@@ -22,10 +22,10 @@ SubstationAdder::SubstationAdder(Network& network) :
 Substation& SubstationAdder::add() {
     checkOptional(*this, m_country, getMessageHeader());
 
-    std::unique_ptr<Substation> substation(new Substation(m_network, m_id, m_name, *m_country, m_tso));
-    m_network.getObjectStore().checkAndAdd<Substation>(std::move(substation));
+    std::unique_ptr<Substation> ptrSubstation = stdcxx::make_unique<Substation>(m_network, m_id, m_name, *m_country, m_tso);
+    Substation& substation = m_network.checkAndAdd<Substation>(std::move(ptrSubstation));
 
-    return m_network.getSubstation(m_id);
+    return substation;
 }
 
 SubstationAdder& SubstationAdder::addGeographicalTag(const std::string& geographicalTag) {

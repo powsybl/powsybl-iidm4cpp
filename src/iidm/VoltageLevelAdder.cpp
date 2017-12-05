@@ -32,20 +32,18 @@ VoltageLevel& VoltageLevelAdder::add() {
 
     checkOptional(*this, m_topologyKind, "TopologyKind is not set");
 
-    std::unique_ptr<VoltageLevel> tmpVoltageLevel;
+    std::unique_ptr<VoltageLevel> ptrVoltageLevel;
     switch (*m_topologyKind) {
         case TopologyKind::NODE_BREAKER:
-            tmpVoltageLevel.reset(new NodeBreakerVoltageLevel(m_id, m_name, m_substation, *m_nominalVoltage, *m_lowVoltageLimit, *m_highVoltageLimit));
+            ptrVoltageLevel = stdcxx::make_unique<NodeBreakerVoltageLevel>(m_id, m_name, m_substation, *m_nominalVoltage, *m_lowVoltageLimit, *m_highVoltageLimit);
             break;
 
         case TopologyKind::BUS_BREAKER:
-            tmpVoltageLevel.reset(new BusBreakerVoltageLevel(m_id, m_name, m_substation, *m_nominalVoltage, *m_lowVoltageLimit, *m_highVoltageLimit));
+            ptrVoltageLevel = stdcxx::make_unique<BusBreakerVoltageLevel>(m_id, m_name, m_substation, *m_nominalVoltage, *m_lowVoltageLimit, *m_highVoltageLimit);
             break;
     }
 
-    getNetwork().getObjectStore().checkAndAdd<VoltageLevel>(std::move(tmpVoltageLevel));
-
-    VoltageLevel& voltageLevel = getNetwork().getVoltageLevel(m_id);
+    VoltageLevel& voltageLevel = getNetwork().checkAndAdd<VoltageLevel>(std::move(ptrVoltageLevel));
     m_substation.addVoltageLevel(voltageLevel);
 
     return voltageLevel;

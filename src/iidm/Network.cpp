@@ -22,10 +22,6 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     m_forecastDistance(0) {
 }
 
-ObjectStore& Network::getObjectStore() {
-    return m_objectStore;
-}
-
 const std::string& Network::getTypeDescription() const {
     static std::string s_typeDescription = "Network";
 

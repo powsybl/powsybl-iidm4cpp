@@ -48,7 +48,7 @@ ObjectStore::iterator<T> ObjectStore::end() {
 }
 
 template <typename T>
-void ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
+T& ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     assert(identifiable);
 
     checkId(identifiable->getId());
@@ -57,9 +57,11 @@ void ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     }
 
     auto it = m_objectsById.emplace(std::make_pair(identifiable->getId(), std::move(identifiable)));
-    std::reference_wrapper<Identifiable> reference = dynamic_cast<Identifiable&>(*it.first->second.get());
 
-    m_objectsByType[typeid(T).name()].emplace_back(std::move(reference));
+    std::reference_wrapper<Identifiable> refIdentifiable = dynamic_cast<Identifiable&>(*it.first->second.get());
+    m_objectsByType[typeid(T).name()].emplace_back(std::move(refIdentifiable));
+
+    return dynamic_cast<T&>(*it.first->second);
 }
 
 template<typename T>

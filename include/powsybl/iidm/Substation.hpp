@@ -24,6 +24,8 @@ namespace iidm {
 
 class Substation : public Container {
 public:
+    Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso);
+
     virtual ~Substation() = default;
 
     Substation& addGeographicalTag(const std::string& geographicalTag);
@@ -47,11 +49,6 @@ public:
 
 protected:
     const std::string& getTypeDescription() const override;
-
-protected:
-    Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso);
-
-    friend class SubstationAdder;
 
 private:
     void addVoltageLevel(VoltageLevel& voltageLevel);

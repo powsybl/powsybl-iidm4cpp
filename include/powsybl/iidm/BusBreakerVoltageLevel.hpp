@@ -16,14 +16,13 @@ namespace iidm {
 
 class BusBreakerVoltageLevel : public VoltageLevel {
 public:
-    virtual ~BusBreakerVoltageLevel() = default;
-
-protected:
     BusBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                            double nominalVoltage, double lowVoltageLimit, double highVoltagelimit);
 
-    friend class VoltageLevelAdder;
+    virtual ~BusBreakerVoltageLevel() = default;
 
+public:
+    TopologyKind getTopologyKind() const override;
 };
 
 }

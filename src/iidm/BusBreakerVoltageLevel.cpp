@@ -16,6 +16,10 @@ BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std:
     VoltageLevel(id, name, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit) {
 }
 
+TopologyKind BusBreakerVoltageLevel::getTopologyKind() const {
+    return TopologyKind::BUS_BREAKER;
+}
+
 }
 
 }
