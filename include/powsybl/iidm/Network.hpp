@@ -52,6 +52,10 @@ public:
         return m_objectStore.end<T>();
     }
 
+    template <typename T> T& checkAndAdd(std::unique_ptr<T>&& identifiable) {
+        return m_objectStore.checkAndAdd(std::move(identifiable));
+    }
+
     SubstationAdder newSubstation();
 
     Substation& getSubstation(const std::string& id) const;
@@ -61,12 +65,6 @@ public:
     VoltageLevel& getVoltageLevel(const std::string& id) const;
 
     unsigned int getVoltageLevelCount() const;
-
-private:
-    ObjectStore& getObjectStore();
-
-    friend class SubstationAdder;
-    friend class VoltageLevelAdder;
 
 private:
     std::string m_sourceFormat;

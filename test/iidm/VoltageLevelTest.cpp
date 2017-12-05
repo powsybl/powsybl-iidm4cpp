@@ -33,19 +33,15 @@ TEST(VoltageLevel, constructor) {
 
     ASSERT_EQ(1, network.getVoltageLevelCount());
 
-    for (auto it = network.cbegin<VoltageLevel>(); it != network.cend<VoltageLevel>(); ++it) {
-        const VoltageLevel& vl = it;
-        std::cout << vl.getId() << std::endl;
-        std::cout << (*it).getId() << std::endl;
-        std::cout << it().getId() << std::endl;
-    }
+    ASSERT_EQ("VL", voltageLevel.getId());
+    ASSERT_EQ("VLNAME", voltageLevel.getName());
+    ASSERT_EQ(TopologyKind::NODE_BREAKER, voltageLevel.getTopologyKind());
+    ASSERT_EQ(200, voltageLevel.getLowVoltageLimit());
+    ASSERT_EQ(250, voltageLevel.getHighVoltageLimit());
+    ASSERT_EQ(225, voltageLevel.getNominalVoltage());
 
-    for (auto it = network.begin<VoltageLevel>(); it != network.end<VoltageLevel>(); ++it) {
-        VoltageLevel& vl = it;
-        std::cout << vl.getId() << std::endl;
-        std::cout << (*it).getId() << std::endl;
-        std::cout << it().getId() << std::endl;
-    }
+    VoltageLevel& voltageLevel2 = network.getVoltageLevel("VL");
+    ASSERT_EQ(&voltageLevel, &voltageLevel2);
 }
 
 }

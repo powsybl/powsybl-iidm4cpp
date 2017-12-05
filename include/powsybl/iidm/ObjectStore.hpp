@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_OBJECTSTORE_HPP
 
 #include <functional>
-#include <iterator>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -21,9 +20,6 @@
 namespace powsybl {
 
 namespace iidm {
-
-class SubstationAdder;
-class VoltageLevelAdder;
 
 class ObjectStore {
 public:
@@ -42,15 +38,11 @@ public:
     template <typename T> iterator<T> end();
 
 public:
+    template <typename T> T& checkAndAdd(std::unique_ptr<T>&& identifiable);
+
     template <typename T> T& get(const std::string& id) const;
 
     template <typename T> unsigned int getObjectCount() const;
-
-private:
-    template <typename T> void checkAndAdd(std::unique_ptr<T>&& identifiable);
-
-    friend SubstationAdder;
-    friend VoltageLevelAdder;
 
 private:
     static void checkId(const std::string& id);

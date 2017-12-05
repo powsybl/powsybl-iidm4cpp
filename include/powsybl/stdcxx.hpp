@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_STDCXX_HPP
 #define POWSYBL_IIDM_STDCXX_HPP
 
+#include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 #endif  // POWSYBL_IIDM_STDCXX_HPP
