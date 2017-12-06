@@ -64,7 +64,7 @@ private:
 
     std::set<std::string> m_geographicalTags;
 
-    std::vector<std::reference_wrapper<VoltageLevel>> m_voltageLevels;
+    std::vector<std::reference_wrapper<VoltageLevel> > m_voltageLevels;
 };
 
 }

@@ -48,9 +48,9 @@ private:
     static void checkId(const std::string& id);
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<Identifiable>> m_objectsById;
+    std::unordered_map<std::string, std::unique_ptr<Identifiable> > m_objectsById;
 
-    std::unordered_map<std::string, std::vector<std::reference_wrapper<Identifiable>>> m_objectsByType;
+    std::unordered_map<std::string, std::vector<std::reference_wrapper<Identifiable> > > m_objectsByType;
 };
 
 }
