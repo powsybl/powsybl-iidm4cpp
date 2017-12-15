@@ -31,7 +31,14 @@ protected:
     virtual const std::string& getTypeDescription() const = 0;
 
 protected:
+    Identifiable(Identifiable&& identifiable) = default;
+
     Identifiable(const std::string& id, const std::string& name);
+
+private: // Non copyable
+    Identifiable(const Identifiable& identifiable) = delete;
+
+    Identifiable& operator=(const Identifiable& identifiable) = delete;
 
 private:
     std::string m_id;
