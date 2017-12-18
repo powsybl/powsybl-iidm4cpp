@@ -21,16 +21,16 @@ class Identifiable;
 
 template <typename T>
 struct iterator_traits {
-    typedef NetworkFastIterator<T, IdentifiableList::iterator> iterator;
+    typedef NetworkFastIterator<T, Identifiables::iterator> iterator;
 
-    typedef NetworkFastIterator<const T, IdentifiableList::const_iterator> const_iterator;
+    typedef NetworkFastIterator<const T, Identifiables::const_iterator> const_iterator;
 };
 
 template <>
 struct iterator_traits<Identifiable> {
-    typedef NetworkIterator<Identifiable, MapById::iterator> iterator;
+    typedef NetworkIterator<Identifiable, IdentifiableById::iterator> iterator;
 
-    typedef NetworkIterator<const Identifiable, MapById::const_iterator> const_iterator;
+    typedef NetworkIterator<const Identifiable, IdentifiableById::const_iterator> const_iterator;
 };
 
 }

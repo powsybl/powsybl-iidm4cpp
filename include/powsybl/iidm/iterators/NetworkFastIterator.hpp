@@ -19,7 +19,7 @@ namespace iidm {
 class ObjectStore;
 
 /**
- * Iterator over the map-by-type map.
+ * Forward iterator over the IdentifiablesByType map.
  */
 template <typename Base, typename Iterator, typename... Derived>
 class NetworkFastIterator {
@@ -40,9 +40,9 @@ public:
 
     operator Base&() const;
 
-    NetworkFastIterator operator++();
+    NetworkFastIterator& operator++();
 
-    NetworkFastIterator& operator++(int i);
+    NetworkFastIterator operator++(int i);
 
     bool operator==(const NetworkFastIterator& it) const;
 

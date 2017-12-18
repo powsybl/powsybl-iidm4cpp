@@ -23,7 +23,7 @@ class Network : public Container {
 public:
     Network(const std::string& id, const std::string& sourceFormat);
 
-    Network(Network&& network);
+    Network(Network&& network) = default;
 
     virtual ~Network() = default;
 

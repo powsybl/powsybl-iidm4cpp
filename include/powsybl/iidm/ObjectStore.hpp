@@ -51,9 +51,9 @@ private: // Non copyable
     ObjectStore& operator=(const ObjectStore& objectStore) = delete;
 
 private:
-    MapById m_objectsById;
+    IdentifiableById m_objectsById;
 
-    MapByType m_objectsByType;
+    IdentifiablesByType m_objectsByType;
 
 private:
     template <typename T, typename Iterator> friend class NetworkIterator;

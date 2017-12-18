@@ -58,22 +58,22 @@ NetworkIterator<T, Iterator>::operator T&() const {
 }
 
 template <typename T, typename Iterator>
-NetworkIterator<T, Iterator> NetworkIterator<T, Iterator>::operator++() {
+NetworkIterator<T, Iterator>& NetworkIterator<T, Iterator>::operator++() {
+    check();
+
+    advance(true);
+
+    return *this;
+}
+
+template <typename T, typename Iterator>
+NetworkIterator<T, Iterator> NetworkIterator<T, Iterator>::operator++(int i) {
     check();
 
     NetworkIterator<T, Iterator> tmp(*this);
     advance(true);
 
     return tmp;
-}
-
-template <typename T, typename Iterator>
-NetworkIterator<T, Iterator>& NetworkIterator<T, Iterator>::operator++(int i) {
-    check();
-
-    advance(true);
-
-    return *this;
 }
 
 template <typename T, typename Iterator>

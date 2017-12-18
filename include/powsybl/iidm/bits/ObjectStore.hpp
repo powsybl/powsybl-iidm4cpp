@@ -21,11 +21,11 @@ namespace iidm {
 
 class Identifiable;
 
-typedef std::unordered_map<std::string, std::unique_ptr<Identifiable> > MapById;
+typedef std::unordered_map<std::string, std::unique_ptr<Identifiable> > IdentifiableById;
 
-typedef std::vector<std::reference_wrapper<Identifiable> > IdentifiableList;
+typedef std::vector<std::reference_wrapper<Identifiable> > Identifiables;
 
-typedef std::unordered_map<std::type_index, IdentifiableList> MapByType;
+typedef std::unordered_map<std::type_index, Identifiables> IdentifiablesByType;
 
 }
 

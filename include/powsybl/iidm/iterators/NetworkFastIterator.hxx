@@ -64,22 +64,22 @@ NetworkFastIterator<Base, Iterator, Derived...>::operator Base&() const {
 }
 
 template <typename Base, typename Iterator, typename... Derived>
-NetworkFastIterator<Base, Iterator, Derived...> NetworkFastIterator<Base, Iterator, Derived...>::operator++() {
+NetworkFastIterator<Base, Iterator, Derived...>& NetworkFastIterator<Base, Iterator, Derived...>::operator++() {
+    check();
+
+    advance(true);
+
+    return *this;
+}
+
+template <typename Base, typename Iterator, typename... Derived>
+NetworkFastIterator<Base, Iterator, Derived...> NetworkFastIterator<Base, Iterator, Derived...>::operator++(int i) {
     check();
 
     NetworkFastIterator<Base, Iterator, Derived...> tmp(*this);
     advance(true);
 
     return tmp;
-}
-
-template <typename Base, typename Iterator, typename... Derived>
-NetworkFastIterator<Base, Iterator, Derived...>& NetworkFastIterator<Base, Iterator, Derived...>::operator++(int i) {
-    check();
-
-    advance(true);
-
-    return *this;
 }
 
 template <typename Base, typename Iterator, typename... Derived>

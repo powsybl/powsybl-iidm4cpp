@@ -15,7 +15,7 @@ namespace iidm {
 class ObjectStore;
 
 /**
- * Iterator over the object-by-id map. Skip all the Identifiable which are not compatible with T.
+ * Forward iterator over the IdentifiableById map. Skip all the Identifiable which are not compatible with T.
  */
 template <typename T, typename Iterator>
 class NetworkIterator {
@@ -36,9 +36,9 @@ public:
 
     operator T&() const;
 
-    NetworkIterator operator++();
+    NetworkIterator& operator++();
 
-    NetworkIterator& operator++(int i);
+    NetworkIterator operator++(int i);
 
     bool operator==(const NetworkIterator& it) const;
 
