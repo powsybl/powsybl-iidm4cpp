@@ -19,7 +19,8 @@ namespace iidm {
 Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, Container::Type::NETWORK),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
-    m_forecastDistance(0) {
+    m_forecastDistance(0),
+    m_objectStore() {
 }
 
 const std::string& Network::getTypeDescription() const {
@@ -45,7 +46,7 @@ Substation& Network::getSubstation(const std::string& id) const {
     return m_objectStore.get<Substation>(id);
 }
 
-unsigned int Network::getSubstationCount() const {
+unsigned long Network::getSubstationCount() const {
     return m_objectStore.getObjectCount<Substation>();
 }
 
@@ -54,7 +55,7 @@ VoltageLevel& Network::getVoltageLevel(const std::string& id) const {
     return m_objectStore.get<VoltageLevel>(id);
 }
 
-unsigned int Network::getVoltageLevelCount() const {
+unsigned long Network::getVoltageLevelCount() const {
     return m_objectStore.getObjectCount<VoltageLevel>();
 }
 

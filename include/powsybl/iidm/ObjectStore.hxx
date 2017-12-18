@@ -10,7 +10,6 @@
 
 #include <powsybl/iidm/ObjectStore.hpp>
 
-#include <iostream>
 #include <sstream>
 
 #include <powsybl/PowsyblException.hpp>
@@ -21,30 +20,22 @@ namespace iidm {
 
 template <typename T>
 ObjectStore::iterator<T> ObjectStore::begin() {
-    return ObjectStore::iterator<T>(*this, 0);
+    return ObjectStore::iterator<T>(*this);
 }
 
 template <typename T>
 ObjectStore::const_iterator<T> ObjectStore::cbegin() const {
-    return ObjectStore::const_iterator<T>(*this, 0);
+    return typename ObjectStore::const_iterator<T>(*this);
 }
 
 template <typename T>
-ObjectStore::iterator<const T> ObjectStore::cend() const {
-    const auto& it = m_objectsByType.find(typeid(T).name());
-
-    int index = (it == m_objectsByType.end()) ? 0 : it->second.size();
-
-    return ObjectStore::const_iterator<T>(*this, index);
+ObjectStore::const_iterator<T> ObjectStore::cend() const {
+    return typename ObjectStore::const_iterator<T>();
 }
 
 template <typename T>
 ObjectStore::iterator<T> ObjectStore::end() {
-    const auto& it = m_objectsByType.find(typeid(T).name());
-
-    int index = (it == m_objectsByType.end()) ? 0 : it->second.size();
-
-    return ObjectStore::iterator<T>(*this, index);
+    return ObjectStore::iterator<T>();
 }
 
 template <typename T>
@@ -59,7 +50,7 @@ T& ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     auto it = m_objectsById.emplace(std::make_pair(identifiable->getId(), std::move(identifiable)));
 
     std::reference_wrapper<Identifiable> refIdentifiable = dynamic_cast<Identifiable&>(*it.first->second.get());
-    m_objectsByType[typeid(T).name()].emplace_back(std::move(refIdentifiable));
+    m_objectsByType[typeid(T)].emplace_back(std::move(refIdentifiable));
 
     return dynamic_cast<T&>(*it.first->second);
 }
@@ -86,8 +77,8 @@ T& ObjectStore::get(const std::string& id) const {
 }
 
 template <typename T>
-unsigned int ObjectStore::getObjectCount() const {
-    const auto& it = m_objectsByType.find(typeid(T).name());
+unsigned long ObjectStore::getObjectCount() const {
+    const auto& it = m_objectsByType.find(typeid(T));
     if (it != m_objectsByType.end()) {
         return it->second.size();
     }

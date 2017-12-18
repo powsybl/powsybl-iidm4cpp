@@ -8,14 +8,9 @@
 #ifndef POWSYBL_IIDM_OBJECTSTORE_HPP
 #define POWSYBL_IIDM_OBJECTSTORE_HPP
 
-#include <functional>
-#include <memory>
-#include <string>
-#include <unordered_map>
-#include <vector>
-
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/ObjectStoreIterator.hpp>
+#include <powsybl/iidm/bits/ObjectStore.hpp>
+#include <powsybl/iidm/iterators/Iterators.hpp>
 
 namespace powsybl {
 
@@ -23,11 +18,14 @@ namespace iidm {
 
 class ObjectStore {
 public:
-    template <typename T> friend class ObjectStoreIterator;
+    ObjectStore() = default;
 
-    template <typename T> using iterator = ObjectStoreIterator<T>;
+    ObjectStore(ObjectStore&& objectStore) = default;
 
-    template <typename T> using const_iterator = ObjectStoreIterator<const T>;;
+public:
+    template <typename T> using const_iterator = typename iterator_traits<T>::const_iterator;
+
+    template <typename T> using iterator = typename iterator_traits<T>::iterator;
 
     template <typename T> iterator<T> begin();
 
@@ -42,15 +40,25 @@ public:
 
     template <typename T> T& get(const std::string& id) const;
 
-    template <typename T> unsigned int getObjectCount() const;
+    template <typename T> unsigned long getObjectCount() const;
 
 private:
     static void checkId(const std::string& id);
 
-private:
-    std::unordered_map<std::string, std::unique_ptr<Identifiable> > m_objectsById;
+private: // Non copyable
+    ObjectStore(const ObjectStore& objectStore) = delete;
 
-    std::unordered_map<std::string, std::vector<std::reference_wrapper<Identifiable> > > m_objectsByType;
+    ObjectStore& operator=(const ObjectStore& objectStore) = delete;
+
+private:
+    IdentifiableById m_objectsById;
+
+    IdentifiablesByType m_objectsByType;
+
+private:
+    template <typename T, typename Iterator> friend class NetworkIterator;
+
+    template <typename Base, typename Iterator, typename... Derived> friend class NetworkFastIterator;
 };
 
 }
@@ -58,6 +66,6 @@ private:
 }
 
 #include <powsybl/iidm/ObjectStore.hxx>
-#include <powsybl/iidm/ObjectStoreIterator.hxx>
+#include <powsybl/iidm/iterators/Iterators.hxx>
 
 #endif  // POWSYBL_IIDM_OBJECTSTORE_HPP

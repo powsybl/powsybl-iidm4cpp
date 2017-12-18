@@ -23,6 +23,8 @@ class Network : public Container {
 public:
     Network(const std::string& id, const std::string& sourceFormat);
 
+    Network(Network&& network) = default;
+
     virtual ~Network() = default;
 
 public:
@@ -60,11 +62,11 @@ public:
 
     Substation& getSubstation(const std::string& id) const;
 
-    unsigned int getSubstationCount() const;
+    unsigned long getSubstationCount() const;
 
     VoltageLevel& getVoltageLevel(const std::string& id) const;
 
-    unsigned int getVoltageLevelCount() const;
+    unsigned long getVoltageLevelCount() const;
 
 private:
     std::string m_sourceFormat;

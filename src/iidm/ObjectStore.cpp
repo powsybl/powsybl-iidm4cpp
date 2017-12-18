@@ -17,6 +17,11 @@ void ObjectStore::checkId(const std::string& id) {
     checkNotEmpty(id, "Invalid id '" + id + "'");
 }
 
+template <>
+unsigned long ObjectStore::getObjectCount<Identifiable>() const {
+    return m_objectsById.size();
+}
+
 }
 
 }
