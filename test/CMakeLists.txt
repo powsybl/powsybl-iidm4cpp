@@ -8,6 +8,7 @@
 set(UNIT_TEST_SOURCES
         iidm/CountryTest.cpp
         iidm/EnergySourceTest.cpp
+        iidm/NetworkFactory.cpp
         iidm/NetworkTest.cpp
         iidm/ObjectStoreTest.cpp
         iidm/SubstationTest.cpp
