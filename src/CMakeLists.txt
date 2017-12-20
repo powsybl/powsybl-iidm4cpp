@@ -23,10 +23,13 @@ set(IIDM_SOURCES
         iidm/LccConverterStation.cpp
         iidm/Line.cpp
         iidm/Load.cpp
+        iidm/LoadAdder.cpp
+        iidm/MultipleStateContext.cpp
         iidm/Network.cpp
         iidm/NodeBreakerVoltageLevel.cpp
         iidm/ObjectStore.cpp
         iidm/ShuntCompensator.cpp
+        iidm/StateManager.cpp
         iidm/StaticVarCompensator.cpp
         iidm/Substation.cpp
         iidm/SubstationAdder.cpp

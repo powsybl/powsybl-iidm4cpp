@@ -39,6 +39,10 @@ const T& checkOptional(const Validable& validable, const stdcxx::optional<T> val
     return *value;
 }
 
+double checkP0(const Validable& validable, double p0);
+
+double checkQ0(const Validable& validable, double q0);
+
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit);
 
 }

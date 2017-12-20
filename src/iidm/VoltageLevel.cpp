@@ -61,6 +61,10 @@ const std::string& VoltageLevel::getTypeDescription() const {
     return s_typeDescription;
 }
 
+LoadAdder VoltageLevel::newLoad() {
+    return LoadAdder(*this);
+}
+
 VoltageLevel& VoltageLevel::setHighVoltageLimit(double highVoltageLimit) {
     checkVoltageLimits(*this, m_lowVoltageLimit, highVoltageLimit);
     m_highVoltageLimit = highVoltageLimit;

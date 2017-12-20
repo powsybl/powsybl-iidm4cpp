@@ -54,7 +54,7 @@ template <typename T, typename Iterator>
 NetworkIterator<T, Iterator>::operator T&() const {
     check();
 
-    return static_cast<T&>(*m_current->second.get());
+    return dynamic_cast<T&>(*m_current->second.get());
 }
 
 template <typename T, typename Iterator>

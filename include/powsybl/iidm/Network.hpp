@@ -9,19 +9,27 @@
 #define POWSYBL_IIDM_NETWORK_HPP
 
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/MultiStateObject.hpp>
 #include <powsybl/iidm/ObjectStore.hpp>
+#include <powsybl/iidm/StateManager.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
+class Load;
 class Substation;
 class VoltageLevel;
 
-class Network : public Container {
+class Network : public Container, public MultiStateObject {
 public: // Identifiable
     const std::string& getTypeDescription() const override;
+
+public: // MultiStateObject
+    unsigned long getStateIndex() const override;
+
+    StateManager& getStateManager() const override;
 
 public:
     Network(const std::string& id, const std::string& sourceFormat);
@@ -52,6 +60,10 @@ public:
 
     int getForecastDistance() const;
 
+    Load& getLoad(const std::string& id) const;
+
+    unsigned long getLoadCount() const;
+
     const std::string& getSourceFormat() const;
 
     Substation& getSubstation(const std::string& id) const;
@@ -72,6 +84,8 @@ private:
     int m_forecastDistance;
 
     ObjectStore m_objectStore;
+
+    StateManager m_stateManager;
 };
 
 }
