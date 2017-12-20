@@ -20,10 +20,12 @@ class Network;
 
 template<typename Adder>
 class IdentifiableAdder : public Validable {
-public:
+public: // Validable
     std::string getMessageHeader() const override;
 
 public:
+    IdentifiableAdder() = default;
+
     virtual ~IdentifiableAdder() = default;
 
     Adder& setId(const std::string& id);

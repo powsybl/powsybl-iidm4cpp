@@ -18,6 +18,10 @@ namespace powsybl {
 
 namespace iidm {
 
+int checkForecastDistance(const Validable& validable, int value);
+
+double checkNominalVoltage(const Validable& validable, double nominalVoltage);
+
 const std::string& checkNotEmpty(const std::string& value, const std::string& message);
 
 const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message);
@@ -34,10 +38,6 @@ const T& checkOptional(const Validable& validable, const stdcxx::optional<T> val
     }
     return *value;
 }
-
-int checkForecastDistance(const Validable& validable, int value);
-
-double checkNominalVoltage(const Validable& validable, double nominalVoltage);
 
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit);
 

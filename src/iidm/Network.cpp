@@ -23,19 +23,8 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     m_objectStore() {
 }
 
-const std::string& Network::getTypeDescription() const {
-    static std::string s_typeDescription = "Network";
-
-    return s_typeDescription;
-}
-
 int Network::getForecastDistance() const {
     return m_forecastDistance;
-}
-
-Network& Network::setForecastDistance(int forecastDistance) {
-    m_forecastDistance = checkForecastDistance(*this, forecastDistance);
-    return *this;
 }
 
 const std::string& Network::getSourceFormat() const {
@@ -50,6 +39,11 @@ unsigned long Network::getSubstationCount() const {
     return m_objectStore.getObjectCount<Substation>();
 }
 
+const std::string& Network::getTypeDescription() const {
+    static std::string s_typeDescription = "Network";
+
+    return s_typeDescription;
+}
 
 VoltageLevel& Network::getVoltageLevel(const std::string& id) const {
     return m_objectStore.get<VoltageLevel>(id);
@@ -63,7 +57,10 @@ SubstationAdder Network::newSubstation() {
     return SubstationAdder(*this);
 }
 
-
+Network& Network::setForecastDistance(int forecastDistance) {
+    m_forecastDistance = checkForecastDistance(*this, forecastDistance);
+    return *this;
+}
 
 }
 

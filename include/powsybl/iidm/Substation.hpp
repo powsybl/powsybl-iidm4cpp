@@ -23,6 +23,9 @@ namespace powsybl {
 namespace iidm {
 
 class Substation : public Container {
+public: // Identifiable
+    const std::string& getTypeDescription() const override;
+
 public:
     Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso);
 
@@ -40,15 +43,11 @@ public:
 
     const std::string& getTso() const;
 
+    VoltageLevelAdder newVoltageLevel();
+
     Substation& setCountry(const Country& country);
 
     Substation& setTso(const std::string& tso);
-
-public:
-    VoltageLevelAdder newVoltageLevel();
-
-protected:
-    const std::string& getTypeDescription() const override;
 
 private:
     void addVoltageLevel(VoltageLevel& voltageLevel);

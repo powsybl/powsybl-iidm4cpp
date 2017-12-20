@@ -34,17 +34,13 @@ ObjectStore::const_iterator<T> ObjectStore::cend() const {
 }
 
 template <typename T>
-ObjectStore::iterator<T> ObjectStore::end() {
-    return ObjectStore::iterator<T>();
-}
-
-template <typename T>
 T& ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     assert(identifiable);
-
     checkId(identifiable->getId());
-    if (m_objectsById.find(identifiable->getId()) != m_objectsById.end()) {
-        throw PowsyblException(std::string("Object (") + typeid(T).name() + ") '" + identifiable->getId() + "' already exists");
+
+    auto other = m_objectsById.find(identifiable->getId());
+    if (other != m_objectsById.end()) {
+        throw PowsyblException(std::string("Object '") + identifiable->getId() + "' already exists (" + other->second->getTypeDescription() + ")");
     }
 
     auto it = m_objectsById.emplace(std::make_pair(identifiable->getId(), std::move(identifiable)));
@@ -53,6 +49,11 @@ T& ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     m_objectsByType[typeid(T)].emplace_back(std::move(refIdentifiable));
 
     return dynamic_cast<T&>(*it.first->second);
+}
+
+template <typename T>
+ObjectStore::iterator<T> ObjectStore::end() {
+    return ObjectStore::iterator<T>();
 }
 
 template<typename T>

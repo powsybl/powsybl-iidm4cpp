@@ -20,6 +20,9 @@ class Substation;
 class VoltageLevel;
 
 class Network : public Container {
+public: // Identifiable
+    const std::string& getTypeDescription() const override;
+
 public:
     Network(const std::string& id, const std::string& sourceFormat);
 
@@ -27,17 +30,6 @@ public:
 
     virtual ~Network() = default;
 
-public:
-    const std::string& getTypeDescription() const override;
-
-public:
-    int getForecastDistance() const;
-
-    Network& setForecastDistance(int forecastDistance);
-
-    const std::string& getSourceFormat() const;
-
-public:
     template <typename T> ObjectStore::iterator<T> begin() {
         return m_objectStore.begin<T>();
     }
@@ -50,15 +42,17 @@ public:
         return m_objectStore.cend<T>();
     }
 
-    template <typename T> ObjectStore::iterator<T> end() {
-        return m_objectStore.end<T>();
-    }
-
     template <typename T> T& checkAndAdd(std::unique_ptr<T>&& identifiable) {
         return m_objectStore.checkAndAdd(std::move(identifiable));
     }
 
-    SubstationAdder newSubstation();
+    template <typename T> ObjectStore::iterator<T> end() {
+        return m_objectStore.end<T>();
+    }
+
+    int getForecastDistance() const;
+
+    const std::string& getSourceFormat() const;
 
     Substation& getSubstation(const std::string& id) const;
 
@@ -67,6 +61,10 @@ public:
     VoltageLevel& getVoltageLevel(const std::string& id) const;
 
     unsigned long getVoltageLevelCount() const;
+
+    SubstationAdder newSubstation();
+
+    Network& setForecastDistance(int forecastDistance);
 
 private:
     std::string m_sourceFormat;
