@@ -11,33 +11,11 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
+#include "NetworkFactory.hpp"
+
 namespace powsybl {
 
 namespace iidm {
-
-Network createNetwork() {
-    Network network("test", "test");
-    Substation& substation = network.newSubstation()
-        .setId("S1")
-        .setCountry(Country::FR)
-        .add();
-    substation.newVoltageLevel()
-        .setId("VL1")
-        .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
-        .setLowVoltageLimit(340.0)
-        .setHighVoltageLimit(420.0)
-        .add();
-    substation.newVoltageLevel()
-        .setId("VL2")
-        .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(225.0)
-        .setLowVoltageLimit(200.0)
-        .setHighVoltageLimit(260.0)
-        .add();
-
-    return network;
-}
 
 TEST(ObjectStore, NetworkIterator) {
     const Network& network = createNetwork();

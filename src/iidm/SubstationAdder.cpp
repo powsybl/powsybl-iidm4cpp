@@ -20,7 +20,7 @@ SubstationAdder::SubstationAdder(Network& network) :
 }
 
 Substation& SubstationAdder::add() {
-    checkOptional(*this, m_country, getMessageHeader());
+    checkOptional(*this, m_country, "Country is not set");
 
     std::unique_ptr<Substation> ptrSubstation = stdcxx::make_unique<Substation>(m_network, m_id, m_name, *m_country, m_tso);
     Substation& substation = m_network.checkAndAdd<Substation>(std::move(ptrSubstation));

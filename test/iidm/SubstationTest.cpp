@@ -10,27 +10,23 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 
+#include "AssertionUtils.hpp"
+#include "NetworkFactory.hpp"
+
 namespace powsybl {
 
 namespace iidm {
 
 TEST(Substation, constructor) {
-    Network network("id", "test");
-    Substation& substation = network.newSubstation()
-        .setId("s.id")
-        .setName("s.name")
-        .setCountry(Country::FR)
-        .setTso("s.tso")
-        .add();
+    const Network& network = createNetwork();
+
     ASSERT_EQ(1, network.getSubstationCount());
 
-    ASSERT_EQ("s.id", substation.getId());
-    ASSERT_EQ("s.name", substation.getName());
+    Substation& substation = network.getSubstation("S1");
+    ASSERT_EQ("S1", substation.getId());
+    ASSERT_EQ("S1_NAME", substation.getName());
     ASSERT_EQ(Country::FR, substation.getCountry());
-    ASSERT_EQ("s.tso", substation.getTso());
-
-    Substation& substation2 = network.getSubstation("s.id");
-    ASSERT_EQ(&substation, &substation2);
+    ASSERT_EQ("TSO", substation.getTso());
 }
 
 TEST(Substation, country) {
@@ -38,14 +34,13 @@ TEST(Substation, country) {
 
     SubstationAdder substationAdder = network.newSubstation();
     substationAdder
-        .setId("s.id")
-        .setName("s.name")
-        .setTso("s.tso");
-    ASSERT_THROW(substationAdder.add(), ValidationException);
+        .setId("S");
+    POWSYBL_ASSERT_THROW(substationAdder.add(), ValidationException, "Substation 'S': Country is not set");
     ASSERT_EQ(0, network.getSubstationCount());
 
     substationAdder.setCountry(Country::FR);
     ASSERT_NO_THROW(substationAdder.add());
+    ASSERT_EQ(1, network.getSubstationCount());
 }
 
 }

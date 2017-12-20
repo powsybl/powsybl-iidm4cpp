@@ -9,39 +9,53 @@
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+
+#include "NetworkFactory.hpp"
+#include "AssertionUtils.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
 TEST(VoltageLevel, constructor) {
-    Network network("test", "test");
-    Substation& substation = network.newSubstation()
-        .setId("S")
-        .setCountry(Country::FR)
-        .add();
+    const Network& network = createNetwork();
+    unsigned long voltageLevelCount = network.getVoltageLevelCount();
 
-    VoltageLevel& voltageLevel = substation.newVoltageLevel()
-        .setId("VL")
-        .setName("VLNAME")
-        .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setLowVoltageLimit(200)
-        .setHighVoltageLimit(250)
-        .setNominalVoltage(225)
-        .add();
+    VoltageLevel& vl1 = network.getVoltageLevel("VL1");
+    ASSERT_EQ("VL1", vl1.getId());
+    ASSERT_EQ("VL1_NAME", vl1.getName());
+    ASSERT_EQ(TopologyKind::BUS_BREAKER, vl1.getTopologyKind());
+    ASSERT_EQ(340, vl1.getLowVoltageLimit());
+    ASSERT_EQ(420, vl1.getHighVoltageLimit());
+    ASSERT_EQ(380, vl1.getNominalVoltage());
 
-    ASSERT_EQ(1, network.getVoltageLevelCount());
+    Substation& s1 = network.getSubstation("S1");
+    VoltageLevelAdder adder = s1.newVoltageLevel()
+        .setId("VL1");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': TopologyKind is not set");
+    adder.setTopologyKind(TopologyKind::BUS_BREAKER);
 
-    ASSERT_EQ("VL", voltageLevel.getId());
-    ASSERT_EQ("VLNAME", voltageLevel.getName());
-    ASSERT_EQ(TopologyKind::NODE_BREAKER, voltageLevel.getTopologyKind());
-    ASSERT_EQ(200, voltageLevel.getLowVoltageLimit());
-    ASSERT_EQ(250, voltageLevel.getHighVoltageLimit());
-    ASSERT_EQ(225, voltageLevel.getNominalVoltage());
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Nominal voltage is not set");
+    adder.setNominalVoltage(50);
 
-    VoltageLevel& voltageLevel2 = network.getVoltageLevel("VL");
-    ASSERT_EQ(&voltageLevel, &voltageLevel2);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Low voltage limit is not set");
+    adder.setLowVoltageLimit(100);
+
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': High voltage limit is not set");
+    adder.setHighVoltageLimit(0);
+
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [100, 0]");
+    adder
+        .setLowVoltageLimit(0)
+        .setHighVoltageLimit(0);
+
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'VL1' already exists (Voltage level)");
+    adder.setId("UNIQUE_VOLTAGE_LEVEL_ID");
+
+    ASSERT_NO_THROW(adder.add());
+    ASSERT_EQ(voltageLevelCount + 1, network.getVoltageLevelCount());
 }
 
 }
