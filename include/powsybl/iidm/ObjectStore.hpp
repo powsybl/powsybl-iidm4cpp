@@ -22,7 +22,6 @@ public:
 
     ObjectStore(ObjectStore&& objectStore) = default;
 
-public:
     template <typename T> using const_iterator = typename iterator_traits<T>::const_iterator;
 
     template <typename T> using iterator = typename iterator_traits<T>::iterator;
@@ -33,10 +32,9 @@ public:
 
     template <typename T> const_iterator<T> cend() const;
 
-    template <typename T> iterator<T> end();
-
-public:
     template <typename T> T& checkAndAdd(std::unique_ptr<T>&& identifiable);
+
+    template <typename T> iterator<T> end();
 
     template <typename T> T& get(const std::string& id) const;
 

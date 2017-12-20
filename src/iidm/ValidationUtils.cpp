@@ -14,20 +14,6 @@ namespace powsybl {
 
 namespace iidm {
 
-const std::string& checkNotEmpty(const std::string& value, const std::string& message) {
-    if (value.empty()) {
-        throw PowsyblException(message);
-    }
-    return value;
-}
-
-const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message) {
-    if (value.empty()) {
-        throw ValidationException(validable, message);
-    }
-    return value;
-}
-
 int checkForecastDistance(const Validable& validable, int forecastDistance) {
     if (forecastDistance < 0) {
         throw ValidationException(validable, "Forecast distance must be positive");
@@ -40,6 +26,20 @@ double checkNominalVoltage(const Validable& validable, double nominalVoltage) {
         throw ValidationException(validable, "Nominal voltage is invalid");
     }
     return nominalVoltage;
+}
+
+const std::string& checkNotEmpty(const std::string& value, const std::string& message) {
+    if (value.empty()) {
+        throw PowsyblException(message);
+    }
+    return value;
+}
+
+const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message) {
+    if (value.empty()) {
+        throw ValidationException(validable, message);
+    }
+    return value;
 }
 
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit) {

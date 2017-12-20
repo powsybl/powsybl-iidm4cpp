@@ -22,12 +22,9 @@ class VoltageLevel;
 
 class VoltageLevelAdder : public IdentifiableAdder<VoltageLevelAdder> {
 public:
-    const std::string& getTypeDescription() const override;
-
-    Network& getNetwork() override;
-
-public:
     virtual ~VoltageLevelAdder() = default;
+
+    VoltageLevel& add();
 
     VoltageLevelAdder& setHighVoltageLimit(double highVoltageLimit);
 
@@ -35,10 +32,12 @@ public:
 
     VoltageLevelAdder& setNominalVoltage(double nominalVoltage);
 
-    VoltageLevelAdder& setTopologyKind(TopologyKind topologyKind);
+    VoltageLevelAdder& setTopologyKind(const TopologyKind& topologyKind);
 
-public:
-    VoltageLevel& add();
+protected: // IdentifiableAdder
+    const std::string& getTypeDescription() const override;
+
+    Network& getNetwork() override;
 
 private:
     explicit VoltageLevelAdder(Substation& substation);

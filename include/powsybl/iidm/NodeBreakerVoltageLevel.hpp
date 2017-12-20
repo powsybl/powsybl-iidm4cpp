@@ -15,14 +15,14 @@ namespace powsybl {
 namespace iidm {
 
 class NodeBreakerVoltageLevel : public VoltageLevel {
+public: // VoltageLevel
+    const TopologyKind& getTopologyKind() const override;
+
 public:
     NodeBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                             double nominalVoltage, double lowVoltageLimit, double highVoltagelimit);
 
     virtual ~NodeBreakerVoltageLevel() = default;
-
-public:
-    TopologyKind getTopologyKind() const override;
 };
 
 }

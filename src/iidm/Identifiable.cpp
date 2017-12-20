@@ -18,12 +18,12 @@ Identifiable::Identifiable(const std::string& id, const std::string& name) :
     m_name(name) {
 }
 
-std::string Identifiable::getMessageHeader() const {
-    return getTypeDescription() + " '" + m_id + "': ";
-}
-
 const std::string& Identifiable::getId() const {
     return m_id;
+}
+
+std::string Identifiable::getMessageHeader() const {
+    return getTypeDescription() + " '" + m_id + "': ";
 }
 
 const std::string& Identifiable::getName() const {

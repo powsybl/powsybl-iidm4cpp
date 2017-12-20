@@ -23,14 +23,10 @@ VoltageLevelAdder::VoltageLevelAdder(Substation& substation) :
 }
 
 VoltageLevel& VoltageLevelAdder::add() {
+    checkOptional(*this, m_topologyKind, "TopologyKind is not set");
     checkOptional(*this, m_nominalVoltage, "Nominal voltage is not set");
-    checkNominalVoltage(*this, *m_nominalVoltage);
-
     checkOptional(*this, m_lowVoltageLimit, "Low voltage limit is not set");
     checkOptional(*this, m_highVoltageLimit, "High voltage limit is not set");
-    checkVoltageLimits(*this, *m_lowVoltageLimit, *m_highVoltageLimit);
-
-    checkOptional(*this, m_topologyKind, "TopologyKind is not set");
 
     std::unique_ptr<VoltageLevel> ptrVoltageLevel;
     switch (*m_topologyKind) {
@@ -74,7 +70,7 @@ VoltageLevelAdder& VoltageLevelAdder::setNominalVoltage(double nominalVoltage) {
     return *this;
 }
 
-VoltageLevelAdder& VoltageLevelAdder::setTopologyKind(TopologyKind topologyKind) {
+VoltageLevelAdder& VoltageLevelAdder::setTopologyKind(const TopologyKind& topologyKind) {
     m_topologyKind = topologyKind;
     return *this;
 }

@@ -26,16 +26,15 @@ class SubstationAdder : public IdentifiableAdder<SubstationAdder> {
 public:
     virtual ~SubstationAdder() = default;
 
+    Substation& add();
+
     SubstationAdder& setCountry(const Country& country);
 
     SubstationAdder& addGeographicalTag(const std::string& geographicalTag);
 
     SubstationAdder& setTso(const std::string& tso);
 
-public:
-    Substation& add();
-
-protected:
+protected: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
     Network& getNetwork() override;

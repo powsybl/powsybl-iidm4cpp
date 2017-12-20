@@ -19,9 +19,11 @@ namespace iidm {
 
 class Network;
 class Substation;
-class VoltageLevelAdder;
 
 class VoltageLevel : public Container {
+public: // Identifiable
+    const std::string& getTypeDescription() const override;
+
 public:
     virtual ~VoltageLevel() = default;
 
@@ -29,26 +31,23 @@ public:
 
     double getLowVoltageLimit() const;
 
-    double getNominalVoltage() const;
-
     const Network& getNetwork() const;
 
     Network& getNetwork();
+
+    double getNominalVoltage() const;
 
     const Substation& getSubstation() const;
 
     Substation& getSubstation();
 
-    virtual TopologyKind getTopologyKind() const = 0;
+    virtual const TopologyKind& getTopologyKind() const = 0;
 
     VoltageLevel& setHighVoltageLimit(double highVoltageLimit);
 
     VoltageLevel& setLowVoltageLimit(double lowVoltageLimit);
 
     VoltageLevel& setNominalVoltage(double nominalVoltage);
-
-protected:
-    const std::string& getTypeDescription() const override;
 
 protected:
     VoltageLevel(const std::string& id, const std::string& name, Substation& substation,

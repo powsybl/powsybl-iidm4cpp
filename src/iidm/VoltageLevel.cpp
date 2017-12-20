@@ -23,6 +23,8 @@ VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, Subst
     m_lowVoltageLimit(lowVoltageLimit),
     m_highVoltageLimit(highVoltageLimit) {
 
+    checkNominalVoltage(*this, m_nominalVoltage);
+    checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
 }
 
 double VoltageLevel::getHighVoltageLimit() const {
@@ -33,16 +35,16 @@ double VoltageLevel::getLowVoltageLimit() const {
     return m_lowVoltageLimit;
 }
 
-double VoltageLevel::getNominalVoltage() const {
-    return m_nominalVoltage;
-}
-
 const Network& VoltageLevel::getNetwork() const {
     return getSubstation().getNetwork();
 }
 
 Network& VoltageLevel::getNetwork() {
     return getSubstation().getNetwork();
+}
+
+double VoltageLevel::getNominalVoltage() const {
+    return m_nominalVoltage;
 }
 
 const Substation& VoltageLevel::getSubstation() const {
