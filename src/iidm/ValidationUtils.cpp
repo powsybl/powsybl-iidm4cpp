@@ -44,10 +44,10 @@ const std::string& checkNotEmpty(const Validable& validable, const std::string& 
 
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit) {
     if (lowVoltageLimit < 0) {
-        throw ValidationException(validable, "low voltage limit is < 0");
+        throw ValidationException(validable, "Low voltage limit is < 0");
     }
     if (highVoltageLimit < 0) {
-        throw ValidationException(validable, "high voltage limit is < 0");
+        throw ValidationException(validable, "High voltage limit is < 0");
     }
     if (lowVoltageLimit > highVoltageLimit) {
         std::ostringstream oss;
