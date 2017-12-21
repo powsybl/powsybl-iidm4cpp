@@ -27,9 +27,7 @@ NetworkIterator<T, Iterator>::NetworkIterator(ObjectStore& objectStore) :
     m_current(objectStore.m_objectsById.begin()),
     m_end(objectStore.m_objectsById.end()) {
 
-    while ((m_current != m_end) && (!isInstanceOf<T>(m_current->second))) {
-        ++m_current;
-    }
+    advance(false);
 }
 
 template <typename T, typename Iterator>
