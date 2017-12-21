@@ -58,6 +58,36 @@ TEST(VoltageLevel, constructor) {
     ASSERT_EQ(voltageLevelCount + 1, network.getVoltageLevelCount());
 }
 
+TEST(VoltageLevel, integrity) {
+    const Network& network = createNetwork();
+
+    VoltageLevel& vl1 = network.getVoltageLevel("VL1");
+    ASSERT_EQ(380, vl1.getNominalVoltage());
+    ASSERT_EQ(340, vl1.getLowVoltageLimit());
+    ASSERT_EQ(420, vl1.getHighVoltageLimit());
+
+    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(-10), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
+    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(0), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
+    if (std::numeric_limits<double>::has_quiet_NaN) {
+        POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(std::numeric_limits<double>::quiet_NaN()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
+    }
+    if (std::numeric_limits<double>::has_signaling_NaN) {
+        POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(std::numeric_limits<double>::signaling_NaN()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
+    }
+    ASSERT_NO_THROW(vl1.setNominalVoltage(100));
+    ASSERT_EQ(100, vl1.getNominalVoltage());
+
+    POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(-10), ValidationException, "Voltage level 'VL1': Low voltage limit is < 0");
+    POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(440), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [440, 420]");
+    ASSERT_NO_THROW(vl1.setLowVoltageLimit(360));
+    ASSERT_EQ(360, vl1.getLowVoltageLimit());
+
+    POWSYBL_ASSERT_THROW(vl1.setHighVoltageLimit(-10), ValidationException, "Voltage level 'VL1': High voltage limit is < 0");
+    POWSYBL_ASSERT_THROW(vl1.setHighVoltageLimit(320), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [360, 320]");
+    ASSERT_NO_THROW(vl1.setHighVoltageLimit(440));
+    ASSERT_EQ(440, vl1.getHighVoltageLimit());
+}
+
 }
 
 }
