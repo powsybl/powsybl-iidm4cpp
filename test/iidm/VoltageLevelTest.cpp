@@ -66,13 +66,13 @@ TEST(VoltageLevel, integrity) {
     ASSERT_EQ(340, vl1.getLowVoltageLimit());
     ASSERT_EQ(420, vl1.getHighVoltageLimit());
 
-    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(-10), ValidationException, "Voltage level 'VL1': Nominal voltage is invalid");
-    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(0), ValidationException, "Voltage level 'VL1': Nominal voltage is invalid");
+    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(-10), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
+    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(0), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
     if (std::numeric_limits<double>::has_quiet_NaN) {
-        POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(std::numeric_limits<double>::quiet_NaN()), ValidationException, "Voltage level 'VL1': Nominal voltage is invalid");
+        POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(std::numeric_limits<double>::quiet_NaN()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
     }
     if (std::numeric_limits<double>::has_signaling_NaN) {
-        POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(std::numeric_limits<double>::signaling_NaN()), ValidationException, "Voltage level 'VL1': Nominal voltage is invalid");
+        POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(std::numeric_limits<double>::signaling_NaN()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
     }
     ASSERT_NO_THROW(vl1.setNominalVoltage(100));
     ASSERT_EQ(100, vl1.getNominalVoltage());

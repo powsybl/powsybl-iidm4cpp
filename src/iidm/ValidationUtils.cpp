@@ -16,14 +16,16 @@ namespace iidm {
 
 int checkForecastDistance(const Validable& validable, int forecastDistance) {
     if (forecastDistance < 0) {
-        throw ValidationException(validable, "Forecast distance must be positive");
+        throw ValidationException(validable, "Forecast distance is < 0");
     }
     return forecastDistance;
 }
 
 double checkNominalVoltage(const Validable& validable, double nominalVoltage) {
-    if (std::isnan(nominalVoltage) || (nominalVoltage <= 0)) {
-        throw ValidationException(validable, "Nominal voltage is invalid");
+    if (std::isnan(nominalVoltage)) {
+        throw ValidationException(validable, "Nominal voltage is undefined");
+    } else if (nominalVoltage <= 0) {
+        throw ValidationException(validable, "Nominal voltage is <= 0");
     }
     return nominalVoltage;
 }
