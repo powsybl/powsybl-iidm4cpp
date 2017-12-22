@@ -27,8 +27,8 @@ TEST(Load, constructor) {
     ASSERT_EQ("LOAD1", load.getId());
     ASSERT_EQ("LOAD1_NAME", load.getName());
     ASSERT_EQ(LoadType::UNDEFINED, load.getLoadType());
-    ASSERT_EQ(50.0, load.getP0());
-    ASSERT_EQ(40.0, load.getQ0());
+    ASSERT_DOUBLE_EQ(50.0, load.getP0());
+    ASSERT_DOUBLE_EQ(40.0, load.getQ0());
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
     LoadAdder adder = vl1.newLoad()
@@ -54,11 +54,11 @@ TEST(Load, integrity) {
     const Network& network = createNetwork();
 
     Load& load1 = network.getLoad("LOAD1");
-    ASSERT_EQ(50, load1.getP0());
-    ASSERT_EQ(40, load1.getQ0());
+    ASSERT_DOUBLE_EQ(50, load1.getP0());
+    ASSERT_DOUBLE_EQ(40, load1.getQ0());
 
     ASSERT_NO_THROW(load1.setP0(100));
-    ASSERT_EQ(100, load1.getP0());
+    ASSERT_DOUBLE_EQ(100, load1.getP0());
     if (std::numeric_limits<double>::has_quiet_NaN) {
         POWSYBL_ASSERT_THROW(load1.setP0(std::numeric_limits<double>::quiet_NaN()), ValidationException, "Load 'LOAD1': p0 is invalid");
     }
@@ -67,7 +67,7 @@ TEST(Load, integrity) {
     }
 
     ASSERT_NO_THROW(load1.setQ0(100));
-    ASSERT_EQ(100, load1.getQ0());
+    ASSERT_DOUBLE_EQ(100, load1.getQ0());
     if (std::numeric_limits<double>::has_quiet_NaN) {
         POWSYBL_ASSERT_THROW(load1.setQ0(std::numeric_limits<double>::quiet_NaN()), ValidationException, "Load 'LOAD1': q0 is invalid");
     }
@@ -80,43 +80,45 @@ TEST(Load, multistate) {
     const Network& network = createNetwork();
 
     Load& load1 = network.getLoad("LOAD1");
-    ASSERT_EQ(50, load1.getP0());
-    ASSERT_EQ(40, load1.getQ0());
+    ASSERT_DOUBLE_EQ(50, load1.getP0());
+    ASSERT_DOUBLE_EQ(40, load1.getQ0());
 
     network.getStateManager().cloneState(StateManager::getInitialStateId(), {"s1", "s2"});
-    ASSERT_EQ(3, network.getStateManager().getStateArraySize());
+    ASSERT_EQ(3ul, network.getStateManager().getStateArraySize());
 
     network.getStateManager().setWorkingState("s1");
-    ASSERT_EQ(50, load1.getP0());
-    ASSERT_EQ(40, load1.getQ0());
+    ASSERT_DOUBLE_EQ(50, load1.getP0());
+    ASSERT_DOUBLE_EQ(40, load1.getQ0());
     load1.setP0(100);
     load1.setQ0(80);
-    ASSERT_EQ(100, load1.getP0());
-    ASSERT_EQ(80, load1.getQ0());
+    ASSERT_DOUBLE_EQ(100, load1.getP0());
+    ASSERT_DOUBLE_EQ(80, load1.getQ0());
 
     network.getStateManager().setWorkingState("s2");
-    ASSERT_EQ(50, load1.getP0());
-    ASSERT_EQ(40, load1.getQ0());
+    ASSERT_DOUBLE_EQ(50, load1.getP0());
+    ASSERT_DOUBLE_EQ(40, load1.getQ0());
     load1.setP0(150);
     load1.setQ0(120);
-    ASSERT_EQ(150, load1.getP0());
-    ASSERT_EQ(120, load1.getQ0());
+    ASSERT_DOUBLE_EQ(150, load1.getP0());
+    ASSERT_DOUBLE_EQ(120, load1.getQ0());
 
     network.getStateManager().setWorkingState(StateManager::getInitialStateId());
-    ASSERT_EQ(50, load1.getP0());
-    ASSERT_EQ(40, load1.getQ0());
+    ASSERT_DOUBLE_EQ(50, load1.getP0());
+    ASSERT_DOUBLE_EQ(40, load1.getQ0());
 
     network.getStateManager().removeState("s1");
-    ASSERT_EQ(3, network.getStateManager().getStateArraySize());
+    ASSERT_EQ(3ul, network.getStateManager().getStateArraySize());
 
     network.getStateManager().cloneState("s2", "s3");
     network.getStateManager().setWorkingState("s3");
-    ASSERT_EQ(150, load1.getP0());
-    ASSERT_EQ(120, load1.getQ0());
+    ASSERT_DOUBLE_EQ(150, load1.getP0());
+    ASSERT_DOUBLE_EQ(120, load1.getQ0());
+
+    network.getStateManager().removeState("s3");
+    ASSERT_EQ(3ul, network.getStateManager().getStateArraySize());
 
     network.getStateManager().removeState("s2");
-    network.getStateManager().removeState("s3");
-    ASSERT_EQ(1, network.getStateManager().getStateArraySize());
+    ASSERT_EQ(1ul, network.getStateManager().getStateArraySize());
 }
 
 }

@@ -14,7 +14,7 @@ namespace powsybl {
 namespace iidm {
 
 const std::string& getCountryName(const Country& country) {
-    static std::array<std::string, 249> countryNames = {
+    static std::array<std::string, 249> countryNames = {{
         u8"AFGHANISTAN",
         u8"ÅLAND ISLANDS",
         u8"ALBANIA",
@@ -264,7 +264,7 @@ const std::string& getCountryName(const Country& country) {
         u8"YEMEN",
         u8"ZAMBIA",
         u8"ZIMBABWE"
-    };
+    }};
 
     return countryNames.at(static_cast<unsigned int>(country));
 }

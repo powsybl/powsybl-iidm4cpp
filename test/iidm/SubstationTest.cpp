@@ -20,7 +20,7 @@ namespace iidm {
 TEST(Substation, constructor) {
     const Network& network = createNetwork();
 
-    ASSERT_EQ(1, network.getSubstationCount());
+    ASSERT_EQ(1ul, network.getSubstationCount());
 
     Substation& substation = network.getSubstation("S1");
     ASSERT_EQ("S1", substation.getId());
@@ -36,11 +36,11 @@ TEST(Substation, country) {
     substationAdder
         .setId("S");
     POWSYBL_ASSERT_THROW(substationAdder.add(), ValidationException, "Substation 'S': Country is not set");
-    ASSERT_EQ(0, network.getSubstationCount());
+    ASSERT_EQ(0ul, network.getSubstationCount());
 
     substationAdder.setCountry(Country::FR);
     ASSERT_NO_THROW(substationAdder.add());
-    ASSERT_EQ(1, network.getSubstationCount());
+    ASSERT_EQ(1ul, network.getSubstationCount());
 }
 
 }

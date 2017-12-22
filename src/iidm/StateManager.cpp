@@ -143,7 +143,7 @@ const std::string& StateManager::getWorkingStateId() const {
     std::lock_guard<std::mutex> lock(m_stateMutex);
 
     unsigned long index = m_stateContext->getStateIndex();
-    const auto& it = std::find_if(m_statesById.begin(), m_statesById.end(), [&](const std::pair<std::string, int>& entry)
+    const auto& it = std::find_if(m_statesById.begin(), m_statesById.end(), [&](const std::pair<std::string, unsigned long>& entry)
     {
         return entry.second == index;
     });
@@ -160,15 +160,14 @@ void StateManager::removeState(const std::string& stateId) {
 
     unsigned long index = getStateIndex(stateId);
     m_statesById.erase(stateId);
-    m_unusedIndexes.insert(index);
 
     // TODO MBA: LOGGER.debug("Removing state '{}'", stateId);
 
     if (index == m_stateArraySize - 1) {
         // remove consecutive unused index starting from the end
-        unsigned long stateCount = 0;
-        for (unsigned long i = index; i >= 0; --i) {
-            const auto& it = std::find(m_unusedIndexes.begin(), m_unusedIndexes.end(), i);
+        unsigned long stateCount = 1;
+        for (unsigned long i = index; i > INITIAL_STATE_INDEX; --i) {
+            const auto& it = std::find(m_unusedIndexes.begin(), m_unusedIndexes.end(), i - 1);
             if (it == m_unusedIndexes.end()) {
                 break;
             } else {

@@ -12,15 +12,21 @@ namespace powsybl {
 
 namespace iidm {
 
+class StateManager;
+
 class StateContext {
 public:
     virtual ~StateContext() = default;
 
+protected:
     virtual unsigned long getStateIndex() const = 0;
 
     virtual void resetIfStateIndexIs(unsigned long index) = 0;
 
     virtual void setStateIndex(unsigned long index) = 0;
+
+private:
+    friend class StateManager;
 };
 
 }

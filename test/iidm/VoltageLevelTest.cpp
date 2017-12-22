@@ -27,9 +27,9 @@ TEST(VoltageLevel, constructor) {
     ASSERT_EQ("VL1", vl1.getId());
     ASSERT_EQ("VL1_NAME", vl1.getName());
     ASSERT_EQ(TopologyKind::BUS_BREAKER, vl1.getTopologyKind());
-    ASSERT_EQ(340, vl1.getLowVoltageLimit());
-    ASSERT_EQ(420, vl1.getHighVoltageLimit());
-    ASSERT_EQ(380, vl1.getNominalVoltage());
+    ASSERT_DOUBLE_EQ(340, vl1.getLowVoltageLimit());
+    ASSERT_DOUBLE_EQ(420, vl1.getHighVoltageLimit());
+    ASSERT_DOUBLE_EQ(380, vl1.getNominalVoltage());
 
     Substation& s1 = network.getSubstation("S1");
     VoltageLevelAdder adder = s1.newVoltageLevel()

@@ -8,9 +8,9 @@
 #ifndef POWSYBL_IIDM_MAKE_UNIQUE_HPP
 #define POWSYBL_IIDM_MAKE_UNIQUE_HPP
 
-#if __cplusplus >= 201402L
-
 #include <memory>
+
+#if __cplusplus >= 201402L
 
 namespace stdcxx {
 

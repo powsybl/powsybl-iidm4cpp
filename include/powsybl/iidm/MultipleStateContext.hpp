@@ -18,17 +18,17 @@ namespace powsybl {
 namespace iidm {
 
 class MultipleStateContext : public StateContext {
-public: // StateContext
+public:
+    MultipleStateContext(unsigned long index);
+
+    virtual ~MultipleStateContext() = default;
+
+protected: // StateContext
     unsigned long getStateIndex() const override;
 
     void resetIfStateIndexIs(unsigned long index) override;
 
     void setStateIndex(unsigned long index) override;
-
-public:
-    MultipleStateContext(unsigned long index);
-
-    virtual ~MultipleStateContext() = default;
 
 private:
     stdcxx::optional<unsigned long> m_index;

@@ -16,20 +16,20 @@ Connectable::Connectable(const std::string& id, const std::string& name, const C
     m_connectableType(connectableType) {
 }
 
-void Connectable::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+void Connectable::allocateStateArrayElement(const std::set<unsigned long>& /*indexes*/, unsigned long /*sourceIndex*/) {
 }
 
-void Connectable::deleteStateArrayElement(unsigned long index) {
+void Connectable::deleteStateArrayElement(unsigned long /*index*/) {
 }
 
-void Connectable::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
+void Connectable::extendStateArraySize(unsigned long /*initStateArraySize*/, unsigned long /*number*/, unsigned long /*sourceIndex*/) {
 }
 
 const ConnectableType& Connectable::getConnectableType() const {
     return m_connectableType;
 }
 
-void Connectable::reduceStateArraySize(unsigned long number) {
+void Connectable::reduceStateArraySize(unsigned long /*number*/) {
 }
 
 }
