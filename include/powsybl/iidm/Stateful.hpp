@@ -14,10 +14,13 @@ namespace powsybl {
 
 namespace iidm {
 
+class StateManager;
+
 class Stateful {
 public:
     virtual ~Stateful() = default;
 
+protected:
     virtual void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) = 0;
 
     virtual void deleteStateArrayElement(unsigned long index) = 0;
@@ -25,6 +28,9 @@ public:
     virtual void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) = 0;
 
     virtual void reduceStateArraySize(unsigned long number) = 0;
+
+private:
+    friend class StateManager;
 };
 
 }

@@ -17,15 +17,12 @@ Connectable::Connectable(const std::string& id, const std::string& name, const C
 }
 
 void Connectable::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
-
 }
 
 void Connectable::deleteStateArrayElement(unsigned long index) {
-
 }
 
 void Connectable::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
-
 }
 
 const ConnectableType& Connectable::getConnectableType() const {
@@ -33,7 +30,6 @@ const ConnectableType& Connectable::getConnectableType() const {
 }
 
 void Connectable::reduceStateArraySize(unsigned long number) {
-
 }
 
 }

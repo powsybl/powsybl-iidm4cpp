@@ -17,7 +17,12 @@ namespace powsybl {
 namespace iidm {
 
 class Connectable : public Identifiable, public Stateful {
-public: // Stateful
+public:
+    virtual ~Connectable() = default;
+
+    const ConnectableType& getConnectableType() const;
+
+protected: // Stateful
     void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
     void deleteStateArrayElement(unsigned long index) override;
@@ -25,11 +30,6 @@ public: // Stateful
     void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
 
     void reduceStateArraySize(unsigned long number) override;
-
-public:
-    virtual ~Connectable() = default;
-
-    const ConnectableType& getConnectableType() const;
 
 protected:
     Connectable(const std::string& id, const std::string& name, const ConnectableType& connectableType);
