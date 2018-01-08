@@ -18,6 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 class Identifiable;
+class Stateful;
 
 template <typename T>
 struct iterator_traits {
@@ -31,6 +32,13 @@ struct iterator_traits<Identifiable> {
     typedef NetworkIterator<Identifiable, IdentifiableById::iterator> iterator;
 
     typedef NetworkIterator<const Identifiable, IdentifiableById::const_iterator> const_iterator;
+};
+
+template <>
+struct iterator_traits<Stateful> {
+    typedef NetworkIterator<Stateful, IdentifiableById::iterator> iterator;
+
+    typedef NetworkIterator<const Stateful, IdentifiableById::const_iterator> const_iterator;
 };
 
 }

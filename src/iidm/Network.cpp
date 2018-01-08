@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 
+#include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
@@ -20,15 +21,32 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, Container::Type::NETWORK),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_forecastDistance(0),
-    m_objectStore() {
+    m_objectStore(),
+    m_stateManager(*this) {
 }
 
 int Network::getForecastDistance() const {
     return m_forecastDistance;
 }
 
+Load& Network::getLoad(const std::string& id) const {
+    return m_objectStore.get<Load>(id);
+}
+
+unsigned long Network::getLoadCount() const {
+    return m_objectStore.getObjectCount<Load>();
+}
+
 const std::string& Network::getSourceFormat() const {
     return m_sourceFormat;
+}
+
+unsigned long Network::getStateIndex() const {
+    return m_stateManager.getStateIndex();
+}
+
+StateManager& Network::getStateManager() const {
+    return const_cast<StateManager&>(m_stateManager);
 }
 
 Substation& Network::getSubstation(const std::string& id) const {

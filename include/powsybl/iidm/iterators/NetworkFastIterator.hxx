@@ -29,7 +29,7 @@ NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(ObjectStore
 
     m_currentRange = m_ranges.begin();
     advanceToNextRange(false);
-};
+}
 
 template <typename Base, typename Iterator, typename... Derived>
 NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(const ObjectStore& objectStore) {
@@ -44,7 +44,7 @@ NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(const Objec
 
     m_currentRange = m_ranges.begin();
     advanceToNextRange(false);
-};
+}
 
 template <typename Base, typename Iterator, typename... Derived>
 Base& NetworkFastIterator<Base, Iterator, Derived...>::operator*() const {
@@ -73,7 +73,7 @@ NetworkFastIterator<Base, Iterator, Derived...>& NetworkFastIterator<Base, Itera
 }
 
 template <typename Base, typename Iterator, typename... Derived>
-NetworkFastIterator<Base, Iterator, Derived...> NetworkFastIterator<Base, Iterator, Derived...>::operator++(int i) {
+NetworkFastIterator<Base, Iterator, Derived...> NetworkFastIterator<Base, Iterator, Derived...>::operator++(int /*unused*/) {
     check();
 
     NetworkFastIterator<Base, Iterator, Derived...> tmp(*this);
@@ -106,7 +106,7 @@ void NetworkFastIterator<T, Iterator, Derived...>::advance(bool increment) {
     if (m_current == m_end) {
         advanceToNextRange(true);
     }
-};
+}
 
 template <typename T, typename Iterator, typename... Derived>
 void NetworkFastIterator<T, Iterator, Derived...>::advanceToNextRange(bool increment) {
@@ -123,7 +123,7 @@ void NetworkFastIterator<T, Iterator, Derived...>::advanceToNextRange(bool incre
         m_current = Iterator();
         m_end = Iterator();
     }
-};
+}
 
 template <typename T, typename Iterator, typename... Derived>
 void NetworkFastIterator<T, Iterator, Derived...>::check() const {

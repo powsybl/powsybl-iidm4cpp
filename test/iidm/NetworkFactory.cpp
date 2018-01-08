@@ -33,7 +33,15 @@ Network createNetwork() {
         .setHighVoltageLimit(420.0)
         .add();
 
-    VoltageLevel& vl2 = substation.newVoltageLevel()
+    vl1.newLoad()
+        .setId("LOAD1")
+        .setName("LOAD1_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    substation.newVoltageLevel()
         .setId("VL2")
         .setName("VL2_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)

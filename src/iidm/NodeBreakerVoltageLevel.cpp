@@ -17,7 +17,7 @@ NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const st
 }
 
 const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
-    const TopologyKind& s_topologyKind = TopologyKind::NODE_BREAKER;
+    static TopologyKind s_topologyKind = TopologyKind::NODE_BREAKER;
 
     return s_topologyKind;
 }

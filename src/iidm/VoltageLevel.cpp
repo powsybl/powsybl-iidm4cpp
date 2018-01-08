@@ -19,9 +19,9 @@ VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, Subst
                            double nominalVoltage, double lowVoltageLimit, double highVoltageLimit) :
     Container(id, name, Container::Type::VOLTAGE_LEVEL),
     m_substation(substation),
-    m_nominalVoltage(nominalVoltage),
+    m_highVoltageLimit(highVoltageLimit),
     m_lowVoltageLimit(lowVoltageLimit),
-    m_highVoltageLimit(highVoltageLimit) {
+    m_nominalVoltage(nominalVoltage) {
 
     checkNominalVoltage(*this, m_nominalVoltage);
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
@@ -59,6 +59,10 @@ const std::string& VoltageLevel::getTypeDescription() const {
     static std::string s_typeDescription = "Voltage level";
 
     return s_typeDescription;
+}
+
+LoadAdder VoltageLevel::newLoad() {
+    return LoadAdder(*this);
 }
 
 VoltageLevel& VoltageLevel::setHighVoltageLimit(double highVoltageLimit) {

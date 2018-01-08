@@ -8,6 +8,11 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project(powsybl-iidm)
 
+set(CMAKE_CXX_STANDARD 11)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+endif()
+
 find_package(GTest)
 find_package(Boost)
 

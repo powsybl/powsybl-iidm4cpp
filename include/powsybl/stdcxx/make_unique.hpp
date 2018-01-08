@@ -8,9 +8,9 @@
 #ifndef POWSYBL_IIDM_MAKE_UNIQUE_HPP
 #define POWSYBL_IIDM_MAKE_UNIQUE_HPP
 
-#if __cplusplus >= 201402L
-
 #include <memory>
+
+#if __cplusplus >= 201402L
 
 namespace stdcxx {
 
@@ -25,7 +25,7 @@ namespace stdcxx {
 template <typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args) {
     return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-};
+}
 
 }
 

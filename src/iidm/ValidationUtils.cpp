@@ -44,6 +44,20 @@ const std::string& checkNotEmpty(const Validable& validable, const std::string& 
     return value;
 }
 
+double checkP0(const Validable& validable, double p0) {
+    if (std::isnan(p0)) {
+        throw ValidationException(validable, "p0 is invalid");
+    }
+    return p0;
+}
+
+double checkQ0(const Validable& validable, double q0) {
+    if (std::isnan(q0)) {
+        throw ValidationException(validable, "q0 is invalid");
+    }
+    return q0;
+}
+
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit) {
     if (lowVoltageLimit < 0) {
         throw ValidationException(validable, "Low voltage limit is < 0");

@@ -10,16 +10,26 @@
 
 #include <powsybl/iidm/ConnectableType.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/iidm/Stateful.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class Connectable : public Identifiable {
+class Connectable : public Identifiable, public Stateful {
 public:
     virtual ~Connectable() = default;
 
     const ConnectableType& getConnectableType() const;
+
+protected: // Stateful
+    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteStateArrayElement(unsigned long index) override;
+
+    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceStateArraySize(unsigned long number) override;
 
 protected:
     Connectable(const std::string& id, const std::string& name, const ConnectableType& connectableType);

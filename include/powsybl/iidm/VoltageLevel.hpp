@@ -11,6 +11,7 @@
 #include <functional>
 
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
 
 namespace powsybl {
@@ -42,6 +43,8 @@ public:
     Substation& getSubstation();
 
     virtual const TopologyKind& getTopologyKind() const = 0;
+
+    LoadAdder newLoad();
 
     VoltageLevel& setHighVoltageLimit(double highVoltageLimit);
 
