@@ -16,14 +16,14 @@ namespace iidm {
 
 class NodeTerminal : public Terminal {
 public: // Terminal
+    double getAngle() const override;
+
     double getV() const override;
 
 public:
     NodeTerminal(MultiStateObject& network, int node);
 
     virtual ~NodeTerminal() = default;
-
-    double getAngle() const;
 
     int getNode() const;
 

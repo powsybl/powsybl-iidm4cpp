@@ -47,6 +47,11 @@ const std::string& BusTerminal::getConnectableBusId() const {
     return m_connectableBusId[m_network.get().getStateIndex()];
 }
 
+double BusTerminal::getAngle() const {
+    // TODO: need views
+    return 0.0;
+}
+
 double BusTerminal::getV() const {
     // TODO: need views
     return 0.0;
@@ -65,7 +70,9 @@ void BusTerminal::reduceStateArraySize(unsigned long number) {
 }
 
 BusTerminal& BusTerminal::setConnectableBusId(const std::string& connectableBusId) {
-    m_connectableBusId[m_network.get().getStateIndex()] = checkNotEmpty(connectableBusId, "ConnectableBusId is required");
+    checkNotEmpty(connectableBusId, "ConnectableBusId is required");
+
+    m_connectableBusId[m_network.get().getStateIndex()] = connectableBusId;
 
     return *this;
 }
@@ -75,14 +82,6 @@ BusTerminal& BusTerminal::setConnected(bool connected) {
 
     return *this;
 }
-
-
-
-
-
-
-
-
 
 }
 

@@ -88,7 +88,7 @@ Terminal& Terminal::setP(double p) {
     const Connectable& connectable = m_connectable.get();
 
     if (connectable.getConnectableType() == ConnectableType::BUSBAR_SECTION) {
-        throw ValidationException(connectable, "cannot set action power on a busbar section");
+        throw ValidationException(connectable, "cannot set active power on a busbar section");
     }
     if (!std::isnan(p) && connectable.getConnectableType() == ConnectableType::SHUNT_COMPENSATOR) {
         throw ValidationException(connectable, "cannot set active power on a shunt compensator");

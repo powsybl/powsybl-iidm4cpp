@@ -71,7 +71,9 @@ NodeTerminal& NodeTerminal::setAngle(double angle) {
 }
 
 NodeTerminal& NodeTerminal::setV(double v) {
-    m_v[m_network.get().getStateIndex()] = checkVoltage(m_connectable.get(), v);
+    checkVoltage(m_connectable.get(), v);
+
+    m_v[m_network.get().getStateIndex()] = v;
 
     return *this;
 }

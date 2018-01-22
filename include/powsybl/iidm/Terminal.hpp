@@ -30,6 +30,8 @@ public:
 
     bool disconnect();
 
+    virtual double getAngle() const = 0;
+
     double getI() const;
 
     double getP() const;

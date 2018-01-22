@@ -19,6 +19,8 @@ namespace iidm {
 
 class BusTerminal : public Terminal {
 public: // Terminal
+    double getAngle() const override;
+
     double getV() const override;
 
 public:
