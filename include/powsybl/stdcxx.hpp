@@ -9,6 +9,8 @@
 #define POWSYBL_IIDM_STDCXX_HPP
 
 #include <powsybl/stdcxx/make_unique.hpp>
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
+#include <powsybl/stdcxx/optional_reference_wrapper.hpp>
 
 #endif  // POWSYBL_IIDM_STDCXX_HPP

@@ -75,6 +75,10 @@ SubstationAdder Network::newSubstation() {
     return SubstationAdder(*this);
 }
 
+void Network::remove(Identifiable& identifiable) {
+    m_objectStore.remove(identifiable);
+}
+
 Network& Network::setForecastDistance(int forecastDistance) {
     m_forecastDistance = checkForecastDistance(*this, forecastDistance);
     return *this;

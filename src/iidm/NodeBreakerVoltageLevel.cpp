@@ -16,10 +16,36 @@ NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const st
     VoltageLevel(id, name, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit) {
 }
 
+void NodeBreakerVoltageLevel::attach(Terminal& /*terminal*/, bool /*test*/) {
+    // TODO
+}
+
+void NodeBreakerVoltageLevel::clean() {
+    // TODO
+}
+
+bool NodeBreakerVoltageLevel::connect(Terminal& /*terminal*/) {
+    // TODO: need topological graph
+    return true;
+}
+
+void NodeBreakerVoltageLevel::detach(Terminal& /*terminal*/) {
+    // TODO
+}
+
+bool NodeBreakerVoltageLevel::disconnect(Terminal& /*terminal*/) {
+    // TODO: need topological graph
+    return true;
+}
+
 const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
     static TopologyKind s_topologyKind = TopologyKind::NODE_BREAKER;
 
     return s_topologyKind;
+}
+
+void NodeBreakerVoltageLevel::invalidateCache() {
+    // TODO
 }
 
 }

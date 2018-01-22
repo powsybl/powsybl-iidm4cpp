@@ -43,6 +43,8 @@ double checkP0(const Validable& validable, double p0);
 
 double checkQ0(const Validable& validable, double q0);
 
+double checkVoltage(const Validable& validable, double voltage);
+
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit);
 
 }

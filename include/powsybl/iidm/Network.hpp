@@ -76,6 +76,8 @@ public:
 
     SubstationAdder newSubstation();
 
+    void remove(Identifiable& identifiable);
+
     Network& setForecastDistance(int forecastDistance);
 
 private:

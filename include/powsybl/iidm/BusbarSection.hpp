@@ -8,18 +8,30 @@
 #ifndef POWSYBL_IIDM_BUSBARSECTION_HPP
 #define POWSYBL_IIDM_BUSBARSECTION_HPP
 
+#include <functional>
+
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/MultiStateObject.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
 class BusbarSection : public Injection {
+public: // Identifiable
+    const std::string& getTypeDescription() const override;
+
 public:
+    BusbarSection(MultiStateObject& network, const std::string& id, const std::string& name);
+
     virtual ~BusbarSection() = default;
 
-protected:
-    BusbarSection(const std::string& id, const std::string& name);
+    double getAngle() const;
+
+    double getV() const;
+
+private:
+    std::reference_wrapper<MultiStateObject> m_network;
 };
 
 }

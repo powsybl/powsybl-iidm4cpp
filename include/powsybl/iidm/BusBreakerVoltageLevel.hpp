@@ -16,6 +16,18 @@ namespace iidm {
 
 class BusBreakerVoltageLevel : public VoltageLevel {
 public: // VoltageLevel
+    void attach(Terminal& terminal, bool test) override;
+
+    void clean() override;
+
+    bool connect(Terminal& terminal) override;
+
+    void detach(Terminal& terminal) override;
+
+    bool disconnect(Terminal& terminal) override;
+
+    void invalidateCache() override;
+
     const TopologyKind& getTopologyKind() const override;
 
 public:

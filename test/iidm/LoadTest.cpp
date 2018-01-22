@@ -32,7 +32,8 @@ TEST(Load, constructor) {
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
     LoadAdder adder = vl1.newLoad()
-        .setId("LOAD1");
+        .setId("LOAD1")
+        .setBus("VL1_BUS1");
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Load 'LOAD1': LoadType is not set");
     adder.setLoadType(LoadType::UNDEFINED);

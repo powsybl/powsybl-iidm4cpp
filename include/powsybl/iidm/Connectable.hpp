@@ -8,19 +8,31 @@
 #ifndef POWSYBL_IIDM_CONNECTABLE_HPP
 #define POWSYBL_IIDM_CONNECTABLE_HPP
 
+#include <memory>
+#include <vector>
+
 #include <powsybl/iidm/ConnectableType.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/Stateful.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
+class Network;
+
 class Connectable : public Identifiable, public Stateful {
 public:
     virtual ~Connectable() = default;
 
+    Terminal& addTerminal(std::unique_ptr<Terminal>&& terminal);
+
     const ConnectableType& getConnectableType() const;
+
+    std::vector<std::reference_wrapper<Terminal> > getTerminals() const;
+
+    void remove();
 
 protected: // Stateful
     void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -34,8 +46,14 @@ protected: // Stateful
 protected:
     Connectable(const std::string& id, const std::string& name, const ConnectableType& connectableType);
 
-private:
+    const Network& getNetwork() const;
+
+    Network& getNetwork();
+
+protected:
     ConnectableType m_connectableType;
+
+    std::vector<std::unique_ptr<Terminal> > m_terminals;
 };
 
 }

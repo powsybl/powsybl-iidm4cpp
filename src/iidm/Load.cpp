@@ -25,12 +25,6 @@ Load::Load(MultiStateObject& network, const std::string& id, const std::string& 
 
 }
 
-const std::string& Load::getTypeDescription() const {
-    static std::string s_typeDescription = "Load";
-
-    return s_typeDescription;
-}
-
 void Load::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     Injection::allocateStateArrayElement(indexes, sourceIndex);
 
@@ -61,6 +55,12 @@ double Load::getP0() const {
 
 double Load::getQ0() const {
     return m_q0[m_network.get().getStateIndex()];
+}
+
+const std::string& Load::getTypeDescription() const {
+    static std::string s_typeDescription = "Load";
+
+    return s_typeDescription;
 }
 
 void Load::reduceStateArraySize(unsigned long number) {
