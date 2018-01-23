@@ -20,6 +20,7 @@ namespace iidm {
 
 class Network;
 class Substation;
+class Terminal;
 
 class VoltageLevel : public Container {
 public: // Identifiable
@@ -27,6 +28,16 @@ public: // Identifiable
 
 public:
     virtual ~VoltageLevel() = default;
+
+    virtual void attach(Terminal& terminal, bool test) = 0;
+
+    virtual void clean() = 0;
+
+    virtual bool connect(Terminal& terminal) = 0;
+
+    virtual void detach(Terminal& terminal) = 0;
+
+    virtual bool disconnect(Terminal& terminal) = 0;
 
     double getHighVoltageLimit() const;
 
@@ -43,6 +54,8 @@ public:
     Substation& getSubstation();
 
     virtual const TopologyKind& getTopologyKind() const = 0;
+
+    virtual void invalidateCache() = 0;
 
     LoadAdder newLoad();
 

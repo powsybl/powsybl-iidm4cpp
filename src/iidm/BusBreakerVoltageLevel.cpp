@@ -16,10 +16,36 @@ BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std:
     VoltageLevel(id, name, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit) {
 }
 
+void BusBreakerVoltageLevel::attach(Terminal& /*terminal*/, bool /*test*/) {
+    // TODO
+}
+
+void BusBreakerVoltageLevel::clean() {
+    // TODO
+}
+
+bool BusBreakerVoltageLevel::connect(Terminal& /*terminal*/) {
+    // TODO: need topological graph
+    return true;
+}
+
+void BusBreakerVoltageLevel::detach(Terminal& /*terminal*/) {
+    // TODO
+}
+
+bool BusBreakerVoltageLevel::disconnect(Terminal& /*terminal*/) {
+    // TODO: need topological graph
+    return true;
+}
+
 const TopologyKind& BusBreakerVoltageLevel::getTopologyKind() const {
     static TopologyKind s_topologyKind = TopologyKind::BUS_BREAKER;
 
     return s_topologyKind;
+}
+
+void BusBreakerVoltageLevel::invalidateCache() {
+    // TODO
 }
 
 }

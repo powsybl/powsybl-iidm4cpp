@@ -11,7 +11,9 @@ set(IIDM_SOURCES
         iidm/Branch.cpp
         iidm/Bus.cpp
         iidm/BusbarSection.cpp
+        iidm/BusbarSectionAdder.cpp
         iidm/BusBreakerVoltageLevel.cpp
+        iidm/BusTerminal.cpp
         iidm/Connectable.cpp
         iidm/Container.cpp
         iidm/Country.cpp
@@ -27,6 +29,7 @@ set(IIDM_SOURCES
         iidm/MultipleStateContext.cpp
         iidm/Network.cpp
         iidm/NodeBreakerVoltageLevel.cpp
+        iidm/NodeTerminal.cpp
         iidm/ObjectStore.cpp
         iidm/ShuntCompensator.cpp
         iidm/StateManager.cpp

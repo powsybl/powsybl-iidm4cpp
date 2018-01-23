@@ -6,6 +6,7 @@
 #
 
 set(UNIT_TEST_SOURCES
+        iidm/BusbarSectionTest.cpp
         iidm/CountryTest.cpp
         iidm/EnergySourceTest.cpp
         iidm/LoadTest.cpp

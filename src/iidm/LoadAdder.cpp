@@ -8,7 +8,6 @@
 #include <powsybl/iidm/LoadAdder.hpp>
 
 #include <powsybl/iidm/Load.hpp>
-#include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
 #include "ValidationUtils.hpp"
@@ -29,12 +28,8 @@ Load& LoadAdder::add() {
     std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(getNetwork(), m_id, m_name, *m_loadType, *m_p0, *m_q0);
     Load& load = getNetwork().checkAndAdd<Load>(std::move(ptrLoad));
 
-    // TODO MBA
-    // String id = checkAndGetUniqueId();
-    // TerminalExt terminal = checkAndGetTerminal(id);
-
-    // load.addTerminal(terminal);
-    // voltageLevel.attach(terminal, false);
+    Terminal& terminal = load.addTerminal(getTerminal());
+    m_voltageLevel.attach(terminal, false);
 
     return load;
 }

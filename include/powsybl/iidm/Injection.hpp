@@ -8,7 +8,10 @@
 #ifndef POWSYBL_IIDM_INJECTION_HPP
 #define POWSYBL_IIDM_INJECTION_HPP
 
+#include <functional>
+
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 
 namespace powsybl {
 
@@ -17,6 +20,10 @@ namespace iidm {
 class Injection : public Connectable {
 public:
     virtual ~Injection() = default;
+
+    const Terminal& getTerminal() const;
+
+    Terminal& getTerminal();
 
 protected:
     Injection(const std::string& id, const std::string& name, const ConnectableType& connectableType);

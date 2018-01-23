@@ -40,6 +40,8 @@ public:
 
     template <typename T> unsigned long getObjectCount() const;
 
+    void remove(Identifiable& identifiable);
+
 private:
     static void checkId(const std::string& id);
 

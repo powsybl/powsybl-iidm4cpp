@@ -15,6 +15,14 @@ Injection::Injection(const std::string& id, const std::string& name, const Conne
     Connectable(id, name, connectableType) {
 }
 
+const Terminal& Injection::getTerminal() const {
+    return *m_terminals.at(0);
+}
+
+Terminal& Injection::getTerminal() {
+    return *m_terminals.at(0);
+}
+
 }
 
 }

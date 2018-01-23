@@ -35,4 +35,4 @@ Adder& IdentifiableAdder<Adder>::setName(const std::string& name) {
 
 }
 
-#endif  // POWSYBL_IIDM_IDENTIFIABLEADDER_HPP
+#endif  // POWSYBL_IIDM_IDENTIFIABLEADDER_HXX

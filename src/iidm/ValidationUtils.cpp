@@ -58,6 +58,13 @@ double checkQ0(const Validable& validable, double q0) {
     return q0;
 }
 
+double checkVoltage(const Validable& validable, double voltage) {
+    if (!std::isnan(voltage) && voltage < 0) {
+        throw ValidationException(validable, "voltage cannot be < 0");
+    }
+    return voltage;
+}
+
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit) {
     if (lowVoltageLimit < 0) {
         throw ValidationException(validable, "Low voltage limit is < 0");

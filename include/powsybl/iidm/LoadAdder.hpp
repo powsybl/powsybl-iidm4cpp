@@ -10,7 +10,7 @@
 
 #include <powsybl/stdcxx.hpp>
 
-#include <powsybl/iidm/IdentifiableAdder.hpp>
+#include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/LoadType.hpp>
 
 namespace powsybl {
@@ -21,7 +21,7 @@ class Load;
 class Network;
 class VoltageLevel;
 
-class LoadAdder : public IdentifiableAdder<LoadAdder> {
+class LoadAdder : public InjectionAdder<LoadAdder> {
 public:
     virtual ~LoadAdder() = default;
 

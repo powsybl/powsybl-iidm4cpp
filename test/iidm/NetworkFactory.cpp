@@ -35,6 +35,8 @@ Network createNetwork() {
 
     vl1.newLoad()
         .setId("LOAD1")
+        .setBus("VL1_BUS1")
+        .setConnectableBus("VL1_BUS1")
         .setName("LOAD1_NAME")
         .setLoadType(LoadType::UNDEFINED)
         .setP0(50.0)
