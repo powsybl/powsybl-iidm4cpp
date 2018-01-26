@@ -11,9 +11,9 @@
 #include <functional>
 #include <vector>
 
-#include <powsybl/stdcxx.hpp>
 #include <powsybl/iidm/MultiStateObject.hpp>
 #include <powsybl/iidm/Stateful.hpp>
+#include <powsybl/stdcxx/optional_reference_wrapper.hpp>
 
 namespace powsybl {
 

@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/StateManager.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 #include "ValidationUtils.hpp"
 

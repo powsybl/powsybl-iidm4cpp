@@ -10,9 +10,9 @@
 
 #include <string>
 
-#include <powsybl/stdcxx.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 

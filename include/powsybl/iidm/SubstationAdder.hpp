@@ -10,10 +10,9 @@
 
 #include <set>
 
-#include <powsybl/stdcxx.hpp>
-
 #include <powsybl/iidm/Country.hpp>
 #include <powsybl/iidm/IdentifiableAdder.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 

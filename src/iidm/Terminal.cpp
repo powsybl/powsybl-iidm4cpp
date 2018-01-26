@@ -13,6 +13,7 @@
 #include <powsybl/iidm/StateManager.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 

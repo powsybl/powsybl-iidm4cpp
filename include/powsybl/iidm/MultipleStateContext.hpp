@@ -8,10 +8,8 @@
 #ifndef POWSYBL_IIDM_MULTIPLESTATECONTEXT_HPP
 #define POWSYBL_IIDM_MULTIPLESTATECONTEXT_HPP
 
-
-#include <powsybl/stdcxx.hpp>
-
 #include <powsybl/iidm/StateContext.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 

@@ -8,10 +8,9 @@
 #ifndef POWSYBL_IIDM_VOLTAGELEVELADDER_HPP
 #define POWSYBL_IIDM_VOLTAGELEVELADDER_HPP
 
-#include <powsybl/stdcxx.hpp>
-
 #include <powsybl/iidm/IdentifiableAdder.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 

@@ -13,6 +13,7 @@
 #include <sstream>
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/stdcxx/demangle.hpp>
 
 namespace powsybl {
 
@@ -69,7 +70,7 @@ T& ObjectStore::get(const std::string& id) const {
         T* identifiable = dynamic_cast<T*>(it->second.get());
         if (identifiable == nullptr) {
             std::ostringstream oss;
-            oss << "Identifiable '" << id << "' is not a " << typeid(T).name();
+            oss << "Identifiable '" << id << "' is not a " << stdcxx::demangle(typeid(T));
             throw PowsyblException(oss.str());
         } else {
             return *identifiable;
