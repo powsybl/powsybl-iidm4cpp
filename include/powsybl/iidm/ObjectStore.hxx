@@ -41,7 +41,7 @@ T& ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
 
     auto other = m_objectsById.find(identifiable->getId());
     if (other != m_objectsById.end()) {
-        throw PowsyblException(std::string("Object '") + identifiable->getId() + "' already exists (" + other->second->getTypeDescription() + ")");
+        throw PowsyblException(std::string("Object '") + identifiable->getId() + "' already exists (" + stdcxx::demangle(*other->second) + ")");
     }
 
     auto it = m_objectsById.emplace(std::make_pair(identifiable->getId(), std::move(identifiable)));

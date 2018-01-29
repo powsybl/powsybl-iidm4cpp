@@ -27,12 +27,13 @@ public:
 
     const std::string& getName() const;
 
-    virtual const std::string& getTypeDescription() const = 0;
-
 protected:
     Identifiable(Identifiable&& identifiable) = default;
 
     Identifiable(const std::string& id, const std::string& name);
+
+private:
+    virtual const std::string& getTypeDescription() const = 0;
 
 private: // Non copyable
     Identifiable(const Identifiable& identifiable) = delete;

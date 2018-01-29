@@ -34,9 +34,10 @@ public:
     VoltageLevelAdder& setTopologyKind(const TopologyKind& topologyKind);
 
 protected: // IdentifiableAdder
-    const std::string& getTypeDescription() const override;
-
     Network& getNetwork() override;
+
+private: // IdentifiableAdder
+    const std::string& getTypeDescription() const override;
 
 private:
     explicit VoltageLevelAdder(Substation& substation);

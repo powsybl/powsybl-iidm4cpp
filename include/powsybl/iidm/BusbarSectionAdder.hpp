@@ -28,9 +28,10 @@ public:
     BusbarSectionAdder& setNode(int node);
 
 protected: // IdentifiableAdder
-    const std::string& getTypeDescription() const override;
-
     Network& getNetwork() override;
+
+private: // IdentifiableAdder
+    const std::string& getTypeDescription() const override;
 
 private:
     explicit BusbarSectionAdder(VoltageLevel& voltageLevel);

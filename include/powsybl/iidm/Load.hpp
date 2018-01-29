@@ -20,9 +20,6 @@ namespace powsybl {
 namespace iidm {
 
 class Load : public Injection {
-public: // Identifiable
-    const std::string& getTypeDescription() const override;
-
 public:
     Load(MultiStateObject& network, const std::string& id, const std::string& name, const LoadType& loadType,
          double p0, double q0);
@@ -47,6 +44,9 @@ protected: // Stateful
     void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
 
     void reduceStateArraySize(unsigned long number) override;
+
+private: // Identifiable
+    const std::string& getTypeDescription() const override;
 
 private:
     std::reference_wrapper<MultiStateObject> m_network;

@@ -23,9 +23,6 @@ class Substation;
 class VoltageLevel;
 
 class Network : public Container, public MultiStateObject {
-public: // Identifiable
-    const std::string& getTypeDescription() const override;
-
 public: // MultiStateObject
     unsigned long getStateIndex() const override;
 
@@ -79,6 +76,9 @@ public:
     void remove(Identifiable& identifiable);
 
     Network& setForecastDistance(int forecastDistance);
+
+private: // Identifiable
+    const std::string& getTypeDescription() const override;
 
 private:
     std::string m_sourceFormat;

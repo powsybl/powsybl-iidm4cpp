@@ -32,9 +32,10 @@ public:
     LoadAdder& setQ0(double q0);
 
 protected: // IdentifiableAdder
-    const std::string& getTypeDescription() const override;
-
     Network& getNetwork() override;
+
+private: // IdentifiableAdder
+    const std::string& getTypeDescription() const override;
 
 private:
     explicit LoadAdder(VoltageLevel& voltageLevel);

@@ -34,9 +34,10 @@ public:
     SubstationAdder& setTso(const std::string& tso);
 
 protected: // IdentifiableAdder
-    const std::string& getTypeDescription() const override;
-
     Network& getNetwork() override;
+
+private: // IdentifiableAdder
+    const std::string& getTypeDescription() const override;
 
 private:
     explicit SubstationAdder(Network& network);

@@ -18,9 +18,6 @@ namespace powsybl {
 namespace iidm {
 
 class BusbarSection : public Injection {
-public: // Identifiable
-    const std::string& getTypeDescription() const override;
-
 public:
     BusbarSection(MultiStateObject& network, const std::string& id, const std::string& name);
 
@@ -29,6 +26,9 @@ public:
     double getAngle() const;
 
     double getV() const;
+
+private: // Identifiable
+    const std::string& getTypeDescription() const override;
 
 private:
     std::reference_wrapper<MultiStateObject> m_network;
