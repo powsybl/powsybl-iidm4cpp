@@ -45,6 +45,8 @@ set(IIDM_SOURCES
         iidm/ValidationUtils.cpp
         iidm/VoltageLevel.cpp
         iidm/VoltageLevelAdder.cpp
-        iidm/VscConverterStation.cpp)
+        iidm/VscConverterStation.cpp
+
+        stdcxx/demangle.cpp)
 
 add_library(iidm ${IIDM_SOURCES})

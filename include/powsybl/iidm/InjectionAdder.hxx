@@ -8,14 +8,13 @@
 #ifndef POWSYBL_IIDM_INJECTIONADDER_HXX
 #define POWSYBL_IIDM_INJECTIONADDER_HXX
 
-#include <iostream>
-
 #include <powsybl/iidm/InjectionAdder.hpp>
 
 #include <powsybl/iidm/BusTerminal.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/NodeTerminal.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
 

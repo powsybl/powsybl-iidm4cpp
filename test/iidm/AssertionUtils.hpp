@@ -10,7 +10,7 @@
 
 #include <sstream>
 
-#include <cxxabi.h>
+
 
 #include <gtest/gtest.h>
 
@@ -21,18 +21,16 @@ try { \
 } catch (const expected_exception& e) { \
     ASSERT_STREQ(expected_message, e.what()); \
 } catch (const std::exception& e) { \
-    int status; \
     std::ostringstream oss; \
     oss << "Expected: " << #statement << " throws an exception of type "; \
-    oss << abi::__cxa_demangle(typeid(expected_exception).name(), 0, 0, &status) << std::endl; \
+    oss << stdcxx::demangle(typeid(expected_exception)) << std::endl; \
     oss << "  Actual: it throws an exception of type "; \
-    oss << abi::__cxa_demangle(typeid(e).name(), 0, 0, &status); \
+    oss << stdcxx::demangle(e); \
     GTEST_FATAL_FAILURE_(oss.str().c_str()); \
 } catch (...) { \
-    int status; \
     std::ostringstream oss; \
     oss << "Expected: " << #statement << " throws an exception of type "; \
-    oss << abi::__cxa_demangle(typeid(expected_exception).name(), 0, 0, &status) << std::endl; \
+    oss << stdcxx::demangle(typeid(expected_exception)) << std::endl; \
     oss << "  Actual: it throws an exception of unknown type"; \
     GTEST_FATAL_FAILURE_(oss.str().c_str()); \
 }

@@ -8,8 +8,6 @@
 #ifndef POWSYBL_IIDM_LOADADDER_HPP
 #define POWSYBL_IIDM_LOADADDER_HPP
 
-#include <powsybl/stdcxx.hpp>
-
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/LoadType.hpp>
 

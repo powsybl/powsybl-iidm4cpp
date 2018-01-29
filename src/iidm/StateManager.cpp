@@ -10,11 +10,10 @@
 #include <algorithm>
 #include <sstream>
 
-#include <powsybl/stdcxx.hpp>
-
 #include <powsybl/iidm/MultipleStateContext.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Stateful.hpp>
+#include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
 

@@ -11,6 +11,7 @@
 #include <memory>
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 

@@ -8,9 +8,8 @@
 #ifndef POWSYBL_IIDM_BUSBARSECTIONADDER_HPP
 #define POWSYBL_IIDM_BUSBARSECTIONADDER_HPP
 
-#include <powsybl/stdcxx.hpp>
-
 #include <powsybl/iidm/IdentifiableAdder.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
