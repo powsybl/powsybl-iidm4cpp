@@ -51,7 +51,7 @@ TEST(VoltageLevel, constructor) {
         .setLowVoltageLimit(0)
         .setHighVoltageLimit(0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'VL1' already exists (Voltage level)");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'VL1' already exists (powsybl::iidm::BusBreakerVoltageLevel)");
     adder.setId("UNIQUE_VOLTAGE_LEVEL_ID");
 
     ASSERT_NO_THROW(adder.add());

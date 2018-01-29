@@ -23,9 +23,6 @@ class Substation;
 class Terminal;
 
 class VoltageLevel : public Container {
-public: // Identifiable
-    const std::string& getTypeDescription() const override;
-
 public:
     virtual ~VoltageLevel() = default;
 
@@ -68,6 +65,9 @@ public:
 protected:
     VoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                  double nominalVoltage, double lowVoltageLimit, double highVoltagelimit);
+
+private: // Identifiable
+    const std::string& getTypeDescription() const override;
 
 private:
     std::reference_wrapper<Substation> m_substation;

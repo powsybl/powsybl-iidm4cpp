@@ -35,6 +35,7 @@ public:
 protected:
     virtual Network& getNetwork() = 0;
 
+private:
     virtual const std::string& getTypeDescription() const = 0;
 
 protected:

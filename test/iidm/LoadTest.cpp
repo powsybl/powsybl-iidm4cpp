@@ -44,7 +44,7 @@ TEST(Load, constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Load 'LOAD1': q0 is not set");
     adder.setQ0(40.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'LOAD1' already exists (Load)");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'LOAD1' already exists (powsybl::iidm::Load)");
     adder.setId("UNIQUE_LOAD_ID");
 
     ASSERT_NO_THROW(adder.add());
