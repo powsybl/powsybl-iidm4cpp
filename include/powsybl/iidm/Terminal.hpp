@@ -44,13 +44,13 @@ public:
 
     VoltageLevel& getVoltageLevel();
 
-    Terminal& setConnectable(const stdcxx::optional_reference_wrapper<Connectable>& connectable);
+    Terminal& setConnectable(const stdcxx::Optional<Connectable>& connectable);
 
     Terminal& setP(double p);
 
     Terminal& setQ(double q);
 
-    Terminal& setVoltageLevel(const stdcxx::optional_reference_wrapper<VoltageLevel>& voltageLevel);
+    Terminal& setVoltageLevel(const stdcxx::Optional<VoltageLevel>& voltageLevel);
 
 protected: // Stateful
     void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -69,9 +69,9 @@ protected:
 protected:
     std::reference_wrapper<MultiStateObject> m_network;
 
-    stdcxx::optional_reference_wrapper<Connectable> m_connectable;
+    stdcxx::Optional<Connectable> m_connectable;
 
-    stdcxx::optional_reference_wrapper<VoltageLevel> m_voltageLevel;
+    stdcxx::Optional<VoltageLevel> m_voltageLevel;
 
     std::vector<double> m_p;
 

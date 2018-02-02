@@ -30,6 +30,14 @@ public:
 
     optional_reference_wrapper& operator=(const optional_reference_wrapper&) = default;
 
+    bool operator!() const noexcept {
+        return m_pointer == nullptr;
+    }
+
+    operator bool() const noexcept {
+        return m_pointer != nullptr;
+    }
+
     operator T&() const noexcept {
         return get();
     }
@@ -67,6 +75,8 @@ template <typename T>
 optional_reference_wrapper<T> optcref(const T& reference) {
     return optional_reference_wrapper<T>(reference);
 }
+
+template <typename T> using Optional = optional_reference_wrapper<T>;
 
 }
 
