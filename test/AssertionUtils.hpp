@@ -10,9 +10,9 @@
 
 #include <sstream>
 
-
-
 #include <gtest/gtest.h>
+
+#include <powsybl/stdcxx/demangle.hpp>
 
 #define POWSYBL_ASSERT_THROW(statement, expected_exception, expected_message) \
 try { \
