@@ -15,6 +15,7 @@ set(IIDM_SOURCES
         iidm/BusBreakerVoltageLevel.cpp
         iidm/BusTerminal.cpp
         iidm/Connectable.cpp
+        iidm/ConnectableType.cpp
         iidm/Container.cpp
         iidm/Country.cpp
         iidm/DanglingLine.cpp

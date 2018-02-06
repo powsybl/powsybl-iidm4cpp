@@ -8,11 +8,13 @@
 #ifndef POWSYBL_IIDM_CONNECTABLETYPE_HPP
 #define POWSYBL_IIDM_CONNECTABLETYPE_HPP
 
+#include <ostream>
+
 namespace powsybl {
 
 namespace iidm {
 
-enum class ConnectableType {
+enum class ConnectableType : unsigned int {
     BUSBAR_SECTION,
     LINE,
     TWO_WINDINGS_TRANSFORMER,
@@ -24,6 +26,8 @@ enum class ConnectableType {
     STATIC_VAR_COMPENSATOR,
     HVDC_CONVERTER_STATION
 };
+
+std::ostream& operator<<(std::ostream& stream, const ConnectableType& type);
 
 }
 
