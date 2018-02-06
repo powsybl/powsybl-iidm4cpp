@@ -50,6 +50,10 @@ void Terminal::extendStateArraySize(unsigned long /*initStateArraySize*/, unsign
     m_q.resize(m_q.size() + number, m_q[sourceIndex]);
 }
 
+const Connectable& Terminal::getConnectable() const {
+    return m_connectable.get();
+}
+
 double Terminal::getI() const {
     if (m_connectable.get().getConnectableType() == ConnectableType::BUSBAR_SECTION) {
         return 0;
