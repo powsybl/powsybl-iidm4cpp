@@ -14,7 +14,11 @@ set(UNIT_TEST_SOURCES
         iidm/NetworkTest.cpp
         iidm/ObjectStoreTest.cpp
         iidm/SubstationTest.cpp
-        iidm/VoltageLevelTest.cpp)
+        iidm/VoltageLevelTest.cpp
+
+        math/UndirectedGraphTest.cpp)
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(unittests ${UNIT_TEST_SOURCES})
 target_link_libraries(unittests pthread ${GTEST_BOTH_LIBRARIES} iidm)

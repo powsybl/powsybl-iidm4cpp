@@ -1,0 +1,442 @@
+/**
+ * Copyright (c) 2018, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#ifndef POWSYBL_IIDM_UNDIRECTEDGRAPH_HXX
+#define POWSYBL_IIDM_UNDIRECTEDGRAPH_HXX
+
+#include <powsybl/math/UndirectedGraph.hpp>
+
+#include <limits>
+#include <sstream>
+
+#include <powsybl/stdcxx/make_unique.hpp>
+
+namespace powsybl {
+
+namespace math {
+
+template <typename V, typename E>
+UndirectedGraph<V, E>::UndirectedGraph() {
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::checkEdge(unsigned long e) const {
+    if (e >= m_edges.size() || !m_edges[e]) {
+        std::ostringstream oss;
+        oss << "Edge " << e << " not found";
+        throw new PowsyblException(oss.str());
+    }
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::checkVertex(unsigned long v) const {
+    if (v >= m_vertices.size() || !m_vertices[v]) {
+        std::ostringstream oss;
+        oss << "Vertex " << v << " not found";
+        throw new PowsyblException(oss.str());
+    }
+}
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::addEdge(unsigned long v1, unsigned long v2, const stdcxx::Optional<E>& object) {
+    checkVertex(v1);
+    checkVertex(v2);
+
+    unsigned long e;
+    std::unique_ptr<Edge> edge = stdcxx::make_unique<Edge>(v1, v2, object);
+    if (m_removedEdges.empty()) {
+        e = m_edges.size();
+        m_edges.emplace_back(std::move(edge));
+    } else {
+        e = *m_removedEdges.begin();
+        m_removedEdges.erase(m_removedEdges.begin());
+
+        m_edges[e] = std::move(edge);
+    }
+
+    invalidateAdjacencyList();
+
+    return e;
+}
+
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::addVertex() {
+    unsigned long v;
+
+    std::unique_ptr<Vertex> vertex = stdcxx::make_unique<Vertex>();
+    if (m_removedVertices.empty()) {
+        v = m_vertices.size();
+        m_vertices.emplace_back(std::move(vertex));
+    } else {
+        v = *m_removedVertices.begin();
+        m_removedVertices.erase(m_removedVertices.begin());
+
+        m_vertices[v] = std::move(vertex);
+    }
+
+    invalidateAdjacencyList();
+
+    return v;
+}
+
+template <typename V, typename E>
+std::vector<typename UndirectedGraph<V, E>::Path> UndirectedGraph<V, E>::findAllPaths(unsigned long v, const VertexVisitor& pathComplete, const EdgeVisitor& pathCanceled) const {
+    std::vector<Path> paths;
+
+    std::vector<bool> encountered(m_vertices.size(), false);
+    Path path;
+    findAllPaths(v, pathComplete, pathCanceled, path, encountered, paths);
+
+    std::sort(paths.begin(), paths.end(), [](const Path& path1, const Path& path2) {
+        return path1.size() < path2.size();
+    });
+
+    return paths;
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::findAllPaths(unsigned long v, const VertexVisitor& pathComplete, const EdgeVisitor& pathCanceled,
+                                         Path& path, std::vector<bool>& encountered, std::vector<Path>& paths) const {
+    checkVertex(v);
+
+    encountered[v] = true;
+
+    const std::vector<std::vector<unsigned long> >& adjacencyList = getAdjacencyList();
+    const std::vector<unsigned long>& adjacentEdges = adjacencyList[v];
+
+    for (unsigned long i = 0; i < adjacentEdges.size(); ++i) {
+        unsigned long e = adjacentEdges[i];
+
+        const std::unique_ptr<Edge>& edge = m_edges[e];
+        if (pathCanceled(edge->getObject())) {
+            continue;
+        }
+
+        unsigned long v1 = edge->getVertex1();
+        unsigned long v2 = edge->getVertex2();
+
+        UndirectedGraph<V, E>::Path path2 = path;
+        std::vector<bool> encountered2 = encountered;
+        if (v == v2) {
+            if (findAllPaths(e, v1, pathComplete, pathCanceled, path2, encountered2, paths)) {
+                continue;
+            }
+        } else if (v == v1) {
+            if (findAllPaths(e, v2, pathComplete, pathCanceled, path2, encountered2, paths)) {
+                continue;
+            }
+        } else {
+            std::ostringstream oss;
+            oss << "Edge " << e << " is not connected to vertex " << v;
+            throw PowsyblException(oss.str());
+        }
+    }
+}
+
+template <typename V, typename E>
+bool UndirectedGraph<V, E>::findAllPaths(unsigned long e, unsigned long v, const VertexVisitor& pathComplete, const EdgeVisitor& pathCanceled,
+                                         typename UndirectedGraph<V, E>::Path& path, std::vector<bool>& encountered, std::vector<std::vector<unsigned long> >& paths) const {
+    if (encountered[v]) {
+        return false;
+    }
+    const std::unique_ptr<Vertex>& vertex = m_vertices[v];
+    path.push_back(e);
+    if (pathComplete(vertex->getObject())) {
+        paths.emplace_back(std::move(path));
+        return true;
+    } else {
+        findAllPaths(v, pathComplete, pathCanceled, path, encountered, paths);
+        return false;
+    }
+}
+
+template <typename V, typename E>
+const std::vector<std::vector<unsigned long> >& UndirectedGraph<V, E>::getAdjacencyList() const {
+    static unsigned long s_neighborsCapacity = 2;
+
+    std::lock_guard<std::mutex> lock(m_adjacencyListMutex);
+
+    if (m_adjacencyList.size() != m_vertices.size()) {
+        m_adjacencyList.resize(m_vertices.size());
+        for (unsigned long v = 0; v < m_vertices.size(); ++v) {
+            if (m_vertices[v]) {
+                m_adjacencyList[v].reserve(s_neighborsCapacity);
+            }
+        }
+
+        for (unsigned long e = 0; e < m_edges.size(); ++e) {
+            const std::unique_ptr<Edge>& edge = m_edges[e];
+            if (edge) {
+                m_adjacencyList[edge->getVertex1()].push_back(e);
+                m_adjacencyList[edge->getVertex2()].push_back(e);
+            }
+        }
+    }
+
+    return m_adjacencyList;
+}
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::getEdgeCount() const {
+    return m_edges.size() - m_removedEdges.size();
+}
+
+template <typename V, typename E>
+const stdcxx::Optional<E>& UndirectedGraph<V, E>::getEdgeObject(unsigned long e) const {
+    checkEdge(e);
+
+    return m_edges[e]->getObject();
+}
+
+template <typename V, typename E>
+std::vector<stdcxx::Optional<E> > UndirectedGraph<V, E>::getEdgeObjects() const {
+    std::vector<stdcxx::Optional<E> > objects;
+    objects.reserve(m_edges.size());
+
+    for (const auto& edge : m_edges) {
+        if (edge) {
+            objects.emplace_back(std::move(edge->getObject()));
+        }
+    }
+
+    return objects;
+}
+
+template <typename V, typename E>
+std::vector<stdcxx::Optional<E> > UndirectedGraph<V, E>::getEdgeObjects(unsigned long v1, unsigned long v2) const {
+    checkVertex(v1);
+    checkVertex(v2);
+
+    std::vector<stdcxx::Optional<E> > objects;
+
+    const std::vector<std::vector<unsigned long> >& adjacencyList = getAdjacencyList();
+    const std::vector<unsigned long>& adjacentEdges = adjacencyList[v1];
+    for (unsigned long e : adjacentEdges) {
+        const std::unique_ptr<Edge>& edge = m_edges[e];
+        if ((edge->getVertex1() == v1 && edge->getVertex2() == v2) ||
+            (edge->getVertex1() == v2 && edge->getVertex2() == v1)) {
+            objects.emplace_back(std::move(edge->getObject()));
+        }
+    }
+
+    return objects;
+}
+
+template <typename V, typename E>
+std::set<unsigned long> UndirectedGraph<V, E>::getEdges() const {
+    std::set<unsigned long> edges;
+
+    for (unsigned long e = 0; e < m_edges.size(); ++e) {
+        if (m_vertices[e]) {
+            edges.insert(e);
+        }
+    }
+
+    return edges;
+}
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::getMaxVertex() const {
+    return m_vertices.size();
+}
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::getVertexCount() const {
+    return m_vertices.size() - m_removedVertices.size();
+}
+
+template <typename V, typename E>
+const stdcxx::Optional<V>& UndirectedGraph<V, E>::getVertexObject(unsigned long v) const {
+    checkVertex(v);
+
+    return m_vertices[v]->getObject();
+}
+
+template <typename V, typename E>
+std::vector<stdcxx::Optional<V> > UndirectedGraph<V, E>::getVertexObjects() const {
+    std::vector<stdcxx::Optional<V> > objects;
+
+    for (const auto& vertex : m_vertices) {
+        if (vertex) {
+            objects.emplace_back(std::move(vertex->getObject()));
+        }
+    }
+
+    return objects;
+}
+
+template <typename V, typename E>
+std::set<unsigned long> UndirectedGraph<V, E>::getVertices() const {
+    std::set<unsigned long> vertices;
+
+    for (unsigned long v = 0; v < m_vertices.size(); ++v) {
+        if (m_vertices[v]) {
+            vertices.insert(v);
+        }
+    }
+
+    return vertices;
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::invalidateAdjacencyList() {
+    std::lock_guard<std::mutex> lock(m_adjacencyListMutex);
+
+    m_adjacencyList.clear();
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::removeAllEdges() {
+    m_edges.clear();
+    m_removedEdges.clear();
+
+    invalidateAdjacencyList();
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::removeAllVertices() {
+    if (!m_edges.empty()) {
+        throw PowsyblException("Cannot remove all vertices because there is still some edges in the graph");
+    }
+
+    m_vertices.clear();
+    m_removedVertices.clear();
+
+    invalidateAdjacencyList();
+}
+
+template <typename V, typename E>
+stdcxx::Optional<E> UndirectedGraph<V, E>::removeEdge(unsigned long e) {
+    checkEdge(e);
+
+    stdcxx::Optional<E> object = m_edges[e]->getObject();
+    if (e == m_edges.size() - 1) {
+        m_edges.pop_back();
+    } else {
+        m_edges[e].reset();
+        m_removedEdges.insert(e);
+    }
+
+    invalidateAdjacencyList();
+
+    return object;
+}
+
+template <typename V, typename E>
+stdcxx::Optional<V> UndirectedGraph<V, E>::removeVertex(unsigned long v) {
+    checkVertex(v);
+
+    for (const auto& edge : m_edges) {
+        if (edge && (edge->getVertex1() == v || edge->getVertex2() == v)) {
+            std::ostringstream oss;
+            oss << "An edge is connected to the vertex " << v;
+            throw PowsyblException(oss.str());
+        }
+    }
+
+    stdcxx::Optional<V> object = m_vertices[v]->getObject();
+    if (v == m_vertices.size() - 1) {
+        m_vertices.pop_back();
+    } else {
+        m_vertices[v].reset();
+        m_removedVertices.insert(v);
+    }
+
+    invalidateAdjacencyList();
+
+    return object;
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::setVertexObject(unsigned long v, const stdcxx::Optional<V>& object) {
+    checkVertex(v);
+
+    m_vertices[v]->setObject(object);
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser) const {
+    std::vector<bool> encountered(m_vertices.size(), false);
+
+    traverse(v, traverser, encountered);
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser, std::vector<bool>& encountered) const {
+    checkVertex(v);
+
+    encountered.resize(m_vertices.size(), false);
+
+    const std::vector<std::vector<unsigned long> >& adjacencyList = getAdjacencyList();
+    const std::vector<unsigned long>& adjacentEdges = adjacencyList[v];
+
+    encountered[v] = true;
+    for (unsigned long e : adjacentEdges) {
+        const std::unique_ptr<Edge>& edge = m_edges[e];
+        unsigned long v1 = edge->getVertex1();
+        unsigned long v2 = edge->getVertex2();
+        if (!encountered[v1]) {
+            if (traverser(v2, e, v1) == TraverseResult::CONTINUE) {
+                encountered[v1] = true;
+                traverse(v1, traverser, encountered);
+            }
+        } else if (!encountered[v2] && (traverser(v1, e, v2) == TraverseResult::CONTINUE)) {
+            encountered[v2] = true;
+            traverse(v2, traverser, encountered);
+        }
+    }
+}
+
+template <typename V, typename E>
+UndirectedGraph<V, E>::Edge::Edge(unsigned long v1, unsigned long v2, const stdcxx::Optional<E>& object) :
+    m_vertex1(v1),
+    m_vertex2(v2),
+    m_object(object) {
+}
+
+template <typename V, typename E>
+const stdcxx::Optional<E>& UndirectedGraph<V, E>::Edge::getObject() const {
+    return m_object;
+
+}
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::Edge::getVertex1() const {
+    return m_vertex1;
+}
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::Edge::getVertex2() const {
+    return m_vertex2;
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::Edge::setObject(const stdcxx::Optional<E>& object) {
+    m_object = object;
+}
+
+template <typename V, typename E>
+UndirectedGraph<V, E>::Vertex::Vertex() :
+    m_object() {
+}
+
+template <typename V, typename E>
+const stdcxx::Optional<V>& UndirectedGraph<V, E>::Vertex::getObject() const {
+    return m_object;
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::Vertex::setObject(const stdcxx::Optional<V>& object) {
+    m_object = object;
+}
+
+}
+
+}
+
+#endif  // POWSYBL_IIDM_UNDIRECTEDGRAPH_HXX
