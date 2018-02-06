@@ -8,6 +8,7 @@
 #include <powsybl/iidm/BusTerminal.hpp>
 
 #include <powsybl/iidm/StateManager.hpp>
+#include <powsybl/stdcxx/demangle.hpp>
 
 #include "ValidationUtils.hpp"
 
@@ -81,6 +82,12 @@ BusTerminal& BusTerminal::setConnected(bool connected) {
     m_connected[m_network.get().getStateIndex()] = connected;
 
     return *this;
+}
+
+std::ostream& operator<<(std::ostream& stream, const BusTerminal& busTerminal) {
+    stream << stdcxx::simpleClassName(busTerminal) << "[" << busTerminal.getConnectableBusId() << "]";
+
+    return stream;
 }
 
 }

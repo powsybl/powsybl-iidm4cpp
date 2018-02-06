@@ -16,7 +16,7 @@ std::string demangle(const char* name) {
     int status = -1;
 
     // __cxa_demangle will allocate an output buffer we have to delete
-    std::unique_ptr<char, void(*)(void*)> res(abi::__cxa_demangle(name, nullptr, 0, &status), std::free);
+    std::unique_ptr<char, void(*)(void*)> res(abi::__cxa_demangle(name, nullptr, nullptr, &status), std::free);
 
     return status ? name : res.get();
 }
@@ -24,6 +24,18 @@ std::string demangle(const char* name) {
 template <>
 std::string demangle(const std::type_info& type) {
     return demangle(type.name());
+}
+
+std::string simpleClassName(const char* className) {
+    const std::string& strClassName = demangle(className);
+    size_t index = strClassName.find_last_of("::");
+
+    return (index == std::string::npos) ? strClassName : strClassName.substr(index + 1, strClassName.size());
+}
+
+template <>
+std::string simpleClassName(const std::type_info& type) {
+    return simpleClassName(type.name());
 }
 
 }
