@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_BUSTERMINAL_HPP
 #define POWSYBL_IIDM_BUSTERMINAL_HPP
 
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -50,6 +51,8 @@ private:
 
     std::vector<std::string> m_connectableBusId;
 };
+
+std::ostream& operator<<(std::ostream& stream, const BusTerminal& busTerminal);
 
 }
 

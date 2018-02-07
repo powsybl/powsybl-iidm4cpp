@@ -32,6 +32,8 @@ public:
 
     virtual double getAngle() const = 0;
 
+    const Connectable& getConnectable() const;
+
     double getI() const;
 
     double getP() const;
