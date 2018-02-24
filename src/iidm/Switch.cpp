@@ -7,12 +7,85 @@
 
 #include <powsybl/iidm/Switch.hpp>
 
+#include <powsybl/iidm/VoltageLevel.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
-Switch::Switch(const std::string& id, const std::string& name) :
-    Identifiable(id, name) {
+Switch::Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, SwitchKind kind, bool open,
+               bool retained, bool fictitious) :
+    Identifiable(id, name),
+    m_voltageLevel(voltageLevel),
+    m_kind(kind),
+    m_fictitious(fictitious),
+    m_open(voltageLevel.getNetwork().getStateManager().getStateArraySize(), open),
+    m_retained(voltageLevel.getNetwork().getStateManager().getStateArraySize(), retained) {
+}
+
+void Switch::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (auto index : indexes) {
+        m_open[index] = m_open[sourceIndex];
+        m_retained[index] = m_retained[sourceIndex];
+    }
+}
+
+void Switch::deleteStateArrayElement(unsigned long /*index*/) {
+
+}
+
+void Switch::extendStateArraySize(unsigned long /*initStateArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    m_open.resize(m_open.size() + number, m_open[sourceIndex]);
+    m_retained.resize(m_retained.size() + number, m_retained[sourceIndex]);
+}
+
+SwitchKind Switch::getKind() const {
+    return m_kind;
+}
+
+const std::string& Switch::getTypeDescription() const {
+    static std::string s_typeDescription = "Switch";
+
+    return s_typeDescription;
+}
+
+VoltageLevel& Switch::getVoltageLevel() const {
+    return m_voltageLevel.get();
+}
+
+bool Switch::isFictitious() const {
+    return m_fictitious;
+}
+
+bool Switch::isOpen() const {
+    return m_open[m_voltageLevel.get().getNetwork().getStateIndex()];
+}
+
+bool Switch::isRetained() const {
+    return m_retained[m_voltageLevel.get().getNetwork().getStateIndex()];
+}
+
+void Switch::reduceStateArraySize(unsigned long number) {
+    m_open.resize(m_open.size() - number);
+    m_retained.resize(m_retained.size() - number);
+}
+
+Switch& Switch::setFictitious(bool fictitious) {
+    m_fictitious = fictitious;
+
+    return *this;
+}
+
+Switch& Switch::setOpen(bool open) {
+    m_open[m_voltageLevel.get().getNetwork().getStateIndex()] = open;
+
+    return *this;
+}
+
+Switch& Switch::setRetained(bool retained) {
+    m_retained[m_voltageLevel.get().getNetwork().getStateIndex()] = retained;
+
+    return *this;
 }
 
 }
