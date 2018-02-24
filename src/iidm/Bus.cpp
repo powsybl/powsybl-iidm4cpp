@@ -11,9 +11,14 @@ namespace powsybl {
 
 namespace iidm {
 
-Bus::Bus(const std::string& id, const std::string& name) :
-    Identifiable(id, name) {
+Bus::Bus(const std::string& id) :
+    Identifiable(id, "") {
+}
 
+const std::string& Bus::getTypeDescription() const {
+    static std::string s_typeDescription = "Bus";
+
+    return s_typeDescription;
 }
 
 }
