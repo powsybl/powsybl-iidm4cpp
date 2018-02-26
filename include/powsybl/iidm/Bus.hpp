@@ -26,10 +26,6 @@ public:
 
     virtual unsigned long getConnectedTerminalCount() const = 0;
 
-    virtual double getP() const = 0;
-
-    virtual double getQ() const = 0;
-
     virtual double getV() const = 0;
 
     virtual VoltageLevel& getVoltageLevel() const = 0;

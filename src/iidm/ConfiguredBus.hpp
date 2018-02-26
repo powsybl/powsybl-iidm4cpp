@@ -29,10 +29,6 @@ public: // Bus
 
     unsigned long getConnectedTerminalCount() const override;
 
-    double getP() const override;
-
-    double getQ() const override;
-
     double getV() const override;
 
     VoltageLevel& getVoltageLevel() const override;

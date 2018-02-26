@@ -53,24 +53,6 @@ unsigned long MergedBus::getConnectedTerminalCount() const {
     return count;
 }
 
-double MergedBus::getP() const {
-    double p = 0.0;
-    for (const auto& it : m_buses) {
-        p += it.get().getP();
-    }
-
-    return p;
-}
-
-double MergedBus::getQ() const {
-    double q = 0.0;
-    for (const auto& it : m_buses) {
-        q += it.get().getQ();
-    }
-
-    return q;
-}
-
 double MergedBus::getV() const {
     for (const auto& it : m_buses) {
         if (!std::isnan(it.get().getV())) {
