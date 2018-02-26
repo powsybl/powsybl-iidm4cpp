@@ -14,12 +14,31 @@ namespace powsybl {
 
 namespace iidm {
 
+class VoltageLevel;
+
 class Bus : public Identifiable {
 public:
     virtual ~Bus() = default;
 
+    // TODO MBA: begin, cbegin, cend, end to iterator over all connected equipments
+
+    virtual double getAngle() const = 0;
+
+    virtual unsigned long getConnectedTerminalCount() const = 0;
+
+    virtual double getV() const = 0;
+
+    virtual VoltageLevel& getVoltageLevel() const = 0;
+
+    virtual Bus& setAngle(double angle) = 0;
+
+    virtual Bus& setV(double v) = 0;
+
 protected:
-    Bus(const std::string& id, const std::string& name);
+    Bus(const std::string& id);
+
+private: // Identifiable
+    const std::string& getTypeDescription() const override;
 };
 
 }

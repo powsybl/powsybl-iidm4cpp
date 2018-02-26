@@ -14,6 +14,9 @@ namespace powsybl {
 
 namespace iidm {
 
+class Bus;
+class ConfiguredBus;
+
 class BusBreakerVoltageLevel : public VoltageLevel {
 public: // VoltageLevel
     void attach(Terminal& terminal, bool test) override;
@@ -35,6 +38,8 @@ public:
                            double nominalVoltage, double lowVoltageLimit, double highVoltagelimit);
 
     virtual ~BusBreakerVoltageLevel() = default;
+
+    Bus& addBus(std::unique_ptr<ConfiguredBus>&& bus);
 };
 
 }

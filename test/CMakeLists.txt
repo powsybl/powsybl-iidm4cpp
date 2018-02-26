@@ -6,17 +6,17 @@
 #
 
 set(UNIT_TEST_SOURCES
-        iidm/BusbarSectionTest.cpp
-        iidm/CountryTest.cpp
-        iidm/EnergySourceTest.cpp
-        iidm/LoadTest.cpp
-        iidm/NetworkFactory.cpp
-        iidm/NetworkTest.cpp
-        iidm/ObjectStoreTest.cpp
-        iidm/SubstationTest.cpp
-        iidm/VoltageLevelTest.cpp
+    iidm/BusbarSectionTest.cpp
+    iidm/CountryTest.cpp
+    iidm/EnergySourceTest.cpp
+    iidm/LoadTest.cpp
+    iidm/NetworkFactory.cpp
+    iidm/NetworkTest.cpp
+    iidm/ObjectStoreTest.cpp
+    iidm/SubstationTest.cpp
+    iidm/VoltageLevelTest.cpp
 
-        math/UndirectedGraphTest.cpp)
+    math/UndirectedGraphTest.cpp)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 

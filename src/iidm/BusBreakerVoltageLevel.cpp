@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/BusBreakerVoltageLevel.hpp>
 
+#include "ConfiguredBus.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -14,6 +16,14 @@ namespace iidm {
 BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                                                double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit) {
+}
+
+Bus& BusBreakerVoltageLevel::addBus(std::unique_ptr<ConfiguredBus>&& ptrBus) {
+    ConfiguredBus& bus = getNetwork().checkAndAdd(std::move(ptrBus));
+
+    // TODO
+
+    return bus;
 }
 
 void BusBreakerVoltageLevel::attach(Terminal& /*terminal*/, bool /*test*/) {
