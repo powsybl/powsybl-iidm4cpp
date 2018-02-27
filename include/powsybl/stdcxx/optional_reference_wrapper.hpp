@@ -49,6 +49,10 @@ public:
         return *m_pointer;
     }
 
+    void reset() noexcept  {
+        m_pointer = nullptr;
+    }
+
 private:
     optional_reference_wrapper(T&& reference) = delete;
 
