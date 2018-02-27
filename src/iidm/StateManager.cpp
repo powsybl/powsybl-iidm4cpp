@@ -13,6 +13,7 @@
 #include <powsybl/iidm/MultipleStateContext.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Stateful.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
@@ -32,7 +33,7 @@ StateManager::StateManager(Network& network) :
     m_statesById.insert(std::make_pair(getInitialStateId(), INITIAL_STATE_INDEX));
 }
 
-StateManager::StateManager(StateManager&& stateManager) :
+StateManager::StateManager(StateManager&& stateManager) noexcept :
     m_network(stateManager.m_network),
     m_stateContext(std::move(stateManager.m_stateContext)),
     m_stateMutex(),
@@ -50,11 +51,13 @@ void StateManager::cloneState(const std::string& sourceStateId, const std::strin
 }
 
 void StateManager::cloneState(const std::string& sourceStateId, const std::initializer_list<std::string>& targetStateIds) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<StateManager>();
+
     if (targetStateIds.size() == 0) {
         throw PowsyblException("Empty target state id list");
     }
 
-    // TODO MBA: LOGGER.debug("Creating states {}", targetStateIds);
+    logger.debug("Creating states %1%", logging::toString(targetStateIds));
 
     std::lock_guard<std::mutex> lock(m_stateMutex);
 
@@ -62,8 +65,7 @@ void StateManager::cloneState(const std::string& sourceStateId, const std::initi
     unsigned long initStateArraySize = m_stateArraySize;
     unsigned long extendedCount = 0;
     std::set<unsigned long> recycled;
-    for (auto it = targetStateIds.begin(); it != targetStateIds.end(); ++it) {
-        const std::string& targetStateId = *it;
+    for (const auto& targetStateId : targetStateIds) {
         if (m_statesById.find(targetStateId) != m_statesById.end()) {
             std::ostringstream oss;
             oss << "Target state '" << targetStateId << "' already exists";
@@ -88,13 +90,13 @@ void StateManager::cloneState(const std::string& sourceStateId, const std::initi
         std::for_each(begin(), end(), [recycled, sourceIndex](Stateful& stateful) {
             stateful.allocateStateArrayElement(recycled, sourceIndex);
         });
-        // TODO MBA: LOGGER.trace("Recycling state array indexes {}", Arrays.toString(indexes));
+        logger.trace("Recycling state array indexes %1%", logging::toString(recycled));
     }
     if (extendedCount > 0) {
         std::for_each(begin(), end(), [initStateArraySize, extendedCount, sourceIndex](Stateful& stateful) {
             stateful.extendStateArraySize(initStateArraySize, extendedCount, sourceIndex);
         });
-        // TODO MBA: LOGGER.trace("Extending state array size to {} (+{})", stateArraySize, extendedCount);
+        logger.trace("Extending state array size to %1% (+%2%)", m_stateArraySize, extendedCount);
     }
 }
 
@@ -151,6 +153,8 @@ const std::string& StateManager::getWorkingStateId() const {
 }
 
 void StateManager::removeState(const std::string& stateId) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<StateManager>();
+
     std::lock_guard<std::mutex> lock(m_stateMutex);
 
     if (stateId == getInitialStateId()) {
@@ -160,7 +164,7 @@ void StateManager::removeState(const std::string& stateId) {
     unsigned long index = getStateIndex(stateId);
     m_statesById.erase(stateId);
 
-    // TODO MBA: LOGGER.debug("Removing state '{}'", stateId);
+    logger.debug("Removing state '%1%'", stateId);
 
     if (index == m_stateArraySize - 1) {
         // remove consecutive unused index starting from the end
@@ -180,7 +184,7 @@ void StateManager::removeState(const std::string& stateId) {
         });
 
         m_stateArraySize -= stateCount;
-        // TODO MBA: LOGGER.trace("Reducing state array size to {}", m_stateArraySize);
+        logger.trace("Reducing state array size to %1%", m_stateArraySize);
     } else {
         m_unusedIndexes.insert(index);
 
@@ -188,7 +192,7 @@ void StateManager::removeState(const std::string& stateId) {
             stateful.deleteStateArrayElement(index);
         });
 
-        // TODO MBA: LOGGER.trace("Deleting state array element at index {}", index);
+        logger.trace("Deleting state array element at index %1%", index);
     }
 
     m_stateContext->resetIfStateIndexIs(index);

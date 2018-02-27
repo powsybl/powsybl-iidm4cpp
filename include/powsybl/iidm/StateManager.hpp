@@ -31,7 +31,7 @@ public:
 public:
     explicit StateManager(Network& network);
 
-    StateManager(StateManager&& stateManager);
+    StateManager(StateManager&& stateManager) noexcept;
 
     void cloneState(const std::string& sourceStateId, const std::string& targetStateId);
 

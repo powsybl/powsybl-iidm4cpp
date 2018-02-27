@@ -16,6 +16,11 @@ set(UNIT_TEST_SOURCES
     iidm/SubstationTest.cpp
     iidm/VoltageLevelTest.cpp
 
+    logging/ConsoleLoggerTest.cpp
+    logging/LoggerFactoryTest.cpp
+    logging/MessageFormatTest.cpp
+    logging/NoopLoggerTest.cpp
+
     math/UndirectedGraphTest.cpp)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})

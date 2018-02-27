@@ -52,6 +52,11 @@ set(IIDM_SOURCES
     iidm/VoltageLevelAdder.cpp
     iidm/VscConverterStation.cpp
 
+    logging/ConsoleLogger.cpp
+    logging/Level.cpp
+    logging/LoggerFactory.cpp
+    logging/NoopLogger.cpp
+
     stdcxx/demangle.cpp)
 
 add_library(iidm ${IIDM_SOURCES})
