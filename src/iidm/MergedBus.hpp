@@ -12,14 +12,18 @@
 #include <set>
 #include <string>
 
-#include "CalculatedBus.hpp"
+#include <powsybl/iidm/Bus.hpp>
+
 #include "ConfiguredBus.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-class MergedBus : public CalculatedBus {
+/**
+ * A Bus implementation used in the BusView of a BusBreakerVoltageLevel
+ */
+class MergedBus : public Bus {
 public: // Bus
     double getAngle() const override;
 
@@ -33,13 +37,20 @@ public: // Bus
 
     Bus& setV(double v) override;
 
-public: // CalculatedBus
-    void invalidate() override;
-
 public:
+    /**
+     * Create a new MergedBus from a list of ConfiguredBus references
+     * @param id the ID of this bus
+     * @param buses the list of ConfiguredBus aggregated in this bus
+     */
     MergedBus(const std::string& id, std::set<std::reference_wrapper<ConfiguredBus> >&& buses);
 
     virtual ~MergedBus() = default;
+
+    /**
+     * Invalidate this bus after the voltage level topology changed
+     */
+    void invalidate();
 
 private:
     void checkValidity() const;

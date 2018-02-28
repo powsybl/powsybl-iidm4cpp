@@ -16,7 +16,7 @@ namespace powsybl {
 namespace iidm {
 
 MergedBus::MergedBus(const std::string& id, std::set<std::reference_wrapper<ConfiguredBus> >&& buses) :
-    CalculatedBus(id),
+    Bus(id),
     m_buses(std::move(buses)),
     m_valid(true) {
 
@@ -75,6 +75,7 @@ void MergedBus::invalidate() {
 }
 
 Bus& MergedBus::setAngle(double angle) {
+    checkValidity();
     for (auto& it : m_buses) {
         it.get().setAngle(angle);
     }
@@ -83,6 +84,7 @@ Bus& MergedBus::setAngle(double angle) {
 }
 
 Bus& MergedBus::setV(double v) {
+    checkValidity();
     for (auto& it : m_buses) {
         it.get().setV(v);
     }

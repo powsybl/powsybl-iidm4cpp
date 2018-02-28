@@ -8,20 +8,59 @@
 #ifndef POWSYBL_IIDM_CALCULATEDBUS_HPP
 #define POWSYBL_IIDM_CALCULATEDBUS_HPP
 
+#include <functional>
+#include <vector>
+
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/NodeBreakerVoltageLevel.hpp>
+#include <powsybl/stdcxx/optional_reference_wrapper.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
+/**
+ * A Bus implementation used in BusBreakerView and BusView of a NodeBreakerVoltageLevel
+ */
 class CalculatedBus : public Bus {
+public: // Bus
+    double getAngle() const override;
+
+    unsigned long getConnectedTerminalCount() const override;
+
+    double getV() const override;
+
+    VoltageLevel& getVoltageLevel() const override;
+
+    Bus& setAngle(double angle) override;
+
+    Bus& setV(double v) override;
+
 public:
+    /**
+     * Create a new CalculatedBus from a list of NodeTerminal references
+     * @param id the ID of this bus
+     * @param voltageLevel the voltage level of this bus
+     * @param terminals the list of NodeTerminal references which are connected to this bus
+     */
+    CalculatedBus(const std::string& id, NodeBreakerVoltageLevel& voltageLevel, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals);
+
     virtual ~CalculatedBus() = default;
 
-    virtual void invalidate() = 0;
+    /**
+     * Invalidate this bus after the voltage level topology changed
+     */
+    void invalidate();
 
-protected:
-    CalculatedBus(const std::string& id);
+private:
+    void checkValidity() const;
+
+private:
+    stdcxx::Optional<NodeBreakerVoltageLevel> m_voltageLevel;
+
+    std::vector<std::reference_wrapper<NodeTerminal> > m_terminals;
+
+    bool m_valid;
 };
 
 }
