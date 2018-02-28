@@ -11,8 +11,8 @@
 #include <powsybl/math/UndirectedGraph.hpp>
 
 #include <limits>
-#include <sstream>
 
+#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
@@ -26,18 +26,14 @@ UndirectedGraph<V, E>::UndirectedGraph() {
 template <typename V, typename E>
 void UndirectedGraph<V, E>::checkEdge(unsigned long e) const {
     if (e >= m_edges.size() || !m_edges[e]) {
-        std::ostringstream oss;
-        oss << "Edge " << e << " not found";
-        throw new PowsyblException(oss.str());
+        throw new PowsyblException(logging::format("Edge %1% not found", e));
     }
 }
 
 template <typename V, typename E>
 void UndirectedGraph<V, E>::checkVertex(unsigned long v) const {
     if (v >= m_vertices.size() || !m_vertices[v]) {
-        std::ostringstream oss;
-        oss << "Vertex " << v << " not found";
-        throw new PowsyblException(oss.str());
+        throw new PowsyblException(logging::format("Vertex %1% not found", v));
     }
 }
 
@@ -131,9 +127,7 @@ void UndirectedGraph<V, E>::findAllPaths(unsigned long v, const VertexVisitor& p
                 continue;
             }
         } else {
-            std::ostringstream oss;
-            oss << "Edge " << e << " is not connected to vertex " << v;
-            throw PowsyblException(oss.str());
+            throw new PowsyblException(logging::format("Edge %1% is not connected to vertex %2%", e, v));
         }
     }
 }
@@ -333,9 +327,8 @@ stdcxx::Optional<V> UndirectedGraph<V, E>::removeVertex(unsigned long v) {
 
     for (const auto& edge : m_edges) {
         if (edge && (edge->getVertex1() == v || edge->getVertex2() == v)) {
-            std::ostringstream oss;
-            oss << "An edge is connected to the vertex " << v;
-            throw PowsyblException(oss.str());
+            throw PowsyblException(logging::format("An edge is connected to the vertex %1%", v));
+
         }
     }
 

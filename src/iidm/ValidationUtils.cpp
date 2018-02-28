@@ -8,7 +8,8 @@
 #include "ValidationUtils.hpp"
 
 #include <cmath>
-#include <sstream>
+
+#include <powsybl/logging/MessageFormat.hpp>
 
 namespace powsybl {
 
@@ -73,9 +74,7 @@ void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, doub
         throw ValidationException(validable, "High voltage limit is < 0");
     }
     if (lowVoltageLimit > highVoltageLimit) {
-        std::ostringstream oss;
-        oss << "Inconsistent voltage limit range [" << lowVoltageLimit << ", " << highVoltageLimit << "]";
-        throw ValidationException(validable, oss.str());
+        throw ValidationException(validable, logging::format("Inconsistent voltage limit range [%1%, %2%]", lowVoltageLimit, highVoltageLimit));
     }
 }
 
