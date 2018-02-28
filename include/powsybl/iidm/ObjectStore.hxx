@@ -10,9 +10,8 @@
 
 #include <powsybl/iidm/ObjectStore.hpp>
 
-#include <sstream>
-
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
 
 namespace powsybl {
@@ -41,7 +40,7 @@ T& ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
 
     auto other = m_objectsById.find(identifiable->getId());
     if (other != m_objectsById.end()) {
-        throw PowsyblException(std::string("Object '") + identifiable->getId() + "' already exists (" + stdcxx::demangle(*other->second) + ")");
+        throw PowsyblException(logging::format("Object '%1%' already exists (%2%)", identifiable->getId(), stdcxx::demangle(*other->second)));
     }
 
     auto it = m_objectsById.emplace(std::make_pair(identifiable->getId(), std::move(identifiable)));
@@ -63,15 +62,11 @@ T& ObjectStore::get(const std::string& id) const {
 
     const auto& it = m_objectsById.find(id);
     if (it == m_objectsById.end()) {
-        std::ostringstream oss;
-        oss << "Unable to find to identifiable '" + id + "'";
-        throw PowsyblException(oss.str());
+        throw PowsyblException(logging::format("Unable to find to the identifiable '%1%'", id));
     } else {
         T* identifiable = dynamic_cast<T*>(it->second.get());
         if (identifiable == nullptr) {
-            std::ostringstream oss;
-            oss << "Identifiable '" << id << "' is not a " << stdcxx::demangle(typeid(T));
-            throw PowsyblException(oss.str());
+            throw PowsyblException(logging::format("Identifiable '%1%' is not a %2%", id, stdcxx::demangle<T>()));
         } else {
             return *identifiable;
         }

@@ -10,6 +10,7 @@
 #include <cmath>
 
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 #include "ValidationUtils.hpp"
@@ -95,9 +96,7 @@ void ConfiguredBus::removeTerminal(BusTerminal& terminal) {
     if (it != terminals.end()) {
         terminals.erase(it);
     } else {
-        std::ostringstream oss;
-        oss << "Terminal " << terminal << " not found";
-        throw PowsyblException(oss.str());
+        throw PowsyblException(logging::format("Terminal %1% not found", terminal));
     }
 }
 

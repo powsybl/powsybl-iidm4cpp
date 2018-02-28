@@ -8,7 +8,6 @@
 #include <powsybl/iidm/StateManager.hpp>
 
 #include <algorithm>
-#include <sstream>
 
 #include <powsybl/iidm/MultipleStateContext.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -67,9 +66,7 @@ void StateManager::cloneState(const std::string& sourceStateId, const std::initi
     std::set<unsigned long> recycled;
     for (const auto& targetStateId : targetStateIds) {
         if (m_statesById.find(targetStateId) != m_statesById.end()) {
-            std::ostringstream oss;
-            oss << "Target state '" << targetStateId << "' already exists";
-            throw PowsyblException(oss.str());
+            throw PowsyblException(logging::format("Target state '%1%' already exists", targetStateId));
         }
         if (m_unusedIndexes.empty()) {
             // extend state array size
@@ -132,9 +129,7 @@ unsigned long StateManager::getStateIndex() const {
 unsigned long StateManager::getStateIndex(const std::string& stateId) const {
     const auto& it = m_statesById.find(stateId);
     if (it == m_statesById.end()) {
-        std::ostringstream oss;
-        oss << "State '" << stateId << "' not found";
-        throw PowsyblException(oss.str());
+        throw PowsyblException(logging::format("State '%1%' not found", stateId));
     }
 
     return it->second;
