@@ -18,7 +18,7 @@ std::string demangle(const char* name) {
     // __cxa_demangle will allocate an output buffer we have to delete
     std::unique_ptr<char, void(*)(void*)> res(abi::__cxa_demangle(name, nullptr, nullptr, &status), std::free);
 
-    return status ? name : res.get();
+    return status == 0 ? res.get() : name;
 }
 
 template <>
