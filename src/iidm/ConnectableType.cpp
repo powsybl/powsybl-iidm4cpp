@@ -13,21 +13,25 @@ namespace powsybl {
 
 namespace iidm {
 
-std::ostream& operator<<(std::ostream& stream, const ConnectableType& type) {
-    static std::array<std::string, 10> s_typeNames = {{
-                                                          "BUSBAR_SECTION",
-                                                          "LINE",
-                                                          "TWO_WINDINGS_TRANSFORMER",
-                                                          "THREE_WINDINGS_TRANSFORMER",
-                                                          "GENERATOR",
-                                                          "LOAD",
-                                                          "SHUNT_COMPENSATOR",
-                                                          "DANGLING_LINE",
-                                                          "STATIC_VAR_COMPENSATOR",
-                                                          "HVDC_CONVERTER_STATION"
-                                                      }};
+const std::string& getConnectableTypeName(const ConnectableType& type) {
+    static std::array<std::string, 10> s_typeNames {{
+        "BUSBAR_SECTION",
+        "LINE",
+        "TWO_WINDINGS_TRANSFORMER",
+        "THREE_WINDINGS_TRANSFORMER",
+        "GENERATOR",
+        "LOAD",
+        "SHUNT_COMPENSATOR",
+        "DANGLING_LINE",
+        "STATIC_VAR_COMPENSATOR",
+        "HVDC_CONVERTER_STATION"
+    }};
 
-    stream << s_typeNames.at(static_cast<unsigned int>(type));
+    return s_typeNames.at(static_cast<unsigned int>(type));
+}
+
+std::ostream& operator<<(std::ostream& stream, const ConnectableType& type) {
+    stream << getConnectableTypeName(type);
 
     return stream;
 }
