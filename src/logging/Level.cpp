@@ -14,7 +14,7 @@ namespace powsybl {
 namespace logging {
 
 const std::string& getLevelName(const Level& level) {
-    static std::array<std::string, 5> s_levelNames = {{
+    static std::array<std::string, 5> s_levelNames {{
         "TRACE",
         "DEBUG",
         "INFO",
