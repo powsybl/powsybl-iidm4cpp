@@ -21,11 +21,11 @@ public: // Terminal
     double getV() const override;
 
 public:
-    NodeTerminal(MultiStateObject& network, int node);
+    NodeTerminal(MultiStateObject& network, unsigned long node);
 
     virtual ~NodeTerminal() = default;
 
-    int getNode() const;
+    unsigned long getNode() const;
 
     NodeTerminal& setAngle(double angle);
 
@@ -41,7 +41,16 @@ protected: // Stateful
     void reduceStateArraySize(unsigned long number) override;
 
 private:
-    int m_node;
+    NodeTerminal(const NodeTerminal& nodeTerminal) = delete;
+
+    NodeTerminal(NodeTerminal&& nodeTerminal) = delete;
+
+    NodeTerminal& operator=(const NodeTerminal& nodeTerminal) = delete;
+
+    NodeTerminal& operator=(NodeTerminal&& nodeTerminal) = delete;
+
+private:
+    unsigned long m_node;
 
     std::vector<double> m_v;
 

@@ -18,6 +18,18 @@ void ObjectStore::checkId(const std::string& id) {
 }
 
 template <>
+Identifiable& ObjectStore::get(const std::string& id) const {
+    checkId(id);
+
+    const auto& it = m_objectsById.find(id);
+    if (it == m_objectsById.end()) {
+        throw PowsyblException(logging::format("Unable to find to the identifiable '%1%'", id));
+    }
+
+    return *(it->second.get());
+}
+
+template <>
 unsigned long ObjectStore::getObjectCount<Identifiable>() const {
     return m_objectsById.size();
 }

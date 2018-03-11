@@ -18,7 +18,10 @@ namespace powsybl {
 
 namespace iidm {
 
+class BusBreakerView;
+class BusView;
 class Network;
+class NodeBreakerView;
 class Substation;
 class Terminal;
 
@@ -36,6 +39,17 @@ public:
 
     virtual bool disconnect(Terminal& terminal) = 0;
 
+    virtual const BusBreakerView& getBusBreakerView() const = 0;
+
+    virtual BusBreakerView& getBusBreakerView() = 0;
+
+    virtual const BusView& getBusView() const = 0;
+
+    virtual BusView& getBusView() = 0;
+
+    template <typename T>
+    T& getConnectable(const std::string& id);
+
     double getHighVoltageLimit() const;
 
     double getLowVoltageLimit() const;
@@ -43,6 +57,10 @@ public:
     const Network& getNetwork() const;
 
     Network& getNetwork();
+
+    virtual const NodeBreakerView& getNodeBreakerView() const = 0;
+
+    virtual NodeBreakerView& getNodeBreakerView() = 0;
 
     double getNominalVoltage() const;
 
@@ -82,5 +100,7 @@ private:
 }
 
 }
+
+#include <powsybl/iidm/VoltageLevel.hxx>
 
 #endif  // POWSYBL_IIDM_VOLTAGELEVEL_HPP

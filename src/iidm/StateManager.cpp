@@ -101,6 +101,22 @@ iterator_traits<Stateful>::iterator StateManager::end() {
     return m_network.get().end<Stateful>();
 }
 
+void StateManager::forEachState(const std::function<void()>& function) {
+    std::lock_guard<std::mutex> lock(m_stateMutex);
+
+    unsigned long stateIndex = m_stateContext->getStateIndex();
+    try {
+        for (const auto& it : m_statesById) {
+            m_stateContext->setStateIndex(it.second);
+            function();
+        }
+        m_stateContext->setStateIndex(stateIndex);
+    } catch (...) {
+        m_stateContext->setStateIndex(stateIndex);
+        throw;
+    }
+}
+
 const std::string& StateManager::getInitialStateId() {
     static std::string s_initialStateId("InitialState");
 

@@ -59,10 +59,17 @@ public:
 
 public:
     /**
+     * Add a logger corresponding to the name of type T
+     *
+     * @param logger the logger
+     */
+    template <typename T>
+    void addLogger(std::unique_ptr<Logger>&& logger);
+
+    /**
      * Add a logger corresponding to the specified name
      *
      * @param name the name corresponding to the logger
-     *
      * @param logger the logger
      */
     void addLogger(const std::string& name, std::unique_ptr<Logger>&& logger);

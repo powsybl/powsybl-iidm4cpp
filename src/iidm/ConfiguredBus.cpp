@@ -13,6 +13,7 @@
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
+#include "BusBreakerVoltageLevel.hpp"
 #include "ValidationUtils.hpp"
 
 namespace powsybl {

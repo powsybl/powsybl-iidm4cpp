@@ -47,6 +47,15 @@ protected: // Stateful
     void reduceStateArraySize(unsigned long number) override;
 
 private:
+    BusTerminal(const BusTerminal& nodeTerminal) = delete;
+
+    BusTerminal(BusTerminal&& nodeTerminal) = delete;
+
+    BusTerminal& operator=(const BusTerminal& nodeTerminal) = delete;
+
+    BusTerminal& operator=(BusTerminal&& nodeTerminal) = delete;
+
+private:
     std::vector<bool> m_connected;
 
     std::vector<std::string> m_connectableBusId;

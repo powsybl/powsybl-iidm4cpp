@@ -10,13 +10,20 @@
 
 #include <powsybl/logging/LoggerFactory.hpp>
 
+#include <powsybl/stdcxx/demangle.hpp>
+
 namespace powsybl {
 
 namespace logging {
 
 template <typename T>
+void LoggerFactory::addLogger(std::unique_ptr<Logger>&& logger) {
+    addLogger(stdcxx::simpleClassName<T>(), std::move(logger));
+}
+
+template <typename T>
 Logger& LoggerFactory::getLogger() {
-    return getLogger(typeid(T).name());
+    return getLogger(stdcxx::simpleClassName<T>());
 }
 
 }

@@ -18,6 +18,8 @@ namespace powsybl {
 
 namespace iidm {
 
+class BusbarSection;
+class Connectable;
 class Load;
 class Substation;
 class VoltageLevel;
@@ -54,6 +56,12 @@ public:
     template <typename T> ObjectStore::iterator<T> end() {
         return m_objectStore.end<T>();
     }
+
+    BusbarSection& getBusbarSection(const std::string& id) const;
+
+    unsigned long getBusbarSectionCount() const;
+
+    Connectable& getConnectable(const std::string& id) const;
 
     int getForecastDistance() const;
 

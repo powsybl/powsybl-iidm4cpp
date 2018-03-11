@@ -1,0 +1,55 @@
+/**
+ * Copyright (c) 2018, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#ifndef POWSYBL_IIDM_BUSBREAKERVIEW_HPP
+#define POWSYBL_IIDM_BUSBREAKERVIEW_HPP
+
+#include <string>
+
+#include <powsybl/iidm/BusAdder.hpp>
+#include <powsybl/iidm/SwitchAdder.hpp>
+
+namespace powsybl {
+
+namespace iidm {
+
+class Bus;
+class Switch;
+
+class BusBreakerView {
+public:
+    typedef bus_breaker_view::SwitchAdder SwitchAdder;
+
+public:
+    virtual ~BusBreakerView() = default;
+
+    virtual Bus& getBus(const std::string& busId) const = 0;
+
+    virtual Bus& getBus1(const std::string& switchId) const = 0;
+
+    virtual Bus& getBus2(const std::string& switchId) const = 0;
+
+    virtual Switch& getSwitch(const std::string& switchId) const = 0;
+
+    virtual BusAdder newBus() = 0;
+
+    virtual SwitchAdder newSwitch() = 0;
+
+    virtual void removeAllBuses() = 0;
+
+    virtual void removeAllSwitches() = 0;
+
+    virtual void removeBus(const std::string& busId) = 0;
+
+    virtual void removeSwitch(const std::string& switchId) = 0;
+};
+
+}
+
+}
+
+#endif  // POWSYBL_IIDM_BUSBREAKERVIEW_HPP

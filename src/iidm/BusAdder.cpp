@@ -5,20 +5,24 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "BusAdder.hpp"
+#include <powsybl/iidm/BusAdder.hpp>
+
+#include "BusBreakerVoltageLevel.hpp"
 #include "ConfiguredBus.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-BusAdder::BusAdder(BusBreakerVoltageLevel& voltageLevel) :
+BusAdder::BusAdder(VoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
 Bus& BusAdder::add() {
-    std::unique_ptr<ConfiguredBus> ptrBus = stdcxx::make_unique<ConfiguredBus>(m_id, m_voltageLevel);
-    return m_voltageLevel.addBus(std::move(ptrBus));
+    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_voltageLevel);
+
+    std::unique_ptr<ConfiguredBus> ptrBus = stdcxx::make_unique<ConfiguredBus>(m_id, voltageLevel);
+    return voltageLevel.addBus(std::move(ptrBus));
 }
 
 Network& BusAdder::getNetwork() {

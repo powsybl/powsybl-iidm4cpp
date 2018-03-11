@@ -7,8 +7,10 @@
 
 #include "MergedBus.hpp"
 
+#include <cassert>
 #include <cmath>
 
+#include <powsybl/PowsyblException.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
