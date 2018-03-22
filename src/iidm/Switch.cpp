@@ -31,7 +31,7 @@ void Switch::allocateStateArrayElement(const std::set<unsigned long>& indexes, u
 }
 
 void Switch::deleteStateArrayElement(unsigned long /*index*/) {
-
+    // Nothing to do
 }
 
 void Switch::extendStateArraySize(unsigned long /*initStateArraySize*/, unsigned long number, unsigned long sourceIndex) {

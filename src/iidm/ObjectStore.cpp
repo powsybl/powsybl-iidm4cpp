@@ -26,11 +26,13 @@ void ObjectStore::remove(Identifiable& identifiable) {
     const auto& it = m_objectsById.find(identifiable.getId());
     if (it != m_objectsById.end()) {
         // assert that the two instances are identical (not namesake)
+        // TODO: use areSame utility function, and merge with the enclosing test
         if (it->second.get() == &identifiable) {
             Identifiables& identifiables = m_objectsByType.find(typeid(identifiable))->second;
 
             const auto& itIdentifiable = std::find_if(identifiables.begin(), identifiables.end(), [&](std::reference_wrapper<Identifiable>& item)
             {
+                // TODO: use areSame utility function
                 return std::addressof(identifiable) == std::addressof(item.get());
             });
 

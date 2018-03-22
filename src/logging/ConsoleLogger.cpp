@@ -18,8 +18,13 @@ namespace logging {
 std::string now() {
     const std::time_t& now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
+    struct std::tm result = {0};
+    if (localtime_r(&now, &result) == nullptr) {
+        // TODO: throw an AssertionError
+    }
+
     std::ostringstream oss;
-    oss << std::put_time(std::localtime(&now), "%Y-%m-%d %X");
+    oss << std::put_time(&result, "%Y-%m-%d %X");
 
     return oss.str();
 }

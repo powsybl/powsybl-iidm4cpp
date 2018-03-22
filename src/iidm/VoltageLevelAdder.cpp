@@ -37,6 +37,10 @@ VoltageLevel& VoltageLevelAdder::add() {
         case TopologyKind::BUS_BREAKER:
             ptrVoltageLevel = stdcxx::make_unique<BusBreakerVoltageLevel>(m_id, m_name, m_substation, *m_nominalVoltage, *m_lowVoltageLimit, *m_highVoltageLimit);
             break;
+
+        default:
+            // TODO: throw an AssertionError
+            break;
     }
 
     VoltageLevel& voltageLevel = getNetwork().checkAndAdd<VoltageLevel>(std::move(ptrVoltageLevel));
