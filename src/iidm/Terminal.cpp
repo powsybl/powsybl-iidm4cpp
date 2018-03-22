@@ -38,7 +38,7 @@ bool Terminal::connect() {
 }
 
 void Terminal::deleteStateArrayElement(unsigned long /*index*/) {
-
+    // Nothing to do
 }
 
 bool Terminal::disconnect() {
