@@ -20,7 +20,7 @@ class ObjectStore {
 public:
     ObjectStore() = default;
 
-    ObjectStore(ObjectStore&& objectStore) = default;
+    ObjectStore(ObjectStore&&) = default;
 
     template <typename T> using const_iterator = typename iterator_traits<T>::const_iterator;
 

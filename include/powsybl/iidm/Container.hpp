@@ -30,7 +30,7 @@ public:
 protected:
     Container(const std::string& id, const std::string& name, const Container::Type& type);
 
-    Container(Container&& container) = default;
+    Container(Container&&) = default;
 
 private:
     Container::Type m_type;
