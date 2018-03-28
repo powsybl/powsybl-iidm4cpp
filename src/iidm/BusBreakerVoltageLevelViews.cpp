@@ -19,19 +19,19 @@ BusBreakerViewImpl::BusBreakerViewImpl(BusBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-Bus& BusBreakerViewImpl::getBus(const std::string& busId) const {
+Bus& BusBreakerViewImpl::getBus(const std::string& /*busId*/) const {
     throw AssertionError("TODO");
 }
 
-Bus& BusBreakerViewImpl::getBus1(const std::string& switchId) const {
+Bus& BusBreakerViewImpl::getBus1(const std::string& /*switchId*/) const {
     throw AssertionError("TODO");
 }
 
-Bus& BusBreakerViewImpl::getBus2(const std::string& switchId) const {
+Bus& BusBreakerViewImpl::getBus2(const std::string& /*switchId*/) const {
     throw AssertionError("TODO");
 }
 
-Switch& BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
+Switch& BusBreakerViewImpl::getSwitch(const std::string& /*switchId*/) const {
     throw AssertionError("TODO");
 }
 
@@ -51,11 +51,11 @@ void BusBreakerViewImpl::removeAllSwitches() {
     throw AssertionError("TODO");
 }
 
-void BusBreakerViewImpl::removeBus(const std::string& busId) {
+void BusBreakerViewImpl::removeBus(const std::string& /*busId*/) {
     throw AssertionError("TODO");
 }
 
-void BusBreakerViewImpl::removeSwitch(const std::string& switchId) {
+void BusBreakerViewImpl::removeSwitch(const std::string& /*switchId*/) {
     throw AssertionError("TODO");
 }
 
@@ -63,7 +63,7 @@ BusViewImpl::BusViewImpl(BusBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-Bus& BusViewImpl::getBus(const std::string& busId) const {
+Bus& BusViewImpl::getBus(const std::string& /*busId*/) const {
     throw AssertionError("TODO");
 }
 
