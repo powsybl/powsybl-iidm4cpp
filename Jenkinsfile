@@ -7,7 +7,7 @@
 
 def maintainers = "mathieu.bague@rte-france.com"
 
-node('convergence-centos7') {
+node('power-system-tools') {
 
     try {
         stage('Cloning git repository') {
@@ -19,8 +19,8 @@ node('convergence-centos7') {
 
             dir('build') {
                 sh """
-                cmake -DCMAKE_BUILD_TYPE=Debug -DBOOST_ROOT=/users/gsr/boost-1.59.0/4.8.2 -DGTEST_ROOT=/users/gsr/googletest-master/4.8.2 -DCODE_COVERAGE=TRUE ..
-                make -j8
+                cmake -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=TRUE ..
+                make -j4
                 """
             }
         }
@@ -33,7 +33,6 @@ node('convergence-centos7') {
 
                 # Clean non relevant files
                 rm -f coverage/reports/#usr#*
-                rm -f coverage/reports/#users#gsr#*
                 """
             }
 
