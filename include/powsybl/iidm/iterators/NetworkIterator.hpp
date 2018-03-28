@@ -22,13 +22,13 @@ class NetworkIterator {
 public:
     NetworkIterator() = default;
 
-    NetworkIterator(const NetworkIterator& it) = default;
+    NetworkIterator(const NetworkIterator&) = default;
 
     NetworkIterator(ObjectStore& objectStore);
 
     NetworkIterator(const ObjectStore& objectStore);
 
-    NetworkIterator& operator=(const NetworkIterator& it) = default;
+    NetworkIterator& operator=(const NetworkIterator&) = default;
 
     T& operator*() const;
 

@@ -8,8 +8,9 @@
 #include "powsybl/logging/ConsoleLogger.hpp"
 
 #include <chrono>
-#include <iomanip>
 #include <iostream>
+
+#include <powsybl/stdcxx/put_time.hpp>
 
 namespace powsybl {
 
@@ -18,13 +19,13 @@ namespace logging {
 std::string now() {
     const std::time_t& now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
-    struct std::tm result = {0};
+    struct std::tm result = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     if (localtime_r(&now, &result) == nullptr) {
         // TODO: throw an AssertionError
     }
 
     std::ostringstream oss;
-    oss << std::put_time(&result, "%Y-%m-%d %X");
+    oss << stdcxx::put_time(&result, "%Y-%m-%d %X");
 
     return oss.str();
 }

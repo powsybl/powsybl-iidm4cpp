@@ -27,7 +27,7 @@ template <typename Arg, typename... Args>
 inline void format(boost::format& fmt, const Arg& arg, const Args&... args) {
     fmt % arg;
     format(fmt, args...);
-};
+}
 
 template <typename... Args>
 std::string format(const std::string& message, const Args&... args) {

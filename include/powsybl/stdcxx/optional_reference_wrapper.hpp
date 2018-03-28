@@ -38,18 +38,18 @@ public:
         return m_pointer != nullptr;
     }
 
-    operator T&() const noexcept {
+    operator T&() const {
         return get();
     }
 
-    T& get() const noexcept {
+    T& get() const {
         if (m_pointer == nullptr) {
             throw std::runtime_error("m_pointer is null");
         }
         return *m_pointer;
     }
 
-    void reset() noexcept  {
+    void reset() noexcept {
         m_pointer = nullptr;
     }
 

@@ -28,7 +28,7 @@ public:
     const std::string& getName() const;
 
 protected:
-    Identifiable(Identifiable&& identifiable) = default;
+    Identifiable(Identifiable&&) = default;
 
     Identifiable(const std::string& id, const std::string& name);
 

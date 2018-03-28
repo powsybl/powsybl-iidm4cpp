@@ -26,13 +26,13 @@ class NetworkFastIterator {
 public:
     NetworkFastIterator() = default;
 
-    NetworkFastIterator(const NetworkFastIterator& it) = default;
+    NetworkFastIterator(const NetworkFastIterator&) = default;
 
     NetworkFastIterator(ObjectStore& objectStore);
 
     NetworkFastIterator(const ObjectStore& objectStore);
 
-    NetworkFastIterator& operator=(const NetworkFastIterator& it) = default;
+    NetworkFastIterator& operator=(const NetworkFastIterator&) = default;
 
     Base& operator*() const;
 

@@ -8,10 +8,18 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project(powsybl-iidm)
 
-set(CMAKE_CXX_STANDARD 11)
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+if (${CMAKE_VERSION} VERSION_LESS "3.1.0")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
+else()
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 endif()
+
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pedantic")
+endif ()
 
 find_package(GTest)
 find_package(Boost)
@@ -19,6 +27,15 @@ find_package(Boost)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(${GTEST_INCLUDE_DIRS})
+
+set(CODE_COVERAGE FALSE CACHE BOOL "Enable code coverage")
+if (CODE_COVERAGE)
+    include(CodeCoverage)
+    code_coverage(NAME code-coverage
+        OUTPUT_DIR coverage
+        EXCLUDE_DIRS test
+        DEPENDENCIES tests)
+endif ()
 
 add_subdirectory(src)
 add_subdirectory(test)

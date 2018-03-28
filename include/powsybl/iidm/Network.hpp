@@ -31,7 +31,7 @@ public: // MultiStateObject
 public:
     Network(const std::string& id, const std::string& sourceFormat);
 
-    Network(Network&& network) = default;
+    Network(Network&&) = default;
 
     virtual ~Network() = default;
 

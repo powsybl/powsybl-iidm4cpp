@@ -5,12 +5,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-sonar.projectKey=powsybl-iidm
-sonar.sourceEncoding=UTF8
+set(UNIT_TEST_SOURCES
+    UndirectedGraphTest.cpp
+    )
 
-sonar.cxx.includedirectories=include
-sonar.sources=src,include
-sonar.tests=test
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-sonar.cfamily.build-wrapper-output.bypass=true
-sonar.cfamily.gcov.reportsPath=build/coverage/reports
+add_executable(unit-tests-math ${UNIT_TEST_SOURCES})
+target_link_libraries(unit-tests-math pthread ${GTEST_BOTH_LIBRARIES} iidm)
