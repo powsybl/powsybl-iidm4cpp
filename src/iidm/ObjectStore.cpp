@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/ObjectStore.hpp>
 
+#include <powsybl/stdcxx/memory.hpp>
+
 #include "ValidationUtils.hpp"
 
 namespace powsybl {
@@ -36,22 +38,19 @@ unsigned long ObjectStore::getObjectCount<Identifiable>() const {
 
 void ObjectStore::remove(Identifiable& identifiable) {
     const auto& it = m_objectsById.find(identifiable.getId());
-    if (it != m_objectsById.end()) {
-        // assert that the two instances are identical (not namesake)
-        // TODO: use areSame utility function, and merge with the enclosing test
-        if (it->second.get() == &identifiable) {
-            Identifiables& identifiables = m_objectsByType.find(typeid(identifiable))->second;
 
-            const auto& itIdentifiable = std::find_if(identifiables.begin(), identifiables.end(), [&](std::reference_wrapper<Identifiable>& item)
-            {
-                // TODO: use areSame utility function
-                return std::addressof(identifiable) == std::addressof(item.get());
-            });
+    // assert that the two instances are identical (not namesake)
+    if ((it != m_objectsById.end()) && stdcxx::areSame(*it->second, identifiable)) {
+        Identifiables& identifiables = m_objectsByType.find(typeid(identifiable))->second;
 
-            if (itIdentifiable != identifiables.end()) {
-                identifiables.erase(itIdentifiable);
-                m_objectsById.erase(identifiable.getId());
-            }
+        const auto& itIdentifiable = std::find_if(identifiables.begin(), identifiables.end(), [&](std::reference_wrapper<Identifiable>& item)
+        {
+            return stdcxx::areSame(identifiable, item.get());
+        });
+
+        if (itIdentifiable != identifiables.end()) {
+            identifiables.erase(itIdentifiable);
+            m_objectsById.erase(identifiable.getId());
         }
     }
 }

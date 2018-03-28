@@ -12,6 +12,7 @@
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/memory.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"
 #include "ValidationUtils.hpp"
@@ -91,7 +92,7 @@ void ConfiguredBus::removeTerminal(BusTerminal& terminal) {
     auto& terminals = m_terminals[m_network.get().getStateIndex()];
     const auto& it = std::find_if(terminals.begin(), terminals.end(), [&](std::reference_wrapper<BusTerminal>& item)
     {
-        return std::addressof(terminal) == std::addressof(item.get());
+        return stdcxx::areSame(terminal, item.get());
     });
 
     if (it != terminals.end()) {

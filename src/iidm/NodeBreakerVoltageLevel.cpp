@@ -8,6 +8,7 @@
 #include "NodeBreakerVoltageLevel.hpp"
 
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {
 
@@ -89,7 +90,7 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
 
     unsigned long node = nodeTerminal.getNode();
     assert(node < m_graph.getVertexCount());
-    assert(std::addressof(m_graph.getVertexObject(node).get()) == std::addressof(nodeTerminal));
+    assert(stdcxx::areSame(m_graph.getVertexObject(node).get(), nodeTerminal));
 
     // remove the link terminal <-> graph vertex
     m_graph.setVertexObject(node, stdcxx::Optional<NodeTerminal>());

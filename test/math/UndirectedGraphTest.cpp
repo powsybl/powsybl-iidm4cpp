@@ -11,6 +11,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/math/UndirectedGraph.hpp>
+#include <powsybl/stdcxx/memory.hpp>
 
 #include "AssertionUtils.hpp"
 
@@ -80,11 +81,11 @@ TEST(UndirectedGraph, getEdgeObject) {
     graph.addEdge(0, 1, stdcxx::optref(expected));
 
     const stdcxx::Optional<E>& edge = graph.getEdgeObject(0);
-    ASSERT_EQ(std::addressof(expected), std::addressof(edge.get()));
+    ASSERT_TRUE(stdcxx::areSame(expected, edge.get()));
 
     const std::vector<stdcxx::Optional<E> >& objects = graph.getEdgeObjects();
     ASSERT_EQ(1ul, objects.size());
-    ASSERT_EQ(std::addressof(expected), std::addressof(objects.at(0).get()));
+    ASSERT_TRUE(stdcxx::areSame(expected, objects.at(0).get()));
 }
 
 TEST(UndirectedGraph, getEdges) {
@@ -141,11 +142,11 @@ TEST(UndirectedGraph, getVertexObject) {
     ASSERT_TRUE(!graph.getVertexObject(0));
 
     graph.setVertexObject(0, stdcxx::optref(expected));
-    ASSERT_EQ(std::addressof(expected), std::addressof(graph.getVertexObject(0).get()));
+    ASSERT_TRUE(stdcxx::areSame(expected, graph.getVertexObject(0).get()));
 
     const std::vector<stdcxx::Optional<V> >& objects = graph.getVertexObjects();
     ASSERT_EQ(1ul, objects.size());
-    ASSERT_EQ(std::addressof(expected), std::addressof(objects.at(0).get()));
+    ASSERT_TRUE(stdcxx::areSame(expected, objects.at(0).get()));
 }
 
 TEST(UndirectedGraph, findAllPaths) {
@@ -202,7 +203,7 @@ TEST(UndirectedGraph, removeEdge) {
 
     const stdcxx::Optional<E>& edge1 = graph.removeEdge(e1);
     ASSERT_EQ(0ul, graph.getEdgeCount());
-    ASSERT_EQ(std::addressof(expectedEdge1), std::addressof(edge1.get()));
+    ASSERT_TRUE(stdcxx::areSame(expectedEdge1, edge1.get()));
 
     unsigned long e2 = graph.addEdge(0, 1, stdcxx::optref<E>(expectedEdge2));
     unsigned long e3 = graph.addEdge(1, 2, stdcxx::optref<E>(expectedEdge3));
@@ -211,7 +212,7 @@ TEST(UndirectedGraph, removeEdge) {
 
     const stdcxx::Optional<E>& edge2 = graph.removeEdge(e2);
     ASSERT_EQ(1ul, graph.getEdgeCount());
-    ASSERT_EQ(std::addressof(expectedEdge2), std::addressof(edge2.get()));
+    ASSERT_TRUE(stdcxx::areSame(expectedEdge2, edge2.get()));
 
     unsigned long e4 = graph.addEdge(0, 1, stdcxx::optref<E>(expectedEdge4));
     ASSERT_EQ(0ul, e4);
@@ -219,8 +220,8 @@ TEST(UndirectedGraph, removeEdge) {
     const stdcxx::Optional<E>& edge3 = graph.removeEdge(e3);
     const stdcxx::Optional<E>& edge4 = graph.removeEdge(e4);
     ASSERT_EQ(0ul, graph.getEdgeCount());
-    ASSERT_EQ(std::addressof(expectedEdge3), std::addressof(edge3.get()));
-    ASSERT_EQ(std::addressof(expectedEdge4), std::addressof(edge4.get()));
+    ASSERT_TRUE(stdcxx::areSame(expectedEdge3, edge3.get()));
+    ASSERT_TRUE(stdcxx::areSame(expectedEdge4, edge4.get()));
 }
 
 TEST(UndirectedGraph, removeVertex) {
@@ -238,7 +239,7 @@ TEST(UndirectedGraph, removeVertex) {
     graph.removeEdge(e1);
     const stdcxx::Optional<V>& vertex1 = graph.removeVertex(v1);
     ASSERT_EQ(1ul, graph.getVertexCount());
-    ASSERT_EQ(std::addressof(expected), std::addressof(vertex1.get()));
+    ASSERT_TRUE(stdcxx::areSame(expected, vertex1.get()));
 }
 
 TEST(UndirectedGraph, traverse) {

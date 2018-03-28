@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {
 
@@ -29,7 +30,7 @@ TEST(Network, forecastDistance) {
     Network network("id", "test");
 
     EXPECT_THROW(network.setForecastDistance(-1), ValidationException);
-    EXPECT_TRUE(&network == &network.setForecastDistance(1));
+    EXPECT_TRUE(stdcxx::areSame(network, network.setForecastDistance(1)));
     EXPECT_EQ(1, network.getForecastDistance());
 }
 
