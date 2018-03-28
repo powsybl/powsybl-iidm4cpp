@@ -13,15 +13,17 @@
 #include <vector>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/BusTerminal.hpp>
 #include <powsybl/iidm/MultiStateObject.hpp>
 #include <powsybl/iidm/Stateful.hpp>
 
-#include "BusAdder.hpp"
+#include "powsybl/iidm/BusAdder.hpp"
 
 namespace powsybl {
 
 namespace iidm {
+
+class BusBreakerVoltageLevel;
+class BusTerminal;
 
 class ConfiguredBus : public Bus, public Stateful {
 public: // Bus

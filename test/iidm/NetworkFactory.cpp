@@ -7,9 +7,9 @@
 
 #include "NetworkFactory.hpp"
 
+#include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Substation.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
 
 namespace powsybl {
 
@@ -31,6 +31,10 @@ Network createNetwork() {
         .setNominalVoltage(380.0)
         .setLowVoltageLimit(340.0)
         .setHighVoltageLimit(420.0)
+        .add();
+
+    vl1.getBusBreakerView().newBus()
+        .setId("VL1_BUS1")
         .add();
 
     vl1.newLoad()

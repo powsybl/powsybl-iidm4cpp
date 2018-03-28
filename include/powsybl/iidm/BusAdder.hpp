@@ -8,13 +8,15 @@
 #ifndef POWSYBL_IIDM_BUSADDER_HPP
 #define POWSYBL_IIDM_BUSADDER_HPP
 
-#include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/BusBreakerVoltageLevel.hpp>
 #include <powsybl/iidm/IdentifiableAdder.hpp>
 
 namespace powsybl {
 
 namespace iidm {
+
+class Bus;
+class BusBreakerView;
+class VoltageLevel;
 
 class BusAdder : public IdentifiableAdder<BusAdder> {
 public:
@@ -26,13 +28,13 @@ protected: // IdentifiableAdder
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
-private:
-    explicit BusAdder(BusBreakerVoltageLevel& voltageLevel);
+public:
+    explicit BusAdder(VoltageLevel& voltageLevel);
 
-    friend class BusBreakerVoltageLevel;
+    virtual ~BusAdder() = default;
 
 private:
-    BusBreakerVoltageLevel& m_voltageLevel;
+    VoltageLevel& m_voltageLevel;
 };
 
 }

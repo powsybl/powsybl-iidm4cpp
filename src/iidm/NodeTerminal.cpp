@@ -17,7 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-NodeTerminal::NodeTerminal(MultiStateObject& network, int node) :
+NodeTerminal::NodeTerminal(MultiStateObject& network, unsigned long node) :
     Terminal(network),
     m_node(node),
     m_v(network.getStateManager().getStateArraySize(), stdcxx::nan()),
@@ -49,7 +49,7 @@ double NodeTerminal::getAngle() const {
     return m_angle[m_network.get().getStateIndex()];
 }
 
-int NodeTerminal::getNode() const {
+unsigned long NodeTerminal::getNode() const {
     return m_node;
 }
 

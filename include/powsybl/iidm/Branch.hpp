@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_BRANCH_HPP
 #define POWSYBL_IIDM_BRANCH_HPP
 
+#include <ostream>
+
 #include <powsybl/iidm/Connectable.hpp>
 
 namespace powsybl {
@@ -16,11 +18,27 @@ namespace iidm {
 
 class Branch : public Connectable {
 public:
+    enum class Side : unsigned int {
+        ONE,
+        TWO
+    };
+
+public:
     virtual ~Branch() = default;
+
+    Terminal& getTerminal(const Side& side) const;
+
+    Terminal& getTerminal1() const;
+
+    Terminal& getTerminal2() const;
 
 protected:
     Branch(const std::string& id, const std::string& name, const ConnectableType& connectableType);
 };
+
+const std::string& getSideName(const Branch::Side& side);
+
+std::ostream& operator<<(std::ostream& stream, const Branch::Side& side);
 
 }
 

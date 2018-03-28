@@ -12,8 +12,9 @@
 #include <vector>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/NodeBreakerVoltageLevel.hpp>
 #include <powsybl/stdcxx/optional_reference_wrapper.hpp>
+
+#include "NodeBreakerVoltageLevel.hpp"
 
 namespace powsybl {
 

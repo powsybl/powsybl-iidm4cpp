@@ -8,13 +8,21 @@
 #ifndef POWSYBL_IIDM_BUSBREAKERVOLTAGELEVEL_HPP
 #define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVEL_HPP
 
+#include <map>
+#include <string>
+
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/math/UndirectedGraph.hpp>
+#include <powsybl/stdcxx/optional.hpp>
+
+#include "BusBreakerVoltageLevelViews.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
 class Bus;
+class Switch;
 class ConfiguredBus;
 
 class BusBreakerVoltageLevel : public VoltageLevel {
@@ -29,9 +37,17 @@ public: // VoltageLevel
 
     bool disconnect(Terminal& terminal) override;
 
-    void invalidateCache() override;
+    const BusBreakerView& getBusBreakerView() const override;
+
+    BusBreakerView& getBusBreakerView() override;
+
+    const BusView& getBusView() const override;
+
+    BusView& getBusView() override;
 
     const TopologyKind& getTopologyKind() const override;
+
+    void invalidateCache() override;
 
 public:
     BusBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
@@ -40,6 +56,29 @@ public:
     virtual ~BusBreakerVoltageLevel() = default;
 
     Bus& addBus(std::unique_ptr<ConfiguredBus>&& bus);
+
+private: // VoltageLevel
+    const NodeBreakerView& getNodeBreakerView() const override;
+
+    NodeBreakerView& getNodeBreakerView() override;
+
+private:
+    void checkTerminal(Terminal& terminal) const;
+
+    stdcxx::Optional<ConfiguredBus> getBus(const std::string& busId, bool throwException) const;
+
+    stdcxx::optional<unsigned long> getVertex(const std::string& busId, bool throwException) const;
+
+private:
+    typedef math::UndirectedGraph<ConfiguredBus, Switch> Graph;
+
+    Graph m_graph;
+
+    std::map<std::string, unsigned long> m_buses;
+
+    bus_breaker_voltage_level::BusBreakerViewImpl m_busBreakerView;
+
+    bus_breaker_voltage_level::BusViewImpl m_busView;
 };
 
 }

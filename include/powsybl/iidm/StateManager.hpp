@@ -37,6 +37,8 @@ public:
 
     void cloneState(const std::string& sourceStateId, const std::initializer_list<std::string>& targetStateIds);
 
+    void forEachState(const std::function<void()>& function);
+
     unsigned long getStateArraySize() const;
 
     std::set<std::string> getStateIds() const;

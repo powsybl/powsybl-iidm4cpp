@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 
+#include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -23,6 +24,21 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     m_forecastDistance(0),
     m_objectStore(),
     m_stateManager(*this) {
+}
+
+BusbarSection& Network::getBusbarSection(const std::string& id) const {
+    return m_objectStore.get<BusbarSection>(id);
+}
+
+unsigned long Network::getBusbarSectionCount() const {
+    return m_objectStore.getObjectCount<BusbarSection>();
+}
+
+Connectable& Network::getConnectable(const std::string& id) const {
+    Identifiable& identifiable = m_objectStore.get<Identifiable>(id);
+    assert(stdcxx::isInstanceOf<Connectable>(identifiable));
+
+    return dynamic_cast<Connectable&>(identifiable);
 }
 
 int Network::getForecastDistance() const {

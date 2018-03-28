@@ -6,6 +6,7 @@
 #
 
 set(IIDM_SOURCES
+    AssertionError.cpp
     PowsyblException.cpp
 
     iidm/Branch.cpp
@@ -14,6 +15,7 @@ set(IIDM_SOURCES
     iidm/BusbarSection.cpp
     iidm/BusbarSectionAdder.cpp
     iidm/BusBreakerVoltageLevel.cpp
+    iidm/BusBreakerVoltageLevelViews.cpp
     iidm/BusTerminal.cpp
     iidm/CalculatedBus.cpp
     iidm/ConfiguredBus.cpp
@@ -34,6 +36,7 @@ set(IIDM_SOURCES
     iidm/MultipleStateContext.cpp
     iidm/Network.cpp
     iidm/NodeBreakerVoltageLevel.cpp
+    iidm/NodeBreakerVoltageLevelViews.cpp
     iidm/NodeTerminal.cpp
     iidm/ObjectStore.cpp
     iidm/ShuntCompensator.cpp
@@ -42,6 +45,7 @@ set(IIDM_SOURCES
     iidm/Substation.cpp
     iidm/SubstationAdder.cpp
     iidm/Switch.cpp
+    iidm/SwitchAdder.cpp
     iidm/Terminal.cpp
     iidm/ThreeWindingsTransformer.cpp
     iidm/TieLine.cpp

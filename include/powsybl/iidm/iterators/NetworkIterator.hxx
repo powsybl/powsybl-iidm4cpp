@@ -12,15 +12,11 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/ObjectStore.hpp>
+#include <powsybl/stdcxx/instanceof.hpp>
 
 namespace powsybl {
 
 namespace iidm {
-
-template <typename T>
-bool isInstanceOf(const std::unique_ptr<Identifiable>& pointer) {
-    return dynamic_cast<T*>(pointer.get()) != nullptr;
-}
 
 template <typename T, typename Iterator>
 NetworkIterator<T, Iterator>::NetworkIterator(ObjectStore& objectStore) :
@@ -94,7 +90,7 @@ void NetworkIterator<T, Iterator>::advance(bool increment) {
         ++m_current;
     }
 
-    while ((m_current != m_end) && (!isInstanceOf<T>(m_current->second))) {
+    while ((m_current != m_end) && (!stdcxx::isInstanceOf<T>(m_current->second))) {
         ++m_current;
     }
 }
