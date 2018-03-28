@@ -15,7 +15,7 @@ namespace stdcxx {
 template <typename T, typename U>
 inline bool areSame(const T& object1, const U& object2) {
     return std::addressof(object1) == std::addressof(object2);
-};
+}
 
 }
 
