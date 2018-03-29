@@ -43,7 +43,7 @@ public: // BusBreakerView
     void removeSwitch(const std::string& switchId) override;
 
 public:
-    BusBreakerViewImpl(BusBreakerVoltageLevel& voltageLevel);
+    explicit BusBreakerViewImpl(BusBreakerVoltageLevel& voltageLevel);
 
     virtual ~BusBreakerViewImpl() = default;
 
@@ -56,7 +56,7 @@ public:
     Bus& getBus(const std::string& busId) const override;
 
 public:
-    BusViewImpl(BusBreakerVoltageLevel& voltageLevel);
+    explicit BusViewImpl(BusBreakerVoltageLevel& voltageLevel);
 
     virtual ~BusViewImpl() = default;
 

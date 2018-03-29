@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/memory.hpp>
 
 #include "AssertionUtils.hpp"
 #include "NetworkFactory.hpp"
@@ -74,17 +75,17 @@ TEST(VoltageLevel, integrity) {
     if (std::numeric_limits<double>::has_signaling_NaN) {
         POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(std::numeric_limits<double>::signaling_NaN()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
     }
-    ASSERT_NO_THROW(vl1.setNominalVoltage(100));
+    ASSERT_TRUE(stdcxx::areSame(vl1, vl1.setNominalVoltage(100)));
     ASSERT_EQ(100, vl1.getNominalVoltage());
 
     POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(-10), ValidationException, "Voltage level 'VL1': Low voltage limit is < 0");
     POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(440), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [440, 420]");
-    ASSERT_NO_THROW(vl1.setLowVoltageLimit(360));
+    ASSERT_TRUE(stdcxx::areSame(vl1, vl1.setLowVoltageLimit(360)));
     ASSERT_EQ(360, vl1.getLowVoltageLimit());
 
     POWSYBL_ASSERT_THROW(vl1.setHighVoltageLimit(-10), ValidationException, "Voltage level 'VL1': High voltage limit is < 0");
     POWSYBL_ASSERT_THROW(vl1.setHighVoltageLimit(320), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [360, 320]");
-    ASSERT_NO_THROW(vl1.setHighVoltageLimit(440));
+    ASSERT_TRUE(stdcxx::areSame(vl1, vl1.setHighVoltageLimit(440)));
     ASSERT_EQ(440, vl1.getHighVoltageLimit());
 }
 

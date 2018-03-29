@@ -61,6 +61,7 @@ set(IIDM_SOURCES
     logging/LoggerFactory.cpp
     logging/NoopLogger.cpp
 
-    stdcxx/demangle.cpp)
+    stdcxx/demangle.cpp
+    )
 
 add_library(iidm ${IIDM_SOURCES})

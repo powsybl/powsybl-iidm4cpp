@@ -57,7 +57,7 @@ public: // NodeBreakerView
     void traverse(unsigned long node, const Traverser& traverser) override;
 
 public:
-    NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
+    explicit NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
     virtual ~NodeBreakerViewImpl() = default;
 
@@ -88,7 +88,7 @@ public: // BusBreakerView
     void removeSwitch(const std::string& switchId) override;
 
 public:
-    BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
+    explicit BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
     virtual ~BusBreakerViewImpl() = default;
 
@@ -101,7 +101,7 @@ public:
     Bus& getBus(const std::string& busId) const override;
 
 public:
-    BusViewImpl(NodeBreakerVoltageLevel& voltageLevel);
+    explicit BusViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
     virtual ~BusViewImpl() = default;
 
