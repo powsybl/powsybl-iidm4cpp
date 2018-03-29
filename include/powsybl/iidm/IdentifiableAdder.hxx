@@ -20,6 +20,16 @@ std::string IdentifiableAdder<Adder>::getMessageHeader() const {
 }
 
 template <typename Adder>
+const std::string& IdentifiableAdder<Adder>::getId() const {
+    return m_id;
+}
+
+template <typename Adder>
+const std::string& IdentifiableAdder<Adder>::getName() const {
+    return m_name;
+}
+
+template <typename Adder>
 Adder& IdentifiableAdder<Adder>::setId(const std::string& id) {
     m_id = id;
     return static_cast<Adder&>(*this);

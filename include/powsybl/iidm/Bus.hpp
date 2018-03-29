@@ -35,7 +35,7 @@ public:
     virtual Bus& setV(double v) = 0;
 
 protected:
-    Bus(const std::string& id);
+    explicit Bus(const std::string& id);
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;

@@ -16,11 +16,11 @@ Injection::Injection(const std::string& id, const std::string& name, const Conne
 }
 
 const Terminal& Injection::getTerminal() const {
-    return *m_terminals.at(0);
+    return getTerminal(0);
 }
 
 Terminal& Injection::getTerminal() {
-    return *m_terminals.at(0);
+    return getTerminal(0);
 }
 
 }

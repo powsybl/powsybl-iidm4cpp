@@ -46,7 +46,7 @@ void NodeTerminal::extendStateArraySize(unsigned long initStateArraySize, unsign
 }
 
 double NodeTerminal::getAngle() const {
-    return m_angle[m_network.get().getStateIndex()];
+    return m_angle[getNetwork().getStateIndex()];
 }
 
 unsigned long NodeTerminal::getNode() const {
@@ -54,7 +54,7 @@ unsigned long NodeTerminal::getNode() const {
 }
 
 double NodeTerminal::getV() const {
-    return m_v[m_network.get().getStateIndex()];
+    return m_v[getNetwork().getStateIndex()];
 }
 
 void NodeTerminal::reduceStateArraySize(unsigned long number) {
@@ -66,15 +66,15 @@ void NodeTerminal::reduceStateArraySize(unsigned long number) {
 }
 
 NodeTerminal& NodeTerminal::setAngle(double angle) {
-    m_angle[m_network.get().getStateIndex()] = angle;
+    m_angle[getNetwork().getStateIndex()] = angle;
 
     return *this;
 }
 
 NodeTerminal& NodeTerminal::setV(double v) {
-    checkVoltage(m_connectable.get(), v);
+    checkVoltage(getConnectable(), v);
 
-    m_v[m_network.get().getStateIndex()] = v;
+    m_v[getNetwork().getStateIndex()] = v;
 
     return *this;
 }
@@ -82,4 +82,3 @@ NodeTerminal& NodeTerminal::setV(double v) {
 }
 
 }
-

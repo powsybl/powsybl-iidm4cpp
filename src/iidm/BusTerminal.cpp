@@ -45,7 +45,7 @@ void BusTerminal::extendStateArraySize(unsigned long initStateArraySize, unsigne
 }
 
 const std::string& BusTerminal::getConnectableBusId() const {
-    return m_connectableBusId[m_network.get().getStateIndex()];
+    return m_connectableBusId[getNetwork().getStateIndex()];
 }
 
 double BusTerminal::getAngle() const {
@@ -59,7 +59,7 @@ double BusTerminal::getV() const {
 }
 
 bool BusTerminal::isConnected() const {
-    return m_connected[m_network.get().getStateIndex()];
+    return m_connected[getNetwork().getStateIndex()];
 
 }
 
@@ -73,13 +73,13 @@ void BusTerminal::reduceStateArraySize(unsigned long number) {
 BusTerminal& BusTerminal::setConnectableBusId(const std::string& connectableBusId) {
     checkNotEmpty(connectableBusId, "ConnectableBusId is required");
 
-    m_connectableBusId[m_network.get().getStateIndex()] = connectableBusId;
+    m_connectableBusId[getNetwork().getStateIndex()] = connectableBusId;
 
     return *this;
 }
 
 BusTerminal& BusTerminal::setConnected(bool connected) {
-    m_connected[m_network.get().getStateIndex()] = connected;
+    m_connected[getNetwork().getStateIndex()] = connected;
 
     return *this;
 }

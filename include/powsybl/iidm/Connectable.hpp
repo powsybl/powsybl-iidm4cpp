@@ -50,7 +50,11 @@ protected:
 
     Network& getNetwork();
 
-protected:
+    const Terminal& getTerminal(unsigned long index) const;
+
+    Terminal& getTerminal(unsigned long index);
+
+private:
     ConnectableType m_connectableType;
 
     std::vector<std::unique_ptr<Terminal> > m_terminals;

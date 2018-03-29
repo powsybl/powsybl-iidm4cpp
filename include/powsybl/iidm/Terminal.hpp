@@ -66,9 +66,11 @@ protected: // Stateful
     friend class Connectable;
 
 protected:
-    Terminal(MultiStateObject& network);
+    explicit Terminal(MultiStateObject& network);
 
-protected:
+    const MultiStateObject& getNetwork() const;
+
+private:
     std::reference_wrapper<MultiStateObject> m_network;
 
     stdcxx::Optional<Connectable> m_connectable;

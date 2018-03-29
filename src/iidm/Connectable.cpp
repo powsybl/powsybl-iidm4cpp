@@ -60,6 +60,14 @@ Network& Connectable::getNetwork() {
     return const_cast<Network&>(static_cast<const Connectable*>(this)->getNetwork());
 }
 
+const Terminal& Connectable::getTerminal(unsigned long index) const {
+    return *m_terminals.at(index);
+}
+
+Terminal& Connectable::getTerminal(unsigned long index) {
+    return *m_terminals.at(index);
+}
+
 std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals() const {
     std::vector<std::reference_wrapper<Terminal> > terminals;
 
