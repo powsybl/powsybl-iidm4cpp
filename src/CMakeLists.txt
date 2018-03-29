@@ -40,6 +40,7 @@ set(IIDM_SOURCES
     iidm/NodeTerminal.cpp
     iidm/ObjectStore.cpp
     iidm/ShuntCompensator.cpp
+    iidm/StateContextGuard.cpp
     iidm/StateManager.cpp
     iidm/StaticVarCompensator.cpp
     iidm/Substation.cpp

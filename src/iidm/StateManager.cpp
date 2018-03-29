@@ -11,6 +11,7 @@
 
 #include <powsybl/iidm/MultipleStateContext.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/StateContextGuard.hpp>
 #include <powsybl/iidm/Stateful.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
@@ -104,16 +105,11 @@ iterator_traits<Stateful>::iterator StateManager::end() {
 void StateManager::forEachState(const std::function<void()>& function) {
     std::lock_guard<std::mutex> lock(m_stateMutex);
 
-    unsigned long stateIndex = m_stateContext->getStateIndex();
-    try {
-        for (const auto& it : m_statesById) {
-            m_stateContext->setStateIndex(it.second);
-            function();
-        }
-        m_stateContext->setStateIndex(stateIndex);
-    } catch (...) {
-        m_stateContext->setStateIndex(stateIndex);
-        throw;
+    StateContextGuard context(*m_stateContext);
+
+    for (const auto& it : m_statesById) {
+        m_stateContext->setStateIndex(it.second);
+        function();
     }
 }
 
