@@ -33,12 +33,16 @@ public:
     Adder& setName(const std::string& name);
 
 protected:
+    const std::string& getId() const;
+
+    const std::string& getName() const;
+
     virtual Network& getNetwork() = 0;
 
 private:
     virtual const std::string& getTypeDescription() const = 0;
 
-protected:
+private:
     std::string m_id;
 
     std::string m_name;

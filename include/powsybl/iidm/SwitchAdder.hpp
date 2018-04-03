@@ -35,12 +35,12 @@ protected: // IdentifiableAdder
     virtual Network& getNetwork() override;
 
 protected:
-    AbstractSwitchAdder(VoltageLevel& voltageLevel);
+    explicit AbstractSwitchAdder(VoltageLevel& voltageLevel);
 
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
-protected:
+private:
     VoltageLevel& m_voltageLevel;
 
     bool m_open;
@@ -55,7 +55,7 @@ public: // AbstractSwitchAdder
     Switch& add() override;
 
 public:
-    SwitchAdder(VoltageLevel& voltageLevel);
+    explicit SwitchAdder(VoltageLevel& voltageLevel);
 
     virtual ~SwitchAdder() = default;
 
@@ -86,7 +86,7 @@ public: // AbstractSwitchAdder
     Switch& add() override;
 
 public:
-    SwitchAdder(VoltageLevel& voltageLevel);
+    explicit SwitchAdder(VoltageLevel& voltageLevel);
 
     virtual ~SwitchAdder() = default;
 

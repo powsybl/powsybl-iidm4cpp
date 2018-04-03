@@ -62,6 +62,10 @@ double Terminal::getI() const {
     }
 }
 
+const MultiStateObject& Terminal::getNetwork() const {
+    return m_network.get();
+}
+
 double Terminal::getP() const {
     return m_p.at(m_network.get().getStateIndex());
 }

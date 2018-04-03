@@ -17,7 +17,7 @@ namespace iidm {
 
 class MultipleStateContext : public StateContext {
 public:
-    MultipleStateContext(unsigned long index);
+    explicit MultipleStateContext(unsigned long index);
 
     virtual ~MultipleStateContext() = default;
 

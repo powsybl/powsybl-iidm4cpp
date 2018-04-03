@@ -25,6 +25,9 @@ public:
 
     Terminal& getTerminal();
 
+protected: // Connectable
+    using Connectable::getTerminal;
+
 protected:
     Injection(const std::string& id, const std::string& name, const ConnectableType& connectableType);
 };

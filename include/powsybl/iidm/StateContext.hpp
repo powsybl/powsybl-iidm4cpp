@@ -26,6 +26,8 @@ protected:
     virtual void setStateIndex(unsigned long index) = 0;
 
 private:
+    friend class StateContextGuard;
+
     friend class StateManager;
 };
 
