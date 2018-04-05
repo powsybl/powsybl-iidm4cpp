@@ -29,7 +29,7 @@ std::string simpleClassName(const char* className);
 
 template <typename T>
 std::string simpleClassName() {
-    return typeid(T).name();
+    return simpleClassName(typeid(T).name());
 }
 
 template <typename T>

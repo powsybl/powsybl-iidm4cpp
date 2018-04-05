@@ -14,7 +14,7 @@ namespace powsybl {
 namespace logging {
 
 void LoggerFactory::addLogger(const std::string& name, std::unique_ptr<Logger>&& logger) {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::recursive_mutex> lock(m_mutex);
     m_loggers.insert(std::make_pair(name, std::move(logger)));
 }
 
@@ -31,17 +31,18 @@ Logger& LoggerFactory::getLogger(const std::string& name) {
 Logger& LoggerFactory::getLoggerByName(const std::string& name) const {
     static NoopLogger s_defaultLogger;
 
-    std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::recursive_mutex> lock(m_mutex);
     const auto& it = m_loggers.find(name);
     if (it != m_loggers.end()) {
         return *(it->second);
+    } else {
+        size_t pos = name.rfind("::");
+        if (pos != std::string::npos) {
+            return getLoggerByName(name.substr(0, pos));
+        }
     }
 
     return s_defaultLogger;
-}
-
-Logger& LoggerFactory::getLogger(const std::type_info& type) {
-    return getLogger(type.name());
 }
 
 }
