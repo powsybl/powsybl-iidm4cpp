@@ -18,12 +18,12 @@ namespace logging {
 
 template <typename T>
 void LoggerFactory::addLogger(std::unique_ptr<Logger>&& logger) {
-    addLogger(stdcxx::simpleClassName<T>(), std::move(logger));
+    addLogger(stdcxx::demangle<T>(), std::move(logger));
 }
 
 template <typename T>
 Logger& LoggerFactory::getLogger() {
-    return getLogger(stdcxx::simpleClassName<T>());
+    return getLogger(stdcxx::demangle<T>());
 }
 
 }

@@ -48,15 +48,6 @@ public:
      */
     static Logger& getLogger(const std::string& name);
 
-    /**
-     * Return the logger corresponding to the name of the specified type
-     *
-     * @param type to use to defined the logger's name
-     *
-     * @return the logger corresponding to the name of the specified type
-     */
-    static Logger& getLogger(const std::type_info& type);
-
 public:
     /**
      * Add a logger corresponding to the name of type T
@@ -82,7 +73,7 @@ private:
     Logger& getLoggerByName(const std::string& name) const;
 
 private:
-    mutable std::mutex m_mutex;
+    mutable std::recursive_mutex m_mutex;
 
     std::map<std::string, std::unique_ptr<Logger> > m_loggers;
 };
