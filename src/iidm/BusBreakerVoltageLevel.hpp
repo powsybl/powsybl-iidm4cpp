@@ -65,7 +65,7 @@ private: // VoltageLevel
 private:
     void checkTerminal(Terminal& terminal) const;
 
-    stdcxx::Optional<ConfiguredBus> getBus(const std::string& busId, bool throwException) const;
+    stdcxx::Reference<ConfiguredBus> getBus(const std::string& busId, bool throwException) const;
 
     stdcxx::optional<unsigned long> getVertex(const std::string& busId, bool throwException) const;
 

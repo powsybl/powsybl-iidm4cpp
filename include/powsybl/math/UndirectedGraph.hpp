@@ -14,7 +14,7 @@
 #include <vector>
 
 #include <powsybl/math/Traverser.hpp>
-#include <powsybl/stdcxx/optional_reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -25,16 +25,16 @@ class UndirectedGraph {
 public:
     typedef std::vector<unsigned long> Path;
 
-    typedef std::function<bool(const stdcxx::Optional<E>&)> EdgeVisitor;
+    typedef std::function<bool(const stdcxx::Reference<E>&)> EdgeVisitor;
 
-    typedef std::function<bool(const stdcxx::Optional<V>&)> VertexVisitor;
+    typedef std::function<bool(const stdcxx::Reference<V>&)> VertexVisitor;
 
 public:
     UndirectedGraph();
 
     ~UndirectedGraph() = default;
 
-    unsigned long addEdge(unsigned long v1, unsigned long v2, const stdcxx::Optional<E>& object);
+    unsigned long addEdge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object);
 
     unsigned long addVertex();
 
@@ -42,11 +42,11 @@ public:
 
     unsigned long getEdgeCount() const;
 
-    const stdcxx::Optional<E>& getEdgeObject(unsigned long e) const;
+    const stdcxx::Reference<E>& getEdgeObject(unsigned long e) const;
 
-    std::vector<stdcxx::Optional<E> > getEdgeObjects() const;
+    std::vector<stdcxx::Reference<E> > getEdgeObjects() const;
 
-    std::vector<stdcxx::Optional<E> > getEdgeObjects(unsigned long v1, unsigned long v2) const;
+    std::vector<stdcxx::Reference<E> > getEdgeObjects(unsigned long v1, unsigned long v2) const;
 
     std::set<unsigned long> getEdges() const;
 
@@ -58,9 +58,9 @@ public:
 
     unsigned long getVertexCount() const;
 
-    const stdcxx::Optional<V>& getVertexObject(unsigned long v) const;
+    const stdcxx::Reference<V>& getVertexObject(unsigned long v) const;
 
-    std::vector<stdcxx::Optional<V> > getVertexObjects() const;
+    std::vector<stdcxx::Reference<V> > getVertexObjects() const;
 
     std::set<unsigned long> getVertices() const;
 
@@ -68,11 +68,11 @@ public:
 
     void removeAllVertices();
 
-    stdcxx::Optional<E> removeEdge(unsigned long e);
+    stdcxx::Reference<E> removeEdge(unsigned long e);
 
-    stdcxx::Optional<V> removeVertex(unsigned long v);
+    stdcxx::Reference<V> removeVertex(unsigned long v);
 
-    void setVertexObject(unsigned long v, const stdcxx::Optional<V>& object);
+    void setVertexObject(unsigned long v, const stdcxx::Reference<V>& object);
 
     void traverse(unsigned long v, const Traverser& traverser) const;
 
@@ -115,24 +115,24 @@ private:
 template <typename V, typename E>
 class UndirectedGraph<V, E>::Edge {
 public:
-    Edge(unsigned long v1, unsigned long v2, const stdcxx::Optional<E>& object);
+    Edge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object);
 
     ~Edge() = default;
 
-    const stdcxx::Optional<E>& getObject() const;
+    const stdcxx::Reference<E>& getObject() const;
 
     unsigned long getVertex1() const;
 
     unsigned long getVertex2() const;
 
-    void setObject(const stdcxx::Optional<E>& object);
+    void setObject(const stdcxx::Reference<E>& object);
 
 private:
     unsigned long m_vertex1;
 
     unsigned long m_vertex2;
 
-    stdcxx::Optional<E> m_object;
+    stdcxx::Reference<E> m_object;
 };
 
 template <typename V, typename E>
@@ -142,12 +142,12 @@ public:
 
     ~Vertex() = default;
 
-    const stdcxx::Optional<V>& getObject() const;
+    const stdcxx::Reference<V>& getObject() const;
 
-    void setObject(const stdcxx::Optional<V>& object);
+    void setObject(const stdcxx::Reference<V>& object);
 
 private:
-    stdcxx::Optional<V> m_object;
+    stdcxx::Reference<V> m_object;
 };
 
 }

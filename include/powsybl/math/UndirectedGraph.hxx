@@ -38,7 +38,7 @@ void UndirectedGraph<V, E>::checkVertex(unsigned long v) const {
 }
 
 template <typename V, typename E>
-unsigned long UndirectedGraph<V, E>::addEdge(unsigned long v1, unsigned long v2, const stdcxx::Optional<E>& object) {
+unsigned long UndirectedGraph<V, E>::addEdge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object) {
     checkVertex(v1);
     checkVertex(v2);
 
@@ -181,15 +181,15 @@ unsigned long UndirectedGraph<V, E>::getEdgeCount() const {
 }
 
 template <typename V, typename E>
-const stdcxx::Optional<E>& UndirectedGraph<V, E>::getEdgeObject(unsigned long e) const {
+const stdcxx::Reference<E>& UndirectedGraph<V, E>::getEdgeObject(unsigned long e) const {
     checkEdge(e);
 
     return m_edges[e]->getObject();
 }
 
 template <typename V, typename E>
-std::vector<stdcxx::Optional<E> > UndirectedGraph<V, E>::getEdgeObjects() const {
-    std::vector<stdcxx::Optional<E> > objects;
+std::vector<stdcxx::Reference<E> > UndirectedGraph<V, E>::getEdgeObjects() const {
+    std::vector<stdcxx::Reference<E> > objects;
     objects.reserve(m_edges.size());
 
     for (const auto& edge : m_edges) {
@@ -202,11 +202,11 @@ std::vector<stdcxx::Optional<E> > UndirectedGraph<V, E>::getEdgeObjects() const 
 }
 
 template <typename V, typename E>
-std::vector<stdcxx::Optional<E> > UndirectedGraph<V, E>::getEdgeObjects(unsigned long v1, unsigned long v2) const {
+std::vector<stdcxx::Reference<E> > UndirectedGraph<V, E>::getEdgeObjects(unsigned long v1, unsigned long v2) const {
     checkVertex(v1);
     checkVertex(v2);
 
-    std::vector<stdcxx::Optional<E> > objects;
+    std::vector<stdcxx::Reference<E> > objects;
 
     const std::vector<std::vector<unsigned long> >& adjacencyList = getAdjacencyList();
     const std::vector<unsigned long>& adjacentEdges = adjacencyList[v1];
@@ -245,15 +245,15 @@ unsigned long UndirectedGraph<V, E>::getVertexCount() const {
 }
 
 template <typename V, typename E>
-const stdcxx::Optional<V>& UndirectedGraph<V, E>::getVertexObject(unsigned long v) const {
+const stdcxx::Reference<V>& UndirectedGraph<V, E>::getVertexObject(unsigned long v) const {
     checkVertex(v);
 
     return m_vertices[v]->getObject();
 }
 
 template <typename V, typename E>
-std::vector<stdcxx::Optional<V> > UndirectedGraph<V, E>::getVertexObjects() const {
-    std::vector<stdcxx::Optional<V> > objects;
+std::vector<stdcxx::Reference<V> > UndirectedGraph<V, E>::getVertexObjects() const {
+    std::vector<stdcxx::Reference<V> > objects;
 
     for (const auto& vertex : m_vertices) {
         if (vertex) {
@@ -305,10 +305,10 @@ void UndirectedGraph<V, E>::removeAllVertices() {
 }
 
 template <typename V, typename E>
-stdcxx::Optional<E> UndirectedGraph<V, E>::removeEdge(unsigned long e) {
+stdcxx::Reference<E> UndirectedGraph<V, E>::removeEdge(unsigned long e) {
     checkEdge(e);
 
-    stdcxx::Optional<E> object = m_edges[e]->getObject();
+    stdcxx::Reference<E> object = m_edges[e]->getObject();
     if (e == m_edges.size() - 1) {
         m_edges.pop_back();
     } else {
@@ -322,7 +322,7 @@ stdcxx::Optional<E> UndirectedGraph<V, E>::removeEdge(unsigned long e) {
 }
 
 template <typename V, typename E>
-stdcxx::Optional<V> UndirectedGraph<V, E>::removeVertex(unsigned long v) {
+stdcxx::Reference<V> UndirectedGraph<V, E>::removeVertex(unsigned long v) {
     checkVertex(v);
 
     for (const auto& edge : m_edges) {
@@ -332,7 +332,7 @@ stdcxx::Optional<V> UndirectedGraph<V, E>::removeVertex(unsigned long v) {
         }
     }
 
-    stdcxx::Optional<V> object = m_vertices[v]->getObject();
+    stdcxx::Reference<V> object = m_vertices[v]->getObject();
     if (v == m_vertices.size() - 1) {
         m_vertices.pop_back();
     } else {
@@ -346,7 +346,7 @@ stdcxx::Optional<V> UndirectedGraph<V, E>::removeVertex(unsigned long v) {
 }
 
 template <typename V, typename E>
-void UndirectedGraph<V, E>::setVertexObject(unsigned long v, const stdcxx::Optional<V>& object) {
+void UndirectedGraph<V, E>::setVertexObject(unsigned long v, const stdcxx::Reference<V>& object) {
     checkVertex(v);
 
     m_vertices[v]->setObject(object);
@@ -386,14 +386,14 @@ void UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser
 }
 
 template <typename V, typename E>
-UndirectedGraph<V, E>::Edge::Edge(unsigned long v1, unsigned long v2, const stdcxx::Optional<E>& object) :
+UndirectedGraph<V, E>::Edge::Edge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object) :
     m_vertex1(v1),
     m_vertex2(v2),
     m_object(object) {
 }
 
 template <typename V, typename E>
-const stdcxx::Optional<E>& UndirectedGraph<V, E>::Edge::getObject() const {
+const stdcxx::Reference<E>& UndirectedGraph<V, E>::Edge::getObject() const {
     return m_object;
 
 }
@@ -409,7 +409,7 @@ unsigned long UndirectedGraph<V, E>::Edge::getVertex2() const {
 }
 
 template <typename V, typename E>
-void UndirectedGraph<V, E>::Edge::setObject(const stdcxx::Optional<E>& object) {
+void UndirectedGraph<V, E>::Edge::setObject(const stdcxx::Reference<E>& object) {
     m_object = object;
 }
 
@@ -419,12 +419,12 @@ UndirectedGraph<V, E>::Vertex::Vertex() :
 }
 
 template <typename V, typename E>
-const stdcxx::Optional<V>& UndirectedGraph<V, E>::Vertex::getObject() const {
+const stdcxx::Reference<V>& UndirectedGraph<V, E>::Vertex::getObject() const {
     return m_object;
 }
 
 template <typename V, typename E>
-void UndirectedGraph<V, E>::Vertex::setObject(const stdcxx::Optional<V>& object) {
+void UndirectedGraph<V, E>::Vertex::setObject(const stdcxx::Reference<V>& object) {
     m_object = object;
 }
 

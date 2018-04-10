@@ -13,22 +13,26 @@
 namespace stdcxx {
 
 template <typename T>
-class optional_reference_wrapper {
+class reference_wrapper {
 public:
     using type = T;
 
 public:
-    optional_reference_wrapper() noexcept :
+    reference_wrapper() noexcept :
         m_pointer(nullptr) {
     }
 
-    explicit optional_reference_wrapper(T& reference) noexcept :
+    explicit reference_wrapper(T& reference) noexcept :
         m_pointer(std::addressof(reference)) {
     }
 
-    optional_reference_wrapper(const optional_reference_wrapper&) = default;
+    reference_wrapper(const reference_wrapper&) = default;
 
-    optional_reference_wrapper& operator=(const optional_reference_wrapper&) = default;
+    reference_wrapper(reference_wrapper&&) = default;
+
+    reference_wrapper& operator=(const reference_wrapper&) = default;
+
+    reference_wrapper& operator=(reference_wrapper&&) = default;
 
     bool operator!() const noexcept {
         return m_pointer == nullptr;
@@ -54,33 +58,35 @@ public:
     }
 
 private:
-    optional_reference_wrapper(T&& reference) = delete;
+    reference_wrapper(T&& reference) = delete;
 
 private:
     T* m_pointer;
 };
 
+template <typename T> using CReference = reference_wrapper<const T>;
+
+template <typename T> using Reference = reference_wrapper<T>;
+
 template <typename T>
-optional_reference_wrapper<T> optref() {
-    return optional_reference_wrapper<T>();
+Reference<T> ref() {
+    return Reference<T>();
 }
 
 template <typename T>
-optional_reference_wrapper<T> optref(T& reference) {
-    return optional_reference_wrapper<T>(reference);
+Reference<T> ref(T& reference) {
+    return Reference<T>(reference);
 }
 
-template <typename T>
-optional_reference_wrapper<T> optcref() {
-    return optional_reference_wrapper<T>();
+template <typename T, typename U, typename std::enable_if<std::is_base_of<T, U>::value>::type>
+Reference<T> ref(U& reference) {
+    return Reference<T>(dynamic_cast<T&>(reference));
 }
 
-template <typename T>
-optional_reference_wrapper<T> optcref(const T& reference) {
-    return optional_reference_wrapper<T>(reference);
+template <typename T, typename U, typename std::enable_if<std::is_base_of<T, U>::value>::type>
+Reference<T> ref(const Reference<U>& reference) {
+    return static_cast<bool>(reference) ? Reference<T>(dynamic_cast<T&>(reference.get())) : Reference<T>();
 }
-
-template <typename T> using Optional = optional_reference_wrapper<T>;
 
 }
 

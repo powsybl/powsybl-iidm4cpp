@@ -28,17 +28,18 @@ void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
         auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
         unsigned long node = nodeTerminal.getNode();
 
-        if (stdcxx::Optional<NodeTerminal> tmp = m_graph.getVertexObject(node)) {
+        const stdcxx::Reference<NodeTerminal>& tmp = m_graph.getVertexObject(node);
+        if (static_cast<bool>(tmp)) {
             throw ValidationException(terminal.getConnectable(),
                 logging::format("An equipment (%1%) is already connected to the node %2% of voltage level %3%",
                                 tmp.get().getConnectable().getId(), node, getId()));
         }
 
         // create the link terminal <-> voltage level
-        terminal.setVoltageLevel(stdcxx::Optional<VoltageLevel>(*this));
+        terminal.setVoltageLevel(stdcxx::ref<VoltageLevel>(*this));
 
         // create the link terminal <-> graph vertex
-        m_graph.setVertexObject(node, stdcxx::Optional<NodeTerminal>(nodeTerminal));
+        m_graph.setVertexObject(node, stdcxx::ref<NodeTerminal>(nodeTerminal));
     }
 }
 
@@ -62,10 +63,10 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
 
     // find all paths starting from the current terminal to a busbar section that does not contain an open disconnector
     // paths are already sorted
-    Graph::VertexVisitor isBusbarSection = [](const stdcxx::Optional<NodeTerminal>& terminal) {
+    Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& terminal) {
         return static_cast<bool>(terminal) && terminal.get().getConnectable().getConnectableType() == ConnectableType::BUSBAR_SECTION;
     };
-    Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Optional<Switch>& aSwitch) {
+    Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
         return aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
     };
     const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedDisconnector);
@@ -93,10 +94,10 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
     assert(stdcxx::areSame(m_graph.getVertexObject(node).get(), nodeTerminal));
 
     // remove the link terminal <-> graph vertex
-    m_graph.setVertexObject(node, stdcxx::Optional<NodeTerminal>());
+    m_graph.setVertexObject(node, stdcxx::ref<NodeTerminal>());
 
     // remove the link terminal <-> voltage level
-    nodeTerminal.setVoltageLevel(stdcxx::Optional<VoltageLevel>());
+    nodeTerminal.setVoltageLevel(stdcxx::ref<VoltageLevel>());
 }
 
 bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
@@ -105,10 +106,10 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
     unsigned long node = nodeTerminal.getNode();
 
     // find all paths starting from the current terminal to a busbar section that does not contain an open disconnector
-    Graph::VertexVisitor isBusbarSection = [](const stdcxx::Optional<NodeTerminal>& terminal) {
+    Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& terminal) {
         return static_cast<bool>(terminal) && terminal.get().getConnectable().getConnectableType() == ConnectableType::BUSBAR_SECTION;
     };
-    Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Optional<Switch>& aSwitch) {
+    Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
         return aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
     };
     const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedDisconnector);

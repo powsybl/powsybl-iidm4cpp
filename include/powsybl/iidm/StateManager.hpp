@@ -8,7 +8,6 @@
 #ifndef POWSYBL_IIDM_STATEMANAGER_HPP
 #define POWSYBL_IIDM_STATEMANAGER_HPP
 
-#include <functional>
 #include <memory>
 #include <mutex>
 #include <set>
@@ -52,7 +51,7 @@ public:
     void setWorkingState(const std::string& stateId);
 
 private:
-    static constexpr int INITIAL_STATE_INDEX = 0;
+    static constexpr unsigned long INITIAL_STATE_INDEX = 0;
 
 private:
     iterator_traits<Stateful>::iterator begin();
@@ -67,7 +66,7 @@ private: // Non copyable
     StateManager& operator=(const StateManager& stateManager) = delete;
 
 private:
-    std::reference_wrapper<Network> m_network;
+    Network& m_network;
 
     std::unique_ptr<StateContext> m_stateContext;
 

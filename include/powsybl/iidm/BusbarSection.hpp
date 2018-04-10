@@ -8,10 +8,9 @@
 #ifndef POWSYBL_IIDM_BUSBARSECTION_HPP
 #define POWSYBL_IIDM_BUSBARSECTION_HPP
 
-#include <functional>
-
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/MultiStateObject.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -31,7 +30,7 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    std::reference_wrapper<MultiStateObject> m_network;
+    stdcxx::Reference<MultiStateObject> m_network;
 };
 
 }

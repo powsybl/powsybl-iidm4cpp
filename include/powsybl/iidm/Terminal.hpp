@@ -8,12 +8,11 @@
 #ifndef POWSYBL_IIDM_TERMINAL_HPP
 #define POWSYBL_IIDM_TERMINAL_HPP
 
-#include <functional>
 #include <vector>
 
 #include <powsybl/iidm/MultiStateObject.hpp>
 #include <powsybl/iidm/Stateful.hpp>
-#include <powsybl/stdcxx/optional_reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -46,13 +45,13 @@ public:
 
     VoltageLevel& getVoltageLevel();
 
-    Terminal& setConnectable(const stdcxx::Optional<Connectable>& connectable);
+    Terminal& setConnectable(const stdcxx::Reference<Connectable>& connectable);
 
     Terminal& setP(double p);
 
     Terminal& setQ(double q);
 
-    Terminal& setVoltageLevel(const stdcxx::Optional<VoltageLevel>& voltageLevel);
+    Terminal& setVoltageLevel(const stdcxx::Reference<VoltageLevel>& voltageLevel);
 
 protected: // Stateful
     void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -71,11 +70,11 @@ protected:
     const MultiStateObject& getNetwork() const;
 
 private:
-    std::reference_wrapper<MultiStateObject> m_network;
+    stdcxx::Reference<MultiStateObject> m_network;
 
-    stdcxx::Optional<Connectable> m_connectable;
+    stdcxx::Reference<Connectable> m_connectable;
 
-    stdcxx::Optional<VoltageLevel> m_voltageLevel;
+    stdcxx::Reference<VoltageLevel> m_voltageLevel;
 
     std::vector<double> m_p;
 

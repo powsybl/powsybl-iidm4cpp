@@ -61,7 +61,7 @@ TEST(UndirectedGraph, addEdge) {
     unsigned long v2 = graph.addVertex();
     ASSERT_EQ(2ul, graph.getVertexCount());
 
-    unsigned long e = graph.addEdge(v1, v2, stdcxx::optref<E>());
+    unsigned long e = graph.addEdge(v1, v2, stdcxx::ref<E>());
     ASSERT_EQ(1ul, graph.getEdgeCount());
     ASSERT_EQ(0ul, e);
 }
@@ -78,12 +78,12 @@ TEST(UndirectedGraph, getEdgeObject) {
     UndirectedGraph<V, E> graph;
     graph.addVertex();
     graph.addVertex();
-    graph.addEdge(0, 1, stdcxx::optref(expected));
+    graph.addEdge(0, 1, stdcxx::ref(expected));
 
-    const stdcxx::Optional<E>& edge = graph.getEdgeObject(0);
+    const stdcxx::Reference<E>& edge = graph.getEdgeObject(0);
     ASSERT_TRUE(stdcxx::areSame(expected, edge.get()));
 
-    const std::vector<stdcxx::Optional<E> >& objects = graph.getEdgeObjects();
+    const std::vector<stdcxx::Reference<E> >& objects = graph.getEdgeObjects();
     ASSERT_EQ(1ul, objects.size());
     ASSERT_TRUE(stdcxx::areSame(expected, objects.at(0).get()));
 }
@@ -95,8 +95,8 @@ TEST(UndirectedGraph, getEdges) {
     graph.addVertex();
     graph.addVertex();
     graph.addVertex();
-    graph.addEdge(0, 1, stdcxx::optref<E>());
-    graph.addEdge(0, 2, stdcxx::optref<E>());
+    graph.addEdge(0, 1, stdcxx::ref<E>());
+    graph.addEdge(0, 2, stdcxx::ref<E>());
 
     const std::set<unsigned long>& edges = graph.getEdges();
 
@@ -141,10 +141,10 @@ TEST(UndirectedGraph, getVertexObject) {
     ASSERT_FALSE(graph.getVertexObject(0));
     ASSERT_TRUE(!graph.getVertexObject(0));
 
-    graph.setVertexObject(0, stdcxx::optref(expected));
+    graph.setVertexObject(0, stdcxx::ref(expected));
     ASSERT_TRUE(stdcxx::areSame(expected, graph.getVertexObject(0).get()));
 
-    const std::vector<stdcxx::Optional<V> >& objects = graph.getVertexObjects();
+    const std::vector<stdcxx::Reference<V> >& objects = graph.getVertexObjects();
     ASSERT_EQ(1ul, objects.size());
     ASSERT_TRUE(stdcxx::areSame(expected, objects.at(0).get()));
 }
@@ -162,19 +162,19 @@ TEST(UndirectedGraph, findAllPaths) {
     graph.addVertex();
     graph.addVertex();
     graph.addVertex();
-    graph.setVertexObject(5, stdcxx::optref(vertex));
-    graph.addEdge(0, 1, stdcxx::optref<E>());
-    graph.addEdge(0, 2, stdcxx::optref<E>());
-    graph.addEdge(0, 3, stdcxx::optref<E>());
-    graph.addEdge(1, 4, stdcxx::optref<E>());
-    graph.addEdge(2, 4, stdcxx::optref<E>());
-    graph.addEdge(4, 5, stdcxx::optref<E>());
-    graph.addEdge(3, 5, stdcxx::optref<E>());
+    graph.setVertexObject(5, stdcxx::ref(vertex));
+    graph.addEdge(0, 1, stdcxx::ref<E>());
+    graph.addEdge(0, 2, stdcxx::ref<E>());
+    graph.addEdge(0, 3, stdcxx::ref<E>());
+    graph.addEdge(1, 4, stdcxx::ref<E>());
+    graph.addEdge(2, 4, stdcxx::ref<E>());
+    graph.addEdge(4, 5, stdcxx::ref<E>());
+    graph.addEdge(3, 5, stdcxx::ref<E>());
 
-    UndirectedGraph<V, E>::VertexVisitor pathComplete = [](const stdcxx::Optional<V>& vertex) {
+    UndirectedGraph<V, E>::VertexVisitor pathComplete = [](const stdcxx::Reference<V>& vertex) {
         return vertex && vertex.get().getName() == "end";
     };
-    UndirectedGraph<V, E>::EdgeVisitor pathCanceled = [](const stdcxx::Optional<E>& /*edge*/) {
+    UndirectedGraph<V, E>::EdgeVisitor pathCanceled = [](const stdcxx::Reference<E>& /*edge*/) {
         return false;
     };
 
@@ -198,27 +198,27 @@ TEST(UndirectedGraph, removeEdge) {
     graph.addVertex();
     ASSERT_EQ(3ul, graph.getVertexCount());
 
-    unsigned long e1 = graph.addEdge(0, 1, stdcxx::optref<E>(expectedEdge1));
+    unsigned long e1 = graph.addEdge(0, 1, stdcxx::ref<E>(expectedEdge1));
     ASSERT_EQ(1ul, graph.getEdgeCount());
 
-    const stdcxx::Optional<E>& edge1 = graph.removeEdge(e1);
+    const stdcxx::Reference<E>& edge1 = graph.removeEdge(e1);
     ASSERT_EQ(0ul, graph.getEdgeCount());
     ASSERT_TRUE(stdcxx::areSame(expectedEdge1, edge1.get()));
 
-    unsigned long e2 = graph.addEdge(0, 1, stdcxx::optref<E>(expectedEdge2));
-    unsigned long e3 = graph.addEdge(1, 2, stdcxx::optref<E>(expectedEdge3));
+    unsigned long e2 = graph.addEdge(0, 1, stdcxx::ref<E>(expectedEdge2));
+    unsigned long e3 = graph.addEdge(1, 2, stdcxx::ref<E>(expectedEdge3));
     ASSERT_EQ(0ul, e2);
     ASSERT_EQ(1ul, e3);
 
-    const stdcxx::Optional<E>& edge2 = graph.removeEdge(e2);
+    const stdcxx::Reference<E>& edge2 = graph.removeEdge(e2);
     ASSERT_EQ(1ul, graph.getEdgeCount());
     ASSERT_TRUE(stdcxx::areSame(expectedEdge2, edge2.get()));
 
-    unsigned long e4 = graph.addEdge(0, 1, stdcxx::optref<E>(expectedEdge4));
+    unsigned long e4 = graph.addEdge(0, 1, stdcxx::ref<E>(expectedEdge4));
     ASSERT_EQ(0ul, e4);
 
-    const stdcxx::Optional<E>& edge3 = graph.removeEdge(e3);
-    const stdcxx::Optional<E>& edge4 = graph.removeEdge(e4);
+    const stdcxx::Reference<E>& edge3 = graph.removeEdge(e3);
+    const stdcxx::Reference<E>& edge4 = graph.removeEdge(e4);
     ASSERT_EQ(0ul, graph.getEdgeCount());
     ASSERT_TRUE(stdcxx::areSame(expectedEdge3, edge3.get()));
     ASSERT_TRUE(stdcxx::areSame(expectedEdge4, edge4.get()));
@@ -231,13 +231,13 @@ TEST(UndirectedGraph, removeVertex) {
 
     unsigned long v1 = graph.addVertex();
     unsigned long v2 = graph.addVertex();
-    unsigned long e1 = graph.addEdge(v1, v2, stdcxx::optref<E>());
-    graph.setVertexObject(v1, stdcxx::optref(expected));
+    unsigned long e1 = graph.addEdge(v1, v2, stdcxx::ref<E>());
+    graph.setVertexObject(v1, stdcxx::ref(expected));
 
     POWSYBL_ASSERT_THROW(graph.removeVertex(v1), PowsyblException, "An edge is connected to the vertex 0");
 
     graph.removeEdge(e1);
-    const stdcxx::Optional<V>& vertex1 = graph.removeVertex(v1);
+    const stdcxx::Reference<V>& vertex1 = graph.removeVertex(v1);
     ASSERT_EQ(1ul, graph.getVertexCount());
     ASSERT_TRUE(stdcxx::areSame(expected, vertex1.get()));
 }
@@ -252,13 +252,13 @@ TEST(UndirectedGraph, traverse) {
     graph.addVertex();
     graph.addVertex();
     graph.addVertex();
-    graph.addEdge(0, 1, stdcxx::optref<E>());
-    graph.addEdge(0, 2, stdcxx::optref<E>());
-    graph.addEdge(0, 3, stdcxx::optref<E>());
-    graph.addEdge(1, 4, stdcxx::optref<E>());
-    graph.addEdge(2, 1, stdcxx::optref<E>());
-    graph.addEdge(4, 5, stdcxx::optref<E>());
-    graph.addEdge(3, 5, stdcxx::optref<E>());
+    graph.addEdge(0, 1, stdcxx::ref<E>());
+    graph.addEdge(0, 2, stdcxx::ref<E>());
+    graph.addEdge(0, 3, stdcxx::ref<E>());
+    graph.addEdge(1, 4, stdcxx::ref<E>());
+    graph.addEdge(2, 1, stdcxx::ref<E>());
+    graph.addEdge(4, 5, stdcxx::ref<E>());
+    graph.addEdge(3, 5, stdcxx::ref<E>());
 
     Traverser traverser = [](unsigned long, unsigned long e, unsigned long) {
         return (e == 3 || e == 4 || e == 6) ? TraverseResult::TERMINATE : TraverseResult::CONTINUE;

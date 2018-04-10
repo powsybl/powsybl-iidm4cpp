@@ -17,6 +17,7 @@
 #include <powsybl/iidm/Country.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -55,7 +56,7 @@ private:
     friend class VoltageLevelAdder;
 
 private:
-    std::reference_wrapper<Network> m_network;
+    stdcxx::Reference<Network> m_network;
 
     Country m_country;
 

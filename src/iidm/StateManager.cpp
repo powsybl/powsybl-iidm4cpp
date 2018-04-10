@@ -20,7 +20,7 @@ namespace powsybl {
 
 namespace iidm {
 
-constexpr int StateManager::INITIAL_STATE_INDEX;
+constexpr unsigned long StateManager::INITIAL_STATE_INDEX;
 
 StateManager::StateManager(Network& network) :
     m_network(network),
@@ -43,7 +43,7 @@ StateManager::StateManager(StateManager&& stateManager) noexcept :
 }
 
 iterator_traits<Stateful>::iterator StateManager::begin() {
-    return m_network.get().begin<Stateful>();
+    return m_network.begin<Stateful>();
 }
 
 void StateManager::cloneState(const std::string& sourceStateId, const std::string& targetStateId) {
@@ -99,7 +99,7 @@ void StateManager::cloneState(const std::string& sourceStateId, const std::initi
 }
 
 iterator_traits<Stateful>::iterator StateManager::end() {
-    return m_network.get().end<Stateful>();
+    return m_network.end<Stateful>();
 }
 
 void StateManager::forEachState(const std::function<void()>& function) {
