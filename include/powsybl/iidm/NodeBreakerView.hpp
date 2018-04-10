@@ -61,7 +61,7 @@ public:
 
     virtual void removeSwitch(const std::string& switchId) = 0;
 
-    virtual void setNodeCount(unsigned long nodeCount) = 0;
+    virtual NodeBreakerView& setNodeCount(unsigned long nodeCount) = 0;
 
     virtual void traverse(unsigned long node, const Traverser& traverser) = 0;
 };

@@ -9,15 +9,15 @@
 
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
 
+#include "NodeBreakerVoltageLevel.hpp"
 #include "ValidationUtils.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-BusbarSectionAdder::BusbarSectionAdder(VoltageLevel& voltageLevel) :
+BusbarSectionAdder::BusbarSectionAdder(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
@@ -43,7 +43,7 @@ const std::string& BusbarSectionAdder::getTypeDescription() const {
     return s_typeDescription;
 }
 
-BusbarSectionAdder& BusbarSectionAdder::setNode(int node) {
+BusbarSectionAdder& BusbarSectionAdder::setNode(unsigned long node) {
     m_node = node;
 
     return *this;

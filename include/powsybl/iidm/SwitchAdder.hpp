@@ -27,10 +27,6 @@ public:
 
     virtual Switch& add() = 0;
 
-    bool isFictitious() const;
-
-    bool isOpen() const;
-
     SwitchAdder& setFictitious(bool fictitious);
 
     SwitchAdder& setOpen(bool open);
@@ -42,6 +38,10 @@ protected:
     explicit AbstractSwitchAdder(VoltageLevel& voltageLevel);
 
     VoltageLevel& getVoltageLevel();
+
+    bool isFictitious() const;
+
+    bool isOpen() const;
 
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;

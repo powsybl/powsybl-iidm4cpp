@@ -10,6 +10,8 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
+#include "ValidationUtils.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -20,6 +22,15 @@ NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const st
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {
+}
+
+Switch& NodeBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, unsigned long node1, unsigned long node2) {
+    Switch& aSwitch = getNetwork().checkAndAdd(std::move(ptrSwitch));
+
+    unsigned long e = m_graph.addEdge(node1, node2, stdcxx::ref(aSwitch));
+    m_switches.insert(std::make_pair(aSwitch.getId(), e));
+
+    return aSwitch;
 }
 
 void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
@@ -44,8 +55,7 @@ void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
 }
 
 void NodeBreakerVoltageLevel::checkTerminal(Terminal& terminal) const {
-    auto nodeTerminal = dynamic_cast<NodeTerminal*>(&terminal);
-    if (nodeTerminal == nullptr) {
+    if (!stdcxx::isInstanceOf<NodeTerminal>(terminal)) {
         throw ValidationException(terminal.getConnectable(),
             logging::format("Voltage level %1% has a node/breaker topology, a node connection should be specified instead of a bus connection",
                             getId()));
@@ -53,7 +63,7 @@ void NodeBreakerVoltageLevel::checkTerminal(Terminal& terminal) const {
 }
 
 void NodeBreakerVoltageLevel::clean() {
-    // TODO
+    m_graph.removeIsolatedVertices();
 }
 
 bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
@@ -158,12 +168,61 @@ BusView& NodeBreakerVoltageLevel::getBusView() {
     return m_busView;
 }
 
+stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::string& switchId, bool throwException) const {
+    checkNotEmpty(switchId, "switch id is null");
+
+    const auto& it = m_switches.find(switchId);
+    if (it != m_switches.end()) {
+        return stdcxx::optional<unsigned long>(it->second);
+    } else if (!throwException) {
+        return stdcxx::optional<unsigned long>();
+    }
+
+    throw PowsyblException(logging::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getId()));
+}
+
+unsigned long NodeBreakerVoltageLevel::getNode1(const std::string& switchId) const {
+    const auto& e = getEdge(switchId, true);
+    return m_graph.getVertex1(*e);
+}
+
+unsigned long NodeBreakerVoltageLevel::getNode2(const std::string& switchId) const {
+    const auto& e = getEdge(switchId, true);
+    return m_graph.getVertex2(*e);
+}
+
 const NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreakerView() const {
     return m_nodeBreakerView;
 }
 
 NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreakerView() {
     return m_nodeBreakerView;
+}
+
+unsigned long NodeBreakerVoltageLevel::getNodeCount() const {
+    return m_graph.getVertexCount();
+}
+
+stdcxx::Reference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string& switchId) const {
+    stdcxx::Reference<Switch> aSwitch;
+
+    const auto& e = getEdge(switchId, false);
+    if (e.is_initialized()) {
+        aSwitch = m_graph.getEdgeObject(*e);
+        if (aSwitch.get().getId() != switchId) {
+            throw PowsyblException(logging::format("Invalid switch id (expected: '%1%', actual: '%2%')", switchId, aSwitch.get().getId()));
+        }
+    }
+
+    return aSwitch;
+}
+
+unsigned long NodeBreakerVoltageLevel::getSwitchCount() const {
+    return m_graph.getEdgeCount();
+}
+
+stdcxx::Reference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long node) const {
+    return stdcxx::ref<Terminal>(m_graph.getVertexObject(node));
 }
 
 const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
@@ -173,11 +232,29 @@ const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
 }
 
 void NodeBreakerVoltageLevel::invalidateCache() {
-    // TODO
+    throw AssertionError("TODO");
 }
 
 bool NodeBreakerVoltageLevel::isConnected(const Terminal& /*terminal*/) const {
     throw AssertionError("TODO");
+}
+
+void NodeBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
+    const auto& it = m_switches.find(switchId);
+    if (it == m_switches.end()) {
+        throw PowsyblException(logging::format("Switch '%1%' not found in voltage level '%2%'", switchId, getId()));
+    }
+
+    const auto& aSwitch = m_graph.removeEdge(it->second);
+    m_switches.erase(it);
+    getNetwork().remove(aSwitch.get());
+}
+
+void NodeBreakerVoltageLevel::setNodeCount(unsigned long nodeCount) {
+    unsigned long oldCount = m_graph.getVertexCount();
+    for (unsigned long i = oldCount; i < nodeCount; ++i) {
+        m_graph.addVertex();
+    }
 }
 
 }

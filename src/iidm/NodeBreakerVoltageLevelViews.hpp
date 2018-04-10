@@ -52,7 +52,7 @@ public: // NodeBreakerView
 
     void removeSwitch(const std::string& switchId) override;
 
-    void setNodeCount(unsigned long nodeCount) override;
+    NodeBreakerView& setNodeCount(unsigned long nodeCount) override;
 
     void traverse(unsigned long node, const Traverser& traverser) override;
 

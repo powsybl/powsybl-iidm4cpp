@@ -334,6 +334,22 @@ stdcxx::Reference<E> UndirectedGraph<V, E>::removeEdge(unsigned long e) {
 }
 
 template <typename V, typename E>
+void UndirectedGraph<V, E>::removeIsolatedVertices() {
+
+    std::set<unsigned long> connectedVertices;
+    for (const auto& e : getEdges()) {
+        connectedVertices.insert(getVertex1(e));
+        connectedVertices.insert(getVertex2(e));
+    }
+
+    for (const auto& v : getVertices()) {
+        if ((connectedVertices.find(v) == connectedVertices.end()) && !getVertexObject(v)) {
+            removeVertex(v);
+        }
+    }
+}
+
+template <typename V, typename E>
 stdcxx::Reference<V> UndirectedGraph<V, E>::removeVertex(unsigned long v) {
     checkVertex(v);
 

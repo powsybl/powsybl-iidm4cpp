@@ -50,7 +50,7 @@ Network createNetwork() {
     substation.newVoltageLevel()
         .setId("VL2")
         .setName("VL2_NAME")
-        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
         .setNominalVoltage(225.0)
         .setLowVoltageLimit(200.0)
         .setHighVoltageLimit(260.0)

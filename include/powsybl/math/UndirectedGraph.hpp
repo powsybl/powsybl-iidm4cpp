@@ -70,6 +70,8 @@ public:
 
     stdcxx::Reference<E> removeEdge(unsigned long e);
 
+    void removeIsolatedVertices();
+
     stdcxx::Reference<V> removeVertex(unsigned long v);
 
     void setVertexObject(unsigned long v, const stdcxx::Reference<V>& object);

@@ -75,67 +75,70 @@ NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) 
 }
 
 stdcxx::Reference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& /*bbsId*/) const {
-    throw AssertionError("TODO");
+    // TODO return m_voltageLevel.getConnectable<BusbarSection>(bbsId);
+    return stdcxx::ref<BusbarSection>();
 }
 
 unsigned long NodeBreakerViewImpl::getBusbarSectionCount() const {
-    throw AssertionError("TODO");
+    // TODO return m_voltageLevel.getConnectableCount<BusbarSection>();
+    return 0;
 }
 
-unsigned long NodeBreakerViewImpl::getNode1(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+unsigned long NodeBreakerViewImpl::getNode1(const std::string& switchId) const {
+    return m_voltageLevel.getNode1(switchId);
 }
 
-unsigned long NodeBreakerViewImpl::getNode2(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+unsigned long NodeBreakerViewImpl::getNode2(const std::string& switchId) const {
+    return m_voltageLevel.getNode2(switchId);
 }
 
 unsigned long NodeBreakerViewImpl::getNodeCount() const {
-    throw AssertionError("TODO");
+    return m_voltageLevel.getNodeCount();
 }
 
-stdcxx::Reference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& switchId) const {
+    return m_voltageLevel.getSwitch(switchId);
 }
 
 unsigned long NodeBreakerViewImpl::getSwitchCount() const {
-    throw AssertionError("TODO");
+    return m_voltageLevel.getSwitchCount();
 }
 
-stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal(unsigned long /*node*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal(unsigned long node) const {
+    return m_voltageLevel.getTerminal(node);
 }
 
-stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal1(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal1(const std::string& switchId) const {
+    return getTerminal(getNode1(switchId));
 }
 
-stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal2(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal2(const std::string& switchId) const {
+    return getTerminal(getNode2(switchId));
 }
 
 NodeBreakerViewImpl::SwitchAdder NodeBreakerViewImpl::newBreaker() {
-    throw AssertionError("TODO");
+    return SwitchAdder(m_voltageLevel).setKind(SwitchKind::BREAKER);
 }
 
 BusbarSectionAdder NodeBreakerViewImpl::newBusbarSection() {
-    throw AssertionError("TODO");
+    return BusbarSectionAdder(m_voltageLevel);
 }
 
 NodeBreakerViewImpl::SwitchAdder NodeBreakerViewImpl::newDisconnector() {
-    throw AssertionError("TODO");
+    return SwitchAdder(m_voltageLevel).setKind(SwitchKind::DISCONNECTOR);
 }
 
 NodeBreakerViewImpl::SwitchAdder NodeBreakerViewImpl::newSwitch() {
-    throw AssertionError("TODO");
+    return SwitchAdder(m_voltageLevel);
 }
 
-void NodeBreakerViewImpl::removeSwitch(const std::string& /*switchId*/) {
-    throw AssertionError("TODO");
+void NodeBreakerViewImpl::removeSwitch(const std::string& switchId) {
+    m_voltageLevel.removeSwitch(switchId);
 }
 
-void NodeBreakerViewImpl::setNodeCount(unsigned long /*nodeCount*/) {
-    throw AssertionError("TODO");
+NodeBreakerView& NodeBreakerViewImpl::setNodeCount(unsigned long nodeCount) {
+    m_voltageLevel.setNodeCount(nodeCount);
+    return *this;
 }
 
 void NodeBreakerViewImpl::traverse(unsigned long /*node*/, const Traverser& /*traverser*/) {

@@ -13,6 +13,7 @@ set(UNIT_TEST_SOURCES
     LoadTest.cpp
     NetworkFactory.cpp
     NetworkTest.cpp
+    NodeBreakerVoltageLevelTest.cpp
     ObjectStoreTest.cpp
     SubstationTest.cpp
     VoltageLevelTest.cpp
