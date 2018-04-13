@@ -21,10 +21,20 @@ function(code_coverage)
     set(multiValueArgs DEPENDENCIES EXCLUDES EXCLUDE_DIRS)
     cmake_parse_arguments(Coverage "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-    # Assert gcov and gcovr commands are available
-    find_program(GCOV_CMD gcov)
-    if (NOT GCOV_CMD)
-        message(FATAL_ERROR "gcov not found")
+    # Assert gcov (or llvm-cov) and gcovr commands are available
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+        find_program(GCOV_CMD gcov)
+        if (NOT GCOV_CMD)
+            message(FATAL_ERROR "gcov not found")
+        endif ()
+    elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+        find_program(LLVM_COV_CMD llvm-cov)
+        if (NOT LLVM_COV_CMD)
+            message(FATAL_ERROR "llvm-cov not found")
+        endif ()
+        set(GCOV_CMD "${LLVM_COV_CMD} gcov")
+    else ()
+        message(FATAL_ERROR "Compiler ${CMAKE_CXX_COMPILER_ID} not supported")
     endif ()
 
     find_program(GCOVR_CMD gcovr)
@@ -40,13 +50,13 @@ function(code_coverage)
         message(FATAL_ERROR "OUTPUT_DIR undefined")
     endif ()
 
-    foreach(exclude ${Coverage_EXCLUDES})
+    foreach (exclude ${Coverage_EXCLUDES})
         list(APPEND GCOVR_OPTIONS "--exclude" "${exclude}")
-    endforeach()
+    endforeach ()
 
-    foreach(exclude ${Coverage_EXCLUDE_DIRS})
+    foreach (exclude ${Coverage_EXCLUDE_DIRS})
         list(APPEND GCOVR_OPTIONS "--exclude-directories" "${exclude}")
-    endforeach()
+    endforeach ()
 
     add_custom_target(${Coverage_NAME}
         # Cleaning previous results
@@ -54,9 +64,11 @@ function(code_coverage)
 
         # Generating report
         COMMAND ${CMAKE_COMMAND} -E make_directory ${Coverage_OUTPUT_DIR}/reports
-        COMMAND ${GCOVR_CMD} --root ${CMAKE_SOURCE_DIR}
-        --html --html-details --output ${Coverage_OUTPUT_DIR}/index.html
+        COMMAND ${GCOVR_CMD} ${CMAKE_CURRENT_BINARY_DIR}
+        --gcov-executable "${GCOV_CMD}"
+        --root ${CMAKE_SOURCE_DIR}
         --keep --object-directory ${Coverage_OUTPUT_DIR}/reports
+        --html --html-details --output ${Coverage_OUTPUT_DIR}/index.html
         ${GCOVR_OPTIONS}
 
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
