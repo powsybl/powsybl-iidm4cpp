@@ -27,7 +27,7 @@ void Connectable::allocateStateArrayElement(const std::set<unsigned long>& index
 
 Terminal& Connectable::addTerminal(std::unique_ptr<Terminal>&& terminal) {
     m_terminals.emplace_back(std::move(terminal));
-    m_terminals.back()->setConnectable(stdcxx::optref(*this));
+    m_terminals.back()->setConnectable(stdcxx::ref(*this));
 
     return *m_terminals.back();
 }

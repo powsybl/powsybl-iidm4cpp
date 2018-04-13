@@ -12,7 +12,7 @@
 #include <vector>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/stdcxx/optional_reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
 
@@ -57,7 +57,7 @@ private:
     void checkValidity() const;
 
 private:
-    stdcxx::Optional<NodeBreakerVoltageLevel> m_voltageLevel;
+    stdcxx::Reference<NodeBreakerVoltageLevel> m_voltageLevel;
 
     std::vector<std::reference_wrapper<NodeTerminal> > m_terminals;
 

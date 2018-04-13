@@ -87,7 +87,7 @@ void Terminal::reduceStateArraySize(unsigned long number) {
     m_q.resize(m_q.size() - number);
 }
 
-Terminal& Terminal::setConnectable(const stdcxx::Optional<Connectable>& connectable) {
+Terminal& Terminal::setConnectable(const stdcxx::Reference<Connectable>& connectable) {
     m_connectable = connectable;
 
     return *this;
@@ -120,7 +120,7 @@ Terminal& Terminal::setQ(double q) {
     return *this;
 }
 
-Terminal& Terminal::setVoltageLevel(const stdcxx::Optional<VoltageLevel>& voltageLevel) {
+Terminal& Terminal::setVoltageLevel(const stdcxx::Reference<VoltageLevel>& voltageLevel) {
     m_voltageLevel = voltageLevel;
 
     return *this;

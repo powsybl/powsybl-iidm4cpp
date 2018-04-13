@@ -8,15 +8,14 @@
 #ifndef POWSYBL_IIDM_CONFIGUREDBUS_HPP
 #define POWSYBL_IIDM_CONFIGUREDBUS_HPP
 
-#include <functional>
 #include <list>
 #include <vector>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/BusAdder.hpp>
 #include <powsybl/iidm/MultiStateObject.hpp>
 #include <powsybl/iidm/Stateful.hpp>
-
-#include "powsybl/iidm/BusAdder.hpp"
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -60,9 +59,9 @@ protected: // Stateful
     void reduceStateArraySize(unsigned long number) override;
 
 private:
-    std::reference_wrapper<BusBreakerVoltageLevel> m_voltageLevel;
+    stdcxx::Reference<BusBreakerVoltageLevel> m_voltageLevel;
 
-    std::reference_wrapper<MultiStateObject> m_network;
+    stdcxx::Reference<MultiStateObject> m_network;
 
     std::vector<std::list<std::reference_wrapper<BusTerminal> > > m_terminals;
 

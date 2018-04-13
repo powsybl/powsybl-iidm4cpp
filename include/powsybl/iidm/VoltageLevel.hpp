@@ -8,11 +8,10 @@
 #ifndef POWSYBL_IIDM_VOLTAGELEVEL_HPP
 #define POWSYBL_IIDM_VOLTAGELEVEL_HPP
 
-#include <functional>
-
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -88,7 +87,7 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    std::reference_wrapper<Substation> m_substation;
+    stdcxx::Reference<Substation> m_substation;
 
     double m_highVoltageLimit;
 

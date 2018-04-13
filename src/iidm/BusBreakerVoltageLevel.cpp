@@ -25,7 +25,7 @@ Bus& BusBreakerVoltageLevel::addBus(std::unique_ptr<ConfiguredBus>&& ptrBus) {
     ConfiguredBus& bus = getNetwork().checkAndAdd(std::move(ptrBus));
 
     unsigned long node = m_graph.addVertex();
-    m_graph.setVertexObject(node, stdcxx::Optional<ConfiguredBus>(bus));
+    m_graph.setVertexObject(node, stdcxx::ref(bus));
     m_buses.insert(std::make_pair(bus.getId(), node));
 
     return bus;
@@ -35,10 +35,10 @@ void BusBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
     checkTerminal(terminal);
     if (!test) {
         // create the link terminal -> voltage level
-        terminal.setVoltageLevel(stdcxx::Optional<VoltageLevel>(*this));
+        terminal.setVoltageLevel(stdcxx::ref<VoltageLevel>(*this));
 
         auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
-        const stdcxx::Optional<ConfiguredBus>& connectableBus = getBus(busTerminal.getConnectableBusId(), true);
+        const stdcxx::Reference<ConfiguredBus>& connectableBus = getBus(busTerminal.getConnectableBusId(), true);
 
         getNetwork().getStateManager().forEachState([&connectableBus, &busTerminal, this]() {
             connectableBus.get().addTerminal(busTerminal);
@@ -75,8 +75,8 @@ bool BusBreakerVoltageLevel::disconnect(Terminal& /*terminal*/) {
     return true;
 }
 
-stdcxx::Optional<ConfiguredBus> BusBreakerVoltageLevel::getBus(const std::string& busId, bool throwException) const {
-    stdcxx::Optional<ConfiguredBus> bus;
+stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getBus(const std::string& busId, bool throwException) const {
+    stdcxx::Reference<ConfiguredBus> bus;
 
     const auto& v = getVertex(busId, throwException);
     if (v.is_initialized()) {

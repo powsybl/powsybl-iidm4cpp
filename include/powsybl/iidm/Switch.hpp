@@ -8,12 +8,12 @@
 #ifndef POWSYBL_IIDM_SWITCH_HPP
 #define POWSYBL_IIDM_SWITCH_HPP
 
-#include <functional>
 #include <vector>
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/Stateful.hpp>
 #include <powsybl/iidm/SwitchKind.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -58,7 +58,7 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    std::reference_wrapper<VoltageLevel> m_voltageLevel;
+    stdcxx::Reference<VoltageLevel> m_voltageLevel;
 
     SwitchKind m_kind;
 
