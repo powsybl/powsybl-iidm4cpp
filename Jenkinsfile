@@ -24,7 +24,10 @@ def gitCheckout() {
                 $class: 'GitSCM',
                     branches: [[name: "origin/${env.gitlabSourceBranch}"]],
                     doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'PreBuildMerge', options: [fastForwardMode: 'NO_FF', mergeRemote: 'origin', mergeStrategy: 'default', mergeTarget: "${env.gitlabTargetBranch}"]]],
+                    extensions: [
+                        [$class: 'UserIdentity', email: 'no-reply@rte-france.com', name: 'jenkins'],
+                        [$class: 'PreBuildMerge', options: [fastForwardMode: 'NO_FF', mergeRemote: 'origin', mergeStrategy: 'default', mergeTarget: "${env.gitlabTargetBranch}"]]
+                    ],
                     submoduleCfg: [],
                     userRemoteConfigs: [[credentialsId: 'jenkins-gitlab-devin', name: 'origin', url: "${env.gitlabSourceRepoHttpUrl}"]]
                 ]
