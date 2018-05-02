@@ -65,6 +65,7 @@ node('power-system-tools') {
                     sh """
                     cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=g++ ..
                     make -j
+                    make tests
                     """
                 }
             }
@@ -80,6 +81,7 @@ node('power-system-tools') {
                     sh """
                     cmake -DCMAKE_CXX_COMPILER=clang++ ..
                     make -j
+                    make tests
                     """
                 }
             }
