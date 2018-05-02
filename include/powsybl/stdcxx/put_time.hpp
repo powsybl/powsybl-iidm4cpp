@@ -9,14 +9,14 @@
 #define POWSYBL_IIDM_PUT_TIME_HPP
 
 #ifndef __GNUC__
-    #define HAS_PUT_TIME 1
+#    define HAS_PUT_TIME 1
 #else
-    #include <features.h>
-    #if __GNUC_PREREQ(5, 0)
-        #define HAS_PUT_TIME 1
-    #else
-        #define HAS_PUT_TIME 0
-    #endif  // __GNUC_PREREQ(5, 0)
+#    include <features.h>
+#    if __GNUC_PREREQ(5, 0)
+#        define HAS_PUT_TIME 1
+#    else
+#        define HAS_PUT_TIME 0
+#    endif  // __GNUC_PREREQ(5, 0)
 #endif  // __GNUC__
 
 #if HAS_PUT_TIME
