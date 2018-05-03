@@ -176,6 +176,10 @@ void NodeBreakerVoltageLevel::invalidateCache() {
     // TODO
 }
 
+bool NodeBreakerVoltageLevel::isConnected(const Terminal& /*terminal*/) const {
+    throw AssertionError("TODO");
+}
+
 }
 
 }

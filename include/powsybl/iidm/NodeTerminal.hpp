@@ -20,6 +20,8 @@ public: // Terminal
 
     double getV() const override;
 
+    bool isConnected() const override;
+
 public:
     NodeTerminal(MultiStateObject& network, unsigned long node);
 

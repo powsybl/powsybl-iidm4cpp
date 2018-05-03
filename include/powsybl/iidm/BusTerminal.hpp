@@ -24,14 +24,14 @@ public: // Terminal
 
     double getV() const override;
 
+    bool isConnected() const override;
+
 public:
     BusTerminal(MultiStateObject& network, const std::string& connectableBusId, bool connected);
 
     virtual ~BusTerminal() = default;
 
     const std::string& getConnectableBusId() const;
-
-    bool isConnected() const;
 
     BusTerminal& setConnectableBusId(const std::string& connectableBusId);
 

@@ -45,6 +45,8 @@ public:
 
     VoltageLevel& getVoltageLevel();
 
+    virtual bool isConnected() const = 0;
+
     Terminal& setConnectable(const stdcxx::Reference<Connectable>& connectable);
 
     Terminal& setP(double p);

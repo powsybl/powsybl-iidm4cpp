@@ -57,6 +57,8 @@ public:
 
     virtual ~NodeBreakerVoltageLevel() = default;
 
+    bool isConnected(const Terminal& terminal) const;
+
 private:
     void checkTerminal(Terminal& terminal) const;
 

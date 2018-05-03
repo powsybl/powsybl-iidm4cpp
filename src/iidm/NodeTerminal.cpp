@@ -12,6 +12,7 @@
 #include <powsybl/stdcxx/math.hpp>
 
 #include "ValidationUtils.hpp"
+#include "NodeBreakerVoltageLevel.hpp"
 
 namespace powsybl {
 
@@ -43,6 +44,10 @@ void NodeTerminal::extendStateArraySize(unsigned long initStateArraySize, unsign
 
     m_v.resize(m_v.size() + number, m_v[sourceIndex]);
     m_angle.resize(m_angle.size() + number, m_angle[sourceIndex]);
+}
+
+bool NodeTerminal::isConnected() const {
+    return dynamic_cast<const NodeBreakerVoltageLevel&>(getVoltageLevel()).isConnected(*this);
 }
 
 double NodeTerminal::getAngle() const {
