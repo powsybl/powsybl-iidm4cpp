@@ -22,16 +22,16 @@ def gitCheckout() {
             // Checkout the source branch and merge with the target branch
             checkout changelog: true, poll: true, scm: [
                 $class: 'GitSCM',
-                    branches: [[name: "origin/${env.gitlabSourceBranch}"]],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [
-                        [$class: 'UserIdentity', email: 'no-reply@rte-france.com', name: 'jenkins'],
-                        [$class: 'PreBuildMerge', options: [fastForwardMode: 'NO_FF', mergeRemote: 'origin', mergeStrategy: 'default', mergeTarget: "${env.gitlabTargetBranch}"]]
-                    ],
-                    submoduleCfg: [],
-                    userRemoteConfigs: [[credentialsId: 'jenkins-gitlab-devin', name: 'origin', url: "${env.gitlabSourceRepoHttpUrl}"]]
-                ]
-            break;
+                branches: [[name: "origin/${env.gitlabSourceBranch}"]],
+                doGenerateSubmoduleConfigurations: false,
+                extensions: [
+                    [$class: 'UserIdentity', email: 'no-reply@rte-france.com', name: 'jenkins'],
+                    [$class: 'PreBuildMerge', options: [fastForwardMode: 'NO_FF', mergeRemote: 'origin', mergeStrategy: 'default', mergeTarget: "${env.gitlabTargetBranch}"]]
+                ],
+                submoduleCfg: [],
+                userRemoteConfigs: [[credentialsId: 'jenkins-gitlab-devin', name: 'origin', url: "${env.gitlabSourceRepoHttpUrl}"]]
+            ]
+            break
 
         case 'PUSH':
             checkout changelog: true, poll: true, scm: [
@@ -41,6 +41,7 @@ def gitCheckout() {
                 submoduleCfg: [],
                 userRemoteConfigs: [[credentialsId: 'jenkins-gitlab-devin', name: 'origin', url: "${env.gitlabSourceRepoHttpUrl}"]]
             ]
+            break
 
         default:
             println "Unsupported GitLab action: ${env.gitlabActionType}"
