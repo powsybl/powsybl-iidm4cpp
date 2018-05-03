@@ -39,7 +39,7 @@ void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
         terminal.setVoltageLevel(stdcxx::ref<VoltageLevel>(*this));
 
         // create the link terminal <-> graph vertex
-        m_graph.setVertexObject(node, stdcxx::ref<NodeTerminal>(nodeTerminal));
+        m_graph.setVertexObject(node, stdcxx::ref(nodeTerminal));
     }
 }
 

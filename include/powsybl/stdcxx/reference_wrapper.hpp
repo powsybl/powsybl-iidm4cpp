@@ -34,6 +34,10 @@ public:
 
     reference_wrapper& operator=(reference_wrapper&&) = default;
 
+    bool operator==(const reference_wrapper& reference) const {
+        return m_pointer == reference.m_pointer;
+    }
+
     bool operator!() const noexcept {
         return m_pointer == nullptr;
     }
@@ -78,12 +82,12 @@ Reference<T> ref(T& reference) {
     return Reference<T>(reference);
 }
 
-template <typename T, typename U, typename std::enable_if<std::is_base_of<T, U>::value>::type>
+template <typename T, typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 Reference<T> ref(U& reference) {
     return Reference<T>(dynamic_cast<T&>(reference));
 }
 
-template <typename T, typename U, typename std::enable_if<std::is_base_of<T, U>::value>::type>
+template <typename T, typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
 Reference<T> ref(const Reference<U>& reference) {
     return static_cast<bool>(reference) ? Reference<T>(dynamic_cast<T&>(reference.get())) : Reference<T>();
 }

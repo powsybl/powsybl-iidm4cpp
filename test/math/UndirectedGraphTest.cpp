@@ -198,15 +198,15 @@ TEST(UndirectedGraph, removeEdge) {
     graph.addVertex();
     ASSERT_EQ(3ul, graph.getVertexCount());
 
-    unsigned long e1 = graph.addEdge(0, 1, stdcxx::ref<E>(expectedEdge1));
+    unsigned long e1 = graph.addEdge(0, 1, stdcxx::ref(expectedEdge1));
     ASSERT_EQ(1ul, graph.getEdgeCount());
 
     const stdcxx::Reference<E>& edge1 = graph.removeEdge(e1);
     ASSERT_EQ(0ul, graph.getEdgeCount());
     ASSERT_TRUE(stdcxx::areSame(expectedEdge1, edge1.get()));
 
-    unsigned long e2 = graph.addEdge(0, 1, stdcxx::ref<E>(expectedEdge2));
-    unsigned long e3 = graph.addEdge(1, 2, stdcxx::ref<E>(expectedEdge3));
+    unsigned long e2 = graph.addEdge(0, 1, stdcxx::ref(expectedEdge2));
+    unsigned long e3 = graph.addEdge(1, 2, stdcxx::ref(expectedEdge3));
     ASSERT_EQ(0ul, e2);
     ASSERT_EQ(1ul, e3);
 
@@ -214,7 +214,7 @@ TEST(UndirectedGraph, removeEdge) {
     ASSERT_EQ(1ul, graph.getEdgeCount());
     ASSERT_TRUE(stdcxx::areSame(expectedEdge2, edge2.get()));
 
-    unsigned long e4 = graph.addEdge(0, 1, stdcxx::ref<E>(expectedEdge4));
+    unsigned long e4 = graph.addEdge(0, 1, stdcxx::ref(expectedEdge4));
     ASSERT_EQ(0ul, e4);
 
     const stdcxx::Reference<E>& edge3 = graph.removeEdge(e3);
