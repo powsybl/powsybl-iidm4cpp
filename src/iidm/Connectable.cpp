@@ -86,13 +86,14 @@ void Connectable::reduceStateArraySize(unsigned long number) {
 
 void Connectable::remove() {
     Network& network = getNetwork();
-    network.remove(*this);
 
     for (auto& terminal : m_terminals) {
         VoltageLevel& voltageLevel = terminal->getVoltageLevel();
         voltageLevel.detach(*terminal);
         voltageLevel.clean();
     }
+
+    network.remove(*this);
 }
 
 }
