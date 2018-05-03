@@ -71,8 +71,6 @@ void BusTerminal::reduceStateArraySize(unsigned long number) {
 }
 
 BusTerminal& BusTerminal::setConnectableBusId(const std::string& connectableBusId) {
-    checkNotEmpty(connectableBusId, "ConnectableBusId is required");
-
     m_connectableBusId[getNetwork().getStateIndex()] = connectableBusId;
 
     return *this;
