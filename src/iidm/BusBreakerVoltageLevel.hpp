@@ -22,8 +22,9 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
-class Switch;
 class ConfiguredBus;
+class MergedBus;
+class Switch;
 
 class BusBreakerVoltageLevel : public VoltageLevel {
 public: // VoltageLevel
@@ -55,7 +56,9 @@ public:
 
     virtual ~BusBreakerVoltageLevel() = default;
 
-    Bus& addBus(std::unique_ptr<ConfiguredBus>&& bus);
+    Bus& addBus(std::unique_ptr<ConfiguredBus>&& ptrBus);
+
+    Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2);
 
 private: // VoltageLevel
     const NodeBreakerView& getNodeBreakerView() const override;
@@ -65,9 +68,32 @@ private: // VoltageLevel
 private:
     void checkTerminal(Terminal& terminal) const;
 
-    stdcxx::Reference<ConfiguredBus> getBus(const std::string& busId, bool throwException) const;
+    stdcxx::Reference<ConfiguredBus> getConfiguredBus(const std::string& busId, bool throwException) const;
+
+    stdcxx::Reference<ConfiguredBus> getConfiguredBus1(const std::string& switchId) const;
+
+    stdcxx::Reference<ConfiguredBus> getConfiguredBus2(const std::string& switchId) const;
+
+    stdcxx::optional<unsigned long> getEdge(const std::string& switchId, bool throwException) const;
+
+    stdcxx::Reference<MergedBus> getMergedBus(const std::string& busId, bool throwException) const;
+
+    stdcxx::Reference<Switch> getSwitch(const std::string& switchId, bool throwException) const;
 
     stdcxx::optional<unsigned long> getVertex(const std::string& busId, bool throwException) const;
+
+    void removeAllBuses();
+
+    void removeAllSwitches();
+
+    void removeBus(const std::string& busId);
+
+    void removeSwitch(const std::string& switchId);
+
+private:
+    friend class bus_breaker_voltage_level::BusBreakerViewImpl;
+
+    friend class bus_breaker_voltage_level::BusViewImpl;
 
 private:
     typedef math::UndirectedGraph<ConfiguredBus, Switch> Graph;
@@ -75,6 +101,8 @@ private:
     Graph m_graph;
 
     std::map<std::string, unsigned long> m_buses;
+
+    std::map<std::string, unsigned long> m_switches;
 
     bus_breaker_voltage_level::BusBreakerViewImpl m_busBreakerView;
 

@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include <powsybl/stdcxx/reference_wrapper.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -20,7 +22,7 @@ class BusView {
 public:
     virtual ~BusView() = default;
 
-    virtual Bus& getBus(const std::string& busId) const = 0;
+    virtual stdcxx::Reference<Bus> getBus(const std::string& busId) const = 0;
 };
 
 }

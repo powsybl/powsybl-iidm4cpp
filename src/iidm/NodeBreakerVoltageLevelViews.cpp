@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/BusbarSection.hpp>
 
+#include "CalculatedBus.hpp"
 #include "NodeBreakerVoltageLevel.hpp"
 
 namespace powsybl {
@@ -21,51 +22,51 @@ BusBreakerViewImpl::BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-Bus& BusBreakerViewImpl::getBus(const std::string& /*busId*/) const {
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& /*busId*/) const {
     throw AssertionError("TODO");
 }
 
-Bus& BusBreakerViewImpl::getBus1(const std::string& /*switchId*/) const {
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus1(const std::string& /*switchId*/) const {
     throw AssertionError("TODO");
 }
 
-Bus& BusBreakerViewImpl::getBus2(const std::string& /*switchId*/) const {
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& /*switchId*/) const {
     throw AssertionError("TODO");
 }
 
-Switch& BusBreakerViewImpl::getSwitch(const std::string& /*switchId*/) const {
+stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& /*switchId*/) const {
     throw AssertionError("TODO");
 }
 
 BusAdder BusBreakerViewImpl::newBus() {
-    throw AssertionError("TODO");
+    throw AssertionError("Not implemented");
 }
 
 BusBreakerView::SwitchAdder BusBreakerViewImpl::newSwitch() {
-    throw AssertionError("TODO");
+    throw AssertionError("Not implemented");
 }
 
 void BusBreakerViewImpl::removeAllBuses() {
-    throw AssertionError("TODO");
+    throw AssertionError("Not implemented");
 }
 
 void BusBreakerViewImpl::removeAllSwitches() {
-    throw AssertionError("TODO");
+    throw AssertionError("Not implemented");
 }
 
 void BusBreakerViewImpl::removeBus(const std::string& /*busId*/) {
-    throw AssertionError("TODO");
+    throw AssertionError("Not implemented");
 }
 
 void BusBreakerViewImpl::removeSwitch(const std::string& /*switchId*/) {
-    throw AssertionError("TODO");
+    throw AssertionError("Not implemented");
 }
 
 BusViewImpl::BusViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-Bus& BusViewImpl::getBus(const std::string& /*busId*/) const {
+stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& /*busId*/) const {
     throw AssertionError("TODO");
 }
 
@@ -73,8 +74,8 @@ NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) 
     m_voltageLevel(voltageLevel) {
 }
 
-BusbarSection& NodeBreakerViewImpl::getBusbarSection(const std::string& bbsId) const {
-    return m_voltageLevel.getConnectable<BusbarSection>(bbsId);
+stdcxx::Reference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& /*bbsId*/) const {
+    throw AssertionError("TODO");
 }
 
 unsigned long NodeBreakerViewImpl::getBusbarSectionCount() const {
@@ -93,7 +94,7 @@ unsigned long NodeBreakerViewImpl::getNodeCount() const {
     throw AssertionError("TODO");
 }
 
-Switch& NodeBreakerViewImpl::getSwitch(const std::string& /*switchId*/) const {
+stdcxx::Reference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& /*switchId*/) const {
     throw AssertionError("TODO");
 }
 
@@ -101,15 +102,15 @@ unsigned long NodeBreakerViewImpl::getSwitchCount() const {
     throw AssertionError("TODO");
 }
 
-Terminal& NodeBreakerViewImpl::getTerminal(unsigned long /*node*/) const {
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal(unsigned long /*node*/) const {
     throw AssertionError("TODO");
 }
 
-Terminal& NodeBreakerViewImpl::getTerminal1(const std::string& /*switchId*/) const {
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal1(const std::string& /*switchId*/) const {
     throw AssertionError("TODO");
 }
 
-Terminal& NodeBreakerViewImpl::getTerminal2(const std::string& /*switchId*/) const {
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal2(const std::string& /*switchId*/) const {
     throw AssertionError("TODO");
 }
 

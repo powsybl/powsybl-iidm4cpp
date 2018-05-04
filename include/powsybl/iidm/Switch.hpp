@@ -23,6 +23,9 @@ class VoltageLevel;
 
 class Switch : public Identifiable, public Stateful {
 public:
+    Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, SwitchKind kind, bool open,
+           bool retained, bool fictitious);
+
     virtual ~Switch() = default;
 
     SwitchKind getKind() const;
@@ -49,10 +52,6 @@ protected: // Stateful
     void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
 
     void reduceStateArraySize(unsigned long number) override;
-
-protected:
-    Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, SwitchKind kind, bool open,
-           bool retained, bool fictitious);
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;

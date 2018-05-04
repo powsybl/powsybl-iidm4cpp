@@ -22,7 +22,7 @@ namespace node_breaker_voltage_level {
 
 class NodeBreakerViewImpl : public NodeBreakerView {
 public: // NodeBreakerView
-    BusbarSection& getBusbarSection(const std::string& bbsId) const override;
+    stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) const override;
 
     unsigned long getBusbarSectionCount() const override;
 
@@ -32,15 +32,15 @@ public: // NodeBreakerView
 
     unsigned long getNodeCount() const override;
 
-    Switch& getSwitch(const std::string& switchId) const override;
+    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
 
     unsigned long getSwitchCount() const override;
 
-    Terminal& getTerminal(unsigned long node) const override;
+    stdcxx::Reference<Terminal> getTerminal(unsigned long node) const override;
 
-    Terminal& getTerminal1(const std::string& switchId) const override;
+    stdcxx::Reference<Terminal> getTerminal1(const std::string& switchId) const override;
 
-    Terminal& getTerminal2(const std::string& switchId) const override;
+    stdcxx::Reference<Terminal> getTerminal2(const std::string& switchId) const override;
 
     SwitchAdder newBreaker() override;
 
@@ -67,14 +67,20 @@ private:
 
 class BusBreakerViewImpl : public BusBreakerView {
 public: // BusBreakerView
-    Bus& getBus(const std::string& busId) const override;
+    stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
 
-    Bus& getBus1(const std::string& switchId) const override;
+    stdcxx::Reference<Bus> getBus1(const std::string& switchId) const override;
 
-    Bus& getBus2(const std::string& switchId) const override;
+    stdcxx::Reference<Bus> getBus2(const std::string& switchId) const override;
 
-    Switch& getSwitch(const std::string& switchId) const override;
+    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
 
+public:
+    explicit BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
+
+    virtual ~BusBreakerViewImpl() = default;
+
+private: // BusBreakerView
     BusAdder newBus() override;
 
     SwitchAdder newSwitch() override;
@@ -87,18 +93,13 @@ public: // BusBreakerView
 
     void removeSwitch(const std::string& switchId) override;
 
-public:
-    explicit BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
-
-    virtual ~BusBreakerViewImpl() = default;
-
 private:
     NodeBreakerVoltageLevel& m_voltageLevel;
 };
 
 class BusViewImpl : public BusView {
 public:
-    Bus& getBus(const std::string& busId) const override;
+    stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
 
 public:
     explicit BusViewImpl(NodeBreakerVoltageLevel& voltageLevel);

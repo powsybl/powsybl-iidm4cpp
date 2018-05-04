@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/BusAdder.hpp>
 #include <powsybl/iidm/SwitchAdder.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -27,13 +28,13 @@ public:
 public:
     virtual ~BusBreakerView() = default;
 
-    virtual Bus& getBus(const std::string& busId) const = 0;
+    virtual stdcxx::Reference<Bus> getBus(const std::string& busId) const = 0;
 
-    virtual Bus& getBus1(const std::string& switchId) const = 0;
+    virtual stdcxx::Reference<Bus> getBus1(const std::string& switchId) const = 0;
 
-    virtual Bus& getBus2(const std::string& switchId) const = 0;
+    virtual stdcxx::Reference<Bus> getBus2(const std::string& switchId) const = 0;
 
-    virtual Switch& getSwitch(const std::string& switchId) const = 0;
+    virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const = 0;
 
     virtual BusAdder newBus() = 0;
 

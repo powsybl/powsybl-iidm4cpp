@@ -29,10 +29,25 @@ Network& AbstractSwitchAdder<SwitchAdder>::getNetwork() {
 }
 
 template <typename SwitchAdder>
+VoltageLevel& AbstractSwitchAdder<SwitchAdder>::getVoltageLevel() {
+    return m_voltageLevel;
+}
+
+template <typename SwitchAdder>
 const std::string& AbstractSwitchAdder<SwitchAdder>::getTypeDescription() const {
     static std::string s_typeDescription = "Switch";
 
     return s_typeDescription;
+}
+
+template <typename SwitchAdder>
+bool AbstractSwitchAdder<SwitchAdder>::isFictitious() const {
+    return m_fictitious;
+}
+
+template <typename SwitchAdder>
+bool AbstractSwitchAdder<SwitchAdder>::isOpen() const {
+    return m_open;
 }
 
 template <typename SwitchAdder>

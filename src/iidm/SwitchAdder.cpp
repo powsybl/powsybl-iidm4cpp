@@ -7,8 +7,11 @@
 
 #include <powsybl/iidm/SwitchAdder.hpp>
 
+#include <powsybl/iidm/Switch.hpp>
+
 #include "BusBreakerVoltageLevel.hpp"
 #include "NodeBreakerVoltageLevel.hpp"
+#include "ValidationUtils.hpp"
 
 namespace powsybl {
 
@@ -60,7 +63,15 @@ SwitchAdder::SwitchAdder(VoltageLevel& voltageLevel) :
 }
 
 Switch& SwitchAdder::add() {
-    throw AssertionError("TODO");
+    checkNotEmpty(*this, m_bus1, "First connection bus is not set");
+    checkNotEmpty(*this, m_bus2, "Second connection bus is not set");
+
+    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel());
+
+    std::unique_ptr<Switch> ptrSwitch = stdcxx::make_unique<Switch>(voltageLevel, getId(), getName(), SwitchKind::DISCONNECTOR, isOpen(), true, isFictitious());
+    Switch& aSwitch = voltageLevel.addSwitch(std::move(ptrSwitch), m_bus1, m_bus2);
+
+    return aSwitch;
 }
 
 SwitchAdder& SwitchAdder::setBus1(const std::string& bus1) {

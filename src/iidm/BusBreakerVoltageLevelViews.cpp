@@ -8,6 +8,8 @@
 #include "BusBreakerVoltageLevelViews.hpp"
 
 #include "BusBreakerVoltageLevel.hpp"
+#include "ConfiguredBus.hpp"
+#include "MergedBus.hpp"
 
 namespace powsybl {
 
@@ -19,20 +21,26 @@ BusBreakerViewImpl::BusBreakerViewImpl(BusBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-Bus& BusBreakerViewImpl::getBus(const std::string& /*busId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) const {
+    const stdcxx::Reference<ConfiguredBus>& bus = m_voltageLevel.getConfiguredBus(busId, false);
+
+    return stdcxx::ref<Bus>(bus);
 }
 
-Bus& BusBreakerViewImpl::getBus1(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus1(const std::string& switchId) const {
+    const stdcxx::Reference<ConfiguredBus>& bus = m_voltageLevel.getConfiguredBus1(switchId);
+
+    return stdcxx::ref<Bus>(bus);
 }
 
-Bus& BusBreakerViewImpl::getBus2(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) const {
+    const stdcxx::Reference<ConfiguredBus>& bus = m_voltageLevel.getConfiguredBus2(switchId);
+
+    return stdcxx::ref<Bus>(bus);
 }
 
-Switch& BusBreakerViewImpl::getSwitch(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
+    return m_voltageLevel.getSwitch(switchId, false);
 }
 
 BusAdder BusBreakerViewImpl::newBus() {
@@ -44,27 +52,29 @@ BusBreakerView::SwitchAdder BusBreakerViewImpl::newSwitch() {
 }
 
 void BusBreakerViewImpl::removeAllBuses() {
-    throw AssertionError("TODO");
+    m_voltageLevel.removeAllBuses();
 }
 
 void BusBreakerViewImpl::removeAllSwitches() {
-    throw AssertionError("TODO");
+    m_voltageLevel.removeAllSwitches();
 }
 
-void BusBreakerViewImpl::removeBus(const std::string& /*busId*/) {
-    throw AssertionError("TODO");
+void BusBreakerViewImpl::removeBus(const std::string& busId) {
+    m_voltageLevel.removeBus(busId);
 }
 
-void BusBreakerViewImpl::removeSwitch(const std::string& /*switchId*/) {
-    throw AssertionError("TODO");
+void BusBreakerViewImpl::removeSwitch(const std::string& switchId) {
+    m_voltageLevel.removeSwitch(switchId);
 }
 
 BusViewImpl::BusViewImpl(BusBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-Bus& BusViewImpl::getBus(const std::string& /*busId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) const {
+    const stdcxx::Reference<MergedBus> mergedBus = m_voltageLevel.getMergedBus(busId, false);
+
+    return stdcxx::ref<Bus>(mergedBus);
 }
 
 }

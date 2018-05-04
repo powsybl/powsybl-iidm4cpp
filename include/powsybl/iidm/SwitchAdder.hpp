@@ -27,6 +27,10 @@ public:
 
     virtual Switch& add() = 0;
 
+    bool isFictitious() const;
+
+    bool isOpen() const;
+
     SwitchAdder& setFictitious(bool fictitious);
 
     SwitchAdder& setOpen(bool open);
@@ -36,6 +40,8 @@ protected: // IdentifiableAdder
 
 protected:
     explicit AbstractSwitchAdder(VoltageLevel& voltageLevel);
+
+    VoltageLevel& getVoltageLevel();
 
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
@@ -95,9 +101,9 @@ public:
     SwitchAdder& setBus2(const std::string& bus2);
 
 private:
-    stdcxx::optional<std::string> m_bus1;
+    std::string m_bus1;
 
-    stdcxx::optional<std::string> m_bus2;
+    std::string m_bus2;
 };
 
 }

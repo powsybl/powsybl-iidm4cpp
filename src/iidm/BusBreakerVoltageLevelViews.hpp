@@ -10,7 +10,7 @@
 
 #include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/BusView.hpp>
-#include <powsybl/iidm/NodeBreakerView.hpp>
+#include <powsybl/math/UndirectedGraph.hpp>
 
 namespace powsybl {
 
@@ -22,13 +22,13 @@ namespace bus_breaker_voltage_level {
 
 class BusBreakerViewImpl : public BusBreakerView {
 public: // BusBreakerView
-    Bus& getBus(const std::string& busId) const override;
+    stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
 
-    Bus& getBus1(const std::string& switchId) const override;
+    stdcxx::Reference<Bus> getBus1(const std::string& switchId) const override;
 
-    Bus& getBus2(const std::string& switchId) const override;
+    stdcxx::Reference<Bus> getBus2(const std::string& switchId) const override;
 
-    Switch& getSwitch(const std::string& switchId) const override;
+    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
 
     BusAdder newBus() override;
 
@@ -53,7 +53,7 @@ private:
 
 class BusViewImpl : public BusView {
 public:
-    Bus& getBus(const std::string& busId) const override;
+    stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
 
 public:
     explicit BusViewImpl(BusBreakerVoltageLevel& voltageLevel);

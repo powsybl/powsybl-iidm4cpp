@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
 #include <powsybl/iidm/SwitchAdder.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -30,7 +31,7 @@ public:
 public:
     virtual ~NodeBreakerView() = default;
 
-    virtual BusbarSection& getBusbarSection(const std::string& bbsId) const = 0;
+    virtual stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) const = 0;
 
     virtual unsigned long getBusbarSectionCount() const = 0;
 
@@ -40,15 +41,15 @@ public:
 
     virtual unsigned long getNodeCount() const = 0;
 
-    virtual Switch& getSwitch(const std::string& switchId) const = 0;
+    virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const = 0;
 
     virtual unsigned long getSwitchCount() const = 0;
 
-    virtual Terminal& getTerminal(unsigned long node) const = 0;
+    virtual stdcxx::Reference<Terminal> getTerminal(unsigned long node) const = 0;
 
-    virtual Terminal& getTerminal1(const std::string& switchId) const = 0;
+    virtual stdcxx::Reference<Terminal> getTerminal1(const std::string& switchId) const = 0;
 
-    virtual Terminal& getTerminal2(const std::string& switchId) const = 0;
+    virtual stdcxx::Reference<Terminal> getTerminal2(const std::string& switchId) const = 0;
 
     virtual SwitchAdder newBreaker() = 0;
 
