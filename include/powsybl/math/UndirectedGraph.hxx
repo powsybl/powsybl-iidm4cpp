@@ -240,6 +240,18 @@ unsigned long UndirectedGraph<V, E>::getMaxVertex() const {
 }
 
 template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::getVertex1(unsigned long e) const {
+    checkEdge(e);
+    return m_edges.at(e).get()->getVertex1();
+}
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::getVertex2(unsigned long e) const {
+    checkEdge(e);
+    return m_edges.at(e).get()->getVertex2();
+}
+
+template <typename V, typename E>
 unsigned long UndirectedGraph<V, E>::getVertexCount() const {
     return m_vertices.size() - m_removedVertices.size();
 }
