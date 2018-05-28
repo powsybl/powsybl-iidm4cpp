@@ -21,7 +21,6 @@ namespace powsybl {
 namespace iidm {
 
 class NodeTerminal;
-class Switch;
 
 class NodeBreakerVoltageLevel : public VoltageLevel {
 public: // VoltageLevel

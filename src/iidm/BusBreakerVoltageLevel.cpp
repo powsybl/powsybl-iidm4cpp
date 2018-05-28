@@ -64,8 +64,7 @@ void BusBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
 }
 
 void BusBreakerVoltageLevel::checkTerminal(Terminal& terminal) const {
-    auto busTerminal = dynamic_cast<BusTerminal*>(&terminal);
-    if (busTerminal == nullptr) {
+    if (!stdcxx::isInstanceOf<BusTerminal>(terminal)) {
         throw ValidationException(terminal.getConnectable(),
                                   logging::format("Voltage level '%1%' has a bus/breaker topology, a bus connection should be specified instead of a node connection",
                                                   getId()));
