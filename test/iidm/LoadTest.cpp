@@ -79,7 +79,7 @@ TEST(Load, integrity) {
 }
 
 TEST(Load, multistate) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
 
     Load& load1 = network.getLoad("LOAD1");
     ASSERT_DOUBLE_EQ(50, load1.getP0());

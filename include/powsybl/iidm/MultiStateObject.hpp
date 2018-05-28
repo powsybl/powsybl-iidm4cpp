@@ -20,7 +20,9 @@ public:
 
     virtual unsigned long getStateIndex() const = 0;
 
-    virtual StateManager& getStateManager() const = 0;
+    virtual const StateManager& getStateManager() const = 0;
+
+    virtual StateManager& getStateManager() = 0;
 };
 
 }

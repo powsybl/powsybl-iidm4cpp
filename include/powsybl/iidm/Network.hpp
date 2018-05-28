@@ -28,7 +28,9 @@ class Network : public Container, public MultiStateObject {
 public: // MultiStateObject
     unsigned long getStateIndex() const override;
 
-    StateManager& getStateManager() const override;
+    const StateManager& getStateManager() const override;
+
+    StateManager& getStateManager() override;
 
 public:
     Network(const std::string& id, const std::string& sourceFormat);

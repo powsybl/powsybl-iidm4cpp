@@ -61,8 +61,12 @@ unsigned long Network::getStateIndex() const {
     return m_stateManager.getStateIndex();
 }
 
-StateManager& Network::getStateManager() const {
-    return const_cast<StateManager&>(m_stateManager);
+const StateManager& Network::getStateManager() const {
+    return m_stateManager;
+}
+
+StateManager& Network::getStateManager() {
+    return m_stateManager;
 }
 
 Substation& Network::getSubstation(const std::string& id) const {
