@@ -15,6 +15,7 @@ set(UNIT_TEST_SOURCES
     NetworkTest.cpp
     NodeBreakerVoltageLevelTest.cpp
     ObjectStoreTest.cpp
+    ReactiveLimitsTest.cpp
     SubstationTest.cpp
     VoltageLevelTest.cpp
 )

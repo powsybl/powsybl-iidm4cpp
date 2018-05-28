@@ -33,12 +33,17 @@ set(IIDM_SOURCES
     iidm/Load.cpp
     iidm/LoadAdder.cpp
     iidm/MergedBus.cpp
+    iidm/MinMaxReactiveLimits.cpp
+    iidm/MinMaxReactiveLimitsAdder.cpp
     iidm/MultipleStateContext.cpp
     iidm/Network.cpp
     iidm/NodeBreakerVoltageLevel.cpp
     iidm/NodeBreakerVoltageLevelViews.cpp
     iidm/NodeTerminal.cpp
     iidm/ObjectStore.cpp
+    iidm/ReactiveCapabilityCurve.cpp
+    iidm/ReactiveCapabilityCurveAdder.cpp
+    iidm/ReactiveLimitsHolder.cpp
     iidm/ShuntCompensator.cpp
     iidm/StateContextGuard.cpp
     iidm/StateManager.cpp

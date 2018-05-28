@@ -26,8 +26,10 @@ const std::string& checkNotEmpty(const std::string& value, const std::string& me
 
 const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message);
 
+const double& checkOptional(const Validable& validable, const stdcxx::optional<double>& value, const std::string& message);
+
 template <typename T>
-const T& checkOptional(const Validable& validable, const stdcxx::optional<T> value, const std::string& message) {
+const T& checkOptional(const Validable& validable, const stdcxx::optional<T>& value, const std::string& message) {
 #if __cplusplus >= 201703L
     bool isInitialized = value.has_value();
 #else

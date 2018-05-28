@@ -45,6 +45,18 @@ const std::string& checkNotEmpty(const Validable& validable, const std::string& 
     return value;
 }
 
+const double& checkOptional(const Validable& validable, const stdcxx::optional<double>& value, const std::string& message) {
+#if __cplusplus >= 201703L
+    bool isInitialized = value.has_value();
+#else
+    bool isInitialized = value.is_initialized();
+#endif
+    if (!isInitialized || std::isnan(*value)) {
+        throw ValidationException(validable, message);
+    }
+    return *value;
+}
+
 double checkP0(const Validable& validable, double p0) {
     if (std::isnan(p0)) {
         throw ValidationException(validable, "p0 is invalid");
