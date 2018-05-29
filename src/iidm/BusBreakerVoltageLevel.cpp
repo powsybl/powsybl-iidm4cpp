@@ -167,7 +167,8 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getEdge(const std::strin
     const auto& it = m_switches.find(switchId);
     if (it != m_switches.end()) {
         return stdcxx::optional<unsigned long>(it->second);
-    } else if (!throwException) {
+    }
+    if (!throwException) {
         return stdcxx::optional<unsigned long>();
     }
 
@@ -212,7 +213,8 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
     const auto& it = m_buses.find(busId);
     if (it != m_buses.end()) {
         return stdcxx::optional<unsigned long>(it->second);
-    } else if (!throwException) {
+    }
+    if (!throwException) {
         return stdcxx::optional<unsigned long>();
     }
 

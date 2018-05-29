@@ -41,9 +41,9 @@ std::string put_time(const struct std::tm* time, const char* format) {
 
     if (strftime(buffer, 128, format, time) > 0) {
         return buffer;
-    } else {
-        return "";
     }
+
+    return "";
 }
 
 }

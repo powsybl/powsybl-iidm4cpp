@@ -35,11 +35,11 @@ Logger& LoggerFactory::getLoggerByName(const std::string& name) const {
     const auto& it = m_loggers.find(name);
     if (it != m_loggers.end()) {
         return *(it->second);
-    } else {
-        size_t pos = name.rfind("::");
-        if (pos != std::string::npos) {
-            return getLoggerByName(name.substr(0, pos));
-        }
+    }
+
+    std::size_t pos = name.rfind("::");
+    if (pos != std::string::npos) {
+        return getLoggerByName(name.substr(0, pos));
     }
 
     return s_defaultLogger;

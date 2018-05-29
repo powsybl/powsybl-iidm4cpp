@@ -126,30 +126,30 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
 
     if (paths.empty()) {
         return false;
-    } else {
-        for (const auto& path : paths) {
-            bool pathOpen = false;
-            for (unsigned long e : path) {
-                Switch& aSwitch = m_graph.getEdgeObject(e).get();
-                if (aSwitch.getKind() == SwitchKind::BREAKER) {
-                    if (!aSwitch.isOpen()) {
-                        aSwitch.setOpen(true);
-                    }
-                    // Open one breaker is sufficient to disconnect the terminal
-                    pathOpen = true;
-                    break;
-                }
-            }
+    }
 
-            // No breaker found, the terminal is still connected
-            if (!pathOpen) {
-                return false;
+    for (const auto& path : paths) {
+        bool pathOpen = false;
+        for (unsigned long e : path) {
+            Switch& aSwitch = m_graph.getEdgeObject(e).get();
+            if (aSwitch.getKind() == SwitchKind::BREAKER) {
+                if (!aSwitch.isOpen()) {
+                    aSwitch.setOpen(true);
+                }
+                // Open one breaker is sufficient to disconnect the terminal
+                pathOpen = true;
+                break;
             }
         }
 
-        // For all paths, a breaker has been found, the terminal is disconnected
-        return true;
+        // No breaker found, the terminal is still connected
+        if (!pathOpen) {
+            return false;
+        }
     }
+
+    // For all paths, a breaker has been found, the terminal is disconnected
+    return true;
 }
 
 const BusBreakerView& NodeBreakerVoltageLevel::getBusBreakerView() const {
@@ -174,7 +174,8 @@ stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::stri
     const auto& it = m_switches.find(switchId);
     if (it != m_switches.end()) {
         return stdcxx::optional<unsigned long>(it->second);
-    } else if (!throwException) {
+    }
+    if (!throwException) {
         return stdcxx::optional<unsigned long>();
     }
 

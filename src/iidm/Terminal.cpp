@@ -57,9 +57,9 @@ const Connectable& Terminal::getConnectable() const {
 double Terminal::getI() const {
     if (m_connectable.get().getConnectableType() == ConnectableType::BUSBAR_SECTION) {
         return 0;
-    } else {
-        return std::hypot(getP(), getQ()) / std::sqrt(3.0) * getV() / 1000.0;
     }
+
+    return std::hypot(getP(), getQ()) / std::sqrt(3.0) * getV() / 1000.0;
 }
 
 const MultiStateObject& Terminal::getNetwork() const {

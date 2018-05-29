@@ -180,10 +180,10 @@ void StateManager::removeState(const std::string& stateId) {
             const auto& it = std::find(m_unusedIndexes.begin(), m_unusedIndexes.end(), i - 1);
             if (it == m_unusedIndexes.end()) {
                 break;
-            } else {
-                m_unusedIndexes.erase(it);
-                ++stateCount;
             }
+
+            m_unusedIndexes.erase(it);
+            ++stateCount;
         }
 
         std::for_each(begin(), end(), [stateCount](Stateful& stateful) {
