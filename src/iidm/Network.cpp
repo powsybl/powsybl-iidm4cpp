@@ -22,7 +22,6 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, Container::Type::NETWORK),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_forecastDistance(0),
-    m_objectStore(),
     m_stateManager(*this) {
 }
 

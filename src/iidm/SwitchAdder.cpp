@@ -21,9 +21,6 @@ namespace node_breaker_view {
 
 SwitchAdder::SwitchAdder(VoltageLevel& voltageLevel) :
     AbstractSwitchAdder(voltageLevel),
-    m_node1(),
-    m_node2(),
-    m_kind(),
     m_retained(false)
 {
 }
@@ -66,9 +63,7 @@ SwitchAdder& SwitchAdder::setRetained(bool retained) {
 namespace bus_breaker_view {
 
 SwitchAdder::SwitchAdder(VoltageLevel& voltageLevel) :
-    AbstractSwitchAdder(voltageLevel),
-    m_bus1(),
-    m_bus2() {
+    AbstractSwitchAdder(voltageLevel) {
 }
 
 Switch& SwitchAdder::add() {

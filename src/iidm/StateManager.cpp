@@ -25,9 +25,6 @@ constexpr unsigned long StateManager::INITIAL_STATE_INDEX;
 StateManager::StateManager(Network& network) :
     m_network(network),
     m_stateContext(stdcxx::make_unique<MultipleStateContext>(INITIAL_STATE_INDEX)),
-    m_stateMutex(),
-    m_statesById(),
-    m_unusedIndexes(),
     m_stateArraySize(INITIAL_STATE_INDEX + 1) {
 
     m_statesById.insert(std::make_pair(getInitialStateId(), INITIAL_STATE_INDEX));
