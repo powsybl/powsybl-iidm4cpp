@@ -35,7 +35,7 @@ unsigned long Network::getBusbarSectionCount() const {
 }
 
 Connectable& Network::getConnectable(const std::string& id) const {
-    Identifiable& identifiable = m_objectStore.get<Identifiable>(id);
+    auto& identifiable = m_objectStore.get<Identifiable>(id);
     assert(stdcxx::isInstanceOf<Connectable>(identifiable));
 
     return dynamic_cast<Connectable&>(identifiable);

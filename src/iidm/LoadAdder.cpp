@@ -26,7 +26,7 @@ Load& LoadAdder::add() {
     checkOptional(*this, m_q0, "q0 is not set");
 
     std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(getNetwork(), getId(), getName(), *m_loadType, *m_p0, *m_q0);
-    Load& load = getNetwork().checkAndAdd<Load>(std::move(ptrLoad));
+    auto& load = getNetwork().checkAndAdd<Load>(std::move(ptrLoad));
 
     Terminal& terminal = load.addTerminal(getTerminal());
     m_voltageLevel.attach(terminal, false);

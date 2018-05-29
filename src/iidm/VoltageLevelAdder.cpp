@@ -43,7 +43,7 @@ VoltageLevel& VoltageLevelAdder::add() {
             break;
     }
 
-    VoltageLevel& voltageLevel = getNetwork().checkAndAdd<VoltageLevel>(std::move(ptrVoltageLevel));
+    auto& voltageLevel = getNetwork().checkAndAdd<VoltageLevel>(std::move(ptrVoltageLevel));
     m_substation.addVoltageLevel(voltageLevel);
 
     return voltageLevel;
