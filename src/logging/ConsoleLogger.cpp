@@ -19,7 +19,7 @@ namespace logging {
 std::string now() {
     const std::time_t& now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
-    struct std::tm result = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    struct std::tm result = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nullptr};
     if (localtime_r(&now, &result) == nullptr) {
         // TODO: throw an AssertionError
     }
