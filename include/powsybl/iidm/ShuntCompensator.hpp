@@ -16,7 +16,7 @@ namespace iidm {
 
 class ShuntCompensator : public Injection {
 public:
-    virtual ~ShuntCompensator() = default;
+    ~ShuntCompensator() override = default;
 
 protected:
     ShuntCompensator(const std::string& id, const std::string& name);

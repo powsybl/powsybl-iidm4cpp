@@ -54,7 +54,7 @@ public:
     NodeBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                             double nominalVoltage, double lowVoltageLimit, double highVoltagelimit);
 
-    virtual ~NodeBreakerVoltageLevel() = default;
+    ~NodeBreakerVoltageLevel() override = default;
 
     Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, unsigned long node1, unsigned long node2);
 

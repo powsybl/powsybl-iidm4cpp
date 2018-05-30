@@ -21,7 +21,7 @@ public: // Validable
     std::string getMessageHeader() const override;
 
 public:
-    virtual ~Identifiable() = default;
+    ~Identifiable() override = default;
 
     const std::string& getId() const;
 

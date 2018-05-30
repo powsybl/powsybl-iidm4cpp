@@ -59,7 +59,7 @@ public: // NodeBreakerView
 public:
     explicit NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
-    virtual ~NodeBreakerViewImpl() = default;
+    ~NodeBreakerViewImpl() override = default;
 
 private:
     NodeBreakerVoltageLevel& m_voltageLevel;
@@ -78,7 +78,7 @@ public: // BusBreakerView
 public:
     explicit BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
-    virtual ~BusBreakerViewImpl() = default;
+    ~BusBreakerViewImpl() override = default;
 
 private: // BusBreakerView
     BusAdder newBus() override;
@@ -104,7 +104,7 @@ public:
 public:
     explicit BusViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
-    virtual ~BusViewImpl() = default;
+    ~BusViewImpl() override = default;
 
 private:
     NodeBreakerVoltageLevel& m_voltageLevel;

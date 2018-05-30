@@ -16,7 +16,7 @@ namespace iidm {
 
 class DanglingLine : public Injection {
 public:
-    virtual ~DanglingLine() = default;
+    ~DanglingLine() override = default;
 
 protected:
     DanglingLine(const std::string& id, const std::string& name);

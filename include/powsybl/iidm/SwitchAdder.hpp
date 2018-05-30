@@ -23,7 +23,7 @@ class VoltageLevel;
 template <typename SwitchAdder>
 class AbstractSwitchAdder : public IdentifiableAdder<SwitchAdder> {
 public:
-    virtual ~AbstractSwitchAdder() = default;
+    ~AbstractSwitchAdder() override = default;
 
     virtual Switch& add() = 0;
 
@@ -63,7 +63,7 @@ public: // AbstractSwitchAdder
 public:
     explicit SwitchAdder(VoltageLevel& voltageLevel);
 
-    virtual ~SwitchAdder() = default;
+    ~SwitchAdder() override = default;
 
     SwitchAdder& setKind(const SwitchKind& kind);
 
@@ -94,7 +94,7 @@ public: // AbstractSwitchAdder
 public:
     explicit SwitchAdder(VoltageLevel& voltageLevel);
 
-    virtual ~SwitchAdder() = default;
+    ~SwitchAdder() override = default;
 
     SwitchAdder& setBus1(const std::string& bus1);
 

@@ -23,7 +23,7 @@ public:
     };
 
 public:
-    virtual ~Container() = default;
+    ~Container() override = default;
 
     const Type& getType() const;
 

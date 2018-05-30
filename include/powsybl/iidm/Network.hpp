@@ -37,7 +37,7 @@ public:
 
     Network(Network&&) = default;
 
-    virtual ~Network() = default;
+    ~Network() override = default;
 
     template <typename T> ObjectStore::iterator<T> begin() {
         return m_objectStore.begin<T>();

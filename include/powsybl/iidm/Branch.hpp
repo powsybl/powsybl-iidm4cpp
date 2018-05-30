@@ -24,7 +24,7 @@ public:
     };
 
 public:
-    virtual ~Branch() = default;
+    ~Branch() override = default;
 
     Terminal& getTerminal(const Side& side) const;
 

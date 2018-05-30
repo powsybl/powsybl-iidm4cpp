@@ -29,7 +29,7 @@ public: // Terminal
 public:
     BusTerminal(MultiStateObject& network, const std::string& connectableBusId, bool connected);
 
-    virtual ~BusTerminal() = default;
+    ~BusTerminal() override = default;
 
     const std::string& getConnectableBusId() const;
 

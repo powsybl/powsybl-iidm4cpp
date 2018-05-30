@@ -16,7 +16,7 @@ namespace iidm {
 
 class StaticVarCompensator : public Injection {
 public:
-    virtual ~StaticVarCompensator() = default;
+    ~StaticVarCompensator() override = default;
 
 protected:
     StaticVarCompensator(const std::string& id, const std::string& name);

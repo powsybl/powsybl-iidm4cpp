@@ -32,7 +32,7 @@ public: // Logger
 public:
     NoopLogger() = default;
 
-    virtual ~NoopLogger() = default;
+    ~NoopLogger() override = default;
 
 private: // Logger
     void log(Level level, const std::string& message) override;

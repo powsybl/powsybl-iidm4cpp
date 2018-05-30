@@ -23,7 +23,7 @@ class VoltageLevel;
 
 class Terminal : public Stateful {
 public:
-    virtual ~Terminal() = default;
+    ~Terminal() override = default;
 
     bool connect();
 

@@ -19,7 +19,7 @@ namespace iidm {
 
 class Injection : public Connectable {
 public:
-    virtual ~Injection() = default;
+    ~Injection() override = default;
 
     const Terminal& getTerminal() const;
 

@@ -24,7 +24,7 @@ class Network;
 
 class Connectable : public Identifiable, public Stateful {
 public:
-    virtual ~Connectable() = default;
+    ~Connectable() override = default;
 
     Terminal& addTerminal(std::unique_ptr<Terminal>&& terminal);
 

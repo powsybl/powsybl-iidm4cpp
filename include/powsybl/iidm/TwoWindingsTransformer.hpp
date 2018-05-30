@@ -16,7 +16,7 @@ namespace iidm {
 
 class TwoWindingsTransformer : public Branch {
 public:
-    virtual ~TwoWindingsTransformer() = default;
+    ~TwoWindingsTransformer() override = default;
 
 protected:
     TwoWindingsTransformer(const std::string& id, const std::string& name);

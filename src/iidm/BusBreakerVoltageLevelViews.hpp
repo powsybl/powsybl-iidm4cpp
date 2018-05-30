@@ -45,7 +45,7 @@ public: // BusBreakerView
 public:
     explicit BusBreakerViewImpl(BusBreakerVoltageLevel& voltageLevel);
 
-    virtual ~BusBreakerViewImpl() = default;
+    ~BusBreakerViewImpl() override = default;
 
 private:
     BusBreakerVoltageLevel& m_voltageLevel;
@@ -58,7 +58,7 @@ public:
 public:
     explicit BusViewImpl(BusBreakerVoltageLevel& voltageLevel);
 
-    virtual ~BusViewImpl() = default;
+    ~BusViewImpl() override = default;
 
 private:
     BusBreakerVoltageLevel& m_voltageLevel;

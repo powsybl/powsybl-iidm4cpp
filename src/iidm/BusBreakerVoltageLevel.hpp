@@ -54,7 +54,7 @@ public:
     BusBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                            double nominalVoltage, double lowVoltageLimit, double highVoltagelimit);
 
-    virtual ~BusBreakerVoltageLevel() = default;
+    ~BusBreakerVoltageLevel() override = default;
 
     Bus& addBus(std::unique_ptr<ConfiguredBus>&& ptrBus);
 

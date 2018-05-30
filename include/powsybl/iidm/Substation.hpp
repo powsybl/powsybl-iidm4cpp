@@ -27,7 +27,7 @@ class Substation : public Container {
 public:
     Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso);
 
-    virtual ~Substation() = default;
+    ~Substation() override = default;
 
     Substation& addGeographicalTag(const std::string& geographicalTag);
 

@@ -24,7 +24,7 @@ public:
     Load(MultiStateObject& network, const std::string& id, const std::string& name, const LoadType& loadType,
          double p0, double q0);
 
-    virtual ~Load() = default;
+    ~Load() override = default;
 
     const LoadType& getLoadType() const;
 

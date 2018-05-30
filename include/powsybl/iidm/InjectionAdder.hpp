@@ -22,7 +22,7 @@ class Terminal;
 template <typename Adder>
 class InjectionAdder : public IdentifiableAdder<Adder> {
 public:
-    virtual ~InjectionAdder() = default;
+    ~InjectionAdder() override = default;
 
     Adder& setBus(const std::string& bus);
 

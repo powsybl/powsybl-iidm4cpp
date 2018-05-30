@@ -32,7 +32,7 @@ public: // Logger
 public:
     ConsoleLogger() = default;
 
-    virtual ~ConsoleLogger() = default;
+    ~ConsoleLogger() override = default;
 
 private: // Logger
     void log(Level level, const std::string& message) override;

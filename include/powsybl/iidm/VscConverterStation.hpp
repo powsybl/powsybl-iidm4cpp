@@ -16,7 +16,7 @@ namespace iidm {
 
 class VscConverterStation : public HvdcConverterStation {
 public:
-    virtual ~VscConverterStation() = default;
+    ~VscConverterStation() override = default;
 
 protected:
     VscConverterStation(const std::string& id, const std::string& name);

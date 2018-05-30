@@ -16,7 +16,7 @@ class AssertionError : public std::runtime_error {
 public:
     explicit AssertionError(const std::string& message);
 
-    virtual ~AssertionError() = default;
+    ~AssertionError() override = default;
 };
 
 }  // namespace powsybl

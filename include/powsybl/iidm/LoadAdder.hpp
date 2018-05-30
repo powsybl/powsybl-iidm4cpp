@@ -21,7 +21,7 @@ class VoltageLevel;
 
 class LoadAdder : public InjectionAdder<LoadAdder> {
 public:
-    virtual ~LoadAdder() = default;
+    ~LoadAdder() override = default;
 
     Load& add();
 

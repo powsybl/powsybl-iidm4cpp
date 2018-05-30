@@ -45,7 +45,7 @@ public:
      */
     MergedBus(const std::string& id, std::set<std::reference_wrapper<ConfiguredBus> >&& buses);
 
-    virtual ~MergedBus() = default;
+    ~MergedBus() override = default;
 
     /**
      * Invalidate this bus after the voltage level topology changed

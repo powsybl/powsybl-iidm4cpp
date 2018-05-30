@@ -31,7 +31,7 @@ private: // IdentifiableAdder
 public:
     explicit BusAdder(VoltageLevel& voltageLevel);
 
-    virtual ~BusAdder() = default;
+    ~BusAdder() override = default;
 
 private:
     VoltageLevel& m_voltageLevel;
