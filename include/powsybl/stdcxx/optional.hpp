@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_OPTIONAL_HPP
-#define POWSYBL_IIDM_OPTIONAL_HPP
+#ifndef POWSYBL_STDCXX_OPTIONAL_HPP
+#define POWSYBL_STDCXX_OPTIONAL_HPP
 
 #if __cplusplus >= 201703L
 
@@ -30,4 +30,4 @@ using boost::optional;
 
 #endif
 
-#endif  // POWSYBL_IIDM_OPTIONAL_HPP
+#endif  // POWSYBL_STDCXX_OPTIONAL_HPP

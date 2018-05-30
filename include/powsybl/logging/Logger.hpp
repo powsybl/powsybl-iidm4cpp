@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_LOGGER_HPP
-#define POWSYBL_IIDM_LOGGER_HPP
+#ifndef POWSYBL_LOGGING_LOGGER_HPP
+#define POWSYBL_LOGGING_LOGGER_HPP
 
 #include <string>
 
@@ -129,4 +129,4 @@ private:
 
 #include <powsybl/logging/Logger.hxx>
 
-#endif  // POWSYBL_IIDM_LOGGER_HPP
+#endif  // POWSYBL_LOGGING_LOGGER_HPP

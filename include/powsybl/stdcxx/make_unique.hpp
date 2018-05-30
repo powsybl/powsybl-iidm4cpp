@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_MAKE_UNIQUE_HPP
-#define POWSYBL_IIDM_MAKE_UNIQUE_HPP
+#ifndef POWSYBL_STDCXX_MAKE_UNIQUE_HPP
+#define POWSYBL_STDCXX_MAKE_UNIQUE_HPP
 
 #include <memory>
 
@@ -31,4 +31,4 @@ std::unique_ptr<T> make_unique(Args&&... args) {
 
 #endif
 
-#endif  // POWSYBL_IIDM_MAKE_UNIQUE_HPP
+#endif  // POWSYBL_STDCXX_MAKE_UNIQUE_HPP

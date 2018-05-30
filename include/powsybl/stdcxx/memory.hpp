@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_MEMORY_HPP
-#define POWSYBL_IIDM_MEMORY_HPP
+#ifndef POWSYBL_STDCXX_MEMORY_HPP
+#define POWSYBL_STDCXX_MEMORY_HPP
 
 #include <memory>
 
@@ -19,4 +19,4 @@ inline bool areSame(const T& object1, const U& object2) {
 
 }  // namespace stdcxx
 
-#endif  // POWSYBL_IIDM_MEMORY_HPP
+#endif  // POWSYBL_STDCXX_MEMORY_HPP

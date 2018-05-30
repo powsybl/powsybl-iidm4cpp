@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_POWSYBLEXCEPTION_HPP
-#define POWSYBL_IIDM_POWSYBLEXCEPTION_HPP
+#ifndef POWSYBL_POWSYBLEXCEPTION_HPP
+#define POWSYBL_POWSYBLEXCEPTION_HPP
 
 #include <stdexcept>
 
@@ -21,4 +21,4 @@ public:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_POWSYBLEXCEPTION_HPP
+#endif  // POWSYBL_POWSYBLEXCEPTION_HPP

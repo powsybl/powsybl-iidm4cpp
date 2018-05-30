@@ -5,10 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_ITERATORS_HXX
-#define POWSYBL_IIDM_ITERATORS_HXX
+#ifndef POWSYBL_IIDM_ITERATORS_ITERATORS_HXX
+#define POWSYBL_IIDM_ITERATORS_ITERATORS_HXX
 
 #include <powsybl/iidm/iterators/NetworkFastIterator.hxx>
 #include <powsybl/iidm/iterators/NetworkIterator.hxx>
 
-#endif  // POWSYBL_IIDM_ITERATORS_HXX
+#endif  // POWSYBL_IIDM_ITERATORS_ITERATORS_HXX

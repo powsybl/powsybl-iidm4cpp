@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_LOGGERFACTORY_HPP
-#define POWSYBL_IIDM_LOGGERFACTORY_HPP
+#ifndef POWSYBL_LOGGING_LOGGERFACTORY_HPP
+#define POWSYBL_LOGGING_LOGGERFACTORY_HPP
 
 #include <map>
 #include <memory>
@@ -84,4 +84,4 @@ private:
 
 #include <powsybl/logging/LoggerFactory.hxx>
 
-#endif  // POWSYBL_IIDM_LOGGERFACTORY_HPP
+#endif  // POWSYBL_LOGGING_LOGGERFACTORY_HPP

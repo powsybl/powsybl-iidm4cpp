@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_DEMANGLE_HPP
-#define POWSYBL_IIDM_DEMANGLE_HPP
+#ifndef POWSYBL_STDCXX_DEMANGLE_HPP
+#define POWSYBL_STDCXX_DEMANGLE_HPP
 
 #include <string>
 #include <typeinfo>
@@ -39,4 +39,4 @@ std::string simpleClassName(const T& t) {
 
 }  // namespace stdcxx
 
-#endif  // POWSYBL_IIDM_DEMANGLE_HPP
+#endif  // POWSYBL_STDCXX_DEMANGLE_HPP

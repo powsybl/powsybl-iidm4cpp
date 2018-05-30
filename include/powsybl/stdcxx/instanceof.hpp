@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_INSTANCEOF_HPP
-#define POWSYBL_IIDM_INSTANCEOF_HPP
+#ifndef POWSYBL_STDCXX_INSTANCEOF_HPP
+#define POWSYBL_STDCXX_INSTANCEOF_HPP
 
 namespace stdcxx {
 
@@ -22,4 +22,4 @@ inline bool isInstanceOf(const std::unique_ptr<T>& pointer) {
 
 }  // namespace stdcxx
 
-#endif  // POWSYBL_IIDM_INSTANCEOF_HPP
+#endif  // POWSYBL_STDCXX_INSTANCEOF_HPP

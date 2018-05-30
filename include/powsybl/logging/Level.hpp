@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_LEVEL_HPP
-#define POWSYBL_IIDM_LEVEL_HPP
+#ifndef POWSYBL_LOGGING_LEVEL_HPP
+#define POWSYBL_LOGGING_LEVEL_HPP
 
 #include <string>
 
@@ -35,4 +35,4 @@ const std::string& getLevelName(const Level& level);
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_LEVEL_HPP
+#endif  // POWSYBL_LOGGING_LEVEL_HPP

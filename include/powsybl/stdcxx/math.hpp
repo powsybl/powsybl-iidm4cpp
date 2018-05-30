@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_MATH_HPP
-#define POWSYBL_IIDM_MATH_HPP
+#ifndef POWSYBL_STDCXX_MATH_HPP
+#define POWSYBL_STDCXX_MATH_HPP
 
 #include <limits>
 
@@ -19,4 +19,4 @@ inline T nan() {
 
 }  // namespace stdcxx
 
-#endif  // POWSYBL_IIDM_MATH_HPP
+#endif  // POWSYBL_STDCXX_MATH_HPP

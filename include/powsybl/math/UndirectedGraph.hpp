@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_UNDIRECTEDGRAPH_HPP
-#define POWSYBL_IIDM_UNDIRECTEDGRAPH_HPP
+#ifndef POWSYBL_MATH_UNDIRECTEDGRAPH_HPP
+#define POWSYBL_MATH_UNDIRECTEDGRAPH_HPP
 
 #include <memory>
 #include <mutex>
@@ -158,4 +158,4 @@ private:
 
 #include <powsybl/math/UndirectedGraph.hxx>
 
-#endif  // POWSYBL_IIDM_UNDIRECTEDGRAPH_HPP
+#endif  // POWSYBL_MATH_UNDIRECTEDGRAPH_HPP

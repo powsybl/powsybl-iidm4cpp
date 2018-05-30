@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_NETWORKITERATOR_HPP
-#define POWSYBL_IIDM_NETWORKITERATOR_HPP
+#ifndef POWSYBL_IIDM_ITERATORS_NETWORKITERATOR_HPP
+#define POWSYBL_IIDM_ITERATORS_NETWORKITERATOR_HPP
 
 namespace powsybl {
 
@@ -59,4 +59,4 @@ private:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_NETWORKITERATOR_HPP
+#endif  // POWSYBL_IIDM_ITERATORS_NETWORKITERATOR_HPP

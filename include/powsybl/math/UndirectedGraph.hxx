@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_UNDIRECTEDGRAPH_HXX
-#define POWSYBL_IIDM_UNDIRECTEDGRAPH_HXX
+#ifndef POWSYBL_MATH_UNDIRECTEDGRAPH_HXX
+#define POWSYBL_MATH_UNDIRECTEDGRAPH_HXX
 
 #include <powsybl/math/UndirectedGraph.hpp>
 
@@ -460,4 +460,4 @@ void UndirectedGraph<V, E>::Vertex::setObject(const stdcxx::Reference<V>& object
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_UNDIRECTEDGRAPH_HXX
+#endif  // POWSYBL_MATH_UNDIRECTEDGRAPH_HXX

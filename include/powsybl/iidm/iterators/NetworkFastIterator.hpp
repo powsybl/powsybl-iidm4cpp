@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_NETWORKFASTITERATOR_HPP
-#define POWSYBL_IIDM_NETWORKFASTITERATOR_HPP
+#ifndef POWSYBL_IIDM_ITERATORS_NETWORKFASTITERATOR_HPP
+#define POWSYBL_IIDM_ITERATORS_NETWORKFASTITERATOR_HPP
 
 #include <functional>
 #include <vector>
@@ -71,4 +71,4 @@ private:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_NETWORKFASTITERATOR_HPPs
+#endif  // POWSYBL_IIDM_ITERATORS_NETWORKFASTITERATOR_HPP

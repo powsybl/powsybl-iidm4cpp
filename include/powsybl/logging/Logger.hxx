@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_LOGGER_HXX
-#define POWSYBL_IIDM_LOGGER_HXX
+#ifndef POWSYBL_LOGGING_LOGGER_HXX
+#define POWSYBL_LOGGING_LOGGER_HXX
 
 #include <powsybl/logging/Logger.hpp>
 
@@ -55,4 +55,4 @@ void Logger::warn(const std::string& message, const T&... args) {
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_LOGGER_HXX
+#endif  // POWSYBL_LOGGING_LOGGER_HXX

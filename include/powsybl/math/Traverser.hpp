@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_TRAVERSER_HPP
-#define POWSYBL_IIDM_TRAVERSER_HPP
+#ifndef POWSYBL_MATH_TRAVERSER_HPP
+#define POWSYBL_MATH_TRAVERSER_HPP
 
 #include <functional>
 
@@ -22,4 +22,4 @@ typedef std::function<TraverseResult(unsigned long v1, unsigned long e, unsigned
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_TRAVERSER_HPP
+#endif  // POWSYBL_MATH_TRAVERSER_HPP

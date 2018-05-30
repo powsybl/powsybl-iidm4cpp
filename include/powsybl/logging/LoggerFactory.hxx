@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_LOGGERFACTORY_HXX
-#define POWSYBL_IIDM_LOGGERFACTORY_HXX
+#ifndef POWSYBL_LOGGING_LOGGERFACTORY_HXX
+#define POWSYBL_LOGGING_LOGGERFACTORY_HXX
 
 #include <powsybl/logging/LoggerFactory.hpp>
 
@@ -30,4 +30,4 @@ Logger& LoggerFactory::getLogger() {
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_LOGGERFACTORY_HXX
+#endif  // POWSYBL_LOGGING_LOGGERFACTORY_HXX

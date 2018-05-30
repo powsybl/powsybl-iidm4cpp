@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_MESSAGEFORMAT_HPP
-#define POWSYBL_IIDM_MESSAGEFORMAT_HPP
+#ifndef POWSYBL_LOGGING_MESSAGEFORMAT_HPP
+#define POWSYBL_LOGGING_MESSAGEFORMAT_HPP
 
 #include <set>
 #include <string>
@@ -58,4 +58,4 @@ std::string toString(const std::set<T>& set);
 
 #include <powsybl/logging/MessageFormat.hxx>
 
-#endif  // POWSYBL_IIDM_MESSAGEFORMAT_HPP
+#endif  // POWSYBL_LOGGING_MESSAGEFORMAT_HPP

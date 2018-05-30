@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_PUT_TIME_HPP
-#define POWSYBL_IIDM_PUT_TIME_HPP
+#ifndef POWSYBL_STDCXX_PUT_TIME_HPP
+#define POWSYBL_STDCXX_PUT_TIME_HPP
 
 #ifndef __GNUC__
 #    define HAS_PUT_TIME 1
@@ -50,4 +50,4 @@ std::string put_time(const struct std::tm* time, const char* format) {
 
 #endif  // HAS_PUT_TIME
 
-#endif  // POWSYBL_IIDM_PUT_TIME_HPP
+#endif  // POWSYBL_STDCXX_PUT_TIME_HPP

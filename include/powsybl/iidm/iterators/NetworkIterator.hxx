@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_NETWORKITERATOR_HXX
-#define POWSYBL_IIDM_NETWORKITERATOR_HXX
+#ifndef POWSYBL_IIDM_ITERATORS_NETWORKITERATOR_HXX
+#define POWSYBL_IIDM_ITERATORS_NETWORKITERATOR_HXX
 
 #include <memory>
 
@@ -106,4 +106,4 @@ void NetworkIterator<T, Iterator>::check() const {
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_NETWORKITERATOR_HXX
+#endif  // POWSYBL_IIDM_ITERATORS_NETWORKITERATOR_HXX

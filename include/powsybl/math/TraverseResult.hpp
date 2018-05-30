@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_TRAVERSERESULT_HPP
-#define POWSYBL_IIDM_TRAVERSERESULT_HPP
+#ifndef POWSYBL_MATH_TRAVERSERESULT_HPP
+#define POWSYBL_MATH_TRAVERSERESULT_HPP
 
 namespace powsybl {
 
@@ -21,4 +21,4 @@ enum class TraverseResult {
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_TRAVERSERESULT_HPP
+#endif  // POWSYBL_MATH_TRAVERSERESULT_HPP
