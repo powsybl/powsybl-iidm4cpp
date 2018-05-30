@@ -49,8 +49,8 @@ public:
     virtual void removeSwitch(const std::string& switchId) = 0;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BUSBREAKERVIEW_HPP

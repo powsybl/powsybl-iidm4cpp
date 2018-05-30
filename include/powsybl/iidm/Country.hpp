@@ -268,8 +268,8 @@ enum class Country : unsigned int {
 
 const std::string& getCountryName(const Country& country);
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_COUNTRY_HPP

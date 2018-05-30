@@ -58,8 +58,8 @@ private:
     std::vector<double> m_q0;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_LOAD_HPP

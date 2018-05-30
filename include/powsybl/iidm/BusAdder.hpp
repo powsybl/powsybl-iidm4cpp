@@ -37,8 +37,8 @@ private:
     VoltageLevel& m_voltageLevel;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BUSADDER_HPP

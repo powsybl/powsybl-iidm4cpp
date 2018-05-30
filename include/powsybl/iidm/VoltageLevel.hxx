@@ -48,8 +48,8 @@ T& VoltageLevel::getConnectable(const std::string& id) {
     return dynamic_cast<T&>(connectable);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_VOLTAGELEVEL_HXX

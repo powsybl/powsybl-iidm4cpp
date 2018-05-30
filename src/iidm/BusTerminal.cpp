@@ -88,6 +88,6 @@ std::ostream& operator<<(std::ostream& stream, const BusTerminal& busTerminal) {
     return stream;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

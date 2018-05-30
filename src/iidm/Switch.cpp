@@ -88,6 +88,6 @@ Switch& Switch::setRetained(bool retained) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

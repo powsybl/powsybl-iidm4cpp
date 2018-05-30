@@ -19,6 +19,6 @@ TEST(BusbarSection, integrity) {
     // TODO
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

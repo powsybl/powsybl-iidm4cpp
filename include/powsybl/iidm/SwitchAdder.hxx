@@ -62,8 +62,8 @@ SwitchAdder& AbstractSwitchAdder<SwitchAdder>::setOpen(bool open) {
     return static_cast<SwitchAdder&>(*this);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_SWITCHADDER_HXX

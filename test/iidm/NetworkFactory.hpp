@@ -16,8 +16,8 @@ namespace iidm {
 
 Network createNetwork();
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NETWORKFACTORY_HPP

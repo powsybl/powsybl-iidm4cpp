@@ -123,6 +123,6 @@ TEST(Load, multistate) {
     ASSERT_EQ(1ul, network.getStateManager().getStateArraySize());
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

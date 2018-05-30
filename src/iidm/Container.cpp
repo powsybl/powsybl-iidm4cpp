@@ -20,6 +20,6 @@ const Container::Type& Container::getType() const {
     return m_type;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

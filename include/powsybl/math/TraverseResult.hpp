@@ -17,8 +17,8 @@ enum class TraverseResult {
     TERMINATE
 };
 
-}
+}  // namespace math
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_TRAVERSERESULT_HPP

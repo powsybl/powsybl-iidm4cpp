@@ -34,8 +34,8 @@ private:
     unsigned long m_stateIndex;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_STATECONTEXTGUARD_HPP

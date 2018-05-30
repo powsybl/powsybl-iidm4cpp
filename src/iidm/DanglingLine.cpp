@@ -15,6 +15,6 @@ DanglingLine::DanglingLine(const std::string& id, const std::string& name) :
     Injection(id, name, ConnectableType::DANGLING_LINE) {
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

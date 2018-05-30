@@ -50,6 +50,6 @@ std::ostream& operator<<(std::ostream& stream, const Branch::Side& side) {
     return stream;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

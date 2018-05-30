@@ -102,8 +102,8 @@ void NetworkIterator<T, Iterator>::check() const {
     }
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NETWORKITERATOR_HXX

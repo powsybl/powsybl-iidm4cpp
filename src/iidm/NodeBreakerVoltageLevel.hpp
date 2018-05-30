@@ -102,8 +102,8 @@ private:
     node_breaker_voltage_level::BusViewImpl m_busView;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVEL_HPP

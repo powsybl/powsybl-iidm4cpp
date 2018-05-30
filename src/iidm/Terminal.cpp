@@ -126,6 +126,6 @@ Terminal& Terminal::setVoltageLevel(const stdcxx::Reference<VoltageLevel>& volta
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

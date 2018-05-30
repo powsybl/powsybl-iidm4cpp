@@ -46,8 +46,8 @@ private:
     std::string m_name;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_IDENTIFIABLE_HPP

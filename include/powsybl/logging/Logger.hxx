@@ -51,8 +51,8 @@ void Logger::warn(const std::string& message, const T&... args) {
     }
 }
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_LOGGER_HXX

@@ -35,6 +35,6 @@ const std::string& BusAdder::getTypeDescription() const {
     return s_typeDescription;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

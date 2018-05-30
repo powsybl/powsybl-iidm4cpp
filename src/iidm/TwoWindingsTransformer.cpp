@@ -15,6 +15,6 @@ TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std:
     Branch(id, name, ConnectableType::TWO_WINDINGS_TRANSFORMER) {
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

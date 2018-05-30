@@ -18,8 +18,8 @@ namespace math {
 
 typedef std::function<TraverseResult(unsigned long v1, unsigned long e, unsigned long v2)> Traverser;
 
-}
+}  // namespace math
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_TRAVERSER_HPP

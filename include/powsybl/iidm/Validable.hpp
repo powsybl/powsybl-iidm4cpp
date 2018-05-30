@@ -21,8 +21,8 @@ public:
     virtual std::string getMessageHeader() const = 0;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_VALIDABLE_HPP

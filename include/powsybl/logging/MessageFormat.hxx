@@ -72,8 +72,8 @@ std::string toString(const std::set<T>& set) {
     return oss.str();
 }
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_MESSAGEFORMAT_HXX

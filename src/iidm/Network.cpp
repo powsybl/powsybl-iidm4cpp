@@ -103,6 +103,6 @@ Network& Network::setForecastDistance(int forecastDistance) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

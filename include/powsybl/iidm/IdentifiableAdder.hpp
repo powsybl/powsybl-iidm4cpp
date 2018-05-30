@@ -48,9 +48,9 @@ private:
     std::string m_name;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #include <powsybl/iidm/IdentifiableAdder.hxx>
 

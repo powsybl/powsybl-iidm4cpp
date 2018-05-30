@@ -32,8 +32,8 @@ protected:
     Injection(const std::string& id, const std::string& name, const ConnectableType& connectableType);
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_INJECTION_HPP

@@ -18,8 +18,8 @@ enum class SwitchKind {
     LOAD_BREAK_SWITCH
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_SWITCHKIND_HPP

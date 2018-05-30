@@ -23,8 +23,8 @@ protected:
 
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_GENERATOR_HPP

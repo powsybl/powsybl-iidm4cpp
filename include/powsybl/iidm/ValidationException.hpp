@@ -22,8 +22,8 @@ public:
     virtual ~ValidationException() = default;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_VALIDATIONEXCEPTION_HPP

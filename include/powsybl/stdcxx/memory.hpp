@@ -17,6 +17,6 @@ inline bool areSame(const T& object1, const U& object2) {
     return std::addressof(object1) == std::addressof(object2);
 }
 
-}
+}  // namespace stdcxx
 
 #endif  // POWSYBL_IIDM_MEMORY_HPP

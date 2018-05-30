@@ -33,8 +33,8 @@ private:
     stdcxx::Reference<MultiStateObject> m_network;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BUSBARSECTION_HPP

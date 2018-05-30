@@ -41,8 +41,8 @@ struct iterator_traits<Stateful> {
     typedef NetworkIterator<const Stateful, IdentifiableById::const_iterator> const_iterator;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_ITERATORS_HPP

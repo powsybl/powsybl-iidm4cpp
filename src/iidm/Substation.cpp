@@ -67,6 +67,6 @@ Substation& Substation::setTso(const std::string& tso) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

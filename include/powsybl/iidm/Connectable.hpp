@@ -60,8 +60,8 @@ private:
     std::vector<std::unique_ptr<Terminal> > m_terminals;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_CONNECTABLE_HPP

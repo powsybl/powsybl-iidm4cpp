@@ -22,6 +22,6 @@ StateContextGuard::~StateContextGuard() {
     m_context.setStateIndex(m_stateIndex);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

@@ -17,8 +17,8 @@ enum class ReactiveLimitsKind {
     CURVE
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_REACTIVELIMITSKIND_HPP

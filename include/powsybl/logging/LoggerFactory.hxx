@@ -26,9 +26,8 @@ Logger& LoggerFactory::getLogger() {
     return getLogger(stdcxx::demangle<T>());
 }
 
-}
+}  // namespace logging
 
-
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_LOGGERFACTORY_HXX

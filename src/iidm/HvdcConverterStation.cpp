@@ -16,7 +16,6 @@ HvdcConverterStation::HvdcConverterStation(const std::string& id, const std::str
 
 }
 
-}
+}  // namespace iidm
 
-}
-
+}  // namespace powsybl

@@ -60,8 +60,8 @@ private:
 
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NODETERMINAL_HPP

@@ -57,8 +57,8 @@ private:
 
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_VOLTAGELEVELADDER_HPP

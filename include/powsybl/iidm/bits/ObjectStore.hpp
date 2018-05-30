@@ -27,8 +27,8 @@ typedef std::vector<std::reference_wrapper<Identifiable> > Identifiables;
 
 typedef std::unordered_map<std::type_index, Identifiables> IdentifiablesByType;
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BITS_OBJECTSTORE_HPP

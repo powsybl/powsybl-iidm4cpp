@@ -84,6 +84,6 @@ NodeTerminal& NodeTerminal::setV(double v) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

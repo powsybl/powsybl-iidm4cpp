@@ -82,8 +82,8 @@ unsigned long ObjectStore::getObjectCount() const {
     return 0;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_OBJECTSTORE_HXX

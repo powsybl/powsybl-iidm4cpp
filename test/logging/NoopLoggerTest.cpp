@@ -22,7 +22,6 @@ TEST(NoopLogger, level) {
     ASSERT_FALSE(logger.isErrorEnabled());
 }
 
-}
+}  // namespace logging
 
-}
-
+}  // namespace powsybl

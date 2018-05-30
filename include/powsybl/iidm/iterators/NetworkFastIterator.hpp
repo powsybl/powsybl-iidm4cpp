@@ -67,8 +67,8 @@ private:
     Iterator m_end;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NETWORKFASTITERATOR_HPPs

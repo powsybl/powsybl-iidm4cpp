@@ -25,8 +25,8 @@ inline bool isIntermittent(const EnergySource& energySource) {
     return static_cast<bool>(energySource);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_ENERGYSOURCE_HPP

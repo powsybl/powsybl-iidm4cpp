@@ -82,6 +82,6 @@ Load& Load::setQ0(double q0) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

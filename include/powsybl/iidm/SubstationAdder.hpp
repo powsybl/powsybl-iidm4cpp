@@ -54,8 +54,8 @@ private:
     std::set<std::string> m_geographicalTags;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_SUBSTATIONADDER_HPP

@@ -79,8 +79,8 @@ private:
     unsigned long m_stateArraySize;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_STATEMANAGER_HPP

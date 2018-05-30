@@ -34,6 +34,6 @@ TEST(Network, forecastDistance) {
     EXPECT_EQ(1, network.getForecastDistance());
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

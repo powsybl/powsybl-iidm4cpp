@@ -46,9 +46,9 @@ private:
     std::string m_connectableBus;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #include <powsybl/iidm/InjectionAdder.hxx>
 

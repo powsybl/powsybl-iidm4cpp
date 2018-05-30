@@ -31,8 +31,8 @@ enum class Level : unsigned int {
  */
 const std::string& getLevelName(const Level& level);
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_LEVEL_HPP

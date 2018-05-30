@@ -70,6 +70,6 @@ Bus& CalculatedBus::setV(double v) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

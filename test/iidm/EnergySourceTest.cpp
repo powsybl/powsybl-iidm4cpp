@@ -22,6 +22,6 @@ TEST(EnergySource, isIntermittent) {
     ASSERT_FALSE(isIntermittent(EnergySource::OTHER));
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

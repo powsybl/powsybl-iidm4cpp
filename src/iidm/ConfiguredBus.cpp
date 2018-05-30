@@ -116,6 +116,6 @@ Bus& ConfiguredBus::setV(double v) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

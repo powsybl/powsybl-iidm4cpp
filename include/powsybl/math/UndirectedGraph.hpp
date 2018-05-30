@@ -152,9 +152,9 @@ private:
     stdcxx::Reference<V> m_object;
 };
 
-}
+}  // namespace math
 
-}
+}  // namespace powsybl
 
 #include <powsybl/math/UndirectedGraph.hxx>
 

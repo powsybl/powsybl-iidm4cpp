@@ -36,6 +36,6 @@ std::ostream& operator<<(std::ostream& stream, const ConnectableType& type) {
     return stream;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

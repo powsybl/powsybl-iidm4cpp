@@ -15,6 +15,6 @@ TieLine::TieLine(const std::string& id, const std::string& name) :
     Line(id, name) {
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

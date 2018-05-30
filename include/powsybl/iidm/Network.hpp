@@ -100,8 +100,8 @@ private:
     StateManager m_stateManager;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NETWORK_HPP

@@ -72,8 +72,8 @@ Adder& InjectionAdder<Adder>::setNode(int node) {
     return static_cast<Adder&>(*this);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_INJECTIONADDER_HXX

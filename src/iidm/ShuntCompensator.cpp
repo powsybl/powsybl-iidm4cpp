@@ -16,6 +16,6 @@ ShuntCompensator::ShuntCompensator(const std::string& id, const std::string& nam
 
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

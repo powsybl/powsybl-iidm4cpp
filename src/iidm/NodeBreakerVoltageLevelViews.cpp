@@ -145,8 +145,8 @@ void NodeBreakerViewImpl::traverse(unsigned long /*node*/, const Traverser& /*tr
     throw AssertionError("TODO");
 }
 
-}
+}  // namespace node_breaker_voltage_level
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

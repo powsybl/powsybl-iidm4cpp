@@ -96,9 +96,9 @@ private:
     double m_nominalVoltage;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #include <powsybl/iidm/VoltageLevel.hxx>
 

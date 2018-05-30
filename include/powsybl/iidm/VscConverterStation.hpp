@@ -22,8 +22,8 @@ protected:
     VscConverterStation(const std::string& id, const std::string& name);
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_VSCCONVERTERSTATION_HPP

@@ -46,6 +46,6 @@ TEST(LoggerFactory, test) {
     ASSERT_TRUE(stdcxx::areSame(expected, logger3));
 }
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl

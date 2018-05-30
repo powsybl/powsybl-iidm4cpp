@@ -21,6 +21,6 @@ const std::string& Bus::getTypeDescription() const {
     return s_typeDescription;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

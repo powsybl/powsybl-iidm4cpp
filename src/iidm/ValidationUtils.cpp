@@ -78,6 +78,6 @@ void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, doub
     }
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

@@ -25,8 +25,8 @@ public:
     virtual stdcxx::Reference<Bus> getBus(const std::string& busId) const = 0;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BUSVIEW_HPP

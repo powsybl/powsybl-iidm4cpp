@@ -16,6 +16,6 @@ ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const 
 
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

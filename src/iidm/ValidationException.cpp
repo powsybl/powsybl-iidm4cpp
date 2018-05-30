@@ -15,6 +15,6 @@ ValidationException::ValidationException(const Validable& validable, const std::
     PowsyblException(validable.getMessageHeader() + message) {
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

@@ -63,8 +63,8 @@ private:
 
 std::ostream& operator<<(std::ostream& stream, const BusTerminal& busTerminal);
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BUSTERMINAL_HPP

@@ -41,9 +41,8 @@ private:
     stdcxx::optional<unsigned long> m_node;
 };
 
+}  // namespace iidm
 
-}
-
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BUSBARSECTIONADDER_HPP

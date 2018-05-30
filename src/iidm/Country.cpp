@@ -269,6 +269,6 @@ const std::string& getCountryName(const Country& country) {
     return s_countryNames.at(static_cast<unsigned int>(country));
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

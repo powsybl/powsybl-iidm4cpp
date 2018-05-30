@@ -47,8 +47,8 @@ double checkVoltage(const Validable& validable, double voltage);
 
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit);
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_VALIDATIONUTILS_HPP

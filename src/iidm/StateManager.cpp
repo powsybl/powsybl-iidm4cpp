@@ -209,6 +209,6 @@ void StateManager::setWorkingState(const std::string& stateId) {
     m_stateContext->setStateIndex(index);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

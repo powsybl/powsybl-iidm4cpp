@@ -78,9 +78,9 @@ private:
     std::map<std::string, std::unique_ptr<Logger> > m_loggers;
 };
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl
 
 #include <powsybl/logging/LoggerFactory.hxx>
 

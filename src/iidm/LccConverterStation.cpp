@@ -15,6 +15,6 @@ LccConverterStation::LccConverterStation(const std::string& id, const std::strin
     HvdcConverterStation(id, name) {
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

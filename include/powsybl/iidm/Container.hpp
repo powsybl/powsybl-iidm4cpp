@@ -36,8 +36,8 @@ private:
     Container::Type m_type;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_CONTAINER_HPP

@@ -270,6 +270,6 @@ TEST(UndirectedGraph, traverse) {
     ASSERT_EQ(expected, encountered);
 }
 
-}
+}  // namespace math
 
-}
+}  // namespace powsybl

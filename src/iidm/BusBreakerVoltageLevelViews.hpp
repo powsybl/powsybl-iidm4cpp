@@ -64,10 +64,10 @@ private:
     BusBreakerVoltageLevel& m_voltageLevel;
 };
 
-}
+}  // namespace bus_breaker_voltage_level
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVIEWS_HPP

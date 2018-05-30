@@ -77,8 +77,8 @@ stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) const {
     return stdcxx::ref<Bus>(mergedBus);
 }
 
-}
+}  // namespace bus_breaker_voltage_level
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

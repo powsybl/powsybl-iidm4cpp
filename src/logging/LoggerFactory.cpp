@@ -45,6 +45,6 @@ Logger& LoggerFactory::getLoggerByName(const std::string& name) const {
     return s_defaultLogger;
 }
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl

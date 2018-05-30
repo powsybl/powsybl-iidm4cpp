@@ -70,8 +70,8 @@ private:
     std::vector<double> m_angle;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_CONFIGUREDBUS_HPP

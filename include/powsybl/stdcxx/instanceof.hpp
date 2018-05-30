@@ -20,6 +20,6 @@ inline bool isInstanceOf(const std::unique_ptr<T>& pointer) {
     return dynamic_cast<Base*>(pointer.get()) != nullptr;
 }
 
-}
+}  // namespace stdcxx
 
 #endif  // POWSYBL_IIDM_INSTANCEOF_HPP

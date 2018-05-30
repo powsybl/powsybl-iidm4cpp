@@ -82,6 +82,6 @@ VoltageLevel& VoltageLevel::setNominalVoltage(double nominalVoltage) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

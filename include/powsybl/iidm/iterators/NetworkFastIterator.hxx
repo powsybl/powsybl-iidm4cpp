@@ -132,8 +132,8 @@ void NetworkFastIterator<T, Iterator, Derived...>::check() const {
     }
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NETWORKFASTITERATOR_HXX

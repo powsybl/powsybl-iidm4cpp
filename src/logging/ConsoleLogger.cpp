@@ -58,6 +58,6 @@ void ConsoleLogger::log(Level level, const std::string& message) {
     }
 }
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl

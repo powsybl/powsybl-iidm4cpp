@@ -13,4 +13,4 @@ AssertionError::AssertionError(const std::string& message) :
     std::runtime_error(message) {
 }
 
-}
+}  // namespace powsybl

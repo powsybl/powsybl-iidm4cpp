@@ -64,8 +64,8 @@ private:
     bool m_valid;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_CALCULATEDBUS_HPP

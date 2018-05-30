@@ -39,6 +39,6 @@ TEST(MessageFormat, toString) {
     ASSERT_EQ("{0, 1, 2}", toString(set));
 }
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl

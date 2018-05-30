@@ -92,6 +92,6 @@ Reference<T> ref(const Reference<U>& reference) {
     return static_cast<bool>(reference) ? Reference<T>(dynamic_cast<T&>(reference.get())) : Reference<T>();
 }
 
-}
+}  // namespace stdcxx
 
 #endif  // POWSYBL_IIDM_OPTIONAL_REFERENCE_WRAPPER_HPP

@@ -52,9 +52,9 @@ std::string toString(const std::initializer_list<T>& list);
 template <typename T>
 std::string toString(const std::set<T>& set);
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl
 
 #include <powsybl/logging/MessageFormat.hxx>
 

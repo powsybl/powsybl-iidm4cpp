@@ -67,8 +67,8 @@ private:
     std::vector<std::reference_wrapper<VoltageLevel> > m_voltageLevels;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_SUBSTATION_HPP

@@ -123,9 +123,9 @@ private:
     virtual void log(Level level, const std::string& message) = 0;
 };
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl
 
 #include <powsybl/logging/Logger.hxx>
 

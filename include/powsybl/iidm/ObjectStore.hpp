@@ -61,9 +61,9 @@ private:
     template <typename Base, typename Iterator, typename... Derived> friend class NetworkFastIterator;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #include <powsybl/iidm/ObjectStore.hxx>
 #include <powsybl/iidm/iterators/Iterators.hxx>

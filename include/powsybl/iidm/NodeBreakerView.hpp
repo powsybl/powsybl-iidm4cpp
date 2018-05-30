@@ -66,8 +66,8 @@ public:
     virtual void traverse(unsigned long node, const Traverser& traverser) = 0;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NODEBREAKERVIEW_HPP

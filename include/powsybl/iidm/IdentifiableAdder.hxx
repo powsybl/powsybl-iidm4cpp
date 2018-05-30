@@ -41,8 +41,8 @@ Adder& IdentifiableAdder<Adder>::setName(const std::string& name) {
     return static_cast<Adder&>(*this);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_IDENTIFIABLEADDER_HXX

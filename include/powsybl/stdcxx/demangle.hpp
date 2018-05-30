@@ -37,6 +37,6 @@ std::string simpleClassName(const T& t) {
     return simpleClassName(typeid(t).name());
 }
 
-}
+}  // namespace stdcxx
 
 #endif  // POWSYBL_IIDM_DEMANGLE_HPP

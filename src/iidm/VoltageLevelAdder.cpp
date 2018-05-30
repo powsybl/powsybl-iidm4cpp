@@ -79,6 +79,6 @@ VoltageLevelAdder& VoltageLevelAdder::setTopologyKind(const TopologyKind& topolo
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

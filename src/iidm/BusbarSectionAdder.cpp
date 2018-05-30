@@ -49,6 +49,6 @@ BusbarSectionAdder& BusbarSectionAdder::setNode(unsigned long node) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

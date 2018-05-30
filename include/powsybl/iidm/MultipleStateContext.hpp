@@ -32,9 +32,8 @@ private:
     stdcxx::optional<unsigned long> m_index;
 };
 
-}
+}  // namespace iidm
 
-}
-
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_MULTIPLESTATECONTEXT_HPP

@@ -16,7 +16,7 @@ namespace stdcxx {
 
 using std::optional;
 
-}
+}  // namespace stdcxx
 
 #else
 
@@ -26,7 +26,7 @@ namespace stdcxx {
 
 using boost::optional;
 
-}
+}  // namespace stdcxx
 
 #endif
 

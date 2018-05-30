@@ -83,7 +83,7 @@ private:
     bool m_retained;
 };
 
-}
+}  // namespace node_breaker_view
 
 namespace bus_breaker_view {
 
@@ -106,11 +106,11 @@ private:
     std::string m_bus2;
 };
 
-}
+}  // namespace bus_breaker_view
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #include <powsybl/iidm/SwitchAdder.hxx>
 

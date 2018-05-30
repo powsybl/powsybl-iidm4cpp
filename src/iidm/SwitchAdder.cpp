@@ -58,7 +58,7 @@ SwitchAdder& SwitchAdder::setRetained(bool retained) {
     return *this;
 }
 
-}
+}  // namespace node_breaker_view
 
 namespace bus_breaker_view {
 
@@ -88,8 +88,8 @@ SwitchAdder& SwitchAdder::setBus2(const std::string& bus2) {
     return *this;
 }
 
-}
+}  // namespace bus_breaker_view
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

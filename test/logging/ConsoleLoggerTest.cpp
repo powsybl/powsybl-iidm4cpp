@@ -22,6 +22,6 @@ TEST(ConsoleLogger, level) {
     ASSERT_TRUE(logger.isErrorEnabled());
 }
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl

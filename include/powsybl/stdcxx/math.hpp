@@ -17,6 +17,6 @@ inline T nan() {
     return std::numeric_limits<T>::quiet_NaN();
 }
 
-}
+}  // namespace stdcxx
 
 #endif  // POWSYBL_IIDM_MATH_HPP

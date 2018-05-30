@@ -43,6 +43,6 @@ TEST(ObjectStore, NetworkFastIterator) {
     ASSERT_EQ(expected, actual);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

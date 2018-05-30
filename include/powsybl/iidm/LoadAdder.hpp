@@ -52,8 +52,8 @@ private:
     stdcxx::optional<double> m_q0;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_LOADADDER_HPP

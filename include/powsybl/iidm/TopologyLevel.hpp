@@ -18,8 +18,8 @@ enum class TopologyLevel {
     BUS_BRANCH
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_TOPOLOGYLEVEL_HPP

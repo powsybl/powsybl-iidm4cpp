@@ -40,8 +40,8 @@ const std::string& getSideName(const Branch::Side& side);
 
 std::ostream& operator<<(std::ostream& stream, const Branch::Side& side);
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BRANCH_HPP

@@ -31,8 +31,8 @@ private:
     friend class StateManager;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_STATECONTEXT_HPP

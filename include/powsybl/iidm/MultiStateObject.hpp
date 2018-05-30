@@ -25,8 +25,8 @@ public:
     virtual StateManager& getStateManager() = 0;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_MULTISTATEOBJECT_HPP

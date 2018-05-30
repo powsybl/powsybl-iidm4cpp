@@ -31,8 +31,7 @@ const std::string& getConnectableTypeName(const ConnectableType& type);
 
 std::ostream& operator<<(std::ostream& stream, const ConnectableType& type);
 
-}
+}  // namespace iidm
 
-}
-
+}  // namespace powsybl
 #endif  // POWSYBL_IIDM_CONNECTABLETYPE_HPP

@@ -159,6 +159,6 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
     ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getSwitchCount());
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

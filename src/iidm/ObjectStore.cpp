@@ -55,6 +55,6 @@ void ObjectStore::remove(Identifiable& identifiable) {
     }
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

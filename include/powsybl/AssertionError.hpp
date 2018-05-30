@@ -19,6 +19,6 @@ public:
     virtual ~AssertionError() = default;
 };
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_ASSERTIONERROR_HPP

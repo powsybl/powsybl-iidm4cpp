@@ -43,6 +43,6 @@ TEST(Substation, country) {
     ASSERT_EQ(1ul, network.getSubstationCount());
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

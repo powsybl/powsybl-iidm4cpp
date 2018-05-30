@@ -23,6 +23,6 @@ Terminal& Injection::getTerminal() {
     return getTerminal(0);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

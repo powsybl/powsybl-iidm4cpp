@@ -456,8 +456,8 @@ void UndirectedGraph<V, E>::Vertex::setObject(const stdcxx::Reference<V>& object
     m_object = object;
 }
 
-}
+}  // namespace math
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_UNDIRECTEDGRAPH_HXX

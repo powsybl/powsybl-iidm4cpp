@@ -16,6 +16,6 @@ Generator::Generator(const std::string& id, const std::string& name) :
 
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

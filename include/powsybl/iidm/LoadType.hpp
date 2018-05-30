@@ -18,8 +18,8 @@ enum class LoadType {
     FICTITIOUS
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_LOADTYPE_HPP

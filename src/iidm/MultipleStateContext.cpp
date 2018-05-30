@@ -34,6 +34,6 @@ void MultipleStateContext::setStateIndex(unsigned long index) {
     m_index = index;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

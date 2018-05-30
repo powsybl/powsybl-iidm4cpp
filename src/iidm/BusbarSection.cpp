@@ -37,6 +37,6 @@ double BusbarSection::getV() const {
     return terminal.getV();
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

@@ -18,6 +18,6 @@ TEST(Country, getCountryName) {
     ASSERT_EQ(u8"BELGIUM", getCountryName(Country::BE));
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

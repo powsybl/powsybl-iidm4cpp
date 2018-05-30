@@ -173,6 +173,6 @@ TEST(BusBreakerVoltageLevel, BusBreakerView) {
     view.removeAllBuses();
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

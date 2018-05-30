@@ -89,6 +89,6 @@ TEST(VoltageLevel, integrity) {
     ASSERT_EQ(440, vl1.getHighVoltageLimit());
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

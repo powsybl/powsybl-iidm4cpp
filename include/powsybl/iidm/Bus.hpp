@@ -41,8 +41,8 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_BUS_HPP

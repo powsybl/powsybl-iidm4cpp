@@ -27,7 +27,7 @@ namespace stdcxx {
 
 using std::put_time;
 
-}
+}  // namespace stdcxx
 
 #else
 
@@ -46,7 +46,7 @@ std::string put_time(const struct std::tm* time, const char* format) {
     return "";
 }
 
-}
+}  // namespace stdcxx
 
 #endif  // HAS_PUT_TIME
 

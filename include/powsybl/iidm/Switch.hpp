@@ -68,8 +68,8 @@ private:
     std::vector<bool> m_retained;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_SWITCH_HPP

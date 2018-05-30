@@ -28,7 +28,7 @@ std::string demangle(const std::type_info& type) {
 
 std::string simpleClassName(const char* className) {
     const std::string& strClassName = demangle(className);
-    size_t index = strClassName.find_last_of("::");
+    std::size_t index = strClassName.find_last_of("::");
 
     return (index == std::string::npos) ? strClassName : strClassName.substr(index + 1, strClassName.size());
 }
@@ -38,4 +38,4 @@ std::string simpleClassName(const std::type_info& type) {
     return simpleClassName(type.name());
 }
 
-}
+}  // namespace stdcxx

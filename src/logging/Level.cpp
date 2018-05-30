@@ -25,6 +25,6 @@ const std::string& getLevelName(const Level& level) {
     return s_levelNames.at(static_cast<unsigned int>(level));
 }
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl

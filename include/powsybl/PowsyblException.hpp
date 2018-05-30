@@ -19,6 +19,6 @@ public:
     virtual ~PowsyblException() = default;
 };
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_POWSYBLEXCEPTION_HPP

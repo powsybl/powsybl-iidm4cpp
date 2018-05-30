@@ -62,8 +62,8 @@ private:
 
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_MERGEDBUS_HPP

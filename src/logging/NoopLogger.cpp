@@ -35,6 +35,6 @@ void NoopLogger::log(Level /*level*/, const std::string& /*message*/) {
     // Nothing to do
 }
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl

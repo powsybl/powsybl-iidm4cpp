@@ -258,6 +258,6 @@ void NodeBreakerVoltageLevel::setNodeCount(unsigned long nodeCount) {
     }
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

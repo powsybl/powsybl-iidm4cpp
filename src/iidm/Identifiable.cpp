@@ -30,6 +30,6 @@ const std::string& Identifiable::getName() const {
     return m_name;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

@@ -291,6 +291,6 @@ void BusBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
     getNetwork().remove(aSwitch.get());
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

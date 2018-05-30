@@ -96,6 +96,6 @@ void Connectable::remove() {
     network.remove(*this);
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

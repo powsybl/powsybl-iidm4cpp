@@ -17,8 +17,8 @@ enum class TopologyKind {
     BUS_BREAKER
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_TOPOLOGYKIND_HPP

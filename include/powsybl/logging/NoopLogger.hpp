@@ -38,8 +38,8 @@ private: // Logger
     void log(Level level, const std::string& message) override;
 };
 
-}
+}  // namespace logging
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NOOPLOGGER_HPP

@@ -15,6 +15,6 @@ Line::Line(const std::string& id, const std::string& name) :
     Branch(id, name, ConnectableType::LINE) {
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

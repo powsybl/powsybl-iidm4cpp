@@ -59,6 +59,6 @@ Network createNetwork() {
     return network;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

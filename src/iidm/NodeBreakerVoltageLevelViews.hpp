@@ -110,10 +110,10 @@ private:
     NodeBreakerVoltageLevel& m_voltageLevel;
 };
 
-}
+}  // namespace node_breaker_voltage_level
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVIEWS_HPP
