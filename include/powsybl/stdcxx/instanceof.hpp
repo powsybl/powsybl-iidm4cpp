@@ -8,6 +8,8 @@
 #ifndef POWSYBL_STDCXX_INSTANCEOF_HPP
 #define POWSYBL_STDCXX_INSTANCEOF_HPP
 
+#include <memory>
+
 namespace stdcxx {
 
 template <typename Base, typename T>
