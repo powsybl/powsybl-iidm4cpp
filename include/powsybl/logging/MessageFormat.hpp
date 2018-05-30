@@ -26,7 +26,7 @@ namespace logging {
  * @return the formatted message
  */
 template <typename... Args>
-std::string format(const std::string& message, const Args&... parameters);
+std::string format(const std::string& message, const Args&... args);
 
 /**
  * A convenient function to convert an initializer_list<T> to a string
