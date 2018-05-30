@@ -9,8 +9,8 @@
 #define POWSYBL_IIDM_ITERATORS_NETWORKFASTITERATOR_HPP
 
 #include <functional>
-#include <vector>
 #include <utility>
+#include <vector>
 
 namespace powsybl {
 
