@@ -31,7 +31,7 @@ public:
         PointAdder& setP(double p);
 
     private:
-        PointAdder(ReactiveCapabilityCurveAdder& adder);
+        explicit PointAdder(ReactiveCapabilityCurveAdder& adder);
 
         friend ReactiveCapabilityCurveAdder;
 
@@ -46,7 +46,7 @@ public:
     };
 
 public:
-    ReactiveCapabilityCurveAdder(ReactiveLimitsHolder& owner);
+    explicit ReactiveCapabilityCurveAdder(ReactiveLimitsHolder& owner);
 
     ~ReactiveCapabilityCurveAdder() = default;
 

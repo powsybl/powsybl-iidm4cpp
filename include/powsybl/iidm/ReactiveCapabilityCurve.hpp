@@ -46,7 +46,7 @@ public: // ReactiveLimits
     virtual double getMinQ(double p) const override;
 
 public:
-    ReactiveCapabilityCurve(std::map<double, Point>&& points);
+    explicit ReactiveCapabilityCurve(std::map<double, Point>&& points);
 
     ReactiveCapabilityCurve(const ReactiveCapabilityCurve&) = default;
 
