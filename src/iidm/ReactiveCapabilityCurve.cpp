@@ -14,7 +14,7 @@ namespace powsybl {
 
 namespace iidm {
 
-ReactiveCapabilityCurve::Point::Point(double p, double minQ, double maxQ):
+ReactiveCapabilityCurve::Point::Point(double p, double minQ, double maxQ) :
     m_p(p),
     m_minQ(minQ),
     m_maxQ(maxQ) {

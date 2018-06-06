@@ -19,7 +19,7 @@ namespace powsybl {
 
 namespace iidm {
 
-ReactiveCapabilityCurveAdder::PointAdder::PointAdder(ReactiveCapabilityCurveAdder& adder):
+ReactiveCapabilityCurveAdder::PointAdder::PointAdder(ReactiveCapabilityCurveAdder& adder) :
     m_adder(adder) {
 }
 

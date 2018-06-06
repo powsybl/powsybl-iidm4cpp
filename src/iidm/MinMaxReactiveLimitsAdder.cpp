@@ -17,7 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-MinMaxReactiveLimitsAdder::MinMaxReactiveLimitsAdder(ReactiveLimitsHolder& owner):
+MinMaxReactiveLimitsAdder::MinMaxReactiveLimitsAdder(ReactiveLimitsHolder& owner) :
     m_owner(owner) {
 }
 

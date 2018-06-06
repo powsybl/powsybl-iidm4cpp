@@ -33,7 +33,6 @@ StateManager::StateManager(Network& network) :
 StateManager::StateManager(StateManager&& stateManager) noexcept :
     m_network(stateManager.m_network),
     m_stateContext(std::move(stateManager.m_stateContext)),
-    m_stateMutex(),
     m_statesById(std::move(stateManager.m_statesById)),
     m_unusedIndexes(std::move(stateManager.m_unusedIndexes)),
     m_stateArraySize(stateManager.m_stateArraySize) {
