@@ -11,8 +11,8 @@
 #include <powsybl/iidm/StateManager.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
-#include "ValidationUtils.hpp"
 #include "NodeBreakerVoltageLevel.hpp"
+#include "ValidationUtils.hpp"
 
 namespace powsybl {
 
