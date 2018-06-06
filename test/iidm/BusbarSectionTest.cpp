@@ -12,11 +12,11 @@ namespace powsybl {
 namespace iidm {
 
 TEST(BusbarSection, constructor) {
-    // TODO
+    // TODO(mathbagu): move code from NodeBreakerVoltageLevelTest here
 }
 
 TEST(BusbarSection, integrity) {
-    // TODO
+    // TODO(mathbagu): move code from NodeBreakerVoltageLevelTest here
 }
 
 }  // namespace iidm

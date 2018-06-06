@@ -222,7 +222,7 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
 }
 
 void BusBreakerVoltageLevel::invalidateCache() {
-    // TODO
+    // TODO(mathbagu): require calculatedBusTopology
     // calculatedBusTopology.invalidateCache();
     // getNetwork().getConnectedComponentsManager().invalidate();
     // getNetwork().getSynchronousComponentsManager().invalidate();

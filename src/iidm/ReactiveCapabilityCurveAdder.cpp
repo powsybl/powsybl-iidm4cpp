@@ -72,7 +72,7 @@ ReactiveCapabilityCurveAdder& ReactiveCapabilityCurveAdder::addPoint(ReactiveCap
         throw ValidationException(owner, logging::format("A point is already defined for active power %1%", point.getP()));
     }
 
-    // TODO: to be activated in IIDM v1.1
+    // TODO(mathbagu): to be activated in IIDM v1.1
     // if (point.getMaxQ() < point.getMinQ()) {
     //     throw ValidationException(owner, "Maximum reactive power is expected to be greater than or equal to minimum reactive power");
     // }

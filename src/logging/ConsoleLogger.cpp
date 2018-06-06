@@ -21,7 +21,7 @@ std::string now() {
 
     struct std::tm result = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nullptr};
     if (localtime_r(&now, &result) == nullptr) {
-        // TODO: throw an AssertionError
+        // TODO(mathbagu): throw an AssertionError
     }
 
     std::ostringstream oss;

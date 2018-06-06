@@ -75,12 +75,12 @@ NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) 
 }
 
 stdcxx::Reference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& /*bbsId*/) const {
-    // TODO return m_voltageLevel.getConnectable<BusbarSection>(bbsId);
+    // TODO(mathbagu): return m_voltageLevel.getConnectable<BusbarSection>(bbsId);
     return stdcxx::ref<BusbarSection>();
 }
 
 unsigned long NodeBreakerViewImpl::getBusbarSectionCount() const {
-    // TODO return m_voltageLevel.getConnectableCount<BusbarSection>();
+    // TODO(mathbagu): return m_voltageLevel.getConnectableCount<BusbarSection>();
     return 0;
 }
 

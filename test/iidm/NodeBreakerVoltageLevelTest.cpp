@@ -118,7 +118,7 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
     ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getSwitchCount());
 
     // Get a busbar section
-    // TODO: need to refactor VoltageLevel::getConnectable to return a Reference<T> instead of a T&
+    // TODO(mathbagu): need to refactor VoltageLevel::getConnectable to return a Reference<T> instead of a T&
     // const auto& refBusbarSection = voltageLevel.getNodeBreakerView().getBusbarSection("BBS");
     // ASSERT_TRUE(refBusbarSection);
     // ASSERT_TRUE(stdcxx::areSame(bbs, refBusbarSection.get()));
@@ -149,7 +149,7 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
 
     // Remove a busbar section
     bbs1.remove();
-    // TODO: ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
+    // TODO(mathbagu): ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
     bbs2.remove();
     ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
 

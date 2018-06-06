@@ -49,12 +49,12 @@ const std::string& BusTerminal::getConnectableBusId() const {
 }
 
 double BusTerminal::getAngle() const {
-    // TODO: need views
+    // TODO(mathbagu): need views
     return 0.0;
 }
 
 double BusTerminal::getV() const {
-    // TODO: need views
+    // TODO(mathbagu): need views
     return 0.0;
 }
 

@@ -39,7 +39,7 @@ VoltageLevel& VoltageLevelAdder::add() {
             break;
 
         default:
-            // TODO: throw an AssertionError
+            // TODO(mathbagu): throw an AssertionError
             break;
     }
 
