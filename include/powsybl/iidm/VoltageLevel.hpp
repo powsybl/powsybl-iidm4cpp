@@ -81,7 +81,7 @@ public:
 
 protected:
     VoltageLevel(const std::string& id, const std::string& name, Substation& substation,
-                 double nominalVoltage, double lowVoltageLimit, double highVoltagelimit);
+                 double nominalVoltage, double lowVoltageLimit, double highVoltageLimit);
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;

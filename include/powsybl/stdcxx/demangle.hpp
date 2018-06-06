@@ -21,8 +21,8 @@ std::string demangle() {
 }
 
 template <typename T>
-std::string demangle(const T& t) {
-    return demangle(typeid(t).name());
+std::string demangle(const T& type) {
+    return demangle(typeid(type).name());
 }
 
 std::string simpleClassName(const char* className);
@@ -33,8 +33,8 @@ std::string simpleClassName() {
 }
 
 template <typename T>
-std::string simpleClassName(const T& t) {
-    return simpleClassName(typeid(t).name());
+std::string simpleClassName(const T& type) {
+    return simpleClassName(typeid(type).name());
 }
 
 }  // namespace stdcxx
