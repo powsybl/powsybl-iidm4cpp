@@ -12,49 +12,11 @@ def withSonar = ((env.gitlabActionType == null) || (env.gitlabSourceBranch == "m
 def buildType = withSonar ? "Debug" : "Release"
 def codeCoverage = withSonar ? "TRUE" : "FALSE"
 
-def gitCheckout() {
-    if (env.gitlabActionType == null) {
-        // Checkout the master branch
-        checkout scm
-    } else {
-        switch(env.gitlabActionType) {
-        case 'MERGE':
-            // Checkout the source branch and merge with the target branch
-            checkout changelog: true, poll: true, scm: [
-                $class: 'GitSCM',
-                branches: [[name: "origin/${env.gitlabSourceBranch}"]],
-                doGenerateSubmoduleConfigurations: false,
-                extensions: [
-                    [$class: 'UserIdentity', email: 'no-reply@rte-france.com', name: 'jenkins'],
-                    [$class: 'PreBuildMerge', options: [fastForwardMode: 'NO_FF', mergeRemote: 'origin', mergeStrategy: 'default', mergeTarget: "${env.gitlabTargetBranch}"]]
-                ],
-                submoduleCfg: [],
-                userRemoteConfigs: [[credentialsId: 'jenkins-gitlab-devin', name: 'origin', url: "${env.gitlabSourceRepoHttpUrl}"]]
-            ]
-            break
-
-        case 'PUSH':
-            checkout changelog: true, poll: true, scm: [
-                $class: 'GitSCM',
-                branches: [[name: "origin/${env.gitlabSourceBranch}"]],
-                doGenerateSubmoduleConfigurations: false,
-                submoduleCfg: [],
-                userRemoteConfigs: [[credentialsId: 'jenkins-gitlab-devin', name: 'origin', url: "${env.gitlabSourceRepoHttpUrl}"]]
-            ]
-            break
-
-        default:
-            println "Unsupported GitLab action: ${env.gitlabActionType}"
-            currentBuild.result = 'ERROR'
-        }
-    }
-}
-
-node('power-system-tools') {
+node('powsybl-rh72') {
 
     try {
         stage('Cloning git repository') {
-            gitCheckout()
+            gitCheckout {}
         }
 
         stage('Building with GCC') {
@@ -125,7 +87,7 @@ node('build') {
         if (withSonar) {
             stage('Sonarqube') {
                 gitlabCommitStatus('sonar') {
-                    gitCheckout()
+                    gitCheckout {}
 
                     dir('build') {
                         // Clean old code coverage results
