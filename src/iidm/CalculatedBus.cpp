@@ -33,7 +33,20 @@ double CalculatedBus::getAngle() const {
 }
 
 unsigned long CalculatedBus::getConnectedTerminalCount() const {
+    checkValidity();
+
     return m_terminals.size();
+}
+
+std::vector<std::reference_wrapper<Terminal> > CalculatedBus::getConnectedTerminals() const {
+    checkValidity();
+
+    std::vector<std::reference_wrapper<Terminal> > terminals;
+    for (auto& terminal : m_terminals) {
+        terminals.emplace_back(std::ref<Terminal>(terminal));
+    }
+
+    return terminals;
 }
 
 double CalculatedBus::getV() const {
@@ -54,8 +67,8 @@ void CalculatedBus::invalidate() {
 
 Bus& CalculatedBus::setAngle(double angle) {
     checkValidity();
-    for (auto& it : m_terminals) {
-        it.get().setAngle(angle);
+    for (auto& terminal : m_terminals) {
+        terminal.get().setAngle(angle);
     }
 
     return *this;
@@ -63,8 +76,8 @@ Bus& CalculatedBus::setAngle(double angle) {
 
 Bus& CalculatedBus::setV(double v) {
     checkValidity();
-    for (auto& it : m_terminals) {
-        it.get().setV(v);
+    for (auto& terminal : m_terminals) {
+        terminal.get().setV(v);
     }
 
     return *this;

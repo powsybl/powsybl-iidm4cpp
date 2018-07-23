@@ -15,7 +15,10 @@
 #include <powsybl/math/UndirectedGraph.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
+#include "BusBreakerVoltageLevelState.hpp"
+#include "BusBreakerVoltageLevelTopology.hpp"
 #include "BusBreakerVoltageLevelViews.hpp"
+#include "StateArray.hpp"
 
 namespace powsybl {
 
@@ -27,6 +30,9 @@ class MergedBus;
 class Switch;
 
 class BusBreakerVoltageLevel : public VoltageLevel {
+public:
+    typedef math::UndirectedGraph<ConfiguredBus, Switch> Graph;
+
 public: // VoltageLevel
     void attach(Terminal& terminal, bool test) override;
 
@@ -60,6 +66,17 @@ public:
 
     Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2);
 
+    const Graph& getGraph() const;
+
+protected: // Stateful
+    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteStateArrayElement(unsigned long index) override;
+
+    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceStateArraySize(unsigned long number) override;
+
 private: // VoltageLevel
     const NodeBreakerView& getNodeBreakerView() const override;
 
@@ -67,6 +84,8 @@ private: // VoltageLevel
 
 private:
     void checkTerminal(Terminal& terminal) const;
+
+    bus_breaker_voltage_level::CalculatedBusTopology& getCalculatedBusTopology();
 
     stdcxx::Reference<ConfiguredBus> getConfiguredBus(const std::string& busId, bool throwException) const;
 
@@ -96,13 +115,13 @@ private:
     friend class bus_breaker_voltage_level::BusViewImpl;
 
 private:
-    typedef math::UndirectedGraph<ConfiguredBus, Switch> Graph;
-
     Graph m_graph;
 
     std::map<std::string, unsigned long> m_buses;
 
     std::map<std::string, unsigned long> m_switches;
+
+    StateArray<bus_breaker_voltage_level::StateImpl> m_states;
 
     bus_breaker_voltage_level::BusBreakerViewImpl m_busBreakerView;
 

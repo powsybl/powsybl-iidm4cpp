@@ -17,7 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-MergedBus::MergedBus(const std::string& id, std::set<std::reference_wrapper<ConfiguredBus> >&& buses) :
+MergedBus::MergedBus(const std::string& id, BusSet buses) :
     Bus(id),
     m_buses(std::move(buses)),
     m_valid(true) {
@@ -53,6 +53,18 @@ unsigned long MergedBus::getConnectedTerminalCount() const {
     }
 
     return count;
+}
+
+std::vector<std::reference_wrapper<Terminal> > MergedBus::getConnectedTerminals() const {
+    checkValidity();
+
+    std::vector<std::reference_wrapper<Terminal> > terminals;
+    for (const auto& bus : m_buses) {
+        const std::vector<std::reference_wrapper<Terminal> >& tmp = bus.get().getConnectedTerminals();
+        terminals.insert(terminals.end(), tmp.begin(), tmp.end());
+    }
+
+    return terminals;
 }
 
 double MergedBus::getV() const {

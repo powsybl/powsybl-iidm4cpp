@@ -11,8 +11,11 @@
 #include <functional>
 #include <set>
 #include <string>
+#include <vector>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/set.hpp>
 
 #include "ConfiguredBus.hpp"
 
@@ -20,14 +23,21 @@ namespace powsybl {
 
 namespace iidm {
 
+class Terminal;
+
 /**
  * A Bus implementation used in the BusView of a BusBreakerVoltageLevel
  */
 class MergedBus : public Bus {
+public:
+    using BusSet = stdcxx::LinkedHashSet<std::reference_wrapper<ConfiguredBus>, stdcxx::hash<ConfiguredBus>, stdcxx::equal_to<ConfiguredBus> >;
+
 public: // Bus
     double getAngle() const override;
 
     unsigned long getConnectedTerminalCount() const override;
+
+    std::vector<std::reference_wrapper<Terminal> > getConnectedTerminals() const override;
 
     double getV() const override;
 
@@ -43,7 +53,7 @@ public:
      * @param id the ID of this bus
      * @param buses the list of ConfiguredBus aggregated in this bus
      */
-    MergedBus(const std::string& id, std::set<std::reference_wrapper<ConfiguredBus> >&& buses);
+    MergedBus(const std::string& id, BusSet buses);
 
     ~MergedBus() override = default;
 
@@ -56,7 +66,7 @@ private:
     void checkValidity() const;
 
 private:
-    std::set<std::reference_wrapper<ConfiguredBus> > m_buses;
+    BusSet m_buses;
 
     bool m_valid;
 

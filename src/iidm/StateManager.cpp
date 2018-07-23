@@ -123,7 +123,7 @@ std::set<std::string> StateManager::getStateIds() const {
     std::lock_guard<std::mutex> lock(m_stateMutex);
 
     std::set<std::string> stateIds;
-    std::for_each(m_statesById.begin(), m_statesById.end(), [&stateIds](const std::pair<std::string, int>& entry) {
+    std::for_each(m_statesById.begin(), m_statesById.end(), [&stateIds](const std::pair<std::string, unsigned long>& entry) {
         stateIds.insert(entry.first);
     });
 
@@ -141,6 +141,17 @@ unsigned long StateManager::getStateIndex(const std::string& stateId) const {
     }
 
     return it->second;
+}
+
+std::set<unsigned long> StateManager::getStateIndices() const {
+    std::lock_guard<std::mutex> lock(m_stateMutex);
+
+    std::set<unsigned long> stateIndices;
+    std::for_each(m_statesById.begin(), m_statesById.end(), [&stateIndices](const std::pair<std::string, unsigned long>& entry) {
+        stateIndices.insert(entry.second);
+    });
+
+    return stateIndices;
 }
 
 const std::string& StateManager::getWorkingStateId() const {

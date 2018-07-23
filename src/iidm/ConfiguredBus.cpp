@@ -61,13 +61,24 @@ unsigned long ConfiguredBus::getConnectedTerminalCount() const {
     unsigned long count = 0;
 
     const std::list<std::reference_wrapper<BusTerminal> >& terminals = m_terminals[m_network.get().getStateIndex()];
-    for (const auto& it : terminals) {
-        if (it.get().isConnected()) {
+    for (const auto& terminal : terminals) {
+        if (terminal.get().isConnected()) {
             count++;
         }
     }
 
     return count;
+}
+
+std::vector<std::reference_wrapper<Terminal> > ConfiguredBus::getConnectedTerminals() const {
+    const std::list<std::reference_wrapper<BusTerminal> >& busTerminals = m_terminals[m_network.get().getStateIndex()];
+
+    std::vector<std::reference_wrapper<Terminal> > terminals;
+    std::transform(busTerminals.begin(), busTerminals.end(), terminals.begin(), [](const std::reference_wrapper<BusTerminal>& terminal) {
+        return std::ref<Terminal>(terminal);
+    });
+
+    return terminals;
 }
 
 unsigned long ConfiguredBus::getTerminalCount() const {

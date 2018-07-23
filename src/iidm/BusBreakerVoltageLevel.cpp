@@ -9,6 +9,7 @@
 
 #include <cassert>
 
+#include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 
 #include "ConfiguredBus.hpp"
@@ -21,6 +22,7 @@ namespace iidm {
 BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                                                double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit),
+    m_states(substation.getNetwork(), [this]() { return stdcxx::make_unique<bus_breaker_voltage_level::StateImpl>(*this); }),
     m_busBreakerView(*this),
     m_busView(*this) {
 }
@@ -44,6 +46,10 @@ Switch& BusBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, c
     m_switches.insert(std::make_pair(aSwitch.getId(), e));
 
     return aSwitch;
+}
+
+void BusBreakerVoltageLevel::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    m_states.allocateStateArrayElement(indexes, [this, sourceIndex]() { return m_states.copy(sourceIndex); });
 }
 
 void BusBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
@@ -89,6 +95,11 @@ bool BusBreakerVoltageLevel::connect(Terminal& terminal) {
     return true;
 }
 
+
+void BusBreakerVoltageLevel::deleteStateArrayElement(unsigned long index) {
+    m_states.deleteStateArrayElement(index);
+}
+
 void BusBreakerVoltageLevel::detach(Terminal& terminal) {
     assert(stdcxx::isInstanceOf<BusTerminal>(terminal));
 
@@ -119,6 +130,11 @@ bool BusBreakerVoltageLevel::disconnect(Terminal& terminal) {
     return true;
 }
 
+
+void BusBreakerVoltageLevel::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
+    m_states.extendStateArraySize(initStateArraySize, number, [this, sourceIndex]() { return m_states.copy(sourceIndex); });
+}
+
 const BusBreakerView& BusBreakerVoltageLevel::getBusBreakerView() const {
     return m_busBreakerView;
 }
@@ -133,6 +149,10 @@ const BusView& BusBreakerVoltageLevel::getBusView() const {
 
 BusView& BusBreakerVoltageLevel::getBusView() {
     return m_busView;
+}
+
+bus_breaker_voltage_level::CalculatedBusTopology& BusBreakerVoltageLevel::getCalculatedBusTopology() {
+    return m_states.get().getCalculatedBusTopology();
 }
 
 stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus(const std::string& busId, bool throwException) const {
@@ -173,6 +193,10 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getEdge(const std::strin
     }
 
     throw PowsyblException(logging::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getId()));
+}
+
+const BusBreakerVoltageLevel::Graph& BusBreakerVoltageLevel::getGraph() const {
+    return m_graph;
 }
 
 stdcxx::Reference<MergedBus> BusBreakerVoltageLevel::getMergedBus(const std::string& /*busId*/, bool /*throwException*/) const {
@@ -222,10 +246,14 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
 }
 
 void BusBreakerVoltageLevel::invalidateCache() {
-    // TODO(mathbagu): require calculatedBusTopology
-    // calculatedBusTopology.invalidateCache();
+    m_states.get().getCalculatedBusTopology().invalidateCache();
+
     // getNetwork().getConnectedComponentsManager().invalidate();
     // getNetwork().getSynchronousComponentsManager().invalidate();
+}
+
+void BusBreakerVoltageLevel::reduceStateArraySize(unsigned long number) {
+    m_states.reduceStateArraySize(number);
 }
 
 void BusBreakerVoltageLevel::removeAllBuses() {

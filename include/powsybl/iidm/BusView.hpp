@@ -8,7 +8,9 @@
 #ifndef POWSYBL_IIDM_BUSVIEW_HPP
 #define POWSYBL_IIDM_BUSVIEW_HPP
 
+#include <functional>
 #include <string>
+#include <vector>
 
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -23,6 +25,10 @@ public:
     virtual ~BusView() = default;
 
     virtual stdcxx::Reference<Bus> getBus(const std::string& busId) const = 0;
+
+    virtual std::vector<std::reference_wrapper<Bus> > getBuses() const = 0;
+
+    virtual stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) const = 0;
 };
 
 }  // namespace iidm

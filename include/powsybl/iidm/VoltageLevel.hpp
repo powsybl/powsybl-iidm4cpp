@@ -24,7 +24,7 @@ class NodeBreakerView;
 class Substation;
 class Terminal;
 
-class VoltageLevel : public Container {
+class VoltageLevel : public Container, public Stateful {
 public:
     ~VoltageLevel() override = default;
 

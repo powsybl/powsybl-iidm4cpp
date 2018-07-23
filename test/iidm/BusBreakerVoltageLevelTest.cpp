@@ -11,10 +11,13 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
+#include <powsybl/iidm/BusView.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VoltageLevelAdder.hpp>
 
 #include "AssertionUtils.hpp"
 #include "NetworkFactory.hpp"
@@ -73,11 +76,11 @@ TEST(BusBreakerVoltageLevel, Switch) {
     ASSERT_TRUE(aSwitch.isRetained());
 
     aSwitch.setFictitious(true)
-        .setOpen(true)
-        .setRetained(true);
+        .setOpen(true);
     ASSERT_TRUE(aSwitch.isFictitious());
     ASSERT_TRUE(aSwitch.isOpen());
-    ASSERT_TRUE(aSwitch.isRetained());
+
+    POWSYBL_ASSERT_THROW(aSwitch.setRetained(true), ValidationException, "Voltage level 'VL1': retain status is not modifiable in a non node/breaker voltage level");
 }
 
 TEST(BusBreakerVoltageLevel, NodeBreakerView) {
@@ -171,6 +174,52 @@ TEST(BusBreakerVoltageLevel, BusBreakerView) {
                          "Voltage level 'VL1': Cannot remove bus 'VL1_BUS1' due to connected equipments");
     network.getLoad("LOAD1").remove();
     view.removeAllBuses();
+}
+
+TEST(BusBreakerVoltageLevel, CalculatedBusTopology) {
+    Network network("test", "test");
+
+    Substation& s = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+
+    VoltageLevel& vl = s.newVoltageLevel()
+        .setId("VL")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalVoltage(400.0)
+        .setLowVoltageLimit(380.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    vl.getBusBreakerView().newBus()
+        .setId("BUS1")
+        .add();
+
+    vl.getBusBreakerView().newBus()
+        .setId("BUS2")
+        .add();
+
+    /*Switch& sw =*/ vl.getBusBreakerView().newSwitch()
+        .setId("SW")
+        .setBus1("BUS1")
+        .setBus2("BUS2")
+        .setOpen(false)
+        .add();
+
+    // TODO(mathbagu): need to implement at least one kind of branch
+    /*
+    ASSERT_EQ(1ul, vl.getBusView().getBuses().size());
+    stdcxx::Reference<Bus> mergedBus1 = vl.getBusView().getMergedBus("BUS1");
+    stdcxx::Reference<Bus> mergedBus2 = vl.getBusView().getMergedBus("BUS2");
+    ASSERT_TRUE(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
+
+    sw.setOpen(true);
+    ASSERT_EQ(2ul, vl.getBusView().getBuses().size());
+    mergedBus1 = vl.getBusView().getMergedBus("BUS1");
+    mergedBus2 = vl.getBusView().getMergedBus("BUS2");
+    ASSERT_FALSE(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
+    */
 }
 
 }  // namespace iidm

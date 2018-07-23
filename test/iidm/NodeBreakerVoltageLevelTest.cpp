@@ -125,7 +125,7 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
 
     const auto& refTerminal = voltageLevel.getNodeBreakerView().getTerminal(0);
     ASSERT_TRUE(refTerminal);
-    ASSERT_TRUE(stdcxx::areSame(bbs1, refTerminal.get().getConnectable()));
+    ASSERT_TRUE(stdcxx::areSame(bbs1, refTerminal.get().getConnectable().get()));
 
     // Get an unknown busbar section
     ASSERT_FALSE(voltageLevel.getNodeBreakerView().getBusbarSection("UNKNOWN"));
@@ -140,12 +140,12 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
     unsigned long node1 = voltageLevel.getNodeBreakerView().getNode1("BK");
     ASSERT_EQ(0, node1);
     const auto& terminal1 = voltageLevel.getNodeBreakerView().getTerminal1("BK");
-    ASSERT_TRUE(stdcxx::areSame(bbs1, terminal1.get().getConnectable()));
+    ASSERT_TRUE(stdcxx::areSame(bbs1, terminal1.get().getConnectable().get()));
 
     unsigned long node2 = voltageLevel.getNodeBreakerView().getNode2("BK");
     ASSERT_EQ(1, node2);
     const auto& terminal2 = voltageLevel.getNodeBreakerView().getTerminal2("BK");
-    ASSERT_TRUE(stdcxx::areSame(bbs2, terminal2.get().getConnectable()));
+    ASSERT_TRUE(stdcxx::areSame(bbs2, terminal2.get().getConnectable().get()));
 
     // Remove a busbar section
     bbs1.remove();

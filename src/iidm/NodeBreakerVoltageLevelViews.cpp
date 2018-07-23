@@ -70,6 +70,16 @@ stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& /*busId*/) const {
     throw AssertionError("TODO");
 }
 
+std::vector<std::reference_wrapper<Bus> > BusViewImpl::getBuses() const {
+    // TODO(mathbagu)
+    return std::vector<std::reference_wrapper<Bus> >();
+}
+
+stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& /*configuredBusId*/) const {
+    // TODO(mathbagu)
+    return stdcxx::ref<Bus>();
+}
+
 NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }

@@ -8,6 +8,7 @@
 #include "BusBreakerVoltageLevelViews.hpp"
 
 #include "BusBreakerVoltageLevel.hpp"
+#include "BusBreakerVoltageLevelTopology.hpp"
 #include "ConfiguredBus.hpp"
 #include "MergedBus.hpp"
 
@@ -72,9 +73,26 @@ BusViewImpl::BusViewImpl(BusBreakerVoltageLevel& voltageLevel) :
 }
 
 stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) const {
-    const stdcxx::Reference<MergedBus> mergedBus = m_voltageLevel.getMergedBus(busId, false);
+    const stdcxx::Reference<MergedBus>& mergedBus = m_voltageLevel.getMergedBus(busId, false);
 
     return stdcxx::ref<Bus>(mergedBus);
+}
+
+std::vector<std::reference_wrapper<Bus> > BusViewImpl::getBuses() const {
+    const auto& mergedBuses = m_voltageLevel.getCalculatedBusTopology().getMergedBuses();
+
+    std::vector<std::reference_wrapper<Bus> > buses;
+    std::transform(mergedBuses.begin(), mergedBuses.end(), buses.begin(), [](const std::reference_wrapper<MergedBus>& bus) {
+        return std::ref<Bus>(bus);
+    });
+
+    return buses;
+}
+
+stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& configuredBusId) const {
+    stdcxx::Reference<ConfiguredBus> configuredBus = stdcxx::ref<ConfiguredBus>(m_voltageLevel.getBusBreakerView().getBus(configuredBusId));
+
+    return stdcxx::ref<Bus>(m_voltageLevel.getCalculatedBusTopology().getMergedBus(configuredBus));
 }
 
 }  // namespace bus_breaker_voltage_level

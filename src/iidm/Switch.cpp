@@ -71,19 +71,37 @@ void Switch::reduceStateArraySize(unsigned long number) {
 }
 
 Switch& Switch::setFictitious(bool fictitious) {
-    m_fictitious = fictitious;
+    bool oldValue = m_fictitious;
+    if (oldValue != fictitious) {
+        m_fictitious = fictitious;
+        m_voltageLevel.get().invalidateCache();
+    }
 
     return *this;
 }
 
 Switch& Switch::setOpen(bool open) {
-    m_open[m_voltageLevel.get().getNetwork().getStateIndex()] = open;
+    unsigned long index = m_voltageLevel.get().getNetwork().getStateIndex();
+    bool oldValue = m_open[index];
+    if (oldValue != open) {
+        m_open[index] = open;
+        m_voltageLevel.get().invalidateCache();
+    }
 
     return *this;
 }
 
 Switch& Switch::setRetained(bool retained) {
-    m_retained[m_voltageLevel.get().getNetwork().getStateIndex()] = retained;
+    if (m_voltageLevel.get().getTopologyKind() != TopologyKind::NODE_BREAKER) {
+        throw ValidationException(m_voltageLevel.get(), logging::format("retain status is not modifiable in a non node/breaker voltage level"));
+    }
+
+    unsigned long index = m_voltageLevel.get().getNetwork().getStateIndex();
+    bool oldValue = m_retained[index];
+    if (oldValue != retained) {
+        m_retained[index] = retained;
+        m_voltageLevel.get().invalidateCache();
+    }
 
     return *this;
 }

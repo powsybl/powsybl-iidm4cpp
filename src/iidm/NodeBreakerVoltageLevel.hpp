@@ -60,6 +60,15 @@ public:
 
     bool isConnected(const Terminal& terminal) const;
 
+protected: // Stateful
+    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteStateArrayElement(unsigned long index) override;
+
+    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceStateArraySize(unsigned long number) override;
+
 private:
     void checkTerminal(Terminal& terminal) const;
 

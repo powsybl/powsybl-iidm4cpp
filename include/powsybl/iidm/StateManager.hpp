@@ -44,6 +44,8 @@ public:
 
     unsigned long getStateIndex() const;
 
+    std::set<unsigned long> getStateIndices() const;
+
     const std::string& getWorkingStateId() const;
 
     void removeState(const std::string& stateId);

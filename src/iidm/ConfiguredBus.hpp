@@ -23,12 +23,15 @@ namespace iidm {
 
 class BusBreakerVoltageLevel;
 class BusTerminal;
+class Terminal;
 
 class ConfiguredBus : public Bus, public Stateful {
 public: // Bus
     double getAngle() const override;
 
     unsigned long getConnectedTerminalCount() const override;
+
+    std::vector<std::reference_wrapper<Terminal> > getConnectedTerminals() const override;
 
     double getV() const override;
 

@@ -8,12 +8,17 @@
 #ifndef POWSYBL_IIDM_BUS_HPP
 #define POWSYBL_IIDM_BUS_HPP
 
+#include <functional>
+#include <string>
+#include <vector>
+
 #include <powsybl/iidm/Identifiable.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
+class Terminal;
 class VoltageLevel;
 
 class Bus : public Identifiable {
@@ -25,6 +30,8 @@ public:
     virtual double getAngle() const = 0;
 
     virtual unsigned long getConnectedTerminalCount() const = 0;
+
+    virtual std::vector<std::reference_wrapper<Terminal> > getConnectedTerminals() const = 0;
 
     virtual double getV() const = 0;
 

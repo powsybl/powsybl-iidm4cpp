@@ -12,10 +12,13 @@ set(IIDM_SOURCES
     iidm/Branch.cpp
     iidm/Bus.cpp
     iidm/BusAdder.cpp
+    iidm/BusCache.cpp
     iidm/BusbarSection.cpp
     iidm/BusbarSectionAdder.cpp
     iidm/BusBreakerVoltageLevel.cpp
+    iidm/BusBreakerVoltageLevelState.cpp
     iidm/BusBreakerVoltageLevelViews.cpp
+    iidm/BusBreakerVoltageLevelTopology.cpp
     iidm/BusTerminal.cpp
     iidm/CalculatedBus.cpp
     iidm/ConfiguredBus.cpp
