@@ -28,7 +28,7 @@ namespace bus_breaker_voltage_level {
 
 class CalculatedBusTopology {
 public:
-    CalculatedBusTopology(BusBreakerVoltageLevel& voltageLevel);
+    explicit CalculatedBusTopology(BusBreakerVoltageLevel& voltageLevel);
 
     ~CalculatedBusTopology() = default;
 

@@ -15,8 +15,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class BusBreakerVoltageLevel;
-
 namespace bus_breaker_voltage_level {
 
 class StateImpl : public State<StateImpl> {
@@ -24,7 +22,7 @@ public: // State
     std::unique_ptr<StateImpl> copy() const override;
 
 public:
-    StateImpl(BusBreakerVoltageLevel& voltageLevel);
+    explicit StateImpl(BusBreakerVoltageLevel& voltageLevel);
 
     ~StateImpl() = default;
 
