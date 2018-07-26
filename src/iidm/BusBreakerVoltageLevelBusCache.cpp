@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "BusCache.hpp"
+#include "BusBreakerVoltageLevelBusCache.hpp"
 
 #include <algorithm>
 #include <cassert>

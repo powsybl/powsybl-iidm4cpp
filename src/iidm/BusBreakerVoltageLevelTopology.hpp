@@ -14,8 +14,8 @@
 
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
+#include "BusBreakerVoltageLevelBusCache.hpp"
 #include "MergedBus.hpp"
-#include "BusCache.hpp"
 
 namespace powsybl {
 
