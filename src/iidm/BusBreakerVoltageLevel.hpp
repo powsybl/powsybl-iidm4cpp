@@ -16,7 +16,6 @@
 #include <powsybl/stdcxx/optional.hpp>
 
 #include "BusBreakerVoltageLevelState.hpp"
-#include "BusBreakerVoltageLevelTopology.hpp"
 #include "BusBreakerVoltageLevelViews.hpp"
 #include "StateArray.hpp"
 
@@ -66,8 +65,6 @@ public:
 
     Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2);
 
-    const Graph& getGraph() const;
-
 protected: // Stateful
     void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -93,6 +90,8 @@ private:
 
     stdcxx::Reference<ConfiguredBus> getConfiguredBus2(const std::string& switchId) const;
 
+    const Graph& getGraph() const;
+
     stdcxx::optional<unsigned long> getEdge(const std::string& switchId, bool throwException) const;
 
     stdcxx::Reference<MergedBus> getMergedBus(const std::string& busId, bool throwException) const;
@@ -113,6 +112,8 @@ private:
     friend class bus_breaker_voltage_level::BusBreakerViewImpl;
 
     friend class bus_breaker_voltage_level::BusViewImpl;
+
+    friend class bus_breaker_voltage_level::CalculatedBusTopology;
 
 private:
     Graph m_graph;

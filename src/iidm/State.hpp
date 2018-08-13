@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_STATE_HPP
 #define POWSYBL_IIDM_STATE_HPP
 
+#include <memory>
+
 namespace powsybl {
 
 namespace iidm {

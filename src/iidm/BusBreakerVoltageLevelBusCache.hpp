@@ -16,12 +16,11 @@
 
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
+#include "MergedBus.hpp"
+
 namespace powsybl {
 
 namespace iidm {
-
-class ConfiguredBus;
-class MergedBus;
 
 namespace bus_breaker_voltage_level {
 

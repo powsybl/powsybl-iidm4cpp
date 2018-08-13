@@ -11,9 +11,6 @@
 #include <cassert>
 #include <functional>
 
-#include "ConfiguredBus.hpp"
-#include "MergedBus.hpp"
-
 namespace powsybl {
 
 namespace iidm {

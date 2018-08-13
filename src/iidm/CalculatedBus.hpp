@@ -14,11 +14,12 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
-#include "NodeBreakerVoltageLevel.hpp"
-
 namespace powsybl {
 
 namespace iidm {
+
+class NodeBreakerVoltageLevel;
+class NodeTerminal;
 
 /**
  * A Bus implementation used in BusBreakerView and BusView of a NodeBreakerVoltageLevel

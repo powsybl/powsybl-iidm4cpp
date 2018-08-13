@@ -27,12 +27,12 @@ CalculatedBusTopology::CalculatedBusTopology(BusBreakerVoltageLevel& voltageLeve
     m_voltageLevel(voltageLevel) {
 }
 
-stdcxx::Reference<MergedBus> CalculatedBusTopology::getMergedBus(const std::string& busId, bool throwException) {
+stdcxx::Reference<MergedBus> CalculatedBusTopology::getMergedBus(const std::string& id, bool throwException) {
     updateCache();
 
-    stdcxx::Reference<MergedBus> bus = m_cache->getMergedBus(busId);
+    stdcxx::Reference<MergedBus> bus = m_cache->getMergedBus(id);
     if (throwException && !bus) {
-        throw PowsyblException(logging::format("Bus %1% not found in voltage level %2%", busId, m_voltageLevel.getId()));
+        throw PowsyblException(logging::format("Bus %1% not found in voltage level %2%", id, m_voltageLevel.getId()));
     }
 
     return bus;
