@@ -20,6 +20,76 @@ namespace iidm {
 
 namespace node_breaker_voltage_level {
 
+PowsyblException createSwitchNotFoundException(const std::string& switchId) {
+    return PowsyblException(logging::format("Switch %1% not found", switchId));
+}
+
+CalculatedBusBreakerTopology::CalculatedBusBreakerTopology(NodeBreakerVoltageLevel& voltageLevel) :
+    CalculatedBusTopology(voltageLevel) {
+
+}
+
+CalculatedBusTopology::SwitchPredicate CalculatedBusBreakerTopology::createSwitchPredicate() const {
+    return [](const stdcxx::Reference<Switch>& aSwitch) {
+        return aSwitch.get().isOpen() || aSwitch.get().isRetained();
+    };
+}
+
+stdcxx::Reference<CalculatedBus> CalculatedBusBreakerTopology::getBus1(const std::string& switchId, bool throwException) {
+    stdcxx::optional<unsigned long> e = m_voltageLevel.getEdge(switchId, throwException);
+    stdcxx::Reference<Switch> aSwitch = getRetainedSwitch(e);
+    if (static_cast<bool>(aSwitch)) {
+        unsigned long v = m_voltageLevel.getGraph().getVertex1(*e);
+        return getBus(v);
+    }
+
+    if (throwException) {
+        throw createSwitchNotFoundException(switchId);
+    }
+
+    return stdcxx::ref<CalculatedBus>();
+}
+
+stdcxx::Reference<CalculatedBus> CalculatedBusBreakerTopology::getBus2(const std::string& switchId, bool throwException) {
+    stdcxx::optional<unsigned long> e = m_voltageLevel.getEdge(switchId, throwException);
+    stdcxx::Reference<Switch> aSwitch = getRetainedSwitch(e);
+    if (static_cast<bool>(aSwitch)) {
+        unsigned long v = m_voltageLevel.getGraph().getVertex2(*e);
+        return getBus(v);
+    }
+
+    if (throwException) {
+        throw createSwitchNotFoundException(switchId);
+    }
+
+    return stdcxx::ref<CalculatedBus>();
+}
+
+stdcxx::Reference<Switch> CalculatedBusBreakerTopology::getRetainedSwitch(const stdcxx::optional<unsigned long>& e) const {
+    if (static_cast<bool>(e)) {
+        const auto& aSwitch = m_voltageLevel.getGraph().getEdgeObject(*e);
+        if (aSwitch.get().isRetained()) {
+            return aSwitch;
+        }
+    }
+
+    return stdcxx::ref<Switch>();
+}
+
+stdcxx::Reference<Switch> CalculatedBusBreakerTopology::getSwitch(const std::string& switchId, bool throwException) {
+    stdcxx::optional<unsigned long> e = m_voltageLevel.getEdge(switchId, false);
+    stdcxx::Reference<Switch> aSwitch = getRetainedSwitch(e);
+    if (throwException && !aSwitch) {
+        throw createSwitchNotFoundException(switchId);
+    }
+
+    return aSwitch;
+}
+
+bool CalculatedBusBreakerTopology::isBusValid(const node_breaker_voltage_level::Graph& /*graph*/, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& /*terminals*/) const {
+    return !vertices.empty();
+}
+
 CalculatedBusTopology::CalculatedBusTopology(powsybl::iidm::NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }

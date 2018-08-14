@@ -75,6 +75,8 @@ private:
 
     node_breaker_voltage_level::BusNamingStrategy& getBusNamingStrategy();
 
+    node_breaker_voltage_level::CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology();
+
     node_breaker_voltage_level::CalculatedBusTopology& getCalculatedBusTopology();
 
     stdcxx::optional<unsigned long> getEdge(const std::string& switchId, bool throwException) const;
@@ -103,6 +105,8 @@ private:
     friend class node_breaker_voltage_level::BusBreakerViewImpl;
 
     friend class node_breaker_voltage_level::BusViewImpl;
+
+    friend class node_breaker_voltage_level::CalculatedBusBreakerTopology;
 
     friend class node_breaker_voltage_level::CalculatedBusTopology;
 

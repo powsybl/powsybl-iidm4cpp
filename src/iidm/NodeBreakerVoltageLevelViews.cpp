@@ -22,20 +22,26 @@ BusBreakerViewImpl::BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& /*busId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) const {
+    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusBreakerTopology().getBus(busId, false);
+
+    return stdcxx::ref<Bus>(bus);
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus1(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus1(const std::string& switchId) const {
+    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusBreakerTopology().getBus1(switchId, true);
+
+    return stdcxx::ref<Bus>(bus);
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) const {
+    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusBreakerTopology().getBus2(switchId, true);
+
+    return stdcxx::ref<Bus>(bus);
 }
 
-stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& /*switchId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
+    return m_voltageLevel.getCalculatedBusBreakerTopology().getSwitch(switchId, true);
 }
 
 BusAdder BusBreakerViewImpl::newBus() {

@@ -188,6 +188,10 @@ node_breaker_voltage_level::BusNamingStrategy& NodeBreakerVoltageLevel::getBusNa
     return m_busNamingStrategy;
 }
 
+node_breaker_voltage_level::CalculatedBusBreakerTopology& NodeBreakerVoltageLevel::getCalculatedBusBreakerTopology() {
+    return m_states.get().getCalculatedBusBreakerTopology();
+}
+
 node_breaker_voltage_level::CalculatedBusTopology& NodeBreakerVoltageLevel::getCalculatedBusTopology() {
     return m_states.get().getCalculatedBusTopology();
 }
@@ -262,6 +266,9 @@ const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
 
 void NodeBreakerVoltageLevel::invalidateCache() {
     m_states.get().getCalculatedBusTopology().invalidateCache();
+    m_states.get().getCalculatedBusBreakerTopology().invalidateCache();
+
+    // TODO(mathbagu): invalidate the connected and synchronous components
 }
 
 bool NodeBreakerVoltageLevel::isConnected(const Terminal& /*terminal*/) const {

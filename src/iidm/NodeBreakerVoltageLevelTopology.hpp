@@ -11,6 +11,7 @@
 #include <functional>
 #include <memory>
 
+#include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 #include "NodeBreakerVoltageLevelBusCache.hpp"
@@ -57,6 +58,26 @@ private:
 
 private:
     std::unique_ptr<BusCache> m_cache;
+};
+
+class CalculatedBusBreakerTopology : public CalculatedBusTopology {
+public:
+    explicit CalculatedBusBreakerTopology(NodeBreakerVoltageLevel& voltageLevel);
+
+    ~CalculatedBusBreakerTopology() override = default;
+
+    stdcxx::Reference<CalculatedBus> getBus1(const std::string& switchId, bool throwException);
+
+    stdcxx::Reference<CalculatedBus> getBus2(const std::string& switchId, bool throwException);
+
+    stdcxx::Reference<Switch> getSwitch(const std::string& switchId, bool throwException);
+
+private: // CalculatedBusTopology
+    SwitchPredicate createSwitchPredicate() const override;
+
+    stdcxx::Reference<Switch> getRetainedSwitch(const stdcxx::optional<unsigned long>& e) const;
+
+    bool isBusValid(const node_breaker_voltage_level::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) const override;
 };
 
 }  // namespace node_breaker_voltage_level

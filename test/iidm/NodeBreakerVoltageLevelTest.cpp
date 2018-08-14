@@ -159,6 +159,10 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
     ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getSwitchCount());
 }
 
+TEST(NodeBreakerVoltageLevel, CalculatedBusBreakerTopology) {
+    // TODO(mathbagu): Need to implement at least one kind of branch
+}
+
 TEST(NodeBreakerVoltageLevel, CalculatedBusTopology) {
     // TODO(mathbagu): Need to implement at least one kind of branch
 }

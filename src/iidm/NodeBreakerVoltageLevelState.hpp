@@ -28,10 +28,14 @@ public:
 
     ~StateImpl() = default;
 
+    CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology();
+
     CalculatedBusTopology& getCalculatedBusTopology();
 
 private:
     NodeBreakerVoltageLevel& m_voltageLevel;
+
+    CalculatedBusBreakerTopology m_calculatedBusBreakerTopology;
 
     CalculatedBusTopology m_calculatedBusTopology;
 };
