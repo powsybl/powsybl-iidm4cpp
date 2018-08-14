@@ -1,0 +1,68 @@
+/**
+ * Copyright (c) 2018, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELTOPOLOGY_HPP
+#define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELTOPOLOGY_HPP
+
+#include <functional>
+#include <memory>
+
+#include <powsybl/stdcxx/reference_wrapper.hpp>
+
+#include "NodeBreakerVoltageLevelBusCache.hpp"
+#include "NodeBreakerVoltageLevelGraph.hpp"
+
+namespace powsybl {
+
+namespace iidm {
+
+class NodeBreakerVoltageLevel;
+
+namespace node_breaker_voltage_level {
+
+class CalculatedBusTopology {
+public:
+    explicit CalculatedBusTopology(NodeBreakerVoltageLevel& voltageLevel);
+
+    virtual ~CalculatedBusTopology() = default;
+
+    stdcxx::Reference<CalculatedBus> getBus(unsigned long node);
+
+    stdcxx::Reference<CalculatedBus> getBus(const std::string& id, bool throwException);
+
+    std::vector<std::reference_wrapper<CalculatedBus> > getBuses();
+
+    void invalidateCache();
+
+    void updateCache();
+
+protected:
+    typedef std::function<bool(const stdcxx::Reference<Switch>& a)> SwitchPredicate;
+
+protected:
+    NodeBreakerVoltageLevel& m_voltageLevel;
+
+private:
+    virtual SwitchPredicate createSwitchPredicate() const;
+
+    virtual bool isBusValid(const typename node_breaker_voltage_level::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) const;
+
+    void traverse(unsigned long v, std::vector<bool>& encountered, const CalculatedBusTopology::SwitchPredicate& terminate, BusCache::CalculatedBusById& busById, BusCache::CalculatedBusByNode& busByNode);
+
+    void updateCache(const SwitchPredicate& predicate);
+
+private:
+    std::unique_ptr<BusCache> m_cache;
+};
+
+}  // namespace node_breaker_voltage_level
+
+}  // namespace iidm
+
+}  // namespace powsybl
+
+#endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELTOPOLOGY_HPP

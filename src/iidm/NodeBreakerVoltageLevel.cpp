@@ -188,6 +188,10 @@ node_breaker_voltage_level::BusNamingStrategy& NodeBreakerVoltageLevel::getBusNa
     return m_busNamingStrategy;
 }
 
+node_breaker_voltage_level::CalculatedBusTopology& NodeBreakerVoltageLevel::getCalculatedBusTopology() {
+    return m_states.get().getCalculatedBusTopology();
+}
+
 stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::string& switchId, bool throwException) const {
     checkNotEmpty(switchId, "switch id is null");
 
@@ -257,7 +261,7 @@ const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
 }
 
 void NodeBreakerVoltageLevel::invalidateCache() {
-    // TODO(mathbagu)
+    m_states.get().getCalculatedBusTopology().invalidateCache();
 }
 
 bool NodeBreakerVoltageLevel::isConnected(const Terminal& /*terminal*/) const {

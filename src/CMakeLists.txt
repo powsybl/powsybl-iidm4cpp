@@ -44,6 +44,7 @@ set(IIDM_SOURCES
     iidm/NodeBreakerVoltageLevelBusCache.cpp
     iidm/NodeBreakerVoltageLevelBusNamingStrategy.cpp
     iidm/NodeBreakerVoltageLevelState.cpp
+    iidm/NodeBreakerVoltageLevelTopology.cpp
     iidm/NodeBreakerVoltageLevelViews.cpp
     iidm/NodeTerminal.cpp
     iidm/ObjectStore.cpp

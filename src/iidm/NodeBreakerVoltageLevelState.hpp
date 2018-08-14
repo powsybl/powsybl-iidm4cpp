@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELSTATE_HPP
 #define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELSTATE_HPP
 
+#include "NodeBreakerVoltageLevelTopology.hpp"
 #include "State.hpp"
 
 namespace powsybl {
@@ -27,8 +28,12 @@ public:
 
     ~StateImpl() = default;
 
+    CalculatedBusTopology& getCalculatedBusTopology();
+
 private:
     NodeBreakerVoltageLevel& m_voltageLevel;
+
+    CalculatedBusTopology m_calculatedBusTopology;
 };
 
 }  // namespace node_breaker_voltage_level

@@ -66,18 +66,29 @@ BusViewImpl::BusViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& /*busId*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) const {
+    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusTopology().getBus(busId, false);
+
+    return stdcxx::ref<Bus>(bus);
 }
 
 std::vector<std::reference_wrapper<Bus> > BusViewImpl::getBuses() const {
-    // TODO(mathbagu)
-    return std::vector<std::reference_wrapper<Bus> >();
+    const auto& calculatedBuses = m_voltageLevel.getCalculatedBusTopology().getBuses();
+
+    std::vector<std::reference_wrapper<Bus> > buses;
+    std::transform(calculatedBuses.begin(), calculatedBuses.end(), buses.begin(), [](const std::reference_wrapper<CalculatedBus>& bus) {
+        return std::ref<Bus>(bus);
+    });
+
+    return buses;
 }
 
-stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& /*busbarSectionId*/) const {
-    // TODO(mathbagu)
-    return stdcxx::ref<Bus>();
+stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& busbarSectionId) const {
+    NodeTerminal& terminal = dynamic_cast<NodeTerminal&>(m_voltageLevel.getNodeBreakerView().getBusbarSection(busbarSectionId).get().getTerminal());
+
+    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusTopology().getBus(terminal.getNode());
+
+    return stdcxx::ref<Bus>(bus);
 }
 
 NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
