@@ -7,9 +7,11 @@
 
 #include "NodeBreakerVoltageLevel.hpp"
 
+#include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
+#include "NodeBreakerVoltageLevelBusCache.hpp"
 #include "ValidationUtils.hpp"
 
 namespace powsybl {
@@ -19,6 +21,8 @@ namespace iidm {
 NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                                                  double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit),
+    m_busNamingStrategy(*this),
+    m_states(substation.getNetwork(), [this]() { return stdcxx::make_unique<node_breaker_voltage_level::StateImpl>(*this); }),
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {
@@ -33,8 +37,8 @@ Switch& NodeBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, 
     return aSwitch;
 }
 
-void NodeBreakerVoltageLevel::allocateStateArrayElement(const std::set<unsigned long>& /*indexes*/, unsigned long /*sourceIndex*/) {
-    // TODO(mathbagu)
+void NodeBreakerVoltageLevel::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    m_states.allocateStateArrayElement(indexes, [this, sourceIndex]() { return m_states.copy(sourceIndex); });
 }
 
 void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
@@ -77,10 +81,10 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
 
     // find all paths starting from the current terminal to a busbar section that does not contain an open disconnector
     // paths are already sorted
-    Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& terminal) {
+    node_breaker_voltage_level::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& terminal) {
         return static_cast<bool>(terminal) && terminal.get().getConnectable().get().getConnectableType() == ConnectableType::BUSBAR_SECTION;
     };
-    Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
+    node_breaker_voltage_level::Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
         return aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
     };
     const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedDisconnector);
@@ -100,8 +104,8 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
     return connected;
 }
 
-void NodeBreakerVoltageLevel::deleteStateArrayElement(unsigned long /*index*/) {
-    // TODO(mathbagu)
+void NodeBreakerVoltageLevel::deleteStateArrayElement(unsigned long index) {
+    m_states.deleteStateArrayElement(index);
 }
 
 void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
@@ -124,10 +128,10 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
     unsigned long node = nodeTerminal.getNode();
 
     // find all paths starting from the current terminal to a busbar section that does not contain an open disconnector
-    Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& terminal) {
+    node_breaker_voltage_level::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& terminal) {
         return static_cast<bool>(terminal) && terminal.get().getConnectable().get().getConnectableType() == ConnectableType::BUSBAR_SECTION;
     };
-    Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
+    node_breaker_voltage_level::Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
         return aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
     };
     const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedDisconnector);
@@ -160,8 +164,8 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
     return true;
 }
 
-void NodeBreakerVoltageLevel::extendStateArraySize(unsigned long /*initStateArraySize*/, unsigned long /*number*/, unsigned long /*sourceIndex*/) {
-    // TODO(mathbagu)
+void NodeBreakerVoltageLevel::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
+    m_states.extendStateArraySize(initStateArraySize, number, [this, sourceIndex]() { return m_states.copy(sourceIndex); });
 }
 
 const BusBreakerView& NodeBreakerVoltageLevel::getBusBreakerView() const {
@@ -180,6 +184,10 @@ BusView& NodeBreakerVoltageLevel::getBusView() {
     return m_busView;
 }
 
+node_breaker_voltage_level::BusNamingStrategy& NodeBreakerVoltageLevel::getBusNamingStrategy() {
+    return m_busNamingStrategy;
+}
+
 stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::string& switchId, bool throwException) const {
     checkNotEmpty(switchId, "switch id is null");
 
@@ -192,6 +200,10 @@ stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::stri
     }
 
     throw PowsyblException(logging::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getId()));
+}
+
+const node_breaker_voltage_level::Graph& NodeBreakerVoltageLevel::getGraph() const {
+    return m_graph;
 }
 
 unsigned long NodeBreakerVoltageLevel::getNode1(const std::string& switchId) const {
@@ -252,8 +264,8 @@ bool NodeBreakerVoltageLevel::isConnected(const Terminal& /*terminal*/) const {
     throw AssertionError("TODO");
 }
 
-void NodeBreakerVoltageLevel::reduceStateArraySize(unsigned long /*number*/) {
-    // TODO(mathbagu)
+void NodeBreakerVoltageLevel::reduceStateArraySize(unsigned long number) {
+    m_states.reduceStateArraySize(number);
 }
 
 void NodeBreakerVoltageLevel::removeSwitch(const std::string& switchId) {

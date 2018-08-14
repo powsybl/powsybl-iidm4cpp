@@ -98,12 +98,12 @@ private:
 };
 
 class BusViewImpl : public BusView {
-public:
+public: // BusView
     stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
 
     std::vector<std::reference_wrapper<Bus> > getBuses() const override;
 
-    stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) const override;
+    stdcxx::Reference<Bus> getMergedBus(const std::string& busbarSectionId) const override;
 
 public:
     explicit BusViewImpl(NodeBreakerVoltageLevel& voltageLevel);

@@ -12,15 +12,16 @@
 #include <string>
 
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/math/UndirectedGraph.hpp>
 
+#include "NodeBreakerVoltageLevelBusNamingStrategy.hpp"
+#include "NodeBreakerVoltageLevelGraph.hpp"
+#include "NodeBreakerVoltageLevelState.hpp"
 #include "NodeBreakerVoltageLevelViews.hpp"
+#include "StateArray.hpp"
 
 namespace powsybl {
 
 namespace iidm {
-
-class NodeTerminal;
 
 class NodeBreakerVoltageLevel : public VoltageLevel {
 public: // VoltageLevel
@@ -72,7 +73,11 @@ protected: // Stateful
 private:
     void checkTerminal(Terminal& terminal) const;
 
+    node_breaker_voltage_level::BusNamingStrategy& getBusNamingStrategy();
+
     stdcxx::optional<unsigned long> getEdge(const std::string& switchId, bool throwException) const;
+
+    const node_breaker_voltage_level::Graph& getGraph() const;
 
     unsigned long getNode1(const std::string& switchId) const;
 
@@ -98,11 +103,13 @@ private:
     friend class node_breaker_voltage_level::BusViewImpl;
 
 private:
-    typedef math::UndirectedGraph<NodeTerminal, Switch> Graph;
-
-    Graph m_graph;
+    node_breaker_voltage_level::Graph m_graph;
 
     std::map<std::string, unsigned long> m_switches;
+
+    node_breaker_voltage_level::BusNamingStrategy m_busNamingStrategy;
+
+    StateArray<node_breaker_voltage_level::StateImpl> m_states;
 
     node_breaker_voltage_level::NodeBreakerViewImpl m_nodeBreakerView;
 
