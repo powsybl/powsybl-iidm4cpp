@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_TOPOLOGYKIND_HPP
 #define POWSYBL_IIDM_TOPOLOGYKIND_HPP
 
+#include <ostream>
+
 namespace powsybl {
 
 namespace iidm {
@@ -16,6 +18,8 @@ enum class TopologyKind {
     NODE_BREAKER,
     BUS_BREAKER
 };
+
+std::ostream& operator<<(std::ostream& stream, const TopologyKind& type);
 
 }  // namespace iidm
 

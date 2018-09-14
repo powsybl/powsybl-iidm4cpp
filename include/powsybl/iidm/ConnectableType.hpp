@@ -27,8 +27,6 @@ enum class ConnectableType : unsigned int {
     HVDC_CONVERTER_STATION
 };
 
-const std::string& getConnectableTypeName(const ConnectableType& type);
-
 std::ostream& operator<<(std::ostream& stream, const ConnectableType& type);
 
 }  // namespace iidm

@@ -9,11 +9,17 @@
 
 #include <array>
 
+#include <powsybl/logging/MessageFormat.hpp>
+
 namespace powsybl {
 
-namespace iidm {
+namespace logging {
 
-const std::string& getConnectableTypeName(const ConnectableType& type) {
+/**
+ * toString template specialization for ConnectableType
+ */
+template <>
+std::string toString(const iidm::ConnectableType& value) {
     static std::array<std::string, 10> s_typeNames {{
         "BUSBAR_SECTION",
         "LINE",
@@ -27,11 +33,15 @@ const std::string& getConnectableTypeName(const ConnectableType& type) {
         "HVDC_CONVERTER_STATION"
     }};
 
-    return s_typeNames.at(static_cast<unsigned int>(type));
+    return s_typeNames.at(static_cast<unsigned int>(value));
 }
 
+}  // namespace logging
+
+namespace iidm {
+
 std::ostream& operator<<(std::ostream& stream, const ConnectableType& type) {
-    stream << getConnectableTypeName(type);
+    stream << logging::toString(type);
 
     return stream;
 }

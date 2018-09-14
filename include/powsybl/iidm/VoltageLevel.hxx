@@ -39,10 +39,9 @@ T& VoltageLevel::getConnectable(const std::string& id) {
             throw PowsyblException(logging::format("The branch '%1%' is not connected to the voltage level '%2%'", id, getId()));
         }
     } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable)) {
-        // TODO
         throw AssertionError("TODO");
     } else {
-        throw AssertionError(logging::format("Unexpected connectable type: ", getConnectableTypeName(connectable.getConnectableType())));
+        throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.getConnectableType()));
     }
 
     return dynamic_cast<T&>(connectable);

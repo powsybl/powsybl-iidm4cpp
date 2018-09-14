@@ -166,7 +166,7 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
                     break;
 
                 default:
-                    throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", getConnectableTypeName(connectableType)));
+                    throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectableType));
             }
         }
     }

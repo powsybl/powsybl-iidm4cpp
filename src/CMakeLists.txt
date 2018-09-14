@@ -62,6 +62,7 @@ set(IIDM_SOURCES
     iidm/Terminal.cpp
     iidm/ThreeWindingsTransformer.cpp
     iidm/TieLine.cpp
+    iidm/TopologyKind.cpp
     iidm/TwoWindingsTransformer.cpp
     iidm/ValidationException.cpp
     iidm/ValidationUtils.cpp

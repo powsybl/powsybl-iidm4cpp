@@ -85,7 +85,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
 
                 case ConnectableType::BUSBAR_SECTION: // must not happen in a bus/breaker topology
                 default:
-                    throw AssertionError(logging::format("Unexpected connectable type: %1%", connectable.getConnectableType()));
+                    throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.getConnectableType()));
             }
         }
     }

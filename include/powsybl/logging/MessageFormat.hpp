@@ -29,28 +29,16 @@ template <typename... Args>
 std::string format(const std::string& message, const Args&... args);
 
 /**
- * A convenient function to convert an initializer_list<T> to a string
+ * A convenient function to convert an instance of T to a string
  *
- * @tparam T the type of the data contained in the list
+ * @tparam T the type of the data to convert to a string
  *
- * @param list the list to convert to string
+ * @param value the value to convert to string
  *
- * @return a string representation of the list
+ * @return a string representation of the value
  */
 template <typename T>
-std::string toString(const std::initializer_list<T>& list);
-
-/**
- * A convenient function to convert a set<T> to a string
- *
- * @tparam T the type of the data contained in the set
- *
- * @param set the set to convert to string
- *
- * @return a string representation of the set
- */
-template <typename T>
-std::string toString(const std::set<T>& set);
+std::string toString(const T& value);
 
 }  // namespace logging
 

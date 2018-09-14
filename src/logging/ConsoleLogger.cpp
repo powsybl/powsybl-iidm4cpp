@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <powsybl/stdcxx/put_time.hpp>
+#include <powsybl/AssertionError.hpp>
 
 namespace powsybl {
 
@@ -21,7 +22,7 @@ std::string now() {
 
     struct std::tm result = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nullptr};
     if (localtime_r(&now, &result) == nullptr) {
-        // TODO(mathbagu): throw an AssertionError
+        throw AssertionError(logging::format("Unable to get the current date."));
     }
 
     std::ostringstream oss;
