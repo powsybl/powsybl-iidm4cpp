@@ -26,14 +26,14 @@ UndirectedGraph<V, E>::UndirectedGraph() {
 template <typename V, typename E>
 void UndirectedGraph<V, E>::checkEdge(unsigned long e) const {
     if (e >= m_edges.size() || !m_edges[e]) {
-        throw new PowsyblException(logging::format("Edge %1% not found", e));
+        throw PowsyblException(logging::format("Edge %1% not found", e));
     }
 }
 
 template <typename V, typename E>
 void UndirectedGraph<V, E>::checkVertex(unsigned long v) const {
     if (v >= m_vertices.size() || !m_vertices[v]) {
-        throw new PowsyblException(logging::format("Vertex %1% not found", v));
+        throw PowsyblException(logging::format("Vertex %1% not found", v));
     }
 }
 
@@ -127,7 +127,7 @@ void UndirectedGraph<V, E>::findAllPaths(unsigned long v, const VertexVisitor& p
                 continue;
             }
         } else {
-            throw new PowsyblException(logging::format("Edge %1% is not connected to vertex %2%", e, v));
+            throw PowsyblException(logging::format("Edge %1% is not connected to vertex %2%", e, v));
         }
     }
 }
