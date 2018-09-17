@@ -45,7 +45,9 @@ protected:
     typedef std::function<bool(const stdcxx::Reference<Switch>& a)> SwitchPredicate;
 
 protected:
-    NodeBreakerVoltageLevel& m_voltageLevel;
+    const NodeBreakerVoltageLevel& getVoltageLevel() const;
+
+    NodeBreakerVoltageLevel& getVoltageLevel();
 
 private:
     virtual SwitchPredicate createSwitchPredicate() const;
@@ -57,6 +59,8 @@ private:
     void updateCache(const SwitchPredicate& predicate);
 
 private:
+    NodeBreakerVoltageLevel& m_voltageLevel;
+
     std::unique_ptr<BusCache> m_cache;
 };
 
