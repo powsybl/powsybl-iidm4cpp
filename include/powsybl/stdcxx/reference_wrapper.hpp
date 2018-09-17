@@ -122,7 +122,7 @@ struct equal_to {
 template <typename T>
 struct hash {
     std::size_t operator()(const std::reference_wrapper<T>& reference) const {
-        return reinterpret_cast<std::size_t>(std::addressof(reference.get()));
+        return std::hash<T*>()(std::addressof(reference.get()));
     }
 };
 
