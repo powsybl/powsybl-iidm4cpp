@@ -17,6 +17,7 @@
 
 #include "BusBreakerVoltageLevelState.hpp"
 #include "BusBreakerVoltageLevelViews.hpp"
+#include "BusTerminalViews.hpp"
 #include "StateArray.hpp"
 
 namespace powsybl {
@@ -109,6 +110,10 @@ private:
     friend class bus_breaker_voltage_level::BusViewImpl;
 
     friend class bus_breaker_voltage_level::CalculatedBusTopology;
+
+    friend class bus_terminal::BusBreakerViewImpl;
+
+    friend class bus_terminal::BusViewImpl;
 
 private:
     Graph m_graph;

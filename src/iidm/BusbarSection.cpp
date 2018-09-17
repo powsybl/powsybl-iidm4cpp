@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/BusbarSection.hpp>
 
-#include <powsybl/iidm/NodeTerminal.hpp>
+#include "NodeTerminal.hpp"
 
 namespace powsybl {
 

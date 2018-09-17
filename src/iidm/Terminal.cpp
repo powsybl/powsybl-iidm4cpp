@@ -15,6 +15,9 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
+#include "BusTerminal.hpp"
+#include "NodeTerminal.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -124,6 +127,14 @@ Terminal& Terminal::setVoltageLevel(const stdcxx::Reference<VoltageLevel>& volta
     m_voltageLevel = voltageLevel;
 
     return *this;
+}
+
+std::unique_ptr<Terminal> createBusTerminal(Network& network, const std::string& connectableBusId, bool connected) {
+    return stdcxx::make_unique<BusTerminal>(network, connectableBusId, connected);
+}
+
+std::unique_ptr<Terminal> createNodeTerminal(Network& network, unsigned long node) {
+    return stdcxx::make_unique<NodeTerminal>(network, node);
 }
 
 }  // namespace iidm

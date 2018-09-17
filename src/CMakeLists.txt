@@ -20,6 +20,7 @@ set(IIDM_SOURCES
     iidm/BusBreakerVoltageLevelViews.cpp
     iidm/BusBreakerVoltageLevelTopology.cpp
     iidm/BusTerminal.cpp
+    iidm/BusTerminalViews.cpp
     iidm/CalculatedBus.cpp
     iidm/ConfiguredBus.cpp
     iidm/Connectable.cpp
@@ -47,6 +48,7 @@ set(IIDM_SOURCES
     iidm/NodeBreakerVoltageLevelTopology.cpp
     iidm/NodeBreakerVoltageLevelViews.cpp
     iidm/NodeTerminal.cpp
+    iidm/NodeTerminalViews.cpp
     iidm/ObjectStore.cpp
     iidm/ReactiveCapabilityCurve.cpp
     iidm/ReactiveCapabilityCurveAdder.cpp

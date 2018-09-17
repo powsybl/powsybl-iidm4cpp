@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
 #include "ValidationUtils.hpp"
@@ -27,7 +28,7 @@ BusbarSection& BusbarSectionAdder::add() {
     std::unique_ptr<BusbarSection> ptrBusbarSection = stdcxx::make_unique<BusbarSection>(getNetwork(), getId(), getName());
     BusbarSection& busbarSection = getNetwork().checkAndAdd(std::move(ptrBusbarSection));
 
-    Terminal& terminal = busbarSection.addTerminal(stdcxx::make_unique<NodeTerminal>(getNetwork(), *m_node));
+    Terminal& terminal = busbarSection.addTerminal(createNodeTerminal(getNetwork(), *m_node));
     m_voltageLevel.attach(terminal, false);
 
     return busbarSection;

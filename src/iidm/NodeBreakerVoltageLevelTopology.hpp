@@ -37,6 +37,8 @@ public:
 
     std::vector<std::reference_wrapper<CalculatedBus> > getBuses();
 
+    stdcxx::Reference<Bus> getConnectableBus(unsigned long node);
+
     void invalidateCache();
 
     void updateCache();

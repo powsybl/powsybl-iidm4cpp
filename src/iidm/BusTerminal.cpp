@@ -5,10 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/BusTerminal.hpp>
+#include "BusTerminal.hpp"
 
+#include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/StateManager.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 #include "ValidationUtils.hpp"
 
@@ -19,7 +21,9 @@ namespace iidm {
 BusTerminal::BusTerminal(MultiStateObject& network, const std::string& connectableBusId, bool connected) :
     Terminal(network),
     m_connected(network.getStateManager().getStateArraySize(), connected),
-    m_connectableBusId(network.getStateManager().getStateArraySize(), checkNotEmpty(connectableBusId, "ConnectableBusId is required")) {
+    m_connectableBusId(network.getStateManager().getStateArraySize(), checkNotEmpty(connectableBusId, "ConnectableBusId is required")),
+    m_busBreakerView(*this),
+    m_busView(*this) {
 }
 
 void BusTerminal::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -49,13 +53,39 @@ const std::string& BusTerminal::getConnectableBusId() const {
 }
 
 double BusTerminal::getAngle() const {
-    // TODO(mathbagu): need views
-    return 0.0;
+    const auto& bus = m_busBreakerView.getBus();
+
+    return static_cast<bool>(bus) ? bus.get().getAngle() : stdcxx::nan();
+}
+
+const terminal::BusBreakerView& BusTerminal::getBusBreakerView() const {
+    return m_busBreakerView;
+}
+
+terminal::BusBreakerView& BusTerminal::getBusBreakerView() {
+    return m_busBreakerView;
+}
+
+const terminal::BusView& BusTerminal::getBusView() const {
+    return m_busView;
+}
+
+terminal::BusView& BusTerminal::getBusView() {
+    return m_busView;
+}
+
+const terminal::NodeBreakerView& BusTerminal::getNodeBreakerView() const {
+    throw AssertionError("Not implemented");
+}
+
+terminal::NodeBreakerView& BusTerminal::getNodeBreakerView() {
+    throw AssertionError("Not implemented");
 }
 
 double BusTerminal::getV() const {
-    // TODO(mathbagu): need views
-    return 0.0;
+    const auto& bus = m_busBreakerView.getBus();
+
+    return static_cast<bool>(bus) ? bus.get().getV() : stdcxx::nan();
 }
 
 bool BusTerminal::isConnected() const {

@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/MultiStateObject.hpp>
 #include <powsybl/iidm/Stateful.hpp>
+#include <powsybl/iidm/TerminalViews.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -19,6 +20,7 @@ namespace powsybl {
 namespace iidm {
 
 class Connectable;
+class Network;
 class VoltageLevel;
 
 class Terminal : public Stateful {
@@ -31,9 +33,21 @@ public:
 
     virtual double getAngle() const = 0;
 
+    virtual const terminal::BusBreakerView& getBusBreakerView() const = 0;
+
+    virtual terminal::BusBreakerView& getBusBreakerView() = 0;
+
+    virtual const terminal::BusView& getBusView() const = 0;
+
+    virtual terminal::BusView& getBusView() = 0;
+
     const stdcxx::Reference<Connectable>& getConnectable() const;
 
     double getI() const;
+
+    virtual const terminal::NodeBreakerView& getNodeBreakerView() const = 0;
+
+    virtual terminal::NodeBreakerView& getNodeBreakerView() = 0;
 
     double getP() const;
 
@@ -82,6 +96,10 @@ private:
 
     std::vector<double> m_q;
 };
+
+std::unique_ptr<Terminal> createBusTerminal(Network& network, const std::string& connectableBusId, bool connected);
+
+std::unique_ptr<Terminal> createNodeTerminal(Network& network, unsigned long node);
 
 }  // namespace iidm
 

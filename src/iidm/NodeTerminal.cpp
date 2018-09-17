@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/NodeTerminal.hpp>
+#include "NodeTerminal.hpp"
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/StateManager.hpp>
@@ -22,7 +22,10 @@ NodeTerminal::NodeTerminal(MultiStateObject& network, unsigned long node) :
     Terminal(network),
     m_node(node),
     m_v(network.getStateManager().getStateArraySize(), stdcxx::nan()),
-    m_angle(network.getStateManager().getStateArraySize(), stdcxx::nan()) {
+    m_angle(network.getStateManager().getStateArraySize(), stdcxx::nan()),
+    m_nodeBreakerView(*this),
+    m_busBreakerView(*this),
+    m_busView(*this) {
 
 }
 
@@ -54,8 +57,32 @@ double NodeTerminal::getAngle() const {
     return m_angle[getNetwork().getStateIndex()];
 }
 
+const terminal::BusBreakerView& NodeTerminal::getBusBreakerView() const {
+    return m_busBreakerView;
+}
+
+terminal::BusBreakerView& NodeTerminal::getBusBreakerView() {
+    return m_busBreakerView;
+}
+
+const terminal::BusView& NodeTerminal::getBusView() const {
+    return m_busView;
+}
+
+terminal::BusView& NodeTerminal::getBusView() {
+    return m_busView;
+}
+
 unsigned long NodeTerminal::getNode() const {
     return m_node;
+}
+
+const terminal::NodeBreakerView& NodeTerminal::getNodeBreakerView() const {
+    return m_nodeBreakerView;
+}
+
+terminal::NodeBreakerView& NodeTerminal::getNodeBreakerView() {
+    return m_nodeBreakerView;
 }
 
 double NodeTerminal::getV() const {

@@ -10,9 +10,8 @@
 
 #include <powsybl/iidm/InjectionAdder.hpp>
 
-#include <powsybl/iidm/BusTerminal.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/NodeTerminal.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
@@ -46,9 +45,9 @@ std::unique_ptr<Terminal> InjectionAdder<Adder>::getTerminal() {
             throw ValidationException(*this, "connectable bus is not set");
         }
 
-        ptrTerminal = stdcxx::make_unique<BusTerminal>(this->getNetwork(), connectionBus, !m_bus.empty());
+        ptrTerminal = createBusTerminal(this->getNetwork(), connectionBus, !m_bus.empty());
     } else {
-        ptrTerminal = stdcxx::make_unique<NodeTerminal>(this->getNetwork(), *m_node);
+        ptrTerminal = createNodeTerminal(this->getNetwork(), *m_node);
     }
 
     return ptrTerminal;

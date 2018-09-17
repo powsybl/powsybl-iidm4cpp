@@ -17,6 +17,7 @@
 #include "NodeBreakerVoltageLevelGraph.hpp"
 #include "NodeBreakerVoltageLevelState.hpp"
 #include "NodeBreakerVoltageLevelViews.hpp"
+#include "NodeTerminalViews.hpp"
 #include "StateArray.hpp"
 
 namespace powsybl {
@@ -109,6 +110,12 @@ private:
     friend class node_breaker_voltage_level::CalculatedBusBreakerTopology;
 
     friend class node_breaker_voltage_level::CalculatedBusTopology;
+
+    friend class node_terminal::NodeBreakerViewImpl;
+
+    friend class node_terminal::BusBreakerViewImpl;
+
+    friend class node_terminal::BusViewImpl;
 
 private:
     node_breaker_voltage_level::Graph m_graph;

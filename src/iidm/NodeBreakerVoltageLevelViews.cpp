@@ -11,6 +11,7 @@
 
 #include "CalculatedBus.hpp"
 #include "NodeBreakerVoltageLevel.hpp"
+#include "NodeTerminal.hpp"
 
 namespace powsybl {
 

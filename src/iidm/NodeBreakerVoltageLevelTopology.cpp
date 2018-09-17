@@ -13,6 +13,7 @@
 #include <powsybl/logging/LoggerFactory.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
+#include "NodeTerminal.hpp"
 
 namespace powsybl {
 
@@ -121,6 +122,35 @@ std::vector<std::reference_wrapper<CalculatedBus> > CalculatedBusTopology::getBu
     updateCache();
 
     return m_cache->getBuses();
+}
+
+stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long node) {
+    // check if the node is associated to a bus
+    stdcxx::Reference<CalculatedBus> connectableBus = getBus(node);
+    if (static_cast<bool>(connectableBus)) {
+        return stdcxx::ref<Bus>(connectableBus);
+    }
+
+    // if not traverse the graph starting from the node (without stopping at open switches) until finding another
+    // node associated to a bus
+    const auto& graph = m_voltageLevel.getGraph();
+    graph.traverse(node, [this, &connectableBus](unsigned long /*v1*/, unsigned long /*e*/, unsigned long v2) {
+        connectableBus = getBus(v2);
+
+        return static_cast<bool>(connectableBus) ? math::TraverseResult::TERMINATE : math::TraverseResult::CONTINUE;
+    });
+
+    // if nothing found, just take the first bus
+    if (! static_cast<bool>(connectableBus)) {
+        const auto& buses = getBuses();
+        if (buses.empty()) {
+            throw AssertionError("Should not happen");
+        }
+
+        return stdcxx::ref<Bus>(buses.at(0));
+    }
+
+    return stdcxx::ref<Bus>(connectableBus);
 }
 
 const NodeBreakerVoltageLevel& CalculatedBusTopology::getVoltageLevel() const {

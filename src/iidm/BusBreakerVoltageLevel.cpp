@@ -12,6 +12,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 
+#include "BusTerminal.hpp"
 #include "ValidationUtils.hpp"
 
 namespace powsybl {

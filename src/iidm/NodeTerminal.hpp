@@ -10,6 +10,8 @@
 
 #include <powsybl/iidm/Terminal.hpp>
 
+#include "NodeTerminalViews.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -17,6 +19,18 @@ namespace iidm {
 class NodeTerminal : public Terminal {
 public: // Terminal
     double getAngle() const override;
+
+    const terminal::BusBreakerView& getBusBreakerView() const override;
+
+    terminal::BusBreakerView& getBusBreakerView() override;
+
+    const terminal::BusView& getBusView() const override;
+
+    terminal::BusView& getBusView() override;
+
+    const terminal::NodeBreakerView& getNodeBreakerView() const override;
+
+    terminal::NodeBreakerView& getNodeBreakerView() override;
 
     double getV() const override;
 
@@ -57,6 +71,12 @@ private:
     std::vector<double> m_v;
 
     std::vector<double> m_angle;
+
+    node_terminal::NodeBreakerViewImpl m_nodeBreakerView;
+
+    node_terminal::BusBreakerViewImpl m_busBreakerView;
+
+    node_terminal::BusViewImpl m_busView;
 
 };
 

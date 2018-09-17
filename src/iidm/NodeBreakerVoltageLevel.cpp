@@ -12,6 +12,7 @@
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "NodeBreakerVoltageLevelBusCache.hpp"
+#include "NodeTerminal.hpp"
 #include "ValidationUtils.hpp"
 
 namespace powsybl {

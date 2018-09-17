@@ -7,10 +7,10 @@
 
 #include "CalculatedBus.hpp"
 
-#include <powsybl/iidm/NodeTerminal.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
+#include "NodeTerminal.hpp"
 
 namespace powsybl {
 
