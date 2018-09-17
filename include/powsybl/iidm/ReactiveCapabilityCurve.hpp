@@ -50,7 +50,7 @@ public:
 
     ReactiveCapabilityCurve(const ReactiveCapabilityCurve&) = default;
 
-    virtual ~ReactiveCapabilityCurve() = default;
+    virtual ~ReactiveCapabilityCurve() noexcept = default;
 
     ReactiveCapabilityCurve& operator=(const ReactiveCapabilityCurve&) = default;
 

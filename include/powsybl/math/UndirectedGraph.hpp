@@ -119,7 +119,7 @@ class UndirectedGraph<V, E>::Edge {
 public:
     Edge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object);
 
-    ~Edge() = default;
+    ~Edge() noexcept = default;
 
     const stdcxx::Reference<E>& getObject() const;
 
@@ -142,7 +142,7 @@ class UndirectedGraph<V, E>::Vertex {
 public:
     Vertex();
 
-    ~Vertex() = default;
+    ~Vertex() noexcept = default;
 
     const stdcxx::Reference<V>& getObject() const;
 

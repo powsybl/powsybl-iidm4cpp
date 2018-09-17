@@ -62,7 +62,7 @@ public:
 public:
     explicit BusViewImpl(BusBreakerVoltageLevel& voltageLevel);
 
-    ~BusViewImpl() override = default;
+    ~BusViewImpl() noexcept override = default;
 
 private:
     BusBreakerVoltageLevel& m_voltageLevel;

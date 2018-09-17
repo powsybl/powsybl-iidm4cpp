@@ -63,7 +63,7 @@ public: // AbstractSwitchAdder
 public:
     explicit SwitchAdder(VoltageLevel& voltageLevel);
 
-    ~SwitchAdder() override = default;
+    ~SwitchAdder() noexcept override = default;
 
     SwitchAdder& setKind(const SwitchKind& kind);
 
@@ -94,7 +94,7 @@ public: // AbstractSwitchAdder
 public:
     explicit SwitchAdder(VoltageLevel& voltageLevel);
 
-    ~SwitchAdder() override = default;
+    ~SwitchAdder() noexcept override = default;
 
     SwitchAdder& setBus1(const std::string& bus1);
 

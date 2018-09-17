@@ -76,7 +76,7 @@ public: // BusBreakerView
 public:
     explicit BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
-    ~BusBreakerViewImpl() override = default;
+    ~BusBreakerViewImpl() noexcept override = default;
 
 private: // BusBreakerView
     BusAdder newBus() override;
@@ -106,7 +106,7 @@ public: // BusView
 public:
     explicit BusViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
-    ~BusViewImpl() override = default;
+    ~BusViewImpl() noexcept override = default;
 
 private:
     NodeBreakerVoltageLevel& m_voltageLevel;

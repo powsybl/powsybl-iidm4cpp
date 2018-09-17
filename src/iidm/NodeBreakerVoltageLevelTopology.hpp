@@ -68,7 +68,7 @@ class CalculatedBusBreakerTopology : public CalculatedBusTopology {
 public:
     explicit CalculatedBusBreakerTopology(NodeBreakerVoltageLevel& voltageLevel);
 
-    ~CalculatedBusBreakerTopology() override = default;
+    ~CalculatedBusBreakerTopology() noexcept override = default;
 
     stdcxx::Reference<CalculatedBus> getBus1(const std::string& switchId, bool throwException);
 
