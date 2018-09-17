@@ -63,7 +63,7 @@ unsigned long ConfiguredBus::getConnectedTerminalCount() const {
     const std::list<std::reference_wrapper<BusTerminal> >& terminals = m_terminals[m_network.get().getStateIndex()];
     for (const auto& terminal : terminals) {
         if (terminal.get().isConnected()) {
-            count++;
+            ++count;
         }
     }
 

@@ -149,8 +149,8 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
                 case ConnectableType::TWO_WINDINGS_TRANSFORMER:
                 case ConnectableType::THREE_WINDINGS_TRANSFORMER:
                 case ConnectableType::HVDC_CONVERTER_STATION:
-                    branchCount++;
-                    feederCount++;
+                    ++branchCount;
+                    ++feederCount;
                     break;
 
                 case ConnectableType::LOAD:
@@ -158,11 +158,11 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
                 case ConnectableType::SHUNT_COMPENSATOR:
                 case ConnectableType::DANGLING_LINE:
                 case ConnectableType::STATIC_VAR_COMPENSATOR:
-                    feederCount++;
+                    ++feederCount;
                     break;
 
                 case ConnectableType::BUSBAR_SECTION:
-                    busbarSectionCount++;
+                    ++busbarSectionCount;
                     break;
 
                 default:
