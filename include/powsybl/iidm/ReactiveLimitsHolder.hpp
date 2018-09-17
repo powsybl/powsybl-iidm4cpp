@@ -21,7 +21,7 @@ class ReactiveLimits;
 
 class ReactiveLimitsHolder {
 public:
-    virtual ~ReactiveLimitsHolder() = default;
+    virtual ~ReactiveLimitsHolder() noexcept = default;
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<ReactiveLimits, T>::value>::type>
     const T& getReactiveLimits() const;

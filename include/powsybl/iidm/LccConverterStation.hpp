@@ -16,7 +16,7 @@ namespace iidm {
 
 class LccConverterStation : public HvdcConverterStation {
 public:
-    ~LccConverterStation() override = default;
+    ~LccConverterStation() noexcept override = default;
 
 protected:
     LccConverterStation(const std::string& id, const std::string& name);

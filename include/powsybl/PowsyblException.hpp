@@ -16,7 +16,7 @@ class PowsyblException : public std::runtime_error {
 public:
     explicit PowsyblException(const std::string& message);
 
-    ~PowsyblException() override = default;
+    ~PowsyblException() noexcept override = default;
 };
 
 }  // namespace powsybl

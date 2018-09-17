@@ -32,7 +32,7 @@ public: // Logger
 public:
     ConsoleLogger() = default;
 
-    ~ConsoleLogger() override = default;
+    ~ConsoleLogger() noexcept override = default;
 
 private: // Logger
     void log(Level level, const std::string& message) override;

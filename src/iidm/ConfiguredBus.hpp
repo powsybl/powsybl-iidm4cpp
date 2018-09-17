@@ -44,7 +44,7 @@ public: // Bus
 public:
     ConfiguredBus(const std::string& id, BusBreakerVoltageLevel& voltageLevel);
 
-    ~ConfiguredBus() override = default;
+    ~ConfiguredBus() noexcept override = default;
 
     void addTerminal(BusTerminal& terminal);
 

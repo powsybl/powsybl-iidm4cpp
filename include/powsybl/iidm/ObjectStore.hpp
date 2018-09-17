@@ -22,6 +22,8 @@ public:
 
     ObjectStore(ObjectStore&&) = default;
 
+    ~ObjectStore() noexcept = default;
+
     template <typename T> using const_iterator = typename iterator_traits<T>::const_iterator;
 
     template <typename T> using iterator = typename iterator_traits<T>::iterator;

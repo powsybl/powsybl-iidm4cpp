@@ -23,7 +23,7 @@ class Substation;
 
 class SubstationAdder : public IdentifiableAdder<SubstationAdder> {
 public:
-    ~SubstationAdder() override = default;
+    ~SubstationAdder() noexcept override = default;
 
     Substation& add();
 

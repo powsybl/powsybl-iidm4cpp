@@ -21,7 +21,7 @@ class VoltageLevel;
 
 class LoadAdder : public InjectionAdder<LoadAdder> {
 public:
-    ~LoadAdder() override = default;
+    ~LoadAdder() noexcept override = default;
 
     Load& add();
 

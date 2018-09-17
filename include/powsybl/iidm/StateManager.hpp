@@ -32,6 +32,8 @@ public:
 
     StateManager(StateManager&& stateManager) noexcept;
 
+    ~StateManager() noexcept = default;
+
     void cloneState(const std::string& sourceStateId, const std::string& targetStateId);
 
     void cloneState(const std::string& sourceStateId, const std::initializer_list<std::string>& targetStateIds);

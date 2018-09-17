@@ -26,7 +26,7 @@ public:
     Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, SwitchKind kind, bool open,
            bool retained, bool fictitious);
 
-    ~Switch() override = default;
+    ~Switch() noexcept override = default;
 
     SwitchKind getKind() const;
 

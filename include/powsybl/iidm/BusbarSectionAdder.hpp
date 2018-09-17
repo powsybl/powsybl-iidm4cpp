@@ -23,7 +23,7 @@ class BusbarSectionAdder : public IdentifiableAdder<BusbarSectionAdder> {
 public:
     explicit BusbarSectionAdder(NodeBreakerVoltageLevel& voltageLevel);
 
-    ~BusbarSectionAdder() override = default;
+    ~BusbarSectionAdder() noexcept override = default;
 
     BusbarSection& add();
 

@@ -25,7 +25,7 @@ public: // Terminal
 public:
     NodeTerminal(MultiStateObject& network, unsigned long node);
 
-    ~NodeTerminal() override = default;
+    ~NodeTerminal() noexcept override = default;
 
     unsigned long getNode() const;
 

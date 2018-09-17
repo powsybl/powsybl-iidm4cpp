@@ -21,7 +21,7 @@ public: // Validable
     std::string getMessageHeader() const override;
 
 public:
-    ~Identifiable() override = default;
+    ~Identifiable() noexcept override = default;
 
     const std::string& getId() const;
 

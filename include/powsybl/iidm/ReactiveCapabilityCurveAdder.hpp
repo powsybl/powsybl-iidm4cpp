@@ -48,7 +48,7 @@ public:
 public:
     explicit ReactiveCapabilityCurveAdder(ReactiveLimitsHolder& owner);
 
-    ~ReactiveCapabilityCurveAdder() = default;
+    ~ReactiveCapabilityCurveAdder() noexcept = default;
 
     ReactiveCapabilityCurve& add();
 

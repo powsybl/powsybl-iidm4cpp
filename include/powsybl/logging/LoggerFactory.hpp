@@ -68,7 +68,7 @@ public:
 private:
     LoggerFactory() = default;
 
-    ~LoggerFactory() = default;
+    ~LoggerFactory() noexcept = default;
 
     Logger& getLoggerByName(const std::string& name) const;
 

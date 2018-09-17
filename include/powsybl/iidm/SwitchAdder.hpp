@@ -23,7 +23,7 @@ class VoltageLevel;
 template <typename SwitchAdder>
 class AbstractSwitchAdder : public IdentifiableAdder<SwitchAdder> {
 public:
-    ~AbstractSwitchAdder() override = default;
+    ~AbstractSwitchAdder() noexcept override = default;
 
     virtual Switch& add() = 0;
 

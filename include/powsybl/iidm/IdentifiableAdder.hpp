@@ -26,7 +26,7 @@ public: // Validable
 public:
     IdentifiableAdder() = default;
 
-    ~IdentifiableAdder() override = default;
+    ~IdentifiableAdder() noexcept override = default;
 
     Adder& setId(const std::string& id);
 

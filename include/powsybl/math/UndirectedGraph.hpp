@@ -32,7 +32,7 @@ public:
 public:
     UndirectedGraph();
 
-    ~UndirectedGraph() = default;
+    ~UndirectedGraph() noexcept = default;
 
     unsigned long addEdge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object);
 

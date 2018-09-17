@@ -29,7 +29,7 @@ class CalculatedBusTopology {
 public:
     explicit CalculatedBusTopology(NodeBreakerVoltageLevel& voltageLevel);
 
-    virtual ~CalculatedBusTopology() = default;
+    virtual ~CalculatedBusTopology() noexcept = default;
 
     stdcxx::Reference<CalculatedBus> getBus(unsigned long node);
 

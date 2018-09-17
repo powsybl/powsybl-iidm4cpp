@@ -21,7 +21,7 @@ class MinMaxReactiveLimitsAdder {
 public:
     explicit MinMaxReactiveLimitsAdder(ReactiveLimitsHolder& owner);
 
-    ~MinMaxReactiveLimitsAdder() = default;
+    ~MinMaxReactiveLimitsAdder() noexcept = default;
 
     MinMaxReactiveLimits& add();
 

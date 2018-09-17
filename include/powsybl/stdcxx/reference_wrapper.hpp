@@ -30,7 +30,9 @@ public:
 
     reference_wrapper(const reference_wrapper&) = default;
 
-    reference_wrapper(reference_wrapper&&) = default;
+    reference_wrapper(T&& reference) noexcept = delete;
+
+    reference_wrapper(reference_wrapper&&) noexcept = default;
 
     reference_wrapper& operator=(const reference_wrapper&) = default;
 
@@ -62,9 +64,6 @@ public:
     void reset() noexcept {
         m_pointer = nullptr;
     }
-
-private:
-    reference_wrapper(T&& reference) = delete;
 
 private:
     T* m_pointer;

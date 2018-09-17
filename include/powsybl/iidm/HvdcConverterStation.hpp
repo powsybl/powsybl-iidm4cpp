@@ -16,7 +16,7 @@ namespace iidm {
 
 class HvdcConverterStation : public Injection {
 public:
-    ~HvdcConverterStation() override = default;
+    ~HvdcConverterStation() noexcept override = default;
 
 protected:
     HvdcConverterStation(const std::string& id, const std::string& name);

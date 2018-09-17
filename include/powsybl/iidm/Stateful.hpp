@@ -18,7 +18,7 @@ class StateManager;
 
 class Stateful {
 public:
-    virtual ~Stateful() = default;
+    virtual ~Stateful() noexcept = default;
 
 protected:
     virtual void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) = 0;

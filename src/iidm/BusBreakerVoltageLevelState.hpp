@@ -24,7 +24,7 @@ public: // State
 public:
     explicit StateImpl(BusBreakerVoltageLevel& voltageLevel);
 
-    ~StateImpl() = default;
+    ~StateImpl() noexcept = default;
 
     CalculatedBusTopology& getCalculatedBusTopology();
 

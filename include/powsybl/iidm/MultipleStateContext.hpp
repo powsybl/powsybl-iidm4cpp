@@ -19,7 +19,7 @@ class MultipleStateContext : public StateContext {
 public:
     explicit MultipleStateContext(unsigned long index);
 
-    ~MultipleStateContext() override = default;
+    ~MultipleStateContext() noexcept override = default;
 
 protected: // StateContext
     unsigned long getStateIndex() const override;

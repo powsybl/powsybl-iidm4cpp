@@ -23,7 +23,7 @@ public:
     };
 
 public:
-    ~Container() override = default;
+    ~Container() noexcept override = default;
 
     const Type& getType() const;
 

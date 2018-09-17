@@ -27,7 +27,7 @@ public:
 
     MinMaxReactiveLimits(const MinMaxReactiveLimits&) = default;
 
-    virtual ~MinMaxReactiveLimits() = default;
+    virtual ~MinMaxReactiveLimits() noexcept = default;
 
     MinMaxReactiveLimits& operator=(const MinMaxReactiveLimits&) = default;
 

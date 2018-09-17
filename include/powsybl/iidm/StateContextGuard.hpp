@@ -21,7 +21,7 @@ class StateContextGuard {
 public:
     explicit StateContextGuard(StateContext& context);
 
-    ~StateContextGuard();
+    ~StateContextGuard() noexcept;
 
 private: // Non copyable
     StateContextGuard(const StateContextGuard& guard) = delete;

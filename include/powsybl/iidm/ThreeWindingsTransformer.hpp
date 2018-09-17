@@ -16,7 +16,7 @@ namespace iidm {
 
 class ThreeWindingsTransformer : public Connectable {
 public:
-    ~ThreeWindingsTransformer() override = default;
+    ~ThreeWindingsTransformer() noexcept override = default;
 
 protected:
     ThreeWindingsTransformer(const std::string& id, const std::string& name);

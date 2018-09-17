@@ -16,7 +16,7 @@ namespace iidm {
 
 class TieLine : public Line {
 public:
-    ~TieLine() override = default;
+    ~TieLine() noexcept override = default;
 
 protected:
     TieLine(const std::string& id, const std::string& name);

@@ -22,7 +22,7 @@ public:
     public:
         Point(double p, double minQ, double maxQ);
 
-        ~Point() = default;
+        ~Point() noexcept = default;
 
         double getMaxQ() const;
 

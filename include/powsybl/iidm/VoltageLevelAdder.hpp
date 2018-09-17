@@ -21,7 +21,7 @@ class VoltageLevel;
 
 class VoltageLevelAdder : public IdentifiableAdder<VoltageLevelAdder> {
 public:
-    ~VoltageLevelAdder() override = default;
+    ~VoltageLevelAdder() noexcept override = default;
 
     VoltageLevel& add();
 

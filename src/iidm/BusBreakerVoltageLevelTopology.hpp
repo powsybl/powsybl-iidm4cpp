@@ -27,7 +27,7 @@ class CalculatedBusTopology {
 public:
     explicit CalculatedBusTopology(BusBreakerVoltageLevel& voltageLevel);
 
-    ~CalculatedBusTopology() = default;
+    ~CalculatedBusTopology() noexcept = default;
 
     stdcxx::Reference<MergedBus> getMergedBus(const std::string& busId, bool throwException);
 

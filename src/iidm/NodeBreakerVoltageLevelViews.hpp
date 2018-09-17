@@ -57,7 +57,7 @@ public: // NodeBreakerView
 public:
     explicit NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
-    ~NodeBreakerViewImpl() override = default;
+    ~NodeBreakerViewImpl() noexcept override = default;
 
 private:
     NodeBreakerVoltageLevel& m_voltageLevel;

@@ -28,7 +28,7 @@ public:
 public:
     StateArray(MultiStateObject& multiStateObject, const StateFactory& stateFactory);
 
-    ~StateArray() = default;
+    ~StateArray() noexcept = default;
 
     void allocateStateArrayElement(const std::set<unsigned long>& indexes, const StateFactory& stateFactory);
 

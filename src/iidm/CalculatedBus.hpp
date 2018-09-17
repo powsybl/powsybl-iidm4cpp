@@ -49,7 +49,7 @@ public:
      */
     CalculatedBus(const std::string& id, NodeBreakerVoltageLevel& voltageLevel, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals);
 
-    ~CalculatedBus() override = default;
+    ~CalculatedBus() noexcept override = default;
 
     /**
      * Invalidate this bus after the voltage level topology changed

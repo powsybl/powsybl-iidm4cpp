@@ -19,7 +19,7 @@ class ValidationException : public PowsyblException {
 public:
     ValidationException(const Validable& validable, const std::string& message);
 
-    ~ValidationException() override = default;
+    ~ValidationException() noexcept override = default;
 };
 
 }  // namespace iidm

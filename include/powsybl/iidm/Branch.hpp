@@ -24,7 +24,7 @@ public:
     };
 
 public:
-    ~Branch() override = default;
+    ~Branch() noexcept override = default;
 
     Terminal& getTerminal(const Side& side) const;
 

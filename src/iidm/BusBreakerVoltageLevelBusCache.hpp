@@ -33,7 +33,7 @@ public:
 public:
     BusCache(MergedBusById mergedBus, MergedBusByConfiguredBus mapping);
 
-    ~BusCache() = default;
+    ~BusCache() noexcept = default;
 
     stdcxx::Reference<MergedBus> getMergedBus(const std::string& id) const;
 

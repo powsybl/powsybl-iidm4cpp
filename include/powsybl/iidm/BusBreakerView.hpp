@@ -26,7 +26,7 @@ public:
     typedef bus_breaker_view::SwitchAdder SwitchAdder;
 
 public:
-    virtual ~BusBreakerView() = default;
+    virtual ~BusBreakerView() noexcept = default;
 
     virtual stdcxx::Reference<Bus> getBus(const std::string& busId) const = 0;
 

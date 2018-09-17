@@ -53,7 +53,7 @@ public:
      */
     MergedBus(const std::string& id, BusSet buses);
 
-    ~MergedBus() override = default;
+    ~MergedBus() noexcept override = default;
 
     /**
      * Invalidate this bus after the voltage level topology changed

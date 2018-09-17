@@ -16,7 +16,7 @@ namespace iidm {
 
 class Validable {
 public:
-    virtual ~Validable() = default;
+    virtual ~Validable() noexcept = default;
 
     virtual std::string getMessageHeader() const = 0;
 };

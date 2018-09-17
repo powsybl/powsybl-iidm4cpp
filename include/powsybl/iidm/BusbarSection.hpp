@@ -20,7 +20,7 @@ class BusbarSection : public Injection {
 public:
     BusbarSection(MultiStateObject& network, const std::string& id, const std::string& name);
 
-    ~BusbarSection() override = default;
+    ~BusbarSection() noexcept override = default;
 
     double getAngle() const;
 

@@ -22,7 +22,7 @@ class BusNamingStrategy {
 public:
     explicit BusNamingStrategy(NodeBreakerVoltageLevel& voltageLevel);
 
-    ~BusNamingStrategy() = default;
+    ~BusNamingStrategy() noexcept = default;
 
     std::string getName();
 

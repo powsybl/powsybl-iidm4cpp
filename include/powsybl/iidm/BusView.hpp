@@ -22,7 +22,7 @@ class Bus;
 
 class BusView {
 public:
-    virtual ~BusView() = default;
+    virtual ~BusView() noexcept = default;
 
     virtual stdcxx::Reference<Bus> getBus(const std::string& busId) const = 0;
 

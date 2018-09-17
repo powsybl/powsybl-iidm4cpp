@@ -16,7 +16,7 @@ class StateManager;
 
 class MultiStateObject {
 public:
-    virtual ~MultiStateObject() = default;
+    virtual ~MultiStateObject() noexcept = default;
 
     virtual unsigned long getStateIndex() const = 0;
 

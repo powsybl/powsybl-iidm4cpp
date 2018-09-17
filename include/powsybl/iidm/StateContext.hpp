@@ -16,7 +16,7 @@ class StateManager;
 
 class StateContext {
 public:
-    virtual ~StateContext() = default;
+    virtual ~StateContext() noexcept = default;
 
 protected:
     virtual unsigned long getStateIndex() const = 0;

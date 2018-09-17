@@ -33,7 +33,7 @@ public:
 public:
     BusCache(CalculatedBusByNode busByNode, CalculatedBusById busById);
 
-    ~BusCache() = default;
+    ~BusCache() noexcept = default;
 
     stdcxx::Reference<CalculatedBus> getBus(unsigned long node) const;
 

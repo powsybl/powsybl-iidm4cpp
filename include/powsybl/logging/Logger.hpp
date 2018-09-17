@@ -21,7 +21,7 @@ namespace logging {
  */
 class Logger {
 public:
-    virtual ~Logger() = default;
+    virtual ~Logger() noexcept = default;
 
     /**
      * Log a debug message

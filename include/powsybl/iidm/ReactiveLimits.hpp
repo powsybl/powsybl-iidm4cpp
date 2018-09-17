@@ -20,7 +20,7 @@ public:
 
     ReactiveLimits(const ReactiveLimits&) = default;
 
-    virtual ~ReactiveLimits() = default;
+    virtual ~ReactiveLimits() noexcept = default;
 
     ReactiveLimits& operator=(const ReactiveLimits&) = default;
 

@@ -26,7 +26,7 @@ class Terminal;
 
 class VoltageLevel : public Container, public Stateful {
 public:
-    ~VoltageLevel() override = default;
+    ~VoltageLevel() noexcept override = default;
 
     virtual void attach(Terminal& terminal, bool test) = 0;
 

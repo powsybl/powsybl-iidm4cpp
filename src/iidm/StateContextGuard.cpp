@@ -18,7 +18,7 @@ StateContextGuard::StateContextGuard(StateContext& context) :
     m_stateIndex(context.getStateIndex()) {
 }
 
-StateContextGuard::~StateContextGuard() {
+StateContextGuard::~StateContextGuard() noexcept {
     m_context.setStateIndex(m_stateIndex);
 }
 

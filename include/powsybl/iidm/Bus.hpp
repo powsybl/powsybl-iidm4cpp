@@ -23,7 +23,7 @@ class VoltageLevel;
 
 class Bus : public Identifiable {
 public:
-    ~Bus() override = default;
+    ~Bus() noexcept override = default;
 
     // TODO MBA: begin, cbegin, cend, end to iterator over all connected equipments
 

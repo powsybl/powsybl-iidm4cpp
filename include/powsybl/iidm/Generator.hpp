@@ -16,7 +16,7 @@ namespace iidm {
 
 class Generator : public Injection {
 public:
-    ~Generator() override = default;
+    ~Generator() noexcept override = default;
 
 protected:
     Generator(const std::string& id, const std::string& name);

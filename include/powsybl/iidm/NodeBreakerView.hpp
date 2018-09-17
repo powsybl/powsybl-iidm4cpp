@@ -29,7 +29,7 @@ public:
     typedef std::function<bool(unsigned long node1, const Switch& sw, unsigned long node2)> Traverser;
 
 public:
-    virtual ~NodeBreakerView() = default;
+    virtual ~NodeBreakerView() noexcept = default;
 
     virtual stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) const = 0;
 

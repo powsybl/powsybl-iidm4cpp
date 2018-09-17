@@ -16,7 +16,7 @@ namespace iidm {
 
 class Line : public Branch {
 public:
-    ~Line() override = default;
+    ~Line() noexcept override = default;
 
 protected:
     Line(const std::string& id, const std::string& name);
