@@ -23,11 +23,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class Bus;
-class ConfiguredBus;
-class MergedBus;
-class Switch;
-
 class BusBreakerVoltageLevel : public VoltageLevel {
 public:
     typedef math::UndirectedGraph<ConfiguredBus, Switch> Graph;

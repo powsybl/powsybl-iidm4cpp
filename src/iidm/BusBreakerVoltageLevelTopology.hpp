@@ -21,9 +21,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class BusBreakerVoltageLevel;
-class ConfiguredBus;
-
 namespace bus_breaker_voltage_level {
 
 class CalculatedBusTopology {

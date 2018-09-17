@@ -16,8 +16,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class NodeBreakerVoltageLevel;
-
 namespace node_breaker_voltage_level {
 
 class NodeBreakerViewImpl : public NodeBreakerView {

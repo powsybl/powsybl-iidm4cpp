@@ -23,8 +23,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class Terminal;
-
 /**
  * A Bus implementation used in the BusView of a BusBreakerVoltageLevel
  */
