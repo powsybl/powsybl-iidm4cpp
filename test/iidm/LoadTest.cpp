@@ -36,9 +36,6 @@ TEST(Load, constructor) {
         .setId("LOAD1")
         .setBus("VL1_BUS1");
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Load 'LOAD1': LoadType is not set");
-    adder.setLoadType(LoadType::UNDEFINED);
-
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Load 'LOAD1': p0 is not set");
     adder.setP0(50.0);
 

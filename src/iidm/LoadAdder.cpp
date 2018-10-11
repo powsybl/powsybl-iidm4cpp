@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 #include "ValidationUtils.hpp"
 
@@ -17,15 +18,17 @@ namespace powsybl {
 namespace iidm {
 
 LoadAdder::LoadAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+    m_voltageLevel(voltageLevel),
+    m_loadType(LoadType::UNDEFINED),
+    m_p0(stdcxx::nan()),
+    m_q0(stdcxx::nan()) {
 }
 
 Load& LoadAdder::add() {
-    checkOptional(*this, m_loadType, "LoadType is not set");
     checkOptional(*this, m_p0, "p0 is not set");
     checkOptional(*this, m_q0, "q0 is not set");
 
-    std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(getNetwork(), getId(), getName(), *m_loadType, *m_p0, *m_q0);
+    std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(getNetwork(), getId(), getName(), m_loadType, m_p0, m_q0);
     auto& load = getNetwork().checkAndAdd<Load>(std::move(ptrLoad));
 
     Terminal& terminal = load.addTerminal(getTerminal());

@@ -45,11 +45,11 @@ private:
 private:
     VoltageLevel& m_voltageLevel;
 
-    stdcxx::optional<LoadType> m_loadType;
+    LoadType m_loadType;
 
-    stdcxx::optional<double> m_p0;
+    double m_p0;
 
-    stdcxx::optional<double> m_q0;
+    double m_q0;
 };
 
 }  // namespace iidm
