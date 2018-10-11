@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_VOLTAGELEVEL_HPP
 
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -70,6 +71,8 @@ public:
     virtual const TopologyKind& getTopologyKind() const = 0;
 
     virtual void invalidateCache() = 0;
+
+    GeneratorAdder newGenerator();
 
     LoadAdder newLoad();
 

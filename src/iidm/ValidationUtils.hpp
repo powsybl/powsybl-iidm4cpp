@@ -18,7 +18,18 @@ namespace powsybl {
 
 namespace iidm {
 
+class Network;
+class Terminal;
+
 int checkForecastDistance(const Validable& validable, int value);
+
+void checkActiveLimits(const Validable& validable, double minP, double maxP);
+
+double checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint);
+
+double checkMaxP(const Validable& validable, double maxP);
+
+double checkMinP(const Validable& validable, double minP);
 
 double checkNominalVoltage(const Validable& validable, double nominalVoltage);
 
@@ -45,7 +56,13 @@ double checkP0(const Validable& validable, double p0);
 
 double checkQ0(const Validable& validable, double q0);
 
+double checkRatedS(const Validable& validable, double ratedS);
+
+void checkRegulatingTerminal(const Validable& validable, const Terminal& regulatingTerminal, const Network& network);
+
 double checkVoltage(const Validable& validable, double voltage);
+
+void checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint, double reactivePowerSetpoint);
 
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit);
 

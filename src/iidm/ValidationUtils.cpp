@@ -9,6 +9,7 @@
 
 #include <cmath>
 
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
 namespace powsybl {
@@ -20,6 +21,33 @@ int checkForecastDistance(const Validable& validable, int forecastDistance) {
         throw ValidationException(validable, "Forecast distance is < 0");
     }
     return forecastDistance;
+}
+
+void checkActiveLimits(const Validable& validable, double minP, double maxP) {
+    if (minP > maxP) {
+        throw ValidationException(validable, logging::format("Invalid active limits [%1%, %2%]", minP, maxP));
+    }
+}
+
+double checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint) {
+    if (std::isnan(activePowerSetpoint)) {
+        throw ValidationException(validable, "Active power setpoint is not set");
+    }
+    return activePowerSetpoint;
+}
+
+double checkMaxP(const Validable& validable, double maxP) {
+    if (std::isnan(maxP)) {
+        throw ValidationException(validable, "Maximum active power is not set");
+    }
+    return maxP;
+}
+
+double checkMinP(const Validable& validable, double minP) {
+    if (std::isnan(minP)) {
+        throw ValidationException(validable, "Minimum active power is not set");
+    }
+    return minP;
 }
 
 double checkNominalVoltage(const Validable& validable, double nominalVoltage) {
@@ -71,11 +99,34 @@ double checkQ0(const Validable& validable, double q0) {
     return q0;
 }
 
+double checkRatedS(const Validable& validable, double ratedS) {
+    if (!std::isnan(ratedS) && ratedS <= 0.0) {
+        throw ValidationException(validable, logging::format("Invalid rated S value: %1%", ratedS));
+    }
+    return ratedS;
+}
+
+void checkRegulatingTerminal(const Validable& validable, const Terminal& regulatingTerminal, const Network& network) {
+    if (!stdcxx::areSame(regulatingTerminal.getVoltageLevel().getNetwork(), network)) {
+        throw ValidationException(validable, "Regulating terminal is not part of the network");
+    }
+}
+
 double checkVoltage(const Validable& validable, double voltage) {
     if (!std::isnan(voltage) && voltage < 0) {
         throw ValidationException(validable, "voltage cannot be < 0");
     }
     return voltage;
+}
+
+void checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint, double reactivePowerSetpoint) {
+    if (voltageRegulatorOn) {
+        if (std::isnan(voltageSetpoint) || voltageSetpoint <= 0) {
+            throw ValidationException(validable, logging::format("Invalid voltage setpoint value (%1%) while voltage regulator is on", voltageSetpoint));
+        }
+    } else if (std::isnan(reactivePowerSetpoint)) {
+        throw ValidationException(validable, logging::format("Invalid reactive power setpoint (%1%) while voltage regulator is off", reactivePowerSetpoint));
+    }
 }
 
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit) {

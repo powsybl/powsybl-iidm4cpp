@@ -61,6 +61,10 @@ const std::string& VoltageLevel::getTypeDescription() const {
     return s_typeDescription;
 }
 
+GeneratorAdder VoltageLevel::newGenerator() {
+    return GeneratorAdder(*this);
+}
+
 LoadAdder VoltageLevel::newLoad() {
     return LoadAdder(*this);
 }

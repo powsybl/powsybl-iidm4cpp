@@ -29,6 +29,7 @@ set(IIDM_SOURCES
     iidm/Country.cpp
     iidm/DanglingLine.cpp
     iidm/Generator.cpp
+    iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp
     iidm/Identifiable.cpp
     iidm/Injection.cpp
