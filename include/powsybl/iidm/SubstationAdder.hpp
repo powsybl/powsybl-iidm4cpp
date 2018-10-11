@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_SUBSTATIONADDER_HPP
 #define POWSYBL_IIDM_SUBSTATIONADDER_HPP
 
+#include <initializer_list>
 #include <set>
 
 #include <powsybl/iidm/Country.hpp>
@@ -30,6 +31,8 @@ public:
     SubstationAdder& setCountry(const Country& country);
 
     SubstationAdder& addGeographicalTag(const std::string& geographicalTag);
+
+    SubstationAdder& setGeographicalTags(const std::initializer_list<std::string>& geographicalTags);
 
     SubstationAdder& setTso(const std::string& tso);
 

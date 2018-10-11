@@ -49,6 +49,11 @@ SubstationAdder& SubstationAdder::setCountry(const Country& country) {
     return *this;
 }
 
+SubstationAdder& SubstationAdder::setGeographicalTags(const std::initializer_list<std::string>& geographicalTags) {
+    m_geographicalTags = std::set<std::string>(geographicalTags.begin(), geographicalTags.end());
+    return *this;
+}
+
 SubstationAdder& SubstationAdder::setTso(const std::string& tso) {
     m_tso = tso;
     return *this;
