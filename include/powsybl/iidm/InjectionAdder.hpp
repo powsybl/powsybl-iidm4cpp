@@ -28,7 +28,7 @@ public:
 
     Adder& setConnectableBus(const std::string& connectableBus);
 
-    Adder& setNode(int node);
+    Adder& setNode(unsigned long node);
 
 protected:
     InjectionAdder() = default;
@@ -39,7 +39,7 @@ private:
     const std::string& getConnectionBus() const;
 
 private:
-    stdcxx::optional<int> m_node;
+    stdcxx::optional<unsigned long> m_node;
 
     std::string m_bus;
 

@@ -66,7 +66,7 @@ Adder& InjectionAdder<Adder>::setConnectableBus(const std::string& connectableBu
 }
 
 template <typename Adder>
-Adder& InjectionAdder<Adder>::setNode(int node) {
+Adder& InjectionAdder<Adder>::setNode(unsigned long node) {
     m_node = node;
     return static_cast<Adder&>(*this);
 }
