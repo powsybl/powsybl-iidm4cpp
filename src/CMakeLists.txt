@@ -78,6 +78,8 @@ set(IIDM_SOURCES
     logging/LoggerFactory.cpp
     logging/NoopLogger.cpp
 
+    network/EurostagFactory.cpp
+
     stdcxx/demangle.cpp
     )
 
