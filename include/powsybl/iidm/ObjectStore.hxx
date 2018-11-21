@@ -13,6 +13,7 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -80,6 +81,21 @@ unsigned long ObjectStore::getObjectCount() const {
         return it->second.size();
     }
     return 0;
+}
+
+template <typename T>
+stdcxx::Reference<T> ObjectStore::find(const std::string& id) const {
+    checkId(id);
+
+    const auto& it = m_objectsById.find(id);
+    if (it != m_objectsById.end()) {
+        T* identifiable = dynamic_cast<T*>(it->second.get());
+        if (identifiable != nullptr) {
+            return stdcxx::ref<T>(*identifiable);
+        }
+    }
+
+    return stdcxx::ref<T>();
 }
 
 }  // namespace iidm

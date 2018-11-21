@@ -26,15 +26,15 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
 }
 
 BusbarSection& Network::getBusbarSection(const std::string& id) const {
-    return m_objectStore.get<BusbarSection>(id);
+    return get<BusbarSection>(id);
 }
 
 unsigned long Network::getBusbarSectionCount() const {
-    return m_objectStore.getObjectCount<BusbarSection>();
+    return getObjectCount<BusbarSection>();
 }
 
 Connectable& Network::getConnectable(const std::string& id) const {
-    auto& identifiable = m_objectStore.get<Identifiable>(id);
+    auto& identifiable = get<Identifiable>(id);
     assert(stdcxx::isInstanceOf<Connectable>(identifiable));
 
     return dynamic_cast<Connectable&>(identifiable);
@@ -45,11 +45,11 @@ int Network::getForecastDistance() const {
 }
 
 Load& Network::getLoad(const std::string& id) const {
-    return m_objectStore.get<Load>(id);
+    return get<Load>(id);
 }
 
 unsigned long Network::getLoadCount() const {
-    return m_objectStore.getObjectCount<Load>();
+    return getObjectCount<Load>();
 }
 
 const std::string& Network::getSourceFormat() const {
@@ -69,11 +69,11 @@ StateManager& Network::getStateManager() {
 }
 
 Substation& Network::getSubstation(const std::string& id) const {
-    return m_objectStore.get<Substation>(id);
+    return get<Substation>(id);
 }
 
 unsigned long Network::getSubstationCount() const {
-    return m_objectStore.getObjectCount<Substation>();
+    return getObjectCount<Substation>();
 }
 
 const std::string& Network::getTypeDescription() const {
@@ -83,11 +83,11 @@ const std::string& Network::getTypeDescription() const {
 }
 
 VoltageLevel& Network::getVoltageLevel(const std::string& id) const {
-    return m_objectStore.get<VoltageLevel>(id);
+    return get<VoltageLevel>(id);
 }
 
 unsigned long Network::getVoltageLevelCount() const {
-    return m_objectStore.getObjectCount<VoltageLevel>();
+    return getObjectCount<VoltageLevel>();
 }
 
 SubstationAdder Network::newSubstation() {

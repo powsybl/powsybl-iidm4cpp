@@ -59,6 +59,12 @@ public:
         return m_objectStore.end<T>();
     }
 
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    T& get(const std::string& id) const;
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    unsigned long getObjectCount() const;
+
     BusbarSection& getBusbarSection(const std::string& id) const;
 
     unsigned long getBusbarSectionCount() const;
@@ -80,6 +86,9 @@ public:
     VoltageLevel& getVoltageLevel(const std::string& id) const;
 
     unsigned long getVoltageLevelCount() const;
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    stdcxx::Reference<T> find(const std::string& id) const;
 
     SubstationAdder newSubstation();
 
@@ -103,5 +112,7 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/Network.hxx>
 
 #endif  // POWSYBL_IIDM_NETWORK_HPP

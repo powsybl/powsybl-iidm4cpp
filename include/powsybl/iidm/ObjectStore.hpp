@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/bits/ObjectStore.hpp>
 #include <powsybl/iidm/iterators/Iterators.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -41,6 +42,9 @@ public:
     template <typename T> T& get(const std::string& id) const;
 
     template <typename T> unsigned long getObjectCount() const;
+
+    template <typename T>
+    stdcxx::Reference<T> find(const std::string& id) const;
 
     void remove(Identifiable& identifiable);
 
