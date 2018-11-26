@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
@@ -55,16 +56,15 @@ iidm::Network EurostagFactory::createTutorial1Network() {
     iidm::Bus& ngen = vlgen.getBusBreakerView().newBus()
         .setId("NGEN")
         .add();
-    /*iidm::Bus& nhv1 =*/ vlhv1.getBusBreakerView().newBus()
+    iidm::Bus& nhv1 = vlhv1.getBusBreakerView().newBus()
         .setId("NHV1")
         .add();
-    /*iidm::Bus& nhv2 =*/ vlhv2.getBusBreakerView().newBus()
+    iidm::Bus& nhv2 = vlhv2.getBusBreakerView().newBus()
         .setId("NHV2")
         .add();
     iidm::Bus& nload = vlload.getBusBreakerView().newBus()
         .setId("NLOAD")
         .add();
-    /*
     network.newLine()
         .setId("NHV1_NHV2_1")
         .setVoltageLevel1(vlhv1.getId())
@@ -95,6 +95,7 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .setG2(0.0)
         .setB2(386E-6 / 2)
         .add();
+    /*
     int zb380 = 380 * 380 / 100;
     p1.newTwoWindingsTransformer()
         .setId("NGEN_NHV1")

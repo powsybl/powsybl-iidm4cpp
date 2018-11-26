@@ -28,9 +28,15 @@ public:
 
     Terminal& getTerminal(const Side& side) const;
 
+    // TODO(MBA): Terminal& getTerminal(const std::string& voltageLevelId) const
+
     Terminal& getTerminal1() const;
 
     Terminal& getTerminal2() const;
+
+    // TODO(MBA): getCurrentLimits(), newCurrentLimits()
+
+    // TODO(MBA): isOverloaded(), getOverloadDuration(), checkTemporaryLimits(), checkPermanentLimits()
 
 protected:
     Branch(const std::string& id, const std::string& name, const ConnectableType& connectableType);

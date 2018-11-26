@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_LINE_HPP
 
 #include <powsybl/iidm/Branch.hpp>
+#include <powsybl/iidm/LineCharacteristics.hpp>
 
 namespace powsybl {
 
@@ -16,10 +17,44 @@ namespace iidm {
 
 class Line : public Branch {
 public:
+    Line(const std::string& id, const std::string& name, double r, double x, double g1, double b1, double g2, double b2);
+
     ~Line() noexcept override = default;
+
+    virtual double getB1() const;
+
+    virtual double getB2() const;
+
+    virtual double getG1() const;
+
+    virtual double getG2() const;
+
+    virtual double getR() const;
+
+    virtual double getX() const;
+
+    virtual bool isTieLine() const;
+
+    virtual Line& setB1(double b1);
+
+    virtual Line& setB2(double b2);
+
+    virtual Line& setG1(double g1);
+
+    virtual Line& setG2(double g2);
+
+    virtual Line& setR(double r);
+
+    virtual Line& setX(double x);
 
 protected:
     Line(const std::string& id, const std::string& name);
+
+private:  // Identifiable
+    const std::string& getTypeDescription() const override;
+
+private:
+    LineCharacteristics m_lineCharacteristics;
 };
 
 }  // namespace iidm

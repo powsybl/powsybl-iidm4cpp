@@ -28,9 +28,9 @@ public:
 
     ~IdentifiableAdder() noexcept override = default;
 
-    Adder& setId(const std::string& id);
+    virtual Adder& setId(const std::string& id);
 
-    Adder& setName(const std::string& name);
+    virtual Adder& setName(const std::string& name);
 
 protected:
     const std::string& getId() const;

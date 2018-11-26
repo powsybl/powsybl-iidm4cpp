@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 #include "ValidationUtils.hpp"

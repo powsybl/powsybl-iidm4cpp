@@ -16,13 +16,6 @@ namespace powsybl {
 
 namespace iidm {
 
-int checkForecastDistance(const Validable& validable, int forecastDistance) {
-    if (forecastDistance < 0) {
-        throw ValidationException(validable, "Forecast distance is < 0");
-    }
-    return forecastDistance;
-}
-
 void checkActiveLimits(const Validable& validable, double minP, double maxP) {
     if (minP > maxP) {
         throw ValidationException(validable, logging::format("Invalid active limits [%1%, %2%]", minP, maxP));
@@ -34,6 +27,69 @@ double checkActivePowerSetpoint(const Validable& validable, double activePowerSe
         throw ValidationException(validable, "Active power setpoint is not set");
     }
     return activePowerSetpoint;
+}
+
+double checkB1(const Validable& validable, double b1) {
+    if (std::isnan(b1)) {
+        throw ValidationException(validable, "b1 is invalid");
+    }
+    return b1;
+}
+
+double checkB2(const Validable& validable, double b2) {
+    if (std::isnan(b2)) {
+        throw ValidationException(validable, "b2 is invalid");
+    }
+    return b2;
+}
+
+int checkForecastDistance(const Validable& validable, int forecastDistance) {
+    if (forecastDistance < 0) {
+        throw ValidationException(validable, "Forecast distance is < 0");
+    }
+    return forecastDistance;
+}
+
+double checkG1(const Validable& validable, double g1) {
+    if (std::isnan(g1)) {
+        throw ValidationException(validable, "g1 is invalid");
+    }
+    return g1;
+}
+
+double checkG2(const Validable& validable, double g2) {
+    if (std::isnan(g2)) {
+        throw ValidationException(validable, "g2 is invalid");
+    }
+    return g2;
+}
+
+void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int num) {
+    checkNotEmpty(validable, half.getId(), logging::format("id is not set for half line %1%", num));
+    if (std::isnan(half.getB1())) {
+        throw ValidationException(validable, logging::format("b1 is not set for half line %1%", num));
+    }
+    if (std::isnan(half.getB2())) {
+        throw ValidationException(validable, logging::format("b2 is not set for half line %1%", num));
+    }
+    if (std::isnan(half.getG1())) {
+        throw ValidationException(validable, logging::format("g1 is not set for half line %1%", num));
+    }
+    if (std::isnan(half.getG2())) {
+        throw ValidationException(validable, logging::format("g2 is not set for half line %1%", num));
+    }
+    if (std::isnan(half.getR())) {
+        throw ValidationException(validable, logging::format("r is not set for half line %1%", num));
+    }
+    if (std::isnan(half.getX())) {
+        throw ValidationException(validable, logging::format("x is not set for half line %1%", num));
+    }
+    if (std::isnan(half.getXnodeP())) {
+        throw ValidationException(validable, logging::format("xnodeP is not set for half line %1%", num));
+    }
+    if (std::isnan(half.getXnodeQ())) {
+        throw ValidationException(validable, logging::format("xnodeQ is not set for half line %1%", num));
+    }
 }
 
 double checkMaxP(const Validable& validable, double maxP) {
@@ -99,6 +155,13 @@ double checkQ0(const Validable& validable, double q0) {
     return q0;
 }
 
+double checkR(const Validable& validable, double r) {
+    if (std::isnan(r)) {
+        throw ValidationException(validable, "r is invalid");
+    }
+    return r;
+}
+
 double checkRatedS(const Validable& validable, double ratedS) {
     if (!std::isnan(ratedS) && ratedS <= 0.0) {
         throw ValidationException(validable, logging::format("Invalid rated S value: %1%", ratedS));
@@ -139,6 +202,13 @@ void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, doub
     if (lowVoltageLimit > highVoltageLimit) {
         throw ValidationException(validable, logging::format("Inconsistent voltage limit range [%1%, %2%]", lowVoltageLimit, highVoltageLimit));
     }
+}
+
+double checkX(const Validable& validable, double x) {
+    if (std::isnan(x)) {
+        throw ValidationException(validable, "x is invalid");
+    }
+    return x;
 }
 
 }  // namespace iidm

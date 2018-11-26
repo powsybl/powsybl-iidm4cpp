@@ -8,8 +8,11 @@
 #include <powsybl/iidm/Network.hpp>
 
 #include <powsybl/iidm/BusbarSection.hpp>
+#include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/TieLine.hpp>
+#include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
 #include "ValidationUtils.hpp"
@@ -42,6 +45,14 @@ Connectable& Network::getConnectable(const std::string& id) const {
 
 int Network::getForecastDistance() const {
     return m_forecastDistance;
+}
+
+Line& Network::getLine(const std::string& id) const {
+    return get<Line>(id);
+}
+
+unsigned long Network::getLineCount() const {
+    return getObjectCount<Line>() + getObjectCount<TieLine>();
 }
 
 Load& Network::getLoad(const std::string& id) const {
@@ -90,8 +101,16 @@ unsigned long Network::getVoltageLevelCount() const {
     return getObjectCount<VoltageLevel>();
 }
 
+LineAdder Network::newLine() {
+    return LineAdder(*this);
+}
+
 SubstationAdder Network::newSubstation() {
     return SubstationAdder(*this);
+}
+
+TieLineAdder Network::newTieLine() {
+    return TieLineAdder(*this);
 }
 
 void Network::remove(Identifiable& identifiable) {

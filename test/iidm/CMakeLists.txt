@@ -10,6 +10,7 @@ set(UNIT_TEST_SOURCES
     BusBreakerVoltageLevelTest.cpp
     CountryTest.cpp
     EnergySourceTest.cpp
+    LineTest.cpp
     LoadTest.cpp
     NetworkFactory.cpp
     NetworkTest.cpp
@@ -17,6 +18,7 @@ set(UNIT_TEST_SOURCES
     ObjectStoreTest.cpp
     ReactiveLimitsTest.cpp
     SubstationTest.cpp
+    TieLineTest.cpp
     VoltageLevelTest.cpp
 )
 

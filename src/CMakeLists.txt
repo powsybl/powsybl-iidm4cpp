@@ -35,6 +35,8 @@ set(IIDM_SOURCES
     iidm/Injection.cpp
     iidm/LccConverterStation.cpp
     iidm/Line.cpp
+    iidm/LineAdder.cpp
+    iidm/LineCharacteristics.cpp
     iidm/Load.cpp
     iidm/LoadAdder.cpp
     iidm/MergedBus.cpp
@@ -63,8 +65,10 @@ set(IIDM_SOURCES
     iidm/Switch.cpp
     iidm/SwitchAdder.cpp
     iidm/Terminal.cpp
+    iidm/TerminalBuilder.cpp
     iidm/ThreeWindingsTransformer.cpp
     iidm/TieLine.cpp
+    iidm/TieLineAdder.cpp
     iidm/TopologyKind.cpp
     iidm/TwoWindingsTransformer.cpp
     iidm/ValidationException.cpp

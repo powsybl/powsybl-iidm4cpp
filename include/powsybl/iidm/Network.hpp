@@ -20,8 +20,11 @@ namespace iidm {
 
 class BusbarSection;
 class Connectable;
+class Line;
+class LineAdder;
 class Load;
 class Substation;
+class TieLineAdder;
 class VoltageLevel;
 
 class Network : public Container, public MultiStateObject {
@@ -73,6 +76,10 @@ public:
 
     int getForecastDistance() const;
 
+    Line& getLine(const std::string& id) const;
+
+    unsigned long getLineCount() const;
+
     Load& getLoad(const std::string& id) const;
 
     unsigned long getLoadCount() const;
@@ -90,7 +97,11 @@ public:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     stdcxx::Reference<T> find(const std::string& id) const;
 
+    LineAdder newLine();
+
     SubstationAdder newSubstation();
+
+    TieLineAdder newTieLine();
 
     void remove(Identifiable& identifiable);
 

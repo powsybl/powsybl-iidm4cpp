@@ -36,9 +36,6 @@ protected:
     std::unique_ptr<Terminal> getTerminal();
 
 private:
-    const std::string& getConnectionBus() const;
-
-private:
     stdcxx::optional<unsigned long> m_node;
 
     std::string m_bus;

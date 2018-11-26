@@ -13,6 +13,7 @@
 #include <powsybl/iidm/StateManager.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 #include "BusTerminal.hpp"

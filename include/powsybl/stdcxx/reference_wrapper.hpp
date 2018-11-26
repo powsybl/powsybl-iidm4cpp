@@ -93,7 +93,7 @@ Reference<T> ref(const std::unique_ptr<T>& pointer) {
     return Reference<T>(*pointer);
 }
 
-template <typename T, typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value>::type>
+template <typename T, typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value && !std::is_same<T, U>::value>::type>
 Reference<T> ref(U& reference) {
     return Reference<T>(dynamic_cast<T&>(reference));
 }

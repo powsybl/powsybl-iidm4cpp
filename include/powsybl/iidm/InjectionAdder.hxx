@@ -11,46 +11,20 @@
 #include <powsybl/iidm/InjectionAdder.hpp>
 
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/TerminalBuilder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
-#include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
 template <typename Adder>
-const std::string& InjectionAdder<Adder>::getConnectionBus() const {
-    if (!m_bus.empty()) {
-        if ((!m_connectableBus.empty()) && (m_bus != m_connectableBus)) {
-            throw ValidationException(*this, "connection bus is different from connectable bus");
-        }
-
-        return m_bus;
-    } else {
-        return m_connectableBus;
-    }
-}
-
-template <typename Adder>
 std::unique_ptr<Terminal> InjectionAdder<Adder>::getTerminal() {
-    const std::string& connectionBus = getConnectionBus();
-    if (m_node.is_initialized() && !connectionBus.empty()) {
-        throw ValidationException(*this, "connection node and connection bus are exclusives");
-    }
-
-    std::unique_ptr<Terminal> ptrTerminal;
-    if (!m_node.is_initialized()) {
-        if (connectionBus.empty()) {
-            throw ValidationException(*this, "connectable bus is not set");
-        }
-
-        ptrTerminal = createBusTerminal(this->getNetwork(), connectionBus, !m_bus.empty());
-    } else {
-        ptrTerminal = createNodeTerminal(this->getNetwork(), *m_node);
-    }
-
-    return ptrTerminal;
+    return TerminalBuilder(this->getNetwork(), *this)
+               .setNode(m_node)
+               .setBus(m_bus)
+               .setConnectableBus(m_connectableBus)
+               .build();
 }
 
 template <typename Adder>
