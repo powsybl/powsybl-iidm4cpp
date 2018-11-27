@@ -11,3 +11,7 @@ cmake-build*/
 
 # CLion project
 .idea
+
+# Eclipse project
+.project
+.cproject
