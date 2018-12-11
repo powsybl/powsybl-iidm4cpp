@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "AssertionUtils.hpp"
@@ -58,21 +59,11 @@ TEST(Load, integrity) {
 
     ASSERT_TRUE(stdcxx::areSame(load1, load1.setP0(100)));
     ASSERT_DOUBLE_EQ(100, load1.getP0());
-    if (std::numeric_limits<double>::has_quiet_NaN) {
-        POWSYBL_ASSERT_THROW(load1.setP0(std::numeric_limits<double>::quiet_NaN()), ValidationException, "Load 'LOAD1': p0 is invalid");
-    }
-    if (std::numeric_limits<double>::has_signaling_NaN) {
-        POWSYBL_ASSERT_THROW(load1.setP0(std::numeric_limits<double>::signaling_NaN()), ValidationException, "Load 'LOAD1': p0 is invalid");
-    }
+    POWSYBL_ASSERT_THROW(load1.setP0(stdcxx::nan()), ValidationException, "Load 'LOAD1': p0 is invalid");
 
     ASSERT_TRUE(stdcxx::areSame(load1, load1.setQ0(100)));
     ASSERT_DOUBLE_EQ(100, load1.getQ0());
-    if (std::numeric_limits<double>::has_quiet_NaN) {
-        POWSYBL_ASSERT_THROW(load1.setQ0(std::numeric_limits<double>::quiet_NaN()), ValidationException, "Load 'LOAD1': q0 is invalid");
-    }
-    if (std::numeric_limits<double>::has_signaling_NaN) {
-        POWSYBL_ASSERT_THROW(load1.setQ0(std::numeric_limits<double>::signaling_NaN()), ValidationException, "Load 'LOAD1': q0 is invalid");
-    }
+    POWSYBL_ASSERT_THROW(load1.setQ0(stdcxx::nan()), ValidationException, "Load 'LOAD1': q0 is invalid");
 }
 
 TEST(Load, multistate) {

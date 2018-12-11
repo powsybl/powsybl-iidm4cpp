@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "AssertionUtils.hpp"
@@ -69,12 +70,7 @@ TEST(VoltageLevel, integrity) {
 
     POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(-10), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
     POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(0), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
-    if (std::numeric_limits<double>::has_quiet_NaN) {
-        POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(std::numeric_limits<double>::quiet_NaN()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
-    }
-    if (std::numeric_limits<double>::has_signaling_NaN) {
-        POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(std::numeric_limits<double>::signaling_NaN()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
-    }
+    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(stdcxx::nan()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
     ASSERT_TRUE(stdcxx::areSame(vl1, vl1.setNominalVoltage(100)));
     ASSERT_EQ(100, vl1.getNominalVoltage());
 
