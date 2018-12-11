@@ -12,7 +12,7 @@
 
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/LoadType.hpp>
-#include <powsybl/iidm/MultiStateObject.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -21,7 +21,7 @@ namespace iidm {
 
 class Load : public Injection {
 public:
-    Load(MultiStateObject& network, const std::string& id, const std::string& name, const LoadType& loadType,
+    Load(VariantManagerHolder& network, const std::string& id, const std::string& name, const LoadType& loadType,
          double p0, double q0);
 
     ~Load() noexcept override = default;
@@ -36,20 +36,20 @@ public:
 
     Load& setQ0(double q0);
 
-protected: // Stateful
-    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
-    void deleteStateArrayElement(unsigned long index) override;
+    void deleteVariantArrayElement(unsigned long index) override;
 
-    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
-    void reduceStateArraySize(unsigned long number) override;
+    void reduceVariantArraySize(unsigned long number) override;
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    stdcxx::Reference<MultiStateObject> m_network;
+    stdcxx::Reference<VariantManagerHolder> m_network;
 
     LoadType m_loadType;
 

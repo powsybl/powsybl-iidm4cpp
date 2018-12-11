@@ -5,21 +5,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/StateContextGuard.hpp>
+#include <powsybl/iidm/VariantContextGuard.hpp>
 
-#include <powsybl/iidm/StateContext.hpp>
+#include <powsybl/iidm/VariantContext.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-StateContextGuard::StateContextGuard(StateContext& context) :
+VariantContextGuard::VariantContextGuard(VariantContext& context) :
     m_context(context),
-    m_stateIndex(context.getStateIndex()) {
+    m_variantIndex(context.getVariantIndex()) {
 }
 
-StateContextGuard::~StateContextGuard() noexcept {
-    m_context.setStateIndex(m_stateIndex);
+VariantContextGuard::~VariantContextGuard() noexcept {
+    m_context.setVariantIndex(m_variantIndex);
 }
 
 }  // namespace iidm

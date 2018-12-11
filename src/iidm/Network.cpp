@@ -25,7 +25,7 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, Container::Type::NETWORK),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_forecastDistance(0),
-    m_stateManager(*this) {
+    m_variantManager(*this) {
 }
 
 BusbarSection& Network::getBusbarSection(const std::string& id) const {
@@ -67,16 +67,16 @@ const std::string& Network::getSourceFormat() const {
     return m_sourceFormat;
 }
 
-unsigned long Network::getStateIndex() const {
-    return m_stateManager.getStateIndex();
+unsigned long Network::getVariantIndex() const {
+    return m_variantManager.getVariantIndex();
 }
 
-const StateManager& Network::getStateManager() const {
-    return m_stateManager;
+const VariantManager& Network::getVariantManager() const {
+    return m_variantManager;
 }
 
-StateManager& Network::getStateManager() {
-    return m_stateManager;
+VariantManager& Network::getVariantManager() {
+    return m_variantManager;
 }
 
 Substation& Network::getSubstation(const std::string& id) const {

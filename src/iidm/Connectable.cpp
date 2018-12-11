@@ -19,9 +19,9 @@ Connectable::Connectable(const std::string& id, const std::string& name, const C
     m_connectableType(connectableType) {
 }
 
-void Connectable::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+void Connectable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     for (auto& terminal : m_terminals) {
-        terminal->allocateStateArrayElement(indexes, sourceIndex);
+        terminal->allocateVariantArrayElement(indexes, sourceIndex);
     }
 }
 
@@ -32,15 +32,15 @@ Terminal& Connectable::addTerminal(std::unique_ptr<Terminal>&& terminal) {
     return *m_terminals.back();
 }
 
-void Connectable::deleteStateArrayElement(unsigned long index) {
+void Connectable::deleteVariantArrayElement(unsigned long index) {
     for (auto& terminal : m_terminals) {
-        terminal->deleteStateArrayElement(index);
+        terminal->deleteVariantArrayElement(index);
     }
 }
 
-void Connectable::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
+void Connectable::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     for (auto& terminal : m_terminals) {
-        terminal->extendStateArraySize(initStateArraySize, number, sourceIndex);
+        terminal->extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
 }
 
@@ -78,9 +78,9 @@ std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals() const
     return terminals;
 }
 
-void Connectable::reduceStateArraySize(unsigned long number) {
+void Connectable::reduceVariantArraySize(unsigned long number) {
     for (auto& terminal : m_terminals) {
-        terminal->reduceStateArraySize(number);
+        terminal->reduceVariantArraySize(number);
     }
 }
 

@@ -18,7 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 class Identifiable;
-class Stateful;
+class MultiVariantObject;
 
 template <typename T>
 struct iterator_traits {
@@ -35,10 +35,10 @@ struct iterator_traits<Identifiable> {
 };
 
 template <>
-struct iterator_traits<Stateful> {
-    typedef NetworkIterator<Stateful, IdentifiableById::iterator> iterator;
+struct iterator_traits<MultiVariantObject> {
+    typedef NetworkIterator<MultiVariantObject, IdentifiableById::iterator> iterator;
 
-    typedef NetworkIterator<const Stateful, IdentifiableById::const_iterator> const_iterator;
+    typedef NetworkIterator<const MultiVariantObject, IdentifiableById::const_iterator> const_iterator;
 };
 
 }  // namespace iidm

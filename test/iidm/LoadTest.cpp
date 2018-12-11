@@ -66,17 +66,17 @@ TEST(Load, integrity) {
     POWSYBL_ASSERT_THROW(load1.setQ0(stdcxx::nan()), ValidationException, "Load 'LOAD1': q0 is invalid");
 }
 
-TEST(Load, multistate) {
+TEST(Load, multivariant) {
     Network network = createNetwork();
 
     Load& load1 = network.getLoad("LOAD1");
     ASSERT_DOUBLE_EQ(50, load1.getP0());
     ASSERT_DOUBLE_EQ(40, load1.getQ0());
 
-    network.getStateManager().cloneState(StateManager::getInitialStateId(), {"s1", "s2"});
-    ASSERT_EQ(3ul, network.getStateManager().getStateArraySize());
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
+    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
 
-    network.getStateManager().setWorkingState("s1");
+    network.getVariantManager().setWorkingVariant("s1");
     ASSERT_DOUBLE_EQ(50, load1.getP0());
     ASSERT_DOUBLE_EQ(40, load1.getQ0());
     load1.setP0(100);
@@ -84,7 +84,7 @@ TEST(Load, multistate) {
     ASSERT_DOUBLE_EQ(100, load1.getP0());
     ASSERT_DOUBLE_EQ(80, load1.getQ0());
 
-    network.getStateManager().setWorkingState("s2");
+    network.getVariantManager().setWorkingVariant("s2");
     ASSERT_DOUBLE_EQ(50, load1.getP0());
     ASSERT_DOUBLE_EQ(40, load1.getQ0());
     load1.setP0(150);
@@ -92,23 +92,23 @@ TEST(Load, multistate) {
     ASSERT_DOUBLE_EQ(150, load1.getP0());
     ASSERT_DOUBLE_EQ(120, load1.getQ0());
 
-    network.getStateManager().setWorkingState(StateManager::getInitialStateId());
+    network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
     ASSERT_DOUBLE_EQ(50, load1.getP0());
     ASSERT_DOUBLE_EQ(40, load1.getQ0());
 
-    network.getStateManager().removeState("s1");
-    ASSERT_EQ(3ul, network.getStateManager().getStateArraySize());
+    network.getVariantManager().removeVariant("s1");
+    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
 
-    network.getStateManager().cloneState("s2", "s3");
-    network.getStateManager().setWorkingState("s3");
+    network.getVariantManager().cloneVariant("s2", "s3");
+    network.getVariantManager().setWorkingVariant("s3");
     ASSERT_DOUBLE_EQ(150, load1.getP0());
     ASSERT_DOUBLE_EQ(120, load1.getQ0());
 
-    network.getStateManager().removeState("s3");
-    ASSERT_EQ(3ul, network.getStateManager().getStateArraySize());
+    network.getVariantManager().removeVariant("s3");
+    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
 
-    network.getStateManager().removeState("s2");
-    ASSERT_EQ(1ul, network.getStateManager().getStateArraySize());
+    network.getVariantManager().removeVariant("s2");
+    ASSERT_EQ(1ul, network.getVariantManager().getVariantArraySize());
 }
 
 }  // namespace iidm

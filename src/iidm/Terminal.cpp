@@ -10,8 +10,8 @@
 #include <cmath>
 
 #include <powsybl/iidm/Connectable.hpp>
-#include <powsybl/iidm/StateManager.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -23,14 +23,14 @@ namespace powsybl {
 
 namespace iidm {
 
-Terminal::Terminal(MultiStateObject& network) :
+Terminal::Terminal(VariantManagerHolder& network) :
     m_network(network),
-    m_p(network.getStateManager().getStateArraySize(), stdcxx::nan()),
-    m_q(network.getStateManager().getStateArraySize(), stdcxx::nan()) {
+    m_p(network.getVariantManager().getVariantArraySize(), stdcxx::nan()),
+    m_q(network.getVariantManager().getVariantArraySize(), stdcxx::nan()) {
 
 }
 
-void Terminal::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+void Terminal::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     for (auto index : indexes) {
         m_p[index] = m_p[sourceIndex];
         m_q[index] = m_q[sourceIndex];
@@ -41,7 +41,7 @@ bool Terminal::connect() {
     return m_voltageLevel.get().connect(*this);
 }
 
-void Terminal::deleteStateArrayElement(unsigned long /*index*/) {
+void Terminal::deleteVariantArrayElement(unsigned long /*index*/) {
     // Nothing to do
 }
 
@@ -49,7 +49,7 @@ bool Terminal::disconnect() {
     return m_voltageLevel.get().disconnect(*this);
 }
 
-void Terminal::extendStateArraySize(unsigned long /*initStateArraySize*/, unsigned long number, unsigned long sourceIndex) {
+void Terminal::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
     m_p.resize(m_p.size() + number, m_p[sourceIndex]);
     m_q.resize(m_q.size() + number, m_q[sourceIndex]);
 }
@@ -66,16 +66,16 @@ double Terminal::getI() const {
     return std::hypot(getP(), getQ()) / std::sqrt(3.0) * getV() / 1000.0;
 }
 
-const MultiStateObject& Terminal::getNetwork() const {
+const VariantManagerHolder& Terminal::getNetwork() const {
     return m_network.get();
 }
 
 double Terminal::getP() const {
-    return m_p.at(m_network.get().getStateIndex());
+    return m_p.at(m_network.get().getVariantIndex());
 }
 
 double Terminal::getQ() const {
-    return m_q.at(m_network.get().getStateIndex());
+    return m_q.at(m_network.get().getVariantIndex());
 }
 
 const VoltageLevel& Terminal::getVoltageLevel() const {
@@ -86,7 +86,7 @@ VoltageLevel& Terminal::getVoltageLevel() {
     return m_voltageLevel.get();
 }
 
-void Terminal::reduceStateArraySize(unsigned long number) {
+void Terminal::reduceVariantArraySize(unsigned long number) {
     m_p.resize(m_p.size() - number);
     m_q.resize(m_q.size() - number);
 }
@@ -107,7 +107,7 @@ Terminal& Terminal::setP(double p) {
         throw ValidationException(connectable, "cannot set active power on a shunt compensator");
     }
 
-    m_p[m_network.get().getStateIndex()] = p;
+    m_p[m_network.get().getVariantIndex()] = p;
 
     return *this;
 }
@@ -119,7 +119,7 @@ Terminal& Terminal::setQ(double q) {
         throw ValidationException(connectable, "cannot set reactive power on a busbar section");
     }
 
-    m_q[m_network.get().getStateIndex()] = q;
+    m_q[m_network.get().getVariantIndex()] = q;
 
     return *this;
 }

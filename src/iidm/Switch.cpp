@@ -19,22 +19,22 @@ Switch::Switch(VoltageLevel& voltageLevel, const std::string& id, const std::str
     m_voltageLevel(voltageLevel),
     m_kind(kind),
     m_fictitious(fictitious),
-    m_open(voltageLevel.getNetwork().getStateManager().getStateArraySize(), open),
-    m_retained(voltageLevel.getNetwork().getStateManager().getStateArraySize(), retained) {
+    m_open(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), open),
+    m_retained(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), retained) {
 }
 
-void Switch::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+void Switch::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     for (auto index : indexes) {
         m_open[index] = m_open[sourceIndex];
         m_retained[index] = m_retained[sourceIndex];
     }
 }
 
-void Switch::deleteStateArrayElement(unsigned long /*index*/) {
+void Switch::deleteVariantArrayElement(unsigned long /*index*/) {
     // Nothing to do
 }
 
-void Switch::extendStateArraySize(unsigned long /*initStateArraySize*/, unsigned long number, unsigned long sourceIndex) {
+void Switch::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
     m_open.resize(m_open.size() + number, m_open[sourceIndex]);
     m_retained.resize(m_retained.size() + number, m_retained[sourceIndex]);
 }
@@ -58,14 +58,14 @@ bool Switch::isFictitious() const {
 }
 
 bool Switch::isOpen() const {
-    return m_open[m_voltageLevel.get().getNetwork().getStateIndex()];
+    return m_open[m_voltageLevel.get().getNetwork().getVariantIndex()];
 }
 
 bool Switch::isRetained() const {
-    return m_retained[m_voltageLevel.get().getNetwork().getStateIndex()];
+    return m_retained[m_voltageLevel.get().getNetwork().getVariantIndex()];
 }
 
-void Switch::reduceStateArraySize(unsigned long number) {
+void Switch::reduceVariantArraySize(unsigned long number) {
     m_open.resize(m_open.size() - number);
     m_retained.resize(m_retained.size() - number);
 }
@@ -81,7 +81,7 @@ Switch& Switch::setFictitious(bool fictitious) {
 }
 
 Switch& Switch::setOpen(bool open) {
-    unsigned long index = m_voltageLevel.get().getNetwork().getStateIndex();
+    unsigned long index = m_voltageLevel.get().getNetwork().getVariantIndex();
     bool oldValue = m_open[index];
     if (oldValue != open) {
         m_open[index] = open;
@@ -96,7 +96,7 @@ Switch& Switch::setRetained(bool retained) {
         throw ValidationException(m_voltageLevel.get(), logging::format("retain status is not modifiable in a non node/breaker voltage level"));
     }
 
-    unsigned long index = m_voltageLevel.get().getNetwork().getStateIndex();
+    unsigned long index = m_voltageLevel.get().getNetwork().getVariantIndex();
     bool oldValue = m_retained[index];
     if (oldValue != retained) {
         m_retained[index] = retained;

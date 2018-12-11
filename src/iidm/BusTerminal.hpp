@@ -41,7 +41,7 @@ public: // Terminal
     bool isConnected() const override;
 
 public:
-    BusTerminal(MultiStateObject& network, const std::string& connectableBusId, bool connected);
+    BusTerminal(VariantManagerHolder& network, const std::string& connectableBusId, bool connected);
 
     ~BusTerminal() noexcept override = default;
 
@@ -51,14 +51,14 @@ public:
 
     BusTerminal& setConnected(bool connected);
 
-protected: // Stateful
-    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
-    void deleteStateArrayElement(unsigned long index) override;
+    void deleteVariantArrayElement(unsigned long index) override;
 
-    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
-    void reduceStateArraySize(unsigned long number) override;
+    void reduceVariantArraySize(unsigned long number) override;
 
 private:
     BusTerminal(const BusTerminal& nodeTerminal) = delete;

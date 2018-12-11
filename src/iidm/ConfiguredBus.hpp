@@ -13,8 +13,8 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusAdder.hpp>
-#include <powsybl/iidm/MultiStateObject.hpp>
-#include <powsybl/iidm/Stateful.hpp>
+#include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -25,7 +25,7 @@ class BusBreakerVoltageLevel;
 class BusTerminal;
 class Terminal;
 
-class ConfiguredBus : public Bus, public Stateful {
+class ConfiguredBus : public Bus, public MultiVariantObject {
 public: // Bus
     double getAngle() const override;
 
@@ -52,19 +52,19 @@ public:
 
     void removeTerminal(BusTerminal& terminal);
 
-protected: // Stateful
-    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
-    void deleteStateArrayElement(unsigned long index) override;
+    void deleteVariantArrayElement(unsigned long index) override;
 
-    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
-    void reduceStateArraySize(unsigned long number) override;
+    void reduceVariantArraySize(unsigned long number) override;
 
 private:
     stdcxx::Reference<BusBreakerVoltageLevel> m_voltageLevel;
 
-    stdcxx::Reference<MultiStateObject> m_network;
+    stdcxx::Reference<VariantManagerHolder> m_network;
 
     std::vector<std::list<std::reference_wrapper<BusTerminal> > > m_terminals;
 

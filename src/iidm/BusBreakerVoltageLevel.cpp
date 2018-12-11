@@ -22,7 +22,7 @@ namespace iidm {
 BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                                                double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit),
-    m_states(substation.getNetwork(), [this]() { return stdcxx::make_unique<bus_breaker_voltage_level::StateImpl>(*this); }),
+    m_variants(substation.getNetwork(), [this]() { return stdcxx::make_unique<bus_breaker_voltage_level::VariantImpl>(*this); }),
     m_busBreakerView(*this),
     m_busView(*this) {
 }
@@ -48,8 +48,8 @@ Switch& BusBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, c
     return aSwitch;
 }
 
-void BusBreakerVoltageLevel::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
-    m_states.allocateStateArrayElement(indexes, [this, sourceIndex]() { return m_states.copy(sourceIndex); });
+void BusBreakerVoltageLevel::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    m_variants.allocateVariantArrayElement(indexes, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
 void BusBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
@@ -61,7 +61,7 @@ void BusBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
         auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
         const stdcxx::Reference<ConfiguredBus>& connectableBus = getConfiguredBus(busTerminal.getConnectableBusId(), true);
 
-        getNetwork().getStateManager().forEachState([&connectableBus, &busTerminal, this]() {
+        getNetwork().getVariantManager().forEachVariant([&connectableBus, &busTerminal, this]() {
             connectableBus.get().addTerminal(busTerminal);
 
             invalidateCache();
@@ -96,8 +96,8 @@ bool BusBreakerVoltageLevel::connect(Terminal& terminal) {
 }
 
 
-void BusBreakerVoltageLevel::deleteStateArrayElement(unsigned long index) {
-    m_states.deleteStateArrayElement(index);
+void BusBreakerVoltageLevel::deleteVariantArrayElement(unsigned long index) {
+    m_variants.deleteVariantArrayElement(index);
 }
 
 void BusBreakerVoltageLevel::detach(Terminal& terminal) {
@@ -108,7 +108,7 @@ void BusBreakerVoltageLevel::detach(Terminal& terminal) {
     auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
     auto& bus = getConfiguredBus(busTerminal.getConnectableBusId(), true).get();
 
-    getNetwork().getStateManager().forEachState([&bus, &busTerminal, this]() {
+    getNetwork().getVariantManager().forEachVariant([&bus, &busTerminal, this]() {
         bus.removeTerminal(busTerminal);
         busTerminal.setConnectableBusId("");
 
@@ -131,8 +131,8 @@ bool BusBreakerVoltageLevel::disconnect(Terminal& terminal) {
 }
 
 
-void BusBreakerVoltageLevel::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
-    m_states.extendStateArraySize(initStateArraySize, number, [this, sourceIndex]() { return m_states.copy(sourceIndex); });
+void BusBreakerVoltageLevel::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
 const BusBreakerView& BusBreakerVoltageLevel::getBusBreakerView() const {
@@ -152,7 +152,7 @@ BusView& BusBreakerVoltageLevel::getBusView() {
 }
 
 bus_breaker_voltage_level::CalculatedBusTopology& BusBreakerVoltageLevel::getCalculatedBusTopology() {
-    return m_states.get().getCalculatedBusTopology();
+    return m_variants.get().getCalculatedBusTopology();
 }
 
 stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus(const std::string& busId, bool throwException) const {
@@ -246,14 +246,14 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
 }
 
 void BusBreakerVoltageLevel::invalidateCache() {
-    m_states.get().getCalculatedBusTopology().invalidateCache();
+    m_variants.get().getCalculatedBusTopology().invalidateCache();
 
     // getNetwork().getConnectedComponentsManager().invalidate();
     // getNetwork().getSynchronousComponentsManager().invalidate();
 }
 
-void BusBreakerVoltageLevel::reduceStateArraySize(unsigned long number) {
-    m_states.reduceStateArraySize(number);
+void BusBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
+    m_variants.reduceVariantArraySize(number);
 }
 
 void BusBreakerVoltageLevel::removeAllBuses() {

@@ -13,7 +13,7 @@ namespace powsybl {
 
 namespace iidm {
 
-BusbarSection::BusbarSection(MultiStateObject& network, const std::string& id, const std::string& name) :
+BusbarSection::BusbarSection(VariantManagerHolder& network, const std::string& id, const std::string& name) :
     Injection(id, name, ConnectableType::BUSBAR_SECTION),
     m_network(network) {
 

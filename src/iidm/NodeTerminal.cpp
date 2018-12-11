@@ -8,7 +8,7 @@
 #include "NodeTerminal.hpp"
 
 #include <powsybl/iidm/Connectable.hpp>
-#include <powsybl/iidm/StateManager.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
@@ -18,19 +18,19 @@ namespace powsybl {
 
 namespace iidm {
 
-NodeTerminal::NodeTerminal(MultiStateObject& network, unsigned long node) :
+NodeTerminal::NodeTerminal(VariantManagerHolder& network, unsigned long node) :
     Terminal(network),
     m_node(node),
-    m_v(network.getStateManager().getStateArraySize(), stdcxx::nan()),
-    m_angle(network.getStateManager().getStateArraySize(), stdcxx::nan()),
+    m_v(network.getVariantManager().getVariantArraySize(), stdcxx::nan()),
+    m_angle(network.getVariantManager().getVariantArraySize(), stdcxx::nan()),
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {
 
 }
 
-void NodeTerminal::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
-    Terminal::allocateStateArrayElement(indexes, sourceIndex);
+void NodeTerminal::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    Terminal::allocateVariantArrayElement(indexes, sourceIndex);
 
     for (auto index : indexes) {
         m_v[index] = m_v[sourceIndex];
@@ -38,12 +38,12 @@ void NodeTerminal::allocateStateArrayElement(const std::set<unsigned long>& inde
     }
 }
 
-void NodeTerminal::deleteStateArrayElement(unsigned long index) {
-    Terminal::deleteStateArrayElement(index);
+void NodeTerminal::deleteVariantArrayElement(unsigned long index) {
+    Terminal::deleteVariantArrayElement(index);
 }
 
-void NodeTerminal::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
-    Terminal::extendStateArraySize(initStateArraySize, number, sourceIndex);
+void NodeTerminal::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    Terminal::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
     m_v.resize(m_v.size() + number, m_v[sourceIndex]);
     m_angle.resize(m_angle.size() + number, m_angle[sourceIndex]);
@@ -54,7 +54,7 @@ bool NodeTerminal::isConnected() const {
 }
 
 double NodeTerminal::getAngle() const {
-    return m_angle[getNetwork().getStateIndex()];
+    return m_angle[getNetwork().getVariantIndex()];
 }
 
 const terminal::BusBreakerView& NodeTerminal::getBusBreakerView() const {
@@ -86,11 +86,11 @@ terminal::NodeBreakerView& NodeTerminal::getNodeBreakerView() {
 }
 
 double NodeTerminal::getV() const {
-    return m_v[getNetwork().getStateIndex()];
+    return m_v[getNetwork().getVariantIndex()];
 }
 
-void NodeTerminal::reduceStateArraySize(unsigned long number) {
-    Terminal::reduceStateArraySize(number);
+void NodeTerminal::reduceVariantArraySize(unsigned long number) {
+    Terminal::reduceVariantArraySize(number);
 
     m_v.resize(m_v.size() - number);
     m_angle.resize(m_angle.size() - number);
@@ -98,7 +98,7 @@ void NodeTerminal::reduceStateArraySize(unsigned long number) {
 }
 
 NodeTerminal& NodeTerminal::setAngle(double angle) {
-    m_angle[getNetwork().getStateIndex()] = angle;
+    m_angle[getNetwork().getVariantIndex()] = angle;
 
     return *this;
 }
@@ -106,7 +106,7 @@ NodeTerminal& NodeTerminal::setAngle(double angle) {
 NodeTerminal& NodeTerminal::setV(double v) {
     checkVoltage(getConnectable(), v);
 
-    m_v[getNetwork().getStateIndex()] = v;
+    m_v[getNetwork().getVariantIndex()] = v;
 
     return *this;
 }

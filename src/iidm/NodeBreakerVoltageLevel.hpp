@@ -15,10 +15,10 @@
 
 #include "NodeBreakerVoltageLevelBusNamingStrategy.hpp"
 #include "NodeBreakerVoltageLevelGraph.hpp"
-#include "NodeBreakerVoltageLevelState.hpp"
+#include "NodeBreakerVoltageLevelVariant.hpp"
 #include "NodeBreakerVoltageLevelViews.hpp"
 #include "NodeTerminalViews.hpp"
-#include "StateArray.hpp"
+#include "VariantArray.hpp"
 
 namespace powsybl {
 
@@ -62,14 +62,14 @@ public:
 
     bool isConnected(const Terminal& terminal) const;
 
-protected: // Stateful
-    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
-    void deleteStateArrayElement(unsigned long index) override;
+    void deleteVariantArrayElement(unsigned long index) override;
 
-    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
-    void reduceStateArraySize(unsigned long number) override;
+    void reduceVariantArraySize(unsigned long number) override;
 
 private:
     void checkTerminal(Terminal& terminal) const;
@@ -124,7 +124,7 @@ private:
 
     node_breaker_voltage_level::BusNamingStrategy m_busNamingStrategy;
 
-    StateArray<node_breaker_voltage_level::StateImpl> m_states;
+    VariantArray<node_breaker_voltage_level::VariantImpl> m_variants;
 
     node_breaker_voltage_level::NodeBreakerViewImpl m_nodeBreakerView;
 

@@ -15,10 +15,10 @@
 #include <powsybl/math/UndirectedGraph.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
-#include "BusBreakerVoltageLevelState.hpp"
+#include "BusBreakerVoltageLevelVariant.hpp"
 #include "BusBreakerVoltageLevelViews.hpp"
 #include "BusTerminalViews.hpp"
-#include "StateArray.hpp"
+#include "VariantArray.hpp"
 
 namespace powsybl {
 
@@ -61,14 +61,14 @@ public:
 
     Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2);
 
-protected: // Stateful
-    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
-    void deleteStateArrayElement(unsigned long index) override;
+    void deleteVariantArrayElement(unsigned long index) override;
 
-    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
-    void reduceStateArraySize(unsigned long number) override;
+    void reduceVariantArraySize(unsigned long number) override;
 
 private: // VoltageLevel
     const NodeBreakerView& getNodeBreakerView() const override;
@@ -122,7 +122,7 @@ private:
 
     std::map<std::string, unsigned long> m_switches;
 
-    StateArray<bus_breaker_voltage_level::StateImpl> m_states;
+    VariantArray<bus_breaker_voltage_level::VariantImpl> m_variants;
 
     bus_breaker_voltage_level::BusBreakerViewImpl m_busBreakerView;
 

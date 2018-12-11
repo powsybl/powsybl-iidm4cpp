@@ -8,7 +8,7 @@
 #include "BusTerminal.hpp"
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/StateManager.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -18,16 +18,16 @@ namespace powsybl {
 
 namespace iidm {
 
-BusTerminal::BusTerminal(MultiStateObject& network, const std::string& connectableBusId, bool connected) :
+BusTerminal::BusTerminal(VariantManagerHolder& network, const std::string& connectableBusId, bool connected) :
     Terminal(network),
-    m_connected(network.getStateManager().getStateArraySize(), connected),
-    m_connectableBusId(network.getStateManager().getStateArraySize(), checkNotEmpty(connectableBusId, "ConnectableBusId is required")),
+    m_connected(network.getVariantManager().getVariantArraySize(), connected),
+    m_connectableBusId(network.getVariantManager().getVariantArraySize(), checkNotEmpty(connectableBusId, "ConnectableBusId is required")),
     m_busBreakerView(*this),
     m_busView(*this) {
 }
 
-void BusTerminal::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
-    Terminal::allocateStateArrayElement(indexes, sourceIndex);
+void BusTerminal::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    Terminal::allocateVariantArrayElement(indexes, sourceIndex);
 
     for (auto index : indexes) {
         m_connected[index] = m_connected[sourceIndex];
@@ -35,21 +35,21 @@ void BusTerminal::allocateStateArrayElement(const std::set<unsigned long>& index
     }
 }
 
-void BusTerminal::deleteStateArrayElement(unsigned long index) {
-    Terminal::deleteStateArrayElement(index);
+void BusTerminal::deleteVariantArrayElement(unsigned long index) {
+    Terminal::deleteVariantArrayElement(index);
 
     m_connectableBusId[index] = "";
 }
 
-void BusTerminal::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
-    Terminal::extendStateArraySize(initStateArraySize, number, sourceIndex);
+void BusTerminal::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    Terminal::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
     m_connected.resize(m_connected.size() + number, m_connected[sourceIndex]);
     m_connectableBusId.resize(m_connectableBusId.size() + number, m_connectableBusId[sourceIndex]);
 }
 
 const std::string& BusTerminal::getConnectableBusId() const {
-    return m_connectableBusId[getNetwork().getStateIndex()];
+    return m_connectableBusId[getNetwork().getVariantIndex()];
 }
 
 double BusTerminal::getAngle() const {
@@ -89,25 +89,25 @@ double BusTerminal::getV() const {
 }
 
 bool BusTerminal::isConnected() const {
-    return m_connected[getNetwork().getStateIndex()];
+    return m_connected[getNetwork().getVariantIndex()];
 
 }
 
-void BusTerminal::reduceStateArraySize(unsigned long number) {
-    Terminal::reduceStateArraySize(number);
+void BusTerminal::reduceVariantArraySize(unsigned long number) {
+    Terminal::reduceVariantArraySize(number);
 
     m_connected.resize(m_connected.size() - number);
     m_connectableBusId.resize(m_connectableBusId.size() - number);
 }
 
 BusTerminal& BusTerminal::setConnectableBusId(const std::string& connectableBusId) {
-    m_connectableBusId[getNetwork().getStateIndex()] = connectableBusId;
+    m_connectableBusId[getNetwork().getVariantIndex()] = connectableBusId;
 
     return *this;
 }
 
 BusTerminal& BusTerminal::setConnected(bool connected) {
-    m_connected[getNetwork().getStateIndex()] = connected;
+    m_connected[getNetwork().getVariantIndex()] = connected;
 
     return *this;
 }

@@ -11,7 +11,7 @@
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
-#include <powsybl/iidm/Stateful.hpp>
+#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -26,7 +26,7 @@ class NodeBreakerView;
 class Substation;
 class Terminal;
 
-class VoltageLevel : public Container, public Stateful {
+class VoltageLevel : public Container, public MultiVariantObject {
 public:
     ~VoltageLevel() noexcept override = default;
 

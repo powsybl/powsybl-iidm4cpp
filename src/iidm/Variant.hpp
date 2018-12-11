@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_STATE_HPP
-#define POWSYBL_IIDM_STATE_HPP
+#ifndef POWSYBL_IIDM_VARIANT_HPP
+#define POWSYBL_IIDM_VARIANT_HPP
 
 #include <memory>
 
@@ -15,7 +15,7 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T>
-class State {
+class Variant {
 public:
     virtual std::unique_ptr<T> copy() const = 0;
 };
@@ -24,4 +24,4 @@ public:
 
 }
 
-#endif  // POWSYBL_IIDM_STATE_HPP
+#endif  // POWSYBL_IIDM_VARIANT_HPP

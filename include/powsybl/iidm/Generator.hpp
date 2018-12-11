@@ -20,7 +20,7 @@ class Terminal;
 
 class Generator : public Injection, public ReactiveLimitsHolder {
 public:
-    Generator(MultiStateObject& network, const std::string& id, const std::string& name, const EnergySource& energySource,
+    Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, const EnergySource& energySource,
         double minP, double maxP, bool voltageRegulatorOn, const stdcxx::Reference<Terminal>& regulatingTerminal,
         double activePowerSetpoint, double reactivePowerSetpoint, double voltageSetpoint, double ratedS);
 
@@ -76,20 +76,20 @@ public:
 
     Generator& setVoltageSetpoint(double voltageSetpoint);
 
-protected: // Stateful
-    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
-    void deleteStateArrayElement(unsigned long index) override;
+    void deleteVariantArrayElement(unsigned long index) override;
 
-    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
-    void reduceStateArraySize(unsigned long number) override;
+    void reduceVariantArraySize(unsigned long number) override;
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    stdcxx::Reference<MultiStateObject> m_network;
+    stdcxx::Reference<VariantManagerHolder> m_network;
 
     EnergySource m_energySource;
 

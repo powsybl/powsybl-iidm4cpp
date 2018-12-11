@@ -9,10 +9,10 @@
 #define POWSYBL_IIDM_NETWORK_HPP
 
 #include <powsybl/iidm/Container.hpp>
-#include <powsybl/iidm/MultiStateObject.hpp>
 #include <powsybl/iidm/ObjectStore.hpp>
-#include <powsybl/iidm/StateManager.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 
 namespace powsybl {
 
@@ -27,13 +27,13 @@ class Substation;
 class TieLineAdder;
 class VoltageLevel;
 
-class Network : public Container, public MultiStateObject {
-public: // MultiStateObject
-    unsigned long getStateIndex() const override;
+class Network : public Container, public VariantManagerHolder {
+public: // VariantManagerHolder
+    unsigned long getVariantIndex() const override;
 
-    const StateManager& getStateManager() const override;
+    const VariantManager& getVariantManager() const override;
 
-    StateManager& getStateManager() override;
+    VariantManager& getVariantManager() override;
 
 public:
     Network(const std::string& id, const std::string& sourceFormat);
@@ -117,7 +117,7 @@ private:
 
     ObjectStore m_objectStore;
 
-    StateManager m_stateManager;
+    VariantManager m_variantManager;
 };
 
 }  // namespace iidm

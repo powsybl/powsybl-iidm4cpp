@@ -13,7 +13,7 @@
 
 #include <powsybl/iidm/ConnectableType.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/Stateful.hpp>
+#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 
 namespace powsybl {
@@ -22,7 +22,7 @@ namespace iidm {
 
 class Network;
 
-class Connectable : public Identifiable, public Stateful {
+class Connectable : public Identifiable, public MultiVariantObject {
 public:
     ~Connectable() noexcept override = default;
 
@@ -34,14 +34,14 @@ public:
 
     void remove();
 
-protected: // Stateful
-    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
-    void deleteStateArrayElement(unsigned long index) override;
+    void deleteVariantArrayElement(unsigned long index) override;
 
-    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
-    void reduceStateArraySize(unsigned long number) override;
+    void reduceVariantArraySize(unsigned long number) override;
 
 protected:
     Connectable(const std::string& id, const std::string& name, const ConnectableType& connectableType);

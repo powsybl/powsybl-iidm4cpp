@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "BusBreakerVoltageLevelState.hpp"
+#include "BusBreakerVoltageLevelVariant.hpp"
 
 #include <powsybl/stdcxx/make_unique.hpp>
 
@@ -15,16 +15,16 @@ namespace iidm {
 
 namespace bus_breaker_voltage_level {
 
-StateImpl::StateImpl(BusBreakerVoltageLevel& voltageLevel) :
+VariantImpl::VariantImpl(BusBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel),
     m_calculatedBusTopology(voltageLevel) {
 }
 
-std::unique_ptr<StateImpl> StateImpl::copy() const {
-    return stdcxx::make_unique<StateImpl>(m_voltageLevel);
+std::unique_ptr<VariantImpl> VariantImpl::copy() const {
+    return stdcxx::make_unique<VariantImpl>(m_voltageLevel);
 }
 
-CalculatedBusTopology& StateImpl::getCalculatedBusTopology() {
+CalculatedBusTopology& VariantImpl::getCalculatedBusTopology() {
     return m_calculatedBusTopology;
 }
 

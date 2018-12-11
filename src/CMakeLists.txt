@@ -16,9 +16,9 @@ set(IIDM_SOURCES
     iidm/BusbarSectionAdder.cpp
     iidm/BusBreakerVoltageLevel.cpp
     iidm/BusBreakerVoltageLevelBusCache.cpp
-    iidm/BusBreakerVoltageLevelState.cpp
-    iidm/BusBreakerVoltageLevelViews.cpp
     iidm/BusBreakerVoltageLevelTopology.cpp
+    iidm/BusBreakerVoltageLevelVariant.cpp
+    iidm/BusBreakerVoltageLevelViews.cpp
     iidm/BusTerminal.cpp
     iidm/BusTerminalViews.cpp
     iidm/CalculatedBus.cpp
@@ -42,13 +42,13 @@ set(IIDM_SOURCES
     iidm/MergedBus.cpp
     iidm/MinMaxReactiveLimits.cpp
     iidm/MinMaxReactiveLimitsAdder.cpp
-    iidm/MultipleStateContext.cpp
+    iidm/MultipleVariantContext.cpp
     iidm/Network.cpp
     iidm/NodeBreakerVoltageLevel.cpp
     iidm/NodeBreakerVoltageLevelBusCache.cpp
     iidm/NodeBreakerVoltageLevelBusNamingStrategy.cpp
-    iidm/NodeBreakerVoltageLevelState.cpp
     iidm/NodeBreakerVoltageLevelTopology.cpp
+    iidm/NodeBreakerVoltageLevelVariant.cpp
     iidm/NodeBreakerVoltageLevelViews.cpp
     iidm/NodeTerminal.cpp
     iidm/NodeTerminalViews.cpp
@@ -57,8 +57,6 @@ set(IIDM_SOURCES
     iidm/ReactiveCapabilityCurveAdder.cpp
     iidm/ReactiveLimitsHolder.cpp
     iidm/ShuntCompensator.cpp
-    iidm/StateContextGuard.cpp
-    iidm/StateManager.cpp
     iidm/StaticVarCompensator.cpp
     iidm/Substation.cpp
     iidm/SubstationAdder.cpp
@@ -73,6 +71,8 @@ set(IIDM_SOURCES
     iidm/TwoWindingsTransformer.cpp
     iidm/ValidationException.cpp
     iidm/ValidationUtils.cpp
+    iidm/VariantContextGuard.cpp
+    iidm/VariantManager.cpp
     iidm/VoltageLevel.cpp
     iidm/VoltageLevelAdder.cpp
     iidm/VscConverterStation.cpp

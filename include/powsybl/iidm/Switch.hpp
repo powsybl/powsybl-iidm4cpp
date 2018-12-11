@@ -11,7 +11,7 @@
 #include <vector>
 
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/Stateful.hpp>
+#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/SwitchKind.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -21,7 +21,7 @@ namespace iidm {
 
 class VoltageLevel;
 
-class Switch : public Identifiable, public Stateful {
+class Switch : public Identifiable, public MultiVariantObject {
 public:
     Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, SwitchKind kind, bool open,
            bool retained, bool fictitious);
@@ -44,14 +44,14 @@ public:
 
     Switch& setRetained(bool retained);
 
-protected: // Stateful
-    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
-    void deleteStateArrayElement(unsigned long index) override;
+    void deleteVariantArrayElement(unsigned long index) override;
 
-    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
-    void reduceStateArraySize(unsigned long number) override;
+    void reduceVariantArraySize(unsigned long number) override;
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;

@@ -37,7 +37,7 @@ public: // Terminal
     bool isConnected() const override;
 
 public:
-    NodeTerminal(MultiStateObject& network, unsigned long node);
+    NodeTerminal(VariantManagerHolder& network, unsigned long node);
 
     ~NodeTerminal() noexcept override = default;
 
@@ -47,14 +47,14 @@ public:
 
     NodeTerminal& setV(double v);
 
-protected: // Stateful
-    void allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
-    void deleteStateArrayElement(unsigned long index) override;
+    void deleteVariantArrayElement(unsigned long index) override;
 
-    void extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) override;
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
-    void reduceStateArraySize(unsigned long number) override;
+    void reduceVariantArraySize(unsigned long number) override;
 
 private:
     NodeTerminal(const NodeTerminal& nodeTerminal) = delete;

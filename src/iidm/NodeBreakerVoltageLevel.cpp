@@ -23,7 +23,7 @@ NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const st
                                                  double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit),
     m_busNamingStrategy(*this),
-    m_states(substation.getNetwork(), [this]() { return stdcxx::make_unique<node_breaker_voltage_level::StateImpl>(*this); }),
+    m_variants(substation.getNetwork(), [this]() { return stdcxx::make_unique<node_breaker_voltage_level::VariantImpl>(*this); }),
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {
@@ -38,8 +38,8 @@ Switch& NodeBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, 
     return aSwitch;
 }
 
-void NodeBreakerVoltageLevel::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
-    m_states.allocateStateArrayElement(indexes, [this, sourceIndex]() { return m_states.copy(sourceIndex); });
+void NodeBreakerVoltageLevel::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    m_variants.allocateVariantArrayElement(indexes, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
 void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
@@ -105,8 +105,8 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
     return connected;
 }
 
-void NodeBreakerVoltageLevel::deleteStateArrayElement(unsigned long index) {
-    m_states.deleteStateArrayElement(index);
+void NodeBreakerVoltageLevel::deleteVariantArrayElement(unsigned long index) {
+    m_variants.deleteVariantArrayElement(index);
 }
 
 void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
@@ -165,8 +165,8 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
     return true;
 }
 
-void NodeBreakerVoltageLevel::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
-    m_states.extendStateArraySize(initStateArraySize, number, [this, sourceIndex]() { return m_states.copy(sourceIndex); });
+void NodeBreakerVoltageLevel::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
 const BusBreakerView& NodeBreakerVoltageLevel::getBusBreakerView() const {
@@ -190,11 +190,11 @@ node_breaker_voltage_level::BusNamingStrategy& NodeBreakerVoltageLevel::getBusNa
 }
 
 node_breaker_voltage_level::CalculatedBusBreakerTopology& NodeBreakerVoltageLevel::getCalculatedBusBreakerTopology() {
-    return m_states.get().getCalculatedBusBreakerTopology();
+    return m_variants.get().getCalculatedBusBreakerTopology();
 }
 
 node_breaker_voltage_level::CalculatedBusTopology& NodeBreakerVoltageLevel::getCalculatedBusTopology() {
-    return m_states.get().getCalculatedBusTopology();
+    return m_variants.get().getCalculatedBusTopology();
 }
 
 stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::string& switchId, bool throwException) const {
@@ -266,8 +266,8 @@ const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
 }
 
 void NodeBreakerVoltageLevel::invalidateCache() {
-    m_states.get().getCalculatedBusTopology().invalidateCache();
-    m_states.get().getCalculatedBusBreakerTopology().invalidateCache();
+    m_variants.get().getCalculatedBusTopology().invalidateCache();
+    m_variants.get().getCalculatedBusBreakerTopology().invalidateCache();
 
     // TODO(mathbagu): invalidate the connected and synchronous components
 }
@@ -276,8 +276,8 @@ bool NodeBreakerVoltageLevel::isConnected(const Terminal& /*terminal*/) const {
     throw AssertionError("TODO");
 }
 
-void NodeBreakerVoltageLevel::reduceStateArraySize(unsigned long number) {
-    m_states.reduceStateArraySize(number);
+void NodeBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
+    m_variants.reduceVariantArraySize(number);
 }
 
 void NodeBreakerVoltageLevel::removeSwitch(const std::string& switchId) {

@@ -5,11 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELSTATE_HPP
-#define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELSTATE_HPP
+#ifndef POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVARIANT_HPP
+#define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVARIANT_HPP
 
 #include "BusBreakerVoltageLevelTopology.hpp"
-#include "State.hpp"
+#include "Variant.hpp"
 
 namespace powsybl {
 
@@ -17,14 +17,14 @@ namespace iidm {
 
 namespace bus_breaker_voltage_level {
 
-class StateImpl : public State<StateImpl> {
-public: // State
-    std::unique_ptr<StateImpl> copy() const override;
+class VariantImpl : public Variant<VariantImpl> {
+public: // Variant
+    std::unique_ptr<VariantImpl> copy() const override;
 
 public:
-    explicit StateImpl(BusBreakerVoltageLevel& voltageLevel);
+    explicit VariantImpl(BusBreakerVoltageLevel& voltageLevel);
 
-    ~StateImpl() noexcept = default;
+    ~VariantImpl() noexcept = default;
 
     CalculatedBusTopology& getCalculatedBusTopology();
 
@@ -40,4 +40,4 @@ private:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELSTATE_HPP
+#endif  // POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVARIANT_HPP

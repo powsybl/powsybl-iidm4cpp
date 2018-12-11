@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/Generator.hpp>
 
-#include <powsybl/iidm/StateManager.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
 
 #include "ValidationUtils.hpp"
 
@@ -15,7 +15,7 @@ namespace powsybl {
 
 namespace iidm {
 
-Generator::Generator(powsybl::iidm::MultiStateObject& network, const std::string& id, const std::string& name,
+Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::string& id, const std::string& name,
                      const powsybl::iidm::EnergySource& energySource, double minP, double maxP, bool voltageRegulatorOn,
                      const stdcxx::Reference<powsybl::iidm::Terminal>& regulatingTerminal, double activePowerSetpoint,
                      double reactivePowerSetpoint, double voltageSetpoint, double ratedS) :
@@ -25,14 +25,14 @@ Generator::Generator(powsybl::iidm::MultiStateObject& network, const std::string
     m_maxP(maxP),
     m_ratedS(ratedS),
     m_regulatingTerminal(regulatingTerminal),
-    m_voltageRegulatorOn(network.getStateManager().getStateArraySize(), voltageRegulatorOn),
-    m_activePowerSetpoint(network.getStateManager().getStateArraySize(), activePowerSetpoint),
-    m_reactivePowerSetpoint(network.getStateManager().getStateArraySize(), reactivePowerSetpoint),
-    m_voltageSetpoint(network.getStateManager().getStateArraySize(), voltageSetpoint) {
+    m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
+    m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), activePowerSetpoint),
+    m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
+    m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint) {
 }
 
-void Generator::allocateStateArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
-    Injection::allocateStateArrayElement(indexes, sourceIndex);
+void Generator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    Injection::allocateVariantArrayElement(indexes, sourceIndex);
 
     for (unsigned long index : indexes) {
         m_voltageRegulatorOn[index] = m_voltageRegulatorOn[sourceIndex];
@@ -42,12 +42,12 @@ void Generator::allocateStateArrayElement(const std::set<unsigned long>& indexes
     }
 }
 
-void Generator::deleteStateArrayElement(unsigned long index) {
-    Injection::deleteStateArrayElement(index);
+void Generator::deleteVariantArrayElement(unsigned long index) {
+    Injection::deleteVariantArrayElement(index);
 }
 
-void Generator::extendStateArraySize(unsigned long initStateArraySize, unsigned long number, unsigned long sourceIndex) {
-    Injection::extendStateArraySize(initStateArraySize, number, sourceIndex);
+void Generator::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    Injection::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
     m_voltageRegulatorOn.resize(m_voltageRegulatorOn.size() + number, m_voltageRegulatorOn[sourceIndex]);
     m_activePowerSetpoint.resize(m_activePowerSetpoint.size() + number, m_activePowerSetpoint[sourceIndex]);
@@ -56,7 +56,7 @@ void Generator::extendStateArraySize(unsigned long initStateArraySize, unsigned 
 }
 
 double Generator::getActivePowerSetpoint() const {
-    return m_activePowerSetpoint.at(m_network.get().getStateIndex());
+    return m_activePowerSetpoint.at(m_network.get().getVariantIndex());
 }
 
 const EnergySource& Generator::getEnergySource() const {
@@ -76,7 +76,7 @@ double Generator::getRatedS() const {
 }
 
 double Generator::getReactivePowerSetpoint() const {
-    return m_reactivePowerSetpoint.at(m_network.get().getStateIndex());
+    return m_reactivePowerSetpoint.at(m_network.get().getVariantIndex());
 }
 
 const stdcxx::Reference<Terminal>& Generator::getRegulatingTerminal() const {
@@ -106,15 +106,15 @@ const std::string& Generator::getTypeDescription() const {
 }
 
 double Generator::getVoltageSetpoint() const {
-    return m_voltageSetpoint.at(m_network.get().getStateIndex());
+    return m_voltageSetpoint.at(m_network.get().getVariantIndex());
 }
 
 bool Generator::isVoltageRegulatorOn() const {
-    return m_voltageRegulatorOn.at(m_network.get().getStateIndex());
+    return m_voltageRegulatorOn.at(m_network.get().getVariantIndex());
 }
 
-void Generator::reduceStateArraySize(unsigned long number) {
-    Injection::reduceStateArraySize(number);
+void Generator::reduceVariantArraySize(unsigned long number) {
+    Injection::reduceVariantArraySize(number);
 
     m_voltageRegulatorOn.resize(m_voltageRegulatorOn.size() - number);
     m_activePowerSetpoint.resize(m_activePowerSetpoint.size() - number);
@@ -123,7 +123,7 @@ void Generator::reduceStateArraySize(unsigned long number) {
 }
 
 Generator& Generator::setActivePowerSetpoint(double activePowerSetpoint) {
-    m_activePowerSetpoint[m_network.get().getStateIndex()] = checkActivePowerSetpoint(*this, activePowerSetpoint);
+    m_activePowerSetpoint[m_network.get().getVariantIndex()] = checkActivePowerSetpoint(*this, activePowerSetpoint);
     return *this;
 }
 
@@ -153,7 +153,7 @@ Generator& Generator::setRatedS(double ratedS) {
 
 Generator& Generator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
     checkVoltageControl(*this, isVoltageRegulatorOn(), getVoltageSetpoint(), reactivePowerSetpoint);
-    m_reactivePowerSetpoint[m_network.get().getStateIndex()] = reactivePowerSetpoint;
+    m_reactivePowerSetpoint[m_network.get().getVariantIndex()] = reactivePowerSetpoint;
     return *this;
 }
 
@@ -181,13 +181,13 @@ Generator& Generator::setTargetV(double voltageSetpoint) {
 
 Generator& Generator::setVoltageRegulatorOn(bool voltageRegulatorOn) {
     checkVoltageControl(*this, voltageRegulatorOn, getTargetV(), getTargetQ());
-    m_voltageRegulatorOn[m_network.get().getStateIndex()] = voltageRegulatorOn;
+    m_voltageRegulatorOn[m_network.get().getVariantIndex()] = voltageRegulatorOn;
     return *this;
 }
 
 Generator& Generator::setVoltageSetpoint(double voltageSetpoint) {
     checkVoltageControl(*this, isVoltageRegulatorOn(), voltageSetpoint, getReactivePowerSetpoint());
-    m_voltageSetpoint[m_network.get().getStateIndex()] = voltageSetpoint;
+    m_voltageSetpoint[m_network.get().getVariantIndex()] = voltageSetpoint;
     return *this;
 }
 
