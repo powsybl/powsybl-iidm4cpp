@@ -24,7 +24,7 @@ public: // Variant
 public:
     explicit VariantImpl(BusBreakerVoltageLevel& voltageLevel);
 
-    ~VariantImpl() noexcept = default;
+    ~VariantImpl() noexcept override = default;
 
     CalculatedBusTopology& getCalculatedBusTopology();
 

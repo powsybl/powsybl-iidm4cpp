@@ -17,6 +17,8 @@ namespace iidm {
 template <typename T>
 class Variant {
 public:
+    virtual ~Variant() noexcept = default;
+
     virtual std::unique_ptr<T> copy() const = 0;
 };
 
