@@ -82,7 +82,7 @@ std::vector<std::reference_wrapper<Bus> > BusViewImpl::getBuses() const {
     const auto& mergedBuses = m_voltageLevel.getCalculatedBusTopology().getMergedBuses();
 
     std::vector<std::reference_wrapper<Bus> > buses;
-    std::transform(mergedBuses.begin(), mergedBuses.end(), buses.begin(), [](const std::reference_wrapper<MergedBus>& bus) {
+    std::transform(mergedBuses.begin(), mergedBuses.end(), std::back_inserter(buses), [](const std::reference_wrapper<MergedBus>& bus) {
         return std::ref<Bus>(bus);
     });
 

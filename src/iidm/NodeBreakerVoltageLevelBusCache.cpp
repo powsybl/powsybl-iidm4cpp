@@ -19,7 +19,7 @@ BusCache::BusCache(CalculatedBusByNode busByNode, CalculatedBusById busById) :
 }
 
 stdcxx::Reference<CalculatedBus> BusCache::getBus(unsigned long node) const {
-    return stdcxx::ref<CalculatedBus>(m_busByNode.at(node));
+    return m_busByNode.at(node);
 }
 
 stdcxx::Reference<CalculatedBus> BusCache::getBus(const std::string& id) const {

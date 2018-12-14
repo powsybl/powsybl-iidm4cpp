@@ -26,7 +26,7 @@ namespace node_breaker_voltage_level {
 
 class BusCache {
 public:
-    using CalculatedBusByNode = std::vector<std::reference_wrapper<CalculatedBus> >;
+    using CalculatedBusByNode = std::vector<stdcxx::Reference<CalculatedBus> >;
 
     using CalculatedBusById = std::map<std::string, std::unique_ptr<CalculatedBus> >;
 

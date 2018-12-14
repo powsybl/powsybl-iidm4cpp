@@ -239,7 +239,7 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
         if (isBusValid(graph, vertices, terminals)) {
             std::unique_ptr<CalculatedBus> ptrCalculatedBus = stdcxx::make_unique<CalculatedBus>(busId, m_voltageLevel, std::move(terminals));
             const auto& it = busById.insert(std::make_pair(busId, std::move(ptrCalculatedBus)));
-            const std::reference_wrapper<CalculatedBus>& calculatedBus = std::ref(*it.first->second);
+            const stdcxx::Reference<CalculatedBus>& calculatedBus = stdcxx::ref(*it.first->second);
 
             for (unsigned long vertex : vertices) {
                 busByNode[vertex] = calculatedBus;
@@ -263,8 +263,7 @@ void CalculatedBusTopology::updateCache(const SwitchPredicate& terminate) {
     const auto& graph = m_voltageLevel.getGraph();
 
     BusCache::CalculatedBusById busById;
-    BusCache::CalculatedBusByNode busByNode;
-    busByNode.reserve(graph.getMaxVertex());
+    BusCache::CalculatedBusByNode busByNode(graph.getMaxVertex());
 
     std::vector<bool> encountered(graph.getMaxVertex(), false);
     for (unsigned long e : graph.getEdges()) {

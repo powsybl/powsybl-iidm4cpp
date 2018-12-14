@@ -27,7 +27,7 @@ Terminal& Branch::getTerminal(const Side& side) const {
             return getTerminals().at(1).get();
 
         default:
-            throw AssertionError(logging::format("Unexpected side value: %1%", side));
+            throw AssertionError(logging::format("Unexpected side value: %1%", static_cast<unsigned int>(side)));
     }
 }
 

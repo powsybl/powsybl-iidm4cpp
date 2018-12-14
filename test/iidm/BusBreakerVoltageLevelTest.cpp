@@ -12,6 +12,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/BusView.hpp>
+#include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -45,6 +46,18 @@ TEST(BusBreakerVoltageLevel, Bus) {
         .setAngle(0.01);
     ASSERT_EQ(10.0, bus.getV());
     ASSERT_EQ(0.01, bus.getAngle());
+
+    voltageLevel.newLoad()
+        .setId("LOAD2")
+        .setBus("BUS")
+        .setConnectableBus("BUS")
+        .setName("LOAD2_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    ASSERT_EQ(1ul, bus.getConnectedTerminalCount());
 }
 
 TEST(BusBreakerVoltageLevel, Switch) {
@@ -90,6 +103,10 @@ TEST(BusBreakerVoltageLevel, NodeBreakerView) {
     ASSERT_EQ(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView(), AssertionError, "Not implemented");
+
+    // test const version
+    const VoltageLevel& vl = network.getVoltageLevel("VL1");
+    POWSYBL_ASSERT_THROW(vl.getNodeBreakerView(), AssertionError, "Not implemented");
 }
 
 TEST(BusBreakerVoltageLevel, BusBreakerView) {
@@ -157,6 +174,8 @@ TEST(BusBreakerVoltageLevel, BusBreakerView) {
     // Remove bus
     POWSYBL_ASSERT_THROW(view.removeBus("BUS2"), PowsyblException,
                          "Cannot remove bus 'BUS2' due to the connected switch 'SW1'");
+    POWSYBL_ASSERT_THROW(view.removeBus("VL1_BUS1"), PowsyblException,
+                         "Voltage level 'VL1': Cannot remove bus 'VL1_BUS1' due to connectable equipments");
     POWSYBL_ASSERT_THROW(view.removeBus("UNKNOWN"), PowsyblException,
                          "Bus 'UNKNOWN' not found in the voltage level 'VL1'");
 
@@ -174,6 +193,12 @@ TEST(BusBreakerVoltageLevel, BusBreakerView) {
                          "Voltage level 'VL1': Cannot remove bus 'VL1_BUS1' due to connected equipments");
     network.getLoad("LOAD1").remove();
     view.removeAllBuses();
+
+    // test const versions
+    const VoltageLevel& vl = network.getVoltageLevel("VL1");
+    const BusBreakerView& view2 = vl.getBusBreakerView();
+    const auto& refUnknownBus2 = view2.getBus("UNKNOWN");
+    ASSERT_FALSE(refUnknownBus2);
 }
 
 TEST(BusBreakerVoltageLevel, CalculatedBusTopology) {
@@ -200,26 +225,168 @@ TEST(BusBreakerVoltageLevel, CalculatedBusTopology) {
         .setId("BUS2")
         .add();
 
-    /*Switch& sw =*/ vl.getBusBreakerView().newSwitch()
+    Switch& sw = vl.getBusBreakerView().newSwitch()
         .setId("SW")
         .setBus1("BUS1")
         .setBus2("BUS2")
         .setOpen(false)
         .add();
 
-    // TODO(mathbagu): need to implement at least one kind of branch
-    /*
+    vl.newLoad()
+        .setId("LOAD1")
+        .setBus("BUS1")
+        .setConnectableBus("BUS1")
+        .setName("LOAD1_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    vl.newLoad()
+        .setId("LOAD2")
+        .setBus("BUS2")
+        .setConnectableBus("BUS2")
+        .setName("LOAD2_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    VoltageLevel& vl2 = s.newVoltageLevel()
+        .setId("VL2")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalVoltage(400.0)
+        .setLowVoltageLimit(380.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    vl2.getBusBreakerView().newBus()
+        .setId("VL2_BUS1")
+        .add();
+
+    network.newLine()
+        .setId("VL1_VL2")
+        .setVoltageLevel1(vl.getId())
+        .setBus1("BUS1")
+        .setConnectableBus1("BUS1")
+        .setVoltageLevel2(vl2.getId())
+        .setBus2("VL2_BUS1")
+        .setConnectableBus2("VL2_BUS1")
+        .setR(3.0)
+        .setX(33.0)
+        .setG1(1.0)
+        .setB1(0.2)
+        .setG2(2.0)
+        .setB2(0.4)
+        .add();
+
+    network.newLine()
+        .setId("VL1_VL2_2")
+        .setVoltageLevel1(vl.getId())
+        .setBus1("BUS2")
+        .setConnectableBus1("BUS2")
+        .setVoltageLevel2(vl2.getId())
+        .setBus2("VL2_BUS1")
+        .setConnectableBus2("VL2_BUS1")
+        .setR(4.0)
+        .setX(44.0)
+        .setG1(5.0)
+        .setB1(0.3)
+        .setG2(6.0)
+        .setB2(0.5)
+        .add();
+
     ASSERT_EQ(1ul, vl.getBusView().getBuses().size());
     stdcxx::Reference<Bus> mergedBus1 = vl.getBusView().getMergedBus("BUS1");
     stdcxx::Reference<Bus> mergedBus2 = vl.getBusView().getMergedBus("BUS2");
     ASSERT_TRUE(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
 
     sw.setOpen(true);
-    ASSERT_EQ(2ul, vl.getBusView().getBuses().size());
-    mergedBus1 = vl.getBusView().getMergedBus("BUS1");
-    mergedBus2 = vl.getBusView().getMergedBus("BUS2");
+    const VoltageLevel& vlTest = vl;
+    const BusView& busView = vlTest.getBusView();
+    ASSERT_EQ(2ul, busView.getBuses().size());
+    mergedBus1 = busView.getMergedBus("BUS1");
+    mergedBus2 = busView.getMergedBus("BUS2");
     ASSERT_FALSE(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
-    */
+
+    Bus& testBus = mergedBus1.get();
+    ASSERT_TRUE(std::isnan(testBus.getAngle()));
+    ASSERT_TRUE(std::isnan(testBus.getV()));
+    ASSERT_DOUBLE_EQ(7.7, testBus.setAngle(7.7).setV(8.8).getAngle());
+    ASSERT_DOUBLE_EQ(8.8, testBus.getV());
+    ASSERT_EQ(2ul, testBus.getConnectedTerminalCount());
+    std::vector<std::reference_wrapper<Terminal> > terminals = testBus.getConnectedTerminals();
+    ASSERT_EQ(terminals.size(), testBus.getConnectedTerminalCount());
+    ASSERT_TRUE(stdcxx::areSame(vl, testBus.getVoltageLevel()));
+
+    // TODO(thiebarr): ASSERT_TRUE(busView.getBus("BUS1"));
+}
+
+TEST(BusBreakerVoltageLevel, Terminal) {
+    Network network("test", "test");
+
+    Substation& s = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+
+    VoltageLevel& vl = s.newVoltageLevel()
+        .setId("VL")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalVoltage(400.0)
+        .setLowVoltageLimit(380.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    vl.getBusBreakerView().newBus()
+        .setId("BUS1")
+        .add();
+
+    Load& l1 = vl.newLoad()
+        .setId("LOAD1")
+        .setBus("BUS1")
+        .setConnectableBus("BUS1")
+        .setName("LOAD1_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    Terminal& terminal = l1.getTerminal();
+    ASSERT_TRUE(terminal.isConnected());
+    ASSERT_TRUE(vl.disconnect(terminal));
+    ASSERT_FALSE(terminal.isConnected());
+    ASSERT_FALSE(vl.disconnect(terminal));
+    ASSERT_FALSE(terminal.isConnected());
+    ASSERT_TRUE(vl.connect(terminal));
+    ASSERT_TRUE(terminal.isConnected());
+    ASSERT_FALSE(vl.connect(terminal));
+    ASSERT_TRUE(terminal.isConnected());
+    ASSERT_TRUE(terminal.disconnect());
+    ASSERT_FALSE(terminal.isConnected());
+    ASSERT_TRUE(terminal.connect());
+    ASSERT_TRUE(terminal.isConnected());
+
+    ASSERT_TRUE(std::isnan(terminal.getV()));
+    ASSERT_TRUE(std::isnan(terminal.getAngle()));
+    ASSERT_TRUE(std::isnan(terminal.getI()));
+    terminal.setP(1.0);
+    terminal.setQ(2.0);
+    ASSERT_DOUBLE_EQ(1.0, terminal.getP());
+    ASSERT_DOUBLE_EQ(2.0, terminal.getQ());
+
+    const Terminal& cTerminal = l1.getTerminal();
+    ASSERT_TRUE(stdcxx::areSame(cTerminal.getVoltageLevel(), vl));
+    auto& busBreakerView = terminal.getBusBreakerView();
+    const auto& cBusBreakerView = cTerminal.getBusBreakerView();
+    ASSERT_TRUE(stdcxx::areSame(busBreakerView, cBusBreakerView));
+    POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus(""), PowsyblException, "busId is empty");
+    busBreakerView.setConnectableBus("BUS1");
+
+    ASSERT_TRUE(stdcxx::areSame(terminal.getBusView(), cTerminal.getBusView()));
+
+    POWSYBL_ASSERT_THROW(terminal.getNodeBreakerView(), AssertionError, "Not implemented");
+    POWSYBL_ASSERT_THROW(cTerminal.getNodeBreakerView(), AssertionError, "Not implemented");
 }
 
 }  // namespace iidm

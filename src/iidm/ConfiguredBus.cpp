@@ -75,7 +75,7 @@ std::vector<std::reference_wrapper<Terminal> > ConfiguredBus::getConnectedTermin
     const std::list<std::reference_wrapper<BusTerminal> >& busTerminals = m_terminals[m_network.get().getVariantIndex()];
 
     std::vector<std::reference_wrapper<Terminal> > terminals;
-    std::transform(busTerminals.begin(), busTerminals.end(), terminals.begin(), [](const std::reference_wrapper<BusTerminal>& terminal) {
+    std::transform(busTerminals.begin(), busTerminals.end(), std::back_inserter(terminals), [](const std::reference_wrapper<BusTerminal>& terminal) {
         return std::ref<Terminal>(terminal);
     });
 
