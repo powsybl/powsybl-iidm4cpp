@@ -257,7 +257,7 @@ TEST(TieLine, adder) {
 
     TieLineAdder tieLineAdder3 = tieLineAdder;
     tieLineAdder3.setNode2(0);
-    POWSYBL_ASSERT_THROW(tieLineAdder2.add(), ValidationException, "AC tie line '': connection node and connection bus are exclusives");
+    POWSYBL_ASSERT_THROW(tieLineAdder3.add(), ValidationException, "AC tie line '': connection node and connection bus are exclusives");
     tieLineAdder.setBus2("");
     tieLineAdder.setConnectableBus2("VL4_BUS1");
 
@@ -349,7 +349,7 @@ TEST(TieLine, adder) {
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 2");
     tieLineAdder.setXnodeQ(40.0);
 
-    tieLineAdder.add();
+    ASSERT_NO_THROW(tieLineAdder.add());
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "Object 'UNIQUE_TIE_LINE_ID' already exists (powsybl::iidm::TieLine)");
     ASSERT_EQ(2ul, network.getLineCount());
 }

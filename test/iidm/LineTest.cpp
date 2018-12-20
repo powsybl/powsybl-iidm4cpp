@@ -196,7 +196,7 @@ TEST(Line, adder) {
 
     LineAdder lineAdder3 = lineAdder;
     lineAdder3.setNode2(0);
-    POWSYBL_ASSERT_THROW(lineAdder2.add(), ValidationException, "AC line '': connection node and connection bus are exclusives");
+    POWSYBL_ASSERT_THROW(lineAdder3.add(), ValidationException, "AC line '': connection node and connection bus are exclusives");
     lineAdder.setBus2("");
     lineAdder.setConnectableBus2("VL4_BUS1");
 
@@ -235,7 +235,7 @@ TEST(Line, adder) {
     POWSYBL_ASSERT_THROW(lineAdder.add(), PowsyblException, "Object 'VL1_VL3' already exists (powsybl::iidm::Line)");
     lineAdder.setName("VL2_VL4");
     lineAdder.setId("UNIQUE_LINE_ID");
-    lineAdder.add();
+    ASSERT_NO_THROW(lineAdder.add());
 
     ASSERT_EQ(2ul, network.getLineCount());
 }
