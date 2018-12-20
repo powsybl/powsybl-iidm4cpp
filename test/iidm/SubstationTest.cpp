@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/stdcxx/memory.hpp>
 
 #include "AssertionUtils.hpp"
 #include "NetworkFactory.hpp"
@@ -39,8 +40,22 @@ TEST(Substation, country) {
     ASSERT_EQ(0ul, network.getSubstationCount());
 
     substationAdder.setCountry(Country::FR);
+    substationAdder.setGeographicalTags({"FR", "DE"});
+    substationAdder.addGeographicalTag("IT");
     ASSERT_NO_THROW(substationAdder.add());
     ASSERT_EQ(1ul, network.getSubstationCount());
+
+    Substation& substation = network.getSubstation("S");
+    const Substation& cSubstation = network.getSubstation("S");
+    ASSERT_TRUE(stdcxx::areSame(substation, cSubstation));
+    ASSERT_TRUE(stdcxx::areSame(network, cSubstation.getNetwork()));
+    ASSERT_EQ(Country::BE, substation.setCountry(Country::BE).setTso("TSO2").getCountry());
+    ASSERT_EQ("TSO2", substation.getTso());
+    ASSERT_EQ(3, substation.getGeographicalTags().size());
+    substation.addGeographicalTag("LU");
+    ASSERT_EQ(4, substation.getGeographicalTags().size());
+    substation.addGeographicalTag("IT");
+    ASSERT_EQ(4, substation.getGeographicalTags().size());
 }
 
 }  // namespace iidm

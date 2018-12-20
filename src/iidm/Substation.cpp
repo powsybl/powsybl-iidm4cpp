@@ -11,11 +11,12 @@ namespace powsybl {
 
 namespace iidm {
 
-Substation::Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso) :
+Substation::Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso, const std::set<std::string>& geographicalTags) :
     Container(id, name, Container::Type::SUBSTATION),
     m_network(network),
     m_country(country),
-    m_tso(tso) {
+    m_tso(tso),
+    m_geographicalTags(geographicalTags) {
 }
 
 Substation& Substation::addGeographicalTag(const std::string& geographicalTag) {

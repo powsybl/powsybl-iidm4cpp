@@ -25,7 +25,7 @@ namespace iidm {
 
 class Substation : public Container {
 public:
-    Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso);
+    Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso, const std::set<std::string>& geographicalTags);
 
     ~Substation() noexcept override = default;
 
