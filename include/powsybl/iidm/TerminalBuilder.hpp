@@ -25,7 +25,7 @@ class TerminalBuilder {
 public:
     TerminalBuilder(Network& network, Validable& validable);
 
-    ~TerminalBuilder() = default;
+    ~TerminalBuilder() noexcept = default;
 
     std::unique_ptr<Terminal> build();
 

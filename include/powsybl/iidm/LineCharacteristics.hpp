@@ -16,7 +16,7 @@ class Validable;
 
 class LineCharacteristics {
 public:
-    LineCharacteristics(const Validable& validable);
+    explicit LineCharacteristics(const Validable& validable);
 
     LineCharacteristics(const Validable& validable, double r, double x, double g1, double b1, double g2, double b2);
 
