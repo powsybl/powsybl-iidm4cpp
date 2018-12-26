@@ -12,6 +12,7 @@
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
+#include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
@@ -85,16 +86,12 @@ const std::string& Network::getSourceFormat() const {
     return m_sourceFormat;
 }
 
-unsigned long Network::getVariantIndex() const {
-    return m_variantManager.getVariantIndex();
+StaticVarCompensator& Network::getStaticVarCompensator(const std::string& id) const {
+    return get<StaticVarCompensator>(id);
 }
 
-const VariantManager& Network::getVariantManager() const {
-    return m_variantManager;
-}
-
-VariantManager& Network::getVariantManager() {
-    return m_variantManager;
+unsigned long Network::getStaticVarCompensatorCount() const {
+    return getObjectCount<StaticVarCompensator>();
 }
 
 Substation& Network::getSubstation(const std::string& id) const {
@@ -109,6 +106,18 @@ const std::string& Network::getTypeDescription() const {
     static std::string s_typeDescription = "Network";
 
     return s_typeDescription;
+}
+
+unsigned long Network::getVariantIndex() const {
+    return m_variantManager.getVariantIndex();
+}
+
+const VariantManager& Network::getVariantManager() const {
+    return m_variantManager;
+}
+
+VariantManager& Network::getVariantManager() {
+    return m_variantManager;
 }
 
 VoltageLevel& Network::getVoltageLevel(const std::string& id) const {

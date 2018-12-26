@@ -25,6 +25,7 @@ class Line;
 class LineAdder;
 class Load;
 class ShuntCompensator;
+class StaticVarCompensator;
 class Substation;
 class TieLineAdder;
 class VoltageLevel;
@@ -95,6 +96,10 @@ public:
     unsigned long getShuntCompensatorCount() const;
 
     const std::string& getSourceFormat() const;
+
+    StaticVarCompensator& getStaticVarCompensator(const std::string& id) const;
+
+    unsigned long getStaticVarCompensatorCount() const;
 
     Substation& getSubstation(const std::string& id) const;
 

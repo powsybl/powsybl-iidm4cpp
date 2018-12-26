@@ -59,6 +59,7 @@ set(IIDM_SOURCES
     iidm/ShuntCompensator.cpp
     iidm/ShuntCompensatorAdder.cpp
     iidm/StaticVarCompensator.cpp
+    iidm/StaticVarCompensatorAdder.cpp
     iidm/Substation.cpp
     iidm/SubstationAdder.cpp
     iidm/Switch.cpp

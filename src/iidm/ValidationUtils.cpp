@@ -16,6 +16,11 @@ namespace powsybl {
 
 namespace iidm {
 
+ValidationException createInvalidValueException(const Validable& validable, double value, const std::string& valueName, const std::string& reason = "") {
+    std::string r = reason.empty() ? "" : logging::format(" (%1%)", reason);
+    return ValidationException(validable, logging::format("invalid value (%1%) for %2%%3%", value, valueName, r));
+}
+
 void checkActiveLimits(const Validable& validable, double minP, double maxP) {
     if (minP > maxP) {
         throw ValidationException(validable, logging::format("Invalid active limits [%1%, %2%]", minP, maxP));
@@ -41,6 +46,20 @@ double checkB2(const Validable& validable, double b2) {
         throw ValidationException(validable, "b2 is invalid");
     }
     return b2;
+}
+
+double checkBmax(const Validable& validable, double bMax) {
+    if (std::isnan(bMax)) {
+        throw ValidationException(validable, "bMax is invalid");
+    }
+    return bMax;
+}
+
+double checkBmin(const Validable& validable, double bMin) {
+    if (std::isnan(bMin)) {
+        throw ValidationException(validable, "bMin is invalid");
+    }
+    return bMin;
 }
 
 double checkbPerSection(const Validable& validable, double bPerSection) {
@@ -191,6 +210,31 @@ void checkSections(const Validable& validable, unsigned long currentSectionCount
     }
     if (currentSectionCount > maximumSectionCount) {
         throw ValidationException(validable, logging::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", currentSectionCount, maximumSectionCount));
+    }
+}
+
+void checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode) {
+    checkOptional(validable, regulationMode, "Regulation mode is invalid");
+
+    switch (*regulationMode) {
+        case StaticVarCompensator::RegulationMode::VOLTAGE:
+            if (std::isnan(voltageSetpoint)) {
+                throw createInvalidValueException(validable, voltageSetpoint, "voltage setpoint");
+            }
+            break;
+
+        case StaticVarCompensator::RegulationMode::REACTIVE_POWER:
+            if (std::isnan(reactivePowerSetpoint)) {
+                throw createInvalidValueException(validable, reactivePowerSetpoint, "reactive power setpoint");
+            }
+            break;
+
+        case StaticVarCompensator::RegulationMode::OFF:
+            // nothing to check
+            break;
+
+        default:
+            throw AssertionError(logging::format("Unexpected regulation mode value: %1%", *regulationMode));
     }
 }
 

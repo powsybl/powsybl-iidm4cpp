@@ -19,6 +19,7 @@ set(UNIT_TEST_SOURCES
     ObjectStoreTest.cpp
     ReactiveLimitsTest.cpp
     ShuntCompensatorTest.cpp
+    StaticVarCompensatorTest.cpp
     SubstationTest.cpp
     TieLineTest.cpp
     VoltageLevelTest.cpp

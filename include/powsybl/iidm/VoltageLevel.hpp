@@ -24,6 +24,7 @@ class BusView;
 class Network;
 class NodeBreakerView;
 class ShuntCompensatorAdder;
+class StaticVarCompensatorAdder;
 class Substation;
 class Terminal;
 
@@ -79,6 +80,8 @@ public:
     LoadAdder newLoad();
 
     ShuntCompensatorAdder newShuntCompensator();
+
+    StaticVarCompensatorAdder newStaticVarCompensator();
 
     VoltageLevel& setHighVoltageLimit(double highVoltageLimit);
 
