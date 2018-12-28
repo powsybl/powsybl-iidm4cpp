@@ -30,6 +30,8 @@ double checkB1(const Validable& validable, double b1);
 
 double checkB2(const Validable& validable, double b2);
 
+double checkbPerSection(const Validable& validable, double bPerSection);
+
 int checkForecastDistance(const Validable& validable, int value);
 
 double checkG1(const Validable& validable, double g1);
@@ -81,6 +83,8 @@ double checkR(const Validable& validable, double r);
 double checkRatedS(const Validable& validable, double ratedS);
 
 void checkRegulatingTerminal(const Validable& validable, const Terminal& regulatingTerminal, const Network& network);
+
+void checkSections(const Validable& validable, unsigned long currentSectionCount, unsigned long maximumSectionCount);
 
 double checkVoltage(const Validable& validable, double voltage);
 

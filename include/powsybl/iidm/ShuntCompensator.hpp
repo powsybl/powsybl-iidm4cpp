@@ -16,10 +16,45 @@ namespace iidm {
 
 class ShuntCompensator : public Injection {
 public:
+    ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
+                     double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount);
+
     ~ShuntCompensator() noexcept override = default;
 
-protected:
-    ShuntCompensator(const std::string& id, const std::string& name);
+    double getbPerSection() const;
+
+    double getCurrentB() const;
+
+    unsigned long getCurrentSectionCount() const;
+
+    double getMaximumB() const;
+
+    unsigned long getMaximumSectionCount() const;
+
+    ShuntCompensator& setbPerSection(double bPerSection);
+
+    ShuntCompensator& setCurrentSectionCount(unsigned long currentSectionCount);
+
+    ShuntCompensator& setMaximumSectionCount(unsigned long maximumSectionCount);
+
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
+
+private: // Identifiable
+    const std::string& getTypeDescription() const override;
+
+private:
+    stdcxx::Reference<VariantManagerHolder> m_network;
+
+    double m_bPerSection;
+
+    unsigned long m_maximumSectionCount;
+
+    std::vector<unsigned long> m_currentSectionCount;
 };
 
 }  // namespace iidm

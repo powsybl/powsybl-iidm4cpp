@@ -57,6 +57,7 @@ set(IIDM_SOURCES
     iidm/ReactiveCapabilityCurveAdder.cpp
     iidm/ReactiveLimitsHolder.cpp
     iidm/ShuntCompensator.cpp
+    iidm/ShuntCompensatorAdder.cpp
     iidm/StaticVarCompensator.cpp
     iidm/Substation.cpp
     iidm/SubstationAdder.cpp

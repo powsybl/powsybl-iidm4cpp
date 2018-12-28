@@ -24,6 +24,7 @@ class Generator;
 class Line;
 class LineAdder;
 class Load;
+class ShuntCompensator;
 class Substation;
 class TieLineAdder;
 class VoltageLevel;
@@ -88,6 +89,10 @@ public:
     Load& getLoad(const std::string& id) const;
 
     unsigned long getLoadCount() const;
+
+    ShuntCompensator& getShuntCompensator(const std::string& id) const;
+
+    unsigned long getShuntCompensatorCount() const;
 
     const std::string& getSourceFormat() const;
 

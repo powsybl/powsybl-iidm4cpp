@@ -43,6 +43,16 @@ double checkB2(const Validable& validable, double b2) {
     return b2;
 }
 
+double checkbPerSection(const Validable& validable, double bPerSection) {
+    if (std::isnan(bPerSection)) {
+        throw ValidationException(validable, "susceptance per section is invalid");
+    }
+    if (bPerSection == 0.0) {
+        throw ValidationException(validable, "susceptance per section is equal to zero");
+    }
+    return bPerSection;
+}
+
 int checkForecastDistance(const Validable& validable, int forecastDistance) {
     if (forecastDistance < 0) {
         throw ValidationException(validable, "Forecast distance is < 0");
@@ -172,6 +182,15 @@ double checkRatedS(const Validable& validable, double ratedS) {
 void checkRegulatingTerminal(const Validable& validable, const Terminal& regulatingTerminal, const Network& network) {
     if (!stdcxx::areSame(regulatingTerminal.getVoltageLevel().getNetwork(), network)) {
         throw ValidationException(validable, "Regulating terminal is not part of the network");
+    }
+}
+
+void checkSections(const Validable& validable, unsigned long currentSectionCount, unsigned long maximumSectionCount) {
+    if (maximumSectionCount == 0ul) {
+        throw ValidationException(validable, logging::format("the maximum number of section (%1%) should be greater than 0", maximumSectionCount));
+    }
+    if (currentSectionCount > maximumSectionCount) {
+        throw ValidationException(validable, logging::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", currentSectionCount, maximumSectionCount));
     }
 }
 

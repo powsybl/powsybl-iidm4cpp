@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
@@ -70,6 +71,14 @@ Load& Network::getLoad(const std::string& id) const {
 
 unsigned long Network::getLoadCount() const {
     return getObjectCount<Load>();
+}
+
+ShuntCompensator& Network::getShuntCompensator(const std::string& id) const {
+    return get<ShuntCompensator>(id);
+}
+
+unsigned long Network::getShuntCompensatorCount() const {
+    return getObjectCount<ShuntCompensator>();
 }
 
 const std::string& Network::getSourceFormat() const {

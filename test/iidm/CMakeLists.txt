@@ -18,6 +18,7 @@ set(UNIT_TEST_SOURCES
     NodeBreakerVoltageLevelTest.cpp
     ObjectStoreTest.cpp
     ReactiveLimitsTest.cpp
+    ShuntCompensatorTest.cpp
     SubstationTest.cpp
     TieLineTest.cpp
     VoltageLevelTest.cpp

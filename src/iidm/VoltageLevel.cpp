@@ -6,7 +6,7 @@
  */
 
 #include <powsybl/iidm/VoltageLevel.hpp>
-
+#include <powsybl/iidm/ShuntCompensatorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 
 #include "ValidationUtils.hpp"
@@ -67,6 +67,10 @@ GeneratorAdder VoltageLevel::newGenerator() {
 
 LoadAdder VoltageLevel::newLoad() {
     return LoadAdder(*this);
+}
+
+ShuntCompensatorAdder VoltageLevel::newShuntCompensator() {
+    return ShuntCompensatorAdder(*this);
 }
 
 VoltageLevel& VoltageLevel::setHighVoltageLimit(double highVoltageLimit) {
