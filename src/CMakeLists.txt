@@ -28,6 +28,7 @@ set(IIDM_SOURCES
     iidm/Container.cpp
     iidm/Country.cpp
     iidm/DanglingLine.cpp
+    iidm/DanglingLineAdder.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp

@@ -21,6 +21,7 @@ namespace iidm {
 
 class BusBreakerView;
 class BusView;
+class DanglingLineAdder;
 class Network;
 class NodeBreakerView;
 class ShuntCompensatorAdder;
@@ -74,6 +75,8 @@ public:
     virtual const TopologyKind& getTopologyKind() const = 0;
 
     virtual void invalidateCache() = 0;
+
+    DanglingLineAdder newDanglingLine();
 
     GeneratorAdder newGenerator();
 

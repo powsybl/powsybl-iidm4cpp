@@ -27,6 +27,8 @@ void checkActiveLimits(const Validable& validable, double minP, double maxP);
 
 double checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint);
 
+double checkB(const Validable& validable, double b);
+
 double checkB1(const Validable& validable, double b1);
 
 double checkB2(const Validable& validable, double b2);
@@ -38,6 +40,8 @@ double checkBmin(const Validable& validable, double bMin);
 double checkbPerSection(const Validable& validable, double bPerSection);
 
 int checkForecastDistance(const Validable& validable, int value);
+
+double checkG(const Validable& validable, double g);
 
 double checkG1(const Validable& validable, double g1);
 

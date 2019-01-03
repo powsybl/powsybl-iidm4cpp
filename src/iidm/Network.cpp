@@ -8,6 +8,7 @@
 #include <powsybl/iidm/Network.hpp>
 
 #include <powsybl/iidm/BusbarSection.hpp>
+#include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -44,6 +45,14 @@ Connectable& Network::getConnectable(const std::string& id) const {
     assert(stdcxx::isInstanceOf<Connectable>(identifiable));
 
     return dynamic_cast<Connectable&>(identifiable);
+}
+
+DanglingLine& Network::getDanglingLine(const std::string& id) const {
+    return get<DanglingLine>(id);
+}
+
+unsigned long Network::getDanglingLineCount() const {
+    return getObjectCount<DanglingLine>();
 }
 
 int Network::getForecastDistance() const {

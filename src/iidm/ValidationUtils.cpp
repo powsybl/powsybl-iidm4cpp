@@ -34,6 +34,13 @@ double checkActivePowerSetpoint(const Validable& validable, double activePowerSe
     return activePowerSetpoint;
 }
 
+double checkB(const Validable& validable, double b) {
+    if (std::isnan(b)) {
+        throw ValidationException(validable, "b is invalid");
+    }
+    return b;
+}
+
 double checkB1(const Validable& validable, double b1) {
     if (std::isnan(b1)) {
         throw ValidationException(validable, "b1 is invalid");
@@ -77,6 +84,13 @@ int checkForecastDistance(const Validable& validable, int forecastDistance) {
         throw ValidationException(validable, "Forecast distance is < 0");
     }
     return forecastDistance;
+}
+
+double checkG(const Validable& validable, double g) {
+    if (std::isnan(g)) {
+        throw ValidationException(validable, "g is invalid");
+    }
+    return g;
 }
 
 double checkG1(const Validable& validable, double g1) {

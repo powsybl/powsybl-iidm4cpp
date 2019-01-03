@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/VoltageLevel.hpp>
 
+#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
 #include <powsybl/iidm/StaticVarCompensatorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -61,6 +62,10 @@ const std::string& VoltageLevel::getTypeDescription() const {
     static std::string s_typeDescription = "Voltage level";
 
     return s_typeDescription;
+}
+
+DanglingLineAdder VoltageLevel::newDanglingLine() {
+    return DanglingLineAdder(*this);
 }
 
 GeneratorAdder VoltageLevel::newGenerator() {

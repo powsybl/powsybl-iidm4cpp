@@ -1,0 +1,74 @@
+/**
+ * Copyright (c) 2019, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#ifndef POWSYBL_IIDM_DANGLINGLINEADDER_HPP
+#define POWSYBL_IIDM_DANGLINGLINEADDER_HPP
+
+#include <powsybl/iidm/InjectionAdder.hpp>
+
+namespace powsybl {
+
+namespace iidm {
+
+class DanglingLine;
+class Network;
+class VoltageLevel;
+
+class DanglingLineAdder : public InjectionAdder<DanglingLineAdder> {
+public:
+    ~DanglingLineAdder() noexcept override = default;
+
+    DanglingLine& add();
+
+    DanglingLineAdder& setB(double b);
+
+    DanglingLineAdder& setG(double g);
+
+    DanglingLineAdder& setP0(double p0);
+
+    DanglingLineAdder& setQ0(double q0);
+
+    DanglingLineAdder& setR(double r);
+
+    DanglingLineAdder& setUcteXnodeCode(const std::string& ucteXnodeCode);
+
+    DanglingLineAdder& setX(double x);
+
+protected: // IdentifiableAdder
+    Network& getNetwork() override;
+
+private: // IdentifiableAdder
+    const std::string& getTypeDescription() const override;
+
+private:
+    explicit DanglingLineAdder(VoltageLevel& voltageLevel);
+
+    friend class VoltageLevel;
+
+private:
+    VoltageLevel& m_voltageLevel;
+
+    double m_r;
+
+    double m_x;
+
+    double m_g;
+
+    double m_b;
+
+    double m_p0;
+
+    double m_q0;
+
+    std::string m_ucteXnodeCode;
+};
+
+}  // namespace iidm
+
+}  // namespace powsybl
+
+#endif  // POWSYBL_IIDM_DANGLINGLINEADDER_HPP
