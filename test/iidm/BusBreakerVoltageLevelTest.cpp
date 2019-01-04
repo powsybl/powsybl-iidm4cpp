@@ -314,6 +314,7 @@ TEST(BusBreakerVoltageLevel, CalculatedBusTopology) {
     ASSERT_TRUE(std::isnan(testBus.getV()));
     ASSERT_DOUBLE_EQ(7.7, testBus.setAngle(7.7).setV(8.8).getAngle());
     ASSERT_DOUBLE_EQ(8.8, testBus.getV());
+    POWSYBL_ASSERT_THROW(testBus.setV(-9.0), ValidationException, "Bus 'BUS1': voltage cannot be < 0");
     ASSERT_EQ(2ul, testBus.getConnectedTerminalCount());
     std::vector<std::reference_wrapper<Terminal> > terminals = testBus.getConnectedTerminals();
     ASSERT_EQ(terminals.size(), testBus.getConnectedTerminalCount());
@@ -384,6 +385,7 @@ TEST(BusBreakerVoltageLevel, Terminal) {
     busBreakerView.setConnectableBus("BUS1");
 
     ASSERT_TRUE(stdcxx::areSame(terminal.getBusView(), cTerminal.getBusView()));
+    ASSERT_FALSE(terminal.getBusView().getBus());
 
     POWSYBL_ASSERT_THROW(terminal.getNodeBreakerView(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(cTerminal.getNodeBreakerView(), AssertionError, "Not implemented");
