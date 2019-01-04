@@ -22,12 +22,14 @@ namespace iidm {
 class BusBreakerView;
 class BusView;
 class DanglingLineAdder;
+class LccConverterStationAdder;
 class Network;
 class NodeBreakerView;
 class ShuntCompensatorAdder;
 class StaticVarCompensatorAdder;
 class Substation;
 class Terminal;
+class VscConverterStationAdder;
 
 class VoltageLevel : public Container, public MultiVariantObject {
 public:
@@ -80,11 +82,15 @@ public:
 
     GeneratorAdder newGenerator();
 
+    LccConverterStationAdder newLccConverterStation();
+
     LoadAdder newLoad();
 
     ShuntCompensatorAdder newShuntCompensator();
 
     StaticVarCompensatorAdder newStaticVarCompensator();
+
+    VscConverterStationAdder newVscConverterStation();
 
     VoltageLevel& setHighVoltageLimit(double highVoltageLimit);
 

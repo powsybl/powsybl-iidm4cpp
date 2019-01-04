@@ -35,6 +35,7 @@ set(IIDM_SOURCES
     iidm/Identifiable.cpp
     iidm/Injection.cpp
     iidm/LccConverterStation.cpp
+    iidm/LccConverterStationAdder.cpp
     iidm/Line.cpp
     iidm/LineAdder.cpp
     iidm/LineCharacteristics.cpp
@@ -79,6 +80,7 @@ set(IIDM_SOURCES
     iidm/VoltageLevel.cpp
     iidm/VoltageLevelAdder.cpp
     iidm/VscConverterStation.cpp
+    iidm/VscConverterStationAdder.cpp
 
     logging/ConsoleLogger.cpp
     logging/Level.cpp

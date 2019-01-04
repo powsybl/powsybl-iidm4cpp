@@ -7,13 +7,24 @@
 
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 
+#include "ValidationUtils.hpp"
+
 namespace powsybl {
 
 namespace iidm {
 
-HvdcConverterStation::HvdcConverterStation(const std::string& id, const std::string& name) :
-    Injection(id, name, ConnectableType::HVDC_CONVERTER_STATION) {
+HvdcConverterStation::HvdcConverterStation(const std::string& id, const std::string& name, double lossFactor) :
+    Injection(id, name, ConnectableType::HVDC_CONVERTER_STATION),
+    m_lossFactor(checkLossFactor(*this, lossFactor)) {
 
+}
+
+double HvdcConverterStation::getLossFactor() const {
+    return m_lossFactor;
+}
+
+void HvdcConverterStation::setLossFactor(double lossFactor) {
+    m_lossFactor = checkLossFactor(*this, lossFactor);
 }
 
 }  // namespace iidm

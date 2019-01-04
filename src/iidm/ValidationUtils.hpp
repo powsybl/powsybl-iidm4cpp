@@ -49,6 +49,8 @@ double checkG2(const Validable& validable, double g2);
 
 void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int num);
 
+double checkLossFactor(const Validable& validable, double lossFactor);
+
 double checkMaxP(const Validable& validable, double maxP);
 
 double checkMinP(const Validable& validable, double minP);
@@ -84,6 +86,8 @@ const T& checkOptional(const Validable& validable, const stdcxx::optional<T>& va
 }
 
 double checkP0(const Validable& validable, double p0);
+
+double checkPowerFactor(const Validable& validable, double powerFactor);
 
 double checkQ0(const Validable& validable, double q0);
 

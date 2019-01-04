@@ -135,6 +135,15 @@ void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int nu
     }
 }
 
+double checkLossFactor(const Validable& validable, double lossFactor) {
+    if (std::isnan(lossFactor)) {
+        throw ValidationException(validable, "loss factor is invalid");
+    } else if (lossFactor < 0) {
+        throw ValidationException(validable, "loss factor must be >= 0");
+    }
+    return lossFactor;
+}
+
 double checkMaxP(const Validable& validable, double maxP) {
     if (std::isnan(maxP)) {
         throw ValidationException(validable, "Maximum active power is not set");
@@ -189,6 +198,13 @@ double checkP0(const Validable& validable, double p0) {
         throw ValidationException(validable, "p0 is invalid");
     }
     return p0;
+}
+
+double checkPowerFactor(const Validable& validable, double powerFactor) {
+    if (std::isnan(powerFactor)) {
+        throw ValidationException(validable, "power factor is invalid");
+    }
+    return powerFactor;
 }
 
 double checkQ0(const Validable& validable, double q0) {

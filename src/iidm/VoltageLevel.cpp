@@ -5,12 +5,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/VoltageLevel.hpp>
-
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
 #include <powsybl/iidm/StaticVarCompensatorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VscConverterStationAdder.hpp>
 
 #include "ValidationUtils.hpp"
 
@@ -72,6 +73,10 @@ GeneratorAdder VoltageLevel::newGenerator() {
     return GeneratorAdder(*this);
 }
 
+LccConverterStationAdder VoltageLevel::newLccConverterStation() {
+    return LccConverterStationAdder(*this);
+}
+
 LoadAdder VoltageLevel::newLoad() {
     return LoadAdder(*this);
 }
@@ -82,6 +87,10 @@ ShuntCompensatorAdder VoltageLevel::newShuntCompensator() {
 
 StaticVarCompensatorAdder VoltageLevel::newStaticVarCompensator() {
     return StaticVarCompensatorAdder(*this);
+}
+
+VscConverterStationAdder VoltageLevel::newVscConverterStation() {
+    return VscConverterStationAdder(*this);
 }
 
 VoltageLevel& VoltageLevel::setHighVoltageLimit(double highVoltageLimit) {

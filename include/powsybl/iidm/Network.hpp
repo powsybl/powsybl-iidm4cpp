@@ -22,6 +22,8 @@ class BusbarSection;
 class Connectable;
 class DanglingLine;
 class Generator;
+class HvdcConverterStation;
+class LccConverterStation;
 class Line;
 class LineAdder;
 class Load;
@@ -30,6 +32,7 @@ class StaticVarCompensator;
 class Substation;
 class TieLineAdder;
 class VoltageLevel;
+class VscConverterStation;
 
 class Network : public Container, public VariantManagerHolder {
 public: // VariantManagerHolder
@@ -88,6 +91,14 @@ public:
 
     unsigned long getGeneratorCount() const;
 
+    HvdcConverterStation& getHvdcConverterStation(const std::string& id) const;
+
+    unsigned long getHvdcConverterStationCount() const;
+
+    LccConverterStation& getLccConverterStation(const std::string& id) const;
+
+    unsigned long getLccConverterStationCount() const;
+
     Line& getLine(const std::string& id) const;
 
     unsigned long getLineCount() const;
@@ -113,6 +124,10 @@ public:
     VoltageLevel& getVoltageLevel(const std::string& id) const;
 
     unsigned long getVoltageLevelCount() const;
+
+    VscConverterStation& getVscConverterStation(const std::string& id) const;
+
+    unsigned long getVscConverterStationCount() const;
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     stdcxx::Reference<T> find(const std::string& id) const;

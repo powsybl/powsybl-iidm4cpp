@@ -16,10 +16,25 @@ namespace iidm {
 
 class HvdcConverterStation : public Injection {
 public:
+    enum class HvdcType {
+        VSC,
+        LCC
+    };
+
+public:
     ~HvdcConverterStation() noexcept override = default;
 
+    virtual HvdcType getHvdcType() const = 0;
+
+    double getLossFactor() const;
+
 protected:
-    HvdcConverterStation(const std::string& id, const std::string& name);
+    HvdcConverterStation(const std::string& id, const std::string& name, double lossFactor);
+
+    void setLossFactor(double lossFactor);
+
+private:
+    double m_lossFactor;
 };
 
 }  // namespace iidm

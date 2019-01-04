@@ -7,12 +7,39 @@
 
 #include <powsybl/iidm/LccConverterStation.hpp>
 
+#include "ValidationUtils.hpp"
+
 namespace powsybl {
 
 namespace iidm {
 
-LccConverterStation::LccConverterStation(const std::string& id, const std::string& name) :
-    HvdcConverterStation(id, name) {
+LccConverterStation::LccConverterStation(const std::string& id, const std::string& name, double lossFactor, double powerFactor) :
+    HvdcConverterStation(id, name, lossFactor),
+    m_powerFactor(checkPowerFactor(*this, powerFactor)) {
+}
+
+HvdcConverterStation::HvdcType LccConverterStation::getHvdcType() const {
+    return HvdcType::LCC;
+}
+
+double LccConverterStation::getPowerFactor() const {
+    return m_powerFactor;
+}
+
+const std::string& LccConverterStation::getTypeDescription() const {
+    static std::string s_typeDescription = "lccConverterStation";
+
+    return s_typeDescription;
+}
+
+LccConverterStation& LccConverterStation::setLossFactor(double lossFactor) {
+    HvdcConverterStation::setLossFactor(lossFactor);
+    return *this;
+}
+
+LccConverterStation& LccConverterStation::setPowerFactor(double powerFactor) {
+    m_powerFactor = checkPowerFactor(*this, powerFactor);
+    return *this;
 }
 
 }  // namespace iidm

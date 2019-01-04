@@ -10,6 +10,8 @@
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/HvdcConverterStation.hpp>
+#include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
@@ -18,6 +20,7 @@
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VscConverterStation.hpp>
 
 #include "ValidationUtils.hpp"
 
@@ -65,6 +68,22 @@ Generator& Network::getGenerator(const std::string& id) const {
 
 unsigned long Network::getGeneratorCount() const {
     return getObjectCount<Generator>();
+}
+
+HvdcConverterStation& Network::getHvdcConverterStation(const std::string& id) const {
+    return get<HvdcConverterStation>(id);
+}
+
+unsigned long Network::getHvdcConverterStationCount() const {
+    return getLccConverterStationCount() + getVscConverterStationCount();
+}
+
+LccConverterStation& Network::getLccConverterStation(const std::string& id) const {
+    return get<LccConverterStation>(id);
+}
+
+unsigned long Network::getLccConverterStationCount() const {
+    return getObjectCount<LccConverterStation>();
 }
 
 Line& Network::getLine(const std::string& id) const {
@@ -135,6 +154,14 @@ VoltageLevel& Network::getVoltageLevel(const std::string& id) const {
 
 unsigned long Network::getVoltageLevelCount() const {
     return getObjectCount<VoltageLevel>();
+}
+
+VscConverterStation& Network::getVscConverterStation(const std::string& id) const {
+    return get<VscConverterStation>(id);
+}
+
+unsigned long Network::getVscConverterStationCount() const {
+    return getObjectCount<VscConverterStation>();
 }
 
 LineAdder Network::newLine() {

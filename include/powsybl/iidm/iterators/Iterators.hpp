@@ -17,6 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class HvdcConverterStation;
 class Identifiable;
 class MultiVariantObject;
 
@@ -25,6 +26,13 @@ struct iterator_traits {
     typedef NetworkFastIterator<T, Identifiables::iterator> iterator;
 
     typedef NetworkFastIterator<const T, Identifiables::const_iterator> const_iterator;
+};
+
+template <>
+struct iterator_traits<HvdcConverterStation> {
+    typedef NetworkIterator<HvdcConverterStation, IdentifiableById::iterator> iterator;
+
+    typedef NetworkIterator<const HvdcConverterStation, IdentifiableById::const_iterator> const_iterator;
 };
 
 template <>

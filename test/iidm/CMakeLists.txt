@@ -12,6 +12,7 @@ set(UNIT_TEST_SOURCES
     DanglingLineTest.cpp
     EnergySourceTest.cpp
     GeneratorTest.cpp
+    LccConverterStationTest.cpp
     LineTest.cpp
     LoadTest.cpp
     NetworkFactory.cpp
@@ -24,6 +25,7 @@ set(UNIT_TEST_SOURCES
     SubstationTest.cpp
     TieLineTest.cpp
     VoltageLevelTest.cpp
+    VscConverterStationTest.cpp
 )
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)

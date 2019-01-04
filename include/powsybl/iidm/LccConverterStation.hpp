@@ -15,11 +15,28 @@ namespace powsybl {
 namespace iidm {
 
 class LccConverterStation : public HvdcConverterStation {
+public: // HvdcConverterStation
+    HvdcConverterStation::HvdcType getHvdcType() const override;
+
 public:
+    LccConverterStation(const std::string& id, const std::string& name, double lossFactor, double powerFactor);
+
     ~LccConverterStation() noexcept override = default;
 
-protected:
-    LccConverterStation(const std::string& id, const std::string& name);
+    double getPowerFactor() const;
+
+    LccConverterStation& setLossFactor(double lossFactor);
+
+    LccConverterStation& setPowerFactor(double powerFactor);
+
+private: // Identifiable
+    const std::string& getTypeDescription() const override;
+
+private: // HvdcConverterStation
+    using HvdcConverterStation::setLossFactor;
+
+private:
+    double m_powerFactor;
 };
 
 }  // namespace iidm

@@ -9,17 +9,54 @@
 #define POWSYBL_IIDM_VSCCONVERTERSTATION_HPP
 
 #include <powsybl/iidm/HvdcConverterStation.hpp>
+#include <powsybl/iidm/ReactiveLimitsHolder.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class VscConverterStation : public HvdcConverterStation {
+class VscConverterStation : public HvdcConverterStation, public ReactiveLimitsHolder {
+public: // HvdcConverterStation
+    HvdcType getHvdcType() const override;
+
 public:
+    VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint);
+
     ~VscConverterStation() noexcept override = default;
 
-protected:
-    VscConverterStation(const std::string& id, const std::string& name);
+    double getReactivePowerSetpoint() const;
+
+    double getVoltageSetpoint() const;
+
+    bool isVoltageRegulatorOn() const;
+
+    VscConverterStation& setLossFactor(double lossFactor);
+
+    VscConverterStation& setReactivePowerSetpoint(double reactivePowerSetpoint);
+
+    VscConverterStation& setVoltageRegulatorOn(bool voltageRegulatorOn);
+
+    VscConverterStation& setVoltageSetpoint(double voltageSetpoint);
+
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
+
+private: // Identifiable
+    const std::string& getTypeDescription() const override;
+
+private: // HvdcConverterStation
+    using HvdcConverterStation::setLossFactor;
+
+private:
+    std::vector<bool> m_voltageRegulatorOn;
+
+    std::vector<double> m_reactivePowerSetpoint;
+
+    std::vector<double> m_voltageSetpoint;
 };
 
 }  // namespace iidm
