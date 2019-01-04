@@ -37,10 +37,10 @@ TEST(Load, constructor) {
         .setId("LOAD1")
         .setBus("VL1_BUS1");
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Load 'LOAD1': p0 is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Load 'LOAD1': p0 is invalid");
     adder.setP0(50.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Load 'LOAD1': q0 is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Load 'LOAD1': q0 is invalid");
     adder.setQ0(40.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'LOAD1' already exists (powsybl::iidm::Load)");

@@ -26,8 +26,8 @@ LoadAdder::LoadAdder(VoltageLevel& voltageLevel) :
 }
 
 Load& LoadAdder::add() {
-    checkOptional(*this, m_p0, "p0 is not set");
-    checkOptional(*this, m_q0, "q0 is not set");
+    checkP0(*this, m_p0);
+    checkQ0(*this, m_q0);
 
     std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(getNetwork(), getId(), getName(), m_loadType, m_p0, m_q0);
     auto& load = getNetwork().checkAndAdd<Load>(std::move(ptrLoad));
