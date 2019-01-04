@@ -20,15 +20,18 @@ Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::st
                      const stdcxx::Reference<powsybl::iidm::Terminal>& regulatingTerminal, double activePowerSetpoint,
                      double reactivePowerSetpoint, double voltageSetpoint, double ratedS) :
     Injection(id, name, ConnectableType::GENERATOR),
+    m_network(network),
     m_energySource(energySource),
-    m_minP(minP),
-    m_maxP(maxP),
-    m_ratedS(ratedS),
+    m_minP(checkMinP(*this, minP)),
+    m_maxP(checkMaxP(*this, maxP)),
+    m_ratedS(checkRatedS(*this, ratedS)),
     m_regulatingTerminal(regulatingTerminal),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
-    m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), activePowerSetpoint),
+    m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), checkActivePowerSetpoint(*this, activePowerSetpoint)),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint) {
+    checkActiveLimits(*this, minP, maxP);
+    checkVoltageControl(*this, voltageRegulatorOn, voltageSetpoint, reactivePowerSetpoint);
 }
 
 void Generator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {

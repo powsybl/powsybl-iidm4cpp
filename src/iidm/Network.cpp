@@ -8,6 +8,7 @@
 #include <powsybl/iidm/Network.hpp>
 
 #include <powsybl/iidm/BusbarSection.hpp>
+#include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -45,6 +46,14 @@ Connectable& Network::getConnectable(const std::string& id) const {
 
 int Network::getForecastDistance() const {
     return m_forecastDistance;
+}
+
+Generator& Network::getGenerator(const std::string& id) const {
+    return get<Generator>(id);
+}
+
+unsigned long Network::getGeneratorCount() const {
+    return getObjectCount<Generator>();
 }
 
 Line& Network::getLine(const std::string& id) const {

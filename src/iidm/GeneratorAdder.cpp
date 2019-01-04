@@ -37,7 +37,7 @@ Generator& GeneratorAdder::add() {
     }
     checkActivePowerSetpoint(*this, m_activePowerSetpoint);
 
-    checkOptional(*this, m_voltageRegulatorOn, "voltageRegulatorOn is not set");
+    checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set");
     checkVoltageControl(*this, *m_voltageRegulatorOn, m_voltageSetpoint, m_reactivePowerSetpoint);
     checkActiveLimits(*this, m_minP, m_maxP);
     checkRatedS(*this, m_ratedS);

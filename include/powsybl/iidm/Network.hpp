@@ -20,6 +20,7 @@ namespace iidm {
 
 class BusbarSection;
 class Connectable;
+class Generator;
 class Line;
 class LineAdder;
 class Load;
@@ -75,6 +76,10 @@ public:
     Connectable& getConnectable(const std::string& id) const;
 
     int getForecastDistance() const;
+
+    Generator& getGenerator(const std::string& id) const;
+
+    unsigned long getGeneratorCount() const;
 
     Line& getLine(const std::string& id) const;
 
