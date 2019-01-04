@@ -201,7 +201,9 @@ TEST(UndirectedGraph, removeEdge) {
     unsigned long e1 = graph.addEdge(0, 1, stdcxx::ref(expectedEdge1));
     ASSERT_EQ(1ul, graph.getEdgeCount());
 
+    POWSYBL_ASSERT_THROW(graph.removeAllVertices(), PowsyblException, "Cannot remove all vertices because there is still some edges in the graph");
     const stdcxx::Reference<E>& edge1 = graph.removeEdge(e1);
+    POWSYBL_ASSERT_THROW(graph.removeEdge(e1), PowsyblException, "Edge 0 not found");
     ASSERT_EQ(0ul, graph.getEdgeCount());
     ASSERT_TRUE(stdcxx::areSame(expectedEdge1, edge1.get()));
 
@@ -238,6 +240,7 @@ TEST(UndirectedGraph, removeVertex) {
 
     graph.removeEdge(e1);
     const stdcxx::Reference<V>& vertex1 = graph.removeVertex(v1);
+    POWSYBL_ASSERT_THROW(graph.removeVertex(v1), PowsyblException, "Vertex 0 not found");
     ASSERT_EQ(1ul, graph.getVertexCount());
     ASSERT_TRUE(stdcxx::areSame(expected, vertex1.get()));
 }
@@ -266,6 +269,7 @@ TEST(UndirectedGraph, traverse) {
 
     std::vector<bool> encountered(graph.getVertexCount(), false);
     graph.traverse(5, traverser, encountered);
+    graph.traverse(5, traverser);
 
     ASSERT_EQ(expected, encountered);
 }
