@@ -24,8 +24,8 @@ std::string toString(const iidm::TopologyKind& value) {
                                                                "NODE_BREAKER",
                                                                "BUS_BREAKER"
                                                            }};
-
-    return s_topologyKindNames.at(static_cast<unsigned int>(value));
+    unsigned int val = static_cast<unsigned int>(value);
+    return (val < s_topologyKindNames.size()) ? s_topologyKindNames.at(val) : logging::format("%1%", val);
 }
 
 }  // namespace logging

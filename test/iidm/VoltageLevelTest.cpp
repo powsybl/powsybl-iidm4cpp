@@ -37,7 +37,7 @@ TEST(VoltageLevel, constructor) {
     VoltageLevelAdder adder = s1.newVoltageLevel()
         .setId("VL1");
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': TopologyKind is not set");
-    adder.setTopologyKind(TopologyKind::BUS_BREAKER);
+    adder.setTopologyKind(static_cast<TopologyKind>(5));
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Nominal voltage is not set");
     adder.setNominalVoltage(50);
@@ -47,6 +47,9 @@ TEST(VoltageLevel, constructor) {
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': High voltage limit is not set");
     adder.setHighVoltageLimit(0);
+
+    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected TopologyKind value: 5");
+    adder.setTopologyKind(TopologyKind::BUS_BREAKER);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [100, 0]");
     adder
@@ -58,10 +61,17 @@ TEST(VoltageLevel, constructor) {
 
     ASSERT_NO_THROW(adder.add());
     ASSERT_EQ(voltageLevelCount + 1, network.getVoltageLevelCount());
+
+    ASSERT_EQ(Container::Type::NETWORK, network.getType());
+    ASSERT_EQ(Container::Type::SUBSTATION, s1.getType());
+    ASSERT_EQ(Container::Type::VOLTAGE_LEVEL, vl1.getType());
 }
 
 TEST(VoltageLevel, integrity) {
     const Network& network = createNetwork();
+
+    POWSYBL_ASSERT_THROW(network.getVoltageLevel("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
+    POWSYBL_ASSERT_THROW(network.getVoltageLevel("LOAD1"), PowsyblException, "Identifiable 'LOAD1' is not a powsybl::iidm::VoltageLevel");
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
     ASSERT_EQ(380, vl1.getNominalVoltage());
@@ -83,6 +93,11 @@ TEST(VoltageLevel, integrity) {
     POWSYBL_ASSERT_THROW(vl1.setHighVoltageLimit(320), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [360, 320]");
     ASSERT_TRUE(stdcxx::areSame(vl1, vl1.setHighVoltageLimit(440)));
     ASSERT_EQ(440, vl1.getHighVoltageLimit());
+
+    // test const version
+    const VoltageLevel& vl = network.getVoltageLevel("VL1");
+    ASSERT_TRUE(stdcxx::areSame(network, vl.getNetwork()));
+    ASSERT_TRUE(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation()));
 }
 
 }  // namespace iidm
