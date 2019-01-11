@@ -11,6 +11,7 @@
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
+#include <powsybl/iidm/HvdcLineAdder.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -76,6 +77,14 @@ HvdcConverterStation& Network::getHvdcConverterStation(const std::string& id) co
 
 unsigned long Network::getHvdcConverterStationCount() const {
     return getLccConverterStationCount() + getVscConverterStationCount();
+}
+
+HvdcLine& Network::getHvdcLine(const std::string& id) const {
+    return get<HvdcLine>(id);
+}
+
+unsigned long Network::getHvdcLineCount() const {
+    return getObjectCount<HvdcLine>();
 }
 
 LccConverterStation& Network::getLccConverterStation(const std::string& id) const {
@@ -162,6 +171,10 @@ VscConverterStation& Network::getVscConverterStation(const std::string& id) cons
 
 unsigned long Network::getVscConverterStationCount() const {
     return getObjectCount<VscConverterStation>();
+}
+
+HvdcLineAdder Network::newHvdcLine() {
+    return HvdcLineAdder(*this);
 }
 
 LineAdder Network::newLine() {

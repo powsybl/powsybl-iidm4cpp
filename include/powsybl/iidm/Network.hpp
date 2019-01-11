@@ -23,6 +23,8 @@ class Connectable;
 class DanglingLine;
 class Generator;
 class HvdcConverterStation;
+class HvdcLine;
+class HvdcLineAdder;
 class LccConverterStation;
 class Line;
 class LineAdder;
@@ -95,6 +97,10 @@ public:
 
     unsigned long getHvdcConverterStationCount() const;
 
+    HvdcLine& getHvdcLine(const std::string& id) const;
+
+    unsigned long getHvdcLineCount() const;
+
     LccConverterStation& getLccConverterStation(const std::string& id) const;
 
     unsigned long getLccConverterStationCount() const;
@@ -131,6 +137,8 @@ public:
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     stdcxx::Reference<T> find(const std::string& id) const;
+
+    HvdcLineAdder newHvdcLine();
 
     LineAdder newLine();
 

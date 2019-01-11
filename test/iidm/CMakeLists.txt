@@ -12,6 +12,7 @@ set(UNIT_TEST_SOURCES
     DanglingLineTest.cpp
     EnergySourceTest.cpp
     GeneratorTest.cpp
+    HvdcLineTest.cpp
     LccConverterStationTest.cpp
     LineTest.cpp
     LoadTest.cpp

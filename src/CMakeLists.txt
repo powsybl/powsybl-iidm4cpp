@@ -32,6 +32,8 @@ set(IIDM_SOURCES
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp
+    iidm/HvdcLine.cpp
+    iidm/HvdcLineAdder.cpp
     iidm/Identifiable.cpp
     iidm/Injection.cpp
     iidm/LccConverterStation.cpp

@@ -79,6 +79,18 @@ double checkbPerSection(const Validable& validable, double bPerSection) {
     return bPerSection;
 }
 
+const HvdcLine::ConvertersMode& checkConvertersMode(const Validable& /*validable*/, const HvdcLine::ConvertersMode& converterMode) {
+    switch (converterMode) {
+        case HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER:
+        case HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER:
+            break;
+
+        default:
+            throw AssertionError(logging::format("Unexpected converter mode value: %1%", converterMode));
+    }
+    return converterMode;
+}
+
 int checkForecastDistance(const Validable& validable, int forecastDistance) {
     if (forecastDistance < 0) {
         throw ValidationException(validable, "Forecast distance is < 0");

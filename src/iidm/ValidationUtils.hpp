@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/Validable.hpp>
@@ -38,6 +39,8 @@ double checkBmax(const Validable& validable, double bMax);
 double checkBmin(const Validable& validable, double bMin);
 
 double checkbPerSection(const Validable& validable, double bPerSection);
+
+const HvdcLine::ConvertersMode& checkConvertersMode(const Validable& validable, const HvdcLine::ConvertersMode& converterMode);
 
 int checkForecastDistance(const Validable& validable, int value);
 
