@@ -20,8 +20,8 @@ namespace iidm {
 ShuntCompensatorAdder::ShuntCompensatorAdder(VoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel),
     m_bPerSection(stdcxx::nan()),
-    m_currentSectionCount(0ul),
-    m_maximumSectionCount(0ul) {
+    m_currentSectionCount(0UL),
+    m_maximumSectionCount(0UL) {
 }
 
 ShuntCompensator& ShuntCompensatorAdder::add() {

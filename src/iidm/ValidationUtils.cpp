@@ -73,7 +73,7 @@ double checkbPerSection(const Validable& validable, double bPerSection) {
     if (std::isnan(bPerSection)) {
         throw ValidationException(validable, "susceptance per section is invalid");
     }
-    if (bPerSection == 0.0) {
+    if (!std::islessgreater(bPerSection, 0.0)) {
         throw ValidationException(validable, "susceptance per section is equal to zero");
     }
     return bPerSection;
@@ -235,7 +235,7 @@ void checkRegulatingTerminal(const Validable& validable, const Terminal& regulat
 }
 
 void checkSections(const Validable& validable, unsigned long currentSectionCount, unsigned long maximumSectionCount) {
-    if (maximumSectionCount == 0ul) {
+    if (maximumSectionCount == 0UL) {
         throw ValidationException(validable, logging::format("the maximum number of section (%1%) should be greater than 0", maximumSectionCount));
     }
     if (currentSectionCount > maximumSectionCount) {
