@@ -240,6 +240,23 @@ double checkRatedS(const Validable& validable, double ratedS) {
     return ratedS;
 }
 
+void checkRatioTapChangerRegulation(const Validable& validable, bool loadTapChangingCapabilities, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network) {
+    if (loadTapChangingCapabilities && regulating) {
+        if (std::isnan(targetV)) {
+            throw ValidationException(validable, "a target voltage has to be set for a regulating ratio tap changer");
+        }
+        if (std::islessequal(targetV, 0.0)) {
+            throw ValidationException(validable, logging::format("bad target voltage %1%", targetV));
+        }
+        if (!static_cast<bool>(regulationTerminal)) {
+            throw ValidationException(validable, "a regulation terminal has to be set for a regulating ratio tap changer");
+        }
+        if (!stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
+            throw ValidationException(validable, "regulation terminal is not part of the network");
+        }
+    }
+}
+
 void checkRegulatingTerminal(const Validable& validable, const Terminal& regulatingTerminal, const Network& network) {
     if (!stdcxx::areSame(regulatingTerminal.getVoltageLevel().getNetwork(), network)) {
         throw ValidationException(validable, "Regulating terminal is not part of the network");
@@ -278,6 +295,13 @@ void checkSvcRegulator(const Validable& validable, double voltageSetpoint, doubl
         default:
             throw AssertionError(logging::format("Unexpected regulation mode value: %1%", *regulationMode));
     }
+}
+
+long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition) {
+    if ((tapPosition < lowTapPosition) || (tapPosition > highTapPosition)) {
+        throw ValidationException(validable, logging::format("incorrect tap position %1% [%2%, %3%]", tapPosition, lowTapPosition, highTapPosition));
+    }
+    return tapPosition;
 }
 
 double checkVoltage(const Validable& validable, double voltage) {

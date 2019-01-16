@@ -98,11 +98,15 @@ double checkR(const Validable& validable, double r);
 
 double checkRatedS(const Validable& validable, double ratedS);
 
+void checkRatioTapChangerRegulation(const Validable& validable, bool loadTapChangingCapabilities, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network);
+
 void checkRegulatingTerminal(const Validable& validable, const Terminal& regulatingTerminal, const Network& network);
 
 void checkSections(const Validable& validable, unsigned long currentSectionCount, unsigned long maximumSectionCount);
 
 void checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode);
+
+long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
 
 double checkVoltage(const Validable& validable, double voltage);
 

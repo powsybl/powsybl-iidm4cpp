@@ -57,6 +57,9 @@ set(IIDM_SOURCES
     iidm/NodeTerminal.cpp
     iidm/NodeTerminalViews.cpp
     iidm/ObjectStore.cpp
+    iidm/RatioTapChanger.cpp
+    iidm/RatioTapChangerAdder.cpp
+    iidm/RatioTapChangerStep.cpp
     iidm/ReactiveCapabilityCurve.cpp
     iidm/ReactiveCapabilityCurveAdder.cpp
     iidm/ReactiveLimitsHolder.cpp

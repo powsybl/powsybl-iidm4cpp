@@ -79,6 +79,11 @@ CReference<T> cref(const std::unique_ptr<T>& pointer) {
 }
 
 template <typename T>
+CReference<T> cref(const Reference<T>& reference) {
+    return static_cast<bool>(reference) ? CReference<T>(reference.get()) : CReference<T>();
+}
+
+template <typename T>
 Reference<T> ref() {
     return Reference<T>();
 }
