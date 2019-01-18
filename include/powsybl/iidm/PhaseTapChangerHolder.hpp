@@ -1,0 +1,41 @@
+/**
+ * Copyright (c) 2019, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#ifndef POWSYBL_IIDM_PHASETAPCHANGERHOLDER_HPP
+#define POWSYBL_IIDM_PHASETAPCHANGERHOLDER_HPP
+
+#include <powsybl/iidm/TapChangerHolder.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
+
+namespace powsybl {
+
+namespace iidm {
+
+class PhaseTapChanger;
+class PhaseTapChangerAdder;
+
+class PhaseTapChangerHolder : public TapChangerHolder {
+public:
+    ~PhaseTapChangerHolder() noexcept override = default;
+
+    virtual stdcxx::CReference<PhaseTapChanger> getPhaseTapChanger() const = 0;
+
+    virtual stdcxx::Reference<PhaseTapChanger> getPhaseTapChanger() = 0;
+
+    virtual PhaseTapChangerAdder newPhaseTapChanger() = 0;
+
+    virtual void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger> phaseTapChanger) = 0;
+
+protected:
+    PhaseTapChangerHolder() noexcept = default;
+};
+
+}  // namespace iidm
+
+}  // namespace powsybl
+
+#endif  // POWSYBL_IIDM_PHASETAPCHANGERHOLDER_HPP

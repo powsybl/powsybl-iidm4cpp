@@ -57,6 +57,9 @@ set(IIDM_SOURCES
     iidm/NodeTerminal.cpp
     iidm/NodeTerminalViews.cpp
     iidm/ObjectStore.cpp
+    iidm/PhaseTapChanger.cpp
+    iidm/PhaseTapChangerAdder.cpp
+    iidm/PhaseTapChangerStep.cpp
     iidm/RatioTapChanger.cpp
     iidm/RatioTapChangerAdder.cpp
     iidm/RatioTapChangerStep.cpp

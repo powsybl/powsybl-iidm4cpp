@@ -11,6 +11,7 @@
 #include <string>
 
 #include <powsybl/iidm/HvdcLine.hpp>
+#include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/Validable.hpp>
@@ -89,6 +90,9 @@ const T& checkOptional(const Validable& validable, const stdcxx::optional<T>& va
 }
 
 double checkP0(const Validable& validable, double p0);
+
+void checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
+                                    const stdcxx::Reference<Terminal>& regulationTerminal, const Network& network);
 
 double checkPowerFactor(const Validable& validable, double powerFactor);
 
