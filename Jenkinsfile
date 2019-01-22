@@ -8,9 +8,11 @@
 def maintainers = "mathieu.bague@rte-france.com"
 
 // Enable code-coverage only for the master branch
-def withSonar = ((env.gitlabActionType == null) || (env.gitlabSourceBranch == "master"))
+def withSonar = (env.gitlabActionType == null) || (env.gitlabSourceBranch == "master")
 def buildType = withSonar ? "Debug" : "Release"
 def codeCoverage = withSonar ? "TRUE" : "FALSE"
+
+def buildWrapper = "/home/jenkins/tools/build-wrapper-linux-x86/build-wrapper-linux-x86-64"
 
 node('powsybl-rh72') {
 
@@ -26,7 +28,7 @@ node('powsybl-rh72') {
                     deleteDir()
 
                     sh """
-                    cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=g++ ..
+                    ${buildWrapper} --out-dir ./output cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=g++ ..
                     make -j4
                     make tests
                     """
@@ -62,41 +64,12 @@ node('powsybl-rh72') {
                         # Clean non relevant files
                         rm -f coverage/reports/#usr#*
                         """
-
-                        // Stash
-                        stash includes: 'coverage/reports/*.gcov', name: 'code-coverage'
                     }
                 }
             }
-        }
 
-    } catch (Exception e) {
-        notify {
-            to = maintainers
-            errorMsg = e.toString()
-        }
-        throw e
-    } finally {
-        step([$class: 'WsCleanup'])
-    }
-}
-
-node('build') {
-
-    try {
-        if (withSonar) {
             stage('Sonarqube') {
                 gitlabCommitStatus('sonar') {
-                    gitCheckout {}
-
-                    dir('build') {
-                        // Clean old code coverage results
-                        deleteDir()
-
-                        // Unstash new code coverage results
-                        unstash "code-coverage"
-                    }
-
                     // Run sonar analysis
                     sonar {
                         useMaven = "false"
@@ -104,6 +77,7 @@ node('build') {
                 }
             }
         }
+
     } catch (Exception e) {
         notify {
             to = maintainers
