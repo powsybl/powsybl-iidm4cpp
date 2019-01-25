@@ -19,9 +19,9 @@ namespace powsybl {
 namespace iidm {
 
 class Network;
-class PhaseTapChangerHolder;
 class PhaseTapChangerStep;
 class Terminal;
+class TwoWindingsTransformer;
 class Validable;
 
 class PhaseTapChangerAdder {
@@ -66,7 +66,7 @@ public:
     };
 
 public:
-    explicit PhaseTapChangerAdder(PhaseTapChangerHolder& parent);
+    explicit PhaseTapChangerAdder(TwoWindingsTransformer & parent);
 
     ~PhaseTapChangerAdder() noexcept = default;
 
@@ -95,7 +95,7 @@ private:
     Validable& getValidable();
 
 private:
-    PhaseTapChangerHolder& m_parent;
+    TwoWindingsTransformer& m_parent;
 
     long m_lowTapPosition;
 

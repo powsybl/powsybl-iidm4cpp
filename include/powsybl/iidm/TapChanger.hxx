@@ -125,16 +125,6 @@ long TapChanger<H, C, S>::getTapPosition() const {
 }
 
 template<typename H, typename C, typename S>
-const Identifiable& TapChanger<H, C, S>::getTransformer() const {
-    return m_parent.getTransformer();
-}
-
-template<typename H, typename C, typename S>
-Identifiable& TapChanger<H, C, S>::getTransformer() {
-    return m_parent.getTransformer();
-}
-
-template<typename H, typename C, typename S>
 bool TapChanger<H, C, S>::isRegulating() const {
     return m_regulating.at(m_network.get().getVariantIndex());
 }
@@ -167,7 +157,7 @@ C& TapChanger<H, C, S>::setRegulationTerminal(const stdcxx::Reference<Terminal>&
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setTapPosition(long tapPosition) {
-    m_tapPosition[m_network.get().getVariantIndex()] = checkTapPosition(getTransformer(), tapPosition, m_lowTapPosition, getHighTapPosition());
+    m_tapPosition[m_network.get().getVariantIndex()] = checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition());
 
     return static_cast<C&>(*this);
 }

@@ -20,6 +20,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 
@@ -137,6 +138,14 @@ Substation& Network::getSubstation(const std::string& id) const {
 
 unsigned long Network::getSubstationCount() const {
     return getObjectCount<Substation>();
+}
+
+TwoWindingsTransformer& Network::getTwoWindingsTransformer(const std::string& id) const {
+    return get<TwoWindingsTransformer>(id);
+}
+
+unsigned long Network::getTwoWindingsTransformerCount() const {
+    return getObjectCount<TwoWindingsTransformer>();
 }
 
 const std::string& Network::getTypeDescription() const {

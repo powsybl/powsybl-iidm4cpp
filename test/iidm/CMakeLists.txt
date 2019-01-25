@@ -20,11 +20,14 @@ set(UNIT_TEST_SOURCES
     NetworkTest.cpp
     NodeBreakerVoltageLevelTest.cpp
     ObjectStoreTest.cpp
+    PhaseTapChangerTest.cpp
+    RatioTapChangerTest.cpp
     ReactiveLimitsTest.cpp
     ShuntCompensatorTest.cpp
     StaticVarCompensatorTest.cpp
     SubstationTest.cpp
     TieLineTest.cpp
+    TwoWindingsTransformerTest.cpp
     VoltageLevelTest.cpp
     VscConverterStationTest.cpp
 )

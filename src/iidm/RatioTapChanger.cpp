@@ -41,10 +41,6 @@ double RatioTapChanger::getTargetV() const {
     return m_targetV.at(getNetwork().getVariantIndex());
 }
 
-const std::string& RatioTapChanger::getTapChangerAttribute() const {
-    return getParent().getTapChangerAttribute();
-}
-
 bool RatioTapChanger::hasLoadTapChangingCapabilities() const {
     return m_loadTapChangingCapabilities;
 }

@@ -6,6 +6,7 @@
  */
 
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 
 namespace powsybl {
 
@@ -52,6 +53,10 @@ const std::string& Substation::getTypeDescription() const {
     static std::string s_typeDescription = "Substation";
 
     return s_typeDescription;
+}
+
+TwoWindingsTransformerAdder Substation::newTwoWindingsTransformer() {
+    return TwoWindingsTransformerAdder(*this);
 }
 
 VoltageLevelAdder Substation::newVoltageLevel() {

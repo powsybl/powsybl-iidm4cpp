@@ -15,9 +15,9 @@ namespace powsybl {
 
 namespace iidm {
 
-class PhaseTapChangerHolder;
+class TwoWindingsTransformer;
 
-class PhaseTapChanger : public TapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep> {
+class PhaseTapChanger : public TapChanger<TwoWindingsTransformer, PhaseTapChanger, PhaseTapChangerStep> {
 public:
     enum class RegulationMode : unsigned int {
         CURRENT_LIMITER,
@@ -38,7 +38,7 @@ public: // TapChanger
     PhaseTapChanger& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) override;
 
 public:
-    PhaseTapChanger(PhaseTapChangerHolder& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
+    PhaseTapChanger(TwoWindingsTransformer& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
                     long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue);
 
     ~PhaseTapChanger() noexcept override = default;
@@ -50,9 +50,6 @@ public:
     PhaseTapChanger& setRegulationMode(const RegulationMode& regulationMode);
 
     PhaseTapChanger& setRegulationValue(double regulationValue);
-
-protected: // TapChanger
-    const std::string& getTapChangerAttribute() const override;
 
 private:
     RegulationMode m_regulationMode;

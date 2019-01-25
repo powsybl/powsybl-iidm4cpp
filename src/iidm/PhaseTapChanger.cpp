@@ -6,7 +6,7 @@
  */
 
 #include <powsybl/iidm/PhaseTapChanger.hpp>
-#include <powsybl/iidm/PhaseTapChangerHolder.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
 #include "ValidationUtils.hpp"
@@ -34,7 +34,7 @@ std::string toString(const iidm::PhaseTapChanger::RegulationMode& value) {
 
 namespace iidm {
 
-PhaseTapChanger::PhaseTapChanger(PhaseTapChangerHolder& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
+PhaseTapChanger::PhaseTapChanger(TwoWindingsTransformer& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
                                  long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue) :
     TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, tapPosition, regulating),
     m_regulationMode(regulationMode),
@@ -63,12 +63,6 @@ const PhaseTapChanger::RegulationMode& PhaseTapChanger::getRegulationMode() cons
 
 double PhaseTapChanger::getRegulationValue() const {
     return m_regulationValue.at(getNetwork().getVariantIndex());
-}
-
-const std::string& PhaseTapChanger::getTapChangerAttribute() const {
-    static std::string s_attributeDescription = "phaseTapChanger";
-
-    return s_attributeDescription;
 }
 
 void PhaseTapChanger::reduceVariantArraySize(unsigned long number) {

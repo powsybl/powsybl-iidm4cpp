@@ -26,14 +26,17 @@ public:
 
     virtual stdcxx::Reference<RatioTapChanger> getRatioTapChanger() = 0;
 
-    virtual const std::string& getTapChangerAttribute() const = 0;
-
     virtual RatioTapChangerAdder newRatioTapChanger() = 0;
-
-    virtual void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) = 0;
 
 protected:
     RatioTapChangerHolder() noexcept = default;
+
+    virtual void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) = 0;
+
+private:
+    friend class RatioTapChanger;
+
+    friend class RatioTapChangerAdder;
 };
 
 }  // namespace iidm

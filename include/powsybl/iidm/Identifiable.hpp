@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class Identifiable : public Validable {
+class Identifiable : public virtual Validable {
 public: // Validable
     std::string getMessageHeader() const override;
 

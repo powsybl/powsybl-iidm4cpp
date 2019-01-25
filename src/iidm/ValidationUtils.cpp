@@ -266,6 +266,20 @@ double checkRatedS(const Validable& validable, double ratedS) {
     return ratedS;
 }
 
+double checkRatedU1(const Validable& validable, double ratedU1) {
+    if (std::isnan(ratedU1)) {
+        throw ValidationException(validable, "rated U1 is invalid");
+    }
+    return ratedU1;
+}
+
+double checkRatedU2(const Validable& validable, double ratedU2) {
+    if (std::isnan(ratedU2)) {
+        throw ValidationException(validable, "rated U2 is invalid");
+    }
+    return ratedU2;
+}
+
 void checkRatioTapChangerRegulation(const Validable& validable, bool loadTapChangingCapabilities, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network) {
     if (loadTapChangingCapabilities && regulating) {
         if (std::isnan(targetV)) {

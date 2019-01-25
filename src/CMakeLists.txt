@@ -81,6 +81,7 @@ set(IIDM_SOURCES
     iidm/TieLineAdder.cpp
     iidm/TopologyKind.cpp
     iidm/TwoWindingsTransformer.cpp
+    iidm/TwoWindingsTransformerAdder.cpp
     iidm/ValidationException.cpp
     iidm/ValidationUtils.cpp
     iidm/VariantContextGuard.cpp

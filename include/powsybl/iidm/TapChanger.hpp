@@ -80,12 +80,6 @@ protected:
 
     H& getParent();
 
-    virtual const std::string& getTapChangerAttribute() const = 0;
-
-    virtual Identifiable& getTransformer();
-
-    virtual const Identifiable& getTransformer() const;
-
 private:
     stdcxx::Reference<VariantManagerHolder> m_network;
 

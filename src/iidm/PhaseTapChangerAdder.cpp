@@ -7,8 +7,8 @@
 
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
-#include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/PhaseTapChangerStep.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -69,7 +69,7 @@ PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setX(double x)
     return *this;
 }
 
-PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent) :
+PhaseTapChangerAdder::PhaseTapChangerAdder(TwoWindingsTransformer& parent) :
     m_parent(parent),
     m_lowTapPosition(0U),
     m_tapPosition(),

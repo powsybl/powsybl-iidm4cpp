@@ -17,17 +17,13 @@ namespace iidm {
 class Identifiable;
 class Network;
 
-class TapChangerHolder : public Validable {
+class TapChangerHolder : public virtual Validable {
 public:
     ~TapChangerHolder() noexcept override = default;
 
     virtual const Network& getNetwork() const = 0;
 
     virtual Network& getNetwork() = 0;
-
-    virtual const Identifiable& getTransformer() const = 0;
-
-    virtual Identifiable& getTransformer() = 0;
 
 protected:
     TapChangerHolder() noexcept = default;

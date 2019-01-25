@@ -102,6 +102,10 @@ double checkR(const Validable& validable, double r);
 
 double checkRatedS(const Validable& validable, double ratedS);
 
+double checkRatedU1(const Validable& validable, double ratedU1);
+
+double checkRatedU2(const Validable& validable, double ratedU2);
+
 void checkRatioTapChangerRegulation(const Validable& validable, bool loadTapChangingCapabilities, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network);
 
 void checkRegulatingTerminal(const Validable& validable, const Terminal& regulatingTerminal, const Network& network);

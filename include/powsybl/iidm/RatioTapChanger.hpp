@@ -44,9 +44,6 @@ public:
 
     RatioTapChanger& setTargetV(double targetV);
 
-protected: // TapChanger
-    const std::string& getTapChangerAttribute() const override;
-
 private:
     bool m_loadTapChangingCapabilities;
 

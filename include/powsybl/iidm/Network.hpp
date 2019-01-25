@@ -33,6 +33,7 @@ class ShuntCompensator;
 class StaticVarCompensator;
 class Substation;
 class TieLineAdder;
+class TwoWindingsTransformer;
 class VoltageLevel;
 class VscConverterStation;
 
@@ -126,6 +127,10 @@ public:
     Substation& getSubstation(const std::string& id) const;
 
     unsigned long getSubstationCount() const;
+
+    TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id) const;
+
+    unsigned long getTwoWindingsTransformerCount() const;
 
     VoltageLevel& getVoltageLevel(const std::string& id) const;
 
