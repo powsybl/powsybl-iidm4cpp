@@ -77,7 +77,7 @@ Network createLineTestNetwork() {
         .setId("VL3_BUS1")
         .add();
 
-    VoltageLevel& vl4 = substation.newVoltageLevel()
+    VoltageLevel& vl4 = substation2.newVoltageLevel()
         .setId("VL4")
         .setName("VL4_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
