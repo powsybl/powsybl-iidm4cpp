@@ -28,8 +28,8 @@ node('powsybl-rh72') {
                     deleteDir()
 
                     sh """
-                    ${buildWrapper} --out-dir ./output cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=g++ ..
-                    make -j4
+                    cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=g++ ..
+                    ${buildWrapper} --out-dir ./output make -j4
                     make tests
                     """
                 }
