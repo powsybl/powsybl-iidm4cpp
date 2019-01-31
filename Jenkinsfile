@@ -17,64 +17,54 @@ def buildWrapper = "/home/jenkins/tools/build-wrapper-linux-x86/build-wrapper-li
 node('powsybl-rh72') {
 
     try {
-        stage('Cloning git repository') {
+        stageDevin('Cloning git repository') {
             gitCheckout {}
         }
 
-        stage('Building with GCC') {
-            gitlabCommitStatus('GCC') {
-                dir('build') {
-                    // Remove old build directory
-                    deleteDir()
+        stageDevin('GCC') {
+            dir('build') {
+                // Remove old build directory
+                deleteDir()
 
-                    sh """
-                    cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=g++ ..
-                    ${buildWrapper} --out-dir ./output make -j4
-                    make tests
-                    """
-                }
+                sh """
+                cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=g++ ..
+                ${buildWrapper} --out-dir ./output make -j4
+                make tests
+                """
             }
         }
 
         /*
-        stage('Building with Clang') {
-            gitlabCommitStatus('Clang') {
-                dir('build-clang') {
-                    // Remove old build directory
-                    deleteDir()
+        stageDevin('Clang') {
+            dir('build-clang') {
+                // Remove old build directory
+                deleteDir()
 
-                    sh """
-                    cmake -DCMAKE_CXX_COMPILER=clang++ ..
-                    make -j4
-                    make tests
-                    """
-                }
+                sh """
+                cmake -DCMAKE_CXX_COMPILER=clang++ ..
+                make -j4
+                make tests
+                """
             }
         }
         */
 
-        if (withSonar) {
-            stage('Code-coverage') {
-                gitlabCommitStatus('code-coverage') {
-                    // Run tests and compute code coverage results
-                    dir('build') {
-                        sh """
-                        make code-coverage
+        // Run tests and compute code coverage results
+        stageDevin('Code-coverage', withSonar) {
+            dir('build') {
+                sh """
+                make code-coverage
 
-                        # Clean non relevant files
-                        rm -f coverage/reports/#usr#*
-                        """
-                    }
-                }
+                # Clean non relevant files
+                rm -f coverage/reports/#usr#*
+                """
             }
+        }
 
-            stage('Sonarqube') {
-                gitlabCommitStatus('sonar') {
-                    // Run sonar analysis
-                    sonar {
-                        useMaven = "false"
-                    }
-                }
+        // Run sonar analysis
+        stageDevin('Sonarqube', withSonar) {
+            sonar {
+                useMaven = "false"
             }
         }
 
