@@ -22,6 +22,7 @@ class RatioTapChanger;
 class RatioTapChangerHolder;
 class RatioTapChangerStep;
 class Terminal;
+class Validable;
 
 class RatioTapChangerAdder {
 public:
@@ -86,6 +87,8 @@ protected:
 
 private:
     RatioTapChangerAdder& addStep(double rho, double r, double x, double g, double b);
+
+    Validable& getValidable();
 
 private:
     RatioTapChangerHolder& m_parent;

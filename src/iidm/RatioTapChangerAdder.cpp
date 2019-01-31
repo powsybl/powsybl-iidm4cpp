@@ -28,11 +28,11 @@ RatioTapChangerAdder::StepAdder::StepAdder(RatioTapChangerAdder& parent) :
 }
 
 RatioTapChangerAdder& RatioTapChangerAdder::StepAdder::endStep() {
-    checkOptional(m_parent.m_parent, m_rho, "step rho is not set");
-    checkOptional(m_parent.m_parent, m_r, "step r is not set");
-    checkOptional(m_parent.m_parent, m_x, "step x is not set");
-    checkOptional(m_parent.m_parent, m_g, "step g is not set");
-    checkOptional(m_parent.m_parent, m_b, "step b is not set");
+    checkOptional(m_parent.getValidable(), m_rho, "step rho is not set");
+    checkOptional(m_parent.getValidable(), m_r, "step r is not set");
+    checkOptional(m_parent.getValidable(), m_x, "step x is not set");
+    checkOptional(m_parent.getValidable(), m_g, "step g is not set");
+    checkOptional(m_parent.getValidable(), m_b, "step b is not set");
 
     return m_parent.addStep(m_rho, m_r, m_x, m_g, m_b);
 }
@@ -100,6 +100,10 @@ RatioTapChangerAdder::StepAdder RatioTapChangerAdder::beginStep() {
 
 Network& RatioTapChangerAdder::getNetwork() {
     return m_parent.getNetwork();
+}
+
+Validable& RatioTapChangerAdder::getValidable() {
+    return m_parent;
 }
 
 RatioTapChangerAdder& RatioTapChangerAdder::setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) {
