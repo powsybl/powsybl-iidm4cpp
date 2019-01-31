@@ -18,7 +18,7 @@ class TieLine;
 class Network;
 
 class TieLineAdder : public BranchAdder<TieLineAdder> {
-public:  // IdentifiableAdder
+public: // IdentifiableAdder
     TieLineAdder& setId(const std::string& id) override;
 
     TieLineAdder& setName(const std::string& name) override;
@@ -52,10 +52,10 @@ public:
 
     TieLineAdder& setXnodeQ(double xnodeQ);
 
-protected:  // IdentifiableAdder
+protected: // IdentifiableAdder
     Network& getNetwork() override;
 
-private:  // IdentifiableAdder
+private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:

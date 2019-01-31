@@ -50,7 +50,7 @@ public:
 protected:
     Line(const std::string& id, const std::string& name);
 
-private:  // Identifiable
+private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:

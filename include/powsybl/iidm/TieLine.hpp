@@ -17,7 +17,7 @@ namespace iidm {
 class TieLine : public Line {
 public:
     class HalfLine : public Validable {
-    public:  // Validable
+    public: // Validable
         std::string getMessageHeader() const override;
 
     public:
@@ -78,7 +78,7 @@ public:
         double m_xnodeQ;
     };
 
-public:  // Line
+public: // Line
     double getB1() const override;
 
     double getB2() const override;
@@ -116,7 +116,7 @@ public:
 
     const std::string& getUcteXnodeCode() const;
 
-private:  // Identifiable
+private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:

@@ -37,10 +37,10 @@ public:
 
     LineAdder& setX(double x);
 
-protected:  // IdentifiableAdder
+protected: // IdentifiableAdder
     Network& getNetwork() override;
 
-private:  // IdentifiableAdder
+private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:

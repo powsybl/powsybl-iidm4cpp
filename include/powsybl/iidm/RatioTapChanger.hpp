@@ -18,14 +18,14 @@ namespace iidm {
 class RatioTapChangerHolder;
 
 class RatioTapChanger : public TapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep> {
-public:  // MultiVariantObject
+public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
     void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
     void reduceVariantArraySize(unsigned long number) override;
 
-public:  // TapChanger
+public: // TapChanger
     void remove() override;
 
     RatioTapChanger& setRegulating(bool regulating) override;
@@ -44,7 +44,7 @@ public:
 
     RatioTapChanger& setTargetV(double targetV);
 
-protected:  // TapChanger
+protected: // TapChanger
     const std::string& getTapChangerAttribute() const override;
 
 private:
