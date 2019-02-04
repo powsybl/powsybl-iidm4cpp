@@ -220,6 +220,41 @@ TEST(DanglingLine, multivariant) {
     ASSERT_EQ(1ul, network.getVariantManager().getVariantArraySize());
 }
 
+TEST(DanglingLine, currentLimits) {
+    Network network = createDanglingLineTestNetwork();
+
+    DanglingLine& danglingLine = network.getDanglingLine("DL1");
+    const DanglingLine& cDanglingLine = danglingLine;
+    ASSERT_TRUE(stdcxx::areSame(danglingLine, cDanglingLine));
+
+    ASSERT_FALSE(cDanglingLine.getCurrentLimits());
+    ASSERT_FALSE(danglingLine.getCurrentLimits());
+
+    danglingLine.newCurrentLimits()
+        .setPermanentLimit(10.0)
+        .beginTemporaryLimit()
+        .setName("TL1")
+        .setValue(13.0)
+        .setAcceptableDuration(1UL)
+        .setFictitious(false)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+        .setName("TL2")
+        .setValue(12.0)
+        .setAcceptableDuration(2UL)
+        .setFictitious(true)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+        .setName("TL3")
+        .setValue(11.0)
+        .setAcceptableDuration(3UL)
+        .setFictitious(false)
+        .endTemporaryLimit()
+        .add();
+
+    ASSERT_TRUE(cDanglingLine.getCurrentLimits());
+    ASSERT_TRUE(danglingLine.getCurrentLimits());
+}
 
 }  // namespace iidm
 

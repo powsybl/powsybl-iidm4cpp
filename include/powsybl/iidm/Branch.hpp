@@ -11,6 +11,7 @@
 #include <ostream>
 
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 
 namespace powsybl {
 
@@ -26,6 +27,18 @@ public:
 public:
     ~Branch() noexcept override = default;
 
+    stdcxx::CReference<CurrentLimits> getCurrentLimits(const Side& side) const;
+
+    stdcxx::Reference<CurrentLimits> getCurrentLimits(const Side& side);
+
+    stdcxx::CReference<CurrentLimits> getCurrentLimits1() const;
+
+    stdcxx::Reference<CurrentLimits> getCurrentLimits1();
+
+    stdcxx::CReference<CurrentLimits> getCurrentLimits2() const;
+
+    stdcxx::Reference<CurrentLimits> getCurrentLimits2();
+
     Terminal& getTerminal(const Side& side) const;
 
     // TODO(MBA): Terminal& getTerminal(const std::string& voltageLevelId) const
@@ -34,12 +47,27 @@ public:
 
     Terminal& getTerminal2() const;
 
-    // TODO(MBA): getCurrentLimits(), newCurrentLimits()
+    CurrentLimitsAdder<Side, Branch> newCurrentLimits1();
+
+    CurrentLimitsAdder<Side, Branch> newCurrentLimits2();
 
     // TODO(MBA): isOverloaded(), getOverloadDuration(), checkTemporaryLimits(), checkPermanentLimits()
 
 protected:
     Branch(const std::string& id, const std::string& name, const ConnectableType& connectableType);
+
+private:
+    const std::unique_ptr<CurrentLimits>& getCurrentLimitsPtr(const Side& side) const;
+
+    void setCurrentLimits(const Side& side, std::unique_ptr<CurrentLimits> limits);
+
+private:
+    friend class CurrentLimitsAdder<Side, Branch>;
+
+private:
+    std::unique_ptr<CurrentLimits> m_limits1;
+
+    std::unique_ptr<CurrentLimits> m_limits2;
 };
 
 std::string getSideName(const Branch::Side& side);

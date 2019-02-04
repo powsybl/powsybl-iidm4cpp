@@ -18,6 +18,43 @@ Branch::Branch(const std::string& id, const std::string& name, const Connectable
     Connectable(id, name, connectableType) {
 }
 
+stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits(const Side& side) const {
+    return stdcxx::cref(getCurrentLimitsPtr(side));
+}
+
+stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits(const Side& side) {
+    return stdcxx::ref(getCurrentLimitsPtr(side));
+}
+
+stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits1() const {
+    return getCurrentLimits(Side::ONE);
+}
+
+stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits1() {
+    return getCurrentLimits(Side::ONE);
+}
+
+stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits2() const {
+    return getCurrentLimits(Side::TWO);
+}
+
+stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits2() {
+    return getCurrentLimits(Side::TWO);
+}
+
+const std::unique_ptr<CurrentLimits>& Branch::getCurrentLimitsPtr(const Side& side) const {
+    switch (side) {
+        case Side::ONE:
+            return m_limits1;
+
+        case Side::TWO:
+            return m_limits2;
+
+        default:
+            throw AssertionError(logging::format("Unexpected side value: %1%", side));
+    }
+}
+
 Terminal& Branch::getTerminal(const Side& side) const {
     switch (side) {
         case Side::ONE:
@@ -37,6 +74,29 @@ Terminal& Branch::getTerminal1() const {
 
 Terminal& Branch::getTerminal2() const {
     return getTerminal(Side::TWO);
+}
+
+CurrentLimitsAdder<Branch::Side, Branch> Branch::newCurrentLimits1() {
+    return CurrentLimitsAdder<Branch::Side, Branch>(Side::ONE, *this);
+}
+
+CurrentLimitsAdder<Branch::Side, Branch> Branch::newCurrentLimits2() {
+    return CurrentLimitsAdder<Branch::Side, Branch>(Side::TWO, *this);
+}
+
+void Branch::setCurrentLimits(const Branch::Side& side, std::unique_ptr<CurrentLimits> limits) {
+    switch (side) {
+        case Side::ONE:
+            m_limits1 = std::move(limits);
+            break;
+
+        case Side::TWO:
+            m_limits2 = std::move(limits);
+            break;
+
+        default:
+            throw AssertionError(logging::format("Unexpected side value: %1%", side));
+    }
 }
 
 std::string getSideName(const Branch::Side& side) {

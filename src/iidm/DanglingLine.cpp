@@ -24,7 +24,8 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     m_x(checkX(*this, x)),
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
-    m_ucteXnodeCode(ucteXnodeCode) {
+    m_ucteXnodeCode(ucteXnodeCode),
+    m_limits() {
 }
 
 void DanglingLine::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -45,6 +46,14 @@ void DanglingLine::extendVariantArraySize(unsigned long initVariantArraySize, un
 
 double DanglingLine::getB() const {
     return m_b;
+}
+
+stdcxx::CReference<CurrentLimits> DanglingLine::getCurrentLimits() const {
+    return stdcxx::cref(m_limits);
+}
+
+stdcxx::Reference<CurrentLimits> DanglingLine::getCurrentLimits() {
+    return stdcxx::ref<CurrentLimits>(m_limits);
 }
 
 double DanglingLine::getG() const {
@@ -77,6 +86,10 @@ double DanglingLine::getX() const {
     return m_x;
 }
 
+CurrentLimitsAdder<std::nullptr_t, DanglingLine> DanglingLine::newCurrentLimits() {
+    return CurrentLimitsAdder<std::nullptr_t, DanglingLine>(nullptr, *this);
+}
+
 void DanglingLine::reduceVariantArraySize(unsigned long number) {
     Injection::reduceVariantArraySize(number);
 
@@ -88,6 +101,10 @@ DanglingLine& DanglingLine::setB(double b) {
     m_b = checkB(*this, b);
 
     return *this;
+}
+
+void DanglingLine::setCurrentLimits(const std::nullptr_t /*side*/, std::unique_ptr<CurrentLimits> limits) {
+    m_limits = std::move(limits);
 }
 
 DanglingLine& DanglingLine::setG(double g) {

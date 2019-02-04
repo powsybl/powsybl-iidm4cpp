@@ -8,8 +8,8 @@
 #ifndef POWSYBL_IIDM_DANGLINGLINE_HPP
 #define POWSYBL_IIDM_DANGLINGLINE_HPP
 
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Injection.hpp>
-#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -26,6 +26,10 @@ public:
 
     double getB() const;
 
+    stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
+
+    stdcxx::Reference<CurrentLimits> getCurrentLimits();
+
     double getG() const;
 
     double getP0() const;
@@ -37,6 +41,8 @@ public:
     const std::string& getUcteXnodeCode() const;
 
     double getX() const;
+
+    CurrentLimitsAdder<std::nullptr_t, DanglingLine> newCurrentLimits();
 
     DanglingLine& setB(double b);
 
@@ -50,8 +56,6 @@ public:
 
     DanglingLine& setX(double x);
 
-    // TODO(thiebarr): getCurrentLimits(), newCurrentLimits()
-
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -61,6 +65,12 @@ protected: // MultiVariantObject
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
+
+private:
+    void setCurrentLimits(const std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
+
+private:
+    friend class CurrentLimitsAdder<std::nullptr_t, DanglingLine>;
 
 private:
     stdcxx::Reference<VariantManagerHolder> m_network;
@@ -78,6 +88,8 @@ private:
     std::vector<double> m_q0;
 
     std::string m_ucteXnodeCode;
+
+    std::unique_ptr<CurrentLimits> m_limits;
 };
 
 }  // namespace iidm

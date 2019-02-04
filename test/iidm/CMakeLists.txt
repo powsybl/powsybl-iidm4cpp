@@ -9,6 +9,7 @@ set(UNIT_TEST_SOURCES
     BusbarSectionTest.cpp
     BusBreakerVoltageLevelTest.cpp
     CountryTest.cpp
+    CurrentLimitsTest.cpp
     DanglingLineTest.cpp
     EnergySourceTest.cpp
     GeneratorTest.cpp

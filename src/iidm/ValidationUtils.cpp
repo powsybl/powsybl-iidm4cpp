@@ -226,6 +226,13 @@ double checkP0(const Validable& validable, double p0) {
     return p0;
 }
 
+double checkPermanentLimit(const Validable& validable, double permanentLimit) {
+    if (std::isnan(permanentLimit) || std::islessequal(permanentLimit, 0.0)) {
+        throw ValidationException(validable, "permanent limit must be > 0");
+    }
+    return permanentLimit;
+}
+
 void checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
                                     const stdcxx::Reference<Terminal>& regulationTerminal, const Network& network) {
     switch (regulationMode) {

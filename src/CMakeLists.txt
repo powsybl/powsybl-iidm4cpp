@@ -27,6 +27,7 @@ set(IIDM_SOURCES
     iidm/ConnectableType.cpp
     iidm/Container.cpp
     iidm/Country.cpp
+    iidm/CurrentLimits.cpp
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
     iidm/Generator.cpp
