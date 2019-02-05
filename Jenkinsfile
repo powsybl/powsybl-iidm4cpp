@@ -12,7 +12,7 @@ def withSonar = (env.gitlabActionType == null) || (env.gitlabSourceBranch == "ma
 def buildType = withSonar ? "Debug" : "Release"
 def codeCoverage = withSonar ? "TRUE" : "FALSE"
 
-def buildWrapper = "/home/jenkins/tools/build-wrapper-linux-x86/build-wrapper-linux-x86-64"
+def buildWrapper = "LANG=C /home/jenkins/tools/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ./output"
 
 node('powsybl-rh72') {
 
@@ -28,7 +28,7 @@ node('powsybl-rh72') {
 
                 sh """
                 cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=g++ ..
-                ${buildWrapper} --out-dir ./output make -j4
+                ${buildWrapper} make -j4
                 make tests
                 """
             }
