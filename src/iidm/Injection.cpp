@@ -16,11 +16,11 @@ Injection::Injection(const std::string& id, const std::string& name, const Conne
 }
 
 const Terminal& Injection::getTerminal() const {
-    return getTerminal(0);
+    return Connectable::getTerminal(0);
 }
 
 Terminal& Injection::getTerminal() {
-    return getTerminal(0);
+    return Connectable::getTerminal(0);
 }
 
 }  // namespace iidm

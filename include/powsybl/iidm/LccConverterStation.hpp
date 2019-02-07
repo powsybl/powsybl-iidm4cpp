@@ -32,9 +32,6 @@ public:
 private: // Identifiable
     const std::string& getTypeDescription() const override;
 
-private: // HvdcConverterStation
-    using HvdcConverterStation::setLossFactor;
-
 private:
     double m_powerFactor;
 };

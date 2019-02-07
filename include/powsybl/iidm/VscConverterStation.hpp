@@ -48,9 +48,6 @@ protected: // MultiVariantObject
 private: // Identifiable
     const std::string& getTypeDescription() const override;
 
-private: // HvdcConverterStation
-    using HvdcConverterStation::setLossFactor;
-
 private:
     std::vector<bool> m_voltageRegulatorOn;
 

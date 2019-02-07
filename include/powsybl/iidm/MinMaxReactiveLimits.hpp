@@ -16,18 +16,18 @@ namespace iidm {
 
 class MinMaxReactiveLimits : public ReactiveLimits {
 public: // ReactiveLimits
-    virtual ReactiveLimitsKind getKind() const override;
+    ReactiveLimitsKind getKind() const override;
 
-    virtual double getMaxQ(double p) const override;
+    double getMaxQ(double p) const override;
 
-    virtual double getMinQ(double p) const override;
+    double getMinQ(double p) const override;
 
 public:
     MinMaxReactiveLimits(double minQ, double maxQ);
 
     MinMaxReactiveLimits(const MinMaxReactiveLimits&) = default;
 
-    virtual ~MinMaxReactiveLimits() noexcept = default;
+    ~MinMaxReactiveLimits() noexcept override = default;
 
     MinMaxReactiveLimits& operator=(const MinMaxReactiveLimits&) = default;
 

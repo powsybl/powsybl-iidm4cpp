@@ -39,18 +39,18 @@ public:
     };
 
 public: // ReactiveLimits
-    virtual ReactiveLimitsKind getKind() const override;
+    ReactiveLimitsKind getKind() const override;
 
-    virtual double getMaxQ(double p) const override;
+    double getMaxQ(double p) const override;
 
-    virtual double getMinQ(double p) const override;
+    double getMinQ(double p) const override;
 
 public:
     explicit ReactiveCapabilityCurve(std::map<double, Point>&& points);
 
     ReactiveCapabilityCurve(const ReactiveCapabilityCurve&) = default;
 
-    virtual ~ReactiveCapabilityCurve() noexcept = default;
+    ~ReactiveCapabilityCurve() noexcept override = default;
 
     ReactiveCapabilityCurve& operator=(const ReactiveCapabilityCurve&) = default;
 

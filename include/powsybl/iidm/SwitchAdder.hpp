@@ -32,7 +32,7 @@ public:
     SwitchAdder& setOpen(bool open);
 
 protected: // IdentifiableAdder
-    virtual Network& getNetwork() override;
+    Network& getNetwork() override;
 
 protected:
     explicit AbstractSwitchAdder(VoltageLevel& voltageLevel);
