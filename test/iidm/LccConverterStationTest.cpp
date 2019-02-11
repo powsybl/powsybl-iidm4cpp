@@ -121,6 +121,9 @@ TEST(LccConverterStation, integrity) {
     ASSERT_TRUE(stdcxx::areSame(hvdc, lcc.setPowerFactor(400.0)));
     ASSERT_DOUBLE_EQ(400.0, lcc.getPowerFactor());
     POWSYBL_ASSERT_THROW(lcc.setPowerFactor(stdcxx::nan()), ValidationException, "lccConverterStation 'LCC1': power factor is invalid");
+
+    lcc.remove();
+    POWSYBL_ASSERT_THROW(network.getLccConverterStation("LCC1"), PowsyblException, "Unable to find to the identifiable 'LCC1'");
 }
 
 TEST(LccConverterStation, loop) {

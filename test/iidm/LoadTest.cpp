@@ -64,6 +64,9 @@ TEST(Load, integrity) {
     ASSERT_TRUE(stdcxx::areSame(load1, load1.setQ0(100)));
     ASSERT_DOUBLE_EQ(100, load1.getQ0());
     POWSYBL_ASSERT_THROW(load1.setQ0(stdcxx::nan()), ValidationException, "Load 'LOAD1': q0 is invalid");
+
+    load1.remove();
+    POWSYBL_ASSERT_THROW(network.getLoad("LOAD1"), PowsyblException, "Unable to find to the identifiable 'LOAD1'");
 }
 
 TEST(Load, multivariant) {

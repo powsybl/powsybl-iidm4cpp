@@ -152,6 +152,9 @@ TEST(VscConverterStation, integrity) {
     ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setReactivePowerSetpoint(400.0)));
     ASSERT_DOUBLE_EQ(400.0, vsc.getReactivePowerSetpoint());
     ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
+
+    vsc.remove();
+    POWSYBL_ASSERT_THROW(network.getVscConverterStation("VSC1"), PowsyblException, "Unable to find to the identifiable 'VSC1'");
 }
 
 TEST(VscConverterStation, multivariant) {

@@ -133,6 +133,9 @@ TEST(DanglingLine, integrity) {
     ASSERT_TRUE(stdcxx::areSame(danglingLine, danglingLine.setX(600.0)));
     ASSERT_DOUBLE_EQ(600.0, danglingLine.getX());
     POWSYBL_ASSERT_THROW(danglingLine.setX(stdcxx::nan()), ValidationException, "Dangling line 'DL1': x is invalid");
+
+    danglingLine.remove();
+    POWSYBL_ASSERT_THROW(network.getDanglingLine("DL1"), PowsyblException, "Unable to find to the identifiable 'DL1'");
 }
 
 TEST(DanglingLine, multivariant) {

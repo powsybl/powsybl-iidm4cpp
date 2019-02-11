@@ -180,6 +180,9 @@ TEST(TieLine, integrity) {
     POWSYBL_ASSERT_THROW(tieLine.setG2(400), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
     POWSYBL_ASSERT_THROW(tieLine.setB1(500), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
     POWSYBL_ASSERT_THROW(tieLine.setB2(600), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+
+    tieLine.remove();
+    POWSYBL_ASSERT_THROW(network.getLine("TL_VL1_VL3"), PowsyblException, "Unable to find to the identifiable 'TL_VL1_VL3'");
 }
 
 TEST(TieLine, adderFail) {

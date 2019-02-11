@@ -124,6 +124,9 @@ TEST(StaticVarCompensator, integrity) {
 
     svc.setReactivePowerSetpoint(700);
     ASSERT_NO_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER));
+
+    svc.remove();
+    POWSYBL_ASSERT_THROW(network.getStaticVarCompensator("SVC1"), PowsyblException, "Unable to find to the identifiable 'SVC1'");
 }
 
 TEST(StaticVarCompensator, multivariant) {

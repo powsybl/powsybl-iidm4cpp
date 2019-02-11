@@ -155,6 +155,9 @@ TEST(Line, integrity) {
     ASSERT_TRUE(stdcxx::areSame(line, line.setB2(600)));
     ASSERT_DOUBLE_EQ(600, line.getB2());
     POWSYBL_ASSERT_THROW(line.setB2(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': b2 is invalid");
+
+    line.remove();
+    POWSYBL_ASSERT_THROW(network.getLine("VL1_VL3"), PowsyblException, "Unable to find to the identifiable 'VL1_VL3'");
 }
 
 TEST(Line, adder) {

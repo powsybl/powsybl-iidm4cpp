@@ -277,6 +277,9 @@ TEST(Generator, integrity) {
     Network network2 = createGeneratorTestNetwork2();
     Terminal& terminal3 = network2.getLoad("LOAD1").getTerminal();
     POWSYBL_ASSERT_THROW(gen.setRegulatingTerminal(stdcxx::ref<Terminal>(terminal3)), ValidationException, "Generator 'GEN1': Regulating terminal is not part of the network");
+
+    gen.remove();
+    POWSYBL_ASSERT_THROW(network.getGenerator("GEN1"), PowsyblException, "Unable to find to the identifiable 'GEN1'");
 }
 
 TEST(Generator, multivariant) {

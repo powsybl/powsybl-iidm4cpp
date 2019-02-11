@@ -121,6 +121,9 @@ TEST(ShuntCompensator, integrity) {
     POWSYBL_ASSERT_THROW(shunt.setMaximumSectionCount(250ul), ValidationException, "Shunt compensator 'SHUNT1': the current number (350) of section should be lesser than the maximum number of section (250)");
 
     POWSYBL_ASSERT_THROW(shunt.getTerminal().setP(1.0), ValidationException, "Shunt compensator 'SHUNT1': cannot set active power on a shunt compensator");
+
+    shunt.remove();
+    POWSYBL_ASSERT_THROW(network.getShuntCompensator("SHUNT1"), PowsyblException, "Unable to find to the identifiable 'SHUNT1'");
 }
 
 TEST(ShuntCompensator, multivariant) {
