@@ -23,6 +23,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class ThreeWindingsTransformerAdder;
 class TwoWindingsTransformerAdder;
 
 class Substation : public Container {
@@ -42,6 +43,8 @@ public:
     Network& getNetwork();
 
     const std::string& getTso() const;
+
+    ThreeWindingsTransformerAdder newThreeWindingsTransformer();
 
     TwoWindingsTransformerAdder newTwoWindingsTransformer();
 

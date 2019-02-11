@@ -80,6 +80,9 @@ set(IIDM_SOURCES
     iidm/Terminal.cpp
     iidm/TerminalBuilder.cpp
     iidm/ThreeWindingsTransformer.cpp
+    iidm/ThreeWindingsTransformerAdder.cpp
+    iidm/ThreeWindingsTransformerLeg2.cpp
+    iidm/ThreeWindingsTransformerLeg3.cpp
     iidm/TieLine.cpp
     iidm/TieLineAdder.cpp
     iidm/TopologyKind.cpp

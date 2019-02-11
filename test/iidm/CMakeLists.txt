@@ -28,6 +28,7 @@ set(UNIT_TEST_SOURCES
     ShuntCompensatorTest.cpp
     StaticVarCompensatorTest.cpp
     SubstationTest.cpp
+    ThreeWindingsTransformerTest.cpp
     TieLineTest.cpp
     TwoWindingsTransformerTest.cpp
     VoltageLevelTest.cpp

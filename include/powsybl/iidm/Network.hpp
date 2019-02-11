@@ -34,6 +34,7 @@ class ShuntCompensator;
 class StaticVarCompensator;
 class Substation;
 class Switch;
+class ThreeWindingsTransformer;
 class TieLineAdder;
 class TwoWindingsTransformer;
 class VoltageLevel;
@@ -141,6 +142,10 @@ public:
     Switch& getSwitch(const std::string& id) const;
 
     unsigned long getSwitchCount() const;
+
+    ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id) const;
+
+    unsigned long getThreeWindingsTransformerCount() const;
 
     TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id) const;
 

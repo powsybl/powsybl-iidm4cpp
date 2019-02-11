@@ -42,7 +42,12 @@ stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const 
                 throw PowsyblException(logging::format("The branch '%1%' is not connected to the voltage level '%2%'", id, getId()));
             }
         } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable.get())) {
-            throw AssertionError("TODO");
+            const auto& transformer = dynamic_cast<ThreeWindingsTransformer&>(connectable.get());
+            if (!stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::ONE).getVoltageLevel(), *this) &&
+                !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::TWO).getVoltageLevel(), *this) &&
+                !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::THREE).getVoltageLevel(), *this)) {
+                throw PowsyblException(logging::format("The 3 windings transformer '%1%' is not connected to the voltage level '%2%'", id, getId()));
+            }
         } else {
             throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.get().getType()));
         }

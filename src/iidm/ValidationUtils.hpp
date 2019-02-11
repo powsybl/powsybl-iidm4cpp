@@ -107,6 +107,8 @@ double checkR(const Validable& validable, double r);
 
 double checkRatedS(const Validable& validable, double ratedS);
 
+double checkRatedU(const Validable& validable, double ratedU);
+
 double checkRatedU1(const Validable& validable, double ratedU1);
 
 double checkRatedU2(const Validable& validable, double ratedU2);

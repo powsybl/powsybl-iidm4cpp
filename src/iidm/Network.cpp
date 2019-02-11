@@ -170,6 +170,14 @@ unsigned long Network::getSwitchCount() const {
     return getObjectCount<Switch>();
 }
 
+ThreeWindingsTransformer& Network::getThreeWindingsTransformer(const std::string& id) const {
+    return get<ThreeWindingsTransformer>(id);
+}
+
+unsigned long Network::getThreeWindingsTransformerCount() const {
+    return getObjectCount<ThreeWindingsTransformer>();
+}
+
 TwoWindingsTransformer& Network::getTwoWindingsTransformer(const std::string& id) const {
     return get<TwoWindingsTransformer>(id);
 }

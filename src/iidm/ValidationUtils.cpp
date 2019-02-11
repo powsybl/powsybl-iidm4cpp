@@ -288,6 +288,13 @@ double checkRatedS(const Validable& validable, double ratedS) {
     return ratedS;
 }
 
+double checkRatedU(const Validable& validable, double ratedU) {
+    if (std::isnan(ratedU)) {
+        throw ValidationException(validable, "rated U is invalid");
+    }
+    return ratedU;
+}
+
 double checkRatedU1(const Validable& validable, double ratedU1) {
     if (std::isnan(ratedU1)) {
         throw ValidationException(validable, "rated U1 is invalid");

@@ -5,7 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 
 namespace powsybl {
@@ -53,6 +55,10 @@ const std::string& Substation::getTypeDescription() const {
     static std::string s_typeDescription = "Substation";
 
     return s_typeDescription;
+}
+
+ThreeWindingsTransformerAdder Substation::newThreeWindingsTransformer() {
+    return ThreeWindingsTransformerAdder(*this);
 }
 
 TwoWindingsTransformerAdder Substation::newTwoWindingsTransformer() {
