@@ -34,10 +34,6 @@ void Load::allocateVariantArrayElement(const std::set<unsigned long>& indexes, u
     }
 }
 
-void Load::deleteVariantArrayElement(unsigned long index) {
-    Injection::deleteVariantArrayElement(index);
-}
-
 void Load::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     Injection::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 

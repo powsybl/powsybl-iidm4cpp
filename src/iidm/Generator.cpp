@@ -45,10 +45,6 @@ void Generator::allocateVariantArrayElement(const std::set<unsigned long>& index
     }
 }
 
-void Generator::deleteVariantArrayElement(unsigned long index) {
-    Injection::deleteVariantArrayElement(index);
-}
-
 void Generator::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     Injection::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 

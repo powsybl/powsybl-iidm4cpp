@@ -38,10 +38,6 @@ void NodeTerminal::allocateVariantArrayElement(const std::set<unsigned long>& in
     }
 }
 
-void NodeTerminal::deleteVariantArrayElement(unsigned long index) {
-    Terminal::deleteVariantArrayElement(index);
-}
-
 void NodeTerminal::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     Terminal::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
