@@ -100,7 +100,7 @@ TieLineAdder& TieLineAdder::setG2(double g2) {
 }
 
 TieLineAdder& TieLineAdder::setId(const std::string& id) {
-    if(!m_activeHalf) {
+    if (!m_activeHalf) {
         BranchAdder::setId(id);
     } else {
         getActiveHalf().setId(id);
@@ -109,7 +109,7 @@ TieLineAdder& TieLineAdder::setId(const std::string& id) {
 }
 
 TieLineAdder& TieLineAdder::setName(const std::string& name) {
-    if(!m_activeHalf) {
+    if (!m_activeHalf) {
         BranchAdder::setName(name);
     } else {
         getActiveHalf().setName(name);

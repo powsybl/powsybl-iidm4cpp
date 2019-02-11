@@ -75,7 +75,7 @@ RatioTapChangerAdder::RatioTapChangerAdder(RatioTapChangerHolder& parent) :
 
 RatioTapChanger& RatioTapChangerAdder::add() {
     checkOptional(m_parent, m_tapPosition, "tap position is not set");
-    if(m_steps.empty()) {
+    if (m_steps.empty()) {
         throw ValidationException(m_parent, "ratio tap changer should have at least one step");
     }
     long highTapPosition = m_lowTapPosition + m_steps.size() - 1;

@@ -82,7 +82,7 @@ PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent) :
 
 PhaseTapChanger& PhaseTapChangerAdder::add() {
     checkOptional(m_parent, m_tapPosition, "tap position is not set");
-    if(m_steps.empty()) {
+    if (m_steps.empty()) {
         throw ValidationException(m_parent, "a phase tap changer should have at least one step");
     }
     long highTapPosition = m_lowTapPosition + m_steps.size() - 1;
