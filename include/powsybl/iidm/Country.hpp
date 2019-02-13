@@ -266,7 +266,7 @@ enum class Country : unsigned int {
     ZW
 };
 
-const std::string& getCountryName(const Country& country);
+std::string getCountryName(const Country& country);
 
 }  // namespace iidm
 

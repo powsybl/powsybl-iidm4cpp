@@ -14,7 +14,7 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class TopologyKind {
+enum class TopologyKind : unsigned int {
     NODE_BREAKER,
     BUS_BREAKER
 };

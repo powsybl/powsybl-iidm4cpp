@@ -9,11 +9,13 @@
 
 #include <array>
 
+#include <powsybl/logging/MessageFormat.hpp>
+
 namespace powsybl {
 
 namespace logging {
 
-const std::string& getLevelName(const Level& level) {
+std::string getLevelName(const Level& level) {
     static std::array<std::string, 5> s_levelNames {{
         "TRACE",
         "DEBUG",
@@ -22,7 +24,8 @@ const std::string& getLevelName(const Level& level) {
         "ERROR"
     }};
 
-    return s_levelNames.at(static_cast<unsigned int>(level));
+    unsigned int val = static_cast<unsigned int>(level);
+    return (val < s_levelNames.size()) ? s_levelNames.at(val) : format("%1%", val);
 }
 
 }  // namespace logging

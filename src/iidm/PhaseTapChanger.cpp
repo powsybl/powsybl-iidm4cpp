@@ -21,10 +21,10 @@ namespace logging {
 template <>
 std::string toString(const iidm::PhaseTapChanger::RegulationMode& value) {
     static std::array<std::string, 3> s_regulationModeNames {{
-                                                               "CURRENT_LIMITER",
-                                                               "ACTIVE_POWER_CONTROL",
-                                                               "FIXED_TAP"
-                                                           }};
+        "CURRENT_LIMITER",
+        "ACTIVE_POWER_CONTROL",
+        "FIXED_TAP"
+    }};
 
     unsigned int val = static_cast<unsigned int>(value);
     return (val < s_regulationModeNames.size()) ? s_regulationModeNames.at(val) : format("%1%", val);

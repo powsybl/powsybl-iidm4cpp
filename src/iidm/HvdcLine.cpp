@@ -20,9 +20,9 @@ namespace logging {
 template <>
 std::string toString(const iidm::HvdcLine::ConvertersMode& value) {
     static std::array<std::string, 2> s_convertersModeNames {{
-                                                               "SIDE_1_RECTIFIER_SIDE_2_INVERTER",
-                                                               "SIDE_1_INVERTER_SIDE_2_RECTIFIER"
-                                                           }};
+        "SIDE_1_RECTIFIER_SIDE_2_INVERTER",
+        "SIDE_1_INVERTER_SIDE_2_RECTIFIER"
+    }};
 
     unsigned int val = static_cast<unsigned int>(value);
     return (val < s_convertersModeNames.size()) ? s_convertersModeNames.at(val) : format("%1%", val);

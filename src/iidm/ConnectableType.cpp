@@ -33,7 +33,8 @@ std::string toString(const iidm::ConnectableType& value) {
         "HVDC_CONVERTER_STATION"
     }};
 
-    return s_typeNames.at(static_cast<unsigned int>(value));
+    unsigned int val = static_cast<unsigned int>(value);
+    return (val < s_typeNames.size()) ? s_typeNames.at(val) : format("%1%", val);
 }
 
 }  // namespace logging

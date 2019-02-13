@@ -21,10 +21,10 @@ namespace logging {
 template <>
 std::string toString(const iidm::StaticVarCompensator::RegulationMode& value) {
     static std::array<std::string, 3> s_regulationModeNames {{
-                                                               "VOLTAGE",
-                                                               "REACTIVE_POWER",
-                                                               "OFF"
-                                                           }};
+        "VOLTAGE",
+        "REACTIVE_POWER",
+        "OFF"
+    }};
 
     unsigned int val = static_cast<unsigned int>(value);
     return (val < s_regulationModeNames.size()) ? s_regulationModeNames.at(val) : format("%1%", val);

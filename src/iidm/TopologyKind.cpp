@@ -21,11 +21,12 @@ namespace logging {
 template <>
 std::string toString(const iidm::TopologyKind& value) {
     static std::array<std::string, 2> s_topologyKindNames {{
-                                                               "NODE_BREAKER",
-                                                               "BUS_BREAKER"
-                                                           }};
+        "NODE_BREAKER",
+        "BUS_BREAKER"
+    }};
+
     unsigned int val = static_cast<unsigned int>(value);
-    return (val < s_topologyKindNames.size()) ? s_topologyKindNames.at(val) : logging::format("%1%", val);
+    return (val < s_topologyKindNames.size()) ? s_topologyKindNames.at(val) : format("%1%", val);
 }
 
 }  // namespace logging

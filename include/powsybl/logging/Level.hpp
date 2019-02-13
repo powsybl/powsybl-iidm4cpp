@@ -29,7 +29,7 @@ enum class Level : unsigned int {
  *
  * @return the name of the specified log level
  */
-const std::string& getLevelName(const Level& level);
+std::string getLevelName(const Level& level);
 
 }  // namespace logging
 

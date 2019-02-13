@@ -9,11 +9,13 @@
 
 #include <array>
 
+#include <powsybl/logging/MessageFormat.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
-const std::string& getCountryName(const Country& country) {
+std::string getCountryName(const Country& country) {
     static std::array<std::string, 249> s_countryNames {{
         u8"AFGHANISTAN",
         u8"ÅLAND ISLANDS",
@@ -266,7 +268,8 @@ const std::string& getCountryName(const Country& country) {
         u8"ZIMBABWE"
     }};
 
-    return s_countryNames.at(static_cast<unsigned int>(country));
+    unsigned int val = static_cast<unsigned int>(country);
+    return (val < s_countryNames.size()) ? s_countryNames.at(val) : logging::format("%1%", val);
 }
 
 }  // namespace iidm
