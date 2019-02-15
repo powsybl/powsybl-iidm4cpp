@@ -268,8 +268,7 @@ std::string getCountryName(const Country& country) {
         u8"ZIMBABWE"
     }};
 
-    unsigned int val = static_cast<unsigned int>(country);
-    return (val < s_countryNames.size()) ? s_countryNames.at(val) : logging::format("%1%", val);
+    return logging::toString(s_countryNames, country);
 }
 
 }  // namespace iidm

@@ -42,7 +42,7 @@ protected:
     Branch(const std::string& id, const std::string& name, const ConnectableType& connectableType);
 };
 
-const std::string& getSideName(const Branch::Side& side);
+std::string getSideName(const Branch::Side& side);
 
 std::ostream& operator<<(std::ostream& stream, const Branch::Side& side);
 

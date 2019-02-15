@@ -24,8 +24,7 @@ std::string getLevelName(const Level& level) {
         "ERROR"
     }};
 
-    unsigned int val = static_cast<unsigned int>(level);
-    return (val < s_levelNames.size()) ? s_levelNames.at(val) : format("%1%", val);
+    return toString(s_levelNames, level);
 }
 
 }  // namespace logging

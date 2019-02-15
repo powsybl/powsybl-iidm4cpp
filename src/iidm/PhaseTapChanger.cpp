@@ -26,8 +26,7 @@ std::string toString(const iidm::PhaseTapChanger::RegulationMode& value) {
         "FIXED_TAP"
     }};
 
-    unsigned int val = static_cast<unsigned int>(value);
-    return (val < s_regulationModeNames.size()) ? s_regulationModeNames.at(val) : format("%1%", val);
+    return toString(s_regulationModeNames, value);
 }
 
 }  // namespace logging

@@ -24,8 +24,7 @@ std::string toString(const iidm::HvdcLine::ConvertersMode& value) {
         "SIDE_1_INVERTER_SIDE_2_RECTIFIER"
     }};
 
-    unsigned int val = static_cast<unsigned int>(value);
-    return (val < s_convertersModeNames.size()) ? s_convertersModeNames.at(val) : format("%1%", val);
+    return toString(s_convertersModeNames, value);
 }
 
 }  // namespace logging

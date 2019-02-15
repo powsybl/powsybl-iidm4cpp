@@ -27,7 +27,7 @@ Terminal& Branch::getTerminal(const Side& side) const {
             return getTerminals().at(1).get();
 
         default:
-            throw AssertionError(logging::format("Unexpected side value: %1%", static_cast<unsigned int>(side)));
+            throw AssertionError(logging::format("Unexpected side value: %1%", side));
     }
 }
 
@@ -39,10 +39,10 @@ Terminal& Branch::getTerminal2() const {
     return getTerminal(Side::TWO);
 }
 
-const std::string& getSideName(const Branch::Side& side) {
+std::string getSideName(const Branch::Side& side) {
     static std::array<std::string, 2> s_sideNames {{ "ONE", "TWO" }};
 
-    return s_sideNames.at(static_cast<unsigned int>(side));
+    return logging::toString(s_sideNames, side);
 }
 
 std::ostream& operator<<(std::ostream& stream, const Branch::Side& side) {

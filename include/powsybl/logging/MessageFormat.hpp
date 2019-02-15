@@ -8,6 +8,7 @@
 #ifndef POWSYBL_LOGGING_MESSAGEFORMAT_HPP
 #define POWSYBL_LOGGING_MESSAGEFORMAT_HPP
 
+#include <array>
 #include <set>
 #include <string>
 
@@ -39,6 +40,21 @@ std::string format(const std::string& message, const Args&... args);
  */
 template <typename T>
 std::string toString(const T& value);
+
+/**
+ * A convenient function to convert an enum to a string
+ *
+ * @tparam N size of the names array
+ * @tparam T the type of the enum to convert
+ *
+ * @param names the array of the names to pick up
+ * @param value the value of the enum to convert
+ *
+ * @return a string corresponding of the value index in the names array or
+ * a string representation of the value if the index is out of range
+ */
+template <std::size_t N, typename T, typename = typename std::enable_if<std::is_enum<T>::value>::type>
+std::string toString(const std::array<std::string, N>& names, T value);
 
 }  // namespace logging
 

@@ -16,7 +16,7 @@ namespace iidm {
 
 class StaticVarCompensator : public Injection {
 public:
-    enum class RegulationMode {
+    enum class RegulationMode : unsigned int {
         VOLTAGE,
         REACTIVE_POWER,
         OFF
