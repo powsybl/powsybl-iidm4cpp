@@ -44,6 +44,10 @@ TEST(Load, constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Load 'LOAD1': q0 is invalid");
     adder.setQ0(40.0);
 
+    adder.setLoadType(static_cast<LoadType>(5));
+    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected load type value: 5");
+    adder.setLoadType(LoadType::AUXILIARY);
+
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'LOAD1' already exists (powsybl::iidm::Load)");
     adder.setId("UNIQUE_LOAD_ID");
 
@@ -55,8 +59,13 @@ TEST(Load, integrity) {
     const Network& network = createNetwork();
 
     Load& load1 = network.getLoad("LOAD1");
+    ASSERT_EQ(LoadType::UNDEFINED, load1.getLoadType());
     ASSERT_DOUBLE_EQ(50, load1.getP0());
     ASSERT_DOUBLE_EQ(40, load1.getQ0());
+
+    ASSERT_TRUE(stdcxx::areSame(load1, load1.setLoadType(LoadType::FICTITIOUS)));
+    ASSERT_EQ(LoadType::FICTITIOUS, load1.getLoadType());
+    POWSYBL_ASSERT_THROW(load1.setLoadType(static_cast<LoadType>(7)), AssertionError, "Unexpected load type value: 7");
 
     ASSERT_TRUE(stdcxx::areSame(load1, load1.setP0(100)));
     ASSERT_DOUBLE_EQ(100, load1.getP0());

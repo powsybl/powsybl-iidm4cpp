@@ -12,11 +12,13 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class LoadType {
+enum class LoadType : unsigned int {
     UNDEFINED,
     AUXILIARY,
     FICTITIOUS
 };
+
+std::ostream& operator<<(std::ostream& stream, const LoadType& type);
 
 }  // namespace iidm
 

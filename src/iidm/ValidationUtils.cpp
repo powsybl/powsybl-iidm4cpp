@@ -9,6 +9,7 @@
 
 #include <cmath>
 
+#include <powsybl/iidm/LoadType.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
@@ -145,6 +146,19 @@ void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int nu
     if (std::isnan(half.getXnodeQ())) {
         throw ValidationException(validable, logging::format("xnodeQ is not set for half line %1%", num));
     }
+}
+
+const LoadType& checkLoadType(const Validable& /*validable*/, const LoadType& loadType) {
+    switch (loadType) {
+        case LoadType::UNDEFINED:
+        case LoadType::AUXILIARY:
+        case LoadType::FICTITIOUS:
+            break;
+
+        default:
+            throw AssertionError(logging::format("Unexpected load type value: %1%", loadType));
+    }
+    return loadType;
 }
 
 double checkLossFactor(const Validable& validable, double lossFactor) {

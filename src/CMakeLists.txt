@@ -43,6 +43,7 @@ set(IIDM_SOURCES
     iidm/LineCharacteristics.cpp
     iidm/Load.cpp
     iidm/LoadAdder.cpp
+    iidm/LoadType.cpp
     iidm/MergedBus.cpp
     iidm/MinMaxReactiveLimits.cpp
     iidm/MinMaxReactiveLimitsAdder.cpp

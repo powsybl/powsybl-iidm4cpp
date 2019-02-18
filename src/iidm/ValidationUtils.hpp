@@ -22,6 +22,7 @@ namespace powsybl {
 
 namespace iidm {
 
+enum class LoadType : unsigned int;
 class Network;
 class Terminal;
 
@@ -52,6 +53,8 @@ double checkG1(const Validable& validable, double g1);
 double checkG2(const Validable& validable, double g2);
 
 void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int num);
+
+const LoadType& checkLoadType(const Validable& validable, const LoadType& loadType);
 
 double checkLossFactor(const Validable& validable, double lossFactor);
 

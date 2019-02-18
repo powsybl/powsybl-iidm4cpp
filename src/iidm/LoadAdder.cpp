@@ -26,6 +26,7 @@ LoadAdder::LoadAdder(VoltageLevel& voltageLevel) :
 }
 
 Load& LoadAdder::add() {
+    checkLoadType(*this, m_loadType);
     checkP0(*this, m_p0);
     checkQ0(*this, m_q0);
 

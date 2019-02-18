@@ -19,7 +19,7 @@ Load::Load(VariantManagerHolder& network, const std::string& id, const std::stri
            double p0, double q0) :
     Injection(id, name, ConnectableType::LOAD),
     m_network(network),
-    m_loadType(loadType),
+    m_loadType(checkLoadType(*this, loadType)),
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)) {
 
@@ -64,6 +64,12 @@ void Load::reduceVariantArraySize(unsigned long number) {
 
     m_p0.resize(m_p0.size() - number);
     m_q0.resize(m_q0.size() - number);
+}
+
+Load& Load::setLoadType(const LoadType& loadType) {
+    m_loadType = checkLoadType(*this, loadType);
+
+    return *this;
 }
 
 Load& Load::setP0(double p0) {

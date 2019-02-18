@@ -30,9 +30,11 @@ public:
 
     double getP0() const;
 
-    Load& setP0(double p0);
-
     double getQ0() const;
+
+    Load& setLoadType(const LoadType& loadType);
+
+    Load& setP0(double p0);
 
     Load& setQ0(double q0);
 
