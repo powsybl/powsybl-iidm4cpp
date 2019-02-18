@@ -272,8 +272,10 @@ void NodeBreakerVoltageLevel::invalidateCache() {
     // TODO(mathbagu): invalidate the connected and synchronous components
 }
 
-bool NodeBreakerVoltageLevel::isConnected(const Terminal& /*terminal*/) const {
-    throw AssertionError("TODO");
+bool NodeBreakerVoltageLevel::isConnected(const Terminal& terminal) const {
+    auto& nodeTerminal = dynamic_cast<const NodeTerminal&>(terminal);
+
+    return nodeTerminal.getBusView().getBus();
 }
 
 void NodeBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {

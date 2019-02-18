@@ -565,19 +565,19 @@ TEST(NodeBreakerVoltageLevel, Terminal) {
     ASSERT_TRUE(std::isnan(terminal.getAngle()));
     ASSERT_TRUE(std::isnan(terminal.getI()));
 
-    // TODO(thiebarr): ASSERT_TRUE(terminal.isConnected());
+    ASSERT_TRUE(terminal.isConnected());
     ASSERT_TRUE(vl.disconnect(terminal));
-    // TODO(thiebarr): ASSERT_FALSE(terminal.isConnected());
+    ASSERT_FALSE(terminal.isConnected());
     // TODO(thiebarr): ASSERT_FALSE(vl.disconnect(terminal));
     // TODO(thiebarr): ASSERT_FALSE(terminal.isConnected());
     ASSERT_TRUE(vl.connect(terminal));
-    // TODO(thiebarr): ASSERT_TRUE(terminal.isConnected());
+    ASSERT_TRUE(terminal.isConnected());
     ASSERT_FALSE(vl.connect(terminal));
-    // TODO(thiebarr): ASSERT_TRUE(terminal.isConnected());
+    ASSERT_TRUE(terminal.isConnected());
     ASSERT_TRUE(terminal.disconnect());
-    // TODO(thiebarr): ASSERT_FALSE(terminal.isConnected());
+    ASSERT_FALSE(terminal.isConnected());
     ASSERT_TRUE(terminal.connect());
-    // TODO(thiebarr): ASSERT_TRUE(terminal.isConnected());
+    ASSERT_TRUE(terminal.isConnected());
 
     POWSYBL_ASSERT_THROW(vl3.attach(l1.getTerminal(), true), ValidationException, "Load 'LOAD1': Voltage level 'VL3' has a bus/breaker topology, a bus connection should be specified instead of a node connection");
     POWSYBL_ASSERT_THROW(vl.attach(l3.getTerminal(), true), ValidationException, "Load 'LOAD3': Voltage level VL has a node/breaker topology, a node connection should be specified instead of a bus connection");
