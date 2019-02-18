@@ -62,9 +62,9 @@ TEST(VoltageLevel, constructor) {
     ASSERT_NO_THROW(adder.add());
     ASSERT_EQ(voltageLevelCount + 1, network.getVoltageLevelCount());
 
-    ASSERT_EQ(Container::Type::NETWORK, network.getType());
-    ASSERT_EQ(Container::Type::SUBSTATION, s1.getType());
-    ASSERT_EQ(Container::Type::VOLTAGE_LEVEL, vl1.getType());
+    ASSERT_EQ(Container::Type::NETWORK, network.getContainerType());
+    ASSERT_EQ(Container::Type::SUBSTATION, s1.getContainerType());
+    ASSERT_EQ(Container::Type::VOLTAGE_LEVEL, vl1.getContainerType());
 }
 
 TEST(VoltageLevel, integrity) {

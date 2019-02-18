@@ -25,7 +25,7 @@ public:
 public:
     ~Container() noexcept override = default;
 
-    const Type& getType() const;
+    const Type& getContainerType() const;
 
 protected:
     Container(const std::string& id, const std::string& name, const Container::Type& type);

@@ -16,7 +16,7 @@ Container::Container(const std::string& id, const std::string& name, const Conta
     m_type(type) {
 }
 
-const Container::Type& Container::getType() const {
+const Container::Type& Container::getContainerType() const {
     return m_type;
 }
 
