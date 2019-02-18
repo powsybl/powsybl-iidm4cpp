@@ -185,6 +185,7 @@ TEST(Generator, integrity) {
     Generator& gen = network.getGenerator("GEN1");
     ASSERT_EQ("GEN1", gen.getId());
     ASSERT_EQ("GEN1_NAME", gen.getName());
+    ASSERT_EQ(ConnectableType::GENERATOR, gen.getType());
     ASSERT_DOUBLE_EQ(45, gen.getActivePowerSetpoint());
     ASSERT_EQ(EnergySource::WIND, gen.getEnergySource());
     ASSERT_DOUBLE_EQ(50.0, gen.getMaxP());

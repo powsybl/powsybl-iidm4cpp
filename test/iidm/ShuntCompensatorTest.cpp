@@ -137,6 +137,7 @@ TEST(ShuntCompensator, multivariant) {
     network.getVariantManager().setWorkingVariant("s1");
     ASSERT_EQ("SHUNT1", shunt.getId());
     ASSERT_EQ("SHUNT1_NAME", shunt.getName());
+    ASSERT_EQ(ConnectableType::SHUNT_COMPENSATOR, shunt.getType());
     ASSERT_DOUBLE_EQ(12.0, shunt.getbPerSection());
     ASSERT_EQ(2ul, shunt.getCurrentSectionCount());
     ASSERT_EQ(3ul, shunt.getMaximumSectionCount());

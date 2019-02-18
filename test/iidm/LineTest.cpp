@@ -117,7 +117,7 @@ TEST(Line, constructor) {
     Line& line = network.getLine("VL1_VL3");
     ASSERT_EQ("VL1_VL3", line.getId());
     ASSERT_EQ("", line.getName());
-    ASSERT_EQ(ConnectableType::LINE, line.getConnectableType());
+    ASSERT_EQ(ConnectableType::LINE, line.getType());
     ASSERT_FALSE(line.isTieLine());
     ASSERT_DOUBLE_EQ(3.0, line.getR());
     ASSERT_DOUBLE_EQ(33.0, line.getX());

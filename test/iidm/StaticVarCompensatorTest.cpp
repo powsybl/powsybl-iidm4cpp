@@ -90,6 +90,7 @@ TEST(StaticVarCompensator, integrity) {
     StaticVarCompensator& svc = network.getStaticVarCompensator("SVC1");
     ASSERT_EQ("SVC1", svc.getId());
     ASSERT_EQ("SVC1_NAME", svc.getName());
+    ASSERT_EQ(ConnectableType::STATIC_VAR_COMPENSATOR, svc.getType());
     ASSERT_DOUBLE_EQ(-0.01, svc.getBmin());
     ASSERT_DOUBLE_EQ(0.02, svc.getBmax());
     ASSERT_DOUBLE_EQ(90.0, svc.getReactivePowerSetpoint());

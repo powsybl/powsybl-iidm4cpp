@@ -220,7 +220,7 @@ TEST(TwoWindingsTransformer, constructor) {
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     ASSERT_EQ("2WT_VL1_VL2", transformer.getId());
     ASSERT_EQ("", transformer.getName());
-    ASSERT_EQ(ConnectableType::TWO_WINDINGS_TRANSFORMER, transformer.getConnectableType());
+    ASSERT_EQ(ConnectableType::TWO_WINDINGS_TRANSFORMER, transformer.getType());
     ASSERT_DOUBLE_EQ(3.0, transformer.getR());
     ASSERT_DOUBLE_EQ(33.0, transformer.getX());
     ASSERT_DOUBLE_EQ(1.0, transformer.getG());

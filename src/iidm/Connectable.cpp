@@ -44,7 +44,7 @@ void Connectable::extendVariantArraySize(unsigned long initVariantArraySize, uns
     }
 }
 
-const ConnectableType& Connectable::getConnectableType() const {
+const ConnectableType& Connectable::getType() const {
     return m_connectableType;
 }
 

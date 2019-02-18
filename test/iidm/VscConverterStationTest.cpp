@@ -118,6 +118,8 @@ TEST(VscConverterStation, integrity) {
     ASSERT_EQ(vsc.getId(), hvdc.getId());
     ASSERT_EQ("VSC1_NAME", vsc.getName());
     ASSERT_EQ(vsc.getName(), hvdc.getName());
+    ASSERT_EQ(ConnectableType::HVDC_CONVERTER_STATION, vsc.getType());
+    ASSERT_EQ(hvdc.getType(), vsc.getType());
     ASSERT_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
     ASSERT_EQ(vsc.getHvdcType(), hvdc.getHvdcType());
     ASSERT_DOUBLE_EQ(3.0, vsc.getLossFactor());

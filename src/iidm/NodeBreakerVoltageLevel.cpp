@@ -83,7 +83,7 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
     // find all paths starting from the current terminal to a busbar section that does not contain an open disconnector
     // paths are already sorted
     node_breaker_voltage_level::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& terminal) {
-        return static_cast<bool>(terminal) && terminal.get().getConnectable().get().getConnectableType() == ConnectableType::BUSBAR_SECTION;
+        return static_cast<bool>(terminal) && terminal.get().getConnectable().get().getType() == ConnectableType::BUSBAR_SECTION;
     };
     node_breaker_voltage_level::Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
         return aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
@@ -130,7 +130,7 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
 
     // find all paths starting from the current terminal to a busbar section that does not contain an open disconnector
     node_breaker_voltage_level::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& terminal) {
-        return static_cast<bool>(terminal) && terminal.get().getConnectable().get().getConnectableType() == ConnectableType::BUSBAR_SECTION;
+        return static_cast<bool>(terminal) && terminal.get().getConnectable().get().getType() == ConnectableType::BUSBAR_SECTION;
     };
     node_breaker_voltage_level::Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
         return aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();

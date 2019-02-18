@@ -102,6 +102,7 @@ TEST(DanglingLine, integrity) {
     DanglingLine& danglingLine = network.getDanglingLine("DL1");
     ASSERT_EQ("DL1", danglingLine.getId());
     ASSERT_EQ("DL1_NAME", danglingLine.getName());
+    ASSERT_EQ(ConnectableType::DANGLING_LINE, danglingLine.getType());
     ASSERT_DOUBLE_EQ(1.0, danglingLine.getB());
     ASSERT_DOUBLE_EQ(2.0, danglingLine.getG());
     ASSERT_DOUBLE_EQ(3.0, danglingLine.getP0());

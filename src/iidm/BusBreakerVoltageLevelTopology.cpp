@@ -68,7 +68,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
     for (const auto& bus : buses) {
         for (const auto& terminal : bus.get().getConnectedTerminals()) {
             const auto& connectable = terminal.get().getConnectable().get();
-            switch (connectable.getConnectableType()) {
+            switch (connectable.getType()) {
                 case ConnectableType::LINE:
                 case ConnectableType::TWO_WINDINGS_TRANSFORMER:
                 case ConnectableType::THREE_WINDINGS_TRANSFORMER:
@@ -85,7 +85,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
 
                 case ConnectableType::BUSBAR_SECTION: // must not happen in a bus/breaker topology
                 default:
-                    throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.getConnectableType()));
+                    throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.getType()));
             }
         }
     }

@@ -45,6 +45,7 @@ TEST(NodeBreakerVoltageLevel, BusbarSection) {
 
     ASSERT_EQ("BBS", bbs.getId());
     ASSERT_EQ("BBS_NAME", bbs.getName());
+    ASSERT_EQ(ConnectableType::BUSBAR_SECTION, bbs.getType());
     ASSERT_TRUE(stdcxx::areSame(voltageLevel, bbs.getTerminal().getVoltageLevel()));
 
     BusbarSection& bbs2 = network.getBusbarSection("BBS");

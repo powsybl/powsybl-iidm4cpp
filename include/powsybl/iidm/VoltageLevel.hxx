@@ -41,7 +41,7 @@ T& VoltageLevel::getConnectable(const std::string& id) {
     } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable)) {
         throw AssertionError("TODO");
     } else {
-        throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.getConnectableType()));
+        throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.getType()));
     }
 
     return dynamic_cast<T&>(connectable);

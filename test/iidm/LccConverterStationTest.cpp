@@ -105,6 +105,8 @@ TEST(LccConverterStation, integrity) {
     ASSERT_EQ(lcc.getId(), hvdc.getId());
     ASSERT_EQ("LCC1_NAME", lcc.getName());
     ASSERT_EQ(lcc.getName(), hvdc.getName());
+    ASSERT_EQ(ConnectableType::HVDC_CONVERTER_STATION, lcc.getType());
+    ASSERT_EQ(hvdc.getType(), lcc.getType());
     ASSERT_EQ(HvdcConverterStation::HvdcType::LCC, lcc.getHvdcType());
     ASSERT_EQ(lcc.getHvdcType(), hvdc.getHvdcType());
     ASSERT_DOUBLE_EQ(1.0, lcc.getLossFactor());

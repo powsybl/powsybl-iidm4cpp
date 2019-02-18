@@ -28,6 +28,7 @@ TEST(Load, constructor) {
     Load& load = network.getLoad("LOAD1");
     ASSERT_EQ("LOAD1", load.getId());
     ASSERT_EQ("LOAD1_NAME", load.getName());
+    ASSERT_EQ(ConnectableType::LOAD, load.getType());
     ASSERT_EQ(LoadType::UNDEFINED, load.getLoadType());
     ASSERT_DOUBLE_EQ(50.0, load.getP0());
     ASSERT_DOUBLE_EQ(40.0, load.getQ0());

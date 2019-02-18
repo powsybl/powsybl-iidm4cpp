@@ -134,7 +134,7 @@ TEST(TieLine, constructor) {
     TieLine& tieLine = dynamic_cast<TieLine&>(network.getLine("TL_VL1_VL3"));
     ASSERT_EQ("TL_VL1_VL3", tieLine.getId());
     ASSERT_EQ("", tieLine.getName());
-    ASSERT_EQ(ConnectableType::LINE, tieLine.getConnectableType());
+    ASSERT_EQ(ConnectableType::LINE, tieLine.getType());
     ASSERT_TRUE(tieLine.isTieLine());
     ASSERT_DOUBLE_EQ(13.0, tieLine.getR());
     ASSERT_DOUBLE_EQ(143.0, tieLine.getX());

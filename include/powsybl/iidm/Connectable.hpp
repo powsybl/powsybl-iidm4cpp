@@ -28,7 +28,7 @@ public:
 
     Terminal& addTerminal(std::unique_ptr<Terminal>&& terminal);
 
-    const ConnectableType& getConnectableType() const;
+    const ConnectableType& getType() const;
 
     std::vector<std::reference_wrapper<Terminal> > getTerminals() const;
 
