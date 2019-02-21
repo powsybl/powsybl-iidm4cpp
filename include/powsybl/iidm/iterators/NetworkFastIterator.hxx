@@ -17,12 +17,12 @@ namespace powsybl {
 namespace iidm {
 
 template <typename Base, typename Iterator, typename... Derived>
-NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(ObjectStore& objectStore) {
+NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(NetworkIndex& networkIndex) {
 
     std::set<std::type_index> typeList = { typeid(Base), typeid(Derived)... };
     for (auto itType = typeList.begin(); itType != typeList.end(); ++itType) {
-        const auto& it = objectStore.m_objectsByType.find(*itType);
-        if (it != objectStore.m_objectsByType.end()) {
+        const auto& it = networkIndex.m_objectsByType.find(*itType);
+        if (it != networkIndex.m_objectsByType.end()) {
             m_ranges.push_back(std::make_pair(it->second.begin(), it->second.end()));
         }
     }
@@ -32,12 +32,12 @@ NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(ObjectStore
 }
 
 template <typename Base, typename Iterator, typename... Derived>
-NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(const ObjectStore& objectStore) {
+NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(const NetworkIndex& networkIndex) {
 
     std::set<std::type_index> typeList = { typeid(Base), typeid(Derived)... };
     for (auto itType = typeList.begin(); itType != typeList.end(); ++itType) {
-        const auto& it = objectStore.m_objectsByType.find(*itType);
-        if (it != objectStore.m_objectsByType.end()) {
+        const auto& it = networkIndex.m_objectsByType.find(*itType);
+        if (it != networkIndex.m_objectsByType.end()) {
             m_ranges.push_back(std::make_pair(it->second.cbegin(), it->second.cend()));
         }
     }

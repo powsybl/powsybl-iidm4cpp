@@ -16,17 +16,17 @@ namespace iidm {
 
 template <typename T, typename>
 T& Network::get(const std::string& id) const {
-    return m_objectStore.get<T>(id);
+    return m_networkIndex.get<T>(id);
 }
 
 template <typename T, typename>
 unsigned long Network::getObjectCount() const {
-    return m_objectStore.getObjectCount<T>();
+    return m_networkIndex.getObjectCount<T>();
 }
 
 template <typename T, typename>
 stdcxx::Reference<T> Network::find(const std::string& id) const {
-    return m_objectStore.find<T>(id);
+    return m_networkIndex.find<T>(id);
 }
 
 }  // namespace iidm

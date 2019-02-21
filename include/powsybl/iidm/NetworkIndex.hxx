@@ -1,14 +1,14 @@
 /**
- * Copyright (c) 2017, RTE (http://www.rte-france.com)
+ * Copyright (c) 2019, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_OBJECTSTORE_HXX
-#define POWSYBL_IIDM_OBJECTSTORE_HXX
+#ifndef POWSYBL_IIDM_NETWORKINDEX_HXX
+#define POWSYBL_IIDM_NETWORKINDEX_HXX
 
-#include <powsybl/iidm/ObjectStore.hpp>
+#include <powsybl/iidm/NetworkIndex.hpp>
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
@@ -20,22 +20,22 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T>
-ObjectStore::iterator<T> ObjectStore::begin() {
-    return ObjectStore::iterator<T>(*this);
+NetworkIndex::iterator<T> NetworkIndex::begin() {
+    return NetworkIndex::iterator<T>(*this);
 }
 
 template <typename T>
-ObjectStore::const_iterator<T> ObjectStore::cbegin() const {
-    return typename ObjectStore::const_iterator<T>(*this);
+NetworkIndex::const_iterator<T> NetworkIndex::cbegin() const {
+    return typename NetworkIndex::const_iterator<T>(*this);
 }
 
 template <typename T>
-ObjectStore::const_iterator<T> ObjectStore::cend() const {
-    return typename ObjectStore::const_iterator<T>();
+NetworkIndex::const_iterator<T> NetworkIndex::cend() const {
+    return typename NetworkIndex::const_iterator<T>();
 }
 
 template <typename T>
-T& ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
+T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     assert(identifiable);
     checkId(identifiable->getId());
 
@@ -53,12 +53,12 @@ T& ObjectStore::checkAndAdd(std::unique_ptr<T>&& identifiable) {
 }
 
 template <typename T>
-ObjectStore::iterator<T> ObjectStore::end() {
-    return ObjectStore::iterator<T>();
+NetworkIndex::iterator<T> NetworkIndex::end() {
+    return NetworkIndex::iterator<T>();
 }
 
 template<typename T>
-T& ObjectStore::get(const std::string& id) const {
+T& NetworkIndex::get(const std::string& id) const {
     checkId(id);
 
     const auto& it = m_objectsById.find(id);
@@ -75,7 +75,7 @@ T& ObjectStore::get(const std::string& id) const {
 }
 
 template <typename T>
-unsigned long ObjectStore::getObjectCount() const {
+unsigned long NetworkIndex::getObjectCount() const {
     const auto& it = m_objectsByType.find(typeid(T));
     if (it != m_objectsByType.end()) {
         return it->second.size();
@@ -84,7 +84,7 @@ unsigned long ObjectStore::getObjectCount() const {
 }
 
 template <typename T>
-stdcxx::Reference<T> ObjectStore::find(const std::string& id) const {
+stdcxx::Reference<T> NetworkIndex::find(const std::string& id) const {
     checkId(id);
 
     const auto& it = m_objectsById.find(id);
@@ -102,4 +102,4 @@ stdcxx::Reference<T> ObjectStore::find(const std::string& id) const {
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_OBJECTSTORE_HXX
+#endif  // POWSYBL_IIDM_NETWORKINDEX_HXX

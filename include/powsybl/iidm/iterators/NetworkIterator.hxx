@@ -11,7 +11,7 @@
 #include <memory>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/iidm/ObjectStore.hpp>
+#include <powsybl/iidm/NetworkIndex.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 
 namespace powsybl {
@@ -19,17 +19,17 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T, typename Iterator>
-NetworkIterator<T, Iterator>::NetworkIterator(ObjectStore& objectStore) :
-    m_current(objectStore.m_objectsById.begin()),
-    m_end(objectStore.m_objectsById.end()) {
+NetworkIterator<T, Iterator>::NetworkIterator(NetworkIndex& networkIndex) :
+    m_current(networkIndex.m_objectsById.begin()),
+    m_end(networkIndex.m_objectsById.end()) {
 
     advance(false);
 }
 
 template <typename T, typename Iterator>
-NetworkIterator<T, Iterator>::NetworkIterator(const ObjectStore& objectStore) :
-    m_current(objectStore.m_objectsById.cbegin()),
-    m_end(objectStore.m_objectsById.cend()) {
+NetworkIterator<T, Iterator>::NetworkIterator(const NetworkIndex& networkIndex) :
+    m_current(networkIndex.m_objectsById.cbegin()),
+    m_end(networkIndex.m_objectsById.cend()) {
 
     advance(false);
 }

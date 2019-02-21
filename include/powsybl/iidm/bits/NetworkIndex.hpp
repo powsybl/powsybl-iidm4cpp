@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2017, RTE (http://www.rte-france.com)
+ * Copyright (c) 2019, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_BITS_OBJECTSTORE_HPP
-#define POWSYBL_IIDM_BITS_OBJECTSTORE_HPP
+#ifndef POWSYBL_IIDM_BITS_NETWORKINDEX_HPP
+#define POWSYBL_IIDM_BITS_NETWORKINDEX_HPP
 
 #include <functional>
 #include <memory>
@@ -31,4 +31,4 @@ typedef std::unordered_map<std::type_index, Identifiables> IdentifiablesByType;
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_BITS_OBJECTSTORE_HPP
+#endif  // POWSYBL_IIDM_BITS_NETWORKINDEX_HPP

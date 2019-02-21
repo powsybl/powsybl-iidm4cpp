@@ -49,6 +49,7 @@ set(IIDM_SOURCES
     iidm/MinMaxReactiveLimitsAdder.cpp
     iidm/MultipleVariantContext.cpp
     iidm/Network.cpp
+    iidm/NetworkIndex.cpp
     iidm/NodeBreakerVoltageLevel.cpp
     iidm/NodeBreakerVoltageLevelBusCache.cpp
     iidm/NodeBreakerVoltageLevelBusNamingStrategy.cpp
@@ -57,7 +58,6 @@ set(IIDM_SOURCES
     iidm/NodeBreakerVoltageLevelViews.cpp
     iidm/NodeTerminal.cpp
     iidm/NodeTerminalViews.cpp
-    iidm/ObjectStore.cpp
     iidm/PhaseTapChanger.cpp
     iidm/PhaseTapChangerAdder.cpp
     iidm/PhaseTapChangerStep.cpp

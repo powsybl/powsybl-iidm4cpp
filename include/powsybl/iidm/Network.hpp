@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_NETWORK_HPP
 
 #include <powsybl/iidm/Container.hpp>
-#include <powsybl/iidm/ObjectStore.hpp>
+#include <powsybl/iidm/NetworkIndex.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
@@ -52,24 +52,24 @@ public:
 
     ~Network() noexcept override = default;
 
-    template <typename T> ObjectStore::iterator<T> begin() {
-        return m_objectStore.begin<T>();
+    template <typename T> NetworkIndex::iterator<T> begin() {
+        return m_networkIndex.begin<T>();
     }
 
-    template <typename T> ObjectStore::const_iterator<T> cbegin() const {
-        return m_objectStore.cbegin<T>();
+    template <typename T> NetworkIndex::const_iterator<T> cbegin() const {
+        return m_networkIndex.cbegin<T>();
     }
 
-    template <typename T> ObjectStore::const_iterator<T> cend() const {
-        return m_objectStore.cend<T>();
+    template <typename T> NetworkIndex::const_iterator<T> cend() const {
+        return m_networkIndex.cend<T>();
     }
 
     template <typename T> T& checkAndAdd(std::unique_ptr<T>&& identifiable) {
-        return m_objectStore.checkAndAdd(std::move(identifiable));
+        return m_networkIndex.checkAndAdd(std::move(identifiable));
     }
 
-    template <typename T> ObjectStore::iterator<T> end() {
-        return m_objectStore.end<T>();
+    template <typename T> NetworkIndex::iterator<T> end() {
+        return m_networkIndex.end<T>();
     }
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
@@ -163,7 +163,7 @@ private:
 
     int m_forecastDistance;
 
-    ObjectStore m_objectStore;
+    NetworkIndex m_networkIndex;
 
     VariantManager m_variantManager;
 };

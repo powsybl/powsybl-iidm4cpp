@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class ObjectStore;
+class NetworkIndex;
 
 /**
  * Forward iterator over the IdentifiablesByType map.
@@ -28,9 +28,9 @@ public:
 
     NetworkFastIterator(const NetworkFastIterator&) = default;
 
-    NetworkFastIterator(ObjectStore& objectStore);
+    NetworkFastIterator(NetworkIndex& networkIndex);
 
-    NetworkFastIterator(const ObjectStore& objectStore);
+    NetworkFastIterator(const NetworkIndex& networkIndex);
 
     NetworkFastIterator& operator=(const NetworkFastIterator&) = default;
 

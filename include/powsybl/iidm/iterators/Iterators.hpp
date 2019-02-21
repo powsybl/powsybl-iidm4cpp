@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_ITERATORS_ITERATORS_HPP
 #define POWSYBL_IIDM_ITERATORS_ITERATORS_HPP
 
-#include <powsybl/iidm/bits/ObjectStore.hpp>
+#include <powsybl/iidm/bits/NetworkIndex.hpp>
 
 #include <powsybl/iidm/iterators/NetworkFastIterator.hpp>
 #include <powsybl/iidm/iterators/NetworkIterator.hpp>

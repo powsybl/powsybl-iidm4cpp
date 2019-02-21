@@ -1,11 +1,11 @@
 /**
- * Copyright (c) 2017, RTE (http://www.rte-france.com)
+ * Copyright (c) 2019, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/ObjectStore.hpp>
+#include <powsybl/iidm/NetworkIndex.hpp>
 
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -15,12 +15,12 @@ namespace powsybl {
 
 namespace iidm {
 
-void ObjectStore::checkId(const std::string& id) {
+void NetworkIndex::checkId(const std::string& id) {
     checkNotEmpty(id, "Invalid id '" + id + "'");
 }
 
 template <>
-Identifiable& ObjectStore::get(const std::string& id) const {
+Identifiable& NetworkIndex::get(const std::string& id) const {
     checkId(id);
 
     const auto& it = m_objectsById.find(id);
@@ -32,11 +32,11 @@ Identifiable& ObjectStore::get(const std::string& id) const {
 }
 
 template <>
-unsigned long ObjectStore::getObjectCount<Identifiable>() const {
+unsigned long NetworkIndex::getObjectCount<Identifiable>() const {
     return m_objectsById.size();
 }
 
-void ObjectStore::remove(Identifiable& identifiable) {
+void NetworkIndex::remove(Identifiable& identifiable) {
     const auto& it = m_objectsById.find(identifiable.getId());
 
     // assert that the two instances are identical (not namesake)

@@ -199,7 +199,7 @@ TieLineAdder Network::newTieLine() {
 }
 
 void Network::remove(Identifiable& identifiable) {
-    m_objectStore.remove(identifiable);
+    m_networkIndex.remove(identifiable);
 }
 
 Network& Network::setForecastDistance(int forecastDistance) {

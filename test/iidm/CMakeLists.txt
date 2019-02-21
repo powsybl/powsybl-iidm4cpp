@@ -17,9 +17,9 @@ set(UNIT_TEST_SOURCES
     LineTest.cpp
     LoadTest.cpp
     NetworkFactory.cpp
+    NetworkIndexTest.cpp
     NetworkTest.cpp
     NodeBreakerVoltageLevelTest.cpp
-    ObjectStoreTest.cpp
     PhaseTapChangerTest.cpp
     RatioTapChangerTest.cpp
     ReactiveLimitsTest.cpp

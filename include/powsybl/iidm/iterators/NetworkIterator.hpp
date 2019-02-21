@@ -12,7 +12,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class ObjectStore;
+class NetworkIndex;
 
 /**
  * Forward iterator over the IdentifiableById map. Skip all the Identifiable which are not compatible with T.
@@ -24,9 +24,9 @@ public:
 
     NetworkIterator(const NetworkIterator&) = default;
 
-    NetworkIterator(ObjectStore& objectStore);
+    NetworkIterator(NetworkIndex& networkIndex);
 
-    NetworkIterator(const ObjectStore& objectStore);
+    NetworkIterator(const NetworkIndex& networkIndex);
 
     NetworkIterator& operator=(const NetworkIterator&) = default;
 
