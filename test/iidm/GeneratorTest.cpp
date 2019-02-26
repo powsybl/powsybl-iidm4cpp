@@ -16,6 +16,7 @@
 #include <powsybl/stdcxx/math.hpp>
 
 #include "AssertionUtils.hpp"
+#include "NetworkFactory.hpp"
 
 namespace powsybl {
 
@@ -106,36 +107,6 @@ Network createGeneratorTestNetwork() {
     return network;
 }
 
-Network createGeneratorTestNetwork2() {
-    Network network("test2", "test2");
-
-    Substation& s = network.newSubstation()
-        .setId("S")
-        .setCountry(Country::FR)
-        .add();
-
-    VoltageLevel& vl = s.newVoltageLevel()
-        .setId("VL")
-        .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
-        .setLowVoltageLimit(380.0)
-        .setHighVoltageLimit(420.0)
-        .add();
-
-    vl.getNodeBreakerView().setNodeCount(1);
-
-    vl.newLoad()
-        .setId("LOAD1")
-        .setNode(0)
-        .setName("LOAD1_NAME")
-        .setLoadType(LoadType::UNDEFINED)
-        .setP0(50.0)
-        .setQ0(40.0)
-        .add();
-
-    return network;
-}
-
 TEST(Generator, constructor) {
     const Network& network = createGeneratorTestNetwork();
     unsigned long generatorCount = network.getGeneratorCount();
@@ -167,9 +138,7 @@ TEST(Generator, constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'GEN1' already exists (powsybl::iidm::Generator)");
 
     //Terminal from other network
-    Network network2 = createGeneratorTestNetwork2();
-    Terminal& terminal2 = network2.getLoad("LOAD1").getTerminal();
-    adder.setRegulatingTerminal(stdcxx::ref<Terminal>(terminal2));
+    adder.setRegulatingTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2()));
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Generator 'GEN1': Regulating terminal is not part of the network");
 
     adder.setRegulatingTerminal(stdcxx::ref<Terminal>());
@@ -275,9 +244,7 @@ TEST(Generator, integrity) {
     gen.setRegulatingTerminal(stdcxx::ref<Terminal>(terminal2));
 
     //Terminal from other network
-    Network network2 = createGeneratorTestNetwork2();
-    Terminal& terminal3 = network2.getLoad("LOAD1").getTerminal();
-    POWSYBL_ASSERT_THROW(gen.setRegulatingTerminal(stdcxx::ref<Terminal>(terminal3)), ValidationException, "Generator 'GEN1': Regulating terminal is not part of the network");
+    POWSYBL_ASSERT_THROW(gen.setRegulatingTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2())), ValidationException, "Generator 'GEN1': Regulating terminal is not part of the network");
 
     gen.remove();
     POWSYBL_ASSERT_THROW(network.getGenerator("GEN1"), PowsyblException, "Unable to find to the identifiable 'GEN1'");

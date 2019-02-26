@@ -7,13 +7,62 @@
 
 #include "NetworkFactory.hpp"
 
+#include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
+#include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/NodeBreakerView.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/VscConverterStationAdder.hpp>
 
 namespace powsybl {
 
 namespace iidm {
+
+Network createHvdcConverterStationTestNetwork() {
+    Network network("test", "test");
+    Substation& substation = network.newSubstation()
+        .setId("S1")
+        .setName("S1_NAME")
+        .setCountry(Country::FR)
+        .setTso("TSO")
+        .add();
+
+    VoltageLevel& vl1 = substation.newVoltageLevel()
+        .setId("VL1")
+        .setName("VL1_NAME")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalVoltage(380.0)
+        .setLowVoltageLimit(340.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    Bus& vl1Bus1 = vl1.getBusBreakerView().newBus()
+        .setId("VL1_BUS1")
+        .add();
+
+    vl1.newLccConverterStation()
+        .setId("LCC1")
+        .setName("LCC1_NAME")
+        .setBus(vl1Bus1.getId())
+        .setConnectableBus(vl1Bus1.getId())
+        .setLossFactor(1.0)
+        .setPowerFactor(2.0)
+        .add();
+
+    vl1.newVscConverterStation()
+        .setId("VSC1")
+        .setName("VSC1_NAME")
+        .setBus(vl1Bus1.getId())
+        .setConnectableBus(vl1Bus1.getId())
+        .setLossFactor(3.0)
+        .setVoltageRegulatorOn(true)
+        .setVoltageSetpoint(4.0)
+        .setReactivePowerSetpoint(5.0)
+        .add();
+
+    return network;
+}
 
 Network createNetwork() {
     Network network("test", "test");
@@ -57,6 +106,36 @@ Network createNetwork() {
         .add();
 
     return network;
+}
+
+Terminal& getTerminalFromNetwork2() {
+    Network network("test2", "test2");
+
+    Substation& s = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+
+    VoltageLevel& vl = s.newVoltageLevel()
+        .setId("VL")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalVoltage(400.0)
+        .setLowVoltageLimit(380.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    vl.getNodeBreakerView().setNodeCount(1);
+
+    Load& l1 = vl.newLoad()
+        .setId("LOAD1")
+        .setNode(0)
+        .setName("LOAD1_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    return l1.getTerminal();
 }
 
 }  // namespace iidm

@@ -24,6 +24,7 @@
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "AssertionUtils.hpp"
+#include "NetworkFactory.hpp"
 
 namespace powsybl {
 
@@ -168,40 +169,6 @@ Network createPhaseTapChangerTestNetwork() {
     return network;
 }
 
-namespace phasetapchangertest {
-
-Terminal& getTerminalFromNetwork2() {
-    Network network("test2", "test2");
-
-    Substation& s = network.newSubstation()
-        .setId("S")
-        .setCountry(Country::FR)
-        .add();
-
-    VoltageLevel& vl = s.newVoltageLevel()
-        .setId("VL")
-        .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
-        .setLowVoltageLimit(380.0)
-        .setHighVoltageLimit(420.0)
-        .add();
-
-    vl.getNodeBreakerView().setNodeCount(1);
-
-    Load& l1 = vl.newLoad()
-        .setId("LOAD1")
-        .setNode(0)
-        .setName("LOAD1_NAME")
-        .setLoadType(LoadType::UNDEFINED)
-        .setP0(50.0)
-        .setQ0(40.0)
-        .add();
-
-    return l1.getTerminal();
-}
-
-}  // namespace phasetapchangertest
-
 TEST(PhaseTapChanger, constructor) {
     const Network& network = createPhaseTapChangerTestNetwork();
     const Terminal& terminal = network.getLoad("LOAD1").getTerminal();
@@ -305,7 +272,7 @@ TEST(PhaseTapChanger, integrity) {
     Terminal& terminal2 = network.getLoad("LOAD2").getTerminal();
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationValue(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and regulated terminal is not set");
-    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(phasetapchangertest::getTerminalFromNetwork2())), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2())), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(terminal2))));
     ASSERT_TRUE(stdcxx::areSame(terminal2, phaseTapChanger.getRegulationTerminal().get()));
 
@@ -320,7 +287,7 @@ TEST(PhaseTapChanger, integrity) {
 
     phaseTapChanger.setRegulating(false).setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP);
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation terminal is null");
-    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(phasetapchangertest::getTerminalFromNetwork2())), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2())), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(terminal))));
     ASSERT_TRUE(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
     ASSERT_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
@@ -389,7 +356,7 @@ TEST(PhaseTapChanger, adder) {
     ASSERT_NO_THROW(adder.add());
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(network.getLoad("LOAD1").getTerminal()));
     ASSERT_NO_THROW(adder.add());
-    adder.setRegulationTerminal(stdcxx::ref<Terminal>(phasetapchangertest::getTerminalFromNetwork2()));
+    adder.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2()));
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     adder.setRegulationTerminal(stdcxx::Reference<Terminal>());
     ASSERT_NO_THROW(adder.add());
@@ -403,7 +370,7 @@ TEST(PhaseTapChanger, adder) {
     adder.setRegulationValue(55.0);
     adder.setRegulationTerminal(stdcxx::Reference<Terminal>());
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and regulated terminal is not set");
-    adder.setRegulationTerminal(stdcxx::ref<Terminal>(phasetapchangertest::getTerminalFromNetwork2()));
+    adder.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2()));
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(network.getLoad("LOAD1").getTerminal()));
     ASSERT_NO_THROW(adder.add());

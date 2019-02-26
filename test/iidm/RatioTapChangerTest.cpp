@@ -24,6 +24,7 @@
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "AssertionUtils.hpp"
+#include "NetworkFactory.hpp"
 
 namespace powsybl {
 
@@ -163,36 +164,6 @@ Network createRatioTapChangerTestNetwork() {
         .add();
 
     return network;
-}
-
-Terminal& getTerminalFromNetwork2() {
-    Network network("test2", "test2");
-
-    Substation& s = network.newSubstation()
-        .setId("S")
-        .setCountry(Country::FR)
-        .add();
-
-    VoltageLevel& vl = s.newVoltageLevel()
-        .setId("VL")
-        .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
-        .setLowVoltageLimit(380.0)
-        .setHighVoltageLimit(420.0)
-        .add();
-
-    vl.getNodeBreakerView().setNodeCount(1);
-
-    Load& l1 = vl.newLoad()
-        .setId("LOAD1")
-        .setNode(0)
-        .setName("LOAD1_NAME")
-        .setLoadType(LoadType::UNDEFINED)
-        .setP0(50.0)
-        .setQ0(40.0)
-        .add();
-
-    return l1.getTerminal();
 }
 
 TEST(RatioTapChanger, constructor) {

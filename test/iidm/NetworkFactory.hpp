@@ -8,13 +8,18 @@
 #ifndef POWSYBL_IIDM_NETWORKFACTORY_HPP
 #define POWSYBL_IIDM_NETWORKFACTORY_HPP
 
-#include <powsybl/iidm/Network.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
+class Network;
+class Terminal;
+
+Network createHvdcConverterStationTestNetwork();
+
 Network createNetwork();
+
+Terminal& getTerminalFromNetwork2();
 
 }  // namespace iidm
 

@@ -9,68 +9,19 @@
 
 #include <gtest/gtest.h>
 
-#include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/BusBreakerView.hpp>
-#include <powsybl/iidm/LccConverterStation.hpp>
-#include <powsybl/iidm/LccConverterStationAdder.hpp>
-#include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 #include "AssertionUtils.hpp"
+#include "NetworkFactory.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-Network createVscConverterStationTestNetwork() {
-    Network network("test", "test");
-    Substation& substation = network.newSubstation()
-        .setId("S1")
-        .setName("S1_NAME")
-        .setCountry(Country::FR)
-        .setTso("TSO")
-        .add();
-
-    VoltageLevel& vl1 = substation.newVoltageLevel()
-        .setId("VL1")
-        .setName("VL1_NAME")
-        .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
-        .setLowVoltageLimit(340.0)
-        .setHighVoltageLimit(420.0)
-        .add();
-
-    Bus& vl1Bus1 = vl1.getBusBreakerView().newBus()
-        .setId("VL1_BUS1")
-        .add();
-
-    vl1.newLccConverterStation()
-        .setId("LCC1")
-        .setName("LCC1_NAME")
-        .setBus(vl1Bus1.getId())
-        .setConnectableBus(vl1Bus1.getId())
-        .setLossFactor(1.0)
-        .setPowerFactor(2.0)
-        .add();
-
-    vl1.newVscConverterStation()
-        .setId("VSC1")
-        .setName("VSC1_NAME")
-        .setBus(vl1Bus1.getId())
-        .setConnectableBus(vl1Bus1.getId())
-        .setLossFactor(3.0)
-        .setVoltageRegulatorOn(true)
-        .setVoltageSetpoint(4.0)
-        .setReactivePowerSetpoint(5.0)
-        .add();
-
-    return network;
-}
-
 TEST(VscConverterStation, constructor) {
-    const Network& network = createVscConverterStationTestNetwork();
+    const Network& network = createHvdcConverterStationTestNetwork();
 
     unsigned long vscCount = network.getVscConverterStationCount();
     unsigned long hvdcCount = network.getHvdcConverterStationCount();
@@ -109,7 +60,7 @@ TEST(VscConverterStation, constructor) {
 }
 
 TEST(VscConverterStation, integrity) {
-    const Network& network = createVscConverterStationTestNetwork();
+    const Network& network = createHvdcConverterStationTestNetwork();
 
     VscConverterStation& vsc = network.getVscConverterStation("VSC1");
     HvdcConverterStation& hvdc = network.getHvdcConverterStation("VSC1");
@@ -160,7 +111,7 @@ TEST(VscConverterStation, integrity) {
 }
 
 TEST(VscConverterStation, multivariant) {
-    Network network = createVscConverterStationTestNetwork();
+    Network network = createHvdcConverterStationTestNetwork();
 
     VscConverterStation& vsc = network.getVscConverterStation("VSC1");
 
@@ -233,7 +184,7 @@ TEST(VscConverterStation, multivariant) {
 }
 
 TEST(VscConverterStation, loop) {
-    const Network& network = createVscConverterStationTestNetwork();
+    const Network& network = createHvdcConverterStationTestNetwork();
 
     unsigned long vscCount = network.getVscConverterStationCount();
     unsigned long hvdcCount = network.getHvdcConverterStationCount();
