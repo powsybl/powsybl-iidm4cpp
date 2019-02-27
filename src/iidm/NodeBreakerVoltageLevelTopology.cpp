@@ -273,7 +273,7 @@ void CalculatedBusTopology::updateCache(const SwitchPredicate& terminate) {
 
     m_cache = stdcxx::make_unique<BusCache>(std::move(busByNode), std::move(busById));
 
-    // TODO(mathbagu) logger.trace(logging::format("Found buses %1%", logging::toString(m_cache->getBuses())));
+    logger.trace(logging::format("Found buses %1%", logging::toString(m_cache->getBuses())));
 }
 
 }  // namespace node_breaker_voltage_level

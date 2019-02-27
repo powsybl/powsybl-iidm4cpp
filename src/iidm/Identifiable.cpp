@@ -6,10 +6,20 @@
  */
 
 #include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/logging/MessageFormat.hpp>
 
 #include "ValidationUtils.hpp"
 
 namespace powsybl {
+
+namespace logging {
+
+template <>
+std::string toString(const iidm::Identifiable& identifiable) {
+    return identifiable.getId();
+}
+
+}  // namespace logging
 
 namespace iidm {
 
@@ -28,6 +38,12 @@ std::string Identifiable::getMessageHeader() const {
 
 const std::string& Identifiable::getName() const {
     return m_name;
+}
+
+std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable) {
+    stream << logging::toString(identifiable);
+
+    return stream;
 }
 
 }  // namespace iidm

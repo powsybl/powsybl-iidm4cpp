@@ -46,6 +46,8 @@ private:
     std::string m_name;
 };
 
+std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable);
+
 }  // namespace iidm
 
 }  // namespace powsybl

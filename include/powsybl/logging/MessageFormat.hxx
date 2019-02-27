@@ -72,10 +72,28 @@ std::string toString(const std::set<T>& set) {
     return oss.str();
 }
 
+template <typename T>
+std::string toString(const std::vector<T>& vect) {
+    std::ostringstream oss;
+
+    oss << "{";
+    serialize(oss, vect.begin(), vect.end());
+    oss << "}";
+
+    return oss.str();
+}
+
 template <std::size_t N, typename T, typename = typename std::enable_if<std::is_enum<T>::value>::type>
 std::string toString(const std::array<std::string, N>& names, T value) {
     unsigned int val = static_cast<unsigned int>(value);
     return (val < N) ? names.at(val) : format("%1%", val);
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& stream, const std::reference_wrapper<T>& ref) {
+    stream << ref.get();
+
+    return stream;
 }
 
 }  // namespace logging
