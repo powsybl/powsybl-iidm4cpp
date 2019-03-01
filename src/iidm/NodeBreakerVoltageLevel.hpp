@@ -58,6 +58,8 @@ public:
 
     ~NodeBreakerVoltageLevel() noexcept override = default;
 
+    void addInternalConnection(unsigned long node1, unsigned long node2);
+
     Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, unsigned long node1, unsigned long node2);
 
     bool isConnected(const Terminal& terminal) const;
@@ -83,6 +85,8 @@ private:
     stdcxx::optional<unsigned long> getEdge(const std::string& switchId, bool throwException) const;
 
     const node_breaker_voltage_level::Graph& getGraph() const;
+
+    unsigned long getInternalConnectionCount() const;
 
     unsigned long getNode1(const std::string& switchId) const;
 

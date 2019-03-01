@@ -29,6 +29,11 @@ NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const st
     m_busView(*this) {
 }
 
+void NodeBreakerVoltageLevel::addInternalConnection(unsigned long node1, unsigned long node2) {
+    m_graph.addEdge(node1, node2, stdcxx::ref<Switch>());
+    invalidateCache();
+}
+
 Switch& NodeBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, unsigned long node1, unsigned long node2) {
     Switch& aSwitch = getNetwork().checkAndAdd(std::move(ptrSwitch));
 
@@ -215,6 +220,11 @@ const node_breaker_voltage_level::Graph& NodeBreakerVoltageLevel::getGraph() con
     return m_graph;
 }
 
+unsigned long NodeBreakerVoltageLevel::getInternalConnectionCount() const {
+    const std::vector<stdcxx::Reference<Switch> >& switches = m_graph.getEdgeObjects();
+    return std::count(switches.cbegin(), switches.cend(), stdcxx::ref<Switch>());
+}
+
 unsigned long NodeBreakerVoltageLevel::getNode1(const std::string& switchId) const {
     const auto& e = getEdge(switchId, true);
     return m_graph.getVertex1(*e);
@@ -252,7 +262,10 @@ stdcxx::Reference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string& 
 }
 
 unsigned long NodeBreakerVoltageLevel::getSwitchCount() const {
-    return m_graph.getEdgeCount();
+    const std::vector<stdcxx::Reference<Switch> >& switches = m_graph.getEdgeObjects();
+    return std::count_if(switches.cbegin(), switches.cend(), [](stdcxx::Reference<Switch> sw) {
+        return static_cast<bool>(sw);
+    });
 }
 
 stdcxx::Reference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long node) const {

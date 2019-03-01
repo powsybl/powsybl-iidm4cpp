@@ -24,6 +24,8 @@ public: // NodeBreakerView
 
     unsigned long getBusbarSectionCount() const override;
 
+    unsigned long getInternalConnectionCount() const override;
+
     unsigned long getNode1(const std::string& switchId) const override;
 
     unsigned long getNode2(const std::string& switchId) const override;
@@ -45,6 +47,8 @@ public: // NodeBreakerView
     BusbarSectionAdder newBusbarSection() override;
 
     SwitchAdder newDisconnector() override;
+
+    InternalConnectionAdder newInternalConnection() override;
 
     SwitchAdder newSwitch() override;
 

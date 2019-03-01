@@ -124,6 +124,7 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
         .add();
 
     ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getSwitchCount());
+    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
     Switch& breaker = voltageLevel.getNodeBreakerView().newBreaker()
         .setId("BK")
         .setName("BK_NAME")
@@ -131,6 +132,7 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
         .setNode2(1)
         .add();
     ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getSwitchCount());
+    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
 
     auto swAdder = voltageLevel.getNodeBreakerView().newSwitch()
         .setId("BK2")
@@ -139,6 +141,7 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
         .setNode2(2);
     POWSYBL_ASSERT_THROW(swAdder.add(), ValidationException, "Switch 'BK2': Kind is not set");
     ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getSwitchCount());
+    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
 
     // Get a busbar section
     // TODO(mathbagu): need to refactor VoltageLevel::getConnectable to return a Reference<T> instead of a T&
@@ -180,13 +183,33 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().removeSwitch("UNKNOWN"), PowsyblException, "Switch 'UNKNOWN' not found in voltage level 'VL2'");
     ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getSwitchCount());
+    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
     voltageLevel.getNodeBreakerView().removeSwitch("BK");
     ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getSwitchCount());
+    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
 
     // test const versions
     const VoltageLevel& vlTest = network.getVoltageLevel("VL2");
     const NodeBreakerView& view = vlTest.getNodeBreakerView();
     ASSERT_EQ(0, view.getBusbarSectionCount());
+
+    //test internal connections
+    ASSERT_EQ(0, view.getSwitchCount());
+    ASSERT_EQ(0, view.getInternalConnectionCount());
+    auto internalConnectionAdder = voltageLevel.getNodeBreakerView().newInternalConnection();
+    internalConnectionAdder.setId("IC_1");
+
+    POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "InternalConnection 'IC_1': first connection node is not set");
+    internalConnectionAdder.setNode1(0);
+
+    POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "InternalConnection 'IC_1': second connection node is not set");
+    internalConnectionAdder.setNode2(0);
+    // TODO(thiebarr):  POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "InternalConnection 'IC_1': connection nodes must be different");
+    internalConnectionAdder.setNode2(1);
+
+    ASSERT_NO_THROW(internalConnectionAdder.add());
+    ASSERT_EQ(0, view.getSwitchCount());
+    ASSERT_EQ(1, view.getInternalConnectionCount());
 }
 
 TEST(NodeBreakerVoltageLevel, CalculatedBusBreakerTopology) {

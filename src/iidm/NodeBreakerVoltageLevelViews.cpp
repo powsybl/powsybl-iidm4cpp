@@ -112,6 +112,10 @@ unsigned long NodeBreakerViewImpl::getBusbarSectionCount() const {
     return 0;
 }
 
+unsigned long NodeBreakerViewImpl::getInternalConnectionCount() const {
+    return m_voltageLevel.getInternalConnectionCount();
+}
+
 unsigned long NodeBreakerViewImpl::getNode1(const std::string& switchId) const {
     return m_voltageLevel.getNode1(switchId);
 }
@@ -154,6 +158,10 @@ BusbarSectionAdder NodeBreakerViewImpl::newBusbarSection() {
 
 NodeBreakerViewImpl::SwitchAdder NodeBreakerViewImpl::newDisconnector() {
     return SwitchAdder(m_voltageLevel).setKind(SwitchKind::DISCONNECTOR);
+}
+
+NodeBreakerViewImpl::InternalConnectionAdder NodeBreakerViewImpl::newInternalConnection() {
+    return InternalConnectionAdder(m_voltageLevel);
 }
 
 NodeBreakerViewImpl::SwitchAdder NodeBreakerViewImpl::newSwitch() {

@@ -11,6 +11,7 @@
 #include <string>
 
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
+#include <powsybl/iidm/InternalConnectionAdder.hpp>
 #include <powsybl/iidm/SwitchAdder.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -24,6 +25,8 @@ class Terminal;
 
 class NodeBreakerView {
 public:
+    typedef node_breaker_view::InternalConnectionAdder InternalConnectionAdder;
+
     typedef node_breaker_view::SwitchAdder SwitchAdder;
 
     typedef std::function<bool(unsigned long node1, const Switch& sw, unsigned long node2)> Traverser;
@@ -34,6 +37,8 @@ public:
     virtual stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) const = 0;
 
     virtual unsigned long getBusbarSectionCount() const = 0;
+
+    virtual unsigned long getInternalConnectionCount() const = 0;
 
     virtual unsigned long getNode1(const std::string& switchId) const = 0;
 
@@ -56,6 +61,8 @@ public:
     virtual BusbarSectionAdder newBusbarSection() = 0;
 
     virtual SwitchAdder newDisconnector() = 0;
+
+    virtual InternalConnectionAdder newInternalConnection() = 0;
 
     virtual SwitchAdder newSwitch() = 0;
 
