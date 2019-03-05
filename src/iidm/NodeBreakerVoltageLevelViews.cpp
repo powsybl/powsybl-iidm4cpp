@@ -106,14 +106,12 @@ NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) 
     m_voltageLevel(voltageLevel) {
 }
 
-stdcxx::Reference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& /*bbsId*/) const {
-    // TODO(mathbagu): return m_voltageLevel.getConnectable<BusbarSection>(bbsId);
-    return stdcxx::ref<BusbarSection>();
+stdcxx::Reference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& bbsId) const {
+    return m_voltageLevel.getConnectable<BusbarSection>(bbsId);
 }
 
 unsigned long NodeBreakerViewImpl::getBusbarSectionCount() const {
-    // TODO(mathbagu): return m_voltageLevel.getConnectableCount<BusbarSection>();
-    return 0;
+    return m_voltageLevel.getConnectableCount<BusbarSection>();
 }
 
 unsigned long NodeBreakerViewImpl::getInternalConnectionCount() const {
@@ -181,8 +179,12 @@ NodeBreakerView& NodeBreakerViewImpl::setNodeCount(unsigned long nodeCount) {
     return *this;
 }
 
-void NodeBreakerViewImpl::traverse(unsigned long /*node*/, const Traverser& /*traverser*/) {
-    throw AssertionError("TODO");
+void NodeBreakerViewImpl::traverse(unsigned long node, const Traverser& traverser) {
+    powsybl::math::Traverser graphTraverser = [&](unsigned long v1, unsigned long e, unsigned long v2) {
+        return traverser(v1, m_voltageLevel.getGraph().getEdgeObject(e), v2) ? powsybl::math::TraverseResult::CONTINUE : powsybl::math::TraverseResult::TERMINATE;
+    };
+
+    m_voltageLevel.getGraph().traverse(node, graphTraverser);
 }
 
 }  // namespace node_breaker_voltage_level

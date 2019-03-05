@@ -229,6 +229,20 @@ unsigned long BusBreakerVoltageLevel::getSwitchCount() const {
     return m_graph.getEdgeCount();
 }
 
+std::vector<std::reference_wrapper<Terminal>> BusBreakerVoltageLevel::getTerminals() const {
+    std::vector<std::reference_wrapper<Terminal>> terminals;
+    const auto& buses = m_graph.getVertexObjects();
+    std::for_each(buses.cbegin(), buses.cend(), [&terminals](const stdcxx::Reference<ConfiguredBus>& bus) {
+        if (bus) {
+            const auto& busTerminals = bus.get().getTerminals();
+            std::transform(busTerminals.cbegin(), busTerminals.cend(), std::back_inserter(terminals), [](const std::reference_wrapper<BusTerminal>& terminal) {
+                return std::ref<Terminal>(terminal.get());
+            });
+        }
+    });
+    return terminals;
+}
+
 const TopologyKind& BusBreakerVoltageLevel::getTopologyKind() const {
     static TopologyKind s_topologyKind = TopologyKind::BUS_BREAKER;
 

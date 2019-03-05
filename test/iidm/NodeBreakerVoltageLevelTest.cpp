@@ -108,9 +108,10 @@ TEST(NodeBreakerVoltageLevel, Switch) {
 
 TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
     const Network& network = createNetwork();
+    const unsigned long NODE_COUNT = 3;
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
-    voltageLevel.getNodeBreakerView().setNodeCount(3);
+    voltageLevel.getNodeBreakerView().setNodeCount(NODE_COUNT);
     ASSERT_EQ(3, voltageLevel.getNodeBreakerView().getNodeCount());
 
     BusbarSection& bbs1 = voltageLevel.getNodeBreakerView().newBusbarSection()
@@ -144,10 +145,9 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
     ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
 
     // Get a busbar section
-    // TODO(mathbagu): need to refactor VoltageLevel::getConnectable to return a Reference<T> instead of a T&
-    // const auto& refBusbarSection = voltageLevel.getNodeBreakerView().getBusbarSection("BBS");
-    // ASSERT_TRUE(refBusbarSection);
-    // ASSERT_TRUE(stdcxx::areSame(bbs, refBusbarSection.get()));
+    const auto& refBusbarSection = voltageLevel.getNodeBreakerView().getBusbarSection("BBS1");
+    ASSERT_TRUE(refBusbarSection);
+    ASSERT_TRUE(stdcxx::areSame(bbs1, refBusbarSection.get()));
 
     const auto& refTerminal = voltageLevel.getNodeBreakerView().getTerminal(0);
     ASSERT_TRUE(refTerminal);
@@ -175,9 +175,14 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getNode1("UNKNOWN"), PowsyblException, "Switch 'UNKNOWN' not found in the voltage level 'VL2'");
 
+    NodeBreakerView::Traverser traverser = [](unsigned long /*node1*/, const Switch& /*sw*/, unsigned long node2) {
+        return (node2 < (NODE_COUNT - 1));
+    };
+    voltageLevel.getNodeBreakerView().traverse(0, traverser);
+
     // Remove a busbar section
     bbs1.remove();
-    // TODO(mathbagu): ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
+    ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
     bbs2.remove();
     ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
 
@@ -631,10 +636,19 @@ TEST(NodeBreakerVoltageLevel, Terminal) {
     POWSYBL_ASSERT_THROW(line.getTerminal(static_cast<iidm::Branch::Side>(3u)), AssertionError, "Unexpected side value: 3");
     ASSERT_FALSE(terminal4.disconnect());
 
-    BusbarSection& bbs = dynamic_cast<BusbarSection&>(network.getConnectable("BBS"));
+    BusbarSection& bbs = dynamic_cast<BusbarSection&>(network.getConnectable("BBS").get());
+    ASSERT_FALSE(network.getConnectable("UNKNOWN"));
+    ASSERT_FALSE(network.getConnectable("BUS1"));
     ASSERT_DOUBLE_EQ(0, bbs.getTerminal().getI());
     POWSYBL_ASSERT_THROW(bbs.getTerminal().setP(1.0), ValidationException, "Busbar section 'BBS': cannot set active power on a busbar section");
     POWSYBL_ASSERT_THROW(bbs.getTerminal().setQ(2.0), ValidationException, "Busbar section 'BBS': cannot set reactive power on a busbar section");
+
+    //test const version
+    const Network& cNetwork = network;
+    const BusbarSection& cBbs = dynamic_cast<const BusbarSection&>(cNetwork.getConnectable("BBS").get());
+    ASSERT_FALSE(cNetwork.getConnectable("UNKNOWN"));
+    ASSERT_FALSE(cNetwork.getConnectable("BUS1"));
+    ASSERT_DOUBLE_EQ(0, cBbs.getTerminal().getI());
 }
 
 }  // namespace iidm

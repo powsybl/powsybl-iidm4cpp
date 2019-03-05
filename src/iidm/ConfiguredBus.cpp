@@ -86,6 +86,12 @@ unsigned long ConfiguredBus::getTerminalCount() const {
     return m_terminals[m_network.get().getVariantIndex()].size();
 }
 
+std::vector<std::reference_wrapper<BusTerminal> > ConfiguredBus::getTerminals() const {
+    const std::list<std::reference_wrapper<BusTerminal> >& busTerminals = m_terminals[m_network.get().getVariantIndex()];
+    std::vector<std::reference_wrapper<BusTerminal> > terminals(busTerminals.cbegin(), busTerminals.cend());
+    return terminals;
+}
+
 double ConfiguredBus::getV() const {
     return m_v[m_network.get().getVariantIndex()];
 }

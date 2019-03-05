@@ -272,6 +272,18 @@ stdcxx::Reference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long n
     return stdcxx::ref<Terminal>(m_graph.getVertexObject(node));
 }
 
+std::vector<std::reference_wrapper<Terminal>> NodeBreakerVoltageLevel::getTerminals() const {
+    std::vector<std::reference_wrapper<Terminal>> terminals;
+    const auto& nodeTerminals = m_graph.getVertexObjects();
+    terminals.reserve(nodeTerminals.size());
+    std::for_each(nodeTerminals.cbegin(), nodeTerminals.cend(), [&terminals](const stdcxx::Reference<NodeTerminal>& terminal) {
+        if (terminal) {
+            terminals.emplace_back(terminal.get());
+        }
+    });
+    return terminals;
+}
+
 const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
     static TopologyKind s_topologyKind = TopologyKind::NODE_BREAKER;
 

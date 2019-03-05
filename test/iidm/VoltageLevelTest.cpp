@@ -7,6 +7,9 @@
 
 #include <gtest/gtest.h>
 
+#include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
@@ -94,10 +97,49 @@ TEST(VoltageLevel, integrity) {
     ASSERT_TRUE(stdcxx::areSame(vl1, vl1.setHighVoltageLimit(440)));
     ASSERT_EQ(440, vl1.getHighVoltageLimit());
 
+    ASSERT_EQ(1, vl1.getConnectableCount());
+    ASSERT_EQ(vl1.getConnectableCount(), vl1.getConnectableCount<Connectable>());
+
+    auto& load1 = network.getLoad("LOAD1");
+    ASSERT_TRUE(vl1.getConnectable<Connectable>("LOAD1"));
+    ASSERT_TRUE(stdcxx::areSame(load1, vl1.getConnectable<Connectable>("LOAD1").get()));
+    ASSERT_TRUE(vl1.getConnectable<Injection>("LOAD1"));
+    ASSERT_TRUE(stdcxx::areSame(load1, vl1.getConnectable<Injection>("LOAD1").get()));
+    ASSERT_TRUE(vl1.getConnectable<Load>("LOAD1"));
+    ASSERT_TRUE(stdcxx::areSame(load1, vl1.getConnectable<Load>("LOAD1").get()));
+    ASSERT_FALSE(vl1.getConnectable<Generator>("LOAD1"));
+
+    auto& load2 = vl1.newLoad()
+        .setId("LOAD2")
+        .setBus("VL1_BUS1")
+        .setConnectableBus("VL1_BUS1")
+        .setName("LOAD2_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(60.0)
+        .setQ0(70.0)
+        .add();
+    ASSERT_EQ(2, vl1.getConnectableCount());
+    ASSERT_EQ(vl1.getConnectableCount(), vl1.getConnectableCount<Connectable>());
+    ASSERT_EQ(2, vl1.getConnectableCount<Injection>());
+    ASSERT_EQ(2, vl1.getConnectableCount<Load>());
+    ASSERT_EQ(0, vl1.getConnectableCount<Generator>());
+    load2.getTerminal().disconnect();
+    ASSERT_EQ(2, vl1.getConnectableCount());
+    load2.remove();
+    ASSERT_EQ(1, vl1.getConnectableCount());
+
     // test const version
-    const VoltageLevel& vl = network.getVoltageLevel("VL1");
+    const VoltageLevel& vl = vl1;
     ASSERT_TRUE(stdcxx::areSame(network, vl.getNetwork()));
     ASSERT_TRUE(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation()));
+
+    ASSERT_TRUE(vl.getConnectable<Connectable>("LOAD1"));
+    ASSERT_TRUE(stdcxx::areSame(load1, vl.getConnectable<Connectable>("LOAD1").get()));
+    ASSERT_TRUE(vl.getConnectable<Injection>("LOAD1"));
+    ASSERT_TRUE(stdcxx::areSame(load1, vl.getConnectable<Injection>("LOAD1").get()));
+    ASSERT_TRUE(vl.getConnectable<Load>("LOAD1"));
+    ASSERT_TRUE(stdcxx::areSame(load1, vl.getConnectable<Load>("LOAD1").get()));
+    ASSERT_FALSE(vl.getConnectable<Generator>("LOAD1"));
 }
 
 }  // namespace iidm

@@ -31,6 +31,13 @@ VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, Subst
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
 }
 
+unsigned long VoltageLevel::getConnectableCount() const {
+    const auto& terminals = getTerminals();
+    return std::count_if(terminals.cbegin(), terminals.cend(), [](const std::reference_wrapper<Terminal>& terminal) {
+        return terminal.get().getConnectable();
+    });
+}
+
 double VoltageLevel::getHighVoltageLimit() const {
     return m_highVoltageLimit;
 }

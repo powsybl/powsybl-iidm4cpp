@@ -82,7 +82,9 @@ public:
 
     unsigned long getBusbarSectionCount() const;
 
-    Connectable& getConnectable(const std::string& id) const;
+    stdcxx::CReference<Connectable> getConnectable(const std::string& id) const;
+
+    stdcxx::Reference<Connectable> getConnectable(const std::string& id);
 
     DanglingLine& getDanglingLine(const std::string& id) const;
 

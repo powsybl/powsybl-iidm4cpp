@@ -50,6 +50,8 @@ public:
 
     unsigned long getTerminalCount() const;
 
+    std::vector<std::reference_wrapper<BusTerminal> > getTerminals() const;
+
     void removeTerminal(BusTerminal& terminal);
 
 protected: // MultiVariantObject

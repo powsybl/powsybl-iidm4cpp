@@ -45,11 +45,12 @@ unsigned long Network::getBusbarSectionCount() const {
     return getObjectCount<BusbarSection>();
 }
 
-Connectable& Network::getConnectable(const std::string& id) const {
-    auto& identifiable = get<Identifiable>(id);
-    assert(stdcxx::isInstanceOf<Connectable>(identifiable));
+stdcxx::CReference<Connectable> Network::getConnectable(const std::string& id) const {
+    return stdcxx::cref<Connectable>(find<Connectable>(id));
+}
 
-    return dynamic_cast<Connectable&>(identifiable);
+stdcxx::Reference<Connectable> Network::getConnectable(const std::string& id) {
+    return find<Connectable>(id);
 }
 
 DanglingLine& Network::getDanglingLine(const std::string& id) const {

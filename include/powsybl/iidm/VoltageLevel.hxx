@@ -24,27 +24,48 @@ namespace powsybl {
 
 namespace iidm {
 
-template <typename T>
-T& VoltageLevel::getConnectable(const std::string& id) {
-    Connectable& connectable = getNetwork().getConnectable(id);
-    if (stdcxx::isInstanceOf<Injection>(connectable)) {
-        Injection& injection = dynamic_cast<Injection&>(connectable);
-        if (!stdcxx::areSame(injection.getTerminal().getVoltageLevel(), *this)) {
-            throw PowsyblException(logging::format("The injection '%1%' is not connected to the voltage level '%2%'", id, getId()));
+template <typename T, typename>
+stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const {
+    stdcxx::CReference<T> res;
+    stdcxx::Reference<T> connectable = getNetwork().find<T>(id);
+
+    if (connectable) {
+        if (stdcxx::isInstanceOf<Injection>(connectable.get())) {
+            const Injection& injection = dynamic_cast<const Injection&>(connectable.get());
+            if (!stdcxx::areSame(injection.getTerminal().getVoltageLevel(), *this)) {
+                throw PowsyblException(logging::format("The injection '%1%' is not connected to the voltage level '%2%'", id, getId()));
+            }
+        } else if (stdcxx::isInstanceOf<Branch>(connectable.get())) {
+            const Branch& branch = dynamic_cast<const Branch&>(connectable.get());
+            if (!stdcxx::areSame(branch.getTerminal1().getVoltageLevel(), *this) &&
+                !stdcxx::areSame(branch.getTerminal2().getVoltageLevel(), *this)) {
+                throw PowsyblException(logging::format("The branch '%1%' is not connected to the voltage level '%2%'", id, getId()));
+            }
+        } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable.get())) {
+            throw AssertionError("TODO");
+        } else {
+            throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.get().getType()));
         }
-    } else if (stdcxx::isInstanceOf<Branch>(connectable)) {
-        Branch& branch = dynamic_cast<Branch&>(connectable);
-        if (!stdcxx::areSame(branch.getTerminal1().getVoltageLevel(), *this) &&
-            !stdcxx::areSame(branch.getTerminal2().getVoltageLevel(), *this)) {
-            throw PowsyblException(logging::format("The branch '%1%' is not connected to the voltage level '%2%'", id, getId()));
-        }
-    } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable)) {
-        throw AssertionError("TODO");
-    } else {
-        throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.getType()));
+
+        res = stdcxx::cref(connectable.get());
     }
 
-    return dynamic_cast<T&>(connectable);
+    return res;
+}
+
+template <typename T, typename>
+stdcxx::Reference<T> VoltageLevel::getConnectable(const std::string& id) {
+    const auto& connectable = static_cast<const VoltageLevel*>(this)->getConnectable<T>(id);
+
+    return static_cast<bool>(connectable) ? stdcxx::ref(const_cast<T&>(connectable.get())) : stdcxx::ref<T>();
+}
+
+template <typename T, typename>
+unsigned long VoltageLevel::getConnectableCount() const {
+    const auto& terminals = getTerminals();
+    return std::count_if(terminals.cbegin(), terminals.cend(), [](const std::reference_wrapper<Terminal>& terminal) {
+        return stdcxx::isInstanceOf<T>(terminal.get().getConnectable().get());
+    });
 }
 
 }  // namespace iidm

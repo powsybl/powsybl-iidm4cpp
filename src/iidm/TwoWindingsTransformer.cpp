@@ -9,6 +9,7 @@
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
+#include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 
 #include "ValidationUtils.hpp"

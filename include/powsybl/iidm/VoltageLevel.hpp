@@ -53,8 +53,16 @@ public:
 
     virtual BusView& getBusView() = 0;
 
-    template <typename T>
-    T& getConnectable(const std::string& id);
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    stdcxx::CReference<T> getConnectable(const std::string& id) const;
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    stdcxx::Reference<T> getConnectable(const std::string& id);
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    unsigned long getConnectableCount() const;
+
+    unsigned long getConnectableCount() const;
 
     double getHighVoltageLimit() const;
 
@@ -101,6 +109,8 @@ public:
 protected:
     VoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                  double nominalVoltage, double lowVoltageLimit, double highVoltageLimit);
+
+    virtual std::vector<std::reference_wrapper<Terminal>> getTerminals() const = 0;
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
