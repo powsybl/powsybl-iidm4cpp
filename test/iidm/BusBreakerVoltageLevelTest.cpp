@@ -322,7 +322,12 @@ TEST(BusBreakerVoltageLevel, CalculatedBusTopology) {
     ASSERT_EQ(terminals.size(), testBus.getConnectedTerminalCount());
     ASSERT_TRUE(stdcxx::areSame(vl, testBus.getVoltageLevel()));
 
-    // TODO(thiebarr): ASSERT_TRUE(busView.getBus("BUS1"));
+    sw.setOpen(true);
+    ASSERT_TRUE(busView.getBus("VL_0"));
+    ASSERT_TRUE(busView.getBus("VL_1"));
+    sw.setOpen(false);
+    ASSERT_TRUE(busView.getBus("VL_0"));
+    ASSERT_FALSE(busView.getBus("VL_1"));
 }
 
 TEST(BusBreakerVoltageLevel, Terminal) {

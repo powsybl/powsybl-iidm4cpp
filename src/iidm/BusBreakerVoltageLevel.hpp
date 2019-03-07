@@ -93,7 +93,7 @@ private:
 
     stdcxx::optional<unsigned long> getEdge(const std::string& switchId, bool throwException) const;
 
-    stdcxx::Reference<MergedBus> getMergedBus(const std::string& busId, bool throwException) const;
+    stdcxx::Reference<MergedBus> getMergedBus(const std::string& busId, bool throwException);
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId, bool throwException) const;
 

@@ -199,8 +199,8 @@ const BusBreakerVoltageLevel::Graph& BusBreakerVoltageLevel::getGraph() const {
     return m_graph;
 }
 
-stdcxx::Reference<MergedBus> BusBreakerVoltageLevel::getMergedBus(const std::string& /*busId*/, bool /*throwException*/) const {
-    throw AssertionError("TODO");
+stdcxx::Reference<MergedBus> BusBreakerVoltageLevel::getMergedBus(const std::string& busId, bool throwException) {
+    return getCalculatedBusTopology().getMergedBus(busId, throwException);
 }
 
 const NodeBreakerView& BusBreakerVoltageLevel::getNodeBreakerView() const {

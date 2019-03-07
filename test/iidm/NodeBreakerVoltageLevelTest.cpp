@@ -457,7 +457,7 @@ TEST(NodeBreakerVoltageLevel, CalculatedBusTopology) {
     const auto& busView = vlTest.getBusView();
     ASSERT_EQ(1ul, vl.getBusView().getBuses().size());
     ASSERT_TRUE(busView.getBus("VL_0"));
-    // TODO(thiebarr): ASSERT_TRUE(busView.getMergedBus("BBS"));
+    ASSERT_TRUE(busView.getMergedBus("BBS"));
     sw.setOpen(true);
     ASSERT_EQ(2ul, busView.getBuses().size());
     ASSERT_TRUE(busView.getBus("VL_1"));
