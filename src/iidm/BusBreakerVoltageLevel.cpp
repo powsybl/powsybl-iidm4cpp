@@ -225,6 +225,10 @@ stdcxx::Reference<Switch> BusBreakerVoltageLevel::getSwitch(const std::string& s
     return aSwitch;
 }
 
+unsigned long BusBreakerVoltageLevel::getSwitchCount() const {
+    return m_graph.getEdgeCount();
+}
+
 const TopologyKind& BusBreakerVoltageLevel::getTopologyKind() const {
     static TopologyKind s_topologyKind = TopologyKind::BUS_BREAKER;
 

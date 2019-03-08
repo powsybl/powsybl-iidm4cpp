@@ -94,6 +94,8 @@ private:
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId, bool throwException) const;
 
+    unsigned long getSwitchCount() const;
+
     stdcxx::optional<unsigned long> getVertex(const std::string& busId, bool throwException) const;
 
     void removeAllBuses();

@@ -321,6 +321,7 @@ TEST(NodeBreakerVoltageLevel, CalculatedBusBreakerTopology) {
     ASSERT_TRUE(busBreakerView.getBus1("SW1"));
     ASSERT_TRUE(busBreakerView.getBus2("SW1"));
     ASSERT_TRUE(busBreakerView.getSwitch("SW1"));
+    ASSERT_EQ(3ul, busBreakerView.getSwitchCount());
     POWSYBL_ASSERT_THROW(busBreakerView.getSwitch("UNKNOWN"), PowsyblException, "Switch UNKNOWN not found");
     POWSYBL_ASSERT_THROW(busBreakerView.newBus(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(busBreakerView.newSwitch(), AssertionError, "Not implemented");

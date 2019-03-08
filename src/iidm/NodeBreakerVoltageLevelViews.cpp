@@ -45,6 +45,10 @@ stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switc
     return m_voltageLevel.getCalculatedBusBreakerTopology().getSwitch(switchId, true);
 }
 
+unsigned long BusBreakerViewImpl::getSwitchCount() const {
+    return m_voltageLevel.getSwitchCount();
+}
+
 BusAdder BusBreakerViewImpl::newBus() {
     throw AssertionError("Not implemented");
 }

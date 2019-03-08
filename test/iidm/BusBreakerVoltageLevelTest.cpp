@@ -151,6 +151,7 @@ TEST(BusBreakerVoltageLevel, BusBreakerView) {
     ASSERT_FALSE(refUnknownBus);
 
     // get switch
+    ASSERT_EQ(2ul, view.getSwitchCount());
     const auto& refSwitch1 = view.getSwitch("SW1");
     ASSERT_TRUE(refSwitch1);
     ASSERT_TRUE(stdcxx::areSame(switch1, refSwitch1.get()));
@@ -189,6 +190,7 @@ TEST(BusBreakerVoltageLevel, BusBreakerView) {
     POWSYBL_ASSERT_THROW(view.removeAllBuses(), ValidationException,
                          "Voltage level 'VL1': Cannot remove all buses because there is still some switches");
     view.removeAllSwitches();
+    ASSERT_EQ(0ul, view.getSwitchCount());
     POWSYBL_ASSERT_THROW(view.removeAllBuses(), ValidationException,
                          "Voltage level 'VL1': Cannot remove bus 'VL1_BUS1' due to connected equipments");
     network.getLoad("LOAD1").remove();

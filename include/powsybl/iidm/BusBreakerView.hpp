@@ -36,6 +36,8 @@ public:
 
     virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const = 0;
 
+    virtual unsigned long getSwitchCount() const = 0;
+
     virtual BusAdder newBus() = 0;
 
     virtual SwitchAdder newSwitch() = 0;

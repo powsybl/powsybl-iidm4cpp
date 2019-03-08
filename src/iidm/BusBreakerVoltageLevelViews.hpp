@@ -30,6 +30,8 @@ public: // BusBreakerView
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
 
+    unsigned long getSwitchCount() const override;
+
     BusAdder newBus() override;
 
     SwitchAdder newSwitch() override;

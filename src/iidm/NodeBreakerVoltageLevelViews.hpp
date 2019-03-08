@@ -77,6 +77,8 @@ public: // BusBreakerView
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
 
+    unsigned long getSwitchCount() const override;
+
 public:
     explicit BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
