@@ -45,6 +45,11 @@ Logger& LoggerFactory::getLoggerByName(const std::string& name) const {
     return s_defaultLogger;
 }
 
+void LoggerFactory::removeLogger(const std::string& name) {
+    std::lock_guard<std::recursive_mutex> lock(m_mutex);
+    m_loggers.erase(name);
+}
+
 }  // namespace logging
 
 }  // namespace powsybl

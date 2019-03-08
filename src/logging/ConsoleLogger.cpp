@@ -51,7 +51,7 @@ bool ConsoleLogger::isWarnEnabled() const {
     return true;
 }
 
-void ConsoleLogger::log(Level level, const std::string& message) {
+void ConsoleLogger::log(const Level& level, const std::string& message) {
     if (level == Level::ERROR) {
         std::cerr << now() << " - " << getLevelName(level) << " - " << message << std::endl;
     } else {

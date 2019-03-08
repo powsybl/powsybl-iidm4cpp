@@ -65,6 +65,13 @@ public:
      */
     void addLogger(const std::string& name, std::unique_ptr<Logger>&& logger);
 
+    /**
+     * Removes a logger corresponding to the specified name
+     *
+     * @param name the name corresponding to the logger
+     */
+    void removeLogger(const std::string& name);
+
 private:
     LoggerFactory() = default;
 

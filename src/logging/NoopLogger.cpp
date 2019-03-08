@@ -31,7 +31,7 @@ bool NoopLogger::isTraceEnabled() const {
     return false;
 }
 
-void NoopLogger::log(Level /*level*/, const std::string& /*message*/) {
+void NoopLogger::log(const Level& /*level*/, const std::string& /*message*/) {
     // Nothing to do
 }
 

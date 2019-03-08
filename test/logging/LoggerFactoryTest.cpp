@@ -30,6 +30,9 @@ TEST(LoggerFactory, test) {
     LoggerFactory::getInstance().addLogger("console", stdcxx::make_unique<ConsoleLogger>());
     Logger& consoleLogger = LoggerFactory::getLogger("console");
     ASSERT_EQ(typeid(ConsoleLogger), typeid(consoleLogger));
+    LoggerFactory::getInstance().removeLogger("console");
+    Logger& consoleLogger2 = LoggerFactory::getLogger("console");
+    ASSERT_EQ(typeid(NoopLogger), typeid(consoleLogger2));
 
     LoggerFactory::getInstance().addLogger<LoggerFactory>(stdcxx::make_unique<NoopLogger>());
     Logger& noopLogger = LoggerFactory::getLogger<LoggerFactory>();

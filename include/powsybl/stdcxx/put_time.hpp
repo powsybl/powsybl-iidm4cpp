@@ -36,15 +36,7 @@ using std::put_time;
 
 namespace stdcxx {
 
-std::string put_time(const struct std::tm* time, const char* format) {
-    char buffer[128];
-
-    if (strftime(buffer, 128, format, time) > 0) {
-        return buffer;
-    }
-
-    return "";
-}
+std::string put_time(const struct std::tm* time, const char* format);
 
 }  // namespace stdcxx
 

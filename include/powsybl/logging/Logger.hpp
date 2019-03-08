@@ -120,7 +120,7 @@ private:
      * @param level the log level of the message
      * @param message the message to log
      */
-    virtual void log(Level level, const std::string& message) = 0;
+    virtual void log(const Level& level, const std::string& message) = 0;
 };
 
 }  // namespace logging

@@ -1,23 +1,27 @@
 /**
- * Copyright (c) 2018, RTE (http://www.rte-france.com)
+ * Copyright (c) 2019, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_LOGGING_NOOPLOGGER_HPP
-#define POWSYBL_LOGGING_NOOPLOGGER_HPP
+#ifndef POWSYBL_LOGGING_CONTAINERLOGGER_HPP
+#define POWSYBL_LOGGING_CONTAINERLOGGER_HPP
 
 #include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LogMessage.hpp>
 
 namespace powsybl {
 
 namespace logging {
 
 /**
- * A Logger implementation for which all log levels are disabled
+ * A Logger implementation which log all messages to a container
  */
-class NoopLogger : public Logger {
+class ContainerLogger : public Logger {
+public:
+    typedef std::vector<LogMessage> Logs;
+
 public: // Logger
     bool isDebugEnabled() const override;
 
@@ -30,16 +34,27 @@ public: // Logger
     bool isWarnEnabled() const override;
 
 public:
-    NoopLogger() = default;
+    ContainerLogger() = default;
 
-    ~NoopLogger() noexcept override = default;
+    ~ContainerLogger() noexcept override = default;
+
+    Logs::const_iterator cbegin() const;
+
+    Logs::const_iterator cend() const;
+
+    const LogMessage& getLogMessage(unsigned long index) const;
+
+    unsigned long size() const;
 
 private: // Logger
     void log(const Level& level, const std::string& message) override;
+
+private:
+    Logs m_logs;
 };
 
 }  // namespace logging
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_LOGGING_NOOPLOGGER_HPP
+#endif  // POWSYBL_LOGGING_CONTAINERLOGGER_HPP

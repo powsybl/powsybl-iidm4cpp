@@ -94,13 +94,16 @@ set(IIDM_SOURCES
     iidm/VscConverterStationAdder.cpp
 
     logging/ConsoleLogger.cpp
+    logging/ContainerLogger.cpp
     logging/Level.cpp
     logging/LoggerFactory.cpp
+    logging/LogMessage.cpp
     logging/NoopLogger.cpp
 
     network/EurostagFactory.cpp
 
     stdcxx/demangle.cpp
+    stdcxx/put_time.cpp
     )
 
 add_library(iidm ${IIDM_SOURCES})
