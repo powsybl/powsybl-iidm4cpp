@@ -5,6 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <unordered_set>
+
 #include <powsybl/iidm/Network.hpp>
 
 #include <powsybl/iidm/BusbarSection.hpp>
@@ -18,11 +20,13 @@
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
+#include <powsybl/stdcxx/hash.hpp>
 
 #include "ValidationUtils.hpp"
 
@@ -35,6 +39,14 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_forecastDistance(0),
     m_variantManager(*this) {
+}
+
+Branch& Network::getBranch(const std::string& id) const {
+    return get<Branch>(id);
+}
+
+unsigned long Network::getBranchCount() const {
+    return getLineCount() + getTwoWindingsTransformerCount();
 }
 
 BusbarSection& Network::getBusbarSection(const std::string& id) const {
@@ -51,6 +63,15 @@ stdcxx::CReference<Connectable> Network::getConnectable(const std::string& id) c
 
 stdcxx::Reference<Connectable> Network::getConnectable(const std::string& id) {
     return find<Connectable>(id);
+}
+
+unsigned long Network::getCountryCount() const {
+    std::unordered_set<Country, stdcxx::hash<Country>> countries;
+    for (auto it = cbegin<Substation>(); it != cend<Substation>(); ++it) {
+        countries.emplace((*it).getCountry());
+    }
+
+    return countries.size();
 }
 
 DanglingLine& Network::getDanglingLine(const std::string& id) const {
@@ -139,6 +160,14 @@ Substation& Network::getSubstation(const std::string& id) const {
 
 unsigned long Network::getSubstationCount() const {
     return getObjectCount<Substation>();
+}
+
+Switch& Network::getSwitch(const std::string& id) const {
+    return get<Switch>(id);
+}
+
+unsigned long Network::getSwitchCount() const {
+    return getObjectCount<Switch>();
 }
 
 TwoWindingsTransformer& Network::getTwoWindingsTransformer(const std::string& id) const {

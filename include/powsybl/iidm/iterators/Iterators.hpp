@@ -17,8 +17,10 @@ namespace powsybl {
 
 namespace iidm {
 
+class Branch;
 class HvdcConverterStation;
 class Identifiable;
+class Line;
 class MultiVariantObject;
 
 template <typename T>
@@ -26,6 +28,13 @@ struct iterator_traits {
     using iterator = NetworkFastIterator<T, Identifiables::iterator>;
 
     using const_iterator = NetworkFastIterator<const T, Identifiables::const_iterator>;
+};
+
+template <>
+struct iterator_traits<Branch> {
+    using iterator = NetworkIterator<Branch, IdentifiableById::iterator>;
+
+    using const_iterator = NetworkIterator<const Branch, IdentifiableById::const_iterator>;
 };
 
 template <>
@@ -40,6 +49,13 @@ struct iterator_traits<Identifiable> {
     using iterator = NetworkIterator<Identifiable, IdentifiableById::iterator>;
 
     using const_iterator = NetworkIterator<const Identifiable, IdentifiableById::const_iterator>;
+};
+
+template <>
+struct iterator_traits<Line> {
+    using iterator = NetworkIterator<Line, IdentifiableById::iterator>;
+
+    using const_iterator = NetworkIterator<const Line, IdentifiableById::const_iterator>;
 };
 
 template <>

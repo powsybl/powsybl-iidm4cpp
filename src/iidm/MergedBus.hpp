@@ -28,7 +28,7 @@ namespace iidm {
  */
 class MergedBus : public Bus {
 public:
-    using BusSet = stdcxx::LinkedHashSet<std::reference_wrapper<ConfiguredBus>, stdcxx::hash<ConfiguredBus>, stdcxx::equal_to<ConfiguredBus> >;
+    using BusSet = stdcxx::LinkedHashSet<std::reference_wrapper<ConfiguredBus>, stdcxx::hash<std::reference_wrapper<ConfiguredBus> >, stdcxx::equal_to<ConfiguredBus> >;
 
 public: // Bus
     double getAngle() const override;

@@ -18,6 +18,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class Branch;
 class BusbarSection;
 class Connectable;
 class DanglingLine;
@@ -32,6 +33,7 @@ class Load;
 class ShuntCompensator;
 class StaticVarCompensator;
 class Substation;
+class Switch;
 class TieLineAdder;
 class TwoWindingsTransformer;
 class VoltageLevel;
@@ -78,6 +80,10 @@ public:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     unsigned long getObjectCount() const;
 
+    Branch& getBranch(const std::string& id) const;
+
+    unsigned long getBranchCount() const;
+
     BusbarSection& getBusbarSection(const std::string& id) const;
 
     unsigned long getBusbarSectionCount() const;
@@ -85,6 +91,8 @@ public:
     stdcxx::CReference<Connectable> getConnectable(const std::string& id) const;
 
     stdcxx::Reference<Connectable> getConnectable(const std::string& id);
+
+    unsigned long getCountryCount() const;
 
     DanglingLine& getDanglingLine(const std::string& id) const;
 
@@ -129,6 +137,10 @@ public:
     Substation& getSubstation(const std::string& id) const;
 
     unsigned long getSubstationCount() const;
+
+    Switch& getSwitch(const std::string& id) const;
+
+    unsigned long getSwitchCount() const;
 
     TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id) const;
 

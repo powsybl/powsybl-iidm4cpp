@@ -11,6 +11,7 @@
 #include <memory>
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/stdcxx/hash.hpp>
 
 namespace stdcxx {
 
@@ -135,9 +136,9 @@ struct equal_to {
  * Specialization of std::hash for std::reference_wrapper
  */
 template <typename T>
-struct hash {
-    std::size_t operator()(const std::reference_wrapper<T>& reference) const {
-        return std::hash<T*>()(std::addressof(reference.get()));
+struct hash<std::reference_wrapper<T>, false> {
+    std::size_t operator()(const std::reference_wrapper<T>& value) const {
+        return std::hash<T*>()(std::addressof(value.get()));
     }
 };
 
