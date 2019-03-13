@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/NetworkIndex.hpp>
+#include <powsybl/iidm/NetworkViews.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
@@ -52,6 +53,11 @@ class ImportOptions;
 }  // namespace converter
 
 class Network : public Container, public VariantManagerHolder {
+public:
+    using BusBreakerView = network::BusBreakerView;
+
+    using BusView = network::BusView;
+
 public:
     static Network readXml(const std::string& data);
 
@@ -115,6 +121,14 @@ public:
     stdcxx::const_range<BusbarSection> getBusbarSections() const;
 
     stdcxx::range<BusbarSection> getBusbarSections();
+
+    const BusBreakerView& getBusBreakerView() const;
+
+    BusBreakerView& getBusBreakerView();
+
+    const BusView& getBusView() const;
+
+    BusView& getBusView();
 
     const stdcxx::DateTime& getCaseDate() const;
 
@@ -319,6 +333,10 @@ private:
     NetworkIndex m_networkIndex;
 
     VariantManager m_variantManager;
+
+    BusBreakerView m_busBreakerView;
+
+    BusView m_busView;
 };
 
 }  // namespace iidm

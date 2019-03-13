@@ -114,6 +114,11 @@ Reference<T> ref(U& reference) {
     return Reference<T>(dynamic_cast<T&>(reference));
 }
 
+template <typename T>
+Reference<T> ref(const CReference<T>& reference) {
+    return static_cast<bool>(reference) ? Reference<T>(const_cast<T&>(reference.get())) : Reference<T>();
+}
+
 /**
  * Upcast / Downcast a reference_wrapper instance from U to T
  */

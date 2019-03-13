@@ -69,7 +69,9 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, Container::Type::NETWORK),
     m_forecastDistance(0),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
-    m_variantManager(*this) {
+    m_variantManager(*this),
+    m_busBreakerView(*this),
+    m_busView(*this) {
 }
 
 const Battery& Network::getBattery(const std::string& id) const {
@@ -138,6 +140,22 @@ stdcxx::const_range<BusbarSection> Network::getBusbarSections() const {
 
 stdcxx::range<BusbarSection> Network::getBusbarSections() {
     return m_networkIndex.getAll<BusbarSection>();
+}
+
+const network::BusBreakerView& Network::getBusBreakerView() const {
+    return m_busBreakerView;
+}
+
+network::BusBreakerView& Network::getBusBreakerView() {
+    return m_busBreakerView;
+}
+
+const network::BusView& Network::getBusView() const {
+    return m_busView;
+}
+
+network::BusView& Network::getBusView() {
+    return m_busView;
 }
 
 const stdcxx::DateTime& Network::getCaseDate() const {

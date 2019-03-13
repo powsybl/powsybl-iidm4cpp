@@ -11,9 +11,11 @@
 #include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/NodeBreakerView.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
@@ -98,8 +100,24 @@ Network createTestNetwork() {
         .setId("VL3_BUS1")
         .add();
 
+    vl3.newLoad()
+        .setId("LOAD1")
+        .setBus(vl3Bus1.getId())
+        .setConnectableBus(vl3Bus1.getId())
+        .setP0(600.0)
+        .setQ0(200.0)
+        .add();
+
     Bus& vl3Bus2 = vl3.getBusBreakerView().newBus()
         .setId("VL3_BUS2")
+        .add();
+
+    vl3.newLoad()
+        .setId("LOAD2")
+        .setBus(vl3Bus2.getId())
+        .setConnectableBus(vl3Bus2.getId())
+        .setP0(500.0)
+        .setQ0(100.0)
         .add();
 
     Bus& vl3Bus3 = vl3.getBusBreakerView().newBus()
@@ -208,6 +226,92 @@ Network createTestNetwork() {
     return network;
 }
 
+Network createTestNodeBreakerNetwork() {
+    Network network2("test2", "test2");
+    Substation& substation = network2.newSubstation()
+        .setId("S4")
+        .setName("S4_NAME")
+        .setCountry(Country::FR)
+        .setTso("TSO")
+        .add();
+
+    VoltageLevel& voltageLevel = substation.newVoltageLevel()
+        .setId("VL5")
+        .setName("VL5_NAME")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalVoltage(225.0)
+        .setLowVoltageLimit(200.0)
+        .setHighVoltageLimit(260.0)
+        .add();
+
+    voltageLevel.getNodeBreakerView().setNodeCount(5);
+    voltageLevel.getNodeBreakerView().newBusbarSection()
+        .setId("BBS1")
+        .setName("BBS1_NAME")
+        .setNode(0)
+        .add();
+
+    voltageLevel.getNodeBreakerView().newBreaker()
+        .setId("BK")
+        .setName("BK_NAME")
+        .setNode1(0)
+        .setNode2(1)
+        .setOpen(false)
+        .setRetained(true)
+        .setFictitious(false)
+        .add();
+
+    voltageLevel.newLoad()
+        .setId("LOAD3")
+        .setNode(1)
+        .setP0(600.0)
+        .setQ0(200.0)
+        .add();
+
+    voltageLevel.getNodeBreakerView().newInternalConnection()
+        .setId("IC_1")
+        .setNode1(1)
+        .setNode2(2)
+        .add();
+
+    voltageLevel.getNodeBreakerView().newDisconnector()
+        .setId("DIS1")
+        .setName("DIS1_NAME")
+        .setNode1(2)
+        .setNode2(3)
+        .setOpen(false)
+        .setRetained(true)
+        .setFictitious(false)
+        .add();
+
+    voltageLevel.newLoad()
+        .setId("LOAD4")
+        .setNode(3)
+        .setP0(700.0)
+        .setQ0(300.0)
+        .add();
+
+    voltageLevel.getNodeBreakerView().newSwitch()
+        .setId("LBS1")
+        .setName("LBS1_NAME")
+        .setKind(SwitchKind::LOAD_BREAK_SWITCH)
+        .setNode1(3)
+        .setNode2(4)
+        .setOpen(false)
+        .setRetained(true)
+        .setFictitious(false)
+        .add();
+
+    voltageLevel.newLoad()
+        .setId("LOAD5")
+        .setNode(4)
+        .setP0(800.0)
+        .setQ0(400.0)
+        .add();
+
+    return network2;
+}
+
 BOOST_AUTO_TEST_SUITE(NetworkTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
@@ -270,80 +374,78 @@ BOOST_AUTO_TEST_CASE(branch) {
     BOOST_CHECK_EQUAL(branchLoopCount, branchCount);
 }
 
-BOOST_AUTO_TEST_CASE(switches) {
+BOOST_AUTO_TEST_CASE(views) {
     //BusBreaker
-    const Network& network1 = createTestNetwork();
+    Network network1 = createTestNetwork();
     BOOST_CHECK_EQUAL(2, network1.getSwitchCount());
+    BOOST_CHECK_EQUAL(2, network1.getBusBreakerView().getSwitchCount());
+    auto switches = network1.getBusBreakerView().getSwitches();
+    BOOST_CHECK_EQUAL(network1.getBusBreakerView().getSwitchCount(), boost::size(switches));
+    POWSYBL_ASSERT_REF_TRUE(network1.getBusBreakerView().getBus("VL1_BUS1"));
+    POWSYBL_ASSERT_REF_FALSE(network1.getBusBreakerView().getBus("UNKNOWN"));
+    auto buses = network1.getBusBreakerView().getBuses();
+    BOOST_CHECK_EQUAL(6, boost::size(buses));
+
+    buses = network1.getBusView().getBuses();
+    BOOST_CHECK_EQUAL(4, boost::size(buses));
+    POWSYBL_ASSERT_REF_TRUE(network1.getBusView().getBus("VL1_0"));
+    POWSYBL_ASSERT_REF_FALSE(network1.getBusView().getBus("UNKNOWN"));
     POWSYBL_ASSERT_THROW(network1.getSwitch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network1.getSwitch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Switch");
     BOOST_CHECK_NO_THROW(network1.getSwitch("SW1"));
 
+    network1.getSwitch("SW1").setOpen(true);
+    network1.getSwitch("SW2").setOpen(true);
+    const Network& cNetwork1 = network1;
+    BOOST_CHECK_EQUAL(2, cNetwork1.getSwitchCount());
+    BOOST_CHECK_EQUAL(2, cNetwork1.getBusBreakerView().getSwitchCount());
+    const auto& cSwitches = cNetwork1.getBusBreakerView().getSwitches();
+    BOOST_CHECK_EQUAL(cNetwork1.getBusBreakerView().getSwitchCount(), boost::size(cSwitches));
+    POWSYBL_ASSERT_REF_TRUE(cNetwork1.getBusBreakerView().getBus("VL1_BUS1"));
+    POWSYBL_ASSERT_REF_FALSE(cNetwork1.getBusBreakerView().getBus("UNKNOWN"));
+    const auto& cBuses = cNetwork1.getBusBreakerView().getBuses();
+    BOOST_CHECK_EQUAL(6, boost::size(cBuses));
+
+    const auto& cBuses2 = cNetwork1.getBusView().getBuses();
+    BOOST_CHECK_EQUAL(4, boost::size(cBuses2));
+    POWSYBL_ASSERT_REF_TRUE(cNetwork1.getBusView().getBus("VL1_0"));
+    POWSYBL_ASSERT_REF_FALSE(cNetwork1.getBusView().getBus("UNKNOWN"));
+
     //NodeBreaker
-    Network network2("test2", "test2");
-    Substation& substation = network2.newSubstation()
-        .setId("S4")
-        .setName("S4_NAME")
-        .setCountry(Country::FR)
-        .setTso("TSO")
-        .add();
-
-    VoltageLevel& voltageLevel = substation.newVoltageLevel()
-        .setId("VL5")
-        .setName("VL5_NAME")
-        .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(225.0)
-        .setLowVoltageLimit(200.0)
-        .setHighVoltageLimit(260.0)
-        .add();
-
-    voltageLevel.getNodeBreakerView().setNodeCount(5);
-    voltageLevel.getNodeBreakerView().newBusbarSection()
-        .setId("BBS1")
-        .setName("BBS1_NAME")
-        .setNode(0)
-        .add();
-
-    voltageLevel.getNodeBreakerView().newBreaker()
-        .setId("BK")
-        .setName("BK_NAME")
-        .setNode1(0)
-        .setNode2(1)
-        .setOpen(false)
-        .setRetained(true)
-        .setFictitious(false)
-        .add();
-
-    voltageLevel.getNodeBreakerView().newInternalConnection()
-        .setId("IC_1")
-        .setNode1(1)
-        .setNode2(2)
-        .add();
-
-    voltageLevel.getNodeBreakerView().newDisconnector()
-        .setId("DIS1")
-        .setName("DIS1_NAME")
-        .setNode1(2)
-        .setNode2(3)
-        .setOpen(false)
-        .setRetained(true)
-        .setFictitious(false)
-        .add();
-
-    voltageLevel.getNodeBreakerView().newSwitch()
-        .setId("LBS1")
-        .setName("LBS1_NAME")
-        .setKind(SwitchKind::LOAD_BREAK_SWITCH)
-        .setNode1(3)
-        .setNode2(4)
-        .setOpen(false)
-        .setRetained(true)
-        .setFictitious(false)
-        .add();
-
+    Network network2 = createTestNodeBreakerNetwork();
     BOOST_CHECK_EQUAL(3, network2.getSwitchCount());
+    BOOST_CHECK_EQUAL(3, network2.getBusBreakerView().getSwitchCount());
+    switches = network2.getBusBreakerView().getSwitches();
+    BOOST_CHECK_EQUAL(network2.getBusBreakerView().getSwitchCount(), boost::size(switches));
+    POWSYBL_ASSERT_REF_TRUE(network2.getBusBreakerView().getBus("VL5_0"));
+    POWSYBL_ASSERT_REF_FALSE(network2.getBusBreakerView().getBus("UNKNOWN"));
+    buses = network2.getBusBreakerView().getBuses();
+    BOOST_CHECK_EQUAL(4, boost::size(buses));
+
+    buses = network2.getBusView().getBuses();
+    BOOST_CHECK_EQUAL(1, boost::size(buses));
+    POWSYBL_ASSERT_REF_TRUE(network2.getBusView().getBus("VL5_4"));
+    POWSYBL_ASSERT_REF_FALSE(network2.getBusView().getBus("UNKNOWN"));
     POWSYBL_ASSERT_THROW(network2.getSwitch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network2.getSwitch("BBS1"), PowsyblException, "Identifiable 'BBS1' is not a powsybl::iidm::Switch");
     BOOST_CHECK_NO_THROW(network2.getSwitch("BK"));
+
+    network2.getSwitch("BK").setOpen(true);
+    network2.getSwitch("DIS1").setOpen(true);
+    network2.getSwitch("LBS1").setOpen(true);
+    const Network& cNetwork2 = network2;
+    BOOST_CHECK_EQUAL(3, cNetwork2.getSwitchCount());
+    BOOST_CHECK_EQUAL(3, cNetwork2.getBusBreakerView().getSwitchCount());
+    const auto& cSwitches2 = cNetwork2.getBusBreakerView().getSwitches();
+    BOOST_CHECK_EQUAL(cNetwork2.getBusBreakerView().getSwitchCount(), boost::size(cSwitches2));
+    POWSYBL_ASSERT_REF_TRUE(cNetwork2.getBusBreakerView().getBus("VL5_5"));
+    POWSYBL_ASSERT_REF_FALSE(cNetwork2.getBusBreakerView().getBus("UNKNOWN"));
+    const auto& cBuses3 = cNetwork2.getBusBreakerView().getBuses();
+    BOOST_CHECK_EQUAL(4, boost::size(cBuses3));
+
+    const auto& cBuses4 = cNetwork2.getBusView().getBuses();
+    BOOST_CHECK_EQUAL(0, boost::size(cBuses4));
+    POWSYBL_ASSERT_REF_FALSE(cNetwork2.getBusView().getBus("UNKNOWN"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

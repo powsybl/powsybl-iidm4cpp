@@ -58,6 +58,8 @@ public:
 
     virtual unsigned long getNodeCount() const = 0;
 
+    //TODO(thiebarr) getNodes
+
     virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const = 0;
 
     virtual unsigned long getSwitchCount() const = 0;
