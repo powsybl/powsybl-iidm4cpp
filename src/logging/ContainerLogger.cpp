@@ -5,10 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <chrono>
-
 #include <powsybl/logging/ContainerLogger.hpp>
-#include <powsybl/logging/LogMessage.hpp>
 
 namespace powsybl {
 
@@ -47,8 +44,7 @@ bool ContainerLogger::isWarnEnabled() const {
 }
 
 void ContainerLogger::log(const Level& level, const std::string& message) {
-    const std::time_t& now = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-    m_logs.emplace_back(now, level, message);
+    m_logs.emplace_back(level, message);
 }
 
 unsigned long ContainerLogger::size() const {

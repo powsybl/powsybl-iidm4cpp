@@ -22,6 +22,15 @@ TEST(ConsoleLogger, level) {
     ASSERT_TRUE(logger.isErrorEnabled());
 }
 
+TEST(ConsoleLogger, logMessage) {
+    ConsoleLogger logger;
+    logger.trace("trace message");
+    logger.debug("debug message");
+    logger.info("info message");
+    logger.warn("warn message");
+    logger.error("error message");
+}
+
 }  // namespace logging
 
 }  // namespace powsybl

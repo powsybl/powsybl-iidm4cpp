@@ -6,6 +6,9 @@
  */
 
 #include <powsybl/logging/LogMessage.hpp>
+
+#include <chrono>
+
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/put_time.hpp>
 
@@ -15,8 +18,8 @@ namespace powsybl {
 
 namespace logging {
 
-LogMessage::LogMessage(const std::time_t& instant, const Level& level, const std::string& message) :
-    m_instant(instant),
+LogMessage::LogMessage(const Level& level, const std::string& message) :
+    m_instant(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now())),
     m_level(level),
     m_message(message) {
 }
@@ -42,6 +45,12 @@ std::string LogMessage::toString() const {
     oss << stdcxx::put_time(&result, "%Y-%m-%d %X") << " - " << getLevelName(m_level) << " - " << m_message;
 
     return oss.str();
+}
+
+std::ostream& operator<<(std::ostream& stream, const LogMessage& logMessage) {
+    stream << logMessage.toString();
+
+    return stream;
 }
 
 }  // namespace logging

@@ -18,7 +18,7 @@ namespace logging {
 
 class LogMessage {
 public:
-    LogMessage(const std::time_t& instant, const Level& level, const std::string& message);
+    LogMessage(const Level& level, const std::string& message);
 
     ~LogMessage() noexcept = default;
 
@@ -37,6 +37,8 @@ private:
 
     std::string m_message;
 };
+
+std::ostream& operator<<(std::ostream& stream, const LogMessage& logMessage);
 
 }  // namespace logging
 
