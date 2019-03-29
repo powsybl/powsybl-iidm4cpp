@@ -8,6 +8,7 @@
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 
 namespace powsybl {
@@ -47,8 +48,24 @@ Network& Substation::getNetwork() {
     return m_network.get();
 }
 
+unsigned long Substation::getThreeWindingsTransformerCount() const {
+    unsigned long res = 0UL;
+    for (const auto& it : m_voltageLevels) {
+        res += it.get().getConnectableCount<ThreeWindingsTransformer>();
+    }
+    return res / 3UL;
+}
+
 const std::string& Substation::getTso() const {
     return m_tso;
+}
+
+unsigned long Substation::getTwoWindingsTransformerCount() const {
+    unsigned long res = 0UL;
+    for (const auto& it : m_voltageLevels) {
+        res += it.get().getConnectableCount<TwoWindingsTransformer>();
+    }
+    return res / 2UL;
 }
 
 const std::string& Substation::getTypeDescription() const {

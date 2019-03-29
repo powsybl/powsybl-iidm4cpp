@@ -42,7 +42,11 @@ public:
 
     Network& getNetwork();
 
+    unsigned long getThreeWindingsTransformerCount() const;
+
     const std::string& getTso() const;
+
+    unsigned long getTwoWindingsTransformerCount() const;
 
     ThreeWindingsTransformerAdder newThreeWindingsTransformer();
 
