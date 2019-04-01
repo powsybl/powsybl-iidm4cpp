@@ -17,6 +17,7 @@
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "AssertionUtils.hpp"
+#include "NetworkFactory.hpp"
 
 namespace powsybl {
 
@@ -241,6 +242,58 @@ TEST(Line, adder) {
     ASSERT_NO_THROW(lineAdder.add());
 
     ASSERT_EQ(2ul, network.getLineCount());
+}
+
+TEST(Line, terminal) {
+    Network network = createLineTestNetwork();
+    Line& line = network.getLine("VL1_VL3");
+    const Line& cLine = line;
+
+    Terminal& t1 = line.getTerminal("VL1");
+    ASSERT_EQ(Branch::Side::ONE, line.getSide(t1));
+    ASSERT_TRUE(stdcxx::areSame(t1, line.getTerminal1()));
+    ASSERT_TRUE(stdcxx::areSame(t1, line.getTerminal(Branch::Side::ONE)));
+
+    const Terminal& cT1 = cLine.getTerminal("VL1");
+    ASSERT_EQ(Branch::Side::ONE, cLine.getSide(cT1));
+    ASSERT_TRUE(stdcxx::areSame(cT1, cLine.getTerminal1()));
+    ASSERT_TRUE(stdcxx::areSame(cT1, cLine.getTerminal(Branch::Side::ONE)));
+
+    Terminal& t2 = line.getTerminal("VL3");
+    ASSERT_EQ(Branch::Side::TWO, line.getSide(t2));
+    ASSERT_TRUE(stdcxx::areSame(t2, line.getTerminal2()));
+    ASSERT_TRUE(stdcxx::areSame(t2, line.getTerminal(Branch::Side::TWO)));
+
+    const Terminal& cT2 = cLine.getTerminal("VL3");
+    ASSERT_EQ(Branch::Side::TWO, cLine.getSide(cT2));
+    ASSERT_TRUE(stdcxx::areSame(cT2, cLine.getTerminal2()));
+    ASSERT_TRUE(stdcxx::areSame(cT2, cLine.getTerminal(Branch::Side::TWO)));
+
+    POWSYBL_ASSERT_THROW(line.getSide(getTerminalFromNetwork2()), AssertionError, "The terminal is not connected to this branch");
+    POWSYBL_ASSERT_THROW(cLine.getSide(getTerminalFromNetwork2()), AssertionError, "The terminal is not connected to this branch");
+
+    POWSYBL_ASSERT_THROW(line.getTerminal("VL2"), PowsyblException, "No terminal connected to voltage level VL2");
+    POWSYBL_ASSERT_THROW(cLine.getTerminal("VL2"), PowsyblException, "No terminal connected to voltage level VL2");
+
+    Line& line2 = network.newLine()
+        .setId("VL2_VL2")
+        .setVoltageLevel1("VL2")
+        .setBus1("VL2_BUS1")
+        .setConnectableBus1("VL2_BUS1")
+        .setVoltageLevel2("VL2")
+        .setBus2("VL2_BUS1")
+        .setConnectableBus2("VL2_BUS1")
+        .setR(3.0)
+        .setX(33.0)
+        .setG1(1.0)
+        .setB1(0.2)
+        .setG2(2.0)
+        .setB2(0.4)
+        .add();
+    const Line& cLine2 = line2;
+
+    POWSYBL_ASSERT_THROW(line2.getTerminal("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
+    POWSYBL_ASSERT_THROW(cLine2.getTerminal("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
 }
 
 }  // namespace iidm

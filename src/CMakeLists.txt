@@ -93,6 +93,7 @@ set(IIDM_SOURCES
     iidm/VoltageLevelAdder.cpp
     iidm/VscConverterStation.cpp
     iidm/VscConverterStationAdder.cpp
+    iidm/util/LimitViolationUtils.cpp
 
     logging/ConsoleLogger.cpp
     logging/ContainerLogger.cpp

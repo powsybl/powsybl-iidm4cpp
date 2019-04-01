@@ -25,7 +25,52 @@ public:
     };
 
 public:
+    class Overload {
+    public:
+        Overload(const CurrentLimits::TemporaryLimit& temporaryLimit, const std::string& previousLimitName, double previousLimit);
+
+        ~Overload() noexcept = default;
+
+        double getPreviousLimit() const;
+
+        const std::string& getPreviousLimitName() const;
+
+        const CurrentLimits::TemporaryLimit& getTemporaryLimit() const;
+
+    private:
+        CurrentLimits::TemporaryLimit m_temporaryLimit;
+
+        std::string m_previousLimitName;
+
+        double m_previousLimit;
+    };
+
+public:
     ~Branch() noexcept override = default;
+
+    bool checkPermanentLimit(const Side& side) const;
+
+    bool checkPermanentLimit(const Side& side, double limitReduction) const;
+
+    bool checkPermanentLimit1() const;
+
+    bool checkPermanentLimit1(double limitReduction) const;
+
+    bool checkPermanentLimit2() const;
+
+    bool checkPermanentLimit2(double limitReduction) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, double limitReduction) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits1() const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits1(double limitReduction) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits2() const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits2(double limitReduction) const;
 
     stdcxx::CReference<CurrentLimits> getCurrentLimits(const Side& side) const;
 
@@ -39,19 +84,33 @@ public:
 
     stdcxx::Reference<CurrentLimits> getCurrentLimits2();
 
-    Terminal& getTerminal(const Side& side) const;
+    unsigned long getOverloadDuration() const;
 
-    // TODO(MBA): Terminal& getTerminal(const std::string& voltageLevelId) const
+    Side getSide(const Terminal& terminal) const;
 
-    Terminal& getTerminal1() const;
+    const Terminal& getTerminal(const Side& side) const;
 
-    Terminal& getTerminal2() const;
+    Terminal& getTerminal(const Side& side);
+
+    const Terminal& getTerminal(const std::string& voltageLevelId) const;
+
+    Terminal& getTerminal(const std::string& voltageLevelId);
+
+    const Terminal& getTerminal1() const;
+
+    Terminal& getTerminal1();
+
+    const Terminal& getTerminal2() const;
+
+    Terminal& getTerminal2();
+
+    bool isOverloaded() const;
+
+    bool isOverloaded(double limitReduction) const;
 
     CurrentLimitsAdder<Side, Branch> newCurrentLimits1();
 
     CurrentLimitsAdder<Side, Branch> newCurrentLimits2();
-
-    // TODO(MBA): isOverloaded(), getOverloadDuration(), checkTemporaryLimits(), checkPermanentLimits()
 
 protected:
     Branch(const std::string& id, const std::string& name, const ConnectableType& connectableType);

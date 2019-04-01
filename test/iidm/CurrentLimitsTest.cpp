@@ -5,6 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <limits>
+
 #include <gtest/gtest.h>
 
 #include <powsybl/iidm/Bus.hpp>
@@ -319,6 +321,267 @@ TEST(CurrentLimits, adder) {
     ASSERT_TRUE(line.getCurrentLimits2());
 
     logging::LoggerFactory::getInstance().removeLogger("powsybl::iidm");
+}
+
+TEST(CurrentLimits, checkPermanentLimits) {
+    Network network = createCurrentLimitsTestNetwork();
+
+    Line& line = network.getLine("VL1_VL3");
+    Terminal& t1 = line.getTerminal1();
+    Terminal& t2 = line.getTerminal2();
+    Bus& b1 = network.getVoltageLevel("VL1").getBusBreakerView().getBus("VL1_BUS1");
+    Bus& b2 = network.getVoltageLevel("VL3").getBusBreakerView().getBus("VL3_BUS1");
+
+    ASSERT_TRUE(line.getCurrentLimits1());
+    ASSERT_TRUE(std::isnan(t1.getI()));
+    ASSERT_TRUE(std::isnan(b1.getV()));
+    ASSERT_FALSE(line.checkPermanentLimit1(2.0));
+
+    b1.setV(1000.0 * std::sqrt(3.0));
+    t1.setQ(0.0).setP(10.0);
+    ASSERT_DOUBLE_EQ(t1.getP(), t1.getI());
+
+    ASSERT_TRUE(line.checkPermanentLimit1(2.0));
+    ASSERT_FALSE(line.checkPermanentLimit1(5.0));
+
+    ASSERT_TRUE(line.checkPermanentLimit(Branch::Side::ONE, 2.0));
+    ASSERT_FALSE(line.checkPermanentLimit(Branch::Side::ONE, 5.0));
+
+    ASSERT_TRUE(line.checkPermanentLimit1());
+    ASSERT_TRUE(line.checkPermanentLimit(Branch::Side::ONE));
+    t1.setP(1.0);
+    ASSERT_FALSE(line.checkPermanentLimit1());
+    ASSERT_FALSE(line.checkPermanentLimit(Branch::Side::ONE));
+
+    ASSERT_FALSE(line.getCurrentLimits2());
+    ASSERT_FALSE(line.checkPermanentLimit2(2.0));
+
+    line.newCurrentLimits2()
+        .setPermanentLimit(8.0)
+        .beginTemporaryLimit()
+        .setName("TL1_2")
+        .setValue(11.0)
+        .setAcceptableDuration(4UL)
+        .setFictitious(false)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+        .setName("TL2_2")
+        .setValue(10.0)
+        .setAcceptableDuration(5UL)
+        .setFictitious(true)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+        .setName("TL3_2")
+        .setValue(9.0)
+        .setAcceptableDuration(6UL)
+        .setFictitious(false)
+        .endTemporaryLimit()
+        .add();
+
+    ASSERT_TRUE(line.getCurrentLimits2());
+    ASSERT_TRUE(std::isnan(t2.getI()));
+    ASSERT_TRUE(std::isnan(b2.getV()));
+    ASSERT_FALSE(line.checkPermanentLimit2(2.0));
+
+    b2.setV(1000.0 * std::sqrt(3.0));
+    t2.setQ(0.0).setP(20.0);
+    ASSERT_DOUBLE_EQ(t2.getP(), t2.getI());
+
+    ASSERT_TRUE(line.checkPermanentLimit2(2.0));
+    ASSERT_FALSE(line.checkPermanentLimit2(5.0));
+
+    ASSERT_TRUE(line.checkPermanentLimit(Branch::Side::TWO, 2.0));
+    ASSERT_FALSE(line.checkPermanentLimit(Branch::Side::TWO, 5.0));
+
+    ASSERT_TRUE(line.checkPermanentLimit2());
+    ASSERT_TRUE(line.checkPermanentLimit(Branch::Side::TWO));
+    t2.setP(1.0);
+    ASSERT_FALSE(line.checkPermanentLimit2());
+    ASSERT_FALSE(line.checkPermanentLimit(Branch::Side::TWO));
+
+    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(5), 3.0), AssertionError, "Unexpected side value: 5");
+    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(6)), AssertionError, "Unexpected side value: 6");
+
+    ASSERT_FALSE(line.isOverloaded(2.0));
+    ASSERT_FALSE(line.isOverloaded());
+    t2.setP(20.0);
+    ASSERT_TRUE(line.isOverloaded(2.0));
+    t1.setP(10.0);
+    ASSERT_TRUE(line.isOverloaded(2.0));
+    t2.setP(1.0);
+    ASSERT_TRUE(line.isOverloaded(2.0));
+
+    ASSERT_TRUE(line.isOverloaded());
+}
+
+TEST(CurrentLimits, checkTemporaryLimits) {
+    Network network = createCurrentLimitsTestNetwork();
+
+    Line& line = network.getLine("VL1_VL3");
+    Terminal& t1 = line.getTerminal1();
+    Terminal& t2 = line.getTerminal2();
+    Bus& b1 = network.getVoltageLevel("VL1").getBusBreakerView().getBus("VL1_BUS1");
+    Bus& b2 = network.getVoltageLevel("VL3").getBusBreakerView().getBus("VL3_BUS1");
+
+    ASSERT_TRUE(line.getCurrentLimits1());
+    ASSERT_TRUE(std::isnan(t1.getI()));
+    ASSERT_TRUE(std::isnan(b1.getV()));
+    std::unique_ptr<Branch::Overload> ptrOverload = line.checkTemporaryLimits1(2.0);
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+
+    b1.setV(1000.0 * std::sqrt(3.0));
+    t1.setQ(0.0).setP(9.0);
+    ASSERT_DOUBLE_EQ(t1.getP(), t1.getI());
+
+    ptrOverload = line.checkTemporaryLimits1(2.0);
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    Branch::Overload& overload = *ptrOverload;
+    ASSERT_EQ("", overload.getPreviousLimitName());
+    ASSERT_DOUBLE_EQ(4.0, overload.getPreviousLimit());
+    const CurrentLimits::TemporaryLimit& tl = overload.getTemporaryLimit();
+    auto limits = line.getCurrentLimits1().get();
+    const auto& tempLimits = limits.getTemporaryLimits();
+    unsigned long index = 0;
+
+    ASSERT_EQ(3UL, tl.getAcceptableDuration());
+    ASSERT_EQ(3UL, tempLimits.at(index).get().getAcceptableDuration());
+    ASSERT_EQ("TL3", tl.getName());
+    ASSERT_EQ("TL3", tempLimits.at(index).get().getName());
+    ASSERT_DOUBLE_EQ(5.0, tl.getValue());
+    ASSERT_DOUBLE_EQ(5.0, tempLimits.at(index).get().getValue());
+    ASSERT_FALSE(tl.isFictitious());
+    ASSERT_FALSE(tempLimits.at(index).get().isFictitious());
+    ASSERT_DOUBLE_EQ(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()));
+
+    t1.setP(11.0);
+    ptrOverload = line.checkTemporaryLimits1(2.0);
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    Branch::Overload& overload2 = *ptrOverload;
+    const CurrentLimits::TemporaryLimit& tl2 = overload2.getTemporaryLimit();
+    ASSERT_EQ("TL3", overload2.getPreviousLimitName());
+    ASSERT_DOUBLE_EQ(5.0, overload2.getPreviousLimit());
+    index = 1;
+    ASSERT_EQ(2UL, tl2.getAcceptableDuration());
+    ASSERT_EQ(2UL, tempLimits.at(index).get().getAcceptableDuration());
+    ASSERT_EQ("TL2", tl2.getName());
+    ASSERT_EQ("TL2", tempLimits.at(index).get().getName());
+    ASSERT_DOUBLE_EQ(6.0, tl2.getValue());
+    ASSERT_DOUBLE_EQ(6.0, tempLimits.at(index).get().getValue());
+    ASSERT_TRUE(tl2.isFictitious());
+    ASSERT_TRUE(tempLimits.at(index).get().isFictitious());
+    ASSERT_DOUBLE_EQ(tl2.getValue(), limits.getTemporaryLimitValue(tl2.getAcceptableDuration()));
+
+    t1.setP(13.0);
+    ptrOverload = line.checkTemporaryLimits1(2.0);
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    Branch::Overload& overload3 = *ptrOverload;
+    const CurrentLimits::TemporaryLimit& tl3 = overload3.getTemporaryLimit();
+    ASSERT_EQ("TL2", overload3.getPreviousLimitName());
+    ASSERT_DOUBLE_EQ(6.0, overload3.getPreviousLimit());
+    index = 2;
+    ASSERT_EQ(1UL, tl3.getAcceptableDuration());
+    ASSERT_EQ(1UL, tempLimits.at(index).get().getAcceptableDuration());
+    ASSERT_EQ("TL1", tl3.getName());
+    ASSERT_EQ("TL1", tempLimits.at(index).get().getName());
+    ASSERT_DOUBLE_EQ(7.0, tl3.getValue());
+    ASSERT_DOUBLE_EQ(7.0, tempLimits.at(index).get().getValue());
+    ASSERT_FALSE(tl3.isFictitious());
+    ASSERT_FALSE(tempLimits.at(index).get().isFictitious());
+    ASSERT_DOUBLE_EQ(tl3.getValue(), limits.getTemporaryLimitValue(tl3.getAcceptableDuration()));
+
+    t1.setP(15.0);
+    ptrOverload = line.checkTemporaryLimits1(2.0);
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, 2.0);
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+
+    t1.setP(9.0);
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, 2.0);
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+
+    t1.setP(5.0);
+    ptrOverload = line.checkTemporaryLimits1();
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE);
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+
+    t1.setP(1.0);
+    ptrOverload = line.checkTemporaryLimits1();
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE);
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+
+    ASSERT_FALSE(line.getCurrentLimits2());
+    ptrOverload = line.checkTemporaryLimits2(2.0);
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+
+    line.newCurrentLimits2()
+        .setPermanentLimit(8.0)
+        .beginTemporaryLimit()
+        .setName("TL1_2")
+        .setValue(11.0)
+        .setAcceptableDuration(2UL)
+        .setFictitious(false)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+        .setName("TL2_2")
+        .setValue(10.0)
+        .setAcceptableDuration(5UL)
+        .setFictitious(true)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+        .setName("TL3_2")
+        .setValue(9.0)
+        .setAcceptableDuration(6UL)
+        .setFictitious(false)
+        .endTemporaryLimit()
+        .add();
+
+    ASSERT_TRUE(line.getCurrentLimits2());
+    ASSERT_TRUE(std::isnan(t2.getI()));
+    ASSERT_TRUE(std::isnan(b2.getV()));
+    ptrOverload = line.checkTemporaryLimits2(2.0);
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+
+    b2.setV(1000.0 * std::sqrt(3.0));
+    t2.setQ(0.0).setP(20.0);
+    ASSERT_DOUBLE_EQ(t2.getP(), t2.getI());
+
+    ptrOverload = line.checkTemporaryLimits2(2.0);
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    ptrOverload = line.checkTemporaryLimits2(5.0);
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, 2.0);
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, 5.0);
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+
+    t2.setP(9.0);
+    ptrOverload = line.checkTemporaryLimits2();
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO);
+    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    t2.setP(1.0);
+    ptrOverload = line.checkTemporaryLimits2();
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO);
+    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+
+    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(5), 3.0), AssertionError, "Unexpected side value: 5");
+    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(6)), AssertionError, "Unexpected side value: 6");
+
+    ASSERT_EQ(std::numeric_limits<unsigned long>::max(), line.getOverloadDuration());
+    t1.setP(4.5);
+    ASSERT_EQ(3UL, line.getOverloadDuration());
+    t1.setP(1.0);
+    t2.setP(10.5);
+    ASSERT_EQ(2UL, line.getOverloadDuration());
+    t1.setP(6.0);
+    ASSERT_EQ(1UL, line.getOverloadDuration());
+    t1.setP(4.5);
+    ASSERT_EQ(2UL, line.getOverloadDuration());
 }
 
 }  // namespace iidm
