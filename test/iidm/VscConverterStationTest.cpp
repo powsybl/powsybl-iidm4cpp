@@ -192,10 +192,10 @@ TEST(VscConverterStation, loop) {
 
     unsigned long vscLoopCount = 0ul;
     unsigned long hvdcLoopCount = 0ul;
-    for(auto it = network.cbegin<VscConverterStation>(); it != network.cend<VscConverterStation>(); ++it) {
+    for (auto it = network.cbegin<VscConverterStation>(); it != network.cend<VscConverterStation>(); ++it) {
         vscLoopCount++;
     }
-    for(auto it = network.cbegin<HvdcConverterStation>(); it != network.cend<HvdcConverterStation>(); ++it) {
+    for (auto it = network.cbegin<HvdcConverterStation>(); it != network.cend<HvdcConverterStation>(); ++it) {
         hvdcLoopCount++;
     }
     ASSERT_EQ(vscLoopCount, vscCount);

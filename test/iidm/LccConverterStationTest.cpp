@@ -88,10 +88,10 @@ TEST(LccConverterStation, loop) {
 
     unsigned long lccLoopCount = 0ul;
     unsigned long hvdcLoopCount = 0ul;
-    for(auto it = network.cbegin<LccConverterStation>(); it != network.cend<LccConverterStation>(); ++it) {
+    for (auto it = network.cbegin<LccConverterStation>(); it != network.cend<LccConverterStation>(); ++it) {
         lccLoopCount++;
     }
-    for(auto it = network.cbegin<HvdcConverterStation>(); it != network.cend<HvdcConverterStation>(); ++it) {
+    for (auto it = network.cbegin<HvdcConverterStation>(); it != network.cend<HvdcConverterStation>(); ++it) {
         hvdcLoopCount++;
     }
     ASSERT_EQ(lccLoopCount, lccCount);

@@ -38,7 +38,7 @@ TEST(ContainerLogger, logMessage) {
     ASSERT_EQ(5, logger.size());
     unsigned int size = 0;
     std::time_t prev = before;
-    for(auto it = logger.cbegin(); it != logger.cend(); ++it) {
+    for (auto it = logger.cbegin(); it != logger.cend(); ++it) {
         ASSERT_TRUE(it->getInstant() >= before);
         ASSERT_TRUE(it->getInstant() >= prev);
         ASSERT_TRUE(it->getInstant() <= after);

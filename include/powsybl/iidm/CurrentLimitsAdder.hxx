@@ -121,8 +121,7 @@ void CurrentLimitsAdder<S, O>::checkTemporaryLimits() const {
         }
         if (std::isnan(previousLimit)) {
             previousLimit = limitValue;
-        }
-        else if (std::islessequal(limitValue, previousLimit)) {
+        } else if (std::islessequal(limitValue, previousLimit)) {
             logger.debug("%1%temporary limits should be in ascending value order", m_owner.getMessageHeader());
         }
     }
