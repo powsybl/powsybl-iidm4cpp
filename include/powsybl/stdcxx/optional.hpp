@@ -14,7 +14,8 @@
 
 namespace stdcxx {
 
-using std::optional;
+template <typename T>
+using optional = std::optional<T>;
 
 }  // namespace stdcxx
 
@@ -24,7 +25,8 @@ using std::optional;
 
 namespace stdcxx {
 
-using boost::optional;
+template <typename T>
+using optional = boost::optional<T>;
 
 }  // namespace stdcxx
 
