@@ -8,9 +8,15 @@
 #ifndef POWSYBL_STDCXX_MATH_HPP
 #define POWSYBL_STDCXX_MATH_HPP
 
+#include <cmath>
 #include <limits>
 
 namespace stdcxx {
+
+template <typename T = double>
+inline bool isEqual(const T& v1, const T& v2) {
+    return !std::islessgreater(v1, v2);
+}
 
 template <typename T = double>
 inline T nan() {

@@ -8,7 +8,9 @@
 #include <powsybl/iidm/ReactiveCapabilityCurve.hpp>
 
 #include <cassert>
+
 #include <powsybl/AssertionError.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -50,7 +52,7 @@ double ReactiveCapabilityCurve::getMaxQ(double p) const {
     assert(m_points.size() >= 2);
 
     const auto& it = m_points.lower_bound(p);
-    if (it != m_points.end() && it->first == p) {
+    if (it != m_points.end() && stdcxx::isEqual(it->first, p)) {
         return it->second.getMaxQ();
     } else {
         const auto& it1 = (it == m_points.cbegin() ? m_points.cend() : std::prev(it));
@@ -79,7 +81,7 @@ double ReactiveCapabilityCurve::getMinQ(double p) const {
     assert(m_points.size() >= 2);
 
     const auto& it = m_points.lower_bound(p);
-    if (it != m_points.end() && it->first == p) {
+    if (it != m_points.end() && stdcxx::isEqual(it->first, p)) {
         return it->second.getMinQ();
     } else {
         const auto& it1 = (it == m_points.cbegin() ? m_points.cend() : std::prev(it));

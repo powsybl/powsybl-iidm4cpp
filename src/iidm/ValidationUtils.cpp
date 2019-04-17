@@ -7,11 +7,10 @@
 
 #include "ValidationUtils.hpp"
 
-#include <cmath>
-
 #include <powsybl/iidm/LoadType.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -74,7 +73,7 @@ double checkbPerSection(const Validable& validable, double bPerSection) {
     if (std::isnan(bPerSection)) {
         throw ValidationException(validable, "susceptance per section is invalid");
     }
-    if (!std::islessgreater(bPerSection, 0.0)) {
+    if (stdcxx::isEqual(bPerSection, 0.0)) {
         throw ValidationException(validable, "susceptance per section is equal to zero");
     }
     return bPerSection;
