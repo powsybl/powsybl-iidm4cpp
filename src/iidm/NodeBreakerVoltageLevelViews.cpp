@@ -180,7 +180,7 @@ NodeBreakerView& NodeBreakerViewImpl::setNodeCount(unsigned long nodeCount) {
 }
 
 void NodeBreakerViewImpl::traverse(unsigned long node, const Traverser& traverser) {
-    powsybl::math::Traverser graphTraverser = [&](unsigned long v1, unsigned long e, unsigned long v2) {
+    powsybl::math::Traverser graphTraverser = [this, &traverser](unsigned long v1, unsigned long e, unsigned long v2) {
         return traverser(v1, m_voltageLevel.getGraph().getEdgeObject(e), v2) ? powsybl::math::TraverseResult::CONTINUE : powsybl::math::TraverseResult::TERMINATE;
     };
 

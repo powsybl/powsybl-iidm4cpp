@@ -108,8 +108,7 @@ void ConfiguredBus::reduceVariantArraySize(unsigned long number) {
 
 void ConfiguredBus::removeTerminal(BusTerminal& terminal) {
     auto& terminals = m_terminals[m_network.get().getVariantIndex()];
-    const auto& it = std::find_if(terminals.begin(), terminals.end(), [&](std::reference_wrapper<BusTerminal>& item)
-    {
+    const auto& it = std::find_if(terminals.begin(), terminals.end(), [&terminal](std::reference_wrapper<BusTerminal>& item) {
         return stdcxx::areSame(terminal, item.get());
     });
 

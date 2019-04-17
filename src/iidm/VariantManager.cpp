@@ -158,8 +158,7 @@ const std::string& VariantManager::getWorkingVariantId() const {
     std::lock_guard<std::mutex> lock(m_variantMutex);
 
     unsigned long index = m_variantContext->getVariantIndex();
-    const auto& it = std::find_if(m_variantsById.begin(), m_variantsById.end(), [&](const std::pair<std::string, unsigned long>& entry)
-    {
+    const auto& it = std::find_if(m_variantsById.begin(), m_variantsById.end(), [index](const std::pair<std::string, unsigned long>& entry) {
         return entry.second == index;
     });
 
