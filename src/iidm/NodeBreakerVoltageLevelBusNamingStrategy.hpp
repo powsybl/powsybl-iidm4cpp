@@ -8,7 +8,8 @@
 #ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELBUSNAMINGSTRATEGY_HPP
 #define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELBUSNAMINGSTRATEGY_HPP
 
-#include <mutex>
+#include <atomic>
+#include <string>
 
 namespace powsybl {
 
@@ -29,9 +30,7 @@ public:
 private:
     NodeBreakerVoltageLevel& m_voltageLevel;
 
-    unsigned long m_counter;
-
-    std::mutex m_mutex;
+    std::atomic_ulong m_counter;
 };
 
 }  // node_breaker_voltage_level

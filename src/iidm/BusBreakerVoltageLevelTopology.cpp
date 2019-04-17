@@ -123,7 +123,9 @@ void CalculatedBusTopology::updateCache() {
             }, encountered);
 
             if (isBusValid(busSet)) {
-                std::string mergedBusId = logging::format("%1%_%2%", m_voltageLevel.getId(), busCount++);
+                std::string mergedBusId = logging::format("%1%_%2%", m_voltageLevel.getId(), busCount);
+                ++busCount;
+
                 std::unique_ptr<MergedBus> ptrMergedBus = stdcxx::make_unique<MergedBus>(mergedBusId, busSet);
                 const auto& it = mergedBuses.insert(std::make_pair(mergedBusId, std::move(ptrMergedBus)));
                 const std::reference_wrapper<MergedBus>& mergedBus = std::ref(*it.first->second);

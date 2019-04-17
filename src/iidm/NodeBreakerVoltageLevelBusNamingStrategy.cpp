@@ -20,13 +20,10 @@ namespace node_breaker_voltage_level {
 BusNamingStrategy::BusNamingStrategy(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel),
     m_counter(0) {
-
 }
 
 std::string BusNamingStrategy::getName() {
-    std::lock_guard<std::mutex> lock(m_mutex);
-
-    return logging::format("%1%_%2%", m_voltageLevel.getId(), (m_counter++));
+    return logging::format("%1%_%2%", m_voltageLevel.getId(), m_counter.fetch_add(1));
 }
 
 }  // node_breaker_voltage_level
