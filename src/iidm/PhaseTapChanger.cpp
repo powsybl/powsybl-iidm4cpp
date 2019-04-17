@@ -39,7 +39,7 @@ PhaseTapChanger::PhaseTapChanger(TwoWindingsTransformer& parent, long lowTapPosi
     m_regulationMode(regulationMode),
     m_regulationValue(parent.getNetwork().getVariantManager().getVariantArraySize(), regulationValue) {
     checkTapPosition(parent, tapPosition, lowTapPosition, getHighTapPosition());
-    checkPhaseTapChangerRegulation(parent, regulationMode, regulationValue, regulating, regulationTerminal, getNetwork());
+    checkPhaseTapChangerRegulation(parent, regulationMode, regulationValue, regulating, regulationTerminal, parent.getNetwork());
 }
 
 void PhaseTapChanger::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
