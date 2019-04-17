@@ -24,9 +24,9 @@ public:
 
     NetworkIterator(const NetworkIterator&) = default;
 
-    NetworkIterator(NetworkIndex& networkIndex);
+    explicit NetworkIterator(NetworkIndex& networkIndex);
 
-    NetworkIterator(const NetworkIndex& networkIndex);
+    explicit NetworkIterator(const NetworkIndex& networkIndex);
 
     NetworkIterator& operator=(const NetworkIterator&) = default;
 
