@@ -38,8 +38,8 @@ HvdcLine& HvdcLineAdder::add() {
     checkActivePowerSetpoint(*this, m_activePowerSetpoint);
     checkMaxP(*this, m_maxP);
 
-    HvdcConverterStation& converterStation1 = getConverterStation(m_converterStationId1, 1u);
-    HvdcConverterStation& converterStation2 = getConverterStation(m_converterStationId2, 2u);
+    HvdcConverterStation& converterStation1 = getConverterStation(m_converterStationId1, 1U);
+    HvdcConverterStation& converterStation2 = getConverterStation(m_converterStationId2, 2U);
 
     std::unique_ptr<HvdcLine> ptrHvdcLine = stdcxx::make_unique<HvdcLine>(getNetwork(), getId(), getName(), m_r, m_nominalVoltage, m_maxP, *m_convertersMode, m_activePowerSetpoint,
                                                                           converterStation1, converterStation2);
