@@ -30,7 +30,7 @@ public:
     typedef std::function<bool(const stdcxx::Reference<V>&)> VertexVisitor;
 
 public:
-    UndirectedGraph();
+    UndirectedGraph() = default;
 
     ~UndirectedGraph() noexcept = default;
 

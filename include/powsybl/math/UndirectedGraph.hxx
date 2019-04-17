@@ -20,10 +20,6 @@ namespace powsybl {
 namespace math {
 
 template <typename V, typename E>
-UndirectedGraph<V, E>::UndirectedGraph() {
-}
-
-template <typename V, typename E>
 void UndirectedGraph<V, E>::checkEdge(unsigned long e) const {
     if (e >= m_edges.size() || !m_edges[e]) {
         throw PowsyblException(logging::format("Edge %1% not found", e));
