@@ -11,8 +11,8 @@
 #include <functional>
 #include <map>
 #include <memory>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 

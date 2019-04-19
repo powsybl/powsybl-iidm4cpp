@@ -8,10 +8,10 @@
 #ifndef POWSYBL_IIDM_SET_HPP
 #define POWSYBL_IIDM_SET_HPP
 
-#include <boost/multi_index_container.hpp>
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
+#include <boost/multi_index_container.hpp>
 
 namespace stdcxx {
 

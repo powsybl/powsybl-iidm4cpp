@@ -10,9 +10,9 @@
 #include <gtest/gtest.h>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/BusView.hpp>
+#include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>

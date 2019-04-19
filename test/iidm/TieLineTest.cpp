@@ -11,9 +11,9 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
+#include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
-#include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>

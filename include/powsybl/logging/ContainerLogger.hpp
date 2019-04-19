@@ -8,8 +8,8 @@
 #ifndef POWSYBL_LOGGING_CONTAINERLOGGER_HPP
 #define POWSYBL_LOGGING_CONTAINERLOGGER_HPP
 
-#include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LogMessage.hpp>
+#include <powsybl/logging/Logger.hpp>
 
 namespace powsybl {
 

@@ -9,8 +9,8 @@
 
 #include <algorithm>
 
-#include <powsybl/iidm/MultipleVariantContext.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/iidm/MultipleVariantContext.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/VariantContextGuard.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
