@@ -36,7 +36,7 @@ public:
 
     reference_wrapper& operator=(const reference_wrapper&) = default;
 
-    reference_wrapper& operator=(reference_wrapper&&) = default;
+    reference_wrapper& operator=(reference_wrapper&&) noexcept = default;
 
     bool operator==(const reference_wrapper& reference) const {
         return m_pointer == reference.m_pointer;
