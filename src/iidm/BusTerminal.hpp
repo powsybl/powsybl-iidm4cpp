@@ -43,7 +43,15 @@ public: // Terminal
 public:
     BusTerminal(VariantManagerHolder& network, const std::string& connectableBusId, bool connected);
 
+    BusTerminal(const BusTerminal& nodeTerminal) = delete;
+
+    BusTerminal(BusTerminal&& nodeTerminal) = delete;
+
     ~BusTerminal() noexcept override = default;
+
+    BusTerminal& operator=(const BusTerminal& nodeTerminal) = delete;
+
+    BusTerminal& operator=(BusTerminal&& nodeTerminal) = delete;
 
     const std::string& getConnectableBusId() const;
 
@@ -59,15 +67,6 @@ protected: // MultiVariantObject
     void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
     void reduceVariantArraySize(unsigned long number) override;
-
-private:
-    BusTerminal(const BusTerminal& nodeTerminal) = delete;
-
-    BusTerminal(BusTerminal&& nodeTerminal) = delete;
-
-    BusTerminal& operator=(const BusTerminal& nodeTerminal) = delete;
-
-    BusTerminal& operator=(BusTerminal&& nodeTerminal) = delete;
 
 private:
     std::vector<bool> m_connected;

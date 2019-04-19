@@ -30,9 +30,13 @@ public:
 public:
     explicit VariantManager(Network& network);
 
+    VariantManager(const VariantManager& variantManager) = delete;
+
     VariantManager(VariantManager&& variantManager) noexcept;
 
     ~VariantManager() noexcept = default;
+
+    VariantManager& operator=(const VariantManager& variantManager) = delete;
 
     void cloneVariant(const std::string& sourceVariantId, const std::string& targetVariantId);
 
@@ -63,11 +67,6 @@ private:
     iterator_traits<MultiVariantObject>::iterator end();
 
     unsigned long getVariantIndex(const std::string& variantId) const;
-
-private: // Non copyable
-    VariantManager(const VariantManager& variantManager) = delete;
-
-    VariantManager& operator=(const VariantManager& variantManager) = delete;
 
 private:
     Network& m_network;

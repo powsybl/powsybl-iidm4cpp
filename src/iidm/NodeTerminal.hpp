@@ -39,7 +39,15 @@ public: // Terminal
 public:
     NodeTerminal(VariantManagerHolder& network, unsigned long node);
 
+    NodeTerminal(const NodeTerminal& nodeTerminal) = delete;
+
+    NodeTerminal(NodeTerminal&& nodeTerminal) = delete;
+
     ~NodeTerminal() noexcept override = default;
+
+    NodeTerminal& operator=(const NodeTerminal& nodeTerminal) = delete;
+
+    NodeTerminal& operator=(NodeTerminal&& nodeTerminal) = delete;
 
     unsigned long getNode() const;
 
@@ -53,15 +61,6 @@ protected: // MultiVariantObject
     void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
     void reduceVariantArraySize(unsigned long number) override;
-
-private:
-    NodeTerminal(const NodeTerminal& nodeTerminal) = delete;
-
-    NodeTerminal(NodeTerminal&& nodeTerminal) = delete;
-
-    NodeTerminal& operator=(const NodeTerminal& nodeTerminal) = delete;
-
-    NodeTerminal& operator=(NodeTerminal&& nodeTerminal) = delete;
 
 private:
     unsigned long m_node;

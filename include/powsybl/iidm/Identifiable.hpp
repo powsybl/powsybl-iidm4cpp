@@ -21,7 +21,11 @@ public: // Validable
     std::string getMessageHeader() const override;
 
 public:
+    Identifiable(const Identifiable& identifiable) = delete;
+
     ~Identifiable() noexcept override = default;
+
+    Identifiable& operator=(const Identifiable& identifiable) = delete;
 
     const std::string& getId() const;
 
@@ -34,11 +38,6 @@ protected:
 
 private:
     virtual const std::string& getTypeDescription() const = 0;
-
-private: // Non copyable
-    Identifiable(const Identifiable& identifiable) = delete;
-
-    Identifiable& operator=(const Identifiable& identifiable) = delete;
 
 private:
     std::string m_id;

@@ -21,9 +21,13 @@ class NetworkIndex {
 public:
     NetworkIndex() = default;
 
+    NetworkIndex(const NetworkIndex& networkIndex) = delete;
+
     NetworkIndex(NetworkIndex&&) = default;
 
     ~NetworkIndex() noexcept = default;
+
+    NetworkIndex& operator=(const NetworkIndex& networkIndex) = delete;
 
     template <typename T> using const_iterator = typename iterator_traits<T>::const_iterator;
 
@@ -50,11 +54,6 @@ public:
 
 private:
     static void checkId(const std::string& id);
-
-private: // Non copyable
-    NetworkIndex(const NetworkIndex& networkIndex) = delete;
-
-    NetworkIndex& operator=(const NetworkIndex& networkIndex) = delete;
 
 private:
     IdentifiableById m_objectsById;

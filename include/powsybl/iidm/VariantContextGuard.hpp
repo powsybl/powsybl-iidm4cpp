@@ -21,10 +21,9 @@ class VariantContextGuard {
 public:
     explicit VariantContextGuard(VariantContext& context);
 
-    ~VariantContextGuard() noexcept;
-
-private: // Non copyable
     VariantContextGuard(const VariantContextGuard& guard) = delete;
+
+    ~VariantContextGuard() noexcept;
 
     VariantContextGuard& operator=(const VariantContextGuard& guard) = delete;
 
