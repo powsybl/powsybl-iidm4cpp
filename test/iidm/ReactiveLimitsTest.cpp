@@ -21,7 +21,7 @@ namespace iidm {
 
 class ReactiveLimitsHolderMock : public ReactiveLimitsHolder, public Validable {
 public:
-    virtual std::string getMessageHeader() const override { return ""; };
+    std::string getMessageHeader() const override { return ""; };
 };
 
 TEST(ReactiveLimits, MinMaxReactiveLimits) {
