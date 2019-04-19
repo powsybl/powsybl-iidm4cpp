@@ -72,7 +72,7 @@ TEST(ShuntCompensator, constructor) {
     adder.setbPerSection(50.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Shunt compensator 'SHUNT1': the maximum number of section (0) should be greater than 0");
-    adder.setMaximumSectionCount(0.0);
+    adder.setMaximumSectionCount(0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Shunt compensator 'SHUNT1': the maximum number of section (0) should be greater than 0");
     adder.setMaximumSectionCount(10);
