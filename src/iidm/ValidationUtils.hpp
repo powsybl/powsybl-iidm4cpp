@@ -44,7 +44,7 @@ double checkbPerSection(const Validable& validable, double bPerSection);
 
 const HvdcLine::ConvertersMode& checkConvertersMode(const Validable& validable, const HvdcLine::ConvertersMode& converterMode);
 
-int checkForecastDistance(const Validable& validable, int value);
+int checkForecastDistance(const Validable& validable, int forecastDistance);
 
 double checkG(const Validable& validable, double g);
 

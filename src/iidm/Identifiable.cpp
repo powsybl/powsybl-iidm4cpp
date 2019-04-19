@@ -15,8 +15,8 @@ namespace powsybl {
 namespace logging {
 
 template <>
-std::string toString(const iidm::Identifiable& identifiable) {
-    return identifiable.getId();
+std::string toString(const iidm::Identifiable& value) {
+    return value.getId();
 }
 
 }  // namespace logging

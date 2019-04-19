@@ -19,7 +19,7 @@ enum class TopologyKind : unsigned int {
     BUS_BREAKER
 };
 
-std::ostream& operator<<(std::ostream& stream, const TopologyKind& type);
+std::ostream& operator<<(std::ostream& stream, const TopologyKind& topologyKind);
 
 }  // namespace iidm
 
