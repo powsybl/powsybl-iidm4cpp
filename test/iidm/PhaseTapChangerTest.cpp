@@ -380,18 +380,17 @@ TEST(PhaseTapChanger, adder) {
 TEST(PhaseTapChanger, holder) {
     const Network& network = createPhaseTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
+    const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();
-    PhaseTapChangerHolder& holder = dynamic_cast<PhaseTapChangerHolder&>(transformer);
-    const PhaseTapChangerHolder& cHolder = holder;
 
-    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, holder.getPhaseTapChanger().get()));
-    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, cHolder.getPhaseTapChanger().get()));
+    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, transformer.getPhaseTapChanger().get()));
+    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, cTransformer.getPhaseTapChanger().get()));
 
-    ASSERT_TRUE(holder.getPhaseTapChanger());
+    ASSERT_TRUE(transformer.getPhaseTapChanger());
     phaseTapChanger.remove();
-    ASSERT_FALSE(holder.getPhaseTapChanger());
+    ASSERT_FALSE(cTransformer.getPhaseTapChanger());
 
-    ASSERT_NO_THROW(holder.newPhaseTapChanger());
+    ASSERT_NO_THROW(transformer.newPhaseTapChanger());
 }
 
 }  // namespace iidm

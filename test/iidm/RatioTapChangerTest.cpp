@@ -349,21 +349,20 @@ TEST(RatioTapChanger, adder) {
 TEST(RatioTapChanger, holder) {
     const Network& network = createRatioTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
+    const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger().get();
-    RatioTapChangerHolder& holder = dynamic_cast<RatioTapChangerHolder&>(transformer);
-    const RatioTapChangerHolder& cHolder = holder;
 
-    ASSERT_TRUE(stdcxx::areSame(network, holder.getNetwork()));
-    ASSERT_TRUE(stdcxx::areSame(network, cHolder.getNetwork()));
+    ASSERT_TRUE(stdcxx::areSame(network, transformer.getNetwork()));
+    ASSERT_TRUE(stdcxx::areSame(network, cTransformer.getNetwork()));
 
-    ASSERT_TRUE(stdcxx::areSame(ratioTapChanger, holder.getRatioTapChanger().get()));
-    ASSERT_TRUE(stdcxx::areSame(ratioTapChanger, cHolder.getRatioTapChanger().get()));
+    ASSERT_TRUE(stdcxx::areSame(ratioTapChanger, transformer.getRatioTapChanger().get()));
+    ASSERT_TRUE(stdcxx::areSame(ratioTapChanger, cTransformer.getRatioTapChanger().get()));
 
-    ASSERT_TRUE(holder.getRatioTapChanger());
+    ASSERT_TRUE(transformer.getRatioTapChanger());
     ratioTapChanger.remove();
-    ASSERT_FALSE(holder.getRatioTapChanger());
+    ASSERT_FALSE(transformer.getRatioTapChanger());
 
-    ASSERT_NO_THROW(holder.newRatioTapChanger());
+    ASSERT_NO_THROW(transformer.newRatioTapChanger());
 }
 
 }  // namespace iidm
