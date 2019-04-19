@@ -21,7 +21,7 @@ namespace math {
 
 class V {
 public:
-    V(std::string name) :
+    explicit V(std::string name) :
         m_name(std::move(name)) {
     }
 
@@ -35,7 +35,7 @@ private:
 
 class E {
 public:
-    E(std::string name) :
+    explicit E(std::string name) :
         m_name(std::move(name)) {
     }
 
