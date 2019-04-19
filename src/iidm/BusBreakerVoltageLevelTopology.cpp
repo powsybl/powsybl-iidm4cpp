@@ -116,10 +116,10 @@ void CalculatedBusTopology::updateCache() {
                 stdcxx::Reference<Switch> aSwitch = graph.getEdgeObject(e);
                 if (aSwitch.get().isOpen()) {
                     return math::TraverseResult::TERMINATE;
-                } else {
-                    busSet.push_back(std::ref(graph.getVertexObject(v2).get()));
-                    return math::TraverseResult::CONTINUE;
                 }
+
+                busSet.push_back(std::ref(graph.getVertexObject(v2).get()));
+                return math::TraverseResult::CONTINUE;
             }, encountered);
 
             if (isBusValid(busSet)) {

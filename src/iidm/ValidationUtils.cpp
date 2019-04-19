@@ -163,7 +163,8 @@ const LoadType& checkLoadType(const Validable& /*validable*/, const LoadType& lo
 double checkLossFactor(const Validable& validable, double lossFactor) {
     if (std::isnan(lossFactor)) {
         throw ValidationException(validable, "loss factor is invalid");
-    } else if (lossFactor < 0) {
+    }
+    if (lossFactor < 0) {
         throw ValidationException(validable, "loss factor must be >= 0");
     }
     return lossFactor;
@@ -186,7 +187,8 @@ double checkMinP(const Validable& validable, double minP) {
 double checkNominalVoltage(const Validable& validable, double nominalVoltage) {
     if (std::isnan(nominalVoltage)) {
         throw ValidationException(validable, "Nominal voltage is undefined");
-    } else if (nominalVoltage <= 0) {
+    }
+    if (nominalVoltage <= 0) {
         throw ValidationException(validable, "Nominal voltage is <= 0");
     }
     return nominalVoltage;

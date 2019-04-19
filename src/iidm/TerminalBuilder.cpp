@@ -30,9 +30,9 @@ const std::string& TerminalBuilder::getConnectionBus() const {
         }
 
         return m_bus;
-    } else {
-        return m_connectableBus;
     }
+
+    return m_connectableBus;
 }
 
 std::unique_ptr<Terminal> TerminalBuilder::build() {

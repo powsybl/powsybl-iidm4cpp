@@ -134,15 +134,16 @@ bool UndirectedGraph<V, E>::findAllPaths(unsigned long e, unsigned long v, const
     if (encountered[v]) {
         return false;
     }
+
     const std::unique_ptr<Vertex>& vertex = m_vertices[v];
     path.push_back(e);
     if (pathComplete(vertex->getObject())) {
         paths.emplace_back(std::move(path));
         return true;
-    } else {
-        findAllPaths(v, pathComplete, pathCanceled, path, encountered, paths);
-        return false;
     }
+
+    findAllPaths(v, pathComplete, pathCanceled, path, encountered, paths);
+    return false;
 }
 
 template <typename V, typename E>

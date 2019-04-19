@@ -54,23 +54,25 @@ double ReactiveCapabilityCurve::getMaxQ(double p) const {
     const auto& it = m_points.lower_bound(p);
     if (it != m_points.end() && stdcxx::isEqual(it->first, p)) {
         return it->second.getMaxQ();
-    } else {
-        const auto& it1 = (it == m_points.cbegin() ? m_points.cend() : std::prev(it));
-        const auto& it2 = it;
-
-        if (it1 == m_points.end() && it2 != m_points.end()) {
-            return it2->second.getMaxQ();
-        } else if (it1 != m_points.end() && it2 == m_points.end()) {
-            return it1->second.getMaxQ();
-        } else if (it1 != m_points.end() && it2 != m_points.end()) {
-            const auto& p1 = it1->second;
-            const auto& p2 = it2->second;
-
-            return p1.getMaxQ() + (p2.getMaxQ() - p1.getMaxQ()) / (p2.getP() - p1.getP()) * (p - p1.getP());
-        } else {
-            throw AssertionError("Should not happen");
-        }
     }
+
+    const auto& it1 = (it == m_points.cbegin() ? m_points.cend() : std::prev(it));
+    const auto& it2 = it;
+
+    if (it1 == m_points.end() && it2 != m_points.end()) {
+        return it2->second.getMaxQ();
+    }
+    if (it1 != m_points.end() && it2 == m_points.end()) {
+        return it1->second.getMaxQ();
+    }
+    if (it1 != m_points.end() && it2 != m_points.end()) {
+        const auto& p1 = it1->second;
+        const auto& p2 = it2->second;
+
+        return p1.getMaxQ() + (p2.getMaxQ() - p1.getMaxQ()) / (p2.getP() - p1.getP()) * (p - p1.getP());
+    }
+
+    throw AssertionError("Should not happen");
 }
 
 double ReactiveCapabilityCurve::getMinP() const {
@@ -83,23 +85,25 @@ double ReactiveCapabilityCurve::getMinQ(double p) const {
     const auto& it = m_points.lower_bound(p);
     if (it != m_points.end() && stdcxx::isEqual(it->first, p)) {
         return it->second.getMinQ();
-    } else {
-        const auto& it1 = (it == m_points.cbegin() ? m_points.cend() : std::prev(it));
-        const auto& it2 = it;
-
-        if (it1 == m_points.end() && it2 != m_points.end()) {
-            return it2->second.getMinQ();
-        } else if (it1 != m_points.end() && it2 == m_points.end()) {
-            return it1->second.getMinQ();
-        } else if (it1 != m_points.end() && it2 != m_points.end()) {
-            const auto& p1 = it1->second;
-            const auto& p2 = it2->second;
-
-            return p1.getMinQ() + (p2.getMinQ() - p1.getMinQ()) / (p2.getP() - p1.getP()) * (p - p1.getP());
-        } else {
-            throw AssertionError("Should not happen");
-        }
     }
+
+    const auto& it1 = (it == m_points.cbegin() ? m_points.cend() : std::prev(it));
+    const auto& it2 = it;
+
+    if (it1 == m_points.end() && it2 != m_points.end()) {
+        return it2->second.getMinQ();
+    }
+    if (it1 != m_points.end() && it2 == m_points.end()) {
+        return it1->second.getMinQ();
+    }
+    if (it1 != m_points.end() && it2 != m_points.end()) {
+        const auto& p1 = it1->second;
+        const auto& p2 = it2->second;
+
+        return p1.getMinQ() + (p2.getMinQ() - p1.getMinQ()) / (p2.getP() - p1.getP()) * (p - p1.getP());
+    }
+
+    throw AssertionError("Should not happen");
 }
 
 unsigned long ReactiveCapabilityCurve::getPointCount() const {

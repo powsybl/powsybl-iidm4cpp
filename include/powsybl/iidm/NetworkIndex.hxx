@@ -64,14 +64,14 @@ T& NetworkIndex::get(const std::string& id) const {
     const auto& it = m_objectsById.find(id);
     if (it == m_objectsById.end()) {
         throw PowsyblException(logging::format("Unable to find to the identifiable '%1%'", id));
-    } else {
-        T* identifiable = dynamic_cast<T*>(it->second.get());
-        if (identifiable == nullptr) {
-            throw PowsyblException(logging::format("Identifiable '%1%' is not a %2%", id, stdcxx::demangle<T>()));
-        } else {
-            return *identifiable;
-        }
     }
+
+    T* identifiable = dynamic_cast<T*>(it->second.get());
+    if (identifiable == nullptr) {
+        throw PowsyblException(logging::format("Identifiable '%1%' is not a %2%", id, stdcxx::demangle<T>()));
+    }
+
+    return *identifiable;
 }
 
 template <typename T>

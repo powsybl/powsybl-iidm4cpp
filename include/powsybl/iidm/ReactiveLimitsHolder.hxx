@@ -24,10 +24,10 @@ const T& ReactiveLimitsHolder::getReactiveLimits() const {
     assert(m_reactiveLimits);
     if (stdcxx::isInstanceOf<T>(m_reactiveLimits)) {
         return dynamic_cast<const T&>(*m_reactiveLimits);
-    } else {
-        const auto& validable = dynamic_cast<const Validable&>(*this);
-        throw ValidationException(validable, logging::format("Incorrect reactive limits type %1%, expected %2%", stdcxx::simpleClassName<T>(), stdcxx::simpleClassName(*m_reactiveLimits)));
     }
+
+    const auto& validable = dynamic_cast<const Validable&>(*this);
+    throw ValidationException(validable, logging::format("Incorrect reactive limits type %1%, expected %2%", stdcxx::simpleClassName<T>(), stdcxx::simpleClassName(*m_reactiveLimits)));
 }
 
 template <typename T, typename>

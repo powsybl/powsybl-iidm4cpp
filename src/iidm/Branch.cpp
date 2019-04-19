@@ -139,11 +139,12 @@ unsigned long Branch::getOverloadDuration() const {
 Branch::Side Branch::getSide(const Terminal& terminal) const {
     if (stdcxx::areSame(terminal, getTerminals().at(0).get())) {
         return Side::ONE;
-    } else if (stdcxx::areSame(terminal, getTerminals().at(1).get())) {
-        return Side::TWO;
-    } else {
-        throw AssertionError("The terminal is not connected to this branch");
     }
+    if (stdcxx::areSame(terminal, getTerminals().at(1).get())) {
+        return Side::TWO;
+    }
+
+    throw AssertionError("The terminal is not connected to this branch");
 }
 
 const Terminal& Branch::getTerminal(const Side& side) const {
@@ -168,13 +169,15 @@ const Terminal& Branch::getTerminal(const std::string& voltageLevelId) const {
     bool side2 = getTerminal2().getVoltageLevel().getId() == voltageLevelId;
     if (side1 && side2) {
         throw PowsyblException(logging::format("Both terminals are connected to voltage level %1%", voltageLevelId));
-    } else if (side1) {
-        return getTerminal1();
-    } else if (side2) {
-        return getTerminal2();
-    } else {
-        throw PowsyblException(logging::format("No terminal connected to voltage level %1%", voltageLevelId));
     }
+    if (side1) {
+        return getTerminal1();
+    }
+    if (side2) {
+        return getTerminal2();
+    }
+
+    throw PowsyblException(logging::format("No terminal connected to voltage level %1%", voltageLevelId));
 }
 
 Terminal& Branch::getTerminal(const std::string& voltageLevelId) {
