@@ -1,0 +1,69 @@
+#
+# Copyright (c) 2019, RTE (http://www.rte-france.com)
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+# List of all checks
+# https://clang.llvm.org/extra/clang-tidy/
+# https://clang.llvm.org/extra/clang-tidy/checks/list.html
+
+Checks: '*,
+  -abseil-*,
+  -android-*,
+  -bugprone-narrowing-conversions,
+  -cert-dcl21-cpp,
+  -cert-err58-cpp,
+  -cppcoreguidelines-avoid-goto,
+  -cppcoreguidelines-narrowing-conversions,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
+  -cppcoreguidelines-pro-type-const-cast,
+  -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-special-member-functions,
+  -clang-analyzer-deadcode.DeadStores,
+  -fuchsia-*,
+  -google-explicit-constructor,
+  -google-readability-function-size,
+  -google-readability-namespace-comments,
+  -google-readability-todo,
+  -google-runtime-int,
+  -google-runtime-references,
+  -hicpp-avoid-goto,
+  -hicpp-explicit-conversions,
+  -hicpp-function-size,
+  -hicpp-move-const-arg,
+  -hicpp-no-array-decay,
+  -hicpp-noexcept-move,
+  -hicpp-special-member-functions,
+  -hicpp-use-auto,
+  -hicpp-use-equals-delete,
+  -hicpp-use-override,
+  -hicpp-vararg,
+  -llvm-header-guard,
+  -llvm-include-order,
+  -llvm-namespace-comment,
+  -modernize-loop-convert,
+  -modernize-pass-by-value,
+  -modernize-return-braced-init-list,
+  -modernize-use-auto,
+  -modernize-use-equals-delete,
+  -modernize-use-override,
+  -modernize-use-using,
+  -mpi-*,
+  -objc-*,
+  -openmp-*,
+  -performance-move-const-arg,
+  -performance-noexcept-move-constructor,
+  -readability-avoid-const-params-in-decls,
+  -readability-else-after-return,
+  -readability-function-size,
+  -readability-inconsistent-declaration-parameter-name,
+  -readability-redundant-declaration,
+  -readability-redundant-member-init,
+  -readability-redundant-smartptr-get,
+  -readability-static-accessed-through-instance,
+  -zircon-*'
+WarningsAsErrors: '*'
+HeaderFilterRegex: '.*'
