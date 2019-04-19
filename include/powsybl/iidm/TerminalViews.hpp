@@ -45,10 +45,10 @@ public:
     virtual unsigned long getNode() const = 0;
 };
 
-}
+}  // namespace terminal
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_TERMINALVIEWS_HPP

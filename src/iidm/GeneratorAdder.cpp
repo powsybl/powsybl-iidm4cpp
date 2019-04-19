@@ -121,6 +121,6 @@ GeneratorAdder& GeneratorAdder::setVoltageSetpoint(double voltageSetpoint) {
     return *this;
 }
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl

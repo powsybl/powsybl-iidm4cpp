@@ -37,8 +37,8 @@ private:
     stdcxx::optional<double> m_maxQ;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif //POWSYBL_IIDM_MINMAXREACTIVELIMITSADDER_HPP

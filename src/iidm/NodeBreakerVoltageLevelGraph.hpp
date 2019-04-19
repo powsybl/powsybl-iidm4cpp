@@ -21,10 +21,10 @@ namespace node_breaker_voltage_level {
 
 typedef math::UndirectedGraph<NodeTerminal, Switch> Graph;
 
-}  // node_breaker_voltage_level
+}  // namespace node_breaker_voltage_level
 
-}  // iidm
+}  // namespace iidm
 
-}  // powsybl
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELGRAPH_HPP

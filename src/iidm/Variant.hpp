@@ -22,8 +22,8 @@ public:
     virtual std::unique_ptr<T> copy() const = 0;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_VARIANT_HPP

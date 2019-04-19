@@ -33,10 +33,10 @@ private:
     std::atomic_ulong m_counter;
 };
 
-}  // node_breaker_voltage_level
+}  // namespace node_breaker_voltage_level
 
-}  // iidm
+}  // namespace iidm
 
-}  // powsybl
+}  // namespace powsybl
 
 #endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELBUSNAMINGSTRATEGY_HPP

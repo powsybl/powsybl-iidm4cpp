@@ -26,8 +26,8 @@ std::string BusNamingStrategy::getName() {
     return logging::format("%1%_%2%", m_voltageLevel.getId(), m_counter.fetch_add(1));
 }
 
-}  // node_breaker_voltage_level
+}  // namespace node_breaker_voltage_level
 
-}  // iidm
+}  // namespace iidm
 
-}  // powsybl
+}  // namespace powsybl

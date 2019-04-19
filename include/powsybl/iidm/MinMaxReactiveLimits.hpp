@@ -41,8 +41,8 @@ private:
     double m_maxQ;
 };
 
-}
+}  // namespace iidm
 
-}
+}  // namespace powsybl
 
 #endif //POWSYBL_IIDM_MINMAXREACTIVELIMITS_HPP
