@@ -198,8 +198,8 @@ TEST(StaticVarCompensator, multivariant) {
     const Network& cNetwork = network;
     ASSERT_EQ(cNetwork.getVariantManager().getVariantIds().size(), network.getVariantManager().getVariantArraySize());
     POWSYBL_ASSERT_THROW(cNetwork.getVariantManager().getWorkingVariantId(), PowsyblException, "Variant index not set");
-    const std::string initialVariantId = cNetwork.getVariantManager().getInitialVariantId();
-    ASSERT_EQ(initialVariantId, "InitialVariant");
+    const std::string& initialVariantId = VariantManager::getInitialVariantId();
+    ASSERT_EQ("InitialVariant", initialVariantId);
     POWSYBL_ASSERT_THROW(network.getVariantManager().removeVariant(initialVariantId), PowsyblException, "Removing initial variant is forbidden");
 }
 
