@@ -26,7 +26,7 @@ namespace iidm {
 
 class BusBreakerVoltageLevel : public VoltageLevel {
 public:
-    typedef math::UndirectedGraph<ConfiguredBus, Switch> Graph;
+    using Graph = math::UndirectedGraph<ConfiguredBus, Switch>;
 
 public: // VoltageLevel
     void attach(Terminal& terminal, bool test) override;

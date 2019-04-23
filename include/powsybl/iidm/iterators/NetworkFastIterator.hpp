@@ -56,7 +56,7 @@ private:
     void check() const;
 
 private:
-    typedef std::vector<std::pair<Iterator, Iterator> > RangeList;
+    using RangeList = std::vector<std::pair<Iterator, Iterator> >;
 
     RangeList m_ranges;
 

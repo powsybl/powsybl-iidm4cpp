@@ -23,11 +23,11 @@ namespace math {
 template <typename V, typename E>
 class UndirectedGraph {
 public:
-    typedef std::vector<unsigned long> Path;
+    using Path = std::vector<unsigned long>;
 
-    typedef std::function<bool(const stdcxx::Reference<E>&)> EdgeVisitor;
+    using EdgeVisitor = std::function<bool(const stdcxx::Reference<E>&)>;
 
-    typedef std::function<bool(const stdcxx::Reference<V>&)> VertexVisitor;
+    using VertexVisitor = std::function<bool(const stdcxx::Reference<V>&)>;
 
 public:
     UndirectedGraph() = default;

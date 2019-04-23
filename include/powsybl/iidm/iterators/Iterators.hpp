@@ -23,30 +23,30 @@ class MultiVariantObject;
 
 template <typename T>
 struct iterator_traits {
-    typedef NetworkFastIterator<T, Identifiables::iterator> iterator;
+    using iterator = NetworkFastIterator<T, Identifiables::iterator>;
 
-    typedef NetworkFastIterator<const T, Identifiables::const_iterator> const_iterator;
+    using const_iterator = NetworkFastIterator<const T, Identifiables::const_iterator>;
 };
 
 template <>
 struct iterator_traits<HvdcConverterStation> {
-    typedef NetworkIterator<HvdcConverterStation, IdentifiableById::iterator> iterator;
+    using iterator = NetworkIterator<HvdcConverterStation, IdentifiableById::iterator>;
 
-    typedef NetworkIterator<const HvdcConverterStation, IdentifiableById::const_iterator> const_iterator;
+    using const_iterator = NetworkIterator<const HvdcConverterStation, IdentifiableById::const_iterator>;
 };
 
 template <>
 struct iterator_traits<Identifiable> {
-    typedef NetworkIterator<Identifiable, IdentifiableById::iterator> iterator;
+    using iterator = NetworkIterator<Identifiable, IdentifiableById::iterator>;
 
-    typedef NetworkIterator<const Identifiable, IdentifiableById::const_iterator> const_iterator;
+    using const_iterator = NetworkIterator<const Identifiable, IdentifiableById::const_iterator>;
 };
 
 template <>
 struct iterator_traits<MultiVariantObject> {
-    typedef NetworkIterator<MultiVariantObject, IdentifiableById::iterator> iterator;
+    using iterator = NetworkIterator<MultiVariantObject, IdentifiableById::iterator>;
 
-    typedef NetworkIterator<const MultiVariantObject, IdentifiableById::const_iterator> const_iterator;
+    using const_iterator = NetworkIterator<const MultiVariantObject, IdentifiableById::const_iterator>;
 };
 
 }  // namespace iidm

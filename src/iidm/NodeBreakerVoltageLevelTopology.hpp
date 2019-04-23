@@ -44,7 +44,7 @@ public:
     void updateCache();
 
 protected:
-    typedef std::function<bool(const stdcxx::Reference<Switch>& a)> SwitchPredicate;
+    using SwitchPredicate = std::function<bool(const stdcxx::Reference<Switch>& a)>;
 
 protected:
     const NodeBreakerVoltageLevel& getVoltageLevel() const;

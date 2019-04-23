@@ -20,7 +20,7 @@ namespace logging {
  */
 class ContainerLogger : public Logger {
 public:
-    typedef std::vector<LogMessage> Logs;
+    using Logs = std::vector<LogMessage>;
 
 public: // Logger
     bool isDebugEnabled() const override;

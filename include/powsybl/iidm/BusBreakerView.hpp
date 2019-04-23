@@ -23,7 +23,7 @@ class Switch;
 
 class BusBreakerView {
 public:
-    typedef bus_breaker_view::SwitchAdder SwitchAdder;
+    using SwitchAdder = bus_breaker_view::SwitchAdder;
 
 public:
     virtual ~BusBreakerView() noexcept = default;

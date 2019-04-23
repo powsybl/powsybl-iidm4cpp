@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace math {
 
-typedef std::function<TraverseResult(unsigned long v1, unsigned long e, unsigned long v2)> Traverser;
+using Traverser = std::function<TraverseResult(unsigned long v1, unsigned long e, unsigned long v2)>;
 
 }  // namespace math
 

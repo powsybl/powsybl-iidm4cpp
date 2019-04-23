@@ -25,11 +25,11 @@ class Terminal;
 
 class NodeBreakerView {
 public:
-    typedef node_breaker_view::InternalConnectionAdder InternalConnectionAdder;
+    using InternalConnectionAdder = node_breaker_view::InternalConnectionAdder;
 
-    typedef node_breaker_view::SwitchAdder SwitchAdder;
+    using SwitchAdder = node_breaker_view::SwitchAdder;
 
-    typedef std::function<bool(unsigned long node1, const Switch& sw, unsigned long node2)> Traverser;
+    using Traverser = std::function<bool(unsigned long node1, const Switch& sw, unsigned long node2)>;
 
 public:
     virtual ~NodeBreakerView() noexcept = default;

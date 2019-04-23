@@ -19,7 +19,7 @@ class Switch;
 
 namespace node_breaker_voltage_level {
 
-typedef math::UndirectedGraph<NodeTerminal, Switch> Graph;
+using Graph = math::UndirectedGraph<NodeTerminal, Switch>;
 
 }  // namespace node_breaker_voltage_level
 

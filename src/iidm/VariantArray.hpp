@@ -23,7 +23,7 @@ namespace iidm {
 template <typename T>
 class VariantArray {
 public:
-    typedef std::function<std::unique_ptr<T>()> VariantFactory;
+    using VariantFactory = std::function<std::unique_ptr<T>()>;
 
 public:
     VariantArray(VariantManagerHolder& variantManagerHolder, const VariantFactory& variantFactory);

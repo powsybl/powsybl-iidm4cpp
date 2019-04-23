@@ -44,7 +44,7 @@ public:
         bool m_fictitious;
     };
 
-    typedef std::map<unsigned long, TemporaryLimit, std::greater<unsigned long>> TemporaryLimits;
+    using TemporaryLimits = std::map<unsigned long, TemporaryLimit, std::greater<unsigned long> >;
 
 public:
     CurrentLimits(Validable& owner, double permanentLimit, TemporaryLimits temporaryLimits);
