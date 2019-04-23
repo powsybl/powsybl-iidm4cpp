@@ -65,12 +65,9 @@ RatioTapChangerAdder::StepAdder& RatioTapChangerAdder::StepAdder::setX(double x)
 RatioTapChangerAdder::RatioTapChangerAdder(RatioTapChangerHolder& parent) :
     m_parent(parent),
     m_lowTapPosition(0U),
-    m_tapPosition(),
-    m_steps(),
     m_loadTapChangingCapabilities(),
     m_regulating(),
-    m_targetV(stdcxx::nan()),
-    m_regulationTerminal() {
+    m_targetV(stdcxx::nan()) {
 }
 
 RatioTapChanger& RatioTapChangerAdder::add() {

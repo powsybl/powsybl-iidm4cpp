@@ -18,7 +18,6 @@ namespace iidm {
 
 VscConverterStationAdder::VscConverterStationAdder(VoltageLevel& voltageLevel) :
     HvdcConverterStationAdder(voltageLevel),
-    m_voltageRegulatorOn(),
     m_reactivePowerSetpoint(stdcxx::nan()),
     m_voltageSetpoint(stdcxx::nan()) {
 }

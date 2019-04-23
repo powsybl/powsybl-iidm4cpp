@@ -15,9 +15,6 @@ namespace powsybl {
 namespace iidm {
 
 TieLine::HalfLine::HalfLine() :
-    Validable(),
-    m_id(),
-    m_name(),
     m_lineCharacteristics(*this),
     m_xnodeP(stdcxx::nan()),
     m_xnodeQ(stdcxx::nan()) {

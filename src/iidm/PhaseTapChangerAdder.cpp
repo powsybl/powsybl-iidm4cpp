@@ -72,12 +72,9 @@ PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setX(double x)
 PhaseTapChangerAdder::PhaseTapChangerAdder(TwoWindingsTransformer& parent) :
     m_parent(parent),
     m_lowTapPosition(0U),
-    m_tapPosition(),
-    m_steps(),
     m_regulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP),
     m_regulationValue(stdcxx::nan()),
-    m_regulating(),
-    m_regulationTerminal() {
+    m_regulating() {
 }
 
 PhaseTapChanger& PhaseTapChangerAdder::add() {

@@ -17,9 +17,7 @@ namespace iidm {
 namespace node_breaker_view {
 
 InternalConnectionAdder::InternalConnectionAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_node1(),
-    m_node2() {
+    m_voltageLevel(voltageLevel) {
 }
 
 void InternalConnectionAdder::add() {

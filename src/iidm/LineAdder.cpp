@@ -21,7 +21,6 @@ namespace powsybl {
 namespace iidm {
 
 LineAdder::LineAdder(Network& network) :
-    BranchAdder(),
     m_network(network),
     m_b1(stdcxx::nan()),
     m_b2(stdcxx::nan()),

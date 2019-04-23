@@ -19,12 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 TieLineAdder::TieLineAdder(Network& network) :
-    BranchAdder(),
-    m_network(network),
-    m_half1(),
-    m_half2(),
-    m_activeHalf(),
-    m_ucteXnodeCode() {
+    m_network(network) {
 }
 
 TieLine& TieLineAdder::add() {

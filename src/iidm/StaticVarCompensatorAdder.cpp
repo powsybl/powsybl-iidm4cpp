@@ -22,8 +22,7 @@ StaticVarCompensatorAdder::StaticVarCompensatorAdder(VoltageLevel& voltageLevel)
     m_bMin(stdcxx::nan()),
     m_bMax(stdcxx::nan()),
     m_voltageSetpoint(stdcxx::nan()),
-    m_reactivePowerSetpoint(stdcxx::nan()),
-    m_regulationMode() {
+    m_reactivePowerSetpoint(stdcxx::nan()) {
 }
 
 StaticVarCompensator& StaticVarCompensatorAdder::add() {

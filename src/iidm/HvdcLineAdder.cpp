@@ -21,12 +21,9 @@ namespace iidm {
 
 HvdcLineAdder::HvdcLineAdder(Network& network) :
     m_network(network),
-    m_converterStationId1(),
-    m_converterStationId2(),
     m_r(stdcxx::nan()),
     m_nominalVoltage(stdcxx::nan()),
     m_maxP(stdcxx::nan()),
-    m_convertersMode(),
     m_activePowerSetpoint(stdcxx::nan()) {
 }
 

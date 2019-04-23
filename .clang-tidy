@@ -45,7 +45,6 @@ Checks: '*,
   -readability-avoid-const-params-in-decls,
   -readability-function-size,
   -readability-redundant-declaration,
-  -readability-redundant-member-init,
   -readability-redundant-smartptr-get,
   -zircon-*'
 WarningsAsErrors: '*'

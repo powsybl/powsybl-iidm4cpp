@@ -25,8 +25,7 @@ DanglingLineAdder::DanglingLineAdder(VoltageLevel& voltageLevel) :
     m_g(stdcxx::nan()),
     m_b(stdcxx::nan()),
     m_p0(stdcxx::nan()),
-    m_q0(stdcxx::nan()),
-    m_ucteXnodeCode() {
+    m_q0(stdcxx::nan()) {
 }
 
 DanglingLine& DanglingLineAdder::add() {
