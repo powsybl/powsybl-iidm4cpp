@@ -47,7 +47,7 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     auto it = m_objectsById.emplace(std::make_pair(identifiable->getId(), std::move(identifiable)));
 
     std::reference_wrapper<Identifiable> refIdentifiable = dynamic_cast<Identifiable&>(*it.first->second.get());
-    m_objectsByType[typeid(T)].emplace_back(std::move(refIdentifiable));
+    m_objectsByType[typeid(T)].emplace_back(refIdentifiable);
 
     return dynamic_cast<T&>(*it.first->second);
 }
