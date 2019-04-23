@@ -186,10 +186,10 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getEdge(const std::strin
 
     const auto& it = m_switches.find(switchId);
     if (it != m_switches.end()) {
-        return stdcxx::optional<unsigned long>(it->second);
+        return {it->second};
     }
     if (!throwException) {
-        return stdcxx::optional<unsigned long>();
+        return {};
     }
 
     throw PowsyblException(logging::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getId()));
@@ -254,10 +254,10 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
 
     const auto& it = m_buses.find(busId);
     if (it != m_buses.end()) {
-        return stdcxx::optional<unsigned long>(it->second);
+        return {it->second};
     }
     if (!throwException) {
-        return stdcxx::optional<unsigned long>();
+        return {};
     }
 
     throw PowsyblException(logging::format("Bus '%1%' not found in the voltage level '%2%'", busId, getId()));

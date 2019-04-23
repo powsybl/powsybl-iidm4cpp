@@ -207,10 +207,10 @@ stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::stri
 
     const auto& it = m_switches.find(switchId);
     if (it != m_switches.end()) {
-        return stdcxx::optional<unsigned long>(it->second);
+        return {it->second};
     }
     if (!throwException) {
-        return stdcxx::optional<unsigned long>();
+        return {};
     }
 
     throw PowsyblException(logging::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getId()));
