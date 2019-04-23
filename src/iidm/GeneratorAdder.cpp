@@ -39,7 +39,7 @@ Generator& GeneratorAdder::add() {
 
     checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set");
     checkVoltageControl(*this, *m_voltageRegulatorOn, m_voltageSetpoint, m_reactivePowerSetpoint);
-    checkActiveLimits(*this, m_minP, m_maxP);
+    checkActivePowerLimits(*this, m_minP, m_maxP);
     checkRatedS(*this, m_ratedS);
 
     std::unique_ptr<Generator> ptrGenerator = stdcxx::make_unique<Generator>(getNetwork(), getId(), getName(),

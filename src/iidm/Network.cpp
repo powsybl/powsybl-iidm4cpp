@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 
+#include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
@@ -39,6 +40,14 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     m_forecastDistance(0),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_variantManager(*this) {
+}
+
+Battery& Network::getBattery(const std::string& id) const {
+    return get<Battery>(id);
+}
+
+unsigned long Network::getBatteryCount() const {
+    return getObjectCount<Battery>();
 }
 
 Branch& Network::getBranch(const std::string& id) const {

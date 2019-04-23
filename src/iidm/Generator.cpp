@@ -30,7 +30,7 @@ Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::st
     m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), checkActivePowerSetpoint(*this, activePowerSetpoint)),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint) {
-    checkActiveLimits(*this, minP, maxP);
+    checkActivePowerLimits(*this, minP, maxP);
     checkVoltageControl(*this, voltageRegulatorOn, voltageSetpoint, reactivePowerSetpoint);
 }
 
@@ -133,14 +133,14 @@ Generator& Generator::setEnergySource(const EnergySource& energySource) {
 
 Generator& Generator::setMaxP(double maxP) {
     checkMaxP(*this, maxP);
-    checkActiveLimits(*this, m_minP, maxP);
+    checkActivePowerLimits(*this, m_minP, maxP);
     m_maxP = maxP;
     return *this;
 }
 
 Generator& Generator::setMinP(double minP) {
     checkMinP(*this, minP);
-    checkActiveLimits(*this, minP, m_maxP);
+    checkActivePowerLimits(*this, minP, m_maxP);
     m_minP = minP;
     return *this;
 }

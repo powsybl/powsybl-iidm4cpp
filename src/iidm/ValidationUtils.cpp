@@ -21,7 +21,7 @@ ValidationException createInvalidValueException(const Validable& validable, doub
     return ValidationException(validable, logging::format("invalid value (%1%) for %2%%3%", value, valueName, r));
 }
 
-void checkActiveLimits(const Validable& validable, double minP, double maxP) {
+void checkActivePowerLimits(const Validable& validable, double minP, double maxP) {
     if (minP > maxP) {
         throw ValidationException(validable, logging::format("Invalid active limits [%1%, %2%]", minP, maxP));
     }

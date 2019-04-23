@@ -20,6 +20,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class Battery;
 class Branch;
 class BusbarSection;
 class Connectable;
@@ -79,6 +80,10 @@ public:
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     T& get(const std::string& id) const;
+
+    Battery& getBattery(const std::string& id) const;
+
+    unsigned long getBatteryCount() const;
 
     Branch& getBranch(const std::string& id) const;
 

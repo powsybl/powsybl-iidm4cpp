@@ -19,6 +19,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class BatteryAdder;
 class BusBreakerView;
 class BusView;
 class DanglingLineAdder;
@@ -85,6 +86,8 @@ public:
     virtual const TopologyKind& getTopologyKind() const = 0;
 
     virtual void invalidateCache() = 0;
+
+    BatteryAdder newBattery();
 
     DanglingLineAdder newDanglingLine();
 

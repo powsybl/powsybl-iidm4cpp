@@ -26,7 +26,7 @@ enum class LoadType : unsigned int;
 class Network;
 class Terminal;
 
-void checkActiveLimits(const Validable& validable, double minP, double maxP);
+void checkActivePowerLimits(const Validable& validable, double minP, double maxP);
 
 double checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint);
 

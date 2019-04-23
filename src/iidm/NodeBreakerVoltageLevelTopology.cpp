@@ -192,6 +192,7 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
 
                 case ConnectableType::LOAD:
                 case ConnectableType::GENERATOR:
+                case ConnectableType::BATTERY:
                 case ConnectableType::SHUNT_COMPENSATOR:
                 case ConnectableType::DANGLING_LINE:
                 case ConnectableType::STATIC_VAR_COMPENSATOR:

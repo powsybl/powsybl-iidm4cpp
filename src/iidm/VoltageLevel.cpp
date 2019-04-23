@@ -5,6 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
@@ -70,6 +71,10 @@ const std::string& VoltageLevel::getTypeDescription() const {
     static std::string s_typeDescription = "Voltage level";
 
     return s_typeDescription;
+}
+
+BatteryAdder VoltageLevel::newBattery() {
+    return BatteryAdder(*this);
 }
 
 DanglingLineAdder VoltageLevel::newDanglingLine() {

@@ -6,6 +6,7 @@
 #
 
 set(UNIT_TEST_SOURCES
+    BatteryTest.cpp
     BusbarSectionTest.cpp
     BusBreakerVoltageLevelTest.cpp
     CountryTest.cpp

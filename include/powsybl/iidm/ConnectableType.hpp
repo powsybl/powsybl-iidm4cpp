@@ -20,6 +20,7 @@ enum class ConnectableType : unsigned int {
     TWO_WINDINGS_TRANSFORMER,
     THREE_WINDINGS_TRANSFORMER,
     GENERATOR,
+    BATTERY,
     LOAD,
     SHUNT_COMPENSATOR,
     DANGLING_LINE,

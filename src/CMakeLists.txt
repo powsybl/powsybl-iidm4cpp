@@ -9,6 +9,8 @@ set(IIDM_SOURCES
     AssertionError.cpp
     PowsyblException.cpp
 
+    iidm/Battery.cpp
+    iidm/BatteryAdder.cpp
     iidm/Branch.cpp
     iidm/Bus.cpp
     iidm/BusAdder.cpp
