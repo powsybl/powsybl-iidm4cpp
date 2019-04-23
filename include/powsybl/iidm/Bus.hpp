@@ -25,7 +25,7 @@ class Bus : public Identifiable {
 public:
     ~Bus() noexcept override = default;
 
-    // TODO MBA: begin, cbegin, cend, end to iterator over all connected equipments
+    // TODO(mathbagu): begin, cbegin, cend, end to iterator over all connected equipments
 
     virtual double getAngle() const = 0;
 
