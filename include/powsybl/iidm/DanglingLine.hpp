@@ -67,7 +67,7 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    void setCurrentLimits(const std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
+    void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
 
 private:
     friend class CurrentLimitsAdder<std::nullptr_t, DanglingLine>;

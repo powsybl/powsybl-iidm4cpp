@@ -103,7 +103,7 @@ DanglingLine& DanglingLine::setB(double b) {
     return *this;
 }
 
-void DanglingLine::setCurrentLimits(const std::nullptr_t /*side*/, std::unique_ptr<CurrentLimits> limits) {
+void DanglingLine::setCurrentLimits(std::nullptr_t /*side*/, std::unique_ptr<CurrentLimits> limits) {
     m_limits = std::move(limits);
 }
 
