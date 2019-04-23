@@ -73,7 +73,7 @@ NetworkFastIterator<Base, Iterator, Derived...>& NetworkFastIterator<Base, Itera
 }
 
 template <typename Base, typename Iterator, typename... Derived>
-NetworkFastIterator<Base, Iterator, Derived...> NetworkFastIterator<Base, Iterator, Derived...>::operator++(int /*unused*/) {
+const NetworkFastIterator<Base, Iterator, Derived...> NetworkFastIterator<Base, Iterator, Derived...>::operator++(int /*unused*/) {
     check();
 
     NetworkFastIterator<Base, Iterator, Derived...> tmp(*this);

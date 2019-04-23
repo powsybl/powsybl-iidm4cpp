@@ -12,7 +12,6 @@
 Checks: '*,
   -abseil-*,
   -android-*,
-  -cert-dcl21-cpp,
   -cert-err58-cpp,
   -cppcoreguidelines-avoid-goto,
   -cppcoreguidelines-owning-memory,

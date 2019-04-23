@@ -38,7 +38,7 @@ public:
 
     NetworkIterator& operator++();
 
-    NetworkIterator operator++(int i);
+    const NetworkIterator operator++(int i);
 
     bool operator==(const NetworkIterator& it) const;
 

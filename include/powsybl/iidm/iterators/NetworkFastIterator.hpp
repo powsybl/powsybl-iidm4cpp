@@ -42,7 +42,7 @@ public:
 
     NetworkFastIterator& operator++();
 
-    NetworkFastIterator operator++(int i);
+    const NetworkFastIterator operator++(int i);
 
     bool operator==(const NetworkFastIterator& it) const;
 

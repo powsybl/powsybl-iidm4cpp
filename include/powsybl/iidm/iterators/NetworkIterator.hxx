@@ -61,7 +61,7 @@ NetworkIterator<T, Iterator>& NetworkIterator<T, Iterator>::operator++() {
 }
 
 template <typename T, typename Iterator>
-NetworkIterator<T, Iterator> NetworkIterator<T, Iterator>::operator++(int /*unused*/) {
+const NetworkIterator<T, Iterator> NetworkIterator<T, Iterator>::operator++(int /*unused*/) {
     check();
 
     NetworkIterator<T, Iterator> tmp(*this);
