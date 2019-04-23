@@ -106,6 +106,9 @@ set(IIDM_SOURCES
 
     stdcxx/demangle.cpp
     stdcxx/put_time.cpp
-    )
+)
 
 add_library(iidm ${IIDM_SOURCES})
+target_include_directories(iidm
+    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
+)

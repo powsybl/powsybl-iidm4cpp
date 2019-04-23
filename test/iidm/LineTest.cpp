@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -110,61 +110,63 @@ Network createLineTestNetwork() {
     return network;
 }
 
-TEST(Line, constructor) {
+BOOST_AUTO_TEST_SUITE(LineTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createLineTestNetwork();
 
-    ASSERT_EQ(1ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(1ul, network.getLineCount());
 
     Line& line = network.getLine("VL1_VL3");
-    ASSERT_EQ("VL1_VL3", line.getId());
-    ASSERT_EQ("", line.getName());
-    ASSERT_EQ(ConnectableType::LINE, line.getType());
-    ASSERT_FALSE(line.isTieLine());
-    ASSERT_DOUBLE_EQ(3.0, line.getR());
-    ASSERT_DOUBLE_EQ(33.0, line.getX());
-    ASSERT_DOUBLE_EQ(1.0, line.getG1());
-    ASSERT_DOUBLE_EQ(0.2, line.getB1());
-    ASSERT_DOUBLE_EQ(2.0, line.getG2());
-    ASSERT_DOUBLE_EQ(0.4, line.getB2());
+    BOOST_CHECK_EQUAL("VL1_VL3", line.getId());
+    BOOST_CHECK_EQUAL("", line.getName());
+    BOOST_CHECK_EQUAL(ConnectableType::LINE, line.getType());
+    BOOST_TEST(!line.isTieLine());
+    BOOST_CHECK_CLOSE(3.0, line.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(33.0, line.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, line.getG1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.2, line.getB1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, line.getG2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.4, line.getB2(), std::numeric_limits<double>::epsilon());
 }
 
-TEST(Line, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     const Network& network = createLineTestNetwork();
 
     Line& line = network.getLine("VL1_VL3");
 
-    ASSERT_TRUE(stdcxx::areSame(line, line.setR(100)));
-    ASSERT_DOUBLE_EQ(100, line.getR());
+    BOOST_TEST(stdcxx::areSame(line, line.setR(100)));
+    BOOST_CHECK_CLOSE(100, line.getR(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setR(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': r is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(line, line.setX(200)));
-    ASSERT_DOUBLE_EQ(200, line.getX());
+    BOOST_TEST(stdcxx::areSame(line, line.setX(200)));
+    BOOST_CHECK_CLOSE(200, line.getX(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setX(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': x is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(line, line.setG1(300)));
-    ASSERT_DOUBLE_EQ(300, line.getG1());
+    BOOST_TEST(stdcxx::areSame(line, line.setG1(300)));
+    BOOST_CHECK_CLOSE(300, line.getG1(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setG1(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': g1 is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(line, line.setG2(400)));
-    ASSERT_DOUBLE_EQ(400, line.getG2());
+    BOOST_TEST(stdcxx::areSame(line, line.setG2(400)));
+    BOOST_CHECK_CLOSE(400, line.getG2(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setG2(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': g2 is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(line, line.setB1(500)));
-    ASSERT_DOUBLE_EQ(500, line.getB1());
+    BOOST_TEST(stdcxx::areSame(line, line.setB1(500)));
+    BOOST_CHECK_CLOSE(500, line.getB1(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setB1(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': b1 is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(line, line.setB2(600)));
-    ASSERT_DOUBLE_EQ(600, line.getB2());
+    BOOST_TEST(stdcxx::areSame(line, line.setB2(600)));
+    BOOST_CHECK_CLOSE(600, line.getB2(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setB2(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': b2 is invalid");
 
     line.remove();
     POWSYBL_ASSERT_THROW(network.getLine("VL1_VL3"), PowsyblException, "Unable to find to the identifiable 'VL1_VL3'");
 }
 
-TEST(Line, adder) {
+BOOST_AUTO_TEST_CASE(adder) {
     Network network = createLineTestNetwork();
 
-    ASSERT_EQ(1ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(1ul, network.getLineCount());
 
     LineAdder lineAdder = network.newLine();
 
@@ -239,35 +241,35 @@ TEST(Line, adder) {
     POWSYBL_ASSERT_THROW(lineAdder.add(), PowsyblException, "Object 'VL1_VL3' already exists (powsybl::iidm::Line)");
     lineAdder.setName("VL2_VL4");
     lineAdder.setId("UNIQUE_LINE_ID");
-    ASSERT_NO_THROW(lineAdder.add());
+    BOOST_CHECK_NO_THROW(lineAdder.add());
 
-    ASSERT_EQ(2ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(2ul, network.getLineCount());
 }
 
-TEST(Line, terminal) {
+BOOST_AUTO_TEST_CASE(terminal) {
     Network network = createLineTestNetwork();
     Line& line = network.getLine("VL1_VL3");
     const Line& cLine = line;
 
     Terminal& t1 = line.getTerminal("VL1");
-    ASSERT_EQ(Branch::Side::ONE, line.getSide(t1));
-    ASSERT_TRUE(stdcxx::areSame(t1, line.getTerminal1()));
-    ASSERT_TRUE(stdcxx::areSame(t1, line.getTerminal(Branch::Side::ONE)));
+    BOOST_CHECK_EQUAL(Branch::Side::ONE, line.getSide(t1));
+    BOOST_TEST(stdcxx::areSame(t1, line.getTerminal1()));
+    BOOST_TEST(stdcxx::areSame(t1, line.getTerminal(Branch::Side::ONE)));
 
     const Terminal& cT1 = cLine.getTerminal("VL1");
-    ASSERT_EQ(Branch::Side::ONE, cLine.getSide(cT1));
-    ASSERT_TRUE(stdcxx::areSame(cT1, cLine.getTerminal1()));
-    ASSERT_TRUE(stdcxx::areSame(cT1, cLine.getTerminal(Branch::Side::ONE)));
+    BOOST_CHECK_EQUAL(Branch::Side::ONE, cLine.getSide(cT1));
+    BOOST_TEST(stdcxx::areSame(cT1, cLine.getTerminal1()));
+    BOOST_TEST(stdcxx::areSame(cT1, cLine.getTerminal(Branch::Side::ONE)));
 
     Terminal& t2 = line.getTerminal("VL3");
-    ASSERT_EQ(Branch::Side::TWO, line.getSide(t2));
-    ASSERT_TRUE(stdcxx::areSame(t2, line.getTerminal2()));
-    ASSERT_TRUE(stdcxx::areSame(t2, line.getTerminal(Branch::Side::TWO)));
+    BOOST_CHECK_EQUAL(Branch::Side::TWO, line.getSide(t2));
+    BOOST_TEST(stdcxx::areSame(t2, line.getTerminal2()));
+    BOOST_TEST(stdcxx::areSame(t2, line.getTerminal(Branch::Side::TWO)));
 
     const Terminal& cT2 = cLine.getTerminal("VL3");
-    ASSERT_EQ(Branch::Side::TWO, cLine.getSide(cT2));
-    ASSERT_TRUE(stdcxx::areSame(cT2, cLine.getTerminal2()));
-    ASSERT_TRUE(stdcxx::areSame(cT2, cLine.getTerminal(Branch::Side::TWO)));
+    BOOST_CHECK_EQUAL(Branch::Side::TWO, cLine.getSide(cT2));
+    BOOST_TEST(stdcxx::areSame(cT2, cLine.getTerminal2()));
+    BOOST_TEST(stdcxx::areSame(cT2, cLine.getTerminal(Branch::Side::TWO)));
 
     POWSYBL_ASSERT_THROW(line.getSide(getTerminalFromNetwork2()), AssertionError, "The terminal is not connected to this branch");
     POWSYBL_ASSERT_THROW(cLine.getSide(getTerminalFromNetwork2()), AssertionError, "The terminal is not connected to this branch");
@@ -295,6 +297,8 @@ TEST(Line, terminal) {
     POWSYBL_ASSERT_THROW(line2.getTerminal("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
     POWSYBL_ASSERT_THROW(cLine2.getTerminal("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

@@ -15,6 +15,4 @@ RUN apk add --no-cache \
     cmake \
     git \
     g++ \
-    gtest \
-    gtest-dev \
     make

@@ -15,4 +15,4 @@ add_custom_target(tests
     COMMAND unit-tests-math
 
     COMMENT "Running unit tests..."
-    )
+)

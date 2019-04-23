@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -17,31 +17,35 @@ namespace powsybl {
 
 namespace iidm {
 
-TEST(NetworkIndex, NetworkIterator) {
+BOOST_AUTO_TEST_SUITE(NetworkIndexTestSuite)
+
+BOOST_AUTO_TEST_CASE(NetworkIteratorTest) {
     const Network& network = createNetwork();
 
-    ASSERT_EQ(1ul, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(1ul, network.getSubstationCount());
 
     std::set<std::string> expected = {"LOAD1", "S1", "VL1", "VL1_BUS1", "VL2"};
     std::set<std::string> actual;
     for (NetworkIndex::const_iterator<Identifiable> it = network.cbegin<Identifiable>(); it != network.cend<Identifiable>(); ++it) {
         actual.insert(it().getId());
     }
-    ASSERT_EQ(expected, actual);
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual.cbegin(), actual.cend());
 }
 
-TEST(NetworkIndex, NetworkFastIterator) {
+BOOST_AUTO_TEST_CASE(NetworkFastIteratorTest) {
     const Network& network = createNetwork();
 
-    ASSERT_EQ(2ul, network.getVoltageLevelCount());
+    BOOST_CHECK_EQUAL(2ul, network.getVoltageLevelCount());
 
     std::vector<std::string> expected = {"VL1", "VL2"};
     std::vector<std::string> actual;
     for (NetworkIndex::const_iterator<VoltageLevel> it = network.cbegin<VoltageLevel>(); it != network.cend<VoltageLevel>(); ++it) {
         actual.push_back(it().getId());
     }
-    ASSERT_EQ(expected, actual);
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual.cbegin(), actual.cend());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

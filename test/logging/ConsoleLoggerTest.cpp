@@ -5,24 +5,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/logging/ConsoleLogger.hpp>
+
+#include "AssertionUtils.hpp"
 
 namespace powsybl {
 
 namespace logging {
 
-TEST(ConsoleLogger, level) {
+BOOST_AUTO_TEST_SUITE(ConsoleLoggerTestSuite)
+
+BOOST_AUTO_TEST_CASE(level) {
     ConsoleLogger logger;
-    ASSERT_TRUE(logger.isTraceEnabled());
-    ASSERT_TRUE(logger.isDebugEnabled());
-    ASSERT_TRUE(logger.isInfoEnabled());
-    ASSERT_TRUE(logger.isWarnEnabled());
-    ASSERT_TRUE(logger.isErrorEnabled());
+    BOOST_TEST(logger.isTraceEnabled());
+    BOOST_TEST(logger.isDebugEnabled());
+    BOOST_TEST(logger.isInfoEnabled());
+    BOOST_TEST(logger.isWarnEnabled());
+    BOOST_TEST(logger.isErrorEnabled());
 }
 
-TEST(ConsoleLogger, logMessage) {
+BOOST_AUTO_TEST_CASE(logMessage) {
     ConsoleLogger logger;
     logger.trace("trace message");
     logger.debug("debug message");
@@ -30,6 +34,8 @@ TEST(ConsoleLogger, logMessage) {
     logger.warn("warn message");
     logger.error("error message");
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace logging
 

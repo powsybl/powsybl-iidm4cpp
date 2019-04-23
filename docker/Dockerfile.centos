@@ -18,6 +18,5 @@ RUN yum -y install \
     cmake \
     git \
     gcc-c++ \
-    gtest-devel \
     make \
 && yum clean all

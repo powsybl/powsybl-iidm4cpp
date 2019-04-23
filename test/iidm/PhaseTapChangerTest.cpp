@@ -7,7 +7,7 @@
 
 #include <cmath>
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -169,33 +169,35 @@ Network createPhaseTapChangerTestNetwork() {
     return network;
 }
 
-TEST(PhaseTapChanger, constructor) {
+BOOST_AUTO_TEST_SUITE(PhaseTapChangerTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createPhaseTapChangerTestNetwork();
     const Terminal& terminal = network.getLoad("LOAD1").getTerminal();
 
     PhaseTapChanger& phaseTapChanger = network.getTwoWindingsTransformer("2WT_VL1_VL2").getPhaseTapChanger().get();
     const PhaseTapChanger& cPhaseTapChanger = phaseTapChanger;
-    ASSERT_EQ(1L, phaseTapChanger.getLowTapPosition());
-    ASSERT_EQ(3L, phaseTapChanger.getHighTapPosition());
-    ASSERT_EQ(2L, phaseTapChanger.getTapPosition());
-    ASSERT_EQ(3, phaseTapChanger.getStepCount());
-    ASSERT_TRUE(phaseTapChanger.isRegulating());
-    ASSERT_EQ(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL, phaseTapChanger.getRegulationMode());
-    ASSERT_DOUBLE_EQ(25.0, phaseTapChanger.getRegulationValue());
-    ASSERT_TRUE(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
-    ASSERT_TRUE(stdcxx::areSame(terminal, cPhaseTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChanger.getStepCount());
+    BOOST_TEST(phaseTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL, phaseTapChanger.getRegulationMode());
+    BOOST_CHECK_CLOSE(25.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
+    BOOST_TEST(stdcxx::areSame(terminal, cPhaseTapChanger.getRegulationTerminal().get()));
 
 
     PhaseTapChangerStep& step = phaseTapChanger.getCurrentStep();
-    ASSERT_TRUE(stdcxx::areSame(step, cPhaseTapChanger.getCurrentStep()));
-    ASSERT_TRUE(stdcxx::areSame(step, phaseTapChanger.getStep(2)));
-    ASSERT_TRUE(stdcxx::areSame(step, cPhaseTapChanger.getStep(2)));
-    ASSERT_DOUBLE_EQ(14.5, step.getAlpha());
-    ASSERT_DOUBLE_EQ(15.0, step.getB());
-    ASSERT_DOUBLE_EQ(16.0, step.getG());
-    ASSERT_DOUBLE_EQ(17.0, step.getR());
-    ASSERT_DOUBLE_EQ(18.0, step.getRho());
-    ASSERT_DOUBLE_EQ(19.0, step.getX());
+    BOOST_TEST(stdcxx::areSame(step, cPhaseTapChanger.getCurrentStep()));
+    BOOST_TEST(stdcxx::areSame(step, phaseTapChanger.getStep(2)));
+    BOOST_TEST(stdcxx::areSame(step, cPhaseTapChanger.getStep(2)));
+    BOOST_CHECK_CLOSE(14.5, step.getAlpha(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(15.0, step.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(16.0, step.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(17.0, step.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(18.0, step.getRho(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(19.0, step.getX(), std::numeric_limits<double>::epsilon());
 
     POWSYBL_ASSERT_THROW(phaseTapChanger.getStep(0), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 0 [1, 3]");
     POWSYBL_ASSERT_THROW(cPhaseTapChanger.getStep(0), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 0 [1, 3]");
@@ -203,23 +205,23 @@ TEST(PhaseTapChanger, constructor) {
     POWSYBL_ASSERT_THROW(cPhaseTapChanger.getStep(5), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 5 [1, 3]");
 
     step = phaseTapChanger.getStep(1);
-    ASSERT_DOUBLE_EQ(9.0, step.getAlpha());
-    ASSERT_DOUBLE_EQ(10.0, step.getB());
-    ASSERT_DOUBLE_EQ(11.0, step.getG());
-    ASSERT_DOUBLE_EQ(12.0, step.getR());
-    ASSERT_DOUBLE_EQ(13.0, step.getRho());
-    ASSERT_DOUBLE_EQ(14.0, step.getX());
+    BOOST_CHECK_CLOSE(9.0, step.getAlpha(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(10.0, step.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(11.0, step.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(12.0, step.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(13.0, step.getRho(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(14.0, step.getX(), std::numeric_limits<double>::epsilon());
 
     step = phaseTapChanger.getStep(3);
-    ASSERT_DOUBLE_EQ(20.5, step.getAlpha());
-    ASSERT_DOUBLE_EQ(20.0, step.getB());
-    ASSERT_DOUBLE_EQ(21.0, step.getG());
-    ASSERT_DOUBLE_EQ(22.0, step.getR());
-    ASSERT_DOUBLE_EQ(23.0, step.getRho());
-    ASSERT_DOUBLE_EQ(24.0, step.getX());
+    BOOST_CHECK_CLOSE(20.5, step.getAlpha(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, step.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(21.0, step.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(22.0, step.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(23.0, step.getRho(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(24.0, step.getX(), std::numeric_limits<double>::epsilon());
 }
 
-TEST(PhaseTapChanger, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     const Network& network = createPhaseTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();
@@ -227,43 +229,43 @@ TEST(PhaseTapChanger, integrity) {
     POWSYBL_ASSERT_THROW(phaseTapChanger.setTapPosition(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position -1 [1, 3]");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setTapPosition(6), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 6 [1, 3]");
     PhaseTapChangerStep& step = phaseTapChanger.setTapPosition(3).getCurrentStep();
-    ASSERT_EQ(3L, phaseTapChanger.getTapPosition());
-    ASSERT_DOUBLE_EQ(20.5, step.getAlpha());
-    ASSERT_DOUBLE_EQ(20.0, step.getB());
-    ASSERT_DOUBLE_EQ(21.0, step.getG());
-    ASSERT_DOUBLE_EQ(22.0, step.getR());
-    ASSERT_DOUBLE_EQ(23.0, step.getRho());
-    ASSERT_DOUBLE_EQ(24.0, step.getX());
+    BOOST_CHECK_EQUAL(3L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_CLOSE(20.5, step.getAlpha(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, step.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(21.0, step.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(22.0, step.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(23.0, step.getRho(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(24.0, step.getX(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(stdcxx::areSame(step, step.setAlpha(stdcxx::nan())));
-    ASSERT_TRUE(std::isnan(step.getAlpha()));
-    ASSERT_TRUE(stdcxx::areSame(step, step.setAlpha(26.0)));
-    ASSERT_DOUBLE_EQ(26.0, step.getAlpha());
+    BOOST_TEST(stdcxx::areSame(step, step.setAlpha(stdcxx::nan())));
+    BOOST_TEST(std::isnan(step.getAlpha()));
+    BOOST_TEST(stdcxx::areSame(step, step.setAlpha(26.0)));
+    BOOST_CHECK_CLOSE(26.0, step.getAlpha(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(stdcxx::areSame(step, step.setB(stdcxx::nan())));
-    ASSERT_TRUE(std::isnan(step.getB()));
-    ASSERT_TRUE(stdcxx::areSame(step, step.setB(26.0)));
-    ASSERT_DOUBLE_EQ(26.0, step.getB());
+    BOOST_TEST(stdcxx::areSame(step, step.setB(stdcxx::nan())));
+    BOOST_TEST(std::isnan(step.getB()));
+    BOOST_TEST(stdcxx::areSame(step, step.setB(26.0)));
+    BOOST_CHECK_CLOSE(26.0, step.getB(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(stdcxx::areSame(step, step.setG(stdcxx::nan())));
-    ASSERT_TRUE(std::isnan(step.getG()));
-    ASSERT_TRUE(stdcxx::areSame(step, step.setG(27.0)));
-    ASSERT_DOUBLE_EQ(27.0, step.getG());
+    BOOST_TEST(stdcxx::areSame(step, step.setG(stdcxx::nan())));
+    BOOST_TEST(std::isnan(step.getG()));
+    BOOST_TEST(stdcxx::areSame(step, step.setG(27.0)));
+    BOOST_CHECK_CLOSE(27.0, step.getG(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(stdcxx::areSame(step, step.setR(stdcxx::nan())));
-    ASSERT_TRUE(std::isnan(step.getR()));
-    ASSERT_TRUE(stdcxx::areSame(step, step.setR(28.0)));
-    ASSERT_DOUBLE_EQ(28.0, step.getR());
+    BOOST_TEST(stdcxx::areSame(step, step.setR(stdcxx::nan())));
+    BOOST_TEST(std::isnan(step.getR()));
+    BOOST_TEST(stdcxx::areSame(step, step.setR(28.0)));
+    BOOST_CHECK_CLOSE(28.0, step.getR(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(stdcxx::areSame(step, step.setRho(stdcxx::nan())));
-    ASSERT_TRUE(std::isnan(step.getRho()));
-    ASSERT_TRUE(stdcxx::areSame(step, step.setRho(29.0)));
-    ASSERT_DOUBLE_EQ(29.0, step.getRho());
+    BOOST_TEST(stdcxx::areSame(step, step.setRho(stdcxx::nan())));
+    BOOST_TEST(std::isnan(step.getRho()));
+    BOOST_TEST(stdcxx::areSame(step, step.setRho(29.0)));
+    BOOST_CHECK_CLOSE(29.0, step.getRho(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(stdcxx::areSame(step, step.setX(stdcxx::nan())));
-    ASSERT_TRUE(std::isnan(step.getX()));
-    ASSERT_TRUE(stdcxx::areSame(step, step.setX(30.0)));
-    ASSERT_DOUBLE_EQ(30.0, step.getX());
+    BOOST_TEST(stdcxx::areSame(step, step.setX(stdcxx::nan())));
+    BOOST_TEST(std::isnan(step.getX()));
+    BOOST_TEST(stdcxx::areSame(step, step.setX(30.0)));
+    BOOST_CHECK_CLOSE(30.0, step.getX(), std::numeric_limits<double>::epsilon());
 
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(static_cast<PhaseTapChanger::RegulationMode>(7)), AssertionError, "Unexpected regulation mode value: 7");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
@@ -273,36 +275,36 @@ TEST(PhaseTapChanger, integrity) {
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationValue(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and regulated terminal is not set");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2())), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
-    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(terminal2))));
-    ASSERT_TRUE(stdcxx::areSame(terminal2, phaseTapChanger.getRegulationTerminal().get()));
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(terminal2))));
+    BOOST_TEST(stdcxx::areSame(terminal2, phaseTapChanger.getRegulationTerminal().get()));
 
     phaseTapChanger.setRegulating(false).setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP);
     //TODO(thiebarr) POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
-    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationValue(stdcxx::nan())));
-    ASSERT_TRUE(std::isnan(phaseTapChanger.getRegulationValue()));
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationValue(stdcxx::nan())));
+    BOOST_TEST(std::isnan(phaseTapChanger.getRegulationValue()));
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
-    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationValue(-15.0)));
-    ASSERT_DOUBLE_EQ(-15.0, phaseTapChanger.getRegulationValue());
-    ASSERT_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationValue(-15.0)));
+    BOOST_CHECK_CLOSE(-15.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
 
     phaseTapChanger.setRegulating(false).setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP);
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation terminal is null");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2())), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
-    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(terminal))));
-    ASSERT_TRUE(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
-    ASSERT_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(terminal))));
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
 
-    ASSERT_NO_THROW(phaseTapChanger.remove());
-    ASSERT_FALSE(transformer.getPhaseTapChanger());
+    BOOST_CHECK_NO_THROW(phaseTapChanger.remove());
+    BOOST_TEST(!transformer.getPhaseTapChanger());
 }
 
-TEST(PhaseTapChanger, adder) {
+BOOST_AUTO_TEST_CASE(adder) {
     const Network& network = createPhaseTapChangerTestNetwork();
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
-    ASSERT_TRUE(transformer.getPhaseTapChanger());
+    BOOST_TEST(transformer.getPhaseTapChanger());
     transformer.getPhaseTapChanger().get().remove();
-    ASSERT_FALSE(transformer.getPhaseTapChanger());
+    BOOST_TEST(!transformer.getPhaseTapChanger());
     PhaseTapChangerAdder adder = transformer.newPhaseTapChanger();
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': tap position is not set");
@@ -340,7 +342,7 @@ TEST(PhaseTapChanger, adder) {
     POWSYBL_ASSERT_THROW(stepAdder.endStep(), ValidationException, "2 windings transformer '2WT_VL1_VL2': step b is not set");
     stepAdder.setB(5.0);
 
-    ASSERT_NO_THROW(stepAdder.endStep());
+    BOOST_CHECK_NO_THROW(stepAdder.endStep());
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position -5 [0, 0]");
     adder.setLowTapPosition(-5L).setTapPosition(3L);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 3 [-5, -5]");
@@ -351,17 +353,17 @@ TEST(PhaseTapChanger, adder) {
     POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected regulation mode value: 7");
 
     adder.setRegulating(false).setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP);
-    ASSERT_NO_THROW(adder.add());
+    BOOST_CHECK_NO_THROW(adder.add());
     adder.setRegulationValue(stdcxx::nan());
-    ASSERT_NO_THROW(adder.add());
+    BOOST_CHECK_NO_THROW(adder.add());
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(network.getLoad("LOAD1").getTerminal()));
-    ASSERT_NO_THROW(adder.add());
+    BOOST_CHECK_NO_THROW(adder.add());
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2()));
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
+     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     adder.setRegulationTerminal(stdcxx::Reference<Terminal>());
-    ASSERT_NO_THROW(adder.add());
+    BOOST_CHECK_NO_THROW(adder.add());
     transformer.getPhaseTapChanger().get().remove();
-    ASSERT_FALSE(transformer.getPhaseTapChanger());
+    BOOST_TEST(!transformer.getPhaseTapChanger());
 
     adder.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
@@ -373,25 +375,27 @@ TEST(PhaseTapChanger, adder) {
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2()));
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(network.getLoad("LOAD1").getTerminal()));
-    ASSERT_NO_THROW(adder.add());
-    ASSERT_TRUE(transformer.getPhaseTapChanger());
+    BOOST_CHECK_NO_THROW(adder.add());
+    BOOST_TEST(transformer.getPhaseTapChanger());
 }
 
-TEST(PhaseTapChanger, holder) {
+BOOST_AUTO_TEST_CASE(holder) {
     const Network& network = createPhaseTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();
 
-    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, transformer.getPhaseTapChanger().get()));
-    ASSERT_TRUE(stdcxx::areSame(phaseTapChanger, cTransformer.getPhaseTapChanger().get()));
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, transformer.getPhaseTapChanger().get()));
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, cTransformer.getPhaseTapChanger().get()));
 
-    ASSERT_TRUE(transformer.getPhaseTapChanger());
+    BOOST_TEST(transformer.getPhaseTapChanger());
     phaseTapChanger.remove();
-    ASSERT_FALSE(cTransformer.getPhaseTapChanger());
+    BOOST_TEST(!cTransformer.getPhaseTapChanger());
 
-    ASSERT_NO_THROW(transformer.newPhaseTapChanger());
+    BOOST_CHECK_NO_THROW(transformer.newPhaseTapChanger());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

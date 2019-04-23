@@ -14,6 +14,7 @@ set(UNIT_TEST_SOURCES
     EnergySourceTest.cpp
     GeneratorTest.cpp
     HvdcLineTest.cpp
+    iidm.cpp
     LccConverterStationTest.cpp
     LineTest.cpp
     LoadTest.cpp
@@ -33,7 +34,15 @@ set(UNIT_TEST_SOURCES
     VscConverterStationTest.cpp
 )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
-
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-iidm ${GTEST_BOTH_LIBRARIES} pthread iidm)
+target_include_directories(unit-tests-iidm
+    PRIVATE Boost::boost
+    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
+    PRIVATE ${CMAKE_HOME_DIRECTORY}/test
+)
+target_compile_definitions(unit-tests-iidm
+    PRIVATE BOOST_TEST_DYN_LINK
+ )
+target_link_libraries(unit-tests-iidm
+    iidm
+)

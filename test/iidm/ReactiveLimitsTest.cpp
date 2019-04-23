@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/MinMaxReactiveLimits.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
@@ -24,7 +24,9 @@ public:
     std::string getMessageHeader() const override { return ""; };
 };
 
-TEST(ReactiveLimits, MinMaxReactiveLimits) {
+BOOST_AUTO_TEST_SUITE(ReactiveLimitsTestSuite)
+
+BOOST_AUTO_TEST_CASE(MinMaxReactiveLimitsTest) {
     ReactiveLimitsHolderMock mock;
 
     MinMaxReactiveLimitsAdder adder = mock.newMinMaxReactiveLimits();
@@ -39,17 +41,17 @@ TEST(ReactiveLimits, MinMaxReactiveLimits) {
         .add();
 
     auto& limits = mock.getReactiveLimits<MinMaxReactiveLimits>();
-    ASSERT_EQ(ReactiveLimitsKind::MIN_MAX, limits.getKind());
-    ASSERT_EQ(1ul, limits.getMinQ());
-    ASSERT_EQ(1ul, limits.getMinQ(0));
-    ASSERT_EQ(2ul, limits.getMaxQ());
-    ASSERT_EQ(2ul, limits.getMaxQ(0));
+    POWSYBL_ASSERT_ENUM_EQ(ReactiveLimitsKind::MIN_MAX, limits.getKind());
+    BOOST_CHECK_EQUAL(1ul, limits.getMinQ());
+    BOOST_CHECK_EQUAL(1ul, limits.getMinQ(0));
+    BOOST_CHECK_EQUAL(2ul, limits.getMaxQ());
+    BOOST_CHECK_EQUAL(2ul, limits.getMaxQ(0));
 
     POWSYBL_ASSERT_THROW(mock.getReactiveLimits<ReactiveCapabilityCurve>(), ValidationException,
         "Incorrect reactive limits type ReactiveCapabilityCurve, expected MinMaxReactiveLimits");
 }
 
-TEST(ReactiveLimits, ReactiveCapabilityCurve) {
+BOOST_AUTO_TEST_CASE(ReactiveCapabilityCurveTest) {
     ReactiveLimitsHolderMock mock;
 
     ReactiveCapabilityCurveAdder adder = mock.newReactiveCapabilityCurve();
@@ -89,20 +91,22 @@ TEST(ReactiveLimits, ReactiveCapabilityCurve) {
         .add();
 
     auto& limits = mock.getReactiveLimits<ReactiveCapabilityCurve>();
-    ASSERT_EQ(ReactiveLimitsKind::CURVE, limits.getKind());
-    ASSERT_EQ(3ul, limits.getPointCount());
-    ASSERT_EQ(0, limits.getMinP());
-    ASSERT_EQ(-10, limits.getMinQ(0));
-    ASSERT_EQ(15, limits.getMinQ(1));
-    ASSERT_EQ(12.5, limits.getMinQ(1.5));
-    ASSERT_EQ(10, limits.getMinQ(3.5));
-    ASSERT_EQ(2, limits.getMaxP());
-    ASSERT_EQ(10, limits.getMaxQ(0));
-    ASSERT_EQ(10, limits.getMaxQ(-1.5));
-    ASSERT_EQ(22.5, limits.getMaxQ(1.5));
+    POWSYBL_ASSERT_ENUM_EQ(ReactiveLimitsKind::CURVE, limits.getKind());
+    BOOST_CHECK_EQUAL(3ul, limits.getPointCount());
+    BOOST_CHECK_EQUAL(0, limits.getMinP());
+    BOOST_CHECK_EQUAL(-10, limits.getMinQ(0));
+    BOOST_CHECK_EQUAL(15, limits.getMinQ(1));
+    BOOST_CHECK_EQUAL(12.5, limits.getMinQ(1.5));
+    BOOST_CHECK_EQUAL(10, limits.getMinQ(3.5));
+    BOOST_CHECK_EQUAL(2, limits.getMaxP());
+    BOOST_CHECK_EQUAL(10, limits.getMaxQ(0));
+    BOOST_CHECK_EQUAL(10, limits.getMaxQ(-1.5));
+    BOOST_CHECK_EQUAL(22.5, limits.getMaxQ(1.5));
 
-    ASSERT_EQ(10, limits.getMinQ(4));
+    BOOST_CHECK_EQUAL(10, limits.getMinQ(4));
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

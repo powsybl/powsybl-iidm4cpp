@@ -6,10 +6,19 @@
 #
 
 set(UNIT_TEST_SOURCES
+    math.cpp
     UndirectedGraphTest.cpp
     )
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
-
 add_executable(unit-tests-math ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-math ${GTEST_BOTH_LIBRARIES} pthread iidm)
+target_include_directories(unit-tests-math
+    PRIVATE Boost::boost
+    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
+    PRIVATE ${CMAKE_HOME_DIRECTORY}/test
+)
+target_compile_definitions(unit-tests-math
+    PRIVATE BOOST_TEST_DYN_LINK
+)
+target_link_libraries(unit-tests-math
+    iidm
+)

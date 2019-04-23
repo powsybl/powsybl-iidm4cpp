@@ -7,7 +7,7 @@
 
 #include <limits>
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -136,116 +136,118 @@ Network createCurrentLimitsTestNetwork() {
     return network;
 }
 
-TEST(CurrentLimits, constructor) {
+BOOST_AUTO_TEST_SUITE(CurrentLimitsTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createCurrentLimitsTestNetwork();
 
     Line& line = network.getLine("VL1_VL3");
     const Line& cLine = line;
-    ASSERT_TRUE(stdcxx::areSame(line, cLine));
+    BOOST_TEST(stdcxx::areSame(line, cLine));
 
-    ASSERT_TRUE(line.getCurrentLimits1());
-    ASSERT_TRUE(cLine.getCurrentLimits1());
-    ASSERT_TRUE(line.getCurrentLimits(Branch::Side::ONE));
-    ASSERT_TRUE(cLine.getCurrentLimits(Branch::Side::ONE));
+    BOOST_TEST(line.getCurrentLimits1());
+    BOOST_TEST(cLine.getCurrentLimits1());
+    BOOST_TEST(line.getCurrentLimits(Branch::Side::ONE));
+    BOOST_TEST(cLine.getCurrentLimits(Branch::Side::ONE));
 
-    ASSERT_FALSE(line.getCurrentLimits2());
-    ASSERT_FALSE(cLine.getCurrentLimits2());
-    ASSERT_FALSE(line.getCurrentLimits(Branch::Side::TWO));
-    ASSERT_FALSE(cLine.getCurrentLimits(Branch::Side::TWO));
+    BOOST_TEST(!line.getCurrentLimits2());
+    BOOST_TEST(!cLine.getCurrentLimits2());
+    BOOST_TEST(!line.getCurrentLimits(Branch::Side::TWO));
+    BOOST_TEST(!cLine.getCurrentLimits(Branch::Side::TWO));
 
     POWSYBL_ASSERT_THROW(line.getCurrentLimits(static_cast<Branch::Side>(5)), AssertionError, "Unexpected side value: 5");
     POWSYBL_ASSERT_THROW(cLine.getCurrentLimits(static_cast<Branch::Side>(6)), AssertionError, "Unexpected side value: 6");
 
     CurrentLimits limits = line.getCurrentLimits1().get();
     const CurrentLimits& cLimits = limits;
-    ASSERT_TRUE(stdcxx::areSame(limits, cLimits));
-    ASSERT_DOUBLE_EQ(4.0, limits.getPermanentLimit());
+    BOOST_TEST(stdcxx::areSame(limits, cLimits));
+    BOOST_CHECK_CLOSE(4.0, limits.getPermanentLimit(), std::numeric_limits<double>::epsilon());
 
     std::vector<std::reference_wrapper<CurrentLimits::TemporaryLimit>> tempLimits = limits.getTemporaryLimits();
-    ASSERT_EQ(3, tempLimits.size());
+    BOOST_CHECK_EQUAL(3, tempLimits.size());
     CurrentLimits::TemporaryLimit tl = limits.getTemporaryLimit(3UL);
     CurrentLimits::TemporaryLimit tl2 = cLimits.getTemporaryLimit(3UL);
     unsigned int index = 0;
 
-    ASSERT_EQ(3UL, tl.getAcceptableDuration());
-    ASSERT_EQ(3UL, tl2.getAcceptableDuration());
-    ASSERT_EQ(3UL, tempLimits.at(index).get().getAcceptableDuration());
-    ASSERT_EQ("TL3", tl.getName());
-    ASSERT_EQ("TL3", tl2.getName());
-    ASSERT_EQ("TL3", tempLimits.at(index).get().getName());
-    ASSERT_DOUBLE_EQ(5.0, tl.getValue());
-    ASSERT_DOUBLE_EQ(5.0, tl2.getValue());
-    ASSERT_DOUBLE_EQ(5.0, tempLimits.at(index).get().getValue());
-    ASSERT_FALSE(tl.isFictitious());
-    ASSERT_FALSE(tl2.isFictitious());
-    ASSERT_FALSE(tempLimits.at(index).get().isFictitious());
-    ASSERT_DOUBLE_EQ(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()));
+    BOOST_CHECK_EQUAL(3UL, tl.getAcceptableDuration());
+    BOOST_CHECK_EQUAL(3UL, tl2.getAcceptableDuration());
+    BOOST_CHECK_EQUAL(3UL, tempLimits.at(index).get().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("TL3", tl.getName());
+    BOOST_CHECK_EQUAL("TL3", tl2.getName());
+    BOOST_CHECK_EQUAL("TL3", tempLimits.at(index).get().getName());
+    BOOST_CHECK_CLOSE(5.0, tl.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, tl2.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!tl.isFictitious());
+    BOOST_TEST(!tl2.isFictitious());
+    BOOST_TEST(!tempLimits.at(index).get().isFictitious());
+    BOOST_CHECK_CLOSE(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     tl = limits.getTemporaryLimit(2UL);
     tl2 = cLimits.getTemporaryLimit(2UL);
     index++;
 
-    ASSERT_EQ(2UL, tl.getAcceptableDuration());
-    ASSERT_EQ(2UL, tl2.getAcceptableDuration());
-    ASSERT_EQ(2UL, tempLimits.at(index).get().getAcceptableDuration());
-    ASSERT_EQ("TL2", tl.getName());
-    ASSERT_EQ("TL2", tl2.getName());
-    ASSERT_EQ("TL2", tempLimits.at(index).get().getName());
-    ASSERT_DOUBLE_EQ(6.0, tl.getValue());
-    ASSERT_DOUBLE_EQ(6.0, tl2.getValue());
-    ASSERT_DOUBLE_EQ(6.0, tempLimits.at(index).get().getValue());
-    ASSERT_TRUE(tl.isFictitious());
-    ASSERT_TRUE(tl2.isFictitious());
-    ASSERT_TRUE(tempLimits.at(index).get().isFictitious());
-    ASSERT_DOUBLE_EQ(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()));
+    BOOST_CHECK_EQUAL(2UL, tl.getAcceptableDuration());
+    BOOST_CHECK_EQUAL(2UL, tl2.getAcceptableDuration());
+    BOOST_CHECK_EQUAL(2UL, tempLimits.at(index).get().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("TL2", tl.getName());
+    BOOST_CHECK_EQUAL("TL2", tl2.getName());
+    BOOST_CHECK_EQUAL("TL2", tempLimits.at(index).get().getName());
+    BOOST_CHECK_CLOSE(6.0, tl.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, tl2.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(tl.isFictitious());
+    BOOST_TEST(tl2.isFictitious());
+    BOOST_TEST(tempLimits.at(index).get().isFictitious());
+    BOOST_CHECK_CLOSE(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     tl = limits.getTemporaryLimit(1UL);
     tl2 = cLimits.getTemporaryLimit(1UL);
     index++;
 
-    ASSERT_EQ(1UL, tl.getAcceptableDuration());
-    ASSERT_EQ(1UL, tl2.getAcceptableDuration());
-    ASSERT_EQ(1UL, tempLimits.at(index).get().getAcceptableDuration());
-    ASSERT_EQ("TL1", tl.getName());
-    ASSERT_EQ("TL1", tl2.getName());
-    ASSERT_EQ("TL1", tempLimits.at(index).get().getName());
-    ASSERT_DOUBLE_EQ(7.0, tl.getValue());
-    ASSERT_DOUBLE_EQ(7.0, tl2.getValue());
-    ASSERT_DOUBLE_EQ(7.0, tempLimits.at(index).get().getValue());
-    ASSERT_FALSE(tl.isFictitious());
-    ASSERT_FALSE(tl2.isFictitious());
-    ASSERT_FALSE(tempLimits.at(index).get().isFictitious());
-    ASSERT_DOUBLE_EQ(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()));
+    BOOST_CHECK_EQUAL(1UL, tl.getAcceptableDuration());
+    BOOST_CHECK_EQUAL(1UL, tl2.getAcceptableDuration());
+    BOOST_CHECK_EQUAL(1UL, tempLimits.at(index).get().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("TL1", tl.getName());
+    BOOST_CHECK_EQUAL("TL1", tl2.getName());
+    BOOST_CHECK_EQUAL("TL1", tempLimits.at(index).get().getName());
+    BOOST_CHECK_CLOSE(7.0, tl.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(7.0, tl2.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(7.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!tl.isFictitious());
+    BOOST_TEST(!tl2.isFictitious());
+    BOOST_TEST(!tempLimits.at(index).get().isFictitious());
+    BOOST_CHECK_CLOSE(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 }
 
-TEST(CurrentLimits, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     const Network& network = createCurrentLimitsTestNetwork();
 
     Line& line = network.getLine("VL1_VL3");
     const Line& cLine = line;
-    ASSERT_TRUE(stdcxx::areSame(line, cLine));
+    BOOST_TEST(stdcxx::areSame(line, cLine));
     CurrentLimits limits = line.getCurrentLimits1().get();
 
-    ASSERT_TRUE(std::isnan(limits.getTemporaryLimitValue(10UL)));
+    BOOST_TEST(std::isnan(limits.getTemporaryLimitValue(10UL)));
 
-    ASSERT_TRUE(stdcxx::areSame(limits, limits.setPermanentLimit(100.0)));
-    ASSERT_DOUBLE_EQ(100.0, limits.getPermanentLimit());
+    BOOST_TEST(stdcxx::areSame(limits, limits.setPermanentLimit(100.0)));
+    BOOST_CHECK_CLOSE(100.0, limits.getPermanentLimit(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(limits.setPermanentLimit(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
     POWSYBL_ASSERT_THROW(limits.setPermanentLimit(-1.0), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
 
-    ASSERT_TRUE(line.getCurrentLimits1());
-    ASSERT_TRUE(cLine.getCurrentLimits1());
-    ASSERT_TRUE(line.getCurrentLimits(Branch::Side::ONE));
-    ASSERT_TRUE(cLine.getCurrentLimits(Branch::Side::ONE));
+    BOOST_TEST(line.getCurrentLimits1());
+    BOOST_TEST(cLine.getCurrentLimits1());
+    BOOST_TEST(line.getCurrentLimits(Branch::Side::ONE));
+    BOOST_TEST(cLine.getCurrentLimits(Branch::Side::ONE));
 }
 
-TEST(CurrentLimits, adder) {
+BOOST_AUTO_TEST_CASE(adder) {
     logging::LoggerFactory::getInstance().addLogger("powsybl::iidm", stdcxx::make_unique<logging::ContainerLogger>());
 
     Network network = createCurrentLimitsTestNetwork();
 
     Line& line = network.getLine("VL1_VL3");
-    ASSERT_FALSE(line.getCurrentLimits2());
+    BOOST_TEST(!line.getCurrentLimits2());
     auto adder = line.newCurrentLimits2();
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
@@ -255,8 +257,8 @@ TEST(CurrentLimits, adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
     adder.setPermanentLimit(100.0);
 
-    ASSERT_NO_THROW(adder.add());
-    ASSERT_TRUE(line.getCurrentLimits2());
+    BOOST_CHECK_NO_THROW(adder.add());
+    BOOST_TEST(line.getCurrentLimits2());
 
     auto adder2 = adder;
     auto tempAdder = adder2.beginTemporaryLimit();
@@ -272,40 +274,40 @@ TEST(CurrentLimits, adder) {
 
     POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': name is not set");
     tempAdder.setName("TL_1");
-    ASSERT_NO_THROW(tempAdder.endTemporaryLimit());
+    BOOST_CHECK_NO_THROW(tempAdder.endTemporaryLimit());
 
     logging::ContainerLogger& logger = dynamic_cast<logging::ContainerLogger&>(logging::LoggerFactory::getLogger("powsybl::iidm"));
-    ASSERT_EQ(0, logger.size());
-    ASSERT_NO_THROW(adder2.add());
-    ASSERT_EQ(1, logger.size());
+    BOOST_CHECK_EQUAL(0, logger.size());
+    BOOST_CHECK_NO_THROW(adder2.add());
+    BOOST_CHECK_EQUAL(1, logger.size());
 
     int indexLog = 0;
-    ASSERT_EQ("AC line 'VL1_VL3': temporary limit should be greater than permanent limit", logger.getLogMessage(indexLog).getMessage());
-    ASSERT_EQ(logging::Level::DEBUG, logger.getLogMessage(indexLog).getLevel());
-    ASSERT_TRUE(line.getCurrentLimits2());
+    BOOST_CHECK_EQUAL("AC line 'VL1_VL3': temporary limit should be greater than permanent limit", logger.getLogMessage(indexLog).getMessage());
+    POWSYBL_ASSERT_ENUM_EQ(logging::Level::DEBUG, logger.getLogMessage(indexLog).getLevel());
+    BOOST_TEST(line.getCurrentLimits2());
 
     auto adder3 = adder;
     adder3.beginTemporaryLimit().setAcceptableDuration(1UL).setFictitious(true).setName("TL_1").setValue(105.0).endTemporaryLimit();
     adder3.beginTemporaryLimit().setAcceptableDuration(2UL).setFictitious(true).setName("TL_2").setValue(110.0).endTemporaryLimit();
-    ASSERT_NO_THROW(adder3.add());
-    ASSERT_EQ(2, logger.size());
+    BOOST_CHECK_NO_THROW(adder3.add());
+    BOOST_CHECK_EQUAL(2, logger.size());
 
     indexLog++;
-    ASSERT_EQ("AC line 'VL1_VL3': temporary limits should be in ascending value order", logger.getLogMessage(indexLog).getMessage());
-    ASSERT_EQ(logging::Level::DEBUG, logger.getLogMessage(indexLog).getLevel());
-    ASSERT_TRUE(line.getCurrentLimits2());
+    BOOST_CHECK_EQUAL("AC line 'VL1_VL3': temporary limits should be in ascending value order", logger.getLogMessage(indexLog).getMessage());
+    POWSYBL_ASSERT_ENUM_EQ(logging::Level::DEBUG, logger.getLogMessage(indexLog).getLevel());
+    BOOST_TEST(line.getCurrentLimits2());
 
     auto adder4 = adder;
     adder4.beginTemporaryLimit().setAcceptableDuration(1UL).setFictitious(true).setName("TL_1").setValue(120.0).endTemporaryLimit();
     adder4.beginTemporaryLimit().setAcceptableDuration(2UL).setFictitious(false).setName("TL_2").setValue(130.0).endTemporaryLimit();
     adder4.beginTemporaryLimit().setAcceptableDuration(3UL).setFictitious(true).setName("TL_3").setValue(110.0).endTemporaryLimit();
-    ASSERT_NO_THROW(adder4.add());
-    //TODO(thiebarr) ASSERT_EQ(3, logger.size());
+    BOOST_CHECK_NO_THROW(adder4.add());
+    //TODO(thiebarr) BOOST_CHECK_EQUAL(3, logger.size());
     //TODO(thiebarr) indexLog++;
-    //TODO(thiebarr) ASSERT_EQ("AC line 'VL1_VL3': temporary limits should be in ascending value order", logger.getLogMessage(indexLog).getMessage());
-    //TODO(thiebarr) ASSERT_EQ(logging::Level::DEBUG, logger.getLogMessage(indexLog).getLevel());
-    ASSERT_EQ(2, logger.size());
-    ASSERT_TRUE(line.getCurrentLimits2());
+    //TODO(thiebarr) BOOST_CHECK_EQUAL("AC line 'VL1_VL3': temporary limits should be in ascending value order", logger.getLogMessage(indexLog).getMessage());
+    //TODO(thiebarr) POWSYBL_ASSERT_ENUM_EQ(logging::Level::DEBUG, logger.getLogMessage(indexLog).getLevel());
+    BOOST_CHECK_EQUAL(2, logger.size());
+    BOOST_TEST(line.getCurrentLimits2());
 
     auto adder5 = adder;
     adder5.beginTemporaryLimit().setAcceptableDuration(1UL).setFictitious(true).setName("TL_DUPLICATE").setValue(130.0).endTemporaryLimit();
@@ -316,14 +318,14 @@ TEST(CurrentLimits, adder) {
     adder.beginTemporaryLimit().setAcceptableDuration(1UL).setFictitious(true).setName("TL_1").setValue(130.0).endTemporaryLimit();
     adder.beginTemporaryLimit().setAcceptableDuration(2UL).setFictitious(false).setName("TL_2").setValue(120.0).endTemporaryLimit();
     adder.beginTemporaryLimit().setAcceptableDuration(3UL).setFictitious(true).setName("TL_3").setValue(110.0).endTemporaryLimit();
-    ASSERT_NO_THROW(adder.add());
-    ASSERT_EQ(2, logger.size());
-    ASSERT_TRUE(line.getCurrentLimits2());
+    BOOST_CHECK_NO_THROW(adder.add());
+    BOOST_CHECK_EQUAL(2, logger.size());
+    BOOST_TEST(line.getCurrentLimits2());
 
     logging::LoggerFactory::getInstance().removeLogger("powsybl::iidm");
 }
 
-TEST(CurrentLimits, checkPermanentLimits) {
+BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
     Network network = createCurrentLimitsTestNetwork();
 
     Line& line = network.getLine("VL1_VL3");
@@ -332,29 +334,29 @@ TEST(CurrentLimits, checkPermanentLimits) {
     Bus& b1 = network.getVoltageLevel("VL1").getBusBreakerView().getBus("VL1_BUS1");
     Bus& b2 = network.getVoltageLevel("VL3").getBusBreakerView().getBus("VL3_BUS1");
 
-    ASSERT_TRUE(line.getCurrentLimits1());
-    ASSERT_TRUE(std::isnan(t1.getI()));
-    ASSERT_TRUE(std::isnan(b1.getV()));
-    ASSERT_FALSE(line.checkPermanentLimit1(2.0));
+    BOOST_TEST(line.getCurrentLimits1());
+    BOOST_TEST(std::isnan(t1.getI()));
+    BOOST_TEST(std::isnan(b1.getV()));
+    BOOST_TEST(!line.checkPermanentLimit1(2.0));
 
     b1.setV(1000.0 * std::sqrt(3.0));
     t1.setQ(0.0).setP(10.0);
-    ASSERT_DOUBLE_EQ(t1.getP(), t1.getI());
+    BOOST_CHECK_CLOSE(t1.getP(), t1.getI(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(line.checkPermanentLimit1(2.0));
-    ASSERT_FALSE(line.checkPermanentLimit1(5.0));
+    BOOST_TEST(line.checkPermanentLimit1(2.0));
+    BOOST_TEST(!line.checkPermanentLimit1(5.0));
 
-    ASSERT_TRUE(line.checkPermanentLimit(Branch::Side::ONE, 2.0));
-    ASSERT_FALSE(line.checkPermanentLimit(Branch::Side::ONE, 5.0));
+    BOOST_TEST(line.checkPermanentLimit(Branch::Side::ONE, 2.0));
+    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::ONE, 5.0));
 
-    ASSERT_TRUE(line.checkPermanentLimit1());
-    ASSERT_TRUE(line.checkPermanentLimit(Branch::Side::ONE));
+    BOOST_TEST(line.checkPermanentLimit1());
+    BOOST_TEST(line.checkPermanentLimit(Branch::Side::ONE));
     t1.setP(1.0);
-    ASSERT_FALSE(line.checkPermanentLimit1());
-    ASSERT_FALSE(line.checkPermanentLimit(Branch::Side::ONE));
+    BOOST_TEST(!line.checkPermanentLimit1());
+    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::ONE));
 
-    ASSERT_FALSE(line.getCurrentLimits2());
-    ASSERT_FALSE(line.checkPermanentLimit2(2.0));
+    BOOST_TEST(!line.getCurrentLimits2());
+    BOOST_TEST(!line.checkPermanentLimit2(2.0));
 
     line.newCurrentLimits2()
         .setPermanentLimit(8.0)
@@ -378,43 +380,43 @@ TEST(CurrentLimits, checkPermanentLimits) {
         .endTemporaryLimit()
         .add();
 
-    ASSERT_TRUE(line.getCurrentLimits2());
-    ASSERT_TRUE(std::isnan(t2.getI()));
-    ASSERT_TRUE(std::isnan(b2.getV()));
-    ASSERT_FALSE(line.checkPermanentLimit2(2.0));
+    BOOST_TEST(line.getCurrentLimits2());
+    BOOST_TEST(std::isnan(t2.getI()));
+    BOOST_TEST(std::isnan(b2.getV()));
+    BOOST_TEST(!line.checkPermanentLimit2(2.0));
 
     b2.setV(1000.0 * std::sqrt(3.0));
     t2.setQ(0.0).setP(20.0);
-    ASSERT_DOUBLE_EQ(t2.getP(), t2.getI());
+    BOOST_CHECK_CLOSE(t2.getP(), t2.getI(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(line.checkPermanentLimit2(2.0));
-    ASSERT_FALSE(line.checkPermanentLimit2(5.0));
+    BOOST_TEST(line.checkPermanentLimit2(2.0));
+    BOOST_TEST(!line.checkPermanentLimit2(5.0));
 
-    ASSERT_TRUE(line.checkPermanentLimit(Branch::Side::TWO, 2.0));
-    ASSERT_FALSE(line.checkPermanentLimit(Branch::Side::TWO, 5.0));
+    BOOST_TEST(line.checkPermanentLimit(Branch::Side::TWO, 2.0));
+    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::TWO, 5.0));
 
-    ASSERT_TRUE(line.checkPermanentLimit2());
-    ASSERT_TRUE(line.checkPermanentLimit(Branch::Side::TWO));
+    BOOST_TEST(line.checkPermanentLimit2());
+    BOOST_TEST(line.checkPermanentLimit(Branch::Side::TWO));
     t2.setP(1.0);
-    ASSERT_FALSE(line.checkPermanentLimit2());
-    ASSERT_FALSE(line.checkPermanentLimit(Branch::Side::TWO));
+    BOOST_TEST(!line.checkPermanentLimit2());
+    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::TWO));
 
     POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(5), 3.0), AssertionError, "Unexpected side value: 5");
     POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(6)), AssertionError, "Unexpected side value: 6");
 
-    ASSERT_FALSE(line.isOverloaded(2.0));
-    ASSERT_FALSE(line.isOverloaded());
+    BOOST_TEST(!line.isOverloaded(2.0));
+    BOOST_TEST(!line.isOverloaded());
     t2.setP(20.0);
-    ASSERT_TRUE(line.isOverloaded(2.0));
+    BOOST_TEST(line.isOverloaded(2.0));
     t1.setP(10.0);
-    ASSERT_TRUE(line.isOverloaded(2.0));
+    BOOST_TEST(line.isOverloaded(2.0));
     t2.setP(1.0);
-    ASSERT_TRUE(line.isOverloaded(2.0));
+    BOOST_TEST(line.isOverloaded(2.0));
 
-    ASSERT_TRUE(line.isOverloaded());
+    BOOST_TEST(line.isOverloaded());
 }
 
-TEST(CurrentLimits, checkTemporaryLimits) {
+BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     Network network = createCurrentLimitsTestNetwork();
 
     Line& line = network.getLine("VL1_VL3");
@@ -423,98 +425,98 @@ TEST(CurrentLimits, checkTemporaryLimits) {
     Bus& b1 = network.getVoltageLevel("VL1").getBusBreakerView().getBus("VL1_BUS1");
     Bus& b2 = network.getVoltageLevel("VL3").getBusBreakerView().getBus("VL3_BUS1");
 
-    ASSERT_TRUE(line.getCurrentLimits1());
-    ASSERT_TRUE(std::isnan(t1.getI()));
-    ASSERT_TRUE(std::isnan(b1.getV()));
+    BOOST_TEST(line.getCurrentLimits1());
+    BOOST_TEST(std::isnan(t1.getI()));
+    BOOST_TEST(std::isnan(b1.getV()));
     std::unique_ptr<Branch::Overload> ptrOverload = line.checkTemporaryLimits1(2.0);
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     b1.setV(1000.0 * std::sqrt(3.0));
     t1.setQ(0.0).setP(9.0);
-    ASSERT_DOUBLE_EQ(t1.getP(), t1.getI());
+    BOOST_CHECK_CLOSE(t1.getP(), t1.getI(), std::numeric_limits<double>::epsilon());
 
     ptrOverload = line.checkTemporaryLimits1(2.0);
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
     Branch::Overload& overload = *ptrOverload;
-    ASSERT_EQ("", overload.getPreviousLimitName());
-    ASSERT_DOUBLE_EQ(4.0, overload.getPreviousLimit());
+    BOOST_CHECK_EQUAL("", overload.getPreviousLimitName());
+    BOOST_CHECK_CLOSE(4.0, overload.getPreviousLimit(), std::numeric_limits<double>::epsilon());
     const CurrentLimits::TemporaryLimit& tl = overload.getTemporaryLimit();
     auto limits = line.getCurrentLimits1().get();
     const auto& tempLimits = limits.getTemporaryLimits();
     unsigned long index = 0;
 
-    ASSERT_EQ(3UL, tl.getAcceptableDuration());
-    ASSERT_EQ(3UL, tempLimits.at(index).get().getAcceptableDuration());
-    ASSERT_EQ("TL3", tl.getName());
-    ASSERT_EQ("TL3", tempLimits.at(index).get().getName());
-    ASSERT_DOUBLE_EQ(5.0, tl.getValue());
-    ASSERT_DOUBLE_EQ(5.0, tempLimits.at(index).get().getValue());
-    ASSERT_FALSE(tl.isFictitious());
-    ASSERT_FALSE(tempLimits.at(index).get().isFictitious());
-    ASSERT_DOUBLE_EQ(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()));
+    BOOST_CHECK_EQUAL(3UL, tl.getAcceptableDuration());
+    BOOST_CHECK_EQUAL(3UL, tempLimits.at(index).get().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("TL3", tl.getName());
+    BOOST_CHECK_EQUAL("TL3", tempLimits.at(index).get().getName());
+    BOOST_CHECK_CLOSE(5.0, tl.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!tl.isFictitious());
+    BOOST_TEST(!tempLimits.at(index).get().isFictitious());
+    BOOST_CHECK_CLOSE(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     t1.setP(11.0);
     ptrOverload = line.checkTemporaryLimits1(2.0);
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
     Branch::Overload& overload2 = *ptrOverload;
     const CurrentLimits::TemporaryLimit& tl2 = overload2.getTemporaryLimit();
-    ASSERT_EQ("TL3", overload2.getPreviousLimitName());
-    ASSERT_DOUBLE_EQ(5.0, overload2.getPreviousLimit());
+    BOOST_CHECK_EQUAL("TL3", overload2.getPreviousLimitName());
+    BOOST_CHECK_CLOSE(5.0, overload2.getPreviousLimit(), std::numeric_limits<double>::epsilon());
     index = 1;
-    ASSERT_EQ(2UL, tl2.getAcceptableDuration());
-    ASSERT_EQ(2UL, tempLimits.at(index).get().getAcceptableDuration());
-    ASSERT_EQ("TL2", tl2.getName());
-    ASSERT_EQ("TL2", tempLimits.at(index).get().getName());
-    ASSERT_DOUBLE_EQ(6.0, tl2.getValue());
-    ASSERT_DOUBLE_EQ(6.0, tempLimits.at(index).get().getValue());
-    ASSERT_TRUE(tl2.isFictitious());
-    ASSERT_TRUE(tempLimits.at(index).get().isFictitious());
-    ASSERT_DOUBLE_EQ(tl2.getValue(), limits.getTemporaryLimitValue(tl2.getAcceptableDuration()));
+    BOOST_CHECK_EQUAL(2UL, tl2.getAcceptableDuration());
+    BOOST_CHECK_EQUAL(2UL, tempLimits.at(index).get().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("TL2", tl2.getName());
+    BOOST_CHECK_EQUAL("TL2", tempLimits.at(index).get().getName());
+    BOOST_CHECK_CLOSE(6.0, tl2.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(tl2.isFictitious());
+    BOOST_TEST(tempLimits.at(index).get().isFictitious());
+    BOOST_CHECK_CLOSE(tl2.getValue(), limits.getTemporaryLimitValue(tl2.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     t1.setP(13.0);
     ptrOverload = line.checkTemporaryLimits1(2.0);
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
     Branch::Overload& overload3 = *ptrOverload;
     const CurrentLimits::TemporaryLimit& tl3 = overload3.getTemporaryLimit();
-    ASSERT_EQ("TL2", overload3.getPreviousLimitName());
-    ASSERT_DOUBLE_EQ(6.0, overload3.getPreviousLimit());
+    BOOST_CHECK_EQUAL("TL2", overload3.getPreviousLimitName());
+    BOOST_CHECK_CLOSE(6.0, overload3.getPreviousLimit(), std::numeric_limits<double>::epsilon());
     index = 2;
-    ASSERT_EQ(1UL, tl3.getAcceptableDuration());
-    ASSERT_EQ(1UL, tempLimits.at(index).get().getAcceptableDuration());
-    ASSERT_EQ("TL1", tl3.getName());
-    ASSERT_EQ("TL1", tempLimits.at(index).get().getName());
-    ASSERT_DOUBLE_EQ(7.0, tl3.getValue());
-    ASSERT_DOUBLE_EQ(7.0, tempLimits.at(index).get().getValue());
-    ASSERT_FALSE(tl3.isFictitious());
-    ASSERT_FALSE(tempLimits.at(index).get().isFictitious());
-    ASSERT_DOUBLE_EQ(tl3.getValue(), limits.getTemporaryLimitValue(tl3.getAcceptableDuration()));
+    BOOST_CHECK_EQUAL(1UL, tl3.getAcceptableDuration());
+    BOOST_CHECK_EQUAL(1UL, tempLimits.at(index).get().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("TL1", tl3.getName());
+    BOOST_CHECK_EQUAL("TL1", tempLimits.at(index).get().getName());
+    BOOST_CHECK_CLOSE(7.0, tl3.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(7.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!tl3.isFictitious());
+    BOOST_TEST(!tempLimits.at(index).get().isFictitious());
+    BOOST_CHECK_CLOSE(tl3.getValue(), limits.getTemporaryLimitValue(tl3.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     t1.setP(15.0);
     ptrOverload = line.checkTemporaryLimits1(2.0);
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, 2.0);
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     t1.setP(9.0);
     ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, 2.0);
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
 
     t1.setP(5.0);
     ptrOverload = line.checkTemporaryLimits1();
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE);
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
 
     t1.setP(1.0);
     ptrOverload = line.checkTemporaryLimits1();
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE);
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
 
-    ASSERT_FALSE(line.getCurrentLimits2());
+    BOOST_TEST(!line.getCurrentLimits2());
     ptrOverload = line.checkTemporaryLimits2(2.0);
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     line.newCurrentLimits2()
         .setPermanentLimit(8.0)
@@ -538,51 +540,53 @@ TEST(CurrentLimits, checkTemporaryLimits) {
         .endTemporaryLimit()
         .add();
 
-    ASSERT_TRUE(line.getCurrentLimits2());
-    ASSERT_TRUE(std::isnan(t2.getI()));
-    ASSERT_TRUE(std::isnan(b2.getV()));
+    BOOST_TEST(line.getCurrentLimits2());
+    BOOST_TEST(std::isnan(t2.getI()));
+    BOOST_TEST(std::isnan(b2.getV()));
     ptrOverload = line.checkTemporaryLimits2(2.0);
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     b2.setV(1000.0 * std::sqrt(3.0));
     t2.setQ(0.0).setP(20.0);
-    ASSERT_DOUBLE_EQ(t2.getP(), t2.getI());
+    BOOST_CHECK_CLOSE(t2.getP(), t2.getI(), std::numeric_limits<double>::epsilon());
 
     ptrOverload = line.checkTemporaryLimits2(2.0);
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits2(5.0);
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, 2.0);
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, 5.0);
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     t2.setP(9.0);
     ptrOverload = line.checkTemporaryLimits2();
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO);
-    ASSERT_TRUE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
     t2.setP(1.0);
     ptrOverload = line.checkTemporaryLimits2();
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO);
-    ASSERT_FALSE(static_cast<bool>(ptrOverload));
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(5), 3.0), AssertionError, "Unexpected side value: 5");
     POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(6)), AssertionError, "Unexpected side value: 6");
 
-    ASSERT_EQ(std::numeric_limits<unsigned long>::max(), line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), line.getOverloadDuration());
     t1.setP(4.5);
-    ASSERT_EQ(3UL, line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(3UL, line.getOverloadDuration());
     t1.setP(1.0);
     t2.setP(10.5);
-    ASSERT_EQ(2UL, line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(2UL, line.getOverloadDuration());
     t1.setP(6.0);
-    ASSERT_EQ(1UL, line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(1UL, line.getOverloadDuration());
     t1.setP(4.5);
-    ASSERT_EQ(2UL, line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(2UL, line.getOverloadDuration());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

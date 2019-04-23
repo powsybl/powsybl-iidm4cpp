@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Country.hpp>
 
@@ -13,10 +13,14 @@ namespace powsybl {
 
 namespace iidm {
 
-TEST(Country, getCountryName) {
-    ASSERT_EQ(u8"FRANCE", getCountryName(Country::FR));
-    ASSERT_EQ(u8"BELGIUM", getCountryName(Country::BE));
+BOOST_AUTO_TEST_SUITE(CountryTestSuite)
+
+BOOST_AUTO_TEST_CASE(getCountryNameTest) {
+    BOOST_CHECK_EQUAL(u8"FRANCE", getCountryName(Country::FR));
+    BOOST_CHECK_EQUAL(u8"BELGIUM", getCountryName(Country::BE));
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

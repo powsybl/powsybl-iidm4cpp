@@ -7,7 +7,7 @@
 
 #include <cmath>
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
@@ -20,12 +20,14 @@ namespace powsybl {
 
 namespace iidm {
 
-TEST(VscConverterStation, constructor) {
+BOOST_AUTO_TEST_SUITE(VscConverterStationTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createHvdcConverterStationTestNetwork();
 
     unsigned long vscCount = network.getVscConverterStationCount();
     unsigned long hvdcCount = network.getHvdcConverterStationCount();
-    ASSERT_EQ(vscCount + network.getLccConverterStationCount(), hvdcCount);
+    BOOST_CHECK_EQUAL(vscCount + network.getLccConverterStationCount(), hvdcCount);
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
     VscConverterStationAdder adder = vl1.newVscConverterStation()
@@ -54,141 +56,141 @@ TEST(VscConverterStation, constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'VSC1' already exists (powsybl::iidm::VscConverterStation)");
     adder.setId("UNIQUE_VSC_ID");
 
-    ASSERT_NO_THROW(adder.add());
-    ASSERT_EQ(vscCount + 1, network.getVscConverterStationCount());
-    ASSERT_EQ(hvdcCount + 1, network.getHvdcConverterStationCount());
+    BOOST_CHECK_NO_THROW(adder.add());
+    BOOST_CHECK_EQUAL(vscCount + 1, network.getVscConverterStationCount());
+    BOOST_CHECK_EQUAL(hvdcCount + 1, network.getHvdcConverterStationCount());
 }
 
-TEST(VscConverterStation, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     const Network& network = createHvdcConverterStationTestNetwork();
 
     VscConverterStation& vsc = network.getVscConverterStation("VSC1");
     HvdcConverterStation& hvdc = network.getHvdcConverterStation("VSC1");
-    ASSERT_TRUE(stdcxx::areSame(vsc, hvdc));
-    ASSERT_EQ("VSC1", vsc.getId());
-    ASSERT_EQ(vsc.getId(), hvdc.getId());
-    ASSERT_EQ("VSC1_NAME", vsc.getName());
-    ASSERT_EQ(vsc.getName(), hvdc.getName());
-    ASSERT_EQ(ConnectableType::HVDC_CONVERTER_STATION, vsc.getType());
-    ASSERT_EQ(hvdc.getType(), vsc.getType());
-    ASSERT_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    ASSERT_EQ(vsc.getHvdcType(), hvdc.getHvdcType());
-    ASSERT_DOUBLE_EQ(3.0, vsc.getLossFactor());
-    ASSERT_DOUBLE_EQ(vsc.getLossFactor(), hvdc.getLossFactor());
-    ASSERT_DOUBLE_EQ(4.0, vsc.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(5.0, vsc.getReactivePowerSetpoint());
-    ASSERT_TRUE(vsc.isVoltageRegulatorOn());
+    BOOST_TEST(stdcxx::areSame(vsc, hvdc));
+    BOOST_CHECK_EQUAL("VSC1", vsc.getId());
+    BOOST_CHECK_EQUAL(vsc.getId(), hvdc.getId());
+    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
+    BOOST_CHECK_EQUAL(vsc.getName(), hvdc.getName());
+    BOOST_CHECK_EQUAL(ConnectableType::HVDC_CONVERTER_STATION, vsc.getType());
+    BOOST_CHECK_EQUAL(hvdc.getType(), vsc.getType());
+    POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
+    POWSYBL_ASSERT_ENUM_EQ(vsc.getHvdcType(), hvdc.getHvdcType());
+    BOOST_CHECK_CLOSE(3.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(vsc.getLossFactor(), hvdc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(vsc.isVoltageRegulatorOn());
 
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setLossFactor(100.0)));
-    ASSERT_DOUBLE_EQ(100.0, vsc.getLossFactor());
-    ASSERT_DOUBLE_EQ(vsc.getLossFactor(), hvdc.getLossFactor());
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setLossFactor(100.0)));
+    BOOST_CHECK_CLOSE(100.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(vsc.getLossFactor(), hvdc.getLossFactor(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(vsc.setLossFactor(stdcxx::nan()), ValidationException, "vscConverterStation 'VSC1': loss factor is invalid");
     POWSYBL_ASSERT_THROW(vsc.setLossFactor(-100.0), ValidationException, "vscConverterStation 'VSC1': loss factor must be >= 0");
 
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(stdcxx::nan())));
-    ASSERT_TRUE(std::isnan(vsc.getVoltageSetpoint()));
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(stdcxx::nan())));
+    BOOST_TEST(std::isnan(vsc.getVoltageSetpoint()));
     POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(true), ValidationException, "vscConverterStation 'VSC1': Invalid voltage setpoint value (nan) while voltage regulator is on");
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(-300.0)));
-    ASSERT_DOUBLE_EQ(-300.0, vsc.getVoltageSetpoint());
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(-300.0)));
+    BOOST_CHECK_CLOSE(-300.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(true), ValidationException, "vscConverterStation 'VSC1': Invalid voltage setpoint value (-300) while voltage regulator is on");
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(0.0)));
-    ASSERT_DOUBLE_EQ(0.0, vsc.getVoltageSetpoint());
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(0.0)));
+    BOOST_CHECK_CLOSE(0.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(true), ValidationException, "vscConverterStation 'VSC1': Invalid voltage setpoint value (0) while voltage regulator is on");
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(300.0)));
-    ASSERT_DOUBLE_EQ(300.0, vsc.getVoltageSetpoint());
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(300.0)));
+    BOOST_CHECK_CLOSE(300.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(true)));
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setReactivePowerSetpoint(stdcxx::nan())));
-    ASSERT_TRUE(std::isnan(vsc.getReactivePowerSetpoint()));
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(true)));
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setReactivePowerSetpoint(stdcxx::nan())));
+    BOOST_TEST(std::isnan(vsc.getReactivePowerSetpoint()));
     POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(false), ValidationException, "vscConverterStation 'VSC1': Invalid reactive power setpoint (nan) while voltage regulator is off");
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setReactivePowerSetpoint(400.0)));
-    ASSERT_DOUBLE_EQ(400.0, vsc.getReactivePowerSetpoint());
-    ASSERT_TRUE(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setReactivePowerSetpoint(400.0)));
+    BOOST_CHECK_CLOSE(400.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
 
     vsc.remove();
     POWSYBL_ASSERT_THROW(network.getVscConverterStation("VSC1"), PowsyblException, "Unable to find to the identifiable 'VSC1'");
 }
 
-TEST(VscConverterStation, multivariant) {
+BOOST_AUTO_TEST_CASE(multivariant) {
     Network network = createHvdcConverterStationTestNetwork();
 
     VscConverterStation& vsc = network.getVscConverterStation("VSC1");
 
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s1");
-    ASSERT_EQ("VSC1", vsc.getId());
-    ASSERT_EQ("VSC1_NAME", vsc.getName());
-    ASSERT_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    ASSERT_DOUBLE_EQ(3.0, vsc.getLossFactor());
-    ASSERT_DOUBLE_EQ(4.0, vsc.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(5.0, vsc.getReactivePowerSetpoint());
-    ASSERT_TRUE(vsc.isVoltageRegulatorOn());
+    BOOST_CHECK_EQUAL("VSC1", vsc.getId());
+    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
+    POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
+    BOOST_CHECK_CLOSE(3.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(vsc.isVoltageRegulatorOn());
     vsc.setLossFactor(100.0).setVoltageSetpoint(200.0).setReactivePowerSetpoint(300.0).setVoltageRegulatorOn(false);
 
-    ASSERT_EQ("VSC1", vsc.getId());
-    ASSERT_EQ("VSC1_NAME", vsc.getName());
-    ASSERT_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    ASSERT_DOUBLE_EQ(100.0, vsc.getLossFactor());
-    ASSERT_DOUBLE_EQ(200.0, vsc.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(300.0, vsc.getReactivePowerSetpoint());
-    ASSERT_FALSE(vsc.isVoltageRegulatorOn());
+    BOOST_CHECK_EQUAL("VSC1", vsc.getId());
+    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
+    POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
+    BOOST_CHECK_CLOSE(100.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!vsc.isVoltageRegulatorOn());
 
     network.getVariantManager().setWorkingVariant("s2");
-    ASSERT_EQ("VSC1", vsc.getId());
-    ASSERT_EQ("VSC1_NAME", vsc.getName());
-    ASSERT_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    ASSERT_DOUBLE_EQ(100.0, vsc.getLossFactor());
-    ASSERT_DOUBLE_EQ(4.0, vsc.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(5.0, vsc.getReactivePowerSetpoint());
-    ASSERT_TRUE(vsc.isVoltageRegulatorOn());
+    BOOST_CHECK_EQUAL("VSC1", vsc.getId());
+    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
+    POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
+    BOOST_CHECK_CLOSE(100.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(vsc.isVoltageRegulatorOn());
     vsc.setLossFactor(150.0).setVoltageSetpoint(250.0).setReactivePowerSetpoint(350.0).setVoltageRegulatorOn(false);
 
-    ASSERT_EQ("VSC1", vsc.getId());
-    ASSERT_EQ("VSC1_NAME", vsc.getName());
-    ASSERT_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    ASSERT_DOUBLE_EQ(150.0, vsc.getLossFactor());
-    ASSERT_DOUBLE_EQ(250.0, vsc.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(350.0, vsc.getReactivePowerSetpoint());
-    ASSERT_FALSE(vsc.isVoltageRegulatorOn());
+    BOOST_CHECK_EQUAL("VSC1", vsc.getId());
+    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
+    POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
+    BOOST_CHECK_CLOSE(150.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(350.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!vsc.isVoltageRegulatorOn());
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
-    ASSERT_EQ("VSC1", vsc.getId());
-    ASSERT_EQ("VSC1_NAME", vsc.getName());
-    ASSERT_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    ASSERT_DOUBLE_EQ(150.0, vsc.getLossFactor());
-    ASSERT_DOUBLE_EQ(4.0, vsc.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(5.0, vsc.getReactivePowerSetpoint());
-    ASSERT_TRUE(vsc.isVoltageRegulatorOn());
+    BOOST_CHECK_EQUAL("VSC1", vsc.getId());
+    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
+    POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
+    BOOST_CHECK_CLOSE(150.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(vsc.isVoltageRegulatorOn());
 
     network.getVariantManager().removeVariant("s1");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
-    ASSERT_EQ("VSC1", vsc.getId());
-    ASSERT_EQ("VSC1_NAME", vsc.getName());
-    ASSERT_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    ASSERT_DOUBLE_EQ(150.0, vsc.getLossFactor());
-    ASSERT_DOUBLE_EQ(250.0, vsc.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(350.0, vsc.getReactivePowerSetpoint());
-    ASSERT_FALSE(vsc.isVoltageRegulatorOn());
+    BOOST_CHECK_EQUAL("VSC1", vsc.getId());
+    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
+    POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
+    BOOST_CHECK_CLOSE(150.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(350.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!vsc.isVoltageRegulatorOn());
 
     network.getVariantManager().removeVariant("s3");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().removeVariant("s2");
-    ASSERT_EQ(1ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(1ul, network.getVariantManager().getVariantArraySize());
 }
 
-TEST(VscConverterStation, loop) {
+BOOST_AUTO_TEST_CASE(loop) {
     const Network& network = createHvdcConverterStationTestNetwork();
 
     unsigned long vscCount = network.getVscConverterStationCount();
     unsigned long hvdcCount = network.getHvdcConverterStationCount();
-    ASSERT_EQ(vscCount + network.getLccConverterStationCount(), hvdcCount);
+    BOOST_CHECK_EQUAL(vscCount + network.getLccConverterStationCount(), hvdcCount);
 
     unsigned long vscLoopCount = 0ul;
     unsigned long hvdcLoopCount = 0ul;
@@ -198,9 +200,11 @@ TEST(VscConverterStation, loop) {
     for (auto it = network.cbegin<HvdcConverterStation>(); it != network.cend<HvdcConverterStation>(); ++it) {
         hvdcLoopCount++;
     }
-    ASSERT_EQ(vscLoopCount, vscCount);
-    ASSERT_EQ(hvdcLoopCount, hvdcCount);
+    BOOST_CHECK_EQUAL(vscLoopCount, vscCount);
+    BOOST_CHECK_EQUAL(hvdcLoopCount, hvdcCount);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

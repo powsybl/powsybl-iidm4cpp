@@ -7,7 +7,7 @@
 
 #include <cmath>
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -28,12 +28,14 @@ namespace powsybl {
 
 namespace iidm {
 
-TEST(NodeBreakerVoltageLevel, BusbarSection) {
+BOOST_AUTO_TEST_SUITE(NodeBreakerVoltageLevelTestSuite)
+
+BOOST_AUTO_TEST_CASE(busbarSection) {
     const Network& network = createNetwork();
-    ASSERT_EQ(0, network.getBusbarSectionCount());
+    BOOST_CHECK_EQUAL(0, network.getBusbarSectionCount());
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
-    ASSERT_EQ(TopologyKind::NODE_BREAKER, voltageLevel.getTopologyKind());
+    BOOST_CHECK_EQUAL(TopologyKind::NODE_BREAKER, voltageLevel.getTopologyKind());
 
     voltageLevel.getNodeBreakerView().setNodeCount(1);
 
@@ -43,29 +45,29 @@ TEST(NodeBreakerVoltageLevel, BusbarSection) {
         .setNode(0)
         .add();
 
-    ASSERT_EQ("BBS", bbs.getId());
-    ASSERT_EQ("BBS_NAME", bbs.getName());
-    ASSERT_EQ(ConnectableType::BUSBAR_SECTION, bbs.getType());
-    ASSERT_TRUE(stdcxx::areSame(voltageLevel, bbs.getTerminal().getVoltageLevel()));
+    BOOST_CHECK_EQUAL("BBS", bbs.getId());
+    BOOST_CHECK_EQUAL("BBS_NAME", bbs.getName());
+    BOOST_CHECK_EQUAL(ConnectableType::BUSBAR_SECTION, bbs.getType());
+    BOOST_TEST(stdcxx::areSame(voltageLevel, bbs.getTerminal().getVoltageLevel()));
 
     BusbarSection& bbs2 = network.getBusbarSection("BBS");
-    ASSERT_TRUE(stdcxx::areSame(bbs, bbs2));
-    ASSERT_TRUE(std::isnan(bbs.getAngle()));
-    ASSERT_TRUE(std::isnan(bbs.getV()));
+    BOOST_TEST(stdcxx::areSame(bbs, bbs2));
+    BOOST_TEST(std::isnan(bbs.getAngle()));
+    BOOST_TEST(std::isnan(bbs.getV()));
 
     BusbarSectionAdder adder = voltageLevel.getNodeBreakerView().newBusbarSection()
         .setId("DUPLICATE")
         .setNode(0);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Busbar section 'DUPLICATE': An equipment (BBS) is already connected to the node 0 of voltage level VL2");
 
-    ASSERT_EQ(2, network.getBusbarSectionCount());
+    BOOST_CHECK_EQUAL(2, network.getBusbarSectionCount());
 }
 
-TEST(NodeBreakerVoltageLevel, Switch) {
+BOOST_AUTO_TEST_CASE(switches) {
     const Network& network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
-    ASSERT_EQ(TopologyKind::NODE_BREAKER, voltageLevel.getTopologyKind());
+    BOOST_CHECK_EQUAL(TopologyKind::NODE_BREAKER, voltageLevel.getTopologyKind());
 
     voltageLevel.getNodeBreakerView().setNodeCount(2);
     voltageLevel.getNodeBreakerView().newBusbarSection()
@@ -90,29 +92,29 @@ TEST(NodeBreakerVoltageLevel, Switch) {
         .setFictitious(false)
         .add();
 
-    ASSERT_EQ("BK", breaker.getId());
-    ASSERT_EQ("BK_NAME", breaker.getName());
-    ASSERT_EQ(SwitchKind::BREAKER, breaker.getKind());
-    ASSERT_FALSE(breaker.isOpen());
-    ASSERT_TRUE(breaker.isRetained());
-    ASSERT_FALSE(breaker.isFictitious());
-    ASSERT_TRUE(stdcxx::areSame(voltageLevel, breaker.getVoltageLevel()));
+    BOOST_CHECK_EQUAL("BK", breaker.getId());
+    BOOST_CHECK_EQUAL("BK_NAME", breaker.getName());
+    POWSYBL_ASSERT_ENUM_EQ(SwitchKind::BREAKER, breaker.getKind());
+    BOOST_TEST(!breaker.isOpen());
+    BOOST_TEST(breaker.isRetained());
+    BOOST_TEST(!breaker.isFictitious());
+    BOOST_TEST(stdcxx::areSame(voltageLevel, breaker.getVoltageLevel()));
 
     breaker.setOpen(true)
         .setRetained(false)
         .setFictitious(true);
-    ASSERT_TRUE(breaker.isOpen());
-    ASSERT_FALSE(breaker.isRetained());
-    ASSERT_TRUE(breaker.isFictitious());
+    BOOST_TEST(breaker.isOpen());
+    BOOST_TEST(!breaker.isRetained());
+    BOOST_TEST(breaker.isFictitious());
 }
 
-TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
+BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     const Network& network = createNetwork();
     const unsigned long NODE_COUNT = 3;
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
     voltageLevel.getNodeBreakerView().setNodeCount(NODE_COUNT);
-    ASSERT_EQ(3, voltageLevel.getNodeBreakerView().getNodeCount());
+    BOOST_CHECK_EQUAL(3, voltageLevel.getNodeBreakerView().getNodeCount());
 
     BusbarSection& bbs1 = voltageLevel.getNodeBreakerView().newBusbarSection()
         .setId("BBS1")
@@ -124,16 +126,16 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
         .setNode(1)
         .add();
 
-    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getSwitchCount());
-    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
+    BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getSwitchCount());
+    BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
     Switch& breaker = voltageLevel.getNodeBreakerView().newBreaker()
         .setId("BK")
         .setName("BK_NAME")
         .setNode1(0)
         .setNode2(1)
         .add();
-    ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getSwitchCount());
-    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
+    BOOST_CHECK_EQUAL(1, voltageLevel.getNodeBreakerView().getSwitchCount());
+    BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
 
     auto swAdder = voltageLevel.getNodeBreakerView().newSwitch()
         .setId("BK2")
@@ -141,37 +143,37 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
         .setNode1(1)
         .setNode2(2);
     POWSYBL_ASSERT_THROW(swAdder.add(), ValidationException, "Switch 'BK2': Kind is not set");
-    ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getSwitchCount());
-    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
+    BOOST_CHECK_EQUAL(1, voltageLevel.getNodeBreakerView().getSwitchCount());
+    BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
 
     // Get a busbar section
     const auto& refBusbarSection = voltageLevel.getNodeBreakerView().getBusbarSection("BBS1");
-    ASSERT_TRUE(refBusbarSection);
-    ASSERT_TRUE(stdcxx::areSame(bbs1, refBusbarSection.get()));
+    POWSYBL_ASSERT_REF_TRUE(refBusbarSection);
+    BOOST_TEST(stdcxx::areSame(bbs1, refBusbarSection.get()));
 
     const auto& refTerminal = voltageLevel.getNodeBreakerView().getTerminal(0);
-    ASSERT_TRUE(refTerminal);
-    ASSERT_TRUE(stdcxx::areSame(bbs1, refTerminal.get().getConnectable().get()));
+    BOOST_TEST(refTerminal);
+    BOOST_TEST(stdcxx::areSame(bbs1, refTerminal.get().getConnectable().get()));
 
     // Get an unknown busbar section
-    ASSERT_FALSE(voltageLevel.getNodeBreakerView().getBusbarSection("UNKNOWN"));
+    BOOST_TEST(!voltageLevel.getNodeBreakerView().getBusbarSection("UNKNOWN"));
 
     // Get a switch
     const auto& refBreaker = voltageLevel.getNodeBreakerView().getSwitch("BK");
-    ASSERT_TRUE(refBreaker);
-    ASSERT_TRUE(stdcxx::areSame(breaker, refBreaker.get()));
+    POWSYBL_ASSERT_REF_TRUE(refBreaker);
+    BOOST_TEST(stdcxx::areSame(breaker, refBreaker.get()));
     // Get an unknown switch
-    ASSERT_FALSE(voltageLevel.getNodeBreakerView().getSwitch("UNKNOWN"));
+    BOOST_TEST(!voltageLevel.getNodeBreakerView().getSwitch("UNKNOWN"));
 
     unsigned long node1 = voltageLevel.getNodeBreakerView().getNode1("BK");
-    ASSERT_EQ(0, node1);
+    BOOST_CHECK_EQUAL(0, node1);
     const auto& terminal1 = voltageLevel.getNodeBreakerView().getTerminal1("BK");
-    ASSERT_TRUE(stdcxx::areSame(bbs1, terminal1.get().getConnectable().get()));
+    BOOST_TEST(stdcxx::areSame(bbs1, terminal1.get().getConnectable().get()));
 
     unsigned long node2 = voltageLevel.getNodeBreakerView().getNode2("BK");
-    ASSERT_EQ(1, node2);
+    BOOST_CHECK_EQUAL(1, node2);
     const auto& terminal2 = voltageLevel.getNodeBreakerView().getTerminal2("BK");
-    ASSERT_TRUE(stdcxx::areSame(bbs2, terminal2.get().getConnectable().get()));
+    BOOST_TEST(stdcxx::areSame(bbs2, terminal2.get().getConnectable().get()));
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getNode1("UNKNOWN"), PowsyblException, "Switch 'UNKNOWN' not found in the voltage level 'VL2'");
 
@@ -182,25 +184,25 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
 
     // Remove a busbar section
     bbs1.remove();
-    ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
+    BOOST_CHECK_EQUAL(1, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
     bbs2.remove();
-    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
+    BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().removeSwitch("UNKNOWN"), PowsyblException, "Switch 'UNKNOWN' not found in voltage level 'VL2'");
-    ASSERT_EQ(1, voltageLevel.getNodeBreakerView().getSwitchCount());
-    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
+    BOOST_CHECK_EQUAL(1, voltageLevel.getNodeBreakerView().getSwitchCount());
+    BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
     voltageLevel.getNodeBreakerView().removeSwitch("BK");
-    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getSwitchCount());
-    ASSERT_EQ(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
+    BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getSwitchCount());
+    BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
 
     // test const versions
     const VoltageLevel& vlTest = network.getVoltageLevel("VL2");
     const NodeBreakerView& view = vlTest.getNodeBreakerView();
-    ASSERT_EQ(0, view.getBusbarSectionCount());
+    BOOST_CHECK_EQUAL(0, view.getBusbarSectionCount());
 
     //test internal connections
-    ASSERT_EQ(0, view.getSwitchCount());
-    ASSERT_EQ(0, view.getInternalConnectionCount());
+    BOOST_CHECK_EQUAL(0, view.getSwitchCount());
+    BOOST_CHECK_EQUAL(0, view.getInternalConnectionCount());
     auto internalConnectionAdder = voltageLevel.getNodeBreakerView().newInternalConnection();
     internalConnectionAdder.setId("IC_1");
 
@@ -212,12 +214,12 @@ TEST(NodeBreakerVoltageLevel, NodeBreakerView) {
     // TODO(thiebarr):  POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "InternalConnection 'IC_1': connection nodes must be different");
     internalConnectionAdder.setNode2(1);
 
-    ASSERT_NO_THROW(internalConnectionAdder.add());
-    ASSERT_EQ(0, view.getSwitchCount());
-    ASSERT_EQ(1, view.getInternalConnectionCount());
+    BOOST_CHECK_NO_THROW(internalConnectionAdder.add());
+    BOOST_CHECK_EQUAL(0, view.getSwitchCount());
+    BOOST_CHECK_EQUAL(1, view.getInternalConnectionCount());
 }
 
-TEST(NodeBreakerVoltageLevel, CalculatedBusBreakerTopology) {
+BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     Network network("test", "test");
 
     Substation& s = network.newSubstation()
@@ -318,15 +320,15 @@ TEST(NodeBreakerVoltageLevel, CalculatedBusBreakerTopology) {
     auto& busBreakerView = vl.getBusBreakerView();
     const auto& cVl = vl;
     const auto& cBusBreakerView = cVl.getBusBreakerView();
-    ASSERT_TRUE(stdcxx::areSame(busBreakerView, cBusBreakerView));
-    ASSERT_TRUE(busBreakerView.getBus("VL_0"));
-    ASSERT_TRUE(busBreakerView.getBus("VL_1"));
-    ASSERT_TRUE(busBreakerView.getBus("VL_2"));
-    ASSERT_FALSE(busBreakerView.getBus("VL_3"));
-    ASSERT_TRUE(busBreakerView.getBus1("SW1"));
-    ASSERT_TRUE(busBreakerView.getBus2("SW1"));
-    ASSERT_TRUE(busBreakerView.getSwitch("SW1"));
-    ASSERT_EQ(3ul, busBreakerView.getSwitchCount());
+    BOOST_TEST(stdcxx::areSame(busBreakerView, cBusBreakerView));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_0"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_1"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_2"));
+    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_3"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus1("SW1"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus2("SW1"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getSwitch("SW1"));
+    BOOST_CHECK_EQUAL(3ul, busBreakerView.getSwitchCount());
     POWSYBL_ASSERT_THROW(busBreakerView.getSwitch("UNKNOWN"), PowsyblException, "Switch UNKNOWN not found");
     POWSYBL_ASSERT_THROW(busBreakerView.newBus(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(busBreakerView.newSwitch(), AssertionError, "Not implemented");
@@ -336,29 +338,29 @@ TEST(NodeBreakerVoltageLevel, CalculatedBusBreakerTopology) {
     POWSYBL_ASSERT_THROW(busBreakerView.removeSwitch(""), AssertionError, "Not implemented");
 
     auto& testBus = busBreakerView.getBus("VL_0").get();
-    ASSERT_DOUBLE_EQ(7.7, testBus.setAngle(7.7).setV(8.8).getAngle());
-    ASSERT_DOUBLE_EQ(8.8, testBus.getV());
-    ASSERT_EQ(2ul, testBus.getConnectedTerminalCount());
+    BOOST_CHECK_CLOSE(7.7, testBus.setAngle(7.7).setV(8.8).getAngle(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(8.8, testBus.getV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(2ul, testBus.getConnectedTerminalCount());
     std::vector<std::reference_wrapper<Terminal> > terminals = testBus.getConnectedTerminals();
-    ASSERT_EQ(terminals.size(), testBus.getConnectedTerminalCount());
-    ASSERT_TRUE(stdcxx::areSame(vl, testBus.getVoltageLevel()));
+    BOOST_CHECK_EQUAL(terminals.size(), testBus.getConnectedTerminalCount());
+    BOOST_TEST(stdcxx::areSame(vl, testBus.getVoltageLevel()));
 
     sw.setOpen(false);
-    ASSERT_FALSE(busBreakerView.getBus("VL_0"));
-    ASSERT_FALSE(busBreakerView.getBus("VL_1"));
-    ASSERT_FALSE(busBreakerView.getBus("VL_2"));
-    ASSERT_TRUE(busBreakerView.getBus("VL_3"));
-    ASSERT_TRUE(busBreakerView.getBus("VL_4"));
-    ASSERT_TRUE(busBreakerView.getBus("VL_5"));
-    ASSERT_FALSE(busBreakerView.getBus("VL_6"));
+    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_0"));
+    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_1"));
+    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_2"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_3"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_4"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_5"));
+    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_6"));
 
     sw.setRetained(false);
-    ASSERT_TRUE(busBreakerView.getBus("VL_6"));
-    ASSERT_TRUE(busBreakerView.getBus("VL_7"));
-    ASSERT_FALSE(busBreakerView.getBus("VL_8"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_6"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_7"));
+    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_8"));
 }
 
-TEST(NodeBreakerVoltageLevel, CalculatedBusTopology) {
+BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     Network network("test", "test");
 
     Substation& s = network.newSubstation()
@@ -455,21 +457,21 @@ TEST(NodeBreakerVoltageLevel, CalculatedBusTopology) {
 
     const VoltageLevel& vlTest = vl;
     const auto& busView = vlTest.getBusView();
-    ASSERT_EQ(1ul, vl.getBusView().getBuses().size());
-    ASSERT_TRUE(busView.getBus("VL_0"));
-    ASSERT_TRUE(busView.getMergedBus("BBS"));
+    BOOST_CHECK_EQUAL(1ul, vl.getBusView().getBuses().size());
+    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
+    POWSYBL_ASSERT_REF_TRUE(busView.getMergedBus("BBS"));
     sw.setOpen(true);
-    ASSERT_EQ(2ul, busView.getBuses().size());
-    ASSERT_TRUE(busView.getBus("VL_1"));
-    ASSERT_TRUE(busView.getBus("VL_2"));
+    BOOST_CHECK_EQUAL(2ul, busView.getBuses().size());
+    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_1"));
+    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_2"));
     sw.setOpen(false);
-    ASSERT_EQ(1ul, vl.getBusView().getBuses().size());
-    ASSERT_TRUE(busView.getBus("VL_3"));
+    BOOST_CHECK_EQUAL(1ul, vl.getBusView().getBuses().size());
+    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_3"));
     sw.setRetained(true);
-    ASSERT_EQ(1ul, vl.getBusView().getBuses().size());
+    BOOST_CHECK_EQUAL(1ul, vl.getBusView().getBuses().size());
 }
 
-TEST(NodeBreakerVoltageLevel, Terminal) {
+BOOST_AUTO_TEST_CASE(TerminalTest) {
     Network network("test", "test");
 
     Substation& s = network.newSubstation()
@@ -590,23 +592,23 @@ TEST(NodeBreakerVoltageLevel, Terminal) {
         .add();
 
     Terminal& terminal = l1.getTerminal();
-    ASSERT_TRUE(std::isnan(terminal.getV()));
-    ASSERT_TRUE(std::isnan(terminal.getAngle()));
-    ASSERT_TRUE(std::isnan(terminal.getI()));
+    BOOST_TEST(std::isnan(terminal.getV()));
+    BOOST_TEST(std::isnan(terminal.getAngle()));
+    BOOST_TEST(std::isnan(terminal.getI()));
 
-    ASSERT_TRUE(terminal.isConnected());
-    ASSERT_TRUE(vl.disconnect(terminal));
-    ASSERT_FALSE(terminal.isConnected());
-    // TODO(thiebarr): ASSERT_FALSE(vl.disconnect(terminal));
-    // TODO(thiebarr): ASSERT_FALSE(terminal.isConnected());
-    ASSERT_TRUE(vl.connect(terminal));
-    ASSERT_TRUE(terminal.isConnected());
-    ASSERT_FALSE(vl.connect(terminal));
-    ASSERT_TRUE(terminal.isConnected());
-    ASSERT_TRUE(terminal.disconnect());
-    ASSERT_FALSE(terminal.isConnected());
-    ASSERT_TRUE(terminal.connect());
-    ASSERT_TRUE(terminal.isConnected());
+    BOOST_TEST(terminal.isConnected());
+    BOOST_TEST(vl.disconnect(terminal));
+    BOOST_TEST(!terminal.isConnected());
+    // TODO(thiebarr): BOOST_TEST(!vl.disconnect(terminal));
+    // TODO(thiebarr): BOOST_TEST(!terminal.isConnected());
+    BOOST_TEST(vl.connect(terminal));
+    BOOST_TEST(terminal.isConnected());
+    BOOST_TEST(!vl.connect(terminal));
+    BOOST_TEST(terminal.isConnected());
+    BOOST_TEST(terminal.disconnect());
+    BOOST_TEST(!terminal.isConnected());
+    BOOST_TEST(terminal.connect());
+    BOOST_TEST(terminal.isConnected());
 
     POWSYBL_ASSERT_THROW(vl3.attach(l1.getTerminal(), true), ValidationException, "Load 'LOAD1': Voltage level 'VL3' has a bus/breaker topology, a bus connection should be specified instead of a node connection");
     POWSYBL_ASSERT_THROW(vl.attach(l3.getTerminal(), true), ValidationException, "Load 'LOAD3': Voltage level VL has a node/breaker topology, a node connection should be specified instead of a bus connection");
@@ -614,42 +616,44 @@ TEST(NodeBreakerVoltageLevel, Terminal) {
     const Terminal& cTerminal = l1.getTerminal();
     auto& busBreakerView = terminal.getBusBreakerView();
     const auto& cBusBreakerView = cTerminal.getBusBreakerView();
-    ASSERT_TRUE(stdcxx::areSame(busBreakerView, cBusBreakerView));
-    ASSERT_TRUE(stdcxx::areSame(busBreakerView.getBus().get(), busBreakerView.getConnectableBus().get()));
+    BOOST_TEST(stdcxx::areSame(busBreakerView, cBusBreakerView));
+    BOOST_TEST(stdcxx::areSame(busBreakerView.getBus().get(), busBreakerView.getConnectableBus().get()));
 
     POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus("BUS1"), AssertionError, "Not implemented");
 
     auto& busView = terminal.getBusView();
     const auto& cBusView = cTerminal.getBusView();
-    ASSERT_TRUE(stdcxx::areSame(busView, cBusView));
-    ASSERT_TRUE(stdcxx::areSame(busView.getBus().get(), busView.getConnectableBus().get()));
+    BOOST_TEST(stdcxx::areSame(busView, cBusView));
+    BOOST_TEST(stdcxx::areSame(busView.getBus().get(), busView.getConnectableBus().get()));
 
-    ASSERT_TRUE(stdcxx::areSame(terminal.getNodeBreakerView(), cTerminal.getNodeBreakerView()));
-    ASSERT_EQ(2ul, terminal.getNodeBreakerView().getNode());
+    BOOST_TEST(stdcxx::areSame(terminal.getNodeBreakerView(), cTerminal.getNodeBreakerView()));
+    BOOST_CHECK_EQUAL(2ul, terminal.getNodeBreakerView().getNode());
 
     Terminal& terminal2 = l2.getTerminal();
-    ASSERT_FALSE(terminal2.disconnect());
+    BOOST_TEST(!terminal2.disconnect());
 
     Terminal& terminal3 = line.getTerminal1();
     Terminal& terminal4 = line.getTerminal2();
-    ASSERT_FALSE(stdcxx::areSame(terminal3, terminal4));
+    BOOST_TEST(!stdcxx::areSame(terminal3, terminal4));
     POWSYBL_ASSERT_THROW(line.getTerminal(static_cast<iidm::Branch::Side>(3u)), AssertionError, "Unexpected side value: 3");
-    ASSERT_FALSE(terminal4.disconnect());
+    BOOST_TEST(!terminal4.disconnect());
 
     BusbarSection& bbs = dynamic_cast<BusbarSection&>(network.getConnectable("BBS").get());
-    ASSERT_FALSE(network.getConnectable("UNKNOWN"));
-    ASSERT_FALSE(network.getConnectable("BUS1"));
-    ASSERT_DOUBLE_EQ(0, bbs.getTerminal().getI());
+    BOOST_TEST(!network.getConnectable("UNKNOWN"));
+    BOOST_TEST(!network.getConnectable("BUS1"));
+    BOOST_CHECK_CLOSE(0, bbs.getTerminal().getI(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(bbs.getTerminal().setP(1.0), ValidationException, "Busbar section 'BBS': cannot set active power on a busbar section");
     POWSYBL_ASSERT_THROW(bbs.getTerminal().setQ(2.0), ValidationException, "Busbar section 'BBS': cannot set reactive power on a busbar section");
 
     //test const version
     const Network& cNetwork = network;
     const BusbarSection& cBbs = dynamic_cast<const BusbarSection&>(cNetwork.getConnectable("BBS").get());
-    ASSERT_FALSE(cNetwork.getConnectable("UNKNOWN"));
-    ASSERT_FALSE(cNetwork.getConnectable("BUS1"));
-    ASSERT_DOUBLE_EQ(0, cBbs.getTerminal().getI());
+    BOOST_TEST(!cNetwork.getConnectable("UNKNOWN"));
+    BOOST_TEST(!cNetwork.getConnectable("BUS1"));
+    BOOST_CHECK_CLOSE(0, cBbs.getTerminal().getI(), std::numeric_limits<double>::epsilon());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

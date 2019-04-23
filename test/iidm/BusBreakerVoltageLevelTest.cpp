@@ -7,7 +7,7 @@
 
 #include <cmath>
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -27,25 +27,27 @@ namespace powsybl {
 
 namespace iidm {
 
-TEST(BusBreakerVoltageLevel, Bus) {
+BOOST_AUTO_TEST_SUITE(BusBreakerVoltageLevelTestSuite)
+
+BOOST_AUTO_TEST_CASE(BusTest) {
     const Network& network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
-    ASSERT_EQ(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
+    BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
 
     Bus& bus = voltageLevel.getBusBreakerView().newBus()
         .setId("BUS")
         .add();
-    ASSERT_EQ("BUS", bus.getId());
-    ASSERT_TRUE(stdcxx::areSame(voltageLevel, bus.getVoltageLevel()));
-    ASSERT_EQ(0ul, bus.getConnectedTerminalCount());
-    ASSERT_TRUE(std::isnan(bus.getV()));
-    ASSERT_TRUE(std::isnan(bus.getAngle()));
+    BOOST_CHECK_EQUAL("BUS", bus.getId());
+    BOOST_TEST(stdcxx::areSame(voltageLevel, bus.getVoltageLevel()));
+    BOOST_CHECK_EQUAL(0ul, bus.getConnectedTerminalCount());
+    BOOST_TEST(std::isnan(bus.getV()));
+    BOOST_TEST(std::isnan(bus.getAngle()));
 
     bus.setV(10.0)
         .setAngle(0.01);
-    ASSERT_EQ(10.0, bus.getV());
-    ASSERT_EQ(0.01, bus.getAngle());
+    BOOST_CHECK_EQUAL(10.0, bus.getV());
+    BOOST_CHECK_EQUAL(0.01, bus.getAngle());
 
     voltageLevel.newLoad()
         .setId("LOAD2")
@@ -57,14 +59,14 @@ TEST(BusBreakerVoltageLevel, Bus) {
         .setQ0(40.0)
         .add();
 
-    ASSERT_EQ(1ul, bus.getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(1ul, bus.getConnectedTerminalCount());
 }
 
-TEST(BusBreakerVoltageLevel, Switch) {
+BOOST_AUTO_TEST_CASE(SwitchTest) {
     const Network& network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
-    ASSERT_EQ(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
+    BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
 
     voltageLevel.getBusBreakerView().newBus()
         .setId("BUS1")
@@ -81,26 +83,26 @@ TEST(BusBreakerVoltageLevel, Switch) {
         .setBus1("BUS1")
         .setBus2("BUS2")
         .add();
-    ASSERT_EQ("SW", aSwitch.getId());
-    ASSERT_EQ("SW_NAME", aSwitch.getName());
-    ASSERT_TRUE(stdcxx::areSame(voltageLevel, aSwitch.getVoltageLevel()));
-    ASSERT_FALSE(aSwitch.isFictitious());
-    ASSERT_FALSE(aSwitch.isOpen());
-    ASSERT_TRUE(aSwitch.isRetained());
+    BOOST_CHECK_EQUAL("SW", aSwitch.getId());
+    BOOST_CHECK_EQUAL("SW_NAME", aSwitch.getName());
+    BOOST_TEST(stdcxx::areSame(voltageLevel, aSwitch.getVoltageLevel()));
+    BOOST_TEST(!aSwitch.isFictitious());
+    BOOST_TEST(!aSwitch.isOpen());
+    BOOST_TEST(aSwitch.isRetained());
 
     aSwitch.setFictitious(true)
         .setOpen(true);
-    ASSERT_TRUE(aSwitch.isFictitious());
-    ASSERT_TRUE(aSwitch.isOpen());
+    BOOST_TEST(aSwitch.isFictitious());
+    BOOST_TEST(aSwitch.isOpen());
 
     POWSYBL_ASSERT_THROW(aSwitch.setRetained(true), ValidationException, "Voltage level 'VL1': retain status is not modifiable in a non node/breaker voltage level");
 }
 
-TEST(BusBreakerVoltageLevel, NodeBreakerView) {
+BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     const Network& network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
-    ASSERT_EQ(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
+    BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView(), AssertionError, "Not implemented");
 
@@ -109,11 +111,11 @@ TEST(BusBreakerVoltageLevel, NodeBreakerView) {
     POWSYBL_ASSERT_THROW(vl.getNodeBreakerView(), AssertionError, "Not implemented");
 }
 
-TEST(BusBreakerVoltageLevel, BusBreakerView) {
+BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     const Network& network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
-    ASSERT_EQ(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
+    BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
 
     BusBreakerView& view = voltageLevel.getBusBreakerView();
     Bus& bus1 = view.newBus()
@@ -144,29 +146,29 @@ TEST(BusBreakerVoltageLevel, BusBreakerView) {
 
     // get bus
     const auto& refBus1 = view.getBus("BUS1");
-    ASSERT_TRUE(refBus1);
-    ASSERT_TRUE(stdcxx::areSame(bus1, refBus1.get()));
+    POWSYBL_ASSERT_REF_TRUE(refBus1);
+    BOOST_TEST(stdcxx::areSame(bus1, refBus1.get()));
 
     const auto& refUnknownBus = view.getBus("UNKNOWN");
-    ASSERT_FALSE(refUnknownBus);
+    BOOST_TEST(!refUnknownBus);
 
     // get switch
-    ASSERT_EQ(2ul, view.getSwitchCount());
+    BOOST_CHECK_EQUAL(2ul, view.getSwitchCount());
     const auto& refSwitch1 = view.getSwitch("SW1");
-    ASSERT_TRUE(refSwitch1);
-    ASSERT_TRUE(stdcxx::areSame(switch1, refSwitch1.get()));
+    POWSYBL_ASSERT_REF_TRUE(refSwitch1);
+    BOOST_TEST(stdcxx::areSame(switch1, refSwitch1.get()));
 
     const auto& refUnknownSwitch = view.getSwitch("UNKNOWN");
-    ASSERT_FALSE(refUnknownSwitch);
+    BOOST_TEST(!refUnknownSwitch);
 
     // get bus from switch
     const auto& refBus2 = view.getBus1("SW2");
-    ASSERT_TRUE(refBus2);
-    ASSERT_TRUE(stdcxx::areSame(bus2, refBus2.get()));
+    POWSYBL_ASSERT_REF_TRUE(refBus2);
+    BOOST_TEST(stdcxx::areSame(bus2, refBus2.get()));
 
     const auto& refBus3 = view.getBus2("SW2");
-    ASSERT_TRUE(refBus3);
-    ASSERT_TRUE(stdcxx::areSame(bus3, refBus3.get()));
+    POWSYBL_ASSERT_REF_TRUE(refBus3);
+    BOOST_TEST(stdcxx::areSame(bus3, refBus3.get()));
 
     // // get bus from unknown switch
     POWSYBL_ASSERT_THROW(view.getBus1("UNKNOWN"), PowsyblException,
@@ -190,7 +192,7 @@ TEST(BusBreakerVoltageLevel, BusBreakerView) {
     POWSYBL_ASSERT_THROW(view.removeAllBuses(), ValidationException,
                          "Voltage level 'VL1': Cannot remove all buses because there is still some switches");
     view.removeAllSwitches();
-    ASSERT_EQ(0ul, view.getSwitchCount());
+    BOOST_CHECK_EQUAL(0ul, view.getSwitchCount());
     POWSYBL_ASSERT_THROW(view.removeAllBuses(), ValidationException,
                          "Voltage level 'VL1': Cannot remove bus 'VL1_BUS1' due to connected equipments");
     network.getLoad("LOAD1").remove();
@@ -200,10 +202,10 @@ TEST(BusBreakerVoltageLevel, BusBreakerView) {
     const VoltageLevel& vl = network.getVoltageLevel("VL1");
     const BusBreakerView& view2 = vl.getBusBreakerView();
     const auto& refUnknownBus2 = view2.getBus("UNKNOWN");
-    ASSERT_FALSE(refUnknownBus2);
+    BOOST_TEST(!refUnknownBus2);
 }
 
-TEST(BusBreakerVoltageLevel, CalculatedBusTopology) {
+BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
     Network network("test", "test");
 
     Substation& s = network.newSubstation()
@@ -298,39 +300,39 @@ TEST(BusBreakerVoltageLevel, CalculatedBusTopology) {
         .setB2(0.5)
         .add();
 
-    ASSERT_EQ(1ul, vl.getBusView().getBuses().size());
+    BOOST_CHECK_EQUAL(1ul, vl.getBusView().getBuses().size());
     stdcxx::Reference<Bus> mergedBus1 = vl.getBusView().getMergedBus("BUS1");
     stdcxx::Reference<Bus> mergedBus2 = vl.getBusView().getMergedBus("BUS2");
-    ASSERT_TRUE(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
+    BOOST_TEST(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
 
     sw.setOpen(true);
     const VoltageLevel& vlTest = vl;
     const BusView& busView = vlTest.getBusView();
-    ASSERT_EQ(2ul, busView.getBuses().size());
+    BOOST_CHECK_EQUAL(2ul, busView.getBuses().size());
     mergedBus1 = busView.getMergedBus("BUS1");
     mergedBus2 = busView.getMergedBus("BUS2");
-    ASSERT_FALSE(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
+    BOOST_TEST(!stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
 
     Bus& testBus = mergedBus1.get();
-    ASSERT_TRUE(std::isnan(testBus.getAngle()));
-    ASSERT_TRUE(std::isnan(testBus.getV()));
-    ASSERT_DOUBLE_EQ(7.7, testBus.setAngle(7.7).setV(8.8).getAngle());
-    ASSERT_DOUBLE_EQ(8.8, testBus.getV());
+    BOOST_TEST(std::isnan(testBus.getAngle()));
+    BOOST_TEST(std::isnan(testBus.getV()));
+    BOOST_CHECK_CLOSE(7.7, testBus.setAngle(7.7).setV(8.8).getAngle(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(8.8, testBus.getV(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(testBus.setV(-9.0), ValidationException, "Bus 'BUS1': voltage cannot be < 0");
-    ASSERT_EQ(2ul, testBus.getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(2ul, testBus.getConnectedTerminalCount());
     std::vector<std::reference_wrapper<Terminal> > terminals = testBus.getConnectedTerminals();
-    ASSERT_EQ(terminals.size(), testBus.getConnectedTerminalCount());
-    ASSERT_TRUE(stdcxx::areSame(vl, testBus.getVoltageLevel()));
+    BOOST_CHECK_EQUAL(terminals.size(), testBus.getConnectedTerminalCount());
+    BOOST_TEST(stdcxx::areSame(vl, testBus.getVoltageLevel()));
 
     sw.setOpen(true);
-    ASSERT_TRUE(busView.getBus("VL_0"));
-    ASSERT_TRUE(busView.getBus("VL_1"));
+    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
+    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_1"));
     sw.setOpen(false);
-    ASSERT_TRUE(busView.getBus("VL_0"));
-    ASSERT_FALSE(busView.getBus("VL_1"));
+    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
+    POWSYBL_ASSERT_REF_FALSE(busView.getBus("VL_1"));
 }
 
-TEST(BusBreakerVoltageLevel, Terminal) {
+BOOST_AUTO_TEST_CASE(TerminalTest) {
     Network network("test", "test");
 
     Substation& s = network.newSubstation()
@@ -361,42 +363,44 @@ TEST(BusBreakerVoltageLevel, Terminal) {
         .add();
 
     Terminal& terminal = l1.getTerminal();
-    ASSERT_TRUE(terminal.isConnected());
-    ASSERT_TRUE(vl.disconnect(terminal));
-    ASSERT_FALSE(terminal.isConnected());
-    ASSERT_FALSE(vl.disconnect(terminal));
-    ASSERT_FALSE(terminal.isConnected());
-    ASSERT_TRUE(vl.connect(terminal));
-    ASSERT_TRUE(terminal.isConnected());
-    ASSERT_FALSE(vl.connect(terminal));
-    ASSERT_TRUE(terminal.isConnected());
-    ASSERT_TRUE(terminal.disconnect());
-    ASSERT_FALSE(terminal.isConnected());
-    ASSERT_TRUE(terminal.connect());
-    ASSERT_TRUE(terminal.isConnected());
+    BOOST_TEST(terminal.isConnected());
+    BOOST_TEST(vl.disconnect(terminal));
+    BOOST_TEST(!terminal.isConnected());
+    BOOST_TEST(!vl.disconnect(terminal));
+    BOOST_TEST(!terminal.isConnected());
+    BOOST_TEST(vl.connect(terminal));
+    BOOST_TEST(terminal.isConnected());
+    BOOST_TEST(!vl.connect(terminal));
+    BOOST_TEST(terminal.isConnected());
+    BOOST_TEST(terminal.disconnect());
+    BOOST_TEST(!terminal.isConnected());
+    BOOST_TEST(terminal.connect());
+    BOOST_TEST(terminal.isConnected());
 
-    ASSERT_TRUE(std::isnan(terminal.getV()));
-    ASSERT_TRUE(std::isnan(terminal.getAngle()));
-    ASSERT_TRUE(std::isnan(terminal.getI()));
+    BOOST_TEST(std::isnan(terminal.getV()));
+    BOOST_TEST(std::isnan(terminal.getAngle()));
+    BOOST_TEST(std::isnan(terminal.getI()));
     terminal.setP(1.0);
     terminal.setQ(2.0);
-    ASSERT_DOUBLE_EQ(1.0, terminal.getP());
-    ASSERT_DOUBLE_EQ(2.0, terminal.getQ());
+    BOOST_CHECK_CLOSE(1.0, terminal.getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, terminal.getQ(), std::numeric_limits<double>::epsilon());
 
     const Terminal& cTerminal = l1.getTerminal();
-    ASSERT_TRUE(stdcxx::areSame(cTerminal.getVoltageLevel(), vl));
+    BOOST_TEST(stdcxx::areSame(cTerminal.getVoltageLevel(), vl));
     auto& busBreakerView = terminal.getBusBreakerView();
     const auto& cBusBreakerView = cTerminal.getBusBreakerView();
-    ASSERT_TRUE(stdcxx::areSame(busBreakerView, cBusBreakerView));
+    BOOST_TEST(stdcxx::areSame(busBreakerView, cBusBreakerView));
     POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus(""), PowsyblException, "busId is empty");
     busBreakerView.setConnectableBus("BUS1");
 
-    ASSERT_TRUE(stdcxx::areSame(terminal.getBusView(), cTerminal.getBusView()));
-    ASSERT_FALSE(terminal.getBusView().getBus());
+    BOOST_TEST(stdcxx::areSame(terminal.getBusView(), cTerminal.getBusView()));
+    BOOST_TEST(!terminal.getBusView().getBus());
 
     POWSYBL_ASSERT_THROW(terminal.getNodeBreakerView(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(cTerminal.getNodeBreakerView(), AssertionError, "Not implemented");
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

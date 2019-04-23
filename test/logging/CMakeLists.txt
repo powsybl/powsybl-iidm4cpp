@@ -9,11 +9,20 @@ set(UNIT_TEST_SOURCES
     ConsoleLoggerTest.cpp
     ContainerLoggerTest.cpp
     LoggerFactoryTest.cpp
+    logging.cpp
     MessageFormatTest.cpp
     NoopLoggerTest.cpp
-    )
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
+)
 
 add_executable(unit-tests-logging ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-logging ${GTEST_BOTH_LIBRARIES} pthread iidm)
+target_include_directories(unit-tests-logging
+    PRIVATE Boost::boost
+    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
+    PRIVATE ${CMAKE_HOME_DIRECTORY}/test
+)
+target_compile_definitions(unit-tests-logging
+    PRIVATE BOOST_TEST_DYN_LINK
+)
+target_link_libraries(unit-tests-logging
+    iidm
+)

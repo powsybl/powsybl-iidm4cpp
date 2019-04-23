@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -211,74 +211,76 @@ void addPhaseTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal)
         .add();
 }
 
-TEST(TwoWindingsTransformer, constructor) {
+BOOST_AUTO_TEST_SUITE(TwoWindingsTransformerTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createTwoWindingsTransformerTestNetwork();
     const Substation& substation = network.getSubstation("S1");
 
-    ASSERT_EQ(1ul, network.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(1ul, network.getTwoWindingsTransformerCount());
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
-    ASSERT_EQ("2WT_VL1_VL2", transformer.getId());
-    ASSERT_EQ("", transformer.getName());
-    ASSERT_EQ(ConnectableType::TWO_WINDINGS_TRANSFORMER, transformer.getType());
-    ASSERT_DOUBLE_EQ(3.0, transformer.getR());
-    ASSERT_DOUBLE_EQ(33.0, transformer.getX());
-    ASSERT_DOUBLE_EQ(1.0, transformer.getG());
-    ASSERT_DOUBLE_EQ(0.2, transformer.getB());
-    ASSERT_DOUBLE_EQ(2.0, transformer.getRatedU1());
-    ASSERT_DOUBLE_EQ(0.4, transformer.getRatedU2());
-    ASSERT_TRUE(stdcxx::areSame(network, transformer.getNetwork()));
-    ASSERT_TRUE(stdcxx::areSame(substation, transformer.getSubstation().get()));
-    ASSERT_FALSE(transformer.getRatioTapChanger());
-    ASSERT_FALSE(transformer.getPhaseTapChanger());
+    BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
+    BOOST_CHECK_EQUAL("", transformer.getName());
+    BOOST_CHECK_EQUAL(ConnectableType::TWO_WINDINGS_TRANSFORMER, transformer.getType());
+    BOOST_CHECK_CLOSE(3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(33.0, transformer.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, transformer.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(network, transformer.getNetwork()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(!transformer.getRatioTapChanger());
+    BOOST_TEST(!transformer.getPhaseTapChanger());
 
     const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
-    ASSERT_TRUE(stdcxx::areSame(transformer, cTransformer));
-    ASSERT_TRUE(stdcxx::areSame(network, cTransformer.getNetwork()));
-    ASSERT_TRUE(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
-    ASSERT_FALSE(cTransformer.getRatioTapChanger());
-    ASSERT_FALSE(cTransformer.getPhaseTapChanger());
+    BOOST_TEST(stdcxx::areSame(transformer, cTransformer));
+    BOOST_TEST(stdcxx::areSame(network, cTransformer.getNetwork()));
+    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
+    BOOST_TEST(!cTransformer.getRatioTapChanger());
+    BOOST_TEST(!cTransformer.getPhaseTapChanger());
 }
 
-TEST(TwoWindingsTransformer, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     const Network& network = createTwoWindingsTransformerTestNetwork();
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
 
-    ASSERT_TRUE(stdcxx::areSame(transformer, transformer.setR(100.0)));
-    ASSERT_DOUBLE_EQ(100.0, transformer.getR());
+    BOOST_TEST(stdcxx::areSame(transformer, transformer.setR(100.0)));
+    BOOST_CHECK_CLOSE(100.0, transformer.getR(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(transformer.setR(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': r is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(transformer, transformer.setX(200.0)));
-    ASSERT_DOUBLE_EQ(200.0, transformer.getX());
+    BOOST_TEST(stdcxx::areSame(transformer, transformer.setX(200.0)));
+    BOOST_CHECK_CLOSE(200.0, transformer.getX(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(transformer.setX(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': x is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(transformer, transformer.setG(300.0)));
-    ASSERT_DOUBLE_EQ(300.0, transformer.getG());
+    BOOST_TEST(stdcxx::areSame(transformer, transformer.setG(300.0)));
+    BOOST_CHECK_CLOSE(300.0, transformer.getG(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(transformer.setG(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': g is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(transformer, transformer.setB(400.0)));
-    ASSERT_DOUBLE_EQ(400.0, transformer.getB());
+    BOOST_TEST(stdcxx::areSame(transformer, transformer.setB(400.0)));
+    BOOST_CHECK_CLOSE(400.0, transformer.getB(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(transformer.setB(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': b is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(transformer, transformer.setRatedU1(500.0)));
-    ASSERT_DOUBLE_EQ(500.0, transformer.getRatedU1());
+    BOOST_TEST(stdcxx::areSame(transformer, transformer.setRatedU1(500.0)));
+    BOOST_CHECK_CLOSE(500.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(transformer.setRatedU1(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': rated U1 is invalid");
 
-    ASSERT_TRUE(stdcxx::areSame(transformer, transformer.setRatedU2(600.0)));
-    ASSERT_DOUBLE_EQ(600.0, transformer.getRatedU2());
+    BOOST_TEST(stdcxx::areSame(transformer, transformer.setRatedU2(600.0)));
+    BOOST_CHECK_CLOSE(600.0, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(transformer.setRatedU2(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': rated U2 is invalid");
 
     transformer.remove();
     POWSYBL_ASSERT_THROW(network.getTwoWindingsTransformer("2WT_VL1_VL2"), PowsyblException, "Unable to find to the identifiable '2WT_VL1_VL2'");
 }
 
-TEST(TwoWindingsTransformer, adder) {
+BOOST_AUTO_TEST_CASE(adder) {
     Network network = createTwoWindingsTransformerTestNetwork();
     Substation& substation2 = network.getSubstation("S2");
     unsigned long twoWindingsTransformerCount = network.getTwoWindingsTransformerCount();
 
-    ASSERT_EQ(1ul, twoWindingsTransformerCount);
+    BOOST_CHECK_EQUAL(1ul, twoWindingsTransformerCount);
 
     TwoWindingsTransformerAdder adder = substation2.newTwoWindingsTransformer();
 
@@ -359,12 +361,12 @@ TEST(TwoWindingsTransformer, adder) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object '2WT_VL1_VL2' already exists (powsybl::iidm::TwoWindingsTransformer)");
     adder.setName("2WT_VL3_VL4");
     adder.setId("UNIQUE_2WT_ID");
-    ASSERT_NO_THROW(adder.add());
+    BOOST_CHECK_NO_THROW(adder.add());
 
-    ASSERT_EQ(twoWindingsTransformerCount + 1, network.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(twoWindingsTransformerCount + 1, network.getTwoWindingsTransformerCount());
 }
 
-TEST(TwoWindingsTransformer, multivariant) {
+BOOST_AUTO_TEST_CASE(multivariant) {
     Network network = createTwoWindingsTransformerTestNetwork();
     const Substation& substation = network.getSubstation("S1");
 
@@ -377,196 +379,198 @@ TEST(TwoWindingsTransformer, multivariant) {
     PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();
 
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s1");
 
-    ASSERT_EQ("2WT_VL1_VL2", transformer.getId());
-    ASSERT_DOUBLE_EQ(3.0, transformer.getR());
-    ASSERT_DOUBLE_EQ(33.0, transformer.getX());
-    ASSERT_DOUBLE_EQ(1.0, transformer.getG());
-    ASSERT_DOUBLE_EQ(0.2, transformer.getB());
-    ASSERT_DOUBLE_EQ(2.0, transformer.getRatedU1());
-    ASSERT_DOUBLE_EQ(0.4, transformer.getRatedU2());
-    ASSERT_TRUE(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
+    BOOST_CHECK_CLOSE(3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(33.0, transformer.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, transformer.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
-    ASSERT_EQ(1L, ratioTapChanger.getLowTapPosition());
-    ASSERT_EQ(3L, ratioTapChanger.getHighTapPosition());
-    ASSERT_EQ(2L, ratioTapChanger.getTapPosition());
-    ASSERT_EQ(3, ratioTapChanger.getStepCount());
-    ASSERT_TRUE(ratioTapChanger.isRegulating());
-    ASSERT_TRUE(ratioTapChanger.hasLoadTapChangingCapabilities());
-    ASSERT_DOUBLE_EQ(25.0, ratioTapChanger.getTargetV());
-    ASSERT_TRUE(stdcxx::areSame(terminal, ratioTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(2L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
+    BOOST_TEST(ratioTapChanger.isRegulating());
+    BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
+    BOOST_CHECK_CLOSE(25.0, ratioTapChanger.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal, ratioTapChanger.getRegulationTerminal().get()));
 
-    ASSERT_EQ(-3L, phaseTapChanger.getLowTapPosition());
-    ASSERT_EQ(0L, phaseTapChanger.getHighTapPosition());
-    ASSERT_EQ(-2L, phaseTapChanger.getTapPosition());
-    ASSERT_EQ(4, phaseTapChanger.getStepCount());
-    ASSERT_FALSE(phaseTapChanger.isRegulating());
-    ASSERT_EQ(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL, phaseTapChanger.getRegulationMode());
-    ASSERT_DOUBLE_EQ(250.0, phaseTapChanger.getRegulationValue());
-    ASSERT_TRUE(stdcxx::areSame(terminal2, phaseTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
+    BOOST_TEST(!phaseTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL, phaseTapChanger.getRegulationMode());
+    BOOST_CHECK_CLOSE(250.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal2, phaseTapChanger.getRegulationTerminal().get()));
 
     transformer.setR(-3.0).setRatedU1(-2.0).setRatedU2(-0.4).setX(-33.0).setG(-1.0).setB(-0.2);
     ratioTapChanger.setTapPosition(1L).setRegulating(false).setRegulationTerminal(stdcxx::ref<Terminal>(terminal2)).setTargetV(300.0);
     phaseTapChanger.setTapPosition(0L).setRegulating(true).setRegulationTerminal(stdcxx::ref<Terminal>(terminal)).setRegulationValue(400.0).setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER);
 
-    ASSERT_EQ("2WT_VL1_VL2", transformer.getId());
-    ASSERT_DOUBLE_EQ(-3.0, transformer.getR());
-    ASSERT_DOUBLE_EQ(-33.0, transformer.getX());
-    ASSERT_DOUBLE_EQ(-1.0, transformer.getG());
-    ASSERT_DOUBLE_EQ(-0.2, transformer.getB());
-    ASSERT_DOUBLE_EQ(-2.0, transformer.getRatedU1());
-    ASSERT_DOUBLE_EQ(-0.4, transformer.getRatedU2());
-    ASSERT_TRUE(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
+    BOOST_CHECK_CLOSE(-3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-33.0, transformer.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-1.0, transformer.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
-    ASSERT_EQ(1L, ratioTapChanger.getLowTapPosition());
-    ASSERT_EQ(3L, ratioTapChanger.getHighTapPosition());
-    ASSERT_EQ(1L, ratioTapChanger.getTapPosition());
-    ASSERT_EQ(3, ratioTapChanger.getStepCount());
-    ASSERT_FALSE(ratioTapChanger.isRegulating());
-    ASSERT_TRUE(ratioTapChanger.hasLoadTapChangingCapabilities());
-    ASSERT_DOUBLE_EQ(300.0, ratioTapChanger.getTargetV());
-    ASSERT_TRUE(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(1L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
+    BOOST_TEST(!ratioTapChanger.isRegulating());
+    BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
+    BOOST_CHECK_CLOSE(300.0, ratioTapChanger.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
 
-    ASSERT_EQ(-3L, phaseTapChanger.getLowTapPosition());
-    ASSERT_EQ(0L, phaseTapChanger.getHighTapPosition());
-    ASSERT_EQ(0L, phaseTapChanger.getTapPosition());
-    ASSERT_EQ(4, phaseTapChanger.getStepCount());
-    ASSERT_TRUE(phaseTapChanger.isRegulating());
-    ASSERT_EQ(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
-    ASSERT_DOUBLE_EQ(400.0, phaseTapChanger.getRegulationValue());
-    ASSERT_TRUE(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(0L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
+    BOOST_TEST(phaseTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
+    BOOST_CHECK_CLOSE(400.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
 
     network.getVariantManager().setWorkingVariant("s2");
 
-    ASSERT_EQ("2WT_VL1_VL2", transformer.getId());
-    ASSERT_DOUBLE_EQ(-3.0, transformer.getR());
-    ASSERT_DOUBLE_EQ(-33.0, transformer.getX());
-    ASSERT_DOUBLE_EQ(-1.0, transformer.getG());
-    ASSERT_DOUBLE_EQ(-0.2, transformer.getB());
-    ASSERT_DOUBLE_EQ(-2.0, transformer.getRatedU1());
-    ASSERT_DOUBLE_EQ(-0.4, transformer.getRatedU2());
-    ASSERT_TRUE(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
+    BOOST_CHECK_CLOSE(-3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-33.0, transformer.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-1.0, transformer.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
-    ASSERT_EQ(1L, ratioTapChanger.getLowTapPosition());
-    ASSERT_EQ(3L, ratioTapChanger.getHighTapPosition());
-    ASSERT_EQ(2L, ratioTapChanger.getTapPosition());
-    ASSERT_EQ(3, ratioTapChanger.getStepCount());
-    ASSERT_TRUE(ratioTapChanger.isRegulating());
-    ASSERT_TRUE(ratioTapChanger.hasLoadTapChangingCapabilities());
-    ASSERT_DOUBLE_EQ(25.0, ratioTapChanger.getTargetV());
-    ASSERT_TRUE(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(2L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
+    BOOST_TEST(ratioTapChanger.isRegulating());
+    BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
+    BOOST_CHECK_CLOSE(25.0, ratioTapChanger.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
 
-    ASSERT_EQ(-3L, phaseTapChanger.getLowTapPosition());
-    ASSERT_EQ(0L, phaseTapChanger.getHighTapPosition());
-    ASSERT_EQ(-2L, phaseTapChanger.getTapPosition());
-    ASSERT_EQ(4, phaseTapChanger.getStepCount());
-    ASSERT_FALSE(phaseTapChanger.isRegulating());
-    ASSERT_EQ(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
-    ASSERT_DOUBLE_EQ(250.0, phaseTapChanger.getRegulationValue());
-    ASSERT_TRUE(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
+    BOOST_TEST(!phaseTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
+    BOOST_CHECK_CLOSE(250.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
 
     transformer.setR(3.0).setRatedU1(2.0).setRatedU2(0.4).setX(33.0).setG(1.0).setB(0.2);
     ratioTapChanger.setTapPosition(3L).setRegulating(false).setTargetV(350.0);
     phaseTapChanger.setTapPosition(-3L).setRegulating(true).setRegulationValue(450.0);
 
-    ASSERT_EQ("2WT_VL1_VL2", transformer.getId());
-    ASSERT_DOUBLE_EQ(3.0, transformer.getR());
-    ASSERT_DOUBLE_EQ(33.0, transformer.getX());
-    ASSERT_DOUBLE_EQ(1.0, transformer.getG());
-    ASSERT_DOUBLE_EQ(0.2, transformer.getB());
-    ASSERT_DOUBLE_EQ(2.0, transformer.getRatedU1());
-    ASSERT_DOUBLE_EQ(0.4, transformer.getRatedU2());
-    ASSERT_TRUE(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
+    BOOST_CHECK_CLOSE(3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(33.0, transformer.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, transformer.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
-    ASSERT_EQ(1L, ratioTapChanger.getLowTapPosition());
-    ASSERT_EQ(3L, ratioTapChanger.getHighTapPosition());
-    ASSERT_EQ(3L, ratioTapChanger.getTapPosition());
-    ASSERT_EQ(3, ratioTapChanger.getStepCount());
-    ASSERT_FALSE(ratioTapChanger.isRegulating());
-    ASSERT_TRUE(ratioTapChanger.hasLoadTapChangingCapabilities());
-    ASSERT_DOUBLE_EQ(350.0, ratioTapChanger.getTargetV());
-    ASSERT_TRUE(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(3L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
+    BOOST_TEST(!ratioTapChanger.isRegulating());
+    BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
+    BOOST_CHECK_CLOSE(350.0, ratioTapChanger.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
 
-    ASSERT_EQ(-3L, phaseTapChanger.getLowTapPosition());
-    ASSERT_EQ(0L, phaseTapChanger.getHighTapPosition());
-    ASSERT_EQ(-3L, phaseTapChanger.getTapPosition());
-    ASSERT_EQ(4, phaseTapChanger.getStepCount());
-    ASSERT_TRUE(phaseTapChanger.isRegulating());
-    ASSERT_EQ(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
-    ASSERT_DOUBLE_EQ(450.0, phaseTapChanger.getRegulationValue());
-    ASSERT_TRUE(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
+    BOOST_TEST(phaseTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
+    BOOST_CHECK_CLOSE(450.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
 
-    ASSERT_EQ("2WT_VL1_VL2", transformer.getId());
-    ASSERT_DOUBLE_EQ(3.0, transformer.getR());
-    ASSERT_DOUBLE_EQ(33.0, transformer.getX());
-    ASSERT_DOUBLE_EQ(1.0, transformer.getG());
-    ASSERT_DOUBLE_EQ(0.2, transformer.getB());
-    ASSERT_DOUBLE_EQ(2.0, transformer.getRatedU1());
-    ASSERT_DOUBLE_EQ(0.4, transformer.getRatedU2());
-    ASSERT_TRUE(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
+    BOOST_CHECK_CLOSE(3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(33.0, transformer.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, transformer.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
-    ASSERT_EQ(1L, ratioTapChanger.getLowTapPosition());
-    ASSERT_EQ(3L, ratioTapChanger.getHighTapPosition());
-    ASSERT_EQ(2L, ratioTapChanger.getTapPosition());
-    ASSERT_EQ(3, ratioTapChanger.getStepCount());
-    ASSERT_TRUE(ratioTapChanger.isRegulating());
-    ASSERT_TRUE(ratioTapChanger.hasLoadTapChangingCapabilities());
-    ASSERT_DOUBLE_EQ(25.0, ratioTapChanger.getTargetV());
-    ASSERT_TRUE(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(2L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
+    BOOST_TEST(ratioTapChanger.isRegulating());
+    BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
+    BOOST_CHECK_CLOSE(25.0, ratioTapChanger.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
 
-    ASSERT_EQ(-3L, phaseTapChanger.getLowTapPosition());
-    ASSERT_EQ(0L, phaseTapChanger.getHighTapPosition());
-    ASSERT_EQ(-2L, phaseTapChanger.getTapPosition());
-    ASSERT_EQ(4, phaseTapChanger.getStepCount());
-    ASSERT_FALSE(phaseTapChanger.isRegulating());
-    ASSERT_EQ(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
-    ASSERT_DOUBLE_EQ(250.0, phaseTapChanger.getRegulationValue());
-    ASSERT_TRUE(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
+    BOOST_TEST(!phaseTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
+    BOOST_CHECK_CLOSE(250.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
 
     network.getVariantManager().removeVariant("s1");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
 
-    ASSERT_EQ("2WT_VL1_VL2", transformer.getId());
-    ASSERT_DOUBLE_EQ(3.0, transformer.getR());
-    ASSERT_DOUBLE_EQ(33.0, transformer.getX());
-    ASSERT_DOUBLE_EQ(1.0, transformer.getG());
-    ASSERT_DOUBLE_EQ(0.2, transformer.getB());
-    ASSERT_DOUBLE_EQ(2.0, transformer.getRatedU1());
-    ASSERT_DOUBLE_EQ(0.4, transformer.getRatedU2());
-    ASSERT_TRUE(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
+    BOOST_CHECK_CLOSE(3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(33.0, transformer.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, transformer.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
-    ASSERT_EQ(1L, ratioTapChanger.getLowTapPosition());
-    ASSERT_EQ(3L, ratioTapChanger.getHighTapPosition());
-    ASSERT_EQ(3L, ratioTapChanger.getTapPosition());
-    ASSERT_EQ(3, ratioTapChanger.getStepCount());
-    ASSERT_FALSE(ratioTapChanger.isRegulating());
-    ASSERT_TRUE(ratioTapChanger.hasLoadTapChangingCapabilities());
-    ASSERT_DOUBLE_EQ(350.0, ratioTapChanger.getTargetV());
-    ASSERT_TRUE(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(3L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
+    BOOST_TEST(!ratioTapChanger.isRegulating());
+    BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
+    BOOST_CHECK_CLOSE(350.0, ratioTapChanger.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
 
-    ASSERT_EQ(-3L, phaseTapChanger.getLowTapPosition());
-    ASSERT_EQ(0L, phaseTapChanger.getHighTapPosition());
-    ASSERT_EQ(-3L, phaseTapChanger.getTapPosition());
-    ASSERT_EQ(4, phaseTapChanger.getStepCount());
-    ASSERT_TRUE(phaseTapChanger.isRegulating());
-    ASSERT_EQ(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
-    ASSERT_DOUBLE_EQ(450.0, phaseTapChanger.getRegulationValue());
-    ASSERT_TRUE(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
+    BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
+    BOOST_TEST(phaseTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
+    BOOST_CHECK_CLOSE(450.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
 
     network.getVariantManager().removeVariant("s3");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().removeVariant("s2");
-    ASSERT_EQ(1ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(1ul, network.getVariantManager().getVariantArraySize());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

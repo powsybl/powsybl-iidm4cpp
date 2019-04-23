@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -120,11 +120,13 @@ Network createHvdcLineTestNetwork() {
     return network;
 }
 
-TEST(HvdcLine, constructor) {
+BOOST_AUTO_TEST_SUITE(HvdcLineTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     Network network = createHvdcLineTestNetwork();
 
     unsigned long hvdcCount = network.getHvdcLineCount();
-    ASSERT_EQ(1, hvdcCount);
+    BOOST_CHECK_EQUAL(1, hvdcCount);
 
     HvdcLineAdder adder = network.newHvdcLine()
         .setId("HVDC1");
@@ -162,139 +164,141 @@ TEST(HvdcLine, constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'HVDC1' already exists (powsybl::iidm::HvdcLine)");
     adder.setId("UNIQUE_HVDC_ID");
 
-    ASSERT_NO_THROW(adder.add());
-    ASSERT_EQ(hvdcCount + 1, network.getHvdcLineCount());
+    BOOST_CHECK_NO_THROW(adder.add());
+    BOOST_CHECK_EQUAL(hvdcCount + 1, network.getHvdcLineCount());
 }
 
-TEST(HvdcLine, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     const Network& network = createHvdcLineTestNetwork();
 
     HvdcLine& hvdc = network.getHvdcLine("HVDC1");
-    ASSERT_EQ("HVDC1", hvdc.getId());
-    ASSERT_EQ("HVDC1_NAME", hvdc.getName());
-    ASSERT_DOUBLE_EQ(11.0, hvdc.getActivePowerSetpoint());
-    ASSERT_EQ(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
-    ASSERT_EQ("LCC1", hvdc.getConverterStation1().get().getId());
-    ASSERT_EQ("LCC2", hvdc.getConverterStation2().get().getId());
-    ASSERT_DOUBLE_EQ(12.0, hvdc.getMaxP());
-    ASSERT_DOUBLE_EQ(13.0, hvdc.getNominalVoltage());
-    ASSERT_DOUBLE_EQ(14.0, hvdc.getR());
-    ASSERT_TRUE(stdcxx::areSame(network, hvdc.getNetwork()));
+    BOOST_CHECK_EQUAL("HVDC1", hvdc.getId());
+    BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
+    BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_CLOSE(12.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(13.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(14.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(network, hvdc.getNetwork()));
 
-    ASSERT_TRUE(stdcxx::areSame(hvdc, hvdc.setActivePowerSetpoint(100.0)));
-    ASSERT_DOUBLE_EQ(100.0, hvdc.getActivePowerSetpoint());
+    BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setActivePowerSetpoint(100.0)));
+    BOOST_CHECK_CLOSE(100.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(hvdc.setActivePowerSetpoint(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': Active power setpoint is not set");
 
-    ASSERT_TRUE(stdcxx::areSame(hvdc, hvdc.setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER)));
-    ASSERT_EQ(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
+    BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER)));
+    BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
     POWSYBL_ASSERT_THROW(hvdc.setConvertersMode(static_cast<HvdcLine::ConvertersMode>(7)), AssertionError, "Unexpected converter mode value: 7");
 
-    ASSERT_TRUE(stdcxx::areSame(hvdc, hvdc.setMaxP(200.0)));
-    ASSERT_DOUBLE_EQ(200.0, hvdc.getMaxP());
+    BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setMaxP(200.0)));
+    BOOST_CHECK_CLOSE(200.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(hvdc.setMaxP(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': Maximum active power is not set");
 
-    ASSERT_TRUE(stdcxx::areSame(hvdc, hvdc.setNominalVoltage(300.0)));
-    ASSERT_DOUBLE_EQ(300.0, hvdc.getNominalVoltage());
+    BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setNominalVoltage(300.0)));
+    BOOST_CHECK_CLOSE(300.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(hvdc.setNominalVoltage(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': Nominal voltage is undefined");
 
-    ASSERT_TRUE(stdcxx::areSame(hvdc, hvdc.setR(400.0)));
-    ASSERT_DOUBLE_EQ(400.0, hvdc.getR());
+    BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setR(400.0)));
+    BOOST_CHECK_CLOSE(400.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(hvdc.setR(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': r is invalid");
 
     const HvdcLine& cHvdc = network.getHvdcLine("HVDC1");
-    ASSERT_TRUE(stdcxx::areSame(cHvdc, hvdc));
-    ASSERT_TRUE(stdcxx::areSame(network, cHvdc.getNetwork()));
-    ASSERT_EQ("LCC1", cHvdc.getConverterStation1().get().getId());
-    ASSERT_EQ("LCC2", cHvdc.getConverterStation2().get().getId());
+    BOOST_TEST(stdcxx::areSame(cHvdc, hvdc));
+    BOOST_TEST(stdcxx::areSame(network, cHvdc.getNetwork()));
+    BOOST_CHECK_EQUAL("LCC1", cHvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", cHvdc.getConverterStation2().get().getId());
 
     hvdc.remove();
     POWSYBL_ASSERT_THROW(network.getHvdcLine("HVDC1"), PowsyblException, "Unable to find to the identifiable 'HVDC1'");
 }
 
-TEST(HvdcLine, multivariant) {
+BOOST_AUTO_TEST_CASE(multivariant) {
     Network network = createHvdcLineTestNetwork();
 
     HvdcLine& hvdc = network.getHvdcLine("HVDC1");
 
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s1");
-    ASSERT_EQ("HVDC1", hvdc.getId());
-    ASSERT_EQ("HVDC1_NAME", hvdc.getName());
-    ASSERT_DOUBLE_EQ(11.0, hvdc.getActivePowerSetpoint());
-    ASSERT_EQ(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
-    ASSERT_EQ("LCC1", hvdc.getConverterStation1().get().getId());
-    ASSERT_EQ("LCC2", hvdc.getConverterStation2().get().getId());
-    ASSERT_DOUBLE_EQ(12.0, hvdc.getMaxP());
-    ASSERT_DOUBLE_EQ(13.0, hvdc.getNominalVoltage());
-    ASSERT_DOUBLE_EQ(14.0, hvdc.getR());
+    BOOST_CHECK_EQUAL("HVDC1", hvdc.getId());
+    BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
+    BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_CLOSE(12.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(13.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(14.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
     hvdc.setActivePowerSetpoint(100.0).setR(200.0).setMaxP(300.0).setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER).setNominalVoltage(400.0);
 
-    ASSERT_EQ("HVDC1", hvdc.getId());
-    ASSERT_EQ("HVDC1_NAME", hvdc.getName());
-    ASSERT_DOUBLE_EQ(100.0, hvdc.getActivePowerSetpoint());
-    ASSERT_EQ(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
-    ASSERT_EQ("LCC1", hvdc.getConverterStation1().get().getId());
-    ASSERT_EQ("LCC2", hvdc.getConverterStation2().get().getId());
-    ASSERT_DOUBLE_EQ(300.0, hvdc.getMaxP());
-    ASSERT_DOUBLE_EQ(400.0, hvdc.getNominalVoltage());
-    ASSERT_DOUBLE_EQ(200.0, hvdc.getR());
+    BOOST_CHECK_EQUAL("HVDC1", hvdc.getId());
+    BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
+    BOOST_CHECK_CLOSE(100.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_CLOSE(300.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(400.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().setWorkingVariant("s2");
-    ASSERT_EQ("HVDC1", hvdc.getId());
-    ASSERT_EQ("HVDC1_NAME", hvdc.getName());
-    ASSERT_DOUBLE_EQ(11.0, hvdc.getActivePowerSetpoint());
-    ASSERT_EQ(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
-    ASSERT_EQ("LCC1", hvdc.getConverterStation1().get().getId());
-    ASSERT_EQ("LCC2", hvdc.getConverterStation2().get().getId());
-    ASSERT_DOUBLE_EQ(300.0, hvdc.getMaxP());
-    ASSERT_DOUBLE_EQ(400.0, hvdc.getNominalVoltage());
-    ASSERT_DOUBLE_EQ(200.0, hvdc.getR());
+    BOOST_CHECK_EQUAL("HVDC1", hvdc.getId());
+    BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
+    BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_CLOSE(300.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(400.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
     hvdc.setActivePowerSetpoint(150.0).setR(250.0).setMaxP(350.0).setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER).setNominalVoltage(450.0);
 
-    ASSERT_EQ("HVDC1", hvdc.getId());
-    ASSERT_EQ("HVDC1_NAME", hvdc.getName());
-    ASSERT_DOUBLE_EQ(150.0, hvdc.getActivePowerSetpoint());
-    ASSERT_EQ(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
-    ASSERT_EQ("LCC1", hvdc.getConverterStation1().get().getId());
-    ASSERT_EQ("LCC2", hvdc.getConverterStation2().get().getId());
-    ASSERT_DOUBLE_EQ(350.0, hvdc.getMaxP());
-    ASSERT_DOUBLE_EQ(450.0, hvdc.getNominalVoltage());
-    ASSERT_DOUBLE_EQ(250.0, hvdc.getR());
+    BOOST_CHECK_EQUAL("HVDC1", hvdc.getId());
+    BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
+    BOOST_CHECK_CLOSE(150.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_CLOSE(350.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(450.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
-    ASSERT_EQ("HVDC1", hvdc.getId());
-    ASSERT_EQ("HVDC1_NAME", hvdc.getName());
-    ASSERT_DOUBLE_EQ(11.0, hvdc.getActivePowerSetpoint());
-    ASSERT_EQ(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
-    ASSERT_EQ("LCC1", hvdc.getConverterStation1().get().getId());
-    ASSERT_EQ("LCC2", hvdc.getConverterStation2().get().getId());
-    ASSERT_DOUBLE_EQ(350.0, hvdc.getMaxP());
-    ASSERT_DOUBLE_EQ(450.0, hvdc.getNominalVoltage());
-    ASSERT_DOUBLE_EQ(250.0, hvdc.getR());
+    BOOST_CHECK_EQUAL("HVDC1", hvdc.getId());
+    BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
+    BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_CLOSE(350.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(450.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().removeVariant("s1");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
-    ASSERT_EQ("HVDC1", hvdc.getId());
-    ASSERT_EQ("HVDC1_NAME", hvdc.getName());
-    ASSERT_DOUBLE_EQ(150.0, hvdc.getActivePowerSetpoint());
-    ASSERT_EQ(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
-    ASSERT_EQ("LCC1", hvdc.getConverterStation1().get().getId());
-    ASSERT_EQ("LCC2", hvdc.getConverterStation2().get().getId());
-    ASSERT_DOUBLE_EQ(350.0, hvdc.getMaxP());
-    ASSERT_DOUBLE_EQ(450.0, hvdc.getNominalVoltage());
-    ASSERT_DOUBLE_EQ(250.0, hvdc.getR());
+    BOOST_CHECK_EQUAL("HVDC1", hvdc.getId());
+    BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
+    BOOST_CHECK_CLOSE(150.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_CLOSE(350.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(450.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().removeVariant("s3");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().removeVariant("s2");
-    ASSERT_EQ(1ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(1ul, network.getVariantManager().getVariantArraySize());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

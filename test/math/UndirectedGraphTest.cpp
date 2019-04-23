@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/math/UndirectedGraph.hpp>
@@ -47,32 +47,34 @@ private:
     std::string m_name;
 };
 
-TEST(UndirectedGraph, constructor) {
+BOOST_AUTO_TEST_SUITE(UndirectedGraphTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     UndirectedGraph<V, E> graph;
 
-    ASSERT_EQ(0ul, graph.getEdgeCount());
-    ASSERT_EQ(0ul, graph.getVertexCount());
+    BOOST_CHECK_EQUAL(0ul, graph.getEdgeCount());
+    BOOST_CHECK_EQUAL(0ul, graph.getVertexCount());
 }
 
-TEST(UndirectedGraph, addEdge) {
+BOOST_AUTO_TEST_CASE(addEdge) {
     UndirectedGraph<V, E> graph;
 
     unsigned long v1 = graph.addVertex();
     unsigned long v2 = graph.addVertex();
-    ASSERT_EQ(2ul, graph.getVertexCount());
+    BOOST_CHECK_EQUAL(2ul, graph.getVertexCount());
 
     unsigned long e = graph.addEdge(v1, v2, stdcxx::ref<E>());
-    ASSERT_EQ(1ul, graph.getEdgeCount());
-    ASSERT_EQ(0ul, e);
+    BOOST_CHECK_EQUAL(1ul, graph.getEdgeCount());
+    BOOST_CHECK_EQUAL(0ul, e);
 }
 
-TEST(UndirectedGraph, addVertex) {
+BOOST_AUTO_TEST_CASE(addVertex) {
     UndirectedGraph<V, E> graph;
     graph.addVertex();
-    ASSERT_EQ(1ul, graph.getVertexCount());
+    BOOST_CHECK_EQUAL(1ul, graph.getVertexCount());
 }
 
-TEST(UndirectedGraph, getEdgeObject) {
+BOOST_AUTO_TEST_CASE(getEdgeObject) {
     E expected("edge");
 
     UndirectedGraph<V, E> graph;
@@ -81,14 +83,14 @@ TEST(UndirectedGraph, getEdgeObject) {
     graph.addEdge(0, 1, stdcxx::ref(expected));
 
     const stdcxx::Reference<E>& edge = graph.getEdgeObject(0);
-    ASSERT_TRUE(stdcxx::areSame(expected, edge.get()));
+    BOOST_TEST(stdcxx::areSame(expected, edge.get()));
 
     const std::vector<stdcxx::Reference<E> >& objects = graph.getEdgeObjects();
-    ASSERT_EQ(1ul, objects.size());
-    ASSERT_TRUE(stdcxx::areSame(expected, objects.at(0).get()));
+    BOOST_CHECK_EQUAL(1ul, objects.size());
+    BOOST_TEST(stdcxx::areSame(expected, objects.at(0).get()));
 }
 
-TEST(UndirectedGraph, getEdges) {
+BOOST_AUTO_TEST_CASE(getEdges) {
     std::set<unsigned long> expected = {0, 1};
 
     UndirectedGraph<V, E> graph;
@@ -100,10 +102,10 @@ TEST(UndirectedGraph, getEdges) {
 
     const std::set<unsigned long>& edges = graph.getEdges();
 
-    ASSERT_EQ(expected, edges);
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), edges.cbegin(), edges.cend());
 }
 
-TEST(UndirectedGraph, getMaxVertex) {
+BOOST_AUTO_TEST_CASE(getMaxVertex) {
     std::set<unsigned long> expected;
 
     UndirectedGraph<V, E> graph;
@@ -112,44 +114,48 @@ TEST(UndirectedGraph, getMaxVertex) {
     graph.addVertex();
     graph.addVertex();
     expected = {0, 1, 2};
-    ASSERT_EQ(3ul, graph.getMaxVertex());
-    ASSERT_EQ(expected, graph.getVertices());
+    BOOST_CHECK_EQUAL(3ul, graph.getMaxVertex());
+    const auto& vertices = graph.getVertices();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), vertices.cbegin(), vertices.cend());
 
     graph.removeVertex(0);
     graph.removeVertex(1);
     expected = {2};
-    ASSERT_EQ(3ul, graph.getMaxVertex());
-    ASSERT_EQ(expected, graph.getVertices());
+    BOOST_CHECK_EQUAL(3ul, graph.getMaxVertex());
+    const auto& vertices2 = graph.getVertices();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), vertices2.cbegin(), vertices2.cend());
 
     graph.addVertex();
     expected = {0, 2};
-    ASSERT_EQ(3ul, graph.getMaxVertex());
-    ASSERT_EQ(expected, graph.getVertices());
+    BOOST_CHECK_EQUAL(3ul, graph.getMaxVertex());
+    const auto& vertices3 = graph.getVertices();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), vertices3.cbegin(), vertices3.cend());
 
     graph.removeVertex(2);
     expected = {0};
-    ASSERT_EQ(2ul, graph.getMaxVertex());
-    ASSERT_EQ(expected, graph.getVertices());
+    BOOST_CHECK_EQUAL(2ul, graph.getMaxVertex());
+    const auto& vertices4 = graph.getVertices();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), vertices4.cbegin(), vertices4.cend());
 }
 
-TEST(UndirectedGraph, getVertexObject) {
+BOOST_AUTO_TEST_CASE(getVertexObject) {
     V expected("vertex");
 
     UndirectedGraph<V, E> graph;
     graph.addVertex();
 
-    ASSERT_FALSE(graph.getVertexObject(0));
-    ASSERT_TRUE(!graph.getVertexObject(0));
+    BOOST_TEST(!graph.getVertexObject(0));
+    BOOST_TEST(!graph.getVertexObject(0));
 
     graph.setVertexObject(0, stdcxx::ref(expected));
-    ASSERT_TRUE(stdcxx::areSame(expected, graph.getVertexObject(0).get()));
+    BOOST_TEST(stdcxx::areSame(expected, graph.getVertexObject(0).get()));
 
     const std::vector<stdcxx::Reference<V> >& objects = graph.getVertexObjects();
-    ASSERT_EQ(1ul, objects.size());
-    ASSERT_TRUE(stdcxx::areSame(expected, objects.at(0).get()));
+    BOOST_CHECK_EQUAL(1ul, objects.size());
+    BOOST_TEST(stdcxx::areSame(expected, objects.at(0).get()));
 }
 
-TEST(UndirectedGraph, findAllPaths) {
+BOOST_AUTO_TEST_CASE(findAllPaths) {
     std::vector<unsigned long> expected1 = {2, 6};
     std::vector<unsigned long> expected2 = {0, 3, 5};
     std::vector<unsigned long> expected3 = {1, 4, 5};
@@ -179,13 +185,13 @@ TEST(UndirectedGraph, findAllPaths) {
     };
 
     const std::vector<UndirectedGraph<V, E>::Path>& paths = graph.findAllPaths(0, pathComplete, pathCanceled);
-    ASSERT_EQ(3ul, paths.size());
-    ASSERT_EQ(expected1, paths[0]);
-    ASSERT_EQ(expected2, paths[1]);
-    ASSERT_EQ(expected3, paths[2]);
+    BOOST_CHECK_EQUAL(3ul, paths.size());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected1.cbegin(), expected1.cend(), paths[0].cbegin(), paths[0].cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected2.cbegin(), expected2.cend(), paths[1].cbegin(), paths[1].cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected3.cbegin(), expected3.cend(), paths[2].cbegin(), paths[2].cend());
 }
 
-TEST(UndirectedGraph, removeEdge) {
+BOOST_AUTO_TEST_CASE(removeEdge) {
     E expectedEdge1("edge1");
     E expectedEdge2("edge2");
     E expectedEdge3("edge3");
@@ -196,37 +202,37 @@ TEST(UndirectedGraph, removeEdge) {
     graph.addVertex();
     graph.addVertex();
     graph.addVertex();
-    ASSERT_EQ(3ul, graph.getVertexCount());
+    BOOST_CHECK_EQUAL(3ul, graph.getVertexCount());
 
     unsigned long e1 = graph.addEdge(0, 1, stdcxx::ref(expectedEdge1));
-    ASSERT_EQ(1ul, graph.getEdgeCount());
+    BOOST_CHECK_EQUAL(1ul, graph.getEdgeCount());
 
     POWSYBL_ASSERT_THROW(graph.removeAllVertices(), PowsyblException, "Cannot remove all vertices because there is still some edges in the graph");
     const stdcxx::Reference<E>& edge1 = graph.removeEdge(e1);
     POWSYBL_ASSERT_THROW(graph.removeEdge(e1), PowsyblException, "Edge 0 not found");
-    ASSERT_EQ(0ul, graph.getEdgeCount());
-    ASSERT_TRUE(stdcxx::areSame(expectedEdge1, edge1.get()));
+    BOOST_CHECK_EQUAL(0ul, graph.getEdgeCount());
+    BOOST_TEST(stdcxx::areSame(expectedEdge1, edge1.get()));
 
     unsigned long e2 = graph.addEdge(0, 1, stdcxx::ref(expectedEdge2));
     unsigned long e3 = graph.addEdge(1, 2, stdcxx::ref(expectedEdge3));
-    ASSERT_EQ(0ul, e2);
-    ASSERT_EQ(1ul, e3);
+    BOOST_CHECK_EQUAL(0ul, e2);
+    BOOST_CHECK_EQUAL(1ul, e3);
 
     const stdcxx::Reference<E>& edge2 = graph.removeEdge(e2);
-    ASSERT_EQ(1ul, graph.getEdgeCount());
-    ASSERT_TRUE(stdcxx::areSame(expectedEdge2, edge2.get()));
+    BOOST_CHECK_EQUAL(1ul, graph.getEdgeCount());
+    BOOST_TEST(stdcxx::areSame(expectedEdge2, edge2.get()));
 
     unsigned long e4 = graph.addEdge(0, 1, stdcxx::ref(expectedEdge4));
-    ASSERT_EQ(0ul, e4);
+    BOOST_CHECK_EQUAL(0ul, e4);
 
     const stdcxx::Reference<E>& edge3 = graph.removeEdge(e3);
     const stdcxx::Reference<E>& edge4 = graph.removeEdge(e4);
-    ASSERT_EQ(0ul, graph.getEdgeCount());
-    ASSERT_TRUE(stdcxx::areSame(expectedEdge3, edge3.get()));
-    ASSERT_TRUE(stdcxx::areSame(expectedEdge4, edge4.get()));
+    BOOST_CHECK_EQUAL(0ul, graph.getEdgeCount());
+    BOOST_TEST(stdcxx::areSame(expectedEdge3, edge3.get()));
+    BOOST_TEST(stdcxx::areSame(expectedEdge4, edge4.get()));
 }
 
-TEST(UndirectedGraph, removeVertex) {
+BOOST_AUTO_TEST_CASE(removeVertex) {
     V expected("vertex");
 
     UndirectedGraph<V, E> graph;
@@ -241,11 +247,11 @@ TEST(UndirectedGraph, removeVertex) {
     graph.removeEdge(e1);
     const stdcxx::Reference<V>& vertex1 = graph.removeVertex(v1);
     POWSYBL_ASSERT_THROW(graph.removeVertex(v1), PowsyblException, "Vertex 0 not found");
-    ASSERT_EQ(1ul, graph.getVertexCount());
-    ASSERT_TRUE(stdcxx::areSame(expected, vertex1.get()));
+    BOOST_CHECK_EQUAL(1ul, graph.getVertexCount());
+    BOOST_TEST(stdcxx::areSame(expected, vertex1.get()));
 }
 
-TEST(UndirectedGraph, traverse) {
+BOOST_AUTO_TEST_CASE(traverse) {
     std::vector<bool> expected = {false, false, false, false, true, true};
 
     UndirectedGraph<V, E> graph;
@@ -271,8 +277,10 @@ TEST(UndirectedGraph, traverse) {
     graph.traverse(5, traverser, encountered);
     graph.traverse(5, traverser);
 
-    ASSERT_EQ(expected, encountered);
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), encountered.cbegin(), encountered.cend());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace math
 

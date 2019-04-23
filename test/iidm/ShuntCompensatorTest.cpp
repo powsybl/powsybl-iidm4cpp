@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -55,7 +55,9 @@ Network createShuntCompensatorTestNetwork() {
     return network;
 }
 
-TEST(ShuntCompensator, constructor) {
+BOOST_AUTO_TEST_SUITE(ShuntCompensatorTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createShuntCompensatorTestNetwork();
 
     unsigned long shuntCompensatorCount = network.getShuntCompensatorCount();
@@ -84,39 +86,39 @@ TEST(ShuntCompensator, constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'SHUNT1' already exists (powsybl::iidm::ShuntCompensator)");
     adder.setId("UNIQUE_SHUNT_ID");
 
-    ASSERT_NO_THROW(adder.add());
-    ASSERT_EQ(shuntCompensatorCount + 1, network.getShuntCompensatorCount());
+    BOOST_CHECK_NO_THROW(adder.add());
+    BOOST_CHECK_EQUAL(shuntCompensatorCount + 1, network.getShuntCompensatorCount());
 }
 
-TEST(ShuntCompensator, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     const Network& network = createShuntCompensatorTestNetwork();
 
     ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
-    ASSERT_EQ("SHUNT1", shunt.getId());
-    ASSERT_EQ("SHUNT1_NAME", shunt.getName());
-    ASSERT_DOUBLE_EQ(12.0, shunt.getbPerSection());
-    ASSERT_EQ(2ul, shunt.getCurrentSectionCount());
-    ASSERT_EQ(3ul, shunt.getMaximumSectionCount());
-    ASSERT_DOUBLE_EQ(24.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(36.0, shunt.getMaximumB());
+    BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
+    BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
+    BOOST_CHECK_CLOSE(12.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(2ul, shunt.getCurrentSectionCount());
+    BOOST_CHECK_EQUAL(3ul, shunt.getMaximumSectionCount());
+    BOOST_CHECK_CLOSE(24.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(36.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
 
-    ASSERT_TRUE(stdcxx::areSame(shunt, shunt.setbPerSection(100.0)));
-    ASSERT_DOUBLE_EQ(100.0, shunt.getbPerSection());
-    ASSERT_DOUBLE_EQ(200.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(300.0, shunt.getMaximumB());
+    BOOST_TEST(stdcxx::areSame(shunt, shunt.setbPerSection(100.0)));
+    BOOST_CHECK_CLOSE(100.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(shunt.setbPerSection(stdcxx::nan()), ValidationException, "Shunt compensator 'SHUNT1': susceptance per section is invalid");
     POWSYBL_ASSERT_THROW(shunt.setbPerSection(0.0), ValidationException, "Shunt compensator 'SHUNT1': susceptance per section is equal to zero");
 
-    ASSERT_TRUE(stdcxx::areSame(shunt, shunt.setMaximumSectionCount(400ul)));
-    ASSERT_EQ(400ul, shunt.getMaximumSectionCount());
-    ASSERT_DOUBLE_EQ(200.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(40000.0, shunt.getMaximumB());
+    BOOST_TEST(stdcxx::areSame(shunt, shunt.setMaximumSectionCount(400ul)));
+    BOOST_CHECK_EQUAL(400ul, shunt.getMaximumSectionCount());
+    BOOST_CHECK_CLOSE(200.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(40000.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(shunt.setMaximumSectionCount(0ul), ValidationException, "Shunt compensator 'SHUNT1': the maximum number of section (0) should be greater than 0");
 
-    ASSERT_TRUE(stdcxx::areSame(shunt, shunt.setCurrentSectionCount(350ul)));
-    ASSERT_EQ(350ul, shunt.getCurrentSectionCount());
-    ASSERT_DOUBLE_EQ(35000.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(40000.0, shunt.getMaximumB());
+    BOOST_TEST(stdcxx::areSame(shunt, shunt.setCurrentSectionCount(350ul)));
+    BOOST_CHECK_EQUAL(350ul, shunt.getCurrentSectionCount());
+    BOOST_CHECK_CLOSE(35000.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(40000.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(shunt.setCurrentSectionCount(500ul), ValidationException, "Shunt compensator 'SHUNT1': the current number (500) of section should be lesser than the maximum number of section (400)");
     POWSYBL_ASSERT_THROW(shunt.setMaximumSectionCount(250ul), ValidationException, "Shunt compensator 'SHUNT1': the current number (350) of section should be lesser than the maximum number of section (250)");
 
@@ -126,79 +128,81 @@ TEST(ShuntCompensator, integrity) {
     POWSYBL_ASSERT_THROW(network.getShuntCompensator("SHUNT1"), PowsyblException, "Unable to find to the identifiable 'SHUNT1'");
 }
 
-TEST(ShuntCompensator, multivariant) {
+BOOST_AUTO_TEST_CASE(multivariant) {
     Network network = createShuntCompensatorTestNetwork();
 
     ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
 
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s1");
-    ASSERT_EQ("SHUNT1", shunt.getId());
-    ASSERT_EQ("SHUNT1_NAME", shunt.getName());
-    ASSERT_EQ(ConnectableType::SHUNT_COMPENSATOR, shunt.getType());
-    ASSERT_DOUBLE_EQ(12.0, shunt.getbPerSection());
-    ASSERT_EQ(2ul, shunt.getCurrentSectionCount());
-    ASSERT_EQ(3ul, shunt.getMaximumSectionCount());
-    ASSERT_DOUBLE_EQ(24.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(36.0, shunt.getMaximumB());
+    BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
+    BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
+    BOOST_CHECK_EQUAL(ConnectableType::SHUNT_COMPENSATOR, shunt.getType());
+    BOOST_CHECK_CLOSE(12.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(2ul, shunt.getCurrentSectionCount());
+    BOOST_CHECK_EQUAL(3ul, shunt.getMaximumSectionCount());
+    BOOST_CHECK_CLOSE(24.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(36.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
     shunt.setbPerSection(100.0).setMaximumSectionCount(300ul).setCurrentSectionCount(200ul);
 
-    ASSERT_EQ("SHUNT1", shunt.getId());
-    ASSERT_EQ("SHUNT1_NAME", shunt.getName());
-    ASSERT_DOUBLE_EQ(100.0, shunt.getbPerSection());
-    ASSERT_EQ(200ul, shunt.getCurrentSectionCount());
-    ASSERT_EQ(300ul, shunt.getMaximumSectionCount());
-    ASSERT_DOUBLE_EQ(20000.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(30000.0, shunt.getMaximumB());
+    BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
+    BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
+    BOOST_CHECK_CLOSE(100.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(200ul, shunt.getCurrentSectionCount());
+    BOOST_CHECK_EQUAL(300ul, shunt.getMaximumSectionCount());
+    BOOST_CHECK_CLOSE(20000.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(30000.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().setWorkingVariant("s2");
-    ASSERT_EQ("SHUNT1", shunt.getId());
-    ASSERT_EQ("SHUNT1_NAME", shunt.getName());
-    ASSERT_DOUBLE_EQ(100.0, shunt.getbPerSection());
-    ASSERT_EQ(2ul, shunt.getCurrentSectionCount());
-    ASSERT_EQ(300ul, shunt.getMaximumSectionCount());
-    ASSERT_DOUBLE_EQ(200.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(30000.0, shunt.getMaximumB());
+    BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
+    BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
+    BOOST_CHECK_CLOSE(100.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(2ul, shunt.getCurrentSectionCount());
+    BOOST_CHECK_EQUAL(300ul, shunt.getMaximumSectionCount());
+    BOOST_CHECK_CLOSE(200.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(30000.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
     shunt.setbPerSection(150.0).setMaximumSectionCount(350ul).setCurrentSectionCount(250ul);
 
-    ASSERT_EQ("SHUNT1", shunt.getId());
-    ASSERT_EQ("SHUNT1_NAME", shunt.getName());
-    ASSERT_DOUBLE_EQ(150.0, shunt.getbPerSection());
-    ASSERT_EQ(250ul, shunt.getCurrentSectionCount());
-    ASSERT_EQ(350ul, shunt.getMaximumSectionCount());
-    ASSERT_DOUBLE_EQ(37500.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(52500.0, shunt.getMaximumB());
+    BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
+    BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
+    BOOST_CHECK_CLOSE(150.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(250ul, shunt.getCurrentSectionCount());
+    BOOST_CHECK_EQUAL(350ul, shunt.getMaximumSectionCount());
+    BOOST_CHECK_CLOSE(37500.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(52500.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
-    ASSERT_EQ("SHUNT1", shunt.getId());
-    ASSERT_EQ("SHUNT1_NAME", shunt.getName());
-    ASSERT_DOUBLE_EQ(150.0, shunt.getbPerSection());
-    ASSERT_EQ(2ul, shunt.getCurrentSectionCount());
-    ASSERT_EQ(350ul, shunt.getMaximumSectionCount());
-    ASSERT_DOUBLE_EQ(300.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(52500.0, shunt.getMaximumB());
+    BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
+    BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
+    BOOST_CHECK_CLOSE(150.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(2ul, shunt.getCurrentSectionCount());
+    BOOST_CHECK_EQUAL(350ul, shunt.getMaximumSectionCount());
+    BOOST_CHECK_CLOSE(300.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(52500.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().removeVariant("s1");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
-    ASSERT_EQ("SHUNT1", shunt.getId());
-    ASSERT_EQ("SHUNT1_NAME", shunt.getName());
-    ASSERT_DOUBLE_EQ(150.0, shunt.getbPerSection());
-    ASSERT_EQ(250ul, shunt.getCurrentSectionCount());
-    ASSERT_EQ(350ul, shunt.getMaximumSectionCount());
-    ASSERT_DOUBLE_EQ(37500.0, shunt.getCurrentB());
-    ASSERT_DOUBLE_EQ(52500.0, shunt.getMaximumB());
+    BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
+    BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
+    BOOST_CHECK_CLOSE(150.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(250ul, shunt.getCurrentSectionCount());
+    BOOST_CHECK_EQUAL(350ul, shunt.getMaximumSectionCount());
+    BOOST_CHECK_CLOSE(37500.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(52500.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().removeVariant("s3");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().removeVariant("s2");
-    ASSERT_EQ(1ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(1ul, network.getVariantManager().getVariantArraySize());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

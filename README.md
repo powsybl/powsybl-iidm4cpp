@@ -7,31 +7,23 @@ To build powsybl-iidm, you need:
 - [CMake](https://cmake.org) (2.6 or higher)
 - [Make](https://www.gnu.org/software/make/)
 - [Boost](https://www.boost.org) development packages
-- [Google Test](https://github.com/google/googletest) development packages
 
 ### Alpine
 Run the following command to install the requirements:
 ```
-$> apk add boost-dev clang cmake g++ gtest gtest-dev make
+$> apk add boost-dev clang cmake g++ make
 ```
 
 ### CentOS
 Run the following command to install the requirements:
 ```
-$> yum -y install boost-devel clang cmake gcc-c++ gtest-devel make
+$> yum -y install boost-devel clang cmake gcc-c++ make
 ```
 
 ### Ubuntu
 Run the following command to install the requirements:
 ```
-$> apt-get -y install clang cmake g++ libgtest-dev libboost-dev make
-```
-
-To build the unit tests, you need to compile Google Test.
-```
-$> cd /usr/include/gtest
-$> cmake .
-$> make install
+$> apt-get -y install clang cmake g++ libboost-dev make
 ```
 
 ### Docker

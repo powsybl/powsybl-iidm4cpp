@@ -5,22 +5,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/logging/NoopLogger.hpp>
+
+#include "AssertionUtils.hpp"
 
 namespace powsybl {
 
 namespace logging {
 
-TEST(NoopLogger, level) {
+BOOST_AUTO_TEST_SUITE(NoopLoggerTestSuite)
+
+BOOST_AUTO_TEST_CASE(level) {
     NoopLogger logger;
-    ASSERT_FALSE(logger.isTraceEnabled());
-    ASSERT_FALSE(logger.isDebugEnabled());
-    ASSERT_FALSE(logger.isInfoEnabled());
-    ASSERT_FALSE(logger.isWarnEnabled());
-    ASSERT_FALSE(logger.isErrorEnabled());
+    BOOST_TEST(!logger.isTraceEnabled());
+    BOOST_TEST(!logger.isDebugEnabled());
+    BOOST_TEST(!logger.isInfoEnabled());
+    BOOST_TEST(!logger.isWarnEnabled());
+    BOOST_TEST(!logger.isErrorEnabled());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace logging
 

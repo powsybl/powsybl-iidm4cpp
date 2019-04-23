@@ -5,22 +5,29 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/EnergySource.hpp>
+
+#include "AssertionUtils.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-TEST(EnergySource, isIntermittent) {
-    ASSERT_FALSE(isIntermittent(EnergySource::HYDRO));
-    ASSERT_FALSE(isIntermittent(EnergySource::NUCLEAR));
-    ASSERT_TRUE(isIntermittent(EnergySource::WIND));
-    ASSERT_FALSE(isIntermittent(EnergySource::THERMAL));
-    ASSERT_TRUE(isIntermittent(EnergySource::SOLAR));
-    ASSERT_FALSE(isIntermittent(EnergySource::OTHER));
+BOOST_AUTO_TEST_SUITE(EnergySourceTestSuite)
+
+BOOST_AUTO_TEST_CASE(is_intermittent)
+{
+    BOOST_TEST(!isIntermittent(EnergySource::HYDRO));
+    BOOST_TEST(!isIntermittent(EnergySource::NUCLEAR));
+    BOOST_TEST(isIntermittent(EnergySource::WIND));
+    BOOST_TEST(!isIntermittent(EnergySource::THERMAL));
+    BOOST_TEST(isIntermittent(EnergySource::SOLAR));
+    BOOST_TEST(!isIntermittent(EnergySource::OTHER));
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

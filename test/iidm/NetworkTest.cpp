@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -203,43 +203,45 @@ Network createTestNetwork() {
     return network;
 }
 
-TEST(Network, constructor) {
-    EXPECT_THROW(Network("", ""), PowsyblException);
-    EXPECT_THROW(Network("id", ""), ValidationException);
+BOOST_AUTO_TEST_SUITE(NetworkTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
+    POWSYBL_ASSERT_THROW(Network("", ""), PowsyblException, "Invalid id");
+    POWSYBL_ASSERT_THROW(Network("id", ""), ValidationException, "Network 'id': Source format is empty");
 
     Network network("id", "sourceFormat");
-    EXPECT_EQ("id", network.getId());
-    EXPECT_EQ("id", network.getName());
-    EXPECT_EQ("sourceFormat", network.getSourceFormat());
-    EXPECT_EQ(0, network.getForecastDistance());
+    BOOST_CHECK_EQUAL("id", network.getId());
+    BOOST_CHECK_EQUAL("id", network.getName());
+    BOOST_CHECK_EQUAL("sourceFormat", network.getSourceFormat());
+    BOOST_CHECK_EQUAL(0, network.getForecastDistance());
 }
 
-TEST(Network, forecastDistance) {
+BOOST_AUTO_TEST_CASE(forecastDistance) {
     Network network("id", "test");
 
-    EXPECT_THROW(network.setForecastDistance(-1), ValidationException);
-    EXPECT_TRUE(stdcxx::areSame(network, network.setForecastDistance(1)));
-    EXPECT_EQ(1, network.getForecastDistance());
+    POWSYBL_ASSERT_THROW(network.setForecastDistance(-1), ValidationException, "Network 'id': Forecast distance is < 0");
+    BOOST_TEST(stdcxx::areSame(network, network.setForecastDistance(1)));
+    BOOST_CHECK_EQUAL(1, network.getForecastDistance());
 }
 
-TEST(Network, country) {
+BOOST_AUTO_TEST_CASE(country) {
     const Network& network = createTestNetwork();
 
-    ASSERT_EQ(3, network.getSubstationCount());
-    ASSERT_EQ(2, network.getCountryCount());
+    BOOST_CHECK_EQUAL(3, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(2, network.getCountryCount());
 }
 
-TEST(Network, branch) {
+BOOST_AUTO_TEST_CASE(branch) {
     const Network& network = createTestNetwork();
 
-    ASSERT_EQ(3, network.getBranchCount());
+    BOOST_CHECK_EQUAL(3, network.getBranchCount());
     POWSYBL_ASSERT_THROW(network.getBranch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network.getBranch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Branch");
-    ASSERT_NO_THROW(network.getBranch("TL_VL1_VL3"));
+    BOOST_CHECK_NO_THROW(network.getBranch("TL_VL1_VL3"));
 
     unsigned long lineCount = network.getLineCount();
     unsigned long branchCount = network.getBranchCount();
-    ASSERT_EQ(lineCount + network.getTwoWindingsTransformerCount(), branchCount);
+    BOOST_CHECK_EQUAL(lineCount + network.getTwoWindingsTransformerCount(), branchCount);
 
     unsigned long lineLoopCount = 0ul;
     unsigned long branchLoopCount = 0ul;
@@ -249,17 +251,17 @@ TEST(Network, branch) {
     for (auto it = network.cbegin<Branch>(); it != network.cend<Branch>(); ++it) {
         branchLoopCount++;
     }
-    ASSERT_EQ(lineLoopCount, lineCount);
-    ASSERT_EQ(branchLoopCount, branchCount);
+    BOOST_CHECK_EQUAL(lineLoopCount, lineCount);
+    BOOST_CHECK_EQUAL(branchLoopCount, branchCount);
 }
 
-TEST(Network, switch) {
+BOOST_AUTO_TEST_CASE(switches) {
     //BusBreaker
     Network network1 = createTestNetwork();
-    ASSERT_EQ(2, network1.getSwitchCount());
+    BOOST_CHECK_EQUAL(2, network1.getSwitchCount());
     POWSYBL_ASSERT_THROW(network1.getSwitch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network1.getSwitch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Switch");
-    ASSERT_NO_THROW(network1.getSwitch("SW1"));
+    BOOST_CHECK_NO_THROW(network1.getSwitch("SW1"));
 
     //NodeBreaker
     Network network2("test2", "test2");
@@ -323,11 +325,13 @@ TEST(Network, switch) {
         .setFictitious(false)
         .add();
 
-    ASSERT_EQ(3, network2.getSwitchCount());
+    BOOST_CHECK_EQUAL(3, network2.getSwitchCount());
     POWSYBL_ASSERT_THROW(network2.getSwitch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network2.getSwitch("BBS1"), PowsyblException, "Identifiable 'BBS1' is not a powsybl::iidm::Switch");
-    ASSERT_NO_THROW(network2.getSwitch("BK"));
+    BOOST_CHECK_NO_THROW(network2.getSwitch("BK"));
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

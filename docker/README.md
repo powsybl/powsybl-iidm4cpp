@@ -12,7 +12,6 @@ The Alpine image provides the following tools:
 - G++ 8.3.0
 - CLang 5.0.2
 - Boost 1.67
-- Google Test 1.8.1
 
 To build the Alpine image, run the following command:
 ```
@@ -26,7 +25,6 @@ The CentOS image provides the following tools:
 - G++ 4.8.5
 - CLang 3.4.2
 - Boost 1.53
-- Google Test 1.6.0
 
 To build the CentOS image, run the following command:
 ```
@@ -40,7 +38,6 @@ The Ubuntu image provides the following tools:
 - G++ 5.5.0 / 6.5.0 / 7.4.0 / 8.3.0
 - CLang 3.9.1 / 4.0.1 / 6.0.0 / 7.0.0
 - Boost 1.65.1
-- Google Test 1.8.0
 
 To build the Ubuntu image, run the following command:
 ```

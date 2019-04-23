@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Injection.hpp>
@@ -24,17 +24,19 @@ namespace powsybl {
 
 namespace iidm {
 
-TEST(VoltageLevel, constructor) {
+BOOST_AUTO_TEST_SUITE(VoltageLevelTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createNetwork();
     unsigned long voltageLevelCount = network.getVoltageLevelCount();
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
-    ASSERT_EQ("VL1", vl1.getId());
-    ASSERT_EQ("VL1_NAME", vl1.getName());
-    ASSERT_EQ(TopologyKind::BUS_BREAKER, vl1.getTopologyKind());
-    ASSERT_DOUBLE_EQ(340, vl1.getLowVoltageLimit());
-    ASSERT_DOUBLE_EQ(420, vl1.getHighVoltageLimit());
-    ASSERT_DOUBLE_EQ(380, vl1.getNominalVoltage());
+    BOOST_CHECK_EQUAL("VL1", vl1.getId());
+    BOOST_CHECK_EQUAL("VL1_NAME", vl1.getName());
+    BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, vl1.getTopologyKind());
+    BOOST_CHECK_CLOSE(340, vl1.getLowVoltageLimit(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(420, vl1.getHighVoltageLimit(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(380, vl1.getNominalVoltage(), std::numeric_limits<double>::epsilon());
 
     Substation& s1 = network.getSubstation("S1");
     VoltageLevelAdder adder = s1.newVoltageLevel()
@@ -62,52 +64,52 @@ TEST(VoltageLevel, constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'VL1' already exists (powsybl::iidm::BusBreakerVoltageLevel)");
     adder.setId("UNIQUE_VOLTAGE_LEVEL_ID");
 
-    ASSERT_NO_THROW(adder.add());
-    ASSERT_EQ(voltageLevelCount + 1, network.getVoltageLevelCount());
+    BOOST_CHECK_NO_THROW(adder.add());
+    BOOST_CHECK_EQUAL(voltageLevelCount + 1, network.getVoltageLevelCount());
 
-    ASSERT_EQ(Container::Type::NETWORK, network.getContainerType());
-    ASSERT_EQ(Container::Type::SUBSTATION, s1.getContainerType());
-    ASSERT_EQ(Container::Type::VOLTAGE_LEVEL, vl1.getContainerType());
+    POWSYBL_ASSERT_ENUM_EQ(Container::Type::NETWORK, network.getContainerType());
+    POWSYBL_ASSERT_ENUM_EQ(Container::Type::SUBSTATION, s1.getContainerType());
+    POWSYBL_ASSERT_ENUM_EQ(Container::Type::VOLTAGE_LEVEL, vl1.getContainerType());
 }
 
-TEST(VoltageLevel, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     const Network& network = createNetwork();
 
     POWSYBL_ASSERT_THROW(network.getVoltageLevel("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network.getVoltageLevel("LOAD1"), PowsyblException, "Identifiable 'LOAD1' is not a powsybl::iidm::VoltageLevel");
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
-    ASSERT_EQ(380, vl1.getNominalVoltage());
-    ASSERT_EQ(340, vl1.getLowVoltageLimit());
-    ASSERT_EQ(420, vl1.getHighVoltageLimit());
+    BOOST_CHECK_EQUAL(380, vl1.getNominalVoltage());
+    BOOST_CHECK_EQUAL(340, vl1.getLowVoltageLimit());
+    BOOST_CHECK_EQUAL(420, vl1.getHighVoltageLimit());
 
     POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(-10), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
     POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(0), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
     POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(stdcxx::nan()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
-    ASSERT_TRUE(stdcxx::areSame(vl1, vl1.setNominalVoltage(100)));
-    ASSERT_EQ(100, vl1.getNominalVoltage());
+    BOOST_TEST(stdcxx::areSame(vl1, vl1.setNominalVoltage(100)));
+    BOOST_CHECK_EQUAL(100, vl1.getNominalVoltage());
 
     POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(-10), ValidationException, "Voltage level 'VL1': Low voltage limit is < 0");
     POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(440), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [440, 420]");
-    ASSERT_TRUE(stdcxx::areSame(vl1, vl1.setLowVoltageLimit(360)));
-    ASSERT_EQ(360, vl1.getLowVoltageLimit());
+    BOOST_TEST(stdcxx::areSame(vl1, vl1.setLowVoltageLimit(360)));
+    BOOST_CHECK_EQUAL(360, vl1.getLowVoltageLimit());
 
     POWSYBL_ASSERT_THROW(vl1.setHighVoltageLimit(-10), ValidationException, "Voltage level 'VL1': High voltage limit is < 0");
     POWSYBL_ASSERT_THROW(vl1.setHighVoltageLimit(320), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [360, 320]");
-    ASSERT_TRUE(stdcxx::areSame(vl1, vl1.setHighVoltageLimit(440)));
-    ASSERT_EQ(440, vl1.getHighVoltageLimit());
+    BOOST_TEST(stdcxx::areSame(vl1, vl1.setHighVoltageLimit(440)));
+    BOOST_CHECK_EQUAL(440, vl1.getHighVoltageLimit());
 
-    ASSERT_EQ(1, vl1.getConnectableCount());
-    ASSERT_EQ(vl1.getConnectableCount(), vl1.getConnectableCount<Connectable>());
+    BOOST_CHECK_EQUAL(1, vl1.getConnectableCount());
+    BOOST_CHECK_EQUAL(vl1.getConnectableCount(), vl1.getConnectableCount<Connectable>());
 
     auto& load1 = network.getLoad("LOAD1");
-    ASSERT_TRUE(vl1.getConnectable<Connectable>("LOAD1"));
-    ASSERT_TRUE(stdcxx::areSame(load1, vl1.getConnectable<Connectable>("LOAD1").get()));
-    ASSERT_TRUE(vl1.getConnectable<Injection>("LOAD1"));
-    ASSERT_TRUE(stdcxx::areSame(load1, vl1.getConnectable<Injection>("LOAD1").get()));
-    ASSERT_TRUE(vl1.getConnectable<Load>("LOAD1"));
-    ASSERT_TRUE(stdcxx::areSame(load1, vl1.getConnectable<Load>("LOAD1").get()));
-    ASSERT_FALSE(vl1.getConnectable<Generator>("LOAD1"));
+    POWSYBL_ASSERT_REF_TRUE(vl1.getConnectable<Connectable>("LOAD1"));
+    BOOST_TEST(stdcxx::areSame(load1, vl1.getConnectable<Connectable>("LOAD1").get()));
+    POWSYBL_ASSERT_REF_TRUE(vl1.getConnectable<Injection>("LOAD1"));
+    BOOST_TEST(stdcxx::areSame(load1, vl1.getConnectable<Injection>("LOAD1").get()));
+    POWSYBL_ASSERT_REF_TRUE(vl1.getConnectable<Load>("LOAD1"));
+    BOOST_TEST(stdcxx::areSame(load1, vl1.getConnectable<Load>("LOAD1").get()));
+    POWSYBL_ASSERT_REF_FALSE(vl1.getConnectable<Generator>("LOAD1"));
 
     auto& load2 = vl1.newLoad()
         .setId("LOAD2")
@@ -118,29 +120,31 @@ TEST(VoltageLevel, integrity) {
         .setP0(60.0)
         .setQ0(70.0)
         .add();
-    ASSERT_EQ(2, vl1.getConnectableCount());
-    ASSERT_EQ(vl1.getConnectableCount(), vl1.getConnectableCount<Connectable>());
-    ASSERT_EQ(2, vl1.getConnectableCount<Injection>());
-    ASSERT_EQ(2, vl1.getConnectableCount<Load>());
-    ASSERT_EQ(0, vl1.getConnectableCount<Generator>());
+    BOOST_CHECK_EQUAL(2, vl1.getConnectableCount());
+    BOOST_CHECK_EQUAL(vl1.getConnectableCount(), vl1.getConnectableCount<Connectable>());
+    BOOST_CHECK_EQUAL(2, vl1.getConnectableCount<Injection>());
+    BOOST_CHECK_EQUAL(2, vl1.getConnectableCount<Load>());
+    BOOST_CHECK_EQUAL(0, vl1.getConnectableCount<Generator>());
     load2.getTerminal().disconnect();
-    ASSERT_EQ(2, vl1.getConnectableCount());
+    BOOST_CHECK_EQUAL(2, vl1.getConnectableCount());
     load2.remove();
-    ASSERT_EQ(1, vl1.getConnectableCount());
+    BOOST_CHECK_EQUAL(1, vl1.getConnectableCount());
 
     // test const version
     const VoltageLevel& vl = vl1;
-    ASSERT_TRUE(stdcxx::areSame(network, vl.getNetwork()));
-    ASSERT_TRUE(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(network, vl.getNetwork()));
+    BOOST_TEST(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation()));
 
-    ASSERT_TRUE(vl.getConnectable<Connectable>("LOAD1"));
-    ASSERT_TRUE(stdcxx::areSame(load1, vl.getConnectable<Connectable>("LOAD1").get()));
-    ASSERT_TRUE(vl.getConnectable<Injection>("LOAD1"));
-    ASSERT_TRUE(stdcxx::areSame(load1, vl.getConnectable<Injection>("LOAD1").get()));
-    ASSERT_TRUE(vl.getConnectable<Load>("LOAD1"));
-    ASSERT_TRUE(stdcxx::areSame(load1, vl.getConnectable<Load>("LOAD1").get()));
-    ASSERT_FALSE(vl.getConnectable<Generator>("LOAD1"));
+    POWSYBL_ASSERT_REF_TRUE(vl.getConnectable<Connectable>("LOAD1"));
+    BOOST_TEST(stdcxx::areSame(load1, vl.getConnectable<Connectable>("LOAD1").get()));
+    POWSYBL_ASSERT_REF_TRUE(vl.getConnectable<Injection>("LOAD1"));
+    BOOST_TEST(stdcxx::areSame(load1, vl.getConnectable<Injection>("LOAD1").get()));
+    POWSYBL_ASSERT_REF_TRUE(vl.getConnectable<Load>("LOAD1"));
+    BOOST_TEST(stdcxx::areSame(load1, vl.getConnectable<Load>("LOAD1").get()));
+    POWSYBL_ASSERT_REF_FALSE(vl.getConnectable<Generator>("LOAD1"));
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

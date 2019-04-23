@@ -7,7 +7,7 @@
 
 #include <cmath>
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
@@ -126,50 +126,52 @@ Network createTieLineTestNetwork() {
     return network;
 }
 
-TEST(TieLine, constructor) {
+BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createTieLineTestNetwork();
 
-    ASSERT_EQ(1ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(1ul, network.getLineCount());
 
     TieLine& tieLine = dynamic_cast<TieLine&>(network.getLine("TL_VL1_VL3"));
-    ASSERT_EQ("TL_VL1_VL3", tieLine.getId());
-    ASSERT_EQ("", tieLine.getName());
-    ASSERT_EQ(ConnectableType::LINE, tieLine.getType());
-    ASSERT_TRUE(tieLine.isTieLine());
-    ASSERT_DOUBLE_EQ(13.0, tieLine.getR());
-    ASSERT_DOUBLE_EQ(143.0, tieLine.getX());
-    ASSERT_DOUBLE_EQ(0.8, tieLine.getG1());
-    ASSERT_DOUBLE_EQ(1.1, tieLine.getB1());
-    ASSERT_DOUBLE_EQ(1.2, tieLine.getG2());
-    ASSERT_DOUBLE_EQ(1.7, tieLine.getB2());
-    ASSERT_EQ("UcteXnodeCode", tieLine.getUcteXnodeCode());
+    BOOST_CHECK_EQUAL("TL_VL1_VL3", tieLine.getId());
+    BOOST_CHECK_EQUAL("", tieLine.getName());
+    BOOST_CHECK_EQUAL(ConnectableType::LINE, tieLine.getType());
+    BOOST_TEST(tieLine.isTieLine());
+    BOOST_CHECK_CLOSE(13.0, tieLine.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(143.0, tieLine.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.8, tieLine.getG1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.1, tieLine.getB1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.2, tieLine.getG2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.7, tieLine.getB2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL("UcteXnodeCode", tieLine.getUcteXnodeCode());
 
     TieLine::HalfLine& half1 = tieLine.getHalf1();
-    ASSERT_EQ("H1_TL_VL1_VL3", half1.getId());
-    ASSERT_EQ("H1_TL_VL1_VL3", half1.getName());
-    ASSERT_DOUBLE_EQ(6.0, half1.getR());
-    ASSERT_DOUBLE_EQ(66.0, half1.getX());
-    ASSERT_DOUBLE_EQ(0.2, half1.getG1());
-    ASSERT_DOUBLE_EQ(0.4, half1.getB1());
-    ASSERT_DOUBLE_EQ(0.3, half1.getG2());
-    ASSERT_DOUBLE_EQ(0.5, half1.getB2());
-    ASSERT_DOUBLE_EQ(1.0, half1.getXnodeP());
-    ASSERT_DOUBLE_EQ(2.0, half1.getXnodeQ());
+    BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", half1.getId());
+    BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", half1.getName());
+    BOOST_CHECK_CLOSE(6.0, half1.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(66.0, half1.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.2, half1.getG1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.4, half1.getB1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.3, half1.getG2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.5, half1.getB2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, half1.getXnodeP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, half1.getXnodeQ(), std::numeric_limits<double>::epsilon());
 
     TieLine::HalfLine& half2 = tieLine.getHalf2();
-    ASSERT_EQ("H2_TL_VL1_VL3", half2.getId());
-    ASSERT_EQ("H2_TL_VL1_VL3", half2.getName());
-    ASSERT_DOUBLE_EQ(7.0, half2.getR());
-    ASSERT_DOUBLE_EQ(77.0, half2.getX());
-    ASSERT_DOUBLE_EQ(0.6, half2.getG1());
-    ASSERT_DOUBLE_EQ(0.7, half2.getB1());
-    ASSERT_DOUBLE_EQ(0.9, half2.getG2());
-    ASSERT_DOUBLE_EQ(1.2, half2.getB2());
-    ASSERT_DOUBLE_EQ(3.0, half2.getXnodeP());
-    ASSERT_DOUBLE_EQ(4.0, half2.getXnodeQ());
+    BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", half2.getId());
+    BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", half2.getName());
+    BOOST_CHECK_CLOSE(7.0, half2.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(77.0, half2.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.6, half2.getG1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.7, half2.getB1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.9, half2.getG2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.2, half2.getB2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.0, half2.getXnodeP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, half2.getXnodeQ(), std::numeric_limits<double>::epsilon());
 }
 
-TEST(TieLine, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     const Network& network = createTieLineTestNetwork();
 
     TieLine& tieLine = dynamic_cast<TieLine&>(network.getLine("TL_VL1_VL3"));
@@ -185,7 +187,7 @@ TEST(TieLine, integrity) {
     POWSYBL_ASSERT_THROW(network.getLine("TL_VL1_VL3"), PowsyblException, "Unable to find to the identifiable 'TL_VL1_VL3'");
 }
 
-TEST(TieLine, adderFail) {
+BOOST_AUTO_TEST_CASE(adderFail) {
     Network network = createTieLineTestNetwork();
 
     TieLineAdder tieLineAdder = network.newTieLine();
@@ -221,10 +223,10 @@ TEST(TieLine, adderFail) {
 
 }
 
-TEST(TieLine, adder) {
+BOOST_AUTO_TEST_CASE(adder) {
     Network network = createTieLineTestNetwork();
 
-    ASSERT_EQ(1ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(1ul, network.getLineCount());
 
     TieLineAdder tieLineAdder = network.newTieLine();
 
@@ -352,10 +354,12 @@ TEST(TieLine, adder) {
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 2");
     tieLineAdder.setXnodeQ(40.0);
 
-    ASSERT_NO_THROW(tieLineAdder.add());
+    BOOST_CHECK_NO_THROW(tieLineAdder.add());
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "Object 'UNIQUE_TIE_LINE_ID' already exists (powsybl::iidm::TieLine)");
-    ASSERT_EQ(2ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(2ul, network.getLineCount());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 

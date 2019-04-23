@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/logging/MessageFormat.hpp>
 
@@ -13,31 +13,35 @@ namespace powsybl {
 
 namespace logging {
 
-TEST(MessageFormat, format) {
+BOOST_AUTO_TEST_SUITE(MessageFormatTestSuite)
+
+BOOST_AUTO_TEST_CASE(formatTest) {
     const std::string& msg1 = format("message");
-    ASSERT_EQ("message", msg1);
+    BOOST_CHECK_EQUAL("message", msg1);
 
     const std::string& msg2 = format("message: %1%", "value");
-    ASSERT_EQ("message: value", msg2);
+    BOOST_CHECK_EQUAL("message: value", msg2);
 
     const std::string& msg3 = format("message: %1% %2%", 1, 2);
-    ASSERT_EQ("message: 1 2", msg3);
+    BOOST_CHECK_EQUAL("message: 1 2", msg3);
 
     const std::string& msg4 = format("message: %2% %1%", 1, 2);
-    ASSERT_EQ("message: 2 1", msg4);
+    BOOST_CHECK_EQUAL("message: 2 1", msg4);
 
-    ASSERT_THROW(format("error: %1%"), boost::io::too_few_args);
+    BOOST_CHECK_THROW(format("error: %1%"), boost::io::too_few_args);
 
-    ASSERT_THROW(format("error", 1), boost::io::too_many_args);
+    BOOST_CHECK_THROW(format("error", 1), boost::io::too_many_args);
 }
 
-TEST(MessageFormat, toString) {
+BOOST_AUTO_TEST_CASE(toStringTest) {
     std::initializer_list<unsigned long> list = {0, 1, 2};
-    ASSERT_EQ("[0, 1, 2]", toString(list));
+    BOOST_CHECK_EQUAL("[0, 1, 2]", toString(list));
 
     std::set<unsigned long> set(list);
-    ASSERT_EQ("{0, 1, 2}", toString(set));
+    BOOST_CHECK_EQUAL("{0, 1, 2}", toString(set));
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace logging
 

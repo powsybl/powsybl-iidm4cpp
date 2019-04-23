@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
@@ -107,10 +107,12 @@ Network createGeneratorTestNetwork() {
     return network;
 }
 
-TEST(Generator, constructor) {
+BOOST_AUTO_TEST_SUITE(GeneratorTestSuite)
+
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createGeneratorTestNetwork();
     unsigned long generatorCount = network.getGeneratorCount();
-    ASSERT_EQ(1ul, generatorCount);
+    BOOST_CHECK_EQUAL(1ul, generatorCount);
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL");
     GeneratorAdder adder = vl1.newGenerator().setId("GEN1").setNode(3);
@@ -144,100 +146,100 @@ TEST(Generator, constructor) {
     adder.setRegulatingTerminal(stdcxx::ref<Terminal>());
     adder.setId("UNIQUE_GEN_ID");
 
-    ASSERT_NO_THROW(adder.add());
-    ASSERT_EQ(generatorCount + 1, network.getGeneratorCount());
+    BOOST_CHECK_NO_THROW(adder.add());
+    BOOST_CHECK_EQUAL(generatorCount + 1, network.getGeneratorCount());
 }
 
-TEST(Generator, integrity) {
+BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createGeneratorTestNetwork();
 
     Generator& gen = network.getGenerator("GEN1");
-    ASSERT_EQ("GEN1", gen.getId());
-    ASSERT_EQ("GEN1_NAME", gen.getName());
-    ASSERT_EQ(ConnectableType::GENERATOR, gen.getType());
-    ASSERT_DOUBLE_EQ(45, gen.getActivePowerSetpoint());
-    ASSERT_EQ(EnergySource::WIND, gen.getEnergySource());
-    ASSERT_DOUBLE_EQ(50.0, gen.getMaxP());
-    ASSERT_DOUBLE_EQ(3.0, gen.getMinP());
-    ASSERT_DOUBLE_EQ(4.0, gen.getRatedS());
-    ASSERT_DOUBLE_EQ(5.0, gen.getReactivePowerSetpoint());
-    ASSERT_FALSE(gen.getRegulatingTerminal());
-    ASSERT_DOUBLE_EQ(45.0, gen.getTargetP());
-    ASSERT_DOUBLE_EQ(5.0, gen.getTargetQ());
-    ASSERT_DOUBLE_EQ(6.0, gen.getTargetV());
-    ASSERT_DOUBLE_EQ(6.0, gen.getVoltageSetpoint());
-    ASSERT_TRUE(gen.isVoltageRegulatorOn());
+    BOOST_CHECK_EQUAL("GEN1", gen.getId());
+    BOOST_CHECK_EQUAL("GEN1_NAME", gen.getName());
+    BOOST_CHECK_EQUAL(ConnectableType::GENERATOR, gen.getType());
+    BOOST_CHECK_CLOSE(45, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_ENUM_EQ(EnergySource::WIND, gen.getEnergySource());
+    BOOST_CHECK_CLOSE(50.0, gen.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.0, gen.getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, gen.getRatedS(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!gen.getRegulatingTerminal());
+    BOOST_CHECK_CLOSE(45.0, gen.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(gen.isVoltageRegulatorOn());
 
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setActivePowerSetpoint(100)));
-    ASSERT_DOUBLE_EQ(100, gen.getActivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(gen.getTargetP(), gen.getActivePowerSetpoint());
+    BOOST_TEST(stdcxx::areSame(gen, gen.setActivePowerSetpoint(100)));
+    BOOST_CHECK_CLOSE(100, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(gen.getTargetP(), gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(gen.setActivePowerSetpoint(stdcxx::nan()), ValidationException, "Generator 'GEN1': Active power setpoint is not set");
 
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setEnergySource(EnergySource::SOLAR)));
-    ASSERT_EQ(EnergySource::SOLAR, gen.getEnergySource());
+    BOOST_TEST(stdcxx::areSame(gen, gen.setEnergySource(EnergySource::SOLAR)));
+    POWSYBL_ASSERT_ENUM_EQ(EnergySource::SOLAR, gen.getEnergySource());
 
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setMaxP(200)));
-    ASSERT_DOUBLE_EQ(200, gen.getMaxP());
+    BOOST_TEST(stdcxx::areSame(gen, gen.setMaxP(200)));
+    BOOST_CHECK_CLOSE(200, gen.getMaxP(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(gen.setMaxP(stdcxx::nan()), ValidationException, "Generator 'GEN1': Maximum active power is not set");
 
     POWSYBL_ASSERT_THROW(gen.setMinP(300), ValidationException, "Generator 'GEN1': Invalid active limits [300, 200]");
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setMinP(150)));
-    ASSERT_DOUBLE_EQ(150, gen.getMinP());
+    BOOST_TEST(stdcxx::areSame(gen, gen.setMinP(150)));
+    BOOST_CHECK_CLOSE(150, gen.getMinP(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(gen.setMinP(stdcxx::nan()), ValidationException, "Generator 'GEN1': Minimum active power is not set");
 
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setRatedS(400)));
-    ASSERT_DOUBLE_EQ(400, gen.getRatedS());
-    ASSERT_NO_THROW(gen.setRatedS(stdcxx::nan()));
+    BOOST_TEST(stdcxx::areSame(gen, gen.setRatedS(400)));
+    BOOST_CHECK_CLOSE(400, gen.getRatedS(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_NO_THROW(gen.setRatedS(stdcxx::nan()));
     POWSYBL_ASSERT_THROW(gen.setRatedS(-1.0), ValidationException, "Generator 'GEN1': Invalid rated S value: -1");
 
     gen.setVoltageRegulatorOn(true);
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setReactivePowerSetpoint(500)));
-    ASSERT_DOUBLE_EQ(500, gen.getReactivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(gen.getTargetQ(), gen.getReactivePowerSetpoint());
-    ASSERT_NO_THROW(gen.setReactivePowerSetpoint(stdcxx::nan()));
+    BOOST_TEST(stdcxx::areSame(gen, gen.setReactivePowerSetpoint(500)));
+    BOOST_CHECK_CLOSE(500, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(gen.getTargetQ(), gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_NO_THROW(gen.setReactivePowerSetpoint(stdcxx::nan()));
     POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(false), ValidationException, "Generator 'GEN1': Invalid reactive power setpoint (nan) while voltage regulator is off");
     gen.setReactivePowerSetpoint(500);
-    ASSERT_NO_THROW(gen.setVoltageRegulatorOn(false));
+    BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(false));
 
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setTargetP(600)));
-    ASSERT_DOUBLE_EQ(600, gen.getTargetP());
-    ASSERT_DOUBLE_EQ(gen.getTargetP(), gen.getActivePowerSetpoint());
+    BOOST_TEST(stdcxx::areSame(gen, gen.setTargetP(600)));
+    BOOST_CHECK_CLOSE(600, gen.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(gen.getTargetP(), gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(gen.setTargetP(stdcxx::nan()), ValidationException, "Generator 'GEN1': Active power setpoint is not set");
 
     gen.setVoltageRegulatorOn(true);
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setTargetQ(700)));
-    ASSERT_DOUBLE_EQ(700, gen.getTargetQ());
-    ASSERT_DOUBLE_EQ(gen.getTargetQ(), gen.getReactivePowerSetpoint());
-    ASSERT_NO_THROW(gen.setTargetQ(stdcxx::nan()));
+    BOOST_TEST(stdcxx::areSame(gen, gen.setTargetQ(700)));
+    BOOST_CHECK_CLOSE(700, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(gen.getTargetQ(), gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_NO_THROW(gen.setTargetQ(stdcxx::nan()));
     POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(false), ValidationException, "Generator 'GEN1': Invalid reactive power setpoint (nan) while voltage regulator is off");
     gen.setTargetQ(700);
-    ASSERT_NO_THROW(gen.setVoltageRegulatorOn(false));
+    BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(false));
 
     gen.setVoltageRegulatorOn(false);
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setTargetV(800)));
-    ASSERT_DOUBLE_EQ(800, gen.getTargetV());
-    ASSERT_DOUBLE_EQ(gen.getTargetV(), gen.getVoltageSetpoint());
-    ASSERT_NO_THROW(gen.setTargetV(stdcxx::nan()));
+    BOOST_TEST(stdcxx::areSame(gen, gen.setTargetV(800)));
+    BOOST_CHECK_CLOSE(800, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(gen.getTargetV(), gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_NO_THROW(gen.setTargetV(stdcxx::nan()));
     POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': Invalid voltage setpoint value (nan) while voltage regulator is on");
-    ASSERT_NO_THROW(gen.setTargetV(-20));
+    BOOST_CHECK_NO_THROW(gen.setTargetV(-20));
     POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': Invalid voltage setpoint value (-20) while voltage regulator is on");
     gen.setTargetV(800);
-    ASSERT_NO_THROW(gen.setVoltageRegulatorOn(true));
+    BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(true));
 
     gen.setVoltageRegulatorOn(false);
-    ASSERT_TRUE(stdcxx::areSame(gen, gen.setVoltageSetpoint(900)));
-    ASSERT_DOUBLE_EQ(900, gen.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(gen.getTargetV(), gen.getVoltageSetpoint());
-    ASSERT_NO_THROW(gen.setVoltageSetpoint(stdcxx::nan()));
+    BOOST_TEST(stdcxx::areSame(gen, gen.setVoltageSetpoint(900)));
+    BOOST_CHECK_CLOSE(900, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(gen.getTargetV(), gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_NO_THROW(gen.setVoltageSetpoint(stdcxx::nan()));
     POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': Invalid voltage setpoint value (nan) while voltage regulator is on");
-    ASSERT_NO_THROW(gen.setVoltageSetpoint(-20));
+    BOOST_CHECK_NO_THROW(gen.setVoltageSetpoint(-20));
     POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': Invalid voltage setpoint value (-20) while voltage regulator is on");
     gen.setVoltageSetpoint(800);
-    ASSERT_NO_THROW(gen.setVoltageRegulatorOn(true));
+    BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(true));
 
     const Generator& cGen = gen;
     const auto terminal = cGen.getRegulatingTerminal();
-    ASSERT_FALSE(terminal);
+    BOOST_TEST(!terminal);
     gen.setRegulatingTerminal(terminal);
 
     Terminal& terminal2 = network.getLoad("LOAD1").getTerminal();
@@ -250,85 +252,87 @@ TEST(Generator, integrity) {
     POWSYBL_ASSERT_THROW(network.getGenerator("GEN1"), PowsyblException, "Unable to find to the identifiable 'GEN1'");
 }
 
-TEST(Generator, multivariant) {
+BOOST_AUTO_TEST_CASE(multivariant) {
     Network network = createGeneratorTestNetwork();
 
     Generator& gen = network.getGenerator("GEN1");
 
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s1");
-    ASSERT_EQ("GEN1", gen.getId());
-    ASSERT_EQ("GEN1_NAME", gen.getName());
-    ASSERT_DOUBLE_EQ(45, gen.getActivePowerSetpoint());
-    ASSERT_EQ(EnergySource::WIND, gen.getEnergySource());
-    ASSERT_DOUBLE_EQ(50.0, gen.getMaxP());
-    ASSERT_DOUBLE_EQ(3.0, gen.getMinP());
-    ASSERT_DOUBLE_EQ(4.0, gen.getRatedS());
-    ASSERT_DOUBLE_EQ(5.0, gen.getReactivePowerSetpoint());
-    ASSERT_FALSE(gen.getRegulatingTerminal());
-    ASSERT_DOUBLE_EQ(45.0, gen.getTargetP());
-    ASSERT_DOUBLE_EQ(5.0, gen.getTargetQ());
-    ASSERT_DOUBLE_EQ(6.0, gen.getTargetV());
-    ASSERT_DOUBLE_EQ(6.0, gen.getVoltageSetpoint());
-    ASSERT_TRUE(gen.isVoltageRegulatorOn());
+    BOOST_CHECK_EQUAL("GEN1", gen.getId());
+    BOOST_CHECK_EQUAL("GEN1_NAME", gen.getName());
+    BOOST_CHECK_CLOSE(45, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_ENUM_EQ(EnergySource::WIND, gen.getEnergySource());
+    BOOST_CHECK_CLOSE(50.0, gen.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.0, gen.getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, gen.getRatedS(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!gen.getRegulatingTerminal());
+    BOOST_CHECK_CLOSE(45.0, gen.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(gen.isVoltageRegulatorOn());
     gen.setTargetP(100).setTargetQ(200).setTargetV(300).setVoltageRegulatorOn(false);
 
-    ASSERT_DOUBLE_EQ(100, gen.getActivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(200, gen.getReactivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(300, gen.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(100, gen.getTargetP());
-    ASSERT_DOUBLE_EQ(200, gen.getTargetQ());
-    ASSERT_DOUBLE_EQ(300, gen.getTargetV());
-    ASSERT_FALSE(gen.isVoltageRegulatorOn());
+    BOOST_CHECK_CLOSE(100, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(100, gen.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!gen.isVoltageRegulatorOn());
 
     network.getVariantManager().setWorkingVariant("s2");
-    ASSERT_DOUBLE_EQ(45, gen.getActivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(5.0, gen.getReactivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(6.0, gen.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(45.0, gen.getTargetP());
-    ASSERT_DOUBLE_EQ(5.0, gen.getTargetQ());
-    ASSERT_DOUBLE_EQ(6.0, gen.getTargetV());
-    ASSERT_TRUE(gen.isVoltageRegulatorOn());
+    BOOST_CHECK_CLOSE(45, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(45.0, gen.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(gen.isVoltageRegulatorOn());
     gen.setTargetP(150).setTargetQ(250).setTargetV(350).setVoltageRegulatorOn(true);
 
-    ASSERT_DOUBLE_EQ(150, gen.getActivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(250, gen.getReactivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(350, gen.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(150, gen.getTargetP());
-    ASSERT_DOUBLE_EQ(250, gen.getTargetQ());
-    ASSERT_DOUBLE_EQ(350, gen.getTargetV());
-    ASSERT_TRUE(gen.isVoltageRegulatorOn());
+    BOOST_CHECK_CLOSE(150, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(350, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(150, gen.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(350, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(gen.isVoltageRegulatorOn());
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
-    ASSERT_DOUBLE_EQ(45, gen.getActivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(5.0, gen.getReactivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(6.0, gen.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(45.0, gen.getTargetP());
-    ASSERT_DOUBLE_EQ(5.0, gen.getTargetQ());
-    ASSERT_DOUBLE_EQ(6.0, gen.getTargetV());
-    ASSERT_TRUE(gen.isVoltageRegulatorOn());
+    BOOST_CHECK_CLOSE(45, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(45.0, gen.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(gen.isVoltageRegulatorOn());
 
     network.getVariantManager().removeVariant("s1");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
-    ASSERT_DOUBLE_EQ(150, gen.getActivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(250, gen.getReactivePowerSetpoint());
-    ASSERT_DOUBLE_EQ(350, gen.getVoltageSetpoint());
-    ASSERT_DOUBLE_EQ(150, gen.getTargetP());
-    ASSERT_DOUBLE_EQ(250, gen.getTargetQ());
-    ASSERT_DOUBLE_EQ(350, gen.getTargetV());
-    ASSERT_TRUE(gen.isVoltageRegulatorOn());
+    BOOST_CHECK_CLOSE(150, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(350, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(150, gen.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(350, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(gen.isVoltageRegulatorOn());
 
     network.getVariantManager().removeVariant("s3");
-    ASSERT_EQ(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().removeVariant("s2");
-    ASSERT_EQ(1ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(1ul, network.getVariantManager().getVariantArraySize());
 }
+
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
 
