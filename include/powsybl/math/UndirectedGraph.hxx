@@ -101,9 +101,7 @@ void UndirectedGraph<V, E>::findAllPaths(unsigned long v, const VertexVisitor& p
     const std::vector<std::vector<unsigned long> >& adjacencyList = getAdjacencyList();
     const std::vector<unsigned long>& adjacentEdges = adjacencyList[v];
 
-    for (unsigned long i = 0; i < adjacentEdges.size(); ++i) {
-        unsigned long e = adjacentEdges[i];
-
+    for (const auto& e : adjacentEdges) {
         const std::unique_ptr<Edge>& edge = m_edges[e];
         if (pathCanceled(edge->getObject())) {
             continue;

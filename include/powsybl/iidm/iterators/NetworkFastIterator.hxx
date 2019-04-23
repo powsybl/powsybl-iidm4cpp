@@ -20,8 +20,8 @@ template <typename Base, typename Iterator, typename... Derived>
 NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(NetworkIndex& networkIndex) {
 
     std::set<std::type_index> typeList = { typeid(Base), typeid(Derived)... };
-    for (auto itType = typeList.begin(); itType != typeList.end(); ++itType) {
-        const auto& it = networkIndex.m_objectsByType.find(*itType);
+    for (const auto& type : typeList) {
+        const auto& it = networkIndex.m_objectsByType.find(type);
         if (it != networkIndex.m_objectsByType.end()) {
             m_ranges.push_back(std::make_pair(it->second.begin(), it->second.end()));
         }
@@ -35,8 +35,8 @@ template <typename Base, typename Iterator, typename... Derived>
 NetworkFastIterator<Base, Iterator, Derived...>::NetworkFastIterator(const NetworkIndex& networkIndex) {
 
     std::set<std::type_index> typeList = { typeid(Base), typeid(Derived)... };
-    for (auto itType = typeList.begin(); itType != typeList.end(); ++itType) {
-        const auto& it = networkIndex.m_objectsByType.find(*itType);
+    for (const auto& type : typeList) {
+        const auto& it = networkIndex.m_objectsByType.find(type);
         if (it != networkIndex.m_objectsByType.end()) {
             m_ranges.push_back(std::make_pair(it->second.cbegin(), it->second.cend()));
         }
