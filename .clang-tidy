@@ -38,7 +38,6 @@ Checks: '*,
   -openmp-*,
   -readability-function-size,
   -readability-redundant-declaration,
-  -readability-redundant-smartptr-get,
   -zircon-*'
 WarningsAsErrors: '*'
 HeaderFilterRegex: '.*'
