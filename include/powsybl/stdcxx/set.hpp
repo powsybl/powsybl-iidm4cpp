@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_SET_HPP
-#define POWSYBL_IIDM_SET_HPP
+#ifndef POWSYBL_STDCXX_SET_HPP
+#define POWSYBL_STDCXX_SET_HPP
 
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
@@ -27,4 +27,4 @@ using LinkedHashSet = boost::multi_index_container<
 
 }  // namespace stdcxx
 
-#endif  // POWSYBL_IIDM_SET_HPP
+#endif  // POWSYBL_STDCXX_SET_HPP

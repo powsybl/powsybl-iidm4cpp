@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_LIMITVIOLATIONUTILS_HPP
-#define POWSYBL_IIDM_LIMITVIOLATIONUTILS_HPP
+#ifndef POWSYBL_IIDM_UTIL_LIMITVIOLATIONUTILS_HPP
+#define POWSYBL_IIDM_UTIL_LIMITVIOLATIONUTILS_HPP
 
 #include <powsybl/iidm/Branch.hpp>
 
@@ -26,4 +26,4 @@ std::unique_ptr<Branch::Overload> checkTemporaryLimits(const Branch& branch, con
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_LIMITVIOLATIONUTILS_HPP
+#endif  // POWSYBL_IIDM_UTIL_LIMITVIOLATIONUTILS_HPP
