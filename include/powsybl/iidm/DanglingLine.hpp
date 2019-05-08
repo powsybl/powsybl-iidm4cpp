@@ -20,7 +20,7 @@ class VariantManagerHolder;
 class DanglingLine : public Injection {
 public:
     DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name,
-                 double p0, double q0, double r, double x, double g, double b, const std::string& m_ucteXnodeCode);
+                 double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode);
 
     ~DanglingLine() noexcept override = default;
 

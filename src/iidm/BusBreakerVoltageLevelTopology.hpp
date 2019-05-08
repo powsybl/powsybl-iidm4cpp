@@ -29,7 +29,7 @@ public:
 
     ~CalculatedBusTopology() noexcept = default;
 
-    stdcxx::Reference<MergedBus> getMergedBus(const std::string& busId, bool throwException);
+    stdcxx::Reference<MergedBus> getMergedBus(const std::string& id, bool throwException);
 
     stdcxx::Reference<MergedBus> getMergedBus(const stdcxx::Reference<ConfiguredBus>& bus);
 

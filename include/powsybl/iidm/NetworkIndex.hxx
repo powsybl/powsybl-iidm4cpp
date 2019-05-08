@@ -66,7 +66,7 @@ T& NetworkIndex::get(const std::string& id) const {
         throw PowsyblException(logging::format("Unable to find to the identifiable '%1%'", id));
     }
 
-    T* identifiable = dynamic_cast<T*>(it->second.get());
+    auto* identifiable = dynamic_cast<T*>(it->second.get());
     if (identifiable == nullptr) {
         throw PowsyblException(logging::format("Identifiable '%1%' is not a %2%", id, stdcxx::demangle<T>()));
     }
@@ -89,7 +89,7 @@ stdcxx::Reference<T> NetworkIndex::find(const std::string& id) const {
 
     const auto& it = m_objectsById.find(id);
     if (it != m_objectsById.end()) {
-        T* identifiable = dynamic_cast<T*>(it->second.get());
+        auto* identifiable = dynamic_cast<T*>(it->second.get());
         if (identifiable != nullptr) {
             return stdcxx::ref<T>(*identifiable);
         }

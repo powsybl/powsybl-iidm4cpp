@@ -12,4 +12,4 @@ set(UNIT_TEST_SOURCES
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 add_executable(unit-tests-math ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-math pthread ${GTEST_BOTH_LIBRARIES} iidm)
+target_link_libraries(unit-tests-math ${GTEST_BOTH_LIBRARIES} pthread iidm)

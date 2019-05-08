@@ -16,4 +16,4 @@ set(UNIT_TEST_SOURCES
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 add_executable(unit-tests-logging ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-logging pthread ${GTEST_BOTH_LIBRARIES} iidm)
+target_link_libraries(unit-tests-logging ${GTEST_BOTH_LIBRARIES} pthread iidm)

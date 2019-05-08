@@ -156,10 +156,10 @@ Generator& Generator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
     return *this;
 }
 
-Generator& Generator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
-    if (static_cast<bool>(regulatingTerminal)) {
-        checkRegulatingTerminal(*this, regulatingTerminal.get(), getNetwork());
-        m_regulatingTerminal = regulatingTerminal;
+Generator& Generator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal) {
+    if (static_cast<bool>(terminal)) {
+        checkRegulatingTerminal(*this, terminal.get(), getNetwork());
+        m_regulatingTerminal = terminal;
     } else {
         m_regulatingTerminal = stdcxx::ref(getTerminal());
     }
