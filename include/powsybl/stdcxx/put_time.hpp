@@ -8,18 +8,9 @@
 #ifndef POWSYBL_STDCXX_PUT_TIME_HPP
 #define POWSYBL_STDCXX_PUT_TIME_HPP
 
-#ifndef __GNUC__
-#    define HAS_PUT_TIME 1
-#else
-#    include <features.h>
-#    if __GNUC_PREREQ(5, 0)
-#        define HAS_PUT_TIME 1
-#    else
-#        define HAS_PUT_TIME 0
-#    endif  // __GNUC_PREREQ(5, 0)
-#endif  // __GNUC__
+#include <powsybl/stdcxx/features.hpp>
 
-#if HAS_PUT_TIME
+#if !defined(__GNUC__) || __GNUC_PREREQ(5, 0)
 
 #include <iomanip>
 
@@ -40,6 +31,6 @@ std::string put_time(const struct std::tm* time, const char* format);
 
 }  // namespace stdcxx
 
-#endif  // HAS_PUT_TIME
+#endif
 
 #endif  // POWSYBL_STDCXX_PUT_TIME_HPP

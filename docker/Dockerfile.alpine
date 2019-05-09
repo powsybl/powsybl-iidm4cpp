@@ -1,0 +1,29 @@
+#
+# Copyright (c) 2019, RTE (http://www.rte-france.com)
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Compilation environment
+#
+# cmake 3.13.0
+#
+# g++ 8.3.0
+# clang++ 5.0.2
+#
+# boost 1.67
+# gtest 1.8.1
+
+FROM alpine:3.9
+MAINTAINER "Mathieu BAGUE <mathieu.bague@rte-france.com>"
+
+# Install requirements
+RUN apk add --no-cache \
+    boost-dev \
+    clang \
+    cmake \
+    git \
+    g++ \
+    gtest \
+    gtest-dev \
+    make
