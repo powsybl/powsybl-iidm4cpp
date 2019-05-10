@@ -1,0 +1,30 @@
+#
+# Copyright (c) 2019, RTE (http://www.rte-france.com)
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+# Compilation environment
+#
+# cmake 2.8.12
+# g++ 4.8.5
+# clang++ 3.4.2
+# boost 1.53.0
+# gtest 1.6.0
+
+FROM centos:7.6.1810
+MAINTAINER "Mathieu BAGUE <mathieu.bague@rte-france.com>"
+
+# Install additional repositories
+RUN yum -y install epel-release
+
+# Install requirements
+RUN yum -y install \
+    boost-devel \
+    clang \
+    cmake \
+    git \
+    gcc-c++ \
+    gtest-devel \
+    make \
+&& yum clean all
