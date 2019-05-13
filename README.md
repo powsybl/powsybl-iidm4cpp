@@ -9,6 +9,18 @@ To build powsybl-iidm, you need:
 - [Boost](https://www.boost.org) development packages
 - [Google Test](https://github.com/google/googletest) development packages
 
+### Alpine
+Run the following command to install the requirements:
+```
+$> apk add boost-dev clang cmake g++ gtest gtest-dev make
+```
+
+### CentOS
+Run the following command to install the requirements:
+```
+$> yum -y install boost-devel clang cmake gcc-c++ gtest-devel make
+```
+
 ### Ubuntu
 Run the following command to install the requirements:
 ```
@@ -22,29 +34,8 @@ $> cmake .
 $> make install
 ```
 
-You can also create a docker image based on [Ubuntu](https://www.ubuntu.com), ready to build powsybl-iidm:
-```
-$> docker build -t powsybl-iidm:centos -f docker/Dockerfile.centos .
-```
+### Docker
 
-### CentOS
-Run the following command to install the requirements:
-```
-$> yum -y install boost-devel clang cmake gcc-c++ gtest-devel make
-```
+You can also use a pre-configured docker image for these environments. See the [readme](docker/README.md) to know how to
+build these images.
 
-You can also create a docker image based on [CentOS](https://www.centos.org), ready to build powsybl-iidm:
-```
-$> docker build -t powsybl-iidm:centos -f docker/Dockerfile.centos .
-```
-
-### Alpine
-Run the following command to install the requirements:
-```
-$> apk add boost-dev clang cmake g++ gtest gtest-dev make
-```
-
-You can also create a docker image based on [Alpine Linux](https://alpinelinux.org), ready to build powsybl-iidm:
-```
-$> docker build -t powsybl-iidm:alpine -f docker/Dockerfile.alpine .
-```
