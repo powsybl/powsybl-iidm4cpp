@@ -37,10 +37,5 @@ if (CODE_COVERAGE)
         DEPENDENCIES tests)
 endif ()
 
-set(CODE_CHECK TRUE CACHE BOOL "Enable code checking")
-if (CODE_CHECK)
-    include(ClangTidy)
-endif ()
-
 add_subdirectory(src)
 add_subdirectory(test)
