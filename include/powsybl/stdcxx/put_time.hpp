@@ -14,6 +14,8 @@
 
 #include <iomanip>
 
+#define HAS_PUT_TIME 1
+
 namespace stdcxx {
 
 using std::put_time;
@@ -24,6 +26,8 @@ using std::put_time;
 
 #include <ctime>
 #include <string>
+
+#define HAS_PUT_TIME 0
 
 namespace stdcxx {
 
