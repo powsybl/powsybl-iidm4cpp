@@ -7,9 +7,16 @@
 
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
 
+#include <powsybl/iidm/MinMaxReactiveLimits.hpp>
+#include <powsybl/stdcxx/make_unique.hpp>
+
 namespace powsybl {
 
 namespace iidm {
+
+ReactiveLimitsHolder::ReactiveLimitsHolder() :
+    m_reactiveLimits(stdcxx::make_unique<MinMaxReactiveLimits>()) {
+}
 
 MinMaxReactiveLimitsAdder ReactiveLimitsHolder::newMinMaxReactiveLimits() {
     return MinMaxReactiveLimitsAdder(*this);

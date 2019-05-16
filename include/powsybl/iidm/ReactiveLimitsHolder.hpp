@@ -34,7 +34,7 @@ public:
     ReactiveCapabilityCurveAdder newReactiveCapabilityCurve();
 
 protected:
-    ReactiveLimitsHolder() = default;
+    ReactiveLimitsHolder();
 
 private:
     void setReactiveLimits(std::unique_ptr<ReactiveLimits>&& limits);

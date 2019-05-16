@@ -5,11 +5,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <limits>
+
 #include <powsybl/iidm/MinMaxReactiveLimits.hpp>
 
 namespace powsybl {
 
 namespace iidm {
+
+MinMaxReactiveLimits::MinMaxReactiveLimits() :
+    m_minQ(std::numeric_limits<double>::lowest()),
+    m_maxQ(std::numeric_limits<double>::max()) {
+}
 
 MinMaxReactiveLimits::MinMaxReactiveLimits(double minQ, double maxQ) :
     m_minQ(minQ),
