@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/MinMaxReactiveLimits.hpp>
 #include <powsybl/iidm/NodeBreakerView.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -250,6 +251,36 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     gen.remove();
     POWSYBL_ASSERT_THROW(network.getGenerator("GEN1"), PowsyblException, "Unable to find to the identifiable 'GEN1'");
+}
+
+BOOST_AUTO_TEST_CASE(reactiveLimits) {
+    const Network& network = createGeneratorTestNetwork();
+    Generator& gen = network.getGenerator("GEN1");
+
+    BOOST_CHECK_NO_THROW(gen.getReactiveLimits<MinMaxReactiveLimits>());
+    gen.newReactiveCapabilityCurve()
+        .beginPoint()
+        .setP(1)
+        .setMinQ(15)
+        .setMaxQ(25)
+        .endPoint()
+        .beginPoint()
+        .setP(2)
+        .setMinQ(10)
+        .setMaxQ(20)
+        .endPoint()
+        .add();
+    BOOST_CHECK_NO_THROW(gen.getReactiveLimits<ReactiveCapabilityCurve>());
+    POWSYBL_ASSERT_THROW(gen.getReactiveLimits<MinMaxReactiveLimits>(), ValidationException,
+        "Generator 'GEN1': Incorrect reactive limits type MinMaxReactiveLimits, expected ReactiveCapabilityCurve");
+
+    gen.newMinMaxReactiveLimits()
+        .setMinQ(1)
+        .setMaxQ(2)
+        .add();
+    BOOST_CHECK_NO_THROW(gen.getReactiveLimits<MinMaxReactiveLimits>());
+    POWSYBL_ASSERT_THROW(gen.getReactiveLimits<ReactiveCapabilityCurve>(), ValidationException,
+        "Generator 'GEN1': Incorrect reactive limits type ReactiveCapabilityCurve, expected MinMaxReactiveLimits");
 }
 
 BOOST_AUTO_TEST_CASE(multivariant) {

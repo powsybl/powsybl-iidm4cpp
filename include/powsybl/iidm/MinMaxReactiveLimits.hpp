@@ -23,6 +23,8 @@ public: // ReactiveLimits
     double getMinQ(double p) const override;
 
 public:
+    MinMaxReactiveLimits();
+
     MinMaxReactiveLimits(double minQ, double maxQ);
 
     MinMaxReactiveLimits(const MinMaxReactiveLimits&) = default;
