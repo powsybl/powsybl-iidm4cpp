@@ -9,10 +9,77 @@ def maintainers = "mathieu.bague@rte-france.com"
 
 // Enable code-coverage only for the master branch
 def withSonar = (env.gitlabActionType == null) || (env.gitlabSourceBranch == "master")
-def buildType = withSonar ? "Debug" : "Release"
-def codeCoverage = withSonar ? "TRUE" : "FALSE"
 
-def buildWrapper = "LANG=C /home/jenkins/tools/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ./output"
+/**
+ * Build powsybl-iidm inside a docker image, using the specified compiler
+ */
+def build(os, compilerFamily, withQualityCheck, withCodeCoverage) {
+    // Define the docker image
+    def dockerImage = 'powsybl-iidm:' + os
+
+    // Define the C++ compiler
+    def compiler = null
+    switch (compilerFamily) {
+    case 'gcc':
+        compiler = 'g++'
+        break
+    case 'clang':
+        compiler = 'clang++'
+        break
+    default:
+        throw new IllegalArgumentException('Unsupported compiler family: ' + compilerFamily)
+    }
+
+    // Define the stage name
+    def stage = os + ' (' + compiler + ')'
+
+    // Define the build directory
+    def buildDirectory = 'build-' + os + '-' + compilerFamily
+
+    // Build options
+    def clangTidy = withQualityCheck ? 'clang-tidy' : ''
+    def buildType = withCodeCoverage ? 'Debug' : 'Release'
+    def codeCoverage = withCodeCoverage ? 'TRUE' : 'FALSE'
+    def dockerOptions = withCodeCoverage ? '-v /home/jenkins/tools/build-wrapper-linux-x86:/home/jenkins/tools' : ''
+    def buildWrapper = withCodeCoverage ? '/home/jenkins/tools/build-wrapper-linux-x86-64 --out-dir ./output' : ''
+
+    docker.image(dockerImage).inside(dockerOptions) { c ->
+
+        // Build
+        stageDevin(stage) {
+            dir(buildDirectory) {
+                // Remove old build directory
+                deleteDir()
+
+                // Compile and run tests
+                sh """
+                cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=${compiler} -DCMAKE_CXX_CLANG_TIDY=${clangTidy} ..
+                ${buildWrapper} make -j4
+                make tests
+                """
+
+                // Run tests, compute code coverage results and stash the reports
+                if (withCodeCoverage) {
+                    sh """
+                    make code-coverage
+
+                    # Clean non relevant files
+                    rm -f coverage/reports/#usr#*
+                    """
+                }
+            }
+        }
+    }
+
+    // Run sonar analysis
+    if (withCodeCoverage) {
+        stageDevin('Sonarqube') {
+            sonar {
+                useMaven = false
+            }
+        }
+    }
+}
 
 node('powsybl-rh72') {
 
@@ -21,51 +88,21 @@ node('powsybl-rh72') {
             gitCheckout {}
         }
 
-        stageDevin('GCC') {
-            dir('build') {
-                // Remove old build directory
-                deleteDir()
+        // Alpine
+        build('alpine', 'gcc', false, false)
+        build('alpine', 'clang', false, false)
 
-                sh """
-                cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=g++ ..
-                ${buildWrapper} make -j4
-                make tests
-                """
-            }
-        }
+        // CentOS
+        build('centos', 'gcc', false, false)
+        build('centos', 'clang', false, false)
 
-        /*
-        stageDevin('Clang') {
-            dir('build-clang') {
-                // Remove old build directory
-                deleteDir()
+        // Ubuntu
+        build('ubuntu', 'gcc', true, false)
+        build('ubuntu', 'clang', true, false)
 
-                sh """
-                cmake -DCMAKE_CXX_COMPILER=clang++ ..
-                make -j4
-                make tests
-                """
-            }
-        }
-        */
-
-        // Run tests and compute code coverage results
-        stageDevin('Code-coverage', withSonar) {
-            dir('build') {
-                sh """
-                make code-coverage
-
-                # Clean non relevant files
-                rm -f coverage/reports/#usr#*
-                """
-            }
-        }
-
-        // Run sonar analysis
-        stageDevin('Sonarqube', withSonar) {
-            sonar {
-                useMaven = "false"
-            }
+        // Sonar
+        if (withSonar) {
+            build('sonar', 'gcc', false, true)
         }
 
     } catch (Exception e) {

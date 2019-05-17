@@ -1,0 +1,28 @@
+#
+# Copyright (c) 2019, RTE (http://www.rte-france.com)
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+FROM centos:7.6.1810
+MAINTAINER "Mathieu BAGUE <mathieu.bague@rte-france.com>"
+
+# Install additional repositories
+RUN yum -y install epel-release
+
+# Install requirements
+RUN yum -y install \
+    boost-devel \
+    cmake \
+    git \
+    gcc-c++ \
+    make \
+    python-pip \
+    wget \
+&& yum clean all
+
+# Install gcovr
+RUN wget https://github.com/gcovr/gcovr/releases/download/3.4/gcovr-3.4-py2.py3-none-any.whl \
+&& pip install gcovr-3.4-py2.py3-none-any.whl \
+&& rm -f gcovr-3.4-py2.py3-none-any.whl

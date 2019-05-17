@@ -10,7 +10,7 @@ We provides several docker images to build powsybl-iidm. Supported environments 
 The Alpine image provides the following tools:
 - CMake 3.13.0
 - G++ 8.3.0
-- CLang 5.0.2
+- Clang 5.0.2
 - Boost 1.67
 
 To build the Alpine image, run the following command:
@@ -23,7 +23,7 @@ $> docker build -t powsybl-iidm:alpine -f docker/Dockerfile.alpine .
 The CentOS image provides the following tools:
 - CMake 2.8.12
 - G++ 4.8.5
-- CLang 3.4.2
+- Clang 3.4.2
 - Boost 1.53
 
 To build the CentOS image, run the following command:
@@ -31,12 +31,24 @@ To build the CentOS image, run the following command:
 $> docker build -t powsybl-iidm:centos -f docker/Dockerfile.centos .
 ```
 
+# Sonar
+The Sonar image is based on CentOS (7.6) and is used for sonar integration. It provides the following tools:
+- CMake 2.8.12
+- G++ 4.8.5
+- Gcovr 3.4
+- Boost 1.53
+
+To build the Sonar image, run the following command:
+```
+$> docker build -t powsybl-iidm:sonar -f docker/Dockerfile.sonar .
+```
+
 # Ubuntu
 
 The Ubuntu image provides the following tools:
 - CMake 3.10.2
-- G++ 5.5.0 / 6.5.0 / 7.4.0 / 8.3.0
-- CLang 3.9.1 / 4.0.1 / 6.0.0 / 7.0.0
+- G++ 7.4.0
+- Clang, Clang-tidy 6.0.0
 - Boost 1.65.1
 
 To build the Ubuntu image, run the following command:

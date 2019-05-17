@@ -5,8 +5,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <gtest/gtest.h>
-
 #include <powsybl/logging/ConsoleLogger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/logging/NoopLogger.hpp>

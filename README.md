@@ -23,7 +23,7 @@ $> yum -y install boost-devel clang cmake gcc-c++ make
 ### Ubuntu
 Run the following command to install the requirements:
 ```
-$> apt-get -y install clang cmake g++ libboost-dev make
+$> apt-get -y install clang cmake g++ libboost-all-dev make
 ```
 
 ### Docker

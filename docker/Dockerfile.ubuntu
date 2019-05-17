@@ -11,20 +11,11 @@ MAINTAINER "Mathieu BAGUE <mathieu.bague@rte-france.com>"
 # Install requirements
 RUN apt-get update \
 && apt-get -y install \
-    clang-3.9 \
-    clang-4.0 \
-    clang-5.0 \
-    clang-6.0 \
-    clang-7 \
-    clang-tidy-6.0 \
-    clang-tidy-7 \
+    clang \
+    clang-tidy \
     cmake \
     git \
-    g++-5 \
-    g++-6 \
-    g++-7 \
-    g++-8 \
-    libboost-dev \
+    g++ \
+    libboost-all-dev \
     make \
 && apt-get clean
-
