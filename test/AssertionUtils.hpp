@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_BOOSTASSERTIONUTILS_HPP
-#define POWSYBL_IIDM_BOOSTASSERTIONUTILS_HPP
+#ifndef POWSYBL_IIDM_ASSERTIONUTILS_HPP
+#define POWSYBL_IIDM_ASSERTIONUTILS_HPP
 
 #include <sstream>
 
@@ -60,4 +60,4 @@ bool isSameEnumValue(const T& val1, const T& val2) {
 #define POWSYBL_ASSERT_ENUM_EQ(left, right) \
 BOOST_TEST(isSameEnumValue((left), (right)));
 
-#endif  // POWSYBL_IIDM_BOOSTASSERTIONUTILS_HPP
+#endif  // POWSYBL_IIDM_ASSERTIONUTILS_HPP
