@@ -38,11 +38,35 @@ VariantManager::VariantManager(VariantManager&& variantManager) noexcept :
     m_variantArraySize(variantManager.m_variantArraySize) {
 }
 
+void VariantManager::allocateVariantArrayElements(unsigned long sourceIndex, const std::set<unsigned long>& recycled, const std::set<unsigned long>& overwritten) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<VariantManager>();
+    if (!recycled.empty()) {
+        for (auto& multiVariantObject : m_network.getStatefulObjects()) {
+            multiVariantObject.allocateVariantArrayElement(recycled, sourceIndex);
+        }
+        logger.trace("Recycling variant array indexes %1%", logging::toString(recycled));
+    }
+    if (!overwritten.empty()) {
+        for (auto& multiVariantObject : m_network.getStatefulObjects()) {
+            multiVariantObject.allocateVariantArrayElement(overwritten, sourceIndex);
+        }
+        logger.trace("Overwriting variant array indexes %1%", logging::toString(overwritten));
+    }
+}
+
 void VariantManager::cloneVariant(const std::string& sourceVariantId, const std::string& targetVariantId) {
-    cloneVariant(sourceVariantId, { targetVariantId });
+    cloneVariant(sourceVariantId, { targetVariantId }, false);
+}
+
+void VariantManager::cloneVariant(const std::string& sourceVariantId, const std::string& targetVariantId, bool mayOverwrite) {
+    cloneVariant(sourceVariantId, { targetVariantId }, mayOverwrite);
 }
 
 void VariantManager::cloneVariant(const std::string& sourceVariantId, const std::initializer_list<std::string>& targetVariantIds) {
+    cloneVariant(sourceVariantId, targetVariantIds, false);
+}
+
+void VariantManager::cloneVariant(const std::string& sourceVariantId, const std::initializer_list<std::string>& targetVariantIds, bool mayOverwrite) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<VariantManager>();
 
     if (targetVariantIds.size() == 0) {
@@ -57,11 +81,15 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
     unsigned long initVariantArraySize = m_variantArraySize;
     unsigned long extendedCount = 0;
     std::set<unsigned long> recycled;
+    std::set<unsigned long> overwritten;
     for (const auto& targetVariantId : targetVariantIds) {
         if (m_variantsById.find(targetVariantId) != m_variantsById.end()) {
-            throw PowsyblException(logging::format("Target variant '%1%' already exists", targetVariantId));
-        }
-        if (m_unusedIndexes.empty()) {
+            if (mayOverwrite) {
+                overwritten.insert(m_variantsById[targetVariantId]);
+            } else {
+                throw PowsyblException(logging::format("Target variant '%1%' already exists", targetVariantId));
+            }
+        } else if (m_unusedIndexes.empty()) {
             // extend variant array size
             m_variantsById.insert(std::make_pair(targetVariantId, m_variantArraySize));
             ++m_variantArraySize;
@@ -76,12 +104,8 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
         }
     }
 
-    if (!recycled.empty()) {
-        for (auto& multiVariantObject : m_network.getStatefulObjects()) {
-            multiVariantObject.allocateVariantArrayElement(recycled, sourceIndex);
-        }
-        logger.trace("Recycling variant array indexes %1%", logging::toString(recycled));
-    }
+    allocateVariantArrayElements(sourceIndex, recycled, overwritten);
+
     if (extendedCount > 0) {
         for (auto& multiVariantObject : m_network.getStatefulObjects()) {
             multiVariantObject.extendVariantArraySize(initVariantArraySize, extendedCount, sourceIndex);
