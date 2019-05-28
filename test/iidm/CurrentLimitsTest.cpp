@@ -574,16 +574,16 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(5), 3.0), AssertionError, "Unexpected side value: 5");
     POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(6)), AssertionError, "Unexpected side value: 6");
 
-    BOOST_CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(std::numeric_limits<int32_t>::max(), line.getOverloadDuration());
     t1.setP(4.5);
-    BOOST_CHECK_EQUAL(3UL, line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(3, line.getOverloadDuration());
     t1.setP(1.0);
     t2.setP(10.5);
-    BOOST_CHECK_EQUAL(2UL, line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(2, line.getOverloadDuration());
     t1.setP(6.0);
-    BOOST_CHECK_EQUAL(1UL, line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(1, line.getOverloadDuration());
     t1.setP(4.5);
-    BOOST_CHECK_EQUAL(2UL, line.getOverloadDuration());
+    BOOST_CHECK_EQUAL(2, line.getOverloadDuration());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_BRANCH_HPP
 #define POWSYBL_IIDM_BRANCH_HPP
 
+#include <cstdint>
 #include <ostream>
 
 #include <powsybl/iidm/Connectable.hpp>
@@ -84,7 +85,7 @@ public:
 
     stdcxx::Reference<CurrentLimits> getCurrentLimits2();
 
-    unsigned long getOverloadDuration() const;
+    int32_t getOverloadDuration() const;
 
     Side getSide(const Terminal& terminal) const;
 

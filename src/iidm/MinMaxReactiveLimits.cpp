@@ -14,7 +14,7 @@ namespace powsybl {
 namespace iidm {
 
 MinMaxReactiveLimits::MinMaxReactiveLimits() :
-    m_minQ(std::numeric_limits<double>::lowest()),
+    m_minQ(-std::numeric_limits<double>::max()),
     m_maxQ(std::numeric_limits<double>::max()) {
 }
 

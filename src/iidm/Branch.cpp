@@ -126,12 +126,12 @@ const std::unique_ptr<CurrentLimits>& Branch::getCurrentLimitsPtr(const Side& si
     }
 }
 
-unsigned long Branch::getOverloadDuration() const {
+int32_t Branch::getOverloadDuration() const {
     std::unique_ptr<Overload> o1 = checkTemporaryLimits1();
     std::unique_ptr<Overload> o2 = checkTemporaryLimits2();
 
-    unsigned long duration1 = o1 ? o1->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
-    unsigned long duration2 = o2 ? o2->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
+    int32_t duration1 = o1 ? o1->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<int32_t>::max();
+    int32_t duration2 = o2 ? o2->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<int32_t>::max();
 
     return std::min(duration1, duration2);
 }
