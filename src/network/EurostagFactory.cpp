@@ -10,10 +10,14 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/GeneratorAdder.hpp>
+#include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
+#include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/iidm/VoltageLevelAdder.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 
 namespace powsybl {
 
@@ -95,7 +99,7 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .setG2(0.0)
         .setB2(386E-6 / 2)
         .add();
-    /*
+
     int zb380 = 380 * 380 / 100;
     p1.newTwoWindingsTransformer()
         .setId("NGEN_NHV1")
@@ -108,12 +112,12 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .setConnectableBus2(nhv1.getId())
         .setRatedU2(400.0)
         .setR(0.24 / 1300 * zb380)
-        .setX(Math.sqrt(10 * 10 - 0.24 * 0.24) / 1300 * zb380)
+        .setX(std::sqrt(10 * 10 - 0.24 * 0.24) / 1300 * zb380)
         .setG(0.0)
         .setB(0.0)
         .add();
     int zb150 = 150 * 150 / 100;
-    TwoWindingsTransformer nhv2Nload = p2.newTwoWindingsTransformer()
+    iidm::TwoWindingsTransformer& nhv2Nload = p2.newTwoWindingsTransformer()
         .setId("NHV2_NLOAD")
         .setVoltageLevel1(vlhv2.getId())
         .setBus1(nhv2.getId())
@@ -124,7 +128,7 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .setConnectableBus2(nload.getId())
         .setRatedU2(158.0)
         .setR(0.21 / 1000 * zb150)
-        .setX(Math.sqrt(18 * 18 - 0.21 * 0.21) / 1000 * zb150)
+        .setX(std::sqrt(18 * 18 - 0.21 * 0.21) / 1000 * zb150)
         .setG(0.0)
         .setB(0.0)
         .add();
@@ -155,9 +159,9 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .setLoadTapChangingCapabilities(true)
         .setRegulating(true)
         .setTargetV(158.0)
-        .setRegulationTerminal(nhv2Nload.getTerminal2())
+        .setRegulationTerminal(stdcxx::ref(nhv2Nload.getTerminal2()))
         .add();
-    */
+
     vlload.newLoad()
         .setId("LOAD")
         .setBus(nload.getId())
@@ -184,12 +188,11 @@ iidm::Network EurostagFactory::createTutorial1Network() {
     return network;
 }
 
-/*
-public static Network createWithCurrentLimits() {
-    Network network = EurostagTutorialExample1Factory.create();
-    network.setCaseDate(DateTime.parse("2018-01-01T11:00:00+01:00"));
+iidm::Network EurostagFactory::createWithCurrentLimits() {
+    iidm::Network network = EurostagFactory::createTutorial1Network();
+    //TODO(mathbagu) network.setCaseDate(stdcxx::DateTime::parse("2018-01-01T11:00:00+01:00"));
 
-    network.getSubstation("P2").setCountry(Country.BE);
+    network.getSubstation("P2").setCountry(iidm::Country::BE);
 
     network.getVoltageLevel("VLGEN").newGenerator()
         .setId("GEN2")
@@ -203,10 +206,10 @@ public static Network createWithCurrentLimits() {
         .setTargetQ(301.0)
         .add();
 
-    ((Bus) network.getIdentifiable("NHV1")).setV(380).getVoltageLevel().setLowVoltageLimit(400).setHighVoltageLimit(500);
-    ((Bus) network.getIdentifiable("NHV2")).setV(380).getVoltageLevel().setLowVoltageLimit(300).setHighVoltageLimit(500);
+    network.get<iidm::Bus>("NHV1").setV(380).getVoltageLevel().setLowVoltageLimit(400).setHighVoltageLimit(500);
+    network.get<iidm::Bus>("NHV2").setV(380).getVoltageLevel().setLowVoltageLimit(300).setHighVoltageLimit(500);
 
-    Line line = network.getLine("NHV1_NHV2_1");
+    iidm::Line& line = network.getLine("NHV1_NHV2_1");
     line.getTerminal1().setP(560.0).setQ(550.0);
     line.getTerminal2().setP(560.0).setQ(550.0);
     line.newCurrentLimits1().setPermanentLimit(500).add();
@@ -224,10 +227,10 @@ public static Network createWithCurrentLimits() {
         .endTemporaryLimit()
         .add();
 
-    line = network.getLine("NHV1_NHV2_2");
-    line.getTerminal1().setP(560.0).setQ(550.0);
-    line.getTerminal2().setP(560.0).setQ(550.0);
-    line.newCurrentLimits1()
+    iidm::Line& line2 = network.getLine("NHV1_NHV2_2");
+    line2.getTerminal1().setP(560.0).setQ(550.0);
+    line2.getTerminal2().setP(560.0).setQ(550.0);
+    line2.newCurrentLimits1()
         .setPermanentLimit(1100)
         .beginTemporaryLimit()
         .setName("20'")
@@ -235,11 +238,10 @@ public static Network createWithCurrentLimits() {
         .setValue(1200)
         .endTemporaryLimit()
         .add();
-    line.newCurrentLimits2().setPermanentLimit(500).add();
+    line2.newCurrentLimits2().setPermanentLimit(500).add();
 
     return network;
 }
-*/
 
 }  // namespace network
 

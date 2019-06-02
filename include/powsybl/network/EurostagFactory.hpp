@@ -18,6 +18,8 @@ class EurostagFactory {
 public:
     static iidm::Network createTutorial1Network();
 
+    static iidm::Network createWithCurrentLimits();
+
 public:
     EurostagFactory() = delete;
 };
