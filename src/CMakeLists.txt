@@ -107,6 +107,7 @@ set(IIDM_SOURCES
 
     network/EurostagFactory.cpp
 
+    stdcxx/DateTime.cpp
     stdcxx/demangle.cpp
     stdcxx/put_time.cpp
 )

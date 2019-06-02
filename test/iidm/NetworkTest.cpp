@@ -214,6 +214,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("id", network.getName());
     BOOST_CHECK_EQUAL("sourceFormat", network.getSourceFormat());
     BOOST_CHECK_EQUAL(0, network.getForecastDistance());
+
+    stdcxx::DateTime caseDate = stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00");
+    network.setCaseDate(caseDate);
+    BOOST_CHECK_EQUAL(caseDate, network.getCaseDate());
 }
 
 BOOST_AUTO_TEST_CASE(forecastDistance) {

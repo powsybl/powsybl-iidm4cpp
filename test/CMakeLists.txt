@@ -8,11 +8,13 @@
 add_subdirectory(iidm)
 add_subdirectory(logging)
 add_subdirectory(math)
+add_subdirectory(stdcxx)
 
 add_custom_target(tests
     COMMAND unit-tests-iidm
     COMMAND unit-tests-logging
     COMMAND unit-tests-math
+    COMMAND unit-tests-stdcxx
 
     COMMENT "Running unit tests..."
 )

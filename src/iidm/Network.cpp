@@ -36,8 +36,8 @@ namespace iidm {
 
 Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, Container::Type::NETWORK),
-    m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_forecastDistance(0),
+    m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_variantManager(*this) {
 }
 
@@ -55,6 +55,10 @@ BusbarSection& Network::getBusbarSection(const std::string& id) const {
 
 unsigned long Network::getBusbarSectionCount() const {
     return getObjectCount<BusbarSection>();
+}
+
+const stdcxx::DateTime& Network::getCaseDate() const {
+    return m_caseDate;
 }
 
 stdcxx::CReference<Connectable> Network::getConnectable(const std::string& id) const {
@@ -238,6 +242,12 @@ TieLineAdder Network::newTieLine() {
 
 void Network::remove(Identifiable& identifiable) {
     m_networkIndex.remove(identifiable);
+}
+
+
+Network& Network::setCaseDate(const stdcxx::DateTime& caseDate) {
+    m_caseDate = caseDate;
+    return *this;
 }
 
 Network& Network::setForecastDistance(int forecastDistance) {

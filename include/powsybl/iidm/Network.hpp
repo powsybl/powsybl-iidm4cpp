@@ -14,6 +14,8 @@
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 
+#include <powsybl/stdcxx/DateTime.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -78,9 +80,6 @@ public:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     T& get(const std::string& id) const;
 
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
-    unsigned long getObjectCount() const;
-
     Branch& getBranch(const std::string& id) const;
 
     unsigned long getBranchCount() const;
@@ -88,6 +87,8 @@ public:
     BusbarSection& getBusbarSection(const std::string& id) const;
 
     unsigned long getBusbarSectionCount() const;
+
+    const stdcxx::DateTime& getCaseDate() const;
 
     stdcxx::CReference<Connectable> getConnectable(const std::string& id) const;
 
@@ -124,6 +125,9 @@ public:
     Load& getLoad(const std::string& id) const;
 
     unsigned long getLoadCount() const;
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    unsigned long getObjectCount() const;
 
     ShuntCompensator& getShuntCompensator(const std::string& id) const;
 
@@ -172,15 +176,19 @@ public:
 
     void remove(Identifiable& identifiable);
 
+    Network& setCaseDate(const stdcxx::DateTime& caseDate);
+
     Network& setForecastDistance(int forecastDistance);
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    std::string m_sourceFormat;
+    stdcxx::DateTime m_caseDate;
 
     int m_forecastDistance;
+
+    std::string m_sourceFormat;
 
     NetworkIndex m_networkIndex;
 
