@@ -13,6 +13,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
+#include <powsybl/stdcxx/make_unique.hpp>
 
 namespace stdcxx {
 
@@ -22,7 +23,9 @@ DateTime DateTime::parse(const std::string& date) {
     boost::local_time::local_date_time localDateTime(boost::local_time::special_values::not_a_date_time);
 
     std::istringstream buffer(date);
-    buffer.imbue(std::locale(std::locale::classic(), new boost::local_time::local_time_input_facet(s_iso8601)));
+
+    auto facet = stdcxx::make_unique<boost::local_time::local_time_input_facet>(s_iso8601);
+    buffer.imbue(std::locale(std::locale::classic(), facet.release()));
 
     std::string dummy;
     if ((buffer >> localDateTime) && (buffer >> dummy).eof()) {
@@ -43,8 +46,10 @@ DateTime::DateTime(const boost::local_time::local_date_time& dateTime) :
 std::string DateTime::toString() const {
     static std::string s_iso8601 = "%Y-%m-%dT%H:%M:%S%F%Q";
 
+    auto facet = stdcxx::make_unique<boost::local_time::local_time_facet>(s_iso8601.c_str());
+
     std::ostringstream oss;
-    oss.imbue(std::locale(std::locale::classic(), new boost::local_time::local_time_facet(s_iso8601.c_str())));
+    oss.imbue(std::locale(std::locale::classic(), facet.release()));
     oss << m_dateTime;
 
     return oss.str();
