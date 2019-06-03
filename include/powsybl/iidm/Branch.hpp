@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_BRANCH_HPP
 #define POWSYBL_IIDM_BRANCH_HPP
 
-#include <ostream>
+#include <iosfwd>
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>

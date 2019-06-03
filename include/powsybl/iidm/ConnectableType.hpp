@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_CONNECTABLETYPE_HPP
 #define POWSYBL_IIDM_CONNECTABLETYPE_HPP
 
-#include <ostream>
+#include <iosfwd>
 
 namespace powsybl {
 

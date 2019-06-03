@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_BUSTERMINAL_HPP
 #define POWSYBL_IIDM_BUSTERMINAL_HPP
 
-#include <ostream>
+#include <iosfwd>
 #include <string>
 #include <vector>
 

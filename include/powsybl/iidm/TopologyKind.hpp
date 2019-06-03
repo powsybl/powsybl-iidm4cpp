@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_TOPOLOGYKIND_HPP
 #define POWSYBL_IIDM_TOPOLOGYKIND_HPP
 
-#include <ostream>
+#include <iosfwd>
 
 namespace powsybl {
 
