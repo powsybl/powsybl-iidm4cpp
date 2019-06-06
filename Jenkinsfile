@@ -97,7 +97,7 @@ node('powsybl-rh72') {
         build('centos', 'clang', false, false)
 
         // Ubuntu
-        build('ubuntu', 'gcc', true, false)
+        build('ubuntu', 'gcc', false, false)
         build('ubuntu', 'clang', true, false)
 
         // Sonar
