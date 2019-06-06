@@ -126,7 +126,8 @@ Reference<T> ref(const Reference<U>& reference) {
  * Specialization of std::equal_to for std::reference_wrapper
  */
 template <typename T>
-struct equal_to {
+class equal_to {
+public:
     bool operator()(const std::reference_wrapper<T>& reference1, const std::reference_wrapper<T>& reference2) const {
         return std::addressof(reference1.get()) == std::addressof(reference2.get());
     }
@@ -136,7 +137,8 @@ struct equal_to {
  * Specialization of std::hash for std::reference_wrapper
  */
 template <typename T>
-struct hash<std::reference_wrapper<T>, false> {
+class hash<std::reference_wrapper<T>, false> {
+public:
     std::size_t operator()(const std::reference_wrapper<T>& value) const {
         return std::hash<T*>()(std::addressof(value.get()));
     }
@@ -146,7 +148,8 @@ struct hash<std::reference_wrapper<T>, false> {
  * Specialization of std::less for std::reference_wrapper
  */
 template <typename T>
-struct less {
+class less {
+public:
     bool operator()(const std::reference_wrapper<T>& reference1, const std::reference_wrapper<T>& reference2) const {
         return std::addressof(reference1.get()) < std::addressof(reference2.get());
     }

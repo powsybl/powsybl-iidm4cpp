@@ -61,7 +61,7 @@ public:
     friend bool operator!=(const DateTime& dt1, const DateTime& dt2);
 
 private:
-    DateTime(const boost::local_time::local_date_time& dateTime);
+    explicit DateTime(const boost::local_time::local_date_time& dateTime);
 
 private:
     boost::local_time::local_date_time m_dateTime;

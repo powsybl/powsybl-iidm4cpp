@@ -16,7 +16,8 @@ namespace stdcxx {
  * @tparam T the type of the enum
  */
 template <typename T, bool = std::is_enum<T>::value>
-struct hash {
+class hash {
+public:
     std::size_t operator()(const T& value) const {
         using type = typename std::underlying_type<T>::type;
         return std::hash<type>{}(static_cast<type>(value));
@@ -28,7 +29,8 @@ struct hash {
  * @tparam T the type of the class
  */
 template <typename T>
-struct hash<T, false> {
+class hash<T, false> {
+public:
     std::size_t operator()(const T& value) const {
         return std::hash<T>{}(value);
     }

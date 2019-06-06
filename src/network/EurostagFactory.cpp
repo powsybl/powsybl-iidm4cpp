@@ -69,8 +69,7 @@ iidm::Network EurostagFactory::createTutorial1Network() {
     iidm::Bus& nload = vlload.getBusBreakerView().newBus()
         .setId("NLOAD")
         .add();
-    network.newLine()
-        .setId("NHV1_NHV2_1")
+    iidm::LineAdder adder = network.newLine()
         .setVoltageLevel1(vlhv1.getId())
         .setBus1(nhv1.getId())
         .setConnectableBus1(nhv1.getId())
@@ -82,23 +81,9 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .setG1(0.0)
         .setB1(386E-6 / 2)
         .setG2(0.0)
-        .setB2(386E-6 / 2)
-        .add();
-    network.newLine()
-        .setId("NHV1_NHV2_2")
-        .setVoltageLevel1(vlhv1.getId())
-        .setBus1(nhv1.getId())
-        .setConnectableBus1(nhv1.getId())
-        .setVoltageLevel2(vlhv2.getId())
-        .setBus2(nhv2.getId())
-        .setConnectableBus2(nhv2.getId())
-        .setR(3.0)
-        .setX(33.0)
-        .setG1(0.0)
-        .setB1(386E-6 / 2)
-        .setG2(0.0)
-        .setB2(386E-6 / 2)
-        .add();
+        .setB2(386E-6 / 2);
+    adder.setId("NHV1_NHV2_1").add();
+    adder.setId("NHV1_NHV2_2").add();
 
     int zb380 = 380 * 380 / 100;
     p1.newTwoWindingsTransformer()
@@ -135,7 +120,7 @@ iidm::Network EurostagFactory::createTutorial1Network() {
     double a = (158.0 / 150.0) / (400.0 / 380.0);
     nhv2Nload.newRatioTapChanger()
         .beginStep()
-        .setRho(0.85f * a)
+        .setRho(0.85 * a)
         .setR(0.0)
         .setX(0.0)
         .setG(0.0)
@@ -149,7 +134,7 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .setB(0.0)
         .endStep()
         .beginStep()
-        .setRho(1.15f * a)
+        .setRho(1.15 * a)
         .setR(0.0)
         .setX(0.0)
         .setG(0.0)
@@ -190,7 +175,7 @@ iidm::Network EurostagFactory::createTutorial1Network() {
 
 iidm::Network EurostagFactory::createWithCurrentLimits() {
     iidm::Network network = EurostagFactory::createTutorial1Network();
-    //TODO(mathbagu) network.setCaseDate(stdcxx::DateTime::parse("2018-01-01T11:00:00+01:00"));
+    network.setCaseDate(stdcxx::DateTime::parse("2018-01-01T11:00:00+01:00"));
 
     network.getSubstation("P2").setCountry(iidm::Country::BE);
 

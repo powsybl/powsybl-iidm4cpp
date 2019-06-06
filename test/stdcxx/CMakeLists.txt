@@ -8,6 +8,7 @@
 set(UNIT_TEST_SOURCES
     stdcxx.cpp
     DateTimeTest.cpp
+    DemangleTest.cpp
     )
 
 add_executable(unit-tests-stdcxx ${UNIT_TEST_SOURCES})
