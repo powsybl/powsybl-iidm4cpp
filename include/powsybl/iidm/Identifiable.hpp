@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include <powsybl/iidm/Properties.hpp>
 #include <powsybl/iidm/Validable.hpp>
 
 namespace powsybl {
@@ -31,6 +32,12 @@ public:
 
     const std::string& getName() const;
 
+    const Properties& getProperties() const;
+
+    Properties& getProperties();
+
+    bool hasProperty() const;
+
 protected:
     Identifiable(Identifiable&&) = default;
 
@@ -43,6 +50,8 @@ private:
     std::string m_id;
 
     std::string m_name;
+
+    Properties m_properties;
 };
 
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable);

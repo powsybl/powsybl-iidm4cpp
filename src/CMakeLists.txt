@@ -65,6 +65,7 @@ set(IIDM_SOURCES
     iidm/PhaseTapChanger.cpp
     iidm/PhaseTapChangerAdder.cpp
     iidm/PhaseTapChangerStep.cpp
+    iidm/Properties.cpp
     iidm/RatioTapChanger.cpp
     iidm/RatioTapChangerAdder.cpp
     iidm/RatioTapChangerStep.cpp

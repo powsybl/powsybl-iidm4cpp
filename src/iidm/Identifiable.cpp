@@ -40,6 +40,18 @@ const std::string& Identifiable::getName() const {
     return m_name;
 }
 
+const Properties& Identifiable::getProperties() const {
+    return m_properties;
+}
+
+Properties& Identifiable::getProperties() {
+    return m_properties;
+}
+
+bool Identifiable::hasProperty() const {
+    return m_properties.isEmpty();
+}
+
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable) {
     stream << logging::toString(identifiable);
 

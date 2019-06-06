@@ -24,6 +24,7 @@ set(UNIT_TEST_SOURCES
     NetworkTest.cpp
     NodeBreakerVoltageLevelTest.cpp
     PhaseTapChangerTest.cpp
+    PropertiesTest.cpp
     RatioTapChangerTest.cpp
     ReactiveLimitsTest.cpp
     ShuntCompensatorTest.cpp
