@@ -54,7 +54,7 @@ def build(os, compilerFamily, withQualityCheck, withCodeCoverage) {
                 // Compile and run tests
                 sh """
                 cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=${compiler} -DCMAKE_CXX_CLANG_TIDY=${clangTidy} ..
-                ${buildWrapper} make -j4
+                ${buildWrapper} make -j8
                 make tests
                 """
 
