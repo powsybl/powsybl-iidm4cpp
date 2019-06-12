@@ -7,7 +7,9 @@
 
 #include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
 #include <powsybl/iidm/StaticVarCompensatorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>

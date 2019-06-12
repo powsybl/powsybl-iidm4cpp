@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationException.hpp>

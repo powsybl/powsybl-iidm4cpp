@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>

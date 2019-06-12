@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
 #include <powsybl/iidm/PhaseTapChangerStep.hpp>

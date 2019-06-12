@@ -12,6 +12,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/NodeBreakerView.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>

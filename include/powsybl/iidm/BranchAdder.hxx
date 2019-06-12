@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_BRANCHADDER_HXX
 
 #include <powsybl/iidm/BranchAdder.hpp>
+#include <powsybl/iidm/TerminalBuilder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/logging/MessageFormat.hpp>

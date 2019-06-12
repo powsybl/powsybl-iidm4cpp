@@ -8,9 +8,8 @@
 #ifndef POWSYBL_IIDM_VOLTAGELEVEL_HPP
 #define POWSYBL_IIDM_VOLTAGELEVEL_HPP
 
+#include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Container.hpp>
-#include <powsybl/iidm/GeneratorAdder.hpp>
-#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -23,7 +22,9 @@ class BatteryAdder;
 class BusBreakerView;
 class BusView;
 class DanglingLineAdder;
+class GeneratorAdder;
 class LccConverterStationAdder;
+class LoadAdder;
 class Network;
 class NodeBreakerView;
 class ShuntCompensatorAdder;

@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/MinMaxReactiveLimits.hpp>
 #include <powsybl/iidm/NodeBreakerView.hpp>
 #include <powsybl/iidm/Substation.hpp>
