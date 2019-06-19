@@ -15,6 +15,10 @@ Bus::Bus(const std::string& id) :
     Identifiable(id, id) {
 }
 
+Bus::Bus(const std::string& id, const std::string& name) :
+    Identifiable(id, name) {
+}
+
 const std::string& Bus::getTypeDescription() const {
     static std::string s_typeDescription = "Bus";
 

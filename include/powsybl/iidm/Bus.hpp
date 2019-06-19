@@ -44,6 +44,8 @@ public:
 protected:
     explicit Bus(const std::string& id);
 
+    Bus(const std::string& id, const std::string& name);
+
 private: // Identifiable
     const std::string& getTypeDescription() const override;
 };

@@ -22,8 +22,8 @@ namespace powsybl {
 
 namespace iidm {
 
-ConfiguredBus::ConfiguredBus(const std::string& id, BusBreakerVoltageLevel& voltageLevel) :
-    Bus(id),
+ConfiguredBus::ConfiguredBus(const std::string& id, const std::string& name, BusBreakerVoltageLevel& voltageLevel) :
+    Bus(id, name),
     m_voltageLevel(voltageLevel),
     m_network(voltageLevel.getNetwork()),
     m_terminals(m_network.get().getVariantManager().getVariantArraySize()),

@@ -339,6 +339,8 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     POWSYBL_ASSERT_THROW(busBreakerView.removeSwitch(""), AssertionError, "Not implemented");
 
     auto& testBus = busBreakerView.getBus("VL_0").get();
+    BOOST_CHECK_EQUAL("VL_0", testBus.getId());
+    BOOST_CHECK_EQUAL("VL_0", testBus.getName());
     BOOST_CHECK_CLOSE(7.7, testBus.setAngle(7.7).setV(8.8).getAngle(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(8.8, testBus.getV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2ul, testBus.getConnectedTerminalCount());
@@ -461,6 +463,10 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     BOOST_CHECK_EQUAL(1ul, vl.getBusView().getBuses().size());
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
     POWSYBL_ASSERT_REF_TRUE(busView.getMergedBus("BBS"));
+    const auto& calculatedBus = busView.getBus("VL_0").get();
+    BOOST_CHECK_EQUAL("VL_0", calculatedBus.getId());
+    BOOST_CHECK_EQUAL("VL_0", calculatedBus.getName());
+
     sw.setOpen(true);
     BOOST_CHECK_EQUAL(2ul, busView.getBuses().size());
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_1"));
@@ -619,6 +625,10 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     const auto& cBusBreakerView = cTerminal.getBusBreakerView();
     BOOST_TEST(stdcxx::areSame(busBreakerView, cBusBreakerView));
     BOOST_TEST(stdcxx::areSame(busBreakerView.getBus().get(), busBreakerView.getConnectableBus().get()));
+    const auto& calculatedBus = busBreakerView.getBus().get();
+    BOOST_CHECK_EQUAL("VL_7", calculatedBus.getId());
+    BOOST_CHECK_EQUAL("VL_7", calculatedBus.getName());
+
 
     POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus("BUS1"), AssertionError, "Not implemented");
 
@@ -626,6 +636,9 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     const auto& cBusView = cTerminal.getBusView();
     BOOST_TEST(stdcxx::areSame(busView, cBusView));
     BOOST_TEST(stdcxx::areSame(busView.getBus().get(), busView.getConnectableBus().get()));
+    const auto& calculatedBus2 = busView.getBus().get();
+    BOOST_CHECK_EQUAL("VL_6", calculatedBus2.getId());
+    BOOST_CHECK_EQUAL("VL_6", calculatedBus2.getName());
 
     BOOST_TEST(stdcxx::areSame(terminal.getNodeBreakerView(), cTerminal.getNodeBreakerView()));
     BOOST_CHECK_EQUAL(2ul, terminal.getNodeBreakerView().getNode());

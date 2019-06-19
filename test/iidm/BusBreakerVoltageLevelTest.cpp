@@ -37,8 +37,10 @@ BOOST_AUTO_TEST_CASE(BusTest) {
 
     Bus& bus = voltageLevel.getBusBreakerView().newBus()
         .setId("BUS")
+        .setName("BUS_NAME")
         .add();
     BOOST_CHECK_EQUAL("BUS", bus.getId());
+    BOOST_CHECK_EQUAL("BUS_NAME", bus.getName());
     BOOST_TEST(stdcxx::areSame(voltageLevel, bus.getVoltageLevel()));
     BOOST_CHECK_EQUAL(0ul, bus.getConnectedTerminalCount());
     BOOST_TEST(std::isnan(bus.getV()));
@@ -304,6 +306,8 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
     stdcxx::Reference<Bus> mergedBus1 = vl.getBusView().getMergedBus("BUS1");
     stdcxx::Reference<Bus> mergedBus2 = vl.getBusView().getMergedBus("BUS2");
     BOOST_TEST(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
+    BOOST_CHECK_EQUAL("VL_0", mergedBus1.get().getId());
+    BOOST_CHECK_EQUAL("VL_0", mergedBus1.get().getName());
 
     sw.setOpen(true);
     const VoltageLevel& vlTest = vl;
@@ -350,6 +354,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
 
     vl.getBusBreakerView().newBus()
         .setId("BUS1")
+        .setName("BUS1_NAME")
         .add();
 
     Load& l1 = vl.newLoad()
@@ -360,6 +365,35 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
         .setLoadType(LoadType::UNDEFINED)
         .setP0(50.0)
         .setQ0(40.0)
+        .add();
+
+    VoltageLevel& vl2 = s.newVoltageLevel()
+        .setId("VL2")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalVoltage(400.0)
+        .setLowVoltageLimit(380.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    vl2.getBusBreakerView().newBus()
+        .setId("BUS2")
+        .setName("BUS2_NAME")
+        .add();
+
+    network.newLine()
+        .setId("VL_VL2")
+        .setVoltageLevel1(vl.getId())
+        .setBus1("BUS1")
+        .setConnectableBus1("BUS1")
+        .setVoltageLevel2(vl2.getId())
+        .setBus2("BUS2")
+        .setConnectableBus2("BUS2")
+        .setR(3.0)
+        .setX(33.0)
+        .setG1(1.0)
+        .setB1(0.2)
+        .setG2(2.0)
+        .setB2(0.4)
         .add();
 
     Terminal& terminal = l1.getTerminal();
@@ -391,10 +425,18 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     const auto& cBusBreakerView = cTerminal.getBusBreakerView();
     BOOST_TEST(stdcxx::areSame(busBreakerView, cBusBreakerView));
     POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus(""), PowsyblException, "busId is empty");
+    //TODO(thiebarr) POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus("UNKNOWN"), PowsyblException, "Bus 'UNKNOWN' not found in the voltage level 'VL'");
     busBreakerView.setConnectableBus("BUS1");
+    const auto& configuredBus = busBreakerView.getBus().get();
+    BOOST_CHECK_EQUAL("BUS1", configuredBus.getId());
+    BOOST_CHECK_EQUAL("BUS1_NAME", configuredBus.getName());
+
 
     BOOST_TEST(stdcxx::areSame(terminal.getBusView(), cTerminal.getBusView()));
-    BOOST_TEST(!terminal.getBusView().getBus());
+    POWSYBL_ASSERT_REF_TRUE(terminal.getBusView().getBus());
+    const auto& mergedBus = terminal.getBusView().getBus().get();
+    BOOST_CHECK_EQUAL("VL_0", mergedBus.getId());
+    BOOST_CHECK_EQUAL("VL_0", mergedBus.getName());
 
     POWSYBL_ASSERT_THROW(terminal.getNodeBreakerView(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(cTerminal.getNodeBreakerView(), AssertionError, "Not implemented");

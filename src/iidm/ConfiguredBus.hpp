@@ -42,7 +42,7 @@ public: // Bus
     Bus& setV(double v) override;
 
 public:
-    ConfiguredBus(const std::string& id, BusBreakerVoltageLevel& voltageLevel);
+    ConfiguredBus(const std::string& id, const std::string& name, BusBreakerVoltageLevel& voltageLevel);
 
     ~ConfiguredBus() noexcept override = default;
 
