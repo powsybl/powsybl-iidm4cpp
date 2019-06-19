@@ -15,7 +15,7 @@ namespace powsybl {
 
 namespace iidm {
 
-Substation::Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso, const std::set<std::string>& geographicalTags) :
+Substation::Substation(Network& network, const std::string& id, const std::string& name, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags) :
     Container(id, name, Container::Type::SUBSTATION),
     m_network(network),
     m_country(country),
@@ -32,7 +32,7 @@ void Substation::addVoltageLevel(VoltageLevel& voltageLevel) {
     m_voltageLevels.emplace_back(std::ref(voltageLevel));
 }
 
-const Country& Substation::getCountry() const {
+const stdcxx::optional<Country>& Substation::getCountry() const {
     return m_country;
 }
 
@@ -86,7 +86,7 @@ VoltageLevelAdder Substation::newVoltageLevel() {
     return VoltageLevelAdder(*this);
 }
 
-Substation& Substation::setCountry(const Country& country) {
+Substation& Substation::setCountry(const stdcxx::optional<Country>& country) {
     m_country = country;
     return *this;
 }

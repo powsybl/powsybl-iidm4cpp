@@ -81,7 +81,10 @@ stdcxx::Reference<Connectable> Network::getConnectable(const std::string& id) {
 unsigned long Network::getCountryCount() const {
     std::unordered_set<Country, stdcxx::hash<Country>> countries;
     for (auto it = cbegin<Substation>(); it != cend<Substation>(); ++it) {
-        countries.emplace((*it).getCountry());
+        const stdcxx::optional<Country>& country = (*it).getCountry();
+        if (country) {
+         countries.emplace(*country);
+        }
     }
 
     return countries.size();

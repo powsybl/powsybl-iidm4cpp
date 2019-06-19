@@ -152,23 +152,19 @@ BOOST_AUTO_TEST_CASE(constructor) {
     Substation& substation = network.getSubstation("S1");
     BOOST_CHECK_EQUAL("S1", substation.getId());
     BOOST_CHECK_EQUAL("S1_NAME", substation.getName());
-    POWSYBL_ASSERT_ENUM_EQ(Country::FR, substation.getCountry());
+    POWSYBL_ASSERT_ENUM_EQ(Country::FR, *substation.getCountry());
     BOOST_CHECK_EQUAL("TSO", substation.getTso());
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
     Network network("id", "test");
-
-    SubstationAdder substationAdder = network.newSubstation();
-    substationAdder
-        .setId("S");
-    POWSYBL_ASSERT_THROW(substationAdder.add(), ValidationException, "Substation 'S': Country is not set");
     BOOST_CHECK_EQUAL(0ul, network.getSubstationCount());
 
-    substationAdder.setCountry(Country::FR);
-    substationAdder.setGeographicalTags({"FR", "DE"});
-    substationAdder.addGeographicalTag("IT");
-    BOOST_CHECK_NO_THROW(substationAdder.add());
+    network.newSubstation()
+        .setId("S")
+        .setGeographicalTags({"FR", "DE"})
+        .addGeographicalTag("IT")
+        .add();
     BOOST_CHECK_EQUAL(1ul, network.getSubstationCount());
 
     Substation& substation = network.getSubstation("S");
@@ -176,7 +172,10 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(substation, cSubstation));
     BOOST_TEST(stdcxx::areSame(network, substation.getNetwork()));
     BOOST_TEST(stdcxx::areSame(network, cSubstation.getNetwork()));
-    POWSYBL_ASSERT_ENUM_EQ(Country::BE, substation.setCountry(Country::BE).setTso("TSO2").getCountry());
+    BOOST_TEST(!substation.getCountry());
+    POWSYBL_ASSERT_ENUM_EQ(Country::BE, *substation.setCountry(Country::BE).setTso("TSO2").getCountry());
+    substation.setCountry(stdcxx::optional<Country>());
+    BOOST_TEST(!substation.getCountry());
     BOOST_CHECK_EQUAL("TSO2", substation.getTso());
     BOOST_CHECK_EQUAL(3, substation.getGeographicalTags().size());
     substation.addGeographicalTag("LU");

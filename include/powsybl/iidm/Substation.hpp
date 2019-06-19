@@ -28,13 +28,13 @@ class TwoWindingsTransformerAdder;
 
 class Substation : public Container {
 public:
-    Substation(Network& network, const std::string& id, const std::string& name, const Country& country, const std::string& tso, const std::set<std::string>& geographicalTags);
+    Substation(Network& network, const std::string& id, const std::string& name, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags);
 
     ~Substation() noexcept override = default;
 
     Substation& addGeographicalTag(const std::string& geographicalTag);
 
-    const Country& getCountry() const;
+    const stdcxx::optional<Country>& getCountry() const;
 
     const std::set<std::string>& getGeographicalTags() const;
 
@@ -54,7 +54,7 @@ public:
 
     VoltageLevelAdder newVoltageLevel();
 
-    Substation& setCountry(const Country& country);
+    Substation& setCountry(const stdcxx::optional<Country>& country);
 
     Substation& setTso(const std::string& tso);
 
@@ -69,7 +69,7 @@ private:
 private:
     stdcxx::Reference<Network> m_network;
 
-    Country m_country;
+    stdcxx::optional<Country> m_country;
 
     std::string m_tso;
 

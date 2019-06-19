@@ -186,6 +186,10 @@ Network createTestNetwork() {
         .setTso("TSO")
         .add();
 
+    network.newSubstation()
+        .setId("S4")
+        .add();
+
     vl1.newDanglingLine()
         .setId("DL1")
         .setName("DL1_NAME")
@@ -231,8 +235,11 @@ BOOST_AUTO_TEST_CASE(forecastDistance) {
 BOOST_AUTO_TEST_CASE(country) {
     const Network& network = createTestNetwork();
 
-    BOOST_CHECK_EQUAL(3, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(4, network.getSubstationCount());
     BOOST_CHECK_EQUAL(2, network.getCountryCount());
+
+    network.getSubstation("S2").setCountry(stdcxx::optional<Country>());
+    BOOST_CHECK_EQUAL(1, network.getCountryCount());
 }
 
 BOOST_AUTO_TEST_CASE(branch) {
