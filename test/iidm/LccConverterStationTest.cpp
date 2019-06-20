@@ -59,6 +59,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_EQUAL("LCC1_NAME", lcc.getName());
     BOOST_CHECK_EQUAL(lcc.getName(), hvdc.getName());
     BOOST_CHECK_EQUAL(ConnectableType::HVDC_CONVERTER_STATION, lcc.getType());
+    std::ostringstream oss;
+    oss << lcc.getType();
+    BOOST_CHECK_EQUAL("HVDC_CONVERTER_STATION", oss.str());
     BOOST_CHECK_EQUAL(hvdc.getType(), lcc.getType());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::LCC, lcc.getHvdcType());
     POWSYBL_ASSERT_ENUM_EQ(lcc.getHvdcType(), hvdc.getHvdcType());

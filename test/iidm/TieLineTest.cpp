@@ -79,7 +79,7 @@ Network createTieLineTestNetwork() {
         .setId("VL3_BUS1")
         .add();
 
-    VoltageLevel& vl4 = substation.newVoltageLevel()
+    VoltageLevel& vl4 = substation2.newVoltageLevel()
         .setId("VL4")
         .setName("VL4_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
@@ -137,6 +137,9 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("TL_VL1_VL3", tieLine.getId());
     BOOST_CHECK_EQUAL("", tieLine.getName());
     BOOST_CHECK_EQUAL(ConnectableType::LINE, tieLine.getType());
+    std::ostringstream oss;
+    oss << tieLine.getType();
+    BOOST_CHECK_EQUAL("LINE", oss.str());
     BOOST_TEST(tieLine.isTieLine());
     BOOST_CHECK_CLOSE(13.0, tieLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(143.0, tieLine.getX(), std::numeric_limits<double>::epsilon());

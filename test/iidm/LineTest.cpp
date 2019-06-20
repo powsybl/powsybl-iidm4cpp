@@ -121,6 +121,9 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("VL1_VL3", line.getId());
     BOOST_CHECK_EQUAL("", line.getName());
     BOOST_CHECK_EQUAL(ConnectableType::LINE, line.getType());
+    std::ostringstream oss;
+    oss << line.getType();
+    BOOST_CHECK_EQUAL("LINE", oss.str());
     BOOST_TEST(!line.isTieLine());
     BOOST_CHECK_CLOSE(3.0, line.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line.getX(), std::numeric_limits<double>::epsilon());

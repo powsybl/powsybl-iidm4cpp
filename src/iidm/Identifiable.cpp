@@ -49,7 +49,7 @@ Properties& Identifiable::getProperties() {
 }
 
 bool Identifiable::hasProperty() const {
-    return m_properties.isEmpty();
+    return !m_properties.isEmpty();
 }
 
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable) {

@@ -49,6 +49,9 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
     BOOST_CHECK_EQUAL("BBS", bbs.getId());
     BOOST_CHECK_EQUAL("BBS_NAME", bbs.getName());
     BOOST_CHECK_EQUAL(ConnectableType::BUSBAR_SECTION, bbs.getType());
+    std::ostringstream oss;
+    oss << bbs.getType();
+    BOOST_CHECK_EQUAL("BUSBAR_SECTION", oss.str());
     BOOST_TEST(stdcxx::areSame(voltageLevel, bbs.getTerminal().getVoltageLevel()));
 
     BusbarSection& bbs2 = network.getBusbarSection("BBS");
@@ -56,9 +59,9 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
     BOOST_TEST(std::isnan(bbs.getAngle()));
     BOOST_TEST(std::isnan(bbs.getV()));
 
-    BusbarSectionAdder adder = voltageLevel.getNodeBreakerView().newBusbarSection()
-        .setId("DUPLICATE")
-        .setNode(0);
+    BusbarSectionAdder adder = voltageLevel.getNodeBreakerView().newBusbarSection().setId("DUPLICATE");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Busbar section 'DUPLICATE': Node is not set");
+    adder.setNode(0);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Busbar section 'DUPLICATE': An equipment (BBS) is already connected to the node 0 of voltage level VL2");
 
     BOOST_CHECK_EQUAL(2, network.getBusbarSectionCount());
@@ -140,9 +143,11 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
 
     auto swAdder = voltageLevel.getNodeBreakerView().newSwitch()
         .setId("BK2")
-        .setName("BK2_NAME")
-        .setNode1(1)
-        .setNode2(2);
+        .setName("BK2_NAME");
+    POWSYBL_ASSERT_THROW(swAdder.add(), ValidationException, "Switch 'BK2': First connection node is not set");
+    swAdder.setNode1(0);
+    POWSYBL_ASSERT_THROW(swAdder.add(), ValidationException, "Switch 'BK2': Second connection node is not set");
+    swAdder.setNode2(1);
     POWSYBL_ASSERT_THROW(swAdder.add(), ValidationException, "Switch 'BK2': Kind is not set");
     BOOST_CHECK_EQUAL(1, voltageLevel.getNodeBreakerView().getSwitchCount());
     BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());

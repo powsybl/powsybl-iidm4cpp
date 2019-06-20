@@ -93,7 +93,7 @@ Switch& Switch::setOpen(bool open) {
 
 Switch& Switch::setRetained(bool retained) {
     if (m_voltageLevel.get().getTopologyKind() != TopologyKind::NODE_BREAKER) {
-        throw ValidationException(m_voltageLevel.get(), logging::format("retain status is not modifiable in a non node/breaker voltage level"));
+        throw ValidationException(*this, logging::format("retain status is not modifiable in a non node/breaker voltage level"));
     }
 
     unsigned long index = m_voltageLevel.get().getNetwork().getVariantIndex();

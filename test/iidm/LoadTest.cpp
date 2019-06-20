@@ -32,6 +32,9 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("LOAD1", load.getId());
     BOOST_CHECK_EQUAL("LOAD1_NAME", load.getName());
     BOOST_CHECK_EQUAL(ConnectableType::LOAD, load.getType());
+    std::ostringstream oss;
+    oss << load.getType();
+    BOOST_CHECK_EQUAL("LOAD", oss.str());
     BOOST_CHECK_EQUAL(LoadType::UNDEFINED, load.getLoadType());
     BOOST_CHECK_CLOSE(50.0, load.getP0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(40.0, load.getQ0(), std::numeric_limits<double>::epsilon());

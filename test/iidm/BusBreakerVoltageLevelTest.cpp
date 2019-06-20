@@ -77,14 +77,16 @@ BOOST_AUTO_TEST_CASE(SwitchTest) {
         .setId("BUS2")
         .add();
 
-    Switch& aSwitch = voltageLevel.getBusBreakerView().newSwitch()
+    auto swAdder = voltageLevel.getBusBreakerView().newSwitch()
         .setId("SW")
         .setName("SW_NAME")
         .setFictitious(false)
-        .setOpen(false)
-        .setBus1("BUS1")
-        .setBus2("BUS2")
-        .add();
+        .setOpen(false);
+    POWSYBL_ASSERT_THROW(swAdder.add(), ValidationException, "Switch 'SW': First connection bus is not set");
+    swAdder.setBus1("BUS1");
+    POWSYBL_ASSERT_THROW(swAdder.add(), ValidationException, "Switch 'SW': Second connection bus is not set");
+    swAdder.setBus2("BUS2");
+    Switch& aSwitch = swAdder.add();
     BOOST_CHECK_EQUAL("SW", aSwitch.getId());
     BOOST_CHECK_EQUAL("SW_NAME", aSwitch.getName());
     BOOST_TEST(stdcxx::areSame(voltageLevel, aSwitch.getVoltageLevel()));
@@ -97,7 +99,7 @@ BOOST_AUTO_TEST_CASE(SwitchTest) {
     BOOST_TEST(aSwitch.isFictitious());
     BOOST_TEST(aSwitch.isOpen());
 
-    POWSYBL_ASSERT_THROW(aSwitch.setRetained(true), ValidationException, "Voltage level 'VL1': retain status is not modifiable in a non node/breaker voltage level");
+    POWSYBL_ASSERT_THROW(aSwitch.setRetained(true), ValidationException, "Switch 'SW': retain status is not modifiable in a non node/breaker voltage level");
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {

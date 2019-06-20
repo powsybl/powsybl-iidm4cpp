@@ -93,6 +93,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_EQUAL("SVC1", svc.getId());
     BOOST_CHECK_EQUAL("SVC1_NAME", svc.getName());
     BOOST_CHECK_EQUAL(ConnectableType::STATIC_VAR_COMPENSATOR, svc.getType());
+    std::ostringstream oss;
+    oss << svc.getType();
+    BOOST_CHECK_EQUAL("STATIC_VAR_COMPENSATOR", oss.str());
     BOOST_CHECK_CLOSE(-0.01, svc.getBmin(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.02, svc.getBmax(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(90.0, svc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());

@@ -230,6 +230,9 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3", transformer.getId());
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3_NAME", transformer.getName());
     BOOST_CHECK_EQUAL(ConnectableType::THREE_WINDINGS_TRANSFORMER, transformer.getType());
+    std::ostringstream oss;
+    oss << transformer.getType();
+    BOOST_CHECK_EQUAL("THREE_WINDINGS_TRANSFORMER", oss.str());
 
     BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
     BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation()));

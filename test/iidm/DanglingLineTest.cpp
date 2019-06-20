@@ -104,6 +104,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
     BOOST_CHECK_EQUAL("DL1_NAME", danglingLine.getName());
     BOOST_CHECK_EQUAL(ConnectableType::DANGLING_LINE, danglingLine.getType());
+    std::ostringstream oss;
+    oss << danglingLine.getType();
+    BOOST_CHECK_EQUAL("DANGLING_LINE", oss.str());
     BOOST_CHECK_CLOSE(1.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, danglingLine.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.0, danglingLine.getP0(), std::numeric_limits<double>::epsilon());

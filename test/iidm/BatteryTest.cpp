@@ -104,6 +104,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_EQUAL("BAT1", battery.getId());
     BOOST_CHECK_EQUAL("BAT1_NAME", battery.getName());
     BOOST_CHECK_EQUAL(ConnectableType::BATTERY, battery.getType());
+    std::ostringstream oss;
+    oss << battery.getType();
+    BOOST_CHECK_EQUAL("BATTERY", oss.str());
     BOOST_CHECK_CLOSE(100.0, battery.getP0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-200.0, battery.getMinP(), std::numeric_limits<double>::epsilon());

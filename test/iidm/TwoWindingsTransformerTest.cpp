@@ -224,6 +224,9 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
     BOOST_CHECK_EQUAL("", transformer.getName());
     BOOST_CHECK_EQUAL(ConnectableType::TWO_WINDINGS_TRANSFORMER, transformer.getType());
+    std::ostringstream oss;
+    oss << transformer.getType();
+    BOOST_CHECK_EQUAL("TWO_WINDINGS_TRANSFORMER", oss.str());
     BOOST_CHECK_CLOSE(3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, transformer.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.0, transformer.getG(), std::numeric_limits<double>::epsilon());

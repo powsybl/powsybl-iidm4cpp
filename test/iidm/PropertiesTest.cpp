@@ -75,6 +75,13 @@ BOOST_AUTO_TEST_CASE(RemoveProperty) {
         suffix++;
     }
 
+    suffix = '1';
+    std::for_each(props.cbegin(), props.cend(), [&suffix] (const std::pair<std::string, std::string>& prop) {
+        BOOST_CHECK_EQUAL(std::string("key") + suffix, prop.first);
+        BOOST_CHECK_EQUAL(std::string("value") + suffix, prop.second);
+        suffix++;
+    });
+
     props.clear();
     BOOST_CHECK_EQUAL(0UL, props.size());
     BOOST_CHECK_EQUAL(true, props.isEmpty());
@@ -108,12 +115,16 @@ BOOST_AUTO_TEST_CASE(GetProperty) {
 BOOST_AUTO_TEST_CASE(networkProperties) {
     Network n("test", "test");
 
+    BOOST_TEST(!n.hasProperty());
     BOOST_CHECK_EQUAL(n.getProperties().size(), 0UL);
 
     n.getProperties().set("key1", "value1").set("key2", "value2");
+    BOOST_TEST(n.hasProperty());
     BOOST_CHECK_EQUAL(n.getProperties().size(), 2UL);
 
     BOOST_CHECK_EQUAL(n.getProperties().get("key1"), "value1");
+    const Network& cNet = n;
+    BOOST_CHECK_EQUAL(cNet.getProperties().get("key1"), "value1");
 
     POWSYBL_ASSERT_THROW(n.getProperties().get("key3"),
                          powsybl::PowsyblException, "Property key3 does not exist");

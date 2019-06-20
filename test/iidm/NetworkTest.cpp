@@ -213,7 +213,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     POWSYBL_ASSERT_THROW(Network("", ""), PowsyblException, "Invalid id");
     POWSYBL_ASSERT_THROW(Network("id", ""), ValidationException, "Network 'id': Source format is empty");
 
-    Network network("id", "sourceFormat");
+    Network n("id", "sourceFormat");
+    Network network(std::move(n));
     BOOST_CHECK_EQUAL("id", network.getId());
     BOOST_CHECK_EQUAL("id", network.getName());
     BOOST_CHECK_EQUAL("sourceFormat", network.getSourceFormat());

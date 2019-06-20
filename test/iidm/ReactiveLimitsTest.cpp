@@ -31,21 +31,21 @@ BOOST_AUTO_TEST_CASE(MinMaxReactiveLimitsTest) {
 
     MinMaxReactiveLimitsAdder adder = mock.newMinMaxReactiveLimits();
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Minimum reactive power is not set");
-    adder.setMinQ(2);
+    adder.setMinQ(2.0);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Maximum reactive power is not set");
-    adder.setMaxQ(1);
+    adder.setMaxQ(1.0);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Maximum reactive power is expected to be greater than or equal to minimum reactive power");
 
-    adder.setMinQ(1)
-        .setMaxQ(2)
+    adder.setMinQ(1.0)
+        .setMaxQ(2.0)
         .add();
 
     auto& limits = mock.getReactiveLimits<MinMaxReactiveLimits>();
     POWSYBL_ASSERT_ENUM_EQ(ReactiveLimitsKind::MIN_MAX, limits.getKind());
-    BOOST_CHECK_EQUAL(1ul, limits.getMinQ());
-    BOOST_CHECK_EQUAL(1ul, limits.getMinQ(0));
-    BOOST_CHECK_EQUAL(2ul, limits.getMaxQ());
-    BOOST_CHECK_EQUAL(2ul, limits.getMaxQ(0));
+    BOOST_CHECK_CLOSE(1.0, limits.getMinQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, limits.getMinQ(0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, limits.getMaxQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, limits.getMaxQ(0), std::numeric_limits<double>::epsilon());
 
     POWSYBL_ASSERT_THROW(mock.getReactiveLimits<ReactiveCapabilityCurve>(), ValidationException,
         "Incorrect reactive limits type ReactiveCapabilityCurve, expected MinMaxReactiveLimits");
@@ -61,15 +61,15 @@ BOOST_AUTO_TEST_CASE(ReactiveCapabilityCurveTest) {
     POWSYBL_ASSERT_THROW(pointAdder.endPoint(), ValidationException, "P is not set");
     pointAdder.setP(stdcxx::nan());
     POWSYBL_ASSERT_THROW(pointAdder.endPoint(), ValidationException, "P is not set");
-    pointAdder.setP(0);
+    pointAdder.setP(0.0);
     POWSYBL_ASSERT_THROW(pointAdder.endPoint(), ValidationException, "min Q is not set");
     pointAdder.setMinQ(stdcxx::nan());
     POWSYBL_ASSERT_THROW(pointAdder.endPoint(), ValidationException, "min Q is not set");
-    pointAdder.setMinQ(-10);
+    pointAdder.setMinQ(-10.0);
     POWSYBL_ASSERT_THROW(pointAdder.endPoint(), ValidationException, "max Q is not set");
     pointAdder.setMaxQ(stdcxx::nan());
     POWSYBL_ASSERT_THROW(pointAdder.endPoint(), ValidationException, "max Q is not set");
-    pointAdder.setMaxQ(10);
+    pointAdder.setMaxQ(10.0);
     pointAdder.endPoint();
 
     ReactiveCapabilityCurveAdder::PointAdder pointAdder2 = adder.beginPoint()
@@ -92,18 +92,34 @@ BOOST_AUTO_TEST_CASE(ReactiveCapabilityCurveTest) {
 
     auto& limits = mock.getReactiveLimits<ReactiveCapabilityCurve>();
     POWSYBL_ASSERT_ENUM_EQ(ReactiveLimitsKind::CURVE, limits.getKind());
-    BOOST_CHECK_EQUAL(3ul, limits.getPointCount());
-    BOOST_CHECK_EQUAL(0, limits.getMinP());
-    BOOST_CHECK_EQUAL(-10, limits.getMinQ(0));
-    BOOST_CHECK_EQUAL(15, limits.getMinQ(1));
-    BOOST_CHECK_EQUAL(12.5, limits.getMinQ(1.5));
-    BOOST_CHECK_EQUAL(10, limits.getMinQ(3.5));
-    BOOST_CHECK_EQUAL(2, limits.getMaxP());
-    BOOST_CHECK_EQUAL(10, limits.getMaxQ(0));
-    BOOST_CHECK_EQUAL(10, limits.getMaxQ(-1.5));
-    BOOST_CHECK_EQUAL(22.5, limits.getMaxQ(1.5));
+    BOOST_CHECK_EQUAL(3UL, limits.getPointCount());
+    BOOST_CHECK_CLOSE(0.0, limits.getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-10.0, limits.getMinQ(-1.5), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-10.0, limits.getMinQ(0.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(15.0, limits.getMinQ(1.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(12.5, limits.getMinQ(1.5), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(10.0, limits.getMinQ(2.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(10.0, limits.getMinQ(3.5), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, limits.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(10.0, limits.getMaxQ(-1.5), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(10.0, limits.getMaxQ(0.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(25.0, limits.getMaxQ(1.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(22.5, limits.getMaxQ(1.5), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, limits.getMaxQ(2.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, limits.getMaxQ(3.5), std::numeric_limits<double>::epsilon());
 
-    BOOST_CHECK_EQUAL(10, limits.getMinQ(4));
+    const std::map<double, ReactiveCapabilityCurve::Point>& actual = limits.getPoints();
+    std::map<double, ReactiveCapabilityCurve::Point> expected = { { 0.0, { 0.0, -10.0, 10.0 } }, { 1.0, { 1.0, 15.0, 25.0 } }, { 2.0, { 2.0, 10.0, 20.0 } } };
+    BOOST_REQUIRE_EQUAL(actual.size(), expected.size());
+    auto itE = expected.begin();
+    for (auto itA = actual.begin(); itA != actual.end(); ++itA, ++itE) {
+        BOOST_CHECK_CLOSE(itA->first, itE->first, std::numeric_limits<double>::epsilon());
+        const ReactiveCapabilityCurve::Point& actualP = itA->second;
+        const ReactiveCapabilityCurve::Point& expectedP = itE->second;
+        BOOST_CHECK_CLOSE(actualP.getP(), expectedP.getP(), std::numeric_limits<double>::epsilon());
+        BOOST_CHECK_CLOSE(actualP.getMinQ(), expectedP.getMinQ(), std::numeric_limits<double>::epsilon());
+        BOOST_CHECK_CLOSE(actualP.getMaxQ(), expectedP.getMaxQ(), std::numeric_limits<double>::epsilon());
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

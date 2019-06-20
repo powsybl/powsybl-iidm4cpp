@@ -140,6 +140,9 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
     BOOST_CHECK_EQUAL(ConnectableType::SHUNT_COMPENSATOR, shunt.getType());
+    std::ostringstream oss;
+    oss << shunt.getType();
+    BOOST_CHECK_EQUAL("SHUNT_COMPENSATOR", oss.str());
     BOOST_CHECK_CLOSE(12.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2ul, shunt.getCurrentSectionCount());
     BOOST_CHECK_EQUAL(3ul, shunt.getMaximumSectionCount());

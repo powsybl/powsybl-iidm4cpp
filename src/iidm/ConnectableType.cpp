@@ -20,12 +20,13 @@ namespace logging {
  */
 template <>
 std::string toString(const iidm::ConnectableType& value) {
-    static std::array<std::string, 10> s_typeNames {{
+    static std::array<std::string, 11> s_typeNames {{
         "BUSBAR_SECTION",
         "LINE",
         "TWO_WINDINGS_TRANSFORMER",
         "THREE_WINDINGS_TRANSFORMER",
         "GENERATOR",
+        "BATTERY",
         "LOAD",
         "SHUNT_COMPENSATOR",
         "DANGLING_LINE",

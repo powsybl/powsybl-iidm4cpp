@@ -27,7 +27,7 @@ SwitchAdder::SwitchAdder(VoltageLevel& voltageLevel) :
 
 Switch& SwitchAdder::add() {
     checkOptional(*this, m_node1, "First connection node is not set");
-    checkOptional(*this, m_node2, "First connection node is not set");
+    checkOptional(*this, m_node2, "Second connection node is not set");
     checkOptional(*this, m_kind, "Kind is not set");
 
     auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel());

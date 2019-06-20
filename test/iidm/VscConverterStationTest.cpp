@@ -72,6 +72,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
     BOOST_CHECK_EQUAL(vsc.getName(), hvdc.getName());
     BOOST_CHECK_EQUAL(ConnectableType::HVDC_CONVERTER_STATION, vsc.getType());
+    std::ostringstream oss;
+    oss << vsc.getType();
+    BOOST_CHECK_EQUAL("HVDC_CONVERTER_STATION", oss.str());
     BOOST_CHECK_EQUAL(hvdc.getType(), vsc.getType());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
     POWSYBL_ASSERT_ENUM_EQ(vsc.getHvdcType(), hvdc.getHvdcType());
