@@ -44,21 +44,21 @@ public:
 
     ~TwoWindingsTransformer() noexcept override = default;
 
-    double getB();
+    double getB() const;
 
-    double getG();
+    double getG() const;
 
-    double getR();
+    double getR() const;
 
-    double getRatedU1();
+    double getRatedU1() const;
 
-    double getRatedU2();
+    double getRatedU2() const;
 
     stdcxx::CReference<Substation> getSubstation() const;
 
     stdcxx::Reference<Substation>& getSubstation();
 
-    double getX();
+    double getX() const;
 
     TwoWindingsTransformer& setB(double b);
 

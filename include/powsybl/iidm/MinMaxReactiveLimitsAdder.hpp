@@ -32,9 +32,9 @@ public:
 private:
     ReactiveLimitsHolder& m_owner;
 
-    stdcxx::optional<double> m_minQ;
+    double m_minQ;
 
-    stdcxx::optional<double> m_maxQ;
+    double m_maxQ;
 };
 
 }  // namespace iidm

@@ -38,11 +38,11 @@ public:
     private:
         ReactiveCapabilityCurveAdder& m_adder;
 
-        stdcxx::optional<double> m_p;
+        double m_p;
 
-        stdcxx::optional<double> m_minQ;
+        double m_minQ;
 
-        stdcxx::optional<double> m_maxQ;
+        double m_maxQ;
     };
 
 public:

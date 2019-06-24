@@ -47,11 +47,11 @@ private:
 private:
     Substation& m_substation;
 
-    stdcxx::optional<double> m_highVoltageLimit;
+    double m_highVoltageLimit;
 
-    stdcxx::optional<double> m_lowVoltageLimit;
+    double m_lowVoltageLimit;
 
-    stdcxx::optional<double> m_nominalVoltage;
+    double m_nominalVoltage;
 
     stdcxx::optional<TopologyKind> m_topologyKind;
 

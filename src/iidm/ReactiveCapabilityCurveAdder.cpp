@@ -20,7 +20,10 @@ namespace powsybl {
 namespace iidm {
 
 ReactiveCapabilityCurveAdder::PointAdder::PointAdder(ReactiveCapabilityCurveAdder& adder) :
-    m_adder(adder) {
+    m_adder(adder),
+    m_p(stdcxx::nan()),
+    m_minQ(stdcxx::nan()),
+    m_maxQ(stdcxx::nan()) {
 }
 
 ReactiveCapabilityCurveAdder& ReactiveCapabilityCurveAdder::PointAdder::endPoint() {
@@ -30,7 +33,7 @@ ReactiveCapabilityCurveAdder& ReactiveCapabilityCurveAdder::PointAdder::endPoint
     checkOptional(owner, m_minQ, "min Q is not set");
     checkOptional(owner, m_maxQ, "max Q is not set");
 
-    return m_adder.addPoint(ReactiveCapabilityCurve::Point(*m_p, *m_minQ, *m_maxQ));
+    return m_adder.addPoint(ReactiveCapabilityCurve::Point(m_p, m_minQ, m_maxQ));
 }
 
 ReactiveCapabilityCurveAdder::PointAdder& ReactiveCapabilityCurveAdder::PointAdder::setMaxQ(double maxQ) {

@@ -18,7 +18,9 @@ namespace powsybl {
 namespace iidm {
 
 MinMaxReactiveLimitsAdder::MinMaxReactiveLimitsAdder(ReactiveLimitsHolder& owner) :
-    m_owner(owner) {
+    m_owner(owner),
+    m_minQ(stdcxx::nan()),
+    m_maxQ(stdcxx::nan()) {
 }
 
 MinMaxReactiveLimitsAdder& MinMaxReactiveLimitsAdder::setMaxQ(double maxQ) {
@@ -36,11 +38,11 @@ MinMaxReactiveLimits& MinMaxReactiveLimitsAdder::add() {
 
     checkOptional(owner, m_minQ, "Minimum reactive power is not set");
     checkOptional(owner, m_maxQ, "Maximum reactive power is not set");
-    if (*m_maxQ < *m_minQ) {
+    if (m_maxQ < m_minQ) {
         throw ValidationException(owner, "Maximum reactive power is expected to be greater than or equal to minimum reactive power");
     }
 
-    std::unique_ptr<ReactiveLimits> limits = stdcxx::make_unique<MinMaxReactiveLimits>(*m_minQ, *m_maxQ);
+    std::unique_ptr<ReactiveLimits> limits = stdcxx::make_unique<MinMaxReactiveLimits>(m_minQ, m_maxQ);
     m_owner.setReactiveLimits(std::move(limits));
 
     return m_owner.getReactiveLimits<MinMaxReactiveLimits>();

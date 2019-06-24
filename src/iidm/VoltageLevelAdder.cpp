@@ -19,23 +19,26 @@ namespace powsybl {
 namespace iidm {
 
 VoltageLevelAdder::VoltageLevelAdder(Substation& substation) :
-    m_substation(substation) {
+    m_substation(substation),
+    m_highVoltageLimit(stdcxx::nan()),
+    m_lowVoltageLimit(stdcxx::nan()),
+    m_nominalVoltage(stdcxx::nan()) {
 }
 
 VoltageLevel& VoltageLevelAdder::add() {
+    // TODO(thiebarr) : check that there are not another voltage level with same base voltage
+    checkNominalVoltage(*this, m_nominalVoltage);
+    checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
     checkOptional(*this, m_topologyKind, "TopologyKind is not set");
-    checkOptional(*this, m_nominalVoltage, "Nominal voltage is not set");
-    checkOptional(*this, m_lowVoltageLimit, "Low voltage limit is not set");
-    checkOptional(*this, m_highVoltageLimit, "High voltage limit is not set");
 
     std::unique_ptr<VoltageLevel> ptrVoltageLevel;
     switch (*m_topologyKind) {
         case TopologyKind::NODE_BREAKER:
-            ptrVoltageLevel = stdcxx::make_unique<NodeBreakerVoltageLevel>(getId(), getName(), m_substation, *m_nominalVoltage, *m_lowVoltageLimit, *m_highVoltageLimit);
+            ptrVoltageLevel = stdcxx::make_unique<NodeBreakerVoltageLevel>(getId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
             break;
 
         case TopologyKind::BUS_BREAKER:
-            ptrVoltageLevel = stdcxx::make_unique<BusBreakerVoltageLevel>(getId(), getName(), m_substation, *m_nominalVoltage, *m_lowVoltageLimit, *m_highVoltageLimit);
+            ptrVoltageLevel = stdcxx::make_unique<BusBreakerVoltageLevel>(getId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
             break;
 
         default:

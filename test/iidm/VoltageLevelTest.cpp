@@ -40,31 +40,28 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(380, vl1.getNominalVoltage(), std::numeric_limits<double>::epsilon());
 
     Substation& s1 = network.getSubstation("S1");
-    VoltageLevelAdder adder = s1.newVoltageLevel()
-        .setId("VL1");
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': TopologyKind is not set");
-    adder.setTopologyKind(static_cast<TopologyKind>(5));
+    VoltageLevelAdder adder = s1.newVoltageLevel().setId("VL1");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Nominal voltage is not set");
-    adder.setNominalVoltage(50);
+    adder.setNominalVoltage(50).setLowVoltageLimit(-100);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Low voltage limit is < 0");
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Low voltage limit is not set");
-    adder.setLowVoltageLimit(100);
+    adder.setLowVoltageLimit(100).setHighVoltageLimit(-10);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': High voltage limit is < 0");
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': High voltage limit is not set");
     adder.setHighVoltageLimit(0);
-
-    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected TopologyKind value: 5");
-    adder.setTopologyKind(TopologyKind::BUS_BREAKER);
-
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [100, 0]");
-    adder
-        .setLowVoltageLimit(0)
-        .setHighVoltageLimit(0);
 
+    adder.setHighVoltageLimit(200);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': TopologyKind is not set");
+
+    adder.setTopologyKind(static_cast<TopologyKind>(5)).setLowVoltageLimit(stdcxx::nan()).setHighVoltageLimit(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected TopologyKind value: 5");
+
+    adder.setTopologyKind(TopologyKind::BUS_BREAKER);
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'VL1' already exists (powsybl::iidm::BusBreakerVoltageLevel)");
-    adder.setId("UNIQUE_VOLTAGE_LEVEL_ID");
 
+    adder.setId("UNIQUE_VOLTAGE_LEVEL_ID").setLowVoltageLimit(0).setHighVoltageLimit(0);
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(voltageLevelCount + 1, network.getVoltageLevelCount());
 
@@ -92,11 +89,13 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(-10), ValidationException, "Voltage level 'VL1': Low voltage limit is < 0");
     POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(440), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [440, 420]");
+    BOOST_TEST(stdcxx::areSame(vl1, vl1.setLowVoltageLimit(stdcxx::nan())));
     BOOST_TEST(stdcxx::areSame(vl1, vl1.setLowVoltageLimit(360)));
     BOOST_CHECK_EQUAL(360, vl1.getLowVoltageLimit());
 
     POWSYBL_ASSERT_THROW(vl1.setHighVoltageLimit(-10), ValidationException, "Voltage level 'VL1': High voltage limit is < 0");
     POWSYBL_ASSERT_THROW(vl1.setHighVoltageLimit(320), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [360, 320]");
+    BOOST_TEST(stdcxx::areSame(vl1, vl1.setHighVoltageLimit(stdcxx::nan())));
     BOOST_TEST(stdcxx::areSame(vl1, vl1.setHighVoltageLimit(440)));
     BOOST_CHECK_EQUAL(440, vl1.getHighVoltageLimit());
 

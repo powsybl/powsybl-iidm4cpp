@@ -62,11 +62,11 @@ void TwoWindingsTransformer::extendVariantArraySize(unsigned long initVariantArr
     }
 }
 
-double TwoWindingsTransformer::getB() {
+double TwoWindingsTransformer::getB() const {
     return m_b;
 }
 
-double TwoWindingsTransformer::getG() {
+double TwoWindingsTransformer::getG() const {
     return m_g;
 }
 
@@ -86,15 +86,15 @@ stdcxx::Reference<PhaseTapChanger> TwoWindingsTransformer::getPhaseTapChanger() 
     return stdcxx::ref<PhaseTapChanger>(m_phaseTapChanger);
 }
 
-double TwoWindingsTransformer::getR() {
+double TwoWindingsTransformer::getR() const {
     return m_r;
 }
 
-double TwoWindingsTransformer::getRatedU1() {
+double TwoWindingsTransformer::getRatedU1() const {
     return m_ratedU1;
 }
 
-double TwoWindingsTransformer::getRatedU2() {
+double TwoWindingsTransformer::getRatedU2() const {
     return m_ratedU2;
 }
 
@@ -120,7 +120,7 @@ const std::string& TwoWindingsTransformer::getTypeDescription() const {
     return s_typeDescription;
 }
 
-double TwoWindingsTransformer::getX() {
+double TwoWindingsTransformer::getX() const {
     return m_x;
 }
 
