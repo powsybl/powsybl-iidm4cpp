@@ -35,6 +35,9 @@ set(UNIT_TEST_SOURCES
     TwoWindingsTransformerTest.cpp
     VoltageLevelTest.cpp
     VscConverterStationTest.cpp
+
+    converter/ExportOptionsTest.cpp
+    converter/ImportOptionsTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
