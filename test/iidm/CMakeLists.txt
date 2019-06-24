@@ -37,6 +37,7 @@ set(UNIT_TEST_SOURCES
     VscConverterStationTest.cpp
 
     converter/ExportOptionsTest.cpp
+    converter/FakeAnonymizerTest.cpp
     converter/ImportOptionsTest.cpp
 )
 

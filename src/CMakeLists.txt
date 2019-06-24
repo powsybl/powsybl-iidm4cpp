@@ -99,8 +99,11 @@ set(IIDM_SOURCES
     iidm/VoltageLevelAdder.cpp
     iidm/VscConverterStation.cpp
     iidm/VscConverterStationAdder.cpp
-    iidm/converter/ImportOptions.cpp
+
     iidm/converter/ExportOptions.cpp
+    iidm/converter/FakeAnonymizer.cpp
+    iidm/converter/ImportOptions.cpp
+
     iidm/util/LimitViolationUtils.cpp
 
     logging/ConsoleLogger.cpp
