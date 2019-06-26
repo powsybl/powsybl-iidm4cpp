@@ -15,4 +15,5 @@ RUN apk add --no-cache \
     cmake \
     git \
     g++ \
+    libxml2-dev \
     make

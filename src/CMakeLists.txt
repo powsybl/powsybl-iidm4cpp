@@ -118,9 +118,16 @@ set(IIDM_SOURCES
     stdcxx/DateTime.cpp
     stdcxx/demangle.cpp
     stdcxx/put_time.cpp
+
+    xml/XmlCharConversion.cpp
+    xml/XmlStreamException.cpp
+    xml/XmlStreamReader.cpp
+    xml/XmlStreamWriter.cpp
 )
 
 add_library(iidm ${IIDM_SOURCES})
 target_include_directories(iidm
     PRIVATE ${CMAKE_HOME_DIRECTORY}/include
+    PRIVATE ${CMAKE_HOME_DIRECTORY}/src/
+    PRIVATE ${LIBXML2_INCLUDE_DIR}
 )

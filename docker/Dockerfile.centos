@@ -18,5 +18,6 @@ RUN yum -y install \
     cmake \
     git \
     gcc-c++ \
+    libxml2-devel \
     make \
 && yum clean all

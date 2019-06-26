@@ -17,5 +17,6 @@ RUN apt-get update \
     git \
     g++ \
     libboost-all-dev \
+    libxml2-dev \
     make \
 && apt-get clean

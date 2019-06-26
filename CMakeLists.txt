@@ -25,6 +25,8 @@ endif ()
 
 find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework)
 
+find_package(LibXml2 REQUIRED)
+
 set(CODE_COVERAGE FALSE CACHE BOOL "Enable code coverage")
 if (CODE_COVERAGE)
     include(CodeCoverage)

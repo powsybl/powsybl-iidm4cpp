@@ -12,6 +12,7 @@ The Alpine image provides the following tools:
 - G++ 8.3.0
 - Clang 5.0.2
 - Boost 1.67
+- LibXml2 2.9.9
 
 To build the Alpine image, run the following command:
 ```
@@ -25,6 +26,7 @@ The CentOS image provides the following tools:
 - G++ 4.8.5
 - Clang 3.4.2
 - Boost 1.53
+- LibXml2 2.9.1
 
 To build the CentOS image, run the following command:
 ```
@@ -37,6 +39,7 @@ The Sonar image is based on CentOS (7.6) and is used for sonar integration. It p
 - G++ 4.8.5
 - Gcovr 3.4
 - Boost 1.53
+- LibXml2 2.9.1
 
 To build the Sonar image, run the following command:
 ```
@@ -50,6 +53,7 @@ The Ubuntu image provides the following tools:
 - G++ 7.4.0
 - Clang, Clang-tidy 6.0.0
 - Boost 1.65.1
+- LibXml2 2.9.4
 
 To build the Ubuntu image, run the following command:
 ```

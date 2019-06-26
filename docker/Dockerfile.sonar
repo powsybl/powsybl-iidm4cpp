@@ -17,6 +17,7 @@ RUN yum -y install \
     cmake \
     git \
     gcc-c++ \
+    libxml2-devel \
     make \
     python-pip \
     wget \

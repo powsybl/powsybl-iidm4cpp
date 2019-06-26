@@ -30,4 +30,4 @@ Checks: '*,
   -readability-redundant-declaration,
   -zircon-*'
 WarningsAsErrors: '*'
-HeaderFilterRegex: '.*'
+HeaderFilterRegex: 'include/powsybl/.*|src/.*|test/.*'
