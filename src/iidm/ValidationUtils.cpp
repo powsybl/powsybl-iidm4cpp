@@ -27,6 +27,17 @@ void checkActivePowerLimits(const Validable& validable, double minP, double maxP
     }
 }
 
+void checkActivePowerLimits(const Validable& validable, double minP, double maxP, double p) {
+    checkActivePowerLimits(validable, minP, maxP);
+
+    if (p > maxP) {
+        throw ValidationException(validable, logging::format("Invalid active power p > maxP: %1% > %2%", p, maxP));
+    }
+    if (p < minP) {
+        throw ValidationException(validable, logging::format("Invalid active power p < minP: %1% < %2%", p, minP));
+    }
+}
+
 double checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint) {
     if (std::isnan(activePowerSetpoint)) {
         throw ValidationException(validable, "Active power setpoint is not set");

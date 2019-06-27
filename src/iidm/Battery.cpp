@@ -21,7 +21,7 @@ Battery::Battery(VariantManagerHolder& network, const std::string& id, const std
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
     m_minP(checkMinP(*this, minP)),
     m_maxP(checkMaxP(*this, maxP)) {
-    checkActivePowerLimits(*this, minP, maxP);
+    checkActivePowerLimits(*this, minP, maxP, p0);
 }
 
 void Battery::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -71,7 +71,7 @@ void Battery::reduceVariantArraySize(unsigned long number) {
 
 Battery& Battery::setMaxP(double maxP) {
     checkMaxP(*this, maxP);
-    checkActivePowerLimits(*this, m_minP, maxP);
+    checkActivePowerLimits(*this, m_minP, maxP, getP0());
     m_maxP = maxP;
 
     return *this;
@@ -79,14 +79,16 @@ Battery& Battery::setMaxP(double maxP) {
 
 Battery& Battery::setMinP(double minP) {
     checkMinP(*this, minP);
-    checkActivePowerLimits(*this, minP, m_maxP);
+    checkActivePowerLimits(*this, minP, m_maxP, getP0());
     m_minP = minP;
 
     return *this;
 }
 
 Battery& Battery::setP0(double p0) {
-    m_p0[m_network.get().getVariantIndex()] = checkP0(*this, p0);
+    checkP0(*this, p0);
+    checkActivePowerLimits(*this, m_minP, m_maxP, p0);
+    m_p0[m_network.get().getVariantIndex()] = p0;
 
     return *this;
 }

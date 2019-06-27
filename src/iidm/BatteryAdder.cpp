@@ -31,7 +31,7 @@ Battery& BatteryAdder::add() {
     checkQ0(*this, m_q0);
     checkMinP(*this, m_minP);
     checkMaxP(*this, m_maxP);
-    checkActivePowerLimits(*this, m_minP, m_maxP);
+    checkActivePowerLimits(*this, m_minP, m_maxP, m_p0);
 
     std::unique_ptr<Battery> ptrBattery = stdcxx::make_unique<Battery>(getNetwork(), getId(), getName(), m_p0, m_q0, m_minP, m_maxP);
     auto& battery = getNetwork().checkAndAdd<Battery>(std::move(ptrBattery));

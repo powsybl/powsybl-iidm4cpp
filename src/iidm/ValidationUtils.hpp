@@ -28,6 +28,8 @@ class Terminal;
 
 void checkActivePowerLimits(const Validable& validable, double minP, double maxP);
 
+void checkActivePowerLimits(const Validable& validable, double minP, double maxP, double p);
+
 double checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint);
 
 double checkB(const Validable& validable, double b);

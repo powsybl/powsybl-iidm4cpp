@@ -89,6 +89,12 @@ BOOST_AUTO_TEST_CASE(constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': Invalid active limits [80, 70]");
     adder.setMinP(60.0);
 
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': Invalid active power p < minP: 40 < 60");
+    adder.setP0(100.0);
+
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': Invalid active power p > maxP: 100 > 70");
+    adder.setP0(65.0);
+
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'BAT1' already exists (powsybl::iidm::Battery)");
     adder.setId("UNIQUE_BAT_ID");
 
@@ -115,22 +121,30 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(battery, battery.setP0(110.0)));
     BOOST_CHECK_CLOSE(110.0, battery.getP0(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(battery.setP0(stdcxx::nan()), ValidationException, "Battery 'BAT1': p0 is invalid");
-    BOOST_TEST(stdcxx::areSame(battery, battery.setP0(400.0)));
-    BOOST_CHECK_CLOSE(400.0, battery.getP0(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_THROW(battery.setP0(-300.0), ValidationException, "Battery 'BAT1': Invalid active power p < minP: -300 < -200");
+    POWSYBL_ASSERT_THROW(battery.setP0(400.0), ValidationException, "Battery 'BAT1': Invalid active power p > maxP: 400 > 300");
+    BOOST_TEST(stdcxx::areSame(battery, battery.setP0(battery.getMinP())));
+    BOOST_CHECK_CLOSE(battery.getMinP(), battery.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(battery, battery.setP0(battery.getMaxP())));
+    BOOST_CHECK_CLOSE(battery.getMaxP(), battery.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(battery, battery.setP0(0.0)));
+    BOOST_CHECK_CLOSE(0.0, battery.getP0(), std::numeric_limits<double>::epsilon());
 
     BOOST_TEST(stdcxx::areSame(battery, battery.setQ0(210.0)));
     BOOST_CHECK_CLOSE(210.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(battery.setQ0(stdcxx::nan()), ValidationException, "Battery 'BAT1': q0 is invalid");
 
-    BOOST_TEST(stdcxx::areSame(battery, battery.setMinP(90.0)));
-    BOOST_CHECK_CLOSE(90.0, battery.getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(battery, battery.setMinP(-90.0)));
+    BOOST_CHECK_CLOSE(-90.0, battery.getMinP(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(battery.setMinP(stdcxx::nan()), ValidationException, "Battery 'BAT1': Minimum active power is not set");
     POWSYBL_ASSERT_THROW(battery.setMinP(400.0), ValidationException, "Battery 'BAT1': Invalid active limits [400, 300]");
+    POWSYBL_ASSERT_THROW(battery.setMinP(100.0), ValidationException, "Battery 'BAT1': Invalid active power p < minP: 0 < 100");
 
     BOOST_TEST(stdcxx::areSame(battery, battery.setMaxP(500.0)));
     BOOST_CHECK_CLOSE(500.0, battery.getMaxP(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(battery.setMaxP(stdcxx::nan()), ValidationException, "Battery 'BAT1': Maximum active power is not set");
-    POWSYBL_ASSERT_THROW(battery.setMaxP(-400.0), ValidationException, "Battery 'BAT1': Invalid active limits [90, -400]");
+    POWSYBL_ASSERT_THROW(battery.setMaxP(-400.0), ValidationException, "Battery 'BAT1': Invalid active limits [-90, -400]");
+    POWSYBL_ASSERT_THROW(battery.setMaxP(-40.0), ValidationException, "Battery 'BAT1': Invalid active power p > maxP: 0 > -40");
 
     battery.remove();
     POWSYBL_ASSERT_THROW(network.getBattery("BAT1"), PowsyblException, "Unable to find to the identifiable 'BAT1'");
