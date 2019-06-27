@@ -20,6 +20,17 @@ class NetworkIndex;
 template <typename T, typename Iterator>
 class NetworkIterator {
 public:
+    using difference_type = std::ptrdiff_t;
+
+    using iterator_category = std::forward_iterator_tag;
+
+    using pointer = T&;
+
+    using reference = T&;
+
+    using value_type = T;
+
+public:
     NetworkIterator() = default;
 
     NetworkIterator(const NetworkIterator&) = default;
