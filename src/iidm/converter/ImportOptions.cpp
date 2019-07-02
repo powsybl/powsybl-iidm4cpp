@@ -11,6 +11,8 @@ namespace powsybl {
 
 namespace iidm {
 
+namespace converter {
+
 bool ImportOptions::isThrowExceptionIfExtensionNotFound() const {
     return m_throwExceptionIfExtensionNotFound;
 }
@@ -19,6 +21,8 @@ ImportOptions& ImportOptions::setThrowExceptionIfExtensionNotFound(bool throwExc
     m_throwExceptionIfExtensionNotFound = throwExceptionIfExtensionNotFound;
     return *this;
 }
+
+}  // namespace converter
 
 }  // namespace iidm
 

@@ -28,9 +28,9 @@ public:
 
     Substation& add();
 
-    SubstationAdder& setCountry(const Country& country);
-
     SubstationAdder& addGeographicalTag(const std::string& geographicalTag);
+
+    SubstationAdder& setCountry(const Country& country);
 
     SubstationAdder& setGeographicalTags(const std::initializer_list<std::string>& geographicalTags);
 

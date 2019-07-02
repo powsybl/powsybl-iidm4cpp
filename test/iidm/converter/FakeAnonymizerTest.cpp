@@ -13,6 +13,8 @@ namespace powsybl {
 
 namespace iidm {
 
+namespace converter {
+
 BOOST_AUTO_TEST_SUITE(FakeAnonymizerTestSuite)
 
 BOOST_AUTO_TEST_CASE(fakeAnonymizationTest) {
@@ -28,6 +30,8 @@ BOOST_AUTO_TEST_CASE(fakeAnonymizationTest) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+}  // namespace converter
 
 }  // namespace iidm
 

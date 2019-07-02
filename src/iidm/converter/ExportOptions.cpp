@@ -11,6 +11,8 @@ namespace powsybl {
 
 namespace iidm {
 
+namespace converter {
+
 ExportOptions::ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
                              bool throwExceptionIfExtensionNotFound) :
     m_indent(indent),
@@ -75,6 +77,7 @@ ExportOptions& ExportOptions::setWithBranchSV(bool withBranchSV) {
     return *this;
 }
 
+}  // namespace converter
 
 }  // namespace iidm
 

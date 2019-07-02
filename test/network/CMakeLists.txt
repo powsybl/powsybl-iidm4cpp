@@ -20,4 +20,5 @@ target_compile_definitions(unit-tests-network
 )
 target_link_libraries(unit-tests-network
     iidm
+    ${LIBXML2_LIBRARIES}
 )

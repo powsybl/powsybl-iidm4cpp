@@ -16,6 +16,8 @@ namespace powsybl {
 
 namespace iidm {
 
+namespace converter {
+
 class Anonymizer {
 public:
     Anonymizer() = default;
@@ -26,14 +28,16 @@ public:
 
     virtual std::string anonymizeString(const std::string& str) = 0;
 
-    virtual Country deanonymizeCountry(const Country& country) = 0;
+    virtual Country deanonymizeCountry(const Country& country) const = 0;
 
-    virtual std::string deanonymizeString(const std::string& anonymousStr) = 0;
+    virtual std::string deanonymizeString(const std::string& anonymousStr) const = 0;
 
     // TODO(sla) Add missing methods:
     // void read(BufferedReader reader);
     // void write(BufferedWriter writer);
 };
+
+}  // namespace converter
 
 }  // namespace iidm
 

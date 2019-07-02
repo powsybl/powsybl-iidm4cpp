@@ -43,7 +43,22 @@ class TwoWindingsTransformer;
 class VoltageLevel;
 class VscConverterStation;
 
+namespace converter {
+class Anonymizer;
+class ExportOptions;
+class ImportOptions;
+}  // namespace converter
+
 class Network : public Container, public VariantManagerHolder {
+public:
+    static Network readXml(std::istream& istream);
+
+    static Network readXml(std::istream& istream, const converter::ImportOptions& options, const stdcxx::CReference<converter::Anonymizer>& anonymizer);
+
+    static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network);
+
+    static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network, const converter::ExportOptions& options);
+
 public: // VariantManagerHolder
     unsigned long getVariantIndex() const override;
 

@@ -14,6 +14,8 @@ namespace powsybl {
 
 namespace iidm {
 
+namespace converter {
+
 class FakeAnonymizer : public Anonymizer {
 public:
     FakeAnonymizer() = default;
@@ -24,10 +26,12 @@ public:
 
     std::string anonymizeString(const std::string& str) override;
 
-    Country deanonymizeCountry(const Country& country) override;
+    Country deanonymizeCountry(const Country& country) const override;
 
-    std::string deanonymizeString(const std::string& anonymousStr) override;
+    std::string deanonymizeString(const std::string& anonymousStr) const override;
 };
+
+}  // namespace converter
 
 }  // namespace iidm
 

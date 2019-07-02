@@ -8,14 +8,11 @@
 #ifndef POWSYBL_IIDM_CONVERTER_IMPORTOPTIONS_HPP
 #define POWSYBL_IIDM_CONVERTER_IMPORTOPTIONS_HPP
 
-#include <set>
-#include <string>
-
-#include <boost/optional.hpp>
-
 namespace powsybl {
 
 namespace iidm {
+
+namespace converter {
 
 class ImportOptions {
 public:
@@ -28,6 +25,8 @@ public:
 private:
     bool m_throwExceptionIfExtensionNotFound{false};
 };
+
+}  // namespace converter
 
 }  // namespace iidm
 

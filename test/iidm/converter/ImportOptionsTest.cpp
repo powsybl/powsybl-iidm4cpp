@@ -13,6 +13,8 @@ namespace powsybl {
 
 namespace iidm {
 
+namespace converter {
+
 BOOST_AUTO_TEST_SUITE(ImportOptionsTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
@@ -24,6 +26,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+}  // namespace converter
 
 }  // namespace iidm
 

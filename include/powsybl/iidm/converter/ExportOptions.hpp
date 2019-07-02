@@ -14,6 +14,8 @@ namespace powsybl {
 
 namespace iidm {
 
+namespace converter {
+
 class ExportOptions {
 public:
     ExportOptions() = default;
@@ -58,6 +60,8 @@ private:
 
     bool m_withBranchSV{true};
 };
+
+}  // namespace converter
 
 }  // namespace iidm
 
