@@ -112,7 +112,7 @@ int XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName,
     std::unique_ptr<xmlChar> value = getAttributeValue(attributeName, false);
     try {
         return static_cast<bool>(value) ? std::stoi(XML2S(value.get())) : defaultValue;
-    } catch (std::invalid_argument& error) {
+    } catch (const std::invalid_argument& error) {
         throw XmlStreamException(logging::format("Unable to convert attribute %1% to int", attributeName));
     }
 }

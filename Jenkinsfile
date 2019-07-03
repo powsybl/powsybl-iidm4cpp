@@ -76,6 +76,7 @@ def build(os, compilerFamily, withQualityCheck, withCodeCoverage) {
         stageDevin('Sonarqube') {
             sonar {
                 useMaven = false
+                scanVersion = 'scan3.3'
             }
         }
     }

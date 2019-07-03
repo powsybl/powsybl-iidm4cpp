@@ -73,7 +73,7 @@ void XmlStreamWriter::writeEndElement() {
 
 void
 XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, double attributeValue, double absentValue) {
-    if (!std::isnan(attributeValue) && attributeValue != absentValue) {
+    if (!std::isnan(attributeValue) && stdcxx::isEqual(attributeValue, absentValue)) {
         writeAttribute(attributeName, std::to_string(attributeValue));
     }
 }
