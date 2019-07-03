@@ -103,6 +103,7 @@ set(IIDM_SOURCES
     iidm/converter/ExportOptions.cpp
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
+    iidm/converter/Version.cpp
 
     iidm/util/LimitViolationUtils.cpp
 

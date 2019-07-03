@@ -39,6 +39,7 @@ set(UNIT_TEST_SOURCES
     converter/ExportOptionsTest.cpp
     converter/FakeAnonymizerTest.cpp
     converter/ImportOptionsTest.cpp
+    converter/VersionTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
