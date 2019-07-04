@@ -56,7 +56,7 @@ public: // NodeBreakerView
 
     NodeBreakerView& setNodeCount(unsigned long nodeCount) override;
 
-    void traverse(unsigned long node, const Traverser& traverser) override;
+    void traverse(unsigned long node, const Traverser& traverser) const override;
 
 public:
     explicit NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);

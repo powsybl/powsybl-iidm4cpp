@@ -29,6 +29,157 @@ namespace powsybl {
 
 namespace iidm {
 
+Network createCalculatedBusSwitchTestNetwork() {
+    Network network("test", "test");
+
+    Substation& s1 = network.newSubstation()
+        .setId("A")
+        .setCountry(Country::FR)
+        .add();
+
+    VoltageLevel& vl = s1.newVoltageLevel()
+        .setId("B")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalVoltage(225.0)
+        .setLowVoltageLimit(0.0)
+        .setHighVoltageLimit(250.0)
+        .add();
+
+    vl.getNodeBreakerView().setNodeCount(3);
+
+    vl.getNodeBreakerView().newBusbarSection()
+        .setId("C")
+        .setNode(0)
+        .add();
+
+    vl.getNodeBreakerView().newDisconnector()
+        .setId("D")
+        .setNode1(0)
+        .setNode2(1)
+        .setRetained(false)
+        .setOpen(false)
+        .add();
+
+    vl.getNodeBreakerView().newBreaker()
+        .setId("E")
+        .setNode1(1)
+        .setNode2(2)
+        .setRetained(false)
+        .setOpen(false)
+        .add();
+
+    Substation& s2 = network.newSubstation()
+        .setId("F")
+        .setCountry(Country::FR)
+        .add();
+
+    VoltageLevel& vl2 = s2.newVoltageLevel()
+        .setId("G")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalVoltage(225.0)
+        .setLowVoltageLimit(0.0)
+        .setHighVoltageLimit(250.0)
+        .add();
+
+    vl2.getNodeBreakerView().setNodeCount(5);
+
+    vl2.getNodeBreakerView().newBusbarSection()
+        .setId("H")
+        .setNode(0)
+        .add();
+
+    vl2.getNodeBreakerView().newBusbarSection()
+        .setId("I")
+        .setNode(1)
+        .add();
+
+    vl2.getNodeBreakerView().newDisconnector()
+        .setId("J")
+        .setNode1(0)
+        .setNode2(2)
+        .setRetained(true)
+        .setOpen(false)
+        .add();
+
+    vl2.getNodeBreakerView().newDisconnector()
+        .setId("K")
+        .setNode1(1)
+        .setNode2(3)
+        .setRetained(true)
+        .setOpen(false)
+        .add();
+
+    vl2.getNodeBreakerView().newBreaker()
+        .setId("L")
+        .setNode1(2)
+        .setNode2(3)
+        .setRetained(true)
+        .setOpen(false)
+        .add();
+
+    vl2.getNodeBreakerView().newBreaker()
+        .setId("M")
+        .setNode1(0)
+        .setNode2(4)
+        .setRetained(false)
+        .setOpen(false)
+        .add();
+
+    network.newLine()
+        .setId("N")
+        .setVoltageLevel1(vl.getId())
+        .setNode1(2)
+        .setVoltageLevel2(vl2.getId())
+        .setNode2(4)
+        .setR(0.001)
+        .setX(0.1)
+        .setG1(0.0)
+        .setB1(0.0)
+        .setG2(0.0)
+        .setB2(0.0)
+        .add();
+
+    Substation& s3 = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+
+    VoltageLevel& vl3 = s3.newVoltageLevel()
+        .setId("VL")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalVoltage(400.0)
+        .setLowVoltageLimit(380.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    vl3.getNodeBreakerView().setNodeCount(3);
+
+    vl3.getNodeBreakerView().newBreaker()
+        .setId("SW1")
+        .setNode1(0)
+        .setNode2(1)
+        .setRetained(true)
+        .setOpen(true)
+        .add();
+
+    vl3.getNodeBreakerView().newInternalConnection()
+        .setId("IC")
+        .setNode1(1)
+        .setNode2(2)
+        .add();
+
+    vl3.newLoad()
+        .setId("LOAD1")
+        .setNode(0)
+        .setName("LOAD1_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(100.0)
+        .setQ0(50.0)
+        .add();
+
+    return network;
+}
+
 BOOST_AUTO_TEST_SUITE(NodeBreakerVoltageLevelTestSuite)
 
 BOOST_AUTO_TEST_CASE(busbarSection) {
@@ -183,7 +334,7 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getNode1("UNKNOWN"), PowsyblException, "Switch 'UNKNOWN' not found in the voltage level 'VL2'");
 
-    NodeBreakerView::Traverser traverser = [](unsigned long /*node1*/, const Switch& /*sw*/, unsigned long node2) {
+    NodeBreakerView::Traverser traverser = [](unsigned long /*node1*/, const stdcxx::Reference<Switch>& /*sw*/, unsigned long node2) {
         return (node2 < (NODE_COUNT - 1));
     };
     voltageLevel.getNodeBreakerView().traverse(0, traverser);
@@ -366,6 +517,36 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_6"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_7"));
     POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_8"));
+}
+
+BOOST_AUTO_TEST_CASE(calculatedBusTraverser) {
+    Network network = createCalculatedBusSwitchTestNetwork();
+    const Load& l1 = network.getLoad("LOAD1");
+    const VoltageLevel& vlG = network.getVoltageLevel("G");
+
+    auto& bus = l1.getTerminal().getBusBreakerView().getBus().get();
+    BOOST_CHECK_EQUAL("VL_0", bus.getId());
+    BOOST_TEST(std::isnan(bus.getAngle()));
+    BOOST_TEST(std::isnan(bus.getV()));
+    bus.setAngle(10.0).setV(20.0);
+    BOOST_CHECK_CLOSE(10.0, bus.getAngle(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, bus.getV(), std::numeric_limits<double>::epsilon());
+
+    auto& bus2 = vlG.getBusBreakerView().getBus("G_0").get();
+    BOOST_CHECK_EQUAL("G_0", bus2.getId());
+    BOOST_TEST(std::isnan(bus2.getAngle()));
+    BOOST_TEST(std::isnan(bus2.getV()));
+    bus2.setAngle(30.0).setV(40.0);
+    BOOST_CHECK_CLOSE(30.0, bus2.getAngle(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(40.0, bus2.getV(), std::numeric_limits<double>::epsilon());
+
+    auto& bus3 = vlG.getBusBreakerView().getBus("G_1").get();
+    BOOST_CHECK_EQUAL("G_1", bus3.getId());
+    BOOST_TEST(std::isnan(bus3.getAngle()));
+    BOOST_TEST(std::isnan(bus3.getV()));
+    bus3.setAngle(50.0).setV(60.0);
+    BOOST_TEST(std::isnan(bus3.getAngle()));
+    BOOST_TEST(std::isnan(bus3.getV()));
 }
 
 BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {

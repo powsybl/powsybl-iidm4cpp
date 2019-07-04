@@ -47,7 +47,7 @@ public:
      * @param voltageLevel the voltage level of this bus
      * @param terminals the list of NodeTerminal references which are connected to this bus
      */
-    CalculatedBus(const std::string& id, NodeBreakerVoltageLevel& voltageLevel, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals);
+    CalculatedBus(const std::string& id, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals);
 
     ~CalculatedBus() noexcept override = default;
 
@@ -57,14 +57,19 @@ public:
     void invalidate();
 
 private:
+    static stdcxx::CReference<NodeTerminal> findTerminal(const NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals);
+
+private:
     void checkValidity() const;
 
 private:
     stdcxx::Reference<NodeBreakerVoltageLevel> m_voltageLevel;
 
+    bool m_valid;
+
     std::vector<std::reference_wrapper<NodeTerminal> > m_terminals;
 
-    bool m_valid;
+    stdcxx::CReference<NodeTerminal> m_terminalRef;
 };
 
 }  // namespace iidm

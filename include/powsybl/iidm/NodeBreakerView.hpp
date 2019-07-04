@@ -29,7 +29,7 @@ public:
 
     using SwitchAdder = node_breaker_view::SwitchAdder;
 
-    using Traverser = std::function<bool(unsigned long node1, const Switch& sw, unsigned long node2)>;
+    using Traverser = std::function<bool(unsigned long node1, const stdcxx::Reference<Switch>& sw, unsigned long node2)>;
 
 public:
     virtual ~NodeBreakerView() noexcept = default;
@@ -70,7 +70,7 @@ public:
 
     virtual NodeBreakerView& setNodeCount(unsigned long nodeCount) = 0;
 
-    virtual void traverse(unsigned long node, const Traverser& traverser) = 0;
+    virtual void traverse(unsigned long node, const Traverser& traverser) const = 0;
 };
 
 }  // namespace iidm
