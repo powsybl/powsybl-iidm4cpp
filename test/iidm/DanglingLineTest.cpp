@@ -61,8 +61,8 @@ Network createDanglingLineTestNetwork() {
 
 BOOST_AUTO_TEST_SUITE(DanglingLineTestSuite)
 
-BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createDanglingLineTestNetwork();
+BOOST_AUTO_TEST_CASE(adder) {
+    Network network = createDanglingLineTestNetwork();
 
     unsigned long danglingLineCount = network.getDanglingLineCount();
 
@@ -97,10 +97,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(network.getDanglingLine("UNIQUE_DL_ID").getUcteXnodeCode().empty());
 }
 
-BOOST_AUTO_TEST_CASE(integrity) {
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createDanglingLineTestNetwork();
 
-    DanglingLine& danglingLine = network.getDanglingLine("DL1");
+    const DanglingLine& danglingLine = network.getDanglingLine("DL1");
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
     BOOST_CHECK_EQUAL("DL1_NAME", danglingLine.getName());
     BOOST_CHECK_EQUAL(ConnectableType::DANGLING_LINE, danglingLine.getType());
@@ -114,6 +114,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(5.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL("ucteXnodeCodeTest", danglingLine.getUcteXnodeCode());
+}
+
+BOOST_AUTO_TEST_CASE(integrity) {
+    Network network = createDanglingLineTestNetwork();
+    DanglingLine& danglingLine = network.getDanglingLine("DL1");
 
     BOOST_TEST(stdcxx::areSame(danglingLine, danglingLine.setB(100.0)));
     BOOST_CHECK_CLOSE(100.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());

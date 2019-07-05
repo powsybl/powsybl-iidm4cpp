@@ -94,97 +94,135 @@ public:
     }
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
-    T& get(const std::string& id) const;
+    const T& get(const std::string& id) const;
 
-    Battery& getBattery(const std::string& id) const;
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    T& get(const std::string& id);
+
+    const Battery& getBattery(const std::string& id) const;
+
+    Battery& getBattery(const std::string& id);
 
     unsigned long getBatteryCount() const;
 
-    Branch& getBranch(const std::string& id) const;
+    const Branch& getBranch(const std::string& id) const;
+
+    Branch& getBranch(const std::string& id);
 
     unsigned long getBranchCount() const;
 
-    BusbarSection& getBusbarSection(const std::string& id) const;
+    const BusbarSection& getBusbarSection(const std::string& id) const;
+
+    BusbarSection& getBusbarSection(const std::string& id);
 
     unsigned long getBusbarSectionCount() const;
 
     const stdcxx::DateTime& getCaseDate() const;
 
-    stdcxx::CReference<Connectable> getConnectable(const std::string& id) const;
-
-    stdcxx::Reference<Connectable> getConnectable(const std::string& id);
-
     unsigned long getCountryCount() const;
 
-    DanglingLine& getDanglingLine(const std::string& id) const;
+    const DanglingLine& getDanglingLine(const std::string& id) const;
+
+    DanglingLine& getDanglingLine(const std::string& id);
 
     unsigned long getDanglingLineCount() const;
 
     int getForecastDistance() const;
 
-    Generator& getGenerator(const std::string& id) const;
+    const Generator& getGenerator(const std::string& id) const;
+
+    Generator& getGenerator(const std::string& id);
 
     unsigned long getGeneratorCount() const;
 
-    HvdcConverterStation& getHvdcConverterStation(const std::string& id) const;
+    const HvdcConverterStation& getHvdcConverterStation(const std::string& id) const;
+
+    HvdcConverterStation& getHvdcConverterStation(const std::string& id);
 
     unsigned long getHvdcConverterStationCount() const;
 
-    HvdcLine& getHvdcLine(const std::string& id) const;
+    const HvdcLine& getHvdcLine(const std::string& id) const;
+
+    HvdcLine& getHvdcLine(const std::string& id);
 
     unsigned long getHvdcLineCount() const;
 
-    LccConverterStation& getLccConverterStation(const std::string& id) const;
+    const LccConverterStation& getLccConverterStation(const std::string& id) const;
+
+    LccConverterStation& getLccConverterStation(const std::string& id);
 
     unsigned long getLccConverterStationCount() const;
 
-    Line& getLine(const std::string& id) const;
+    const Line& getLine(const std::string& id) const;
+
+    Line& getLine(const std::string& id);
 
     unsigned long getLineCount() const;
 
-    Load& getLoad(const std::string& id) const;
+    const Load& getLoad(const std::string& id) const;
+
+    Load& getLoad(const std::string& id);
 
     unsigned long getLoadCount() const;
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     unsigned long getObjectCount() const;
 
-    ShuntCompensator& getShuntCompensator(const std::string& id) const;
+    const ShuntCompensator& getShuntCompensator(const std::string& id) const;
+
+    ShuntCompensator& getShuntCompensator(const std::string& id);
 
     unsigned long getShuntCompensatorCount() const;
 
     const std::string& getSourceFormat() const;
 
-    StaticVarCompensator& getStaticVarCompensator(const std::string& id) const;
+    const StaticVarCompensator& getStaticVarCompensator(const std::string& id) const;
+
+    StaticVarCompensator& getStaticVarCompensator(const std::string& id);
 
     unsigned long getStaticVarCompensatorCount() const;
 
-    Substation& getSubstation(const std::string& id) const;
+    const Substation& getSubstation(const std::string& id) const;
+
+    Substation& getSubstation(const std::string& id);
 
     unsigned long getSubstationCount() const;
 
-    Switch& getSwitch(const std::string& id) const;
+    const Switch& getSwitch(const std::string& id) const;
+
+    Switch& getSwitch(const std::string& id);
 
     unsigned long getSwitchCount() const;
 
-    ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id) const;
+    const ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id) const;
+
+    ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id);
 
     unsigned long getThreeWindingsTransformerCount() const;
 
-    TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id) const;
+    const TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id) const;
+
+    TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id);
 
     unsigned long getTwoWindingsTransformerCount() const;
 
-    VoltageLevel& getVoltageLevel(const std::string& id) const;
+    const VoltageLevel& getVoltageLevel(const std::string& id) const;
+
+    VoltageLevel& getVoltageLevel(const std::string& id);
 
     unsigned long getVoltageLevelCount() const;
 
-    VscConverterStation& getVscConverterStation(const std::string& id) const;
+    const VscConverterStation& getVscConverterStation(const std::string& id) const;
+
+    VscConverterStation& getVscConverterStation(const std::string& id);
 
     unsigned long getVscConverterStationCount() const;
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
-    stdcxx::Reference<T> find(const std::string& id) const;
+    stdcxx::CReference<T> find(const std::string& id) const;
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    stdcxx::Reference<T> find(const std::string& id);
 
     HvdcLineAdder newHvdcLine();
 

@@ -173,7 +173,7 @@ Network createPhaseTapChangerTestNetwork() {
 BOOST_AUTO_TEST_SUITE(PhaseTapChangerTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createPhaseTapChangerTestNetwork();
+    Network network = createPhaseTapChangerTestNetwork();
     const Terminal& terminal = network.getLoad("LOAD1").getTerminal();
 
     PhaseTapChanger& phaseTapChanger = network.getTwoWindingsTransformer("2WT_VL1_VL2").getPhaseTapChanger().get();
@@ -223,7 +223,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
-    const Network& network = createPhaseTapChangerTestNetwork();
+    Network network = createPhaseTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();
 
@@ -300,7 +300,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 }
 
 BOOST_AUTO_TEST_CASE(adder) {
-    const Network& network = createPhaseTapChangerTestNetwork();
+    Network network = createPhaseTapChangerTestNetwork();
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_TEST(transformer.getPhaseTapChanger());
@@ -381,7 +381,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 }
 
 BOOST_AUTO_TEST_CASE(holder) {
-    const Network& network = createPhaseTapChangerTestNetwork();
+    Network network = createPhaseTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();

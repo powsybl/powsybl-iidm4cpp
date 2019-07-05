@@ -43,12 +43,17 @@ public:
 
     template <typename T> iterator<T> end();
 
-    template <typename T> T& get(const std::string& id) const;
+    template <typename T> const T& get(const std::string& id) const;
+
+    template <typename T> T& get(const std::string& id);
 
     template <typename T> unsigned long getObjectCount() const;
 
     template <typename T>
-    stdcxx::Reference<T> find(const std::string& id) const;
+    stdcxx::CReference<T> find(const std::string& id) const;
+
+    template <typename T>
+    stdcxx::Reference<T> find(const std::string& id);
 
     void remove(Identifiable& identifiable);
 

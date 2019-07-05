@@ -25,7 +25,7 @@ namespace iidm {
 BOOST_AUTO_TEST_SUITE(LoadTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
     unsigned long loadCount = network.getLoadCount();
 
     Load& load = network.getLoad("LOAD1");
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
 
     Load& load1 = network.getLoad("LOAD1");
     BOOST_CHECK_EQUAL(LoadType::UNDEFINED, load1.getLoadType());

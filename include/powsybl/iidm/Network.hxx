@@ -15,7 +15,12 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T, typename>
-T& Network::get(const std::string& id) const {
+const T& Network::get(const std::string& id) const {
+    return m_networkIndex.get<T>(id);
+}
+
+template <typename T, typename>
+T& Network::get(const std::string& id) {
     return m_networkIndex.get<T>(id);
 }
 
@@ -25,7 +30,12 @@ unsigned long Network::getObjectCount() const {
 }
 
 template <typename T, typename>
-stdcxx::Reference<T> Network::find(const std::string& id) const {
+stdcxx::CReference<T> Network::find(const std::string& id) const {
+    return m_networkIndex.find<T>(id);
+}
+
+template <typename T, typename>
+stdcxx::Reference<T> Network::find(const std::string& id) {
     return m_networkIndex.find<T>(id);
 }
 

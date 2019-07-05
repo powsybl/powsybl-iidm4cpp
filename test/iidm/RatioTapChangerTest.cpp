@@ -170,7 +170,7 @@ Network createRatioTapChangerTestNetwork() {
 BOOST_AUTO_TEST_SUITE(RatioTapChangerTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createRatioTapChangerTestNetwork();
+    Network network = createRatioTapChangerTestNetwork();
     const Terminal& terminal = network.getLoad("LOAD1").getTerminal();
 
     RatioTapChanger& ratioTapChanger = network.getTwoWindingsTransformer("2WT_VL1_VL2").getRatioTapChanger().get();
@@ -217,7 +217,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
-    const Network& network = createRatioTapChangerTestNetwork();
+    Network network = createRatioTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger().get();
 
@@ -288,7 +288,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 }
 
 BOOST_AUTO_TEST_CASE(adder) {
-    const Network& network = createRatioTapChangerTestNetwork();
+    Network network = createRatioTapChangerTestNetwork();
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_TEST(transformer.getRatioTapChanger());
@@ -350,7 +350,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 }
 
 BOOST_AUTO_TEST_CASE(holder) {
-    const Network& network = createRatioTapChangerTestNetwork();
+    Network network = createRatioTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger().get();

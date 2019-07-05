@@ -122,7 +122,7 @@ Network createHvdcLineTestNetwork() {
 
 BOOST_AUTO_TEST_SUITE(HvdcLineTestSuite)
 
-BOOST_AUTO_TEST_CASE(constructor) {
+BOOST_AUTO_TEST_CASE(adder) {
     Network network = createHvdcLineTestNetwork();
 
     unsigned long hvdcCount = network.getHvdcLineCount();
@@ -168,10 +168,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(hvdcCount + 1, network.getHvdcLineCount());
 }
 
-BOOST_AUTO_TEST_CASE(integrity) {
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createHvdcLineTestNetwork();
 
-    HvdcLine& hvdc = network.getHvdcLine("HVDC1");
+    const HvdcLine& hvdc = network.getHvdcLine("HVDC1");
     BOOST_CHECK_EQUAL("HVDC1", hvdc.getId());
     BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
     BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
@@ -181,6 +181,15 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(12.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(13.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(14.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(network, hvdc.getNetwork()));
+}
+
+BOOST_AUTO_TEST_CASE(integrity) {
+    Network network = createHvdcLineTestNetwork();
+
+    HvdcLine& hvdc = network.getHvdcLine("HVDC1");
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
     BOOST_TEST(stdcxx::areSame(network, hvdc.getNetwork()));
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setActivePowerSetpoint(100.0)));
@@ -202,12 +211,6 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setR(400.0)));
     BOOST_CHECK_CLOSE(400.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(hvdc.setR(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': r is invalid");
-
-    const HvdcLine& cHvdc = network.getHvdcLine("HVDC1");
-    BOOST_TEST(stdcxx::areSame(cHvdc, hvdc));
-    BOOST_TEST(stdcxx::areSame(network, cHvdc.getNetwork()));
-    BOOST_CHECK_EQUAL("LCC1", cHvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", cHvdc.getConverterStation2().get().getId());
 
     hvdc.remove();
     POWSYBL_ASSERT_THROW(network.getHvdcLine("HVDC1"), PowsyblException, "Unable to find to the identifiable 'HVDC1'");

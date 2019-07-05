@@ -110,7 +110,11 @@ public:
 
     ~TieLine() noexcept override = default;
 
+    const HalfLine& getHalf1() const;
+
     HalfLine& getHalf1();
+
+    const HalfLine& getHalf2() const;
 
     HalfLine& getHalf2();
 

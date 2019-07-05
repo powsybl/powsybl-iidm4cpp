@@ -20,7 +20,7 @@ void NetworkIndex::checkId(const std::string& id) {
 }
 
 template <>
-Identifiable& NetworkIndex::get(const std::string& id) const {
+const Identifiable& NetworkIndex::get(const std::string& id) const {
     checkId(id);
 
     const auto& it = m_objectsById.find(id);
@@ -29,6 +29,11 @@ Identifiable& NetworkIndex::get(const std::string& id) const {
     }
 
     return *(it->second.get());
+}
+
+template <>
+Identifiable& NetworkIndex::get(const std::string& id) {
+    return const_cast<Identifiable&>(static_cast<const NetworkIndex*>(this)->get<Identifiable>(id));
 }
 
 template <>

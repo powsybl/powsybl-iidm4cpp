@@ -133,7 +133,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_CHECK_EQUAL(1ul, network.getLineCount());
 
-    TieLine& tieLine = dynamic_cast<TieLine&>(network.getLine("TL_VL1_VL3"));
+    const TieLine& tieLine = dynamic_cast<const TieLine&>(network.getLine("TL_VL1_VL3"));
     BOOST_CHECK_EQUAL("TL_VL1_VL3", tieLine.getId());
     BOOST_CHECK_EQUAL("", tieLine.getName());
     BOOST_CHECK_EQUAL(ConnectableType::LINE, tieLine.getType());
@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(1.7, tieLine.getB2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL("UcteXnodeCode", tieLine.getUcteXnodeCode());
 
-    TieLine::HalfLine& half1 = tieLine.getHalf1();
+    const TieLine::HalfLine& half1 = tieLine.getHalf1();
     BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", half1.getId());
     BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", half1.getName());
     BOOST_CHECK_CLOSE(6.0, half1.getR(), std::numeric_limits<double>::epsilon());
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(1.0, half1.getXnodeP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, half1.getXnodeQ(), std::numeric_limits<double>::epsilon());
 
-    TieLine::HalfLine& half2 = tieLine.getHalf2();
+    const TieLine::HalfLine& half2 = tieLine.getHalf2();
     BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", half2.getId());
     BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", half2.getName());
     BOOST_CHECK_CLOSE(7.0, half2.getR(), std::numeric_limits<double>::epsilon());
@@ -175,9 +175,11 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
-    const Network& network = createTieLineTestNetwork();
+    Network network = createTieLineTestNetwork();
 
     TieLine& tieLine = dynamic_cast<TieLine&>(network.getLine("TL_VL1_VL3"));
+    BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", tieLine.getHalf1().getId());
+    BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", tieLine.getHalf2().getId());
 
     POWSYBL_ASSERT_THROW(tieLine.setR(100), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
     POWSYBL_ASSERT_THROW(tieLine.setX(200), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");

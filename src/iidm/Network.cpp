@@ -64,7 +64,11 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     m_variantManager(*this) {
 }
 
-Battery& Network::getBattery(const std::string& id) const {
+const Battery& Network::getBattery(const std::string& id) const {
+    return get<Battery>(id);
+}
+
+Battery& Network::getBattery(const std::string& id) {
     return get<Battery>(id);
 }
 
@@ -72,7 +76,11 @@ unsigned long Network::getBatteryCount() const {
     return getObjectCount<Battery>();
 }
 
-Branch& Network::getBranch(const std::string& id) const {
+const Branch& Network::getBranch(const std::string& id) const {
+    return get<Branch>(id);
+}
+
+Branch& Network::getBranch(const std::string& id) {
     return get<Branch>(id);
 }
 
@@ -80,7 +88,11 @@ unsigned long Network::getBranchCount() const {
     return getLineCount() + getTwoWindingsTransformerCount();
 }
 
-BusbarSection& Network::getBusbarSection(const std::string& id) const {
+const BusbarSection& Network::getBusbarSection(const std::string& id) const {
+    return get<BusbarSection>(id);
+}
+
+BusbarSection& Network::getBusbarSection(const std::string& id) {
     return get<BusbarSection>(id);
 }
 
@@ -90,14 +102,6 @@ unsigned long Network::getBusbarSectionCount() const {
 
 const stdcxx::DateTime& Network::getCaseDate() const {
     return m_caseDate;
-}
-
-stdcxx::CReference<Connectable> Network::getConnectable(const std::string& id) const {
-    return stdcxx::cref<Connectable>(find<Connectable>(id));
-}
-
-stdcxx::Reference<Connectable> Network::getConnectable(const std::string& id) {
-    return find<Connectable>(id);
 }
 
 unsigned long Network::getCountryCount() const {
@@ -112,7 +116,11 @@ unsigned long Network::getCountryCount() const {
     return countries.size();
 }
 
-DanglingLine& Network::getDanglingLine(const std::string& id) const {
+const DanglingLine& Network::getDanglingLine(const std::string& id) const {
+    return get<DanglingLine>(id);
+}
+
+DanglingLine& Network::getDanglingLine(const std::string& id) {
     return get<DanglingLine>(id);
 }
 
@@ -124,7 +132,11 @@ int Network::getForecastDistance() const {
     return m_forecastDistance;
 }
 
-Generator& Network::getGenerator(const std::string& id) const {
+const Generator& Network::getGenerator(const std::string& id) const {
+    return get<Generator>(id);
+}
+
+Generator& Network::getGenerator(const std::string& id) {
     return get<Generator>(id);
 }
 
@@ -132,7 +144,11 @@ unsigned long Network::getGeneratorCount() const {
     return getObjectCount<Generator>();
 }
 
-HvdcConverterStation& Network::getHvdcConverterStation(const std::string& id) const {
+const HvdcConverterStation& Network::getHvdcConverterStation(const std::string& id) const {
+    return get<HvdcConverterStation>(id);
+}
+
+HvdcConverterStation& Network::getHvdcConverterStation(const std::string& id) {
     return get<HvdcConverterStation>(id);
 }
 
@@ -140,7 +156,11 @@ unsigned long Network::getHvdcConverterStationCount() const {
     return getLccConverterStationCount() + getVscConverterStationCount();
 }
 
-HvdcLine& Network::getHvdcLine(const std::string& id) const {
+const HvdcLine& Network::getHvdcLine(const std::string& id) const {
+    return get<HvdcLine>(id);
+}
+
+HvdcLine& Network::getHvdcLine(const std::string& id) {
     return get<HvdcLine>(id);
 }
 
@@ -148,7 +168,11 @@ unsigned long Network::getHvdcLineCount() const {
     return getObjectCount<HvdcLine>();
 }
 
-LccConverterStation& Network::getLccConverterStation(const std::string& id) const {
+const LccConverterStation& Network::getLccConverterStation(const std::string& id) const {
+    return get<LccConverterStation>(id);
+}
+
+LccConverterStation& Network::getLccConverterStation(const std::string& id) {
     return get<LccConverterStation>(id);
 }
 
@@ -156,7 +180,11 @@ unsigned long Network::getLccConverterStationCount() const {
     return getObjectCount<LccConverterStation>();
 }
 
-Line& Network::getLine(const std::string& id) const {
+const Line& Network::getLine(const std::string& id) const {
+    return get<Line>(id);
+}
+
+Line& Network::getLine(const std::string& id) {
     return get<Line>(id);
 }
 
@@ -164,7 +192,11 @@ unsigned long Network::getLineCount() const {
     return getObjectCount<Line>() + getObjectCount<TieLine>();
 }
 
-Load& Network::getLoad(const std::string& id) const {
+const Load& Network::getLoad(const std::string& id) const {
+    return get<Load>(id);
+}
+
+Load& Network::getLoad(const std::string& id) {
     return get<Load>(id);
 }
 
@@ -172,7 +204,11 @@ unsigned long Network::getLoadCount() const {
     return getObjectCount<Load>();
 }
 
-ShuntCompensator& Network::getShuntCompensator(const std::string& id) const {
+const ShuntCompensator& Network::getShuntCompensator(const std::string& id) const {
+    return get<ShuntCompensator>(id);
+}
+
+ShuntCompensator& Network::getShuntCompensator(const std::string& id) {
     return get<ShuntCompensator>(id);
 }
 
@@ -184,7 +220,11 @@ const std::string& Network::getSourceFormat() const {
     return m_sourceFormat;
 }
 
-StaticVarCompensator& Network::getStaticVarCompensator(const std::string& id) const {
+const StaticVarCompensator& Network::getStaticVarCompensator(const std::string& id) const {
+    return get<StaticVarCompensator>(id);
+}
+
+StaticVarCompensator& Network::getStaticVarCompensator(const std::string& id) {
     return get<StaticVarCompensator>(id);
 }
 
@@ -192,7 +232,11 @@ unsigned long Network::getStaticVarCompensatorCount() const {
     return getObjectCount<StaticVarCompensator>();
 }
 
-Substation& Network::getSubstation(const std::string& id) const {
+const Substation& Network::getSubstation(const std::string& id) const {
+    return get<Substation>(id);
+}
+
+Substation& Network::getSubstation(const std::string& id) {
     return get<Substation>(id);
 }
 
@@ -200,7 +244,11 @@ unsigned long Network::getSubstationCount() const {
     return getObjectCount<Substation>();
 }
 
-Switch& Network::getSwitch(const std::string& id) const {
+const Switch& Network::getSwitch(const std::string& id) const {
+    return get<Switch>(id);
+}
+
+Switch& Network::getSwitch(const std::string& id) {
     return get<Switch>(id);
 }
 
@@ -208,7 +256,11 @@ unsigned long Network::getSwitchCount() const {
     return getObjectCount<Switch>();
 }
 
-ThreeWindingsTransformer& Network::getThreeWindingsTransformer(const std::string& id) const {
+const ThreeWindingsTransformer& Network::getThreeWindingsTransformer(const std::string& id) const {
+    return get<ThreeWindingsTransformer>(id);
+}
+
+ThreeWindingsTransformer& Network::getThreeWindingsTransformer(const std::string& id) {
     return get<ThreeWindingsTransformer>(id);
 }
 
@@ -216,7 +268,11 @@ unsigned long Network::getThreeWindingsTransformerCount() const {
     return getObjectCount<ThreeWindingsTransformer>();
 }
 
-TwoWindingsTransformer& Network::getTwoWindingsTransformer(const std::string& id) const {
+const TwoWindingsTransformer& Network::getTwoWindingsTransformer(const std::string& id) const {
+    return get<TwoWindingsTransformer>(id);
+}
+
+TwoWindingsTransformer& Network::getTwoWindingsTransformer(const std::string& id) {
     return get<TwoWindingsTransformer>(id);
 }
 
@@ -242,7 +298,11 @@ VariantManager& Network::getVariantManager() {
     return m_variantManager;
 }
 
-VoltageLevel& Network::getVoltageLevel(const std::string& id) const {
+const VoltageLevel& Network::getVoltageLevel(const std::string& id) const {
+    return get<VoltageLevel>(id);
+}
+
+VoltageLevel& Network::getVoltageLevel(const std::string& id) {
     return get<VoltageLevel>(id);
 }
 
@@ -250,7 +310,11 @@ unsigned long Network::getVoltageLevelCount() const {
     return getObjectCount<VoltageLevel>();
 }
 
-VscConverterStation& Network::getVscConverterStation(const std::string& id) const {
+const VscConverterStation& Network::getVscConverterStation(const std::string& id) const {
+    return get<VscConverterStation>(id);
+}
+
+VscConverterStation& Network::getVscConverterStation(const std::string& id) {
     return get<VscConverterStation>(id);
 }
 

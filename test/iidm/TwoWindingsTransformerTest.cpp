@@ -215,7 +215,7 @@ void addPhaseTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal)
 BOOST_AUTO_TEST_SUITE(TwoWindingsTransformerTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createTwoWindingsTransformerTestNetwork();
+    Network network = createTwoWindingsTransformerTestNetwork();
     const Substation& substation = network.getSubstation("S1");
 
     BOOST_CHECK_EQUAL(1ul, network.getTwoWindingsTransformerCount());
@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
-    const Network& network = createTwoWindingsTransformerTestNetwork();
+    Network network = createTwoWindingsTransformerTestNetwork();
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
 

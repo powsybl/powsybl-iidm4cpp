@@ -57,8 +57,8 @@ Network createShuntCompensatorTestNetwork() {
 
 BOOST_AUTO_TEST_SUITE(ShuntCompensatorTestSuite)
 
-BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createShuntCompensatorTestNetwork();
+BOOST_AUTO_TEST_CASE(adder) {
+    Network network = createShuntCompensatorTestNetwork();
 
     unsigned long shuntCompensatorCount = network.getShuntCompensatorCount();
 
@@ -90,17 +90,27 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(shuntCompensatorCount + 1, network.getShuntCompensatorCount());
 }
 
-BOOST_AUTO_TEST_CASE(integrity) {
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createShuntCompensatorTestNetwork();
 
-    ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
+    const ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
+    BOOST_CHECK_EQUAL(ConnectableType::SHUNT_COMPENSATOR, shunt.getType());
+    std::ostringstream oss;
+    oss << shunt.getType();
+    BOOST_CHECK_EQUAL("SHUNT_COMPENSATOR", oss.str());
     BOOST_CHECK_CLOSE(12.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2ul, shunt.getCurrentSectionCount());
     BOOST_CHECK_EQUAL(3ul, shunt.getMaximumSectionCount());
     BOOST_CHECK_CLOSE(24.0, shunt.getCurrentB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(36.0, shunt.getMaximumB(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_AUTO_TEST_CASE(integrity) {
+    Network network = createShuntCompensatorTestNetwork();
+
+    ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
 
     BOOST_TEST(stdcxx::areSame(shunt, shunt.setbPerSection(100.0)));
     BOOST_CHECK_CLOSE(100.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
@@ -139,10 +149,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     network.getVariantManager().setWorkingVariant("s1");
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
-    BOOST_CHECK_EQUAL(ConnectableType::SHUNT_COMPENSATOR, shunt.getType());
-    std::ostringstream oss;
-    oss << shunt.getType();
-    BOOST_CHECK_EQUAL("SHUNT_COMPENSATOR", oss.str());
     BOOST_CHECK_CLOSE(12.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2ul, shunt.getCurrentSectionCount());
     BOOST_CHECK_EQUAL(3ul, shunt.getMaximumSectionCount());

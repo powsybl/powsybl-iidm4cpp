@@ -29,7 +29,7 @@ namespace network {
 BOOST_AUTO_TEST_SUITE(EurostagFactoryTestSuite)
 
 BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
-    iidm::Network network = EurostagFactory::createTutorial1Network();
+    const iidm::Network& network = EurostagFactory::createTutorial1Network();
     BOOST_CHECK_EQUAL("eurostag1", network.getId());
     BOOST_CHECK_EQUAL("eurostag1", network.getName());
     BOOST_CHECK_EQUAL("test", network.getSourceFormat());
@@ -69,7 +69,7 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     const auto& sub1 = network.getSubstation("P1");
     POWSYBL_ASSERT_ENUM_EQ(iidm::Country::FR, *sub1.getCountry());
     BOOST_CHECK_EQUAL("RTE", sub1.getTso());
-    std::set<std::string> expected = {"A"};
+    const std::set<std::string>& expected = {"A"};
     const std::set<std::string>& actual1 = sub1.getGeographicalTags();
     BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual1.cbegin(), actual1.cend());
 
@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
 }
 
 BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
-    iidm::Network network = EurostagFactory::createWithCurrentLimits();
+    const iidm::Network& network = EurostagFactory::createWithCurrentLimits();
 
     BOOST_CHECK_EQUAL("eurostag1", network.getId());
     BOOST_CHECK_EQUAL("eurostag1", network.getName());
@@ -289,7 +289,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     const auto& sub1 = network.getSubstation("P1");
     POWSYBL_ASSERT_ENUM_EQ(iidm::Country::FR, *sub1.getCountry());
     BOOST_CHECK_EQUAL("RTE", sub1.getTso());
-    std::set<std::string> expected = {"A"};
+    const std::set<std::string>& expected = {"A"};
     const std::set<std::string>& actual1 = sub1.getGeographicalTags();
     BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual1.cbegin(), actual1.cend());
 
@@ -489,7 +489,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(301.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(301.0, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
 
-    auto& limits = gen.getReactiveLimits<iidm::MinMaxReactiveLimits>();
+    const auto& limits = gen.getReactiveLimits<iidm::MinMaxReactiveLimits>();
     POWSYBL_ASSERT_ENUM_EQ(iidm::ReactiveLimitsKind::MIN_MAX, limits.getKind());
     BOOST_CHECK_CLOSE(-9999.99, limits.getMinQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-9999.99, limits.getMinQ(0), std::numeric_limits<double>::epsilon());

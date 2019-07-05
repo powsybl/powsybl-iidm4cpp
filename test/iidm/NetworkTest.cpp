@@ -234,7 +234,7 @@ BOOST_AUTO_TEST_CASE(forecastDistance) {
 }
 
 BOOST_AUTO_TEST_CASE(country) {
-    const Network& network = createTestNetwork();
+    Network network = createTestNetwork();
 
     BOOST_CHECK_EQUAL(4, network.getSubstationCount());
     BOOST_CHECK_EQUAL(2, network.getCountryCount());
@@ -244,23 +244,27 @@ BOOST_AUTO_TEST_CASE(country) {
 }
 
 BOOST_AUTO_TEST_CASE(branch) {
-    const Network& network = createTestNetwork();
+    Network network = createTestNetwork();
+    const Network& cNetwork = network;
 
-    BOOST_CHECK_EQUAL(3, network.getBranchCount());
+    BOOST_CHECK_EQUAL(3, cNetwork.getBranchCount());
+    POWSYBL_ASSERT_THROW(cNetwork.getBranch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network.getBranch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
+    POWSYBL_ASSERT_THROW(cNetwork.getBranch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Branch");
     POWSYBL_ASSERT_THROW(network.getBranch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Branch");
+    BOOST_CHECK_NO_THROW(cNetwork.getBranch("TL_VL1_VL3"));
     BOOST_CHECK_NO_THROW(network.getBranch("TL_VL1_VL3"));
 
-    unsigned long lineCount = network.getLineCount();
-    unsigned long branchCount = network.getBranchCount();
-    BOOST_CHECK_EQUAL(lineCount + network.getTwoWindingsTransformerCount(), branchCount);
+    unsigned long lineCount = cNetwork.getLineCount();
+    unsigned long branchCount = cNetwork.getBranchCount();
+    BOOST_CHECK_EQUAL(lineCount + cNetwork.getTwoWindingsTransformerCount(), branchCount);
 
     unsigned long lineLoopCount = 0ul;
     unsigned long branchLoopCount = 0ul;
-    for (auto it = network.cbegin<Line>(); it != network.cend<Line>(); ++it) {
+    for (auto it = cNetwork.cbegin<Line>(); it != cNetwork.cend<Line>(); ++it) {
         lineLoopCount++;
     }
-    for (auto it = network.cbegin<Branch>(); it != network.cend<Branch>(); ++it) {
+    for (auto it = cNetwork.cbegin<Branch>(); it != cNetwork.cend<Branch>(); ++it) {
         branchLoopCount++;
     }
     BOOST_CHECK_EQUAL(lineLoopCount, lineCount);
@@ -269,7 +273,7 @@ BOOST_AUTO_TEST_CASE(branch) {
 
 BOOST_AUTO_TEST_CASE(switches) {
     //BusBreaker
-    Network network1 = createTestNetwork();
+    const Network& network1 = createTestNetwork();
     BOOST_CHECK_EQUAL(2, network1.getSwitchCount());
     POWSYBL_ASSERT_THROW(network1.getSwitch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network1.getSwitch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Switch");

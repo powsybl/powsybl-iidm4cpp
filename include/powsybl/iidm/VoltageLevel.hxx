@@ -27,10 +27,9 @@ namespace iidm {
 
 template <typename T, typename>
 stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const {
-    stdcxx::CReference<T> res;
-    stdcxx::Reference<T> connectable = getNetwork().find<T>(id);
+    stdcxx::CReference<T> connectable = getNetwork().find<T>(id);
 
-    if (connectable) {
+    if (static_cast<bool>(connectable)) {
         if (stdcxx::isInstanceOf<Injection>(connectable.get())) {
             const auto& injection = dynamic_cast<const Injection&>(connectable.get());
             if (!stdcxx::areSame(injection.getTerminal().getVoltageLevel(), *this)) {
@@ -43,7 +42,7 @@ stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const 
                 throw PowsyblException(logging::format("The branch '%1%' is not connected to the voltage level '%2%'", id, getId()));
             }
         } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable.get())) {
-            const auto& transformer = dynamic_cast<ThreeWindingsTransformer&>(connectable.get());
+            const auto& transformer = dynamic_cast<const ThreeWindingsTransformer&>(connectable.get());
             if (!stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::ONE).getVoltageLevel(), *this) &&
                 !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::TWO).getVoltageLevel(), *this) &&
                 !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::THREE).getVoltageLevel(), *this)) {
@@ -52,11 +51,9 @@ stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const 
         } else {
             throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.get().getType()));
         }
-
-        res = stdcxx::cref(connectable.get());
     }
 
-    return res;
+    return connectable;
 }
 
 template <typename T, typename>

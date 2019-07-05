@@ -183,7 +183,9 @@ Network createCalculatedBusSwitchTestNetwork() {
 BOOST_AUTO_TEST_SUITE(NodeBreakerVoltageLevelTestSuite)
 
 BOOST_AUTO_TEST_CASE(busbarSection) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
+    const Network& cNetwork = network;
+
     BOOST_CHECK_EQUAL(0, network.getBusbarSectionCount());
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
@@ -207,6 +209,7 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
 
     BusbarSection& bbs2 = network.getBusbarSection("BBS");
     BOOST_TEST(stdcxx::areSame(bbs, bbs2));
+    BOOST_TEST(stdcxx::areSame(bbs, cNetwork.getBusbarSection("BBS")));
     BOOST_TEST(std::isnan(bbs.getAngle()));
     BOOST_TEST(std::isnan(bbs.getV()));
 
@@ -219,7 +222,7 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
 }
 
 BOOST_AUTO_TEST_CASE(switches) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
     BOOST_CHECK_EQUAL(TopologyKind::NODE_BREAKER, voltageLevel.getTopologyKind());
@@ -261,10 +264,13 @@ BOOST_AUTO_TEST_CASE(switches) {
     BOOST_TEST(breaker.isOpen());
     BOOST_TEST(!breaker.isRetained());
     BOOST_TEST(breaker.isFictitious());
+
+    const Network& cNetwork = network;
+    BOOST_TEST(stdcxx::areSame(breaker, cNetwork.getSwitch("BK")));
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
     const unsigned long NODE_COUNT = 3;
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
@@ -838,18 +844,14 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     POWSYBL_ASSERT_THROW(line.getTerminal(static_cast<iidm::Branch::Side>(3u)), AssertionError, "Unexpected side value: 3");
     BOOST_TEST(!terminal4.disconnect());
 
-    BusbarSection& bbs = dynamic_cast<BusbarSection&>(network.getConnectable("BBS").get());
-    BOOST_TEST(!network.getConnectable("UNKNOWN"));
-    BOOST_TEST(!network.getConnectable("BUS1"));
+    BusbarSection& bbs = vl.getNodeBreakerView().getBusbarSection("BBS");
     BOOST_CHECK_CLOSE(0, bbs.getTerminal().getI(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(bbs.getTerminal().setP(1.0), ValidationException, "Busbar section 'BBS': cannot set active power on a busbar section");
     POWSYBL_ASSERT_THROW(bbs.getTerminal().setQ(2.0), ValidationException, "Busbar section 'BBS': cannot set reactive power on a busbar section");
 
     //test const version
-    const Network& cNetwork = network;
-    const BusbarSection& cBbs = dynamic_cast<const BusbarSection&>(cNetwork.getConnectable("BBS").get());
-    BOOST_TEST(!cNetwork.getConnectable("UNKNOWN"));
-    BOOST_TEST(!cNetwork.getConnectable("BUS1"));
+    const auto& cVl = vl;
+    const BusbarSection& cBbs = cVl.getNodeBreakerView().getBusbarSection("BBS");
     BOOST_CHECK_CLOSE(0, cBbs.getTerminal().getI(), std::numeric_limits<double>::epsilon());
 }
 

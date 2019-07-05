@@ -112,7 +112,7 @@ Network createGeneratorTestNetwork() {
 BOOST_AUTO_TEST_SUITE(GeneratorTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createGeneratorTestNetwork();
+    Network network = createGeneratorTestNetwork();
     unsigned long generatorCount = network.getGeneratorCount();
     BOOST_CHECK_EQUAL(1ul, generatorCount);
 
@@ -258,7 +258,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 }
 
 BOOST_AUTO_TEST_CASE(reactiveLimits) {
-    const Network& network = createGeneratorTestNetwork();
+    Network network = createGeneratorTestNetwork();
     Generator& gen = network.getGenerator("GEN1");
 
     BOOST_CHECK_NO_THROW(gen.getReactiveLimits<MinMaxReactiveLimits>());

@@ -20,8 +20,8 @@ namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(LccConverterStationTestSuite)
 
-BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createHvdcConverterStationTestNetwork();
+BOOST_AUTO_TEST_CASE(adder) {
+    Network network = createHvdcConverterStationTestNetwork();
 
     unsigned long lccCount = network.getLccConverterStationCount();
     unsigned long hvdcCount = network.getHvdcConverterStationCount();
@@ -48,11 +48,11 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(hvdcCount + 1, network.getHvdcConverterStationCount());
 }
 
-BOOST_AUTO_TEST_CASE(integrity) {
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createHvdcConverterStationTestNetwork();
 
-    LccConverterStation& lcc = network.getLccConverterStation("LCC1");
-    HvdcConverterStation& hvdc = network.getHvdcConverterStation("LCC1");
+    const LccConverterStation& lcc = network.getLccConverterStation("LCC1");
+    const HvdcConverterStation& hvdc = network.getHvdcConverterStation("LCC1");
     BOOST_TEST(stdcxx::areSame(lcc, hvdc));
     BOOST_CHECK_EQUAL("LCC1", lcc.getId());
     BOOST_CHECK_EQUAL(lcc.getId(), hvdc.getId());
@@ -68,6 +68,14 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(1.0, lcc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(lcc.getLossFactor(), hvdc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, lcc.getPowerFactor(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_AUTO_TEST_CASE(integrity) {
+    Network network = createHvdcConverterStationTestNetwork();
+
+    LccConverterStation& lcc = network.getLccConverterStation("LCC1");
+    HvdcConverterStation& hvdc = network.getHvdcConverterStation("LCC1");
+    BOOST_TEST(stdcxx::areSame(lcc, hvdc));
 
     BOOST_TEST(stdcxx::areSame(lcc, lcc.setLossFactor(100.0)));
     BOOST_CHECK_CLOSE(100.0, lcc.getLossFactor(), std::numeric_limits<double>::epsilon());

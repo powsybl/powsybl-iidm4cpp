@@ -135,8 +135,16 @@ double TieLine::getG2() const {
     return m_half1.getG2() + m_half2.getG2();
 }
 
+const TieLine::HalfLine& TieLine::getHalf1() const {
+    return m_half1;
+}
+
 TieLine::HalfLine& TieLine::getHalf1() {
     return m_half1;
+}
+
+const TieLine::HalfLine& TieLine::getHalf2() const {
+    return m_half2;
 }
 
 TieLine::HalfLine& TieLine::getHalf2() {

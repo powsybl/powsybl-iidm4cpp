@@ -61,7 +61,7 @@ Network createBatteryTestNetwork() {
 
 BOOST_AUTO_TEST_SUITE(BatteryTestSuite)
 
-BOOST_AUTO_TEST_CASE(constructor) {
+BOOST_AUTO_TEST_CASE(adder) {
     Network network = createBatteryTestNetwork();
     unsigned long batteryCount = network.getBatteryCount();
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
@@ -102,10 +102,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(batteryCount + 1, network.getBatteryCount());
 }
 
-BOOST_AUTO_TEST_CASE(integrity) {
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createBatteryTestNetwork();
     BOOST_CHECK_EQUAL(1ul, network.getBatteryCount());
-    Battery& battery = network.getBattery("BAT1");
+    const Battery& battery = network.getBattery("BAT1");
 
     BOOST_CHECK_EQUAL("BAT1", battery.getId());
     BOOST_CHECK_EQUAL("BAT1_NAME", battery.getName());
@@ -117,6 +117,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(200.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-200.0, battery.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(300.0, battery.getMaxP(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_AUTO_TEST_CASE(integrity) {
+    Network network = createBatteryTestNetwork();
+    Battery& battery = network.getBattery("BAT1");
 
     BOOST_TEST(stdcxx::areSame(battery, battery.setP0(110.0)));
     BOOST_CHECK_CLOSE(110.0, battery.getP0(), std::numeric_limits<double>::epsilon());
@@ -152,7 +157,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 }
 
 BOOST_AUTO_TEST_CASE(reactiveLimits) {
-    const Network& network = createBatteryTestNetwork();
+    Network network = createBatteryTestNetwork();
     Battery& battery = network.getBattery("BAT1");
 
     BOOST_CHECK_NO_THROW(battery.getReactiveLimits<MinMaxReactiveLimits>());

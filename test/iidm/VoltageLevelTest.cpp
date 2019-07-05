@@ -28,7 +28,7 @@ namespace iidm {
 BOOST_AUTO_TEST_SUITE(VoltageLevelTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
     unsigned long voltageLevelCount = network.getVoltageLevelCount();
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
 
     POWSYBL_ASSERT_THROW(network.getVoltageLevel("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network.getVoltageLevel("LOAD1"), PowsyblException, "Identifiable 'LOAD1' is not a powsybl::iidm::VoltageLevel");

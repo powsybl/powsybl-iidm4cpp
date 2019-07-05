@@ -22,8 +22,8 @@ namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(VscConverterStationTestSuite)
 
-BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createHvdcConverterStationTestNetwork();
+BOOST_AUTO_TEST_CASE(adder) {
+    Network network = createHvdcConverterStationTestNetwork();
 
     unsigned long vscCount = network.getVscConverterStationCount();
     unsigned long hvdcCount = network.getHvdcConverterStationCount();
@@ -61,11 +61,11 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(hvdcCount + 1, network.getHvdcConverterStationCount());
 }
 
-BOOST_AUTO_TEST_CASE(integrity) {
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createHvdcConverterStationTestNetwork();
 
-    VscConverterStation& vsc = network.getVscConverterStation("VSC1");
-    HvdcConverterStation& hvdc = network.getHvdcConverterStation("VSC1");
+    const VscConverterStation& vsc = network.getVscConverterStation("VSC1");
+    const HvdcConverterStation& hvdc = network.getHvdcConverterStation("VSC1");
     BOOST_TEST(stdcxx::areSame(vsc, hvdc));
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
     BOOST_CHECK_EQUAL(vsc.getId(), hvdc.getId());
@@ -83,6 +83,14 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(vsc.isVoltageRegulatorOn());
+}
+
+BOOST_AUTO_TEST_CASE(integrity) {
+    Network network = createHvdcConverterStationTestNetwork();
+
+    VscConverterStation& vsc = network.getVscConverterStation("VSC1");
+    HvdcConverterStation& hvdc = network.getHvdcConverterStation("VSC1");
+    BOOST_TEST(stdcxx::areSame(vsc, hvdc));
 
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setLossFactor(100.0)));
     BOOST_CHECK_CLOSE(100.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());

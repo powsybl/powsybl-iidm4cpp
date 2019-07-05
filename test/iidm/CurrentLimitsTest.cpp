@@ -139,10 +139,11 @@ Network createCurrentLimitsTestNetwork() {
 BOOST_AUTO_TEST_SUITE(CurrentLimitsTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createCurrentLimitsTestNetwork();
+    Network network = createCurrentLimitsTestNetwork();
+    const Network& cNetwork = network;
 
     Line& line = network.getLine("VL1_VL3");
-    const Line& cLine = line;
+    const Line& cLine = cNetwork.getLine("VL1_VL3");;
     BOOST_TEST(stdcxx::areSame(line, cLine));
 
     BOOST_TEST(line.getCurrentLimits1());
@@ -221,7 +222,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
-    const Network& network = createCurrentLimitsTestNetwork();
+    Network network = createCurrentLimitsTestNetwork();
 
     Line& line = network.getLine("VL1_VL3");
     const Line& cLine = line;

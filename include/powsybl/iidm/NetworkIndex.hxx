@@ -58,7 +58,7 @@ NetworkIndex::iterator<T> NetworkIndex::end() {
 }
 
 template<typename T>
-T& NetworkIndex::get(const std::string& id) const {
+const T& NetworkIndex::get(const std::string& id) const {
     checkId(id);
 
     const auto& it = m_objectsById.find(id);
@@ -74,6 +74,11 @@ T& NetworkIndex::get(const std::string& id) const {
     return *identifiable;
 }
 
+template<typename T>
+T& NetworkIndex::get(const std::string& id) {
+    return const_cast<T&>(static_cast<const NetworkIndex*>(this)->get<T>(id));
+}
+
 template <typename T>
 unsigned long NetworkIndex::getObjectCount() const {
     const auto& it = m_objectsByType.find(typeid(T));
@@ -84,18 +89,25 @@ unsigned long NetworkIndex::getObjectCount() const {
 }
 
 template <typename T>
-stdcxx::Reference<T> NetworkIndex::find(const std::string& id) const {
+stdcxx::CReference<T> NetworkIndex::find(const std::string& id) const {
     checkId(id);
 
     const auto& it = m_objectsById.find(id);
     if (it != m_objectsById.end()) {
         auto* identifiable = dynamic_cast<T*>(it->second.get());
         if (identifiable != nullptr) {
-            return stdcxx::ref<T>(*identifiable);
+            return stdcxx::cref<T>(*identifiable);
         }
     }
 
-    return stdcxx::ref<T>();
+    return stdcxx::CReference<T>();
+}
+
+template <typename T>
+stdcxx::Reference<T> NetworkIndex::find(const std::string& id) {
+    const auto& res = static_cast<const NetworkIndex*>(this)->find<T>(id);
+
+    return static_cast<bool>(res) ? stdcxx::ref(const_cast<T&>(res.get())) : stdcxx::ref<T>();
 }
 
 }  // namespace iidm

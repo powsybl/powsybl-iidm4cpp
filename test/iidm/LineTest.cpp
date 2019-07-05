@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_CHECK_EQUAL(1ul, network.getLineCount());
 
-    Line& line = network.getLine("VL1_VL3");
+    const Line& line = network.getLine("VL1_VL3");
     BOOST_CHECK_EQUAL("VL1_VL3", line.getId());
     BOOST_CHECK_EQUAL("", line.getName());
     BOOST_CHECK_EQUAL(ConnectableType::LINE, line.getType());
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
-    const Network& network = createLineTestNetwork();
+    Network network = createLineTestNetwork();
 
     Line& line = network.getLine("VL1_VL3");
 

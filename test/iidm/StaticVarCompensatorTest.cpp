@@ -58,8 +58,8 @@ Network createStaticVarCompensatorTestNetwork() {
 
 BOOST_AUTO_TEST_SUITE(StaticVarCompensatorTestSuite)
 
-BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createStaticVarCompensatorTestNetwork();
+BOOST_AUTO_TEST_CASE(adder) {
+    Network network = createStaticVarCompensatorTestNetwork();
     unsigned long staticVarCompensatorCount = network.getStaticVarCompensatorCount();
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
@@ -86,10 +86,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(staticVarCompensatorCount + 1, network.getStaticVarCompensatorCount());
 }
 
-BOOST_AUTO_TEST_CASE(integrity) {
+BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createStaticVarCompensatorTestNetwork();
 
-    StaticVarCompensator& svc = network.getStaticVarCompensator("SVC1");
+    const StaticVarCompensator& svc = network.getStaticVarCompensator("SVC1");
     BOOST_CHECK_EQUAL("SVC1", svc.getId());
     BOOST_CHECK_EQUAL("SVC1_NAME", svc.getName());
     BOOST_CHECK_EQUAL(ConnectableType::STATIC_VAR_COMPENSATOR, svc.getType());
@@ -101,6 +101,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(90.0, svc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::REACTIVE_POWER, svc.getRegulationMode());
     BOOST_CHECK_CLOSE(380.0, svc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_AUTO_TEST_CASE(integrity) {
+    Network network = createStaticVarCompensatorTestNetwork();
+
+    StaticVarCompensator& svc = network.getStaticVarCompensator("SVC1");
 
     BOOST_TEST(stdcxx::areSame(svc, svc.setBmax(100)));
     BOOST_CHECK_CLOSE(100, svc.getBmax(), std::numeric_limits<double>::epsilon());

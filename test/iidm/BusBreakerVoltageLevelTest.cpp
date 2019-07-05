@@ -30,7 +30,7 @@ namespace iidm {
 BOOST_AUTO_TEST_SUITE(BusBreakerVoltageLevelTestSuite)
 
 BOOST_AUTO_TEST_CASE(BusTest) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(BusTest) {
 }
 
 BOOST_AUTO_TEST_CASE(SwitchTest) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
@@ -99,11 +99,14 @@ BOOST_AUTO_TEST_CASE(SwitchTest) {
     BOOST_TEST(aSwitch.isFictitious());
     BOOST_TEST(aSwitch.isOpen());
 
+    const Network& cNetwork = network;
+    BOOST_TEST(stdcxx::areSame(aSwitch, cNetwork.getSwitch("SW")));
+
     POWSYBL_ASSERT_THROW(aSwitch.setRetained(true), ValidationException, "Switch 'SW': retain status is not modifiable in a non node/breaker voltage level");
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
@@ -111,12 +114,13 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView(), AssertionError, "Not implemented");
 
     // test const version
-    const VoltageLevel& vl = network.getVoltageLevel("VL1");
+    const Network& cNetwork = network;
+    const VoltageLevel& vl = cNetwork.getVoltageLevel("VL1");
     POWSYBL_ASSERT_THROW(vl.getNodeBreakerView(), AssertionError, "Not implemented");
 }
 
 BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());

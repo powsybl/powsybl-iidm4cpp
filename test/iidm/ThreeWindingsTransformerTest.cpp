@@ -218,13 +218,14 @@ void addRatioTapChangerLeg3(ThreeWindingsTransformer& transformer, Terminal& ter
 BOOST_AUTO_TEST_SUITE(ThreeWindingsTransformerTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createThreeWindingsTransformerTestNetwork();
-    const Substation& substation = network.getSubstation("S1");
+    Network network = createThreeWindingsTransformerTestNetwork();
+    const Network& cNetwork = network;
+    const Substation& substation = cNetwork.getSubstation("S1");
 
     BOOST_CHECK_EQUAL(1ul, network.getThreeWindingsTransformerCount());
 
     ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
-    const ThreeWindingsTransformer& cTransformer = transformer;
+    const ThreeWindingsTransformer& cTransformer = cNetwork.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
     BOOST_TEST(stdcxx::areSame(cTransformer, transformer));
 
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3", transformer.getId());

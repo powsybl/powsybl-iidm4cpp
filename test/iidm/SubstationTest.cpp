@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_CHECK_EQUAL(1ul, network.getSubstationCount());
 
-    Substation& substation = network.getSubstation("S1");
+    const Substation& substation = network.getSubstation("S1");
     BOOST_CHECK_EQUAL("S1", substation.getId());
     BOOST_CHECK_EQUAL("S1_NAME", substation.getName());
     POWSYBL_ASSERT_ENUM_EQ(Country::FR, *substation.getCountry());
@@ -228,6 +228,9 @@ BOOST_AUTO_TEST_CASE(twoWindingsTransformerCount) {
 
     BOOST_CHECK_EQUAL(3ul, network.getTwoWindingsTransformerCount());
     BOOST_CHECK_EQUAL(2ul, substation.getTwoWindingsTransformerCount());
+
+    network.remove(substation);
+    POWSYBL_ASSERT_THROW(network.getSubstation("S1"), PowsyblException, "Unable to find to the identifiable 'S1'");
 }
 
 BOOST_AUTO_TEST_CASE(threeWindingsTransformerCount) {
