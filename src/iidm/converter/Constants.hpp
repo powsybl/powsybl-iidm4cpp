@@ -15,12 +15,19 @@ namespace iidm {
 namespace converter {
 
 static const char* const CASE_DATE = "caseDate";
+static const char* const COUNTRY = "country";
 static const char* const FORECAST_DISTANCE = "forecastDistance";
+static const char* const GEOGRAPHICAL_TAGS = "geographicalTags";
 static const char* const ID = "id";
 static const char* const IIDM_PREFIX = "iidm";
 static const char* const IIDM_URI = "http://www.itesla_project.eu/schema/iidm/1_0";
+static const char* const NAME = "name";
 static const char* const NETWORK = "network";
+static const char* const PROPERTY = "property";
 static const char* const SOURCE_FORMAT = "sourceFormat";
+static const char* const SUBSTATION = "substation";
+static const char* const TSO = "tso";
+static const char* const VALUE = "value";
 
 }  // namespace converter
 

@@ -17,21 +17,30 @@ namespace iidm {
 
 class Properties {
 public:
+    using const_iterator = std::map<std::string, std::string>::const_iterator;
+
+    using iterator = std::map<std::string, std::string>::iterator;
+
+public:
     Properties() = default;
 
     ~Properties() = default;
 
-    std::map<std::string, std::string>::iterator begin();
+    const_iterator begin() const;
 
-    std::map<std::string, std::string>::const_iterator cbegin() const;
+    iterator begin();
 
-    std::map<std::string, std::string>::const_iterator cend() const;
+    const_iterator cbegin() const;
+
+    const_iterator cend() const;
 
     Properties& clear();
 
     bool contains(const std::string& key) const;
 
-    std::map<std::string, std::string>::iterator end();
+    const_iterator end() const;
+
+    iterator end();
 
     const std::string& get(const std::string& key) const;
 

@@ -8,10 +8,8 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_NETWORKXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_NETWORKXML_HPP
 
+#include <iosfwd>
 #include <memory>
-#include <string>
-
-#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -29,7 +27,7 @@ namespace xml {
 
 class NetworkXml {
 public:
-    static Network read(std::istream& is, const converter::ImportOptions& options, const stdcxx::CReference<converter::Anonymizer>& anonymizer);
+    static Network read(std::istream& is, const ImportOptions& options, const Anonymizer& anonymizer);
 
     static std::unique_ptr<Anonymizer> write(std::ostream& ostream, const Network& network, const ExportOptions& options);
 

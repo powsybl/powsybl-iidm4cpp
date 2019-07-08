@@ -28,11 +28,10 @@ BOOST_AUTO_TEST_CASE(Constructor) {
                "<test />";
     powsybl::xml::XmlStreamReader reader(istream);
     ImportOptions importOptions;
-    FakeAnonymizer fakeAnonymizer;
-    stdcxx::CReference<Anonymizer> anonymizer(fakeAnonymizer);
+    FakeAnonymizer anonymizer;
     NetworkXmlReaderContext context(anonymizer, reader, importOptions);
     BOOST_CHECK_EQUAL(importOptions.isThrowExceptionIfExtensionNotFound(), context.getOptions().isThrowExceptionIfExtensionNotFound());
-    BOOST_CHECK_EQUAL(anonymizer, context.getAnonymizer());
+    BOOST_CHECK(stdcxx::areSame(anonymizer, context.getAnonymizer()));
     BOOST_CHECK(stdcxx::areSame(reader, context.getReader()));
 }
 

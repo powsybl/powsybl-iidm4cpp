@@ -12,12 +12,13 @@
 #include <string>
 
 #include <powsybl/iidm/converter/ExportOptions.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
 namespace xml {
+
 class XmlStreamWriter;
+
 }  // namespace xml
 
 namespace iidm {
@@ -32,15 +33,15 @@ namespace xml {
 
 class NetworkXmlWriterContext {
 public:
-    NetworkXmlWriterContext(const stdcxx::reference_wrapper<Anonymizer>& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options);
+    NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options);
 
     ~NetworkXmlWriterContext() = default;
 
     void addExportedEquipment(const Identifiable& identifiable);
 
-    const stdcxx::reference_wrapper<Anonymizer>& getAnonymizer() const;
+    const Anonymizer& getAnonymizer() const;
 
-    stdcxx::reference_wrapper<Anonymizer>& getAnonymizer();
+    Anonymizer& getAnonymizer();
 
     const std::set<std::string>& getExportedEquipments() const;
 
@@ -51,7 +52,7 @@ public:
 private:
     powsybl::xml::XmlStreamWriter& m_writer;
 
-    stdcxx::reference_wrapper<Anonymizer> m_anonymizer;
+    Anonymizer& m_anonymizer;
 
     ExportOptions m_options;
 

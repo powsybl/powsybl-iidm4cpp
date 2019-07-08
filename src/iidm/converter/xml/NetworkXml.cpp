@@ -7,23 +7,17 @@
 
 #include "NetworkXml.hpp"
 
-#include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/converter/Anonymizer.hpp>
-#include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
-#include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
-#include <powsybl/stdcxx/DateTime.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
-#include <powsybl/xml/XmlStreamWriter.hpp>
-
-#include "xml/XmlEncoding.hpp"
 
 #include "iidm/converter/Constants.hpp"
+#include "iidm/converter/xml/SubstationXml.hpp"
+#include "xml/XmlEncoding.hpp"
 
 namespace powsybl {
 
@@ -33,7 +27,7 @@ namespace converter {
 
 namespace xml {
 
-Network NetworkXml::read(std::istream& is, const ImportOptions& /*options*/, const stdcxx::CReference<converter::Anonymizer>& /*anonymizer*/) {
+Network NetworkXml::read(std::istream& is, const ImportOptions& options, const Anonymizer& anonymizer) {
 
     powsybl::xml::XmlStreamReader reader(is);
 
@@ -53,11 +47,27 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& /*options*/, con
         throw powsybl::xml::XmlStreamException(err.what());
     }
 
+    NetworkXmlReaderContext context(anonymizer, reader, options);
+
+    context.getReader().readUntilEndElement(NETWORK, [&network, &context]() {
+        if (context.getReader().getLocalName() == SUBSTATION) {
+            SubstationXml::instance().read(network, context);
+        } else {
+            throw powsybl::xml::XmlStreamException(logging::format("Unexpected element: %1%", context.getReader().getLocalName()));
+        }
+    });
+
     return network;
 }
 
 std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Network& network, const ExportOptions& options) {
     powsybl::xml::XmlStreamWriter writer(ostream, options.isIndent());
+
+    // FIXME(sebalaig): for now on, only one kind of anonymizer = FakeAnonymizer
+    // later, a real anonymizer will be instantiated depending on options.isAnonymized()
+    std::unique_ptr<Anonymizer> anonymizer(stdcxx::make_unique<FakeAnonymizer>());
+
+    NetworkXmlWriterContext context(*anonymizer, writer, options);
 
     writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");
 
@@ -69,10 +79,13 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
 
+    for (auto it = network.cbegin<Substation>(); it != network.cend<Substation>(); ++it) {
+        SubstationXml::instance().write(*it, network, context);
+    }
+
     writer.writeEndElement();
     writer.writeEndDocument();
 
-    std::unique_ptr<Anonymizer> anonymizer(options.isAnonymized() ? stdcxx::make_unique<FakeAnonymizer>() : nullptr);
     return anonymizer;
 }
 

@@ -5,12 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp"
-
-#include <powsybl/iidm/converter/Anonymizer.hpp>
-#include <powsybl/iidm/converter/ImportOptions.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
-#include <powsybl/xml/XmlStreamReader.hpp>
+#include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 
 namespace powsybl {
 
@@ -20,14 +15,14 @@ namespace converter {
 
 namespace xml {
 
-NetworkXmlReaderContext::NetworkXmlReaderContext(const stdcxx::CReference<Anonymizer>& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options) :
+NetworkXmlReaderContext::NetworkXmlReaderContext(const Anonymizer& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options) :
     m_reader(reader),
     m_anonymizer(anonymizer),
     m_options(options) {
 
 }
 
-const stdcxx::CReference<Anonymizer>& NetworkXmlReaderContext::getAnonymizer() const {
+const Anonymizer& NetworkXmlReaderContext::getAnonymizer() const {
     return m_anonymizer;
 }
 

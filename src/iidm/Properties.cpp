@@ -14,15 +14,19 @@ namespace powsybl {
 
 namespace iidm {
 
-std::map<std::string, std::string>::iterator Properties::begin() {
+Properties::const_iterator Properties::begin() const {
     return m_properties.begin();
 }
 
-std::map<std::string, std::string>::const_iterator Properties::cbegin() const {
+Properties::iterator Properties::begin() {
+    return m_properties.begin();
+}
+
+Properties::const_iterator Properties::cbegin() const {
     return m_properties.cbegin();
 }
 
-std::map<std::string, std::string>::const_iterator Properties::cend() const {
+Properties::const_iterator Properties::cend() const {
     return m_properties.cend();
 }
 
@@ -31,7 +35,11 @@ Properties& Properties::clear() {
     return *this;
 }
 
-std::map<std::string, std::string>::iterator Properties::end() {
+Properties::const_iterator Properties::end() const {
+    return m_properties.end();
+}
+
+Properties::iterator Properties::end() {
     return m_properties.end();
 }
 

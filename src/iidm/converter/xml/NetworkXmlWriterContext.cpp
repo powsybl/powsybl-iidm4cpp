@@ -5,13 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp"
+#include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/converter/Anonymizer.hpp>
-#include <powsybl/iidm/converter/ExportOptions.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
-#include <powsybl/xml/XmlStreamWriter.hpp>
 
 namespace powsybl {
 
@@ -21,7 +17,7 @@ namespace converter {
 
 namespace xml {
 
-NetworkXmlWriterContext::NetworkXmlWriterContext(const stdcxx::reference_wrapper<Anonymizer>& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options) :
+NetworkXmlWriterContext::NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options) :
     m_writer(writer),
     m_anonymizer(anonymizer),
     m_options(options) {
@@ -32,11 +28,11 @@ void NetworkXmlWriterContext::addExportedEquipment(const Identifiable& identifia
     m_exportedEquipments.insert(identifiable.getId());
 }
 
-const stdcxx::reference_wrapper<Anonymizer>& NetworkXmlWriterContext::getAnonymizer() const {
+const Anonymizer& NetworkXmlWriterContext::getAnonymizer() const {
     return m_anonymizer;
 }
 
-stdcxx::reference_wrapper<Anonymizer>& NetworkXmlWriterContext::getAnonymizer() {
+Anonymizer& NetworkXmlWriterContext::getAnonymizer() {
     return m_anonymizer;
 }
 

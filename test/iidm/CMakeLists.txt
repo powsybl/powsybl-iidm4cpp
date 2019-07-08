@@ -43,6 +43,7 @@ set(UNIT_TEST_SOURCES
     converter/xml/NetworkXmlTest.cpp
     converter/xml/NetworkXmlReaderContextTest.cpp
     converter/xml/NetworkXmlWriterContextTest.cpp
+    converter/xml/XmlReadWriteTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})

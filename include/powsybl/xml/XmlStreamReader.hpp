@@ -21,7 +21,7 @@ namespace xml {
 
 class XmlStreamReader {
 public:
-    using ReadCallback = std::function<void(const XmlStreamReader& reader)>;
+    using ReadCallback = std::function<void()>;
 
 public:
     explicit XmlStreamReader(std::istream& stream);

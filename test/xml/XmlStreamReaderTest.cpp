@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(XmlReadApiReadUntilEndElement) {
     ss << xmlTest;
     powsybl::xml::XmlStreamReader reader(ss);
 
-    xml::XmlStreamReader::ReadCallback callback = [](const powsybl::xml::XmlStreamReader& reader) {
+    xml::XmlStreamReader::ReadCallback callback = [&reader]() {
         if (reader.getLocalName() == "substation") {
             BOOST_CHECK_EQUAL("FR", reader.getAttributeValue("country"));
         } else if (reader.getLocalName() == "voltageLevel") {

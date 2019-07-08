@@ -9,12 +9,13 @@
 #define POWSYBL_IIDM_CONVERTER_XML_NETWORKXMLREADERCONTEXT_HPP
 
 #include <powsybl/iidm/converter/ImportOptions.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
 namespace xml {
+
 class XmlStreamReader;
+
 }  // namespace xml
 
 namespace iidm {
@@ -27,9 +28,9 @@ namespace xml {
 
 class NetworkXmlReaderContext {
 public:
-    NetworkXmlReaderContext(const stdcxx::CReference<Anonymizer>& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options);
+    NetworkXmlReaderContext(const Anonymizer& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options);
 
-    const stdcxx::CReference<Anonymizer>& getAnonymizer() const;
+    const Anonymizer& getAnonymizer() const;
 
     const ImportOptions& getOptions() const;
 
@@ -38,7 +39,7 @@ public:
 private:
     powsybl::xml::XmlStreamReader& m_reader;
 
-    stdcxx::CReference<Anonymizer> m_anonymizer;
+    const Anonymizer& m_anonymizer;
 
     ImportOptions m_options;
 };
