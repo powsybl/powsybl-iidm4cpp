@@ -255,18 +255,16 @@ BOOST_AUTO_TEST_CASE(branch) {
     BOOST_CHECK_NO_THROW(cNetwork.getBranch("TL_VL1_VL3"));
     BOOST_CHECK_NO_THROW(network.getBranch("TL_VL1_VL3"));
 
+    BOOST_CHECK_EQUAL(boost::size(network.getBranches()), boost::size(cNetwork.getBranches()));
+    BOOST_CHECK_EQUAL(boost::size(network.getLines()), boost::size(cNetwork.getLines()));
+    BOOST_CHECK_EQUAL(boost::size(network.getTwoWindingsTransformers()), boost::size(cNetwork.getTwoWindingsTransformers()));
+
     unsigned long lineCount = cNetwork.getLineCount();
     unsigned long branchCount = cNetwork.getBranchCount();
     BOOST_CHECK_EQUAL(lineCount + cNetwork.getTwoWindingsTransformerCount(), branchCount);
 
-    unsigned long lineLoopCount = 0ul;
-    unsigned long branchLoopCount = 0ul;
-    for (auto it = cNetwork.cbegin<Line>(); it != cNetwork.cend<Line>(); ++it) {
-        lineLoopCount++;
-    }
-    for (auto it = cNetwork.cbegin<Branch>(); it != cNetwork.cend<Branch>(); ++it) {
-        branchLoopCount++;
-    }
+    unsigned long lineLoopCount = boost::size(network.getLines());
+    unsigned long branchLoopCount = boost::size(network.getBranches());
     BOOST_CHECK_EQUAL(lineLoopCount, lineCount);
     BOOST_CHECK_EQUAL(branchLoopCount, branchCount);
 }

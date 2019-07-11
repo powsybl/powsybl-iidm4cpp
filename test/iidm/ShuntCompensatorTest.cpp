@@ -88,6 +88,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(shuntCompensatorCount + 1, network.getShuntCompensatorCount());
+    BOOST_CHECK_EQUAL(shuntCompensatorCount + 1, boost::size(network.getShuntCompensators()));
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {

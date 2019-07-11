@@ -218,7 +218,8 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
     adder.setNode(0);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Busbar section 'DUPLICATE': An equipment (BBS) is already connected to the node 0 of voltage level VL2");
 
-    BOOST_CHECK_EQUAL(2, network.getBusbarSectionCount());
+    BOOST_CHECK_EQUAL(2UL, network.getBusbarSectionCount());
+    BOOST_CHECK_EQUAL(2UL, boost::size(network.getBusbarSections()));
 }
 
 BOOST_AUTO_TEST_CASE(switches) {
@@ -267,6 +268,8 @@ BOOST_AUTO_TEST_CASE(switches) {
 
     const Network& cNetwork = network;
     BOOST_TEST(stdcxx::areSame(breaker, cNetwork.getSwitch("BK")));
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getSwitches()));
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {

@@ -19,30 +19,30 @@ namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(NetworkIndexTestSuite)
 
-BOOST_AUTO_TEST_CASE(NetworkIteratorTest) {
+BOOST_AUTO_TEST_CASE(RangeTest) {
     const Network& network = createNetwork();
 
-    BOOST_CHECK_EQUAL(1ul, network.getSubstationCount());
+    // Substations
+    BOOST_CHECK_EQUAL(1UL, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getSubstations()));
 
+    // Identifiables
     std::set<std::string> expected = {"LOAD1", "S1", "VL1", "VL1_BUS1", "VL2"};
     std::set<std::string> actual;
-    for (NetworkIndex::const_iterator<Identifiable> it = network.cbegin<Identifiable>(); it != network.cend<Identifiable>(); ++it) {
-        actual.insert(it().getId());
+    for (const auto& identifiable : network.getIdentifiables()) {
+        actual.insert(identifiable.get().getId());
     }
     BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual.cbegin(), actual.cend());
-}
 
-BOOST_AUTO_TEST_CASE(NetworkFastIteratorTest) {
-    const Network& network = createNetwork();
-
-    BOOST_CHECK_EQUAL(2ul, network.getVoltageLevelCount());
-
-    std::vector<std::string> expected = {"VL1", "VL2"};
-    std::vector<std::string> actual;
-    for (NetworkIndex::const_iterator<VoltageLevel> it = network.cbegin<VoltageLevel>(); it != network.cend<VoltageLevel>(); ++it) {
-        actual.push_back(it().getId());
+    // VoltageLevels
+    BOOST_CHECK_EQUAL(2UL, network.getVoltageLevelCount());
+    BOOST_CHECK_EQUAL(2UL, boost::size(network.getVoltageLevels()));
+    std::vector<std::string> expectedVL = {"VL1", "VL2"};
+    std::vector<std::string> actualVL;
+    for (const auto& vl : network.getVoltageLevels()) {
+        actualVL.push_back(vl.get().getId());
     }
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual.cbegin(), actual.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedVL.cbegin(), expectedVL.cend(), actualVL.cbegin(), actualVL.cend());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

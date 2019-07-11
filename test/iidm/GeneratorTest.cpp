@@ -114,7 +114,8 @@ BOOST_AUTO_TEST_SUITE(GeneratorTestSuite)
 BOOST_AUTO_TEST_CASE(constructor) {
     Network network = createGeneratorTestNetwork();
     unsigned long generatorCount = network.getGeneratorCount();
-    BOOST_CHECK_EQUAL(1ul, generatorCount);
+    BOOST_CHECK_EQUAL(1UL, generatorCount);
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getGenerators()));
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL");
     GeneratorAdder adder = vl1.newGenerator().setId("GEN1").setNode(3);

@@ -10,7 +10,11 @@
 
 #include <powsybl/iidm/NetworkIndex.hpp>
 
+#include <boost/range/adaptor/transformed.hpp>
+
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/LccConverterStation.hpp>
+#include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -18,21 +22,6 @@
 namespace powsybl {
 
 namespace iidm {
-
-template <typename T>
-NetworkIndex::iterator<T> NetworkIndex::begin() {
-    return NetworkIndex::iterator<T>(*this);
-}
-
-template <typename T>
-NetworkIndex::const_iterator<T> NetworkIndex::cbegin() const {
-    return typename NetworkIndex::const_iterator<T>(*this);
-}
-
-template <typename T>
-NetworkIndex::const_iterator<T> NetworkIndex::cend() const {
-    return typename NetworkIndex::const_iterator<T>();
-}
 
 template <typename T>
 T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
@@ -50,11 +39,6 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     m_objectsByType[typeid(T)].emplace_back(refIdentifiable);
 
     return dynamic_cast<T&>(*it.first->second);
-}
-
-template <typename T>
-NetworkIndex::iterator<T> NetworkIndex::end() {
-    return NetworkIndex::iterator<T>();
 }
 
 template<typename T>
@@ -77,6 +61,40 @@ const T& NetworkIndex::get(const std::string& id) const {
 template<typename T>
 T& NetworkIndex::get(const std::string& id) {
     return const_cast<T&>(static_cast<const NetworkIndex*>(this)->get<T>(id));
+}
+
+template <>
+NetworkIndex::const_range<Identifiable, MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const;
+
+template <>
+NetworkIndex::range<Identifiable, MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>();
+
+template <>
+NetworkIndex::const_range<Identifiable, Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const;
+
+template <>
+NetworkIndex::range<Identifiable, Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>();
+
+template <typename T, typename U>
+NetworkIndex::const_range<T, U> NetworkIndex::getAll() const {
+    const auto& it = m_objectsByType[typeid(T)];
+
+    typename network_index::range_traits<T, U>::const_downcaster downcaster = [](const std::reference_wrapper<Identifiable>& identifiable) {
+        return std::cref(dynamic_cast<const U&>(identifiable.get()));
+    };
+
+    return it | boost::adaptors::transformed(downcaster);
+}
+
+template <typename T, typename U>
+NetworkIndex::range<T, U> NetworkIndex::getAll() {
+    auto& it = m_objectsByType[typeid(T)];
+
+    typename network_index::range_traits<T, U>::downcaster downcaster = [](const std::reference_wrapper<Identifiable>& identifiable) {
+        return std::ref(dynamic_cast<U&>(identifiable.get()));
+    };
+
+    return it | boost::adaptors::transformed(downcaster);
 }
 
 template <typename T>

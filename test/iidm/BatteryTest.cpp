@@ -104,7 +104,8 @@ BOOST_AUTO_TEST_CASE(adder) {
 
 BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createBatteryTestNetwork();
-    BOOST_CHECK_EQUAL(1ul, network.getBatteryCount());
+    BOOST_CHECK_EQUAL(1UL, network.getBatteryCount());
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBatteries()));
     const Battery& battery = network.getBattery("BAT1");
 
     BOOST_CHECK_EQUAL("BAT1", battery.getId());
@@ -121,6 +122,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
 BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createBatteryTestNetwork();
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBatteries()));
+
     Battery& battery = network.getBattery("BAT1");
 
     BOOST_TEST(stdcxx::areSame(battery, battery.setP0(110.0)));

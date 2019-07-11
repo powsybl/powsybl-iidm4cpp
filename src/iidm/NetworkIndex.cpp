@@ -7,6 +7,9 @@
 
 #include <powsybl/iidm/NetworkIndex.hpp>
 
+#include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "ValidationUtils.hpp"
@@ -37,6 +40,48 @@ Identifiable& NetworkIndex::get(const std::string& id) {
 }
 
 template <>
+NetworkIndex::const_range<Identifiable, Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const {
+    typename network_index::range_traits<Identifiable, Identifiable>::const_mapper mapper = [](const network_index::IdentifiableById::value_type& it) {
+        return std::cref(*it.second);
+    };
+
+    return m_objectsById | boost::adaptors::transformed(mapper);
+}
+
+template <>
+NetworkIndex::range<Identifiable, Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() {
+    typename network_index::range_traits<Identifiable, Identifiable>::mapper mapper = [](const network_index::IdentifiableById::value_type& it) {
+        return std::ref(*it.second);
+    };
+
+    return m_objectsById | boost::adaptors::transformed(mapper);
+}
+
+template <>
+NetworkIndex::const_range<Identifiable, MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const {
+    typename network_index::range_traits<Identifiable, MultiVariantObject>::filter filter = [](const network_index::IdentifiableById::value_type& it) {
+        return stdcxx::isInstanceOf<MultiVariantObject>(it.second);
+    };
+    typename network_index::range_traits<Identifiable, MultiVariantObject>::const_mapper mapper = [](const network_index::IdentifiableById::value_type& it) {
+        return std::cref(dynamic_cast<MultiVariantObject&>(*it.second));
+    };
+
+    return m_objectsById | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
+template <>
+NetworkIndex::range<Identifiable, MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() {
+    typename network_index::range_traits<Identifiable, MultiVariantObject>::filter filter = [](const network_index::IdentifiableById::value_type& it) {
+        return stdcxx::isInstanceOf<MultiVariantObject>(it.second);
+    };
+    typename network_index::range_traits<Identifiable, MultiVariantObject>::mapper mapper = [](const network_index::IdentifiableById::value_type& it) {
+        return std::ref(dynamic_cast<MultiVariantObject&>(*it.second));
+    };
+
+    return m_objectsById | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
+template <>
 unsigned long NetworkIndex::getObjectCount<Identifiable>() const {
     return m_objectsById.size();
 }
@@ -46,7 +91,7 @@ void NetworkIndex::remove(Identifiable& identifiable) {
 
     // assert that the two instances are identical (not namesake)
     if ((it != m_objectsById.end()) && stdcxx::areSame(*it->second, identifiable)) {
-        Identifiables& identifiables = m_objectsByType.find(typeid(identifiable))->second;
+        network_index::Identifiables& identifiables = m_objectsByType.find(typeid(identifiable))->second;
 
         const auto& itIdentifiable = std::find_if(identifiables.begin(), identifiables.end(), [&identifiable](std::reference_wrapper<Identifiable>& item) {
             return stdcxx::areSame(identifiable, item.get());

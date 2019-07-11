@@ -84,6 +84,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(staticVarCompensatorCount + 1, network.getStaticVarCompensatorCount());
+    BOOST_CHECK_EQUAL(staticVarCompensatorCount + 1, boost::size(network.getStaticVarCompensators()));
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {

@@ -79,8 +79,8 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
 
-    for (auto it = network.cbegin<Substation>(); it != network.cend<Substation>(); ++it) {
-        SubstationXml::instance().write(*it, network, context);
+    for (const auto& substation : network.getSubstations()) {
+        SubstationXml::instance().write(substation.get(), network, context);
     }
 
     writer.writeEndElement();

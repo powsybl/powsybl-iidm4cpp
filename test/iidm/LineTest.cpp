@@ -115,7 +115,8 @@ BOOST_AUTO_TEST_SUITE(LineTestSuite)
 BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createLineTestNetwork();
 
-    BOOST_CHECK_EQUAL(1ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(1UL, network.getLineCount());
+    // FIXME(mathbagu) BOOST_CHECK_EQUAL(1UL, boost::size(network.getLines()));
 
     const Line& line = network.getLine("VL1_VL3");
     BOOST_CHECK_EQUAL("VL1_VL3", line.getId());

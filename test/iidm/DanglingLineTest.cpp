@@ -94,6 +94,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(danglingLineCount + 1, network.getDanglingLineCount());
+    BOOST_CHECK_EQUAL(danglingLineCount + 1, boost::size(network.getDanglingLines()));
     BOOST_TEST(network.getDanglingLine("UNIQUE_DL_ID").getUcteXnodeCode().empty());
 }
 

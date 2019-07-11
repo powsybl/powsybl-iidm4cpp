@@ -59,6 +59,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(loadCount + 1, network.getLoadCount());
+    BOOST_CHECK_EQUAL(loadCount + 1, boost::size(network.getLoads()));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {

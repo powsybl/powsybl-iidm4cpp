@@ -14,6 +14,11 @@ namespace powsybl {
 
 namespace iidm {
 
+template <typename T>
+T& Network::checkAndAdd(std::unique_ptr<T>&& identifiable) {
+    return m_networkIndex.checkAndAdd(std::move(identifiable));
+}
+
 template <typename T, typename>
 const T& Network::get(const std::string& id) const {
     return m_networkIndex.get<T>(id);

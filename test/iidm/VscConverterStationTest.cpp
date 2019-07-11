@@ -197,22 +197,20 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 }
 
 BOOST_AUTO_TEST_CASE(loop) {
-    const Network& network = createHvdcConverterStationTestNetwork();
+    Network network = createHvdcConverterStationTestNetwork();
 
     unsigned long vscCount = network.getVscConverterStationCount();
     unsigned long hvdcCount = network.getHvdcConverterStationCount();
     BOOST_CHECK_EQUAL(vscCount + network.getLccConverterStationCount(), hvdcCount);
 
-    unsigned long vscLoopCount = 0ul;
-    unsigned long hvdcLoopCount = 0ul;
-    for (auto it = network.cbegin<VscConverterStation>(); it != network.cend<VscConverterStation>(); ++it) {
-        vscLoopCount++;
-    }
-    for (auto it = network.cbegin<HvdcConverterStation>(); it != network.cend<HvdcConverterStation>(); ++it) {
-        hvdcLoopCount++;
-    }
+    unsigned long vscLoopCount = boost::size(network.getVscConverterStations());
+    unsigned long hvdcLoopCount = boost::size(network.getHvdcConverterStations());
     BOOST_CHECK_EQUAL(vscLoopCount, vscCount);
     BOOST_CHECK_EQUAL(hvdcLoopCount, hvdcCount);
+
+    const Network& cNetwork = network;
+    BOOST_CHECK_EQUAL(boost::size(network.getLccConverterStations()), boost::size(cNetwork.getLccConverterStations()));
+    BOOST_CHECK_EQUAL(boost::size(network.getHvdcConverterStations()), boost::size(cNetwork.getHvdcConverterStations()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -222,7 +222,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     const Network& cNetwork = network;
     const Substation& substation = cNetwork.getSubstation("S1");
 
-    BOOST_CHECK_EQUAL(1ul, network.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(1UL, network.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getThreeWindingsTransformers()));
 
     ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
     const ThreeWindingsTransformer& cTransformer = cNetwork.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");

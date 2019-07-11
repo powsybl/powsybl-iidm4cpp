@@ -126,7 +126,8 @@ BOOST_AUTO_TEST_CASE(adder) {
     Network network = createHvdcLineTestNetwork();
 
     unsigned long hvdcCount = network.getHvdcLineCount();
-    BOOST_CHECK_EQUAL(1, hvdcCount);
+    BOOST_CHECK_EQUAL(1UL, hvdcCount);
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getHvdcLines()));
 
     HvdcLineAdder adder = network.newHvdcLine()
         .setId("HVDC1");

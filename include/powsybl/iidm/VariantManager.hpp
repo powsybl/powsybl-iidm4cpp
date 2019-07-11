@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_VARIANTMANAGER_HPP
 #define POWSYBL_IIDM_VARIANTMANAGER_HPP
 
+#include <functional>
 #include <memory>
 #include <mutex>
 #include <set>
@@ -15,7 +16,6 @@
 #include <unordered_map>
 
 #include <powsybl/iidm/VariantContext.hpp>
-#include <powsybl/iidm/iterators/Iterators.hpp>
 
 namespace powsybl {
 
@@ -62,10 +62,6 @@ private:
     static constexpr unsigned long INITIAL_VARIANT_INDEX = 0;
 
 private:
-    iterator_traits<MultiVariantObject>::iterator begin();
-
-    iterator_traits<MultiVariantObject>::iterator end();
-
     unsigned long getVariantIndex(const std::string& variantId) const;
 
 private:

@@ -10,7 +10,6 @@
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/bits/NetworkIndex.hpp>
-#include <powsybl/iidm/iterators/Iterators.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -18,6 +17,13 @@ namespace powsybl {
 namespace iidm {
 
 class NetworkIndex {
+public:
+    template <typename T, typename U = T>
+    using range = typename network_index::range_traits<T, U>::range;
+
+    template <typename T, typename U = T>
+    using const_range = typename network_index::range_traits<T, U>::const_range;
+
 public:
     NetworkIndex() = default;
 
@@ -29,25 +35,23 @@ public:
 
     NetworkIndex& operator=(const NetworkIndex& networkIndex) = delete;
 
-    template <typename T> using const_iterator = typename iterator_traits<T>::const_iterator;
+    template <typename T>
+    T& checkAndAdd(std::unique_ptr<T>&& identifiable);
 
-    template <typename T> using iterator = typename iterator_traits<T>::iterator;
+    template <typename T>
+    const T& get(const std::string& id) const;
 
-    template <typename T> iterator<T> begin();
+    template <typename T>
+    T& get(const std::string& id);
 
-    template <typename T> const_iterator<T> cbegin() const;
+    template <typename T, typename U = T>
+    const_range<T, U> getAll() const;
 
-    template <typename T> const_iterator<T> cend() const;
+    template <typename T, typename U = T>
+    range<T, U> getAll();
 
-    template <typename T> T& checkAndAdd(std::unique_ptr<T>&& identifiable);
-
-    template <typename T> iterator<T> end();
-
-    template <typename T> const T& get(const std::string& id) const;
-
-    template <typename T> T& get(const std::string& id);
-
-    template <typename T> unsigned long getObjectCount() const;
+    template <typename T>
+    unsigned long getObjectCount() const;
 
     template <typename T>
     stdcxx::CReference<T> find(const std::string& id) const;
@@ -61,14 +65,9 @@ private:
     static void checkId(const std::string& id);
 
 private:
-    IdentifiableById m_objectsById;
+    network_index::IdentifiableById m_objectsById;
 
-    IdentifiablesByType m_objectsByType;
-
-private:
-    template <typename T, typename Iterator> friend class NetworkIterator;
-
-    template <typename Base, typename Iterator, typename... Derived> friend class NetworkFastIterator;
+    mutable network_index::IdentifiablesByType m_objectsByType;
 };
 
 }  // namespace iidm
@@ -76,6 +75,5 @@ private:
 }  // namespace powsybl
 
 #include <powsybl/iidm/NetworkIndex.hxx>
-#include <powsybl/iidm/iterators/Iterators.hxx>
 
 #endif  // POWSYBL_IIDM_NETWORKINDEX_HPP

@@ -35,21 +35,20 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_CHECK_EQUAL("test", network.getSourceFormat());
     BOOST_CHECK_EQUAL(0, network.getForecastDistance());
 
-    // FIXME(mathbagu) BOOST_CHECK_EQUAL(16UL, network.getObjectCount<iidm::Identifiable>());
+    BOOST_CHECK_EQUAL(2UL, boost::size(network.getSubstations()));
 
-    // FIXME(mathbagu) BOOST_CHECK_EQUAL(6UL, network.getObjectCount<iidm::Container>());
     BOOST_CHECK_EQUAL(2UL, network.getSubstationCount());
     BOOST_CHECK_EQUAL(4UL, network.getVoltageLevelCount());
 
-    // FIXME(mathbagu) BOOST_CHECK_EQUAL(6UL, network.getObjectCount<iidm::Connectable>());
-
     BOOST_CHECK_EQUAL(4UL, network.getBranchCount());
+    BOOST_CHECK_EQUAL(4UL, boost::size(network.getBranches()));
     BOOST_CHECK_EQUAL(2UL, network.getLineCount());
+    BOOST_CHECK_EQUAL(2UL, boost::size(network.getLines()));
     BOOST_CHECK_EQUAL(2UL, network.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(2UL, boost::size(network.getTwoWindingsTransformers()));
 
     BOOST_CHECK_EQUAL(0UL, network.getThreeWindingsTransformerCount());
 
-    // FIXME(mathbagu) BOOST_CHECK_EQUAL(2UL, network.getObjectCount<iidm::Injection>());
     BOOST_CHECK_EQUAL(0UL, network.getBatteryCount());
     BOOST_CHECK_EQUAL(0UL, network.getBusbarSectionCount());
     BOOST_CHECK_EQUAL(0UL, network.getDanglingLineCount());
@@ -255,13 +254,8 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_EQUAL(0, network.getForecastDistance());
     BOOST_CHECK_EQUAL("2018-01-01T11:00:00+01:00", network.getCaseDate().toString());
 
-    // FIXME(mathbagu) BOOST_CHECK_EQUAL(17UL, network.getObjectCount<iidm::Identifiable>());
-
-    // FIXME(mathbagu) BOOST_CHECK_EQUAL(6UL, network.getObjectCount<iidm::Container>());
     BOOST_CHECK_EQUAL(2UL, network.getSubstationCount());
     BOOST_CHECK_EQUAL(4UL, network.getVoltageLevelCount());
-
-    // FIXME(mathbagu) BOOST_CHECK_EQUAL(7UL, network.getObjectCount<iidm::Connectable>());
 
     BOOST_CHECK_EQUAL(4UL, network.getBranchCount());
     BOOST_CHECK_EQUAL(2UL, network.getLineCount());
@@ -269,7 +263,6 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
 
     BOOST_CHECK_EQUAL(0UL, network.getThreeWindingsTransformerCount());
 
-    // FIXME(mathbagu) BOOST_CHECK_EQUAL(3UL, network.getObjectCount<iidm::Injection>());
     BOOST_CHECK_EQUAL(0UL, network.getBatteryCount());
     BOOST_CHECK_EQUAL(0UL, network.getBusbarSectionCount());
     BOOST_CHECK_EQUAL(0UL, network.getDanglingLineCount());
