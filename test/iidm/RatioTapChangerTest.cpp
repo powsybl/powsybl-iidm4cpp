@@ -292,7 +292,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_TEST(transformer.getRatioTapChanger());
-    transformer.getRatioTapChanger().get().remove();
+    transformer.getRatioTapChanger()->remove();
     BOOST_TEST(!transformer.getRatioTapChanger());
     RatioTapChangerAdder adder = transformer.newRatioTapChanger();
 

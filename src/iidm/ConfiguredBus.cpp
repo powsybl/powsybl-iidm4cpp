@@ -26,14 +26,14 @@ ConfiguredBus::ConfiguredBus(const std::string& id, const std::string& name, Bus
     Bus(id, name),
     m_voltageLevel(voltageLevel),
     m_network(voltageLevel.getNetwork()),
-    m_terminals(m_network.get().getVariantManager().getVariantArraySize()),
-    m_v(m_network.get().getVariantManager().getVariantArraySize(), stdcxx::nan()),
-    m_angle(m_network.get().getVariantManager().getVariantArraySize(), stdcxx::nan()) {
+    m_terminals(m_network->getVariantManager().getVariantArraySize()),
+    m_v(m_network->getVariantManager().getVariantArraySize(), stdcxx::nan()),
+    m_angle(m_network->getVariantManager().getVariantArraySize(), stdcxx::nan()) {
 
 }
 
 void ConfiguredBus::addTerminal(BusTerminal& terminal) {
-    m_terminals[m_network.get().getVariantIndex()].push_back(std::ref(terminal));
+    m_terminals[m_network->getVariantIndex()].push_back(std::ref(terminal));
 }
 
 void ConfiguredBus::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -55,13 +55,13 @@ void ConfiguredBus::extendVariantArraySize(unsigned long /*initVariantArraySize*
 }
 
 double ConfiguredBus::getAngle() const {
-    return m_angle[m_network.get().getVariantIndex()];
+    return m_angle[m_network->getVariantIndex()];
 }
 
 unsigned long ConfiguredBus::getConnectedTerminalCount() const {
     unsigned long count = 0;
 
-    const std::list<std::reference_wrapper<BusTerminal> >& terminals = m_terminals[m_network.get().getVariantIndex()];
+    const std::list<std::reference_wrapper<BusTerminal> >& terminals = m_terminals[m_network->getVariantIndex()];
     for (const auto& terminal : terminals) {
         if (terminal.get().isConnected()) {
             ++count;
@@ -72,7 +72,7 @@ unsigned long ConfiguredBus::getConnectedTerminalCount() const {
 }
 
 std::vector<std::reference_wrapper<Terminal> > ConfiguredBus::getConnectedTerminals() const {
-    const std::list<std::reference_wrapper<BusTerminal> >& busTerminals = m_terminals[m_network.get().getVariantIndex()];
+    const std::list<std::reference_wrapper<BusTerminal> >& busTerminals = m_terminals[m_network->getVariantIndex()];
 
     std::vector<std::reference_wrapper<Terminal> > terminals;
     terminals.reserve(busTerminals.size());
@@ -87,17 +87,17 @@ std::vector<std::reference_wrapper<Terminal> > ConfiguredBus::getConnectedTermin
 }
 
 unsigned long ConfiguredBus::getTerminalCount() const {
-    return m_terminals[m_network.get().getVariantIndex()].size();
+    return m_terminals[m_network->getVariantIndex()].size();
 }
 
 std::vector<std::reference_wrapper<BusTerminal> > ConfiguredBus::getTerminals() const {
-    const std::list<std::reference_wrapper<BusTerminal> >& busTerminals = m_terminals[m_network.get().getVariantIndex()];
+    const std::list<std::reference_wrapper<BusTerminal> >& busTerminals = m_terminals[m_network->getVariantIndex()];
     std::vector<std::reference_wrapper<BusTerminal> > terminals(busTerminals.cbegin(), busTerminals.cend());
     return terminals;
 }
 
 double ConfiguredBus::getV() const {
-    return m_v[m_network.get().getVariantIndex()];
+    return m_v[m_network->getVariantIndex()];
 }
 
 VoltageLevel& ConfiguredBus::getVoltageLevel() const {
@@ -111,7 +111,7 @@ void ConfiguredBus::reduceVariantArraySize(unsigned long number) {
 }
 
 void ConfiguredBus::removeTerminal(BusTerminal& terminal) {
-    auto& terminals = m_terminals[m_network.get().getVariantIndex()];
+    auto& terminals = m_terminals[m_network->getVariantIndex()];
     const auto& it = std::find_if(terminals.begin(), terminals.end(), [&terminal](std::reference_wrapper<BusTerminal>& item) {
         return stdcxx::areSame(terminal, item.get());
     });
@@ -124,7 +124,7 @@ void ConfiguredBus::removeTerminal(BusTerminal& terminal) {
 }
 
 Bus& ConfiguredBus::setAngle(double angle) {
-    m_angle[m_network.get().getVariantIndex()] = angle;
+    m_angle[m_network->getVariantIndex()] = angle;
 
     return *this;
 }
@@ -132,7 +132,7 @@ Bus& ConfiguredBus::setAngle(double angle) {
 Bus& ConfiguredBus::setV(double v) {
     checkVoltage(*this, v);
 
-    m_v[m_network.get().getVariantIndex()] = v;
+    m_v[m_network->getVariantIndex()] = v;
 
     return *this;
 }

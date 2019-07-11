@@ -55,7 +55,7 @@ const std::string& BusTerminal::getConnectableBusId() const {
 double BusTerminal::getAngle() const {
     const auto& bus = m_busBreakerView.getBus();
 
-    return static_cast<bool>(bus) ? bus.get().getAngle() : stdcxx::nan();
+    return static_cast<bool>(bus) ? bus->getAngle() : stdcxx::nan();
 }
 
 const terminal::BusBreakerView& BusTerminal::getBusBreakerView() const {
@@ -85,7 +85,7 @@ terminal::NodeBreakerView& BusTerminal::getNodeBreakerView() {
 double BusTerminal::getV() const {
     const auto& bus = m_busBreakerView.getBus();
 
-    return static_cast<bool>(bus) ? bus.get().getV() : stdcxx::nan();
+    return static_cast<bool>(bus) ? bus->getV() : stdcxx::nan();
 }
 
 bool BusTerminal::isConnected() const {

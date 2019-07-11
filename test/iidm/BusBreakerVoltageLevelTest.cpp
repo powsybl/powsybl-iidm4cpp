@@ -315,8 +315,8 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
     stdcxx::Reference<Bus> mergedBus1 = vl.getBusView().getMergedBus("BUS1");
     stdcxx::Reference<Bus> mergedBus2 = vl.getBusView().getMergedBus("BUS2");
     BOOST_TEST(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
-    BOOST_CHECK_EQUAL("VL_0", mergedBus1.get().getId());
-    BOOST_CHECK_EQUAL("VL_0", mergedBus1.get().getName());
+    BOOST_CHECK_EQUAL("VL_0", mergedBus1->getId());
+    BOOST_CHECK_EQUAL("VL_0", mergedBus1->getName());
 
     sw.setOpen(true);
     const VoltageLevel& vlTest = vl;

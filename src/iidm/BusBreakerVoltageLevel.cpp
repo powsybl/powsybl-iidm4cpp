@@ -62,7 +62,7 @@ void BusBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
         const stdcxx::Reference<ConfiguredBus>& connectableBus = getConfiguredBus(busTerminal.getConnectableBusId(), true);
 
         getNetwork().getVariantManager().forEachVariant([&connectableBus, &busTerminal, this]() {
-            connectableBus.get().addTerminal(busTerminal);
+            connectableBus->addTerminal(busTerminal);
 
             invalidateCache();
         });
@@ -161,8 +161,8 @@ stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus(const 
     const auto& v = getVertex(busId, throwException);
     if (v.is_initialized()) {
         bus = m_graph.getVertexObject(*v);
-        if (bus.get().getId() != busId) {
-            throw PowsyblException(logging::format("Invalid bus id (expected: '%1%', actual: '%2%')", busId, bus.get().getId()));
+        if (bus->getId() != busId) {
+            throw PowsyblException(logging::format("Invalid bus id (expected: '%1%', actual: '%2%')", busId, bus->getId()));
         }
     }
 
@@ -217,8 +217,8 @@ stdcxx::Reference<Switch> BusBreakerVoltageLevel::getSwitch(const std::string& s
     const auto& e = getEdge(switchId, throwException);
     if (e.is_initialized()) {
         aSwitch = m_graph.getEdgeObject(*e);
-        if (aSwitch.get().getId() != switchId) {
-            throw PowsyblException(logging::format("Invalid switch id (expected: '%1%', actual: '%2%')", switchId, aSwitch.get().getId()));
+        if (aSwitch->getId() != switchId) {
+            throw PowsyblException(logging::format("Invalid switch id (expected: '%1%', actual: '%2%')", switchId, aSwitch->getId()));
         }
     }
 
@@ -234,7 +234,7 @@ std::vector<std::reference_wrapper<Terminal>> BusBreakerVoltageLevel::getTermina
     const auto& buses = m_graph.getVertexObjects();
     std::for_each(buses.cbegin(), buses.cend(), [&terminals](const stdcxx::Reference<ConfiguredBus>& bus) {
         if (bus) {
-            const auto& busTerminals = bus.get().getTerminals();
+            const auto& busTerminals = bus->getTerminals();
             std::transform(busTerminals.cbegin(), busTerminals.cend(), std::back_inserter(terminals), [](const std::reference_wrapper<BusTerminal>& terminal) {
                 return std::ref<Terminal>(terminal.get());
             });
@@ -303,7 +303,7 @@ void BusBreakerVoltageLevel::removeAllSwitches() {
 
 void BusBreakerVoltageLevel::removeBus(const std::string& busId) {
     const auto& bus = getConfiguredBus(busId, true);
-    if (bus.get().getTerminalCount() > 0) {
+    if (bus->getTerminalCount() > 0) {
         throw ValidationException(*this, logging::format("Cannot remove bus '%1%' due to connectable equipments", busId));
     }
 

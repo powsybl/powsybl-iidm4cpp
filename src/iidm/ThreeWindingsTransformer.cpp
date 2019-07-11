@@ -67,7 +67,7 @@ ThreeWindingsTransformer::Leg1& ThreeWindingsTransformer::Leg1::setG(double g) {
 }
 
 std::string ThreeWindingsTransformer::Leg1::toString() const {
-    return logging::format("%1% leg 1", getTransformer().get().getId());
+    return logging::format("%1% leg 1", getTransformer()->getId());
 }
 
 ThreeWindingsTransformer::Leg2or3::Leg2or3(double r, double x, double ratedU) :
@@ -75,11 +75,11 @@ ThreeWindingsTransformer::Leg2or3::Leg2or3(double r, double x, double ratedU) :
 }
 
 const Network& ThreeWindingsTransformer::Leg2or3::getNetwork() const {
-    return getTransformer().get().getSubstation().getNetwork();
+    return getTransformer()->getSubstation().getNetwork();
 }
 
 Network& ThreeWindingsTransformer::Leg2or3::getNetwork() {
-    return getTransformer().get().getSubstation().getNetwork();
+    return getTransformer()->getSubstation().getNetwork();
 }
 
 stdcxx::CReference<RatioTapChanger> ThreeWindingsTransformer::Leg2or3::getRatioTapChanger() const {
@@ -109,10 +109,10 @@ void ThreeWindingsTransformer::allocateVariantArrayElement(const std::set<unsign
     Connectable::allocateVariantArrayElement(indexes, sourceIndex);
 
     if (m_leg2->getRatioTapChanger()) {
-        m_leg2->getRatioTapChanger().get().allocateVariantArrayElement(indexes, sourceIndex);
+        m_leg2->getRatioTapChanger()->allocateVariantArrayElement(indexes, sourceIndex);
     }
     if (m_leg3->getRatioTapChanger()) {
-        m_leg3->getRatioTapChanger().get().allocateVariantArrayElement(indexes, sourceIndex);
+        m_leg3->getRatioTapChanger()->allocateVariantArrayElement(indexes, sourceIndex);
     }
 }
 
@@ -120,10 +120,10 @@ void ThreeWindingsTransformer::deleteVariantArrayElement(unsigned long index) {
     Connectable::deleteVariantArrayElement(index);
 
     if (m_leg2->getRatioTapChanger()) {
-        m_leg2->getRatioTapChanger().get().deleteVariantArrayElement(index);
+        m_leg2->getRatioTapChanger()->deleteVariantArrayElement(index);
     }
     if (m_leg3->getRatioTapChanger()) {
-        m_leg3->getRatioTapChanger().get().deleteVariantArrayElement(index);
+        m_leg3->getRatioTapChanger()->deleteVariantArrayElement(index);
     }
 }
 
@@ -131,10 +131,10 @@ void ThreeWindingsTransformer::extendVariantArraySize(unsigned long initVariantA
     Connectable::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
     if (m_leg2->getRatioTapChanger()) {
-        m_leg2->getRatioTapChanger().get().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+        m_leg2->getRatioTapChanger()->extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
     if (m_leg3->getRatioTapChanger()) {
-        m_leg3->getRatioTapChanger().get().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+        m_leg3->getRatioTapChanger()->extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
 }
 
@@ -176,11 +176,11 @@ ThreeWindingsTransformer::Side ThreeWindingsTransformer::getSide(const Terminal&
 }
 
 const Substation& ThreeWindingsTransformer::getSubstation() const {
-    return m_leg1->getTerminal().get().getVoltageLevel().getSubstation();
+    return m_leg1->getTerminal()->getVoltageLevel().getSubstation();
 }
 
 Substation& ThreeWindingsTransformer::getSubstation() {
-    return m_leg1->getTerminal().get().getVoltageLevel().getSubstation();
+    return m_leg1->getTerminal()->getVoltageLevel().getSubstation();
 }
 
 
@@ -213,10 +213,10 @@ void ThreeWindingsTransformer::reduceVariantArraySize(unsigned long number) {
     Connectable::reduceVariantArraySize(number);
 
     if (m_leg2->getRatioTapChanger()) {
-        m_leg2->getRatioTapChanger().get().reduceVariantArraySize(number);
+        m_leg2->getRatioTapChanger()->reduceVariantArraySize(number);
     }
     if (m_leg3->getRatioTapChanger()) {
-        m_leg3->getRatioTapChanger().get().reduceVariantArraySize(number);
+        m_leg3->getRatioTapChanger()->reduceVariantArraySize(number);
     }
 }
 

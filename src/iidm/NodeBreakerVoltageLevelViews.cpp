@@ -106,7 +106,7 @@ std::vector<std::reference_wrapper<Bus> > BusViewImpl::getBuses() const {
 }
 
 stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& busbarSectionId) const {
-    NodeTerminal& terminal = dynamic_cast<NodeTerminal&>(m_voltageLevel.getNodeBreakerView().getBusbarSection(busbarSectionId).get().getTerminal());
+    auto& terminal = dynamic_cast<NodeTerminal&>(m_voltageLevel.getNodeBreakerView().getBusbarSection(busbarSectionId)->getTerminal());
 
     const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusTopology().getBus(terminal.getNode());
 

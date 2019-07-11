@@ -49,11 +49,11 @@ double Battery::getMinP() const {
 }
 
 double Battery::getP0() const {
-    return m_p0.at(m_network.get().getVariantIndex());
+    return m_p0.at(m_network->getVariantIndex());
 }
 
 double Battery::getQ0() const {
-    return m_q0.at(m_network.get().getVariantIndex());
+    return m_q0.at(m_network->getVariantIndex());
 }
 
 const std::string& Battery::getTypeDescription() const {
@@ -88,13 +88,13 @@ Battery& Battery::setMinP(double minP) {
 Battery& Battery::setP0(double p0) {
     checkP0(*this, p0);
     checkActivePowerLimits(*this, m_minP, m_maxP, p0);
-    m_p0[m_network.get().getVariantIndex()] = p0;
+    m_p0[m_network->getVariantIndex()] = p0;
 
     return *this;
 }
 
 Battery& Battery::setQ0(double q0) {
-    m_q0[m_network.get().getVariantIndex()] = checkQ0(*this, q0);
+    m_q0[m_network->getVariantIndex()] = checkQ0(*this, q0);
 
     return *this;
 }

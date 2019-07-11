@@ -178,7 +178,7 @@ BOOST_AUTO_TEST_CASE(findAllPaths) {
     graph.addEdge(3, 5, stdcxx::ref<E>());
 
     UndirectedGraph<V, E>::VertexVisitor pathComplete = [](const stdcxx::Reference<V>& vertex) {
-        return vertex && vertex.get().getName() == "end";
+        return vertex && vertex->getName() == "end";
     };
     UndirectedGraph<V, E>::EdgeVisitor pathCanceled = [](const stdcxx::Reference<E>& /*edge*/) {
         return false;

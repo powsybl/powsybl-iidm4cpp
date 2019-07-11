@@ -50,7 +50,7 @@ VoltageLevel& ThreeWindingsTransformerAdder::LegAdder<L>::checkAndGetVoltageLeve
     if (!voltageLevel) {
         throw ValidationException(*this, logging::format("voltage level '%1%' not found", m_voltageLevelId));
     }
-    if (!stdcxx::areSame(voltageLevel.get().getSubstation(), m_parent.getSubstation())) {
+    if (!stdcxx::areSame(voltageLevel->getSubstation(), m_parent.getSubstation())) {
         throw ValidationException(*this, logging::format("voltage level shall belong to the substation '%1%'", m_parent.getSubstation().getId()));
     }
 

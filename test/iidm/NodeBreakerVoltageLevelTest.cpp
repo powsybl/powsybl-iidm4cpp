@@ -321,7 +321,7 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
 
     const auto& refTerminal = voltageLevel.getNodeBreakerView().getTerminal(0);
     BOOST_TEST(refTerminal);
-    BOOST_TEST(stdcxx::areSame(bbs1, refTerminal.get().getConnectable().get()));
+    BOOST_TEST(stdcxx::areSame(bbs1, refTerminal->getConnectable().get()));
 
     // Get an unknown busbar section
     BOOST_TEST(!voltageLevel.getNodeBreakerView().getBusbarSection("UNKNOWN"));
@@ -336,12 +336,12 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     unsigned long node1 = voltageLevel.getNodeBreakerView().getNode1("BK");
     BOOST_CHECK_EQUAL(0, node1);
     const auto& terminal1 = voltageLevel.getNodeBreakerView().getTerminal1("BK");
-    BOOST_TEST(stdcxx::areSame(bbs1, terminal1.get().getConnectable().get()));
+    BOOST_TEST(stdcxx::areSame(bbs1, terminal1->getConnectable().get()));
 
     unsigned long node2 = voltageLevel.getNodeBreakerView().getNode2("BK");
     BOOST_CHECK_EQUAL(1, node2);
     const auto& terminal2 = voltageLevel.getNodeBreakerView().getTerminal2("BK");
-    BOOST_TEST(stdcxx::areSame(bbs2, terminal2.get().getConnectable().get()));
+    BOOST_TEST(stdcxx::areSame(bbs2, terminal2->getConnectable().get()));
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getNode1("UNKNOWN"), PowsyblException, "Switch 'UNKNOWN' not found in the voltage level 'VL2'");
 

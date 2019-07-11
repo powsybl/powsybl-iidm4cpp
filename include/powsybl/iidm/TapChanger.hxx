@@ -121,12 +121,12 @@ unsigned int TapChanger<H, C, S>::getStepCount() const {
 
 template<typename H, typename C, typename S>
 long TapChanger<H, C, S>::getTapPosition() const {
-    return m_tapPosition.at(m_network.get().getVariantIndex());
+    return m_tapPosition.at(m_network->getVariantIndex());
 }
 
 template<typename H, typename C, typename S>
 bool TapChanger<H, C, S>::isRegulating() const {
-    return m_regulating.at(m_network.get().getVariantIndex());
+    return m_regulating.at(m_network->getVariantIndex());
 }
 
 template<typename H, typename C, typename S>
@@ -137,14 +137,14 @@ void TapChanger<H, C, S>::reduceVariantArraySize(unsigned long number) {
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setRegulating(bool regulating) {
-    m_regulating[m_network.get().getVariantIndex()] = regulating;
+    m_regulating[m_network->getVariantIndex()] = regulating;
 
     return static_cast<C&>(*this);
 }
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) {
-    if (static_cast<bool>(regulationTerminal) && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), getNetwork())) {
+    if (static_cast<bool>(regulationTerminal) && !stdcxx::areSame(regulationTerminal->getVoltageLevel().getNetwork(), getNetwork())) {
         throw ValidationException(m_parent, "regulation terminal is not part of the network");
     }
     m_regulationTerminal = regulationTerminal;
@@ -154,7 +154,7 @@ C& TapChanger<H, C, S>::setRegulationTerminal(const stdcxx::Reference<Terminal>&
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setTapPosition(long tapPosition) {
-    m_tapPosition[m_network.get().getVariantIndex()] = checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition());
+    m_tapPosition[m_network->getVariantIndex()] = checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition());
 
     return static_cast<C&>(*this);
 }

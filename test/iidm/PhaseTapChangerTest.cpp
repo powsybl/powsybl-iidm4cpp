@@ -304,7 +304,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_TEST(transformer.getPhaseTapChanger());
-    transformer.getPhaseTapChanger().get().remove();
+    transformer.getPhaseTapChanger()->remove();
     BOOST_TEST(!transformer.getPhaseTapChanger());
     PhaseTapChangerAdder adder = transformer.newPhaseTapChanger();
 
@@ -363,7 +363,7 @@ BOOST_AUTO_TEST_CASE(adder) {
      POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     adder.setRegulationTerminal(stdcxx::Reference<Terminal>());
     BOOST_CHECK_NO_THROW(adder.add());
-    transformer.getPhaseTapChanger().get().remove();
+    transformer.getPhaseTapChanger()->remove();
     BOOST_TEST(!transformer.getPhaseTapChanger());
 
     adder.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER);

@@ -55,7 +55,7 @@ void Generator::extendVariantArraySize(unsigned long initVariantArraySize, unsig
 }
 
 double Generator::getActivePowerSetpoint() const {
-    return m_activePowerSetpoint.at(m_network.get().getVariantIndex());
+    return m_activePowerSetpoint.at(m_network->getVariantIndex());
 }
 
 const EnergySource& Generator::getEnergySource() const {
@@ -75,7 +75,7 @@ double Generator::getRatedS() const {
 }
 
 double Generator::getReactivePowerSetpoint() const {
-    return m_reactivePowerSetpoint.at(m_network.get().getVariantIndex());
+    return m_reactivePowerSetpoint.at(m_network->getVariantIndex());
 }
 
 const stdcxx::Reference<Terminal>& Generator::getRegulatingTerminal() const {
@@ -105,11 +105,11 @@ const std::string& Generator::getTypeDescription() const {
 }
 
 double Generator::getVoltageSetpoint() const {
-    return m_voltageSetpoint.at(m_network.get().getVariantIndex());
+    return m_voltageSetpoint.at(m_network->getVariantIndex());
 }
 
 bool Generator::isVoltageRegulatorOn() const {
-    return m_voltageRegulatorOn.at(m_network.get().getVariantIndex());
+    return m_voltageRegulatorOn.at(m_network->getVariantIndex());
 }
 
 void Generator::reduceVariantArraySize(unsigned long number) {
@@ -122,7 +122,7 @@ void Generator::reduceVariantArraySize(unsigned long number) {
 }
 
 Generator& Generator::setActivePowerSetpoint(double activePowerSetpoint) {
-    m_activePowerSetpoint[m_network.get().getVariantIndex()] = checkActivePowerSetpoint(*this, activePowerSetpoint);
+    m_activePowerSetpoint[m_network->getVariantIndex()] = checkActivePowerSetpoint(*this, activePowerSetpoint);
     return *this;
 }
 
@@ -152,7 +152,7 @@ Generator& Generator::setRatedS(double ratedS) {
 
 Generator& Generator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
     checkVoltageControl(*this, isVoltageRegulatorOn(), getVoltageSetpoint(), reactivePowerSetpoint);
-    m_reactivePowerSetpoint[m_network.get().getVariantIndex()] = reactivePowerSetpoint;
+    m_reactivePowerSetpoint[m_network->getVariantIndex()] = reactivePowerSetpoint;
     return *this;
 }
 
@@ -180,13 +180,13 @@ Generator& Generator::setTargetV(double voltageSetpoint) {
 
 Generator& Generator::setVoltageRegulatorOn(bool voltageRegulatorOn) {
     checkVoltageControl(*this, voltageRegulatorOn, getTargetV(), getTargetQ());
-    m_voltageRegulatorOn[m_network.get().getVariantIndex()] = voltageRegulatorOn;
+    m_voltageRegulatorOn[m_network->getVariantIndex()] = voltageRegulatorOn;
     return *this;
 }
 
 Generator& Generator::setVoltageSetpoint(double voltageSetpoint) {
     checkVoltageControl(*this, isVoltageRegulatorOn(), voltageSetpoint, getReactivePowerSetpoint());
-    m_voltageSetpoint[m_network.get().getVariantIndex()] = voltageSetpoint;
+    m_voltageSetpoint[m_network->getVariantIndex()] = voltageSetpoint;
     return *this;
 }
 

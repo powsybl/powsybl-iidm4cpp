@@ -47,6 +47,10 @@ public:
         return m_pointer == nullptr;
     }
 
+    T* operator->() const noexcept {
+        return m_pointer;
+    }
+
     operator bool() const noexcept {
         return m_pointer != nullptr;
     }

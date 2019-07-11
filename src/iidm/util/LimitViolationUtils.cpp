@@ -20,18 +20,18 @@ namespace LimitViolationUtils {
 bool checkPermanentLimit(const Branch& branch, const Branch::Side& side, double limitReduction, double i) {
     stdcxx::CReference<CurrentLimits> limits = branch.getCurrentLimits(side);
     return static_cast<bool>(limits)
-           && !std::isnan(limits.get().getPermanentLimit())
+           && !std::isnan(limits->getPermanentLimit())
            && !std::isnan(i)
-           && std::isgreaterequal(i, limits.get().getPermanentLimit() * limitReduction);
+           && std::isgreaterequal(i, limits->getPermanentLimit() * limitReduction);
 }
 
 std::unique_ptr<Branch::Overload> checkTemporaryLimits(const Branch& branch, const Branch::Side& side, double limitReduction, double i) {
     std::unique_ptr<Branch::Overload> res;
     stdcxx::CReference<CurrentLimits> limits = branch.getCurrentLimits(side);
-    if (static_cast<bool>(limits) && !std::isnan(limits.get().getPermanentLimit()) && !std::isnan(i)) {
+    if (static_cast<bool>(limits) && !std::isnan(limits->getPermanentLimit()) && !std::isnan(i)) {
         std::string previousLimitName;
-        double previousLimit = limits.get().getPermanentLimit();
-        for (const auto& tl : limits.get().getTemporaryLimits()) { // iterate in ascending order
+        double previousLimit = limits->getPermanentLimit();
+        for (const auto& tl : limits->getTemporaryLimits()) { // iterate in ascending order
             if (std::isgreaterequal(i, previousLimit * limitReduction) && std::isless(i, tl.get().getValue() * limitReduction)) {
                 res = stdcxx::make_unique<Branch::Overload>(tl.get(), previousLimitName, previousLimit);
                 break;

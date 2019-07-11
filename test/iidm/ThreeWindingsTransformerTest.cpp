@@ -423,7 +423,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(!leg2.getRatioTapChanger());
     addRatioTapChangerLeg2(transformer, load1Terminal);
     BOOST_TEST(leg2.getRatioTapChanger());
-    leg2.getRatioTapChanger().get().remove();
+    leg2.getRatioTapChanger()->remove();
     BOOST_TEST(!leg2.getRatioTapChanger());
 
     // Leg 3 tests
@@ -469,7 +469,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(!leg3.getRatioTapChanger());
     addRatioTapChangerLeg3(transformer, load2Terminal);
     BOOST_TEST(leg3.getRatioTapChanger());
-    leg3.getRatioTapChanger().get().remove();
+    leg3.getRatioTapChanger()->remove();
     BOOST_TEST(!leg3.getRatioTapChanger());
 
     transformer.remove();

@@ -32,7 +32,7 @@ CalculatedBusBreakerTopology::CalculatedBusBreakerTopology(NodeBreakerVoltageLev
 
 CalculatedBusTopology::SwitchPredicate CalculatedBusBreakerTopology::createSwitchPredicate() const {
     return [](const stdcxx::Reference<Switch>& aSwitch) {
-        return aSwitch.get().isOpen() || aSwitch.get().isRetained();
+        return aSwitch->isOpen() || aSwitch->isRetained();
     };
 }
 
@@ -69,7 +69,7 @@ stdcxx::Reference<CalculatedBus> CalculatedBusBreakerTopology::getBus2(const std
 stdcxx::Reference<Switch> CalculatedBusBreakerTopology::getRetainedSwitch(const stdcxx::optional<unsigned long>& e) const {
     if (static_cast<bool>(e)) {
         const auto& aSwitch = getVoltageLevel().getGraph().getEdgeObject(*e);
-        if (aSwitch.get().isRetained()) {
+        if (aSwitch->isRetained()) {
             return aSwitch;
         }
     }
@@ -97,7 +97,7 @@ CalculatedBusTopology::CalculatedBusTopology(powsybl::iidm::NodeBreakerVoltageLe
 
 CalculatedBusTopology::SwitchPredicate CalculatedBusTopology::createSwitchPredicate() const {
     return [](const stdcxx::Reference<Switch>& aSwitch) {
-        return aSwitch.get().isOpen();
+        return aSwitch->isOpen();
     };
 }
 
@@ -178,8 +178,7 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
     for (unsigned long vertex : vertices) {
         const auto& terminal = graph.getVertexObject(vertex);
         if (static_cast<bool>(terminal)) {
-            const auto& connectable = terminal.get().getConnectable();
-            const auto& connectableType = connectable.get().getType();
+            const auto& connectableType = terminal->getConnectable()->getType();
 
             switch (connectableType) {
                 case ConnectableType::LINE:

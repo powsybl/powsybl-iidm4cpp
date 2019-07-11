@@ -58,11 +58,11 @@ bool Switch::isFictitious() const {
 }
 
 bool Switch::isOpen() const {
-    return m_open[m_voltageLevel.get().getNetwork().getVariantIndex()];
+    return m_open[m_voltageLevel->getNetwork().getVariantIndex()];
 }
 
 bool Switch::isRetained() const {
-    return m_retained[m_voltageLevel.get().getNetwork().getVariantIndex()];
+    return m_retained[m_voltageLevel->getNetwork().getVariantIndex()];
 }
 
 void Switch::reduceVariantArraySize(unsigned long number) {
@@ -74,33 +74,33 @@ Switch& Switch::setFictitious(bool fictitious) {
     bool oldValue = m_fictitious;
     if (oldValue != fictitious) {
         m_fictitious = fictitious;
-        m_voltageLevel.get().invalidateCache();
+        m_voltageLevel->invalidateCache();
     }
 
     return *this;
 }
 
 Switch& Switch::setOpen(bool open) {
-    unsigned long index = m_voltageLevel.get().getNetwork().getVariantIndex();
+    unsigned long index = m_voltageLevel->getNetwork().getVariantIndex();
     bool oldValue = m_open[index];
     if (oldValue != open) {
         m_open[index] = open;
-        m_voltageLevel.get().invalidateCache();
+        m_voltageLevel->invalidateCache();
     }
 
     return *this;
 }
 
 Switch& Switch::setRetained(bool retained) {
-    if (m_voltageLevel.get().getTopologyKind() != TopologyKind::NODE_BREAKER) {
+    if (m_voltageLevel->getTopologyKind() != TopologyKind::NODE_BREAKER) {
         throw ValidationException(*this, logging::format("retain status is not modifiable in a non node/breaker voltage level"));
     }
 
-    unsigned long index = m_voltageLevel.get().getNetwork().getVariantIndex();
+    unsigned long index = m_voltageLevel->getNetwork().getVariantIndex();
     bool oldValue = m_retained[index];
     if (oldValue != retained) {
         m_retained[index] = retained;
-        m_voltageLevel.get().invalidateCache();
+        m_voltageLevel->invalidateCache();
     }
 
     return *this;

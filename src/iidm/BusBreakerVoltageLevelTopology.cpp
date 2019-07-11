@@ -67,8 +67,8 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
 
     for (const auto& bus : buses) {
         for (const auto& terminal : bus.get().getConnectedTerminals()) {
-            const auto& connectable = terminal.get().getConnectable().get();
-            switch (connectable.getType()) {
+            const auto& connectable = terminal.get().getConnectable();
+            switch (connectable->getType()) {
                 case ConnectableType::LINE:
                 case ConnectableType::TWO_WINDINGS_TRANSFORMER:
                 case ConnectableType::THREE_WINDINGS_TRANSFORMER:
@@ -85,7 +85,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                     break;
 
                 case ConnectableType::BUSBAR_SECTION: // must not happen in a bus/breaker topology
-                    throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.getType()));
+                    throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable->getType()));
             }
         }
     }
@@ -114,7 +114,7 @@ void CalculatedBusTopology::updateCache() {
 
             graph.traverse(v, [&busSet, &graph](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
                 stdcxx::Reference<Switch> aSwitch = graph.getEdgeObject(e);
-                if (aSwitch.get().isOpen()) {
+                if (aSwitch->isOpen()) {
                     return math::TraverseResult::TERMINATE;
                 }
 

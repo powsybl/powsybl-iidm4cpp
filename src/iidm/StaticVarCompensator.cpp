@@ -72,11 +72,11 @@ double StaticVarCompensator::getBmin() const {
 }
 
 double StaticVarCompensator::getReactivePowerSetpoint() const {
-    return m_reactivePowerSetpoint.at(m_network.get().getVariantIndex());
+    return m_reactivePowerSetpoint.at(m_network->getVariantIndex());
 }
 
 const StaticVarCompensator::RegulationMode& StaticVarCompensator::getRegulationMode() const {
-    return m_regulationMode.at(m_network.get().getVariantIndex());
+    return m_regulationMode.at(m_network->getVariantIndex());
 }
 
 const std::string& StaticVarCompensator::getTypeDescription() const {
@@ -86,7 +86,7 @@ const std::string& StaticVarCompensator::getTypeDescription() const {
 }
 
 double StaticVarCompensator::getVoltageSetpoint() const {
-    return m_voltageSetpoint.at(m_network.get().getVariantIndex());
+    return m_voltageSetpoint.at(m_network->getVariantIndex());
 }
 
 void StaticVarCompensator::reduceVariantArraySize(unsigned long number) {
@@ -111,21 +111,21 @@ StaticVarCompensator& StaticVarCompensator::setBmin(double bMin) {
 
 StaticVarCompensator& StaticVarCompensator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
     checkSvcRegulator(*this, getVoltageSetpoint(), reactivePowerSetpoint, getRegulationMode());
-    m_reactivePowerSetpoint[m_network.get().getVariantIndex()] = reactivePowerSetpoint;
+    m_reactivePowerSetpoint[m_network->getVariantIndex()] = reactivePowerSetpoint;
 
     return *this;
 }
 
 StaticVarCompensator& StaticVarCompensator::setRegulationMode(const RegulationMode& regulationMode) {
     checkSvcRegulator(*this, getVoltageSetpoint(), getReactivePowerSetpoint(), regulationMode);
-    m_regulationMode[m_network.get().getVariantIndex()] = regulationMode;
+    m_regulationMode[m_network->getVariantIndex()] = regulationMode;
 
     return *this;
 }
 
 StaticVarCompensator& StaticVarCompensator::setVoltageSetpoint(double voltageSetpoint) {
     checkSvcRegulator(*this, voltageSetpoint, getReactivePowerSetpoint(), getRegulationMode());
-    m_voltageSetpoint[m_network.get().getVariantIndex()] = voltageSetpoint;
+    m_voltageSetpoint[m_network->getVariantIndex()] = voltageSetpoint;
 
     return *this;
 }

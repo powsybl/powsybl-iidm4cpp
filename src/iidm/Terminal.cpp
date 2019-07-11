@@ -38,7 +38,7 @@ void Terminal::allocateVariantArrayElement(const std::set<unsigned long>& indexe
 }
 
 bool Terminal::connect() {
-    return m_voltageLevel.get().connect(*this);
+    return m_voltageLevel->connect(*this);
 }
 
 void Terminal::deleteVariantArrayElement(unsigned long /*index*/) {
@@ -46,7 +46,7 @@ void Terminal::deleteVariantArrayElement(unsigned long /*index*/) {
 }
 
 bool Terminal::disconnect() {
-    return m_voltageLevel.get().disconnect(*this);
+    return m_voltageLevel->disconnect(*this);
 }
 
 void Terminal::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
@@ -59,7 +59,7 @@ const stdcxx::Reference<Connectable>& Terminal::getConnectable() const {
 }
 
 double Terminal::getI() const {
-    if (m_connectable.get().getType() == ConnectableType::BUSBAR_SECTION) {
+    if (m_connectable->getType() == ConnectableType::BUSBAR_SECTION) {
         return 0;
     }
 
@@ -71,11 +71,11 @@ const VariantManagerHolder& Terminal::getNetwork() const {
 }
 
 double Terminal::getP() const {
-    return m_p.at(m_network.get().getVariantIndex());
+    return m_p.at(m_network->getVariantIndex());
 }
 
 double Terminal::getQ() const {
-    return m_q.at(m_network.get().getVariantIndex());
+    return m_q.at(m_network->getVariantIndex());
 }
 
 const VoltageLevel& Terminal::getVoltageLevel() const {
@@ -107,7 +107,7 @@ Terminal& Terminal::setP(double p) {
         throw ValidationException(connectable, "cannot set active power on a shunt compensator");
     }
 
-    m_p[m_network.get().getVariantIndex()] = p;
+    m_p[m_network->getVariantIndex()] = p;
 
     return *this;
 }
@@ -119,7 +119,7 @@ Terminal& Terminal::setQ(double q) {
         throw ValidationException(connectable, "cannot set reactive power on a busbar section");
     }
 
-    m_q[m_network.get().getVariantIndex()] = q;
+    m_q[m_network->getVariantIndex()] = q;
 
     return *this;
 }

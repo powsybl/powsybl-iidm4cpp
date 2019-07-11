@@ -178,8 +178,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
     BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
-    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1()->getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2()->getId());
     BOOST_CHECK_CLOSE(12.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(13.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(14.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
@@ -190,8 +190,8 @@ BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createHvdcLineTestNetwork();
 
     HvdcLine& hvdc = network.getHvdcLine("HVDC1");
-    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1()->getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2()->getId());
     BOOST_TEST(stdcxx::areSame(network, hvdc.getNetwork()));
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setActivePowerSetpoint(100.0)));
@@ -231,8 +231,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
     BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
-    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1()->getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2()->getId());
     BOOST_CHECK_CLOSE(12.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(13.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(14.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
@@ -242,8 +242,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
     BOOST_CHECK_CLOSE(100.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
-    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1()->getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2()->getId());
     BOOST_CHECK_CLOSE(300.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(400.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
@@ -253,8 +253,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
     BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
-    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1()->getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2()->getId());
     BOOST_CHECK_CLOSE(300.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(400.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
@@ -264,8 +264,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
     BOOST_CHECK_CLOSE(150.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
-    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1()->getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2()->getId());
     BOOST_CHECK_CLOSE(350.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(450.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
@@ -275,8 +275,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
     BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
-    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1()->getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2()->getId());
     BOOST_CHECK_CLOSE(350.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(450.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
@@ -290,8 +290,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("HVDC1_NAME", hvdc.getName());
     BOOST_CHECK_CLOSE(150.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
-    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1()->getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2()->getId());
     BOOST_CHECK_CLOSE(350.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(450.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
