@@ -47,7 +47,7 @@ Generator& GeneratorAdder::add() {
         m_activePowerSetpoint, m_reactivePowerSetpoint, m_voltageSetpoint, m_ratedS);
     auto& generator = getNetwork().checkAndAdd(std::move(ptrGenerator));
 
-    Terminal& terminal = generator.addTerminal(getTerminal());
+    Terminal& terminal = generator.addTerminal(checkAndGetTerminal());
     m_voltageLevel.attach(terminal, false);
 
     return generator;

@@ -31,7 +31,7 @@ ShuntCompensator& ShuntCompensatorAdder::add() {
     std::unique_ptr<ShuntCompensator> ptrShunt = stdcxx::make_unique<ShuntCompensator>(getNetwork(), getId(), getName(), m_bPerSection, m_maximumSectionCount, m_currentSectionCount);
     auto& shunt = getNetwork().checkAndAdd<ShuntCompensator>(std::move(ptrShunt));
 
-    Terminal& terminal = shunt.addTerminal(getTerminal());
+    Terminal& terminal = shunt.addTerminal(checkAndGetTerminal());
     m_voltageLevel.attach(terminal, false);
 
     return shunt;

@@ -39,7 +39,7 @@ DanglingLine& DanglingLineAdder::add() {
     std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(getNetwork(), getId(), getName(), m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode);
     auto& danglingLine = getNetwork().checkAndAdd<DanglingLine>(std::move(ptrDanglingLine));
 
-    Terminal& terminal = danglingLine.addTerminal(getTerminal());
+    Terminal& terminal = danglingLine.addTerminal(checkAndGetTerminal());
     m_voltageLevel.attach(terminal, false);
 
     return danglingLine;

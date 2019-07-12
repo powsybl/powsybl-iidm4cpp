@@ -19,7 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 template <typename Adder>
-std::unique_ptr<Terminal> BranchAdder<Adder>::getTerminal1() {
+std::unique_ptr<Terminal> BranchAdder<Adder>::checkAndGetTerminal1() {
     return TerminalBuilder(this->getNetwork(), *this)
                .setNode(m_node1)
                .setBus(m_bus1)
@@ -28,7 +28,7 @@ std::unique_ptr<Terminal> BranchAdder<Adder>::getTerminal1() {
 }
 
 template <typename Adder>
-std::unique_ptr<Terminal> BranchAdder<Adder>::getTerminal2() {
+std::unique_ptr<Terminal> BranchAdder<Adder>::checkAndGetTerminal2() {
     return TerminalBuilder(this->getNetwork(), *this)
                .setNode(m_node2)
                .setBus(m_bus2)

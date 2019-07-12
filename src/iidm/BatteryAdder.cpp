@@ -36,7 +36,7 @@ Battery& BatteryAdder::add() {
     std::unique_ptr<Battery> ptrBattery = stdcxx::make_unique<Battery>(getNetwork(), getId(), getName(), m_p0, m_q0, m_minP, m_maxP);
     auto& battery = getNetwork().checkAndAdd<Battery>(std::move(ptrBattery));
 
-    Terminal& terminal = battery.addTerminal(getTerminal());
+    Terminal& terminal = battery.addTerminal(checkAndGetTerminal());
     m_voltageLevel.attach(terminal, false);
 
     return battery;

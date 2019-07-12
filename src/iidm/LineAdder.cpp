@@ -33,8 +33,8 @@ LineAdder::LineAdder(Network& network) :
 Line& LineAdder::add() {
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
     VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
-    std::unique_ptr<Terminal> ptrTerminal1 = getTerminal1();
-    std::unique_ptr<Terminal> ptrTerminal2 = getTerminal2();
+    std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1();
+    std::unique_ptr<Terminal> ptrTerminal2 = checkAndGetTerminal2();
 
     checkB1(*this, m_b1);
     checkB2(*this, m_b2);

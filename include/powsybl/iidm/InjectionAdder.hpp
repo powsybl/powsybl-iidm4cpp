@@ -33,7 +33,7 @@ public:
 protected:
     InjectionAdder() = default;
 
-    std::unique_ptr<Terminal> getTerminal();
+    std::unique_ptr<Terminal> checkAndGetTerminal();
 
 private:
     stdcxx::optional<unsigned long> m_node;

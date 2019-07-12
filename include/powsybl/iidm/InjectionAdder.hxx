@@ -19,7 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 template <typename Adder>
-std::unique_ptr<Terminal> InjectionAdder<Adder>::getTerminal() {
+std::unique_ptr<Terminal> InjectionAdder<Adder>::checkAndGetTerminal() {
     return TerminalBuilder(this->getNetwork(), *this)
                .setNode(m_node)
                .setBus(m_bus)

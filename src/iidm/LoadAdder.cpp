@@ -33,7 +33,7 @@ Load& LoadAdder::add() {
     std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(getNetwork(), getId(), getName(), m_loadType, m_p0, m_q0);
     auto& load = getNetwork().checkAndAdd<Load>(std::move(ptrLoad));
 
-    Terminal& terminal = load.addTerminal(getTerminal());
+    Terminal& terminal = load.addTerminal(checkAndGetTerminal());
     m_voltageLevel.attach(terminal, false);
 
     return load;

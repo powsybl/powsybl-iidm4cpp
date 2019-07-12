@@ -33,7 +33,7 @@ StaticVarCompensator& StaticVarCompensatorAdder::add() {
     std::unique_ptr<StaticVarCompensator> ptrSvc = stdcxx::make_unique<StaticVarCompensator>(getNetwork(), getId(), getName(), m_bMin, m_bMax, m_voltageSetpoint, m_reactivePowerSetpoint, *m_regulationMode);
     auto& svc = getNetwork().checkAndAdd<StaticVarCompensator>(std::move(ptrSvc));
 
-    Terminal& terminal = svc.addTerminal(getTerminal());
+    Terminal& terminal = svc.addTerminal(checkAndGetTerminal());
     m_voltageLevel.attach(terminal, false);
 
     return svc;

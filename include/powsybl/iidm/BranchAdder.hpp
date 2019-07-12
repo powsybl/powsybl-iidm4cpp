@@ -44,13 +44,14 @@ public:
     Adder& setVoltageLevel2(const std::string& voltageLevelId2);
 
 protected:
+
+    std::unique_ptr<Terminal> checkAndGetTerminal1();
+
+    std::unique_ptr<Terminal> checkAndGetTerminal2();
+
     VoltageLevel& checkAndGetVoltageLevel1();
 
     VoltageLevel& checkAndGetVoltageLevel2();
-
-    std::unique_ptr<Terminal> getTerminal1();
-
-    std::unique_ptr<Terminal> getTerminal2();
 
 private:
     std::string m_bus1;

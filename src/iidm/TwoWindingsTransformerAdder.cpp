@@ -35,8 +35,8 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
         throw ValidationException(*this, logging::format("the 2 windings of the transformer shall belong to the substation '%1%' ('%2%', '%3%')",
                                                          m_substation.getId(), voltageLevel1.getSubstation().getId(), voltageLevel2.getSubstation().getId()));
     }
-    std::unique_ptr<Terminal> ptrTerminal1 = getTerminal1();
-    std::unique_ptr<Terminal> ptrTerminal2 = getTerminal2();
+    std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1();
+    std::unique_ptr<Terminal> ptrTerminal2 = checkAndGetTerminal2();
 
     checkR(*this, m_r);
     checkX(*this, m_x);
