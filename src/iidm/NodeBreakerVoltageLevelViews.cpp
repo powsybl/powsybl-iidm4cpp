@@ -41,6 +41,17 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) 
     return stdcxx::ref<Bus>(bus);
 }
 
+std::vector<std::reference_wrapper<Bus> > BusBreakerViewImpl::getBuses() const {
+    const auto& calculatedBuses = m_voltageLevel.getCalculatedBusBreakerTopology().getBuses();
+
+    std::vector<std::reference_wrapper<Bus> > buses;
+    std::transform(calculatedBuses.begin(), calculatedBuses.end(), std::back_inserter(buses), [](const std::reference_wrapper<CalculatedBus>& bus) {
+        return std::ref<Bus>(bus);
+    });
+
+    return buses;
+}
+
 stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
     return m_voltageLevel.getCalculatedBusBreakerTopology().getSwitch(switchId, true);
 }

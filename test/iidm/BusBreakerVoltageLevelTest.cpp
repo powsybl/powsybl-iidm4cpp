@@ -178,6 +178,9 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     POWSYBL_ASSERT_REF_TRUE(refBus3);
     BOOST_TEST(stdcxx::areSame(bus3, refBus3.get()));
 
+    const auto& buses = view.getBuses();
+    BOOST_CHECK_EQUAL(4, buses.size());
+
     // // get bus from unknown switch
     POWSYBL_ASSERT_THROW(view.getBus1("UNKNOWN"), PowsyblException,
                          "Switch 'UNKNOWN' not found in the voltage level 'VL1'");

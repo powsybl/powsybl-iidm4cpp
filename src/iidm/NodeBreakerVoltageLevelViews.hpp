@@ -75,6 +75,8 @@ public: // BusBreakerView
 
     stdcxx::Reference<Bus> getBus2(const std::string& switchId) const override;
 
+    std::vector<std::reference_wrapper<Bus> > getBuses() const override;
+
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
 
     unsigned long getSwitchCount() const override;

@@ -34,6 +34,8 @@ public:
 
     virtual stdcxx::Reference<Bus> getBus2(const std::string& switchId) const = 0;
 
+    virtual std::vector<std::reference_wrapper<Bus> > getBuses() const = 0;
+
     virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const = 0;
 
     virtual unsigned long getSwitchCount() const = 0;

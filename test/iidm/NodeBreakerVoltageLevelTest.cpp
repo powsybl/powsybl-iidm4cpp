@@ -490,6 +490,7 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_3"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus1("SW1"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus2("SW1"));
+    BOOST_CHECK_EQUAL(3, busBreakerView.getBuses().size());
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getSwitch("SW1"));
     BOOST_CHECK_EQUAL(3ul, busBreakerView.getSwitchCount());
     POWSYBL_ASSERT_THROW(busBreakerView.getSwitch("UNKNOWN"), PowsyblException, "Switch UNKNOWN not found");

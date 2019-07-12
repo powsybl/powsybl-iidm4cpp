@@ -40,6 +40,21 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) 
     return stdcxx::ref<Bus>(bus);
 }
 
+std::vector<std::reference_wrapper<Bus> > BusBreakerViewImpl::getBuses() const {
+    const auto& configuredBuses = m_voltageLevel.getGraph().getVertexObjects();
+
+    std::vector<std::reference_wrapper<Bus> > buses;
+    buses.reserve(configuredBuses.size());
+
+    for (const auto& it : configuredBuses) {
+        if (static_cast<bool>(it)) {
+            buses.emplace_back(std::ref<Bus>(it.get()));
+        }
+    }
+
+    return buses;
+}
+
 stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
     return m_voltageLevel.getSwitch(switchId, false);
 }
