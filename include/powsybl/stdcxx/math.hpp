@@ -10,6 +10,7 @@
 
 #include <cmath>
 #include <limits>
+#include <sstream>
 
 namespace stdcxx {
 
@@ -21,6 +22,14 @@ inline bool isEqual(const T& v1, const T& v2) {
 template <typename T = double>
 inline T nan() {
     return std::numeric_limits<T>::quiet_NaN();
+}
+
+template <typename T>
+std::string to_string(const T& value) {
+    std::ostringstream out;
+    out.precision(std::numeric_limits<T>::max_digits10);
+    out << value;
+    return out.str();
 }
 
 }  // namespace stdcxx

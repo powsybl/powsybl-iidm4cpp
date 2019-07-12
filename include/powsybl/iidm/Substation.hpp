@@ -48,6 +48,8 @@ public:
 
     unsigned long getTwoWindingsTransformerCount() const;
 
+    const std::vector<std::reference_wrapper<VoltageLevel> >& getVoltageLevels() const;
+
     ThreeWindingsTransformerAdder newThreeWindingsTransformer();
 
     TwoWindingsTransformerAdder newTwoWindingsTransformer();

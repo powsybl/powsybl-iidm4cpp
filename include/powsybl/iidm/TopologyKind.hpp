@@ -19,6 +19,10 @@ enum class TopologyKind : unsigned int {
     BUS_BREAKER
 };
 
+TopologyKind getTopologyKind(const std::string& topologyKindName);
+
+std::string getTopologyKindName(const TopologyKind& topologyKind);
+
 std::ostream& operator<<(std::ostream& stream, const TopologyKind& topologyKind);
 
 }  // namespace iidm

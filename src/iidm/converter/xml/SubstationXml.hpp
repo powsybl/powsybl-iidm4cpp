@@ -39,6 +39,8 @@ protected:
 
     void writeRootElementAttributes(const Substation& substation, const Network& network, NetworkXmlWriterContext& context) const override;
 
+    void writeSubElements(const Substation& substation, const Network& network, NetworkXmlWriterContext& context) const override;
+
 private:
     SubstationXml() = default;
 

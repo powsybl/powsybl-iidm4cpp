@@ -89,6 +89,7 @@ set(IIDM_SOURCES
     iidm/TieLine.cpp
     iidm/TieLineAdder.cpp
     iidm/TopologyKind.cpp
+    iidm/TopologyLevel.cpp
     iidm/TwoWindingsTransformer.cpp
     iidm/TwoWindingsTransformerAdder.cpp
     iidm/ValidationException.cpp
@@ -107,6 +108,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/NetworkXmlReaderContext.cpp
     iidm/converter/xml/NetworkXmlWriterContext.cpp
     iidm/converter/xml/SubstationXml.cpp
+    iidm/converter/xml/VoltageLevelXml.cpp
 
     iidm/util/LimitViolationUtils.cpp
 

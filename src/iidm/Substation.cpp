@@ -74,6 +74,10 @@ const std::string& Substation::getTypeDescription() const {
     return s_typeDescription;
 }
 
+const std::vector<std::reference_wrapper<VoltageLevel> >& Substation::getVoltageLevels() const {
+    return m_voltageLevels;
+}
+
 ThreeWindingsTransformerAdder Substation::newThreeWindingsTransformer() {
     return ThreeWindingsTransformerAdder(*this);
 }

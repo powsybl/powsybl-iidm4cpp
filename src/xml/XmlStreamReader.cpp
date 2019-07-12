@@ -60,13 +60,24 @@ XmlStreamReader::XmlStreamReader(std::istream& stream, const std::string& encodi
     next();
 }
 
+template <>
+double XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+    std::unique_ptr<xmlChar> xmlCharPtr = getAttributeValue(attributeName, true);
+    return std::stod(XML2S(xmlCharPtr.get()));
+}
+
+template <>
+int XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+    std::unique_ptr<xmlChar> xmlCharPtr = getAttributeValue(attributeName, true);
+    return std::stoi(XML2S(xmlCharPtr.get()));
+}
+
 std::string XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
     std::unique_ptr<xmlChar> value = getAttributeValue(attributeName, true);
     return XML2S(value.get());
 }
 
-std::unique_ptr<xmlChar>
-XmlStreamReader::getAttributeValue(const std::string& attributeName, bool throwException) const {
+std::unique_ptr<xmlChar> XmlStreamReader::getAttributeValue(const std::string& attributeName, bool throwException) const {
     checkNodeType(*m_reader, XML_READER_TYPE_ELEMENT);
 
     std::unique_ptr<xmlChar> value(xmlTextReaderGetAttribute(m_reader.get(), S2XML(attributeName)));
@@ -127,8 +138,7 @@ double XmlStreamReader::getOptionalAttributeValue(const std::string& attributeNa
     }
 }
 
-std::string
-XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, const std::string& defaultValue) const {
+std::string XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, const std::string& defaultValue) const {
     std::unique_ptr<xmlChar> value = getAttributeValue(attributeName, false);
     return static_cast<bool>(value) ? XML2S(value.get()) : defaultValue;
 }
@@ -160,7 +170,7 @@ void XmlStreamReader::readUntilEndElement(const std::string& elementName, const 
             throw XmlStreamException(logging::format("An error occurred while reading <%1%>", elementName.c_str()));
 
         case 0: {
-            // not an empty element => read until element
+            // not an empty element => read until end element
             std::string name;
 
             int res = xmlTextReaderRead(m_reader.get());

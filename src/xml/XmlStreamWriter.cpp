@@ -37,13 +37,12 @@ void XmlStreamWriter::setPrefix(const std::string& prefix, const std::string& ur
 }
 
 void XmlStreamWriter::writeAttribute(const std::string& attributeName, double attributeValue) {
-    writeAttribute(attributeName, std::to_string(attributeValue));
+    writeAttribute(attributeName, stdcxx::to_string(attributeValue));
 }
 
 void XmlStreamWriter::writeAttribute(const std::string& attributeName, int attributeValue) {
     writeAttribute(attributeName, std::to_string(attributeValue));
 }
-
 
 void XmlStreamWriter::writeAttribute(const std::string& attributeName, const std::string& attributeValue) {
     int written = xmlTextWriterWriteAttribute(m_writer.get(), S2XML(attributeName), S2XML(attributeValue));
@@ -71,10 +70,9 @@ void XmlStreamWriter::writeEndElement() {
     }
 }
 
-void
-XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, double attributeValue, double absentValue) {
+void XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, double attributeValue, double absentValue) {
     if (!std::isnan(attributeValue) && stdcxx::isEqual(attributeValue, absentValue)) {
-        writeAttribute(attributeName, std::to_string(attributeValue));
+        writeAttribute(attributeName, stdcxx::to_string(attributeValue));
     }
 }
 

@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(XmlWriteApiWriteElementAttribute) {
     BOOST_CHECK(result.find("<?xml version=\"1.0\" encoding=\"UTF-8\"?>") != std::string::npos);
     BOOST_CHECK(result.find(
         "<ns:element xmlns:ns=\"http://ns/1_0\" xmlns:ns2=\"http://ns2/1_0\" elementAttr=\"elementAttrValue\" "
-        "elementAttr2=\"1\" elementAttr3=\"1.000000\" elementAttr4=\"1.000000\" elementAttr6=\"a\">"
+        "elementAttr2=\"1\" elementAttr3=\"1\" elementAttr4=\"1\" elementAttr6=\"a\">"
         "<subElement subElementAttr=\"subElementAttrValue\"/>"
         "</ns:element>") != std::string::npos);
 }

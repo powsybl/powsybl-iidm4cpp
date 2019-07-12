@@ -12,11 +12,11 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Properties.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/logging/ConsoleLogger.hpp>
-#include <powsybl/network/EurostagFactory.hpp>
 
 namespace powsybl {
 
@@ -50,6 +50,10 @@ public:
 
         // write a first time
         Network::writeXml(streamReferer, network, exportOptions);
+
+        if (m_enableDebug) {
+            m_logger.debug("Reference:\n" + streamReferer.str());
+        }
 
         // read the first output and dump from read result
         {
@@ -95,35 +99,54 @@ BOOST_AUTO_TEST_CASE(SubstationOptions) {
 
     network.setCaseDate(stdcxx::DateTime::parse("2019-06-17T13:16:03Z"));
     Substation& s1 = network.newSubstation()
-                            .setId("S1")
-                            .setCountry(iidm::Country::BE)
-                            .setTso("TSO1")
-                            .setGeographicalTags({"A"})
-                            .add();
+        .setId("S1")
+        .setCountry(iidm::Country::BE)
+        .setTso("TSO1")
+        .setGeographicalTags({"A"})
+        .add();
     s1.getProperties().set("prop1S1", "val1S1");
     s1.getProperties().set("prop3S1", "val3S1");
     Substation& s2 = network.newSubstation()
-                            .setId("S2")
-                            .setCountry(iidm::Country::FR)
-                            .setTso("TSO2")
-                            .setGeographicalTags({"A", "B", "C", "D", "E"})
-                            .add();
+        .setId("S2")
+        .setCountry(iidm::Country::FR)
+        .setTso("TSO2")
+        .setGeographicalTags({"A", "B", "C", "D", "E"})
+        .add();
     s2.getProperties().set("prop4S2", "val4S2");
     s2.getProperties().set("prop6S2", "val6S2");
     s2.getProperties().set("prop5S2", "val5S2");
+
+    s1.newVoltageLevel().setId("vl1")
+        .setName("VoltageLevel1")
+        .setNominalVoltage(1.23456789)
+        .setLowVoltageLimit(2.3456789)
+        .setHighVoltageLimit(3.456789)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+
+    VoltageLevel& vl2 = s1.newVoltageLevel().setId("vl2")
+        .setName("VoltageLevel2")
+        .setNominalVoltage(4.56789)
+        .setLowVoltageLimit(5.6789)
+        .setHighVoltageLimit(6.789)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+
+    vl2.getProperties().set("vlProp1", "vlValue1");
+    vl2.getProperties().set("vlProp2", "vlValue2");
 
     ImportOptions importOptions;
     importOptions.setThrowExceptionIfExtensionNotFound(false);
     ExportOptions exportOptions;
     exportOptions.setAnonymised(true)
-                 .setIndent(true)
-                 .setThrowExceptionIfExtensionNotFound(false)
-                 .setTopologyLevel(TopologyLevel::NODE_BREAKER);
+        .setIndent(true)
+        .setThrowExceptionIfExtensionNotFound(false)
+        .setTopologyLevel(TopologyLevel::BUS_BREAKER);
     FakeAnonymizer anonymizer;
     stdcxx::CReference<Anonymizer> crefAnonymizer(anonymizer);
     ReadWriteTester(boost::unit_test::framework::current_test_case().p_name)
-                    .setDebugEnabled(ENABLE_DEBUG)
-                    .readWriteOptions(network, importOptions, exportOptions, crefAnonymizer);
+        .setDebugEnabled(ENABLE_DEBUG)
+        .readWriteOptions(network, importOptions, exportOptions, crefAnonymizer);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

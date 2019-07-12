@@ -9,9 +9,23 @@
 
 #include <array>
 
+#include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/TopologyLevel.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
 namespace powsybl {
+
+namespace iidm {
+
+static const std::array<std::string, 2>& getTopologyKindNames() {
+    static std::array<std::string, 2> s_topologyKindNames {{
+        "NODE_BREAKER",
+        "BUS_BREAKER"
+    }};
+    return s_topologyKindNames;
+}
+
+}  // namespace iidm
 
 namespace logging {
 
@@ -20,17 +34,25 @@ namespace logging {
  */
 template <>
 std::string toString(const iidm::TopologyKind& value) {
-    static std::array<std::string, 2> s_topologyKindNames {{
-        "NODE_BREAKER",
-        "BUS_BREAKER"
-    }};
-
-    return toString(s_topologyKindNames, value);
+    return toString(iidm::getTopologyKindNames(), value);
 }
 
 }  // namespace logging
 
 namespace iidm {
+
+TopologyKind getTopologyKind(const std::string& topologyKindName) {
+    const auto& names = getTopologyKindNames();
+    const auto& it = std::find(names.cbegin(), names.cend(), topologyKindName);
+    if (it == names.cend()) {
+        throw PowsyblException(logging::format("Unable to retrieve topology kind from '%1%'", topologyKindName));
+    }
+    return static_cast<TopologyKind>(it - names.cbegin());
+}
+
+std::string getTopologyKindName(const TopologyKind& topologyKind) {
+    return logging::toString(topologyKind);
+}
 
 std::ostream& operator<<(std::ostream& stream, const iidm::TopologyKind& topologyKind) {
     stream << logging::toString(topologyKind);

@@ -8,6 +8,10 @@
 #ifndef POWSYBL_IIDM_TOPOLOGYLEVEL_HPP
 #define POWSYBL_IIDM_TOPOLOGYLEVEL_HPP
 
+#include <iosfwd>
+
+#include <powsybl/iidm/TopologyKind.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -17,6 +21,12 @@ enum class TopologyLevel {
     BUS_BREAKER,
     BUS_BRANCH
 };
+
+TopologyLevel getMinTopologyLevel(const TopologyKind& topologyKind, const TopologyLevel& topologyLevel);
+
+TopologyKind getTopologyKind(const TopologyLevel& topologyLevel);
+
+std::ostream& operator<<(std::ostream& stream, const TopologyLevel& topologyLevel);
 
 }  // namespace iidm
 

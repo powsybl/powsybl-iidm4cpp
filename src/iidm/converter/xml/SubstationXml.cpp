@@ -14,6 +14,8 @@
 #include <powsybl/iidm/Country.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 
+#include "VoltageLevelXml.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -66,7 +68,11 @@ Substation& SubstationXml::readRootElementAttributes(SubstationAdder& adder, con
 
 void SubstationXml::readSubElements(Substation& substation, const NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(SUBSTATION, [this, &substation, &context]() {
-        AbstractIdentifiableXml::readSubElements(substation, context);
+        if (context.getReader().getLocalName() == VOLTAGE_LEVEL) {
+            VoltageLevelXml::instance().read(substation, context);
+        } else {
+            AbstractIdentifiableXml::readSubElements(substation, context);
+        }
     });
 }
 
@@ -87,6 +93,12 @@ void SubstationXml::writeRootElementAttributes(const Substation& substation, con
         }
 
         context.getWriter().writeAttribute(GEOGRAPHICAL_TAGS, boost::algorithm::join(tags, ","));
+    }
+}
+
+void SubstationXml::writeSubElements(const Substation& substation, const Network& /*network*/, NetworkXmlWriterContext& context) const {
+    for (const auto& voltageLevel : substation.getVoltageLevels()) {
+        VoltageLevelXml::instance().write(voltageLevel, substation, context);
     }
 }
 
