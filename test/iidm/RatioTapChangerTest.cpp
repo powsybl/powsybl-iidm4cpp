@@ -277,7 +277,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChanger.getRegulationTerminal().get()));
 
     ratioTapChanger.setRegulating(false);
-    POWSYBL_ASSERT_THROW(ratioTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation terminal is null");
+    BOOST_CHECK_NO_THROW(ratioTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()));
     POWSYBL_ASSERT_THROW(ratioTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2())), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation terminal is not part of the network");
     BOOST_TEST(stdcxx::areSame(ratioTapChanger, ratioTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(terminal))));
     BOOST_TEST(stdcxx::areSame(terminal, ratioTapChanger.getRegulationTerminal().get()));

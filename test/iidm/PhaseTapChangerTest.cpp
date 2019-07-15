@@ -289,7 +289,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
 
     phaseTapChanger.setRegulating(false).setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP);
-    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation terminal is null");
+    BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()));
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2())), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(terminal))));
     BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));

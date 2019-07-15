@@ -144,10 +144,7 @@ C& TapChanger<H, C, S>::setRegulating(bool regulating) {
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) {
-    if (!static_cast<bool>(regulationTerminal)) {
-        throw ValidationException(m_parent, "regulation terminal is null");
-    }
-    if (!stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), getNetwork())) {
+    if (static_cast<bool>(regulationTerminal) && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), getNetwork())) {
         throw ValidationException(m_parent, "regulation terminal is not part of the network");
     }
     m_regulationTerminal = regulationTerminal;
