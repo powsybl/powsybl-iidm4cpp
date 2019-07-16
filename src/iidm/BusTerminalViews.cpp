@@ -35,6 +35,10 @@ void BusBreakerViewImpl::setConnectableBus(const std::string& busId) {
     checkNotEmpty(busId, "busId is empty");
 
     auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+
+    // Assert that the new bus exists
+    voltageLevel.getConfiguredBus(busId, true);
+
     voltageLevel.detach(m_terminal);
     m_terminal.setConnectableBusId(busId);
     voltageLevel.attach(m_terminal, false);

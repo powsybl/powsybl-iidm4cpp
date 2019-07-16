@@ -77,6 +77,12 @@ void BusBreakerVoltageLevel::checkTerminal(Terminal& terminal) const {
                                   logging::format("Voltage level '%1%' has a bus/breaker topology, a bus connection should be specified instead of a node connection",
                                                   getId()));
     }
+
+    // check connectable buses exist
+    auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
+    if (!busTerminal.getConnectableBusId().empty()) {
+        getConfiguredBus(busTerminal.getConnectableBusId(), true);
+    }
 }
 
 void BusBreakerVoltageLevel::clean() {
@@ -105,8 +111,6 @@ void BusBreakerVoltageLevel::deleteVariantArrayElement(unsigned long index) {
 void BusBreakerVoltageLevel::detach(Terminal& terminal) {
     assert(stdcxx::isInstanceOf<BusTerminal>(terminal));
 
-    terminal.setVoltageLevel(stdcxx::ref<VoltageLevel>());
-
     auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
     auto& bus = getConfiguredBus(busTerminal.getConnectableBusId(), true).get();
 
@@ -116,6 +120,8 @@ void BusBreakerVoltageLevel::detach(Terminal& terminal) {
 
         invalidateCache();
     });
+
+    terminal.setVoltageLevel(stdcxx::ref<VoltageLevel>());
 }
 
 bool BusBreakerVoltageLevel::disconnect(Terminal& terminal) {

@@ -438,7 +438,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     const auto& cBusBreakerView = cTerminal.getBusBreakerView();
     BOOST_TEST(stdcxx::areSame(busBreakerView, cBusBreakerView));
     POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus(""), PowsyblException, "busId is empty");
-    //TODO(thiebarr) POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus("UNKNOWN"), PowsyblException, "Bus 'UNKNOWN' not found in the voltage level 'VL'");
+    POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus("UNKNOWN"), PowsyblException, "Bus 'UNKNOWN' not found in the voltage level 'VL'");
     busBreakerView.setConnectableBus("BUS1");
     const auto& configuredBus = busBreakerView.getBus().get();
     BOOST_CHECK_EQUAL("BUS1", configuredBus.getId());
