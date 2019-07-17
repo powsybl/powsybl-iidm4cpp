@@ -209,7 +209,7 @@ BOOST_AUTO_TEST_CASE(loop) {
     BOOST_CHECK_EQUAL(hvdcLoopCount, hvdcCount);
 
     const Network& cNetwork = network;
-    BOOST_CHECK_EQUAL(boost::size(network.getLccConverterStations()), boost::size(cNetwork.getLccConverterStations()));
+    BOOST_CHECK_EQUAL(boost::size(network.getVscConverterStations()), boost::size(cNetwork.getVscConverterStations()));
     BOOST_CHECK_EQUAL(boost::size(network.getHvdcConverterStations()), boost::size(cNetwork.getHvdcConverterStations()));
 }
 

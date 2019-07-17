@@ -89,6 +89,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
 BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createStaticVarCompensatorTestNetwork();
+    BOOST_CHECK_EQUAL(1, boost::size(network.getStaticVarCompensators()));
 
     const StaticVarCompensator& svc = network.getStaticVarCompensator("SVC1");
     BOOST_CHECK_EQUAL("SVC1", svc.getId());

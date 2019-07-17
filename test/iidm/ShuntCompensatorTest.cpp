@@ -93,6 +93,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
 BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createShuntCompensatorTestNetwork();
+    BOOST_CHECK_EQUAL(1, boost::size(network.getShuntCompensators()));
 
     const ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());

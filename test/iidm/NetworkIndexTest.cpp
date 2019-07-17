@@ -20,29 +20,57 @@ namespace iidm {
 BOOST_AUTO_TEST_SUITE(NetworkIndexTestSuite)
 
 BOOST_AUTO_TEST_CASE(RangeTest) {
-    const Network& network = createNetwork();
+    Network network = createNetwork();
+    const Network& cNetwork = network;
 
     // Substations
-    BOOST_CHECK_EQUAL(1UL, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(1UL, cNetwork.getSubstationCount());
+    BOOST_CHECK_EQUAL(1UL, boost::size(cNetwork.getSubstations()));
     BOOST_CHECK_EQUAL(1UL, boost::size(network.getSubstations()));
 
     // Identifiables
     std::set<std::string> expected = {"LOAD1", "S1", "VL1", "VL1_BUS1", "VL2"};
     std::set<std::string> actual;
+    std::set<std::string> actualConst;
     for (const auto& identifiable : network.getIdentifiables()) {
         actual.insert(identifiable.get().getId());
     }
+    for (const auto& identifiable : cNetwork.getIdentifiables()) {
+        actualConst.insert(identifiable.get().getId());
+    }
     BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual.cbegin(), actual.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actualConst.cbegin(), actualConst.cend());
 
     // VoltageLevels
-    BOOST_CHECK_EQUAL(2UL, network.getVoltageLevelCount());
+    BOOST_CHECK_EQUAL(2UL, cNetwork.getVoltageLevelCount());
+    BOOST_CHECK_EQUAL(2UL, boost::size(cNetwork.getVoltageLevels()));
     BOOST_CHECK_EQUAL(2UL, boost::size(network.getVoltageLevels()));
     std::vector<std::string> expectedVL = {"VL1", "VL2"};
     std::vector<std::string> actualVL;
+    std::vector<std::string> actualConstVL;
     for (const auto& vl : network.getVoltageLevels()) {
         actualVL.push_back(vl.get().getId());
     }
+    for (const auto& vl : cNetwork.getVoltageLevels()) {
+        actualConstVL.push_back(vl.get().getId());
+    }
     BOOST_CHECK_EQUAL_COLLECTIONS(expectedVL.cbegin(), expectedVL.cend(), actualVL.cbegin(), actualVL.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedVL.cbegin(), expectedVL.cend(), actualConstVL.cbegin(), actualConstVL.cend());
+
+    // StatefulObjects
+    //FIXME(thiebarr) BOOST_CHECK_EQUAL(4UL, boost::size(cNetwork.getStatefulObjects()));
+    //FIXME(thiebarr) BOOST_CHECK_EQUAL(4UL, boost::size(network.getStatefulObjects()));
+    unsigned long statefulObjectsCount = 0UL;
+    unsigned long statefulObjectsConstCount = 0UL;
+    for (const auto& multiVariantObject : network.getStatefulObjects()) {
+        multiVariantObject.get();
+        statefulObjectsCount++;
+    }
+    for (const auto& multiVariantObject : cNetwork.getStatefulObjects()) {
+        multiVariantObject.get();
+        statefulObjectsConstCount++;
+    }
+    BOOST_CHECK_EQUAL(statefulObjectsCount, statefulObjectsConstCount);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

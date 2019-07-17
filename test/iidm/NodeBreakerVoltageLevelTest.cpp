@@ -220,6 +220,7 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
 
     BOOST_CHECK_EQUAL(2UL, network.getBusbarSectionCount());
     BOOST_CHECK_EQUAL(2UL, boost::size(network.getBusbarSections()));
+    BOOST_CHECK_EQUAL(2UL, boost::size(cNetwork.getBusbarSections()));
 }
 
 BOOST_AUTO_TEST_CASE(switches) {
@@ -270,6 +271,7 @@ BOOST_AUTO_TEST_CASE(switches) {
     BOOST_TEST(stdcxx::areSame(breaker, cNetwork.getSwitch("BK")));
 
     BOOST_CHECK_EQUAL(1UL, boost::size(network.getSwitches()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(cNetwork.getSwitches()));
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {

@@ -7,13 +7,27 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Country.hpp>
+
+#include "AssertionUtils.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(CountryTestSuite)
+
+BOOST_AUTO_TEST_CASE(getCountryCodeTest) {
+    BOOST_CHECK_EQUAL(u8"FR", getCountryCode(Country::FR));
+    BOOST_CHECK_EQUAL(u8"BE", getCountryCode(Country::BE));
+}
+
+BOOST_AUTO_TEST_CASE(getCountryFromCodeTest) {
+    POWSYBL_ASSERT_ENUM_EQ(Country::FR, getCountryFromCode(u8"FR"));
+    POWSYBL_ASSERT_ENUM_EQ(Country::BE, getCountryFromCode(u8"BE"));
+    POWSYBL_ASSERT_THROW(getCountryFromCode(u8"INVALID"), PowsyblException, "Unable to retrieve country from ISO code 'INVALID'");
+}
 
 BOOST_AUTO_TEST_CASE(getCountryNameTest) {
     BOOST_CHECK_EQUAL(u8"FRANCE", getCountryName(Country::FR));

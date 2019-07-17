@@ -151,6 +151,9 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(generatorCount + 1, network.getGeneratorCount());
+
+    const Network& cNetwork = network;
+    BOOST_CHECK_EQUAL(generatorCount + 1, boost::size(cNetwork.getGenerators()));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {

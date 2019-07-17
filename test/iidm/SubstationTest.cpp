@@ -147,7 +147,8 @@ BOOST_AUTO_TEST_SUITE(SubstationTestSuite)
 BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createNetwork();
 
-    BOOST_CHECK_EQUAL(1ul, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(1UL, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getSubstations()));
 
     const Substation& substation = network.getSubstation("S1");
     BOOST_CHECK_EQUAL("S1", substation.getId());
@@ -158,14 +159,16 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
 BOOST_AUTO_TEST_CASE(integrity) {
     Network network("id", "test");
-    BOOST_CHECK_EQUAL(0ul, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(0UL, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(0UL, boost::size(network.getSubstations()));
 
     network.newSubstation()
         .setId("S")
         .setGeographicalTags({"FR", "DE"})
         .addGeographicalTag("IT")
         .add();
-    BOOST_CHECK_EQUAL(1ul, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(1UL, network.getSubstationCount());
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getSubstations()));
 
     Substation& substation = network.getSubstation("S");
     const Substation& cSubstation = network.getSubstation("S");

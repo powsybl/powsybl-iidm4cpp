@@ -171,6 +171,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
 BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createHvdcLineTestNetwork();
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getHvdcLines()));
 
     const HvdcLine& hvdc = network.getHvdcLine("HVDC1");
     BOOST_CHECK_EQUAL("HVDC1", hvdc.getId());
