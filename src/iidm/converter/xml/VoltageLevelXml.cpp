@@ -7,9 +7,12 @@
 
 #include "VoltageLevelXml.hpp"
 
+#include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
+#include <powsybl/xml/XmlStreamException.hpp>
 
 #include "iidm/converter/Constants.hpp"
+#include "iidm/converter/xml/BusXml.hpp"
 
 namespace powsybl {
 
@@ -50,8 +53,28 @@ VoltageLevel& VoltageLevelXml::readRootElementAttributes(VoltageLevelAdder& adde
 
 void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, const NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(VOLTAGE_LEVEL, [this, &voltageLevel, &context]() {
-        AbstractIdentifiableXml::readSubElements(voltageLevel, context);
+        if (context.getReader().getLocalName() == BUS_BREAKER_TOPOLOGY) {
+            context.getReader().readUntilEndElement(BUS_BREAKER_TOPOLOGY, [&voltageLevel, &context]() {
+                if (context.getReader().getLocalName() == BUS) {
+                    BusXml::instance().read(voltageLevel, context);
+                } else {
+                    throw powsybl::xml::XmlStreamException(logging::format("Unsupported element %1%", context.getReader().getLocalName()));
+                }
+            });
+        } else {
+            AbstractIdentifiableXml::readSubElements(voltageLevel, context);
+        }
     });
+}
+
+void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const {
+    context.getWriter().writeStartElement(IIDM_PREFIX, BUS_BREAKER_TOPOLOGY);
+    for (const Bus& bus : voltageLevel.getBusBreakerView().getBuses()) {
+        // TODO(sebalaig) consider bus filters
+        BusXml::instance().write(bus, voltageLevel, context);
+    }
+    // TODO(sebalaig) export switches
+    context.getWriter().writeEndElement();
 }
 
 void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLevel, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
@@ -61,6 +84,22 @@ void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLeve
     const TopologyLevel& topologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), context.getOptions().getTopologyLevel());
     const TopologyKind& topologyKind = getTopologyKind(topologyLevel);
     context.getWriter().writeAttribute(TOPOLOGY_KIND, getTopologyKindName(topologyKind));
+}
+
+void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
+    TopologyLevel topologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), context.getOptions().getTopologyLevel());
+    switch (topologyLevel) {
+        case TopologyLevel::BUS_BREAKER:
+            writeBusBreakerTopology(voltageLevel, context);
+            break;
+
+        case TopologyLevel::NODE_BREAKER:
+        case TopologyLevel::BUS_BRANCH:
+            throw powsybl::xml::XmlStreamException(logging::format("Unsupported TopologyLevel value: ", topologyLevel));
+
+        default:
+            throw powsybl::xml::XmlStreamException(logging::format("Unexpected TopologyLevel value: ", topologyLevel));
+    }
 }
 
 }  // namespace xml

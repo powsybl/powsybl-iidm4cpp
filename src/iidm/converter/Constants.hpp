@@ -14,6 +14,9 @@ namespace iidm {
 
 namespace converter {
 
+static const char* const ANGLE = "angle";
+static const char* const BUS = "bus";
+static const char* const BUS_BREAKER_TOPOLOGY = "busBreakerTopology";
 static const char* const CASE_DATE = "caseDate";
 static const char* const COUNTRY = "country";
 static const char* const FORECAST_DISTANCE = "forecastDistance";
@@ -31,6 +34,7 @@ static const char* const SOURCE_FORMAT = "sourceFormat";
 static const char* const SUBSTATION = "substation";
 static const char* const TOPOLOGY_KIND = "topologyKind";
 static const char* const TSO = "tso";
+static const char* const V = "v";
 static const char* const VALUE = "value";
 static const char* const VOLTAGE_LEVEL = "voltageLevel";
 

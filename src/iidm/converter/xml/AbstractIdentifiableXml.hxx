@@ -8,9 +8,11 @@
 #include "AbstractIdentifiableXml.hpp"
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/Properties.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
@@ -24,7 +26,7 @@ namespace converter {
 
 namespace xml {
 
-template<typename T, typename A, typename P>
+template <typename T, typename A, typename P>
 void AbstractIdentifiableXml<T, A, P>::read(P& parent, const NetworkXmlReaderContext& context) const {
     A adder = createAdder(parent);
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
@@ -34,7 +36,7 @@ void AbstractIdentifiableXml<T, A, P>::read(P& parent, const NetworkXmlReaderCon
     readSubElements(identifiable, context);
 }
 
-template<typename T, typename A, typename P>
+template <typename T, typename A, typename P>
 void AbstractIdentifiableXml<T, A, P>::readSubElements(T& identifiable, const NetworkXmlReaderContext& context) const {
     if (context.getReader().getLocalName() == PROPERTY) {
         const std::string& name = context.getReader().getAttributeValue(NAME);
@@ -45,14 +47,10 @@ void AbstractIdentifiableXml<T, A, P>::readSubElements(T& identifiable, const Ne
     }
 }
 
-template<typename T, typename A, typename P>
+template <typename T, typename A, typename P>
 void AbstractIdentifiableXml<T, A, P>::write(const T& identifiable, const P& parent, NetworkXmlWriterContext& context) const {
-    bool hasSubElems = hasSubElements(identifiable);
-    if (hasSubElems || identifiable.hasProperty()) {
-        context.getWriter().writeStartElement(IIDM_PREFIX, getRootElementName());
-    } else {
-        context.getWriter().writeEmptyElement(IIDM_PREFIX, getRootElementName());
-    }
+    context.getWriter().writeStartElement(IIDM_PREFIX, getRootElementName());
+
     context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
     if (identifiable.getId() != identifiable.getName()) {
         context.getWriter().writeAttribute(NAME, context.getAnonymizer().anonymizeString(identifiable.getName()));
@@ -66,14 +64,13 @@ void AbstractIdentifiableXml<T, A, P>::write(const T& identifiable, const P& par
         context.getWriter().writeEndElement();
     }
     writeSubElements(identifiable, parent, context);
-    if (hasSubElems || identifiable.hasProperty()) {
-        context.getWriter().writeEndElement();
-    }
+
+    context.getWriter().writeEndElement();
 
     context.addExportedEquipment(identifiable);
 }
 
-template<typename T, typename A, typename P>
+template <typename T, typename A, typename P>
 void AbstractIdentifiableXml<T, A, P>::writeSubElements(const T& /*identifiable*/, const P& /*parent*/, xml::NetworkXmlWriterContext&/*context*/) const {
 
 }

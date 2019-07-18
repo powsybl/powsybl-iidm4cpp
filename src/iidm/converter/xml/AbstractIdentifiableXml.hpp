@@ -19,7 +19,7 @@ namespace xml {
 class NetworkXmlReaderContext;
 class NetworkXmlWriterContext;
 
-template<typename T, typename A, typename P>
+template <typename T, typename A, typename P>
 class AbstractIdentifiableXml {
 public:
     void read(P& parent, const NetworkXmlReaderContext& context) const;

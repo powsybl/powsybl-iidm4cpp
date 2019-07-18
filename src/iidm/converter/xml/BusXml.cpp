@@ -1,0 +1,64 @@
+/**
+ * Copyright (c) 2019, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#include "BusXml.hpp"
+
+#include <powsybl/iidm/BusBreakerView.hpp>
+
+namespace powsybl {
+
+namespace iidm {
+
+namespace converter {
+
+namespace xml {
+
+BusAdder BusXml::createAdder(VoltageLevel& voltageLevel) const {
+    return voltageLevel.getBusBreakerView().newBus();
+}
+
+const char* BusXml::getRootElementName() const {
+    return BUS;
+}
+
+bool BusXml::hasSubElements(const Bus& /*bus*/) const {
+    return false;
+}
+
+BusXml& BusXml::instance() {
+    static BusXml instance;
+    return instance;
+}
+
+Bus& BusXml::readRootElementAttributes(BusAdder& adder, const NetworkXmlReaderContext& context) const {
+    double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
+    double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
+    Bus& b = adder.add();
+    b.setV(v);
+    b.setAngle(angle);
+    return b;
+}
+
+void BusXml::readSubElements(Bus& bus, const NetworkXmlReaderContext& context) const {
+    context.getReader().readUntilEndElement(SUBSTATION, [this, &bus, &context]() {
+        AbstractIdentifiableXml::readSubElements(bus, context);
+    });
+}
+
+void BusXml::writeRootElementAttributes(const Bus& bus, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
+    context.getWriter().writeOptionalAttribute(V, bus.getV(), stdcxx::nan());
+    context.getWriter().writeOptionalAttribute(ANGLE, bus.getAngle(), stdcxx::nan());
+}
+
+}  // namespace xml
+
+}  // namespace converter
+
+}  // namespace iidm
+
+}  // namespace powsybl
+

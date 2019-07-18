@@ -39,10 +39,14 @@ protected:
 
     void writeRootElementAttributes(const VoltageLevel& voltageLevel, const Substation& substation, NetworkXmlWriterContext& context) const override;
 
+    void writeSubElements(const VoltageLevel& voltageLevel, const Substation& substation, NetworkXmlWriterContext& context) const override;
+
 private:
     VoltageLevelXml() = default;
 
     ~VoltageLevelXml() = default;
+
+    void writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const;
 };
 
 }  // namespace xml

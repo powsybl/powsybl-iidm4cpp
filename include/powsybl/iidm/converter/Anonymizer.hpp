@@ -32,7 +32,7 @@ public:
 
     virtual std::string deanonymizeString(const std::string& anonymousStr) const = 0;
 
-    // TODO(sla) Add missing methods:
+    // TODO(sebalaig) Add missing methods:
     // void read(BufferedReader reader);
     // void write(BufferedWriter writer);
 };

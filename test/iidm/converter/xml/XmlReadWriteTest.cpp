@@ -9,6 +9,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Properties.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -116,13 +118,27 @@ BOOST_AUTO_TEST_CASE(SubstationOptions) {
     s2.getProperties().set("prop6S2", "val6S2");
     s2.getProperties().set("prop5S2", "val5S2");
 
-    s1.newVoltageLevel().setId("vl1")
+    VoltageLevel& vl1 = s1.newVoltageLevel().setId("vl1")
         .setName("VoltageLevel1")
         .setNominalVoltage(1.23456789)
         .setLowVoltageLimit(2.3456789)
         .setHighVoltageLimit(3.456789)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
+
+    iidm::Bus& nloadVl1 = vl1.getBusBreakerView().newBus().setId("NLOAD_VL1").add();
+    nloadVl1.setAngle(60.0).setV(200.0);
+
+    nloadVl1.getProperties().set("nLoadVl1_Prop1", "nLoadVl1_Value1");
+    nloadVl1.getProperties().set("nLoadVl1_Prop3", "nLoadVl1_Value3");
+
+    iidm::Bus& nload2Vl1 = vl1.getBusBreakerView().newBus().setId("NLOAD2_VL1").add();
+    nload2Vl1.setAngle(62.0).setV(202.0);
+
+    iidm::Bus& nload3Vl1 = vl1.getBusBreakerView().newBus().setId("NLOAD3_VL1").add();
+    nload3Vl1.setAngle(63.0).setV(203.0);
+    nload3Vl1.getProperties().set("nLoad3Vl1_Prop1", "nLoad3Vl1_Value1");
+    nload3Vl1.getProperties().set("nLoad3Vl1_Prop2", "nLoad3Vl1_Value2");
 
     VoltageLevel& vl2 = s1.newVoltageLevel().setId("vl2")
         .setName("VoltageLevel2")
@@ -131,6 +147,17 @@ BOOST_AUTO_TEST_CASE(SubstationOptions) {
         .setHighVoltageLimit(6.789)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
+
+    iidm::Bus& nloadVl2 = vl2.getBusBreakerView().newBus().setId("NLOAD_VL2").add();
+    nloadVl2.setAngle(64.0).setV(204.0);
+
+    iidm::Bus& nload2Vl2 = vl2.getBusBreakerView().newBus().setId("NLOAD2_VL2").add();
+    nload2Vl2.setAngle(65.0).setV(205.0);
+
+    iidm::Bus& nload3Vl2 = vl2.getBusBreakerView().newBus().setId("NLOAD3_VL2").add();
+    nload3Vl2.setAngle(66.0).setV(206.0);
+    nload3Vl2.getProperties().set("nload3Vl2_Prop1", "nload3Vl2_Value1");
+    nload3Vl2.getProperties().set("nload3Vl2_Prop2", "nload3Vl2_Value2");
 
     vl2.getProperties().set("vlProp1", "vlValue1");
     vl2.getProperties().set("vlProp2", "vlValue2");
