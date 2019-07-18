@@ -24,7 +24,7 @@ namespace powsybl {
 namespace network {
 
 iidm::Network EurostagFactory::createTutorial1Network() {
-    iidm::Network network("eurostag1", "test");
+    iidm::Network network("sim1", "test");
     iidm::Substation& p1 = network.newSubstation()
         .setId("P1")
         .setCountry(iidm::Country::FR)

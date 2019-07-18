@@ -7,6 +7,7 @@
 
 #include <array>
 
+#include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/LoadType.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
@@ -14,18 +15,22 @@ namespace powsybl {
 
 namespace logging {
 
-/**
- * toString template specialization for LoadType
- */
-template <>
-std::string toString(const iidm::LoadType& value) {
+static const std::array<std::string, 3>& getLoadTypeNames() {
     static std::array<std::string, 3> s_typeNames {{
         "UNDEFINED",
         "AUXILIARY",
         "FICTITIOUS"
     }};
 
-    return toString(s_typeNames, value);
+    return s_typeNames;
+}
+
+/**
+ * toString template specialization for LoadType
+ */
+template <>
+std::string toString(const iidm::LoadType& value) {
+    return toString(getLoadTypeNames(), value);
 }
 
 }  // namespace logging
@@ -36,6 +41,19 @@ std::ostream& operator<<(std::ostream& stream, const LoadType& type) {
     stream << logging::toString(type);
 
     return stream;
+}
+
+LoadType getLoadType(const std::string& loadTypeName) {
+    const auto& names = logging::getLoadTypeNames();
+    const auto& it = std::find(names.cbegin(), names.cend(), loadTypeName);
+    if (it == names.cend()) {
+        throw PowsyblException(logging::format("Unable to retrieve load type from '%1%'", loadTypeName));
+    }
+    return static_cast<LoadType>(it - names.cbegin());
+}
+
+std::string getLoadTypeName(const LoadType& loadType) {
+    return logging::toString(loadType);
 }
 
 }  // namespace iidm

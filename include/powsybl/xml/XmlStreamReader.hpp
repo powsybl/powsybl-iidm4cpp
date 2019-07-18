@@ -15,6 +15,7 @@
 
 #include <libxml/xmlreader.h>
 
+#include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/xml/XmlString.hpp>
 
 namespace powsybl {
@@ -43,9 +44,14 @@ public:
 
     std::string getNamespace(const std::string& prefix) const;
 
+    template <typename T>
+    stdcxx::optional<T> getOptionalAttributeValue(const std::string& attributeName) const;
+
     int getOptionalAttributeValue(const std::string& attributeName, int defaultValue) const;
 
     double getOptionalAttributeValue(const std::string& attributeName, double defaultValue) const;
+
+    unsigned long getOptionalAttributeValue(const std::string& attributeName, unsigned long defaultValue) const;
 
     std::string getOptionalAttributeValue(const std::string& attributeName, const std::string& defaultValue) const;
 

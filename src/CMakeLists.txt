@@ -106,6 +106,7 @@ set(IIDM_SOURCES
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
     iidm/converter/xml/BusXml.cpp
+    iidm/converter/xml/LoadXml.cpp
     iidm/converter/xml/NetworkXml.cpp
     iidm/converter/xml/NetworkXmlReaderContext.cpp
     iidm/converter/xml/NetworkXmlWriterContext.cpp

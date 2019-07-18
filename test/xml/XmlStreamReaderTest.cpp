@@ -56,8 +56,7 @@ BOOST_AUTO_TEST_CASE(XmlReadApiGetAttribute) {
     BOOST_CHECK_EQUAL("dd", reader.getAttributeValue("sourceFormat"));
     BOOST_CHECK_EQUAL("ab", reader.getAttributeValue("attributeNoNamespace"));
 
-    POWSYBL_ASSERT_THROW(reader.getOptionalAttributeValue("nonNamespacedAttributeInvalid", 0),
-                         powsybl::xml::XmlStreamException, "Unable to convert attribute nonNamespacedAttributeInvalid to int");
+    POWSYBL_ASSERT_THROW(reader.getOptionalAttributeValue("nonNamespacedAttributeInvalid", 0), std::invalid_argument, "stoi");
     BOOST_CHECK_EQUAL(3, reader.getOptionalAttributeValue("nonNamespacedAttributeValid", 0));
 
 

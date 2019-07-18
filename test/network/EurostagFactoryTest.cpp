@@ -30,8 +30,8 @@ BOOST_AUTO_TEST_SUITE(EurostagFactoryTestSuite)
 
 BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     const iidm::Network& network = EurostagFactory::createTutorial1Network();
-    BOOST_CHECK_EQUAL("eurostag1", network.getId());
-    BOOST_CHECK_EQUAL("eurostag1", network.getName());
+    BOOST_CHECK_EQUAL("sim1", network.getId());
+    BOOST_CHECK_EQUAL("sim1", network.getName());
     BOOST_CHECK_EQUAL("test", network.getSourceFormat());
     BOOST_CHECK_EQUAL(0, network.getForecastDistance());
 
@@ -248,8 +248,8 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
 BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     const iidm::Network& network = EurostagFactory::createWithCurrentLimits();
 
-    BOOST_CHECK_EQUAL("eurostag1", network.getId());
-    BOOST_CHECK_EQUAL("eurostag1", network.getName());
+    BOOST_CHECK_EQUAL("sim1", network.getId());
+    BOOST_CHECK_EQUAL("sim1", network.getName());
     BOOST_CHECK_EQUAL("test", network.getSourceFormat());
     BOOST_CHECK_EQUAL(0, network.getForecastDistance());
     BOOST_CHECK_EQUAL("2018-01-01T11:00:00+01:00", network.getCaseDate().toString());

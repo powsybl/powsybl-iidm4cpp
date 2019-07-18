@@ -72,6 +72,12 @@ int XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
     return std::stoi(XML2S(value.get()));
 }
 
+template <>
+unsigned long XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+    XmlString value = getAttributeValue(attributeName, false);
+    return std::stoul(XML2S(value.get()));
+}
+
 std::string XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
     XmlString value = getAttributeValue(attributeName, true);
     return XML2S(value.get());
@@ -120,27 +126,72 @@ std::string XmlStreamReader::getNamespace(const std::string& prefix) const {
     return XML2S(namespaceXml.get());
 }
 
-int XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, int defaultValue) const {
-    XmlString value = getAttributeValue(attributeName, false);
-    try {
-        return static_cast<bool>(value) ? std::stoi(XML2S(value.get())) : defaultValue;
-    } catch (const std::invalid_argument& error) {
-        throw XmlStreamException(logging::format("Unable to convert attribute %1% to int", attributeName));
+template <>
+stdcxx::optional<int> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+    stdcxx::optional<int> value;
+
+    const XmlString& str = getAttributeValue(attributeName, false);
+    if (str) {
+        value = std::stoi(XML2S(str.get()));
     }
+
+    return value;
+}
+
+template <>
+stdcxx::optional<double> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+    stdcxx::optional<double> value;
+
+    const XmlString& str = getAttributeValue(attributeName, false);
+    if (str) {
+        value = std::stod(XML2S(str.get()));
+    }
+
+    return value;
+}
+
+template <>
+stdcxx::optional<unsigned long> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+    stdcxx::optional<unsigned long> value;
+
+    const XmlString& str = getAttributeValue(attributeName, false);
+    if (str) {
+        value = std::stoul(XML2S(str.get()));
+    }
+
+    return value;
+}
+
+template <>
+stdcxx::optional<std::string> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+    stdcxx::optional<std::string> value;
+
+    const auto& str = getAttributeValue(attributeName, false);
+    if (str) {
+        value = XML2S(str.get());
+    }
+
+    return value;
+}
+
+int XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, int defaultValue) const {
+    const auto& value = getOptionalAttributeValue<int>(attributeName);
+    return static_cast<bool>(value) ? *value : defaultValue;
 }
 
 double XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, double defaultValue) const {
-    XmlString value = getAttributeValue(attributeName, false);
-    try {
-        return static_cast<bool>(value) ? std::stod(XML2S(value.get())) : defaultValue;
-    } catch (const std::invalid_argument& error) {
-        throw XmlStreamException(logging::format("Unable to convert attribute %1% to double", attributeName));
-    }
+    const auto& value = getOptionalAttributeValue<double>(attributeName);
+    return static_cast<bool>(value) ? *value : defaultValue;
+}
+
+unsigned long XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, unsigned long defaultValue) const {
+    const auto& value = getOptionalAttributeValue<unsigned long>(attributeName);
+    return static_cast<bool>(value) ? *value : defaultValue;
 }
 
 std::string XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, const std::string& defaultValue) const {
-    XmlString value = getAttributeValue(attributeName, false);
-    return static_cast<bool>(value) ? XML2S(value.get()) : defaultValue;
+    const auto& value = getOptionalAttributeValue<std::string>(attributeName);
+    return static_cast<bool>(value) ? *value : defaultValue;
 }
 
 std::string XmlStreamReader::getPrefix() const {

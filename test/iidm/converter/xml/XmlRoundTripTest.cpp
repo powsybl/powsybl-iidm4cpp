@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
+#include <powsybl/stdcxx/DateTime.hpp>
 
 #include "iidm/converter/ResourceFixture.hpp"
 #include "iidm/converter/RoundTrip.hpp"
@@ -25,11 +26,12 @@ BOOST_AUTO_TEST_SUITE(XmlRoundTrip)
 
 BOOST_FIXTURE_TEST_CASE(Eurostag, ResourceFixture) {
 
-    const powsybl::iidm::Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    powsybl::iidm::Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
 
-    const std::string networkStr = ResourceFixture::getResource("/eurostag-tutorial1-lf.xml");
+    const std::string& networkStr = ResourceFixture::getResource("/eurostag-tutorial1-tmp.xml");
 
-    // FIXME(mathbagu): RoundTrip::runXml(network, networkStr);
+    RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

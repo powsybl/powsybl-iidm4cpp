@@ -14,6 +14,8 @@
 #include "iidm/converter/Constants.hpp"
 #include "iidm/converter/xml/BusXml.hpp"
 
+#include "LoadXml.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -61,6 +63,8 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, const NetworkX
                     throw powsybl::xml::XmlStreamException(logging::format("Unsupported element %1%", context.getReader().getLocalName()));
                 }
             });
+    } else if (context.getReader().getLocalName() == LOAD) {
+            LoadXml::instance().read(voltageLevel, context);
         } else {
             AbstractIdentifiableXml::readSubElements(voltageLevel, context);
         }
@@ -75,6 +79,13 @@ void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, 
     }
     // TODO(sebalaig) export switches
     context.getWriter().writeEndElement();
+}
+
+void VoltageLevelXml::writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const auto& load : voltageLevel.getLoads()) {
+        // TODO(sebalaig) consider bus filters
+        LoadXml::instance().write(load, voltageLevel, context);
+    }
 }
 
 void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLevel, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
@@ -100,6 +111,8 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const S
         default:
             throw powsybl::xml::XmlStreamException(logging::format("Unexpected TopologyLevel value: ", topologyLevel));
     }
+
+    writeLoads(voltageLevel, context);
 }
 
 }  // namespace xml
