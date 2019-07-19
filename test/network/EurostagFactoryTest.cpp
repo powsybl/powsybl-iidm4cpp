@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_TEST(std::isnan(nload.getV()));
 
     const auto& line1 = network.getLine("NHV1_NHV2_1");
-    BOOST_CHECK_EQUAL("", line1.getName());
+    BOOST_CHECK_EQUAL("NHV1_NHV2_1", line1.getName());
     BOOST_TEST(!line1.isTieLine());
     BOOST_CHECK_CLOSE(3.0, line1.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line1.getX(), std::numeric_limits<double>::epsilon());
@@ -142,7 +142,7 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_TEST(!line1.isOverloaded());
 
     const auto& line2 = network.getLine("NHV1_NHV2_2");
-    BOOST_CHECK_EQUAL("", line2.getName());
+    BOOST_CHECK_EQUAL("NHV1_NHV2_2", line2.getName());
     BOOST_TEST(!line2.isTieLine());
     BOOST_CHECK_CLOSE(3.0, line2.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line2.getX(), std::numeric_limits<double>::epsilon());
@@ -157,7 +157,7 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_TEST(!line2.isOverloaded());
 
     const auto& transfo1 = network.getTwoWindingsTransformer("NGEN_NHV1");
-    BOOST_CHECK_EQUAL("", transfo1.getName());
+    BOOST_CHECK_EQUAL("NGEN_NHV1", transfo1.getName());
     BOOST_CHECK_CLOSE(24.0, transfo1.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(400.0, transfo1.getRatedU2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.24 / 1300.0 * (380.0 * 380.0 / 100.0), transfo1.getR(), std::numeric_limits<double>::epsilon());
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_TEST(!transfo1.isOverloaded());
 
     const auto& transfo2 = network.getTwoWindingsTransformer("NHV2_NLOAD");
-    BOOST_CHECK_EQUAL("", transfo2.getName());
+    BOOST_CHECK_EQUAL("NHV2_NLOAD", transfo2.getName());
     BOOST_CHECK_CLOSE(400.0, transfo2.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(158.0, transfo2.getRatedU2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.21 / 1000 * (150.0 * 150.0 / 100.0), transfo2.getR(), std::numeric_limits<double>::epsilon());
@@ -217,13 +217,13 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_CHECK_CLOSE(0.0, step.getB(), std::numeric_limits<double>::epsilon());
 
     const auto& load = network.getLoad("LOAD");
-    BOOST_CHECK_EQUAL("", load.getName());
+    BOOST_CHECK_EQUAL("LOAD", load.getName());
     BOOST_CHECK_EQUAL(iidm::LoadType::UNDEFINED, load.getLoadType());
     BOOST_CHECK_CLOSE(600.0, load.getP0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200.0, load.getQ0(), std::numeric_limits<double>::epsilon());
 
     const auto& gen = network.getGenerator("GEN");
-    BOOST_CHECK_EQUAL("", gen.getName());
+    BOOST_CHECK_EQUAL("GEN", gen.getName());
     POWSYBL_ASSERT_ENUM_EQ(iidm::EnergySource::OTHER, gen.getEnergySource());
     BOOST_TEST(std::isnan(gen.getRatedS()));
     BOOST_TEST(!gen.getRegulatingTerminal());
@@ -341,7 +341,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_TEST(std::isnan(nload.getV()));
 
     const auto& line1 = network.getLine("NHV1_NHV2_1");
-    BOOST_CHECK_EQUAL("", line1.getName());
+    BOOST_CHECK_EQUAL("NHV1_NHV2_1", line1.getName());
     BOOST_TEST(!line1.isTieLine());
     BOOST_CHECK_CLOSE(3.0, line1.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line1.getX(), std::numeric_limits<double>::epsilon());
@@ -374,7 +374,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_TEST(!tempLimit.isFictitious());
 
     const auto& line2 = network.getLine("NHV1_NHV2_2");
-    BOOST_CHECK_EQUAL("", line2.getName());
+    BOOST_CHECK_EQUAL("NHV1_NHV2_2", line2.getName());
     BOOST_TEST(!line2.isTieLine());
     BOOST_CHECK_CLOSE(3.0, line2.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line2.getX(), std::numeric_limits<double>::epsilon());
@@ -402,7 +402,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_EQUAL(0, line2CurLimit2.getTemporaryLimits().size());
 
     const auto& transfo1 = network.getTwoWindingsTransformer("NGEN_NHV1");
-    BOOST_CHECK_EQUAL("", transfo1.getName());
+    BOOST_CHECK_EQUAL("NGEN_NHV1", transfo1.getName());
     BOOST_CHECK_CLOSE(24.0, transfo1.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(400.0, transfo1.getRatedU2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.24 / 1300.0 * (380.0 * 380.0 / 100.0), transfo1.getR(), std::numeric_limits<double>::epsilon());
@@ -418,7 +418,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_TEST(!transfo1.isOverloaded());
 
     const auto& transfo2 = network.getTwoWindingsTransformer("NHV2_NLOAD");
-    BOOST_CHECK_EQUAL("", transfo2.getName());
+    BOOST_CHECK_EQUAL("NHV2_NLOAD", transfo2.getName());
     BOOST_CHECK_CLOSE(400.0, transfo2.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(158.0, transfo2.getRatedU2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.21 / 1000 * (150.0 * 150.0 / 100.0), transfo2.getR(), std::numeric_limits<double>::epsilon());
@@ -462,13 +462,13 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(0.0, step.getB(), std::numeric_limits<double>::epsilon());
 
     const auto& load = network.getLoad("LOAD");
-    BOOST_CHECK_EQUAL("", load.getName());
+    BOOST_CHECK_EQUAL("LOAD", load.getName());
     BOOST_CHECK_EQUAL(iidm::LoadType::UNDEFINED, load.getLoadType());
     BOOST_CHECK_CLOSE(600.0, load.getP0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200.0, load.getQ0(), std::numeric_limits<double>::epsilon());
 
     const auto& gen = network.getGenerator("GEN");
-    BOOST_CHECK_EQUAL("", gen.getName());
+    BOOST_CHECK_EQUAL("GEN", gen.getName());
     POWSYBL_ASSERT_ENUM_EQ(iidm::EnergySource::OTHER, gen.getEnergySource());
     BOOST_TEST(std::isnan(gen.getRatedS()));
     BOOST_TEST(!gen.getRegulatingTerminal());
@@ -490,7 +490,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(9999.99, limits.getMaxQ(0), std::numeric_limits<double>::epsilon());
 
     const auto& gen2 = network.getGenerator("GEN2");
-    BOOST_CHECK_EQUAL("", gen2.getName());
+    BOOST_CHECK_EQUAL("GEN2", gen2.getName());
     POWSYBL_ASSERT_ENUM_EQ(iidm::EnergySource::OTHER, gen2.getEnergySource());
     BOOST_TEST(std::isnan(gen2.getRatedS()));
     BOOST_TEST(!gen2.getRegulatingTerminal());

@@ -37,7 +37,7 @@ std::string Identifiable::getMessageHeader() const {
 }
 
 const std::string& Identifiable::getName() const {
-    return m_name;
+    return m_name.empty() ? m_id : m_name;
 }
 
 const Properties& Identifiable::getProperties() const {

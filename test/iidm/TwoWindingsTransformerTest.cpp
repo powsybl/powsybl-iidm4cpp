@@ -223,7 +223,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
-    BOOST_CHECK_EQUAL("", transformer.getName());
+    BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getName());
     BOOST_CHECK_EQUAL(ConnectableType::TWO_WINDINGS_TRANSFORMER, transformer.getType());
     std::ostringstream oss;
     oss << transformer.getType();

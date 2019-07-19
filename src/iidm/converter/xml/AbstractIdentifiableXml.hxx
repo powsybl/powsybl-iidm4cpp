@@ -30,7 +30,7 @@ template <typename T, typename A, typename P>
 void AbstractIdentifiableXml<T, A, P>::read(P& parent, const NetworkXmlReaderContext& context) const {
     A adder = createAdder(parent);
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
-    const std::string& name = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(NAME));
+    const std::string& name = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(NAME, id));
     adder.setId(id).setName(name);
     T& identifiable = readRootElementAttributes(adder, context);
     readSubElements(identifiable, context);
