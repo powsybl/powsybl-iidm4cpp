@@ -55,7 +55,7 @@ unsigned long MergedBus::getConnectedTerminalCount() const {
     return count;
 }
 
-std::vector<std::reference_wrapper<Terminal> > MergedBus::getConnectedTerminals() const {
+bus::Terminals MergedBus::getConnectedTerminals() const {
     checkValidity();
 
     std::vector<std::reference_wrapper<Terminal> > terminals;

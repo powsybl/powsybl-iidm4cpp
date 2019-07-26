@@ -62,10 +62,12 @@ unsigned long CalculatedBus::getConnectedTerminalCount() const {
     return m_terminals.size();
 }
 
-std::vector<std::reference_wrapper<Terminal> > CalculatedBus::getConnectedTerminals() const {
+bus::Terminals CalculatedBus::getConnectedTerminals() const {
     checkValidity();
 
     std::vector<std::reference_wrapper<Terminal> > terminals;
+    terminals.reserve(m_terminals.size());
+
     for (auto& terminal : m_terminals) {
         terminals.emplace_back(std::ref<Terminal>(terminal));
     }
