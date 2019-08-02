@@ -25,6 +25,13 @@ class VoltageLevel;
 
 class Terminal : public MultiVariantObject {
 public:
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    static bool isInstanceOf(const std::reference_wrapper<Terminal>& terminal);
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    static T& map(const std::reference_wrapper<Terminal>& terminal);
+
+public:
     ~Terminal() noexcept override = default;
 
     bool connect();
@@ -104,5 +111,7 @@ std::unique_ptr<Terminal> createNodeTerminal(Network& network, unsigned long nod
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/Terminal.hxx>
 
 #endif  // POWSYBL_IIDM_TERMINAL_HPP

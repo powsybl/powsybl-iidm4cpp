@@ -14,6 +14,7 @@
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/bits/Bus.hpp>
+#include <powsybl/iidm/bits/Terminal.hpp>
 
 namespace powsybl {
 
@@ -36,10 +37,10 @@ class VscConverterStation;
 class Bus : public Identifiable {
 public:
     template <typename T>
-    using const_range = typename bus::range_traits<T>::const_range;
+    using const_range = typename terminal::range_traits<T>::const_range;
 
     template <typename T>
-    using range = typename bus::range_traits<T>::range;
+    using range = typename terminal::range_traits<T>::range;
 
 public:
     ~Bus() noexcept override = default;

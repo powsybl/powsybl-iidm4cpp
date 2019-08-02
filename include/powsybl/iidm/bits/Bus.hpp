@@ -26,20 +26,6 @@ namespace bus {
 
 using Terminals = std::vector<std::reference_wrapper<Terminal> >;
 
-template <typename T>
-struct range_traits {
-
-    using filter = std::function<bool(const std::reference_wrapper<Terminal>&)>;
-
-    using const_mapper = std::function<const T&(const std::reference_wrapper<Terminal>&)>;
-
-    using const_range = boost::transformed_range<const_mapper, const boost::filtered_range<filter, const Terminals> >;
-
-    using mapper = std::function<T&(const std::reference_wrapper<Terminal>&)>;
-
-    using range = boost::transformed_range<mapper, const boost::filtered_range<filter, const Terminals> >;
-};
-
 }  // namespace bus
 
 }  // namespace iidm

@@ -67,8 +67,24 @@ template <typename T, typename>
 unsigned long VoltageLevel::getConnectableCount() const {
     const auto& terminals = getTerminals();
     return std::count_if(terminals.cbegin(), terminals.cend(), [](const std::reference_wrapper<Terminal>& terminal) {
-        return stdcxx::isInstanceOf<T>(terminal.get().getConnectable().get());
+        return Terminal::isInstanceOf<T>(terminal);
     });
+}
+
+template <typename T, typename>
+VoltageLevel::const_range<T> VoltageLevel::getConnectables() const {
+    typename terminal::range_traits<T>::filter filter = &Terminal::isInstanceOf<T>;
+    typename terminal::range_traits<T>::const_mapper mapper = &Terminal::map<const T>;
+
+    return getTerminals() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
+template <typename T, typename>
+VoltageLevel::range<T> VoltageLevel::getConnectables() {
+    typename terminal::range_traits<T>::filter filter = &Terminal::isInstanceOf<T>;
+    typename terminal::range_traits<T>::mapper mapper = &Terminal::map<T>;
+
+    return getTerminals() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
 }  // namespace iidm

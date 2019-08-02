@@ -27,17 +27,6 @@ namespace powsybl {
 
 namespace iidm {
 
-template <typename T>
-bool isInstanceOf(const std::reference_wrapper<Terminal>& terminal) {
-    const auto& connectable = terminal.get().getConnectable();
-    return static_cast<bool>(connectable) && stdcxx::isInstanceOf<T>(connectable.get());
-}
-
-template <typename T>
-T& map(const std::reference_wrapper<Terminal>& terminal) {
-    return dynamic_cast<T&>(terminal.get().getConnectable().get());
-}
-
 Bus::Bus(const std::string& id) :
     Identifiable(id, id) {
 }
@@ -48,16 +37,16 @@ Bus::Bus(const std::string& id, const std::string& name) :
 
 template <typename T>
 Bus::const_range<T> Bus::getAll() const {
-    typename bus::range_traits<T>::filter filter = isInstanceOf<T>;
-    typename bus::range_traits<T>::const_mapper mapper = map<const T>;
+    typename terminal::range_traits<T>::filter filter = Terminal::isInstanceOf<T>;
+    typename terminal::range_traits<T>::const_mapper mapper = Terminal::map<const T>;
 
     return getConnectedTerminals() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
 template <typename T>
 Bus::range<T> Bus::getAll() {
-    typename bus::range_traits<T>::filter filter = isInstanceOf<T>;
-    typename bus::range_traits<T>::mapper mapper = map<T>;
+    typename terminal::range_traits<T>::filter filter = Terminal::isInstanceOf<T>;
+    typename terminal::range_traits<T>::mapper mapper = Terminal::map<T>;
 
     return getConnectedTerminals() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }

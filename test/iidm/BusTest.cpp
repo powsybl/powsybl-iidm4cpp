@@ -100,6 +100,11 @@ BOOST_AUTO_TEST_CASE(range_batteries) {
     BOOST_CHECK_EQUAL(1, network.getBatteryCount());
     BOOST_CHECK_EQUAL(1, stdcxx::size(bus.getBatteries()));
     BOOST_CHECK_EQUAL(1, stdcxx::size(cBus.getBatteries()));
+
+    const VoltageLevel& cVL = vl;
+    BOOST_CHECK_EQUAL(1, vl.getBatteryCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(vl.getBatteries()));
+    BOOST_CHECK_EQUAL(1, stdcxx::size(cVL.getBatteries()));
 }
 
 BOOST_AUTO_TEST_CASE(range_danglingLines) {
@@ -122,6 +127,11 @@ BOOST_AUTO_TEST_CASE(range_danglingLines) {
     BOOST_CHECK_EQUAL(1, network.getDanglingLineCount());
     BOOST_CHECK_EQUAL(1, stdcxx::size(bus.getDanglingLines()));
     BOOST_CHECK_EQUAL(1, stdcxx::size(cBus.getDanglingLines()));
+
+    const VoltageLevel& cVL = vl;
+    BOOST_CHECK_EQUAL(1, vl.getDanglingLineCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(vl.getDanglingLines()));
+    BOOST_CHECK_EQUAL(1, stdcxx::size(cVL.getDanglingLines()));
 }
 
 BOOST_AUTO_TEST_CASE(range_generators) {
@@ -143,6 +153,11 @@ BOOST_AUTO_TEST_CASE(range_generators) {
     BOOST_CHECK_EQUAL(1, network.getGeneratorCount());
     BOOST_CHECK_EQUAL(1, stdcxx::size(bus.getGenerators()));
     BOOST_CHECK_EQUAL(1, stdcxx::size(cBus.getGenerators()));
+
+    const VoltageLevel& cVL = vl;
+    BOOST_CHECK_EQUAL(1, vl.getGeneratorCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(vl.getGenerators()));
+    BOOST_CHECK_EQUAL(1, stdcxx::size(cVL.getGenerators()));
 }
 
 BOOST_AUTO_TEST_CASE(range_lccConverterStations) {
@@ -161,6 +176,11 @@ BOOST_AUTO_TEST_CASE(range_lccConverterStations) {
     BOOST_CHECK_EQUAL(1, network.getLccConverterStationCount());
     BOOST_CHECK_EQUAL(1, stdcxx::size(bus.getLccConverterStations()));
     BOOST_CHECK_EQUAL(1, stdcxx::size(cBus.getLccConverterStations()));
+
+    const VoltageLevel& cVL = vl;
+    BOOST_CHECK_EQUAL(1, vl.getLccConverterStationCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(vl.getLccConverterStations()));
+    BOOST_CHECK_EQUAL(1, stdcxx::size(cVL.getLccConverterStations()));
 }
 
 BOOST_AUTO_TEST_CASE(range_lines) {
@@ -203,6 +223,11 @@ BOOST_AUTO_TEST_CASE(range_loads) {
     BOOST_CHECK_EQUAL(1, network.getLoadCount());
     BOOST_CHECK_EQUAL(1, stdcxx::size(bus.getLoads()));
     BOOST_CHECK_EQUAL(1, stdcxx::size(cBus.getLoads()));
+
+    const VoltageLevel& cVL = vl;
+    BOOST_CHECK_EQUAL(1, vl.getLoadCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(vl.getLoads()));
+    BOOST_CHECK_EQUAL(1, stdcxx::size(cVL.getLoads()));
 }
 
 BOOST_AUTO_TEST_CASE(range_shuntCompensators) {
@@ -222,6 +247,11 @@ BOOST_AUTO_TEST_CASE(range_shuntCompensators) {
     BOOST_CHECK_EQUAL(1, network.getShuntCompensatorCount());
     BOOST_CHECK_EQUAL(1, stdcxx::size(bus.getShuntCompensators()));
     BOOST_CHECK_EQUAL(1, stdcxx::size(cBus.getShuntCompensators()));
+
+    const VoltageLevel& cVL = vl;
+    BOOST_CHECK_EQUAL(1, vl.getShuntCompensatorCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(vl.getShuntCompensators()));
+    BOOST_CHECK_EQUAL(1, stdcxx::size(cVL.getShuntCompensators()));
 }
 
 BOOST_AUTO_TEST_CASE(range_staticVarCompensators) {
@@ -241,6 +271,11 @@ BOOST_AUTO_TEST_CASE(range_staticVarCompensators) {
     BOOST_CHECK_EQUAL(1, network.getStaticVarCompensatorCount());
     BOOST_CHECK_EQUAL(1, stdcxx::size(bus.getStaticVarCompensators()));
     BOOST_CHECK_EQUAL(1, stdcxx::size(cBus.getStaticVarCompensators()));
+
+    const VoltageLevel& cVL = vl;
+    BOOST_CHECK_EQUAL(1, vl.getStaticVarCompensatorCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(vl.getStaticVarCompensators()));
+    BOOST_CHECK_EQUAL(1, stdcxx::size(cVL.getStaticVarCompensators()));
 }
 
 BOOST_AUTO_TEST_CASE(range_threeWindingsTransformers) {
@@ -321,6 +356,11 @@ BOOST_AUTO_TEST_CASE(range_vscConverterStations) {
     BOOST_CHECK_EQUAL(1, network.getVscConverterStationCount());
     BOOST_CHECK_EQUAL(1, stdcxx::size(bus.getVscConverterStations()));
     BOOST_CHECK_EQUAL(1, stdcxx::size(cBus.getVscConverterStations()));
+
+    const VoltageLevel& cVL = vl;
+    BOOST_CHECK_EQUAL(1, vl.getVscConverterStationCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(vl.getVscConverterStations()));
+    BOOST_CHECK_EQUAL(1, stdcxx::size(cVL.getVscConverterStations()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

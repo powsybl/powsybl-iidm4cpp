@@ -5,15 +5,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <powsybl/iidm/VoltageLevel.hpp>
+
+#include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
+#include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
+#include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
+#include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
+#include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensatorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
 
 #include "ValidationUtils.hpp"
@@ -34,6 +42,18 @@ VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, Subst
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
 }
 
+unsigned long VoltageLevel::getBatteryCount() const {
+    return getConnectableCount<Battery>();
+}
+
+VoltageLevel::const_range<Battery> VoltageLevel::getBatteries() const {
+    return getConnectables<Battery>();
+}
+
+VoltageLevel::range<Battery> VoltageLevel::getBatteries() {
+    return getConnectables<Battery>();
+}
+
 unsigned long VoltageLevel::getConnectableCount() const {
     const auto& terminals = getTerminals();
     return std::count_if(terminals.cbegin(), terminals.cend(), [](const std::reference_wrapper<Terminal>& terminal) {
@@ -41,8 +61,56 @@ unsigned long VoltageLevel::getConnectableCount() const {
     });
 }
 
+unsigned long VoltageLevel::getDanglingLineCount() const {
+    return getConnectableCount<DanglingLine>();
+}
+
+VoltageLevel::const_range<DanglingLine> VoltageLevel::getDanglingLines() const {
+    return getConnectables<DanglingLine>();
+}
+
+VoltageLevel::range<DanglingLine> VoltageLevel::getDanglingLines() {
+    return getConnectables<DanglingLine>();
+}
+
+unsigned long VoltageLevel::getGeneratorCount() const {
+    return getConnectableCount<Generator>();
+}
+
+VoltageLevel::const_range<Generator> VoltageLevel::getGenerators() const {
+    return getConnectables<Generator>();
+}
+
+VoltageLevel::range<Generator> VoltageLevel::getGenerators() {
+    return getConnectables<Generator>();
+}
+
 double VoltageLevel::getHighVoltageLimit() const {
     return m_highVoltageLimit;
+}
+
+unsigned long VoltageLevel::getLccConverterStationCount() const {
+    return getConnectableCount<LccConverterStation>();
+}
+
+VoltageLevel::const_range<LccConverterStation> VoltageLevel::getLccConverterStations() const {
+    return getConnectables<LccConverterStation>();
+}
+
+VoltageLevel::range<LccConverterStation> VoltageLevel::getLccConverterStations() {
+    return getConnectables<LccConverterStation>();
+}
+
+unsigned long VoltageLevel::getLoadCount() const {
+    return getConnectableCount<Load>();
+}
+
+VoltageLevel::const_range<Load> VoltageLevel::getLoads() const {
+    return getConnectables<Load>();
+}
+
+VoltageLevel::range<Load> VoltageLevel::getLoads() {
+    return getConnectables<Load>();
 }
 
 double VoltageLevel::getLowVoltageLimit() const {
@@ -61,6 +129,30 @@ double VoltageLevel::getNominalVoltage() const {
     return m_nominalVoltage;
 }
 
+unsigned long VoltageLevel::getShuntCompensatorCount() const {
+    return getConnectableCount<ShuntCompensator>();
+}
+
+VoltageLevel::const_range<ShuntCompensator> VoltageLevel::getShuntCompensators() const {
+    return getConnectables<ShuntCompensator>();
+}
+
+VoltageLevel::range<ShuntCompensator> VoltageLevel::getShuntCompensators() {
+    return getConnectables<ShuntCompensator>();
+}
+
+unsigned long VoltageLevel::getStaticVarCompensatorCount() const {
+    return getConnectableCount<StaticVarCompensator>();
+}
+
+VoltageLevel::const_range<StaticVarCompensator> VoltageLevel::getStaticVarCompensators() const {
+    return getConnectables<StaticVarCompensator>();
+}
+
+VoltageLevel::range<StaticVarCompensator> VoltageLevel::getStaticVarCompensators() {
+    return getConnectables<StaticVarCompensator>();
+}
+
 const Substation& VoltageLevel::getSubstation() const {
     return m_substation.get();
 }
@@ -73,6 +165,18 @@ const std::string& VoltageLevel::getTypeDescription() const {
     static std::string s_typeDescription = "Voltage level";
 
     return s_typeDescription;
+}
+
+unsigned long VoltageLevel::getVscConverterStationCount() const {
+    return getConnectableCount<VscConverterStation>();
+}
+
+VoltageLevel::const_range<VscConverterStation> VoltageLevel::getVscConverterStations() const {
+    return getConnectables<VscConverterStation>();
+}
+
+VoltageLevel::range<VscConverterStation> VoltageLevel::getVscConverterStations() {
+    return getConnectables<VscConverterStation>();
 }
 
 BatteryAdder VoltageLevel::newBattery() {
