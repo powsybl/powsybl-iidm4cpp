@@ -19,7 +19,6 @@ BOOST_AUTO_TEST_SUITE(DateTimeTestSuite)
 
 BOOST_AUTO_TEST_CASE(parse) {
     DateTime dateTime;
-    std::cout << dateTime << std::endl;
 
     std::string strDate = "1977-04-22T01:00:00+05:00";
     dateTime = DateTime::parse(strDate);
