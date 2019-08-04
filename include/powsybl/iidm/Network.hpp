@@ -13,9 +13,8 @@
 #include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/iidm/bits/Network.hpp>
-
 #include <powsybl/stdcxx/DateTime.hpp>
+#include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
@@ -64,10 +63,10 @@ public:
 
 public:
     template <typename T>
-    using range = typename network::range_traits<T>::range;
+    using const_range = stdcxx::range<const T&>;
 
     template <typename T>
-    using const_range = typename network::range_traits<T>::const_range;
+    using range = stdcxx::range<T&>;
 
 public: // VariantManagerHolder
     unsigned long getVariantIndex() const override;

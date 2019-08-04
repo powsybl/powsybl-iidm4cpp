@@ -5,9 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <powsybl/iidm/Network.hpp>
+
 #include <unordered_set>
 
-#include <powsybl/iidm/Network.hpp>
+#include <boost/range/join.hpp>
 
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
@@ -139,7 +141,7 @@ const stdcxx::DateTime& Network::getCaseDate() const {
 unsigned long Network::getCountryCount() const {
     std::unordered_set<Country, stdcxx::hash<Country>> countries;
     for (const auto& substation : getSubstations()) {
-        const stdcxx::optional<Country>& country = substation.get().getCountry();
+        const stdcxx::optional<Country>& country = substation.getCountry();
         if (country) {
             countries.emplace(*country);
         }

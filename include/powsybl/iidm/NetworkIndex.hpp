@@ -8,8 +8,12 @@
 #ifndef POWSYBL_IIDM_NETWORKINDEX_HPP
 #define POWSYBL_IIDM_NETWORKINDEX_HPP
 
+#include <typeindex>
+#include <unordered_map>
+#include <vector>
+
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/bits/NetworkIndex.hpp>
+#include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -18,11 +22,11 @@ namespace iidm {
 
 class NetworkIndex {
 public:
-    template <typename T, typename U = T>
-    using range = typename network_index::range_traits<T, U>::range;
+    template <typename T>
+    using const_range = stdcxx::range<const T&>;
 
-    template <typename T, typename U = T>
-    using const_range = typename network_index::range_traits<T, U>::const_range;
+    template <typename T>
+    using range = stdcxx::range<T&>;
 
 public:
     NetworkIndex() = default;
@@ -45,10 +49,10 @@ public:
     T& get(const std::string& id);
 
     template <typename T, typename U = T>
-    const_range<T, U> getAll() const;
+    const_range<U> getAll() const;
 
     template <typename T, typename U = T>
-    range<T, U> getAll();
+    range<U> getAll();
 
     template <typename T>
     unsigned long getObjectCount() const;
@@ -65,9 +69,16 @@ private:
     static void checkId(const std::string& id);
 
 private:
-    network_index::IdentifiableById m_objectsById;
+    using IdentifiableById = std::unordered_map<std::string, std::unique_ptr<Identifiable> >;
 
-    mutable network_index::IdentifiablesByType m_objectsByType;
+    using Identifiables = std::vector<std::reference_wrapper<Identifiable> >;
+
+    using IdentifiablesByType = std::unordered_map<std::type_index, Identifiables>;
+
+private:
+    IdentifiableById m_objectsById;
+
+    mutable IdentifiablesByType m_objectsByType;
 };
 
 }  // namespace iidm

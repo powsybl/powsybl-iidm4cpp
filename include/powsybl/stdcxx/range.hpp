@@ -8,6 +8,18 @@
 #ifndef POWSYBL_STDCXX_RANGE_HPP
 #define POWSYBL_STDCXX_RANGE_HPP
 
+#include <boost/range/any_range.hpp>
+
+namespace stdcxx {
+
+template <typename T>
+using range = boost::any_range<T, boost::forward_traversal_tag, T&, std::ptrdiff_t>;
+
+template <typename T>
+using const_range = range<const T>;
+
+}  // namespace stdcxx
+
 #if BOOST_VERSION < 105600
 
 #include <iterator>

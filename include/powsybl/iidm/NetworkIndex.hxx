@@ -24,6 +24,11 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T>
+const T& map(const Identifiable& identifiable) {
+    return dynamic_cast<const T&>(identifiable);
+}
+
+template <typename T>
 T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     assert(identifiable);
     checkId(identifiable->getId());
@@ -64,37 +69,33 @@ T& NetworkIndex::get(const std::string& id) {
 }
 
 template <>
-NetworkIndex::const_range<Identifiable, MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const;
+NetworkIndex::const_range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const;
 
 template <>
-NetworkIndex::range<Identifiable, MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>();
+NetworkIndex::range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>();
 
 template <>
-NetworkIndex::const_range<Identifiable, Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const;
+NetworkIndex::const_range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const;
 
 template <>
-NetworkIndex::range<Identifiable, Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>();
+NetworkIndex::range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>();
 
 template <typename T, typename U>
-NetworkIndex::const_range<T, U> NetworkIndex::getAll() const {
+NetworkIndex::const_range<U> NetworkIndex::getAll() const {
     const auto& it = m_objectsByType[typeid(T)];
 
-    typename network_index::range_traits<T, U>::const_downcaster downcaster = [](const std::reference_wrapper<Identifiable>& identifiable) {
-        return std::cref(dynamic_cast<const U&>(identifiable.get()));
-    };
+    const auto& mapper = map<const U>;
 
-    return it | boost::adaptors::transformed(downcaster);
+    return it | boost::adaptors::transformed(mapper);
 }
 
 template <typename T, typename U>
-NetworkIndex::range<T, U> NetworkIndex::getAll() {
+NetworkIndex::range<U> NetworkIndex::getAll() {
     auto& it = m_objectsByType[typeid(T)];
 
-    typename network_index::range_traits<T, U>::downcaster downcaster = [](const std::reference_wrapper<Identifiable>& identifiable) {
-        return std::ref(dynamic_cast<U&>(identifiable.get()));
-    };
+    const auto& mapper = map<U>;
 
-    return it | boost::adaptors::transformed(downcaster);
+    return it | boost::adaptors::transformed(mapper);
 }
 
 template <typename T>

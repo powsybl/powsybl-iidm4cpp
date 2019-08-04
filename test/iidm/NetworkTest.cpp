@@ -16,6 +16,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/stdcxx/memory.hpp>

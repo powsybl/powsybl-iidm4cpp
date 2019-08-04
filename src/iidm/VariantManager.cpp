@@ -77,14 +77,14 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
     }
 
     if (!recycled.empty()) {
-        for (const auto& multiVariantObject : m_network.getStatefulObjects()) {
-            multiVariantObject.get().allocateVariantArrayElement(recycled, sourceIndex);
+        for (auto& multiVariantObject : m_network.getStatefulObjects()) {
+            multiVariantObject.allocateVariantArrayElement(recycled, sourceIndex);
         }
         logger.trace("Recycling variant array indexes %1%", logging::toString(recycled));
     }
     if (extendedCount > 0) {
-        for (const auto& multiVariantObject : m_network.getStatefulObjects()) {
-            multiVariantObject.get().extendVariantArraySize(initVariantArraySize, extendedCount, sourceIndex);
+        for (auto& multiVariantObject : m_network.getStatefulObjects()) {
+            multiVariantObject.extendVariantArraySize(initVariantArraySize, extendedCount, sourceIndex);
         }
         logger.trace("Extending variant array size to %1% (+%2%)", m_variantArraySize, extendedCount);
     }
@@ -184,8 +184,8 @@ void VariantManager::removeVariant(const std::string& variantId) {
             ++variantCount;
         }
 
-        for (const auto& multiVariantObject : m_network.getStatefulObjects()) {
-            multiVariantObject.get().reduceVariantArraySize(variantCount);
+        for (auto& multiVariantObject : m_network.getStatefulObjects()) {
+            multiVariantObject.reduceVariantArraySize(variantCount);
         }
 
         m_variantArraySize -= variantCount;
@@ -193,8 +193,8 @@ void VariantManager::removeVariant(const std::string& variantId) {
     } else {
         m_unusedIndexes.insert(index);
 
-        for (const auto& multiVariantObject : m_network.getStatefulObjects()) {
-            multiVariantObject.get().deleteVariantArrayElement(index);
+        for (auto& multiVariantObject : m_network.getStatefulObjects()) {
+            multiVariantObject.deleteVariantArrayElement(index);
         }
 
         logger.trace("Deleting variant array element at index %1%", index);

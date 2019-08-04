@@ -8,6 +8,8 @@
 #include <powsybl/iidm/NetworkIndex.hpp>
 
 #include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/adaptor/map.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
 #include <powsybl/stdcxx/memory.hpp>
@@ -40,45 +42,34 @@ Identifiable& NetworkIndex::get(const std::string& id) {
 }
 
 template <>
-NetworkIndex::const_range<Identifiable, Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const {
-    typename network_index::range_traits<Identifiable, Identifiable>::const_mapper mapper = [](const network_index::IdentifiableById::value_type& it) {
-        return std::cref(*it.second);
-    };
-
-    return m_objectsById | boost::adaptors::transformed(mapper);
+NetworkIndex::const_range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const {
+    return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected;
 }
 
 template <>
-NetworkIndex::range<Identifiable, Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() {
-    typename network_index::range_traits<Identifiable, Identifiable>::mapper mapper = [](const network_index::IdentifiableById::value_type& it) {
-        return std::ref(*it.second);
-    };
-
-    return m_objectsById | boost::adaptors::transformed(mapper);
+NetworkIndex::range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() {
+    return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected;
 }
 
 template <>
-NetworkIndex::const_range<Identifiable, MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const {
-    typename network_index::range_traits<Identifiable, MultiVariantObject>::filter filter = [](const network_index::IdentifiableById::value_type& it) {
-        return stdcxx::isInstanceOf<MultiVariantObject>(it.second);
-    };
-    typename network_index::range_traits<Identifiable, MultiVariantObject>::const_mapper mapper = [](const network_index::IdentifiableById::value_type& it) {
-        return std::cref(dynamic_cast<MultiVariantObject&>(*it.second));
+NetworkIndex::const_range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const {
+    const auto& filter = [](const Identifiable& identifiable) {
+        return stdcxx::isInstanceOf<MultiVariantObject>(identifiable);
     };
 
-    return m_objectsById | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+    const auto& mapper = &map<MultiVariantObject>;
+
+    return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
 template <>
-NetworkIndex::range<Identifiable, MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() {
-    typename network_index::range_traits<Identifiable, MultiVariantObject>::filter filter = [](const network_index::IdentifiableById::value_type& it) {
-        return stdcxx::isInstanceOf<MultiVariantObject>(it.second);
+NetworkIndex::range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() {
+    const auto& filter = [](const Identifiable& identifiable) {
+        return stdcxx::isInstanceOf<MultiVariantObject>(identifiable);
     };
-    typename network_index::range_traits<Identifiable, MultiVariantObject>::mapper mapper = [](const network_index::IdentifiableById::value_type& it) {
-        return std::ref(dynamic_cast<MultiVariantObject&>(*it.second));
-    };
+    const auto& mapper = &map<MultiVariantObject>;
 
-    return m_objectsById | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+    return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
 template <>
@@ -91,7 +82,7 @@ void NetworkIndex::remove(Identifiable& identifiable) {
 
     // assert that the two instances are identical (not namesake)
     if ((it != m_objectsById.end()) && stdcxx::areSame(*it->second, identifiable)) {
-        network_index::Identifiables& identifiables = m_objectsByType.find(typeid(identifiable))->second;
+        Identifiables& identifiables = m_objectsByType.find(typeid(identifiable))->second;
 
         const auto& itIdentifiable = std::find_if(identifiables.begin(), identifiables.end(), [&identifiable](std::reference_wrapper<Identifiable>& item) {
             return stdcxx::areSame(identifiable, item.get());

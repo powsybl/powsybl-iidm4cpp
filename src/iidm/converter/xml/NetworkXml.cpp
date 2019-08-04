@@ -80,7 +80,7 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
 
     for (const auto& substation : network.getSubstations()) {
-        SubstationXml::instance().write(substation.get(), network, context);
+        SubstationXml::instance().write(substation, network, context);
     }
 
     writer.writeEndElement();
