@@ -24,6 +24,10 @@ public: // NodeBreakerView
 
     unsigned long getBusbarSectionCount() const override;
 
+    stdcxx::const_range<BusbarSection> getBusbarSections() const override;
+
+    stdcxx::range<BusbarSection> getBusbarSections() override;
+
     unsigned long getInternalConnectionCount() const override;
 
     unsigned long getNode1(const std::string& switchId) const override;

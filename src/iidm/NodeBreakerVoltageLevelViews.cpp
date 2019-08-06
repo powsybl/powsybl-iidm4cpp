@@ -145,6 +145,14 @@ unsigned long NodeBreakerViewImpl::getBusbarSectionCount() const {
     return m_voltageLevel.getConnectableCount<BusbarSection>();
 }
 
+stdcxx::const_range<BusbarSection> NodeBreakerViewImpl::getBusbarSections() const {
+    return m_voltageLevel.getConnectables<BusbarSection>();
+}
+
+stdcxx::range<BusbarSection> NodeBreakerViewImpl::getBusbarSections() {
+    return m_voltageLevel.getConnectables<BusbarSection>();
+}
+
 unsigned long NodeBreakerViewImpl::getInternalConnectionCount() const {
     return m_voltageLevel.getInternalConnectionCount();
 }

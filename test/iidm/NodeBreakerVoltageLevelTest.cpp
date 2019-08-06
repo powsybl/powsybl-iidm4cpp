@@ -221,6 +221,10 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
     BOOST_CHECK_EQUAL(2UL, network.getBusbarSectionCount());
     BOOST_CHECK_EQUAL(2UL, boost::size(network.getBusbarSections()));
     BOOST_CHECK_EQUAL(2UL, boost::size(cNetwork.getBusbarSections()));
+
+    const VoltageLevel& cVoltageLevel = voltageLevel;
+    BOOST_CHECK_EQUAL(1UL, boost::size(voltageLevel.getNodeBreakerView().getBusbarSections()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(cVoltageLevel.getNodeBreakerView().getBusbarSections()));
 }
 
 BOOST_AUTO_TEST_CASE(switches) {
@@ -353,6 +357,7 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     // Remove a busbar section
     bbs1.remove();
     BOOST_CHECK_EQUAL(1, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(voltageLevel.getNodeBreakerView().getBusbarSections()));
     bbs2.remove();
     BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
 
@@ -364,9 +369,13 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
 
     // test const versions
-    const VoltageLevel& vlTest = network.getVoltageLevel("VL2");
-    const NodeBreakerView& view = vlTest.getNodeBreakerView();
+    // test const versions
+    VoltageLevel& vlTest = network.getVoltageLevel("VL2");
+    NodeBreakerView& view = vlTest.getNodeBreakerView();
+    const NodeBreakerView& cView = view;
     BOOST_CHECK_EQUAL(0, view.getBusbarSectionCount());
+    BOOST_CHECK_EQUAL(0, stdcxx::size(view.getBusbarSections()));
+    BOOST_CHECK_EQUAL(0, stdcxx::size(cView.getBusbarSections()));
 
     //test internal connections
     BOOST_CHECK_EQUAL(0, view.getSwitchCount());

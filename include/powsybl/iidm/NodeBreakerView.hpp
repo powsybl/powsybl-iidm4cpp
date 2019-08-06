@@ -13,6 +13,7 @@
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
 #include <powsybl/iidm/InternalConnectionAdder.hpp>
 #include <powsybl/iidm/SwitchAdder.hpp>
+#include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -37,6 +38,10 @@ public:
     virtual stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) const = 0;
 
     virtual unsigned long getBusbarSectionCount() const = 0;
+
+    virtual stdcxx::const_range<BusbarSection> getBusbarSections() const = 0;
+
+    virtual stdcxx::range<BusbarSection> getBusbarSections() = 0;
 
     virtual unsigned long getInternalConnectionCount() const = 0;
 
