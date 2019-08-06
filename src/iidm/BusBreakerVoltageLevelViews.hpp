@@ -28,7 +28,9 @@ public: // BusBreakerView
 
     stdcxx::Reference<Bus> getBus2(const std::string& switchId) const override;
 
-    std::vector<std::reference_wrapper<Bus> > getBuses() const override;
+    stdcxx::const_range<Bus> getBuses() const override;
+
+    stdcxx::range<Bus> getBuses() override;
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
 
@@ -59,7 +61,9 @@ class BusViewImpl : public BusView {
 public:
     stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
 
-    std::vector<std::reference_wrapper<Bus> > getBuses() const override;
+    stdcxx::const_range<Bus> getBuses() const override;
+
+    stdcxx::range<Bus> getBuses() override;
 
     stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) const override;
 

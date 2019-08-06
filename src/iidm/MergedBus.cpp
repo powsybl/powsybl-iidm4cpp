@@ -10,7 +10,10 @@
 #include <cassert>
 #include <cmath>
 
+#include <boost/range/join.hpp>
+
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -55,16 +58,28 @@ unsigned long MergedBus::getConnectedTerminalCount() const {
     return count;
 }
 
-bus::Terminals MergedBus::getConnectedTerminals() const {
+stdcxx::const_range<Terminal> MergedBus::getConnectedTerminals() const {
     checkValidity();
 
-    std::vector<std::reference_wrapper<Terminal> > terminals;
+    stdcxx::const_range<Terminal> range;
+
     for (const auto& bus : m_buses) {
-        const std::vector<std::reference_wrapper<Terminal> >& tmp = bus.get().getConnectedTerminals();
-        terminals.insert(terminals.end(), tmp.begin(), tmp.end());
+        range = boost::range::join(range, bus.get().getConnectedTerminals());
     }
 
-    return terminals;
+    return range;
+}
+
+stdcxx::range<Terminal> MergedBus::getConnectedTerminals() {
+    checkValidity();
+
+    stdcxx::range<Terminal> range;
+
+    for (const auto& bus : m_buses) {
+        range = boost::range::join(range, bus.get().getConnectedTerminals());
+    }
+
+    return range;
 }
 
 double MergedBus::getV() const {

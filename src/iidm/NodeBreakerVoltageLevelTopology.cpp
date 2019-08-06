@@ -118,7 +118,7 @@ stdcxx::Reference<CalculatedBus> CalculatedBusTopology::getBus(const std::string
     return bus;
 }
 
-std::vector<std::reference_wrapper<CalculatedBus> > CalculatedBusTopology::getBuses() {
+stdcxx::range<CalculatedBus> CalculatedBusTopology::getBuses() {
     updateCache();
 
     return m_cache->getBuses();
@@ -142,12 +142,11 @@ stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long no
 
     // if nothing found, just take the first bus
     if (! static_cast<bool>(connectableBus)) {
-        const auto& buses = getBuses();
-        if (buses.empty()) {
-            throw AssertionError("Should not happen");
+        for (auto& bus : getBuses()) {
+            return stdcxx::ref<Bus>(bus);
         }
 
-        return stdcxx::ref<Bus>(buses.at(0));
+        throw AssertionError("Should not happen");
     }
 
     return stdcxx::ref<Bus>(connectableBus);
@@ -164,7 +163,7 @@ NodeBreakerVoltageLevel& CalculatedBusTopology::getVoltageLevel() {
 void CalculatedBusTopology::invalidateCache() {
     if (static_cast<bool>(m_cache)) {
         for (auto& bus : m_cache->getBuses()) {
-            bus.get().invalidate();
+            bus.invalidate();
         }
         m_cache.reset();
     }

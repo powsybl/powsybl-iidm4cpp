@@ -33,7 +33,7 @@ public:
 
     stdcxx::Reference<MergedBus> getMergedBus(const stdcxx::Reference<ConfiguredBus>& bus);
 
-    std::vector<std::reference_wrapper<MergedBus> > getMergedBuses();
+    stdcxx::range<MergedBus> getMergedBuses();
 
     void invalidateCache();
 

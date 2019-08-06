@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+#include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -26,7 +27,9 @@ public:
 
     virtual stdcxx::Reference<Bus> getBus(const std::string& busId) const = 0;
 
-    virtual std::vector<std::reference_wrapper<Bus> > getBuses() const = 0;
+    virtual stdcxx::const_range<Bus> getBuses() const = 0;
+
+    virtual stdcxx::range<Bus> getBuses() = 0;
 
     virtual stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) const = 0;
 };

@@ -31,7 +31,9 @@ public: // Bus
 
     unsigned long getConnectedTerminalCount() const override;
 
-    bus::Terminals getConnectedTerminals() const override;
+    stdcxx::const_range<Terminal> getConnectedTerminals() const override;
+
+    stdcxx::range<Terminal> getConnectedTerminals() override;
 
     double getV() const override;
 
@@ -50,7 +52,9 @@ public:
 
     unsigned long getTerminalCount() const;
 
-    std::vector<std::reference_wrapper<BusTerminal> > getTerminals() const;
+    stdcxx::const_range<BusTerminal> getTerminals() const;
+
+    stdcxx::range<BusTerminal> getTerminals();
 
     void removeTerminal(BusTerminal& terminal);
 

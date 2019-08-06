@@ -12,7 +12,7 @@
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
-#include <powsybl/iidm/bits/Terminal.hpp>
+#include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -45,13 +45,6 @@ class VscConverterStationAdder;
 
 class VoltageLevel : public Container, public MultiVariantObject {
 public:
-    template <typename T>
-    using const_range = typename terminal::range_traits<T>::const_range;
-
-    template <typename T>
-    using range = typename terminal::range_traits<T>::range;
-
-public:
     ~VoltageLevel() noexcept override = default;
 
     virtual void attach(Terminal& terminal, bool test) = 0;
@@ -66,9 +59,9 @@ public:
 
     unsigned long getBatteryCount() const;
 
-    const_range<Battery> getBatteries() const;
+    stdcxx::const_range<Battery> getBatteries() const;
 
-    range<Battery> getBatteries();
+    stdcxx::range<Battery> getBatteries();
 
     virtual const BusBreakerView& getBusBreakerView() const = 0;
 
@@ -90,36 +83,36 @@ public:
     unsigned long getConnectableCount() const;
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
-    const_range<T> getConnectables() const;
+    stdcxx::const_range<T> getConnectables() const;
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
-    range<T> getConnectables();
+    stdcxx::range<T> getConnectables();
 
     unsigned long getDanglingLineCount() const;
 
-    const_range<DanglingLine> getDanglingLines() const;
+    stdcxx::const_range<DanglingLine> getDanglingLines() const;
 
-    range<DanglingLine> getDanglingLines();
+    stdcxx::range<DanglingLine> getDanglingLines();
 
     unsigned long getGeneratorCount() const;
 
-    const_range<Generator> getGenerators() const;
+    stdcxx::const_range<Generator> getGenerators() const;
 
-    range<Generator> getGenerators();
+    stdcxx::range<Generator> getGenerators();
 
     double getHighVoltageLimit() const;
 
     unsigned long getLccConverterStationCount() const;
 
-    const_range<LccConverterStation> getLccConverterStations() const;
+    stdcxx::const_range<LccConverterStation> getLccConverterStations() const;
 
-    range<LccConverterStation> getLccConverterStations();
+    stdcxx::range<LccConverterStation> getLccConverterStations();
 
     unsigned long getLoadCount() const;
 
-    const_range<Load> getLoads() const;
+    stdcxx::const_range<Load> getLoads() const;
 
-    range<Load> getLoads();
+    stdcxx::range<Load> getLoads();
 
     double getLowVoltageLimit() const;
 
@@ -135,15 +128,15 @@ public:
 
     unsigned long getShuntCompensatorCount() const;
 
-    const_range<ShuntCompensator> getShuntCompensators() const;
+    stdcxx::const_range<ShuntCompensator> getShuntCompensators() const;
 
-    range<ShuntCompensator> getShuntCompensators();
+    stdcxx::range<ShuntCompensator> getShuntCompensators();
 
     unsigned long getStaticVarCompensatorCount() const;
 
-    const_range<StaticVarCompensator> getStaticVarCompensators() const;
+    stdcxx::const_range<StaticVarCompensator> getStaticVarCompensators() const;
 
-    range<StaticVarCompensator> getStaticVarCompensators();
+    stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
     const Substation& getSubstation() const;
 
@@ -159,9 +152,9 @@ public:
 
     unsigned long getVscConverterStationCount() const;
 
-    const_range<VscConverterStation> getVscConverterStations() const;
+    stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
 
-    range<VscConverterStation> getVscConverterStations();
+    stdcxx::range<VscConverterStation> getVscConverterStations();
 
     virtual void invalidateCache() = 0;
 
@@ -191,7 +184,9 @@ protected:
     VoltageLevel(const std::string& id, const std::string& name, Substation& substation,
                  double nominalVoltage, double lowVoltageLimit, double highVoltageLimit);
 
-    virtual std::vector<std::reference_wrapper<Terminal>> getTerminals() const = 0;
+    virtual stdcxx::const_range<Terminal> getTerminals() const = 0;
+
+    virtual stdcxx::range<Terminal> getTerminals() = 0;
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;

@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/BusAdder.hpp>
 #include <powsybl/iidm/SwitchAdder.hpp>
+#include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -34,7 +35,9 @@ public:
 
     virtual stdcxx::Reference<Bus> getBus2(const std::string& switchId) const = 0;
 
-    virtual std::vector<std::reference_wrapper<Bus> > getBuses() const = 0;
+    virtual stdcxx::const_range<Bus> getBuses() const = 0;
+
+    virtual stdcxx::range<Bus> getBuses() = 0;
 
     virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const = 0;
 

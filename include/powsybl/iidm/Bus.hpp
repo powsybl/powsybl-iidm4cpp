@@ -13,8 +13,7 @@
 #include <vector>
 
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/bits/Bus.hpp>
-#include <powsybl/iidm/bits/Terminal.hpp>
+#include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
@@ -36,68 +35,63 @@ class VscConverterStation;
 
 class Bus : public Identifiable {
 public:
-    template <typename T>
-    using const_range = typename terminal::range_traits<T>::const_range;
-
-    template <typename T>
-    using range = typename terminal::range_traits<T>::range;
-
-public:
     ~Bus() noexcept override = default;
 
     virtual double getAngle() const = 0;
 
-    const_range<Battery> getBatteries() const;
+    stdcxx::const_range<Battery> getBatteries() const;
 
-    range<Battery> getBatteries();
+    stdcxx::range<Battery> getBatteries();
 
     virtual unsigned long getConnectedTerminalCount() const = 0;
 
-    virtual bus::Terminals getConnectedTerminals() const = 0;
+    virtual stdcxx::const_range<Terminal> getConnectedTerminals() const = 0;
 
-    const_range<DanglingLine> getDanglingLines() const;
+    virtual stdcxx::range<Terminal> getConnectedTerminals() = 0;
 
-    range<DanglingLine> getDanglingLines();
+    stdcxx::const_range<DanglingLine> getDanglingLines() const;
 
-    const_range<Generator> getGenerators() const;
+    stdcxx::range<DanglingLine> getDanglingLines();
 
-    range<Generator> getGenerators();
+    stdcxx::const_range<Generator> getGenerators() const;
 
-    const_range<LccConverterStation> getLccConverterStations() const;
+    stdcxx::range<Generator> getGenerators();
 
-    range<LccConverterStation> getLccConverterStations();
+    stdcxx::const_range<LccConverterStation> getLccConverterStations() const;
 
-    const_range<Line> getLines() const;
+    stdcxx::range<LccConverterStation> getLccConverterStations();
 
-    range<Line> getLines();
+    stdcxx::const_range<Line> getLines() const;
 
-    const_range<Load> getLoads() const;
+    stdcxx::range<Line> getLines();
 
-    range<Load> getLoads();
+    stdcxx::const_range<Load> getLoads() const;
 
-    const_range<ShuntCompensator> getShuntCompensators() const;
+    stdcxx::range<Load> getLoads();
 
-    range<ShuntCompensator> getShuntCompensators();
+    stdcxx::const_range<ShuntCompensator> getShuntCompensators() const;
 
-    const_range<StaticVarCompensator> getStaticVarCompensators() const;
+    stdcxx::range<ShuntCompensator> getShuntCompensators();
 
-    range<StaticVarCompensator> getStaticVarCompensators();
+    stdcxx::const_range<StaticVarCompensator> getStaticVarCompensators() const;
 
-    const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
+    stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
-    range<ThreeWindingsTransformer> getThreeWindingsTransformers();
+    stdcxx::const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
 
-    const_range<TwoWindingsTransformer> getTwoWindingsTransformers() const;
+    stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
 
-    range<TwoWindingsTransformer> getTwoWindingsTransformers();
+    stdcxx::const_range<TwoWindingsTransformer> getTwoWindingsTransformers() const;
+
+    stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
 
     virtual double getV() const = 0;
 
     virtual VoltageLevel& getVoltageLevel() const = 0;
 
-    const_range<VscConverterStation> getVscConverterStations() const;
+    stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
 
-    range<VscConverterStation> getVscConverterStations();
+    stdcxx::range<VscConverterStation> getVscConverterStations();
 
     virtual Bus& setAngle(double angle) = 0;
 
@@ -112,10 +106,10 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
     template <typename T>
-    const_range<T> getAll() const;
+    stdcxx::const_range<T> getAll() const;
 
     template <typename T>
-    range<T> getAll();
+    stdcxx::range<T> getAll();
 
 };
 

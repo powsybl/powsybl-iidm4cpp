@@ -36,106 +36,100 @@ Bus::Bus(const std::string& id, const std::string& name) :
 }
 
 template <typename T>
-Bus::const_range<T> Bus::getAll() const {
-    typename terminal::range_traits<T>::filter filter = Terminal::isInstanceOf<T>;
-    typename terminal::range_traits<T>::const_mapper mapper = Terminal::map<const T>;
-
-    return getConnectedTerminals() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+stdcxx::const_range<T> Bus::getAll() const {
+    return getConnectedTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<const T>);
 }
 
 template <typename T>
-Bus::range<T> Bus::getAll() {
-    typename terminal::range_traits<T>::filter filter = Terminal::isInstanceOf<T>;
-    typename terminal::range_traits<T>::mapper mapper = Terminal::map<T>;
-
-    return getConnectedTerminals() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+stdcxx::range<T> Bus::getAll() {
+    return getConnectedTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<T>);
 }
 
-Bus::const_range<Battery> Bus::getBatteries() const {
+stdcxx::const_range<Battery> Bus::getBatteries() const {
     return getAll<Battery>();
 }
 
-Bus::range<Battery> Bus::getBatteries() {
+stdcxx::range<Battery> Bus::getBatteries() {
     return getAll<Battery>();
 }
 
-Bus::const_range<DanglingLine> Bus::getDanglingLines() const {
+stdcxx::const_range<DanglingLine> Bus::getDanglingLines() const {
     return getAll<DanglingLine>();
 }
 
-Bus::range<DanglingLine> Bus::getDanglingLines() {
+stdcxx::range<DanglingLine> Bus::getDanglingLines() {
     return getAll<DanglingLine>();
 }
 
-Bus::const_range<Generator> Bus::getGenerators() const {
+stdcxx::const_range<Generator> Bus::getGenerators() const {
     return getAll<Generator>();
 }
 
-Bus::range<Generator> Bus::getGenerators() {
+stdcxx::range<Generator> Bus::getGenerators() {
     return getAll<Generator>();
 }
 
-Bus::const_range<LccConverterStation> Bus::getLccConverterStations() const {
+stdcxx::const_range<LccConverterStation> Bus::getLccConverterStations() const {
     return getAll<LccConverterStation>();
 }
 
-Bus::range<LccConverterStation> Bus::getLccConverterStations() {
+stdcxx::range<LccConverterStation> Bus::getLccConverterStations() {
     return getAll<LccConverterStation>();
 }
 
-Bus::const_range<Line> Bus::getLines() const {
+stdcxx::const_range<Line> Bus::getLines() const {
     return getAll<Line>();
 }
 
-Bus::range<Line> Bus::getLines() {
+stdcxx::range<Line> Bus::getLines() {
     return getAll<Line>();
 }
 
-Bus::const_range<Load> Bus::getLoads() const {
+stdcxx::const_range<Load> Bus::getLoads() const {
     return getAll<Load>();
 }
 
-Bus::range<Load> Bus::getLoads() {
+stdcxx::range<Load> Bus::getLoads() {
     return getAll<Load>();
 }
 
-Bus::const_range<ShuntCompensator> Bus::getShuntCompensators() const {
+stdcxx::const_range<ShuntCompensator> Bus::getShuntCompensators() const {
     return getAll<ShuntCompensator>();
 }
 
-Bus::range<ShuntCompensator> Bus::getShuntCompensators() {
+stdcxx::range<ShuntCompensator> Bus::getShuntCompensators() {
     return getAll<ShuntCompensator>();
 }
 
-Bus::const_range<StaticVarCompensator> Bus::getStaticVarCompensators() const {
+stdcxx::const_range<StaticVarCompensator> Bus::getStaticVarCompensators() const {
     return getAll<StaticVarCompensator>();
 }
 
-Bus::range<StaticVarCompensator> Bus::getStaticVarCompensators() {
+stdcxx::range<StaticVarCompensator> Bus::getStaticVarCompensators() {
     return getAll<StaticVarCompensator>();
 }
 
-Bus::const_range<ThreeWindingsTransformer> Bus::getThreeWindingsTransformers() const {
+stdcxx::const_range<ThreeWindingsTransformer> Bus::getThreeWindingsTransformers() const {
     return getAll<ThreeWindingsTransformer>();
 }
 
-Bus::range<ThreeWindingsTransformer> Bus::getThreeWindingsTransformers() {
+stdcxx::range<ThreeWindingsTransformer> Bus::getThreeWindingsTransformers() {
     return getAll<ThreeWindingsTransformer>();
 }
 
-Bus::const_range<TwoWindingsTransformer> Bus::getTwoWindingsTransformers() const {
+stdcxx::const_range<TwoWindingsTransformer> Bus::getTwoWindingsTransformers() const {
     return getAll<TwoWindingsTransformer>();
 }
 
-Bus::range<TwoWindingsTransformer> Bus::getTwoWindingsTransformers() {
+stdcxx::range<TwoWindingsTransformer> Bus::getTwoWindingsTransformers() {
     return getAll<TwoWindingsTransformer>();
 }
 
-Bus::const_range<VscConverterStation> Bus::getVscConverterStations() const {
+stdcxx::const_range<VscConverterStation> Bus::getVscConverterStations() const {
     return getAll<VscConverterStation>();
 }
 
-Bus::range<VscConverterStation> Bus::getVscConverterStations() {
+stdcxx::range<VscConverterStation> Bus::getVscConverterStations() {
     return getAll<VscConverterStation>();
 }
 

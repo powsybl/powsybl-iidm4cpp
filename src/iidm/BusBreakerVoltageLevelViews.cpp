@@ -7,6 +7,8 @@
 
 #include "BusBreakerVoltageLevelViews.hpp"
 
+#include <powsybl/stdcxx/upcast.hpp>
+
 #include "BusBreakerVoltageLevel.hpp"
 #include "BusBreakerVoltageLevelTopology.hpp"
 #include "ConfiguredBus.hpp"
@@ -40,19 +42,22 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) 
     return stdcxx::ref<Bus>(bus);
 }
 
-std::vector<std::reference_wrapper<Bus> > BusBreakerViewImpl::getBuses() const {
-    const auto& configuredBuses = m_voltageLevel.getGraph().getVertexObjects();
+stdcxx::const_range<Bus> BusBreakerViewImpl::getBuses() const {
+    const auto& filter = [](const stdcxx::Reference<ConfiguredBus>& bus) {
+        return static_cast<bool>(bus);
+    };
+    const auto& mapper = stdcxx::map<stdcxx::Reference<ConfiguredBus>, Bus>;
 
-    std::vector<std::reference_wrapper<Bus> > buses;
-    buses.reserve(configuredBuses.size());
+    return m_voltageLevel.getGraph().getVertexObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
 
-    for (const auto& it : configuredBuses) {
-        if (static_cast<bool>(it)) {
-            buses.emplace_back(std::ref<Bus>(it.get()));
-        }
-    }
+stdcxx::range<Bus> BusBreakerViewImpl::getBuses() {
+    const auto& filter = [](const stdcxx::Reference<ConfiguredBus>& bus) {
+        return static_cast<bool>(bus);
+    };
+    const auto& mapper = stdcxx::map<stdcxx::Reference<ConfiguredBus>, Bus>;
 
-    return buses;
+    return m_voltageLevel.getGraph().getVertexObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
 stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
@@ -97,16 +102,20 @@ stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) const {
     return stdcxx::ref<Bus>(mergedBus);
 }
 
-std::vector<std::reference_wrapper<Bus> > BusViewImpl::getBuses() const {
+stdcxx::const_range<Bus> BusViewImpl::getBuses() const {
     const auto& mergedBuses = m_voltageLevel.getCalculatedBusTopology().getMergedBuses();
 
-    std::vector<std::reference_wrapper<Bus> > buses;
-    buses.reserve(mergedBuses.size());
-    std::transform(mergedBuses.begin(), mergedBuses.end(), std::back_inserter(buses), [](const std::reference_wrapper<MergedBus>& bus) {
-        return std::ref<Bus>(bus);
-    });
+    const auto& mapper = stdcxx::upcast<MergedBus, Bus>;
 
-    return buses;
+    return mergedBuses | boost::adaptors::transformed(mapper);
+}
+
+stdcxx::range<Bus> BusViewImpl::getBuses() {
+    const auto& mergedBuses = m_voltageLevel.getCalculatedBusTopology().getMergedBuses();
+
+    const auto& mapper = stdcxx::upcast<MergedBus, Bus>;
+
+    return mergedBuses | boost::adaptors::transformed(mapper);
 }
 
 stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& configuredBusId) const {

@@ -61,13 +61,6 @@ public:
 
     static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network, const converter::ExportOptions& options);
 
-public:
-    template <typename T>
-    using const_range = stdcxx::range<const T&>;
-
-    template <typename T>
-    using range = stdcxx::range<T&>;
-
 public: // VariantManagerHolder
     unsigned long getVariantIndex() const override;
 
@@ -97,9 +90,9 @@ public:
 
     unsigned long getBatteryCount() const;
 
-    const_range<Battery> getBatteries() const;
+    stdcxx::const_range<Battery> getBatteries() const;
 
-    range<Battery> getBatteries();
+    stdcxx::range<Battery> getBatteries();
 
     const Branch& getBranch(const std::string& id) const;
 
@@ -107,9 +100,9 @@ public:
 
     unsigned long getBranchCount() const;
 
-    const_range<Branch> getBranches() const;
+    stdcxx::const_range<Branch> getBranches() const;
 
-    range<Branch> getBranches();
+    stdcxx::range<Branch> getBranches();
 
     const BusbarSection& getBusbarSection(const std::string& id) const;
 
@@ -117,9 +110,9 @@ public:
 
     unsigned long getBusbarSectionCount() const;
 
-    const_range<BusbarSection> getBusbarSections() const;
+    stdcxx::const_range<BusbarSection> getBusbarSections() const;
 
-    range<BusbarSection> getBusbarSections();
+    stdcxx::range<BusbarSection> getBusbarSections();
 
     const stdcxx::DateTime& getCaseDate() const;
 
@@ -131,9 +124,9 @@ public:
 
     unsigned long getDanglingLineCount() const;
 
-    const_range<DanglingLine> getDanglingLines() const;
+    stdcxx::const_range<DanglingLine> getDanglingLines() const;
 
-    range<DanglingLine> getDanglingLines();
+    stdcxx::range<DanglingLine> getDanglingLines();
 
     int getForecastDistance() const;
 
@@ -143,9 +136,9 @@ public:
 
     unsigned long getGeneratorCount() const;
 
-    const_range<Generator> getGenerators() const;
+    stdcxx::const_range<Generator> getGenerators() const;
 
-    range<Generator> getGenerators();
+    stdcxx::range<Generator> getGenerators();
 
     const HvdcConverterStation& getHvdcConverterStation(const std::string& id) const;
 
@@ -153,9 +146,9 @@ public:
 
     unsigned long getHvdcConverterStationCount() const;
 
-    const_range<HvdcConverterStation> getHvdcConverterStations() const;
+    stdcxx::const_range<HvdcConverterStation> getHvdcConverterStations() const;
 
-    range<HvdcConverterStation> getHvdcConverterStations();
+    stdcxx::range<HvdcConverterStation> getHvdcConverterStations();
 
     const HvdcLine& getHvdcLine(const std::string& id) const;
 
@@ -163,13 +156,13 @@ public:
 
     unsigned long getHvdcLineCount() const;
 
-    const_range<HvdcLine> getHvdcLines() const;
+    stdcxx::const_range<HvdcLine> getHvdcLines() const;
 
-    range<HvdcLine> getHvdcLines();
+    stdcxx::range<HvdcLine> getHvdcLines();
 
-    const_range<Identifiable> getIdentifiables() const;
+    stdcxx::const_range<Identifiable> getIdentifiables() const;
 
-    range<Identifiable> getIdentifiables();
+    stdcxx::range<Identifiable> getIdentifiables();
 
     const LccConverterStation& getLccConverterStation(const std::string& id) const;
 
@@ -177,9 +170,9 @@ public:
 
     unsigned long getLccConverterStationCount() const;
 
-    const_range<LccConverterStation> getLccConverterStations() const;
+    stdcxx::const_range<LccConverterStation> getLccConverterStations() const;
 
-    range<LccConverterStation> getLccConverterStations();
+    stdcxx::range<LccConverterStation> getLccConverterStations();
 
     const Line& getLine(const std::string& id) const;
 
@@ -187,9 +180,9 @@ public:
 
     unsigned long getLineCount() const;
 
-    const_range<Line> getLines() const;
+    stdcxx::const_range<Line> getLines() const;
 
-    range<Line> getLines();
+    stdcxx::range<Line> getLines();
 
     const Load& getLoad(const std::string& id) const;
 
@@ -197,9 +190,9 @@ public:
 
     unsigned long getLoadCount() const;
 
-    const_range<Load> getLoads() const;
+    stdcxx::const_range<Load> getLoads() const;
 
-    range<Load> getLoads();
+    stdcxx::range<Load> getLoads();
 
     const ShuntCompensator& getShuntCompensator(const std::string& id) const;
 
@@ -207,15 +200,15 @@ public:
 
     unsigned long getShuntCompensatorCount() const;
 
-    const_range<ShuntCompensator> getShuntCompensators() const;
+    stdcxx::const_range<ShuntCompensator> getShuntCompensators() const;
 
-    range<ShuntCompensator> getShuntCompensators();
+    stdcxx::range<ShuntCompensator> getShuntCompensators();
 
     const std::string& getSourceFormat() const;
 
-    const_range<MultiVariantObject> getStatefulObjects() const;
+    stdcxx::const_range<MultiVariantObject> getStatefulObjects() const;
 
-    range<MultiVariantObject> getStatefulObjects();
+    stdcxx::range<MultiVariantObject> getStatefulObjects();
 
     const StaticVarCompensator& getStaticVarCompensator(const std::string& id) const;
 
@@ -223,9 +216,9 @@ public:
 
     unsigned long getStaticVarCompensatorCount() const;
 
-    const_range<StaticVarCompensator> getStaticVarCompensators() const;
+    stdcxx::const_range<StaticVarCompensator> getStaticVarCompensators() const;
 
-    range<StaticVarCompensator> getStaticVarCompensators();
+    stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
     const Substation& getSubstation(const std::string& id) const;
 
@@ -233,9 +226,9 @@ public:
 
     unsigned long getSubstationCount() const;
 
-    const_range<Substation> getSubstations() const;
+    stdcxx::const_range<Substation> getSubstations() const;
 
-    range<Substation> getSubstations();
+    stdcxx::range<Substation> getSubstations();
 
     const Switch& getSwitch(const std::string& id) const;
 
@@ -243,9 +236,9 @@ public:
 
     unsigned long getSwitchCount() const;
 
-    const_range<Switch> getSwitches() const;
+    stdcxx::const_range<Switch> getSwitches() const;
 
-    range<Switch> getSwitches();
+    stdcxx::range<Switch> getSwitches();
 
     const ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id) const;
 
@@ -253,9 +246,9 @@ public:
 
     unsigned long getThreeWindingsTransformerCount() const;
 
-    const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
+    stdcxx::const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
 
-    range<ThreeWindingsTransformer> getThreeWindingsTransformers();
+    stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
 
     const TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id) const;
 
@@ -263,9 +256,9 @@ public:
 
     unsigned long getTwoWindingsTransformerCount() const;
 
-    const_range<TwoWindingsTransformer> getTwoWindingsTransformers() const;
+    stdcxx::const_range<TwoWindingsTransformer> getTwoWindingsTransformers() const;
 
-    range<TwoWindingsTransformer> getTwoWindingsTransformers();
+    stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
 
     const VoltageLevel& getVoltageLevel(const std::string& id) const;
 
@@ -273,9 +266,9 @@ public:
 
     unsigned long getVoltageLevelCount() const;
 
-    const_range<VoltageLevel> getVoltageLevels() const;
+    stdcxx::const_range<VoltageLevel> getVoltageLevels() const;
 
-    range<VoltageLevel> getVoltageLevels();
+    stdcxx::range<VoltageLevel> getVoltageLevels();
 
     const VscConverterStation& getVscConverterStation(const std::string& id) const;
 
@@ -283,9 +276,9 @@ public:
 
     unsigned long getVscConverterStationCount() const;
 
-    const_range<VscConverterStation> getVscConverterStations() const;
+    stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
 
-    range<VscConverterStation> getVscConverterStations();
+    stdcxx::range<VscConverterStation> getVscConverterStations();
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     stdcxx::CReference<T> find(const std::string& id) const;

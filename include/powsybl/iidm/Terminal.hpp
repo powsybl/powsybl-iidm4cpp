@@ -26,10 +26,10 @@ class VoltageLevel;
 class Terminal : public MultiVariantObject {
 public:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
-    static bool isInstanceOf(const std::reference_wrapper<Terminal>& terminal);
+    static bool isInstanceOf(const Terminal& terminal);
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
-    static T& map(const std::reference_wrapper<Terminal>& terminal);
+    static const T& map(const Terminal& terminal);
 
 public:
     ~Terminal() noexcept override = default;

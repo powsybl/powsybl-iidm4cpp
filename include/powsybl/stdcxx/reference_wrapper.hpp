@@ -122,6 +122,11 @@ Reference<T> ref(const Reference<U>& reference) {
     return static_cast<bool>(reference) ? Reference<T>(dynamic_cast<T&>(reference.get())) : Reference<T>();
 }
 
+template <typename T, typename U>
+const U& map(const T& reference) {
+    return dynamic_cast<const U&>(reference.get());
+}
+
 /**
  * Specialization of std::equal_to for std::reference_wrapper
  */

@@ -35,7 +35,9 @@ public: // Bus
 
     unsigned long getConnectedTerminalCount() const override;
 
-    bus::Terminals getConnectedTerminals() const override;
+    stdcxx::const_range<Terminal> getConnectedTerminals() const override;
+
+    stdcxx::range<Terminal> getConnectedTerminals() override;
 
     double getV() const override;
 

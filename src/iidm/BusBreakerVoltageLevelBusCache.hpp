@@ -39,7 +39,9 @@ public:
 
     stdcxx::Reference<MergedBus> getMergedBus(const stdcxx::Reference<ConfiguredBus>& bus) const;
 
-    std::vector<std::reference_wrapper<MergedBus> > getMergedBuses() const;
+    stdcxx::const_range<MergedBus> getMergedBuses() const;
+
+    stdcxx::range<MergedBus> getMergedBuses();
 
 private:
     MergedBusById m_mergedBus;

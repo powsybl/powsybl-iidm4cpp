@@ -74,7 +74,9 @@ protected: // MultiVariantObject
     void reduceVariantArraySize(unsigned long number) override;
 
 protected: // VoltageLevel
-    std::vector<std::reference_wrapper<Terminal>> getTerminals() const override;
+    stdcxx::const_range<Terminal> getTerminals() const override;
+
+    stdcxx::range<Terminal> getTerminals() override;
 
 private:
     void checkTerminal(Terminal& terminal) const;

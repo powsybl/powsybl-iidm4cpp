@@ -78,11 +78,11 @@ unsigned long Network::getBatteryCount() const {
     return getObjectCount<Battery>();
 }
 
-Network::const_range<Battery> Network::getBatteries() const {
+stdcxx::const_range<Battery> Network::getBatteries() const {
     return m_networkIndex.getAll<Battery>();
 }
 
-Network::range<Battery> Network::getBatteries() {
+stdcxx::range<Battery> Network::getBatteries() {
     return m_networkIndex.getAll<Battery>();
 }
 
@@ -98,7 +98,7 @@ unsigned long Network::getBranchCount() const {
     return getLineCount() + getTwoWindingsTransformerCount();
 }
 
-Network::const_range<Branch> Network::getBranches() const {
+stdcxx::const_range<Branch> Network::getBranches() const {
     return boost::range::join(
         boost::range::join(
             m_networkIndex.getAll<Line, Branch>(),
@@ -106,7 +106,7 @@ Network::const_range<Branch> Network::getBranches() const {
         m_networkIndex.getAll<TwoWindingsTransformer, Branch>());
 }
 
-Network::range<Branch> Network::getBranches() {
+stdcxx::range<Branch> Network::getBranches() {
     return boost::range::join(
         boost::range::join(
             m_networkIndex.getAll<Line, Branch>(),
@@ -126,11 +126,11 @@ unsigned long Network::getBusbarSectionCount() const {
     return getObjectCount<BusbarSection>();
 }
 
-Network::const_range<BusbarSection> Network::getBusbarSections() const {
+stdcxx::const_range<BusbarSection> Network::getBusbarSections() const {
     return m_networkIndex.getAll<BusbarSection>();
 }
 
-Network::range<BusbarSection> Network::getBusbarSections() {
+stdcxx::range<BusbarSection> Network::getBusbarSections() {
     return m_networkIndex.getAll<BusbarSection>();
 }
 
@@ -162,11 +162,11 @@ unsigned long Network::getDanglingLineCount() const {
     return getObjectCount<DanglingLine>();
 }
 
-Network::const_range<DanglingLine> Network::getDanglingLines() const {
+stdcxx::const_range<DanglingLine> Network::getDanglingLines() const {
     return m_networkIndex.getAll<DanglingLine>();
 }
 
-Network::range<DanglingLine> Network::getDanglingLines() {
+stdcxx::range<DanglingLine> Network::getDanglingLines() {
     return m_networkIndex.getAll<DanglingLine>();
 }
 
@@ -186,11 +186,11 @@ unsigned long Network::getGeneratorCount() const {
     return getObjectCount<Generator>();
 }
 
-Network::const_range<Generator> Network::getGenerators() const {
+stdcxx::const_range<Generator> Network::getGenerators() const {
     return m_networkIndex.getAll<Generator>();
 }
 
-Network::range<Generator> Network::getGenerators() {
+stdcxx::range<Generator> Network::getGenerators() {
     return m_networkIndex.getAll<Generator>();
 }
 
@@ -206,13 +206,13 @@ unsigned long Network::getHvdcConverterStationCount() const {
     return getLccConverterStationCount() + getVscConverterStationCount();
 }
 
-Network::const_range<HvdcConverterStation> Network::getHvdcConverterStations() const {
+stdcxx::const_range<HvdcConverterStation> Network::getHvdcConverterStations() const {
     return boost::range::join(
         m_networkIndex.getAll<LccConverterStation, HvdcConverterStation>(),
         m_networkIndex.getAll<VscConverterStation, HvdcConverterStation>());
 }
 
-Network::range<HvdcConverterStation> Network::getHvdcConverterStations() {
+stdcxx::range<HvdcConverterStation> Network::getHvdcConverterStations() {
     return boost::range::join(
         m_networkIndex.getAll<LccConverterStation, HvdcConverterStation>(),
         m_networkIndex.getAll<VscConverterStation, HvdcConverterStation>());
@@ -230,19 +230,19 @@ unsigned long Network::getHvdcLineCount() const {
     return getObjectCount<HvdcLine>();
 }
 
-Network::const_range<HvdcLine> Network::getHvdcLines() const {
+stdcxx::const_range<HvdcLine> Network::getHvdcLines() const {
     return m_networkIndex.getAll<HvdcLine>();
 }
 
-Network::range<HvdcLine> Network::getHvdcLines() {
+stdcxx::range<HvdcLine> Network::getHvdcLines() {
     return m_networkIndex.getAll<HvdcLine>();
 }
 
-Network::const_range<Identifiable> Network::getIdentifiables() const {
+stdcxx::const_range<Identifiable> Network::getIdentifiables() const {
     return m_networkIndex.getAll<Identifiable>();
 }
 
-Network::range<Identifiable> Network::getIdentifiables() {
+stdcxx::range<Identifiable> Network::getIdentifiables() {
     return m_networkIndex.getAll<Identifiable>();
 }
 
@@ -258,11 +258,11 @@ unsigned long Network::getLccConverterStationCount() const {
     return getObjectCount<LccConverterStation>();
 }
 
-Network::const_range<LccConverterStation> Network::getLccConverterStations() const {
+stdcxx::const_range<LccConverterStation> Network::getLccConverterStations() const {
     return m_networkIndex.getAll<LccConverterStation>();
 }
 
-Network::range<LccConverterStation> Network::getLccConverterStations() {
+stdcxx::range<LccConverterStation> Network::getLccConverterStations() {
     return m_networkIndex.getAll<LccConverterStation>();
 }
 
@@ -278,13 +278,13 @@ unsigned long Network::getLineCount() const {
     return getObjectCount<Line>() + getObjectCount<TieLine>();
 }
 
-Network::const_range<Line> Network::getLines() const {
+stdcxx::const_range<Line> Network::getLines() const {
     return boost::range::join(
         m_networkIndex.getAll<Line>(),
         m_networkIndex.getAll<TieLine, Line>());
 }
 
-Network::range<Line> Network::getLines() {
+stdcxx::range<Line> Network::getLines() {
     return boost::range::join(
         m_networkIndex.getAll<Line>(),
         m_networkIndex.getAll<TieLine, Line>());
@@ -302,11 +302,11 @@ unsigned long Network::getLoadCount() const {
     return getObjectCount<Load>();
 }
 
-Network::const_range<Load> Network::getLoads() const {
+stdcxx::const_range<Load> Network::getLoads() const {
     return m_networkIndex.getAll<Load>();
 }
 
-Network::range<Load> Network::getLoads() {
+stdcxx::range<Load> Network::getLoads() {
     return m_networkIndex.getAll<Load>();
 }
 
@@ -322,11 +322,11 @@ unsigned long Network::getShuntCompensatorCount() const {
     return getObjectCount<ShuntCompensator>();
 }
 
-Network::const_range<ShuntCompensator> Network::getShuntCompensators() const {
+stdcxx::const_range<ShuntCompensator> Network::getShuntCompensators() const {
     return m_networkIndex.getAll<ShuntCompensator>();
 }
 
-Network::range<ShuntCompensator> Network::getShuntCompensators() {
+stdcxx::range<ShuntCompensator> Network::getShuntCompensators() {
     return m_networkIndex.getAll<ShuntCompensator>();
 }
 
@@ -334,11 +334,11 @@ const std::string& Network::getSourceFormat() const {
     return m_sourceFormat;
 }
 
-Network::const_range<MultiVariantObject> Network::getStatefulObjects() const {
+stdcxx::const_range<MultiVariantObject> Network::getStatefulObjects() const {
     return m_networkIndex.getAll<Identifiable, MultiVariantObject>();
 }
 
-Network::range<MultiVariantObject> Network::getStatefulObjects() {
+stdcxx::range<MultiVariantObject> Network::getStatefulObjects() {
     return m_networkIndex.getAll<Identifiable, MultiVariantObject>();
 }
 
@@ -354,11 +354,11 @@ unsigned long Network::getStaticVarCompensatorCount() const {
     return getObjectCount<StaticVarCompensator>();
 }
 
-Network::const_range<StaticVarCompensator> Network::getStaticVarCompensators() const {
+stdcxx::const_range<StaticVarCompensator> Network::getStaticVarCompensators() const {
     return m_networkIndex.getAll<StaticVarCompensator>();
 }
 
-Network::range<StaticVarCompensator> Network::getStaticVarCompensators() {
+stdcxx::range<StaticVarCompensator> Network::getStaticVarCompensators() {
     return m_networkIndex.getAll<StaticVarCompensator>();
 }
 
@@ -374,11 +374,11 @@ unsigned long Network::getSubstationCount() const {
     return getObjectCount<Substation>();
 }
 
-Network::const_range<Substation> Network::getSubstations() const {
+stdcxx::const_range<Substation> Network::getSubstations() const {
     return m_networkIndex.getAll<Substation>();
 }
 
-Network::range<Substation> Network::getSubstations() {
+stdcxx::range<Substation> Network::getSubstations() {
     return m_networkIndex.getAll<Substation>();
 }
 
@@ -394,11 +394,11 @@ unsigned long Network::getSwitchCount() const {
     return getObjectCount<Switch>();
 }
 
-Network::const_range<Switch> Network::getSwitches() const {
+stdcxx::const_range<Switch> Network::getSwitches() const {
     return m_networkIndex.getAll<Switch>();
 }
 
-Network::range<Switch> Network::getSwitches() {
+stdcxx::range<Switch> Network::getSwitches() {
     return m_networkIndex.getAll<Switch>();
 }
 
@@ -414,11 +414,11 @@ unsigned long Network::getThreeWindingsTransformerCount() const {
     return getObjectCount<ThreeWindingsTransformer>();
 }
 
-Network::const_range<ThreeWindingsTransformer> Network::getThreeWindingsTransformers() const {
+stdcxx::const_range<ThreeWindingsTransformer> Network::getThreeWindingsTransformers() const {
     return m_networkIndex.getAll<ThreeWindingsTransformer>();
 }
 
-Network::range<ThreeWindingsTransformer> Network::getThreeWindingsTransformers() {
+stdcxx::range<ThreeWindingsTransformer> Network::getThreeWindingsTransformers() {
     return m_networkIndex.getAll<ThreeWindingsTransformer>();
 }
 
@@ -434,11 +434,11 @@ unsigned long Network::getTwoWindingsTransformerCount() const {
     return getObjectCount<TwoWindingsTransformer>();
 }
 
-Network::const_range<TwoWindingsTransformer> Network::getTwoWindingsTransformers() const {
+stdcxx::const_range<TwoWindingsTransformer> Network::getTwoWindingsTransformers() const {
     return m_networkIndex.getAll<TwoWindingsTransformer>();
 }
 
-Network::range<TwoWindingsTransformer> Network::getTwoWindingsTransformers() {
+stdcxx::range<TwoWindingsTransformer> Network::getTwoWindingsTransformers() {
     return m_networkIndex.getAll<TwoWindingsTransformer>();
 }
 
@@ -472,11 +472,11 @@ unsigned long Network::getVoltageLevelCount() const {
     return getObjectCount<VoltageLevel>();
 }
 
-Network::const_range<VoltageLevel> Network::getVoltageLevels() const {
+stdcxx::const_range<VoltageLevel> Network::getVoltageLevels() const {
     return m_networkIndex.getAll<VoltageLevel>();
 }
 
-Network::range<VoltageLevel> Network::getVoltageLevels() {
+stdcxx::range<VoltageLevel> Network::getVoltageLevels() {
     return m_networkIndex.getAll<VoltageLevel>();
 }
 
@@ -488,11 +488,11 @@ VscConverterStation& Network::getVscConverterStation(const std::string& id) {
     return get<VscConverterStation>(id);
 }
 
-Network::const_range<VscConverterStation> Network::getVscConverterStations() const {
+stdcxx::const_range<VscConverterStation> Network::getVscConverterStations() const {
     return m_networkIndex.getAll<VscConverterStation>();
 }
 
-Network::range<VscConverterStation> Network::getVscConverterStations() {
+stdcxx::range<VscConverterStation> Network::getVscConverterStations() {
     return m_networkIndex.getAll<VscConverterStation>();
 }
 

@@ -71,29 +71,48 @@ unsigned long ConfiguredBus::getConnectedTerminalCount() const {
     return count;
 }
 
-std::vector<std::reference_wrapper<Terminal> > ConfiguredBus::getConnectedTerminals() const {
-    const std::list<std::reference_wrapper<BusTerminal> >& busTerminals = m_terminals[m_network.get().getVariantIndex()];
+stdcxx::const_range<Terminal> ConfiguredBus::getConnectedTerminals() const {
+    const auto& busTerminals = m_terminals[m_network.get().getVariantIndex()];
 
-    std::vector<std::reference_wrapper<Terminal> > terminals;
-    terminals.reserve(busTerminals.size());
+    const auto& filter = [](const Terminal& terminal) {
+        return terminal.isConnected();
+    };
 
-    for (const auto& terminal : busTerminals) {
-        if (terminal.get().isConnected()) {
-            terminals.emplace_back(std::ref<Terminal>(terminal));
-        }
-    }
+    const auto& mapper = stdcxx::map<std::reference_wrapper<BusTerminal>, Terminal>;
 
-    return terminals;
+    return busTerminals | boost::adaptors::transformed(mapper) | boost::adaptors::filtered(filter);
+}
+
+stdcxx::range<Terminal> ConfiguredBus::getConnectedTerminals() {
+    const auto& busTerminals = m_terminals[m_network.get().getVariantIndex()];
+
+    const auto& filter = [](const Terminal& terminal) {
+        return terminal.isConnected();
+    };
+
+    const auto& mapper = stdcxx::map<std::reference_wrapper<BusTerminal>, Terminal>;
+
+    return busTerminals | boost::adaptors::transformed(mapper) | boost::adaptors::filtered(filter);
 }
 
 unsigned long ConfiguredBus::getTerminalCount() const {
     return m_terminals[m_network.get().getVariantIndex()].size();
 }
 
-std::vector<std::reference_wrapper<BusTerminal> > ConfiguredBus::getTerminals() const {
-    const std::list<std::reference_wrapper<BusTerminal> >& busTerminals = m_terminals[m_network.get().getVariantIndex()];
-    std::vector<std::reference_wrapper<BusTerminal> > terminals(busTerminals.cbegin(), busTerminals.cend());
-    return terminals;
+stdcxx::const_range<BusTerminal> ConfiguredBus::getTerminals() const {
+    const auto& terminals = m_terminals[m_network.get().getVariantIndex()];
+
+    const auto& mapper = stdcxx::map<std::reference_wrapper<BusTerminal>, BusTerminal>;
+
+    return terminals | boost::adaptors::transformed(mapper);
+}
+
+stdcxx::range<BusTerminal> ConfiguredBus::getTerminals() {
+    const auto& terminals = m_terminals[m_network.get().getVariantIndex()];
+
+    const auto& mapper = stdcxx::map<std::reference_wrapper<BusTerminal>, BusTerminal>;
+
+    return terminals | boost::adaptors::transformed(mapper);
 }
 
 double ConfiguredBus::getV() const {

@@ -69,19 +69,19 @@ T& NetworkIndex::get(const std::string& id) {
 }
 
 template <>
-NetworkIndex::const_range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const;
+stdcxx::const_range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const;
 
 template <>
-NetworkIndex::range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>();
+stdcxx::range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>();
 
 template <>
-NetworkIndex::const_range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const;
+stdcxx::const_range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const;
 
 template <>
-NetworkIndex::range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>();
+stdcxx::range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>();
 
 template <typename T, typename U>
-NetworkIndex::const_range<U> NetworkIndex::getAll() const {
+stdcxx::const_range<U> NetworkIndex::getAll() const {
     const auto& it = m_objectsByType[typeid(T)];
 
     const auto& mapper = map<const U>;
@@ -90,7 +90,7 @@ NetworkIndex::const_range<U> NetworkIndex::getAll() const {
 }
 
 template <typename T, typename U>
-NetworkIndex::range<U> NetworkIndex::getAll() {
+stdcxx::range<U> NetworkIndex::getAll() {
     auto& it = m_objectsByType[typeid(T)];
 
     const auto& mapper = map<U>;

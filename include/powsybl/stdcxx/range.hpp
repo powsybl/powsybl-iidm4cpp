@@ -13,7 +13,7 @@
 namespace stdcxx {
 
 template <typename T>
-using range = boost::any_range<T, boost::forward_traversal_tag, T&, std::ptrdiff_t>;
+using range = boost::any_range<T&, boost::forward_traversal_tag, T&, std::ptrdiff_t>;
 
 template <typename T>
 using const_range = range<const T>;

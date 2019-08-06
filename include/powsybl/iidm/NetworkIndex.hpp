@@ -22,13 +22,6 @@ namespace iidm {
 
 class NetworkIndex {
 public:
-    template <typename T>
-    using const_range = stdcxx::range<const T&>;
-
-    template <typename T>
-    using range = stdcxx::range<T&>;
-
-public:
     NetworkIndex() = default;
 
     NetworkIndex(const NetworkIndex& networkIndex) = delete;
@@ -49,10 +42,10 @@ public:
     T& get(const std::string& id);
 
     template <typename T, typename U = T>
-    const_range<U> getAll() const;
+    stdcxx::const_range<U> getAll() const;
 
     template <typename T, typename U = T>
-    range<U> getAll();
+    stdcxx::range<U> getAll();
 
     template <typename T>
     unsigned long getObjectCount() const;

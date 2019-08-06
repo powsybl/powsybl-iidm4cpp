@@ -62,17 +62,20 @@ unsigned long CalculatedBus::getConnectedTerminalCount() const {
     return m_terminals.size();
 }
 
-bus::Terminals CalculatedBus::getConnectedTerminals() const {
+stdcxx::const_range<Terminal> CalculatedBus::getConnectedTerminals() const {
     checkValidity();
 
-    std::vector<std::reference_wrapper<Terminal> > terminals;
-    terminals.reserve(m_terminals.size());
+    const auto& mapper = stdcxx::map<std::reference_wrapper<NodeTerminal>, Terminal>;
 
-    for (auto& terminal : m_terminals) {
-        terminals.emplace_back(std::ref<Terminal>(terminal));
-    }
+    return m_terminals | boost::adaptors::transformed(mapper);
+}
 
-    return terminals;
+stdcxx::range<Terminal> CalculatedBus::getConnectedTerminals() {
+    checkValidity();
+
+    const auto& mapper = stdcxx::map<std::reference_wrapper<NodeTerminal>, Terminal>;
+
+    return m_terminals | boost::adaptors::transformed(mapper);
 }
 
 double CalculatedBus::getV() const {

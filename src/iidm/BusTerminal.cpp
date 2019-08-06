@@ -90,7 +90,6 @@ double BusTerminal::getV() const {
 
 bool BusTerminal::isConnected() const {
     return m_connected[getNetwork().getVariantIndex()];
-
 }
 
 void BusTerminal::reduceVariantArraySize(unsigned long number) {

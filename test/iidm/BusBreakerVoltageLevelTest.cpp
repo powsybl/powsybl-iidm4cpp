@@ -179,7 +179,7 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     BOOST_TEST(stdcxx::areSame(bus3, refBus3.get()));
 
     const auto& buses = view.getBuses();
-    BOOST_CHECK_EQUAL(4, buses.size());
+    BOOST_CHECK_EQUAL(4, stdcxx::size(buses));
 
     // // get bus from unknown switch
     POWSYBL_ASSERT_THROW(view.getBus1("UNKNOWN"), PowsyblException,
@@ -311,7 +311,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
         .setB2(0.5)
         .add();
 
-    BOOST_CHECK_EQUAL(1ul, vl.getBusView().getBuses().size());
+    BOOST_CHECK_EQUAL(1UL, stdcxx::size(vl.getBusView().getBuses()));
     stdcxx::Reference<Bus> mergedBus1 = vl.getBusView().getMergedBus("BUS1");
     stdcxx::Reference<Bus> mergedBus2 = vl.getBusView().getMergedBus("BUS2");
     BOOST_TEST(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
@@ -319,9 +319,11 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
     BOOST_CHECK_EQUAL("VL_0", mergedBus1.get().getName());
 
     sw.setOpen(true);
-    const VoltageLevel& vlTest = vl;
-    const BusView& busView = vlTest.getBusView();
-    BOOST_CHECK_EQUAL(2ul, busView.getBuses().size());
+    VoltageLevel& vlTest = vl;
+    BusView& busView = vlTest.getBusView();
+    const BusView& cBusView = vlTest.getBusView();
+    BOOST_CHECK_EQUAL(2UL, stdcxx::size(busView.getBuses()));
+    BOOST_CHECK_EQUAL(2UL, stdcxx::size(cBusView.getBuses()));
     mergedBus1 = busView.getMergedBus("BUS1");
     mergedBus2 = busView.getMergedBus("BUS2");
     BOOST_TEST(!stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
@@ -333,8 +335,8 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
     BOOST_CHECK_CLOSE(8.8, testBus.getV(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(testBus.setV(-9.0), ValidationException, "Bus 'BUS1': voltage cannot be < 0");
     BOOST_CHECK_EQUAL(2ul, testBus.getConnectedTerminalCount());
-    std::vector<std::reference_wrapper<Terminal> > terminals = testBus.getConnectedTerminals();
-    BOOST_CHECK_EQUAL(terminals.size(), testBus.getConnectedTerminalCount());
+    const auto& terminals = testBus.getConnectedTerminals();
+    BOOST_CHECK_EQUAL(stdcxx::size(terminals), testBus.getConnectedTerminalCount());
     BOOST_TEST(stdcxx::areSame(vl, testBus.getVoltageLevel()));
 
     sw.setOpen(true);

@@ -15,7 +15,6 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
-class BusBreakerView;
 class VoltageLevel;
 
 class BusAdder : public IdentifiableAdder<BusAdder> {

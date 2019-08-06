@@ -12,7 +12,6 @@
 #include <vector>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/bits/Bus.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -31,7 +30,9 @@ public: // Bus
 
     unsigned long getConnectedTerminalCount() const override;
 
-    bus::Terminals getConnectedTerminals() const override;
+    stdcxx::const_range<Terminal> getConnectedTerminals() const override;
+
+    stdcxx::range<Terminal> getConnectedTerminals() override;
 
     double getV() const override;
 

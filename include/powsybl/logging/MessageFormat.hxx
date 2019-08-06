@@ -15,6 +15,8 @@
 
 #include <boost/format.hpp>
 
+#include <powsybl/stdcxx/range.hpp>
+
 namespace powsybl {
 
 namespace logging {
@@ -78,6 +80,17 @@ std::string toString(const std::vector<T>& vect) {
 
     oss << "{";
     serialize(oss, vect.begin(), vect.end());
+    oss << "}";
+
+    return oss.str();
+}
+
+template <typename T>
+std::string toString(const stdcxx::range<T>& range) {
+    std::ostringstream oss;
+
+    oss << "{";
+    serialize(oss, std::begin(range), std::end(range));
     oss << "}";
 
     return oss.str();

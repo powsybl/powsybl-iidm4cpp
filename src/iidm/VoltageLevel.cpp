@@ -46,18 +46,18 @@ unsigned long VoltageLevel::getBatteryCount() const {
     return getConnectableCount<Battery>();
 }
 
-VoltageLevel::const_range<Battery> VoltageLevel::getBatteries() const {
+stdcxx::const_range<Battery> VoltageLevel::getBatteries() const {
     return getConnectables<Battery>();
 }
 
-VoltageLevel::range<Battery> VoltageLevel::getBatteries() {
+stdcxx::range<Battery> VoltageLevel::getBatteries() {
     return getConnectables<Battery>();
 }
 
 unsigned long VoltageLevel::getConnectableCount() const {
     const auto& terminals = getTerminals();
-    return std::count_if(terminals.cbegin(), terminals.cend(), [](const std::reference_wrapper<Terminal>& terminal) {
-        return terminal.get().getConnectable();
+    return std::count_if(std::begin(terminals), std::end(terminals), [](const Terminal& terminal) {
+        return terminal.getConnectable();
     });
 }
 
@@ -65,11 +65,11 @@ unsigned long VoltageLevel::getDanglingLineCount() const {
     return getConnectableCount<DanglingLine>();
 }
 
-VoltageLevel::const_range<DanglingLine> VoltageLevel::getDanglingLines() const {
+stdcxx::const_range<DanglingLine> VoltageLevel::getDanglingLines() const {
     return getConnectables<DanglingLine>();
 }
 
-VoltageLevel::range<DanglingLine> VoltageLevel::getDanglingLines() {
+stdcxx::range<DanglingLine> VoltageLevel::getDanglingLines() {
     return getConnectables<DanglingLine>();
 }
 
@@ -77,11 +77,11 @@ unsigned long VoltageLevel::getGeneratorCount() const {
     return getConnectableCount<Generator>();
 }
 
-VoltageLevel::const_range<Generator> VoltageLevel::getGenerators() const {
+stdcxx::const_range<Generator> VoltageLevel::getGenerators() const {
     return getConnectables<Generator>();
 }
 
-VoltageLevel::range<Generator> VoltageLevel::getGenerators() {
+stdcxx::range<Generator> VoltageLevel::getGenerators() {
     return getConnectables<Generator>();
 }
 
@@ -93,11 +93,11 @@ unsigned long VoltageLevel::getLccConverterStationCount() const {
     return getConnectableCount<LccConverterStation>();
 }
 
-VoltageLevel::const_range<LccConverterStation> VoltageLevel::getLccConverterStations() const {
+stdcxx::const_range<LccConverterStation> VoltageLevel::getLccConverterStations() const {
     return getConnectables<LccConverterStation>();
 }
 
-VoltageLevel::range<LccConverterStation> VoltageLevel::getLccConverterStations() {
+stdcxx::range<LccConverterStation> VoltageLevel::getLccConverterStations() {
     return getConnectables<LccConverterStation>();
 }
 
@@ -105,11 +105,11 @@ unsigned long VoltageLevel::getLoadCount() const {
     return getConnectableCount<Load>();
 }
 
-VoltageLevel::const_range<Load> VoltageLevel::getLoads() const {
+stdcxx::const_range<Load> VoltageLevel::getLoads() const {
     return getConnectables<Load>();
 }
 
-VoltageLevel::range<Load> VoltageLevel::getLoads() {
+stdcxx::range<Load> VoltageLevel::getLoads() {
     return getConnectables<Load>();
 }
 
@@ -133,11 +133,11 @@ unsigned long VoltageLevel::getShuntCompensatorCount() const {
     return getConnectableCount<ShuntCompensator>();
 }
 
-VoltageLevel::const_range<ShuntCompensator> VoltageLevel::getShuntCompensators() const {
+stdcxx::const_range<ShuntCompensator> VoltageLevel::getShuntCompensators() const {
     return getConnectables<ShuntCompensator>();
 }
 
-VoltageLevel::range<ShuntCompensator> VoltageLevel::getShuntCompensators() {
+stdcxx::range<ShuntCompensator> VoltageLevel::getShuntCompensators() {
     return getConnectables<ShuntCompensator>();
 }
 
@@ -145,11 +145,11 @@ unsigned long VoltageLevel::getStaticVarCompensatorCount() const {
     return getConnectableCount<StaticVarCompensator>();
 }
 
-VoltageLevel::const_range<StaticVarCompensator> VoltageLevel::getStaticVarCompensators() const {
+stdcxx::const_range<StaticVarCompensator> VoltageLevel::getStaticVarCompensators() const {
     return getConnectables<StaticVarCompensator>();
 }
 
-VoltageLevel::range<StaticVarCompensator> VoltageLevel::getStaticVarCompensators() {
+stdcxx::range<StaticVarCompensator> VoltageLevel::getStaticVarCompensators() {
     return getConnectables<StaticVarCompensator>();
 }
 
@@ -171,11 +171,11 @@ unsigned long VoltageLevel::getVscConverterStationCount() const {
     return getConnectableCount<VscConverterStation>();
 }
 
-VoltageLevel::const_range<VscConverterStation> VoltageLevel::getVscConverterStations() const {
+stdcxx::const_range<VscConverterStation> VoltageLevel::getVscConverterStations() const {
     return getConnectables<VscConverterStation>();
 }
 
-VoltageLevel::range<VscConverterStation> VoltageLevel::getVscConverterStations() {
+stdcxx::range<VscConverterStation> VoltageLevel::getVscConverterStations() {
     return getConnectables<VscConverterStation>();
 }
 

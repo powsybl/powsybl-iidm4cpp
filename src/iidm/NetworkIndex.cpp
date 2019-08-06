@@ -42,17 +42,17 @@ Identifiable& NetworkIndex::get(const std::string& id) {
 }
 
 template <>
-NetworkIndex::const_range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const {
+stdcxx::const_range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const {
     return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected;
 }
 
 template <>
-NetworkIndex::range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() {
+stdcxx::range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() {
     return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected;
 }
 
 template <>
-NetworkIndex::const_range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const {
+stdcxx::const_range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const {
     const auto& filter = [](const Identifiable& identifiable) {
         return stdcxx::isInstanceOf<MultiVariantObject>(identifiable);
     };
@@ -63,7 +63,7 @@ NetworkIndex::const_range<MultiVariantObject> NetworkIndex::getAll<Identifiable,
 }
 
 template <>
-NetworkIndex::range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() {
+stdcxx::range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() {
     const auto& filter = [](const Identifiable& identifiable) {
         return stdcxx::isInstanceOf<MultiVariantObject>(identifiable);
     };

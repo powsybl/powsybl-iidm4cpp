@@ -9,6 +9,8 @@
 
 #include <cassert>
 
+#include <boost/range/join.hpp>
+
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 
@@ -229,17 +231,25 @@ unsigned long BusBreakerVoltageLevel::getSwitchCount() const {
     return m_graph.getEdgeCount();
 }
 
-std::vector<std::reference_wrapper<Terminal>> BusBreakerVoltageLevel::getTerminals() const {
-    std::vector<std::reference_wrapper<Terminal>> terminals;
-    const auto& buses = m_graph.getVertexObjects();
-    std::for_each(buses.cbegin(), buses.cend(), [&terminals](const stdcxx::Reference<ConfiguredBus>& bus) {
+stdcxx::const_range<Terminal> BusBreakerVoltageLevel::getTerminals() const {
+    stdcxx::const_range<Terminal> terminals;
+    for (const auto& bus : m_graph.getVertexObjects()) {
         if (bus) {
-            const auto& busTerminals = bus.get().getTerminals();
-            std::transform(busTerminals.cbegin(), busTerminals.cend(), std::back_inserter(terminals), [](const std::reference_wrapper<BusTerminal>& terminal) {
-                return std::ref<Terminal>(terminal.get());
-            });
+            terminals = boost::range::join(terminals, bus.get().getTerminals());
         }
-    });
+    }
+
+    return terminals;
+}
+
+stdcxx::range<Terminal> BusBreakerVoltageLevel::getTerminals() {
+    stdcxx::range<Terminal> terminals;
+    for (const auto& bus : m_graph.getVertexObjects()) {
+        if (bus) {
+            terminals = boost::range::join(terminals, bus.get().getTerminals());
+        }
+    }
+
     return terminals;
 }
 

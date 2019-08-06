@@ -44,18 +44,16 @@ stdcxx::Reference<MergedBus> CalculatedBusTopology::getMergedBus(const stdcxx::R
     return m_cache->getMergedBus(bus);
 }
 
-
-std::vector<std::reference_wrapper<MergedBus> > CalculatedBusTopology::getMergedBuses() {
+stdcxx::range<MergedBus> CalculatedBusTopology::getMergedBuses() {
     updateCache();
 
     return m_cache->getMergedBuses();
 }
 
-
 void CalculatedBusTopology::invalidateCache() {
     if (static_cast<bool>(m_cache)) {
-        for (const auto& bus : m_cache->getMergedBuses()) {
-            bus.get().invalidate();
+        for (auto& bus : m_cache->getMergedBuses()) {
+            bus.invalidate();
         }
 
         m_cache.reset();
@@ -67,7 +65,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
 
     for (const auto& bus : buses) {
         for (const auto& terminal : bus.get().getConnectedTerminals()) {
-            const auto& connectable = terminal.get().getConnectable().get();
+            const auto& connectable = terminal.getConnectable().get();
             switch (connectable.getType()) {
                 case ConnectableType::LINE:
                 case ConnectableType::TWO_WINDINGS_TRANSFORMER:

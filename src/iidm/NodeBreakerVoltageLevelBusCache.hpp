@@ -39,7 +39,9 @@ public:
 
     stdcxx::Reference<CalculatedBus> getBus(const std::string& id) const;
 
-    std::vector<std::reference_wrapper<CalculatedBus> > getBuses() const;
+    stdcxx::const_range<CalculatedBus> getBuses() const;
+
+    stdcxx::range<CalculatedBus> getBuses();
 
 private:
     CalculatedBusByNode m_busByNode;

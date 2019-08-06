@@ -221,8 +221,8 @@ const node_breaker_voltage_level::Graph& NodeBreakerVoltageLevel::getGraph() con
 }
 
 unsigned long NodeBreakerVoltageLevel::getInternalConnectionCount() const {
-    const std::vector<stdcxx::Reference<Switch> >& switches = m_graph.getEdgeObjects();
-    return std::count(switches.cbegin(), switches.cend(), stdcxx::ref<Switch>());
+    const auto& switches = m_graph.getEdgeObjects();
+    return std::count(std::begin(switches), std::end(switches), stdcxx::ref<Switch>());
 }
 
 unsigned long NodeBreakerVoltageLevel::getNode1(const std::string& switchId) const {
@@ -262,8 +262,8 @@ stdcxx::Reference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string& 
 }
 
 unsigned long NodeBreakerVoltageLevel::getSwitchCount() const {
-    const std::vector<stdcxx::Reference<Switch> >& switches = m_graph.getEdgeObjects();
-    return std::count_if(switches.cbegin(), switches.cend(), [](stdcxx::Reference<Switch> sw) {
+    const auto& switches = m_graph.getEdgeObjects();
+    return std::count_if(std::begin(switches), std::end(switches), [](stdcxx::Reference<Switch> sw) {
         return static_cast<bool>(sw);
     });
 }
@@ -272,16 +272,24 @@ stdcxx::Reference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long n
     return stdcxx::ref<Terminal>(m_graph.getVertexObject(node));
 }
 
-std::vector<std::reference_wrapper<Terminal>> NodeBreakerVoltageLevel::getTerminals() const {
-    std::vector<std::reference_wrapper<Terminal>> terminals;
-    const auto& nodeTerminals = m_graph.getVertexObjects();
-    terminals.reserve(nodeTerminals.size());
-    std::for_each(nodeTerminals.cbegin(), nodeTerminals.cend(), [&terminals](const stdcxx::Reference<NodeTerminal>& terminal) {
-        if (terminal) {
-            terminals.emplace_back(terminal.get());
-        }
-    });
-    return terminals;
+stdcxx::const_range<Terminal> NodeBreakerVoltageLevel::getTerminals() const {
+    const auto& filter = [](const stdcxx::Reference<NodeTerminal>& terminal) {
+        return static_cast<bool>(terminal);
+    };
+
+    const auto& mapper = stdcxx::map<stdcxx::Reference<NodeTerminal>, Terminal>;
+
+    return m_graph.getVertexObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
+stdcxx::range<Terminal> NodeBreakerVoltageLevel::getTerminals() {
+    const auto& filter = [](const stdcxx::Reference<NodeTerminal>& terminal) {
+        return static_cast<bool>(terminal);
+    };
+
+    const auto& mapper = stdcxx::map<stdcxx::Reference<NodeTerminal>, Terminal>;
+
+    return m_graph.getVertexObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
 const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {

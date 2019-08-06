@@ -7,6 +7,9 @@
 
 #include "NodeBreakerVoltageLevelBusCache.hpp"
 
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/adaptor/map.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -28,15 +31,12 @@ stdcxx::Reference<CalculatedBus> BusCache::getBus(const std::string& id) const {
     return (it == m_busById.end()) ? stdcxx::Reference<CalculatedBus>() : stdcxx::ref<CalculatedBus>(it->second);
 }
 
-std::vector<std::reference_wrapper<CalculatedBus> > BusCache::getBuses() const {
-    std::vector<std::reference_wrapper<CalculatedBus> > buses;
-    buses.reserve(m_busById.size());
+stdcxx::const_range<CalculatedBus> BusCache::getBuses() const {
+    return boost::adaptors::values(m_busById) | boost::adaptors::indirected;
+}
 
-    for (const auto& itBus : m_busById) {
-        buses.emplace_back(std::ref(*itBus.second));
-    }
-
-    return buses;
+stdcxx::range<CalculatedBus> BusCache::getBuses() {
+    return boost::adaptors::values(m_busById) | boost::adaptors::indirected;
 }
 
 }  // namespace node_breaker_voltage_level

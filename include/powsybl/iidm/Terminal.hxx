@@ -17,14 +17,14 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T, typename>
-bool Terminal::isInstanceOf(const std::reference_wrapper<Terminal>& terminal) {
-    const auto& connectable = terminal.get().getConnectable();
+bool Terminal::isInstanceOf(const Terminal& terminal) {
+    const auto& connectable = terminal.getConnectable();
     return static_cast<bool>(connectable) && stdcxx::isInstanceOf<T>(connectable.get());
 }
 
 template <typename T, typename>
-T& Terminal::map(const std::reference_wrapper<Terminal>& terminal) {
-    return dynamic_cast<T&>(terminal.get().getConnectable().get());
+const T& Terminal::map(const Terminal& terminal) {
+    return dynamic_cast<const T&>(terminal.getConnectable().get());
 }
 
 }  // namespace iidm

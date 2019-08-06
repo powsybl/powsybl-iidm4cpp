@@ -35,7 +35,7 @@ public:
 
     stdcxx::Reference<CalculatedBus> getBus(const std::string& id, bool throwException);
 
-    std::vector<std::reference_wrapper<CalculatedBus> > getBuses();
+    stdcxx::range<CalculatedBus> getBuses();
 
     stdcxx::Reference<Bus> getConnectableBus(unsigned long node);
 

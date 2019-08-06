@@ -14,6 +14,7 @@
 #include <vector>
 
 #include <powsybl/math/Traverser.hpp>
+#include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -28,6 +29,12 @@ public:
     using EdgeVisitor = std::function<bool(const stdcxx::Reference<E>&)>;
 
     using VertexVisitor = std::function<bool(const stdcxx::Reference<V>&)>;
+
+    template <typename T>
+    using const_range = typename stdcxx::const_range<stdcxx::Reference<T>>;
+
+    template <typename T>
+    using range = typename stdcxx::range<stdcxx::Reference<T>>;
 
 public:
     UndirectedGraph() = default;
@@ -44,9 +51,11 @@ public:
 
     const stdcxx::Reference<E>& getEdgeObject(unsigned long e) const;
 
-    std::vector<stdcxx::Reference<E> > getEdgeObjects() const;
+    const_range<E> getEdgeObjects() const;
 
-    std::vector<stdcxx::Reference<E> > getEdgeObjects(unsigned long v1, unsigned long v2) const;
+    range<E> getEdgeObjects();
+
+    const_range<E> getEdgeObjects(unsigned long v1, unsigned long v2) const;
 
     std::set<unsigned long> getEdges() const;
 
@@ -60,7 +69,9 @@ public:
 
     const stdcxx::Reference<V>& getVertexObject(unsigned long v) const;
 
-    std::vector<stdcxx::Reference<V> > getVertexObjects() const;
+    const_range<V> getVertexObjects() const;
+
+    range<V> getVertexObjects();
 
     std::set<unsigned long> getVertices() const;
 
@@ -117,6 +128,9 @@ private:
 template <typename V, typename E>
 class UndirectedGraph<V, E>::Edge {
 public:
+    static const stdcxx::Reference<E>& map(const Edge& edge);
+
+public:
     Edge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object);
 
     ~Edge() noexcept = default;
@@ -139,6 +153,9 @@ private:
 
 template <typename V, typename E>
 class UndirectedGraph<V, E>::Vertex {
+public:
+    static const stdcxx::Reference<V>& map(const Vertex& vertex);
+
 public:
     Vertex();
 

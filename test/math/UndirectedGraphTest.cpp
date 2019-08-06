@@ -85,9 +85,11 @@ BOOST_AUTO_TEST_CASE(getEdgeObject) {
     const stdcxx::Reference<E>& edge = graph.getEdgeObject(0);
     BOOST_TEST(stdcxx::areSame(expected, edge.get()));
 
-    const std::vector<stdcxx::Reference<E> >& objects = graph.getEdgeObjects();
-    BOOST_CHECK_EQUAL(1ul, objects.size());
-    BOOST_TEST(stdcxx::areSame(expected, objects.at(0).get()));
+    const auto& objects = graph.getEdgeObjects();
+    BOOST_CHECK_EQUAL(1ul, stdcxx::size(objects));
+    for (const auto& obj : objects) {
+        BOOST_TEST(stdcxx::areSame(expected, obj.get()));
+    }
 }
 
 BOOST_AUTO_TEST_CASE(getEdges) {
@@ -150,9 +152,12 @@ BOOST_AUTO_TEST_CASE(getVertexObject) {
     graph.setVertexObject(0, stdcxx::ref(expected));
     BOOST_TEST(stdcxx::areSame(expected, graph.getVertexObject(0).get()));
 
-    const std::vector<stdcxx::Reference<V> >& objects = graph.getVertexObjects();
-    BOOST_CHECK_EQUAL(1ul, objects.size());
-    BOOST_TEST(stdcxx::areSame(expected, objects.at(0).get()));
+    const auto& objects = graph.getVertexObjects();
+    BOOST_CHECK_EQUAL(1ul, stdcxx::size(objects));
+    for (const auto& obj : objects) {
+        BOOST_TEST(stdcxx::areSame(expected, obj.get()));
+    }
+
 }
 
 BOOST_AUTO_TEST_CASE(findAllPaths) {

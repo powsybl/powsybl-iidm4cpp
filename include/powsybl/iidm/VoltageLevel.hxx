@@ -12,6 +12,8 @@
 
 #include <cassert>
 
+#include <boost/range/adaptor/filtered.hpp>
+
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Branch.hpp>
 #include <powsybl/iidm/Connectable.hpp>
@@ -66,25 +68,19 @@ stdcxx::Reference<T> VoltageLevel::getConnectable(const std::string& id) {
 template <typename T, typename>
 unsigned long VoltageLevel::getConnectableCount() const {
     const auto& terminals = getTerminals();
-    return std::count_if(terminals.cbegin(), terminals.cend(), [](const std::reference_wrapper<Terminal>& terminal) {
+    return std::count_if(std::begin(terminals), std::end(terminals), [](const Terminal& terminal) {
         return Terminal::isInstanceOf<T>(terminal);
     });
 }
 
 template <typename T, typename>
-VoltageLevel::const_range<T> VoltageLevel::getConnectables() const {
-    typename terminal::range_traits<T>::filter filter = &Terminal::isInstanceOf<T>;
-    typename terminal::range_traits<T>::const_mapper mapper = &Terminal::map<const T>;
-
-    return getTerminals() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+stdcxx::const_range<T> VoltageLevel::getConnectables() const {
+    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<const T>);
 }
 
 template <typename T, typename>
-VoltageLevel::range<T> VoltageLevel::getConnectables() {
-    typename terminal::range_traits<T>::filter filter = &Terminal::isInstanceOf<T>;
-    typename terminal::range_traits<T>::mapper mapper = &Terminal::map<T>;
-
-    return getTerminals() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+stdcxx::range<T> VoltageLevel::getConnectables() {
+    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<T>);
 }
 
 }  // namespace iidm

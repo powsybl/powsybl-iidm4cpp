@@ -495,7 +495,7 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_3"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus1("SW1"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus2("SW1"));
-    BOOST_CHECK_EQUAL(3, busBreakerView.getBuses().size());
+    BOOST_CHECK_EQUAL(3, stdcxx::size(busBreakerView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getSwitch("SW1"));
     BOOST_CHECK_EQUAL(3ul, busBreakerView.getSwitchCount());
     POWSYBL_ASSERT_THROW(busBreakerView.getSwitch("UNKNOWN"), PowsyblException, "Switch UNKNOWN not found");
@@ -512,8 +512,8 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     BOOST_CHECK_CLOSE(7.7, testBus.setAngle(7.7).setV(8.8).getAngle(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(8.8, testBus.getV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2ul, testBus.getConnectedTerminalCount());
-    std::vector<std::reference_wrapper<Terminal> > terminals = testBus.getConnectedTerminals();
-    BOOST_CHECK_EQUAL(terminals.size(), testBus.getConnectedTerminalCount());
+    const auto& terminals = testBus.getConnectedTerminals();
+    BOOST_CHECK_EQUAL(stdcxx::size(terminals), testBus.getConnectedTerminalCount());
     BOOST_TEST(stdcxx::areSame(vl, testBus.getVoltageLevel()));
 
     sw.setOpen(false);
@@ -656,9 +656,11 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
         .setB2(0.5)
         .add();
 
-    const VoltageLevel& vlTest = vl;
-    const auto& busView = vlTest.getBusView();
-    BOOST_CHECK_EQUAL(1ul, vl.getBusView().getBuses().size());
+    VoltageLevel& vlTest = vl;
+    auto& busView = vlTest.getBusView();
+    const auto& cBusView = vlTest.getBusView();
+    BOOST_CHECK_EQUAL(1UL, stdcxx::size(busView.getBuses()));
+    BOOST_CHECK_EQUAL(1UL, stdcxx::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
     POWSYBL_ASSERT_REF_TRUE(busView.getMergedBus("BBS"));
     const auto& calculatedBus = busView.getBus("VL_0").get();
@@ -666,14 +668,17 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     BOOST_CHECK_EQUAL("VL_0", calculatedBus.getName());
 
     sw.setOpen(true);
-    BOOST_CHECK_EQUAL(2ul, busView.getBuses().size());
+    BOOST_CHECK_EQUAL(2UL, stdcxx::size(busView.getBuses()));
+    BOOST_CHECK_EQUAL(2UL, stdcxx::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_1"));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_2"));
     sw.setOpen(false);
-    BOOST_CHECK_EQUAL(1ul, vl.getBusView().getBuses().size());
+    BOOST_CHECK_EQUAL(1UL, stdcxx::size(busView.getBuses()));
+    BOOST_CHECK_EQUAL(1UL, stdcxx::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_3"));
     sw.setRetained(true);
-    BOOST_CHECK_EQUAL(1ul, vl.getBusView().getBuses().size());
+    BOOST_CHECK_EQUAL(1UL, stdcxx::size(busView.getBuses()));
+    BOOST_CHECK_EQUAL(1UL, stdcxx::size(cBusView.getBuses()));
 }
 
 BOOST_AUTO_TEST_CASE(TerminalTest) {

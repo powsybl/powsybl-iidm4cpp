@@ -7,9 +7,10 @@
 
 #include "BusBreakerVoltageLevelBusCache.hpp"
 
-#include <algorithm>
 #include <cassert>
-#include <functional>
+
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/adaptor/map.hpp>
 
 namespace powsybl {
 
@@ -36,14 +37,12 @@ stdcxx::Reference<MergedBus> BusCache::getMergedBus(const stdcxx::Reference<Conf
     return (it == m_mapping.end()) ? stdcxx::ref<MergedBus>() : stdcxx::ref<MergedBus>(it->second);
 }
 
-std::vector<std::reference_wrapper<MergedBus> > BusCache::getMergedBuses() const {
-    std::vector<std::reference_wrapper<MergedBus> > buses;
-    buses.reserve(m_mergedBus.size());
-    std::for_each(m_mergedBus.begin(), m_mergedBus.end(), [&buses](const std::pair<const std::string, std::unique_ptr<MergedBus> >& it) {
-        buses.emplace_back(std::ref(*it.second));
-    });
+stdcxx::const_range<MergedBus> BusCache::getMergedBuses() const {
+    return boost::adaptors::values(m_mergedBus) | boost::adaptors::indirected;
+}
 
-    return buses;
+stdcxx::range<MergedBus> BusCache::getMergedBuses() {
+    return boost::adaptors::values(m_mergedBus) | boost::adaptors::indirected;
 }
 
 }  // namespace bus_breaker_voltage_level
