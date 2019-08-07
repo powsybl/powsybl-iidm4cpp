@@ -30,6 +30,10 @@ public: // NodeBreakerView
 
     unsigned long getInternalConnectionCount() const override;
 
+    stdcxx::const_range<InternalConnection> getInternalConnections() const override;
+
+    stdcxx::range<InternalConnection> getInternalConnections() override;
+
     unsigned long getNode1(const std::string& switchId) const override;
 
     unsigned long getNode2(const std::string& switchId) const override;
@@ -39,6 +43,10 @@ public: // NodeBreakerView
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
 
     unsigned long getSwitchCount() const override;
+
+    stdcxx::const_range<Switch> getSwitches() const override;
+
+    stdcxx::range<Switch> getSwitches() override;
 
     stdcxx::Reference<Terminal> getTerminal(unsigned long node) const override;
 

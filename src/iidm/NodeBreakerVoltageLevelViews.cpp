@@ -8,6 +8,7 @@
 #include "NodeBreakerVoltageLevelViews.hpp"
 
 #include <powsybl/iidm/BusbarSection.hpp>
+#include <powsybl/iidm/Switch.hpp>
 #include <powsybl/stdcxx/upcast.hpp>
 
 #include "CalculatedBus.hpp"
@@ -157,6 +158,36 @@ unsigned long NodeBreakerViewImpl::getInternalConnectionCount() const {
     return m_voltageLevel.getInternalConnectionCount();
 }
 
+stdcxx::const_range<NodeBreakerViewImpl::InternalConnection> NodeBreakerViewImpl::getInternalConnections() const {
+    const auto& filter = [this](const unsigned long& e) {
+        return !m_voltageLevel.getGraph().getEdgeObject(e);
+    };
+
+    const auto& mapper = [this](const unsigned long& e) {
+        unsigned long node1 = m_voltageLevel.getGraph().getVertex1(e);
+        unsigned long node2 = m_voltageLevel.getGraph().getVertex2(e);
+
+        return InternalConnection(node1, node2);
+    };
+
+    return m_voltageLevel.getGraph().getEdges() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
+stdcxx::range<NodeBreakerViewImpl::InternalConnection> NodeBreakerViewImpl::getInternalConnections() {
+    const auto& filter = [this](const unsigned long& e) {
+        return !m_voltageLevel.getGraph().getEdgeObject(e);
+    };
+
+    const auto& mapper = [this](const unsigned long& e) {
+        unsigned long node1 = m_voltageLevel.getGraph().getVertex1(e);
+        unsigned long node2 = m_voltageLevel.getGraph().getVertex2(e);
+
+        return InternalConnection(node1, node2);
+    };
+
+    return m_voltageLevel.getGraph().getEdges() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
 unsigned long NodeBreakerViewImpl::getNode1(const std::string& switchId) const {
     return m_voltageLevel.getNode1(switchId);
 }
@@ -175,6 +206,26 @@ stdcxx::Reference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& swit
 
 unsigned long NodeBreakerViewImpl::getSwitchCount() const {
     return m_voltageLevel.getSwitchCount();
+}
+
+stdcxx::const_range<Switch> NodeBreakerViewImpl::getSwitches() const {
+    const auto& filter = [](const stdcxx::Reference<Switch>& sw) {
+        return static_cast<bool>(sw);
+    };
+
+    const auto& mapper = stdcxx::map<stdcxx::Reference<Switch>, Switch>;
+
+    return m_voltageLevel.getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
+stdcxx::range<Switch> NodeBreakerViewImpl::getSwitches() {
+    const auto& filter = [](const stdcxx::Reference<Switch>& sw) {
+        return static_cast<bool>(sw);
+    };
+
+    const auto& mapper = stdcxx::map<stdcxx::Reference<Switch>, Switch>;
+
+    return m_voltageLevel.getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
 stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal(unsigned long node) const {

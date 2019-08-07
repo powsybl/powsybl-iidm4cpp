@@ -39,6 +39,7 @@ set(IIDM_SOURCES
     iidm/HvdcLineAdder.cpp
     iidm/Identifiable.cpp
     iidm/Injection.cpp
+    iidm/InternalConnection.cpp
     iidm/InternalConnectionAdder.cpp
     iidm/LccConverterStation.cpp
     iidm/LccConverterStationAdder.cpp

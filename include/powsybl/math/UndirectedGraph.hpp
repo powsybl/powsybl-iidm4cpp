@@ -14,6 +14,7 @@
 #include <vector>
 
 #include <powsybl/math/Traverser.hpp>
+#include <powsybl/math/UndirectedGraphRanges.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -31,10 +32,10 @@ public:
     using VertexVisitor = std::function<bool(const stdcxx::Reference<V>&)>;
 
     template <typename T>
-    using const_range = typename stdcxx::const_range<stdcxx::Reference<T>>;
+    using const_range = typename graph::range_traits<T>::const_range;
 
     template <typename T>
-    using range = typename stdcxx::range<stdcxx::Reference<T>>;
+    using range = typename graph::range_traits<T>::range;
 
 public:
     UndirectedGraph() = default;
@@ -57,7 +58,7 @@ public:
 
     const_range<E> getEdgeObjects(unsigned long v1, unsigned long v2) const;
 
-    std::set<unsigned long> getEdges() const;
+    const_range<unsigned long> getEdges() const;
 
     unsigned long getMaxVertex() const;
 
@@ -73,7 +74,7 @@ public:
 
     range<V> getVertexObjects();
 
-    std::set<unsigned long> getVertices() const;
+    const_range<unsigned long> getVertices() const;
 
     void removeAllEdges();
 

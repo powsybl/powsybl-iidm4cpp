@@ -276,6 +276,10 @@ BOOST_AUTO_TEST_CASE(switches) {
 
     BOOST_CHECK_EQUAL(1UL, boost::size(network.getSwitches()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cNetwork.getSwitches()));
+
+    const VoltageLevel& cVoltageLevel = voltageLevel;
+    BOOST_CHECK_EQUAL(1UL, boost::size(voltageLevel.getNodeBreakerView().getSwitches()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(cVoltageLevel.getNodeBreakerView().getSwitches()));
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
@@ -394,6 +398,8 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     BOOST_CHECK_NO_THROW(internalConnectionAdder.add());
     BOOST_CHECK_EQUAL(0, view.getSwitchCount());
     BOOST_CHECK_EQUAL(1, view.getInternalConnectionCount());
+    BOOST_CHECK_EQUAL(1, stdcxx::size(view.getInternalConnections()));
+    BOOST_CHECK_EQUAL(1, stdcxx::size(cView.getInternalConnections()));
 }
 
 BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {

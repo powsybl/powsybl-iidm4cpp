@@ -11,6 +11,7 @@
 #include <string>
 
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
+#include <powsybl/iidm/InternalConnection.hpp>
 #include <powsybl/iidm/InternalConnectionAdder.hpp>
 #include <powsybl/iidm/SwitchAdder.hpp>
 #include <powsybl/stdcxx/range.hpp>
@@ -26,6 +27,8 @@ class Terminal;
 
 class NodeBreakerView {
 public:
+    using InternalConnection = node_breaker_view::InternalConnection;
+
     using InternalConnectionAdder = node_breaker_view::InternalConnectionAdder;
 
     using SwitchAdder = node_breaker_view::SwitchAdder;
@@ -45,6 +48,10 @@ public:
 
     virtual unsigned long getInternalConnectionCount() const = 0;
 
+    virtual stdcxx::const_range<InternalConnection> getInternalConnections() const = 0;
+
+    virtual stdcxx::range<InternalConnection> getInternalConnections() = 0;
+
     virtual unsigned long getNode1(const std::string& switchId) const = 0;
 
     virtual unsigned long getNode2(const std::string& switchId) const = 0;
@@ -54,6 +61,10 @@ public:
     virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const = 0;
 
     virtual unsigned long getSwitchCount() const = 0;
+
+    virtual stdcxx::const_range<Switch> getSwitches() const = 0;
+
+    virtual stdcxx::range<Switch> getSwitches() = 0;
 
     virtual stdcxx::Reference<Terminal> getTerminal(unsigned long node) const = 0;
 

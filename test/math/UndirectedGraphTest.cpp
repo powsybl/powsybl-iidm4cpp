@@ -102,9 +102,9 @@ BOOST_AUTO_TEST_CASE(getEdges) {
     graph.addEdge(0, 1, stdcxx::ref<E>());
     graph.addEdge(0, 2, stdcxx::ref<E>());
 
-    const std::set<unsigned long>& edges = graph.getEdges();
+    const auto& edges = graph.getEdges();
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), edges.cbegin(), edges.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), std::begin(edges), std::end(edges));
 }
 
 BOOST_AUTO_TEST_CASE(getMaxVertex) {
@@ -118,26 +118,26 @@ BOOST_AUTO_TEST_CASE(getMaxVertex) {
     expected = {0, 1, 2};
     BOOST_CHECK_EQUAL(3ul, graph.getMaxVertex());
     const auto& vertices = graph.getVertices();
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), vertices.cbegin(), vertices.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), std::begin(vertices), std::end(vertices));
 
     graph.removeVertex(0);
     graph.removeVertex(1);
     expected = {2};
     BOOST_CHECK_EQUAL(3ul, graph.getMaxVertex());
     const auto& vertices2 = graph.getVertices();
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), vertices2.cbegin(), vertices2.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), std::begin(vertices2), std::end(vertices2));
 
     graph.addVertex();
     expected = {0, 2};
     BOOST_CHECK_EQUAL(3ul, graph.getMaxVertex());
     const auto& vertices3 = graph.getVertices();
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), vertices3.cbegin(), vertices3.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), std::begin(vertices3), std::end(vertices3));
 
     graph.removeVertex(2);
     expected = {0};
     BOOST_CHECK_EQUAL(2ul, graph.getMaxVertex());
     const auto& vertices4 = graph.getVertices();
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), vertices4.cbegin(), vertices4.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), std::begin(vertices4), std::end(vertices4));
 }
 
 BOOST_AUTO_TEST_CASE(getVertexObject) {

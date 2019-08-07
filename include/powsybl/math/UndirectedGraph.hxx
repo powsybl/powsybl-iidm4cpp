@@ -227,16 +227,12 @@ typename UndirectedGraph<V, E>::template const_range<E> UndirectedGraph<V, E>::g
 }
 
 template <typename V, typename E>
-std::set<unsigned long> UndirectedGraph<V, E>::getEdges() const {
-    std::set<unsigned long> edges;
+typename UndirectedGraph<V, E>::template const_range<unsigned long> UndirectedGraph<V, E>::getEdges() const {
+    const auto& filter = [this](const unsigned long e) {
+        return static_cast<bool>(m_vertices[e]);
+    };
 
-    for (unsigned long e = 0; e < m_edges.size(); ++e) {
-        if (m_vertices[e]) {
-            edges.insert(e);
-        }
-    }
-
-    return edges;
+    return boost::counting_range(0UL, m_edges.size()) | boost::adaptors::filtered(filter);
 }
 
 template <typename V, typename E>
@@ -287,16 +283,12 @@ typename UndirectedGraph<V, E>::template range<V> UndirectedGraph<V, E>::getVert
 }
 
 template <typename V, typename E>
-std::set<unsigned long> UndirectedGraph<V, E>::getVertices() const {
-    std::set<unsigned long> vertices;
+typename UndirectedGraph<V, E>::template const_range<unsigned long> UndirectedGraph<V, E>::getVertices() const {
+    const auto& filter = [this](const unsigned long v) {
+        return static_cast<bool>(m_vertices[v]);
+    };
 
-    for (unsigned long v = 0; v < m_vertices.size(); ++v) {
-        if (m_vertices[v]) {
-            vertices.insert(v);
-        }
-    }
-
-    return vertices;
+    return boost::counting_range(0UL, m_vertices.size()) | boost::adaptors::filtered(filter);
 }
 
 template <typename V, typename E>
