@@ -23,9 +23,11 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STRE
     # set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -D_GLIBCXX_DEBUG")
 endif ()
 
-find_package(Boost REQUIRED COMPONENTS date_time unit_test_framework)
+find_package(Boost 1.56 REQUIRED COMPONENTS date_time unit_test_framework)
+include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
 find_package(LibXml2 REQUIRED)
+include_directories(SYSTEM ${LIBXML2_INCLUDE_DIR})
 
 set(CODE_COVERAGE FALSE CACHE BOOL "Enable code coverage")
 if (CODE_COVERAGE)

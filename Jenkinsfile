@@ -43,6 +43,12 @@ def build(os, compilerFamily, withQualityCheck, withCodeCoverage) {
     def dockerOptions = withCodeCoverage ? '-v /home/jenkins/tools/build-wrapper-linux-x86:/home/jenkins/tools' : ''
     def buildWrapper = withCodeCoverage ? '/home/jenkins/tools/build-wrapper-linux-x86-64 --out-dir ./output' : ''
 
+    // Additional build options
+    def cmakeOptions = ''
+    if (os == 'centos' || os == 'sonar') {
+        cmakeOptions = '-DBOOST_ROOT=/opt/boost-1.69'
+    }
+
     docker.image(dockerImage).inside(dockerOptions) { c ->
 
         // Build
@@ -53,7 +59,7 @@ def build(os, compilerFamily, withQualityCheck, withCodeCoverage) {
 
                 // Compile and run tests
                 sh """
-                cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=${compiler} -DCMAKE_CXX_CLANG_TIDY=${clangTidy} ..
+                cmake -DCMAKE_BUILD_TYPE=${buildType} -DCODE_COVERAGE=${codeCoverage} -DCMAKE_CXX_COMPILER=${compiler} -DCMAKE_CXX_CLANG_TIDY=${clangTidy} ${cmakeOptions} ..
                 ${buildWrapper} make -j8
                 make tests
                 """

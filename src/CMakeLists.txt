@@ -136,5 +136,4 @@ add_library(iidm ${IIDM_SOURCES})
 target_include_directories(iidm
     PRIVATE ${CMAKE_HOME_DIRECTORY}/include
     PRIVATE ${CMAKE_HOME_DIRECTORY}/src/
-    PRIVATE ${LIBXML2_INCLUDE_DIR}
 )

@@ -49,8 +49,6 @@ set(UNIT_TEST_SOURCES
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
 target_include_directories(unit-tests-iidm
-    PRIVATE Boost::boost
-    PRIVATE ${LIBXML2_INCLUDE_DIR}
     PRIVATE ${CMAKE_HOME_DIRECTORY}/include
     PRIVATE ${CMAKE_HOME_DIRECTORY}/test
 )

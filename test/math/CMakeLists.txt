@@ -12,7 +12,6 @@ set(UNIT_TEST_SOURCES
 
 add_executable(unit-tests-math ${UNIT_TEST_SOURCES})
 target_include_directories(unit-tests-math
-    PRIVATE Boost::boost
     PRIVATE ${CMAKE_HOME_DIRECTORY}/include
     PRIVATE ${CMAKE_HOME_DIRECTORY}/test
 )

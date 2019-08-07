@@ -13,7 +13,6 @@ set(UNIT_TEST_SOURCES
 
 add_executable(unit-tests-stdcxx ${UNIT_TEST_SOURCES})
 target_include_directories(unit-tests-stdcxx
-    PRIVATE Boost::boost
     PRIVATE ${CMAKE_HOME_DIRECTORY}/include
     PRIVATE ${CMAKE_HOME_DIRECTORY}/test
     )

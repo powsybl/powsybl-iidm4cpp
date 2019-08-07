@@ -25,7 +25,7 @@ The CentOS image provides the following tools:
 - CMake 2.8.12
 - G++ 4.8.5
 - Clang 3.4.2
-- Boost 1.53
+- Boost 1.69
 - LibXml2 2.9.1
 
 To build the CentOS image, run the following command:
@@ -38,7 +38,7 @@ The Sonar image is based on CentOS (7.6) and is used for sonar integration. It p
 - CMake 2.8.12
 - G++ 4.8.5
 - Gcovr 3.4
-- Boost 1.53
+- Boost 1.69
 - LibXml2 2.9.1
 
 To build the Sonar image, run the following command:

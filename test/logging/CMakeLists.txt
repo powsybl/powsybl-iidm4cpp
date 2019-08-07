@@ -16,7 +16,6 @@ set(UNIT_TEST_SOURCES
 
 add_executable(unit-tests-logging ${UNIT_TEST_SOURCES})
 target_include_directories(unit-tests-logging
-    PRIVATE Boost::boost
     PRIVATE ${CMAKE_HOME_DIRECTORY}/include
     PRIVATE ${CMAKE_HOME_DIRECTORY}/test
 )

@@ -11,7 +11,6 @@ set(UNIT_TEST_SOURCES
 
 add_executable(unit-tests-network ${UNIT_TEST_SOURCES})
 target_include_directories(unit-tests-network
-    PRIVATE Boost::boost
     PRIVATE ${CMAKE_HOME_DIRECTORY}/include
     PRIVATE ${CMAKE_HOME_DIRECTORY}/test
 )

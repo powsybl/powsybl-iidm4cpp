@@ -13,7 +13,7 @@ RUN yum -y install epel-release
 
 # Install requirements
 RUN yum -y install \
-    boost-devel \
+    boost169-devel \
     clang \
     cmake \
     git \
@@ -21,3 +21,8 @@ RUN yum -y install \
     libxml2-devel \
     make \
 && yum clean all
+
+# Install boost
+RUN mkdir /opt/boost-1.69 \
+&& ln -s /usr/include/boost169 /opt/boost-1.69/include \
+&& ln -s /usr/lib64/boost169 /opt/boost-1.69/lib
