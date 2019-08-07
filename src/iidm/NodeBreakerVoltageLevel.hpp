@@ -83,6 +83,8 @@ private:
 
     node_breaker_voltage_level::BusNamingStrategy& getBusNamingStrategy();
 
+    const node_breaker_voltage_level::CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology() const;
+
     node_breaker_voltage_level::CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology();
 
     node_breaker_voltage_level::CalculatedBusTopology& getCalculatedBusTopology();

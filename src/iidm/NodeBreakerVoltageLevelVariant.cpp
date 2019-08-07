@@ -28,6 +28,10 @@ std::unique_ptr<VariantImpl> VariantImpl::copy() const {
     return stdcxx::make_unique<VariantImpl>(m_voltageLevel);
 }
 
+const CalculatedBusBreakerTopology& VariantImpl::getCalculatedBusBreakerTopology() const {
+    return m_calculatedBusBreakerTopology;
+}
+
 CalculatedBusBreakerTopology& VariantImpl::getCalculatedBusBreakerTopology() {
     return m_calculatedBusBreakerTopology;
 }

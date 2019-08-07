@@ -43,6 +43,10 @@ public:
 
     virtual unsigned long getSwitchCount() const = 0;
 
+    virtual stdcxx::const_range<Switch> getSwitches() const = 0;
+
+    virtual stdcxx::range<Switch> getSwitches() = 0;
+
     virtual BusAdder newBus() = 0;
 
     virtual SwitchAdder newSwitch() = 0;

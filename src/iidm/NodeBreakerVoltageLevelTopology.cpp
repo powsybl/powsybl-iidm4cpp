@@ -87,6 +87,36 @@ stdcxx::Reference<Switch> CalculatedBusBreakerTopology::getSwitch(const std::str
     return aSwitch;
 }
 
+unsigned long CalculatedBusBreakerTopology::getSwitchCount() const {
+    unsigned long switchCount = 0;
+
+    for (const auto& sw : getVoltageLevel().getGraph().getEdgeObjects()) {
+        if (static_cast<bool>(sw) && sw.get().isRetained()) {
+            switchCount++;
+        }
+    }
+
+    return switchCount;
+}
+
+stdcxx::const_range<Switch> CalculatedBusBreakerTopology::getSwitches() const {
+    const auto& filter = [](const stdcxx::Reference<Switch>& sw) {
+        return static_cast<bool>(sw) && sw.get().isRetained();
+    };
+    const auto& mapper = stdcxx::map<stdcxx::Reference<Switch>, Switch>;
+
+    return getVoltageLevel().getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
+stdcxx::range<Switch> CalculatedBusBreakerTopology::getSwitches() {
+    const auto& filter = [](const stdcxx::Reference<Switch>& sw) {
+        return static_cast<bool>(sw) && sw.get().isRetained();
+    };
+    const auto& mapper = stdcxx::map<stdcxx::Reference<Switch>, Switch>;
+
+    return getVoltageLevel().getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
 bool CalculatedBusBreakerTopology::isBusValid(const node_breaker_voltage_level::Graph& /*graph*/, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& /*terminals*/) const {
     return !vertices.empty();
 }

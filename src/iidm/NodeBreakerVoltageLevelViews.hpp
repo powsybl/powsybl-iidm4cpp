@@ -81,6 +81,10 @@ public: // BusBreakerView
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
 
+    stdcxx::const_range<Switch> getSwitches() const override;
+
+    stdcxx::range<Switch> getSwitches() override;
+
     unsigned long getSwitchCount() const override;
 
 public:

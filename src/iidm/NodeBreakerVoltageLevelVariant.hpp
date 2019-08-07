@@ -26,6 +26,8 @@ public:
 
     ~VariantImpl() noexcept override = default;
 
+    const CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology() const;
+
     CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology();
 
     CalculatedBusTopology& getCalculatedBusTopology();

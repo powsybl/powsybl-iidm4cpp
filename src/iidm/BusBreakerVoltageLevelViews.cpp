@@ -7,6 +7,7 @@
 
 #include "BusBreakerVoltageLevelViews.hpp"
 
+#include <powsybl/iidm/Switch.hpp>
 #include <powsybl/stdcxx/upcast.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"
@@ -66,6 +67,24 @@ stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switc
 
 unsigned long BusBreakerViewImpl::getSwitchCount() const {
     return m_voltageLevel.getSwitchCount();
+}
+
+stdcxx::const_range<Switch> BusBreakerViewImpl::getSwitches() const {
+    const auto& filter = [](const stdcxx::Reference<Switch>& sw) {
+        return static_cast<bool>(sw);
+    };
+    const auto& mapper = stdcxx::map<stdcxx::Reference<Switch>, Switch>;
+
+    return m_voltageLevel.getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
+stdcxx::range<Switch> BusBreakerViewImpl::getSwitches() {
+    const auto& filter = [](const stdcxx::Reference<Switch>& sw) {
+        return static_cast<bool>(sw);
+    };
+    const auto& mapper = stdcxx::map<stdcxx::Reference<Switch>, Switch>;
+
+    return m_voltageLevel.getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
 BusAdder BusBreakerViewImpl::newBus() {

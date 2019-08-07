@@ -36,6 +36,10 @@ public: // BusBreakerView
 
     unsigned long getSwitchCount() const override;
 
+    stdcxx::const_range<Switch> getSwitches() const override;
+
+    stdcxx::range<Switch> getSwitches() override;
+
     BusAdder newBus() override;
 
     SwitchAdder newSwitch() override;

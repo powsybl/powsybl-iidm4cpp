@@ -12,6 +12,7 @@
 #include <memory>
 
 #include <powsybl/stdcxx/optional.hpp>
+#include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 #include "NodeBreakerVoltageLevelBusCache.hpp"
@@ -77,6 +78,12 @@ public:
     stdcxx::Reference<CalculatedBus> getBus2(const std::string& switchId, bool throwException);
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId, bool throwException);
+
+    unsigned long getSwitchCount() const;
+
+    stdcxx::const_range<Switch> getSwitches() const;
+
+    stdcxx::range<Switch> getSwitches();
 
 private: // CalculatedBusTopology
     SwitchPredicate createSwitchPredicate() const override;

@@ -497,7 +497,9 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus2("SW1"));
     BOOST_CHECK_EQUAL(3, stdcxx::size(busBreakerView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getSwitch("SW1"));
-    BOOST_CHECK_EQUAL(3ul, busBreakerView.getSwitchCount());
+    BOOST_CHECK_EQUAL(2UL, busBreakerView.getSwitchCount());
+    BOOST_CHECK_EQUAL(2UL, stdcxx::size(busBreakerView.getSwitches()));
+    BOOST_CHECK_EQUAL(2UL, stdcxx::size(cBusBreakerView.getSwitches()));
     POWSYBL_ASSERT_THROW(busBreakerView.getSwitch("UNKNOWN"), PowsyblException, "Switch UNKNOWN not found");
     POWSYBL_ASSERT_THROW(busBreakerView.newBus(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(busBreakerView.newSwitch(), AssertionError, "Not implemented");

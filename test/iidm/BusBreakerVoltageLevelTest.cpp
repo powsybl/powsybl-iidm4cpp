@@ -152,6 +152,8 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
         .setBus2("BUS3")
         .add();
 
+    const BusBreakerView& cView = view;
+
     // get bus
     const auto& refBus1 = view.getBus("BUS1");
     POWSYBL_ASSERT_REF_TRUE(refBus1);
@@ -161,7 +163,9 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     BOOST_TEST(!refUnknownBus);
 
     // get switch
-    BOOST_CHECK_EQUAL(2ul, view.getSwitchCount());
+    BOOST_CHECK_EQUAL(2UL, view.getSwitchCount());
+    BOOST_CHECK_EQUAL(2UL, stdcxx::size(view.getSwitches()));
+    BOOST_CHECK_EQUAL(2UL, stdcxx::size(cView.getSwitches()));
     const auto& refSwitch1 = view.getSwitch("SW1");
     POWSYBL_ASSERT_REF_TRUE(refSwitch1);
     BOOST_TEST(stdcxx::areSame(switch1, refSwitch1.get()));

@@ -63,7 +63,15 @@ stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switc
 }
 
 unsigned long BusBreakerViewImpl::getSwitchCount() const {
-    return m_voltageLevel.getSwitchCount();
+    return m_voltageLevel.getCalculatedBusBreakerTopology().getSwitchCount();
+}
+
+stdcxx::const_range<Switch> BusBreakerViewImpl::getSwitches() const {
+    return m_voltageLevel.getCalculatedBusBreakerTopology().getSwitches();
+}
+
+stdcxx::range<Switch> BusBreakerViewImpl::getSwitches() {
+    return m_voltageLevel.getCalculatedBusBreakerTopology().getSwitches();
 }
 
 BusAdder BusBreakerViewImpl::newBus() {

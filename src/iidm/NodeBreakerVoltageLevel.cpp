@@ -194,6 +194,10 @@ node_breaker_voltage_level::BusNamingStrategy& NodeBreakerVoltageLevel::getBusNa
     return m_busNamingStrategy;
 }
 
+const node_breaker_voltage_level::CalculatedBusBreakerTopology& NodeBreakerVoltageLevel::getCalculatedBusBreakerTopology() const {
+    return m_variants.get().getCalculatedBusBreakerTopology();
+}
+
 node_breaker_voltage_level::CalculatedBusBreakerTopology& NodeBreakerVoltageLevel::getCalculatedBusBreakerTopology() {
     return m_variants.get().getCalculatedBusBreakerTopology();
 }
