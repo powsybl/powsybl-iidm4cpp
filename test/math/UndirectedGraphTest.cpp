@@ -86,7 +86,7 @@ BOOST_AUTO_TEST_CASE(getEdgeObject) {
     BOOST_TEST(stdcxx::areSame(expected, edge.get()));
 
     const auto& objects = graph.getEdgeObjects();
-    BOOST_CHECK_EQUAL(1ul, stdcxx::size(objects));
+    BOOST_CHECK_EQUAL(1ul, boost::size(objects));
     for (const auto& obj : objects) {
         BOOST_TEST(stdcxx::areSame(expected, obj.get()));
     }
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE(getVertexObject) {
     BOOST_TEST(stdcxx::areSame(expected, graph.getVertexObject(0).get()));
 
     const auto& objects = graph.getVertexObjects();
-    BOOST_CHECK_EQUAL(1ul, stdcxx::size(objects));
+    BOOST_CHECK_EQUAL(1ul, boost::size(objects));
     for (const auto& obj : objects) {
         BOOST_TEST(stdcxx::areSame(expected, obj.get()));
     }

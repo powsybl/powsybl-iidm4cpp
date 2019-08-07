@@ -20,31 +20,4 @@ using const_range = range<const T>;
 
 }  // namespace stdcxx
 
-#if BOOST_VERSION < 105600
-
-#include <iterator>
-
-#include <boost/range/size_type.hpp>
-
-namespace stdcxx {
-
-template <typename R>
-typename boost::range_size<R>::type size(const R& range) {
-    return std::distance(boost::begin(range), boost::end(range));
-}
-
-}  // namespace stdcxx
-
-#else
-
-#include <boost/range/size.hpp>
-
-namespace stdcxx {
-
-using boost::size;
-
-}  // namespace stdcxx
-
-#endif  // BOOST_VERSION
-
 #endif  // POWSYBL_IIDM_RANGE_HPP

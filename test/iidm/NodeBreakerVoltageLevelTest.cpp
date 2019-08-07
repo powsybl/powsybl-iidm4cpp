@@ -361,7 +361,7 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     // Remove a busbar section
     bbs1.remove();
     BOOST_CHECK_EQUAL(1, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
-    BOOST_CHECK_EQUAL(1, stdcxx::size(voltageLevel.getNodeBreakerView().getBusbarSections()));
+    BOOST_CHECK_EQUAL(1, boost::size(voltageLevel.getNodeBreakerView().getBusbarSections()));
     bbs2.remove();
     BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getBusbarSectionCount());
 
@@ -378,8 +378,8 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     NodeBreakerView& view = vlTest.getNodeBreakerView();
     const NodeBreakerView& cView = view;
     BOOST_CHECK_EQUAL(0, view.getBusbarSectionCount());
-    BOOST_CHECK_EQUAL(0, stdcxx::size(view.getBusbarSections()));
-    BOOST_CHECK_EQUAL(0, stdcxx::size(cView.getBusbarSections()));
+    BOOST_CHECK_EQUAL(0, boost::size(view.getBusbarSections()));
+    BOOST_CHECK_EQUAL(0, boost::size(cView.getBusbarSections()));
 
     //test internal connections
     BOOST_CHECK_EQUAL(0, view.getSwitchCount());
@@ -398,8 +398,8 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     BOOST_CHECK_NO_THROW(internalConnectionAdder.add());
     BOOST_CHECK_EQUAL(0, view.getSwitchCount());
     BOOST_CHECK_EQUAL(1, view.getInternalConnectionCount());
-    BOOST_CHECK_EQUAL(1, stdcxx::size(view.getInternalConnections()));
-    BOOST_CHECK_EQUAL(1, stdcxx::size(cView.getInternalConnections()));
+    BOOST_CHECK_EQUAL(1, boost::size(view.getInternalConnections()));
+    BOOST_CHECK_EQUAL(1, boost::size(cView.getInternalConnections()));
 }
 
 BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
@@ -510,11 +510,11 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_3"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus1("SW1"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus2("SW1"));
-    BOOST_CHECK_EQUAL(3, stdcxx::size(busBreakerView.getBuses()));
+    BOOST_CHECK_EQUAL(3, boost::size(busBreakerView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getSwitch("SW1"));
     BOOST_CHECK_EQUAL(2UL, busBreakerView.getSwitchCount());
-    BOOST_CHECK_EQUAL(2UL, stdcxx::size(busBreakerView.getSwitches()));
-    BOOST_CHECK_EQUAL(2UL, stdcxx::size(cBusBreakerView.getSwitches()));
+    BOOST_CHECK_EQUAL(2UL, boost::size(busBreakerView.getSwitches()));
+    BOOST_CHECK_EQUAL(2UL, boost::size(cBusBreakerView.getSwitches()));
     POWSYBL_ASSERT_THROW(busBreakerView.getSwitch("UNKNOWN"), PowsyblException, "Switch UNKNOWN not found");
     POWSYBL_ASSERT_THROW(busBreakerView.newBus(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(busBreakerView.newSwitch(), AssertionError, "Not implemented");
@@ -530,7 +530,7 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     BOOST_CHECK_CLOSE(8.8, testBus.getV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2ul, testBus.getConnectedTerminalCount());
     const auto& terminals = testBus.getConnectedTerminals();
-    BOOST_CHECK_EQUAL(stdcxx::size(terminals), testBus.getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(boost::size(terminals), testBus.getConnectedTerminalCount());
     BOOST_TEST(stdcxx::areSame(vl, testBus.getVoltageLevel()));
 
     sw.setOpen(false);
@@ -676,8 +676,8 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     VoltageLevel& vlTest = vl;
     auto& busView = vlTest.getBusView();
     const auto& cBusView = vlTest.getBusView();
-    BOOST_CHECK_EQUAL(1UL, stdcxx::size(busView.getBuses()));
-    BOOST_CHECK_EQUAL(1UL, stdcxx::size(cBusView.getBuses()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(busView.getBuses()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
     POWSYBL_ASSERT_REF_TRUE(busView.getMergedBus("BBS"));
     const auto& calculatedBus = busView.getBus("VL_0").get();
@@ -685,17 +685,17 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     BOOST_CHECK_EQUAL("VL_0", calculatedBus.getName());
 
     sw.setOpen(true);
-    BOOST_CHECK_EQUAL(2UL, stdcxx::size(busView.getBuses()));
-    BOOST_CHECK_EQUAL(2UL, stdcxx::size(cBusView.getBuses()));
+    BOOST_CHECK_EQUAL(2UL, boost::size(busView.getBuses()));
+    BOOST_CHECK_EQUAL(2UL, boost::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_1"));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_2"));
     sw.setOpen(false);
-    BOOST_CHECK_EQUAL(1UL, stdcxx::size(busView.getBuses()));
-    BOOST_CHECK_EQUAL(1UL, stdcxx::size(cBusView.getBuses()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(busView.getBuses()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_3"));
     sw.setRetained(true);
-    BOOST_CHECK_EQUAL(1UL, stdcxx::size(busView.getBuses()));
-    BOOST_CHECK_EQUAL(1UL, stdcxx::size(cBusView.getBuses()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(busView.getBuses()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
 }
 
 BOOST_AUTO_TEST_CASE(TerminalTest) {
