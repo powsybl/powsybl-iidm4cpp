@@ -15,6 +15,8 @@
 
 #include <libxml/xmlreader.h>
 
+#include <powsybl/xml/XmlString.hpp>
+
 namespace powsybl {
 
 namespace xml {
@@ -56,7 +58,7 @@ public:
     void skipComments() const;
 
 private:
-    std::unique_ptr<xmlChar> getAttributeValue(const std::string& attributeName, bool throwException) const;
+    XmlString getAttributeValue(const std::string& attributeName, bool throwException) const;
 
     int getCurrentNodeType() const;
 

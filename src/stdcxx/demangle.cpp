@@ -8,6 +8,7 @@
 #include <powsybl/stdcxx/demangle.hpp>
 
 #include <cxxabi.h>
+#include <functional>
 #include <memory>
 
 namespace stdcxx {
@@ -16,7 +17,7 @@ std::string demangle(const char* name) {
     int status = -1;
 
     // __cxa_demangle will allocate an output buffer we have to delete
-    std::unique_ptr<char, void(*)(void*)> res(abi::__cxa_demangle(name, nullptr, nullptr, &status), &std::free);
+    std::unique_ptr<char, std::function<void(void*)>> res(abi::__cxa_demangle(name, nullptr, nullptr, &status), &std::free);
 
     return status == 0 ? res.get() : name;
 }

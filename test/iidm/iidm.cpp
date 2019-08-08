@@ -7,3 +7,7 @@
 
 #define BOOST_TEST_MODULE iidm
 #include <boost/test/included/unit_test.hpp>
+
+#include <xml/XmlFixture.hpp>
+
+BOOST_TEST_GLOBAL_FIXTURE(XmlFixture);

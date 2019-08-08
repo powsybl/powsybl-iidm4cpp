@@ -62,25 +62,25 @@ XmlStreamReader::XmlStreamReader(std::istream& stream, const std::string& encodi
 
 template <>
 double XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
-    std::unique_ptr<xmlChar> xmlCharPtr = getAttributeValue(attributeName, true);
-    return std::stod(XML2S(xmlCharPtr.get()));
+    XmlString value = getAttributeValue(attributeName, true);
+    return std::stod(XML2S(value.get()));
 }
 
 template <>
 int XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
-    std::unique_ptr<xmlChar> xmlCharPtr = getAttributeValue(attributeName, true);
-    return std::stoi(XML2S(xmlCharPtr.get()));
+    XmlString value = getAttributeValue(attributeName, true);
+    return std::stoi(XML2S(value.get()));
 }
 
 std::string XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
-    std::unique_ptr<xmlChar> value = getAttributeValue(attributeName, true);
+    XmlString value = getAttributeValue(attributeName, true);
     return XML2S(value.get());
 }
 
-std::unique_ptr<xmlChar> XmlStreamReader::getAttributeValue(const std::string& attributeName, bool throwException) const {
+XmlString XmlStreamReader::getAttributeValue(const std::string& attributeName, bool throwException) const {
     checkNodeType(*m_reader, XML_READER_TYPE_ELEMENT);
 
-    std::unique_ptr<xmlChar> value(xmlTextReaderGetAttribute(m_reader.get(), S2XML(attributeName)));
+    XmlString value(xmlTextReaderGetAttribute(m_reader.get(), S2XML(attributeName)));
     if (!value && throwException) {
         throw XmlStreamException(logging::format("Attribute %1% does not exists", attributeName.c_str()));
     }
@@ -93,14 +93,14 @@ int XmlStreamReader::getCurrentNodeType() const {
 }
 
 std::string XmlStreamReader::getDefaultNamespace() const {
-    std::unique_ptr<xmlChar> namespaceXml(xmlTextReaderLookupNamespace(m_reader.get(), nullptr));
+    XmlString namespaceXml(xmlTextReaderLookupNamespace(m_reader.get(), nullptr));
     return namespaceXml ? XML2S(namespaceXml.get()) : "";
 }
 
 std::string XmlStreamReader::getLocalName() const {
     checkNodeType(*m_reader, XML_READER_TYPE_ELEMENT);
 
-    std::unique_ptr<xmlChar> localNameXml(xmlTextReaderLocalName(m_reader.get()));
+    XmlString localNameXml(xmlTextReaderLocalName(m_reader.get()));
     if (!localNameXml) {
         throw XmlStreamException("Element does not have any local name");
     }
@@ -113,7 +113,7 @@ std::string XmlStreamReader::getNamespace(const std::string& prefix) const {
         return getDefaultNamespace();
     }
 
-    std::unique_ptr<xmlChar> namespaceXml(xmlTextReaderLookupNamespace(m_reader.get(), S2XML(prefix)));
+    XmlString namespaceXml(xmlTextReaderLookupNamespace(m_reader.get(), S2XML(prefix)));
     if (!namespaceXml) {
         throw XmlStreamException(logging::format("Unknown prefix %1%", prefix));
     }
@@ -121,7 +121,7 @@ std::string XmlStreamReader::getNamespace(const std::string& prefix) const {
 }
 
 int XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, int defaultValue) const {
-    std::unique_ptr<xmlChar> value = getAttributeValue(attributeName, false);
+    XmlString value = getAttributeValue(attributeName, false);
     try {
         return static_cast<bool>(value) ? std::stoi(XML2S(value.get())) : defaultValue;
     } catch (const std::invalid_argument& error) {
@@ -130,7 +130,7 @@ int XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName,
 }
 
 double XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, double defaultValue) const {
-    std::unique_ptr<xmlChar> value = getAttributeValue(attributeName, false);
+    XmlString value = getAttributeValue(attributeName, false);
     try {
         return static_cast<bool>(value) ? std::stod(XML2S(value.get())) : defaultValue;
     } catch (const std::invalid_argument& error) {
@@ -139,7 +139,7 @@ double XmlStreamReader::getOptionalAttributeValue(const std::string& attributeNa
 }
 
 std::string XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, const std::string& defaultValue) const {
-    std::unique_ptr<xmlChar> value = getAttributeValue(attributeName, false);
+    XmlString value = getAttributeValue(attributeName, false);
     return static_cast<bool>(value) ? XML2S(value.get()) : defaultValue;
 }
 
@@ -147,7 +147,7 @@ std::string XmlStreamReader::getPrefix() const {
     checkNodeType(*m_reader, XML_READER_TYPE_ELEMENT);
 
     std::string prefix;
-    std::unique_ptr<xmlChar> prefixXml(xmlTextReaderPrefix(m_reader.get()));
+    XmlString prefixXml(xmlTextReaderPrefix(m_reader.get()));
     if (prefixXml) {
         prefix = XML2S(prefixXml.get());
     }
