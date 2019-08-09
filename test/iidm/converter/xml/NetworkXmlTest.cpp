@@ -22,57 +22,13 @@ namespace xml {
 
 BOOST_AUTO_TEST_SUITE(NetworkXmlTest)
 
-class ReadWriteTester {
-public:
-    ReadWriteTester(std::string testName) :
-        m_enableDebug(false),
-        m_testName(std::move(testName)) {
+void assertNetwork(const Network& network) {
+    BOOST_CHECK_EQUAL("terminalRef", network.getId());
+    BOOST_CHECK_EQUAL("2000-11-08T19:00:00+01:00", network.getCaseDate().toString());
+    BOOST_CHECK_EQUAL(0, network.getForecastDistance());
+    BOOST_CHECK_EQUAL("test", network.getSourceFormat());
 
-    }
-
-    ReadWriteTester& setDebugEnabled(bool enableDebug) {
-        m_enableDebug = enableDebug;
-        return *this;
-    }
-
-    void readWriteOptions(const std::string& str,
-                          const ImportOptions& importOptions,
-                          const ExportOptions& exportOptions,
-                          const stdcxx::CReference<converter::Anonymizer>& anonymizer) {
-        std::stringstream istream;
-        istream << str;
-        Network networkTmp(Network::readXml(istream, importOptions, anonymizer));
-
-        std::stringstream ostream1;
-        Network::writeXml(ostream1, networkTmp, exportOptions);
-
-        istream.clear();
-        istream << ostream1.str();
-        Network network(Network::readXml(istream, importOptions, anonymizer));
-
-        std::stringstream ostream2;
-        Network::writeXml(ostream2, network, exportOptions);
-
-        if (m_enableDebug) {
-            std::cout << m_testName << ": " << std::endl;
-            std::cout << "  1st unparse : " << ostream1.str();
-            std::cout << "  2nd unparse : " << ostream2.str();
-            std::cout << std::endl;
-        }
-        BOOST_CHECK_EQUAL(ostream1.str(), ostream2.str());
-    }
-
-    void readWrite(const std::string& str) {
-        FakeAnonymizer anonymizer;
-        readWriteOptions(str, ImportOptions(), ExportOptions(), stdcxx::CReference<converter::Anonymizer>(anonymizer));
-    }
-
-private:
-    bool m_enableDebug;
-    std::string m_testName;
-};
-
-#define ENABLE_DEBUG 0
+}
 
 BOOST_AUTO_TEST_CASE(StartByComments) {
 
@@ -86,7 +42,8 @@ BOOST_AUTO_TEST_CASE(StartByComments) {
                                     "    <!-- test comment --> "
                                     "</iidm:network>";
 
-    ReadWriteTester(boost::unit_test::framework::current_test_case().p_name).setDebugEnabled(ENABLE_DEBUG).readWrite(networkStr);
+    const Network& network = Network::readXml(networkStr);
+    assertNetwork(network);
 }
 
 BOOST_AUTO_TEST_CASE(Basic) {
@@ -99,7 +56,8 @@ BOOST_AUTO_TEST_CASE(Basic) {
                                     "              sourceFormat=\"test\">"
                                     "</iidm:network>";
 
-    ReadWriteTester(boost::unit_test::framework::current_test_case().p_name).setDebugEnabled(ENABLE_DEBUG).readWrite(networkStr);
+    const Network& network = Network::readXml(networkStr);
+    assertNetwork(network);
 }
 
 BOOST_AUTO_TEST_CASE(NoPrefix) {
@@ -107,12 +65,13 @@ BOOST_AUTO_TEST_CASE(NoPrefix) {
     const std::string& networkStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                                     "<network xmlns=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
                                     "              id=\"terminalRef\" "
-                                    "              caseDate=\"2014-11-08T19:00:00.000+01:00\" "
+                                    "              caseDate=\"2000-11-08T19:00:00.000+01:00\" "
                                     "              forecastDistance=\"0\" "
                                     "              sourceFormat=\"test\">"
                                     "</network>";
 
-    ReadWriteTester(boost::unit_test::framework::current_test_case().p_name).setDebugEnabled(ENABLE_DEBUG).readWrite(networkStr);
+    const Network& network = Network::readXml(networkStr);
+    assertNetwork(network);
 }
 
 BOOST_AUTO_TEST_CASE(SpecialChars) {
@@ -125,30 +84,8 @@ BOOST_AUTO_TEST_CASE(SpecialChars) {
                                     "              sourceFormat=\"test\">"
                                     "</network>";
 
-    ReadWriteTester(boost::unit_test::framework::current_test_case().p_name).setDebugEnabled(ENABLE_DEBUG).readWrite(networkStr);
-}
-
-BOOST_AUTO_TEST_CASE(FakeAnonymizerTest) {
-
-    const std::string& networkStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                    "<network xmlns=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
-                                    "              id=\"ø/Ø - ö/Ö - æ/Æ - ä/Ä - å/Å (aa/Aa)\" "
-                                    "              caseDate=\"2014-11-08T19:00:00.000+01:00\" "
-                                    "              forecastDistance=\"0\" "
-                                    "              sourceFormat=\"test\">"
-                                    "</network>";
-
-    ImportOptions importOptions;
-    importOptions.setThrowExceptionIfExtensionNotFound(false);
-    ExportOptions exportOptions;
-    exportOptions.setAnonymised(true)
-                 .setIndent(false)
-                 .setThrowExceptionIfExtensionNotFound(false)
-                 .setTopologyLevel(TopologyLevel::NODE_BREAKER);
-    FakeAnonymizer anonymizer;
-    ReadWriteTester(boost::unit_test::framework::current_test_case().p_name)
-                    .setDebugEnabled(ENABLE_DEBUG)
-                    .readWriteOptions(networkStr, importOptions, exportOptions, stdcxx::CReference<converter::Anonymizer>(anonymizer));
+    const Network& network = Network::readXml(networkStr);
+    BOOST_CHECK_EQUAL("ø/Ø - ö/Ö - æ/Æ - ä/Ä - å/Å (aa/Aa)", network.getId());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

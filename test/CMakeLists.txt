@@ -12,8 +12,14 @@ add_subdirectory(network)
 add_subdirectory(stdcxx)
 add_subdirectory(xml)
 
+# Since Boost 1.60, program arguments and boost test arguments are separated by --
+# https://github.com/boostorg/test/commit/d63379a9b3ad33d263d55c119681047c1d28547c
+if (${Boost_VERSION} GREATER 106000)
+    set(ARGS_SEPARATOR "--")
+endif()
+
 add_custom_target(tests
-    COMMAND unit-tests-iidm
+    COMMAND unit-tests-iidm ${ARGS_SEPARATOR} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources
     COMMAND unit-tests-logging
     COMMAND unit-tests-math
     COMMAND unit-tests-network

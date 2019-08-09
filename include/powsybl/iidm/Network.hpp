@@ -53,9 +53,11 @@ class ImportOptions;
 
 class Network : public Container, public VariantManagerHolder {
 public:
+    static Network readXml(const std::string& data);
+
     static Network readXml(std::istream& istream);
 
-    static Network readXml(std::istream& istream, const converter::ImportOptions& options, const stdcxx::CReference<converter::Anonymizer>& anonymizer);
+    static Network readXml(std::istream& istream, const converter::ImportOptions& options, const converter::Anonymizer& anonymizer);
 
     static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network);
 

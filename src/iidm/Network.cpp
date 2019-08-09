@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 
+#include <sstream>
 #include <unordered_set>
 
 #include <boost/range/join.hpp>
@@ -42,11 +43,16 @@ namespace powsybl {
 
 namespace iidm {
 
-Network Network::readXml(std::istream& istream) {
-    return readXml(istream, converter::ImportOptions(), stdcxx::CReference<converter::Anonymizer>());
+Network Network::readXml(const std::string& data) {
+    std::stringstream stream(data);
+    return readXml(stream);
 }
 
-Network Network::readXml(std::istream& istream, const converter::ImportOptions& options, const stdcxx::CReference<converter::Anonymizer>& anonymizer) {
+Network Network::readXml(std::istream& istream) {
+    return readXml(istream, converter::ImportOptions(), converter::FakeAnonymizer());
+}
+
+Network Network::readXml(std::istream& istream, const converter::ImportOptions& options, const converter::Anonymizer& anonymizer) {
     return converter::xml::NetworkXml::read(istream, options, anonymizer);
 }
 

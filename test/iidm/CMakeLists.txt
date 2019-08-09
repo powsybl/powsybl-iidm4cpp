@@ -40,11 +40,13 @@ set(UNIT_TEST_SOURCES
     converter/ExportOptionsTest.cpp
     converter/FakeAnonymizerTest.cpp
     converter/ImportOptionsTest.cpp
+    converter/RoundTrip.cpp
 
     converter/xml/NetworkXmlTest.cpp
     converter/xml/NetworkXmlReaderContextTest.cpp
     converter/xml/NetworkXmlWriterContextTest.cpp
     converter/xml/XmlReadWriteTest.cpp
+    converter/xml/XmlRoundTripTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
@@ -58,4 +60,5 @@ target_compile_definitions(unit-tests-iidm
 target_link_libraries(unit-tests-iidm
     iidm
     ${LIBXML2_LIBRARIES}
+    ${Boost_FILESYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY}
 )

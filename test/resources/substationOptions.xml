@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.itesla_project.eu/schema/iidm/1_0" id="eurostag1" caseDate="2019-06-17T13:16:03+00:00" forecastDistance="0" sourceFormat="test">
+    <iidm:substation id="S1" country="BE" tso="TSO1" geographicalTags="A">
+        <iidm:property name="prop1S1" value="val1S1"/>
+        <iidm:property name="prop3S1" value="val3S1"/>
+        <iidm:voltageLevel id="vl1" name="VoltageLevel1" nominalV="1.2345678899999999" lowVoltageLimit="2.3456788999999998" highVoltageLimit="3.4567890000000001" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="NLOAD_VL1" v="200" angle="60">
+                    <iidm:property name="nLoadVl1_Prop1" value="nLoadVl1_Value1"/>
+                    <iidm:property name="nLoadVl1_Prop3" value="nLoadVl1_Value3"/>
+                </iidm:bus>
+                <iidm:bus id="NLOAD2_VL1" v="202" angle="62"/>
+                <iidm:bus id="NLOAD3_VL1" v="203" angle="63">
+                    <iidm:property name="nLoad3Vl1_Prop1" value="nLoad3Vl1_Value1"/>
+                    <iidm:property name="nLoad3Vl1_Prop2" value="nLoad3Vl1_Value2"/>
+                </iidm:bus>
+            </iidm:busBreakerTopology>
+        </iidm:voltageLevel>
+        <iidm:voltageLevel id="vl2" name="VoltageLevel2" nominalV="4.5678900000000002" lowVoltageLimit="5.6788999999999996" highVoltageLimit="6.7889999999999997" topologyKind="BUS_BREAKER">
+            <iidm:property name="vlProp1" value="vlValue1"/>
+            <iidm:property name="vlProp2" value="vlValue2"/>
+            <iidm:busBreakerTopology>
+                <iidm:bus id="NLOAD_VL2" v="204" angle="64"/>
+                <iidm:bus id="NLOAD2_VL2" v="205" angle="65"/>
+                <iidm:bus id="NLOAD3_VL2" v="206" angle="66">
+                    <iidm:property name="nload3Vl2_Prop1" value="nload3Vl2_Value1"/>
+                    <iidm:property name="nload3Vl2_Prop2" value="nload3Vl2_Value2"/>
+                </iidm:bus>
+            </iidm:busBreakerTopology>
+        </iidm:voltageLevel>
+    </iidm:substation>
+    <iidm:substation id="S2" country="FR" tso="TSO2" geographicalTags="A,B,C,D,E">
+        <iidm:property name="prop4S2" value="val4S2"/>
+        <iidm:property name="prop5S2" value="val5S2"/>
+        <iidm:property name="prop6S2" value="val6S2"/>
+    </iidm:substation>
+</iidm:network>

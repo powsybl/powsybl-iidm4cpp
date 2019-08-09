@@ -20,6 +20,9 @@
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/logging/ConsoleLogger.hpp>
 
+#include "iidm/converter/ResourceFixture.hpp"
+#include "iidm/converter/RoundTrip.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -30,67 +33,7 @@ namespace xml {
 
 BOOST_AUTO_TEST_SUITE(XmlReadWriteTest)
 
-class ReadWriteTester {
-public:
-    ReadWriteTester(std::string testName) :
-        m_enableDebug(false),
-        m_testName(std::move(testName)) {
-
-    }
-
-    ReadWriteTester& setDebugEnabled(bool enableDebug) {
-        m_enableDebug = enableDebug;
-        return *this;
-    }
-
-    void readWriteOptions(const Network& network,
-                          const ImportOptions& importOptions,
-                          const ExportOptions& exportOptions,
-                          const stdcxx::CReference<Anonymizer>& anonymizer) {
-        std::stringstream streamReferer;
-        std::stringstream streamChallenger;
-
-        // write a first time
-        Network::writeXml(streamReferer, network, exportOptions);
-
-        if (m_enableDebug) {
-            m_logger.debug("Reference:\n" + streamReferer.str());
-        }
-
-        // read the first output and dump from read result
-        {
-            std::stringstream istream;
-            istream << streamReferer.str();
-            Network otherNetwork(Network::readXml(istream, importOptions, anonymizer));
-
-            Network::writeXml(streamChallenger, otherNetwork, exportOptions);
-        }
-
-        if (m_enableDebug) {
-            m_logger.debug("expecting:\n" + streamReferer.str());
-            m_logger.debug("got:\n" + streamChallenger.str());
-        }
-
-        BOOST_CHECK_EQUAL(streamReferer.str(), streamChallenger.str());
-    }
-
-    void readWrite(const Network& network) {
-        FakeAnonymizer anonymizer;
-        stdcxx::CReference<Anonymizer> crefAnonymizer(anonymizer);
-        readWriteOptions(network, ImportOptions(), ExportOptions(), crefAnonymizer);
-    }
-
-private:
-    bool m_enableDebug;
-
-    logging::ConsoleLogger m_logger;
-
-    std::string m_testName;
-};
-
-#define ENABLE_DEBUG 0
-
-BOOST_AUTO_TEST_CASE(SubstationOptions) {
+BOOST_FIXTURE_TEST_CASE(SubstationOptions, ResourceFixture) {
 
     iidm::Network network("eurostag1", "test");
 
@@ -154,7 +97,7 @@ BOOST_AUTO_TEST_CASE(SubstationOptions) {
     iidm::Bus& nload2Vl2 = vl2.getBusBreakerView().newBus().setId("NLOAD2_VL2").add();
     nload2Vl2.setAngle(65.0).setV(205.0);
 
-    iidm::Bus& nload3Vl2 = vl2.getBusBreakerView().newBus().setId("NLOAD3_VL2").add();
+    Bus& nload3Vl2 = vl2.getBusBreakerView().newBus().setId("NLOAD3_VL2").add();
     nload3Vl2.setAngle(66.0).setV(206.0);
     nload3Vl2.getProperties().set("nload3Vl2_Prop1", "nload3Vl2_Value1");
     nload3Vl2.getProperties().set("nload3Vl2_Prop2", "nload3Vl2_Value2");
@@ -162,18 +105,9 @@ BOOST_AUTO_TEST_CASE(SubstationOptions) {
     vl2.getProperties().set("vlProp1", "vlValue1");
     vl2.getProperties().set("vlProp2", "vlValue2");
 
-    ImportOptions importOptions;
-    importOptions.setThrowExceptionIfExtensionNotFound(false);
-    ExportOptions exportOptions;
-    exportOptions.setAnonymised(true)
-        .setIndent(true)
-        .setThrowExceptionIfExtensionNotFound(false)
-        .setTopologyLevel(TopologyLevel::BUS_BREAKER);
-    FakeAnonymizer anonymizer;
-    stdcxx::CReference<Anonymizer> crefAnonymizer(anonymizer);
-    ReadWriteTester(boost::unit_test::framework::current_test_case().p_name)
-        .setDebugEnabled(ENABLE_DEBUG)
-        .readWriteOptions(network, importOptions, exportOptions, crefAnonymizer);
+    const std::string& reference = ResourceFixture::getResource("/substationOptions.xml");
+
+    powsybl::iidm::converter::RoundTrip::runXml(network, reference);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
