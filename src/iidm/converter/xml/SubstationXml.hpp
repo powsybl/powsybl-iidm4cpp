@@ -24,7 +24,7 @@ namespace xml {
 
 class SubstationXml : public AbstractIdentifiableXml<Substation, SubstationAdder, Network> {
 public:
-    static const SubstationXml& instance();
+    static const SubstationXml& getInstance();
 
 protected:
     SubstationAdder createAdder(Network& network) const override;

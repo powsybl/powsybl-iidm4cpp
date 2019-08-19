@@ -36,6 +36,14 @@ void XmlStreamWriter::setPrefix(const std::string& prefix, const std::string& ur
     writeAttribute(fullPrefix, uri);
 }
 
+void XmlStreamWriter::writeAttribute(const std::string& attributeName, bool attributeValue) {
+    writeAttribute(attributeName, std::string(attributeValue ? "true" : "false"));
+}
+
+void XmlStreamWriter::writeAttribute(const std::string& attributeName, const char* attributeValue) {
+    writeAttribute(attributeName, std::string(attributeValue));
+}
+
 void XmlStreamWriter::writeAttribute(const std::string& attributeName, double attributeValue) {
     writeAttribute(attributeName, stdcxx::to_string(attributeValue));
 }

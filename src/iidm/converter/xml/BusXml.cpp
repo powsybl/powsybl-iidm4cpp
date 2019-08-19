@@ -21,17 +21,17 @@ BusAdder BusXml::createAdder(VoltageLevel& voltageLevel) const {
     return voltageLevel.getBusBreakerView().newBus();
 }
 
+const BusXml& BusXml::getInstance() {
+    static BusXml s_instance;
+    return s_instance;
+}
+
 const char* BusXml::getRootElementName() const {
     return BUS;
 }
 
 bool BusXml::hasSubElements(const Bus& /*bus*/) const {
     return false;
-}
-
-BusXml& BusXml::instance() {
-    static BusXml instance;
-    return instance;
 }
 
 Bus& BusXml::readRootElementAttributes(BusAdder& adder, const NetworkXmlReaderContext& context) const {

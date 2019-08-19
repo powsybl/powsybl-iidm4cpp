@@ -28,17 +28,17 @@ SubstationAdder SubstationXml::createAdder(Network& network) const {
     return network.newSubstation();
 }
 
+const SubstationXml& SubstationXml::getInstance() {
+    static SubstationXml s_instance;
+    return s_instance;
+}
+
 const char* SubstationXml::getRootElementName() const {
     return SUBSTATION;
 }
 
 bool SubstationXml::hasSubElements(const Substation& /*substation*/) const {
     return true;
-}
-
-const SubstationXml& SubstationXml::instance() {
-    static SubstationXml instance;
-    return instance;
 }
 
 Substation& SubstationXml::readRootElementAttributes(SubstationAdder& adder, const NetworkXmlReaderContext& context) const {
@@ -69,7 +69,7 @@ Substation& SubstationXml::readRootElementAttributes(SubstationAdder& adder, con
 void SubstationXml::readSubElements(Substation& substation, const NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(SUBSTATION, [this, &substation, &context]() {
         if (context.getReader().getLocalName() == VOLTAGE_LEVEL) {
-            VoltageLevelXml::instance().read(substation, context);
+            VoltageLevelXml::getInstance().read(substation, context);
         } else {
             AbstractIdentifiableXml::readSubElements(substation, context);
         }
@@ -98,7 +98,7 @@ void SubstationXml::writeRootElementAttributes(const Substation& substation, con
 
 void SubstationXml::writeSubElements(const Substation& substation, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     for (const auto& voltageLevel : substation.getVoltageLevels()) {
-        VoltageLevelXml::instance().write(voltageLevel, substation, context);
+        VoltageLevelXml::getInstance().write(voltageLevel, substation, context);
     }
 }
 

@@ -24,7 +24,7 @@ namespace xml {
 
 class BusXml : public AbstractIdentifiableXml<Bus, BusAdder, VoltageLevel> {
 public:
-    static BusXml& instance();
+    static const BusXml& getInstance();
 
 protected:
     BusAdder createAdder(VoltageLevel& voltageLevel) const override;

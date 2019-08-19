@@ -32,6 +32,7 @@ set(IIDM_SOURCES
     iidm/CurrentLimits.cpp
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
+    iidm/EnergySource.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp
@@ -107,6 +108,7 @@ set(IIDM_SOURCES
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
     iidm/converter/xml/BusXml.cpp
+    iidm/converter/xml/GeneratorXml.cpp
     iidm/converter/xml/LoadXml.cpp
     iidm/converter/xml/NetworkXml.cpp
     iidm/converter/xml/NetworkXmlReaderContext.cpp

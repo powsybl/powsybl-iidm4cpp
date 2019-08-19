@@ -24,7 +24,7 @@ namespace xml {
 
 class LoadXml : public AbstractConnectableXml<Load, LoadAdder, VoltageLevel> {
 public:
-    static LoadXml& instance();
+    static const LoadXml& getInstance();
 
 protected:
     LoadAdder createAdder(VoltageLevel& voltageLevel) const override;

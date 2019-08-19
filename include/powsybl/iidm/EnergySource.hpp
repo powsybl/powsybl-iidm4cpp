@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_ENERGYSOURCE_HPP
 #define POWSYBL_IIDM_ENERGYSOURCE_HPP
 
+#include <string>
+
 namespace powsybl {
 
 namespace iidm {
@@ -20,6 +22,10 @@ enum class EnergySource : bool {
     SOLAR = true,
     OTHER = false
 };
+
+EnergySource getEnergySource(const std::string& energySourceName);
+
+std::string getEnergySourceName(const EnergySource& energySource);
 
 inline bool isIntermittent(const EnergySource& energySource) {
     return static_cast<bool>(energySource);

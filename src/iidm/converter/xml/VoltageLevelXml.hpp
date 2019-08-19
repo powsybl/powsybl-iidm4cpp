@@ -24,7 +24,7 @@ namespace xml {
 
 class VoltageLevelXml : public AbstractIdentifiableXml<VoltageLevel, VoltageLevelAdder, Substation> {
 public:
-    static VoltageLevelXml& instance();
+    static const VoltageLevelXml& getInstance();
 
 protected:
     VoltageLevelAdder createAdder(Substation& substation) const override;
@@ -47,6 +47,8 @@ private:
     ~VoltageLevelXml() = default;
 
     void writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const;
+
+    void writeGenerators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 };

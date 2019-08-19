@@ -51,7 +51,7 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
 
     context.getReader().readUntilEndElement(NETWORK, [&network, &context]() {
         if (context.getReader().getLocalName() == SUBSTATION) {
-            SubstationXml::instance().read(network, context);
+            SubstationXml::getInstance().read(network, context);
         } else {
             throw powsybl::xml::XmlStreamException(logging::format("Unexpected element: %1%", context.getReader().getLocalName()));
         }
@@ -80,7 +80,7 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
 
     for (const auto& substation : network.getSubstations()) {
-        SubstationXml::instance().write(substation, network, context);
+        SubstationXml::getInstance().write(substation, network, context);
     }
 
     writer.writeEndElement();

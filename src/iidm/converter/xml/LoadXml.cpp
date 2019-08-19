@@ -27,17 +27,17 @@ LoadAdder LoadXml::createAdder(VoltageLevel& voltageLevel) const {
     return voltageLevel.newLoad();
 }
 
+const LoadXml& LoadXml::getInstance() {
+    static LoadXml s_instance;
+    return s_instance;
+}
+
 const char* LoadXml::getRootElementName() const {
     return LOAD;
 }
 
 bool LoadXml::hasSubElements(const Load& /*load*/) const {
     return false;
-}
-
-LoadXml& LoadXml::instance() {
-    static LoadXml instance;
-    return instance;
 }
 
 Load& LoadXml::readRootElementAttributes(LoadAdder& loadAdder, const NetworkXmlReaderContext& context) const {

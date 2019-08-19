@@ -7,6 +7,7 @@
 
 #include <powsybl/xml/XmlStreamReader.hpp>
 
+#include <boost/algorithm/string/predicate.hpp>
 #include <libxml/xmlreader.h>
 
 #include <powsybl/AssertionError.hpp>
@@ -58,6 +59,13 @@ XmlStreamReader::XmlStreamReader(std::istream& stream, const std::string& encodi
         deleteReaderCallback);
 
     next();
+}
+
+template <>
+bool XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+    XmlString value = getAttributeValue(attributeName, false);
+    const std::string& booleanStr = XML2S(value.get());
+    return boost::iequals(booleanStr, "true");
 }
 
 template <>

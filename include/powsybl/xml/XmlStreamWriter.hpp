@@ -27,6 +27,10 @@ public:
 
     void setPrefix(const std::string& prefix, const std::string& uri);
 
+    void writeAttribute(const std::string& attributeName, bool attributeValue);
+
+    void writeAttribute(const std::string& attributeName, const char* attributeValue);
+
     void writeAttribute(const std::string& attributeName, double attributeValue);
 
     void writeAttribute(const std::string& attributeName, int attributeValue);
