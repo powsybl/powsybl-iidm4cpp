@@ -6,6 +6,7 @@
  */
 
 #define BOOST_TEST_MODULE iidm
+#include "boost/unit_test.hpp"
 #include <boost/test/included/unit_test.hpp>
 
 #include <xml/XmlFixture.hpp>

@@ -6,6 +6,7 @@
  */
 
 #define BOOST_TEST_MODULE xml
+#include "boost/unit_test.hpp"
 #include <boost/test/included/unit_test.hpp>
 
 #include <xml/XmlFixture.hpp>
