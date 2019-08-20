@@ -15,11 +15,13 @@ namespace iidm {
 namespace converter {
 
 static const char* const ANGLE = "angle";
+static const char* const B_PER_SECTION = "bPerSection";
 static const char* const BUS = "bus";
 static const char* const BUS_BREAKER_TOPOLOGY = "busBreakerTopology";
 static const char* const CASE_DATE = "caseDate";
 static const char* const CONNECTABLE_BUS = "connectableBus";
 static const char* const COUNTRY = "country";
+static const char* const CURRENT_SECTION_COUNT = "currentSectionCount";
 static const char* const ENERGY_SOURCE = "energySource";
 static const char* const FORECAST_DISTANCE = "forecastDistance";
 static const char* const GENERATOR = "generator";
@@ -32,6 +34,7 @@ static const char* const LOAD = "load";
 static const char* const LOAD_TYPE = "loadType";
 static const char* const LOW_VOLTAGE_LIMIT = "lowVoltageLimit";
 static const char* const MAX_P = "maxP";
+static const char* const MAXIMUM_SECTION_COUNT = "maximumSectionCount";
 static const char* const MIN_MAX_REACTIVE_LIMITS = "minMaxReactiveLimits";
 static const char* const MIN_P = "minP";
 static const char* const NAME = "name";
@@ -44,6 +47,7 @@ static const char* const PROPERTY = "property";
 static const char* const RATED_S = "ratedS";
 static const char* const REACTIVE_CAPABILITY_CURVE = "reactiveCapabilityCurve";
 static const char* const REGULATING_TERMINAL = "regulatingTerminal";
+static const char* const SHUNT = "shunt";
 static const char* const SOURCE_FORMAT = "sourceFormat";
 static const char* const SUBSTATION = "substation";
 static const char* const Q = "q";

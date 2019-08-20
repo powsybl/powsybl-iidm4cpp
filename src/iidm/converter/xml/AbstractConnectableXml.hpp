@@ -44,7 +44,7 @@ protected:
     static void writePQ(const boost::optional<int>& index, const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer);
 
 private:
-    static void writeBus(const boost::optional<int>& index, const Bus& bus, const Bus& connectableBus, NetworkXmlWriterContext& context);
+    static void writeBus(const boost::optional<int>& index, const stdcxx::Reference<Bus>& bus, const stdcxx::Reference<Bus>& connectableBus, NetworkXmlWriterContext& context);
 
     static void writeNode(const boost::optional<int>& index, const Terminal& terminal, NetworkXmlWriterContext& context);
 };

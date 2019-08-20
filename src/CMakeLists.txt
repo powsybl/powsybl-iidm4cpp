@@ -113,6 +113,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/NetworkXml.cpp
     iidm/converter/xml/NetworkXmlReaderContext.cpp
     iidm/converter/xml/NetworkXmlWriterContext.cpp
+    iidm/converter/xml/ShuntCompensatorXml.cpp
     iidm/converter/xml/SubstationXml.cpp
     iidm/converter/xml/VoltageLevelXml.cpp
 

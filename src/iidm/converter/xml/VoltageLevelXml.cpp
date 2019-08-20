@@ -16,6 +16,7 @@
 #include "BusXml.hpp"
 #include "GeneratorXml.hpp"
 #include "LoadXml.hpp"
+#include "ShuntCompensatorXml.hpp"
 
 namespace powsybl {
 
@@ -68,6 +69,8 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, const NetworkX
             GeneratorXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == LOAD) {
             LoadXml::getInstance().read(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == SHUNT) {
+            ShuntCompensatorXml::getInstance().read(voltageLevel, context);
         } else {
             AbstractIdentifiableXml::readSubElements(voltageLevel, context);
         }
@@ -77,7 +80,7 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, const NetworkX
 void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const {
     context.getWriter().writeStartElement(IIDM_PREFIX, BUS_BREAKER_TOPOLOGY);
     for (const Bus& bus : voltageLevel.getBusBreakerView().getBuses()) {
-        // TODO(sebalaig) consider bus filters
+        // TODO(sebalaig) consider filtering
         BusXml::getInstance().write(bus, voltageLevel, context);
     }
     // TODO(sebalaig) export switches
@@ -93,8 +96,15 @@ void VoltageLevelXml::writeGenerators(const VoltageLevel& voltageLevel, NetworkX
 
 void VoltageLevelXml::writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const auto& load : voltageLevel.getLoads()) {
-        // TODO(sebalaig) consider bus filters
+        // TODO(sebalaig) consider filtering
         LoadXml::getInstance().write(load, voltageLevel, context);
+    }
+}
+
+void VoltageLevelXml::writeShuntCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const auto& shuntCompensator : voltageLevel.getShuntCompensators()) {
+        // TODO(sebalaig) consider filtering
+        ShuntCompensatorXml::getInstance().write(shuntCompensator, voltageLevel, context);
     }
 }
 
@@ -124,6 +134,7 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const S
 
     writeGenerators(voltageLevel, context);
     writeLoads(voltageLevel, context);
+    writeShuntCompensators(voltageLevel, context);
 }
 
 }  // namespace xml

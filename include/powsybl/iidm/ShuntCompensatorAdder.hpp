@@ -19,7 +19,6 @@ class ShuntCompensator;
 class VoltageLevel;
 
 class ShuntCompensatorAdder : public InjectionAdder<ShuntCompensatorAdder> {
-
 public:
     ~ShuntCompensatorAdder() noexcept override = default;
 

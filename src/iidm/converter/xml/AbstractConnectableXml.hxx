@@ -53,9 +53,13 @@ std::string AbstractConnectableXml<T, A, P>::toString(const char* string, const 
 }
 
 template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeBus(const boost::optional<int>& index, const Bus& bus, const Bus& connectableBus, NetworkXmlWriterContext& context) {
-    context.getWriter().writeAttribute(toString(BUS, index), context.getAnonymizer().anonymizeString(bus.getId()));
-    context.getWriter().writeAttribute(toString(CONNECTABLE_BUS, index), context.getAnonymizer().anonymizeString(connectableBus.getId()));
+void AbstractConnectableXml<T, A, P>::writeBus(const boost::optional<int>& index, const stdcxx::Reference<Bus>& bus, const stdcxx::Reference<Bus>& connectableBus, NetworkXmlWriterContext& context) {
+    if (bus) {
+        context.getWriter().writeAttribute(toString(BUS, index), context.getAnonymizer().anonymizeString(bus.get().getId()));
+    }
+    if (connectableBus) {
+        context.getWriter().writeAttribute(toString(CONNECTABLE_BUS, index), context.getAnonymizer().anonymizeString(connectableBus.get().getId()));
+    }
 }
 
 template <typename T, typename A, typename P>

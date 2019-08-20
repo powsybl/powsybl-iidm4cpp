@@ -45,6 +45,7 @@ set(UNIT_TEST_SOURCES
     converter/xml/NetworkXmlTest.cpp
     converter/xml/NetworkXmlReaderContextTest.cpp
     converter/xml/NetworkXmlWriterContextTest.cpp
+    converter/xml/TerminalRefTest.cpp
     converter/xml/XmlReadWriteTest.cpp
     converter/xml/XmlRoundTripTest.cpp
 )
