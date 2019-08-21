@@ -72,7 +72,7 @@ void AbstractIdentifiableXml<T, A, P>::write(const T& identifiable, const P& par
 
 template <typename T, typename A, typename P>
 void AbstractIdentifiableXml<T, A, P>::writeSubElements(const T& /*identifiable*/, const P& /*parent*/, xml::NetworkXmlWriterContext&/*context*/) const {
-
+    // Nothing to do
 }
 
 }  // namespace xml

@@ -42,7 +42,7 @@ protected:
 private:
     GeneratorXml() = default;
 
-    ~GeneratorXml() = default;
+    ~GeneratorXml() noexcept override = default;
 };
 
 }  // namespace xml

@@ -46,7 +46,7 @@ protected:
 protected:
     AbstractIdentifiableXml() = default;
 
-    ~AbstractIdentifiableXml() = default;
+    virtual ~AbstractIdentifiableXml() noexcept = default;
 };
 
 }  // namespace xml

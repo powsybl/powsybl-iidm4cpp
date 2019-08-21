@@ -42,7 +42,7 @@ protected:
 private:
     VscConverterStationXml() = default;
 
-    ~VscConverterStationXml() = default;
+    ~VscConverterStationXml() noexcept override = default;
 };
 
 }  // namespace xml

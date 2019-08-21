@@ -42,7 +42,7 @@ protected:
 private:
     LoadXml() = default;
 
-    ~LoadXml() = default;
+    ~LoadXml() override = default;
 };
 
 }  // namespace xml

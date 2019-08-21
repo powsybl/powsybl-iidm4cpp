@@ -36,12 +36,7 @@ bool ConsoleLogger::isWarnEnabled() const {
 }
 
 void ConsoleLogger::log(const Level& level, const std::string& message) {
-    LogMessage logMessage(level, message);
-    if (level == Level::ERROR) {
-        std::cerr << logMessage << std::endl;
-    } else {
-        std::cout << logMessage << std::endl;
-    }
+    std::clog << LogMessage(level, message) << std::endl;
 }
 
 }  // namespace logging

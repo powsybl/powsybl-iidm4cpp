@@ -44,7 +44,7 @@ protected:
 private:
     SubstationXml() = default;
 
-    ~SubstationXml() = default;
+    ~SubstationXml() noexcept override = default;
 };
 
 }  // namespace xml

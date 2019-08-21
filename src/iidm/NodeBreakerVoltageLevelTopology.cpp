@@ -92,7 +92,7 @@ unsigned long CalculatedBusBreakerTopology::getSwitchCount() const {
 
     for (const auto& sw : getVoltageLevel().getGraph().getEdgeObjects()) {
         if (static_cast<bool>(sw) && sw.get().isRetained()) {
-            switchCount++;
+            ++switchCount;
         }
     }
 
@@ -172,8 +172,9 @@ stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long no
 
     // if nothing found, just take the first bus
     if (! static_cast<bool>(connectableBus)) {
-        for (auto& bus : getBuses()) {
-            return stdcxx::ref<Bus>(bus);
+        const auto& buses = getBuses();
+        if (!boost::empty(buses)) {
+            return stdcxx::ref<Bus>(buses.front());
         }
 
         throw AssertionError("Should not happen");

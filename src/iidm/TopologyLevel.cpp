@@ -52,9 +52,9 @@ TopologyKind getTopologyKind(const TopologyLevel& topologyLevel) {
             return TopologyKind::NODE_BREAKER;
 
         case TopologyLevel::BUS_BREAKER:
+        case TopologyLevel::BUS_BRANCH:
             return TopologyKind::BUS_BREAKER;
 
-        case TopologyLevel::BUS_BRANCH:
         default:
             throw PowsyblException(logging::format("No topology kind associated to topology level %1%", topologyLevel));
     }

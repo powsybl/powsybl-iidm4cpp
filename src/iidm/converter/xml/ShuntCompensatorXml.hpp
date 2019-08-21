@@ -42,7 +42,7 @@ protected:
 private:
     ShuntCompensatorXml() = default;
 
-    ~ShuntCompensatorXml() = default;
+    ~ShuntCompensatorXml() noexcept override = default;
 };
 
 }  // namespace xml

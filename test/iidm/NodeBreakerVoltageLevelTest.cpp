@@ -698,6 +698,101 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
 }
 
+BOOST_AUTO_TEST_CASE(CalculatedBusTopology2) {
+    Network network("test", "test");
+
+    Substation& s = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+
+    VoltageLevel& vl = s.newVoltageLevel()
+        .setId("VL")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalVoltage(400.0)
+        .add();
+
+    vl.getNodeBreakerView().setNodeCount(1);
+
+    auto& l1 = vl.newLoad()
+        .setId("LOAD1")
+        .setNode(0)
+        .setName("LOAD1_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    POWSYBL_ASSERT_THROW(l1.getTerminal().getBusBreakerView().getConnectableBus(), AssertionError, "Should not happen");
+}
+
+BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
+    Network network("test", "test");
+
+    Substation& s = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+
+    VoltageLevel& vl = s.newVoltageLevel()
+        .setId("VL")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalVoltage(400.0)
+        .add();
+
+    vl.getNodeBreakerView().setNodeCount(3);
+
+    auto& l1 = vl.newLoad()
+        .setId("LOAD1")
+        .setNode(0)
+        .setName("LOAD1_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    vl.newLoad()
+        .setId("LOAD2")
+        .setNode(1)
+        .setName("LOAD1_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    vl.getNodeBreakerView().newBreaker()
+        .setId("SWB1")
+        .setNode1(1)
+        .setNode2(2)
+        .setRetained(false)
+        .setOpen(false)
+        .add();
+
+    VoltageLevel& vl2 = s.newVoltageLevel()
+        .setId("VL2")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalVoltage(90.0)
+        .add();
+
+    vl2.getNodeBreakerView().setNodeCount(1);
+
+    network.newLine()
+        .setId("VL_VL2")
+        .setVoltageLevel1(vl.getId())
+        .setNode1(2)
+        .setVoltageLevel2(vl2.getId())
+        .setNode2(0)
+        .setR(3.0)
+        .setX(33.0)
+        .setG1(1.0)
+        .setB1(0.2)
+        .setG2(2.0)
+        .setB2(0.4)
+        .add();
+
+    POWSYBL_ASSERT_REF_TRUE(l1.getTerminal().getBusBreakerView().getConnectableBus());
+}
+
 BOOST_AUTO_TEST_CASE(TerminalTest) {
     Network network("test", "test");
 

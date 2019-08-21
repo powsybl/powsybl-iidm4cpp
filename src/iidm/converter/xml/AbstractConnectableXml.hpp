@@ -32,7 +32,12 @@ namespace xml {
 
 template <typename T, typename A, typename P>
 class AbstractConnectableXml : public AbstractIdentifiableXml<T, A, P> {
+public:
+    ~AbstractConnectableXml() noexcept override = default;
+
 protected:
+    AbstractConnectableXml() = default;
+
     static void readNodeOrBus(InjectionAdder<A>& adder, const NetworkXmlReaderContext& context);
 
     static void readPQ(const boost::optional<int>& index, Terminal& terminal, const powsybl::xml::XmlStreamReader& reader);

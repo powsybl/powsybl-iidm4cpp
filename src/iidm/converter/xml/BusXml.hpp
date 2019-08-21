@@ -42,7 +42,7 @@ protected:
 private:
     BusXml() = default;
 
-    ~BusXml() = default;
+    ~BusXml() noexcept override = default;
 };
 
 }  // namespace xml

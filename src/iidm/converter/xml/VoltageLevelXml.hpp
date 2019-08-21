@@ -44,7 +44,7 @@ protected:
 private:
     VoltageLevelXml() = default;
 
-    ~VoltageLevelXml() = default;
+    ~VoltageLevelXml() noexcept override = default;
 
     void writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const;
 
