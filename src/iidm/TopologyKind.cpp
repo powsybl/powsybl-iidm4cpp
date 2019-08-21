@@ -17,7 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-static const std::array<std::string, 2>& getTopologyKindNames() {
+const std::array<std::string, 2>& getTopologyKindNames() {
     static std::array<std::string, 2> s_topologyKindNames {{
         "NODE_BREAKER",
         "BUS_BREAKER"

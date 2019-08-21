@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace iidm {
 
-static const std::array<std::string, 3>& getTopologyLevelNames() {
+const std::array<std::string, 3>& getTopologyLevelNames() {
     static std::array<std::string, 3> s_topologyLevelNames {{
         "NODE_BREAKER",
         "BUS_BREAKER",

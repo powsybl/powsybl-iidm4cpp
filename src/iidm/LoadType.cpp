@@ -15,7 +15,7 @@ namespace powsybl {
 
 namespace logging {
 
-static const std::array<std::string, 3>& getLoadTypeNames() {
+const std::array<std::string, 3>& getLoadTypeNames() {
     static std::array<std::string, 3> s_typeNames {{
         "UNDEFINED",
         "AUXILIARY",
