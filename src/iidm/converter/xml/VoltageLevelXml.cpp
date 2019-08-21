@@ -17,6 +17,7 @@
 #include "GeneratorXml.hpp"
 #include "LoadXml.hpp"
 #include "ShuntCompensatorXml.hpp"
+#include "VscConverterStationXml.hpp"
 
 namespace powsybl {
 
@@ -71,6 +72,8 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, const NetworkX
             LoadXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == SHUNT) {
             ShuntCompensatorXml::getInstance().read(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == VSC_CONVERTER_STATION) {
+            VscConverterStationXml::getInstance().read(voltageLevel, context);
         } else {
             AbstractIdentifiableXml::readSubElements(voltageLevel, context);
         }
@@ -89,7 +92,7 @@ void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, 
 
 void VoltageLevelXml::writeGenerators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const auto& generator : voltageLevel.getGenerators()) {
-        // TODO(sebalaig) consider bus filters
+        // TODO(sebalaig) consider filtering
         GeneratorXml::getInstance().write(generator, voltageLevel, context);
     }
 }
@@ -135,6 +138,14 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const S
     writeGenerators(voltageLevel, context);
     writeLoads(voltageLevel, context);
     writeShuntCompensators(voltageLevel, context);
+    writeVscConverterStations(voltageLevel, context);
+}
+
+void VoltageLevelXml::writeVscConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const auto& converterStation : voltageLevel.getVscConverterStations()) {
+        // TODO(sebalaig) consider filtering
+        VscConverterStationXml::getInstance().write(converterStation, voltageLevel, context);
+    }
 }
 
 }  // namespace xml

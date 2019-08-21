@@ -116,6 +116,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/ShuntCompensatorXml.cpp
     iidm/converter/xml/SubstationXml.cpp
     iidm/converter/xml/VoltageLevelXml.cpp
+    iidm/converter/xml/VscConverterStationXml.cpp
 
     iidm/util/LimitViolationUtils.cpp
 

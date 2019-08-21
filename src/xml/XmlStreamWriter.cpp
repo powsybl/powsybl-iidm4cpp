@@ -45,7 +45,9 @@ void XmlStreamWriter::writeAttribute(const std::string& attributeName, const cha
 }
 
 void XmlStreamWriter::writeAttribute(const std::string& attributeName, double attributeValue) {
-    writeAttribute(attributeName, stdcxx::to_string(attributeValue));
+    if (!std::isnan(attributeValue)) {
+        writeAttribute(attributeName, stdcxx::to_string(attributeValue));
+    }
 }
 
 void XmlStreamWriter::writeAttribute(const std::string& attributeName, int attributeValue) {

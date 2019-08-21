@@ -53,6 +53,8 @@ private:
     void writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeShuntCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
+
+    void writeVscConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 };
 
 }  // namespace xml

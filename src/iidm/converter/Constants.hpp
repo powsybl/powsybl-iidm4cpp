@@ -32,6 +32,7 @@ static const char* const IIDM_PREFIX = "iidm";
 static const char* const IIDM_URI = "http://www.itesla_project.eu/schema/iidm/1_0";
 static const char* const LOAD = "load";
 static const char* const LOAD_TYPE = "loadType";
+static const char* const LOSS_FACTOR = "lossFactor";
 static const char* const LOW_VOLTAGE_LIMIT = "lowVoltageLimit";
 static const char* const MAX_P = "maxP";
 static const char* const MAXIMUM_SECTION_COUNT = "maximumSectionCount";
@@ -46,6 +47,7 @@ static const char* const P0 = "p0";
 static const char* const PROPERTY = "property";
 static const char* const RATED_S = "ratedS";
 static const char* const REACTIVE_CAPABILITY_CURVE = "reactiveCapabilityCurve";
+static const char* const REACTIVE_POWER_SETPOINT = "reactivePowerSetpoint";
 static const char* const REGULATING_TERMINAL = "regulatingTerminal";
 static const char* const SHUNT = "shunt";
 static const char* const SOURCE_FORMAT = "sourceFormat";
@@ -62,6 +64,8 @@ static const char* const VALUE = "value";
 static const char* const VOLTAGE_LEVEL = "voltageLevel";
 static const char* const VOLTAGE_LEVEL_ID = "voltageLevelId";
 static const char* const VOLTAGE_REGULATOR_ON = "voltageRegulatorOn";
+static const char* const VOLTAGE_SETPOINT = "voltageSetpoint";
+static const char* const VSC_CONVERTER_STATION = "vscConverterStation";
 
 }  // namespace converter
 
