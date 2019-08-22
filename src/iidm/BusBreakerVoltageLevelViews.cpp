@@ -91,7 +91,7 @@ BusAdder BusBreakerViewImpl::newBus() {
     return BusAdder(m_voltageLevel);
 }
 
-BusBreakerView::SwitchAdder BusBreakerViewImpl::newSwitch() {
+VoltageLevel::BusBreakerView::SwitchAdder BusBreakerViewImpl::newSwitch() {
     return BusBreakerView::SwitchAdder(m_voltageLevel);
 }
 

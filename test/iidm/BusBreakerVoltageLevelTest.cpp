@@ -10,8 +10,6 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/BusBreakerView.hpp>
-#include <powsybl/iidm/BusView.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
@@ -125,7 +123,7 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
 
-    BusBreakerView& view = voltageLevel.getBusBreakerView();
+    auto& view = voltageLevel.getBusBreakerView();
     Bus& bus1 = view.newBus()
         .setId("BUS1")
         .setName("BUS1_NAME")
@@ -152,7 +150,7 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
         .setBus2("BUS3")
         .add();
 
-    const BusBreakerView& cView = view;
+    const auto& cView = view;
 
     // get bus
     const auto& refBus1 = view.getBus("BUS1");
@@ -215,7 +213,7 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
 
     // test const versions
     const VoltageLevel& vl = network.getVoltageLevel("VL1");
-    const BusBreakerView& view2 = vl.getBusBreakerView();
+    const auto& view2 = vl.getBusBreakerView();
     const auto& refUnknownBus2 = view2.getBus("UNKNOWN");
     BOOST_TEST(!refUnknownBus2);
 }
@@ -324,8 +322,8 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
 
     sw.setOpen(true);
     VoltageLevel& vlTest = vl;
-    BusView& busView = vlTest.getBusView();
-    const BusView& cBusView = vlTest.getBusView();
+    auto& busView = vlTest.getBusView();
+    const auto& cBusView = vlTest.getBusView();
     BOOST_CHECK_EQUAL(2UL, boost::size(busView.getBuses()));
     BOOST_CHECK_EQUAL(2UL, boost::size(cBusView.getBuses()));
     mergedBus1 = busView.getMergedBus("BUS1");

@@ -12,7 +12,6 @@
 #include <boost/range/join.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/BusView.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>

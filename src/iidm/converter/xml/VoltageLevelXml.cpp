@@ -7,7 +7,6 @@
 
 #include "VoltageLevelXml.hpp"
 
-#include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 

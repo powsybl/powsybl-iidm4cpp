@@ -137,19 +137,19 @@ void BusBreakerVoltageLevel::extendVariantArraySize(unsigned long initVariantArr
     m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
-const BusBreakerView& BusBreakerVoltageLevel::getBusBreakerView() const {
+const BusBreakerVoltageLevel::BusBreakerView& BusBreakerVoltageLevel::getBusBreakerView() const {
     return m_busBreakerView;
 }
 
-BusBreakerView& BusBreakerVoltageLevel::getBusBreakerView() {
+BusBreakerVoltageLevel::BusBreakerView& BusBreakerVoltageLevel::getBusBreakerView() {
     return m_busBreakerView;
 }
 
-const BusView& BusBreakerVoltageLevel::getBusView() const {
+const BusBreakerVoltageLevel::BusView& BusBreakerVoltageLevel::getBusView() const {
     return m_busView;
 }
 
-BusView& BusBreakerVoltageLevel::getBusView() {
+BusBreakerVoltageLevel::BusView& BusBreakerVoltageLevel::getBusView() {
     return m_busView;
 }
 
@@ -205,11 +205,11 @@ stdcxx::Reference<MergedBus> BusBreakerVoltageLevel::getMergedBus(const std::str
     return getCalculatedBusTopology().getMergedBus(busId, throwException);
 }
 
-const NodeBreakerView& BusBreakerVoltageLevel::getNodeBreakerView() const {
+const BusBreakerVoltageLevel::NodeBreakerView& BusBreakerVoltageLevel::getNodeBreakerView() const {
     throw AssertionError("Not implemented");
 }
 
-NodeBreakerView& BusBreakerVoltageLevel::getNodeBreakerView() {
+BusBreakerVoltageLevel::NodeBreakerView& BusBreakerVoltageLevel::getNodeBreakerView() {
     throw AssertionError("Not implemented");
 }
 

@@ -8,7 +8,6 @@
 #include <powsybl/network/EurostagFactory.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/BusBreakerView.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Line.hpp>

@@ -10,15 +10,12 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/BusBreakerView.hpp>
-#include <powsybl/iidm/BusView.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/NodeBreakerView.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 
@@ -353,7 +350,7 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getNode1("UNKNOWN"), PowsyblException, "Switch 'UNKNOWN' not found in the voltage level 'VL2'");
 
-    NodeBreakerView::Traverser traverser = [](unsigned long /*node1*/, const stdcxx::Reference<Switch>& /*sw*/, unsigned long node2) {
+    VoltageLevel::NodeBreakerView::Traverser traverser = [](unsigned long /*node1*/, const stdcxx::Reference<Switch>& /*sw*/, unsigned long node2) {
         return (node2 < (NODE_COUNT - 1));
     };
     voltageLevel.getNodeBreakerView().traverse(0, traverser);
@@ -375,8 +372,8 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     // test const versions
     // test const versions
     VoltageLevel& vlTest = network.getVoltageLevel("VL2");
-    NodeBreakerView& view = vlTest.getNodeBreakerView();
-    const NodeBreakerView& cView = view;
+    auto& view = vlTest.getNodeBreakerView();
+    const auto& cView = view;
     BOOST_CHECK_EQUAL(0, view.getBusbarSectionCount());
     BOOST_TEST(boost::empty(view.getBusbarSections()));
     BOOST_TEST(boost::empty(cView.getBusbarSections()));

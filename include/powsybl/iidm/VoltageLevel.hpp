@@ -12,6 +12,7 @@
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
+#include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -21,8 +22,6 @@ namespace iidm {
 
 class Battery;
 class BatteryAdder;
-class BusBreakerView;
-class BusView;
 class DanglingLine;
 class DanglingLineAdder;
 class Generator;
@@ -32,7 +31,6 @@ class LccConverterStationAdder;
 class Load;
 class LoadAdder;
 class Network;
-class NodeBreakerView;
 class ShuntCompensator;
 class ShuntCompensatorAdder;
 class StaticVarCompensator;
@@ -44,6 +42,13 @@ class VscConverterStation;
 class VscConverterStationAdder;
 
 class VoltageLevel : public Container, public MultiVariantObject {
+public:
+    using BusBreakerView = voltage_level::BusBreakerView;
+
+    using BusView = voltage_level::BusView;
+
+    using NodeBreakerView = voltage_level::NodeBreakerView;
+
 public:
     ~VoltageLevel() noexcept override = default;
 

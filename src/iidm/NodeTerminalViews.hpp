@@ -8,9 +8,7 @@
 #ifndef POWSYBL_IIDM_NODETERMINALVIEWS_HPP
 #define POWSYBL_IIDM_NODETERMINALVIEWS_HPP
 
-#include <powsybl/iidm/BusBreakerView.hpp>
-#include <powsybl/iidm/BusView.hpp>
-#include <powsybl/iidm/NodeBreakerView.hpp>
+#include <powsybl/iidm/TerminalViews.hpp>
 
 namespace powsybl {
 

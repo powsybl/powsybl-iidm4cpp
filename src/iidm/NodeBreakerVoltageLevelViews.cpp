@@ -79,7 +79,7 @@ BusAdder BusBreakerViewImpl::newBus() {
     throw AssertionError("Not implemented");
 }
 
-BusBreakerView::SwitchAdder BusBreakerViewImpl::newSwitch() {
+VoltageLevel::BusBreakerView::SwitchAdder BusBreakerViewImpl::newSwitch() {
     throw AssertionError("Not implemented");
 }
 
@@ -264,7 +264,7 @@ void NodeBreakerViewImpl::removeSwitch(const std::string& switchId) {
     m_voltageLevel.removeSwitch(switchId);
 }
 
-NodeBreakerView& NodeBreakerViewImpl::setNodeCount(unsigned long nodeCount) {
+VoltageLevel::NodeBreakerView& NodeBreakerViewImpl::setNodeCount(unsigned long nodeCount) {
     m_voltageLevel.setNodeCount(nodeCount);
     return *this;
 }

@@ -58,27 +58,27 @@ double BusTerminal::getAngle() const {
     return static_cast<bool>(bus) ? bus.get().getAngle() : stdcxx::nan();
 }
 
-const terminal::BusBreakerView& BusTerminal::getBusBreakerView() const {
+const BusTerminal::BusBreakerView& BusTerminal::getBusBreakerView() const {
     return m_busBreakerView;
 }
 
-terminal::BusBreakerView& BusTerminal::getBusBreakerView() {
+BusTerminal::BusBreakerView& BusTerminal::getBusBreakerView() {
     return m_busBreakerView;
 }
 
-const terminal::BusView& BusTerminal::getBusView() const {
+const BusTerminal::BusView& BusTerminal::getBusView() const {
     return m_busView;
 }
 
-terminal::BusView& BusTerminal::getBusView() {
+BusTerminal::BusView& BusTerminal::getBusView() {
     return m_busView;
 }
 
-const terminal::NodeBreakerView& BusTerminal::getNodeBreakerView() const {
+const BusTerminal::NodeBreakerView& BusTerminal::getNodeBreakerView() const {
     throw AssertionError("Not implemented");
 }
 
-terminal::NodeBreakerView& BusTerminal::getNodeBreakerView() {
+BusTerminal::NodeBreakerView& BusTerminal::getNodeBreakerView() {
     throw AssertionError("Not implemented");
 }
 

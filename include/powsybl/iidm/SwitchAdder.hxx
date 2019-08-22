@@ -10,8 +10,6 @@
 
 #include <powsybl/iidm/SwitchAdder.hpp>
 
-#include <powsybl/iidm/VoltageLevel.hpp>
-
 namespace powsybl {
 
 namespace iidm {
@@ -25,7 +23,7 @@ AbstractSwitchAdder<SwitchAdder>::AbstractSwitchAdder(VoltageLevel& voltageLevel
 
 template <typename SwitchAdder>
 Network& AbstractSwitchAdder<SwitchAdder>::getNetwork() {
-    return m_voltageLevel.getNetwork();
+    return getVoltageLevel().getNetwork();
 }
 
 template <typename SwitchAdder>

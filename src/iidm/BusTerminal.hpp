@@ -21,20 +21,27 @@ namespace powsybl {
 namespace iidm {
 
 class BusTerminal : public Terminal {
+public:
+    using BusBreakerView = terminal::BusBreakerView;
+
+    using BusView = terminal::BusView;
+
+    using NodeBreakerView = terminal::NodeBreakerView;
+
 public: // Terminal
     double getAngle() const override;
 
-    const terminal::BusBreakerView& getBusBreakerView() const override;
+    const BusBreakerView& getBusBreakerView() const override;
 
-    terminal::BusBreakerView& getBusBreakerView() override;
+    BusBreakerView& getBusBreakerView() override;
 
-    const terminal::BusView& getBusView() const override;
+    const BusView& getBusView() const override;
 
-    terminal::BusView& getBusView() override;
+    BusView& getBusView() override;
 
-    const terminal::NodeBreakerView& getNodeBreakerView() const override;
+    const NodeBreakerView& getNodeBreakerView() const override;
 
-    terminal::NodeBreakerView& getNodeBreakerView() override;
+    NodeBreakerView& getNodeBreakerView() override;
 
     double getV() const override;
 

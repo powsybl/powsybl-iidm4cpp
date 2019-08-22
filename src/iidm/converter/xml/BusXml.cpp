@@ -7,8 +7,6 @@
 
 #include "BusXml.hpp"
 
-#include <powsybl/iidm/BusBreakerView.hpp>
-
 namespace powsybl {
 
 namespace iidm {

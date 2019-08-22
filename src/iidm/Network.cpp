@@ -142,19 +142,19 @@ stdcxx::range<BusbarSection> Network::getBusbarSections() {
     return m_networkIndex.getAll<BusbarSection>();
 }
 
-const network::BusBreakerView& Network::getBusBreakerView() const {
+const Network::BusBreakerView& Network::getBusBreakerView() const {
     return m_busBreakerView;
 }
 
-network::BusBreakerView& Network::getBusBreakerView() {
+Network::BusBreakerView& Network::getBusBreakerView() {
     return m_busBreakerView;
 }
 
-const network::BusView& Network::getBusView() const {
+const Network::BusView& Network::getBusView() const {
     return m_busView;
 }
 
-network::BusView& Network::getBusView() {
+Network::BusView& Network::getBusView() {
     return m_busView;
 }
 

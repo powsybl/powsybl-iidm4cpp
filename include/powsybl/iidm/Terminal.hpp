@@ -25,6 +25,13 @@ class VoltageLevel;
 
 class Terminal : public MultiVariantObject {
 public:
+    using BusBreakerView = terminal::BusBreakerView;
+
+    using BusView = terminal::BusView;
+
+    using NodeBreakerView = terminal::NodeBreakerView;
+
+public:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     static bool isInstanceOf(const Terminal& terminal);
 
@@ -40,21 +47,21 @@ public:
 
     virtual double getAngle() const = 0;
 
-    virtual const terminal::BusBreakerView& getBusBreakerView() const = 0;
+    virtual const BusBreakerView& getBusBreakerView() const = 0;
 
-    virtual terminal::BusBreakerView& getBusBreakerView() = 0;
+    virtual BusBreakerView& getBusBreakerView() = 0;
 
-    virtual const terminal::BusView& getBusView() const = 0;
+    virtual const BusView& getBusView() const = 0;
 
-    virtual terminal::BusView& getBusView() = 0;
+    virtual BusView& getBusView() = 0;
 
     const stdcxx::Reference<Connectable>& getConnectable() const;
 
     double getI() const;
 
-    virtual const terminal::NodeBreakerView& getNodeBreakerView() const = 0;
+    virtual const NodeBreakerView& getNodeBreakerView() const = 0;
 
-    virtual terminal::NodeBreakerView& getNodeBreakerView() = 0;
+    virtual NodeBreakerView& getNodeBreakerView() = 0;
 
     double getP() const;
 

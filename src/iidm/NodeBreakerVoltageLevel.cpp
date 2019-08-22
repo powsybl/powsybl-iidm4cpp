@@ -174,19 +174,19 @@ void NodeBreakerVoltageLevel::extendVariantArraySize(unsigned long initVariantAr
     m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
-const BusBreakerView& NodeBreakerVoltageLevel::getBusBreakerView() const {
+const NodeBreakerVoltageLevel::BusBreakerView& NodeBreakerVoltageLevel::getBusBreakerView() const {
     return m_busBreakerView;
 }
 
-BusBreakerView& NodeBreakerVoltageLevel::getBusBreakerView() {
+NodeBreakerVoltageLevel::BusBreakerView& NodeBreakerVoltageLevel::getBusBreakerView() {
     return m_busBreakerView;
 }
 
-const BusView& NodeBreakerVoltageLevel::getBusView() const {
+const NodeBreakerVoltageLevel::BusView& NodeBreakerVoltageLevel::getBusView() const {
     return m_busView;
 }
 
-BusView& NodeBreakerVoltageLevel::getBusView() {
+NodeBreakerVoltageLevel::BusView& NodeBreakerVoltageLevel::getBusView() {
     return m_busView;
 }
 
@@ -239,11 +239,11 @@ unsigned long NodeBreakerVoltageLevel::getNode2(const std::string& switchId) con
     return m_graph.getVertex2(*e);
 }
 
-const NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreakerView() const {
+const NodeBreakerVoltageLevel::NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreakerView() const {
     return m_nodeBreakerView;
 }
 
-NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreakerView() {
+NodeBreakerVoltageLevel::NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreakerView() {
     return m_nodeBreakerView;
 }
 

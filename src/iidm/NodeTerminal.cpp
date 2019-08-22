@@ -53,19 +53,19 @@ double NodeTerminal::getAngle() const {
     return m_angle[getNetwork().getVariantIndex()];
 }
 
-const terminal::BusBreakerView& NodeTerminal::getBusBreakerView() const {
+const NodeTerminal::BusBreakerView& NodeTerminal::getBusBreakerView() const {
     return m_busBreakerView;
 }
 
-terminal::BusBreakerView& NodeTerminal::getBusBreakerView() {
+NodeTerminal::BusBreakerView& NodeTerminal::getBusBreakerView() {
     return m_busBreakerView;
 }
 
-const terminal::BusView& NodeTerminal::getBusView() const {
+const NodeTerminal::BusView& NodeTerminal::getBusView() const {
     return m_busView;
 }
 
-terminal::BusView& NodeTerminal::getBusView() {
+NodeTerminal::BusView& NodeTerminal::getBusView() {
     return m_busView;
 }
 
@@ -73,11 +73,11 @@ unsigned long NodeTerminal::getNode() const {
     return m_node;
 }
 
-const terminal::NodeBreakerView& NodeTerminal::getNodeBreakerView() const {
+const NodeTerminal::NodeBreakerView& NodeTerminal::getNodeBreakerView() const {
     return m_nodeBreakerView;
 }
 
-terminal::NodeBreakerView& NodeTerminal::getNodeBreakerView() {
+NodeTerminal::NodeBreakerView& NodeTerminal::getNodeBreakerView() {
     return m_nodeBreakerView;
 }
 

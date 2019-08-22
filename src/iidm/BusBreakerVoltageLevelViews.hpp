@@ -8,8 +8,7 @@
 #ifndef POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVIEWS_HPP
 #define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVIEWS_HPP
 
-#include <powsybl/iidm/BusBreakerView.hpp>
-#include <powsybl/iidm/BusView.hpp>
+#include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/math/UndirectedGraph.hpp>
 
 namespace powsybl {
@@ -20,7 +19,7 @@ class BusBreakerVoltageLevel;
 
 namespace bus_breaker_voltage_level {
 
-class BusBreakerViewImpl : public BusBreakerView {
+class BusBreakerViewImpl : public voltage_level::BusBreakerView {
 public: // BusBreakerView
     stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
 
@@ -61,7 +60,7 @@ private:
     BusBreakerVoltageLevel& m_voltageLevel;
 };
 
-class BusViewImpl : public BusView {
+class BusViewImpl : public voltage_level::BusView {
 public:
     stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
 
