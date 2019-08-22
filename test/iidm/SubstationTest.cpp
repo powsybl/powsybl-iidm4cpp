@@ -160,7 +160,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 BOOST_AUTO_TEST_CASE(integrity) {
     Network network("id", "test");
     BOOST_CHECK_EQUAL(0UL, network.getSubstationCount());
-    BOOST_CHECK_EQUAL(0UL, boost::size(network.getSubstations()));
+    BOOST_TEST(boost::empty(network.getSubstations()));
 
     network.newSubstation()
         .setId("S")

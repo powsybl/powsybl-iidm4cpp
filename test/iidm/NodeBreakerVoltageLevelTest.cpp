@@ -378,8 +378,8 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     NodeBreakerView& view = vlTest.getNodeBreakerView();
     const NodeBreakerView& cView = view;
     BOOST_CHECK_EQUAL(0, view.getBusbarSectionCount());
-    BOOST_CHECK_EQUAL(0, boost::size(view.getBusbarSections()));
-    BOOST_CHECK_EQUAL(0, boost::size(cView.getBusbarSections()));
+    BOOST_TEST(boost::empty(view.getBusbarSections()));
+    BOOST_TEST(boost::empty(cView.getBusbarSections()));
 
     //test internal connections
     BOOST_CHECK_EQUAL(0, view.getSwitchCount());
