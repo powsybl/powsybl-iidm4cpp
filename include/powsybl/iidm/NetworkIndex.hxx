@@ -126,7 +126,7 @@ template <typename T>
 stdcxx::Reference<T> NetworkIndex::find(const std::string& id) {
     const auto& res = static_cast<const NetworkIndex*>(this)->find<T>(id);
 
-    return static_cast<bool>(res) ? stdcxx::ref(const_cast<T&>(res.get())) : stdcxx::ref<T>();
+    return stdcxx::ref(res);
 }
 
 }  // namespace iidm

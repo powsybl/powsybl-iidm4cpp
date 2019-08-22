@@ -62,7 +62,7 @@ template <typename T, typename>
 stdcxx::Reference<T> VoltageLevel::getConnectable(const std::string& id) {
     const auto& connectable = static_cast<const VoltageLevel*>(this)->getConnectable<T>(id);
 
-    return static_cast<bool>(connectable) ? stdcxx::ref(const_cast<T&>(connectable.get())) : stdcxx::ref<T>();
+    return stdcxx::ref(connectable);
 }
 
 template <typename T, typename>

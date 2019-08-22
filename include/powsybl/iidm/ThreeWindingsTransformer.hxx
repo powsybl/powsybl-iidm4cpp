@@ -72,7 +72,7 @@ template <typename L>
 stdcxx::Reference<Terminal> ThreeWindingsTransformer::LegBase<L>::getTerminal(unsigned long index) {
     const auto& terminal = static_cast<const ThreeWindingsTransformer::LegBase<L>*>(this)->getTerminal(index);
 
-    return static_cast<bool>(terminal) ? stdcxx::ref(const_cast<Terminal&>(terminal.get())) : stdcxx::ref<Terminal>();
+    return stdcxx::ref(terminal);
 }
 
 template <typename L>
