@@ -21,12 +21,22 @@ BusBreakerViewImpl::BusBreakerViewImpl(BusTerminal& terminal):
     m_terminal(terminal) {
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus() const {
+stdcxx::CReference<Bus> BusBreakerViewImpl::getBus() const {
+    return m_terminal.isConnected() ? getConnectableBus() : stdcxx::CReference<Bus>();
+}
+
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus() {
     return m_terminal.isConnected() ? getConnectableBus() : stdcxx::ref<Bus>();
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() const {
-    const auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+stdcxx::CReference<Bus> BusBreakerViewImpl::getConnectableBus() const {
+    const auto& voltageLevel = dynamic_cast<const BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+
+    return stdcxx::cref<Bus>(voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true));
+}
+
+stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
+    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
 
     return stdcxx::ref<Bus>(voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true));
 }
@@ -48,11 +58,23 @@ BusViewImpl::BusViewImpl(powsybl::iidm::BusTerminal& terminal):
     m_terminal(terminal) {
 }
 
-stdcxx::Reference<Bus> BusViewImpl::getBus() const {
+stdcxx::CReference<Bus> BusViewImpl::getBus() const {
+    return m_terminal.isConnected() ? getConnectableBus() : stdcxx::CReference<Bus>();
+}
+
+stdcxx::Reference<Bus> BusViewImpl::getBus() {
     return m_terminal.isConnected() ? getConnectableBus() : stdcxx::ref<Bus>();
 }
 
-stdcxx::Reference<Bus> BusViewImpl::getConnectableBus() const {
+stdcxx::CReference<Bus> BusViewImpl::getConnectableBus() const {
+    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+
+    const auto& configuredBus = voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true);
+
+    return stdcxx::cref<Bus>(voltageLevel.getCalculatedBusTopology().getMergedBus(configuredBus));
+}
+
+stdcxx::Reference<Bus> BusViewImpl::getConnectableBus() {
     auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
 
     const auto& configuredBus = voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true);

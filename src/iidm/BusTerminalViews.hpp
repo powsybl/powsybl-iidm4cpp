@@ -20,9 +20,13 @@ namespace bus_terminal {
 
 class BusBreakerViewImpl : public terminal::BusBreakerView {
 public: // BusBreakerView
-    stdcxx::Reference<Bus> getBus() const override;
+    stdcxx::CReference<Bus> getBus() const override;
 
-    stdcxx::Reference<Bus> getConnectableBus() const override;
+    stdcxx::Reference<Bus> getBus() override;
+
+    stdcxx::CReference<Bus> getConnectableBus() const override;
+
+    stdcxx::Reference<Bus> getConnectableBus() override;
 
     void setConnectableBus(const std::string& busId) override;
 
@@ -37,9 +41,13 @@ private:
 
 class BusViewImpl : public terminal::BusView {
 public: // BusView
-    stdcxx::Reference<Bus> getBus() const override;
+    stdcxx::CReference<Bus> getBus() const override;
 
-    stdcxx::Reference<Bus> getConnectableBus() const override;
+    stdcxx::Reference<Bus> getBus() override;
+
+    stdcxx::CReference<Bus> getConnectableBus() const override;
+
+    stdcxx::Reference<Bus> getConnectableBus() override;
 
 public:
     explicit BusViewImpl(BusTerminal& terminal);

@@ -36,7 +36,7 @@ stdcxx::CReference<NodeTerminal> CalculatedBus::findTerminal(const NodeBreakerVo
         return stdcxx::cref<NodeTerminal>(terminals.front().get());
     }
 
-    stdcxx::Reference<Terminal> terminal;
+    stdcxx::CReference<Terminal> terminal;
 
     VoltageLevel::NodeBreakerView::Traverser traverser = [&terminal, &voltageLevel](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long node2) {
         if (static_cast<bool>(sw) && sw.get().isOpen()) {
@@ -47,7 +47,7 @@ stdcxx::CReference<NodeTerminal> CalculatedBus::findTerminal(const NodeBreakerVo
     };
     voltageLevel.getNodeBreakerView().traverse(nodes.front(), traverser);
 
-    return static_cast<bool>(terminal) ? stdcxx::cref<NodeTerminal>(dynamic_cast<NodeTerminal&>(terminal.get())) : stdcxx::CReference<NodeTerminal>();
+    return stdcxx::cref<NodeTerminal>(terminal);
 }
 
 double CalculatedBus::getAngle() const {

@@ -77,14 +77,14 @@ stdcxx::Reference<Switch> CalculatedBusBreakerTopology::getRetainedSwitch(const 
     return stdcxx::ref<Switch>();
 }
 
-stdcxx::Reference<Switch> CalculatedBusBreakerTopology::getSwitch(const std::string& switchId, bool throwException) {
+stdcxx::CReference<Switch> CalculatedBusBreakerTopology::getSwitch(const std::string& switchId, bool throwException) const {
     stdcxx::optional<unsigned long> e = getVoltageLevel().getEdge(switchId, false);
     stdcxx::Reference<Switch> aSwitch = getRetainedSwitch(e);
     if (throwException && !aSwitch) {
         throw createSwitchNotFoundException(switchId);
     }
 
-    return aSwitch;
+    return stdcxx::cref<Switch>(aSwitch);
 }
 
 unsigned long CalculatedBusBreakerTopology::getSwitchCount() const {

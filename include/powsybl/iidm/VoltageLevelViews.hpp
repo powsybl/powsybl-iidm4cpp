@@ -38,17 +38,25 @@ public:
 public:
     virtual ~BusBreakerView() noexcept = default;
 
-    virtual stdcxx::Reference<Bus> getBus(const std::string& busId) const = 0;
+    virtual stdcxx::CReference<Bus> getBus(const std::string& busId) const = 0;
 
-    virtual stdcxx::Reference<Bus> getBus1(const std::string& switchId) const = 0;
+    virtual stdcxx::Reference<Bus> getBus(const std::string& busId) = 0;
 
-    virtual stdcxx::Reference<Bus> getBus2(const std::string& switchId) const = 0;
+    virtual stdcxx::CReference<Bus> getBus1(const std::string& switchId) const = 0;
+
+    virtual stdcxx::Reference<Bus> getBus1(const std::string& switchId) = 0;
+
+    virtual stdcxx::CReference<Bus> getBus2(const std::string& switchId) const = 0;
+
+    virtual stdcxx::Reference<Bus> getBus2(const std::string& switchId) = 0;
 
     virtual stdcxx::const_range<Bus> getBuses() const = 0;
 
     virtual stdcxx::range<Bus> getBuses() = 0;
 
-    virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const = 0;
+    virtual stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const = 0;
+
+    virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) = 0;
 
     virtual unsigned long getSwitchCount() const = 0;
 
@@ -73,13 +81,17 @@ class BusView {
 public:
     virtual ~BusView() noexcept = default;
 
-    virtual stdcxx::Reference<Bus> getBus(const std::string& busId) const = 0;
+    virtual stdcxx::CReference<Bus> getBus(const std::string& busId) const = 0;
+
+    virtual stdcxx::Reference<Bus> getBus(const std::string& busId) = 0;
 
     virtual stdcxx::const_range<Bus> getBuses() const = 0;
 
     virtual stdcxx::range<Bus> getBuses() = 0;
 
-    virtual stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) const = 0;
+    virtual stdcxx::CReference<Bus> getMergedBus(const std::string& configuredBusId) const = 0;
+
+    virtual stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) = 0;
 };
 
 class NodeBreakerView {
@@ -95,7 +107,9 @@ public:
 public:
     virtual ~NodeBreakerView() noexcept = default;
 
-    virtual stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) const = 0;
+    virtual stdcxx::CReference<BusbarSection> getBusbarSection(const std::string& bbsId) const = 0;
+
+    virtual stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) = 0;
 
     virtual unsigned long getBusbarSectionCount() const = 0;
 
@@ -115,9 +129,11 @@ public:
 
     virtual unsigned long getNodeCount() const = 0;
 
-    //TODO(thiebarr) getNodes
+    virtual stdcxx::const_range<unsigned long> getNodes() const = 0;
 
-    virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const = 0;
+    virtual stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const = 0;
+
+    virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) = 0;
 
     virtual unsigned long getSwitchCount() const = 0;
 
@@ -125,11 +141,17 @@ public:
 
     virtual stdcxx::range<Switch> getSwitches() = 0;
 
-    virtual stdcxx::Reference<Terminal> getTerminal(unsigned long node) const = 0;
+    virtual stdcxx::CReference<Terminal> getTerminal(unsigned long node) const = 0;
 
-    virtual stdcxx::Reference<Terminal> getTerminal1(const std::string& switchId) const = 0;
+    virtual stdcxx::Reference<Terminal> getTerminal(unsigned long node) = 0;
 
-    virtual stdcxx::Reference<Terminal> getTerminal2(const std::string& switchId) const = 0;
+    virtual stdcxx::CReference<Terminal> getTerminal1(const std::string& switchId) const = 0;
+
+    virtual stdcxx::Reference<Terminal> getTerminal1(const std::string& switchId) = 0;
+
+    virtual stdcxx::CReference<Terminal> getTerminal2(const std::string& switchId) const = 0;
+
+    virtual stdcxx::Reference<Terminal> getTerminal2(const std::string& switchId) = 0;
 
     virtual SwitchAdder newBreaker() = 0;
 

@@ -25,22 +25,28 @@ BusBreakerViewImpl::BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) const {
-    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusBreakerTopology().getBus(busId, false);
-
-    return stdcxx::ref<Bus>(bus);
+stdcxx::CReference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) const {
+    return stdcxx::cref<Bus>(m_voltageLevel.getCalculatedBusBreakerTopology().getBus(busId, false));
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus1(const std::string& switchId) const {
-    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusBreakerTopology().getBus1(switchId, true);
-
-    return stdcxx::ref<Bus>(bus);
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) {
+    return stdcxx::ref<Bus>(m_voltageLevel.getCalculatedBusBreakerTopology().getBus(busId, false));
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) const {
-    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusBreakerTopology().getBus2(switchId, true);
+stdcxx::CReference<Bus> BusBreakerViewImpl::getBus1(const std::string& switchId) const {
+    return stdcxx::cref<Bus>(m_voltageLevel.getCalculatedBusBreakerTopology().getBus1(switchId, true));
+}
 
-    return stdcxx::ref<Bus>(bus);
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus1(const std::string& switchId) {
+    return stdcxx::ref<Bus>(m_voltageLevel.getCalculatedBusBreakerTopology().getBus1(switchId, true));
+}
+
+stdcxx::CReference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) const {
+    return stdcxx::cref<Bus>(m_voltageLevel.getCalculatedBusBreakerTopology().getBus2(switchId, true));
+}
+
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) {
+    return stdcxx::ref<Bus>(m_voltageLevel.getCalculatedBusBreakerTopology().getBus2(switchId, true));
 }
 
 stdcxx::const_range<Bus> BusBreakerViewImpl::getBuses() const {
@@ -59,8 +65,12 @@ stdcxx::range<Bus> BusBreakerViewImpl::getBuses() {
     return calculatedBuses | boost::adaptors::transformed(mapper);
 }
 
-stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
+stdcxx::CReference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
     return m_voltageLevel.getCalculatedBusBreakerTopology().getSwitch(switchId, true);
+}
+
+stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) {
+    return stdcxx::ref(m_voltageLevel.getCalculatedBusBreakerTopology().getSwitch(switchId, true));
 }
 
 unsigned long BusBreakerViewImpl::getSwitchCount() const {
@@ -103,10 +113,12 @@ BusViewImpl::BusViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) const {
-    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusTopology().getBus(busId, false);
+stdcxx::CReference<Bus> BusViewImpl::getBus(const std::string& busId) const {
+    return stdcxx::cref<Bus>(m_voltageLevel.getCalculatedBusTopology().getBus(busId, false));
+}
 
-    return stdcxx::ref<Bus>(bus);
+stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) {
+    return stdcxx::ref<Bus>(m_voltageLevel.getCalculatedBusTopology().getBus(busId, false));
 }
 
 stdcxx::const_range<Bus> BusViewImpl::getBuses() const {
@@ -126,19 +138,27 @@ stdcxx::range<Bus> BusViewImpl::getBuses() {
 }
 
 
-stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& busbarSectionId) const {
-    NodeTerminal& terminal = dynamic_cast<NodeTerminal&>(m_voltageLevel.getNodeBreakerView().getBusbarSection(busbarSectionId).get().getTerminal());
+stdcxx::CReference<Bus> BusViewImpl::getMergedBus(const std::string& busbarSectionId) const {
+    auto& terminal = dynamic_cast<NodeTerminal&>(m_voltageLevel.getNodeBreakerView().getBusbarSection(busbarSectionId).get().getTerminal());
 
-    const stdcxx::Reference<CalculatedBus>& bus = m_voltageLevel.getCalculatedBusTopology().getBus(terminal.getNode());
+    return stdcxx::cref<Bus>(m_voltageLevel.getCalculatedBusTopology().getBus(terminal.getNode()));
+}
 
-    return stdcxx::ref<Bus>(bus);
+stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& busbarSectionId) {
+    auto& terminal = dynamic_cast<NodeTerminal&>(m_voltageLevel.getNodeBreakerView().getBusbarSection(busbarSectionId).get().getTerminal());
+
+    return stdcxx::ref<Bus>(m_voltageLevel.getCalculatedBusTopology().getBus(terminal.getNode()));
 }
 
 NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-stdcxx::Reference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& bbsId) const {
+stdcxx::CReference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& bbsId) const {
+    return stdcxx::cref(m_voltageLevel.getConnectable<BusbarSection>(bbsId));
+}
+
+stdcxx::Reference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& bbsId) {
     return m_voltageLevel.getConnectable<BusbarSection>(bbsId);
 }
 
@@ -200,8 +220,16 @@ unsigned long NodeBreakerViewImpl::getNodeCount() const {
     return m_voltageLevel.getNodeCount();
 }
 
-stdcxx::Reference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& switchId) const {
+stdcxx::const_range<unsigned long> NodeBreakerViewImpl::getNodes() const {
+    return m_voltageLevel.getGraph().getVertices();
+}
+
+stdcxx::CReference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& switchId) const {
     return m_voltageLevel.getSwitch(switchId);
+}
+
+stdcxx::Reference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& switchId) {
+    return stdcxx::ref(m_voltageLevel.getSwitch(switchId));
 }
 
 unsigned long NodeBreakerViewImpl::getSwitchCount() const {
@@ -228,15 +256,27 @@ stdcxx::range<Switch> NodeBreakerViewImpl::getSwitches() {
     return m_voltageLevel.getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
-stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal(unsigned long node) const {
+stdcxx::CReference<Terminal> NodeBreakerViewImpl::getTerminal(unsigned long node) const {
+    return stdcxx::cref(m_voltageLevel.getTerminal(node));
+}
+
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal(unsigned long node) {
     return m_voltageLevel.getTerminal(node);
 }
 
-stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal1(const std::string& switchId) const {
+stdcxx::CReference<Terminal> NodeBreakerViewImpl::getTerminal1(const std::string& switchId) const {
     return getTerminal(getNode1(switchId));
 }
 
-stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal2(const std::string& switchId) const {
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal1(const std::string& switchId) {
+    return getTerminal(getNode1(switchId));
+}
+
+stdcxx::CReference<Terminal> NodeBreakerViewImpl::getTerminal2(const std::string& switchId) const {
+    return getTerminal(getNode2(switchId));
+}
+
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal2(const std::string& switchId) {
     return getTerminal(getNode2(switchId));
 }
 

@@ -25,22 +25,28 @@ BusBreakerViewImpl::BusBreakerViewImpl(BusBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) const {
-    const stdcxx::Reference<ConfiguredBus>& bus = m_voltageLevel.getConfiguredBus(busId, false);
-
-    return stdcxx::ref<Bus>(bus);
+stdcxx::CReference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) const {
+    return stdcxx::cref<Bus>(m_voltageLevel.getConfiguredBus(busId, false));
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus1(const std::string& switchId) const {
-    const stdcxx::Reference<ConfiguredBus>& bus = m_voltageLevel.getConfiguredBus1(switchId);
-
-    return stdcxx::ref<Bus>(bus);
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) {
+    return stdcxx::ref<Bus>(m_voltageLevel.getConfiguredBus(busId, false));
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) const {
-    const stdcxx::Reference<ConfiguredBus>& bus = m_voltageLevel.getConfiguredBus2(switchId);
+stdcxx::CReference<Bus> BusBreakerViewImpl::getBus1(const std::string& switchId) const {
+    return stdcxx::cref<Bus>(m_voltageLevel.getConfiguredBus1(switchId));
+}
 
-    return stdcxx::ref<Bus>(bus);
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus1(const std::string& switchId) {
+    return stdcxx::ref<Bus>(m_voltageLevel.getConfiguredBus1(switchId));
+}
+
+stdcxx::CReference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) const {
+    return stdcxx::cref<Bus>(m_voltageLevel.getConfiguredBus2(switchId));
+}
+
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) {
+    return stdcxx::ref<Bus>(m_voltageLevel.getConfiguredBus2(switchId));
 }
 
 stdcxx::const_range<Bus> BusBreakerViewImpl::getBuses() const {
@@ -61,7 +67,11 @@ stdcxx::range<Bus> BusBreakerViewImpl::getBuses() {
     return m_voltageLevel.getGraph().getVertexObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
-stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
+stdcxx::CReference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) const {
+    return stdcxx::cref(m_voltageLevel.getSwitch(switchId, false));
+}
+
+stdcxx::Reference<Switch> BusBreakerViewImpl::getSwitch(const std::string& switchId) {
     return m_voltageLevel.getSwitch(switchId, false);
 }
 
@@ -115,10 +125,12 @@ BusViewImpl::BusViewImpl(BusBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) const {
-    const stdcxx::Reference<MergedBus>& mergedBus = m_voltageLevel.getMergedBus(busId, false);
+stdcxx::CReference<Bus> BusViewImpl::getBus(const std::string& busId) const {
+    return stdcxx::cref<Bus>(m_voltageLevel.getMergedBus(busId, false));
+}
 
-    return stdcxx::ref<Bus>(mergedBus);
+stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) {
+    return stdcxx::ref<Bus>(m_voltageLevel.getMergedBus(busId, false));
 }
 
 stdcxx::const_range<Bus> BusViewImpl::getBuses() const {
@@ -137,8 +149,14 @@ stdcxx::range<Bus> BusViewImpl::getBuses() {
     return mergedBuses | boost::adaptors::transformed(mapper);
 }
 
-stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& configuredBusId) const {
-    stdcxx::Reference<ConfiguredBus> configuredBus = stdcxx::ref<ConfiguredBus>(m_voltageLevel.getBusBreakerView().getBus(configuredBusId));
+stdcxx::CReference<Bus> BusViewImpl::getMergedBus(const std::string& configuredBusId) const {
+    const auto& configuredBus = stdcxx::ref<ConfiguredBus>(m_voltageLevel.getBusBreakerView().getBus(configuredBusId));
+
+    return stdcxx::cref<Bus>(m_voltageLevel.getCalculatedBusTopology().getMergedBus(configuredBus));
+}
+
+stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& configuredBusId) {
+    const auto& configuredBus = stdcxx::ref<ConfiguredBus>(m_voltageLevel.getBusBreakerView().getBus(configuredBusId));
 
     return stdcxx::ref<Bus>(m_voltageLevel.getCalculatedBusTopology().getMergedBus(configuredBus));
 }

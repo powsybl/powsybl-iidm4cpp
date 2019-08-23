@@ -20,13 +20,25 @@ BusBreakerViewImpl::BusBreakerViewImpl(powsybl::iidm::NodeTerminal& terminal):
     m_terminal(terminal) {
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getBus() const {
+stdcxx::CReference<Bus> BusBreakerViewImpl::getBus() const {
+    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+
+    return stdcxx::cref<Bus>(voltageLevel.getCalculatedBusBreakerTopology().getBus(m_terminal.getNode()));
+}
+
+stdcxx::Reference<Bus> BusBreakerViewImpl::getBus() {
     auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
 
     return stdcxx::ref<Bus>(voltageLevel.getCalculatedBusBreakerTopology().getBus(m_terminal.getNode()));
 }
 
-stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() const {
+stdcxx::CReference<Bus> BusBreakerViewImpl::getConnectableBus() const {
+    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+
+    return stdcxx::cref(voltageLevel.getCalculatedBusBreakerTopology().getConnectableBus(m_terminal.getNode()));
+}
+
+stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
     auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
 
     return voltageLevel.getCalculatedBusBreakerTopology().getConnectableBus(m_terminal.getNode());
@@ -40,13 +52,25 @@ BusViewImpl::BusViewImpl(powsybl::iidm::NodeTerminal& terminal):
     m_terminal(terminal) {
 }
 
-stdcxx::Reference<Bus> BusViewImpl::getBus() const {
+stdcxx::CReference<Bus> BusViewImpl::getBus() const {
+    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+
+    return stdcxx::cref<Bus>(voltageLevel.getCalculatedBusTopology().getBus(m_terminal.getNode()));
+}
+
+stdcxx::Reference<Bus> BusViewImpl::getBus() {
     auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
 
     return stdcxx::ref<Bus>(voltageLevel.getCalculatedBusTopology().getBus(m_terminal.getNode()));
 }
 
-stdcxx::Reference<Bus> BusViewImpl::getConnectableBus() const {
+stdcxx::CReference<Bus> BusViewImpl::getConnectableBus() const {
+    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+
+    return stdcxx::cref(voltageLevel.getCalculatedBusTopology().getConnectableBus(m_terminal.getNode()));
+}
+
+stdcxx::Reference<Bus> BusViewImpl::getConnectableBus() {
     auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
 
     return voltageLevel.getCalculatedBusTopology().getConnectableBus(m_terminal.getNode());

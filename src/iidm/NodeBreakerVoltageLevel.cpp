@@ -251,7 +251,7 @@ unsigned long NodeBreakerVoltageLevel::getNodeCount() const {
     return m_graph.getVertexCount();
 }
 
-stdcxx::Reference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string& switchId) const {
+stdcxx::CReference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string& switchId) const {
     stdcxx::Reference<Switch> aSwitch;
 
     const auto& e = getEdge(switchId, false);
@@ -262,7 +262,7 @@ stdcxx::Reference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string& 
         }
     }
 
-    return aSwitch;
+    return stdcxx::cref<Switch>(aSwitch);
 }
 
 unsigned long NodeBreakerVoltageLevel::getSwitchCount() const {
@@ -280,7 +280,11 @@ stdcxx::range<Switch> NodeBreakerVoltageLevel::getSwitches() {
     return getNodeBreakerView().getSwitches();
 }
 
-stdcxx::Reference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long node) const {
+stdcxx::CReference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long node) const {
+    return stdcxx::cref<Terminal>(m_graph.getVertexObject(node));
+}
+
+stdcxx::Reference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long node) {
     return stdcxx::ref<Terminal>(m_graph.getVertexObject(node));
 }
 

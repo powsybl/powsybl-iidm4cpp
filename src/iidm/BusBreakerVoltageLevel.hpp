@@ -91,11 +91,13 @@ private:
 
     bus_breaker_voltage_level::CalculatedBusTopology& getCalculatedBusTopology();
 
-    stdcxx::Reference<ConfiguredBus> getConfiguredBus(const std::string& busId, bool throwException) const;
+    stdcxx::CReference<ConfiguredBus> getConfiguredBus(const std::string& busId, bool throwException) const;
 
-    stdcxx::Reference<ConfiguredBus> getConfiguredBus1(const std::string& switchId) const;
+    stdcxx::Reference<ConfiguredBus> getConfiguredBus(const std::string& busId, bool throwException);
 
-    stdcxx::Reference<ConfiguredBus> getConfiguredBus2(const std::string& switchId) const;
+    stdcxx::Reference<ConfiguredBus> getConfiguredBus1(const std::string& switchId);
+
+    stdcxx::Reference<ConfiguredBus> getConfiguredBus2(const std::string& switchId);
 
     const Graph& getGraph() const;
 
@@ -103,7 +105,7 @@ private:
 
     stdcxx::Reference<MergedBus> getMergedBus(const std::string& busId, bool throwException);
 
-    stdcxx::Reference<Switch> getSwitch(const std::string& switchId, bool throwException) const;
+    stdcxx::Reference<Switch> getSwitch(const std::string& switchId, bool throwException);
 
     stdcxx::optional<unsigned long> getVertex(const std::string& busId, bool throwException) const;
 

@@ -287,8 +287,10 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     const unsigned long NODE_COUNT = 3;
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
+    const auto& cVoltageLevel = voltageLevel;
     voltageLevel.getNodeBreakerView().setNodeCount(NODE_COUNT);
     BOOST_CHECK_EQUAL(3, voltageLevel.getNodeBreakerView().getNodeCount());
+    BOOST_CHECK_EQUAL(voltageLevel.getNodeBreakerView().getNodeCount(), boost::size(voltageLevel.getNodeBreakerView().getNodes()));
 
     BusbarSection& bbs1 = voltageLevel.getNodeBreakerView().newBusbarSection()
         .setId("BBS1")
@@ -338,18 +340,26 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     const auto& refBreaker = voltageLevel.getNodeBreakerView().getSwitch("BK");
     POWSYBL_ASSERT_REF_TRUE(refBreaker);
     BOOST_TEST(stdcxx::areSame(breaker, refBreaker.get()));
+    const auto& cRefBreaker = cVoltageLevel.getNodeBreakerView().getSwitch("BK");
+    POWSYBL_ASSERT_REF_TRUE(cRefBreaker);
+    BOOST_TEST(stdcxx::areSame(breaker, cRefBreaker.get()));
     // Get an unknown switch
     BOOST_TEST(!voltageLevel.getNodeBreakerView().getSwitch("UNKNOWN"));
+    BOOST_TEST(!cVoltageLevel.getNodeBreakerView().getSwitch("UNKNOWN"));
 
     unsigned long node1 = voltageLevel.getNodeBreakerView().getNode1("BK");
     BOOST_CHECK_EQUAL(0, node1);
     const auto& terminal1 = voltageLevel.getNodeBreakerView().getTerminal1("BK");
+    const auto& cTerminal1 = cVoltageLevel.getNodeBreakerView().getTerminal1("BK");
     BOOST_TEST(stdcxx::areSame(bbs1, terminal1.get().getConnectable().get()));
+    BOOST_TEST(stdcxx::areSame(cTerminal1.get(), terminal1.get()));
 
     unsigned long node2 = voltageLevel.getNodeBreakerView().getNode2("BK");
     BOOST_CHECK_EQUAL(1, node2);
     const auto& terminal2 = voltageLevel.getNodeBreakerView().getTerminal2("BK");
+    const auto& cTerminal2 = cVoltageLevel.getNodeBreakerView().getTerminal2("BK");
     BOOST_TEST(stdcxx::areSame(bbs2, terminal2.get().getConnectable().get()));
+    BOOST_TEST(stdcxx::areSame(cTerminal2.get(), terminal2.get()));
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getNode1("UNKNOWN"), PowsyblException, "Switch 'UNKNOWN' not found in the voltage level 'VL2'");
 
@@ -372,7 +382,6 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getSwitchCount());
     BOOST_CHECK_EQUAL(0, voltageLevel.getNodeBreakerView().getInternalConnectionCount());
 
-    // test const versions
     // test const versions
     VoltageLevel& vlTest = network.getVoltageLevel("VL2");
     auto& view = vlTest.getNodeBreakerView();
@@ -509,13 +518,17 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_2"));
     POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_3"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus1("SW1"));
+    POWSYBL_ASSERT_REF_TRUE(cBusBreakerView.getBus1("SW1"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus2("SW1"));
+    POWSYBL_ASSERT_REF_TRUE(cBusBreakerView.getBus2("SW1"));
     BOOST_CHECK_EQUAL(3, boost::size(busBreakerView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getSwitch("SW1"));
+    POWSYBL_ASSERT_REF_TRUE(cBusBreakerView.getSwitch("SW1"));
     BOOST_CHECK_EQUAL(2UL, busBreakerView.getSwitchCount());
     BOOST_CHECK_EQUAL(2UL, boost::size(busBreakerView.getSwitches()));
     BOOST_CHECK_EQUAL(2UL, boost::size(cBusBreakerView.getSwitches()));
     POWSYBL_ASSERT_THROW(busBreakerView.getSwitch("UNKNOWN"), PowsyblException, "Switch UNKNOWN not found");
+    POWSYBL_ASSERT_THROW(cBusBreakerView.getSwitch("UNKNOWN"), PowsyblException, "Switch UNKNOWN not found");
     POWSYBL_ASSERT_THROW(busBreakerView.newBus(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(busBreakerView.newSwitch(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(busBreakerView.removeAllBuses(), AssertionError, "Not implemented");
@@ -524,6 +537,7 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     POWSYBL_ASSERT_THROW(busBreakerView.removeSwitch(""), AssertionError, "Not implemented");
 
     auto& testBus = busBreakerView.getBus("VL_0").get();
+    const auto& cTestBus = testBus;
     BOOST_CHECK_EQUAL("VL_0", testBus.getId());
     BOOST_CHECK_EQUAL("VL_0", testBus.getName());
     BOOST_CHECK_CLOSE(7.7, testBus.setAngle(7.7).setV(8.8).getAngle(), std::numeric_limits<double>::epsilon());
@@ -531,6 +545,8 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     BOOST_CHECK_EQUAL(2ul, testBus.getConnectedTerminalCount());
     const auto& terminals = testBus.getConnectedTerminals();
     BOOST_CHECK_EQUAL(boost::size(terminals), testBus.getConnectedTerminalCount());
+    const auto& cTerminals = cTestBus.getConnectedTerminals();
+    BOOST_CHECK_EQUAL(boost::size(cTerminals), cTestBus.getConnectedTerminalCount());
     BOOST_TEST(stdcxx::areSame(vl, testBus.getVoltageLevel()));
 
     sw.setOpen(false);
@@ -550,8 +566,8 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
 
 BOOST_AUTO_TEST_CASE(calculatedBusTraverser) {
     Network network = createCalculatedBusSwitchTestNetwork();
-    const Load& l1 = network.getLoad("LOAD1");
-    const VoltageLevel& vlG = network.getVoltageLevel("G");
+    Load& l1 = network.getLoad("LOAD1");
+    VoltageLevel& vlG = network.getVoltageLevel("G");
 
     auto& bus = l1.getTerminal().getBusBreakerView().getBus().get();
     BOOST_CHECK_EQUAL("VL_0", bus.getId());
@@ -680,6 +696,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
     POWSYBL_ASSERT_REF_TRUE(busView.getMergedBus("BBS"));
+    POWSYBL_ASSERT_REF_TRUE(cBusView.getMergedBus("BBS"));
     const auto& calculatedBus = busView.getBus("VL_0").get();
     BOOST_CHECK_EQUAL("VL_0", calculatedBus.getId());
     BOOST_CHECK_EQUAL("VL_0", calculatedBus.getName());
@@ -940,6 +957,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     const auto& cBusBreakerView = cTerminal.getBusBreakerView();
     BOOST_TEST(stdcxx::areSame(busBreakerView, cBusBreakerView));
     BOOST_TEST(stdcxx::areSame(busBreakerView.getBus().get(), busBreakerView.getConnectableBus().get()));
+    BOOST_TEST(stdcxx::areSame(cBusBreakerView.getBus().get(), cBusBreakerView.getConnectableBus().get()));
     const auto& calculatedBus = busBreakerView.getBus().get();
     BOOST_CHECK_EQUAL("VL_7", calculatedBus.getId());
     BOOST_CHECK_EQUAL("VL_7", calculatedBus.getName());
@@ -951,6 +969,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     const auto& cBusView = cTerminal.getBusView();
     BOOST_TEST(stdcxx::areSame(busView, cBusView));
     BOOST_TEST(stdcxx::areSame(busView.getBus().get(), busView.getConnectableBus().get()));
+    BOOST_TEST(stdcxx::areSame(cBusView.getBus().get(), cBusView.getConnectableBus().get()));
     const auto& calculatedBus2 = busView.getBus().get();
     BOOST_CHECK_EQUAL("VL_6", calculatedBus2.getId());
     BOOST_CHECK_EQUAL("VL_6", calculatedBus2.getName());

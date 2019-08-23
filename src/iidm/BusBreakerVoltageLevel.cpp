@@ -61,7 +61,7 @@ void BusBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
         terminal.setVoltageLevel(stdcxx::ref<VoltageLevel>(*this));
 
         auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
-        const stdcxx::Reference<ConfiguredBus>& connectableBus = getConfiguredBus(busTerminal.getConnectableBusId(), true);
+        const auto& connectableBus = getConfiguredBus(busTerminal.getConnectableBusId(), true);
 
         getNetwork().getVariantManager().forEachVariant([&connectableBus, &busTerminal, this]() {
             connectableBus.get().addTerminal(busTerminal);
@@ -163,7 +163,7 @@ bus_breaker_voltage_level::CalculatedBusTopology& BusBreakerVoltageLevel::getCal
     return m_variants.get().getCalculatedBusTopology();
 }
 
-stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus(const std::string& busId, bool throwException) const {
+stdcxx::CReference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus(const std::string& busId, bool throwException) const {
     stdcxx::Reference<ConfiguredBus> bus;
 
     const auto& v = getVertex(busId, throwException);
@@ -174,16 +174,20 @@ stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus(const 
         }
     }
 
-    return bus;
+    return stdcxx::cref<ConfiguredBus>(bus);
 }
 
-stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus1(const std::string& switchId) const {
+stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus(const std::string& busId, bool throwException) {
+    return stdcxx::ref(static_cast<const BusBreakerVoltageLevel*>(this)->getConfiguredBus(busId, throwException));
+}
+
+stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus1(const std::string& switchId) {
     const auto& e = getEdge(switchId, true);
     const auto& v = m_graph.getVertex1(*e);
     return m_graph.getVertexObject(v);
 }
 
-stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus2(const std::string& switchId) const {
+stdcxx::Reference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus2(const std::string& switchId) {
     const auto& e = getEdge(switchId, true);
     const auto& v = m_graph.getVertex2(*e);
     return m_graph.getVertexObject(v);
@@ -219,7 +223,7 @@ BusBreakerVoltageLevel::NodeBreakerView& BusBreakerVoltageLevel::getNodeBreakerV
     throw AssertionError("Not implemented");
 }
 
-stdcxx::Reference<Switch> BusBreakerVoltageLevel::getSwitch(const std::string& switchId, bool throwException) const {
+stdcxx::Reference<Switch> BusBreakerVoltageLevel::getSwitch(const std::string& switchId, bool throwException) {
     stdcxx::Reference<Switch> aSwitch;
 
     const auto& e = getEdge(switchId, throwException);

@@ -18,7 +18,9 @@ namespace node_breaker_voltage_level {
 
 class NodeBreakerViewImpl : public voltage_level::NodeBreakerView {
 public: // NodeBreakerView
-    stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) const override;
+    stdcxx::CReference<BusbarSection> getBusbarSection(const std::string& bbsId) const override;
+
+    stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) override;
 
     unsigned long getBusbarSectionCount() const override;
 
@@ -38,7 +40,11 @@ public: // NodeBreakerView
 
     unsigned long getNodeCount() const override;
 
-    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
+    stdcxx::const_range<unsigned long> getNodes() const override;
+
+    stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const override;
+
+    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) override;
 
     unsigned long getSwitchCount() const override;
 
@@ -46,11 +52,17 @@ public: // NodeBreakerView
 
     stdcxx::range<Switch> getSwitches() override;
 
-    stdcxx::Reference<Terminal> getTerminal(unsigned long node) const override;
+    stdcxx::CReference<Terminal> getTerminal(unsigned long node) const override;
 
-    stdcxx::Reference<Terminal> getTerminal1(const std::string& switchId) const override;
+    stdcxx::Reference<Terminal> getTerminal(unsigned long node) override;
 
-    stdcxx::Reference<Terminal> getTerminal2(const std::string& switchId) const override;
+    stdcxx::CReference<Terminal> getTerminal1(const std::string& switchId) const override;
+
+    stdcxx::Reference<Terminal> getTerminal1(const std::string& switchId) override;
+
+    stdcxx::CReference<Terminal> getTerminal2(const std::string& switchId) const override;
+
+    stdcxx::Reference<Terminal> getTerminal2(const std::string& switchId) override;
 
     SwitchAdder newBreaker() override;
 
@@ -79,17 +91,25 @@ private:
 
 class BusBreakerViewImpl : public voltage_level::BusBreakerView {
 public: // BusBreakerView
-    stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
+    stdcxx::CReference<Bus> getBus(const std::string& busId) const override;
 
-    stdcxx::Reference<Bus> getBus1(const std::string& switchId) const override;
+    stdcxx::Reference<Bus> getBus(const std::string& busId) override;
 
-    stdcxx::Reference<Bus> getBus2(const std::string& switchId) const override;
+    stdcxx::CReference<Bus> getBus1(const std::string& switchId) const override;
+
+    stdcxx::Reference<Bus> getBus1(const std::string& switchId) override;
+
+    stdcxx::CReference<Bus> getBus2(const std::string& switchId) const override;
+
+    stdcxx::Reference<Bus> getBus2(const std::string& switchId) override;
 
     stdcxx::const_range<Bus> getBuses() const override;
 
     stdcxx::range<Bus> getBuses() override;
 
-    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
+    stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const override;
+
+    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) override;
 
     stdcxx::const_range<Switch> getSwitches() const override;
 
@@ -121,13 +141,17 @@ private:
 
 class BusViewImpl : public voltage_level::BusView {
 public: // BusView
-    stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
+    stdcxx::CReference<Bus> getBus(const std::string& busId) const override;
+
+    stdcxx::Reference<Bus> getBus(const std::string& busId) override;
 
     stdcxx::const_range<Bus> getBuses() const override;
 
     stdcxx::range<Bus> getBuses() override;
 
-    stdcxx::Reference<Bus> getMergedBus(const std::string& busbarSectionId) const override;
+    stdcxx::CReference<Bus> getMergedBus(const std::string& busbarSectionId) const override;
+
+    stdcxx::Reference<Bus> getMergedBus(const std::string& busbarSectionId) override;
 
 public:
     explicit BusViewImpl(NodeBreakerVoltageLevel& voltageLevel);

@@ -22,9 +22,13 @@ class BusBreakerView {
 public:
     virtual ~BusBreakerView() noexcept = default;
 
-    virtual stdcxx::Reference<Bus> getBus() const = 0;
+    virtual stdcxx::CReference<Bus> getBus() const = 0;
 
-    virtual stdcxx::Reference<Bus> getConnectableBus() const = 0;
+    virtual stdcxx::Reference<Bus> getBus() = 0;
+
+    virtual stdcxx::CReference<Bus> getConnectableBus() const = 0;
+
+    virtual stdcxx::Reference<Bus> getConnectableBus() = 0;
 
     virtual void setConnectableBus(const std::string& busId) = 0;
 };
@@ -33,9 +37,13 @@ class BusView {
 public:
     virtual ~BusView() noexcept = default;
 
-    virtual stdcxx::Reference<Bus> getBus() const = 0;
+    virtual stdcxx::CReference<Bus> getBus() const = 0;
 
-    virtual stdcxx::Reference<Bus> getConnectableBus() const = 0;
+    virtual stdcxx::Reference<Bus> getBus() = 0;
+
+    virtual stdcxx::CReference<Bus> getConnectableBus() const = 0;
+
+    virtual stdcxx::Reference<Bus> getConnectableBus() = 0;
 };
 
 class NodeBreakerView {

@@ -107,9 +107,12 @@ private:
 
     unsigned long getNodeCount() const;
 
-    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const;
+    stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const;
 
-    stdcxx::Reference<Terminal> getTerminal(unsigned long node) const;
+
+    stdcxx::CReference<Terminal> getTerminal(unsigned long node) const;
+
+    stdcxx::Reference<Terminal> getTerminal(unsigned long node);
 
     void removeSwitch(const std::string& switchId);
 

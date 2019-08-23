@@ -172,24 +172,37 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     const auto& refSwitch1 = view.getSwitch("SW1");
     POWSYBL_ASSERT_REF_TRUE(refSwitch1);
     BOOST_TEST(stdcxx::areSame(switch1, refSwitch1.get()));
+    const auto& cRefSwitch1 = cView.getSwitch("SW1");
+    POWSYBL_ASSERT_REF_TRUE(cRefSwitch1);
+    BOOST_TEST(stdcxx::areSame(switch1, cRefSwitch1.get()));
 
     const auto& refUnknownSwitch = view.getSwitch("UNKNOWN");
     BOOST_TEST(!refUnknownSwitch);
+    const auto& cRefUnknownSwitch = cView.getSwitch("UNKNOWN");
+    BOOST_TEST(!cRefUnknownSwitch);
 
     // get bus from switch
     const auto& refBus2 = view.getBus1("SW2");
     POWSYBL_ASSERT_REF_TRUE(refBus2);
     BOOST_TEST(stdcxx::areSame(bus2, refBus2.get()));
+    const auto& cRefBus2 = cView.getBus1("SW2");
+    POWSYBL_ASSERT_REF_TRUE(cRefBus2);
+    BOOST_TEST(stdcxx::areSame(bus2, cRefBus2.get()));
 
     const auto& refBus3 = view.getBus2("SW2");
     POWSYBL_ASSERT_REF_TRUE(refBus3);
     BOOST_TEST(stdcxx::areSame(bus3, refBus3.get()));
+    const auto& cRefBus3 = cView.getBus2("SW2");
+    POWSYBL_ASSERT_REF_TRUE(cRefBus3);
+    BOOST_TEST(stdcxx::areSame(bus3, cRefBus3.get()));
 
     const auto& buses = view.getBuses();
     BOOST_CHECK_EQUAL(4, boost::size(buses));
 
     // // get bus from unknown switch
     POWSYBL_ASSERT_THROW(view.getBus1("UNKNOWN"), PowsyblException,
+                         "Switch 'UNKNOWN' not found in the voltage level 'VL1'");
+    POWSYBL_ASSERT_THROW(cView.getBus1("UNKNOWN"), PowsyblException,
                          "Switch 'UNKNOWN' not found in the voltage level 'VL1'");
 
     // Remove bus
@@ -334,6 +347,11 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
     mergedBus1 = busView.getMergedBus("BUS1");
     mergedBus2 = busView.getMergedBus("BUS2");
     BOOST_TEST(!stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
+    const auto& cMergedBus1 = cBusView.getMergedBus("BUS1");
+    const auto& cMergedBus2 = cBusView.getMergedBus("BUS2");
+    BOOST_TEST(!stdcxx::areSame(cMergedBus1.get(), cMergedBus2.get()));
+    BOOST_TEST(stdcxx::areSame(cMergedBus1.get(), mergedBus1.get()));
+    BOOST_TEST(stdcxx::areSame(cMergedBus2.get(), mergedBus2.get()));
 
     Bus& testBus = mergedBus1.get();
     BOOST_TEST(std::isnan(testBus.getAngle()));
@@ -448,10 +466,13 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     const auto& configuredBus = busBreakerView.getBus().get();
     BOOST_CHECK_EQUAL("BUS1", configuredBus.getId());
     BOOST_CHECK_EQUAL("BUS1_NAME", configuredBus.getName());
+    const auto& cConfiguredBus = cBusBreakerView.getBus().get();
+    BOOST_TEST(stdcxx::areSame(configuredBus, cConfiguredBus));
 
 
     BOOST_TEST(stdcxx::areSame(terminal.getBusView(), cTerminal.getBusView()));
     POWSYBL_ASSERT_REF_TRUE(terminal.getBusView().getBus());
+    POWSYBL_ASSERT_REF_TRUE(cTerminal.getBusView().getBus());
     const auto& mergedBus = terminal.getBusView().getBus().get();
     BOOST_CHECK_EQUAL("VL_0", mergedBus.getId());
     BOOST_CHECK_EQUAL("VL_0", mergedBus.getName());

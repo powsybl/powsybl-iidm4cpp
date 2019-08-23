@@ -77,7 +77,7 @@ public:
 
     stdcxx::Reference<CalculatedBus> getBus2(const std::string& switchId, bool throwException);
 
-    stdcxx::Reference<Switch> getSwitch(const std::string& switchId, bool throwException);
+    stdcxx::CReference<Switch> getSwitch(const std::string& switchId, bool throwException) const;
 
     unsigned long getSwitchCount() const;
 

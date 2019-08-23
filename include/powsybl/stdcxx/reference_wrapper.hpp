@@ -134,9 +134,19 @@ Reference<T> ref(const CReference<T>& reference) {
 /**
  * Upcast / Downcast a reference_wrapper instance from U to T
  */
-template <typename T, typename U>
+template <typename T, typename U, typename = typename std::enable_if<!std::is_same<T, U>::value>::type>
 Reference<T> ref(const Reference<U>& reference) {
     return static_cast<bool>(reference) ? Reference<T>(dynamic_cast<T&>(reference.get())) : Reference<T>();
+}
+
+template <typename T, typename U, typename = typename std::enable_if<!std::is_same<T, U>::value>::type>
+CReference<T> cref(const Reference<U>& reference) {
+    return static_cast<bool>(reference) ? CReference<T>(dynamic_cast<const T&>(reference.get())) : CReference<T>();
+}
+
+template <typename T, typename U, typename = typename std::enable_if<!std::is_same<T, U>::value>::type>
+CReference<T> cref(const CReference<U>& reference) {
+    return static_cast<bool>(reference) ? CReference<T>(dynamic_cast<const T&>(reference.get())) : CReference<T>();
 }
 
 template <typename T, typename U>

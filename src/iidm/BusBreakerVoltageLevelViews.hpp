@@ -21,17 +21,25 @@ namespace bus_breaker_voltage_level {
 
 class BusBreakerViewImpl : public voltage_level::BusBreakerView {
 public: // BusBreakerView
-    stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
+    stdcxx::CReference<Bus> getBus(const std::string& busId) const override;
 
-    stdcxx::Reference<Bus> getBus1(const std::string& switchId) const override;
+    stdcxx::Reference<Bus> getBus(const std::string& busId) override;
 
-    stdcxx::Reference<Bus> getBus2(const std::string& switchId) const override;
+    stdcxx::CReference<Bus> getBus1(const std::string& switchId) const override;
+
+    stdcxx::Reference<Bus> getBus1(const std::string& switchId) override;
+
+    stdcxx::CReference<Bus> getBus2(const std::string& switchId) const override;
+
+    stdcxx::Reference<Bus> getBus2(const std::string& switchId) override;
 
     stdcxx::const_range<Bus> getBuses() const override;
 
     stdcxx::range<Bus> getBuses() override;
 
-    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const override;
+    stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const override;
+
+    stdcxx::Reference<Switch> getSwitch(const std::string& switchId) override;
 
     unsigned long getSwitchCount() const override;
 
@@ -62,13 +70,17 @@ private:
 
 class BusViewImpl : public voltage_level::BusView {
 public:
-    stdcxx::Reference<Bus> getBus(const std::string& busId) const override;
+    stdcxx::CReference<Bus> getBus(const std::string& busId) const override;
+
+    stdcxx::Reference<Bus> getBus(const std::string& busId) override;
 
     stdcxx::const_range<Bus> getBuses() const override;
 
     stdcxx::range<Bus> getBuses() override;
 
-    stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) const override;
+    stdcxx::CReference<Bus> getMergedBus(const std::string& configuredBusId) const override;
+
+    stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) override;
 
 public:
     explicit BusViewImpl(BusBreakerVoltageLevel& voltageLevel);
