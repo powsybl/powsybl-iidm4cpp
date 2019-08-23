@@ -45,6 +45,12 @@ public:
 
     void writeEndElement();
 
+    void writeOptionalAttribute(const std::string& attributeName, bool attributeValue, bool absentValue);
+
+    void writeOptionalAttribute(const std::string& attributeName, const char* attributeValue, const char* absentValue);
+
+    void writeOptionalAttribute(const std::string& attributeName, double attributeValue);
+
     void writeOptionalAttribute(const std::string& attributeName, double attributeValue, double absentValue);
 
     void writeOptionalAttribute(const std::string& attributeName, int attributeValue, int absentValue);

@@ -109,6 +109,7 @@ set(IIDM_SOURCES
     iidm/converter/ImportOptions.cpp
     iidm/converter/xml/BusXml.cpp
     iidm/converter/xml/GeneratorXml.cpp
+    iidm/converter/xml/LineXml.cpp
     iidm/converter/xml/LoadXml.cpp
     iidm/converter/xml/NetworkXml.cpp
     iidm/converter/xml/NetworkXmlReaderContext.cpp

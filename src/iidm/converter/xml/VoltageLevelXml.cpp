@@ -112,8 +112,8 @@ void VoltageLevelXml::writeShuntCompensators(const VoltageLevel& voltageLevel, N
 
 void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLevel, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(NOMINAL_V, voltageLevel.getNominalVoltage());
-    context.getWriter().writeOptionalAttribute(LOW_VOLTAGE_LIMIT, voltageLevel.getLowVoltageLimit(), stdcxx::nan());
-    context.getWriter().writeOptionalAttribute(HIGH_VOLTAGE_LIMIT, voltageLevel.getHighVoltageLimit(), stdcxx::nan());
+    context.getWriter().writeOptionalAttribute(LOW_VOLTAGE_LIMIT, voltageLevel.getLowVoltageLimit());
+    context.getWriter().writeOptionalAttribute(HIGH_VOLTAGE_LIMIT, voltageLevel.getHighVoltageLimit());
     const TopologyLevel& topologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), context.getOptions().getTopologyLevel());
     const TopologyKind& topologyKind = getTopologyKind(topologyLevel);
     context.getWriter().writeAttribute(TOPOLOGY_KIND, getTopologyKindName(topologyKind));

@@ -83,8 +83,24 @@ void XmlStreamWriter::writeEndElement() {
     }
 }
 
+void XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, bool attributeValue, bool absentValue) {
+    if (attributeValue != absentValue) {
+        writeAttribute(attributeName, attributeValue);
+    }
+}
+
+void XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, const char* attributeValue, const char* absentValue) {
+    if (strcmp(attributeValue, absentValue) != 0) {
+        writeAttribute(attributeName, attributeValue);
+    }
+}
+
+void XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, double attributeValue) {
+    writeAttribute(attributeName, attributeValue);
+}
+
 void XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, double attributeValue, double absentValue) {
-    if (!std::isnan(attributeValue) && stdcxx::isEqual(attributeValue, absentValue)) {
+    if (!std::isnan(attributeValue) && !stdcxx::isEqual(attributeValue, absentValue)) {
         writeAttribute(attributeName, stdcxx::to_string(attributeValue));
     }
 }

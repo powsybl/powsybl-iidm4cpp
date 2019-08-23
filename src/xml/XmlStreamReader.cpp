@@ -135,6 +135,18 @@ std::string XmlStreamReader::getNamespace(const std::string& prefix) const {
 }
 
 template <>
+stdcxx::optional<bool> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+    stdcxx::optional<bool> value;
+
+    const XmlString& str = getAttributeValue(attributeName, false);
+    if (str) {
+        value = boost::iequals(XML2S(str.get()), "true");
+    }
+
+    return value;
+}
+
+template <>
 stdcxx::optional<int> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
     stdcxx::optional<int> value;
 
@@ -182,24 +194,34 @@ stdcxx::optional<std::string> XmlStreamReader::getOptionalAttributeValue(const s
     return value;
 }
 
+bool XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, bool defaultValue) const {
+    const auto& value = getOptionalAttributeValue<bool>(attributeName);
+    return value.is_initialized() ? *value : defaultValue;
+}
+
+std::string XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, const char* defaultValue) const {
+    const auto& value = getOptionalAttributeValue<std::string>(attributeName);
+    return value.is_initialized() ? *value : defaultValue;
+}
+
 int XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, int defaultValue) const {
     const auto& value = getOptionalAttributeValue<int>(attributeName);
-    return static_cast<bool>(value) ? *value : defaultValue;
+    return value.is_initialized() ? *value : defaultValue;
 }
 
 double XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, double defaultValue) const {
     const auto& value = getOptionalAttributeValue<double>(attributeName);
-    return static_cast<bool>(value) ? *value : defaultValue;
+    return value.is_initialized() ? *value : defaultValue;
 }
 
 unsigned long XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, unsigned long defaultValue) const {
     const auto& value = getOptionalAttributeValue<unsigned long>(attributeName);
-    return static_cast<bool>(value) ? *value : defaultValue;
+    return value.is_initialized() ? *value : defaultValue;
 }
 
 std::string XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName, const std::string& defaultValue) const {
     const auto& value = getOptionalAttributeValue<std::string>(attributeName);
-    return static_cast<bool>(value) ? *value : defaultValue;
+    return value.is_initialized() ? *value : defaultValue;
 }
 
 std::string XmlStreamReader::getPrefix() const {

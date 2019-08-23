@@ -8,6 +8,9 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HPP
 
+#include <powsybl/iidm/BranchAdder.hpp>
+#include <powsybl/iidm/CurrentLimits.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
 
 #include "AbstractIdentifiableXml.hpp"
@@ -35,8 +38,17 @@ class AbstractConnectableXml : public AbstractIdentifiableXml<T, A, P> {
 public:
     ~AbstractConnectableXml() noexcept override = default;
 
+    template <typename S, typename O>
+    static void readCurrentLimits(const boost::optional<int>& index, CurrentLimitsAdder<S,O>& adder, const powsybl::xml::XmlStreamReader& reader);
+
+    static void writeCurrentLimits(const boost::optional<int>& index, const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer);
+
+    static void writeCurrentLimits(const boost::optional<int>& index, const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix);
+
 protected:
     AbstractConnectableXml() = default;
+
+    static void readNodeOrBus(BranchAdder<A>& adder, const NetworkXmlReaderContext& context);
 
     static void readNodeOrBus(InjectionAdder<A>& adder, const NetworkXmlReaderContext& context);
 

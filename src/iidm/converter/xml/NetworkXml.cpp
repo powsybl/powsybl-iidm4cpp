@@ -16,8 +16,10 @@
 #include <powsybl/xml/XmlStreamReader.hpp>
 
 #include "iidm/converter/Constants.hpp"
-#include "iidm/converter/xml/SubstationXml.hpp"
 #include "xml/XmlEncoding.hpp"
+
+#include "LineXml.hpp"
+#include "SubstationXml.hpp"
 
 namespace powsybl {
 
@@ -52,6 +54,8 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
     context.getReader().readUntilEndElement(NETWORK, [&network, &context]() {
         if (context.getReader().getLocalName() == SUBSTATION) {
             SubstationXml::getInstance().read(network, context);
+        } else if (context.getReader().getLocalName() == LINE) {
+            LineXml::getInstance().read(network, context);
         } else {
             throw powsybl::xml::XmlStreamException(logging::format("Unexpected element: %1%", context.getReader().getLocalName()));
         }
@@ -81,6 +85,15 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
 
     for (const auto& substation : network.getSubstations()) {
         SubstationXml::getInstance().write(substation, network, context);
+    }
+
+    for (const auto& line : network.getLines()) {
+        // TODO(sebalaig) consider filtering
+        if (line.isTieLine()) {
+            // TODO(sebalaig) implement TieLineXml
+        } else {
+            LineXml::getInstance().write(line, network, context);
+        }
     }
 
     writer.writeEndElement();

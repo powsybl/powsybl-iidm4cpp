@@ -36,9 +36,12 @@ BOOST_AUTO_TEST_CASE(XmlWriteApiWriteElementAttribute) {
     writer.writeAttribute("elementAttr", "elementAttrValue");
     writer.writeAttribute("elementAttr2", 1);
     writer.writeAttribute("elementAttr3", 1.0);
-    writer.writeOptionalAttribute("elementAttr4", 1.0, stdcxx::nan());
-    writer.writeOptionalAttribute("elementAttr5", stdcxx::nan(), stdcxx::nan());
+    writer.writeOptionalAttribute("elementAttr4", 1.0); // should be written
+    writer.writeOptionalAttribute("elementAttr5", stdcxx::nan()); // should not be written
     writer.writeOptionalAttribute("elementAttr6", "a", "");
+    writer.writeOptionalAttribute("elementAttr7", 1.0, 0.0); // should be written
+    writer.writeOptionalAttribute("elementAttr8", 1.0, 1.0); // should not be written
+    writer.writeOptionalAttribute("elementAttr9", stdcxx::nan(), 1.0); // should not be written
 
     // add a sub-element
     writer.writeStartElement("", "subElement");
@@ -54,7 +57,7 @@ BOOST_AUTO_TEST_CASE(XmlWriteApiWriteElementAttribute) {
     BOOST_CHECK(result.find("<?xml version=\"1.0\" encoding=\"UTF-8\"?>") != std::string::npos);
     BOOST_CHECK(result.find(
         "<ns:element xmlns:ns=\"http://ns/1_0\" xmlns:ns2=\"http://ns2/1_0\" elementAttr=\"elementAttrValue\" "
-        "elementAttr2=\"1\" elementAttr3=\"1\" elementAttr4=\"1\" elementAttr6=\"a\">"
+        "elementAttr2=\"1\" elementAttr3=\"1\" elementAttr4=\"1\" elementAttr6=\"a\" elementAttr7=\"1\">"
         "<subElement subElementAttr=\"subElementAttrValue\"/>"
         "</ns:element>") != std::string::npos);
 }

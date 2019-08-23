@@ -47,6 +47,10 @@ public:
     template <typename T>
     stdcxx::optional<T> getOptionalAttributeValue(const std::string& attributeName) const;
 
+    bool getOptionalAttributeValue(const std::string& attributeName, bool defaultValue) const;
+
+    std::string getOptionalAttributeValue(const std::string& attributeName, const char* defaultValue) const;
+
     int getOptionalAttributeValue(const std::string& attributeName, int defaultValue) const;
 
     double getOptionalAttributeValue(const std::string& attributeName, double defaultValue) const;

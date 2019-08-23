@@ -62,8 +62,8 @@ void LoadXml::readSubElements(Load& load, const NetworkXmlReaderContext& context
 
 void LoadXml::writeRootElementAttributes(const Load& load, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(LOAD_TYPE, getLoadTypeName(load.getLoadType()));
-    context.getWriter().writeOptionalAttribute(P0, load.getP0(), stdcxx::nan());
-    context.getWriter().writeOptionalAttribute(Q0, load.getQ0(), stdcxx::nan());
+    context.getWriter().writeOptionalAttribute(P0, load.getP0());
+    context.getWriter().writeOptionalAttribute(Q0, load.getQ0());
     writeNodeOrBus(boost::optional<int>(), load.getTerminal(), context);
     writePQ(boost::optional<int>(), load.getTerminal(), context.getWriter());
 }

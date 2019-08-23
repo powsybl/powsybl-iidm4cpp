@@ -48,8 +48,8 @@ void BusXml::readSubElements(Bus& bus, const NetworkXmlReaderContext& context) c
 }
 
 void BusXml::writeRootElementAttributes(const Bus& bus, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeOptionalAttribute(V, bus.getV(), stdcxx::nan());
-    context.getWriter().writeOptionalAttribute(ANGLE, bus.getAngle(), stdcxx::nan());
+    context.getWriter().writeOptionalAttribute(V, bus.getV());
+    context.getWriter().writeOptionalAttribute(ANGLE, bus.getAngle());
 }
 
 }  // namespace xml

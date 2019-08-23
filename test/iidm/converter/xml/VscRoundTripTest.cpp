@@ -22,7 +22,7 @@ namespace xml {
 
 BOOST_AUTO_TEST_SUITE(VscRoundTrip)
 
-BOOST_FIXTURE_TEST_CASE(VscRountTripTest, ResourceFixture) {
+BOOST_FIXTURE_TEST_CASE(VscRoundTripTest, ResourceFixture) {
 
     const std::string& networkStr = ResourceFixture::getResource("/VscRoundTripRef-tmp.xml");
     std::stringstream stream;

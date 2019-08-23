@@ -75,11 +75,11 @@ void GeneratorXml::writeRootElementAttributes(const Generator& generator, const 
     context.getWriter().writeAttribute(ENERGY_SOURCE, getEnergySourceName(generator.getEnergySource()));
     context.getWriter().writeAttribute(MIN_P, generator.getMinP());
     context.getWriter().writeAttribute(MAX_P, generator.getMaxP());
-    context.getWriter().writeOptionalAttribute(RATED_S, generator.getRatedS(), stdcxx::nan());
+    context.getWriter().writeOptionalAttribute(RATED_S, generator.getRatedS());
     context.getWriter().writeAttribute(VOLTAGE_REGULATOR_ON, generator.isVoltageRegulatorOn() ? "true" : "false");
     context.getWriter().writeAttribute(TARGET_P, generator.getTargetP());
-    context.getWriter().writeOptionalAttribute(TARGET_V, generator.getTargetV(), stdcxx::nan());
-    context.getWriter().writeOptionalAttribute(TARGET_Q, generator.getTargetQ(), stdcxx::nan());
+    context.getWriter().writeOptionalAttribute(TARGET_V, generator.getTargetV());
+    context.getWriter().writeOptionalAttribute(TARGET_Q, generator.getTargetQ());
     writeNodeOrBus(boost::optional<int>(), generator.getTerminal(), context);
     writePQ(boost::optional<int>(), generator.getTerminal(), context.getWriter());
 }
