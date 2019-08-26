@@ -37,6 +37,8 @@ public:
 
     void writeAttribute(const std::string& attributeName, const std::string& attributeValue);
 
+    void writeAttribute(const std::string& attributeName, long attributeValue);
+
     void writeAttribute(const std::string& attributeName, unsigned long attributeValue);
 
     void writeEmptyElement(const std::string& uri, const std::string& elementName);

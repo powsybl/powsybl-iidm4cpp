@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HPP
 
 #include <powsybl/iidm/BranchAdder.hpp>
-#include <powsybl/iidm/CurrentLimits.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
 
@@ -27,6 +26,7 @@ class XmlStreamWriter;
 namespace iidm {
 
 class Bus;
+class CurrentLimits;
 class Terminal;
 
 namespace converter {

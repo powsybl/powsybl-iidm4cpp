@@ -14,6 +14,7 @@
 #include <powsybl/iidm/Country.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 
+#include "TwoWindingsTransformerXml.hpp"
 #include "VoltageLevelXml.hpp"
 
 namespace powsybl {
@@ -70,6 +71,8 @@ void SubstationXml::readSubElements(Substation& substation, const NetworkXmlRead
     context.getReader().readUntilEndElement(SUBSTATION, [this, &substation, &context]() {
         if (context.getReader().getLocalName() == VOLTAGE_LEVEL) {
             VoltageLevelXml::getInstance().read(substation, context);
+        } else if (context.getReader().getLocalName() == TWO_WINDINGS_TRANSFORMER) {
+            TwoWindingsTransformerXml::getInstance().read(substation, context);
         } else {
             AbstractIdentifiableXml::readSubElements(substation, context);
         }
@@ -99,6 +102,11 @@ void SubstationXml::writeRootElementAttributes(const Substation& substation, con
 void SubstationXml::writeSubElements(const Substation& substation, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     for (const auto& voltageLevel : substation.getVoltageLevels()) {
         VoltageLevelXml::getInstance().write(voltageLevel, substation, context);
+    }
+
+    for (const auto& twt : substation.getTwoWindingsTransformers()) {
+        // TODO(sebalaig) consider filtering
+        TwoWindingsTransformerXml::getInstance().write(twt, substation, context);
     }
 }
 

@@ -60,6 +60,11 @@ void XmlStreamWriter::writeAttribute(const std::string& attributeName, const std
         throw XmlStreamException(logging::format("Failed to write attribute %1%", attributeName));
     }
 }
+
+void XmlStreamWriter::writeAttribute(const std::string& attributeName, long attributeValue) {
+    writeAttribute(attributeName, std::to_string(attributeValue));
+}
+
 void XmlStreamWriter::writeAttribute(const std::string& attributeName, unsigned long attributeValue) {
     writeAttribute(attributeName, std::to_string(attributeValue));
 }

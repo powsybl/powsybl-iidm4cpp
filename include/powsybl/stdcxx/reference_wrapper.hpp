@@ -43,6 +43,10 @@ public:
         return m_pointer == reference.m_pointer;
     }
 
+    bool operator==(const T& reference) const {
+        return m_pointer == &reference;
+    }
+
     bool operator!() const noexcept {
         return m_pointer == nullptr;
     }
