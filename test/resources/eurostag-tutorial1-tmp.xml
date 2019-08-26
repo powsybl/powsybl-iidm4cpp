@@ -5,7 +5,9 @@
             <iidm:busBreakerTopology>
                 <iidm:bus id="NGEN"/>
             </iidm:busBreakerTopology>
-            <iidm:generator id="GEN" energySource="HYDRO" minP="-9999.9899999999998" maxP="9999.9899999999998" voltageRegulatorOn="true" targetP="607" targetV="24.5" targetQ="301" bus="NGEN" connectableBus="NGEN"/>
+            <iidm:generator id="GEN" energySource="HYDRO" minP="-9999.9899999999998" maxP="9999.9899999999998" voltageRegulatorOn="true" targetP="607" targetV="24.5" targetQ="301" bus="NGEN" connectableBus="NGEN">
+                <iidm:minMaxReactiveLimits minQ="-9999.9899999999998" maxQ="9999.9899999999998"/>
+            </iidm:generator>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="VLHV1" nominalV="380" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>

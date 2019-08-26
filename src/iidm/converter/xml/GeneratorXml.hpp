@@ -39,6 +39,8 @@ protected:
 
     void writeRootElementAttributes(const Generator& generator, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
+    void writeSubElements(const Generator& generator, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+
 private:
     GeneratorXml() = default;
 

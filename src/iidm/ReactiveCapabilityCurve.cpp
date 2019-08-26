@@ -9,6 +9,8 @@
 
 #include <cassert>
 
+#include <boost/range/adaptor/map.hpp>
+
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -110,8 +112,12 @@ unsigned long ReactiveCapabilityCurve::getPointCount() const {
     return m_points.size();
 }
 
-const std::map<double, ReactiveCapabilityCurve::Point>& ReactiveCapabilityCurve::getPoints() const {
-    return m_points;
+stdcxx::const_range<ReactiveCapabilityCurve::Point> ReactiveCapabilityCurve::getPoints() const {
+    return m_points | boost::adaptors::map_values;
+}
+
+stdcxx::range<ReactiveCapabilityCurve::Point> ReactiveCapabilityCurve::getPoints() {
+    return m_points | boost::adaptors::map_values;
 }
 
 }  // namespace iidm

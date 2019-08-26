@@ -11,6 +11,7 @@
 #include <map>
 
 #include <powsybl/iidm/ReactiveLimits.hpp>
+#include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
@@ -60,7 +61,9 @@ public:
 
     unsigned long getPointCount() const;
 
-    const std::map<double, Point>& getPoints() const;
+    stdcxx::const_range<Point> getPoints() const;
+
+    stdcxx::range<Point> getPoints();
 
 private:
     std::map<double, Point> m_points;

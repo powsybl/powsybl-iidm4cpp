@@ -108,18 +108,17 @@ BOOST_AUTO_TEST_CASE(ReactiveCapabilityCurveTest) {
     BOOST_CHECK_CLOSE(20.0, limits.getMaxQ(2.0), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(20.0, limits.getMaxQ(3.5), std::numeric_limits<double>::epsilon());
 
-    const std::map<double, ReactiveCapabilityCurve::Point>& actual = limits.getPoints();
+    const auto& actual = limits.getPoints();
     std::map<double, ReactiveCapabilityCurve::Point> expected = { { 0.0, { 0.0, -10.0, 10.0 } }, { 1.0, { 1.0, 15.0, 25.0 } }, { 2.0, { 2.0, 10.0, 20.0 } } };
-    BOOST_REQUIRE_EQUAL(actual.size(), expected.size());
     auto itE = expected.begin();
-    for (auto itA = actual.begin(); itA != actual.end(); ++itA, ++itE) {
-        BOOST_CHECK_CLOSE(itA->first, itE->first, std::numeric_limits<double>::epsilon());
-        const ReactiveCapabilityCurve::Point& actualP = itA->second;
+    for (const auto& actualP : actual) {
         const ReactiveCapabilityCurve::Point& expectedP = itE->second;
         BOOST_CHECK_CLOSE(actualP.getP(), expectedP.getP(), std::numeric_limits<double>::epsilon());
         BOOST_CHECK_CLOSE(actualP.getMinQ(), expectedP.getMinQ(), std::numeric_limits<double>::epsilon());
         BOOST_CHECK_CLOSE(actualP.getMaxQ(), expectedP.getMaxQ(), std::numeric_limits<double>::epsilon());
+        ++itE;
     }
+    BOOST_CHECK(itE == expected.end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

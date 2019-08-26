@@ -7,6 +7,8 @@
 
 #include "VscConverterStationXml.hpp"
 
+#include "ReactiveLimitsXml.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -52,7 +54,7 @@ void VscConverterStationXml::readSubElements(VscConverterStation& converterStati
     context.getReader().readUntilEndElement(VSC_CONVERTER_STATION, [this, &converterStation, &context]() {
         if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
             context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
-            // TODO(sebalaig) implement ReactiveLimitsXml
+            ReactiveLimitsXml::getInstance().read(converterStation, context);
         } else {
             AbstractIdentifiableXml::readSubElements(converterStation, context);
         }
@@ -60,12 +62,16 @@ void VscConverterStationXml::readSubElements(VscConverterStation& converterStati
 }
 
 void VscConverterStationXml::writeRootElementAttributes(const VscConverterStation& converterStation, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeAttribute(VOLTAGE_REGULATOR_ON, converterStation.isVoltageRegulatorOn() ? "true" : "false");
+    context.getWriter().writeAttribute(VOLTAGE_REGULATOR_ON, converterStation.isVoltageRegulatorOn());
     context.getWriter().writeAttribute(LOSS_FACTOR, converterStation.getLossFactor());
     context.getWriter().writeAttribute(VOLTAGE_SETPOINT, converterStation.getVoltageSetpoint());
     context.getWriter().writeAttribute(REACTIVE_POWER_SETPOINT, converterStation.getReactivePowerSetpoint());
     writeNodeOrBus(boost::optional<int>(), converterStation.getTerminal(), context);
     writePQ(boost::optional<int>(), converterStation.getTerminal(), context.getWriter());
+}
+
+void VscConverterStationXml::writeSubElements(const VscConverterStation& converterStation, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
+    ReactiveLimitsXml::getInstance().write(converterStation, context);
 }
 
 }  // namespace xml

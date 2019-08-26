@@ -9,6 +9,8 @@
 
 #include "iidm/converter/Constants.hpp"
 
+#include "ReactiveLimitsXml.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -64,7 +66,7 @@ void GeneratorXml::readSubElements(Generator& generator, const NetworkXmlReaderC
             // TODO(sebalaig) implement "regulatingTerminal" read
         } else if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
                    context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
-            // TODO(sebalaig) implement ReactiveLimitsXml
+            ReactiveLimitsXml::getInstance().read(generator, context);
         } else {
             AbstractIdentifiableXml::readSubElements(generator, context);
         }
@@ -83,6 +85,12 @@ void GeneratorXml::writeRootElementAttributes(const Generator& generator, const 
     writeNodeOrBus(boost::optional<int>(), generator.getTerminal(), context);
     writePQ(boost::optional<int>(), generator.getTerminal(), context.getWriter());
 }
+
+void GeneratorXml::writeSubElements(const Generator& generator, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
+    // TODO(sebalaig) implement TerminalRefXml
+    ReactiveLimitsXml::getInstance().write(generator, context);
+}
+
 
 }  // namespace xml
 

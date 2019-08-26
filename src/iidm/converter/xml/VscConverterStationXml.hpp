@@ -39,6 +39,8 @@ protected:
 
     void writeRootElementAttributes(const VscConverterStation& converterStation, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
+    void writeSubElements(const VscConverterStation& converterStation, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+
 private:
     VscConverterStationXml() = default;
 
