@@ -118,6 +118,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 
+    iidm/util/DistinctPredicate.cpp
     iidm/util/LimitViolationUtils.cpp
 
     logging/ConsoleLogger.cpp

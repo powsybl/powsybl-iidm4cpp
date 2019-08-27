@@ -219,11 +219,14 @@ BOOST_AUTO_TEST_SUITE(ThreeWindingsTransformerTestSuite)
 BOOST_AUTO_TEST_CASE(constructor) {
     Network network = createThreeWindingsTransformerTestNetwork();
     const Network& cNetwork = network;
-    const Substation& substation = cNetwork.getSubstation("S1");
+    Substation& substation = network.getSubstation("S1");
+    const Substation& cSubstation = substation;
 
     BOOST_CHECK_EQUAL(1UL, network.getThreeWindingsTransformerCount());
     BOOST_CHECK_EQUAL(1UL, boost::size(network.getThreeWindingsTransformers()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cNetwork.getThreeWindingsTransformers()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(substation.getThreeWindingsTransformers()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(cSubstation.getThreeWindingsTransformers()));
 
     ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
     const ThreeWindingsTransformer& cTransformer = cNetwork.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");

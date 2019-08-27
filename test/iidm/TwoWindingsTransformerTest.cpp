@@ -215,10 +215,13 @@ BOOST_AUTO_TEST_SUITE(TwoWindingsTransformerTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
     Network network = createTwoWindingsTransformerTestNetwork();
-    const Substation& substation = network.getSubstation("S1");
+    Substation& substation = network.getSubstation("S1");
+    const Substation& cSubstation = substation;
 
     BOOST_CHECK_EQUAL(1UL, network.getTwoWindingsTransformerCount());
     BOOST_CHECK_EQUAL(1UL, boost::size(network.getTwoWindingsTransformers()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(substation.getTwoWindingsTransformers()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(cSubstation.getTwoWindingsTransformers()));
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());

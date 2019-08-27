@@ -5,11 +5,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/Substation.hpp>
+
+#include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/join.hpp>
+
+#include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
+#include <powsybl/iidm/util/DistinctPredicate.hpp>
 
 namespace powsybl {
 
@@ -56,6 +61,26 @@ unsigned long Substation::getThreeWindingsTransformerCount() const {
     return res / 3UL;
 }
 
+stdcxx::const_range<ThreeWindingsTransformer> Substation::getThreeWindingsTransformers() const {
+    stdcxx::const_range<ThreeWindingsTransformer> range;
+
+    for (const auto& it : m_voltageLevels) {
+        range = boost::range::join(range, it.get().getConnectables<ThreeWindingsTransformer>());
+    }
+
+    return range | boost::adaptors::filtered(DistinctPredicate());
+}
+
+stdcxx::range<ThreeWindingsTransformer> Substation::getThreeWindingsTransformers() {
+    stdcxx::range<ThreeWindingsTransformer> range;
+
+    for (auto& it : m_voltageLevels) {
+        range = boost::range::join(range, it.get().getConnectables<ThreeWindingsTransformer>());
+    }
+
+    return range | boost::adaptors::filtered(DistinctPredicate());
+}
+
 const std::string& Substation::getTso() const {
     return m_tso;
 }
@@ -68,13 +93,37 @@ unsigned long Substation::getTwoWindingsTransformerCount() const {
     return res / 2UL;
 }
 
+stdcxx::const_range<TwoWindingsTransformer> Substation::getTwoWindingsTransformers() const {
+    stdcxx::const_range<TwoWindingsTransformer> range;
+
+    for (const auto& it : m_voltageLevels) {
+        range = boost::range::join(range, it.get().getConnectables<TwoWindingsTransformer>());
+    }
+
+    return range | boost::adaptors::filtered(DistinctPredicate());
+}
+
+stdcxx::range<TwoWindingsTransformer> Substation::getTwoWindingsTransformers() {
+    stdcxx::range<TwoWindingsTransformer> range;
+
+    for (auto& it : m_voltageLevels) {
+        range = boost::range::join(range, it.get().getConnectables<TwoWindingsTransformer>());
+    }
+
+    return range | boost::adaptors::filtered(DistinctPredicate());
+}
+
 const std::string& Substation::getTypeDescription() const {
     static std::string s_typeDescription = "Substation";
 
     return s_typeDescription;
 }
 
-const std::vector<std::reference_wrapper<VoltageLevel> >& Substation::getVoltageLevels() const {
+stdcxx::const_range<VoltageLevel> Substation::getVoltageLevels() const {
+    return m_voltageLevels;
+}
+
+stdcxx::range<VoltageLevel> Substation::getVoltageLevels() {
     return m_voltageLevels;
 }
 

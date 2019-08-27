@@ -23,7 +23,9 @@ namespace powsybl {
 
 namespace iidm {
 
+class ThreeWindingsTransformer;
 class ThreeWindingsTransformerAdder;
+class TwoWindingsTransformer;
 class TwoWindingsTransformerAdder;
 
 class Substation : public Container {
@@ -44,11 +46,21 @@ public:
 
     unsigned long getThreeWindingsTransformerCount() const;
 
+    stdcxx::const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
+
+    stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
+
     const std::string& getTso() const;
 
     unsigned long getTwoWindingsTransformerCount() const;
 
-    const std::vector<std::reference_wrapper<VoltageLevel> >& getVoltageLevels() const;
+    stdcxx::const_range<TwoWindingsTransformer> getTwoWindingsTransformers() const;
+
+    stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
+
+    stdcxx::const_range<VoltageLevel> getVoltageLevels() const;
+
+    stdcxx::range<VoltageLevel> getVoltageLevels();
 
     ThreeWindingsTransformerAdder newThreeWindingsTransformer();
 
