@@ -196,6 +196,10 @@ private:
     std::unique_ptr<Leg2or3> m_leg3;
 };
 
+ThreeWindingsTransformer::Side getThreeWindingsTransformerSide(const std::string& sideName);
+
+std::string getThreeWindingsTransformerSideName(const ThreeWindingsTransformer::Side& side);
+
 std::ostream& operator<<(std::ostream& stream, const ThreeWindingsTransformer::Side& side);
 
 }  // namespace iidm

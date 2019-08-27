@@ -34,7 +34,7 @@ protected:  // AbstractIdentifiableXml
 
     TwoWindingsTransformer& readRootElementAttributes(TwoWindingsTransformerAdder& adder, const NetworkXmlReaderContext& context) const override;
 
-    void readSubElements(TwoWindingsTransformer& twt, const NetworkXmlReaderContext& context) const override;
+    void readSubElements(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) const override;
 
     void writeRootElementAttributes(const TwoWindingsTransformer& twt, const Substation& substation, NetworkXmlWriterContext& context) const override;
 

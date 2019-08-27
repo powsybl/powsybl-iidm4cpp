@@ -27,7 +27,7 @@ namespace converter {
 namespace xml {
 
 template <typename T, typename A, typename P>
-void AbstractIdentifiableXml<T, A, P>::read(P& parent, const NetworkXmlReaderContext& context) const {
+void AbstractIdentifiableXml<T, A, P>::read(P& parent, NetworkXmlReaderContext& context) const {
     A adder = createAdder(parent);
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     const std::string& name = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(NAME, ""));
@@ -37,7 +37,7 @@ void AbstractIdentifiableXml<T, A, P>::read(P& parent, const NetworkXmlReaderCon
 }
 
 template <typename T, typename A, typename P>
-void AbstractIdentifiableXml<T, A, P>::readSubElements(T& identifiable, const NetworkXmlReaderContext& context) const {
+void AbstractIdentifiableXml<T, A, P>::readSubElements(T& identifiable, NetworkXmlReaderContext& context) const {
     if (context.getReader().getLocalName() == PROPERTY) {
         const std::string& name = context.getReader().getAttributeValue(NAME);
         const std::string& value = context.getReader().getAttributeValue(VALUE);

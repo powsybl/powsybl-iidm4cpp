@@ -7,9 +7,12 @@
 
 #include "GeneratorXml.hpp"
 
+#include <powsybl/iidm/Substation.hpp>
+
 #include "iidm/converter/Constants.hpp"
 
 #include "ReactiveLimitsXml.hpp"
+#include "TerminalRefXml.hpp"
 
 namespace powsybl {
 
@@ -60,10 +63,14 @@ Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdde
     return generator;
 }
 
-void GeneratorXml::readSubElements(Generator& generator, const NetworkXmlReaderContext& context) const {
+void GeneratorXml::readSubElements(Generator& generator, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(GENERATOR, [this, &generator, &context]() {
         if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
-            // TODO(sebalaig) implement "regulatingTerminal" read
+            const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(ID, ""));
+            const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
+            context.addEndTask([&generator, id, side]() {
+                generator.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(generator.getTerminal().getVoltageLevel().getSubstation().getNetwork(), id, side)));
+            });
         } else if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
                    context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
             ReactiveLimitsXml::getInstance().read(generator, context);
@@ -78,7 +85,7 @@ void GeneratorXml::writeRootElementAttributes(const Generator& generator, const 
     context.getWriter().writeAttribute(MIN_P, generator.getMinP());
     context.getWriter().writeAttribute(MAX_P, generator.getMaxP());
     context.getWriter().writeOptionalAttribute(RATED_S, generator.getRatedS());
-    context.getWriter().writeAttribute(VOLTAGE_REGULATOR_ON, generator.isVoltageRegulatorOn() ? "true" : "false");
+    context.getWriter().writeAttribute(VOLTAGE_REGULATOR_ON, generator.isVoltageRegulatorOn());
     context.getWriter().writeAttribute(TARGET_P, generator.getTargetP());
     context.getWriter().writeOptionalAttribute(TARGET_V, generator.getTargetV());
     context.getWriter().writeOptionalAttribute(TARGET_Q, generator.getTargetQ());
@@ -87,10 +94,12 @@ void GeneratorXml::writeRootElementAttributes(const Generator& generator, const 
 }
 
 void GeneratorXml::writeSubElements(const Generator& generator, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    // TODO(sebalaig) implement TerminalRefXml
+    if (generator.getRegulatingTerminal()
+        && generator.getRegulatingTerminal().get().getBusBreakerView().getConnectableBus() != generator.getTerminal().getBusBreakerView().getConnectableBus()) {
+        TerminalRefXml::writeTerminalRef(generator.getRegulatingTerminal(), context, REGULATING_TERMINAL);
+    }
     ReactiveLimitsXml::getInstance().write(generator, context);
 }
-
 
 }  // namespace xml
 

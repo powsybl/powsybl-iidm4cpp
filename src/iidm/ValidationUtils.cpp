@@ -337,8 +337,8 @@ void checkRatioTapChangerRegulation(const Validable& validable, bool loadTapChan
     }
 }
 
-void checkRegulatingTerminal(const Validable& validable, const Terminal& regulatingTerminal, const Network& network) {
-    if (!stdcxx::areSame(regulatingTerminal.getVoltageLevel().getNetwork(), network)) {
+void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network) {
+    if (regulatingTerminal && !stdcxx::areSame(regulatingTerminal.get().getVoltageLevel().getNetwork(), network)) {
         throw ValidationException(validable, "Regulating terminal is not part of the network");
     }
 }

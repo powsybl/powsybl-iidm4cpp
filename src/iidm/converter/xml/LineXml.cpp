@@ -52,7 +52,7 @@ Line& LineXml::readRootElementAttributes(LineAdder& adder, const NetworkXmlReade
     return line;
 }
 
-void LineXml::readSubElements(Line& line, const NetworkXmlReaderContext& context) const {
+void LineXml::readSubElements(Line& line, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(LINE, [this, &line, &context]() {
         if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
             CurrentLimitsAdder<Branch::Side, Branch> adder = line.newCurrentLimits1();

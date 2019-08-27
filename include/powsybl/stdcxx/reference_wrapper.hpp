@@ -43,8 +43,16 @@ public:
         return m_pointer == reference.m_pointer;
     }
 
+    bool operator!=(const reference_wrapper& reference) const {
+        return m_pointer != reference.m_pointer;
+    }
+
     bool operator==(const T& reference) const {
         return m_pointer == &reference;
+    }
+
+    bool operator!=(const T& reference) const {
+        return m_pointer != &reference;
     }
 
     bool operator!() const noexcept {

@@ -35,7 +35,7 @@ protected:  // AbstractIdentifiableXml
 
     Substation& readRootElementAttributes(SubstationAdder& adder, const NetworkXmlReaderContext& context) const override;
 
-    void readSubElements(Substation& substation, const NetworkXmlReaderContext& context) const override;
+    void readSubElements(Substation& substation, NetworkXmlReaderContext& context) const override;
 
     void writeRootElementAttributes(const Substation& substation, const Network& network, NetworkXmlWriterContext& context) const override;
 

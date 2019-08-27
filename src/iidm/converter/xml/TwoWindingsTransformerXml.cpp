@@ -55,14 +55,14 @@ TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(Two
     return twt;
 }
 
-void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, const NetworkXmlReaderContext& context) const {
+void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(TWO_WINDINGS_TRANSFORMER, [this, &twt, &context]() {
         if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
-            // TODO(mathbagu/sebalaig) merge with line-xml
-            //readCurrentLimits<Branch::Side, Branch>(1, [&line](){ return line.newCurrentLimits1(); }, context.getReader());
+            CurrentLimitsAdder<Branch::Side, Branch> adder = twt.newCurrentLimits1();
+            readCurrentLimits(1, adder, context.getReader());
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
-            // TODO(mathbagu/sebalaig) merge with line-xml
-            //readCurrentLimits<Branch::Side, Branch>(2, [&line](){ return line.newCurrentLimits2(); }, context.getReader());
+            CurrentLimitsAdder<Branch::Side, Branch> adder = twt.newCurrentLimits2();
+            readCurrentLimits(2, adder, context.getReader());
         } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER) {
             // TODO(sebalaig) RadioTapChanger read
         } else if (context.getReader().getLocalName() == PHASE_TAP_CHANGER) {
@@ -88,7 +88,7 @@ void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTran
     }
 }
 
-void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& /*context*/) const {
+void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
     const auto& rtc = twt.getRatioTapChanger();
     if (rtc) {
         // TODO(sebalaig) RadioTapChanger write
@@ -98,12 +98,10 @@ void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& t
         // TODO(sebalaig) PhaseTapChanger write
     }
     if (twt.getCurrentLimits1()) {
-        // TODO(mathbagu/sebalaig) merge with line-xml
-        //writeCurrentLimits(1, twt.getCurrentLimits1(), context.getWriter());
+        writeCurrentLimits(1, twt.getCurrentLimits1(), context.getWriter());
     }
     if (twt.getCurrentLimits2()) {
-        // TODO(mathbagu/sebalaig) merge with line-xml
-        //writeCurrentLimits(2, twt.getCurrentLimits2(), context.getWriter());
+        writeCurrentLimits(2, twt.getCurrentLimits2(), context.getWriter());
     }
 }
 

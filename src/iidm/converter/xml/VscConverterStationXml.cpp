@@ -50,7 +50,7 @@ VscConverterStation& VscConverterStationXml::readRootElementAttributes(VscConver
     return converterStation;
 }
 
-void VscConverterStationXml::readSubElements(VscConverterStation& converterStation, const NetworkXmlReaderContext& context) const {
+void VscConverterStationXml::readSubElements(VscConverterStation& converterStation, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(VSC_CONVERTER_STATION, [this, &converterStation, &context]() {
         if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
             context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {

@@ -67,7 +67,7 @@ Substation& SubstationXml::readRootElementAttributes(SubstationAdder& adder, con
     return adder.add();
 }
 
-void SubstationXml::readSubElements(Substation& substation, const NetworkXmlReaderContext& context) const {
+void SubstationXml::readSubElements(Substation& substation, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(SUBSTATION, [this, &substation, &context]() {
         if (context.getReader().getLocalName() == VOLTAGE_LEVEL) {
             VoltageLevelXml::getInstance().read(substation, context);

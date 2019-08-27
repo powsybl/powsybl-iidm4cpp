@@ -22,8 +22,16 @@ NetworkXmlReaderContext::NetworkXmlReaderContext(const Anonymizer& anonymizer, p
 
 }
 
+void NetworkXmlReaderContext::addEndTask(const std::function<void()>& endTask) {
+    m_endTasks.emplace_back(endTask);
+}
+
 const Anonymizer& NetworkXmlReaderContext::getAnonymizer() const {
     return m_anonymizer;
+}
+
+const std::list<std::function<void()>>& NetworkXmlReaderContext::getEndTasks() const {
+    return m_endTasks;
 }
 
 const ImportOptions& NetworkXmlReaderContext::getOptions() const {

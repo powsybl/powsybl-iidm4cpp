@@ -22,11 +22,11 @@ class NetworkXmlWriterContext;
 template <typename T, typename A, typename P>
 class AbstractIdentifiableXml {
 public:
-    void read(P& parent, const NetworkXmlReaderContext& context) const;
+    void read(P& parent, NetworkXmlReaderContext& context) const;
 
     // FIXME(mathbagu): This method is public due to a bug in GCC 4.8.5 that doesn't allow lambda to acces to private/protected members
     // https://stackoverflow.com/questions/11933999/why-is-it-not-possible-to-use-private-method-in-a-lambda
-    virtual void readSubElements(T& identifiable, const NetworkXmlReaderContext& context) const;
+    virtual void readSubElements(T& identifiable, NetworkXmlReaderContext& context) const;
     
     void write(const T& identifiable, const P& parent, NetworkXmlWriterContext& context) const;
 

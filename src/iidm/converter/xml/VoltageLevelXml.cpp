@@ -55,7 +55,7 @@ VoltageLevel& VoltageLevelXml::readRootElementAttributes(VoltageLevelAdder& adde
                 .add();
 }
 
-void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, const NetworkXmlReaderContext& context) const {
+void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(VOLTAGE_LEVEL, [this, &voltageLevel, &context]() {
         if (context.getReader().getLocalName() == BUS_BREAKER_TOPOLOGY) {
             context.getReader().readUntilEndElement(BUS_BREAKER_TOPOLOGY, [&voltageLevel, &context]() {

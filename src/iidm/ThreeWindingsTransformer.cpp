@@ -183,7 +183,6 @@ Substation& ThreeWindingsTransformer::getSubstation() {
     return m_leg1->getTerminal().get().getVoltageLevel().getSubstation();
 }
 
-
 const Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) const {
     switch (side) {
         case Side::ONE:
@@ -195,6 +194,28 @@ const Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) const {
         default:
             throw AssertionError(logging::format("Unexpected side value: %1%", side));
     }
+}
+
+const std::array<std::string, 3>& getThreeWindingsTransformerSideNames() {
+    static std::array<std::string, 3> s_threeWindingsTransformerSideNames {{
+       "ONE",
+       "TWO",
+       "THREE"
+    }};
+    return s_threeWindingsTransformerSideNames;
+}
+
+ThreeWindingsTransformer::Side getThreeWindingsTransformerSide(const std::string& sideName) {
+    const auto& names = getThreeWindingsTransformerSideNames();
+    const auto& it = std::find(names.cbegin(), names.cend(), sideName);
+    if (it == names.cend()) {
+        throw PowsyblException(logging::format("Unable to retrieve side '%1%'", sideName));
+    }
+    return static_cast<ThreeWindingsTransformer::Side>(it - names.cbegin());
+}
+
+std::string getThreeWindingsTransformerSideName(const ThreeWindingsTransformer::Side& side) {
+    return logging::toString(getThreeWindingsTransformerSideNames(), side);
 }
 
 Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) {

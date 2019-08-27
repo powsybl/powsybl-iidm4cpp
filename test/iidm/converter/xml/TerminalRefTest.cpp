@@ -8,7 +8,6 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/stdcxx/DateTime.hpp>
 
 #include "iidm/converter/ResourceFixture.hpp"
 #include "iidm/converter/RoundTrip.hpp"

@@ -225,7 +225,7 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_CHECK_EQUAL("GEN", gen.getName());
     POWSYBL_ASSERT_ENUM_EQ(iidm::EnergySource::OTHER, gen.getEnergySource());
     BOOST_TEST(std::isnan(gen.getRatedS()));
-    BOOST_TEST(!gen.getRegulatingTerminal());
+    BOOST_TEST(gen.getRegulatingTerminal());
     BOOST_CHECK_CLOSE(-9999.99, gen.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(9999.99, gen.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(gen.isVoltageRegulatorOn());
@@ -470,7 +470,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_EQUAL("GEN", gen.getName());
     POWSYBL_ASSERT_ENUM_EQ(iidm::EnergySource::OTHER, gen.getEnergySource());
     BOOST_TEST(std::isnan(gen.getRatedS()));
-    BOOST_TEST(!gen.getRegulatingTerminal());
+    BOOST_TEST(gen.getRegulatingTerminal());
     BOOST_CHECK_CLOSE(-9999.99, gen.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(9999.99, gen.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(gen.isVoltageRegulatorOn());
@@ -492,7 +492,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_EQUAL("GEN2", gen2.getName());
     POWSYBL_ASSERT_ENUM_EQ(iidm::EnergySource::OTHER, gen2.getEnergySource());
     BOOST_TEST(std::isnan(gen2.getRatedS()));
-    BOOST_TEST(!gen2.getRegulatingTerminal());
+    BOOST_TEST(gen2.getRegulatingTerminal());
     BOOST_CHECK_CLOSE(-9999.99, gen2.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(9999.99, gen2.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(gen2.isVoltageRegulatorOn());

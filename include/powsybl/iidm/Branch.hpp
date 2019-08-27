@@ -129,6 +129,8 @@ private:
     std::unique_ptr<CurrentLimits> m_limits2;
 };
 
+Branch::Side getSide(const std::string& sideName);
+
 std::string getSideName(const Branch::Side& side);
 
 std::ostream& operator<<(std::ostream& stream, const Branch::Side& side);

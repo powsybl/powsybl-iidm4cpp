@@ -35,7 +35,7 @@ protected:  // AbstractIdentifiableXml
 
     ShuntCompensator& readRootElementAttributes(ShuntCompensatorAdder& adder, const NetworkXmlReaderContext& context) const override;
 
-    void readSubElements(ShuntCompensator& shuntCompensator, const NetworkXmlReaderContext& context) const override;
+    void readSubElements(ShuntCompensator& shuntCompensator, NetworkXmlReaderContext& context) const override;
 
     void writeRootElementAttributes(const ShuntCompensator& shuntCompensator, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 

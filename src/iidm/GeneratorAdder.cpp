@@ -32,9 +32,7 @@ GeneratorAdder::GeneratorAdder(powsybl::iidm::VoltageLevel& voltageLevel) :
 Generator& GeneratorAdder::add() {
     checkMinP(*this, m_minP);
     checkMaxP(*this, m_maxP);
-    if (m_regulatingTerminal) {
-        checkRegulatingTerminal(*this, m_regulatingTerminal, getNetwork());
-    }
+    checkRegulatingTerminal(*this, m_regulatingTerminal, getNetwork());
     checkActivePowerSetpoint(*this, m_activePowerSetpoint);
 
     checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set");
@@ -42,12 +40,13 @@ Generator& GeneratorAdder::add() {
     checkActivePowerLimits(*this, m_minP, m_maxP);
     checkRatedS(*this, m_ratedS);
 
+    auto terminalPtr = checkAndGetTerminal();
     std::unique_ptr<Generator> ptrGenerator = stdcxx::make_unique<Generator>(getNetwork(), getId(), getName(),
-        m_energySource, m_minP, m_maxP, *m_voltageRegulatorOn, m_regulatingTerminal,
+        m_energySource, m_minP, m_maxP, *m_voltageRegulatorOn, m_regulatingTerminal ? m_regulatingTerminal : stdcxx::ref(*terminalPtr),
         m_activePowerSetpoint, m_reactivePowerSetpoint, m_voltageSetpoint, m_ratedS);
     auto& generator = getNetwork().checkAndAdd(std::move(ptrGenerator));
 
-    Terminal& terminal = generator.addTerminal(checkAndGetTerminal());
+    Terminal& terminal = generator.addTerminal(std::move(terminalPtr));
     m_voltageLevel.attach(terminal, false);
 
     return generator;

@@ -61,6 +61,10 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
         }
     });
 
+    for (const auto& task : context.getEndTasks()) {
+        task();
+    }
+
     return network;
 }
 

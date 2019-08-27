@@ -35,7 +35,7 @@ protected:  // AbstractIdentifiableXml
 
     Line& readRootElementAttributes(LineAdder& adder, const NetworkXmlReaderContext& context) const override;
 
-    void readSubElements(Line& line, const NetworkXmlReaderContext& context) const override;
+    void readSubElements(Line& line, NetworkXmlReaderContext& context) const override;
 
     void writeRootElementAttributes(const Line& line, const Network& network, NetworkXmlWriterContext& context) const override;
 

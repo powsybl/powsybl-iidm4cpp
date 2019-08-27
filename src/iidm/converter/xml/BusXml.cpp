@@ -41,7 +41,7 @@ Bus& BusXml::readRootElementAttributes(BusAdder& adder, const NetworkXmlReaderCo
     return b;
 }
 
-void BusXml::readSubElements(Bus& bus, const NetworkXmlReaderContext& context) const {
+void BusXml::readSubElements(Bus& bus, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(SUBSTATION, [this, &bus, &context]() {
         AbstractIdentifiableXml::readSubElements(bus, context);
     });

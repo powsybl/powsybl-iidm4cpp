@@ -14,13 +14,13 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class EnergySource : bool {
-    HYDRO = false,
-    NUCLEAR = false,
-    WIND = true,
-    THERMAL = false,
-    SOLAR = true,
-    OTHER = false
+enum class EnergySource : unsigned int {
+    HYDRO,
+    NUCLEAR,
+    WIND,
+    THERMAL,
+    SOLAR,
+    OTHER
 };
 
 EnergySource getEnergySource(const std::string& energySourceName);
@@ -28,7 +28,7 @@ EnergySource getEnergySource(const std::string& energySourceName);
 std::string getEnergySourceName(const EnergySource& energySource);
 
 inline bool isIntermittent(const EnergySource& energySource) {
-    return static_cast<bool>(energySource);
+    return energySource == EnergySource::WIND || energySource == EnergySource::SOLAR;
 }
 
 }  // namespace iidm

@@ -47,7 +47,7 @@ ShuntCompensator& ShuntCompensatorXml::readRootElementAttributes(ShuntCompensato
     return sc;
 }
 
-void ShuntCompensatorXml::readSubElements(ShuntCompensator& shuntCompensator, const NetworkXmlReaderContext& context) const {
+void ShuntCompensatorXml::readSubElements(ShuntCompensator& shuntCompensator, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(SHUNT, [this, &shuntCompensator, &context]() {
         AbstractIdentifiableXml::readSubElements(shuntCompensator, context);
     });

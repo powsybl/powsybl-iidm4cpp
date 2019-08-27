@@ -8,6 +8,9 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_NETWORKXMLREADERCONTEXT_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_NETWORKXMLREADERCONTEXT_HPP
 
+#include <functional>
+#include <list>
+
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 
 namespace powsybl {
@@ -30,7 +33,11 @@ class NetworkXmlReaderContext {
 public:
     NetworkXmlReaderContext(const Anonymizer& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options);
 
+    void addEndTask(const std::function<void()>& endTask);
+
     const Anonymizer& getAnonymizer() const;
+
+    const std::list<std::function<void()>>& getEndTasks() const;
 
     const ImportOptions& getOptions() const;
 
@@ -40,6 +47,8 @@ private:
     powsybl::xml::XmlStreamReader& m_reader;
 
     const Anonymizer& m_anonymizer;
+
+    std::list<std::function<void()>> m_endTasks;
 
     ImportOptions m_options;
 };
