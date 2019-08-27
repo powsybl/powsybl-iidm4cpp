@@ -39,7 +39,7 @@ public: // TapChanger
 
 public:
     PhaseTapChanger(TwoWindingsTransformer& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                    long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue);
+                    long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
 
     ~PhaseTapChanger() noexcept override = default;
 

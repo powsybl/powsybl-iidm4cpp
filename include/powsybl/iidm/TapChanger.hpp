@@ -58,6 +58,8 @@ public:
 
     long getTapPosition() const;
 
+    double getTargetDeadband() const;
+
     bool isRegulating() const;
 
     virtual void remove() = 0;
@@ -68,9 +70,11 @@ public:
 
     C& setTapPosition(long tapPosition);
 
+    C& setTargetDeadband(double targetDeadband);
+
 protected:
     TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-               long tapPosition, bool regulating);
+               long tapPosition, bool regulating, double targetDeadband);
 
     virtual const Network& getNetwork() const;
 
@@ -94,6 +98,8 @@ private:
     std::vector<long> m_tapPosition;
 
     std::vector<bool> m_regulating;
+
+    std::vector<double> m_targetDeadband;
 };
 
 }  // namespace iidm

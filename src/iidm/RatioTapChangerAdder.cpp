@@ -67,7 +67,8 @@ RatioTapChangerAdder::RatioTapChangerAdder(RatioTapChangerHolder& parent) :
     m_lowTapPosition(0U),
     m_loadTapChangingCapabilities(),
     m_regulating(),
-    m_targetV(stdcxx::nan()) {
+    m_targetV(stdcxx::nan()),
+    m_targetDeadband(stdcxx::nan()) {
 }
 
 RatioTapChanger& RatioTapChangerAdder::add() {
@@ -78,9 +79,10 @@ RatioTapChanger& RatioTapChangerAdder::add() {
     long highTapPosition = m_lowTapPosition + m_steps.size() - 1;
     checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition);
     checkRatioTapChangerRegulation(m_parent, m_loadTapChangingCapabilities, m_regulating, m_regulationTerminal, m_targetV, getNetwork());
+    checkTargetDeadband(m_parent, m_targetDeadband);
 
     std::unique_ptr<RatioTapChanger> ptrRatioTapChanger = stdcxx::make_unique<RatioTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
-                                                                                               m_loadTapChangingCapabilities, *m_tapPosition, m_regulating, m_targetV);
+                                                                                               m_loadTapChangingCapabilities, *m_tapPosition, m_regulating, m_targetV, m_targetDeadband);
     m_parent.setRatioTapChanger(std::move(ptrRatioTapChanger));
 
     return m_parent.getRatioTapChanger().get();
@@ -125,6 +127,11 @@ RatioTapChangerAdder& RatioTapChangerAdder::setRegulationTerminal(const stdcxx::
 
 RatioTapChangerAdder& RatioTapChangerAdder::setTapPosition(long tapPosition) {
     m_tapPosition = tapPosition;
+    return *this;
+}
+
+RatioTapChangerAdder& RatioTapChangerAdder::setTargetDeadband(double targetDeadband) {
+    m_targetDeadband = targetDeadband;
     return *this;
 }
 

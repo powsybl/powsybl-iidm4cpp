@@ -74,7 +74,8 @@ PhaseTapChangerAdder::PhaseTapChangerAdder(TwoWindingsTransformer& parent) :
     m_lowTapPosition(0U),
     m_regulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP),
     m_regulationValue(stdcxx::nan()),
-    m_regulating() {
+    m_regulating(),
+    m_targetDeadband(stdcxx::nan()) {
 }
 
 PhaseTapChanger& PhaseTapChangerAdder::add() {
@@ -85,9 +86,10 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
     long highTapPosition = m_lowTapPosition + m_steps.size() - 1;
     checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition);
     checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, m_regulationTerminal, getNetwork());
+    checkTargetDeadband(m_parent, m_targetDeadband);
 
     std::unique_ptr<PhaseTapChanger> ptrPhaseTapChanger = stdcxx::make_unique<PhaseTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
-                                                                                               *m_tapPosition, m_regulating, m_regulationMode, m_regulationValue);
+                                                                                               *m_tapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
     m_parent.setPhaseTapChanger(std::move(ptrPhaseTapChanger));
 
     return m_parent.getPhaseTapChanger().get();
@@ -137,6 +139,11 @@ PhaseTapChangerAdder& PhaseTapChangerAdder::setRegulationValue(double regulation
 
 PhaseTapChangerAdder& PhaseTapChangerAdder::setTapPosition(long tapPosition) {
     m_tapPosition = tapPosition;
+    return *this;
+}
+
+PhaseTapChangerAdder& PhaseTapChangerAdder::setTargetDeadband(double targetDeadband) {
+    m_targetDeadband = targetDeadband;
     return *this;
 }
 

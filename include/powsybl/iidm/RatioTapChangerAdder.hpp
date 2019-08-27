@@ -80,6 +80,8 @@ public:
 
     RatioTapChangerAdder& setTapPosition(long tapPosition);
 
+    RatioTapChangerAdder& setTargetDeadband(double targetDeadband);
+
     RatioTapChangerAdder& setTargetV(double targetV);
 
 protected:
@@ -106,6 +108,8 @@ private:
     double m_targetV;
 
     stdcxx::Reference<Terminal> m_regulationTerminal;
+
+    double m_targetDeadband;
 };
 
 }  // namespace iidm

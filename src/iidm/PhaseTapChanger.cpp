@@ -34,8 +34,8 @@ std::string toString(const iidm::PhaseTapChanger::RegulationMode& value) {
 namespace iidm {
 
 PhaseTapChanger::PhaseTapChanger(TwoWindingsTransformer& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                                 long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue) :
-    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, tapPosition, regulating),
+                                 long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband) :
+    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, tapPosition, regulating, targetDeadband),
     m_regulationMode(regulationMode),
     m_regulationValue(parent.getNetwork().getVariantManager().getVariantArraySize(), regulationValue) {
     checkTapPosition(parent, tapPosition, lowTapPosition, getHighTapPosition());

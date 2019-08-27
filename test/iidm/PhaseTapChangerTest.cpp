@@ -293,6 +293,13 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
     BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
 
+    BOOST_TEST(std::isnan(phaseTapChanger.getTargetDeadband()));
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setTargetDeadband(-1.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
+    BOOST_CHECK_NO_THROW(phaseTapChanger.setTargetDeadband(1.0));
+    BOOST_CHECK_CLOSE(1.0, phaseTapChanger.getTargetDeadband(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_NO_THROW(phaseTapChanger.setTargetDeadband(stdcxx::nan()));
+    BOOST_TEST(std::isnan(phaseTapChanger.getTargetDeadband()));
+
     BOOST_CHECK_NO_THROW(phaseTapChanger.remove());
     BOOST_TEST(!transformer.getPhaseTapChanger());
 }
@@ -374,6 +381,11 @@ BOOST_AUTO_TEST_CASE(adder) {
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2()));
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(network.getLoad("LOAD1").getTerminal()));
+
+    adder.setTargetDeadband(-2.0);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -2");
+    adder.setTargetDeadband(stdcxx::nan());
+
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_TEST(transformer.getPhaseTapChanger());
 }

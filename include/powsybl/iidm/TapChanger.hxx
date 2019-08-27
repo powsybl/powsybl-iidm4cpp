@@ -20,17 +20,19 @@ namespace powsybl {
 namespace iidm {
 
 long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
+double checkTargetDeadband(const Validable& validable, double targetDeadband);
 
 template<typename H, typename C, typename S>
 TapChanger<H, C, S>::TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                                long tapPosition, bool regulating) :
+                                long tapPosition, bool regulating, double targetDeadband) :
    m_network(network),
    m_parent(parent),
    m_lowTapPosition(lowTapPosition),
    m_steps(steps),
    m_regulationTerminal(regulationTerminal),
    m_tapPosition(network.getVariantManager().getVariantArraySize(), tapPosition),
-   m_regulating(network.getVariantManager().getVariantArraySize(), regulating) {
+   m_regulating(network.getVariantManager().getVariantArraySize(), regulating),
+   m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband) {
 }
 
 template<typename H, typename C, typename S>
@@ -38,6 +40,7 @@ void TapChanger<H, C, S>::allocateVariantArrayElement(const std::set<unsigned lo
     for (auto index : indexes) {
         m_tapPosition[index] = m_tapPosition[sourceIndex];
         m_regulating[index] = m_regulating[sourceIndex];
+        m_targetDeadband[index] = m_targetDeadband[sourceIndex];
     }
 }
 
@@ -50,6 +53,7 @@ template<typename H, typename C, typename S>
 void TapChanger<H, C, S>::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
     m_tapPosition.resize(m_tapPosition.size() + number, m_tapPosition[sourceIndex]);
     m_regulating.resize(m_regulating.size() + number, m_regulating[sourceIndex]);
+    m_targetDeadband.resize(m_targetDeadband.size() + number, m_targetDeadband[sourceIndex]);
 }
 
 template<typename H, typename C, typename S>
@@ -125,6 +129,11 @@ long TapChanger<H, C, S>::getTapPosition() const {
 }
 
 template<typename H, typename C, typename S>
+double TapChanger<H, C, S>::getTargetDeadband() const {
+    return m_targetDeadband.at(m_network.get().getVariantIndex());
+}
+
+template<typename H, typename C, typename S>
 bool TapChanger<H, C, S>::isRegulating() const {
     return m_regulating.at(m_network.get().getVariantIndex());
 }
@@ -133,6 +142,7 @@ template<typename H, typename C, typename S>
 void TapChanger<H, C, S>::reduceVariantArraySize(unsigned long number) {
     m_tapPosition.resize(m_tapPosition.size() - number);
     m_regulating.resize(m_regulating.size() - number);
+    m_targetDeadband.resize(m_targetDeadband.size() - number);
 }
 
 template<typename H, typename C, typename S>
@@ -155,6 +165,13 @@ C& TapChanger<H, C, S>::setRegulationTerminal(const stdcxx::Reference<Terminal>&
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setTapPosition(long tapPosition) {
     m_tapPosition[m_network.get().getVariantIndex()] = checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition());
+
+    return static_cast<C&>(*this);
+}
+
+template<typename H, typename C, typename S>
+C& TapChanger<H, C, S>::setTargetDeadband(double targetDeadband) {
+    m_targetDeadband[m_network.get().getVariantIndex()] = checkTargetDeadband(m_parent, targetDeadband);
 
     return static_cast<C&>(*this);
 }

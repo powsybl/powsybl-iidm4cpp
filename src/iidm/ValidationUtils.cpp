@@ -384,6 +384,13 @@ long checkTapPosition(const Validable& validable, long tapPosition, long lowTapP
     return tapPosition;
 }
 
+double checkTargetDeadband(const Validable& validable, double targetDeadband) {
+    if (!std::isnan(targetDeadband) && targetDeadband < 0) {
+        throw ValidationException(validable, logging::format("Unexpected value for target deadband of tap changer: %1%", targetDeadband));
+    }
+    return targetDeadband;
+}
+
 double checkVoltage(const Validable& validable, double voltage) {
     if (!std::isnan(voltage) && voltage < 0) {
         throw ValidationException(validable, "voltage cannot be < 0");

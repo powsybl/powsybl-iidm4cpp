@@ -86,6 +86,8 @@ public:
 
     PhaseTapChangerAdder& setTapPosition(long tapPosition);
 
+    PhaseTapChangerAdder& setTargetDeadband(double targetDeadband);
+
 protected:
     Network& getNetwork();
 
@@ -110,6 +112,8 @@ private:
     bool m_regulating;
 
     stdcxx::Reference<Terminal> m_regulationTerminal;
+
+    double m_targetDeadband;
 };
 
 }  // namespace iidm
