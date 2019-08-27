@@ -147,11 +147,11 @@ public:
 
     Substation& getSubstation();
 
-    // TODO(mathbagu): virtual unsigned long getSwitchCount() const;
+    virtual unsigned long getSwitchCount() const = 0;
 
-    // TODO(mathbagu): virtual const_range<Switch> getSwitches() const;
+    virtual stdcxx::const_range<Switch> getSwitches() const = 0;
 
-    // TODO(mathbagu): virtual range<Switch> getSwitches();
+    virtual stdcxx::range<Switch> getSwitches() = 0;
 
     virtual const TopologyKind& getTopologyKind() const = 0;
 

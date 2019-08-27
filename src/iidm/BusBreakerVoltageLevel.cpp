@@ -237,6 +237,14 @@ unsigned long BusBreakerVoltageLevel::getSwitchCount() const {
     return m_graph.getEdgeCount();
 }
 
+stdcxx::const_range<Switch> BusBreakerVoltageLevel::getSwitches() const {
+    return getBusBreakerView().getSwitches();
+}
+
+stdcxx::range<Switch> BusBreakerVoltageLevel::getSwitches() {
+    return getBusBreakerView().getSwitches();
+}
+
 stdcxx::const_range<Terminal> BusBreakerVoltageLevel::getTerminals() const {
     stdcxx::const_range<Terminal> terminals;
     for (const auto& bus : m_graph.getVertexObjects()) {

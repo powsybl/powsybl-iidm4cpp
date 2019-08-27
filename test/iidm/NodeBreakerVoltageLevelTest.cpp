@@ -275,8 +275,11 @@ BOOST_AUTO_TEST_CASE(switches) {
     BOOST_CHECK_EQUAL(1UL, boost::size(cNetwork.getSwitches()));
 
     const VoltageLevel& cVoltageLevel = voltageLevel;
+    BOOST_CHECK_EQUAL(1UL, cVoltageLevel.getSwitchCount());
     BOOST_CHECK_EQUAL(1UL, boost::size(voltageLevel.getNodeBreakerView().getSwitches()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cVoltageLevel.getNodeBreakerView().getSwitches()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(voltageLevel.getSwitches()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(cVoltageLevel.getSwitches()));
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {

@@ -121,6 +121,8 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     Network network = createNetwork();
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL1");
+    const VoltageLevel& cVoltageLevel = voltageLevel;
+
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, voltageLevel.getTopologyKind());
 
     auto& view = voltageLevel.getBusBreakerView();
@@ -164,6 +166,9 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     BOOST_CHECK_EQUAL(2UL, view.getSwitchCount());
     BOOST_CHECK_EQUAL(2UL, boost::size(view.getSwitches()));
     BOOST_CHECK_EQUAL(2UL, boost::size(cView.getSwitches()));
+    BOOST_CHECK_EQUAL(2UL, cVoltageLevel.getSwitchCount());
+    BOOST_CHECK_EQUAL(2UL, boost::size(voltageLevel.getSwitches()));
+    BOOST_CHECK_EQUAL(2UL, boost::size(cVoltageLevel.getSwitches()));
     const auto& refSwitch1 = view.getSwitch("SW1");
     POWSYBL_ASSERT_REF_TRUE(refSwitch1);
     BOOST_TEST(stdcxx::areSame(switch1, refSwitch1.get()));

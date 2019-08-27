@@ -48,6 +48,12 @@ public: // VoltageLevel
 
     NodeBreakerView& getNodeBreakerView() override;
 
+    unsigned long getSwitchCount() const override;
+
+    stdcxx::const_range<Switch> getSwitches() const override;
+
+    stdcxx::range<Switch> getSwitches() override;
+
     const TopologyKind& getTopologyKind() const override;
 
     void invalidateCache() override;
@@ -102,8 +108,6 @@ private:
     unsigned long getNodeCount() const;
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId) const;
-
-    unsigned long getSwitchCount() const;
 
     stdcxx::Reference<Terminal> getTerminal(unsigned long node) const;
 

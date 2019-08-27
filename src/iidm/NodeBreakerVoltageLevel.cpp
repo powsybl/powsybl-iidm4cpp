@@ -272,6 +272,14 @@ unsigned long NodeBreakerVoltageLevel::getSwitchCount() const {
     });
 }
 
+stdcxx::const_range<Switch> NodeBreakerVoltageLevel::getSwitches() const {
+    return getNodeBreakerView().getSwitches();
+}
+
+stdcxx::range<Switch> NodeBreakerVoltageLevel::getSwitches() {
+    return getNodeBreakerView().getSwitches();
+}
+
 stdcxx::Reference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long node) const {
     return stdcxx::ref<Terminal>(m_graph.getVertexObject(node));
 }

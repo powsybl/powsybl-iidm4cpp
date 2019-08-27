@@ -47,6 +47,12 @@ public: // VoltageLevel
 
     BusView& getBusView() override;
 
+    unsigned long getSwitchCount() const override;
+
+    stdcxx::const_range<Switch> getSwitches() const override;
+
+    stdcxx::range<Switch> getSwitches() override;
+
     const TopologyKind& getTopologyKind() const override;
 
     void invalidateCache() override;
@@ -98,8 +104,6 @@ private:
     stdcxx::Reference<MergedBus> getMergedBus(const std::string& busId, bool throwException);
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId, bool throwException) const;
-
-    unsigned long getSwitchCount() const;
 
     stdcxx::optional<unsigned long> getVertex(const std::string& busId, bool throwException) const;
 
