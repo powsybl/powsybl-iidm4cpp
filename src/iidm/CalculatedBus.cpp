@@ -56,6 +56,24 @@ double CalculatedBus::getAngle() const {
     return static_cast<bool>(m_terminalRef) ? m_terminalRef.get().getAngle() : stdcxx::nan();
 }
 
+stdcxx::CReference<Component> CalculatedBus::getConnectedComponent() const {
+    checkValidity();
+    ConnectedComponentsManager& ccm = m_voltageLevel.get().getNetwork().getConnectedComponentsManager();
+    ccm.update();
+    return static_cast<bool>(m_terminalRef) ? stdcxx::cref<Component>(ccm.getComponent(getConnectedComponentNumber())) : stdcxx::CReference<Component>();
+}
+
+stdcxx::Reference<Component> CalculatedBus::getConnectedComponent() {
+    checkValidity();
+    ConnectedComponentsManager& ccm = m_voltageLevel.get().getNetwork().getConnectedComponentsManager();
+    ccm.update();
+    return static_cast<bool>(m_terminalRef) ? ccm.getComponent(getConnectedComponentNumber()) : stdcxx::ref<Component>();
+}
+
+long CalculatedBus::getConnectedComponentNumber() const {
+    return m_terminalRef.get().getConnectedComponentNumber();
+}
+
 unsigned long CalculatedBus::getConnectedTerminalCount() const {
     checkValidity();
 
@@ -76,6 +94,24 @@ stdcxx::range<Terminal> CalculatedBus::getConnectedTerminals() {
     const auto& mapper = stdcxx::map<std::reference_wrapper<NodeTerminal>, Terminal>;
 
     return m_terminals | boost::adaptors::transformed(mapper);
+}
+
+stdcxx::CReference<Component> CalculatedBus::getSynchronousComponent() const {
+    checkValidity();
+    SynchronousComponentsManager& scm = m_voltageLevel.get().getNetwork().getSynchronousComponentsManager();
+    scm.update();
+    return static_cast<bool>(m_terminalRef) ? stdcxx::cref<Component>(scm.getComponent(getSynchronousComponentNumber())) : stdcxx::CReference<Component>();
+}
+
+stdcxx::Reference<Component> CalculatedBus::getSynchronousComponent() {
+    checkValidity();
+    SynchronousComponentsManager& scm = m_voltageLevel.get().getNetwork().getSynchronousComponentsManager();
+    scm.update();
+    return static_cast<bool>(m_terminalRef) ? scm.getComponent(getSynchronousComponentNumber()) : stdcxx::ref<Component>();
+}
+
+long CalculatedBus::getSynchronousComponentNumber() const {
+    return m_terminalRef.get().getSynchronousComponentNumber();
 }
 
 double CalculatedBus::getV() const {
@@ -102,6 +138,20 @@ Bus& CalculatedBus::setAngle(double angle) {
     }
 
     return *this;
+}
+
+void CalculatedBus::setConnectedComponentNumber(long connectedComponentNumber) {
+    checkValidity();
+    for (auto& terminal : m_terminals) {
+        terminal.get().setConnectedComponentNumber(connectedComponentNumber);
+    }
+}
+
+void CalculatedBus::setSynchronousComponentNumber(long componentNumber) {
+    checkValidity();
+    for (auto& terminal : m_terminals) {
+        terminal.get().setSynchronousComponentNumber(componentNumber);
+    }
 }
 
 Bus& CalculatedBus::setV(double v) {

@@ -8,7 +8,6 @@
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
 
 #include <powsybl/iidm/BusbarSection.hpp>
-#include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"

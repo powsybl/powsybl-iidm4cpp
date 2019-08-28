@@ -15,7 +15,6 @@
 #include <powsybl/iidm/BusAdder.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -29,11 +28,19 @@ class ConfiguredBus : public Bus, public MultiVariantObject {
 public: // Bus
     double getAngle() const override;
 
+    stdcxx::CReference<Component> getConnectedComponent() const override;
+
+    stdcxx::Reference<Component> getConnectedComponent() override;
+
     unsigned long getConnectedTerminalCount() const override;
 
     stdcxx::const_range<Terminal> getConnectedTerminals() const override;
 
     stdcxx::range<Terminal> getConnectedTerminals() override;
+
+    stdcxx::CReference<Component> getSynchronousComponent() const override;
+
+    stdcxx::Reference<Component> getSynchronousComponent() override;
 
     double getV() const override;
 
@@ -67,6 +74,18 @@ protected: // MultiVariantObject
 
     void reduceVariantArraySize(unsigned long number) override;
 
+protected: // Bus
+    void setConnectedComponentNumber(long connectedComponentNumber) override;
+
+    void setSynchronousComponentNumber(long componentNumber) override;
+
+private:
+    long getConnectedComponentNumber() const;
+
+    long getSynchronousComponentNumber() const;
+
+    friend class MergedBus;
+
 private:
     stdcxx::Reference<BusBreakerVoltageLevel> m_voltageLevel;
 
@@ -77,6 +96,10 @@ private:
     std::vector<double> m_v;
 
     std::vector<double> m_angle;
+
+    std::vector<long> m_connectedComponentNumber;
+
+    std::vector<long> m_synchronousComponentNumber;
 };
 
 }  // namespace iidm

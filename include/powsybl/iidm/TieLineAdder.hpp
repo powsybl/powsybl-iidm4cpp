@@ -9,12 +9,12 @@
 #define POWSYBL_IIDM_TIELINEADDER_HPP
 
 #include <powsybl/iidm/BranchAdder.hpp>
+#include <powsybl/iidm/TieLine.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class TieLine;
 class Network;
 
 class TieLineAdder : public BranchAdder<TieLineAdder> {

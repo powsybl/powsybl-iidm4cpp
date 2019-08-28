@@ -18,6 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
+class Component;
 class Network;
 class Switch;
 
@@ -61,7 +62,9 @@ public:
 
     stdcxx::range<Bus> getBuses();
 
-    //TODO(thiebarr) getConnectedComponents
+    stdcxx::const_range<Component> getConnectedComponents() const;
+
+    stdcxx::range<Component> getConnectedComponents();
 
 private:
     Network& m_network;

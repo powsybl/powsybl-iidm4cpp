@@ -12,7 +12,6 @@
 #include <vector>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -28,11 +27,19 @@ class CalculatedBus : public Bus {
 public: // Bus
     double getAngle() const override;
 
+    stdcxx::CReference<Component> getConnectedComponent() const override;
+
+    stdcxx::Reference<Component> getConnectedComponent() override;
+
     unsigned long getConnectedTerminalCount() const override;
 
     stdcxx::const_range<Terminal> getConnectedTerminals() const override;
 
     stdcxx::range<Terminal> getConnectedTerminals() override;
+
+    stdcxx::CReference<Component> getSynchronousComponent() const override;
+
+    stdcxx::Reference<Component> getSynchronousComponent() override;
 
     double getV() const override;
 
@@ -58,8 +65,17 @@ public:
      */
     void invalidate();
 
+protected: // Bus
+    void setConnectedComponentNumber(long connectedComponentNumber) override;
+
+    void setSynchronousComponentNumber(long componentNumber) override;
+
 private:
     static stdcxx::CReference<NodeTerminal> findTerminal(const NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals);
+
+    long getConnectedComponentNumber() const;
+
+    long getSynchronousComponentNumber() const;
 
 private:
     void checkValidity() const;

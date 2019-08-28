@@ -56,9 +56,17 @@ public:
 
     NodeTerminal& operator=(NodeTerminal&& nodeTerminal) = delete;
 
+    long getConnectedComponentNumber() const;
+
     unsigned long getNode() const;
 
+    long getSynchronousComponentNumber() const;
+
     NodeTerminal& setAngle(double angle);
+
+    void setConnectedComponentNumber(long connectedComponentNumber);
+
+    void setSynchronousComponentNumber(long componentNumber);
 
     NodeTerminal& setV(double v);
 
@@ -75,6 +83,10 @@ private:
     std::vector<double> m_v;
 
     std::vector<double> m_angle;
+
+    std::vector<long> m_connectedComponentNumber;
+
+    std::vector<long> m_synchronousComponentNumber;
 
     node_terminal::NodeBreakerViewImpl m_nodeBreakerView;
 

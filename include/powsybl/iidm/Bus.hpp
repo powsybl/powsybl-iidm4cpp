@@ -14,12 +14,14 @@
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/stdcxx/range.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
 class Battery;
+class Component;
 class DanglingLine;
 class Generator;
 class LccConverterStation;
@@ -42,6 +44,10 @@ public:
     stdcxx::const_range<Battery> getBatteries() const;
 
     stdcxx::range<Battery> getBatteries();
+
+    virtual stdcxx::CReference<Component> getConnectedComponent() const = 0;
+
+    virtual stdcxx::Reference<Component> getConnectedComponent() = 0;
 
     virtual unsigned long getConnectedTerminalCount() const = 0;
 
@@ -77,6 +83,10 @@ public:
 
     stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
+    virtual stdcxx::CReference<Component> getSynchronousComponent() const = 0;
+
+    virtual stdcxx::Reference<Component> getSynchronousComponent() = 0;
+
     stdcxx::const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
 
     stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
@@ -93,6 +103,10 @@ public:
 
     stdcxx::range<VscConverterStation> getVscConverterStations();
 
+    virtual bool isInMainConnectedComponent() const;
+
+    virtual bool isInMainSynchronousComponent() const;
+
     virtual Bus& setAngle(double angle) = 0;
 
     virtual Bus& setV(double v) = 0;
@@ -101,6 +115,10 @@ protected:
     explicit Bus(const std::string& id);
 
     Bus(const std::string& id, const std::string& name);
+
+    virtual void setConnectedComponentNumber(long connectedComponentNumber) = 0;
+
+    virtual void setSynchronousComponentNumber(long componentNumber) = 0;
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
@@ -111,6 +129,10 @@ private: // Identifiable
     template <typename T>
     stdcxx::range<T> getAll();
 
+private:
+    friend class ConnectedComponentsManager;
+
+    friend class SynchronousComponentsManager;
 };
 
 }  // namespace iidm

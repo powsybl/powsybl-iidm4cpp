@@ -8,17 +8,16 @@
 #ifndef POWSYBL_IIDM_VARIANTARRAY_HPP
 #define POWSYBL_IIDM_VARIANTARRAY_HPP
 
+#include <functional>
 #include <memory>
-
-#include <powsybl/iidm/MultiVariantObject.hpp>
-#include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
-
-#include "Variant.hpp"
+#include <set>
+#include <vector>
 
 namespace powsybl {
 
 namespace iidm {
+
+class VariantManagerHolder;
 
 template <typename T>
 class VariantArray {
@@ -27,6 +26,8 @@ public:
 
 public:
     VariantArray(VariantManagerHolder& variantManagerHolder, const VariantFactory& variantFactory);
+
+    VariantArray(VariantArray&& variantArray) noexcept;
 
     ~VariantArray() noexcept = default;
 
@@ -54,6 +55,6 @@ private:
 
 }  // namespace powsybl
 
-#include "VariantArray.hxx"
+#include <powsybl/iidm/VariantArray.hxx>
 
 #endif  // POWSYBL_IIDM_VARIANTARRAY_HPP

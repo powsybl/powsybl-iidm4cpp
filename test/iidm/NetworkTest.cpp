@@ -446,6 +446,42 @@ BOOST_AUTO_TEST_CASE(views) {
     POWSYBL_ASSERT_REF_FALSE(cNetwork2.getBusView().getBus("UNKNOWN"));
 }
 
+BOOST_AUTO_TEST_CASE(multivariant) {
+    Network network = createTestNetwork();
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().setWorkingVariant("s1");
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().setWorkingVariant("s2");
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().removeVariant("s1");
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().cloneVariant("s2", "s3");
+    network.getVariantManager().setWorkingVariant("s3");
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().removeVariant("s3");
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    network.getVariantManager().removeVariant("s2");
+    BOOST_CHECK_EQUAL(1UL, network.getVariantManager().getVariantArraySize());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

@@ -10,9 +10,7 @@
 
 #include <powsybl/iidm/InjectionAdder.hpp>
 
-#include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/TerminalBuilder.hpp>
-#include <powsybl/iidm/ValidationException.hpp>
 
 namespace powsybl {
 

@@ -5,10 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
+
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
-#include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 

@@ -7,6 +7,7 @@
 
 #include "NodeTerminal.hpp"
 
+#include <powsybl/iidm/ComponentConstants.hpp>
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -23,6 +24,8 @@ NodeTerminal::NodeTerminal(VariantManagerHolder& network, unsigned long node) :
     m_node(node),
     m_v(network.getVariantManager().getVariantArraySize(), stdcxx::nan()),
     m_angle(network.getVariantManager().getVariantArraySize(), stdcxx::nan()),
+    m_connectedComponentNumber(network.getVariantManager().getVariantArraySize(), ComponentConstants::INVALID_NUM),
+    m_synchronousComponentNumber(network.getVariantManager().getVariantArraySize(), ComponentConstants::INVALID_NUM),
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {
@@ -35,6 +38,8 @@ void NodeTerminal::allocateVariantArrayElement(const std::set<unsigned long>& in
     for (auto index : indexes) {
         m_v[index] = m_v[sourceIndex];
         m_angle[index] = m_angle[sourceIndex];
+        m_connectedComponentNumber[index] = m_connectedComponentNumber[sourceIndex];
+        m_synchronousComponentNumber[index] = m_synchronousComponentNumber[sourceIndex];
     }
 }
 
@@ -43,6 +48,8 @@ void NodeTerminal::extendVariantArraySize(unsigned long initVariantArraySize, un
 
     m_v.resize(m_v.size() + number, m_v[sourceIndex]);
     m_angle.resize(m_angle.size() + number, m_angle[sourceIndex]);
+    m_connectedComponentNumber.resize(m_connectedComponentNumber.size() + number, m_connectedComponentNumber[sourceIndex]);
+    m_synchronousComponentNumber.resize(m_synchronousComponentNumber.size() + number, m_synchronousComponentNumber[sourceIndex]);
 }
 
 bool NodeTerminal::isConnected() const {
@@ -69,6 +76,10 @@ NodeTerminal::BusView& NodeTerminal::getBusView() {
     return m_busView;
 }
 
+long NodeTerminal::getConnectedComponentNumber() const {
+    return m_connectedComponentNumber[getNetwork().getVariantIndex()];
+}
+
 unsigned long NodeTerminal::getNode() const {
     return m_node;
 }
@@ -81,6 +92,10 @@ NodeTerminal::NodeBreakerView& NodeTerminal::getNodeBreakerView() {
     return m_nodeBreakerView;
 }
 
+long NodeTerminal::getSynchronousComponentNumber() const {
+    return m_synchronousComponentNumber[getNetwork().getVariantIndex()];
+}
+
 double NodeTerminal::getV() const {
     return m_v[getNetwork().getVariantIndex()];
 }
@@ -90,13 +105,22 @@ void NodeTerminal::reduceVariantArraySize(unsigned long number) {
 
     m_v.resize(m_v.size() - number);
     m_angle.resize(m_angle.size() - number);
-
+    m_connectedComponentNumber.resize(m_connectedComponentNumber.size() - number);
+    m_synchronousComponentNumber.resize(m_synchronousComponentNumber.size() - number);
 }
 
 NodeTerminal& NodeTerminal::setAngle(double angle) {
     m_angle[getNetwork().getVariantIndex()] = angle;
 
     return *this;
+}
+
+void NodeTerminal::setConnectedComponentNumber(long connectedComponentNumber) {
+    m_connectedComponentNumber[getNetwork().getVariantIndex()] = connectedComponentNumber;
+}
+
+void NodeTerminal::setSynchronousComponentNumber(long componentNumber) {
+    m_synchronousComponentNumber[getNetwork().getVariantIndex()] = componentNumber;
 }
 
 NodeTerminal& NodeTerminal::setV(double v) {

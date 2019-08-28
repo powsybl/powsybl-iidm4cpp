@@ -71,7 +71,20 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_variantManager(*this),
     m_busBreakerView(*this),
-    m_busView(*this) {
+    m_busView(*this),
+    m_variants(*this, [this]() { return stdcxx::make_unique<network::VariantImpl>(*this); }) {
+}
+
+void Network::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    m_variants.allocateVariantArrayElement(indexes, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
+}
+
+void Network::deleteVariantArrayElement(unsigned long index) {
+    m_variants.deleteVariantArrayElement(index);
+}
+
+void Network::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
 const Battery& Network::getBattery(const std::string& id) const {
@@ -160,6 +173,14 @@ Network::BusView& Network::getBusView() {
 
 const stdcxx::DateTime& Network::getCaseDate() const {
     return m_caseDate;
+}
+
+const ConnectedComponentsManager& Network::getConnectedComponentsManager() const {
+    return m_variants.get().getConnectedComponentsManager();
+}
+
+ConnectedComponentsManager& Network::getConnectedComponentsManager() {
+    return m_variants.get().getConnectedComponentsManager();
 }
 
 unsigned long Network::getCountryCount() const {
@@ -434,6 +455,14 @@ stdcxx::range<Switch> Network::getSwitches() {
     return m_networkIndex.getAll<Switch>();
 }
 
+const SynchronousComponentsManager& Network::getSynchronousComponentsManager() const {
+    return m_variants.get().getSynchronousComponentsManager();
+}
+
+SynchronousComponentsManager& Network::getSynchronousComponentsManager() {
+    return m_variants.get().getSynchronousComponentsManager();
+}
+
 const ThreeWindingsTransformer& Network::getThreeWindingsTransformer(const std::string& id) const {
     return get<ThreeWindingsTransformer>(id);
 }
@@ -546,6 +575,10 @@ SubstationAdder Network::newSubstation() {
 
 TieLineAdder Network::newTieLine() {
     return TieLineAdder(*this);
+}
+
+void Network::reduceVariantArraySize(unsigned long number) {
+    m_variants.reduceVariantArraySize(number);
 }
 
 void Network::remove(Identifiable& identifiable) {

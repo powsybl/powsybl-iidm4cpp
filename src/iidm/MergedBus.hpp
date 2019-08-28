@@ -33,15 +33,27 @@ public:
 public: // Bus
     double getAngle() const override;
 
+    stdcxx::CReference<Component> getConnectedComponent() const override;
+
+    stdcxx::Reference<Component> getConnectedComponent() override;
+
     unsigned long getConnectedTerminalCount() const override;
 
     stdcxx::const_range<Terminal> getConnectedTerminals() const override;
 
     stdcxx::range<Terminal> getConnectedTerminals() override;
 
+    stdcxx::CReference<Component> getSynchronousComponent() const override;
+
+    stdcxx::Reference<Component> getSynchronousComponent() override;
+
     double getV() const override;
 
     VoltageLevel& getVoltageLevel() const override;
+
+    bool isInMainConnectedComponent() const override;
+
+    bool isInMainSynchronousComponent() const override;
 
     Bus& setAngle(double angle) override;
 
@@ -61,6 +73,11 @@ public:
      * Invalidate this bus after the voltage level topology changed
      */
     void invalidate();
+
+protected: // Bus
+    void setConnectedComponentNumber(long connectedComponentNumber) override;
+
+    void setSynchronousComponentNumber(long componentNumber) override;
 
 private:
     void checkValidity() const;

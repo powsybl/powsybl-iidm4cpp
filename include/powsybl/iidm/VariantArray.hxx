@@ -8,9 +8,10 @@
 #ifndef POWSYBL_IIDM_VARIANTARRAY_HXX
 #define POWSYBL_IIDM_VARIANTARRAY_HXX
 
-#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantArray.hpp>
 
-#include "VariantArray.hpp"
+#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 
 namespace powsybl {
 
@@ -25,6 +26,12 @@ VariantArray<T>::VariantArray(VariantManagerHolder& variantManagerHolder, const 
     for (unsigned long i : variantManager.getVariantIndices()) {
         m_variants.at(i) = variantFactory();
     }
+}
+
+template <typename T>
+VariantArray<T>::VariantArray(VariantArray&& variantArray) noexcept :
+    m_variantManagerHolder(variantArray.m_variantManagerHolder),
+    m_variants(std::move(variantArray.m_variants)) {
 }
 
 template <typename T>

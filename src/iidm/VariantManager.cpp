@@ -80,12 +80,14 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
         for (auto& multiVariantObject : m_network.getStatefulObjects()) {
             multiVariantObject.allocateVariantArrayElement(recycled, sourceIndex);
         }
+        static_cast<MultiVariantObject&>(m_network).allocateVariantArrayElement(recycled, sourceIndex);
         logger.trace("Recycling variant array indexes %1%", logging::toString(recycled));
     }
     if (extendedCount > 0) {
         for (auto& multiVariantObject : m_network.getStatefulObjects()) {
             multiVariantObject.extendVariantArraySize(initVariantArraySize, extendedCount, sourceIndex);
         }
+        static_cast<MultiVariantObject&>(m_network).extendVariantArraySize(initVariantArraySize, extendedCount, sourceIndex);
         logger.trace("Extending variant array size to %1% (+%2%)", m_variantArraySize, extendedCount);
     }
 }
@@ -187,6 +189,7 @@ void VariantManager::removeVariant(const std::string& variantId) {
         for (auto& multiVariantObject : m_network.getStatefulObjects()) {
             multiVariantObject.reduceVariantArraySize(variantCount);
         }
+        static_cast<MultiVariantObject&>(m_network).reduceVariantArraySize(variantCount);
 
         m_variantArraySize -= variantCount;
         logger.trace("Reducing variant array size to %1%", m_variantArraySize);
@@ -196,6 +199,7 @@ void VariantManager::removeVariant(const std::string& variantId) {
         for (auto& multiVariantObject : m_network.getStatefulObjects()) {
             multiVariantObject.deleteVariantArrayElement(index);
         }
+        static_cast<MultiVariantObject&>(m_network).deleteVariantArrayElement(index);
 
         logger.trace("Deleting variant array element at index %1%", index);
     }

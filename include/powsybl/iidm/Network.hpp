@@ -9,9 +9,12 @@
 #define POWSYBL_IIDM_NETWORK_HPP
 
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/NetworkIndex.hpp>
+#include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/NetworkViews.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
+#include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/stdcxx/DateTime.hpp>
@@ -52,11 +55,13 @@ class ImportOptions;
 
 }  // namespace converter
 
-class Network : public Container, public VariantManagerHolder {
+class Network : public Container, public VariantManagerHolder, public MultiVariantObject {
 public:
     using BusBreakerView = network::BusBreakerView;
 
     using BusView = network::BusView;
+
+    using VariantImpl = network::VariantImpl;
 
 public:
     static Network readXml(const std::string& data);
@@ -320,12 +325,40 @@ public:
 
     Network& setForecastDistance(int forecastDistance);
 
+protected: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
+
 private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
+    friend class BusBreakerVoltageLevel;
+
+    friend class CalculatedBus;
+
+    friend class ConfiguredBus;
+
+    friend class NodeBreakerVoltageLevel;
+
+    friend class network::BusView;
+
+private:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     unsigned long getObjectCount() const;
+
+    const ConnectedComponentsManager& getConnectedComponentsManager() const;
+
+    ConnectedComponentsManager& getConnectedComponentsManager();
+
+    const SynchronousComponentsManager& getSynchronousComponentsManager() const;
+
+    SynchronousComponentsManager& getSynchronousComponentsManager();
 
 private:
     stdcxx::DateTime m_caseDate;
@@ -341,6 +374,8 @@ private:
     BusBreakerView m_busBreakerView;
 
     BusView m_busView;
+
+    VariantArray<VariantImpl> m_variants;
 };
 
 }  // namespace iidm

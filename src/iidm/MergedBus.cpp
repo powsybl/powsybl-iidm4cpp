@@ -12,6 +12,7 @@
 
 #include <boost/range/join.hpp>
 
+#include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -45,6 +46,25 @@ double MergedBus::getAngle() const {
         }
     }
     return stdcxx::nan();
+}
+
+stdcxx::CReference<Component> MergedBus::getConnectedComponent() const {
+    checkValidity();
+
+    for (const auto& it : m_buses) {
+        const auto& cc = it.get().getConnectedComponent();
+        if (static_cast<bool>(cc)) {
+            return stdcxx::cref<Component>(cc);
+        }
+    }
+
+    throw AssertionError("Should not happen");
+}
+
+stdcxx::Reference<Component> MergedBus::getConnectedComponent() {
+    const auto& comp = static_cast<const MergedBus*>(this)->getConnectedComponent();
+
+    return stdcxx::ref(comp);
 }
 
 unsigned long MergedBus::getConnectedTerminalCount() const {
@@ -82,6 +102,25 @@ stdcxx::range<Terminal> MergedBus::getConnectedTerminals() {
     return range;
 }
 
+stdcxx::CReference<Component> MergedBus::getSynchronousComponent() const {
+    checkValidity();
+
+    for (const auto& it : m_buses) {
+        const auto& sc = it.get().getSynchronousComponent();
+        if (static_cast<bool>(sc)) {
+            return stdcxx::cref<Component>(sc);
+        }
+    }
+
+    throw AssertionError("Should not happen");
+}
+
+stdcxx::Reference<Component> MergedBus::getSynchronousComponent() {
+    const auto& comp = static_cast<const MergedBus*>(this)->getSynchronousComponent();
+
+    return stdcxx::ref(comp);
+}
+
 double MergedBus::getV() const {
     for (const auto& it : m_buses) {
         if (!std::isnan(it.get().getV())) {
@@ -103,6 +142,22 @@ void MergedBus::invalidate() {
     m_buses.clear();
 }
 
+bool MergedBus::isInMainConnectedComponent() const {
+    if (!m_buses.empty()) {
+        return m_buses.front().get().isInMainConnectedComponent();
+    }
+
+    return false;
+}
+
+bool MergedBus::isInMainSynchronousComponent() const {
+    if (!m_buses.empty()) {
+        return m_buses.front().get().isInMainSynchronousComponent();
+    }
+
+    return false;
+}
+
 Bus& MergedBus::setAngle(double angle) {
     checkValidity();
     for (auto& it : m_buses) {
@@ -110,6 +165,20 @@ Bus& MergedBus::setAngle(double angle) {
     }
 
     return *this;
+}
+
+void MergedBus::setConnectedComponentNumber(long connectedComponentNumber) {
+    checkValidity();
+    for (auto& it : m_buses) {
+        it.get().setConnectedComponentNumber(connectedComponentNumber);
+    }
+}
+
+void MergedBus::setSynchronousComponentNumber(long componentNumber) {
+    checkValidity();
+    for (auto& it : m_buses) {
+        it.get().setSynchronousComponentNumber(componentNumber);
+    }
 }
 
 Bus& MergedBus::setV(double v) {
