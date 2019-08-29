@@ -26,7 +26,7 @@ class VscConverterStationXml : public AbstractConnectableXml<VscConverterStation
 public:
     static const VscConverterStationXml& getInstance();
 
-protected:
+protected:  // AbstractIdentifiableXml
     VscConverterStationAdder createAdder(VoltageLevel& voltageLevel) const override;
 
     const char* getRootElementName() const override;

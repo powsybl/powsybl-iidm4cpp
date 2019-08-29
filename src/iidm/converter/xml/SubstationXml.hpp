@@ -26,7 +26,7 @@ class SubstationXml : public AbstractIdentifiableXml<Substation, SubstationAdder
 public:
     static const SubstationXml& getInstance();
 
-protected:
+protected:  // AbstractIdentifiableXml
     SubstationAdder createAdder(Network& network) const override;
 
     const char* getRootElementName() const override;

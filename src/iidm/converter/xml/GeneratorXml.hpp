@@ -26,7 +26,7 @@ class GeneratorXml : public AbstractConnectableXml<Generator, GeneratorAdder, Vo
 public:
     static const GeneratorXml& getInstance();
 
-protected:
+protected:  // AbstractIdentifiableXml
     GeneratorAdder createAdder(VoltageLevel& voltageLevel) const override;
 
     const char* getRootElementName() const override;

@@ -26,7 +26,7 @@ class ShuntCompensatorXml : public AbstractConnectableXml<ShuntCompensator, Shun
 public:
     static const ShuntCompensatorXml& getInstance();
 
-protected:
+protected:  // AbstractIdentifiableXml
     ShuntCompensatorAdder createAdder(VoltageLevel& voltageLevel) const override;
 
     const char* getRootElementName() const override;

@@ -26,7 +26,7 @@ class LoadXml : public AbstractConnectableXml<Load, LoadAdder, VoltageLevel> {
 public:
     static const LoadXml& getInstance();
 
-protected:
+protected:  // AbstractIdentifiableXml
     LoadAdder createAdder(VoltageLevel& voltageLevel) const override;
 
     const char* getRootElementName() const override;

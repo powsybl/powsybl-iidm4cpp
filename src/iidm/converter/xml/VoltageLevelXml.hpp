@@ -26,7 +26,7 @@ class VoltageLevelXml : public AbstractIdentifiableXml<VoltageLevel, VoltageLeve
 public:
     static const VoltageLevelXml& getInstance();
 
-protected:
+protected:  // AbstractIdentifiableXml
     VoltageLevelAdder createAdder(Substation& substation) const override;
 
     const char* getRootElementName() const override;

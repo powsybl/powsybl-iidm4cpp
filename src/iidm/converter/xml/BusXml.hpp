@@ -26,7 +26,7 @@ class BusXml : public AbstractIdentifiableXml<Bus, BusAdder, VoltageLevel> {
 public:
     static const BusXml& getInstance();
 
-protected:
+protected:  // AbstractIdentifiableXml
     BusAdder createAdder(VoltageLevel& voltageLevel) const override;
 
     const char* getRootElementName() const override;

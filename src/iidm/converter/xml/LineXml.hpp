@@ -26,7 +26,7 @@ class LineXml : public AbstractConnectableXml<Line, LineAdder, Network> {
 public:
     static const LineXml& getInstance();
 
-protected:
+protected:  // AbstractIdentifiableXml
     LineAdder createAdder(Network& network) const override;
 
     const char* getRootElementName() const override;
