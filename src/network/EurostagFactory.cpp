@@ -34,7 +34,7 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .setId("P2")
         .setCountry(iidm::Country::FR)
         .setTso("RTE")
-        .setGeographicalTags({"A"})
+        .setGeographicalTags({"B"})
         .add();
     iidm::VoltageLevel& vlgen = p1.newVoltageLevel()
         .setId("VLGEN")

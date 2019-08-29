@@ -9,6 +9,8 @@
 
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
+#include <powsybl/iidm/RatioTapChanger.hpp>
+#include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 
@@ -30,8 +32,9 @@ void AbstractTransformerXml<T,A>::readPhaseTapChanger(TwoWindingsTransformer& tw
     PhaseTapChanger::RegulationMode regulationMode = getRegulationMode(context.getReader().getAttributeValue(REGULATION_MODE));
     const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
     bool regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
-    PhaseTapChangerAdder adder = twt.newPhaseTapChanger()
-        .setLowTapPosition(lowTapPosition)
+
+    std::shared_ptr<PhaseTapChangerAdder> adder = std::make_shared<PhaseTapChangerAdder>(twt.newPhaseTapChanger());
+    adder->setLowTapPosition(lowTapPosition)
         .setTapPosition(tapPosition)
         .setTargetDeadband(targetDeadband)
         .setRegulationMode(regulationMode)
@@ -42,8 +45,9 @@ void AbstractTransformerXml<T,A>::readPhaseTapChanger(TwoWindingsTransformer& tw
         if (context.getReader().getLocalName() == TERMINAL_REF) {
             const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
-            context.addEndTask([&adder, &twt, id, side]() {
-                adder.setRegulationTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(twt.getTerminal1().getVoltageLevel().getSubstation().getNetwork(), id, side)));
+            context.addEndTask([adder, &twt, id, side]() {
+                adder->setRegulationTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(twt.getTerminal1().getVoltageLevel().getSubstation().getNetwork(), id, side)));
+                adder->add();
             });
             hasTerminalRef = true;
         } else if (context.getReader().getLocalName() == STEP) {
@@ -53,7 +57,7 @@ void AbstractTransformerXml<T,A>::readPhaseTapChanger(TwoWindingsTransformer& tw
             const auto& b = context.getReader().getAttributeValue<double>(B);
             const auto& rho = context.getReader().getAttributeValue<double>(RHO);
             const auto& alpha = context.getReader().getAttributeValue<double>(ALPHA);
-            adder.beginStep()
+            adder->beginStep()
                 .setR(r)
                 .setX(x)
                 .setG(g)
@@ -66,7 +70,61 @@ void AbstractTransformerXml<T,A>::readPhaseTapChanger(TwoWindingsTransformer& tw
         }
     });
     if (!hasTerminalRef) {
-        adder.add();
+        adder->add();
+    }
+}
+
+template <typename T, typename A>
+void AbstractTransformerXml<T,A>::readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) {
+    std::shared_ptr<RatioTapChangerAdder> adder = std::make_shared<RatioTapChangerAdder>(twt.newRatioTapChanger());
+    readRatioTapChanger(RATIO_TAP_CHANGER, adder, twt.getTerminal1(), context);
+}
+
+template <typename T, typename A>
+void AbstractTransformerXml<T,A>::readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
+    const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
+    const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
+    const auto& targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
+    const auto& regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
+    const auto& loadTapChangingCapabilities = context.getReader().getAttributeValue<bool>(LOAD_TAP_CHANGING_CAPABILITIES);
+    double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
+    adder->setLowTapPosition(lowTapPosition)
+        .setTapPosition(tapPosition)
+        .setTargetDeadband(targetDeadband)
+        .setLoadTapChangingCapabilities(loadTapChangingCapabilities)
+        .setTargetV(targetV);
+    if (loadTapChangingCapabilities) {
+        adder->setRegulating(regulating);
+    }
+    bool hasTerminalRef = false;
+    context.getReader().readUntilEndElement(elementName, [&adder, &context, &terminal, &hasTerminalRef]() {
+        if (context.getReader().getLocalName() == TERMINAL_REF) {
+            const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+            const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
+            context.addEndTask([adder, &terminal, id, side]() {
+                adder->setRegulationTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(terminal.getVoltageLevel().getSubstation().getNetwork(), id, side)));
+                adder->add();
+            });
+            hasTerminalRef = true;
+        } else if (context.getReader().getLocalName() == STEP) {
+            const auto& r = context.getReader().getAttributeValue<double>(R);
+            const auto& x = context.getReader().getAttributeValue<double>(X);
+            const auto& g = context.getReader().getAttributeValue<double>(G);
+            const auto& b = context.getReader().getAttributeValue<double>(B);
+            const auto& rho = context.getReader().getAttributeValue<double>(RHO);
+            adder->beginStep()
+                .setR(r)
+                .setX(x)
+                .setG(g)
+                .setB(b)
+                .setRho(rho)
+                .endStep();
+        } else {
+            throw PowsyblException(logging::format("Unexpected XML element <%1%>", context.getReader().getLocalName()));
+        }
+    });
+    if (!hasTerminalRef) {
+        adder->add();
     }
 }
 
@@ -89,6 +147,29 @@ void AbstractTransformerXml<T,A>::writePhaseTapChanger(const std::string& name, 
         context.getWriter().writeStartElement(IIDM_PREFIX, STEP);
         writeTapChangerStep(ptcs, context.getWriter());
         context.getWriter().writeOptionalAttribute(ALPHA, ptcs.getAlpha());
+        context.getWriter().writeEndElement();
+    }
+    context.getWriter().writeEndElement();
+}
+
+template <typename T, typename A>
+void AbstractTransformerXml<T,A>::writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context) {
+    context.getWriter().writeStartElement(IIDM_PREFIX, name);
+    writeTapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep>(rtc, context.getWriter());
+    context.getWriter().writeAttribute(LOAD_TAP_CHANGING_CAPABILITIES, rtc.hasLoadTapChangingCapabilities());
+    if (rtc.hasLoadTapChangingCapabilities() || rtc.isRegulating()) {
+        context.getWriter().writeAttribute(REGULATING, rtc.isRegulating());
+    }
+    if (rtc.hasLoadTapChangingCapabilities() || !std::isnan(rtc.getTargetV())) {
+        context.getWriter().writeAttribute(TARGET_V, rtc.getTargetV());
+    }
+    if (rtc.getRegulationTerminal()) {
+        TerminalRefXml::writeTerminalRef(rtc.getRegulationTerminal(), context, TERMINAL_REF);
+    }
+    for (long p = rtc.getLowTapPosition(); p <= rtc.getHighTapPosition(); ++p) {
+        const RatioTapChangerStep& rtcs = rtc.getStep(p);
+        context.getWriter().writeStartElement(IIDM_PREFIX, STEP);
+        writeTapChangerStep(rtcs, context.getWriter());
         context.getWriter().writeEndElement();
     }
     context.getWriter().writeEndElement();
@@ -119,3 +200,4 @@ void AbstractTransformerXml<T,A>::writeTapChangerStep(const TapChangerStep<S>& t
 }  // namespace iidm
 
 }  // namespace powsybl
+

@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTTRANSFORMERXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTTRANSFORMERXML_HPP
 
+#include <memory>
+
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TapChangerStep.hpp>
 
@@ -24,6 +26,8 @@ class XmlStreamWriter;
 namespace iidm {
 
 class PhaseTapChanger;
+class RatioTapChanger;
+class Terminal;
 class TwoWindingsTransformer;
 
 namespace converter {
@@ -37,7 +41,13 @@ public:
 
     static void readPhaseTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
 
+    static void readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
+
+    static void readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
+
     static void writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context);
+
+    static void writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context);
 
     template <typename H, typename C, typename S>
     static void writeTapChanger(const TapChanger<H, C, S>& tc, powsybl::xml::XmlStreamWriter& writer);

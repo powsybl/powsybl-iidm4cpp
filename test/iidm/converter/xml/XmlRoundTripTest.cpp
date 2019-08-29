@@ -29,7 +29,7 @@ BOOST_FIXTURE_TEST_CASE(Eurostag, ResourceFixture) {
     powsybl::iidm::Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
 
-    const std::string& networkStr = ResourceFixture::getResource("/eurostag-tutorial1-tmp.xml");
+    const std::string& networkStr = ResourceFixture::getResource("/eurostag-tutorial1.xml");
 
     RoundTrip::runXml(network, networkStr);
 }

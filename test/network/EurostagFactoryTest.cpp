@@ -67,15 +67,16 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     const auto& sub1 = network.getSubstation("P1");
     POWSYBL_ASSERT_ENUM_EQ(iidm::Country::FR, *sub1.getCountry());
     BOOST_CHECK_EQUAL("RTE", sub1.getTso());
-    const std::set<std::string>& expected = {"A"};
+    const std::set<std::string>& expected1 = {"A"};
     const std::set<std::string>& actual1 = sub1.getGeographicalTags();
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual1.cbegin(), actual1.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected1.cbegin(), expected1.cend(), actual1.cbegin(), actual1.cend());
 
     const auto& sub2 = network.getSubstation("P2");
     POWSYBL_ASSERT_ENUM_EQ(iidm::Country::FR, *sub2.getCountry());
     BOOST_CHECK_EQUAL("RTE", sub2.getTso());
+    const std::set<std::string>& expected2 = {"B"};
     const std::set<std::string>& actual2 = sub2.getGeographicalTags();
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual2.cbegin(), actual2.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected2.cbegin(), expected2.cend(), actual2.cbegin(), actual2.cend());
 
     const auto& vlGen = network.getVoltageLevel("VLGEN");
     BOOST_CHECK_CLOSE(24.0, vlGen.getNominalVoltage(), std::numeric_limits<double>::epsilon());
@@ -281,15 +282,16 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     const auto& sub1 = network.getSubstation("P1");
     POWSYBL_ASSERT_ENUM_EQ(iidm::Country::FR, *sub1.getCountry());
     BOOST_CHECK_EQUAL("RTE", sub1.getTso());
-    const std::set<std::string>& expected = {"A"};
+    const std::set<std::string>& expected1 = {"A"};
     const std::set<std::string>& actual1 = sub1.getGeographicalTags();
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual1.cbegin(), actual1.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected1.cbegin(), expected1.cend(), actual1.cbegin(), actual1.cend());
 
     const auto& sub2 = network.getSubstation("P2");
     POWSYBL_ASSERT_ENUM_EQ(iidm::Country::BE, *sub2.getCountry());
     BOOST_CHECK_EQUAL("RTE", sub2.getTso());
+    const std::set<std::string>& expected2 = {"B"};
     const std::set<std::string>& actual2 = sub2.getGeographicalTags();
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), actual2.cbegin(), actual2.cend());
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected2.cbegin(), expected2.cend(), actual2.cbegin(), actual2.cend());
 
     const auto& vlGen = network.getVoltageLevel("VLGEN");
     BOOST_CHECK_CLOSE(24.0, vlGen.getNominalVoltage(), std::numeric_limits<double>::epsilon());

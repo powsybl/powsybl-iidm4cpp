@@ -64,7 +64,7 @@ void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, Net
             CurrentLimitsAdder<Branch::Side, Branch> adder = twt.newCurrentLimits2();
             readCurrentLimits(2, adder, context.getReader());
         } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER) {
-            // TODO(sebalaig) RadioTapChanger read
+            readRatioTapChanger(twt, context);
         } else if (context.getReader().getLocalName() == PHASE_TAP_CHANGER) {
             readPhaseTapChanger(twt, context);
         } else {
@@ -91,7 +91,7 @@ void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTran
 void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
     const auto& rtc = twt.getRatioTapChanger();
     if (rtc) {
-        // TODO(sebalaig) RadioTapChanger write
+        writeRatioTapChanger(RATIO_TAP_CHANGER, rtc, context);
     }
     const auto& ptc = twt.getPhaseTapChanger();
     if (ptc) {

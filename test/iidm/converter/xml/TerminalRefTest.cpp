@@ -24,7 +24,7 @@ BOOST_AUTO_TEST_SUITE(XmlRoundTrip)
 
 BOOST_FIXTURE_TEST_CASE(TerminalRef, ResourceFixture) {
 
-    const std::string& networkStr = ResourceFixture::getResource("/terminalRef-tmp.xiidm");
+    const std::string& networkStr = ResourceFixture::getResource("/terminalRef.xiidm");
     std::stringstream stream;
     stream << networkStr;
     Network network = Network::readXml(stream);
