@@ -8,18 +8,23 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTTRANSFORMERXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTTRANSFORMERXML_HPP
 
-#include <powsybl/iidm/RatioTapChanger.hpp>
-#include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TapChangerStep.hpp>
-#include <powsybl/iidm/Terminal.hpp>
-#include <powsybl/iidm/TwoWindingsTransformer.hpp>
 
 #include "AbstractConnectableXml.hpp"
 
 namespace powsybl {
 
+namespace xml {
+
+class XmlStreamWriter;
+
+}  // namespace xml
+
 namespace iidm {
+
+class PhaseTapChanger;
+class TwoWindingsTransformer;
 
 namespace converter {
 
@@ -29,6 +34,16 @@ template <typename T, typename A>
 class AbstractTransformerXml : public AbstractConnectableXml<T, A, Substation> {
 public:
     ~AbstractTransformerXml() noexcept override = default;
+
+    static void readPhaseTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
+
+    static void writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context);
+
+    template <typename H, typename C, typename S>
+    static void writeTapChanger(const TapChanger<H, C, S>& tc, powsybl::xml::XmlStreamWriter& writer);
+
+    template <typename S>
+    static void writeTapChangerStep(const TapChangerStep<S>& tcs, powsybl::xml::XmlStreamWriter& writer);
 
 protected:
     AbstractTransformerXml() = default;

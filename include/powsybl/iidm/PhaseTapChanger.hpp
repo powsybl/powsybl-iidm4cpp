@@ -57,6 +57,10 @@ private:
     std::vector<double> m_regulationValue;
 };
 
+PhaseTapChanger::RegulationMode getRegulationMode(const std::string& regulationModeName);
+
+std::string getRegulationModeName(const PhaseTapChanger::RegulationMode& regulationMode);
+
 std::ostream& operator<<(std::ostream& stream, const PhaseTapChanger::RegulationMode& mode);
 
 }  // namespace iidm

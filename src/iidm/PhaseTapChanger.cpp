@@ -60,6 +60,28 @@ const PhaseTapChanger::RegulationMode& PhaseTapChanger::getRegulationMode() cons
     return m_regulationMode;
 }
 
+const std::array<std::string, 3>& getRegulationModeNames() {
+    static std::array<std::string, 3> s_regulationModeNames {{
+        "CURRENT_LIMITER",
+        "ACTIVE_POWER_CONTROL",
+        "FIXED_TAP"
+    }};
+    return s_regulationModeNames;
+}
+
+PhaseTapChanger::RegulationMode getRegulationMode(const std::string& regulationModeName) {
+    const auto& names = getRegulationModeNames();
+    const auto& it = std::find(names.cbegin(), names.cend(), regulationModeName);
+    if (it == names.cend()) {
+        throw PowsyblException(logging::format("Unable to retrieve regulation mode from '%1%'", regulationModeName));
+    }
+    return static_cast<PhaseTapChanger::RegulationMode>(it - names.cbegin());
+}
+
+std::string getRegulationModeName(const PhaseTapChanger::RegulationMode& regulationMode) {
+    return logging::toString(getRegulationModeNames(), regulationMode);
+}
+
 double PhaseTapChanger::getRegulationValue() const {
     return m_regulationValue.at(getNetwork().getVariantIndex());
 }

@@ -81,6 +81,12 @@ int XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
 }
 
 template <>
+long XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+    XmlString value = getAttributeValue(attributeName, true);
+    return std::stol(XML2S(value.get()));
+}
+
+template <>
 unsigned long XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
     XmlString value = getAttributeValue(attributeName, false);
     return std::stoul(XML2S(value.get()));

@@ -18,5 +18,21 @@
                 <iidm:minMaxReactiveLimits minQ="-9999.9899999999998" maxQ="9999.9899999999998"/>
             </iidm:generator>
         </iidm:voltageLevel>
+        <iidm:twoWindingsTransformer id="VLY641" r="1.549974799156189" x="58.800025939941406" g="0" b="0" ratedU1="90" ratedU2="225" bus1="VL41" connectableBus1="VL41" voltageLevelId1="VL4" bus2="VL61" connectableBus2="VL61" voltageLevelId2="VL6" p1="-35.508800506591797" q1="-0.79081434011459351" p2="35.543498992919922" q2="2.1071410179138184"/>
+        <iidm:twoWindingsTransformer id="VL642" r="1.8199917078018188" x="62.600349426269531" g="0" b="0" ratedU1="90" ratedU2="225" bus1="VL41" connectableBus1="VL41" voltageLevelId1="VL4" bus2="VL61" connectableBus2="VL61" voltageLevelId2="VL6" p1="-33.338603973388672" q1="-2.3741626739501953" p2="33.374824523925781" q2="3.6199276447296143"/>
+        <iidm:twoWindingsTransformer id="VLY643" r="0.047249999999999993" x="4.0497243656204551" g="0" b="0" ratedU1="400" ratedU2="158" bus1="VL41" connectableBus1="VL41" voltageLevelId1="VL4" bus2="VL61" connectableBus2="VL61" voltageLevelId2="VL6">
+            <iidm:phaseTapChanger lowTapPosition="0" tapPosition="1" regulationMode="FIXED_TAP" regulationValue="200">
+                <iidm:step r="0" x="0" g="0" b="0" rho="0.85056669052441913" alpha="-1"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.0006666666666666" alpha="0"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.1507666428089141" alpha="1"/>
+            </iidm:phaseTapChanger>
+        </iidm:twoWindingsTransformer>
+        <iidm:twoWindingsTransformer id="VLY644" r="0.047249999999999993" x="4.0497243656204551" g="0" b="0" ratedU1="400" ratedU2="158" bus1="VL41" connectableBus1="VL41" voltageLevelId1="VL4" bus2="VL61" connectableBus2="VL61" voltageLevelId2="VL6">
+            <iidm:phaseTapChanger lowTapPosition="0" tapPosition="1" regulationMode="FIXED_TAP" regulationValue="200">
+                <iidm:step r="0" x="0" g="0" b="0" rho="0.85056669052441913" alpha="-1"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.0006666666666666" alpha="0"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.1507666428089141" alpha="1"/>
+            </iidm:phaseTapChanger>
+        </iidm:twoWindingsTransformer>
     </iidm:substation>
 </iidm:network>
