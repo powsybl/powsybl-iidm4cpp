@@ -20,11 +20,11 @@ namespace converter {
 
 namespace xml {
 
-BOOST_AUTO_TEST_SUITE(XmlRoundTrip)
+BOOST_AUTO_TEST_SUITE(FictitiousSwitchTestSuite)
 
-BOOST_FIXTURE_TEST_CASE(TerminalRef, ResourceFixture) {
+BOOST_FIXTURE_TEST_CASE(FictitiousSwitchBbk, ResourceFixture) {
 
-    const std::string& networkStr = ResourceFixture::getResource("/terminalRef.xiidm");
+    const std::string& networkStr = ResourceFixture::getResource("/fictitiousSwitchRef-bbk.xml");
     Network network = Network::readXml(networkStr);
 
     RoundTrip::runXml(network, networkStr);

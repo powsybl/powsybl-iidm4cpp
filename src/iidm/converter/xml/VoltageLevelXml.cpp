@@ -7,11 +7,13 @@
 
 #include "VoltageLevelXml.hpp"
 
+#include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 
 #include "iidm/converter/Constants.hpp"
 
+#include "BusBreakerViewSwitchXml.hpp"
 #include "BusXml.hpp"
 #include "GeneratorXml.hpp"
 #include "LoadXml.hpp"
@@ -61,6 +63,8 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
             context.getReader().readUntilEndElement(BUS_BREAKER_TOPOLOGY, [&voltageLevel, &context]() {
                 if (context.getReader().getLocalName() == BUS) {
                     BusXml::getInstance().read(voltageLevel, context);
+                } else if (context.getReader().getLocalName() == SWITCH) {
+                    BusBreakerViewSwitchXml::getInstance().read(voltageLevel, context);
                 } else {
                     throw powsybl::xml::XmlStreamException(logging::format("Unsupported element %1%", context.getReader().getLocalName()));
                 }
@@ -83,9 +87,20 @@ void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, 
     context.getWriter().writeStartElement(IIDM_PREFIX, BUS_BREAKER_TOPOLOGY);
     for (const Bus& bus : voltageLevel.getBusBreakerView().getBuses()) {
         // TODO(sebalaig) consider filtering
+//        if (!context.getFilter().test(b)) {
+//            continue;
+//        }
         BusXml::getInstance().write(bus, voltageLevel, context);
     }
-    // TODO(sebalaig) export switches
+    for (const Switch& sw : voltageLevel.getBusBreakerView().getSwitches()) {
+        // TODO(sebalaig) consider filtering
+//        const Bus& b1 = voltageLevel.getBusBreakerView().getBus1(context.getAnonymizer().anonymizeString(sw.getId()));
+//        const Bus& b2 = voltageLevel.getBusBreakerView().getBus2(context.getAnonymizer().anonymizeString(sw.getId()));
+//        if (!context.getFilter().test(b1) || !context.getFilter().test(b2)) {
+//            continue;
+//        }
+        BusBreakerViewSwitchXml::getInstance().write(sw, voltageLevel, context);
+    }
     context.getWriter().writeEndElement();
 }
 

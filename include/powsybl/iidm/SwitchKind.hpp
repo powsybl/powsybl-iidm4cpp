@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_SWITCHKIND_HPP
 #define POWSYBL_IIDM_SWITCHKIND_HPP
 
+#include <string>
+
 namespace powsybl {
 
 namespace iidm {
@@ -17,6 +19,10 @@ enum class SwitchKind {
     DISCONNECTOR,
     LOAD_BREAK_SWITCH
 };
+
+SwitchKind getSwitchKind(const std::string& switchKindName);
+
+std::string getSwitchKindName(const SwitchKind& switchKind);
 
 }  // namespace iidm
 

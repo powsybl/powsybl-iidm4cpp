@@ -83,6 +83,7 @@ set(IIDM_SOURCES
     iidm/SubstationAdder.cpp
     iidm/Switch.cpp
     iidm/SwitchAdder.cpp
+    iidm/SwitchKind.cpp
     iidm/Terminal.cpp
     iidm/TerminalBuilder.cpp
     iidm/ThreeWindingsTransformer.cpp
@@ -107,6 +108,7 @@ set(IIDM_SOURCES
     iidm/converter/ExportOptions.cpp
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
+    iidm/converter/xml/BusBreakerViewSwitchXml.cpp
     iidm/converter/xml/BusXml.cpp
     iidm/converter/xml/GeneratorXml.cpp
     iidm/converter/xml/LineXml.cpp

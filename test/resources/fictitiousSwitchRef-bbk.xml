@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.itesla_project.eu/schema/iidm/1_0" id="fictitious" caseDate="2017-06-25T17:43:00+01:00" forecastDistance="0" sourceFormat="test">
+    <iidm:substation id="A" country="FR">
+        <iidm:voltageLevel id="C" nominalV="225" lowVoltageLimit="0" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="C_0" v="234.40912" angle="0"/>
+            </iidm:busBreakerTopology>
+        </iidm:voltageLevel>
+        <iidm:voltageLevel id="N" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245.00002000000001" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="N_0" v="236.44736" angle="15.250391"/>
+                <iidm:bus id="N_1" v="236.44736" angle="15.250391"/>
+                <iidm:bus id="N_11"/>
+                <iidm:bus id="N_13"/>
+                <iidm:bus id="N_2"/>
+                <iidm:bus id="N_3"/>
+                <iidm:bus id="N_12"/>
+                <iidm:bus id="N_14"/>
+                <iidm:switch id="BJ" name="BK" kind="BREAKER" retained="true" open="false" bus1="N_1" bus2="N_0"/>
+            </iidm:busBreakerTopology>
+            <iidm:generator id="CD" energySource="HYDRO" minP="0" maxP="35" voltageRegulatorOn="true" targetP="21.789588999999999" targetV="236.44736" targetQ="-20.701546" bus="N_0" connectableBus="N_0" p="-21.789588999999999" q="20.693394000000001">
+                <iidm:reactiveCapabilityCurve>
+                    <iidm:point p="0" minQ="-20.600000000000001" maxQ="18.100000000000001"/>
+                    <iidm:point p="35" minQ="-21.725000000000001" maxQ="6.3500003999999999"/>
+                </iidm:reactiveCapabilityCurve>
+            </iidm:generator>
+            <iidm:generator id="CB" energySource="HYDRO" minP="0" maxP="70" voltageRegulatorOn="false" targetP="0" targetV="0" targetQ="0" bus="N_12" connectableBus="N_12">
+                <iidm:reactiveCapabilityCurve>
+                    <iidm:point p="0" minQ="-59.299999999999997" maxQ="60"/>
+                    <iidm:point p="70" minQ="-54.549999999999997" maxQ="46.25"/>
+                </iidm:reactiveCapabilityCurve>
+            </iidm:generator>
+            <iidm:generator id="CC" energySource="HYDRO" minP="0" maxP="80" voltageRegulatorOn="false" targetP="0" targetV="0" targetQ="0" bus="N_14" connectableBus="N_14">
+                <iidm:reactiveCapabilityCurve>
+                    <iidm:point p="0" minQ="-56.799999999999997" maxQ="57.399999999999999"/>
+                    <iidm:point p="80" minQ="-53.514000000000003" maxQ="36.399999999999999"/>
+                </iidm:reactiveCapabilityCurve>
+            </iidm:generator>
+            <iidm:load id="CF" loadType="UNDEFINED" p0="8.4558540000000004" q0="-23.695924999999999" bus="N_1" connectableBus="N_1" p="8.4558540000000004" q="-23.695924999999999"/>
+            <iidm:load id="CG" loadType="UNDEFINED" p0="90.399109999999993" q0="-51.968690000000002" bus="N_1" connectableBus="N_1" p="90.399109999999993" q="-51.968690000000002"/>
+            <iidm:load id="CH" loadType="UNDEFINED" p0="-5.1022489999999996" q0="4.9081216000000003" bus="N_1" connectableBus="N_1" p="-5.1022489999999996" q="4.9081216000000003"/>
+            <iidm:load id="CE" loadType="UNDEFINED" p0="-72.186890000000005" q0="50.168945000000001" bus="N_3" connectableBus="N_3" p="-72.186890000000005" q="50.168945000000001"/>
+        </iidm:voltageLevel>
+        <iidm:twoWindingsTransformer id="CI" r="2" x="14.744999999999999" g="0" b="3.1999999999999999e-05" ratedU1="225" ratedU2="225" bus1="C_0" connectableBus1="C_0" voltageLevelId1="C" bus2="N_1" connectableBus2="N_1" voltageLevelId2="N">
+            <iidm:phaseTapChanger lowTapPosition="0" tapPosition="22" regulationMode="CURRENT_LIMITER" regulationValue="930.66669999999999" regulating="false">
+                <iidm:terminalRef id="CI" side="ONE"/>
+                <iidm:step r="39.784730000000003" x="39.784725000000002" g="0" b="0" rho="1" alpha="-42.799999999999997"/>
+                <iidm:step r="31.720244999999998" x="31.720241999999999" g="0" b="0" rho="1" alpha="-40.18"/>
+                <iidm:step r="23.655736999999998" x="23.655735" g="0" b="0" rho="1" alpha="-37.539999999999999"/>
+                <iidm:step r="16.263271" x="16.263268" g="0" b="0" rho="1" alpha="-34.899999999999999"/>
+                <iidm:step r="9.5428470000000001" x="9.5428420000000003" g="0" b="0" rho="1" alpha="-32.259999999999998"/>
+                <iidm:step r="3.4944772999999998" x="3.4944772999999998" g="0" b="0" rho="1" alpha="-29.600000000000001"/>
+                <iidm:step r="-1.8818557" x="-1.8818527" g="0" b="0" rho="1" alpha="-26.940000000000001"/>
+                <iidm:step r="-7.2581949999999997" x="-7.2581954" g="0" b="0" rho="1" alpha="-24.260000000000002"/>
+                <iidm:step r="-11.962484999999999" x="-11.962484" g="0" b="0" rho="1" alpha="-21.579999999999998"/>
+                <iidm:step r="-15.994745" x="-15.994745" g="0" b="0" rho="1" alpha="-18.899999999999999"/>
+                <iidm:step r="-19.354952000000001" x="-19.354952000000001" g="0" b="0" rho="1" alpha="-16.219999999999999"/>
+                <iidm:step r="-22.043126999999998" x="-22.043129" g="0" b="0" rho="1" alpha="-13.52"/>
+                <iidm:step r="-24.731290000000001" x="-24.731286999999998" g="0" b="0" rho="1" alpha="-10.82"/>
+                <iidm:step r="-26.747416999999999" x="-26.747416999999999" g="0" b="0" rho="1" alpha="-8.1199999999999992"/>
+                <iidm:step r="-28.091502999999999" x="-28.091502999999999" g="0" b="0" rho="1" alpha="-5.4199999999999999"/>
+                <iidm:step r="-28.763538" x="-28.763535999999998" g="0" b="0" rho="1" alpha="-2.7000000000000002"/>
+                <iidm:step r="-28.763538" x="-28.763535999999998" g="0" b="0" rho="1" alpha="0"/>
+                <iidm:step r="-28.763538" x="-28.763535999999998" g="0" b="0" rho="1" alpha="2.7000000000000002"/>
+                <iidm:step r="-28.091502999999999" x="-28.091502999999999" g="0" b="0" rho="1" alpha="5.4199999999999999"/>
+                <iidm:step r="-26.747416999999999" x="-26.747416999999999" g="0" b="0" rho="1" alpha="8.1199999999999992"/>
+                <iidm:step r="-24.731290000000001" x="-24.731286999999998" g="0" b="0" rho="1" alpha="10.82"/>
+                <iidm:step r="-22.043126999999998" x="-22.043129" g="0" b="0" rho="1" alpha="13.52"/>
+                <iidm:step r="-19.354952000000001" x="-19.354952000000001" g="0" b="0" rho="1" alpha="16.219999999999999"/>
+                <iidm:step r="-15.994745" x="-15.994745" g="0" b="0" rho="1" alpha="18.899999999999999"/>
+                <iidm:step r="-11.962484999999999" x="-11.962484" g="0" b="0" rho="1" alpha="21.579999999999998"/>
+                <iidm:step r="-7.2581949999999997" x="-7.2581954" g="0" b="0" rho="1" alpha="24.260000000000002"/>
+                <iidm:step r="-1.8818557" x="-1.8818527" g="0" b="0" rho="1" alpha="26.940000000000001"/>
+                <iidm:step r="3.4944772999999998" x="3.4944772999999998" g="0" b="0" rho="1" alpha="29.600000000000001"/>
+                <iidm:step r="9.5428470000000001" x="9.5428420000000003" g="0" b="0" rho="1" alpha="32.259999999999998"/>
+                <iidm:step r="16.263271" x="16.263268" g="0" b="0" rho="1" alpha="34.899999999999999"/>
+                <iidm:step r="23.655736999999998" x="23.655735" g="0" b="0" rho="1" alpha="37.539999999999999"/>
+                <iidm:step r="31.720244999999998" x="31.720241999999999" g="0" b="0" rho="1" alpha="40.18"/>
+                <iidm:step r="39.784730000000003" x="39.784725000000002" g="0" b="0" rho="1" alpha="42.799999999999997"/>
+            </iidm:phaseTapChanger>
+            <iidm:currentLimits1 permanentLimit="931"/>
+            <iidm:currentLimits2 permanentLimit="931"/>
+        </iidm:twoWindingsTransformer>
+    </iidm:substation>
+    <iidm:line id="CJ" r="0.0099999990000000007" x="0.10000002400000001" g1="0" b1="0" g2="0" b2="0" bus1="C_0" connectableBus1="C_0" voltageLevelId1="C" bus2="N_3" connectableBus2="N_3" voltageLevelId2="N">
+        <iidm:currentLimits1 permanentLimit="931"/>
+        <iidm:currentLimits2 permanentLimit="931">
+            <iidm:temporaryLimit name="IST" value="1640" fictitious="true"/>
+            <iidm:temporaryLimit name="IT1" acceptableDuration="60"/>
+        </iidm:currentLimits2>
+    </iidm:line>
+</iidm:network>

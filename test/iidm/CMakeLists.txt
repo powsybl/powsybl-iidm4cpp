@@ -44,6 +44,7 @@ set(UNIT_TEST_SOURCES
     converter/ImportOptionsTest.cpp
     converter/RoundTrip.cpp
 
+    converter/xml/FictitiousSwitchTest.cpp
     converter/xml/NetworkXmlTest.cpp
     converter/xml/NetworkXmlReaderContextTest.cpp
     converter/xml/NetworkXmlWriterContextTest.cpp
