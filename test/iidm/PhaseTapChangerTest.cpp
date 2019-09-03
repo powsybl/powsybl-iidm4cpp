@@ -293,6 +293,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
     BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
 
+    BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChanger.getTapPosition());
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setLowTapPosition(-3L)));
+    BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChanger.getTapPosition());
+
     BOOST_TEST(std::isnan(phaseTapChanger.getTargetDeadband()));
     POWSYBL_ASSERT_THROW(phaseTapChanger.setTargetDeadband(-1.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
     BOOST_CHECK_NO_THROW(phaseTapChanger.setTargetDeadband(1.0));

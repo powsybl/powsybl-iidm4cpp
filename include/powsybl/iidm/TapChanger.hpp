@@ -64,6 +64,8 @@ public:
 
     virtual void remove() = 0;
 
+    C& setLowTapPosition(long lowTapPosition);
+
     virtual C& setRegulating(bool regulating);
 
     virtual C& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal);

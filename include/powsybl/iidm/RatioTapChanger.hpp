@@ -42,6 +42,8 @@ public:
 
     bool hasLoadTapChangingCapabilities() const;
 
+    RatioTapChanger& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities);
+
     RatioTapChanger& setTargetV(double targetV);
 
 private:

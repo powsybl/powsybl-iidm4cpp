@@ -146,6 +146,15 @@ void TapChanger<H, C, S>::reduceVariantArraySize(unsigned long number) {
 }
 
 template<typename H, typename C, typename S>
+C& TapChanger<H, C, S>::setLowTapPosition(long lowTapPosition) {
+    long oldValue = m_lowTapPosition;
+    m_lowTapPosition = lowTapPosition;
+    m_tapPosition[m_network.get().getVariantIndex()] = getTapPosition() + m_lowTapPosition - oldValue;
+
+    return static_cast<C&>(*this);
+}
+
+template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setRegulating(bool regulating) {
     m_regulating[m_network.get().getVariantIndex()] = regulating;
 

@@ -55,6 +55,12 @@ void RatioTapChanger::remove() {
     return getParent().setRatioTapChanger(std::unique_ptr<RatioTapChanger>());
 }
 
+RatioTapChanger& RatioTapChanger::setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) {
+    checkRatioTapChangerRegulation(getParent(), loadTapChangingCapabilities, isRegulating(), getRegulationTerminal(), getTargetV(), getNetwork());
+    m_loadTapChangingCapabilities = loadTapChangingCapabilities;
+    return *this;
+}
+
 RatioTapChanger& RatioTapChanger::setRegulating(bool regulating) {
     checkRatioTapChangerRegulation(getParent(), m_loadTapChangingCapabilities, regulating, getRegulationTerminal(), getTargetV(), getNetwork());
     return TapChanger::setRegulating(regulating);
