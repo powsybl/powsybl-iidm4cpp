@@ -7,10 +7,14 @@
 
 #include "NetworkXml.hpp"
 
+#include <chrono>
+
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -30,6 +34,9 @@ namespace converter {
 namespace xml {
 
 Network NetworkXml::read(std::istream& is, const ImportOptions& options, const Anonymizer& anonymizer) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
+
+    auto startTime = std::chrono::high_resolution_clock::now();
 
     powsybl::xml::XmlStreamReader reader(is);
 
@@ -65,10 +72,18 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
         task();
     }
 
+    auto endTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> diff = endTime - startTime;
+    logger.debug("XIIDM import done in %1% ms", diff.count() * 1000.0);
+
     return network;
 }
 
 std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Network& network, const ExportOptions& options) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
+
+    auto startTime = std::chrono::high_resolution_clock::now();
+
     powsybl::xml::XmlStreamWriter writer(ostream, options.isIndent());
 
     // FIXME(sebalaig): for now on, only one kind of anonymizer = FakeAnonymizer
@@ -102,6 +117,10 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
 
     writer.writeEndElement();
     writer.writeEndDocument();
+
+    auto endTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> diff = endTime - startTime;
+    logger.debug("XIIDM export done in %1% ms", diff.count() * 1000.0);
 
     return anonymizer;
 }
