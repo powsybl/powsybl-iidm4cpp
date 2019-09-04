@@ -23,6 +23,7 @@ static const char* const B_MAX = "bMax";
 static const char* const B_PER_SECTION = "bPerSection";
 static const char* const B1 = "b1";
 static const char* const B2 = "b2";
+static const char* const BATTERY = "battery";
 static const char* const BUS = "bus";
 static const char* const BUS1 = "bus1";
 static const char* const BUS2 = "bus2";

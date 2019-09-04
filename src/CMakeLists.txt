@@ -108,6 +108,7 @@ set(IIDM_SOURCES
     iidm/converter/ExportOptions.cpp
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
+    iidm/converter/xml/BatteryXml.cpp
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp
     iidm/converter/xml/BusXml.cpp
     iidm/converter/xml/GeneratorXml.cpp

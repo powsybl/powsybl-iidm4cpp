@@ -13,6 +13,7 @@
 
 #include "iidm/converter/Constants.hpp"
 
+#include "BatteryXml.hpp"
 #include "BusBreakerViewSwitchXml.hpp"
 #include "BusXml.hpp"
 #include "GeneratorXml.hpp"
@@ -87,6 +88,8 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
                     throw powsybl::xml::XmlStreamException(logging::format("Unsupported element %1%", context.getReader().getLocalName()));
                 }
             });
+        } else if (context.getReader().getLocalName() == BATTERY) {
+            BatteryXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == GENERATOR) {
             GeneratorXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == LOAD) {
@@ -101,6 +104,16 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
             AbstractIdentifiableXml::readSubElements(voltageLevel, context);
         }
     });
+}
+
+void VoltageLevelXml::writeBatteries(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const {
+    for (const Battery& battery : voltageLevel.getBatteries()) {
+        // TODO(sebalaig) consider filtering
+//        if (!context.getFilter().test(battery)) {
+//            continue;
+//        }
+        BatteryXml::getInstance().write(battery, voltageLevel, context);
+    }
 }
 
 void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const {
@@ -199,6 +212,7 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const S
     }
 
     writeGenerators(voltageLevel, context);
+    writeBatteries(voltageLevel, context);
     writeLoads(voltageLevel, context);
     writeShuntCompensators(voltageLevel, context);
     writeStaticVarCompensators(voltageLevel, context);

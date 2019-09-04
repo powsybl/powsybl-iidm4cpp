@@ -46,6 +46,8 @@ private:
 
     ~VoltageLevelXml() noexcept override = default;
 
+    void writeBatteries(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const;
+
     void writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const;
 
     void writeGenerators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
