@@ -22,9 +22,17 @@ namespace xml {
 
 BOOST_AUTO_TEST_SUITE(FictitiousSwitchTestSuite)
 
-BOOST_FIXTURE_TEST_CASE(FictitiousSwitchBbk, ResourceFixture) {
+BOOST_FIXTURE_TEST_CASE(FictitiousSwitchBBk, ResourceFixture) {
 
     const std::string& networkStr = ResourceFixture::getResource("/fictitiousSwitchRef-bbk.xml");
+    Network network = Network::readXml(networkStr);
+
+    RoundTrip::runXml(network, networkStr);
+}
+
+BOOST_FIXTURE_TEST_CASE(FictitiousSwitchNBk, ResourceFixture) {
+
+    const std::string& networkStr = ResourceFixture::getResource("/fictitiousSwitchRef-nbk-tmp.xml");
     Network network = Network::readXml(networkStr);
 
     RoundTrip::runXml(network, networkStr);

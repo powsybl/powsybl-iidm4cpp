@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.itesla_project.eu/schema/iidm/1_0" id="fictitious" caseDate="2017-06-25T17:43:00+01:00" forecastDistance="0" sourceFormat="test">
+    <iidm:substation id="A" country="FR">
+        <iidm:voltageLevel id="C" nominalV="225" lowVoltageLimit="0" topologyKind="NODE_BREAKER">
+            <iidm:nodeBreakerTopology nodeCount="0"/>
+        </iidm:voltageLevel>
+        <iidm:voltageLevel id="N" nominalV="225" lowVoltageLimit="220" highVoltageLimit="245.00002000000001" topologyKind="NODE_BREAKER">
+            <iidm:nodeBreakerTopology nodeCount="0"/>
+        </iidm:voltageLevel>
+    </iidm:substation>
+</iidm:network>
