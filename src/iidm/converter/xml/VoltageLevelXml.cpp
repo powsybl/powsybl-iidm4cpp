@@ -18,6 +18,7 @@
 #include "GeneratorXml.hpp"
 #include "LoadXml.hpp"
 #include "ShuntCompensatorXml.hpp"
+#include "StaticVarCompensatorXml.hpp"
 #include "VscConverterStationXml.hpp"
 
 namespace powsybl {
@@ -92,6 +93,8 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
             LoadXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == SHUNT) {
             ShuntCompensatorXml::getInstance().read(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == STATIC_VAR_COMPENSATOR) {
+            StaticVarCompensatorXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == VSC_CONVERTER_STATION) {
             VscConverterStationXml::getInstance().read(voltageLevel, context);
         } else {
@@ -167,6 +170,16 @@ void VoltageLevelXml::writeShuntCompensators(const VoltageLevel& voltageLevel, N
     }
 }
 
+void VoltageLevelXml::writeStaticVarCompensators(const VoltageLevel& vl, NetworkXmlWriterContext& context) const {
+    for (const StaticVarCompensator& svc : vl.getStaticVarCompensators()) {
+        // TODO(sebalaig) consider filtering
+//        if (!context.getFilter().test(svc)) {
+//            continue;
+//        }
+        StaticVarCompensatorXml::getInstance().write(svc, vl, context);
+    }
+}
+
 void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
     TopologyLevel topologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), context.getOptions().getTopologyLevel());
     switch (topologyLevel) {
@@ -188,6 +201,7 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const S
     writeGenerators(voltageLevel, context);
     writeLoads(voltageLevel, context);
     writeShuntCompensators(voltageLevel, context);
+    writeStaticVarCompensators(voltageLevel, context);
     writeVscConverterStations(voltageLevel, context);
 }
 

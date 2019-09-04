@@ -118,6 +118,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/NetworkXmlWriterContext.cpp
     iidm/converter/xml/ReactiveLimitsXml.cpp
     iidm/converter/xml/ShuntCompensatorXml.cpp
+    iidm/converter/xml/StaticVarCompensatorXml.cpp
     iidm/converter/xml/SubstationXml.cpp
     iidm/converter/xml/TerminalRefXml.cpp
     iidm/converter/xml/TwoWindingsTransformerXml.cpp

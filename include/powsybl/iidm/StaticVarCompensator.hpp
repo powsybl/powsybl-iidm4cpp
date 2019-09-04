@@ -22,6 +22,10 @@ public:
         OFF
     };
 
+    static RegulationMode getRegulationMode(const std::string& regulationModeName);
+
+    static std::string getRegulationModeName(const RegulationMode& regulationMode);
+
 public:
     StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
                          double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode);

@@ -75,8 +75,30 @@ double StaticVarCompensator::getReactivePowerSetpoint() const {
     return m_reactivePowerSetpoint.at(m_network.get().getVariantIndex());
 }
 
+const std::array<std::string, 3>& getStaticVarCompensatorRegulationNames() {
+    static std::array<std::string, 3> s_staticVarCompensatorRegulationNames {{
+        "VOLTAGE",
+        "REACTIVE_POWER",
+        "OFF"
+    }};
+    return s_staticVarCompensatorRegulationNames;
+}
+
+StaticVarCompensator::RegulationMode StaticVarCompensator::getRegulationMode(const std::string& regulationModeName) {
+    const auto& names = getStaticVarCompensatorRegulationNames();
+    const auto& it = std::find(names.cbegin(), names.cend(), regulationModeName);
+    if (it == names.cend()) {
+        throw PowsyblException(logging::format("Unable to retrieve regulation mode from '%1%'", regulationModeName));
+    }
+    return static_cast<RegulationMode>(it - names.cbegin());
+}
+
 const StaticVarCompensator::RegulationMode& StaticVarCompensator::getRegulationMode() const {
     return m_regulationMode.at(m_network.get().getVariantIndex());
+}
+
+std::string StaticVarCompensator::getRegulationModeName(const StaticVarCompensator::RegulationMode& regulationMode) {
+    return logging::toString(getStaticVarCompensatorRegulationNames(), regulationMode);
 }
 
 const std::string& StaticVarCompensator::getTypeDescription() const {

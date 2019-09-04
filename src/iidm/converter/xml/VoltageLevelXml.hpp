@@ -56,6 +56,8 @@ private:
 
     void writeShuntCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
+    void writeStaticVarCompensators(const VoltageLevel& vl, NetworkXmlWriterContext& context) const;
+
     void writeVscConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 };
 
