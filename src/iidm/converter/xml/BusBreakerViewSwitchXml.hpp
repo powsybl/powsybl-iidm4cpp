@@ -30,6 +30,11 @@ protected:  // AbstractIdentifiableXml
     Switch& readRootElementAttributes(VoltageLevel::BusBreakerView::SwitchAdder& adder, const NetworkXmlReaderContext& context) const override;
 
     void writeRootElementAttributes(const Switch& sw, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+
+private:
+    BusBreakerViewSwitchXml() = default;
+
+    ~BusBreakerViewSwitchXml() noexcept override = default;
 };
 
 }  // namespace xml

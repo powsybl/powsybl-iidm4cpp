@@ -36,8 +36,6 @@ namespace xml {
 template <typename T, typename A, typename P>
 class AbstractConnectableXml : public AbstractIdentifiableXml<T, A, P> {
 public:
-    ~AbstractConnectableXml() noexcept override = default;
-
     template <typename S, typename O>
     static void readCurrentLimits(const boost::optional<int>& index, CurrentLimitsAdder<S,O>& adder, const powsybl::xml::XmlStreamReader& reader);
 
@@ -46,8 +44,6 @@ public:
     static void writeCurrentLimits(const boost::optional<int>& index, const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix);
 
 protected:
-    AbstractConnectableXml() = default;
-
     static void readNodeOrBus(BranchAdder<A>& adder, const NetworkXmlReaderContext& context);
 
     static void readNodeOrBus(InjectionAdder<A>& adder, const NetworkXmlReaderContext& context);
@@ -59,6 +55,11 @@ protected:
     static void writeNodeOrBus(const boost::optional<int>& index, const Terminal& terminal, NetworkXmlWriterContext& context);
 
     static void writePQ(const boost::optional<int>& index, const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer);
+
+protected:
+    AbstractConnectableXml() = default;
+
+    ~AbstractConnectableXml() noexcept override = default;
 
 private:
     static void writeBus(const boost::optional<int>& index, const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context);

@@ -37,8 +37,6 @@ namespace xml {
 template <typename T, typename A>
 class AbstractTransformerXml : public AbstractConnectableXml<T, A, Substation> {
 public:
-    ~AbstractTransformerXml() noexcept override = default;
-
     static void readPhaseTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
 
     static void readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
@@ -57,6 +55,8 @@ public:
 
 protected:
     AbstractTransformerXml() = default;
+
+    ~AbstractTransformerXml() noexcept override = default;
 };
 
 }  // namespace xml
