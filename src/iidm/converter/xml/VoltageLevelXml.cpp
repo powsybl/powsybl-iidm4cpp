@@ -19,6 +19,7 @@
 #include "BusbarSectionXml.hpp"
 #include "GeneratorXml.hpp"
 #include "LoadXml.hpp"
+#include "NodeBreakerViewSwitchXml.hpp"
 #include "ShuntCompensatorXml.hpp"
 #include "StaticVarCompensatorXml.hpp"
 #include "VscConverterStationXml.hpp"
@@ -69,8 +70,7 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
                 if (context.getReader().getLocalName() == BUSBAR_SECTION) {
                     BusbarSectionXml::getInstance().read(voltageLevel, context);
                 } else if (context.getReader().getLocalName() == SWITCH) {
-                    // TODO(sebalaig) implement NodeBreakerViewSwitchXml
-                    //NodeBreakerViewSwitchXml::getInstance().read(voltageLevel, context);
+                    NodeBreakerViewSwitchXml::getInstance().read(voltageLevel, context);
                 } else if (context.getReader().getLocalName() == INTERNAL_CONNECTION) {
                     // TODO(sebalaig) implement NodeBreakerViewInternalConnectionXml
                     //NodeBreakerViewInternalConnectionXml::getInstance().read(voltageLevel, context);
@@ -157,10 +157,9 @@ void VoltageLevelXml::writeNodeBreakerTopology(const VoltageLevel& voltageLevel,
     for (const BusbarSection& bs : voltageLevel.getNodeBreakerView().getBusbarSections()) {
         BusbarSectionXml::getInstance().write(bs, voltageLevel, context);
     }
-    // TODO(sebalaig) implement NodeBreakerViewSwitchXml
-//    for (const Switch& sw : voltageLevel.getNodeBreakerView().getSwitches()) {
-//        NodeBreakerViewSwitchXml::getInstance().write(sw, voltageLevel, context);
-//    }
+    for (const Switch& sw : voltageLevel.getNodeBreakerView().getSwitches()) {
+        NodeBreakerViewSwitchXml::getInstance().write(sw, voltageLevel, context);
+    }
     // TODO(sebalaig) implement NodeBreakerViewInternalConnectionXml
     //writeNodeBreakerTopologyInternalConnections(voltageLevel, context);
     context.getWriter().writeEndElement();

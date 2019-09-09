@@ -32,7 +32,7 @@ BOOST_FIXTURE_TEST_CASE(FictitiousSwitchBBk, ResourceFixture) {
 
 BOOST_FIXTURE_TEST_CASE(FictitiousSwitchNBk, ResourceFixture) {
 
-    const std::string& networkStr = ResourceFixture::getResource("/fictitiousSwitchRef-nbk-tmp.xml");
+    const std::string& networkStr = ResourceFixture::getResource("/fictitiousSwitchRef-nbk.xml");
     Network network = Network::readXml(networkStr);
 
     RoundTrip::runXml(network, networkStr);
