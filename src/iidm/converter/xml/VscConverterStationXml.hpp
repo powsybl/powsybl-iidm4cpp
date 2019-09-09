@@ -33,7 +33,7 @@ protected:  // AbstractIdentifiableXml
 
     bool hasSubElements(const VscConverterStation& converterStation) const override;
 
-    VscConverterStation& readRootElementAttributes(VscConverterStationAdder& adder, const NetworkXmlReaderContext& context) const override;
+    VscConverterStation& readRootElementAttributes(VscConverterStationAdder& adder, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(VscConverterStation& converterStation, NetworkXmlReaderContext& context) const override;
 

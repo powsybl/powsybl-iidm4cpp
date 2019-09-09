@@ -33,7 +33,7 @@ protected:  // AbstractIdentifiableXml
 
     bool hasSubElements(const VoltageLevel& voltageLevel) const override;
 
-    VoltageLevel& readRootElementAttributes(VoltageLevelAdder& adder, const NetworkXmlReaderContext& context) const override;
+    VoltageLevel& readRootElementAttributes(VoltageLevelAdder& adder, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const override;
 

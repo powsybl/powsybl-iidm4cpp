@@ -16,6 +16,7 @@
 #include "BatteryXml.hpp"
 #include "BusBreakerViewSwitchXml.hpp"
 #include "BusXml.hpp"
+#include "BusbarSectionXml.hpp"
 #include "GeneratorXml.hpp"
 #include "LoadXml.hpp"
 #include "ShuntCompensatorXml.hpp"
@@ -47,7 +48,7 @@ bool VoltageLevelXml::hasSubElements(const VoltageLevel& /*voltageLevel*/) const
     return true;
 }
 
-VoltageLevel& VoltageLevelXml::readRootElementAttributes(VoltageLevelAdder& adder, const NetworkXmlReaderContext& context) const {
+VoltageLevel& VoltageLevelXml::readRootElementAttributes(VoltageLevelAdder& adder, NetworkXmlReaderContext& context) const {
     auto nominalVoltage = context.getReader().getAttributeValue<double>(NOMINAL_V);
     double lowVoltageLimit = context.getReader().getOptionalAttributeValue(LOW_VOLTAGE_LIMIT, stdcxx::nan());
     double highVoltageLimit = context.getReader().getOptionalAttributeValue(HIGH_VOLTAGE_LIMIT, stdcxx::nan());
@@ -64,10 +65,9 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
         if (context.getReader().getLocalName() == NODE_BREAKER_TOPOLOGY) {
             const auto& nodeCount = context.getReader().getAttributeValue<unsigned long>(NODE_COUNT);
             voltageLevel.getNodeBreakerView().setNodeCount(nodeCount);
-            context.getReader().readUntilEndElement(NODE_BREAKER_TOPOLOGY, [/*&voltageLevel, */&context]() {
+            context.getReader().readUntilEndElement(NODE_BREAKER_TOPOLOGY, [&voltageLevel, &context]() {
                 if (context.getReader().getLocalName() == BUSBAR_SECTION) {
-                    // TODO(sebalaig) implement BusbarSectionXml
-                    //BusbarSectionXml::getInstance().read(voltageLevel, context);
+                    BusbarSectionXml::getInstance().read(voltageLevel, context);
                 } else if (context.getReader().getLocalName() == SWITCH) {
                     // TODO(sebalaig) implement NodeBreakerViewSwitchXml
                     //NodeBreakerViewSwitchXml::getInstance().read(voltageLevel, context);
@@ -154,16 +154,15 @@ void VoltageLevelXml::writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWri
 void VoltageLevelXml::writeNodeBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     context.getWriter().writeStartElement(IIDM_PREFIX, NODE_BREAKER_TOPOLOGY);
     context.getWriter().writeAttribute(NODE_COUNT, voltageLevel.getNodeBreakerView().getNodeCount());
-    // TODO(sebalaig) implement BusbarSectionXml
-//    for (BusbarSection bs : vl.getNodeBreakerView().getBusbarSections()) {
-//        BusbarSectionXml::getInstance().write(bs, voltageLevel, context);
-//    }
+    for (const BusbarSection& bs : voltageLevel.getNodeBreakerView().getBusbarSections()) {
+        BusbarSectionXml::getInstance().write(bs, voltageLevel, context);
+    }
     // TODO(sebalaig) implement NodeBreakerViewSwitchXml
-//    for (Switch sw : vl.getNodeBreakerView().getSwitches()) {
-//        NodeBreakerViewSwitchXml.INSTANCE.write(sw, vl, context);
+//    for (const Switch& sw : voltageLevel.getNodeBreakerView().getSwitches()) {
+//        NodeBreakerViewSwitchXml::getInstance().write(sw, voltageLevel, context);
 //    }
     // TODO(sebalaig) implement NodeBreakerViewInternalConnectionXml
-    //writeNodeBreakerTopologyInternalConnections(vl, context);
+    //writeNodeBreakerTopologyInternalConnections(voltageLevel, context);
     context.getWriter().writeEndElement();
 }
 

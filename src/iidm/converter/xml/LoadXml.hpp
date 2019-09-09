@@ -33,7 +33,7 @@ protected:  // AbstractIdentifiableXml
 
     bool hasSubElements(const Load& load) const override;
 
-    Load& readRootElementAttributes(LoadAdder& loadAdder, const NetworkXmlReaderContext& context) const override;
+    Load& readRootElementAttributes(LoadAdder& loadAdder, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(Load& load, NetworkXmlReaderContext& context) const override;
 

@@ -40,7 +40,7 @@ bool LoadXml::hasSubElements(const Load& /*load*/) const {
     return false;
 }
 
-Load& LoadXml::readRootElementAttributes(LoadAdder& loadAdder, const NetworkXmlReaderContext& context) const {
+Load& LoadXml::readRootElementAttributes(LoadAdder& loadAdder, NetworkXmlReaderContext& context) const {
     const std::string& loadTypeName = context.getReader().getOptionalAttributeValue(LOAD_TYPE, "");
     LoadType loadType = loadTypeName.empty() ? LoadType::UNDEFINED : getLoadType(loadTypeName);
     const auto& p0 = context.getReader().getAttributeValue<double>(P0);

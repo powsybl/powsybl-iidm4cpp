@@ -27,7 +27,7 @@ public:
 protected:  // AbstractIdentifiableXml
     VoltageLevel::BusBreakerView::SwitchAdder createAdder(VoltageLevel& voltageLevel) const override;
 
-    Switch& readRootElementAttributes(VoltageLevel::BusBreakerView::SwitchAdder& adder, const NetworkXmlReaderContext& context) const override;
+    Switch& readRootElementAttributes(VoltageLevel::BusBreakerView::SwitchAdder& adder, NetworkXmlReaderContext& context) const override;
 
     void writeRootElementAttributes(const Switch& sw, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 

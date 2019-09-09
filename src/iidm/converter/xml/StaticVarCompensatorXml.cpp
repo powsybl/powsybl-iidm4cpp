@@ -32,7 +32,7 @@ bool StaticVarCompensatorXml::hasSubElements(const StaticVarCompensator& /*svc*/
     return false;
 }
 
-StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticVarCompensatorAdder& adder, const NetworkXmlReaderContext& context) const {
+StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticVarCompensatorAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& bMin = context.getReader().getAttributeValue<double>(B_MIN);
     const auto& bMax = context.getReader().getAttributeValue<double>(B_MAX);
     double voltageSetpoint = context.getReader().getOptionalAttributeValue(VOLTAGE_SET_POINT, stdcxx::nan());

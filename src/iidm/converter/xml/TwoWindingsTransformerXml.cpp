@@ -35,7 +35,7 @@ bool TwoWindingsTransformerXml::hasSubElements(const TwoWindingsTransformer& twt
            || twt.getCurrentLimits2();
 }
 
-TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(TwoWindingsTransformerAdder& adder, const NetworkXmlReaderContext& context) const {
+TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(TwoWindingsTransformerAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);
     const auto& g = context.getReader().getAttributeValue<double>(G);

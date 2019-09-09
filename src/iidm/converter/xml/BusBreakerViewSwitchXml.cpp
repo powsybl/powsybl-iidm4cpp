@@ -27,7 +27,7 @@ const BusBreakerViewSwitchXml& BusBreakerViewSwitchXml::getInstance() {
     return s_instance;
 }
 
-Switch& BusBreakerViewSwitchXml::readRootElementAttributes(VoltageLevel::BusBreakerView::SwitchAdder& adder, const NetworkXmlReaderContext& context) const {
+Switch& BusBreakerViewSwitchXml::readRootElementAttributes(VoltageLevel::BusBreakerView::SwitchAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& open = context.getReader().getAttributeValue<bool>(OPEN);
     bool fictitious = context.getReader().getOptionalAttributeValue(FICTITIOUS, false);
     const std::string& bus1 = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(BUS1));

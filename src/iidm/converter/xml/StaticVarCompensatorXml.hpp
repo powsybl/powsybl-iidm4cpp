@@ -33,7 +33,7 @@ protected:  // AbstractIdentifiableXml
 
     bool hasSubElements(const StaticVarCompensator& svc) const override;
 
-    StaticVarCompensator& readRootElementAttributes(StaticVarCompensatorAdder& adder, const NetworkXmlReaderContext& context) const override;
+    StaticVarCompensator& readRootElementAttributes(StaticVarCompensatorAdder& adder, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(StaticVarCompensator& svc, NetworkXmlReaderContext& context) const override;
 

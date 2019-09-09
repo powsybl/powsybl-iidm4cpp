@@ -34,7 +34,7 @@ bool BatteryXml::hasSubElements(const Battery& /*battery*/) const {
     return true;
 }
 
-Battery& BatteryXml::readRootElementAttributes(BatteryAdder& adder, const NetworkXmlReaderContext& context) const {
+Battery& BatteryXml::readRootElementAttributes(BatteryAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& p0 = context.getReader().getAttributeValue<double>(P0);
     const auto& q0 = context.getReader().getAttributeValue<double>(Q0);
     const auto& minP = context.getReader().getAttributeValue<double>(MIN_P);

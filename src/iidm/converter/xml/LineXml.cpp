@@ -32,7 +32,7 @@ bool LineXml::hasSubElements(const Line& line) const {
     return line.getCurrentLimits1() || line.getCurrentLimits2();
 }
 
-Line& LineXml::readRootElementAttributes(LineAdder& adder, const NetworkXmlReaderContext& context) const {
+Line& LineXml::readRootElementAttributes(LineAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);
     const auto& g1 = context.getReader().getAttributeValue<double>(G1);

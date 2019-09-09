@@ -39,7 +39,7 @@ bool GeneratorXml::hasSubElements(const Generator& /*generator*/) const {
     return true;
 }
 
-Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdder, const NetworkXmlReaderContext& context) const {
+Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdder, NetworkXmlReaderContext& context) const {
     EnergySource energySource = getEnergySource(context.getReader().getAttributeValue(ENERGY_SOURCE));
     const auto& minP = context.getReader().getAttributeValue<double>(MIN_P);
     const auto& maxP = context.getReader().getAttributeValue<double>(MAX_P);
