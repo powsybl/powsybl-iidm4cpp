@@ -68,6 +68,29 @@ const HvdcLine::ConvertersMode& HvdcLine::getConvertersMode() const {
     return m_convertersMode.at(getNetwork().getVariantIndex());
 }
 
+const std::array<std::string, 2>& getConvertersModeNames() {
+    static std::array<std::string, 2> s_sideNames {{
+        "SIDE_1_RECTIFIER_SIDE_2_INVERTER",
+        "SIDE_1_INVERTER_SIDE_2_RECTIFIER"
+    }};
+    return s_sideNames;
+}
+
+// FIXME(sebalaig) should be updated while fixing issue #43 (https://devin-source.rte-france.com/powsybl/powsybl-iidm/issues/43)
+HvdcLine::ConvertersMode getConvertersMode(const std::string& convertersModeName) {
+    const auto& names = getConvertersModeNames();
+    const auto& it = std::find(names.cbegin(), names.cend(), convertersModeName);
+    if (it == names.cend()) {
+        throw PowsyblException(logging::format("Unable to retrieve side '%1%'", convertersModeName));
+    }
+    return static_cast<HvdcLine::ConvertersMode>(it - names.cbegin());
+}
+
+// FIXME(sebalaig) should be updated while fixing issue #43 (https://devin-source.rte-france.com/powsybl/powsybl-iidm/issues/43)
+std::string getConvertersModeName(const HvdcLine::ConvertersMode& convertersMode) {
+    return logging::toString(getConvertersModeNames(), convertersMode);
+}
+
 const stdcxx::Reference<HvdcConverterStation>& HvdcLine::getConverterStation1() const {
     return m_converterStation1;
 }

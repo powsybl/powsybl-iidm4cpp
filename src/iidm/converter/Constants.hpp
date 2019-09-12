@@ -15,6 +15,7 @@ namespace iidm {
 namespace converter {
 
 static const char* const ACCEPTABLE_DURATION = "acceptableDuration";
+static const char* const ACTIVE_POWER_SETPOINT = "activePowerSetpoint";
 static const char* const ALPHA = "alpha";
 static const char* const ANGLE = "angle";
 static const char* const B = "b";
@@ -33,6 +34,9 @@ static const char* const CASE_DATE = "caseDate";
 static const char* const CONNECTABLE_BUS = "connectableBus";
 static const char* const CONNECTABLE_BUS1 = "connectableBus1";
 static const char* const CONNECTABLE_BUS2 = "connectableBus2";
+static const char* const CONVERTER_STATION1 = "converterStation1";
+static const char* const CONVERTER_STATION2 = "converterStation2";
+static const char* const CONVERTERS_MODE = "convertersMode";
 static const char* const COUNTRY = "country";
 static const char* const CURRENT_LIMITS = "currentLimits";
 static const char* const CURRENT_LIMITS1 = "currentLimits1";
@@ -47,6 +51,7 @@ static const char* const G2 = "g2";
 static const char* const GENERATOR = "generator";
 static const char* const GEOGRAPHICAL_TAGS = "geographicalTags";
 static const char* const HIGH_VOLTAGE_LIMIT = "highVoltageLimit";
+static const char* const HVDC_LINE = "hvdcLine";
 static const char* const ID = "id";
 static const char* const IIDM_PREFIX = "iidm";
 static const char* const IIDM_URI = "http://www.itesla_project.eu/schema/iidm/1_0";

@@ -22,6 +22,7 @@
 #include "iidm/converter/Constants.hpp"
 #include "xml/XmlEncoding.hpp"
 
+#include "HvdcLineXml.hpp"
 #include "LineXml.hpp"
 #include "SubstationXml.hpp"
 
@@ -63,6 +64,8 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
             SubstationXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == LINE) {
             LineXml::getInstance().read(network, context);
+        } else if (context.getReader().getLocalName() == HVDC_LINE) {
+            HvdcLineXml::getInstance().read(network, context);
         } else {
             throw powsybl::xml::XmlStreamException(logging::format("Unexpected element: %1%", context.getReader().getLocalName()));
         }
@@ -113,6 +116,14 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
         } else {
             LineXml::getInstance().write(line, network, context);
         }
+    }
+
+    for (const auto& line : network.getHvdcLines()) {
+        // TODO(sebalaig) consider filtering
+//        if (!filter.test(line.getConverterStation1()) || !filter.test(line.getConverterStation2())) {
+//            continue;
+//        }
+        HvdcLineXml::getInstance().write(line, network, context);
     }
 
     writer.writeEndElement();
