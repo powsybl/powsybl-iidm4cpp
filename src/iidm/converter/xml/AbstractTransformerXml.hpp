@@ -11,6 +11,7 @@
 #include <memory>
 
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/TapChanger.hpp>
 #include <powsybl/iidm/TapChangerStep.hpp>
 
 #include "AbstractConnectableXml.hpp"
@@ -40,6 +41,8 @@ public:
     static void readPhaseTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
 
     static void readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
+
+    static void readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg2or3& twl, NetworkXmlReaderContext& context);
 
     static void readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 

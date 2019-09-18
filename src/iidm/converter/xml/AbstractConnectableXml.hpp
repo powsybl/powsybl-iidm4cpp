@@ -11,6 +11,7 @@
 #include <powsybl/iidm/BranchAdder.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 
 #include "AbstractIdentifiableXml.hpp"
 
@@ -47,6 +48,9 @@ protected:
     static void readNodeOrBus(BranchAdder<A>& adder, const NetworkXmlReaderContext& context);
 
     static void readNodeOrBus(InjectionAdder<A>& adder, const NetworkXmlReaderContext& context);
+
+    template <typename L>
+    static void readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder<L>& adder, const NetworkXmlReaderContext& context);
 
     static void readPQ(const boost::optional<int>& index, Terminal& terminal, const powsybl::xml::XmlStreamReader& reader);
 

@@ -91,6 +91,25 @@ void AbstractConnectableXml<T, A, P>::readNodeOrBus(InjectionAdder<A>& adder, co
 }
 
 template <typename T, typename A, typename P>
+template <typename L>
+void AbstractConnectableXml<T, A, P>::readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder<L>& adder, const NetworkXmlReaderContext& context){
+    const auto& bus = context.getReader().getOptionalAttributeValue<std::string>(toString(BUS, index));
+    const auto& connectableBus = context.getReader().getOptionalAttributeValue<std::string>(toString(CONNECTABLE_BUS, index));
+    const auto& node = context.getReader().getOptionalAttributeValue<unsigned long>(toString(NODE, index));
+    const std::string& voltageLevelId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(toString(VOLTAGE_LEVEL_ID, index)));
+    if (bus) {
+        adder.setBus(context.getAnonymizer().deanonymizeString(*bus));
+    }
+    if (connectableBus) {
+        adder.setConnectableBus(context.getAnonymizer().deanonymizeString(*connectableBus));
+    }
+    if (node) {
+        adder.setNode(*node);
+    }
+    adder.setVoltageLevel(voltageLevelId);
+}
+
+template <typename T, typename A, typename P>
 void AbstractConnectableXml<T, A, P>::readPQ(const boost::optional<int>& index, Terminal& terminal, const powsybl::xml::XmlStreamReader& reader) {
     const double& p = reader.getOptionalAttributeValue(toString(converter::P, index), stdcxx::nan());
     const double& q = reader.getOptionalAttributeValue(toString(Q, index), stdcxx::nan());
