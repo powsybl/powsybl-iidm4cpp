@@ -17,6 +17,7 @@
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
 #include "iidm/converter/Constants.hpp"
+#include "iidm/converter/xml/PropertiesXml.hpp"
 
 namespace powsybl {
 
@@ -39,9 +40,7 @@ void AbstractIdentifiableXml<T, A, P>::read(P& parent, NetworkXmlReaderContext& 
 template <typename T, typename A, typename P>
 void AbstractIdentifiableXml<T, A, P>::readSubElements(T& identifiable, NetworkXmlReaderContext& context) const {
     if (context.getReader().getLocalName() == PROPERTY) {
-        const std::string& name = context.getReader().getAttributeValue(NAME);
-        const std::string& value = context.getReader().getAttributeValue(VALUE);
-        identifiable.getProperties().set(name, value);
+        PropertiesXml::read(identifiable, context);
     } else {
         throw PowsyblException(logging::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), identifiable.getId()));
     }
@@ -56,13 +55,9 @@ void AbstractIdentifiableXml<T, A, P>::write(const T& identifiable, const P& par
         context.getWriter().writeAttribute(NAME, context.getAnonymizer().anonymizeString(identifiable.getName()));
     }
     writeRootElementAttributes(identifiable, parent, context);
-    const Properties& props = identifiable.getProperties();
-    for (const auto& prop : props) {
-        context.getWriter().writeStartElement(IIDM_PREFIX, PROPERTY);
-        context.getWriter().writeAttribute(NAME, prop.first);
-        context.getWriter().writeAttribute(VALUE, prop.second);
-        context.getWriter().writeEndElement();
-    }
+
+    PropertiesXml::write(identifiable, context);
+
     writeSubElements(identifiable, parent, context);
 
     context.getWriter().writeEndElement();

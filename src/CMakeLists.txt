@@ -122,6 +122,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/NetworkXmlReaderContext.cpp
     iidm/converter/xml/NetworkXmlWriterContext.cpp
     iidm/converter/xml/NodeBreakerViewSwitchXml.cpp
+    iidm/converter/xml/PropertiesXml.cpp
     iidm/converter/xml/ReactiveLimitsXml.cpp
     iidm/converter/xml/ShuntCompensatorXml.cpp
     iidm/converter/xml/StaticVarCompensatorXml.cpp

@@ -32,13 +32,13 @@ class NetworkXmlWriterContext;
 
 class TerminalRefXml {
 public:
+    static Terminal& readTerminalRef(Network& network, const std::string& id, const std::string& side);
+
     static void writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& elementName);
 
     static void writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& nsPrefix, const std::string& elementName);
 
     static void writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& nsPrefix, const std::string& elementName, powsybl::xml::XmlStreamWriter& writer);
-
-    static Terminal& readTerminalRef(Network& network, const std::string& id, const std::string& side);
 
 private:
     TerminalRefXml() = default;

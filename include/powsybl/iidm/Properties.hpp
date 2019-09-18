@@ -11,6 +11,9 @@
 #include <map>
 #include <string>
 
+#include <powsybl/stdcxx/optional.hpp>
+#include <powsybl/stdcxx/range.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -46,11 +49,13 @@ public:
 
     const std::string& get(const std::string& key, const std::string& defaultValue) const;
 
+    stdcxx::const_range<std::string> getKeys() const;
+
     bool isEmpty() const;
 
     Properties& remove(const std::string& key);
 
-    Properties& set(const std::string& key, const std::string& value);
+    stdcxx::optional<std::string> set(const std::string& key, const std::string& value);
 
     unsigned long size() const;
 

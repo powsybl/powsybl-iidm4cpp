@@ -40,16 +40,28 @@ const std::string& Identifiable::getName() const {
     return m_name.empty() ? m_id : m_name;
 }
 
-const Properties& Identifiable::getProperties() const {
-    return m_properties;
+const std::string& Identifiable::getProperty(const std::string& key) const {
+    return m_properties.get(key);
 }
 
-Properties& Identifiable::getProperties() {
-    return m_properties;
+const std::string& Identifiable::getProperty(const std::string& key, const std::string& defaultValue) const {
+    return m_properties.get(key, defaultValue);
+}
+
+stdcxx::const_range<std::string> Identifiable::getPropertyNames() const {
+    return m_properties.getKeys();
 }
 
 bool Identifiable::hasProperty() const {
     return !m_properties.isEmpty();
+}
+
+bool Identifiable::hasProperty(const std::string& key) const {
+    return m_properties.contains(key);
+}
+
+stdcxx::optional<std::string> Identifiable::setProperty(const std::string& key, const std::string& value) {
+    return m_properties.set(key, value);
 }
 
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable) {

@@ -12,6 +12,8 @@
 
 #include <powsybl/iidm/Properties.hpp>
 #include <powsybl/iidm/Validable.hpp>
+#include <powsybl/stdcxx/optional.hpp>
+#include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
@@ -32,11 +34,17 @@ public:
 
     const std::string& getName() const;
 
-    const Properties& getProperties() const;
-
-    Properties& getProperties();
-
     bool hasProperty() const;
+
+    bool hasProperty(const std::string& key) const;
+
+    const std::string& getProperty(const std::string& key) const;
+
+    const std::string& getProperty(const std::string& key, const std::string& defaultValue) const;
+
+    stdcxx::const_range<std::string> getPropertyNames() const;
+
+    stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
 
 protected:
     Identifiable(Identifiable&&) = default;

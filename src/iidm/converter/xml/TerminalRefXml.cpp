@@ -28,6 +28,22 @@ namespace converter {
 
 namespace xml {
 
+Terminal& TerminalRefXml::readTerminalRef(Network& network, const std::string& id, const std::string& side) {
+    auto& identifiable = network.get<Identifiable>(id);
+    if (stdcxx::isInstanceOf<Injection>(identifiable)) {
+        return dynamic_cast<Injection&>(identifiable).getTerminal();
+    }
+    if (stdcxx::isInstanceOf<Branch>(identifiable)) {
+        return dynamic_cast<Branch&>(identifiable).getTerminal(getSide(side));
+    }
+    if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
+        auto& twt = dynamic_cast<ThreeWindingsTransformer&>(identifiable);
+        return twt.getTerminal(getThreeWindingsTransformerSide(side));
+    }
+
+    throw AssertionError(logging::format("Unexpected Identifiable instance: %1%", stdcxx::demangle(identifiable)));
+}
+
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& elementName) {
     writeTerminalRef(terminal, context, IIDM_PREFIX, elementName);
 }
@@ -55,22 +71,6 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
         }
     }
     writer.writeEndElement();
-}
-
-Terminal& TerminalRefXml::readTerminalRef(Network& network, const std::string& id, const std::string& side) {
-    auto& identifiable = network.get<Identifiable>(id);
-    if (stdcxx::isInstanceOf<Injection>(identifiable)) {
-        return dynamic_cast<Injection&>(identifiable).getTerminal();
-    }
-    if (stdcxx::isInstanceOf<Branch>(identifiable)) {
-        return dynamic_cast<Branch&>(identifiable).getTerminal(getSide(side));
-    }
-    if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
-        auto& twt = dynamic_cast<ThreeWindingsTransformer&>(identifiable);
-        return twt.getTerminal(getThreeWindingsTransformerSide(side));
-    }
-
-    throw AssertionError(logging::format("Unexpected Identifiable instance: %1%", stdcxx::demangle(identifiable)));
 }
 
 }  // namespace xml

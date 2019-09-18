@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/Properties.hpp>
 
+#include <boost/range/adaptor/map.hpp>
+
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
@@ -57,6 +59,10 @@ const std::string& Properties::get(const std::string& key, const std::string& de
     return (it != m_properties.end()) ? it->second : defaultValue;
 }
 
+stdcxx::const_range<std::string> Properties::getKeys() const {
+    return m_properties | boost::adaptors::map_keys;
+}
+
 bool Properties::contains(const std::string& key) const {
     return m_properties.find(key) != m_properties.end();
 }
@@ -70,12 +76,16 @@ Properties& Properties::remove(const std::string& key) {
     return *this;
 }
 
-Properties& Properties::set(const std::string& key, const std::string& value) {
+stdcxx::optional<std::string> Properties::set(const std::string& key, const std::string& value) {
+    stdcxx::optional<std::string> oldValue;
+
     const auto& res = m_properties.insert(std::make_pair(key, value));
     if (!res.second) {
+        oldValue = res.first->second;
         res.first->second = value;
     }
-    return *this;
+
+    return oldValue;
 }
 
 unsigned long Properties::size() const {

@@ -36,14 +36,15 @@ BOOST_AUTO_TEST_CASE(AddProperty) {
     props.set("key4", "value4");
     BOOST_CHECK_EQUAL(4UL, props.size());
 
-    props.set("key5", "value5")
-         .set("key6", "value6")
-         .set("key7", "value7")
-         .set("key8", "value8");
+    props.set("key5", "value5");
+    props.set("key6", "value6");
+    props.set("key7", "value7");
+    props.set("key8", "value8");
     BOOST_CHECK_EQUAL(8UL, props.size());
 
-    props.set("key8", "newValue");
-    BOOST_CHECK_EQUAL(props.get("key8"), "newValue");
+    stdcxx::optional<std::string> oldValue = props.set("key8", "newValue");
+    BOOST_CHECK_EQUAL("newValue", props.get("key8"));
+    BOOST_CHECK_EQUAL("value8", *oldValue);
 
     BOOST_CHECK(props.contains("key5"));
     BOOST_CHECK(!props.contains("key9"));
@@ -52,10 +53,10 @@ BOOST_AUTO_TEST_CASE(AddProperty) {
 BOOST_AUTO_TEST_CASE(RemoveProperty) {
     Properties props;
 
-    props.set("key1", "value1")
-         .set("key2", "value2")
-         .set("key3", "value3")
-         .set("key4", "value4");
+    props.set("key1", "value1");
+    props.set("key2", "value2");
+    props.set("key3", "value3");
+    props.set("key4", "value4");
     BOOST_CHECK_EQUAL(4UL, props.size());
 
     props.remove("key3");
@@ -90,23 +91,23 @@ BOOST_AUTO_TEST_CASE(RemoveProperty) {
 BOOST_AUTO_TEST_CASE(GetProperty) {
     Properties props;
 
-    props.set("key1", "value1")
-         .set("key2", "value2")
-         .set("key3", "value3")
-         .set("key4", "value4");
+    props.set("key1", "value1");
+    props.set("key2", "value2");
+    props.set("key3", "value3");
+    props.set("key4", "value4");
 
     BOOST_CHECK_EQUAL(4UL, props.size());
 
-    BOOST_CHECK_EQUAL(props.get("key1"), "value1");
-    BOOST_CHECK_EQUAL(props.get("key2"), "value2");
-    BOOST_CHECK_EQUAL(props.get("key3"), "value3");
-    BOOST_CHECK_EQUAL(props.get("key4"), "value4");
+    BOOST_CHECK_EQUAL("value1", props.get("key1"));
+    BOOST_CHECK_EQUAL("value2", props.get("key2"));
+    BOOST_CHECK_EQUAL("value3", props.get("key3"));
+    BOOST_CHECK_EQUAL("value4", props.get("key4"));
 
     BOOST_CHECK_EQUAL(4UL, props.size());
 
     POWSYBL_ASSERT_THROW(props.get("key9"),
                          powsybl::PowsyblException, "Property key9 does not exist");
-    BOOST_CHECK_EQUAL(props.get("key9", "value9"), "value9");
+    BOOST_CHECK_EQUAL("value9", props.get("key9", "value9"));
 
     POWSYBL_ASSERT_THROW(props.get("key9"),
                          powsybl::PowsyblException, "Property key9 does not exist");
@@ -116,21 +117,19 @@ BOOST_AUTO_TEST_CASE(networkProperties) {
     Network n("test", "test");
 
     BOOST_TEST(!n.hasProperty());
-    BOOST_CHECK_EQUAL(n.getProperties().size(), 0UL);
+    BOOST_TEST(!n.hasProperty("unknown"));
+    BOOST_CHECK_EQUAL(0UL, boost::size(n.getPropertyNames()));
 
-    n.getProperties().set("key1", "value1").set("key2", "value2");
+    n.setProperty("key1", "value1");
+    n.setProperty("key2", "value2");
     BOOST_TEST(n.hasProperty());
-    BOOST_CHECK_EQUAL(n.getProperties().size(), 2UL);
+    BOOST_CHECK_EQUAL(2UL, boost::size(n.getPropertyNames()));
 
-    BOOST_CHECK_EQUAL(n.getProperties().get("key1"), "value1");
-    const Network& cNet = n;
-    BOOST_CHECK_EQUAL(cNet.getProperties().get("key1"), "value1");
+    BOOST_CHECK_EQUAL("value1", n.getProperty("key1"));
 
-    POWSYBL_ASSERT_THROW(n.getProperties().get("key3"),
+    POWSYBL_ASSERT_THROW(n.getProperty("key3"),
                          powsybl::PowsyblException, "Property key3 does not exist");
-
-    n.getProperties().remove("key1");
-    BOOST_CHECK_EQUAL(n.getProperties().size(), 1UL);
+    BOOST_CHECK_EQUAL("value3", n.getProperty("key3", "value3"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
