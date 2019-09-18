@@ -17,6 +17,7 @@
 #include "BusBreakerViewSwitchXml.hpp"
 #include "BusXml.hpp"
 #include "BusbarSectionXml.hpp"
+#include "DanglingLineXml.hpp"
 #include "GeneratorXml.hpp"
 #include "LccConverterStationXml.hpp"
 #include "LoadXml.hpp"
@@ -97,6 +98,8 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
             LoadXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == SHUNT) {
             ShuntCompensatorXml::getInstance().read(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == DANGLING_LINE) {
+            DanglingLineXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == STATIC_VAR_COMPENSATOR) {
             StaticVarCompensatorXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == VSC_CONVERTER_STATION) {
@@ -109,7 +112,7 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
     });
 }
 
-void VoltageLevelXml::writeBatteries(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const {
+void VoltageLevelXml::writeBatteries(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const Battery& battery : voltageLevel.getBatteries()) {
         // TODO(sebalaig) consider filtering
 //        if (!context.getFilter().test(battery)) {
@@ -119,7 +122,7 @@ void VoltageLevelXml::writeBatteries(const VoltageLevel& voltageLevel, NetworkXm
     }
 }
 
-void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const {
+void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     context.getWriter().writeStartElement(IIDM_PREFIX, BUS_BREAKER_TOPOLOGY);
     for (const Bus& bus : voltageLevel.getBusBreakerView().getBuses()) {
         // TODO(sebalaig) consider filtering
@@ -138,6 +141,16 @@ void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, 
         BusBreakerViewSwitchXml::getInstance().write(sw, voltageLevel, context);
     }
     context.getWriter().writeEndElement();
+}
+
+void VoltageLevelXml::writeDanglingLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const DanglingLine& dl : voltageLevel.getDanglingLines()) {
+        // TODO(sebalaig) consider filtering
+//        if (!context.getFilter().test(dl)) {
+//            continue;
+//        }
+        DanglingLineXml::getInstance().write(dl, voltageLevel, context);
+    }
 }
 
 void VoltageLevelXml::writeGenerators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
@@ -194,13 +207,13 @@ void VoltageLevelXml::writeShuntCompensators(const VoltageLevel& voltageLevel, N
     }
 }
 
-void VoltageLevelXml::writeStaticVarCompensators(const VoltageLevel& vl, NetworkXmlWriterContext& context) const {
-    for (const StaticVarCompensator& svc : vl.getStaticVarCompensators()) {
+void VoltageLevelXml::writeStaticVarCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const StaticVarCompensator& svc : voltageLevel.getStaticVarCompensators()) {
         // TODO(sebalaig) consider filtering
 //        if (!context.getFilter().test(svc)) {
 //            continue;
 //        }
-        StaticVarCompensatorXml::getInstance().write(svc, vl, context);
+        StaticVarCompensatorXml::getInstance().write(svc, voltageLevel, context);
     }
 }
 
@@ -226,6 +239,7 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const S
     writeBatteries(voltageLevel, context);
     writeLoads(voltageLevel, context);
     writeShuntCompensators(voltageLevel, context);
+    writeDanglingLines(voltageLevel, context);
     writeStaticVarCompensators(voltageLevel, context);
     writeVscConverterStations(voltageLevel, context);
     writeLccConverterStations(voltageLevel, context);

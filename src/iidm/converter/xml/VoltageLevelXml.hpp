@@ -46,9 +46,11 @@ private:
 
     ~VoltageLevelXml() noexcept override = default;
 
-    void writeBatteries(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const;
+    void writeBatteries(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
-    void writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext context) const;
+    void writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
+
+    void writeDanglingLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeGenerators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
@@ -60,7 +62,7 @@ private:
 
     void writeShuntCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
-    void writeStaticVarCompensators(const VoltageLevel& vl, NetworkXmlWriterContext& context) const;
+    void writeStaticVarCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeVscConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 };

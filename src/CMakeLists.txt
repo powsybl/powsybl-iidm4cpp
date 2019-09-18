@@ -112,6 +112,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/BusbarSectionXml.cpp
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp
     iidm/converter/xml/BusXml.cpp
+    iidm/converter/xml/DanglingLineXml.cpp
     iidm/converter/xml/GeneratorXml.cpp
     iidm/converter/xml/HvdcLineXml.cpp
     iidm/converter/xml/LccConverterStationXml.cpp
