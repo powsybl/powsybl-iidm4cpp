@@ -18,11 +18,11 @@ InternalConnection::InternalConnection(unsigned long node1, unsigned long node2)
     m_node2(node2) {
 }
 
-unsigned long InternalConnection::getNode1() {
+unsigned long InternalConnection::getNode1() const {
     return m_node1;
 }
 
-unsigned long InternalConnection::getNode2() {
+unsigned long InternalConnection::getNode2() const {
     return m_node2;
 }
 

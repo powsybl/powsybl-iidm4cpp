@@ -13,10 +13,15 @@
 namespace stdcxx {
 
 template <typename T>
-using range = boost::any_range<T&, boost::forward_traversal_tag, T&, std::ptrdiff_t>;
+struct range_traits {
+    using type = boost::any_range<T&, boost::forward_traversal_tag, T&, std::ptrdiff_t>;
+};
 
 template <typename T>
-using const_range = range<const T>;
+using range = typename range_traits<T>::type;
+
+template <typename T>
+using const_range = typename range_traits<const T>::type;
 
 }  // namespace stdcxx
 

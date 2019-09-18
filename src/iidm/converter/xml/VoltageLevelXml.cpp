@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
+#include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 
 #include "iidm/converter/Constants.hpp"
@@ -21,6 +22,7 @@
 #include "GeneratorXml.hpp"
 #include "LccConverterStationXml.hpp"
 #include "LoadXml.hpp"
+#include "NodeBreakerViewInternalConnectionXml.hpp"
 #include "NodeBreakerViewSwitchXml.hpp"
 #include "ShuntCompensatorXml.hpp"
 #include "StaticVarCompensatorXml.hpp"
@@ -70,8 +72,7 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
                 } else if (context.getReader().getLocalName() == SWITCH) {
                     NodeBreakerViewSwitchXml::getInstance().read(voltageLevel, context);
                 } else if (context.getReader().getLocalName() == INTERNAL_CONNECTION) {
-                    // TODO(sebalaig) implement NodeBreakerViewInternalConnectionXml
-                    //NodeBreakerViewInternalConnectionXml::getInstance().read(voltageLevel, context);
+                    NodeBreakerViewInternalConnectionXml::getInstance().read(voltageLevel, context);
                 } else {
                     throw powsybl::xml::XmlStreamException(logging::format("Unexpected element %1%", context.getReader().getLocalName()));
                 }
@@ -193,9 +194,14 @@ void VoltageLevelXml::writeNodeBreakerTopology(const VoltageLevel& voltageLevel,
     for (const Switch& sw : voltageLevel.getNodeBreakerView().getSwitches()) {
         NodeBreakerViewSwitchXml::getInstance().write(sw, voltageLevel, context);
     }
-    // TODO(sebalaig) implement NodeBreakerViewInternalConnectionXml
-    //writeNodeBreakerTopologyInternalConnections(voltageLevel, context);
+    writeNodeBreakerTopologyInternalConnections(voltageLevel, context);
     context.getWriter().writeEndElement();
+}
+
+void VoltageLevelXml::writeNodeBreakerTopologyInternalConnections(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const auto& ic : voltageLevel.getNodeBreakerView().getInternalConnections()) {
+        NodeBreakerViewInternalConnectionXml::getInstance().write(ic.getNode1(), ic.getNode2(), context);
+    }
 }
 
 void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLevel, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {

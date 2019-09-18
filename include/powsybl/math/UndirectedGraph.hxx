@@ -229,7 +229,7 @@ typename UndirectedGraph<V, E>::template const_range<E> UndirectedGraph<V, E>::g
 template <typename V, typename E>
 typename UndirectedGraph<V, E>::template const_range<unsigned long> UndirectedGraph<V, E>::getEdges() const {
     const auto& filter = [this](const unsigned long e) {
-        return static_cast<bool>(m_vertices[e]);
+        return static_cast<bool>(m_edges[e]);
     };
 
     return boost::counting_range(0UL, m_edges.size()) | boost::adaptors::filtered(filter);

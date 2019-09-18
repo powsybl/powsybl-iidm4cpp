@@ -46,6 +46,7 @@ set(UNIT_TEST_SOURCES
 
     converter/xml/BatteryRoundTripTest.cpp
     converter/xml/FictitiousSwitchTest.cpp
+    converter/xml/InternalConnectionsRoundTripTest.cpp
     converter/xml/LinesRoundTripTest.cpp
     converter/xml/LccRoundTripRef.cpp
     converter/xml/NetworkXmlTest.cpp

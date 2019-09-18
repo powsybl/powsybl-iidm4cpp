@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_INTERNALCONNECTION_HPP
 #define POWSYBL_IIDM_INTERNALCONNECTION_HPP
 
+#include <powsybl/stdcxx/range.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -22,9 +24,9 @@ public:
 
     ~InternalConnection() = default;
 
-    unsigned long getNode1();
+    unsigned long getNode1() const;
 
-    unsigned long getNode2();
+    unsigned long getNode2() const;
 
 private:
     unsigned long m_node1;
@@ -37,5 +39,14 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
+
+namespace stdcxx {
+
+template <>
+struct range_traits<const powsybl::iidm::node_breaker_view::InternalConnection> {
+    using type = boost::any_range<const powsybl::iidm::node_breaker_view::InternalConnection, boost::forward_traversal_tag, const powsybl::iidm::node_breaker_view::InternalConnection, std::ptrdiff_t>;
+};
+
+}  // namespace stdcxx
 
 #endif  // POWSYBL_IIDM_INTERNALCONNECTION_HPP

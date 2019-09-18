@@ -60,6 +60,8 @@ private:
 
     void writeNodeBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
+    void writeNodeBreakerTopologyInternalConnections(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
+
     void writeShuntCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeStaticVarCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;

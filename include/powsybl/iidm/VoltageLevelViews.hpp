@@ -121,8 +121,6 @@ public:
 
     virtual stdcxx::const_range<InternalConnection> getInternalConnections() const = 0;
 
-    virtual stdcxx::range<InternalConnection> getInternalConnections() = 0;
-
     virtual unsigned long getNode1(const std::string& switchId) const = 0;
 
     virtual unsigned long getNode2(const std::string& switchId) const = 0;
