@@ -25,6 +25,7 @@
 #include "HvdcLineXml.hpp"
 #include "LineXml.hpp"
 #include "SubstationXml.hpp"
+#include "TieLineXml.hpp"
 
 namespace powsybl {
 
@@ -64,6 +65,8 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
             SubstationXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == LINE) {
             LineXml::getInstance().read(network, context);
+        } else if (context.getReader().getLocalName() == TIE_LINE) {
+            TieLineXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == HVDC_LINE) {
             HvdcLineXml::getInstance().read(network, context);
         } else {
@@ -112,7 +115,7 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     for (const auto& line : network.getLines()) {
         // TODO(sebalaig) consider filtering
         if (line.isTieLine()) {
-            // TODO(sebalaig) implement TieLineXml
+            TieLineXml::getInstance().write(dynamic_cast<const TieLine&>(line), network, context);
         } else {
             LineXml::getInstance().write(line, network, context);
         }

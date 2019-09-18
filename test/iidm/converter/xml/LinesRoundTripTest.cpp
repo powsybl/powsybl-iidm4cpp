@@ -29,6 +29,13 @@ BOOST_FIXTURE_TEST_CASE(DanglingLineTest, ResourceFixture) {
     RoundTrip::runXml(network, networkStr);
 }
 
+BOOST_FIXTURE_TEST_CASE(TieLineTest, ResourceFixture) {
+    const std::string& networkStr = ResourceFixture::getResource("/tieline.xml");
+    Network network = Network::readXml(networkStr);
+
+    RoundTrip::runXml(network, networkStr);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml

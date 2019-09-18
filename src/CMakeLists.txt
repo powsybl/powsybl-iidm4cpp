@@ -128,6 +128,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/StaticVarCompensatorXml.cpp
     iidm/converter/xml/SubstationXml.cpp
     iidm/converter/xml/TerminalRefXml.cpp
+    iidm/converter/xml/TieLineXml.cpp
     iidm/converter/xml/TwoWindingsTransformerXml.cpp
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
