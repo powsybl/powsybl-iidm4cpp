@@ -64,9 +64,15 @@ public:
 
         void setName(const std::string& name);
 
+        void setParent(TieLine& parent);
+
+        friend class TieLine;
+
         friend class TieLineAdder;
 
     private:
+        stdcxx::Reference<TieLine> m_parent;
+
         std::string m_id;
 
         std::string m_name;
@@ -122,6 +128,9 @@ public:
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
+
+private:
+    HalfLine& attach(HalfLine& halfLine);
 
 private:
     HalfLine m_half1;

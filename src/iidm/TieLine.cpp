@@ -92,6 +92,10 @@ void TieLine::HalfLine::setName(const std::string& name) {
     m_name = name;
 }
 
+void TieLine::HalfLine::setParent(TieLine& parent) {
+    m_parent = stdcxx::ref(parent);
+}
+
 TieLine::HalfLine& TieLine::HalfLine::setR(double r) {
     m_lineCharacteristics.setR(r);
     return *this;
@@ -114,9 +118,14 @@ TieLine::HalfLine& TieLine::HalfLine::setXnodeQ(double xnodeQ) {
 
 TieLine::TieLine(const std::string& id, const std::string& name, const std::string& ucteXnodeCode, HalfLine& half1, HalfLine& half2) :
     Line(id, name),
-    m_half1(half1),
-    m_half2(half2),
+    m_half1(attach(half1)),
+    m_half2(attach(half2)),
     m_ucteXnodeCode(ucteXnodeCode) {
+}
+
+TieLine::HalfLine& TieLine::attach(TieLine::HalfLine& halfLine) {
+    halfLine.setParent(*this);
+    return halfLine;
 }
 
 double TieLine::getB1() const {
