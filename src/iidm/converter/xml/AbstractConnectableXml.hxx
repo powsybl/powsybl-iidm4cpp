@@ -161,7 +161,7 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeNode(const Terminal& ter
 
 template <typename Added, typename Adder, typename Parent>
 void AbstractConnectableXml<Added, Adder, Parent>::writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
-    const TopologyLevel& topologyLevel = getMinTopologyLevel(terminal.getVoltageLevel().getTopologyKind(), context.getOptions().getTopologyLevel());
+    const TopologyLevel& topologyLevel = getMinTopologyLevel(terminal.getVoltageLevel().get().getTopologyKind(), context.getOptions().getTopologyLevel());
     switch (topologyLevel) {
         case TopologyLevel::NODE_BREAKER:
             writeNode(terminal, context, index);
@@ -177,7 +177,7 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeNodeOrBus(const Terminal
     }
 
     if (index.is_initialized()) {
-        context.getWriter().writeAttribute(toString(VOLTAGE_LEVEL_ID, index), context.getAnonymizer().anonymizeString(terminal.getVoltageLevel().getId()));
+        context.getWriter().writeAttribute(toString(VOLTAGE_LEVEL_ID, index), context.getAnonymizer().anonymizeString(terminal.getVoltageLevel().get().getId()));
     }
 }
 

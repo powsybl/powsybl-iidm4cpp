@@ -35,20 +35,20 @@ stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const 
     if (static_cast<bool>(connectable)) {
         if (stdcxx::isInstanceOf<Injection>(connectable.get())) {
             const auto& injection = dynamic_cast<const Injection&>(connectable.get());
-            if (!stdcxx::areSame(injection.getTerminal().getVoltageLevel(), *this)) {
+            if (!stdcxx::areSame(injection.getTerminal().getVoltageLevel().get(), *this)) {
                 throw PowsyblException(logging::format("The injection '%1%' is not connected to the voltage level '%2%'", id, getId()));
             }
         } else if (stdcxx::isInstanceOf<Branch>(connectable.get())) {
             const auto& branch = dynamic_cast<const Branch&>(connectable.get());
-            if (!stdcxx::areSame(branch.getTerminal1().getVoltageLevel(), *this) &&
-                !stdcxx::areSame(branch.getTerminal2().getVoltageLevel(), *this)) {
+            if (!stdcxx::areSame(branch.getTerminal1().getVoltageLevel().get(), *this) &&
+                !stdcxx::areSame(branch.getTerminal2().getVoltageLevel().get(), *this)) {
                 throw PowsyblException(logging::format("The branch '%1%' is not connected to the voltage level '%2%'", id, getId()));
             }
         } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable.get())) {
             const auto& transformer = dynamic_cast<const ThreeWindingsTransformer&>(connectable.get());
-            if (!stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::ONE).getVoltageLevel(), *this) &&
-                !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::TWO).getVoltageLevel(), *this) &&
-                !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::THREE).getVoltageLevel(), *this)) {
+            if (!stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::ONE).getVoltageLevel().get(), *this) &&
+                !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::TWO).getVoltageLevel().get(), *this) &&
+                !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::THREE).getVoltageLevel().get(), *this)) {
                 throw PowsyblException(logging::format("The 3 windings transformer '%1%' is not connected to the voltage level '%2%'", id, getId()));
             }
         } else {

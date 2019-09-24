@@ -160,11 +160,11 @@ ThreeWindingsTransformer::Side ThreeWindingsTransformer::getSide(const Terminal&
 }
 
 const Substation& ThreeWindingsTransformer::getSubstation() const {
-    return m_leg1->getTerminal().get().getVoltageLevel().getSubstation();
+    return m_leg1->getTerminal().get().getVoltageLevel().get().getSubstation();
 }
 
 Substation& ThreeWindingsTransformer::getSubstation() {
-    return m_leg1->getTerminal().get().getVoltageLevel().getSubstation();
+    return m_leg1->getTerminal().get().getVoltageLevel().get().getSubstation();
 }
 
 const Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) const {

@@ -48,16 +48,22 @@ const ConnectableType& Connectable::getType() const {
     return m_connectableType;
 }
 
-const Network& Connectable::getNetwork() const {
+stdcxx::CReference<Network> Connectable::getNetwork() const {
     if (m_terminals.empty()) {
         throw PowsyblException(getId() + " is not attached to a network");
     }
 
-    return m_terminals.at(0)->getVoltageLevel().getNetwork();
+    for (auto& terminal : m_terminals) {
+        if (static_cast<bool>(terminal->getVoltageLevel())) {
+            return stdcxx::cref<Network>(terminal->getVoltageLevel().get().getNetwork());
+        }
+    }
+
+    return {};
 }
 
-Network& Connectable::getNetwork() {
-    return const_cast<Network&>(static_cast<const Connectable*>(this)->getNetwork());
+stdcxx::Reference<Network> Connectable::getNetwork() {
+    return stdcxx::ref<Network>(static_cast<const Connectable*>(this)->getNetwork());
 }
 
 const Terminal& Connectable::getTerminal(unsigned long index) const {

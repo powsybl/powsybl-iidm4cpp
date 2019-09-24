@@ -30,13 +30,13 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getBus() {
 }
 
 stdcxx::CReference<Bus> BusBreakerViewImpl::getConnectableBus() const {
-    const auto& voltageLevel = dynamic_cast<const BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    const auto& voltageLevel = dynamic_cast<const BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel().get());
 
     return stdcxx::cref<Bus>(voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true));
 }
 
 stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel().get());
 
     return stdcxx::ref<Bus>(voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true));
 }
@@ -44,7 +44,7 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
 void BusBreakerViewImpl::setConnectableBus(const std::string& busId) {
     checkNotEmpty(busId, "busId is empty");
 
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel().get());
 
     // Assert that the new bus exists
     voltageLevel.getConfiguredBus(busId, true);
@@ -67,7 +67,7 @@ stdcxx::Reference<Bus> BusViewImpl::getBus() {
 }
 
 stdcxx::CReference<Bus> BusViewImpl::getConnectableBus() const {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel().get());
 
     const auto& configuredBus = voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true);
 
@@ -75,7 +75,7 @@ stdcxx::CReference<Bus> BusViewImpl::getConnectableBus() const {
 }
 
 stdcxx::Reference<Bus> BusViewImpl::getConnectableBus() {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel().get());
 
     const auto& configuredBus = voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true);
 

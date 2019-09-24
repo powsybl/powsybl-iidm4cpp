@@ -263,7 +263,7 @@ void checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapCh
     if ((regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP) && !regulationTerminal) {
         throw ValidationException(validable, "phase regulation is on and regulated terminal is not set");
     }
-    if (regulationTerminal && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
+    if (regulationTerminal && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().get().getNetwork(), network)) {
         throw ValidationException(validable, "phase regulation terminal is not part of the network");
     }
     if ((regulationMode == PhaseTapChanger::RegulationMode::FIXED_TAP) && regulating) {
@@ -331,14 +331,14 @@ void checkRatioTapChangerRegulation(const Validable& validable, bool loadTapChan
         if (!static_cast<bool>(regulationTerminal)) {
             throw ValidationException(validable, "a regulation terminal has to be set for a regulating ratio tap changer");
         }
-        if (!stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
+        if (!stdcxx::areSame(regulationTerminal.get().getVoltageLevel().get().getNetwork(), network)) {
             throw ValidationException(validable, "regulation terminal is not part of the network");
         }
     }
 }
 
 void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network) {
-    if (regulatingTerminal && !stdcxx::areSame(regulatingTerminal.get().getVoltageLevel().getNetwork(), network)) {
+    if (regulatingTerminal && !stdcxx::areSame(regulatingTerminal.get().getVoltageLevel().get().getNetwork(), network)) {
         throw ValidationException(validable, "Regulating terminal is not part of the network");
     }
 }

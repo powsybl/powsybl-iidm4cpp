@@ -279,6 +279,8 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(transformer.setRatedU2(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': rated U2 is invalid");
 
     transformer.remove();
+    //TODO(thiebarr) POWSYBL_ASSERT_THROW(transformer.getNetwork(), PowsyblException, "2 windings transformer '2WT_VL1_VL2' is not attached to a network");
+    //TODO(thiebarr) POWSYBL_ASSERT_REF_FALSE(transformer.getSubstation());
     POWSYBL_ASSERT_THROW(network.getTwoWindingsTransformer("2WT_VL1_VL2"), PowsyblException, "Unable to find to the identifiable '2WT_VL1_VL2'");
 }
 

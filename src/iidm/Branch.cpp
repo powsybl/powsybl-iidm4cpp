@@ -166,8 +166,8 @@ Terminal& Branch::getTerminal(const Side& side) {
 }
 
 const Terminal& Branch::getTerminal(const std::string& voltageLevelId) const {
-    bool side1 = getTerminal1().getVoltageLevel().getId() == voltageLevelId;
-    bool side2 = getTerminal2().getVoltageLevel().getId() == voltageLevelId;
+    bool side1 = getTerminal1().getVoltageLevel().get().getId() == voltageLevelId;
+    bool side2 = getTerminal2().getVoltageLevel().get().getId() == voltageLevelId;
     if (side1 && side2) {
         throw PowsyblException(logging::format("Both terminals are connected to voltage level %1%", voltageLevelId));
     }

@@ -46,7 +46,7 @@ void NodeTerminal::extendVariantArraySize(unsigned long initVariantArraySize, un
 }
 
 bool NodeTerminal::isConnected() const {
-    return dynamic_cast<const NodeBreakerVoltageLevel&>(getVoltageLevel()).isConnected(*this);
+    return dynamic_cast<const NodeBreakerVoltageLevel&>(getVoltageLevel().get()).isConnected(*this);
 }
 
 double NodeTerminal::getAngle() const {

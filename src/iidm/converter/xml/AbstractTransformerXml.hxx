@@ -45,7 +45,7 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(TwoWindingsTransf
             const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
             context.addEndTask([adder, &twt, id, side]() {
-                adder->setRegulationTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(twt.getTerminal1().getVoltageLevel().getSubstation().getNetwork(), id, side)));
+                adder->setRegulationTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(twt.getTerminal1().getVoltageLevel().get().getSubstation().getNetwork(), id, side)));
                 adder->add();
             });
             hasTerminalRef = true;
@@ -107,7 +107,7 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
             const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
             context.addEndTask([adder, &terminal, id, side]() {
-                adder->setRegulationTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(terminal.getVoltageLevel().getSubstation().getNetwork(), id, side)));
+                adder->setRegulationTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(terminal.getVoltageLevel().get().getSubstation().getNetwork(), id, side)));
                 adder->add();
             });
             hasTerminalRef = true;

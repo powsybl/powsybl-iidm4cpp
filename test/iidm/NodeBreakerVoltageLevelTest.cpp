@@ -202,7 +202,7 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
     std::ostringstream oss;
     oss << bbs.getType();
     BOOST_CHECK_EQUAL("BUSBAR_SECTION", oss.str());
-    BOOST_TEST(stdcxx::areSame(voltageLevel, bbs.getTerminal().getVoltageLevel()));
+    BOOST_TEST(stdcxx::areSame(voltageLevel, bbs.getTerminal().getVoltageLevel().get()));
 
     BusbarSection& bbs2 = network.getBusbarSection("BBS");
     BOOST_TEST(stdcxx::areSame(bbs, bbs2));

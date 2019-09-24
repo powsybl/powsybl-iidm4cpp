@@ -456,7 +456,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     BOOST_CHECK_CLOSE(2.0, terminal.getQ(), std::numeric_limits<double>::epsilon());
 
     const Terminal& cTerminal = l1.getTerminal();
-    BOOST_TEST(stdcxx::areSame(cTerminal.getVoltageLevel(), vl));
+    BOOST_TEST(stdcxx::areSame(cTerminal.getVoltageLevel().get(), vl));
     auto& busBreakerView = terminal.getBusBreakerView();
     const auto& cBusBreakerView = cTerminal.getBusBreakerView();
     BOOST_TEST(stdcxx::areSame(busBreakerView, cBusBreakerView));

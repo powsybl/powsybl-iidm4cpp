@@ -71,9 +71,9 @@ public:
 
     virtual double getV() const = 0;
 
-    const VoltageLevel& getVoltageLevel() const;
+    stdcxx::CReference<VoltageLevel> getVoltageLevel() const;
 
-    VoltageLevel& getVoltageLevel();
+    stdcxx::Reference<VoltageLevel> getVoltageLevel();
 
     virtual bool isConnected() const = 0;
 

@@ -475,6 +475,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(!leg3.getRatioTapChanger());
 
     transformer.remove();
+    //TODO(thiebarr) POWSYBL_ASSERT_THROW(transformer.getLeg2().getNetwork(), PowsyblException, "3 windings transformer leg 2 '3WT_VL1_VL2_VL3' is not attached to a network");
+    //TODO(thiebarr) POWSYBL_ASSERT_THROW(transformer.getLeg3().getNetwork(), PowsyblException, "3 windings transformer leg 3 '3WT_VL1_VL2_VL3' is not attached to a network");
+    //TODO(thiebarr) POWSYBL_ASSERT_REF_FALSE(transformer.getSubstation());
     POWSYBL_ASSERT_THROW(network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3"), PowsyblException, "Unable to find to the identifiable '3WT_VL1_VL2_VL3'");
 }
 

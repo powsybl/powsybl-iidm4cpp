@@ -82,12 +82,12 @@ double Terminal::getQ() const {
     return m_q.at(m_network.get().getVariantIndex());
 }
 
-const VoltageLevel& Terminal::getVoltageLevel() const {
-    return m_voltageLevel.get();
+stdcxx::CReference<VoltageLevel> Terminal::getVoltageLevel() const {
+    return stdcxx::cref(m_voltageLevel);
 }
 
-VoltageLevel& Terminal::getVoltageLevel() {
-    return m_voltageLevel.get();
+stdcxx::Reference<VoltageLevel> Terminal::getVoltageLevel() {
+    return m_voltageLevel;
 }
 
 void Terminal::reduceVariantArraySize(unsigned long number) {

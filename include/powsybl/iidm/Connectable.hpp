@@ -46,9 +46,9 @@ protected: // MultiVariantObject
 protected:
     Connectable(const std::string& id, const std::string& name, const ConnectableType& connectableType);
 
-    const Network& getNetwork() const;
+    stdcxx::CReference<Network> getNetwork() const;
 
-    Network& getNetwork();
+    stdcxx::Reference<Network> getNetwork();
 
     const Terminal& getTerminal(unsigned long index) const;
 
