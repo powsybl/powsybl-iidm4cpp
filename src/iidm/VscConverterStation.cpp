@@ -52,15 +52,15 @@ const std::string& VscConverterStation::getTypeDescription() const {
 }
 
 double VscConverterStation::getReactivePowerSetpoint() const {
-    return m_reactivePowerSetpoint.at(getNetwork().get().getVariantIndex());
+    return m_reactivePowerSetpoint.at(getNetwork().getVariantIndex());
 }
 
 double VscConverterStation::getVoltageSetpoint() const {
-    return m_voltageSetpoint.at(getNetwork().get().getVariantIndex());
+    return m_voltageSetpoint.at(getNetwork().getVariantIndex());
 }
 
 bool VscConverterStation::isVoltageRegulatorOn() const {
-    return m_voltageRegulatorOn.at(getNetwork().get().getVariantIndex());
+    return m_voltageRegulatorOn.at(getNetwork().getVariantIndex());
 }
 
 void VscConverterStation::reduceVariantArraySize(unsigned long number) {
@@ -78,19 +78,19 @@ VscConverterStation& VscConverterStation::setLossFactor(double lossFactor) {
 
 VscConverterStation& VscConverterStation::setReactivePowerSetpoint(double reactivePowerSetpoint) {
     checkVoltageControl(*this, isVoltageRegulatorOn(), getVoltageSetpoint(), reactivePowerSetpoint);
-    m_reactivePowerSetpoint[getNetwork().get().getVariantIndex()] = reactivePowerSetpoint;
+    m_reactivePowerSetpoint[getNetwork().getVariantIndex()] = reactivePowerSetpoint;
     return *this;
 }
 
 VscConverterStation& VscConverterStation::setVoltageRegulatorOn(bool voltageRegulatorOn) {
     checkVoltageControl(*this, voltageRegulatorOn, getVoltageSetpoint(), getReactivePowerSetpoint());
-    m_voltageRegulatorOn[getNetwork().get().getVariantIndex()] = voltageRegulatorOn;
+    m_voltageRegulatorOn[getNetwork().getVariantIndex()] = voltageRegulatorOn;
     return *this;
 }
 
 VscConverterStation& VscConverterStation::setVoltageSetpoint(double voltageSetpoint) {
     checkVoltageControl(*this, isVoltageRegulatorOn(), voltageSetpoint, getReactivePowerSetpoint());
-    m_voltageSetpoint[getNetwork().get().getVariantIndex()] = voltageSetpoint;
+    m_voltageSetpoint[getNetwork().getVariantIndex()] = voltageSetpoint;
     return *this;
 }
 }  // namespace iidm
