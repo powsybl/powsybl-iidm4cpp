@@ -96,7 +96,7 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
 }
 
 PhaseTapChangerAdder& PhaseTapChangerAdder::addStep(double alpha, double rho, double r, double x, double g, double b) {
-    m_steps.emplace_back(alpha, rho, r, x, g, b);
+    m_steps.emplace_back(m_steps.size(), alpha, rho, r, x, g, b);
     return *this;
 }
 

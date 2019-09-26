@@ -11,8 +11,8 @@ namespace powsybl {
 
 namespace iidm {
 
-RatioTapChangerStep::RatioTapChangerStep(double rho, double r, double x, double g, double b) :
-    TapChangerStep(rho, r, x, g, b) {
+RatioTapChangerStep::RatioTapChangerStep(unsigned long position, double rho, double r, double x, double g, double b) :
+    TapChangerStep(position, rho, r, x, g, b) {
 }
 
 }  // namespace iidm

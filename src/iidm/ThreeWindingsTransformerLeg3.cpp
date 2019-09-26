@@ -34,7 +34,7 @@ const std::string& ThreeWindingsTransformerLeg3::getTypeDescription() const {
 }
 
 std::string ThreeWindingsTransformerLeg3::toString() const {
-    return logging::format("%1% leg 3", getTransformer().get().getId());
+    return logging::format("%1% leg 3", getRefTransformer().get().getId());
 }
 
 }  // namespace iidm

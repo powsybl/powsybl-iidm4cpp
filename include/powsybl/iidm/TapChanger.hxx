@@ -33,6 +33,9 @@ TapChanger<H, C, S>::TapChanger(VariantManagerHolder& network, H& parent, long l
    m_tapPosition(network.getVariantManager().getVariantArraySize(), tapPosition),
    m_regulating(network.getVariantManager().getVariantArraySize(), regulating),
    m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband) {
+    std::for_each(m_steps.begin(), m_steps.end(), [this](S& step) {
+        step.setParent(getParent());
+    });
 }
 
 template<typename H, typename C, typename S>

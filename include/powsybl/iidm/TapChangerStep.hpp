@@ -8,9 +8,13 @@
 #ifndef POWSYBL_IIDM_TAPCHANGERSTEP_HPP
 #define POWSYBL_IIDM_TAPCHANGERSTEP_HPP
 
+#include <powsybl/stdcxx/reference_wrapper.hpp>
+
 namespace powsybl {
 
 namespace iidm {
+
+class TapChangerHolder;
 
 template<typename S>
 class TapChangerStep {
@@ -38,9 +42,18 @@ public:
     S& setX(double x);
 
 protected:
-    TapChangerStep(double rho, double r, double x, double g, double b);
+    TapChangerStep(unsigned long position, double rho, double r, double x, double g, double b);
+
+    void setParent(const TapChangerHolder& parent);
 
 private:
+    template<typename, typename, typename> friend class TapChanger;
+
+private:
+    stdcxx::CReference<TapChangerHolder> m_stepHolder;
+
+    unsigned long m_position;
+
     double m_rho;
 
     double m_r;

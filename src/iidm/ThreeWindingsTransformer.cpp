@@ -51,7 +51,7 @@ ThreeWindingsTransformer::Leg1& ThreeWindingsTransformer::Leg1::setG(double g) {
 }
 
 std::string ThreeWindingsTransformer::Leg1::toString() const {
-    return logging::format("%1% leg 1", getTransformer().get().getId());
+    return logging::format("%1% leg 1", getRefTransformer().get().getId());
 }
 
 ThreeWindingsTransformer::Leg2or3::Leg2or3(double r, double x, double ratedU) :
@@ -59,11 +59,11 @@ ThreeWindingsTransformer::Leg2or3::Leg2or3(double r, double x, double ratedU) :
 }
 
 const Network& ThreeWindingsTransformer::Leg2or3::getNetwork() const {
-    return getTransformer().get().getSubstation().getNetwork();
+    return getRefTransformer().get().getSubstation().getNetwork();
 }
 
 Network& ThreeWindingsTransformer::Leg2or3::getNetwork() {
-    return getTransformer().get().getSubstation().getNetwork();
+    return getRefTransformer().get().getSubstation().getNetwork();
 }
 
 stdcxx::CReference<RatioTapChanger> ThreeWindingsTransformer::Leg2or3::getRatioTapChanger() const {
@@ -72,6 +72,10 @@ stdcxx::CReference<RatioTapChanger> ThreeWindingsTransformer::Leg2or3::getRatioT
 
 stdcxx::Reference<RatioTapChanger> ThreeWindingsTransformer::Leg2or3::getRatioTapChanger() {
     return stdcxx::ref<RatioTapChanger>(m_ratioTapChanger);
+}
+
+const Identifiable& ThreeWindingsTransformer::Leg2or3::getTransformer() const {
+    return getRefTransformer().get();
 }
 
 RatioTapChangerAdder ThreeWindingsTransformer::Leg2or3::newRatioTapChanger() {

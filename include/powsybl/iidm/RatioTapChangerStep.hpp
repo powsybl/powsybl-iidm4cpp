@@ -16,9 +16,12 @@ namespace iidm {
 
 class RatioTapChangerStep : public TapChangerStep<RatioTapChangerStep> {
 public:
-    RatioTapChangerStep(double rho, double r, double x, double g, double b);
+    RatioTapChangerStep(unsigned long position, double rho, double r, double x, double g, double b);
 
     ~RatioTapChangerStep() noexcept override = default;
+
+private:
+    template<typename, typename, typename> friend class TapChanger;
 };
 
 }  // namespace iidm

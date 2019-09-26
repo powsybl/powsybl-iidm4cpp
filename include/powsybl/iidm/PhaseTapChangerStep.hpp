@@ -16,13 +16,16 @@ namespace iidm {
 
 class PhaseTapChangerStep : public TapChangerStep<PhaseTapChangerStep> {
 public:
-    PhaseTapChangerStep(double alpha, double rho, double r, double x, double g, double b);
+    PhaseTapChangerStep(unsigned long position, double alpha, double rho, double r, double x, double g, double b);
 
     ~PhaseTapChangerStep() noexcept override = default;
 
     double getAlpha() const;
 
     PhaseTapChangerStep& setAlpha(double alpha);
+
+private:
+    template<typename, typename, typename> friend class TapChanger;
 
 private:
     double m_alpha;

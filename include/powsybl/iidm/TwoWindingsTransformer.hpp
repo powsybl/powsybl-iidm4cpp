@@ -81,6 +81,9 @@ protected: // MultiVariantObject
 
     void reduceVariantArraySize(unsigned long number) override;
 
+protected: // TapChangerHolder
+    const Identifiable& getTransformer() const override;
+
 protected: // RatioTapChangerHolder
     void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) override;
 

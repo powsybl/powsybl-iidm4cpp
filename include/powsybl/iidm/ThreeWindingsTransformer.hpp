@@ -64,9 +64,9 @@ public:
 
         stdcxx::Reference<Terminal> getTerminal(unsigned long index);
 
-        stdcxx::CReference<ThreeWindingsTransformer> getTransformer() const;
+        stdcxx::CReference<ThreeWindingsTransformer> getRefTransformer() const;
 
-        stdcxx::Reference<ThreeWindingsTransformer>& getTransformer();
+        stdcxx::Reference<ThreeWindingsTransformer>& getRefTransformer();
 
         virtual const std::string& getTypeDescription() const = 0;
 
@@ -138,6 +138,9 @@ public:
         ~Leg2or3() noexcept override = default;
 
         virtual std::string toString() const = 0;
+
+    protected: // TapChangerHolder
+        const Identifiable& getTransformer() const override;
 
     protected: // RatioTapChangerHolder
         void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) override;

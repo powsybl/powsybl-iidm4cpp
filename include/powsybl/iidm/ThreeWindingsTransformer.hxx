@@ -37,7 +37,7 @@ stdcxx::Reference<CurrentLimits> ThreeWindingsTransformer::LegBase<L>::getCurren
 
 template <typename L>
 std::string ThreeWindingsTransformer::LegBase<L>::getMessageHeader() const {
-    return logging::format("%1% '%2%': ", getTypeDescription(), getTransformer().get().getId());
+    return logging::format("%1% '%2%': ", getTypeDescription(), getRefTransformer().get().getId());
 }
 
 template <typename L>
@@ -76,12 +76,12 @@ stdcxx::Reference<Terminal> ThreeWindingsTransformer::LegBase<L>::getTerminal(un
 }
 
 template <typename L>
-stdcxx::CReference<ThreeWindingsTransformer> ThreeWindingsTransformer::LegBase<L>::getTransformer() const {
+stdcxx::CReference<ThreeWindingsTransformer> ThreeWindingsTransformer::LegBase<L>::getRefTransformer() const {
     return stdcxx::cref(m_transformer);
 }
 
 template <typename L>
-stdcxx::Reference<ThreeWindingsTransformer>& ThreeWindingsTransformer::LegBase<L>::getTransformer() {
+stdcxx::Reference<ThreeWindingsTransformer>& ThreeWindingsTransformer::LegBase<L>::getRefTransformer() {
     return m_transformer;
 }
 

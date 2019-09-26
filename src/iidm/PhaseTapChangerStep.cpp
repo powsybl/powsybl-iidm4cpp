@@ -11,8 +11,8 @@ namespace powsybl {
 
 namespace iidm {
 
-PhaseTapChangerStep::PhaseTapChangerStep(double alpha, double rho, double r, double x, double g, double b) :
-    TapChangerStep(rho, r, x, g, b),
+PhaseTapChangerStep::PhaseTapChangerStep(unsigned long position, double alpha, double rho, double r, double x, double g, double b) :
+    TapChangerStep(position, rho, r, x, g, b),
     m_alpha(alpha) {
 }
 

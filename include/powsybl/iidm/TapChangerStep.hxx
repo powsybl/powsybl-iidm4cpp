@@ -15,7 +15,8 @@ namespace powsybl {
 namespace iidm {
 
 template<typename S>
-TapChangerStep<S>::TapChangerStep(double rho, double r, double x, double g, double b) :
+TapChangerStep<S>::TapChangerStep(unsigned long position, double rho, double r, double x, double g, double b) :
+    m_position(position),
     m_rho(rho),
     m_r(r),
     m_x(x),
@@ -58,6 +59,11 @@ template<typename S>
 S& TapChangerStep<S>::setG(double g) {
     m_g = g;
     return static_cast<S&>(*this);
+}
+
+template<typename S>
+void TapChangerStep<S>::setParent(const TapChangerHolder& parent) {
+    m_stepHolder = stdcxx::cref(parent);
 }
 
 template<typename S>

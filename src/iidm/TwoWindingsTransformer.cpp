@@ -114,6 +114,10 @@ stdcxx::Reference<Substation> TwoWindingsTransformer::getSubstation() {
     return m_substation;
 }
 
+const Identifiable& TwoWindingsTransformer::getTransformer() const {
+    return *this;
+}
+
 const std::string& TwoWindingsTransformer::getTypeDescription() const {
     static std::string s_typeDescription = "2 windings transformer";
 

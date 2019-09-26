@@ -27,6 +27,11 @@ public:
 
 protected:
     TapChangerHolder() noexcept = default;
+
+    virtual const Identifiable& getTransformer() const = 0;
+
+private:
+    template<typename> friend class TapChangerStep;
 };
 
 }  // namespace iidm

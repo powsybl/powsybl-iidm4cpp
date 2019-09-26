@@ -89,7 +89,7 @@ RatioTapChanger& RatioTapChangerAdder::add() {
 }
 
 RatioTapChangerAdder& RatioTapChangerAdder::addStep(double rho, double r, double x, double g, double b) {
-    m_steps.emplace_back(rho, r, x, g, b);
+    m_steps.emplace_back(m_steps.size(), rho, r, x, g, b);
     return *this;
 }
 
