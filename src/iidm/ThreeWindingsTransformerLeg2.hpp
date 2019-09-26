@@ -20,15 +20,13 @@ public: // LegBase
 
     stdcxx::Reference<Terminal> getTerminal() override;
 
-    std::string toString() const override;
-
 public:
     ThreeWindingsTransformerLeg2(double r, double x, double ratedU);
 
     ~ThreeWindingsTransformerLeg2() noexcept override = default;
 
 protected: // LegBase
-    const std::string& getTypeDescription() const override;
+    const std::string& getLegAttribute() const override;
 };
 
 }  // namespace iidm

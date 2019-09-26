@@ -59,7 +59,11 @@ public:
 
         L& setX(double x);
 
+        std::string toString() const;
+
     protected:
+        virtual const std::string& getLegAttribute() const = 0;
+
         stdcxx::CReference<Terminal> getTerminal(unsigned long index) const;
 
         stdcxx::Reference<Terminal> getTerminal(unsigned long index);
@@ -68,7 +72,7 @@ public:
 
         stdcxx::Reference<ThreeWindingsTransformer>& getTransformer();
 
-        virtual const std::string& getTypeDescription() const = 0;
+        const std::string getTypeDescription() const;
 
     private:
         void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
@@ -107,10 +111,8 @@ public:
 
         Leg1& setG(double g);
 
-        std::string toString() const;
-
     protected: // LegBase
-        const std::string& getTypeDescription() const override;
+        const std::string& getLegAttribute() const override;
 
     private:
         double m_g;
@@ -136,8 +138,6 @@ public:
         Leg2or3(double r, double x, double ratedU);
 
         ~Leg2or3() noexcept override = default;
-
-        virtual std::string toString() const = 0;
 
     protected: // RatioTapChangerHolder
         void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) override;

@@ -37,7 +37,7 @@ stdcxx::Reference<CurrentLimits> ThreeWindingsTransformer::LegBase<L>::getCurren
 
 template <typename L>
 std::string ThreeWindingsTransformer::LegBase<L>::getMessageHeader() const {
-    return logging::format("%1% '%2%': ", getTypeDescription(), getTransformer().get().getId());
+    return logging::format("%1% '%2%': ", getTypeDescription(), m_transformer.get().getId());
 }
 
 template <typename L>
@@ -86,6 +86,11 @@ stdcxx::Reference<ThreeWindingsTransformer>& ThreeWindingsTransformer::LegBase<L
 }
 
 template <typename L>
+const std::string ThreeWindingsTransformer::LegBase<L>::getTypeDescription() const {
+    return logging::format("%1% %2%", m_transformer.get().getTypeDescription(), getLegAttribute());
+}
+
+template <typename L>
 double ThreeWindingsTransformer::LegBase<L>::getX() const {
     return m_x;
 }
@@ -124,6 +129,11 @@ L& ThreeWindingsTransformer::LegBase<L>::setX(double x) {
     m_x = checkX(*this, x);
 
     return static_cast<L&>(*this);
+}
+
+template <typename L>
+std::string ThreeWindingsTransformer::LegBase<L>::toString() const {
+    return logging::format("%1% %2%", m_transformer.get().getId(), getLegAttribute());
 }
 
 }  // namespace iidm

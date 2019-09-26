@@ -19,22 +19,18 @@ ThreeWindingsTransformerLeg3::ThreeWindingsTransformerLeg3(double r, double x, d
     ThreeWindingsTransformer::Leg2or3(r, x, ratedU) {
 }
 
+const std::string& ThreeWindingsTransformerLeg3::getLegAttribute() const {
+    static std::string s_legAttribute = "leg 3";
+
+    return s_legAttribute;
+}
+
 stdcxx::CReference<Terminal> ThreeWindingsTransformerLeg3::getTerminal() const {
     return LegBase::getTerminal(2UL);
 }
 
 stdcxx::Reference<Terminal> ThreeWindingsTransformerLeg3::getTerminal() {
     return LegBase::getTerminal(2UL);
-}
-
-const std::string& ThreeWindingsTransformerLeg3::getTypeDescription() const {
-    static std::string s_typeDescription = "3 windings transformer leg 3";
-
-    return s_typeDescription;
-}
-
-std::string ThreeWindingsTransformerLeg3::toString() const {
-    return logging::format("%1% leg 3", getTransformer().get().getId());
 }
 
 }  // namespace iidm

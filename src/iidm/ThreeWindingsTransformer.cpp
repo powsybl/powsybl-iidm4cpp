@@ -32,10 +32,10 @@ double ThreeWindingsTransformer::Leg1::getG() const {
     return m_g;
 }
 
-const std::string& ThreeWindingsTransformer::Leg1::getTypeDescription() const {
-    static std::string s_typeDescription = "3 windings transformer leg 1";
+const std::string& ThreeWindingsTransformer::Leg1::getLegAttribute() const {
+    static std::string s_legAttribute = "leg 1";
 
-    return s_typeDescription;
+    return s_legAttribute;
 }
 
 ThreeWindingsTransformer::Leg1& ThreeWindingsTransformer::Leg1::setB(double b) {
@@ -48,10 +48,6 @@ ThreeWindingsTransformer::Leg1& ThreeWindingsTransformer::Leg1::setG(double g) {
     m_g = checkG(*this, g);
 
     return *this;
-}
-
-std::string ThreeWindingsTransformer::Leg1::toString() const {
-    return logging::format("%1% leg 1", getTransformer().get().getId());
 }
 
 ThreeWindingsTransformer::Leg2or3::Leg2or3(double r, double x, double ratedU) :

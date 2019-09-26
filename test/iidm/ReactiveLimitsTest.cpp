@@ -9,7 +9,6 @@
 
 #include <powsybl/iidm/MinMaxReactiveLimits.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
-#include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -19,9 +18,19 @@ namespace powsybl {
 
 namespace iidm {
 
-class ReactiveLimitsHolderMock : public ReactiveLimitsHolder, public Validable {
+class ReactiveLimitsHolderMock : public ReactiveLimitsHolder, public Connectable {
 public:
+    ReactiveLimitsHolderMock() : Connectable("mock", "", ConnectableType::GENERATOR) {};
+
     std::string getMessageHeader() const override { return ""; };
+
+private:
+    const std::string& getTypeDescription() const override
+    {
+        static std::string s_typeDescription;
+
+        return s_typeDescription;
+    };
 };
 
 BOOST_AUTO_TEST_SUITE(ReactiveLimitsTestSuite)
