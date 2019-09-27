@@ -746,68 +746,115 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology2) {
 BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
     Network network("test", "test");
 
-    Substation& s = network.newSubstation()
+    Substation& s1 = network.newSubstation()
         .setId("S")
-        .setCountry(Country::FR)
         .add();
 
-    VoltageLevel& vl = s.newVoltageLevel()
+    VoltageLevel& vl1 = s1.newVoltageLevel()
         .setId("VL")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalVoltage(1.0)
         .add();
 
-    vl.getNodeBreakerView().setNodeCount(3);
+    vl1.getNodeBreakerView().setNodeCount(11);
 
-    auto& l1 = vl.newLoad()
-        .setId("LOAD1")
+    vl1.getNodeBreakerView().newBusbarSection()
+        .setId("B0")
         .setNode(0)
-        .setName("LOAD1_NAME")
-        .setLoadType(LoadType::UNDEFINED)
-        .setP0(50.0)
-        .setQ0(40.0)
         .add();
 
-    vl.newLoad()
-        .setId("LOAD2")
+    vl1.getNodeBreakerView().newBusbarSection()
+        .setId("B1")
         .setNode(1)
-        .setName("LOAD1_NAME")
-        .setLoadType(LoadType::UNDEFINED)
-        .setP0(50.0)
-        .setQ0(40.0)
         .add();
 
-    vl.getNodeBreakerView().newBreaker()
-        .setId("SWB1")
-        .setNode1(1)
-        .setNode2(2)
-        .setRetained(false)
+    vl1.getNodeBreakerView().newBusbarSection()
+        .setId("B2")
+        .setNode(2)
+        .add();
+
+    auto& l0 = vl1.newLoad()
+        .setId("L0")
+        .setNode(6)
+        .setP0(0.0)
+        .setQ0(0.0)
+        .add();
+
+    auto& l1 = vl1.newLoad()
+        .setId("L1")
+        .setNode(3)
+        .setP0(0.0)
+        .setQ0(0.0)
+        .add();
+
+    auto& l2 = vl1.newLoad()
+        .setId("L2")
+        .setNode(4)
+        .setP0(0.0)
+        .setQ0(0.0)
+        .add();
+
+    auto& l3 = vl1.newLoad()
+        .setId("L3")
+        .setNode(5)
+        .setP0(0.0)
+        .setQ0(0.0)
+        .add();
+
+    vl1.getNodeBreakerView().newBreaker()
+        .setId("L0-node")
+        .setNode1(0)
+        .setNode2(6)
         .setOpen(false)
         .add();
 
-    VoltageLevel& vl2 = s.newVoltageLevel()
-        .setId("VL2")
-        .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(90.0)
+    vl1.getNodeBreakerView().newBreaker()
+        .setId("L1-node")
+        .setNode1(4)
+        .setNode2(10)
+        .setOpen(true)
         .add();
 
-    vl2.getNodeBreakerView().setNodeCount(1);
-
-    network.newLine()
-        .setId("VL_VL2")
-        .setVoltageLevel1(vl.getId())
-        .setNode1(2)
-        .setVoltageLevel2(vl2.getId())
-        .setNode2(0)
-        .setR(3.0)
-        .setX(33.0)
-        .setG1(1.0)
-        .setB1(0.2)
-        .setG2(2.0)
-        .setB2(0.4)
+    vl1.getNodeBreakerView().newBreaker()
+        .setId("L0-B0")
+        .setNode1(3)
+        .setNode2(1)
+        .setOpen(false)
         .add();
 
-    POWSYBL_ASSERT_REF_TRUE(l1.getTerminal().getBusBreakerView().getConnectableBus());
+    vl1.getNodeBreakerView().newBreaker()
+        .setId("B0-node")
+        .setNode1(1)
+        .setNode2(10)
+        .setRetained(true)
+        .setOpen(true)
+        .add();
+
+    vl1.getNodeBreakerView().newBreaker()
+        .setId("node-B1")
+        .setNode1(10)
+        .setNode2(2)
+        .setRetained(true)
+        .setOpen(false)
+        .add();
+
+    BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getBuses()));
+
+    // load "L0" is connected to bus "VL_0"
+    POWSYBL_ASSERT_REF_TRUE(l0.getTerminal().getBusView().getBus());
+    BOOST_CHECK_EQUAL("VL_0", l0.getTerminal().getBusView().getConnectableBus().get().getId());
+
+    // load "L1" is connected to bus "VL_3"
+    POWSYBL_ASSERT_REF_TRUE(l1.getTerminal().getBusView().getBus());
+    BOOST_CHECK_EQUAL("VL_3", l1.getTerminal().getBusView().getConnectableBus().get().getId());
+
+    // load "L2" is not connected but is connectable to bus "VL_3"
+    POWSYBL_ASSERT_REF_FALSE(l2.getTerminal().getBusView().getBus());
+    BOOST_CHECK_EQUAL("VL_3", l2.getTerminal().getBusView().getConnectableBus().get().getId());
+
+    // load "L3" is not connected and has no connectable bus (the first bus is taken as connectable bus in this case)
+    POWSYBL_ASSERT_REF_FALSE(l3.getTerminal().getBusView().getBus());
+    BOOST_CHECK_EQUAL("VL_0", l3.getTerminal().getBusView().getConnectableBus().get().getId());
 }
 
 BOOST_AUTO_TEST_CASE(TerminalTest) {

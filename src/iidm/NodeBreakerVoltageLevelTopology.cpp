@@ -165,6 +165,11 @@ stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long no
     // node associated to a bus
     const auto& graph = m_voltageLevel.getGraph();
     graph.traverse(node, [this, &connectableBus](unsigned long /*v1*/, unsigned long /*e*/, unsigned long v2) {
+        if (static_cast<bool>(connectableBus)) {
+            // traverse does not stop the algorithm when TERMINATE, it only stops searching in a given direction
+            // this condition insures that while checking all the edges (in every direction) of a node, if a bus is found, it will not be lost
+            return math::TraverseResult::TERMINATE;
+        }
         connectableBus = getBus(v2);
 
         return static_cast<bool>(connectableBus) ? math::TraverseResult::TERMINATE : math::TraverseResult::CONTINUE;
