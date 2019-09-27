@@ -38,7 +38,7 @@ public:
 
     double getReactivePowerSetpoint() const;
 
-    const stdcxx::Reference<Terminal>& getRegulatingTerminal() const;
+    stdcxx::CReference<Terminal> getRegulatingTerminal() const;
 
     stdcxx::Reference<Terminal> getRegulatingTerminal();
 

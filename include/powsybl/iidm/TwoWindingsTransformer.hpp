@@ -56,7 +56,7 @@ public:
 
     stdcxx::CReference<Substation> getSubstation() const;
 
-    stdcxx::Reference<Substation>& getSubstation();
+    stdcxx::Reference<Substation> getSubstation();
 
     double getX() const;
 

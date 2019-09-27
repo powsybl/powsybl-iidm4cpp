@@ -55,7 +55,9 @@ public:
 
     virtual BusView& getBusView() = 0;
 
-    const stdcxx::Reference<Connectable>& getConnectable() const;
+    stdcxx::CReference<Connectable> getConnectable() const;
+
+    stdcxx::Reference<Connectable> getConnectable();
 
     double getI() const;
 

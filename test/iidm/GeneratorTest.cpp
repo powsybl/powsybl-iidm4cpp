@@ -249,7 +249,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     const Generator& cGen = gen;
     const auto terminal = cGen.getRegulatingTerminal();
     BOOST_TEST(terminal);
-    gen.setRegulatingTerminal(terminal);
+    gen.setRegulatingTerminal(stdcxx::ref(terminal));
 
     Terminal& terminal2 = network.getLoad("LOAD1").getTerminal();
     gen.setRegulatingTerminal(stdcxx::ref<Terminal>(terminal2));

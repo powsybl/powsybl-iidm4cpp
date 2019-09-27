@@ -61,11 +61,11 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
         if (stdcxx::isInstanceOf<Injection>(c.get())) {
             // nothing to do
         } else if (stdcxx::isInstanceOf<Branch>(c.get())) {
-            auto branch = dynamic_cast<Branch*>(&c.get());
-            writer.writeAttribute(SIDE, getSideName(branch->getSide(terminal)));
+            const auto& branch = dynamic_cast<const Branch&>(c.get());
+            writer.writeAttribute(SIDE, getSideName(branch.getSide(terminal)));
         } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(c.get())) {
-            auto twt = dynamic_cast<ThreeWindingsTransformer*>(&c.get());
-            writer.writeAttribute(SIDE, getThreeWindingsTransformerSideName(twt->getSide(terminal)));
+            const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(c.get());
+            writer.writeAttribute(SIDE, getThreeWindingsTransformerSideName(twt.getSide(terminal)));
         } else {
             throw AssertionError(logging::format("Unexpected Connectable instance: %1%", stdcxx::demangle(c.get())));
         }

@@ -54,7 +54,11 @@ void Terminal::extendVariantArraySize(unsigned long /*initVariantArraySize*/, un
     m_q.resize(m_q.size() + number, m_q[sourceIndex]);
 }
 
-const stdcxx::Reference<Connectable>& Terminal::getConnectable() const {
+stdcxx::CReference<Connectable> Terminal::getConnectable() const {
+    return stdcxx::cref(m_connectable);
+}
+
+stdcxx::Reference<Connectable> Terminal::getConnectable() {
     return m_connectable;
 }
 

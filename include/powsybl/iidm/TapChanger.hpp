@@ -48,7 +48,7 @@ public:
 
     stdcxx::CReference<Terminal> getRegulationTerminal() const;
 
-    stdcxx::Reference<Terminal>& getRegulationTerminal();
+    stdcxx::Reference<Terminal> getRegulationTerminal();
 
     const S& getStep(long tapPosition) const;
 

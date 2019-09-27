@@ -110,7 +110,7 @@ stdcxx::CReference<Substation> TwoWindingsTransformer::getSubstation() const {
     return stdcxx::cref<Substation>(m_substation);
 }
 
-stdcxx::Reference<Substation>& TwoWindingsTransformer::getSubstation() {
+stdcxx::Reference<Substation> TwoWindingsTransformer::getSubstation() {
     return m_substation;
 }
 

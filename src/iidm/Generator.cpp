@@ -78,8 +78,8 @@ double Generator::getReactivePowerSetpoint() const {
     return m_reactivePowerSetpoint.at(m_network.get().getVariantIndex());
 }
 
-const stdcxx::Reference<Terminal>& Generator::getRegulatingTerminal() const {
-    return m_regulatingTerminal;
+stdcxx::CReference<Terminal> Generator::getRegulatingTerminal() const {
+    return stdcxx::cref(m_regulatingTerminal);
 }
 
 stdcxx::Reference<Terminal> Generator::getRegulatingTerminal() {

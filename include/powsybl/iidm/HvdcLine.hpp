@@ -39,13 +39,13 @@ public:
 
     const ConvertersMode& getConvertersMode() const;
 
-    const stdcxx::Reference<HvdcConverterStation>& getConverterStation1() const;
+    stdcxx::CReference<HvdcConverterStation> getConverterStation1() const;
 
-    stdcxx::Reference<HvdcConverterStation>& getConverterStation1();
+    stdcxx::Reference<HvdcConverterStation> getConverterStation1();
 
-    const stdcxx::Reference<HvdcConverterStation>& getConverterStation2() const;
+    stdcxx::CReference<HvdcConverterStation> getConverterStation2() const;
 
-    stdcxx::Reference<HvdcConverterStation>& getConverterStation2();
+    stdcxx::Reference<HvdcConverterStation> getConverterStation2();
 
     double getMaxP() const;
 

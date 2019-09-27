@@ -91,19 +91,19 @@ std::string getConvertersModeName(const HvdcLine::ConvertersMode& convertersMode
     return logging::toString(getConvertersModeNames(), convertersMode);
 }
 
-const stdcxx::Reference<HvdcConverterStation>& HvdcLine::getConverterStation1() const {
+stdcxx::CReference<HvdcConverterStation> HvdcLine::getConverterStation1() const {
+    return stdcxx::cref(m_converterStation1);
+}
+
+stdcxx::Reference<HvdcConverterStation> HvdcLine::getConverterStation1() {
     return m_converterStation1;
 }
 
-stdcxx::Reference<HvdcConverterStation>& HvdcLine::getConverterStation1() {
-    return m_converterStation1;
+stdcxx::CReference<HvdcConverterStation> HvdcLine::getConverterStation2() const {
+    return stdcxx::cref(m_converterStation2);
 }
 
-const stdcxx::Reference<HvdcConverterStation>& HvdcLine::getConverterStation2() const {
-    return m_converterStation2;
-}
-
-stdcxx::Reference<HvdcConverterStation>& HvdcLine::getConverterStation2() {
+stdcxx::Reference<HvdcConverterStation> HvdcLine::getConverterStation2() {
     return m_converterStation2;
 }
 

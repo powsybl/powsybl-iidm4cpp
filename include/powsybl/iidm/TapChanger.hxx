@@ -102,7 +102,7 @@ stdcxx::CReference<Terminal> TapChanger<H, C, S>::getRegulationTerminal() const 
 }
 
 template<typename H, typename C, typename S>
-stdcxx::Reference<Terminal>& TapChanger<H, C, S>::getRegulationTerminal() {
+stdcxx::Reference<Terminal> TapChanger<H, C, S>::getRegulationTerminal() {
     return m_regulationTerminal;
 }
 
