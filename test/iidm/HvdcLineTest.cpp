@@ -178,7 +178,12 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(11.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER, hvdc.getConvertersMode());
     BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation(HvdcLine::Side::ONE).get().getId());
+    BOOST_TEST(stdcxx::areSame(hvdc.getConverterStation1().get(), hvdc.getConverterStation(HvdcLine::Side::ONE).get()));
     BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation(HvdcLine::Side::TWO).get().getId());
+    BOOST_TEST(stdcxx::areSame(hvdc.getConverterStation2().get(), hvdc.getConverterStation(HvdcLine::Side::TWO).get()));
+    POWSYBL_ASSERT_THROW(hvdc.getConverterStation(static_cast<HvdcLine::Side>(5)), AssertionError, "Unexpected Side value: 5");
     BOOST_CHECK_CLOSE(12.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(13.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(14.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
@@ -190,7 +195,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     HvdcLine& hvdc = network.getHvdcLine("HVDC1");
     BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
+    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation(HvdcLine::Side::ONE).get().getId());
+    BOOST_TEST(stdcxx::areSame(hvdc.getConverterStation1().get(), hvdc.getConverterStation(HvdcLine::Side::ONE).get()));
     BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation(HvdcLine::Side::TWO).get().getId());
+    BOOST_TEST(stdcxx::areSame(hvdc.getConverterStation2().get(), hvdc.getConverterStation(HvdcLine::Side::TWO).get()));
+    POWSYBL_ASSERT_THROW(hvdc.getConverterStation(static_cast<HvdcLine::Side>(6)), AssertionError, "Unexpected Side value: 6");
     BOOST_TEST(stdcxx::areSame(network, hvdc.getNetwork()));
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setActivePowerSetpoint(100.0)));

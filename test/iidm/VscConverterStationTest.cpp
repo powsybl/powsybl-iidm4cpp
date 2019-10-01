@@ -9,6 +9,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -75,6 +76,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     std::ostringstream oss;
     oss << vsc.getType();
     BOOST_CHECK_EQUAL("HVDC_CONVERTER_STATION", oss.str());
+    BOOST_TEST(stdcxx::areSame(network.getHvdcLine("HVDC2"), hvdc.getHvdcLine().get()));
+    BOOST_TEST(stdcxx::areSame(network.getHvdcLine("HVDC2"), vsc.getHvdcLine().get()));
     BOOST_CHECK_EQUAL(hvdc.getType(), vsc.getType());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
     POWSYBL_ASSERT_ENUM_EQ(vsc.getHvdcType(), hvdc.getHvdcType());
@@ -83,6 +86,12 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(vsc.isVoltageRegulatorOn());
+
+    //test const version
+    const auto& cHvdc = hvdc;
+    const auto& cVsc = vsc;
+    BOOST_TEST(stdcxx::areSame(network.getHvdcLine("HVDC2"), cHvdc.getHvdcLine().get()));
+    BOOST_TEST(stdcxx::areSame(network.getHvdcLine("HVDC2"), cVsc.getHvdcLine().get()));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
@@ -119,7 +128,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(400.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
 
-    vsc.remove();
+    POWSYBL_ASSERT_THROW(vsc.remove(), ValidationException, "vscConverterStation 'VSC1': Impossible to remove this converter station (still attached to 'HVDC2')");
+    vsc.getHvdcLine().get().remove();
+    BOOST_CHECK_NO_THROW(vsc.remove());
     POWSYBL_ASSERT_THROW(network.getVscConverterStation("VSC1"), PowsyblException, "Unable to find to the identifiable 'VSC1'");
 }
 

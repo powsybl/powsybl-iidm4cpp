@@ -7,6 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -62,12 +63,20 @@ BOOST_AUTO_TEST_CASE(constructor) {
     std::ostringstream oss;
     oss << lcc.getType();
     BOOST_CHECK_EQUAL("HVDC_CONVERTER_STATION", oss.str());
+    BOOST_TEST(stdcxx::areSame(network.getHvdcLine("HVDC1"), hvdc.getHvdcLine().get()));
+    BOOST_TEST(stdcxx::areSame(network.getHvdcLine("HVDC1"), lcc.getHvdcLine().get()));
     BOOST_CHECK_EQUAL(hvdc.getType(), lcc.getType());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::LCC, lcc.getHvdcType());
     POWSYBL_ASSERT_ENUM_EQ(lcc.getHvdcType(), hvdc.getHvdcType());
     BOOST_CHECK_CLOSE(1.0, lcc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(lcc.getLossFactor(), hvdc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, lcc.getPowerFactor(), std::numeric_limits<double>::epsilon());
+
+    //test const version
+    const auto& cHvdc = hvdc;
+    const auto& cLcc = lcc;
+    BOOST_TEST(stdcxx::areSame(network.getHvdcLine("HVDC1"), cHvdc.getHvdcLine().get()));
+    BOOST_TEST(stdcxx::areSame(network.getHvdcLine("HVDC1"), cLcc.getHvdcLine().get()));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
@@ -88,7 +97,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(400.0, lcc.getPowerFactor(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(lcc.setPowerFactor(stdcxx::nan()), ValidationException, "lccConverterStation 'LCC1': power factor is invalid");
 
-    lcc.remove();
+    POWSYBL_ASSERT_THROW(lcc.remove(), ValidationException, "lccConverterStation 'LCC1': Impossible to remove this converter station (still attached to 'HVDC1')");
+    lcc.getHvdcLine().get().remove();
+    BOOST_CHECK_NO_THROW(lcc.remove());
     POWSYBL_ASSERT_THROW(network.getLccConverterStation("LCC1"), PowsyblException, "Unable to find to the identifiable 'LCC1'");
 }
 

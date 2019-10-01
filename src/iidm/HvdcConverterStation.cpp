@@ -16,11 +16,34 @@ namespace iidm {
 HvdcConverterStation::HvdcConverterStation(const std::string& id, const std::string& name, double lossFactor) :
     Injection(id, name, ConnectableType::HVDC_CONVERTER_STATION),
     m_lossFactor(checkLossFactor(*this, lossFactor)) {
+}
 
+stdcxx::CReference<HvdcLine> HvdcConverterStation::getHvdcLine() const {
+    return stdcxx::cref(m_hvdcLine);
+}
+
+stdcxx::Reference<HvdcLine> HvdcConverterStation::getHvdcLine() {
+    return m_hvdcLine;
 }
 
 double HvdcConverterStation::getLossFactor() const {
     return m_lossFactor;
+}
+
+void HvdcConverterStation::remove() {
+    if (static_cast<bool>(m_hvdcLine)) {
+        throw ValidationException(*this, logging::format("Impossible to remove this converter station (still attached to '%1%')", m_hvdcLine.get().getId()));
+    }
+    Injection::remove();
+}
+
+void HvdcConverterStation::resetHvdcLine() {
+    m_hvdcLine.reset();
+}
+
+HvdcConverterStation& HvdcConverterStation::setHvdcLine(HvdcLine& hvdcLine) {
+    m_hvdcLine = stdcxx::ref<HvdcLine>(hvdcLine);
+    return *this;
 }
 
 void HvdcConverterStation::setLossFactor(double lossFactor) {

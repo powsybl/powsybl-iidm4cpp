@@ -20,8 +20,8 @@ HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& n
                    const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2) :
     Identifiable(id, name),
     m_network(network),
-    m_converterStation1(converterStation1),
-    m_converterStation2(converterStation2),
+    m_converterStation1(attach(converterStation1)),
+    m_converterStation2(attach(converterStation2)),
     m_r(checkR(*this, r)),
     m_nominalVoltage(checkNominalVoltage(*this, nominalVoltage)),
     m_maxP(checkMaxP(*this, maxP)),
@@ -34,6 +34,10 @@ void HvdcLine::allocateVariantArrayElement(const std::set<unsigned long>& indexe
         m_convertersMode[index] = m_convertersMode[sourceIndex];
         m_activePowerSetpoint[index] = m_activePowerSetpoint[sourceIndex];
     }
+}
+
+HvdcConverterStation& HvdcLine::attach(HvdcConverterStation& converterStation) {
+    return converterStation.setHvdcLine(*this);
 }
 
 void HvdcLine::deleteVariantArrayElement(unsigned long /*index*/) {
@@ -51,6 +55,23 @@ double HvdcLine::getActivePowerSetpoint() const {
 
 const HvdcLine::ConvertersMode& HvdcLine::getConvertersMode() const {
     return m_convertersMode.at(getNetwork().getVariantIndex());
+}
+
+stdcxx::CReference<HvdcConverterStation> HvdcLine::getConverterStation(Side side) const {
+    switch (side) {
+        case Side::ONE:
+            return getConverterStation1();
+
+        case Side::TWO:
+            return getConverterStation2();
+
+        default:
+            throw AssertionError(logging::format("Unexpected side value: %1%", side));
+    }
+}
+
+stdcxx::Reference<HvdcConverterStation> HvdcLine::getConverterStation(Side side) {
+    return stdcxx::ref(static_cast<const HvdcLine*>(this)->getConverterStation(side));
 }
 
 stdcxx::CReference<HvdcConverterStation> HvdcLine::getConverterStation1() const {
@@ -101,6 +122,12 @@ void HvdcLine::reduceVariantArraySize(unsigned long number) {
 }
 
 void HvdcLine::remove() {
+    // Detach converter stations
+    m_converterStation1.get().resetHvdcLine();
+    m_converterStation2.get().resetHvdcLine();
+    m_converterStation1.reset();
+    m_converterStation2.reset();
+
     getNetwork().remove(*this);
 }
 
@@ -138,9 +165,18 @@ namespace Enum {
 
 template <>
 const std::initializer_list<std::string>& getNames<HvdcLine::ConvertersMode>() {
-    static std::initializer_list<std::string> s_sideNames {
+    static std::initializer_list<std::string> s_convertersModeNames {
         "SIDE_1_RECTIFIER_SIDE_2_INVERTER",
         "SIDE_1_INVERTER_SIDE_2_RECTIFIER"
+    };
+    return s_convertersModeNames;
+}
+
+template <>
+const std::initializer_list<std::string>& getNames<HvdcLine::Side>() {
+    static std::initializer_list<std::string> s_sideNames {
+        "ONE",
+        "TWO"
     };
     return s_sideNames;
 }

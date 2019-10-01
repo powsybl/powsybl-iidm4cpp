@@ -14,6 +14,8 @@ namespace powsybl {
 
 namespace iidm {
 
+class HvdcLine;
+
 class HvdcConverterStation : public Injection {
 public:
     enum class HvdcType {
@@ -24,9 +26,15 @@ public:
 public:
     ~HvdcConverterStation() noexcept override = default;
 
+    stdcxx::CReference<HvdcLine> getHvdcLine() const;
+
+    stdcxx::Reference<HvdcLine> getHvdcLine();
+
     virtual HvdcType getHvdcType() const = 0;
 
     double getLossFactor() const;
+
+    void remove() override;
 
 protected:
     HvdcConverterStation(const std::string& id, const std::string& name, double lossFactor);
@@ -34,6 +42,15 @@ protected:
     void setLossFactor(double lossFactor);
 
 private:
+    void resetHvdcLine();
+
+    HvdcConverterStation& setHvdcLine(HvdcLine& hvdcLine);
+
+    friend class HvdcLine;
+
+private:
+    stdcxx::Reference<HvdcLine> m_hvdcLine;
+
     double m_lossFactor;
 };
 

@@ -8,6 +8,7 @@
 #include "NetworkFactory.hpp"
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/HvdcLineAdder.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
@@ -61,6 +62,70 @@ Network createHvdcConverterStationTestNetwork() {
         .setVoltageRegulatorOn(true)
         .setVoltageSetpoint(4.0)
         .setReactivePowerSetpoint(5.0)
+        .add();
+
+    Substation& substation2 = network.newSubstation()
+        .setId("S2")
+        .setName("S2_NAME")
+        .setCountry(Country::FR)
+        .setTso("TSO")
+        .add();
+
+    VoltageLevel& vl2 = substation2.newVoltageLevel()
+        .setId("VL2")
+        .setName("VL2_NAME")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalVoltage(380.0)
+        .setLowVoltageLimit(340.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    Bus& vl2Bus1 = vl2.getBusBreakerView().newBus()
+        .setId("VL2_BUS1")
+        .add();
+
+    vl2.newLccConverterStation()
+        .setId("LCC2")
+        .setName("LCC2_NAME")
+        .setBus(vl2Bus1.getId())
+        .setConnectableBus(vl2Bus1.getId())
+        .setLossFactor(6.0)
+        .setPowerFactor(7.0)
+        .add();
+
+    vl2.newVscConverterStation()
+        .setId("VSC2")
+        .setName("VSC2_NAME")
+        .setBus(vl2Bus1.getId())
+        .setConnectableBus(vl2Bus1.getId())
+        .setLossFactor(8.0)
+        .setVoltageRegulatorOn(true)
+        .setVoltageSetpoint(9.0)
+        .setReactivePowerSetpoint(10.0)
+        .add();
+
+    network.newHvdcLine()
+        .setId("HVDC1")
+        .setName("HVDC1_NAME")
+        .setActivePowerSetpoint(11.0)
+        .setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER)
+        .setConverterStationId1("LCC1")
+        .setConverterStationId2("LCC2")
+        .setMaxP(12.0)
+        .setNominalVoltage(13.0)
+        .setR(14.0)
+        .add();
+
+    network.newHvdcLine()
+        .setId("HVDC2")
+        .setName("HVDC2_NAME")
+        .setActivePowerSetpoint(15.0)
+        .setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER)
+        .setConverterStationId1("VSC1")
+        .setConverterStationId2("VSC2")
+        .setMaxP(16.0)
+        .setNominalVoltage(17.0)
+        .setR(18.0)
         .add();
 
     return network;
