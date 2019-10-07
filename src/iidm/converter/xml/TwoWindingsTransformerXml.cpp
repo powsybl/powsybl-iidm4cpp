@@ -43,8 +43,8 @@ TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(Two
         .setRatedU2(ratedU2);
     readNodeOrBus(adder, context);
     TwoWindingsTransformer& twt = adder.add();
-    readPQ(1, twt.getTerminal1(), context.getReader());
-    readPQ(2, twt.getTerminal2(), context.getReader());
+    readPQ(twt.getTerminal1(), context.getReader(), 1);
+    readPQ(twt.getTerminal2(), context.getReader(), 2);
     return twt;
 }
 
@@ -52,10 +52,10 @@ void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, Net
     context.getReader().readUntilEndElement(TWO_WINDINGS_TRANSFORMER, [this, &twt, &context]() {
         if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
             CurrentLimitsAdder<Branch::Side, Branch> adder = twt.newCurrentLimits1();
-            readCurrentLimits(1, adder, context.getReader());
+            readCurrentLimits(adder, context.getReader(), 1);
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
             CurrentLimitsAdder<Branch::Side, Branch> adder = twt.newCurrentLimits2();
-            readCurrentLimits(2, adder, context.getReader());
+            readCurrentLimits(adder, context.getReader(), 2);
         } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER) {
             readRatioTapChanger(twt, context);
         } else if (context.getReader().getLocalName() == PHASE_TAP_CHANGER) {
@@ -73,11 +73,11 @@ void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTran
     context.getWriter().writeAttribute(B, twt.getB());
     context.getWriter().writeAttribute(RATED_U1, twt.getRatedU1());
     context.getWriter().writeAttribute(RATED_U2, twt.getRatedU2());
-    writeNodeOrBus(1, twt.getTerminal1(), context);
-    writeNodeOrBus(2, twt.getTerminal2(), context);
+    writeNodeOrBus(twt.getTerminal1(), context, 1);
+    writeNodeOrBus(twt.getTerminal2(), context, 2);
     if (context.getOptions().isWithBranchSV()) {
-        writePQ(1, twt.getTerminal1(), context.getWriter());
-        writePQ(2, twt.getTerminal2(), context.getWriter());
+        writePQ(twt.getTerminal1(), context.getWriter(), 1);
+        writePQ(twt.getTerminal2(), context.getWriter(), 2);
     }
 }
 
@@ -91,10 +91,10 @@ void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& t
         writePhaseTapChanger(PHASE_TAP_CHANGER, ptc, context);
     }
     if (twt.getCurrentLimits1()) {
-        writeCurrentLimits(1, twt.getCurrentLimits1(), context.getWriter());
+        writeCurrentLimits(twt.getCurrentLimits1(), context.getWriter(), 1);
     }
     if (twt.getCurrentLimits2()) {
-        writeCurrentLimits(2, twt.getCurrentLimits2(), context.getWriter());
+        writeCurrentLimits(twt.getCurrentLimits2(), context.getWriter(), 2);
     }
 }
 

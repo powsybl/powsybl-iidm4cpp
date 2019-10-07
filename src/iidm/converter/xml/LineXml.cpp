@@ -43,8 +43,8 @@ Line& LineXml::readRootElementAttributes(LineAdder& adder, NetworkXmlReaderConte
         .setB2(b2);
     readNodeOrBus(adder, context);
     Line& line = adder.add();
-    readPQ(1, line.getTerminal1(), context.getReader());
-    readPQ(2, line.getTerminal2(), context.getReader());
+    readPQ(line.getTerminal1(), context.getReader(), 1);
+    readPQ(line.getTerminal2(), context.getReader(), 2);
     return line;
 }
 
@@ -52,10 +52,10 @@ void LineXml::readSubElements(Line& line, NetworkXmlReaderContext& context) cons
     context.getReader().readUntilEndElement(LINE, [this, &line, &context]() {
         if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
             CurrentLimitsAdder<Branch::Side, Branch> adder = line.newCurrentLimits1();
-            readCurrentLimits(1, adder, context.getReader());
+            readCurrentLimits(adder, context.getReader(), 1);
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
             CurrentLimitsAdder<Branch::Side, Branch> adder = line.newCurrentLimits2();
-            readCurrentLimits(2, adder, context.getReader());
+            readCurrentLimits(adder, context.getReader(), 2);
         } else {
             AbstractIdentifiableXml::readSubElements(line, context);
         }
@@ -69,20 +69,20 @@ void LineXml::writeRootElementAttributes(const Line& line, const Network& /*netw
     context.getWriter().writeAttribute(B1, line.getB1());
     context.getWriter().writeAttribute(G2, line.getG2());
     context.getWriter().writeAttribute(B2, line.getB2());
-    writeNodeOrBus(1, line.getTerminal1(), context);
-    writeNodeOrBus(2, line.getTerminal2(), context);
+    writeNodeOrBus(line.getTerminal1(), context, 1);
+    writeNodeOrBus(line.getTerminal2(), context, 2);
     if (context.getOptions().isWithBranchSV()) {
-        writePQ(1, line.getTerminal1(), context.getWriter());
-        writePQ(2, line.getTerminal2(), context.getWriter());
+        writePQ(line.getTerminal1(), context.getWriter(), 1);
+        writePQ(line.getTerminal2(), context.getWriter(), 2);
     }
 }
 
 void LineXml::writeSubElements(const Line& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     if (line.getCurrentLimits1()) {
-        writeCurrentLimits(1, line.getCurrentLimits1(), context.getWriter());
+        writeCurrentLimits(line.getCurrentLimits1(), context.getWriter(), 1);
     }
     if (line.getCurrentLimits2()) {
-        writeCurrentLimits(2, line.getCurrentLimits2(), context.getWriter());
+        writeCurrentLimits(line.getCurrentLimits2(), context.getWriter(), 2);
     }
 }
 

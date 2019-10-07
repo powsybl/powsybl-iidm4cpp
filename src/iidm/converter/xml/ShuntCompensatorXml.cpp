@@ -39,7 +39,7 @@ ShuntCompensator& ShuntCompensatorXml::readRootElementAttributes(ShuntCompensato
         .setCurrentSectionCount(currentSectionCount);
     readNodeOrBus(adder, context);
     ShuntCompensator& sc = adder.add();
-    readPQ(boost::optional<int>(), sc.getTerminal(), context.getReader());
+    readPQ(sc.getTerminal(), context.getReader());
     return sc;
 }
 
@@ -53,8 +53,8 @@ void ShuntCompensatorXml::writeRootElementAttributes(const ShuntCompensator& shu
     context.getWriter().writeAttribute(B_PER_SECTION, shuntCompensator.getbPerSection());
     context.getWriter().writeAttribute(MAXIMUM_SECTION_COUNT, shuntCompensator.getMaximumSectionCount());
     context.getWriter().writeAttribute(CURRENT_SECTION_COUNT, shuntCompensator.getCurrentSectionCount());
-    writeNodeOrBus(boost::optional<int>(), shuntCompensator.getTerminal(), context);
-    writePQ(boost::optional<int>(), shuntCompensator.getTerminal(), context.getWriter());
+    writeNodeOrBus(shuntCompensator.getTerminal(), context);
+    writePQ(shuntCompensator.getTerminal(), context.getWriter());
 }
 
 }  // namespace xml

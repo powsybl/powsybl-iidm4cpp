@@ -57,8 +57,8 @@ TieLine& TieLineXml::readRootElementAttributes(TieLineAdder& adder, NetworkXmlRe
     readNodeOrBus(adder, context);
     const std::string& ucteXnodeCode = context.getReader().getOptionalAttributeValue(UCTE_XNODE_CODE, "");
     TieLine& tl  = adder.setUcteXnodeCode(ucteXnodeCode).add();
-    readPQ(1, tl.getTerminal1(), context.getReader());
-    readPQ(2, tl.getTerminal2(), context.getReader());
+    readPQ(tl.getTerminal1(), context.getReader(), 1);
+    readPQ(tl.getTerminal2(), context.getReader(), 2);
     return tl;
 }
 
@@ -66,10 +66,10 @@ void TieLineXml::readSubElements(TieLine& line, NetworkXmlReaderContext& context
     context.getReader().readUntilEndElement(TIE_LINE, [this, &line, &context]() {
         if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
             CurrentLimitsAdder<Branch::Side, Branch> adder = line.newCurrentLimits1();
-            readCurrentLimits(1, adder, context.getReader());
+            readCurrentLimits(adder, context.getReader(), 1);
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
             CurrentLimitsAdder<Branch::Side, Branch> adder = line.newCurrentLimits2();
-            readCurrentLimits(2, adder, context.getReader());
+            readCurrentLimits(adder, context.getReader(), 2);
         } else {
             AbstractIdentifiableXml::readSubElements(line, context);
         }
@@ -93,11 +93,11 @@ void TieLineXml::writeHalf(const TieLine::HalfLine& halfLine, NetworkXmlWriterCo
 
 void TieLineXml::writeRootElementAttributes(const TieLine& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(UCTE_XNODE_CODE, line.getUcteXnodeCode());
-    writeNodeOrBus(1, line.getTerminal1(), context);
-    writeNodeOrBus(2, line.getTerminal2(), context);
+    writeNodeOrBus(line.getTerminal1(), context, 1);
+    writeNodeOrBus(line.getTerminal2(), context, 2);
     if (context.getOptions().isWithBranchSV()) {
-        writePQ(1, line.getTerminal1(), context.getWriter());
-        writePQ(2, line.getTerminal2(), context.getWriter());
+        writePQ(line.getTerminal1(), context.getWriter(), 1);
+        writePQ(line.getTerminal2(), context.getWriter(), 2);
     }
     writeHalf(line.getHalf1(), context, 1);
     writeHalf(line.getHalf2(), context, 2);
@@ -105,10 +105,10 @@ void TieLineXml::writeRootElementAttributes(const TieLine& line, const Network& 
 
 void TieLineXml::writeSubElements(const TieLine& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     if (line.getCurrentLimits1()) {
-        writeCurrentLimits(1, line.getCurrentLimits1(), context.getWriter());
+        writeCurrentLimits(line.getCurrentLimits1(), context.getWriter(), 1);
     }
     if (line.getCurrentLimits2()) {
-        writeCurrentLimits(2, line.getCurrentLimits2(), context.getWriter());
+        writeCurrentLimits(line.getCurrentLimits2(), context.getWriter(), 2);
     }
 }
 

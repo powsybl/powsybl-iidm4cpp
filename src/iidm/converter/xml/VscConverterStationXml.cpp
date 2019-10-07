@@ -42,7 +42,7 @@ VscConverterStation& VscConverterStationXml::readRootElementAttributes(VscConver
         .setVoltageSetpoint(voltageSetpoint)
         .setReactivePowerSetpoint(reactivePowerSetpoint)
         .add();
-    readPQ(boost::optional<int>(), converterStation.getTerminal(), context.getReader());
+    readPQ(converterStation.getTerminal(), context.getReader());
     return converterStation;
 }
 
@@ -62,8 +62,8 @@ void VscConverterStationXml::writeRootElementAttributes(const VscConverterStatio
     context.getWriter().writeAttribute(LOSS_FACTOR, converterStation.getLossFactor());
     context.getWriter().writeAttribute(VOLTAGE_SETPOINT, converterStation.getVoltageSetpoint());
     context.getWriter().writeAttribute(REACTIVE_POWER_SETPOINT, converterStation.getReactivePowerSetpoint());
-    writeNodeOrBus(boost::optional<int>(), converterStation.getTerminal(), context);
-    writePQ(boost::optional<int>(), converterStation.getTerminal(), context.getWriter());
+    writeNodeOrBus(converterStation.getTerminal(), context);
+    writePQ(converterStation.getTerminal(), context.getWriter());
 }
 
 void VscConverterStationXml::writeSubElements(const VscConverterStation& converterStation, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {

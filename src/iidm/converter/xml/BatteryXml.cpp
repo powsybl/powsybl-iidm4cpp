@@ -41,7 +41,7 @@ Battery& BatteryXml::readRootElementAttributes(BatteryAdder& adder, NetworkXmlRe
         .setMinP(minP)
         .setMaxP(maxP)
         .add();
-    readPQ(boost::optional<int>(), battery.getTerminal(), context.getReader());
+    readPQ(battery.getTerminal(), context.getReader());
     return battery;
 }
 
@@ -61,8 +61,8 @@ void BatteryXml::writeRootElementAttributes(const Battery& battery, const Voltag
     context.getWriter().writeAttribute(Q0, battery.getQ0());
     context.getWriter().writeAttribute(MIN_P, battery.getMinP());
     context.getWriter().writeAttribute(MAX_P, battery.getMaxP());
-    writeNodeOrBus(boost::optional<int>(), battery.getTerminal(), context);
-    writePQ(boost::optional<int>(), battery.getTerminal(), context.getWriter());
+    writeNodeOrBus(battery.getTerminal(), context);
+    writePQ(battery.getTerminal(), context.getWriter());
 }
 
 void BatteryXml::writeSubElements(const Battery& battery, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {

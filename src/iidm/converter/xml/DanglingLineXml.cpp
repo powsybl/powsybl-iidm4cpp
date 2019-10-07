@@ -45,7 +45,7 @@ DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adde
         .setB(b)
         .setUcteXnodeCode(ucteXnodeCode)
         .add();
-    readPQ(boost::optional<int>(), dl.getTerminal(), context.getReader());
+    readPQ(dl.getTerminal(), context.getReader());
     return dl;
 }
 
@@ -53,7 +53,7 @@ void DanglingLineXml::readSubElements(DanglingLine& line, NetworkXmlReaderContex
     context.getReader().readUntilEndElement(DANGLING_LINE, [this, &line, &context]() {
         if (context.getReader().getLocalName() == CURRENT_LIMITS) {
             CurrentLimitsAdder<std::nullptr_t, DanglingLine> adder = line.newCurrentLimits();
-            readCurrentLimits(boost::optional<int>(), adder, context.getReader());
+            readCurrentLimits(adder, context.getReader());
         } else {
             AbstractIdentifiableXml::readSubElements(line, context);
         }
@@ -70,13 +70,13 @@ void DanglingLineXml::writeRootElementAttributes(const DanglingLine& line, const
     if (!line.getUcteXnodeCode().empty()) {
         context.getWriter().writeAttribute(UCTE_XNODE_CODE, line.getUcteXnodeCode());
     }
-    writeNodeOrBus(boost::optional<int>(), line.getTerminal(), context);
-    writePQ(boost::optional<int>(), line.getTerminal(), context.getWriter());
+    writeNodeOrBus(line.getTerminal(), context);
+    writePQ(line.getTerminal(), context.getWriter());
 }
 
 void DanglingLineXml::writeSubElements(const DanglingLine& line, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     if (line.getCurrentLimits()) {
-        writeCurrentLimits(boost::optional<int>(), line.getCurrentLimits(), context.getWriter());
+        writeCurrentLimits(line.getCurrentLimits(), context.getWriter());
     }
 }
 

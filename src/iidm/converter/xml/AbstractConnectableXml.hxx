@@ -21,7 +21,7 @@ namespace xml {
 
 template <typename T, typename A, typename P>
 template <typename S, typename O>
-void AbstractConnectableXml<T, A, P>::readCurrentLimits(const boost::optional<int>& index, CurrentLimitsAdder<S,O>& adder, const powsybl::xml::XmlStreamReader& reader) {
+void AbstractConnectableXml<T, A, P>::readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
     const double& permanentLimit = reader.getOptionalAttributeValue(PERMANENT_LIMIT, stdcxx::nan());
     adder.setPermanentLimit(permanentLimit);
     reader.readUntilEndElement(toString(CURRENT_LIMITS, index), [&adder, &reader]() {
@@ -110,7 +110,7 @@ void AbstractConnectableXml<T, A, P>::readNodeOrBus(int index, ThreeWindingsTran
 }
 
 template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::readPQ(const boost::optional<int>& index, Terminal& terminal, const powsybl::xml::XmlStreamReader& reader) {
+void AbstractConnectableXml<T, A, P>::readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
     const double& p = reader.getOptionalAttributeValue(toString(converter::P, index), stdcxx::nan());
     const double& q = reader.getOptionalAttributeValue(toString(Q, index), stdcxx::nan());
     terminal.setP(p).setQ(q);
@@ -126,7 +126,7 @@ std::string AbstractConnectableXml<T, A, P>::toString(const char* string, const 
 }
 
 template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeBus(const boost::optional<int>& index, const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context) {
+void AbstractConnectableXml<T, A, P>::writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
     if (bus) {
         context.getWriter().writeAttribute(toString(BUS, index), context.getAnonymizer().anonymizeString(bus.get().getId()));
     }
@@ -136,12 +136,7 @@ void AbstractConnectableXml<T, A, P>::writeBus(const boost::optional<int>& index
 }
 
 template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeCurrentLimits(const boost::optional<int>& index, const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer) {
-    writeCurrentLimits(index, limits, writer, IIDM_PREFIX);
-}
-
-template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeCurrentLimits(const boost::optional<int>& index, const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix) {
+void AbstractConnectableXml<T, A, P>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index, const std::string& nsPrefix) {
     if (!std::isnan(limits.getPermanentLimit()) || !limits.getTemporaryLimits().empty()) {
         writer.writeStartElement(nsPrefix, toString(CURRENT_LIMITS, index));
         writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
@@ -160,22 +155,22 @@ void AbstractConnectableXml<T, A, P>::writeCurrentLimits(const boost::optional<i
 }
 
 template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeNode(const boost::optional<int>& index, const Terminal& terminal, NetworkXmlWriterContext& context) {
+void AbstractConnectableXml<T, A, P>::writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
     context.getWriter().writeAttribute(toString(NODE, index), terminal.getNodeBreakerView().getNode());
 }
 
 template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeNodeOrBus(const boost::optional<int>& index, const Terminal& terminal, NetworkXmlWriterContext& context) {
+void AbstractConnectableXml<T, A, P>::writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
     const TopologyLevel& topologyLevel = getMinTopologyLevel(terminal.getVoltageLevel().getTopologyKind(), context.getOptions().getTopologyLevel());
     switch (topologyLevel) {
         case TopologyLevel::NODE_BREAKER:
-            writeNode(index, terminal, context);
+            writeNode(terminal, context, index);
             break;
         case TopologyLevel::BUS_BREAKER:
-            writeBus(index, terminal.getBusBreakerView().getBus(), terminal.getBusBreakerView().getConnectableBus(), context);
+            writeBus(terminal.getBusBreakerView().getBus(), terminal.getBusBreakerView().getConnectableBus(), context, index);
             break;
         case TopologyLevel::BUS_BRANCH:
-            writeBus(index, terminal.getBusView().getBus(), terminal.getBusView().getConnectableBus(), context);
+            writeBus(terminal.getBusView().getBus(), terminal.getBusView().getConnectableBus(), context, index);
             break;
         default:
             throw powsybl::xml::XmlStreamException(logging::format("Unexpected TopologyLevel value: ", topologyLevel));
@@ -187,11 +182,10 @@ void AbstractConnectableXml<T, A, P>::writeNodeOrBus(const boost::optional<int>&
 }
 
 template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writePQ(const boost::optional<int>& index, const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer) {
+void AbstractConnectableXml<T, A, P>::writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index) {
     writer.writeOptionalAttribute(toString(converter::P, index), terminal.getP());
     writer.writeOptionalAttribute(toString(Q, index), terminal.getQ());
 }
-
 }  // namespace xml
 
 }  // namespace converter

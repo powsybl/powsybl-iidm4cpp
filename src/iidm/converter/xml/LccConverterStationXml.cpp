@@ -36,7 +36,7 @@ LccConverterStation& LccConverterStationXml::readRootElementAttributes(LccConver
         .setLossFactor(lossFactor)
         .setPowerFactor(powerFactor)
         .add();
-    readPQ(boost::optional<int>(), converterStation.getTerminal(), context.getReader());
+    readPQ(converterStation.getTerminal(), context.getReader());
     return converterStation;
 }
 
@@ -49,8 +49,8 @@ void LccConverterStationXml::readSubElements(LccConverterStation& converterStati
 void LccConverterStationXml::writeRootElementAttributes(const LccConverterStation& converterStation, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(LOSS_FACTOR, converterStation.getLossFactor());
     context.getWriter().writeOptionalAttribute(POWER_FACTOR, converterStation.getPowerFactor());
-    writeNodeOrBus(boost::optional<int>(), converterStation.getTerminal(), context);
-    writePQ(boost::optional<int>(), converterStation.getTerminal(), context.getWriter());
+    writeNodeOrBus(converterStation.getTerminal(), context);
+    writePQ(converterStation.getTerminal(), context.getWriter());
 }
 
 }  // namespace xml

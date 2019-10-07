@@ -55,7 +55,7 @@ Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdde
         .setTargetQ(targetQ)
         .add();
 
-    readPQ(boost::optional<int>(), generator.getTerminal(), context.getReader());
+    readPQ(generator.getTerminal(), context.getReader());
     return generator;
 }
 
@@ -85,8 +85,8 @@ void GeneratorXml::writeRootElementAttributes(const Generator& generator, const 
     context.getWriter().writeAttribute(TARGET_P, generator.getTargetP());
     context.getWriter().writeOptionalAttribute(TARGET_V, generator.getTargetV());
     context.getWriter().writeOptionalAttribute(TARGET_Q, generator.getTargetQ());
-    writeNodeOrBus(boost::optional<int>(), generator.getTerminal(), context);
-    writePQ(boost::optional<int>(), generator.getTerminal(), context.getWriter());
+    writeNodeOrBus(generator.getTerminal(), context);
+    writePQ(generator.getTerminal(), context.getWriter());
 }
 
 void GeneratorXml::writeSubElements(const Generator& generator, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {

@@ -41,7 +41,7 @@ StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticV
             .setRegulationMode(regulationMode);
     readNodeOrBus(adder, context);
     StaticVarCompensator& svc = adder.add();
-    readPQ(boost::optional<int>(), svc.getTerminal(), context.getReader());
+    readPQ(svc.getTerminal(), context.getReader());
     return svc;
 }
 
@@ -57,8 +57,8 @@ void StaticVarCompensatorXml::writeRootElementAttributes(const StaticVarCompensa
     context.getWriter().writeAttribute(VOLTAGE_SET_POINT, svc.getVoltageSetpoint());
     context.getWriter().writeAttribute(REACTIVE_POWER_SET_POINT, svc.getReactivePowerSetpoint());
     context.getWriter().writeAttribute(REGULATION_MODE, StaticVarCompensator::getRegulationModeName(svc.getRegulationMode()));
-    writeNodeOrBus(boost::optional<int>(), svc.getTerminal(), context);
-    writePQ(boost::optional<int>(), svc.getTerminal(), context.getWriter());
+    writeNodeOrBus(svc.getTerminal(), context);
+    writePQ(svc.getTerminal(), context.getWriter());
 }
 
 }  // namespace xml

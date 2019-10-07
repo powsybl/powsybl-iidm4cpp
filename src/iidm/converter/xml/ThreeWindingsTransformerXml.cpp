@@ -61,9 +61,9 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
     legAdder2.add();
     legAdder3.add();
     ThreeWindingsTransformer& twt = adder.add();
-    readPQ(1, twt.getLeg1().getTerminal(), context.getReader());
-    readPQ(2, twt.getLeg2().getTerminal(), context.getReader());
-    readPQ(3, twt.getLeg3().getTerminal(), context.getReader());
+    readPQ(twt.getLeg1().getTerminal(), context.getReader(), 1);
+    readPQ(twt.getLeg2().getTerminal(), context.getReader(), 2);
+    readPQ(twt.getLeg3().getTerminal(), context.getReader(), 3);
     return twt;
 }
 
@@ -71,13 +71,13 @@ void ThreeWindingsTransformerXml::readSubElements(ThreeWindingsTransformer& twt,
     context.getReader().readUntilEndElement(THREE_WINDINGS_TRANSFORMER, [this, &twt, &context]() {
         if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
             CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::LegBase<ThreeWindingsTransformer::Leg1> > adder = twt.getLeg1().newCurrentLimits();
-            readCurrentLimits(1, adder, context.getReader());
+            readCurrentLimits(adder, context.getReader(), 1);
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
             CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::LegBase<ThreeWindingsTransformer::Leg2or3> > adder = twt.getLeg2().newCurrentLimits();
-            readCurrentLimits(2, adder, context.getReader());
+            readCurrentLimits(adder, context.getReader(), 2);
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS3) {
             CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::LegBase<ThreeWindingsTransformer::Leg2or3> > adder = twt.getLeg3().newCurrentLimits();
-            readCurrentLimits(3, adder, context.getReader());
+            readCurrentLimits(adder, context.getReader(), 3);
         } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER2) {
             readRatioTapChanger(2, twt.getLeg2(), context);
         } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER3) {
@@ -100,13 +100,13 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
     context.getWriter().writeAttribute(R3, twt.getLeg3().getR());
     context.getWriter().writeAttribute(X3, twt.getLeg3().getX());
     context.getWriter().writeAttribute(RATED_U3, twt.getLeg3().getRatedU());
-    writeNodeOrBus(1, twt.getLeg1().getTerminal(), context);
-    writeNodeOrBus(2, twt.getLeg2().getTerminal(), context);
-    writeNodeOrBus(3, twt.getLeg3().getTerminal(), context);
+    writeNodeOrBus(twt.getLeg1().getTerminal(), context, 1);
+    writeNodeOrBus(twt.getLeg2().getTerminal(), context, 2);
+    writeNodeOrBus(twt.getLeg3().getTerminal(), context, 3);
     if (context.getOptions().isWithBranchSV()) {
-        writePQ(1, twt.getLeg1().getTerminal(), context.getWriter());
-        writePQ(2, twt.getLeg2().getTerminal(), context.getWriter());
-        writePQ(3, twt.getLeg3().getTerminal(), context.getWriter());
+        writePQ(twt.getLeg1().getTerminal(), context.getWriter(), 1);
+        writePQ(twt.getLeg2().getTerminal(), context.getWriter(), 2);
+        writePQ(twt.getLeg3().getTerminal(), context.getWriter(), 3);
     }
 }
 
@@ -120,13 +120,13 @@ void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransforme
         writeRatioTapChanger(RATIO_TAP_CHANGER3, rtc3, context);
     }
     if (twt.getLeg1().getCurrentLimits()) {
-        writeCurrentLimits(1, twt.getLeg1().getCurrentLimits(), context.getWriter());
+        writeCurrentLimits(twt.getLeg1().getCurrentLimits(), context.getWriter(), 1);
     }
     if (twt.getLeg2().getCurrentLimits()) {
-        writeCurrentLimits(2, twt.getLeg2().getCurrentLimits(), context.getWriter());
+        writeCurrentLimits(twt.getLeg2().getCurrentLimits(), context.getWriter(), 2);
     }
     if (twt.getLeg3().getCurrentLimits()) {
-        writeCurrentLimits(3, twt.getLeg3().getCurrentLimits(), context.getWriter());
+        writeCurrentLimits(twt.getLeg3().getCurrentLimits(), context.getWriter(), 3);
     }
 }
 
