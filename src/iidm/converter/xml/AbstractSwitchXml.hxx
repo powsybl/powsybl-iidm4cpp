@@ -23,11 +23,6 @@ const char* AbstractSwitchXml<A>::getRootElementName() const {
 }
 
 template <typename A>
-bool AbstractSwitchXml<A>::hasSubElements(const Switch& /*sw*/) const {
-    return false;
-}
-
-template <typename A>
 void AbstractSwitchXml<A>::readSubElements(Switch& sw, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(SWITCH, [this, &sw, &context]() {
         AbstractIdentifiableXml<Switch, A, VoltageLevel>::readSubElements(sw, context);

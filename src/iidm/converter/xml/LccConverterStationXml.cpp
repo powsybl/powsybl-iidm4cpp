@@ -28,10 +28,6 @@ const char* LccConverterStationXml::getRootElementName() const {
     return LCC_CONVERTER_STATION;
 }
 
-bool LccConverterStationXml::hasSubElements(const LccConverterStation& /*converterStation*/) const {
-    return false;
-}
-
 LccConverterStation& LccConverterStationXml::readRootElementAttributes(LccConverterStationAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& lossFactor = context.getReader().getAttributeValue<double>(LOSS_FACTOR);
     const double& powerFactor = context.getReader().getOptionalAttributeValue(POWER_FACTOR, stdcxx::nan());

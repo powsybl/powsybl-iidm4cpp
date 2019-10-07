@@ -31,8 +31,6 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    bool hasSubElements(const TieLine& line) const override;
-
     TieLine& readRootElementAttributes(TieLineAdder& adder, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(TieLine& line, NetworkXmlReaderContext& context) const override;

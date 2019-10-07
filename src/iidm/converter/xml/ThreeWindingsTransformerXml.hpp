@@ -30,8 +30,6 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    bool hasSubElements(const ThreeWindingsTransformer& twt) const override;
-
     ThreeWindingsTransformer& readRootElementAttributes(ThreeWindingsTransformerAdder& adder, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(ThreeWindingsTransformer& twt, NetworkXmlReaderContext& context) const override;

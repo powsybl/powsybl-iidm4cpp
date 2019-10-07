@@ -35,10 +35,6 @@ const char* GeneratorXml::getRootElementName() const {
     return GENERATOR;
 }
 
-bool GeneratorXml::hasSubElements(const Generator& /*generator*/) const {
-    return true;
-}
-
 Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdder, NetworkXmlReaderContext& context) const {
     EnergySource energySource = getEnergySource(context.getReader().getAttributeValue(ENERGY_SOURCE));
     const auto& minP = context.getReader().getAttributeValue<double>(MIN_P);

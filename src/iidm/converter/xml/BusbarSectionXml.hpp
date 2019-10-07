@@ -31,8 +31,6 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    bool hasSubElements(const BusbarSection& busbarSection) const override;
-
     BusbarSection& readRootElementAttributes(BusbarSectionAdder& adder, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(BusbarSection& busbarSection, NetworkXmlReaderContext& context) const override;

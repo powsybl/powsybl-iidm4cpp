@@ -28,10 +28,6 @@ const char* DanglingLineXml::getRootElementName() const  {
     return DANGLING_LINE;
 }
 
-bool DanglingLineXml::hasSubElements(const DanglingLine& line) const  {
-    return line.getCurrentLimits();
-}
-
 DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adder, NetworkXmlReaderContext& context) const  {
     const auto& p0 = context.getReader().getAttributeValue<double>(P0);
     const auto& q0 = context.getReader().getAttributeValue<double>(Q0);

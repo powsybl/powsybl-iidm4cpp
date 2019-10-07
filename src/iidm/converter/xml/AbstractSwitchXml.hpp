@@ -26,8 +26,6 @@ class AbstractSwitchXml : public AbstractIdentifiableXml<Switch, A, VoltageLevel
 public:  // AbstractIdentifiableXml
     const char* getRootElementName() const override;
 
-    bool hasSubElements(const Switch& sw) const override;
-
     void readSubElements(Switch& sw, NetworkXmlReaderContext& context) const override;
 
     void writeRootElementAttributes(const Switch& sw, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;

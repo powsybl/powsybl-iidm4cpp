@@ -30,10 +30,6 @@ const char* BusbarSectionXml::getRootElementName() const {
     return BUSBAR_SECTION;
 }
 
-bool BusbarSectionXml::hasSubElements(const BusbarSection& /*busbarSection*/) const {
-    return false;
-}
-
 BusbarSection& BusbarSectionXml::readRootElementAttributes(BusbarSectionAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& node = context.getReader().getAttributeValue<unsigned long>(NODE);
     double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());

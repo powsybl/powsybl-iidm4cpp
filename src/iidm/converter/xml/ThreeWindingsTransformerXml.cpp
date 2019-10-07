@@ -28,14 +28,6 @@ const char* ThreeWindingsTransformerXml::getRootElementName() const {
     return THREE_WINDINGS_TRANSFORMER;
 }
 
-bool ThreeWindingsTransformerXml::hasSubElements(const ThreeWindingsTransformer& twt) const {
-    return twt.getLeg2().getRatioTapChanger()
-           || twt.getLeg3().getRatioTapChanger()
-           || twt.getLeg1().getCurrentLimits()
-           || twt.getLeg2().getCurrentLimits()
-           || twt.getLeg3().getCurrentLimits();
-}
-
 ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes(ThreeWindingsTransformerAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& r1 = context.getReader().getAttributeValue<double>(R1);
     const auto& x1 = context.getReader().getAttributeValue<double>(X1);

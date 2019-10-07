@@ -31,8 +31,6 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    bool hasSubElements(const VscConverterStation& converterStation) const override;
-
     VscConverterStation& readRootElementAttributes(VscConverterStationAdder& adder, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(VscConverterStation& converterStation, NetworkXmlReaderContext& context) const override;

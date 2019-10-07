@@ -39,10 +39,6 @@ const char* SubstationXml::getRootElementName() const {
     return SUBSTATION;
 }
 
-bool SubstationXml::hasSubElements(const Substation& /*substation*/) const {
-    return true;
-}
-
 Substation& SubstationXml::readRootElementAttributes(SubstationAdder& adder, NetworkXmlReaderContext& context) const {
     const std::string& countryCode = context.getReader().getOptionalAttributeValue(COUNTRY, "");
     if (!countryCode.empty()) {

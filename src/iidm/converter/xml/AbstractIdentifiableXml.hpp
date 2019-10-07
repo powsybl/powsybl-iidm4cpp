@@ -35,8 +35,6 @@ protected:
 
     virtual const char* getRootElementName() const = 0;
 
-    virtual bool hasSubElements(const T& identifiable) const = 0;
-
     virtual T& readRootElementAttributes(A& adder, NetworkXmlReaderContext& context) const = 0;
 
     virtual void writeRootElementAttributes(const T& identifiable, const P& parent, NetworkXmlWriterContext& context) const = 0;

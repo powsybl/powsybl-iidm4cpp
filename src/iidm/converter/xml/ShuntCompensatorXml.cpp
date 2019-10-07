@@ -30,10 +30,6 @@ const char* ShuntCompensatorXml::getRootElementName() const {
     return SHUNT;
 }
 
-bool ShuntCompensatorXml::hasSubElements(const ShuntCompensator& /*shuntCompensator*/) const {
-    return false;
-}
-
 ShuntCompensator& ShuntCompensatorXml::readRootElementAttributes(ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const {
     auto bPerSection = context.getReader().getAttributeValue<double>(B_PER_SECTION);
     auto maximumSectionCount = context.getReader().getAttributeValue<unsigned long>(MAXIMUM_SECTION_COUNT);

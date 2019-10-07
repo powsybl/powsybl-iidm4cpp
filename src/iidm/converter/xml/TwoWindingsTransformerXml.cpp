@@ -28,13 +28,6 @@ const char* TwoWindingsTransformerXml::getRootElementName() const {
     return TWO_WINDINGS_TRANSFORMER;
 }
 
-bool TwoWindingsTransformerXml::hasSubElements(const TwoWindingsTransformer& twt) const {
-    return twt.getRatioTapChanger()
-           || twt.getPhaseTapChanger()
-           || twt.getCurrentLimits1()
-           || twt.getCurrentLimits2();
-}
-
 TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(TwoWindingsTransformerAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);

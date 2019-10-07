@@ -47,10 +47,6 @@ const char* VoltageLevelXml::getRootElementName() const {
     return VOLTAGE_LEVEL;
 }
 
-bool VoltageLevelXml::hasSubElements(const VoltageLevel& /*voltageLevel*/) const {
-    return true;
-}
-
 VoltageLevel& VoltageLevelXml::readRootElementAttributes(VoltageLevelAdder& adder, NetworkXmlReaderContext& context) const {
     auto nominalVoltage = context.getReader().getAttributeValue<double>(NOMINAL_V);
     double lowVoltageLimit = context.getReader().getOptionalAttributeValue(LOW_VOLTAGE_LIMIT, stdcxx::nan());

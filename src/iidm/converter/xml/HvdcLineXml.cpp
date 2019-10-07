@@ -28,10 +28,6 @@ const char* HvdcLineXml::getRootElementName() const {
     return HVDC_LINE;
 }
 
-bool HvdcLineXml::hasSubElements(const HvdcLine& /*line*/) const {
-    return false;
-}
-
 HvdcLine& HvdcLineXml::readRootElementAttributes(HvdcLineAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& nominalV = context.getReader().getAttributeValue<double>(NOMINAL_V);

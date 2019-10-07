@@ -30,10 +30,6 @@ const char* BatteryXml::getRootElementName() const {
     return BATTERY;
 }
 
-bool BatteryXml::hasSubElements(const Battery& /*battery*/) const {
-    return true;
-}
-
 Battery& BatteryXml::readRootElementAttributes(BatteryAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& p0 = context.getReader().getAttributeValue<double>(P0);
     const auto& q0 = context.getReader().getAttributeValue<double>(Q0);

@@ -28,10 +28,6 @@ const char* TieLineXml::getRootElementName() const  {
     return TIE_LINE;
 }
 
-bool TieLineXml::hasSubElements(const TieLine& line) const  {
-    return line.getCurrentLimits1() || line.getCurrentLimits2();
-}
-
 void TieLineXml::readHalf(TieLineAdder& adder, const NetworkXmlReaderContext& context, int side) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(toString(ID_, side)));
     const std::string& name = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(toString(NAME_ , side), ""));

@@ -28,10 +28,6 @@ const char* BusXml::getRootElementName() const {
     return BUS;
 }
 
-bool BusXml::hasSubElements(const Bus& /*bus*/) const {
-    return false;
-}
-
 Bus& BusXml::readRootElementAttributes(BusAdder& adder, NetworkXmlReaderContext& context) const {
     double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
     double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());

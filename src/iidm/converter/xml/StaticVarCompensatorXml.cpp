@@ -28,10 +28,6 @@ const char* StaticVarCompensatorXml::getRootElementName() const {
     return STATIC_VAR_COMPENSATOR;
 }
 
-bool StaticVarCompensatorXml::hasSubElements(const StaticVarCompensator& /*svc*/) const {
-    return false;
-}
-
 StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticVarCompensatorAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& bMin = context.getReader().getAttributeValue<double>(B_MIN);
     const auto& bMax = context.getReader().getAttributeValue<double>(B_MAX);
