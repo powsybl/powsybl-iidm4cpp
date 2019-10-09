@@ -19,27 +19,27 @@ namespace xml {
 class NetworkXmlReaderContext;
 class NetworkXmlWriterContext;
 
-template <typename T, typename A, typename P>
+template <typename Added, typename Adder, typename Parent>
 class AbstractIdentifiableXml {
 public:
-    void read(P& parent, NetworkXmlReaderContext& context) const;
+    void read(Parent& parent, NetworkXmlReaderContext& context) const;
 
     // FIXME(mathbagu): This method is public due to a bug in GCC 4.8.5 that doesn't allow lambda to acces to private/protected members
     // https://stackoverflow.com/questions/11933999/why-is-it-not-possible-to-use-private-method-in-a-lambda
-    virtual void readSubElements(T& identifiable, NetworkXmlReaderContext& context) const;
+    virtual void readSubElements(Added& identifiable, NetworkXmlReaderContext& context) const;
     
-    void write(const T& identifiable, const P& parent, NetworkXmlWriterContext& context) const;
+    void write(const Added& identifiable, const Parent& parent, NetworkXmlWriterContext& context) const;
 
 protected:
-    virtual A createAdder(P& parent) const = 0;
+    virtual Adder createAdder(Parent& parent) const = 0;
 
     virtual const char* getRootElementName() const = 0;
 
-    virtual T& readRootElementAttributes(A& adder, NetworkXmlReaderContext& context) const = 0;
+    virtual Added& readRootElementAttributes(Adder& adder, NetworkXmlReaderContext& context) const = 0;
 
-    virtual void writeRootElementAttributes(const T& identifiable, const P& parent, NetworkXmlWriterContext& context) const = 0;
+    virtual void writeRootElementAttributes(const Added& identifiable, const Parent& parent, NetworkXmlWriterContext& context) const = 0;
 
-    virtual void writeSubElements(const T& identifiable, const P& parent, NetworkXmlWriterContext& context) const;
+    virtual void writeSubElements(const Added& identifiable, const Parent& parent, NetworkXmlWriterContext& context) const;
 
 protected:
     AbstractIdentifiableXml() = default;

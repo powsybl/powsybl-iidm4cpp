@@ -27,18 +27,18 @@ namespace converter {
 
 namespace xml {
 
-template <typename T, typename A, typename P>
-void AbstractIdentifiableXml<T, A, P>::read(P& parent, NetworkXmlReaderContext& context) const {
-    A adder = createAdder(parent);
+template <typename Added, typename Adder, typename Parent>
+void AbstractIdentifiableXml<Added, Adder, Parent>::read(Parent& parent, NetworkXmlReaderContext& context) const {
+    Adder adder = createAdder(parent);
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     const std::string& name = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(NAME, ""));
     adder.setId(id).setName(name);
-    T& identifiable = readRootElementAttributes(adder, context);
+    Added& identifiable = readRootElementAttributes(adder, context);
     readSubElements(identifiable, context);
 }
 
-template <typename T, typename A, typename P>
-void AbstractIdentifiableXml<T, A, P>::readSubElements(T& identifiable, NetworkXmlReaderContext& context) const {
+template <typename Added, typename Adder, typename Parent>
+void AbstractIdentifiableXml<Added, Adder, Parent>::readSubElements(Added& identifiable, NetworkXmlReaderContext& context) const {
     if (context.getReader().getLocalName() == PROPERTY) {
         PropertiesXml::read(identifiable, context);
     } else {
@@ -46,8 +46,8 @@ void AbstractIdentifiableXml<T, A, P>::readSubElements(T& identifiable, NetworkX
     }
 }
 
-template <typename T, typename A, typename P>
-void AbstractIdentifiableXml<T, A, P>::write(const T& identifiable, const P& parent, NetworkXmlWriterContext& context) const {
+template <typename Added, typename Adder, typename Parent>
+void AbstractIdentifiableXml<Added, Adder, Parent>::write(const Added& identifiable, const Parent& parent, NetworkXmlWriterContext& context) const {
     context.getWriter().writeStartElement(IIDM_PREFIX, getRootElementName());
 
     context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
@@ -65,8 +65,8 @@ void AbstractIdentifiableXml<T, A, P>::write(const T& identifiable, const P& par
     context.addExportedEquipment(identifiable);
 }
 
-template <typename T, typename A, typename P>
-void AbstractIdentifiableXml<T, A, P>::writeSubElements(const T& /*identifiable*/, const P& /*parent*/, xml::NetworkXmlWriterContext&/*context*/) const {
+template <typename Added, typename Adder, typename Parent>
+void AbstractIdentifiableXml<Added, Adder, Parent>::writeSubElements(const Added& /*identifiable*/, const Parent& /*parent*/, xml::NetworkXmlWriterContext&/*context*/) const {
     // Nothing to do
 }
 

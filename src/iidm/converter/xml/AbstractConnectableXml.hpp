@@ -34,8 +34,8 @@ namespace converter {
 
 namespace xml {
 
-template <typename T, typename A, typename P>
-class AbstractConnectableXml : public AbstractIdentifiableXml<T, A, P> {
+template <typename Added, typename Adder, typename Parent>
+class AbstractConnectableXml : public AbstractIdentifiableXml<Added, Adder, Parent> {
 public:
     template <typename S, typename O>
     static void readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index = boost::optional<int>());
@@ -43,9 +43,9 @@ public:
     static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index = boost::optional<int>(), const std::string& nsPrefix = IIDM_PREFIX);
 
 protected:
-    static void readNodeOrBus(BranchAdder<A>& adder, const NetworkXmlReaderContext& context);
+    static void readNodeOrBus(BranchAdder<Adder>& adder, const NetworkXmlReaderContext& context);
 
-    static void readNodeOrBus(InjectionAdder<A>& adder, const NetworkXmlReaderContext& context);
+    static void readNodeOrBus(InjectionAdder<Adder>& adder, const NetworkXmlReaderContext& context);
 
     template <typename L>
     static void readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder<L>& adder, const NetworkXmlReaderContext& context);

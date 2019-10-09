@@ -21,8 +21,8 @@ namespace converter {
 
 namespace xml {
 
-template <typename A>
-class AbstractSwitchXml : public AbstractIdentifiableXml<Switch, A, VoltageLevel> {
+template <typename Adder>
+class AbstractSwitchXml : public AbstractIdentifiableXml<Switch, Adder, VoltageLevel> {
 public:  // AbstractIdentifiableXml
     const char* getRootElementName() const override;
 

@@ -17,20 +17,20 @@ namespace converter {
 
 namespace xml {
 
-template <typename A>
-const char* AbstractSwitchXml<A>::getRootElementName() const {
+template <typename Adder>
+const char* AbstractSwitchXml<Adder>::getRootElementName() const {
     return SWITCH;
 }
 
-template <typename A>
-void AbstractSwitchXml<A>::readSubElements(Switch& sw, NetworkXmlReaderContext& context) const {
+template <typename Adder>
+void AbstractSwitchXml<Adder>::readSubElements(Switch& sw, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(SWITCH, [this, &sw, &context]() {
-        AbstractIdentifiableXml<Switch, A, VoltageLevel>::readSubElements(sw, context);
+        AbstractIdentifiableXml<Switch, Adder, VoltageLevel>::readSubElements(sw, context);
     });
 }
 
-template <typename A>
-void AbstractSwitchXml<A>::writeRootElementAttributes(const Switch& sw, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
+template <typename Adder>
+void AbstractSwitchXml<Adder>::writeRootElementAttributes(const Switch& sw, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(KIND, getSwitchKindName(sw.getKind()));
     context.getWriter().writeAttribute(RETAINED, sw.isRetained());
     context.getWriter().writeAttribute(OPEN, sw.isOpen());

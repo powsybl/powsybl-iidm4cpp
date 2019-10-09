@@ -19,9 +19,9 @@ namespace converter {
 
 namespace xml {
 
-template <typename T, typename A, typename P>
+template <typename Added, typename Adder, typename Parent>
 template <typename S, typename O>
-void AbstractConnectableXml<T, A, P>::readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
+void AbstractConnectableXml<Added, Adder, Parent>::readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
     const double& permanentLimit = reader.getOptionalAttributeValue(PERMANENT_LIMIT, stdcxx::nan());
     adder.setPermanentLimit(permanentLimit);
     reader.readUntilEndElement(toString(CURRENT_LIMITS, index), [&adder, &reader]() {
@@ -41,8 +41,8 @@ void AbstractConnectableXml<T, A, P>::readCurrentLimits(CurrentLimitsAdder<S, O>
     adder.add();
 }
 
-template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::readNodeOrBus(BranchAdder<A>& adder, const NetworkXmlReaderContext& context) {
+template <typename Added, typename Adder, typename Parent>
+void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(BranchAdder<Adder>& adder, const NetworkXmlReaderContext& context) {
     const auto& bus1 = context.getReader().getOptionalAttributeValue<std::string>(BUS1);
     const auto& connectableBus1 = context.getReader().getOptionalAttributeValue<std::string>(CONNECTABLE_BUS1);
     const auto& node1 = context.getReader().getOptionalAttributeValue<int>(NODE1);
@@ -73,8 +73,8 @@ void AbstractConnectableXml<T, A, P>::readNodeOrBus(BranchAdder<A>& adder, const
     adder.setVoltageLevel2(voltageLevelId2);
 }
 
-template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::readNodeOrBus(InjectionAdder<A>& adder, const NetworkXmlReaderContext& context) {
+template <typename Added, typename Adder, typename Parent>
+void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(InjectionAdder<Adder>& adder, const NetworkXmlReaderContext& context) {
     const auto& bus = context.getReader().getOptionalAttributeValue<std::string>(BUS);
     const auto& connectableBus = context.getReader().getOptionalAttributeValue<std::string>(CONNECTABLE_BUS);
     const auto& node = context.getReader().getOptionalAttributeValue<unsigned long>(NODE);
@@ -90,9 +90,9 @@ void AbstractConnectableXml<T, A, P>::readNodeOrBus(InjectionAdder<A>& adder, co
     }
 }
 
-template <typename T, typename A, typename P>
+template <typename Added, typename Adder, typename Parent>
 template <typename L>
-void AbstractConnectableXml<T, A, P>::readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder<L>& adder, const NetworkXmlReaderContext& context){
+void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder<L>& adder, const NetworkXmlReaderContext& context){
     const auto& bus = context.getReader().getOptionalAttributeValue<std::string>(toString(BUS, index));
     const auto& connectableBus = context.getReader().getOptionalAttributeValue<std::string>(toString(CONNECTABLE_BUS, index));
     const auto& node = context.getReader().getOptionalAttributeValue<unsigned long>(toString(NODE, index));
@@ -109,15 +109,15 @@ void AbstractConnectableXml<T, A, P>::readNodeOrBus(int index, ThreeWindingsTran
     adder.setVoltageLevel(voltageLevelId);
 }
 
-template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
-    const double& p = reader.getOptionalAttributeValue(toString(converter::P, index), stdcxx::nan());
+template <typename Added, typename Adder, typename Parent>
+void AbstractConnectableXml<Added, Adder, Parent>::readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
+    const double& p = reader.getOptionalAttributeValue(toString(P, index), stdcxx::nan());
     const double& q = reader.getOptionalAttributeValue(toString(Q, index), stdcxx::nan());
     terminal.setP(p).setQ(q);
 }
 
-template <typename T, typename A, typename P>
-std::string AbstractConnectableXml<T, A, P>::toString(const char* string, const boost::optional<int>& index) {
+template <typename Added, typename Adder, typename Parent>
+std::string AbstractConnectableXml<Added, Adder, Parent>::toString(const char* string, const boost::optional<int>& index) {
     std::string str = string;
     if (index) {
         str += std::to_string(*index);
@@ -125,8 +125,8 @@ std::string AbstractConnectableXml<T, A, P>::toString(const char* string, const 
     return str;
 }
 
-template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
+template <typename Added, typename Adder, typename Parent>
+void AbstractConnectableXml<Added, Adder, Parent>::writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
     if (bus) {
         context.getWriter().writeAttribute(toString(BUS, index), context.getAnonymizer().anonymizeString(bus.get().getId()));
     }
@@ -135,8 +135,8 @@ void AbstractConnectableXml<T, A, P>::writeBus(const stdcxx::CReference<Bus>& bu
     }
 }
 
-template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index, const std::string& nsPrefix) {
+template <typename Added, typename Adder, typename Parent>
+void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index, const std::string& nsPrefix) {
     if (!std::isnan(limits.getPermanentLimit()) || !limits.getTemporaryLimits().empty()) {
         writer.writeStartElement(nsPrefix, toString(CURRENT_LIMITS, index));
         writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
@@ -154,13 +154,13 @@ void AbstractConnectableXml<T, A, P>::writeCurrentLimits(const CurrentLimits& li
     }
 }
 
-template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
+template <typename Added, typename Adder, typename Parent>
+void AbstractConnectableXml<Added, Adder, Parent>::writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
     context.getWriter().writeAttribute(toString(NODE, index), terminal.getNodeBreakerView().getNode());
 }
 
-template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
+template <typename Added, typename Adder, typename Parent>
+void AbstractConnectableXml<Added, Adder, Parent>::writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
     const TopologyLevel& topologyLevel = getMinTopologyLevel(terminal.getVoltageLevel().getTopologyKind(), context.getOptions().getTopologyLevel());
     switch (topologyLevel) {
         case TopologyLevel::NODE_BREAKER:
@@ -181,11 +181,12 @@ void AbstractConnectableXml<T, A, P>::writeNodeOrBus(const Terminal& terminal, N
     }
 }
 
-template <typename T, typename A, typename P>
-void AbstractConnectableXml<T, A, P>::writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index) {
-    writer.writeOptionalAttribute(toString(converter::P, index), terminal.getP());
+template <typename Added, typename Adder, typename Parent>
+void AbstractConnectableXml<Added, Adder, Parent>::writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index) {
+    writer.writeOptionalAttribute(toString(P, index), terminal.getP());
     writer.writeOptionalAttribute(toString(Q, index), terminal.getQ());
 }
+
 }  // namespace xml
 
 }  // namespace converter

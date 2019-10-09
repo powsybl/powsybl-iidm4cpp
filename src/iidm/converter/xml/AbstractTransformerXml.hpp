@@ -35,8 +35,8 @@ namespace converter {
 
 namespace xml {
 
-template <typename T, typename A>
-class AbstractTransformerXml : public AbstractConnectableXml<T, A, Substation> {
+template <typename Added, typename Adder>
+class AbstractTransformerXml : public AbstractConnectableXml<Added, Adder, Substation> {
 public:
     static void readPhaseTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
 

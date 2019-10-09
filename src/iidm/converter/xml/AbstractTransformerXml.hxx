@@ -24,8 +24,8 @@ namespace converter {
 
 namespace xml {
 
-template <typename T, typename A>
-void AbstractTransformerXml<T, A>::readPhaseTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) {
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) {
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
     const double& targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
@@ -74,20 +74,20 @@ void AbstractTransformerXml<T, A>::readPhaseTapChanger(TwoWindingsTransformer& t
     }
 }
 
-template <typename T, typename A>
-void AbstractTransformerXml<T, A>::readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) {
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) {
     std::shared_ptr<RatioTapChangerAdder> adder = std::make_shared<RatioTapChangerAdder>(twt.newRatioTapChanger());
     readRatioTapChanger(RATIO_TAP_CHANGER, adder, twt.getTerminal1(), context);
 }
 
-template <typename T, typename A>
-void AbstractTransformerXml<T, A>::readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg2or3& twl, NetworkXmlReaderContext& context) {
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg2or3& twl, NetworkXmlReaderContext& context) {
     std::shared_ptr<RatioTapChangerAdder> adder = std::make_shared<RatioTapChangerAdder>(twl.newRatioTapChanger());
-    readRatioTapChanger(AbstractConnectableXml<T, A, Substation>::toString(RATIO_TAP_CHANGER, leg), adder, twl.getTerminal(), context);
+    readRatioTapChanger(AbstractConnectableXml<Added, Adder, Substation>::toString(RATIO_TAP_CHANGER, leg), adder, twl.getTerminal(), context);
 }
 
-template <typename T, typename A>
-void AbstractTransformerXml<T, A>::readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
     const auto& targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
@@ -134,8 +134,8 @@ void AbstractTransformerXml<T, A>::readRatioTapChanger(const std::string& elemen
     }
 }
 
-template <typename T, typename A>
-void AbstractTransformerXml<T, A>::writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context) {
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context) {
     context.getWriter().writeStartElement(IIDM_PREFIX, name);
     writeTapChanger<TwoWindingsTransformer, PhaseTapChanger, PhaseTapChangerStep>(ptc, context.getWriter());
     context.getWriter().writeAttribute(REGULATION_MODE, getRegulationModeName(ptc.getRegulationMode()));
@@ -158,8 +158,8 @@ void AbstractTransformerXml<T, A>::writePhaseTapChanger(const std::string& name,
     context.getWriter().writeEndElement();
 }
 
-template <typename T, typename A>
-void AbstractTransformerXml<T, A>::writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context) {
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context) {
     context.getWriter().writeStartElement(IIDM_PREFIX, name);
     writeTapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep>(rtc, context.getWriter());
     context.getWriter().writeAttribute(LOAD_TAP_CHANGING_CAPABILITIES, rtc.hasLoadTapChangingCapabilities());
@@ -181,17 +181,17 @@ void AbstractTransformerXml<T, A>::writeRatioTapChanger(const std::string& name,
     context.getWriter().writeEndElement();
 }
 
-template <typename T, typename A>
+template <typename Added, typename Adder>
 template <typename H, typename C, typename S>
-void AbstractTransformerXml<T, A>::writeTapChanger(const TapChanger<H, C, S>& tc, powsybl::xml::XmlStreamWriter& writer) {
+void AbstractTransformerXml<Added, Adder>::writeTapChanger(const TapChanger<H, C, S>& tc, powsybl::xml::XmlStreamWriter& writer) {
     writer.writeAttribute(LOW_TAP_POSITION, tc.getLowTapPosition());
     writer.writeAttribute(TAP_POSITION, tc.getTapPosition());
     writer.writeOptionalAttribute(TARGET_DEADBAND, tc.getTargetDeadband());
 }
 
-template <typename T, typename A>
+template <typename Added, typename Adder>
 template <typename S>
-void AbstractTransformerXml<T, A>::writeTapChangerStep(const TapChangerStep<S>& tcs, powsybl::xml::XmlStreamWriter& writer) {
+void AbstractTransformerXml<Added, Adder>::writeTapChangerStep(const TapChangerStep<S>& tcs, powsybl::xml::XmlStreamWriter& writer) {
     writer.writeOptionalAttribute(R, tcs.getR());
     writer.writeOptionalAttribute(X, tcs.getX());
     writer.writeOptionalAttribute(G, tcs.getG());
