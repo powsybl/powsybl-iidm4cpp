@@ -110,10 +110,9 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
 
 void VoltageLevelXml::writeBatteries(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const Battery& battery : voltageLevel.getBatteries()) {
-        // TODO(sebalaig) consider filtering
-//        if (!context.getFilter().test(battery)) {
-//            continue;
-//        }
+        if (!context.getFilter().test(battery)) {
+            continue;
+        }
         BatteryXml::getInstance().write(battery, voltageLevel, context);
     }
 }
@@ -133,54 +132,54 @@ void VoltageLevelXml::writeBusBranchTopology(const VoltageLevel& voltageLevel, N
 void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     context.getWriter().writeStartElement(IIDM_PREFIX, BUS_BREAKER_TOPOLOGY);
     for (const Bus& bus : voltageLevel.getBusBreakerView().getBuses()) {
-        // TODO(sebalaig) consider filtering
-//        if (!context.getFilter().test(b)) {
-//            continue;
-//        }
+        if (!context.getFilter().test(bus)) {
+            continue;
+        }
         BusXml::getInstance().write(bus, voltageLevel, context);
     }
     for (const Switch& sw : voltageLevel.getBusBreakerView().getSwitches()) {
-        // TODO(sebalaig) consider filtering
-//        const Bus& b1 = voltageLevel.getBusBreakerView().getBus1(context.getAnonymizer().anonymizeString(sw.getId()));
-//        const Bus& b2 = voltageLevel.getBusBreakerView().getBus2(context.getAnonymizer().anonymizeString(sw.getId()));
-//        if (!context.getFilter().test(b1) || !context.getFilter().test(b2)) {
-//            continue;
-//        }
+        const Bus& b1 = voltageLevel.getBusBreakerView().getBus1(context.getAnonymizer().anonymizeString(sw.getId()));
+        const Bus& b2 = voltageLevel.getBusBreakerView().getBus2(context.getAnonymizer().anonymizeString(sw.getId()));
+        if (!context.getFilter().test(b1) || !context.getFilter().test(b2)) {
+            continue;
+        }
         BusBreakerViewSwitchXml::getInstance().write(sw, voltageLevel, context);
     }
     context.getWriter().writeEndElement();
 }
 
 void VoltageLevelXml::writeDanglingLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
-    for (const DanglingLine& dl : voltageLevel.getDanglingLines()) {
-        // TODO(sebalaig) consider filtering
-//        if (!context.getFilter().test(dl)) {
-//            continue;
-//        }
+    for (const auto& dl : voltageLevel.getDanglingLines()) {
+        if (!context.getFilter().test(dl)) {
+            continue;
+        }
         DanglingLineXml::getInstance().write(dl, voltageLevel, context);
     }
 }
 
 void VoltageLevelXml::writeGenerators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const auto& generator : voltageLevel.getGenerators()) {
-        // TODO(sebalaig) consider filtering
+        if (!context.getFilter().test(generator)) {
+            continue;
+        }
         GeneratorXml::getInstance().write(generator, voltageLevel, context);
     }
 }
 
 void VoltageLevelXml::writeLccConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
-    for (const LccConverterStation& cs : voltageLevel.getLccConverterStations()) {
-        // TODO(sebalaig) consider filtering
-//        if (!context.getFilter().test(cs)) {
-//            continue;
-//        }
+    for (const auto& cs : voltageLevel.getLccConverterStations()) {
+        if (!context.getFilter().test(cs)) {
+            continue;
+        }
         LccConverterStationXml::getInstance().write(cs, voltageLevel, context);
     }
 }
 
 void VoltageLevelXml::writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const auto& load : voltageLevel.getLoads()) {
-        // TODO(sebalaig) consider filtering
+        if (!context.getFilter().test(load)) {
+            continue;
+        }
         LoadXml::getInstance().write(load, voltageLevel, context);
     }
 }
@@ -210,17 +209,18 @@ void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLeve
 
 void VoltageLevelXml::writeShuntCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const auto& shuntCompensator : voltageLevel.getShuntCompensators()) {
-        // TODO(sebalaig) consider filtering
+        if (!context.getFilter().test(shuntCompensator)) {
+            continue;
+        }
         ShuntCompensatorXml::getInstance().write(shuntCompensator, voltageLevel, context);
     }
 }
 
 void VoltageLevelXml::writeStaticVarCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const StaticVarCompensator& svc : voltageLevel.getStaticVarCompensators()) {
-        // TODO(sebalaig) consider filtering
-//        if (!context.getFilter().test(svc)) {
-//            continue;
-//        }
+        if (!context.getFilter().test(svc)) {
+            continue;
+        }
         StaticVarCompensatorXml::getInstance().write(svc, voltageLevel, context);
     }
 }
@@ -256,7 +256,9 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const S
 
 void VoltageLevelXml::writeVscConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const auto& converterStation : voltageLevel.getVscConverterStations()) {
-        // TODO(sebalaig) consider filtering
+        if (!context.getFilter().test(converterStation)) {
+            continue;
+        }
         VscConverterStationXml::getInstance().write(converterStation, voltageLevel, context);
     }
 }

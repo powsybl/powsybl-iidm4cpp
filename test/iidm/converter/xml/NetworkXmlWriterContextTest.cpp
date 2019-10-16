@@ -30,7 +30,9 @@ BOOST_AUTO_TEST_CASE(Constructor) {
     ExportOptions exportOptions;
     FakeAnonymizer fakeAnonymizer;
     stdcxx::reference_wrapper<Anonymizer> anonymizer(fakeAnonymizer);
-    NetworkXmlWriterContext context(anonymizer, writer, exportOptions);
+    Network network("id_network", "name_network");
+    const BusFilter& filter = BusFilter::create(network, exportOptions);
+    NetworkXmlWriterContext context(anonymizer, writer, exportOptions, filter);
     BOOST_CHECK_EQUAL(static_cast<int>(exportOptions.getTopologyLevel()), static_cast<int>(context.getOptions().getTopologyLevel()));
     BOOST_CHECK_EQUAL(exportOptions.isAnonymized(), context.getOptions().isAnonymized());
     BOOST_CHECK_EQUAL(exportOptions.isIndent(), context.getOptions().isIndent());
@@ -40,7 +42,6 @@ BOOST_AUTO_TEST_CASE(Constructor) {
     BOOST_CHECK_EQUAL(&writer, &context.getWriter());
 
     BOOST_CHECK(context.getExportedEquipments().empty());
-    Network network("id_network", "name_network");
     const Substation& substation = network.newSubstation().setTso("tso_test").setCountry(Country::FR).setId("id_test").setName("name_test").add();
     context.addExportedEquipment(substation);
     BOOST_CHECK_EQUAL(1L, context.getExportedEquipments().size());

@@ -108,6 +108,7 @@ set(IIDM_SOURCES
     iidm/VscConverterStation.cpp
     iidm/VscConverterStationAdder.cpp
 
+    iidm/converter/BusFilter.cpp
     iidm/converter/ExportOptions.cpp
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp

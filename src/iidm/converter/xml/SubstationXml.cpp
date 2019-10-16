@@ -104,15 +104,16 @@ void SubstationXml::writeSubElements(const Substation& substation, const Network
     }
 
     for (const auto& twt : substation.getTwoWindingsTransformers()) {
-        // TODO(sebalaig) consider filtering
+        if (!context.getFilter().test(twt)) {
+            continue;
+        }
         TwoWindingsTransformerXml::getInstance().write(twt, substation, context);
     }
 
     for (const auto& twt : substation.getThreeWindingsTransformers()) {
-        // TODO(sebalaig) consider filtering
-//        if (!context.getFilter().test(twt)) {
-//            continue;
-//        }
+        if (!context.getFilter().test(twt)) {
+            continue;
+        }
         ThreeWindingsTransformerXml::getInstance().write(twt, substation, context);
     }
 }

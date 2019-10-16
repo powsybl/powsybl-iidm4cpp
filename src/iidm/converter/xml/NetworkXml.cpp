@@ -228,7 +228,8 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     // later, a real anonymizer will be instantiated depending on options.isAnonymized()
     std::unique_ptr<Anonymizer> anonymizer(stdcxx::make_unique<FakeAnonymizer>());
 
-    NetworkXmlWriterContext context(*anonymizer, writer, options);
+    const BusFilter& filter = BusFilter::create(network, options);
+    NetworkXmlWriterContext context(*anonymizer, writer, options, filter);
 
     writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");
 
@@ -246,7 +247,9 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     }
 
     for (const auto& line : network.getLines()) {
-        // TODO(sebalaig) consider filtering
+        if (!filter.test(line)) {
+            continue;
+        }
         if (line.isTieLine()) {
             TieLineXml::getInstance().write(dynamic_cast<const TieLine&>(line), network, context);
         } else {
@@ -255,10 +258,9 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     }
 
     for (const auto& line : network.getHvdcLines()) {
-        // TODO(sebalaig) consider filtering
-//        if (!filter.test(line.getConverterStation1()) || !filter.test(line.getConverterStation2())) {
-//            continue;
-//        }
+        if (!filter.test(line.getConverterStation1()) || !filter.test(line.getConverterStation2())) {
+            continue;
+        }
         HvdcLineXml::getInstance().write(line, network, context);
     }
 

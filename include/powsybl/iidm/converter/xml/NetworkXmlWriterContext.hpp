@@ -12,6 +12,7 @@
 #include <set>
 #include <string>
 
+#include <powsybl/iidm/converter/BusFilter.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 
 namespace powsybl {
@@ -34,7 +35,7 @@ namespace xml {
 
 class NetworkXmlWriterContext {
 public:
-    NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options);
+    NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter);
 
     ~NetworkXmlWriterContext() = default;
 
@@ -47,6 +48,8 @@ public:
     const std::set<std::string>& getExportedEquipments() const;
 
     powsybl::xml::XmlStreamWriter& getExtensionsWriter();
+
+    const BusFilter& getFilter() const;
 
     const ExportOptions& getOptions() const;
 
@@ -66,6 +69,8 @@ private:
     ExportOptions m_options;
 
     std::set<std::string> m_exportedEquipments;
+
+    BusFilter m_filter;
 };
 
 }  // namespace xml

@@ -7,8 +7,6 @@
 
 #include "TerminalRefXml.hpp"
 
-#include <boost/algorithm/string/predicate.hpp>
-
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Branch.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -54,7 +52,9 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
 
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& nsPrefix, const std::string& elementName, powsybl::xml::XmlStreamWriter& writer) {
     const auto& c = terminal.getConnectable();
-    // TODO(sebalaig) consider filtering
+    if (!context.getFilter().test(c)) {
+        throw PowsyblException(logging::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
+    }
     writer.writeStartElement(nsPrefix, elementName);
     writer.writeAttribute(ID, context.getAnonymizer().anonymizeString(c.get().getId()));
     if (c.get().getTerminals().size() > 1) {
