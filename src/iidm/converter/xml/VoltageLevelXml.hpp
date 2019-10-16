@@ -46,6 +46,8 @@ private:
 
     void writeBatteries(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
+    void writeBusBranchTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
+
     void writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeDanglingLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
