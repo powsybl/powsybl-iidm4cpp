@@ -140,6 +140,9 @@ set(IIDM_SOURCES
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 
+    iidm/extensions/entsoe/EntsoeArea.cpp
+    iidm/extensions/entsoe/EntsoeAreaXmlSerializer.cpp
+    iidm/extensions/entsoe/EntsoeGeographicalCode.cpp
     iidm/extensions/entsoe/MergedXnode.cpp
     iidm/extensions/entsoe/MergedXnodeXmlSerializer.cpp
     iidm/extensions/entsoe/Xnode.cpp

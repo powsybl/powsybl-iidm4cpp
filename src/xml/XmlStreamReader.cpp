@@ -241,17 +241,33 @@ std::string XmlStreamReader::getPrefix() const {
     return prefix;
 }
 
+std::string XmlStreamReader::getText() const {
+    checkNodeType(*m_reader, XML_READER_TYPE_TEXT);
+
+    std::string text;
+    XmlString content(xmlTextReaderReadString(m_reader.get()));
+    if (content) {
+        text = XML2S(content.get());
+    }
+    return text;
+}
+
 int XmlStreamReader::next() const {
     xmlTextReaderRead(m_reader.get());
     return getCurrentNodeType();
 }
 
-void XmlStreamReader::readUntilEndElement(const std::string& elementName, const ReadCallback& callback) const {
+std::string XmlStreamReader::readUntilEndElement(const std::string& elementName) const {
+    return readUntilEndElement(elementName, [](){});
+}
+
+std::string XmlStreamReader::readUntilEndElement(const std::string& elementName, const ReadCallback& callback) const {
+    std::string text;
     int emptyElement = xmlTextReaderIsEmptyElement(m_reader.get());
     switch (emptyElement) {
         case 1:
             // if current element is an empty element, XML_READER_TYPE_END_ELEMENT is never reached => nothing to do
-            return;
+            return text;
 
         case -1:
             throw XmlStreamException(logging::format("An error occurred while reading <%1%>", elementName.c_str()));
@@ -264,6 +280,8 @@ void XmlStreamReader::readUntilEndElement(const std::string& elementName, const 
             int nodeType = getCurrentNodeType();
             if (nodeType == XML_READER_TYPE_ELEMENT) {
                 name = getLocalName();
+            } else if (nodeType == XML_READER_TYPE_TEXT) {
+                text = getText();
             }
 
             while (res == 1 && nodeType != XML_READER_TYPE_END_ELEMENT && name != elementName) {
@@ -275,6 +293,8 @@ void XmlStreamReader::readUntilEndElement(const std::string& elementName, const 
                 nodeType = getCurrentNodeType();
                 if (nodeType == XML_READER_TYPE_ELEMENT) {
                     name = getLocalName();
+                } else if (nodeType == XML_READER_TYPE_TEXT) {
+                    text = getText();
                 }
             }
 
@@ -287,6 +307,8 @@ void XmlStreamReader::readUntilEndElement(const std::string& elementName, const 
         default:
             throw AssertionError(logging::format("Unexpected xmlTextReaderIsEmptyElement return value: %1%", emptyElement));
     }
+
+    return text;
 }
 
 void XmlStreamReader::readUntilNextElement() const {

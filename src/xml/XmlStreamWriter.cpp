@@ -69,6 +69,13 @@ void XmlStreamWriter::writeAttribute(const std::string& attributeName, unsigned 
     writeAttribute(attributeName, std::to_string(attributeValue));
 }
 
+void XmlStreamWriter::writeCharacters(const std::string& content) {
+    int written = xmlTextWriterWriteString(m_writer.get(), S2XML(content));
+    if (written < 0) {
+        throw XmlStreamException(logging::format("Failed to write characters %1%", content));
+    }
+}
+
 void XmlStreamWriter::writeEmptyElement(const std::string& uri, const std::string& elementName) {
     writeStartElement(uri, elementName);
     writeEndElement();

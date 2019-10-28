@@ -61,7 +61,11 @@ public:
 
     std::string getPrefix() const;
 
-    void readUntilEndElement(const std::string& elementName, const ReadCallback& callback) const;
+    std::string getText() const;
+
+    std::string readUntilEndElement(const std::string& elementName) const;
+
+    std::string readUntilEndElement(const std::string& elementName, const ReadCallback& callback) const;
 
     void readUntilNextElement() const;
 

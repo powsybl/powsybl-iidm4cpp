@@ -59,6 +59,7 @@ set(UNIT_TEST_SOURCES
     converter/xml/XmlRoundTripTest.cpp
     converter/xml/VscRoundTripTest.cpp
 
+    extensions/entsoe/EntsoeAreaTest.cpp
     extensions/entsoe/MergedXnodeTest.cpp
     extensions/entsoe/XnodeTest.cpp
 
