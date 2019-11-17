@@ -65,6 +65,10 @@ set(UNIT_TEST_SOURCES
 
     extensions/iidm/ActivePowerControlTest.cpp
     extensions/iidm/CoordinatedReactiveControlTest.cpp
+
+    extensions/iidm-cvg-extensions/CongestionManagementTest.cpp
+    extensions/iidm-cvg-extensions/StateOfChargeTest.cpp
+    extensions/iidm-cvg-extensions/VoltageRegulationTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})

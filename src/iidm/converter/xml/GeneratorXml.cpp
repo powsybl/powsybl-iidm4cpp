@@ -8,11 +8,11 @@
 #include "GeneratorXml.hpp"
 
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
 
 #include "iidm/converter/Constants.hpp"
 
 #include "ReactiveLimitsXml.hpp"
-#include "TerminalRefXml.hpp"
 
 namespace powsybl {
 

@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "TerminalRefXml.hpp"
+#include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
 
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Branch.hpp>

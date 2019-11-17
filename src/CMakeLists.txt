@@ -9,6 +9,7 @@ set(IIDM_SOURCES
     AssertionError.cpp
     PowsyblException.cpp
 
+    iidm/AbstractMultiVariantConnectableExtension.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
     iidm/Branch.cpp
@@ -152,6 +153,11 @@ set(IIDM_SOURCES
     iidm/extensions/iidm/ActivePowerControlXmlSerializer.cpp
     iidm/extensions/iidm/CoordinatedReactiveControl.cpp
     iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.cpp
+
+    iidm/extensions/cvg/CongestionManagement.cpp
+    iidm/extensions/cvg/CongestionManagementXmlSerializer.cpp
+    iidm/extensions/cvg/StateOfCharge.cpp
+    iidm/extensions/cvg/StateOfChargeXmlSerializer.cpp
 
     iidm/util/DistinctPredicate.cpp
     iidm/util/LimitViolationUtils.cpp

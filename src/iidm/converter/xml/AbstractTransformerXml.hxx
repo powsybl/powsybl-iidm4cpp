@@ -13,8 +13,7 @@
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
-
-#include "TerminalRefXml.hpp"
+#include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
 
 namespace powsybl {
 
