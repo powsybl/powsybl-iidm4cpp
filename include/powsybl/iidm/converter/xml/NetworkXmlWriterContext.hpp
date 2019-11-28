@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_NETWORKXMLWRITERCONTEXT_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_NETWORKXMLWRITERCONTEXT_HPP
 
+#include <functional>
 #include <set>
 #include <string>
 
@@ -45,12 +46,18 @@ public:
 
     const std::set<std::string>& getExportedEquipments() const;
 
+    powsybl::xml::XmlStreamWriter& getExtensionsWriter();
+
     const ExportOptions& getOptions() const;
 
     powsybl::xml::XmlStreamWriter& getWriter();
 
+    void setExtensionsWriter(powsybl::xml::XmlStreamWriter& extensionsWriter);
+
 private:
     powsybl::xml::XmlStreamWriter& m_writer;
+
+    std::reference_wrapper<powsybl::xml::XmlStreamWriter> m_extensionsWriter;
 
     Anonymizer& m_anonymizer;
 

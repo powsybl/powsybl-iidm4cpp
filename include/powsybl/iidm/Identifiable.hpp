@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include <powsybl/iidm/Extendable.hpp>
 #include <powsybl/iidm/Properties.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/stdcxx/optional.hpp>
@@ -19,7 +20,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class Identifiable : public virtual Validable {
+class Identifiable : public virtual Validable, public Extendable {
 public: // Validable
     std::string getMessageHeader() const override;
 

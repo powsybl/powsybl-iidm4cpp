@@ -33,6 +33,8 @@ set(IIDM_SOURCES
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
     iidm/EnergySource.cpp
+    iidm/Extendable.cpp
+    iidm/Extension.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp
@@ -113,6 +115,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp
     iidm/converter/xml/BusXml.cpp
     iidm/converter/xml/DanglingLineXml.cpp
+    iidm/converter/xml/ExtensionXmlSerializer.cpp
     iidm/converter/xml/GeneratorXml.cpp
     iidm/converter/xml/HvdcLineXml.cpp
     iidm/converter/xml/LccConverterStationXml.cpp

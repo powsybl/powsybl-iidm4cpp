@@ -57,6 +57,8 @@ set(UNIT_TEST_SOURCES
     converter/xml/ThreeWindingsTransformerRoundTripTest.cpp
     converter/xml/XmlRoundTripTest.cpp
     converter/xml/VscRoundTripTest.cpp
+
+    extensions/ExtensionRoundTrip.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})

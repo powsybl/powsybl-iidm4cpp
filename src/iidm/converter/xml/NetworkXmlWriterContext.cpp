@@ -19,6 +19,7 @@ namespace xml {
 
 NetworkXmlWriterContext::NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options) :
     m_writer(writer),
+    m_extensionsWriter(writer),
     m_anonymizer(anonymizer),
     m_options(options) {
 
@@ -40,12 +41,20 @@ const std::set<std::string>& NetworkXmlWriterContext::getExportedEquipments() co
     return m_exportedEquipments;
 }
 
+powsybl::xml::XmlStreamWriter& NetworkXmlWriterContext::getExtensionsWriter() {
+    return m_extensionsWriter.get();
+}
+
 const ExportOptions& NetworkXmlWriterContext::getOptions() const {
     return m_options;
 }
 
 powsybl::xml::XmlStreamWriter& NetworkXmlWriterContext::getWriter() {
     return m_writer;
+}
+
+void NetworkXmlWriterContext::setExtensionsWriter(powsybl::xml::XmlStreamWriter& extensionsWriter) {
+    m_extensionsWriter = std::ref(extensionsWriter);
 }
 
 }  // namespace xml
