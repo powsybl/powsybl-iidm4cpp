@@ -118,8 +118,6 @@ std::string XmlStreamReader::getDefaultNamespace() const {
 }
 
 std::string XmlStreamReader::getLocalName() const {
-    checkNodeType(*m_reader, XML_READER_TYPE_ELEMENT);
-
     XmlString localNameXml(xmlTextReaderLocalName(m_reader.get()));
     if (!localNameXml) {
         throw XmlStreamException("Element does not have any local name");
@@ -274,26 +272,22 @@ std::string XmlStreamReader::readUntilEndElement(const std::string& elementName,
 
         case 0: {
             // not an empty element => read until end element
-            std::string name;
-
             int res = xmlTextReaderRead(m_reader.get());
             int nodeType = getCurrentNodeType();
-            if (nodeType == XML_READER_TYPE_ELEMENT) {
-                name = getLocalName();
-            } else if (nodeType == XML_READER_TYPE_TEXT) {
+            std::string name = getLocalName();
+            if (nodeType == XML_READER_TYPE_TEXT) {
                 text = getText();
             }
 
-            while (res == 1 && nodeType != XML_READER_TYPE_END_ELEMENT && name != elementName) {
+            while (res == 1 && (nodeType != XML_READER_TYPE_END_ELEMENT || name != elementName)) {
                 if (nodeType == XML_READER_TYPE_ELEMENT) {
                     callback();
                 }
 
                 res = xmlTextReaderRead(m_reader.get());
                 nodeType = getCurrentNodeType();
-                if (nodeType == XML_READER_TYPE_ELEMENT) {
-                    name = getLocalName();
-                } else if (nodeType == XML_READER_TYPE_TEXT) {
+                name = getLocalName();
+                if (nodeType == XML_READER_TYPE_TEXT) {
                     text = getText();
                 }
             }

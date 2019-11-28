@@ -74,7 +74,7 @@ stdcxx::const_range<ThreeWindingsTransformer> Substation::getThreeWindingsTransf
 stdcxx::range<ThreeWindingsTransformer> Substation::getThreeWindingsTransformers() {
     stdcxx::range<ThreeWindingsTransformer> range;
 
-    for (auto& it : m_voltageLevels) {
+    for (const auto& it : m_voltageLevels) {
         range = boost::range::join(range, it.get().getConnectables<ThreeWindingsTransformer>());
     }
 
@@ -106,7 +106,7 @@ stdcxx::const_range<TwoWindingsTransformer> Substation::getTwoWindingsTransforme
 stdcxx::range<TwoWindingsTransformer> Substation::getTwoWindingsTransformers() {
     stdcxx::range<TwoWindingsTransformer> range;
 
-    for (auto& it : m_voltageLevels) {
+    for (const auto& it : m_voltageLevels) {
         range = boost::range::join(range, it.get().getConnectables<TwoWindingsTransformer>());
     }
 
