@@ -137,6 +137,8 @@ set(IIDM_SOURCES
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 
+    iidm/extensions/entsoe/MergedXnode.cpp
+    iidm/extensions/entsoe/MergedXnodeXmlSerializer.cpp
     iidm/extensions/entsoe/Xnode.cpp
     iidm/extensions/entsoe/XnodeXmlSerializer.cpp
 

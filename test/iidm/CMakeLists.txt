@@ -60,6 +60,7 @@ set(UNIT_TEST_SOURCES
 
     extensions/ExtensionRoundTrip.cpp
 
+    extensions/entsoe/MergedXnodeTest.cpp
     extensions/entsoe/XnodeTest.cpp
 
     extensions/iidm/ActivePowerControlTest.cpp
