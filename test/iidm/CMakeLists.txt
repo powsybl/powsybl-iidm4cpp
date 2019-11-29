@@ -59,6 +59,8 @@ set(UNIT_TEST_SOURCES
     converter/xml/VscRoundTripTest.cpp
 
     extensions/ExtensionRoundTrip.cpp
+
+    extensions/iidm/CoordinatedReactiveControlTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})

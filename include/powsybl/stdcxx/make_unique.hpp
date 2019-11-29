@@ -10,25 +10,13 @@
 
 #include <memory>
 
-#if __cplusplus >= 201402L
-
 namespace stdcxx {
 
-using std::make_unique;
-
-}  // namespace stdcxx
-
-#else
-
-namespace stdcxx {
-
-template <typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args&&... args) {
-    return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+template <typename B, typename D = B, typename = typename std::enable_if<std::is_base_of<B, D>::value>::type, typename... Args>
+std::unique_ptr<B> make_unique(Args&&... args) {
+    return std::unique_ptr<B>(new D(std::forward<Args>(args)...));
 }
 
 }  // namespace stdcxx
-
-#endif
 
 #endif  // POWSYBL_STDCXX_MAKE_UNIQUE_HPP
