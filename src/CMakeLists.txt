@@ -137,6 +137,8 @@ set(IIDM_SOURCES
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 
+    iidm/extensions/iidm/ActivePowerControl.cpp
+    iidm/extensions/iidm/ActivePowerControlXmlSerializer.cpp
     iidm/extensions/iidm/CoordinatedReactiveControl.cpp
     iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.cpp
 

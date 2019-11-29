@@ -60,6 +60,7 @@ set(UNIT_TEST_SOURCES
 
     extensions/ExtensionRoundTrip.cpp
 
+    extensions/iidm/ActivePowerControlTest.cpp
     extensions/iidm/CoordinatedReactiveControlTest.cpp
 )
 
