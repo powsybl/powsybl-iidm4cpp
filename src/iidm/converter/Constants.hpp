@@ -47,6 +47,7 @@ static const char* const CURRENT_LIMITS3 = "currentLimits3";
 static const char* const CURRENT_SECTION_COUNT = "currentSectionCount";
 static const char* const DANGLING_LINE = "danglingLine";
 static const char* const ENERGY_SOURCE = "energySource";
+static const char* const EXTENSION = "extension";
 static const char* const FICTITIOUS = "fictitious";
 static const char* const FORECAST_DISTANCE = "forecastDistance";
 static const char* const G = "g";

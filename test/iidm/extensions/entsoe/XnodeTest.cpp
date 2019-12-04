@@ -9,14 +9,17 @@
 
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VoltageLevelAdder.hpp>
+#include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/extensions/entsoe/Xnode.hpp>
 #include <powsybl/iidm/extensions/entsoe/XnodeXmlSerializer.hpp>
-#include <powsybl/network/EurostagFactory.hpp>
 
 #include "iidm/converter/ResourceFixture.hpp"
-#include "iidm/extensions/ExtensionRoundTrip.hpp"
+#include "iidm/converter/RoundTrip.hpp"
 
 namespace powsybl {
 
@@ -29,42 +32,55 @@ namespace entsoe {
 BOOST_AUTO_TEST_SUITE(XnodeTestSuite)
 
 Network createNetwork() {
-    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
-    VoltageLevel& vl = network.getVoltageLevel("VLGEN");
-    vl.newDanglingLine()
-        .setId("DL1")
-        .setBus("NGEN")
+    Network network("test", "test");
+    network.setCaseDate(stdcxx::DateTime::parse("2016-06-27T12:27:58.535+02:00"));
+    Substation& s = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+    VoltageLevel& vl = s.newVoltageLevel()
+        .setId("VL")
+        .setNominalVoltage(400)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    vl.getBusBreakerView().newBus()
+        .setId("B")
+        .add();
+    DanglingLine& dl = vl.newDanglingLine()
+        .setId("DL")
+        .setBus("B")
+        .setR(1.0)
+        .setX(1.0)
+        .setG(0.0)
+        .setB(0.0)
         .setP0(0.0)
         .setQ0(0.0)
-        .setR(1.0)
-        .setX(0.1)
-        .setG(0.00005)
-        .setB(0.00005)
         .add();
+
+    dl.addExtension(Extension::create<Xnode>(dl, "XXXXXX11"));
 
     return network;
 }
 
 BOOST_AUTO_TEST_CASE(XnodeTest) {
     Network network = createNetwork();
-    DanglingLine& dl = network.getDanglingLine("DL1");
+    DanglingLine& dl = network.getDanglingLine("DL");
 
-    Xnode extension(dl, "countryCode");
+    const auto& extension = dl.getExtension<Xnode>();
+
     BOOST_CHECK_EQUAL("xnode", extension.getName());
     BOOST_CHECK(stdcxx::areSame(dl, extension.getExtendable().get()));
-    BOOST_CHECK_EQUAL("countryCode", extension.getCode());
+    BOOST_CHECK_EQUAL("XXXXXX11", extension.getCode());
 }
 
 BOOST_FIXTURE_TEST_CASE(XnodeXmlSerializerTest, ResourceFixture) {
     Network network = createNetwork();
-    DanglingLine& dl = network.getDanglingLine("DL1");
 
-    Xnode ext(dl, "countryCode");
-    XnodeXmlSerializer serializer;
+    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::registerExtension("xnode", stdcxx::make_unique<XnodeXmlSerializer>());
 
-    const std::string& extensionStr = ResourceFixture::getResource("/extensions/entsoe/xnode.xml");
+    const std::string& networkStr = ResourceFixture::getResource("/extensions/entsoe/xnode.xml");
 
-    ExtensionRoundTrip::runXml(dl, ext, serializer, extensionStr);
+    converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -9,8 +9,10 @@
 #define POWSYBL_IIDM_EXTENSION_HPP
 
 #include <string>
+#include <type_traits>
 #include <typeindex>
 
+#include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -20,6 +22,10 @@ namespace iidm {
 class Extendable;
 
 class Extension {
+public:
+    template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type, typename... Args>
+    static std::unique_ptr<Extension> create(Args&&... args);
+
 public:
     Extension() = default;
 

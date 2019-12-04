@@ -9,6 +9,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -17,10 +18,11 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControl.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.hpp>
+#include <powsybl/network/EurostagFactory.hpp>
 
 #include "AssertionUtils.hpp"
 #include "iidm/converter/ResourceFixture.hpp"
-#include "iidm/extensions/ExtensionRoundTrip.hpp"
+#include "iidm/converter/RoundTrip.hpp"
 
 namespace powsybl {
 
@@ -83,15 +85,17 @@ BOOST_AUTO_TEST_CASE(CoordinatedReactiveControlTest) {
 }
 
 BOOST_FIXTURE_TEST_CASE(CoordinatedReactiveControlXmlSerializerTest, ResourceFixture) {
-    Network network = createNetwork();
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));
+
     Generator& gen = network.getGenerator("GEN");
+    gen.addExtension(Extension::create<CoordinatedReactiveControl>(gen, 100.0));
 
-    CoordinatedReactiveControl ext(gen, 1.1);
-    CoordinatedReactiveControlXmlSerializer serializer;
+    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::registerExtension("coordinatedReactiveControl", stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
 
-    const std::string& extensionStr = ResourceFixture::getResource("/extensions/iidm/coordinatedReactiveControl.xml");
+    const std::string& networkStr = ResourceFixture::getResource("/extensions/iidm/coordinatedReactiveControl.xml");
 
-    ExtensionRoundTrip::runXml(gen, ext, serializer, extensionStr);
+    converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

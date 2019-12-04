@@ -35,6 +35,7 @@ set(IIDM_SOURCES
     iidm/EnergySource.cpp
     iidm/Extendable.cpp
     iidm/Extension.cpp
+    iidm/ExtensionProvider.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp
@@ -157,6 +158,7 @@ set(IIDM_SOURCES
     logging/LogMessage.cpp
     logging/NoopLogger.cpp
 
+    network/BatteryNetworkFactory.cpp
     network/EurostagFactory.cpp
 
     stdcxx/DateTime.cpp

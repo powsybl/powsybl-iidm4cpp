@@ -8,6 +8,9 @@
 #ifndef POWSYBL_IIDM_CONVERTER_IMPORTOPTIONS_HPP
 #define POWSYBL_IIDM_CONVERTER_IMPORTOPTIONS_HPP
 
+#include <set>
+#include <string>
+
 namespace powsybl {
 
 namespace iidm {
@@ -18,12 +21,18 @@ class ImportOptions {
 public:
     ImportOptions() = default;
 
+    ImportOptions& addExtension(const std::string& extension);
+
     bool isThrowExceptionIfExtensionNotFound() const;
 
     ImportOptions& setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound);
 
+    bool withExtension(const std::string& extension) const;
+
 private:
     bool m_throwExceptionIfExtensionNotFound{false};
+
+    std::set<std::string> m_extensions;
 };
 
 }  // namespace converter

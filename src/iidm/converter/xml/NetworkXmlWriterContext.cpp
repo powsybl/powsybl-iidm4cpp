@@ -53,6 +53,10 @@ powsybl::xml::XmlStreamWriter& NetworkXmlWriterContext::getWriter() {
     return m_writer;
 }
 
+bool NetworkXmlWriterContext::isExportedEquipment(const std::string& id) {
+    return m_exportedEquipments.find(id) != m_exportedEquipments.end();
+}
+
 void NetworkXmlWriterContext::setExtensionsWriter(powsybl::xml::XmlStreamWriter& extensionsWriter) {
     m_extensionsWriter = std::ref(extensionsWriter);
 }

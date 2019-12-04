@@ -23,6 +23,11 @@ ExportOptions::ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, co
 
 }
 
+ExportOptions& ExportOptions::addExtension(const std::string& extension) {
+    m_extensions.insert(extension);
+    return *this;
+}
+
 const TopologyLevel& ExportOptions::getTopologyLevel() const {
     return m_topologyLevel;
 }
@@ -75,6 +80,10 @@ ExportOptions& ExportOptions::setTopologyLevel(const TopologyLevel& topologyLeve
 ExportOptions& ExportOptions::setWithBranchSV(bool withBranchSV) {
     m_withBranchSV = withBranchSV;
     return *this;
+}
+
+bool ExportOptions::withExtension(const std::string& extension) const {
+    return m_extensions.empty() || m_extensions.find(extension) != m_extensions.end();
 }
 
 }  // namespace converter

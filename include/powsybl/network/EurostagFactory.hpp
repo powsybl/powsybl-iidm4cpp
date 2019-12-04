@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_EUROSTAGFACTORY_HPP
-#define POWSYBL_IIDM_EUROSTAGFACTORY_HPP
+#ifndef POWSYBL_IIDM_NETWORK_EUROSTAGFACTORY_HPP
+#define POWSYBL_IIDM_NETWORK_EUROSTAGFACTORY_HPP
 
 #include <powsybl/iidm/Network.hpp>
 
@@ -28,4 +28,4 @@ public:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_EUROSTAGFACTORY_HPP
+#endif  // POWSYBL_IIDM_NETWORK_EUROSTAGFACTORY_HPP

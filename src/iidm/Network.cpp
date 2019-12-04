@@ -262,6 +262,14 @@ stdcxx::range<HvdcLine> Network::getHvdcLines() {
     return m_networkIndex.getAll<HvdcLine>();
 }
 
+const Identifiable& Network::getIdentifiable(const std::string& id) const {
+    return get<Identifiable>(id);
+}
+
+Identifiable& Network::getIdentifiable(const std::string& id) {
+    return get<Identifiable>(id);
+}
+
 stdcxx::const_range<Identifiable> Network::getIdentifiables() const {
     return m_networkIndex.getAll<Identifiable>();
 }

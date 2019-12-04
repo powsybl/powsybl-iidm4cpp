@@ -26,7 +26,7 @@ namespace extensions {
 namespace entsoe {
 
 XnodeXmlSerializer::XnodeXmlSerializer() :
-    ExtensionXmlSerializer("xnode", "network", false, "http://www.itesla_project.eu/schema/iidm/ext/xnode/1_0", "xn") {
+    ExtensionXmlSerializer("xnode", "network", "http://www.itesla_project.eu/schema/iidm/ext/xnode/1_0", "xn") {
 }
 
 std::unique_ptr<Extension> XnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {

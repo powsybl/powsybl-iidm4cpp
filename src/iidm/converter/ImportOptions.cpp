@@ -13,6 +13,11 @@ namespace iidm {
 
 namespace converter {
 
+ImportOptions& ImportOptions::addExtension(const std::string& extension) {
+    m_extensions.insert(extension);
+    return *this;
+}
+
 bool ImportOptions::isThrowExceptionIfExtensionNotFound() const {
     return m_throwExceptionIfExtensionNotFound;
 }
@@ -20,6 +25,10 @@ bool ImportOptions::isThrowExceptionIfExtensionNotFound() const {
 ImportOptions& ImportOptions::setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound) {
     m_throwExceptionIfExtensionNotFound = throwExceptionIfExtensionNotFound;
     return *this;
+}
+
+bool ImportOptions::withExtension(const std::string& extension) const {
+    return m_extensions.empty() || m_extensions.find(extension) != m_extensions.end();
 }
 
 }  // namespace converter

@@ -12,6 +12,7 @@
 #include <string>
 
 #include <powsybl/iidm/Extendable.hpp>
+#include <powsybl/iidm/ExtensionProvider.hpp>
 
 namespace powsybl {
 
@@ -27,25 +28,19 @@ namespace xml {
 class NetworkXmlReaderContext;
 class NetworkXmlWriterContext;
 
-class ExtensionXmlSerializer {
+class ExtensionXmlSerializer : public ExtensionProvider {
 public:
     ExtensionXmlSerializer(const std::string& extensionName,
                            const std::string& categoryName, /*const std::type_index& extensionClass,*/
-                           bool subElements, const std::string& namespaceUri, const std::string& namespacePrefix);
+                           const std::string& namespaceUri, const std::string& namespacePrefix);
 
     virtual ~ExtensionXmlSerializer() noexcept = default;
 
-    const std::string& getCategoryName() const;
-
     // std::type_index getExtensionClass();
-
-    const std::string& getExtensionName() const;
 
     const std::string& getNamespacePrefix() const;
 
     const std::string& getNamespaceUri() const;
-
-    bool hasSubElements() const;
 
     virtual std::unique_ptr<Extension> read(Extendable& extendable, NetworkXmlReaderContext& context) const = 0;
 
@@ -56,13 +51,7 @@ protected:
     const E& safeCast(const Extension& extension) const;
 
 private:
-    std::string m_extensionName;
-
-    std::string m_categoryName;
-
     // TODO(mathbagu): extensionClass
-
-    bool m_subElements;
 
     // TODO(mathbague) xsdFileName;
 

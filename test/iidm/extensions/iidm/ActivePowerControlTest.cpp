@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -18,9 +19,10 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/iidm/ActivePowerControl.hpp>
 #include <powsybl/iidm/extensions/iidm/ActivePowerControlXmlSerializer.hpp>
+#include <powsybl/network/BatteryNetworkFactory.hpp>
 
 #include "iidm/converter/ResourceFixture.hpp"
-#include "iidm/extensions/ExtensionRoundTrip.hpp"
+#include "iidm/converter/RoundTrip.hpp"
 
 namespace powsybl {
 
@@ -33,75 +35,43 @@ namespace iidm {
 BOOST_AUTO_TEST_SUITE(ActivePowerControlTestSuite)
 
 Network createNetwork() {
-    Network network("networkId", "sourceFormat");
-    Substation& p1 = network.newSubstation()
-        .setId("P1")
-        .setCountry(Country::FR)
-        .setTso("RTE")
-        .setGeographicalTags({"A"})
-        .add();
-    VoltageLevel& vlgen = p1.newVoltageLevel()
-        .setId("VLGEN")
-        .setNominalVoltage(24.0)
-        .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .add();
-    Bus& ngen = vlgen.getBusBreakerView().newBus()
-        .setId("NGEN")
-        .add();
-    vlgen.newGenerator()
-        .setId("GEN")
-        .setBus(ngen.getId())
-        .setConnectableBus(ngen.getId())
-        .setMinP(-9999.99)
-        .setMaxP(9999.99)
-        .setVoltageRegulatorOn(true)
-        .setTargetV(24.5)
-        .setTargetP(607.0)
-        .setTargetQ(301.0)
-        .add();
-    vlgen.newBattery()
-        .setId("BAT1")
-        .setName("BAT1_NAME")
-        .setBus(ngen.getId())
-        .setConnectableBus(ngen.getId())
-        .setP0(100.0)
-        .setQ0(200.0)
-        .setMinP(-200.0)
-        .setMaxP(300.0)
-        .add();
+    Network network = powsybl::network::BatteryNetworkFactory::create();
+
+    Battery& battery = network.getBattery("BAT");
+    battery.addExtension(Extension::create<ActivePowerControl>(battery, true, 4.0));
+
+    Generator& generator = network.getGenerator("GEN");
+    generator.addExtension(Extension::create<ActivePowerControl>(generator, false, 3.0));
 
     return network;
 }
 
 BOOST_AUTO_TEST_CASE(ActivePowerControlTest) {
     Network network = createNetwork();
-    Generator& gen = network.getGenerator("GEN");
 
-    ActivePowerControl apcGen(gen, true, 1.1);
+    Generator& generator = network.getGenerator("GEN");
+    const ActivePowerControl& apcGen = generator.getExtension<ActivePowerControl>();
     BOOST_CHECK_EQUAL("activePowerControl", apcGen.getName());
-    BOOST_CHECK_CLOSE(1.1, apcGen.getDroop(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(apcGen.isParticipate());
-    BOOST_CHECK(stdcxx::areSame(gen, apcGen.getExtendable<Generator>().get()));
+    BOOST_CHECK_CLOSE(3, apcGen.getDroop(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(!apcGen.isParticipate());
+    BOOST_CHECK(stdcxx::areSame(generator, apcGen.getExtendable<Generator>().get()));
 
-    Battery& battery = network.getBattery("BAT1");
-
-    ActivePowerControl apcBat(battery, false, 2.2);
+    Battery& battery = network.getBattery("BAT");
+    const ActivePowerControl& apcBat = battery.getExtension<ActivePowerControl>();
     BOOST_CHECK_EQUAL("activePowerControl", apcBat.getName());
-    BOOST_CHECK_CLOSE(2.2, apcBat.getDroop(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(!apcBat.isParticipate());
+    BOOST_CHECK_CLOSE(4, apcBat.getDroop(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(apcBat.isParticipate());
     BOOST_CHECK(stdcxx::areSame(battery, apcBat.getExtendable<Battery>().get()));
 }
 
 BOOST_FIXTURE_TEST_CASE(ActivePowerControlXmlSerializerTest, ResourceFixture) {
     Network network = createNetwork();
-    Generator& gen = network.getGenerator("GEN");
 
-    ActivePowerControl ext(gen, true, 1.1);
-    ActivePowerControlXmlSerializer serializer;
+    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::registerExtension("activePowerControl", stdcxx::make_unique<ActivePowerControlXmlSerializer>());
 
-    const std::string& extensionStr = ResourceFixture::getResource("/extensions/iidm/activePowerControl.xml");
+    const std::string& networkStr = ResourceFixture::getResource("/extensions/iidm/activePowerControl.xml");
 
-    ExtensionRoundTrip::runXml(gen, ext, serializer, extensionStr);
+    converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

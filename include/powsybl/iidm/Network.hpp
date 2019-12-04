@@ -86,10 +86,16 @@ public:
     template <typename T>
     T& checkAndAdd(std::unique_ptr<T>&& identifiable);
 
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    stdcxx::CReference<T> find(const std::string& id) const;
+
+    template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    stdcxx::Reference<T> find(const std::string& id);
+
+    template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     const T& get(const std::string& id) const;
 
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
+    template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     T& get(const std::string& id);
 
     const Battery& getBattery(const std::string& id) const;
@@ -175,6 +181,10 @@ public:
     stdcxx::const_range<HvdcLine> getHvdcLines() const;
 
     stdcxx::range<HvdcLine> getHvdcLines();
+
+    const Identifiable& getIdentifiable(const std::string& id) const;
+
+    Identifiable& getIdentifiable(const std::string& id);
 
     stdcxx::const_range<Identifiable> getIdentifiables() const;
 
@@ -295,12 +305,6 @@ public:
     stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
 
     stdcxx::range<VscConverterStation> getVscConverterStations();
-
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
-    stdcxx::CReference<T> find(const std::string& id) const;
-
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
-    stdcxx::Reference<T> find(const std::string& id);
 
     HvdcLineAdder newHvdcLine();
 

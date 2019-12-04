@@ -8,6 +8,9 @@
 #ifndef POWSYBL_IIDM_CONVERTER_EXPORTOPTIONS_HPP
 #define POWSYBL_IIDM_CONVERTER_EXPORTOPTIONS_HPP
 
+#include <set>
+#include <string>
+
 #include <powsybl/iidm/TopologyLevel.hpp>
 
 namespace powsybl {
@@ -22,6 +25,8 @@ public:
 
     ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
                   bool throwExceptionIfExtensionNotFound);
+
+    ExportOptions& addExtension(const std::string& extension);
 
     const TopologyLevel& getTopologyLevel() const;
 
@@ -47,6 +52,8 @@ public:
 
     ExportOptions& setWithBranchSV(bool withBranchSV);
 
+    bool withExtension(const std::string& extension) const;
+
 private:
     bool m_anonymized{false};
 
@@ -59,6 +66,8 @@ private:
     TopologyLevel m_topologyLevel{TopologyLevel::NODE_BREAKER};
 
     bool m_withBranchSV{true};
+
+    std::set<std::string> m_extensions;
 };
 
 }  // namespace converter

@@ -52,6 +52,8 @@ public:
 
     powsybl::xml::XmlStreamWriter& getWriter();
 
+    bool isExportedEquipment(const std::string& id);
+
     void setExtensionsWriter(powsybl::xml::XmlStreamWriter& extensionsWriter);
 
 private:

@@ -15,6 +15,7 @@
 #include <unordered_map>
 
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
@@ -30,6 +31,25 @@ public:
 
     void addExtension(std::unique_ptr<Extension>&& extension);
 
+    template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
+    stdcxx::CReference<E> findExtension() const;
+
+    template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
+    stdcxx::Reference<E> findExtension();
+
+    template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
+    const E& getExtension() const;
+
+    template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
+    E& getExtension();
+
+    stdcxx::const_range<Extension> getExtensions() const;
+
+    stdcxx::range<Extension> getExtensions();
+
+    template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
+    void removeExtension();
+
 private:
     std::map<std::string, std::unique_ptr<Extension> > m_extensionsByName;
 
@@ -39,5 +59,7 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/Extendable.hxx>
 
 #endif  // POWSYBL_IIDM_EXTENDABLE_HPP

@@ -7,6 +7,9 @@
 
 #include <powsybl/iidm/Extendable.hpp>
 
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/adaptor/map.hpp>
+
 #include <powsybl/iidm/Extension.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -20,6 +23,14 @@ void Extendable::addExtension(std::unique_ptr<Extension>&& extension) {
 
     std::reference_wrapper<Extension> refExtension = *it.first->second;
     m_extensionsByType.emplace(std::make_pair(refExtension.get().getType(), refExtension));
+}
+
+stdcxx::const_range<Extension> Extendable::getExtensions() const {
+    return boost::adaptors::values(m_extensionsByName) | boost::adaptors::indirected;
+}
+
+stdcxx::range<Extension> Extendable::getExtensions() {
+    return boost::adaptors::values(m_extensionsByName) | boost::adaptors::indirected;
 }
 
 }  // namespace iidm
