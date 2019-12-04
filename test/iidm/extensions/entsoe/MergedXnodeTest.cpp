@@ -11,10 +11,10 @@
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/iidm/extensions/entsoe/MergedXnode.hpp>
 #include <powsybl/iidm/extensions/entsoe/MergedXnodeXmlSerializer.hpp>
 #include <powsybl/network/EurostagFactory.hpp>

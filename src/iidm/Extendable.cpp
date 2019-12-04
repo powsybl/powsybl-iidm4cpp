@@ -17,8 +17,17 @@ namespace powsybl {
 
 namespace iidm {
 
+Extendable::Extendable(Extendable&& extendable) noexcept :
+    m_extensionsByName(std::move(extendable.m_extensionsByName)),
+    m_extensionsByType(std::move(extendable.m_extensionsByType)) {
+
+    for (auto& it : m_extensionsByName) {
+        it.second->setExtendable(*this);
+    }
+}
+
 void Extendable::addExtension(std::unique_ptr<Extension>&& extension) {
-    extension->setExtendable(stdcxx::ref(*this));
+    extension->setExtendable(*this);
     auto it = m_extensionsByName.emplace(std::make_pair(extension->getName(), std::move(extension)));
 
     std::reference_wrapper<Extension> refExtension = *it.first->second;

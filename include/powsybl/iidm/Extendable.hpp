@@ -25,7 +25,7 @@ class Extendable {
 public:
     Extendable() = default;
 
-    Extendable(Extendable&& extendable) = default;
+    Extendable(Extendable&& extendable) noexcept;
 
     virtual ~Extendable() noexcept = default;
 

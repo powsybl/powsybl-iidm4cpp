@@ -34,7 +34,7 @@ public:
                            const std::string& categoryName, /*const std::type_index& extensionClass,*/
                            const std::string& namespaceUri, const std::string& namespacePrefix);
 
-    virtual ~ExtensionXmlSerializer() noexcept = default;
+    ~ExtensionXmlSerializer() noexcept override = default;
 
     // std::type_index getExtensionClass();
 

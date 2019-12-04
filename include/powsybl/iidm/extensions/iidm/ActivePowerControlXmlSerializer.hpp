@@ -30,7 +30,7 @@ public:
     ~ActivePowerControlXmlSerializer() noexcept override = default;
 };
 
-}  // namespace iidm_extensions
+}  // namespace iidm
 
 }  // namespace extensions
 

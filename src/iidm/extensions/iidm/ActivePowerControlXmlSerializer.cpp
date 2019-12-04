@@ -42,7 +42,8 @@ std::unique_ptr<Extension> ActivePowerControlXmlSerializer::read(Extendable& ext
     if (stdcxx::isInstanceOf<Battery>(extendable)) {
         auto& battery = dynamic_cast<Battery&>(extendable);
         return stdcxx::make_unique<Extension, ActivePowerControl>(battery, participate, droop);
-    } else if (stdcxx::isInstanceOf<Generator>(extendable)) {
+    }
+    if (stdcxx::isInstanceOf<Generator>(extendable)) {
         auto& generator = dynamic_cast<Generator&>(extendable);
         return stdcxx::make_unique<Extension, ActivePowerControl>(generator, participate, droop);
     }

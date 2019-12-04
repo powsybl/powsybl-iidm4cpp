@@ -11,10 +11,10 @@
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/iidm/extensions/entsoe/Xnode.hpp>
 #include <powsybl/iidm/extensions/entsoe/XnodeXmlSerializer.hpp>
 

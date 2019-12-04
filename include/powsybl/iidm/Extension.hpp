@@ -43,6 +43,8 @@ public:
 
     virtual const std::type_index& getType() const = 0;
 
+    void setExtendable(Extendable& extendable);
+
     void setExtendable(const stdcxx::Reference<Extendable>& extendable);
 
 private:

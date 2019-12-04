@@ -44,10 +44,10 @@ void checkExtensionsNotFound(const NetworkXmlReaderContext& context, const std::
 
         if (context.getOptions().isThrowExceptionIfExtensionNotFound()) {
             throw PowsyblException(message);
-        } else {
-            logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
-            logger.error(message);
         }
+
+        logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
+        logger.error(message);
     }
 }
 

@@ -18,6 +18,10 @@ Extension::Extension(powsybl::iidm::Extendable& extendable) :
     m_extendable(extendable) {
 }
 
+void Extension::setExtendable(powsybl::iidm::Extendable& extendable) {
+    setExtendable(stdcxx::ref(extendable));
+}
+
 void Extension::setExtendable(const stdcxx::Reference<Extendable>& extendable) {
     assertExtendable(extendable);
 
