@@ -20,6 +20,11 @@ namespace powsybl {
 
 namespace iidm {
 
+NetworkIndex::NetworkIndex(NetworkIndex&& networkIndex) noexcept :
+    m_objectsById(std::move(networkIndex.m_objectsById)),
+    m_objectsByType(std::move(networkIndex.m_objectsByType)) {
+}
+
 void NetworkIndex::checkId(const std::string& id) {
     checkNotEmpty(id, "Invalid id '" + id + "'");
 }

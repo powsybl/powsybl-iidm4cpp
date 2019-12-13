@@ -26,7 +26,7 @@ public:
 
     NetworkIndex(const NetworkIndex& networkIndex) = delete;
 
-    NetworkIndex(NetworkIndex&&) = default;
+    NetworkIndex(NetworkIndex&& networkIndex) noexcept;
 
     ~NetworkIndex() noexcept = default;
 
@@ -62,7 +62,7 @@ private:
     static void checkId(const std::string& id);
 
 private:
-    using IdentifiableById = std::unordered_map<std::string, std::unique_ptr<Identifiable> >;
+    using IdentifiableById = std::map<std::string, std::unique_ptr<Identifiable> >;
 
     using Identifiables = std::vector<std::reference_wrapper<Identifiable> >;
 
