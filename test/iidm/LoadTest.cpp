@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     adder.setQ0(40.0);
 
     adder.setLoadType(static_cast<LoadType>(5));
-    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected load type value: 5");
+    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected LoadType value: 5");
     adder.setLoadType(LoadType::AUXILIARY);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'LOAD1' already exists (powsybl::iidm::Load)");
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(load1, load1.setLoadType(LoadType::FICTITIOUS)));
     BOOST_CHECK_EQUAL(LoadType::FICTITIOUS, load1.getLoadType());
-    POWSYBL_ASSERT_THROW(load1.setLoadType(static_cast<LoadType>(7)), AssertionError, "Unexpected load type value: 7");
+    POWSYBL_ASSERT_THROW(load1.setLoadType(static_cast<LoadType>(7)), AssertionError, "Unexpected LoadType value: 7");
 
     BOOST_TEST(stdcxx::areSame(load1, load1.setP0(100)));
     BOOST_CHECK_CLOSE(100, load1.getP0(), std::numeric_limits<double>::epsilon());

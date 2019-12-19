@@ -12,8 +12,6 @@
 #include <set>
 #include <string>
 
-#include <iostream>
-
 namespace powsybl {
 
 namespace iidm {

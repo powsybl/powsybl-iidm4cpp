@@ -266,7 +266,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(step, step.setX(30.0)));
     BOOST_CHECK_CLOSE(30.0, step.getX(), std::numeric_limits<double>::epsilon());
 
-    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(static_cast<PhaseTapChanger::RegulationMode>(7)), AssertionError, "Unexpected regulation mode value: 7");
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(static_cast<PhaseTapChanger::RegulationMode>(7)), AssertionError, "Unexpected RegulationMode value: 7");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
 
     Terminal& terminal = network.getLoad("LOAD1").getTerminal();
@@ -362,7 +362,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
     adder.setRegulationMode(static_cast<PhaseTapChanger::RegulationMode>(7));
-    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected regulation mode value: 7");
+    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected RegulationMode value: 7");
 
     adder.setRegulating(false).setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP);
     BOOST_CHECK_NO_THROW(adder.add());

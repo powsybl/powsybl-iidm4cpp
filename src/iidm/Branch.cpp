@@ -10,6 +10,7 @@
 #include <limits>
 
 #include <powsybl/AssertionError.hpp>
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
@@ -231,31 +232,18 @@ void Branch::setCurrentLimits(const Branch::Side& side, std::unique_ptr<CurrentL
     }
 }
 
-const std::array<std::string, 2>& getSideNames() {
-    static std::array<std::string, 2> s_sideNames {{
+namespace Enum {
+
+template <>
+const std::initializer_list<std::string>& getNames<Branch::Side>() {
+    static std::initializer_list<std::string> s_sideNames{
         "ONE",
         "TWO"
-    }};
+    };
     return s_sideNames;
 }
 
-Branch::Side getSide(const std::string& sideName) {
-    const auto& names = getSideNames();
-    const auto& it = std::find(names.cbegin(), names.cend(), sideName);
-    if (it == names.cend()) {
-        throw PowsyblException(logging::format("Unable to retrieve side '%1%'", sideName));
-    }
-    return static_cast<Branch::Side>(it - names.cbegin());
-}
-
-std::string getSideName(const Branch::Side& side) {
-    return logging::toString(getSideNames(), side);
-}
-
-std::ostream& operator<<(std::ostream& stream, const Branch::Side& side) {
-    stream << getSideName(side);
-    return stream;
-}
+}  // namespace Enum
 
 }  // namespace iidm
 

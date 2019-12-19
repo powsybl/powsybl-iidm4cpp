@@ -7,8 +7,9 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/PowsyblException.hpp>
+#include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Country.hpp>
+#include <powsybl/iidm/Enum.hpp>
 
 #include "AssertionUtils.hpp"
 
@@ -19,14 +20,15 @@ namespace iidm {
 BOOST_AUTO_TEST_SUITE(CountryTestSuite)
 
 BOOST_AUTO_TEST_CASE(getCountryCodeTest) {
-    BOOST_CHECK_EQUAL(u8"FR", getCountryCode(Country::FR));
-    BOOST_CHECK_EQUAL(u8"BE", getCountryCode(Country::BE));
+    BOOST_CHECK_EQUAL(u8"FR", Enum::toString(Country::FR));
+    BOOST_CHECK_EQUAL(u8"BE", Enum::toString(Country::BE));
 }
 
 BOOST_AUTO_TEST_CASE(getCountryFromCodeTest) {
-    POWSYBL_ASSERT_ENUM_EQ(Country::FR, getCountryFromCode(u8"FR"));
-    POWSYBL_ASSERT_ENUM_EQ(Country::BE, getCountryFromCode(u8"BE"));
-    POWSYBL_ASSERT_THROW(getCountryFromCode(u8"INVALID"), PowsyblException, "Unable to retrieve country from ISO code 'INVALID'");
+    POWSYBL_ASSERT_ENUM_EQ(Country::FR, Enum::fromString<Country>(u8"FR"));
+    POWSYBL_ASSERT_ENUM_EQ(Country::BE, Enum::fromString<Country>(u8"BE"));
+
+    POWSYBL_ASSERT_THROW(Enum::fromString<Country>(u8"INVALID"), AssertionError, "Unexpected Country name: INVALID");
 }
 
 BOOST_AUTO_TEST_CASE(getCountryNameTest) {

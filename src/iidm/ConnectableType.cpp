@@ -7,20 +7,17 @@
 
 #include <powsybl/iidm/ConnectableType.hpp>
 
-#include <array>
-
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/iidm/Enum.hpp>
 
 namespace powsybl {
 
-namespace logging {
+namespace iidm {
 
-/**
- * toString template specialization for ConnectableType
- */
+namespace Enum {
+
 template <>
-std::string toString(const iidm::ConnectableType& value) {
-    static std::array<std::string, 11> s_typeNames {{
+const std::initializer_list<std::string>& getNames<ConnectableType>() {
+    static std::initializer_list<std::string> s_typeNames {
         "BUSBAR_SECTION",
         "LINE",
         "TWO_WINDINGS_TRANSFORMER",
@@ -32,20 +29,11 @@ std::string toString(const iidm::ConnectableType& value) {
         "DANGLING_LINE",
         "STATIC_VAR_COMPENSATOR",
         "HVDC_CONVERTER_STATION"
-    }};
-
-    return toString(s_typeNames, value);
+    };
+    return s_typeNames;
 }
 
-}  // namespace logging
-
-namespace iidm {
-
-std::ostream& operator<<(std::ostream& stream, const ConnectableType& type) {
-    stream << logging::toString(type);
-
-    return stream;
-}
+}  // namespace Enum
 
 }  // namespace iidm
 

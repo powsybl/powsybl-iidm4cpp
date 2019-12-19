@@ -9,6 +9,7 @@
 
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Branch.hpp>
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
@@ -32,11 +33,11 @@ Terminal& TerminalRefXml::readTerminalRef(Network& network, const std::string& i
         return dynamic_cast<Injection&>(identifiable).getTerminal();
     }
     if (stdcxx::isInstanceOf<Branch>(identifiable)) {
-        return dynamic_cast<Branch&>(identifiable).getTerminal(getSide(side));
+        return dynamic_cast<Branch&>(identifiable).getTerminal(Enum::fromString<Branch::Side>(side));
     }
     if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
         auto& twt = dynamic_cast<ThreeWindingsTransformer&>(identifiable);
-        return twt.getTerminal(getThreeWindingsTransformerSide(side));
+        return twt.getTerminal(Enum::fromString<ThreeWindingsTransformer::Side>(side));
     }
 
     throw AssertionError(logging::format("Unexpected Identifiable instance: %1%", stdcxx::demangle(identifiable)));
@@ -62,10 +63,10 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
             // nothing to do
         } else if (stdcxx::isInstanceOf<Branch>(c.get())) {
             const auto& branch = dynamic_cast<const Branch&>(c.get());
-            writer.writeAttribute(SIDE, getSideName(branch.getSide(terminal)));
+            writer.writeAttribute(SIDE, Enum::toString(branch.getSide(terminal)));
         } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(c.get())) {
             const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(c.get());
-            writer.writeAttribute(SIDE, getThreeWindingsTransformerSideName(twt.getSide(terminal)));
+            writer.writeAttribute(SIDE, Enum::toString(twt.getSide(terminal)));
         } else {
             throw AssertionError(logging::format("Unexpected Connectable instance: %1%", stdcxx::demangle(c.get())));
         }

@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(svc, svc.setRegulationMode(StaticVarCompensator::RegulationMode::OFF)));
     BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::OFF, svc.getRegulationMode());
-    POWSYBL_ASSERT_THROW(svc.setRegulationMode(static_cast<StaticVarCompensator::RegulationMode>(5)), AssertionError, "Unexpected regulation mode value: 5");
+    POWSYBL_ASSERT_THROW(svc.setRegulationMode(static_cast<StaticVarCompensator::RegulationMode>(5)), AssertionError, "Unexpected RegulationMode value: 5");
 
     BOOST_TEST(stdcxx::areSame(svc, svc.setVoltageSetpoint(400)));
     BOOST_CHECK_CLOSE(400, svc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());

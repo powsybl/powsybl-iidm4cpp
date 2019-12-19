@@ -6,30 +6,14 @@
  */
 
 #include <powsybl/iidm/StaticVarCompensator.hpp>
+
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
 #include "ValidationUtils.hpp"
 
 namespace powsybl {
-
-namespace logging {
-
-/**
- * toString template specialization for RegulationMode
- */
-template <>
-std::string toString(const iidm::StaticVarCompensator::RegulationMode& value) {
-    static std::array<std::string, 3> s_regulationModeNames {{
-        "VOLTAGE",
-        "REACTIVE_POWER",
-        "OFF"
-    }};
-
-    return toString(s_regulationModeNames, value);
-}
-
-}  // namespace logging
 
 namespace iidm {
 
@@ -75,30 +59,8 @@ double StaticVarCompensator::getReactivePowerSetpoint() const {
     return m_reactivePowerSetpoint.at(m_network.get().getVariantIndex());
 }
 
-const std::array<std::string, 3>& getStaticVarCompensatorRegulationNames() {
-    static std::array<std::string, 3> s_staticVarCompensatorRegulationNames {{
-        "VOLTAGE",
-        "REACTIVE_POWER",
-        "OFF"
-    }};
-    return s_staticVarCompensatorRegulationNames;
-}
-
-StaticVarCompensator::RegulationMode StaticVarCompensator::getRegulationMode(const std::string& regulationModeName) {
-    const auto& names = getStaticVarCompensatorRegulationNames();
-    const auto& it = std::find(names.cbegin(), names.cend(), regulationModeName);
-    if (it == names.cend()) {
-        throw PowsyblException(logging::format("Unable to retrieve regulation mode from '%1%'", regulationModeName));
-    }
-    return static_cast<RegulationMode>(it - names.cbegin());
-}
-
 const StaticVarCompensator::RegulationMode& StaticVarCompensator::getRegulationMode() const {
     return m_regulationMode.at(m_network.get().getVariantIndex());
-}
-
-std::string StaticVarCompensator::getRegulationModeName(const StaticVarCompensator::RegulationMode& regulationMode) {
-    return logging::toString(getStaticVarCompensatorRegulationNames(), regulationMode);
 }
 
 const std::string& StaticVarCompensator::getTypeDescription() const {
@@ -152,11 +114,19 @@ StaticVarCompensator& StaticVarCompensator::setVoltageSetpoint(double voltageSet
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& stream, const StaticVarCompensator::RegulationMode& mode) {
-    stream << logging::toString(mode);
+namespace Enum {
 
-    return stream;
+template <>
+const std::initializer_list<std::string>& getNames<StaticVarCompensator::RegulationMode>() {
+    static std::initializer_list<std::string> s_staticVarCompensatorRegulationNames {
+        "VOLTAGE",
+        "REACTIVE_POWER",
+        "OFF"
+    };
+    return s_staticVarCompensatorRegulationNames;
 }
+
+}  // namespace Enum
 
 }  // namespace iidm
 

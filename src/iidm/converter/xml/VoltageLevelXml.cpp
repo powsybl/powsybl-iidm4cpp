@@ -51,7 +51,7 @@ VoltageLevel& VoltageLevelXml::readRootElementAttributes(VoltageLevelAdder& adde
     auto nominalVoltage = context.getReader().getAttributeValue<double>(NOMINAL_V);
     double lowVoltageLimit = context.getReader().getOptionalAttributeValue(LOW_VOLTAGE_LIMIT, stdcxx::nan());
     double highVoltageLimit = context.getReader().getOptionalAttributeValue(HIGH_VOLTAGE_LIMIT, stdcxx::nan());
-    const TopologyKind& topologyKing = getTopologyKind(context.getReader().getAttributeValue(TOPOLOGY_KIND));
+    const auto& topologyKing = Enum::fromString<TopologyKind>(context.getReader().getAttributeValue(TOPOLOGY_KIND));
     return adder.setNominalVoltage(nominalVoltage)
                 .setLowVoltageLimit(lowVoltageLimit)
                 .setHighVoltageLimit(highVoltageLimit)
@@ -204,7 +204,7 @@ void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLeve
     context.getWriter().writeOptionalAttribute(HIGH_VOLTAGE_LIMIT, voltageLevel.getHighVoltageLimit());
     const TopologyLevel& topologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), context.getOptions().getTopologyLevel());
     const TopologyKind& topologyKind = getTopologyKind(topologyLevel);
-    context.getWriter().writeAttribute(TOPOLOGY_KIND, getTopologyKindName(topologyKind));
+    context.getWriter().writeAttribute(TOPOLOGY_KIND, Enum::toString(topologyKind));
 }
 
 void VoltageLevelXml::writeShuntCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {

@@ -137,7 +137,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': converter mode is invalid");
     adder.setConvertersMode(static_cast<HvdcLine::ConvertersMode>(5));
 
-    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected converter mode value: 5");
+    POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected ConvertersMode value: 5");
     adder.setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': Nominal voltage is undefined");
@@ -199,7 +199,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER)));
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
-    POWSYBL_ASSERT_THROW(hvdc.setConvertersMode(static_cast<HvdcLine::ConvertersMode>(7)), AssertionError, "Unexpected converter mode value: 7");
+    POWSYBL_ASSERT_THROW(hvdc.setConvertersMode(static_cast<HvdcLine::ConvertersMode>(7)), AssertionError, "Unexpected ConvertersMode value: 7");
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setMaxP(200.0)));
     BOOST_CHECK_CLOSE(200.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());

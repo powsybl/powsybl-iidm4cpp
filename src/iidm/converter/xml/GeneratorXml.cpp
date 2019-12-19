@@ -36,7 +36,7 @@ const char* GeneratorXml::getRootElementName() const {
 }
 
 Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdder, NetworkXmlReaderContext& context) const {
-    EnergySource energySource = getEnergySource(context.getReader().getAttributeValue(ENERGY_SOURCE));
+    const auto& energySource = Enum::fromString<EnergySource>(context.getReader().getAttributeValue(ENERGY_SOURCE));
     const auto& minP = context.getReader().getAttributeValue<double>(MIN_P);
     const auto& maxP = context.getReader().getAttributeValue<double>(MAX_P);
     double ratedS = context.getReader().getOptionalAttributeValue(RATED_S, stdcxx::nan());
@@ -77,7 +77,7 @@ void GeneratorXml::readSubElements(Generator& generator, NetworkXmlReaderContext
 }
 
 void GeneratorXml::writeRootElementAttributes(const Generator& generator, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeAttribute(ENERGY_SOURCE, getEnergySourceName(generator.getEnergySource()));
+    context.getWriter().writeAttribute(ENERGY_SOURCE, Enum::toString(generator.getEnergySource()));
     context.getWriter().writeAttribute(MIN_P, generator.getMinP());
     context.getWriter().writeAttribute(MAX_P, generator.getMaxP());
     context.getWriter().writeOptionalAttribute(RATED_S, generator.getRatedS());

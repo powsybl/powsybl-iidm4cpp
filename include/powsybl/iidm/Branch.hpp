@@ -19,7 +19,7 @@ namespace iidm {
 
 class Branch : public Connectable {
 public:
-    enum class Side : unsigned int {
+    enum class Side : unsigned char {
         ONE,
         TWO
     };
@@ -128,12 +128,6 @@ private:
 
     std::unique_ptr<CurrentLimits> m_limits2;
 };
-
-Branch::Side getSide(const std::string& sideName);
-
-std::string getSideName(const Branch::Side& side);
-
-std::ostream& operator<<(std::ostream& stream, const Branch::Side& side);
 
 }  // namespace iidm
 

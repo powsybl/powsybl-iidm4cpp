@@ -38,7 +38,7 @@ const char* LoadXml::getRootElementName() const {
 
 Load& LoadXml::readRootElementAttributes(LoadAdder& loadAdder, NetworkXmlReaderContext& context) const {
     const std::string& loadTypeName = context.getReader().getOptionalAttributeValue(LOAD_TYPE, "");
-    LoadType loadType = loadTypeName.empty() ? LoadType::UNDEFINED : getLoadType(loadTypeName);
+    const auto& loadType = loadTypeName.empty() ? LoadType::UNDEFINED : Enum::fromString<LoadType>(loadTypeName);
     const auto& p0 = context.getReader().getAttributeValue<double>(P0);
     const auto& q0 = context.getReader().getAttributeValue<double>(Q0);
     readNodeOrBus(loadAdder, context);
@@ -57,7 +57,7 @@ void LoadXml::readSubElements(Load& load, NetworkXmlReaderContext& context) cons
 }
 
 void LoadXml::writeRootElementAttributes(const Load& load, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeAttribute(LOAD_TYPE, getLoadTypeName(load.getLoadType()));
+    context.getWriter().writeAttribute(LOAD_TYPE, Enum::toString(load.getLoadType()));
     context.getWriter().writeOptionalAttribute(P0, load.getP0());
     context.getWriter().writeOptionalAttribute(Q0, load.getQ0());
     writeNodeOrBus(load.getTerminal(), context);

@@ -7,7 +7,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/PowsyblException.hpp>
+#include <powsybl/AssertionError.hpp>
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
 
@@ -40,9 +41,9 @@ BOOST_AUTO_TEST_CASE(getTopologyKindTest)
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, getTopologyKind(TopologyLevel::BUS_BREAKER));
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, getTopologyKind(TopologyLevel::BUS_BRANCH));
 
-    POWSYBL_ASSERT_THROW(getTopologyKind(static_cast<TopologyLevel>(5)), PowsyblException, "No topology kind associated to topology level 5");
+    POWSYBL_ASSERT_THROW(Enum::toString(static_cast<TopologyLevel>(5)), AssertionError, "Unexpected TopologyLevel value: 5");
 
-    POWSYBL_ASSERT_THROW(getTopologyKind("INVALID"), PowsyblException, "Unable to retrieve topology kind from 'INVALID'");
+    POWSYBL_ASSERT_THROW(Enum::fromString<TopologyLevel>(u8"INVALID"), AssertionError, "Unexpected TopologyLevel name: INVALID");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

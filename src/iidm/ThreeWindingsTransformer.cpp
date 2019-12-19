@@ -5,32 +5,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
-#include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 
 #include "ValidationUtils.hpp"
 
 namespace powsybl {
-
-namespace logging {
-
-/**
- * toString template specialization for ThreeWindingsTransformer::Side
- */
-template <>
-std::string toString(const iidm::ThreeWindingsTransformer::Side& value) {
-    static std::array<std::string, 3> s_sideNames {{
-        "ONE",
-        "TWO",
-        "THREE"
-    }};
-
-    return toString(s_sideNames, value);
-}
-
-}  // namespace logging
 
 namespace iidm {
 
@@ -196,28 +180,6 @@ const Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) const {
     }
 }
 
-const std::array<std::string, 3>& getThreeWindingsTransformerSideNames() {
-    static std::array<std::string, 3> s_threeWindingsTransformerSideNames {{
-       "ONE",
-       "TWO",
-       "THREE"
-    }};
-    return s_threeWindingsTransformerSideNames;
-}
-
-ThreeWindingsTransformer::Side getThreeWindingsTransformerSide(const std::string& sideName) {
-    const auto& names = getThreeWindingsTransformerSideNames();
-    const auto& it = std::find(names.cbegin(), names.cend(), sideName);
-    if (it == names.cend()) {
-        throw PowsyblException(logging::format("Unable to retrieve side '%1%'", sideName));
-    }
-    return static_cast<ThreeWindingsTransformer::Side>(it - names.cbegin());
-}
-
-std::string getThreeWindingsTransformerSideName(const ThreeWindingsTransformer::Side& side) {
-    return logging::toString(getThreeWindingsTransformerSideNames(), side);
-}
-
 Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) {
     const auto& terminal = static_cast<const ThreeWindingsTransformer*>(this)->getTerminal(side);
 
@@ -241,11 +203,19 @@ void ThreeWindingsTransformer::reduceVariantArraySize(unsigned long number) {
     }
 }
 
-std::ostream& operator<<(std::ostream& stream, const ThreeWindingsTransformer::Side& side) {
-    stream << logging::toString(side);
+namespace Enum {
 
-    return stream;
+template <>
+const std::initializer_list<std::string>& getNames<ThreeWindingsTransformer::Side>() {
+    static std::initializer_list<std::string> s_threeWindingsTransformerSideNames {
+        "ONE",
+        "TWO",
+        "THREE"
+    };
+    return s_threeWindingsTransformerSideNames;
 }
+
+}  // namespace Enum
 
 }  // namespace iidm
 

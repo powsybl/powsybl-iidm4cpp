@@ -7,37 +7,11 @@
 
 #include <powsybl/iidm/TopologyLevel.hpp>
 
-#include <array>
-
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
 namespace powsybl {
-
-namespace iidm {
-
-const std::array<std::string, 3>& getTopologyLevelNames() {
-    static std::array<std::string, 3> s_topologyLevelNames {{
-        "NODE_BREAKER",
-        "BUS_BREAKER",
-        "BUS_BRANCH"
-    }};
-    return s_topologyLevelNames;
-}
-
-}  // namespace iidm
-
-namespace logging {
-
-/**
- * toString template specialization for TopologyLevel
- */
-template <>
-std::string toString(const iidm::TopologyLevel& value) {
-    return toString(iidm::getTopologyLevelNames(), value);
-}
-
-}  // namespace logging
 
 namespace iidm {
 
@@ -60,11 +34,19 @@ TopologyKind getTopologyKind(const TopologyLevel& topologyLevel) {
     }
 }
 
-std::ostream& operator<<(std::ostream& stream, const TopologyLevel& topologyLevel) {
-    stream << logging::toString(topologyLevel);
+namespace Enum {
 
-    return stream;
+template <>
+const std::initializer_list<std::string>& getNames<TopologyLevel>() {
+    static std::initializer_list<std::string> s_topologyLevelNames {
+        "NODE_BREAKER",
+        "BUS_BREAKER",
+        "BUS_BRANCH"
+    };
+    return s_topologyLevelNames;
 }
+
+}  // namespace Enum
 
 }  // namespace iidm
 

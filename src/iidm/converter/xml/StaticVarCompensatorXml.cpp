@@ -7,6 +7,8 @@
 
 #include "StaticVarCompensatorXml.hpp"
 
+#include <powsybl/iidm/Enum.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -33,7 +35,7 @@ StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticV
     const auto& bMax = context.getReader().getAttributeValue<double>(B_MAX);
     double voltageSetpoint = context.getReader().getOptionalAttributeValue(VOLTAGE_SET_POINT, stdcxx::nan());
     double reactivePowerSetpoint = context.getReader().getOptionalAttributeValue(REACTIVE_POWER_SET_POINT, stdcxx::nan());
-    StaticVarCompensator::RegulationMode regulationMode = StaticVarCompensator::getRegulationMode(context.getReader().getAttributeValue(REGULATION_MODE));
+    const auto& regulationMode = Enum::fromString<StaticVarCompensator::RegulationMode>(context.getReader().getAttributeValue(REGULATION_MODE));
     adder.setBmin(bMin)
             .setBmax(bMax)
             .setVoltageSetpoint(voltageSetpoint)
@@ -56,7 +58,7 @@ void StaticVarCompensatorXml::writeRootElementAttributes(const StaticVarCompensa
     context.getWriter().writeAttribute(B_MAX, svc.getBmax());
     context.getWriter().writeAttribute(VOLTAGE_SET_POINT, svc.getVoltageSetpoint());
     context.getWriter().writeAttribute(REACTIVE_POWER_SET_POINT, svc.getReactivePowerSetpoint());
-    context.getWriter().writeAttribute(REGULATION_MODE, StaticVarCompensator::getRegulationModeName(svc.getRegulationMode()));
+    context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(svc.getRegulationMode()));
     writeNodeOrBus(svc.getTerminal(), context);
     writePQ(svc.getTerminal(), context.getWriter());
 }

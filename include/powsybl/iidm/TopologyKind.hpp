@@ -14,16 +14,10 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class TopologyKind : unsigned int {
+enum class TopologyKind : unsigned char {
     NODE_BREAKER,
     BUS_BREAKER
 };
-
-TopologyKind getTopologyKind(const std::string& topologyKindName);
-
-std::string getTopologyKindName(const TopologyKind& topologyKind);
-
-std::ostream& operator<<(std::ostream& stream, const TopologyKind& topologyKind);
 
 }  // namespace iidm
 

@@ -16,15 +16,11 @@ namespace iidm {
 
 class StaticVarCompensator : public Injection {
 public:
-    enum class RegulationMode : unsigned int {
+    enum class RegulationMode : unsigned char {
         VOLTAGE,
         REACTIVE_POWER,
         OFF
     };
-
-    static RegulationMode getRegulationMode(const std::string& regulationModeName);
-
-    static std::string getRegulationModeName(const RegulationMode& regulationMode);
 
 public:
     StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
@@ -75,8 +71,6 @@ private:
 
     std::vector<RegulationMode> m_regulationMode;
 };
-
-std::ostream& operator<<(std::ostream& stream, const StaticVarCompensator::RegulationMode& mode);
 
 }  // namespace iidm
 

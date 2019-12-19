@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class TopologyLevel {
+enum class TopologyLevel : unsigned char {
     NODE_BREAKER,
     BUS_BREAKER,
     BUS_BRANCH
@@ -25,8 +25,6 @@ enum class TopologyLevel {
 TopologyLevel getMinTopologyLevel(const TopologyKind& topologyKind, const TopologyLevel& topologyLevel);
 
 TopologyKind getTopologyKind(const TopologyLevel& topologyLevel);
-
-std::ostream& operator<<(std::ostream& stream, const TopologyLevel& topologyLevel);
 
 }  // namespace iidm
 

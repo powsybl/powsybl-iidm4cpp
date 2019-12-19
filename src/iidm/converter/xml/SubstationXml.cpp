@@ -42,7 +42,7 @@ const char* SubstationXml::getRootElementName() const {
 Substation& SubstationXml::readRootElementAttributes(SubstationAdder& adder, NetworkXmlReaderContext& context) const {
     const std::string& countryCode = context.getReader().getOptionalAttributeValue(COUNTRY, "");
     if (!countryCode.empty()) {
-        const Country& country = getCountryFromCode(context.getAnonymizer().deanonymizeString(countryCode));
+        const auto& country = Enum::fromString<Country>(context.getAnonymizer().deanonymizeString(countryCode));
         adder.setCountry(country);
     }
 
@@ -81,7 +81,7 @@ void SubstationXml::readSubElements(Substation& substation, NetworkXmlReaderCont
 void SubstationXml::writeRootElementAttributes(const Substation& substation, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     const auto& country = substation.getCountry();
     if (country) {
-        context.getWriter().writeAttribute(COUNTRY, context.getAnonymizer().anonymizeString(getCountryCode(*country)));
+        context.getWriter().writeAttribute(COUNTRY, context.getAnonymizer().anonymizeString(Enum::toString(*country)));
     }
 
     if (!substation.getTso().empty()) {

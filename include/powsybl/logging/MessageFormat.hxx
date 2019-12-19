@@ -26,7 +26,7 @@ inline void format(boost::format& /*fmt*/) {
 }
 
 template <typename Arg, typename... Args>
-inline void format(boost::format& fmt, const Arg& arg, const Args&... args) {
+void format(boost::format& fmt, const Arg& arg, const Args&... args) {
     fmt % arg;
     format(fmt, args...);
 }
@@ -94,12 +94,6 @@ std::string toString(const stdcxx::range<T>& range) {
     oss << "}";
 
     return oss.str();
-}
-
-template <std::size_t N, typename T, typename>
-std::string toString(const std::array<std::string, N>& names, T value) {
-    auto val = static_cast<unsigned int>(value);
-    return (val < N) ? names.at(val) : format("%1%", val);
 }
 
 template <typename T>

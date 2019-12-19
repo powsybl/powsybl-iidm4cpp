@@ -19,7 +19,7 @@ class TwoWindingsTransformer;
 
 class PhaseTapChanger : public TapChanger<TwoWindingsTransformer, PhaseTapChanger, PhaseTapChangerStep> {
 public:
-    enum class RegulationMode : unsigned int {
+    enum class RegulationMode : unsigned char {
         CURRENT_LIMITER,
         ACTIVE_POWER_CONTROL,
         FIXED_TAP
@@ -56,12 +56,6 @@ private:
 
     std::vector<double> m_regulationValue;
 };
-
-PhaseTapChanger::RegulationMode getRegulationMode(const std::string& regulationModeName);
-
-std::string getRegulationModeName(const PhaseTapChanger::RegulationMode& regulationMode);
-
-std::ostream& operator<<(std::ostream& stream, const PhaseTapChanger::RegulationMode& mode);
 
 }  // namespace iidm
 

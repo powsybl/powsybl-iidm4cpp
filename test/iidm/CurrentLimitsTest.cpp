@@ -155,8 +155,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(!line.getCurrentLimits(Branch::Side::TWO));
     BOOST_TEST(!cLine.getCurrentLimits(Branch::Side::TWO));
 
-    POWSYBL_ASSERT_THROW(line.getCurrentLimits(static_cast<Branch::Side>(5)), AssertionError, "Unexpected side value: 5");
-    POWSYBL_ASSERT_THROW(cLine.getCurrentLimits(static_cast<Branch::Side>(6)), AssertionError, "Unexpected side value: 6");
+    POWSYBL_ASSERT_THROW(line.getCurrentLimits(static_cast<Branch::Side>(5)), AssertionError, "Unexpected Side value: 5");
+    POWSYBL_ASSERT_THROW(cLine.getCurrentLimits(static_cast<Branch::Side>(6)), AssertionError, "Unexpected Side value: 6");
 
     CurrentLimits limits = line.getCurrentLimits1().get();
     const CurrentLimits& cLimits = limits;
@@ -401,8 +401,8 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
     BOOST_TEST(!line.checkPermanentLimit2());
     BOOST_TEST(!line.checkPermanentLimit(Branch::Side::TWO));
 
-    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(5), 3.0), AssertionError, "Unexpected side value: 5");
-    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(6)), AssertionError, "Unexpected side value: 6");
+    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(5), 3.0), AssertionError, "Unexpected Side value: 5");
+    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(6)), AssertionError, "Unexpected Side value: 6");
 
     BOOST_TEST(!line.isOverloaded(2.0));
     BOOST_TEST(!line.isOverloaded());
@@ -571,8 +571,8 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
-    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(5), 3.0), AssertionError, "Unexpected side value: 5");
-    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(6)), AssertionError, "Unexpected side value: 6");
+    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(5), 3.0), AssertionError, "Unexpected Side value: 5");
+    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(6)), AssertionError, "Unexpected Side value: 6");
 
     BOOST_CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), line.getOverloadDuration());
     t1.setP(4.5);

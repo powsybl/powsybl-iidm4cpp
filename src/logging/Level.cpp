@@ -9,7 +9,9 @@
 
 #include <array>
 
+#include <powsybl/AssertionError.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/demangle.hpp>
 
 namespace powsybl {
 
@@ -24,7 +26,11 @@ std::string getLevelName(const Level& level) {
         "ERROR"
     }};
 
-    return toString(s_levelNames, level);
+    auto index = static_cast<unsigned char>(level);
+    if (index >= s_levelNames.size()) {
+        throw powsybl::AssertionError(powsybl::logging::format("Unexpected %1% value: %2%", stdcxx::simpleClassName<Level>(), index));
+    }
+    return *(s_levelNames.begin() + index);
 }
 
 }  // namespace logging

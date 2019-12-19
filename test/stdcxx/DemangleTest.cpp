@@ -7,8 +7,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <iostream>
-
 #include <powsybl/stdcxx/demangle.hpp>
 
 namespace stdcxx {

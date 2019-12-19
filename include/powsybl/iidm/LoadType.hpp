@@ -18,12 +18,6 @@ enum class LoadType : unsigned int {
     FICTITIOUS
 };
 
-LoadType getLoadType(const std::string& loadTypeName);
-
-std::string getLoadTypeName(const LoadType& loadType);
-
-std::ostream& operator<<(std::ostream& stream, const LoadType& type);
-
 }  // namespace iidm
 
 }  // namespace powsybl

@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/EnergySource.hpp>
+#include <powsybl/iidm/Enum.hpp>
 
 #include "AssertionUtils.hpp"
 
@@ -19,12 +20,12 @@ BOOST_AUTO_TEST_SUITE(EnergySourceTestSuite)
 
 BOOST_AUTO_TEST_CASE(energySourceName)
 {
-    POWSYBL_ASSERT_ENUM_EQ(EnergySource::HYDRO, getEnergySource(getEnergySourceName(EnergySource::HYDRO)));
-    POWSYBL_ASSERT_ENUM_EQ(EnergySource::NUCLEAR, getEnergySource(getEnergySourceName(EnergySource::NUCLEAR)));
-    POWSYBL_ASSERT_ENUM_EQ(EnergySource::WIND, getEnergySource(getEnergySourceName(EnergySource::WIND)));
-    POWSYBL_ASSERT_ENUM_EQ(EnergySource::THERMAL, getEnergySource(getEnergySourceName(EnergySource::THERMAL)));
-    POWSYBL_ASSERT_ENUM_EQ(EnergySource::SOLAR, getEnergySource(getEnergySourceName(EnergySource::SOLAR)));
-    POWSYBL_ASSERT_ENUM_EQ(EnergySource::OTHER, getEnergySource(getEnergySourceName(EnergySource::OTHER)));
+    POWSYBL_ASSERT_ENUM_EQ(EnergySource::HYDRO, Enum::fromString<EnergySource>(Enum::toString(EnergySource::HYDRO)));
+    POWSYBL_ASSERT_ENUM_EQ(EnergySource::NUCLEAR, Enum::fromString<EnergySource>(Enum::toString(EnergySource::NUCLEAR)));
+    POWSYBL_ASSERT_ENUM_EQ(EnergySource::WIND, Enum::fromString<EnergySource>(Enum::toString(EnergySource::WIND)));
+    POWSYBL_ASSERT_ENUM_EQ(EnergySource::THERMAL, Enum::fromString<EnergySource>(Enum::toString(EnergySource::THERMAL)));
+    POWSYBL_ASSERT_ENUM_EQ(EnergySource::SOLAR, Enum::fromString<EnergySource>(Enum::toString(EnergySource::SOLAR)));
+    POWSYBL_ASSERT_ENUM_EQ(EnergySource::OTHER, Enum::fromString<EnergySource>(Enum::toString(EnergySource::OTHER)));
 }
 
 BOOST_AUTO_TEST_CASE(is_intermittent)

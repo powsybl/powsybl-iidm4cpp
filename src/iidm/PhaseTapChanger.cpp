@@ -6,30 +6,14 @@
  */
 
 #include <powsybl/iidm/PhaseTapChanger.hpp>
+
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
 #include "ValidationUtils.hpp"
 
 namespace powsybl {
-
-namespace logging {
-
-/**
- * toString template specialization for RegulationMode
- */
-template <>
-std::string toString(const iidm::PhaseTapChanger::RegulationMode& value) {
-    static std::array<std::string, 3> s_regulationModeNames {{
-        "CURRENT_LIMITER",
-        "ACTIVE_POWER_CONTROL",
-        "FIXED_TAP"
-    }};
-
-    return toString(s_regulationModeNames, value);
-}
-
-}  // namespace logging
 
 namespace iidm {
 
@@ -58,28 +42,6 @@ void PhaseTapChanger::extendVariantArraySize(unsigned long initVariantArraySize,
 
 const PhaseTapChanger::RegulationMode& PhaseTapChanger::getRegulationMode() const {
     return m_regulationMode;
-}
-
-const std::array<std::string, 3>& getRegulationModeNames() {
-    static std::array<std::string, 3> s_regulationModeNames {{
-        "CURRENT_LIMITER",
-        "ACTIVE_POWER_CONTROL",
-        "FIXED_TAP"
-    }};
-    return s_regulationModeNames;
-}
-
-PhaseTapChanger::RegulationMode getRegulationMode(const std::string& regulationModeName) {
-    const auto& names = getRegulationModeNames();
-    const auto& it = std::find(names.cbegin(), names.cend(), regulationModeName);
-    if (it == names.cend()) {
-        throw PowsyblException(logging::format("Unable to retrieve regulation mode from '%1%'", regulationModeName));
-    }
-    return static_cast<PhaseTapChanger::RegulationMode>(it - names.cbegin());
-}
-
-std::string getRegulationModeName(const PhaseTapChanger::RegulationMode& regulationMode) {
-    return logging::toString(getRegulationModeNames(), regulationMode);
 }
 
 double PhaseTapChanger::getRegulationValue() const {
@@ -113,11 +75,19 @@ PhaseTapChanger& PhaseTapChanger::setRegulationValue(double regulationValue) {
     return *this;
 }
 
-std::ostream& operator<<(std::ostream& stream, const PhaseTapChanger::RegulationMode& mode) {
-    stream << logging::toString(mode);
+namespace Enum {
 
-    return stream;
+template <>
+const std::initializer_list<std::string>& getNames<PhaseTapChanger::RegulationMode>() {
+    static std::initializer_list<std::string> s_regulationModeNames {
+        "CURRENT_LIMITER",
+        "ACTIVE_POWER_CONTROL",
+        "FIXED_TAP"
+    };
+    return s_regulationModeNames;
 }
+
+}  // namespace Enum
 
 }  // namespace iidm
 

@@ -29,7 +29,7 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(TwoWindingsTransf
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
     const double& targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
-    PhaseTapChanger::RegulationMode regulationMode = getRegulationMode(context.getReader().getAttributeValue(REGULATION_MODE));
+    const auto&  regulationMode = Enum::fromString<PhaseTapChanger::RegulationMode>(context.getReader().getAttributeValue(REGULATION_MODE));
     const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
     bool regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
 
@@ -138,7 +138,7 @@ template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context) {
     context.getWriter().writeStartElement(IIDM_PREFIX, name);
     writeTapChanger<TwoWindingsTransformer, PhaseTapChanger, PhaseTapChangerStep>(ptc, context.getWriter());
-    context.getWriter().writeAttribute(REGULATION_MODE, getRegulationModeName(ptc.getRegulationMode()));
+    context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(ptc.getRegulationMode()));
     if (ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP || !std::isnan(ptc.getRegulationValue())) {
         context.getWriter().writeAttribute(REGULATION_VALUE, ptc.getRegulationValue());
     }

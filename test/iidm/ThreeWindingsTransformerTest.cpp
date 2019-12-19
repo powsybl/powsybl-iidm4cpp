@@ -245,13 +245,13 @@ BOOST_AUTO_TEST_CASE(constructor) {
     Terminal& terminal1 = transformer.getTerminal(ThreeWindingsTransformer::Side::ONE);
     Terminal& terminal2 = transformer.getTerminal(ThreeWindingsTransformer::Side::TWO);
     Terminal& terminal3 = transformer.getTerminal(ThreeWindingsTransformer::Side::THREE);
-    POWSYBL_ASSERT_THROW(transformer.getTerminal(static_cast<ThreeWindingsTransformer::Side>(4)), AssertionError, "Unexpected side value: 4");
+    POWSYBL_ASSERT_THROW(transformer.getTerminal(static_cast<ThreeWindingsTransformer::Side>(4)), AssertionError, "Unexpected Side value: 4");
 
 
     const Terminal& cTerminal1 = cTransformer.getTerminal(ThreeWindingsTransformer::Side::ONE);
     const Terminal& cTerminal2 = cTransformer.getTerminal(ThreeWindingsTransformer::Side::TWO);
     const Terminal& cTerminal3 = cTransformer.getTerminal(ThreeWindingsTransformer::Side::THREE);
-    POWSYBL_ASSERT_THROW(cTransformer.getTerminal(static_cast<ThreeWindingsTransformer::Side>(5)), AssertionError, "Unexpected side value: 5");
+    POWSYBL_ASSERT_THROW(cTransformer.getTerminal(static_cast<ThreeWindingsTransformer::Side>(5)), AssertionError, "Unexpected Side value: 5");
 
     BOOST_TEST(stdcxx::areSame(terminal1, cTerminal1));
     BOOST_TEST(stdcxx::areSame(terminal2, cTerminal2));

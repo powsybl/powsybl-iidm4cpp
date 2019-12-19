@@ -7,6 +7,8 @@
 
 #include "HvdcLineXml.hpp"
 
+#include <powsybl/iidm/Enum.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -31,8 +33,7 @@ const char* HvdcLineXml::getRootElementName() const {
 HvdcLine& HvdcLineXml::readRootElementAttributes(HvdcLineAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& nominalV = context.getReader().getAttributeValue<double>(NOMINAL_V);
-    // FIXME(sebalaig) should be updated while fixing issue #43 (https://devin-source.rte-france.com/powsybl/powsybl-iidm/issues/43)
-    HvdcLine::ConvertersMode convertersMode = getConvertersMode(context.getReader().getAttributeValue(CONVERTERS_MODE));
+    const auto& convertersMode = Enum::fromString<HvdcLine::ConvertersMode>(context.getReader().getAttributeValue(CONVERTERS_MODE));
     const auto& activePowerSetpoint = context.getReader().getAttributeValue<double>(ACTIVE_POWER_SETPOINT);
     const auto& maxP = context.getReader().getAttributeValue<double>(MAX_P);
     const std::string& converterStation1 = context.getReader().getAttributeValue(CONVERTER_STATION1);
@@ -55,8 +56,8 @@ void HvdcLineXml::readSubElements(HvdcLine& line, NetworkXmlReaderContext& conte
 
 void HvdcLineXml::writeRootElementAttributes(const HvdcLine& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(R, line.getR());
-    context.getWriter().writeAttribute(NOMINAL_V, line.getNominalVoltage()); // called HvdcLine::getNominalV in java code
-    context.getWriter().writeAttribute(CONVERTERS_MODE, getConvertersModeName(line.getConvertersMode()));
+    context.getWriter().writeAttribute(NOMINAL_V, line.getNominalVoltage());
+    context.getWriter().writeAttribute(CONVERTERS_MODE, Enum::toString(line.getConvertersMode()));
     context.getWriter().writeAttribute(ACTIVE_POWER_SETPOINT, line.getActivePowerSetpoint());
     context.getWriter().writeAttribute(MAX_P, line.getMaxP());
     context.getWriter().writeAttribute(CONVERTER_STATION1, line.getConverterStation1().get().getId());

@@ -99,13 +99,6 @@ private:
     std::vector<double> m_activePowerSetpoint;
 };
 
-// FIXME(sebalaig) should be updated while fixing issue #43 (https://devin-source.rte-france.com/powsybl/powsybl-iidm/issues/43)
-HvdcLine::ConvertersMode getConvertersMode(const std::string& convertersModeName);
-
-std::string getConvertersModeName(const HvdcLine::ConvertersMode& convertersMode);
-
-std::ostream& operator<<(std::ostream& stream, const HvdcLine::ConvertersMode& mode);
-
 }  // namespace iidm
 
 }  // namespace powsybl

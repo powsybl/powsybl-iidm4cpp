@@ -14,7 +14,7 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class ConnectableType : unsigned int {
+enum class ConnectableType : unsigned char {
     BUSBAR_SECTION,
     LINE,
     TWO_WINDINGS_TRANSFORMER,
@@ -27,8 +27,6 @@ enum class ConnectableType : unsigned int {
     STATIC_VAR_COMPENSATOR,
     HVDC_CONVERTER_STATION
 };
-
-std::ostream& operator<<(std::ostream& stream, const ConnectableType& type);
 
 }  // namespace iidm
 

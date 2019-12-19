@@ -17,6 +17,7 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Branch.hpp>
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>

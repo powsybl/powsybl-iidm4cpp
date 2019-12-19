@@ -31,7 +31,7 @@ void AbstractSwitchXml<Adder>::readSubElements(Switch& sw, NetworkXmlReaderConte
 
 template <typename Adder>
 void AbstractSwitchXml<Adder>::writeRootElementAttributes(const Switch& sw, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeAttribute(KIND, getSwitchKindName(sw.getKind()));
+    context.getWriter().writeAttribute(KIND, Enum::toString(sw.getKind()));
     context.getWriter().writeAttribute(RETAINED, sw.isRetained());
     context.getWriter().writeAttribute(OPEN, sw.isOpen());
     if (sw.isFictitious()) {

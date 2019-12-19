@@ -14,15 +14,11 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class SwitchKind {
+enum class SwitchKind : unsigned char {
     BREAKER,
     DISCONNECTOR,
     LOAD_BREAK_SWITCH
 };
-
-SwitchKind getSwitchKind(const std::string& switchKindName);
-
-std::string getSwitchKindName(const SwitchKind& switchKind);
 
 }  // namespace iidm
 
