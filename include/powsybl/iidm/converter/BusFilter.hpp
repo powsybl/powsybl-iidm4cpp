@@ -35,7 +35,7 @@ public:
 private:
     BusFilter(const std::set<std::string>& buses, const ExportOptions& options);
 
-    BusFilter(const ExportOptions& options);
+    explicit BusFilter(const ExportOptions& options);
 
 private:
     std::set<std::string> m_buses;
