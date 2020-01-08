@@ -149,15 +149,23 @@ set(IIDM_SOURCES
     iidm/extensions/entsoe/Xnode.cpp
     iidm/extensions/entsoe/XnodeXmlSerializer.cpp
 
+    iidm/extensions/cvg/CongestionManagement.cpp
+    iidm/extensions/cvg/CongestionManagementXmlSerializer.cpp
+    iidm/extensions/cvg/StateOfCharge.cpp
+    iidm/extensions/cvg/StateOfChargeXmlSerializer.cpp
+
     iidm/extensions/iidm/ActivePowerControl.cpp
     iidm/extensions/iidm/ActivePowerControlXmlSerializer.cpp
     iidm/extensions/iidm/CoordinatedReactiveControl.cpp
     iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.cpp
 
-    iidm/extensions/cvg/CongestionManagement.cpp
-    iidm/extensions/cvg/CongestionManagementXmlSerializer.cpp
-    iidm/extensions/cvg/StateOfCharge.cpp
-    iidm/extensions/cvg/StateOfChargeXmlSerializer.cpp
+    iidm/extensions/shortcircuits/AbstractShortCircuits.cpp
+    iidm/extensions/shortcircuits/BatteryShortCircuits.cpp
+    iidm/extensions/shortcircuits/BatteryShortCircuitsXmlSerializer.cpp
+    iidm/extensions/shortcircuits/GeneratorShortCircuits.cpp
+    iidm/extensions/shortcircuits/GeneratorShortCircuitsXmlSerializer.cpp
+    iidm/extensions/shortcircuits/VoltageLevelShortCircuits.cpp
+    iidm/extensions/shortcircuits/VoltageLevelShortCircuitsXmlSerializer.cpp
 
     iidm/util/DistinctPredicate.cpp
     iidm/util/LimitViolationUtils.cpp

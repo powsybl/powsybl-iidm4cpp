@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.itesla_project.eu/schema/iidm/1_0" xmlns:bsc="http://www.itesla_project.eu/schema/iidm/ext/battery_short_circuits/1_0" id="test" caseDate="2013-01-15T18:45:00+01:00" forecastDistance="0" sourceFormat="test">
+    <iidm:substation id="S1" name="S1_NAME" country="FR" tso="TSO">
+        <iidm:voltageLevel id="VL1" name="VL1_NAME" nominalV="380" lowVoltageLimit="340" highVoltageLimit="420" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="VL1_BUS1"/>
+            </iidm:busBreakerTopology>
+            <iidm:battery id="BAT1" name="BAT1_NAME" p0="100" q0="200" minP="-200" maxP="300" bus="VL1_BUS1" connectableBus="VL1_BUS1">
+                <iidm:minMaxReactiveLimits minQ="-1.7976931348623157e+308" maxQ="1.7976931348623157e+308"/>
+            </iidm:battery>
+        </iidm:voltageLevel>
+    </iidm:substation>
+    <iidm:extension id="BAT1">
+        <bsc:batteryShortCircuits transientReactance="1" stepUpTransformerReactance="2"/>
+    </iidm:extension>
+</iidm:network>

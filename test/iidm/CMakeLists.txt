@@ -59,6 +59,10 @@ set(UNIT_TEST_SOURCES
     converter/xml/XmlRoundTripTest.cpp
     converter/xml/VscRoundTripTest.cpp
 
+    extensions/cvg/CongestionManagementTest.cpp
+    extensions/cvg/StateOfChargeTest.cpp
+    extensions/cvg/VoltageRegulationTest.cpp
+
     extensions/entsoe/EntsoeAreaTest.cpp
     extensions/entsoe/MergedXnodeTest.cpp
     extensions/entsoe/XnodeTest.cpp
@@ -66,9 +70,9 @@ set(UNIT_TEST_SOURCES
     extensions/iidm/ActivePowerControlTest.cpp
     extensions/iidm/CoordinatedReactiveControlTest.cpp
 
-    extensions/iidm-cvg-extensions/CongestionManagementTest.cpp
-    extensions/iidm-cvg-extensions/StateOfChargeTest.cpp
-    extensions/iidm-cvg-extensions/VoltageRegulationTest.cpp
+    extensions/shortcircuits/BatteryShortCircuitsTest.cpp
+    extensions/shortcircuits/GeneratorShortCircuitsTest.cpp
+    extensions/shortcircuits/VoltageLevelShortCircuitsTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
