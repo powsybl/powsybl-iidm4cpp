@@ -66,6 +66,7 @@ set(UNIT_TEST_SOURCES
     extensions/cvg/GeneratorEntsoeCategoryTest.cpp
     extensions/cvg/GeneratorStartupTest.cpp
     extensions/cvg/HvdcAngleDroopActivePowerControlTest.cpp
+    extensions/cvg/HvdcOperatorActivePowerRangeTest.cpp
     extensions/cvg/LoadDetailTest.cpp
     extensions/cvg/StateOfChargeTest.cpp
     extensions/cvg/VoltageRegulationTest.cpp
