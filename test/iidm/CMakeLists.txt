@@ -68,6 +68,7 @@ set(UNIT_TEST_SOURCES
     extensions/cvg/HvdcAngleDroopActivePowerControlTest.cpp
     extensions/cvg/HvdcOperatorActivePowerRangeTest.cpp
     extensions/cvg/LoadDetailTest.cpp
+    extensions/cvg/StandbyAutomatonTest.cpp
     extensions/cvg/StateOfChargeTest.cpp
     extensions/cvg/VoltageRegulationTest.cpp
 

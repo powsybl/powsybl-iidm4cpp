@@ -167,6 +167,8 @@ set(IIDM_SOURCES
     iidm/extensions/cvg/HvdcOperatorActivePowerRangeXmlSerializer.cpp
     iidm/extensions/cvg/LoadDetail.cpp
     iidm/extensions/cvg/LoadDetailXmlSerializer.cpp
+    iidm/extensions/cvg/StandbyAutomaton.cpp
+    iidm/extensions/cvg/StandbyAutomatonXmlSerializer.cpp
     iidm/extensions/cvg/StateOfCharge.cpp
     iidm/extensions/cvg/StateOfChargeXmlSerializer.cpp
 
