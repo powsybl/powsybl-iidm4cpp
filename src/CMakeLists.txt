@@ -141,14 +141,6 @@ set(IIDM_SOURCES
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 
-    iidm/extensions/entsoe/EntsoeArea.cpp
-    iidm/extensions/entsoe/EntsoeAreaXmlSerializer.cpp
-    iidm/extensions/entsoe/EntsoeGeographicalCode.cpp
-    iidm/extensions/entsoe/MergedXnode.cpp
-    iidm/extensions/entsoe/MergedXnodeXmlSerializer.cpp
-    iidm/extensions/entsoe/Xnode.cpp
-    iidm/extensions/entsoe/XnodeXmlSerializer.cpp
-
     iidm/extensions/cvg/ActiveSeason.cpp
     iidm/extensions/cvg/ActiveSeasonXmlSerializer.cpp
     iidm/extensions/cvg/BusbarSectionPosition.cpp
@@ -157,6 +149,8 @@ set(IIDM_SOURCES
     iidm/extensions/cvg/CongestionManagementXmlSerializer.cpp
     iidm/extensions/cvg/ConnectablePosition.cpp
     iidm/extensions/cvg/ConnectablePositionXmlSerializer.cpp
+    iidm/extensions/cvg/CurrentLimitsPerSeason.cpp
+    iidm/extensions/cvg/CurrentLimitsPerSeasonXmlSerializer.cpp
     iidm/extensions/cvg/GeneratorEntsoeCategory.cpp
     iidm/extensions/cvg/GeneratorEntsoeCategoryXmlSerializer.cpp
     iidm/extensions/cvg/GeneratorStartup.cpp
@@ -171,6 +165,14 @@ set(IIDM_SOURCES
     iidm/extensions/cvg/StandbyAutomatonXmlSerializer.cpp
     iidm/extensions/cvg/StateOfCharge.cpp
     iidm/extensions/cvg/StateOfChargeXmlSerializer.cpp
+
+    iidm/extensions/entsoe/EntsoeArea.cpp
+    iidm/extensions/entsoe/EntsoeAreaXmlSerializer.cpp
+    iidm/extensions/entsoe/EntsoeGeographicalCode.cpp
+    iidm/extensions/entsoe/MergedXnode.cpp
+    iidm/extensions/entsoe/MergedXnodeXmlSerializer.cpp
+    iidm/extensions/entsoe/Xnode.cpp
+    iidm/extensions/entsoe/XnodeXmlSerializer.cpp
 
     iidm/extensions/iidm/ActivePowerControl.cpp
     iidm/extensions/iidm/ActivePowerControlXmlSerializer.cpp
