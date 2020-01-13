@@ -155,6 +155,8 @@ set(IIDM_SOURCES
     iidm/extensions/cvg/BusbarSectionPositionXmlSerializer.cpp
     iidm/extensions/cvg/CongestionManagement.cpp
     iidm/extensions/cvg/CongestionManagementXmlSerializer.cpp
+    iidm/extensions/cvg/ConnectablePosition.cpp
+    iidm/extensions/cvg/ConnectablePositionXmlSerializer.cpp
     iidm/extensions/cvg/StateOfCharge.cpp
     iidm/extensions/cvg/StateOfChargeXmlSerializer.cpp
 

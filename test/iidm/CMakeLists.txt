@@ -62,6 +62,7 @@ set(UNIT_TEST_SOURCES
     extensions/cvg/ActiveSeasonTest.cpp
     extensions/cvg/BusbarSectionPositionTest.cpp
     extensions/cvg/CongestionManagementTest.cpp
+    extensions/cvg/ConnectablePositionTest.cpp
     extensions/cvg/StateOfChargeTest.cpp
     extensions/cvg/VoltageRegulationTest.cpp
 
