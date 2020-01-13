@@ -159,6 +159,8 @@ set(IIDM_SOURCES
     iidm/extensions/cvg/ConnectablePositionXmlSerializer.cpp
     iidm/extensions/cvg/GeneratorEntsoeCategory.cpp
     iidm/extensions/cvg/GeneratorEntsoeCategoryXmlSerializer.cpp
+    iidm/extensions/cvg/GeneratorStartup.cpp
+    iidm/extensions/cvg/GeneratorStartupXmlSerializer.cpp
     iidm/extensions/cvg/StateOfCharge.cpp
     iidm/extensions/cvg/StateOfChargeXmlSerializer.cpp
 

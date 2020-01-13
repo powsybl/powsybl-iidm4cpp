@@ -64,6 +64,7 @@ set(UNIT_TEST_SOURCES
     extensions/cvg/CongestionManagementTest.cpp
     extensions/cvg/ConnectablePositionTest.cpp
     extensions/cvg/GeneratorEntsoeCategoryTest.cpp
+    extensions/cvg/GeneratorStartupTest.cpp
     extensions/cvg/StateOfChargeTest.cpp
     extensions/cvg/VoltageRegulationTest.cpp
 
