@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.itesla_project.eu/schema/iidm/1_0" xmlns:bbsp="http://www.itesla_project.eu/schema/iidm/ext/busbarsectionposition/1_0" id="test" caseDate="2013-01-15T18:45:00+01:00" forecastDistance="0" sourceFormat="test">
+    <iidm:substation id="S" country="FR">
+        <iidm:voltageLevel id="VL" nominalV="400" lowVoltageLimit="380" highVoltageLimit="420" topologyKind="NODE_BREAKER">
+            <iidm:nodeBreakerTopology nodeCount="5">
+                <iidm:busbarSection id="BBS" name="BBS_NAME" node="0"/>
+            </iidm:nodeBreakerTopology>
+        </iidm:voltageLevel>
+    </iidm:substation>
+    <iidm:extension id="BBS">
+        <bbsp:busbarSectionPosition busbarIndex="2" sectionIndex="3"/>
+    </iidm:extension>
+</iidm:network>

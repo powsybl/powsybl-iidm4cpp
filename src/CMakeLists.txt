@@ -151,6 +151,8 @@ set(IIDM_SOURCES
 
     iidm/extensions/cvg/ActiveSeason.cpp
     iidm/extensions/cvg/ActiveSeasonXmlSerializer.cpp
+    iidm/extensions/cvg/BusbarSectionPosition.cpp
+    iidm/extensions/cvg/BusbarSectionPositionXmlSerializer.cpp
     iidm/extensions/cvg/CongestionManagement.cpp
     iidm/extensions/cvg/CongestionManagementXmlSerializer.cpp
     iidm/extensions/cvg/StateOfCharge.cpp
