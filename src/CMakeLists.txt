@@ -149,6 +149,8 @@ set(IIDM_SOURCES
     iidm/extensions/entsoe/Xnode.cpp
     iidm/extensions/entsoe/XnodeXmlSerializer.cpp
 
+    iidm/extensions/cvg/ActiveSeason.cpp
+    iidm/extensions/cvg/ActiveSeasonXmlSerializer.cpp
     iidm/extensions/cvg/CongestionManagement.cpp
     iidm/extensions/cvg/CongestionManagementXmlSerializer.cpp
     iidm/extensions/cvg/StateOfCharge.cpp

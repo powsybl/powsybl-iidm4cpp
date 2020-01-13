@@ -59,6 +59,7 @@ set(UNIT_TEST_SOURCES
     converter/xml/XmlRoundTripTest.cpp
     converter/xml/VscRoundTripTest.cpp
 
+    extensions/cvg/ActiveSeasonTest.cpp
     extensions/cvg/CongestionManagementTest.cpp
     extensions/cvg/StateOfChargeTest.cpp
     extensions/cvg/VoltageRegulationTest.cpp
