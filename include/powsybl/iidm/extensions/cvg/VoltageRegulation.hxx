@@ -54,7 +54,7 @@ void VoltageRegulation<T>::assertExtendable(const stdcxx::Reference<Extendable>&
 
 template <typename T>
 void VoltageRegulation<T>::checkRegulatingTerminal(const stdcxx::CReference<Terminal>& regulatingTerminal, const Network& network) {
-    if (regulatingTerminal && !stdcxx::areSame(regulatingTerminal.get().getVoltageLevel().getSubstation().getNetwork(), network)) {
+    if (regulatingTerminal && !stdcxx::areSame(regulatingTerminal.get().getVoltageLevel().get().getSubstation().getNetwork(), network)) {
         throw PowsyblException(logging::format("regulating terminal is not part of the same network"));
     }
 }
@@ -78,7 +78,7 @@ const std::string& VoltageRegulation<T>::getName() const {
 
 template <typename T>
 const Network& VoltageRegulation<T>::getNetworkFromExtendable() const {
-    return AbstractMultiVariantConnectableExtension::getExtendable<T>().get().getTerminal().getVoltageLevel().getSubstation().getNetwork();
+    return AbstractMultiVariantConnectableExtension::getExtendable<T>().get().getTerminal().getVoltageLevel().get().getSubstation().getNetwork();
 }
 
 template <typename T>

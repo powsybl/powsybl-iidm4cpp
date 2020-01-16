@@ -54,7 +54,7 @@ std::unique_ptr<Extension> VoltageRegulationXmlSerializer<T>::read(Extendable& e
             const std::string& side = context.getReader().getOptionalAttributeValue("side", "");
 
             context.addEndTask([&component, &voltageRegulation, id, side]() {
-                Network& network = component.getTerminal().getVoltageLevel().getSubstation().getNetwork();
+                Network& network = component.getTerminal().getVoltageLevel().get().getSubstation().getNetwork();
                 voltageRegulation->setRegulatingTerminal(stdcxx::cref(converter::xml::TerminalRefXml::readTerminalRef(network, id, side)));
             });
         } else {

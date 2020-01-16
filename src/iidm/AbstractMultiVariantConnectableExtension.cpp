@@ -34,7 +34,7 @@ const VariantManagerHolder& AbstractMultiVariantConnectableExtension::getVariant
 }
 
 const VariantManagerHolder& AbstractMultiVariantConnectableExtension::getVariantManagerHolder(const Connectable& connectable) {
-    const Network& network = dynamic_cast<const Terminal&>(connectable.getTerminals()[0].get()).getVoltageLevel().getSubstation().getNetwork();
+    const Network& network = dynamic_cast<const Terminal&>(connectable.getTerminals()[0].get()).getVoltageLevel().get().getSubstation().getNetwork();
 
     if (stdcxx::isInstanceOf<VariantManagerHolder>(network)) {
         return dynamic_cast<const VariantManagerHolder&>(network);
