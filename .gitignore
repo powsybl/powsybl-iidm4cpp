@@ -13,5 +13,6 @@ cmake-build*/
 .idea
 
 # Eclipse project
-.project
 .cproject
+.project
+.settings/
