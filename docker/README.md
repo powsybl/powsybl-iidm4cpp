@@ -3,7 +3,7 @@
 We provides several docker images to build powsybl-iidm. Supported environments are:
 - [Alpine](https://alpinelinux.org) 3.9
 - [CentOS](https://www.centos.org) 7.6
-- [Ubuntu](https://alpinelinux.org) 18.04
+- [Ubuntu](https://ubuntu.com) 18.04
 
 # Alpine
 
