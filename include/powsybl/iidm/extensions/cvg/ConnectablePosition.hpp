@@ -23,11 +23,6 @@ namespace extensions {
 namespace cvg {
 
 class ConnectablePosition : public Extension {
-public:  // Extension
-    const std::string& getName() const override;
-
-    const std::type_index& getType() const override;
-
 public:
     enum class Direction : unsigned char {
         TOP,
@@ -60,6 +55,11 @@ public:
     };
 
     using OptionalFeeder = boost::optional<Feeder>;
+
+public:  // Extension
+    const std::string& getName() const override;
+
+    const std::type_index& getType() const override;
 
 public:
     ConnectablePosition(Connectable& connectable, const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3);
