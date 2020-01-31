@@ -27,7 +27,9 @@ do { \
         oss << "  Actual: no exception thrown"; \
         BOOST_ERROR(oss.str().c_str()); \
     } catch (const expected_exception& e) { \
-        BOOST_CHECK_EQUAL(expected_message, e.what()); \
+        if (expected_message) { \
+            BOOST_CHECK_EQUAL(expected_message, e.what()); \
+        } \
     } catch (const std::exception& e) { \
         std::ostringstream oss; \
         oss << "Expected: " << #statement << " throws an exception of type "; \

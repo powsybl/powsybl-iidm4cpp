@@ -9,6 +9,7 @@
 #define POWSYBL_POWSYBLEXCEPTION_HPP
 
 #include <stdexcept>
+#include <string>
 
 namespace powsybl {
 
