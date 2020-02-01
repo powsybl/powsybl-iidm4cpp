@@ -1,0 +1,45 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {
+              name: "Ubuntu (GCC)"
+              os: ubuntu-latest
+              build_type: "Release", cxx: "g++", clang_tidy: ""
+          }
+          - {
+              name: "Ubuntu (Clang)"
+              os: ubuntu-latest
+              build_type: "Release", cxx: "clang++", clang_tidy: "clang-tidy"
+          }
+          - {
+              name: "MacOS (Clang)"
+              os: macos-latest
+              build_type: "Release", cxx: "clang++", clang_tidy: "clang-tidy"
+          }
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v1
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{ runner.workspace }}/build
+
+      - name: Configure CMake
+        working-directory: ${{runner.workspace}}/build
+        run: cmake ${{ runner.workspace }} -DCMAKE_BUILD_TYPE=${{ runner.config.build_type }} -DCMAKE_CXX_CLANG_TIDY=${{ runner.config.clang_tidy }} -DCMAKE_CXX_COMPILER=${{ runner.config.cxx }}
+
+      - name: Build
+        working-directory: ${{runner.workspace}}/build
+        run: cmake --build . --parallel
+
+      - name: Tests
+        working-directory: ${{runner.workspace}}/build
+        run: cmake --build . --target tests
