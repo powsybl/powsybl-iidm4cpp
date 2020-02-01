@@ -34,7 +34,7 @@ jobs:
 
       - name: Configure CMake
         working-directory: ${{runner.workspace}}/build
-        run: cmake ${{ runner.workspace }} -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+        run: cmake ${{ runner.workspace }}/powsybl-iidm4cpp -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
 
       - name: Build
         working-directory: ${{runner.workspace}}/build
