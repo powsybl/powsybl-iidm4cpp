@@ -33,8 +33,14 @@ jobs:
         run: cmake -E make_directory ${{ runner.workspace }}/build
 
       - name: Configure CMake
+        shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: cmake ${{ runner.workspace }}/powsybl-iidm4cpp -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+        run: >
+          cmake $GITHUB_WORKSPACE
+          -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+          -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+          -DBOOST_ROOT=$BOOST_ROOT_1_69_0
 
       - name: Build
         working-directory: ${{runner.workspace}}/build
