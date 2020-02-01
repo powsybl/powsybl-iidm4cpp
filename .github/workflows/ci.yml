@@ -29,13 +29,19 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v1
 
+        # Workaround for https://github.com/actions/virtual-environments/issues/10
+      - name: Avoid to use GitHub Actions-installed boost
+        shell: bash
+        run: |
+          echo "::set-env name=BOOST_ROOT::"
+
       - name: Create build environment
         run: cmake -E make_directory ${{ runner.workspace }}/build
 
       - name: Configure CMake
         shell: bash
         working-directory: ${{runner.workspace}}/build
-        run: >
+        run: |
           cmake $GITHUB_WORKSPACE
           -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
           -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }}
