@@ -47,6 +47,7 @@ jobs:
           -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }}
           -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
           -DBOOST_ROOT=$BOOST_ROOT_1_69_0
+          -DBoost_ARCHITECTURE=-x64
 
       - name: Build
         working-directory: ${{runner.workspace}}/build
