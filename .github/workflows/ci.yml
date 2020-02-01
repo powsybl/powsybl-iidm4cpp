@@ -30,10 +30,10 @@ jobs:
         uses: actions/checkout@v1
 
         # Workaround for https://github.com/actions/virtual-environments/issues/10
-      - name: Avoid to use GitHub Actions-installed boost
+      - name: Boost
         shell: bash
         run: |
-          echo "::set-env name=BOOST_ROOT::"
+          ls -l $BOOST_ROOT_1_69_0/lib/
 
       - name: Create build environment
         run: cmake -E make_directory ${{ runner.workspace }}/build
