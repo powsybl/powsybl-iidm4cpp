@@ -10,19 +10,19 @@ jobs:
       matrix:
         config:
           - {
-              name: "Ubuntu (GCC)"
-              os: ubuntu-latest
-              build_type: "Release", cxx: "g++", clang_tidy: ""
+            name: "Ubuntu (GCC)"
+            os: ubuntu-latest
+            build_type: "Release", cxx: "g++", clang_tidy: ""
           }
           - {
-              name: "Ubuntu (Clang)"
-              os: ubuntu-latest
-              build_type: "Release", cxx: "clang++", clang_tidy: "clang-tidy"
+            name: "Ubuntu (Clang)"
+            os: ubuntu-latest
+            build_type: "Release", cxx: "clang++", clang_tidy: "clang-tidy"
           }
           - {
-              name: "MacOS (Clang)"
-              os: macos-latest
-              build_type: "Release", cxx: "clang++", clang_tidy: "clang-tidy"
+            name: "MacOS (Clang)"
+            os: macos-latest
+            build_type: "Release", cxx: "clang++", clang_tidy: "clang-tidy"
           }
 
     steps:
