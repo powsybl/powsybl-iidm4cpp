@@ -1,4 +1,4 @@
-# Powsybl - IIDM - Docker
+# Powsybl - IIDM for C++ - Docker
 
 We provides several docker images to build powsybl-iidm. Supported environments are:
 - [Alpine](https://alpinelinux.org) 3.9
@@ -16,7 +16,7 @@ The Alpine image provides the following tools:
 
 To build the Alpine image, run the following command:
 ```
-$> docker build -t powsybl-iidm:alpine -f docker/Dockerfile.alpine .
+$> docker build -t powsybl-iidm4cpp:alpine -f docker/Dockerfile.alpine .
 ```
 
 # CentOS
@@ -30,20 +30,7 @@ The CentOS image provides the following tools:
 
 To build the CentOS image, run the following command:
 ```
-$> docker build -t powsybl-iidm:centos -f docker/Dockerfile.centos .
-```
-
-# Sonar
-The Sonar image is based on CentOS (7.6) and is used for sonar integration. It provides the following tools:
-- CMake 2.8.12
-- G++ 4.8.5
-- Gcovr 3.4
-- Boost 1.69
-- LibXml2 2.9.1
-
-To build the Sonar image, run the following command:
-```
-$> docker build -t powsybl-iidm:sonar -f docker/Dockerfile.sonar .
+$> docker build -t powsybl-iidm4cpp:centos -f docker/Dockerfile.centos .
 ```
 
 # Ubuntu
@@ -57,5 +44,5 @@ The Ubuntu image provides the following tools:
 
 To build the Ubuntu image, run the following command:
 ```
-$> docker build -t powsybl-iidm:ubuntu -f docker/Dockerfile.ubuntu .
+$> docker build -t powsybl-iidm4cpp:ubuntu -f docker/Dockerfile.ubuntu .
 ```

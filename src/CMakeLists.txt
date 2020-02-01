@@ -141,31 +141,6 @@ set(IIDM_SOURCES
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 
-    iidm/extensions/cvg/ActiveSeason.cpp
-    iidm/extensions/cvg/ActiveSeasonXmlSerializer.cpp
-    iidm/extensions/cvg/BusbarSectionPosition.cpp
-    iidm/extensions/cvg/BusbarSectionPositionXmlSerializer.cpp
-    iidm/extensions/cvg/CongestionManagement.cpp
-    iidm/extensions/cvg/CongestionManagementXmlSerializer.cpp
-    iidm/extensions/cvg/ConnectablePosition.cpp
-    iidm/extensions/cvg/ConnectablePositionXmlSerializer.cpp
-    iidm/extensions/cvg/CurrentLimitsPerSeason.cpp
-    iidm/extensions/cvg/CurrentLimitsPerSeasonXmlSerializer.cpp
-    iidm/extensions/cvg/GeneratorEntsoeCategory.cpp
-    iidm/extensions/cvg/GeneratorEntsoeCategoryXmlSerializer.cpp
-    iidm/extensions/cvg/GeneratorStartup.cpp
-    iidm/extensions/cvg/GeneratorStartupXmlSerializer.cpp
-    iidm/extensions/cvg/HvdcAngleDroopActivePowerControl.cpp
-    iidm/extensions/cvg/HvdcAngleDroopActivePowerControlXmlSerializer.cpp
-    iidm/extensions/cvg/HvdcOperatorActivePowerRange.cpp
-    iidm/extensions/cvg/HvdcOperatorActivePowerRangeXmlSerializer.cpp
-    iidm/extensions/cvg/LoadDetail.cpp
-    iidm/extensions/cvg/LoadDetailXmlSerializer.cpp
-    iidm/extensions/cvg/StandbyAutomaton.cpp
-    iidm/extensions/cvg/StandbyAutomatonXmlSerializer.cpp
-    iidm/extensions/cvg/StateOfCharge.cpp
-    iidm/extensions/cvg/StateOfChargeXmlSerializer.cpp
-
     iidm/extensions/entsoe/EntsoeArea.cpp
     iidm/extensions/entsoe/EntsoeAreaXmlSerializer.cpp
     iidm/extensions/entsoe/EntsoeGeographicalCode.cpp
@@ -178,14 +153,6 @@ set(IIDM_SOURCES
     iidm/extensions/iidm/ActivePowerControlXmlSerializer.cpp
     iidm/extensions/iidm/CoordinatedReactiveControl.cpp
     iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.cpp
-
-    iidm/extensions/shortcircuits/AbstractShortCircuits.cpp
-    iidm/extensions/shortcircuits/BatteryShortCircuits.cpp
-    iidm/extensions/shortcircuits/BatteryShortCircuitsXmlSerializer.cpp
-    iidm/extensions/shortcircuits/GeneratorShortCircuits.cpp
-    iidm/extensions/shortcircuits/GeneratorShortCircuitsXmlSerializer.cpp
-    iidm/extensions/shortcircuits/VoltageLevelShortCircuits.cpp
-    iidm/extensions/shortcircuits/VoltageLevelShortCircuitsXmlSerializer.cpp
 
     iidm/util/DistinctPredicate.cpp
     iidm/util/LimitViolationUtils.cpp

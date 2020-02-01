@@ -1,8 +1,8 @@
-# PowSyBl - IIDM
+# PowSyBl - IIDM for C++
 
 ## Requirements
 
-To build powsybl-iidm, you need:
+To build powsybl-iidm4cpp, you need:
 - A C++ compiler that supports C++11 ([clang](https://clang.llvm.org) 3.3 or higher, [g++](https://gcc.gnu.org) 5.0 or higher)
 - [CMake](https://cmake.org) (2.6 or higher)
 - [Make](https://www.gnu.org/software/make/)
