@@ -48,7 +48,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
           -DBOOST_ROOT=$BOOST_ROOT_1_69_0
           -DBoost_ADDITIONAL_VERSIONS=1.69.0
-          -DBoost_ARCHITECTURE=-x64
+          -DBoost_ARCHITECTURE=x64
           -DBoost_USE_MULTITHREADED=ON
 
       - name: Build
