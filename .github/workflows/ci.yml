@@ -19,11 +19,6 @@ jobs:
               os: ubuntu-latest,
               build_type: "Release", cxx: "clang++", clang_tidy: "clang-tidy"
           }
-          - {
-              name: "MacOS (Clang)",
-              os: macos-latest,
-              build_type: "Release", cxx: "clang++", clang_tidy: "clang-tidy"
-          }
 
     steps:
       - name: Checkout sources
@@ -42,7 +37,7 @@ jobs:
         shell: bash
         working-directory: ${{runner.workspace}}/build
         run: |
-          cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DBOOST_ROOT=$BOOST_ROOT_1_69_0 -DBoost_ARCHITECTURE=-x64 -DBoost_DEBUG=ON
+          cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }} -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }} -DBOOST_ROOT=$BOOST_ROOT_1_69_0 -DBoost_ARCHITECTURE=-x64
 
       - name: Build
         working-directory: ${{runner.workspace}}/build
