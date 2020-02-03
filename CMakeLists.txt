@@ -23,7 +23,9 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STRE
     # set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -D_GLIBCXX_DEBUG")
 endif ()
 
-set(Boost_DEBUG ON)
+if (DEFINED Boost_ARCHITECTURE)
+    message("DEFINED!")
+endif()
 find_package(Boost 1.56 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
 include_directories(SYSTEM ${Boost_INCLUDE_DIR})
 
