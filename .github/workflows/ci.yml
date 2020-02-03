@@ -17,18 +17,17 @@ jobs:
           - {
               name: "Ubuntu (Clang)",
               os: ubuntu-latest,
-              build_type: "Release", cxx: "clang++", clang_tidy: "clang-tidy"
+              build_type: "Release", cxx: "clang++", clang_tidy: ""
           }
+#          - {
+#              name: "MacOS (Clang)",
+#              os: macos-latest,
+#              build_type: "Release", cxx: "clang++", clang_tidy: ""
+#          }
 
     steps:
       - name: Checkout sources
         uses: actions/checkout@v1
-
-      - name: Install clang-tidy
-        run: |
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt install -y clang-tidy
-          fi
 
       - name: Create build environment
         run: cmake -E make_directory ${{ runner.workspace }}/build
