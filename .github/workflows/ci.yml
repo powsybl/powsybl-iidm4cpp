@@ -50,6 +50,7 @@ jobs:
           -DBoost_ADDITIONAL_VERSIONS=1.69.0
           -DBoost_ARCHITECTURE=x64
           -DBoost_USE_MULTITHREADED=ON
+          -DBoost_DEBUG=TRUE
 
       - name: Build
         working-directory: ${{runner.workspace}}/build
