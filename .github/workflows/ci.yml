@@ -27,7 +27,7 @@ jobs:
       - name: Install clang-tidy
         run: |
           if [ "$RUNNER_OS" == "Linux" ]; then
-            apt install clang-tools-extra
+            sudo apt install clang-tools-extra
           fi
 
       - name: Create build environment
