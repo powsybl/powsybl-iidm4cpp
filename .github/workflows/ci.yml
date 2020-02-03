@@ -24,11 +24,11 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v1
 
-        # Workaround for https://github.com/actions/virtual-environments/issues/10
-      - name: Boost
-        shell: bash
+      - name: Install clang-tidy
         run: |
-          ls -l $BOOST_ROOT_1_69_0/lib/
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            apt install clang-tools-extra
+          fi
 
       - name: Create build environment
         run: cmake -E make_directory ${{ runner.workspace }}/build
