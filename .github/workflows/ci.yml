@@ -40,7 +40,7 @@ jobs:
 
       - name: Build
         working-directory: ${{runner.workspace}}/build
-        run: cmake --build . --parallel
+        run: cmake --build . --parallel 8
 
       - name: Tests
         working-directory: ${{runner.workspace}}/build
