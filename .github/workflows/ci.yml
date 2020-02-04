@@ -51,9 +51,9 @@ jobs:
         working-directory: ${{runner.workspace}}/build
         run: cmake --build . --target tests
 
-      - name: SonarCloud Scan
+      - name: Sonarcloud
         uses: sonarsource/sonarcloud-github-action@v2
-        if: matrix.os == "ubuntu-latest"
+        if: matrix.os == 'ubuntu-latest'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
