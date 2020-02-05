@@ -26,14 +26,15 @@ jobs:
 #          }
 
     steps:
-      - name: Checkout sources
-        uses: actions/checkout@v1
-
       - name: Install Sonar prerequisites
         run: |
           wget https://github.com/gcovr/gcovr/releases/download/3.4/gcovr-3.4-py2.py3-none-any.whl
-          pip3 install gcovr-3.4-py2.py3-none-any.whl
+          pip install gcovr-3.4-py2.py3-none-any.whl
           rm -f gcovr-3.4-py2.py3-none-any.whl
+          gcovr --version
+
+      - name: Checkout sources
+        uses: actions/checkout@v1
 
       - name: Create build environment
         run: cmake -E make_directory ${{ runner.workspace }}/build
