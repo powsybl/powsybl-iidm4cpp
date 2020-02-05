@@ -65,8 +65,8 @@ jobs:
         working-directory: ${{ runner.workspace }}/build
         run: |
           cmake --build . --target code-coverage
-          ls build/coverage
-          ls build/coverage/reports
+          ls coverage
+          ls coverage/reports
 
       - name: Sonarcloud
         uses: sonarsource/sonarcloud-github-action@v1.1
