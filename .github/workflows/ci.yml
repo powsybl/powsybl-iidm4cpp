@@ -12,12 +12,12 @@ jobs:
           - {
               name: "Ubuntu (GCC)",
               os: ubuntu-latest,
-              build_type: "Release", cxx: "g++", clang_tidy: ""
+              build_type: "Debug", cxx: "g++", clang_tidy: "", sonar: "TRUE"
           }
           - {
               name: "Ubuntu (Clang)",
               os: ubuntu-latest,
-              build_type: "Release", cxx: "clang++", clang_tidy: ""
+              build_type: "Release", cxx: "clang++", clang_tidy: "", sonar: "FALSE"
           }
 #          - {
 #              name: "MacOS (Clang)",
@@ -34,26 +34,32 @@ jobs:
 
       - name: Configure CMake
         shell: bash
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ${{ runner.workspace }}/build
         run: >
           cmake $GITHUB_WORKSPACE
           -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+          -DCODE_COVERAGE=${{ matrix.config.sonar }}
           -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }}
           -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
           -DBOOST_ROOT=$BOOST_ROOT_1_69_0
           -DBoost_ARCHITECTURE=-x64
 
       - name: Build
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ${{ runner.workspace }}/build
         run: cmake --build . --parallel 3
 
       - name: Tests
-        working-directory: ${{runner.workspace}}/build
+        working-directory: ${{ runner.workspace }}/build
         run: cmake --build . --target tests
+
+      - name: Code coverage
+        if: matrix.config.code_coverage == 'TRUE'
+        working-directory: ${{ runner.workspace }}/build
+        run: cmake --build . --target code-coverage
 
       - name: Sonarcloud
         uses: sonarsource/sonarcloud-github-action@v1.1
-        if: matrix.config.os == 'ubuntu-latest'
+        if: matrix.config.code_coverage == 'TRUE'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
