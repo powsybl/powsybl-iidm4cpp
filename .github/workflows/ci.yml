@@ -63,7 +63,10 @@ jobs:
       - name: Code coverage
         if: matrix.config.sonar == 'TRUE'
         working-directory: ${{ runner.workspace }}/build
-        run: cmake --build . --target code-coverage
+        run: |
+          cmake --build . --target code-coverage
+          ls build/coverage
+          ls build/coverage/reports
 
       - name: Sonarcloud
         uses: sonarsource/sonarcloud-github-action@v1.1
