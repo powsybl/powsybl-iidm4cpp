@@ -19,6 +19,15 @@ jobs:
           wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
           unzip build-wrapper-linux-x86.zip -d ${{ runner.workspace }}
 
+      - name: Install Sonar scanner
+        with:
+          SONAR_SCANNER_VERSION: 3.3.0.1492
+        run: |
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
+          unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip -d ${{ runner.workspace }}
+          mv sonar-scanner-cli-${SONAR_SCANNER_VERSION} sonar-scanner-cli
+          rm sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
+
       - name: Checkout sources
         uses: actions/checkout@v1
 
@@ -39,18 +48,16 @@ jobs:
 
       - name: Build
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
-        run: |
-          ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ./output cmake --build . --parallel 3
-          ls output
-          pwd
-          ls /home/runner/work/powsybl-iidm4cpp/powsybl-iidm4cpp/build/output
+        run: ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ./output cmake --build . --parallel 3
 
       - name: Tests
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
-        run: cmake --build . --target code-coverage
+        run: |
+          cmake --build . --target code-coverage
+          rm coverage/reports/#usr#*
 
       - name: Sonarcloud
-        uses: sonarsource/sonarcloud-github-action@v1.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ${{ runner.workspace }}/sonar-scanner-cli/sonar-scanner -Dsonar.host.url=https://sonarcloud.io
