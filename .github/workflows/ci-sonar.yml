@@ -27,6 +27,6 @@ jobs:
         run: |
           wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
           unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-          ln -s sonar-scanner-cli-${SONAR_SCANNER_VERSION} sonar-scanner-cli
+          ln -s sonar-scanner-${SONAR_SCANNER_VERSION} sonar-scanner
           rm sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-          ls -lR ${{ runner.workspace }}
+          ${{ runner.workspace }}/sonar-scanner/bin/sonar-scanner --version
