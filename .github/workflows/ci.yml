@@ -39,4 +39,4 @@ jobs:
           wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
           unzip build-wrapper-linux-x86.zip -d ${{ runner.workspace }}
           echo "::set-env name=BUILD_WRAPPER::${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86 --out-dir ./output"
-          echo ${BUILD_WRAPPER}
+          echo "MBA::${BUILD_WRAPPER}"
