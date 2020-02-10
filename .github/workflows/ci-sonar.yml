@@ -1,0 +1,56 @@
+name: CI (sonar)
+
+on: [push]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install gcovr
+        run: |
+          wget https://github.com/gcovr/gcovr/releases/download/3.4/gcovr-3.4-py2.py3-none-any.whl
+          sudo pip install gcovr-3.4-py2.py3-none-any.whl
+          rm -f gcovr-3.4-py2.py3-none-any.whl
+
+      - name: Install Sonar wrapper
+        run: |
+          wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+          unzip build-wrapper-linux-x86.zip -d ${{ runner.workspace }}
+
+      - name: Checkout sources
+        uses: actions/checkout@v1
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{ runner.workspace }}/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{ runner.workspace }}/build
+        run: >
+          cmake $GITHUB_WORKSPACE
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCODE_COVERAGE=TRUE
+          -DCLANG_TIDY=
+          -DCMAKE_CXX_COMPILER=g++
+          -DBOOST_ROOT=$BOOST_ROOT_1_69_0
+          -DBoost_ARCHITECTURE=-x64
+
+      - name: Build
+        working-directory: ${{ runner.workspace }}/build
+        run: ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86 --out-dir ./output cmake --build . --parallel 3
+
+      - name: Tests
+        working-directory: ${{ runner.workspace }}/build
+        run: cmake --build . --target tests
+
+      - name: Code coverage
+        working-directory: ${{ runner.workspace }}/build
+        run: cmake --build . --target code-coverage
+
+      - name: Sonarcloud
+        uses: sonarsource/sonarcloud-github-action@v1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
