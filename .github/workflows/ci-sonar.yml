@@ -42,6 +42,7 @@ jobs:
         run: |
           ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ./output cmake --build . --parallel 3
           ls output
+          pwd
           ls /home/runner/work/powsybl-iidm4cpp/powsybl-iidm4cpp/build/output
 
       - name: Tests
