@@ -26,51 +26,18 @@ jobs:
 #          }
 
     steps:
-      - name: Install Sonar prerequisites
+      - name: Install gcovr
         if: matrix.config.sonar == 'TRUE'
         run: |
           wget https://github.com/gcovr/gcovr/releases/download/3.4/gcovr-3.4-py2.py3-none-any.whl
           sudo pip install gcovr-3.4-py2.py3-none-any.whl
           rm -f gcovr-3.4-py2.py3-none-any.whl
-          gcovr --version
 
-      - name: Checkout sources
-        uses: actions/checkout@v1
-
-      - name: Create build environment
-        run: cmake -E make_directory ${{ runner.workspace }}/build
-
-      - name: Configure CMake
-        shell: bash
-        working-directory: ${{ runner.workspace }}/build
-        run: >
-          cmake $GITHUB_WORKSPACE
-          -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
-          -DCODE_COVERAGE=${{ matrix.config.sonar }}
-          -DCMAKE_CXX_CLANG_TIDY=${{ matrix.config.clang_tidy }}
-          -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
-          -DBOOST_ROOT=$BOOST_ROOT_1_69_0
-          -DBoost_ARCHITECTURE=-x64
-
-      - name: Build
-        working-directory: ${{ runner.workspace }}/build
-        run: cmake --build . --parallel 3
-
-      - name: Tests
-        working-directory: ${{ runner.workspace }}/build
-        run: cmake --build . --target tests
-
-      - name: Code coverage
+      - name: Install Sonar wrapper
         if: matrix.config.sonar == 'TRUE'
-        working-directory: ${{ runner.workspace }}/build
         run: |
-          cmake --build . --target code-coverage
-          ls coverage
-          ls coverage/reports
-
-      - name: Sonarcloud
-        uses: sonarsource/sonarcloud-github-action@v1.1
-        if: matrix.config.sonar == 'TRUE'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+          unzip build-wrapper-linux-x86.zip
+          echo $PWD
+          ls $PWD/build-wrapper-linux-x86
+          echo ${{ runner.workspace }}
