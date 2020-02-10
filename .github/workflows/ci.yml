@@ -37,7 +37,6 @@ jobs:
         if: matrix.config.sonar == 'TRUE'
         run: |
           wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
-          unzip build-wrapper-linux-x86.zip
-          echo $PWD
-          ls $PWD/build-wrapper-linux-x86
-          echo ${{ runner.workspace }}
+          unzip build-wrapper-linux-x86.zip -d ${{ runner.workspace }}
+          echo "::set-env name=BUILD_WRAPPER::${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86 --out-dir ./output"
+          echo ${BUILD_WRAPPER}
