@@ -4,7 +4,7 @@ on: [push]
 
 jobs:
   build:
-    name: ${{ matrix.config.name }}
+    name: Sonar
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +39,7 @@ jobs:
 
       - name: Build
         working-directory: ${{ runner.workspace }}/build
-        run: ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86 --out-dir ./output cmake --build . --parallel 3
+        run: ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ./output cmake --build . --parallel 3
 
       - name: Tests
         working-directory: ${{ runner.workspace }}/build
