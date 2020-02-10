@@ -29,17 +29,45 @@ jobs:
           unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
           ln -s sonar-scanner-${SONAR_SCANNER_VERSION} sonar
           rm sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-          ls -l ${{ runner.workspace }}/sonar/bin
-          file ${{ runner.workspace }}/sonar/bin/sonar-scanner
+
+      - name: Checkout sources
+        uses: actions/checkout@v1
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{ runner.workspace }}/powsybl-iidm4cpp/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        run: >
+          cmake $GITHUB_WORKSPACE
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCODE_COVERAGE=TRUE
+          -DCLANG_TIDY=
+          -DCMAKE_CXX_COMPILER=g++
+          -DBOOST_ROOT=$BOOST_ROOT_1_69_0
+          -DBoost_ARCHITECTURE=-x64
+
+      - name: Build
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        run: ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ./output cmake --build . --parallel 3
+
+      - name: Tests
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        run: |
+          cmake --build . --target code-coverage
+          rm coverage/reports/#usr#*
 
       - name: Sonarcloud
-        # working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          ls ${{ runner.workspace }}
-          ls ${{ runner.workspace }}/sonar
-          ls ${{ runner.workspace }}/sonar/bin
-          ls ${{ runner.workspace }}/sonar/bin/sonar-scanner
-          file ${{ runner.workspace }}/sonar/bin/sonar-scanner
+        run: ${{ runner.workspace }}/sonar-scanner-cli/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io
+
+      - name: Sonarcloud
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ${{ runner.workspace }}/sonar/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io
