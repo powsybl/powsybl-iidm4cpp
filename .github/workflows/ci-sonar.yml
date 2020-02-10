@@ -59,7 +59,8 @@ jobs:
           rm coverage/reports/#usr#*
 
       - name: Sonarcloud
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ${{ runner.workspace }}/sonar-scanner-cli/sonar-scanner -Dsonar.host.url=https://sonarcloud.io
+        run: ${{ runner.workspace }}/sonar-scanner-cli/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io
