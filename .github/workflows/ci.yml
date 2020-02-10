@@ -25,11 +25,11 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Create build environment
-        run: cmake -E make_directory ${{ runner.workspace }}/build
+        run: cmake -E make_directory ${{ runner.workspace }}/powsybl-iidm4cpp/build
 
       - name: Configure CMake
         shell: bash
-        working-directory: ${{ runner.workspace }}/build
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: >
           cmake $GITHUB_WORKSPACE
           -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
@@ -38,9 +38,9 @@ jobs:
           -DBoost_ARCHITECTURE=-x64
 
       - name: Build
-        working-directory: ${{ runner.workspace }}/build
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: cmake --build . --parallel 3
 
       - name: Tests
-        working-directory: ${{ runner.workspace }}/build
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: cmake --build . --target tests
