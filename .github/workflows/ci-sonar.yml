@@ -15,16 +15,18 @@ jobs:
           rm -f gcovr-3.4-py2.py3-none-any.whl
 
       - name: Install Sonar wrapper
+        working-directory: ${{ runner.workspace }}
         run: |
           wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
-          unzip build-wrapper-linux-x86.zip -d ${{ runner.workspace }}
+          unzip build-wrapper-linux-x86.zip
 
       - name: Install Sonar scanner
+        working-directory: ${{ runner.workspace }}
         env:
           SONAR_SCANNER_VERSION: 3.3.0.1492
         run: |
           wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-          unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip -d ${{ runner.workspace }}
+          unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
           mv sonar-scanner-cli-${SONAR_SCANNER_VERSION} sonar-scanner-cli
           rm sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
 
