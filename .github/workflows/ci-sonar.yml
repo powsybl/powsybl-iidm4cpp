@@ -20,7 +20,7 @@ jobs:
           unzip build-wrapper-linux-x86.zip -d ${{ runner.workspace }}
 
       - name: Install Sonar scanner
-        with:
+        env:
           SONAR_SCANNER_VERSION: 3.3.0.1492
         run: |
           wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
