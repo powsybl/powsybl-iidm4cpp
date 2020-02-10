@@ -29,4 +29,5 @@ jobs:
           unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
           ln -s sonar-scanner-${SONAR_SCANNER_VERSION} sonar-scanner
           rm sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-          ${{ runner.workspace }}/sonar-scanner/bin/sonar-scanner --version
+          pwd
+          echo ${{ runner.workspace }}
