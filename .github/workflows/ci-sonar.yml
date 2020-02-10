@@ -29,5 +29,11 @@ jobs:
           unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
           ln -s sonar-scanner-${SONAR_SCANNER_VERSION} sonar-scanner
           rm sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-          pwd
-          echo ${{ runner.workspace }}
+
+
+      - name: Sonarcloud
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ${{ runner.workspace }}/sonar-scanner/bin/sonar-scanner -Dsonar.host.url=https://sonarcloud.io
