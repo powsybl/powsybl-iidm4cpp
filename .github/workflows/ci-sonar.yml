@@ -32,10 +32,14 @@ jobs:
           ls -l ${{ runner.workspace }}/sonar/bin
           file ${{ runner.workspace }}/sonar/bin/sonar-scanner
 
-
       - name: Sonarcloud
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: file ${{ runner.workspace }}/sonar/bin/sonar-scanner
+        run: |
+          ls ${{ runner.workspace }}
+          ls ${{ runner.workspace }}/sonar
+          ls ${{ runner.workspace }}/sonar/bin
+          ls ${{ runner.workspace }}/sonar/bin/sonar-scanner
+          file ${{ runner.workspace }}/sonar/bin/sonar-scanner
