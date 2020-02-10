@@ -29,8 +29,8 @@ jobs:
           unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
           ln -s sonar-scanner-${SONAR_SCANNER_VERSION} sonar-scanner
           rm sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-          ls ${{ runner.workspace }}/sonar-scanner
-          ls ${{ runner.workspace }}/sonar-scanner/bin
+          ls -l ${{ runner.workspace }}/sonar-scanner
+          ls -l ${{ runner.workspace }}/sonar-scanner/bin
 
 
       - name: Sonarcloud
