@@ -50,7 +50,7 @@ jobs:
 
       - name: Build
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
-        run: ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ./output cmake --build . --parallel 3
+        run: ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir ./output cmake --build .
 
       - name: Tests
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
