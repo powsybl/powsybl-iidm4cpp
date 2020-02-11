@@ -1,0 +1,46 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - {
+              name: "Ubuntu (Clang)",
+              os: ubuntu-latest,
+              build_type: "Release", cxx: "clang++"
+          }
+#          - {
+#              name: "MacOS (Clang)",
+#              os: macos-latest,
+#              build_type: "Release", cxx: "clang++", clang_tidy: ""
+#          }
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v1
+
+      - name: Create build environment
+        run: cmake -E make_directory ${{ runner.workspace }}/powsybl-iidm4cpp/build
+
+      - name: Configure CMake
+        shell: bash
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        run: >
+          cmake $GITHUB_WORKSPACE
+          -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+          -DBOOST_ROOT=$BOOST_ROOT_1_69_0
+          -DBoost_ARCHITECTURE=-x64
+
+      - name: Build
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        run: cmake --build . --parallel 3
+
+      - name: Tests
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        run: cmake --build . --target tests
