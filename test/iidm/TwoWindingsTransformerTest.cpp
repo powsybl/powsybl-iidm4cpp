@@ -23,7 +23,7 @@
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

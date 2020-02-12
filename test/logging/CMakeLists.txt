@@ -15,13 +15,6 @@ set(UNIT_TEST_SOURCES
 )
 
 add_executable(unit-tests-logging ${UNIT_TEST_SOURCES})
-target_include_directories(unit-tests-logging
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/test
-)
-target_compile_definitions(unit-tests-logging
-    PRIVATE BOOST_TEST_DYN_LINK
-)
-target_link_libraries(unit-tests-logging
-    iidm
-)
+target_link_libraries(unit-tests-logging PRIVATE iidm iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+add_test(NAME logging COMMAND unit-tests-logging)

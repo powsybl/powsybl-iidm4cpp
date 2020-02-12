@@ -20,7 +20,7 @@ set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${COVERAGE_LINKER_FL
 function(code_coverage)
     set(options NONE)
     set(oneValueArgs NAME OUTPUT_DIR)
-    set(multiValueArgs DEPENDENCIES EXCLUDES EXCLUDE_DIRS)
+    set(multiValueArgs EXCLUDES EXCLUDE_DIRS)
     cmake_parse_arguments(Coverage "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     # Assert gcov (or llvm-cov) and gcovr commands are available
@@ -74,8 +74,6 @@ function(code_coverage)
         ${GCOVR_OPTIONS}
 
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-
-        DEPENDS ${Coverage_DEPENDENCIES}
-        )
+    )
 
 endfunction()

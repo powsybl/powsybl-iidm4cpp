@@ -11,14 +11,6 @@ set(UNIT_TEST_SOURCES
     XmlStreamWriterTest.cpp)
 
 add_executable(unit-tests-xml ${UNIT_TEST_SOURCES})
-target_include_directories(unit-tests-xml
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/test
-)
-target_compile_definitions(unit-tests-xml
-    PRIVATE BOOST_TEST_DYN_LINK
-)
-target_link_libraries(unit-tests-xml
-    iidm
-    ${LIBXML2_LIBRARIES}
-)
+target_link_libraries(unit-tests-xml PRIVATE iidm iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+add_test(NAME xml COMMAND unit-tests-xml)

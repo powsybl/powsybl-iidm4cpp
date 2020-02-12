@@ -141,19 +141,6 @@ set(IIDM_SOURCES
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 
-    iidm/extensions/entsoe/EntsoeArea.cpp
-    iidm/extensions/entsoe/EntsoeAreaXmlSerializer.cpp
-    iidm/extensions/entsoe/EntsoeGeographicalCode.cpp
-    iidm/extensions/entsoe/MergedXnode.cpp
-    iidm/extensions/entsoe/MergedXnodeXmlSerializer.cpp
-    iidm/extensions/entsoe/Xnode.cpp
-    iidm/extensions/entsoe/XnodeXmlSerializer.cpp
-
-    iidm/extensions/iidm/ActivePowerControl.cpp
-    iidm/extensions/iidm/ActivePowerControlXmlSerializer.cpp
-    iidm/extensions/iidm/CoordinatedReactiveControl.cpp
-    iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.cpp
-
     iidm/util/DistinctPredicate.cpp
     iidm/util/LimitViolationUtils.cpp
 
@@ -177,8 +164,43 @@ set(IIDM_SOURCES
     xml/XmlStreamWriter.cpp
 )
 
-add_library(iidm ${IIDM_SOURCES})
+# Shared library
+add_library(iidm SHARED ${IIDM_SOURCES})
+set_target_properties(iidm PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION})
 target_include_directories(iidm
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/src/
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
+    PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
+target_include_directories(iidm SYSTEM PUBLIC ${Boost_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIR})
+target_link_libraries(iidm PUBLIC ${LIBXML2_LIBRARIES})
+
+# Static library
+add_library(iidm-static STATIC ${IIDM_SOURCES})
+set_target_properties(iidm-static PROPERTIES OUTPUT_NAME iidm)
+target_include_directories(iidm-static
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${Boost_INCLUDE_DIR}>
+        $<BUILD_INTERFACE:${LIBXML2_INCLUDE_DIR}>
+        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
+    PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
+target_include_directories(iidm-static SYSTEM PUBLIC ${Boost_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIR})
+target_link_libraries(iidm PUBLIC ${LIBXML2_LIBRARIES})
+
+# Installation
+install(TARGETS iidm iidm-static
+    LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+    ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+)
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/powsybl
+    DESTINATION ${INSTALL_INCLUDE_DIR}
+    PATTERN "test/*" EXCLUDE
+)
+
+add_subdirectory(test)

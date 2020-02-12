@@ -12,13 +12,6 @@ set(UNIT_TEST_SOURCES
     )
 
 add_executable(unit-tests-stdcxx ${UNIT_TEST_SOURCES})
-target_include_directories(unit-tests-stdcxx
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/test
-    )
-target_compile_definitions(unit-tests-stdcxx
-    PRIVATE BOOST_TEST_DYN_LINK
-    )
-target_link_libraries(unit-tests-stdcxx
-    iidm
-    )
+target_link_libraries(unit-tests-stdcxx PRIVATE iidm iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+add_test(NAME stdcxx COMMAND unit-tests-stdcxx)

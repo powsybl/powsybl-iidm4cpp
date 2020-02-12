@@ -8,6 +8,16 @@ cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
 
 project(powsybl-iidm4cpp)
 
+set(IIDM_VERSION_MAJOR 0)
+set(IIDM_VERSION_MINOR 9)
+set(IIDM_VERSION_PATCH 0)
+set(IIDM_VERSION ${IIDM_VERSION_MAJOR}.${IIDM_VERSION_MINOR}.${IIDM_VERSION_PATCH})
+set(IIDM_SOVERSION ${IIDM_VERSION_MAJOR})
+
+set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
+set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
+set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for headers")
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if (${CMAKE_VERSION} VERSION_LESS "3.1.0")
@@ -24,20 +34,25 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STRE
 endif ()
 
 find_package(Boost 1.56 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
-include_directories(SYSTEM ${Boost_INCLUDE_DIR})
-
 find_package(LibXml2 REQUIRED)
-include_directories(SYSTEM ${LIBXML2_INCLUDE_DIR})
+
+enable_testing()
+
+# Since Boost 1.60, program arguments and boost test arguments are separated by --
+# https://github.com/boostorg/test/commit/d63379a9b3ad33d263d55c119681047c1d28547c
+if (${Boost_VERSION} GREATER 106000)
+    set(BOOST_ARGS_SEPARATOR "--")
+endif()
 
 set(CODE_COVERAGE FALSE CACHE BOOL "Enable code coverage")
 if (CODE_COVERAGE)
     include(CodeCoverage)
     code_coverage(NAME code-coverage
         OUTPUT_DIR coverage
-        EXCLUDE_DIRS test
-        DEPENDENCIES tests)
+        EXCLUDE_DIRS test tools)
 endif ()
 
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(extensions)
 add_subdirectory(tools)

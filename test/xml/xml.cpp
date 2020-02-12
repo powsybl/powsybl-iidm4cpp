@@ -6,9 +6,9 @@
  */
 
 #define BOOST_TEST_MODULE xml
-#include "boost/unit_test.hpp"
 #include <boost/test/included/unit_test.hpp>
 
-#include <xml/XmlFixture.hpp>
+#include <powsybl/test/unit_test.hpp>
+#include <powsybl/test/XmlFixture.hpp>
 
-BOOST_TEST_GLOBAL_FIXTURE(XmlFixture);
+POWSYBL_TEST_GLOBAL_FIXTURE(powsybl::test::XmlFixture, XmlFixture);

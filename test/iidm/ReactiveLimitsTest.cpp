@@ -13,7 +13,7 @@
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

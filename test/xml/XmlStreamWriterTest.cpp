@@ -13,7 +13,7 @@
 #include <powsybl/xml/XmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

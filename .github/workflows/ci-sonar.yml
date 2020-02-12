@@ -54,6 +54,10 @@ jobs:
 
       - name: Tests
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        run: cmake --build . --target test
+
+      - name: Code coverage
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: |
           cmake --build . --target code-coverage
           rm coverage/reports/#usr#*

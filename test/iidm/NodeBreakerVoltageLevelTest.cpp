@@ -19,7 +19,8 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
+
 #include "NetworkFactory.hpp"
 
 namespace powsybl {

@@ -11,7 +11,7 @@
 #include <powsybl/iidm/Country.hpp>
 #include <powsybl/iidm/Enum.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

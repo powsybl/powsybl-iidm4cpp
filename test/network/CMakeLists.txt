@@ -10,14 +10,6 @@ set(UNIT_TEST_SOURCES
     network.cpp)
 
 add_executable(unit-tests-network ${UNIT_TEST_SOURCES})
-target_include_directories(unit-tests-network
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/test
-)
-target_compile_definitions(unit-tests-network
-    PRIVATE BOOST_TEST_DYN_LINK
-)
-target_link_libraries(unit-tests-network
-    iidm
-    ${LIBXML2_LIBRARIES}
-)
+target_link_libraries(unit-tests-network PRIVATE iidm iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+
+add_test(NAME network COMMAND unit-tests-network)

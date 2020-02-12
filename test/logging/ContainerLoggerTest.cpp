@@ -12,7 +12,7 @@
 #include <powsybl/logging/ContainerLogger.hpp>
 #include <powsybl/stdcxx/put_time.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

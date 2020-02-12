@@ -18,7 +18,8 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
+
 #include "NetworkFactory.hpp"
 
 namespace powsybl {
