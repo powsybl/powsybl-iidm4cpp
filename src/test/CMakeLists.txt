@@ -13,23 +13,19 @@ set(IIDM_TEST_SOURCES
 
 # Static library
 add_library(iidm-tests STATIC ${IIDM_TEST_SOURCES})
+target_include_directories(iidm-tests SYSTEM PUBLIC ${Boost_INCLUDE_DIRS} PRIVATE ${LIBXML2_INCLUDE_DIR})
 target_include_directories(iidm-tests
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
-)
-target_include_directories(iidm-tests SYSTEM
-    PUBLIC
-        ${Boost_INCLUDE_DIR}
+    INTERFACE
+        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
     PRIVATE
-        ${LIBXML2_INCLUDE_DIR}
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_link_libraries(iidm-tests
-    PUBLIC Boost::filesystem Boost::program_options Boost::system
-)
+target_link_libraries(iidm-tests iidm Boost::filesystem Boost::program_options Boost::system ${LIBXML2_LIBRARIES})
 
 # Installation
 install(TARGETS iidm-tests
+    EXPORT iidm-targets
     LIBRARY DESTINATION ${INSTALL_LIB_DIR}
     ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
 )

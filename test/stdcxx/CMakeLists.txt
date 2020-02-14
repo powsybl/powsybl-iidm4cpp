@@ -12,6 +12,6 @@ set(UNIT_TEST_SOURCES
     )
 
 add_executable(unit-tests-stdcxx ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-stdcxx PRIVATE iidm iidm-tests Boost::unit_test_framework)
+target_link_libraries(unit-tests-stdcxx PRIVATE iidm-tests Boost::unit_test_framework)
 
 add_test(NAME stdcxx COMMAND unit-tests-stdcxx)

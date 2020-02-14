@@ -170,30 +170,28 @@ set(IIDM_SOURCES
 # Shared library
 add_library(iidm SHARED ${IIDM_SOURCES})
 set_target_properties(iidm PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION})
+target_include_directories(iidm SYSTEM PUBLIC ${Boost_INCLUDE_DIRS} ${LIBXML2_INCLUDE_DIR})
 target_include_directories(iidm
+    INTERFACE
+        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
-    PRIVATE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_include_directories(iidm SYSTEM PUBLIC ${Boost_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIR})
-target_link_libraries(iidm PUBLIC ${LIBXML2_LIBRARIES})
+target_link_libraries(iidm ${LIBXML2_LIBRARIES})
 
 # Static library
 add_library(iidm-static STATIC ${IIDM_SOURCES})
 set_target_properties(iidm-static PROPERTIES OUTPUT_NAME iidm)
+target_include_directories(iidm-static SYSTEM PUBLIC ${Boost_INCLUDE_DIRS} ${LIBXML2_INCLUDE_DIR})
 target_include_directories(iidm-static
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${Boost_INCLUDE_DIR}>
-        $<BUILD_INTERFACE:${LIBXML2_INCLUDE_DIR}>
-        $<INSTALL_INTERFACE:${INCLUDE_INSTALL_DIR}>
+    INTERFACE
+        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
     PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_include_directories(iidm-static SYSTEM PUBLIC ${Boost_INCLUDE_DIR} ${LIBXML2_INCLUDE_DIR})
-target_link_libraries(iidm PUBLIC ${LIBXML2_LIBRARIES})
+target_link_libraries(iidm-static ${LIBXML2_LIBRARIES})
 
 # Installation
 install(TARGETS iidm iidm-static

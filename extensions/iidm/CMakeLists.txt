@@ -5,7 +5,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-set(EXT_NAME iidm-ext-iidm)
+set(EXT_NAME ext-iidm)
 
 set(EXT_VERSION_MAJOR ${IIDM_VERSION_MAJOR})
 set(EXT_VERSION_MINOR ${IIDM_VERSION_MINOR})
@@ -28,34 +28,35 @@ set(UNIT_TEST_SOURCES
 
 # Shared library
 add_library(${EXT_NAME} SHARED ${EXT_SOURCES})
-set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${EXT_SOVERSION} VERSION ${EXT_VERSION})
+set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${EXT_SOVERSION} VERSION ${EXT_VERSION} OUTPUT_NAME iidm-${EXT_NAME})
 target_include_directories(${EXT_NAME}
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    INTERFACE
         $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
-target_link_libraries(${EXT_NAME} PUBLIC iidm)
+target_link_libraries(${EXT_NAME} iidm)
 
 # Static library
 add_library(${EXT_NAME}-static STATIC ${EXT_SOURCES})
-set_target_properties(${EXT_NAME}-static PROPERTIES OUTPUT_NAME ${EXT_NAME})
+set_target_properties(${EXT_NAME}-static PROPERTIES OUTPUT_NAME iidm-${EXT_NAME})
 target_include_directories(${EXT_NAME}-static
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    INTERFACE
         $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 target_link_libraries(${EXT_NAME}-static PUBLIC iidm)
 
 # Unit tests
-add_executable(unit-tests-ext-iidm ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-ext-iidm PRIVATE ${EXT_NAME} iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+add_executable(unit-tests-${EXT_NAME} ${UNIT_TEST_SOURCES})
+target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
-add_test(NAME ext-iidm COMMAND unit-tests-ext-iidm ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)
+add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 # Installation
 install(TARGETS ${EXT_NAME} ${EXT_NAME}-static
+    EXPORT iidm-targets
     LIBRARY DESTINATION ${INSTALL_LIB_DIR}
     ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
 )

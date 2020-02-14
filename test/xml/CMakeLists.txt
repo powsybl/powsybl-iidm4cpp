@@ -11,6 +11,6 @@ set(UNIT_TEST_SOURCES
     XmlStreamWriterTest.cpp)
 
 add_executable(unit-tests-xml ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-xml PRIVATE iidm iidm-tests Boost::unit_test_framework)
+target_link_libraries(unit-tests-xml PRIVATE iidm-tests Boost::unit_test_framework)
 
 add_test(NAME xml COMMAND unit-tests-xml)
