@@ -17,6 +17,7 @@ set(IIDM_SOVERSION ${IIDM_VERSION_MAJOR})
 set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
 set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
 set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for headers")
+set(INSTALL_CMAKE_DIR share/cmake CACHE PATH "Installation directory for cmake files")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -56,3 +57,27 @@ add_subdirectory(src)
 add_subdirectory(test)
 add_subdirectory(extensions)
 add_subdirectory(tools)
+
+include(CMakePackageConfigHelpers)
+configure_package_config_file(libiidm-config.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/libiidm-config.cmake
+    INSTALL_DESTINATION ${INSTALL_CMAKE_DIR}
+    PATH_VARS
+    INSTALL_INCLUDE_DIR
+    INSTALL_LIB_DIR
+    INSTALL_BIN_DIR
+    NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/libiidm-config-version.cmake
+    VERSION ${IIDM_VERSION}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/libiidm-config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/libiidm-config-version.cmake
+    DESTINATION ${INSTALL_CMAKE_DIR}
+)
+

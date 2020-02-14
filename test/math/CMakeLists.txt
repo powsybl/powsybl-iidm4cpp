@@ -11,6 +11,6 @@ set(UNIT_TEST_SOURCES
     )
 
 add_executable(unit-tests-math ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-math PRIVATE iidm iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
+target_link_libraries(unit-tests-math PRIVATE iidm iidm-tests Boost::unit_test_framework)
 
 add_test(NAME math COMMAND unit-tests-math)

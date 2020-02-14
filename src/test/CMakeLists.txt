@@ -25,7 +25,7 @@ target_include_directories(iidm-tests SYSTEM
         ${LIBXML2_INCLUDE_DIR}
 )
 target_link_libraries(iidm-tests
-    PUBLIC ${Boost_FILESYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY}
+    PUBLIC Boost::filesystem Boost::program_options Boost::system
 )
 
 # Installation

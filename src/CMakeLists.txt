@@ -110,13 +110,16 @@ set(IIDM_SOURCES
     iidm/VscConverterStationAdder.cpp
 
     iidm/converter/BusFilter.cpp
+    iidm/converter/Constants.cpp
     iidm/converter/ExportOptions.cpp
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
+
     iidm/converter/xml/BatteryXml.cpp
     iidm/converter/xml/BusbarSectionXml.cpp
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp
     iidm/converter/xml/BusXml.cpp
+    iidm/converter/xml/CurrentLimitsXml.cpp
     iidm/converter/xml/DanglingLineXml.cpp
     iidm/converter/xml/ExtensionXmlSerializer.cpp
     iidm/converter/xml/GeneratorXml.cpp
@@ -194,6 +197,7 @@ target_link_libraries(iidm PUBLIC ${LIBXML2_LIBRARIES})
 
 # Installation
 install(TARGETS iidm iidm-static
+    EXPORT iidm-targets
     LIBRARY DESTINATION ${INSTALL_LIB_DIR}
     ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
 )

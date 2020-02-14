@@ -52,8 +52,6 @@ protected:
 
     static void readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index = boost::optional<int>());
 
-    static std::string toString(const char* string, const boost::optional<int>& index);
-
     static void writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index = boost::optional<int>());
 
     static void writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index = boost::optional<int>());

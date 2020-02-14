@@ -1,0 +1,26 @@
+# libiidm-config.cmake
+# --------------------
+#
+# Libiidm cmake module.
+# THis module sets the following variables:
+#
+# ::
+#
+#   LIBXML2_INCLUDE_DIRS      - Directory where libxml2 headers are located.
+#   LIBXML2_LIBRARIES         - xml2 libraries to link against.
+#   LIBXML2_VERSION_MAJOR     - The major version of libxml2.
+#   LIBXML2_VERSION_MINOR     - The minor version of libxml2.
+#   LIBXML2_VERSION_PATCH     - The patch version of libxml2.
+#   LIBXML2_VERSION_STRING    - version number as a string (ex: "2.3.4")
+#   LIBXML2_MODULES           - whether libxml2 as dso support
+
+get_filename_component(_libiidm_rootdir "${CMAKE_CURRENT_LIST_DIR}/../../" ABSOLUTE)
+
+set(LIBIIDM_VERSION_MAJOR @IIDM_VERSION_MAJOR@)
+set(LIBIIDM_VERSION_MAJOR @IIDM_VERSION_MINOR@)
+set(LIBIIDM_VERSION_PATCH @IIDM_VERSION_PATCH@)
+set(LIBIIDM_VERSION @IIDM_VERSION@)
+set(LIBIIDM_INSTALL_PREFIX ${_libiidm_rootdir})
+set(LIBIIDM_INCLUDE_DIR ${_libiidm_rootdir}/@INSTALL_INCLUDE_DIR@)
+set(LIBIIDM_LIBRARY_DIR ${_libiidm_rootdir}/@INSTALL_LIB_DIR@)
+set(LIBIIDM_LIBRARIES -L${LIBIIDM_LIBRARY_DIR} -liidm)

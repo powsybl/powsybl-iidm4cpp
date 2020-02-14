@@ -8,6 +8,10 @@
 #ifndef POWSYBL_IIDM_CONVERTER_CONSTANTS_HPP
 #define POWSYBL_IIDM_CONVERTER_CONSTANTS_HPP
 
+#include <string>
+
+#include <boost/optional.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -156,6 +160,8 @@ static const char* const X2 = "x2";
 static const char* const X3 = "x3";
 static const char* const XNODE_P_ = "xnodeP_";
 static const char* const XNODE_Q_ = "xnodeQ_";
+
+std::string toString(const char* attribute, boost::optional<int> index);
 
 }  // namespace converter
 

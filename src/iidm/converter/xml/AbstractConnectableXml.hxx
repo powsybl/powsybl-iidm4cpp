@@ -8,6 +8,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/converter/xml/CurrentLimitsXml.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 
@@ -22,23 +23,7 @@ namespace xml {
 template <typename Added, typename Adder, typename Parent>
 template <typename S, typename O>
 void AbstractConnectableXml<Added, Adder, Parent>::readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
-    const double& permanentLimit = reader.getOptionalAttributeValue(PERMANENT_LIMIT, stdcxx::nan());
-    adder.setPermanentLimit(permanentLimit);
-    reader.readUntilEndElement(toString(CURRENT_LIMITS, index), [&adder, &reader]() {
-        if (reader.getLocalName() == TEMPORARY_LIMIT) {
-            const std::string& name = reader.getAttributeValue(NAME);
-            int acceptableDuration = reader.getOptionalAttributeValue(ACCEPTABLE_DURATION, std::numeric_limits<int>::max());
-            double value = reader.getOptionalAttributeValue(VALUE, std::numeric_limits<double>::max());
-            bool fictitious = reader.getOptionalAttributeValue(FICTITIOUS, false);
-            adder.beginTemporaryLimit()
-                .setName(name)
-                .setAcceptableDuration(acceptableDuration)
-                .setValue(value)
-                .setFictitious(fictitious)
-                .endTemporaryLimit();
-        }
-    });
-    adder.add();
+    CurrentLimitsXml::readCurrentLimits(adder, reader, index);
 }
 
 template <typename Added, typename Adder, typename Parent>
@@ -117,15 +102,6 @@ void AbstractConnectableXml<Added, Adder, Parent>::readPQ(Terminal& terminal, co
 }
 
 template <typename Added, typename Adder, typename Parent>
-std::string AbstractConnectableXml<Added, Adder, Parent>::toString(const char* string, const boost::optional<int>& index) {
-    std::string str = string;
-    if (index) {
-        str += std::to_string(*index);
-    }
-    return str;
-}
-
-template <typename Added, typename Adder, typename Parent>
 void AbstractConnectableXml<Added, Adder, Parent>::writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
     if (bus) {
         context.getWriter().writeAttribute(toString(BUS, index), context.getAnonymizer().anonymizeString(bus.get().getId()));
@@ -137,21 +113,7 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeBus(const stdcxx::CRefer
 
 template <typename Added, typename Adder, typename Parent>
 void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index, const std::string& nsPrefix) {
-    if (!std::isnan(limits.getPermanentLimit()) || !limits.getTemporaryLimits().empty()) {
-        writer.writeStartElement(nsPrefix, toString(CURRENT_LIMITS, index));
-        writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
-
-        for (const auto& tl : limits.getTemporaryLimits()) {
-            writer.writeStartElement(nsPrefix, TEMPORARY_LIMIT);
-            writer.writeAttribute(NAME, tl.get().getName());
-            writer.writeOptionalAttribute(ACCEPTABLE_DURATION, tl.get().getAcceptableDuration(), std::numeric_limits<int>::max());
-            writer.writeOptionalAttribute(VALUE, tl.get().getValue(), std::numeric_limits<double>::max());
-            writer.writeOptionalAttribute(FICTITIOUS, tl.get().isFictitious(), false);
-            writer.writeEndElement();
-        }
-
-        writer.writeEndElement();
-    }
+    CurrentLimitsXml::writeCurrentLimits(limits, writer, index, nsPrefix);
 }
 
 template <typename Added, typename Adder, typename Parent>
