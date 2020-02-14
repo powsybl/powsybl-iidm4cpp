@@ -8,7 +8,7 @@
 #define BOOST_TEST_MODULE entsoe
 #include <boost/test/included/unit_test.hpp>
 
-#include <powsybl/test/unit_test.hpp>
 #include <powsybl/test/XmlFixture.hpp>
+#include <powsybl/test/unit_test.hpp>
 
 POWSYBL_TEST_GLOBAL_FIXTURE(powsybl::test::XmlFixture, XmlFixture);

@@ -42,8 +42,8 @@ private:
 
 }  // namespace converter
 
-}  // namespace iidm
+}  // namespace test
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_ROUNDTRIP_HPP
+#endif  // POWSYBL_TEST_CONVERTER_ROUNDTRIP_HPP

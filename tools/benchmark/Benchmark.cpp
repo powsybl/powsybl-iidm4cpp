@@ -17,7 +17,7 @@
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv) noexcept {
     const char* const INPUT_FILE = "input-file";
     const char* const OUTPUT_FILE = "output-file";
 
@@ -53,12 +53,18 @@ int main(int argc, char** argv) {
 
         inputStream.close();
         outputStream.close();
-    } catch(const boost::program_options::error& e) {
+    } catch (const boost::program_options::error& e) {
         std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
         std::cerr << desc << std::endl;
         return EXIT_FAILURE;
-    } catch(const powsybl::PowsyblException& e) {
+    } catch (const powsybl::PowsyblException& e) {
         std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+        return EXIT_FAILURE;
+    } catch (const std::exception& e) {
+        std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+        return EXIT_FAILURE;
+    } catch (...) {
+        std::cerr << "ERROR: unexpected exception" << std::endl << std::endl;
         return EXIT_FAILURE;
     }
 
