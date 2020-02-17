@@ -9,7 +9,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 
-#include <powsybl/test//ResourceFixture.hpp>
+#include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
 namespace powsybl {

@@ -27,13 +27,13 @@ public:
     ResourceFixture() {
         boost::program_options::options_description desc;
         desc.add_options()
-                ("resources", boost::program_options::value<std::string>()->required(),
-                 "Path where the test resources are stored");
+            ("resources", boost::program_options::value<std::string>()->required(),
+             "Path where the test resources are stored");
 
         parse(desc);
     }
 
-    std::string getResource(const std::string &name) {
+    std::string getResource(const std::string& name) {
         boost::filesystem::path path(getOptionValue("resources").as<std::string>());
         path /= name;
 
@@ -45,7 +45,7 @@ public:
         std::ifstream stream(path.string());
         if (!stream) {
             throw powsybl::AssertionError(
-                    powsybl::logging::format("Unable to access to the resource: %1%", path.string()));
+                powsybl::logging::format("Unable to access to the resource: %1%", path.string()));
         }
         buffer << stream.rdbuf();
 

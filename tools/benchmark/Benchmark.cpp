@@ -17,7 +17,7 @@
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
-int main(int argc, char** argv) noexcept {
+int main(int argc, char** argv) {
     const char* const INPUT_FILE = "input-file";
     const char* const OUTPUT_FILE = "output-file";
 

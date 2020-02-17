@@ -22,7 +22,7 @@ namespace xml {
 class XmlStreamReader;
 class XmlStreamWriter;
 
-}
+}  // namespace xml
 
 namespace iidm {
 

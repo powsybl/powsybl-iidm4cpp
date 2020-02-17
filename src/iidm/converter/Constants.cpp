@@ -21,7 +21,6 @@ std::string toString(const char* attribute, boost::optional<int> index) {
     return str;
 }
 
-
 }  // namespace converter
 
 }  // namespace iidm
