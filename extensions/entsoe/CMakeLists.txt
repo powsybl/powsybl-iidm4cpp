@@ -39,7 +39,7 @@ target_include_directories(${EXT_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
-target_link_libraries(${EXT_NAME} iidm)
+target_link_libraries(${EXT_NAME} PUBLIC iidm)
 
 # Static library
 add_library(${EXT_NAME}-static STATIC ${EXT_SOURCES})
@@ -50,7 +50,7 @@ target_include_directories(${EXT_NAME}-static
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
-target_link_libraries(${EXT_NAME}-static iidm)
+target_link_libraries(${EXT_NAME}-static PUBLIC iidm)
 
 # Unit tests
 add_executable(unit-tests-${EXT_NAME} ${UNIT_TEST_SOURCES})

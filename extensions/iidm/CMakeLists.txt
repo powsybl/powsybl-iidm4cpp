@@ -35,7 +35,7 @@ target_include_directories(${EXT_NAME}
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
-target_link_libraries(${EXT_NAME} iidm)
+target_link_libraries(${EXT_NAME} PUBLIC iidm)
 
 # Static library
 add_library(${EXT_NAME}-static STATIC ${EXT_SOURCES})
