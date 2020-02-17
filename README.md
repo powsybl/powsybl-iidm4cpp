@@ -9,27 +9,31 @@ To build powsybl-iidm4cpp, you need:
 - [Boost](https://www.boost.org) development packages (1.56 or higher)
 - [LibXML2](http://www.xmlsoft.org/) development packages
 
-### Alpine
-Run the following command to install the requirements:
+To install these requirements, the simplest way is to use the package manager:
+
+**Alpine**
 ```
 $> apk add boost-dev clang cmake g++ make
 ```
 
-### CentOS
-Run the following command to install the requirements:
+**CentOS**
 ```
 $> yum -y install boost-devel clang cmake gcc-c++ make
-$> mkdir /opt/boost-1.69 && ln -s /usr/include/boost169 /opt/boost-1.69/include && ln -s /usr/lib64/boost169 /opt/boost-1.69/lib
 ```
 
-### Ubuntu
-Run the following command to install the requirements:
+**Ubuntu**
 ```
 $> apt-get -y install clang cmake g++ libboost-all-dev make
 ```
 
-### Docker
-
-You can also use a pre-configured docker image for these environments. See the [readme](docker/README.md) to know how to
-build these images.
-
+## Build
+To build powsybl-iidm4cpp, run the following commands:
+```
+$> git clone https://github.com/powsybl/powsybl-iidm4cpp
+$> cd powsybl-iidm4cpp
+$> mkdir build
+$> cd build
+$> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE>
+$> make -j
+$> make install
+```
