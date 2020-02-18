@@ -8,14 +8,8 @@
 #ifndef POWSYBL_TEST_RESOURCEFIXTURE_HPP
 #define POWSYBL_TEST_RESOURCEFIXTURE_HPP
 
-#include <fstream>
-#include <sstream>
+#include <string>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
-#include <powsybl/AssertionError.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/test/CommandLine.hpp>
 
 namespace powsybl {
@@ -24,33 +18,9 @@ namespace test {
 
 class ResourceFixture : private CommandLine {
 public:
-    ResourceFixture() {
-        boost::program_options::options_description desc;
-        desc.add_options()
-            ("resources", boost::program_options::value<std::string>()->required(),
-             "Path where the test resources are stored");
+    ResourceFixture();
 
-        parse(desc);
-    }
-
-    std::string getResource(const std::string& name) {
-        boost::filesystem::path path(getOptionValue("resources").as<std::string>());
-        path /= name;
-
-        if (!boost::filesystem::exists(path)) {
-            throw powsybl::AssertionError(powsybl::logging::format("Unable to find the resource: %1%", path.string()));
-        }
-
-        std::stringstream buffer;
-        std::ifstream stream(path.string());
-        if (!stream) {
-            throw powsybl::AssertionError(
-                powsybl::logging::format("Unable to access to the resource: %1%", path.string()));
-        }
-        buffer << stream.rdbuf();
-
-        return buffer.str();
-    }
+    std::string getResource(const std::string& name);
 };
 
 }  // namespace test

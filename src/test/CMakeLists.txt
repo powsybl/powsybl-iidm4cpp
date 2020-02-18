@@ -6,6 +6,8 @@
 #
 
 set(IIDM_TEST_SOURCES
+    CommandLine.cpp
+    ResourceFixture.cpp
     XmlFixture.cpp
 
     converter/RoundTrip.cpp

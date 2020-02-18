@@ -11,7 +11,6 @@
 #include <string>
 
 #include <boost/program_options/options_description.hpp>
-#include <boost/program_options/parsers.hpp>
 #include <boost/program_options/variables_map.hpp>
 
 namespace powsybl {
@@ -20,25 +19,13 @@ namespace test {
 
 class CommandLine {
 public:
-    const boost::program_options::variable_value& getOptionValue(const std::string& name) const {
-        return m_options[name];
-    }
+    const boost::program_options::variable_value& getOptionValue(const std::string& name) const;
 
 protected:
-    void parse(const boost::program_options::options_description& desc) {
-        m_options.clear();
-        boost::program_options::store(
-            boost::program_options::parse_command_line(
-                boost::unit_test::framework::master_test_suite().argc,
-                boost::unit_test::framework::master_test_suite().argv,
-                desc),
-            m_options);
-        boost::program_options::notify(m_options);
-    }
+    void parse(const boost::program_options::options_description& desc);
 
 private:
     boost::program_options::variables_map m_options;
-
 };
 
 }  // namespace test

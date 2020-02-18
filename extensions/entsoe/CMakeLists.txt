@@ -7,12 +7,6 @@
 
 set(EXT_NAME ext-entsoe)
 
-set(EXT_VERSION_MAJOR ${IIDM_VERSION_MAJOR})
-set(EXT_VERSION_MINOR ${IIDM_VERSION_MINOR})
-set(EXT_VERSION_PATCH ${IIDM_VERSION_PATCH})
-set(EXT_VERSION ${EXT_VERSION_MAJOR}.${EXT_VERSION_MINOR}.${EXT_VERSION_PATCH})
-set(EXT_SOVERSION ${EXT_VERSION_MAJOR})
-
 set(EXT_SOURCES
     src/EntsoeArea.cpp
     src/EntsoeAreaXmlSerializer.cpp
@@ -32,7 +26,7 @@ set(UNIT_TEST_SOURCES
 
 # Shared library
 add_library(${EXT_NAME} SHARED ${EXT_SOURCES})
-set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${EXT_SOVERSION} VERSION ${EXT_VERSION} OUTPUT_NAME iidm-${EXT_NAME})
+set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION} OUTPUT_NAME iidm-${EXT_NAME})
 target_include_directories(${EXT_NAME}
     INTERFACE
         $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
@@ -54,6 +48,7 @@ target_link_libraries(${EXT_NAME}-static PUBLIC iidm)
 
 # Unit tests
 add_executable(unit-tests-${EXT_NAME} ${UNIT_TEST_SOURCES})
+target_compile_definitions(unit-tests-${EXT_NAME} PRIVATE BOOST_TEST_DYN_LINK)
 target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
 add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)

@@ -6,9 +6,16 @@
  */
 
 #define BOOST_TEST_MODULE entsoe
-#include <boost/test/included/unit_test.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include <powsybl/test/XmlFixture.hpp>
-#include <powsybl/test/unit_test.hpp>
 
-POWSYBL_TEST_GLOBAL_FIXTURE(powsybl::test::XmlFixture, XmlFixture);
+namespace powsybl {
+
+namespace test {
+
+BOOST_TEST_GLOBAL_FIXTURE(XmlFixture);
+
+}  // namespace test
+
+}  // namespace powsybl

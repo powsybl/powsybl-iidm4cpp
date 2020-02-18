@@ -18,8 +18,4 @@
 #   define BOOST_TEST_GLOBAL_FIXTURE BOOST_GLOBAL_FIXTURE
 #endif
 
-#define POWSYBL_TEST_GLOBAL_FIXTURE( T, F ) \
-static boost::unit_test::ut_detail::global_fixture_impl<T> BOOST_JOIN( gf_, F )
-
-
 #endif  // POWSYBL_TEST_BOOST_UNIT_TEST_HPP

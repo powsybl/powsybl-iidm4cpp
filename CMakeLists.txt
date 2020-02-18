@@ -66,7 +66,10 @@ install(EXPORT iidm-targets
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
-    ${CMAKE_CURRENT_BINARY_DIR}/libiidm-config-version.cmake
+    "${CMAKE_CURRENT_BINARY_DIR}/libiidm-config-version.cmake"
     VERSION ${IIDM_VERSION}
     COMPATIBILITY AnyNewerVersion
+)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libiidm-config-version.cmake"
+    DESTINATION ${INSTALL_CMAKE_DIR}
 )
