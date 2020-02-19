@@ -12,8 +12,7 @@
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-
-#include "iidm/converter/Constants.hpp"
+#include <powsybl/iidm/converter/Constants.hpp>
 
 namespace powsybl {
 

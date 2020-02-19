@@ -14,10 +14,9 @@
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
+#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
-
-#include "iidm/converter/Constants.hpp"
 
 namespace powsybl {
 

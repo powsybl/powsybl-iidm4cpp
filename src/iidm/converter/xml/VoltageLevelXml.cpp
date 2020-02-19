@@ -10,9 +10,8 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
+#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
-
-#include "iidm/converter/Constants.hpp"
 
 #include "BatteryXml.hpp"
 #include "BusBreakerViewSwitchXml.hpp"

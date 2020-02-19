@@ -5,9 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "iidm/converter/Constants.hpp"
-
 #include "ShuntCompensatorXml.hpp"
+
+#include <powsybl/iidm/converter/Constants.hpp>
 
 namespace powsybl {
 

@@ -13,7 +13,8 @@
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
+
 #include "NetworkFactory.hpp"
 
 namespace powsybl {

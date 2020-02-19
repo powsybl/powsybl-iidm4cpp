@@ -9,10 +9,7 @@ jobs:
 
     steps:
       - name: Install gcovr
-        run: |
-          wget https://github.com/gcovr/gcovr/releases/download/3.4/gcovr-3.4-py2.py3-none-any.whl
-          sudo pip install gcovr-3.4-py2.py3-none-any.whl
-          rm -f gcovr-3.4-py2.py3-none-any.whl
+        run: sudo pip install gcovr
 
       - name: Install Sonar wrapper
         working-directory: ${{ runner.workspace }}
@@ -54,9 +51,12 @@ jobs:
 
       - name: Tests
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
+        run: cmake --build . --target test
+
+      - name: Code coverage
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: |
           cmake --build . --target code-coverage
-          rm coverage/reports/#usr#*
 
       - name: Sonarcloud
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp

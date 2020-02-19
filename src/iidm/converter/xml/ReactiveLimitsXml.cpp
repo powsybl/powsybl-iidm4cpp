@@ -9,12 +9,11 @@
 
 #include <powsybl/iidm/MinMaxReactiveLimits.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
+#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
-
-#include "iidm/converter/Constants.hpp"
 
 namespace powsybl {
 

@@ -11,6 +11,7 @@
 
 #include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
@@ -22,7 +23,6 @@
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
-#include "iidm/converter/Constants.hpp"
 #include "xml/XmlEncoding.hpp"
 
 #include "HvdcLineXml.hpp"

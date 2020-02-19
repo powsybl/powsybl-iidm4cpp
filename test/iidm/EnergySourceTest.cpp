@@ -10,7 +10,7 @@
 #include <powsybl/iidm/EnergySource.hpp>
 #include <powsybl/iidm/Enum.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

@@ -11,7 +11,7 @@
 
 #include <powsybl/stdcxx/DateTime.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace stdcxx {
 

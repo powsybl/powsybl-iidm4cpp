@@ -11,8 +11,8 @@
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/stdcxx/DateTime.hpp>
 
-#include "iidm/converter/ResourceFixture.hpp"
-#include "iidm/converter/RoundTrip.hpp"
+#include <powsybl/test/ResourceFixture.hpp>
+#include <powsybl/test/converter/RoundTrip.hpp>
 
 namespace powsybl {
 
@@ -24,14 +24,14 @@ namespace xml {
 
 BOOST_AUTO_TEST_SUITE(XmlRoundTrip)
 
-BOOST_FIXTURE_TEST_CASE(Eurostag, ResourceFixture) {
+BOOST_FIXTURE_TEST_CASE(Eurostag, test::ResourceFixture) {
 
-    powsybl::iidm::Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
 
     const std::string& networkStr = ResourceFixture::getResource("/eurostag-tutorial1.xml");
 
-    RoundTrip::runXml(network, networkStr);
+    test::converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

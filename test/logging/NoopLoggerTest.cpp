@@ -9,7 +9,7 @@
 
 #include <powsybl/logging/NoopLogger.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

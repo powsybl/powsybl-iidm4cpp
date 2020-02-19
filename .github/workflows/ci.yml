@@ -43,4 +43,6 @@ jobs:
 
       - name: Tests
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
-        run: cmake --build . --target tests
+        run: cmake --build . --target test
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1

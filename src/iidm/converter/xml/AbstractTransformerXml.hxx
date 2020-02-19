@@ -82,7 +82,7 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(TwoWindingsTransf
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg2or3& twl, NetworkXmlReaderContext& context) {
     std::shared_ptr<RatioTapChangerAdder> adder = std::make_shared<RatioTapChangerAdder>(twl.newRatioTapChanger());
-    readRatioTapChanger(AbstractConnectableXml<Added, Adder, Substation>::toString(RATIO_TAP_CHANGER, leg), adder, twl.getTerminal(), context);
+    readRatioTapChanger(toString(RATIO_TAP_CHANGER, leg), adder, twl.getTerminal(), context);
 }
 
 template <typename Added, typename Adder>

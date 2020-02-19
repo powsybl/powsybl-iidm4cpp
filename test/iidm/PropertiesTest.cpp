@@ -10,7 +10,7 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Network.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

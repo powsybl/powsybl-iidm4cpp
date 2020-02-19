@@ -9,8 +9,8 @@
 
 #include <powsybl/iidm/Network.hpp>
 
-#include "iidm/converter/ResourceFixture.hpp"
-#include "iidm/converter/RoundTrip.hpp"
+#include <powsybl/test/ResourceFixture.hpp>
+#include <powsybl/test/converter/RoundTrip.hpp>
 
 namespace powsybl {
 
@@ -22,18 +22,18 @@ namespace xml {
 
 BOOST_AUTO_TEST_SUITE(XmlRoundTrip)
 
-BOOST_FIXTURE_TEST_CASE(DanglingLineTest, ResourceFixture) {
+BOOST_FIXTURE_TEST_CASE(DanglingLineTest, test::ResourceFixture) {
     const std::string& networkStr = ResourceFixture::getResource("/danglingLine.xml");
     Network network = Network::readXml(networkStr);
 
-    RoundTrip::runXml(network, networkStr);
+    test::converter::RoundTrip::runXml(network, networkStr);
 }
 
-BOOST_FIXTURE_TEST_CASE(TieLineTest, ResourceFixture) {
+BOOST_FIXTURE_TEST_CASE(TieLineTest, test::ResourceFixture) {
     const std::string& networkStr = ResourceFixture::getResource("/tieline.xml");
     Network network = Network::readXml(networkStr);
 
-    RoundTrip::runXml(network, networkStr);
+    test::converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

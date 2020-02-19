@@ -19,7 +19,7 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

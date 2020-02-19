@@ -9,7 +9,7 @@
 
 #include <powsybl/logging/ConsoleLogger.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

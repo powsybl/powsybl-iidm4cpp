@@ -12,7 +12,7 @@
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 

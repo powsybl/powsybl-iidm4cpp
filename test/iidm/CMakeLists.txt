@@ -42,7 +42,6 @@ set(UNIT_TEST_SOURCES
     converter/ExportOptionsTest.cpp
     converter/FakeAnonymizerTest.cpp
     converter/ImportOptionsTest.cpp
-    converter/RoundTrip.cpp
 
     converter/xml/BatteryRoundTripTest.cpp
     converter/xml/FictitiousSwitchTest.cpp
@@ -58,25 +57,10 @@ set(UNIT_TEST_SOURCES
     converter/xml/ThreeWindingsTransformerRoundTripTest.cpp
     converter/xml/XmlRoundTripTest.cpp
     converter/xml/VscRoundTripTest.cpp
-
-    extensions/entsoe/EntsoeAreaTest.cpp
-    extensions/entsoe/MergedXnodeTest.cpp
-    extensions/entsoe/XnodeTest.cpp
-
-    extensions/iidm/ActivePowerControlTest.cpp
-    extensions/iidm/CoordinatedReactiveControlTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
-target_include_directories(unit-tests-iidm
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/include
-    PRIVATE ${CMAKE_HOME_DIRECTORY}/test
-)
-target_compile_definitions(unit-tests-iidm
-    PRIVATE BOOST_TEST_DYN_LINK
-)
-target_link_libraries(unit-tests-iidm
-    iidm
-    ${LIBXML2_LIBRARIES}
-    ${Boost_FILESYSTEM_LIBRARY} ${Boost_PROGRAM_OPTIONS_LIBRARY} ${Boost_SYSTEM_LIBRARY}
-)
+target_compile_definitions(unit-tests-iidm PRIVATE BOOST_TEST_DYN_LINK)
+target_link_libraries(unit-tests-iidm PRIVATE iidm-tests Boost::unit_test_framework)
+
+add_test(NAME iidm COMMAND unit-tests-iidm ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_SOURCE_DIR}/test/resources)

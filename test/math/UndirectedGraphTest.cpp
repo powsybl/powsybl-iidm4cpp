@@ -13,7 +13,7 @@
 #include <powsybl/math/UndirectedGraph.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
-#include "AssertionUtils.hpp"
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 
