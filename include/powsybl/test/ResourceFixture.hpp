@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace test {
 
-class ResourceFixture : private CommandLine {
+class ResourceFixture : public CommandLine {
 public:
     ResourceFixture();
 

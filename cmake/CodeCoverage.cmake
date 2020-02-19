@@ -70,7 +70,7 @@ function(code_coverage)
         --gcov-executable "${GCOV_CMD}"
         --root ${CMAKE_SOURCE_DIR}
         --keep --object-directory ${Coverage_OUTPUT_DIR}/reports
-        --html --html-details --output ${Coverage_OUTPUT_DIR}/index.html
+        --html --html-details --output ${Coverage_OUTPUT_DIR}/index.html --sonarqube ${Coverage_OUTPUT_DIR}/coverage.xml
         ${GCOVR_OPTIONS}
 
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
