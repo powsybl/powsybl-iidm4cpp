@@ -29,7 +29,7 @@ $> yum -y install boost-devel clang cmake gcc-c++ make
 
 ### Ubuntu
 ```
-$> apt-get -y install clang g++ libboost-all-dev make
+$> apt-get -y install clang cmake g++ libboost-all-dev make
 ```
 
 **Note**: On Ubuntu 18.04, default cmake package is too old (3.10), so you have to install it manually:
