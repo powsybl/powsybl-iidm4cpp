@@ -10,26 +10,33 @@
 
 To build powsybl-iidm4cpp, you need:
 - A C++ compiler that supports C++11 ([clang](https://clang.llvm.org) 3.3 or higher, [g++](https://gcc.gnu.org) 5.0 or higher)
-- [CMake](https://cmake.org) (2.6 or higher)
+- [CMake](https://cmake.org) (3.12 or higher)
 - [Make](https://www.gnu.org/software/make/)
 - [Boost](https://www.boost.org) development packages (1.56 or higher)
 - [LibXML2](http://www.xmlsoft.org/) development packages
 
 To install these requirements, the simplest way is to use the package manager:
 
-**Alpine**
+### Alpine
 ```
 $> apk add boost-dev clang cmake g++ make
 ```
 
-**CentOS**
+### CentOS
 ```
 $> yum -y install boost-devel clang cmake gcc-c++ make
 ```
 
-**Ubuntu**
+### Ubuntu
 ```
-$> apt-get -y install clang cmake g++ libboost-all-dev make
+$> apt-get -y install clang g++ libboost-all-dev make
+```
+
+**Note**: On Ubuntu 18.04, default cmake package is too old (3.10), so you have to install it manually:
+```
+$> wget https://cmake.org/files/v3.12/cmake-3.12.0-Linux-x86_64.tar.gz
+$> tar xzf cmake-3.12.0-Linux-x86_64.tar.gz
+$> export PATH=$PWD/cmake-3.12.0-Linux-x86_64/bin:$PATH
 ```
 
 ## Build
