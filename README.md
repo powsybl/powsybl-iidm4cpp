@@ -19,17 +19,17 @@ To install these requirements, the simplest way is to use the package manager:
 
 ### Alpine
 ```
-$> apk add boost-dev clang cmake g++ make
+$> apk add boost-dev clang cmake git g++ libxml2-dev make
 ```
 
 ### CentOS
 ```
-$> yum -y install boost-devel clang cmake gcc-c++ make
+$> yum -y install boost-devel clang cmake gcc-c++ git libxml2-devel make
 ```
 
 ### Ubuntu
 ```
-$> apt-get -y install clang cmake g++ libboost-all-dev make
+$> apt-get -y install clang cmake g++ git libboost-all-dev libxml2-dev make
 ```
 
 **Note**: On Ubuntu 18.04, default cmake package is too old (3.10), so you have to install it manually:
