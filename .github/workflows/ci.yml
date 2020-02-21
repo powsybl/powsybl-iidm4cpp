@@ -12,17 +12,22 @@ jobs:
           - {
               name: "Ubuntu (Clang)",
               os: ubuntu-latest,
+              build_type: "Release", cxx: "clang++",
+              cmake_options: "-DBOOST_ROOT=$BOOST_ROOT_1_69_0 -DBoost_ARCHITECTURE=-x64"
+          }
+          - {
+              name: "MacOS (Clang)",
+              os: macos-latest,
               build_type: "Release", cxx: "clang++"
           }
-#          - {
-#              name: "MacOS (Clang)",
-#              os: macos-latest,
-#              build_type: "Release", cxx: "clang++", clang_tidy: ""
-#          }
 
     steps:
       - name: Checkout sources
         uses: actions/checkout@v1
+
+      - name: Install boost
+        if: runner.os == 'macOS'
+        run: brew install boost
 
       - name: Create build environment
         run: cmake -E make_directory ${{ runner.workspace }}/powsybl-iidm4cpp/build
@@ -34,8 +39,7 @@ jobs:
           cmake $GITHUB_WORKSPACE
           -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
           -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
-          -DBOOST_ROOT=$BOOST_ROOT_1_69_0
-          -DBoost_ARCHITECTURE=-x64
+          ${{ matrix.config.cmake_options }}
 
       - name: Build
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build

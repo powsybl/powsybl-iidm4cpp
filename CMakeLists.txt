@@ -41,7 +41,7 @@ enable_testing()
 
 # Since Boost 1.60, program arguments and boost test arguments are separated by --
 # https://github.com/boostorg/test/commit/d63379a9b3ad33d263d55c119681047c1d28547c
-if (${Boost_VERSION} GREATER 106000)
+if (${Boost_VERSION_MACRO} GREATER 106000)
     set(BOOST_ARGS_SEPARATOR "--")
 endif()
 
