@@ -8,7 +8,6 @@
 #include <powsybl/stdcxx/filesystem.hpp>
 
 #include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
 
 namespace stdcxx {
 
@@ -21,7 +20,7 @@ std::vector<std::string> getFileList(const std::string& directory, const std::st
         while (it != endit)
         {
             if (boost::filesystem::is_regular_file(*it) && it->path().extension() == extension) {
-                libs.push_back((directory / it->path().filename()).string());
+                libs.push_back(directory + "/" + it->path().filename().string());
             }
             ++it;
         }
