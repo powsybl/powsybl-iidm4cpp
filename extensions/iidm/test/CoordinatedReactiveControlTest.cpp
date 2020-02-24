@@ -91,7 +91,7 @@ BOOST_FIXTURE_TEST_CASE(CoordinatedReactiveControlXmlSerializerTest, test::Resou
     Generator& gen = network.getGenerator("GEN");
     gen.addExtension(Extension::create<CoordinatedReactiveControl>(gen, 100.0));
 
-    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::registerExtension("coordinatedReactiveControl", stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
+    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::initialize(ResourceFixture::getExtensionsBuildDir());
 
     const std::string& networkStr = ResourceFixture::getResource("coordinatedReactiveControl.xml");
 

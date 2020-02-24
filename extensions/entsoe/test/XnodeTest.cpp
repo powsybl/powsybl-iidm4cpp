@@ -77,7 +77,7 @@ BOOST_AUTO_TEST_CASE(XnodeTest) {
 BOOST_FIXTURE_TEST_CASE(XnodeXmlSerializerTest, test::ResourceFixture) {
     Network network = createNetwork();
 
-    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::registerExtension("xnode", stdcxx::make_unique<XnodeXmlSerializer>());
+    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::initialize(ResourceFixture::getExtensionsBuildDir());
 
     const std::string& networkStr = ResourceFixture::getResource("xnode.xml");
 

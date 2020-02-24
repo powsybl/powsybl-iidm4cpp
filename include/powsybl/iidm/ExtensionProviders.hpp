@@ -12,6 +12,7 @@
 #include <memory>
 #include <string>
 #include <type_traits>
+#include <vector>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -22,18 +23,22 @@ namespace iidm {
 
 template <typename T, typename = typename std::enable_if<std::is_base_of<ExtensionProvider, T>::value>::type>
 class ExtensionProviders {
-public:  // FIXME(mathbagu): replace singleton by an automatic discovery
-    static ExtensionProviders& getInstance();
+public:
+    static void clear();
+
+    static void initialize(const std::string& extensionsPath);
+
+    static void initialize(const std::vector<std::string>& searchPaths);
 
     static void registerExtension(const std::string& name, std::unique_ptr<T>&& provider);
 
 public:
-    stdcxx::CReference<T> findProvider(const std::string& name) const;
+    static stdcxx::CReference<T> findProvider(const std::string& name);
 
-    const T& findProviderOrThrowException(const std::string& name) const;
+    static const T& findProviderOrThrowException(const std::string& name);
 
 private:
-    std::map<std::string, std::unique_ptr<T>> m_providers;
+    static std::map<std::string, std::unique_ptr<T>> m_providers;
 };
 
 }  // namespace iidm
