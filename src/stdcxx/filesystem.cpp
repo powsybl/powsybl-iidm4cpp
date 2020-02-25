@@ -29,8 +29,10 @@ std::vector<std::string> getFileList(const std::string& directory, const std::st
 }
 
 const std::string& sharedLibExtension() {
-#if defined __GNUC__
+#if defined __linux__
     static std::string s_extension = ".so";
+#elif defined __APPLE__
+    static std::string s_extension = ".dylib";
 #elif defined _WIN64
 #error "To be updated"
 #endif
