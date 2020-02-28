@@ -14,6 +14,7 @@
 #include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
+#include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/stdcxx/DateTime.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
@@ -46,7 +47,6 @@ class VscConverterStation;
 
 namespace converter {
 
-class Anonymizer;
 class ExportOptions;
 class ImportOptions;
 
