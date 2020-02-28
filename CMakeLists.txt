@@ -21,6 +21,7 @@ set(INSTALL_CMAKE_DIR LibIIDM/cmake CACHE PATH "Installation directory for cmake
 set(INSTALL_DOC_DIR share CACHE PATH "Installation directory for doxygen files")
 
 option(BUILD_DOXYGEN "Enable/Disable the generation of the Doxygen." OFF)
+option(BUILD_EXAMPLES "Enable/Disable the compilation of the examples." OFF)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 

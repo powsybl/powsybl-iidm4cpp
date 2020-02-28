@@ -75,3 +75,9 @@ $> cmake .. -DDOXYGEN=TRUE
 $> make doxygen
 ```
 The HTML documentation is available in `<BUILD_DIR>/doc/html/index.html`.
+
+## Examples
+
+To start using powsybl-iidm4cpp, you can follow the [examples](examples). By default `BUILD_EXAMPLES` option is deactivated in CMake, use `-DBUILD_EXAMPLES=ON` to activate it.
+
+- [Example 1](examples/getting-started/example1/README.md): Build a XML reader and writer for iidm file using CMake.
