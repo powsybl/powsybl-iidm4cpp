@@ -9,8 +9,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/iidm/converter/Anonymizer.hpp>
-
 namespace powsybl {
 
 namespace test {
