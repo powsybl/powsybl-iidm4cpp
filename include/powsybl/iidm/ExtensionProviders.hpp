@@ -10,9 +10,11 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <type_traits>
-#include <vector>
+
+#include <boost/dll/shared_library.hpp>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -24,20 +26,28 @@ namespace iidm {
 template <typename T, typename = typename std::enable_if<std::is_base_of<ExtensionProvider, T>::value>::type>
 class ExtensionProviders {
 public:
-    static void clear();
+    static ExtensionProviders& getInstance();
 
-    static void initialize(const std::string& extensionsPath);
-
-    static void initialize(const std::vector<std::string>& searchPaths);
-
-    static void registerExtension(const std::string& name, std::unique_ptr<T>&& provider);
+    static void addExtensionPath(const std::string& path);
 
 public:
-    static stdcxx::CReference<T> findProvider(const std::string& name);
+    stdcxx::CReference<T> findProvider(const std::string& name);
 
-    static const T& findProviderOrThrowException(const std::string& name);
+    const T& findProviderOrThrowException(const std::string& name);
 
 private:
+    static std::vector<std::string> getLibraries(const std::string& directory);
+
+private:
+    ExtensionProviders() = default;
+
+    ~ExtensionProviders() noexcept;
+
+private:
+    static std::set<std::string> m_extensionPaths;
+
+    static std::vector<boost::dll::shared_library> m_handlers;
+
     static std::map<std::string, std::unique_ptr<T>> m_providers;
 };
 

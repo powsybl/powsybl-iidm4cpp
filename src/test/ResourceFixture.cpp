@@ -24,18 +24,10 @@ ResourceFixture::ResourceFixture() {
     desc.add_options()
         ("resources", boost::program_options::value<std::string>()->required(),
          "Path where the test resources are stored")
-         ("ext-path", boost::program_options::value<std::string>()->implicit_value(""),
+        ("ext-path", boost::program_options::value<std::string>()->implicit_value(""),
          "Path where extensions are stored");
 
     parse(desc);
-}
-
-std::string ResourceFixture::getExtensionsBuildDir() const {
-    boost::filesystem::path path(getOptionValue("ext-path").as<std::string>());
-    if (!boost::filesystem::exists(path)) {
-        throw powsybl::AssertionError(powsybl::logging::format("Directory %1% does not exist", path.string()));
-    }
-    return path.string();
 }
 
 std::string ResourceFixture::getResource(const std::string& name) const {

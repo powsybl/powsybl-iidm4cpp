@@ -9,14 +9,12 @@
 
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
-#include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/iidm/extensions/entsoe/Xnode.hpp>
-#include <powsybl/iidm/extensions/entsoe/XnodeXmlSerializer.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
@@ -76,8 +74,6 @@ BOOST_AUTO_TEST_CASE(XnodeTest) {
 
 BOOST_FIXTURE_TEST_CASE(XnodeXmlSerializerTest, test::ResourceFixture) {
     Network network = createNetwork();
-
-    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::initialize(ResourceFixture::getExtensionsBuildDir());
 
     const std::string& networkStr = ResourceFixture::getResource("xnode.xml");
 

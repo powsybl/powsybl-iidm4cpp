@@ -57,8 +57,6 @@ BOOST_AUTO_TEST_CASE(EntsoeAreaConstructor) {
 BOOST_FIXTURE_TEST_CASE(EntsoeAreaXmlSerializerTest, test::ResourceFixture) {
     Network network = createNetwork();
 
-    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::initialize(ResourceFixture::getExtensionsBuildDir());
-
     const std::string& networkStr = ResourceFixture::getResource("entsoeArea.xml");
 
     test::converter::RoundTrip::runXml(network, networkStr);

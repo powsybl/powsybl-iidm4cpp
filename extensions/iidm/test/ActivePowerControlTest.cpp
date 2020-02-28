@@ -67,8 +67,6 @@ BOOST_AUTO_TEST_CASE(ActivePowerControlTest) {
 BOOST_FIXTURE_TEST_CASE(ActivePowerControlXmlSerializerTest, test::ResourceFixture) {
     Network network = createNetwork();
 
-    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::initialize(ResourceFixture::getExtensionsBuildDir());
-
     const std::string& networkStr = ResourceFixture::getResource("activePowerControl.xml");
 
     test::converter::RoundTrip::runXml(network, networkStr);

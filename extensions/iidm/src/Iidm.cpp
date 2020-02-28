@@ -18,35 +18,17 @@ namespace extensions {
 
 namespace iidm {
 
-const std::initializer_list<std::string>& getNames() {
-    static std::initializer_list<std::string> s_extensionNames = {
-        ActivePowerControlXmlSerializer().getExtensionName(),
-        CoordinatedReactiveControlXmlSerializer().getExtensionName()
-    };
-    return s_extensionNames;
+std::map<std::string, std::unique_ptr<ExtensionProvider>> create() {
+    std::map<std::string, std::unique_ptr<ExtensionProvider>> serializers;
+    serializers.emplace(std::make_pair(ActivePowerControlXmlSerializer().getExtensionName(), stdcxx::make_unique<ActivePowerControlXmlSerializer>()));
+    serializers.emplace(std::make_pair(CoordinatedReactiveControlXmlSerializer().getExtensionName(), stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>()));
+    return serializers;
 }
 
 // NOLINTNEXTLINE BOOST_DLL_ALIAS uses reinterpret_cast
 BOOST_DLL_ALIAS(
-    getNames,
-    getExtensionsNames
-)
-
-std::unique_ptr<ExtensionProvider> createSerializer(const std::string& extensionName) {
-    if (extensionName == ActivePowerControlXmlSerializer().getExtensionName()) {
-        return stdcxx::make_unique<ActivePowerControlXmlSerializer>();
-    }
-    if (extensionName == CoordinatedReactiveControlXmlSerializer().getExtensionName()) {
-        return stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>();
-    }
-
-    throw powsybl::PowsyblException(logging::format("Unknown provider for extension %1%", extensionName));
-}
-
-// NOLINTNEXTLINE BOOST_DLL_ALIAS uses reinterpret_cast
-BOOST_DLL_ALIAS(
-    createSerializer,
-    create
+    create,
+    createSerializers
 )
 
 }  // namespace iidm

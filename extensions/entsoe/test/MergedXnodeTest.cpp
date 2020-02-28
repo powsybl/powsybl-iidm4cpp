@@ -119,8 +119,6 @@ BOOST_AUTO_TEST_CASE(MergedXnodeTest) {
 BOOST_FIXTURE_TEST_CASE(XnodeXmlSerializerTest, test::ResourceFixture) {
     Network network = createNetwork();
 
-    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::initialize(ResourceFixture::getExtensionsBuildDir());
-
     const std::string& networkStr = ResourceFixture::getResource("mergedXnode.xml");
 
     test::converter::RoundTrip::runXml(network, networkStr);

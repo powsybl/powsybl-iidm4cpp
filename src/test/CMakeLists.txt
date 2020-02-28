@@ -7,6 +7,7 @@
 
 set(IIDM_TEST_SOURCES
     CommandLine.cpp
+    ExtensionFixture.cpp
     ResourceFixture.cpp
     XmlFixture.cpp
 

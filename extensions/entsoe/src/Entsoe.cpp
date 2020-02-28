@@ -19,39 +19,18 @@ namespace extensions {
 
 namespace entsoe {
 
-const std::initializer_list<std::string>& getNames() {
-    static std::initializer_list<std::string> s_extensionNames = {
-        EntsoeAreaXmlSerializer().getExtensionName(),
-        MergedXnodeXmlSerializer().getExtensionName(),
-        XnodeXmlSerializer().getExtensionName()
-    };
-    return s_extensionNames;
+std::map<std::string, std::unique_ptr<ExtensionProvider>> create() {
+    std::map<std::string, std::unique_ptr<ExtensionProvider>> serializers;
+    serializers.emplace(std::make_pair(EntsoeAreaXmlSerializer().getExtensionName(), stdcxx::make_unique<EntsoeAreaXmlSerializer>()));
+    serializers.emplace(std::make_pair(MergedXnodeXmlSerializer().getExtensionName(), stdcxx::make_unique<MergedXnodeXmlSerializer>()));
+    serializers.emplace(std::make_pair(XnodeXmlSerializer().getExtensionName(), stdcxx::make_unique<XnodeXmlSerializer>()));
+    return serializers;
 }
 
 // NOLINTNEXTLINE BOOST_DLL_ALIAS uses reinterpret_cast
 BOOST_DLL_ALIAS(
-    getNames,
-    getExtensionsNames
-)
-
-std::unique_ptr<ExtensionProvider> createSerializer(const std::string& extensionName) {
-    if (extensionName == EntsoeAreaXmlSerializer().getExtensionName()) {
-        return stdcxx::make_unique<EntsoeAreaXmlSerializer>();
-    }
-    if (extensionName == MergedXnodeXmlSerializer().getExtensionName()) {
-        return stdcxx::make_unique<MergedXnodeXmlSerializer>();
-    }
-    if (extensionName == XnodeXmlSerializer().getExtensionName()) {
-        return stdcxx::make_unique<XnodeXmlSerializer>();
-    }
-
-    throw powsybl::PowsyblException(logging::format("Unknown provider for extension %1%", extensionName));
-}
-
-// NOLINTNEXTLINE BOOST_DLL_ALIAS uses reinterpret_cast
-BOOST_DLL_ALIAS(
-    createSerializer,
-    create
+    create,
+    createSerializers
 )
 
 }  // namespace entsoe

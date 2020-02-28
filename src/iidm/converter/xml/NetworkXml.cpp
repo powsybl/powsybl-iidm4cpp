@@ -64,9 +64,9 @@ std::set<std::string> getExtensionNames(const Network& network) {
 stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOptions& options, const std::string& extensionName) {
     stdcxx::CReference<ExtensionXmlSerializer> serializer;
     if (options.isThrowExceptionIfExtensionNotFound()) {
-        serializer = stdcxx::cref(powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::findProviderOrThrowException(extensionName));
+        serializer = stdcxx::cref(powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance().findProviderOrThrowException(extensionName));
     } else {
-        serializer = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::findProvider(extensionName);
+        serializer = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance().findProvider(extensionName);
         if (!serializer) {
             logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
             logger.warn("No extension XML serializer for %1%", extensionName);
@@ -84,7 +84,7 @@ void readExtensions(Identifiable& identifiable, NetworkXmlReaderContext& context
             return;
         }
 
-        stdcxx::CReference<ExtensionXmlSerializer> serializer = ExtensionProviders<ExtensionXmlSerializer>::findProvider(extensionName);
+        stdcxx::CReference<ExtensionXmlSerializer> serializer = ExtensionProviders<ExtensionXmlSerializer>::getInstance().findProvider(extensionName);
         if (serializer) {
             std::unique_ptr<Extension> extension = serializer.get().read(identifiable, context);
             identifiable.addExtension(std::move(extension));
@@ -102,7 +102,7 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
     const auto& extensions = getExtensionNames(network);
     for (const auto& extension : extensions) {
         if (context.getOptions().withExtension(extension)) {
-            stdcxx::CReference<ExtensionXmlSerializer> serializer = ExtensionProviders<ExtensionXmlSerializer>::findProvider(extension);
+            stdcxx::CReference<ExtensionXmlSerializer> serializer = ExtensionProviders<ExtensionXmlSerializer>::getInstance().findProvider(extension);
             if (!serializer) {
                 continue;
             }

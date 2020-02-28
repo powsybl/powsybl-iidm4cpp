@@ -20,8 +20,6 @@ class ResourceFixture : public CommandLine {
 public:
     ResourceFixture();
 
-    std::string getExtensionsBuildDir() const;
-
     std::string getResource(const std::string& name) const;
 };
 
