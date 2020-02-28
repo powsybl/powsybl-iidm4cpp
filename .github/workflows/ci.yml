@@ -23,6 +23,7 @@ jobs:
         run: >
           cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-linux
           -DCMAKE_BUILD_TYPE=Release
+          -DBUILD_EXAMPLES=ON
           -DCMAKE_CXX_CLANG_TIDY=clang-tidy
           -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
 
@@ -45,7 +46,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Configure CMake
-        run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-macos -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-macos -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=ON
 
       - name: Build
         run: cmake --build $GITHUB_WORKSPACE/build-macos --parallel 3
@@ -78,6 +79,7 @@ jobs:
         shell: cmd
         run: >
           cmake -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build-windows
+          -DBUILD_EXAMPLES=ON
           -DCMAKE_PREFIX_PATH=%BOOST_ROOT_1_72_0%;C:\thirdparties\libxml2-2.9.10
 
       - name: Build
@@ -125,6 +127,7 @@ jobs:
           cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build
           -DCMAKE_BUILD_TYPE=Debug
           -DCODE_COVERAGE=TRUE
+          -DBUILD_EXAMPLES=ON
           -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
 
       - name: Build
