@@ -232,7 +232,6 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(limits, limits.setPermanentLimit(100.0)));
     BOOST_CHECK_CLOSE(100.0, limits.getPermanentLimit(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(limits.setPermanentLimit(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
     POWSYBL_ASSERT_THROW(limits.setPermanentLimit(-1.0), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
 
     BOOST_TEST(line.getCurrentLimits1());
@@ -250,9 +249,6 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_TEST(!line.getCurrentLimits2());
     auto adder = line.newCurrentLimits2();
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
-    adder.setPermanentLimit(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
     adder.setPermanentLimit(-10.0);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
     adder.setPermanentLimit(100.0);
@@ -262,8 +258,6 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     auto adder2 = adder;
     auto tempAdder = adder2.beginTemporaryLimit();
-    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value is not set");
-    tempAdder.setValue(stdcxx::nan());
     POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value is not set");
     tempAdder.setValue(-10.0);
     POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value must be > 0");
