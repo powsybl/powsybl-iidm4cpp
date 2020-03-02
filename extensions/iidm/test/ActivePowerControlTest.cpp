@@ -9,16 +9,9 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Battery.hpp>
-#include <powsybl/iidm/BatteryAdder.hpp>
-#include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Generator.hpp>
-#include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/Substation.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/iidm/ActivePowerControl.hpp>
-#include <powsybl/iidm/extensions/iidm/ActivePowerControlXmlSerializer.hpp>
 #include <powsybl/network/BatteryNetworkFactory.hpp>
 
 #include <powsybl/test/ResourceFixture.hpp>

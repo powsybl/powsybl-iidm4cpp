@@ -14,7 +14,7 @@
 #include <string>
 #include <type_traits>
 
-#include <boost/dll/shared_library.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
@@ -29,12 +29,12 @@ class ExtensionProviders {
 public:
     static ExtensionProviders& getInstance();
 
-    static void addExtensions(const std::string& path, const boost::regex& files);
+    static void loadExtensions(const std::string& path, const boost::regex& files);
 
 public:
-    stdcxx::CReference<T> findProvider(const std::string& name);
+    stdcxx::CReference<T> findProvider(const std::string& name) const;
 
-    const T& findProviderOrThrowException(const std::string& name);
+    const T& findProviderOrThrowException(const std::string& name) const;
 
 private:
     static std::vector<std::string> getFiles(const std::string& directory, const boost::regex& file);

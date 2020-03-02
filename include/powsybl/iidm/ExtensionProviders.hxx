@@ -11,6 +11,7 @@
 #include <powsybl/iidm/ExtensionProviders.hpp>
 
 #include <boost/dll/import.hpp>
+#include <boost/dll/shared_library.hpp>
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Extension.hpp>
@@ -29,7 +30,7 @@ template <typename T, typename Dummy>
 std::set<boost::filesystem::path> ExtensionProviders<T, Dummy>::m_loadedLibraries;
 
 template <typename T, typename Dummy>
-stdcxx::CReference<T> ExtensionProviders<T, Dummy>::findProvider(const std::string& name) {
+stdcxx::CReference<T> ExtensionProviders<T, Dummy>::findProvider(const std::string& name) const {
     stdcxx::CReference<T> provider;
 
     const auto& it = m_providers.find(name);
@@ -41,7 +42,36 @@ stdcxx::CReference<T> ExtensionProviders<T, Dummy>::findProvider(const std::stri
 }
 
 template <typename T, typename Dummy>
-void ExtensionProviders<T, Dummy>::addExtensions(const std::string& path, const boost::regex& files) {
+const T& ExtensionProviders<T, Dummy>::findProviderOrThrowException(const std::string& name) const {
+    const auto& it = m_providers.find(name);
+    if (it == m_providers.end()) {
+        throw PowsyblException(logging::format("No provider found for extension '%1'", name));
+    }
+    return *it->second;
+}
+
+template <typename T, typename Dummy>
+std::vector<std::string> ExtensionProviders<T, Dummy>::getFiles(const std::string& directory, const boost::regex& file) {
+    std::vector<std::string> libs;
+    if (boost::filesystem::exists(directory) && boost::filesystem::is_directory(directory)) {
+        for (const auto& it : boost::filesystem::directory_iterator(directory)) {
+            if (boost::filesystem::is_regular_file(it) && boost::regex_match(it.path().filename().c_str(), file)) {
+                libs.push_back((directory / it.path().filename()).string());
+            }
+        }
+    }
+
+    return libs;
+}
+
+template <typename T, typename Dummy>
+ExtensionProviders<T, Dummy>& ExtensionProviders<T, Dummy>::getInstance() {
+    static ExtensionProviders<T, Dummy> s_instance;
+    return s_instance;
+}
+
+template <typename T, typename Dummy>
+void ExtensionProviders<T, Dummy>::loadExtensions(const std::string& path, const boost::regex& files) {
     if (!boost::filesystem::exists(path)) {
         throw PowsyblException(logging::format("Path %1% does not exist", path));
     }
@@ -62,59 +92,23 @@ void ExtensionProviders<T, Dummy>::addExtensions(const std::string& path, const 
 }
 
 template <typename T, typename Dummy>
-const T& ExtensionProviders<T, Dummy>::findProviderOrThrowException(const std::string& name) {
-    const auto& it = m_providers.find(name);
-    if (it == m_providers.end()) {
-        throw PowsyblException(logging::format("No provider found for extension '%1'", name));
-    }
-    return *it->second;
-}
-
-template <typename T, typename Dummy>
-std::vector<std::string> ExtensionProviders<T, Dummy>::getFiles(const std::string& directory, const boost::regex& file) {
-    std::vector<std::string> libs;
-    if (boost::filesystem::exists(directory) && boost::filesystem::is_directory(directory)) {
-        boost::filesystem::directory_iterator it(directory);
-        boost::filesystem::directory_iterator endit;
-
-        while (it != endit)
-        {
-            if (boost::filesystem::is_regular_file(*it) && boost::regex_match((*it).path().filename().c_str(), file)) {
-                libs.push_back((directory / it->path().filename()).string());
-            }
-            ++it;
-        }
-    }
-
-    return libs;
-}
-
-template <typename T, typename Dummy>
-ExtensionProviders<T, Dummy>& ExtensionProviders<T, Dummy>::getInstance() {
-    static ExtensionProviders<T, Dummy> s_instance;
-    return s_instance;
-}
-
-template <typename T, typename Dummy>
 void ExtensionProviders<T, Dummy>::loadLibrary(const std::string& library) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
     boost::dll::shared_library lib(library);
 
     if (m_loadedLibraries.find(boost::filesystem::canonical(lib.location())) == m_loadedLibraries.end()) {
         if (lib.has("createSerializers")) {
-            const auto &createSerializers = boost::dll::import_alias<std::map<std::string, std::unique_ptr<T>>()>(lib, "createSerializers");
-            for (auto &it : createSerializers()) {
-                const auto &status = m_providers.emplace(std::make_pair(it.first, std::move(it.second)));
+            const auto& createSerializers = boost::dll::import_alias<std::map<std::string, std::unique_ptr<T>>()>(lib, "createSerializers");
+            for (auto& it : createSerializers()) {
+                const auto& status = m_providers.emplace(std::make_pair(it.first, std::move(it.second)));
 
                 // check that extension was not already registered
                 if (!status.second) {
                     throw PowsyblException(logging::format("Extension %1% was already registered", it.first));
                 }
-                logger.info(logging::format("Loaded extension %1% from %2%", it.first, library));
+                logger.debug(logging::format("Extension %1% has been loaded from %2%", it.first, library));
             }
             m_loadedLibraries.insert(boost::filesystem::canonical(lib.location()));
-        } else {
-            logger.info(logging::format("Unable to load %1%: one of the required symbol is missing (getExtensionsNames / create)", library));
         }
     }
 }

@@ -19,7 +19,7 @@ namespace test {
 
 ExtensionFixture::ExtensionFixture() {
     const boost::regex& fileRegex = boost::regex(logging::format(".*\\%1%.*", boost::dll::shared_library::suffix().string()));
-    iidm::ExtensionProviders<iidm::converter::xml::ExtensionXmlSerializer>::addExtensions(boost::dll::program_location().parent_path().string(), fileRegex);
+    iidm::ExtensionProviders<iidm::converter::xml::ExtensionXmlSerializer>::loadExtensions(boost::dll::program_location().parent_path().string(), fileRegex);
 }
 
 }  // namespace test
