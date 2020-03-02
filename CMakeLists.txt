@@ -18,6 +18,7 @@ set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
 set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
 set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for headers")
 set(INSTALL_CMAKE_DIR share/cmake CACHE PATH "Installation directory for cmake files")
+set(INSTALL_DOC_DIR share CACHE PATH "Installation directory for doxygen files")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -43,7 +44,7 @@ enable_testing()
 # https://github.com/boostorg/test/commit/d63379a9b3ad33d263d55c119681047c1d28547c
 if ((DEFINED Boost_VERSION_MACRO AND ${Boost_VERSION_MACRO} GREATER 106000) OR (${Boost_VERSION} GREATER 106000))
     set(BOOST_ARGS_SEPARATOR "--")
-endif()
+endif ()
 
 set(CODE_COVERAGE FALSE CACHE BOOL "Enable code coverage")
 if (CODE_COVERAGE)
@@ -51,6 +52,12 @@ if (CODE_COVERAGE)
     code_coverage(NAME code-coverage
         OUTPUT_DIR coverage
         EXCLUDE_DIRS test tools)
+endif ()
+
+set(DOXYGEN FALSE CACHE BOOL "Enable doxygen")
+if (DOXYGEN)
+    include(Doxygen)
+    doxygen(NAME doxygen CONFIG doxygen/Doxyfile.in OUTPUT_DIR doc)
 endif ()
 
 add_subdirectory(src)
