@@ -15,6 +15,7 @@
 #include <type_traits>
 
 #include <boost/dll/shared_library.hpp>
+#include <boost/regex.hpp>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -28,7 +29,7 @@ class ExtensionProviders {
 public:
     static ExtensionProviders& getInstance();
 
-    static void addExtensionPath(const std::string& path);
+    static void addExtensions(const std::string& path, const boost::regex& files);
 
 public:
     stdcxx::CReference<T> findProvider(const std::string& name);
@@ -36,7 +37,7 @@ public:
     const T& findProviderOrThrowException(const std::string& name);
 
 private:
-    static std::vector<std::string> getLibraries(const std::string& directory);
+    static std::vector<std::string> getFiles(const std::string& directory, const boost::regex& file);
 
 private:
     ExtensionProviders() = default;
@@ -44,8 +45,6 @@ private:
     ~ExtensionProviders() noexcept;
 
 private:
-    static std::set<std::string> m_extensionPaths;
-
     static std::vector<boost::dll::shared_library> m_handlers;
 
     static std::map<std::string, std::unique_ptr<T>> m_providers;

@@ -15,8 +15,8 @@ namespace powsybl {
 
 namespace test {
 
-BOOST_TEST_GLOBAL_FIXTURE(XmlFixture);
 BOOST_TEST_GLOBAL_FIXTURE(ExtensionFixture);
+BOOST_TEST_GLOBAL_FIXTURE(XmlFixture);
 
 }  // namespace test
 

@@ -19,8 +19,8 @@ namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(ExtensionProvidersTestSuite)
 
-BOOST_AUTO_TEST_CASE(addExtensionPath) {
-    POWSYBL_ASSERT_THROW(iidm::ExtensionProviders<iidm::converter::xml::ExtensionXmlSerializer>::addExtensionPath("abcdef"),
+BOOST_AUTO_TEST_CASE(addExtensions) {
+    POWSYBL_ASSERT_THROW(iidm::ExtensionProviders<iidm::converter::xml::ExtensionXmlSerializer>::addExtensions("abcdef", boost::regex("")),
         PowsyblException, "Path abcdef does not exist");
 }
 

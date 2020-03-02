@@ -52,7 +52,7 @@ add_executable(unit-tests-${EXT_NAME} ${UNIT_TEST_SOURCES})
 target_compile_definitions(unit-tests-${EXT_NAME} PRIVATE BOOST_TEST_DYN_LINK)
 target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
 
-add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} ${BOOST_ARGS_SEPARATOR} --ext-path=${CMAKE_CURRENT_BINARY_DIR} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)
+add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} ${BOOST_ARGS_SEPARATOR} --ext-path=${CMAKE_CURRENT_BINARY_DIR} --files=.*${EXT_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)
 
 # Installation
 install(TARGETS ${EXT_NAME} ${EXT_NAME}-static

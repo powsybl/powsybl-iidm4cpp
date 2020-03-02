@@ -19,13 +19,17 @@ ExtensionFixture::ExtensionFixture() {
     desc.add_options()
         ("resources", boost::program_options::value<std::string>()->required(),
          "Path where the test resources are stored")
-        ("ext-path", boost::program_options::value<std::string>()->implicit_value(""),
-         "Path where extensions are stored");
+        ("ext-path", boost::program_options::value<std::string>()->required(),
+         "Path where extensions are stored")
+        ("files", boost::program_options::value<std::string>()->required(),
+         "Identify files to be loaded in the directory");
 
     parse(desc);
 
     if (!getOptionValue("ext-path").as<std::string>().empty()) {
-        iidm::ExtensionProviders<iidm::converter::xml::ExtensionXmlSerializer>::addExtensionPath(getOptionValue("ext-path").as<std::string>());
+        const std::string& directory = getOptionValue("ext-path").as<std::string>();
+        const std::string& filesRegex = getOptionValue("files").as<std::string>();
+        iidm::ExtensionProviders<iidm::converter::xml::ExtensionXmlSerializer>::addExtensions(directory, boost::regex(filesRegex));
     }
 }
 
