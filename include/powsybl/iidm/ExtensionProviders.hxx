@@ -74,7 +74,8 @@ std::vector<std::string> ExtensionProviders<T, Dummy>::getLibraries(const std::s
 
         while (it != endit)
         {
-            if (boost::filesystem::is_regular_file(*it) && it->path().extension() == boost::dll::shared_library::suffix().string()) {
+            if (boost::filesystem::is_regular_file(*it) && !boost::filesystem::is_symlink(boost::filesystem::symlink_status(*it)) && 
+		it->path().extension() == boost::dll::shared_library::suffix().string()) {
                 libs.push_back((directory / it->path().filename()).string());
             }
             ++it;
