@@ -26,13 +26,7 @@ template <typename T, typename Dummy>
 std::map<std::string, std::unique_ptr<T>> ExtensionProviders<T, Dummy>::m_providers;
 
 template <typename T, typename Dummy>
-std::vector<boost::dll::shared_library> ExtensionProviders<T, Dummy>::m_handlers;
-
-template <typename T, typename Dummy>
-ExtensionProviders<T, Dummy>::~ExtensionProviders() noexcept {
-    m_providers.clear();
-    m_handlers.clear();
-}
+std::set<boost::filesystem::path> ExtensionProviders<T, Dummy>::m_loadedLibraries;
 
 template <typename T, typename Dummy>
 stdcxx::CReference<T> ExtensionProviders<T, Dummy>::findProvider(const std::string& name) {
@@ -44,6 +38,27 @@ stdcxx::CReference<T> ExtensionProviders<T, Dummy>::findProvider(const std::stri
     }
 
     return provider;
+}
+
+template <typename T, typename Dummy>
+void ExtensionProviders<T, Dummy>::addExtensions(const std::string& path, const boost::regex& files) {
+    if (!boost::filesystem::exists(path)) {
+        throw PowsyblException(logging::format("Path %1% does not exist", path));
+    }
+
+    if (!boost::filesystem::is_directory(path)) {
+        throw PowsyblException(logging::format("Path %1% is not a directory", path));
+    }
+
+    logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
+    const std::vector<std::string>& libFiles = getFiles(path, files);
+    for (const std::string& libFile : libFiles) {
+        try {
+            loadLibrary(libFile);
+        } catch (const boost::system::system_error& err) {
+            logger.info(logging::format("Unable to load file %1%: %2%", libFile, err.what()));
+        }
+    }
 }
 
 template <typename T, typename Dummy>
@@ -81,38 +96,25 @@ ExtensionProviders<T, Dummy>& ExtensionProviders<T, Dummy>::getInstance() {
 }
 
 template <typename T, typename Dummy>
-void ExtensionProviders<T, Dummy>::addExtensions(const std::string& path, const boost::regex& files) {
-    if (!boost::filesystem::exists(path)) {
-        throw PowsyblException(logging::format("Path %1% does not exist", path));
-    }
-
-    if (!boost::filesystem::is_directory(path)) {
-        throw PowsyblException(logging::format("Path %1% is not a directory", path));
-    }
-
+void ExtensionProviders<T, Dummy>::loadLibrary(const std::string& library) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
-    const std::vector<std::string>& libFiles = getFiles(path, files);
-    for (const std::string& libFile : libFiles) {
-        try {
-            boost::dll::shared_library lib(libFile);
-            if (lib.has("createSerializers")) {
-                const auto& createSerializers = boost::dll::import_alias<std::map<std::string, std::unique_ptr<T>>()>(lib, "createSerializers");
-                for (auto& it : createSerializers()) {
-                    const auto& status = m_providers.emplace(std::make_pair(it.first, std::move(it.second)));
+    boost::dll::shared_library lib(library);
 
-                    // check that extension was not already registered
-                    if (!status.second) {
-                        throw PowsyblException(logging::format("Extension %1% was already registered", it.first));
-                    }
-                    logger.info(logging::format("Loaded extension %1% from %2%", it.first, libFile));
+    if (m_loadedLibraries.find(boost::filesystem::canonical(lib.location())) == m_loadedLibraries.end()) {
+        if (lib.has("createSerializers")) {
+            const auto &createSerializers = boost::dll::import_alias<std::map<std::string, std::unique_ptr<T>>()>(lib, "createSerializers");
+            for (auto &it : createSerializers()) {
+                const auto &status = m_providers.emplace(std::make_pair(it.first, std::move(it.second)));
+
+                // check that extension was not already registered
+                if (!status.second) {
+                    throw PowsyblException(logging::format("Extension %1% was already registered", it.first));
                 }
-                m_handlers.emplace_back(lib);
-            } else {
-                logger.info(logging::format("Unable to load %1%: one of the required symbol is missing (getExtensionsNames / create)", libFile));
+                logger.info(logging::format("Loaded extension %1% from %2%", it.first, library));
             }
-        } catch (const boost::system::system_error& err) {
-            // do nothing: the file is not a library file
-            logger.info(logging::format("Unable to load %1%: %2%", libFile, err.what()));
+            m_loadedLibraries.insert(boost::filesystem::canonical(lib.location()));
+        } else {
+            logger.info(logging::format("Unable to load %1%: one of the required symbol is missing (getExtensionsNames / create)", library));
         }
     }
 }

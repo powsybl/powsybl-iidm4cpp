@@ -23,11 +23,7 @@ ResourceFixture::ResourceFixture() {
     boost::program_options::options_description desc;
     desc.add_options()
         ("resources", boost::program_options::value<std::string>()->required(),
-         "Path where the test resources are stored")
-        ("ext-path", boost::program_options::value<std::string>()->implicit_value(""),
-         "Path where extensions are stored")
-        ("files", boost::program_options::value<std::string>()->implicit_value(""),
-         "Identify files to be loaded in the directory");
+         "Path where the test resources are stored");
 
     parse(desc);
 }

@@ -39,13 +39,23 @@ public:
 private:
     static std::vector<std::string> getFiles(const std::string& directory, const boost::regex& file);
 
+    static void loadLibrary(const std::string& library);
+
 private:
     ExtensionProviders() = default;
 
-    ~ExtensionProviders() noexcept;
+    ExtensionProviders(const ExtensionProviders& other) = default;
+
+    ExtensionProviders(ExtensionProviders&& fixture) noexcept = default;
+
+    ~ExtensionProviders() noexcept = default;
+
+    ExtensionProviders& operator=(const ExtensionProviders& fixture) = default;
+
+    ExtensionProviders& operator=(ExtensionProviders&& fixture) noexcept = default;
 
 private:
-    static std::vector<boost::dll::shared_library> m_handlers;
+    static std::set<boost::filesystem::path> m_loadedLibraries;
 
     static std::map<std::string, std::unique_ptr<T>> m_providers;
 };
