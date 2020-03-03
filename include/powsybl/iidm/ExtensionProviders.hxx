@@ -24,12 +24,6 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T, typename Dummy>
-std::map<std::string, std::unique_ptr<T>> ExtensionProviders<T, Dummy>::m_providers;
-
-template <typename T, typename Dummy>
-std::set<boost::filesystem::path> ExtensionProviders<T, Dummy>::m_loadedLibraries;
-
-template <typename T, typename Dummy>
 stdcxx::CReference<T> ExtensionProviders<T, Dummy>::findProvider(const std::string& name) const {
     stdcxx::CReference<T> provider;
 
@@ -96,20 +90,25 @@ void ExtensionProviders<T, Dummy>::loadLibrary(const std::string& library) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
     boost::dll::shared_library lib(library);
 
-    if (m_loadedLibraries.find(boost::filesystem::canonical(lib.location())) == m_loadedLibraries.end()) {
+    const boost::filesystem::path& libraryPath = boost::filesystem::canonical(lib.location());
+    if (m_loadedLibraries.find(libraryPath) == m_loadedLibraries.end()) {
         if (lib.has("createSerializers")) {
-            const auto& createSerializers = boost::dll::import_alias<std::map<std::string, std::unique_ptr<T>>()>(lib, "createSerializers");
+            const auto& createSerializers = boost::dll::import_alias<std::set<std::unique_ptr<T>>()>(lib, "createSerializers");
             for (auto& it : createSerializers()) {
-                const auto& status = m_providers.emplace(std::make_pair(it.first, std::move(it.second)));
-
-                // check that extension was not already registered
-                if (!status.second) {
-                    throw PowsyblException(logging::format("Extension %1% was already registered", it.first));
-                }
-                logger.debug(logging::format("Extension %1% has been loaded from %2%", it.first, library));
+                const std::string& extensionName = it->getExtensionName();
+                registerExtension(extensionName, std::move(const_cast<std::unique_ptr<T>&>(it)));
+                logger.debug(logging::format("Extension %1% has been loaded from %2%", extensionName, library));
             }
-            m_loadedLibraries.insert(boost::filesystem::canonical(lib.location()));
+            m_loadedLibraries.insert(libraryPath);
         }
+    }
+}
+
+template <typename T, typename Dummy>
+void ExtensionProviders<T, Dummy>::registerExtension(const std::string& name, std::unique_ptr<T>&& provider) {
+    const auto& status = m_providers.emplace(std::make_pair(name, std::move(provider)));
+    if (!status.second) {
+        throw PowsyblException(logging::format("Extension %1% was already registered", name));
     }
 }
 

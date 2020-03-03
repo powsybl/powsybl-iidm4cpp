@@ -19,11 +19,11 @@ namespace extensions {
 
 namespace entsoe {
 
-std::map<std::string, std::unique_ptr<ExtensionProvider>> create() {
-    std::map<std::string, std::unique_ptr<ExtensionProvider>> serializers;
-    serializers.emplace(std::make_pair(EntsoeAreaXmlSerializer().getExtensionName(), stdcxx::make_unique<EntsoeAreaXmlSerializer>()));
-    serializers.emplace(std::make_pair(MergedXnodeXmlSerializer().getExtensionName(), stdcxx::make_unique<MergedXnodeXmlSerializer>()));
-    serializers.emplace(std::make_pair(XnodeXmlSerializer().getExtensionName(), stdcxx::make_unique<XnodeXmlSerializer>()));
+std::set<std::unique_ptr<ExtensionProvider>> create() {
+    std::set<std::unique_ptr<ExtensionProvider>> serializers;
+    serializers.insert(stdcxx::make_unique<EntsoeAreaXmlSerializer>());
+    serializers.insert(stdcxx::make_unique<MergedXnodeXmlSerializer>());
+    serializers.insert(stdcxx::make_unique<XnodeXmlSerializer>());
     return serializers;
 }
 

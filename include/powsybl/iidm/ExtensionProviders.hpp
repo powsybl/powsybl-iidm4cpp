@@ -29,17 +29,15 @@ class ExtensionProviders {
 public:
     static ExtensionProviders& getInstance();
 
-    static void loadExtensions(const std::string& path, const boost::regex& files);
-
 public:
     stdcxx::CReference<T> findProvider(const std::string& name) const;
 
     const T& findProviderOrThrowException(const std::string& name) const;
 
+    void loadExtensions(const std::string& path, const boost::regex& files);
+
 private:
     static std::vector<std::string> getFiles(const std::string& directory, const boost::regex& file);
-
-    static void loadLibrary(const std::string& library);
 
 private:
     ExtensionProviders() = default;
@@ -54,10 +52,14 @@ private:
 
     ExtensionProviders& operator=(ExtensionProviders&& fixture) noexcept = default;
 
-private:
-    static std::set<boost::filesystem::path> m_loadedLibraries;
+    void loadLibrary(const std::string& library);
 
-    static std::map<std::string, std::unique_ptr<T>> m_providers;
+    void registerExtension(const std::string& name, std::unique_ptr<T>&& provider);
+
+private:
+    std::set<boost::filesystem::path> m_loadedLibraries;
+
+    std::map<std::string, std::unique_ptr<T>> m_providers;
 };
 
 }  // namespace iidm

@@ -18,10 +18,10 @@ namespace extensions {
 
 namespace iidm {
 
-std::map<std::string, std::unique_ptr<ExtensionProvider>> create() {
-    std::map<std::string, std::unique_ptr<ExtensionProvider>> serializers;
-    serializers.emplace(std::make_pair(ActivePowerControlXmlSerializer().getExtensionName(), stdcxx::make_unique<ActivePowerControlXmlSerializer>()));
-    serializers.emplace(std::make_pair(CoordinatedReactiveControlXmlSerializer().getExtensionName(), stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>()));
+std::set<std::unique_ptr<ExtensionProvider>> create() {
+    std::set<std::unique_ptr<ExtensionProvider>> serializers;
+    serializers.insert(stdcxx::make_unique<ActivePowerControlXmlSerializer>());
+    serializers.insert(stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
     return serializers;
 }
 
