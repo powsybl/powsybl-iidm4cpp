@@ -29,7 +29,7 @@ stdcxx::CReference<T> ExtensionProviders<T, Dummy>::findProvider(const std::stri
 
     const auto& it = m_providers.find(name);
     if (it != m_providers.end()) {
-        provider = stdcxx::cref(*it->second);
+        provider = stdcxx::cref(it->second);
     }
 
     return provider;

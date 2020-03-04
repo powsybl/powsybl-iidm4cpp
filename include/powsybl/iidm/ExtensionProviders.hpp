@@ -41,13 +41,13 @@ private:
 
     ExtensionProviders(const ExtensionProviders& other) = default;
 
-    ExtensionProviders(ExtensionProviders&& fixture) noexcept = default;
+    ExtensionProviders(ExtensionProviders&& other) noexcept = default;
 
     ~ExtensionProviders() noexcept = default;
 
-    ExtensionProviders& operator=(const ExtensionProviders& fixture) = default;
+    ExtensionProviders& operator=(const ExtensionProviders& other) = default;
 
-    ExtensionProviders& operator=(ExtensionProviders&& fixture) noexcept = default;
+    ExtensionProviders& operator=(ExtensionProviders&& other) noexcept = default;
 
     void loadLibrary(const boost::filesystem::path& libraryPath);
 

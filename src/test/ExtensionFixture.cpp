@@ -18,7 +18,7 @@ namespace powsybl {
 namespace test {
 
 ExtensionFixture::ExtensionFixture() {
-    const boost::regex& fileRegex = boost::regex(logging::format(".*\\%1%.*", boost::dll::shared_library::suffix().string()));
+    boost::regex fileRegex(logging::format(".*\\%1%.*", boost::dll::shared_library::suffix().string()));
     iidm::ExtensionProviders<iidm::converter::xml::ExtensionXmlSerializer>::getInstance().loadExtensions(boost::dll::program_location().parent_path().string(), fileRegex);
 }
 
