@@ -80,6 +80,12 @@ private:
     mutable IdentifiablesByType m_objectsByType;
 };
 
+template <>
+const Identifiable& NetworkIndex::get(const std::string& id) const;
+
+template <>
+Identifiable& NetworkIndex::get(const std::string& id);
+
 }  // namespace iidm
 
 }  // namespace powsybl

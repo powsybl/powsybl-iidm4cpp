@@ -25,6 +25,9 @@ std::string demangle(const T& type) {
     return demangle(typeid(type).name());
 }
 
+template <>
+std::string demangle(const std::type_info& type);
+
 std::string simpleClassName(const char* className);
 
 template <typename T>

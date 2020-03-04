@@ -11,4 +11,8 @@ set(IIDM_BENCHMARK_SOURCES
 
 add_executable(iidm-benchmark ${IIDM_BENCHMARK_SOURCES})
 target_link_libraries(iidm-benchmark PRIVATE iidm Boost::program_options)
+target_link_directories(iidm-benchmark PRIVATE ${Boost_LIBRARY_DIRS})
 
+IF (WIN32)
+  target_link_options(iidm-benchmark PRIVATE "/FORCE:MULTIPLE")
+ENDIF()
