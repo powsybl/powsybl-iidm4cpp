@@ -9,7 +9,6 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -17,7 +16,6 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControl.hpp>
-#include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -90,8 +88,6 @@ BOOST_FIXTURE_TEST_CASE(CoordinatedReactiveControlXmlSerializerTest, test::Resou
 
     Generator& gen = network.getGenerator("GEN");
     gen.addExtension(Extension::create<CoordinatedReactiveControl>(gen, 100.0));
-
-    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::registerExtension("coordinatedReactiveControl", stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
 
     const std::string& networkStr = ResourceFixture::getResource("coordinatedReactiveControl.xml");
 

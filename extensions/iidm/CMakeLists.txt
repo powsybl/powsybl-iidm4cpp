@@ -12,6 +12,7 @@ set(EXT_SOURCES
     src/ActivePowerControlXmlSerializer.cpp
     src/CoordinatedReactiveControl.cpp
     src/CoordinatedReactiveControlXmlSerializer.cpp
+    src/Iidm.cpp
 )
 
 set(UNIT_TEST_SOURCES

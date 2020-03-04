@@ -10,8 +10,12 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <type_traits>
+
+#include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -22,17 +26,34 @@ namespace iidm {
 
 template <typename T, typename = typename std::enable_if<std::is_base_of<ExtensionProvider, T>::value>::type>
 class ExtensionProviders {
-public:  // FIXME(mathbagu): replace singleton by an automatic discovery
+public:
     static ExtensionProviders& getInstance();
-
-    static void registerExtension(const std::string& name, std::unique_ptr<T>&& provider);
 
 public:
     stdcxx::CReference<T> findProvider(const std::string& name) const;
 
     const T& findProviderOrThrowException(const std::string& name) const;
 
+    void loadExtensions(const boost::filesystem::path& directory, const boost::regex& pattern);
+
 private:
+    ExtensionProviders() = default;
+
+    ExtensionProviders(const ExtensionProviders& other) = default;
+
+    ExtensionProviders(ExtensionProviders&& other) noexcept = default;
+
+    ~ExtensionProviders() noexcept = default;
+
+    ExtensionProviders& operator=(const ExtensionProviders& other) = default;
+
+    ExtensionProviders& operator=(ExtensionProviders&& other) noexcept = default;
+
+    void loadLibrary(const boost::filesystem::path& libraryPath);
+
+private:
+    std::set<boost::filesystem::path> m_loadedLibraries;
+
     std::map<std::string, std::unique_ptr<T>> m_providers;
 };
 

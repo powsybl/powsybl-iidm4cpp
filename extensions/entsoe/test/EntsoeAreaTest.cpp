@@ -7,15 +7,11 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/extensions/entsoe/EntsoeArea.hpp>
-#include <powsybl/iidm/extensions/entsoe/EntsoeAreaXmlSerializer.hpp>
-#include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
-#include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -56,8 +52,6 @@ BOOST_AUTO_TEST_CASE(EntsoeAreaConstructor) {
 
 BOOST_FIXTURE_TEST_CASE(EntsoeAreaXmlSerializerTest, test::ResourceFixture) {
     Network network = createNetwork();
-
-    ExtensionProviders<converter::xml::ExtensionXmlSerializer>::registerExtension("entsoeArea", stdcxx::make_unique<EntsoeAreaXmlSerializer>());
 
     const std::string& networkStr = ResourceFixture::getResource("entsoeArea.xml");
 

@@ -8,7 +8,6 @@
 #include <powsybl/test/ResourceFixture.hpp>
 
 #include <fstream>
-#include <sstream>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -29,7 +28,7 @@ ResourceFixture::ResourceFixture() {
     parse(desc);
 }
 
-std::string ResourceFixture::getResource(const std::string& name) {
+std::string ResourceFixture::getResource(const std::string& name) const {
     boost::filesystem::path path(getOptionValue("resources").as<std::string>());
     path /= name;
 

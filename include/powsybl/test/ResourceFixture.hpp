@@ -20,7 +20,7 @@ class ResourceFixture : public CommandLine {
 public:
     ResourceFixture();
 
-    std::string getResource(const std::string& name);
+    std::string getResource(const std::string& name) const;
 };
 
 }  // namespace test
