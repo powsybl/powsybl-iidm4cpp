@@ -239,7 +239,7 @@ double checkP0(const Validable& validable, double p0) {
 }
 
 double checkPermanentLimit(const Validable& validable, double permanentLimit) {
-    if (std::isnan(permanentLimit) || std::islessequal(permanentLimit, 0.0)) {
+    if (std::islessequal(permanentLimit, 0.0)) {
         throw ValidationException(validable, "permanent limit must be > 0");
     }
     return permanentLimit;

@@ -50,3 +50,28 @@ $> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE>
 $> make -j
 $> make install
 ```
+
+### Checkstyle
+This project uses [clang-tidy](https://clang.llvm.org/extra/clang-tidy/) to verify the code style. This tool is provided with
+the clang extra tools. To enable the code style checking, add `-DCMAKE_CXX_CLANG_TIDY=clang-tidy` to the cmake command.  
+
+### Code coverage
+This project uses either [gcov](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) or [llvm-cov](https://llvm.org/docs/CommandGuide/llvm-cov.html)
+to compute the code coverage. We also use [gcovr](https://gcovr.com/en/stable/) (4.2 or higher) to generate both sonar
+and HTML reports. To compute the code coverage, add `-DCODE_COVERAGE=TRUE` to the cmake command.
+```
+$> cmake .. -DCODE_COVERAGE=TRUE
+$> make -j
+$> make test
+$> make code-coverage
+```
+The HTML report is available in `<BUILD_DIR>/coverage/index.html`. 
+
+### Doxygen
+This project uses [doxygen](http://www.doxygen.nl/) to generate code documentation. To enable doxygen, add `-DDOXYGEN=TRUE`
+to the cmake command line. This will create a `doxygen` target.
+```
+$> cmake .. -DDOXYGEN=TRUE
+$> make doxygen
+```
+The HTML documentation is available in `<BUILD_DIR>/doc/html/index.html`.

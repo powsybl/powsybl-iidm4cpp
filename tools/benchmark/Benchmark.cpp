@@ -8,9 +8,7 @@
 #include <boost/program_options.hpp>
 
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/logging/ConsoleLogger.hpp>
-#include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
