@@ -22,6 +22,8 @@ public:
 
     ExtensionFixture(ExtensionFixture&& fixture) = default;
 
+    ~ExtensionFixture() = default;
+
     ExtensionFixture& operator=(const ExtensionFixture& fixture) = default;
 
     ExtensionFixture& operator=(ExtensionFixture&& fixture) = default;

@@ -34,10 +34,7 @@ public:
 
     const T& findProviderOrThrowException(const std::string& name) const;
 
-    void loadExtensions(const std::string& path, const boost::regex& files);
-
-private:
-    static std::vector<std::string> getFiles(const std::string& directory, const boost::regex& file);
+    void loadExtensions(const boost::filesystem::path& directory, const boost::regex& pattern);
 
 private:
     ExtensionProviders() = default;
@@ -52,9 +49,7 @@ private:
 
     ExtensionProviders& operator=(ExtensionProviders&& fixture) noexcept = default;
 
-    void loadLibrary(const std::string& library);
-
-    void registerExtension(const std::string& name, std::unique_ptr<T>&& provider);
+    void loadLibrary(const boost::filesystem::path& libraryPath);
 
 private:
     std::set<boost::filesystem::path> m_loadedLibraries;

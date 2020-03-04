@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/extensions/entsoe/EntsoeArea.hpp>
+#include <powsybl/stdcxx/memory.hpp>
 
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>

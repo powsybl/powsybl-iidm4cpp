@@ -15,6 +15,7 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/iidm/extensions/entsoe/MergedXnode.hpp>
+#include <powsybl/stdcxx/memory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>

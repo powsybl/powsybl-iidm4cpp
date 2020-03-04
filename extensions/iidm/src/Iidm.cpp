@@ -5,10 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <memory>
+#include <vector>
+
 #include <boost/dll/alias.hpp>
 
 #include <powsybl/iidm/extensions/iidm/ActivePowerControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.hpp>
+#include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
 
@@ -18,10 +22,11 @@ namespace extensions {
 
 namespace iidm {
 
-std::set<std::unique_ptr<ExtensionProvider>> create() {
-    std::set<std::unique_ptr<ExtensionProvider>> serializers;
-    serializers.insert(stdcxx::make_unique<ActivePowerControlXmlSerializer>());
-    serializers.insert(stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
+std::vector<std::unique_ptr<ExtensionProvider>> create() {
+    std::vector<std::unique_ptr<ExtensionProvider>> serializers;
+    serializers.emplace_back(stdcxx::make_unique<ActivePowerControlXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
+
     return serializers;
 }
 
@@ -38,4 +43,3 @@ BOOST_DLL_ALIAS(
 }  // namespace iidm
 
 }  // namespace powsybl
-

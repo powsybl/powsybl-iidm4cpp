@@ -62,11 +62,13 @@ std::set<std::string> getExtensionNames(const Network& network) {
 }
 
 stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOptions& options, const std::string& extensionName) {
+    powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>& extensionProviders = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance();
+
     stdcxx::CReference<ExtensionXmlSerializer> serializer;
     if (options.isThrowExceptionIfExtensionNotFound()) {
-        serializer = stdcxx::cref(powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance().findProviderOrThrowException(extensionName));
+        serializer = stdcxx::cref(extensionProviders.findProviderOrThrowException(extensionName));
     } else {
-        serializer = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance().findProvider(extensionName);
+        serializer = extensionProviders.findProvider(extensionName);
         if (!serializer) {
             logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
             logger.warn("No extension XML serializer for %1%", extensionName);
@@ -77,14 +79,16 @@ stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOp
 }
 
 void readExtensions(Identifiable& identifiable, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound) {
-    context.getReader().readUntilEndElement(EXTENSION, [&identifiable, &context, &extensionsNotFound]() {
+    powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>& extensionProviders = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance();
+
+    context.getReader().readUntilEndElement(EXTENSION, [&identifiable, &context, &extensionsNotFound, &extensionProviders]() {
         const std::string& extensionName = context.getReader().getLocalName();
         if (!context.getOptions().withExtension(extensionName)) {
             context.getReader().readUntilEndElement(extensionName, []() {});
             return;
         }
 
-        stdcxx::CReference<ExtensionXmlSerializer> serializer = ExtensionProviders<ExtensionXmlSerializer>::getInstance().findProvider(extensionName);
+        stdcxx::CReference<ExtensionXmlSerializer> serializer = extensionProviders.findProvider(extensionName);
         if (serializer) {
             std::unique_ptr<Extension> extension = serializer.get().read(identifiable, context);
             identifiable.addExtension(std::move(extension));
@@ -96,13 +100,15 @@ void readExtensions(Identifiable& identifiable, NetworkXmlReaderContext& context
 }
 
 void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& context) {
+    powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>& extensionProviders = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance();
+
     std::set<std::string> extensionUris;
     std::set<std::string> extensionPrefixes;
 
     const auto& extensions = getExtensionNames(network);
     for (const auto& extension : extensions) {
         if (context.getOptions().withExtension(extension)) {
-            stdcxx::CReference<ExtensionXmlSerializer> serializer = ExtensionProviders<ExtensionXmlSerializer>::getInstance().findProvider(extension);
+            stdcxx::CReference<ExtensionXmlSerializer> serializer = extensionProviders.findProvider(extension);
             if (!serializer) {
                 continue;
             }

@@ -45,70 +45,51 @@ const T& ExtensionProviders<T, Dummy>::findProviderOrThrowException(const std::s
 }
 
 template <typename T, typename Dummy>
-std::vector<std::string> ExtensionProviders<T, Dummy>::getFiles(const std::string& directory, const boost::regex& file) {
-    std::vector<std::string> libs;
-    if (boost::filesystem::exists(directory) && boost::filesystem::is_directory(directory)) {
-        for (const auto& it : boost::filesystem::directory_iterator(directory)) {
-            if (boost::filesystem::is_regular_file(it) && boost::regex_match(it.path().filename().c_str(), file)) {
-                libs.push_back((directory / it.path().filename()).string());
-            }
-        }
-    }
-
-    return libs;
-}
-
-template <typename T, typename Dummy>
 ExtensionProviders<T, Dummy>& ExtensionProviders<T, Dummy>::getInstance() {
     static ExtensionProviders<T, Dummy> s_instance;
     return s_instance;
 }
 
 template <typename T, typename Dummy>
-void ExtensionProviders<T, Dummy>::loadExtensions(const std::string& path, const boost::regex& files) {
-    if (!boost::filesystem::exists(path)) {
-        throw PowsyblException(logging::format("Path %1% does not exist", path));
+void ExtensionProviders<T, Dummy>::loadExtensions(const boost::filesystem::path& directory, const boost::regex& pattern) {
+    if (!boost::filesystem::exists(directory)) {
+        throw PowsyblException(logging::format("Path %1% does not exist", directory));
     }
 
-    if (!boost::filesystem::is_directory(path)) {
-        throw PowsyblException(logging::format("Path %1% is not a directory", path));
+    if (!boost::filesystem::is_directory(directory)) {
+        throw PowsyblException(logging::format("Path %1% is not a directory", directory));
     }
 
-    logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
-    const std::vector<std::string>& libFiles = getFiles(path, files);
-    for (const std::string& libFile : libFiles) {
-        try {
-            loadLibrary(libFile);
-        } catch (const boost::system::system_error& err) {
-            logger.info(logging::format("Unable to load file %1%: %2%", libFile, err.what()));
+    for (const auto& it : boost::filesystem::directory_iterator(directory)) {
+        if (boost::filesystem::is_regular_file(it) && boost::regex_match(it.path().c_str(), pattern)) {
+            loadLibrary(boost::filesystem::canonical(it.path()));
         }
     }
 }
 
 template <typename T, typename Dummy>
-void ExtensionProviders<T, Dummy>::loadLibrary(const std::string& library) {
+void ExtensionProviders<T, Dummy>::loadLibrary(const boost::filesystem::path& libraryPath) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
-    boost::dll::shared_library lib(library);
 
-    const boost::filesystem::path& libraryPath = boost::filesystem::canonical(lib.location());
     if (m_loadedLibraries.find(libraryPath) == m_loadedLibraries.end()) {
-        if (lib.has("createSerializers")) {
-            const auto& createSerializers = boost::dll::import_alias<std::set<std::unique_ptr<T>>()>(lib, "createSerializers");
-            for (auto& it : createSerializers()) {
-                const std::string& extensionName = it->getExtensionName();
-                registerExtension(extensionName, std::move(const_cast<std::unique_ptr<T>&>(it)));
-                logger.debug(logging::format("Extension %1% has been loaded from %2%", extensionName, library));
+        try {
+            boost::dll::shared_library library(libraryPath);
+            if (library.has("createSerializers")) {
+                const auto& createSerializers = boost::dll::import_alias<std::vector<std::unique_ptr<T>>()>(library, "createSerializers");
+                std::vector<std::unique_ptr<T>> serializers = createSerializers();
+                for (auto& it : serializers) {
+                    const std::string& extensionName = it->getExtensionName();
+                    const auto& status = m_providers.emplace(std::make_pair(extensionName, std::move(it)));
+                    if (!status.second) {
+                        throw PowsyblException(logging::format("Extension %1% was already registered", extensionName));
+                    }
+                    logger.debug(logging::format("Extension %1% has been loaded from %2%", extensionName, libraryPath));
+                }
+                m_loadedLibraries.insert(libraryPath);
             }
-            m_loadedLibraries.insert(libraryPath);
+        } catch (const boost::system::system_error& err) {
+            logger.info(logging::format("Unable to load file %1%: %2%", libraryPath, err.what()));
         }
-    }
-}
-
-template <typename T, typename Dummy>
-void ExtensionProviders<T, Dummy>::registerExtension(const std::string& name, std::unique_ptr<T>&& provider) {
-    const auto& status = m_providers.emplace(std::make_pair(name, std::move(provider)));
-    if (!status.second) {
-        throw PowsyblException(logging::format("Extension %1% was already registered", name));
     }
 }
 
