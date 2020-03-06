@@ -285,11 +285,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getTapPosition());
-    BOOST_CHECK_NO_THROW(ratioTapChanger.setLoadTapChangingCapabilities(false).setLowTapPosition(-3L).setTargetV(stdcxx::nan()));
+    BOOST_CHECK_NO_THROW(ratioTapChanger.setLoadTapChangingCapabilities(false).setLowTapPosition(-3L).setRegulating(false).setTargetV(stdcxx::nan()));
     BOOST_TEST(!ratioTapChanger.hasLoadTapChangingCapabilities());
     BOOST_CHECK_EQUAL(-3L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(-1L, ratioTapChanger.getTapPosition());
-    POWSYBL_ASSERT_THROW(ratioTapChanger.setLoadTapChangingCapabilities(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': a target voltage has to be set for a regulating ratio tap changer");
+    BOOST_CHECK_NO_THROW(ratioTapChanger.setLoadTapChangingCapabilities(true));
+    POWSYBL_ASSERT_THROW(ratioTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': a target voltage has to be set for a regulating ratio tap changer");
 
     BOOST_TEST(std::isnan(ratioTapChanger.getTargetDeadband()));
     POWSYBL_ASSERT_THROW(ratioTapChanger.setTargetDeadband(-1.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
