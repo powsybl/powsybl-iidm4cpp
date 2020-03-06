@@ -13,12 +13,18 @@ set(EXT_SOURCES
     src/CoordinatedReactiveControl.cpp
     src/CoordinatedReactiveControlXmlSerializer.cpp
     src/Iidm.cpp
+    src/ThreeWindingsTransformerPhaseAngleClock.cpp
+    src/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.cpp
+    src/TwoWindingsTransformerPhaseAngleClock.cpp
+    src/TwoWindingsTransformerPhaseAngleClockXmlSerializer.cpp
 )
 
 set(UNIT_TEST_SOURCES
     test/ActivePowerControlTest.cpp
     test/CoordinatedReactiveControlTest.cpp
     test/iidm.cpp
+    test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
+    test/TwoWindingsTransformerPhaseAngleClockTest.cpp
 )
 
 # Shared library

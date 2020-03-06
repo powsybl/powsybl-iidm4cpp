@@ -156,6 +156,7 @@ set(IIDM_SOURCES
 
     network/BatteryNetworkFactory.cpp
     network/EurostagFactory.cpp
+    network/ThreeWindingsTransformerNetworkFactory.cpp
 
     stdcxx/DateTime.cpp
     stdcxx/demangle.cpp
