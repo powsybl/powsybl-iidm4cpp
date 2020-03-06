@@ -10,7 +10,15 @@
 
 #include <ctime>
 
+#include <ctime>
+
 #include <powsybl/stdcxx/features.hpp>
+
+namespace stdcxx {
+
+std::tm tm();
+
+}  // namespace stdcxx
 
 #if !defined(__GNUC__) || __GNUC_PREREQ(5, 0)
 

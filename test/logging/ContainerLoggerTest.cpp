@@ -53,7 +53,6 @@ BOOST_AUTO_TEST_CASE(logMessage) {
     BOOST_CHECK_EQUAL(size, logger.size());
 
     std::ostringstream oss;
-    struct std::tm result = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nullptr};
     std::time_t instant;
     const LogMessage& logMessage1 = logger.getLogMessage(0);
     BOOST_CHECK_EQUAL("trace message", logMessage1.getMessage());
