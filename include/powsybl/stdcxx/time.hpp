@@ -12,6 +12,8 @@
 
 #include <ctime>
 
+#include <ctime>
+
 #include <powsybl/stdcxx/features.hpp>
 
 namespace stdcxx {
