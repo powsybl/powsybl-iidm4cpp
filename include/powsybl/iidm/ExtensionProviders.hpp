@@ -10,12 +10,12 @@
 
 #include <map>
 #include <memory>
+#include <regex>
 #include <set>
 #include <string>
 #include <type_traits>
 
 #include <boost/filesystem.hpp>
-#include <boost/regex.hpp>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -34,7 +34,7 @@ public:
 
     const T& findProviderOrThrowException(const std::string& name) const;
 
-    void loadExtensions(const boost::filesystem::path& directory, const boost::regex& pattern);
+    void loadExtensions(const boost::filesystem::path& directory, const std::regex& pattern);
 
 private:
     ExtensionProviders() = default;
