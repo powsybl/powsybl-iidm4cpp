@@ -7,7 +7,7 @@
 
 #include <powsybl/test/ExtensionFixture.hpp>
 
-#include <regex> 
+#include <regex>
 
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <boost/dll/shared_library.hpp>
