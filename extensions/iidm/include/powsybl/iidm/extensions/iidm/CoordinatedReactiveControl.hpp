@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_COORDINATEDREACTIVECONTROL_HPP
 
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/extensions/iidm/IidmExport.hpp>
 
 namespace powsybl {
 
@@ -18,25 +19,25 @@ class Generator;
 
 namespace extensions {
 
-namespace iidm {
+    namespace iidm {
 
-class CoordinatedReactiveControl : public Extension {
-public:  // Extension
-    const std::string& getName() const override;
+        class EXT_IIDM_EXPORT CoordinatedReactiveControl : public Extension {
+        public:  // Extension
+            const std::string &getName() const override;
 
-    const std::type_index& getType() const override;
+            const std::type_index &getType() const override;
 
-public:
-    CoordinatedReactiveControl(Generator& generator, double qPercent);
+        public:
+            CoordinatedReactiveControl(Generator &generator, double qPercent);
 
-    ~CoordinatedReactiveControl() noexcept override = default;
+            ~CoordinatedReactiveControl() noexcept override = default;
 
-    double getQPercent() const;
+            double getQPercent() const;
 
-    CoordinatedReactiveControl& setQPercent(double qPercent);
+            CoordinatedReactiveControl &setQPercent(double qPercent);
 
-private:  // Extension
-    void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
+        private:  // Extension
+            void assertExtendable(const stdcxx::Reference<Extendable> &extendable) const override;
 
 private:
     static double checkQPercent(double qPercent);

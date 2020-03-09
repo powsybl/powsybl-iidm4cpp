@@ -25,6 +25,8 @@ set(UNIT_TEST_SOURCES
     test/XnodeTest.cpp
 )
 
+add_compile_definitions(EXT_ENTSOE_LIBRARY)
+
 # Shared library
 add_library(${EXT_NAME} SHARED ${EXT_SOURCES})
 set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION} OUTPUT_NAME iidm-${EXT_NAME})

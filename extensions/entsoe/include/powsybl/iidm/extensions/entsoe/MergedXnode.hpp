@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_ENTSOE_MERGEDXNODE_HPP
 
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/extensions/entsoe/EntsoeExport.hpp>
 
 namespace powsybl {
 
@@ -18,27 +19,28 @@ class Line;
 
 namespace extensions {
 
-namespace entsoe {
+    namespace entsoe {
 
-class MergedXnode : public Extension {
-public:  // Extension
-    const std::string& getName() const override;
+        class EXT_ENTSOE_EXPORT MergedXnode : public Extension {
+        public:  // Extension
+            const std::string &getName() const override;
 
-    const std::type_index& getType() const override;
+            const std::type_index &getType() const override;
 
-public:
-    MergedXnode(Line& line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2, double xnodeQ2,
-                const std::string& line1Name, const std::string& line2Name, const std::string& code);
+        public:
+            MergedXnode(Line &line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2,
+                        double xnodeQ2,
+                        const std::string &line1Name, const std::string &line2Name, const std::string &code);
 
-    ~MergedXnode() noexcept override = default;
+            ~MergedXnode() noexcept override = default;
 
-    const std::string& getCode() const;
+            const std::string &getCode() const;
 
-    const std::string& getLine1Name() const;
+            const std::string &getLine1Name() const;
 
-    const std::string& getLine2Name() const;
+            const std::string &getLine2Name() const;
 
-    double getRdp() const;
+            double getRdp() const;
 
     double getXdp() const;
 
