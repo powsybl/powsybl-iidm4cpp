@@ -41,6 +41,7 @@ jobs:
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: >
           cmake $GITHUB_WORKSPACE
+          -G "NMake Makefiles"
           -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
           -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
           ${{ matrix.config.cmake_options }}
