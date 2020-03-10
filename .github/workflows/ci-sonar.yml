@@ -1,6 +1,6 @@
 name: CI (sonar)
 
-on: [push]
+# on: [push]
 
 jobs:
   build:

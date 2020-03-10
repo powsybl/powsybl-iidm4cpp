@@ -1,6 +1,6 @@
 name: CI
 
-#on: [push]
+on: [push]
 
 jobs:
   build:
@@ -10,30 +10,34 @@ jobs:
       matrix:
         config:
           - {
-              name: "Ubuntu (Clang)",
-              os: ubuntu-latest,
-              build_type: "Release", cxx: "clang++",
-              cmake_options: "-DBOOST_ROOT=$BOOST_ROOT_1_69_0 -DBoost_ARCHITECTURE=-x64"
-          }
-          - {
-              name: "MacOS (Clang)",
-              os: macos-latest,
-              build_type: "Release", cxx: "clang++"
+            name: "Windows (MSVC 2019)",
+            os: windows-latest,
+            build_type: "Release",
+            vs_version: "2019",
+            cmake_options: "-DBOOST_ROOT=$BOOST_ROOT_1_72_0 -DCMAKE_PREFIX_PATH=C:\thirdparties\libxml2-2.9.10"
           }
 
     steps:
+      - name: Install LibXML2
+        shell: cmd
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          choco install wget --no-progress
+          wget -nv https://github.com/GNOME/libxml2/archive/v2.9.10.zip
+          7z x v2.9.10.zip
+          cd libxml2-2.9.10/win32
+          cscript configure.js compiler=msvc prefix=C:\thirdparties\libxml2-2.9.10 iconv=no
+          nmake -f Makefile.msvc
+          nmake -f Makefile.msvc install
+
       - name: Checkout sources
         uses: actions/checkout@v1
-
-      - name: Install boost
-        if: runner.os == 'macOS'
-        run: brew install boost
 
       - name: Create build environment
         run: cmake -E make_directory ${{ runner.workspace }}/powsybl-iidm4cpp/build
 
       - name: Configure CMake
-        shell: bash
+        shell: cmd
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: >
           cmake $GITHUB_WORKSPACE
