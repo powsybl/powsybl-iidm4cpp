@@ -39,19 +39,20 @@ jobs:
       - name: Configure CMake
         shell: cmd
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
-        run: >
-          cmake %GITHUB_WORKSPACE%
-          -G "NMake Makefiles"
-          -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
-          -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
-          ${{ matrix.config.cmake_options }}
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cmake %GITHUB_WORKSPACE% -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} ${{ matrix.config.cmake_options }}
 
       - name: Build
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
-        run: cmake --build . --parallel 3
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cmake --build . --parallel 3
 
       - name: Tests
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
-        run: cmake --build . --target test
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          cmake --build . --target test
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
