@@ -44,12 +44,14 @@ jobs:
           cmake %GITHUB_WORKSPACE% -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} ${{ matrix.config.cmake_options }}
 
       - name: Build
+        shell: cmd
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           cmake --build . --parallel 3
 
       - name: Tests
+        shell: cmd
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
