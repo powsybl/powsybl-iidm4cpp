@@ -19,22 +19,22 @@ namespace iidm {
 
 namespace extensions {
 
-    namespace entsoe {
+namespace entsoe {
 
-        class EXT_ENTSOE_EXPORT EntsoeAreaXmlSerializer : public converter::xml::ExtensionXmlSerializer {
-        public:  // ExtensionXmlSerializer
-            std::unique_ptr<Extension>
-            read(Extendable &extendable, converter::xml::NetworkXmlReaderContext &context) const override;
+class EXT_ENTSOE_EXPORT EntsoeAreaXmlSerializer : public converter::xml::ExtensionXmlSerializer {
+public:  // ExtensionXmlSerializer
+    std::unique_ptr<Extension>
+    read(Extendable &extendable, converter::xml::NetworkXmlReaderContext &context) const override;
 
-            void write(const Extension &extension, converter::xml::NetworkXmlWriterContext &context) const override;
+    void write(const Extension &extension, converter::xml::NetworkXmlWriterContext &context) const override;
 
-        public:
-            EntsoeAreaXmlSerializer();
+public:
+    EntsoeAreaXmlSerializer();
 
-            ~EntsoeAreaXmlSerializer() noexcept override = default;
-        };
+    ~EntsoeAreaXmlSerializer() noexcept override = default;
+};
 
-    }  // namespace entsoe
+}  // namespace entsoe
 
 }  // namespace extensions
 

@@ -17,22 +17,22 @@ namespace iidm {
 
 namespace extensions {
 
-    namespace iidm {
+namespace iidm {
 
-        class EXT_IIDM_EXPORT CoordinatedReactiveControlXmlSerializer : public converter::xml::ExtensionXmlSerializer {
-        public:  // ExtensionXmlSerializer
-            std::unique_ptr<Extension>
-            read(Extendable &extendable, converter::xml::NetworkXmlReaderContext &context) const override;
+class EXT_IIDM_EXPORT CoordinatedReactiveControlXmlSerializer : public converter::xml::ExtensionXmlSerializer {
+public:  // ExtensionXmlSerializer
+    std::unique_ptr<Extension>
+    read(Extendable &extendable, converter::xml::NetworkXmlReaderContext &context) const override;
 
-            void write(const Extension &extension, converter::xml::NetworkXmlWriterContext &context) const override;
+    void write(const Extension &extension, converter::xml::NetworkXmlWriterContext &context) const override;
 
-        public:
-            CoordinatedReactiveControlXmlSerializer();
+public:
+    CoordinatedReactiveControlXmlSerializer();
 
-            ~CoordinatedReactiveControlXmlSerializer() noexcept override = default;
-        };
+    ~CoordinatedReactiveControlXmlSerializer() noexcept override = default;
+};
 
-    }  // namespace iidm
+}  // namespace iidm
 
 }  // namespace extensions
 

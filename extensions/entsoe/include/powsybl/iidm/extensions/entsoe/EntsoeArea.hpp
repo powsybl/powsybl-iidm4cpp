@@ -22,25 +22,25 @@ class Substation;
 
 namespace extensions {
 
-    namespace entsoe {
+namespace entsoe {
 
-        class EXT_ENTSOE_EXPORT EntsoeArea : public Extension {
-        public:  // Extension
-            const std::string &getName() const override;
+class EXT_ENTSOE_EXPORT EntsoeArea : public Extension {
+public:  // Extension
+    const std::string &getName() const override;
 
-            const std::type_index &getType() const override;
+    const std::type_index &getType() const override;
 
-        public:
-            EntsoeArea(Substation &substation, const EntsoeGeographicalCode &code);
+public:
+    EntsoeArea(Substation &substation, const EntsoeGeographicalCode &code);
 
-            ~EntsoeArea() noexcept override = default;
+    ~EntsoeArea() noexcept override = default;
 
-            const EntsoeGeographicalCode &getCode() const;
+    const EntsoeGeographicalCode &getCode() const;
 
-            EntsoeArea &setCode(const EntsoeGeographicalCode &code);
+    EntsoeArea &setCode(const EntsoeGeographicalCode &code);
 
-        private:  // Extension
-            void assertExtendable(const stdcxx::Reference<Extendable> &extendable) const override;
+private:  // Extension
+    void assertExtendable(const stdcxx::Reference<Extendable> &extendable) const override;
 
 private:
     EntsoeGeographicalCode m_code;

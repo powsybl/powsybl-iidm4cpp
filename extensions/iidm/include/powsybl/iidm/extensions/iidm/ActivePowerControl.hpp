@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_ACTIVEPOWERCONTROL_HPP
 
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/extensions/iidm/IidmExport.hpp>
 
 namespace powsybl {
 
@@ -19,26 +20,26 @@ class Generator;
 
 namespace extensions {
 
-namespace iidm {
+    namespace iidm {
 
-class ActivePowerControl : public Extension {
-public:  // Extension
-    const std::string& getName() const override;
+        class EXT_IIDM_EXPORT ActivePowerControl : public Extension {
+        public:  // Extension
+            const std::string &getName() const override;
 
-    const std::type_index& getType() const override;
+            const std::type_index &getType() const override;
 
-public:
-    ActivePowerControl(Battery& battery, bool participate, double droop);
+        public:
+            ActivePowerControl(Battery &battery, bool participate, double droop);
 
-    ActivePowerControl(Generator& generator, bool participate, double droop);
+            ActivePowerControl(Generator &generator, bool participate, double droop);
 
-    ~ActivePowerControl() noexcept override = default;
+            ~ActivePowerControl() noexcept override = default;
 
-    double getDroop() const;
+            double getDroop() const;
 
-    bool isParticipate() const;
+            bool isParticipate() const;
 
-    ActivePowerControl& setDroop(double droop);
+            ActivePowerControl &setDroop(double droop);
 
     ActivePowerControl& setParticipate(bool participate);
 

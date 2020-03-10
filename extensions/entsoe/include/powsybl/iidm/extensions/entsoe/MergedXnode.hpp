@@ -19,28 +19,28 @@ class Line;
 
 namespace extensions {
 
-    namespace entsoe {
+namespace entsoe {
 
-        class EXT_ENTSOE_EXPORT MergedXnode : public Extension {
-        public:  // Extension
-            const std::string &getName() const override;
+class EXT_ENTSOE_EXPORT MergedXnode : public Extension {
+public:  // Extension
+    const std::string &getName() const override;
 
-            const std::type_index &getType() const override;
+    const std::type_index &getType() const override;
 
-        public:
-            MergedXnode(Line &line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2,
-                        double xnodeQ2,
-                        const std::string &line1Name, const std::string &line2Name, const std::string &code);
+public:
+    MergedXnode(Line &line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2,
+                double xnodeQ2,
+                const std::string &line1Name, const std::string &line2Name, const std::string &code);
 
-            ~MergedXnode() noexcept override = default;
+    ~MergedXnode() noexcept override = default;
 
-            const std::string &getCode() const;
+    const std::string &getCode() const;
 
-            const std::string &getLine1Name() const;
+    const std::string &getLine1Name() const;
 
-            const std::string &getLine2Name() const;
+    const std::string &getLine2Name() const;
 
-            double getRdp() const;
+    double getRdp() const;
 
     double getXdp() const;
 
@@ -52,23 +52,23 @@ namespace extensions {
 
     double getXnodeQ2() const;
 
-    MergedXnode& setCode(const std::string& xNodeCode);
+    MergedXnode &setCode(const std::string &xNodeCode);
 
-    MergedXnode& setLine1Name(const std::string& line1Name);
+    MergedXnode &setLine1Name(const std::string &line1Name);
 
-    MergedXnode& setLine2Name(const std::string& line2Name);
+    MergedXnode &setLine2Name(const std::string &line2Name);
 
-    MergedXnode& setRdp(double rdp);
+    MergedXnode &setRdp(double rdp);
 
-    MergedXnode& setXdp(double xdp);
+    MergedXnode &setXdp(double xdp);
 
-    MergedXnode& setXnodeP1(double xNodeP1);
+    MergedXnode &setXnodeP1(double xNodeP1);
 
-    MergedXnode& setXnodeQ1(double xNodeQ1);
+    MergedXnode &setXnodeQ1(double xNodeQ1);
 
-    MergedXnode& setXnodeP2(double xNodeP2);
+    MergedXnode &setXnodeP2(double xNodeP2);
 
-    MergedXnode& setXnodeQ2(double xNodeQ2);
+    MergedXnode &setXnodeQ2(double xNodeQ2);
 
 private:
     static double checkDividerPosition(double dp);
@@ -76,7 +76,7 @@ private:
     static double checkPowerFlow(double value);
 
 private:  // Extension
-    void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
+    void assertExtendable(const stdcxx::Reference<Extendable> &extendable) const override;
 
 private:
     double m_rdp; // r divider position 1 -> 2

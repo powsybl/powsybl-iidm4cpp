@@ -19,25 +19,25 @@ class DanglingLine;
 
 namespace extensions {
 
-    namespace entsoe {
+namespace entsoe {
 
-        class EXT_ENTSOE_EXPORT Xnode : public Extension {
-        public:  // Extension
-            const std::string &getName() const override;
+class EXT_ENTSOE_EXPORT Xnode : public Extension {
+public:  // Extension
+    const std::string &getName() const override;
 
-            const std::type_index &getType() const override;
+    const std::type_index &getType() const override;
 
-        public:
-            Xnode(DanglingLine &dl, const std::string &code);
+public:
+    Xnode(DanglingLine &dl, const std::string &code);
 
-            ~Xnode() noexcept override = default;
+    ~Xnode() noexcept override = default;
 
-            const std::string &getCode() const;
+    const std::string &getCode() const;
 
-            Xnode &setCode(const std::string &code);
+    Xnode &setCode(const std::string &code);
 
-        private:  // Extension
-            void assertExtendable(const stdcxx::Reference<Extendable> &extendable) const override;
+private:  // Extension
+    void assertExtendable(const stdcxx::Reference<Extendable> &extendable) const override;
 
 private:
     std::string m_code;
