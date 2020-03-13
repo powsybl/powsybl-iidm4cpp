@@ -120,10 +120,9 @@ void VoltageLevelXml::writeBatteries(const VoltageLevel& voltageLevel, NetworkXm
 void VoltageLevelXml::writeBusBranchTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     context.getWriter().writeStartElement(IIDM_URI, BUS_BREAKER_TOPOLOGY);
     for (const Bus& bus : voltageLevel.getBusView().getBuses()) {
-        // TODO(sebalaig) consider filtering
-//        if (!context.getFilter().test(bus)) {
-//            continue;
-//        }
+        if (!context.getFilter().test(bus)) {
+            continue;
+        }
         BusXml::getInstance().write(bus, voltageLevel, context);
     }
     context.getWriter().writeEndElement();
