@@ -123,6 +123,12 @@ void XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, i
     }
 }
 
+void XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, unsigned long attributeValue, unsigned long absentValue) {
+    if (attributeValue != absentValue) {
+        writeAttribute(attributeName, std::to_string(attributeValue));
+    }
+}
+
 void XmlStreamWriter::writeOptionalAttribute(const std::string& attributeName, const std::string& attributeValue,
                                              const std::string& absentValue) {
     if (attributeValue != absentValue) {

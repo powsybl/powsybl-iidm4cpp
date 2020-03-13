@@ -22,10 +22,12 @@ void CurrentLimitsXml::writeCurrentLimits(const CurrentLimits& limits, powsybl::
         writer.writeStartElement(nsPrefix, toString(CURRENT_LIMITS, index));
         writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
 
+        constexpr unsigned long undefinedAcceptableDuration = std::numeric_limits<int>::max();
+
         for (const auto& tl : limits.getTemporaryLimits()) {
             writer.writeStartElement(nsPrefix, TEMPORARY_LIMIT);
             writer.writeAttribute(NAME, tl.get().getName());
-            writer.writeOptionalAttribute(ACCEPTABLE_DURATION, tl.get().getAcceptableDuration(), std::numeric_limits<int>::max());
+            writer.writeOptionalAttribute(ACCEPTABLE_DURATION, tl.get().getAcceptableDuration(), undefinedAcceptableDuration);
             writer.writeOptionalAttribute(VALUE, tl.get().getValue(), std::numeric_limits<double>::max());
             writer.writeOptionalAttribute(FICTITIOUS, tl.get().isFictitious(), false);
             writer.writeEndElement();
