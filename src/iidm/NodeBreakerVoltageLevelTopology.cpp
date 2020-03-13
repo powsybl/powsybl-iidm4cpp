@@ -182,7 +182,7 @@ stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long no
             return stdcxx::ref<Bus>(buses.front());
         }
 
-        throw AssertionError("Should not happen");
+        return stdcxx::ref<Bus>();
     }
 
     return stdcxx::ref<Bus>(connectableBus);

@@ -741,7 +741,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology2) {
         .setQ0(40.0)
         .add();
 
-    POWSYBL_ASSERT_THROW(l1.getTerminal().getBusBreakerView().getConnectableBus(), AssertionError, "Should not happen");
+    POWSYBL_ASSERT_REF_FALSE(l1.getTerminal().getBusBreakerView().getConnectableBus());
 }
 
 BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
