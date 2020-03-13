@@ -18,12 +18,21 @@ namespace iidm {
 namespace node_breaker_voltage_level {
 
 BusNamingStrategy::BusNamingStrategy(NodeBreakerVoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_counter(0) {
+    m_voltageLevel(voltageLevel) {
 }
 
-std::string BusNamingStrategy::getName() {
-    return logging::format("%1%_%2%", m_voltageLevel.getId(), m_counter.fetch_add(1));
+std::string BusNamingStrategy::getId(const std::vector<unsigned long>& nodes) {
+    const auto& iter = std::min_element(nodes.cbegin(), nodes.cend());
+    return logging::format("%1%_%2%", m_voltageLevel.getId(), *iter);
+}
+
+std::string BusNamingStrategy::getName(const std::vector<unsigned long>& nodes) {
+    if (!m_voltageLevel.getName().empty()) {
+        const auto& iter = std::min_element(nodes.cbegin(), nodes.cend());
+        return logging::format("%1%_%2%", m_voltageLevel.getName(), *iter);
+    }
+
+    return "";
 }
 
 }  // namespace node_breaker_voltage_level

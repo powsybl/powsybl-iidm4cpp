@@ -333,6 +333,9 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
         .add();
 
     BOOST_CHECK_EQUAL(1UL, boost::size(vl.getBusView().getBuses()));
+    for (const auto& bus : vl.getBusView().getBuses()) {
+        std::cout << "B = " << bus.getId() << std::endl;
+    }
     stdcxx::Reference<Bus> mergedBus1 = vl.getBusView().getMergedBus("BUS1");
     stdcxx::Reference<Bus> mergedBus2 = vl.getBusView().getMergedBus("BUS2");
     BOOST_TEST(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));

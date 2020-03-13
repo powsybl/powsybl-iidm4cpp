@@ -27,10 +27,6 @@ namespace powsybl {
 
 namespace iidm {
 
-Bus::Bus(const std::string& id) :
-    Identifiable(id, id) {
-}
-
 Bus::Bus(const std::string& id, const std::string& name) :
     Identifiable(id, name) {
 }
