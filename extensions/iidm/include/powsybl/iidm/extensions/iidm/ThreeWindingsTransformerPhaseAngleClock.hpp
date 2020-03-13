@@ -27,7 +27,7 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    ThreeWindingsTransformerPhaseAngleClock(ThreeWindingsTransformer& battery, unsigned long phaseAngleClockLeg2, unsigned long phaseAngleClockLeg3);
+    ThreeWindingsTransformerPhaseAngleClock(ThreeWindingsTransformer& transformer, unsigned long phaseAngleClockLeg2, unsigned long phaseAngleClockLeg3);
 
     unsigned long getPhaseAngleClockLeg2() const;
 
