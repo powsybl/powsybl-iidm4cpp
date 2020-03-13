@@ -7,6 +7,8 @@
 
 #include <powsybl/test/ExtensionFixture.hpp>
 
+#include <regex>
+
 #include <boost/dll/runtime_symbol_info.hpp>
 #include <boost/dll/shared_library.hpp>
 
@@ -18,7 +20,7 @@ namespace powsybl {
 namespace test {
 
 ExtensionFixture::ExtensionFixture() {
-    boost::regex fileRegex(logging::format(".*\\%1%.*", boost::dll::shared_library::suffix().string()));
+    std::regex fileRegex(logging::format(".*\\%1%.*", boost::dll::shared_library::suffix().string()));
     iidm::ExtensionProviders<iidm::converter::xml::ExtensionXmlSerializer>::getInstance().loadExtensions(boost::dll::program_location().parent_path().string(), fileRegex);
 }
 

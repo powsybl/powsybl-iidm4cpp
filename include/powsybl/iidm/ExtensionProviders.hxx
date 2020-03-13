@@ -51,7 +51,7 @@ ExtensionProviders<T, Dummy>& ExtensionProviders<T, Dummy>::getInstance() {
 }
 
 template <typename T, typename Dummy>
-void ExtensionProviders<T, Dummy>::loadExtensions(const boost::filesystem::path& directory, const boost::regex& pattern) {
+void ExtensionProviders<T, Dummy>::loadExtensions(const boost::filesystem::path& directory, const std::regex& pattern) {
     if (!boost::filesystem::exists(directory)) {
         throw PowsyblException(logging::format("Path %1% does not exist", directory));
     }
@@ -61,7 +61,7 @@ void ExtensionProviders<T, Dummy>::loadExtensions(const boost::filesystem::path&
     }
 
     for (const auto& it : boost::filesystem::directory_iterator(directory)) {
-        if (boost::filesystem::is_regular_file(it) && boost::regex_match(it.path().c_str(), pattern)) {
+        if (boost::filesystem::is_regular_file(it) && std::regex_match(it.path().string(), pattern)) {
             loadLibrary(boost::filesystem::canonical(it.path()));
         }
     }
