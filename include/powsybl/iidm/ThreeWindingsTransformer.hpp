@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
 
 namespace powsybl {
@@ -27,19 +28,45 @@ public:
     };
 
 public:
-    template <typename L>
-    class LegBase : public virtual Validable {
-    public: // Validable
+    class Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
+    public:  // Validable
         std::string getMessageHeader() const override;
 
-    public :
-        LegBase(double r, double x, double ratedU);
+    public:  // TapChangerHolder
+        bool hasPhaseTapChanger() const override;
 
-        ~LegBase() noexcept override = default;
+        bool hasRatioTapChanger() const override;
+
+        const Network& getNetwork() const override;
+
+        Network& getNetwork() override;
+
+    public:  // RatioTapChangerHolder
+        stdcxx::CReference<RatioTapChanger> getRatioTapChanger() const override;
+
+        stdcxx::Reference<RatioTapChanger> getRatioTapChanger() override;
+
+        RatioTapChangerAdder newRatioTapChanger() override;
+
+    public:  // PhaseTapChanger
+        stdcxx::CReference<PhaseTapChanger> getPhaseTapChanger() const override;
+
+        stdcxx::Reference<PhaseTapChanger> getPhaseTapChanger() override;
+
+        PhaseTapChangerAdder newPhaseTapChanger() override;
+
+    public :
+        Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU);
+
+        ~Leg() noexcept override = default;
+
+        double getB() const;
 
         stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
 
         stdcxx::Reference<CurrentLimits> getCurrentLimits();
+
+        double getG() const;
 
         double getR() const;
 
@@ -51,117 +78,81 @@ public:
 
         double getX() const;
 
-        CurrentLimitsAdder<const std::nullptr_t, LegBase<L>> newCurrentLimits();
+        CurrentLimitsAdder<const std::nullptr_t, Leg> newCurrentLimits();
 
-        L& setR(double r);
+        Leg& setB(double b);
 
-        L& setRatedU(double ratedU);
+        Leg& setG(double g);
 
-        L& setX(double x);
+        Leg& setR(double r);
 
-    protected:
-        stdcxx::CReference<Terminal> getTerminal(unsigned long index) const;
+        Leg& setRatedU(double ratedU);
 
-        stdcxx::Reference<Terminal> getTerminal(unsigned long index);
+        Leg& setX(double x);
 
-        stdcxx::CReference<ThreeWindingsTransformer> getTransformer() const;
+        std::string toString() const;
 
-        stdcxx::Reference<ThreeWindingsTransformer>& getTransformer();
+    private:  // TapChangerHolder
+        unsigned long getRegulatingTapChangerCount() const override;
 
-        virtual const std::string& getTypeDescription() const = 0;
+    private:  // RatioTapChangerHolder
+        void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) override;
+
+    private:  // PhaseTapChangerHolder
+        void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger> phaseTapChanger) override;
 
     private:
+        const std::string& getTypeDescription() const;
+
         void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
 
         void setTransformer(ThreeWindingsTransformer& transformer);
 
     private:
-        friend class CurrentLimitsAdder<const std::nullptr_t, LegBase<L>>;
+        friend class CurrentLimitsAdder<const std::nullptr_t, Leg>;
 
         friend class ThreeWindingsTransformerAdder;
 
     private:
         stdcxx::Reference<ThreeWindingsTransformer> m_transformer;
 
+        unsigned long m_legNumber;
+
         double m_r;
 
         double m_x;
 
-        double m_ratedU;
-
-        std::unique_ptr<CurrentLimits> m_limits;
-    };
-
-public:
-    class Leg1 : public LegBase<Leg1> {
-    public:
-        Leg1(double r, double x, double g, double b, double ratedU);
-
-        ~Leg1() noexcept override = default;
-
-        double getB() const;
-
-        double getG() const;
-
-        Leg1& setB(double b);
-
-        Leg1& setG(double g);
-
-        std::string toString() const;
-
-    protected: // LegBase
-        const std::string& getTypeDescription() const override;
-
-    private:
         double m_g;
 
         double m_b;
-    };
 
-public:
-    class Leg2or3 : public LegBase<Leg2or3>, public RatioTapChangerHolder {
-    public: // TapChangerHolder
-        const Network& getNetwork() const override;
+        double m_ratedU;
 
-        Network& getNetwork() override;
+        std::unique_ptr<CurrentLimits> m_limits;
 
-    public: // RatioTapChangerHolder
-        stdcxx::CReference<RatioTapChanger> getRatioTapChanger() const override;
+        std::unique_ptr<PhaseTapChanger> m_phaseTapChanger;
 
-        stdcxx::Reference<RatioTapChanger> getRatioTapChanger() override;
-
-        RatioTapChangerAdder newRatioTapChanger() override;
-
-    public:
-        Leg2or3(double r, double x, double ratedU);
-
-        ~Leg2or3() noexcept override = default;
-
-        virtual std::string toString() const = 0;
-
-    protected: // RatioTapChangerHolder
-        void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) override;
-
-    private:
         std::unique_ptr<RatioTapChanger> m_ratioTapChanger;
     };
 
 public:
-    ThreeWindingsTransformer(const std::string& id, const std::string& name, std::unique_ptr<Leg1> leg1, std::unique_ptr<Leg2or3> leg2, std::unique_ptr<Leg2or3> leg3);
+    ThreeWindingsTransformer(const std::string& id, const std::string& name, std::unique_ptr<Leg> leg1, std::unique_ptr<Leg> leg2, std::unique_ptr<Leg> leg3, double ratedU0);
 
     ~ThreeWindingsTransformer() noexcept override = default;
 
-    const Leg1& getLeg1() const;
+    const Leg& getLeg1() const;
 
-    Leg1& getLeg1();
+    Leg& getLeg1();
 
-    const Leg2or3& getLeg2() const;
+    const Leg& getLeg2() const;
 
-    Leg2or3& getLeg2();
+    Leg& getLeg2();
 
-    const Leg2or3& getLeg3() const;
+    const Leg& getLeg3() const;
 
-    Leg2or3& getLeg3();
+    Leg& getLeg3();
+
+    double getRatedU0() const;
 
     Side getSide(const Terminal& terminal) const;
 
@@ -189,17 +180,17 @@ private:
     friend class ThreeWindingsTransformerAdder;
 
 private:
-    std::unique_ptr<Leg1> m_leg1;
+    std::unique_ptr<Leg> m_leg1;
 
-    std::unique_ptr<Leg2or3> m_leg2;
+    std::unique_ptr<Leg> m_leg2;
 
-    std::unique_ptr<Leg2or3> m_leg3;
+    std::unique_ptr<Leg> m_leg3;
+
+    double m_ratedU0;
 };
 
 }  // namespace iidm
 
 }  // namespace powsybl
-
-#include <powsybl/iidm/ThreeWindingsTransformer.hxx>
 
 #endif  // POWSYBL_IIDM_THREEWINDINGSTRANSFORMER_HPP

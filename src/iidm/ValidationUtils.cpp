@@ -219,6 +219,12 @@ const std::string& checkNotEmpty(const Validable& validable, const std::string& 
     return value;
 }
 
+void checkOnlyOneTapChangerRegulatingEnabled(const Validable& validable, unsigned long regulatingTapChangerCount, bool regulating) {
+    if (regulating && regulatingTapChangerCount > 0) {
+        throw ValidationException(validable, "Only one regulating control enabled is allowed");
+    }
+}
+
 const double& checkOptional(const Validable& validable, const stdcxx::optional<double>& value, const std::string& message) {
 #if __cplusplus >= 201703L
     bool isInitialized = value.has_value();
@@ -299,25 +305,20 @@ double checkRatedS(const Validable& validable, double ratedS) {
     return ratedS;
 }
 
-double checkRatedU(const Validable& validable, double ratedU) {
+double checkRatedU(const Validable& validable, double ratedU, const stdcxx::optional<unsigned long>& num) {
     if (std::isnan(ratedU)) {
-        throw ValidationException(validable, "rated U is invalid");
+        std::string strNum = num.is_initialized() ? std::to_string(num.get()) : "";
+        throw ValidationException(validable, logging::format("rated U%1% is invalid", strNum));
     }
     return ratedU;
 }
 
 double checkRatedU1(const Validable& validable, double ratedU1) {
-    if (std::isnan(ratedU1)) {
-        throw ValidationException(validable, "rated U1 is invalid");
-    }
-    return ratedU1;
+    return checkRatedU(validable, ratedU1, 1);
 }
 
 double checkRatedU2(const Validable& validable, double ratedU2) {
-    if (std::isnan(ratedU2)) {
-        throw ValidationException(validable, "rated U2 is invalid");
-    }
-    return ratedU2;
+    return checkRatedU(validable, ratedU2, 2);
 }
 
 void checkRatioTapChangerRegulation(const Validable& validable, bool loadTapChangingCapabilities, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network) {

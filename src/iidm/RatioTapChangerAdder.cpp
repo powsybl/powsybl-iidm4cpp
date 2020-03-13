@@ -72,6 +72,8 @@ RatioTapChangerAdder::RatioTapChangerAdder(RatioTapChangerHolder& parent) :
 }
 
 RatioTapChanger& RatioTapChangerAdder::add() {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<RatioTapChangerAdder>();
+
     checkOptional(m_parent, m_tapPosition, "tap position is not set");
     if (m_steps.empty()) {
         throw ValidationException(m_parent, "ratio tap changer should have at least one step");
@@ -83,6 +85,15 @@ RatioTapChanger& RatioTapChangerAdder::add() {
 
     std::unique_ptr<RatioTapChanger> ptrRatioTapChanger = stdcxx::make_unique<RatioTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
                                                                                                m_loadTapChangingCapabilities, *m_tapPosition, m_regulating, m_targetV, m_targetDeadband);
+
+    bool wasRegulating = m_parent.hasRatioTapChanger() && m_parent.getRatioTapChanger().get().isRegulating();
+    unsigned long count = m_parent.getRegulatingTapChangerCount() - (wasRegulating ? 1 : 0);
+    checkOnlyOneTapChangerRegulatingEnabled(m_parent, count, m_regulating);
+
+    if (m_parent.hasPhaseTapChanger()) {
+        logger.warn("%1% both Ratio and Phase Tap Changer are defined", m_parent.getMessageHeader());
+    }
+
     m_parent.setRatioTapChanger(std::move(ptrRatioTapChanger));
 
     return m_parent.getRatioTapChanger().get();

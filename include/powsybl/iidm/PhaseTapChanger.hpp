@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_PHASETAPCHANGER_HPP
 #define POWSYBL_IIDM_PHASETAPCHANGER_HPP
 
+#include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/PhaseTapChangerStep.hpp>
 #include <powsybl/iidm/TapChanger.hpp>
 
@@ -15,9 +16,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class TwoWindingsTransformer;
-
-class PhaseTapChanger : public TapChanger<TwoWindingsTransformer, PhaseTapChanger, PhaseTapChangerStep> {
+class PhaseTapChanger : public TapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep> {
 public:
     enum class RegulationMode : unsigned char {
         CURRENT_LIMITER,
@@ -38,7 +37,7 @@ public: // TapChanger
     PhaseTapChanger& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) override;
 
 public:
-    PhaseTapChanger(TwoWindingsTransformer& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
+    PhaseTapChanger(PhaseTapChangerHolder& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
                     long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
 
     ~PhaseTapChanger() noexcept override = default;

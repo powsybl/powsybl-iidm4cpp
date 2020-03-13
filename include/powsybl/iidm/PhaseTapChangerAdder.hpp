@@ -66,7 +66,7 @@ public:
     };
 
 public:
-    explicit PhaseTapChangerAdder(TwoWindingsTransformer & parent);
+    explicit PhaseTapChangerAdder(PhaseTapChangerHolder& parent);
 
     ~PhaseTapChangerAdder() noexcept = default;
 
@@ -97,7 +97,7 @@ private:
     Validable& getValidable();
 
 private:
-    TwoWindingsTransformer& m_parent;
+    PhaseTapChangerHolder& m_parent;
 
     long m_lowTapPosition;
 

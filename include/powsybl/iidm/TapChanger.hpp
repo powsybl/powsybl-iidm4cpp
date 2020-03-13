@@ -25,7 +25,7 @@ class Terminal;
 class VariantManagerHolder;
 
 template<typename H, typename C, typename S>
-class TapChanger : public MultiVariantObject {
+class TapChanger : public virtual MultiVariantObject {
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

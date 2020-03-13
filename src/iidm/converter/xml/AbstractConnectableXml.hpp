@@ -47,8 +47,7 @@ protected:
 
     static void readNodeOrBus(InjectionAdder<Adder>& adder, const NetworkXmlReaderContext& context);
 
-    template <typename L>
-    static void readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder<L>& adder, const NetworkXmlReaderContext& context);
+    static void readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder& adder, const NetworkXmlReaderContext& context);
 
     static void readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index = boost::optional<int>());
 
