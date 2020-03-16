@@ -59,6 +59,8 @@ public:
 
     void writeOptionalAttribute(const std::string& attributeName, int attributeValue, int absentValue);
 
+    void writeOptionalAttribute(const std::string& attributeName, unsigned long attributeValue, unsigned long absentValue);
+
     void writeOptionalAttribute(const std::string& attributeName, const std::string& attributeValue,
                                 const std::string& absentValue);
 

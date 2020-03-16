@@ -321,8 +321,8 @@ double checkRatedU2(const Validable& validable, double ratedU2) {
     return checkRatedU(validable, ratedU2, 2);
 }
 
-void checkRatioTapChangerRegulation(const Validable& validable, bool loadTapChangingCapabilities, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network) {
-    if (loadTapChangingCapabilities && regulating) {
+void checkRatioTapChangerRegulation(const Validable& validable, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network) {
+    if (regulating) {
         if (std::isnan(targetV)) {
             throw ValidationException(validable, "a target voltage has to be set for a regulating ratio tap changer");
         }

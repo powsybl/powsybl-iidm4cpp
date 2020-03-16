@@ -12,6 +12,8 @@
 
 #include <powsybl/iidm/extensions/iidm/ActivePowerControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
@@ -26,6 +28,8 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     std::vector<std::unique_ptr<ExtensionProvider>> serializers;
     serializers.emplace_back(stdcxx::make_unique<ActivePowerControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<ThreeWindingsTransformerPhaseAngleClockXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<TwoWindingsTransformerPhaseAngleClockXmlSerializer>());
 
     return serializers;
 }
