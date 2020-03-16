@@ -23,21 +23,21 @@ namespace iidm {
 
 class EXT_IIDM_EXPORT CoordinatedReactiveControl : public Extension {
 public:  // Extension
-    const std::string &getName() const override;
+    const std::string& getName() const override;
 
-    const std::type_index &getType() const override;
+    const std::type_index& getType() const override;
 
 public:
-    CoordinatedReactiveControl(Generator &generator, double qPercent);
+    CoordinatedReactiveControl(Generator& generator, double qPercent);
 
     ~CoordinatedReactiveControl() noexcept override = default;
 
     double getQPercent() const;
 
-    CoordinatedReactiveControl &setQPercent(double qPercent);
+    CoordinatedReactiveControl& setQPercent(double qPercent);
 
 private:  // Extension
-    void assertExtendable(const stdcxx::Reference<Extendable> &extendable) const override;
+    void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
     static double checkQPercent(double qPercent);
