@@ -62,7 +62,6 @@ set(UNIT_TEST_SOURCES
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
 target_compile_definitions(unit-tests-iidm PRIVATE BOOST_TEST_DYN_LINK)
 target_link_libraries(unit-tests-iidm PRIVATE iidm-tests Boost::unit_test_framework)
-target_link_directories(unit-tests-iidm PRIVATE ${Boost_LIBRARY_DIRS})
 
 IF (WIN32)
   target_link_options(unit-tests-iidm PRIVATE "/FORCE:MULTIPLE")

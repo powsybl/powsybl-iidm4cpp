@@ -37,7 +37,6 @@ target_include_directories(${EXT_NAME}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 target_link_libraries(${EXT_NAME} PUBLIC iidm)
-target_link_directories(${EXT_NAME} PRIVATE ${Boost_LIBRARY_DIRS})
 
 # Static library
 add_library(${EXT_NAME}-static STATIC ${EXT_SOURCES})
@@ -49,13 +48,11 @@ target_include_directories(${EXT_NAME}-static
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 target_link_libraries(${EXT_NAME}-static PUBLIC iidm)
-target_link_directories(${EXT_NAME}-static PRIVATE ${Boost_LIBRARY_DIRS})
 
 # Unit tests
 add_executable(unit-tests-${EXT_NAME} ${UNIT_TEST_SOURCES})
 target_compile_definitions(unit-tests-${EXT_NAME} PRIVATE BOOST_TEST_DYN_LINK)
 target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY})
-target_link_directories(unit-tests-${EXT_NAME} PRIVATE ${Boost_LIBRARY_DIRS})
 add_dependencies(unit-tests-${EXT_NAME} ${EXT_NAME}-static)
 
 IF (WIN32)
