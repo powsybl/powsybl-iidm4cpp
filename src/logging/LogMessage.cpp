@@ -9,8 +9,11 @@
 
 #include <chrono>
 
+#include <boost/date_time/c_time.hpp>
+
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/put_time.hpp>
+#include <powsybl/stdcxx/time.hpp>
 
 #include <powsybl/AssertionError.hpp>
 
@@ -37,10 +40,14 @@ const std::string& LogMessage::getMessage() const {
 }
 
 std::string LogMessage::toString() const {
-    struct std::tm result = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nullptr};
-    if (localtime_r(&m_instant, &result) == nullptr) {
-        throw AssertionError(format("Unable to get the date."));
+    std::tm result(stdcxx::tm());
+    try {
+        boost::date_time::c_time::localtime(&m_instant, &result);
     }
+    catch (const std::runtime_error & err) {
+        throw AssertionError(err.what());
+    }
+
     std::ostringstream oss;
     oss << stdcxx::put_time(&result, "%Y-%m-%d %X") << " - " << getLevelName(m_level) << " - " << m_message;
 
