@@ -7,15 +7,40 @@
 
 #include <powsybl/stdcxx/time.hpp>
 
+#include <boost/date_time/c_time.hpp>
+
+#include <powsybl/AssertionError.hpp>
+
 namespace stdcxx {
 
-std::tm tm() {
+std::tm localtime(const std::time_t& time) {
 #if defined __GNUC__
-    return {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nullptr};
+    std::tm result {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nullptr};
 #else
-    return {0, 0, 0, 0, 0, 0, 0, 0, 0};
+    std::tm result {0, 0, 0, 0, 0, 0, 0, 0, 0};
 #endif
+    try {
+        boost::date_time::c_time::localtime(&time, &result);
+    }
+    catch (const std::runtime_error & err) {
+        throw powsybl::AssertionError(err.what());
+    }
+    return result;
 }
+
+#if !HAS_PUT_TIME
+
+std::string put_time(const struct std::tm* time, const char* format) {
+    char buffer[128];
+
+    if (strftime(buffer, 128, format, time) > 0) {
+        return buffer;
+    }
+
+    return "";
+}
+
+#endif  // HAS_PUT_TIME
 
 }  // namespace stdcxx
 

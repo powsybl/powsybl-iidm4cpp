@@ -10,10 +10,40 @@
 
 #include <ctime>
 
+#include <powsybl/stdcxx/features.hpp>
+
 namespace stdcxx {
 
-std::tm tm();
+std::tm localtime(const std::time_t& time);
 
 }  // namespace stdcxx
 
+#if !defined(__GNUC__) || __GNUC_PREREQ(5, 0)
+
+#include <iomanip>
+
+#define HAS_PUT_TIME 1
+
+namespace stdcxx {
+
+using std::put_time;
+
+}  // namespace stdcxx
+
+#else
+
+#include <ctime>
+#include <string>
+
+#define HAS_PUT_TIME 0
+
+namespace stdcxx {
+
+std::string put_time(const struct std::tm* time, const char* format);
+
+}  // namespace stdcxx
+
+#endif
+
 #endif  // POWSYBL_STDCXX_TIME_HPP
+

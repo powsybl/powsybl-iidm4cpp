@@ -160,7 +160,6 @@ set(IIDM_SOURCES
 
     stdcxx/DateTime.cpp
     stdcxx/demangle.cpp
-    stdcxx/put_time.cpp
     stdcxx/time.cpp
 
     xml/XmlCharConversion.cpp

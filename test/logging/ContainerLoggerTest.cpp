@@ -11,7 +11,6 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/logging/ContainerLogger.hpp>
-#include <powsybl/stdcxx/put_time.hpp>
 #include <powsybl/stdcxx/time.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -60,7 +59,7 @@ BOOST_AUTO_TEST_CASE(logMessage) {
     BOOST_CHECK_EQUAL("trace message", logMessage1.getMessage());
     POWSYBL_ASSERT_ENUM_EQ(Level::TRACE, logMessage1.getLevel());
     instant = logMessage1.getInstant();
-    std::tm result(stdcxx::tm());
+    std::tm result(stdcxx::localtime(instant));
     boost::date_time::c_time::localtime(&instant, &result);
     oss << stdcxx::put_time(&result, "%Y-%m-%d %X") << " - " << getLevelName(logMessage1.getLevel()) << " - " << logMessage1.getMessage();
     BOOST_CHECK_EQUAL(oss.str(), logMessage1.toString());
