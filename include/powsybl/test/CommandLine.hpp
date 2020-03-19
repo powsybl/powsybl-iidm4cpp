@@ -13,11 +13,13 @@
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/variables_map.hpp>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace test {
 
-class CommandLine {
+class IIDM_DECLSPEC CommandLine {
 public:
     const boost::program_options::variable_value& getOptionValue(const std::string& name) const;
 

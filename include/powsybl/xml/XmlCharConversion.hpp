@@ -12,13 +12,15 @@
 
 #include <libxml/xmlstring.h>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace xml {
 
-const std::string XML2S(const xmlChar* str);
+IIDM_DECLSPEC const std::string XML2S(const xmlChar* str);
 
-const xmlChar* S2XML(const std::string& str);
+IIDM_DECLSPEC const xmlChar* S2XML(const std::string& str);
 
 }  // namespace xml
 

@@ -14,6 +14,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 #include <powsybl/test/unit_test.hpp>
 
@@ -55,7 +56,7 @@ BOOST_TEST(static_cast<bool>(reference))
 BOOST_TEST(!static_cast<bool>(reference))
 
 template <typename T, bool = std::is_enum<T>::value>
-bool isSameEnumValue(const T& val1, const T& val2) {
+IIDM_DECLSPEC bool isSameEnumValue(const T& val1, const T& val2) {
     using type = typename std::underlying_type<T>::type;
     return static_cast<type>(val1) == static_cast<type>(val2);
 }

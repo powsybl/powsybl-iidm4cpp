@@ -10,12 +10,13 @@
 
 #include <powsybl/iidm/Branch.hpp>
 #include <powsybl/iidm/LineCharacteristics.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class Line : public Branch {
+class IIDM_DECLSPEC Line : public Branch {
 public:
     Line(const std::string& id, const std::string& name, double r, double x, double g1, double b1, double g2, double b2);
 

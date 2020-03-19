@@ -9,12 +9,13 @@
 #define POWSYBL_IIDM_STATICVARCOMPENSATOR_HPP
 
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class StaticVarCompensator : public Injection {
+class IIDM_DECLSPEC StaticVarCompensator : public Injection {
 public:
     enum class RegulationMode : unsigned char {
         VOLTAGE,

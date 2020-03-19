@@ -8,22 +8,12 @@
 #ifndef POWSYBL_STDCXX_EXPORT_HPP
 #define POWSYBL_STDCXX_EXPORT_HPP
 
-#if defined _WIN32 || defined __CYGWIN__ || defined __MINGW32__
-#ifdef __GNUC__
-#define DLL_EXPORT __attribute__ ((dllexport))
-#define DLL_IMPORT __attribute__ ((dllimport))
+#if defined(_WIN32) && defined(IIDM_BUILD_DLL)
+#define IIDM_DECLSPEC __declspec(dllexport)
+#elif defined(_WIN32) && defined(IIDM_USE_DLL)
+#define IIDM_DECLSPEC __declspec(dllimport)
 #else
-#define DLL_EXPORT __declspec(dllexport)
-#define DLL_IMPORT __declspec(dllimport)
-#endif
-#else
-#if __GNUC__ >= 4
-#define DLL_EXPORT __attribute__ ((visibility ("default")))
-#define DLL_IMPORT  __attribute__ ((visibility ("hidden")))
-#else
-#define DLL_EXPORT
-#define DLL_IMPORT
-#endif
+#define IIDM_DECLSPEC
 #endif
 
 #endif  // POWSYBL_STDCXX_EXPORT_HPP

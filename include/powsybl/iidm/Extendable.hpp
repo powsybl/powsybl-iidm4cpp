@@ -15,13 +15,14 @@
 #include <unordered_map>
 
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class Extendable {
+class IIDM_DECLSPEC Extendable {
 public:
     Extendable() = default;
 

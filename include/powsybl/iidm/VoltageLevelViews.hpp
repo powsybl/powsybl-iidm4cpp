@@ -17,6 +17,7 @@
 #include <powsybl/iidm/InternalConnection.hpp>
 #include <powsybl/iidm/InternalConnectionAdder.hpp>
 #include <powsybl/iidm/SwitchAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -31,7 +32,7 @@ class Terminal;
 
 namespace voltage_level {
 
-class BusBreakerView {
+class IIDM_DECLSPEC BusBreakerView {
 public:
     using SwitchAdder = bus_breaker_view::SwitchAdder;
 

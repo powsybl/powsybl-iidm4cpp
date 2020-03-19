@@ -8,11 +8,13 @@
 #ifndef POWSYBL_TEST_XMLFIXTURE_HPP
 #define POWSYBL_TEST_XMLFIXTURE_HPP
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace test {
 
-class XmlFixture {
+class IIDM_DECLSPEC XmlFixture {
 public:
     XmlFixture();
 

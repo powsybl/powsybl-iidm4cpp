@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_TERMINALVIEWS_HPP
 #define POWSYBL_IIDM_TERMINALVIEWS_HPP
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -18,7 +19,7 @@ class Bus;
 
 namespace terminal {
 
-class BusBreakerView {
+class IIDM_DECLSPEC BusBreakerView {
 public:
     virtual ~BusBreakerView() noexcept = default;
 

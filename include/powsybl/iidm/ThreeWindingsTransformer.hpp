@@ -12,6 +12,7 @@
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -19,7 +20,7 @@ namespace iidm {
 
 class Substation;
 
-class ThreeWindingsTransformer : public Connectable {
+class IIDM_DECLSPEC ThreeWindingsTransformer : public Connectable {
 public:
     enum class Side : unsigned char {
         ONE,

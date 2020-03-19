@@ -12,13 +12,15 @@
 #include <string>
 #include <vector>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
 class Validable;
 
-class CurrentLimits {
+class IIDM_DECLSPEC CurrentLimits {
 public:
     class TemporaryLimit {
     public:

@@ -10,10 +10,12 @@
 
 #include <boost/range/any_range.hpp>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace stdcxx {
 
 template <typename T>
-struct range_traits {
+struct IIDM_DECLSPEC range_traits {
     using type = boost::any_range<T&, boost::forward_traversal_tag, T&, std::ptrdiff_t>;
 };
 

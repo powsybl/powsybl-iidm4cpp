@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_PHASETAPCHANGERHOLDER_HPP
 
 #include <powsybl/iidm/TapChangerHolder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -18,7 +19,7 @@ namespace iidm {
 class PhaseTapChanger;
 class PhaseTapChangerAdder;
 
-class PhaseTapChangerHolder : public virtual TapChangerHolder {
+class IIDM_DECLSPEC PhaseTapChangerHolder : public virtual TapChangerHolder {
 public:
     virtual ~PhaseTapChangerHolder() noexcept = default;
 

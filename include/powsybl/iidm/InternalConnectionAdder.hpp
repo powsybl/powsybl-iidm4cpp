@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_INTERNALCONNECTIONADDER_HPP
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -19,7 +20,7 @@ class VoltageLevel;
 
 namespace node_breaker_view {
 
-class InternalConnectionAdder : public IdentifiableAdder<InternalConnectionAdder> {
+class IIDM_DECLSPEC InternalConnectionAdder : public IdentifiableAdder<InternalConnectionAdder> {
 public:
     explicit InternalConnectionAdder(VoltageLevel& voltageLevel);
 

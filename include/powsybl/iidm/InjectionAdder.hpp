@@ -11,6 +11,7 @@
 #include <memory>
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -21,7 +22,7 @@ class Terminal;
 class VoltageLevel;
 
 template <typename Adder>
-class InjectionAdder : public IdentifiableAdder<Adder> {
+class IIDM_DECLSPEC InjectionAdder : public IdentifiableAdder<Adder> {
 public:
     ~InjectionAdder() noexcept override = default;
 

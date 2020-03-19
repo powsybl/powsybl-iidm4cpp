@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_SHUNTCOMPENSATORADDER_HPP
 
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -19,7 +20,7 @@ class Network;
 class ShuntCompensator;
 class VoltageLevel;
 
-class ShuntCompensatorAdder : public InjectionAdder<ShuntCompensatorAdder> {
+class IIDM_DECLSPEC ShuntCompensatorAdder : public InjectionAdder<ShuntCompensatorAdder> {
 public:
     ~ShuntCompensatorAdder() noexcept override = default;
 

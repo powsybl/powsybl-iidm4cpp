@@ -10,6 +10,7 @@
 
 #include <powsybl/logging/LogMessage.hpp>
 #include <powsybl/logging/Logger.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -18,7 +19,7 @@ namespace logging {
 /**
  * A Logger implementation which log all messages to a container
  */
-class ContainerLogger : public Logger {
+class IIDM_DECLSPEC ContainerLogger : public Logger {
 public:
     using Logs = std::vector<LogMessage>;
 

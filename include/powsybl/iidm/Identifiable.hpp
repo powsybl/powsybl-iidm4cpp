@@ -13,6 +13,7 @@
 #include <powsybl/iidm/Extendable.hpp>
 #include <powsybl/iidm/Properties.hpp>
 #include <powsybl/iidm/Validable.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
@@ -20,7 +21,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class Identifiable : public virtual Validable, public Extendable {
+class IIDM_DECLSPEC Identifiable : public virtual Validable, public Extendable {
 public: // Validable
     std::string getMessageHeader() const override;
 

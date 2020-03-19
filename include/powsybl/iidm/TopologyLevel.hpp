@@ -11,20 +11,21 @@
 #include <iosfwd>
 
 #include <powsybl/iidm/TopologyKind.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-enum class TopologyLevel : unsigned char {
+enum class IIDM_DECLSPEC TopologyLevel : unsigned char {
     NODE_BREAKER,
     BUS_BREAKER,
     BUS_BRANCH
 };
 
-TopologyLevel getMinTopologyLevel(const TopologyKind& topologyKind, const TopologyLevel& topologyLevel);
+IIDM_DECLSPEC TopologyLevel getMinTopologyLevel(const TopologyKind& topologyKind, const TopologyLevel& topologyLevel);
 
-TopologyKind getTopologyKind(const TopologyLevel& topologyLevel);
+IIDM_DECLSPEC TopologyKind getTopologyKind(const TopologyLevel& topologyLevel);
 
 }  // namespace iidm
 

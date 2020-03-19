@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
 #include <powsybl/iidm/SwitchKind.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -21,7 +22,7 @@ class Switch;
 class VoltageLevel;
 
 template <typename SwitchAdder>
-class AbstractSwitchAdder : public IdentifiableAdder<SwitchAdder> {
+class IIDM_DECLSPEC AbstractSwitchAdder : public IdentifiableAdder<SwitchAdder> {
 public:
     ~AbstractSwitchAdder() noexcept override = default;
 

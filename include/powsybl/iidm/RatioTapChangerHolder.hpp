@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_RATIOTAPCHANGERHOLDER_HPP
 
 #include <powsybl/iidm/TapChangerHolder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -18,7 +19,7 @@ namespace iidm {
 class RatioTapChanger;
 class RatioTapChangerAdder;
 
-class RatioTapChangerHolder : public virtual TapChangerHolder {
+class IIDM_DECLSPEC RatioTapChangerHolder : public virtual TapChangerHolder {
 public:
     ~RatioTapChangerHolder() noexcept override = default;
 

@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_COORDINATEDREACTIVECONTROL_HPP
 
 #include <powsybl/iidm/Extension.hpp>
-#include <powsybl/iidm/extensions/iidm/IidmExport.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -21,7 +21,7 @@ namespace extensions {
 
 namespace iidm {
 
-class EXT_IIDM_EXPORT CoordinatedReactiveControl : public Extension {
+class IIDM_DECLSPEC CoordinatedReactiveControl : public Extension {
 public:  // Extension
     const std::string& getName() const override;
 

@@ -10,12 +10,13 @@
 
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class Battery : public Injection, public ReactiveLimitsHolder {
+class IIDM_DECLSPEC Battery : public Injection, public ReactiveLimitsHolder {
 public:
     Battery(VariantManagerHolder& network, const std::string& id, const std::string& name,
         double p0, double q0, double minP, double maxP);

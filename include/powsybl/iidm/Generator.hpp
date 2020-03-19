@@ -11,6 +11,7 @@
 #include <powsybl/iidm/EnergySource.hpp>
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -18,7 +19,7 @@ namespace iidm {
 
 class Terminal;
 
-class Generator : public Injection, public ReactiveLimitsHolder {
+class IIDM_DECLSPEC Generator : public Injection, public ReactiveLimitsHolder {
 public:
     Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, const EnergySource& energySource,
         double minP, double maxP, bool voltageRegulatorOn, const stdcxx::Reference<Terminal>& regulatingTerminal,

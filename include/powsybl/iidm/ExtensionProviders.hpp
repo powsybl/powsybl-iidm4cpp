@@ -18,6 +18,7 @@
 #include <boost/filesystem.hpp>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -25,7 +26,7 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T, typename = typename std::enable_if<std::is_base_of<ExtensionProvider, T>::value>::type>
-class ExtensionProviders {
+class IIDM_DECLSPEC ExtensionProviders {
 public:
     static ExtensionProviders& getInstance();
 

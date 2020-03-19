@@ -10,12 +10,13 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Validable.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class ValidationException : public PowsyblException {
+class IIDM_DECLSPEC ValidationException : public PowsyblException {
 public:
     ValidationException(const Validable& validable, const std::string& message);
 

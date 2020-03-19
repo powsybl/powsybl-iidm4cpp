@@ -15,11 +15,13 @@
 
 #include <libxml/xmlwriter.h>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace xml {
 
-class XmlStreamWriter {
+class IIDM_DECLSPEC XmlStreamWriter {
 public:
     XmlStreamWriter(std::ostream& stream, bool indent);
 

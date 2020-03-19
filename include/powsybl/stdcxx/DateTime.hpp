@@ -13,9 +13,11 @@
 
 #include <boost/date_time/local_time/local_time.hpp>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace stdcxx {
 
-class DateTime {
+class IIDM_DECLSPEC DateTime {
 public:
     /**
      * Parse a string representation of a ISO-8601 date time.

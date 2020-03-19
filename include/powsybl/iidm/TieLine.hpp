@@ -9,13 +9,14 @@
 #define POWSYBL_IIDM_TIELINE_HPP
 
 #include <powsybl/iidm/Line.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class TieLine : public Line {
+class IIDM_DECLSPEC TieLine : public Line {
 public:
     class HalfLine : public Validable {
     public: // Validable

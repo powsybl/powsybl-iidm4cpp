@@ -9,12 +9,13 @@
 #define POWSYBL_IIDM_LCCCONVERTERSTATION_HPP
 
 #include <powsybl/iidm/HvdcConverterStation.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class LccConverterStation : public HvdcConverterStation {
+class IIDM_DECLSPEC LccConverterStation : public HvdcConverterStation {
 public: // HvdcConverterStation
     HvdcConverterStation::HvdcType getHvdcType() const override;
 

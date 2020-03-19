@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -25,7 +26,7 @@ class RatioTapChangerStep;
 class Terminal;
 class Validable;
 
-class RatioTapChangerAdder {
+class IIDM_DECLSPEC RatioTapChangerAdder {
 public:
     class StepAdder {
     public:

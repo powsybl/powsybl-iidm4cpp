@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/IdentifiableAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -20,7 +21,7 @@ namespace iidm {
 class HvdcConverterStation;
 class Network;
 
-class HvdcLineAdder : public IdentifiableAdder<HvdcLineAdder> {
+class IIDM_DECLSPEC HvdcLineAdder : public IdentifiableAdder<HvdcLineAdder> {
 public:
     ~HvdcLineAdder() noexcept override = default;
 

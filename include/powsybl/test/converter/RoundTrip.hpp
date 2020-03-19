@@ -12,6 +12,7 @@
 #include <string>
 
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -19,7 +20,7 @@ namespace test {
 
 namespace converter {
 
-class RoundTrip {
+class IIDM_DECLSPEC RoundTrip {
 public:
     using Comparator = std::function<void(const std::string&, const std::string&)>;
 

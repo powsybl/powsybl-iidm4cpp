@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/EnergySource.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -22,7 +23,7 @@ class Network;
 class Terminal;
 class VoltageLevel;
 
-class GeneratorAdder : public InjectionAdder<GeneratorAdder> {
+class IIDM_DECLSPEC GeneratorAdder : public InjectionAdder<GeneratorAdder> {
 public:
     ~GeneratorAdder() noexcept override = default;
 

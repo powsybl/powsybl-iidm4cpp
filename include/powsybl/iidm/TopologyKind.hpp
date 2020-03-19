@@ -10,11 +10,13 @@
 
 #include <iosfwd>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
-enum class TopologyKind : unsigned char {
+enum class IIDM_DECLSPEC TopologyKind : unsigned char {
     NODE_BREAKER,
     BUS_BREAKER
 };

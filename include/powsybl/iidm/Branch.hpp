@@ -12,12 +12,13 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class Branch : public Connectable {
+class IIDM_DECLSPEC Branch : public Connectable {
 public:
     enum class Side : unsigned char {
         ONE,

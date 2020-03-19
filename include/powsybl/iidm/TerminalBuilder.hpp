@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -21,7 +22,7 @@ class Terminal;
 class Validable;
 class VoltageLevel;
 
-class TerminalBuilder {
+class IIDM_DECLSPEC TerminalBuilder {
 public:
     TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable);
 

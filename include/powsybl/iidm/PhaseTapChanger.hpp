@@ -12,12 +12,15 @@
 #include <powsybl/iidm/PhaseTapChangerStep.hpp>
 #include <powsybl/iidm/TapChanger.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class PhaseTapChanger : public TapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep> {
+class TwoWindingsTransformer;
+
+class IIDM_DECLSPEC PhaseTapChanger : public TapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep> {
 public:
     enum class RegulationMode : unsigned char {
         CURRENT_LIMITER,

@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_BUSBARSECTIONADDER_HPP
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -19,7 +20,7 @@ class BusbarSection;
 class Network;
 class NodeBreakerVoltageLevel;
 
-class BusbarSectionAdder : public IdentifiableAdder<BusbarSectionAdder> {
+class IIDM_DECLSPEC BusbarSectionAdder : public IdentifiableAdder<BusbarSectionAdder> {
 public:
     explicit BusbarSectionAdder(NodeBreakerVoltageLevel& voltageLevel);
 

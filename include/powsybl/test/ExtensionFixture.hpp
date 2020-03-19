@@ -8,13 +8,14 @@
 #ifndef POWSYBL_TEST_EXTENSIONFIXTURE_HPP
 #define POWSYBL_TEST_EXTENSIONFIXTURE_HPP
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 
 namespace powsybl {
 
 namespace test {
 
-class ExtensionFixture : public ResourceFixture {
+class IIDM_DECLSPEC ExtensionFixture : public ResourceFixture {
 public:
     ExtensionFixture();
 

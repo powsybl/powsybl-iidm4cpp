@@ -11,6 +11,7 @@
 #include <string>
 
 #include <powsybl/iidm/Validable.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -19,7 +20,7 @@ namespace iidm {
 class Network;
 
 template<typename Adder>
-class IdentifiableAdder : public Validable {
+class IIDM_DECLSPEC IdentifiableAdder : public Validable {
 public: // Validable
     std::string getMessageHeader() const override;
 

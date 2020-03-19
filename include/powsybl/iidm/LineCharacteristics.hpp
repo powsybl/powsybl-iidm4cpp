@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_LINECHARACTERISTICS_HPP
 #define POWSYBL_IIDM_LINECHARACTERISTICS_HPP
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -16,7 +17,7 @@ namespace iidm {
 
 class Validable;
 
-class LineCharacteristics {
+class IIDM_DECLSPEC LineCharacteristics {
 public:
     explicit LineCharacteristics(const Validable& validable);
 

@@ -11,12 +11,13 @@
 #include <limits>
 
 #include <powsybl/iidm/ReactiveLimits.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class MinMaxReactiveLimits : public ReactiveLimits {
+class IIDM_DECLSPEC MinMaxReactiveLimits : public ReactiveLimits {
 public: // ReactiveLimits
     ReactiveLimitsKind getKind() const override;
 

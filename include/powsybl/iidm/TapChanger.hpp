@@ -13,6 +13,7 @@
 #include <vector>
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -25,7 +26,7 @@ class Terminal;
 class VariantManagerHolder;
 
 template<typename H, typename C, typename S>
-class TapChanger : public virtual MultiVariantObject {
+class IIDM_DECLSPEC TapChanger : public virtual MultiVariantObject {
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

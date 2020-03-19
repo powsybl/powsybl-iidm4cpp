@@ -13,6 +13,7 @@
 #include <vector>
 
 #include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -22,7 +23,7 @@ namespace iidm {
 
 class Network;
 
-class NetworkIndex {
+class IIDM_DECLSPEC NetworkIndex {
 public:
     NetworkIndex() = default;
 

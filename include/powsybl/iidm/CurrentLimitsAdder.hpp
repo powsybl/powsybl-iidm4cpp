@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_CURRENTLIMITSADDER_HPP
 
 #include <powsybl/iidm/CurrentLimits.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -17,7 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 template <typename S, typename O>
-class CurrentLimitsAdder {
+class IIDM_DECLSPEC CurrentLimitsAdder {
 public:
     class TemporaryLimitAdder {
     public:

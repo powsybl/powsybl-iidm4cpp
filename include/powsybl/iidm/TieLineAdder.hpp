@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_TIELINEADDER_HPP
 
 #include <powsybl/iidm/BranchAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -17,7 +18,7 @@ namespace iidm {
 class TieLine;
 class Network;
 
-class TieLineAdder : public BranchAdder<TieLineAdder> {
+class IIDM_DECLSPEC TieLineAdder : public BranchAdder<TieLineAdder> {
 public: // IdentifiableAdder
     TieLineAdder& setId(const std::string& id) override;
 

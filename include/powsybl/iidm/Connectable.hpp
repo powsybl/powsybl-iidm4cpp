@@ -15,6 +15,7 @@
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -22,7 +23,7 @@ namespace iidm {
 
 class Network;
 
-class Connectable : public Identifiable, public MultiVariantObject {
+class IIDM_DECLSPEC Connectable : public Identifiable, public MultiVariantObject {
 public:
     ~Connectable() noexcept override = default;
 

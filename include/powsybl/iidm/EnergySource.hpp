@@ -10,11 +10,13 @@
 
 #include <string>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
-enum class EnergySource : unsigned char {
+enum class IIDM_DECLSPEC EnergySource : unsigned char {
     HYDRO,
     NUCLEAR,
     WIND,

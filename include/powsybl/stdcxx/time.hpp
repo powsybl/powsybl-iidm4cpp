@@ -14,11 +14,12 @@
 
 #include <ctime>
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/features.hpp>
 
 namespace stdcxx {
 
-std::tm tm();
+IIDM_DECLSPEC std::tm tm();
 
 }  // namespace stdcxx
 

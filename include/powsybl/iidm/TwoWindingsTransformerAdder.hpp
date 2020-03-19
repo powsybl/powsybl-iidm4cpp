@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_TWOWINDINGSTRANSFORMERADDER_HPP
 
 #include <powsybl/iidm/BranchAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -19,7 +20,7 @@ class Network;
 class Substation;
 class TwoWindingsTransformer;
 
-class TwoWindingsTransformerAdder : public BranchAdder<TwoWindingsTransformerAdder> {
+class IIDM_DECLSPEC TwoWindingsTransformerAdder : public BranchAdder<TwoWindingsTransformerAdder> {
 public:
     explicit TwoWindingsTransformerAdder(Substation& substation);
 

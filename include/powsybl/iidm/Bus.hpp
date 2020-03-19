@@ -13,6 +13,7 @@
 #include <vector>
 
 #include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
@@ -33,7 +34,7 @@ class TwoWindingsTransformer;
 class VoltageLevel;
 class VscConverterStation;
 
-class Bus : public Identifiable {
+class IIDM_DECLSPEC Bus : public Identifiable {
 public:
     ~Bus() noexcept override = default;
 

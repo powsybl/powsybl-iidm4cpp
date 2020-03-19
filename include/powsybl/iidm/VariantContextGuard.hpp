@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_VARIANTCONTEXTGUARD_HPP
 #define POWSYBL_IIDM_VARIANTCONTEXTGUARD_HPP
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -17,7 +19,7 @@ class VariantContext;
 /**
  * A scope guard implementation based on RAII idiom to restore the variant index
  */
-class VariantContextGuard {
+class IIDM_DECLSPEC VariantContextGuard {
 public:
     explicit VariantContextGuard(VariantContext& context);
 

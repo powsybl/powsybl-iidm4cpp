@@ -11,13 +11,14 @@
 #include <map>
 
 #include <powsybl/iidm/ReactiveLimits.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class ReactiveCapabilityCurve : public ReactiveLimits {
+class IIDM_DECLSPEC ReactiveCapabilityCurve : public ReactiveLimits {
 public:
     class Point {
     public:

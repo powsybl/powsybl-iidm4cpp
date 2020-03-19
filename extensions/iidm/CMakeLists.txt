@@ -27,7 +27,7 @@ set(UNIT_TEST_SOURCES
     test/TwoWindingsTransformerPhaseAngleClockTest.cpp
 )
 
-add_compile_definitions(EXT_IIDM_LIBRARY)
+add_compile_definitions(IIDM_BUILD_DLL)
 
 # Shared library
 add_library(${EXT_NAME} SHARED ${EXT_SOURCES})

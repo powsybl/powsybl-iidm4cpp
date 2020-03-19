@@ -10,11 +10,13 @@
 
 #include <string>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace logging {
 
-enum class Level : unsigned int {
+enum class IIDM_DECLSPEC Level : unsigned int {
     TRACE,
     DEBUG,
     INFO,
@@ -29,7 +31,7 @@ enum class Level : unsigned int {
  *
  * @return the name of the specified log level
  */
-std::string getLevelName(const Level& level);
+IIDM_DECLSPEC std::string getLevelName(const Level& level);
 
 }  // namespace logging
 

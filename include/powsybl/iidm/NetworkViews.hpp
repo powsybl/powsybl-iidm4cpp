@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -23,7 +24,7 @@ class Switch;
 
 namespace network {
 
-class BusBreakerView {
+class IIDM_DECLSPEC BusBreakerView {
 public:
     explicit BusBreakerView(Network& network);
 

@@ -9,12 +9,13 @@
 #define POWSYBL_IIDM_PHASETAPCHANGERSTEP_HPP
 
 #include <powsybl/iidm/TapChangerStep.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class PhaseTapChangerStep : public TapChangerStep<PhaseTapChangerStep> {
+class IIDM_DECLSPEC PhaseTapChangerStep : public TapChangerStep<PhaseTapChangerStep> {
 public:
     PhaseTapChangerStep(double alpha, double rho, double r, double x, double g, double b);
 

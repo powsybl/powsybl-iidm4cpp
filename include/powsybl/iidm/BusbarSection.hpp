@@ -9,12 +9,13 @@
 #define POWSYBL_IIDM_BUSBARSECTION_HPP
 
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class BusbarSection : public Injection {
+class IIDM_DECLSPEC BusbarSection : public Injection {
 public:
     BusbarSection(const std::string& id, const std::string& name);
 

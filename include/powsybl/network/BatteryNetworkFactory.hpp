@@ -9,12 +9,13 @@
 #define POWSYBL_NETWORK_BATTERYNETWORKFACTORY_HPP
 
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace network {
 
-class BatteryNetworkFactory {
+class IIDM_DECLSPEC BatteryNetworkFactory {
 public:
     static iidm::Network create();
 };

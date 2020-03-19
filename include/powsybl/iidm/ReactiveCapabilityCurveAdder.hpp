@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_REACTIVECAPABILITYCURVEADDER_HPP
 
 #include <powsybl/iidm/ReactiveCapabilityCurve.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -19,7 +20,7 @@ namespace iidm {
 class ReactiveLimitsHolder;
 class Validable;
 
-class ReactiveCapabilityCurveAdder {
+class IIDM_DECLSPEC ReactiveCapabilityCurveAdder {
 public:
     class PointAdder {
     public:

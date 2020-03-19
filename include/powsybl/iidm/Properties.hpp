@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
@@ -18,7 +19,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class Properties {
+class IIDM_DECLSPEC Properties {
 public:
     using const_iterator = std::map<std::string, std::string>::const_iterator;
 

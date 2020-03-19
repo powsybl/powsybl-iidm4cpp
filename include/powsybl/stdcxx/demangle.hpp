@@ -11,32 +11,34 @@
 #include <string>
 #include <typeinfo>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace stdcxx {
 
-std::string demangle(const char* name);
+IIDM_DECLSPEC std::string demangle(const char* name);
 
 template <typename T>
-std::string demangle() {
+IIDM_DECLSPEC std::string demangle() {
     return demangle(typeid(T).name());
 }
 
 template <typename T>
-std::string demangle(const T& type) {
+IIDM_DECLSPEC std::string demangle(const T& type) {
     return demangle(typeid(type).name());
 }
 
 template <>
-std::string demangle(const std::type_info& type);
+IIDM_DECLSPEC std::string demangle(const std::type_info& type);
 
-std::string simpleClassName(const char* className);
+IIDM_DECLSPEC std::string simpleClassName(const char* className);
 
 template <typename T>
-std::string simpleClassName() {
+IIDM_DECLSPEC std::string simpleClassName() {
     return simpleClassName(typeid(T).name());
 }
 
 template <typename T>
-std::string simpleClassName(const T& type) {
+IIDM_DECLSPEC std::string simpleClassName(const T& type) {
     return simpleClassName(typeid(type).name());
 }
 

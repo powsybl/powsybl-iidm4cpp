@@ -10,11 +10,13 @@
 
 #include <string>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
-class ExtensionProvider {
+class IIDM_DECLSPEC ExtensionProvider {
 public:
     virtual ~ExtensionProvider() noexcept = default;
 

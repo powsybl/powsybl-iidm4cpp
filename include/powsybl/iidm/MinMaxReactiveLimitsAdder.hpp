@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_MINMAXREACTIVELIMITSADDER_HPP
 #define POWSYBL_IIDM_MINMAXREACTIVELIMITSADDER_HPP
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -18,7 +19,7 @@ namespace iidm {
 class MinMaxReactiveLimits;
 class ReactiveLimitsHolder;
 
-class MinMaxReactiveLimitsAdder {
+class IIDM_DECLSPEC MinMaxReactiveLimitsAdder {
 public:
     explicit MinMaxReactiveLimitsAdder(ReactiveLimitsHolder& owner);
 

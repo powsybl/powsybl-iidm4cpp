@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_HVDCCONVERTERSTATION_HPP
 
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -17,7 +18,7 @@ namespace iidm {
 
 class HvdcLine;
 
-class HvdcConverterStation : public Injection {
+class IIDM_DECLSPEC HvdcConverterStation : public Injection {
 public:
     enum class HvdcType {
         VSC,

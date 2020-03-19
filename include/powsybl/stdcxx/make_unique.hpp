@@ -10,10 +10,12 @@
 
 #include <memory>
 
+#include <powsybl/stdcxx/export.hpp>
+
 namespace stdcxx {
 
 template <typename B, typename D = B, typename = typename std::enable_if<std::is_base_of<B, D>::value>::type, typename... Args>
-std::unique_ptr<B> make_unique(Args&&... args) {
+IIDM_DECLSPEC std::unique_ptr<B> make_unique(Args&&... args) {
     return std::unique_ptr<B>(new D(std::forward<Args>(args)...));
 }
 

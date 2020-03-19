@@ -12,12 +12,13 @@
 
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/LoadType.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class Load : public Injection {
+class IIDM_DECLSPEC Load : public Injection {
 public:
     Load(VariantManagerHolder& network, const std::string& id, const std::string& name, const LoadType& loadType,
          double p0, double q0);

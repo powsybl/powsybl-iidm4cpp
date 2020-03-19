@@ -9,13 +9,14 @@
 #define POWSYBL_IIDM_VSCCONVERTERSTATIONADDER_HPP
 
 #include <powsybl/iidm/HvdcConverterStationAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class VscConverterStationAdder : public HvdcConverterStationAdder<VscConverterStationAdder> {
+class IIDM_DECLSPEC VscConverterStationAdder : public HvdcConverterStationAdder<VscConverterStationAdder> {
 public:
     ~VscConverterStationAdder() noexcept override = default;
 

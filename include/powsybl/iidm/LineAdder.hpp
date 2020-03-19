@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_LINEADDER_HPP
 
 #include <powsybl/iidm/BranchAdder.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -18,7 +19,7 @@ namespace iidm {
 class Line;
 class Network;
 
-class LineAdder : public BranchAdder<LineAdder> {
+class IIDM_DECLSPEC LineAdder : public BranchAdder<LineAdder> {
 public:
     explicit LineAdder(Network& network);
 

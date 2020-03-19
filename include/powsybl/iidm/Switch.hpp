@@ -13,6 +13,7 @@
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/SwitchKind.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -21,7 +22,7 @@ namespace iidm {
 
 class VoltageLevel;
 
-class Switch : public Identifiable, public MultiVariantObject {
+class IIDM_DECLSPEC Switch : public Identifiable, public MultiVariantObject {
 public:
     Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, SwitchKind kind, bool open,
            bool retained, bool fictitious);

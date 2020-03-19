@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_INTERNALCONNECTION_HPP
 #define POWSYBL_IIDM_INTERNALCONNECTION_HPP
 
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
@@ -16,7 +17,7 @@ namespace iidm {
 
 namespace node_breaker_view {
 
-class InternalConnection {
+class IIDM_DECLSPEC InternalConnection {
 public:
     InternalConnection(unsigned long node1, unsigned long node2);
 

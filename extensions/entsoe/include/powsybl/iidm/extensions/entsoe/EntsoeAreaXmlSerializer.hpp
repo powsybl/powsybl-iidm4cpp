@@ -11,7 +11,7 @@
 #include <memory>
 
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
-#include <powsybl/iidm/extensions/entsoe/EntsoeExport.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -21,7 +21,7 @@ namespace extensions {
 
 namespace entsoe {
 
-class EXT_ENTSOE_EXPORT EntsoeAreaXmlSerializer : public converter::xml::ExtensionXmlSerializer {
+class IIDM_DECLSPEC EntsoeAreaXmlSerializer : public converter::xml::ExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
     std::unique_ptr<Extension>
     read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
