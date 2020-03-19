@@ -12,12 +12,6 @@
 
 #include <powsybl/stdcxx/features.hpp>
 
-namespace stdcxx {
-
-std::tm localtime(const std::time_t& time);
-
-}  // namespace stdcxx
-
 #if !defined(__GNUC__) || __GNUC_PREREQ(5, 0)
 
 #include <iomanip>
@@ -32,7 +26,6 @@ using std::put_time;
 
 #else
 
-#include <ctime>
 #include <string>
 
 #define HAS_PUT_TIME 0
@@ -44,6 +37,12 @@ std::string put_time(const struct std::tm* time, const char* format);
 }  // namespace stdcxx
 
 #endif
+
+namespace stdcxx {
+
+std::tm localtime(const std::time_t& time);
+
+}  // namespace stdcxx
 
 #endif  // POWSYBL_STDCXX_TIME_HPP
 
