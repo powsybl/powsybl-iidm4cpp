@@ -19,20 +19,24 @@ namespace iidm {
 
 class Substation;
 
-class TwoWindingsTransformer : public Branch, public RatioTapChangerHolder, public PhaseTapChangerHolder {
-public: // TapChangerHolder
+class TwoWindingsTransformer : public virtual Branch, public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
+public:  // TapChangerHolder
+    bool hasPhaseTapChanger() const override;
+
+    bool hasRatioTapChanger() const override;
+
     const Network& getNetwork() const override;
 
     Network& getNetwork() override;
 
-public: // RatioTapChangerHolder
+public:  // RatioTapChangerHolder
     stdcxx::CReference<RatioTapChanger> getRatioTapChanger() const override;
 
     stdcxx::Reference<RatioTapChanger> getRatioTapChanger() override;
 
     RatioTapChangerAdder newRatioTapChanger() override;
 
-public: // PhaseTapChangerHolder
+public:  // PhaseTapChangerHolder
     stdcxx::CReference<PhaseTapChanger> getPhaseTapChanger() const override;
 
     stdcxx::Reference<PhaseTapChanger> getPhaseTapChanger() override;
@@ -81,14 +85,17 @@ protected: // MultiVariantObject
 
     void reduceVariantArraySize(unsigned long number) override;
 
-protected: // RatioTapChangerHolder
-    void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) override;
-
-private: // Identifiable
+private:  // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger> phaseTapChanger);
+    unsigned long getRegulatingTapChangerCount() const override;
+
+private:  // RatioTapChangerHolder
+    void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) override;
+
+private:  // PhaseTapChangerHolder
+    void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger> phaseTapChanger) override;
 
 private:
     friend class PhaseTapChanger;

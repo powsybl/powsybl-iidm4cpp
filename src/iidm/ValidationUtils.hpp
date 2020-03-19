@@ -70,6 +70,8 @@ const std::string& checkNotEmpty(const std::string& value, const std::string& me
 
 const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message);
 
+void checkOnlyOneTapChangerRegulatingEnabled(const Validable& validable, unsigned long regulatingTapChangerCount, bool regulating);
+
 template <typename T>
 bool checkOptional(const stdcxx::optional<T>& value) {
 #if __cplusplus >= 201703L
@@ -109,7 +111,7 @@ double checkR(const Validable& validable, double r);
 
 double checkRatedS(const Validable& validable, double ratedS);
 
-double checkRatedU(const Validable& validable, double ratedU);
+double checkRatedU(const Validable& validable, double ratedU, const stdcxx::optional<unsigned long>& num = stdcxx::optional<unsigned long>());
 
 double checkRatedU1(const Validable& validable, double ratedU1);
 

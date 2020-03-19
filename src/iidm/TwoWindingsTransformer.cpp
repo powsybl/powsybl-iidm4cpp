@@ -70,6 +70,14 @@ double TwoWindingsTransformer::getG() const {
     return m_g;
 }
 
+bool TwoWindingsTransformer::hasPhaseTapChanger() const {
+    return static_cast<bool>(m_phaseTapChanger);
+}
+
+bool TwoWindingsTransformer::hasRatioTapChanger() const {
+    return static_cast<bool >(m_ratioTapChanger);
+}
+
 const Network& TwoWindingsTransformer::getNetwork() const {
     return Branch::getNetwork();
 }
@@ -174,6 +182,14 @@ TwoWindingsTransformer& TwoWindingsTransformer::setRatedU2(double ratedU2) {
 
 void TwoWindingsTransformer::setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) {
     m_ratioTapChanger = std::move(ratioTapChanger);
+}
+
+unsigned long TwoWindingsTransformer::getRegulatingTapChangerCount() const {
+    unsigned long count = 0;
+    count += (hasPhaseTapChanger() && m_phaseTapChanger->isRegulating()) ? 1 : 0;
+    count += (hasRatioTapChanger() && m_ratioTapChanger->isRegulating()) ? 1 : 0;
+
+    return count;
 }
 
 TwoWindingsTransformer& TwoWindingsTransformer::setX(double x) {
