@@ -152,8 +152,6 @@ stdcxx::range<Bus> BusViewImpl::getBuses() {
 stdcxx::CReference<Bus> BusViewImpl::getMergedBus(const std::string& configuredBusId) const {
     const auto& configuredBus = stdcxx::ref<ConfiguredBus>(m_voltageLevel.getBusBreakerView().getBus(configuredBusId));
 
-    std::cout << "ConfiguredBus = " << configuredBus.get().getId() << std::endl;
-
     return stdcxx::cref<Bus>(m_voltageLevel.getCalculatedBusTopology().getMergedBus(configuredBus));
 }
 

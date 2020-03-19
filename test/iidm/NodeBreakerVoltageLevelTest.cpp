@@ -843,15 +843,15 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
     POWSYBL_ASSERT_REF_TRUE(l0.getTerminal().getBusView().getBus());
     BOOST_CHECK_EQUAL("VL_0", l0.getTerminal().getBusView().getConnectableBus().get().getId());
 
-    // load "L1" is connected to bus "VL_3"
+    // load "L1" is connected to bus "VL_1"
     POWSYBL_ASSERT_REF_TRUE(l1.getTerminal().getBusView().getBus());
     BOOST_CHECK_EQUAL("VL_1", l1.getTerminal().getBusView().getConnectableBus().get().getId());
 
-    // load "L2" is not connected but is connectable to bus "VL_3"
+    // load "L2" is not connected but is connectable to bus "VL_1"
     POWSYBL_ASSERT_REF_FALSE(l2.getTerminal().getBusView().getBus());
     BOOST_CHECK_EQUAL("VL_1", l2.getTerminal().getBusView().getConnectableBus().get().getId());
 
-    // load "L3" is not connected and has no connectable bus (the first bus is taken as connectable bus in this case)
+    // load "L3" is not connected but is connectable to bus "VL_0"
     POWSYBL_ASSERT_REF_FALSE(l3.getTerminal().getBusView().getBus());
     BOOST_CHECK_EQUAL("VL_0", l3.getTerminal().getBusView().getConnectableBus().get().getId());
 }
