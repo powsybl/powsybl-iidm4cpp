@@ -76,8 +76,7 @@ void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(InjectionAdder<
 }
 
 template <typename Added, typename Adder, typename Parent>
-template <typename L>
-void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder<L>& adder, const NetworkXmlReaderContext& context) {
+void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder& adder, const NetworkXmlReaderContext& context) {
     const auto& bus = context.getReader().getOptionalAttributeValue<std::string>(toString(BUS, index));
     const auto& connectableBus = context.getReader().getOptionalAttributeValue<std::string>(toString(CONNECTABLE_BUS, index));
     const auto& node = context.getReader().getOptionalAttributeValue<unsigned long>(toString(NODE, index));

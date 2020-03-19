@@ -98,8 +98,6 @@ public:
     virtual Bus& setV(double v) = 0;
 
 protected:
-    explicit Bus(const std::string& id);
-
     Bus(const std::string& id, const std::string& name);
 
 private: // Identifiable

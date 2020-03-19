@@ -26,7 +26,7 @@
                 <iidm:step r="1.089" x="0.1089" g="0.091827364554637275" b="0.0091827364554637279" rho="1"/>
                 <iidm:step r="1.1979" x="0.11978999999999999" g="0.10101010101010101" b="0.0101010101010101" rho="1.1000000000000001"/>
             </iidm:ratioTapChanger2>
-            <iidm:ratioTapChanger3 lowTapPosition="0" tapPosition="0" loadTapChangingCapabilities="true" regulating="true" targetV="11">
+            <iidm:ratioTapChanger3 lowTapPosition="0" tapPosition="0" loadTapChangingCapabilities="true" regulating="false" targetV="11">
                 <iidm:terminalRef id="LOAD_11"/>
                 <iidm:step r="0.1089" x="0.01089" g="0.82644628099173556" b="0.082644628099173556" rho="0.90000000000000002"/>
                 <iidm:step r="0.121" x="0.0121" g="0.82644628099173556" b="0.082644628099173556" rho="1"/>

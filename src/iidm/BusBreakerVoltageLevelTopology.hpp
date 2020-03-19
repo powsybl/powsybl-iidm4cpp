@@ -40,6 +40,8 @@ public:
     void updateCache();
 
 private:
+    std::unique_ptr<MergedBus> createMergedBus(unsigned long busCount, const MergedBus::BusSet& busSet) const;
+
     bool isBusValid(const MergedBus::BusSet& buses) const;
 
 private:

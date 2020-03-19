@@ -18,7 +18,7 @@ namespace iidm {
 class RatioTapChanger;
 class RatioTapChangerAdder;
 
-class RatioTapChangerHolder : public TapChangerHolder {
+class RatioTapChangerHolder : public virtual TapChangerHolder {
 public:
     ~RatioTapChangerHolder() noexcept override = default;
 
@@ -31,6 +31,7 @@ public:
 protected:
     RatioTapChangerHolder() noexcept = default;
 
+private:
     virtual void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) = 0;
 
 private:
