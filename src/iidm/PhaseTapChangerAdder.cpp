@@ -69,7 +69,7 @@ PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setX(double x)
     return *this;
 }
 
-PhaseTapChangerAdder::PhaseTapChangerAdder(TwoWindingsTransformer& parent) :
+PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent) :
     m_parent(parent),
     m_lowTapPosition(0U),
     m_regulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP),
@@ -79,6 +79,8 @@ PhaseTapChangerAdder::PhaseTapChangerAdder(TwoWindingsTransformer& parent) :
 }
 
 PhaseTapChanger& PhaseTapChangerAdder::add() {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<PhaseTapChangerAdder>();
+
     checkOptional(m_parent, m_tapPosition, "tap position is not set");
     if (m_steps.empty()) {
         throw ValidationException(m_parent, "a phase tap changer should have at least one step");
@@ -90,6 +92,15 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
 
     std::unique_ptr<PhaseTapChanger> ptrPhaseTapChanger = stdcxx::make_unique<PhaseTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
                                                                                                *m_tapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
+
+    bool wasRegulating = m_parent.hasPhaseTapChanger() && m_parent.getPhaseTapChanger().get().isRegulating();
+    unsigned long count = m_parent.getRegulatingTapChangerCount() - (wasRegulating ? 1 : 0);
+    checkOnlyOneTapChangerRegulatingEnabled(m_parent, count, m_regulating);
+
+    if (m_parent.hasRatioTapChanger()) {
+        logger.warn("%1% both Ratio and Phase Tap Changer are defined", m_parent.getMessageHeader());
+    }
+
     m_parent.setPhaseTapChanger(std::move(ptrPhaseTapChanger));
 
     return m_parent.getPhaseTapChanger().get();

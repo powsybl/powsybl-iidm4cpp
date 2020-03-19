@@ -298,6 +298,8 @@ BOOST_AUTO_TEST_CASE(range_threeWindingsTransformers) {
             .setBus("Bus2")
             .setR(1.1)
             .setX(0.11)
+            .setG(0.0)
+            .setB(0.0)
             .setRatedU(1.1)
         .add()
         .newLeg3()
@@ -305,6 +307,8 @@ BOOST_AUTO_TEST_CASE(range_threeWindingsTransformers) {
             .setBus("Bus3")
             .setR(1.2)
             .setX(0.12)
+            .setG(0.0)
+            .setB(0.0)
             .setRatedU(1.2)
         .add()
         .add();
