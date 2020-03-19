@@ -9,8 +9,6 @@
 
 #include <boost/date_time/c_time.hpp>
 
-#include <powsybl/AssertionError.hpp>
-
 namespace stdcxx {
 
 std::tm localtime(const std::time_t& time) {

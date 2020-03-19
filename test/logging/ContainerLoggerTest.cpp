@@ -7,7 +7,6 @@
 
 #include <chrono>
 
-#include <boost/date_time/c_time.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/logging/ContainerLogger.hpp>
@@ -60,7 +59,6 @@ BOOST_AUTO_TEST_CASE(logMessage) {
     POWSYBL_ASSERT_ENUM_EQ(Level::TRACE, logMessage1.getLevel());
     instant = logMessage1.getInstant();
     std::tm result = stdcxx::localtime(instant);
-    boost::date_time::c_time::localtime(&instant, &result);
     oss << stdcxx::put_time(&result, "%Y-%m-%d %X") << " - " << getLevelName(logMessage1.getLevel()) << " - " << logMessage1.getMessage();
     BOOST_CHECK_EQUAL(oss.str(), logMessage1.toString());
 
@@ -68,7 +66,7 @@ BOOST_AUTO_TEST_CASE(logMessage) {
     BOOST_CHECK_EQUAL("debug message", logMessage2.getMessage());
     POWSYBL_ASSERT_ENUM_EQ(Level::DEBUG, logMessage2.getLevel());
     instant = logMessage2.getInstant();
-    boost::date_time::c_time::localtime(&instant, &result);
+    result = stdcxx::localtime(instant);
     oss.str("");
     oss << stdcxx::put_time(&result, "%Y-%m-%d %X") << " - " << getLevelName(logMessage2.getLevel()) << " - " << logMessage2.getMessage();
     BOOST_CHECK_EQUAL(oss.str(), logMessage2.toString());
@@ -77,7 +75,7 @@ BOOST_AUTO_TEST_CASE(logMessage) {
     BOOST_CHECK_EQUAL("info message", logMessage3.getMessage());
     POWSYBL_ASSERT_ENUM_EQ(Level::INFO, logMessage3.getLevel());
     instant = logMessage3.getInstant();
-    boost::date_time::c_time::localtime(&instant, &result);
+    result = stdcxx::localtime(instant);
     oss.str("");
     oss << stdcxx::put_time(&result, "%Y-%m-%d %X") << " - " << getLevelName(logMessage3.getLevel()) << " - " << logMessage3.getMessage();
     BOOST_CHECK_EQUAL(oss.str(), logMessage3.toString());
@@ -86,7 +84,7 @@ BOOST_AUTO_TEST_CASE(logMessage) {
     BOOST_CHECK_EQUAL("warn message", logMessage4.getMessage());
     POWSYBL_ASSERT_ENUM_EQ(Level::WARN, logMessage4.getLevel());
     instant = logMessage4.getInstant();
-    boost::date_time::c_time::localtime(&instant, &result);
+    result = stdcxx::localtime(instant);
     oss.str("");
     oss << stdcxx::put_time(&result, "%Y-%m-%d %X") << " - " << getLevelName(logMessage4.getLevel()) << " - " << logMessage4.getMessage();
     BOOST_CHECK_EQUAL(oss.str(), logMessage4.toString());
@@ -95,7 +93,7 @@ BOOST_AUTO_TEST_CASE(logMessage) {
     BOOST_CHECK_EQUAL("error message", logMessage5.getMessage());
     POWSYBL_ASSERT_ENUM_EQ(Level::ERROR, logMessage5.getLevel());
     instant = logMessage5.getInstant();
-    boost::date_time::c_time::localtime(&instant, &result);
+    result = stdcxx::localtime(instant);
     oss.str("");
     oss << stdcxx::put_time(&result, "%Y-%m-%d %X") << " - " << getLevelName(logMessage5.getLevel()) << " - " << logMessage5.getMessage();
     BOOST_CHECK_EQUAL(oss.str(), logMessage5.toString());
