@@ -27,6 +27,13 @@ CalculatedBusTopology::CalculatedBusTopology(BusBreakerVoltageLevel& voltageLeve
     m_voltageLevel(voltageLevel) {
 }
 
+std::unique_ptr<MergedBus> CalculatedBusTopology::createMergedBus(unsigned long busCount, const MergedBus::BusSet& busSet) const {
+    const std::string& mergedBusId = logging::format("%1%_%2%", m_voltageLevel.getId(), busCount);
+    const std::string& mergedBusName = m_voltageLevel.getName().empty() ? "" : logging::format("%1%_%2%", m_voltageLevel.getName(), busCount);
+
+    return stdcxx::make_unique<MergedBus>(mergedBusId, mergedBusName, busSet);
+}
+
 stdcxx::Reference<MergedBus> CalculatedBusTopology::getMergedBus(const std::string& id, bool throwException) {
     updateCache();
 
@@ -121,11 +128,9 @@ void CalculatedBusTopology::updateCache() {
             }, encountered);
 
             if (isBusValid(busSet)) {
-                std::string mergedBusId = logging::format("%1%_%2%", m_voltageLevel.getId(), busCount);
-                ++busCount;
+                std::unique_ptr<MergedBus> ptrMergedBus = createMergedBus(busCount++, busSet);
 
-                std::unique_ptr<MergedBus> ptrMergedBus = stdcxx::make_unique<MergedBus>(mergedBusId, busSet);
-                const auto& it = mergedBuses.insert(std::make_pair(mergedBusId, std::move(ptrMergedBus)));
+                const auto& it = mergedBuses.insert(std::make_pair(ptrMergedBus->getId(), std::move(ptrMergedBus)));
                 const std::reference_wrapper<MergedBus>& mergedBus = std::ref(*it.first->second);
 
                 std::for_each(busSet.begin(), busSet.end(), [&mapping, &mergedBus](const std::reference_wrapper<ConfiguredBus>& bus) {

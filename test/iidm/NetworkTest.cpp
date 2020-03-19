@@ -422,7 +422,7 @@ BOOST_AUTO_TEST_CASE(views) {
 
     buses = network2.getBusView().getBuses();
     BOOST_CHECK_EQUAL(1, boost::size(buses));
-    POWSYBL_ASSERT_REF_TRUE(network2.getBusView().getBus("VL5_4"));
+    POWSYBL_ASSERT_REF_TRUE(network2.getBusView().getBus("VL5_0"));
     POWSYBL_ASSERT_REF_FALSE(network2.getBusView().getBus("UNKNOWN"));
     POWSYBL_ASSERT_THROW(network2.getSwitch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network2.getSwitch("BBS1"), PowsyblException, "Identifiable 'BBS1' is not a powsybl::iidm::Switch");
@@ -436,7 +436,7 @@ BOOST_AUTO_TEST_CASE(views) {
     BOOST_CHECK_EQUAL(3, cNetwork2.getBusBreakerView().getSwitchCount());
     const auto& cSwitches2 = cNetwork2.getBusBreakerView().getSwitches();
     BOOST_CHECK_EQUAL(cNetwork2.getBusBreakerView().getSwitchCount(), boost::size(cSwitches2));
-    POWSYBL_ASSERT_REF_TRUE(cNetwork2.getBusBreakerView().getBus("VL5_5"));
+    POWSYBL_ASSERT_REF_TRUE(cNetwork2.getBusBreakerView().getBus("VL5_0"));
     POWSYBL_ASSERT_REF_FALSE(cNetwork2.getBusBreakerView().getBus("UNKNOWN"));
     const auto& cBuses3 = cNetwork2.getBusBreakerView().getBuses();
     BOOST_CHECK_EQUAL(4, boost::size(cBuses3));

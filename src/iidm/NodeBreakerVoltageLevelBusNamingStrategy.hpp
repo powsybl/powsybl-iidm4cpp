@@ -8,8 +8,8 @@
 #ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELBUSNAMINGSTRATEGY_HPP
 #define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELBUSNAMINGSTRATEGY_HPP
 
-#include <atomic>
 #include <string>
+#include <vector>
 
 namespace powsybl {
 
@@ -25,12 +25,12 @@ public:
 
     ~BusNamingStrategy() noexcept = default;
 
-    std::string getName();
+    std::string getId(const std::vector<unsigned long>& nodes);
+
+    std::string getName(const std::vector<unsigned long>& nodes);
 
 private:
     NodeBreakerVoltageLevel& m_voltageLevel;
-
-    std::atomic_ulong m_counter;
 };
 
 }  // namespace node_breaker_voltage_level

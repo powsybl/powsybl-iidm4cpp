@@ -515,9 +515,9 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     const auto& cBusBreakerView = cVl.getBusBreakerView();
     BOOST_TEST(stdcxx::areSame(busBreakerView, cBusBreakerView));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_0"));
-    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_1"));
+    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_1"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_2"));
-    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_3"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_3"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus1("SW1"));
     POWSYBL_ASSERT_REF_TRUE(cBusBreakerView.getBus1("SW1"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus2("SW1"));
@@ -551,18 +551,16 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     BOOST_TEST(stdcxx::areSame(vl, testBus.getVoltageLevel()));
 
     sw.setOpen(false);
-    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_0"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_0"));
+    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_1"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_2"));
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_3"));
+
+    sw.setRetained(false);
+    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_0"));
     POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_1"));
     POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_2"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_3"));
-    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_4"));
-    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_5"));
-    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_6"));
-
-    sw.setRetained(false);
-    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_6"));
-    POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus("VL_7"));
-    POWSYBL_ASSERT_REF_FALSE(busBreakerView.getBus("VL_8"));
 }
 
 BOOST_AUTO_TEST_CASE(calculatedBusTraverser) {
@@ -591,8 +589,8 @@ BOOST_AUTO_TEST_CASE(calculatedBusTraverser) {
     BOOST_TEST(std::isnan(bus3.getAngle()));
     BOOST_TEST(std::isnan(bus3.getV()));
     bus3.setAngle(50.0).setV(60.0);
-    BOOST_TEST(std::isnan(bus3.getAngle()));
-    BOOST_TEST(std::isnan(bus3.getV()));
+    BOOST_CHECK_CLOSE(50.0, bus3.getAngle(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(60.0, bus3.getV(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
@@ -705,12 +703,12 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     sw.setOpen(true);
     BOOST_CHECK_EQUAL(2UL, boost::size(busView.getBuses()));
     BOOST_CHECK_EQUAL(2UL, boost::size(cBusView.getBuses()));
-    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_1"));
+    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_2"));
     sw.setOpen(false);
     BOOST_CHECK_EQUAL(1UL, boost::size(busView.getBuses()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
-    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_3"));
+    POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
     sw.setRetained(true);
     BOOST_CHECK_EQUAL(1UL, boost::size(busView.getBuses()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
@@ -845,15 +843,15 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
     POWSYBL_ASSERT_REF_TRUE(l0.getTerminal().getBusView().getBus());
     BOOST_CHECK_EQUAL("VL_0", l0.getTerminal().getBusView().getConnectableBus().get().getId());
 
-    // load "L1" is connected to bus "VL_3"
+    // load "L1" is connected to bus "VL_1"
     POWSYBL_ASSERT_REF_TRUE(l1.getTerminal().getBusView().getBus());
-    BOOST_CHECK_EQUAL("VL_3", l1.getTerminal().getBusView().getConnectableBus().get().getId());
+    BOOST_CHECK_EQUAL("VL_1", l1.getTerminal().getBusView().getConnectableBus().get().getId());
 
-    // load "L2" is not connected but is connectable to bus "VL_3"
+    // load "L2" is not connected but is connectable to bus "VL_1"
     POWSYBL_ASSERT_REF_FALSE(l2.getTerminal().getBusView().getBus());
-    BOOST_CHECK_EQUAL("VL_3", l2.getTerminal().getBusView().getConnectableBus().get().getId());
+    BOOST_CHECK_EQUAL("VL_1", l2.getTerminal().getBusView().getConnectableBus().get().getId());
 
-    // load "L3" is not connected and has no connectable bus (the first bus is taken as connectable bus in this case)
+    // load "L3" is not connected but is connectable to bus "VL_0"
     POWSYBL_ASSERT_REF_FALSE(l3.getTerminal().getBusView().getBus());
     BOOST_CHECK_EQUAL("VL_0", l3.getTerminal().getBusView().getConnectableBus().get().getId());
 }
@@ -868,6 +866,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
 
     VoltageLevel& vl = s.newVoltageLevel()
         .setId("VL")
+        .setName("VL_name")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
         .setNominalVoltage(400.0)
         .setLowVoltageLimit(380.0)
@@ -1007,8 +1006,8 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     BOOST_TEST(stdcxx::areSame(busBreakerView.getBus().get(), busBreakerView.getConnectableBus().get()));
     BOOST_TEST(stdcxx::areSame(cBusBreakerView.getBus().get(), cBusBreakerView.getConnectableBus().get()));
     const auto& calculatedBus = busBreakerView.getBus().get();
-    BOOST_CHECK_EQUAL("VL_7", calculatedBus.getId());
-    BOOST_CHECK_EQUAL("VL_7", calculatedBus.getName());
+    BOOST_CHECK_EQUAL("VL_0", calculatedBus.getId());
+    BOOST_CHECK_EQUAL("VL_name_0", calculatedBus.getName());
 
 
     POWSYBL_ASSERT_THROW(busBreakerView.setConnectableBus("BUS1"), AssertionError, "Not implemented");
@@ -1019,8 +1018,8 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     BOOST_TEST(stdcxx::areSame(busView.getBus().get(), busView.getConnectableBus().get()));
     BOOST_TEST(stdcxx::areSame(cBusView.getBus().get(), cBusView.getConnectableBus().get()));
     const auto& calculatedBus2 = busView.getBus().get();
-    BOOST_CHECK_EQUAL("VL_6", calculatedBus2.getId());
-    BOOST_CHECK_EQUAL("VL_6", calculatedBus2.getName());
+    BOOST_CHECK_EQUAL("VL_0", calculatedBus2.getId());
+    BOOST_CHECK_EQUAL("VL_name_0", calculatedBus2.getName());
 
     BOOST_TEST(stdcxx::areSame(terminal.getNodeBreakerView(), cTerminal.getNodeBreakerView()));
     BOOST_CHECK_EQUAL(2ul, terminal.getNodeBreakerView().getNode());
