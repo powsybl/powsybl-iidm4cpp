@@ -80,7 +80,7 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(TwoWindingsTransf
 }
 
 template <typename Added, typename Adder>
-void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg2or3& twl, NetworkXmlReaderContext& context) {
+void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context) {
     std::shared_ptr<RatioTapChangerAdder> adder = std::make_shared<RatioTapChangerAdder>(twl.newRatioTapChanger());
     readRatioTapChanger(toString(RATIO_TAP_CHANGER, leg), adder, twl.getTerminal(), context);
 }
@@ -136,7 +136,7 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context) {
     context.getWriter().writeStartElement(IIDM_PREFIX, name);
-    writeTapChanger<TwoWindingsTransformer, PhaseTapChanger, PhaseTapChangerStep>(ptc, context.getWriter());
+    writeTapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep>(ptc, context.getWriter());
     context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(ptc.getRegulationMode()));
     if (ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP || !std::isnan(ptc.getRegulationValue())) {
         context.getWriter().writeAttribute(REGULATION_VALUE, ptc.getRegulationValue());

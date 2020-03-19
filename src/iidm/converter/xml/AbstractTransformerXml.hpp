@@ -42,7 +42,7 @@ public:
 
     static void readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
 
-    static void readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg2or3& twl, NetworkXmlReaderContext& context);
+    static void readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context);
 
     static void readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 

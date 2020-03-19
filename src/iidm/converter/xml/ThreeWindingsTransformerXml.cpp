@@ -7,6 +7,9 @@
 
 #include "ThreeWindingsTransformerXml.hpp"
 
+#include <powsybl/PowsyblException.hpp>
+#include <powsybl/logging/MessageFormat.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -40,19 +43,23 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
     const auto& r3 = context.getReader().getAttributeValue<double>(R3);
     const auto& x3 = context.getReader().getAttributeValue<double>(X3);
     const auto& ratedU3 = context.getReader().getAttributeValue<double>(RATED_U3);
-    ThreeWindingsTransformerAdder::Leg1Adder& legAdder1 = adder.newLeg1()
+    ThreeWindingsTransformerAdder::LegAdder& legAdder1 = adder.newLeg1()
         .setR(r1)
         .setX(x1)
         .setG(g1)
         .setB(b1)
         .setRatedU(ratedU1);
-    ThreeWindingsTransformerAdder::Leg2Adder& legAdder2 = adder.newLeg2()
+    ThreeWindingsTransformerAdder::LegAdder& legAdder2 = adder.newLeg2()
         .setR(r2)
         .setX(x2)
+        .setG(0.0)  // FIXME(mathbagu)
+        .setB(0.0)  // FIXME(mathbagu)
         .setRatedU(ratedU2);
-    ThreeWindingsTransformerAdder::Leg3Adder& legAdder3 = adder.newLeg3()
+    ThreeWindingsTransformerAdder::LegAdder& legAdder3 = adder.newLeg3()
         .setR(r3)
         .setX(x3)
+        .setG(0.0)  // FIXME(mathbagu)
+        .setB(0.0)  // FIXME(mathbagu)
         .setRatedU(ratedU3);
     readNodeOrBus(1, legAdder1, context);
     readNodeOrBus(2, legAdder2, context);
@@ -70,13 +77,13 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
 void ThreeWindingsTransformerXml::readSubElements(ThreeWindingsTransformer& twt, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(THREE_WINDINGS_TRANSFORMER, [this, &twt, &context]() {
         if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
-            CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::LegBase<ThreeWindingsTransformer::Leg1> > adder = twt.getLeg1().newCurrentLimits();
+            CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::Leg> adder = twt.getLeg1().newCurrentLimits();
             readCurrentLimits(adder, context.getReader(), 1);
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
-            CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::LegBase<ThreeWindingsTransformer::Leg2or3> > adder = twt.getLeg2().newCurrentLimits();
+            CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::Leg> adder = twt.getLeg2().newCurrentLimits();
             readCurrentLimits(adder, context.getReader(), 2);
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS3) {
-            CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::LegBase<ThreeWindingsTransformer::Leg2or3> > adder = twt.getLeg3().newCurrentLimits();
+            CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::Leg> adder = twt.getLeg3().newCurrentLimits();
             readCurrentLimits(adder, context.getReader(), 3);
         } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER2) {
             readRatioTapChanger(2, twt.getLeg2(), context);
@@ -89,6 +96,10 @@ void ThreeWindingsTransformerXml::readSubElements(ThreeWindingsTransformer& twt,
 }
 
 void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
+    if (twt.getLeg2().getG() != 0.0 || twt.getLeg2().getB() != 0.0 || twt.getLeg3().getG() != 0.0 || twt.getLeg3().getB() != 0.0) {
+        throw PowsyblException(logging::format("G and B in Leg 2 or 3 not supported by current version %1%", twt.getId()));
+    }
+
     context.getWriter().writeAttribute(R1, twt.getLeg1().getR());
     context.getWriter().writeAttribute(X1, twt.getLeg1().getX());
     context.getWriter().writeAttribute(G1, twt.getLeg1().getG());
@@ -111,6 +122,11 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
 }
 
 void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
+    if (twt.getLeg1().hasRatioTapChanger() || twt.getLeg1().getPhaseTapChanger() ||
+        twt.getLeg2().hasPhaseTapChanger() || twt.getLeg3().hasPhaseTapChanger()) {
+        throw PowsyblException(logging::format("Tap changer not supported by current version %1%", twt.getId()));
+    }
+
     const stdcxx::CReference<RatioTapChanger>& rtc2 = twt.getLeg2().getRatioTapChanger();
     if (rtc2) {
         writeRatioTapChanger(RATIO_TAP_CHANGER2, rtc2, context);

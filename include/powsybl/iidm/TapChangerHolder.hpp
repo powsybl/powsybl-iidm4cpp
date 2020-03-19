@@ -25,8 +25,20 @@ public:
 
     virtual Network& getNetwork() = 0;
 
+    virtual bool hasPhaseTapChanger() const = 0;
+
+    virtual bool hasRatioTapChanger() const = 0;
+
 protected:
     TapChangerHolder() noexcept = default;
+
+private:
+    virtual unsigned long getRegulatingTapChangerCount() const = 0;
+
+private:
+    friend class PhaseTapChangerAdder;
+
+    friend class RatioTapChangerAdder;
 };
 
 }  // namespace iidm

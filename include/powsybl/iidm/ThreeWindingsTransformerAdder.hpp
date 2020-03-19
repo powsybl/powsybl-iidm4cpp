@@ -21,46 +21,53 @@ class VoltageLevel;
 
 class ThreeWindingsTransformerAdder : public IdentifiableAdder<ThreeWindingsTransformerAdder> {
 public:
-    template <typename L>
     class LegAdder : public virtual Validable {
+    public:  // Validable
+        std::string getMessageHeader() const override;
+
     public:
         ~LegAdder() noexcept override = default;
 
         ThreeWindingsTransformerAdder& add();
 
-        L& setBus(const std::string& bus);
+        LegAdder& setB(double b);
 
-        L& setConnectableBus(const std::string& connectableBus);
+        LegAdder& setBus(const std::string& bus);
 
-        L& setNode(unsigned long node);
+        LegAdder& setConnectableBus(const std::string& connectableBus);
 
-        L& setR(double r);
+        LegAdder& setG(double b);
 
-        L& setRatedU(double ratedU);
+        LegAdder& setNode(unsigned long node);
 
-        L& setVoltageLevel(const std::string& voltageLevelId);
+        LegAdder& setR(double r);
 
-        L& setX(double x);
+        LegAdder& setRatedU(double ratedU);
 
-    protected:
-        explicit LegAdder(ThreeWindingsTransformerAdder& parent);
+        LegAdder& setVoltageLevel(const std::string& voltageLevelId);
+
+        LegAdder& setX(double x);
+
+    private:
+        LegAdder(ThreeWindingsTransformerAdder& parent, unsigned long legNumber);
+
+        std::unique_ptr<ThreeWindingsTransformer::Leg> checkAndGetLeg() const;
 
         std::unique_ptr<Terminal> checkAndGetTerminal();
 
         VoltageLevel& checkAndGetVoltageLevel();
 
-        virtual void checkParams() const;
+        LegAdder& clear();
 
-        virtual L& clear();
+        void checkParams() const;
 
-        double getR() const;
-
-        double getRatedU() const;
-
-        double getX() const;
+    private:
+        friend class ThreeWindingsTransformerAdder;
 
     private:
         ThreeWindingsTransformerAdder& m_parent;
+
+        unsigned long m_legNumber;
 
         std::string m_voltageLevelId;
 
@@ -74,73 +81,11 @@ public:
 
         double m_x;
 
-        double m_ratedU;
-    };
-
-public:
-    class Leg1Adder : public LegAdder<Leg1Adder> {
-    public:  // Validable
-        std::string getMessageHeader() const override;
-
-    public:
-        ~Leg1Adder() noexcept override = default;
-
-        Leg1Adder& setB(double b);
-
-        Leg1Adder& setG(double g);
-
-    protected:  // LegAdder
-        void checkParams() const override;
-
-        Leg1Adder& clear() override;
-
-
-    protected:
-        std::unique_ptr<ThreeWindingsTransformer::Leg1> checkAndGetLeg() const;
-
-    private:
-        explicit Leg1Adder(ThreeWindingsTransformerAdder& parent);
-
-        friend class ThreeWindingsTransformerAdder;
-
-    private:
         double m_g;
 
         double m_b;
-    };
 
-public:
-    class Leg2Adder : public LegAdder<Leg2Adder> {
-    public:  // Validable
-        std::string getMessageHeader() const override;
-
-    public:
-        ~Leg2Adder() noexcept override = default;
-
-    protected:
-        std::unique_ptr<ThreeWindingsTransformer::Leg2or3> checkAndGetLeg() const;
-
-    private:
-        explicit Leg2Adder(ThreeWindingsTransformerAdder& parent);
-
-        friend class ThreeWindingsTransformerAdder;
-    };
-
-public:
-    class Leg3Adder : public LegAdder<Leg3Adder> {
-    public:  // Validable
-        std::string getMessageHeader() const override;
-
-    public:
-        ~Leg3Adder() noexcept override = default;
-
-    protected:
-        std::unique_ptr<ThreeWindingsTransformer::Leg2or3> checkAndGetLeg() const;
-
-    private:
-        explicit Leg3Adder(ThreeWindingsTransformerAdder& parent);
-
-        friend class ThreeWindingsTransformerAdder;
+        double m_ratedU;
     };
 
 public:
@@ -150,11 +95,13 @@ public:
 
     ThreeWindingsTransformer& add();
 
-    Leg1Adder& newLeg1();
+    LegAdder& newLeg1();
 
-    Leg2Adder& newLeg2();
+    LegAdder& newLeg2();
 
-    Leg3Adder& newLeg3();
+    LegAdder& newLeg3();
+
+    ThreeWindingsTransformerAdder& setRatedU0(double ratedU0);
 
 protected: // IdentifiableAdder
     Network& getNetwork() override;
@@ -168,17 +115,17 @@ private:
 private:
     Substation& m_substation;
 
-    Leg1Adder m_adder1;
+    LegAdder m_adder1;
 
-    Leg2Adder m_adder2;
+    LegAdder m_adder2;
 
-    Leg3Adder m_adder3;
+    LegAdder m_adder3;
+
+    double m_ratedU0;
 };
 
 }  // namespace iidm
 
 }  // namespace powsybl
-
-#include <powsybl/iidm/ThreeWindingsTransformerAdder.hxx>
 
 #endif  // POWSYBL_IIDM_THREEWINDINGSTRANSFORMERADDER_HPP
