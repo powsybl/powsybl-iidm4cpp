@@ -10,7 +10,7 @@
 #include <chrono>
 
 #include <powsybl/logging/MessageFormat.hpp>
-#include <powsybl/stdcxx/put_time.hpp>
+#include <powsybl/stdcxx/time.hpp>
 
 #include <powsybl/AssertionError.hpp>
 
@@ -37,10 +37,8 @@ const std::string& LogMessage::getMessage() const {
 }
 
 std::string LogMessage::toString() const {
-    struct std::tm result = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nullptr};
-    if (localtime_r(&m_instant, &result) == nullptr) {
-        throw AssertionError(format("Unable to get the date."));
-    }
+    const std::tm& result = stdcxx::localtime(m_instant);
+
     std::ostringstream oss;
     oss << stdcxx::put_time(&result, "%Y-%m-%d %X") << " - " << getLevelName(m_level) << " - " << m_message;
 

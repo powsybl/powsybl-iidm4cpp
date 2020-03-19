@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2018, RTE (http://www.rte-france.com)
+ * Copyright (c) 2020, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_STDCXX_PUT_TIME_HPP
-#define POWSYBL_STDCXX_PUT_TIME_HPP
+#ifndef POWSYBL_STDCXX_TIME_HPP
+#define POWSYBL_STDCXX_TIME_HPP
+
+#include <ctime>
 
 #include <powsybl/stdcxx/features.hpp>
 
@@ -24,7 +26,6 @@ using std::put_time;
 
 #else
 
-#include <ctime>
 #include <string>
 
 #define HAS_PUT_TIME 0
@@ -37,4 +38,11 @@ std::string put_time(const struct std::tm* time, const char* format);
 
 #endif
 
-#endif  // POWSYBL_STDCXX_PUT_TIME_HPP
+namespace stdcxx {
+
+std::tm localtime(const std::time_t& time);
+
+}  // namespace stdcxx
+
+#endif  // POWSYBL_STDCXX_TIME_HPP
+
