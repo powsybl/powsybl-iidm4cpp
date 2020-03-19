@@ -24,8 +24,7 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     m_x(checkX(*this, x)),
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
-    m_ucteXnodeCode(ucteXnodeCode),
-    m_limits() {
+    m_ucteXnodeCode(ucteXnodeCode) {
 }
 
 void DanglingLine::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {

@@ -17,9 +17,7 @@ namespace powsybl {
 namespace iidm {
 
 VscConverterStationAdder::VscConverterStationAdder(VoltageLevel& voltageLevel) :
-    HvdcConverterStationAdder(voltageLevel),
-    m_reactivePowerSetpoint(stdcxx::nan()),
-    m_voltageSetpoint(stdcxx::nan()) {
+    HvdcConverterStationAdder(voltageLevel) {
 }
 
 VscConverterStation& VscConverterStationAdder::add() {

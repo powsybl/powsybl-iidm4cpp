@@ -20,10 +20,7 @@ namespace powsybl {
 namespace iidm {
 
 ReactiveCapabilityCurveAdder::PointAdder::PointAdder(ReactiveCapabilityCurveAdder& adder) :
-    m_adder(adder),
-    m_p(stdcxx::nan()),
-    m_minQ(stdcxx::nan()),
-    m_maxQ(stdcxx::nan()) {
+    m_adder(adder) {
 }
 
 ReactiveCapabilityCurveAdder& ReactiveCapabilityCurveAdder::PointAdder::endPoint() {

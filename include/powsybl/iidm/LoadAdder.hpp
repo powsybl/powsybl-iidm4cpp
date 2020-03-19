@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/LoadType.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -45,11 +46,11 @@ private:
 private:
     VoltageLevel& m_voltageLevel;
 
-    LoadType m_loadType;
+    LoadType m_loadType = LoadType::UNDEFINED;
 
-    double m_p0;
+    double m_p0 = stdcxx::nan();
 
-    double m_q0;
+    double m_q0 = stdcxx::nan();
 };
 
 }  // namespace iidm

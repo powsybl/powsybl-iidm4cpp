@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/EnergySource.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -65,23 +66,23 @@ private:
 private:
     VoltageLevel& m_voltageLevel;
 
-    EnergySource m_energySource;
+    EnergySource m_energySource = EnergySource::OTHER;
 
-    double m_minP;
+    double m_minP = stdcxx::nan();
 
-    double m_maxP;
+    double m_maxP = stdcxx::nan();
 
-    double m_ratedS;
+    double m_ratedS = stdcxx::nan();
 
     stdcxx::Reference<Terminal> m_regulatingTerminal;
 
     stdcxx::optional<bool> m_voltageRegulatorOn;
 
-    double m_activePowerSetpoint;
+    double m_activePowerSetpoint = stdcxx::nan();
 
-    double m_reactivePowerSetpoint;
+    double m_reactivePowerSetpoint = stdcxx::nan();
 
-    double m_voltageSetpoint;
+    double m_voltageSetpoint = stdcxx::nan();
 };
 
 }  // namespace iidm

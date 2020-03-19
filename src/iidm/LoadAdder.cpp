@@ -19,10 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 LoadAdder::LoadAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_loadType(LoadType::UNDEFINED),
-    m_p0(stdcxx::nan()),
-    m_q0(stdcxx::nan()) {
+    m_voltageLevel(voltageLevel) {
 }
 
 Load& LoadAdder::add() {

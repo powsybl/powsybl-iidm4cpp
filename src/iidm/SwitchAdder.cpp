@@ -20,9 +20,7 @@ namespace iidm {
 namespace node_breaker_view {
 
 SwitchAdder::SwitchAdder(VoltageLevel& voltageLevel) :
-    AbstractSwitchAdder(voltageLevel),
-    m_retained(false)
-{
+    AbstractSwitchAdder(voltageLevel) {
 }
 
 Switch& SwitchAdder::add() {

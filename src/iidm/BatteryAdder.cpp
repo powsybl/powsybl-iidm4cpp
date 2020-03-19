@@ -19,11 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 BatteryAdder::BatteryAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_p0(stdcxx::nan()),
-    m_q0(stdcxx::nan()),
-    m_minP(stdcxx::nan()),
-    m_maxP(stdcxx::nan()) {
+    m_voltageLevel(voltageLevel) {
 }
 
 Battery& BatteryAdder::add() {

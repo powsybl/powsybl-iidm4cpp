@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_TWOWINDINGSTRANSFORMERADDER_HPP
 
 #include <powsybl/iidm/BranchAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -47,17 +48,17 @@ private: // IdentifiableAdder
 private:
     Substation& m_substation;
 
-    double m_r;
+    double m_r = stdcxx::nan();
 
-    double m_x;
+    double m_x = stdcxx::nan();
 
-    double m_g;
+    double m_g = stdcxx::nan();
 
-    double m_b;
+    double m_b = stdcxx::nan();
 
-    double m_ratedU1;
+    double m_ratedU1 = stdcxx::nan();
 
-    double m_ratedU2;
+    double m_ratedU2 = stdcxx::nan();
 };
 
 }  // namespace iidm
