@@ -29,6 +29,11 @@ public:
         SIDE_1_INVERTER_SIDE_2_RECTIFIER
     };
 
+    enum class Side : unsigned char {
+        ONE,
+        TWO
+    };
+
 public:
     HvdcLine(Network& network, const std::string& id, const std::string& name, double r, double nominalVoltage, double maxP,
              const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2);
@@ -38,6 +43,10 @@ public:
     double getActivePowerSetpoint() const;
 
     const ConvertersMode& getConvertersMode() const;
+
+    stdcxx::CReference<HvdcConverterStation> getConverterStation(const Side& side) const;
+
+    stdcxx::Reference<HvdcConverterStation> getConverterStation(const Side& side);
 
     stdcxx::CReference<HvdcConverterStation> getConverterStation1() const;
 
@@ -80,6 +89,9 @@ protected: // MultiVariantObject
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
+
+private:
+    HvdcConverterStation& attach(HvdcConverterStation& converterStation);
 
 private:
     stdcxx::Reference<Network> m_network;

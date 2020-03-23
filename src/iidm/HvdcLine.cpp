@@ -20,8 +20,8 @@ HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& n
                    const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2) :
     Identifiable(id, name),
     m_network(network),
-    m_converterStation1(converterStation1),
-    m_converterStation2(converterStation2),
+    m_converterStation1(attach(converterStation1)),
+    m_converterStation2(attach(converterStation2)),
     m_r(checkR(*this, r)),
     m_nominalVoltage(checkNominalVoltage(*this, nominalVoltage)),
     m_maxP(checkMaxP(*this, maxP)),
@@ -34,6 +34,11 @@ void HvdcLine::allocateVariantArrayElement(const std::set<unsigned long>& indexe
         m_convertersMode[index] = m_convertersMode[sourceIndex];
         m_activePowerSetpoint[index] = m_activePowerSetpoint[sourceIndex];
     }
+}
+
+HvdcConverterStation& HvdcLine::attach(HvdcConverterStation& converterStation) {
+    converterStation.setHvdcLine(stdcxx::ref(*this));
+    return converterStation;
 }
 
 void HvdcLine::deleteVariantArrayElement(unsigned long /*index*/) {
@@ -51,6 +56,14 @@ double HvdcLine::getActivePowerSetpoint() const {
 
 const HvdcLine::ConvertersMode& HvdcLine::getConvertersMode() const {
     return m_convertersMode.at(getNetwork().getVariantIndex());
+}
+
+stdcxx::CReference<HvdcConverterStation> HvdcLine::getConverterStation(const HvdcLine::Side& side) const {
+    return side == Side::ONE ? getConverterStation1() : getConverterStation2();
+}
+
+stdcxx::Reference<HvdcConverterStation> HvdcLine::getConverterStation(const HvdcLine::Side& side) {
+    return side == Side::ONE ? getConverterStation1() : getConverterStation2();
 }
 
 stdcxx::CReference<HvdcConverterStation> HvdcLine::getConverterStation1() const {
@@ -101,6 +114,11 @@ void HvdcLine::reduceVariantArraySize(unsigned long number) {
 }
 
 void HvdcLine::remove() {
+    m_converterStation1.get().setHvdcLine(stdcxx::ref<HvdcLine>());
+    m_converterStation2.get().setHvdcLine(stdcxx::ref<HvdcLine>());
+    m_converterStation1 = stdcxx::ref<HvdcConverterStation>();
+    m_converterStation2 = stdcxx::ref<HvdcConverterStation>();
+
     getNetwork().remove(*this);
 }
 
