@@ -75,7 +75,7 @@ private:
 
     std::set<unsigned long> m_unusedIndexes;
 
-    unsigned long m_variantArraySize;
+    unsigned long m_variantArraySize = INITIAL_VARIANT_INDEX + 1;
 };
 
 }  // namespace iidm

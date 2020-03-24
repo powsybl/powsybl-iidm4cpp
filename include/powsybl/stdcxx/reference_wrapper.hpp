@@ -21,9 +21,7 @@ public:
     using type = T;
 
 public:
-    reference_wrapper() noexcept :
-        m_pointer(nullptr) {
-    }
+    reference_wrapper() noexcept = default;
 
     explicit reference_wrapper(T& reference) noexcept :
         m_pointer(std::addressof(reference)) {
@@ -79,7 +77,7 @@ public:
     }
 
 private:
-    T* m_pointer;
+    T* m_pointer = nullptr;
 };
 
 template <typename T> using CReference = reference_wrapper<const T>;

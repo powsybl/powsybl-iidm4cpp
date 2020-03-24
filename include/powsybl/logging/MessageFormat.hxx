@@ -21,7 +21,7 @@ namespace powsybl {
 
 namespace logging {
 
-inline void format(boost::format& /*fmt*/) {
+inline void format(const boost::format& /*fmt*/) {
     // This function is used to stop the recursion
 }
 

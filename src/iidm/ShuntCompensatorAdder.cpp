@@ -18,10 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 ShuntCompensatorAdder::ShuntCompensatorAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_bPerSection(stdcxx::nan()),
-    m_currentSectionCount(0UL),
-    m_maximumSectionCount(0UL) {
+    m_voltageLevel(voltageLevel) {
 }
 
 ShuntCompensator& ShuntCompensatorAdder::add() {

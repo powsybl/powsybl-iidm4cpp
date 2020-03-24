@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_TIELINE_HPP
 
 #include <powsybl/iidm/Line.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -79,9 +80,9 @@ public:
 
         LineCharacteristics m_lineCharacteristics;
 
-        double m_xnodeP;
+        double m_xnodeP = stdcxx::nan();
 
-        double m_xnodeQ;
+        double m_xnodeQ = stdcxx::nan();
     };
 
 public: // Line

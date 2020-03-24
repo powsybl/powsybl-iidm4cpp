@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_VSCCONVERTERSTATIONADDER_HPP
 
 #include <powsybl/iidm/HvdcConverterStationAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -40,9 +41,9 @@ private:
 private:
     stdcxx::optional<bool> m_voltageRegulatorOn;
 
-    double m_reactivePowerSetpoint;
+    double m_reactivePowerSetpoint = stdcxx::nan();
 
-    double m_voltageSetpoint;
+    double m_voltageSetpoint = stdcxx::nan();
 };
 
 }  // namespace iidm

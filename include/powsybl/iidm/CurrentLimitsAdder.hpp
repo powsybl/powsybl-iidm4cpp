@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_CURRENTLIMITSADDER_HPP
 
 #include <powsybl/iidm/CurrentLimits.hpp>
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -42,11 +43,11 @@ public:
 
         std::string m_name;
 
-        double m_value;
+        double m_value{stdcxx::nan()};
 
         stdcxx::optional<unsigned long> m_acceptableDuration;
 
-        bool m_fictitious;
+        bool m_fictitious{false};
     };
 
 public:
@@ -72,7 +73,7 @@ private:
 
     O& m_owner;
 
-    double m_permanentLimit;
+    double m_permanentLimit = stdcxx::nan();
 
     CurrentLimits::TemporaryLimits m_temporaryLimits;
 };

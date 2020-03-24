@@ -19,10 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 VoltageLevelAdder::VoltageLevelAdder(Substation& substation) :
-    m_substation(substation),
-    m_highVoltageLimit(stdcxx::nan()),
-    m_lowVoltageLimit(stdcxx::nan()),
-    m_nominalVoltage(stdcxx::nan()) {
+    m_substation(substation) {
 }
 
 VoltageLevel& VoltageLevelAdder::add() {

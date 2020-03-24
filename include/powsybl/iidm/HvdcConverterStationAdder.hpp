@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_HVDCCONVERTERSTATIONADDER_HPP
 
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -39,7 +40,7 @@ protected:
 private:
     VoltageLevel& m_voltageLevel;
 
-    double m_lossFactor;
+    double m_lossFactor = stdcxx::nan();
 };
 
 }  // namespace iidm

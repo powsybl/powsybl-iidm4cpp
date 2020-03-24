@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -50,15 +51,15 @@ public:
     private:
         RatioTapChangerAdder& m_parent;
 
-        double m_rho;
+        double m_rho = stdcxx::nan();
 
-        double m_r;
+        double m_r = stdcxx::nan();
 
-        double m_x;
+        double m_x = stdcxx::nan();
 
-        double m_g;
+        double m_g = stdcxx::nan();
 
-        double m_b;
+        double m_b = stdcxx::nan();
     };
 
 public:
@@ -95,21 +96,21 @@ private:
 private:
     RatioTapChangerHolder& m_parent;
 
-    long m_lowTapPosition;
+    long m_lowTapPosition = 0;
 
     stdcxx::optional<long> m_tapPosition;
 
     std::vector<RatioTapChangerStep> m_steps;
 
-    bool m_loadTapChangingCapabilities;
+    bool m_loadTapChangingCapabilities = false;
 
-    bool m_regulating;
+    bool m_regulating = false;
 
-    double m_targetV;
+    double m_targetV = stdcxx::nan();
 
     stdcxx::Reference<Terminal> m_regulationTerminal;
 
-    double m_targetDeadband;
+    double m_targetDeadband = stdcxx::nan();
 };
 
 }  // namespace iidm

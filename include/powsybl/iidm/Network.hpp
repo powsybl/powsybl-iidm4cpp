@@ -330,7 +330,7 @@ private:
 private:
     stdcxx::DateTime m_caseDate;
 
-    int m_forecastDistance;
+    int m_forecastDistance = 0;
 
     std::string m_sourceFormat;
 

@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -45,13 +46,13 @@ private:
 private:
     VoltageLevel& m_voltageLevel;
 
-    double m_bMin;
+    double m_bMin = stdcxx::nan();
 
-    double m_bMax;
+    double m_bMax = stdcxx::nan();
 
-    double m_voltageSetpoint;
+    double m_voltageSetpoint = stdcxx::nan();
 
-    double m_reactivePowerSetpoint;
+    double m_reactivePowerSetpoint = stdcxx::nan();
 
     stdcxx::optional<StaticVarCompensator::RegulationMode> m_regulationMode;
 };

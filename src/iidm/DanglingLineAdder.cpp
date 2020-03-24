@@ -19,13 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 DanglingLineAdder::DanglingLineAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_r(stdcxx::nan()),
-    m_x(stdcxx::nan()),
-    m_g(stdcxx::nan()),
-    m_b(stdcxx::nan()),
-    m_p0(stdcxx::nan()),
-    m_q0(stdcxx::nan()) {
+    m_voltageLevel(voltageLevel) {
 }
 
 DanglingLine& DanglingLineAdder::add() {

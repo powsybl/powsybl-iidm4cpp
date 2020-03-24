@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -47,11 +48,11 @@ private:
 private:
     Substation& m_substation;
 
-    double m_highVoltageLimit;
+    double m_highVoltageLimit = stdcxx::nan();
 
-    double m_lowVoltageLimit;
+    double m_lowVoltageLimit = stdcxx::nan();
 
-    double m_nominalVoltage;
+    double m_nominalVoltage = stdcxx::nan();
 
     stdcxx::optional<TopologyKind> m_topologyKind;
 

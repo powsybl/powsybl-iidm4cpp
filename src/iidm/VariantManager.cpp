@@ -24,8 +24,7 @@ constexpr unsigned long VariantManager::INITIAL_VARIANT_INDEX;
 
 VariantManager::VariantManager(Network& network) :
     m_network(network),
-    m_variantContext(stdcxx::make_unique<MultipleVariantContext>(INITIAL_VARIANT_INDEX)),
-    m_variantArraySize(INITIAL_VARIANT_INDEX + 1) {
+    m_variantContext(stdcxx::make_unique<MultipleVariantContext>(INITIAL_VARIANT_INDEX)) {
 
     m_variantsById.insert(std::make_pair(getInitialVariantId(), INITIAL_VARIANT_INDEX));
 }

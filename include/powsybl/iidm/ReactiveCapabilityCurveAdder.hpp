@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_REACTIVECAPABILITYCURVEADDER_HPP
 
 #include <powsybl/iidm/ReactiveCapabilityCurve.hpp>
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -38,11 +39,11 @@ public:
     private:
         ReactiveCapabilityCurveAdder& m_adder;
 
-        double m_p;
+        double m_p = stdcxx::nan();
 
-        double m_minQ;
+        double m_minQ = stdcxx::nan();
 
-        double m_maxQ;
+        double m_maxQ = stdcxx::nan();
     };
 
 public:

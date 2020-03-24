@@ -89,7 +89,7 @@ void NetworkIndex::remove(Identifiable& identifiable) {
     if ((it != m_objectsById.end()) && stdcxx::areSame(*it->second, identifiable)) {
         Identifiables& identifiables = m_objectsByType.find(typeid(identifiable))->second;
 
-        const auto& itIdentifiable = std::find_if(identifiables.begin(), identifiables.end(), [&identifiable](std::reference_wrapper<Identifiable>& item) {
+        const auto& itIdentifiable = std::find_if(identifiables.begin(), identifiables.end(), [&identifiable](const std::reference_wrapper<Identifiable>& item) {
             return stdcxx::areSame(identifiable, item.get());
         });
 
