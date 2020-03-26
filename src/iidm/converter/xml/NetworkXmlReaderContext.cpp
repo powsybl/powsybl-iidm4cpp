@@ -15,10 +15,11 @@ namespace converter {
 
 namespace xml {
 
-NetworkXmlReaderContext::NetworkXmlReaderContext(const Anonymizer& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options) :
+NetworkXmlReaderContext::NetworkXmlReaderContext(const Anonymizer& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options, const IidmXmlVersion& version) :
     m_reader(reader),
     m_anonymizer(anonymizer),
-    m_options(options) {
+    m_options(options),
+    m_version(version) {
 
 }
 
@@ -40,6 +41,10 @@ const ImportOptions& NetworkXmlReaderContext::getOptions() const {
 
 const powsybl::xml::XmlStreamReader& NetworkXmlReaderContext::getReader() const {
     return m_reader;
+}
+
+const IidmXmlVersion& NetworkXmlReaderContext::getVersion() const {
+    return m_version;
 }
 
 }  // namespace xml

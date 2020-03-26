@@ -14,6 +14,7 @@
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/logging/Logger.hpp>
@@ -168,6 +169,8 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
 
     reader.skipComments();
 
+    const IidmXmlVersion& version = IidmXmlVersion::fromNamespaceURI(reader.getNamespaceOrDefault(IIDM_PREFIX));
+
     const std::string& id = reader.getAttributeValue(ID);
     const std::string& sourceFormat = reader.getAttributeValue(SOURCE_FORMAT);
     int forecastDistance = reader.getOptionalAttributeValue(FORECAST_DISTANCE, 0);
@@ -182,7 +185,7 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
         throw powsybl::xml::XmlStreamException(err.what());
     }
 
-    NetworkXmlReaderContext context(anonymizer, reader, options);
+    NetworkXmlReaderContext context(anonymizer, reader, options, version);
 
     std::set<std::string> extensionsNotFound;
 
@@ -231,12 +234,14 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     std::unique_ptr<Anonymizer> anonymizer(stdcxx::make_unique<FakeAnonymizer>());
 
     const BusFilter& filter = BusFilter::create(network, options);
-    NetworkXmlWriterContext context(*anonymizer, writer, options, filter);
+
+    const IidmXmlVersion& version = options.getVersion().empty() ? IidmXmlVersion::CURRENT_IIDM_XML_VERSION : IidmXmlVersion::of(options.getVersion(), ".");
+    NetworkXmlWriterContext context(*anonymizer, writer, options, filter, version);
 
     writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");
 
     writer.writeStartElement(IIDM_PREFIX, NETWORK);
-    writer.setPrefix(IIDM_PREFIX, IIDM_URI);
+    writer.setPrefix(IIDM_PREFIX, version.getNamespaceUri());
     writeExtensionNamespaces(network, context);
 
     writer.writeAttribute(ID, network.getId());

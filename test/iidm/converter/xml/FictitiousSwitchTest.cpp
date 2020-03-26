@@ -7,8 +7,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/iidm/Network.hpp>
-
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -23,19 +21,11 @@ namespace xml {
 BOOST_AUTO_TEST_SUITE(FictitiousSwitchTestSuite)
 
 BOOST_FIXTURE_TEST_CASE(FictitiousSwitchBBk, test::ResourceFixture) {
-
-    const std::string& networkStr = ResourceFixture::getResource("/fictitiousSwitchRef-bbk.xml");
-    Network network = Network::readXml(networkStr);
-
-    test::converter::RoundTrip::runXml(network, networkStr);
+    test::converter::RoundTrip::roundTripVersionedXmlTest("fictitiousSwitchRef-bbk.xml", IidmXmlVersion::all());
 }
 
 BOOST_FIXTURE_TEST_CASE(FictitiousSwitchNBk, test::ResourceFixture) {
-
-    const std::string& networkStr = ResourceFixture::getResource("/fictitiousSwitchRef-nbk.xml");
-    Network network = Network::readXml(networkStr);
-
-    test::converter::RoundTrip::runXml(network, networkStr);
+    test::converter::RoundTrip::roundTripVersionedXmlTest("fictitiousSwitchRef-nbk.xml", IidmXmlVersion::all());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

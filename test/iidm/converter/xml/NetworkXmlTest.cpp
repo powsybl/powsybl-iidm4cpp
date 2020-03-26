@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(NoPrefix) {
 BOOST_AUTO_TEST_CASE(SpecialChars) {
 
     const std::string& networkStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                    "<network xmlns=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
+                                    "<network xmlns:iidm=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
                                     "              id=\"ø/Ø - ö/Ö - æ/Æ - ä/Ä - å/Å (aa/Aa)\" "
                                     "              caseDate=\"2014-11-08T19:00:00.000+01:00\" "
                                     "              forecastDistance=\"0\" "

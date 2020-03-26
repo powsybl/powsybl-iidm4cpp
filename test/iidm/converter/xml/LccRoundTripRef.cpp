@@ -7,8 +7,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/iidm/Network.hpp>
-
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -23,10 +21,7 @@ namespace xml {
 BOOST_AUTO_TEST_SUITE(LccRoundTrip)
 
 BOOST_FIXTURE_TEST_CASE(LccRoundTripTest, test::ResourceFixture) {
-    const std::string& networkStr = ResourceFixture::getResource("/LccRoundTripRef.xml");
-    Network network = Network::readXml(networkStr);
-
-    test::converter::RoundTrip::runXml(network, networkStr);
+    test::converter::RoundTrip::roundTripVersionedXmlTest("LccRoundTripRef.xml", IidmXmlVersion::all());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
