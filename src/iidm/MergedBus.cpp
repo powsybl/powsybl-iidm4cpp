@@ -22,8 +22,7 @@ namespace iidm {
 
 MergedBus::MergedBus(const std::string& id, const std::string& name, BusSet buses) :
     Bus(id, name),
-    m_buses(std::move(buses)),
-    m_valid(true) {
+    m_buses(std::move(buses)) {
 
     if (m_buses.empty()) {
         throw PowsyblException("The set of buses is empty");

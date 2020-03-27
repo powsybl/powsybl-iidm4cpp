@@ -98,7 +98,7 @@ std::vector<typename UndirectedGraph<V, E>::Path> UndirectedGraph<V, E>::findAll
 
 template <typename V, typename E>
 void UndirectedGraph<V, E>::findAllPaths(unsigned long v, const VertexVisitor& pathComplete, const EdgeVisitor& pathCanceled,
-                                         Path& path, std::vector<bool>& encountered, std::vector<Path>& paths) const {
+                                         const Path& path, std::vector<bool>& encountered, std::vector<Path>& paths) const {
     checkVertex(v);
 
     encountered[v] = true;
@@ -133,7 +133,7 @@ void UndirectedGraph<V, E>::findAllPaths(unsigned long v, const VertexVisitor& p
 
 template <typename V, typename E>
 bool UndirectedGraph<V, E>::findAllPaths(unsigned long e, unsigned long v, const VertexVisitor& pathComplete, const EdgeVisitor& pathCanceled,
-                                         typename UndirectedGraph<V, E>::Path& path, std::vector<bool>& encountered, std::vector<std::vector<unsigned long> >& paths) const {
+                                         Path& path, std::vector<bool>& encountered, std::vector<std::vector<unsigned long> >& paths) const {
     if (encountered[v]) {
         return false;
     }

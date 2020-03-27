@@ -262,44 +262,37 @@ std::string XmlStreamReader::readUntilEndElement(const std::string& elementName)
 std::string XmlStreamReader::readUntilEndElement(const std::string& elementName, const ReadCallback& callback) const {
     std::string text;
     int emptyElement = xmlTextReaderIsEmptyElement(m_reader.get());
-    switch (emptyElement) {
-        case 1:
-            // if current element is an empty element, XML_READER_TYPE_END_ELEMENT is never reached => nothing to do
-            return text;
+    if (emptyElement == -1) {
+        // Error
+        throw XmlStreamException(logging::format("An error occurred while reading <%1%>", elementName.c_str()));
+    } else if (emptyElement == 1) {
+        // if current element is an empty element, XML_READER_TYPE_END_ELEMENT is never reached => nothing to do
+        return text;
+    }
 
-        case -1:
-            throw XmlStreamException(logging::format("An error occurred while reading <%1%>", elementName.c_str()));
+    // not an empty element => read until end element
+    int res = xmlTextReaderRead(m_reader.get());
+    int nodeType = getCurrentNodeType();
+    std::string name = getLocalName();
+    if (nodeType == XML_READER_TYPE_TEXT) {
+        text = getText();
+    }
 
-        case 0: {
-            // not an empty element => read until end element
-            int res = xmlTextReaderRead(m_reader.get());
-            int nodeType = getCurrentNodeType();
-            std::string name = getLocalName();
-            if (nodeType == XML_READER_TYPE_TEXT) {
-                text = getText();
-            }
-
-            while (res == 1 && (nodeType != XML_READER_TYPE_END_ELEMENT || name != elementName)) {
-                if (nodeType == XML_READER_TYPE_ELEMENT) {
-                    callback();
-                }
-
-                res = xmlTextReaderRead(m_reader.get());
-                nodeType = getCurrentNodeType();
-                name = getLocalName();
-                if (nodeType == XML_READER_TYPE_TEXT) {
-                    text = getText();
-                }
-            }
-
-            if (res != 1) {
-                throw XmlStreamException(logging::format("Unexpected end of file: expecting %1%", elementName.c_str()));
-            }
-            break;
+    while (res == 1 && (nodeType != XML_READER_TYPE_END_ELEMENT || name != elementName)) {
+        if (nodeType == XML_READER_TYPE_ELEMENT) {
+            callback();
         }
 
-        default:
-            throw AssertionError(logging::format("Unexpected xmlTextReaderIsEmptyElement return value: %1%", emptyElement));
+        res = xmlTextReaderRead(m_reader.get());
+        nodeType = getCurrentNodeType();
+        name = getLocalName();
+        if (nodeType == XML_READER_TYPE_TEXT) {
+            text = getText();
+        }
+    }
+
+    if (res != 1) {
+        throw XmlStreamException(logging::format("Unexpected end of file: expecting %1%", elementName.c_str()));
     }
 
     return text;

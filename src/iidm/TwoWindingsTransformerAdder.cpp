@@ -19,13 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 TwoWindingsTransformerAdder::TwoWindingsTransformerAdder(Substation& substation) :
-    m_substation(substation),
-    m_r(stdcxx::nan()),
-    m_x(stdcxx::nan()),
-    m_g(stdcxx::nan()),
-    m_b(stdcxx::nan()),
-    m_ratedU1(stdcxx::nan()),
-    m_ratedU2(stdcxx::nan()) {
+    m_substation(substation) {
 }
 
 TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {

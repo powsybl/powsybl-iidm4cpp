@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_MINMAXREACTIVELIMITSADDER_HPP
 #define POWSYBL_IIDM_MINMAXREACTIVELIMITSADDER_HPP
 
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -32,9 +33,9 @@ public:
 private:
     ReactiveLimitsHolder& m_owner;
 
-    double m_minQ;
+    double m_minQ = stdcxx::nan();
 
-    double m_maxQ;
+    double m_maxQ = stdcxx::nan();
 };
 
 }  // namespace iidm

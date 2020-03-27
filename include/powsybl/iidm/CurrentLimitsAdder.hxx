@@ -30,9 +30,7 @@ double checkPermanentLimit(const Validable& validable, double permanentLimit);
 
 template <typename S, typename O>
 CurrentLimitsAdder<S, O>::TemporaryLimitAdder::TemporaryLimitAdder(CurrentLimitsAdder<S, O>& parent) :
-    m_parent(parent),
-    m_value(stdcxx::nan()),
-    m_fictitious() {
+    m_parent(parent) {
 }
 
 template <typename S, typename O>
@@ -78,8 +76,7 @@ typename CurrentLimitsAdder<S, O>::TemporaryLimitAdder& CurrentLimitsAdder<S, O>
 template <typename S, typename O>
 CurrentLimitsAdder<S, O>::CurrentLimitsAdder(const S& side, O& owner) :
     m_side(side),
-    m_owner(owner),
-    m_permanentLimit(stdcxx::nan()) {
+    m_owner(owner) {
 }
 
 template <typename S, typename O>

@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -77,15 +78,15 @@ public:
 
         std::string m_connectableBus;
 
-        double m_r;
+        double m_r = stdcxx::nan();
 
-        double m_x;
+        double m_x = stdcxx::nan();
 
-        double m_g;
+        double m_g = stdcxx::nan();
 
-        double m_b;
+        double m_b = stdcxx::nan();
 
-        double m_ratedU;
+        double m_ratedU = stdcxx::nan();
     };
 
 public:
@@ -121,7 +122,7 @@ private:
 
     LegAdder m_adder3;
 
-    double m_ratedU0;
+    double m_ratedU0 = stdcxx::nan();
 };
 
 }  // namespace iidm

@@ -18,11 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 StaticVarCompensatorAdder::StaticVarCompensatorAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_bMin(stdcxx::nan()),
-    m_bMax(stdcxx::nan()),
-    m_voltageSetpoint(stdcxx::nan()),
-    m_reactivePowerSetpoint(stdcxx::nan()) {
+    m_voltageLevel(voltageLevel) {
 }
 
 StaticVarCompensator& StaticVarCompensatorAdder::add() {

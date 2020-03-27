@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_BATTERYADDER_HPP
 
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -46,13 +47,13 @@ private:
 private:
     VoltageLevel& m_voltageLevel;
 
-    double m_p0;
+    double m_p0 = stdcxx::nan();
 
-    double m_q0;
+    double m_q0 = stdcxx::nan();
 
-    double m_minP;
+    double m_minP = stdcxx::nan();
 
-    double m_maxP;
+    double m_maxP = stdcxx::nan();
 };
 
 }  // namespace iidm

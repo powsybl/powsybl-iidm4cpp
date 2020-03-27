@@ -19,14 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 GeneratorAdder::GeneratorAdder(powsybl::iidm::VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_energySource(EnergySource::OTHER),
-    m_minP(stdcxx::nan()),
-    m_maxP(stdcxx::nan()),
-    m_ratedS(stdcxx::nan()),
-    m_activePowerSetpoint(stdcxx::nan()),
-    m_reactivePowerSetpoint(stdcxx::nan()),
-    m_voltageSetpoint(stdcxx::nan()) {
+    m_voltageLevel(voltageLevel) {
 }
 
 Generator& GeneratorAdder::add() {

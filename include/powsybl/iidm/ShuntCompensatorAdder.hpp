@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_SHUNTCOMPENSATORADDER_HPP
 
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -44,11 +45,11 @@ private:
 private:
     VoltageLevel& m_voltageLevel;
 
-    double m_bPerSection;
+    double m_bPerSection = stdcxx::nan();
 
-    unsigned long m_currentSectionCount;
+    unsigned long m_currentSectionCount = 0;
 
-    unsigned long m_maximumSectionCount;
+    unsigned long m_maximumSectionCount = 0;
 
 };
 

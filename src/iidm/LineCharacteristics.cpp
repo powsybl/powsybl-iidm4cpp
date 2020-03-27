@@ -15,23 +15,11 @@ namespace powsybl {
 namespace iidm {
 
 LineCharacteristics::LineCharacteristics(const Validable& validable) :
-    m_validable(validable),
-    m_b1(stdcxx::nan()),
-    m_b2(stdcxx::nan()),
-    m_g1(stdcxx::nan()),
-    m_g2(stdcxx::nan()),
-    m_r(stdcxx::nan()),
-    m_x(stdcxx::nan()) {
+    m_validable(validable) {
 }
 
 LineCharacteristics::LineCharacteristics(const Validable& validable, double r, double x, double g1, double b1, double g2, double b2) :
-    m_validable(validable),
-    m_b1(stdcxx::nan()),
-    m_b2(stdcxx::nan()),
-    m_g1(stdcxx::nan()),
-    m_g2(stdcxx::nan()),
-    m_r(stdcxx::nan()),
-    m_x(stdcxx::nan()) {
+    m_validable(validable) {
     setB1(b1);
     setB2(b2);
     setG1(g1);

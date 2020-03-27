@@ -58,30 +58,34 @@ void ReactiveLimitsXml::read(ReactiveLimitsHolder& holder, const NetworkXmlReade
     }
 }
 
+void ReactiveLimitsXml::write(const MinMaxReactiveLimits& limits, NetworkXmlWriterContext& context) const {
+    context.getWriter().writeStartElement(IIDM_PREFIX, MIN_MAX_REACTIVE_LIMITS);
+    context.getWriter().writeAttribute(MIN_Q, limits.getMinQ());
+    context.getWriter().writeAttribute(MAX_Q, limits.getMaxQ());
+    context.getWriter().writeEndElement();
+}
+
+void ReactiveLimitsXml::write(const ReactiveCapabilityCurve& curve, NetworkXmlWriterContext& context) const {
+    context.getWriter().writeStartElement(IIDM_PREFIX, REACTIVE_CAPABILITY_CURVE);
+    for (const auto& point : curve.getPoints()) {
+        context.getWriter().writeStartElement(IIDM_PREFIX, POINT);
+        context.getWriter().writeAttribute(P, point.getP());
+        context.getWriter().writeAttribute(MIN_Q, point.getMinQ());
+        context.getWriter().writeAttribute(MAX_Q, point.getMaxQ());
+        context.getWriter().writeEndElement();
+    }
+    context.getWriter().writeEndElement();
+}
+
 void ReactiveLimitsXml::write(const ReactiveLimitsHolder& holder, NetworkXmlWriterContext& context) const {
     switch (holder.getReactiveLimits<ReactiveLimits>().getKind()) {
-        case ReactiveLimitsKind::CURVE: {
-                const auto& curve = holder.getReactiveLimits<ReactiveCapabilityCurve>();
-                context.getWriter().writeStartElement(IIDM_PREFIX, REACTIVE_CAPABILITY_CURVE);
-                for (const auto& point : curve.getPoints()) {
-                    context.getWriter().writeStartElement(IIDM_PREFIX, POINT);
-                    context.getWriter().writeAttribute(P, point.getP());
-                    context.getWriter().writeAttribute(MIN_Q, point.getMinQ());
-                    context.getWriter().writeAttribute(MAX_Q, point.getMaxQ());
-                    context.getWriter().writeEndElement();
-                }
-                context.getWriter().writeEndElement();
-                break;
-            }
+        case ReactiveLimitsKind::CURVE:
+            write(holder.getReactiveLimits<ReactiveCapabilityCurve>(), context);
+            break;
 
-        case ReactiveLimitsKind::MIN_MAX: {
-                const auto& limits = holder.getReactiveLimits<MinMaxReactiveLimits>();
-                context.getWriter().writeStartElement(IIDM_PREFIX, MIN_MAX_REACTIVE_LIMITS);
-                context.getWriter().writeAttribute(MIN_Q, limits.getMinQ());
-                context.getWriter().writeAttribute(MAX_Q, limits.getMaxQ());
-                context.getWriter().writeEndElement();
-                break;
-            }
+        case ReactiveLimitsKind::MIN_MAX:
+            write(holder.getReactiveLimits<MinMaxReactiveLimits>(), context);
+            break;
 
         default:
             throw PowsyblException(logging::format("Unknown reactive limit kind"));

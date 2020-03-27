@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_LCCCONVERTERSTATIONADDER_HPP
 
 #include <powsybl/iidm/HvdcConverterStationAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -36,7 +37,7 @@ private:
     friend class VoltageLevel;
 
 private:
-    double m_powerFactor;
+    double m_powerFactor = stdcxx::nan();
 
 };
 

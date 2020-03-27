@@ -12,6 +12,8 @@ namespace powsybl {
 
 namespace iidm {
 
+class MinMaxReactiveLimits;
+class ReactiveCapabilityCurve;
 class ReactiveLimitsHolder;
 
 namespace converter {
@@ -34,6 +36,10 @@ private:
     ReactiveLimitsXml() = default;
 
     ~ReactiveLimitsXml() noexcept = default;
+
+    void write(const MinMaxReactiveLimits& limits, NetworkXmlWriterContext& context) const;
+
+    void write(const ReactiveCapabilityCurve& curve, NetworkXmlWriterContext& context) const;
 };
 
 }  // namespace xml

@@ -19,13 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 PhaseTapChangerAdder::StepAdder::StepAdder(PhaseTapChangerAdder& parent) :
-    m_parent(parent),
-    m_alpha(stdcxx::nan()),
-    m_rho(stdcxx::nan()),
-    m_r(stdcxx::nan()),
-    m_x(stdcxx::nan()),
-    m_g(stdcxx::nan()),
-    m_b(stdcxx::nan()) {
+    m_parent(parent) {
 }
 
 PhaseTapChangerAdder& PhaseTapChangerAdder::StepAdder::endStep() {
@@ -70,12 +64,7 @@ PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setX(double x)
 }
 
 PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent) :
-    m_parent(parent),
-    m_lowTapPosition(0U),
-    m_regulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP),
-    m_regulationValue(stdcxx::nan()),
-    m_regulating(),
-    m_targetDeadband(stdcxx::nan()) {
+    m_parent(parent) {
 }
 
 PhaseTapChanger& PhaseTapChangerAdder::add() {

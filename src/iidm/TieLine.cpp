@@ -15,9 +15,7 @@ namespace powsybl {
 namespace iidm {
 
 TieLine::HalfLine::HalfLine() :
-    m_lineCharacteristics(*this),
-    m_xnodeP(stdcxx::nan()),
-    m_xnodeQ(stdcxx::nan()) {
+    m_lineCharacteristics(*this) {
 }
 
 double TieLine::HalfLine::getB1() const {
