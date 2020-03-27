@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_MINMAXREACTIVELIMITS_HPP
 #define POWSYBL_IIDM_MINMAXREACTIVELIMITS_HPP
 
+#include <limits>
+
 #include <powsybl/iidm/ReactiveLimits.hpp>
 
 namespace powsybl {
@@ -23,7 +25,7 @@ public: // ReactiveLimits
     double getMinQ(double p) const override;
 
 public:
-    MinMaxReactiveLimits();
+    MinMaxReactiveLimits() noexcept = default;
 
     MinMaxReactiveLimits(double minQ, double maxQ);
 
@@ -38,9 +40,9 @@ public:
     double getMinQ() const;
 
 private:
-    double m_minQ;
+    double m_minQ = -std::numeric_limits<double>::max();
 
-    double m_maxQ;
+    double m_maxQ = std::numeric_limits<double>::max();
 };
 
 }  // namespace iidm

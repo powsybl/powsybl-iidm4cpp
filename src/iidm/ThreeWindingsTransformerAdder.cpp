@@ -22,12 +22,7 @@ namespace iidm {
 
 ThreeWindingsTransformerAdder::LegAdder::LegAdder(ThreeWindingsTransformerAdder& parent, unsigned long legNumber) :
     m_parent(parent),
-    m_legNumber(legNumber),
-    m_r(stdcxx::nan()),
-    m_x(stdcxx::nan()),
-    m_g(stdcxx::nan()),
-    m_b(stdcxx::nan()),
-    m_ratedU(stdcxx::nan()) {
+    m_legNumber(legNumber) {
 }
 
 ThreeWindingsTransformerAdder& ThreeWindingsTransformerAdder::LegAdder::add() {
@@ -144,8 +139,7 @@ ThreeWindingsTransformerAdder::ThreeWindingsTransformerAdder(Substation& substat
     m_substation(substation),
     m_adder1(*this, 1),
     m_adder2(*this, 2),
-    m_adder3(*this, 3),
-    m_ratedU0(stdcxx::nan()) {
+    m_adder3(*this, 3) {
 }
 
 ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {

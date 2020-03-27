@@ -20,11 +20,7 @@ namespace powsybl {
 namespace iidm {
 
 HvdcLineAdder::HvdcLineAdder(Network& network) :
-    m_network(network),
-    m_r(stdcxx::nan()),
-    m_nominalVoltage(stdcxx::nan()),
-    m_maxP(stdcxx::nan()),
-    m_activePowerSetpoint(stdcxx::nan()) {
+    m_network(network) {
 }
 
 HvdcLine& HvdcLineAdder::add() {

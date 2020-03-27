@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_DANGLINGLINEADDER_HPP
 
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -52,17 +53,17 @@ private:
 private:
     VoltageLevel& m_voltageLevel;
 
-    double m_r;
+    double m_r = stdcxx::nan();
 
-    double m_x;
+    double m_x = stdcxx::nan();
 
-    double m_g;
+    double m_g = stdcxx::nan();
 
-    double m_b;
+    double m_b = stdcxx::nan();
 
-    double m_p0;
+    double m_p0 = stdcxx::nan();
 
-    double m_q0;
+    double m_q0 = stdcxx::nan();
 
     std::string m_ucteXnodeCode;
 };

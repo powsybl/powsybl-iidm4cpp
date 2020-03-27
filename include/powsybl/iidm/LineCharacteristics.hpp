@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_LINECHARACTERISTICS_HPP
 #define POWSYBL_IIDM_LINECHARACTERISTICS_HPP
 
+#include <powsybl/stdcxx/math.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -49,17 +51,17 @@ public:
 private:
     const Validable& m_validable;
 
-    double m_b1;
+    double m_b1 = stdcxx::nan();
 
-    double m_b2;
+    double m_b2 = stdcxx::nan();
 
-    double m_g1;
+    double m_g1 = stdcxx::nan();
 
-    double m_g2;
+    double m_g2 = stdcxx::nan();
 
-    double m_r;
+    double m_r = stdcxx::nan();
 
-    double m_x;
+    double m_x = stdcxx::nan();
 };
 
 }  // namespace iidm

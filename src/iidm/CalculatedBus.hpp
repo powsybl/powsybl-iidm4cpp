@@ -68,7 +68,7 @@ private:
 private:
     stdcxx::Reference<NodeBreakerVoltageLevel> m_voltageLevel;
 
-    bool m_valid;
+    bool m_valid{true};
 
     std::vector<std::reference_wrapper<NodeTerminal> > m_terminals;
 

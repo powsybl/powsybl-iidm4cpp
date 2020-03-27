@@ -49,9 +49,9 @@ private: // IdentifiableAdder
 private:
     VoltageLevel& m_voltageLevel;
 
-    bool m_open;
+    bool m_open = false;
 
-    bool m_fictitious;
+    bool m_fictitious = false;
 };
 
 namespace node_breaker_view {
@@ -80,7 +80,7 @@ private:
 
     stdcxx::optional<SwitchKind> m_kind;
 
-    bool m_retained;
+    bool m_retained = false;
 };
 
 }  // namespace node_breaker_view

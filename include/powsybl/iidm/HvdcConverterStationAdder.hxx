@@ -20,8 +20,7 @@ double checkLossFactor(const Validable& validable, double lossFactor);
 
 template<typename Adder>
 HvdcConverterStationAdder<Adder>::HvdcConverterStationAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_lossFactor(stdcxx::nan()) {
+    m_voltageLevel(voltageLevel) {
 }
 
 template<typename Adder>

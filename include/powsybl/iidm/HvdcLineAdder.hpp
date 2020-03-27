@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/IdentifiableAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -59,15 +60,15 @@ private:
 
     std::string m_converterStationId2;
 
-    double m_r;
+    double m_r = stdcxx::nan();
 
-    double m_nominalVoltage;
+    double m_nominalVoltage = stdcxx::nan();
 
-    double m_maxP;
+    double m_maxP = stdcxx::nan();
 
     stdcxx::optional<HvdcLine::ConvertersMode> m_convertersMode;
 
-    double m_activePowerSetpoint;
+    double m_activePowerSetpoint = stdcxx::nan();
 };
 
 }  // namespace iidm

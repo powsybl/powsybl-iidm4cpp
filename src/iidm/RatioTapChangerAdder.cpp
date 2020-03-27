@@ -19,12 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 RatioTapChangerAdder::StepAdder::StepAdder(RatioTapChangerAdder& parent) :
-    m_parent(parent),
-    m_rho(stdcxx::nan()),
-    m_r(stdcxx::nan()),
-    m_x(stdcxx::nan()),
-    m_g(stdcxx::nan()),
-    m_b(stdcxx::nan()) {
+    m_parent(parent) {
 }
 
 RatioTapChangerAdder& RatioTapChangerAdder::StepAdder::endStep() {
@@ -63,12 +58,7 @@ RatioTapChangerAdder::StepAdder& RatioTapChangerAdder::StepAdder::setX(double x)
 }
 
 RatioTapChangerAdder::RatioTapChangerAdder(RatioTapChangerHolder& parent) :
-    m_parent(parent),
-    m_lowTapPosition(0U),
-    m_loadTapChangingCapabilities(),
-    m_regulating(),
-    m_targetV(stdcxx::nan()),
-    m_targetDeadband(stdcxx::nan()) {
+    m_parent(parent) {
 }
 
 RatioTapChanger& RatioTapChangerAdder::add() {

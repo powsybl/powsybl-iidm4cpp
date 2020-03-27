@@ -16,9 +16,7 @@ namespace iidm {
 
 template <typename SwitchAdder>
 AbstractSwitchAdder<SwitchAdder>::AbstractSwitchAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
-    m_open(false),
-    m_fictitious(false) {
+    m_voltageLevel(voltageLevel) {
 }
 
 template <typename SwitchAdder>

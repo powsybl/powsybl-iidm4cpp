@@ -69,7 +69,7 @@ private:
 private:
     BusSet m_buses;
 
-    bool m_valid;
+    bool m_valid{true};
 
 };
 

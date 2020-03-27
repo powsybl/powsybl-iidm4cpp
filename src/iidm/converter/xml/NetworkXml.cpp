@@ -187,7 +187,9 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
     std::set<std::string> extensionsNotFound;
 
     context.getReader().readUntilEndElement(NETWORK, [&network, &context, &extensionsNotFound]() {
-        if (context.getReader().getLocalName() == SUBSTATION) {
+        if (context.getReader().getLocalName() == PROPERTY) {
+            PropertiesXml::read(network, context);
+        } else if (context.getReader().getLocalName() == SUBSTATION) {
             SubstationXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == LINE) {
             LineXml::getInstance().read(network, context);
@@ -241,6 +243,8 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     writer.writeAttribute(CASE_DATE, network.getCaseDate().toString());
     writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
+
+    PropertiesXml::write(network, context);
 
     for (const auto& substation : network.getSubstations()) {
         SubstationXml::getInstance().write(substation, network, context);

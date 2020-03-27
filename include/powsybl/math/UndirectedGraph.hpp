@@ -103,7 +103,7 @@ private:
     void checkVertex(unsigned long v) const;
 
     void findAllPaths(unsigned long v, const VertexVisitor& pathComplete, const EdgeVisitor& pathCanceled,
-                      Path& path, std::vector<bool>& encountered, std::vector<Path>& paths) const;
+                      const Path& path, std::vector<bool>& encountered, std::vector<Path>& paths) const;
 
     bool findAllPaths(unsigned long e, unsigned long v, const VertexVisitor& pathComplete, const EdgeVisitor& pathCanceled,
                       Path& path, std::vector<bool>& encountered, std::vector<Path>& paths) const;
