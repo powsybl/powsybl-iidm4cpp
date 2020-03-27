@@ -19,8 +19,20 @@ HvdcConverterStation::HvdcConverterStation(const std::string& id, const std::str
 
 }
 
+stdcxx::CReference<HvdcLine> HvdcConverterStation::getHvdcLine() const {
+    return stdcxx::cref(m_hvdcLine);
+}
+
+stdcxx::Reference<HvdcLine> HvdcConverterStation::getHvdcLine() {
+    return m_hvdcLine;
+}
+
 double HvdcConverterStation::getLossFactor() const {
     return m_lossFactor;
+}
+
+void HvdcConverterStation::setHvdcLine(const stdcxx::Reference<HvdcLine>& hvdcLine) {
+    m_hvdcLine = hvdcLine;
 }
 
 void HvdcConverterStation::setLossFactor(double lossFactor) {

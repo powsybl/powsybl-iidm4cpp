@@ -189,9 +189,24 @@ BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createHvdcLineTestNetwork();
 
     HvdcLine& hvdc = network.getHvdcLine("HVDC1");
-    BOOST_CHECK_EQUAL("LCC1", hvdc.getConverterStation1().get().getId());
-    BOOST_CHECK_EQUAL("LCC2", hvdc.getConverterStation2().get().getId());
+    HvdcConverterStation& cs1 = hvdc.getConverterStation1().get();
+    HvdcConverterStation& cs2 = hvdc.getConverterStation2().get();
+
+    const HvdcLine& cHvdc = hvdc;
+    const HvdcConverterStation& ccs1 = cs1;
+    const HvdcConverterStation& ccs2 = cs2;
+
+    BOOST_CHECK_EQUAL("LCC1", cs1.getId());
+    BOOST_CHECK_EQUAL("LCC2", cs2.getId());
     BOOST_TEST(stdcxx::areSame(network, hvdc.getNetwork()));
+    BOOST_TEST(stdcxx::areSame(cs1, hvdc.getConverterStation(HvdcLine::Side::ONE).get()));
+    BOOST_TEST(stdcxx::areSame(cs2, hvdc.getConverterStation(HvdcLine::Side::TWO).get()));
+    BOOST_TEST(stdcxx::areSame(ccs1, cHvdc.getConverterStation(HvdcLine::Side::ONE).get()));
+    BOOST_TEST(stdcxx::areSame(ccs2, cHvdc.getConverterStation(HvdcLine::Side::TWO).get()));
+    BOOST_TEST(stdcxx::areSame(hvdc, cs1.getHvdcLine().get()));
+    BOOST_TEST(stdcxx::areSame(hvdc, cs2.getHvdcLine().get()));
+    BOOST_TEST(stdcxx::areSame(cHvdc, ccs1.getHvdcLine().get()));
+    BOOST_TEST(stdcxx::areSame(cHvdc, ccs2.getHvdcLine().get()));
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setActivePowerSetpoint(100.0)));
     BOOST_CHECK_CLOSE(100.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
@@ -215,6 +230,10 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     hvdc.remove();
     POWSYBL_ASSERT_THROW(network.getHvdcLine("HVDC1"), PowsyblException, "Unable to find to the identifiable 'HVDC1'");
+    POWSYBL_ASSERT_REF_FALSE(cs1.getHvdcLine());
+    POWSYBL_ASSERT_REF_FALSE(cs2.getHvdcLine());
+    POWSYBL_ASSERT_REF_FALSE(ccs1.getHvdcLine());
+    POWSYBL_ASSERT_REF_FALSE(ccs2.getHvdcLine());
 }
 
 BOOST_AUTO_TEST_CASE(multivariant) {
