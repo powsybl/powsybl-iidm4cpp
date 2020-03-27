@@ -8,13 +8,11 @@
 #ifndef POWSYBL_MATH_TRAVERSERESULT_HPP
 #define POWSYBL_MATH_TRAVERSERESULT_HPP
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace math {
 
-enum class IIDM_DECLSPEC TraverseResult {
+enum class TraverseResult {
     CONTINUE,
     TERMINATE
 };

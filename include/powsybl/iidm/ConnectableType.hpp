@@ -10,13 +10,11 @@
 
 #include <iosfwd>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
-enum class IIDM_DECLSPEC ConnectableType : unsigned char {
+enum class ConnectableType : unsigned char {
     BUSBAR_SECTION,
     LINE,
     TWO_WINDINGS_TRANSFORMER,

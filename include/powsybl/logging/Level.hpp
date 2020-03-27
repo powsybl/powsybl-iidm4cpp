@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace logging {
 
-enum class IIDM_DECLSPEC Level : unsigned int {
+enum class Level : unsigned int {
     TRACE,
     DEBUG,
     INFO,

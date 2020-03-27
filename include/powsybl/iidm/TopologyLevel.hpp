@@ -17,7 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class IIDM_DECLSPEC TopologyLevel : unsigned char {
+enum class TopologyLevel : unsigned char {
     NODE_BREAKER,
     BUS_BREAKER,
     BUS_BRANCH

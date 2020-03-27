@@ -8,13 +8,11 @@
 #ifndef POWSYBL_IIDM_REACTIVELIMITSKIND_HPP
 #define POWSYBL_IIDM_REACTIVELIMITSKIND_HPP
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
-enum class IIDM_DECLSPEC ReactiveLimitsKind {
+enum class ReactiveLimitsKind {
     MIN_MAX,
     CURVE
 };

@@ -11,13 +11,12 @@
 #include <memory>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/hash.hpp>
 
 namespace stdcxx {
 
 template <typename T>
-class IIDM_DECLSPEC reference_wrapper {
+class reference_wrapper {
 public:
     using type = T;
 

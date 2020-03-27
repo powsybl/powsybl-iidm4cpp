@@ -8,8 +8,6 @@
 #ifndef POWSYBL_STDCXX_HASH_HPP
 #define POWSYBL_STDCXX_HASH_HPP
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace stdcxx {
 
 /**
@@ -18,7 +16,7 @@ namespace stdcxx {
  * @tparam T the type of the enum
  */
 template <typename T, bool = std::is_enum<T>::value>
-class IIDM_DECLSPEC hash {
+class hash {
 public:
     std::size_t operator()(const T& value) const {
         using type = typename std::underlying_type<T>::type;
@@ -31,7 +29,7 @@ public:
  * @tparam T the type of the class
  */
 template <typename T>
-class IIDM_DECLSPEC hash<T, false> {
+class hash<T, false> {
 public:
     std::size_t operator()(const T& value) const {
         return std::hash<T>{}(value);

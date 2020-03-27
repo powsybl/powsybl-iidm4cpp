@@ -15,7 +15,6 @@
 
 #include <powsybl/math/Traverser.hpp>
 #include <powsybl/math/UndirectedGraphRanges.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -24,7 +23,7 @@ namespace powsybl {
 namespace math {
 
 template <typename V, typename E>
-class IIDM_DECLSPEC UndirectedGraph {
+class UndirectedGraph {
 public:
     using Path = std::vector<unsigned long>;
 

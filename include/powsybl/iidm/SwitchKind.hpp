@@ -10,13 +10,11 @@
 
 #include <string>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
-enum class IIDM_DECLSPEC SwitchKind : unsigned char {
+enum class SwitchKind : unsigned char {
     BREAKER,
     DISCONNECTOR,
     LOAD_BREAK_SWITCH

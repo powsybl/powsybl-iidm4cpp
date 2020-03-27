@@ -8,7 +8,6 @@
 #ifndef POWSYBL_IIDM_UNDIRECTEDGRAPHRANGES_HPP
 #define POWSYBL_IIDM_UNDIRECTEDGRAPHRANGES_HPP
 
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -19,7 +18,7 @@ namespace math {
 namespace graph {
 
 template <typename T>
-struct IIDM_DECLSPEC range_traits {
+struct range_traits {
 
     using const_range = typename stdcxx::const_range<stdcxx::Reference<T> >;
 
@@ -27,7 +26,7 @@ struct IIDM_DECLSPEC range_traits {
 };
 
 template <>
-struct IIDM_DECLSPEC range_traits<unsigned long> {
+struct range_traits<unsigned long> {
 
     using const_range = boost::any_range<unsigned long, boost::forward_traversal_tag, const unsigned long&, std::ptrdiff_t>;
 

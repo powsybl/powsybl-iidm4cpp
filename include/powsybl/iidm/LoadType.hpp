@@ -8,13 +8,11 @@
 #ifndef POWSYBL_IIDM_LOADTYPE_HPP
 #define POWSYBL_IIDM_LOADTYPE_HPP
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
-enum class IIDM_DECLSPEC LoadType : unsigned int {
+enum class LoadType : unsigned int {
     UNDEFINED,
     AUXILIARY,
     FICTITIOUS
