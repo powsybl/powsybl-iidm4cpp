@@ -18,18 +18,10 @@ namespace converter {
 
 namespace xml {
 
-BOOST_AUTO_TEST_SUITE(FictitiousSwitchTestSuite)
+BOOST_AUTO_TEST_SUITE(PhaseShifterRoundTrip)
 
-BOOST_FIXTURE_TEST_CASE(FictitiousSwitchBBr, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("fictitiousSwitchRef-bbr.xml", IidmXmlVersion::all());
-}
-
-BOOST_FIXTURE_TEST_CASE(FictitiousSwitchBBk, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("fictitiousSwitchRef-bbk.xml", IidmXmlVersion::all());
-}
-
-BOOST_FIXTURE_TEST_CASE(FictitiousSwitchNBk, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("fictitiousSwitchRef.xml", IidmXmlVersion::all());
+BOOST_FIXTURE_TEST_CASE(PhaseShifterRoundTripTest, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("phaseShifterRoundTripRef.xml", IidmXmlVersion::all());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

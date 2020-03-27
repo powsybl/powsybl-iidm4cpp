@@ -35,13 +35,17 @@ std::string RoundTrip::getVersionDir(const iidm::converter::xml::IidmXmlVersion&
     return "/V" + version.toString("_") + "/";
 }
 
+std::string RoundTrip::getVersionedNetwork(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
+    ResourceFixture fixture;
+
+    return fixture.getResource(getVersionedNetworkPath(filename, version));
+}
+
 std::string RoundTrip::getVersionedNetworkPath(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
     return getVersionDir(version) + filename;
 }
 
 void RoundTrip::roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersion& version) {
-    ResourceFixture fixture;
-
     const auto& writer = [](const iidm::Network& n, std::ostream& stream) {
         iidm::Network::writeXml(stream, n);
     };
@@ -51,8 +55,7 @@ void RoundTrip::roundTripVersionedXmlTest(const std::string& ref, const iidm::co
         return iidm::Network::readXml(stream);
     };
 
-    const std::string& filename = getVersionedNetworkPath(ref, version);
-    const std::string& expected = fixture.getResource(filename);
+    const std::string& expected = getVersionedNetwork(ref, version);
     iidm::Network network = iidm::Network::readXml(expected);
     run(network, writer, reader, compareXml, expected);
 }

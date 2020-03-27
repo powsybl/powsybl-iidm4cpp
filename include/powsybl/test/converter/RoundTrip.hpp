@@ -38,6 +38,8 @@ public:
 
     static std::string getVersionDir(const iidm::converter::xml::IidmXmlVersion& version);
 
+    static std::string getVersionedNetwork(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
+
     static std::string getVersionedNetworkPath(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
 
     static void roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersion& version);
