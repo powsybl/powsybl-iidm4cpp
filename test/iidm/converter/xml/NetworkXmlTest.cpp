@@ -90,14 +90,6 @@ BOOST_AUTO_TEST_CASE(SpecialChars) {
     BOOST_CHECK_EQUAL("ø/Ø - ö/Ö - æ/Æ - ä/Ä - å/Å (aa/Aa)", network.getId());
 }
 
-BOOST_FIXTURE_TEST_CASE(Properties, test::ResourceFixture) {
-
-    const std::string& networkStr = ResourceFixture::getResource("/eurostag-tutorial1-properties.xml");
-    Network network = Network::readXml(networkStr);
-
-    test::converter::RoundTrip::runXml(network, networkStr);
-}
-
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml
