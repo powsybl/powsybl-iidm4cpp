@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_TWOWINDINGSTRANSFORMERPHASEANGLECLOCKXMLSERIALIZER_HPP
 
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -18,7 +19,7 @@ namespace extensions {
 
 namespace iidm {
 
-class TwoWindingsTransformerPhaseAngleClockXmlSerializer : public converter::xml::ExtensionXmlSerializer {
+class IIDM_DECLSPEC TwoWindingsTransformerPhaseAngleClockXmlSerializer : public converter::xml::ExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
     std::unique_ptr<Extension> read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 

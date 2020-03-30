@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_TWOWINDINGSTRANSFORMERPHASEANGLECLOCK_HPP
 
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -20,7 +21,7 @@ namespace extensions {
 
 namespace iidm {
 
-class TwoWindingsTransformerPhaseAngleClock : public Extension {
+class IIDM_DECLSPEC TwoWindingsTransformerPhaseAngleClock : public Extension {
 public:  // Extension
     const std::string& getName() const override;
 
