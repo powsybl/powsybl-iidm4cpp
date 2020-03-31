@@ -10,7 +10,9 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
+#include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
 #include <powsybl/stdcxx/export.hpp>
 
@@ -29,7 +31,7 @@ public:
     };
 
 public:
-    class Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
+    class IIDM_DECLSPEC Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
     public:  // Validable
         std::string getMessageHeader() const override;
 

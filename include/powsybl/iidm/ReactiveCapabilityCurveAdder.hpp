@@ -22,7 +22,7 @@ class Validable;
 
 class IIDM_DECLSPEC ReactiveCapabilityCurveAdder {
 public:
-    class PointAdder {
+    class IIDM_DECLSPEC PointAdder {
     public:
         ReactiveCapabilityCurveAdder& endPoint();
 

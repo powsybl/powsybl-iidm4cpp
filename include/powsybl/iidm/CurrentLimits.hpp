@@ -22,7 +22,7 @@ class Validable;
 
 class IIDM_DECLSPEC CurrentLimits {
 public:
-    class TemporaryLimit {
+    class IIDM_DECLSPEC TemporaryLimit {
     public:
         TemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious);
 

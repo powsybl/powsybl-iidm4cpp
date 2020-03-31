@@ -20,7 +20,7 @@ namespace iidm {
 
 class IIDM_DECLSPEC ReactiveCapabilityCurve : public ReactiveLimits {
 public:
-    class Point {
+    class IIDM_DECLSPEC Point {
     public:
         Point(double p, double minQ, double maxQ);
 

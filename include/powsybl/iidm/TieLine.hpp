@@ -18,7 +18,7 @@ namespace iidm {
 
 class IIDM_DECLSPEC TieLine : public Line {
 public:
-    class HalfLine : public Validable {
+    class IIDM_DECLSPEC HalfLine : public Validable {
     public: // Validable
         std::string getMessageHeader() const override;
 

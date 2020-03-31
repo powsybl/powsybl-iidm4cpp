@@ -28,7 +28,7 @@ class Validable;
 
 class IIDM_DECLSPEC RatioTapChangerAdder {
 public:
-    class StepAdder {
+    class IIDM_DECLSPEC StepAdder {
     public:
         ~StepAdder() noexcept = default;
 

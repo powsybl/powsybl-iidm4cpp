@@ -57,7 +57,7 @@ private:
 
 namespace node_breaker_view {
 
-class SwitchAdder : public AbstractSwitchAdder<SwitchAdder> {
+class IIDM_DECLSPEC SwitchAdder : public AbstractSwitchAdder<SwitchAdder> {
 public: // AbstractSwitchAdder
     Switch& add() override;
 
@@ -88,7 +88,7 @@ private:
 
 namespace bus_breaker_view {
 
-class SwitchAdder : public AbstractSwitchAdder<SwitchAdder> {
+class IIDM_DECLSPEC SwitchAdder : public AbstractSwitchAdder<SwitchAdder> {
 public: // AbstractSwitchAdder
     Switch& add() override;
 

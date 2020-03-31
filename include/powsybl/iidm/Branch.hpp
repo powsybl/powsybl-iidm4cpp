@@ -26,7 +26,7 @@ public:
     };
 
 public:
-    class Overload {
+    class IIDM_DECLSPEC Overload {
     public:
         Overload(const CurrentLimits::TemporaryLimit& temporaryLimit, const std::string& previousLimitName, double previousLimit);
 

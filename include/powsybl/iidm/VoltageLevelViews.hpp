@@ -78,7 +78,7 @@ public:
     virtual void removeSwitch(const std::string& switchId) = 0;
 };
 
-class BusView {
+class IIDM_DECLSPEC BusView {
 public:
     virtual ~BusView() noexcept = default;
 
@@ -95,7 +95,7 @@ public:
     virtual stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) = 0;
 };
 
-class NodeBreakerView {
+class IIDM_DECLSPEC NodeBreakerView {
 public:
     using InternalConnection = node_breaker_view::InternalConnection;
 

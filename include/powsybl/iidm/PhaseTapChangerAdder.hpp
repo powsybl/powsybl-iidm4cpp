@@ -28,7 +28,7 @@ class Validable;
 
 class IIDM_DECLSPEC PhaseTapChangerAdder {
 public:
-    class StepAdder {
+    class IIDM_DECLSPEC StepAdder {
     public:
         ~StepAdder() noexcept = default;
 
