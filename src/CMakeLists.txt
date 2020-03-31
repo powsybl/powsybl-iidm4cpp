@@ -184,7 +184,6 @@ target_include_directories(iidm
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_compile_definitions(iidm PUBLIC Boost::dynamic_linking Boost::disable_autolinking)
 target_link_libraries(iidm PUBLIC LibXml2::LibXml2 Boost::filesystem Boost::system ${CMAKE_DL_LIBS} Boost::disable_autolinking Boost::dynamic_linking)
 
 # Static library
