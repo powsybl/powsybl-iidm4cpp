@@ -51,7 +51,7 @@ std::string put_time(const struct std::tm* time, const char* format);
 
 namespace stdcxx {
 
-std::tm localtime(const std::time_t& time);
+IIDM_DECLSPEC std::tm localtime(const std::time_t& time);
 
 }  // namespace stdcxx
 

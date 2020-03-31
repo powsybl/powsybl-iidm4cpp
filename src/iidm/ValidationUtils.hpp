@@ -16,6 +16,7 @@
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -58,7 +59,7 @@ void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int nu
 
 const LoadType& checkLoadType(const Validable& validable, const LoadType& loadType);
 
-double checkLossFactor(const Validable& validable, double lossFactor);
+IIDM_DECLSPEC double checkLossFactor(const Validable& validable, double lossFactor);
 
 double checkMaxP(const Validable& validable, double maxP);
 
@@ -66,9 +67,9 @@ double checkMinP(const Validable& validable, double minP);
 
 double checkNominalVoltage(const Validable& validable, double nominalVoltage);
 
-const std::string& checkNotEmpty(const std::string& value, const std::string& message);
+IIDM_DECLSPEC const std::string& checkNotEmpty(const std::string& value, const std::string& message);
 
-const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message);
+IIDM_DECLSPEC const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message);
 
 void checkOnlyOneTapChangerRegulatingEnabled(const Validable& validable, unsigned long regulatingTapChangerCount, bool regulating);
 
@@ -98,7 +99,7 @@ const T& checkOptional(const Validable& validable, const stdcxx::optional<T>& va
 
 double checkP0(const Validable& validable, double p0);
 
-double checkPermanentLimit(const Validable& validable, double permanentLimit);
+IIDM_DECLSPEC double checkPermanentLimit(const Validable& validable, double permanentLimit);
 
 void checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
                                     const stdcxx::Reference<Terminal>& regulationTerminal, const Network& network);
@@ -125,9 +126,9 @@ void checkSections(const Validable& validable, unsigned long currentSectionCount
 
 void checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode);
 
-long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
+IIDM_DECLSPEC long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
 
-double checkTargetDeadband(const Validable& validable, const std::string& tapChangerType, double targetDeadband);
+IIDM_DECLSPEC double checkTargetDeadband(const Validable& validable, const std::string& tapChangerType, double targetDeadband);
 
 double checkVoltage(const Validable& validable, double voltage);
 

@@ -366,7 +366,7 @@ void ThreeWindingsTransformer::reduceVariantArraySize(unsigned long number) {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<ThreeWindingsTransformer::Side>() {
+IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<ThreeWindingsTransformer::Side>() {
     static std::initializer_list<std::string> s_threeWindingsTransformerSideNames {
         "ONE",
         "TWO",

@@ -164,7 +164,7 @@ HvdcLine& HvdcLine::setR(double r) {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<HvdcLine::ConvertersMode>() {
+IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<HvdcLine::ConvertersMode>() {
     static std::initializer_list<std::string> s_sideNames {
         "SIDE_1_RECTIFIER_SIDE_2_INVERTER",
         "SIDE_1_INVERTER_SIDE_2_RECTIFIER"

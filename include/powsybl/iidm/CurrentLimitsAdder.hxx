@@ -16,6 +16,7 @@
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -24,9 +25,9 @@ namespace powsybl {
 
 namespace iidm {
 
-const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message);
+IIDM_DECLSPEC const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message);
 
-double checkPermanentLimit(const Validable& validable, double permanentLimit);
+IIDM_DECLSPEC double checkPermanentLimit(const Validable& validable, double permanentLimit);
 
 template <typename S, typename O>
 CurrentLimitsAdder<S, O>::TemporaryLimitAdder::TemporaryLimitAdder(CurrentLimitsAdder<S, O>& parent) :

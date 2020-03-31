@@ -8,6 +8,7 @@
 #include <powsybl/iidm/TopologyKind.hpp>
 
 #include <powsybl/iidm/Enum.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -16,7 +17,7 @@ namespace iidm {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<TopologyKind>() {
+IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<TopologyKind>() {
     static std::initializer_list<std::string> s_topologyKindNames {
         "NODE_BREAKER",
         "BUS_BREAKER"

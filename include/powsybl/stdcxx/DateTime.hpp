@@ -50,7 +50,7 @@ public:
      *
      * @return true if the two {@link DateTime} objects are equivalent, false otherwise.
      */
-    friend bool operator==(const DateTime& dt1, const DateTime& dt2);
+    friend IIDM_DECLSPEC bool operator==(const DateTime& dt1, const DateTime& dt2);
 
     /**
      * Return true if the two specified {@link DateTime} objects are not equivalent.
@@ -60,7 +60,7 @@ public:
      *
      * @return true if the two {@link DateTime} objects are not equivalent, false otherwise.
      */
-    friend bool operator!=(const DateTime& dt1, const DateTime& dt2);
+     friend IIDM_DECLSPEC bool operator!=(const DateTime& dt1, const DateTime& dt2);
 
 private:
     explicit DateTime(const boost::local_time::local_date_time& dateTime);
@@ -77,7 +77,7 @@ private:
  *
  * @return The modified output stream.
  */
-std::ostream& operator<<(std::ostream& stream, const DateTime& dt);
+IIDM_DECLSPEC std::ostream& operator<<(std::ostream& stream, const DateTime& dt);
 
 }  // namespace stdcxx
 

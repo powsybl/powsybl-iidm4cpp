@@ -13,6 +13,7 @@
 
 #include <powsybl/iidm/Extendable.hpp>
 #include <powsybl/iidm/ExtensionProvider.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -28,7 +29,7 @@ namespace xml {
 class NetworkXmlReaderContext;
 class NetworkXmlWriterContext;
 
-class ExtensionXmlSerializer : public ExtensionProvider {
+class IIDM_DECLSPEC ExtensionXmlSerializer : public ExtensionProvider {
 public:
     ExtensionXmlSerializer(const std::string& extensionName,
                            const std::string& categoryName, /*const std::type_index& extensionClass,*/

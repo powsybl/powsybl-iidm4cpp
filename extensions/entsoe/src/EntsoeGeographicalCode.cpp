@@ -8,6 +8,7 @@
 #include <powsybl/iidm/extensions/entsoe/EntsoeGeographicalCode.hpp>
 
 #include <powsybl/iidm/Enum.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -16,7 +17,7 @@ namespace iidm {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<powsybl::iidm::extensions::entsoe::EntsoeGeographicalCode>() {
+IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<powsybl::iidm::extensions::entsoe::EntsoeGeographicalCode>() {
     static std::initializer_list<std::string> s_names = {
         "AL",
         "AT",

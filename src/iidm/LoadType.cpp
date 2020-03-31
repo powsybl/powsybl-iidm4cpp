@@ -8,6 +8,7 @@
 #include <powsybl/iidm/LoadType.hpp>
 
 #include <powsybl/iidm/Enum.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -16,7 +17,7 @@ namespace iidm {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<LoadType>() {
+IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<LoadType>() {
     static std::initializer_list<std::string> s_typeNames {
         "UNDEFINED",
         "AUXILIARY",

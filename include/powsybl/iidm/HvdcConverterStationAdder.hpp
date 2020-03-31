@@ -20,7 +20,7 @@ class Network;
 class VoltageLevel;
 
 template<typename Adder>
-class IIDM_DECLSPEC HvdcConverterStationAdder : public InjectionAdder<Adder> {
+class HvdcConverterStationAdder : public InjectionAdder<Adder> {
 public:
     ~HvdcConverterStationAdder() noexcept override = default;
 

@@ -23,7 +23,7 @@ class VoltageLevel;
 
 class IIDM_DECLSPEC ThreeWindingsTransformerAdder : public IdentifiableAdder<ThreeWindingsTransformerAdder> {
 public:
-    class LegAdder : public virtual Validable {
+    class IIDM_DECLSPEC LegAdder : public virtual Validable {
     public:  // Validable
         std::string getMessageHeader() const override;
 

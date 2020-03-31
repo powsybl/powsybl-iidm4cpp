@@ -9,12 +9,13 @@
 #define POWSYBL_IIDM_NETWORK_THREEWINDINGSTRANSFORMERNETWORKFACTORY_HPP
 
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace network {
 
-class ThreeWindingsTransformerNetworkFactory {
+class IIDM_DECLSPEC ThreeWindingsTransformerNetworkFactory {
 public:
     static iidm::Network create();
 

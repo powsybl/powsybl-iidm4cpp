@@ -184,27 +184,29 @@ target_include_directories(iidm
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_link_libraries(iidm PUBLIC LibXml2::LibXml2 Boost::filesystem Boost::system ${CMAKE_DL_LIBS})
+target_compile_definitions(iidm PUBLIC Boost::dynamic_linking Boost::disable_autolinking)
+target_link_libraries(iidm PUBLIC LibXml2::LibXml2 Boost::filesystem Boost::system ${CMAKE_DL_LIBS} Boost::disable_autolinking Boost::dynamic_linking)
 
 # Static library
-add_library(iidm-static STATIC ${IIDM_SOURCES})
-set_target_properties(iidm-static PROPERTIES OUTPUT_NAME iidm)
-target_include_directories(iidm-static SYSTEM
-    PUBLIC
-        $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:LibXml2::LibXml2,INTERFACE_INCLUDE_DIRECTORIES>
-)
-target_include_directories(iidm-static
-    INTERFACE
-        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
-    PRIVATE
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-)
-target_link_libraries(iidm-static PUBLIC LibXml2::LibXml2 Boost::filesystem Boost::system ${CMAKE_DL_LIBS})
+# TODO(sebalaig)
+#add_library(iidm-static STATIC ${IIDM_SOURCES})
+#set_target_properties(iidm-static PROPERTIES OUTPUT_NAME iidm)
+#target_include_directories(iidm-static SYSTEM
+#    PUBLIC
+#        $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
+#        $<TARGET_PROPERTY:LibXml2::LibXml2,INTERFACE_INCLUDE_DIRECTORIES>
+#)
+#target_include_directories(iidm-static
+#    INTERFACE
+#        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+#    PRIVATE
+#        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+#        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+#)
+#target_link_libraries(iidm-static PUBLIC LibXml2::LibXml2 Boost::filesystem Boost::system ${CMAKE_DL_LIBS})
 
 # Installation
-install(TARGETS iidm iidm-static
+install(TARGETS iidm #iidm-static # TODO(sebalaig)
     EXPORT iidm-targets
     LIBRARY DESTINATION ${INSTALL_LIB_DIR}
     ARCHIVE DESTINATION ${INSTALL_LIB_DIR}

@@ -280,7 +280,7 @@ std::string getCountryName(const Country& country) {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<Country>() {
+IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<Country>() {
     static std::initializer_list<std::string> s_countryCodes {
         u8"AF",
         u8"AX",

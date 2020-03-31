@@ -37,7 +37,7 @@ TopologyKind getTopologyKind(const TopologyLevel& topologyLevel) {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<TopologyLevel>() {
+IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<TopologyLevel>() {
     static std::initializer_list<std::string> s_topologyLevelNames {
         "NODE_BREAKER",
         "BUS_BREAKER",

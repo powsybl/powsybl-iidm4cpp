@@ -14,8 +14,8 @@ set(IIDM_TEST_SOURCES
     converter/RoundTrip.cpp
 )
 
-# Static library
-add_library(iidm-tests STATIC ${IIDM_TEST_SOURCES})
+# Shared library
+add_library(iidm-tests SHARED ${IIDM_TEST_SOURCES})
 target_include_directories(iidm-tests
     INTERFACE
         $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
@@ -23,7 +23,10 @@ target_include_directories(iidm-tests
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_link_libraries(iidm-tests PUBLIC iidm Boost::filesystem Boost::program_options Boost::system PRIVATE LibXml2::LibXml2)
+target_compile_definitions(iidm-tests PUBLIC Boost::disable_autolinking Boost::dynamic_linking)
+target_link_libraries(iidm-tests PUBLIC iidm Boost::filesystem Boost::program_options Boost::system Boost::unit_test_framework PRIVATE LibXml2::LibXml2)
+
+#TODO(sebalaig) Static library
 
 # Installation
 install(TARGETS iidm-tests

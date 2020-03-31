@@ -19,8 +19,9 @@ namespace powsybl {
 
 namespace iidm {
 
-long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
-double checkTargetDeadband(const Validable& validable, double targetDeadband);
+IIDM_DECLSPEC long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
+
+IIDM_DECLSPEC double checkTargetDeadband(const Validable& validable, double targetDeadband);
 
 template<typename H, typename C, typename S>
 TapChanger<H, C, S>::TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,

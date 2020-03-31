@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace iidm {
 
-double checkLossFactor(const Validable& validable, double lossFactor);
+IIDM_DECLSPEC double checkLossFactor(const Validable& validable, double lossFactor);
 
 template<typename Adder>
 HvdcConverterStationAdder<Adder>::HvdcConverterStationAdder(VoltageLevel& voltageLevel) :

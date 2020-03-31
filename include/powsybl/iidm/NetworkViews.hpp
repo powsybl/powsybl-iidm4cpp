@@ -48,7 +48,7 @@ private:
     Network& m_network;
 };
 
-class BusView {
+class IIDM_DECLSPEC BusView {
 public:
     explicit BusView(Network& network);
 
