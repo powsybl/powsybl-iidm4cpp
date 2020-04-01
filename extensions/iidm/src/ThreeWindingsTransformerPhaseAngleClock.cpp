@@ -9,6 +9,8 @@
 
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/PhaseTapChanger.hpp>
+#include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>

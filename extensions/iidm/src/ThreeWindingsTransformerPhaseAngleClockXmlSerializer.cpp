@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
 
+#include <powsybl/iidm/PhaseTapChanger.hpp>
+#include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
