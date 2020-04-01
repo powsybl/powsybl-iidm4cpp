@@ -23,7 +23,6 @@ target_include_directories(iidm-tests
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_compile_definitions(iidm-tests PUBLIC Boost::disable_autolinking Boost::dynamic_linking)
 target_link_libraries(iidm-tests PUBLIC iidm Boost::filesystem Boost::program_options Boost::system Boost::unit_test_framework PRIVATE LibXml2::LibXml2)
 
 #TODO(sebalaig) Static library
