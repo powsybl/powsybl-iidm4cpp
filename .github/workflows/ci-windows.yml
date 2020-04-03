@@ -58,4 +58,4 @@ jobs:
           cmake --build . --target test -- /A
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
-          PATH: ${{ env.PATH }};$BOOST_ROOT_1_72_0;C:\thirdparties\libxml2-2.9.10\;${{ runner.workspace }}/powsybl-iidm4cpp/build/src;${{ runner.workspace }}/powsybl-iidm4cpp/build/src/test;
+          PATH: ${{ env.PATH }};${{ env.BOOST_ROOT_1_72_0 }};C:\thirdparties\libxml2-2.9.10\;${{ runner.workspace }}/powsybl-iidm4cpp/build/src;${{ runner.workspace }}/powsybl-iidm4cpp/build/src/test;
