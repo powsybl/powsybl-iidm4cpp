@@ -39,6 +39,12 @@ set(Boost_USE_STATIC_LIBS OFF)
 find_package(Boost 1.56 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
 find_package(LibXml2 REQUIRED)
 
+# On windows, also force prefix to avoid conflict between import file (for shared compilation) and
+# static file
+if (WIN32)
+    set(CMAKE_STATIC_LIBRARY_PREFIX lib)
+endif()
+
 enable_testing()
 
 # Since Boost 1.60, program arguments and boost test arguments are separated by --
