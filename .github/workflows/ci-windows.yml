@@ -57,7 +57,7 @@ jobs:
           dir ${{ runner.workspace }}\powsybl-iidm4cpp\build\src
           dir ${{ runner.workspace }}\powsybl-iidm4cpp\build\src\test
           dir ${{ BOOST_ROOT_1_72_0 }}
-          dir $BOOST_ROOT_1_72_0
+          dir %BOOST_ROOT_1_72_0%
           dir C:\thirdparties\libxml2-2.9.10
           echo PATH = ${{ env.PATH }}
           echo PATH2 = $PATH
