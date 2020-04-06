@@ -54,10 +54,12 @@ jobs:
         shell: cmd
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: |
-          echo PATH = %PATH%
-          echo BOOST_ROOT_1_72_0 = %BOOST_ROOT_1_72_0%
+          echo ${{ PATH }}
+          echo ${{ BOOST_ROOT_1_72_0 }}
+          dir ${{ BOOST_ROOT_1_72_0 }}
+          dir C:/thirdparties/libxml2-2.9.10
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           cmake --build . --target test -- /A
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
-          PATH: '${{ PATH }};${{ BOOST_ROOT_1_72_0 }};C:thirdparties/libxml2-2.9.10;${{ runner.workspace }}/powsybl-iidm4cpp/build/src;${{ runner.workspace }}/powsybl-iidm4cpp/build/src/test;'
+          PATH: '${{ PATH }};${{ BOOST_ROOT_1_72_0 }};C:\\thirdparties\\libxml2-2.9.10;${{ runner.workspace }}/powsybl-iidm4cpp/build/src;${{ runner.workspace }}/powsybl-iidm4cpp/build/src/test;'
