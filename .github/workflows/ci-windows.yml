@@ -57,6 +57,10 @@ jobs:
           echo "::add-path::C:/thirdparties/libxml2-2.9.10"
           echo "::add-path::${{ runner.workspace }}/powsybl-iidm4cpp/build/src"
           echo "::add-path::${{ runner.workspace }}/powsybl-iidm4cpp/build/src/test"
+          echo %PATH%
+          echo %BOOST_ROOT_1_72_0
+          dir "${{ runner.workspace }}/powsybl-iidm4cpp/build/src"
+          dir "${{ runner.workspace }}/powsybl-iidm4cpp/build/src/test"
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           cmake --build . --target test -- /A
         env:
