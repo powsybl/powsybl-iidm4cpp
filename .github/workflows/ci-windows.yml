@@ -54,6 +54,11 @@ jobs:
         shell: cmd
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: |
+          dir ${{ runner.workspace }}/powsybl-iidm4cpp/build/src
+          dir ${{ runner.workspace }}/powsybl-iidm4cpp/build/src/test
+          dir ${{ env.BOOST_ROOT_1_72_0 }}
+          dir C:/thirdparties/libxml2-2.9.10
+          echo PATH = ${{ env.PATH }}
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           cmake --build . --target test -- /A
         env:

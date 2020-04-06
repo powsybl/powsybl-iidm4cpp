@@ -201,10 +201,10 @@ target_include_directories(iidm-static
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_link_libraries(iidm-static PUBLIC LibXml2::LibXml2 Boost::filesystem Boost::system ${CMAKE_DL_LIBS})
+target_link_libraries(iidm-static PUBLIC LibXml2::LibXml2 Boost::filesystem Boost::system ${CMAKE_DL_LIBS} Boost::disable_autolinking Boost::dynamic_linking)
 
 # Installation
-install(TARGETS iidm #iidm-static # TODO(sebalaig)
+install(TARGETS iidm iidm-static
     EXPORT iidm-targets
     LIBRARY DESTINATION ${INSTALL_LIB_DIR}
     ARCHIVE DESTINATION ${INSTALL_LIB_DIR}

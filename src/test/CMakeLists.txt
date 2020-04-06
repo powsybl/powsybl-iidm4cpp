@@ -25,8 +25,6 @@ target_include_directories(iidm-tests
 )
 target_link_libraries(iidm-tests PUBLIC iidm Boost::filesystem Boost::program_options Boost::system Boost::unit_test_framework PRIVATE LibXml2::LibXml2)
 
-#TODO(sebalaig) Static library
-
 # Installation
 install(TARGETS iidm-tests
     EXPORT iidm-targets
