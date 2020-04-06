@@ -22,7 +22,7 @@ namespace xml {
 class IIDM_DECLSPEC XmlString : public std::unique_ptr<xmlChar, std::function<void(void*)>> {
 public:
     explicit XmlString(xmlChar* ptr) noexcept :
-        unique_ptr(ptr, &std::free) {
+        unique_ptr(ptr, xmlFree) {
     }
 
     XmlString(XmlString&&) noexcept = default;
