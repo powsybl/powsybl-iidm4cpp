@@ -15,3 +15,4 @@ add_executable(unit-tests-math ${UNIT_TEST_SOURCES})
 target_link_libraries(unit-tests-math PRIVATE iidm-tests Boost::unit_test_framework Boost::dynamic_linking Boost::disable_autolinking)
 
 add_test(NAME math COMMAND unit-tests-math)
+set_tests_properties(math PROPERTIES ENVIRONMENT "PATH=${WINDOWSPATH}")

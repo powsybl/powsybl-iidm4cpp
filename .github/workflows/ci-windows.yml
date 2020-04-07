@@ -54,14 +54,6 @@ jobs:
         shell: cmd
         working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: |
-          echo %PATH%
-          echo "::add-path::C:\thirdparties\libxml2-2.9.10;${{ runner.workspace }}\powsybl-iidm4cpp\build\src;${{ runner.workspace }}\powsybl-iidm4cpp\build\src\test"
-          echo %PATH%
-          echo "##[add-path]C:\thirdparties\libxml2-2.9.10;${{ runner.workspace }}\powsybl-iidm4cpp\build\src;${{ runner.workspace }}\powsybl-iidm4cpp\build\src\test"
-          echo %PATH%
-          set PATH=%PATH%;C:\thirdparties\libxml2-2.9.10;${{ runner.workspace }}\powsybl-iidm4cpp\build\src;${{ runner.workspace }}\powsybl-iidm4cpp\build\src\test
-          dir "${{ runner.workspace }}/powsybl-iidm4cpp/build/src"
-          dir "${{ runner.workspace }}/powsybl-iidm4cpp/build/src/test"
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           cmake --build . --target test -- /A
         env:
