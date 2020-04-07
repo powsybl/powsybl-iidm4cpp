@@ -18,14 +18,14 @@ class LccConverterStation : public HvdcConverterStation {
 public: // HvdcConverterStation
     HvdcConverterStation::HvdcType getHvdcType() const override;
 
+    LccConverterStation& setLossFactor(double lossFactor) override;
+
 public:
     LccConverterStation(const std::string& id, const std::string& name, double lossFactor, double powerFactor);
 
     ~LccConverterStation() noexcept override = default;
 
     double getPowerFactor() const;
-
-    LccConverterStation& setLossFactor(double lossFactor);
 
     LccConverterStation& setPowerFactor(double powerFactor);
 
