@@ -19,6 +19,8 @@ class VscConverterStation : public HvdcConverterStation, public ReactiveLimitsHo
 public: // HvdcConverterStation
     HvdcType getHvdcType() const override;
 
+    VscConverterStation& setLossFactor(double lossFactor) override;
+
 public:
     VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint);
 
@@ -29,8 +31,6 @@ public:
     double getVoltageSetpoint() const;
 
     bool isVoltageRegulatorOn() const;
-
-    VscConverterStation& setLossFactor(double lossFactor);
 
     VscConverterStation& setReactivePowerSetpoint(double reactivePowerSetpoint);
 

@@ -33,8 +33,7 @@ const std::string& LccConverterStation::getTypeDescription() const {
 }
 
 LccConverterStation& LccConverterStation::setLossFactor(double lossFactor) {
-    HvdcConverterStation::setLossFactor(lossFactor);
-    return *this;
+    return dynamic_cast<LccConverterStation&>(HvdcConverterStation::setLossFactor(lossFactor));
 }
 
 LccConverterStation& LccConverterStation::setPowerFactor(double powerFactor) {

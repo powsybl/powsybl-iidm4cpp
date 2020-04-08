@@ -72,8 +72,7 @@ void VscConverterStation::reduceVariantArraySize(unsigned long number) {
 }
 
 VscConverterStation& VscConverterStation::setLossFactor(double lossFactor) {
-    HvdcConverterStation::setLossFactor(lossFactor);
-    return *this;
+    return dynamic_cast<VscConverterStation&>(HvdcConverterStation::setLossFactor(lossFactor));
 }
 
 VscConverterStation& VscConverterStation::setReactivePowerSetpoint(double reactivePowerSetpoint) {

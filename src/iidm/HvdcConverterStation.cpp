@@ -35,8 +35,9 @@ void HvdcConverterStation::setHvdcLine(const stdcxx::Reference<HvdcLine>& hvdcLi
     m_hvdcLine = hvdcLine;
 }
 
-void HvdcConverterStation::setLossFactor(double lossFactor) {
+HvdcConverterStation& HvdcConverterStation::setLossFactor(double lossFactor) {
     m_lossFactor = checkLossFactor(*this, lossFactor);
+    return *this;
 }
 
 }  // namespace iidm

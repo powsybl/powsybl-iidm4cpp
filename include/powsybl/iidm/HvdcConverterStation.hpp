@@ -35,10 +35,10 @@ public:
 
     double getLossFactor() const;
 
+    virtual HvdcConverterStation& setLossFactor(double lossFactor);
+
 protected:
     HvdcConverterStation(const std::string& id, const std::string& name, double lossFactor);
-
-    void setLossFactor(double lossFactor);
 
 private:
     void setHvdcLine(const stdcxx::Reference<HvdcLine>& hvdcLine);
