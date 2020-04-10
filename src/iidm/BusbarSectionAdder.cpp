@@ -25,7 +25,7 @@ BusbarSectionAdder::BusbarSectionAdder(NodeBreakerVoltageLevel& voltageLevel) :
 BusbarSection& BusbarSectionAdder::add() {
     checkOptional(*this, m_node, "Node is not set");
 
-    std::unique_ptr<BusbarSection> ptrBusbarSection = stdcxx::make_unique<BusbarSection>(getNetwork(), getId(), getName());
+    std::unique_ptr<BusbarSection> ptrBusbarSection = stdcxx::make_unique<BusbarSection>(getId(), getName());
     BusbarSection& busbarSection = getNetwork().checkAndAdd(std::move(ptrBusbarSection));
 
     Terminal& terminal = busbarSection.addTerminal(createNodeTerminal(getNetwork(), *m_node));

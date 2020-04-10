@@ -9,8 +9,6 @@
 #define POWSYBL_IIDM_BUSBARSECTION_HPP
 
 #include <powsybl/iidm/Injection.hpp>
-#include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -18,7 +16,7 @@ namespace iidm {
 
 class BusbarSection : public Injection {
 public:
-    BusbarSection(VariantManagerHolder& network, const std::string& id, const std::string& name);
+    BusbarSection(const std::string& id, const std::string& name);
 
     ~BusbarSection() noexcept override = default;
 
@@ -28,9 +26,6 @@ public:
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
-
-private:
-    stdcxx::Reference<VariantManagerHolder> m_network;
 };
 
 }  // namespace iidm
