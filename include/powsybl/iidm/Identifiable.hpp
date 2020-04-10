@@ -25,11 +25,15 @@ public: // Validable
     std::string getMessageHeader() const override;
 
 public:
-    Identifiable(const Identifiable& identifiable) = delete;
+    Identifiable(const Identifiable&) = delete;
+
+    Identifiable(Identifiable&& identifiable) noexcept;
 
     ~Identifiable() noexcept override = default;
 
-    Identifiable& operator=(const Identifiable& identifiable) = delete;
+    Identifiable& operator=(const Identifiable&) = delete;
+
+    Identifiable& operator=(Identifiable&&) noexcept = delete;
 
     const std::string& getId() const;
 
@@ -48,8 +52,6 @@ public:
     stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
 
 protected:
-    Identifiable(Identifiable&&) = default;
-
     Identifiable(const std::string& id, const std::string& name);
 
 private:

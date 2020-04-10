@@ -12,6 +12,7 @@
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
+#include <powsybl/iidm/Substation.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "ValidationUtils.hpp"
@@ -20,9 +21,13 @@ namespace powsybl {
 
 namespace iidm {
 
-NetworkIndex::NetworkIndex(NetworkIndex&& networkIndex) noexcept :
+NetworkIndex::NetworkIndex(Network& network, NetworkIndex&& networkIndex) noexcept :
     m_objectsById(std::move(networkIndex.m_objectsById)),
     m_objectsByType(std::move(networkIndex.m_objectsByType)) {
+
+    for (Substation& substation : getAll<Substation>()) {
+        substation.setNetworkRef(network);
+    }
 }
 
 void NetworkIndex::checkId(const std::string& id) {

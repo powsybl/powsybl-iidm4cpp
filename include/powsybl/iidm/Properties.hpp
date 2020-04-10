@@ -27,7 +27,15 @@ public:
 public:
     Properties() = default;
 
+    Properties(const Properties&) = default;
+
+    Properties(Properties&&) noexcept = default;
+
     ~Properties() = default;
+
+    Properties& operator=(const Properties&) = default;
+
+    Properties& operator=(Properties&&) noexcept = default;
 
     const_iterator begin() const;
 
