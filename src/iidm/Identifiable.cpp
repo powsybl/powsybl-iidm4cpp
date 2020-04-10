@@ -28,6 +28,14 @@ Identifiable::Identifiable(const std::string& id, const std::string& name) :
     m_name(name) {
 }
 
+Identifiable::Identifiable(Identifiable&& identifiable) noexcept :
+    Validable(std::move(identifiable)),
+    Extendable(std::move(identifiable)),
+    m_id(std::move(identifiable.m_id)),
+    m_name(std::move(identifiable.m_name)),
+    m_properties(std::move(identifiable.m_properties)) {
+}
+
 const std::string& Identifiable::getId() const {
     return m_id;
 }

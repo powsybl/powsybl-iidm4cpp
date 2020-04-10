@@ -16,7 +16,17 @@ namespace iidm {
 
 class Validable {
 public:
+    Validable() = default;
+
+    Validable(const Validable&) = default;
+
+    Validable(Validable&&) noexcept = default;
+
     virtual ~Validable() noexcept = default;
+
+    Validable& operator=(const Validable&) = default;
+
+    Validable& operator=(Validable&&) noexcept = default;
 
     virtual std::string getMessageHeader() const = 0;
 };

@@ -24,6 +24,7 @@ namespace powsybl {
 namespace iidm {
 
 class Network;
+class NetworkIndex;
 class ThreeWindingsTransformer;
 class ThreeWindingsTransformerAdder;
 class TwoWindingsTransformer;
@@ -79,7 +80,11 @@ private: // Identifiable
 private:
     void addVoltageLevel(VoltageLevel& voltageLevel);
 
+    void setNetworkRef(Network& network);
+
     friend class VoltageLevelAdder;
+
+    friend class NetworkIndex;
 
 private:
     NetworkRef m_network;

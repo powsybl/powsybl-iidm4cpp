@@ -328,6 +328,23 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(caseDate, network.getCaseDate());
 }
 
+BOOST_AUTO_TEST_CASE(move) {
+    Network n1("id", "test");
+    Substation& s1 = n1.newSubstation()
+        .setId("S1")
+        .add();
+
+    n1.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), "variant2");
+    n1.getVariantManager().setWorkingVariant("variant2");
+
+    Network n2 = std::move(n1);
+
+    BOOST_TEST(stdcxx::areSame(n2, s1.getNetwork()));
+    BOOST_TEST(1, n2.getSubstationCount());
+    BOOST_TEST(2, n2.getVariantManager().getVariantArraySize());
+    BOOST_TEST("variant2", n2.getVariantManager().getWorkingVariantId());
+}
+
 BOOST_AUTO_TEST_CASE(forecastDistance) {
     Network network("id", "test");
 

@@ -144,6 +144,10 @@ Substation& Substation::setCountry(const stdcxx::optional<Country>& country) {
     return *this;
 }
 
+void Substation::setNetworkRef(Network& network) {
+    m_network.set(network);
+}
+
 Substation& Substation::setTso(const std::string& tso) {
     m_tso = tso;
     return *this;

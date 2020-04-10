@@ -79,9 +79,15 @@ public: // VariantManagerHolder
 public:
     Network(const std::string& id, const std::string& sourceFormat);
 
-    Network(Network&&) = default;
+    Network(const Network&) = delete;
+
+    Network(Network&&) noexcept;
 
     ~Network() noexcept override = default;
+
+    Network& operator=(const Network&) = delete;
+
+    Network& operator=(Network&&) noexcept = delete;
 
     template <typename T>
     T& checkAndAdd(std::unique_ptr<T>&& identifiable);

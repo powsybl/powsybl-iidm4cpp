@@ -23,14 +23,20 @@ public:
     };
 
 public:
+    Container(const Container&) = delete;
+
+    Container(Container&& container) noexcept;
+
     ~Container() noexcept override = default;
+
+    Container& operator=(const Container&) = delete;
+
+    Container& operator=(Container&&) = delete;
 
     const Type& getContainerType() const;
 
 protected:
     Container(const std::string& id, const std::string& name, const Container::Type& type);
-
-    Container(Container&&) = default;
 
 private:
     Container::Type m_type;
