@@ -16,6 +16,11 @@ Container::Container(const std::string& id, const std::string& name, const Conta
     m_type(type) {
 }
 
+Container::Container(Container&& container) noexcept :
+    Identifiable(std::move(container)),
+    m_type(container.m_type) {
+}
+
 const Container::Type& Container::getContainerType() const {
     return m_type;
 }

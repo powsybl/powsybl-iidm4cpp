@@ -20,17 +20,23 @@ namespace powsybl {
 
 namespace iidm {
 
+class Network;
+
 class NetworkIndex {
 public:
     NetworkIndex() = default;
 
-    NetworkIndex(const NetworkIndex& networkIndex) = delete;
+    NetworkIndex(const NetworkIndex&) = delete;
 
-    NetworkIndex(NetworkIndex&& networkIndex) noexcept;
+    NetworkIndex(NetworkIndex&&) noexcept = delete;
+
+    NetworkIndex(Network& network, NetworkIndex&& networkIndex) noexcept;
 
     ~NetworkIndex() noexcept = default;
 
-    NetworkIndex& operator=(const NetworkIndex& networkIndex) = delete;
+    NetworkIndex& operator=(const NetworkIndex&) = delete;
+
+    NetworkIndex& operator=(NetworkIndex&&) noexcept = delete;
 
     template <typename T>
     T& checkAndAdd(std::unique_ptr<T>&& identifiable);

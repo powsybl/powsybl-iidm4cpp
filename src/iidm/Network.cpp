@@ -73,6 +73,18 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     m_busView(*this) {
 }
 
+Network::Network(Network&& network) noexcept :
+    Container(std::move(network)),
+    VariantManagerHolder(std::move(network)),
+    m_caseDate(std::move(network.m_caseDate)),
+    m_forecastDistance(network.m_forecastDistance),
+    m_sourceFormat(std::move(network.m_sourceFormat)),
+    m_networkIndex(*this, std::move(network.m_networkIndex)),
+    m_variantManager(*this, std::move(network.m_variantManager)),
+    m_busBreakerView(*this),
+    m_busView(*this) {
+}
+
 const Battery& Network::getBattery(const std::string& id) const {
     return get<Battery>(id);
 }

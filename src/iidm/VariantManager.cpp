@@ -29,8 +29,8 @@ VariantManager::VariantManager(Network& network) :
     m_variantsById.insert(std::make_pair(getInitialVariantId(), INITIAL_VARIANT_INDEX));
 }
 
-VariantManager::VariantManager(VariantManager&& variantManager) noexcept :
-    m_network(variantManager.m_network),
+VariantManager::VariantManager(Network& network, VariantManager&& variantManager) noexcept :
+    m_network(network),
     m_variantContext(std::move(variantManager.m_variantContext)),
     m_variantsById(std::move(variantManager.m_variantsById)),
     m_unusedIndexes(std::move(variantManager.m_unusedIndexes)),

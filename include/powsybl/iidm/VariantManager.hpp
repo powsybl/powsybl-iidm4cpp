@@ -30,13 +30,17 @@ public:
 public:
     explicit VariantManager(Network& network);
 
-    VariantManager(const VariantManager& variantManager) = delete;
+    VariantManager(const VariantManager&) = delete;
 
-    VariantManager(VariantManager&& variantManager) noexcept;
+    VariantManager(VariantManager&& variantManager) noexcept = delete;
+
+    VariantManager(Network& network, VariantManager&& variantManager) noexcept;
 
     ~VariantManager() noexcept = default;
 
-    VariantManager& operator=(const VariantManager& variantManager) = delete;
+    VariantManager& operator=(const VariantManager&) = delete;
+
+    VariantManager& operator=(VariantManager&&) noexcept = delete;
 
     void cloneVariant(const std::string& sourceVariantId, const std::string& targetVariantId);
 

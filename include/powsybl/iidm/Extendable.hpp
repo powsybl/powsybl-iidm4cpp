@@ -25,9 +25,15 @@ class Extendable {
 public:
     Extendable() = default;
 
+    Extendable(const Extendable&) = delete;
+
     Extendable(Extendable&& extendable) noexcept;
 
     virtual ~Extendable() noexcept = default;
+
+    Extendable& operator=(const Extendable&) = delete;
+
+    Extendable& operator=(Extendable&&) noexcept = delete;
 
     void addExtension(std::unique_ptr<Extension>&& extension);
 
