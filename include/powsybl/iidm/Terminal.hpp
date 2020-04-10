@@ -83,8 +83,6 @@ public:
 
     Terminal& setQ(double q);
 
-    Terminal& setVoltageLevel(const stdcxx::Reference<VoltageLevel>& voltageLevel);
-
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -97,25 +95,25 @@ protected: // MultiVariantObject
     friend class Connectable;
 
 protected:
-    explicit Terminal(VariantManagerHolder& network);
+    explicit Terminal(VoltageLevel& voltageLevel);
 
-    const VariantManagerHolder& getNetwork() const;
+    const Network& getNetwork() const;
+
+    Network& getNetwork();
 
 private:
-    stdcxx::Reference<VariantManagerHolder> m_network;
+    VoltageLevel& m_voltageLevel;
 
     stdcxx::Reference<Connectable> m_connectable;
-
-    stdcxx::Reference<VoltageLevel> m_voltageLevel;
 
     std::vector<double> m_p;
 
     std::vector<double> m_q;
 };
 
-std::unique_ptr<Terminal> createBusTerminal(Network& network, const std::string& connectableBusId, bool connected);
+std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& network, const std::string& connectableBusId, bool connected);
 
-std::unique_ptr<Terminal> createNodeTerminal(Network& network, unsigned long node);
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& network, unsigned long node);
 
 }  // namespace iidm
 

@@ -48,7 +48,7 @@ public: // Terminal
     bool isConnected() const override;
 
 public:
-    BusTerminal(VariantManagerHolder& network, const std::string& connectableBusId, bool connected);
+    BusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);
 
     BusTerminal(const BusTerminal& nodeTerminal) = delete;
 

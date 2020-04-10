@@ -19,7 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 LoadAdder::LoadAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+    InjectionAdder(voltageLevel) {
 }
 
 Load& LoadAdder::add() {
@@ -31,13 +31,9 @@ Load& LoadAdder::add() {
     auto& load = getNetwork().checkAndAdd<Load>(std::move(ptrLoad));
 
     Terminal& terminal = load.addTerminal(checkAndGetTerminal());
-    m_voltageLevel.attach(terminal, false);
+    getVoltageLevel().attach(terminal, false);
 
     return load;
-}
-
-Network& LoadAdder::getNetwork() {
-    return m_voltageLevel.getNetwork();
 }
 
 const std::string& LoadAdder::getTypeDescription() const {

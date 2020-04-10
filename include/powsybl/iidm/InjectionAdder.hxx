@@ -11,6 +11,7 @@
 #include <powsybl/iidm/InjectionAdder.hpp>
 
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/TerminalBuilder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 
@@ -19,12 +20,27 @@ namespace powsybl {
 namespace iidm {
 
 template <typename Adder>
+InjectionAdder<Adder>::InjectionAdder(VoltageLevel& voltageLevel) :
+    m_voltageLevel(voltageLevel) {
+}
+
+template <typename Adder>
 std::unique_ptr<Terminal> InjectionAdder<Adder>::checkAndGetTerminal() {
-    return TerminalBuilder(this->getNetwork(), *this)
+    return TerminalBuilder(m_voltageLevel, *this)
                .setNode(m_node)
                .setBus(m_bus)
                .setConnectableBus(m_connectableBus)
                .build();
+}
+
+template <typename Adder>
+Network& InjectionAdder<Adder>::getNetwork() {
+    return m_voltageLevel.getNetwork();
+}
+
+template <typename Adder>
+VoltageLevel& InjectionAdder<Adder>::getVoltageLevel() {
+    return m_voltageLevel;
 }
 
 template <typename Adder>

@@ -44,7 +44,7 @@ public: // Terminal
     bool isConnected() const override;
 
 public:
-    NodeTerminal(VariantManagerHolder& network, unsigned long node);
+    NodeTerminal(VoltageLevel& voltageLevel, unsigned long node);
 
     NodeTerminal(const NodeTerminal& nodeTerminal) = delete;
 

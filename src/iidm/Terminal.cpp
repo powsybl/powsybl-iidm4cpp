@@ -23,10 +23,10 @@ namespace powsybl {
 
 namespace iidm {
 
-Terminal::Terminal(VariantManagerHolder& network) :
-    m_network(network),
-    m_p(network.getVariantManager().getVariantArraySize(), stdcxx::nan()),
-    m_q(network.getVariantManager().getVariantArraySize(), stdcxx::nan()) {
+Terminal::Terminal(VoltageLevel& voltageLevel) :
+    m_voltageLevel(voltageLevel),
+    m_p(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
+    m_q(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()) {
 
 }
 
@@ -38,7 +38,7 @@ void Terminal::allocateVariantArrayElement(const std::set<unsigned long>& indexe
 }
 
 bool Terminal::connect() {
-    return m_voltageLevel.get().connect(*this);
+    return m_voltageLevel.connect(*this);
 }
 
 void Terminal::deleteVariantArrayElement(unsigned long /*index*/) {
@@ -46,7 +46,7 @@ void Terminal::deleteVariantArrayElement(unsigned long /*index*/) {
 }
 
 bool Terminal::disconnect() {
-    return m_voltageLevel.get().disconnect(*this);
+    return m_voltageLevel.disconnect(*this);
 }
 
 void Terminal::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
@@ -70,24 +70,28 @@ double Terminal::getI() const {
     return std::hypot(getP(), getQ()) / std::sqrt(3.0) * getV() / 1000.0;
 }
 
-const VariantManagerHolder& Terminal::getNetwork() const {
-    return m_network.get();
+const Network& Terminal::getNetwork() const {
+    return m_voltageLevel.getNetwork();
+}
+
+Network& Terminal::getNetwork() {
+    return m_voltageLevel.getNetwork();
 }
 
 double Terminal::getP() const {
-    return m_p.at(m_network.get().getVariantIndex());
+    return m_p.at(getNetwork().getVariantIndex());
 }
 
 double Terminal::getQ() const {
-    return m_q.at(m_network.get().getVariantIndex());
+    return m_q.at(getNetwork().getVariantIndex());
 }
 
 const VoltageLevel& Terminal::getVoltageLevel() const {
-    return m_voltageLevel.get();
+    return m_voltageLevel;
 }
 
 VoltageLevel& Terminal::getVoltageLevel() {
-    return m_voltageLevel.get();
+    return m_voltageLevel;
 }
 
 void Terminal::reduceVariantArraySize(unsigned long number) {
@@ -111,7 +115,7 @@ Terminal& Terminal::setP(double p) {
         throw ValidationException(connectable, "cannot set active power on a shunt compensator");
     }
 
-    m_p[m_network.get().getVariantIndex()] = p;
+    m_p[getNetwork().getVariantIndex()] = p;
 
     return *this;
 }
@@ -123,23 +127,17 @@ Terminal& Terminal::setQ(double q) {
         throw ValidationException(connectable, "cannot set reactive power on a busbar section");
     }
 
-    m_q[m_network.get().getVariantIndex()] = q;
+    m_q[getNetwork().getVariantIndex()] = q;
 
     return *this;
 }
 
-Terminal& Terminal::setVoltageLevel(const stdcxx::Reference<VoltageLevel>& voltageLevel) {
-    m_voltageLevel = voltageLevel;
-
-    return *this;
+std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected) {
+    return stdcxx::make_unique<BusTerminal>(voltageLevel, connectableBusId, connected);
 }
 
-std::unique_ptr<Terminal> createBusTerminal(Network& network, const std::string& connectableBusId, bool connected) {
-    return stdcxx::make_unique<BusTerminal>(network, connectableBusId, connected);
-}
-
-std::unique_ptr<Terminal> createNodeTerminal(Network& network, unsigned long node) {
-    return stdcxx::make_unique<NodeTerminal>(network, node);
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, unsigned long node) {
+    return stdcxx::make_unique<NodeTerminal>(voltageLevel, node);
 }
 
 }  // namespace iidm

@@ -19,7 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 GeneratorAdder::GeneratorAdder(powsybl::iidm::VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+    InjectionAdder(voltageLevel) {
 }
 
 Generator& GeneratorAdder::add() {
@@ -40,13 +40,9 @@ Generator& GeneratorAdder::add() {
     auto& generator = getNetwork().checkAndAdd(std::move(ptrGenerator));
 
     Terminal& terminal = generator.addTerminal(std::move(terminalPtr));
-    m_voltageLevel.attach(terminal, false);
+    getVoltageLevel().attach(terminal, false);
 
     return generator;
-}
-
-Network& GeneratorAdder::getNetwork() {
-    return m_voltageLevel.getNetwork();
 }
 
 const std::string& GeneratorAdder::getTypeDescription() const {

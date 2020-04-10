@@ -18,7 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 StaticVarCompensatorAdder::StaticVarCompensatorAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+    InjectionAdder(voltageLevel) {
 }
 
 StaticVarCompensator& StaticVarCompensatorAdder::add() {
@@ -30,13 +30,9 @@ StaticVarCompensator& StaticVarCompensatorAdder::add() {
     auto& svc = getNetwork().checkAndAdd<StaticVarCompensator>(std::move(ptrSvc));
 
     Terminal& terminal = svc.addTerminal(checkAndGetTerminal());
-    m_voltageLevel.attach(terminal, false);
+    getVoltageLevel().attach(terminal, false);
 
     return svc;
-}
-
-Network& StaticVarCompensatorAdder::getNetwork() {
-    return m_voltageLevel.getNetwork();
 }
 
 const std::string& StaticVarCompensatorAdder::getTypeDescription() const {

@@ -25,8 +25,8 @@ TieLineAdder::TieLineAdder(Network& network) :
 TieLine& TieLineAdder::add() {
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
     VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
-    std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1();
-    std::unique_ptr<Terminal> ptrTerminal2 = checkAndGetTerminal2();
+    std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1(voltageLevel1);
+    std::unique_ptr<Terminal> ptrTerminal2 = checkAndGetTerminal2(voltageLevel2);
 
     checkNotEmpty(*this, m_ucteXnodeCode, "ucteXnodeCode is not set");
     checkHalf(*this, m_half1, 1);

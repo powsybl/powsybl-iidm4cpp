@@ -20,22 +20,12 @@ double checkLossFactor(const Validable& validable, double lossFactor);
 
 template<typename Adder>
 HvdcConverterStationAdder<Adder>::HvdcConverterStationAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+    InjectionAdder<Adder>(voltageLevel) {
 }
 
 template<typename Adder>
 double HvdcConverterStationAdder<Adder>::getLossFactor() const {
     return m_lossFactor;
-}
-
-template<typename Adder>
-Network& HvdcConverterStationAdder<Adder>::getNetwork() {
-    return m_voltageLevel.getNetwork();
-}
-
-template<typename Adder>
-VoltageLevel& HvdcConverterStationAdder<Adder>::getVoltageLevel() const {
-    return m_voltageLevel;
 }
 
 template<typename Adder>

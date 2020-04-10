@@ -32,9 +32,6 @@ public:
 
     LoadAdder& setQ0(double q0);
 
-protected: // IdentifiableAdder
-    Network& getNetwork() override;
-
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
@@ -44,8 +41,6 @@ private:
     friend class VoltageLevel;
 
 private:
-    VoltageLevel& m_voltageLevel;
-
     LoadType m_loadType = LoadType::UNDEFINED;
 
     double m_p0 = stdcxx::nan();

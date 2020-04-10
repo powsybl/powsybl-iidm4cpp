@@ -36,8 +36,8 @@ std::unique_ptr<ThreeWindingsTransformer::Leg> ThreeWindingsTransformerAdder::Le
     return stdcxx::make_unique<ThreeWindingsTransformer::Leg>(m_legNumber, m_r, m_x, m_g, m_b, m_ratedU);
 }
 
-std::unique_ptr<Terminal> ThreeWindingsTransformerAdder::LegAdder::checkAndGetTerminal() {
-    return TerminalBuilder(m_parent.getNetwork(), *this)
+std::unique_ptr<Terminal> ThreeWindingsTransformerAdder::LegAdder::checkAndGetTerminal(VoltageLevel& voltageLevel) {
+    return TerminalBuilder(voltageLevel, *this)
         .setNode(m_node)
         .setBus(m_bus)
         .setConnectableBus(m_connectableBus)
@@ -145,15 +145,15 @@ ThreeWindingsTransformerAdder::ThreeWindingsTransformerAdder(Substation& substat
 ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg1 = m_adder1.checkAndGetLeg();
     VoltageLevel& voltageLevel1 = m_adder1.checkAndGetVoltageLevel();
-    std::unique_ptr<Terminal> ptrTerminal1 = m_adder1.checkAndGetTerminal();
+    std::unique_ptr<Terminal> ptrTerminal1 = m_adder1.checkAndGetTerminal(voltageLevel1);
 
     std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg2 = m_adder2.checkAndGetLeg();
     VoltageLevel& voltageLevel2 = m_adder2.checkAndGetVoltageLevel();
-    std::unique_ptr<Terminal> ptrTerminal2 = m_adder2.checkAndGetTerminal();
+    std::unique_ptr<Terminal> ptrTerminal2 = m_adder2.checkAndGetTerminal(voltageLevel2);
 
     std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg3 = m_adder3.checkAndGetLeg();
     VoltageLevel& voltageLevel3 = m_adder3.checkAndGetVoltageLevel();
-    std::unique_ptr<Terminal> ptrTerminal3 = m_adder3.checkAndGetTerminal();
+    std::unique_ptr<Terminal> ptrTerminal3 = m_adder3.checkAndGetTerminal(voltageLevel3);
 
     // check that the 3 windings transformer is attachable on the 3 sides
     voltageLevel1.attach(*ptrTerminal1, true);

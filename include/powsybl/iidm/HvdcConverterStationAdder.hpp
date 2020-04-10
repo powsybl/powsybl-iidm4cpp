@@ -25,21 +25,14 @@ public:
 
     Adder& setLossFactor(double lossFactor);
 
-protected: // IdentifiableAdder
-    Network& getNetwork() override;
-
 protected:
     explicit HvdcConverterStationAdder(VoltageLevel& voltageLevel);
 
     double getLossFactor() const;
 
-    VoltageLevel& getVoltageLevel() const;
-
     virtual void validate() const;
 
 private:
-    VoltageLevel& m_voltageLevel;
-
     double m_lossFactor = stdcxx::nan();
 };
 

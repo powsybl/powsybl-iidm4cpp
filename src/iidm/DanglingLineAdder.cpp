@@ -19,7 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 DanglingLineAdder::DanglingLineAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+    InjectionAdder(voltageLevel) {
 }
 
 DanglingLine& DanglingLineAdder::add() {
@@ -34,13 +34,9 @@ DanglingLine& DanglingLineAdder::add() {
     auto& danglingLine = getNetwork().checkAndAdd<DanglingLine>(std::move(ptrDanglingLine));
 
     Terminal& terminal = danglingLine.addTerminal(checkAndGetTerminal());
-    m_voltageLevel.attach(terminal, false);
+    getVoltageLevel().attach(terminal, false);
 
     return danglingLine;
-}
-
-Network& DanglingLineAdder::getNetwork() {
-    return m_voltageLevel.getNetwork();
 }
 
 const std::string& DanglingLineAdder::getTypeDescription() const {

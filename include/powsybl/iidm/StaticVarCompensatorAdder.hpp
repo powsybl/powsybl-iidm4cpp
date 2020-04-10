@@ -32,9 +32,6 @@ public:
 
     StaticVarCompensatorAdder& setVoltageSetpoint(double voltageSetpoint);
 
-protected: // IdentifiableAdder
-    Network& getNetwork() override;
-
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
@@ -44,8 +41,6 @@ private:
     friend class VoltageLevel;
 
 private:
-    VoltageLevel& m_voltageLevel;
-
     double m_bMin = stdcxx::nan();
 
     double m_bMax = stdcxx::nan();

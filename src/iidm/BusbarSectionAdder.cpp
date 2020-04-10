@@ -28,7 +28,7 @@ BusbarSection& BusbarSectionAdder::add() {
     std::unique_ptr<BusbarSection> ptrBusbarSection = stdcxx::make_unique<BusbarSection>(getId(), getName());
     BusbarSection& busbarSection = getNetwork().checkAndAdd(std::move(ptrBusbarSection));
 
-    Terminal& terminal = busbarSection.addTerminal(createNodeTerminal(getNetwork(), *m_node));
+    Terminal& terminal = busbarSection.addTerminal(createNodeTerminal(m_voltageLevel, *m_node));
     m_voltageLevel.attach(terminal, false);
 
     return busbarSection;

@@ -19,7 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 BatteryAdder::BatteryAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+    InjectionAdder(voltageLevel) {
 }
 
 Battery& BatteryAdder::add() {
@@ -33,13 +33,9 @@ Battery& BatteryAdder::add() {
     auto& battery = getNetwork().checkAndAdd<Battery>(std::move(ptrBattery));
 
     Terminal& terminal = battery.addTerminal(checkAndGetTerminal());
-    m_voltageLevel.attach(terminal, false);
+    getVoltageLevel().attach(terminal, false);
 
     return battery;
-}
-
-Network& BatteryAdder::getNetwork() {
-    return m_voltageLevel.getNetwork();
 }
 
 const std::string& BatteryAdder::getTypeDescription() const {

@@ -54,7 +54,7 @@ public:
 
         std::unique_ptr<ThreeWindingsTransformer::Leg> checkAndGetLeg() const;
 
-        std::unique_ptr<Terminal> checkAndGetTerminal();
+        std::unique_ptr<Terminal> checkAndGetTerminal(VoltageLevel& voltageLevel);
 
         VoltageLevel& checkAndGetVoltageLevel();
 
