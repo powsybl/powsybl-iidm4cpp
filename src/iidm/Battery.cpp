@@ -16,7 +16,6 @@ namespace iidm {
 Battery::Battery(VariantManagerHolder& network, const std::string& id, const std::string& name,
     double p0, double q0, double minP, double maxP) :
     Injection(id, name, ConnectableType::BATTERY),
-    m_network(network),
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
     m_minP(checkMinP(*this, minP)),
@@ -49,11 +48,11 @@ double Battery::getMinP() const {
 }
 
 double Battery::getP0() const {
-    return m_p0.at(m_network.get().getVariantIndex());
+    return m_p0.at(getNetwork().getVariantIndex());
 }
 
 double Battery::getQ0() const {
-    return m_q0.at(m_network.get().getVariantIndex());
+    return m_q0.at(getNetwork().getVariantIndex());
 }
 
 const std::string& Battery::getTypeDescription() const {
@@ -88,13 +87,13 @@ Battery& Battery::setMinP(double minP) {
 Battery& Battery::setP0(double p0) {
     checkP0(*this, p0);
     checkActivePowerLimits(*this, m_minP, m_maxP, p0);
-    m_p0[m_network.get().getVariantIndex()] = p0;
+    m_p0[getNetwork().getVariantIndex()] = p0;
 
     return *this;
 }
 
 Battery& Battery::setQ0(double q0) {
-    m_q0[m_network.get().getVariantIndex()] = checkQ0(*this, q0);
+    m_q0[getNetwork().getVariantIndex()] = checkQ0(*this, q0);
 
     return *this;
 }

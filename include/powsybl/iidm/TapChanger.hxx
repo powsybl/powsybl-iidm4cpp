@@ -25,7 +25,6 @@ double checkTargetDeadband(const Validable& validable, double targetDeadband);
 template<typename H, typename C, typename S>
 TapChanger<H, C, S>::TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
                                 long tapPosition, bool regulating, double targetDeadband) :
-   m_network(network),
    m_parent(parent),
    m_lowTapPosition(lowTapPosition),
    m_steps(steps),
@@ -125,17 +124,17 @@ unsigned int TapChanger<H, C, S>::getStepCount() const {
 
 template<typename H, typename C, typename S>
 long TapChanger<H, C, S>::getTapPosition() const {
-    return m_tapPosition.at(m_network.get().getVariantIndex());
+    return m_tapPosition.at(getNetwork().getVariantIndex());
 }
 
 template<typename H, typename C, typename S>
 double TapChanger<H, C, S>::getTargetDeadband() const {
-    return m_targetDeadband.at(m_network.get().getVariantIndex());
+    return m_targetDeadband.at(getNetwork().getVariantIndex());
 }
 
 template<typename H, typename C, typename S>
 bool TapChanger<H, C, S>::isRegulating() const {
-    return m_regulating.at(m_network.get().getVariantIndex());
+    return m_regulating.at(getNetwork().getVariantIndex());
 }
 
 template<typename H, typename C, typename S>
@@ -149,14 +148,14 @@ template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setLowTapPosition(long lowTapPosition) {
     long oldValue = m_lowTapPosition;
     m_lowTapPosition = lowTapPosition;
-    m_tapPosition[m_network.get().getVariantIndex()] = getTapPosition() + m_lowTapPosition - oldValue;
+    m_tapPosition[getNetwork().getVariantIndex()] = getTapPosition() + m_lowTapPosition - oldValue;
 
     return static_cast<C&>(*this);
 }
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setRegulating(bool regulating) {
-    m_regulating[m_network.get().getVariantIndex()] = regulating;
+    m_regulating[getNetwork().getVariantIndex()] = regulating;
 
     return static_cast<C&>(*this);
 }
@@ -173,14 +172,14 @@ C& TapChanger<H, C, S>::setRegulationTerminal(const stdcxx::Reference<Terminal>&
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setTapPosition(long tapPosition) {
-    m_tapPosition[m_network.get().getVariantIndex()] = checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition());
+    m_tapPosition[getNetwork().getVariantIndex()] = checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition());
 
     return static_cast<C&>(*this);
 }
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setTargetDeadband(double targetDeadband) {
-    m_targetDeadband[m_network.get().getVariantIndex()] = checkTargetDeadband(m_parent, targetDeadband);
+    m_targetDeadband[getNetwork().getVariantIndex()] = checkTargetDeadband(m_parent, targetDeadband);
 
     return static_cast<C&>(*this);
 }

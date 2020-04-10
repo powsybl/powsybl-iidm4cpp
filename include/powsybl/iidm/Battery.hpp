@@ -49,8 +49,6 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    stdcxx::Reference<VariantManagerHolder> m_network;
-
     std::vector<double> m_p0;
 
     std::vector<double> m_q0;

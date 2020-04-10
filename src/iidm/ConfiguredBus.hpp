@@ -14,7 +14,6 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusAdder.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
-#include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -23,6 +22,7 @@ namespace iidm {
 
 class BusBreakerVoltageLevel;
 class BusTerminal;
+class Network;
 class Terminal;
 
 class ConfiguredBus : public Bus, public MultiVariantObject {
@@ -50,6 +50,10 @@ public:
 
     void addTerminal(BusTerminal& terminal);
 
+    const Network& getNetwork() const;
+
+    Network& getNetwork();
+
     unsigned long getTerminalCount() const;
 
     stdcxx::const_range<BusTerminal> getTerminals() const;
@@ -69,8 +73,6 @@ protected: // MultiVariantObject
 
 private:
     stdcxx::Reference<BusBreakerVoltageLevel> m_voltageLevel;
-
-    stdcxx::Reference<VariantManagerHolder> m_network;
 
     std::vector<std::list<std::reference_wrapper<BusTerminal> > > m_terminals;
 

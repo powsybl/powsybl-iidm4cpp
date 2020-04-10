@@ -15,8 +15,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class VariantManagerHolder;
-
 class DanglingLine : public Injection {
 public:
     DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name,
@@ -73,8 +71,6 @@ private:
     friend class CurrentLimitsAdder<std::nullptr_t, DanglingLine>;
 
 private:
-    stdcxx::Reference<VariantManagerHolder> m_network;
-
     double m_b;
 
     double m_g;

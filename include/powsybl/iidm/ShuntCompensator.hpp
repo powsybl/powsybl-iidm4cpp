@@ -48,8 +48,6 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    stdcxx::Reference<VariantManagerHolder> m_network;
-
     double m_bPerSection;
 
     unsigned long m_maximumSectionCount;

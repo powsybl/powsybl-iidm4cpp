@@ -19,7 +19,6 @@ namespace iidm {
 HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& name, double r, double nominalVoltage, double maxP,
                    const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2) :
     Identifiable(id, name),
-    m_network(network),
     m_converterStation1(attach(converterStation1)),
     m_converterStation2(attach(converterStation2)),
     m_r(checkR(*this, r)),
@@ -87,11 +86,18 @@ double HvdcLine::getMaxP() const {
 }
 
 const Network& HvdcLine::getNetwork() const {
-    return m_network.get();
+    if (m_converterStation1) {
+        return m_converterStation1.get().getNetwork();
+    }
+    if (m_converterStation2) {
+        return m_converterStation2.get().getNetwork();
+    }
+
+    throw PowsyblException(getId() + " is not attached to a network");
 }
 
 Network& HvdcLine::getNetwork() {
-    return m_network.get();
+    return const_cast<Network&>(static_cast<const HvdcLine*>(this)->getNetwork());
 }
 
 double HvdcLine::getNominalVoltage() const {
@@ -114,12 +120,15 @@ void HvdcLine::reduceVariantArraySize(unsigned long number) {
 }
 
 void HvdcLine::remove() {
+    Network& network = getNetwork();
+
+    // Detach converter stations
     m_converterStation1.get().setHvdcLine(stdcxx::ref<HvdcLine>());
     m_converterStation2.get().setHvdcLine(stdcxx::ref<HvdcLine>());
     m_converterStation1 = stdcxx::ref<HvdcConverterStation>();
     m_converterStation2 = stdcxx::ref<HvdcConverterStation>();
 
-    getNetwork().remove(*this);
+    network.remove(*this);
 }
 
 HvdcLine& HvdcLine::setActivePowerSetpoint(double activePowerSetpoint) {
