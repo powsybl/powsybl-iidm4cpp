@@ -94,8 +94,6 @@ private:
     HvdcConverterStation& attach(HvdcConverterStation& converterStation);
 
 private:
-    stdcxx::Reference<Network> m_network;
-
     stdcxx::Reference<HvdcConverterStation> m_converterStation1;
 
     stdcxx::Reference<HvdcConverterStation> m_converterStation2;

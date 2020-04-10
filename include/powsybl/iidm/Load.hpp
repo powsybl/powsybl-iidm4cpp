@@ -12,8 +12,6 @@
 
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/LoadType.hpp>
-#include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -49,8 +47,6 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    stdcxx::Reference<VariantManagerHolder> m_network;
-
     LoadType m_loadType;
 
     std::vector<double> m_p0;

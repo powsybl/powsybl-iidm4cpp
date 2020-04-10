@@ -17,7 +17,6 @@ namespace iidm {
 DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name,
                            double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode) :
     Injection(id, name, ConnectableType::DANGLING_LINE),
-    m_network(network),
     m_b(checkB(*this, b)),
     m_g(checkG(*this, g)),
     m_r(checkR(*this, r)),
@@ -60,11 +59,11 @@ double DanglingLine::getG() const {
 }
 
 double DanglingLine::getP0() const {
-    return m_p0.at(m_network.get().getVariantIndex());
+    return m_p0.at(getNetwork().getVariantIndex());
 }
 
 double DanglingLine::getQ0() const {
-    return m_q0.at(m_network.get().getVariantIndex());
+    return m_q0.at(getNetwork().getVariantIndex());
 }
 
 double DanglingLine::getR() const {
@@ -113,13 +112,13 @@ DanglingLine& DanglingLine::setG(double g) {
 }
 
 DanglingLine& DanglingLine::setP0(double p0) {
-    m_p0[m_network.get().getVariantIndex()] = checkP0(*this, p0);
+    m_p0[getNetwork().getVariantIndex()] = checkP0(*this, p0);
 
     return *this;
 }
 
 DanglingLine& DanglingLine::setQ0(double q0) {
-    m_q0[m_network.get().getVariantIndex()] = checkQ0(*this, q0);
+    m_q0[getNetwork().getVariantIndex()] = checkQ0(*this, q0);
 
     return *this;
 }

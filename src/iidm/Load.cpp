@@ -18,7 +18,6 @@ namespace iidm {
 Load::Load(VariantManagerHolder& network, const std::string& id, const std::string& name, const LoadType& loadType,
            double p0, double q0) :
     Injection(id, name, ConnectableType::LOAD),
-    m_network(network),
     m_loadType(checkLoadType(*this, loadType)),
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)) {
@@ -46,11 +45,11 @@ const LoadType& Load::getLoadType() const {
 }
 
 double Load::getP0() const {
-    return m_p0.at(m_network.get().getVariantIndex());
+    return m_p0.at(getNetwork().getVariantIndex());
 }
 
 double Load::getQ0() const {
-    return m_q0[m_network.get().getVariantIndex()];
+    return m_q0[getNetwork().getVariantIndex()];
 }
 
 const std::string& Load::getTypeDescription() const {
@@ -73,13 +72,13 @@ Load& Load::setLoadType(const LoadType& loadType) {
 }
 
 Load& Load::setP0(double p0) {
-    m_p0[m_network.get().getVariantIndex()] = checkP0(*this, p0);
+    m_p0[getNetwork().getVariantIndex()] = checkP0(*this, p0);
 
     return *this;
 }
 
 Load& Load::setQ0(double q0) {
-    m_q0[m_network.get().getVariantIndex()] = checkQ0(*this, q0);
+    m_q0[getNetwork().getVariantIndex()] = checkQ0(*this, q0);
 
     return *this;
 }

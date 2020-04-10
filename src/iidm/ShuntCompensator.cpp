@@ -17,7 +17,6 @@ namespace iidm {
 ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
     double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount) :
     Injection(id, name, ConnectableType::SHUNT_COMPENSATOR),
-    m_network(network),
     m_bPerSection(checkbPerSection(*this, bPerSection)),
     m_maximumSectionCount(maximumSectionCount),
     m_currentSectionCount(network.getVariantManager().getVariantArraySize(), currentSectionCount) {
@@ -47,7 +46,7 @@ double ShuntCompensator::getCurrentB() const {
 }
 
 unsigned long ShuntCompensator::getCurrentSectionCount() const {
-    return m_currentSectionCount.at(m_network.get().getVariantIndex());
+    return m_currentSectionCount.at(getNetwork().getVariantIndex());
 }
 
 double ShuntCompensator::getMaximumB() const {
@@ -78,7 +77,7 @@ ShuntCompensator& ShuntCompensator::setbPerSection(double bPerSection) {
 
 ShuntCompensator& ShuntCompensator::setCurrentSectionCount(unsigned long currentSectionCount) {
     checkSections(*this, currentSectionCount, m_maximumSectionCount);
-    m_currentSectionCount[m_network.get().getVariantIndex()] = currentSectionCount;
+    m_currentSectionCount[getNetwork().getVariantIndex()] = currentSectionCount;
 
     return *this;
 }

@@ -87,8 +87,6 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    stdcxx::Reference<VariantManagerHolder> m_network;
-
     EnergySource m_energySource;
 
     double m_minP;

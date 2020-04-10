@@ -87,8 +87,6 @@ protected:
     H& getParent();
 
 private:
-    stdcxx::Reference<VariantManagerHolder> m_network;
-
     H& m_parent;
 
     long m_lowTapPosition;
