@@ -18,6 +18,7 @@
 #include <boost/filesystem.hpp>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -25,7 +26,7 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T, typename = typename std::enable_if<std::is_base_of<ExtensionProvider, T>::value>::type>
-class ExtensionProviders {
+class IIDM_DECLSPEC ExtensionProviders {
 public:
     static ExtensionProviders& getInstance();
 
@@ -39,13 +40,13 @@ public:
 private:
     ExtensionProviders() = default;
 
-    ExtensionProviders(const ExtensionProviders& other) = default;
+    ExtensionProviders(const ExtensionProviders& other) = delete;
 
     ExtensionProviders(ExtensionProviders&& other) = default;
 
     ~ExtensionProviders() noexcept = default;
 
-    ExtensionProviders& operator=(const ExtensionProviders& other) = default;
+    ExtensionProviders& operator=(const ExtensionProviders& other) = delete;
 
     ExtensionProviders& operator=(ExtensionProviders&& other) = default;
 
@@ -60,7 +61,5 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
-
-#include <powsybl/iidm/ExtensionProviders.hxx>
 
 #endif  // POWSYBL_IIDM_EXTENSIONPROVIDERS_HPP

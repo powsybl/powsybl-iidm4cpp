@@ -5,9 +5,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_EXTENSIONPROVIDERS_HXX
-#define POWSYBL_IIDM_EXTENSIONPROVIDERS_HXX
-
 #include <powsybl/iidm/ExtensionProviders.hpp>
 
 #include <boost/dll/import.hpp>
@@ -15,6 +12,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
@@ -97,4 +95,4 @@ void ExtensionProviders<T, Dummy>::loadLibrary(const boost::filesystem::path& li
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_EXTENSIONPROVIDERS_HXX
+template class IIDM_DECLSPEC powsybl::iidm::ExtensionProviders<powsybl::iidm::converter::xml::ExtensionXmlSerializer>;

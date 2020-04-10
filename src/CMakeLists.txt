@@ -37,6 +37,7 @@ set(IIDM_SOURCES
     iidm/Extendable.cpp
     iidm/Extension.cpp
     iidm/ExtensionProvider.cpp
+    iidm/ExtensionProviders.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp
