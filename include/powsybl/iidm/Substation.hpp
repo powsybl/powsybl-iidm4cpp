@@ -15,7 +15,7 @@
 
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/Country.hpp>
-#include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -23,6 +23,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class Network;
 class ThreeWindingsTransformer;
 class ThreeWindingsTransformerAdder;
 class TwoWindingsTransformer;
@@ -81,7 +82,7 @@ private:
     friend class VoltageLevelAdder;
 
 private:
-    stdcxx::Reference<Network> m_network;
+    NetworkRef m_network;
 
     stdcxx::optional<Country> m_country;
 
