@@ -18,6 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 class Terminal;
+class VoltageLevel;
 
 template <typename Adder>
 class InjectionAdder : public IdentifiableAdder<Adder> {
@@ -30,12 +31,19 @@ public:
 
     Adder& setNode(unsigned long node);
 
+protected:  // IdentifiableAdder
+    Network& getNetwork() override;
+
 protected:
-    InjectionAdder() = default;
+    InjectionAdder(VoltageLevel& voltageLevel);
 
     std::unique_ptr<Terminal> checkAndGetTerminal();
 
+    VoltageLevel& getVoltageLevel();
+
 private:
+    VoltageLevel& m_voltageLevel;
+
     stdcxx::optional<unsigned long> m_node;
 
     std::string m_bus;

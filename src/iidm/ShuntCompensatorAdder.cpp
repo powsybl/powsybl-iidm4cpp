@@ -18,7 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 ShuntCompensatorAdder::ShuntCompensatorAdder(VoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+    InjectionAdder(voltageLevel) {
 }
 
 ShuntCompensator& ShuntCompensatorAdder::add() {
@@ -29,13 +29,9 @@ ShuntCompensator& ShuntCompensatorAdder::add() {
     auto& shunt = getNetwork().checkAndAdd<ShuntCompensator>(std::move(ptrShunt));
 
     Terminal& terminal = shunt.addTerminal(checkAndGetTerminal());
-    m_voltageLevel.attach(terminal, false);
+    getVoltageLevel().attach(terminal, false);
 
     return shunt;
-}
-
-Network& ShuntCompensatorAdder::getNetwork() {
-    return m_voltageLevel.getNetwork();
 }
 
 const std::string& ShuntCompensatorAdder::getTypeDescription() const {

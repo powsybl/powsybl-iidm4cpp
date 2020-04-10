@@ -17,13 +17,13 @@ namespace powsybl {
 
 namespace iidm {
 
-class Network;
 class Terminal;
 class Validable;
+class VoltageLevel;
 
 class TerminalBuilder {
 public:
-    TerminalBuilder(Network& network, Validable& validable);
+    TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable);
 
     ~TerminalBuilder() noexcept = default;
 
@@ -39,7 +39,7 @@ private:
     const std::string& getConnectionBus() const;
 
 private:
-    Network& m_network;
+    VoltageLevel& m_voltageLevel;
 
     Validable& m_validable;
 

@@ -33,9 +33,6 @@ public:
 
     BatteryAdder& setQ0(double q0);
 
-protected: // IdentifiableAdder
-    Network& getNetwork() override;
-
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
@@ -45,8 +42,6 @@ private:
     friend class VoltageLevel;
 
 private:
-    VoltageLevel& m_voltageLevel;
-
     double m_p0 = stdcxx::nan();
 
     double m_q0 = stdcxx::nan();

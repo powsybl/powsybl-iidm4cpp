@@ -18,10 +18,10 @@ namespace powsybl {
 
 namespace iidm {
 
-BusTerminal::BusTerminal(VariantManagerHolder& network, const std::string& connectableBusId, bool connected) :
-    Terminal(network),
-    m_connected(network.getVariantManager().getVariantArraySize(), connected),
-    m_connectableBusId(network.getVariantManager().getVariantArraySize(), checkNotEmpty(connectableBusId, "ConnectableBusId is required")),
+BusTerminal::BusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected) :
+    Terminal(voltageLevel),
+    m_connected(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), connected),
+    m_connectableBusId(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), checkNotEmpty(connectableBusId, "ConnectableBusId is required")),
     m_busBreakerView(*this),
     m_busView(*this) {
 }

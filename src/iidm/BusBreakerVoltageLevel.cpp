@@ -57,9 +57,6 @@ void BusBreakerVoltageLevel::allocateVariantArrayElement(const std::set<unsigned
 void BusBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
     checkTerminal(terminal);
     if (!test) {
-        // create the link terminal -> voltage level
-        terminal.setVoltageLevel(stdcxx::ref<VoltageLevel>(*this));
-
         auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
         const auto& connectableBus = getConfiguredBus(busTerminal.getConnectableBusId(), true);
 
@@ -120,8 +117,6 @@ void BusBreakerVoltageLevel::detach(Terminal& terminal) {
 
         invalidateCache();
     });
-
-    terminal.setVoltageLevel(stdcxx::ref<VoltageLevel>());
 }
 
 bool BusBreakerVoltageLevel::disconnect(Terminal& terminal) {

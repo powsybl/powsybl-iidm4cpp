@@ -39,9 +39,6 @@ public:
 
     DanglingLineAdder& setX(double x);
 
-protected: // IdentifiableAdder
-    Network& getNetwork() override;
-
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
@@ -51,8 +48,6 @@ private:
     friend class VoltageLevel;
 
 private:
-    VoltageLevel& m_voltageLevel;
-
     double m_r = stdcxx::nan();
 
     double m_x = stdcxx::nan();

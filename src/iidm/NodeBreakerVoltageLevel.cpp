@@ -60,9 +60,6 @@ void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
                                 tmp.get().getConnectable().get().getId(), node, getId()));
         }
 
-        // create the link terminal <-> voltage level
-        terminal.setVoltageLevel(stdcxx::ref<VoltageLevel>(*this));
-
         // create the link terminal <-> graph vertex
         m_graph.setVertexObject(node, stdcxx::ref(nodeTerminal));
     }
@@ -123,9 +120,6 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
 
     // remove the link terminal <-> graph vertex
     m_graph.setVertexObject(node, stdcxx::ref<NodeTerminal>());
-
-    // remove the link terminal <-> voltage level
-    nodeTerminal.setVoltageLevel(stdcxx::ref<VoltageLevel>());
 }
 
 bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {

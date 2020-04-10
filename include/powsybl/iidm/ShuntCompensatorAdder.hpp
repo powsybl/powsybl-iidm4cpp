@@ -31,9 +31,6 @@ public:
 
     ShuntCompensatorAdder& setMaximumSectionCount(unsigned long maximumSectionCount);
 
-protected: // IdentifiableAdder
-    Network& getNetwork() override;
-
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
@@ -43,8 +40,6 @@ private:
     friend class VoltageLevel;
 
 private:
-    VoltageLevel& m_voltageLevel;
-
     double m_bPerSection = stdcxx::nan();
 
     unsigned long m_currentSectionCount = 0;

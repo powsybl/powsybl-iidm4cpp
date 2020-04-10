@@ -18,11 +18,11 @@ namespace powsybl {
 
 namespace iidm {
 
-NodeTerminal::NodeTerminal(VariantManagerHolder& network, unsigned long node) :
-    Terminal(network),
+NodeTerminal::NodeTerminal(VoltageLevel& voltageLevel, unsigned long node) :
+    Terminal(voltageLevel),
     m_node(node),
-    m_v(network.getVariantManager().getVariantArraySize(), stdcxx::nan()),
-    m_angle(network.getVariantManager().getVariantArraySize(), stdcxx::nan()),
+    m_v(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
+    m_angle(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {

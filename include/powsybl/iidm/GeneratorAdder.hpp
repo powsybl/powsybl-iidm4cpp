@@ -52,9 +52,6 @@ public:
 
     GeneratorAdder& setVoltageSetpoint(double voltageSetpoint);
 
-protected: // IdentifiableAdder
-    Network& getNetwork() override;
-
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
@@ -64,8 +61,6 @@ private:
     friend class VoltageLevel;
 
 private:
-    VoltageLevel& m_voltageLevel;
-
     EnergySource m_energySource = EnergySource::OTHER;
 
     double m_minP = stdcxx::nan();
