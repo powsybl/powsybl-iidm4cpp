@@ -17,10 +17,10 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T>
-VariantArray<T>::VariantArray(VariantManagerHolder& variantManagerHolder, const VariantFactory& variantFactory) :
-    m_variantManagerHolder(variantManagerHolder) {
+VariantArray<T>::VariantArray(VoltageLevel& voltageLevel, const VariantFactory& variantFactory) :
+    m_voltageLevel(voltageLevel) {
 
-    const auto& variantManager = variantManagerHolder.getVariantManager();
+    const auto& variantManager = voltageLevel.getNetwork().getVariantManager();
     m_variants.resize(variantManager.getVariantArraySize());
     for (unsigned long i : variantManager.getVariantIndices()) {
         m_variants.at(i) = variantFactory();
@@ -53,12 +53,12 @@ void VariantArray<T>::extendVariantArraySize(unsigned long /*initVariantArraySiz
 
 template <typename T>
 const T& VariantArray<T>::get() const {
-    return *m_variants.at(m_variantManagerHolder.getVariantIndex());
+    return *m_variants.at(m_voltageLevel.getNetwork().getVariantIndex());
 }
 
 template <typename T>
 T& VariantArray<T>::get() {
-    return *m_variants.at(m_variantManagerHolder.getVariantIndex());
+    return *m_variants.at(m_voltageLevel.getNetwork().getVariantIndex());
 }
 
 template <typename T>

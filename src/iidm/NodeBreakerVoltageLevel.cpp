@@ -23,7 +23,7 @@ NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const st
                                                  double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit),
     m_busNamingStrategy(*this),
-    m_variants(substation.getNetwork(), [this]() { return stdcxx::make_unique<node_breaker_voltage_level::VariantImpl>(*this); }),
+    m_variants(*this, [this]() { return stdcxx::make_unique<node_breaker_voltage_level::VariantImpl>(*this); }),
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {

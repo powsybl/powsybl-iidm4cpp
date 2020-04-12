@@ -8,11 +8,9 @@
 #ifndef POWSYBL_IIDM_VARIANTARRAY_HPP
 #define POWSYBL_IIDM_VARIANTARRAY_HPP
 
+#include <functional>
 #include <memory>
-
-#include <powsybl/iidm/MultiVariantObject.hpp>
-#include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <set>
 
 #include "Variant.hpp"
 
@@ -20,13 +18,15 @@ namespace powsybl {
 
 namespace iidm {
 
+class VoltageLevel;
+
 template <typename T>
 class VariantArray {
 public:
     using VariantFactory = std::function<std::unique_ptr<T>()>;
 
 public:
-    VariantArray(VariantManagerHolder& variantManagerHolder, const VariantFactory& variantFactory);
+    VariantArray(VoltageLevel& voltageLevel, const VariantFactory& variantFactory);
 
     ~VariantArray() noexcept = default;
 
@@ -45,7 +45,7 @@ public:
     void reduceVariantArraySize(unsigned long number);
 
 private:
-    VariantManagerHolder& m_variantManagerHolder;
+    VoltageLevel& m_voltageLevel;
 
     std::vector<std::unique_ptr<T> > m_variants;
 };
