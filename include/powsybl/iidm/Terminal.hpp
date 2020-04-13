@@ -111,9 +111,9 @@ private:
     std::vector<double> m_q;
 };
 
-std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& network, const std::string& connectableBusId, bool connected);
+std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);
 
-std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& network, unsigned long node);
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, unsigned long node);
 
 }  // namespace iidm
 

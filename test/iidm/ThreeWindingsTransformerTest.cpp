@@ -487,7 +487,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     Substation& substation2 = network.getSubstation("S2");
     unsigned long threeWindingsTransformerCount = network.getThreeWindingsTransformerCount();
 
-    BOOST_CHECK_EQUAL(1ul, threeWindingsTransformerCount);
+    BOOST_CHECK_EQUAL(1UL, threeWindingsTransformerCount);
 
     ThreeWindingsTransformerAdder adder = substation2.newThreeWindingsTransformer();
 
@@ -654,7 +654,7 @@ BOOST_AUTO_TEST_CASE(adder2) {
     Substation& substation2 = network.getSubstation("S2");
     unsigned long threeWindingsTransformerCount = network.getThreeWindingsTransformerCount();
 
-    BOOST_CHECK_EQUAL(1ul, threeWindingsTransformerCount);
+    BOOST_CHECK_EQUAL(1UL, threeWindingsTransformerCount);
 
     ThreeWindingsTransformerAdder adder = substation2.newThreeWindingsTransformer();
     adder.setId("3WT_VL1_VL2_VL3");
@@ -717,7 +717,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     RatioTapChanger& ratioTapChangerLeg3 = leg3.getRatioTapChanger().get();
 
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
-    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s1");
 
@@ -918,7 +918,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChangerLeg3.getRegulationTerminal().get()));
 
     network.getVariantManager().removeVariant("s1");
-    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
@@ -960,10 +960,10 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChangerLeg3.getRegulationTerminal().get()));
 
     network.getVariantManager().removeVariant("s3");
-    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().removeVariant("s2");
-    BOOST_CHECK_EQUAL(1ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(1UL, network.getVariantManager().getVariantArraySize());
 }
 
 BOOST_AUTO_TEST_CASE(voltageLevel) {

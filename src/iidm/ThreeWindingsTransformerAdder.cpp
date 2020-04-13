@@ -9,8 +9,8 @@
 
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
-#include <powsybl/iidm//Substation.hpp>
-#include <powsybl/iidm//TerminalBuilder.hpp>
+#include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/TerminalBuilder.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 

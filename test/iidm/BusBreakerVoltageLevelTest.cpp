@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(BusTest) {
     BOOST_CHECK_EQUAL("BUS", bus.getId());
     BOOST_CHECK_EQUAL("BUS_NAME", bus.getName());
     BOOST_TEST(stdcxx::areSame(voltageLevel, bus.getVoltageLevel()));
-    BOOST_CHECK_EQUAL(0ul, bus.getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(0UL, bus.getConnectedTerminalCount());
     BOOST_TEST(std::isnan(bus.getV()));
     BOOST_TEST(std::isnan(bus.getAngle()));
 
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(BusTest) {
         .setQ0(40.0)
         .add();
 
-    BOOST_CHECK_EQUAL(1ul, bus.getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(1UL, bus.getConnectedTerminalCount());
 }
 
 BOOST_AUTO_TEST_CASE(SwitchTest) {
@@ -224,7 +224,7 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     POWSYBL_ASSERT_THROW(view.removeAllBuses(), ValidationException,
                          "Voltage level 'VL1': Cannot remove all buses because there is still some switches");
     view.removeAllSwitches();
-    BOOST_CHECK_EQUAL(0ul, view.getSwitchCount());
+    BOOST_CHECK_EQUAL(0UL, view.getSwitchCount());
     POWSYBL_ASSERT_THROW(view.removeAllBuses(), ValidationException,
                          "Voltage level 'VL1': Cannot remove bus 'VL1_BUS1' due to connected equipments");
     network.getLoad("LOAD1").remove();
@@ -360,7 +360,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
     BOOST_CHECK_CLOSE(7.7, testBus.setAngle(7.7).setV(8.8).getAngle(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(8.8, testBus.getV(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(testBus.setV(-9.0), ValidationException, "Bus 'BUS1': voltage cannot be < 0");
-    BOOST_CHECK_EQUAL(2ul, testBus.getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(2UL, testBus.getConnectedTerminalCount());
     const auto& terminals = testBus.getConnectedTerminals();
     BOOST_CHECK_EQUAL(boost::size(terminals), testBus.getConnectedTerminalCount());
     BOOST_TEST(stdcxx::areSame(vl, testBus.getVoltageLevel()));

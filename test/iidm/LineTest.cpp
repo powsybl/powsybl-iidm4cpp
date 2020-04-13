@@ -170,7 +170,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 BOOST_AUTO_TEST_CASE(adder) {
     Network network = createLineTestNetwork();
 
-    BOOST_CHECK_EQUAL(1ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(1UL, network.getLineCount());
 
     LineAdder lineAdder = network.newLine();
 
@@ -247,7 +247,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     lineAdder.setId("UNIQUE_LINE_ID");
     BOOST_CHECK_NO_THROW(lineAdder.add());
 
-    BOOST_CHECK_EQUAL(2ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(2UL, network.getLineCount());
 }
 
 BOOST_AUTO_TEST_CASE(terminal) {

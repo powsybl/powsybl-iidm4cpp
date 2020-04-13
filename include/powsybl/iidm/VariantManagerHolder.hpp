@@ -16,7 +16,17 @@ class VariantManager;
 
 class VariantManagerHolder {
 public:
+    VariantManagerHolder() = default;
+
+    VariantManagerHolder(const VariantManagerHolder&) = default;
+
+    VariantManagerHolder(VariantManagerHolder&&) noexcept = default;
+
     virtual ~VariantManagerHolder() noexcept = default;
+
+    VariantManagerHolder& operator=(const VariantManagerHolder&) = default;
+
+    VariantManagerHolder& operator=(VariantManagerHolder&&) noexcept = default;
 
     virtual unsigned long getVariantIndex() const = 0;
 

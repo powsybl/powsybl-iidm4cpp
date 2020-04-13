@@ -195,8 +195,8 @@ BOOST_AUTO_TEST_CASE(twoWindingsTransformerCount) {
     Network network = createSubstationTransformerCountTestNetwork();
     Substation& substation = network.getSubstation("S1");
 
-    BOOST_CHECK_EQUAL(1ul, network.getTwoWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(0ul, substation.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(1UL, network.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(0UL, substation.getTwoWindingsTransformerCount());
 
     substation.newTwoWindingsTransformer()
         .setId("2WT_VL1_VL2")
@@ -214,8 +214,8 @@ BOOST_AUTO_TEST_CASE(twoWindingsTransformerCount) {
         .setRatedU2(0.4)
         .add();
 
-    BOOST_CHECK_EQUAL(2ul, network.getTwoWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(1ul, substation.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(2UL, network.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(1UL, substation.getTwoWindingsTransformerCount());
 
     substation.newTwoWindingsTransformer()
         .setId("2WT_VL1_VL1")
@@ -233,8 +233,8 @@ BOOST_AUTO_TEST_CASE(twoWindingsTransformerCount) {
         .setRatedU2(0.4)
         .add();
 
-    BOOST_CHECK_EQUAL(3ul, network.getTwoWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(2ul, substation.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(3UL, network.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(2UL, substation.getTwoWindingsTransformerCount());
 
     network.remove(substation);
     POWSYBL_ASSERT_THROW(network.getSubstation("S1"), PowsyblException, "Unable to find to the identifiable 'S1'");
@@ -244,8 +244,8 @@ BOOST_AUTO_TEST_CASE(threeWindingsTransformerCount) {
     Network network = createSubstationTransformerCountTestNetwork();
     Substation& substation = network.getSubstation("S1");
 
-    BOOST_CHECK_EQUAL(1ul, network.getThreeWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(0ul, substation.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(1UL, network.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(0UL, substation.getThreeWindingsTransformerCount());
 
     substation.newThreeWindingsTransformer()
         .setId("3WT_VL1_VL2_VL3")
@@ -282,8 +282,8 @@ BOOST_AUTO_TEST_CASE(threeWindingsTransformerCount) {
         .add()
         .add();
 
-    BOOST_CHECK_EQUAL(2ul, network.getThreeWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(1ul, substation.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(2UL, network.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(1UL, substation.getThreeWindingsTransformerCount());
 
     substation.newThreeWindingsTransformer()
         .setId("3WT_VL1_VL3_VL3")
@@ -320,8 +320,8 @@ BOOST_AUTO_TEST_CASE(threeWindingsTransformerCount) {
         .add()
         .add();
 
-    BOOST_CHECK_EQUAL(3ul, network.getThreeWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(2ul, substation.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(3UL, network.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(2UL, substation.getThreeWindingsTransformerCount());
 
     substation.newThreeWindingsTransformer()
         .setId("3WT_VL3_VL1_VL3")
@@ -358,8 +358,8 @@ BOOST_AUTO_TEST_CASE(threeWindingsTransformerCount) {
         .add()
         .add();
 
-    BOOST_CHECK_EQUAL(4ul, network.getThreeWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(3ul, substation.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(4UL, network.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(3UL, substation.getThreeWindingsTransformerCount());
 
     substation.newThreeWindingsTransformer()
         .setId("3WT_VL3_VL3_VL1")
@@ -396,8 +396,8 @@ BOOST_AUTO_TEST_CASE(threeWindingsTransformerCount) {
         .add()
         .add();
 
-    BOOST_CHECK_EQUAL(5ul, network.getThreeWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(4ul, substation.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(5UL, network.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(4UL, substation.getThreeWindingsTransformerCount());
 
     substation.newThreeWindingsTransformer()
         .setId("3WT_VL3_VL3_VL3")
@@ -434,8 +434,8 @@ BOOST_AUTO_TEST_CASE(threeWindingsTransformerCount) {
         .add()
         .add();
 
-    BOOST_CHECK_EQUAL(6ul, network.getThreeWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(5ul, substation.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(6UL, network.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(5UL, substation.getThreeWindingsTransformerCount());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -29,6 +29,7 @@ public:
 
     Properties(const Properties&) = default;
 
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept
     Properties(Properties&&) = default;
 
     ~Properties() = default;

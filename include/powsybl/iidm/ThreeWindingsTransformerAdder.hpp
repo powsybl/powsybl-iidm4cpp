@@ -37,7 +37,7 @@ public:
 
         LegAdder& setConnectableBus(const std::string& connectableBus);
 
-        LegAdder& setG(double b);
+        LegAdder& setG(double g);
 
         LegAdder& setNode(unsigned long node);
 

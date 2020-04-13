@@ -72,7 +72,7 @@ Network createNetwork() {
         .setB2(0.0)
         .add();
 
-    line.addExtension(Extension::create<MergedXnode>(line, 0.5f, 0.5f, 1.0, 2.0, 3.0, 4.0, "line1", "line2", "XXXXXX11"));
+    line.addExtension(Extension::create<MergedXnode>(line, 0.5F, 0.5F, 1.0, 2.0, 3.0, 4.0, "line1", "line2", "XXXXXX11"));
 
     return network;
 }

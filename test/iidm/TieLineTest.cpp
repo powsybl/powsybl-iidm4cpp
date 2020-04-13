@@ -130,7 +130,7 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
 BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createTieLineTestNetwork();
 
-    BOOST_CHECK_EQUAL(1ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(1UL, network.getLineCount());
 
     const TieLine& tieLine = dynamic_cast<const TieLine&>(network.getLine("TL_VL1_VL3"));
     BOOST_CHECK_EQUAL("TL_VL1_VL3", tieLine.getId());
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(adderFail) {
 BOOST_AUTO_TEST_CASE(adder) {
     Network network = createTieLineTestNetwork();
 
-    BOOST_CHECK_EQUAL(1ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(1UL, network.getLineCount());
 
     TieLineAdder tieLineAdder = network.newTieLine();
 
@@ -360,7 +360,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     BOOST_CHECK_NO_THROW(tieLineAdder.add());
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "Object 'UNIQUE_TIE_LINE_ID' already exists (powsybl::iidm::TieLine)");
-    BOOST_CHECK_EQUAL(2ul, network.getLineCount());
+    BOOST_CHECK_EQUAL(2UL, network.getLineCount());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -81,7 +81,7 @@ public:
 
     Network(const Network&) = delete;
 
-    Network(Network&&) noexcept;
+    Network(Network&& network) noexcept;
 
     ~Network() noexcept override = default;
 

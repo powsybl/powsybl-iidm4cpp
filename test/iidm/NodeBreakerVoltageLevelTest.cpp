@@ -543,7 +543,7 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     BOOST_CHECK_EQUAL("VL_0", testBus.getName());
     BOOST_CHECK_CLOSE(7.7, testBus.setAngle(7.7).setV(8.8).getAngle(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(8.8, testBus.getV(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_EQUAL(2ul, testBus.getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(2UL, testBus.getConnectedTerminalCount());
     const auto& terminals = testBus.getConnectedTerminals();
     BOOST_CHECK_EQUAL(boost::size(terminals), testBus.getConnectedTerminalCount());
     const auto& cTerminals = cTestBus.getConnectedTerminals();
@@ -1022,7 +1022,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     BOOST_CHECK_EQUAL("VL_name_0", calculatedBus2.getName());
 
     BOOST_TEST(stdcxx::areSame(terminal.getNodeBreakerView(), cTerminal.getNodeBreakerView()));
-    BOOST_CHECK_EQUAL(2ul, terminal.getNodeBreakerView().getNode());
+    BOOST_CHECK_EQUAL(2UL, terminal.getNodeBreakerView().getNode());
 
     Terminal& terminal2 = l2.getTerminal();
     BOOST_TEST(!terminal2.disconnect());
@@ -1030,7 +1030,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     Terminal& terminal3 = line.getTerminal1();
     Terminal& terminal4 = line.getTerminal2();
     BOOST_TEST(!stdcxx::areSame(terminal3, terminal4));
-    POWSYBL_ASSERT_THROW(line.getTerminal(static_cast<iidm::Branch::Side>(3u)), AssertionError, "Unexpected Side value: 3");
+    POWSYBL_ASSERT_THROW(line.getTerminal(static_cast<iidm::Branch::Side>(3U)), AssertionError, "Unexpected Side value: 3");
     BOOST_TEST(!terminal4.disconnect());
 
     BusbarSection& bbs = vl.getNodeBreakerView().getBusbarSection("BBS");
