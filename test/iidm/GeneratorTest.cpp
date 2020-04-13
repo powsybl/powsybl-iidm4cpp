@@ -298,7 +298,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     Generator& gen = network.getGenerator("GEN1");
 
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
-    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s1");
     BOOST_CHECK_EQUAL("GEN1", gen.getId());
@@ -354,7 +354,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_TEST(gen.isVoltageRegulatorOn());
 
     network.getVariantManager().removeVariant("s1");
-    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
@@ -367,10 +367,10 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_TEST(gen.isVoltageRegulatorOn());
 
     network.getVariantManager().removeVariant("s3");
-    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().removeVariant("s2");
-    BOOST_CHECK_EQUAL(1ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(1UL, network.getVariantManager().getVariantArraySize());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

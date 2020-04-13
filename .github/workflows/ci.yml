@@ -11,6 +11,11 @@ jobs:
     name: Linux
     runs-on: ubuntu-latest
     steps:
+      - name: Install clang-tidy
+        run: |
+          sudo apt-get install -y clang-tidy-9
+          sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-9 100
+
       - name: Checkout sources
         uses: actions/checkout@v1
 
@@ -18,6 +23,7 @@ jobs:
         run: >
           cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-linux
           -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_CXX_CLANG_TIDY=clang-tidy
           -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
 
       - name: Build

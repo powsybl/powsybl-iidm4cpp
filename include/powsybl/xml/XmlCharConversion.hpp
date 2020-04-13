@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace xml {
 
-const std::string XML2S(const xmlChar* str);
+std::string XML2S(const xmlChar* str);
 
 const xmlChar* S2XML(const std::string& str);
 

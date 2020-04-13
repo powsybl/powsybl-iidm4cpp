@@ -20,7 +20,7 @@ class PhaseTapChangerAdder;
 
 class PhaseTapChangerHolder : public virtual TapChangerHolder {
 public:
-    virtual ~PhaseTapChangerHolder() noexcept = default;
+    ~PhaseTapChangerHolder() noexcept override = default;
 
     virtual stdcxx::CReference<PhaseTapChanger> getPhaseTapChanger() const = 0;
 

@@ -46,7 +46,7 @@ XmlStreamReader::XmlStreamReader(std::istream& stream, const std::string& encodi
         return static_cast<int>(reader.m_stream.gcount());
     };
 
-    auto closeCallback = [](void*) {
+    auto closeCallback = [](void* /*context*/) {
         return 0;
     };
 
@@ -265,7 +265,8 @@ std::string XmlStreamReader::readUntilEndElement(const std::string& elementName,
     if (emptyElement == -1) {
         // Error
         throw XmlStreamException(logging::format("An error occurred while reading <%1%>", elementName.c_str()));
-    } else if (emptyElement == 1) {
+    }
+    if (emptyElement == 1) {
         // if current element is an empty element, XML_READER_TYPE_END_ELEMENT is never reached => nothing to do
         return text;
     }

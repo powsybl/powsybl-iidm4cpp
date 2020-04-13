@@ -7,6 +7,8 @@
 
 #include <powsybl/stdcxx/time.hpp>
 
+#include <array>
+
 #include <boost/date_time/c_time.hpp>
 
 namespace stdcxx {
@@ -24,10 +26,10 @@ std::tm localtime(const std::time_t& time) {
 #if !HAS_PUT_TIME
 
 std::string put_time(const struct std::tm* time, const char* format) {
-    char buffer[128];
+    std::array<char, 128> buffer;
 
-    if (strftime(buffer, 128, format, time) > 0) {
-        return buffer;
+    if (strftime(buffer.data(), buffer.size(), format, time) > 0) {
+        return buffer.data();
     }
 
     return "";

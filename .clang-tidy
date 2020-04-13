@@ -9,25 +9,19 @@
 # https://clang.llvm.org/extra/clang-tidy/
 # https://clang.llvm.org/extra/clang-tidy/checks/list.html
 
-Checks: '*,
-  -abseil-*,
-  -android-*,
-  -cppcoreguidelines-pro-bounds-array-to-pointer-decay,
-  -cppcoreguidelines-pro-type-const-cast,
-  -cppcoreguidelines-special-member-functions,
-  -fuchsia-*,
-  -google-explicit-constructor,
-  -google-runtime-int,
-  -google-runtime-references,
-  -hicpp-explicit-conversions,
-  -hicpp-no-array-decay,
-  -hicpp-special-member-functions,
-  -llvm-header-guard,
+Checks: '-*,
+  llvm-include-order,
+  llvm-namespace-comment,
+  modernize-*,
   -modernize-pass-by-value,
-  -mpi-*,
-  -objc-*,
-  -openmp-*,
+  -modernize-use-trailing-return-type,
+  performance-*,
+  readability-*,
+  -readability-convert-member-functions-to-static,
+  -readability-function-size,
+  -readability-magic-numbers,
   -readability-redundant-declaration,
-  -zircon-*'
+'
+
 WarningsAsErrors: '*'
-HeaderFilterRegex: 'include/powsybl/.*|src/.*|test/.*'
+HeaderFilterRegex: 'include/powsybl/.*|src/.*|extensions/.*|test/.*'

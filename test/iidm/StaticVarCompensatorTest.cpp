@@ -150,7 +150,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {}), PowsyblException, "Empty target variant id list");
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
-    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s1");
     BOOST_CHECK_CLOSE(-0.01, svc.getBmin(), std::numeric_limits<double>::epsilon());
@@ -188,7 +188,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(380.0, svc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().removeVariant("s1");
-    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant("s2", "s2"), PowsyblException, "Target variant 's2' already exists");
     POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant("s4", "s3"), PowsyblException, "Variant 's4' not found");
@@ -202,11 +202,11 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     const std::string workingVariantId = network.getVariantManager().getWorkingVariantId();
     network.getVariantManager().removeVariant("s3");
-    BOOST_CHECK_EQUAL(3ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
     POWSYBL_ASSERT_THROW(network.getVariantManager().removeVariant(workingVariantId), PowsyblException, "Variant 's3' not found");
 
     network.getVariantManager().removeVariant("s2");
-    BOOST_CHECK_EQUAL(1ul, network.getVariantManager().getVariantArraySize());
+    BOOST_CHECK_EQUAL(1UL, network.getVariantManager().getVariantArraySize());
 
     const Network& cNetwork = network;
     BOOST_CHECK_EQUAL(cNetwork.getVariantManager().getVariantIds().size(), network.getVariantManager().getVariantArraySize());
