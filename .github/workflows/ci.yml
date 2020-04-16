@@ -79,10 +79,11 @@ jobs:
         run: cmake --build $GITHUB_WORKSPACE/build-windows --parallel 3
 
       - name: Tests
-        run: cmake --build $GITHUB_WORKSPACE/build-windows --target RUN_TESTS
+        shell: cmd
+        run: cmake --build %GITHUB_WORKSPACE%/build-windows --target RUN_TESTS
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
-          PATH: "$PATH:C\\:/thirdparties/libxml2-2.9.10/bin:$BOOST_ROOT_1_72_0/lib:$GITHUB_WORKSPACE/build-windows/src/Release:$GITHUB_WORKSPACE/build-windows/src/test/Release"
+          PATH: "%PATH%;C:/thirdparties/libxml2-2.9.10/bin;%BOOST_ROOT_1_72_0%/lib;%GITHUB_WORKSPACE%/build-windows/src/Release;%GITHUB_WORKSPACE%/build-windows/src/test/Release"
 
   qa:
     name: QA
