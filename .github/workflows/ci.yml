@@ -75,9 +75,10 @@ jobs:
           -DCMAKE_PREFIX_PATH=%BOOST_ROOT_1_72_0%;C:\thirdparties\libxml2-2.9.10 ^
 
       - name: Build
-        run: cmake --build $GITHUB_WORKSPACE/build-windows --parallel 3 --config Release
-        env:
-          CL: /MP
+        shell: cmd
+        run: |
+          set CL=/MP
+          cmake --build $GITHUB_WORKSPACE/build-windows --parallel 3 --config Release
 
       - name: Tests
         shell: cmd
