@@ -73,7 +73,7 @@ jobs:
       - name: test-env
         shell: cmd
         run: |
-          echo %PATH%
+          echo %PATH% 
           dir C:\thirdparties\libxml2-2.9.10\bin
           xmllint.exe
 
