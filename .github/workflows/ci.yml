@@ -78,7 +78,7 @@ jobs:
         shell: cmd
         run: |
           set CL=/MP
-          cmake --build $GITHUB_WORKSPACE/build-windows --parallel 3 --config Release
+          cmake --build %GITHUB_WORKSPACE%/build-windows --parallel 3 --config Release
 
       - name: Tests
         shell: cmd
