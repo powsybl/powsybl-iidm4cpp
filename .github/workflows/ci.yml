@@ -70,10 +70,11 @@ jobs:
 
       - name: Configure CMake
         shell: cmd
-        run: >
-          cmake -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%/build-windows
-          -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_PREFIX_PATH=%BOOST_ROOT_1_72_0%;C:\thirdparties\libxml2-2.9.10
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=x64
+          cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-windows ^
+          -DCMAKE_BUILD_TYPE=Release ^
+          -DCMAKE_PREFIX_PATH="$BOOST_ROOT_1_72_0;C:\thirdparties\libxml2-2.9.10" ^
           -G Ninja
 
       - name: Build
@@ -82,6 +83,7 @@ jobs:
       - name: Tests
         shell: cmd
         run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=x64
           set PATH=%PATH%;C:\thirdparties\libxml2-2.9.10\bin;%BOOST_ROOT_1_72_0%\lib;%GITHUB_WORKSPACE%\build-windows\src;%GITHUB_WORKSPACE%\build-windows\src\test
           cmake --build %GITHUB_WORKSPACE%/build-windows --target RUN_TESTS  --verbose
         env:
