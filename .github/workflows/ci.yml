@@ -53,6 +53,18 @@ jobs:
     name: Windows
     runs-on: windows-latest
     steps:
+      - name: test-env
+        shell: cmd
+        run: |
+          echo %PATH%
+          #set PATH="%PATH%;C:/thirdparties/libxml2-2.9.10/bin;%BOOST_ROOT_1_72_0%/lib;%GITHUB_WORKSPACE%/build-windows/src/Release;%GITHUB_WORKSPACE%/build-windows/src/test/Release"
+          echo %PATH%
+          echo "::add-path::C:/thirdparties/libxml2-2.9.10/bin"
+          echo "::add-path::%BOOST_ROOT_1_72_0%/lib"
+          echo "::add-path::%GITHUB_WORKSPACE%/build-windows/src/Release"
+          echo "::add-path::%GITHUB_WORKSPACE%/build-windows/src/test/Release"
+          echo %PATH%
+
       - name: Pre-requisites
         shell: cmd
         run: |
