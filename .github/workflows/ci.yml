@@ -65,16 +65,6 @@ jobs:
           nmake -f Makefile.msvc
           nmake -f Makefile.msvc install
 
-      - name: update-path
-        shell: cmd
-        run:
-          echo "::add-path::C:/thirdparties/libxml2-2.9.10/bin"
-
-      - name: test-env
-        shell: cmd
-        run:
-          xmllint.exe
-
       - name: Checkout sources
         uses: actions/checkout@v1
 
@@ -91,14 +81,7 @@ jobs:
       - name: Tests
         shell: cmd
         run: |
-          echo %PATH%
-          #set PATH="%PATH%;C:/thirdparties/libxml2-2.9.10/bin;%BOOST_ROOT_1_72_0%/lib;%GITHUB_WORKSPACE%/build-windows/src/Release;%GITHUB_WORKSPACE%/build-windows/src/test/Release"
-          echo %PATH%
-          echo "::add-path::C:/thirdparties/libxml2-2.9.10/bin"
-          echo "::add-path::%BOOST_ROOT_1_72_0%/lib"
-          echo "::add-path::%GITHUB_WORKSPACE%/build-windows/src/Release"
-          echo "::add-path::%GITHUB_WORKSPACE%/build-windows/src/test/Release"
-          echo %PATH%
+          set PATH="%PATH%;C:\thirdparties\libxml2-2.9.10\bin;%BOOST_ROOT_1_72_0%\lib;%GITHUB_WORKSPACE%\build-windows\src\Release;%GITHUB_WORKSPACE%\build-windows\src\test\Release
           cmake --build %GITHUB_WORKSPACE%/build-windows --target RUN_TESTS
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
