@@ -20,7 +20,6 @@ namespace powsybl {
 namespace iidm {
 
 IIDM_DECLSPEC long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
-
 IIDM_DECLSPEC double checkTargetDeadband(const Validable& validable, double targetDeadband);
 
 template<typename H, typename C, typename S>

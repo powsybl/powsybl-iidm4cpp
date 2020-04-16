@@ -10,10 +10,6 @@
 
 #include <ctime>
 
-#include <ctime>
-
-#include <ctime>
-
 #include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/features.hpp>
 

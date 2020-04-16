@@ -28,8 +28,7 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    MergedXnode(Line& line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2,
-                double xnodeQ2,
+    MergedXnode(Line& line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2, double xnodeQ2,
                 const std::string& line1Name, const std::string& line2Name, const std::string& code);
 
     ~MergedXnode() noexcept override = default;

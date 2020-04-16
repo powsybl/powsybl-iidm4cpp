@@ -31,6 +31,14 @@ public:
     static ExtensionProviders& getInstance();
 
 public:
+    ExtensionProviders(const ExtensionProviders&) = delete;
+
+    ExtensionProviders(ExtensionProviders&&) = delete;
+
+    ExtensionProviders& operator=(const ExtensionProviders&) = delete;
+
+    ExtensionProviders& operator=(ExtensionProviders&&) = delete;
+
     stdcxx::CReference<T> findProvider(const std::string& name) const;
 
     const T& findProviderOrThrowException(const std::string& name) const;
@@ -40,15 +48,7 @@ public:
 private:
     ExtensionProviders() = default;
 
-    ExtensionProviders(const ExtensionProviders& other) = delete;
-
-    ExtensionProviders(ExtensionProviders&& other) = default;
-
     ~ExtensionProviders() noexcept = default;
-
-    ExtensionProviders& operator=(const ExtensionProviders& other) = delete;
-
-    ExtensionProviders& operator=(ExtensionProviders&& other) = default;
 
     void loadLibrary(const boost::filesystem::path& libraryPath);
 

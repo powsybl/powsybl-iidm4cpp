@@ -15,7 +15,6 @@
 namespace stdcxx {
 
 std::string demangle(const char* name) {
-    //return boost::core::demangle(name);
 #if defined __GNUC__
     return boost::core::demangle(name);
 #else 

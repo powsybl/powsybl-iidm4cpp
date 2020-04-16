@@ -21,8 +21,7 @@ namespace entsoe {
 
 class IIDM_DECLSPEC MergedXnodeXmlSerializer : public converter::xml::ExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
-    std::unique_ptr<Extension>
-    read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
+    std::unique_ptr<Extension> read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 
     void write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const override;
 

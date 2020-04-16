@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/HvdcConverterStationAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {

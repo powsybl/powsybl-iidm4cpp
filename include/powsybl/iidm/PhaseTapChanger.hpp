@@ -18,8 +18,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class TwoWindingsTransformer;
-
 class IIDM_DECLSPEC PhaseTapChanger : public TapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep> {
 public:
     enum class RegulationMode : unsigned char {

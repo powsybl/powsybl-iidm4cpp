@@ -15,7 +15,6 @@ set(UNIT_TEST_SOURCES
 )
 
 add_executable(unit-tests-logging ${UNIT_TEST_SOURCES})
-# target_compile_definitions(unit-tests-logging PRIVATE BOOST_TEST_DYN_LINK)
 target_link_libraries(unit-tests-logging PRIVATE iidm-tests Boost::unit_test_framework Boost::disable_autolinking Boost::dynamic_linking)
 
 add_test(NAME logging COMMAND unit-tests-logging)
