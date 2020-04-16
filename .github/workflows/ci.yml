@@ -70,21 +70,21 @@ jobs:
 
       - name: Configure CMake
         shell: cmd
-        run: |
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          cmake -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%/build-windows ^
-          -DCMAKE_BUILD_TYPE=Release ^
+        run: >
+          cmake -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%/build-windows
           -DCMAKE_PREFIX_PATH=%BOOST_ROOT_1_72_0%;C:\thirdparties\libxml2-2.9.10 ^
-          -G Ninja
 
       - name: Build
-        run: cmake --build $GITHUB_WORKSPACE/build-windows --parallel 3
+        run: cmake --build $GITHUB_WORKSPACE/build-windows --parallel 3 --config Release
+        env:
+          CL: /MP
 
       - name: Tests
         shell: cmd
         run: |
           set PATH=%PATH%;C:\thirdparties\libxml2-2.9.10\bin;%BOOST_ROOT_1_72_0%\lib;%GITHUB_WORKSPACE%\build-windows\src;%GITHUB_WORKSPACE%\build-windows\src\test
-          cmake --build %GITHUB_WORKSPACE%/build-windows --target RUN_TESTS  --verbose
+          ldd %GITHUB_WORKSPACE%\build-windows\test\iidm\Release
+          cmake --build %GITHUB_WORKSPACE%/build-windows --target RUN_TESTS --config Release --verbose
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
 
