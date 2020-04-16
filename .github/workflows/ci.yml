@@ -66,15 +66,13 @@ jobs:
           nmake -f Makefile.msvc install
 
       - name: update-path
+        shell: cmd
         run:
           echo "::add-path::C:/thirdparties/libxml2-2.9.10/bin"
-          echo "::add-path::C:\thirdparties\libxml2-2.9.10\bin"
 
       - name: test-env
         shell: cmd
-        run: |
-          echo %PATH% 
-          dir C:\thirdparties\libxml2-2.9.10\bin
+        run:
           xmllint.exe
 
       - name: Checkout sources
