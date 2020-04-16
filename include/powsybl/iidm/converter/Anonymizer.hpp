@@ -11,7 +11,6 @@
 #include <string>
 
 #include <powsybl/iidm/Country.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -19,7 +18,7 @@ namespace iidm {
 
 namespace converter {
 
-class IIDM_DECLSPEC Anonymizer {
+class Anonymizer {
 public:
     Anonymizer() = default;
 

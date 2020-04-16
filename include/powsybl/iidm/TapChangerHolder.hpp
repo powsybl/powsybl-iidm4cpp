@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_TAPCHANGERHOLDER_HPP
 
 #include <powsybl/iidm/Validable.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -18,7 +17,7 @@ namespace iidm {
 class Identifiable;
 class Network;
 
-class IIDM_DECLSPEC TapChangerHolder : public virtual Validable {
+class TapChangerHolder : public virtual Validable {
 public:
     ~TapChangerHolder() noexcept override = default;
 

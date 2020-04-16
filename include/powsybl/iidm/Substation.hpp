@@ -17,7 +17,6 @@
 #include <powsybl/iidm/Country.hpp>
 #include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -31,7 +30,7 @@ class ThreeWindingsTransformerAdder;
 class TwoWindingsTransformer;
 class TwoWindingsTransformerAdder;
 
-class IIDM_DECLSPEC Substation : public Container {
+class Substation : public Container {
 public:
     Substation(Network& network, const std::string& id, const std::string& name, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags);
 

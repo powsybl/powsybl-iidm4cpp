@@ -11,7 +11,6 @@
 #include <string>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -20,7 +19,7 @@ namespace xml {
 /**
  * @brief XML library typed exception
  */
-class IIDM_DECLSPEC XmlStreamException : public PowsyblException {
+class XmlStreamException : public PowsyblException {
 public:
     explicit XmlStreamException(const std::string& msg);
 

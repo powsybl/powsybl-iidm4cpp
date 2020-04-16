@@ -9,13 +9,12 @@
 #define POWSYBL_IIDM_SHUNTCOMPENSATOR_HPP
 
 #include <powsybl/iidm/Injection.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC ShuntCompensator : public Injection {
+class ShuntCompensator : public Injection {
 public:
     ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
                      double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount);

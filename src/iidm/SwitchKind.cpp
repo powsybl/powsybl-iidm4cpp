@@ -8,7 +8,6 @@
 #include <powsybl/iidm/SwitchKind.hpp>
 
 #include <powsybl/iidm/Enum.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -17,7 +16,7 @@ namespace iidm {
 namespace Enum {
 
 template <>
-IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<SwitchKind>() {
+const std::initializer_list<std::string>& getNames<SwitchKind>() {
     static std::initializer_list<std::string> s_switchKindNames {
         "BREAKER",
         "DISCONNECTOR",

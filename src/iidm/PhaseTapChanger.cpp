@@ -78,7 +78,7 @@ PhaseTapChanger& PhaseTapChanger::setRegulationValue(double regulationValue) {
 namespace Enum {
 
 template <>
-IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<PhaseTapChanger::RegulationMode>() {
+const std::initializer_list<std::string>& getNames<PhaseTapChanger::RegulationMode>() {
     static std::initializer_list<std::string> s_regulationModeNames {
         "CURRENT_LIMITER",
         "ACTIVE_POWER_CONTROL",

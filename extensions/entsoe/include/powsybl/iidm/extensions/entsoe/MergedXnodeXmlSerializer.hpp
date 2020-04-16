@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_EXTENSIONS_ENTSOE_MERGEDXNODEXMLSERIALIZER_HPP
 
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -19,7 +18,7 @@ namespace extensions {
 
 namespace entsoe {
 
-class IIDM_DECLSPEC MergedXnodeXmlSerializer : public converter::xml::ExtensionXmlSerializer {
+class MergedXnodeXmlSerializer : public converter::xml::ExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
     std::unique_ptr<Extension> read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 

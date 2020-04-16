@@ -11,8 +11,6 @@
 #include <set>
 #include <string>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
@@ -25,7 +23,7 @@ namespace converter {
 
 class ExportOptions;
 
-class IIDM_DECLSPEC BusFilter {
+class BusFilter {
 public:
     static BusFilter create(const Network& network, const ExportOptions& options);
 

@@ -10,13 +10,11 @@
 
 #include <string>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC Validable {
+class Validable {
 public:
     Validable() = default;
 

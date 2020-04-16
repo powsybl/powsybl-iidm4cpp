@@ -9,13 +9,12 @@
 #define POWSYBL_IIDM_REACTIVELIMITS_HPP
 
 #include <powsybl/iidm/ReactiveLimitsKind.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC ReactiveLimits {
+class ReactiveLimits {
 public:
     ReactiveLimits() = default;
 

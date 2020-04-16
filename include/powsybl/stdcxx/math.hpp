@@ -12,8 +12,6 @@
 #include <limits>
 #include <sstream>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace stdcxx {
 
 template <typename T = double>
@@ -27,7 +25,7 @@ inline T nan() {
 }
 
 template <typename T>
-IIDM_DECLSPEC std::string to_string(const T& value) {
+std::string to_string(const T& value) {
     std::ostringstream out;
     out.precision(std::numeric_limits<T>::max_digits10);
     out << value;

@@ -15,7 +15,6 @@
 
 #include <libxml/xmlreader.h>
 
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/xml/XmlString.hpp>
 
@@ -23,7 +22,7 @@ namespace powsybl {
 
 namespace xml {
 
-class IIDM_DECLSPEC XmlStreamReader {
+class XmlStreamReader {
 public:
     using ReadCallback = std::function<void()>;
 

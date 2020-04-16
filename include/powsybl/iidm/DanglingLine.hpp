@@ -10,13 +10,12 @@
 
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Injection.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC DanglingLine : public Injection {
+class DanglingLine : public Injection {
 public:
     DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name,
                  double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode);

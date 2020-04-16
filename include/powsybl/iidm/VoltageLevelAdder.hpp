@@ -10,7 +10,6 @@
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -21,7 +20,7 @@ namespace iidm {
 class Substation;
 class VoltageLevel;
 
-class IIDM_DECLSPEC VoltageLevelAdder : public IdentifiableAdder<VoltageLevelAdder> {
+class VoltageLevelAdder : public IdentifiableAdder<VoltageLevelAdder> {
 public:
     ~VoltageLevelAdder() noexcept override = default;
 

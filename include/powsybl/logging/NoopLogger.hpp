@@ -9,7 +9,6 @@
 #define POWSYBL_LOGGING_NOOPLOGGER_HPP
 
 #include <powsybl/logging/Logger.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -18,7 +17,7 @@ namespace logging {
 /**
  * A Logger implementation for which all log levels are disabled
  */
-class IIDM_DECLSPEC NoopLogger : public Logger {
+class NoopLogger : public Logger {
 public: // Logger
     bool isDebugEnabled() const override;
 

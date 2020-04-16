@@ -9,16 +9,15 @@
 #define POWSYBL_IIDM_TIELINE_HPP
 
 #include <powsybl/iidm/Line.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC TieLine : public Line {
+class TieLine : public Line {
 public:
-    class IIDM_DECLSPEC HalfLine : public Validable {
+    class HalfLine : public Validable {
     public: // Validable
         std::string getMessageHeader() const override;
 

@@ -10,13 +10,12 @@
 
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC VscConverterStation : public HvdcConverterStation, public ReactiveLimitsHolder {
+class VscConverterStation : public HvdcConverterStation, public ReactiveLimitsHolder {
 public: // HvdcConverterStation
     HvdcType getHvdcType() const override;
 

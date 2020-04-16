@@ -12,7 +12,6 @@
 
 #include <powsybl/iidm/Extension.hpp>
 #include <powsybl/iidm/extensions/entsoe/EntsoeGeographicalCode.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -24,7 +23,7 @@ namespace extensions {
 
 namespace entsoe {
 
-class IIDM_DECLSPEC EntsoeArea : public Extension {
+class EntsoeArea : public Extension {
 public:  // Extension
     const std::string& getName() const override;
 

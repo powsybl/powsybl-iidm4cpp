@@ -13,7 +13,6 @@
 
 #include <powsybl/iidm/Country.hpp>
 #include <powsybl/iidm/IdentifiableAdder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -23,7 +22,7 @@ namespace iidm {
 class Network;
 class Substation;
 
-class IIDM_DECLSPEC SubstationAdder : public IdentifiableAdder<SubstationAdder> {
+class SubstationAdder : public IdentifiableAdder<SubstationAdder> {
 public:
     ~SubstationAdder() noexcept override = default;
 

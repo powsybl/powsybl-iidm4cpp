@@ -9,13 +9,12 @@
 #define POWSYBL_IIDM_CONTAINER_HPP
 
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC Container : public Identifiable {
+class Container : public Identifiable {
 public:
     enum class Type {
         NETWORK,

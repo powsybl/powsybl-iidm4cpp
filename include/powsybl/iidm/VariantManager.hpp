@@ -16,7 +16,6 @@
 #include <unordered_map>
 
 #include <powsybl/iidm/VariantContext.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -24,7 +23,7 @@ namespace iidm {
 
 class Network;
 
-class IIDM_DECLSPEC VariantManager {
+class VariantManager {
 public:
     static const std::string& getInitialVariantId();
 

@@ -9,14 +9,13 @@
 #define POWSYBL_IIDM_MULTIPLEVARIANTCONTEXT_HPP
 
 #include <powsybl/iidm/VariantContext.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC MultipleVariantContext : public VariantContext {
+class MultipleVariantContext : public VariantContext {
 public:
     explicit MultipleVariantContext(unsigned long index);
 

@@ -10,8 +10,6 @@
 
 #include <string>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
@@ -268,7 +266,7 @@ enum class Country : unsigned int {
     ZW
 };
 
-IIDM_DECLSPEC std::string getCountryName(const Country& country);
+std::string getCountryName(const Country& country);
 
 }  // namespace iidm
 

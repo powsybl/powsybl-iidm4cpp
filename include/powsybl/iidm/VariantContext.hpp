@@ -8,15 +8,13 @@
 #ifndef POWSYBL_IIDM_VARIANTCONTEXT_HPP
 #define POWSYBL_IIDM_VARIANTCONTEXT_HPP
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
 class VariantManager;
 
-class IIDM_DECLSPEC VariantContext {
+class VariantContext {
 public:
     virtual ~VariantContext() noexcept = default;
 

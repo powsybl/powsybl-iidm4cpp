@@ -168,8 +168,6 @@ set(IIDM_SOURCES
     xml/XmlStreamWriter.cpp
 )
 
-add_compile_definitions(IIDM_BUILD_DLL)
-
 # Shared library
 add_library(iidm SHARED ${IIDM_SOURCES})
 set_target_properties(iidm PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION})

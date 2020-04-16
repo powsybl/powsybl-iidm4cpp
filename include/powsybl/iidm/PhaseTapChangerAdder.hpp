@@ -11,7 +11,6 @@
 #include <vector>
 
 #include <powsybl/iidm/PhaseTapChanger.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -26,9 +25,9 @@ class Terminal;
 class TwoWindingsTransformer;
 class Validable;
 
-class IIDM_DECLSPEC PhaseTapChangerAdder {
+class PhaseTapChangerAdder {
 public:
-    class IIDM_DECLSPEC StepAdder {
+    class StepAdder {
     public:
         ~StepAdder() noexcept = default;
 

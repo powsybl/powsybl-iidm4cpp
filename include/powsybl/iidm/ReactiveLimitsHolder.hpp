@@ -12,7 +12,6 @@
 
 #include <powsybl/iidm/MinMaxReactiveLimitsAdder.hpp>
 #include <powsybl/iidm/ReactiveCapabilityCurveAdder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -20,7 +19,7 @@ namespace iidm {
 
 class ReactiveLimits;
 
-class IIDM_DECLSPEC ReactiveLimitsHolder {
+class ReactiveLimitsHolder {
 public:
     virtual ~ReactiveLimitsHolder() noexcept = default;
 

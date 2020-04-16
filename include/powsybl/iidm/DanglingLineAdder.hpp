@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_DANGLINGLINEADDER_HPP
 
 #include <powsybl/iidm/InjectionAdder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -20,7 +19,7 @@ class DanglingLine;
 class Network;
 class VoltageLevel;
 
-class IIDM_DECLSPEC DanglingLineAdder : public InjectionAdder<DanglingLineAdder> {
+class DanglingLineAdder : public InjectionAdder<DanglingLineAdder> {
 public:
     ~DanglingLineAdder() noexcept override = default;
 

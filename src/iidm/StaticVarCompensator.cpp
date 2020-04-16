@@ -116,7 +116,7 @@ StaticVarCompensator& StaticVarCompensator::setVoltageSetpoint(double voltageSet
 namespace Enum {
 
 template <>
-IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<StaticVarCompensator::RegulationMode>() {
+const std::initializer_list<std::string>& getNames<StaticVarCompensator::RegulationMode>() {
     static std::initializer_list<std::string> s_staticVarCompensatorRegulationNames {
         "VOLTAGE",
         "REACTIVE_POWER",

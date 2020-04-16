@@ -11,13 +11,12 @@
 #include <ctime>
 
 #include <powsybl/logging/Level.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace logging {
 
-class IIDM_DECLSPEC LogMessage {
+class LogMessage {
 public:
     LogMessage(const Level& level, const std::string& message);
 

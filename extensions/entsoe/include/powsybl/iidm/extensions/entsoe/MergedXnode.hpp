@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_EXTENSIONS_ENTSOE_MERGEDXNODE_HPP
 
 #include <powsybl/iidm/Extension.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -21,7 +20,7 @@ namespace extensions {
 
 namespace entsoe {
 
-class IIDM_DECLSPEC MergedXnode : public Extension {
+class MergedXnode : public Extension {
 public:  // Extension
     const std::string& getName() const override;
 

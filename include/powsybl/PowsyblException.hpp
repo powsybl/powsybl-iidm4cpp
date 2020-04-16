@@ -11,11 +11,9 @@
 #include <stdexcept>
 #include <string>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
-class IIDM_DECLSPEC PowsyblException : public std::runtime_error {
+class PowsyblException : public std::runtime_error {
 public:
     explicit PowsyblException(const std::string& message);
 

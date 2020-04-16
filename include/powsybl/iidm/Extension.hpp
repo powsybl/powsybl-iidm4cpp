@@ -12,7 +12,6 @@
 #include <type_traits>
 #include <typeindex>
 
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -22,7 +21,7 @@ namespace iidm {
 
 class Extendable;
 
-class IIDM_DECLSPEC Extension {
+class Extension {
 public:
     template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type, typename... Args>
     static std::unique_ptr<Extension> create(Args&&... args);

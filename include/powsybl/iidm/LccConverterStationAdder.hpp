@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_LCCCONVERTERSTATIONADDER_HPP
 
 #include <powsybl/iidm/HvdcConverterStationAdder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -18,7 +17,7 @@ namespace iidm {
 
 class LccConverterStation;
 
-class IIDM_DECLSPEC LccConverterStationAdder : public HvdcConverterStationAdder<LccConverterStationAdder> {
+class LccConverterStationAdder : public HvdcConverterStationAdder<LccConverterStationAdder> {
 public:
     ~LccConverterStationAdder() noexcept override = default;
 

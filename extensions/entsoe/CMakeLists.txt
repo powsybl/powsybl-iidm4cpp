@@ -25,7 +25,9 @@ set(UNIT_TEST_SOURCES
     test/XnodeTest.cpp
 )
 
-add_compile_definitions(IIDM_BUILD_DLL)
+if (WIN32)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
+endif()
 
 # Shared library
 add_library(${EXT_NAME} SHARED ${EXT_SOURCES})

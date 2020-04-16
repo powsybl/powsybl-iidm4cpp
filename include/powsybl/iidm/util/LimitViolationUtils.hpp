@@ -16,9 +16,9 @@ namespace iidm {
 
 namespace LimitViolationUtils {
 
-IIDM_DECLSPEC bool checkPermanentLimit(const Branch& branch, const Branch::Side& side, double limitReduction, double i);
+bool checkPermanentLimit(const Branch& branch, const Branch::Side& side, double limitReduction, double i);
 
-IIDM_DECLSPEC std::unique_ptr<Branch::Overload> checkTemporaryLimits(const Branch& branch, const Branch::Side& side, double limitReduction, double i);
+std::unique_ptr<Branch::Overload> checkTemporaryLimits(const Branch& branch, const Branch::Side& side, double limitReduction, double i);
 
 }  // namespace LimitViolationUtils
 

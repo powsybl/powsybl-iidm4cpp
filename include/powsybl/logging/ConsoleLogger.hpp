@@ -9,7 +9,6 @@
 #define POWSYBL_LOGGING_CONSOLELOGGER_HPP
 
 #include <powsybl/logging/Logger.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -18,7 +17,7 @@ namespace logging {
 /**
  * A Logger implementation which log all messages to the standard output
  */
-class IIDM_DECLSPEC ConsoleLogger : public Logger {
+class ConsoleLogger : public Logger {
 public: // Logger
     bool isDebugEnabled() const override;
 

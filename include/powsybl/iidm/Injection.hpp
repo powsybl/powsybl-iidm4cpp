@@ -12,13 +12,12 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Terminal.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC Injection : public Connectable {
+class Injection : public Connectable {
 public:
     ~Injection() noexcept override = default;
 

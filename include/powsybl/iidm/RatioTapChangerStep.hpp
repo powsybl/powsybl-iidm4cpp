@@ -9,13 +9,12 @@
 #define POWSYBL_IIDM_RATIOTAPCHANGERSTEP_HPP
 
 #include <powsybl/iidm/TapChangerStep.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC RatioTapChangerStep : public TapChangerStep<RatioTapChangerStep> {
+class RatioTapChangerStep : public TapChangerStep<RatioTapChangerStep> {
 public:
     RatioTapChangerStep(double rho, double r, double x, double g, double b);
 

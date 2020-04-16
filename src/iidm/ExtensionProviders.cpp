@@ -91,7 +91,7 @@ void ExtensionProviders<T, Dummy>::loadLibrary(const boost::filesystem::path& li
     }
 }
 
-template class IIDM_DECLSPEC
+template class
 ExtensionProviders<converter::xml::ExtensionXmlSerializer>;
 
 }  // namespace iidm

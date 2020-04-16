@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_BATTERYADDER_HPP
 
 #include <powsybl/iidm/InjectionAdder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -20,7 +19,7 @@ class Battery;
 class Network;
 class VoltageLevel;
 
-class IIDM_DECLSPEC BatteryAdder : public InjectionAdder<BatteryAdder> {
+class BatteryAdder : public InjectionAdder<BatteryAdder> {
 public:
     ~BatteryAdder() noexcept override = default;
 

@@ -12,13 +12,12 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC Branch : public Connectable {
+class Branch : public Connectable {
 public:
     enum class Side : unsigned char {
         ONE,
@@ -26,7 +25,7 @@ public:
     };
 
 public:
-    class IIDM_DECLSPEC Overload {
+    class Overload {
     public:
         Overload(const CurrentLimits::TemporaryLimit& temporaryLimit, const std::string& previousLimitName, double previousLimit);
 

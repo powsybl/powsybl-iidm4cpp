@@ -13,7 +13,6 @@
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TerminalViews.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -24,7 +23,7 @@ class Connectable;
 class Network;
 class VoltageLevel;
 
-class IIDM_DECLSPEC Terminal : public MultiVariantObject {
+class Terminal : public MultiVariantObject {
 public:
     using BusBreakerView = terminal::BusBreakerView;
 

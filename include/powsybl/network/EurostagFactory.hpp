@@ -9,13 +9,12 @@
 #define POWSYBL_IIDM_NETWORK_EUROSTAGFACTORY_HPP
 
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace network {
 
-class IIDM_DECLSPEC EurostagFactory {
+class EurostagFactory {
 public:
     static iidm::Network createTutorial1Network();
 

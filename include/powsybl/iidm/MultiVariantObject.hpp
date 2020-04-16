@@ -10,15 +10,13 @@
 
 #include <set>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
 class VariantManager;
 
-class IIDM_DECLSPEC MultiVariantObject {
+class MultiVariantObject {
 public:
     virtual ~MultiVariantObject() noexcept = default;
 

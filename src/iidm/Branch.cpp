@@ -235,7 +235,7 @@ void Branch::setCurrentLimits(const Branch::Side& side, std::unique_ptr<CurrentL
 namespace Enum {
 
 template <>
-IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<Branch::Side>() {
+const std::initializer_list<std::string>& getNames<Branch::Side>() {
     static std::initializer_list<std::string> s_sideNames{
         "ONE",
         "TWO"

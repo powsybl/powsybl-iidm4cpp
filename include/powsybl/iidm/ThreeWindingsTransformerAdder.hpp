@@ -10,7 +10,6 @@
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -21,9 +20,9 @@ class Substation;
 class Terminal;
 class VoltageLevel;
 
-class IIDM_DECLSPEC ThreeWindingsTransformerAdder : public IdentifiableAdder<ThreeWindingsTransformerAdder> {
+class ThreeWindingsTransformerAdder : public IdentifiableAdder<ThreeWindingsTransformerAdder> {
 public:
-    class IIDM_DECLSPEC LegAdder : public virtual Validable {
+    class LegAdder : public virtual Validable {
     public:  // Validable
         std::string getMessageHeader() const override;
 

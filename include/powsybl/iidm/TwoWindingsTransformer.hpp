@@ -13,7 +13,6 @@
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -21,7 +20,7 @@ namespace iidm {
 
 class Substation;
 
-class IIDM_DECLSPEC TwoWindingsTransformer : public virtual Branch, public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
+class TwoWindingsTransformer : public virtual Branch, public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
 public:  // TapChangerHolder
     bool hasPhaseTapChanger() const override;
 

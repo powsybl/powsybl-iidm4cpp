@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_CONVERTER_FAKEANONYMIZER_HPP
 
 #include <powsybl/iidm/converter/Anonymizer.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -17,7 +16,7 @@ namespace iidm {
 
 namespace converter {
 
-class IIDM_DECLSPEC FakeAnonymizer : public Anonymizer {
+class FakeAnonymizer : public Anonymizer {
 public:
     FakeAnonymizer() = default;
 

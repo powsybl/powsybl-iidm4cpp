@@ -10,14 +10,13 @@
 
 #include <string>
 
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/test/CommandLine.hpp>
 
 namespace powsybl {
 
 namespace test {
 
-class IIDM_DECLSPEC ResourceFixture : public CommandLine {
+class ResourceFixture : public CommandLine {
 public:
     ResourceFixture();
 

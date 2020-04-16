@@ -10,14 +10,13 @@
 
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class IIDM_DECLSPEC StaticVarCompensatorAdder : public InjectionAdder<StaticVarCompensatorAdder> {
+class StaticVarCompensatorAdder : public InjectionAdder<StaticVarCompensatorAdder> {
 public:
     ~StaticVarCompensatorAdder() noexcept override = default;
 

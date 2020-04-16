@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_BUSADDER_HPP
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -18,7 +17,7 @@ namespace iidm {
 class Bus;
 class VoltageLevel;
 
-class IIDM_DECLSPEC BusAdder : public IdentifiableAdder<BusAdder> {
+class BusAdder : public IdentifiableAdder<BusAdder> {
 public:
     Bus& add();
 

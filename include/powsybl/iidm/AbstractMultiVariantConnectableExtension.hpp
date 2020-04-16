@@ -10,7 +10,6 @@
 
 #include <powsybl/iidm/Extension.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -19,7 +18,7 @@ namespace iidm {
 class Connectable;
 class VariantManagerHolder;
 
-class IIDM_DECLSPEC AbstractMultiVariantConnectableExtension : public Extension, public MultiVariantObject {
+class AbstractMultiVariantConnectableExtension : public Extension, public MultiVariantObject {
 public:
     explicit AbstractMultiVariantConnectableExtension(Extendable& extendable);
 

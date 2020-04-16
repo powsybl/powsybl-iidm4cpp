@@ -10,7 +10,6 @@
 
 #include <powsybl/iidm/RatioTapChangerStep.hpp>
 #include <powsybl/iidm/TapChanger.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -18,7 +17,7 @@ namespace iidm {
 
 class RatioTapChangerHolder;
 
-class IIDM_DECLSPEC RatioTapChanger : public TapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep> {
+class RatioTapChanger : public TapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep> {
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

@@ -11,15 +11,13 @@
 #include <set>
 #include <string>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
 namespace converter {
 
-class IIDM_DECLSPEC ImportOptions {
+class ImportOptions {
 public:
     ImportOptions() = default;
 

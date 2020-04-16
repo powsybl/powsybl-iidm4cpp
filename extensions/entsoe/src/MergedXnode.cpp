@@ -13,7 +13,7 @@ namespace powsybl {
 
 namespace iidm {
 
-IIDM_DECLSPEC const std::string& checkNotEmpty(const std::string& value, const std::string& message);
+const std::string& checkNotEmpty(const std::string& value, const std::string& message);
 
 namespace extensions {
 

@@ -12,7 +12,6 @@
 #include <string>
 
 #include <powsybl/iidm/TopologyLevel.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -20,7 +19,7 @@ namespace iidm {
 
 namespace converter {
 
-class IIDM_DECLSPEC ExportOptions {
+class ExportOptions {
 public:
     ExportOptions() = default;
 

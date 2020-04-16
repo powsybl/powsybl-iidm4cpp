@@ -29,7 +29,7 @@ class Anonymizer;
 
 namespace xml {
 
-class IIDM_DECLSPEC NetworkXmlReaderContext {
+class NetworkXmlReaderContext {
 public:
     NetworkXmlReaderContext(const Anonymizer& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options);
 

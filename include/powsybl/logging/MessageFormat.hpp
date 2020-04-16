@@ -12,8 +12,6 @@
 #include <set>
 #include <string>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace logging {
@@ -29,7 +27,7 @@ namespace logging {
  * @return the formatted message
  */
 template <typename... Args>
-IIDM_DECLSPEC std::string format(const std::string& message, const Args&... args);
+std::string format(const std::string& message, const Args&... args);
 
 /**
  * A convenient function to convert an instance of T to a string
@@ -41,7 +39,7 @@ IIDM_DECLSPEC std::string format(const std::string& message, const Args&... args
  * @return a string representation of the value
  */
 template <typename T>
-IIDM_DECLSPEC std::string toString(const T& value);
+std::string toString(const T& value);
 
 }  // namespace logging
 

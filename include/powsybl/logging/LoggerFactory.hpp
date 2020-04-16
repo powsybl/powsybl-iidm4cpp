@@ -15,13 +15,12 @@
 #include <typeinfo>
 
 #include <powsybl/logging/Logger.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
 namespace logging {
 
-class IIDM_DECLSPEC LoggerFactory {
+class LoggerFactory {
 public:
     /**
      * Return the unique instance of LoggerFactory

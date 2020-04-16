@@ -8,15 +8,13 @@
 #ifndef POWSYBL_IIDM_VARIANTMANAGERHOLDER_HPP
 #define POWSYBL_IIDM_VARIANTMANAGERHOLDER_HPP
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
 class VariantManager;
 
-class IIDM_DECLSPEC VariantManagerHolder {
+class VariantManagerHolder {
 public:
     virtual ~VariantManagerHolder() noexcept = default;
 

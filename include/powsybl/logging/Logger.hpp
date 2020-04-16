@@ -11,7 +11,6 @@
 #include <string>
 
 #include <powsybl/logging/Level.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -20,7 +19,7 @@ namespace logging {
 /**
  * The logger interface
  */
-class IIDM_DECLSPEC Logger {
+class Logger {
 public:
     virtual ~Logger() noexcept = default;
 

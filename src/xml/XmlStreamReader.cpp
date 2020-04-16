@@ -62,32 +62,32 @@ XmlStreamReader::XmlStreamReader(std::istream& stream, const std::string& encodi
 }
 
 template <>
-IIDM_DECLSPEC bool XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+bool XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
     XmlString value = getAttributeValue(attributeName, false);
     const std::string& booleanStr = XML2S(value.get());
     return boost::iequals(booleanStr, "true");
 }
 
 template <>
-IIDM_DECLSPEC double XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+double XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
     XmlString value = getAttributeValue(attributeName, true);
     return std::stod(XML2S(value.get()));
 }
 
 template <>
-IIDM_DECLSPEC int XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+int XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
     XmlString value = getAttributeValue(attributeName, true);
     return std::stoi(XML2S(value.get()));
 }
 
 template <>
-IIDM_DECLSPEC long XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+long XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
     XmlString value = getAttributeValue(attributeName, true);
     return std::stol(XML2S(value.get()));
 }
 
 template <>
-IIDM_DECLSPEC unsigned long XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
+unsigned long XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
     XmlString value = getAttributeValue(attributeName, false);
     return std::stoul(XML2S(value.get()));
 }
@@ -139,7 +139,7 @@ std::string XmlStreamReader::getNamespace(const std::string& prefix) const {
 }
 
 template <>
-IIDM_DECLSPEC stdcxx::optional<bool> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+stdcxx::optional<bool> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
     stdcxx::optional<bool> value;
 
     const XmlString& str = getAttributeValue(attributeName, false);
@@ -151,7 +151,7 @@ IIDM_DECLSPEC stdcxx::optional<bool> XmlStreamReader::getOptionalAttributeValue(
 }
 
 template <>
-IIDM_DECLSPEC stdcxx::optional<int> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+stdcxx::optional<int> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
     stdcxx::optional<int> value;
 
     const XmlString& str = getAttributeValue(attributeName, false);
@@ -163,7 +163,7 @@ IIDM_DECLSPEC stdcxx::optional<int> XmlStreamReader::getOptionalAttributeValue(c
 }
 
 template <>
-IIDM_DECLSPEC stdcxx::optional<double> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+stdcxx::optional<double> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
     stdcxx::optional<double> value;
 
     const XmlString& str = getAttributeValue(attributeName, false);
@@ -175,7 +175,7 @@ IIDM_DECLSPEC stdcxx::optional<double> XmlStreamReader::getOptionalAttributeValu
 }
 
 template <>
-IIDM_DECLSPEC stdcxx::optional<unsigned long> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+stdcxx::optional<unsigned long> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
     stdcxx::optional<unsigned long> value;
 
     const XmlString& str = getAttributeValue(attributeName, false);
@@ -187,7 +187,7 @@ IIDM_DECLSPEC stdcxx::optional<unsigned long> XmlStreamReader::getOptionalAttrib
 }
 
 template <>
-IIDM_DECLSPEC stdcxx::optional<std::string> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+stdcxx::optional<std::string> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
     stdcxx::optional<std::string> value;
 
     const auto& str = getAttributeValue(attributeName, false);

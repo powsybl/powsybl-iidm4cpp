@@ -10,7 +10,6 @@
 
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/LoadType.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -21,7 +20,7 @@ class Load;
 class Network;
 class VoltageLevel;
 
-class IIDM_DECLSPEC LoadAdder : public InjectionAdder<LoadAdder> {
+class LoadAdder : public InjectionAdder<LoadAdder> {
 public:
     ~LoadAdder() noexcept override = default;
 

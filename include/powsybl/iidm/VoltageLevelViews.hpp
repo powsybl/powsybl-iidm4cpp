@@ -17,7 +17,6 @@
 #include <powsybl/iidm/InternalConnection.hpp>
 #include <powsybl/iidm/InternalConnectionAdder.hpp>
 #include <powsybl/iidm/SwitchAdder.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -32,7 +31,7 @@ class Terminal;
 
 namespace voltage_level {
 
-class IIDM_DECLSPEC BusBreakerView {
+class BusBreakerView {
 public:
     using SwitchAdder = bus_breaker_view::SwitchAdder;
 
@@ -78,7 +77,7 @@ public:
     virtual void removeSwitch(const std::string& switchId) = 0;
 };
 
-class IIDM_DECLSPEC BusView {
+class BusView {
 public:
     virtual ~BusView() noexcept = default;
 
@@ -95,7 +94,7 @@ public:
     virtual stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) = 0;
 };
 
-class IIDM_DECLSPEC NodeBreakerView {
+class NodeBreakerView {
 public:
     using InternalConnection = node_breaker_view::InternalConnection;
 

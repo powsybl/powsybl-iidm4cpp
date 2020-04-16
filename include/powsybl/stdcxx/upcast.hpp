@@ -10,12 +10,10 @@
 
 #include <type_traits>
 
-#include <powsybl/stdcxx/export.hpp>
-
 namespace stdcxx {
 
 template <typename Derived, typename Base, typename = typename std::enable_if<std::is_base_of<Base, Derived>::value>::type>
-IIDM_DECLSPEC const Base& upcast(const Derived& value) {
+const Base& upcast(const Derived& value) {
     return value;
 }
 

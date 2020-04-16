@@ -16,7 +16,6 @@
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/stdcxx/DateTime.hpp>
-#include <powsybl/stdcxx/export.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
@@ -53,7 +52,7 @@ class ImportOptions;
 
 }  // namespace converter
 
-class IIDM_DECLSPEC Network : public Container, public VariantManagerHolder {
+class Network : public Container, public VariantManagerHolder {
 public:
     using BusBreakerView = network::BusBreakerView;
 

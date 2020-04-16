@@ -8,7 +8,6 @@
 #include <powsybl/iidm/ConnectableType.hpp>
 
 #include <powsybl/iidm/Enum.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -17,7 +16,7 @@ namespace iidm {
 namespace Enum {
 
 template <>
-IIDM_DECLSPEC const std::initializer_list<std::string>& getNames<ConnectableType>() {
+const std::initializer_list<std::string>& getNames<ConnectableType>() {
     static std::initializer_list<std::string> s_typeNames {
         "BUSBAR_SECTION",
         "LINE",

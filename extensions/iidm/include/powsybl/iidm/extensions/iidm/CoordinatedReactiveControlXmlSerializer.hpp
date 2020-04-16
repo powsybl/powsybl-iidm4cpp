@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_COORDINATEDREACTIVECONTROLXMLSERIALIZER_HPP
 
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
-#include <powsybl/stdcxx/export.hpp>
 
 namespace powsybl {
 
@@ -19,7 +18,7 @@ namespace extensions {
 
 namespace iidm {
 
-class IIDM_DECLSPEC CoordinatedReactiveControlXmlSerializer : public converter::xml::ExtensionXmlSerializer {
+class CoordinatedReactiveControlXmlSerializer : public converter::xml::ExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
     std::unique_ptr<Extension> read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 

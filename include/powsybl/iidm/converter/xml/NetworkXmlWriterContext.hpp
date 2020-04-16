@@ -33,7 +33,7 @@ class Anonymizer;
 
 namespace xml {
 
-class IIDM_DECLSPEC NetworkXmlWriterContext {
+class NetworkXmlWriterContext {
 public:
     NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter);
 
