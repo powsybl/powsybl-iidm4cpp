@@ -72,17 +72,16 @@ jobs:
         shell: cmd
         run: >
           cmake -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%/build-windows
-          -DCMAKE_BUILD_TYPE=Release
           -DCMAKE_PREFIX_PATH=%BOOST_ROOT_1_72_0%;C:\thirdparties\libxml2-2.9.10
 
       - name: Build
-        run: cmake --build $GITHUB_WORKSPACE/build-windows --parallel 3
+        run: cmake --build $GITHUB_WORKSPACE/build-windows --config Release --parallel 3
 
       - name: Tests
         shell: cmd
         run: |
           set PATH=%PATH%;C:\thirdparties\libxml2-2.9.10\bin;%BOOST_ROOT_1_72_0%\lib;%GITHUB_WORKSPACE%\build-windows\src\Release;%GITHUB_WORKSPACE%\build-windows\src\test\Release
-          cmake --build %GITHUB_WORKSPACE%/build-windows --target RUN_TESTS
+          cmake --build %GITHUB_WORKSPACE%/build-windows --config Release --target RUN_TESTS
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
 
