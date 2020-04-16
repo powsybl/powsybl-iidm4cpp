@@ -71,7 +71,7 @@ jobs:
       - name: Configure CMake
         shell: cmd
         run: |
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\Tools\VsDevCmd.bat" -arch=x64
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           cmake -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%/build-windows ^
           -DCMAKE_BUILD_TYPE=Release ^
           -DCMAKE_PREFIX_PATH=%BOOST_ROOT_1_72_0%;C:\thirdparties\libxml2-2.9.10 ^
