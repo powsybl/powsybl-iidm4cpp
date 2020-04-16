@@ -53,8 +53,7 @@ target_link_libraries(${EXT_NAME}-static PUBLIC iidm)
 
 # Unit tests
 add_executable(unit-tests-${EXT_NAME} ${UNIT_TEST_SOURCES})
-# target_compile_definitions(unit-tests-${EXT_NAME} PRIVATE BOOST_TEST_DYN_LINK)
-target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests Boost::unit_test_framework Boost::dynamic_linking Boost::disable_autolinking)
+target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests Boost::disable_autolinking Boost::dynamic_linking Boost::unit_test_framework)
 add_dependencies(unit-tests-${EXT_NAME} ${EXT_NAME}-static)
 
 add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)

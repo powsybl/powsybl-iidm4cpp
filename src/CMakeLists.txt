@@ -183,7 +183,7 @@ target_include_directories(iidm
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_link_libraries(iidm PUBLIC LibXml2::LibXml2 Boost::filesystem Boost::system Boost::disable_autolinking Boost::dynamic_linking ${CMAKE_DL_LIBS})
+target_link_libraries(iidm PUBLIC LibXml2::LibXml2 Boost::disable_autolinking Boost::dynamic_linking Boost::filesystem Boost::system ${CMAKE_DL_LIBS})
 
 # Static library
 add_library(iidm-static STATIC ${IIDM_SOURCES})
@@ -196,11 +196,11 @@ target_include_directories(iidm-static SYSTEM
 target_include_directories(iidm-static
     INTERFACE
         $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
-    PRIVATE
+    PUBLIC
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_link_libraries(iidm-static PUBLIC LibXml2::LibXml2 Boost::filesystem Boost::system Boost::disable_autolinking Boost::dynamic_linking ${CMAKE_DL_LIBS})
+target_link_libraries(iidm-static PUBLIC LibXml2::LibXml2 Boost::disable_autolinking Boost::dynamic_linking Boost::filesystem Boost::system ${CMAKE_DL_LIBS})
 
 # Installation
 install(TARGETS iidm iidm-static

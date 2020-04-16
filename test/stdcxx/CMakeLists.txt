@@ -12,7 +12,7 @@ set(UNIT_TEST_SOURCES
     )
 
 add_executable(unit-tests-stdcxx ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-stdcxx PRIVATE iidm-tests Boost::unit_test_framework Boost::dynamic_linking Boost::disable_autolinking)
+target_link_libraries(unit-tests-stdcxx PRIVATE iidm-tests Boost::disable_autolinking Boost::dynamic_linking Boost::unit_test_framework)
 
 add_test(NAME stdcxx COMMAND unit-tests-stdcxx)
 set_tests_properties(stdcxx PROPERTIES ENVIRONMENT "PATH=${WINDOWSPATH}")

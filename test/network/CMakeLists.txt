@@ -10,7 +10,6 @@ set(UNIT_TEST_SOURCES
     network.cpp)
 
 add_executable(unit-tests-network ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-network PRIVATE iidm-tests Boost::unit_test_framework Boost::dynamic_linking Boost::disable_autolinking)
+target_link_libraries(unit-tests-network PRIVATE iidm-tests Boost::disable_autolinking Boost::dynamic_linking Boost::unit_test_framework)
 
 add_test(NAME network COMMAND unit-tests-network)
-set_tests_properties(network PROPERTIES ENVIRONMENT "PATH=${WINDOWSPATH}")

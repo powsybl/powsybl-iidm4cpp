@@ -42,16 +42,6 @@ find_package(LibXml2 REQUIRED)
 if (MSVC)
     # On windows, also force prefix to avoid conflict between import file (for shared compilation) and static file
     set(CMAKE_STATIC_LIBRARY_PREFIX lib)
-
-    # Update PATH VARIABLE for test execution
-    # for libxml2, dll are located in <LIBXML_INSTALL_DIR>/bin
-    # ${LIBXML2_LIBRARIES} leads to <LIBXML_INSTALL_DIR>/lib/libxml2.lib (static version)
-    get_filename_component(LIBXML2_LIBRARY_DIRS ${LIBXML2_LIBRARIES} DIRECTORY TRUE)
-    set(LIBXML2_BINARY_DIRS ${LIBXML2_LIBRARY_DIRS}/../bin)
-    set (WINDOWSPATH "$ENV{PATH};${Boost_LIBRARY_DIRS};${LIBXML2_BINARY_DIRS};${CMAKE_CURRENT_BINARY_DIR}/src;${CMAKE_CURRENT_BINARY_DIR}/src/test;")
-    STRING(REPLACE ";" "\\;" WINDOWSPATH "${WINDOWSPATH}")
-
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4250 /wd4251 /wd4267 /wd4275")
 endif()
 
 if (WIN32)

@@ -15,7 +15,7 @@ set(UNIT_TEST_SOURCES
 )
 
 add_executable(unit-tests-logging ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-logging PRIVATE iidm-tests Boost::unit_test_framework Boost::disable_autolinking Boost::dynamic_linking)
+target_link_libraries(unit-tests-logging PRIVATE iidm-tests Boost::disable_autolinking Boost::dynamic_linking Boost::unit_test_framework)
 
 add_test(NAME logging COMMAND unit-tests-logging)
 set_tests_properties(logging PROPERTIES ENVIRONMENT "PATH=${WINDOWSPATH}")
