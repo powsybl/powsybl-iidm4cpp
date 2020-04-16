@@ -59,6 +59,7 @@ jobs:
           echo %PATH%
           set PATH="%PATH%;C:/thirdparties/libxml2-2.9.10/bin;%BOOST_ROOT_1_72_0%/lib;%GITHUB_WORKSPACE%/build-windows/src/Release;%GITHUB_WORKSPACE%/build-windows/src/test/Release"
           echo %PATH%
+          dir C:/thirdparties/libxml2-2.9.10/bin
           xmllint
 
       - name: Pre-requisites
