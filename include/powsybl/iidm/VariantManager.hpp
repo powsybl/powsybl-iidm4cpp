@@ -32,7 +32,7 @@ public:
 
     VariantManager(const VariantManager&) = delete;
 
-    VariantManager(VariantManager&& variantManager) noexcept = delete;
+    VariantManager(VariantManager&&) noexcept = delete;
 
     VariantManager(Network& network, VariantManager&& variantManager) noexcept;
 

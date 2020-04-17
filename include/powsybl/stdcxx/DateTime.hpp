@@ -58,7 +58,7 @@ public:
      *
      * @return true if the two {@link DateTime} objects are not equivalent, false otherwise.
      */
-     friend bool operator!=(const DateTime& dt1, const DateTime& dt2);
+    friend bool operator!=(const DateTime& dt1, const DateTime& dt2);
 
 private:
     explicit DateTime(const boost::local_time::local_date_time& dateTime);

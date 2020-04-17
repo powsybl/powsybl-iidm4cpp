@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/Branch.hpp>
 #include <powsybl/iidm/LineCharacteristics.hpp>
+
 namespace powsybl {
 
 namespace iidm {

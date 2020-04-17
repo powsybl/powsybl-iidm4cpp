@@ -12,6 +12,7 @@
 #include <powsybl/iidm/PhaseTapChangerStep.hpp>
 #include <powsybl/iidm/TapChanger.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
+
 namespace powsybl {
 
 namespace iidm {
