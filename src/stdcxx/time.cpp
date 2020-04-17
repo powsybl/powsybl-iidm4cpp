@@ -17,8 +17,7 @@ std::tm localtime(const std::time_t& time) {
     boost::date_time::c_time::localtime(&time, &result);
     return result;
 #else
-    std::tm* result  = nullptr;
-    return *boost::date_time::c_time::localtime(&time, result);
+    return *boost::date_time::c_time::localtime(&time, nullptr);
 #endif
 }
 
