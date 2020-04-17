@@ -59,7 +59,6 @@ target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests Boos
 add_dependencies(unit-tests-${EXT_NAME} ${EXT_NAME}-static)
 
 add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)
-set_tests_properties(${EXT_NAME} PROPERTIES ENVIRONMENT "PATH=${WINDOWSPATH}")
 
 # Installation
 install(TARGETS ${EXT_NAME} ${EXT_NAME}-static
