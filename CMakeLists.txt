@@ -46,6 +46,7 @@ endif()
 
 if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4250 /wd4251 /wd4267 /wd4275")
 endif()
 
 enable_testing()
