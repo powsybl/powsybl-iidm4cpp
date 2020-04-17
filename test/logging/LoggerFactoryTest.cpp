@@ -10,15 +10,9 @@
 #include <powsybl/logging/NoopLogger.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/memory.hpp>
+#include <powsybl/stdcxx/typeinfo.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
-
-template<>
-struct boost::test_tools::tt_detail::print_log_value<std::type_info> {
-    void operator()(std::ostream& os, const std::type_info& typeInfo) {
-        os << stdcxx::demangle(typeInfo);
-    }
-};
 
 namespace powsybl {
 
