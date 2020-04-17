@@ -11,35 +11,33 @@
 #include <string>
 #include <typeinfo>
 
+#include <boost/core/demangle.hpp>
+
 namespace stdcxx {
 
 std::string demangle(const char* name);
 
 template <typename T>
-std::string demangle() {
-    return demangle(typeid(T).name());
-}
+std::string demangle();
 
 template <typename T>
-std::string demangle(const T& type) {
-    return demangle(typeid(type).name());
-}
+std::string demangle(const T& type);
 
 template <>
 std::string demangle(const std::type_info& type);
 
+std::string getTypeIdName(const std::string& typeIdName);
+
 std::string simpleClassName(const char* className);
 
 template <typename T>
-std::string simpleClassName() {
-    return simpleClassName(typeid(T).name());
-}
+std::string simpleClassName();
 
 template <typename T>
-std::string simpleClassName(const T& type) {
-    return simpleClassName(typeid(type).name());
-}
+std::string simpleClassName(const T& type);
 
 }  // namespace stdcxx
+
+#include <powsybl/stdcxx/demangle.hxx>
 
 #endif  // POWSYBL_STDCXX_DEMANGLE_HPP
