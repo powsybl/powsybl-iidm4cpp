@@ -33,20 +33,19 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STRE
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -pedantic -Wswitch-enum")
     # set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_GLIBCXX_DEBUG")
     # set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -D_GLIBCXX_DEBUG")
+elseif (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4250 /wd4251 /wd4267 /wd4275")
 endif ()
 
 set(Boost_USE_STATIC_LIBS OFF)
 find_package(Boost 1.56 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
 find_package(LibXml2 REQUIRED)
 
-if (MSVC)
+if (WIN32)
     # On windows, also force prefix to avoid conflict between import file (for shared compilation) and static file
     set(CMAKE_STATIC_LIBRARY_PREFIX lib)
-endif()
 
-if (WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4244 /wd4250 /wd4251 /wd4267 /wd4275")
 endif()
 
 enable_testing()

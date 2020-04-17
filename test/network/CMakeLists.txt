@@ -10,6 +10,6 @@ set(UNIT_TEST_SOURCES
     network.cpp)
 
 add_executable(unit-tests-network ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-network PRIVATE iidm-tests Boost::disable_autolinking Boost::dynamic_linking Boost::unit_test_framework)
+target_link_libraries(unit-tests-network PRIVATE iidm-tests)
 
 add_test(NAME network COMMAND unit-tests-network)

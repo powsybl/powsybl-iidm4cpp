@@ -25,10 +25,6 @@ set(UNIT_TEST_SOURCES
     test/XnodeTest.cpp
 )
 
-if (WIN32)
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true)
-endif()
-
 # Shared library
 add_library(${EXT_NAME} SHARED ${EXT_SOURCES})
 set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION} OUTPUT_NAME iidm-${EXT_NAME})
@@ -53,8 +49,7 @@ target_link_libraries(${EXT_NAME}-static PUBLIC iidm)
 
 # Unit tests
 add_executable(unit-tests-${EXT_NAME} ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests Boost::disable_autolinking Boost::dynamic_linking Boost::unit_test_framework)
-add_dependencies(unit-tests-${EXT_NAME} ${EXT_NAME}-static)
+target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests)
 
 add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)
 

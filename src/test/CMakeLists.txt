@@ -34,7 +34,7 @@ target_include_directories(iidm-tests-static
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_link_libraries(iidm-tests-static PUBLIC iidm Boost::filesystem Boost::program_options Boost::system Boost::unit_test_framework PRIVATE LibXml2::LibXml2)
+target_link_libraries(iidm-tests-static PUBLIC iidm-static Boost::filesystem Boost::program_options Boost::system Boost::unit_test_framework PRIVATE LibXml2::LibXml2)
 
 # Installation
 install(TARGETS iidm-tests iidm-tests-static

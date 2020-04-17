@@ -10,5 +10,4 @@ set(IIDM_BENCHMARK_SOURCES
 )
 
 add_executable(iidm-benchmark ${IIDM_BENCHMARK_SOURCES})
-target_link_libraries(iidm-benchmark PRIVATE iidm Boost::program_options Boost::disable_autolinking Boost::dynamic_linking)
-
+target_link_libraries(iidm-benchmark PRIVATE iidm Boost::program_options)

@@ -60,6 +60,6 @@ set(UNIT_TEST_SOURCES
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
-target_link_libraries(unit-tests-iidm PRIVATE iidm-tests Boost::unit_test_framework)
+target_link_libraries(unit-tests-iidm PRIVATE iidm-tests)
 
 add_test(NAME iidm COMMAND unit-tests-iidm ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_SOURCE_DIR}/test/resources)
