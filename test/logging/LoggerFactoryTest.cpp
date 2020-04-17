@@ -35,7 +35,7 @@ BOOST_AUTO_TEST_CASE(test) {
     BOOST_TEST(stdcxx::areSame(typeid(ConsoleLogger), typeid(consoleLogger)));
     LoggerFactory::getInstance().removeLogger("console");
     Logger& consoleLogger2 = LoggerFactory::getLogger("console");
-    BOOST_TEST(typeid(NoopLogger) == typeid(consoleLogger2));
+    BOOST_CHECK_EQUAL(typeid(NoopLogger), typeid(consoleLogger2));
 
     LoggerFactory::getInstance().addLogger<LoggerFactory>(stdcxx::make_unique<NoopLogger>());
     Logger& noopLogger = LoggerFactory::getLogger<LoggerFactory>();
