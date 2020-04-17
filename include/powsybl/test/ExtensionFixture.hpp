@@ -34,4 +34,3 @@ public:
 }  // namespace powsybl
 
 #endif //POWSYBL_TEST_EXTENSIONFIXTURE_HPP
-

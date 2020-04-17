@@ -232,7 +232,7 @@ typename UndirectedGraph<V, E>::template const_range<unsigned long> UndirectedGr
         return static_cast<bool>(m_edges[e]);
     };
 
-    return boost::counting_range(0UL, m_edges.size()) | boost::adaptors::filtered(filter);
+    return boost::counting_range(0UL, static_cast<unsigned long>(m_edges.size())) | boost::adaptors::filtered(filter);
 }
 
 template <typename V, typename E>
@@ -288,7 +288,7 @@ typename UndirectedGraph<V, E>::template const_range<unsigned long> UndirectedGr
         return static_cast<bool>(m_vertices[v]);
     };
 
-    return boost::counting_range(0UL, m_vertices.size()) | boost::adaptors::filtered(filter);
+    return boost::counting_range(0UL, static_cast<unsigned long>(m_vertices.size())) | boost::adaptors::filtered(filter);
 }
 
 template <typename V, typename E>

@@ -14,8 +14,8 @@ set(IIDM_TEST_SOURCES
     converter/RoundTrip.cpp
 )
 
-# Static library
-add_library(iidm-tests STATIC ${IIDM_TEST_SOURCES})
+# Shared library
+add_library(iidm-tests SHARED ${IIDM_TEST_SOURCES})
 target_include_directories(iidm-tests
     INTERFACE
         $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
@@ -23,10 +23,21 @@ target_include_directories(iidm-tests
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
 )
-target_link_libraries(iidm-tests PUBLIC iidm Boost::filesystem Boost::program_options Boost::system PRIVATE LibXml2::LibXml2)
+target_link_libraries(iidm-tests PUBLIC iidm Boost::filesystem Boost::program_options Boost::system Boost::unit_test_framework PRIVATE LibXml2::LibXml2)
+
+# Static library
+add_library(iidm-tests-static STATIC ${IIDM_TEST_SOURCES})
+target_include_directories(iidm-tests-static
+    INTERFACE
+        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+)
+target_link_libraries(iidm-tests-static PUBLIC iidm-static Boost::filesystem Boost::program_options Boost::system Boost::unit_test_framework PRIVATE LibXml2::LibXml2)
 
 # Installation
-install(TARGETS iidm-tests
+install(TARGETS iidm-tests iidm-tests-static
     EXPORT iidm-targets
     LIBRARY DESTINATION ${INSTALL_LIB_DIR}
     ARCHIVE DESTINATION ${INSTALL_LIB_DIR}

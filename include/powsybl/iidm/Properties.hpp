@@ -29,13 +29,13 @@ public:
 
     Properties(const Properties&) = default;
 
-    Properties(Properties&&) noexcept = default;
+    Properties(Properties&&) = default;
 
     ~Properties() = default;
 
     Properties& operator=(const Properties&) = default;
 
-    Properties& operator=(Properties&&) noexcept = default;
+    Properties& operator=(Properties&&) = default;
 
     const_iterator begin() const;
 

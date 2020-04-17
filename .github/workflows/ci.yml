@@ -2,51 +2,145 @@ name: CI
 
 on: [push]
 
-jobs:
-  build:
-    name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
-    strategy:
-      matrix:
-        config:
-          - {
-              name: "Ubuntu (Clang)",
-              os: ubuntu-latest,
-              build_type: "Release", cxx: "clang++",
-              cmake_options: "-DBOOST_ROOT=$BOOST_ROOT_1_69_0 -DBoost_ARCHITECTURE=-x64"
-          }
-          - {
-              name: "MacOS (Clang)",
-              os: macos-latest,
-              build_type: "Release", cxx: "clang++"
-          }
+defaults:
+  run:
+    shell: bash
 
+jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
         uses: actions/checkout@v1
 
-      - name: Install boost
-        if: runner.os == 'macOS'
-        run: brew install boost
-
-      - name: Create build environment
-        run: cmake -E make_directory ${{ runner.workspace }}/powsybl-iidm4cpp/build
-
       - name: Configure CMake
-        shell: bash
-        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
         run: >
-          cmake $GITHUB_WORKSPACE
-          -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
-          -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
-          ${{ matrix.config.cmake_options }}
+          cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-linux
+          -DCMAKE_BUILD_TYPE=Release
+          -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
 
       - name: Build
-        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
-        run: cmake --build . --parallel 3
+        run: cmake --build $GITHUB_WORKSPACE/build-linux --parallel 3
 
       - name: Tests
-        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp/build
-        run: cmake --build . --target test
+        run: cmake --build $GITHUB_WORKSPACE/build-linux --target test
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
+
+  macos:
+    name: MacOS
+    runs-on: macos-latest
+    steps:
+      - name: Pre-requisites
+        run: brew install boost
+
+      - name: Checkout sources
+        uses: actions/checkout@v1
+
+      - name: Configure CMake
+        run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-macos -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build
+        run: cmake --build $GITHUB_WORKSPACE/build-macos --parallel 3
+
+      - name: Tests
+        run: cmake --build $GITHUB_WORKSPACE/build-macos --target test
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
+
+  windows:
+    name: Windows
+    runs-on: windows-latest
+    steps:
+      - name: Pre-requisites
+        shell: cmd
+        run: |
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          choco install wget --no-progress
+          wget -nv https://github.com/GNOME/libxml2/archive/v2.9.10.zip
+          7z x v2.9.10.zip
+          cd libxml2-2.9.10/win32
+          cscript configure.js compiler=msvc prefix=C:\thirdparties\libxml2-2.9.10 iconv=no
+          nmake -f Makefile.msvc
+          nmake -f Makefile.msvc install
+
+      - name: Checkout sources
+        uses: actions/checkout@v1
+
+      - name: Configure CMake
+        shell: cmd
+        run: >
+          cmake -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build-windows
+          -DCMAKE_PREFIX_PATH=%BOOST_ROOT_1_72_0%;C:\thirdparties\libxml2-2.9.10
+
+      - name: Build
+        shell: cmd
+        run: |
+          set CL=/MP
+          cmake --build %GITHUB_WORKSPACE%\build-windows --parallel 3 --config Release
+
+      - name: Tests
+        shell: cmd
+        run: |
+          set PATH=%PATH%;C:\thirdparties\libxml2-2.9.10\bin;%BOOST_ROOT_1_72_0%\lib;%GITHUB_WORKSPACE%\build-windows\src\Release;%GITHUB_WORKSPACE%\build-windows\src\test\Release
+          cmake --build %GITHUB_WORKSPACE%\build-windows --target RUN_TESTS --config Release --verbose
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
+
+  qa:
+    name: QA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcovr
+        run: sudo pip install gcovr
+
+      - name: Install Sonar wrapper
+        working-directory: ${{ runner.workspace }}
+        run: |
+          wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+          unzip build-wrapper-linux-x86.zip
+
+      - name: Install Sonar scanner
+        working-directory: ${{ runner.workspace }}
+        run: |
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
+          unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
+          ln -s sonar-scanner-${SONAR_SCANNER_VERSION} sonar
+          rm sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
+        env:
+          SONAR_SCANNER_VERSION: 3.3.0.1492
+
+      - name: Checkout sources
+        uses: actions/checkout@v1
+
+      - name: Configure CMake
+        run: >
+          cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build
+          -DCMAKE_BUILD_TYPE=Debug
+          -DCODE_COVERAGE=TRUE
+          -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
+
+      - name: Build
+        run:  >
+          ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64
+          --out-dir $GITHUB_WORKSPACE/build/output
+          cmake --build $GITHUB_WORKSPACE/build --parallel 2
+
+      - name: Tests
+        run: >
+          cmake --build $GITHUB_WORKSPACE/build --target test
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
+
+      - name: Code coverage
+        run: cmake --build $GITHUB_WORKSPACE/build --target code-coverage
+
+      - name: Sonarcloud
+        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: >
+          ${{ runner.workspace }}/sonar/bin/sonar-scanner
+          -Dsonar.host.url=https://sonarcloud.io

@@ -14,11 +14,11 @@ namespace stdcxx {
 std::tm localtime(const std::time_t& time) {
 #if defined __GNUC__
     std::tm result {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nullptr};
-#else
-    std::tm result {0, 0, 0, 0, 0, 0, 0, 0, 0};
-#endif
     boost::date_time::c_time::localtime(&time, &result);
     return result;
+#else
+    return *boost::date_time::c_time::localtime(&time, nullptr);
+#endif
 }
 
 #if !HAS_PUT_TIME

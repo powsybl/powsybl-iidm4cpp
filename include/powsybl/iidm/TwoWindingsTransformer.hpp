@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_TWOWINDINGSTRANSFORMER_HPP
 
 #include <powsybl/iidm/Branch.hpp>
+#include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>

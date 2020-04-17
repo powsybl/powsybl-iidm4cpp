@@ -7,19 +7,28 @@
 
 #include <powsybl/stdcxx/demangle.hpp>
 
-#include <cxxabi.h>
-#include <functional>
-#include <memory>
+#include <boost/core/demangle.hpp>
 
 namespace stdcxx {
 
 std::string demangle(const char* name) {
-    int status = -1;
+#if defined(_WIN32) || defined(WIN32)
+    // under windows typeid(T).name() does not return a mangled name, but returns :
+    //  - "class T" if T is a class
+    //  - "struct T" if T is a struct
+    //  - "enum T" if T is an enum
+    //  - "union T" if T is an union
+    // so remove this useless prefix by removing everything found before the last ' ' character
+    std::string simplifiedName = name;
+    std::size_t index = simplifiedName.rfind(' ');
+    if (index != std::string::npos) {
+        simplifiedName = simplifiedName.substr(index + 1);
+    }
 
-    // __cxa_demangle will allocate an output buffer we have to delete
-    std::unique_ptr<char, std::function<void(void*)>> res(abi::__cxa_demangle(name, nullptr, nullptr, &status), &std::free);
-
-    return status == 0 ? res.get() : name;
+    return boost::core::demangle(simplifiedName.c_str());
+#else
+    return boost::core::demangle(name);
+#endif
 }
 
 template <>

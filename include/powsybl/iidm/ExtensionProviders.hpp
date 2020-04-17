@@ -30,6 +30,14 @@ public:
     static ExtensionProviders& getInstance();
 
 public:
+    ExtensionProviders(const ExtensionProviders&) = delete;
+
+    ExtensionProviders(ExtensionProviders&&) = delete;
+
+    ExtensionProviders& operator=(const ExtensionProviders&) = delete;
+
+    ExtensionProviders& operator=(ExtensionProviders&&) = delete;
+
     stdcxx::CReference<T> findProvider(const std::string& name) const;
 
     const T& findProviderOrThrowException(const std::string& name) const;
@@ -39,15 +47,7 @@ public:
 private:
     ExtensionProviders() = default;
 
-    ExtensionProviders(const ExtensionProviders& other) = default;
-
-    ExtensionProviders(ExtensionProviders&& other) = default;
-
     ~ExtensionProviders() noexcept = default;
-
-    ExtensionProviders& operator=(const ExtensionProviders& other) = default;
-
-    ExtensionProviders& operator=(ExtensionProviders&& other) = default;
 
     void loadLibrary(const boost::filesystem::path& libraryPath);
 
@@ -60,7 +60,5 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
-
-#include <powsybl/iidm/ExtensionProviders.hxx>
 
 #endif  // POWSYBL_IIDM_EXTENSIONPROVIDERS_HPP
