@@ -83,8 +83,8 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Shunt compensator 'SHUNT1': the current number (20) of section should be lesser than the maximum number of section (10)");
     adder.setCurrentSectionCount(5);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'SHUNT1' already exists (powsybl::iidm::ShuntCompensator)");
-    adder.setId("UNIQUE_SHUNT_ID");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ShuntCompensator' with the id 'SHUNT1'");
+    adder.setEnsureIdUnicity(true);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(shuntCompensatorCount + 1, network.getShuntCompensatorCount());

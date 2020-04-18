@@ -79,8 +79,8 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltage setpoint");
     adder.setVoltageSetpoint(30.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'SVC1' already exists (powsybl::iidm::StaticVarCompensator)");
-    adder.setId("UNIQUE_SVC_ID");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'StaticVarCompensator' with the id 'SVC1'");
+    adder.setEnsureIdUnicity(true);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(staticVarCompensatorCount + 1, network.getStaticVarCompensatorCount());

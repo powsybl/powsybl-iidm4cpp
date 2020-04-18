@@ -395,10 +395,10 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     BOOST_CHECK_EQUAL(0, view.getInternalConnectionCount());
     auto internalConnectionAdder = voltageLevel.getNodeBreakerView().newInternalConnection();
 
-    POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "InternalConnection 'IC_1': first connection node is not set");
+    POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "Voltage level 'VL2': first connection node is not set");
     internalConnectionAdder.setNode1(0);
 
-    POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "InternalConnection 'IC_1': second connection node is not set");
+    POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "Voltage level 'VL2': second connection node is not set");
     internalConnectionAdder.setNode2(0);
     // TODO(thiebarr):  POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "InternalConnection 'IC_1': connection nodes must be different");
     internalConnectionAdder.setNode2(1);

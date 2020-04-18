@@ -637,14 +637,14 @@ BOOST_AUTO_TEST_CASE(adder) {
         .setVoltageLevel("VL4")
         .setConnectableBus("VL4_BUS1");
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Invalid id");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "3 windings transformer id is not set");
     adder.setId("3WT_VL1_VL2_VL3");
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object '3WT_VL1_VL2_VL3' already exists (powsybl::iidm::ThreeWindingsTransformer)");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ThreeWindingsTransformer' with the id '3WT_VL1_VL2_VL3'");
     adder.setName("3WT_VL4_VL4_VL4_NAME");
     adder.setId("UNIQUE_3WT_ID");
     BOOST_CHECK_NO_THROW(adder.add());
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'UNIQUE_3WT_ID' already exists (powsybl::iidm::ThreeWindingsTransformer)");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ThreeWindingsTransformer' with the id 'UNIQUE_3WT_ID'");
 
     BOOST_CHECK_EQUAL(threeWindingsTransformerCount + 1, network.getThreeWindingsTransformerCount());
 }
@@ -694,7 +694,7 @@ BOOST_AUTO_TEST_CASE(adder2) {
         .setConnectableBus("VL4_BUS1")
         .add();
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object '3WT_VL1_VL2_VL3' already exists (powsybl::iidm::ThreeWindingsTransformer)");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ThreeWindingsTransformer' with the id '3WT_VL1_VL2_VL3'");
     adder.setName("3WT_VL4_VL4_VL4_NAME");
     adder.setId("UNIQUE_3WT_ID");
     BOOST_CHECK_NO_THROW(adder.add());

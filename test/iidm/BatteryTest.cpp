@@ -95,8 +95,8 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': Invalid active power p > maxP: 100 > 70");
     adder.setP0(65.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'BAT1' already exists (powsybl::iidm::Battery)");
-    adder.setId("UNIQUE_BAT_ID");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'Battery' with the id 'BAT1'");
+    adder.setEnsureIdUnicity(true);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(batteryCount + 1, network.getBatteryCount());

@@ -363,11 +363,11 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': rated U2 is invalid");
     adder.setRatedU2(600.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Invalid id");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "2 windings transformer id is not set");
     adder.setId("2WT_VL1_VL2");
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object '2WT_VL1_VL2' already exists (powsybl::iidm::TwoWindingsTransformer)");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'TwoWindingsTransformer' with the id '2WT_VL1_VL2'");
     adder.setName("2WT_VL3_VL4");
-    adder.setId("UNIQUE_2WT_ID");
+    adder.setEnsureIdUnicity(true);
     BOOST_CHECK_NO_THROW(adder.add());
 
     BOOST_CHECK_EQUAL(twoWindingsTransformerCount + 1, network.getTwoWindingsTransformerCount());
