@@ -32,7 +32,8 @@ std::string Identifiables::getUniqueId(const std::string& baseId, const stdcxx::
     std::string uniqueId;
     unsigned long i = 0;
     do {
-        uniqueId = checkedBaseId + '#' + std::to_string(i++);
+        uniqueId = checkedBaseId + '#' + std::to_string(i);
+        ++i;
     } while (i < std::numeric_limits<unsigned long>::max() && containsId(uniqueId));
 
     logger.trace("Object '%1%' is not unique, rename to '%2%'", baseId, uniqueId);
