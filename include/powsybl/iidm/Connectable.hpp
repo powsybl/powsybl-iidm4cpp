@@ -23,6 +23,11 @@ namespace iidm {
 class Network;
 
 class Connectable : public Identifiable, public MultiVariantObject {
+public:  // Identifiable
+    const Network& getNetwork() const override;
+
+    Network& getNetwork() override;
+
 public:
     ~Connectable() noexcept override = default;
 
@@ -45,10 +50,6 @@ protected: // MultiVariantObject
 
 protected:
     Connectable(const std::string& id, const std::string& name, const ConnectableType& connectableType);
-
-    const Network& getNetwork() const;
-
-    Network& getNetwork();
 
     const Terminal& getTerminal(unsigned long index) const;
 

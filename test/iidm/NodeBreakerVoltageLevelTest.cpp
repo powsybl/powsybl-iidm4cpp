@@ -272,6 +272,10 @@ BOOST_AUTO_TEST_CASE(switches) {
     const Network& cNetwork = network;
     BOOST_TEST(stdcxx::areSame(breaker, cNetwork.getSwitch("BK")));
 
+    const auto& cBreaker = breaker;
+    BOOST_TEST(stdcxx::areSame(network, breaker.getNetwork()));
+    BOOST_TEST(stdcxx::areSame(cNetwork, cBreaker.getNetwork()));
+
     BOOST_CHECK_EQUAL(1UL, boost::size(network.getSwitches()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cNetwork.getSwitches()));
 

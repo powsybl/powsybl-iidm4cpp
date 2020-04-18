@@ -316,8 +316,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     POWSYBL_ASSERT_THROW(Network("", ""), PowsyblException, "Invalid id");
     POWSYBL_ASSERT_THROW(Network("id", ""), ValidationException, "Network 'id': Source format is empty");
 
-    Network n("id", "sourceFormat");
-    Network network(std::move(n));
+    Network network("id", "sourceFormat");
     BOOST_CHECK_EQUAL("id", network.getId());
     BOOST_CHECK_EQUAL("id", network.getName());
     BOOST_CHECK_EQUAL("sourceFormat", network.getSourceFormat());
@@ -326,6 +325,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     stdcxx::DateTime caseDate = stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00");
     network.setCaseDate(caseDate);
     BOOST_CHECK_EQUAL(caseDate, network.getCaseDate());
+
+    const auto& cNetwork = network;
+    BOOST_TEST(stdcxx::areSame(network, network.getNetwork()));
+    BOOST_TEST(stdcxx::areSame(cNetwork, cNetwork.getNetwork()));
 }
 
 BOOST_AUTO_TEST_CASE(move) {

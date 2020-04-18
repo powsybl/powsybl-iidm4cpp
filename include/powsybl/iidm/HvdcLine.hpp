@@ -34,6 +34,11 @@ public:
         TWO
     };
 
+public:  // Identifiable
+    const Network& getNetwork() const override;
+
+    Network& getNetwork() override;
+
 public:
     HvdcLine(Network& network, const std::string& id, const std::string& name, double r, double nominalVoltage, double maxP,
              const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2);
@@ -57,10 +62,6 @@ public:
     stdcxx::Reference<HvdcConverterStation> getConverterStation2();
 
     double getMaxP() const;
-
-    const Network& getNetwork() const;
-
-    Network& getNetwork();
 
     double getNominalVoltage() const;
 

@@ -22,6 +22,11 @@ namespace iidm {
 class VoltageLevel;
 
 class Switch : public Identifiable, public MultiVariantObject {
+public:  // Identifiable
+    const Network& getNetwork() const override;
+
+    Network& getNetwork() override;
+
 public:
     Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, SwitchKind kind, bool open,
            bool retained, bool fictitious);
@@ -30,7 +35,9 @@ public:
 
     SwitchKind getKind() const;
 
-    VoltageLevel& getVoltageLevel() const;
+    const VoltageLevel& getVoltageLevel() const;
+
+    VoltageLevel& getVoltageLevel();
 
     bool isFictitious() const;
 
