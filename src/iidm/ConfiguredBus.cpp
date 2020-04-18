@@ -94,14 +94,6 @@ stdcxx::range<Terminal> ConfiguredBus::getConnectedTerminals() {
     return busTerminals | boost::adaptors::transformed(mapper) | boost::adaptors::filtered(filter);
 }
 
-const Network& ConfiguredBus::getNetwork() const {
-    return m_voltageLevel.get().getNetwork();
-}
-
-Network& ConfiguredBus::getNetwork() {
-    return m_voltageLevel.get().getNetwork();
-}
-
 unsigned long ConfiguredBus::getTerminalCount() const {
     return m_terminals[getNetwork().getVariantIndex()].size();
 }
@@ -126,7 +118,11 @@ double ConfiguredBus::getV() const {
     return m_v[getNetwork().getVariantIndex()];
 }
 
-VoltageLevel& ConfiguredBus::getVoltageLevel() const {
+const VoltageLevel& ConfiguredBus::getVoltageLevel() const {
+    return m_voltageLevel;
+}
+
+VoltageLevel& ConfiguredBus::getVoltageLevel() {
     return m_voltageLevel;
 }
 

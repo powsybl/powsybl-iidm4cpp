@@ -38,9 +38,12 @@ BOOST_AUTO_TEST_CASE(BusTest) {
         .setId("BUS")
         .setName("BUS_NAME")
         .add();
+    const auto& cBus = bus;
+
     BOOST_CHECK_EQUAL("BUS", bus.getId());
     BOOST_CHECK_EQUAL("BUS_NAME", bus.getName());
     BOOST_TEST(stdcxx::areSame(voltageLevel, bus.getVoltageLevel()));
+    BOOST_TEST(stdcxx::areSame(voltageLevel, cBus.getVoltageLevel()));
     BOOST_CHECK_EQUAL(0UL, bus.getConnectedTerminalCount());
     BOOST_TEST(std::isnan(bus.getV()));
     BOOST_TEST(std::isnan(bus.getAngle()));

@@ -20,6 +20,8 @@ namespace powsybl {
 
 namespace iidm {
 
+class Network;
+
 class Identifiable : public virtual Validable, public Extendable {
 public: // Validable
     std::string getMessageHeader() const override;
@@ -38,6 +40,10 @@ public:
     const std::string& getId() const;
 
     const std::string& getName() const;
+
+    virtual const Network& getNetwork() const = 0;
+
+    virtual Network& getNetwork() = 0;
 
     bool hasProperty() const;
 

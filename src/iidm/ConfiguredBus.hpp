@@ -37,7 +37,9 @@ public: // Bus
 
     double getV() const override;
 
-    VoltageLevel& getVoltageLevel() const override;
+    const VoltageLevel& getVoltageLevel() const override;
+
+    VoltageLevel& getVoltageLevel() override;
 
     Bus& setAngle(double angle) override;
 
@@ -49,10 +51,6 @@ public:
     ~ConfiguredBus() noexcept override = default;
 
     void addTerminal(BusTerminal& terminal);
-
-    const Network& getNetwork() const;
-
-    Network& getNetwork();
 
     unsigned long getTerminalCount() const;
 

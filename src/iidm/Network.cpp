@@ -353,6 +353,14 @@ stdcxx::range<Load> Network::getLoads() {
     return m_networkIndex.getAll<Load>();
 }
 
+const Network& Network::getNetwork() const {
+    return *this;
+}
+
+Network& Network::getNetwork() {
+    return *this;
+}
+
 const ShuntCompensator& Network::getShuntCompensator(const std::string& id) const {
     return get<ShuntCompensator>(id);
 }

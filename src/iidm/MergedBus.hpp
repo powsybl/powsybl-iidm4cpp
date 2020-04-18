@@ -41,7 +41,9 @@ public: // Bus
 
     double getV() const override;
 
-    VoltageLevel& getVoltageLevel() const override;
+    const VoltageLevel& getVoltageLevel() const override;
+
+    VoltageLevel& getVoltageLevel() override;
 
     Bus& setAngle(double angle) override;
 
@@ -69,7 +71,7 @@ private:
 private:
     BusSet m_buses;
 
-    bool m_valid{true};
+    bool m_valid = true;
 
 };
 

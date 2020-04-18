@@ -31,6 +31,11 @@ class TwoWindingsTransformer;
 class TwoWindingsTransformerAdder;
 
 class Substation : public Container {
+public:  // Identifiable
+    const Network& getNetwork() const override;
+
+    Network& getNetwork() override;
+
 public:
     Substation(Network& network, const std::string& id, const std::string& name, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags);
 
@@ -41,10 +46,6 @@ public:
     const stdcxx::optional<Country>& getCountry() const;
 
     const std::set<std::string>& getGeographicalTags() const;
-
-    const Network& getNetwork() const;
-
-    Network& getNetwork();
 
     unsigned long getThreeWindingsTransformerCount() const;
 

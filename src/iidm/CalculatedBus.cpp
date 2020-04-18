@@ -83,7 +83,11 @@ double CalculatedBus::getV() const {
     return static_cast<bool>(m_terminalRef) ? m_terminalRef.get().getV() : stdcxx::nan();
 }
 
-VoltageLevel& CalculatedBus::getVoltageLevel() const {
+const VoltageLevel& CalculatedBus::getVoltageLevel() const {
+    return m_voltageLevel;
+}
+
+VoltageLevel& CalculatedBus::getVoltageLevel() {
     return m_voltageLevel;
 }
 

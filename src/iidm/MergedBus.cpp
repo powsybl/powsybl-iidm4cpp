@@ -14,6 +14,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -90,11 +91,15 @@ double MergedBus::getV() const {
     return stdcxx::nan();
 }
 
-VoltageLevel& MergedBus::getVoltageLevel() const {
+const VoltageLevel& MergedBus::getVoltageLevel() const {
     checkValidity();
     assert(!m_buses.empty());
 
     return m_buses.begin()->get().getVoltageLevel();
+}
+
+VoltageLevel& MergedBus::getVoltageLevel() {
+    return const_cast<VoltageLevel&>(static_cast<const MergedBus*>(this)->getVoltageLevel());
 }
 
 void MergedBus::invalidate() {
