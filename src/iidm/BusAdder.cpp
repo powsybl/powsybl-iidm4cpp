@@ -21,8 +21,12 @@ BusAdder::BusAdder(VoltageLevel& voltageLevel) :
 Bus& BusAdder::add() {
     auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_voltageLevel);
 
-    std::unique_ptr<ConfiguredBus> ptrBus = stdcxx::make_unique<ConfiguredBus>(getId(), getName(), voltageLevel);
+    std::unique_ptr<ConfiguredBus> ptrBus = stdcxx::make_unique<ConfiguredBus>(checkAndGetUniqueId(), getName(), voltageLevel);
     return voltageLevel.addBus(std::move(ptrBus));
+}
+
+const Network& BusAdder::getNetwork() const {
+    return m_voltageLevel.getNetwork();
 }
 
 Network& BusAdder::getNetwork() {

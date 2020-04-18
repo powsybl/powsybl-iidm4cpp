@@ -267,7 +267,6 @@ Network createTestNodeBreakerNetwork() {
         .add();
 
     voltageLevel.getNodeBreakerView().newInternalConnection()
-        .setId("IC_1")
         .setNode1(1)
         .setNode2(2)
         .add();

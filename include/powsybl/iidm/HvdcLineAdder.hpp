@@ -41,6 +41,8 @@ public:
     HvdcLineAdder& setR(double r);
 
 protected: // IdentifiableAdder
+    const Network& getNetwork() const override;
+
     Network& getNetwork() override;
 
 private: // IdentifiableAdder

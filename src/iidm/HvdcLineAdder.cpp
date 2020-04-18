@@ -34,7 +34,7 @@ HvdcLine& HvdcLineAdder::add() {
     HvdcConverterStation& converterStation1 = getConverterStation(m_converterStationId1, 1U);
     HvdcConverterStation& converterStation2 = getConverterStation(m_converterStationId2, 2U);
 
-    std::unique_ptr<HvdcLine> ptrHvdcLine = stdcxx::make_unique<HvdcLine>(getNetwork(), getId(), getName(), m_r, m_nominalVoltage, m_maxP, *m_convertersMode, m_activePowerSetpoint,
+    std::unique_ptr<HvdcLine> ptrHvdcLine = stdcxx::make_unique<HvdcLine>(getNetwork(), checkAndGetUniqueId(), getName(), m_r, m_nominalVoltage, m_maxP, *m_convertersMode, m_activePowerSetpoint,
                                                                           converterStation1, converterStation2);
     auto& line = m_network.checkAndAdd<HvdcLine>(std::move(ptrHvdcLine));
 
@@ -49,6 +49,10 @@ HvdcConverterStation& HvdcLineAdder::getConverterStation(const std::string& conv
         throw PowsyblException(logging::format("Side %1% converter station %2% not found", side, converterStationId));
     }
     return converterStation.get();
+}
+
+const Network& HvdcLineAdder::getNetwork() const {
+    return m_network;
 }
 
 Network& HvdcLineAdder::getNetwork() {

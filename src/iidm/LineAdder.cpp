@@ -41,7 +41,7 @@ Line& LineAdder::add() {
     voltageLevel1.attach(*ptrTerminal1, true);
     voltageLevel2.attach(*ptrTerminal2, true);
 
-    std::unique_ptr<Line> ptrLine = stdcxx::make_unique<Line>(getId(), getName(), m_r, m_x, m_g1, m_b1, m_g2, m_b2);
+    std::unique_ptr<Line> ptrLine = stdcxx::make_unique<Line>(checkAndGetUniqueId(), getName(), m_r, m_x, m_g1, m_b1, m_g2, m_b2);
     auto& line = m_network.checkAndAdd<Line>(std::move(ptrLine));
 
     Terminal& terminal1 = line.addTerminal(std::move(ptrTerminal1));
@@ -50,6 +50,10 @@ Line& LineAdder::add() {
     voltageLevel2.attach(terminal2, false);
 
     return line;
+}
+
+const Network& LineAdder::getNetwork() const {
+    return m_network;
 }
 
 Network& LineAdder::getNetwork() {

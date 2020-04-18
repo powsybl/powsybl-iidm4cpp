@@ -30,7 +30,7 @@ Switch& SwitchAdder::add() {
 
     auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel());
 
-    std::unique_ptr<Switch> ptrSwitch = stdcxx::make_unique<Switch>(voltageLevel, getId(), getName(), *m_kind, isOpen(), m_retained, isFictitious());
+    std::unique_ptr<Switch> ptrSwitch = stdcxx::make_unique<Switch>(voltageLevel, checkAndGetUniqueId(), getName(), *m_kind, isOpen(), m_retained, isFictitious());
     Switch& aSwitch = voltageLevel.addSwitch(std::move(ptrSwitch), *m_node1, *m_node2);
 
     return aSwitch;
@@ -70,7 +70,7 @@ Switch& SwitchAdder::add() {
 
     auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel());
 
-    std::unique_ptr<Switch> ptrSwitch = stdcxx::make_unique<Switch>(voltageLevel, getId(), getName(), SwitchKind::BREAKER, isOpen(), true, isFictitious());
+    std::unique_ptr<Switch> ptrSwitch = stdcxx::make_unique<Switch>(voltageLevel, checkAndGetUniqueId(), getName(), SwitchKind::BREAKER, isOpen(), true, isFictitious());
     Switch& aSwitch = voltageLevel.addSwitch(std::move(ptrSwitch), m_bus1, m_bus2);
 
     return aSwitch;

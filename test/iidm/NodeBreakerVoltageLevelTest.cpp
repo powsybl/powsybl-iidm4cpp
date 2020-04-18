@@ -161,7 +161,6 @@ Network createCalculatedBusSwitchTestNetwork() {
         .add();
 
     vl3.getNodeBreakerView().newInternalConnection()
-        .setId("IC")
         .setNode1(1)
         .setNode2(2)
         .add();
@@ -395,7 +394,6 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     BOOST_CHECK_EQUAL(0, view.getSwitchCount());
     BOOST_CHECK_EQUAL(0, view.getInternalConnectionCount());
     auto internalConnectionAdder = voltageLevel.getNodeBreakerView().newInternalConnection();
-    internalConnectionAdder.setId("IC_1");
 
     POWSYBL_ASSERT_THROW(internalConnectionAdder.add(), ValidationException, "InternalConnection 'IC_1': first connection node is not set");
     internalConnectionAdder.setNode1(0);

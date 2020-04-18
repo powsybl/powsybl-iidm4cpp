@@ -38,6 +38,7 @@ class Load;
 class ShuntCompensator;
 class StaticVarCompensator;
 class Substation;
+class SubstationAdder;
 class Switch;
 class ThreeWindingsTransformer;
 class TieLineAdder;

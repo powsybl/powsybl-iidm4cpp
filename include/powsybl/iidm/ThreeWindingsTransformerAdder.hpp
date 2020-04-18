@@ -105,6 +105,8 @@ public:
     ThreeWindingsTransformerAdder& setRatedU0(double ratedU0);
 
 protected: // IdentifiableAdder
+    const Network& getNetwork() const override;
+
     Network& getNetwork() override;
 
 private: // IdentifiableAdder

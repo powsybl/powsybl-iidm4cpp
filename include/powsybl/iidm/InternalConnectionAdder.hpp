@@ -19,23 +19,17 @@ class VoltageLevel;
 
 namespace node_breaker_view {
 
-class InternalConnectionAdder : public IdentifiableAdder<InternalConnectionAdder> {
+class InternalConnectionAdder {
 public:
     explicit InternalConnectionAdder(VoltageLevel& voltageLevel);
 
-    ~InternalConnectionAdder() noexcept override = default;
+    ~InternalConnectionAdder() noexcept = default;
 
     void add();
 
     InternalConnectionAdder& setNode1(unsigned long node1);
 
     InternalConnectionAdder& setNode2(unsigned long node2);
-
-protected: // IdentifiableAdder
-    Network& getNetwork() override;
-
-private: // IdentifiableAdder
-    const std::string& getTypeDescription() const override;
 
 private:
     VoltageLevel& m_voltageLevel;

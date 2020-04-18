@@ -53,6 +53,8 @@ public:
     TieLineAdder& setXnodeQ(double xnodeQ);
 
 protected: // IdentifiableAdder
+    const Network& getNetwork() const override;
+
     Network& getNetwork() override;
 
 private: // IdentifiableAdder

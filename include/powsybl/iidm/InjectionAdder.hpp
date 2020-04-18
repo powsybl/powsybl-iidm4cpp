@@ -32,12 +32,16 @@ public:
     Adder& setNode(unsigned long node);
 
 protected:  // IdentifiableAdder
+    const Network& getNetwork() const override;
+
     Network& getNetwork() override;
 
 protected:
     InjectionAdder(VoltageLevel& voltageLevel);
 
     std::unique_ptr<Terminal> checkAndGetTerminal();
+
+    const VoltageLevel& getVoltageLevel() const;
 
     VoltageLevel& getVoltageLevel();
 

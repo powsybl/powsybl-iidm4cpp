@@ -23,7 +23,7 @@ VscConverterStationAdder::VscConverterStationAdder(VoltageLevel& voltageLevel) :
 VscConverterStation& VscConverterStationAdder::add() {
     validate();
 
-    std::unique_ptr<VscConverterStation> ptrVsc = stdcxx::make_unique<VscConverterStation>(getNetwork(), getId(), getName(), getLossFactor(), *m_voltageRegulatorOn, m_reactivePowerSetpoint, m_voltageSetpoint);
+    std::unique_ptr<VscConverterStation> ptrVsc = stdcxx::make_unique<VscConverterStation>(getNetwork(), checkAndGetUniqueId(), getName(), getLossFactor(), *m_voltageRegulatorOn, m_reactivePowerSetpoint, m_voltageSetpoint);
     auto& vsc = getNetwork().checkAndAdd<VscConverterStation>(std::move(ptrVsc));
 
     Terminal& terminal = vsc.addTerminal(checkAndGetTerminal());

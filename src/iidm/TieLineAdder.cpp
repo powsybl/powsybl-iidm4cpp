@@ -36,7 +36,7 @@ TieLine& TieLineAdder::add() {
     voltageLevel1.attach(*ptrTerminal1, true);
     voltageLevel2.attach(*ptrTerminal2, true);
 
-    std::unique_ptr<TieLine> ptrTieLine = stdcxx::make_unique<TieLine>(getId(), getName(), m_ucteXnodeCode, m_half1, m_half2);
+    std::unique_ptr<TieLine> ptrTieLine = stdcxx::make_unique<TieLine>(checkAndGetUniqueId(), getName(), m_ucteXnodeCode, m_half1, m_half2);
     auto& tieLine = m_network.checkAndAdd<TieLine>(std::move(ptrTieLine));
 
     Terminal& terminal1 = tieLine.addTerminal(std::move(ptrTerminal1));
@@ -52,6 +52,10 @@ TieLine::HalfLine& TieLineAdder::getActiveHalf() const {
         throw ValidationException(*this, "No active half of the line");
     }
     return m_activeHalf.get();
+}
+
+const Network& TieLineAdder::getNetwork() const {
+    return m_network;
 }
 
 Network& TieLineAdder::getNetwork() {

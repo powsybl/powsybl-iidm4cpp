@@ -20,9 +20,20 @@ AbstractSwitchAdder<SwitchAdder>::AbstractSwitchAdder(VoltageLevel& voltageLevel
 }
 
 template <typename SwitchAdder>
+const Network& AbstractSwitchAdder<SwitchAdder>::getNetwork() const {
+    return getVoltageLevel().getNetwork();
+}
+
+template <typename SwitchAdder>
 Network& AbstractSwitchAdder<SwitchAdder>::getNetwork() {
     return getVoltageLevel().getNetwork();
 }
+
+template <typename SwitchAdder>
+const VoltageLevel& AbstractSwitchAdder<SwitchAdder>::getVoltageLevel() const {
+    return m_voltageLevel;
+}
+
 
 template <typename SwitchAdder>
 VoltageLevel& AbstractSwitchAdder<SwitchAdder>::getVoltageLevel() {

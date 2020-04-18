@@ -30,7 +30,7 @@ DanglingLine& DanglingLineAdder::add() {
     checkG(*this, m_g);
     checkB(*this, m_b);
 
-    std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(getNetwork(), getId(), getName(), m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode);
+    std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(getNetwork(), checkAndGetUniqueId(), getName(), m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode);
     auto& danglingLine = getNetwork().checkAndAdd<DanglingLine>(std::move(ptrDanglingLine));
 
     Terminal& terminal = danglingLine.addTerminal(checkAndGetTerminal());

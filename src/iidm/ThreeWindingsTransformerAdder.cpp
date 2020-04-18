@@ -160,7 +160,7 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     voltageLevel2.attach(*ptrTerminal2, true);
     voltageLevel3.attach(*ptrTerminal3, true);
 
-    std::unique_ptr<ThreeWindingsTransformer> ptrTransformer = stdcxx::make_unique<ThreeWindingsTransformer>(getId(), getName(), std::move(ptrLeg1), std::move(ptrLeg2), std::move(ptrLeg3), m_ratedU0);
+    std::unique_ptr<ThreeWindingsTransformer> ptrTransformer = stdcxx::make_unique<ThreeWindingsTransformer>(checkAndGetUniqueId(), getName(), std::move(ptrLeg1), std::move(ptrLeg2), std::move(ptrLeg3), m_ratedU0);
     auto& transformer = getNetwork().checkAndAdd<ThreeWindingsTransformer>(std::move(ptrTransformer));
     transformer.getLeg1().setTransformer(transformer);
     transformer.getLeg2().setTransformer(transformer);
@@ -175,6 +175,10 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     voltageLevel3.attach(terminal3, false);
 
     return transformer;
+}
+
+const Network& ThreeWindingsTransformerAdder::getNetwork() const {
+    return m_substation.getNetwork();
 }
 
 Network& ThreeWindingsTransformerAdder::getNetwork() {
