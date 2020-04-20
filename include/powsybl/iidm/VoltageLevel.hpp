@@ -49,6 +49,11 @@ public:
 
     using NodeBreakerView = voltage_level::NodeBreakerView;
 
+public:  // Identifiable
+    const Network& getNetwork() const override;
+
+    Network& getNetwork() override;
+
 public:
     ~VoltageLevel() noexcept override = default;
 
@@ -120,10 +125,6 @@ public:
     stdcxx::range<Load> getLoads();
 
     double getLowVoltageLimit() const;
-
-    const Network& getNetwork() const;
-
-    Network& getNetwork();
 
     virtual const NodeBreakerView& getNodeBreakerView() const = 0;
 

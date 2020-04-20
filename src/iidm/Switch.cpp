@@ -43,13 +43,25 @@ SwitchKind Switch::getKind() const {
     return m_kind;
 }
 
+const Network& Switch::getNetwork() const {
+    return getVoltageLevel().getNetwork();
+}
+
+Network& Switch::getNetwork() {
+    return getVoltageLevel().getNetwork();
+}
+
 const std::string& Switch::getTypeDescription() const {
     static std::string s_typeDescription = "Switch";
 
     return s_typeDescription;
 }
 
-VoltageLevel& Switch::getVoltageLevel() const {
+const VoltageLevel& Switch::getVoltageLevel() const {
+    return m_voltageLevel.get();
+}
+
+VoltageLevel& Switch::getVoltageLevel() {
     return m_voltageLevel.get();
 }
 

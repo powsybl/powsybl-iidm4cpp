@@ -70,6 +70,11 @@ public:
 
     static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network, const converter::ExportOptions& options);
 
+public:  // Identifiable
+    const Network& getNetwork() const override;
+
+    Network& getNetwork() override;
+
 public: // VariantManagerHolder
     unsigned long getVariantIndex() const override;
 

@@ -34,6 +34,11 @@ class VoltageLevel;
 class VscConverterStation;
 
 class Bus : public Identifiable {
+public:  // Identifiable
+    const Network& getNetwork() const override;
+
+    Network& getNetwork() override;
+
 public:
     ~Bus() noexcept override = default;
 
@@ -87,7 +92,9 @@ public:
 
     virtual double getV() const = 0;
 
-    virtual VoltageLevel& getVoltageLevel() const = 0;
+    virtual const VoltageLevel& getVoltageLevel() const = 0;
+
+    virtual VoltageLevel& getVoltageLevel() = 0;
 
     stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
 

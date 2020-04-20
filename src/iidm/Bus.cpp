@@ -89,6 +89,14 @@ stdcxx::range<Load> Bus::getLoads() {
     return getAll<Load>();
 }
 
+const Network& Bus::getNetwork() const {
+    return getVoltageLevel().getNetwork();
+}
+
+Network& Bus::getNetwork() {
+    return getVoltageLevel().getNetwork();
+}
+
 stdcxx::const_range<ShuntCompensator> Bus::getShuntCompensators() const {
     return getAll<ShuntCompensator>();
 }

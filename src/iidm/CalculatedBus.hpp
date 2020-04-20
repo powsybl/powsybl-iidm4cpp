@@ -36,7 +36,9 @@ public: // Bus
 
     double getV() const override;
 
-    VoltageLevel& getVoltageLevel() const override;
+    const VoltageLevel& getVoltageLevel() const override;
+
+    VoltageLevel& getVoltageLevel() override;
 
     Bus& setAngle(double angle) override;
 
