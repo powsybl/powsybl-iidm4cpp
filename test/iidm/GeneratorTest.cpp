@@ -140,14 +140,14 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     Terminal& terminal = network.getLoad("LOAD1").getTerminal();
     adder.setRegulatingTerminal(stdcxx::ref<Terminal>(terminal));
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'GEN1' already exists (powsybl::iidm::Generator)");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'Generator' with the id 'GEN1'");
 
     //Terminal from other network
     adder.setRegulatingTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2()));
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Generator 'GEN1': Regulating terminal is not part of the network");
 
     adder.setRegulatingTerminal(stdcxx::ref<Terminal>());
-    adder.setId("UNIQUE_GEN_ID");
+    adder.setEnsureIdUnicity(true);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(generatorCount + 1, network.getGeneratorCount());

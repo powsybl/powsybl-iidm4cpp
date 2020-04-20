@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected TopologyKind value: 5");
 
     adder.setTopologyKind(TopologyKind::BUS_BREAKER);
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'VL1' already exists (powsybl::iidm::BusBreakerVoltageLevel)");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'BusBreakerVoltageLevel' with the id 'VL1'");
 
     adder.setId("UNIQUE_VOLTAGE_LEVEL_ID").setLowVoltageLimit(0).setHighVoltageLimit(0);
     BOOST_CHECK_NO_THROW(adder.add());

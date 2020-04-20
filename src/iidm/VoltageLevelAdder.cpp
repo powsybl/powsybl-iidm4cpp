@@ -31,11 +31,11 @@ VoltageLevel& VoltageLevelAdder::add() {
     std::unique_ptr<VoltageLevel> ptrVoltageLevel;
     switch (*m_topologyKind) {
         case TopologyKind::NODE_BREAKER:
-            ptrVoltageLevel = stdcxx::make_unique<NodeBreakerVoltageLevel>(getId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
+            ptrVoltageLevel = stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
             break;
 
         case TopologyKind::BUS_BREAKER:
-            ptrVoltageLevel = stdcxx::make_unique<BusBreakerVoltageLevel>(getId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
+            ptrVoltageLevel = stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
             break;
 
         default:
@@ -46,6 +46,10 @@ VoltageLevel& VoltageLevelAdder::add() {
     m_substation.addVoltageLevel(voltageLevel);
 
     return voltageLevel;
+}
+
+const Network& VoltageLevelAdder::getNetwork() const {
+    return m_substation.getNetwork();
 }
 
 Network& VoltageLevelAdder::getNetwork() {

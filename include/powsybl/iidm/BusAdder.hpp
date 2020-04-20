@@ -22,6 +22,8 @@ public:
     Bus& add();
 
 protected: // IdentifiableAdder
+    const Network& getNetwork() const override;
+
     Network& getNetwork() override;
 
 private: // IdentifiableAdder

@@ -54,8 +54,8 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': Invalid reactive power setpoint (nan) while voltage regulator is off");
     adder.setReactivePowerSetpoint(30.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'VSC1' already exists (powsybl::iidm::VscConverterStation)");
-    adder.setId("UNIQUE_VSC_ID");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'VscConverterStation' with the id 'VSC1'");
+    adder.setEnsureIdUnicity(true);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(vscCount + 1, network.getVscConverterStationCount());

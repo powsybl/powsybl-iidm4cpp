@@ -30,6 +30,8 @@ public:
     BusbarSectionAdder& setNode(unsigned long node);
 
 protected: // IdentifiableAdder
+    const Network& getNetwork() const override;
+
     Network& getNetwork() override;
 
 private: // IdentifiableAdder

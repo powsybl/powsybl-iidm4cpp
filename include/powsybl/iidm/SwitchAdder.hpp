@@ -32,10 +32,14 @@ public:
     SwitchAdder& setOpen(bool open);
 
 protected: // IdentifiableAdder
+    const Network& getNetwork() const override;
+
     Network& getNetwork() override;
 
 protected:
     explicit AbstractSwitchAdder(VoltageLevel& voltageLevel);
+
+    const VoltageLevel& getVoltageLevel() const;
 
     VoltageLevel& getVoltageLevel();
 

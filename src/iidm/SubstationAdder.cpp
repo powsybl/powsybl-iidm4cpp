@@ -21,7 +21,7 @@ SubstationAdder::SubstationAdder(Network& network) :
 }
 
 Substation& SubstationAdder::add() {
-    std::unique_ptr<Substation> ptrSubstation = stdcxx::make_unique<Substation>(m_network, getId(), getName(), m_country, m_tso, m_geographicalTags);
+    std::unique_ptr<Substation> ptrSubstation = stdcxx::make_unique<Substation>(m_network, checkAndGetUniqueId(), getName(), m_country, m_tso, m_geographicalTags);
     auto& substation = m_network.checkAndAdd<Substation>(std::move(ptrSubstation));
 
     return substation;
@@ -30,6 +30,10 @@ Substation& SubstationAdder::add() {
 SubstationAdder& SubstationAdder::addGeographicalTag(const std::string& geographicalTag) {
     m_geographicalTags.insert(geographicalTag);
     return *this;
+}
+
+const Network& SubstationAdder::getNetwork() const {
+    return m_network;
 }
 
 Network& SubstationAdder::getNetwork() {

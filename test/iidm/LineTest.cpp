@@ -240,11 +240,11 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': x is invalid");
     lineAdder.setX(66.0);
 
-    POWSYBL_ASSERT_THROW(lineAdder.add(), PowsyblException, "Invalid id");
+    POWSYBL_ASSERT_THROW(lineAdder.add(), PowsyblException, "AC line id is not set");
     lineAdder.setId("VL1_VL3");
-    POWSYBL_ASSERT_THROW(lineAdder.add(), PowsyblException, "Object 'VL1_VL3' already exists (powsybl::iidm::Line)");
+    POWSYBL_ASSERT_THROW(lineAdder.add(), PowsyblException, "The network test already contains an object 'Line' with the id 'VL1_VL3'");
     lineAdder.setName("VL2_VL4");
-    lineAdder.setId("UNIQUE_LINE_ID");
+    lineAdder.setEnsureIdUnicity(true);
     BOOST_CHECK_NO_THROW(lineAdder.add());
 
     BOOST_CHECK_EQUAL(2UL, network.getLineCount());

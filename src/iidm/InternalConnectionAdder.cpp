@@ -21,21 +21,11 @@ InternalConnectionAdder::InternalConnectionAdder(VoltageLevel& voltageLevel) :
 }
 
 void InternalConnectionAdder::add() {
-    checkOptional(*this, m_node1, "first connection node is not set");
-    checkOptional(*this, m_node2, "second connection node is not set");
+    checkOptional(m_voltageLevel, m_node1, "first connection node is not set");
+    checkOptional(m_voltageLevel, m_node2, "second connection node is not set");
 
     auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_voltageLevel);
     voltageLevel.addInternalConnection(*m_node1, *m_node2);
-}
-
-Network& InternalConnectionAdder::getNetwork() {
-    return m_voltageLevel.getNetwork();
-}
-
-const std::string& InternalConnectionAdder::getTypeDescription() const {
-    static std::string s_typeDescription = "InternalConnection";
-
-    return s_typeDescription;
 }
 
 InternalConnectionAdder& InternalConnectionAdder::setNode1(unsigned long node1) {

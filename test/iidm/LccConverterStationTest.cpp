@@ -41,8 +41,8 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': power factor is invalid");
     adder.setPowerFactor(50.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'LCC1' already exists (powsybl::iidm::LccConverterStation)");
-    adder.setId("UNIQUE_LCC_ID");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'LccConverterStation' with the id 'LCC1'");
+    adder.setEnsureIdUnicity(true);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(lccCount + 1, network.getLccConverterStationCount());

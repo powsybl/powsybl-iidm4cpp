@@ -223,7 +223,7 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .setG2(9.0)
         .setB2(12.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "Invalid id");
+    POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "AC tie line id is not set");
 
 }
 
@@ -359,7 +359,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     tieLineAdder.setXnodeQ(40.0);
 
     BOOST_CHECK_NO_THROW(tieLineAdder.add());
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "Object 'UNIQUE_TIE_LINE_ID' already exists (powsybl::iidm::TieLine)");
+    POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "The network test already contains an object 'TieLine' with the id 'UNIQUE_TIE_LINE_ID'");
     BOOST_CHECK_EQUAL(2UL, network.getLineCount());
 }
 

@@ -37,6 +37,8 @@ public:
     SubstationAdder& setTso(const std::string& tso);
 
 protected: // IdentifiableAdder
+    const Network& getNetwork() const override;
+
     Network& getNetwork() override;
 
 private: // IdentifiableAdder

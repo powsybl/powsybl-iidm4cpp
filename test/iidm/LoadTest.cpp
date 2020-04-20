@@ -55,8 +55,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected LoadType value: 5");
     adder.setLoadType(LoadType::AUXILIARY);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'LOAD1' already exists (powsybl::iidm::Load)");
-    adder.setId("UNIQUE_LOAD_ID");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'Load' with the id 'LOAD1'");
+    adder.setEnsureIdUnicity(true);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(loadCount + 1, network.getLoadCount());

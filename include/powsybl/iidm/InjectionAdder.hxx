@@ -34,8 +34,18 @@ std::unique_ptr<Terminal> InjectionAdder<Adder>::checkAndGetTerminal() {
 }
 
 template <typename Adder>
+const Network& InjectionAdder<Adder>::getNetwork() const {
+    return m_voltageLevel.getNetwork();
+}
+
+template <typename Adder>
 Network& InjectionAdder<Adder>::getNetwork() {
     return m_voltageLevel.getNetwork();
+}
+
+template <typename Adder>
+const VoltageLevel& InjectionAdder<Adder>::getVoltageLevel() const {
+    return m_voltageLevel;
 }
 
 template <typename Adder>

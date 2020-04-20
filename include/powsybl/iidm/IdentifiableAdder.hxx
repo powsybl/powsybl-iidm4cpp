@@ -10,6 +10,9 @@
 
 #include <powsybl/iidm/IdentifiableAdder.hpp>
 
+#include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/util/Identifiables.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -20,13 +23,38 @@ std::string IdentifiableAdder<Adder>::getMessageHeader() const {
 }
 
 template <typename Adder>
-const std::string& IdentifiableAdder<Adder>::getId() const {
-    return m_id;
+std::string IdentifiableAdder<Adder>::checkAndGetUniqueId() const {
+    if (m_id.empty()) {
+        throw PowsyblException(logging::format("%1% id is not set", getTypeDescription()));
+    }
+
+    const auto& network = getNetwork();
+
+    std::string uniqueId;
+    if (m_ensureIdUnicity) {
+        uniqueId = util::Identifiables::getUniqueId(m_id, [&network](const std::string& id) {
+            return static_cast<bool>(network.find(id));
+        });
+    } else {
+        const auto& obj = network.find(m_id);
+        if (obj) {
+            throw PowsyblException(logging::format("The network %1% already contains an object '%2%' with the id '%3%'", network.getId(), stdcxx::simpleClassName(obj.get()), m_id));
+        }
+        uniqueId = m_id;
+    }
+
+    return uniqueId;
 }
 
 template <typename Adder>
 const std::string& IdentifiableAdder<Adder>::getName() const {
     return m_name;
+}
+
+template <typename Adder>
+Adder& IdentifiableAdder<Adder>::setEnsureIdUnicity(bool ensureIdUnicity) {
+    m_ensureIdUnicity = ensureIdUnicity;
+    return static_cast<Adder&>(*this);
 }
 
 template <typename Adder>

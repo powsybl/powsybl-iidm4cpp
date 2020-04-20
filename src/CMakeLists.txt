@@ -145,6 +145,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/VscConverterStationXml.cpp
 
     iidm/util/DistinctPredicate.cpp
+    iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
 
     logging/ConsoleLogger.cpp

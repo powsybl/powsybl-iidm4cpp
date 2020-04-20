@@ -28,14 +28,18 @@ public:
 
     ~IdentifiableAdder() noexcept override = default;
 
+    Adder& setEnsureIdUnicity(bool ensureIdUnicity);
+
     virtual Adder& setId(const std::string& id);
 
     virtual Adder& setName(const std::string& name);
 
 protected:
-    const std::string& getId() const;
+    std::string checkAndGetUniqueId() const;
 
     const std::string& getName() const;
+
+    virtual const Network& getNetwork() const = 0;
 
     virtual Network& getNetwork() = 0;
 
@@ -44,6 +48,8 @@ private:
 
 private:
     std::string m_id;
+
+    bool m_ensureIdUnicity = false;
 
     std::string m_name;
 };

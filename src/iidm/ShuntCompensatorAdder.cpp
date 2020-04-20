@@ -25,7 +25,7 @@ ShuntCompensator& ShuntCompensatorAdder::add() {
     checkbPerSection(*this, m_bPerSection);
     checkSections(*this, m_currentSectionCount, m_maximumSectionCount);
 
-    std::unique_ptr<ShuntCompensator> ptrShunt = stdcxx::make_unique<ShuntCompensator>(getNetwork(), getId(), getName(), m_bPerSection, m_maximumSectionCount, m_currentSectionCount);
+    std::unique_ptr<ShuntCompensator> ptrShunt = stdcxx::make_unique<ShuntCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), m_bPerSection, m_maximumSectionCount, m_currentSectionCount);
     auto& shunt = getNetwork().checkAndAdd<ShuntCompensator>(std::move(ptrShunt));
 
     Terminal& terminal = shunt.addTerminal(checkAndGetTerminal());

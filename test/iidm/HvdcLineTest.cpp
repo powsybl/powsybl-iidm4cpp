@@ -161,8 +161,8 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Side 2 converter station UNKNOWN not found");
     adder.setConverterStationId2("VSC2");
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'HVDC1' already exists (powsybl::iidm::HvdcLine)");
-    adder.setId("UNIQUE_HVDC_ID");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'HvdcLine' with the id 'HVDC1'");
+    adder.setEnsureIdUnicity(true);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(hvdcCount + 1, network.getHvdcLineCount());

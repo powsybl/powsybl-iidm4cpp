@@ -89,13 +89,13 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Dangling line 'DL1': b is invalid");
     adder.setB(12.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Object 'DL1' already exists (powsybl::iidm::DanglingLine)");
-    adder.setId("UNIQUE_DL_ID");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'DanglingLine' with the id 'DL1'");
+    adder.setEnsureIdUnicity(true);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(danglingLineCount + 1, network.getDanglingLineCount());
     BOOST_CHECK_EQUAL(danglingLineCount + 1, boost::size(network.getDanglingLines()));
-    BOOST_TEST(network.getDanglingLine("UNIQUE_DL_ID").getUcteXnodeCode().empty());
+    BOOST_TEST(network.getDanglingLine("DL1#0").getUcteXnodeCode().empty());
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {

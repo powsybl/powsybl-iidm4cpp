@@ -40,6 +40,8 @@ public:
     TwoWindingsTransformerAdder& setX(double x);
 
 protected: // IdentifiableAdder
+    const Network& getNetwork() const override;
+
     Network& getNetwork() override;
 
 private: // IdentifiableAdder
