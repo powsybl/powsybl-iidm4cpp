@@ -149,6 +149,7 @@ set(IIDM_SOURCES
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
+    iidm/util/Networks.cpp
 
     logging/ConsoleLogger.cpp
     logging/ContainerLogger.cpp
@@ -165,6 +166,7 @@ set(IIDM_SOURCES
     stdcxx/demangle.cpp
     stdcxx/time.cpp
 
+    xml/UncheckedXmlStreamException.cpp
     xml/XmlCharConversion.cpp
     xml/XmlStreamException.cpp
     xml/XmlStreamReader.cpp
