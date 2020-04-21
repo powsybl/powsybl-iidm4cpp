@@ -14,6 +14,7 @@
 #include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/extensions/entsoe/Xnode.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -73,11 +74,7 @@ BOOST_AUTO_TEST_CASE(XnodeTest) {
 }
 
 BOOST_FIXTURE_TEST_CASE(XnodeXmlSerializerTest, test::ResourceFixture) {
-    Network network = createNetwork();
-
-    const std::string& networkStr = ResourceFixture::getResource("xnode.xml");
-
-    test::converter::RoundTrip::runXml(network, networkStr);
+    test::converter::RoundTrip::roundTripVersionedXmlTest("xnode.xml", converter::xml::IidmXmlVersion::V1_0);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

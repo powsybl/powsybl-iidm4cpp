@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iidm:network xmlns:iidm="http://www.itesla_project.eu/schema/iidm/1_0" id="ReactiveLimits" caseDate="2016-01-01T10:00:00+02:00" forecastDistance="0" sourceFormat="???">
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_0" id="ReactiveLimits" caseDate="2016-01-01T10:00:00+02:00" forecastDistance="0" sourceFormat="???">
     <iidm:substation id="S" country="FR" tso="RTE">
         <iidm:voltageLevel id="VL" nominalV="380" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>

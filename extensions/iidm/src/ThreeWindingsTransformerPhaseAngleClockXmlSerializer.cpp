@@ -11,6 +11,7 @@
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 
+#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
@@ -30,7 +31,7 @@ namespace extensions {
 namespace iidm {
 
 ThreeWindingsTransformerPhaseAngleClockXmlSerializer::ThreeWindingsTransformerPhaseAngleClockXmlSerializer() :
-    ExtensionXmlSerializer("threeWindingsTransformerPhaseAngleClock", "network", "http://www.powsybl.org/schema/iidm/ext/three_windings_transformer_phase_angle_clock/1_0", "threewtpac") {
+    ExtensionXmlSerializer("threeWindingsTransformerPhaseAngleClock", "network", logging::format("http://www.%1%/schema/iidm/ext/three_windings_transformer_phase_angle_clock/1_0", converter::IIDM_DOMAIN), "threewtpac") {
 }
 
 std::unique_ptr<Extension> ThreeWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
