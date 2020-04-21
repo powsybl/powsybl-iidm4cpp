@@ -13,7 +13,6 @@
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/Generator.hpp>
 
-#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
@@ -33,7 +32,7 @@ namespace extensions {
 namespace iidm {
 
 ActivePowerControlXmlSerializer::ActivePowerControlXmlSerializer() :
-    ExtensionXmlSerializer("activePowerControl", "network", logging::format("http://www.%1%/schema/iidm/ext/active_power_control/1_0", converter::IIDM_DOMAIN), "apc") {
+    ExtensionXmlSerializer("activePowerControl", "network", "http://www.itesla_project.eu/schema/iidm/ext/active_power_control/1_0", "apc") {
 }
 
 std::unique_ptr<Extension> ActivePowerControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {

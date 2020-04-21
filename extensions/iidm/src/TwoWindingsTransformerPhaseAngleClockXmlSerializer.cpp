@@ -9,7 +9,6 @@
 
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 
-#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
@@ -29,7 +28,7 @@ namespace extensions {
 namespace iidm {
 
 TwoWindingsTransformerPhaseAngleClockXmlSerializer::TwoWindingsTransformerPhaseAngleClockXmlSerializer() :
-    ExtensionXmlSerializer("twoWindingsTransformerPhaseAngleClock", "network", logging::format("http://www.%1%/schema/iidm/ext/two_windings_transformer_phase_angle_clock/1_0", converter::IIDM_DOMAIN), "twowtpac") {
+    ExtensionXmlSerializer("twoWindingsTransformerPhaseAngleClock", "network", "http://www.itesla_project.eu/schema/iidm/ext/two_windings_transformer_phase_angle_clock/1_0", "twowtpac") {
 }
 
 std::unique_ptr<Extension> TwoWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
