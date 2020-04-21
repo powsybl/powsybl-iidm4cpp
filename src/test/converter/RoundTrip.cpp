@@ -9,6 +9,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 
 namespace powsybl {
@@ -46,8 +47,8 @@ std::string RoundTrip::getVersionedNetworkPath(const std::string& filename, cons
 }
 
 void RoundTrip::roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersion& version) {
-    const auto& writer = [](const iidm::Network& n, std::ostream& stream) {
-        iidm::Network::writeXml(stream, n);
+    const auto& writer = [&version](const iidm::Network& n, std::ostream& stream) {
+        iidm::Network::writeXml(stream, n, powsybl::iidm::converter::ExportOptions().setVersion(version.toString(".")));
     };
 
     const auto& reader = [](const std::string& xml) {

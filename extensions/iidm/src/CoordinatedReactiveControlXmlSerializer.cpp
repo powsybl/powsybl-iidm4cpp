@@ -11,6 +11,7 @@
 
 #include <powsybl/iidm/Generator.hpp>
 
+#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
@@ -30,7 +31,7 @@ namespace extensions {
 namespace iidm {
 
 CoordinatedReactiveControlXmlSerializer::CoordinatedReactiveControlXmlSerializer() :
-    ExtensionXmlSerializer("coordinatedReactiveControl", "network", "http://www.powsybl.org/schema/iidm/ext/coordinated_reactive_control/1_0", "crc") {
+    ExtensionXmlSerializer("coordinatedReactiveControl", "network", logging::format("http://www.%1%/schema/iidm/ext/coordinated_reactive_control/1_0", converter::IIDM_DOMAIN), "crc") {
 }
 
 std::unique_ptr<Extension> CoordinatedReactiveControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {

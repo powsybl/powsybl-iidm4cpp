@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Substation.hpp>
 
+#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
@@ -30,7 +31,7 @@ namespace extensions {
 namespace entsoe {
 
 EntsoeAreaXmlSerializer::EntsoeAreaXmlSerializer() :
-    ExtensionXmlSerializer("entsoeArea", "network", "http://www.itesla_project.eu/schema/iidm/ext/entsoe_area/1_0", "ea") {
+    ExtensionXmlSerializer("entsoeArea", "network", logging::format("http://www.%1%/schema/iidm/ext/entsoe_area/1_0", converter::IIDM_DOMAIN), "ea") {
 }
 
 std::unique_ptr<Extension> EntsoeAreaXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {

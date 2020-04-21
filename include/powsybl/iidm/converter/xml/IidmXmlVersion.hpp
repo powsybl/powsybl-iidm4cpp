@@ -34,6 +34,11 @@ public:
      */
     static const IidmXmlVersion& V1_0();
 
+    /**
+     * IIDM V1.1 (http://www.powsybl.org)
+     */
+    static const IidmXmlVersion& V1_1();
+
 public:
     /**
      * Get an {@link IidmXmlVersion} instance from a namespace URI
