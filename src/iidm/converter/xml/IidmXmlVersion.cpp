@@ -7,7 +7,6 @@
 
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 
-#include <array>
 #include <functional>
 
 #include <boost/algorithm/string/join.hpp>
