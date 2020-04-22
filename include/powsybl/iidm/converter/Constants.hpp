@@ -66,7 +66,6 @@ static const char* const HVDC_LINE = "hvdcLine";
 static const char* const ID = "id";
 static const char* const ID_ = "id_";
 static const char* const IIDM_PREFIX = "iidm";
-static const char* const IIDM_URI = "http://www.itesla_project.eu/schema/iidm/1_0";
 static const char* const INTERNAL_CONNECTION = "internalConnection";
 static const char* const KIND = "kind";
 static const char* const LCC_CONVERTER_STATION = "lccConverterStation";

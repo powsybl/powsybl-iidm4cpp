@@ -14,18 +14,22 @@ namespace iidm {
 namespace converter {
 
 ExportOptions::ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
-                             bool throwExceptionIfExtensionNotFound) :
+                             bool throwExceptionIfExtensionNotFound, const std::string& version) :
     m_indent(indent),
     m_onlyMainCc(onlyMainCc),
     m_throwExceptionIfExtensionNotFound(throwExceptionIfExtensionNotFound),
     m_topologyLevel(topologyLevel),
-    m_withBranchSV(withBranchSV) {
-
+    m_withBranchSV(withBranchSV),
+    m_version(version) {
 }
 
 ExportOptions& ExportOptions::addExtension(const std::string& extension) {
     m_extensions.insert(extension);
     return *this;
+}
+
+const std::string& ExportOptions::getVersion() const {
+    return m_version;
 }
 
 const TopologyLevel& ExportOptions::getTopologyLevel() const {
@@ -74,6 +78,11 @@ ExportOptions& ExportOptions::setThrowExceptionIfExtensionNotFound(bool throwExc
 
 ExportOptions& ExportOptions::setTopologyLevel(const TopologyLevel& topologyLevel) {
     m_topologyLevel = topologyLevel;
+    return *this;
+}
+
+ExportOptions& ExportOptions::setVersion(const std::string& version) {
+    m_version = version;
     return *this;
 }
 

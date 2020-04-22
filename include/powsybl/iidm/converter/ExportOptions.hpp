@@ -24,9 +24,11 @@ public:
     ExportOptions() = default;
 
     ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
-                  bool throwExceptionIfExtensionNotFound);
+                  bool throwExceptionIfExtensionNotFound, const std::string& version);
 
     ExportOptions& addExtension(const std::string& extension);
+
+    const std::string& getVersion() const;
 
     const TopologyLevel& getTopologyLevel() const;
 
@@ -50,6 +52,8 @@ public:
 
     ExportOptions& setTopologyLevel(const TopologyLevel& topologyLevel);
 
+    ExportOptions& setVersion(const std::string& version);
+
     ExportOptions& setWithBranchSV(bool withBranchSV);
 
     bool withExtension(const std::string& extension) const;
@@ -68,6 +72,8 @@ private:
     bool m_withBranchSV{true};
 
     std::set<std::string> m_extensions;
+
+    std::string m_version;
 };
 
 }  // namespace converter

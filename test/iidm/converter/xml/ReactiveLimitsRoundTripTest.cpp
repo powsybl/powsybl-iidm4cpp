@@ -7,10 +7,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/iidm/Network.hpp>
-#include <powsybl/network/EurostagFactory.hpp>
-#include <powsybl/stdcxx/DateTime.hpp>
-
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -22,16 +18,10 @@ namespace converter {
 
 namespace xml {
 
-BOOST_AUTO_TEST_SUITE(XmlRoundTrip)
+BOOST_AUTO_TEST_SUITE(ReactiveLimitsRoundTrip)
 
-BOOST_FIXTURE_TEST_CASE(Eurostag, test::ResourceFixture) {
-
-    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
-    network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
-
-    const std::string& networkStr = ResourceFixture::getResource("/eurostag-tutorial1.xml");
-
-    test::converter::RoundTrip::runXml(network, networkStr);
+BOOST_FIXTURE_TEST_CASE(ReactiveLimitsRoundTripTest, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("reactiveLimitsRoundTripRef.xml", IidmXmlVersion::all());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
@@ -43,3 +33,4 @@ BOOST_AUTO_TEST_SUITE_END()
 }  // namespace iidm
 
 }  // namespace powsybl
+
