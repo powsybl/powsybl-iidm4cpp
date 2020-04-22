@@ -37,7 +37,7 @@ BusbarSection& BusbarSectionXml::readRootElementAttributes(BusbarSectionAdder& a
     const auto& node = context.getReader().getAttributeValue<unsigned long>(NODE);
     BusbarSection& bbs = adder.setNode(node)
         .add();
-    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_0, context.getVersion(), [&bbs, &context]() {
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_0(), context.getVersion(), [&bbs, &context]() {
         double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
         double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
         context.addEndTask([&bbs, angle, v]() {
@@ -52,11 +52,11 @@ BusbarSection& BusbarSectionXml::readRootElementAttributes(BusbarSectionAdder& a
 
 void BusbarSectionXml::writeRootElementAttributes(const BusbarSection& busbarSection, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(NODE, busbarSection.getTerminal().getNodeBreakerView().getNode());
-    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_0, context.getVersion(), [&busbarSection, &context]() {
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_0(), context.getVersion(), [&busbarSection, &context]() {
         try {
             context.getWriter().writeOptionalAttribute(V, busbarSection.getV());
             context.getWriter().writeOptionalAttribute(ANGLE, busbarSection.getAngle());
-        } catch (powsybl::xml::XmlStreamException& exception) {
+        } catch (const powsybl::xml::XmlStreamException& exception) {
             throw powsybl::xml::UncheckedXmlStreamException(exception.what());
         }
     });

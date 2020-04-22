@@ -9,7 +9,6 @@
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
-#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/extensions/entsoe/EntsoeArea.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -52,7 +51,11 @@ BOOST_AUTO_TEST_CASE(EntsoeAreaConstructor) {
 }
 
 BOOST_FIXTURE_TEST_CASE(EntsoeAreaXmlSerializerTest, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("entsoeArea.xml", converter::xml::IidmXmlVersion::V1_0);
+    Network network = createNetwork();
+
+    const std::string& networkStr = ResourceFixture::getResource("entsoeArea.xml");
+
+    test::converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

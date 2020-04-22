@@ -9,7 +9,6 @@
 
 #include <powsybl/iidm/Line.hpp>
 
-#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
@@ -27,7 +26,7 @@ namespace extensions {
 namespace entsoe {
 
 MergedXnodeXmlSerializer::MergedXnodeXmlSerializer() :
-    ExtensionXmlSerializer("mergedXnode", "network", logging::format("http://www.%1%/schema/iidm/ext/merged_xnode/1_0", converter::IIDM_DOMAIN), "mxn") {
+    ExtensionXmlSerializer("mergedXnode", "network", "http://www.itesla_project.eu/schema/iidm/ext/merged_xnode/1_0", "mxn") {
 }
 
 std::unique_ptr<Extension> MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {

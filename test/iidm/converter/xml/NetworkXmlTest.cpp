@@ -11,8 +11,6 @@
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
-#include <powsybl/test/ResourceFixture.hpp>
-#include <powsybl/test/converter/RoundTrip.hpp>
 
 namespace powsybl {
 
@@ -34,15 +32,15 @@ void assertNetwork(const Network& network) {
 
 BOOST_AUTO_TEST_CASE(StartByComments) {
 
-    const std::string& networkStr = logging::format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+    const std::string& networkStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                                     "<!-- test --> "
-                                    "<iidm:network xmlns:iidm=\"%1%\" "
+                                    "<iidm:network xmlns:iidm=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
                                     "              id=\"terminalRef\" "
                                     "              caseDate=\"2000-11-08T19:00:00.000+01:00\" "
                                     "              forecastDistance=\"0\" "
                                     "              sourceFormat=\"test\">"
                                     "    <!-- test comment --> "
-                                    "</iidm:network>", IidmXmlVersion::CURRENT_IIDM_XML_VERSION.getNamespaceUri());
+                                    "</iidm:network>";
 
     const Network& network = Network::readXml(networkStr);
     assertNetwork(network);
@@ -50,13 +48,13 @@ BOOST_AUTO_TEST_CASE(StartByComments) {
 
 BOOST_AUTO_TEST_CASE(Basic) {
 
-    const std::string& networkStr = logging::format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                    "<iidm:network xmlns:iidm=\"%1%\" "
+    const std::string& networkStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                    "<iidm:network xmlns:iidm=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
                                     "              id=\"terminalRef\" "
                                     "              caseDate=\"2000-11-08T19:00:00.000+01:00\" "
                                     "              forecastDistance=\"0\" "
                                     "              sourceFormat=\"test\">"
-                                    "</iidm:network>", IidmXmlVersion::CURRENT_IIDM_XML_VERSION.getNamespaceUri());
+                                    "</iidm:network>";
 
     const Network& network = Network::readXml(networkStr);
     assertNetwork(network);
@@ -64,13 +62,13 @@ BOOST_AUTO_TEST_CASE(Basic) {
 
 BOOST_AUTO_TEST_CASE(NoPrefix) {
 
-    const std::string& networkStr = logging::format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                    "<network xmlns=\"%1%\" "
+    const std::string& networkStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                    "<network xmlns=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
                                     "              id=\"terminalRef\" "
                                     "              caseDate=\"2000-11-08T19:00:00.000+01:00\" "
                                     "              forecastDistance=\"0\" "
                                     "              sourceFormat=\"test\">"
-                                    "</network>", IidmXmlVersion::CURRENT_IIDM_XML_VERSION.getNamespaceUri());
+                                    "</network>";
 
     const Network& network = Network::readXml(networkStr);
     assertNetwork(network);
@@ -78,13 +76,13 @@ BOOST_AUTO_TEST_CASE(NoPrefix) {
 
 BOOST_AUTO_TEST_CASE(SpecialChars) {
 
-    const std::string& networkStr = logging::format("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                    "<network xmlns:iidm=\"%1%\" "
+    const std::string& networkStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                    "<network xmlns:iidm=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
                                     "              id=\"ø/Ø - ö/Ö - æ/Æ - ä/Ä - å/Å (aa/Aa)\" "
                                     "              caseDate=\"2014-11-08T19:00:00.000+01:00\" "
                                     "              forecastDistance=\"0\" "
                                     "              sourceFormat=\"test\">"
-                                    "</network>", IidmXmlVersion::CURRENT_IIDM_XML_VERSION.getNamespaceUri());
+                                    "</network>";
 
     const Network& network = Network::readXml(networkStr);
     BOOST_CHECK_EQUAL("ø/Ø - ö/Ö - æ/Æ - ä/Ä - å/Å (aa/Aa)", network.getId());

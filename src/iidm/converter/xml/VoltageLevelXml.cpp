@@ -69,7 +69,7 @@ void VoltageLevelXml::readBusBreakerTopology(VoltageLevel& voltageLevel, Network
 }
 
 void VoltageLevelXml::readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlReaderContext& context) const {
-    xml::IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, BUS, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_1, context.getVersion());
+    xml::IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, BUS, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_1(), context.getVersion());
     double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
     double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
     const std::string& nodesString = context.getReader().getAttributeValue(NODES);
@@ -194,7 +194,7 @@ void VoltageLevelXml::writeCalculatedBus(const Bus& bus, const std::set<unsigned
         context.getWriter().writeAttribute(ANGLE, bus.getAngle());
         context.getWriter().writeAttribute(NODES, boost::algorithm::join(nodes | boost::adaptors::transformed(static_cast<std::string(*)(unsigned long)>(std::to_string)), ","));
         context.getWriter().writeEndElement();
-    } catch (powsybl::xml::XmlStreamException& exception) {
+    } catch (const powsybl::xml::XmlStreamException& exception) {
         throw powsybl::xml::UncheckedXmlStreamException(exception.what());
     }
 }
@@ -246,7 +246,7 @@ void VoltageLevelXml::writeNodeBreakerTopology(const VoltageLevel& voltageLevel,
     }
     writeNodeBreakerTopologyInternalConnections(voltageLevel, context);
 
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_1, context.getVersion(), [&context, &voltageLevel]() {
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&context, &voltageLevel]() {
         const auto& nodesByBus = util::Networks::getNodesByBus(voltageLevel);
         for (const auto& pair : nodesByBus) {
             const stdcxx::CReference<Bus>& bus = voltageLevel.getBusView().getBus(pair.first);
