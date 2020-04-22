@@ -7,6 +7,13 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/PhaseTapChanger.hpp>
+#include <powsybl/iidm/RatioTapChanger.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClock.hpp>
+#include <powsybl/network/ThreeWindingsTransformerNetworkFactory.hpp>
+
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -21,7 +28,15 @@ namespace iidm {
 BOOST_AUTO_TEST_SUITE(ThreeWindingsTransformerPhaseAngleClockTestSuite)
 
 BOOST_FIXTURE_TEST_CASE(ThreeWindingsTransformerPhaseAngleClockXmlSerializerTest, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("threeWindingsTransformerPhaseAngleClock.xml", converter::xml::IidmXmlVersion::V1_0);
+    Network network = powsybl::network::ThreeWindingsTransformerNetworkFactory::create();
+    network.setCaseDate(stdcxx::DateTime::parse("2018-03-05T13:30:30.486+01:00"));
+
+    ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT");
+    transformer.addExtension(Extension::create<ThreeWindingsTransformerPhaseAngleClock>(transformer, 3, 1));
+
+    const std::string& networkStr = ResourceFixture::getResource("threeWindingsTransformerPhaseAngleClock.xml");
+
+    test::converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

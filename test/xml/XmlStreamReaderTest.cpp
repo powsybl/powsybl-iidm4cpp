@@ -22,8 +22,8 @@ namespace xml {
 BOOST_AUTO_TEST_SUITE(XmlReaderTestSuite)
 
 const std::string& xmlTest = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                             "<iidm:network xmlns=\"http://www.powsybl.org/schema/iidm/1_1\" "
-                             "              xmlns:iidm=\"http://www.powsybl.org/schema/iidm/1_0\" "
+                             "<iidm:network xmlns=\"http://www.itesla_project.eu/schema/iidm/1_1\" "
+                             "              xmlns:iidm=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
                              "               id=\"aa\" "
                              "               caseDate=\"bb\" "
                              "               forecastDistance=\"cc\" "
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(XmlReadApiGetAttribute) {
     powsybl::xml::XmlStreamReader reader(ss);
 
     BOOST_CHECK_EQUAL("iidm", reader.getPrefix());
-    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/1_0", reader.getAttributeValue("xmlns:iidm"));
+    BOOST_CHECK_EQUAL("http://www.itesla_project.eu/schema/iidm/1_0", reader.getAttributeValue("xmlns:iidm"));
     BOOST_CHECK_EQUAL("aa", reader.getAttributeValue("id"));
     BOOST_CHECK_EQUAL("bb", reader.getAttributeValue("caseDate"));
     BOOST_CHECK_EQUAL("cc", reader.getAttributeValue("forecastDistance"));
@@ -60,9 +60,9 @@ BOOST_AUTO_TEST_CASE(XmlReadApiGetAttribute) {
     BOOST_CHECK_EQUAL(3, reader.getOptionalAttributeValue("nonNamespacedAttributeValid", 0));
 
 
-    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/1_0", reader.getNamespace("iidm"));
-    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/1_1", reader.getNamespace(""));
-    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/1_1", reader.getDefaultNamespace());
+    BOOST_CHECK_EQUAL("http://www.itesla_project.eu/schema/iidm/1_0", reader.getNamespace("iidm"));
+    BOOST_CHECK_EQUAL("http://www.itesla_project.eu/schema/iidm/1_1", reader.getNamespace(""));
+    BOOST_CHECK_EQUAL("http://www.itesla_project.eu/schema/iidm/1_1", reader.getDefaultNamespace());
     POWSYBL_ASSERT_THROW(reader.getNamespace("test"), powsybl::xml::XmlStreamException, "Unknown prefix test");
 }
 

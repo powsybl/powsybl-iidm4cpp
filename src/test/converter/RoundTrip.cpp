@@ -46,7 +46,7 @@ std::string RoundTrip::getVersionedNetworkPath(const std::string& filename, cons
     return getVersionDir(version) + filename;
 }
 
-void RoundTrip::roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersion& version) {
+void RoundTrip::roundTripVersionedXmlTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
     const auto& writer = [&version](const iidm::Network& n, std::ostream& stream) {
         iidm::Network::writeXml(stream, n, powsybl::iidm::converter::ExportOptions().setVersion(version.toString(".")));
     };
@@ -56,14 +56,14 @@ void RoundTrip::roundTripVersionedXmlTest(const std::string& ref, const iidm::co
         return iidm::Network::readXml(stream);
     };
 
-    const std::string& expected = getVersionedNetwork(ref, version);
+    const std::string& expected = getVersionedNetwork(filename, version);
     iidm::Network network = iidm::Network::readXml(expected);
     run(network, writer, reader, compareXml, expected);
 }
 
-void RoundTrip::roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersions& versions) {
+void RoundTrip::roundTripVersionedXmlTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersions& versions) {
     for (const auto& version : versions) {
-        roundTripVersionedXmlTest(ref, version.get());
+        roundTripVersionedXmlTest(filename, version.get());
     }
 }
 

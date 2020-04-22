@@ -16,6 +16,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControl.hpp>
+#include <powsybl/network/EurostagFactory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
@@ -82,7 +83,15 @@ BOOST_AUTO_TEST_CASE(CoordinatedReactiveControlTest) {
 }
 
 BOOST_FIXTURE_TEST_CASE(CoordinatedReactiveControlXmlSerializerTest, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("coordinatedReactiveControl.xml", converter::xml::IidmXmlVersion::V1_0);
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));
+
+    Generator& gen = network.getGenerator("GEN");
+    gen.addExtension(Extension::create<CoordinatedReactiveControl>(gen, 100.0));
+
+    const std::string& networkStr = ResourceFixture::getResource("coordinatedReactiveControl.xml");
+
+    test::converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

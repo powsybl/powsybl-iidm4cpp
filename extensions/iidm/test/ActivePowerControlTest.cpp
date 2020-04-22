@@ -58,7 +58,11 @@ BOOST_AUTO_TEST_CASE(ActivePowerControlTest) {
 }
 
 BOOST_FIXTURE_TEST_CASE(ActivePowerControlXmlSerializerTest, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("activePowerControl.xml", converter::xml::IidmXmlVersion::V1_0);
+    Network network = createNetwork();
+
+    const std::string& networkStr = ResourceFixture::getResource("activePowerControl.xml");
+
+    test::converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
