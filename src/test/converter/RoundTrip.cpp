@@ -48,7 +48,9 @@ std::string RoundTrip::getVersionedNetworkPath(const std::string& filename, cons
 
 void RoundTrip::roundTripVersionedXmlTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
     const auto& writer = [&version](const iidm::Network& n, std::ostream& stream) {
-        iidm::Network::writeXml(stream, n, powsybl::iidm::converter::ExportOptions().setVersion(version.toString(".")));
+        iidm::converter::ExportOptions options;
+        options.setVersion(version.toString("."));
+        iidm::Network::writeXml(stream, n, options);
     };
 
     const auto& reader = [](const std::string& xml) {
