@@ -30,7 +30,7 @@ namespace extensions {
 namespace iidm {
 
 ThreeWindingsTransformerPhaseAngleClockXmlSerializer::ThreeWindingsTransformerPhaseAngleClockXmlSerializer() :
-    ExtensionXmlSerializer("threeWindingsTransformerPhaseAngleClock", "network", "http://www.itesla_project.eu/schema/iidm/ext/three_windings_transformer_phase_angle_clock/1_0", "threewtpac") {
+    ExtensionXmlSerializer("threeWindingsTransformerPhaseAngleClock", "network", "http://www.powsybl.org/schema/iidm/ext/three_windings_transformer_phase_angle_clock/1_0", "threewtpac") {
 }
 
 std::unique_ptr<Extension> ThreeWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
