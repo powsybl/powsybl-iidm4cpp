@@ -14,6 +14,7 @@
 
 #include <powsybl/iidm/converter/BusFilter.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 
 namespace powsybl {
 
@@ -35,7 +36,7 @@ namespace xml {
 
 class NetworkXmlWriterContext {
 public:
-    NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter);
+    NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version);
 
     ~NetworkXmlWriterContext() = default;
 
@@ -53,6 +54,8 @@ public:
 
     const ExportOptions& getOptions() const;
 
+    const IidmXmlVersion& getVersion() const;
+
     powsybl::xml::XmlStreamWriter& getWriter();
 
     bool isExportedEquipment(const std::string& id);
@@ -67,6 +70,8 @@ private:
     Anonymizer& m_anonymizer;
 
     ExportOptions m_options;
+
+    const IidmXmlVersion& m_version;
 
     std::set<std::string> m_exportedEquipments;
 

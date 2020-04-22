@@ -7,8 +7,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/iidm/Network.hpp>
-
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -23,17 +21,11 @@ namespace xml {
 BOOST_AUTO_TEST_SUITE(XmlRoundTrip)
 
 BOOST_FIXTURE_TEST_CASE(DanglingLineTest, test::ResourceFixture) {
-    const std::string& networkStr = ResourceFixture::getResource("/danglingLine.xml");
-    Network network = Network::readXml(networkStr);
-
-    test::converter::RoundTrip::runXml(network, networkStr);
+    test::converter::RoundTrip::roundTripVersionedXmlTest("danglingLine.xml", IidmXmlVersion::all());
 }
 
 BOOST_FIXTURE_TEST_CASE(TieLineTest, test::ResourceFixture) {
-    const std::string& networkStr = ResourceFixture::getResource("/tieline.xml");
-    Network network = Network::readXml(networkStr);
-
-    test::converter::RoundTrip::runXml(network, networkStr);
+    test::converter::RoundTrip::roundTripVersionedXmlTest("tieline.xml", IidmXmlVersion::all());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

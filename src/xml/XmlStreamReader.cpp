@@ -138,6 +138,11 @@ std::string XmlStreamReader::getNamespace(const std::string& prefix) const {
     return XML2S(namespaceXml.get());
 }
 
+std::string XmlStreamReader::getNamespaceOrDefault(const std::string& prefix) const {
+    XmlString namespaceXml(xmlTextReaderLookupNamespace(m_reader.get(), S2XML(prefix)));
+    return namespaceXml ? XML2S(namespaceXml.get()) : getDefaultNamespace();
+}
+
 template <>
 stdcxx::optional<bool> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
     stdcxx::optional<bool> value;

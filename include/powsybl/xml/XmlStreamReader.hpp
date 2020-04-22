@@ -44,6 +44,8 @@ public:
 
     std::string getNamespace(const std::string& prefix) const;
 
+    std::string getNamespaceOrDefault(const std::string& prefix) const;
+
     template <typename T>
     stdcxx::optional<T> getOptionalAttributeValue(const std::string& attributeName) const;
 
