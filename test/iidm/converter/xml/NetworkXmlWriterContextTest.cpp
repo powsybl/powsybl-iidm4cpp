@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_CASE(Constructor) {
     stdcxx::reference_wrapper<Anonymizer> anonymizer(fakeAnonymizer);
     Network network("id_network", "name_network");
     const BusFilter& filter = BusFilter::create(network, exportOptions);
-    NetworkXmlWriterContext context(anonymizer, writer, exportOptions, filter, IidmXmlVersion::CURRENT_IIDM_XML_VERSION);
+    NetworkXmlWriterContext context(anonymizer, writer, exportOptions, filter, IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
     BOOST_CHECK_EQUAL(static_cast<int>(exportOptions.getTopologyLevel()), static_cast<int>(context.getOptions().getTopologyLevel()));
     BOOST_CHECK_EQUAL(exportOptions.isAnonymized(), context.getOptions().isAnonymized());
     BOOST_CHECK_EQUAL(exportOptions.isIndent(), context.getOptions().isIndent());

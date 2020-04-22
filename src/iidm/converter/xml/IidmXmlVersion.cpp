@@ -25,10 +25,6 @@ namespace converter {
 
 namespace xml {
 
-const IidmXmlVersion& IidmXmlVersion::V1_0 = IidmXmlVersion("itesla_project.eu", {{1, 0}});
-
-const IidmXmlVersion& IidmXmlVersion::CURRENT_IIDM_XML_VERSION = IidmXmlVersion::V1_0;
-
 bool operator==(const std::reference_wrapper<const IidmXmlVersion>& ref, const IidmXmlVersion& version) {
     return stdcxx::areSame(ref.get(), version);
 }
@@ -67,10 +63,14 @@ bool IidmXmlVersion::operator>=(const IidmXmlVersion& version) const {
 
 const IidmXmlVersions& IidmXmlVersion::all() {
     static std::vector<std::reference_wrapper<const IidmXmlVersion> > s_versions {{
-        std::cref(IidmXmlVersion::V1_0)
+        std::cref(IidmXmlVersion::V1_0())
     }};
 
     return s_versions;
+}
+
+const IidmXmlVersion& IidmXmlVersion::CURRENT_IIDM_XML_VERSION() {
+    return V1_0();
 }
 
 const IidmXmlVersion& IidmXmlVersion::fromNamespaceURI(const std::string& namespaceURI) {
@@ -107,6 +107,11 @@ std::string IidmXmlVersion::toString(const std::string& separator) const {
     const auto& mapper = [](const int& i) { return std::to_string(i); };
 
     return boost::algorithm::join(m_versionArray | boost::adaptors::transformed(mapper), separator);
+}
+
+const IidmXmlVersion& IidmXmlVersion::V1_0() {
+    static IidmXmlVersion V1_0("itesla_project.eu", {{1, 0}});
+    return V1_0;
 }
 
 }  // namespace xml

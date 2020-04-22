@@ -235,7 +235,7 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
 
     const BusFilter& filter = BusFilter::create(network, options);
 
-    const IidmXmlVersion& version = options.getVersion().empty() ? IidmXmlVersion::CURRENT_IIDM_XML_VERSION : IidmXmlVersion::of(options.getVersion(), ".");
+    const IidmXmlVersion& version = options.getVersion().empty() ? IidmXmlVersion::CURRENT_IIDM_XML_VERSION() : IidmXmlVersion::of(options.getVersion(), ".");
     NetworkXmlWriterContext context(*anonymizer, writer, options, filter, version);
 
     writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");

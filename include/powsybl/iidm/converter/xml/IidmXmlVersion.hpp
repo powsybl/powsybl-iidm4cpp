@@ -22,17 +22,17 @@ namespace xml {
 
 class IidmXmlVersion {
 public:
-    /**
-     * IIDM V1.0 (http://www.itesla_project.eu)
-     */
-    static const IidmXmlVersion& V1_0;
+    static const std::vector<std::reference_wrapper<const IidmXmlVersion>>& all();
 
     /**
      * The current IIDM version supported by this version of the project
      */
-    static const IidmXmlVersion& CURRENT_IIDM_XML_VERSION;
+    static const IidmXmlVersion& CURRENT_IIDM_XML_VERSION();
 
-    static const std::vector<std::reference_wrapper<const IidmXmlVersion>>& all();
+    /**
+     * IIDM V1.0 (http://www.itesla_project.eu)
+     */
+    static const IidmXmlVersion& V1_0();
 
 public:
     /**
