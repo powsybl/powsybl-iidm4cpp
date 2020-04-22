@@ -7,7 +7,6 @@
 
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 
-#include <array>
 #include <functional>
 
 #include <boost/algorithm/string/join.hpp>
@@ -40,7 +39,6 @@ bool IidmXmlVersion::operator<(const IidmXmlVersion& version) const {
     const auto& it1 = std::find(versions.cbegin(), versions.cend(), *this);
     const auto& it2 = std::find(versions.cbegin(), versions.cend(), std::cref(version));
 
-
     return it1 < it2;
 }
 
@@ -63,14 +61,15 @@ bool IidmXmlVersion::operator>=(const IidmXmlVersion& version) const {
 
 const IidmXmlVersions& IidmXmlVersion::all() {
     static std::vector<std::reference_wrapper<const IidmXmlVersion> > s_versions {{
-        std::cref(IidmXmlVersion::V1_0())
+        std::cref(IidmXmlVersion::V1_0()),
+        std::cref(IidmXmlVersion::V1_1())
     }};
 
     return s_versions;
 }
 
 const IidmXmlVersion& IidmXmlVersion::CURRENT_IIDM_XML_VERSION() {
-    return V1_0();
+    return V1_1();
 }
 
 const IidmXmlVersion& IidmXmlVersion::fromNamespaceURI(const std::string& namespaceURI) {
@@ -112,6 +111,11 @@ std::string IidmXmlVersion::toString(const std::string& separator) const {
 const IidmXmlVersion& IidmXmlVersion::V1_0() {
     static IidmXmlVersion V1_0("itesla_project.eu", {{1, 0}});
     return V1_0;
+}
+
+const IidmXmlVersion& IidmXmlVersion::V1_1() {
+    static IidmXmlVersion V1_1("powsybl.org", {{1, 1}});
+    return V1_1;
 }
 
 }  // namespace xml
