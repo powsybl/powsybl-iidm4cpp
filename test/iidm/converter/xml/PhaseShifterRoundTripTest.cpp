@@ -18,10 +18,10 @@ namespace converter {
 
 namespace xml {
 
-BOOST_AUTO_TEST_SUITE(InternalConnections)
+BOOST_AUTO_TEST_SUITE(PhaseShifterRoundTrip)
 
-BOOST_FIXTURE_TEST_CASE(InternalConnectionsRoundTripTest, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("internalConnections.xml", IidmXmlVersion::all());
+BOOST_FIXTURE_TEST_CASE(PhaseShifterRoundTripTest, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("phaseShifterRoundTripRef.xml", IidmXmlVersion::all());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

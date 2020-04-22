@@ -12,6 +12,7 @@
 #include <list>
 
 #include <powsybl/iidm/converter/ImportOptions.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 
 namespace powsybl {
 
@@ -31,7 +32,7 @@ namespace xml {
 
 class NetworkXmlReaderContext {
 public:
-    NetworkXmlReaderContext(const Anonymizer& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options);
+    NetworkXmlReaderContext(const Anonymizer& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options, const IidmXmlVersion& version);
 
     void addEndTask(const std::function<void()>& endTask);
 
@@ -43,6 +44,8 @@ public:
 
     const powsybl::xml::XmlStreamReader& getReader() const;
 
+    const IidmXmlVersion& getVersion() const;
+
 private:
     powsybl::xml::XmlStreamReader& m_reader;
 
@@ -51,6 +54,8 @@ private:
     std::list<std::function<void()>> m_endTasks;
 
     ImportOptions m_options;
+
+    const IidmXmlVersion& m_version;
 };
 
 }  // namespace xml

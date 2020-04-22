@@ -17,11 +17,12 @@ namespace converter {
 
 namespace xml {
 
-NetworkXmlWriterContext::NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter) :
+NetworkXmlWriterContext::NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version) :
     m_writer(writer),
     m_extensionsWriter(writer),
     m_anonymizer(anonymizer),
     m_options(options),
+    m_version(version),
     m_filter(filter) {
 
 }
@@ -52,6 +53,10 @@ const BusFilter& NetworkXmlWriterContext::getFilter() const {
 
 const ExportOptions& NetworkXmlWriterContext::getOptions() const {
     return m_options;
+}
+
+const IidmXmlVersion& NetworkXmlWriterContext::getVersion() const {
+    return m_version;
 }
 
 powsybl::xml::XmlStreamWriter& NetworkXmlWriterContext::getWriter() {
