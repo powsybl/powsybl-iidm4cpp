@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_1" id="ReactiveLimits" caseDate="2016-01-01T10:00:00+02:00" forecastDistance="0" sourceFormat="???">
+    <iidm:substation id="S" country="FR" tso="RTE">
+        <iidm:voltageLevel id="VL" nominalV="380" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="B"/>
+            </iidm:busBreakerTopology>
+            <iidm:generator id="G1" energySource="OTHER" minP="0" maxP="10" voltageRegulatorOn="true" targetP="10" targetV="380" bus="B" connectableBus="B">
+                <iidm:reactiveCapabilityCurve>
+                    <iidm:point p="5" minQ="1" maxQ="10"/>
+                    <iidm:point p="10" minQ="-10" maxQ="1"/>
+                </iidm:reactiveCapabilityCurve>
+            </iidm:generator>
+            <iidm:generator id="G2" energySource="OTHER" minP="0" maxP="10" voltageRegulatorOn="true" targetP="10" targetV="380" bus="B" connectableBus="B">
+                <iidm:minMaxReactiveLimits minQ="1" maxQ="10"/>
+            </iidm:generator>
+        </iidm:voltageLevel>
+    </iidm:substation>
+</iidm:network>
