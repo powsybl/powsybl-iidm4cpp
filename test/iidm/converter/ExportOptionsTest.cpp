@@ -43,14 +43,19 @@ BOOST_AUTO_TEST_CASE(defaultConstructor) {
     BOOST_CHECK(options.isWithBranchSV());
     options.setWithBranchSV(false);
     BOOST_CHECK(!options.isWithBranchSV());
+
+    BOOST_TEST("", options.getVersion());
+    options.setVersion("V1.0");
+    BOOST_TEST("V1.0", options.getVersion());
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    ExportOptions options(true, // withBranchSV
-                          false, // indent
-                          true, // onlyMainCc
+    ExportOptions options(true,  // withBranchSV
+                          false,  // indent
+                          true,  // onlyMainCc
                           TopologyLevel::BUS_BREAKER,  // topologyLevel
-                          true);// throwExceptionIfExtensionNotFound
+                          true,  // throwExceptionIfExtensionNotFound
+                          "V1.0");
 
     BOOST_CHECK(!options.isIndent());
 
@@ -61,6 +66,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(static_cast<int>(TopologyLevel::BUS_BREAKER), static_cast<int>(options.getTopologyLevel()));
 
     BOOST_CHECK(options.isWithBranchSV());
+
+    BOOST_TEST("V1.0", options.getVersion());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

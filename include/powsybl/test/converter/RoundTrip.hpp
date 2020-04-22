@@ -10,12 +10,16 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 
 namespace powsybl {
 
 namespace test {
+
+class ResourceFixture;
 
 namespace converter {
 
@@ -31,6 +35,16 @@ public:
     static void compareTxt(const std::string& expected, const std::string& actual);
 
     static void compareXml(const std::string& expected, const std::string& actual);
+
+    static std::string getVersionDir(const iidm::converter::xml::IidmXmlVersion& version);
+
+    static std::string getVersionedNetwork(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
+
+    static std::string getVersionedNetworkPath(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
+
+    static void roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersion& version);
+
+    static void roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersions& versions);
 
     static iidm::Network run(const iidm::Network& network, const Writer& out, const Reader& in, const Comparator& compare, const std::string& ref);
 

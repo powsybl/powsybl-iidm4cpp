@@ -9,6 +9,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/test/ResourceFixture.hpp>
+
 namespace powsybl {
 
 namespace test {
@@ -27,6 +29,41 @@ void RoundTrip::compareTxt(const std::string& expected, const std::string& actua
 
 void RoundTrip::compareXml(const std::string& expected, const std::string& actual) {
     compareTxt(expected, actual);
+}
+
+std::string RoundTrip::getVersionDir(const iidm::converter::xml::IidmXmlVersion& version) {
+    return "/V" + version.toString("_") + "/";
+}
+
+std::string RoundTrip::getVersionedNetwork(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
+    ResourceFixture fixture;
+
+    return fixture.getResource(getVersionedNetworkPath(filename, version));
+}
+
+std::string RoundTrip::getVersionedNetworkPath(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
+    return getVersionDir(version) + filename;
+}
+
+void RoundTrip::roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersion& version) {
+    const auto& writer = [](const iidm::Network& n, std::ostream& stream) {
+        iidm::Network::writeXml(stream, n);
+    };
+
+    const auto& reader = [](const std::string& xml) {
+        std::istringstream stream(xml);
+        return iidm::Network::readXml(stream);
+    };
+
+    const std::string& expected = getVersionedNetwork(ref, version);
+    iidm::Network network = iidm::Network::readXml(expected);
+    run(network, writer, reader, compareXml, expected);
+}
+
+void RoundTrip::roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersions& versions) {
+    for (const auto& version : versions) {
+        roundTripVersionedXmlTest(ref, version.get());
+    }
 }
 
 iidm::Network RoundTrip::run(const iidm::Network& network, const Writer& out, const Reader& in, const Comparator& compare, const std::string& ref) {

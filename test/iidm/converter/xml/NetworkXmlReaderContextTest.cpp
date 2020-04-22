@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -29,7 +30,7 @@ BOOST_AUTO_TEST_CASE(Constructor) {
     powsybl::xml::XmlStreamReader reader(istream);
     ImportOptions importOptions;
     FakeAnonymizer anonymizer;
-    NetworkXmlReaderContext context(anonymizer, reader, importOptions);
+    NetworkXmlReaderContext context(anonymizer, reader, importOptions, IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
     BOOST_CHECK_EQUAL(importOptions.isThrowExceptionIfExtensionNotFound(), context.getOptions().isThrowExceptionIfExtensionNotFound());
     BOOST_CHECK(stdcxx::areSame(anonymizer, context.getAnonymizer()));
     BOOST_CHECK(stdcxx::areSame(reader, context.getReader()));

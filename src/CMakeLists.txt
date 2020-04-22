@@ -124,6 +124,8 @@ set(IIDM_SOURCES
     iidm/converter/xml/ExtensionXmlSerializer.cpp
     iidm/converter/xml/GeneratorXml.cpp
     iidm/converter/xml/HvdcLineXml.cpp
+    iidm/converter/xml/IidmXmlVersion.cpp
+    iidm/converter/xml/IidmXmlUtil.cpp
     iidm/converter/xml/LccConverterStationXml.cpp
     iidm/converter/xml/LineXml.cpp
     iidm/converter/xml/LoadXml.cpp

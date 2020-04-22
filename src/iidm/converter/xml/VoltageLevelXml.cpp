@@ -118,7 +118,7 @@ void VoltageLevelXml::writeBatteries(const VoltageLevel& voltageLevel, NetworkXm
 }
 
 void VoltageLevelXml::writeBusBranchTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeStartElement(IIDM_URI, BUS_BREAKER_TOPOLOGY);
+    context.getWriter().writeStartElement(IIDM_PREFIX, BUS_BREAKER_TOPOLOGY);
     for (const Bus& bus : voltageLevel.getBusView().getBuses()) {
         if (!context.getFilter().test(bus)) {
             continue;
