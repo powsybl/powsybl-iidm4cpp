@@ -30,7 +30,7 @@ namespace extensions {
 namespace iidm {
 
 CoordinatedReactiveControlXmlSerializer::CoordinatedReactiveControlXmlSerializer() :
-    ExtensionXmlSerializer("coordinatedReactiveControl", "network", "http://www.powsybl.org/schema/iidm/ext/coordinated_reactive_control/1_0", "crc") {
+    AbstractExtensionXmlSerializer("coordinatedReactiveControl", "network", "crc", "http://www.powsybl.org/schema/iidm/ext/coordinated_reactive_control/1_0") {
 }
 
 std::unique_ptr<Extension> CoordinatedReactiveControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {

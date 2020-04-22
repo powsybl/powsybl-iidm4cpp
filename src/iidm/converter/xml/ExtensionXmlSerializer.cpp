@@ -15,11 +15,13 @@ namespace converter {
 
 namespace xml {
 
-ExtensionXmlSerializer::ExtensionXmlSerializer(const std::string& extensionName, const std::string& categoryName,
-                                               const std::string& namespaceUri, const std::string& namespacePrefix) :
-    ExtensionProvider(extensionName, categoryName),
-    m_namespaceUri(namespaceUri),
-    m_namespacePrefix(namespacePrefix) {
+ExtensionXmlSerializer::ExtensionXmlSerializer(std::string extensionName, std::string categoryName, std::string namespacePrefix) :
+    ExtensionProvider(std::move(extensionName), std::move(categoryName)),
+    m_namespacePrefix(std::move(namespacePrefix)) {
+}
+
+const std::string& ExtensionXmlSerializer::getName() const {
+    return getExtensionName();
 }
 
 const std::string& ExtensionXmlSerializer::getNamespacePrefix() const {
@@ -27,7 +29,12 @@ const std::string& ExtensionXmlSerializer::getNamespacePrefix() const {
 }
 
 const std::string& ExtensionXmlSerializer::getNamespaceUri() const {
-    return m_namespaceUri;
+    return getNamespaceUri(getVersion());
+}
+
+const std::string& ExtensionXmlSerializer::getVersion() const {
+    static std::string s_version = "1.0";
+    return s_version;
 }
 
 }  // namespace xml

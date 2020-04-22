@@ -8,8 +8,10 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_EXTENSIONXMLSERIALIZER_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_EXTENSIONXMLSERIALIZER_HPP
 
+#include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <powsybl/iidm/Extendable.hpp>
 #include <powsybl/iidm/ExtensionProvider.hpp>
@@ -28,35 +30,97 @@ namespace xml {
 class NetworkXmlReaderContext;
 class NetworkXmlWriterContext;
 
+/**
+ * An ExtensionProvider able to serialize/deserialize extensions from XML
+ *
+ * An ExtensionXmlSerializer can have several versions with one XSD schema per version: the XML serialization/deserialization
+ * of an extension is versionable.
+ */
 class ExtensionXmlSerializer : public ExtensionProvider {
 public:
-    ExtensionXmlSerializer(const std::string& extensionName,
-                           const std::string& categoryName, /*const std::type_index& extensionClass,*/
-                           const std::string& namespaceUri, const std::string& namespacePrefix);
+    /**
+     * Construct an XML serializer for an extension
+     *
+     * @param extensionName the name of the extension
+     * @param categoryName the category of the extension
+     */
+    ExtensionXmlSerializer(std::string extensionName, std::string categoryName, std::string namespacePrefix);
 
     ~ExtensionXmlSerializer() noexcept override = default;
 
-    // std::type_index getExtensionClass();
+    /**
+     * Return the name of this serializer
+     *
+     * @return the name of this serializer
+     */
+    const std::string& getName() const;
 
+    /**
+     * Return the XML prefix of the extension
+     *
+     * @return the XML prefix of the extension
+     */
     const std::string& getNamespacePrefix() const;
 
-    const std::string& getNamespaceUri() const;
+    /**
+     * Return the namespace URI of the extension in the latest version of its serialization
+     *
+     * @return the namespace URI of the extension in the latest version
+     */
+    virtual const std::string& getNamespaceUri() const = 0;
 
+    /**
+     * Return the namespace URI of the extension in the given version of its serialization
+     *
+     * @param extensionVersion the version of its serialization
+     *
+     * @return the namespace URI of the extension in the given version
+     */
+    virtual const std::string& getNamespaceUri(const std::string& extensionVersion) const = 0;
+
+    /**
+     * Return the current version of this serializer
+     *
+     * @return the current version of this serializer
+     */
+    virtual const std::string& getVersion() const;
+
+    /**
+     * Create an extension from its XML serialization
+     *
+     * @param extendable The holder of the new extension
+     * @param context The current XML context
+     *
+     * @return An extension
+     *
+     * @throw An {@link AssertionError} if the extension is not compatible with the extendable type
+     */
     virtual std::unique_ptr<Extension> read(Extendable& extendable, NetworkXmlReaderContext& context) const = 0;
 
+    /**
+     * Write an extension in XML
+     *
+     * @param extension The extension to write to XML
+     * @param context The current XML context
+     */
     virtual void write(const Extension& extension, NetworkXmlWriterContext& context) const = 0;
 
 protected:
+    /**
+     * A utility function to cast a generic extension into its specific type E
+     *
+     * @tparam E The expected type of the extension
+     *
+     * @param extension The extension to cast
+     *
+     * @return The extension casted into E if the extension is an instance of E
+     *
+     * @throw a {@link PowsyblException} if the extension is not compatible with the expected type
+     */
     template <typename E>
     const E& safeCast(const Extension& extension) const;
 
 private:
-    // TODO(mathbagu): extensionClass
-
-    // TODO(mathbague) xsdFileName;
-
-    std::string m_namespaceUri;
-
     std::string m_namespacePrefix;
 };
 

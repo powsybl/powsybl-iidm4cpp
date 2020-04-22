@@ -138,9 +138,13 @@ std::string XmlStreamReader::getNamespace(const std::string& prefix) const {
     return XML2S(namespaceXml.get());
 }
 
-std::string XmlStreamReader::getNamespaceOrDefault(const std::string& prefix) const {
+std::string XmlStreamReader::getNamespace(const std::string& prefix, const std::string& defaultValue) const {
     XmlString namespaceXml(xmlTextReaderLookupNamespace(m_reader.get(), S2XML(prefix)));
-    return namespaceXml ? XML2S(namespaceXml.get()) : getDefaultNamespace();
+    return namespaceXml ? XML2S(namespaceXml.get()) : defaultValue;
+}
+
+std::string XmlStreamReader::getNamespaceOrDefault(const std::string& prefix) const {
+    return getNamespace(prefix, getDefaultNamespace());
 }
 
 template <>

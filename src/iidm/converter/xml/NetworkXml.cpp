@@ -187,6 +187,9 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
 
     NetworkXmlReaderContext context(anonymizer, reader, options, version);
 
+    const auto& extensionProviders = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
+    context.buildExtensionNamespaceUriList(extensionProviders.getProviders());
+
     std::set<std::string> extensionsNotFound;
 
     context.getReader().readUntilEndElement(NETWORK, [&network, &context, &extensionsNotFound]() {

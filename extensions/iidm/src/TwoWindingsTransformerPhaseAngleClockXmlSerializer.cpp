@@ -28,7 +28,7 @@ namespace extensions {
 namespace iidm {
 
 TwoWindingsTransformerPhaseAngleClockXmlSerializer::TwoWindingsTransformerPhaseAngleClockXmlSerializer() :
-    ExtensionXmlSerializer("twoWindingsTransformerPhaseAngleClock", "network", "http://www.powsybl.org/schema/iidm/ext/two_windings_transformer_phase_angle_clock/1_0", "twowtpac") {
+    AbstractExtensionXmlSerializer("twoWindingsTransformerPhaseAngleClock", "network", "twowtpac", "http://www.powsybl.org/schema/iidm/ext/two_windings_transformer_phase_angle_clock/1_0") {
 }
 
 std::unique_ptr<Extension> TwoWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
