@@ -42,9 +42,9 @@ public:
 
     static std::string getVersionedNetworkPath(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
 
-    static void roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersion& version);
+    static void roundTripVersionedXmlTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
 
-    static void roundTripVersionedXmlTest(const std::string& ref, const iidm::converter::xml::IidmXmlVersions& versions);
+    static void roundTripVersionedXmlTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersions& versions);
 
     static iidm::Network run(const iidm::Network& network, const Writer& out, const Reader& in, const Comparator& compare, const std::string& ref);
 
