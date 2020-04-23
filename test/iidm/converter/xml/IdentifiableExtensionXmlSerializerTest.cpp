@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/ExtensionProviders.hpp>
+#include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
@@ -24,6 +25,25 @@ namespace converter {
 namespace xml {
 
 BOOST_AUTO_TEST_SUITE(IdentfiableExtensionXml)
+
+BOOST_AUTO_TEST_CASE(ExtensionXmlSerializerTest) {
+    auto& providers = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
+    const auto& cProviders = providers;
+    BOOST_CHECK_EQUAL(3, boost::size(providers.getProviders()));
+    BOOST_CHECK_EQUAL(3, boost::size(cProviders.getProviders()));
+
+    const auto& serializer = providers.findProvider("loadMock");
+    BOOST_CHECK_EQUAL(true, static_cast<bool>(serializer));
+
+    BOOST_CHECK_EQUAL("loadMock", serializer.get().getName());
+    BOOST_CHECK_EQUAL("loadMock", serializer.get().getExtensionName());
+    BOOST_CHECK_EQUAL("network", serializer.get().getCategoryName());
+    BOOST_CHECK_EQUAL("1.0", serializer.get().getVersion());
+    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_mock/1_1", serializer.get().getNamespaceUri());
+    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_mock/1_0", serializer.get().getNamespaceUri("1.0"));
+    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_mock/1_1", serializer.get().getNamespaceUri("1.1"));
+    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_mock/1_2", serializer.get().getNamespaceUri("1.2"));
+}
 
 BOOST_AUTO_TEST_CASE(TerminalExtension) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
