@@ -166,7 +166,6 @@ set(IIDM_SOURCES
     stdcxx/demangle.cpp
     stdcxx/time.cpp
 
-    xml/UncheckedXmlStreamException.cpp
     xml/XmlCharConversion.cpp
     xml/XmlStreamException.cpp
     xml/XmlStreamReader.cpp

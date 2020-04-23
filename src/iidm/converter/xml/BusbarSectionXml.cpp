@@ -9,7 +9,6 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
-#include <powsybl/xml/UncheckedXmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 
 namespace powsybl {
@@ -53,12 +52,8 @@ BusbarSection& BusbarSectionXml::readRootElementAttributes(BusbarSectionAdder& a
 void BusbarSectionXml::writeRootElementAttributes(const BusbarSection& busbarSection, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(NODE, busbarSection.getTerminal().getNodeBreakerView().getNode());
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_0(), context.getVersion(), [&busbarSection, &context]() {
-        try {
-            context.getWriter().writeOptionalAttribute(V, busbarSection.getV());
-            context.getWriter().writeOptionalAttribute(ANGLE, busbarSection.getAngle());
-        } catch (const powsybl::xml::XmlStreamException& exception) {
-            throw powsybl::xml::UncheckedXmlStreamException(exception.what());
-        }
+        context.getWriter().writeAttribute(V, busbarSection.getV());
+        context.getWriter().writeAttribute(ANGLE, busbarSection.getAngle());
     });
 }
 

@@ -11,6 +11,7 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
+#include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
@@ -18,7 +19,6 @@
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/util/Networks.hpp>
-#include <powsybl/xml/UncheckedXmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 
 #include "BatteryXml.hpp"
@@ -63,19 +63,19 @@ void VoltageLevelXml::readBusBreakerTopology(VoltageLevel& voltageLevel, Network
         } else if (context.getReader().getLocalName() == SWITCH) {
             BusBreakerViewSwitchXml::getInstance().read(voltageLevel, context);
         } else {
-            throw powsybl::xml::XmlStreamException(logging::format("Unsupported element %1%", context.getReader().getLocalName()));
+            throw AssertionError(logging::format("Unsupported element %1%", context.getReader().getLocalName()));
         }
     });
 }
 
 void VoltageLevelXml::readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlReaderContext& context) const {
-    xml::IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, BUS, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_1(), context.getVersion());
+    IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, BUS, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_1(), context.getVersion());
     double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
     double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
-    const std::string& nodesString = context.getReader().getAttributeValue(NODES);
-    context.addEndTask([angle, nodesString, &voltageLevel, v]() {
+    std::shared_ptr<std::string> nodesString = std::make_shared<std::string>(context.getReader().getAttributeValue(NODES));
+    context.addEndTask([v, angle, nodesString, &voltageLevel]() {
         std::vector<std::string> nodes;
-        boost::algorithm::split( nodes, nodesString, [](char c) { return c == ','; });
+        boost::algorithm::split(nodes, *nodesString, [](char c) { return c == ','; });
         for (const std::string& nodeStr : nodes) {
             unsigned long node = std::stoul(nodeStr);
             const auto& terminal = voltageLevel.getNodeBreakerView().getTerminal(node);
@@ -103,7 +103,7 @@ void VoltageLevelXml::readNodeBreakerTopology(VoltageLevel& voltageLevel, Networ
         } else if (context.getReader().getLocalName() == BUS) {
             readCalculatedBus(voltageLevel, context);
         } else {
-            throw powsybl::xml::XmlStreamException(logging::format("Unexpected element %1%", context.getReader().getLocalName()));
+            throw AssertionError(logging::format("Unexpected element %1%", context.getReader().getLocalName()));
         }
     });
 }
@@ -188,15 +188,12 @@ void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, 
 }
 
 void VoltageLevelXml::writeCalculatedBus(const Bus& bus, const std::set<unsigned long>& nodes, NetworkXmlWriterContext& context) {
-    try {
-        context.getWriter().writeStartElement(IIDM_PREFIX, BUS);
-        context.getWriter().writeAttribute(V, bus.getV());
-        context.getWriter().writeAttribute(ANGLE, bus.getAngle());
-        context.getWriter().writeAttribute(NODES, boost::algorithm::join(nodes | boost::adaptors::transformed(static_cast<std::string(*)(unsigned long)>(std::to_string)), ","));
-        context.getWriter().writeEndElement();
-    } catch (const powsybl::xml::XmlStreamException& exception) {
-        throw powsybl::xml::UncheckedXmlStreamException(exception.what());
-    }
+    context.getWriter().writeStartElement(IIDM_PREFIX, BUS);
+    context.getWriter().writeAttribute(V, bus.getV());
+    context.getWriter().writeAttribute(ANGLE, bus.getAngle());
+    const auto& mapper = [](const unsigned long& i) { return std::to_string(i); };
+    context.getWriter().writeAttribute(NODES, boost::algorithm::join(nodes | boost::adaptors::transformed(mapper), ","));
+    context.getWriter().writeEndElement();
 }
 
 void VoltageLevelXml::writeDanglingLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
@@ -308,7 +305,7 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const S
             break;
 
         default:
-            throw powsybl::xml::XmlStreamException(logging::format("Unexpected TopologyLevel value: ", topologyLevel));
+            throw AssertionError(logging::format("Unexpected TopologyLevel value: ", topologyLevel));
     }
 
     writeGenerators(voltageLevel, context);

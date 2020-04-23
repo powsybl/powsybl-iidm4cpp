@@ -24,7 +24,7 @@ stdcxx::CReference<Terminal> Networks::getEquivalentTerminal(const VoltageLevel&
         throw PowsyblException(logging::format("The voltage level %1% is not described in Node/Breaker topology", voltageLevel.getId()));
     }
 
-    stdcxx::CReference<Terminal> equivalentTerminal = stdcxx::cref<Terminal>();
+    stdcxx::CReference<Terminal> equivalentTerminal;
 
     VoltageLevel::NodeBreakerView::Traverser traverser = [&equivalentTerminal, &voltageLevel](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long node2) {
         if (sw && sw.get().isOpen()) {
@@ -53,12 +53,7 @@ std::map<std::string, std::set<unsigned long>> Networks::getNodesByBus(const Vol
         if (terminal) {
             const auto& bus = terminal.get().getBusView().getBus();
             if (bus) {
-                const auto& it = nodesByBus.find(bus.get().getId());
-                if (it == nodesByBus.end()) {
-                    nodesByBus.emplace(std::make_pair(bus.get().getId(), std::set<unsigned long>{i}));
-                } else {
-                    it->second.insert(i);
-                }
+                nodesByBus[bus.get().getId()].insert(i);
             }
         } else {
             // If there is no terminal for the current node, we try to find one traversing the topology
@@ -66,12 +61,7 @@ std::map<std::string, std::set<unsigned long>> Networks::getNodesByBus(const Vol
             if (equivalentTerminal) {
                 const auto& bus = equivalentTerminal.get().getBusView().getBus();
                 if (bus) {
-                    const auto& it = nodesByBus.find(bus.get().getId());
-                    if (it == nodesByBus.end()) {
-                        nodesByBus.emplace(std::make_pair(bus.get().getId(), std::set<unsigned long>{i}));
-                    } else {
-                        it->second.insert(i);
-                    }
+                    nodesByBus[bus.get().getId()].insert(i);
                 }
             }
         }
