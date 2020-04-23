@@ -23,7 +23,7 @@ VersionsCompatibilityBuilder& VersionsCompatibilityBuilder::put(const IidmXmlVer
     return put(iidmVersion.toString("."), extensionVersions);
 }
 
-VersionsCompatibilityBuilder& VersionsCompatibilityBuilder::put(std::string iidmVersion, std::initializer_list<std::string> extensionVersions) {
+VersionsCompatibilityBuilder& VersionsCompatibilityBuilder::put(std::string&& iidmVersion, std::initializer_list<std::string> extensionVersions) {
     m_versionsCompatibility.emplace(std::make_pair(std::move(iidmVersion), extensionVersions));
 
     return *this;

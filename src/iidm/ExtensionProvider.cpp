@@ -12,8 +12,8 @@ namespace powsybl {
 namespace iidm {
 
 ExtensionProvider::ExtensionProvider(std::string&& extensionName, std::string&& categoryName) :
-    m_extensionName(extensionName),
-    m_categoryName(categoryName) {
+    m_extensionName(std::move(extensionName)),
+    m_categoryName(std::move(categoryName)) {
 
 }
 

@@ -51,7 +51,7 @@ public:
 
     VersionsCompatibilityBuilder& put(const IidmXmlVersion& iidmVersion, std::initializer_list<std::string> extensionVersions);
 
-    VersionsCompatibilityBuilder& put(std::string iidmVersion, std::initializer_list<std::string> extensionVersions);
+    VersionsCompatibilityBuilder& put(std::string&& iidmVersion, std::initializer_list<std::string> extensionVersions);
 
 private:
     VersionsCompatibility m_versionsCompatibility;

@@ -23,8 +23,8 @@ namespace xml {
 AbstractVersionableExtensionXmlSerializer::AbstractVersionableExtensionXmlSerializer(std::string&& extensionName, std::string&& extensionCategory, std::string&& namespacePrefix,
                                                                                      VersionsCompatibility&& extensionVersions, std::map<std::string, std::string>&& namespaceUris) :
     ExtensionXmlSerializer(std::move(extensionName), std::move(extensionCategory), std::move(namespacePrefix)),
-    m_extensionVersions(extensionVersions),
-    m_namespaceUris(namespaceUris) {
+    m_extensionVersions(std::move(extensionVersions)),
+    m_namespaceUris(std::move(namespaceUris)) {
 }
 
 void AbstractVersionableExtensionXmlSerializer::checkReadingCompatibility(const NetworkXmlReaderContext& networkContext) const {
