@@ -43,8 +43,9 @@ public:
      *
      * @param extensionName the name of the extension
      * @param categoryName the category of the extension
+     * @param namespacePrefix the XML prefix of the extension
      */
-    ExtensionXmlSerializer(std::string extensionName, std::string categoryName, std::string namespacePrefix);
+    ExtensionXmlSerializer(std::string&& extensionName, std::string&& categoryName, std::string&& namespacePrefix);
 
     ~ExtensionXmlSerializer() noexcept override = default;
 

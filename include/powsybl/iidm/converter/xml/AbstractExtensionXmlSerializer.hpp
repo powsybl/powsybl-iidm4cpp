@@ -33,7 +33,7 @@ public:  // ExtensionXmlSerializer
     const std::string& getNamespaceUri(const std::string& extensionVersion) const override;
 
 public:
-    AbstractExtensionXmlSerializer(std::string extensionName, std::string categoryName, std::string namespacePrefix, std::string namespaceUri);
+    AbstractExtensionXmlSerializer(std::string&& extensionName, std::string&& categoryName, std::string&& namespacePrefix, std::string&& namespaceUri);
 
     ~AbstractExtensionXmlSerializer() noexcept override = default;
 

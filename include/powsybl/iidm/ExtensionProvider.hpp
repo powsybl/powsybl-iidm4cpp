@@ -62,7 +62,7 @@ protected:
      * @param extensionName The name of the extension associated to this {@link ExtensionProvider} instance
      * @param categoryName The category of the extension associated to this {@link ExtensionProvider} instance
      */
-    ExtensionProvider(std::string extensionName, std::string categoryName);
+    ExtensionProvider(std::string&& extensionName, std::string&& categoryName);
 
 private:
     std::string m_extensionName;

@@ -15,9 +15,9 @@ namespace converter {
 
 namespace xml {
 
-AbstractExtensionXmlSerializer::AbstractExtensionXmlSerializer(std::string extensionName, std::string categoryName, std::string namespacePrefix, std::string namespaceUri) :
+AbstractExtensionXmlSerializer::AbstractExtensionXmlSerializer(std::string&& extensionName, std::string&& categoryName, std::string&& namespacePrefix, std::string&& namespaceUri) :
     ExtensionXmlSerializer(std::move(extensionName), std::move(categoryName), std::move(namespacePrefix)),
-    m_namespaceUri(std::move(namespaceUri)) {
+    m_namespaceUri(namespaceUri) {
 }
 
 const std::string& AbstractExtensionXmlSerializer::getNamespaceUri() const {
