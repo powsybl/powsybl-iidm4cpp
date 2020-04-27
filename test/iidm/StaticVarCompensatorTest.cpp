@@ -8,6 +8,10 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/GeneratorAdder.hpp>
+#include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/StaticVarCompensatorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -54,6 +58,92 @@ Network createStaticVarCompensatorTestNetwork() {
         .add();
 
     return network;
+}
+
+Network createSvcNetwork() {
+    Network network("network", "test");
+    network.setCaseDate(stdcxx::DateTime::parse("2016-06-29T14:54:03.427+02:00"));
+    Substation& s1 = network.newSubstation()
+        .setId("S1")
+        .setCountry(Country::FR)
+        .add();
+    VoltageLevel& vl1 = s1.newVoltageLevel()
+        .setId("VL1")
+        .setNominalVoltage(380)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    vl1.getBusBreakerView().newBus()
+        .setId("B1")
+        .add();
+    vl1.newGenerator()
+        .setId("G1")
+        .setConnectableBus("B1")
+        .setBus("B1")
+        .setVoltageRegulatorOn(true)
+        .setTargetP(100.0)
+        .setTargetV(400.0)
+        .setMinP(50.0)
+        .setMaxP(150.0)
+        .add();
+    Substation& s2 = network.newSubstation()
+        .setId("S2")
+        .setCountry(Country::FR)
+        .add();
+    VoltageLevel& vl2 = s2.newVoltageLevel()
+        .setId("VL2")
+        .setNominalVoltage(380)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    vl2.getBusBreakerView().newBus()
+        .setId("B2")
+        .add();
+    vl2.newLoad()
+        .setId("L2")
+        .setConnectableBus("B2")
+        .setBus("B2")
+        .setP0(100.0)
+        .setQ0(50.0)
+        .add();
+    vl2.newStaticVarCompensator()
+        .setId("SVC2")
+        .setConnectableBus("B2")
+        .setBus("B2")
+        .setBmin(0.0002)
+        .setBmax(0.0008)
+        .setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE)
+        .setVoltageSetpoint(390)
+        .add();
+    network.newLine()
+        .setId("L1")
+        .setVoltageLevel1("VL1")
+        .setConnectableBus1("B1")
+        .setBus1("B1")
+        .setVoltageLevel2("VL2")
+        .setConnectableBus2("B2")
+        .setBus2("B2")
+        .setR(4.0)
+        .setX(200.0)
+        .setG1(0.0)
+        .setB1(0.0)
+        .setG2(0.0)
+        .setB2(0.0)
+        .add();
+    return network;
+}
+
+StaticVarCompensator& createSvc(Network& network, const std::string& id, const stdcxx::Reference<Terminal>& regulatingTerminal) {
+    VoltageLevel& vl2 = network.getVoltageLevel("VL2");
+    return vl2.newStaticVarCompensator()
+        .setId(id)
+        .setConnectableBus("B2")
+        .setBus("B2")
+        .setBmin(0.0002)
+        .setBmax(0.0008)
+        .setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE)
+        .setVoltageSetpoint(390.0)
+        .setReactivePowerSetpoint(1.0)
+        .setRegulatingTerminal(regulatingTerminal)
+        .add();
 }
 
 BOOST_AUTO_TEST_SUITE(StaticVarCompensatorTestSuite)
@@ -214,6 +304,30 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     const std::string& initialVariantId = VariantManager::getInitialVariantId();
     BOOST_CHECK_EQUAL("InitialVariant", initialVariantId);
     POWSYBL_ASSERT_THROW(network.getVariantManager().removeVariant(initialVariantId), PowsyblException, "Removing initial variant is forbidden");
+}
+
+BOOST_AUTO_TEST_CASE(regulatingTerminalTest) {
+    Network network = createSvcNetwork();
+    StaticVarCompensator& svc = network.getStaticVarCompensator("SVC2");
+    BOOST_CHECK(stdcxx::areSame(svc.getTerminal(), svc.getRegulatingTerminal()));
+
+    Terminal& loadTerminal = network.getLoad("L2").getTerminal();
+    svc.setRegulatingTerminal(stdcxx::ref<Terminal>(loadTerminal));
+    BOOST_CHECK(stdcxx::areSame(loadTerminal, svc.getRegulatingTerminal()));
+
+    svc.setRegulatingTerminal(stdcxx::ref<Terminal>());
+    BOOST_CHECK(stdcxx::areSame(svc.getTerminal(), svc.getRegulatingTerminal()));
+
+    StaticVarCompensator& svc3 = createSvc(network, "SVC3", stdcxx::ref<Terminal>());
+    BOOST_CHECK(stdcxx::areSame(svc3.getTerminal(), svc3.getRegulatingTerminal()));
+    svc3.remove();
+
+    StaticVarCompensator& svc4 = createSvc(network, "SVC4", stdcxx::ref<Terminal>(loadTerminal));
+    BOOST_CHECK(stdcxx::areSame(loadTerminal, svc4.getRegulatingTerminal()));
+
+    Network network2 = createSvcNetwork();
+    StaticVarCompensator& svc2 = network2.getStaticVarCompensator("SVC2");
+    POWSYBL_ASSERT_THROW(svc2.setRegulatingTerminal(stdcxx::ref<Terminal>(loadTerminal)), ValidationException, "staticVarCompensator 'SVC2': Regulating terminal is not part of the network");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
