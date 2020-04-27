@@ -8,6 +8,10 @@
 #include "StaticVarCompensatorXml.hpp"
 
 #include <powsybl/iidm/Enum.hpp>
+#include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/converter/Constants.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
+#include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
 
 namespace powsybl {
 
@@ -49,7 +53,16 @@ StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticV
 
 void StaticVarCompensatorXml::readSubElements(StaticVarCompensator& svc, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(STATIC_VAR_COMPENSATOR, [this, &svc, &context]() {
-        AbstractConnectableXml::readSubElements(svc, context);
+        if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
+            IidmXmlUtil::assertMinimumVersion(STATIC_VAR_COMPENSATOR, REGULATING_TERMINAL, xml::ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+            const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+            const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
+            context.addEndTask([id, side, &svc]() {
+                svc.setRegulatingTerminal(stdcxx::ref<Terminal>(TerminalRefXml::readTerminalRef(svc.getTerminal().getVoltageLevel().getSubstation().getNetwork(), id, side)));
+            });
+        } else {
+            AbstractConnectableXml::readSubElements(svc, context);
+        }
     });
 }
 
@@ -61,6 +74,13 @@ void StaticVarCompensatorXml::writeRootElementAttributes(const StaticVarCompensa
     context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(svc.getRegulationMode()));
     writeNodeOrBus(svc.getTerminal(), context);
     writePQ(svc.getTerminal(), context.getWriter());
+}
+
+void StaticVarCompensatorXml::writeSubElements(const StaticVarCompensator& svc, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
+    IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(!stdcxx::areSame(svc, svc.getRegulatingTerminal().getConnectable().get()),
+        STATIC_VAR_COMPENSATOR, REGULATING_TERMINAL, ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion(), [&svc, &context]() {
+        TerminalRefXml::writeTerminalRef(svc.getRegulatingTerminal(), context, REGULATING_TERMINAL);
+    });
 }
 
 }  // namespace xml
