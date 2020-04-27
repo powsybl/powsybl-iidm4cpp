@@ -24,12 +24,16 @@ StaticVarCompensatorAdder::StaticVarCompensatorAdder(VoltageLevel& voltageLevel)
 StaticVarCompensator& StaticVarCompensatorAdder::add() {
     checkBmin(*this, m_bMin);
     checkBmax(*this, m_bMax);
+    checkRegulatingTerminal(*this, m_regulatingTerminal, getNetwork());
     checkSvcRegulator(*this, m_voltageSetpoint, m_reactivePowerSetpoint, m_regulationMode);
 
-    std::unique_ptr<StaticVarCompensator> ptrSvc = stdcxx::make_unique<StaticVarCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), m_bMin, m_bMax, m_voltageSetpoint, m_reactivePowerSetpoint, *m_regulationMode);
+    std::unique_ptr<Terminal> ptrTerminal = checkAndGetTerminal();
+    Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *ptrTerminal;
+    std::unique_ptr<StaticVarCompensator> ptrSvc = stdcxx::make_unique<StaticVarCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), m_bMin, m_bMax, m_voltageSetpoint,
+        m_reactivePowerSetpoint, *m_regulationMode, regulatingTerminal);
     auto& svc = getNetwork().checkAndAdd<StaticVarCompensator>(std::move(ptrSvc));
 
-    Terminal& terminal = svc.addTerminal(checkAndGetTerminal());
+    Terminal& terminal = svc.addTerminal(std::move(ptrTerminal));
     getVoltageLevel().attach(terminal, false);
 
     return svc;
@@ -53,6 +57,11 @@ StaticVarCompensatorAdder& StaticVarCompensatorAdder::setBmin(double bMin) {
 
 StaticVarCompensatorAdder& StaticVarCompensatorAdder::setReactivePowerSetpoint(double reactivePowerSetpoint) {
     m_reactivePowerSetpoint = reactivePowerSetpoint;
+    return *this;
+}
+
+StaticVarCompensatorAdder& StaticVarCompensatorAdder::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
+    m_regulatingTerminal = regulatingTerminal;
     return *this;
 }
 
