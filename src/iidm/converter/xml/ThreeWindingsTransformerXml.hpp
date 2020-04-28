@@ -39,6 +39,11 @@ protected:  // AbstractIdentifiableXml
     void writeSubElements(const ThreeWindingsTransformer& twt, const Substation& substation, NetworkXmlWriterContext& context) const override;
 
 private:
+    static void writePhaseTapChanger(const stdcxx::CReference<PhaseTapChanger>& ptc, int index, NetworkXmlWriterContext& context);
+
+    static void writeRatioTapChanger(const stdcxx::CReference<RatioTapChanger>& rtc, int index, NetworkXmlWriterContext& context);
+
+private:
     ThreeWindingsTransformerXml() = default;
 
     ~ThreeWindingsTransformerXml() noexcept override = default;
