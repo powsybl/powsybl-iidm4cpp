@@ -79,7 +79,7 @@ void IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(const std::string& root
 }
 
 void IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(const std::string& rootElementName, const std::string& attributeName, double value, double defaultValue, const char* errorMessage, const IidmXmlVersion& minVersion, NetworkXmlWriterContext& context) {
-    writeAttributeFromMinimumVersion(rootElementName, attributeName, value != defaultValue, errorMessage, minVersion, context.getVersion(), [&context, &attributeName, &value]() {
+    writeAttributeFromMinimumVersion(rootElementName, attributeName, !stdcxx::isEqual(value, defaultValue), errorMessage, minVersion, context.getVersion(), [&context, &attributeName, &value]() {
         context.getWriter().writeAttribute(attributeName, value);
     });
 }

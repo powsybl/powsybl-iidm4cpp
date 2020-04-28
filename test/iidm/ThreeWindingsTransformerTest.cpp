@@ -549,12 +549,6 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2: x is not set");
     l2Adder.setX(2.1);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2: g is not set");
-    l2Adder.setG(0.0);
-
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2: b is not set");
-    l2Adder.setB(0.0);
-
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2: rated U is not set");
     l2Adder.setRatedU(2.2);
 
@@ -596,12 +590,6 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3: x is not set");
     l3Adder.setX(3.1);
-
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3: g is not set");
-    l3Adder.setG(0.0);
-
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3: b is not set");
-    l3Adder.setB(0.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3: rated U is not set");
     l3Adder.setRatedU(3.2);

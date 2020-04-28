@@ -11,6 +11,7 @@
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TerminalBuilder.hpp>
+#include <powsybl/logging/Logger.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -143,6 +144,8 @@ ThreeWindingsTransformerAdder::ThreeWindingsTransformerAdder(Substation& substat
 }
 
 ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<ThreeWindingsTransformer>();
+
     std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg1 = m_adder1.checkAndGetLeg();
     VoltageLevel& voltageLevel1 = m_adder1.checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal1 = m_adder1.checkAndGetTerminal(voltageLevel1);
@@ -159,6 +162,12 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     voltageLevel1.attach(*ptrTerminal1, true);
     voltageLevel2.attach(*ptrTerminal2, true);
     voltageLevel3.attach(*ptrTerminal3, true);
+
+    // Define ratedU0 equal to ratedU1 if it has not been defined
+    if (std::isnan(m_ratedU0)) {
+        m_ratedU0 = ptrLeg1->getRatedU();
+        logger.info(logging::format("RatedU0 is not set. Fixed to leg1 ratedU: %1%", ptrLeg1->getRatedU()));
+    }
 
     std::unique_ptr<ThreeWindingsTransformer> ptrTransformer = stdcxx::make_unique<ThreeWindingsTransformer>(checkAndGetUniqueId(), getName(), std::move(ptrLeg1), std::move(ptrLeg2), std::move(ptrLeg3), m_ratedU0);
     auto& transformer = getNetwork().checkAndAdd<ThreeWindingsTransformer>(std::move(ptrTransformer));
@@ -200,11 +209,11 @@ ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::newLeg1(
 }
 
 ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::newLeg2() {
-    return m_adder2.clear();
+    return m_adder2.clear().setB(0).setG(0);
 }
 
 ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::newLeg3() {
-    return m_adder3.clear();
+    return m_adder3.clear().setB(0).setG(0);
 }
 
 ThreeWindingsTransformerAdder& ThreeWindingsTransformerAdder::setRatedU0(double ratedU0) {

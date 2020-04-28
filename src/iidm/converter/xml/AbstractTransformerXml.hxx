@@ -25,6 +25,18 @@ namespace xml {
 
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) {
+    std::shared_ptr<PhaseTapChangerAdder> adder = std::make_shared<PhaseTapChangerAdder>(twt.newPhaseTapChanger());
+    readPhaseTapChanger(PHASE_TAP_CHANGER, adder, twt.getTerminal1(), context);
+}
+
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context) {
+    std::shared_ptr<PhaseTapChangerAdder> adder = std::make_shared<PhaseTapChangerAdder>(twl.newPhaseTapChanger());
+    readPhaseTapChanger(toString(PHASE_TAP_CHANGER, leg), adder, twl.getTerminal(), context);
+}
+
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
     const double& targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
@@ -32,7 +44,6 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(TwoWindingsTransf
     const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
     bool regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
 
-    std::shared_ptr<PhaseTapChangerAdder> adder = std::make_shared<PhaseTapChangerAdder>(twt.newPhaseTapChanger());
     adder->setLowTapPosition(lowTapPosition)
         .setTapPosition(tapPosition)
         .setTargetDeadband(targetDeadband)
@@ -40,29 +51,23 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(TwoWindingsTransf
         .setRegulationValue(regulationValue)
         .setRegulating(regulating);
     bool hasTerminalRef = false;
-    context.getReader().readUntilEndElement(PHASE_TAP_CHANGER, [&adder, &context, &hasTerminalRef, &twt]() {
+    context.getReader().readUntilEndElement(elementName, [&adder, &context, &hasTerminalRef, &terminal]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
-            const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
-            const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
-            context.addEndTask([adder, &twt, id, side]() {
-                adder->setRegulationTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(twt.getTerminal1().getVoltageLevel().getSubstation().getNetwork(), id, side)));
+            readTerminalRef(context, hasTerminalRef, [adder, &terminal](const std::string& id, const std::string& side) {
+                adder->setRegulationTerminal(stdcxx::ref<Terminal>(TerminalRefXml::readTerminalRef(terminal.getVoltageLevel().getSubstation().getNetwork(), id, side)));
                 adder->add();
             });
-            hasTerminalRef = true;
         } else if (context.getReader().getLocalName() == STEP) {
-            const auto& r = context.getReader().getAttributeValue<double>(R);
-            const auto& x = context.getReader().getAttributeValue<double>(X);
-            const auto& g = context.getReader().getAttributeValue<double>(G);
-            const auto& b = context.getReader().getAttributeValue<double>(B);
-            const auto& rho = context.getReader().getAttributeValue<double>(RHO);
+            PhaseTapChangerAdder::StepAdder stepAdder = adder->beginStep();
+            readSteps(context, [&stepAdder](double r, double x, double g, double b, double rho) {
+                stepAdder.setR(r)
+                    .setX(x)
+                    .setG(g)
+                    .setB(b)
+                    .setRho(rho);
+            });
             const auto& alpha = context.getReader().getAttributeValue<double>(ALPHA);
-            adder->beginStep()
-                .setR(r)
-                .setX(x)
-                .setG(g)
-                .setB(b)
-                .setRho(rho)
-                .setAlpha(alpha)
+            stepAdder.setAlpha(alpha)
                 .endStep();
         } else {
             throw PowsyblException(logging::format("Unknown element <%1%>", context.getReader().getLocalName()));
@@ -104,26 +109,20 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
     bool hasTerminalRef = false;
     context.getReader().readUntilEndElement(elementName, [&adder, &context, &terminal, &hasTerminalRef]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
-            const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
-            const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
-            context.addEndTask([adder, &terminal, id, side]() {
-                adder->setRegulationTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(terminal.getVoltageLevel().getSubstation().getNetwork(), id, side)));
+            readTerminalRef(context, hasTerminalRef, [adder, &terminal](const std::string& id, const std::string& side) {
+                adder->setRegulationTerminal(stdcxx::ref<Terminal>(TerminalRefXml::readTerminalRef(terminal.getVoltageLevel().getSubstation().getNetwork(), id, side)));
                 adder->add();
             });
-            hasTerminalRef = true;
         } else if (context.getReader().getLocalName() == STEP) {
-            const auto& r = context.getReader().getAttributeValue<double>(R);
-            const auto& x = context.getReader().getAttributeValue<double>(X);
-            const auto& g = context.getReader().getAttributeValue<double>(G);
-            const auto& b = context.getReader().getAttributeValue<double>(B);
-            const auto& rho = context.getReader().getAttributeValue<double>(RHO);
-            adder->beginStep()
-                .setR(r)
-                .setX(x)
-                .setG(g)
-                .setB(b)
-                .setRho(rho)
-                .endStep();
+            readSteps(context, [&adder](double r, double x, double g, double b, double rho) {
+                adder->beginStep()
+                    .setR(r)
+                    .setX(x)
+                    .setG(g)
+                    .setB(b)
+                    .setRho(rho)
+                    .endStep();
+            });
         } else {
             throw PowsyblException(logging::format("Unexpected XML element <%1%>", context.getReader().getLocalName()));
         }
@@ -131,6 +130,28 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
     if (!hasTerminalRef) {
         adder->add();
     }
+}
+
+template <typename Added, typename Adder>
+template <typename StepConsumer>
+void AbstractTransformerXml<Added, Adder>::readSteps(const NetworkXmlReaderContext& context, const StepConsumer& consumer) {
+    const auto& r = context.getReader().getAttributeValue<double>(R);
+    const auto& x = context.getReader().getAttributeValue<double>(X);
+    const auto& g = context.getReader().getAttributeValue<double>(G);
+    const auto& b = context.getReader().getAttributeValue<double>(B);
+    const auto& rho = context.getReader().getAttributeValue<double>(RHO);
+    consumer(r, x, g, b, rho);
+}
+
+template <typename Added, typename Adder>
+template <typename TerminalRefConsumer>
+void AbstractTransformerXml<Added, Adder>::readTerminalRef(NetworkXmlReaderContext& context, bool& hasTerminalRef, const TerminalRefConsumer& consumer) {
+    const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+    const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
+    context.addEndTask([id, side, consumer]() {
+        consumer(id, side);
+    });
+    hasTerminalRef = true;
 }
 
 template <typename Added, typename Adder>
@@ -151,7 +172,7 @@ void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::strin
         const PhaseTapChangerStep& ptcs = ptc.getStep(p);
         context.getWriter().writeStartElement(IIDM_PREFIX, STEP);
         writeTapChangerStep(ptcs, context.getWriter());
-        context.getWriter().writeOptionalAttribute(ALPHA, ptcs.getAlpha());
+        context.getWriter().writeAttribute(ALPHA, ptcs.getAlpha());
         context.getWriter().writeEndElement();
     }
     context.getWriter().writeEndElement();

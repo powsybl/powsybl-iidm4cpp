@@ -9,7 +9,8 @@ set(UNIT_TEST_SOURCES
     stdcxx.cpp
     DateTimeTest.cpp
     DemangleTest.cpp
-    )
+    MathTest.cpp
+)
 
 add_executable(unit-tests-stdcxx ${UNIT_TEST_SOURCES})
 target_compile_definitions(unit-tests-stdcxx PRIVATE BOOST_TEST_DYN_LINK)

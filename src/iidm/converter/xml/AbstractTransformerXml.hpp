@@ -57,9 +57,21 @@ public:
     static void writeTapChangerStep(const TapChangerStep<S>& tcs, powsybl::xml::XmlStreamWriter& writer);
 
 protected:
+    static void readPhaseTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context);
+
+    static void readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
+
+protected:
     AbstractTransformerXml() = default;
 
     ~AbstractTransformerXml() noexcept override = default;
+
+private:
+    template <typename StepConsumer>
+    static void readSteps(const NetworkXmlReaderContext& context, const StepConsumer& consumer);
+
+    template <typename TerminalRefConsumer>
+    static void readTerminalRef(NetworkXmlReaderContext& context, bool& hasTerminalRef, const TerminalRefConsumer& consumer);
 };
 
 }  // namespace xml

@@ -7,6 +7,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/PowsyblException.hpp>
+#include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -22,6 +24,10 @@ BOOST_AUTO_TEST_SUITE(ThreeWindingsTransformerRoundTrip)
 
 BOOST_FIXTURE_TEST_CASE(ThreeWindingsTransformerRoundTripTest, test::ResourceFixture) {
     test::converter::RoundTrip::roundTripVersionedXmlTest("threeWindingsTransformerRoundTripRef.xml", IidmXmlVersion::all());
+}
+
+BOOST_FIXTURE_TEST_CASE(CompleteThreeWindingsTransformerRoundTripTest, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("completeThreeWindingsTransformerRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
