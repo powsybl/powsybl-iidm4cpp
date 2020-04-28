@@ -8,6 +8,8 @@
 #include "ThreeWindingsTransformerXml.hpp"
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
 
 namespace powsybl {
@@ -52,15 +54,23 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
     ThreeWindingsTransformerAdder::LegAdder& legAdder2 = adder.newLeg2()
         .setR(r2)
         .setX(x2)
-        .setG(0.0)  // FIXME(mathbagu)
-        .setB(0.0)  // FIXME(mathbagu)
         .setRatedU(ratedU2);
     ThreeWindingsTransformerAdder::LegAdder& legAdder3 = adder.newLeg3()
         .setR(r3)
         .setX(x3)
-        .setG(0.0)  // FIXME(mathbagu)
-        .setB(0.0)  // FIXME(mathbagu)
         .setRatedU(ratedU3);
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&adder, &legAdder2, &legAdder3, &context]() {
+        const auto& ratedU0 = context.getReader().getAttributeValue<double>(RATED_U0);
+        adder.setRatedU0(ratedU0);
+
+        const auto& g2 = context.getReader().getAttributeValue<double>(G2);
+        const auto& b2 = context.getReader().getAttributeValue<double>(B2);
+        legAdder2.setG(g2).setB(b2);
+
+        const auto& g3 = context.getReader().getAttributeValue<double>(G3);
+        const auto& b3 = context.getReader().getAttributeValue<double>(B3);
+        legAdder3.setG(g3).setB(b3);
+    });
     readNodeOrBus(1, legAdder1, context);
     readNodeOrBus(2, legAdder2, context);
     readNodeOrBus(3, legAdder3, context);
@@ -85,21 +95,41 @@ void ThreeWindingsTransformerXml::readSubElements(ThreeWindingsTransformer& twt,
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS3) {
             CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::Leg> adder = twt.getLeg3().newCurrentLimits();
             readCurrentLimits(adder, context.getReader(), 3);
+        } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER1) {
+            IidmXmlUtil::assertMinimumVersion(THREE_WINDINGS_TRANSFORMER, RATIO_TAP_CHANGER1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+            readRatioTapChanger(1, twt.getLeg1(), context);
+        } else if (context.getReader().getLocalName() == PHASE_TAP_CHANGER1) {
+            IidmXmlUtil::assertMinimumVersion(THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+            readPhaseTapChanger(1, twt.getLeg1(), context);
         } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER2) {
             readRatioTapChanger(2, twt.getLeg2(), context);
+        } else if (context.getReader().getLocalName() == PHASE_TAP_CHANGER2) {
+            IidmXmlUtil::assertMinimumVersion(THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+            readPhaseTapChanger(2, twt.getLeg2(), context);
         } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER3) {
             readRatioTapChanger(3, twt.getLeg3(), context);
+        } else if (context.getReader().getLocalName() == PHASE_TAP_CHANGER3) {
+            IidmXmlUtil::assertMinimumVersion(THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER3, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+            readPhaseTapChanger(3, twt.getLeg3(), context);
         } else {
             AbstractIdentifiableXml::readSubElements(twt, context);
         }
     });
 }
 
-void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
-    if (twt.getLeg2().getG() != 0.0 || twt.getLeg2().getB() != 0.0 || twt.getLeg3().getG() != 0.0 || twt.getLeg3().getB() != 0.0) {
-        throw PowsyblException(logging::format("G and B in Leg 2 or 3 not supported by current version %1%", twt.getId()));
+void ThreeWindingsTransformerXml::writePhaseTapChanger(const stdcxx::CReference<PhaseTapChanger>& ptc, int index, NetworkXmlWriterContext& context) {
+    if (ptc) {
+        AbstractTransformerXml<ThreeWindingsTransformer, ThreeWindingsTransformerAdder>::writePhaseTapChanger(toString(PHASE_TAP_CHANGER, index), ptc, context);
     }
+}
 
+void ThreeWindingsTransformerXml::writeRatioTapChanger(const stdcxx::CReference<RatioTapChanger>& rtc, int index, NetworkXmlWriterContext& context) {
+    if (rtc) {
+        AbstractTransformerXml<ThreeWindingsTransformer, ThreeWindingsTransformerAdder>::writeRatioTapChanger(toString(RATIO_TAP_CHANGER, index), rtc, context);
+    }
+}
+
+void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(R1, twt.getLeg1().getR());
     context.getWriter().writeAttribute(X1, twt.getLeg1().getX());
     context.getWriter().writeAttribute(G1, twt.getLeg1().getG());
@@ -107,10 +137,20 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
     context.getWriter().writeAttribute(RATED_U1, twt.getLeg1().getRatedU());
     context.getWriter().writeAttribute(R2, twt.getLeg2().getR());
     context.getWriter().writeAttribute(X2, twt.getLeg2().getX());
+    IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, G2, twt.getLeg2().getG(), 0,
+        ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
+    IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, B2, twt.getLeg2().getB(), 0,
+        ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
     context.getWriter().writeAttribute(RATED_U2, twt.getLeg2().getRatedU());
     context.getWriter().writeAttribute(R3, twt.getLeg3().getR());
     context.getWriter().writeAttribute(X3, twt.getLeg3().getX());
+    IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, G3, twt.getLeg3().getG(), 0,
+        ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
+    IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, B3, twt.getLeg3().getB(), 0,
+        ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
     context.getWriter().writeAttribute(RATED_U3, twt.getLeg3().getRatedU());
+    IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, RATED_U0, twt.getRatedU0(), twt.getLeg1().getRatedU(),
+        ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
     writeNodeOrBus(twt.getLeg1().getTerminal(), context, 1);
     writeNodeOrBus(twt.getLeg2().getTerminal(), context, 2);
     writeNodeOrBus(twt.getLeg3().getTerminal(), context, 3);
@@ -122,19 +162,21 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
 }
 
 void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
-    if (twt.getLeg1().hasRatioTapChanger() || twt.getLeg1().getPhaseTapChanger() ||
-        twt.getLeg2().hasPhaseTapChanger() || twt.getLeg3().hasPhaseTapChanger()) {
-        throw PowsyblException(logging::format("Tap changer not supported by current version %1%", twt.getId()));
-    }
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg1().getRatioTapChanger(), THREE_WINDINGS_TRANSFORMER, RATIO_TAP_CHANGER1,
+        ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+    writeRatioTapChanger(twt.getLeg1().getRatioTapChanger(), 1, context);
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg1().getPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER1,
+        ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+    writePhaseTapChanger(twt.getLeg1().getPhaseTapChanger(), 1, context);
+    writeRatioTapChanger(twt.getLeg2().getRatioTapChanger(), 2, context);
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg2().getPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER2,
+        ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+    writePhaseTapChanger(twt.getLeg2().getPhaseTapChanger(), 2, context);
+    writeRatioTapChanger(twt.getLeg3().getRatioTapChanger(), 3, context);
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg3().getPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER3,
+        ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+    writePhaseTapChanger(twt.getLeg3().getPhaseTapChanger(), 3, context);
 
-    const stdcxx::CReference<RatioTapChanger>& rtc2 = twt.getLeg2().getRatioTapChanger();
-    if (rtc2) {
-        writeRatioTapChanger(RATIO_TAP_CHANGER2, rtc2, context);
-    }
-    const stdcxx::CReference<RatioTapChanger>& rtc3 = twt.getLeg3().getRatioTapChanger();
-    if (rtc3) {
-        writeRatioTapChanger(RATIO_TAP_CHANGER3, rtc3, context);
-    }
     if (twt.getLeg1().getCurrentLimits()) {
         writeCurrentLimits(twt.getLeg1().getCurrentLimits(), context.getWriter(), 1);
     }
@@ -153,4 +195,3 @@ void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransforme
 }  // namespace iidm
 
 }  // namespace powsybl
-

@@ -16,6 +16,9 @@ namespace stdcxx {
 
 template <typename T = double>
 inline bool isEqual(const T& v1, const T& v2) {
+    if (std::isnan(v1) ^ std::isnan(v2)) {
+        return false;
+    }
     return !std::islessgreater(v1, v2);
 }
 
