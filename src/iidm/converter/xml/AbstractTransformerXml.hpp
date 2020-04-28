@@ -37,8 +37,16 @@ namespace xml {
 
 template <typename Added, typename Adder>
 class AbstractTransformerXml : public AbstractConnectableXml<Added, Adder, Substation> {
-public:
+protected:
+    AbstractTransformerXml() = default;
+
+    ~AbstractTransformerXml() noexcept override = default;
+
     static void readPhaseTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
+
+    static void readPhaseTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context);
+
+    static void readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 
     static void readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
 
@@ -55,16 +63,6 @@ public:
 
     template <typename S>
     static void writeTapChangerStep(const TapChangerStep<S>& tcs, powsybl::xml::XmlStreamWriter& writer);
-
-protected:
-    static void readPhaseTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context);
-
-    static void readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
-
-protected:
-    AbstractTransformerXml() = default;
-
-    ~AbstractTransformerXml() noexcept override = default;
 
 private:
     template <typename StepConsumer>
