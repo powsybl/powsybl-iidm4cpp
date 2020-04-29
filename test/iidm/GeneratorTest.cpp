@@ -172,8 +172,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(3.0, gen.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, gen.getRatedS(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(gen.getRegulatingTerminal());
-    BOOST_TEST(stdcxx::areSame(gen.getRegulatingTerminal().get(), gen.getTerminal()));
+    BOOST_TEST(stdcxx::areSame(gen.getRegulatingTerminal(), gen.getTerminal()));
     BOOST_CHECK_CLOSE(45.0, gen.getTargetP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
@@ -248,8 +247,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(true));
 
     const Generator& cGen = gen;
-    const auto terminal = cGen.getRegulatingTerminal();
-    BOOST_TEST(terminal);
+    const auto& terminal = cGen.getRegulatingTerminal();
     gen.setRegulatingTerminal(stdcxx::ref(terminal));
 
     Terminal& terminal2 = network.getLoad("LOAD1").getTerminal();
@@ -309,8 +307,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(3.0, gen.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, gen.getRatedS(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(gen.getRegulatingTerminal());
-    BOOST_TEST(stdcxx::areSame(gen.getRegulatingTerminal().get(), gen.getTerminal()));
+    BOOST_TEST(stdcxx::areSame(gen.getRegulatingTerminal(), gen.getTerminal()));
     BOOST_CHECK_CLOSE(45.0, gen.getTargetP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
