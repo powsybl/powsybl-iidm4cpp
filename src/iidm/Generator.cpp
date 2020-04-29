@@ -16,8 +16,8 @@ namespace powsybl {
 namespace iidm {
 
 Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::string& id, const std::string& name,
-                     const powsybl::iidm::EnergySource& energySource, double minP, double maxP, bool voltageRegulatorOn,
-                     const stdcxx::Reference<powsybl::iidm::Terminal>& regulatingTerminal, double activePowerSetpoint,
+                     const EnergySource& energySource, double minP, double maxP, bool voltageRegulatorOn,
+                     Terminal& regulatingTerminal, double activePowerSetpoint,
                      double reactivePowerSetpoint, double voltageSetpoint, double ratedS) :
     Injection(id, name, ConnectableType::GENERATOR),
     m_energySource(energySource),
@@ -77,12 +77,12 @@ double Generator::getReactivePowerSetpoint() const {
     return m_reactivePowerSetpoint.at(getNetwork().getVariantIndex());
 }
 
-stdcxx::CReference<Terminal> Generator::getRegulatingTerminal() const {
-    return stdcxx::cref(m_regulatingTerminal);
+const Terminal& Generator::getRegulatingTerminal() const {
+    return m_regulatingTerminal.get();
 }
 
-stdcxx::Reference<Terminal> Generator::getRegulatingTerminal() {
-    return m_regulatingTerminal;
+Terminal& Generator::getRegulatingTerminal() {
+    return m_regulatingTerminal.get();
 }
 
 double Generator::getTargetP() const {
@@ -158,9 +158,9 @@ Generator& Generator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
 Generator& Generator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal) {
     if (static_cast<bool>(terminal)) {
         checkRegulatingTerminal(*this, terminal, getNetwork());
-        m_regulatingTerminal = terminal;
+        m_regulatingTerminal = terminal.get();
     } else {
-        m_regulatingTerminal = stdcxx::ref(getTerminal());
+        m_regulatingTerminal = getTerminal();
     }
     return *this;
 }
