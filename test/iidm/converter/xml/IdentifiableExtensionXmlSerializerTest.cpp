@@ -24,7 +24,7 @@ namespace converter {
 
 namespace xml {
 
-BOOST_AUTO_TEST_SUITE(IdentfiableExtensionXml)
+BOOST_AUTO_TEST_SUITE(IdentifiableExtensionXml)
 
 BOOST_AUTO_TEST_CASE(ExtensionXmlSerializerTest) {
     auto& providers = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
