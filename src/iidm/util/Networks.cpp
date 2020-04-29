@@ -48,20 +48,20 @@ std::map<std::string, std::set<unsigned long>> Networks::getNodesByBus(const Vol
     }
 
     std::map<std::string, std::set<unsigned long>> nodesByBus;
-    for (unsigned long i : voltageLevel.getNodeBreakerView().getNodes()) {
-        const auto& terminal = voltageLevel.getNodeBreakerView().getTerminal(i);
+    for (unsigned long node : voltageLevel.getNodeBreakerView().getNodes()) {
+        const auto& terminal = voltageLevel.getNodeBreakerView().getTerminal(node);
         if (terminal) {
             const auto& bus = terminal.get().getBusView().getBus();
             if (bus) {
-                nodesByBus[bus.get().getId()].insert(i);
+                nodesByBus[bus.get().getId()].insert(node);
             }
         } else {
             // If there is no terminal for the current node, we try to find one traversing the topology
-            const auto& equivalentTerminal = getEquivalentTerminal(voltageLevel, i);
+            const auto& equivalentTerminal = getEquivalentTerminal(voltageLevel, node);
             if (equivalentTerminal) {
                 const auto& bus = equivalentTerminal.get().getBusView().getBus();
                 if (bus) {
-                    nodesByBus[bus.get().getId()].insert(i);
+                    nodesByBus[bus.get().getId()].insert(node);
                 }
             }
         }

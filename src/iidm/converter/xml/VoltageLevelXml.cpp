@@ -72,10 +72,10 @@ void VoltageLevelXml::readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlRe
     IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, BUS, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_1(), context.getVersion());
     double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
     double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
-    std::shared_ptr<std::string> nodesString = std::make_shared<std::string>(context.getReader().getAttributeValue(NODES));
-    context.addEndTask([v, angle, nodesString, &voltageLevel]() {
+    const std::string& strNodes = context.getReader().getAttributeValue(NODES);
+    context.addEndTask([v, angle, strNodes, &voltageLevel]() {
         std::vector<std::string> nodes;
-        boost::algorithm::split(nodes, *nodesString, [](char c) { return c == ','; });
+        boost::algorithm::split(nodes, strNodes, [](char c) { return c == ','; });
         for (const std::string& nodeStr : nodes) {
             unsigned long node = std::stoul(nodeStr);
             const auto& terminal = voltageLevel.getNodeBreakerView().getTerminal(node);
@@ -191,7 +191,7 @@ void VoltageLevelXml::writeCalculatedBus(const Bus& bus, const std::set<unsigned
     context.getWriter().writeStartElement(IIDM_PREFIX, BUS);
     context.getWriter().writeAttribute(V, bus.getV());
     context.getWriter().writeAttribute(ANGLE, bus.getAngle());
-    const auto& mapper = [](const unsigned long& i) { return std::to_string(i); };
+    const auto& mapper = [](unsigned long node) { return std::to_string(node); };
     context.getWriter().writeAttribute(NODES, boost::algorithm::join(nodes | boost::adaptors::transformed(mapper), ","));
     context.getWriter().writeEndElement();
 }
