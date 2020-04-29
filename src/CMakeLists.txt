@@ -152,6 +152,7 @@ set(IIDM_SOURCES
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
+    iidm/util/Networks.cpp
 
     logging/ConsoleLogger.cpp
     logging/ContainerLogger.cpp

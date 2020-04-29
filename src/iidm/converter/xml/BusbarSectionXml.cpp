@@ -5,9 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/Bus.hpp>
-
 #include "BusbarSectionXml.hpp"
+
+#include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
+#include <powsybl/xml/XmlStreamException.hpp>
 
 namespace powsybl {
 
@@ -32,23 +34,27 @@ const char* BusbarSectionXml::getRootElementName() const {
 
 BusbarSection& BusbarSectionXml::readRootElementAttributes(BusbarSectionAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& node = context.getReader().getAttributeValue<unsigned long>(NODE);
-    double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
-    double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
     BusbarSection& bbs = adder.setNode(node)
         .add();
-    context.addEndTask([&bbs, angle, v]() {
-        const auto& b = bbs.getTerminal().getBusView().getBus();
-        if (b) {
-            b.get().setV(v).setAngle(angle);
-        }
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_0(), context.getVersion(), [&bbs, &context]() {
+        double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
+        double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
+        context.addEndTask([&bbs, angle, v]() {
+            const auto& b = bbs.getTerminal().getBusView().getBus();
+            if (b) {
+                b.get().setV(v).setAngle(angle);
+            }
+        });
     });
     return bbs;
 }
 
 void BusbarSectionXml::writeRootElementAttributes(const BusbarSection& busbarSection, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(NODE, busbarSection.getTerminal().getNodeBreakerView().getNode());
-    context.getWriter().writeOptionalAttribute(V, busbarSection.getV());
-    context.getWriter().writeOptionalAttribute(ANGLE, busbarSection.getAngle());
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_0(), context.getVersion(), [&busbarSection, &context]() {
+        context.getWriter().writeAttribute(V, busbarSection.getV());
+        context.getWriter().writeAttribute(ANGLE, busbarSection.getAngle());
+    });
 }
 
 void BusbarSectionXml::readSubElements(BusbarSection& busbarSection, NetworkXmlReaderContext& context) const {
