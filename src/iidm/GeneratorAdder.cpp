@@ -34,8 +34,9 @@ Generator& GeneratorAdder::add() {
     checkRatedS(*this, m_ratedS);
 
     auto terminalPtr = checkAndGetTerminal();
+    Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal : *terminalPtr;
     std::unique_ptr<Generator> ptrGenerator = stdcxx::make_unique<Generator>(getNetwork(), checkAndGetUniqueId(), getName(),
-        m_energySource, m_minP, m_maxP, *m_voltageRegulatorOn, m_regulatingTerminal ? m_regulatingTerminal : stdcxx::ref(*terminalPtr),
+        m_energySource, m_minP, m_maxP, *m_voltageRegulatorOn, regulatingTerminal,
         m_activePowerSetpoint, m_reactivePowerSetpoint, m_voltageSetpoint, m_ratedS);
     auto& generator = getNetwork().checkAndAdd(std::move(ptrGenerator));
 

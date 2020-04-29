@@ -89,7 +89,7 @@ void GeneratorXml::writeRootElementAttributes(const Generator& generator, const 
 }
 
 void GeneratorXml::writeSubElements(const Generator& generator, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    if (!stdcxx::areSame(generator.getTerminal(), generator.getRegulatingTerminal().get())) {
+    if (!stdcxx::areSame(generator.getTerminal(), generator.getRegulatingTerminal())) {
         TerminalRefXml::writeTerminalRef(generator.getRegulatingTerminal(), context, REGULATING_TERMINAL);
     }
     ReactiveLimitsXml::getInstance().write(generator, context);
