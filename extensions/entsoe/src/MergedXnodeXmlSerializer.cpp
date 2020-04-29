@@ -26,7 +26,7 @@ namespace extensions {
 namespace entsoe {
 
 MergedXnodeXmlSerializer::MergedXnodeXmlSerializer() :
-    ExtensionXmlSerializer("mergedXnode", "network", "http://www.itesla_project.eu/schema/iidm/ext/merged_xnode/1_0", "mxn") {
+    AbstractExtensionXmlSerializer("mergedXnode", "network", "mxn", "http://www.itesla_project.eu/schema/iidm/ext/merged_xnode/1_0") {
 }
 
 std::unique_ptr<Extension> MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {

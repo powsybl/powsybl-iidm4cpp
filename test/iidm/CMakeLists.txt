@@ -42,26 +42,11 @@ set(UNIT_TEST_SOURCES
     converter/ExportOptionsTest.cpp
     converter/FakeAnonymizerTest.cpp
     converter/ImportOptionsTest.cpp
-
-    converter/xml/BatteryRoundTripTest.cpp
-    converter/xml/EurostagTest.cpp
-    converter/xml/FictitiousSwitchTest.cpp
-    converter/xml/InternalConnectionsRoundTripTest.cpp
-    converter/xml/LinesRoundTripTest.cpp
-    converter/xml/LccRoundTripRef.cpp
-    converter/xml/NetworkXmlTest.cpp
-    converter/xml/NetworkXmlReaderContextTest.cpp
-    converter/xml/NetworkXmlWriterContextTest.cpp
-    converter/xml/PhaseShifterRoundTripTest.cpp
-    converter/xml/ReactiveLimitsRoundTripTest.cpp
-    converter/xml/RegulatingTerminalRoundTripTest.cpp
-    converter/xml/StaticVarCompensatorRoundTripTest.cpp
-    converter/xml/TerminalRefTest.cpp
-    converter/xml/ThreeWindingsTransformerRoundTripTest.cpp
-    converter/xml/VscRoundTripTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
 target_link_libraries(unit-tests-iidm PRIVATE iidm-tests)
 
-add_test(NAME iidm COMMAND unit-tests-iidm ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_SOURCE_DIR}/test/resources)
+add_test(NAME iidm COMMAND unit-tests-iidm ${BOOST_ARGS_SEPARATOR})
+
+add_subdirectory(converter/xml)
