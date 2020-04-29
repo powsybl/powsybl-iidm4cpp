@@ -37,6 +37,8 @@ protected:  // AbstractIdentifiableXml
 
     void writeRootElementAttributes(const StaticVarCompensator& svc, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
+    void writeSubElements(const StaticVarCompensator& svc, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+
 private:
     StaticVarCompensatorXml() = default;
 

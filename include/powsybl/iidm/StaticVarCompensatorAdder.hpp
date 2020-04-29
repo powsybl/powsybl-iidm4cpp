@@ -11,6 +11,7 @@
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -27,6 +28,8 @@ public:
     StaticVarCompensatorAdder& setBmin(double bMin);
 
     StaticVarCompensatorAdder& setReactivePowerSetpoint(double reactivePowerSetpoint);
+
+    StaticVarCompensatorAdder& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
 
     StaticVarCompensatorAdder& setRegulationMode(const StaticVarCompensator::RegulationMode& regulationMode);
 
@@ -48,6 +51,8 @@ private:
     double m_voltageSetpoint = stdcxx::nan();
 
     double m_reactivePowerSetpoint = stdcxx::nan();
+
+    stdcxx::Reference<Terminal> m_regulatingTerminal;
 
     stdcxx::optional<StaticVarCompensator::RegulationMode> m_regulationMode;
 };

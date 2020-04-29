@@ -18,12 +18,13 @@ namespace powsybl {
 namespace iidm {
 
 StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
-        double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode) :
+        double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, Terminal& regulatingTerminal) :
     Injection(id, name, ConnectableType::STATIC_VAR_COMPENSATOR),
     m_bMin(checkBmin(*this, bMin)),
     m_bMax(checkBmax(*this, bMax)),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
+    m_regulatingTerminal(regulatingTerminal),
     m_regulationMode(network.getVariantManager().getVariantArraySize(), regulationMode) {
     checkSvcRegulator(*this, voltageSetpoint, reactivePowerSetpoint, regulationMode);
 }
@@ -56,6 +57,14 @@ double StaticVarCompensator::getBmin() const {
 
 double StaticVarCompensator::getReactivePowerSetpoint() const {
     return m_reactivePowerSetpoint.at(getNetwork().getVariantIndex());
+}
+
+const Terminal& StaticVarCompensator::getRegulatingTerminal() const {
+    return m_regulatingTerminal.get();
+}
+
+Terminal& StaticVarCompensator::getRegulatingTerminal() {
+    return m_regulatingTerminal.get();
 }
 
 const StaticVarCompensator::RegulationMode& StaticVarCompensator::getRegulationMode() const {
@@ -96,6 +105,12 @@ StaticVarCompensator& StaticVarCompensator::setReactivePowerSetpoint(double reac
     checkSvcRegulator(*this, getVoltageSetpoint(), reactivePowerSetpoint, getRegulationMode());
     m_reactivePowerSetpoint[getNetwork().getVariantIndex()] = reactivePowerSetpoint;
 
+    return *this;
+}
+
+StaticVarCompensator& StaticVarCompensator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
+    checkRegulatingTerminal(*this, regulatingTerminal, getNetwork());
+    m_regulatingTerminal = regulatingTerminal ? regulatingTerminal : getTerminal();
     return *this;
 }
 

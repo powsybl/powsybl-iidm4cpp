@@ -8,11 +8,16 @@
 #ifndef POWSYBL_IIDM_STATICVARCOMPENSATOR_HPP
 #define POWSYBL_IIDM_STATICVARCOMPENSATOR_HPP
 
+#include <functional>
+
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
 namespace iidm {
+
+class Terminal;
 
 class StaticVarCompensator : public Injection {
 public:
@@ -24,7 +29,7 @@ public:
 
 public:
     StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
-                         double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode);
+                         double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, Terminal& regulatingTerminal);
 
     ~StaticVarCompensator() noexcept override = default;
 
@@ -33,6 +38,10 @@ public:
     double getBmin() const;
 
     double getReactivePowerSetpoint() const;
+
+    const Terminal& getRegulatingTerminal() const;
+
+    Terminal& getRegulatingTerminal();
 
     const RegulationMode& getRegulationMode() const;
 
@@ -43,6 +52,8 @@ public:
     StaticVarCompensator& setBmin(double bMin);
 
     StaticVarCompensator& setReactivePowerSetpoint(double reactivePowerSetpoint);
+
+    StaticVarCompensator& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
 
     StaticVarCompensator& setRegulationMode(const RegulationMode& regulationMode);
 
@@ -66,6 +77,8 @@ private:
     std::vector<double> m_voltageSetpoint;
 
     std::vector<double> m_reactivePowerSetpoint;
+
+    std::reference_wrapper<Terminal> m_regulatingTerminal;
 
     std::vector<RegulationMode> m_regulationMode;
 };
