@@ -204,7 +204,7 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
         } else if (context.getReader().getLocalName() == HVDC_LINE) {
             HvdcLineXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == EXTENSION) {
-            std::string id2 = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue("id"));
+            const std::string& id2 = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             Identifiable& identifiable = network.get(id2);
             readExtensions(identifiable, context, extensionsNotFound);
         } else {
