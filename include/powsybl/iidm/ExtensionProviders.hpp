@@ -18,6 +18,7 @@
 #include <boost/filesystem.hpp>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
+#include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -32,15 +33,19 @@ public:
 public:
     ExtensionProviders(const ExtensionProviders&) = delete;
 
-    ExtensionProviders(ExtensionProviders&&) = delete;
+    ExtensionProviders(ExtensionProviders&&) noexcept = delete;
 
     ExtensionProviders& operator=(const ExtensionProviders&) = delete;
 
-    ExtensionProviders& operator=(ExtensionProviders&&) = delete;
+    ExtensionProviders& operator=(ExtensionProviders&&) noexcept = delete;
 
     stdcxx::CReference<T> findProvider(const std::string& name) const;
 
     const T& findProviderOrThrowException(const std::string& name) const;
+
+    stdcxx::const_range<T> getProviders() const;
+
+    stdcxx::range<T> getProviders();
 
     void loadExtensions(const boost::filesystem::path& directory, const std::regex& pattern);
 

@@ -44,6 +44,8 @@ public:
 
     std::string getNamespace(const std::string& prefix) const;
 
+    std::string getNamespace(const std::string& prefix, const std::string& defaultValue) const;
+
     std::string getNamespaceOrDefault(const std::string& prefix) const;
 
     template <typename T>

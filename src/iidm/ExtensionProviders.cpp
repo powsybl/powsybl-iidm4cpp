@@ -9,6 +9,8 @@
 
 #include <boost/dll/import.hpp>
 #include <boost/dll/shared_library.hpp>
+#include <boost/range/adaptor/indirected.hpp>
+#include <boost/range/adaptor/map.hpp>
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Extension.hpp>
@@ -46,6 +48,16 @@ template <typename T, typename Dummy>
 ExtensionProviders<T, Dummy>& ExtensionProviders<T, Dummy>::getInstance() {
     static ExtensionProviders<T, Dummy> s_instance;
     return s_instance;
+}
+
+template <typename T, typename Dummy>
+stdcxx::const_range<T> ExtensionProviders<T, Dummy>::getProviders() const {
+    return boost::adaptors::values(m_providers) | boost::adaptors::indirected;
+}
+
+template <typename T, typename Dummy>
+stdcxx::range<T> ExtensionProviders<T, Dummy>::getProviders() {
+    return boost::adaptors::values(m_providers) | boost::adaptors::indirected;
 }
 
 template <typename T, typename Dummy>
