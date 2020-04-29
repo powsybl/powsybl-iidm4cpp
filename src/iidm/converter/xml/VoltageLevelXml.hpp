@@ -40,9 +40,18 @@ protected:  // AbstractIdentifiableXml
     void writeSubElements(const VoltageLevel& voltageLevel, const Substation& substation, NetworkXmlWriterContext& context) const override;
 
 private:
+    static void writeCalculatedBus(const Bus& bus, const std::set<unsigned long>& nodes, NetworkXmlWriterContext& context);
+
+private:
     VoltageLevelXml() = default;
 
     ~VoltageLevelXml() noexcept override = default;
+
+    void readBusBreakerTopology(VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const;
+
+    void readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlReaderContext& context) const;
+
+    void readNodeBreakerTopology(VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const;
 
     void writeBatteries(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 

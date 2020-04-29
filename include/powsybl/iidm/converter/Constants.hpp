@@ -90,6 +90,7 @@ static const char* const NODE_BREAKER_TOPOLOGY = "nodeBreakerTopology";
 static const char* const NODE_COUNT = "nodeCount";
 static const char* const NODE1 = "node1";
 static const char* const NODE2 = "node2";
+static const char* const NODES = "nodes";
 static const char* const NOMINAL_V = "nominalV";
 static const char* const OPEN = "open";
 static const char* const P = "p";
