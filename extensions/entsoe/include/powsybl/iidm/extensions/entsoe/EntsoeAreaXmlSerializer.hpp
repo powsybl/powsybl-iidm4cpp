@@ -8,9 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_ENTSOE_ENTSOEAREAXMLSERIALIZER_HPP
 #define POWSYBL_IIDM_EXTENSIONS_ENTSOE_ENTSOEAREAXMLSERIALIZER_HPP
 
-#include <memory>
-
-#include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
+#include <powsybl/iidm/converter/xml/AbstractExtensionXmlSerializer.hpp>
 
 namespace powsybl {
 
@@ -20,7 +18,7 @@ namespace extensions {
 
 namespace entsoe {
 
-class EntsoeAreaXmlSerializer : public converter::xml::ExtensionXmlSerializer {
+class EntsoeAreaXmlSerializer : public converter::xml::AbstractExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
     std::unique_ptr<Extension> read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 

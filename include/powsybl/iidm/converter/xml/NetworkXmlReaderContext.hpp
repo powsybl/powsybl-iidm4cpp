@@ -12,7 +12,9 @@
 #include <list>
 
 #include <powsybl/iidm/converter/ImportOptions.hpp>
+#include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+#include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
@@ -36,6 +38,10 @@ public:
 
     void addEndTask(const std::function<void()>& endTask);
 
+    void buildExtensionNamespaceUriList(const stdcxx::const_range<ExtensionXmlSerializer>& providers);
+
+    bool containsExtensionNamespaceUri(const std::string& extensionNamespaceUri) const;
+
     const Anonymizer& getAnonymizer() const;
 
     const std::list<std::function<void()>>& getEndTasks() const;
@@ -56,6 +62,8 @@ private:
     ImportOptions m_options;
 
     const IidmXmlVersion& m_version;
+
+    std::set<std::string> m_extensionsNamespaceUri;
 };
 
 }  // namespace xml

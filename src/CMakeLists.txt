@@ -115,6 +115,8 @@ set(IIDM_SOURCES
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
 
+    iidm/converter/xml/AbstractExtensionXmlSerializer.cpp
+    iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.cpp
     iidm/converter/xml/BatteryXml.cpp
     iidm/converter/xml/BusbarSectionXml.cpp
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp
@@ -143,6 +145,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/ThreeWindingsTransformerXml.cpp
     iidm/converter/xml/TieLineXml.cpp
     iidm/converter/xml/TwoWindingsTransformerXml.cpp
+    iidm/converter/xml/VersionsCompatibility.cpp
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 
