@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_GENERATOR_HPP
 #define POWSYBL_IIDM_GENERATOR_HPP
 
+#include <functional>
+
 #include <powsybl/iidm/EnergySource.hpp>
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
@@ -21,7 +23,7 @@ class Terminal;
 class Generator : public Injection, public ReactiveLimitsHolder {
 public:
     Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, const EnergySource& energySource,
-        double minP, double maxP, bool voltageRegulatorOn, const stdcxx::Reference<Terminal>& regulatingTerminal,
+        double minP, double maxP, bool voltageRegulatorOn, Terminal& regulatingTerminal,
         double activePowerSetpoint, double reactivePowerSetpoint, double voltageSetpoint, double ratedS);
 
     ~Generator() noexcept override = default;
@@ -38,9 +40,9 @@ public:
 
     double getReactivePowerSetpoint() const;
 
-    stdcxx::CReference<Terminal> getRegulatingTerminal() const;
+    const Terminal& getRegulatingTerminal() const;
 
-    stdcxx::Reference<Terminal> getRegulatingTerminal();
+    Terminal& getRegulatingTerminal();
 
     double getTargetP() const;
 
@@ -95,7 +97,7 @@ private:
 
     double m_ratedS;
 
-    stdcxx::Reference<Terminal> m_regulatingTerminal;
+    std::reference_wrapper<Terminal> m_regulatingTerminal;
 
     std::vector<bool> m_voltageRegulatorOn;
 
