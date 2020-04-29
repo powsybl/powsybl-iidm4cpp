@@ -16,14 +16,53 @@ namespace iidm {
 
 class ExtensionProvider {
 public:
+    /**
+     * Copy constructor
+     */
+    ExtensionProvider(const ExtensionProvider&) = default;
+
+    /**
+     * Move constructor
+     */
+    ExtensionProvider(ExtensionProvider&&) noexcept = default;
+
+    /**
+     * Destructor
+     */
     virtual ~ExtensionProvider() noexcept = default;
 
+    /**
+     * Copy assignment operator
+     */
+    ExtensionProvider& operator=(const ExtensionProvider&) = default;
+
+    /**
+     * Move assignment operator
+     */
+    ExtensionProvider& operator=(ExtensionProvider&&) = default;
+
+    /**
+     * Return the name of the category of this {@link ExtensionProvider} instance
+     *
+     * @return the name of the category
+     */
     const std::string& getCategoryName() const;
 
+    /**
+     * Return the name of the extension associated to this {@link ExtensionProvider} instance
+     *
+     * @return the name of the extension
+     */
     const std::string& getExtensionName() const;
 
 protected:
-    ExtensionProvider(const std::string& extensionName, const std::string& categoryName);
+    /**
+     * Create an {@link ExtensionProvider} instance for an extension of a category
+     *
+     * @param extensionName The name of the extension associated to this {@link ExtensionProvider} instance
+     * @param categoryName The category of the extension associated to this {@link ExtensionProvider} instance
+     */
+    ExtensionProvider(std::string&& extensionName, std::string&& categoryName);
 
 private:
     std::string m_extensionName;

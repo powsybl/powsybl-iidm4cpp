@@ -32,7 +32,7 @@ namespace extensions {
 namespace iidm {
 
 ActivePowerControlXmlSerializer::ActivePowerControlXmlSerializer() :
-    ExtensionXmlSerializer("activePowerControl", "network", "http://www.itesla_project.eu/schema/iidm/ext/active_power_control/1_0", "apc") {
+    AbstractExtensionXmlSerializer("activePowerControl", "network", "apc", "http://www.itesla_project.eu/schema/iidm/ext/active_power_control/1_0") {
 }
 
 std::unique_ptr<Extension> ActivePowerControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {

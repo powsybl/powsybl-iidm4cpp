@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 
+#include <powsybl/xml/XmlStreamReader.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -25,6 +27,19 @@ NetworkXmlReaderContext::NetworkXmlReaderContext(const Anonymizer& anonymizer, p
 
 void NetworkXmlReaderContext::addEndTask(const std::function<void()>& endTask) {
     m_endTasks.emplace_back(endTask);
+}
+
+void NetworkXmlReaderContext::buildExtensionNamespaceUriList(const stdcxx::const_range<ExtensionXmlSerializer>& providers) {
+    for (const auto& it : providers) {
+        std::string namespaceUri = m_reader.getNamespace(it.getNamespacePrefix(), "");
+        if (!namespaceUri.empty()) {
+            m_extensionsNamespaceUri.emplace(std::move(namespaceUri));
+        }
+    }
+}
+
+bool NetworkXmlReaderContext::containsExtensionNamespaceUri(const std::string& extensionNamespaceUri) const {
+    return m_extensionsNamespaceUri.find(extensionNamespaceUri) != m_extensionsNamespaceUri.end();
 }
 
 const Anonymizer& NetworkXmlReaderContext::getAnonymizer() const {

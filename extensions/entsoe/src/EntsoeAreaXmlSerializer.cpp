@@ -30,7 +30,7 @@ namespace extensions {
 namespace entsoe {
 
 EntsoeAreaXmlSerializer::EntsoeAreaXmlSerializer() :
-    ExtensionXmlSerializer("entsoeArea", "network", "http://www.itesla_project.eu/schema/iidm/ext/entsoe_area/1_0", "ea") {
+    AbstractExtensionXmlSerializer("entsoeArea", "network", "ea", "http://www.itesla_project.eu/schema/iidm/ext/entsoe_area/1_0") {
 }
 
 std::unique_ptr<Extension> EntsoeAreaXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {

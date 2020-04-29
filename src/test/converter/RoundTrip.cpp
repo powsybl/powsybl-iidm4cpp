@@ -46,6 +46,15 @@ std::string RoundTrip::getVersionedNetworkPath(const std::string& filename, cons
     return getVersionDir(version) + filename;
 }
 
+/*
+void RoundTrip::roundTripAllPreviousVersionedXmlTest(const std::string& filename) {
+    iidm::converter::xml::IidmXmlVersions versions = iidm::converter::xml::IidmXmlVersion::all();
+    versions.pop_back();
+
+    roundTripVersionedXmlTest(filename, versions);
+}
+*/
+
 void RoundTrip::roundTripVersionedXmlTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
     const auto& writer = [&version](const iidm::Network& n, std::ostream& stream) {
         iidm::converter::ExportOptions options;
