@@ -23,7 +23,6 @@ namespace xml {
 
 class NetworkXmlWriterContext;
 
-/*
 namespace ErrorMessage {
 
 static const char* const MANDATORY = "mandatory";
@@ -31,8 +30,7 @@ static const char* const NOT_DEFAULT_NOT_SUPPORTED = "not defined as default and
 static const char* const NOT_NULL_NOT_SUPPORTED = "not null and not supported";
 static const char* const NOT_SUPPORTED = "not supported";
 
-}
-*/
+}  // namespace ErrorMessage
 
 class IidmXmlUtil {
 public:
