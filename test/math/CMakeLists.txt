@@ -11,6 +11,7 @@ set(UNIT_TEST_SOURCES
 )
 
 add_executable(unit-tests-math ${UNIT_TEST_SOURCES})
+target_compile_definitions(unit-tests-math PRIVATE BOOST_TEST_DYN_LINK)
 target_link_libraries(unit-tests-math PRIVATE iidm-tests)
 
 add_test(NAME math COMMAND unit-tests-math)
