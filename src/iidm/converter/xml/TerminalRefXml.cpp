@@ -45,7 +45,7 @@ Terminal& TerminalRefXml::readTerminalRef(Network& network, const std::string& i
 }
 
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& elementName) {
-    writeTerminalRef(terminal, context, IIDM_PREFIX, elementName);
+    writeTerminalRef(terminal, context, context.getVersion().getPrefix(), elementName);
 }
 
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& nsPrefix, const std::string& elementName) {

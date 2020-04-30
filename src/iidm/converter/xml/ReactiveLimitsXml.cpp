@@ -59,16 +59,16 @@ void ReactiveLimitsXml::read(ReactiveLimitsHolder& holder, const NetworkXmlReade
 }
 
 void ReactiveLimitsXml::write(const MinMaxReactiveLimits& limits, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeStartElement(IIDM_PREFIX, MIN_MAX_REACTIVE_LIMITS);
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), MIN_MAX_REACTIVE_LIMITS);
     context.getWriter().writeAttribute(MIN_Q, limits.getMinQ());
     context.getWriter().writeAttribute(MAX_Q, limits.getMaxQ());
     context.getWriter().writeEndElement();
 }
 
 void ReactiveLimitsXml::write(const ReactiveCapabilityCurve& curve, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeStartElement(IIDM_PREFIX, REACTIVE_CAPABILITY_CURVE);
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), REACTIVE_CAPABILITY_CURVE);
     for (const auto& point : curve.getPoints()) {
-        context.getWriter().writeStartElement(IIDM_PREFIX, POINT);
+        context.getWriter().writeStartElement(context.getVersion().getPrefix(), POINT);
         context.getWriter().writeAttribute(P, point.getP());
         context.getWriter().writeAttribute(MIN_Q, point.getMinQ());
         context.getWriter().writeAttribute(MAX_Q, point.getMaxQ());

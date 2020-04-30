@@ -40,7 +40,7 @@ public:
     template <typename S, typename O>
     static void readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index = boost::optional<int>());
 
-    static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index = boost::optional<int>(), const std::string& nsPrefix = IIDM_PREFIX);
+    static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const boost::optional<int>& index = boost::optional<int>());
 
 protected:
     static void readNodeOrBus(BranchAdder<Adder>& adder, const NetworkXmlReaderContext& context);
