@@ -22,8 +22,6 @@ namespace xml {
 
 class IidmXmlVersion {
 public:
-    static const std::vector<std::reference_wrapper<const IidmXmlVersion>>& all();
-
     /**
      * The current IIDM version supported by this version of the project
      */
@@ -41,6 +39,13 @@ public:
 
 public:
     /**
+     * Return the list of all supported XIIDM versions
+     *
+     * @return the supported versions
+     */
+    static const std::vector<std::reference_wrapper<const IidmXmlVersion>>& all();
+
+    /**
      * Get an {@link IidmXmlVersion} instance from a namespace URI
      *
      * @param namespaceURI the namespace URI of the searched IIDM version
@@ -50,6 +55,13 @@ public:
      * @throw a {@link PowsyblException} if the namespace URI is associated to no version
      */
     static const IidmXmlVersion& fromNamespaceURI(const std::string& namespaceURI);
+
+    /**
+     * Get the default XIIDM prefix
+     *
+     * @return the default XIIDM prefix
+     */
+     static const std::string& getDefaultPrefix();
 
     /**
      * Get an {@link IidmXmlVersion} instance from its string representation
@@ -112,6 +124,13 @@ public:
      * @return the namespace URI of this version
      */
     std::string getNamespaceUri() const;
+
+    /**
+     * Get the XML prefix associated to this IIDM version
+     *
+     * @return the XML prefix of this version
+     */
+    const std::string& getPrefix() const;
 
     /**
      * Get the name of the XSD file for this IIDM version
