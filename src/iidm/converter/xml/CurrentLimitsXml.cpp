@@ -17,7 +17,7 @@ namespace converter {
 
 namespace xml {
 
-void CurrentLimitsXml::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index, const std::string& nsPrefix) {
+void CurrentLimitsXml::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const boost::optional<int>& index) {
     if (!std::isnan(limits.getPermanentLimit()) || !limits.getTemporaryLimits().empty()) {
         writer.writeStartElement(nsPrefix, toString(CURRENT_LIMITS, index));
         writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
@@ -25,7 +25,7 @@ void CurrentLimitsXml::writeCurrentLimits(const CurrentLimits& limits, powsybl::
         constexpr unsigned long undefinedAcceptableDuration = std::numeric_limits<int>::max();
 
         for (const auto& tl : limits.getTemporaryLimits()) {
-            writer.writeStartElement(nsPrefix, TEMPORARY_LIMIT);
+            writer.writeStartElement(version.getPrefix(), TEMPORARY_LIMIT);
             writer.writeAttribute(NAME, tl.get().getName());
             writer.writeOptionalAttribute(ACCEPTABLE_DURATION, tl.get().getAcceptableDuration(), undefinedAcceptableDuration);
             writer.writeOptionalAttribute(VALUE, tl.get().getValue(), std::numeric_limits<double>::max());

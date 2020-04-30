@@ -178,13 +178,13 @@ void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransforme
     writePhaseTapChanger(twt.getLeg3().getPhaseTapChanger(), 3, context);
 
     if (twt.getLeg1().getCurrentLimits()) {
-        writeCurrentLimits(twt.getLeg1().getCurrentLimits(), context.getWriter(), 1);
+        writeCurrentLimits(twt.getLeg1().getCurrentLimits(), context.getWriter(), context.getVersion(), 1);
     }
     if (twt.getLeg2().getCurrentLimits()) {
-        writeCurrentLimits(twt.getLeg2().getCurrentLimits(), context.getWriter(), 2);
+        writeCurrentLimits(twt.getLeg2().getCurrentLimits(), context.getWriter(), context.getVersion(), 2);
     }
     if (twt.getLeg3().getCurrentLimits()) {
-        writeCurrentLimits(twt.getLeg3().getCurrentLimits(), context.getWriter(), 3);
+        writeCurrentLimits(twt.getLeg3().getCurrentLimits(), context.getWriter(), context.getVersion(), 3);
     }
 }
 

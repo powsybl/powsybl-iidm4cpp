@@ -158,7 +158,7 @@ void VoltageLevelXml::writeBatteries(const VoltageLevel& voltageLevel, NetworkXm
 }
 
 void VoltageLevelXml::writeBusBranchTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeStartElement(IIDM_PREFIX, BUS_BREAKER_TOPOLOGY);
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), BUS_BREAKER_TOPOLOGY);
     for (const Bus& bus : voltageLevel.getBusView().getBuses()) {
         if (!context.getFilter().test(bus)) {
             continue;
@@ -169,7 +169,7 @@ void VoltageLevelXml::writeBusBranchTopology(const VoltageLevel& voltageLevel, N
 }
 
 void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeStartElement(IIDM_PREFIX, BUS_BREAKER_TOPOLOGY);
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), BUS_BREAKER_TOPOLOGY);
     for (const Bus& bus : voltageLevel.getBusBreakerView().getBuses()) {
         if (!context.getFilter().test(bus)) {
             continue;
@@ -188,7 +188,7 @@ void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, 
 }
 
 void VoltageLevelXml::writeCalculatedBus(const Bus& bus, const std::set<unsigned long>& nodes, NetworkXmlWriterContext& context) {
-    context.getWriter().writeStartElement(IIDM_PREFIX, BUS);
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), BUS);
     context.getWriter().writeAttribute(V, bus.getV());
     context.getWriter().writeAttribute(ANGLE, bus.getAngle());
     const auto& mapper = [](unsigned long node) { return std::to_string(node); };
@@ -233,7 +233,7 @@ void VoltageLevelXml::writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWri
 }
 
 void VoltageLevelXml::writeNodeBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeStartElement(IIDM_PREFIX, NODE_BREAKER_TOPOLOGY);
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), NODE_BREAKER_TOPOLOGY);
     context.getWriter().writeAttribute(NODE_COUNT, voltageLevel.getNodeBreakerView().getNodeCount());
     for (const BusbarSection& bs : voltageLevel.getNodeBreakerView().getBusbarSections()) {
         BusbarSectionXml::getInstance().write(bs, voltageLevel, context);

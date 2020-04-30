@@ -156,7 +156,7 @@ void AbstractTransformerXml<Added, Adder>::readTerminalRef(NetworkXmlReaderConte
 
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context) {
-    context.getWriter().writeStartElement(IIDM_PREFIX, name);
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), name);
     writeTapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep>(ptc, context.getWriter());
     context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(ptc.getRegulationMode()));
     if (ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP || !std::isnan(ptc.getRegulationValue())) {
@@ -170,7 +170,7 @@ void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::strin
     }
     for (long p = ptc.getLowTapPosition(); p <= ptc.getHighTapPosition(); ++p) {
         const PhaseTapChangerStep& ptcs = ptc.getStep(p);
-        context.getWriter().writeStartElement(IIDM_PREFIX, STEP);
+        context.getWriter().writeStartElement(context.getVersion().getPrefix(), STEP);
         writeTapChangerStep(ptcs, context.getWriter());
         context.getWriter().writeAttribute(ALPHA, ptcs.getAlpha());
         context.getWriter().writeEndElement();
@@ -180,7 +180,7 @@ void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::strin
 
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context) {
-    context.getWriter().writeStartElement(IIDM_PREFIX, name);
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), name);
     writeTapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep>(rtc, context.getWriter());
     context.getWriter().writeAttribute(LOAD_TAP_CHANGING_CAPABILITIES, rtc.hasLoadTapChangingCapabilities());
     if (rtc.hasLoadTapChangingCapabilities() || rtc.isRegulating()) {
@@ -194,7 +194,7 @@ void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::strin
     }
     for (long p = rtc.getLowTapPosition(); p <= rtc.getHighTapPosition(); ++p) {
         const RatioTapChangerStep& rtcs = rtc.getStep(p);
-        context.getWriter().writeStartElement(IIDM_PREFIX, STEP);
+        context.getWriter().writeStartElement(context.getVersion().getPrefix(), STEP);
         writeTapChangerStep(rtcs, context.getWriter());
         context.getWriter().writeEndElement();
     }

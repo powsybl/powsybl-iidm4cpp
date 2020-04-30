@@ -76,7 +76,7 @@ void DanglingLineXml::writeRootElementAttributes(const DanglingLine& line, const
 
 void DanglingLineXml::writeSubElements(const DanglingLine& line, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     if (line.getCurrentLimits()) {
-        writeCurrentLimits(line.getCurrentLimits(), context.getWriter());
+        writeCurrentLimits(line.getCurrentLimits(), context.getWriter(), context.getVersion());
     }
 }
 

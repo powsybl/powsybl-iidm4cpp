@@ -148,7 +148,7 @@ void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
         const auto& extensions = identifiable.getExtensions();
         if (context.isExportedEquipment(identifiable.getId()) && boost::size(extensions) > 0) {
 
-            context.getExtensionsWriter().writeStartElement(IIDM_PREFIX, EXTENSION);
+            context.getExtensionsWriter().writeStartElement(context.getVersion().getPrefix(), EXTENSION);
             context.getExtensionsWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
             for (const auto& extension : extensions) {
                 if (context.getOptions().withExtension(extension.getName())) {
@@ -169,7 +169,7 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
 
     reader.skipComments();
 
-    const IidmXmlVersion& version = IidmXmlVersion::fromNamespaceURI(reader.getNamespaceOrDefault(IIDM_PREFIX));
+    const IidmXmlVersion& version = IidmXmlVersion::fromNamespaceURI(reader.getNamespaceOrDefault(IidmXmlVersion::getDefaultPrefix()));
 
     const std::string& id = reader.getAttributeValue(ID);
     const std::string& sourceFormat = reader.getAttributeValue(SOURCE_FORMAT);
@@ -243,8 +243,8 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
 
     writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");
 
-    writer.writeStartElement(IIDM_PREFIX, NETWORK);
-    writer.setPrefix(IIDM_PREFIX, version.getNamespaceUri());
+    writer.writeStartElement(context.getVersion().getPrefix(), NETWORK);
+    writer.setPrefix(context.getVersion().getPrefix(), version.getNamespaceUri());
     writeExtensionNamespaces(network, context);
 
     writer.writeAttribute(ID, network.getId());
