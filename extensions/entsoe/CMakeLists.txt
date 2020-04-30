@@ -49,6 +49,7 @@ target_link_libraries(${EXT_NAME}-static PUBLIC iidm)
 
 # Unit tests
 add_executable(unit-tests-${EXT_NAME} ${UNIT_TEST_SOURCES})
+target_compile_definitions(unit-tests-${EXT_NAME} PRIVATE BOOST_TEST_DYN_LINK)
 target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests)
 
 add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} ${BOOST_ARGS_SEPARATOR} --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)
