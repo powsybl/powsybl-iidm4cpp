@@ -91,10 +91,10 @@ void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& t
         writePhaseTapChanger(PHASE_TAP_CHANGER, ptc, context);
     }
     if (twt.getCurrentLimits1()) {
-        writeCurrentLimits(twt.getCurrentLimits1(), context.getWriter(), 1);
+        writeCurrentLimits(twt.getCurrentLimits1(), context.getWriter(), context.getVersion(), 1);
     }
     if (twt.getCurrentLimits2()) {
-        writeCurrentLimits(twt.getCurrentLimits2(), context.getWriter(), 2);
+        writeCurrentLimits(twt.getCurrentLimits2(), context.getWriter(), context.getVersion(), 2);
     }
 }
 

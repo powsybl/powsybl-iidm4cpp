@@ -31,7 +31,7 @@ void PropertiesXml::read(Identifiable& identifiable, NetworkXmlReaderContext& co
 void PropertiesXml::write(const Identifiable& identifiable, NetworkXmlWriterContext& context) {
     for (const auto& name : identifiable.getPropertyNames()) {
         const auto& value = identifiable.getProperty(name);
-        context.getWriter().writeStartElement(IIDM_PREFIX, PROPERTY);
+        context.getWriter().writeStartElement(context.getVersion().getPrefix(), PROPERTY);
         context.getWriter().writeAttribute(NAME, name);
         context.getWriter().writeAttribute(VALUE, value);
         context.getWriter().writeEndElement();

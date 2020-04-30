@@ -111,8 +111,8 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeBus(const stdcxx::CRefer
 }
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index, const std::string& nsPrefix) {
-    CurrentLimitsXml::writeCurrentLimits(limits, writer, index, nsPrefix);
+void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const boost::optional<int>& index) {
+    CurrentLimitsXml::writeCurrentLimits(limits, writer, version.getPrefix(), version, index);
 }
 
 template <typename Added, typename Adder, typename Parent>

@@ -34,7 +34,7 @@ void NodeBreakerViewInternalConnectionXml::read(VoltageLevel& voltageLevel, cons
 }
 
 void NodeBreakerViewInternalConnectionXml::write(unsigned long node1, unsigned long node2, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeStartElement(IIDM_PREFIX, INTERNAL_CONNECTION);
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), INTERNAL_CONNECTION);
     context.getWriter().writeAttribute(NODE1, node1);
     context.getWriter().writeAttribute(NODE2, node2);
     context.getWriter().writeEndElement();

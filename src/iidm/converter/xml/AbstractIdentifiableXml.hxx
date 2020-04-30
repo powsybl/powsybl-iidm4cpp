@@ -48,7 +48,7 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::readSubElements(Added& ident
 
 template <typename Added, typename Adder, typename Parent>
 void AbstractIdentifiableXml<Added, Adder, Parent>::write(const Added& identifiable, const Parent& parent, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeStartElement(IIDM_PREFIX, getRootElementName());
+    context.getWriter().writeStartElement(context.getVersion().getPrefix(), getRootElementName());
 
     context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
     if (identifiable.getId() != identifiable.getName()) {

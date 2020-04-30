@@ -79,10 +79,10 @@ void LineXml::writeRootElementAttributes(const Line& line, const Network& /*netw
 
 void LineXml::writeSubElements(const Line& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     if (line.getCurrentLimits1()) {
-        writeCurrentLimits(line.getCurrentLimits1(), context.getWriter(), 1);
+        writeCurrentLimits(line.getCurrentLimits1(), context.getWriter(), context.getVersion(), 1);
     }
     if (line.getCurrentLimits2()) {
-        writeCurrentLimits(line.getCurrentLimits2(), context.getWriter(), 2);
+        writeCurrentLimits(line.getCurrentLimits2(), context.getWriter(), context.getVersion(), 2);
     }
 }
 

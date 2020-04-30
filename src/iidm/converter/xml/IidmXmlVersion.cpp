@@ -84,8 +84,17 @@ const IidmXmlVersion& IidmXmlVersion::fromNamespaceURI(const std::string& namesp
     return v;
 }
 
+const std::string& IidmXmlVersion::getDefaultPrefix() {
+    static std::string s_prefix = "iidm";
+    return s_prefix;
+}
+
 std::string IidmXmlVersion::getNamespaceUri() const {
     return logging::format("http://www.%1%/schema/iidm/%2%", m_domain, toString("_"));
+}
+
+const std::string& IidmXmlVersion::getPrefix() const {
+    return getDefaultPrefix();
 }
 
 std::string IidmXmlVersion::getXsd() const {
