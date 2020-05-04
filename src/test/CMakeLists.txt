@@ -41,6 +41,7 @@ install(TARGETS iidm-tests iidm-tests-static
     EXPORT iidm-targets
     LIBRARY DESTINATION ${INSTALL_LIB_DIR}
     ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+    RUNTIME DESTINATION ${INSTALL_BIN_DIR}
 )
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/powsybl/test
