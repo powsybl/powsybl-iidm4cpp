@@ -17,7 +17,7 @@ set(IIDM_SOVERSION ${IIDM_VERSION_MAJOR})
 set(INSTALL_LIB_DIR lib CACHE PATH "Installation directory for libraries")
 set(INSTALL_BIN_DIR bin CACHE PATH "Installation directory for executables")
 set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for headers")
-set(INSTALL_CMAKE_DIR share/cmake CACHE PATH "Installation directory for cmake files")
+set(INSTALL_CMAKE_DIR LibIIDM/cmake CACHE PATH "Installation directory for cmake files")
 set(INSTALL_DOC_DIR share CACHE PATH "Installation directory for doxygen files")
 
 option(BUILD_DOXYGEN "Enable/Disable the generation of the Doxygen." OFF)
