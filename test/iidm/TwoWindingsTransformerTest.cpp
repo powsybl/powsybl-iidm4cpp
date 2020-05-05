@@ -166,6 +166,7 @@ void addRatioTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal)
         .setRegulating(true)
         .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
         .setTargetV(25.0)
+        .setTargetDeadband(1.0)
         .add();
 }
 
@@ -209,6 +210,7 @@ void addPhaseTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal)
         .setRegulating(false)
         .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
         .setRegulationValue(250.0)
+        .setTargetDeadband(2.0)
         .add();
 }
 

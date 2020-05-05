@@ -31,6 +31,14 @@ public:
 
     ShuntCompensatorAdder& setMaximumSectionCount(unsigned long maximumSectionCount);
 
+    ShuntCompensatorAdder& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
+
+    ShuntCompensatorAdder& setTargetDeadband(double targetDeadband);
+
+    ShuntCompensatorAdder& setTargetV(double targetV);
+
+    ShuntCompensatorAdder& setVoltageRegulatorOn(bool voltageRegulatorOn);
+
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
@@ -46,6 +54,13 @@ private:
 
     unsigned long m_maximumSectionCount = 0;
 
+    double m_targetDeadband = stdcxx::nan();
+
+    double m_targetV = stdcxx::nan();
+
+    stdcxx::Reference<Terminal> m_regulatingTerminal;
+
+    bool m_voltageRegulatorOn = false;
 };
 
 }  // namespace iidm

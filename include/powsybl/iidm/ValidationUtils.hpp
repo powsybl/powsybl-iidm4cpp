@@ -127,9 +127,11 @@ void checkSvcRegulator(const Validable& validable, double voltageSetpoint, doubl
 
 long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
 
-double checkTargetDeadband(const Validable& validable, const std::string& tapChangerType, double targetDeadband);
+double checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband);
 
 double checkVoltage(const Validable& validable, double voltage);
+
+bool checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint);
 
 void checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint, double reactivePowerSetpoint);
 
