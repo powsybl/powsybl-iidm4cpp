@@ -20,6 +20,8 @@ set(INSTALL_INCLUDE_DIR include CACHE PATH "Installation directory for headers")
 set(INSTALL_CMAKE_DIR share/cmake CACHE PATH "Installation directory for cmake files")
 set(INSTALL_DOC_DIR share CACHE PATH "Installation directory for doxygen files")
 
+option(BUILD_DOXYGEN "Enable/Disable the generation of the Doxygen." OFF)
+
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 if (${CMAKE_VERSION} VERSION_LESS "3.1.0")
@@ -64,8 +66,7 @@ if (CODE_COVERAGE)
         EXCLUDE_DIRS test tools)
 endif ()
 
-set(DOXYGEN FALSE CACHE BOOL "Enable doxygen")
-if (DOXYGEN)
+if (BUILD_DOXYGEN)
     include(Doxygen)
     doxygen(NAME doxygen CONFIG doxygen/Doxyfile.in OUTPUT_DIR doc)
 endif ()

@@ -27,9 +27,11 @@ function(doxygen)
             WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         )
 
-        install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DOXYGEN_OUTPUT_DIRECTORY}"
-            DESTINATION ${INSTALL_DOC_DIR}
-        )
+        if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/${DOXYGEN_OUTPUT_DIRECTORY}")
+            install(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${DOXYGEN_OUTPUT_DIRECTORY}"
+                DESTINATION ${INSTALL_DOC_DIR}
+            )
+        endif ()
 
     endif ()
 
