@@ -16,7 +16,7 @@ find_package(LibXml2 REQUIRED)
 find_package(LibIIDM REQUIRED)
 
 # Create an executable
-add_executable(my-executable ../example1/main.cpp)
+add_executable(my-executable ../example1/example1.cpp)
 
 # Link the executable with the IIDM shared library
 target_link_libraries(my-executable PRIVATE IIDM::iidm-static)

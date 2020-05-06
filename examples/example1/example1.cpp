@@ -1,17 +1,19 @@
 /**
+ * @internal
  * Copyright (c) 2020, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ * @endinternal
  */
 
-#include <fstream>
 #include <iostream>
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Network.hpp>
 
-/** \example main.cpp
+/**
+ * @example example1.cpp
  * This is an example of how to use the powsybl::iidm::Network class.
  */
 int main(int argc, char** argv) {
