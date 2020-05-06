@@ -55,8 +55,7 @@ BOOST_AUTO_TEST_CASE(TerminalExtension) {
     const auto& terminalMockExt = load2.getExtension<extensions::TerminalMockExt>();
     BOOST_TEST(stdcxx::areSame(load2.getTerminal(), terminalMockExt.getTerminal()));
 
-    // FIXME(mathbagu): it requires to be able to write an extension in a previous version
-    // test::converter::RoundTrip::roundTripAllPreviousVersionedXmlTest("eurostag-tutorial-example1-with-terminalMock-ext.xml");
+    test::converter::RoundTrip::roundTripAllPreviousVersionedXmlTest("eurostag-tutorial-example1-with-terminalMock-ext.xml");
 }
 
 BOOST_AUTO_TEST_CASE(IncompatibleExtensionVersion) {
