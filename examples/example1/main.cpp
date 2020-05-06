@@ -11,6 +11,9 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Network.hpp>
 
+/** \example main.cpp
+ * This is an example of how to use the powsybl::iidm::Network class.
+ */
 int main(int argc, char** argv) {
     if (argc != 3) {
         std::cerr << "Usage: " << argv[0] << " <input-file> <output-file>" << std::endl;
