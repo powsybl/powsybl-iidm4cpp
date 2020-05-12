@@ -38,6 +38,10 @@ stdcxx::CReference<NodeTerminal> CalculatedBus::findTerminal(const NodeBreakerVo
     stdcxx::CReference<Terminal> terminal;
 
     VoltageLevel::NodeBreakerView::Traverser traverser = [&terminal, &voltageLevel](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long node2) {
+        if (terminal) {
+            return false;
+        }
+
         if (static_cast<bool>(sw) && sw.get().isOpen()) {
             return false;
         }
