@@ -163,6 +163,9 @@ set(IIDM_SOURCES
 
     network/BatteryNetworkFactory.cpp
     network/EurostagFactory.cpp
+    network/LoadBarExt.cpp
+    network/LoadFooExt.cpp
+    network/MultipleExtensionsTestNetworkFactory.cpp
     network/ThreeWindingsTransformerNetworkFactory.cpp
 
     stdcxx/DateTime.cpp

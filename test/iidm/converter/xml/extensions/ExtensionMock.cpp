@@ -12,6 +12,8 @@
 
 #include <powsybl/stdcxx/make_unique.hpp>
 
+#include "LoadBarXmlSerializer.hpp"
+#include "LoadFooXmlSerializer.hpp"
 #include "LoadMockExtXmlSerializer.hpp"
 #include "LoadQuxXmlSerializer.hpp"
 #include "TerminalMockXmlSerializer.hpp"
@@ -28,6 +30,8 @@ namespace extensions {
 
 std::vector<std::unique_ptr<ExtensionProvider>> create() {
     std::vector<std::unique_ptr<ExtensionProvider>> serializers;
+    serializers.emplace_back(stdcxx::make_unique<LoadBarXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<LoadFooXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<LoadMockExtXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<LoadQuxXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<TerminalMockXmlSerializer>());

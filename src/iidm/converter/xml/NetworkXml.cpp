@@ -13,6 +13,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
+#include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
@@ -79,6 +80,31 @@ stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOp
     return serializer;
 }
 
+const std::string& getNamespaceUri(const ExtensionXmlSerializer& extensionXmlSerializer, const ExportOptions& options, const IidmXmlVersion& networkVersion) {
+    const auto& extensionVersion = options.getExtensionVersion(extensionXmlSerializer.getExtensionName());
+    if (stdcxx::isInstanceOf<AbstractVersionableExtensionXmlSerializer>(extensionXmlSerializer)) {
+        const auto& serializer = dynamic_cast<const AbstractVersionableExtensionXmlSerializer&>(extensionXmlSerializer);
+
+        if (!extensionVersion.empty()) {
+            serializer.checkWritingCompatibility(extensionVersion, networkVersion);
+            return serializer.getNamespaceUri(extensionVersion);
+        }
+
+        return serializer.getNamespaceUri(serializer.getVersion(networkVersion));
+    }
+
+    if (!extensionVersion.empty()) {
+        return extensionXmlSerializer.getNamespaceUri(extensionVersion);
+    }
+
+    return extensionXmlSerializer.getNamespaceUri();
+}
+
+const std::string& getNamespaceUri(const ExtensionXmlSerializer& extensionXmlSerializer, const ExportOptions& options) {
+    const IidmXmlVersion& networkVersion = options.getVersion().empty() ? IidmXmlVersion::CURRENT_IIDM_XML_VERSION() : IidmXmlVersion::of(options.getVersion(), ".");
+    return getNamespaceUri(extensionXmlSerializer, options, networkVersion);
+}
+
 void readExtensions(Identifiable& identifiable, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound) {
     powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>& extensionProviders = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance();
 
@@ -114,7 +140,7 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
                 continue;
             }
 
-            const std::string& uri = serializer.get().getNamespaceUri();
+            const std::string& uri = getNamespaceUri(serializer.get(), context.getOptions());
             const std::string& prefix = serializer.get().getNamespacePrefix();
 
             if (extensionUris.find(uri) != extensionUris.end()) {
@@ -137,6 +163,11 @@ void writeExtension(const Extension& extension, NetworkXmlWriterContext& context
     stdcxx::CReference<ExtensionXmlSerializer> serializer = getExtensionSerializer(context.getOptions(), extension.getName());
 
     if (serializer) {
+        const std::string& version = context.getExtensionVersion(extension.getName());
+        if (!version.empty()) {
+            serializer.get().checkExtensionVersionSupported(version);
+        }
+
         writer.writeStartElement(serializer.get().getNamespacePrefix(), extension.getName());
         serializer.get().write(extension, context);
         writer.writeEndElement();
