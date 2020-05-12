@@ -94,8 +94,8 @@ Under Windows, install all the following requirements following the vendor instr
 To build **Boost** (1.56 or higher), download the sources from [Boost website](https://www.boost.org/users/download) and uncompress them into a folder. Then open a MSVC prompt and run the following commands:
 ```
 $> cd <BOOST_SOURCES>
-$> b2 -j 4 --with-date_time --with-filesystem --with-program_options --with-system --with-test --layout=system --prefix=<BOOST_PREFIX> variant=<BOOST_BUILD_TYPE> architecture=x86 address-model=64 link=static,shared stage
-$> b2 install
+$> bootstrap.bat
+$> b2 install -j 4 --with-date_time --with-filesystem --with-program_options --with-system --with-test --layout=system --prefix=<BOOST_PREFIX> variant=<BOOST_BUILD_TYPE> architecture=x86 address-model=64 link=static,shared stage
 ```
 where `BOOST_PREFIX` is the folder where Boost libraries will be installed and the `BOOST_BUILD_TYPE` is the build type (`debug` or `release`).
 
