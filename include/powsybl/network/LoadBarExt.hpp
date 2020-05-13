@@ -27,7 +27,7 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    LoadBarExt(iidm::Load& load);
+    explicit LoadBarExt(iidm::Load& load);
 
     ~LoadBarExt() override = default;
 
