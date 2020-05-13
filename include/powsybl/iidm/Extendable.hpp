@@ -55,9 +55,9 @@ public:
     stdcxx::range<Extension> getExtensions();
 
     /**
-     * Returns an extensionAdder to build and add an extension for this extendable.
+     * Returns an {@link ExtensionAdder} to build and add an {@link Extension} for this {@link Extendable}.
      *
-     * @tparam Adder The ExtensionAdder
+     * @tparam Adder The {@link ExtensionAdder}
      *
      * @return the adder
      */

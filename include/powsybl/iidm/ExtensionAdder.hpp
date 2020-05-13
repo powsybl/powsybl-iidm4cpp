@@ -20,12 +20,44 @@ class Extension;
 class ExtensionAdder {
 public:
     /**
+     * Copy assignment operator
+     */
+    ExtensionAdder& operator=(const ExtensionAdder&) = delete;
+
+    /**
+     * Move assignment operator
+     */
+    ExtensionAdder& operator=(ExtensionAdder&&) noexcept = delete;
+
+    /**
      * Add the extension.
      *
      * @return the extendable
      */
     Extendable& add();
 
+protected:
+    /**
+     * Constructor
+     */
+    explicit ExtensionAdder(Extendable& extendable);
+
+    /**
+     * Destructor
+     */
+    virtual ~ExtensionAdder() noexcept = default;
+
+    /**
+     * Copy constructor
+     */
+    ExtensionAdder(const ExtensionAdder& extendable) = default;
+
+    /**
+     * Move constructor
+     */
+    ExtensionAdder(ExtensionAdder&&) noexcept = default;
+
+private:
     /**
      * Creates the extension.
      *
@@ -34,9 +66,6 @@ public:
      * @return the extension
      */
     virtual std::unique_ptr<Extension> createExtension(Extendable& extendable) = 0;
-
-protected:
-    explicit ExtensionAdder(Extendable& extendable);
 
 private:
     Extendable& m_extendable;
