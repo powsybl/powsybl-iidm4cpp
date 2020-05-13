@@ -80,7 +80,7 @@ bool ExportOptions::isWithBranchSV() const {
     return m_withBranchSV;
 }
 
-ExportOptions& ExportOptions::setAnonymised(bool anonymized) {
+ExportOptions& ExportOptions::setAnonymized(bool anonymized) {
     m_anonymized = anonymized;
     return *this;
 }

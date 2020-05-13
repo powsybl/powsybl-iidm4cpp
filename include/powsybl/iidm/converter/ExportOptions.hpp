@@ -134,7 +134,7 @@ public:
      *
      * @return this ExportOptions object
      */
-    ExportOptions& setAnonymised(bool anonymized);
+    ExportOptions& setAnonymized(bool anonymized);
 
     /**
      * Enable/disable the indentation of the XML
