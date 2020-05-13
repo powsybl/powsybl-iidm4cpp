@@ -55,6 +55,11 @@ E& Extendable::getExtension() {
     return const_cast<E&>(static_cast<const Extendable*>(this)->getExtension<E>());
 }
 
+template <typename Adder, typename>
+Adder Extendable::newExtension() {
+    return Adder(*this);
+}
+
 template <typename E, typename>
 void Extendable::removeExtension() {
     const auto& it = m_extensionsByType.find(typeid(E));

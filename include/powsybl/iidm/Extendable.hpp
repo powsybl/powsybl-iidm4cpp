@@ -15,6 +15,7 @@
 #include <unordered_map>
 
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/ExtensionAdder.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
@@ -52,6 +53,16 @@ public:
     stdcxx::const_range<Extension> getExtensions() const;
 
     stdcxx::range<Extension> getExtensions();
+
+    /**
+     * Returns an extensionAdder to build and add an extension for this extendable.
+     *
+     * @tparam Adder The ExtensionAdder
+     *
+     * @return the adder
+     */
+    template <typename Adder, typename = typename std::enable_if<std::is_base_of<ExtensionAdder, Adder>::value>::type>
+    Adder newExtension();
 
     template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
     void removeExtension();

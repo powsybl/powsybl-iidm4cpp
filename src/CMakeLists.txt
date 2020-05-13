@@ -36,6 +36,7 @@ set(IIDM_SOURCES
     iidm/EnergySource.cpp
     iidm/Extendable.cpp
     iidm/Extension.cpp
+    iidm/ExtensionAdder.cpp
     iidm/ExtensionProvider.cpp
     iidm/ExtensionProviders.cpp
     iidm/Generator.cpp
