@@ -137,6 +137,15 @@ public:
     ExportOptions& setAnonymized(bool anonymized);
 
     /**
+     * Set the list of exported extensions.
+     *
+     * @param extensions The exported extension list
+     *
+     * @return this ExportOptions object
+     */
+    ExportOptions& setExtensions(const std::set<std::string>& extensions);
+
+    /**
      * Enable/disable the indentation of the XML
      *
      * @param indent the indentation status

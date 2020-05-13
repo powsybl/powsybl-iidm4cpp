@@ -85,6 +85,11 @@ ExportOptions& ExportOptions::setAnonymized(bool anonymized) {
     return *this;
 }
 
+ExportOptions& ExportOptions::setExtensions(const std::set<std::string>& extensions) {
+    m_extensions = extensions;
+    return *this;
+}
+
 ExportOptions& ExportOptions::setIndent(bool indent) {
     m_indent = indent;
     return *this;

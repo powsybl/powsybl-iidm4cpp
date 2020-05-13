@@ -7,10 +7,14 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
+#include <powsybl/iidm/converter/Parameter.hpp>
+#include <powsybl/iidm/converter/Properties.hpp>
+#include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -88,6 +92,37 @@ BOOST_AUTO_TEST_CASE(SpecialChars) {
 
     const Network& network = Network::readXml(networkStr);
     BOOST_CHECK_EQUAL("ø/Ø - ö/Ö - æ/Æ - ä/Ä - å/Å (aa/Aa)", network.getId());
+}
+
+BOOST_AUTO_TEST_CASE(FromParameters) {
+
+    const std::string& networkStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                                    "<network xmlns:iidm=\"http://www.itesla_project.eu/schema/iidm/1_0\" "
+                                    "              id=\"ø/Ø - ö/Ö - æ/Æ - ä/Ä - å/Å (aa/Aa)\" "
+                                    "              caseDate=\"2014-11-08T19:00:00.000+01:00\" "
+                                    "              forecastDistance=\"0\" "
+                                    "              sourceFormat=\"test\">"
+                                    "</network>";
+    std::stringstream stream;
+    stream << networkStr;
+
+    converter::Properties properties;
+    properties.put(THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
+    properties.put(TOPOLOGY_LEVEL, "BUS_BREAKER");
+
+    FakeAnonymizer anonymizer;
+    const Network& network = Network::readXml(stream, properties, anonymizer);
+
+    std::stringstream ostream;
+    Network::writeXml(ostream, network, properties);
+
+    properties.put(TOPOLOGY_LEVEL, "true");
+    POWSYBL_ASSERT_THROW(Network::writeXml(ostream, network, properties), AssertionError, "Unexpected TopologyLevel name: true");
+    properties.remove(TOPOLOGY_LEVEL);
+
+    properties.put(TOPOLOGY_LEVEL, "true");
+    POWSYBL_ASSERT_THROW(Network::writeXml(ostream, network, properties), AssertionError, "Unexpected TopologyLevel name: true");
+    properties.remove(TOPOLOGY_LEVEL);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

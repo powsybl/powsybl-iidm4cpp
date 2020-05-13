@@ -22,6 +22,11 @@ bool ImportOptions::isThrowExceptionIfExtensionNotFound() const {
     return m_throwExceptionIfExtensionNotFound;
 }
 
+ImportOptions& ImportOptions::setExtensions(const std::set<std::string>& extensions) {
+    m_extensions = extensions;
+    return *this;
+}
+
 ImportOptions& ImportOptions::setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound) {
     m_throwExceptionIfExtensionNotFound = throwExceptionIfExtensionNotFound;
     return *this;

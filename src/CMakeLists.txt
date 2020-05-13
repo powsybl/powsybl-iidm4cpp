@@ -114,6 +114,8 @@ set(IIDM_SOURCES
     iidm/converter/ExportOptions.cpp
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
+    iidm/converter/Parameter.cpp
+    iidm/converter/Properties.cpp
 
     iidm/converter/xml/AbstractExtensionXmlSerializer.cpp
     iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.cpp

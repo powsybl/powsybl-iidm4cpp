@@ -25,6 +25,8 @@ public:
 
     bool isThrowExceptionIfExtensionNotFound() const;
 
+    ImportOptions& setExtensions(const std::set<std::string>& extensions);
+
     ImportOptions& setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound);
 
     bool withExtension(const std::string& extension) const;
