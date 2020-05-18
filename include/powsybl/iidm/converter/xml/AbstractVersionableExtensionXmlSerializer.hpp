@@ -23,6 +23,8 @@ class NetworkXmlReaderContext;
 
 class AbstractVersionableExtensionXmlSerializer : public ExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
+    void checkExtensionVersionSupported(const std::string& extensionVersion) const override;
+
     const std::string& getNamespaceUri() const override;
 
     const std::string& getNamespaceUri(const std::string& extensionVersion) const override;
@@ -34,6 +36,10 @@ public:
                                               VersionsCompatibility&& extensionVersions, std::map<std::string, std::string>&& namespaceUris);
 
     ~AbstractVersionableExtensionXmlSerializer() override = default;
+
+    void checkWritingCompatibility(const std::string& extensionVersion, const IidmXmlVersion& version) const;
+
+    const std::string& getVersion(const IidmXmlVersion& networkVersion) const;
 
 protected:
     void checkReadingCompatibility(const NetworkXmlReaderContext& networkContext) const;
