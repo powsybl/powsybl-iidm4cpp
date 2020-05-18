@@ -50,6 +50,15 @@ public:
     ~ExtensionXmlSerializer() noexcept override = default;
 
     /**
+     * Check if a XML version of the extension is supported
+     *
+     * @param extensionVersion The XML version for this extension
+     *
+     * @throws an {@link PowsyblException} if the version is not supported.
+     */
+    virtual void checkExtensionVersionSupported(const std::string& extensionVersion) const;
+
+    /**
      * Return the name of this serializer
      *
      * @return the name of this serializer
