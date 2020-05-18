@@ -13,7 +13,17 @@ namespace iidm {
 
 namespace converter {
 
-Parameter::Parameter(const std::string& name, const ParameterType& type, const std::string& description, const boost::any& defaultValue) :
+Parameter::Parameter(const std::string& name, const ParameterType& type, const std::string& description, const std::string& defaultValue) :
+    m_type(type), m_description(description), m_defaultValue(defaultValue) {
+    m_names.emplace_back(name);
+}
+
+Parameter::Parameter(const std::string& name, const ParameterType& type, const std::string& description, bool defaultValue) :
+    m_type(type), m_description(description), m_defaultValue(defaultValue) {
+    m_names.emplace_back(name);
+}
+
+Parameter::Parameter(const std::string& name, const ParameterType& type, const std::string& description, const std::set<std::string>& defaultValue) :
     m_type(type), m_description(description), m_defaultValue(defaultValue) {
     m_names.emplace_back(name);
 }

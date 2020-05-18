@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_CONVERTER_PARAMETER_HPP
 #define POWSYBL_IIDM_CONVERTER_PARAMETER_HPP
 
+#include <set>
 #include <string>
 #include <vector>
 
@@ -29,7 +30,11 @@ class Parameter {
 public:
     Parameter() = delete;
 
-    Parameter(const std::string& name, const ParameterType& type, const std::string& description, const boost::any& defaultValue);
+    Parameter(const std::string& name, const ParameterType& type, const std::string& description, const std::string& defaultValue);
+
+    Parameter(const std::string& name, const ParameterType& type, const std::string& description, bool defaultValue);
+
+    Parameter(const std::string& name, const ParameterType& type, const std::string& description, const std::set<std::string>& defaultValue);
 
     ~Parameter() = default;
 

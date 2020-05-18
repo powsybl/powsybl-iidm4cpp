@@ -7,6 +7,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <boost/algorithm/string/join.hpp>
+
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
@@ -120,9 +122,11 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     POWSYBL_ASSERT_THROW(Network::writeXml(ostream, network, properties), AssertionError, "Unexpected TopologyLevel name: true");
     properties.remove(TOPOLOGY_LEVEL);
 
-    properties.put(TOPOLOGY_LEVEL, "true");
-    POWSYBL_ASSERT_THROW(Network::writeXml(ostream, network, properties), AssertionError, "Unexpected TopologyLevel name: true");
-    properties.remove(TOPOLOGY_LEVEL);
+    std::set<std::string> extensions;
+    extensions.insert("extension1");
+    extensions.insert("extension2");
+    properties.put(EXTENSIONS_LIST, boost::algorithm::join(extensions, ","));
+    Network::writeXml(ostream, network, properties);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

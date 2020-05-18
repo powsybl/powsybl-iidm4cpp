@@ -53,7 +53,7 @@ static const converter::Parameter& INDENT_PARAMETER = converter::Parameter(conve
 static const converter::Parameter& EXTENSIONS_LIST_PARAMETER = converter::Parameter(converter::EXTENSIONS_LIST, converter::ParameterType::STRING_LIST, "The list of exported extensions", std::set<std::string>());
 static const converter::Parameter& ONLY_MAIN_CC_PARAMETER = converter::Parameter(converter::ONLY_MAIN_CC, converter::ParameterType::BOOLEAN, "Export only main CC", false);
 static const converter::Parameter& THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = converter::Parameter(converter::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::ParameterType::BOOLEAN, "Throw exception if extension not found", false);
-static const converter::Parameter& TOPOLOGY_LEVEL_PARAMETER = converter::Parameter(converter::TOPOLOGY_LEVEL, converter::ParameterType::STRING, "Export network in this topology level", "NODE_BREAKER");
+static const converter::Parameter& TOPOLOGY_LEVEL_PARAMETER = converter::Parameter(converter::TOPOLOGY_LEVEL, converter::ParameterType::STRING, "Export network in this topology level", std::string("NODE_BREAKER"));
 static const converter::Parameter& VERSION_PARAMETER = converter::Parameter(converter::VERSION, converter::ParameterType::STRING, "IIDM-XML version in which files will be generated", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString("."));
 static const converter::Parameter& WITH_BRANCH_STATE_VARIABLES_PARAMETER = converter::Parameter(converter::WITH_BRANCH_STATE_VARIABLES, converter::ParameterType::BOOLEAN, "Export network with branch state variables", true);
 
