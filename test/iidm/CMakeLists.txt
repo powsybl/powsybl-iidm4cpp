@@ -15,6 +15,7 @@ set(UNIT_TEST_SOURCES
     CurrentLimitsTest.cpp
     DanglingLineTest.cpp
     EnergySourceTest.cpp
+    ExtensionAdderTest.cpp
     GeneratorTest.cpp
     HvdcLineTest.cpp
     iidm.cpp
