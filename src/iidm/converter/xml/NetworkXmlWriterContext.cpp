@@ -43,6 +43,10 @@ const std::set<std::string>& NetworkXmlWriterContext::getExportedEquipments() co
     return m_exportedEquipments;
 }
 
+const std::string& NetworkXmlWriterContext::getExtensionVersion(const std::string& extensionName) const {
+    return m_options.getExtensionVersion(extensionName);
+}
+
 powsybl::xml::XmlStreamWriter& NetworkXmlWriterContext::getExtensionsWriter() {
     return m_extensionsWriter.get();
 }

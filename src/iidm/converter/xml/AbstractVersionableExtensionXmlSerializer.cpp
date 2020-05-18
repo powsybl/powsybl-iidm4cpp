@@ -27,6 +27,12 @@ AbstractVersionableExtensionXmlSerializer::AbstractVersionableExtensionXmlSerial
     m_namespaceUris(std::move(namespaceUris)) {
 }
 
+void AbstractVersionableExtensionXmlSerializer::checkExtensionVersionSupported(const std::string& extensionVersion) const {
+    if (m_namespaceUris.find(extensionVersion) == m_namespaceUris.end()) {
+        throw PowsyblException(logging::format("The version %1% of the %2% extension is not supported.", extensionVersion, getExtensionName()));
+    }
+}
+
 void AbstractVersionableExtensionXmlSerializer::checkReadingCompatibility(const NetworkXmlReaderContext& networkContext) const {
     const auto& version = networkContext.getVersion().toString(".");
     const auto& it = m_extensionVersions.find(version);
@@ -39,6 +45,18 @@ void AbstractVersionableExtensionXmlSerializer::checkReadingCompatibility(const 
         }
     }
     throw PowsyblException(logging::format("IIDM-XML version of network (%1%) is not compatible with the %2% extension's namespace URI", version, getExtensionName()));
+}
+
+void AbstractVersionableExtensionXmlSerializer::checkWritingCompatibility(const std::string& extensionVersion, const IidmXmlVersion& version) const {
+    checkExtensionVersionSupported(extensionVersion);
+    const auto& strVersion = version.toString(".");
+    const auto& it = m_extensionVersions.find(strVersion);
+    if (it == m_extensionVersions.end()) {
+        throw PowsyblException(logging::format("IIDM-XML version of network (%1%) is not supported by the %2% extension's XML serializer", strVersion, getExtensionName()));
+    }
+    if (std::find(it->second.begin(), it->second.end(), extensionVersion) == it->second.end()) {
+        throw PowsyblException(logging::format("IIDM-XML version of network (%1%) is not compatible with the version %2% of the %3% extension", strVersion, extensionVersion, getExtensionName()));
+    }
 }
 
 const std::string& AbstractVersionableExtensionXmlSerializer::getNamespaceUri() const {
@@ -55,7 +73,11 @@ const std::string& AbstractVersionableExtensionXmlSerializer::getNamespaceUri(co
 }
 
 const std::string& AbstractVersionableExtensionXmlSerializer::getVersion() const {
-    return m_extensionVersions.at(IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString(".")).back();
+    return getVersion(IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+}
+
+const std::string& AbstractVersionableExtensionXmlSerializer::getVersion(const IidmXmlVersion& networkVersion) const {
+    return m_extensionVersions.at(networkVersion.toString(".")).back();
 }
 
 }  // namespace xml

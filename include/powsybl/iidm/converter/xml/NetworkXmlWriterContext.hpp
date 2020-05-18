@@ -48,6 +48,8 @@ public:
 
     const std::set<std::string>& getExportedEquipments() const;
 
+    const std::string& getExtensionVersion(const std::string& extensionName) const;
+
     powsybl::xml::XmlStreamWriter& getExtensionsWriter();
 
     const BusFilter& getFilter() const;
