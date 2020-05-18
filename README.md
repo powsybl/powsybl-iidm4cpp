@@ -67,8 +67,8 @@ $> yum install -y gcc-c++ git libxml2-devel make wget
 ```
 $> yum install -y epel-release
 $> yum install -y boost169-devel
-$> export BOOST_INCLUDE_DIR=/usr/include/boost169
-$> export BOOST_LIBRARY_DIR=/usr/lib64/boost169
+$> export BOOST_INCLUDEDIR=/usr/include/boost169
+$> export BOOST_LIBRARYDIR=/usr/lib64/boost169
 ```
 
 **Note:** Under CentOS 7, the default CMake package is too old (2.8.12), so you have to install it manually:
