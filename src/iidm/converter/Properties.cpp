@@ -68,7 +68,6 @@ Properties& Properties::remove(const std::string& property) {
     return *this;
 }
 
-
 }  // namespace converter
 
 }  // namespace iidm

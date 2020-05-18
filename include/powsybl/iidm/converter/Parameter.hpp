@@ -20,6 +20,15 @@ namespace iidm {
 
 namespace converter {
 
+static const char* const ANONYMISED = "iidm.export.xml.anonymised";
+static const char* const EXTENSIONS_LIST = "iidm.export.xml.extensions";
+static const char* const INDENT = "iidm.export.xml.indent";
+static const char* const ONLY_MAIN_CC = "iidm.export.xml.only-main-cc";
+static const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.export.xml.throw-exception-if-extension-not-found";
+static const char* const TOPOLOGY_LEVEL = "iidm.export.xml.topology-level";
+static const char* const VERSION = "iidm.export.xml.version";
+static const char* const WITH_BRANCH_STATE_VARIABLES = "iidm.export.xml.with-branch-state-variables";
+
 enum class ParameterType : char {
     BOOLEAN,
     STRING,
@@ -68,15 +77,6 @@ private:
 
     boost::any m_defaultValue;
 };
-
-static const char* const ANONYMISED = "iidm.export.xml.anonymised";
-static const char* const EXTENSIONS_LIST = "iidm.export.xml.extensions";
-static const char* const INDENT = "iidm.export.xml.indent";
-static const char* const ONLY_MAIN_CC = "iidm.export.xml.only-main-cc";
-static const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.export.xml.throw-exception-if-extension-not-found";
-static const char* const TOPOLOGY_LEVEL = "iidm.export.xml.topology-level";
-static const char* const VERSION = "iidm.export.xml.version";
-static const char* const WITH_BRANCH_STATE_VARIABLES = "iidm.export.xml.with-branch-state-variables";
 
 }  // namespace converter
 
