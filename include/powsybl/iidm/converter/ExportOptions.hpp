@@ -121,8 +121,9 @@ public:
     bool isThrowExceptionIfExtensionNotFound() const;
 
     /**
+     * Return true if the state variables must be exported for branches.
      *
-     * @return
+     * @return true if te state variables must be exported, false otherwise
      */
     bool isWithBranchSV() const;
 
@@ -181,9 +182,11 @@ public:
     ExportOptions& setVersion(const std::string& version);
 
     /**
+     * Enable/Disable the export of the state variables for branches
      *
-     * @param withBranchSV
-     * @return
+     * @param withBranchSV Set to true to export the state variables
+     *
+     * @return this ExportOptions object
      */
     ExportOptions& setWithBranchSV(bool withBranchSV);
 

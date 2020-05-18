@@ -44,5 +44,4 @@ public:
 
 }  // namespace powsybl
 
-
 #endif  // POWSYBL_IIDM_CONVERTER_XML_EXTENSIONS_LOADFOOXMLSERIALIZER_HPP
