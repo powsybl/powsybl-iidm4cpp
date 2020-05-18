@@ -9,6 +9,8 @@ set(EXT_NAME ext-mock)
 
 set(EXT_SOURCES
     extensions/ExtensionMock.cpp
+    extensions/LoadBarXmlSerializer.cpp
+    extensions/LoadFooXmlSerializer.cpp
     extensions/LoadMockExt.cpp
     extensions/LoadMockExtXmlSerializer.cpp
     extensions/LoadQuxExt.cpp
