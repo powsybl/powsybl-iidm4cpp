@@ -30,8 +30,6 @@ To build powsybl-iidm4cpp, you need:
 - [Boost](https://www.boost.org) development packages (1.56 or higher)
 - [LibXML2](http://www.xmlsoft.org/) development packages
 
-### Build from sources
-
 ### Ubuntu 20.04
 ```
 $> apt install -y cmake g++ git libboost-all-dev libxml2-dev make
