@@ -12,6 +12,7 @@
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/extensions/iidm/ActivePowerControl.hpp>
+#include <powsybl/iidm/extensions/iidm/ActivePowerControlAdder.hpp>
 #include <powsybl/network/BatteryNetworkFactory.hpp>
 
 #include <powsybl/test/ResourceFixture.hpp>
@@ -34,7 +35,7 @@ Network createNetwork() {
     battery.addExtension(Extension::create<ActivePowerControl>(battery, true, 4.0));
 
     Generator& generator = network.getGenerator("GEN");
-    generator.addExtension(Extension::create<ActivePowerControl>(generator, false, 3.0));
+    generator.newExtension<ActivePowerControlAdder>().withParticipate(false).withDroop(3.0).add();
 
     return network;
 }
