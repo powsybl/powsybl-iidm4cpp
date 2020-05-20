@@ -15,8 +15,6 @@
 
 #include <powsybl/stdcxx/demangle.hpp>
 
-#include <powsybl/test/unit_test.hpp>
-
 #define POWSYBL_ASSERT_THROW(statement, expected_exception, expected_message) \
 do { \
     try { \

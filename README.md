@@ -27,7 +27,7 @@ To build powsybl-iidm4cpp, you need:
 - A C++ compiler that supports C++11 ([clang](https://clang.llvm.org) 3.3 or higher, [g++](https://gcc.gnu.org) 5.0 or higher)
 - [CMake](https://cmake.org) (3.12 or higher)
 - [Make](https://www.gnu.org/software/make/)
-- [Boost](https://www.boost.org) development packages (1.56 or higher)
+- [Boost](https://www.boost.org) development packages (1.65 or higher)
 - [LibXML2](http://www.xmlsoft.org/) development packages
 
 ### Ubuntu 20.04
@@ -89,7 +89,7 @@ Under Windows, install all the following requirements following the vendor instr
 - [CMake](https://cmake.org/) (3.12 or higher)
 - [Git](https://git-scm.com/download/win)
 
-To build **Boost** (1.56 or higher), download the sources from [Boost website](https://www.boost.org/users/download) and uncompress them into a folder. Then open a MSVC prompt and run the following commands:
+To build **Boost** (1.65 or higher), download the sources from [Boost website](https://www.boost.org/users/download) and uncompress them into a folder. Then open a MSVC prompt and run the following commands:
 ```
 $> cd <BOOST_SOURCES>
 $> bootstrap.bat
@@ -115,7 +115,7 @@ To install **Boost** using `brew`, run the following command:
 ```
 $> brew install boost
 ```
-Otherwise, you can build **Boost** (1.56 or higher) from the sources. First, download the sources from [Boost website](https://www.boost.org/users/download) and uncompress them into a folder. Then open a terminal and run the following commands:
+Otherwise, you can build **Boost** (1.65 or higher) from the sources. First, download the sources from [Boost website](https://www.boost.org/users/download) and uncompress them into a folder. Then open a terminal and run the following commands:
 ```
 $> cd <BOOST_SOURCES>
 $> ./b2 -j 4 --with-date_time --with-filesystem --with-program_options --with-system --with-test --layout=system --prefix=<BOOST_PREFIX> variant=<BOOST_BUILD_TYPE> architecture=x86 address-model=64 link=static,shared stage

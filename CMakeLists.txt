@@ -41,7 +41,7 @@ elseif (MSVC)
 endif ()
 
 set(Boost_USE_STATIC_LIBS OFF)
-find_package(Boost 1.56 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
+find_package(Boost 1.65 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
 find_package(LibXml2 REQUIRED)
 
 if (WIN32)
@@ -52,12 +52,6 @@ if (WIN32)
 endif()
 
 enable_testing()
-
-# Since Boost 1.60, program arguments and boost test arguments are separated by --
-# https://github.com/boostorg/test/commit/d63379a9b3ad33d263d55c119681047c1d28547c
-if ((DEFINED Boost_VERSION_MACRO AND ${Boost_VERSION_MACRO} GREATER 106000) OR (${Boost_VERSION} GREATER 106000))
-    set(BOOST_ARGS_SEPARATOR "--")
-endif ()
 
 set(CODE_COVERAGE FALSE CACHE BOOL "Enable code coverage")
 if (CODE_COVERAGE)
