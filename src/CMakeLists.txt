@@ -38,7 +38,6 @@ set(IIDM_SOURCES
     iidm/Extension.cpp
     iidm/ExtensionAdder.cpp
     iidm/ExtensionProvider.cpp
-    iidm/ExtensionProviders.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp
@@ -124,6 +123,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/BusXml.cpp
     iidm/converter/xml/CurrentLimitsXml.cpp
     iidm/converter/xml/DanglingLineXml.cpp
+    iidm/converter/xml/ExtensionProvidersXml.cpp
     iidm/converter/xml/ExtensionXmlSerializer.cpp
     iidm/converter/xml/GeneratorXml.cpp
     iidm/converter/xml/HvdcLineXml.cpp

@@ -1,9 +1,12 @@
 /**
- * Copyright (c) 2019, RTE (http://www.rte-france.com)
+ * Copyright (c) 2020, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
+
+#ifndef POWSYBL_IIDM_EXTENSIONPROVIDERS_HXX
+#define POWSYBL_IIDM_EXTENSIONPROVIDERS_HXX
 
 #include <powsybl/iidm/ExtensionProviders.hpp>
 
@@ -13,8 +16,6 @@
 #include <boost/range/adaptor/map.hpp>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/iidm/Extension.hpp>
-#include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
@@ -103,9 +104,8 @@ void ExtensionProviders<T, Dummy>::loadLibrary(const boost::filesystem::path& li
     }
 }
 
-template class
-ExtensionProviders<converter::xml::ExtensionXmlSerializer>;
-
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#endif  // POWSYBL_IIDM_EXTENSIONPROVIDERS_HXX
