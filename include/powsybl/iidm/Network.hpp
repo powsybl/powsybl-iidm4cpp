@@ -46,29 +46,11 @@ class TwoWindingsTransformer;
 class VoltageLevel;
 class VscConverterStation;
 
-namespace converter {
-
-class ExportOptions;
-class ImportOptions;
-
-}  // namespace converter
-
 class Network : public Container, public VariantManagerHolder {
 public:
     using BusBreakerView = network::BusBreakerView;
 
     using BusView = network::BusView;
-
-public:
-    static Network readXml(const std::string& data);
-
-    static Network readXml(std::istream& istream);
-
-    static Network readXml(std::istream& istream, const converter::ImportOptions& options, const converter::Anonymizer& anonymizer);
-
-    static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network);
-
-    static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network, const converter::ExportOptions& options);
 
 public:  // Identifiable
     const Network& getNetwork() const override;

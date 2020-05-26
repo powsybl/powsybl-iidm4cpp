@@ -30,40 +30,13 @@
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
-#include <powsybl/iidm/converter/ExportOptions.hpp>
-#include <powsybl/iidm/converter/FakeAnonymizer.hpp>
-#include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/stdcxx/hash.hpp>
-
-#include "converter/xml/NetworkXml.hpp"
 
 #include "ValidationUtils.hpp"
 
 namespace powsybl {
 
 namespace iidm {
-
-Network Network::readXml(const std::string& data) {
-    std::stringstream stream(data);
-    return readXml(stream);
-}
-
-Network Network::readXml(std::istream& istream) {
-    return readXml(istream, converter::ImportOptions(), converter::FakeAnonymizer());
-}
-
-Network Network::readXml(std::istream& istream, const converter::ImportOptions& options, const converter::Anonymizer& anonymizer) {
-    return converter::xml::NetworkXml::read(istream, options, anonymizer);
-}
-
-std::unique_ptr<converter::Anonymizer> Network::writeXml(std::ostream& ostream, const Network& network) {
-    converter::ExportOptions options;
-    return writeXml(ostream, network, options);
-}
-
-std::unique_ptr<converter::Anonymizer> Network::writeXml(std::ostream& ostream, const Network& network, const converter::ExportOptions& options) {
-    return converter::xml::NetworkXml::write(ostream, network, options);
-}
 
 Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, Container::Type::NETWORK),

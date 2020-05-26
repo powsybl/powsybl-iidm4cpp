@@ -8,6 +8,7 @@
 #include <boost/program_options.hpp>
 
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/converter/xml/NetworkXml.hpp>
 #include <powsybl/logging/ConsoleLogger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/logging/MessageFormat.hpp>
@@ -44,8 +45,8 @@ int main(int argc, char** argv) {
         auto logger = stdcxx::make_unique<powsybl::logging::ConsoleLogger>();
         powsybl::logging::LoggerFactory::getInstance().addLogger("powsybl::iidm::converter::xml::NetworkXml", std::move(logger));
 
-        const powsybl::iidm::Network& network = powsybl::iidm::Network::readXml(inputStream);
-        powsybl::iidm::Network::writeXml(outputStream, network);
+        const powsybl::iidm::Network& network = powsybl::iidm::converter::xml::NetworkXml::read(inputStream);
+        powsybl::iidm::converter::xml::NetworkXml::write(outputStream, network);
 
         inputStream.close();
         outputStream.close();

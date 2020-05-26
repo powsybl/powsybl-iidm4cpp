@@ -5,14 +5,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "NetworkXml.hpp"
+#include <powsybl/iidm/converter/xml/NetworkXml.hpp>
 
 #include <chrono>
 
 #include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
+#include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
+#include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
@@ -191,6 +193,15 @@ void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
     }
 }
 
+Network NetworkXml::read(const std::string& data) {
+    std::stringstream stream(data);
+    return read(stream);
+}
+
+Network NetworkXml::read(std::istream& istream) {
+    return read(istream, converter::ImportOptions(), converter::FakeAnonymizer());
+}
+
 Network NetworkXml::read(std::istream& is, const ImportOptions& options, const Anonymizer& anonymizer) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
 
@@ -254,6 +265,11 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
     logger.debug("XIIDM import done in %1% ms", diff.count() * 1000.0);
 
     return network;
+}
+
+std::unique_ptr<converter::Anonymizer> NetworkXml::write(std::ostream& ostream, const Network& network) {
+    converter::ExportOptions options;
+    return write(ostream, network, options);
 }
 
 std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Network& network, const ExportOptions& options) {

@@ -10,6 +10,7 @@
 
 #include <iosfwd>
 #include <memory>
+#include <string>
 
 namespace powsybl {
 
@@ -27,7 +28,13 @@ namespace xml {
 
 class NetworkXml {
 public:
+    static Network read(const std::string& data);
+
+    static Network read(std::istream& istream);
+
     static Network read(std::istream& is, const ImportOptions& options, const Anonymizer& anonymizer);
+
+    static std::unique_ptr<Anonymizer> write(std::ostream& ostream, const Network& network);
 
     static std::unique_ptr<Anonymizer> write(std::ostream& ostream, const Network& network, const ExportOptions& options);
 

@@ -11,6 +11,7 @@
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
+#include <powsybl/iidm/converter/xml/NetworkXml.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -44,7 +45,7 @@ BOOST_AUTO_TEST_CASE(StartByComments) {
                                     "    <!-- test comment --> "
                                     "</iidm:network>";
 
-    const Network& network = Network::readXml(networkStr);
+    const Network& network = NetworkXml::read(networkStr);
     assertNetwork(network);
 }
 
@@ -58,7 +59,7 @@ BOOST_AUTO_TEST_CASE(Basic) {
                                     "              sourceFormat=\"test\">"
                                     "</iidm:network>";
 
-    const Network& network = Network::readXml(networkStr);
+    const Network& network = NetworkXml::read(networkStr);
     assertNetwork(network);
 }
 
@@ -72,7 +73,7 @@ BOOST_AUTO_TEST_CASE(NoPrefix) {
                                     "              sourceFormat=\"test\">"
                                     "</network>";
 
-    const Network& network = Network::readXml(networkStr);
+    const Network& network = NetworkXml::read(networkStr);
     assertNetwork(network);
 }
 
@@ -86,7 +87,7 @@ BOOST_AUTO_TEST_CASE(SpecialChars) {
                                     "              sourceFormat=\"test\">"
                                     "</network>";
 
-    const Network& network = Network::readXml(networkStr);
+    const Network& network = NetworkXml::read(networkStr);
     BOOST_CHECK_EQUAL("ø/Ø - ö/Ö - æ/Æ - ä/Ä - å/Å (aa/Aa)", network.getId());
 }
 
