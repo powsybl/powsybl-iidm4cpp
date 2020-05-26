@@ -56,6 +56,9 @@ public:
 
     const std::string& get(const std::string& key, const std::string& defaultValue) const;
 
+    template <typename T>
+    T get(const std::string& key) const;
+
     stdcxx::const_range<std::string> getKeys() const;
 
     bool isEmpty() const;

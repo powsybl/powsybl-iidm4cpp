@@ -11,6 +11,12 @@
 #include <set>
 #include <string>
 
+namespace stdcxx {
+
+class Properties;
+
+}  // namespace stdcxx
+
 namespace powsybl {
 
 namespace iidm {
@@ -18,12 +24,11 @@ namespace iidm {
 namespace converter {
 
 class Parameter;
-class Properties;
 
 class ConversionParameters {
 public:
     template <typename T>
-    static T readParameter(const Properties& parameters, const Parameter& configuredParameter);
+    static T readParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
 public:
     ConversionParameters() = delete;

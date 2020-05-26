@@ -18,6 +18,12 @@
 #include <powsybl/stdcxx/DateTime.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
+namespace stdcxx {
+
+class Properties;
+
+}  // namespace stdcxx
+
 namespace powsybl {
 
 namespace iidm {
@@ -50,7 +56,6 @@ namespace converter {
 
 class ExportOptions;
 class ImportOptions;
-class Properties;
 
 }  // namespace converter
 
@@ -67,13 +72,13 @@ public:
 
     static Network readXml(std::istream& istream, const converter::ImportOptions& options, const converter::Anonymizer& anonymizer);
 
-    static Network readXml(std::istream& istream, const converter::Properties& parameters, const converter::Anonymizer& anonymizer);
+    static Network readXml(std::istream& istream, const stdcxx::Properties& parameters, const converter::Anonymizer& anonymizer);
 
     static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network);
 
     static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network, const converter::ExportOptions& options);
 
-    static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network, const converter::Properties& parameters);
+    static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network, const stdcxx::Properties& parameters);
 
 public:  // Identifiable
     const Network& getNetwork() const override;

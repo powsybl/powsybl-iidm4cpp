@@ -13,23 +13,29 @@ namespace iidm {
 
 namespace converter {
 
-Parameter::Parameter(const std::string& name, const ParameterType& type, const std::string& description, const std::string& defaultValue) :
-    m_type(type), m_description(description), m_defaultValue(defaultValue) {
-    m_names.emplace_back(name);
+Parameter::Parameter(std::string&& name, ParameterType&& type, std::string&& description, std::string&& defaultValue) :
+    m_type(type),
+    m_description(std::move(description)),
+    m_defaultValue(std::move(defaultValue)) {
+    m_names.emplace_back(std::move(name));
 }
 
-Parameter::Parameter(const std::string& name, const ParameterType& type, const std::string& description, bool defaultValue) :
-    m_type(type), m_description(description), m_defaultValue(defaultValue) {
-    m_names.emplace_back(name);
+Parameter::Parameter(std::string&& name, ParameterType&& type, std::string&& description, bool&& defaultValue) :
+    m_type(type),
+    m_description(std::move(description)),
+    m_defaultValue(defaultValue) {
+    m_names.emplace_back(std::move(name));
 }
 
-Parameter::Parameter(const std::string& name, const ParameterType& type, const std::string& description, const std::set<std::string>& defaultValue) :
-    m_type(type), m_description(description), m_defaultValue(defaultValue) {
-    m_names.emplace_back(name);
+Parameter::Parameter(std::string&& name, ParameterType&& type, std::string&& description, std::set<std::string>&& defaultValue) :
+    m_type(type),
+    m_description(std::move(description)),
+    m_defaultValue(std::move(defaultValue)) {
+    m_names.emplace_back(std::move(name));
 }
 
-Parameter& Parameter::addAdditionalNames(const std::string& additionalName) {
-    m_names.emplace_back(additionalName);
+Parameter& Parameter::addAdditionalNames(const std::initializer_list<std::string>& additionalNames) {
+    std::copy(additionalNames.begin(), additionalNames.end(), std::back_inserter(m_names));
     return *this;
 }
 
@@ -45,7 +51,7 @@ const std::vector<std::string>& Parameter::getNames() const {
     return m_names;
 }
 
-const ParameterType& Parameter::getType() const {
+const Parameter::ParameterType& Parameter::getType() const {
     return m_type;
 }
 

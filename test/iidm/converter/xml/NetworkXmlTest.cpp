@@ -15,10 +15,9 @@
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/Parameter.hpp>
-#include <powsybl/iidm/converter/Properties.hpp>
+#include <powsybl/iidm/converter/xml/Constants.hpp>
+#include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
-#include <powsybl/test/ResourceFixture.hpp>
-#include <powsybl/test/converter/RoundTrip.hpp>
 
 namespace powsybl {
 
@@ -108,9 +107,9 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     std::stringstream stream;
     stream << networkStr;
 
-    converter::Properties properties;
-    properties.put(THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
-    properties.put(TOPOLOGY_LEVEL, "BUS_BREAKER");
+    stdcxx::Properties properties;
+    properties.set(xml::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
+    properties.set(xml::TOPOLOGY_LEVEL, "BUS_BREAKER");
 
     FakeAnonymizer anonymizer;
     const Network& network = Network::readXml(stream, properties, anonymizer);
@@ -118,14 +117,14 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     std::stringstream ostream;
     Network::writeXml(ostream, network, properties);
 
-    properties.put(TOPOLOGY_LEVEL, "true");
+    properties.set(xml::TOPOLOGY_LEVEL, "true");
     POWSYBL_ASSERT_THROW(Network::writeXml(ostream, network, properties), AssertionError, "Unexpected TopologyLevel name: true");
-    properties.remove(TOPOLOGY_LEVEL);
+    properties.remove(xml::TOPOLOGY_LEVEL);
 
     std::set<std::string> extensions;
     extensions.insert("extension1");
     extensions.insert("extension2");
-    properties.put(EXTENSIONS_LIST, boost::algorithm::join(extensions, ","));
+    properties.set(xml::EXTENSIONS_LIST, boost::algorithm::join(extensions, ","));
     Network::writeXml(ostream, network, properties);
 }
 

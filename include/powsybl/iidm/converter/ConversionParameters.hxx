@@ -11,7 +11,7 @@
 #include <powsybl/iidm/converter/ConversionParameters.hpp>
 
 #include <powsybl/iidm/converter/Parameter.hpp>
-#include <powsybl/iidm/converter/Properties.hpp>
+#include <powsybl/stdcxx/Properties.hpp>
 
 namespace powsybl {
 
@@ -20,7 +20,7 @@ namespace iidm {
 namespace converter {
 
 template <typename T>
-T ConversionParameters::readParameter(const Properties& parameters, const Parameter& configuredParameter) {
+T ConversionParameters::readParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter) {
     for (const std::string& name : configuredParameter.getNames()) {
         if (parameters.contains(name)) {
             return parameters.get<T>(name);

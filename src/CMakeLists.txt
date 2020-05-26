@@ -115,7 +115,6 @@ set(IIDM_SOURCES
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
     iidm/converter/Parameter.cpp
-    iidm/converter/Properties.cpp
 
     iidm/converter/xml/AbstractExtensionXmlSerializer.cpp
     iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.cpp
@@ -173,8 +172,8 @@ set(IIDM_SOURCES
     stdcxx/DateTime.cpp
     stdcxx/demangle.cpp
     stdcxx/exception.cpp
-    stdcxx/time.cpp
     stdcxx/Properties.cpp
+    stdcxx/time.cpp
 
     xml/XmlCharConversion.cpp
     xml/XmlStreamException.cpp

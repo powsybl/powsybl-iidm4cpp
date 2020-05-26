@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_CONVERTER_PARAMETER_HPP
 #define POWSYBL_IIDM_CONVERTER_PARAMETER_HPP
 
+#include <initializer_list>
 #include <set>
 #include <string>
 #include <vector>
@@ -20,30 +21,20 @@ namespace iidm {
 
 namespace converter {
 
-static const char* const ANONYMISED = "iidm.export.xml.anonymised";
-static const char* const EXTENSIONS_LIST = "iidm.export.xml.extensions";
-static const char* const INDENT = "iidm.export.xml.indent";
-static const char* const ONLY_MAIN_CC = "iidm.export.xml.only-main-cc";
-static const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.export.xml.throw-exception-if-extension-not-found";
-static const char* const TOPOLOGY_LEVEL = "iidm.export.xml.topology-level";
-static const char* const VERSION = "iidm.export.xml.version";
-static const char* const WITH_BRANCH_STATE_VARIABLES = "iidm.export.xml.with-branch-state-variables";
-
-enum class ParameterType : char {
-    BOOLEAN,
-    STRING,
-    STRING_LIST
-};
-
 class Parameter {
 public:
-    Parameter() = delete;
+    enum class ParameterType : char {
+        BOOLEAN,
+        STRING,
+        STRING_LIST
+    };
 
-    Parameter(const std::string& name, const ParameterType& type, const std::string& description, const std::string& defaultValue);
+public:
+    Parameter(std::string&& name, ParameterType&& type, std::string&& description, std::string&& defaultValue);
 
-    Parameter(const std::string& name, const ParameterType& type, const std::string& description, bool defaultValue);
+    Parameter(std::string&& name, ParameterType&& type, std::string&& description, bool&& defaultValue);
 
-    Parameter(const std::string& name, const ParameterType& type, const std::string& description, const std::set<std::string>& defaultValue);
+    Parameter(std::string&& name, ParameterType&& type, std::string&& description, std::set<std::string>&& defaultValue);
 
     ~Parameter() = default;
 
@@ -53,9 +44,9 @@ public:
 
     Parameter& operator=(const Parameter&) = default;
 
-    Parameter& operator=(Parameter&&) = default;
+    Parameter& operator=(Parameter&&) = delete;
 
-    Parameter& addAdditionalNames(const std::string& additionalName);
+    Parameter& addAdditionalNames(const std::initializer_list<std::string>& additionalNames);
 
     template <typename T>
     T getDefaultValue() const;

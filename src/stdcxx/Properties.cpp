@@ -7,6 +7,9 @@
 
 #include <powsybl/stdcxx/Properties.hpp>
 
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/split.hpp>
 #include <boost/range/adaptor/map.hpp>
 
 #include <powsybl/stdcxx/exception.hpp>
@@ -55,6 +58,36 @@ const std::string& Properties::get(const std::string& key) const {
 const std::string& Properties::get(const std::string& key, const std::string& defaultValue) const {
     const auto& it = m_properties.find(key);
     return (it != m_properties.end()) ? it->second : defaultValue;
+}
+
+template <>
+bool Properties::get(const std::string& key) const {
+    const auto& it = m_properties.find(key);
+    if (it != m_properties.end()) {
+        return boost::iequals(it->second, "true");
+    }
+    throw powsybl::PowsyblException(powsybl::logging::format("Property %1% does not exist", key));
+}
+
+template <>
+std::string Properties::get(const std::string& key) const {
+    const auto& it = m_properties.find(key);
+    if (it != m_properties.end()) {
+        return it->second;
+    }
+    throw powsybl::PowsyblException(powsybl::logging::format("Property %1% does not exist", key));
+}
+
+template <>
+std::set<std::string> Properties::get(const std::string& key) const {
+    const auto& it = m_properties.find(key);
+    if (it != m_properties.end()) {
+        const std::string& valuesStr = it->second;
+        std::set<std::string> values;
+        boost::algorithm::split(values, valuesStr, boost::is_any_of(",:"));
+        return values;
+    }
+    throw powsybl::PowsyblException(powsybl::logging::format("Property %1% does not exist", key));
 }
 
 stdcxx::const_range<std::string> Properties::getKeys() const {
