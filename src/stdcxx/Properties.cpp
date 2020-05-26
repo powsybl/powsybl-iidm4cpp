@@ -5,16 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/Properties.hpp>
+#include <powsybl/stdcxx/Properties.hpp>
 
 #include <boost/range/adaptor/map.hpp>
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
-namespace powsybl {
-
-namespace iidm {
+namespace stdcxx {
 
 Properties::const_iterator Properties::begin() const {
     return m_properties.begin();
@@ -48,7 +46,7 @@ Properties::iterator Properties::end() {
 const std::string& Properties::get(const std::string& key) const {
     const auto& it = m_properties.find(key);
     if (it == m_properties.end()) {
-        throw PowsyblException(stdcxx::format("Property %1% does not exist", key));
+        throw powsybl::PowsyblException(format("Property %1% does not exist", key));
     }
 
     return it->second;
@@ -92,6 +90,4 @@ unsigned long Properties::size() const {
     return m_properties.size();
 }
 
-}  // namespace iidm
-
-}  // namespace powsybl
+}  // namespace stdcxx
