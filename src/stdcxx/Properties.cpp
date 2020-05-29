@@ -9,7 +9,7 @@
 
 #include <boost/range/adaptor/map.hpp>
 
-#include <powsybl/PowsyblException.hpp>
+#include <powsybl/stdcxx/exception.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
 namespace stdcxx {
@@ -46,7 +46,7 @@ Properties::iterator Properties::end() {
 const std::string& Properties::get(const std::string& key) const {
     const auto& it = m_properties.find(key);
     if (it == m_properties.end()) {
-        throw powsybl::PowsyblException(format("Property %1% does not exist", key));
+        throw stdcxx::Exception(format("Property %1% does not exist", key));
     }
 
     return it->second;

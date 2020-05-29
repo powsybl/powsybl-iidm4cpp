@@ -6,6 +6,7 @@
  */
 
 #include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/stdcxx/exception.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
 #include "ValidationUtils.hpp"
@@ -49,7 +50,11 @@ const std::string& Identifiable::getName() const {
 }
 
 const std::string& Identifiable::getProperty(const std::string& key) const {
-    return m_properties.get(key);
+    try {
+        return m_properties.get(key);
+    } catch (const stdcxx::Exception& error) {
+        throw PowsyblException(error.what());
+    }
 }
 
 const std::string& Identifiable::getProperty(const std::string& key, const std::string& defaultValue) const {

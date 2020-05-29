@@ -170,6 +170,7 @@ set(IIDM_SOURCES
 
     stdcxx/DateTime.cpp
     stdcxx/demangle.cpp
+    stdcxx/exception.cpp
     stdcxx/time.cpp
     stdcxx/Properties.cpp
 

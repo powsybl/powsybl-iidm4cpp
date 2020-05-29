@@ -7,8 +7,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/PowsyblException.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
+#include <powsybl/stdcxx/exception.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 
@@ -104,11 +104,11 @@ BOOST_AUTO_TEST_CASE(GetProperty) {
     BOOST_CHECK_EQUAL(4UL, props.size());
 
     POWSYBL_ASSERT_THROW(props.get("key9"),
-                         powsybl::PowsyblException, "Property key9 does not exist");
+                         stdcxx::Exception, "Property key9 does not exist");
     BOOST_CHECK_EQUAL("value9", props.get("key9", "value9"));
 
     POWSYBL_ASSERT_THROW(props.get("key9"),
-                         powsybl::PowsyblException, "Property key9 does not exist");
+                         stdcxx::Exception, "Property key9 does not exist");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
