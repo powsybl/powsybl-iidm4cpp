@@ -50,11 +50,7 @@ const std::string& Identifiable::getName() const {
 }
 
 const std::string& Identifiable::getProperty(const std::string& key) const {
-    try {
-        return m_properties.get(key);
-    } catch (const stdcxx::Exception& error) {
-        throw PowsyblException(error.what());
-    }
+    return m_properties.get(key);
 }
 
 const std::string& Identifiable::getProperty(const std::string& key, const std::string& defaultValue) const {

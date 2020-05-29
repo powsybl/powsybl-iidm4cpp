@@ -13,11 +13,11 @@
 
 namespace stdcxx {
 
-class Exception : public std::runtime_error {
+class PropertyNotFoundException : public std::runtime_error {
 public:
-    explicit Exception(const std::string& message);
+    explicit PropertyNotFoundException(const std::string& message);
 
-    ~Exception() noexcept override = default;
+    ~PropertyNotFoundException() noexcept override = default;
 };
 
 }  // namespace stdcxx

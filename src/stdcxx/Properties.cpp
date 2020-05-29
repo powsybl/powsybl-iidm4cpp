@@ -46,7 +46,7 @@ Properties::iterator Properties::end() {
 const std::string& Properties::get(const std::string& key) const {
     const auto& it = m_properties.find(key);
     if (it == m_properties.end()) {
-        throw stdcxx::Exception(format("Property %1% does not exist", key));
+        throw stdcxx::PropertyNotFoundException(format("Property %1% does not exist", key));
     }
 
     return it->second;

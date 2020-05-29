@@ -9,7 +9,7 @@
 
 namespace stdcxx {
 
-Exception::Exception(const std::string& message) :
+PropertyNotFoundException::PropertyNotFoundException(const std::string& message) :
     std::runtime_error(message) {
 }
 

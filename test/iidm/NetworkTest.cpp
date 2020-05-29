@@ -19,6 +19,7 @@
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/stdcxx/exception.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -480,7 +481,7 @@ BOOST_AUTO_TEST_CASE(Properties) {
     BOOST_CHECK_EQUAL("value1", n.getProperty("key1"));
 
     POWSYBL_ASSERT_THROW(n.getProperty("key3"),
-                         powsybl::PowsyblException, "Property key3 does not exist");
+                         stdcxx::PropertyNotFoundException, "Property key3 does not exist");
     BOOST_CHECK_EQUAL("value3", n.getProperty("key3", "value3"));
 }
 
