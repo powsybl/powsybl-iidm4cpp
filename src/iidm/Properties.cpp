@@ -10,7 +10,7 @@
 #include <boost/range/adaptor/map.hpp>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 

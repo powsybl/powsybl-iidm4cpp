@@ -7,7 +7,7 @@
 
 #include "NodeBreakerVoltageLevelBusNamingStrategy.hpp"
 
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
 

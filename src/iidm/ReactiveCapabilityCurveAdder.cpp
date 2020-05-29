@@ -10,7 +10,7 @@
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 #include "ValidationUtils.hpp"

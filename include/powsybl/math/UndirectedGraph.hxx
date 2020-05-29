@@ -17,7 +17,7 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/counting_range.hpp>
 
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {

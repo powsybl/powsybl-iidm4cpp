@@ -12,8 +12,8 @@
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 

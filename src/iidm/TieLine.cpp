@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {

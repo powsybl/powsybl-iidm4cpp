@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/Extension.hpp>
 
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {

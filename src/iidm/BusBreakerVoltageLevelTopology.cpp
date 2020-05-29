@@ -10,7 +10,7 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/math/TraverseResult.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 #include <powsybl/stdcxx/set.hpp>

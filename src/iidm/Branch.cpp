@@ -13,7 +13,7 @@
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {

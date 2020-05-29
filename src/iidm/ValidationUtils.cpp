@@ -9,7 +9,7 @@
 
 #include <powsybl/iidm/LoadType.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {

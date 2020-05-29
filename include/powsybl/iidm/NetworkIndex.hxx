@@ -15,8 +15,8 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {

@@ -13,7 +13,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include <powsybl/AssertionError.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 

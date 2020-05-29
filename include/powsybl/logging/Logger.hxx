@@ -10,7 +10,7 @@
 
 #include <powsybl/logging/Logger.hpp>
 
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 

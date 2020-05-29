@@ -11,7 +11,7 @@
 #include <libxml/xmlreader.h>
 
 #include <powsybl/AssertionError.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/xml/XmlCharConversion.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>

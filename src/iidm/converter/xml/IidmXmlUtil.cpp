@@ -9,7 +9,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 

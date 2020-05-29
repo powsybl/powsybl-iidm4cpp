@@ -13,7 +13,7 @@
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 

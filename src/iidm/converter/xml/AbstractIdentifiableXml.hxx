@@ -13,7 +13,7 @@
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 

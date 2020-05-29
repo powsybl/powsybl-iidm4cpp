@@ -8,7 +8,7 @@
 #ifndef POWSYBL_STDCXX_MESSAGEFORMAT_HXX
 #define POWSYBL_STDCXX_MESSAGEFORMAT_HXX
 
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 #include <iterator>
 #include <set>

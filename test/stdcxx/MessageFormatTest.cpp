@@ -7,7 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace stdcxx {
 

@@ -9,7 +9,7 @@
 
 #include <libxml/xmlwriter.h>
 
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlCharConversion.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>

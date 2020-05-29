@@ -11,7 +11,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Enum.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 

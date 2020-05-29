@@ -9,7 +9,7 @@
 
 #include <chrono>
 
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/time.hpp>
 
 #include <powsybl/AssertionError.hpp>

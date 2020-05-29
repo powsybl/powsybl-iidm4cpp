@@ -10,8 +10,8 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 

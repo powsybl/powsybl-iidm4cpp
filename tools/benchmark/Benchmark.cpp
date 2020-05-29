@@ -10,7 +10,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/logging/ConsoleLogger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 int main(int argc, char** argv) {

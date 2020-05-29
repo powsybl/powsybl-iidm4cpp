@@ -39,6 +39,6 @@ std::string toString(const T& value);
 
 }  // namespace stdcxx
 
-#include <powsybl/stdcxx/MessageFormat.hxx>
+#include <powsybl/stdcxx/format.hxx>
 
 #endif  // POWSYBL_STDCXX_MESSAGEFORMAT_HPP

@@ -11,8 +11,8 @@
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 
 namespace powsybl {

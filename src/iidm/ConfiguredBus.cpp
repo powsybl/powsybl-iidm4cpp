@@ -10,7 +10,7 @@
 #include <cmath>
 
 #include <powsybl/iidm/Connectable.hpp>
-#include <powsybl/stdcxx/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
