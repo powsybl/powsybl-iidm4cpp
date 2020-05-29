@@ -11,8 +11,8 @@
 #include <powsybl/iidm/Extension.hpp>
 
 #include <powsybl/AssertionError.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -28,7 +28,7 @@ std::unique_ptr<Extension> Extension::create(Args&&... args) {
 template <typename E, typename>
 stdcxx::CReference<E> Extension::getExtendable() const {
     if (m_extendable && !stdcxx::isInstanceOf<E>(m_extendable.get())) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle<E>(), stdcxx::demangle(m_extendable.get())));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle<E>(), stdcxx::demangle(m_extendable.get())));
     }
     return stdcxx::cref<E>(m_extendable);
 }
@@ -36,7 +36,7 @@ stdcxx::CReference<E> Extension::getExtendable() const {
 template <typename E, typename>
 stdcxx::Reference<E> Extension::getExtendable() {
     if (m_extendable && !stdcxx::isInstanceOf<E>(m_extendable.get())) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle<E>(), stdcxx::demangle(m_extendable.get())));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle<E>(), stdcxx::demangle(m_extendable.get())));
     }
     return stdcxx::ref<E>(m_extendable);
 }

@@ -134,7 +134,7 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeNodeOrBus(const Terminal
             writeBus(terminal.getBusView().getBus(), terminal.getBusView().getConnectableBus(), context, index);
             break;
         default:
-            throw powsybl::xml::XmlStreamException(logging::format("Unexpected TopologyLevel value: ", topologyLevel));
+            throw powsybl::xml::XmlStreamException(stdcxx::format("Unexpected TopologyLevel value: ", topologyLevel));
     }
 
     if (index.is_initialized()) {

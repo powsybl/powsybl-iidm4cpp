@@ -71,7 +71,7 @@ void BusBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
 void BusBreakerVoltageLevel::checkTerminal(Terminal& terminal) const {
     if (!stdcxx::isInstanceOf<BusTerminal>(terminal)) {
         throw ValidationException(terminal.getConnectable(),
-                                  logging::format("Voltage level '%1%' has a bus/breaker topology, a bus connection should be specified instead of a node connection",
+                                  stdcxx::format("Voltage level '%1%' has a bus/breaker topology, a bus connection should be specified instead of a node connection",
                                                   getId()));
     }
 
@@ -165,7 +165,7 @@ stdcxx::CReference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus(const
     if (v.is_initialized()) {
         bus = m_graph.getVertexObject(*v);
         if (bus.get().getId() != busId) {
-            throw PowsyblException(logging::format("Invalid bus id (expected: '%1%', actual: '%2%')", busId, bus.get().getId()));
+            throw PowsyblException(stdcxx::format("Invalid bus id (expected: '%1%', actual: '%2%')", busId, bus.get().getId()));
         }
     }
 
@@ -199,7 +199,7 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getEdge(const std::strin
         return {};
     }
 
-    throw PowsyblException(logging::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getId()));
+    throw PowsyblException(stdcxx::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getId()));
 }
 
 const BusBreakerVoltageLevel::Graph& BusBreakerVoltageLevel::getGraph() const {
@@ -225,7 +225,7 @@ stdcxx::Reference<Switch> BusBreakerVoltageLevel::getSwitch(const std::string& s
     if (e.is_initialized()) {
         aSwitch = m_graph.getEdgeObject(*e);
         if (aSwitch.get().getId() != switchId) {
-            throw PowsyblException(logging::format("Invalid switch id (expected: '%1%', actual: '%2%')", switchId, aSwitch.get().getId()));
+            throw PowsyblException(stdcxx::format("Invalid switch id (expected: '%1%', actual: '%2%')", switchId, aSwitch.get().getId()));
         }
     }
 
@@ -283,7 +283,7 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
         return {};
     }
 
-    throw PowsyblException(logging::format("Bus '%1%' not found in the voltage level '%2%'", busId, getId()));
+    throw PowsyblException(stdcxx::format("Bus '%1%' not found in the voltage level '%2%'", busId, getId()));
 }
 
 void BusBreakerVoltageLevel::invalidateCache() {
@@ -299,12 +299,12 @@ void BusBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
 
 void BusBreakerVoltageLevel::removeAllBuses() {
     if (m_graph.getEdgeCount() > 0) {
-        throw ValidationException(*this, logging::format("Cannot remove all buses because there is still some switches"));
+        throw ValidationException(*this, stdcxx::format("Cannot remove all buses because there is still some switches"));
     }
     for (const auto& it : m_graph.getVertexObjects()) {
         const auto& bus = it.get();
         if (bus.getTerminalCount() > 0) {
-            throw ValidationException(*this, logging::format("Cannot remove bus '%1%' due to connected equipments", bus.getId()));
+            throw ValidationException(*this, stdcxx::format("Cannot remove bus '%1%' due to connected equipments", bus.getId()));
         }
     }
     for (const auto& it : m_graph.getVertexObjects()) {
@@ -327,7 +327,7 @@ void BusBreakerVoltageLevel::removeAllSwitches() {
 void BusBreakerVoltageLevel::removeBus(const std::string& busId) {
     const auto& bus = getConfiguredBus(busId, true);
     if (bus.get().getTerminalCount() > 0) {
-        throw ValidationException(*this, logging::format("Cannot remove bus '%1%' due to connectable equipments", busId));
+        throw ValidationException(*this, stdcxx::format("Cannot remove bus '%1%' due to connectable equipments", busId));
     }
 
     for (const auto& it : m_switches) {
@@ -339,7 +339,7 @@ void BusBreakerVoltageLevel::removeBus(const std::string& busId) {
         const auto& bus1 = m_graph.getVertexObject(v1);
         const auto& bus2 = m_graph.getVertexObject(v2);
         if ((bus == bus1) || (bus == bus2)) {
-            throw PowsyblException(logging::format("Cannot remove bus '%1%' due to the connected switch '%2%'", busId, switchId));
+            throw PowsyblException(stdcxx::format("Cannot remove bus '%1%' due to the connected switch '%2%'", busId, switchId));
         }
     }
 
@@ -352,7 +352,7 @@ void BusBreakerVoltageLevel::removeBus(const std::string& busId) {
 void BusBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
     const auto& it = m_switches.find(switchId);
     if (it == m_switches.end()) {
-        throw PowsyblException(logging::format("Switch '%1%' not found in voltage level '%2%'", switchId, getId()));
+        throw PowsyblException(stdcxx::format("Switch '%1%' not found in voltage level '%2%'", switchId, getId()));
     }
 
     const auto& aSwitch = m_graph.removeEdge(it->second);

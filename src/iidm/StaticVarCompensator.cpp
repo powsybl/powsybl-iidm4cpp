@@ -9,7 +9,7 @@
 
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 #include "ValidationUtils.hpp"
 

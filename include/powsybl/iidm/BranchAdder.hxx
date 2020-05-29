@@ -12,7 +12,7 @@
 #include <powsybl/iidm/TerminalBuilder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -44,7 +44,7 @@ VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel1() {
 
     stdcxx::Reference<VoltageLevel> voltageLevel1 = this->getNetwork().template find<VoltageLevel>(m_voltageLevelId1);
     if (!voltageLevel1) {
-        throw ValidationException(*this, logging::format("First voltage level '%1%' not found", m_voltageLevelId1));
+        throw ValidationException(*this, stdcxx::format("First voltage level '%1%' not found", m_voltageLevelId1));
     }
 
     return voltageLevel1.get();
@@ -58,7 +58,7 @@ VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel2() {
 
     stdcxx::Reference<VoltageLevel> voltageLevel2 = this->getNetwork().template find<VoltageLevel>(m_voltageLevelId2);
     if (!voltageLevel2) {
-        throw ValidationException(*this, logging::format("Second voltage level '%1%' not found", m_voltageLevelId2));
+        throw ValidationException(*this, stdcxx::format("Second voltage level '%1%' not found", m_voltageLevelId2));
     }
 
     return voltageLevel2.get();

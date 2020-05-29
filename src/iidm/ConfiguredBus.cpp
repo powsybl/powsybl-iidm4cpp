@@ -10,7 +10,7 @@
 #include <cmath>
 
 #include <powsybl/iidm/Connectable.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -141,7 +141,7 @@ void ConfiguredBus::removeTerminal(BusTerminal& terminal) {
     if (it != terminals.end()) {
         terminals.erase(it);
     } else {
-        throw PowsyblException(logging::format("Terminal %1% not found", terminal));
+        throw PowsyblException(stdcxx::format("Terminal %1% not found", terminal));
     }
 }
 

@@ -13,7 +13,7 @@
 #include <boost/filesystem/path.hpp>
 
 #include <powsybl/AssertionError.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -33,14 +33,14 @@ std::string ResourceFixture::getResource(const std::string& name) const {
     path /= name;
 
     if (!boost::filesystem::exists(path)) {
-        throw powsybl::AssertionError(powsybl::logging::format("Unable to find the resource: %1%", path.string()));
+        throw powsybl::AssertionError(stdcxx::format("Unable to find the resource: %1%", path.string()));
     }
 
     std::stringstream buffer;
     std::ifstream stream(path.string());
     if (!stream) {
         throw powsybl::AssertionError(
-            powsybl::logging::format("Unable to access to the resource: %1%", path.string()));
+            stdcxx::format("Unable to access to the resource: %1%", path.string()));
     }
     buffer << stream.rdbuf();
 

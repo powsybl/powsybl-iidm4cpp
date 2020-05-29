@@ -42,11 +42,11 @@ HvdcLine& HvdcLineAdder::add() {
 }
 
 HvdcConverterStation& HvdcLineAdder::getConverterStation(const std::string& converterStationId, unsigned int side) const {
-    checkNotEmpty(converterStationId, logging::format("Side %1% converter station not set", side));
+    checkNotEmpty(converterStationId, stdcxx::format("Side %1% converter station not set", side));
 
     stdcxx::Reference<HvdcConverterStation> converterStation = m_network.find<HvdcConverterStation>(converterStationId);
     if (!converterStation) {
-        throw PowsyblException(logging::format("Side %1% converter station %2% not found", side, converterStationId));
+        throw PowsyblException(stdcxx::format("Side %1% converter station %2% not found", side, converterStationId));
     }
     return converterStation.get();
 }

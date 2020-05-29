@@ -9,7 +9,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Enum.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -30,7 +30,7 @@ TopologyKind getTopologyKind(const TopologyLevel& topologyLevel) {
             return TopologyKind::BUS_BREAKER;
 
         default:
-            throw PowsyblException(logging::format("No topology kind associated to topology level %1%", topologyLevel));
+            throw PowsyblException(stdcxx::format("No topology kind associated to topology level %1%", topologyLevel));
     }
 }
 

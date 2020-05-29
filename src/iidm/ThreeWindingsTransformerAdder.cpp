@@ -50,10 +50,10 @@ VoltageLevel& ThreeWindingsTransformerAdder::LegAdder::checkAndGetVoltageLevel()
 
     stdcxx::Reference<VoltageLevel> voltageLevel = m_parent.getNetwork().template find<VoltageLevel>(m_voltageLevelId);
     if (!voltageLevel) {
-        throw ValidationException(*this, logging::format("voltage level '%1%' not found", m_voltageLevelId));
+        throw ValidationException(*this, stdcxx::format("voltage level '%1%' not found", m_voltageLevelId));
     }
     if (!stdcxx::areSame(voltageLevel.get().getSubstation(), m_parent.getSubstation())) {
-        throw ValidationException(*this, logging::format("voltage level shall belong to the substation '%1%'", m_parent.getSubstation().getId()));
+        throw ValidationException(*this, stdcxx::format("voltage level shall belong to the substation '%1%'", m_parent.getSubstation().getId()));
     }
 
     return voltageLevel.get();
@@ -166,7 +166,7 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     // Define ratedU0 equal to ratedU1 if it has not been defined
     if (std::isnan(m_ratedU0)) {
         m_ratedU0 = ptrLeg1->getRatedU();
-        logger.info(logging::format("RatedU0 is not set. Fixed to leg1 ratedU: %1%", ptrLeg1->getRatedU()));
+        logger.info(stdcxx::format("RatedU0 is not set. Fixed to leg1 ratedU: %1%", ptrLeg1->getRatedU()));
     }
 
     std::unique_ptr<ThreeWindingsTransformer> ptrTransformer = stdcxx::make_unique<ThreeWindingsTransformer>(checkAndGetUniqueId(), getName(), std::move(ptrLeg1), std::move(ptrLeg2), std::move(ptrLeg3), m_ratedU0);

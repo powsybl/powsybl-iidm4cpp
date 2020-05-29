@@ -41,7 +41,7 @@ std::unique_ptr<Extension> LoadMockExtXmlSerializer::read(Extendable& extendable
     checkReadingCompatibility(context);
 
     if (!stdcxx::isInstanceOf<Load>(extendable)) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Load>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Load>()));
     }
     auto& load = dynamic_cast<Load&>(extendable);
 

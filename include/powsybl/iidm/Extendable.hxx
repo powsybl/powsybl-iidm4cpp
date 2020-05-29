@@ -10,8 +10,8 @@
 
 #include <powsybl/iidm/Extendable.hpp>
 
-#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -45,7 +45,7 @@ template <typename E, typename>
 const E& Extendable::getExtension() const {
     const auto& it = m_extensionsByType.find(typeid(E));
     if (it == m_extensionsByType.end()) {
-        throw PowsyblException(logging::format("Extension %1% not found", stdcxx::demangle<E>()));
+        throw PowsyblException(stdcxx::format("Extension %1% not found", stdcxx::demangle<E>()));
     }
     return dynamic_cast<E&>(it->second.get());
 }

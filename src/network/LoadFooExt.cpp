@@ -19,7 +19,7 @@ LoadFooExt::LoadFooExt(iidm::Load& load) :
 
 void LoadFooExt::assertExtendable(const stdcxx::Reference<iidm::Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<iidm::Load>(extendable.get())) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<iidm::Load>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<iidm::Load>()));
     }
 }
 

@@ -10,7 +10,7 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 

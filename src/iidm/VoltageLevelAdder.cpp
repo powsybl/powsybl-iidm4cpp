@@ -39,7 +39,7 @@ VoltageLevel& VoltageLevelAdder::add() {
             break;
 
         default:
-            throw AssertionError(logging::format("Unexpected TopologyKind value: %1%", *m_topologyKind));
+            throw AssertionError(stdcxx::format("Unexpected TopologyKind value: %1%", *m_topologyKind));
     }
 
     auto& voltageLevel = getNetwork().checkAndAdd<VoltageLevel>(std::move(ptrVoltageLevel));

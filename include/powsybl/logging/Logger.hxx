@@ -10,7 +10,7 @@
 
 #include <powsybl/logging/Logger.hpp>
 
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -19,35 +19,35 @@ namespace logging {
 template <typename... T>
 void Logger::debug(const std::string& message, const T&... args) {
     if (isDebugEnabled()) {
-        log(Level::DEBUG, format(message, args...));
+        log(Level::DEBUG, stdcxx::format(message, args...));
     }
 }
 
 template <typename... T>
 void Logger::error(const std::string& message, const T&... args) {
     if (isErrorEnabled()) {
-        log(Level::ERROR, format(message, args...));
+        log(Level::ERROR, stdcxx::format(message, args...));
     }
 }
 
 template <typename... T>
 void Logger::info(const std::string& message, const T&... args) {
     if (isInfoEnabled()) {
-        log(Level::INFO, format(message, args...));
+        log(Level::INFO, stdcxx::format(message, args...));
     }
 }
 
 template <typename... T>
 void Logger::trace(const std::string& message, const T&... args) {
     if (isTraceEnabled()) {
-        log(Level::TRACE, format(message, args...));
+        log(Level::TRACE, stdcxx::format(message, args...));
     }
 }
 
 template <typename... T>
 void Logger::warn(const std::string& message, const T&... args) {
     if (isWarnEnabled()) {
-        log(Level::WARN, format(message, args...));
+        log(Level::WARN, stdcxx::format(message, args...));
     }
 }
 

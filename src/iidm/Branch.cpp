@@ -13,7 +13,7 @@
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {
@@ -123,7 +123,7 @@ const std::unique_ptr<CurrentLimits>& Branch::getCurrentLimitsPtr(const Side& si
             return m_limits2;
 
         default:
-            throw AssertionError(logging::format("Unexpected side value: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
     }
 }
 
@@ -157,7 +157,7 @@ const Terminal& Branch::getTerminal(const Side& side) const {
             return getTerminals().at(1).get();
 
         default:
-            throw AssertionError(logging::format("Unexpected side value: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
     }
 }
 
@@ -169,7 +169,7 @@ const Terminal& Branch::getTerminal(const std::string& voltageLevelId) const {
     bool side1 = getTerminal1().getVoltageLevel().getId() == voltageLevelId;
     bool side2 = getTerminal2().getVoltageLevel().getId() == voltageLevelId;
     if (side1 && side2) {
-        throw PowsyblException(logging::format("Both terminals are connected to voltage level %1%", voltageLevelId));
+        throw PowsyblException(stdcxx::format("Both terminals are connected to voltage level %1%", voltageLevelId));
     }
     if (side1) {
         return getTerminal1();
@@ -178,7 +178,7 @@ const Terminal& Branch::getTerminal(const std::string& voltageLevelId) const {
         return getTerminal2();
     }
 
-    throw PowsyblException(logging::format("No terminal connected to voltage level %1%", voltageLevelId));
+    throw PowsyblException(stdcxx::format("No terminal connected to voltage level %1%", voltageLevelId));
 }
 
 Terminal& Branch::getTerminal(const std::string& voltageLevelId) {
@@ -228,7 +228,7 @@ void Branch::setCurrentLimits(const Branch::Side& side, std::unique_ptr<CurrentL
             break;
 
         default:
-            throw AssertionError(logging::format("Unexpected side value: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
     }
 }
 

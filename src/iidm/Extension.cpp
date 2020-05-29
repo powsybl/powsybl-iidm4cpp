@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/Extension.hpp>
 
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {
@@ -26,7 +26,7 @@ void Extension::setExtendable(const stdcxx::Reference<Extendable>& extendable) {
     assertExtendable(extendable);
 
     if (m_extendable && extendable && !stdcxx::areSame(m_extendable.get(), extendable.get())) {
-        throw PowsyblException(logging::format("Extension is already associated to the extendable %1%", m_extendable));
+        throw PowsyblException(stdcxx::format("Extension is already associated to the extendable %1%", m_extendable));
     }
     m_extendable = extendable;
 }
