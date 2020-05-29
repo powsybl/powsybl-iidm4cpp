@@ -35,7 +35,7 @@ CoordinatedReactiveControlXmlSerializer::CoordinatedReactiveControlXmlSerializer
 
 std::unique_ptr<Extension> CoordinatedReactiveControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<Generator>(extendable)) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
     }
     auto& generator = dynamic_cast<Generator&>(extendable);
 

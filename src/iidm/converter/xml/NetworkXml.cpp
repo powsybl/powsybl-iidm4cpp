@@ -42,7 +42,7 @@ namespace xml {
 
 void checkExtensionsNotFound(const NetworkXmlReaderContext& context, const std::set<std::string>& extensionsNotFound) {
     if (!extensionsNotFound.empty()) {
-        const std::string& message = logging::format("Extensions %1% not found!", logging::toString(extensionsNotFound));
+        const std::string& message = stdcxx::format("Extensions %1% not found!", stdcxx::toString(extensionsNotFound));
 
         if (context.getOptions().isThrowExceptionIfExtensionNotFound()) {
             throw PowsyblException(message);
@@ -144,11 +144,11 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
             const std::string& prefix = serializer.get().getNamespacePrefix();
 
             if (extensionUris.find(uri) != extensionUris.end()) {
-                throw PowsyblException(logging::format("Extension namespace URI collision"));
+                throw PowsyblException(stdcxx::format("Extension namespace URI collision"));
             }
 
             if (extensionPrefixes.find(prefix) != extensionPrefixes.end()) {
-                throw PowsyblException(logging::format("Extension namespace prefix collision"));
+                throw PowsyblException(stdcxx::format("Extension namespace prefix collision"));
             }
 
             extensionUris.insert(uri);
@@ -239,7 +239,7 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
             Identifiable& identifiable = network.get(id2);
             readExtensions(identifiable, context, extensionsNotFound);
         } else {
-            throw powsybl::xml::XmlStreamException(logging::format("Unexpected element: %1%", context.getReader().getLocalName()));
+            throw powsybl::xml::XmlStreamException(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));
         }
     });
 

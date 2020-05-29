@@ -11,8 +11,8 @@
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 
 namespace powsybl {
@@ -26,7 +26,7 @@ namespace xml {
 template <typename E>
 const E& ExtensionXmlSerializer::safeCast(const Extension& extension) const {
     if (!stdcxx::isInstanceOf<E>(extension)) {
-        throw PowsyblException(logging::format("Unexpected extension type: %1% (%2% expected)", stdcxx::demangle(extension), stdcxx::demangle<E>()));
+        throw PowsyblException(stdcxx::format("Unexpected extension type: %1% (%2% expected)", stdcxx::demangle(extension), stdcxx::demangle<E>()));
     }
 
     return dynamic_cast<const E&>(extension);

@@ -11,8 +11,8 @@
 #include <powsybl/iidm/Enum.hpp>
 
 #include <powsybl/AssertionError.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -25,7 +25,7 @@ E fromString(const std::string& name) {
     const auto& names = getNames<E>();
     const auto& it = std::find(names.begin(), names.end(), name);
     if (it == names.end()) {
-        throw powsybl::AssertionError(powsybl::logging::format("Unexpected %1% name: %2%", stdcxx::simpleClassName<E>(), name));
+        throw powsybl::AssertionError(stdcxx::format("Unexpected %1% name: %2%", stdcxx::simpleClassName<E>(), name));
     }
 
     return static_cast<E>(it - names.begin());
@@ -36,7 +36,7 @@ std::string toString(const E& value) {
     auto index = static_cast<unsigned long>(value);
     const auto& names = getNames<E>();
     if (index >= names.size()) {
-        throw powsybl::AssertionError(powsybl::logging::format("Unexpected %1% value: %2%", stdcxx::simpleClassName<E>(), index));
+        throw powsybl::AssertionError(stdcxx::format("Unexpected %1% value: %2%", stdcxx::simpleClassName<E>(), index));
     }
     return *(names.begin() + index);
 }

@@ -26,7 +26,7 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
     VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
     if (!stdcxx::areSame(voltageLevel1.getSubstation(), m_substation) || !stdcxx::areSame(voltageLevel2.getSubstation(), m_substation)) {
-        throw ValidationException(*this, logging::format("the 2 windings of the transformer shall belong to the substation '%1%' ('%2%', '%3%')",
+        throw ValidationException(*this, stdcxx::format("the 2 windings of the transformer shall belong to the substation '%1%' ('%2%', '%3%')",
                                                          m_substation.getId(), voltageLevel1.getSubstation().getId(), voltageLevel2.getSubstation().getId()));
     }
     std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1(voltageLevel1);

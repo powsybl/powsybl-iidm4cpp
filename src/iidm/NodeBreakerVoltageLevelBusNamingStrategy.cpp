@@ -7,7 +7,7 @@
 
 #include "NodeBreakerVoltageLevelBusNamingStrategy.hpp"
 
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
 
@@ -23,13 +23,13 @@ BusNamingStrategy::BusNamingStrategy(NodeBreakerVoltageLevel& voltageLevel) :
 
 std::string BusNamingStrategy::getId(const std::vector<unsigned long>& nodes) {
     const auto& iter = std::min_element(nodes.cbegin(), nodes.cend());
-    return logging::format("%1%_%2%", m_voltageLevel.getId(), *iter);
+    return stdcxx::format("%1%_%2%", m_voltageLevel.getId(), *iter);
 }
 
 std::string BusNamingStrategy::getName(const std::vector<unsigned long>& nodes) {
     if (!m_voltageLevel.getName().empty()) {
         const auto& iter = std::min_element(nodes.cbegin(), nodes.cend());
-        return logging::format("%1%_%2%", m_voltageLevel.getName(), *iter);
+        return stdcxx::format("%1%_%2%", m_voltageLevel.getName(), *iter);
     }
 
     return "";

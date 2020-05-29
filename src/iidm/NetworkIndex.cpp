@@ -40,7 +40,7 @@ const Identifiable& NetworkIndex::get(const std::string& id) const {
 
     const auto& it = m_objectsById.find(id);
     if (it == m_objectsById.end()) {
-        throw PowsyblException(logging::format("Unable to find to the identifiable '%1%'", id));
+        throw PowsyblException(stdcxx::format("Unable to find to the identifiable '%1%'", id));
     }
 
     return *(it->second.get());

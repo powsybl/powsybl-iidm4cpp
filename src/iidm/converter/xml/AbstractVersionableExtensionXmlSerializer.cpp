@@ -10,7 +10,7 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -29,7 +29,7 @@ AbstractVersionableExtensionXmlSerializer::AbstractVersionableExtensionXmlSerial
 
 void AbstractVersionableExtensionXmlSerializer::checkExtensionVersionSupported(const std::string& extensionVersion) const {
     if (m_namespaceUris.find(extensionVersion) == m_namespaceUris.end()) {
-        throw PowsyblException(logging::format("The version %1% of the %2% extension is not supported.", extensionVersion, getExtensionName()));
+        throw PowsyblException(stdcxx::format("The version %1% of the %2% extension is not supported.", extensionVersion, getExtensionName()));
     }
 }
 
@@ -37,14 +37,14 @@ void AbstractVersionableExtensionXmlSerializer::checkReadingCompatibility(const 
     const auto& version = networkContext.getVersion().toString(".");
     const auto& it = m_extensionVersions.find(version);
     if (it == m_extensionVersions.end()) {
-        throw PowsyblException(logging::format("IIDM-XML version of network (%1%) is not supported by the %2% extension's XML serializer", version, getExtensionName()));
+        throw PowsyblException(stdcxx::format("IIDM-XML version of network (%1%) is not supported by the %2% extension's XML serializer", version, getExtensionName()));
     }
     for (const auto& v : it->second) {
         if (networkContext.containsExtensionNamespaceUri(getNamespaceUri(v))) {
             return;
         }
     }
-    throw PowsyblException(logging::format("IIDM-XML version of network (%1%) is not compatible with the %2% extension's namespace URI", version, getExtensionName()));
+    throw PowsyblException(stdcxx::format("IIDM-XML version of network (%1%) is not compatible with the %2% extension's namespace URI", version, getExtensionName()));
 }
 
 void AbstractVersionableExtensionXmlSerializer::checkWritingCompatibility(const std::string& extensionVersion, const IidmXmlVersion& version) const {
@@ -52,10 +52,10 @@ void AbstractVersionableExtensionXmlSerializer::checkWritingCompatibility(const 
     const auto& strVersion = version.toString(".");
     const auto& it = m_extensionVersions.find(strVersion);
     if (it == m_extensionVersions.end()) {
-        throw PowsyblException(logging::format("IIDM-XML version of network (%1%) is not supported by the %2% extension's XML serializer", strVersion, getExtensionName()));
+        throw PowsyblException(stdcxx::format("IIDM-XML version of network (%1%) is not supported by the %2% extension's XML serializer", strVersion, getExtensionName()));
     }
     if (std::find(it->second.begin(), it->second.end(), extensionVersion) == it->second.end()) {
-        throw PowsyblException(logging::format("IIDM-XML version of network (%1%) is not compatible with the version %2% of the %3% extension", strVersion, extensionVersion, getExtensionName()));
+        throw PowsyblException(stdcxx::format("IIDM-XML version of network (%1%) is not compatible with the version %2% of the %3% extension", strVersion, extensionVersion, getExtensionName()));
     }
 }
 
@@ -66,7 +66,7 @@ const std::string& AbstractVersionableExtensionXmlSerializer::getNamespaceUri() 
 const std::string& AbstractVersionableExtensionXmlSerializer::getNamespaceUri(const std::string& extensionVersion) const {
     const auto& it = m_namespaceUris.find(extensionVersion);
     if (it == m_namespaceUris.end()) {
-        throw PowsyblException(logging::format("Namespace URI null for %1% extension's version %2%", getExtensionName(), extensionVersion));
+        throw PowsyblException(stdcxx::format("Namespace URI null for %1% extension's version %2%", getExtensionName(), extensionVersion));
     }
 
     return it->second;

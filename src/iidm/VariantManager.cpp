@@ -48,7 +48,7 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
         throw PowsyblException("Empty target variant id list");
     }
 
-    logger.debug("Creating variants %1%", logging::toString(targetVariantIds));
+    logger.debug("Creating variants %1%", stdcxx::toString(targetVariantIds));
 
     std::lock_guard<std::mutex> lock(m_variantMutex);
 
@@ -58,7 +58,7 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
     std::set<unsigned long> recycled;
     for (const auto& targetVariantId : targetVariantIds) {
         if (m_variantsById.find(targetVariantId) != m_variantsById.end()) {
-            throw PowsyblException(logging::format("Target variant '%1%' already exists", targetVariantId));
+            throw PowsyblException(stdcxx::format("Target variant '%1%' already exists", targetVariantId));
         }
         if (m_unusedIndexes.empty()) {
             // extend variant array size
@@ -79,7 +79,7 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
         for (auto& multiVariantObject : m_network.getStatefulObjects()) {
             multiVariantObject.allocateVariantArrayElement(recycled, sourceIndex);
         }
-        logger.trace("Recycling variant array indexes %1%", logging::toString(recycled));
+        logger.trace("Recycling variant array indexes %1%", stdcxx::toString(recycled));
     }
     if (extendedCount > 0) {
         for (auto& multiVariantObject : m_network.getStatefulObjects()) {
@@ -128,7 +128,7 @@ unsigned long VariantManager::getVariantIndex() const {
 unsigned long VariantManager::getVariantIndex(const std::string& variantId) const {
     const auto& it = m_variantsById.find(variantId);
     if (it == m_variantsById.end()) {
-        throw PowsyblException(logging::format("Variant '%1%' not found", variantId));
+        throw PowsyblException(stdcxx::format("Variant '%1%' not found", variantId));
     }
 
     return it->second;

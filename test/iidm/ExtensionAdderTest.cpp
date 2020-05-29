@@ -26,7 +26,7 @@ public:
 
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override {
         if (extendable && !stdcxx::isInstanceOf<SimpleExtendable>(extendable.get())) {
-            throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<SimpleExtendable>()));
+            throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<SimpleExtendable>()));
         }
     }
 

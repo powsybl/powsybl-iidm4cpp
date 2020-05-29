@@ -48,7 +48,7 @@ std::unique_ptr<Extension> ActivePowerControlXmlSerializer::read(Extendable& ext
         return stdcxx::make_unique<Extension, ActivePowerControl>(generator, participate, droop);
     }
 
-    throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
+    throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
 }
 
 void ActivePowerControlXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {

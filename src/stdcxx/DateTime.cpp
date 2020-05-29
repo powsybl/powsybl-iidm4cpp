@@ -32,7 +32,7 @@ DateTime DateTime::parse(const std::string& date) {
         return DateTime(localDateTime);
     }
 
-    throw powsybl::PowsyblException(powsybl::logging::format("Unable to parse the date '%1%'", date));
+    throw powsybl::PowsyblException(stdcxx::format("Unable to parse the date '%1%'", date));
 }
 
 DateTime::DateTime() :

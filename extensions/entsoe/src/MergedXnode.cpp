@@ -36,20 +36,20 @@ MergedXnode::MergedXnode(Line& line, double rdp, double xdp, double xnodeP1, dou
 
 void MergedXnode::assertExtendable(const stdcxx::Reference<powsybl::iidm::Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<Line>(extendable.get())) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Line>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Line>()));
     }
 }
 
 double MergedXnode::checkDividerPosition(double dp) {
     if (dp < 0.0 || dp > 1.0) {
-        throw PowsyblException(logging::format("Invalid divider position: %1%", dp));
+        throw PowsyblException(stdcxx::format("Invalid divider position: %1%", dp));
     }
     return dp;
 }
 
 double MergedXnode::checkPowerFlow(double value) {
     if (std::isnan(value)) {
-        throw PowsyblException(logging::format("Power flow is invalid"));
+        throw PowsyblException(stdcxx::format("Power flow is invalid"));
     }
     return value;
 }

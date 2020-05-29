@@ -125,7 +125,7 @@ void CurrentLimitsAdder<S, O>::checkTemporaryLimits() const {
     std::for_each(m_temporaryLimits.cbegin(), m_temporaryLimits.cend(), [this, &names](const std::pair<unsigned long, CurrentLimits::TemporaryLimit>& element) {
         const auto& res = names.insert(element.second.getName());
         if (!res.second) {
-            throw ValidationException(m_owner, logging::format("2 temporary limits have the same name %1%", element.second.getName()));
+            throw ValidationException(m_owner, stdcxx::format("2 temporary limits have the same name %1%", element.second.getName()));
         }
     });
 }

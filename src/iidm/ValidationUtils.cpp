@@ -9,7 +9,7 @@
 
 #include <powsybl/iidm/LoadType.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -17,13 +17,13 @@ namespace powsybl {
 namespace iidm {
 
 ValidationException createInvalidValueException(const Validable& validable, double value, const std::string& valueName, const std::string& reason = "") {
-    std::string r = reason.empty() ? "" : logging::format(" (%1%)", reason);
-    return ValidationException(validable, logging::format("invalid value (%1%) for %2%%3%", value, valueName, r));
+    std::string r = reason.empty() ? "" : stdcxx::format(" (%1%)", reason);
+    return ValidationException(validable, stdcxx::format("invalid value (%1%) for %2%%3%", value, valueName, r));
 }
 
 void checkActivePowerLimits(const Validable& validable, double minP, double maxP) {
     if (minP > maxP) {
-        throw ValidationException(validable, logging::format("Invalid active limits [%1%, %2%]", minP, maxP));
+        throw ValidationException(validable, stdcxx::format("Invalid active limits [%1%, %2%]", minP, maxP));
     }
 }
 
@@ -31,10 +31,10 @@ void checkActivePowerLimits(const Validable& validable, double minP, double maxP
     checkActivePowerLimits(validable, minP, maxP);
 
     if (p > maxP) {
-        throw ValidationException(validable, logging::format("Invalid active power p > maxP: %1% > %2%", p, maxP));
+        throw ValidationException(validable, stdcxx::format("Invalid active power p > maxP: %1% > %2%", p, maxP));
     }
     if (p < minP) {
-        throw ValidationException(validable, logging::format("Invalid active power p < minP: %1% < %2%", p, minP));
+        throw ValidationException(validable, stdcxx::format("Invalid active power p < minP: %1% < %2%", p, minP));
     }
 }
 
@@ -97,7 +97,7 @@ const HvdcLine::ConvertersMode& checkConvertersMode(const Validable& /*validable
             break;
 
         default:
-            throw AssertionError(logging::format("Unexpected converter mode value: %1%", converterMode));
+            throw AssertionError(stdcxx::format("Unexpected converter mode value: %1%", converterMode));
     }
     return converterMode;
 }
@@ -131,30 +131,30 @@ double checkG2(const Validable& validable, double g2) {
 }
 
 void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int num) {
-    checkNotEmpty(validable, half.getId(), logging::format("id is not set for half line %1%", num));
+    checkNotEmpty(validable, half.getId(), stdcxx::format("id is not set for half line %1%", num));
     if (std::isnan(half.getB1())) {
-        throw ValidationException(validable, logging::format("b1 is not set for half line %1%", num));
+        throw ValidationException(validable, stdcxx::format("b1 is not set for half line %1%", num));
     }
     if (std::isnan(half.getB2())) {
-        throw ValidationException(validable, logging::format("b2 is not set for half line %1%", num));
+        throw ValidationException(validable, stdcxx::format("b2 is not set for half line %1%", num));
     }
     if (std::isnan(half.getG1())) {
-        throw ValidationException(validable, logging::format("g1 is not set for half line %1%", num));
+        throw ValidationException(validable, stdcxx::format("g1 is not set for half line %1%", num));
     }
     if (std::isnan(half.getG2())) {
-        throw ValidationException(validable, logging::format("g2 is not set for half line %1%", num));
+        throw ValidationException(validable, stdcxx::format("g2 is not set for half line %1%", num));
     }
     if (std::isnan(half.getR())) {
-        throw ValidationException(validable, logging::format("r is not set for half line %1%", num));
+        throw ValidationException(validable, stdcxx::format("r is not set for half line %1%", num));
     }
     if (std::isnan(half.getX())) {
-        throw ValidationException(validable, logging::format("x is not set for half line %1%", num));
+        throw ValidationException(validable, stdcxx::format("x is not set for half line %1%", num));
     }
     if (std::isnan(half.getXnodeP())) {
-        throw ValidationException(validable, logging::format("xnodeP is not set for half line %1%", num));
+        throw ValidationException(validable, stdcxx::format("xnodeP is not set for half line %1%", num));
     }
     if (std::isnan(half.getXnodeQ())) {
-        throw ValidationException(validable, logging::format("xnodeQ is not set for half line %1%", num));
+        throw ValidationException(validable, stdcxx::format("xnodeQ is not set for half line %1%", num));
     }
 }
 
@@ -166,7 +166,7 @@ const LoadType& checkLoadType(const Validable& /*validable*/, const LoadType& lo
             break;
 
         default:
-            throw AssertionError(logging::format("Unexpected load type value: %1%", loadType));
+            throw AssertionError(stdcxx::format("Unexpected load type value: %1%", loadType));
     }
     return loadType;
 }
@@ -260,7 +260,7 @@ void checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapCh
             break;
 
         default:
-            throw AssertionError(logging::format("Unexpected regulation mode value: %1%", regulationMode));
+            throw AssertionError(stdcxx::format("Unexpected regulation mode value: %1%", regulationMode));
     }
 
     if ((regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP) && std::isnan(regulationValue)) {
@@ -300,7 +300,7 @@ double checkR(const Validable& validable, double r) {
 
 double checkRatedS(const Validable& validable, double ratedS) {
     if (!std::isnan(ratedS) && ratedS <= 0.0) {
-        throw ValidationException(validable, logging::format("Invalid rated S value: %1%", ratedS));
+        throw ValidationException(validable, stdcxx::format("Invalid rated S value: %1%", ratedS));
     }
     return ratedS;
 }
@@ -308,7 +308,7 @@ double checkRatedS(const Validable& validable, double ratedS) {
 double checkRatedU(const Validable& validable, double ratedU, const stdcxx::optional<unsigned long>& num) {
     if (std::isnan(ratedU)) {
         std::string strNum = num.is_initialized() ? std::to_string(num.get()) : "";
-        throw ValidationException(validable, logging::format("rated U%1% is invalid", strNum));
+        throw ValidationException(validable, stdcxx::format("rated U%1% is invalid", strNum));
     }
     return ratedU;
 }
@@ -327,7 +327,7 @@ void checkRatioTapChangerRegulation(const Validable& validable, bool regulating,
             throw ValidationException(validable, "a target voltage has to be set for a regulating ratio tap changer");
         }
         if (std::islessequal(targetV, 0.0)) {
-            throw ValidationException(validable, logging::format("bad target voltage %1%", targetV));
+            throw ValidationException(validable, stdcxx::format("bad target voltage %1%", targetV));
         }
         if (!static_cast<bool>(regulationTerminal)) {
             throw ValidationException(validable, "a regulation terminal has to be set for a regulating ratio tap changer");
@@ -346,10 +346,10 @@ void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference
 
 void checkSections(const Validable& validable, unsigned long currentSectionCount, unsigned long maximumSectionCount) {
     if (maximumSectionCount == 0UL) {
-        throw ValidationException(validable, logging::format("the maximum number of section (%1%) should be greater than 0", maximumSectionCount));
+        throw ValidationException(validable, stdcxx::format("the maximum number of section (%1%) should be greater than 0", maximumSectionCount));
     }
     if (currentSectionCount > maximumSectionCount) {
-        throw ValidationException(validable, logging::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", currentSectionCount, maximumSectionCount));
+        throw ValidationException(validable, stdcxx::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", currentSectionCount, maximumSectionCount));
     }
 }
 
@@ -374,20 +374,20 @@ void checkSvcRegulator(const Validable& validable, double voltageSetpoint, doubl
             break;
 
         default:
-            throw AssertionError(logging::format("Unexpected regulation mode value: %1%", *regulationMode));
+            throw AssertionError(stdcxx::format("Unexpected regulation mode value: %1%", *regulationMode));
     }
 }
 
 long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition) {
     if ((tapPosition < lowTapPosition) || (tapPosition > highTapPosition)) {
-        throw ValidationException(validable, logging::format("incorrect tap position %1% [%2%, %3%]", tapPosition, lowTapPosition, highTapPosition));
+        throw ValidationException(validable, stdcxx::format("incorrect tap position %1% [%2%, %3%]", tapPosition, lowTapPosition, highTapPosition));
     }
     return tapPosition;
 }
 
 double checkTargetDeadband(const Validable& validable, double targetDeadband) {
     if (!std::isnan(targetDeadband) && targetDeadband < 0) {
-        throw ValidationException(validable, logging::format("Unexpected value for target deadband of tap changer: %1%", targetDeadband));
+        throw ValidationException(validable, stdcxx::format("Unexpected value for target deadband of tap changer: %1%", targetDeadband));
     }
     return targetDeadband;
 }
@@ -402,10 +402,10 @@ double checkVoltage(const Validable& validable, double voltage) {
 void checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint, double reactivePowerSetpoint) {
     if (voltageRegulatorOn) {
         if (std::isnan(voltageSetpoint) || voltageSetpoint <= 0) {
-            throw ValidationException(validable, logging::format("Invalid voltage setpoint value (%1%) while voltage regulator is on", voltageSetpoint));
+            throw ValidationException(validable, stdcxx::format("Invalid voltage setpoint value (%1%) while voltage regulator is on", voltageSetpoint));
         }
     } else if (std::isnan(reactivePowerSetpoint)) {
-        throw ValidationException(validable, logging::format("Invalid reactive power setpoint (%1%) while voltage regulator is off", reactivePowerSetpoint));
+        throw ValidationException(validable, stdcxx::format("Invalid reactive power setpoint (%1%) while voltage regulator is off", reactivePowerSetpoint));
     }
 }
 
@@ -417,7 +417,7 @@ void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, doub
         throw ValidationException(validable, "High voltage limit is < 0");
     }
     if (lowVoltageLimit > highVoltageLimit) {
-        throw ValidationException(validable, logging::format("Inconsistent voltage limit range [%1%, %2%]", lowVoltageLimit, highVoltageLimit));
+        throw ValidationException(validable, stdcxx::format("Inconsistent voltage limit range [%1%, %2%]", lowVoltageLimit, highVoltageLimit));
     }
 }
 
