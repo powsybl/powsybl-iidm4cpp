@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE(getTemplated) {
 
     BOOST_CHECK(properties.contains("boolTrue"));
     BOOST_CHECK(!properties.contains("missingAttr"));
-    POWSYBL_ASSERT_THROW(properties.get<std::string>("missingAttr"), powsybl::PowsyblException, "Property missingAttr does not exist");
+    POWSYBL_ASSERT_THROW(properties.get<std::string>("missingAttr"), PropertyNotFoundException, "Property missingAttr does not exist");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -66,7 +66,7 @@ bool Properties::get(const std::string& key) const {
     if (it != m_properties.end()) {
         return boost::iequals(it->second, "true");
     }
-    throw powsybl::PowsyblException(powsybl::logging::format("Property %1% does not exist", key));
+    throw PropertyNotFoundException(format("Property %1% does not exist", key));
 }
 
 template <>
@@ -75,7 +75,7 @@ std::string Properties::get(const std::string& key) const {
     if (it != m_properties.end()) {
         return it->second;
     }
-    throw powsybl::PowsyblException(powsybl::logging::format("Property %1% does not exist", key));
+    throw PropertyNotFoundException(format("Property %1% does not exist", key));
 }
 
 template <>
@@ -87,7 +87,7 @@ std::set<std::string> Properties::get(const std::string& key) const {
         boost::algorithm::split(values, valuesStr, boost::is_any_of(",:"));
         return values;
     }
-    throw powsybl::PowsyblException(powsybl::logging::format("Property %1% does not exist", key));
+    throw PropertyNotFoundException(format("Property %1% does not exist", key));
 }
 
 stdcxx::const_range<std::string> Properties::getKeys() const {
