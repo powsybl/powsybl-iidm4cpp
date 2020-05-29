@@ -41,7 +41,7 @@ Terminal& TerminalRefXml::readTerminalRef(Network& network, const std::string& i
         return twt.getTerminal(Enum::fromString<ThreeWindingsTransformer::Side>(side));
     }
 
-    throw AssertionError(logging::format("Unexpected Identifiable instance: %1%", stdcxx::demangle(identifiable)));
+    throw AssertionError(stdcxx::format("Unexpected Identifiable instance: %1%", stdcxx::demangle(identifiable)));
 }
 
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& elementName) {
@@ -55,7 +55,7 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& nsPrefix, const std::string& elementName, powsybl::xml::XmlStreamWriter& writer) {
     const auto& c = terminal.getConnectable();
     if (!context.getFilter().test(c)) {
-        throw PowsyblException(logging::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
+        throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
     }
     writer.writeStartElement(nsPrefix, elementName);
     writer.writeAttribute(ID, context.getAnonymizer().anonymizeString(c.get().getId()));
@@ -69,7 +69,7 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
             const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(c.get());
             writer.writeAttribute(SIDE, Enum::toString(twt.getSide(terminal)));
         } else {
-            throw AssertionError(logging::format("Unexpected Connectable instance: %1%", stdcxx::demangle(c.get())));
+            throw AssertionError(stdcxx::format("Unexpected Connectable instance: %1%", stdcxx::demangle(c.get())));
         }
     }
     writer.writeEndElement();

@@ -10,7 +10,6 @@ set(UNIT_TEST_SOURCES
     ContainerLoggerTest.cpp
     LoggerFactoryTest.cpp
     logging.cpp
-    MessageFormatTest.cpp
     NoopLoggerTest.cpp
 )
 

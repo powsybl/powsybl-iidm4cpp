@@ -31,7 +31,7 @@ MergedXnodeXmlSerializer::MergedXnodeXmlSerializer() :
 
 std::unique_ptr<Extension> MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<Line>(extendable)) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
     }
     auto& line = dynamic_cast<Line&>(extendable);
 

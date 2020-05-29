@@ -32,7 +32,7 @@ ActivePowerControl::ActivePowerControl(Generator& generator, bool participate, d
 
 void ActivePowerControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<Battery>(extendable.get()) && !stdcxx::isInstanceOf<Generator>(extendable.get())) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% or %3% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Battery>(), stdcxx::demangle<Generator>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% or %3% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Battery>(), stdcxx::demangle<Generator>()));
     }
 }
 

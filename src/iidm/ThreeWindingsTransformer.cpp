@@ -46,7 +46,7 @@ double ThreeWindingsTransformer::Leg::getG() const {
 }
 
 std::string ThreeWindingsTransformer::Leg::getMessageHeader() const {
-    return logging::format("%1% '%2%': ", getTypeDescription(), m_transformer.get().getId());
+    return stdcxx::format("%1% '%2%': ", getTypeDescription(), m_transformer.get().getId());
 }
 
 const Network& ThreeWindingsTransformer::Leg::getNetwork() const {
@@ -186,7 +186,7 @@ void ThreeWindingsTransformer::Leg::setTransformer(ThreeWindingsTransformer& tra
 }
 
 std::string ThreeWindingsTransformer::Leg::toString() const {
-    return logging::format("%1% leg%2%", m_transformer.get().getId(), m_legNumber);
+    return stdcxx::format("%1% leg%2%", m_transformer.get().getId(), m_legNumber);
 }
 
 ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const std::string& name, std::unique_ptr<Leg> leg1, std::unique_ptr<Leg> leg2, std::unique_ptr<Leg> leg3, double ratedU0) :
@@ -324,7 +324,7 @@ const Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) const {
         case Side::THREE:
             return m_leg3->getTerminal().get();
         default:
-            throw AssertionError(logging::format("Unexpected side value: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
     }
 }
 

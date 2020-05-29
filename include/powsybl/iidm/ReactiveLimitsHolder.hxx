@@ -11,8 +11,8 @@
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
 
 #include <powsybl/iidm/ValidationException.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 
 namespace powsybl {
@@ -27,7 +27,7 @@ const T& ReactiveLimitsHolder::getReactiveLimits() const {
     }
 
     const auto& validable = dynamic_cast<const Validable&>(*this);
-    throw ValidationException(validable, logging::format("Incorrect reactive limits type %1%, expected %2%", stdcxx::simpleClassName<T>(), stdcxx::simpleClassName(*m_reactiveLimits)));
+    throw ValidationException(validable, stdcxx::format("Incorrect reactive limits type %1%, expected %2%", stdcxx::simpleClassName<T>(), stdcxx::simpleClassName(*m_reactiveLimits)));
 }
 
 template <typename T, typename>

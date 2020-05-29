@@ -31,7 +31,7 @@ XnodeXmlSerializer::XnodeXmlSerializer() :
 
 std::unique_ptr<Extension> XnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<DanglingLine>(extendable)) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<DanglingLine>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<DanglingLine>()));
     }
     auto& dl = dynamic_cast<DanglingLine&>(extendable);
 

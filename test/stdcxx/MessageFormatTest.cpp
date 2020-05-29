@@ -7,11 +7,9 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
-namespace powsybl {
-
-namespace logging {
+namespace stdcxx {
 
 BOOST_AUTO_TEST_SUITE(MessageFormatTestSuite)
 
@@ -43,6 +41,4 @@ BOOST_AUTO_TEST_CASE(toStringTest) {
 
 BOOST_AUTO_TEST_SUITE_END()
 
-}  // namespace logging
-
-}  // namespace powsybl
+}  // namespace stdcxx

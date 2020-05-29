@@ -26,7 +26,7 @@ Xnode::Xnode(DanglingLine& dl, const std::string& code) :
 
 void Xnode::assertExtendable(const stdcxx::Reference<powsybl::iidm::Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<DanglingLine>(extendable.get())) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<DanglingLine>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<DanglingLine>()));
     }
 }
 

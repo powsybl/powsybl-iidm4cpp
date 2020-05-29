@@ -21,7 +21,7 @@ namespace util {
 
 stdcxx::CReference<Terminal> Networks::getEquivalentTerminal(const VoltageLevel& voltageLevel, unsigned long node) {
     if (voltageLevel.getTopologyKind() != TopologyKind::NODE_BREAKER) {
-        throw PowsyblException(logging::format("The voltage level %1% is not described in Node/Breaker topology", voltageLevel.getId()));
+        throw PowsyblException(stdcxx::format("The voltage level %1% is not described in Node/Breaker topology", voltageLevel.getId()));
     }
 
     stdcxx::CReference<Terminal> equivalentTerminal;
@@ -44,7 +44,7 @@ stdcxx::CReference<Terminal> Networks::getEquivalentTerminal(const VoltageLevel&
 
 std::map<std::string, std::set<unsigned long>> Networks::getNodesByBus(const VoltageLevel& voltageLevel) {
     if (voltageLevel.getTopologyKind() != TopologyKind::NODE_BREAKER) {
-        throw PowsyblException(logging::format("The voltage level %1% is not described in Node/Breaker topology", voltageLevel.getId()));
+        throw PowsyblException(stdcxx::format("The voltage level %1% is not described in Node/Breaker topology", voltageLevel.getId()));
     }
 
     std::map<std::string, std::set<unsigned long>> nodesByBus;

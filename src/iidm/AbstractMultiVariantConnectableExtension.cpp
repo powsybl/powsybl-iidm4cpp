@@ -13,7 +13,7 @@
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -40,7 +40,7 @@ const VariantManagerHolder& AbstractMultiVariantConnectableExtension::getVariant
         return dynamic_cast<const VariantManagerHolder&>(network);
     }
 
-    throw PowsyblException(logging::format("Network cannot be converted to VariantManagerHolder"));
+    throw PowsyblException(stdcxx::format("Network cannot be converted to VariantManagerHolder"));
 }
 
 }  // namespace iidm
