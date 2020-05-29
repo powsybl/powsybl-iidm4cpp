@@ -103,12 +103,10 @@ BOOST_AUTO_TEST_CASE(GetProperty) {
 
     BOOST_CHECK_EQUAL(4UL, props.size());
 
-    POWSYBL_ASSERT_THROW(props.get("key9"),
-                         stdcxx::PropertyNotFoundException, "Property key9 does not exist");
+    POWSYBL_ASSERT_THROW(props.get("key9"), PropertyNotFoundException, "Property key9 does not exist");
     BOOST_CHECK_EQUAL("value9", props.get("key9", "value9"));
 
-    POWSYBL_ASSERT_THROW(props.get("key9"),
-                         stdcxx::PropertyNotFoundException, "Property key9 does not exist");
+    POWSYBL_ASSERT_THROW(props.get("key9"), PropertyNotFoundException, "Property key9 does not exist");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
