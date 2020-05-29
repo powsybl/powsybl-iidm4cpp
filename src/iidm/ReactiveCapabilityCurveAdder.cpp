@@ -10,7 +10,7 @@
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 #include "ValidationUtils.hpp"
@@ -69,7 +69,7 @@ ReactiveCapabilityCurveAdder& ReactiveCapabilityCurveAdder::addPoint(ReactiveCap
     const auto& owner = getValidable();
 
     if (m_points.find(point.getP()) != m_points.end()) {
-        throw ValidationException(owner, logging::format("A point is already defined for active power %1%", point.getP()));
+        throw ValidationException(owner, stdcxx::format("A point is already defined for active power %1%", point.getP()));
     }
 
     // TODO(mathbagu): to be activated in IIDM v1.1

@@ -17,7 +17,7 @@
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 
 namespace powsybl {
 
@@ -39,7 +39,7 @@ template <typename T, typename Dummy>
 const T& ExtensionProviders<T, Dummy>::findProviderOrThrowException(const std::string& name) const {
     const auto& it = m_providers.find(name);
     if (it == m_providers.end()) {
-        throw PowsyblException(logging::format("No provider found for extension '%1'", name));
+        throw PowsyblException(stdcxx::format("No provider found for extension '%1'", name));
     }
     return *it->second;
 }
@@ -63,11 +63,11 @@ stdcxx::range<T> ExtensionProviders<T, Dummy>::getProviders() {
 template <typename T, typename Dummy>
 void ExtensionProviders<T, Dummy>::loadExtensions(const boost::filesystem::path& directory, const std::regex& pattern) {
     if (!boost::filesystem::exists(directory)) {
-        throw PowsyblException(logging::format("Path %1% does not exist", directory));
+        throw PowsyblException(stdcxx::format("Path %1% does not exist", directory));
     }
 
     if (!boost::filesystem::is_directory(directory)) {
-        throw PowsyblException(logging::format("Path %1% is not a directory", directory));
+        throw PowsyblException(stdcxx::format("Path %1% is not a directory", directory));
     }
 
     for (const auto& it : boost::filesystem::directory_iterator(directory)) {
@@ -91,14 +91,14 @@ void ExtensionProviders<T, Dummy>::loadLibrary(const boost::filesystem::path& li
                     const std::string& extensionName = it->getExtensionName();
                     const auto& status = m_providers.emplace(std::make_pair(extensionName, std::move(it)));
                     if (!status.second) {
-                        throw PowsyblException(logging::format("Extension %1% was already registered", extensionName));
+                        throw PowsyblException(stdcxx::format("Extension %1% was already registered", extensionName));
                     }
-                    logger.debug(logging::format("Extension %1% has been loaded from %2%", extensionName, libraryPath));
+                    logger.debug(stdcxx::format("Extension %1% has been loaded from %2%", extensionName, libraryPath));
                 }
                 m_loadedLibraries.insert(libraryPath);
             }
         } catch (const boost::system::system_error& err) {
-            logger.info(logging::format("Unable to load file %1%: %2%", libraryPath, err.what()));
+            logger.info(stdcxx::format("Unable to load file %1%: %2%", libraryPath, err.what()));
         }
     }
 }

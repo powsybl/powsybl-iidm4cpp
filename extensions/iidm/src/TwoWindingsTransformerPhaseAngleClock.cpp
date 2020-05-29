@@ -10,7 +10,7 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -30,13 +30,13 @@ TwoWindingsTransformerPhaseAngleClock::TwoWindingsTransformerPhaseAngleClock(Two
 
 void TwoWindingsTransformerPhaseAngleClock::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<TwoWindingsTransformer>(extendable.get())) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<TwoWindingsTransformer>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<TwoWindingsTransformer>()));
     }
 }
 
 unsigned long TwoWindingsTransformerPhaseAngleClock::checkPhaseAngleClock(unsigned long phaseAngleClock) const {
     if (phaseAngleClock > 11) {
-        throw PowsyblException(logging::format("Unexpected value for phaseAngleClock: %1%1", phaseAngleClock));
+        throw PowsyblException(stdcxx::format("Unexpected value for phaseAngleClock: %1%1", phaseAngleClock));
     }
     return phaseAngleClock;
 }

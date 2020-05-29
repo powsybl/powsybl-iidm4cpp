@@ -10,7 +10,7 @@
 #include <boost/range/adaptor/map.hpp>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 
 namespace powsybl {
 
@@ -48,7 +48,7 @@ Properties::iterator Properties::end() {
 const std::string& Properties::get(const std::string& key) const {
     const auto& it = m_properties.find(key);
     if (it == m_properties.end()) {
-        throw PowsyblException(logging::format("Property %1% does not exist", key));
+        throw PowsyblException(stdcxx::format("Property %1% does not exist", key));
     }
 
     return it->second;

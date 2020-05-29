@@ -9,8 +9,8 @@
 
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Switch.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
 #include <powsybl/math/TraverseResult.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 #include <powsybl/stdcxx/set.hpp>
@@ -28,8 +28,8 @@ CalculatedBusTopology::CalculatedBusTopology(BusBreakerVoltageLevel& voltageLeve
 }
 
 std::unique_ptr<MergedBus> CalculatedBusTopology::createMergedBus(unsigned long busCount, const MergedBus::BusSet& busSet) const {
-    const std::string& mergedBusId = logging::format("%1%_%2%", m_voltageLevel.getId(), busCount);
-    const std::string& mergedBusName = m_voltageLevel.getName().empty() ? "" : logging::format("%1%_%2%", m_voltageLevel.getName(), busCount);
+    const std::string& mergedBusId = stdcxx::format("%1%_%2%", m_voltageLevel.getId(), busCount);
+    const std::string& mergedBusName = m_voltageLevel.getName().empty() ? "" : stdcxx::format("%1%_%2%", m_voltageLevel.getName(), busCount);
 
     return stdcxx::make_unique<MergedBus>(mergedBusId, mergedBusName, busSet);
 }
@@ -39,7 +39,7 @@ stdcxx::Reference<MergedBus> CalculatedBusTopology::getMergedBus(const std::stri
 
     stdcxx::Reference<MergedBus> bus = m_cache->getMergedBus(id);
     if (throwException && !bus) {
-        throw PowsyblException(logging::format("Bus %1% not found in voltage level %2%", id, m_voltageLevel.getId()));
+        throw PowsyblException(stdcxx::format("Bus %1% not found in voltage level %2%", id, m_voltageLevel.getId()));
     }
 
     return bus;
@@ -90,7 +90,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                     break;
 
                 case ConnectableType::BUSBAR_SECTION: // must not happen in a bus/breaker topology
-                    throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectable.getType()));
+                    throw AssertionError(stdcxx::format("Unexpected ConnectableType value: %1%", connectable.getType()));
             }
         }
     }

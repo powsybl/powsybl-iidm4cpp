@@ -11,7 +11,7 @@
 #include <libxml/xmlreader.h>
 
 #include <powsybl/AssertionError.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/xml/XmlCharConversion.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
@@ -25,7 +25,7 @@ namespace xml {
 void checkNodeType(xmlTextReader& reader, const xmlReaderTypes& expected) {
     int nodeType = xmlTextReaderNodeType(&reader);
     if (nodeType != expected) {
-        throw XmlStreamException(logging::format("Unexpected node type: %1% (expected: %2%)", nodeType, expected));
+        throw XmlStreamException(stdcxx::format("Unexpected node type: %1% (expected: %2%)", nodeType, expected));
     }
 }
 
@@ -102,7 +102,7 @@ XmlString XmlStreamReader::getAttributeValue(const std::string& attributeName, b
 
     XmlString value(xmlTextReaderGetAttribute(m_reader.get(), S2XML(attributeName)));
     if (!value && throwException) {
-        throw XmlStreamException(logging::format("Attribute %1% does not exists", attributeName.c_str()));
+        throw XmlStreamException(stdcxx::format("Attribute %1% does not exists", attributeName.c_str()));
     }
 
     return value;
@@ -133,7 +133,7 @@ std::string XmlStreamReader::getNamespace(const std::string& prefix) const {
 
     XmlString namespaceXml(xmlTextReaderLookupNamespace(m_reader.get(), S2XML(prefix)));
     if (!namespaceXml) {
-        throw XmlStreamException(logging::format("Unknown prefix %1%", prefix));
+        throw XmlStreamException(stdcxx::format("Unknown prefix %1%", prefix));
     }
     return XML2S(namespaceXml.get());
 }
@@ -273,7 +273,7 @@ std::string XmlStreamReader::readUntilEndElement(const std::string& elementName,
     int emptyElement = xmlTextReaderIsEmptyElement(m_reader.get());
     if (emptyElement == -1) {
         // Error
-        throw XmlStreamException(logging::format("An error occurred while reading <%1%>", elementName.c_str()));
+        throw XmlStreamException(stdcxx::format("An error occurred while reading <%1%>", elementName.c_str()));
     }
     if (emptyElement == 1) {
         // if current element is an empty element, XML_READER_TYPE_END_ELEMENT is never reached => nothing to do
@@ -302,7 +302,7 @@ std::string XmlStreamReader::readUntilEndElement(const std::string& elementName,
     }
 
     if (res != 1) {
-        throw XmlStreamException(logging::format("Unexpected end of file: expecting %1%", elementName.c_str()));
+        throw XmlStreamException(stdcxx::format("Unexpected end of file: expecting %1%", elementName.c_str()));
     }
 
     return text;

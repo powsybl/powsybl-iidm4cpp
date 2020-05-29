@@ -22,7 +22,7 @@ namespace iidm {
 namespace node_breaker_voltage_level {
 
 PowsyblException createSwitchNotFoundException(const std::string& switchId) {
-    return PowsyblException(logging::format("Switch %1% not found", switchId));
+    return PowsyblException(stdcxx::format("Switch %1% not found", switchId));
 }
 
 CalculatedBusBreakerTopology::CalculatedBusBreakerTopology(NodeBreakerVoltageLevel& voltageLevel) :
@@ -142,7 +142,7 @@ stdcxx::Reference<CalculatedBus> CalculatedBusTopology::getBus(const std::string
 
     stdcxx::Reference<CalculatedBus> bus = m_cache->getBus(id);
     if (throwException && !bus) {
-        throw PowsyblException(logging::format("Bus %1% not found in voltage level %2%", id, m_voltageLevel.getId()));
+        throw PowsyblException(stdcxx::format("Bus %1% not found in voltage level %2%", id, m_voltageLevel.getId()));
     }
 
     return bus;
@@ -239,7 +239,7 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
                     break;
 
                 default:
-                    throw AssertionError(logging::format("Unexpected ConnectableType value: %1%", connectableType));
+                    throw AssertionError(stdcxx::format("Unexpected ConnectableType value: %1%", connectableType));
             }
         }
     }
@@ -295,7 +295,7 @@ void CalculatedBusTopology::updateCache(const SwitchPredicate& predicate) {
     }
 
     logging::Logger& logger = logging::LoggerFactory::getLogger<CalculatedBusTopology>();
-    logger.trace(logging::format("Update bus topology of voltage level %1%", m_voltageLevel.getId()));
+    logger.trace(stdcxx::format("Update bus topology of voltage level %1%", m_voltageLevel.getId()));
 
     const auto& graph = m_voltageLevel.getGraph();
 
@@ -310,7 +310,7 @@ void CalculatedBusTopology::updateCache(const SwitchPredicate& predicate) {
 
     m_cache = stdcxx::make_unique<BusCache>(std::move(busByNode), std::move(busById));
 
-    logger.trace(logging::format("Found buses %1%", logging::toString<CalculatedBus>(m_cache->getBuses())));
+    logger.trace(stdcxx::format("Found buses %1%", stdcxx::toString<CalculatedBus>(m_cache->getBuses())));
 }
 
 }  // namespace node_breaker_voltage_level

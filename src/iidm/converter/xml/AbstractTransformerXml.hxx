@@ -70,7 +70,7 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string
             stepAdder.setAlpha(alpha)
                 .endStep();
         } else {
-            throw PowsyblException(logging::format("Unknown element <%1%>", context.getReader().getLocalName()));
+            throw PowsyblException(stdcxx::format("Unknown element <%1%>", context.getReader().getLocalName()));
         }
     });
     if (!hasTerminalRef) {
@@ -124,7 +124,7 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
                     .endStep();
             });
         } else {
-            throw PowsyblException(logging::format("Unexpected XML element <%1%>", context.getReader().getLocalName()));
+            throw PowsyblException(stdcxx::format("Unexpected XML element <%1%>", context.getReader().getLocalName()));
         }
     });
     if (!hasTerminalRef) {

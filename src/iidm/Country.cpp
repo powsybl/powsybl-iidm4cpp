@@ -11,7 +11,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Enum.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 
 namespace powsybl {
 
@@ -272,7 +272,7 @@ std::string getCountryName(const Country& country) {
 
     auto index = static_cast<unsigned long>(country);
     if (index >= s_countryNames.size()) {
-        throw powsybl::AssertionError(powsybl::logging::format("Unexpected %1% value: %2%", stdcxx::simpleClassName<Country>(), index));
+        throw powsybl::AssertionError(stdcxx::format("Unexpected %1% value: %2%", stdcxx::simpleClassName<Country>(), index));
     }
     return *(s_countryNames.begin() + index);
 }

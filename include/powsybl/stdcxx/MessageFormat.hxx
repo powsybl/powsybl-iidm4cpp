@@ -5,21 +5,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_LOGGING_MESSAGEFORMAT_HXX
-#define POWSYBL_LOGGING_MESSAGEFORMAT_HXX
+#ifndef POWSYBL_STDCXX_MESSAGEFORMAT_HXX
+#define POWSYBL_STDCXX_MESSAGEFORMAT_HXX
 
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 
 #include <iterator>
+#include <set>
 #include <sstream>
+#include <vector>
 
 #include <boost/format.hpp>
 
 #include <powsybl/stdcxx/range.hpp>
 
-namespace powsybl {
-
-namespace logging {
+namespace stdcxx {
 
 inline void format(const boost::format& /*fmt*/) {
     // This function is used to stop the recursion
@@ -103,8 +103,6 @@ std::ostream& operator<<(std::ostream& stream, const std::reference_wrapper<T>& 
     return stream;
 }
 
-}  // namespace logging
+}  // namespace stdcxx
 
-}  // namespace powsybl
-
-#endif  // POWSYBL_LOGGING_MESSAGEFORMAT_HXX
+#endif  // POWSYBL_STDCXX_MESSAGEFORMAT_HXX

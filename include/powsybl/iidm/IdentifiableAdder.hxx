@@ -25,7 +25,7 @@ std::string IdentifiableAdder<Adder>::getMessageHeader() const {
 template <typename Adder>
 std::string IdentifiableAdder<Adder>::checkAndGetUniqueId() const {
     if (m_id.empty()) {
-        throw PowsyblException(logging::format("%1% id is not set", getTypeDescription()));
+        throw PowsyblException(stdcxx::format("%1% id is not set", getTypeDescription()));
     }
 
     const auto& network = getNetwork();
@@ -38,7 +38,7 @@ std::string IdentifiableAdder<Adder>::checkAndGetUniqueId() const {
     } else {
         const auto& obj = network.find(m_id);
         if (obj) {
-            throw PowsyblException(logging::format("The network %1% already contains an object '%2%' with the id '%3%'", network.getId(), stdcxx::simpleClassName(obj.get()), m_id));
+            throw PowsyblException(stdcxx::format("The network %1% already contains an object '%2%' with the id '%3%'", network.getId(), stdcxx::simpleClassName(obj.get()), m_id));
         }
         uniqueId = m_id;
     }

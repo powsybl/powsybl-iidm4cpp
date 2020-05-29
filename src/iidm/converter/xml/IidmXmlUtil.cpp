@@ -9,7 +9,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
@@ -22,7 +22,7 @@ namespace converter {
 namespace xml {
 
 PowsyblException createException(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& version, const IidmXmlVersion& contextVersion, const std::string& reason) {
-    return PowsyblException(logging::format("%1%.%2% is %3% for IIDM-XML version %4%. %5%%6%", rootElementName, elementName, errorMessage, contextVersion.toString("."), reason, version.toString(".")));
+    return PowsyblException(stdcxx::format("%1%.%2% is %3% for IIDM-XML version %4%. %5%%6%", rootElementName, elementName, errorMessage, contextVersion.toString("."), reason, version.toString(".")));
 }
 
 void IidmXmlUtil::assertMaximumVersion(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& maxVersion, const IidmXmlVersion& contextVersion) {

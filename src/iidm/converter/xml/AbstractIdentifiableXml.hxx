@@ -13,7 +13,7 @@
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
@@ -42,7 +42,7 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::readSubElements(Added& ident
     if (context.getReader().getLocalName() == PROPERTY) {
         PropertiesXml::read(identifiable, context);
     } else {
-        throw PowsyblException(logging::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), identifiable.getId()));
+        throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), identifiable.getId()));
     }
 }
 

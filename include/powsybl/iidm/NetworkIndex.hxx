@@ -15,7 +15,7 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -35,7 +35,7 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
 
     auto other = m_objectsById.find(identifiable->getId());
     if (other != m_objectsById.end()) {
-        throw PowsyblException(logging::format("Object '%1%' already exists (%2%)", identifiable->getId(), stdcxx::demangle(*other->second)));
+        throw PowsyblException(stdcxx::format("Object '%1%' already exists (%2%)", identifiable->getId(), stdcxx::demangle(*other->second)));
     }
 
     auto it = m_objectsById.emplace(std::make_pair(identifiable->getId(), std::move(identifiable)));
@@ -52,12 +52,12 @@ const T& NetworkIndex::get(const std::string& id) const {
 
     const auto& it = m_objectsById.find(id);
     if (it == m_objectsById.end()) {
-        throw PowsyblException(logging::format("Unable to find to the identifiable '%1%'", id));
+        throw PowsyblException(stdcxx::format("Unable to find to the identifiable '%1%'", id));
     }
 
     auto* identifiable = dynamic_cast<T*>(it->second.get());
     if (identifiable == nullptr) {
-        throw PowsyblException(logging::format("Identifiable '%1%' is not a %2%", id, stdcxx::demangle<T>()));
+        throw PowsyblException(stdcxx::format("Identifiable '%1%' is not a %2%", id, stdcxx::demangle<T>()));
     }
 
     return *identifiable;

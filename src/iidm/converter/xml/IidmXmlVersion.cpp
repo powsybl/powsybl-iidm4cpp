@@ -13,7 +13,7 @@
 #include <boost/range/adaptor/transformed.hpp>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {
@@ -76,7 +76,7 @@ const IidmXmlVersion& IidmXmlVersion::fromNamespaceURI(const std::string& namesp
     const std::string version = namespaceURI.substr(namespaceURI.find_last_of('/') + 1);
     const IidmXmlVersion& v = of(version, "_");
     if (namespaceURI != v.getNamespaceUri()) {
-        throw PowsyblException(logging::format(
+        throw PowsyblException(stdcxx::format(
             "Namespace %1% is not supported. The namespace for IIDM XML version %2% is: %3%.",
             namespaceURI, v.toString("."), v.getNamespaceUri()));
     }
@@ -90,7 +90,7 @@ const std::string& IidmXmlVersion::getDefaultPrefix() {
 }
 
 std::string IidmXmlVersion::getNamespaceUri() const {
-    return logging::format("http://www.%1%/schema/iidm/%2%", m_domain, toString("_"));
+    return stdcxx::format("http://www.%1%/schema/iidm/%2%", m_domain, toString("_"));
 }
 
 const std::string& IidmXmlVersion::getPrefix() const {
@@ -98,7 +98,7 @@ const std::string& IidmXmlVersion::getPrefix() const {
 }
 
 std::string IidmXmlVersion::getXsd() const {
-    return logging::format("iidm_V%1%.xsd", toString("_"));
+    return stdcxx::format("iidm_V%1%.xsd", toString("_"));
 }
 
 const IidmXmlVersion& IidmXmlVersion::of(const std::string& version, const std::string& separator) {
@@ -108,7 +108,7 @@ const IidmXmlVersion& IidmXmlVersion::of(const std::string& version, const std::
         }
     }
 
-    throw PowsyblException(logging::format("Version %1% is not supported.", version));
+    throw PowsyblException(stdcxx::format("Version %1% is not supported.", version));
 }
 
 std::string IidmXmlVersion::toString(const std::string& separator) const {

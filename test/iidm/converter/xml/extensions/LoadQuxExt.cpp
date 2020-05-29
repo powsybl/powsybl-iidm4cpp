@@ -27,7 +27,7 @@ LoadQuxExt::LoadQuxExt(Load& load) :
 
 void LoadQuxExt::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<Load>(extendable.get())) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Load>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Load>()));
     }
 }
 

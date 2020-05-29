@@ -5,16 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_LOGGING_MESSAGEFORMAT_HPP
-#define POWSYBL_LOGGING_MESSAGEFORMAT_HPP
+#ifndef POWSYBL_STDCXX_MESSAGEFORMAT_HPP
+#define POWSYBL_STDCXX_MESSAGEFORMAT_HPP
 
-#include <array>
-#include <set>
 #include <string>
 
-namespace powsybl {
-
-namespace logging {
+namespace stdcxx {
 
 /**
  * Format a message with the specified parameters
@@ -41,10 +37,8 @@ std::string format(const std::string& message, const Args&... args);
 template <typename T>
 std::string toString(const T& value);
 
-}  // namespace logging
+}  // namespace stdcxx
 
-}  // namespace powsybl
+#include <powsybl/stdcxx/MessageFormat.hxx>
 
-#include <powsybl/logging/MessageFormat.hxx>
-
-#endif  // POWSYBL_LOGGING_MESSAGEFORMAT_HPP
+#endif  // POWSYBL_STDCXX_MESSAGEFORMAT_HPP

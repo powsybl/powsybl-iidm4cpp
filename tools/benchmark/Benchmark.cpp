@@ -10,7 +10,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/logging/ConsoleLogger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 int main(int argc, char** argv) {
@@ -30,14 +30,14 @@ int main(int argc, char** argv) {
         const auto& inputFile = vm[INPUT_FILE].as<std::string>();
         std::ifstream inputStream(inputFile);
         if (!inputStream.is_open()) {
-            std::cerr << powsybl::logging::format("Unable to open file '%1%' for reading", inputFile) << std::endl;
+            std::cerr << stdcxx::format("Unable to open file '%1%' for reading", inputFile) << std::endl;
             return EXIT_FAILURE;
         }
 
         const auto& outputFile = vm[OUTPUT_FILE].as<std::string>();
         std::ofstream outputStream(outputFile);
         if (!outputStream.is_open()) {
-            std::cerr << powsybl::logging::format("Unable to open file '%1%' for writing", outputFile) << std::endl;
+            std::cerr << stdcxx::format("Unable to open file '%1%' for writing", outputFile) << std::endl;
             return EXIT_FAILURE;
         }
 

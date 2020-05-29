@@ -42,7 +42,7 @@ void ReactiveLimitsXml::read(ReactiveLimitsHolder& holder, const NetworkXmlReade
                     .setMaxQ(maxQ)
                     .endPoint();
             } else {
-                throw PowsyblException(logging::format("Unexpected element <%1%>", context.getReader().getLocalName()));
+                throw PowsyblException(stdcxx::format("Unexpected element <%1%>", context.getReader().getLocalName()));
             }
         });
         curveAdder.add();
@@ -54,7 +54,7 @@ void ReactiveLimitsXml::read(ReactiveLimitsHolder& holder, const NetworkXmlReade
             .setMaxQ(max)
             .add();
     } else {
-        throw PowsyblException(logging::format("Unknown XML element <%1%>", context.getReader().getLocalName()));
+        throw PowsyblException(stdcxx::format("Unknown XML element <%1%>", context.getReader().getLocalName()));
     }
 }
 
@@ -88,7 +88,7 @@ void ReactiveLimitsXml::write(const ReactiveLimitsHolder& holder, NetworkXmlWrit
             break;
 
         default:
-            throw PowsyblException(logging::format("Unknown reactive limit kind"));
+            throw PowsyblException(stdcxx::format("Unknown reactive limit kind"));
     }
 }
 

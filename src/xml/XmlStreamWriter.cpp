@@ -9,7 +9,7 @@
 
 #include <libxml/xmlwriter.h>
 
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlCharConversion.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
@@ -57,7 +57,7 @@ void XmlStreamWriter::writeAttribute(const std::string& attributeName, int attri
 void XmlStreamWriter::writeAttribute(const std::string& attributeName, const std::string& attributeValue) {
     int written = xmlTextWriterWriteAttribute(m_writer.get(), S2XML(attributeName), S2XML(attributeValue));
     if (written < 0) {
-        throw XmlStreamException(logging::format("Failed to write attribute %1%", attributeName));
+        throw XmlStreamException(stdcxx::format("Failed to write attribute %1%", attributeName));
     }
 }
 
@@ -72,7 +72,7 @@ void XmlStreamWriter::writeAttribute(const std::string& attributeName, unsigned 
 void XmlStreamWriter::writeCharacters(const std::string& content) {
     int written = xmlTextWriterWriteString(m_writer.get(), S2XML(content));
     if (written < 0) {
-        throw XmlStreamException(logging::format("Failed to write characters %1%", content));
+        throw XmlStreamException(stdcxx::format("Failed to write characters %1%", content));
     }
 }
 
@@ -143,7 +143,7 @@ void XmlStreamWriter::writeStartDocument(const std::string& encoding, const std:
 
     xmlCharEncodingHandlerPtr encoder = xmlFindCharEncodingHandler(encoding.c_str());
     if (encoder == nullptr) {
-        throw XmlStreamException(logging::format("Unable to get encoder for encoding %1%", encoding));
+        throw XmlStreamException(stdcxx::format("Unable to get encoder for encoding %1%", encoding));
     }
 
     // initialize writer
@@ -170,7 +170,7 @@ void XmlStreamWriter::writeStartDocument(const std::string& encoding, const std:
     m_writer = XmlStreamWriterPtr(xmlNewTextWriter(buffer), deleteWriterCallback);
 
     if (!m_writer) {
-        throw XmlStreamException(logging::format("Unable to create xml writer"));
+        throw XmlStreamException(stdcxx::format("Unable to create xml writer"));
     }
 
     int ok = xmlTextWriterSetIndent(m_writer.get(), m_indent ? 1 : 0);
@@ -179,7 +179,7 @@ void XmlStreamWriter::writeStartDocument(const std::string& encoding, const std:
     }
 
     if (ok < 0) {
-        throw XmlStreamException(logging::format("Cannot set indentation"));
+        throw XmlStreamException(stdcxx::format("Cannot set indentation"));
     }
 
     int written = xmlTextWriterStartDocument(m_writer.get(), version.c_str(), encoding.c_str(), nullptr);
@@ -192,7 +192,7 @@ void XmlStreamWriter::writeStartElement(const std::string& prefix, const std::st
     const std::string& fullElementName = prefix.empty() ? elementName : prefix + ":" + elementName;
     int written = xmlTextWriterStartElement(m_writer.get(), S2XML(fullElementName));
     if (written < 0) {
-        throw XmlStreamException(logging::format("Failed to write start element %1%", fullElementName));
+        throw XmlStreamException(stdcxx::format("Failed to write start element %1%", fullElementName));
     }
 }
 

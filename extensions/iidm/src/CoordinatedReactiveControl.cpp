@@ -28,7 +28,7 @@ CoordinatedReactiveControl::CoordinatedReactiveControl(Generator& generator, dou
 
 void CoordinatedReactiveControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<Generator>(extendable.get())) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Generator>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Generator>()));
     }
 }
 
@@ -37,7 +37,7 @@ double CoordinatedReactiveControl::checkQPercent(double qPercent) {
         throw PowsyblException("Undefined value for qPercent");
     }
     if (qPercent < 0.0 || qPercent > 100.0) {
-        throw PowsyblException(logging::format("Unexpected value for qPercent: %1%", qPercent));
+        throw PowsyblException(stdcxx::format("Unexpected value for qPercent: %1%", qPercent));
     }
     return qPercent;
 }

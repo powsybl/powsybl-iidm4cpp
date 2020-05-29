@@ -35,7 +35,7 @@ ThreeWindingsTransformerPhaseAngleClockXmlSerializer::ThreeWindingsTransformerPh
 
 std::unique_ptr<Extension> ThreeWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<ThreeWindingsTransformer>(extendable)) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<ThreeWindingsTransformer>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<ThreeWindingsTransformer>()));
     }
     auto& transformer = dynamic_cast<ThreeWindingsTransformer&>(extendable);
 

@@ -63,7 +63,7 @@ void VoltageLevelXml::readBusBreakerTopology(VoltageLevel& voltageLevel, Network
         } else if (context.getReader().getLocalName() == SWITCH) {
             BusBreakerViewSwitchXml::getInstance().read(voltageLevel, context);
         } else {
-            throw AssertionError(logging::format("Unsupported element %1%", context.getReader().getLocalName()));
+            throw AssertionError(stdcxx::format("Unsupported element %1%", context.getReader().getLocalName()));
         }
     });
 }
@@ -103,7 +103,7 @@ void VoltageLevelXml::readNodeBreakerTopology(VoltageLevel& voltageLevel, Networ
         } else if (context.getReader().getLocalName() == BUS) {
             readCalculatedBus(voltageLevel, context);
         } else {
-            throw AssertionError(logging::format("Unexpected element %1%", context.getReader().getLocalName()));
+            throw AssertionError(stdcxx::format("Unexpected element %1%", context.getReader().getLocalName()));
         }
     });
 }
@@ -305,7 +305,7 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const S
             break;
 
         default:
-            throw AssertionError(logging::format("Unexpected TopologyLevel value: ", topologyLevel));
+            throw AssertionError(stdcxx::format("Unexpected TopologyLevel value: ", topologyLevel));
     }
 
     writeGenerators(voltageLevel, context);

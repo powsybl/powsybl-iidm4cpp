@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -39,7 +39,7 @@ const std::string& TieLine::HalfLine::getId() const {
 }
 
 std::string TieLine::HalfLine::getMessageHeader() const {
-    return logging::format("Half line '%1%': ", m_id);
+    return stdcxx::format("Half line '%1%': ", m_id);
 }
 
 const std::string& TieLine::HalfLine::getName() const {

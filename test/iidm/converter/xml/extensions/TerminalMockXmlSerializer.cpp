@@ -46,7 +46,7 @@ std::unique_ptr<Extension> TerminalMockXmlSerializer::read(Extendable& extendabl
     checkReadingCompatibility(context);
 
     if (!stdcxx::isInstanceOf<Load>(extendable)) {
-        throw AssertionError(logging::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Load>()));
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Load>()));
     }
     auto& load = dynamic_cast<Load&>(extendable);
 
@@ -58,7 +58,7 @@ std::unique_ptr<Extension> TerminalMockXmlSerializer::read(Extendable& extendabl
             Terminal& terminal = TerminalRefXml::readTerminalRef(load.getNetwork(), id, side);
             terminalMockExt->setTerminal(stdcxx::ref(terminal));
         } else {
-            throw AssertionError(logging::format("Unexpected element: %1%", context.getReader().getLocalName()));
+            throw AssertionError(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));
         }
     });
 

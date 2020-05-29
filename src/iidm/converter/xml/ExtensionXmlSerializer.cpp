@@ -8,7 +8,7 @@
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 
 namespace powsybl {
 
@@ -25,7 +25,7 @@ ExtensionXmlSerializer::ExtensionXmlSerializer(std::string&& extensionName, std:
 
 void ExtensionXmlSerializer::checkExtensionVersionSupported(const std::string& extensionVersion) const {
     if (extensionVersion != "1.0") {
-        throw PowsyblException(logging::format("The version %1% of the %2% extension's XML serializer is not supported", extensionVersion, getExtensionName()));
+        throw PowsyblException(stdcxx::format("The version %1% of the %2% extension's XML serializer is not supported", extensionVersion, getExtensionName()));
     }
 }
 

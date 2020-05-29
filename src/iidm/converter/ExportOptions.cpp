@@ -8,7 +8,7 @@
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/logging/MessageFormat.hpp>
+#include <powsybl/stdcxx/MessageFormat.hpp>
 
 namespace powsybl {
 
@@ -33,10 +33,10 @@ ExportOptions& ExportOptions::addExtension(const std::string& extension) {
 
 ExportOptions& ExportOptions::addExtensionVersion(const std::string& extensionName, const std::string& extensionVersion) {
     if (!m_extensions.empty() && m_extensions.find(extensionName) == m_extensions.end()) {
-        throw PowsyblException(logging::format("%1% is not an extension you have passed in the extensions list to export.", extensionName));
+        throw PowsyblException(stdcxx::format("%1% is not an extension you have passed in the extensions list to export.", extensionName));
     }
     if (m_extensionsVersions.find(extensionName) != m_extensionsVersions.end()) {
-        throw PowsyblException(logging::format("The version of %1%'s XML serializer has already been set.", extensionName));
+        throw PowsyblException(stdcxx::format("The version of %1%'s XML serializer has already been set.", extensionName));
     }
 
     m_extensionsVersions.insert(std::make_pair(extensionName, extensionVersion));
