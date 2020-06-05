@@ -17,6 +17,7 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
 #include <powsybl/iidm/extensions/iidm/ActivePowerControl.hpp>
+#include <powsybl/iidm/extensions/iidm/ActivePowerControlAdder.hpp>
 
 #include <powsybl/stdcxx/make_unique.hpp>
 
@@ -39,16 +40,8 @@ std::unique_ptr<Extension> ActivePowerControlXmlSerializer::read(Extendable& ext
     const auto& participate = context.getReader().getAttributeValue<bool>("participate");
     const auto& droop = context.getReader().getAttributeValue<double>("droop");
 
-    if (stdcxx::isInstanceOf<Battery>(extendable)) {
-        auto& battery = dynamic_cast<Battery&>(extendable);
-        return stdcxx::make_unique<Extension, ActivePowerControl>(battery, participate, droop);
-    }
-    if (stdcxx::isInstanceOf<Generator>(extendable)) {
-        auto& generator = dynamic_cast<Generator&>(extendable);
-        return stdcxx::make_unique<Extension, ActivePowerControl>(generator, participate, droop);
-    }
-
-    throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
+    extendable.newExtension<ActivePowerControlAdder>().withParticipate(participate).withDroop(droop).add();
+    return stdcxx::make_unique<ActivePowerControl>(extendable.getExtension<ActivePowerControl>());
 }
 
 void ActivePowerControlXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
