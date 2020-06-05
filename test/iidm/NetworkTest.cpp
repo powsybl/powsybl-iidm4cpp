@@ -19,6 +19,7 @@
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/stdcxx/exception.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -463,6 +464,25 @@ BOOST_AUTO_TEST_CASE(views) {
     const auto& cBuses4 = cNetwork2.getBusView().getBuses();
     BOOST_CHECK_EQUAL(0, boost::size(cBuses4));
     POWSYBL_ASSERT_REF_FALSE(cNetwork2.getBusView().getBus("UNKNOWN"));
+}
+ 
+BOOST_AUTO_TEST_CASE(Properties) {
+    Network n("test", "test");
+
+    BOOST_TEST(!n.hasProperty());
+    BOOST_TEST(!n.hasProperty("unknown"));
+    BOOST_CHECK_EQUAL(0UL, boost::size(n.getPropertyNames()));
+
+    n.setProperty("key1", "value1");
+    n.setProperty("key2", "value2");
+    BOOST_TEST(n.hasProperty());
+    BOOST_CHECK_EQUAL(2UL, boost::size(n.getPropertyNames()));
+
+    BOOST_CHECK_EQUAL("value1", n.getProperty("key1"));
+
+    POWSYBL_ASSERT_THROW(n.getProperty("key3"),
+                         stdcxx::PropertyNotFoundException, "Property key3 does not exist");
+    BOOST_CHECK_EQUAL("value3", n.getProperty("key3", "value3"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

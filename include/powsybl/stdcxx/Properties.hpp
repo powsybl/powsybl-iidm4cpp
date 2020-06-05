@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_PROPERTIES_HPP
-#define POWSYBL_IIDM_PROPERTIES_HPP
+#ifndef POWSYBL_STDCXX_PROPERTIES_HPP
+#define POWSYBL_STDCXX_PROPERTIES_HPP
 
 #include <map>
 #include <string>
@@ -14,9 +14,7 @@
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
-namespace powsybl {
-
-namespace iidm {
+namespace stdcxx {
 
 class Properties {
 public:
@@ -72,8 +70,6 @@ private:
     std::map<std::string, std::string> m_properties;
 };
 
-}  // namespace iidm
+}  // namespace stdcxx
 
-}  // namespace powsybl
-
-#endif  // POWSYBL_IIDM_PROPERTIES_HPP
+#endif  // POWSYBL_STDCXX_PROPERTIES_HPP
