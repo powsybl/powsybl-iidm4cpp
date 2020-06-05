@@ -27,8 +27,11 @@ class Parameter;
 
 class ConversionParameters {
 public:
-    template <typename T>
-    static T readParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
+    static bool readBooleanParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
+
+    static std::set<std::string> readStringListParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
+
+    static std::string readStringParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
 public:
     ConversionParameters() = delete;
@@ -49,7 +52,5 @@ public:
 }  // namespace iidm
 
 }  // namespace powsybl
-
-#include <powsybl/iidm/converter/ConversionParameters.hxx>
 
 #endif  // POWSYBL_IIDM_CONVERTER_CONVERSIONPARAMETERS_HPP

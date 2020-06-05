@@ -109,20 +109,6 @@ BOOST_AUTO_TEST_CASE(GetProperty) {
     POWSYBL_ASSERT_THROW(props.get("key9"), PropertyNotFoundException, "Property key9 does not exist");
 }
 
-BOOST_AUTO_TEST_CASE(getTemplated) {
-    Properties properties;
-
-    properties.set("boolTrue", "true");
-    properties.set("boolFalse", "false");
-    BOOST_CHECK(properties.get<bool>("boolTrue"));
-    BOOST_CHECK(!properties.get<bool>("boolFalse"));
-    BOOST_CHECK_EQUAL("true", properties.get<std::string>("boolTrue"));
-
-    BOOST_CHECK(properties.contains("boolTrue"));
-    BOOST_CHECK(!properties.contains("missingAttr"));
-    POWSYBL_ASSERT_THROW(properties.get<std::string>("missingAttr"), PropertyNotFoundException, "Property missingAttr does not exist");
-}
-
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace stdcxx

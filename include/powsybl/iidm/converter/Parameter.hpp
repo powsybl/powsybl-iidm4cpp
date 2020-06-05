@@ -30,17 +30,17 @@ public:
     };
 
 public:
-    Parameter(std::string&& name, ParameterType&& type, std::string&& description, std::string&& defaultValue);
+    Parameter(std::string&& name, const ParameterType& type, std::string&& description, std::string&& defaultValue);
 
-    Parameter(std::string&& name, ParameterType&& type, std::string&& description, bool&& defaultValue);
+    Parameter(std::string&& name, const ParameterType& type, std::string&& description, bool defaultValue);
 
-    Parameter(std::string&& name, ParameterType&& type, std::string&& description, std::set<std::string>&& defaultValue);
+    Parameter(std::string&& name, const ParameterType& type, std::string&& description, std::set<std::string>&& defaultValue);
 
     ~Parameter() = default;
 
     Parameter(const Parameter&) = default;
 
-    Parameter(Parameter&&) = default;
+    Parameter(Parameter&&) noexcept = default;
 
     Parameter& operator=(const Parameter&) = default;
 
@@ -48,14 +48,17 @@ public:
 
     Parameter& addAdditionalNames(const std::initializer_list<std::string>& additionalNames);
 
-    template <typename T>
-    T getDefaultValue() const;
+    bool getBooleanDefaultValue() const;
 
     const std::string& getDescription() const;
 
     const std::string& getName() const;
 
     const std::vector<std::string>& getNames() const;
+
+    const std::string& getStringDefaultValue() const;
+
+    const std::set<std::string>& getStringListDefaultValue() const;
 
     const ParameterType& getType() const;
 
@@ -66,7 +69,7 @@ private:
 
     std::string m_description;
 
-    boost::any m_defaultValue;
+    std::set<std::string> m_defaultValue;
 };
 
 }  // namespace converter
@@ -74,7 +77,5 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
-
-#include <powsybl/iidm/converter/Parameter.hxx>
 
 #endif  // POWSYBL_IIDM_CONVERTER_PARAMETER_HPP

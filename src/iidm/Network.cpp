@@ -49,14 +49,14 @@ namespace powsybl {
 
 namespace iidm {
 
-static const converter::Parameter& ANONYMISED_PARAMETER = converter::Parameter(converter::xml::ANONYMISED, converter::Parameter::ParameterType::BOOLEAN, "Anonymise exported network", false);
-static const converter::Parameter& INDENT_PARAMETER = converter::Parameter(converter::xml::INDENT, converter::Parameter::ParameterType::BOOLEAN, "Indent export output file", true);
-static const converter::Parameter& EXTENSIONS_LIST_PARAMETER = converter::Parameter(converter::xml::EXTENSIONS_LIST, converter::Parameter::ParameterType::STRING_LIST, "The list of exported extensions", std::set<std::string>());
-static const converter::Parameter& ONLY_MAIN_CC_PARAMETER = converter::Parameter(converter::xml::ONLY_MAIN_CC, converter::Parameter::ParameterType::BOOLEAN, "Export only main CC", false);
-static const converter::Parameter& THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = converter::Parameter(converter::xml::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::Parameter::ParameterType::BOOLEAN, "Throw exception if extension not found", false);
-static const converter::Parameter& TOPOLOGY_LEVEL_PARAMETER = converter::Parameter(converter::xml::TOPOLOGY_LEVEL, converter::Parameter::ParameterType::STRING, "Export network in this topology level", std::string("NODE_BREAKER"));
-static const converter::Parameter& VERSION_PARAMETER = converter::Parameter(converter::xml::VERSION, converter::Parameter::ParameterType::STRING, "IIDM-XML version in which files will be generated", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString("."));
-static const converter::Parameter& WITH_BRANCH_STATE_VARIABLES_PARAMETER = converter::Parameter(converter::xml::WITH_BRANCH_STATE_VARIABLES, converter::Parameter::ParameterType::BOOLEAN, "Export network with branch state variables", true);
+static const converter::Parameter ANONYMISED_PARAMETER(converter::xml::ANONYMISED, converter::Parameter::ParameterType::BOOLEAN, "Anonymise exported network", false);
+static const converter::Parameter INDENT_PARAMETER(converter::xml::INDENT, converter::Parameter::ParameterType::BOOLEAN, "Indent export output file", true);
+static const converter::Parameter EXTENSIONS_LIST_PARAMETER(converter::xml::EXTENSIONS_LIST, converter::Parameter::ParameterType::STRING_LIST, "The list of exported extensions", std::set<std::string>());
+static const converter::Parameter ONLY_MAIN_CC_PARAMETER(converter::xml::ONLY_MAIN_CC, converter::Parameter::ParameterType::BOOLEAN, "Export only main CC", false);
+static const converter::Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = std::move(converter::Parameter(converter::xml::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::Parameter::ParameterType::BOOLEAN, "Throw exception if extension not found", false).addAdditionalNames({"throwExceptionIfExtensionNotFound"}));
+static const converter::Parameter TOPOLOGY_LEVEL_PARAMETER(converter::xml::TOPOLOGY_LEVEL, converter::Parameter::ParameterType::STRING, "Export network in this topology level", std::string("NODE_BREAKER"));
+static const converter::Parameter VERSION_PARAMETER(converter::xml::VERSION, converter::Parameter::ParameterType::STRING, "IIDM-XML version in which files will be generated", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString("."));
+static const converter::Parameter WITH_BRANCH_STATE_VARIABLES_PARAMETER(converter::xml::WITH_BRANCH_STATE_VARIABLES, converter::Parameter::ParameterType::BOOLEAN, "Export network with branch state variables", true);
 
 Network Network::readXml(const std::string& data) {
     std::stringstream stream(data);
@@ -73,10 +73,8 @@ Network Network::readXml(std::istream& istream, const converter::ImportOptions& 
 
 Network Network::readXml(std::istream& istream, const stdcxx::Properties& parameters, const converter::Anonymizer& anonymizer) {
     converter::ImportOptions options;
-    converter::Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_IMPORT_PARAMETER(THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER);
-    THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_IMPORT_PARAMETER.addAdditionalNames({"throwExceptionIfExtensionNotFound"});
-    options.setThrowExceptionIfExtensionNotFound(converter::ConversionParameters::readParameter<bool>(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_IMPORT_PARAMETER))
-        .setExtensions(converter::ConversionParameters::readParameter<std::set<std::string>>(parameters, EXTENSIONS_LIST_PARAMETER));
+    options.setThrowExceptionIfExtensionNotFound(converter::ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER))
+        .setExtensions(converter::ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER));
     return converter::xml::NetworkXml::read(istream, options, anonymizer);
 }
 
@@ -91,14 +89,14 @@ std::unique_ptr<converter::Anonymizer> Network::writeXml(std::ostream& ostream, 
 
 std::unique_ptr<converter::Anonymizer> Network::writeXml(std::ostream& ostream, const Network& network, const stdcxx::Properties& parameters) {
     converter::ExportOptions options;
-    options.setIndent(converter::ConversionParameters::readParameter<bool>(parameters, INDENT_PARAMETER))
-        .setWithBranchSV(converter::ConversionParameters::readParameter<bool>(parameters, WITH_BRANCH_STATE_VARIABLES_PARAMETER))
-        .setOnlyMainCc(converter::ConversionParameters::readParameter<bool>(parameters, ONLY_MAIN_CC_PARAMETER))
-        .setAnonymized(converter::ConversionParameters::readParameter<bool>(parameters, ANONYMISED_PARAMETER))
-        .setTopologyLevel(Enum::fromString<TopologyLevel>(converter::ConversionParameters::readParameter<std::string>(parameters, TOPOLOGY_LEVEL_PARAMETER)))
-        .setThrowExceptionIfExtensionNotFound(converter::ConversionParameters::readParameter<bool>(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER))
-        .setExtensions(converter::ConversionParameters::readParameter<std::set<std::string>>(parameters, EXTENSIONS_LIST_PARAMETER))
-        .setVersion(converter::ConversionParameters::readParameter<std::string>(parameters, VERSION_PARAMETER));
+    options.setIndent(converter::ConversionParameters::readBooleanParameter(parameters, INDENT_PARAMETER))
+        .setWithBranchSV(converter::ConversionParameters::readBooleanParameter(parameters, WITH_BRANCH_STATE_VARIABLES_PARAMETER))
+        .setOnlyMainCc(converter::ConversionParameters::readBooleanParameter(parameters, ONLY_MAIN_CC_PARAMETER))
+        .setAnonymized(converter::ConversionParameters::readBooleanParameter(parameters, ANONYMISED_PARAMETER))
+        .setTopologyLevel(Enum::fromString<TopologyLevel>(converter::ConversionParameters::readStringParameter(parameters, TOPOLOGY_LEVEL_PARAMETER)))
+        .setThrowExceptionIfExtensionNotFound(converter::ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER))
+        .setExtensions(converter::ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))
+        .setVersion(converter::ConversionParameters::readStringParameter(parameters, VERSION_PARAMETER));
     return converter::xml::NetworkXml::write(ostream, network, options);
 }
 

@@ -111,6 +111,7 @@ set(IIDM_SOURCES
 
     iidm/converter/BusFilter.cpp
     iidm/converter/Constants.cpp
+    iidm/converter/ConversionParameters.cpp
     iidm/converter/ExportOptions.cpp
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
