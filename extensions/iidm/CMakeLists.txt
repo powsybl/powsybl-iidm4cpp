@@ -9,6 +9,7 @@ set(EXT_NAME ext-iidm)
 
 set(EXT_SOURCES
     src/ActivePowerControl.cpp
+    src/ActivePowerControlAdder.cpp
     src/ActivePowerControlXmlSerializer.cpp
     src/CoordinatedReactiveControl.cpp
     src/CoordinatedReactiveControlXmlSerializer.cpp
