@@ -15,6 +15,7 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/iidm/extensions/entsoe/Xnode.hpp>
+#include <powsybl/iidm/extensions/entsoe/XnodeAdder.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include <powsybl/test/ResourceFixture.hpp>
@@ -56,7 +57,7 @@ Network createNetwork() {
         .setQ0(0.0)
         .add();
 
-    dl.addExtension(Extension::create<Xnode>(dl, "XXXXXX11"));
+    dl.newExtension<XnodeAdder>().withCode("XXXXXX11").add();
 
     return network;
 }
