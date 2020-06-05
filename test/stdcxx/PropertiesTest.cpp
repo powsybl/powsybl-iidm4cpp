@@ -7,14 +7,12 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/PowsyblException.hpp>
-#include <powsybl/iidm/Network.hpp>
+#include <powsybl/stdcxx/Properties.hpp>
+#include <powsybl/stdcxx/exception.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 
-namespace powsybl {
-
-namespace iidm {
+namespace stdcxx {
 
 BOOST_AUTO_TEST_SUITE(PropertiesTestSuite)
 
@@ -105,35 +103,12 @@ BOOST_AUTO_TEST_CASE(GetProperty) {
 
     BOOST_CHECK_EQUAL(4UL, props.size());
 
-    POWSYBL_ASSERT_THROW(props.get("key9"),
-                         powsybl::PowsyblException, "Property key9 does not exist");
+    POWSYBL_ASSERT_THROW(props.get("key9"), PropertyNotFoundException, "Property key9 does not exist");
     BOOST_CHECK_EQUAL("value9", props.get("key9", "value9"));
 
-    POWSYBL_ASSERT_THROW(props.get("key9"),
-                         powsybl::PowsyblException, "Property key9 does not exist");
-}
-
-BOOST_AUTO_TEST_CASE(networkProperties) {
-    Network n("test", "test");
-
-    BOOST_TEST(!n.hasProperty());
-    BOOST_TEST(!n.hasProperty("unknown"));
-    BOOST_CHECK_EQUAL(0UL, boost::size(n.getPropertyNames()));
-
-    n.setProperty("key1", "value1");
-    n.setProperty("key2", "value2");
-    BOOST_TEST(n.hasProperty());
-    BOOST_CHECK_EQUAL(2UL, boost::size(n.getPropertyNames()));
-
-    BOOST_CHECK_EQUAL("value1", n.getProperty("key1"));
-
-    POWSYBL_ASSERT_THROW(n.getProperty("key3"),
-                         powsybl::PowsyblException, "Property key3 does not exist");
-    BOOST_CHECK_EQUAL("value3", n.getProperty("key3", "value3"));
+    POWSYBL_ASSERT_THROW(props.get("key9"), PropertyNotFoundException, "Property key9 does not exist");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
 
-}  // namespace iidm
-
-}  // namespace powsybl
+}  // namespace stdcxx

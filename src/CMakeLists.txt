@@ -75,7 +75,6 @@ set(IIDM_SOURCES
     iidm/PhaseTapChanger.cpp
     iidm/PhaseTapChangerAdder.cpp
     iidm/PhaseTapChangerStep.cpp
-    iidm/Properties.cpp
     iidm/RatioTapChanger.cpp
     iidm/RatioTapChangerAdder.cpp
     iidm/RatioTapChangerStep.cpp
@@ -171,7 +170,9 @@ set(IIDM_SOURCES
 
     stdcxx/DateTime.cpp
     stdcxx/demangle.cpp
+    stdcxx/exception.cpp
     stdcxx/time.cpp
+    stdcxx/Properties.cpp
 
     xml/XmlCharConversion.cpp
     xml/XmlStreamException.cpp

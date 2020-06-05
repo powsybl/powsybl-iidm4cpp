@@ -11,8 +11,8 @@
 #include <string>
 
 #include <powsybl/iidm/Extendable.hpp>
-#include <powsybl/iidm/Properties.hpp>
 #include <powsybl/iidm/Validable.hpp>
+#include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
@@ -68,7 +68,7 @@ private:
 
     std::string m_name;
 
-    Properties m_properties;
+    stdcxx::Properties m_properties;
 };
 
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable);
