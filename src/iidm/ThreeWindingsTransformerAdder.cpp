@@ -11,11 +11,10 @@
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TerminalBuilder.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

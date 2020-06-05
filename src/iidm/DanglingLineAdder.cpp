@@ -5,14 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+
+#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

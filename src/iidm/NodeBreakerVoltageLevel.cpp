@@ -9,11 +9,11 @@
 
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "NodeBreakerVoltageLevelBusCache.hpp"
 #include "NodeTerminal.hpp"
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

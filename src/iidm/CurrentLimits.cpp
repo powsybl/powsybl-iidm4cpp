@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/CurrentLimits.hpp>
 
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 

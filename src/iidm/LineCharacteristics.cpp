@@ -6,9 +6,9 @@
  */
 
 #include <powsybl/iidm/LineCharacteristics.hpp>
-#include <powsybl/stdcxx/math.hpp>
 
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 

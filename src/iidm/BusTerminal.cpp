@@ -8,11 +8,10 @@
 #include "BusTerminal.hpp"
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/math.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 
