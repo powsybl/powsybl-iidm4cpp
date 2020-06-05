@@ -6,7 +6,6 @@
  */
 
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/stdcxx/exception.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
 #include "ValidationUtils.hpp"
