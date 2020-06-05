@@ -13,6 +13,7 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
 #include <powsybl/iidm/extensions/entsoe/Xnode.hpp>
+#include <powsybl/iidm/extensions/entsoe/XnodeAdder.hpp>
 
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
@@ -30,14 +31,9 @@ XnodeXmlSerializer::XnodeXmlSerializer() :
 }
 
 std::unique_ptr<Extension> XnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
-    if (!stdcxx::isInstanceOf<DanglingLine>(extendable)) {
-        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<DanglingLine>()));
-    }
-    auto& dl = dynamic_cast<DanglingLine&>(extendable);
-
     const auto& code = context.getReader().getAttributeValue("code");
-
-    return stdcxx::make_unique<Extension, Xnode>(dl, code);
+    extendable.newExtension<XnodeAdder>().withCode(code).add();
+    return stdcxx::make_unique<Xnode>(extendable.getExtension<Xnode>());
 }
 
 void XnodeXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
