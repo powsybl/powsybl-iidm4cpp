@@ -11,6 +11,7 @@ set(UNIT_TEST_SOURCES
     DemangleTest.cpp
     MathTest.cpp
     MessageFormatTest.cpp
+    PropertiesTest.cpp
 )
 
 add_executable(unit-tests-stdcxx ${UNIT_TEST_SOURCES})
