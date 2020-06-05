@@ -15,6 +15,7 @@ set(EXT_SOURCES
     src/MergedXnode.cpp
     src/MergedXnodeXmlSerializer.cpp
     src/Xnode.cpp
+    src/XnodeAdder.cpp
     src/XnodeXmlSerializer.cpp
 )
 
