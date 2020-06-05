@@ -43,6 +43,8 @@ public:
 
         LegAdder& setR(double r);
 
+        LegAdder& setRatedS(double ratedS);
+
         LegAdder& setRatedU(double ratedU);
 
         LegAdder& setVoltageLevel(const std::string& voltageLevelId);
@@ -87,6 +89,8 @@ public:
         double m_b = stdcxx::nan();
 
         double m_ratedU = stdcxx::nan();
+
+        double m_ratedS = stdcxx::nan();
     };
 
 public:

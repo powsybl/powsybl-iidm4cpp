@@ -19,13 +19,14 @@ namespace powsybl {
 
 namespace iidm {
 
-ThreeWindingsTransformer::Leg::Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU) :
+ThreeWindingsTransformer::Leg::Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU, double ratedS) :
     m_legNumber(legNumber),
     m_r(checkR(*this, r)),
     m_x(checkX(*this, x)),
     m_g(checkG(*this, g)),
     m_b(checkB(*this, b)),
-    m_ratedU(checkRatedU(*this, ratedU, legNumber)) {
+    m_ratedU(checkRatedU(*this, ratedU, legNumber)),
+    m_ratedS(checkRatedS(*this, ratedS)) {
 }
 
 double ThreeWindingsTransformer::Leg::getB() const {
@@ -66,6 +67,10 @@ stdcxx::Reference<PhaseTapChanger> ThreeWindingsTransformer::Leg::getPhaseTapCha
 
 double ThreeWindingsTransformer::Leg::getR() const {
     return m_r;
+}
+
+double ThreeWindingsTransformer::Leg::getRatedS() const {
+    return m_ratedS;
 }
 
 double ThreeWindingsTransformer::Leg::getRatedU() const {
@@ -151,6 +156,11 @@ ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::Leg::setG(double g) {
 
 ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::Leg::setR(double r) {
     m_r = checkR(*this, r);
+    return *this;
+}
+
+ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::Leg::setRatedS(double ratedS) {
+    m_ratedS = checkRatedS(*this, ratedS);
     return *this;
 }
 
