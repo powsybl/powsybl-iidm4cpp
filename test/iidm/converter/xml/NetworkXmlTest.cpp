@@ -117,7 +117,7 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     const Network& network = Network::readXml(stream, ImportOptions(properties), anonymizer);
 
     std::stringstream ostream;
-    Network::writeXml(ostream, network, properties);
+    Network::writeXml(ostream, network, ExportOptions(properties));
 
     properties.set(xml::TOPOLOGY_LEVEL, "true");
     POWSYBL_ASSERT_THROW(Network::writeXml(ostream, network, ExportOptions(properties)), AssertionError, "Unexpected TopologyLevel name: true");
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     extensions.insert("extension1");
     extensions.insert("extension2");
     properties.set(xml::EXTENSIONS_LIST, boost::algorithm::join(extensions, ","));
-    Network::writeXml(ostream, network, properties);
+    Network::writeXml(ostream, network, ExportOptions(properties));
 }
 
 BOOST_AUTO_TEST_CASE(WriteFromParametersCheckExtensions) {
