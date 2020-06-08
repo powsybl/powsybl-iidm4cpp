@@ -51,7 +51,7 @@ public:
      *
      * @param parameters import parameters
      */
-    ExportOptions(const stdcxx::Properties& parameters);
+    explicit ExportOptions(const stdcxx::Properties& parameters);
 
     /**
      * Add an extension to the list of exported extensions.
