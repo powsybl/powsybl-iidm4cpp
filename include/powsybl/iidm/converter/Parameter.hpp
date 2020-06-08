@@ -23,18 +23,14 @@ namespace converter {
 
 class Parameter {
 public:
-    enum class ParameterType : char {
+    enum class Type : char {
         BOOLEAN,
         STRING,
         STRING_LIST
     };
 
 public:
-    Parameter(std::string&& name, const ParameterType& type, std::string&& description, std::string&& defaultValue);
-
-    Parameter(std::string&& name, const ParameterType& type, std::string&& description, bool defaultValue);
-
-    Parameter(std::string&& name, const ParameterType& type, std::string&& description, std::set<std::string>&& defaultValue);
+    Parameter(std::string&& name, const Type& type, std::string&& description, std::string&& defaultValue);
 
     ~Parameter() = default;
 
@@ -44,7 +40,7 @@ public:
 
     Parameter& operator=(const Parameter&) = default;
 
-    Parameter& operator=(Parameter&&) = delete;
+    Parameter& operator=(Parameter&&) = default;
 
     Parameter& addAdditionalNames(const std::initializer_list<std::string>& additionalNames);
 
@@ -58,18 +54,18 @@ public:
 
     const std::string& getStringDefaultValue() const;
 
-    const std::set<std::string>& getStringListDefaultValue() const;
+    const std::vector<std::string>& getStringListDefaultValue() const;
 
-    const ParameterType& getType() const;
+    const Type& getType() const;
 
 private:
     std::vector<std::string> m_names;
 
-    ParameterType m_type;
+    Type m_type;
 
     std::string m_description;
 
-    std::set<std::string> m_defaultValue;
+    std::string m_defaultValue;
 };
 
 }  // namespace converter

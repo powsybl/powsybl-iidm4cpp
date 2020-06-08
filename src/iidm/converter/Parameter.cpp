@@ -7,7 +7,9 @@
 
 #include <powsybl/iidm/converter/Parameter.hpp>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/split.hpp>
 
 namespace powsybl {
 
@@ -15,34 +17,20 @@ namespace iidm {
 
 namespace converter {
 
-Parameter::Parameter(std::string&& name, const ParameterType& type, std::string&& description, std::string&& defaultValue) :
+Parameter::Parameter(std::string&& name, const Type& type, std::string&& description, std::string&& defaultValue) :
     m_type(type),
     m_description(std::move(description)),
     m_defaultValue({std::move(defaultValue)}) {
     m_names.emplace_back(std::move(name));
 }
 
-Parameter::Parameter(std::string&& name, const ParameterType& type, std::string&& description, bool defaultValue) :
-    m_type(type),
-    m_description(std::move(description)),
-    m_defaultValue({defaultValue ? "true" : "false"}) {
-    m_names.emplace_back(std::move(name));
-}
-
-Parameter::Parameter(std::string&& name, const ParameterType& type, std::string&& description, std::set<std::string>&& defaultValue) :
-    m_type(type),
-    m_description(std::move(description)),
-    m_defaultValue(std::move(defaultValue)) {
-    m_names.emplace_back(std::move(name));
-}
-
 Parameter& Parameter::addAdditionalNames(const std::initializer_list<std::string>& additionalNames) {
-    std::copy(additionalNames.begin(), additionalNames.end(), std::back_inserter(m_names));
+    std::move(additionalNames.begin(), additionalNames.end(), std::back_inserter(m_names));
     return *this;
 }
 
 bool Parameter::getBooleanDefaultValue() const {
-    return boost::iequals(*m_defaultValue.begin(), "true");
+    return boost::iequals(m_defaultValue, "true");
 }
 
 const std::string& Parameter::getDescription() const {
@@ -58,14 +46,18 @@ const std::vector<std::string>& Parameter::getNames() const {
 }
 
 const std::string& Parameter::getStringDefaultValue() const {
-    return *m_defaultValue.begin();
-}
-
-const std::set<std::string>& Parameter::getStringListDefaultValue() const {
     return m_defaultValue;
 }
 
-const Parameter::ParameterType& Parameter::getType() const {
+const std::vector<std::string>& Parameter::getStringListDefaultValue() const {
+    static std::vector<std::string> values;
+    if (!m_defaultValue.empty()) {
+        boost::algorithm::split(values, m_defaultValue, boost::is_any_of(",:"));
+    }
+    return values;
+}
+
+const Parameter::Type& Parameter::getType() const {
     return m_type;
 }
 

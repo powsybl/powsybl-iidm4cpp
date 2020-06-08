@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_CONVERTER_CONSTANTS_HPP
-#define POWSYBL_IIDM_CONVERTER_CONSTANTS_HPP
+#ifndef POWSYBL_IIDM_CONVERTER_XML_CONSTANTS_HPP
+#define POWSYBL_IIDM_CONVERTER_XML_CONSTANTS_HPP
 
 #include <string>
 
@@ -37,5 +37,5 @@ static const char* const WITH_BRANCH_STATE_VARIABLES = "iidm.export.xml.with-bra
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_CONVERTER_CONSTANTS_HPP
+#endif  // POWSYBL_IIDM_CONVERTER_XML_CONSTANTS_HPP
 

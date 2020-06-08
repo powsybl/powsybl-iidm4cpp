@@ -28,10 +28,10 @@ bool ConversionParameters::readBooleanParameter(const stdcxx::Properties& parame
     return configuredParameter.getBooleanDefaultValue();
 }
 
-std::set<std::string> ConversionParameters::readStringListParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter) {
+std::vector<std::string> ConversionParameters::readStringListParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter) {
     for (const std::string& name : configuredParameter.getNames()) {
         if (parameters.contains(name)) {
-            std::set<std::string> values;
+            std::vector<std::string> values;
             boost::algorithm::split(values, parameters.get(name), boost::is_any_of(",:"));
             return values;
         }

@@ -14,6 +14,12 @@
 
 #include <powsybl/iidm/TopologyLevel.hpp>
 
+namespace stdcxx {
+
+class Properties;
+
+}  // namespace stdcxx
+
 namespace powsybl {
 
 namespace iidm {
@@ -39,6 +45,13 @@ public:
      */
     ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
                   bool throwExceptionIfExtensionNotFound, const std::string& version);
+
+    /**
+     * Constructor
+     *
+     * @param parameters import parameters
+     */
+    ExportOptions(const stdcxx::Properties& parameters);
 
     /**
      * Add an extension to the list of exported extensions.

@@ -10,12 +10,14 @@
 #include <boost/algorithm/string/join.hpp>
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/Parameter.hpp>
 #include <powsybl/iidm/converter/xml/Constants.hpp>
+#include <powsybl/network/MultipleExtensionsTestNetworkFactory.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
 
@@ -112,13 +114,13 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     properties.set(xml::TOPOLOGY_LEVEL, "BUS_BREAKER");
 
     FakeAnonymizer anonymizer;
-    const Network& network = Network::readXml(stream, properties, anonymizer);
+    const Network& network = Network::readXml(stream, ImportOptions(properties), anonymizer);
 
     std::stringstream ostream;
     Network::writeXml(ostream, network, properties);
 
     properties.set(xml::TOPOLOGY_LEVEL, "true");
-    POWSYBL_ASSERT_THROW(Network::writeXml(ostream, network, properties), AssertionError, "Unexpected TopologyLevel name: true");
+    POWSYBL_ASSERT_THROW(Network::writeXml(ostream, network, ExportOptions(properties)), AssertionError, "Unexpected TopologyLevel name: true");
     properties.remove(xml::TOPOLOGY_LEVEL);
 
     std::set<std::string> extensions;
@@ -126,6 +128,75 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     extensions.insert("extension2");
     properties.set(xml::EXTENSIONS_LIST, boost::algorithm::join(extensions, ","));
     Network::writeXml(ostream, network, properties);
+}
+
+BOOST_AUTO_TEST_CASE(WriteFromParametersCheckExtensions) {
+    Network network = powsybl::network::MultipleExtensionsTestNetworkFactory::MultipleExtensionsTestNetworkFactory::create();
+
+    stdcxx::Properties properties;
+    std::stringstream ostream;
+
+    properties.set(xml::EXTENSIONS_LIST, "loadBar");
+    Network::writeXml(ostream, network, ExportOptions(properties));
+    const std::string& loadBarOnly = ostream.str();
+    BOOST_TEST(loadBarOnly.find("loadBar") != std::string::npos);
+    BOOST_TEST(loadBarOnly.find("loadFoo") == std::string::npos);
+
+    ostream.str("");
+    ostream.clear();
+    properties.set(xml::EXTENSIONS_LIST, "loadFoo");
+    Network::writeXml(ostream, network, ExportOptions(properties));
+    const std::string& loadFooOnly = ostream.str();
+    BOOST_TEST(loadFooOnly.find("loadBar") == std::string::npos);
+    BOOST_TEST(loadFooOnly.find("loadFoo") != std::string::npos);
+
+    ostream.str("");
+    ostream.clear();
+    properties.remove(xml::EXTENSIONS_LIST);
+    Network::writeXml(ostream, network, ExportOptions(properties));
+    const std::string& loadAllExtsOutput = ostream.str();
+    BOOST_TEST(loadAllExtsOutput.find("loadBar") != std::string::npos);
+    BOOST_TEST(loadAllExtsOutput.find("loadFoo") != std::string::npos);
+
+    std::stringstream referenceStream;
+    Network::writeXml(referenceStream, network);
+    const std::string& refOutput = referenceStream.str();
+    BOOST_TEST(refOutput.find("loadBar") != std::string::npos);
+    BOOST_TEST(refOutput.find("loadFoo") != std::string::npos);
+
+    BOOST_CHECK_EQUAL(refOutput, loadAllExtsOutput);
+}
+
+BOOST_AUTO_TEST_CASE(ReadFromParametersCheckExtensions) {
+    stdcxx::Properties properties;
+    FakeAnonymizer anonymizer;
+    std::stringstream inputStream;
+
+    Network network = powsybl::network::MultipleExtensionsTestNetworkFactory::MultipleExtensionsTestNetworkFactory::create();
+    Network::writeXml(inputStream, network);
+
+    std::string refString = inputStream.str();
+
+    properties.set(xml::EXTENSIONS_LIST, "loadFoo");
+    inputStream.str(refString);
+    inputStream.clear();
+    Network fooNetwork = Network::readXml(inputStream, ImportOptions(properties), anonymizer);
+    BOOST_CHECK_EQUAL(1UL, boost::size(fooNetwork.getLoad("LOAD").getExtensions()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(fooNetwork.getLoad("LOAD2").getExtensions()));
+
+    properties.set(xml::EXTENSIONS_LIST, "loadBar");
+    inputStream.str(refString);
+    inputStream.clear();
+    Network barNetwork = Network::readXml(inputStream, ImportOptions(properties), anonymizer);
+    BOOST_CHECK_EQUAL(1UL, boost::size(barNetwork.getLoad("LOAD").getExtensions()));
+    BOOST_CHECK_EQUAL(0UL, boost::size(barNetwork.getLoad("LOAD2").getExtensions()));
+
+    properties.remove(xml::EXTENSIONS_LIST);
+    inputStream.str(refString);
+    inputStream.clear();
+    Network allExtNetwork = Network::readXml(inputStream, ImportOptions(properties), anonymizer);
+    BOOST_CHECK_EQUAL(2UL, boost::size(allExtNetwork.getLoad("LOAD").getExtensions()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(allExtNetwork.getLoad("LOAD2").getExtensions()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

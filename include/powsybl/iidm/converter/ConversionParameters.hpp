@@ -8,8 +8,8 @@
 #ifndef POWSYBL_IIDM_CONVERTER_CONVERSIONPARAMETERS_HPP
 #define POWSYBL_IIDM_CONVERTER_CONVERSIONPARAMETERS_HPP
 
-#include <set>
 #include <string>
+#include <vector>
 
 namespace stdcxx {
 
@@ -29,7 +29,7 @@ class ConversionParameters {
 public:
     static bool readBooleanParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
-    static std::set<std::string> readStringListParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
+    static std::vector<std::string> readStringListParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
     static std::string readStringParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 

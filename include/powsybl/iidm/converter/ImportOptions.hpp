@@ -11,6 +11,12 @@
 #include <set>
 #include <string>
 
+namespace stdcxx {
+
+class Properties;
+
+}  // namespace stdcxx
+
 namespace powsybl {
 
 namespace iidm {
@@ -20,6 +26,8 @@ namespace converter {
 class ImportOptions {
 public:
     ImportOptions() = default;
+
+    explicit ImportOptions(const stdcxx::Properties& parameters);
 
     ImportOptions& addExtension(const std::string& extension);
 
