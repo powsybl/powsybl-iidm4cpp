@@ -8,10 +8,10 @@
 #include <powsybl/iidm/SwitchAdder.hpp>
 
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"
 #include "NodeBreakerVoltageLevel.hpp"
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

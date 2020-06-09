@@ -28,6 +28,7 @@
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/converter/ConversionParameters.hpp>
@@ -42,8 +43,6 @@
 #include <powsybl/stdcxx/hash.hpp>
 
 #include "converter/xml/NetworkXml.hpp"
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

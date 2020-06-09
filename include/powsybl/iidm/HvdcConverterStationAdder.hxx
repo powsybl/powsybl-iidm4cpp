@@ -9,14 +9,13 @@
 #define POWSYBL_IIDM_HVDCCONVERTERSTATIONADDER_HXX
 
 #include <powsybl/iidm/HvdcConverterStationAdder.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
 namespace iidm {
-
-double checkLossFactor(const Validable& validable, double lossFactor);
 
 template<typename Adder>
 HvdcConverterStationAdder<Adder>::HvdcConverterStationAdder(VoltageLevel& voltageLevel) :

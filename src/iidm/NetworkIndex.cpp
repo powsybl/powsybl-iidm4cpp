@@ -13,9 +13,8 @@
 #include <boost/range/adaptor/transformed.hpp>
 
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/memory.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

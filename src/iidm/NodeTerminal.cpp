@@ -8,11 +8,11 @@
 #include "NodeTerminal.hpp"
 
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 
