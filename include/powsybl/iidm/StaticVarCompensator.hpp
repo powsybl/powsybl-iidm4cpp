@@ -28,7 +28,7 @@ public:
     };
 
 public:
-    StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
+    StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                          double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, Terminal& regulatingTerminal);
 
     ~StaticVarCompensator() noexcept override = default;

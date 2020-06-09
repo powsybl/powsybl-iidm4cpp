@@ -38,7 +38,7 @@ public:
     virtual HvdcConverterStation& setLossFactor(double lossFactor);
 
 protected:
-    HvdcConverterStation(const std::string& id, const std::string& name, double lossFactor);
+    HvdcConverterStation(const std::string& id, const std::string& name, bool fictitious, double lossFactor);
 
 private:
     void setHvdcLine(const stdcxx::Reference<HvdcLine>& hvdcLine);

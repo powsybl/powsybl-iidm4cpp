@@ -274,7 +274,7 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
 
         if (isBusValid(graph, vertices, terminals)) {
             std::string busName = m_voltageLevel.getBusNamingStrategy().getName(vertices);
-            std::unique_ptr<CalculatedBus> ptrCalculatedBus = stdcxx::make_unique<CalculatedBus>(busId, busName, m_voltageLevel, vertices, std::move(terminals));
+            std::unique_ptr<CalculatedBus> ptrCalculatedBus = stdcxx::make_unique<CalculatedBus>(busId, busName, m_voltageLevel.m_fictitious, m_voltageLevel, vertices, std::move(terminals));
             const auto& it = busById.insert(std::make_pair(busId, std::move(ptrCalculatedBus)));
             const stdcxx::Reference<CalculatedBus>& calculatedBus = stdcxx::ref(*it.first->second);
 

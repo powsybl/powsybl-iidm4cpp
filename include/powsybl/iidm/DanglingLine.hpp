@@ -17,7 +17,7 @@ namespace iidm {
 
 class DanglingLine : public Injection {
 public:
-    DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name,
+    DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                  double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode);
 
     ~DanglingLine() noexcept override = default;

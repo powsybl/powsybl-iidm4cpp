@@ -198,8 +198,8 @@ std::string ThreeWindingsTransformer::Leg::toString() const {
     return stdcxx::format("%1% leg%2%", m_transformer.get().getId(), m_legNumber);
 }
 
-ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const std::string& name, std::unique_ptr<Leg> leg1, std::unique_ptr<Leg> leg2, std::unique_ptr<Leg> leg3, double ratedU0) :
-    Connectable(id, name, ConnectableType::THREE_WINDINGS_TRANSFORMER),
+ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<Leg> leg1, std::unique_ptr<Leg> leg2, std::unique_ptr<Leg> leg3, double ratedU0) :
+    Connectable(id, name, fictitious, ConnectableType::THREE_WINDINGS_TRANSFORMER),
     m_leg1(std::move(leg1)),
     m_leg2(std::move(leg2)),
     m_leg3(std::move(leg3)),

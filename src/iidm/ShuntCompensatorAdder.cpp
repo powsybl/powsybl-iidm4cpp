@@ -29,8 +29,8 @@ ShuntCompensator& ShuntCompensatorAdder::add() {
 
     auto ptrTerminal = checkAndGetTerminal();
     Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *ptrTerminal;
-    std::unique_ptr<ShuntCompensator> ptrShunt = stdcxx::make_unique<ShuntCompensator>(getNetwork(), checkAndGetUniqueId(), getName(),
-        m_bPerSection, m_maximumSectionCount, m_currentSectionCount, regulatingTerminal, m_voltageRegulatorOn, m_targetV, m_targetDeadband);
+    std::unique_ptr<ShuntCompensator> ptrShunt = stdcxx::make_unique<ShuntCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(),
+                                                                                       m_bPerSection, m_maximumSectionCount, m_currentSectionCount, regulatingTerminal, m_voltageRegulatorOn, m_targetV, m_targetDeadband);
     auto& shunt = getNetwork().checkAndAdd<ShuntCompensator>(std::move(ptrShunt));
 
     Terminal& terminal = shunt.addTerminal(std::move(ptrTerminal));

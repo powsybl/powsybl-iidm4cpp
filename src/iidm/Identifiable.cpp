@@ -23,7 +23,8 @@ namespace powsybl {
 
 namespace iidm {
 
-Identifiable::Identifiable(const std::string& id, const std::string& name) :
+Identifiable::Identifiable(const std::string& id, const std::string& name, bool fictitious) :
+    m_fictitious(fictitious),
     m_id(checkNotEmpty(id, "Invalid id")),
     m_name(name) {
 }
@@ -70,6 +71,18 @@ bool Identifiable::hasProperty() const {
 
 bool Identifiable::hasProperty(const std::string& key) const {
     return m_properties.contains(key);
+}
+
+bool Identifiable::isFictitious() const {
+    return m_fictitious;
+}
+
+Identifiable& Identifiable::setFictitious(bool fictitious) {
+    bool oldValue = m_fictitious;
+    if (oldValue != fictitious) {
+        m_fictitious = fictitious;
+    }
+    return *this;
 }
 
 stdcxx::optional<std::string> Identifiable::setProperty(const std::string& key, const std::string& value) {

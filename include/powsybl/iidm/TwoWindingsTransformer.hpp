@@ -45,7 +45,7 @@ public:  // PhaseTapChangerHolder
     PhaseTapChangerAdder newPhaseTapChanger() override;
 
 public:
-    TwoWindingsTransformer(const std::string& id, const std::string& name, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS);
+    TwoWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS);
 
     ~TwoWindingsTransformer() noexcept override = default;
 

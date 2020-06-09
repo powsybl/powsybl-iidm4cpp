@@ -36,7 +36,7 @@ public:
     const Type& getContainerType() const;
 
 protected:
-    Container(const std::string& id, const std::string& name, const Container::Type& type);
+    Container(const std::string& id, const std::string& name, bool fictitious, const Container::Type& type);
 
 private:
     Container::Type m_type;

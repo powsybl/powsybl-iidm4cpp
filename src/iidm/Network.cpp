@@ -67,7 +67,7 @@ std::unique_ptr<converter::Anonymizer> Network::writeXml(std::ostream& ostream, 
 }
 
 Network::Network(const std::string& id, const std::string& sourceFormat) :
-    Container(id, id, Container::Type::NETWORK),
+    Container(id, id, false, Container::Type::NETWORK),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_variantManager(*this),
     m_busBreakerView(*this),

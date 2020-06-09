@@ -26,7 +26,7 @@ Load& LoadAdder::add() {
     checkP0(*this, m_p0);
     checkQ0(*this, m_q0);
 
-    std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(getNetwork(), checkAndGetUniqueId(), getName(), m_loadType, m_p0, m_q0);
+    std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_loadType, m_p0, m_q0);
     auto& load = getNetwork().checkAndAdd<Load>(std::move(ptrLoad));
 
     Terminal& terminal = load.addTerminal(checkAndGetTerminal());

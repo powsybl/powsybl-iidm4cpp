@@ -114,8 +114,8 @@ TieLine::HalfLine& TieLine::HalfLine::setXnodeQ(double xnodeQ) {
     return *this;
 }
 
-TieLine::TieLine(const std::string& id, const std::string& name, const std::string& ucteXnodeCode, HalfLine& half1, HalfLine& half2) :
-    Line(id, name),
+TieLine::TieLine(const std::string& id, const std::string& name, bool fictitious, const std::string& ucteXnodeCode, HalfLine& half1, HalfLine& half2) :
+    Line(id, name, fictitious),
     m_half1(attach(half1)),
     m_half2(attach(half2)),
     m_ucteXnodeCode(ucteXnodeCode) {

@@ -47,20 +47,27 @@ public:
 
     const std::string& getOptionalName() const;
 
-    bool hasProperty() const;
-
-    bool hasProperty(const std::string& key) const;
-
     const std::string& getProperty(const std::string& key) const;
 
     const std::string& getProperty(const std::string& key, const std::string& defaultValue) const;
 
     stdcxx::const_range<std::string> getPropertyNames() const;
 
+    bool hasProperty() const;
+
+    bool hasProperty(const std::string& key) const;
+
+    bool isFictitious() const;
+
+    virtual Identifiable& setFictitious(bool fictitious);
+
     stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
 
 protected:
-    Identifiable(const std::string& id, const std::string& name);
+    Identifiable(const std::string& id, const std::string& name, bool fictitious);
+
+protected:
+    bool m_fictitious;
 
 private:
     virtual const std::string& getTypeDescription() const = 0;

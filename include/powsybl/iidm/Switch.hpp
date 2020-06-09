@@ -28,8 +28,8 @@ public:  // Identifiable
     Network& getNetwork() override;
 
 public:
-    Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, SwitchKind kind, bool open,
-           bool retained, bool fictitious);
+    Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, bool fictitious, SwitchKind kind, bool open,
+           bool retained);
 
     ~Switch() noexcept override = default;
 
@@ -39,13 +39,11 @@ public:
 
     VoltageLevel& getVoltageLevel();
 
-    bool isFictitious() const;
-
     bool isOpen() const;
 
     bool isRetained() const;
 
-    Switch& setFictitious(bool fictitious);
+    Switch& setFictitious(bool fictitious) override;
 
     Switch& setOpen(bool open);
 
@@ -67,8 +65,6 @@ private:
     stdcxx::Reference<VoltageLevel> m_voltageLevel;
 
     SwitchKind m_kind;
-
-    bool m_fictitious;
 
     std::vector<bool> m_open;
 

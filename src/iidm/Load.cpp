@@ -14,9 +14,9 @@ namespace powsybl {
 
 namespace iidm {
 
-Load::Load(VariantManagerHolder& network, const std::string& id, const std::string& name, const LoadType& loadType,
+Load::Load(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const LoadType& loadType,
            double p0, double q0) :
-    Injection(id, name, ConnectableType::LOAD),
+    Injection(id, name, fictitious, ConnectableType::LOAD),
     m_loadType(checkLoadType(*this, loadType)),
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)) {

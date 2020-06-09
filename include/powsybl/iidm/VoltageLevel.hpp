@@ -178,6 +178,8 @@ public:
 
     VscConverterStationAdder newVscConverterStation();
 
+    VoltageLevel& setFictitious(bool fictitious) override;
+
     VoltageLevel& setHighVoltageLimit(double highVoltageLimit);
 
     VoltageLevel& setLowVoltageLimit(double lowVoltageLimit);
@@ -185,7 +187,7 @@ public:
     VoltageLevel& setNominalVoltage(double nominalVoltage);
 
 protected:
-    VoltageLevel(const std::string& id, const std::string& name, Substation& substation,
+    VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
                  double nominalVoltage, double lowVoltageLimit, double highVoltageLimit);
 
     virtual stdcxx::const_range<Terminal> getTerminals() const = 0;

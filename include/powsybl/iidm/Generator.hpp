@@ -22,7 +22,7 @@ class Terminal;
 
 class Generator : public Injection, public ReactiveLimitsHolder {
 public:
-    Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, const EnergySource& energySource,
+    Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const EnergySource& energySource,
         double minP, double maxP, bool voltageRegulatorOn, Terminal& regulatingTerminal,
         double activePowerSetpoint, double reactivePowerSetpoint, double voltageSetpoint, double ratedS);
 

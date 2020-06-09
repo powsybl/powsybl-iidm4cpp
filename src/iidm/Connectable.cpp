@@ -14,8 +14,8 @@ namespace powsybl {
 
 namespace iidm {
 
-Connectable::Connectable(const std::string& id, const std::string& name, const ConnectableType& connectableType) :
-    Identifiable(id, name),
+Connectable::Connectable(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType) :
+    Identifiable(id, name, fictitious),
     m_connectableType(connectableType) {
 }
 

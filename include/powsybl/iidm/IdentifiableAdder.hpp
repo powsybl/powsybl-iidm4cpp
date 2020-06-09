@@ -28,7 +28,11 @@ public:
 
     ~IdentifiableAdder() noexcept override = default;
 
+    bool isFictitious() const;
+
     Adder& setEnsureIdUnicity(bool ensureIdUnicity);
+
+    Adder& setFictitious(bool fictitious);
 
     virtual Adder& setId(const std::string& id);
 
@@ -52,6 +56,8 @@ private:
     bool m_ensureIdUnicity = false;
 
     std::string m_name;
+
+    bool m_fictitious = false;
 };
 
 }  // namespace iidm

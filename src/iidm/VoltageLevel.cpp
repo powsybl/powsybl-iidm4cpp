@@ -29,9 +29,9 @@ namespace powsybl {
 
 namespace iidm {
 
-VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, Substation& substation,
+VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
                            double nominalVoltage, double lowVoltageLimit, double highVoltageLimit) :
-    Container(id, name, Container::Type::VOLTAGE_LEVEL),
+    Container(id, name, fictitious, Container::Type::VOLTAGE_LEVEL),
     m_substation(substation),
     m_highVoltageLimit(highVoltageLimit),
     m_lowVoltageLimit(lowVoltageLimit),
@@ -208,6 +208,15 @@ StaticVarCompensatorAdder VoltageLevel::newStaticVarCompensator() {
 
 VscConverterStationAdder VoltageLevel::newVscConverterStation() {
     return VscConverterStationAdder(*this);
+}
+
+VoltageLevel& VoltageLevel::setFictitious(bool fictitious) {
+    bool oldValue = m_fictitious;
+    if (oldValue != fictitious) {
+        Identifiable::setFictitious(fictitious);
+        invalidateCache();
+    }
+    return *this;
 }
 
 VoltageLevel& VoltageLevel::setHighVoltageLimit(double highVoltageLimit) {

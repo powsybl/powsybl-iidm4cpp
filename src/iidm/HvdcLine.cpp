@@ -15,9 +15,9 @@ namespace powsybl {
 
 namespace iidm {
 
-HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& name, double r, double nominalVoltage, double maxP,
+HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& name, bool fictitious, double r, double nominalVoltage, double maxP,
                    const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2) :
-    Identifiable(id, name),
+    Identifiable(id, name, fictitious),
     m_converterStation1(attach(converterStation1)),
     m_converterStation2(attach(converterStation2)),
     m_r(checkR(*this, r)),

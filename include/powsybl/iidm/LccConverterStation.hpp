@@ -21,7 +21,7 @@ public: // HvdcConverterStation
     LccConverterStation& setLossFactor(double lossFactor) override;
 
 public:
-    LccConverterStation(const std::string& id, const std::string& name, double lossFactor, double powerFactor);
+    LccConverterStation(const std::string& id, const std::string& name, bool fictitious, double lossFactor, double powerFactor);
 
     ~LccConverterStation() noexcept override = default;
 
