@@ -11,11 +11,7 @@
 #include <set>
 #include <string>
 
-namespace stdcxx {
-
-class Properties;
-
-}  // namespace stdcxx
+#include <powsybl/stdcxx/Properties.hpp>
 
 namespace powsybl {
 
@@ -24,6 +20,10 @@ namespace iidm {
 namespace converter {
 
 class ImportOptions {
+public:
+    static constexpr const char* const EXTENSIONS_LIST = "iidm.import.xml.extensions";
+    static constexpr const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.import.xml.throw-exception-if-extension-not-found";
+
 public:
     ImportOptions() = default;
 
@@ -40,7 +40,7 @@ public:
     bool withExtension(const std::string& extension) const;
 
 private:
-    bool m_throwExceptionIfExtensionNotFound{false};
+    bool m_throwExceptionIfExtensionNotFound = false;
 
     std::set<std::string> m_extensions;
 };

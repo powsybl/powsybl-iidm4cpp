@@ -11,11 +11,7 @@
 #include <string>
 #include <vector>
 
-namespace stdcxx {
-
-class Properties;
-
-}  // namespace stdcxx
+#include <powsybl/stdcxx/Properties.hpp>
 
 namespace powsybl {
 
@@ -31,7 +27,7 @@ public:
 
     static std::vector<std::string> readStringListParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
-    static std::string readStringParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
+    static const std::string& readStringParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
 public:
     ConversionParameters() = delete;

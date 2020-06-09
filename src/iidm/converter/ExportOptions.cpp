@@ -9,11 +9,12 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Enum.hpp>
-#include <powsybl/iidm/converter/ConversionParameters.hpp>
-#include <powsybl/iidm/converter/Parameter.hpp>
-#include <powsybl/iidm/converter/xml/Constants.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/stdcxx/format.hpp>
+#include <powsybl/stdcxx/set.hpp>
+
+#include "ConversionParameters.hpp"
+#include "Parameter.hpp"
 
 namespace powsybl {
 
@@ -21,14 +22,15 @@ namespace iidm {
 
 namespace converter {
 
-static const converter::Parameter ANONYMISED_PARAMETER(converter::xml::ANONYMISED, converter::Parameter::Type::BOOLEAN, "Anonymise exported network", "false");
-static const converter::Parameter INDENT_PARAMETER(converter::xml::INDENT, converter::Parameter::Type::BOOLEAN, "Indent export output file", "true");
-static const converter::Parameter EXTENSIONS_LIST_PARAMETER(converter::xml::EXTENSIONS_LIST, converter::Parameter::Type::STRING_LIST, "The list of exported extensions", "");
-static const converter::Parameter ONLY_MAIN_CC_PARAMETER(converter::xml::ONLY_MAIN_CC, converter::Parameter::Type::BOOLEAN, "Export only main CC", "false");
-static const converter::Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = std::move(converter::Parameter(converter::xml::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false").addAdditionalNames({"throwExceptionIfExtensionNotFound"}));
-static const converter::Parameter TOPOLOGY_LEVEL_PARAMETER(converter::xml::TOPOLOGY_LEVEL, converter::Parameter::Type::STRING, "Export network in this topology level", "NODE_BREAKER");
-static const converter::Parameter VERSION_PARAMETER(converter::xml::VERSION, converter::Parameter::Type::STRING, "IIDM-XML version in which files will be generated", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString("."));
-static const converter::Parameter WITH_BRANCH_STATE_VARIABLES_PARAMETER(converter::xml::WITH_BRANCH_STATE_VARIABLES, converter::Parameter::Type::BOOLEAN, "Export network with branch state variables", "true");
+static const Parameter ANONYMISED_PARAMETER(ExportOptions::ANONYMISED, Parameter::Type::BOOLEAN, "Anonymize exported network", "false");
+static const Parameter EXTENSIONS_LIST_PARAMETER(ExportOptions::EXTENSIONS_LIST, Parameter::Type::STRING_LIST, "The list of exported extensions", "");
+static const Parameter INDENT_PARAMETER(ExportOptions::INDENT, Parameter::Type::BOOLEAN, "Indent export output file", "true");
+static const Parameter ONLY_MAIN_CC_PARAMETER(ExportOptions::ONLY_MAIN_CC, Parameter::Type::BOOLEAN, "Export only main CC", "false");
+static const Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parameter(ExportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false")
+    .addAdditionalNames({"throwExceptionIfExtensionNotFound"});
+static const Parameter TOPOLOGY_LEVEL_PARAMETER(ExportOptions::TOPOLOGY_LEVEL, Parameter::Type::STRING, "Export network in this topology level", "NODE_BREAKER");
+static const Parameter VERSION_PARAMETER(ExportOptions::VERSION, Parameter::Type::STRING, "IIDM-XML version in which files will be generated", xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString("."));
+static const Parameter WITH_BRANCH_STATE_VARIABLES_PARAMETER(ExportOptions::WITH_BRANCH_STATE_VARIABLES, Parameter::Type::BOOLEAN, "Export network with branch state variables", "true");
 
 ExportOptions::ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
                              bool throwExceptionIfExtensionNotFound, const std::string& version) :
@@ -41,16 +43,14 @@ ExportOptions::ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, co
 }
 
 ExportOptions::ExportOptions(const stdcxx::Properties& parameters) :
-    m_anonymized(converter::ConversionParameters::readBooleanParameter(parameters, ANONYMISED_PARAMETER)),
-    m_indent(converter::ConversionParameters::readBooleanParameter(parameters, INDENT_PARAMETER)),
-    m_onlyMainCc(converter::ConversionParameters::readBooleanParameter(parameters, ONLY_MAIN_CC_PARAMETER)),
-    m_throwExceptionIfExtensionNotFound(converter::ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER)),
-    m_topologyLevel(Enum::fromString<TopologyLevel>(converter::ConversionParameters::readStringParameter(parameters, TOPOLOGY_LEVEL_PARAMETER))),
-    m_withBranchSV(converter::ConversionParameters::readBooleanParameter(parameters, WITH_BRANCH_STATE_VARIABLES_PARAMETER)),
-    m_version(converter::ConversionParameters::readStringParameter(parameters, VERSION_PARAMETER)) {
-    const std::vector<std::string>& extensionVector = converter::ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER);
-    std::set<std::string> extensionSet(std::make_move_iterator(extensionVector.begin()), std::make_move_iterator(extensionVector.end()));
-    m_extensions = std::move(extensionSet);
+    m_anonymized(ConversionParameters::readBooleanParameter(parameters, ANONYMISED_PARAMETER)),
+    m_indent(ConversionParameters::readBooleanParameter(parameters, INDENT_PARAMETER)),
+    m_onlyMainCc(ConversionParameters::readBooleanParameter(parameters, ONLY_MAIN_CC_PARAMETER)),
+    m_throwExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER)),
+    m_topologyLevel(Enum::fromString<TopologyLevel>(ConversionParameters::readStringParameter(parameters, TOPOLOGY_LEVEL_PARAMETER))),
+    m_withBranchSV(ConversionParameters::readBooleanParameter(parameters, WITH_BRANCH_STATE_VARIABLES_PARAMETER)),
+    m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))),
+    m_version(ConversionParameters::readStringParameter(parameters, VERSION_PARAMETER)) {
 }
 
 ExportOptions& ExportOptions::addExtension(const std::string& extension) {

@@ -13,12 +13,7 @@
 #include <string>
 
 #include <powsybl/iidm/TopologyLevel.hpp>
-
-namespace stdcxx {
-
-class Properties;
-
-}  // namespace stdcxx
+#include <powsybl/stdcxx/Properties.hpp>
 
 namespace powsybl {
 
@@ -27,6 +22,16 @@ namespace iidm {
 namespace converter {
 
 class ExportOptions {
+public:
+    static constexpr const char* const ANONYMISED = "iidm.export.xml.anonymised";
+    static constexpr const char* const EXTENSIONS_LIST = "iidm.export.xml.extensions";
+    static constexpr const char* const INDENT = "iidm.export.xml.indent";
+    static constexpr const char* const ONLY_MAIN_CC = "iidm.export.xml.only-main-cc";
+    static constexpr const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.export.xml.throw-exception-if-extension-not-found";
+    static constexpr const char* const TOPOLOGY_LEVEL = "iidm.export.xml.topology-level";
+    static constexpr const char* const VERSION = "iidm.export.xml.version";
+    static constexpr const char* const WITH_BRANCH_STATE_VARIABLES = "iidm.export.xml.with-branch-state-variables";
+
 public:
     /**
      * Default constructor

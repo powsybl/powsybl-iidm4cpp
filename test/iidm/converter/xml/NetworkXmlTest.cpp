@@ -15,8 +15,6 @@
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
-#include <powsybl/iidm/converter/Parameter.hpp>
-#include <powsybl/iidm/converter/xml/Constants.hpp>
 #include <powsybl/network/MultipleExtensionsTestNetworkFactory.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
@@ -110,8 +108,7 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     stream << networkStr;
 
     stdcxx::Properties properties;
-    properties.set(xml::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
-    properties.set(xml::TOPOLOGY_LEVEL, "BUS_BREAKER");
+    properties.set(ImportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
 
     FakeAnonymizer anonymizer;
     const Network& network = Network::readXml(stream, ImportOptions(properties), anonymizer);
@@ -119,14 +116,14 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     std::stringstream ostream;
     Network::writeXml(ostream, network, ExportOptions(properties));
 
-    properties.set(xml::TOPOLOGY_LEVEL, "true");
+    properties.set(ExportOptions::TOPOLOGY_LEVEL, "true");
     POWSYBL_ASSERT_THROW(Network::writeXml(ostream, network, ExportOptions(properties)), AssertionError, "Unexpected TopologyLevel name: true");
-    properties.remove(xml::TOPOLOGY_LEVEL);
+    properties.remove(ExportOptions::TOPOLOGY_LEVEL);
 
     std::set<std::string> extensions;
     extensions.insert("extension1");
     extensions.insert("extension2");
-    properties.set(xml::EXTENSIONS_LIST, boost::algorithm::join(extensions, ","));
+    properties.set(ExportOptions::EXTENSIONS_LIST, boost::algorithm::join(extensions, ","));
     Network::writeXml(ostream, network, ExportOptions(properties));
 }
 
@@ -136,7 +133,7 @@ BOOST_AUTO_TEST_CASE(WriteFromParametersCheckExtensions) {
     stdcxx::Properties properties;
     std::stringstream ostream;
 
-    properties.set(xml::EXTENSIONS_LIST, "loadBar");
+    properties.set(ExportOptions::EXTENSIONS_LIST, "loadBar");
     Network::writeXml(ostream, network, ExportOptions(properties));
     const std::string& loadBarOnly = ostream.str();
     BOOST_TEST(loadBarOnly.find("loadBar") != std::string::npos);
@@ -144,7 +141,7 @@ BOOST_AUTO_TEST_CASE(WriteFromParametersCheckExtensions) {
 
     ostream.str("");
     ostream.clear();
-    properties.set(xml::EXTENSIONS_LIST, "loadFoo");
+    properties.set(ExportOptions::EXTENSIONS_LIST, "loadFoo");
     Network::writeXml(ostream, network, ExportOptions(properties));
     const std::string& loadFooOnly = ostream.str();
     BOOST_TEST(loadFooOnly.find("loadBar") == std::string::npos);
@@ -152,7 +149,7 @@ BOOST_AUTO_TEST_CASE(WriteFromParametersCheckExtensions) {
 
     ostream.str("");
     ostream.clear();
-    properties.remove(xml::EXTENSIONS_LIST);
+    properties.remove(ExportOptions::EXTENSIONS_LIST);
     Network::writeXml(ostream, network, ExportOptions(properties));
     const std::string& loadAllExtsOutput = ostream.str();
     BOOST_TEST(loadAllExtsOutput.find("loadBar") != std::string::npos);
@@ -177,21 +174,21 @@ BOOST_AUTO_TEST_CASE(ReadFromParametersCheckExtensions) {
 
     std::string refString = inputStream.str();
 
-    properties.set(xml::EXTENSIONS_LIST, "loadFoo");
+    properties.set(ImportOptions::EXTENSIONS_LIST, "loadFoo");
     inputStream.str(refString);
     inputStream.clear();
     Network fooNetwork = Network::readXml(inputStream, ImportOptions(properties), anonymizer);
     BOOST_CHECK_EQUAL(1UL, boost::size(fooNetwork.getLoad("LOAD").getExtensions()));
     BOOST_CHECK_EQUAL(1UL, boost::size(fooNetwork.getLoad("LOAD2").getExtensions()));
 
-    properties.set(xml::EXTENSIONS_LIST, "loadBar");
+    properties.set(ImportOptions::EXTENSIONS_LIST, "loadBar");
     inputStream.str(refString);
     inputStream.clear();
     Network barNetwork = Network::readXml(inputStream, ImportOptions(properties), anonymizer);
     BOOST_CHECK_EQUAL(1UL, boost::size(barNetwork.getLoad("LOAD").getExtensions()));
     BOOST_CHECK_EQUAL(0UL, boost::size(barNetwork.getLoad("LOAD2").getExtensions()));
 
-    properties.remove(xml::EXTENSIONS_LIST);
+    properties.remove(ImportOptions::EXTENSIONS_LIST);
     inputStream.str(refString);
     inputStream.clear();
     Network allExtNetwork = Network::readXml(inputStream, ImportOptions(properties), anonymizer);

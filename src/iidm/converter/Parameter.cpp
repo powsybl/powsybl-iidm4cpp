@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/converter/Parameter.hpp>
+#include "Parameter.hpp"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/algorithm/string/predicate.hpp>
@@ -18,10 +18,10 @@ namespace iidm {
 namespace converter {
 
 Parameter::Parameter(std::string&& name, const Type& type, std::string&& description, std::string&& defaultValue) :
+    m_names({name}),
     m_type(type),
     m_description(std::move(description)),
     m_defaultValue({std::move(defaultValue)}) {
-    m_names.emplace_back(std::move(name));
 }
 
 Parameter& Parameter::addAdditionalNames(const std::initializer_list<std::string>& additionalNames) {

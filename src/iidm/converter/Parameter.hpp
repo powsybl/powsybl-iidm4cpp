@@ -13,8 +13,6 @@
 #include <string>
 #include <vector>
 
-#include <boost/any.hpp>
-
 namespace powsybl {
 
 namespace iidm {
@@ -23,7 +21,7 @@ namespace converter {
 
 class Parameter {
 public:
-    enum class Type : char {
+    enum class Type : unsigned char {
         BOOLEAN,
         STRING,
         STRING_LIST
@@ -40,7 +38,7 @@ public:
 
     Parameter& operator=(const Parameter&) = default;
 
-    Parameter& operator=(Parameter&&) = default;
+    Parameter& operator=(Parameter&&) noexcept = default;
 
     Parameter& addAdditionalNames(const std::initializer_list<std::string>& additionalNames);
 

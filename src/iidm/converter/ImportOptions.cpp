@@ -7,9 +7,10 @@
 
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 
-#include <powsybl/iidm/converter/ConversionParameters.hpp>
-#include <powsybl/iidm/converter/Parameter.hpp>
-#include <powsybl/iidm/converter/xml/Constants.hpp>
+#include <powsybl/stdcxx/set.hpp>
+
+#include "ConversionParameters.hpp"
+#include "Parameter.hpp"
 
 namespace powsybl {
 
@@ -17,14 +18,13 @@ namespace iidm {
 
 namespace converter {
 
-static const converter::Parameter EXTENSIONS_LIST_PARAMETER(converter::xml::EXTENSIONS_LIST, converter::Parameter::Type::STRING_LIST, "The list of exported extensions", "");
-static const converter::Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = std::move(converter::Parameter(converter::xml::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false").addAdditionalNames({"throwExceptionIfExtensionNotFound"}));
+static const Parameter EXTENSIONS_LIST_PARAMETER(ImportOptions::EXTENSIONS_LIST, converter::Parameter::Type::STRING_LIST, "The list of exported extensions", "");
+static const Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parameter(ImportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false")
+    .addAdditionalNames({"throwExceptionIfExtensionNotFound"});
 
 ImportOptions::ImportOptions(const stdcxx::Properties& parameters) :
-    m_throwExceptionIfExtensionNotFound(converter::ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER)) {
-    const std::vector<std::string>& extensionVector = converter::ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER);
-    std::set<std::string> extensionSet(std::make_move_iterator(extensionVector.begin()), std::make_move_iterator(extensionVector.end()));
-    m_extensions = std::move(extensionSet);
+    m_throwExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER)),
+    m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))) {
 }
 
 ImportOptions& ImportOptions::addExtension(const std::string& extension) {

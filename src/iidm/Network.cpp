@@ -31,13 +31,9 @@
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
-#include <powsybl/iidm/converter/ConversionParameters.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
-#include <powsybl/iidm/converter/Parameter.hpp>
-#include <powsybl/iidm/converter/xml/Constants.hpp>
-#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 
 #include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/stdcxx/hash.hpp>

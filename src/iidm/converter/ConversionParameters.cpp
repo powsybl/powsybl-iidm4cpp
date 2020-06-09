@@ -5,13 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/converter/ConversionParameters.hpp>
+#include "ConversionParameters.hpp"
 
-#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
 
-#include <powsybl/iidm/converter/Parameter.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
+
+#include "Parameter.hpp"
 
 namespace powsybl {
 
@@ -32,14 +34,13 @@ std::vector<std::string> ConversionParameters::readStringListParameter(const std
     for (const std::string& name : configuredParameter.getNames()) {
         if (parameters.contains(name)) {
             std::vector<std::string> values;
-            boost::algorithm::split(values, parameters.get(name), boost::is_any_of(",:"));
-            return values;
+            return boost::algorithm::split(values, parameters.get(name), boost::is_any_of(",:"));
         }
     }
     return configuredParameter.getStringListDefaultValue();
 }
 
-std::string ConversionParameters::readStringParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter) {
+const std::string& ConversionParameters::readStringParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter) {
     for (const std::string& name : configuredParameter.getNames()) {
         if (parameters.contains(name)) {
             return parameters.get(name);

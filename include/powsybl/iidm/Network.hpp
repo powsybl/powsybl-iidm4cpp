@@ -18,12 +18,6 @@
 #include <powsybl/stdcxx/DateTime.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
-namespace stdcxx {
-
-class Properties;
-
-}  // namespace stdcxx
-
 namespace powsybl {
 
 namespace iidm {
