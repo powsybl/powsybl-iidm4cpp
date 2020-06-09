@@ -13,6 +13,7 @@
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
 
 namespace powsybl {
@@ -76,6 +77,13 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string
     if (!hasTerminalRef) {
         adder->add();
     }
+}
+
+template <typename Added, typename Adder>
+template <typename Consumer>
+void AbstractTransformerXml<Added, Adder>::readRatedS(const std::string& name, NetworkXmlReaderContext& context, const Consumer& consumer) {
+    const auto& ratedS = context.getReader().getAttributeValue<double>(name);
+    consumer(ratedS);
 }
 
 template <typename Added, typename Adder>
@@ -176,6 +184,17 @@ void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::strin
         context.getWriter().writeEndElement();
     }
     context.getWriter().writeEndElement();
+}
+
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::writeRatedS(const std::string& name, double ratedS, NetworkXmlWriterContext& context) {
+    assert(false);
+    (void) name;
+    (void) ratedS;
+    (void) context;
+//    IidmXmlUtils::runFromMinimumVersion(IidmXmlVersion::V_1_2(), context.getVersion(), []() {
+//        context.getWriter().writeOptionalAttribute(name, ratedS);
+//    });
 }
 
 template <typename Added, typename Adder>

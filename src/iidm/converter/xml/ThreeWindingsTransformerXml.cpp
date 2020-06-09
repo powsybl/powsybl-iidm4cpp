@@ -71,6 +71,18 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
         const auto& b3 = context.getReader().getAttributeValue<double>(B3);
         legAdder3.setG(g3).setB(b3);
     });
+    assert(false);
+//    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V_1_2(), context, [this, &legAdder1, &legAdder2, &legAdder3, &context]() {
+//        readRatedS(RATED_S1, context, [&legAdder1](double ratedS) {
+//            legAdder1.setRatedS(ratedS);
+//        });
+//        readRatedS(RATED_S2, context, [&legAdder2](double ratedS) {
+//            legAdder2.setRatedS(ratedS);
+//        });
+//        readRatedS(RATED_S3, context, [&legAdder3](double ratedS) {
+//            legAdder3.setRatedS(ratedS);
+//        });
+//    });
     readNodeOrBus(1, legAdder1, context);
     readNodeOrBus(2, legAdder2, context);
     readNodeOrBus(3, legAdder3, context);
@@ -135,6 +147,7 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
     context.getWriter().writeAttribute(G1, twt.getLeg1().getG());
     context.getWriter().writeAttribute(B1, twt.getLeg1().getB());
     context.getWriter().writeAttribute(RATED_U1, twt.getLeg1().getRatedU());
+    writeRatedS(RATED_S1, twt.getLeg1().getRatedS(), context);
     context.getWriter().writeAttribute(R2, twt.getLeg2().getR());
     context.getWriter().writeAttribute(X2, twt.getLeg2().getX());
     IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, G2, twt.getLeg2().getG(), 0,
@@ -142,6 +155,7 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
     IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, B2, twt.getLeg2().getB(), 0,
         ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
     context.getWriter().writeAttribute(RATED_U2, twt.getLeg2().getRatedU());
+    writeRatedS(RATED_S2, twt.getLeg2().getRatedS(), context);
     context.getWriter().writeAttribute(R3, twt.getLeg3().getR());
     context.getWriter().writeAttribute(X3, twt.getLeg3().getX());
     IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, G3, twt.getLeg3().getG(), 0,
@@ -149,6 +163,7 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
     IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, B3, twt.getLeg3().getB(), 0,
         ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
     context.getWriter().writeAttribute(RATED_U3, twt.getLeg3().getRatedU());
+    writeRatedS(RATED_S3, twt.getLeg3().getRatedS(), context);
     IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(THREE_WINDINGS_TRANSFORMER, RATED_U0, twt.getRatedU0(), twt.getLeg1().getRatedU(),
         ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
     writeNodeOrBus(twt.getLeg1().getTerminal(), context, 1);
