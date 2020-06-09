@@ -6,9 +6,9 @@
  */
 
 #include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/VariantManager.hpp>
 
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
 
 namespace powsybl {
 

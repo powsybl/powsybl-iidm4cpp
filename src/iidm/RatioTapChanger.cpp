@@ -6,9 +6,9 @@
  */
 
 #include <powsybl/iidm/RatioTapChanger.hpp>
-#include <powsybl/iidm/RatioTapChangerHolder.hpp>
 
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/RatioTapChangerHolder.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 

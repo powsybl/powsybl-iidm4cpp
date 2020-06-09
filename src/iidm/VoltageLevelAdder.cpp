@@ -9,10 +9,10 @@
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"
 #include "NodeBreakerVoltageLevel.hpp"
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

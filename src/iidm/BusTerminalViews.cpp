@@ -7,9 +7,10 @@
 
 #include "BusTerminalViews.hpp"
 
+#include <powsybl/iidm/ValidationUtils.hpp>
+
 #include "BusBreakerVoltageLevel.hpp"
 #include "BusTerminal.hpp"
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

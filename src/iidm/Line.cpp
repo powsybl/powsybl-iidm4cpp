@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/Line.hpp>
 
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 

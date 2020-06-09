@@ -9,9 +9,8 @@
 
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/format.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 
