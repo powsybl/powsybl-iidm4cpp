@@ -5,14 +5,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
+
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
-#include <powsybl/iidm/TwoWindingsTransformer.hpp>
-
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 

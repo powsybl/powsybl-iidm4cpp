@@ -6,9 +6,9 @@
  */
 
 #include <powsybl/iidm/ShuntCompensator.hpp>
-#include <powsybl/iidm/VariantManager.hpp>
 
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
 
 namespace powsybl {
 

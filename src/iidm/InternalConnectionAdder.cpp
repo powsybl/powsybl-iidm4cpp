@@ -7,8 +7,9 @@
 
 #include <powsybl/iidm/InternalConnectionAdder.hpp>
 
+#include <powsybl/iidm/ValidationUtils.hpp>
+
 #include "NodeBreakerVoltageLevel.hpp"
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

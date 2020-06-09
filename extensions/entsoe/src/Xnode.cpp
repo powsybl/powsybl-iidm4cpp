@@ -8,12 +8,11 @@
 #include <powsybl/iidm/extensions/entsoe/Xnode.hpp>
 
 #include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 
 namespace iidm {
-
-const std::string& checkNotEmpty(const std::string& value, const std::string& message);
 
 namespace extensions {
 

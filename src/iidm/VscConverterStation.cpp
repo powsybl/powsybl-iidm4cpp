@@ -5,11 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
 
 namespace powsybl {
 

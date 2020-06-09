@@ -7,9 +7,8 @@
 
 #include <powsybl/iidm/Load.hpp>
 
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 
