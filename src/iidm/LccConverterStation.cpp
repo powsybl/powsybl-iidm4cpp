@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/LccConverterStation.hpp>
 
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 

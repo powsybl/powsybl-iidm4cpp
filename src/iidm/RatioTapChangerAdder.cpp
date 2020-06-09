@@ -6,13 +6,13 @@
  */
 
 #include <powsybl/iidm/RatioTapChanger.hpp>
+
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerStep.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

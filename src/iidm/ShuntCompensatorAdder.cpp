@@ -7,11 +7,10 @@
 
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

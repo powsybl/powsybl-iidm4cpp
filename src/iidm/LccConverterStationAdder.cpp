@@ -5,12 +5,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
+
+#include <powsybl/iidm/LccConverterStation.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

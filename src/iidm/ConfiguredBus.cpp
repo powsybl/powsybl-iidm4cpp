@@ -10,13 +10,13 @@
 #include <cmath>
 
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"
 #include "BusTerminal.hpp"
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

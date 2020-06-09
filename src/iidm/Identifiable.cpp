@@ -6,9 +6,9 @@
  */
 
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/stdcxx/format.hpp>
 
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace stdcxx {
 

@@ -9,9 +9,8 @@
 
 #include <powsybl/iidm/MinMaxReactiveLimits.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

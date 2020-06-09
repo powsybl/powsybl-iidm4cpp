@@ -8,9 +8,8 @@
 #include <powsybl/iidm/SubstationAdder.hpp>
 
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
-
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

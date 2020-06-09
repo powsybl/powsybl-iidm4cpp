@@ -8,11 +8,11 @@
 #include <powsybl/iidm/BatteryAdder.hpp>
 
 #include <powsybl/iidm/Battery.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
-#include "ValidationUtils.hpp"
 
 namespace powsybl {
 

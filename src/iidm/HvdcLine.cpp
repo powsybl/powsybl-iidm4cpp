@@ -9,8 +9,7 @@
 
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Network.hpp>
-
-#include "ValidationUtils.hpp"
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 
