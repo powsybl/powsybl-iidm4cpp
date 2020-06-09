@@ -8,7 +8,6 @@
 #include "AbstractIdentifiableXml.hpp"
 
 #include <powsybl/PowsyblException.hpp>
-#include <powsybl/iidm/Properties.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
