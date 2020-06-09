@@ -71,18 +71,17 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
         const auto& b3 = context.getReader().getAttributeValue<double>(B3);
         legAdder3.setG(g3).setB(b3);
     });
-    assert(false);
-//    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V_1_2(), context, [this, &legAdder1, &legAdder2, &legAdder3, &context]() {
-//        readRatedS(RATED_S1, context, [&legAdder1](double ratedS) {
-//            legAdder1.setRatedS(ratedS);
-//        });
-//        readRatedS(RATED_S2, context, [&legAdder2](double ratedS) {
-//            legAdder2.setRatedS(ratedS);
-//        });
-//        readRatedS(RATED_S3, context, [&legAdder3](double ratedS) {
-//            legAdder3.setRatedS(ratedS);
-//        });
-//    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&legAdder1, &legAdder2, &legAdder3, &context]() {
+        readRatedS(RATED_S1, context, [&legAdder1](double ratedS) {
+            legAdder1.setRatedS(ratedS);
+        });
+        readRatedS(RATED_S2, context, [&legAdder2](double ratedS) {
+            legAdder2.setRatedS(ratedS);
+        });
+        readRatedS(RATED_S3, context, [&legAdder3](double ratedS) {
+            legAdder3.setRatedS(ratedS);
+        });
+    });
     readNodeOrBus(1, legAdder1, context);
     readNodeOrBus(2, legAdder2, context);
     readNodeOrBus(3, legAdder3, context);
