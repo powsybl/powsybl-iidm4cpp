@@ -8,6 +8,8 @@
 #include "AbstractSwitchXml.hpp"
 
 #include <powsybl/iidm/SwitchKind.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 
 namespace powsybl {
 
@@ -34,9 +36,9 @@ void AbstractSwitchXml<Adder>::writeRootElementAttributes(const Switch& sw, cons
     context.getWriter().writeAttribute(KIND, Enum::toString(sw.getKind()));
     context.getWriter().writeAttribute(RETAINED, sw.isRetained());
     context.getWriter().writeAttribute(OPEN, sw.isOpen());
-    if (sw.isFictitious()) {
-        context.getWriter().writeAttribute(FICTITIOUS, sw.isFictitious());
-    }
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&context, &sw]() {
+        context.getWriter().writeOptionalAttribute(FICTITIOUS, sw.isFictitious(), false);
+    });
 }
 
 }  // namespace xml
