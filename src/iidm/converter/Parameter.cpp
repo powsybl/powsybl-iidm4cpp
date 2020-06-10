@@ -18,7 +18,7 @@ namespace iidm {
 namespace converter {
 
 Parameter::Parameter(std::string&& name, const Type& type, std::string&& description, std::string&& defaultValue) :
-    m_names({name}),
+    m_names({std::move(name)}),
     m_type(type),
     m_description(std::move(description)),
     m_defaultValue({std::move(defaultValue)}) {
