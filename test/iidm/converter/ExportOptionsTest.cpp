@@ -21,7 +21,7 @@ BOOST_AUTO_TEST_CASE(defaultConstructor) {
     ExportOptions options;
 
     BOOST_CHECK(!options.isAnonymized());
-    options.setAnonymised(true);
+    options.setAnonymized(true);
     BOOST_CHECK(options.isAnonymized());
 
     BOOST_CHECK(options.isIndent());

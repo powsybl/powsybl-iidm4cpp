@@ -23,6 +23,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(!options.isThrowExceptionIfExtensionNotFound());
     options.setThrowExceptionIfExtensionNotFound(true);
     BOOST_CHECK(options.isThrowExceptionIfExtensionNotFound());
+
+    options.addExtension("test");
+    BOOST_CHECK(options.withExtension("test"));
+    BOOST_CHECK(!options.withExtension("test2"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
