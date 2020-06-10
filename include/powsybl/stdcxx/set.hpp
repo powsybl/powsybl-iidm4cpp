@@ -8,6 +8,9 @@
 #ifndef POWSYBL_STDCXX_SET_HPP
 #define POWSYBL_STDCXX_SET_HPP
 
+#include <set>
+#include <vector>
+
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/identity.hpp>
 #include <boost/multi_index/sequenced_index.hpp>
@@ -24,6 +27,10 @@ using LinkedHashSet = boost::multi_index_container<
     >
 >;
 
+template <typename T>
+std::set<T> toSet(std::vector<T>&& vector) {
+    return std::set<T>(std::make_move_iterator(vector.begin()), std::make_move_iterator(vector.end()));
+}
 
 }  // namespace stdcxx
 

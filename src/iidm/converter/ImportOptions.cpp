@@ -7,11 +7,25 @@
 
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 
+#include <powsybl/stdcxx/set.hpp>
+
+#include "ConversionParameters.hpp"
+#include "Parameter.hpp"
+
 namespace powsybl {
 
 namespace iidm {
 
 namespace converter {
+
+static const Parameter EXTENSIONS_LIST_PARAMETER(ImportOptions::EXTENSIONS_LIST, converter::Parameter::Type::STRING_LIST, "The list of exported extensions", "");
+static const Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parameter(ImportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false")
+    .addAdditionalNames({"throwExceptionIfExtensionNotFound"});
+
+ImportOptions::ImportOptions(const stdcxx::Properties& parameters) :
+    m_throwExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER)),
+    m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))) {
+}
 
 ImportOptions& ImportOptions::addExtension(const std::string& extension) {
     m_extensions.insert(extension);
@@ -20,6 +34,11 @@ ImportOptions& ImportOptions::addExtension(const std::string& extension) {
 
 bool ImportOptions::isThrowExceptionIfExtensionNotFound() const {
     return m_throwExceptionIfExtensionNotFound;
+}
+
+ImportOptions& ImportOptions::setExtensions(const std::set<std::string>& extensions) {
+    m_extensions = extensions;
+    return *this;
 }
 
 ImportOptions& ImportOptions::setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound) {
