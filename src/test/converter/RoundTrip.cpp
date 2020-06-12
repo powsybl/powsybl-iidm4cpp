@@ -79,7 +79,7 @@ void RoundTrip::roundTripVersionedXmlTest(const std::string& filename, const iid
 iidm::Network RoundTrip::run(const iidm::Network& network, const Writer& out, const Reader& in, const Comparator& compare, const std::string& ref) {
     const std::string& output1 = write(network, out, compare, ref);
     iidm::Network data2 = in(output1);
-    write(network, out, compare, ref);
+    write(data2, out, compare, ref);
     return data2;
 }
 
