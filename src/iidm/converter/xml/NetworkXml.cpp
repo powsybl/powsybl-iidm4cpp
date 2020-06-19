@@ -117,8 +117,7 @@ void readExtensions(Identifiable& identifiable, NetworkXmlReaderContext& context
 
         stdcxx::CReference<ExtensionXmlSerializer> serializer = extensionProviders.findProvider(extensionName);
         if (serializer) {
-            std::unique_ptr<Extension> extension = serializer.get().read(identifiable, context);
-            identifiable.addExtension(std::move(extension));
+            serializer.get().read(identifiable, context);
         } else {
             extensionsNotFound.insert(extensionName);
             context.getReader().readUntilEndElement(extensionName, []() {});

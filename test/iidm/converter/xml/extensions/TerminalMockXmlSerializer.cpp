@@ -18,8 +18,6 @@
 #include <powsybl/stdcxx/map.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 
-#include "TerminalMockExt.hpp"
-
 namespace powsybl {
 
 namespace iidm {
@@ -42,7 +40,7 @@ TerminalMockXmlSerializer::TerminalMockXmlSerializer() :
             .build()) {
 }
 
-std::unique_ptr<Extension> TerminalMockXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
+TerminalMockExt& TerminalMockXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
     checkReadingCompatibility(context);
 
     if (!stdcxx::isInstanceOf<Load>(extendable)) {
@@ -62,7 +60,8 @@ std::unique_ptr<Extension> TerminalMockXmlSerializer::read(Extendable& extendabl
         }
     });
 
-    return std::move(terminalMockExt);
+    extendable.addExtension(std::move(terminalMockExt));
+    return extendable.getExtension<TerminalMockExt>();
 }
 
 void TerminalMockXmlSerializer::write(const Extension& extension, NetworkXmlWriterContext& context) const {

@@ -13,7 +13,6 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
-#include <powsybl/iidm/extensions/entsoe/EntsoeArea.hpp>
 #include <powsybl/iidm/extensions/entsoe/EntsoeGeographicalCode.hpp>
 
 #include <powsybl/stdcxx/make_unique.hpp>
@@ -33,7 +32,7 @@ EntsoeAreaXmlSerializer::EntsoeAreaXmlSerializer() :
     AbstractExtensionXmlSerializer("entsoeArea", "network", "ea", "http://www.itesla_project.eu/schema/iidm/ext/entsoe_area/1_0") {
 }
 
-std::unique_ptr<Extension> EntsoeAreaXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+EntsoeArea& EntsoeAreaXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<Substation>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Substation>()));
     }
@@ -41,7 +40,8 @@ std::unique_ptr<Extension> EntsoeAreaXmlSerializer::read(Extendable& extendable,
 
     const auto& code = Enum::fromString<EntsoeGeographicalCode>(context.getReader().readUntilEndElement(getExtensionName()));
 
-    return stdcxx::make_unique<EntsoeArea>(substation, code);
+    extendable.addExtension(stdcxx::make_unique<EntsoeArea>(substation, code));
+    return extendable.getExtension<EntsoeArea>();
 }
 
 void EntsoeAreaXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {

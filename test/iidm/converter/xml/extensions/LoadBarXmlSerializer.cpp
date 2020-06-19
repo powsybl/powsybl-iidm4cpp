@@ -8,7 +8,6 @@
 #include "LoadBarXmlSerializer.hpp"
 
 #include <powsybl/iidm/Load.hpp>
-#include <powsybl/network/LoadBarExt.hpp>
 
 namespace powsybl {
 
@@ -24,13 +23,14 @@ LoadBarXmlSerializer::LoadBarXmlSerializer() :
     AbstractExtensionXmlSerializer("loadBar", "network", "bar", "http://www.itesla_project.eu/schema/iidm/ext/loadbar/1_0") {
 }
 
-std::unique_ptr<Extension> LoadBarXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& /*context*/) const {
+network::LoadBarExt& LoadBarXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& /*context*/) const {
     if (!stdcxx::isInstanceOf<Load>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Load>()));
     }
     auto& load = dynamic_cast<Load&>(extendable);
 
-    return stdcxx::make_unique<network::LoadBarExt>(load);
+    extendable.addExtension(stdcxx::make_unique<network::LoadBarExt>(load));
+    return extendable.getExtension<network::LoadBarExt>();
 }
 
 void LoadBarXmlSerializer::write(const Extension& /*extension*/, NetworkXmlWriterContext& /*context*/) const {

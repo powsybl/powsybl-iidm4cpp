@@ -12,8 +12,6 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
-#include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClock.hpp>
-
 #include <powsybl/stdcxx/make_unique.hpp>
 
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -31,7 +29,7 @@ TwoWindingsTransformerPhaseAngleClockXmlSerializer::TwoWindingsTransformerPhaseA
     AbstractExtensionXmlSerializer("twoWindingsTransformerPhaseAngleClock", "network", "twowtpac", "http://www.powsybl.org/schema/iidm/ext/two_windings_transformer_phase_angle_clock/1_0") {
 }
 
-std::unique_ptr<Extension> TwoWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+TwoWindingsTransformerPhaseAngleClock& TwoWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<TwoWindingsTransformer>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<TwoWindingsTransformer>()));
     }
@@ -39,7 +37,8 @@ std::unique_ptr<Extension> TwoWindingsTransformerPhaseAngleClockXmlSerializer::r
 
     const auto& phaseAngleClock = context.getReader().getOptionalAttributeValue("phaseAngleClock", 0UL);
 
-    return stdcxx::make_unique<Extension, TwoWindingsTransformerPhaseAngleClock>(transformer, phaseAngleClock);
+    extendable.addExtension(stdcxx::make_unique<TwoWindingsTransformerPhaseAngleClock>(transformer, phaseAngleClock));
+    return extendable.getExtension<TwoWindingsTransformerPhaseAngleClock>();
 }
 
 void TwoWindingsTransformerPhaseAngleClockXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {

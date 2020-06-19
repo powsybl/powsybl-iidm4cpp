@@ -10,6 +10,8 @@
 
 #include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
 
+#include "LoadMockExt.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -24,7 +26,7 @@ namespace extensions {
 
 class LoadMockExtXmlSerializer : public AbstractVersionableExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
-    std::unique_ptr<Extension> read(Extendable& extendable, NetworkXmlReaderContext& context) const override;
+    LoadMockExt& read(Extendable& extendable, NetworkXmlReaderContext& context) const override;
 
     void write(const Extension& extension, NetworkXmlWriterContext& context) const override;
 
