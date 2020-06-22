@@ -37,7 +37,7 @@ LoadMockExtXmlSerializer::LoadMockExtXmlSerializer() :
             .build()) {
 }
 
-std::unique_ptr<Extension> LoadMockExtXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
+Extension& LoadMockExtXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
     checkReadingCompatibility(context);
 
     if (!stdcxx::isInstanceOf<Load>(extendable)) {
@@ -45,7 +45,8 @@ std::unique_ptr<Extension> LoadMockExtXmlSerializer::read(Extendable& extendable
     }
     auto& load = dynamic_cast<Load&>(extendable);
 
-    return stdcxx::make_unique<LoadMockExt>(load);
+    extendable.addExtension(stdcxx::make_unique<LoadMockExt>(load));
+    return extendable.getExtension<LoadMockExt>();
 }
 
 void LoadMockExtXmlSerializer::write(const Extension& /*extension*/, NetworkXmlWriterContext& /*context*/) const {

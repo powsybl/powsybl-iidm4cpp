@@ -24,13 +24,14 @@ LoadFooXmlSerializer::LoadFooXmlSerializer() :
     AbstractExtensionXmlSerializer("loadFoo", "network", "foo", "http://www.itesla_project.eu/schema/iidm/ext/loadfoo/1_0") {
 }
 
-std::unique_ptr<Extension> LoadFooXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& /*context*/) const {
+Extension& LoadFooXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& /*context*/) const {
     if (!stdcxx::isInstanceOf<Load>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Load>()));
     }
     auto& load = dynamic_cast<Load&>(extendable);
 
-    return stdcxx::make_unique<network::LoadFooExt>(load);
+    extendable.addExtension(stdcxx::make_unique<network::LoadFooExt>(load));
+    return extendable.getExtension<network::LoadFooExt>();
 }
 
 void LoadFooXmlSerializer::write(const Extension& /*extension*/, NetworkXmlWriterContext& /*context*/) const {

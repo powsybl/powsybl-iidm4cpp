@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_ENTSOE_XNODEXMLSERIALIZER_HPP
 
 #include <powsybl/iidm/converter/xml/AbstractExtensionXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/entsoe/Xnode.hpp>
 
 namespace powsybl {
 
@@ -20,7 +21,7 @@ namespace entsoe {
 
 class XnodeXmlSerializer : public converter::xml::AbstractExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
-    std::unique_ptr<Extension> read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
+    Extension& read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 
     void write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const override;
 

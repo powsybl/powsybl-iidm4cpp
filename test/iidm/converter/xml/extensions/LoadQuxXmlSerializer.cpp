@@ -34,7 +34,7 @@ LoadQuxXmlSerializer::LoadQuxXmlSerializer() :
             .build()) {
 }
 
-std::unique_ptr<Extension> LoadQuxXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
+Extension& LoadQuxXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
     checkReadingCompatibility(context);
 
     if (!stdcxx::isInstanceOf<Load>(extendable)) {
@@ -42,7 +42,8 @@ std::unique_ptr<Extension> LoadQuxXmlSerializer::read(Extendable& extendable, Ne
     }
     auto& load = dynamic_cast<Load&>(extendable);
 
-    return stdcxx::make_unique<LoadQuxExt>(load);
+    extendable.addExtension(stdcxx::make_unique<LoadQuxExt>(load));
+    return extendable.getExtension<LoadQuxExt>();
 }
 
 void LoadQuxXmlSerializer::write(const Extension& /*extension*/, NetworkXmlWriterContext& /*context*/) const {

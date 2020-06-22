@@ -30,10 +30,10 @@ XnodeXmlSerializer::XnodeXmlSerializer() :
     AbstractExtensionXmlSerializer("xnode", "network", "xn", "http://www.itesla_project.eu/schema/iidm/ext/xnode/1_0") {
 }
 
-std::unique_ptr<Extension> XnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+Extension& XnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     const auto& code = context.getReader().getAttributeValue("code");
     extendable.newExtension<XnodeAdder>().withCode(code).add();
-    return stdcxx::make_unique<Xnode>(extendable.getExtension<Xnode>());
+    return extendable.getExtension<Xnode>();
 }
 
 void XnodeXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {

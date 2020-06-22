@@ -101,11 +101,11 @@ public:
      * @param extendable The holder of the new extension
      * @param context The current XML context
      *
-     * @return An extension
+     * @return The added extension
      *
      * @throw An {@link AssertionError} if the extension is not compatible with the extendable type
      */
-    virtual std::unique_ptr<Extension> read(Extendable& extendable, NetworkXmlReaderContext& context) const = 0;
+    virtual Extension& read(Extendable& extendable, NetworkXmlReaderContext& context) const = 0;
 
     /**
      * Write an extension in XML

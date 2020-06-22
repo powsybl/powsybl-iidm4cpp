@@ -29,7 +29,7 @@ MergedXnodeXmlSerializer::MergedXnodeXmlSerializer() :
     AbstractExtensionXmlSerializer("mergedXnode", "network", "mxn", "http://www.itesla_project.eu/schema/iidm/ext/merged_xnode/1_0") {
 }
 
-std::unique_ptr<Extension> MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+Extension& MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<Line>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
     }
@@ -43,7 +43,8 @@ std::unique_ptr<Extension> MergedXnodeXmlSerializer::read(Extendable& extendable
     const auto& xnodeQ2 = context.getReader().getAttributeValue<double>("xnodeQ2");
     const auto& code = context.getReader().getAttributeValue("code");
 
-    return stdcxx::make_unique<Extension, MergedXnode>(line, rdp, xdp, xnodeP1, xnodeQ1, xnodeP2, xnodeQ2, "", "", code);
+    extendable.addExtension(stdcxx::make_unique<MergedXnode>(line, rdp, xdp, xnodeP1, xnodeQ1, xnodeP2, xnodeQ2, "", "", code));
+    return extendable.getExtension<MergedXnode>();
 }
 
 void MergedXnodeXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {

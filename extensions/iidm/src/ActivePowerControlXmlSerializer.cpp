@@ -19,8 +19,6 @@
 #include <powsybl/iidm/extensions/iidm/ActivePowerControl.hpp>
 #include <powsybl/iidm/extensions/iidm/ActivePowerControlAdder.hpp>
 
-#include <powsybl/stdcxx/make_unique.hpp>
-
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
@@ -36,12 +34,12 @@ ActivePowerControlXmlSerializer::ActivePowerControlXmlSerializer() :
     AbstractExtensionXmlSerializer("activePowerControl", "network", "apc", "http://www.itesla_project.eu/schema/iidm/ext/active_power_control/1_0") {
 }
 
-std::unique_ptr<Extension> ActivePowerControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+Extension& ActivePowerControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     const auto& participate = context.getReader().getAttributeValue<bool>("participate");
     const auto& droop = context.getReader().getAttributeValue<double>("droop");
 
     extendable.newExtension<ActivePowerControlAdder>().withParticipate(participate).withDroop(droop).add();
-    return stdcxx::make_unique<ActivePowerControl>(extendable.getExtension<ActivePowerControl>());
+    return extendable.getExtension<ActivePowerControl>();
 }
 
 void ActivePowerControlXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {

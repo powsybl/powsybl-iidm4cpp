@@ -33,7 +33,7 @@ CoordinatedReactiveControlXmlSerializer::CoordinatedReactiveControlXmlSerializer
     AbstractExtensionXmlSerializer("coordinatedReactiveControl", "network", "crc", "http://www.powsybl.org/schema/iidm/ext/coordinated_reactive_control/1_0") {
 }
 
-std::unique_ptr<Extension> CoordinatedReactiveControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+Extension& CoordinatedReactiveControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<Generator>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
     }
@@ -41,7 +41,8 @@ std::unique_ptr<Extension> CoordinatedReactiveControlXmlSerializer::read(Extenda
 
     const auto& qPercent = context.getReader().getAttributeValue<double>("qPercent");
 
-    return stdcxx::make_unique<Extension, CoordinatedReactiveControl>(generator, qPercent);
+    extendable.addExtension(stdcxx::make_unique<CoordinatedReactiveControl>(generator, qPercent));
+    return extendable.getExtension<CoordinatedReactiveControl>();
 }
 
 void CoordinatedReactiveControlXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
