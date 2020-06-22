@@ -21,7 +21,7 @@ namespace entsoe {
 
 class XnodeXmlSerializer : public converter::xml::AbstractExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
-    Xnode& read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
+    Extension& read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 
     void write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const override;
 

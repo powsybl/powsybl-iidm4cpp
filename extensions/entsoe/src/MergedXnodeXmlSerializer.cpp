@@ -12,6 +12,8 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
+#include <powsybl/iidm/extensions/entsoe/MergedXnode.hpp>
+
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
@@ -27,7 +29,7 @@ MergedXnodeXmlSerializer::MergedXnodeXmlSerializer() :
     AbstractExtensionXmlSerializer("mergedXnode", "network", "mxn", "http://www.itesla_project.eu/schema/iidm/ext/merged_xnode/1_0") {
 }
 
-MergedXnode& MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+Extension& MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<Line>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
     }

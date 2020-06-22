@@ -12,6 +12,7 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
+#include <powsybl/iidm/extensions/entsoe/Xnode.hpp>
 #include <powsybl/iidm/extensions/entsoe/XnodeAdder.hpp>
 
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -29,7 +30,7 @@ XnodeXmlSerializer::XnodeXmlSerializer() :
     AbstractExtensionXmlSerializer("xnode", "network", "xn", "http://www.itesla_project.eu/schema/iidm/ext/xnode/1_0") {
 }
 
-Xnode& XnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+Extension& XnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     const auto& code = context.getReader().getAttributeValue("code");
     extendable.newExtension<XnodeAdder>().withCode(code).add();
     return extendable.getExtension<Xnode>();

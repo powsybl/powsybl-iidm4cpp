@@ -14,6 +14,8 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
+#include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControl.hpp>
+
 #include <powsybl/stdcxx/make_unique.hpp>
 
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -31,7 +33,7 @@ CoordinatedReactiveControlXmlSerializer::CoordinatedReactiveControlXmlSerializer
     AbstractExtensionXmlSerializer("coordinatedReactiveControl", "network", "crc", "http://www.powsybl.org/schema/iidm/ext/coordinated_reactive_control/1_0") {
 }
 
-CoordinatedReactiveControl& CoordinatedReactiveControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+Extension& CoordinatedReactiveControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<Generator>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
     }

@@ -12,6 +12,8 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
+#include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClock.hpp>
+
 #include <powsybl/stdcxx/make_unique.hpp>
 
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -29,7 +31,7 @@ TwoWindingsTransformerPhaseAngleClockXmlSerializer::TwoWindingsTransformerPhaseA
     AbstractExtensionXmlSerializer("twoWindingsTransformerPhaseAngleClock", "network", "twowtpac", "http://www.powsybl.org/schema/iidm/ext/two_windings_transformer_phase_angle_clock/1_0") {
 }
 
-TwoWindingsTransformerPhaseAngleClock& TwoWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+Extension& TwoWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<TwoWindingsTransformer>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<TwoWindingsTransformer>()));
     }
@@ -54,3 +56,4 @@ void TwoWindingsTransformerPhaseAngleClockXmlSerializer::write(const Extension& 
 }  // namespace iidm
 
 }  // namespace powsybl
+

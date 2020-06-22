@@ -10,8 +10,6 @@
 
 #include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
 
-#include "TerminalMockExt.hpp"
-
 namespace powsybl {
 
 namespace iidm {
@@ -26,7 +24,7 @@ namespace extensions {
 
 class TerminalMockXmlSerializer : public AbstractVersionableExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
-    TerminalMockExt& read(Extendable& extendable, NetworkXmlReaderContext& context) const override;
+    Extension& read(Extendable& extendable, NetworkXmlReaderContext& context) const override;
 
     void write(const Extension& extension, NetworkXmlWriterContext& context) const override;
 

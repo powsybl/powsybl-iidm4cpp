@@ -12,6 +12,8 @@
 #include <powsybl/iidm/converter/xml/VersionsCompatibity.hpp>
 #include <powsybl/stdcxx/map.hpp>
 
+#include "LoadQuxExt.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -32,7 +34,7 @@ LoadQuxXmlSerializer::LoadQuxXmlSerializer() :
             .build()) {
 }
 
-LoadQuxExt& LoadQuxXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
+Extension& LoadQuxXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
     checkReadingCompatibility(context);
 
     if (!stdcxx::isInstanceOf<Load>(extendable)) {

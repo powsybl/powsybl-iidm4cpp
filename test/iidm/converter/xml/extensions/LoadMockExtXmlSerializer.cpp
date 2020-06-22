@@ -12,6 +12,8 @@
 #include <powsybl/iidm/converter/xml/VersionsCompatibity.hpp>
 #include <powsybl/stdcxx/map.hpp>
 
+#include "LoadMockExt.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -35,7 +37,7 @@ LoadMockExtXmlSerializer::LoadMockExtXmlSerializer() :
             .build()) {
 }
 
-LoadMockExt& LoadMockExtXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
+Extension& LoadMockExtXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {
     checkReadingCompatibility(context);
 
     if (!stdcxx::isInstanceOf<Load>(extendable)) {

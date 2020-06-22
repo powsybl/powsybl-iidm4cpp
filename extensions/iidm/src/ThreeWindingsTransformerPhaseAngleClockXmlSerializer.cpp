@@ -14,6 +14,8 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
+#include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClock.hpp>
+
 #include <powsybl/stdcxx/make_unique.hpp>
 
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -31,7 +33,7 @@ ThreeWindingsTransformerPhaseAngleClockXmlSerializer::ThreeWindingsTransformerPh
     AbstractExtensionXmlSerializer("threeWindingsTransformerPhaseAngleClock", "network", "threewtpac", "http://www.powsybl.org/schema/iidm/ext/three_windings_transformer_phase_angle_clock/1_0") {
 }
 
-ThreeWindingsTransformerPhaseAngleClock& ThreeWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
+Extension& ThreeWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<ThreeWindingsTransformer>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<ThreeWindingsTransformer>()));
     }
@@ -44,12 +46,12 @@ ThreeWindingsTransformerPhaseAngleClock& ThreeWindingsTransformerPhaseAngleClock
     return extendable.getExtension<ThreeWindingsTransformerPhaseAngleClock>();
 }
 
-void ThreeWindingsTransformerPhaseAngleClockXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
-    const auto& ext = safeCast<ThreeWindingsTransformerPhaseAngleClock>(extension);
+    void ThreeWindingsTransformerPhaseAngleClockXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
+        const auto& ext = safeCast<ThreeWindingsTransformerPhaseAngleClock>(extension);
 
-    context.getExtensionsWriter().writeOptionalAttribute("phaseAngleClockLeg2", ext.getPhaseAngleClockLeg2(), 0UL);
-    context.getExtensionsWriter().writeOptionalAttribute("phaseAngleClockLeg3", ext.getPhaseAngleClockLeg3(), 0UL);
-}
+        context.getExtensionsWriter().writeOptionalAttribute("phaseAngleClockLeg2", ext.getPhaseAngleClockLeg2(), 0UL);
+        context.getExtensionsWriter().writeOptionalAttribute("phaseAngleClockLeg3", ext.getPhaseAngleClockLeg3(), 0UL);
+    }
 
 }  // namespace iidm
 
@@ -58,3 +60,4 @@ void ThreeWindingsTransformerPhaseAngleClockXmlSerializer::write(const Extension
 }  // namespace iidm
 
 }  // namespace powsybl
+

@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_CONVERTER_XML_EXTENSIONS_LOADBARXMLSERIALIZER_HPP
 
 #include <powsybl/iidm/converter/xml/AbstractExtensionXmlSerializer.hpp>
-#include <powsybl/network/LoadBarExt.hpp>
 
 namespace powsybl {
 
@@ -25,7 +24,7 @@ namespace extensions {
 
 class LoadBarXmlSerializer : public AbstractExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
-    network::LoadBarExt& read(Extendable& extendable, NetworkXmlReaderContext& context) const override;
+    Extension& read(Extendable& extendable, NetworkXmlReaderContext& context) const override;
 
     void write(const Extension& extension, NetworkXmlWriterContext& context) const override;
 

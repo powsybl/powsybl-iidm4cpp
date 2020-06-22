@@ -8,6 +8,7 @@
 #include "LoadFooXmlSerializer.hpp"
 
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/network/LoadFooExt.hpp>
 
 namespace powsybl {
 
@@ -23,7 +24,7 @@ LoadFooXmlSerializer::LoadFooXmlSerializer() :
     AbstractExtensionXmlSerializer("loadFoo", "network", "foo", "http://www.itesla_project.eu/schema/iidm/ext/loadfoo/1_0") {
 }
 
-network::LoadFooExt& LoadFooXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& /*context*/) const {
+Extension& LoadFooXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& /*context*/) const {
     if (!stdcxx::isInstanceOf<Load>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Load>()));
     }
