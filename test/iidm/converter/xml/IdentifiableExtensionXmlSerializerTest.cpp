@@ -72,6 +72,10 @@ BOOST_AUTO_TEST_CASE(UnsupportedExtensionVersion) {
     POWSYBL_ASSERT_THROW(Network::readXml(strNetwork), PowsyblException, "IIDM-XML version of network (1.1) is not supported by the loadQux extension's XML serializer");
 }
 
+BOOST_AUTO_TEST_CASE(MultipleExtensionRoundTrip) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("multiple-extensions.xml", IidmXmlVersion::all());
+}
+
 BOOST_AUTO_TEST_CASE(NotLatestVersionTerminalExtension) {
     const auto& network = Network::readXml(test::converter::RoundTrip::getVersionedNetwork("eurostag-tutorial-example1-with-loadMockExt-1_2.xml", IidmXmlVersion::V1_1()));
 
