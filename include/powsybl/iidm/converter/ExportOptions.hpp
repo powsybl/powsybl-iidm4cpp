@@ -111,6 +111,15 @@ public:
     const TopologyLevel& getTopologyLevel() const;
 
     /**
+     * Return true if one (or more) extension of the given list should be exported
+     *
+     * @param extensions the list of extensions to be checked.
+     *
+     * @return true if at least one extension should be exported, false otherwise
+     */
+    bool hasAtLeastOneExtension(const std::set<std::string>& extensions) const;
+
+    /**
      * Return true if the identifier should be anonymized
      *
      * @return true if the identifier should be anonymized, false otherwise

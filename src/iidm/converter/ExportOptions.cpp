@@ -87,6 +87,18 @@ const TopologyLevel& ExportOptions::getTopologyLevel() const {
     return m_topologyLevel;
 }
 
+bool ExportOptions::hasAtLeastOneExtension(const std::set<std::string>& extensions) const {
+    if (m_extensions.empty()) {
+        return true;
+    }
+    for (const auto& extension : extensions) {
+        if (m_extensions.find(extension) != m_extensions.end()) {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool ExportOptions::isAnonymized() const {
     return m_anonymized;
 }
