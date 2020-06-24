@@ -90,7 +90,7 @@ void ExtensionProviders<T, Dummy>::loadLibrary(const boost::filesystem::path& li
                     const std::string& extensionName = it->getExtensionName();
                     const auto& status = m_providers.emplace(std::make_pair(extensionName, std::move(it)));
                     if (!status.second) {
-                        throw PowsyblException(stdcxx::format("Extension %1% was already registered", extensionName));
+                        throw PowsyblException(stdcxx::format("Unable to load file %1%: Extension %2% is already registered", libraryPath, status.first->first));
                     }
                     logger.debug(stdcxx::format("Extension %1% has been loaded from %2%", extensionName, libraryPath));
                 }
