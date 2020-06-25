@@ -38,12 +38,13 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     checkB(*this, m_b);
     checkRatedU1(*this, m_ratedU1);
     checkRatedU2(*this, m_ratedU2);
+    checkRatedS(*this, m_ratedS);
 
     // check that the two windings transformer is attachable on both side
     voltageLevel1.attach(*ptrTerminal1, true);
     voltageLevel2.attach(*ptrTerminal2, true);
 
-    std::unique_ptr<TwoWindingsTransformer> ptrTransformer = stdcxx::make_unique<TwoWindingsTransformer>(checkAndGetUniqueId(), getName(), m_substation, m_r, m_x, m_g, m_b, m_ratedU1, m_ratedU2);
+    std::unique_ptr<TwoWindingsTransformer> ptrTransformer = stdcxx::make_unique<TwoWindingsTransformer>(checkAndGetUniqueId(), getName(), m_substation, m_r, m_x, m_g, m_b, m_ratedU1, m_ratedU2, m_ratedS);
     auto& transformer = getNetwork().checkAndAdd<TwoWindingsTransformer>(std::move(ptrTransformer));
 
     Terminal& terminal1 = transformer.addTerminal(std::move(ptrTerminal1));
@@ -80,6 +81,11 @@ TwoWindingsTransformerAdder& TwoWindingsTransformerAdder::setG(double g) {
 
 TwoWindingsTransformerAdder& TwoWindingsTransformerAdder::setR(double r) {
     m_r = r;
+    return *this;
+}
+
+TwoWindingsTransformerAdder& TwoWindingsTransformerAdder::setRatedS(double ratedS) {
+    m_ratedS = ratedS;
     return *this;
 }
 
