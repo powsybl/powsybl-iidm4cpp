@@ -389,7 +389,7 @@ double checkTargetDeadband(const Validable& validable, const std::string& valida
     if (regulating && std::isnan(targetDeadband)) {
         throw ValidationException(validable, "Undefined value for target deadband of regulating " + validableType);
     }
-    if (!std::isnan(targetDeadband) && targetDeadband < 0) {
+    if (targetDeadband < 0) {
         throw ValidationException(validable, stdcxx::format("Unexpected value for target deadband of tap changer: %1%", targetDeadband));
     }
     return targetDeadband;

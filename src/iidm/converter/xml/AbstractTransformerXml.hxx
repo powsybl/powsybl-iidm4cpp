@@ -41,11 +41,10 @@ template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
-    const double& targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
-    const auto& regulationMode = Enum::fromString<PhaseTapChanger::RegulationMode>(context.getReader().getAttributeValue(REGULATION_MODE));
-    const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
     bool regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
     const double& targetDeadband = readTargetDeadband(regulating, context);
+    const auto& regulationMode = Enum::fromString<PhaseTapChanger::RegulationMode>(context.getReader().getAttributeValue(REGULATION_MODE));
+    const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
 
     adder->setLowTapPosition(lowTapPosition)
         .setTapPosition(tapPosition)
@@ -165,6 +164,9 @@ double AbstractTransformerXml<Added, Adder>::readTargetDeadband(bool regulating,
             targetDeadband = 0.0;
         }
     });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &targetDeadband]() {
+        targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
+    });
     return targetDeadband;
 }
 
@@ -257,6 +259,9 @@ void AbstractTransformerXml<Added, Adder>::writeTargetDeadband(double targetDead
         // in IIDM-XML version 1.0, 0 as targetDeadband is ignored for backwards compatibility
         // (i.e. ensuring round trips in IIDM-XML version 1.0)
         context.getWriter().writeOptionalAttribute(TARGET_DEADBAND, targetDeadband, 0.0);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, targetDeadband]() {
+        context.getWriter().writeAttribute(TARGET_DEADBAND, targetDeadband);
     });
 }
 
