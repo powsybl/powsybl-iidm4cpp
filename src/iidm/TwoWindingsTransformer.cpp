@@ -18,7 +18,7 @@ namespace powsybl {
 
 namespace iidm {
 
-TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std::string& name, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2) :
+TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std::string& name, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS) :
     Branch(id, name, ConnectableType::TWO_WINDINGS_TRANSFORMER),
     m_substation(substation),
     m_r(checkR(*this, r)),
@@ -26,7 +26,8 @@ TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std:
     m_g(checkG(*this, g)),
     m_b(checkB(*this, b)),
     m_ratedU1(checkRatedU1(*this, ratedU1)),
-    m_ratedU2(checkRatedU2(*this, ratedU2)) {
+    m_ratedU2(checkRatedU2(*this, ratedU2)),
+    m_ratedS(checkRatedS(*this, ratedS)) {
 }
 
 void TwoWindingsTransformer::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -98,6 +99,10 @@ double TwoWindingsTransformer::getR() const {
     return m_r;
 }
 
+double TwoWindingsTransformer::getRatedS() const {
+    return m_ratedS;
+}
+
 double TwoWindingsTransformer::getRatedU1() const {
     return m_ratedU1;
 }
@@ -167,6 +172,11 @@ void TwoWindingsTransformer::setPhaseTapChanger(std::unique_ptr<PhaseTapChanger>
 
 TwoWindingsTransformer& TwoWindingsTransformer::setR(double r) {
     m_r = checkR(*this, r);
+    return *this;
+}
+
+TwoWindingsTransformer& TwoWindingsTransformer::setRatedS(double ratedS) {
+    m_ratedS = checkRatedS(*this, ratedS);
     return *this;
 }
 

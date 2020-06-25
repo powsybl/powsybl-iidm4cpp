@@ -33,6 +33,8 @@ public:
 
     TwoWindingsTransformerAdder& setR(double r);
 
+    TwoWindingsTransformerAdder& setRatedS(double ratedS);
+
     TwoWindingsTransformerAdder& setRatedU1(double ratedU1);
 
     TwoWindingsTransformerAdder& setRatedU2(double ratedU2);
@@ -61,6 +63,8 @@ private:
     double m_ratedU1 = stdcxx::nan();
 
     double m_ratedU2 = stdcxx::nan();
+
+    double m_ratedS = stdcxx::nan();
 };
 
 }  // namespace iidm

@@ -48,6 +48,9 @@ protected:
 
     static void readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 
+    template <typename Consumer>
+    static void readRatedS(const std::string& name, NetworkXmlReaderContext& context, const Consumer& consumer);
+
     static void readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
 
     static void readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context);
@@ -55,6 +58,8 @@ protected:
     static void readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 
     static void writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context);
+
+    static void writeRatedS(const std::string& name, double ratedS, NetworkXmlWriterContext& context);
 
     static void writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context);
 
