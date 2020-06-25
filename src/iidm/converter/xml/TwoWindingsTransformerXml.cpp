@@ -41,6 +41,9 @@ TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(Two
         .setB(b)
         .setRatedU1(ratedU1)
         .setRatedU2(ratedU2);
+    readRatedS("ratedS", context, [&adder](double ratedS) {
+        adder.setRatedS(ratedS);
+    });
     readNodeOrBus(adder, context);
     TwoWindingsTransformer& twt = adder.add();
     readPQ(twt.getTerminal1(), context.getReader(), 1);
@@ -73,6 +76,7 @@ void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTran
     context.getWriter().writeAttribute(B, twt.getB());
     context.getWriter().writeAttribute(RATED_U1, twt.getRatedU1());
     context.getWriter().writeAttribute(RATED_U2, twt.getRatedU2());
+    writeRatedS(RATED_S, twt.getRatedS(), context);
     writeNodeOrBus(twt.getTerminal1(), context, 1);
     writeNodeOrBus(twt.getTerminal2(), context, 2);
     if (context.getOptions().isWithBranchSV()) {

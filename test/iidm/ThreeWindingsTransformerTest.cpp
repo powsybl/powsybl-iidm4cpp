@@ -125,6 +125,7 @@ Network createThreeWindingsTransformerTestNetwork() {
          .setG(1.6)
          .setB(1.7)
          .setRatedU(1.1)
+         .setRatedS(2.2)
          .setVoltageLevel(vl1.getId())
          .setBus(vl1Bus1.getId())
          .setConnectableBus(vl1Bus1.getId())
@@ -281,6 +282,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(1.6, leg1.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.7, leg1.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.1, leg1.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.2, leg1.getRatedS(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!leg1.getCurrentLimits());
     BOOST_TEST(!cLeg1.getCurrentLimits());
 
@@ -296,6 +298,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(2.3, leg2.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.4, leg2.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.1, leg2.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(std::isnan(leg2.getRatedS()));
     BOOST_TEST(!leg2.getCurrentLimits());
     BOOST_TEST(!cLeg2.getCurrentLimits());
     BOOST_TEST(!leg2.getRatioTapChanger());
@@ -359,6 +362,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(leg1, leg1.setRatedU(500.0)));
     BOOST_CHECK_CLOSE(500.0, leg1.getRatedU(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(leg1.setRatedU(stdcxx::nan()), ValidationException, "3 windings transformer leg1 '3WT_VL1_VL2_VL3': rated U is invalid");
+
+    BOOST_TEST(stdcxx::areSame(leg1, leg1.setRatedS(600.0)));
+    BOOST_CHECK_CLOSE(600.0, leg1.getRatedS(), std::numeric_limits<double>::epsilon());
+    leg1.setRatedS(stdcxx::nan());
+    BOOST_TEST(std::isnan(leg1.getRatedS()));
+    POWSYBL_ASSERT_THROW(leg1.setRatedS(-1.0), ValidationException, "3 windings transformer leg1 '3WT_VL1_VL2_VL3': Invalid rated S value: -1");
 
     BOOST_TEST(!leg1.getCurrentLimits());
     leg1.newCurrentLimits()
@@ -563,6 +572,10 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2: connectable bus is not set");
     l2Adder.setConnectableBus("VL4_BUS1");
+
+    l2Adder.setRatedS(-1.0);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2: Invalid rated S value: -1");
+    l2Adder.setRatedS(1.0);
 
     adder2.newLeg2()
         .setR(2.0)

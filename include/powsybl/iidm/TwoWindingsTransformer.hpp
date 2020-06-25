@@ -45,7 +45,7 @@ public:  // PhaseTapChangerHolder
     PhaseTapChangerAdder newPhaseTapChanger() override;
 
 public:
-    TwoWindingsTransformer(const std::string& id, const std::string& name, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2);
+    TwoWindingsTransformer(const std::string& id, const std::string& name, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS);
 
     ~TwoWindingsTransformer() noexcept override = default;
 
@@ -54,6 +54,8 @@ public:
     double getG() const;
 
     double getR() const;
+
+    double getRatedS() const;
 
     double getRatedU1() const;
 
@@ -70,6 +72,8 @@ public:
     TwoWindingsTransformer& setG(double g);
 
     TwoWindingsTransformer& setR(double r);
+
+    TwoWindingsTransformer& setRatedS(double ratedS);
 
     TwoWindingsTransformer& setRatedU1(double ratedU1);
 
@@ -119,6 +123,8 @@ private:
     double m_ratedU1;
 
     double m_ratedU2;
+
+    double m_ratedS;
 
     std::unique_ptr<RatioTapChanger> m_ratioTapChanger;
 

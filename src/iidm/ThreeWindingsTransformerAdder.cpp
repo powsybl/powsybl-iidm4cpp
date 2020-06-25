@@ -33,7 +33,7 @@ ThreeWindingsTransformerAdder& ThreeWindingsTransformerAdder::LegAdder::add() {
 std::unique_ptr<ThreeWindingsTransformer::Leg> ThreeWindingsTransformerAdder::LegAdder::checkAndGetLeg() const {
     checkParams();
 
-    return stdcxx::make_unique<ThreeWindingsTransformer::Leg>(m_legNumber, m_r, m_x, m_g, m_b, m_ratedU);
+    return stdcxx::make_unique<ThreeWindingsTransformer::Leg>(m_legNumber, m_r, m_x, m_g, m_b, m_ratedU, m_ratedS);
 }
 
 std::unique_ptr<Terminal> ThreeWindingsTransformerAdder::LegAdder::checkAndGetTerminal(VoltageLevel& voltageLevel) {
@@ -64,6 +64,7 @@ void ThreeWindingsTransformerAdder::LegAdder::checkParams() const {
     checkOptional(*this, m_g, "g is not set");
     checkOptional(*this, m_b, "b is not set");
     checkOptional(*this, m_ratedU, "rated U is not set");
+    checkRatedS(*this, m_ratedS);
 }
 
 ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::LegAdder::clear() {
@@ -117,6 +118,11 @@ ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::LegAdder
 
 ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::LegAdder::setR(double r) {
     m_r = r;
+    return *this;
+}
+
+ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::LegAdder::setRatedS(double ratedS) {
+    m_ratedS = ratedS;
     return *this;
 }
 
