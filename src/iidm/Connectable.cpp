@@ -90,7 +90,6 @@ void Connectable::remove() {
     for (auto& terminal : m_terminals) {
         VoltageLevel& voltageLevel = terminal->getVoltageLevel();
         voltageLevel.detach(*terminal);
-        voltageLevel.clean();
     }
 
     network.remove(*this);
