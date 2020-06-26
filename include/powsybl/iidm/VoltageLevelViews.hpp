@@ -121,6 +121,8 @@ public:
 
     virtual stdcxx::const_range<InternalConnection> getInternalConnections() const = 0;
 
+    virtual unsigned long getMaximumNodeIndex() const = 0;
+
     virtual unsigned long getNode1(const std::string& switchId) const = 0;
 
     virtual unsigned long getNode2(const std::string& switchId) const = 0;
@@ -161,9 +163,9 @@ public:
 
     virtual SwitchAdder newSwitch() = 0;
 
-    virtual void removeSwitch(const std::string& switchId) = 0;
+    virtual void removeInternalConnections(unsigned long node1, unsigned long node2) = 0;
 
-    virtual NodeBreakerView& setNodeCount(unsigned long nodeCount) = 0;
+    virtual void removeSwitch(const std::string& switchId) = 0;
 
     virtual void traverse(unsigned long node, const Traverser& traverser) const = 0;
 };

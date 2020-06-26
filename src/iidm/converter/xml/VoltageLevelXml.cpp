@@ -19,6 +19,8 @@
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/util/Networks.hpp>
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 
 #include "BatteryXml.hpp"
@@ -91,8 +93,10 @@ void VoltageLevelXml::readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlRe
 }
 
 void VoltageLevelXml::readNodeBreakerTopology(VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const {
-    const auto& nodeCount = context.getReader().getAttributeValue<unsigned long>(NODE_COUNT);
-    voltageLevel.getNodeBreakerView().setNodeCount(nodeCount);
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), []() {
+        logging::Logger& logger = logging::LoggerFactory::getLogger<VoltageLevelXml>();
+        logger.info(stdcxx::format("attribute %1%.nodeCount is ignored.", NODE_BREAKER_TOPOLOGY));
+    });
     context.getReader().readUntilEndElement(NODE_BREAKER_TOPOLOGY, [this, &voltageLevel, &context]() {
         if (context.getReader().getLocalName() == BUSBAR_SECTION) {
             BusbarSectionXml::getInstance().read(voltageLevel, context);
@@ -234,7 +238,7 @@ void VoltageLevelXml::writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWri
 
 void VoltageLevelXml::writeNodeBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), NODE_BREAKER_TOPOLOGY);
-    context.getWriter().writeAttribute(NODE_COUNT, voltageLevel.getNodeBreakerView().getNodeCount());
+    IidmXmlUtil::writeIntAttributeUntilMaximumVersion(NODE_COUNT, voltageLevel.getNodeBreakerView().getMaximumNodeIndex() + 1, IidmXmlVersion::V1_1(), context);
     for (const BusbarSection& bs : voltageLevel.getNodeBreakerView().getBusbarSections()) {
         BusbarSectionXml::getInstance().write(bs, voltageLevel, context);
     }

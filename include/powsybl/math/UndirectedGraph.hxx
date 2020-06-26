@@ -39,6 +39,18 @@ void UndirectedGraph<V, E>::checkVertex(unsigned long v) const {
 }
 
 template <typename V, typename E>
+void UndirectedGraph<V, E>::cleanVertices(unsigned long v) {
+    for (unsigned long i = v; v >= 0; --i) {
+        const auto& it = m_availableVertices.find(i);
+        if (it == m_availableVertices.end()) {
+            return;
+        }
+        m_availableVertices.erase(it);
+        m_vertices.pop_back();
+    }
+}
+
+template <typename V, typename E>
 unsigned long UndirectedGraph<V, E>::addEdge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object) {
     checkVertex(v1);
     checkVertex(v2);
@@ -66,12 +78,12 @@ unsigned long UndirectedGraph<V, E>::addVertex() {
     unsigned long v;
 
     std::unique_ptr<Vertex> vertex = stdcxx::make_unique<Vertex>();
-    if (m_removedVertices.empty()) {
+    if (m_availableVertices.empty()) {
         v = m_vertices.size();
         m_vertices.emplace_back(std::move(vertex));
     } else {
-        v = *m_removedVertices.begin();
-        m_removedVertices.erase(m_removedVertices.begin());
+        v = *m_availableVertices.begin();
+        m_availableVertices.erase(m_availableVertices.begin());
 
         m_vertices[v] = std::move(vertex);
     }
@@ -79,6 +91,25 @@ unsigned long UndirectedGraph<V, E>::addVertex() {
     invalidateAdjacencyList();
 
     return v;
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::addVertexIfNotPresent(unsigned long v) {
+    if (v < m_vertices.size()) {
+        const auto& it = m_availableVertices.find(v);
+        if (it != m_availableVertices.end()) {
+            m_vertices[v] = stdcxx::make_unique<Vertex>();
+            m_availableVertices.erase(it);
+        }
+    } else {
+        std::size_t oldSize = m_vertices.size();
+        m_vertices.resize(v + 1);
+        for (unsigned int i = oldSize; i < v; i++) {
+            m_availableVertices.insert(m_availableVertices.end(), i);
+        }
+        m_vertices[v] = stdcxx::make_unique<Vertex>();
+    }
+    invalidateAdjacencyList();
 }
 
 template <typename V, typename E>
@@ -253,8 +284,13 @@ unsigned long UndirectedGraph<V, E>::getVertex2(unsigned long e) const {
 }
 
 template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::getVertexCapacity() const {
+    return m_vertices.size();
+}
+
+template <typename V, typename E>
 unsigned long UndirectedGraph<V, E>::getVertexCount() const {
-    return m_vertices.size() - m_removedVertices.size();
+    return m_vertices.size() - m_availableVertices.size();
 }
 
 template <typename V, typename E>
@@ -313,7 +349,7 @@ void UndirectedGraph<V, E>::removeAllVertices() {
     }
 
     m_vertices.clear();
-    m_removedVertices.clear();
+    m_availableVertices.clear();
 
     invalidateAdjacencyList();
 }
@@ -365,9 +401,10 @@ stdcxx::Reference<V> UndirectedGraph<V, E>::removeVertex(unsigned long v) {
     stdcxx::Reference<V> object = m_vertices[v]->getObject();
     if (v == m_vertices.size() - 1) {
         m_vertices.pop_back();
+        cleanVertices(v - 1);
     } else {
         m_vertices[v].reset();
-        m_removedVertices.insert(v);
+        m_availableVertices.insert(v);
     }
 
     invalidateAdjacencyList();

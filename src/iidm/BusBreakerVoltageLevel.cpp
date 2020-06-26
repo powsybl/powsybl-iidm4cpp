@@ -82,10 +82,6 @@ void BusBreakerVoltageLevel::checkTerminal(Terminal& terminal) const {
     }
 }
 
-void BusBreakerVoltageLevel::clean() {
-    // Nothing to do
-}
-
 bool BusBreakerVoltageLevel::connect(Terminal& terminal) {
     assert(stdcxx::isInstanceOf<BusTerminal>(terminal));
 

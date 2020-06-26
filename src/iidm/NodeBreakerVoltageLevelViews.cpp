@@ -193,6 +193,10 @@ stdcxx::const_range<NodeBreakerViewImpl::InternalConnection> NodeBreakerViewImpl
     return m_voltageLevel.getGraph().getEdges() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
+unsigned long NodeBreakerViewImpl::getMaximumNodeIndex() const {
+    return m_voltageLevel.getMaximumNodeIndex();
+}
+
 unsigned long NodeBreakerViewImpl::getNode1(const std::string& switchId) const {
     return m_voltageLevel.getNode1(switchId);
 }
@@ -206,7 +210,7 @@ unsigned long NodeBreakerViewImpl::getNodeCount() const {
 }
 
 stdcxx::const_range<unsigned long> NodeBreakerViewImpl::getNodes() const {
-    return m_voltageLevel.getGraph().getVertices();
+    return m_voltageLevel.getNodes();
 }
 
 stdcxx::CReference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& switchId) const {
@@ -285,13 +289,12 @@ NodeBreakerViewImpl::SwitchAdder NodeBreakerViewImpl::newSwitch() {
     return SwitchAdder(m_voltageLevel);
 }
 
-void NodeBreakerViewImpl::removeSwitch(const std::string& switchId) {
-    m_voltageLevel.removeSwitch(switchId);
+void NodeBreakerViewImpl::removeInternalConnections(unsigned long node1, unsigned long node2) {
+    m_voltageLevel.removeInternalConnections(node1, node2);
 }
 
-VoltageLevel::NodeBreakerView& NodeBreakerViewImpl::setNodeCount(unsigned long nodeCount) {
-    m_voltageLevel.setNodeCount(nodeCount);
-    return *this;
+void NodeBreakerViewImpl::removeSwitch(const std::string& switchId) {
+    m_voltageLevel.removeSwitch(switchId);
 }
 
 void NodeBreakerViewImpl::traverse(unsigned long node, const Traverser& traverser) const {
