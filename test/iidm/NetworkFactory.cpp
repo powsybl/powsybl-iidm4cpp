@@ -125,8 +125,6 @@ Terminal& getTerminalFromNetwork2() {
             .setHighVoltageLimit(420.0)
             .add();
 
-        vl.getNodeBreakerView().setNodeCount(1);
-
         vl.newLoad()
             .setId("LOAD1")
             .setNode(0)

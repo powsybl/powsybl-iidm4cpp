@@ -135,9 +135,34 @@ BOOST_AUTO_TEST_CASE(getMaxVertex) {
 
     graph.removeVertex(2);
     expected = {0};
-    BOOST_CHECK_EQUAL(2UL, graph.getMaxVertex());
+    BOOST_CHECK_EQUAL(1UL, graph.getMaxVertex());
     const auto& vertices4 = graph.getVertices();
     BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), std::begin(vertices4), std::end(vertices4));
+
+    graph.addVertexIfNotPresent(3);
+    expected = {0, 3};
+    BOOST_CHECK_EQUAL(2UL, graph.getVertexCount());
+    BOOST_CHECK_EQUAL(4UL, graph.getMaxVertex());
+    const auto& vertices5 = graph.getVertices();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), std::begin(vertices5), std::end(vertices5));
+
+    graph.addVertexIfNotPresent(1);
+    expected = {0, 1, 3};
+    BOOST_CHECK_EQUAL(3UL, graph.getVertexCount());
+    BOOST_CHECK_EQUAL(4UL, graph.getMaxVertex());
+    const auto& vertices6 = graph.getVertices();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), std::begin(vertices6), std::end(vertices6));
+
+    graph.removeVertex(3);
+    expected = {0, 1};
+    BOOST_CHECK_EQUAL(2UL, graph.getVertexCount());
+    BOOST_CHECK_EQUAL(2UL, graph.getMaxVertex());
+    const auto& vertices7 = graph.getVertices();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), std::begin(vertices7), std::end(vertices7));
+
+    graph.removeAllVertices();
+    BOOST_CHECK_EQUAL(0UL, graph.getVertexCount());
+    BOOST_CHECK_EQUAL(0UL, graph.getMaxVertex());
 }
 
 BOOST_AUTO_TEST_CASE(getVertexObject) {

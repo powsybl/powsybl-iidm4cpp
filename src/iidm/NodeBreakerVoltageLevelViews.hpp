@@ -32,11 +32,11 @@ public: // NodeBreakerView
 
     stdcxx::const_range<InternalConnection> getInternalConnections() const override;
 
+    unsigned long getMaximumNodeIndex() const override;
+
     unsigned long getNode1(const std::string& switchId) const override;
 
     unsigned long getNode2(const std::string& switchId) const override;
-
-    unsigned long getNodeCount() const override;
 
     stdcxx::const_range<unsigned long> getNodes() const override;
 
@@ -72,9 +72,9 @@ public: // NodeBreakerView
 
     SwitchAdder newSwitch() override;
 
-    void removeSwitch(const std::string& switchId) override;
+    void removeInternalConnections(unsigned long node1, unsigned long node2) override;
 
-    NodeBreakerView& setNodeCount(unsigned long nodeCount) override;
+    void removeSwitch(const std::string& switchId) override;
 
     void traverse(unsigned long node, const Traverser& traverser) const override;
 
