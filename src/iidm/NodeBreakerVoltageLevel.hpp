@@ -28,8 +28,6 @@ class NodeBreakerVoltageLevel : public VoltageLevel {
 public: // VoltageLevel
     void attach(Terminal& terminal, bool test) override;
 
-    void clean() override;
-
     bool connect(Terminal& terminal) override;
 
     void detach(Terminal& terminal) override;
@@ -43,6 +41,13 @@ public: // VoltageLevel
     const BusView& getBusView() const override;
 
     BusView& getBusView() override;
+
+    /**
+     * Get the highest index of used nodes (i.e. attached to an equipment, a switch or an internal connection) in the voltage level.
+     *
+     * @return the highest index of used nodes.
+     */
+    unsigned long getMaximumNodeIndex() const;
 
     const NodeBreakerView& getNodeBreakerView() const override;
 
@@ -87,6 +92,8 @@ protected: // VoltageLevel
 private:
     void checkTerminal(Terminal& terminal) const;
 
+    void clean();
+
     node_breaker_voltage_level::BusNamingStrategy& getBusNamingStrategy();
 
     const node_breaker_voltage_level::CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology() const;
@@ -105,18 +112,15 @@ private:
 
     unsigned long getNode2(const std::string& switchId) const;
 
-    unsigned long getNodeCount() const;
-
     stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const;
-
 
     stdcxx::CReference<Terminal> getTerminal(unsigned long node) const;
 
     stdcxx::Reference<Terminal> getTerminal(unsigned long node);
 
-    void removeSwitch(const std::string& switchId);
+    void removeInternalConnections(unsigned long node1, unsigned long node2);
 
-    void setNodeCount(unsigned long nodeCount);
+    void removeSwitch(const std::string& switchId);
 
 private:
     friend class node_breaker_voltage_level::NodeBreakerViewImpl;

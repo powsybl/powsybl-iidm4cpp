@@ -30,13 +30,16 @@ NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const st
 }
 
 void NodeBreakerVoltageLevel::addInternalConnection(unsigned long node1, unsigned long node2) {
+    m_graph.addVertexIfNotPresent(node1);
+    m_graph.addVertexIfNotPresent(node2);
     m_graph.addEdge(node1, node2, stdcxx::ref<Switch>());
     invalidateCache();
 }
 
 Switch& NodeBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, unsigned long node1, unsigned long node2) {
     Switch& aSwitch = getNetwork().checkAndAdd(std::move(ptrSwitch));
-
+    m_graph.addVertexIfNotPresent(node1);
+    m_graph.addVertexIfNotPresent(node2);
     unsigned long e = m_graph.addEdge(node1, node2, stdcxx::ref(aSwitch));
     m_switches.insert(std::make_pair(aSwitch.getId(), e));
 
@@ -52,6 +55,7 @@ void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
     if (!test) {
         auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
         unsigned long node = nodeTerminal.getNode();
+        m_graph.addVertexIfNotPresent(node);
 
         const stdcxx::Reference<NodeTerminal>& tmp = m_graph.getVertexObject(node);
         if (static_cast<bool>(tmp)) {
@@ -120,6 +124,7 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
 
     // remove the link terminal <-> graph vertex
     m_graph.setVertexObject(node, stdcxx::ref<NodeTerminal>());
+    clean();
 }
 
 bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
@@ -223,6 +228,10 @@ unsigned long NodeBreakerVoltageLevel::getInternalConnectionCount() const {
     return std::count(std::begin(switches), std::end(switches), stdcxx::ref<Switch>());
 }
 
+unsigned long NodeBreakerVoltageLevel::getMaximumNodeIndex() const {
+    return m_graph.getVertexCapacity() - 1;
+}
+
 unsigned long NodeBreakerVoltageLevel::getNode1(const std::string& switchId) const {
     const auto& e = getEdge(switchId, true);
     return m_graph.getVertex1(*e);
@@ -239,10 +248,6 @@ const NodeBreakerVoltageLevel::NodeBreakerView& NodeBreakerVoltageLevel::getNode
 
 NodeBreakerVoltageLevel::NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreakerView() {
     return m_nodeBreakerView;
-}
-
-unsigned long NodeBreakerVoltageLevel::getNodeCount() const {
-    return m_graph.getVertexCount();
 }
 
 stdcxx::CReference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string& switchId) const {
@@ -316,13 +321,29 @@ void NodeBreakerVoltageLevel::invalidateCache() {
 }
 
 bool NodeBreakerVoltageLevel::isConnected(const Terminal& terminal) const {
-    auto& nodeTerminal = dynamic_cast<const NodeTerminal&>(terminal);
+    const auto& nodeTerminal = dynamic_cast<const NodeTerminal&>(terminal);
 
     return nodeTerminal.getBusView().getBus();
 }
 
 void NodeBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
     m_variants.reduceVariantArraySize(number);
+}
+
+void NodeBreakerVoltageLevel::removeInternalConnections(unsigned long node1, unsigned long node2) {
+    const auto& filter = [this, node1, node2](const unsigned long& edge) {
+        return !m_graph.getEdgeObject(edge) && ((m_graph.getVertex1(edge) == node1 && m_graph.getVertex2(edge) == node2) || (m_graph.getVertex1(edge) == node2 && m_graph.getVertex2(edge) == node1));
+    };
+
+    const auto& internalConnectionsToBeRemoved = m_graph.getEdges() | boost::adaptors::filtered(filter);
+    if (boost::empty(internalConnectionsToBeRemoved)) {
+        throw PowsyblException(stdcxx::format("Internal connection not found between %1% and %2%", node1, node2));
+    }
+    for (unsigned long ic : internalConnectionsToBeRemoved) {
+        m_graph.removeEdge(ic);
+    }
+    clean();
+    invalidateCache();
 }
 
 void NodeBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
@@ -332,15 +353,10 @@ void NodeBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
     }
 
     const auto& aSwitch = m_graph.removeEdge(it->second);
+    clean();
+
     m_switches.erase(it);
     getNetwork().remove(aSwitch.get());
-}
-
-void NodeBreakerVoltageLevel::setNodeCount(unsigned long nodeCount) {
-    unsigned long oldCount = m_graph.getVertexCount();
-    for (unsigned long i = oldCount; i < nodeCount; ++i) {
-        m_graph.addVertex();
-    }
 }
 
 }  // namespace iidm
