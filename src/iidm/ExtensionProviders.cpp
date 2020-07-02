@@ -8,7 +8,6 @@
 #include <powsybl/iidm/ExtensionProviders.hpp>
 
 #include <boost/dll/import.hpp>
-#include <boost/dll/shared_library.hpp>
 #include <boost/range/adaptor/indirected.hpp>
 #include <boost/range/adaptor/map.hpp>
 
@@ -95,7 +94,7 @@ void ExtensionProviders<T, Dummy>::loadLibrary(const boost::filesystem::path& li
                     }
                     logger.debug(stdcxx::format("Extension %1% has been loaded from %2%", extensionName, libraryPath));
                 }
-                m_loadedLibraries.insert(libraryPath);
+                m_loadedLibraries.insert(std::make_pair(libraryPath, library));
             }
         } catch (const boost::system::system_error& err) {
             logger.info(stdcxx::format("Unable to load file %1%: %2%", libraryPath, err.what()));
