@@ -30,12 +30,17 @@ public: // Logger
     bool isWarnEnabled() const override;
 
 public:
-    ConsoleLogger() = default;
+    ConsoleLogger();
+
+    explicit ConsoleLogger(const Level& level);
 
     ~ConsoleLogger() noexcept override = default;
 
 private: // Logger
     void log(const Level& level, const std::string& message) override;
+
+private:
+    Level m_level;
 };
 
 }  // namespace logging

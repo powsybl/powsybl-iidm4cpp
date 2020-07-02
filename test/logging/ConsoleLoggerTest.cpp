@@ -19,11 +19,11 @@ BOOST_AUTO_TEST_SUITE(ConsoleLoggerTestSuite)
 
 BOOST_AUTO_TEST_CASE(level) {
     ConsoleLogger logger;
-    BOOST_TEST(logger.isTraceEnabled());
-    BOOST_TEST(logger.isDebugEnabled());
-    BOOST_TEST(logger.isInfoEnabled());
-    BOOST_TEST(logger.isWarnEnabled());
-    BOOST_TEST(logger.isErrorEnabled());
+    BOOST_CHECK_EQUAL(false, logger.isTraceEnabled());
+    BOOST_CHECK_EQUAL(false, logger.isDebugEnabled());
+    BOOST_CHECK_EQUAL(true, logger.isInfoEnabled());
+    BOOST_CHECK_EQUAL(true, logger.isWarnEnabled());
+    BOOST_CHECK_EQUAL(true, logger.isErrorEnabled());
 }
 
 BOOST_AUTO_TEST_CASE(logMessage) {

@@ -15,24 +15,32 @@ namespace powsybl {
 
 namespace logging {
 
+ConsoleLogger::ConsoleLogger() :
+    ConsoleLogger(Level::INFO) {
+}
+
+ConsoleLogger::ConsoleLogger(const Level &level) :
+    m_level(level) {
+}
+
 bool ConsoleLogger::isDebugEnabled() const {
-    return true;
+    return m_level <= Level::DEBUG;
 }
 
 bool ConsoleLogger::isErrorEnabled() const {
-    return true;
+    return m_level <= Level::ERROR;
 }
 
 bool ConsoleLogger::isInfoEnabled() const {
-    return true;
+    return m_level <= Level::INFO;
 }
 
 bool ConsoleLogger::isTraceEnabled() const {
-    return true;
+    return m_level <= Level::TRACE;
 }
 
 bool ConsoleLogger::isWarnEnabled() const {
-    return true;
+    return m_level <= Level::WARN;
 }
 
 void ConsoleLogger::log(const Level& level, const std::string& message) {
