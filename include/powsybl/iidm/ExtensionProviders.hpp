@@ -11,10 +11,10 @@
 #include <map>
 #include <memory>
 #include <regex>
-#include <set>
 #include <string>
 #include <type_traits>
 
+#include <boost/dll/shared_library.hpp>
 #include <boost/filesystem.hpp>
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
@@ -57,7 +57,7 @@ private:
     void loadLibrary(const boost::filesystem::path& libraryPath);
 
 private:
-    std::set<boost::filesystem::path> m_loadedLibraries;
+    std::map<boost::filesystem::path, boost::dll::shared_library> m_loadedLibraries;
 
     std::map<std::string, std::unique_ptr<T>> m_providers;
 };
