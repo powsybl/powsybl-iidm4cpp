@@ -7,8 +7,11 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/Line.hpp>
+#include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -25,6 +28,51 @@
 namespace powsybl {
 
 namespace iidm {
+
+Network createLineTestNetwork2() {
+    Network network("test", "test");
+    Substation& substation = network.newSubstation()
+        .setId("S1")
+        .setName("S1_NAME")
+        .setCountry(Country::FR)
+        .setTso("TSO")
+        .add();
+
+    VoltageLevel& vl1 = substation.newVoltageLevel()
+        .setId("VL1")
+        .setName("VL1_NAME")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalVoltage(380.0)
+        .setLowVoltageLimit(340.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    Bus& vl1Bus1 = vl1.getBusBreakerView().newBus()
+        .setId("VL1_BUS1")
+        .add();
+
+    Bus& vl1Bus2 = vl1.getBusBreakerView().newBus()
+        .setId("VL1_BUS2")
+        .add();
+
+    network.newLine()
+        .setId("VL1_VL3")
+        .setVoltageLevel1(vl1.getId())
+        .setBus1(vl1Bus1.getId())
+        .setConnectableBus1(vl1Bus1.getId())
+        .setVoltageLevel2(vl1.getId())
+        .setBus2(vl1Bus2.getId())
+        .setConnectableBus2(vl1Bus2.getId())
+        .setR(3.0)
+        .setX(33.0)
+        .setG1(1.0)
+        .setB1(0.2)
+        .setG2(2.0)
+        .setB2(0.4)
+        .add();
+
+    return network;
+}
 
 BOOST_AUTO_TEST_SUITE(VoltageLevelTestSuite)
 
@@ -143,6 +191,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_REF_TRUE(vl.getConnectable<Load>("LOAD1"));
     BOOST_TEST(stdcxx::areSame(load1, vl.getConnectable<Load>("LOAD1").get()));
     POWSYBL_ASSERT_REF_FALSE(vl.getConnectable<Generator>("LOAD1"));
+}
+
+BOOST_AUTO_TEST_CASE(getConnectablesCheckUnique) {
+    const Network network = createLineTestNetwork2();
+    const VoltageLevel& vl = network.getVoltageLevel("VL1");
+    BOOST_CHECK_EQUAL(1UL, boost::size(vl.getConnectables<Line>()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

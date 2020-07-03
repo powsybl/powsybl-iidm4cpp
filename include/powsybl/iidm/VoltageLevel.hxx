@@ -23,6 +23,7 @@
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/util/DistinctPredicate.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -78,12 +79,12 @@ unsigned long VoltageLevel::getConnectableCount() const {
 
 template <typename T, typename>
 stdcxx::const_range<T> VoltageLevel::getConnectables() const {
-    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<const T>);
+    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<const T>) | boost::adaptors::filtered(DistinctPredicate());
 }
 
 template <typename T, typename>
 stdcxx::range<T> VoltageLevel::getConnectables() {
-    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<T>);
+    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<T>) | boost::adaptors::filtered(DistinctPredicate());
 }
 
 }  // namespace iidm
