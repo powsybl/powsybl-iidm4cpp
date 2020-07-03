@@ -44,6 +44,8 @@ public: // VoltageLevel
 
     /**
      * Get the highest index of used nodes (i.e. attached to an equipment, a switch or an internal connection) in the voltage level.
+     *
+     * @return the highest index of used nodes.
      */
     unsigned long getMaximumNodeIndex() const;
 
@@ -119,6 +121,8 @@ private:
 
     /**
      * Get the list of nodes.
+     *
+     * @return the list of nodes.
      */
     stdcxx::const_range<unsigned long> getNodes() const;
 

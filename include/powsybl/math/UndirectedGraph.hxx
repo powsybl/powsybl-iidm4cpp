@@ -104,7 +104,7 @@ void UndirectedGraph<V, E>::addVertexIfNotPresent(unsigned long v) {
     } else {
         std::size_t oldSize = m_vertices.size();
         m_vertices.resize(v + 1);
-        for (unsigned int i = oldSize; i < v; i++) {
+        for (unsigned int i = oldSize; i < v; ++i) {
             m_availableVertices.insert(m_availableVertices.end(), i);
         }
         m_vertices[v] = stdcxx::make_unique<Vertex>();
