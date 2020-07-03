@@ -238,7 +238,7 @@ void VoltageLevelXml::writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWri
 
 void VoltageLevelXml::writeNodeBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), NODE_BREAKER_TOPOLOGY);
-    IidmXmlUtil::writeIntAttributeUntilMaximumVersion(NODE_COUNT, voltageLevel.getNodeBreakerView().getMaximumNodeIndex() + 1, IidmXmlVersion::V1_1(), context);
+    IidmXmlUtil::writeULongAttributeUntilMaximumVersion(NODE_COUNT, voltageLevel.getNodeBreakerView().getMaximumNodeIndex() + 1, IidmXmlVersion::V1_1(), context);
     for (const BusbarSection& bs : voltageLevel.getNodeBreakerView().getBusbarSections()) {
         BusbarSectionXml::getInstance().write(bs, voltageLevel, context);
     }

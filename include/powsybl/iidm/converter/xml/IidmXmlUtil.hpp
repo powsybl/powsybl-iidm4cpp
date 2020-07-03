@@ -177,7 +177,7 @@ public:
     static void writeDoubleAttributeFromMinimumVersion(const std::string& rootElementName, const std::string& attributeName, double value, double defaultValue, const char* errorMessage, const IidmXmlVersion& minVersion, NetworkXmlWriterContext& context);
 
     /**
-     * Write a <b>mandatory</b> int attribute until a given maximum IIDM-XML version.
+     * Write a <b>mandatory</b> unsigned long attribute until a given maximum IIDM-XML version.
      *
      * If the context's IIDM-XML version is strictly more recent than the given maximum IIDM-XML version, do nothing.
      *
@@ -186,7 +186,7 @@ public:
      * @param minVersion the IIDM-XML version in which the attribute has been removed
      * @param contextVersion the context's IIDM-XML version
      */
-    static void writeIntAttributeUntilMaximumVersion(const std::string& attributeName, int value, const IidmXmlVersion& maxVersion, NetworkXmlWriterContext& context);
+    static void writeULongAttributeUntilMaximumVersion(const std::string& attributeName, unsigned long value, const IidmXmlVersion& maxVersion, NetworkXmlWriterContext& context);
 
 public:
     IidmXmlUtil() = delete;
