@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include <libxml/parser.h>
+
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Network.hpp>
 
@@ -23,11 +25,15 @@ int main(int argc, char** argv) {
     }
 
     try {
+        xmlInitParser();
+
         std::ifstream inputStream(argv[1]);
         powsybl::iidm::Network network = powsybl::iidm::Network::readXml(inputStream);
 
         std::ofstream outputStream(argv[2]);
         powsybl::iidm::Network::writeXml(outputStream, network);
+
+        xmlCleanupParser();
 
     } catch (const powsybl::PowsyblException& e) {
         std::cout << e.what() << std::endl;
