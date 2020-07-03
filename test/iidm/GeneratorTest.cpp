@@ -32,6 +32,8 @@ Network createGeneratorTestNetwork() {
         .setCountry(Country::FR)
         .add();
 
+    s.setFictitious(false).setCountry(Country::FR);
+
     VoltageLevel& vl = s.newVoltageLevel()
         .setId("VL")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
@@ -39,6 +41,10 @@ Network createGeneratorTestNetwork() {
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
+
+    vl.setFictitious(false).setHighVoltageLimit(420.0);
+
+    vl.getNodeBreakerView().setNodeCount(5);
 
     vl.getNodeBreakerView().newBusbarSection()
         .setId("BBS")
@@ -62,7 +68,7 @@ Network createGeneratorTestNetwork() {
         .setOpen(false)
         .add();
 
-    vl.newGenerator()
+    Generator& gen = vl.newGenerator()
         .setId("GEN1")
         .setName("GEN1_NAME")
         .setNode(2)
@@ -78,6 +84,8 @@ Network createGeneratorTestNetwork() {
         .setVoltageRegulatorOn(true)
         .setVoltageSetpoint(6.0)
         .add();
+
+    gen.setFictitious(false).setVoltageSetpoint(6.0);
 
     vl.getNodeBreakerView().newDisconnector()
         .setId("SWD2")
@@ -95,7 +103,7 @@ Network createGeneratorTestNetwork() {
         .setOpen(false)
         .add();
 
-    vl.newLoad()
+    Load& load = vl.newLoad()
         .setId("LOAD1")
         .setNode(4)
         .setName("LOAD1_NAME")
@@ -103,6 +111,8 @@ Network createGeneratorTestNetwork() {
         .setP0(50.0)
         .setQ0(40.0)
         .add();
+
+    load.setFictitious(false).setQ0(40.0);
 
     return network;
 }

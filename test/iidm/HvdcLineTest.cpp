@@ -44,7 +44,9 @@ Network createHvdcLineTestNetwork() {
         .setId("VL1_BUS1")
         .add();
 
-    vl1.newLccConverterStation()
+    vl1Bus1.setFictitious(false).setAngle(1.0);
+
+    LccConverterStation& lccConverterStation = vl1.newLccConverterStation()
         .setId("LCC1")
         .setName("LCC1_NAME")
         .setBus(vl1Bus1.getId())
@@ -53,7 +55,9 @@ Network createHvdcLineTestNetwork() {
         .setPowerFactor(2.0)
         .add();
 
-    vl1.newVscConverterStation()
+    lccConverterStation.setFictitious(false).setPowerFactor(2.0);
+
+    VscConverterStation& vscConverterStation = vl1.newVscConverterStation()
         .setId("VSC1")
         .setName("VSC1_NAME")
         .setBus(vl1Bus1.getId())
@@ -104,7 +108,7 @@ Network createHvdcLineTestNetwork() {
         .setReactivePowerSetpoint(10.0)
         .add();
 
-    network.newHvdcLine()
+    HvdcLine& hvdcLine = network.newHvdcLine()
         .setId("HVDC1")
         .setName("HVDC1_NAME")
         .setActivePowerSetpoint(11.0)
@@ -115,6 +119,7 @@ Network createHvdcLineTestNetwork() {
         .setNominalVoltage(13.0)
         .setR(14.0)
         .add();
+    hvdcLine.setFictitious(false).setR(14.0);
 
     return network;
 }
