@@ -40,6 +40,8 @@ public: // NodeBreakerView
 
     stdcxx::const_range<unsigned long> getNodes() const override;
 
+    stdcxx::Reference<Terminal> getOptionalTerminal(unsigned long node) const override;
+
     stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const override;
 
     stdcxx::Reference<Switch> getSwitch(const std::string& switchId) override;

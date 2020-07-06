@@ -209,6 +209,13 @@ stdcxx::const_range<unsigned long> NodeBreakerViewImpl::getNodes() const {
     return m_voltageLevel.getGraph().getVertices();
 }
 
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getOptionalTerminal(unsigned long node) const {
+    if (m_voltageLevel.getGraph().vertexExists(node)) {
+        return stdcxx::ref<Terminal>(m_voltageLevel.getGraph().getVertexObject(node));
+    }
+    return stdcxx::ref<Terminal>();
+}
+
 stdcxx::CReference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& switchId) const {
     return m_voltageLevel.getSwitch(switchId);
 }

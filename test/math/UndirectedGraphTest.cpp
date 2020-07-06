@@ -90,6 +90,15 @@ BOOST_AUTO_TEST_CASE(getEdgeObject) {
     for (const auto& obj : objects) {
         BOOST_TEST(stdcxx::areSame(expected, obj.get()));
     }
+
+    graph.addVertex();
+    graph.addVertex();
+    graph.removeVertex(2UL);
+    BOOST_CHECK(graph.vertexExists(0UL));
+    BOOST_CHECK(graph.vertexExists(1UL));
+    BOOST_CHECK(!graph.vertexExists(2UL));
+    BOOST_CHECK(graph.vertexExists(3UL));
+    POWSYBL_ASSERT_THROW(graph.vertexExists(4), PowsyblException, "Invalid vertex 4");
 }
 
 BOOST_AUTO_TEST_CASE(getEdges) {

@@ -129,6 +129,8 @@ public:
 
     virtual stdcxx::const_range<unsigned long> getNodes() const = 0;
 
+    virtual stdcxx::Reference<Terminal> getOptionalTerminal(unsigned long node) const = 0;
+
     virtual stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const = 0;
 
     virtual stdcxx::Reference<Switch> getSwitch(const std::string& switchId) = 0;
