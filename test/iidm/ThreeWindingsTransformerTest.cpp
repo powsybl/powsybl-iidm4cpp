@@ -184,6 +184,7 @@ void addRatioTapChangerLeg2(ThreeWindingsTransformer& transformer, Terminal& ter
         .setRegulating(true)
         .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
         .setTargetV(25.0)
+        .setTargetDeadband(1.0)
         .add();
 }
 
@@ -216,6 +217,7 @@ void addRatioTapChangerLeg3(ThreeWindingsTransformer& transformer, Terminal& ter
         .setRegulating(false)
         .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
         .setTargetV(26.0)
+        .setTargetDeadband(2.0)
         .add();
 }
 

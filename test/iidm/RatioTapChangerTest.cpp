@@ -161,6 +161,7 @@ Network createRatioTapChangerTestNetwork() {
         .setRegulating(true)
         .setRegulationTerminal(stdcxx::ref<Terminal>(l1.getTerminal()))
         .setTargetV(25.0)
+        .setTargetDeadband(0.0)
         .add();
 
     return network;
@@ -292,12 +293,16 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_NO_THROW(ratioTapChanger.setLoadTapChangingCapabilities(true));
     POWSYBL_ASSERT_THROW(ratioTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': a target voltage has to be set for a regulating ratio tap changer");
 
-    BOOST_TEST(std::isnan(ratioTapChanger.getTargetDeadband()));
+    BOOST_CHECK_CLOSE(0.0, ratioTapChanger.getTargetDeadband(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(ratioTapChanger.setTargetDeadband(-1.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
     BOOST_CHECK_NO_THROW(ratioTapChanger.setTargetDeadband(1.0));
     BOOST_CHECK_CLOSE(1.0, ratioTapChanger.getTargetDeadband(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(ratioTapChanger.setTargetDeadband(stdcxx::nan()));
     BOOST_TEST(std::isnan(ratioTapChanger.getTargetDeadband()));
+
+    ratioTapChanger.setTargetV(31.0);
+    POWSYBL_ASSERT_THROW(ratioTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': Undefined value for target deadband of regulating ratio tap changer");
+    POWSYBL_ASSERT_THROW(ratioTapChanger.setTargetDeadband(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
 
     BOOST_CHECK_NO_THROW(ratioTapChanger.remove());
     BOOST_TEST(!transformer.getRatioTapChanger());
@@ -365,7 +370,9 @@ BOOST_AUTO_TEST_CASE(adder) {
     adder.setTargetDeadband(-2.0);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -2");
     adder.setTargetDeadband(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': Undefined value for target deadband of regulating ratio tap changer");
 
+    adder.setTargetDeadband(2.0);
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_TEST(transformer.getRatioTapChanger());
 }
