@@ -18,7 +18,7 @@ namespace iidm {
 
 PhaseTapChanger::PhaseTapChanger(PhaseTapChangerHolder& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
                                  long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband) :
-    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, tapPosition, regulating, targetDeadband),
+    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, tapPosition, regulating, targetDeadband, "phase tap changer"),
     m_regulationMode(regulationMode),
     m_regulationValue(parent.getNetwork().getVariantManager().getVariantArraySize(), regulationValue) {
     checkTapPosition(parent, tapPosition, lowTapPosition, getHighTapPosition());

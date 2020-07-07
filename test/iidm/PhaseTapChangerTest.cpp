@@ -164,6 +164,7 @@ Network createPhaseTapChangerTestNetwork() {
         .setRegulating(true)
         .setRegulationTerminal(stdcxx::ref<Terminal>(l1.getTerminal()))
         .setRegulationValue(25.0)
+        .setTargetDeadband(0.0)
         .add();
 
     return network;
@@ -300,12 +301,14 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(-1L, phaseTapChanger.getTapPosition());
 
-    BOOST_TEST(std::isnan(phaseTapChanger.getTargetDeadband()));
+    BOOST_CHECK_CLOSE(0.0, phaseTapChanger.getTargetDeadband(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(phaseTapChanger.setTargetDeadband(-1.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
     BOOST_CHECK_NO_THROW(phaseTapChanger.setTargetDeadband(1.0));
     BOOST_CHECK_CLOSE(1.0, phaseTapChanger.getTargetDeadband(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_NO_THROW(phaseTapChanger.setTargetDeadband(stdcxx::nan()));
-    BOOST_TEST(std::isnan(phaseTapChanger.getTargetDeadband()));
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setTargetDeadband(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': Undefined value for target deadband of regulating phase tap changer");
+
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulating(true).setTargetDeadband(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': Undefined value for target deadband of regulating phase tap changer");
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setTargetDeadband(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
 
     BOOST_CHECK_NO_THROW(phaseTapChanger.remove());
     BOOST_TEST(!transformer.getPhaseTapChanger());

@@ -8,6 +8,8 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -63,6 +65,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     unsigned long shuntCompensatorCount = network.getShuntCompensatorCount();
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
+    Bus& vl1Bus1 = network.getBusBreakerView().getBus("VL1_BUS1");
     ShuntCompensatorAdder adder = vl1.newShuntCompensator()
         .setId("SHUNT1")
         .setBus("VL1_BUS1");
@@ -86,16 +89,65 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ShuntCompensator' with the id 'SHUNT1'");
     adder.setEnsureIdUnicity(true);
 
-    BOOST_CHECK_NO_THROW(adder.add());
-    BOOST_CHECK_EQUAL(shuntCompensatorCount + 1, network.getShuntCompensatorCount());
-    BOOST_CHECK_EQUAL(shuntCompensatorCount + 1, boost::size(network.getShuntCompensators()));
+    // check with regulating = true
+    adder.setVoltageRegulatorOn(true);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': Invalid voltage setpoint value (nan) while voltage regulator is on");
+
+    adder.setTargetV(-1.0);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': Invalid voltage setpoint value (-1) while voltage regulator is on");
+
+    adder.setTargetV(1.0);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': Undefined value for target deadband of regulating shunt compensator");
+
+    adder.setTargetDeadband(-1.0);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': Unexpected value for target deadband of tap changer: -1");
+
+    adder.setTargetDeadband(2.0);
+    ShuntCompensator& sc1 = adder.add();
+    BOOST_CHECK_CLOSE(1.0, sc1.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, sc1.getTargetDeadband(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(sc1.isVoltageRegulatorOn());
+    BOOST_TEST(stdcxx::areSame(sc1.getTerminal(), sc1.getRegulatingTerminal()));
+
+    // check with regulating = false
+    adder.setVoltageRegulatorOn(false);
+    adder.setTargetDeadband(-1.0);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': Unexpected value for target deadband of tap changer: -1");
+    adder.setTargetDeadband(stdcxx::nan());
+
+    adder.setId("SHUNT2");
+    adder.setTargetV(3.0);
+    adder.setTargetDeadband(4.0);
+    ShuntCompensator& sc2 = adder.add();
+    BOOST_CHECK_CLOSE(3.0, sc2.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, sc2.getTargetDeadband(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(!sc2.isVoltageRegulatorOn());
+    BOOST_TEST(stdcxx::areSame(sc2.getTerminal(), sc2.getRegulatingTerminal()));
+
+    Load& load = vl1.newLoad()
+        .setId("LOAD1")
+        .setName("LOAD1_NAME")
+        .setBus(vl1Bus1.getId())
+        .setConnectableBus(vl1Bus1.getId())
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    adder.setId("SHUNT3");
+    adder.setRegulatingTerminal(stdcxx::ref(load.getTerminal()));
+    ShuntCompensator& sc3 = adder.add();
+    BOOST_TEST(stdcxx::areSame(load.getTerminal(), sc3.getRegulatingTerminal()));
+
+    BOOST_CHECK_EQUAL(shuntCompensatorCount + 3, network.getShuntCompensatorCount());
+    BOOST_CHECK_EQUAL(shuntCompensatorCount + 3, boost::size(network.getShuntCompensators()));
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createShuntCompensatorTestNetwork();
+    Network network = createShuntCompensatorTestNetwork();
     BOOST_CHECK_EQUAL(1, boost::size(network.getShuntCompensators()));
 
-    const ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
+    ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getName());
     BOOST_CHECK_EQUAL(ConnectableType::SHUNT_COMPENSATOR, shunt.getType());
@@ -112,6 +164,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
 BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createShuntCompensatorTestNetwork();
 
+    VoltageLevel& vl1 = network.getVoltageLevel("VL1");
+    Bus& vl1Bus1 = network.getBusBreakerView().getBus("VL1_BUS1");
     ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
 
     BOOST_TEST(stdcxx::areSame(shunt, shunt.setbPerSection(100.0)));
@@ -135,6 +189,50 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(shunt.setMaximumSectionCount(250UL), ValidationException, "Shunt compensator 'SHUNT1': the current number (350) of section should be lesser than the maximum number of section (250)");
 
     POWSYBL_ASSERT_THROW(shunt.getTerminal().setP(1.0), ValidationException, "Shunt compensator 'SHUNT1': cannot set active power on a shunt compensator");
+
+    shunt.setTargetDeadband(stdcxx::nan());
+    BOOST_TEST(std::isnan(shunt.getTargetDeadband()));
+    shunt.setTargetDeadband(1.0);
+    BOOST_CHECK_CLOSE(1.0, shunt.getTargetDeadband(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_THROW(shunt.setTargetDeadband(-1.0), ValidationException, "Shunt compensator 'SHUNT1': Unexpected value for target deadband of tap changer: -1");
+
+    shunt.setTargetV(stdcxx::nan());
+    BOOST_TEST(std::isnan(shunt.getTargetV()));
+    shunt.setTargetV(1.0);
+    BOOST_CHECK_CLOSE(1.0, shunt.getTargetV(), std::numeric_limits<double>::epsilon());
+    shunt.setTargetV(-1.0);
+    BOOST_CHECK_CLOSE(-1.0, shunt.getTargetV(), std::numeric_limits<double>::epsilon());
+
+    shunt.setTargetV(1.0);
+    shunt.setVoltageRegulatorOn(true);
+    BOOST_TEST(shunt.isVoltageRegulatorOn());
+
+    shunt.setVoltageRegulatorOn(false);
+    BOOST_TEST(!shunt.isVoltageRegulatorOn());
+
+    shunt.setTargetV(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(shunt.setVoltageRegulatorOn(true), ValidationException, "Shunt compensator 'SHUNT1': Invalid voltage setpoint value (nan) while voltage regulator is on");
+    shunt.setTargetV(-1.0);
+    POWSYBL_ASSERT_THROW(shunt.setVoltageRegulatorOn(true), ValidationException, "Shunt compensator 'SHUNT1': Invalid voltage setpoint value (-1) while voltage regulator is on");
+
+    Load& load = vl1.newLoad()
+        .setId("LOAD1")
+        .setName("LOAD1_NAME")
+        .setBus(vl1Bus1.getId())
+        .setConnectableBus(vl1Bus1.getId())
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    BOOST_TEST(stdcxx::areSame(shunt.getTerminal(), shunt.getRegulatingTerminal()));
+    shunt.setRegulatingTerminal(stdcxx::ref(load.getTerminal()));
+    BOOST_TEST(stdcxx::areSame(load.getTerminal(), shunt.getRegulatingTerminal()));
+    shunt.setRegulatingTerminal(stdcxx::ref<Terminal>());
+    BOOST_TEST(stdcxx::areSame(shunt.getTerminal(), shunt.getRegulatingTerminal()));
+
+    const ShuntCompensator& cShunt = shunt;
+    BOOST_TEST(stdcxx::areSame(cShunt.getTerminal(), cShunt.getRegulatingTerminal()));
 
     shunt.remove();
     POWSYBL_ASSERT_THROW(network.getShuntCompensator("SHUNT1"), PowsyblException, "Unable to find to the identifiable 'SHUNT1'");

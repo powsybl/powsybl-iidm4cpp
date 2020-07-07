@@ -76,7 +76,7 @@ public:
 
 protected:
     TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-               long tapPosition, bool regulating, double targetDeadband);
+               long tapPosition, bool regulating, double targetDeadband, std::string&& type);
 
     virtual const Network& getNetwork() const;
 
@@ -100,6 +100,8 @@ private:
     std::vector<bool> m_regulating;
 
     std::vector<double> m_targetDeadband;
+
+    std::string m_type;
 };
 
 }  // namespace iidm

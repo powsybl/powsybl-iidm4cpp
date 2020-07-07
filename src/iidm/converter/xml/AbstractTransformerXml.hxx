@@ -41,10 +41,10 @@ template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
-    const double& targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
-    const auto&  regulationMode = Enum::fromString<PhaseTapChanger::RegulationMode>(context.getReader().getAttributeValue(REGULATION_MODE));
-    const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
     bool regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
+    const double& targetDeadband = readTargetDeadband(regulating, context);
+    const auto& regulationMode = Enum::fromString<PhaseTapChanger::RegulationMode>(context.getReader().getAttributeValue(REGULATION_MODE));
+    const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
 
     adder->setLowTapPosition(lowTapPosition)
         .setTapPosition(tapPosition)
@@ -103,8 +103,8 @@ template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
-    const auto& targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
     const auto& regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
+    const double& targetDeadband = readTargetDeadband(regulating, context);
     const auto& loadTapChangingCapabilities = context.getReader().getAttributeValue<bool>(LOAD_TAP_CHANGING_CAPABILITIES);
     double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
     adder->setLowTapPosition(lowTapPosition)
@@ -153,6 +153,24 @@ void AbstractTransformerXml<Added, Adder>::readSteps(const NetworkXmlReaderConte
 }
 
 template <typename Added, typename Adder>
+double AbstractTransformerXml<Added, Adder>::readTargetDeadband(bool regulating, NetworkXmlReaderContext& context) {
+    double targetDeadband = stdcxx::nan();
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&context, &targetDeadband, regulating]() {
+        targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
+        // in IIDM-XML version 1.0, NaN as targetDeadband when regulating is allowed.
+        // in IIDM-XML version 1.1 and more recent, it is forbidden and throws an exception
+        // to prevent issues, targetDeadband is set to 0 in this case
+        if (regulating && std::isnan(targetDeadband)) {
+            targetDeadband = 0.0;
+        }
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &targetDeadband]() {
+        targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
+    });
+    return targetDeadband;
+}
+
+template <typename Added, typename Adder>
 template <typename TerminalRefConsumer>
 void AbstractTransformerXml<Added, Adder>::readTerminalRef(NetworkXmlReaderContext& context, bool& hasTerminalRef, const TerminalRefConsumer& consumer) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
@@ -166,7 +184,7 @@ void AbstractTransformerXml<Added, Adder>::readTerminalRef(NetworkXmlReaderConte
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context) {
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), name);
-    writeTapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep>(ptc, context.getWriter());
+    writeTapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep>(ptc, context);
     context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(ptc.getRegulationMode()));
     if (ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP || !std::isnan(ptc.getRegulationValue())) {
         context.getWriter().writeAttribute(REGULATION_VALUE, ptc.getRegulationValue());
@@ -197,7 +215,7 @@ void AbstractTransformerXml<Added, Adder>::writeRatedS(const std::string& name, 
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context) {
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), name);
-    writeTapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep>(rtc, context.getWriter());
+    writeTapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep>(rtc, context);
     context.getWriter().writeAttribute(LOAD_TAP_CHANGING_CAPABILITIES, rtc.hasLoadTapChangingCapabilities());
     if (rtc.hasLoadTapChangingCapabilities() || rtc.isRegulating()) {
         context.getWriter().writeAttribute(REGULATING, rtc.isRegulating());
@@ -219,10 +237,10 @@ void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::strin
 
 template <typename Added, typename Adder>
 template <typename H, typename C, typename S>
-void AbstractTransformerXml<Added, Adder>::writeTapChanger(const TapChanger<H, C, S>& tc, powsybl::xml::XmlStreamWriter& writer) {
-    writer.writeAttribute(LOW_TAP_POSITION, tc.getLowTapPosition());
-    writer.writeAttribute(TAP_POSITION, tc.getTapPosition());
-    writer.writeOptionalAttribute(TARGET_DEADBAND, tc.getTargetDeadband());
+void AbstractTransformerXml<Added, Adder>::writeTapChanger(const TapChanger<H, C, S>& tc, NetworkXmlWriterContext& context) {
+    context.getWriter().writeAttribute(LOW_TAP_POSITION, tc.getLowTapPosition());
+    context.getWriter().writeAttribute(TAP_POSITION, tc.getTapPosition());
+    writeTargetDeadband(tc.getTargetDeadband(), context);
 }
 
 template <typename Added, typename Adder>
@@ -233,6 +251,18 @@ void AbstractTransformerXml<Added, Adder>::writeTapChangerStep(const TapChangerS
     writer.writeOptionalAttribute(G, tcs.getG());
     writer.writeOptionalAttribute(B, tcs.getB());
     writer.writeOptionalAttribute(RHO, tcs.getRho());
+}
+
+template <typename Added, typename Adder>
+void AbstractTransformerXml<Added, Adder>::writeTargetDeadband(double targetDeadband, NetworkXmlWriterContext& context) {
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&context, targetDeadband]() {
+        // in IIDM-XML version 1.0, 0 as targetDeadband is ignored for backwards compatibility
+        // (i.e. ensuring round trips in IIDM-XML version 1.0)
+        context.getWriter().writeOptionalAttribute(TARGET_DEADBAND, targetDeadband, 0.0);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, targetDeadband]() {
+        context.getWriter().writeAttribute(TARGET_DEADBAND, targetDeadband);
+    });
 }
 
 }  // namespace xml

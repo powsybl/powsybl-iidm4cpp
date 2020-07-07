@@ -76,7 +76,7 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
     long highTapPosition = m_lowTapPosition + m_steps.size() - 1;
     checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition);
     checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, m_regulationTerminal, getNetwork());
-    checkTargetDeadband(m_parent, m_targetDeadband);
+    checkTargetDeadband(m_parent, "phase tap changer", m_regulating, m_targetDeadband);
 
     std::unique_ptr<PhaseTapChanger> ptrPhaseTapChanger = stdcxx::make_unique<PhaseTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
                                                                                                *m_tapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
