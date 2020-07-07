@@ -143,6 +143,7 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .setLoadTapChangingCapabilities(true)
         .setRegulating(true)
         .setTargetV(158.0)
+        .setTargetDeadband(0.0)
         .setRegulationTerminal(stdcxx::ref(nhv2Nload.getTerminal2()))
         .add();
 

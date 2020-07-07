@@ -8,16 +8,22 @@
 #ifndef POWSYBL_IIDM_SHUNTCOMPENSATOR_HPP
 #define POWSYBL_IIDM_SHUNTCOMPENSATOR_HPP
 
+#include <functional>
+#include <vector>
+
 #include <powsybl/iidm/Injection.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
+class Terminal;
+
 class ShuntCompensator : public Injection {
 public:
     ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
-                     double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount);
+                     double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount, Terminal& terminal,
+                     bool voltageRegulatorOn, double targetV, double targetDeadband);
 
     ~ShuntCompensator() noexcept override = default;
 
@@ -31,11 +37,29 @@ public:
 
     unsigned long getMaximumSectionCount() const;
 
+    const Terminal& getRegulatingTerminal() const;
+
+    Terminal& getRegulatingTerminal();
+
+    double getTargetDeadband() const;
+
+    double getTargetV() const;
+
+    bool isVoltageRegulatorOn() const;
+
     ShuntCompensator& setbPerSection(double bPerSection);
 
     ShuntCompensator& setCurrentSectionCount(unsigned long currentSectionCount);
 
     ShuntCompensator& setMaximumSectionCount(unsigned long maximumSectionCount);
+
+    ShuntCompensator& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
+
+    ShuntCompensator& setTargetDeadband(double targetDeadband);
+
+    ShuntCompensator& setTargetV(double targetV);
+
+    ShuntCompensator& setVoltageRegulatorOn(bool voltageRegulatorOn);
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -53,6 +77,14 @@ private:
     unsigned long m_maximumSectionCount;
 
     std::vector<unsigned long> m_currentSectionCount;
+
+    std::reference_wrapper<Terminal> m_regulatingTerminal;
+
+    std::vector<bool> m_voltageRegulatorOn;
+
+    std::vector<double> m_targetV;
+
+    std::vector<double> m_targetDeadband;
 };
 
 }  // namespace iidm
