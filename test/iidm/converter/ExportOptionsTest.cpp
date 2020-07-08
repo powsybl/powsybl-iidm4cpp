@@ -7,6 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 
 namespace powsybl {
@@ -47,6 +48,9 @@ BOOST_AUTO_TEST_CASE(defaultConstructor) {
     BOOST_TEST("", options.getVersion());
     options.setVersion("V1.0");
     BOOST_TEST("V1.0", options.getVersion());
+
+    BOOST_CHECK(options.withExtension("abc"));
+    BOOST_CHECK(options.withExtension("def"));
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {
@@ -68,6 +72,71 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(options.isWithBranchSV());
 
     BOOST_TEST("V1.0", options.getVersion());
+}
+
+BOOST_AUTO_TEST_CASE(initFromProperties) {
+    stdcxx::Properties properties;
+    properties.set(ExportOptions::ANONYMISED, "true");
+    properties.set(ExportOptions::INDENT, "false");
+    properties.set(ExportOptions::ONLY_MAIN_CC, "false");
+    properties.set(ExportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
+    properties.set(ExportOptions::TOPOLOGY_LEVEL, "NODE_BREAKER");
+    properties.set(ExportOptions::WITH_BRANCH_STATE_VARIABLES, "true");
+    properties.set(ExportOptions::EXTENSIONS_LIST, "");
+    properties.set(ExportOptions::VERSION, "1.0");
+
+    ExportOptions options(properties);
+
+    BOOST_CHECK(options.isAnonymized());
+    BOOST_CHECK(!options.isIndent());
+    BOOST_CHECK(!options.isOnlyMainCc());
+    BOOST_CHECK(options.isThrowExceptionIfExtensionNotFound());
+    BOOST_CHECK_EQUAL(TopologyLevel::NODE_BREAKER, options.getTopologyLevel());
+    BOOST_CHECK(options.isWithBranchSV());
+    BOOST_CHECK(!options.withExtension("abc"));
+    BOOST_CHECK(!options.withExtension("def"));
+    BOOST_CHECK_EQUAL("1.0", options.getVersion());
+}
+
+BOOST_AUTO_TEST_CASE(checkAllExtensions) {
+    stdcxx::Properties properties;
+    ExportOptions options(properties);
+    BOOST_CHECK(options.withExtension("abc"));
+    BOOST_CHECK(options.withExtension("def"));
+}
+
+BOOST_AUTO_TEST_CASE(checkNoExtension) {
+    stdcxx::Properties properties;
+    properties.set(ExportOptions::EXTENSIONS_LIST, "");
+
+    ExportOptions options(properties);
+    BOOST_CHECK(!options.withExtension("abc"));
+    BOOST_CHECK(!options.withExtension("def"));
+}
+
+BOOST_AUTO_TEST_CASE(checkSomeExtensions) {
+    stdcxx::Properties properties;
+
+    properties.set(ExportOptions::EXTENSIONS_LIST, "loadFoo,loadBar");
+    ExportOptions options(properties);
+    BOOST_CHECK(options.withExtension("loadFoo"));
+    BOOST_CHECK(options.withExtension("loadBar"));
+    BOOST_CHECK(!options.withExtension("abc"));
+    BOOST_CHECK(!options.withExtension("def"));
+
+    properties.set(ExportOptions::EXTENSIONS_LIST, "loadFoo:loadBar");
+    ExportOptions options2(properties);
+    BOOST_CHECK(options2.withExtension("loadFoo"));
+    BOOST_CHECK(options2.withExtension("loadBar"));
+    BOOST_CHECK(!options2.withExtension("abc"));
+    BOOST_CHECK(!options2.withExtension("def"));
+
+    properties.set(ExportOptions::EXTENSIONS_LIST, "loadFoo");
+    ExportOptions options3(properties);
+    BOOST_CHECK(options3.withExtension("loadFoo"));
+    BOOST_CHECK(!options3.withExtension("loadBar"));
+    BOOST_CHECK(!options3.withExtension("abc"));
+    BOOST_CHECK(!options3.withExtension("def"));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
