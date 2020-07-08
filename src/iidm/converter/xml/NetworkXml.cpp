@@ -176,18 +176,17 @@ void writeExtension(const Extension& extension, NetworkXmlWriterContext& context
 
 void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
     for (const auto& identifiable : network.getIdentifiables()) {
-        const auto& extensions = identifiable.getExtensions();
-        if (context.isExportedEquipment(identifiable.getId()) && boost::size(extensions) > 0) {
-
-            context.getExtensionsWriter().writeStartElement(context.getVersion().getPrefix(), EXTENSION);
-            context.getExtensionsWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
-            for (const auto& extension : extensions) {
-                if (context.getOptions().withExtension(extension.getName())) {
-                    writeExtension(extension, context);
-                }
-            }
-            context.getExtensionsWriter().writeEndElement();
+        if (!context.isExportedEquipment(identifiable.getId()) || boost::empty(identifiable.getExtensions()) || !context.getOptions().hasAtLeastOneExtension(identifiable.getExtensions())) {
+            continue;
         }
+        context.getExtensionsWriter().writeStartElement(context.getVersion().getPrefix(), EXTENSION);
+        context.getExtensionsWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
+        for (const auto& extension : identifiable.getExtensions()) {
+            if (context.getOptions().withExtension(extension.getName())) {
+                writeExtension(extension, context);
+            }
+        }
+        context.getExtensionsWriter().writeEndElement();
     }
 }
 

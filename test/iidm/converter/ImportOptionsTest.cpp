@@ -29,6 +29,59 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(!options.withExtension("test2"));
 }
 
+BOOST_AUTO_TEST_CASE(initFromProperties) {
+    stdcxx::Properties properties;
+    properties.set(ImportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
+    properties.set(ImportOptions::EXTENSIONS_LIST, "");
+
+    ImportOptions options(properties);
+
+    BOOST_CHECK(options.isThrowExceptionIfExtensionNotFound());
+    BOOST_CHECK(!options.withExtension("abc"));
+    BOOST_CHECK(!options.withExtension("def"));
+}
+
+BOOST_AUTO_TEST_CASE(checkAllExtensions) {
+    stdcxx::Properties properties;
+    ImportOptions options(properties);
+    BOOST_CHECK(options.withExtension("abc"));
+    BOOST_CHECK(options.withExtension("def"));
+}
+
+BOOST_AUTO_TEST_CASE(checkNoExtension) {
+    stdcxx::Properties properties;
+    properties.set(ImportOptions::EXTENSIONS_LIST, "");
+
+    ImportOptions options(properties);
+    BOOST_CHECK(!options.withExtension("abc"));
+    BOOST_CHECK(!options.withExtension("def"));
+}
+
+BOOST_AUTO_TEST_CASE(checkSomeExtensions) {
+    stdcxx::Properties properties;
+
+    properties.set(ImportOptions::EXTENSIONS_LIST, "loadFoo,loadBar");
+    ImportOptions options(properties);
+    BOOST_CHECK(options.withExtension("loadFoo"));
+    BOOST_CHECK(options.withExtension("loadBar"));
+    BOOST_CHECK(!options.withExtension("abc"));
+    BOOST_CHECK(!options.withExtension("def"));
+
+    properties.set(ImportOptions::EXTENSIONS_LIST, "loadFoo:loadBar");
+    ImportOptions options2(properties);
+    BOOST_CHECK(options2.withExtension("loadFoo"));
+    BOOST_CHECK(options2.withExtension("loadBar"));
+    BOOST_CHECK(!options2.withExtension("abc"));
+    BOOST_CHECK(!options2.withExtension("def"));
+
+    properties.set(ImportOptions::EXTENSIONS_LIST, "loadFoo");
+    ImportOptions options3(properties);
+    BOOST_CHECK(options3.withExtension("loadFoo"));
+    BOOST_CHECK(!options3.withExtension("loadBar"));
+    BOOST_CHECK(!options3.withExtension("abc"));
+    BOOST_CHECK(!options3.withExtension("def"));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace converter
