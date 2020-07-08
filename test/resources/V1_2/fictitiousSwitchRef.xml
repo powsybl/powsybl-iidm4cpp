@@ -71,7 +71,7 @@
             <iidm:load id="CG" loadType="UNDEFINED" p0="90.399109999999993" q0="-51.968690000000002" node="20" p="90.399109999999993" q="-51.968690000000002"/>
             <iidm:load id="CH" loadType="UNDEFINED" p0="-5.1022489999999996" q0="4.9081216000000003" node="22" p="-5.1022489999999996" q="4.9081216000000003"/>
         </iidm:voltageLevel>
-        <iidm:twoWindingsTransformer id="CI" r="2" x="14.744999999999999" g="0" b="3.1999999999999999e-05" ratedU1="225" ratedU2="225" node1="2" voltageLevelId1="C" node2="10" voltageLevelId2="N">
+        <iidm:twoWindingsTransformer id="CI" r="2" x="14.744999999999999" g="0" b="3.1999999999999999e-05" ratedU1="225" ratedU2="225" ratedS="1" node1="2" voltageLevelId1="C" node2="10" voltageLevelId2="N">
             <iidm:phaseTapChanger lowTapPosition="0" tapPosition="22" regulationMode="CURRENT_LIMITER" regulationValue="930.66669999999999" regulating="false">
                 <iidm:terminalRef id="CI" side="ONE"/>
                 <iidm:step r="39.784730000000003" x="39.784725000000002" g="0" b="0" rho="1" alpha="-42.799999999999997"/>

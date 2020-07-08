@@ -131,6 +131,7 @@ Network createTwoWindingsTransformerTestNetwork() {
         .setB(0.2)
         .setRatedU1(2.0)
         .setRatedU2(0.4)
+        .setRatedS(3.0)
         .add();
 
     return network;
@@ -165,6 +166,7 @@ void addRatioTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal)
         .setRegulating(true)
         .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
         .setTargetV(25.0)
+        .setTargetDeadband(1.0)
         .add();
 }
 
@@ -208,6 +210,7 @@ void addPhaseTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal)
         .setRegulating(false)
         .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
         .setRegulationValue(250.0)
+        .setTargetDeadband(2.0)
         .add();
 }
 
@@ -236,6 +239,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.0, transformer.getRatedS(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(network, transformer.getNetwork()));
     BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
     BOOST_TEST(!transformer.getRatioTapChanger());
@@ -277,6 +281,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(transformer, transformer.setRatedU2(600.0)));
     BOOST_CHECK_CLOSE(600.0, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(transformer.setRatedU2(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': rated U2 is invalid");
+
+    BOOST_TEST(stdcxx::areSame(transformer, transformer.setRatedS(700.0)));
+    BOOST_CHECK_CLOSE(700.0, transformer.getRatedS(), std::numeric_limits<double>::epsilon());
+    transformer.setRatedS(stdcxx::nan());
+    BOOST_TEST(std::isnan(transformer.getRatedS()));
+    POWSYBL_ASSERT_THROW(transformer.setRatedS(-1.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': Invalid rated S value: -1");
 
     transformer.remove();
     POWSYBL_ASSERT_THROW(network.getTwoWindingsTransformer("2WT_VL1_VL2"), PowsyblException, "Unable to find to the identifiable '2WT_VL1_VL2'");
@@ -362,6 +372,10 @@ BOOST_AUTO_TEST_CASE(adder) {
     adder.setRatedU2(stdcxx::nan());
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': rated U2 is invalid");
     adder.setRatedU2(600.0);
+
+    adder.setRatedS(-1.0);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': Invalid rated S value: -1");
+    adder.setRatedS(1.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "2 windings transformer id is not set");
     adder.setId("2WT_VL1_VL2");

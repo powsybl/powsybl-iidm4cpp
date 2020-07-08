@@ -55,8 +55,8 @@ public:
 
         PhaseTapChangerAdder newPhaseTapChanger() override;
 
-    public :
-        Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU);
+    public:
+        Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU, double ratedS);
 
         ~Leg() noexcept override = default;
 
@@ -69,6 +69,8 @@ public:
         double getG() const;
 
         double getR() const;
+
+        double getRatedS() const;
 
         double getRatedU() const;
 
@@ -85,6 +87,8 @@ public:
         Leg& setG(double g);
 
         Leg& setR(double r);
+
+        Leg& setRatedS(double ratedS);
 
         Leg& setRatedU(double ratedU);
 
@@ -127,6 +131,8 @@ public:
         double m_b;
 
         double m_ratedU;
+
+        double m_ratedS;
 
         std::unique_ptr<CurrentLimits> m_limits;
 

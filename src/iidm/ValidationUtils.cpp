@@ -385,8 +385,11 @@ long checkTapPosition(const Validable& validable, long tapPosition, long lowTapP
     return tapPosition;
 }
 
-double checkTargetDeadband(const Validable& validable, double targetDeadband) {
-    if (!std::isnan(targetDeadband) && targetDeadband < 0) {
+double checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband) {
+    if (regulating && std::isnan(targetDeadband)) {
+        throw ValidationException(validable, "Undefined value for target deadband of regulating " + validableType);
+    }
+    if (targetDeadband < 0) {
         throw ValidationException(validable, stdcxx::format("Unexpected value for target deadband of tap changer: %1%", targetDeadband));
     }
     return targetDeadband;
@@ -397,6 +400,16 @@ double checkVoltage(const Validable& validable, double voltage) {
         throw ValidationException(validable, "voltage cannot be < 0");
     }
     return voltage;
+}
+
+bool checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint) {
+    if (voltageRegulatorOn) {
+        if (std::isnan(voltageSetpoint) || voltageSetpoint <= 0) {
+            throw ValidationException(validable, stdcxx::format("Invalid voltage setpoint value (%1%) while voltage regulator is on", voltageSetpoint));
+        }
+        return false;
+    }
+    return true;
 }
 
 void checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint, double reactivePowerSetpoint) {

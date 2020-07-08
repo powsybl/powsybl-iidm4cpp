@@ -20,18 +20,19 @@ namespace powsybl {
 namespace iidm {
 
 long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
-double checkTargetDeadband(const Validable& validable, double targetDeadband);
+double checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband);
 
 template<typename H, typename C, typename S>
 TapChanger<H, C, S>::TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                                long tapPosition, bool regulating, double targetDeadband) :
+                                long tapPosition, bool regulating, double targetDeadband, std::string&& type) :
    m_parent(parent),
    m_lowTapPosition(lowTapPosition),
    m_steps(steps),
    m_regulationTerminal(regulationTerminal),
    m_tapPosition(network.getVariantManager().getVariantArraySize(), tapPosition),
    m_regulating(network.getVariantManager().getVariantArraySize(), regulating),
-   m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband) {
+   m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband),
+   m_type(std::move(type)) {
 }
 
 template<typename H, typename C, typename S>
@@ -155,6 +156,7 @@ C& TapChanger<H, C, S>::setLowTapPosition(long lowTapPosition) {
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setRegulating(bool regulating) {
+    checkTargetDeadband(m_parent, m_type, regulating, m_targetDeadband[getNetwork().getVariantIndex()]);
     m_regulating[getNetwork().getVariantIndex()] = regulating;
 
     return static_cast<C&>(*this);
@@ -179,7 +181,7 @@ C& TapChanger<H, C, S>::setTapPosition(long tapPosition) {
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setTargetDeadband(double targetDeadband) {
-    m_targetDeadband[getNetwork().getVariantIndex()] = checkTargetDeadband(m_parent, targetDeadband);
+    m_targetDeadband[getNetwork().getVariantIndex()] = checkTargetDeadband(m_parent, m_type, m_regulating[getNetwork().getVariantIndex()], targetDeadband);
 
     return static_cast<C&>(*this);
 }

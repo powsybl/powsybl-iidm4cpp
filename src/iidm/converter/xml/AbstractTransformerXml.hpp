@@ -48,28 +48,36 @@ protected:
 
     static void readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 
+    template <typename Consumer>
+    static void readRatedS(const std::string& name, NetworkXmlReaderContext& context, const Consumer& consumer);
+
     static void readRatioTapChanger(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context);
 
     static void readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context);
 
     static void readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 
+    template <typename StepConsumer>
+    static void readSteps(const NetworkXmlReaderContext& context, const StepConsumer& consumer);
+
+    static double readTargetDeadband(bool regulating, NetworkXmlReaderContext& context);
+
+    template <typename TerminalRefConsumer>
+    static void readTerminalRef(NetworkXmlReaderContext& context, bool& hasTerminalRef, const TerminalRefConsumer& consumer);
+
     static void writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context);
+
+    static void writeRatedS(const std::string& name, double ratedS, NetworkXmlWriterContext& context);
 
     static void writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context);
 
     template <typename H, typename C, typename S>
-    static void writeTapChanger(const TapChanger<H, C, S>& tc, powsybl::xml::XmlStreamWriter& writer);
+    static void writeTapChanger(const TapChanger<H, C, S>& tc, NetworkXmlWriterContext& context);
 
     template <typename S>
     static void writeTapChangerStep(const TapChangerStep<S>& tcs, powsybl::xml::XmlStreamWriter& writer);
 
-private:
-    template <typename StepConsumer>
-    static void readSteps(const NetworkXmlReaderContext& context, const StepConsumer& consumer);
-
-    template <typename TerminalRefConsumer>
-    static void readTerminalRef(NetworkXmlReaderContext& context, bool& hasTerminalRef, const TerminalRefConsumer& consumer);
+    static void writeTargetDeadband(double targetDeadband, NetworkXmlWriterContext& context);
 };
 
 }  // namespace xml
