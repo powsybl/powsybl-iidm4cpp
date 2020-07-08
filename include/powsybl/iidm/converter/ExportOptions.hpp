@@ -19,6 +19,8 @@ namespace powsybl {
 
 namespace iidm {
 
+class Extension;
+
 namespace converter {
 
 class ExportOptions {
@@ -117,7 +119,7 @@ public:
      *
      * @return true if at least one extension should be exported, false otherwise
      */
-    bool hasAtLeastOneExtension(const std::set<std::string>& extensions) const;
+    bool hasAtLeastOneExtension(const stdcxx::const_range<Extension>& extensions) const;
 
     /**
      * Return true if the identifier should be anonymized

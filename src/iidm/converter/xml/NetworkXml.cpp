@@ -174,23 +174,14 @@ void writeExtension(const Extension& extension, NetworkXmlWriterContext& context
     }
 }
 
-std::set<std::string> getExtensionsName(const stdcxx::const_range<Extension>& extensions) {
-    std::set<std::string> names;
-    for (const auto& extension : extensions) {
-        names.emplace(extension.getName());
-    }
-    return names;
-}
-
 void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
     for (const auto& identifiable : network.getIdentifiables()) {
-        const auto& extensions = identifiable.getExtensions();
-        if (!context.isExportedEquipment(identifiable.getId()) || boost::size(extensions) == 0 || !context.getOptions().hasAtLeastOneExtension(getExtensionsName(extensions))) {
+        if (!context.isExportedEquipment(identifiable.getId()) || boost::empty(identifiable.getExtensions()) || !context.getOptions().hasAtLeastOneExtension(identifiable.getExtensions())) {
             continue;
         }
         context.getExtensionsWriter().writeStartElement(context.getVersion().getPrefix(), EXTENSION);
         context.getExtensionsWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
-        for (const auto& extension : extensions) {
+        for (const auto& extension : identifiable.getExtensions()) {
             if (context.getOptions().withExtension(extension.getName())) {
                 writeExtension(extension, context);
             }
