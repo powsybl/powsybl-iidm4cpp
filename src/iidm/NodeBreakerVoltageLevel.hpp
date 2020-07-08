@@ -75,8 +75,6 @@ public:
 
     bool isConnected(const Terminal& terminal) const;
 
-    void removeInternalConnections(unsigned long node1, unsigned long node2);
-
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -114,24 +112,13 @@ private:
 
     unsigned long getNode2(const std::string& switchId) const;
 
-    /**
-     * @deprecated Use {@link #getMaximumNodeIndex()} instead.
-     */
-    unsigned long getNodeCount() const;
-
-    /**
-     * Get the list of nodes.
-     *
-     * @return the list of nodes.
-     */
-    stdcxx::const_range<unsigned long> getNodes() const;
-
     stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const;
-
 
     stdcxx::CReference<Terminal> getTerminal(unsigned long node) const;
 
     stdcxx::Reference<Terminal> getTerminal(unsigned long node);
+
+    void removeInternalConnections(unsigned long node1, unsigned long node2);
 
     void removeSwitch(const std::string& switchId);
 

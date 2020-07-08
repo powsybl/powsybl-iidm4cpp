@@ -25,32 +25,6 @@ namespace powsybl {
 namespace math {
 
 template <typename V, typename E>
-void UndirectedGraph<V, E>::checkEdge(unsigned long e) const {
-    if (e >= m_edges.size() || !m_edges[e]) {
-        throw PowsyblException(stdcxx::format("Edge %1% not found", e));
-    }
-}
-
-template <typename V, typename E>
-void UndirectedGraph<V, E>::checkVertex(unsigned long v) const {
-    if (v >= m_vertices.size() || !m_vertices[v]) {
-        throw PowsyblException(stdcxx::format("Vertex %1% not found", v));
-    }
-}
-
-template <typename V, typename E>
-void UndirectedGraph<V, E>::cleanVertices(unsigned long v) {
-    for (unsigned long i = v; i >= 0; --i) {
-        const auto& it = m_availableVertices.find(i);
-        if (it == m_availableVertices.end()) {
-            return;
-        }
-        m_availableVertices.erase(it);
-        m_vertices.pop_back();
-    }
-}
-
-template <typename V, typename E>
 unsigned long UndirectedGraph<V, E>::addEdge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object) {
     checkVertex(v1);
     checkVertex(v2);
@@ -71,7 +45,6 @@ unsigned long UndirectedGraph<V, E>::addEdge(unsigned long v1, unsigned long v2,
 
     return e;
 }
-
 
 template <typename V, typename E>
 unsigned long UndirectedGraph<V, E>::addVertex() {
@@ -105,11 +78,37 @@ void UndirectedGraph<V, E>::addVertexIfNotPresent(unsigned long v) {
         std::size_t oldSize = m_vertices.size();
         m_vertices.resize(v + 1);
         for (unsigned int i = oldSize; i < v; ++i) {
-            m_availableVertices.insert(m_availableVertices.end(), i);
+            m_availableVertices.insert(i);
         }
         m_vertices[v] = stdcxx::make_unique<Vertex>();
     }
     invalidateAdjacencyList();
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::checkEdge(unsigned long e) const {
+    if (e >= m_edges.size() || !m_edges[e]) {
+        throw PowsyblException(stdcxx::format("Edge %1% not found", e));
+    }
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::checkVertex(unsigned long v) const {
+    if (v >= m_vertices.size() || !m_vertices[v]) {
+        throw PowsyblException(stdcxx::format("Vertex %1% not found", v));
+    }
+}
+
+template <typename V, typename E>
+void UndirectedGraph<V, E>::cleanVertices(unsigned long v) {
+    for (unsigned long i = v; i >= 0; --i) {
+        const auto& it = m_availableVertices.find(i);
+        if (it == m_availableVertices.end()) {
+            return;
+        }
+        m_availableVertices.erase(it);
+        m_vertices.pop_back();
+    }
 }
 
 template <typename V, typename E>

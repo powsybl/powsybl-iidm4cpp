@@ -38,8 +38,6 @@ public: // NodeBreakerView
 
     unsigned long getNode2(const std::string& switchId) const override;
 
-    unsigned long getNodeCount() const override;
-
     stdcxx::const_range<unsigned long> getNodes() const override;
 
     stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const override;

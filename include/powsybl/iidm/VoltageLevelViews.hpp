@@ -127,8 +127,6 @@ public:
 
     virtual unsigned long getNode2(const std::string& switchId) const = 0;
 
-    virtual unsigned long getNodeCount() const = 0;
-
     virtual stdcxx::const_range<unsigned long> getNodes() const = 0;
 
     virtual stdcxx::CReference<Switch> getSwitch(const std::string& switchId) const = 0;

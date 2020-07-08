@@ -93,10 +93,6 @@ void VoltageLevelXml::readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlRe
 }
 
 void VoltageLevelXml::readNodeBreakerTopology(VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const {
-    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), []() {
-        logging::Logger& logger = logging::LoggerFactory::getLogger<VoltageLevelXml>();
-        logger.info(stdcxx::format("attribute %1%.nodeCount is ignored.", NODE_BREAKER_TOPOLOGY));
-    });
     context.getReader().readUntilEndElement(NODE_BREAKER_TOPOLOGY, [this, &voltageLevel, &context]() {
         if (context.getReader().getLocalName() == BUSBAR_SECTION) {
             BusbarSectionXml::getInstance().read(voltageLevel, context);

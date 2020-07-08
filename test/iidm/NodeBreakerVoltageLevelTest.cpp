@@ -283,8 +283,6 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
     const auto& cVoltageLevel = voltageLevel;
-    BOOST_CHECK_EQUAL(0UL, voltageLevel.getNodeBreakerView().getNodeCount());
-    BOOST_CHECK_EQUAL(voltageLevel.getNodeBreakerView().getNodeCount(), boost::size(voltageLevel.getNodeBreakerView().getNodes()));
 
     BusbarSection& bbs1 = voltageLevel.getNodeBreakerView().newBusbarSection()
         .setId("BBS1")

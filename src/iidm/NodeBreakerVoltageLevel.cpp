@@ -250,14 +250,6 @@ NodeBreakerVoltageLevel::NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreake
     return m_nodeBreakerView;
 }
 
-unsigned long NodeBreakerVoltageLevel::getNodeCount() const {
-    return m_graph.getVertexCount();
-}
-
-stdcxx::const_range<unsigned long> NodeBreakerVoltageLevel::getNodes() const {
-    return m_graph.getVertices();
-}
-
 stdcxx::CReference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string& switchId) const {
     stdcxx::Reference<Switch> aSwitch;
 
@@ -340,11 +332,11 @@ void NodeBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
 
 void NodeBreakerVoltageLevel::removeInternalConnections(unsigned long node1, unsigned long node2) {
     const auto& filter = [this, node1, node2](const unsigned long& edge) {
-        return !m_graph.getEdgeObject(edge) && m_graph.getVertex1(edge) == node1 && m_graph.getVertex2(edge) == node2;
+        return !m_graph.getEdgeObject(edge) && ((m_graph.getVertex1(edge) == node1 && m_graph.getVertex2(edge) == node2) || (m_graph.getVertex1(edge) == node2 && m_graph.getVertex2(edge) == node1));
     };
 
     const auto& internalConnectionsToBeRemoved = m_graph.getEdges() | boost::adaptors::filtered(filter);
-    if (boost::size(internalConnectionsToBeRemoved) == 0UL) {
+    if (boost::empty(internalConnectionsToBeRemoved)) {
         throw PowsyblException(stdcxx::format("Internal connection not found between %1% and %2%", node1, node2));
     }
     for (unsigned long ic : internalConnectionsToBeRemoved) {

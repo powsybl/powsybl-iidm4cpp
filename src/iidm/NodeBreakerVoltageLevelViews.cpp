@@ -205,12 +205,8 @@ unsigned long NodeBreakerViewImpl::getNode2(const std::string& switchId) const {
     return m_voltageLevel.getNode2(switchId);
 }
 
-unsigned long NodeBreakerViewImpl::getNodeCount() const {
-    return m_voltageLevel.getNodeCount();
-}
-
 stdcxx::const_range<unsigned long> NodeBreakerViewImpl::getNodes() const {
-    return m_voltageLevel.getNodes();
+    return m_voltageLevel.getGraph().getVertices();
 }
 
 stdcxx::CReference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& switchId) const {
