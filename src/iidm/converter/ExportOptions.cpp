@@ -9,6 +9,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Enum.hpp>
+#include <powsybl/iidm/Extension.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/set.hpp>
@@ -85,6 +86,18 @@ const std::string& ExportOptions::getVersion() const {
 
 const TopologyLevel& ExportOptions::getTopologyLevel() const {
     return m_topologyLevel;
+}
+
+bool ExportOptions::hasAtLeastOneExtension(const stdcxx::const_range<Extension>& extensions) const {
+    if (m_extensions.empty()) {
+        return true;
+    }
+    for (const auto& extension : extensions) {
+        if (m_extensions.find(extension.getName()) != m_extensions.end()) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool ExportOptions::isAnonymized() const {

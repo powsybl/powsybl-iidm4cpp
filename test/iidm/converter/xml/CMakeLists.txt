@@ -34,6 +34,7 @@ set(UNIT_TEST_SOURCES
     PhaseShifterRoundTripTest.cpp
     ReactiveLimitsRoundTripTest.cpp
     RegulatingTerminalRoundTripTest.cpp
+    SkipExtensionTest.cpp
     StaticVarCompensatorRoundTripTest.cpp
     TerminalRefTest.cpp
     ThreeWindingsTransformerRoundTripTest.cpp
