@@ -109,7 +109,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     const Battery& battery = network.getBattery("BAT1");
 
     BOOST_CHECK_EQUAL("BAT1", battery.getId());
-    BOOST_CHECK_EQUAL("BAT1_NAME", battery.getName());
+    BOOST_CHECK_EQUAL("BAT1_NAME", *battery.getOptionalName());
     BOOST_CHECK_EQUAL(ConnectableType::BATTERY, battery.getType());
     std::ostringstream oss;
     oss << battery.getType();

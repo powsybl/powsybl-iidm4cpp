@@ -120,7 +120,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     const Line& line = network.getLine("VL1_VL3");
     BOOST_CHECK_EQUAL("VL1_VL3", line.getId());
-    BOOST_CHECK_EQUAL("VL1_VL3", line.getName());
+    BOOST_CHECK(!line.getOptionalName());
+    BOOST_CHECK_EQUAL("VL1_VL3", line.getNameOrId());
     BOOST_CHECK_EQUAL(ConnectableType::LINE, line.getType());
     std::ostringstream oss;
     oss << line.getType();

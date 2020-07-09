@@ -39,11 +39,13 @@ public:
 
     const std::string& getId() const;
 
-    const std::string& getName() const;
+    const std::string& getNameOrId() const;
 
     virtual const Network& getNetwork() const = 0;
 
     virtual Network& getNetwork() = 0;
+
+    boost::optional<std::string> getOptionalName() const;
 
     bool hasProperty() const;
 

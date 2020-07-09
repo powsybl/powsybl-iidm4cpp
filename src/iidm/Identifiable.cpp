@@ -44,8 +44,12 @@ std::string Identifiable::getMessageHeader() const {
     return getTypeDescription() + " '" + m_id + "': ";
 }
 
-const std::string& Identifiable::getName() const {
+const std::string& Identifiable::getNameOrId() const {
     return m_name.empty() ? m_id : m_name;
+}
+
+boost::optional<std::string> Identifiable::getOptionalName() const {
+    return m_name.empty() ? boost::optional<std::string>() : boost::optional<std::string>(m_name);
 }
 
 const std::string& Identifiable::getProperty(const std::string& key) const {

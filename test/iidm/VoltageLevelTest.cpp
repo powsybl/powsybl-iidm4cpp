@@ -34,7 +34,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
     BOOST_CHECK_EQUAL("VL1", vl1.getId());
-    BOOST_CHECK_EQUAL("VL1_NAME", vl1.getName());
+    BOOST_CHECK(vl1.getOptionalName());
+    BOOST_CHECK_EQUAL("VL1_NAME", *vl1.getOptionalName());
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, vl1.getTopologyKind());
     BOOST_CHECK_CLOSE(340, vl1.getLowVoltageLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(420, vl1.getHighVoltageLimit(), std::numeric_limits<double>::epsilon());

@@ -318,7 +318,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     Network network("id", "sourceFormat");
     BOOST_CHECK_EQUAL("id", network.getId());
-    BOOST_CHECK_EQUAL("id", network.getName());
+    BOOST_CHECK_EQUAL("id", *network.getOptionalName());
     BOOST_CHECK_EQUAL("sourceFormat", network.getSourceFormat());
     BOOST_CHECK_EQUAL(0, network.getForecastDistance());
 
