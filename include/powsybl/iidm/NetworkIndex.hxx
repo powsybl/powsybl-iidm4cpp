@@ -41,7 +41,7 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     auto it = m_objectsById.emplace(std::make_pair(identifiable->getId(), std::move(identifiable)));
 
     std::reference_wrapper<Identifiable> refIdentifiable = *it.first->second;
-    m_objectsByType[typeid(T)].emplace_back(refIdentifiable);
+    m_objectsByType[typeid(*it.first->second)].emplace_back(refIdentifiable);
 
     return dynamic_cast<T&>(*it.first->second);
 }
@@ -79,6 +79,12 @@ stdcxx::const_range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiabl
 
 template <>
 stdcxx::range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>();
+
+template <>
+stdcxx::const_range<VoltageLevel> NetworkIndex::getAll<VoltageLevel, VoltageLevel>() const;
+
+template <>
+stdcxx::range<VoltageLevel> NetworkIndex::getAll<VoltageLevel, VoltageLevel>();
 
 template <typename T, typename U>
 stdcxx::const_range<U> NetworkIndex::getAll() const {

@@ -21,6 +21,7 @@ namespace powsybl {
 namespace iidm {
 
 class Network;
+class VoltageLevel;
 
 class NetworkIndex {
 public:
@@ -85,6 +86,9 @@ const Identifiable& NetworkIndex::get(const std::string& id) const;
 
 template <>
 Identifiable& NetworkIndex::get(const std::string& id);
+
+template <>
+unsigned long NetworkIndex::getObjectCount<VoltageLevel>() const;
 
 }  // namespace iidm
 
