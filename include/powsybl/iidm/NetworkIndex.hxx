@@ -80,6 +80,12 @@ stdcxx::const_range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiabl
 template <>
 stdcxx::range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>();
 
+template <>
+stdcxx::const_range<VoltageLevel> NetworkIndex::getAll<VoltageLevel, VoltageLevel>() const;
+
+template <>
+stdcxx::range<VoltageLevel> NetworkIndex::getAll<VoltageLevel, VoltageLevel>();
+
 template <typename T, typename U>
 stdcxx::const_range<U> NetworkIndex::getAll() const {
     const auto& it = m_objectsByType[typeid(T)];

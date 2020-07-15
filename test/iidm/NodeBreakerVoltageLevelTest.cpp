@@ -11,6 +11,7 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
+#include <powsybl/iidm/InternalConnection.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -18,6 +19,8 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VoltageLevelAdder.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 
@@ -175,6 +178,109 @@ Network createCalculatedBusSwitchTestNetwork() {
         .add();
 
     return network;
+}
+
+void addInternalConnection( VoltageLevel::NodeBreakerView& topo, int node1, int node2) {
+    topo.newInternalConnection()
+        .setNode1(node1)
+        .setNode2(node2)
+        .add();
+}
+
+void createNetwork(Network& network) {
+    const std::string S5_10K_V = "S5 10kV";
+    Substation& s = network.newSubstation()
+        .setId("S5")
+        .setCountry(Country::FR)
+        .add();
+    VoltageLevel& vl = s.newVoltageLevel()
+        .setId(S5_10K_V)
+        .setNominalVoltage(10.0)
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .add();
+    vl.getNodeBreakerView().setNodeCount(20);
+    vl.getNodeBreakerView().newBusbarSection()
+        .setId("NODE13")
+        .setNode(0)
+        .add();
+    vl.getNodeBreakerView().newBusbarSection()
+        .setId("NODE14")
+        .setNode(3)
+        .add();
+    vl.getNodeBreakerView().newBusbarSection()
+        .setId("NODE15")
+        .setNode(2)
+        .add();
+    vl.getNodeBreakerView().newBusbarSection()
+        .setId("NODE16")
+        .setNode(1)
+        .add();
+    vl.getNodeBreakerView().newSwitch()
+        .setId("BREAKER4")
+        .setNode1(4)
+        .setNode2(5)
+        .setKind(SwitchKind::BREAKER)
+    .add();
+    vl.getNodeBreakerView().newSwitch()
+        .setId("DISCONNECTOR7")
+        .setNode1(6)
+        .setNode2(7)
+        .setKind(SwitchKind::DISCONNECTOR)
+        .add();
+    vl.getNodeBreakerView().newSwitch()
+        .setId("DISCONNECTOR8")
+        .setNode1(8)
+        .setNode2(9)
+        .setKind(SwitchKind::DISCONNECTOR)
+        .add();
+    vl.newLoad()
+        .setId("M3")
+        .setNode(11)
+        .setP0(5)
+        .setQ0(3)
+        .add();
+    vl.newLoad()
+        .setId("M2a")
+        .setNode(12)
+        .setP0(2)
+        .setQ0(1)
+        .add();
+    vl.newLoad()
+        .setId("M2b")
+        .setNode(13)
+        .setP0(2)
+        .setQ0(1)
+        .add();
+    VoltageLevel::NodeBreakerView& topo = vl.getNodeBreakerView();
+    addInternalConnection(topo, 7, 0);
+    addInternalConnection(topo, 6, 3);
+    addInternalConnection(topo, 4, 3);
+    addInternalConnection(topo, 5, 2);
+    addInternalConnection(topo, 9, 2);
+    addInternalConnection(topo, 8, 1);
+    Substation& s4 = network.newSubstation()
+        .setId("S4")
+        .setCountry(Country::FR)
+        .add();
+    VoltageLevel& vl2 = s4.newVoltageLevel()
+    .setId("S4 10kV")
+    .setNominalVoltage(10.0)
+    .setTopologyKind(TopologyKind::NODE_BREAKER)
+    .add();
+    vl2.getNodeBreakerView().setNodeCount(10);
+    network.newLine()
+    .setId("L6")
+    .setVoltageLevel1("S4 10kV")
+    .setNode1(0)
+    .setVoltageLevel2(S5_10K_V)
+    .setNode2(10)
+    .setR(0.082)
+    .setX(0.086)
+    .setG1(0)
+    .setB1(0)
+    .setG2(0)
+    .setB2(0)
+    .add();
 }
 
 BOOST_AUTO_TEST_SUITE(NodeBreakerVoltageLevelTestSuite)
@@ -1044,6 +1150,15 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     const auto& cVl = vl;
     const BusbarSection& cBbs = cVl.getNodeBreakerView().getBusbarSection("BBS");
     BOOST_CHECK_CLOSE(0, cBbs.getTerminal().getI(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_AUTO_TEST_CASE(TestRemoveVoltageLevelWithInternalConnectionsIssue) {
+    Network network("test", "test");
+
+    createNetwork(network);
+    network.getLine("L6").remove(); // needed to be allowed to remove the voltage level
+    network.remove(network.getVoltageLevel("S5 10kV"));
+    POWSYBL_ASSERT_THROW(network.getVoltageLevel("S5 10kV"), PowsyblException, "Unable to find to the identifiable 'S5 10kV'");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

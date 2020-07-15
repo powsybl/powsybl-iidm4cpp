@@ -11,10 +11,14 @@
 #include <boost/range/adaptor/indirected.hpp>
 #include <boost/range/adaptor/map.hpp>
 #include <boost/range/adaptor/transformed.hpp>
+#include <boost/range/join.hpp>
 
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/memory.hpp>
+
+#include "BusBreakerVoltageLevel.hpp"
+#include "NodeBreakerVoltageLevel.hpp"
 
 namespace powsybl {
 
@@ -82,8 +86,23 @@ stdcxx::range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVarian
 }
 
 template <>
+stdcxx::const_range<VoltageLevel> NetworkIndex::getAll<VoltageLevel, VoltageLevel>() const {
+    return boost::range::join(getAll<BusBreakerVoltageLevel, VoltageLevel>(), getAll<NodeBreakerVoltageLevel, VoltageLevel>());
+}
+
+template <>
+stdcxx::range<VoltageLevel> NetworkIndex::getAll<VoltageLevel, VoltageLevel>() {
+    return boost::range::join(getAll<BusBreakerVoltageLevel, VoltageLevel>(), getAll<NodeBreakerVoltageLevel, VoltageLevel>());
+}
+
+template <>
 unsigned long NetworkIndex::getObjectCount<Identifiable>() const {
     return m_objectsById.size();
+}
+
+template <>
+unsigned long NetworkIndex::getObjectCount<VoltageLevel>() const {
+    return getObjectCount<BusBreakerVoltageLevel>() + getObjectCount<NodeBreakerVoltageLevel>();
 }
 
 void NetworkIndex::remove(Identifiable& identifiable) {
