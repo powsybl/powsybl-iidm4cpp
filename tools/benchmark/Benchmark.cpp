@@ -43,8 +43,14 @@ void loadExtensions(const std::string& strPaths) {
     powsybl::iidm::ExtensionProviders<powsybl::iidm::converter::xml::ExtensionXmlSerializer>::getInstance().loadExtensions(boost::dll::program_location().parent_path().string(), fileRegex);
 
     if (!strPaths.empty()) {
+#if defined(BOOST_WINDOWS_API)
+        char pathSeparator = ';';
+#elif defined(BOOST_POSIX_API)
+        char pathSeparator = ':';
+#endif
+
         std::vector<std::string> paths;
-        boost::algorithm::split(paths, strPaths, [](char c) { return c == boost::filesystem::path::separator; });
+        boost::algorithm::split(paths, strPaths, [pathSeparator](char c) { return c == pathSeparator; });
         for (const auto& path : paths) {
             powsybl::iidm::ExtensionProviders<powsybl::iidm::converter::xml::ExtensionXmlSerializer>::getInstance().loadExtensions(path, fileRegex);
         }
