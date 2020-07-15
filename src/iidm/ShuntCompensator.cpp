@@ -116,6 +116,11 @@ ShuntCompensator& ShuntCompensator::setCurrentSectionCount(unsigned long current
     return *this;
 }
 
+ShuntCompensator& ShuntCompensator::setFictitious(bool fictitious) {
+    Injection::setFictitious(fictitious);
+    return *this;
+}
+
 ShuntCompensator& ShuntCompensator::setMaximumSectionCount(unsigned long maximumSectionCount) {
     checkSections(*this, getCurrentSectionCount(), maximumSectionCount);
     m_maximumSectionCount = maximumSectionCount;

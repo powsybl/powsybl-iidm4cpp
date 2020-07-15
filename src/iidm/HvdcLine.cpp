@@ -142,6 +142,12 @@ HvdcLine& HvdcLine::setConvertersMode(const ConvertersMode& mode) {
     return *this;
 }
 
+HvdcLine& HvdcLine::setFictitious(bool fictitious) {
+    Identifiable::setFictitious(fictitious);
+
+    return *this;
+}
+
 HvdcLine& HvdcLine::setMaxP(double maxP) {
     m_maxP = checkMaxP(*this, maxP);
 

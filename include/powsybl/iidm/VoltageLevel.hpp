@@ -54,6 +54,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    VoltageLevel& setFictitious(bool fictitious) override;
+
 public:
     ~VoltageLevel() noexcept override = default;
 
@@ -177,8 +179,6 @@ public:
     StaticVarCompensatorAdder newStaticVarCompensator();
 
     VscConverterStationAdder newVscConverterStation();
-
-    VoltageLevel& setFictitious(bool fictitious) override;
 
     VoltageLevel& setHighVoltageLimit(double highVoltageLimit);
 

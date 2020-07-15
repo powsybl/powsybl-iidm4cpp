@@ -78,10 +78,7 @@ bool Identifiable::isFictitious() const {
 }
 
 Identifiable& Identifiable::setFictitious(bool fictitious) {
-    bool oldValue = m_fictitious;
-    if (oldValue != fictitious) {
-        m_fictitious = fictitious;
-    }
+    m_fictitious = fictitious;
     return *this;
 }
 

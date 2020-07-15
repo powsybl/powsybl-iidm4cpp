@@ -95,6 +95,11 @@ void Connectable::remove() {
     network.remove(*this);
 }
 
+Connectable& Connectable::setFictitious(bool fictitious) {
+    Identifiable::setFictitious(fictitious);
+    return *this;
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

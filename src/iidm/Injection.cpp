@@ -23,6 +23,11 @@ Terminal& Injection::getTerminal() {
     return Connectable::getTerminal(0);
 }
 
+Injection& Injection::setFictitious(bool fictitious) {
+    Connectable::setFictitious(fictitious);
+    return *this;
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

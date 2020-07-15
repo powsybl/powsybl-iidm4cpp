@@ -24,6 +24,9 @@ public:
         LCC
     };
 
+public:  // Identifiable
+    HvdcConverterStation& setFictitious(bool fictitious) override;
+
 public:
     ~HvdcConverterStation() noexcept override = default;
 

@@ -129,6 +129,11 @@ Generator& Generator::setEnergySource(const EnergySource& energySource) {
     return *this;
 }
 
+Generator& Generator::setFictitious(bool fictitious) {
+    Injection::setFictitious(fictitious);
+    return *this;
+}
+
 Generator& Generator::setMaxP(double maxP) {
     checkMaxP(*this, maxP);
     checkActivePowerLimits(*this, m_minP, maxP);

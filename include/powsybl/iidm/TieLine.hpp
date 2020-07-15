@@ -16,6 +16,9 @@ namespace powsybl {
 namespace iidm {
 
 class TieLine : public Line {
+public:  // Identifiable
+    TieLine& setFictitious(bool fictitious) override;
+
 public:
     class HalfLine : public Validable {
     public: // Validable

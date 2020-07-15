@@ -164,6 +164,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(600, line.getB2(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setB2(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': b2 is invalid");
 
+    BOOST_TEST(stdcxx::areSame(line, line.setFictitious(true)));
+    BOOST_CHECK(line.isFictitious());
+    line.setFictitious(false).setB2(600.0);
+    BOOST_CHECK(!line.isFictitious());
+
     line.remove();
     POWSYBL_ASSERT_THROW(network.getLine("VL1_VL3"), PowsyblException, "Unable to find to the identifiable 'VL1_VL3'");
 }

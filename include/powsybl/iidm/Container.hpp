@@ -22,6 +22,9 @@ public:
         VOLTAGE_LEVEL
     };
 
+public:  // Identifiable
+    Container& setFictitious(bool fictitious) override;
+
 public:
     Container(const Container&) = delete;
 

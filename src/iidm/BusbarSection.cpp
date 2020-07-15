@@ -35,6 +35,11 @@ double BusbarSection::getV() const {
     return terminal.getV();
 }
 
+BusbarSection& BusbarSection::setFictitious(bool fictitious) {
+    Injection::setFictitious(fictitious);
+    return *this;
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

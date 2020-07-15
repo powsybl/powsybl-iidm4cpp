@@ -578,6 +578,11 @@ Network& Network::setCaseDate(const stdcxx::DateTime& caseDate) {
     return *this;
 }
 
+Network& Network::setFictitious(bool fictitious) {
+    Container::setFictitious(fictitious);
+    return *this;
+}
+
 Network& Network::setForecastDistance(int forecastDistance) {
     m_forecastDistance = checkForecastDistance(*this, forecastDistance);
     return *this;

@@ -229,6 +229,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     svc.setReactivePowerSetpoint(700);
     BOOST_CHECK_NO_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER));
 
+    BOOST_TEST(stdcxx::areSame(svc, svc.setFictitious(true)));
+    BOOST_CHECK(svc.isFictitious());
+    svc.setFictitious(false).setReactivePowerSetpoint(700);
+    BOOST_CHECK(!svc.isFictitious());
+
     svc.remove();
     POWSYBL_ASSERT_THROW(network.getStaticVarCompensator("SVC1"), PowsyblException, "Unable to find to the identifiable 'SVC1'");
 }

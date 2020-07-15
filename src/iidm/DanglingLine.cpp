@@ -105,6 +105,11 @@ void DanglingLine::setCurrentLimits(std::nullptr_t /*side*/, std::unique_ptr<Cur
     m_limits = std::move(limits);
 }
 
+DanglingLine& DanglingLine::setFictitious(bool fictitious) {
+    Injection::setFictitious(fictitious);
+    return *this;
+}
+
 DanglingLine& DanglingLine::setG(double g) {
     m_g = checkG(*this, g);
 

@@ -213,7 +213,7 @@ VscConverterStationAdder VoltageLevel::newVscConverterStation() {
 VoltageLevel& VoltageLevel::setFictitious(bool fictitious) {
     bool oldValue = m_fictitious;
     if (oldValue != fictitious) {
-        Identifiable::setFictitious(fictitious);
+        Container::setFictitious(fictitious);
         invalidateCache();
     }
     return *this;

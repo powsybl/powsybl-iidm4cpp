@@ -189,6 +189,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_EQUAL(4, substation.getGeographicalTags().size());
     substation.addGeographicalTag("IT");
     BOOST_CHECK_EQUAL(4, substation.getGeographicalTags().size());
+
+    BOOST_TEST(stdcxx::areSame(substation, substation.setFictitious(true)));
+    BOOST_CHECK(substation.isFictitious());
+    substation.setFictitious(false).setCountry(Country::BE);
+    BOOST_CHECK(!substation.isFictitious());
 }
 
 BOOST_AUTO_TEST_CASE(twoWindingsTransformerCount) {

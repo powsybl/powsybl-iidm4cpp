@@ -32,6 +32,11 @@ const std::string& LccConverterStation::getTypeDescription() const {
     return s_typeDescription;
 }
 
+LccConverterStation& LccConverterStation::setFictitious(bool fictitious) {
+    HvdcConverterStation::setFictitious(fictitious);
+    return *this;
+}
+
 LccConverterStation& LccConverterStation::setLossFactor(double lossFactor) {
     return dynamic_cast<LccConverterStation&>(HvdcConverterStation::setLossFactor(lossFactor));
 }

@@ -28,6 +28,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    Connectable& setFictitious(bool fictitious) override;
+
 public:
     ~Connectable() noexcept override = default;
 

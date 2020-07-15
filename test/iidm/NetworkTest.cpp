@@ -355,6 +355,16 @@ BOOST_AUTO_TEST_CASE(forecastDistance) {
     BOOST_CHECK_EQUAL(1, network.getForecastDistance());
 }
 
+BOOST_AUTO_TEST_CASE(fictitious) {
+    Network network("id", "test");
+
+    BOOST_CHECK(!network.isFictitious());
+    BOOST_TEST(stdcxx::areSame(network, network.setFictitious(true)));
+    BOOST_CHECK(network.isFictitious());
+    network.setFictitious(false).setForecastDistance(1);
+    BOOST_CHECK(!network.isFictitious());
+}
+
 BOOST_AUTO_TEST_CASE(country) {
     Network network = createTestNetwork();
 

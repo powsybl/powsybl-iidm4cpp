@@ -39,6 +39,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    HvdcLine& setFictitious(bool fictitious) override;
+
 public:
     HvdcLine(Network& network, const std::string& id, const std::string& name, bool fictitious, double r, double nominalVoltage, double maxP,
              const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2);

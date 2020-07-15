@@ -67,6 +67,11 @@ Line& Line::setB2(double b2) {
     return *this;
 }
 
+Line& Line::setFictitious(bool fictitious) {
+    Branch::setFictitious(fictitious);
+    return *this;
+}
+
 Line& Line::setG1(double g1) {
     m_lineCharacteristics.setG1(g1);
     return *this;

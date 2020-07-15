@@ -149,6 +149,11 @@ void ThreeWindingsTransformer::Leg::setCurrentLimits(std::nullptr_t /*side*/, st
     m_limits = std::move(limits);
 }
 
+ThreeWindingsTransformer& ThreeWindingsTransformer::setFictitious(bool fictitious) {
+    Connectable::setFictitious(fictitious);
+    return *this;
+}
+
 ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::Leg::setG(double g) {
     m_g = checkG(*this, g);
     return *this;

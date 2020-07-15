@@ -39,6 +39,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    Bus& setFictitious(bool fictitious) override;
+
 public:
     ~Bus() noexcept override = default;
 

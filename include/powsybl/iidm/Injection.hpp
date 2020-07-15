@@ -18,6 +18,9 @@ namespace powsybl {
 namespace iidm {
 
 class Injection : public Connectable {
+public:  // Identifiable
+    Injection& setFictitious(bool fictitious) override;
+
 public:
     ~Injection() noexcept override = default;
 

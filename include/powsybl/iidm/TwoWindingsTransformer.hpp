@@ -21,6 +21,9 @@ namespace iidm {
 class Substation;
 
 class TwoWindingsTransformer : public virtual Branch, public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
+public:  // Identifiable
+    TwoWindingsTransformer& setFictitious(bool fictitious) override;
+
 public:  // TapChangerHolder
     bool hasPhaseTapChanger() const override;
 

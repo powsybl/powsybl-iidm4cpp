@@ -288,6 +288,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(std::isnan(transformer.getRatedS()));
     POWSYBL_ASSERT_THROW(transformer.setRatedS(-1.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': Invalid rated S value: -1");
 
+    BOOST_TEST(stdcxx::areSame(transformer, transformer.setFictitious(true)));
+    BOOST_CHECK(transformer.isFictitious());
+    transformer.setFictitious(false).setRatedU2(600.0);
+    BOOST_CHECK(!transformer.isFictitious());
+
     transformer.remove();
     POWSYBL_ASSERT_THROW(network.getTwoWindingsTransformer("2WT_VL1_VL2"), PowsyblException, "Unable to find to the identifiable '2WT_VL1_VL2'");
 }

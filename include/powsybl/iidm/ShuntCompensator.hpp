@@ -20,6 +20,9 @@ namespace iidm {
 class Terminal;
 
 class ShuntCompensator : public Injection {
+public:  // Identifiable
+    ShuntCompensator& setFictitious(bool fictitious) override;
+
 public:
     ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                      double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount, Terminal& terminal,

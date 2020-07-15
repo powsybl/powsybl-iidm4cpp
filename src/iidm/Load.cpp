@@ -64,6 +64,11 @@ void Load::reduceVariantArraySize(unsigned long number) {
     m_q0.resize(m_q0.size() - number);
 }
 
+Load& Load::setFictitious(bool fictitious) {
+    Injection::setFictitious(fictitious);
+    return *this;
+}
+
 Load& Load::setLoadType(const LoadType& loadType) {
     m_loadType = checkLoadType(*this, loadType);
 

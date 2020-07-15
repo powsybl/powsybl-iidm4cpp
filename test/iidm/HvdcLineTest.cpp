@@ -44,9 +44,7 @@ Network createHvdcLineTestNetwork() {
         .setId("VL1_BUS1")
         .add();
 
-    vl1Bus1.setFictitious(false).setAngle(1.0);
-
-    LccConverterStation& lccConverterStation = vl1.newLccConverterStation()
+    vl1.newLccConverterStation()
         .setId("LCC1")
         .setName("LCC1_NAME")
         .setBus(vl1Bus1.getId())
@@ -55,9 +53,7 @@ Network createHvdcLineTestNetwork() {
         .setPowerFactor(2.0)
         .add();
 
-    lccConverterStation.setFictitious(false).setPowerFactor(2.0);
-
-    VscConverterStation& vscConverterStation = vl1.newVscConverterStation()
+    vl1.newVscConverterStation()
         .setId("VSC1")
         .setName("VSC1_NAME")
         .setBus(vl1Bus1.getId())
@@ -108,7 +104,7 @@ Network createHvdcLineTestNetwork() {
         .setReactivePowerSetpoint(10.0)
         .add();
 
-    HvdcLine& hvdcLine = network.newHvdcLine()
+    network.newHvdcLine()
         .setId("HVDC1")
         .setName("HVDC1_NAME")
         .setActivePowerSetpoint(11.0)
@@ -119,7 +115,6 @@ Network createHvdcLineTestNetwork() {
         .setNominalVoltage(13.0)
         .setR(14.0)
         .add();
-    hvdcLine.setFictitious(false).setR(14.0);
 
     return network;
 }
@@ -232,6 +227,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setR(400.0)));
     BOOST_CHECK_CLOSE(400.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(hvdc.setR(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': r is invalid");
+
+    BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setFictitious(true)));
+    BOOST_CHECK(hvdc.isFictitious());
+    hvdc.setFictitious(false).setR(400.0);
+    BOOST_CHECK(!hvdc.isFictitious());
 
     hvdc.remove();
     POWSYBL_ASSERT_THROW(network.getHvdcLine("HVDC1"), PowsyblException, "Unable to find to the identifiable 'HVDC1'");

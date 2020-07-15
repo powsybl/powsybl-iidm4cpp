@@ -154,6 +154,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(battery.setMaxP(-400.0), ValidationException, "Battery 'BAT1': Invalid active limits [-90, -400]");
     POWSYBL_ASSERT_THROW(battery.setMaxP(-40.0), ValidationException, "Battery 'BAT1': Invalid active power p > maxP: 0 > -40");
 
+    BOOST_TEST(stdcxx::areSame(battery, battery.setFictitious(true)));
+    BOOST_CHECK(battery.isFictitious());
+    battery.setFictitious(false).setMaxP(500.0);
+    BOOST_CHECK(!battery.isFictitious());
+
     battery.remove();
     POWSYBL_ASSERT_THROW(network.getBattery("BAT1"), PowsyblException, "Unable to find to the identifiable 'BAT1'");
     BOOST_CHECK_EQUAL(0UL, network.getBatteryCount());

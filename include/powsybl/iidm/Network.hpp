@@ -75,6 +75,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    Network& setFictitious(bool fictitious) override;
+
 public: // VariantManagerHolder
     unsigned long getVariantIndex() const override;
 
