@@ -13,6 +13,7 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/join.hpp>
 
+#include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/memory.hpp>
@@ -52,6 +53,16 @@ const Identifiable& NetworkIndex::get(const std::string& id) const {
 template <>
 Identifiable& NetworkIndex::get(const std::string& id) {
     return const_cast<Identifiable&>(static_cast<const NetworkIndex*>(this)->get<Identifiable>(id));
+}
+
+template <>
+stdcxx::const_range<Connectable> NetworkIndex::getAll<Connectable, Connectable>() const {
+    return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected | boost::adaptors::filtered(Identifiable::isInstanceOf<Connectable>);
+}
+
+template <>
+stdcxx::range<Connectable> NetworkIndex::getAll<Connectable, Connectable>() {
+    return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected | boost::adaptors::filtered(Identifiable::isInstanceOf<Connectable>);
 }
 
 template <>

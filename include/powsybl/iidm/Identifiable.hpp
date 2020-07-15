@@ -23,6 +23,10 @@ namespace iidm {
 class Network;
 
 class Identifiable : public virtual Validable, public Extendable {
+public:
+    template <typename T>
+    static bool isInstanceOf(const Identifiable& identifiable);
+
 public: // Validable
     std::string getMessageHeader() const override;
 
@@ -78,5 +82,7 @@ std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable)
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/Identifiable.hxx>
 
 #endif  // POWSYBL_IIDM_IDENTIFIABLE_HPP

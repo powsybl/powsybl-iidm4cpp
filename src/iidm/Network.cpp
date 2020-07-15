@@ -174,6 +174,15 @@ const stdcxx::DateTime& Network::getCaseDate() const {
     return m_caseDate;
 }
 
+stdcxx::const_range<Connectable> Network::getConnectables() const {
+    return m_networkIndex.getAll<Connectable>();
+}
+
+stdcxx::range<Connectable> Network::getConnectables() {
+    const auto& mapper = map<Connectable>;
+    return static_cast<const Network*>(this)->getConnectables() | boost::adaptors::transformed(mapper);
+}
+
 unsigned long Network::getCountryCount() const {
     std::unordered_set<Country, stdcxx::hash<Country>> countries;
     for (const auto& substation : getSubstations()) {

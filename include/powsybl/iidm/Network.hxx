@@ -30,6 +30,21 @@ T& Network::get(const std::string& id) {
 }
 
 template <typename T, typename>
+unsigned long Network::getConnectableCount() const {
+    return m_networkIndex.getObjectCount<T>();
+}
+
+template <typename T, typename>
+stdcxx::const_range<T> Network::getConnectables() const {
+    return m_networkIndex.getAll<T>();
+}
+
+template <typename T, typename>
+stdcxx::range<T> Network::getConnectables() {
+    return m_networkIndex.getAll<T>();
+}
+
+template <typename T, typename>
 unsigned long Network::getObjectCount() const {
     return m_networkIndex.getObjectCount<T>();
 }

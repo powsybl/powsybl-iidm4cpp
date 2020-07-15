@@ -8,8 +8,11 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -363,6 +366,34 @@ BOOST_AUTO_TEST_CASE(country) {
 
     network.getSubstation("S2").setCountry(stdcxx::optional<Country>());
     BOOST_CHECK_EQUAL(1, network.getCountryCount());
+}
+
+BOOST_AUTO_TEST_CASE(getConnectablesTest) {
+    Network network = createTestNetwork();
+    const Network& cNetwork = network;
+
+    BOOST_CHECK_EQUAL(2, boost::size(network.getConnectables<Load>()));
+    BOOST_CHECK_EQUAL(2, boost::size(cNetwork.getConnectables<Load>()));
+    BOOST_CHECK_EQUAL(2UL, network.getConnectableCount<Load>());
+
+    BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<Line>()));
+    BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<Line>()));
+    BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<Line>());
+
+    BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<TieLine>()));
+    BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<TieLine>()));
+    BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<TieLine>());
+
+    BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<DanglingLine>()));
+    BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<DanglingLine>()));
+    BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<DanglingLine>());
+
+    BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<TwoWindingsTransformer>()));
+    BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<TwoWindingsTransformer>()));
+    BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<TwoWindingsTransformer>());
+
+    BOOST_CHECK_EQUAL(6UL, boost::size(network.getConnectables()));
+    BOOST_CHECK_EQUAL(6UL, boost::size(cNetwork.getConnectables()));
 }
 
 BOOST_AUTO_TEST_CASE(branch) {
