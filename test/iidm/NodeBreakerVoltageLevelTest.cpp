@@ -187,8 +187,8 @@ void addInternalConnection( VoltageLevel::NodeBreakerView& topo, int node1, int 
         .add();
 }
 
-const std::string S5_10K_V = "S5 10kV";
 void createNetwork(Network& network) {
+    const std::string S5_10K_V = "S5 10kV";
     Substation& s = network.newSubstation()
         .setId("S5")
         .setCountry(Country::FR)
@@ -1157,8 +1157,8 @@ BOOST_AUTO_TEST_CASE(TestRemoveVoltageLevelWithInternalConnectionsIssue) {
 
     createNetwork(network);
     network.getLine("L6").remove(); // needed to be allowed to remove the voltage level
-    network.remove(network.getVoltageLevel(S5_10K_V));
-    POWSYBL_ASSERT_THROW(network.getVoltageLevel(S5_10K_V), PowsyblException, "Unable to find to the identifiable 'S5 10kV'");
+    network.remove(network.getVoltageLevel("S5 10kV"));
+    POWSYBL_ASSERT_THROW(network.getVoltageLevel("S5 10kV"), PowsyblException, "Unable to find to the identifiable 'S5 10kV'");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

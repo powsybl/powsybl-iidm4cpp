@@ -28,24 +28,24 @@ VoltageLevel& VoltageLevelAdder::add() {
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
     checkOptional(*this, m_topologyKind, "TopologyKind is not set");
 
-    std::unique_ptr<VoltageLevel> ptrVoltageLevel;
     switch (*m_topologyKind) {
-        case TopologyKind::NODE_BREAKER:
-            ptrVoltageLevel = stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
-            break;
+        case TopologyKind::NODE_BREAKER: {
+            auto ptrVoltageLevel = stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
+            auto& voltageLevel = getNetwork().checkAndAdd<NodeBreakerVoltageLevel>(std::move(ptrVoltageLevel));
+            m_substation.addVoltageLevel(voltageLevel);
+            return voltageLevel;
+        }
 
-        case TopologyKind::BUS_BREAKER:
-            ptrVoltageLevel = stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
-            break;
+        case TopologyKind::BUS_BREAKER: {
+            auto ptrVoltageLevel = stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit);
+            auto& voltageLevel = getNetwork().checkAndAdd<BusBreakerVoltageLevel>(std::move(ptrVoltageLevel));
+            m_substation.addVoltageLevel(voltageLevel);
+            return voltageLevel;
+        }
 
         default:
             throw AssertionError(stdcxx::format("Unexpected TopologyKind value: %1%", *m_topologyKind));
     }
-
-    auto& voltageLevel = getNetwork().checkAndAdd<VoltageLevel>(std::move(ptrVoltageLevel));
-    m_substation.addVoltageLevel(voltageLevel);
-
-    return voltageLevel;
 }
 
 const Network& VoltageLevelAdder::getNetwork() const {

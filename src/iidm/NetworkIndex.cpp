@@ -87,14 +87,12 @@ stdcxx::range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVarian
 
 template <>
 stdcxx::const_range<VoltageLevel> NetworkIndex::getAll<VoltageLevel, VoltageLevel>() const {
-    stdcxx::const_range<VoltageLevel> bbvl = getAll<BusBreakerVoltageLevel, VoltageLevel>();
-    return boost::range::join(bbvl, getAll<NodeBreakerVoltageLevel, VoltageLevel>());
+    return boost::range::join(getAll<BusBreakerVoltageLevel, VoltageLevel>(), getAll<NodeBreakerVoltageLevel, VoltageLevel>());
 }
 
 template <>
 stdcxx::range<VoltageLevel> NetworkIndex::getAll<VoltageLevel, VoltageLevel>() {
-    stdcxx::range<VoltageLevel> bbvl = getAll<BusBreakerVoltageLevel, VoltageLevel>();
-    return boost::range::join(bbvl, getAll<NodeBreakerVoltageLevel, VoltageLevel>());
+    return boost::range::join(getAll<BusBreakerVoltageLevel, VoltageLevel>(), getAll<NodeBreakerVoltageLevel, VoltageLevel>());
 }
 
 template <>
