@@ -383,6 +383,8 @@ BOOST_AUTO_TEST_CASE(switches) {
     voltageLevel.getNodeBreakerView().setNodeCount(5);
     BOOST_CHECK(voltageLevel.getNodeBreakerView().getOptionalTerminal(0));
     BOOST_CHECK(voltageLevel.getNodeBreakerView().getOptionalTerminal(1));
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(0));
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(1));
     voltageLevel.getNodeBreakerView().removeSwitch(breaker.getId());
 
     Switch& tmpSwitch = voltageLevel.getNodeBreakerView().newBreaker()
@@ -398,6 +400,8 @@ BOOST_AUTO_TEST_CASE(switches) {
     voltageLevel.clean();
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(2));
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(3));
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().hasAttachedEquipment(2));
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().hasAttachedEquipment(3));
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getOptionalTerminal(5), PowsyblException, "Invalid vertex 5");
 }
 

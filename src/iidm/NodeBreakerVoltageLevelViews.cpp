@@ -272,6 +272,10 @@ stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal2(const std::string&
     return getTerminal(getNode2(switchId));
 }
 
+bool NodeBreakerViewImpl::hasAttachedEquipment(unsigned long node) const {
+    return m_voltageLevel.getGraph().vertexExists(node);
+}
+
 NodeBreakerViewImpl::SwitchAdder NodeBreakerViewImpl::newBreaker() {
     return SwitchAdder(m_voltageLevel).setKind(SwitchKind::BREAKER);
 }

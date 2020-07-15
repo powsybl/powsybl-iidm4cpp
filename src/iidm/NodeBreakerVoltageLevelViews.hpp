@@ -64,6 +64,8 @@ public: // NodeBreakerView
 
     stdcxx::Reference<Terminal> getTerminal2(const std::string& switchId) override;
 
+    bool hasAttachedEquipment(unsigned long node) const override;
+
     SwitchAdder newBreaker() override;
 
     BusbarSectionAdder newBusbarSection() override;

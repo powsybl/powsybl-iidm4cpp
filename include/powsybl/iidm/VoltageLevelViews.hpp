@@ -153,6 +153,8 @@ public:
 
     virtual stdcxx::Reference<Terminal> getTerminal2(const std::string& switchId) = 0;
 
+    virtual bool hasAttachedEquipment(unsigned long node) const = 0;
+
     virtual SwitchAdder newBreaker() = 0;
 
     virtual BusbarSectionAdder newBusbarSection() = 0;
