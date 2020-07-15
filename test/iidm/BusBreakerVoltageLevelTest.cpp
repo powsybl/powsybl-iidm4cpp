@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(BusTest) {
     const auto& cBus = bus;
 
     BOOST_CHECK_EQUAL("BUS", bus.getId());
-    BOOST_CHECK_EQUAL("BUS_NAME", *bus.getOptionalName());
+    BOOST_CHECK_EQUAL("BUS_NAME", bus.getOptionalName());
     BOOST_TEST(stdcxx::areSame(voltageLevel, bus.getVoltageLevel()));
     BOOST_TEST(stdcxx::areSame(voltageLevel, cBus.getVoltageLevel()));
     BOOST_CHECK_EQUAL(0UL, bus.getConnectedTerminalCount());
@@ -90,7 +90,7 @@ BOOST_AUTO_TEST_CASE(SwitchTest) {
     swAdder.setBus2("BUS2");
     Switch& aSwitch = swAdder.add();
     BOOST_CHECK_EQUAL("SW", aSwitch.getId());
-    BOOST_CHECK_EQUAL("SW_NAME", *aSwitch.getOptionalName());
+    BOOST_CHECK_EQUAL("SW_NAME", aSwitch.getOptionalName());
     BOOST_TEST(stdcxx::areSame(voltageLevel, aSwitch.getVoltageLevel()));
     BOOST_TEST(!aSwitch.isFictitious());
     BOOST_TEST(!aSwitch.isOpen());
@@ -340,7 +340,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
     stdcxx::Reference<Bus> mergedBus2 = vl.getBusView().getMergedBus("BUS2");
     BOOST_TEST(stdcxx::areSame(mergedBus1.get(), mergedBus2.get()));
     BOOST_CHECK_EQUAL("VL_0", mergedBus1.get().getId());
-    BOOST_CHECK(!mergedBus1.get().getOptionalName());
+    BOOST_CHECK(mergedBus1.get().getOptionalName().empty());
 
     sw.setOpen(true);
     VoltageLevel& vlTest = vl;
@@ -469,7 +469,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     busBreakerView.setConnectableBus("BUS1");
     const auto& configuredBus = busBreakerView.getBus().get();
     BOOST_CHECK_EQUAL("BUS1", configuredBus.getId());
-    BOOST_CHECK_EQUAL("BUS1_NAME", *configuredBus.getOptionalName());
+    BOOST_CHECK_EQUAL("BUS1_NAME", configuredBus.getOptionalName());
     const auto& cConfiguredBus = cBusBreakerView.getBus().get();
     BOOST_TEST(stdcxx::areSame(configuredBus, cConfiguredBus));
 
@@ -479,7 +479,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     POWSYBL_ASSERT_REF_TRUE(cTerminal.getBusView().getBus());
     const auto& mergedBus = terminal.getBusView().getBus().get();
     BOOST_CHECK_EQUAL("VL_0", mergedBus.getId());
-    BOOST_CHECK(!mergedBus.getOptionalName());
+    BOOST_CHECK(mergedBus.getOptionalName().empty());
 
     POWSYBL_ASSERT_THROW(terminal.getNodeBreakerView(), AssertionError, "Not implemented");
     POWSYBL_ASSERT_THROW(cTerminal.getNodeBreakerView(), AssertionError, "Not implemented");

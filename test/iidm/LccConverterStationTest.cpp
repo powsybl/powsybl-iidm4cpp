@@ -57,8 +57,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(lcc, hvdc));
     BOOST_CHECK_EQUAL("LCC1", lcc.getId());
     BOOST_CHECK_EQUAL(lcc.getId(), hvdc.getId());
-    BOOST_CHECK_EQUAL("LCC1_NAME", *lcc.getOptionalName());
-    BOOST_CHECK_EQUAL(*lcc.getOptionalName(), *hvdc.getOptionalName());
+    BOOST_CHECK_EQUAL("LCC1_NAME", lcc.getOptionalName());
     BOOST_CHECK_EQUAL(ConnectableType::HVDC_CONVERTER_STATION, lcc.getType());
     std::ostringstream oss;
     oss << lcc.getType();

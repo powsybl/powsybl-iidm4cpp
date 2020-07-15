@@ -197,8 +197,7 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
         .add();
 
     BOOST_CHECK_EQUAL("BBS", bbs.getId());
-    BOOST_CHECK( bbs.getOptionalName());
-    BOOST_CHECK_EQUAL("BBS_NAME", *bbs.getOptionalName());
+    BOOST_CHECK_EQUAL("BBS_NAME", bbs.getOptionalName());
     BOOST_CHECK_EQUAL(ConnectableType::BUSBAR_SECTION, bbs.getType());
     std::ostringstream oss;
     oss << bbs.getType();
@@ -255,8 +254,7 @@ BOOST_AUTO_TEST_CASE(switches) {
         .add();
 
     BOOST_CHECK_EQUAL("BK", breaker.getId());
-    BOOST_CHECK(breaker.getOptionalName());
-    BOOST_CHECK_EQUAL("BK_NAME",* breaker.getOptionalName());
+    BOOST_CHECK_EQUAL("BK_NAME", breaker.getOptionalName());
     POWSYBL_ASSERT_ENUM_EQ(SwitchKind::BREAKER, breaker.getKind());
     BOOST_TEST(!breaker.isOpen());
     BOOST_TEST(breaker.isRetained());
@@ -544,7 +542,7 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     auto& testBus = busBreakerView.getBus("VL_0").get();
     const auto& cTestBus = testBus;
     BOOST_CHECK_EQUAL("VL_0", testBus.getId());
-    BOOST_CHECK(!testBus.getOptionalName());
+    BOOST_CHECK(testBus.getOptionalName().empty());
     BOOST_CHECK_EQUAL("VL_0", testBus.getNameOrId());
     BOOST_CHECK_CLOSE(7.7, testBus.setAngle(7.7).setV(8.8).getAngle(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(8.8, testBus.getV(), std::numeric_limits<double>::epsilon());
@@ -703,7 +701,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     POWSYBL_ASSERT_REF_TRUE(cBusView.getMergedBus("BBS"));
     const auto& calculatedBus = busView.getBus("VL_0").get();
     BOOST_CHECK_EQUAL("VL_0", calculatedBus.getId());
-    BOOST_CHECK(!calculatedBus.getOptionalName());
+    BOOST_CHECK(calculatedBus.getOptionalName().empty());
 
     sw.setOpen(true);
     BOOST_CHECK_EQUAL(2UL, boost::size(busView.getBuses()));
@@ -1012,8 +1010,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     BOOST_TEST(stdcxx::areSame(cBusBreakerView.getBus().get(), cBusBreakerView.getConnectableBus().get()));
     const auto& calculatedBus = busBreakerView.getBus().get();
     BOOST_CHECK_EQUAL("VL_0", calculatedBus.getId());
-    BOOST_CHECK(calculatedBus.getOptionalName());
-    BOOST_CHECK_EQUAL("VL_name_0", *calculatedBus.getOptionalName());
+    BOOST_CHECK_EQUAL("VL_name_0", calculatedBus.getOptionalName());
     BOOST_CHECK_EQUAL("VL_name_0", calculatedBus.getNameOrId());
 
 
@@ -1026,8 +1023,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     BOOST_TEST(stdcxx::areSame(cBusView.getBus().get(), cBusView.getConnectableBus().get()));
     const auto& calculatedBus2 = busView.getBus().get();
     BOOST_CHECK_EQUAL("VL_0", calculatedBus2.getId());
-    BOOST_CHECK(calculatedBus2.getOptionalName());
-    BOOST_CHECK_EQUAL("VL_name_0", *calculatedBus2.getOptionalName());
+    BOOST_CHECK_EQUAL("VL_name_0", calculatedBus2.getOptionalName());
     BOOST_CHECK_EQUAL("VL_name_0", calculatedBus.getNameOrId());
 
     BOOST_TEST(stdcxx::areSame(terminal.getNodeBreakerView(), cTerminal.getNodeBreakerView()));

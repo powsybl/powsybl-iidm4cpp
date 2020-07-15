@@ -31,7 +31,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     Load& load = network.getLoad("LOAD1");
     BOOST_CHECK_EQUAL("LOAD1", load.getId());
-    BOOST_CHECK_EQUAL("LOAD1_NAME", *load.getOptionalName());
+    BOOST_CHECK_EQUAL("LOAD1_NAME", load.getOptionalName());
     BOOST_CHECK_EQUAL(ConnectableType::LOAD, load.getType());
     std::ostringstream oss;
     oss << load.getType();

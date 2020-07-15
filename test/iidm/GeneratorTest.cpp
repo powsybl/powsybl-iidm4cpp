@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     Generator& gen = network.getGenerator("GEN1");
     BOOST_CHECK_EQUAL("GEN1", gen.getId());
-    BOOST_CHECK_EQUAL("GEN1_NAME", *gen.getOptionalName());
+    BOOST_CHECK_EQUAL("GEN1_NAME", gen.getOptionalName());
     BOOST_CHECK_EQUAL(ConnectableType::GENERATOR, gen.getType());
     std::ostringstream oss;
     oss << gen.getType();
@@ -300,7 +300,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant("s1");
     BOOST_CHECK_EQUAL("GEN1", gen.getId());
-    BOOST_CHECK_EQUAL("GEN1_NAME", *gen.getOptionalName());
     BOOST_CHECK_CLOSE(45, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_ENUM_EQ(EnergySource::WIND, gen.getEnergySource());
     BOOST_CHECK_CLOSE(50.0, gen.getMaxP(), std::numeric_limits<double>::epsilon());

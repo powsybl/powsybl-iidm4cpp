@@ -51,8 +51,8 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::write(const Added& identifia
 
     context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
     const auto& name = identifiable.getOptionalName();
-    if (name) {
-        context.getWriter().writeAttribute(NAME, context.getAnonymizer().anonymizeString(*name));
+    if (!name.empty()) {
+        context.getWriter().writeAttribute(NAME, context.getAnonymizer().anonymizeString(name));
     }
     writeRootElementAttributes(identifiable, parent, context);
 

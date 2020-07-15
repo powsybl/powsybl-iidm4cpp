@@ -103,7 +103,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     const DanglingLine& danglingLine = network.getDanglingLine("DL1");
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
-    BOOST_CHECK_EQUAL("DL1_NAME", *danglingLine.getOptionalName());
+    BOOST_CHECK_EQUAL("DL1_NAME", danglingLine.getOptionalName());
     BOOST_CHECK_EQUAL(ConnectableType::DANGLING_LINE, danglingLine.getType());
     std::ostringstream oss;
     oss << danglingLine.getType();
@@ -160,7 +160,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant("s1");
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
-    BOOST_CHECK_EQUAL("DL1_NAME", *danglingLine.getOptionalName());
     BOOST_CHECK_CLOSE(1.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, danglingLine.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.0, danglingLine.getP0(), std::numeric_limits<double>::epsilon());
@@ -171,7 +170,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     danglingLine.setB(100.0).setG(200.0).setP0(300.0).setQ0(400).setR(500.0).setX(600.0);
 
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
-    BOOST_CHECK_EQUAL("DL1_NAME", *danglingLine.getOptionalName());
     BOOST_CHECK_CLOSE(100.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200.0, danglingLine.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(300.0, danglingLine.getP0(), std::numeric_limits<double>::epsilon());
@@ -182,7 +180,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant("s2");
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
-    BOOST_CHECK_EQUAL("DL1_NAME", *danglingLine.getOptionalName());
     BOOST_CHECK_CLOSE(100.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200.0, danglingLine.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.0, danglingLine.getP0(), std::numeric_limits<double>::epsilon());
@@ -192,7 +189,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     danglingLine.setB(150.0).setG(250.0).setP0(350.0).setQ0(450).setR(550.0).setX(650.0);
 
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
-    BOOST_CHECK_EQUAL("DL1_NAME", *danglingLine.getOptionalName());
     BOOST_CHECK_CLOSE(150.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, danglingLine.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(350.0, danglingLine.getP0(), std::numeric_limits<double>::epsilon());
@@ -202,7 +198,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
-    BOOST_CHECK_EQUAL("DL1_NAME", *danglingLine.getOptionalName());
     BOOST_CHECK_CLOSE(150.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, danglingLine.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.0, danglingLine.getP0(), std::numeric_limits<double>::epsilon());
@@ -216,7 +211,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
-    BOOST_CHECK_EQUAL("DL1_NAME", *danglingLine.getOptionalName());
     BOOST_CHECK_CLOSE(150.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, danglingLine.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(350.0, danglingLine.getP0(), std::numeric_limits<double>::epsilon());

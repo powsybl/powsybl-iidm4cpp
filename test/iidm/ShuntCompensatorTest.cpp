@@ -149,7 +149,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
-    BOOST_CHECK_EQUAL("SHUNT1_NAME", *shunt.getOptionalName());
+    BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getOptionalName());
     BOOST_CHECK_EQUAL(ConnectableType::SHUNT_COMPENSATOR, shunt.getType());
     std::ostringstream oss;
     oss << shunt.getType();
@@ -248,7 +248,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant("s1");
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
-    BOOST_CHECK_EQUAL("SHUNT1_NAME", *shunt.getOptionalName());
     BOOST_CHECK_CLOSE(12.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2UL, shunt.getCurrentSectionCount());
     BOOST_CHECK_EQUAL(3UL, shunt.getMaximumSectionCount());
@@ -257,7 +256,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     shunt.setbPerSection(100.0).setMaximumSectionCount(300UL).setCurrentSectionCount(200UL);
 
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
-    BOOST_CHECK_EQUAL("SHUNT1_NAME", *shunt.getOptionalName());
     BOOST_CHECK_CLOSE(100.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(200UL, shunt.getCurrentSectionCount());
     BOOST_CHECK_EQUAL(300UL, shunt.getMaximumSectionCount());
@@ -266,7 +264,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant("s2");
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
-    BOOST_CHECK_EQUAL("SHUNT1_NAME", *shunt.getOptionalName());
     BOOST_CHECK_CLOSE(100.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2UL, shunt.getCurrentSectionCount());
     BOOST_CHECK_EQUAL(300UL, shunt.getMaximumSectionCount());
@@ -275,7 +272,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     shunt.setbPerSection(150.0).setMaximumSectionCount(350UL).setCurrentSectionCount(250UL);
 
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
-    BOOST_CHECK_EQUAL("SHUNT1_NAME", *shunt.getOptionalName());
     BOOST_CHECK_CLOSE(150.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(250UL, shunt.getCurrentSectionCount());
     BOOST_CHECK_EQUAL(350UL, shunt.getMaximumSectionCount());
@@ -284,7 +280,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
-    BOOST_CHECK_EQUAL("SHUNT1_NAME", *shunt.getOptionalName());
     BOOST_CHECK_CLOSE(150.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2UL, shunt.getCurrentSectionCount());
     BOOST_CHECK_EQUAL(350UL, shunt.getMaximumSectionCount());
@@ -297,7 +292,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
-    BOOST_CHECK_EQUAL("SHUNT1_NAME", *shunt.getOptionalName());
     BOOST_CHECK_CLOSE(150.0, shunt.getbPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(250UL, shunt.getCurrentSectionCount());
     BOOST_CHECK_EQUAL(350UL, shunt.getMaximumSectionCount());

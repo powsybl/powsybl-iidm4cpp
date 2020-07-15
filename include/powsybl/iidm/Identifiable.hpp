@@ -45,7 +45,7 @@ public:
 
     virtual Network& getNetwork() = 0;
 
-    boost::optional<std::string> getOptionalName() const;
+    const std::string& getOptionalName() const;
 
     bool hasProperty() const;
 

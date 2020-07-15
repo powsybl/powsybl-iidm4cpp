@@ -27,9 +27,9 @@ std::string BusNamingStrategy::getId(const std::vector<unsigned long>& nodes) {
 }
 
 std::string BusNamingStrategy::getName(const std::vector<unsigned long>& nodes) {
-    if (m_voltageLevel.getOptionalName()) {
+    if (!m_voltageLevel.getOptionalName().empty()) {
         const auto& iter = std::min_element(nodes.cbegin(), nodes.cend());
-        return stdcxx::format("%1%_%2%", *m_voltageLevel.getOptionalName(), *iter);
+        return stdcxx::format("%1%_%2%", m_voltageLevel.getOptionalName(), *iter);
     }
 
     return "";
