@@ -485,6 +485,12 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     POWSYBL_ASSERT_THROW(cTerminal.getNodeBreakerView(), AssertionError, "Not implemented");
 }
 
+BOOST_AUTO_TEST_CASE(TestRemoveVoltageLevel) {
+    Network network = createNetwork();
+    network.remove(network.getVoltageLevel("VL2"));
+    POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL2"), PowsyblException, "Unable to find to the identifiable 'VL2'");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
