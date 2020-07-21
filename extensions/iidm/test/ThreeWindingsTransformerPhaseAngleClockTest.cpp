@@ -11,7 +11,7 @@
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
-#include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClock.hpp>
+#include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClockAdder.hpp>
 #include <powsybl/network/ThreeWindingsTransformerNetworkFactory.hpp>
 
 #include <powsybl/test/ResourceFixture.hpp>
@@ -32,7 +32,7 @@ BOOST_FIXTURE_TEST_CASE(ThreeWindingsTransformerPhaseAngleClockXmlSerializerTest
     network.setCaseDate(stdcxx::DateTime::parse("2018-03-05T13:30:30.486+01:00"));
 
     ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT");
-    transformer.addExtension(Extension::create<ThreeWindingsTransformerPhaseAngleClock>(transformer, 3, 1));
+    transformer.newExtension<ThreeWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClockLeg2(3).withPhaseAngleClockLeg3(1).add();
 
     const std::string& networkStr = ResourceFixture::getResource("threeWindingsTransformerPhaseAngleClock.xml");
 
