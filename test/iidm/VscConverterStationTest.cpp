@@ -70,8 +70,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(vsc, hvdc));
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
     BOOST_CHECK_EQUAL(vsc.getId(), hvdc.getId());
-    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
-    BOOST_CHECK_EQUAL(vsc.getName(), hvdc.getName());
+    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getOptionalName());
+    BOOST_CHECK_EQUAL(vsc.getOptionalName(), hvdc.getOptionalName());
     BOOST_CHECK_EQUAL(ConnectableType::HVDC_CONVERTER_STATION, vsc.getType());
     std::ostringstream oss;
     oss << vsc.getType();
@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant("s1");
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
-    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
+    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getOptionalName());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
     BOOST_CHECK_CLOSE(3.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
@@ -143,7 +143,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     vsc.setLossFactor(100.0).setVoltageSetpoint(200.0).setReactivePowerSetpoint(300.0).setVoltageRegulatorOn(false);
 
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
-    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
     BOOST_CHECK_CLOSE(100.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
@@ -152,7 +151,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant("s2");
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
-    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
     BOOST_CHECK_CLOSE(100.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
@@ -161,7 +159,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     vsc.setLossFactor(150.0).setVoltageSetpoint(250.0).setReactivePowerSetpoint(350.0).setVoltageRegulatorOn(false);
 
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
-    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
     BOOST_CHECK_CLOSE(150.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
@@ -170,7 +167,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
-    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
     BOOST_CHECK_CLOSE(150.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
@@ -183,7 +179,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
-    BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getName());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
     BOOST_CHECK_CLOSE(150.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());

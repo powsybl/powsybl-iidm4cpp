@@ -134,7 +134,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     const TieLine& tieLine = dynamic_cast<const TieLine&>(network.getLine("TL_VL1_VL3"));
     BOOST_CHECK_EQUAL("TL_VL1_VL3", tieLine.getId());
-    BOOST_CHECK_EQUAL("TL_VL1_VL3", tieLine.getName());
+    BOOST_CHECK(tieLine.getOptionalName().empty());
     BOOST_CHECK_EQUAL(ConnectableType::LINE, tieLine.getType());
     std::ostringstream oss;
     oss << tieLine.getType();
