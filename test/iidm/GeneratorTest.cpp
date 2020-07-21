@@ -40,8 +40,6 @@ Network createGeneratorTestNetwork() {
         .setHighVoltageLimit(420.0)
         .add();
 
-    vl.getNodeBreakerView().setNodeCount(5);
-
     vl.getNodeBreakerView().newBusbarSection()
         .setId("BBS")
         .setName("BBS_NAME")

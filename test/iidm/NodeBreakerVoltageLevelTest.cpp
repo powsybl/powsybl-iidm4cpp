@@ -43,8 +43,6 @@ Network createCalculatedBusSwitchTestNetwork() {
         .setHighVoltageLimit(250.0)
         .add();
 
-    vl.getNodeBreakerView().setNodeCount(3);
-
     vl.getNodeBreakerView().newBusbarSection()
         .setId("C")
         .setNode(0)
@@ -78,8 +76,6 @@ Network createCalculatedBusSwitchTestNetwork() {
         .setLowVoltageLimit(0.0)
         .setHighVoltageLimit(250.0)
         .add();
-
-    vl2.getNodeBreakerView().setNodeCount(5);
 
     vl2.getNodeBreakerView().newBusbarSection()
         .setId("H")
@@ -150,8 +146,6 @@ Network createCalculatedBusSwitchTestNetwork() {
         .setHighVoltageLimit(420.0)
         .add();
 
-    vl3.getNodeBreakerView().setNodeCount(3);
-
     vl3.getNodeBreakerView().newBreaker()
         .setId("SW1")
         .setNode1(0)
@@ -187,8 +181,6 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
     BOOST_CHECK_EQUAL(TopologyKind::NODE_BREAKER, voltageLevel.getTopologyKind());
-
-    voltageLevel.getNodeBreakerView().setNodeCount(1);
 
     BusbarSection& bbs = voltageLevel.getNodeBreakerView().newBusbarSection()
         .setId("BBS")
@@ -230,7 +222,6 @@ BOOST_AUTO_TEST_CASE(switches) {
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
     BOOST_CHECK_EQUAL(TopologyKind::NODE_BREAKER, voltageLevel.getTopologyKind());
 
-    voltageLevel.getNodeBreakerView().setNodeCount(2);
     voltageLevel.getNodeBreakerView().newBusbarSection()
         .setId("BBS1")
         .setName("BBS1_NAME")
@@ -292,9 +283,6 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
     const auto& cVoltageLevel = voltageLevel;
-    voltageLevel.getNodeBreakerView().setNodeCount(NODE_COUNT);
-    BOOST_CHECK_EQUAL(3, voltageLevel.getNodeBreakerView().getNodeCount());
-    BOOST_CHECK_EQUAL(voltageLevel.getNodeBreakerView().getNodeCount(), boost::size(voltageLevel.getNodeBreakerView().getNodes()));
 
     BusbarSection& bbs1 = voltageLevel.getNodeBreakerView().newBusbarSection()
         .setId("BBS1")
@@ -412,6 +400,11 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
     BOOST_CHECK_EQUAL(1, view.getInternalConnectionCount());
     BOOST_CHECK_EQUAL(1, boost::size(view.getInternalConnections()));
     BOOST_CHECK_EQUAL(1, boost::size(cView.getInternalConnections()));
+
+    POWSYBL_ASSERT_THROW(view.removeInternalConnections(0, 2), PowsyblException, "Internal connection not found between 0 and 2");
+    view.removeInternalConnections(0, 1);
+    BOOST_CHECK_EQUAL(0, boost::size(view.getInternalConnections()));
+    BOOST_CHECK_EQUAL(0, boost::size(cView.getInternalConnections()));
 }
 
 BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
@@ -429,8 +422,6 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
-
-    vl.getNodeBreakerView().setNodeCount(4);
 
     vl.newLoad()
         .setId("LOAD1")
@@ -481,8 +472,6 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
-
-    vl2.getNodeBreakerView().setNodeCount(2);
 
     network.newLine()
         .setId("VL1_VL2")
@@ -612,8 +601,6 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
         .setHighVoltageLimit(420.0)
         .add();
 
-    vl.getNodeBreakerView().setNodeCount(5);
-
     vl.getNodeBreakerView().newBusbarSection()
         .setId("BBS")
         .setName("BBS_NAME")
@@ -660,8 +647,6 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
-
-    vl2.getNodeBreakerView().setNodeCount(2);
 
     network.newLine()
         .setId("VL1_VL2")
@@ -731,8 +716,6 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology2) {
         .setNominalVoltage(400.0)
         .add();
 
-    vl.getNodeBreakerView().setNodeCount(1);
-
     auto& l1 = vl.newLoad()
         .setId("LOAD1")
         .setNode(0)
@@ -757,8 +740,6 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
         .setTopologyKind(TopologyKind::NODE_BREAKER)
         .setNominalVoltage(1.0)
         .add();
-
-    vl1.getNodeBreakerView().setNodeCount(11);
 
     vl1.getNodeBreakerView().newBusbarSection()
         .setId("B0")
@@ -876,8 +857,6 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
         .setHighVoltageLimit(420.0)
         .add();
 
-    vl.getNodeBreakerView().setNodeCount(5);
-
     vl.getNodeBreakerView().newBusbarSection()
         .setId("BBS")
         .setName("BBS_NAME")
@@ -941,8 +920,6 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
-
-    vl2.getNodeBreakerView().setNodeCount(1);
 
     Line& line = network.newLine()
         .setId("VL1_VL2")

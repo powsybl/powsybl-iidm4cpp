@@ -46,6 +46,8 @@ public:
 
     unsigned long addVertex();
 
+    void addVertexIfNotPresent(unsigned long v);
+
     std::vector<Path> findAllPaths(unsigned long v, const VertexVisitor& pathComplete, const EdgeVisitor& pathCanceled) const;
 
     unsigned long getEdgeCount() const;
@@ -65,6 +67,8 @@ public:
     unsigned long getVertex1(unsigned long e) const;
 
     unsigned long getVertex2(unsigned long e) const;
+
+    unsigned long getVertexCapacity() const;
 
     unsigned long getVertexCount() const;
 
@@ -102,6 +106,8 @@ private:
 
     void checkVertex(unsigned long v) const;
 
+    void cleanVertices(unsigned long v);
+
     void findAllPaths(unsigned long v, const VertexVisitor& pathComplete, const EdgeVisitor& pathCanceled,
                       const Path& path, std::vector<bool>& encountered, std::vector<Path>& paths) const;
 
@@ -117,7 +123,7 @@ private:
 
     std::vector<std::unique_ptr<Edge> > m_edges;
 
-    std::set<unsigned long> m_removedVertices;
+    std::set<unsigned long> m_availableVertices;
 
     std::set<unsigned long> m_removedEdges;
 

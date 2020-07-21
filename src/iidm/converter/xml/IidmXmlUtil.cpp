@@ -92,7 +92,7 @@ void IidmXmlUtil::writeAttributeFromMinimumVersion(const std::string& rootElemen
     }
 }
 
-void IidmXmlUtil::writeIntAttributeUntilMaximumVersion(const std::string& attributeName, int value, const IidmXmlVersion& maxVersion, NetworkXmlWriterContext& context) {
+void IidmXmlUtil::writeULongAttributeUntilMaximumVersion(const std::string& attributeName, unsigned long value, const IidmXmlVersion& maxVersion, NetworkXmlWriterContext& context) {
     if (context.getVersion() <= maxVersion) {
         context.getWriter().writeAttribute(attributeName, value);
     }

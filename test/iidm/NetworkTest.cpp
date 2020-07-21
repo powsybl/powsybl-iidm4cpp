@@ -243,7 +243,6 @@ Network createTestNodeBreakerNetwork() {
         .setHighVoltageLimit(260.0)
         .add();
 
-    voltageLevel.getNodeBreakerView().setNodeCount(5);
     voltageLevel.getNodeBreakerView().newBusbarSection()
         .setId("BBS1")
         .setName("BBS1_NAME")
