@@ -17,6 +17,7 @@ set(EXT_SOURCES
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
     src/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.cpp
     src/TwoWindingsTransformerPhaseAngleClock.cpp
+    src/TwoWindingsTransformerPhaseAngleClockAdder.cpp
     src/TwoWindingsTransformerPhaseAngleClockXmlSerializer.cpp
 )
 

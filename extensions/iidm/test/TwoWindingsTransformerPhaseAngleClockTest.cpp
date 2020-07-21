@@ -9,7 +9,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
-#include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClock.hpp>
+#include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClockAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 
 #include <powsybl/test/ResourceFixture.hpp>
@@ -30,7 +30,7 @@ BOOST_FIXTURE_TEST_CASE(TwoWindingsTransformerPhaseAngleClockXmlSerializerTest, 
     network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("NHV2_NLOAD");
-    transformer.addExtension(Extension::create<TwoWindingsTransformerPhaseAngleClock>(transformer, 3));
+    transformer.newExtension<TwoWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClock(3).add();
 
     const std::string& networkStr = ResourceFixture::getResource("twoWindingsTransformerPhaseAngleClock.xml");
 
