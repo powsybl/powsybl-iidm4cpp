@@ -380,29 +380,33 @@ BOOST_AUTO_TEST_CASE(switches) {
     BOOST_CHECK_EQUAL(1UL, boost::size(voltageLevel.getSwitches()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cVoltageLevel.getSwitches()));
 
-    voltageLevel.getNodeBreakerView().setNodeCount(5);
     BOOST_CHECK(voltageLevel.getNodeBreakerView().getOptionalTerminal(0));
     BOOST_CHECK(voltageLevel.getNodeBreakerView().getOptionalTerminal(1));
     BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(0));
     BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(1));
     voltageLevel.getNodeBreakerView().removeSwitch(breaker.getId());
 
-    Switch& tmpSwitch = voltageLevel.getNodeBreakerView().newBreaker()
-        .setId("tmp")
-        .setName("TMP")
-        .setNode1(2)
-        .setNode2(3)
+    voltageLevel.getNodeBreakerView().newBreaker()
+        .setId("SWITCH")
+        .setName("SWITCH")
+        .setNode1(4)
+        .setNode2(5)
         .setOpen(false)
         .setRetained(true)
         .setFictitious(false)
         .add();
-    voltageLevel.getNodeBreakerView().removeSwitch(tmpSwitch.getId());
-    voltageLevel.clean();
+
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(2));
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(3));
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().hasAttachedEquipment(2));
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().hasAttachedEquipment(3));
-    POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getOptionalTerminal(5), PowsyblException, "Invalid vertex 5");
+
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(4));
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(5));
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(4));
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(5));
+    
+    POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getOptionalTerminal(6), PowsyblException, "Invalid vertex 6");
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
