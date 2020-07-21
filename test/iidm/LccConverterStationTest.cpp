@@ -35,11 +35,15 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': loss factor is invalid");
     adder.setLossFactor(-10.0);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': loss factor must be >= 0");
-    adder.setLossFactor(10.0);
+
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': loss factor must be >= 0 and <= 1");
+    adder.setLossFactor(0.1);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': power factor is invalid");
     adder.setPowerFactor(50.0);
+
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': power factor is invalid, it should be between -1 and 1");
+    adder.setPowerFactor(0.1);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'LccConverterStation' with the id 'LCC1'");
     adder.setEnsureIdUnicity(true);
@@ -68,7 +72,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     POWSYBL_ASSERT_ENUM_EQ(lcc.getHvdcType(), hvdc.getHvdcType());
     BOOST_CHECK_CLOSE(1.0, lcc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(lcc.getLossFactor(), hvdc.getLossFactor(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(2.0, lcc.getPowerFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, lcc.getPowerFactor(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
@@ -78,15 +82,15 @@ BOOST_AUTO_TEST_CASE(integrity) {
     HvdcConverterStation& hvdc = network.getHvdcConverterStation("LCC1");
     BOOST_TEST(stdcxx::areSame(lcc, hvdc));
 
-    BOOST_TEST(stdcxx::areSame(lcc, lcc.setLossFactor(100.0)));
-    BOOST_CHECK_CLOSE(100.0, lcc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(lcc, lcc.setLossFactor(0.22)));
+    BOOST_CHECK_CLOSE(0.22, lcc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(lcc.getLossFactor(), hvdc.getLossFactor(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(lcc.setLossFactor(stdcxx::nan()), ValidationException, "lccConverterStation 'LCC1': loss factor is invalid");
-    POWSYBL_ASSERT_THROW(lcc.setLossFactor(-100.0), ValidationException, "lccConverterStation 'LCC1': loss factor must be >= 0");
+    POWSYBL_ASSERT_THROW(lcc.setLossFactor(-100.0), ValidationException, "lccConverterStation 'LCC1': loss factor must be >= 0 and <= 1");
 
-    BOOST_TEST(stdcxx::areSame(lcc, lcc.setPowerFactor(300.0)));
-    BOOST_TEST(stdcxx::areSame(hvdc, lcc.setPowerFactor(400.0)));
-    BOOST_CHECK_CLOSE(400.0, lcc.getPowerFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(lcc, lcc.setPowerFactor(0.33)));
+    BOOST_TEST(stdcxx::areSame(hvdc, lcc.setPowerFactor(0.44)));
+    BOOST_CHECK_CLOSE(0.44, lcc.getPowerFactor(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(lcc.setPowerFactor(stdcxx::nan()), ValidationException, "lccConverterStation 'LCC1': power factor is invalid");
 
     lcc.remove();
