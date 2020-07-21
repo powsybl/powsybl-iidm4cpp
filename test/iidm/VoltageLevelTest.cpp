@@ -197,6 +197,7 @@ BOOST_AUTO_TEST_CASE(getConnectablesCheckUnique) {
     const Network network = createLineTestNetwork2();
     const VoltageLevel& vl = network.getVoltageLevel("VL1");
     BOOST_CHECK_EQUAL(1UL, boost::size(vl.getConnectables<Line>()));
+    BOOST_CHECK_EQUAL(1UL, vl.getConnectableCount<Line>());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
