@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     const Substation& substation = network.getSubstation("S1");
     BOOST_CHECK_EQUAL("S1", substation.getId());
-    BOOST_CHECK_EQUAL("S1_NAME", substation.getName());
+    BOOST_CHECK_EQUAL("S1_NAME", substation.getOptionalName());
     POWSYBL_ASSERT_ENUM_EQ(Country::FR, *substation.getCountry());
     BOOST_CHECK_EQUAL("TSO", substation.getTso());
 }
