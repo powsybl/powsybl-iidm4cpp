@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/extensions/entsoe/EntsoeArea.hpp>
+#include <powsybl/iidm/extensions/entsoe/EntsoeAreaAdder.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include <powsybl/test/ResourceFixture.hpp>
@@ -32,7 +33,7 @@ Network createNetwork() {
         .setId("S")
         .setCountry(Country::FR)
         .add();
-    s.addExtension(Extension::create<EntsoeArea>(s, EntsoeGeographicalCode::FR));
+    s.newExtension<EntsoeAreaAdder>().withCode(EntsoeGeographicalCode::FR).add();
 
     return network;
 }
