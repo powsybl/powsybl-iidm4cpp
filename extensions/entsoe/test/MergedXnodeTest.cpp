@@ -96,8 +96,14 @@ BOOST_AUTO_TEST_CASE(MergedXnodeTest) {
     BOOST_CHECK_CLOSE(3.0, extension.getXnodeP2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, extension.getXnodeQ2(), std::numeric_limits<double>::epsilon());
 
+    POWSYBL_ASSERT_THROW(MergedXnode(line, stdcxx::nan(), 0.2, 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: nan");
+    POWSYBL_ASSERT_THROW(extension.setRdp(stdcxx::nan()), PowsyblException, "Invalid divider position: nan");
+
     POWSYBL_ASSERT_THROW(MergedXnode(line, 10, 0.2, 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: 10");
     POWSYBL_ASSERT_THROW(extension.setRdp(10), PowsyblException, "Invalid divider position: 10");
+
+    POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, stdcxx::nan(), 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: nan");
+    POWSYBL_ASSERT_THROW(extension.setXdp(stdcxx::nan()), PowsyblException, "Invalid divider position: nan");
 
     POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, 10, 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: 10");
     POWSYBL_ASSERT_THROW(extension.setXdp(10), PowsyblException, "Invalid divider position: 10");
