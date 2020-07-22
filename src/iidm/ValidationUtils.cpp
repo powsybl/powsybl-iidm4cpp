@@ -197,8 +197,8 @@ double checkLossFactor(const Validable& validable, double lossFactor) {
     if (std::isnan(lossFactor)) {
         throw ValidationException(validable, "loss factor is invalid");
     }
-    if (lossFactor < 0) {
-        throw ValidationException(validable, "loss factor must be >= 0");
+    if (lossFactor < 0 || lossFactor > 100) {
+        throw ValidationException(validable, "loss factor must be >= 0 and <= 100");
     }
     return lossFactor;
 }

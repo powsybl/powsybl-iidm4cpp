@@ -35,7 +35,9 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': loss factor is invalid");
     adder.setLossFactor(-10.0);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': loss factor must be >= 0");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': loss factor must be >= 0 and <= 100");
+    adder.setLossFactor(101.0);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': loss factor must be >= 0 and <= 100");
     adder.setLossFactor(10.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "lccConverterStation 'LCC1': power factor is invalid");
@@ -84,7 +86,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(100.0, lcc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(lcc.getLossFactor(), hvdc.getLossFactor(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(lcc.setLossFactor(stdcxx::nan()), ValidationException, "lccConverterStation 'LCC1': loss factor is invalid");
-    POWSYBL_ASSERT_THROW(lcc.setLossFactor(-100.0), ValidationException, "lccConverterStation 'LCC1': loss factor must be >= 0");
+    POWSYBL_ASSERT_THROW(lcc.setLossFactor(-100.0), ValidationException, "lccConverterStation 'LCC1': loss factor must be >= 0 and <= 100");
 
     BOOST_TEST(stdcxx::areSame(lcc, lcc.setPowerFactor(0.3)));
     BOOST_TEST(stdcxx::areSame(hvdc, lcc.setPowerFactor(0.4)));
