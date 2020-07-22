@@ -22,9 +22,9 @@ HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& n
     m_converterStation2(attach(converterStation2)),
     m_r(checkR(*this, r)),
     m_nominalVoltage(checkNominalVoltage(*this, nominalVoltage)),
-    m_maxP(checkMaxP(*this, maxP)),
+    m_maxP(checkHvdcMaxP(*this, maxP)),
     m_convertersMode(network.getVariantManager().getVariantArraySize(), checkConvertersMode(*this, convertersMode)),
-    m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), checkActivePowerSetpoint(*this, activePowerSetpoint)) {
+    m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), checkHvdcActivePowerSetpoint(*this, activePowerSetpoint)) {
 }
 
 void HvdcLine::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -131,7 +131,7 @@ void HvdcLine::remove() {
 }
 
 HvdcLine& HvdcLine::setActivePowerSetpoint(double activePowerSetpoint) {
-    m_activePowerSetpoint[getNetwork().getVariantIndex()] = checkActivePowerSetpoint(*this, activePowerSetpoint);
+    m_activePowerSetpoint[getNetwork().getVariantIndex()] = checkHvdcActivePowerSetpoint(*this, activePowerSetpoint);
 
     return *this;
 }
@@ -143,7 +143,7 @@ HvdcLine& HvdcLine::setConvertersMode(const ConvertersMode& mode) {
 }
 
 HvdcLine& HvdcLine::setMaxP(double maxP) {
-    m_maxP = checkMaxP(*this, maxP);
+    m_maxP = checkHvdcMaxP(*this, maxP);
 
     return *this;
 }

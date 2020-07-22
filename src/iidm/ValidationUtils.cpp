@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/ValidationUtils.hpp>
 
+#include <cmath>
+
 #include <powsybl/iidm/LoadType.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/format.hpp>
@@ -158,6 +160,26 @@ void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int nu
     }
 }
 
+double checkHvdcActivePowerSetpoint(const Validable& validable, double activePowerSetpoint) {
+    if (std::isnan(activePowerSetpoint)) {
+        throw createInvalidValueException(validable, activePowerSetpoint, "active power setpoint");
+    }
+    if (activePowerSetpoint < 0) {
+        throw createInvalidValueException(validable, activePowerSetpoint, "active power setpoint should not be negative");
+    }
+    return activePowerSetpoint;
+}
+
+double checkHvdcMaxP(const Validable& validable, double maxP) {
+    if (std::isnan(maxP)) {
+        throw createInvalidValueException(validable, maxP, "maximum P");
+    }
+    if (maxP < 0) {
+        throw createInvalidValueException(validable, maxP, "maximum P");
+    }
+    return maxP;
+}
+
 const LoadType& checkLoadType(const Validable& /*validable*/, const LoadType& loadType) {
     switch (loadType) {
         case LoadType::UNDEFINED:
@@ -280,6 +302,9 @@ void checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapCh
 double checkPowerFactor(const Validable& validable, double powerFactor) {
     if (std::isnan(powerFactor)) {
         throw ValidationException(validable, "power factor is invalid");
+    }
+    if (std::abs(powerFactor) > 1) {
+        throw ValidationException(validable, "power factor is invalid, it should be between -1 and 1");
     }
     return powerFactor;
 }
