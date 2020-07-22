@@ -39,7 +39,7 @@ private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
-    static double checkQPercent(double qPercent);
+    static double checkQPercent(Generator& generator, double qPercent);
 
 private:
     double m_qPercent;
