@@ -21,7 +21,7 @@ public:  // Identifiable
 
 public:
     Battery(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-            double p0, double q0, double minP, double maxP);
+        double p0, double q0, double minP, double maxP);
 
     ~Battery() noexcept override = default;
 
