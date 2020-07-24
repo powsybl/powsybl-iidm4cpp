@@ -18,6 +18,9 @@ set(EXT_SOURCES
     src/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.cpp
     src/TwoWindingsTransformerPhaseAngleClock.cpp
     src/TwoWindingsTransformerPhaseAngleClockXmlSerializer.cpp
+    src/VoltagePerReactivePowerControl.cpp
+    src/VoltagePerReactivePowerControlAdder.cpp
+    src/VoltagePerReactivePowerControlXmlSerializer.cpp
 )
 
 set(UNIT_TEST_SOURCES
@@ -26,6 +29,7 @@ set(UNIT_TEST_SOURCES
     test/iidm.cpp
     test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
     test/TwoWindingsTransformerPhaseAngleClockTest.cpp
+    test/VoltagePerReactivePowerControlTest.cpp
 )
 
 # Shared library
