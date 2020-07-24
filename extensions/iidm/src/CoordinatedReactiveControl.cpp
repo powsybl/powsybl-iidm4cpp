@@ -35,7 +35,7 @@ void CoordinatedReactiveControl::assertExtendable(const stdcxx::Reference<Extend
     }
 }
 
-double CoordinatedReactiveControl::checkQPercent(Generator& generator, double qPercent) {
+double CoordinatedReactiveControl::checkQPercent(const Generator& generator, double qPercent) {
     if (std::isnan(qPercent)) {
         throw PowsyblException("Undefined value for qPercent");
     }
