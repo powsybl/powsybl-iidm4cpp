@@ -5,7 +5,7 @@
             <iidm:busBreakerTopology>
                 <iidm:bus id="B1"/>
             </iidm:busBreakerTopology>
-            <iidm:vscConverterStation id="C1" name="Converter1" voltageRegulatorOn="true" lossFactor="0.010999999940395355" voltageSetpoint="405" bus="B1" connectableBus="B1" p="100" q="50">
+            <iidm:vscConverterStation id="C1" name="Converter1" voltageRegulatorOn="true" lossFactor="1.1000000000000001" voltageSetpoint="405" bus="B1" connectableBus="B1" p="100" q="50">
                 <iidm:reactiveCapabilityCurve>
                     <iidm:point p="5" minQ="0" maxQ="10"/>
                     <iidm:point p="10" minQ="0" maxQ="10"/>
@@ -20,7 +20,7 @@
                 <iidm:switch id="DISC_BBS1_BK1" name="Disconnector" kind="DISCONNECTOR" retained="false" open="false" node1="0" node2="1"/>
                 <iidm:switch id="BK1" name="Breaker" kind="BREAKER" retained="true" open="false" node1="1" node2="2"/>
             </iidm:nodeBreakerTopology>
-            <iidm:vscConverterStation id="C2" name="Converter2" voltageRegulatorOn="false" lossFactor="0.010999999999999999" reactivePowerSetpoint="123" node="2">
+            <iidm:vscConverterStation id="C2" name="Converter2" voltageRegulatorOn="false" lossFactor="1.1000000000000001" reactivePowerSetpoint="123" node="2">
                 <iidm:minMaxReactiveLimits minQ="0" maxQ="10"/>
             </iidm:vscConverterStation>
         </iidm:voltageLevel>
