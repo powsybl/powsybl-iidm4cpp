@@ -452,10 +452,7 @@ void UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser
 
 template <typename V, typename E>
 bool UndirectedGraph<V, E>::vertexExists(unsigned long v) const {
-    if (v >= m_vertices.size()) {
-        throw PowsyblException(stdcxx::format("Invalid vertex %1%", v));
-    }
-    return static_cast<bool>(m_vertices[v]);
+    return v < m_vertices.size() && m_vertices[v];
 }
 
 template <typename V, typename E>

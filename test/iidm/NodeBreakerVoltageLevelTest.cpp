@@ -396,6 +396,7 @@ BOOST_AUTO_TEST_CASE(switches) {
         .setFictitious(false)
         .add();
 
+    // check non-const versions
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(2));
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(3));
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().hasAttachedEquipment(2));
@@ -405,8 +406,21 @@ BOOST_AUTO_TEST_CASE(switches) {
     BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(5));
     BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(4));
     BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(5));
-    
-    POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getOptionalTerminal(6), PowsyblException, "Invalid vertex 6");
+
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(6));
+
+    // check const versions
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(2));
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(3));
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().hasAttachedEquipment(2));
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().hasAttachedEquipment(3));
+
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(4));
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(5));
+    BOOST_CHECK(cVoltageLevel.getNodeBreakerView().hasAttachedEquipment(4));
+    BOOST_CHECK(cVoltageLevel.getNodeBreakerView().hasAttachedEquipment(5));
+
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(6));
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {

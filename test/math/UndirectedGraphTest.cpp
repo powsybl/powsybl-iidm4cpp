@@ -98,7 +98,7 @@ BOOST_AUTO_TEST_CASE(getEdgeObject) {
     BOOST_CHECK(graph.vertexExists(1UL));
     BOOST_CHECK(!graph.vertexExists(2UL));
     BOOST_CHECK(graph.vertexExists(3UL));
-    POWSYBL_ASSERT_THROW(graph.vertexExists(4), PowsyblException, "Invalid vertex 4");
+    BOOST_CHECK(!graph.vertexExists(4UL));
 }
 
 BOOST_AUTO_TEST_CASE(getEdges) {
