@@ -376,9 +376,9 @@ BOOST_AUTO_TEST_CASE(getConnectablesTest) {
     BOOST_CHECK_EQUAL(2, boost::size(cNetwork.getConnectables<Load>()));
     BOOST_CHECK_EQUAL(2UL, network.getConnectableCount<Load>());
 
-    BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<Line>()));
-    BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<Line>()));
-    BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<Line>());
+    BOOST_CHECK_EQUAL(2, boost::size(network.getConnectables<Line>()));
+    BOOST_CHECK_EQUAL(2, boost::size(cNetwork.getConnectables<Line>()));
+    BOOST_CHECK_EQUAL(2UL, network.getConnectableCount<Line>());
 
     BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<TieLine>()));
     BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<TieLine>()));
@@ -391,6 +391,10 @@ BOOST_AUTO_TEST_CASE(getConnectablesTest) {
     BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<TwoWindingsTransformer>()));
     BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<TwoWindingsTransformer>()));
     BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<TwoWindingsTransformer>());
+
+    BOOST_CHECK_EQUAL(3, boost::size(network.getConnectables<Injection>()));
+    BOOST_CHECK_EQUAL(3, boost::size(cNetwork.getConnectables<Injection>()));
+    BOOST_CHECK_EQUAL(3UL, network.getConnectableCount<Injection>());
 
     BOOST_CHECK_EQUAL(6UL, boost::size(network.getConnectables()));
     BOOST_CHECK_EQUAL(6UL, boost::size(cNetwork.getConnectables()));

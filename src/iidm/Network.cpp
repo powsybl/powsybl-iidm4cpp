@@ -179,8 +179,7 @@ stdcxx::const_range<Connectable> Network::getConnectables() const {
 }
 
 stdcxx::range<Connectable> Network::getConnectables() {
-    const auto& mapper = map<Connectable>;
-    return static_cast<const Network*>(this)->getConnectables() | boost::adaptors::transformed(mapper);
+    return m_networkIndex.getAll<Connectable>();
 }
 
 unsigned long Network::getCountryCount() const {

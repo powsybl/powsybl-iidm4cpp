@@ -10,6 +10,9 @@
 
 #include <powsybl/iidm/Network.hpp>
 
+#include <boost/range/adaptor/filtered.hpp>
+#include <boost/range/adaptor/transformed.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -31,17 +34,17 @@ T& Network::get(const std::string& id) {
 
 template <typename T, typename>
 unsigned long Network::getConnectableCount() const {
-    return m_networkIndex.getObjectCount<T>();
+    return boost::size(getConnectables<T>());
 }
 
 template <typename T, typename>
 stdcxx::const_range<T> Network::getConnectables() const {
-    return m_networkIndex.getAll<T>();
+    return m_networkIndex.getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(Identifiable::isInstanceOf<T>) | boost::adaptors::transformed(map<const T>);
 }
 
 template <typename T, typename>
 stdcxx::range<T> Network::getConnectables() {
-    return m_networkIndex.getAll<T>();
+    return m_networkIndex.getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(Identifiable::isInstanceOf<T>) | boost::adaptors::transformed(map<T>);
 }
 
 template <typename T, typename>
