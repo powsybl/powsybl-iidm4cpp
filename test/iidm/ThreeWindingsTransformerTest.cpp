@@ -343,6 +343,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     // Leg 1 tests
     ThreeWindingsTransformer::Leg& leg1 = transformer.getLeg1();
+    const ThreeWindingsTransformer::Leg& cLeg1 = transformer.getLeg1();
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
 
     BOOST_TEST(stdcxx::areSame(leg1, leg1.setR(100.0)));
@@ -395,9 +396,13 @@ BOOST_AUTO_TEST_CASE(integrity) {
         .add();
     BOOST_TEST(leg1.getCurrentLimits());
 
+    BOOST_TEST(!leg1.getOptionalRatioTapChanger());
+    BOOST_TEST(!cLeg1.getOptionalRatioTapChanger());
+    BOOST_TEST(!leg1.hasRatioTapChanger());
 
     // Leg 2 tests
     ThreeWindingsTransformer::Leg& leg2 = transformer.getLeg2();
+    const ThreeWindingsTransformer::Leg& cLeg2 = transformer.getLeg2();
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg2", leg2.toString());
 
     BOOST_TEST(stdcxx::areSame(leg2, leg2.setR(600.0)));
@@ -440,11 +445,26 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(!leg2.getRatioTapChanger());
     addRatioTapChangerLeg2(transformer, load1Terminal);
     BOOST_TEST(leg2.getRatioTapChanger());
+    BOOST_TEST(leg2.getOptionalRatioTapChanger());
+    BOOST_CHECK(stdcxx::areSame(leg2.getOptionalRatioTapChanger().get(), leg2.getRatioTapChanger().get()));
+    BOOST_TEST(leg2.hasRatioTapChanger());
+    BOOST_TEST(cLeg2.getRatioTapChanger());
+    BOOST_TEST(cLeg2.getOptionalRatioTapChanger());
+    BOOST_CHECK(stdcxx::areSame(cLeg2.getOptionalRatioTapChanger().get(), leg2.getRatioTapChanger().get()));
     leg2.getRatioTapChanger().get().remove();
     BOOST_TEST(!leg2.getRatioTapChanger());
+    BOOST_TEST(!leg2.getOptionalRatioTapChanger());
+    BOOST_TEST(!leg2.hasRatioTapChanger());
+    BOOST_TEST(!cLeg2.getRatioTapChanger());
+    BOOST_TEST(!cLeg2.getOptionalRatioTapChanger());
+
+    BOOST_TEST(!leg2.getOptionalPhaseTapChanger());
+    BOOST_TEST(!cLeg2.getOptionalPhaseTapChanger());
+    BOOST_TEST(!leg2.hasPhaseTapChanger());
 
     // Leg 3 tests
     ThreeWindingsTransformer::Leg& leg3 = transformer.getLeg3();
+    const ThreeWindingsTransformer::Leg& cLeg3 = transformer.getLeg3();
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg3", leg3.toString());
 
     BOOST_TEST(stdcxx::areSame(leg3, leg3.setR(900.0)));
@@ -486,8 +506,20 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(!leg3.getRatioTapChanger());
     addRatioTapChangerLeg3(transformer, load2Terminal);
     BOOST_TEST(leg3.getRatioTapChanger());
+    BOOST_TEST(leg3.getOptionalRatioTapChanger());
+    BOOST_TEST(leg3.hasRatioTapChanger());
+    BOOST_TEST(cLeg3.getRatioTapChanger());
+    BOOST_TEST(cLeg3.getOptionalRatioTapChanger());
     leg3.getRatioTapChanger().get().remove();
     BOOST_TEST(!leg3.getRatioTapChanger());
+    BOOST_TEST(!leg3.getOptionalRatioTapChanger());
+    BOOST_TEST(!leg3.hasRatioTapChanger());
+    BOOST_TEST(!cLeg3.getRatioTapChanger());
+    BOOST_TEST(!cLeg3.getOptionalRatioTapChanger());
+
+    BOOST_TEST(!leg3.getOptionalPhaseTapChanger());
+    BOOST_TEST(!leg3.hasPhaseTapChanger());
+    BOOST_TEST(!cLeg3.getOptionalPhaseTapChanger());
 
     transformer.remove();
     POWSYBL_ASSERT_THROW(network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3"), PowsyblException, "Unable to find to the identifiable '3WT_VL1_VL2_VL3'");

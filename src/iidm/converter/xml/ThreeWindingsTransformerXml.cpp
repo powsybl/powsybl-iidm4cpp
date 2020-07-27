@@ -176,18 +176,18 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
 }
 
 void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg1().getRatioTapChanger(), THREE_WINDINGS_TRANSFORMER, RATIO_TAP_CHANGER1,
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg1().hasRatioTapChanger(), THREE_WINDINGS_TRANSFORMER, RATIO_TAP_CHANGER1,
         ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
     writeRatioTapChanger(twt.getLeg1().getRatioTapChanger(), 1, context);
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg1().getPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER1,
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg1().hasPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER1,
         ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
     writePhaseTapChanger(twt.getLeg1().getPhaseTapChanger(), 1, context);
     writeRatioTapChanger(twt.getLeg2().getRatioTapChanger(), 2, context);
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg2().getPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER2,
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg2().hasPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER2,
         ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
     writePhaseTapChanger(twt.getLeg2().getPhaseTapChanger(), 2, context);
     writeRatioTapChanger(twt.getLeg3().getRatioTapChanger(), 3, context);
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg3().getPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER3,
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg3().hasPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER3,
         ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
     writePhaseTapChanger(twt.getLeg3().getPhaseTapChanger(), 3, context);
 

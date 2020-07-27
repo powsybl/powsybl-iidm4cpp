@@ -137,8 +137,8 @@ Network createTwoWindingsTransformerTestNetwork() {
     return network;
 }
 
-void addRatioTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal) {
-    transformer.newRatioTapChanger()
+RatioTapChanger& addRatioTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal) {
+    return transformer.newRatioTapChanger()
         .setTapPosition(2L)
         .setLowTapPosition(1L)
         .beginStep()
@@ -170,8 +170,8 @@ void addRatioTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal)
         .add();
 }
 
-void addPhaseTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal) {
-    transformer.newPhaseTapChanger()
+PhaseTapChanger& addPhaseTapChanger(TwoWindingsTransformer& transformer, Terminal& terminal) {
+    return transformer.newPhaseTapChanger()
         .setTapPosition(-2L)
         .setLowTapPosition(-3L)
         .beginStep()
@@ -394,8 +394,21 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     Terminal& terminal = network.getLoad("LOAD1").getTerminal();
     Terminal& terminal2 = network.getLoad("LOAD2").getTerminal();
-    addRatioTapChanger(transformer, terminal);
-    addPhaseTapChanger(transformer, terminal2);
+
+    BOOST_TEST(!transformer.getOptionalRatioTapChanger());
+    BOOST_TEST(!transformer.hasRatioTapChanger());
+    RatioTapChanger& rtc = addRatioTapChanger(transformer, terminal);
+    BOOST_TEST(transformer.getOptionalRatioTapChanger());
+    BOOST_CHECK(stdcxx::areSame(rtc, transformer.getOptionalRatioTapChanger().get()));
+    BOOST_TEST(transformer.hasRatioTapChanger());
+
+    BOOST_TEST(!transformer.getOptionalPhaseTapChanger());
+    BOOST_TEST(!transformer.hasPhaseTapChanger());
+    PhaseTapChanger& ptc = addPhaseTapChanger(transformer, terminal2);
+    BOOST_TEST(transformer.getOptionalPhaseTapChanger());
+    BOOST_CHECK(stdcxx::areSame(ptc, transformer.getOptionalPhaseTapChanger().get()));
+    BOOST_TEST(transformer.hasPhaseTapChanger());
+
     RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger().get();
     PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();
 

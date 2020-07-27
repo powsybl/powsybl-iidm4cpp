@@ -22,10 +22,6 @@ class Substation;
 
 class TwoWindingsTransformer : public virtual Branch, public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
 public:  // TapChangerHolder
-    bool hasPhaseTapChanger() const override;
-
-    bool hasRatioTapChanger() const override;
-
     const Network& getNetwork() const override;
 
     Network& getNetwork() override;

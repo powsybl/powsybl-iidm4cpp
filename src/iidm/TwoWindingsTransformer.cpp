@@ -71,14 +71,6 @@ double TwoWindingsTransformer::getG() const {
     return m_g;
 }
 
-bool TwoWindingsTransformer::hasPhaseTapChanger() const {
-    return static_cast<bool>(m_phaseTapChanger);
-}
-
-bool TwoWindingsTransformer::hasRatioTapChanger() const {
-    return static_cast<bool >(m_ratioTapChanger);
-}
-
 const Network& TwoWindingsTransformer::getNetwork() const {
     return Branch::getNetwork();
 }

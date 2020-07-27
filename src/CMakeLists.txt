@@ -74,9 +74,11 @@ set(IIDM_SOURCES
     iidm/NodeTerminalViews.cpp
     iidm/PhaseTapChanger.cpp
     iidm/PhaseTapChangerAdder.cpp
+    iidm/PhaseTapChangerHolder.cpp
     iidm/PhaseTapChangerStep.cpp
     iidm/RatioTapChanger.cpp
     iidm/RatioTapChangerAdder.cpp
+    iidm/RatioTapChangerHolder.cpp
     iidm/RatioTapChangerStep.cpp
     iidm/ReactiveCapabilityCurve.cpp
     iidm/ReactiveCapabilityCurveAdder.cpp

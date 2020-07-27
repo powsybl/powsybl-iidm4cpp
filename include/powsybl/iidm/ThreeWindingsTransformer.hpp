@@ -33,10 +33,6 @@ public:
         std::string getMessageHeader() const override;
 
     public:  // TapChangerHolder
-        bool hasPhaseTapChanger() const override;
-
-        bool hasRatioTapChanger() const override;
-
         const Network& getNetwork() const override;
 
         Network& getNetwork() override;
