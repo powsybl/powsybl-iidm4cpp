@@ -9,9 +9,11 @@
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClock.hpp>
 #include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClockAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 
+#include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -24,6 +26,23 @@ namespace extensions {
 namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(TwoWindingsTransformerPhaseAngleClockTestSuite)
+
+BOOST_AUTO_TEST_CASE(integrity) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+
+    TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("NHV2_NLOAD");
+    POWSYBL_ASSERT_THROW(transformer.newExtension<TwoWindingsTransformerPhaseAngleClockAdder>().add(), PowsyblException, "Undefined value for phaseAngleClock");
+    POWSYBL_ASSERT_THROW(transformer.newExtension<TwoWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClock(12UL).add(), PowsyblException, "Unexpected value for phaseAngleClock: 12");
+    POWSYBL_ASSERT_THROW(TwoWindingsTransformerPhaseAngleClock(transformer, 12UL), PowsyblException, "Unexpected value for phaseAngleClock: 12");
+
+    transformer.newExtension<TwoWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClock(3UL).add();
+
+    auto& twtpac = transformer.getExtension<TwoWindingsTransformerPhaseAngleClock>();
+    BOOST_CHECK_EQUAL(3, twtpac.getPhaseAngleClock());
+    BOOST_CHECK(stdcxx::areSame(twtpac, twtpac.setPhaseAngleClock(4UL)));
+    BOOST_CHECK_EQUAL(4, twtpac.getPhaseAngleClock());
+    POWSYBL_ASSERT_THROW(twtpac.setPhaseAngleClock(12), PowsyblException, "Unexpected value for phaseAngleClock: 12");
+}
 
 BOOST_FIXTURE_TEST_CASE(TwoWindingsTransformerPhaseAngleClockXmlSerializerTest, test::ResourceFixture) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();

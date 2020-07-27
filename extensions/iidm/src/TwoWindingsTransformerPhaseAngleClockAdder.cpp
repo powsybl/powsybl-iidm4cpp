@@ -23,8 +23,11 @@ TwoWindingsTransformerPhaseAngleClockAdder::TwoWindingsTransformerPhaseAngleCloc
 }
 
 std::unique_ptr<Extension> TwoWindingsTransformerPhaseAngleClockAdder::createExtension(Extendable& extendable) {
+    if (!m_phaseAngleClock) {
+        throw PowsyblException(stdcxx::format("Undefined value for phaseAngleClock"));
+    }
     if (stdcxx::isInstanceOf<TwoWindingsTransformer>(extendable)) {
-        return stdcxx::make_unique<TwoWindingsTransformerPhaseAngleClock>(dynamic_cast<TwoWindingsTransformer&>(extendable), m_phaseAngleClock);
+        return stdcxx::make_unique<TwoWindingsTransformerPhaseAngleClock>(dynamic_cast<TwoWindingsTransformer&>(extendable), *m_phaseAngleClock);
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<TwoWindingsTransformer>()));
 }

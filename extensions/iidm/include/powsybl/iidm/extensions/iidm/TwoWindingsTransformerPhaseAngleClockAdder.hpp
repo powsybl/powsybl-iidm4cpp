@@ -6,6 +6,7 @@
  */
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -67,7 +68,7 @@ protected:
     std::unique_ptr<Extension> createExtension(Extendable& extendable) override;
 
 private:
-    unsigned long m_phaseAngleClock = 12UL;
+    stdcxx::optional<unsigned long> m_phaseAngleClock;
 };
 
 }  // namespace iidm
