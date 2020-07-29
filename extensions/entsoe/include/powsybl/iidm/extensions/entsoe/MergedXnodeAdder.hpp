@@ -36,7 +36,7 @@ public:
     /**
      * Copy constructor
      */
-    MergedXnodeAdder(const MergedXnodeAdder& extendable) = default;
+    MergedXnodeAdder(const MergedXnodeAdder&) = default;
 
     /**
      * Move constructor
