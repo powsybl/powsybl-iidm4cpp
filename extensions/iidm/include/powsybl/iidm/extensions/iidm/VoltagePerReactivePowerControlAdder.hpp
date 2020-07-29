@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_VOLTAGEPERREACTIVEPOWERCONTROLADDER_HPP
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -70,7 +71,7 @@ protected:  // ExtensionAdder
     std::unique_ptr<Extension> createExtension(Extendable& extendable) override;
 
 private:
-    double m_slope = 0.0;
+    double m_slope = stdcxx::nan();
 };
 
 }  // namespace iidm

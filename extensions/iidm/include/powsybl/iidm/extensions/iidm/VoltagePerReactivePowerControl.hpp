@@ -27,35 +27,9 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    /**
-     * Constructor
-     */
     VoltagePerReactivePowerControl(StaticVarCompensator& svc, double slope);
 
-    /**
-     * Destructor
-     */
     ~VoltagePerReactivePowerControl() noexcept override = default;
-
-    /**
-     * Copy constructor
-     */
-    VoltagePerReactivePowerControl(const VoltagePerReactivePowerControl&) = default;
-
-    /**
-     * Move constructor
-     */
-    VoltagePerReactivePowerControl(VoltagePerReactivePowerControl&&) = default;
-
-    /**
-     * Copy assignment operator
-     */
-    VoltagePerReactivePowerControl& operator=(const VoltagePerReactivePowerControl&) = delete;
-
-    /**
-     * Move assignment operator
-     */
-    VoltagePerReactivePowerControl& operator=(VoltagePerReactivePowerControl&&) = delete;
 
     /**
      * Get slope
