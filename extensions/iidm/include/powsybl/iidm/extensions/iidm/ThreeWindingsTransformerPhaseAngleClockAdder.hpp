@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_THREEWINDINGSTRANSFORMERPHASEANGLECLOCKADDER_HPP
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -79,9 +80,9 @@ protected:
     std::unique_ptr<Extension> createExtension(Extendable& extendable) override;
 
 private:
-    unsigned long m_phaseAngleClockLeg2 = 12UL;
+    stdcxx::optional<unsigned long> m_phaseAngleClockLeg2;
 
-    unsigned long m_phaseAngleClockLeg3 = 12UL;
+    stdcxx::optional<unsigned long> m_phaseAngleClockLeg3;
 };
 
 }  // namespace iidm
