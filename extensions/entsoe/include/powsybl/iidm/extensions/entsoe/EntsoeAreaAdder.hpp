@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
 #include <powsybl/iidm/extensions/entsoe/EntsoeGeographicalCode.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -71,7 +72,7 @@ protected:
     std::unique_ptr<Extension> createExtension(Extendable& extendable) override;
 
 private:
-    EntsoeGeographicalCode m_code;
+    stdcxx::optional<EntsoeGeographicalCode> m_code;
 };
 
 }  // namespace entsoe
