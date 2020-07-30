@@ -12,6 +12,7 @@ set(EXT_SOURCES
     src/ActivePowerControlAdder.cpp
     src/ActivePowerControlXmlSerializer.cpp
     src/CoordinatedReactiveControl.cpp
+    src/CoordinatedReactiveControlAdder.cpp
     src/CoordinatedReactiveControlXmlSerializer.cpp
     src/Iidm.cpp
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
