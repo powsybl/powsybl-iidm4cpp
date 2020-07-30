@@ -50,7 +50,7 @@ Network createHvdcLineTestNetwork() {
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
         .setLossFactor(1.0)
-        .setPowerFactor(2.0)
+        .setPowerFactor(0.4)
         .add();
 
     vl1.newVscConverterStation()
@@ -90,7 +90,7 @@ Network createHvdcLineTestNetwork() {
         .setBus(vl2Bus1.getId())
         .setConnectableBus(vl2Bus1.getId())
         .setLossFactor(6.0)
-        .setPowerFactor(7.0)
+        .setPowerFactor(0.5)
         .add();
 
     vl2.newVscConverterStation()
@@ -143,10 +143,10 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': Nominal voltage is undefined");
     adder.setNominalVoltage(30.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': Active power setpoint is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for active power setpoint");
     adder.setActivePowerSetpoint(40.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': Maximum active power is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for maximum P");
     adder.setMaxP(50.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Side 1 converter station not set");
@@ -210,7 +210,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setActivePowerSetpoint(100.0)));
     BOOST_CHECK_CLOSE(100.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(hvdc.setActivePowerSetpoint(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': Active power setpoint is not set");
+    POWSYBL_ASSERT_THROW(hvdc.setActivePowerSetpoint(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for active power setpoint");
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER)));
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
@@ -218,7 +218,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setMaxP(200.0)));
     BOOST_CHECK_CLOSE(200.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(hvdc.setMaxP(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': Maximum active power is not set");
+    POWSYBL_ASSERT_THROW(hvdc.setMaxP(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for maximum P");
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setNominalVoltage(300.0)));
     BOOST_CHECK_CLOSE(300.0, hvdc.getNominalVoltage(), std::numeric_limits<double>::epsilon());
