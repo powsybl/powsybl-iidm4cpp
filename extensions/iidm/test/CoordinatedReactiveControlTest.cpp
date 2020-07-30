@@ -67,8 +67,8 @@ BOOST_AUTO_TEST_CASE(CoordinatedReactiveControlTest) {
     Network network = createNetwork();
     Generator& gen = network.getGenerator("GEN");
 
-    CoordinatedReactiveControl(gen, -1.0);
-    CoordinatedReactiveControl(gen, 101.0);
+    BOOST_CHECK_NO_THROW(CoordinatedReactiveControl(gen, -1.0));
+    BOOST_CHECK_NO_THROW(CoordinatedReactiveControl(gen, 101.0));
 
     POWSYBL_ASSERT_THROW(CoordinatedReactiveControl(gen, stdcxx::nan()), PowsyblException, "Undefined value for qPercent");
 
