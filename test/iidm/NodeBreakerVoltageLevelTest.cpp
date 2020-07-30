@@ -379,6 +379,48 @@ BOOST_AUTO_TEST_CASE(switches) {
     BOOST_CHECK_EQUAL(1UL, boost::size(cVoltageLevel.getNodeBreakerView().getSwitches()));
     BOOST_CHECK_EQUAL(1UL, boost::size(voltageLevel.getSwitches()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cVoltageLevel.getSwitches()));
+
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().getOptionalTerminal(0));
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().getOptionalTerminal(1));
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(0));
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(1));
+    voltageLevel.getNodeBreakerView().removeSwitch(breaker.getId());
+
+    voltageLevel.getNodeBreakerView().newBreaker()
+        .setId("SWITCH")
+        .setName("SWITCH")
+        .setNode1(4)
+        .setNode2(5)
+        .setOpen(false)
+        .setRetained(true)
+        .setFictitious(false)
+        .add();
+
+    // check non-const versions
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(2));
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(3));
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().hasAttachedEquipment(2));
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().hasAttachedEquipment(3));
+
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(4));
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(5));
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(4));
+    BOOST_CHECK(voltageLevel.getNodeBreakerView().hasAttachedEquipment(5));
+
+    BOOST_CHECK(!voltageLevel.getNodeBreakerView().getOptionalTerminal(6));
+
+    // check const versions
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(2));
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(3));
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().hasAttachedEquipment(2));
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().hasAttachedEquipment(3));
+
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(4));
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(5));
+    BOOST_CHECK(cVoltageLevel.getNodeBreakerView().hasAttachedEquipment(4));
+    BOOST_CHECK(cVoltageLevel.getNodeBreakerView().hasAttachedEquipment(5));
+
+    BOOST_CHECK(!cVoltageLevel.getNodeBreakerView().getOptionalTerminal(6));
 }
 
 BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {

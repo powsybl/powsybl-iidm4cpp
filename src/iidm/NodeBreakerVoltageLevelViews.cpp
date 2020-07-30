@@ -209,6 +209,20 @@ stdcxx::const_range<unsigned long> NodeBreakerViewImpl::getNodes() const {
     return m_voltageLevel.getGraph().getVertices();
 }
 
+stdcxx::CReference<Terminal> NodeBreakerViewImpl::getOptionalTerminal(unsigned long node) const {
+    if (m_voltageLevel.getGraph().vertexExists(node)) {
+        return stdcxx::cref<Terminal>(m_voltageLevel.getGraph().getVertexObject(node));
+    }
+    return stdcxx::cref<Terminal>();
+}
+
+stdcxx::Reference<Terminal> NodeBreakerViewImpl::getOptionalTerminal(unsigned long node) {
+    if (m_voltageLevel.getGraph().vertexExists(node)) {
+        return stdcxx::ref<Terminal>(m_voltageLevel.getGraph().getVertexObject(node));
+    }
+    return stdcxx::ref<Terminal>();
+}
+
 stdcxx::CReference<Switch> NodeBreakerViewImpl::getSwitch(const std::string& switchId) const {
     return m_voltageLevel.getSwitch(switchId);
 }
@@ -263,6 +277,10 @@ stdcxx::CReference<Terminal> NodeBreakerViewImpl::getTerminal2(const std::string
 
 stdcxx::Reference<Terminal> NodeBreakerViewImpl::getTerminal2(const std::string& switchId) {
     return getTerminal(getNode2(switchId));
+}
+
+bool NodeBreakerViewImpl::hasAttachedEquipment(unsigned long node) const {
+    return m_voltageLevel.getGraph().vertexExists(node);
 }
 
 NodeBreakerViewImpl::SwitchAdder NodeBreakerViewImpl::newBreaker() {

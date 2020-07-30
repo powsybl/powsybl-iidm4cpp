@@ -49,7 +49,7 @@ Network createHvdcConverterStationTestNetwork() {
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
         .setLossFactor(1.0)
-        .setPowerFactor(2.0)
+        .setPowerFactor(1.0)
         .add();
 
     vl1.newVscConverterStation()

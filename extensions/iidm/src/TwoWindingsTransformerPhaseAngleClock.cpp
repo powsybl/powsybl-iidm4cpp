@@ -36,7 +36,7 @@ void TwoWindingsTransformerPhaseAngleClock::assertExtendable(const stdcxx::Refer
 
 unsigned long TwoWindingsTransformerPhaseAngleClock::checkPhaseAngleClock(unsigned long phaseAngleClock) const {
     if (phaseAngleClock > 11) {
-        throw PowsyblException(stdcxx::format("Unexpected value for phaseAngleClock: %1%1", phaseAngleClock));
+        throw PowsyblException(stdcxx::format("Unexpected value for phaseAngleClock: %1%", phaseAngleClock));
     }
     return phaseAngleClock;
 }
