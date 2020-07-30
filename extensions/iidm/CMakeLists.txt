@@ -16,6 +16,7 @@ set(EXT_SOURCES
     src/CoordinatedReactiveControlXmlSerializer.cpp
     src/Iidm.cpp
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
+    src/ThreeWindingsTransformerPhaseAngleClockAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.cpp
     src/TwoWindingsTransformerPhaseAngleClock.cpp
     src/TwoWindingsTransformerPhaseAngleClockAdder.cpp
