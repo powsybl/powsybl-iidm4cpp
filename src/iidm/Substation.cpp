@@ -54,11 +54,7 @@ Network& Substation::getNetwork() {
 }
 
 unsigned long Substation::getThreeWindingsTransformerCount() const {
-    unsigned long res = 0UL;
-    for (const auto& it : m_voltageLevels) {
-        res += it.get().getConnectableCount<ThreeWindingsTransformer>();
-    }
-    return res / 3UL;
+    return boost::size(getThreeWindingsTransformers());
 }
 
 stdcxx::const_range<ThreeWindingsTransformer> Substation::getThreeWindingsTransformers() const {
@@ -86,11 +82,7 @@ const std::string& Substation::getTso() const {
 }
 
 unsigned long Substation::getTwoWindingsTransformerCount() const {
-    unsigned long res = 0UL;
-    for (const auto& it : m_voltageLevels) {
-        res += it.get().getConnectableCount<TwoWindingsTransformer>();
-    }
-    return res / 2UL;
+    return boost::size(getTwoWindingsTransformers());
 }
 
 stdcxx::const_range<TwoWindingsTransformer> Substation::getTwoWindingsTransformers() const {
