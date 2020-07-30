@@ -14,6 +14,7 @@ set(EXT_SOURCES
     src/EntsoeAreaXmlSerializer.cpp
     src/EntsoeGeographicalCode.cpp
     src/MergedXnode.cpp
+    src/MergedXnodeAdder.cpp
     src/MergedXnodeXmlSerializer.cpp
     src/Xnode.cpp
     src/XnodeAdder.cpp

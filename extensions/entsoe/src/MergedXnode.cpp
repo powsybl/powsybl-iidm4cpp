@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/extensions/entsoe/MergedXnode.hpp>
 
+#include <cmath>
+
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 
@@ -40,7 +42,7 @@ void MergedXnode::assertExtendable(const stdcxx::Reference<powsybl::iidm::Extend
 }
 
 double MergedXnode::checkDividerPosition(double dp) {
-    if (dp < 0.0 || dp > 1.0) {
+    if (dp < 0.0 || dp > 1.0 || std::isnan(dp)) {
         throw PowsyblException(stdcxx::format("Invalid divider position: %1%", dp));
     }
     return dp;
