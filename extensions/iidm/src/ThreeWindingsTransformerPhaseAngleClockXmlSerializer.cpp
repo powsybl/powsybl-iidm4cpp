@@ -15,6 +15,7 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
 #include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClock.hpp>
+#include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClockAdder.hpp>
 
 #include <powsybl/stdcxx/make_unique.hpp>
 
@@ -34,15 +35,10 @@ ThreeWindingsTransformerPhaseAngleClockXmlSerializer::ThreeWindingsTransformerPh
 }
 
 Extension& ThreeWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
-    if (!stdcxx::isInstanceOf<ThreeWindingsTransformer>(extendable)) {
-        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<ThreeWindingsTransformer>()));
-    }
-    auto& transformer = dynamic_cast<ThreeWindingsTransformer&>(extendable);
-
     const auto& phaseAngleClockLeg2 = context.getReader().getOptionalAttributeValue("phaseAngleClockLeg2", 0UL);
     const auto& phaseAngleClockLeg3 = context.getReader().getOptionalAttributeValue("phaseAngleClockLeg3", 0UL);
 
-    extendable.addExtension(stdcxx::make_unique<ThreeWindingsTransformerPhaseAngleClock>(transformer, phaseAngleClockLeg2, phaseAngleClockLeg3));
+    extendable.newExtension<ThreeWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClockLeg2(phaseAngleClockLeg2).withPhaseAngleClockLeg3(phaseAngleClockLeg3).add();
     return extendable.getExtension<ThreeWindingsTransformerPhaseAngleClock>();
 }
 

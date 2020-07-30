@@ -15,6 +15,7 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControl.hpp>
+#include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlAdder.hpp>
 
 #include <powsybl/stdcxx/make_unique.hpp>
 
@@ -34,14 +35,9 @@ CoordinatedReactiveControlXmlSerializer::CoordinatedReactiveControlXmlSerializer
 }
 
 Extension& CoordinatedReactiveControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
-    if (!stdcxx::isInstanceOf<Generator>(extendable)) {
-        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
-    }
-    auto& generator = dynamic_cast<Generator&>(extendable);
-
     const auto& qPercent = context.getReader().getAttributeValue<double>("qPercent");
 
-    extendable.addExtension(stdcxx::make_unique<CoordinatedReactiveControl>(generator, qPercent));
+    extendable.newExtension<CoordinatedReactiveControlAdder>().withQPercent(qPercent).add();
     return extendable.getExtension<CoordinatedReactiveControl>();
 }
 
