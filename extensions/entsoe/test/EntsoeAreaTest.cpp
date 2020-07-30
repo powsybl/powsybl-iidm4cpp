@@ -10,8 +10,10 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/extensions/entsoe/EntsoeArea.hpp>
+#include <powsybl/iidm/extensions/entsoe/EntsoeAreaAdder.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
+#include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -32,7 +34,7 @@ Network createNetwork() {
         .setId("S")
         .setCountry(Country::FR)
         .add();
-    s.addExtension(Extension::create<EntsoeArea>(s, EntsoeGeographicalCode::FR));
+    s.newExtension<EntsoeAreaAdder>().withCode(EntsoeGeographicalCode::FR).add();
 
     return network;
 }
@@ -40,6 +42,8 @@ Network createNetwork() {
 BOOST_AUTO_TEST_CASE(EntsoeAreaConstructor) {
     Network network = createNetwork();
     Substation& substation = network.getSubstation("S");
+
+    POWSYBL_ASSERT_THROW(substation.newExtension<EntsoeAreaAdder>().add(), PowsyblException, "code is undefined");
 
     EntsoeArea extension(substation, EntsoeGeographicalCode::FR);
     BOOST_CHECK_EQUAL("entsoeArea", extension.getName());
