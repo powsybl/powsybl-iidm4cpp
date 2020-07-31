@@ -398,6 +398,7 @@ BOOST_AUTO_TEST_CASE(getConnectablesTest) {
 
     BOOST_CHECK_EQUAL(6UL, boost::size(network.getConnectables()));
     BOOST_CHECK_EQUAL(6UL, boost::size(cNetwork.getConnectables()));
+    BOOST_CHECK_EQUAL(6UL, network.getConnectableCount());
 }
 
 BOOST_AUTO_TEST_CASE(branch) {

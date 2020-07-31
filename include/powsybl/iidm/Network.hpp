@@ -150,17 +150,13 @@ public:
 
     const stdcxx::DateTime& getCaseDate() const;
 
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    template <typename T=Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     unsigned long getConnectableCount() const;
 
-    stdcxx::const_range<Connectable> getConnectables() const;
-
-    stdcxx::range<Connectable> getConnectables();
-
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    template <typename T=Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::const_range<T> getConnectables() const;
 
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    template <typename T=Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::range<T> getConnectables();
 
     unsigned long getCountryCount() const;

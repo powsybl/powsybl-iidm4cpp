@@ -174,14 +174,6 @@ const stdcxx::DateTime& Network::getCaseDate() const {
     return m_caseDate;
 }
 
-stdcxx::const_range<Connectable> Network::getConnectables() const {
-    return m_networkIndex.getAll<Connectable>();
-}
-
-stdcxx::range<Connectable> Network::getConnectables() {
-    return m_networkIndex.getAll<Connectable>();
-}
-
 unsigned long Network::getCountryCount() const {
     std::unordered_set<Country, stdcxx::hash<Country>> countries;
     for (const auto& substation : getSubstations()) {
