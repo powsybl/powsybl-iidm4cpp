@@ -399,6 +399,14 @@ BOOST_AUTO_TEST_CASE(getConnectablesTest) {
     BOOST_CHECK_EQUAL(6UL, boost::size(network.getConnectables()));
     BOOST_CHECK_EQUAL(6UL, boost::size(cNetwork.getConnectables()));
     BOOST_CHECK_EQUAL(6UL, network.getConnectableCount());
+
+    BOOST_CHECK_EQUAL(3UL, boost::size(network.getConnectables<Branch>()));
+    BOOST_CHECK_EQUAL(3UL, boost::size(cNetwork.getConnectables<Branch>()));
+    BOOST_CHECK_EQUAL(3UL, network.getConnectableCount<Branch>());
+
+    BOOST_CHECK_EQUAL(0, boost::size(network.getConnectables<ThreeWindingsTransformer>()));
+    BOOST_CHECK_EQUAL(0, boost::size(cNetwork.getConnectables<ThreeWindingsTransformer>()));
+    BOOST_CHECK_EQUAL(0UL, network.getConnectableCount<ThreeWindingsTransformer>());
 }
 
 BOOST_AUTO_TEST_CASE(branch) {
