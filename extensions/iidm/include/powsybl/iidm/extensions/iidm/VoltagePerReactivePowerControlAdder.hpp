@@ -71,7 +71,7 @@ protected:  // ExtensionAdder
     std::unique_ptr<Extension> createExtension(Extendable& extendable) override;
 
 private:
-    double m_slope = stdcxx::nan();
+    double m_slope = 0.0;
 };
 
 }  // namespace iidm
