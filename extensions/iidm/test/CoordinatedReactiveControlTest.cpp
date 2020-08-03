@@ -16,6 +16,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControl.hpp>
+#include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -87,7 +88,7 @@ BOOST_FIXTURE_TEST_CASE(CoordinatedReactiveControlXmlSerializerTest, test::Resou
     network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));
 
     Generator& gen = network.getGenerator("GEN");
-    gen.addExtension(Extension::create<CoordinatedReactiveControl>(gen, 100.0));
+    gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(100.0).add();
 
     const std::string& networkStr = ResourceFixture::getResource("coordinatedReactiveControl.xml");
 

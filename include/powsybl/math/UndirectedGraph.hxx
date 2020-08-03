@@ -451,6 +451,11 @@ void UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser
 }
 
 template <typename V, typename E>
+bool UndirectedGraph<V, E>::vertexExists(unsigned long v) const {
+    return v < m_vertices.size() && m_vertices[v];
+}
+
+template <typename V, typename E>
 UndirectedGraph<V, E>::Edge::Edge(unsigned long v1, unsigned long v2, const stdcxx::Reference<E>& object) :
     m_vertex1(v1),
     m_vertex2(v2),
