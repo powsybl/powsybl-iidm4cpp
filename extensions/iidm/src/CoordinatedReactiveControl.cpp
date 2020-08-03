@@ -12,6 +12,9 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -23,7 +26,7 @@ namespace iidm {
 
 CoordinatedReactiveControl::CoordinatedReactiveControl(Generator& generator, double qPercent) :
     Extension(generator),
-    m_qPercent(checkQPercent(qPercent)) {
+    m_qPercent(checkQPercent(generator, qPercent)) {
 }
 
 void CoordinatedReactiveControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -32,12 +35,13 @@ void CoordinatedReactiveControl::assertExtendable(const stdcxx::Reference<Extend
     }
 }
 
-double CoordinatedReactiveControl::checkQPercent(double qPercent) {
+double CoordinatedReactiveControl::checkQPercent(const Generator& generator, double qPercent) {
     if (std::isnan(qPercent)) {
         throw PowsyblException("Undefined value for qPercent");
     }
     if (qPercent < 0.0 || qPercent > 100.0) {
-        throw PowsyblException(stdcxx::format("Unexpected value for qPercent: %1%", qPercent));
+        logging::Logger& logger = logging::LoggerFactory::getLogger<CoordinatedReactiveControl>();
+        logger.debug(stdcxx::format("qPercent value of generator %1% does not seem to be a valid percent: %2%", generator.getId(), qPercent));
     }
     return qPercent;
 }
@@ -57,7 +61,7 @@ const std::type_index& CoordinatedReactiveControl::getType() const {
 }
 
 CoordinatedReactiveControl& CoordinatedReactiveControl::setQPercent(double qPercent) {
-    m_qPercent = checkQPercent(qPercent);
+    m_qPercent = checkQPercent(getExtendable<Generator>(), qPercent);
     return *this;
 }
 
