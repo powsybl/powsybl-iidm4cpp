@@ -69,12 +69,6 @@ T& NetworkIndex::get(const std::string& id) {
 }
 
 template <>
-stdcxx::const_range<Connectable> NetworkIndex::getAll<Connectable, Connectable>() const;
-
-template <>
-stdcxx::range<Connectable> NetworkIndex::getAll<Connectable, Connectable>();
-
-template <>
 stdcxx::const_range<MultiVariantObject> NetworkIndex::getAll<Identifiable, MultiVariantObject>() const;
 
 template <>

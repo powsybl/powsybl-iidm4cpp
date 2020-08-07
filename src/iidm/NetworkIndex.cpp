@@ -56,16 +56,6 @@ Identifiable& NetworkIndex::get(const std::string& id) {
 }
 
 template <>
-stdcxx::const_range<Connectable> NetworkIndex::getAll<Connectable, Connectable>() const {
-    return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected | boost::adaptors::filtered(Identifiable::isInstanceOf<Connectable>);
-}
-
-template <>
-stdcxx::range<Connectable> NetworkIndex::getAll<Connectable, Connectable>() {
-    return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected | boost::adaptors::filtered(Identifiable::isInstanceOf<Connectable>);
-}
-
-template <>
 stdcxx::const_range<Identifiable> NetworkIndex::getAll<Identifiable, Identifiable>() const {
     return boost::adaptors::values(m_objectsById) | boost::adaptors::indirected;
 }
