@@ -53,10 +53,6 @@ stdcxx::range<Battery> VoltageLevel::getBatteries() {
     return getConnectables<Battery>();
 }
 
-unsigned long VoltageLevel::getConnectableCount() const {
-    return boost::size(getConnectables<Connectable>());
-}
-
 unsigned long VoltageLevel::getDanglingLineCount() const {
     return getConnectableCount<DanglingLine>();
 }
