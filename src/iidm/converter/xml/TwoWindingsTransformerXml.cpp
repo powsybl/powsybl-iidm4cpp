@@ -86,13 +86,11 @@ void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTran
 }
 
 void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
-    const auto& rtc = twt.getRatioTapChanger();
-    if (rtc) {
-        writeRatioTapChanger(RATIO_TAP_CHANGER, rtc, context);
+    if (twt.hasRatioTapChanger()) {
+        writeRatioTapChanger(RATIO_TAP_CHANGER, twt.getRatioTapChanger(), context);
     }
-    const auto& ptc = twt.getPhaseTapChanger();
-    if (ptc) {
-        writePhaseTapChanger(PHASE_TAP_CHANGER, ptc, context);
+    if (twt.hasPhaseTapChanger()) {
+        writePhaseTapChanger(PHASE_TAP_CHANGER, twt.getPhaseTapChanger(), context);
     }
     if (twt.getCurrentLimits1()) {
         writeCurrentLimits(twt.getCurrentLimits1(), context.getWriter(), context.getVersion(), 1);

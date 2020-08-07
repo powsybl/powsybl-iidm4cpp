@@ -167,8 +167,8 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_CHECK_CLOSE(std::sqrt(10.0 * 10.0 - 0.24 * 0.24) / 1300.0 * (380.0 * 380.0 / 100.0), transfo1.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, transfo1.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, transfo1.getB(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(!transfo1.getRatioTapChanger());
-    BOOST_TEST(!transfo1.getPhaseTapChanger());
+    BOOST_TEST(!transfo1.hasRatioTapChanger());
+    BOOST_TEST(!transfo1.hasPhaseTapChanger());
     POWSYBL_ASSERT_REF_FALSE(transfo1.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo1.getCurrentLimits2());
     POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits1());
@@ -184,14 +184,14 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_CHECK_CLOSE(std::sqrt(18 * 18 - 0.21 * 0.21) / 1000 * (150.0 * 150.0 / 100.0), transfo2.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, transfo2.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, transfo2.getB(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(!transfo2.getPhaseTapChanger());
+    BOOST_TEST(!transfo2.hasPhaseTapChanger());
     POWSYBL_ASSERT_REF_FALSE(transfo2.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo2.getCurrentLimits2());
     POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits2());
     BOOST_TEST(!transfo2.isOverloaded());
 
-    const auto& ratioTapChanger = transfo2.getRatioTapChanger().get();
+    const auto& ratioTapChanger = transfo2.getRatioTapChanger();
     BOOST_CHECK_EQUAL(3U, ratioTapChanger.getStepCount());
     BOOST_CHECK_EQUAL(0L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getHighTapPosition());
@@ -414,8 +414,8 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(std::sqrt(10.0 * 10.0 - 0.24 * 0.24) / 1300.0 * (380.0 * 380.0 / 100.0), transfo1.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, transfo1.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, transfo1.getB(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(!transfo1.getRatioTapChanger());
-    BOOST_TEST(!transfo1.getPhaseTapChanger());
+    BOOST_TEST(!transfo1.hasRatioTapChanger());
+    BOOST_TEST(!transfo1.hasPhaseTapChanger());
     POWSYBL_ASSERT_REF_FALSE(transfo1.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo1.getCurrentLimits2());
     POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits1());
@@ -430,14 +430,14 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(std::sqrt(18 * 18 - 0.21 * 0.21) / 1000 * (150.0 * 150.0 / 100.0), transfo2.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, transfo2.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, transfo2.getB(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(!transfo2.getPhaseTapChanger());
+    BOOST_TEST(!transfo2.hasPhaseTapChanger());
     POWSYBL_ASSERT_REF_FALSE(transfo2.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo2.getCurrentLimits2());
     POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits2());
     BOOST_TEST(!transfo2.isOverloaded());
 
-    const auto& ratioTapChanger = transfo2.getRatioTapChanger().get();
+    const auto& ratioTapChanger = transfo2.getRatioTapChanger();
     BOOST_CHECK_EQUAL(3U, ratioTapChanger.getStepCount());
     BOOST_CHECK_EQUAL(0L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getHighTapPosition());
