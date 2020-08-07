@@ -12,15 +12,11 @@ namespace powsybl {
 namespace iidm {
 
 stdcxx::CReference<PhaseTapChanger> PhaseTapChangerHolder::getOptionalPhaseTapChanger() const {
-    return getPhaseTapChanger();
+    return hasPhaseTapChanger() ? stdcxx::cref(getPhaseTapChanger()) : stdcxx::cref<PhaseTapChanger>();
 }
 
 stdcxx::Reference<PhaseTapChanger> PhaseTapChangerHolder::getOptionalPhaseTapChanger() {
-    return getPhaseTapChanger();
-}
-
-bool PhaseTapChangerHolder::hasPhaseTapChanger() const {
-    return getPhaseTapChanger();
+    return hasPhaseTapChanger() ? stdcxx::ref(getPhaseTapChanger()) : stdcxx::ref<PhaseTapChanger>();
 }
 
 }  // namespace iidm

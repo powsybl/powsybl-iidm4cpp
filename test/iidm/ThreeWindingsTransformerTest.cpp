@@ -303,8 +303,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(std::isnan(leg2.getRatedS()));
     BOOST_TEST(!leg2.getCurrentLimits());
     BOOST_TEST(!cLeg2.getCurrentLimits());
-    BOOST_TEST(!leg2.getRatioTapChanger());
-    BOOST_TEST(!cLeg2.getRatioTapChanger());
+    BOOST_TEST(!leg2.hasRatioTapChanger());
+    BOOST_TEST(!cLeg2.hasRatioTapChanger());
 
     BOOST_TEST(stdcxx::areSame(terminal2, leg2.getTerminal().get()));
     BOOST_TEST(stdcxx::areSame(cTerminal2, cLeg2.getTerminal().get()));
@@ -322,8 +322,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(3.1, leg3.getRatedU(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!leg3.getCurrentLimits());
     BOOST_TEST(!cLeg3.getCurrentLimits());
-    BOOST_TEST(!leg3.getRatioTapChanger());
-    BOOST_TEST(!cLeg3.getRatioTapChanger());
+    BOOST_TEST(!leg3.hasRatioTapChanger());
+    BOOST_TEST(!cLeg3.hasRatioTapChanger());
 
     BOOST_TEST(stdcxx::areSame(terminal3, leg3.getTerminal().get()));
     BOOST_TEST(stdcxx::areSame(cTerminal3, cLeg3.getTerminal().get()));
@@ -442,20 +442,20 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(leg2.getCurrentLimits());
 
 
-    BOOST_TEST(!leg2.getRatioTapChanger());
+    BOOST_TEST(!leg2.hasRatioTapChanger());
     addRatioTapChangerLeg2(transformer, load1Terminal);
-    BOOST_TEST(leg2.getRatioTapChanger());
-    BOOST_TEST(leg2.getOptionalRatioTapChanger());
-    BOOST_CHECK(stdcxx::areSame(leg2.getOptionalRatioTapChanger().get(), leg2.getRatioTapChanger().get()));
     BOOST_TEST(leg2.hasRatioTapChanger());
-    BOOST_TEST(cLeg2.getRatioTapChanger());
+    BOOST_TEST(leg2.getOptionalRatioTapChanger());
+    BOOST_CHECK(stdcxx::areSame(leg2.getOptionalRatioTapChanger().get(), leg2.getRatioTapChanger()));
+    BOOST_TEST(leg2.hasRatioTapChanger());
+    BOOST_TEST(cLeg2.hasRatioTapChanger());
     BOOST_TEST(cLeg2.getOptionalRatioTapChanger());
-    BOOST_CHECK(stdcxx::areSame(cLeg2.getOptionalRatioTapChanger().get(), leg2.getRatioTapChanger().get()));
-    leg2.getRatioTapChanger().get().remove();
-    BOOST_TEST(!leg2.getRatioTapChanger());
+    BOOST_CHECK(stdcxx::areSame(cLeg2.getOptionalRatioTapChanger().get(), leg2.getRatioTapChanger()));
+    leg2.getRatioTapChanger().remove();
+    BOOST_TEST(!leg2.hasRatioTapChanger());
     BOOST_TEST(!leg2.getOptionalRatioTapChanger());
     BOOST_TEST(!leg2.hasRatioTapChanger());
-    BOOST_TEST(!cLeg2.getRatioTapChanger());
+    BOOST_TEST(!cLeg2.hasRatioTapChanger());
     BOOST_TEST(!cLeg2.getOptionalRatioTapChanger());
 
     BOOST_TEST(!leg2.getOptionalPhaseTapChanger());
@@ -503,18 +503,18 @@ BOOST_AUTO_TEST_CASE(integrity) {
         .add();
     BOOST_TEST(leg3.getCurrentLimits());
 
-    BOOST_TEST(!leg3.getRatioTapChanger());
+    BOOST_TEST(!leg3.hasRatioTapChanger());
     addRatioTapChangerLeg3(transformer, load2Terminal);
-    BOOST_TEST(leg3.getRatioTapChanger());
+    BOOST_TEST(leg3.hasRatioTapChanger());
     BOOST_TEST(leg3.getOptionalRatioTapChanger());
     BOOST_TEST(leg3.hasRatioTapChanger());
-    BOOST_TEST(cLeg3.getRatioTapChanger());
+    BOOST_TEST(cLeg3.hasRatioTapChanger());
     BOOST_TEST(cLeg3.getOptionalRatioTapChanger());
-    leg3.getRatioTapChanger().get().remove();
-    BOOST_TEST(!leg3.getRatioTapChanger());
+    leg3.getRatioTapChanger().remove();
+    BOOST_TEST(!leg3.hasRatioTapChanger());
     BOOST_TEST(!leg3.getOptionalRatioTapChanger());
     BOOST_TEST(!leg3.hasRatioTapChanger());
-    BOOST_TEST(!cLeg3.getRatioTapChanger());
+    BOOST_TEST(!cLeg3.hasRatioTapChanger());
     BOOST_TEST(!cLeg3.getOptionalRatioTapChanger());
 
     BOOST_TEST(!leg3.getOptionalPhaseTapChanger());
@@ -748,8 +748,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     ThreeWindingsTransformer::Leg& leg1 = transformer.getLeg1();
     ThreeWindingsTransformer::Leg& leg2 = transformer.getLeg2();
     ThreeWindingsTransformer::Leg& leg3 = transformer.getLeg3();
-    RatioTapChanger& ratioTapChangerLeg2 = leg2.getRatioTapChanger().get();
-    RatioTapChanger& ratioTapChangerLeg3 = leg3.getRatioTapChanger().get();
+    RatioTapChanger& ratioTapChangerLeg2 = leg2.getRatioTapChanger();
+    RatioTapChanger& ratioTapChangerLeg3 = leg3.getRatioTapChanger();
 
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
     BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());

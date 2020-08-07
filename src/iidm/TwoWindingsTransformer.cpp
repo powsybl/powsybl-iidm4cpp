@@ -79,12 +79,18 @@ Network& TwoWindingsTransformer::getNetwork() {
     return Branch::getNetwork();
 }
 
-stdcxx::CReference<PhaseTapChanger> TwoWindingsTransformer::getPhaseTapChanger() const {
-    return stdcxx::cref<PhaseTapChanger>(m_phaseTapChanger);
+const PhaseTapChanger& TwoWindingsTransformer::getPhaseTapChanger() const {
+    if (!m_phaseTapChanger) {
+        throw PowsyblException("Phase tap changer not set");
+    }
+    return *m_phaseTapChanger;
 }
 
-stdcxx::Reference<PhaseTapChanger> TwoWindingsTransformer::getPhaseTapChanger() {
-    return stdcxx::ref<PhaseTapChanger>(m_phaseTapChanger);
+PhaseTapChanger& TwoWindingsTransformer::getPhaseTapChanger() {
+    if (!m_phaseTapChanger) {
+        throw PowsyblException("Phase tap changer not set");
+    }
+    return *m_phaseTapChanger;
 }
 
 double TwoWindingsTransformer::getR() const {
@@ -103,12 +109,18 @@ double TwoWindingsTransformer::getRatedU2() const {
     return m_ratedU2;
 }
 
-stdcxx::CReference<RatioTapChanger> TwoWindingsTransformer::getRatioTapChanger() const {
-    return stdcxx::cref<RatioTapChanger>(m_ratioTapChanger);
+const RatioTapChanger& TwoWindingsTransformer::getRatioTapChanger() const {
+    if (!m_ratioTapChanger) {
+        throw PowsyblException("Ratio tap changer not set");
+    }
+    return *m_ratioTapChanger;
 }
 
-stdcxx::Reference<RatioTapChanger> TwoWindingsTransformer::getRatioTapChanger() {
-    return stdcxx::ref<RatioTapChanger>(m_ratioTapChanger);
+RatioTapChanger& TwoWindingsTransformer::getRatioTapChanger() {
+    if (!m_ratioTapChanger) {
+        throw PowsyblException("Ratio tap changer not set");
+    }
+    return *m_ratioTapChanger;
 }
 
 stdcxx::CReference<Substation> TwoWindingsTransformer::getSubstation() const {
@@ -127,6 +139,14 @@ const std::string& TwoWindingsTransformer::getTypeDescription() const {
 
 double TwoWindingsTransformer::getX() const {
     return m_x;
+}
+
+bool TwoWindingsTransformer::hasPhaseTapChanger() const {
+    return m_phaseTapChanger != nullptr;
+}
+
+bool TwoWindingsTransformer::hasRatioTapChanger() const {
+    return m_ratioTapChanger != nullptr;
 }
 
 PhaseTapChangerAdder TwoWindingsTransformer::newPhaseTapChanger() {

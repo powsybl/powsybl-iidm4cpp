@@ -242,15 +242,15 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(3.0, transformer.getRatedS(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(network, transformer.getNetwork()));
     BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
-    BOOST_TEST(!transformer.getRatioTapChanger());
-    BOOST_TEST(!transformer.getPhaseTapChanger());
+    BOOST_TEST(!transformer.hasRatioTapChanger());
+    BOOST_TEST(!transformer.hasPhaseTapChanger());
 
     const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_TEST(stdcxx::areSame(transformer, cTransformer));
     BOOST_TEST(stdcxx::areSame(network, cTransformer.getNetwork()));
     BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
-    BOOST_TEST(!cTransformer.getRatioTapChanger());
-    BOOST_TEST(!cTransformer.getPhaseTapChanger());
+    BOOST_TEST(!cTransformer.hasRatioTapChanger());
+    BOOST_TEST(!cTransformer.hasPhaseTapChanger());
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
@@ -392,6 +392,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     const Substation& substation = network.getSubstation("S1");
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
+    const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     Terminal& terminal = network.getLoad("LOAD1").getTerminal();
     Terminal& terminal2 = network.getLoad("LOAD2").getTerminal();
 
@@ -399,18 +400,24 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_TEST(!transformer.hasRatioTapChanger());
     RatioTapChanger& rtc = addRatioTapChanger(transformer, terminal);
     BOOST_TEST(transformer.getOptionalRatioTapChanger());
+    BOOST_CHECK(stdcxx::areSame(rtc, transformer.getRatioTapChanger()));
+    BOOST_CHECK(stdcxx::areSame(rtc, cTransformer.getRatioTapChanger()));
     BOOST_CHECK(stdcxx::areSame(rtc, transformer.getOptionalRatioTapChanger().get()));
+    BOOST_CHECK(stdcxx::areSame(rtc, cTransformer.getOptionalRatioTapChanger().get()));
     BOOST_TEST(transformer.hasRatioTapChanger());
 
     BOOST_TEST(!transformer.getOptionalPhaseTapChanger());
     BOOST_TEST(!transformer.hasPhaseTapChanger());
     PhaseTapChanger& ptc = addPhaseTapChanger(transformer, terminal2);
     BOOST_TEST(transformer.getOptionalPhaseTapChanger());
+    BOOST_CHECK(stdcxx::areSame(ptc, transformer.getPhaseTapChanger()));
+    BOOST_CHECK(stdcxx::areSame(ptc, cTransformer.getPhaseTapChanger()));
     BOOST_CHECK(stdcxx::areSame(ptc, transformer.getOptionalPhaseTapChanger().get()));
+    BOOST_CHECK(stdcxx::areSame(ptc, cTransformer.getOptionalPhaseTapChanger().get()));
     BOOST_TEST(transformer.hasPhaseTapChanger());
 
-    RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger().get();
-    PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();
+    RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger();
+    PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger();
 
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
     BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());

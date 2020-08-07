@@ -12,15 +12,11 @@ namespace powsybl {
 namespace iidm {
 
 stdcxx::CReference<RatioTapChanger> RatioTapChangerHolder::getOptionalRatioTapChanger() const {
-    return getRatioTapChanger();
+    return hasRatioTapChanger() ? stdcxx::cref(getRatioTapChanger()) : stdcxx::cref<RatioTapChanger>();
 }
 
 stdcxx::Reference<RatioTapChanger> RatioTapChangerHolder::getOptionalRatioTapChanger() {
-    return getRatioTapChanger();
-}
-
-bool RatioTapChangerHolder::hasRatioTapChanger() const {
-    return getRatioTapChanger();
+    return hasRatioTapChanger() ? stdcxx::ref(getRatioTapChanger()) : stdcxx::ref<RatioTapChanger>();
 }
 
 }  // namespace iidm

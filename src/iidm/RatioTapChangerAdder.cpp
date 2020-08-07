@@ -76,7 +76,7 @@ RatioTapChanger& RatioTapChangerAdder::add() {
     std::unique_ptr<RatioTapChanger> ptrRatioTapChanger = stdcxx::make_unique<RatioTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
                                                                                                m_loadTapChangingCapabilities, *m_tapPosition, m_regulating, m_targetV, m_targetDeadband);
 
-    bool wasRegulating = m_parent.hasRatioTapChanger() && m_parent.getRatioTapChanger().get().isRegulating();
+    bool wasRegulating = m_parent.hasRatioTapChanger() && m_parent.getRatioTapChanger().isRegulating();
     unsigned long count = m_parent.getRegulatingTapChangerCount() - (wasRegulating ? 1 : 0);
     checkOnlyOneTapChangerRegulatingEnabled(m_parent, count, m_regulating);
 
@@ -86,7 +86,7 @@ RatioTapChanger& RatioTapChangerAdder::add() {
 
     m_parent.setRatioTapChanger(std::move(ptrRatioTapChanger));
 
-    return m_parent.getRatioTapChanger().get();
+    return m_parent.getRatioTapChanger();
 }
 
 RatioTapChangerAdder& RatioTapChangerAdder::addStep(double rho, double r, double x, double g, double b) {

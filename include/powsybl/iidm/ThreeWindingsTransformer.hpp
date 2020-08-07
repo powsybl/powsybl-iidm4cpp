@@ -38,16 +38,20 @@ public:
         Network& getNetwork() override;
 
     public:  // RatioTapChangerHolder
-        stdcxx::CReference<RatioTapChanger> getRatioTapChanger() const override;
+        const RatioTapChanger& getRatioTapChanger() const override;
 
-        stdcxx::Reference<RatioTapChanger> getRatioTapChanger() override;
+        RatioTapChanger& getRatioTapChanger() override;
+
+        bool hasRatioTapChanger() const override;
 
         RatioTapChangerAdder newRatioTapChanger() override;
 
     public:  // PhaseTapChanger
-        stdcxx::CReference<PhaseTapChanger> getPhaseTapChanger() const override;
+        const PhaseTapChanger& getPhaseTapChanger() const override;
 
-        stdcxx::Reference<PhaseTapChanger> getPhaseTapChanger() override;
+        PhaseTapChanger& getPhaseTapChanger() override;
+
+        bool hasPhaseTapChanger() const override;
 
         PhaseTapChangerAdder newPhaseTapChanger() override;
 
