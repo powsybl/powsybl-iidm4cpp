@@ -13,7 +13,6 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/join.hpp>
 
-#include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/memory.hpp>
