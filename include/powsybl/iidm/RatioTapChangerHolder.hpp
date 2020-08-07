@@ -22,9 +22,9 @@ class RatioTapChangerHolder : public virtual TapChangerHolder {
 public:
     ~RatioTapChangerHolder() noexcept override = default;
 
-    virtual stdcxx::CReference<RatioTapChanger> getOptionalRatioTapChanger() const;
+    stdcxx::CReference<RatioTapChanger> getOptionalRatioTapChanger() const;
 
-    virtual stdcxx::Reference<RatioTapChanger> getOptionalRatioTapChanger();
+    stdcxx::Reference<RatioTapChanger> getOptionalRatioTapChanger();
 
     virtual const RatioTapChanger& getRatioTapChanger() const = 0;
 

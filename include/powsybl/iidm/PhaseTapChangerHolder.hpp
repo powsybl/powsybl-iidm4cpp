@@ -22,9 +22,9 @@ class PhaseTapChangerHolder : public virtual TapChangerHolder {
 public:
     ~PhaseTapChangerHolder() noexcept override = default;
 
-    virtual stdcxx::CReference<PhaseTapChanger> getOptionalPhaseTapChanger() const;
+    stdcxx::CReference<PhaseTapChanger> getOptionalPhaseTapChanger() const;
 
-    virtual stdcxx::Reference<PhaseTapChanger> getOptionalPhaseTapChanger();
+    stdcxx::Reference<PhaseTapChanger> getOptionalPhaseTapChanger();
 
     virtual const PhaseTapChanger& getPhaseTapChanger() const = 0;
 

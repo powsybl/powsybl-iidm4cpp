@@ -142,11 +142,11 @@ double TwoWindingsTransformer::getX() const {
 }
 
 bool TwoWindingsTransformer::hasPhaseTapChanger() const {
-    return m_phaseTapChanger != nullptr;
+    return static_cast<bool>(m_phaseTapChanger);
 }
 
 bool TwoWindingsTransformer::hasRatioTapChanger() const {
-    return m_ratioTapChanger != nullptr;
+    return static_cast<bool>(m_ratioTapChanger);
 }
 
 PhaseTapChangerAdder TwoWindingsTransformer::newPhaseTapChanger() {

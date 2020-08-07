@@ -141,11 +141,11 @@ double ThreeWindingsTransformer::Leg::getX() const {
 }
 
 bool ThreeWindingsTransformer::Leg::hasPhaseTapChanger() const {
-    return m_phaseTapChanger != nullptr;
+    return static_cast<bool>(m_phaseTapChanger);
 }
 
 bool ThreeWindingsTransformer::Leg::hasRatioTapChanger() const {
-    return m_ratioTapChanger != nullptr;
+    return static_cast<bool>(m_ratioTapChanger);
 }
 
 CurrentLimitsAdder<const std::nullptr_t, ThreeWindingsTransformer::Leg> ThreeWindingsTransformer::Leg::newCurrentLimits() {
