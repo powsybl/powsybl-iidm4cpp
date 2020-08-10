@@ -13,6 +13,8 @@
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
+#include <powsybl/stdcxx/instanceof.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -39,12 +41,20 @@ unsigned long Network::getConnectableCount() const {
 
 template <typename T, typename>
 stdcxx::const_range<T> Network::getConnectables() const {
-    return m_networkIndex.getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(Identifiable::isInstanceOf<T>) | boost::adaptors::transformed(map<const T>);
+    const auto& filter = [](const Identifiable& identifiable) {
+        return stdcxx::isInstanceOf<T>(identifiable);
+    };
+
+    return m_networkIndex.getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(map<const T>);
 }
 
 template <typename T, typename>
 stdcxx::range<T> Network::getConnectables() {
-    return m_networkIndex.getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(Identifiable::isInstanceOf<T>) | boost::adaptors::transformed(map<T>);
+    const auto& filter = [](const Identifiable& identifiable) {
+        return stdcxx::isInstanceOf<T>(identifiable);
+    };
+
+    return m_networkIndex.getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(map<T>);
 }
 
 template <typename T, typename>
