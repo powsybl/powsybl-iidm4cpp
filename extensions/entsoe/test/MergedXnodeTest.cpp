@@ -15,6 +15,7 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/iidm/extensions/entsoe/MergedXnode.hpp>
+#include <powsybl/iidm/extensions/entsoe/MergedXnodeAdder.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -72,7 +73,7 @@ Network createNetwork() {
         .setB2(0.0)
         .add();
 
-    line.addExtension(Extension::create<MergedXnode>(line, 0.5F, 0.5F, 1.0, 2.0, 3.0, 4.0, "line1", "line2", "XXXXXX11"));
+    line.newExtension<MergedXnodeAdder>().withRdp(0.5).withXdp(0.5).withXnodeP1(1.0).withXnodeQ1(2.0).withXnodeP2(3.0).withXnodeQ2(4.0).withLine1Name("line1").withLine2Name("line2").withCode("XXXXXX11").add();
 
     return network;
 }
@@ -95,8 +96,14 @@ BOOST_AUTO_TEST_CASE(MergedXnodeTest) {
     BOOST_CHECK_CLOSE(3.0, extension.getXnodeP2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, extension.getXnodeQ2(), std::numeric_limits<double>::epsilon());
 
+    POWSYBL_ASSERT_THROW(MergedXnode(line, stdcxx::nan(), 0.2, 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: nan");
+    POWSYBL_ASSERT_THROW(extension.setRdp(stdcxx::nan()), PowsyblException, "Invalid divider position: nan");
+
     POWSYBL_ASSERT_THROW(MergedXnode(line, 10, 0.2, 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: 10");
     POWSYBL_ASSERT_THROW(extension.setRdp(10), PowsyblException, "Invalid divider position: 10");
+
+    POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, stdcxx::nan(), 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: nan");
+    POWSYBL_ASSERT_THROW(extension.setXdp(stdcxx::nan()), PowsyblException, "Invalid divider position: nan");
 
     POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, 10, 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: 10");
     POWSYBL_ASSERT_THROW(extension.setXdp(10), PowsyblException, "Invalid divider position: 10");

@@ -96,6 +96,8 @@ public:
 
     void traverse(unsigned long v, const Traverser& traverser, std::vector<bool>& encountered) const;
 
+    bool vertexExists(unsigned long v) const;
+
 private:
     class Edge;
 

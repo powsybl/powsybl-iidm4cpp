@@ -176,7 +176,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     Network network = createPhaseTapChangerTestNetwork();
     const Terminal& terminal = network.getLoad("LOAD1").getTerminal();
 
-    PhaseTapChanger& phaseTapChanger = network.getTwoWindingsTransformer("2WT_VL1_VL2").getPhaseTapChanger().get();
+    PhaseTapChanger& phaseTapChanger = network.getTwoWindingsTransformer("2WT_VL1_VL2").getPhaseTapChanger();
     const PhaseTapChanger& cPhaseTapChanger = phaseTapChanger;
     BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, phaseTapChanger.getHighTapPosition());
@@ -225,7 +225,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createPhaseTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
-    PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();
+    PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger();
 
     POWSYBL_ASSERT_THROW(phaseTapChanger.setTapPosition(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position -1 [1, 3]");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setTapPosition(6), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 6 [1, 3]");
@@ -311,16 +311,16 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(phaseTapChanger.setTargetDeadband(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
 
     BOOST_CHECK_NO_THROW(phaseTapChanger.remove());
-    BOOST_TEST(!transformer.getPhaseTapChanger());
+    BOOST_TEST(!transformer.hasPhaseTapChanger());
 }
 
 BOOST_AUTO_TEST_CASE(adder) {
     Network network = createPhaseTapChangerTestNetwork();
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
-    BOOST_TEST(transformer.getPhaseTapChanger());
-    transformer.getPhaseTapChanger().get().remove();
-    BOOST_TEST(!transformer.getPhaseTapChanger());
+    BOOST_TEST(transformer.hasPhaseTapChanger());
+    transformer.getPhaseTapChanger().remove();
+    BOOST_TEST(!transformer.hasPhaseTapChanger());
     PhaseTapChangerAdder adder = transformer.newPhaseTapChanger();
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': tap position is not set");
@@ -378,8 +378,8 @@ BOOST_AUTO_TEST_CASE(adder) {
      POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     adder.setRegulationTerminal(stdcxx::Reference<Terminal>());
     BOOST_CHECK_NO_THROW(adder.add());
-    transformer.getPhaseTapChanger().get().remove();
-    BOOST_TEST(!transformer.getPhaseTapChanger());
+    transformer.getPhaseTapChanger().remove();
+    BOOST_TEST(!transformer.hasPhaseTapChanger());
 
     adder.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
@@ -397,21 +397,34 @@ BOOST_AUTO_TEST_CASE(adder) {
     adder.setTargetDeadband(stdcxx::nan());
 
     BOOST_CHECK_NO_THROW(adder.add());
-    BOOST_TEST(transformer.getPhaseTapChanger());
+    BOOST_TEST(transformer.hasPhaseTapChanger());
 }
 
 BOOST_AUTO_TEST_CASE(holder) {
     Network network = createPhaseTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
-    PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger().get();
+    PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger();
 
-    BOOST_TEST(stdcxx::areSame(phaseTapChanger, transformer.getPhaseTapChanger().get()));
-    BOOST_TEST(stdcxx::areSame(phaseTapChanger, cTransformer.getPhaseTapChanger().get()));
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, transformer.getPhaseTapChanger()));
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, cTransformer.getPhaseTapChanger()));
 
-    BOOST_TEST(transformer.getPhaseTapChanger());
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, transformer.getOptionalPhaseTapChanger().get()));
+    BOOST_TEST(stdcxx::areSame(phaseTapChanger, cTransformer.getOptionalPhaseTapChanger().get()));
+
+    BOOST_TEST(transformer.hasPhaseTapChanger());
+    BOOST_TEST(cTransformer.hasPhaseTapChanger());
+
     phaseTapChanger.remove();
-    BOOST_TEST(!cTransformer.getPhaseTapChanger());
+
+    BOOST_TEST(!transformer.hasPhaseTapChanger());
+    BOOST_TEST(!cTransformer.hasPhaseTapChanger());
+
+    BOOST_TEST(!transformer.getOptionalPhaseTapChanger());
+    BOOST_TEST(!cTransformer.getOptionalPhaseTapChanger());
+
+    POWSYBL_ASSERT_THROW(transformer.getPhaseTapChanger(), PowsyblException, "Phase tap changer not set");
+    POWSYBL_ASSERT_THROW(cTransformer.getPhaseTapChanger(), PowsyblException, "Phase tap changer not set");
 
     BOOST_CHECK_NO_THROW(transformer.newPhaseTapChanger());
 }
