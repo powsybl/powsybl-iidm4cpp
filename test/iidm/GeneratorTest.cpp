@@ -30,9 +30,8 @@ Network createGeneratorTestNetwork() {
     Substation& s = network.newSubstation()
         .setId("S")
         .setCountry(Country::FR)
+        .setFictitious(false)
         .add();
-
-    s.setCountry(Country::FR).setFictitious(false);
 
     VoltageLevel& vl = s.newVoltageLevel()
         .setId("VL")

@@ -66,7 +66,6 @@ BOOST_AUTO_TEST_CASE(constructor) {
     const Network& network = createHvdcConverterStationTestNetwork();
 
     const VscConverterStation& vsc = network.getVscConverterStation("VSC1");
-
     const HvdcConverterStation& hvdc = network.getHvdcConverterStation("VSC1");
     BOOST_TEST(stdcxx::areSame(vsc, hvdc));
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());

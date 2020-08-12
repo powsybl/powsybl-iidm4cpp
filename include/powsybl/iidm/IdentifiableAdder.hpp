@@ -28,8 +28,6 @@ public:
 
     ~IdentifiableAdder() noexcept override = default;
 
-    bool isFictitious() const;
-
     Adder& setEnsureIdUnicity(bool ensureIdUnicity);
 
     Adder& setFictitious(bool fictitious);
@@ -46,6 +44,8 @@ protected:
     virtual const Network& getNetwork() const = 0;
 
     virtual Network& getNetwork() = 0;
+
+    bool isFictitious() const;
 
 private:
     virtual const std::string& getTypeDescription() const = 0;
