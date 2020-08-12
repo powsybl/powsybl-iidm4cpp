@@ -23,6 +23,7 @@
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/util/DistinctPredicate.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -70,20 +71,17 @@ stdcxx::Reference<T> VoltageLevel::getConnectable(const std::string& id) {
 
 template <typename T, typename>
 unsigned long VoltageLevel::getConnectableCount() const {
-    const auto& terminals = getTerminals();
-    return std::count_if(std::begin(terminals), std::end(terminals), [](const Terminal& terminal) {
-        return Terminal::isInstanceOf<T>(terminal);
-    });
+    return boost::size(getConnectables<T>());
 }
 
 template <typename T, typename>
 stdcxx::const_range<T> VoltageLevel::getConnectables() const {
-    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<const T>);
+    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<const T>) | boost::adaptors::filtered(DistinctPredicate());
 }
 
 template <typename T, typename>
 stdcxx::range<T> VoltageLevel::getConnectables() {
-    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<T>);
+    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<T>) | boost::adaptors::filtered(DistinctPredicate());
 }
 
 }  // namespace iidm
