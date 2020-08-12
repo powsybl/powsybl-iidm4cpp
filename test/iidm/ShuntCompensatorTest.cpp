@@ -234,6 +234,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     const ShuntCompensator& cShunt = shunt;
     BOOST_TEST(stdcxx::areSame(cShunt.getTerminal(), cShunt.getRegulatingTerminal()));
 
+    shunt.setFictitious(true);
+    BOOST_CHECK(shunt.isFictitious());
+    shunt.setFictitious(false);
+    BOOST_CHECK(!shunt.isFictitious());
+
     shunt.remove();
     POWSYBL_ASSERT_THROW(network.getShuntCompensator("SHUNT1"), PowsyblException, "Unable to find to the identifiable 'SHUNT1'");
 }

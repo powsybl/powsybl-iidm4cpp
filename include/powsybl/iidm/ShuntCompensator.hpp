@@ -21,7 +21,7 @@ class Terminal;
 
 class ShuntCompensator : public Injection {
 public:
-    ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
+    ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                      double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount, Terminal& terminal,
                      bool voltageRegulatorOn, double targetV, double targetDeadband);
 

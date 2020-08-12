@@ -13,13 +13,13 @@ namespace powsybl {
 
 namespace iidm {
 
-Line::Line(const std::string& id, const std::string& name) :
-    Branch(id, name, ConnectableType::LINE),
+Line::Line(const std::string& id, const std::string& name, bool fictitious) :
+    Branch(id, name, fictitious, ConnectableType::LINE),
     m_lineCharacteristics(*this) {
 }
 
-Line::Line(const std::string& id, const std::string& name, double r, double x, double g1, double b1, double g2, double b2) :
-    Branch(id, name, ConnectableType::LINE),
+Line::Line(const std::string& id, const std::string& name, bool fictitious, double r, double x, double g1, double b1, double g2, double b2) :
+    Branch(id, name, fictitious, ConnectableType::LINE),
     m_lineCharacteristics(*this, r, x, g1, b1, g2, b2) {
 }
 

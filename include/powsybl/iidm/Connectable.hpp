@@ -49,7 +49,7 @@ protected: // MultiVariantObject
     void reduceVariantArraySize(unsigned long number) override;
 
 protected:
-    Connectable(const std::string& id, const std::string& name, const ConnectableType& connectableType);
+    Connectable(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType);
 
     const Terminal& getTerminal(unsigned long index) const;
 

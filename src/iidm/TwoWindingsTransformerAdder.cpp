@@ -44,7 +44,7 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     voltageLevel1.attach(*ptrTerminal1, true);
     voltageLevel2.attach(*ptrTerminal2, true);
 
-    std::unique_ptr<TwoWindingsTransformer> ptrTransformer = stdcxx::make_unique<TwoWindingsTransformer>(checkAndGetUniqueId(), getName(), m_substation, m_r, m_x, m_g, m_b, m_ratedU1, m_ratedU2, m_ratedS);
+    std::unique_ptr<TwoWindingsTransformer> ptrTransformer = stdcxx::make_unique<TwoWindingsTransformer>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_r, m_x, m_g, m_b, m_ratedU1, m_ratedU2, m_ratedS);
     auto& transformer = getNetwork().checkAndAdd<TwoWindingsTransformer>(std::move(ptrTransformer));
 
     Terminal& terminal1 = transformer.addTerminal(std::move(ptrTerminal1));

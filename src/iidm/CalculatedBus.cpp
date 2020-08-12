@@ -17,8 +17,8 @@ namespace powsybl {
 
 namespace iidm {
 
-CalculatedBus::CalculatedBus(const std::string& id, const std::string& name, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals) :
-    Bus(id, name),
+CalculatedBus::CalculatedBus(const std::string& id, const std::string& name, bool fictitious, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals) :
+    Bus(id, name, fictitious),
     m_voltageLevel(voltageLevel),
     m_terminals(std::move(terminals)),
     m_terminalRef(findTerminal(voltageLevel, nodes, m_terminals)) {

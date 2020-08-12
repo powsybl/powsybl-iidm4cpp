@@ -23,7 +23,7 @@ LccConverterStationAdder::LccConverterStationAdder(VoltageLevel& voltageLevel) :
 LccConverterStation& LccConverterStationAdder::add() {
     validate();
 
-    std::unique_ptr<LccConverterStation> ptrLcc = stdcxx::make_unique<LccConverterStation>(checkAndGetUniqueId(), getName(), getLossFactor(), m_powerFactor);
+    std::unique_ptr<LccConverterStation> ptrLcc = stdcxx::make_unique<LccConverterStation>(checkAndGetUniqueId(), getName(), isFictitious(), getLossFactor(), m_powerFactor);
     auto& lcc = getNetwork().checkAndAdd<LccConverterStation>(std::move(ptrLcc));
 
     Terminal& terminal = lcc.addTerminal(checkAndGetTerminal());

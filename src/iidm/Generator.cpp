@@ -14,11 +14,11 @@ namespace powsybl {
 
 namespace iidm {
 
-Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::string& id, const std::string& name,
+Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                      const EnergySource& energySource, double minP, double maxP, bool voltageRegulatorOn,
                      Terminal& regulatingTerminal, double activePowerSetpoint,
                      double reactivePowerSetpoint, double voltageSetpoint, double ratedS) :
-    Injection(id, name, ConnectableType::GENERATOR),
+    Injection(id, name, fictitious, ConnectableType::GENERATOR),
     m_energySource(energySource),
     m_minP(checkMinP(*this, minP)),
     m_maxP(checkMaxP(*this, maxP)),

@@ -11,8 +11,8 @@ namespace powsybl {
 
 namespace iidm {
 
-Container::Container(const std::string& id, const std::string& name, const Container::Type& type) :
-    Identifiable(id, name),
+Container::Container(const std::string& id, const std::string& name, bool fictitious, const Container::Type& type) :
+    Identifiable(id, name, fictitious),
     m_type(type) {
 }
 

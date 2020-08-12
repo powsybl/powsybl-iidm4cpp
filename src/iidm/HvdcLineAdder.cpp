@@ -33,7 +33,7 @@ HvdcLine& HvdcLineAdder::add() {
     HvdcConverterStation& converterStation1 = getConverterStation(m_converterStationId1, 1U);
     HvdcConverterStation& converterStation2 = getConverterStation(m_converterStationId2, 2U);
 
-    std::unique_ptr<HvdcLine> ptrHvdcLine = stdcxx::make_unique<HvdcLine>(getNetwork(), checkAndGetUniqueId(), getName(), m_r, m_nominalVoltage, m_maxP, *m_convertersMode, m_activePowerSetpoint,
+    std::unique_ptr<HvdcLine> ptrHvdcLine = stdcxx::make_unique<HvdcLine>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_r, m_nominalVoltage, m_maxP, *m_convertersMode, m_activePowerSetpoint,
                                                                           converterStation1, converterStation2);
     auto& line = m_network.checkAndAdd<HvdcLine>(std::move(ptrHvdcLine));
 

@@ -49,10 +49,11 @@ public:
      * Create a new CalculatedBus from a list of NodeTerminal references
      * @param id the ID of this bus
      * @param name the name of this bus
+     * @param fictious the fictitious status of this bus
      * @param voltageLevel the voltage level of this bus
      * @param terminals the list of NodeTerminal references which are connected to this bus
      */
-    CalculatedBus(const std::string& id, const std::string& name, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals);
+    CalculatedBus(const std::string& id, const std::string& name, bool fictitious, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals);
 
     ~CalculatedBus() noexcept override = default;
 

@@ -17,7 +17,7 @@ namespace iidm {
 
 class Line : public Branch {
 public:
-    Line(const std::string& id, const std::string& name, double r, double x, double g1, double b1, double g2, double b2);
+    Line(const std::string& id, const std::string& name, bool fictitious, double r, double x, double g1, double b1, double g2, double b2);
 
     ~Line() noexcept override = default;
 
@@ -48,7 +48,7 @@ public:
     virtual Line& setX(double x);
 
 protected:
-    Line(const std::string& id, const std::string& name);
+    Line(const std::string& id, const std::string& name, bool fictitious);
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;

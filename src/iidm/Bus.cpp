@@ -27,8 +27,8 @@ namespace powsybl {
 
 namespace iidm {
 
-Bus::Bus(const std::string& id, const std::string& name) :
-    Identifiable(id, name) {
+Bus::Bus(const std::string& id, const std::string& name, bool fictitious) :
+    Identifiable(id, name, fictitious) {
 }
 
 template <typename T>

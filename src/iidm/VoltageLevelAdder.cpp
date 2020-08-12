@@ -32,12 +32,12 @@ VoltageLevel& VoltageLevelAdder::add() {
     switch (*m_topologyKind) {
         case TopologyKind::NODE_BREAKER:
             voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<NodeBreakerVoltageLevel>(
-                stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit)));
+                stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit)));
             break;
 
         case TopologyKind::BUS_BREAKER:
             voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<BusBreakerVoltageLevel>(
-                stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit)));
+                stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit)));
             break;
 
         default:

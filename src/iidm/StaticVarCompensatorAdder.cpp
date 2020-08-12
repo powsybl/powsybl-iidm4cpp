@@ -29,7 +29,7 @@ StaticVarCompensator& StaticVarCompensatorAdder::add() {
 
     std::unique_ptr<Terminal> ptrTerminal = checkAndGetTerminal();
     Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *ptrTerminal;
-    std::unique_ptr<StaticVarCompensator> ptrSvc = stdcxx::make_unique<StaticVarCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), m_bMin, m_bMax, m_voltageSetpoint,
+    std::unique_ptr<StaticVarCompensator> ptrSvc = stdcxx::make_unique<StaticVarCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_bMin, m_bMax, m_voltageSetpoint,
         m_reactivePowerSetpoint, *m_regulationMode, regulatingTerminal);
     auto& svc = getNetwork().checkAndAdd<StaticVarCompensator>(std::move(ptrSvc));
 

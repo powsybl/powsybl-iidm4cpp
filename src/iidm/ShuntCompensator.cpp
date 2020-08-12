@@ -14,10 +14,10 @@ namespace powsybl {
 
 namespace iidm {
 
-ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
+ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
     double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount, Terminal& terminal,
     bool voltageRegulatorOn, double targetV, double targetDeadband) :
-    Injection(id, name, ConnectableType::SHUNT_COMPENSATOR),
+    Injection(id, name, fictitious, ConnectableType::SHUNT_COMPENSATOR),
     m_bPerSection(checkbPerSection(*this, bPerSection)),
     m_maximumSectionCount(maximumSectionCount),
     m_currentSectionCount(network.getVariantManager().getVariantArraySize(), currentSectionCount),

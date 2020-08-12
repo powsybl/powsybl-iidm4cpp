@@ -16,7 +16,7 @@ namespace iidm {
 
 class BusbarSection : public Injection {
 public:
-    BusbarSection(const std::string& id, const std::string& name);
+    BusbarSection(const std::string& id, const std::string& name, bool fictitious);
 
     ~BusbarSection() noexcept override = default;
 

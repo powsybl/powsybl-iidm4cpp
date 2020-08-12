@@ -27,8 +27,6 @@ public:
 
     virtual Switch& add() = 0;
 
-    SwitchAdder& setFictitious(bool fictitious);
-
     SwitchAdder& setOpen(bool open);
 
 protected: // IdentifiableAdder
@@ -43,8 +41,6 @@ protected:
 
     VoltageLevel& getVoltageLevel();
 
-    bool isFictitious() const;
-
     bool isOpen() const;
 
 private: // IdentifiableAdder
@@ -54,8 +50,6 @@ private:
     VoltageLevel& m_voltageLevel;
 
     bool m_open = false;
-
-    bool m_fictitious = false;
 };
 
 namespace node_breaker_view {

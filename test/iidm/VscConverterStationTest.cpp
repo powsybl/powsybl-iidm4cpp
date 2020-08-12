@@ -122,6 +122,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(400.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
 
+    vsc.setFictitious(true);
+    BOOST_CHECK(vsc.isFictitious());
+    vsc.setFictitious(false);
+    BOOST_CHECK(!vsc.isFictitious());
+
     vsc.remove();
     POWSYBL_ASSERT_THROW(network.getVscConverterStation("VSC1"), PowsyblException, "Unable to find to the identifiable 'VSC1'");
 }

@@ -93,6 +93,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(0.4, lcc.getPowerFactor(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(lcc.setPowerFactor(stdcxx::nan()), ValidationException, "lccConverterStation 'LCC1': power factor is invalid");
 
+    lcc.setFictitious(true);
+    BOOST_CHECK(lcc.isFictitious());
+    lcc.setFictitious(false);
+    BOOST_CHECK(!lcc.isFictitious());
+
     lcc.remove();
     POWSYBL_ASSERT_THROW(network.getLccConverterStation("LCC1"), PowsyblException, "Unable to find to the identifiable 'LCC1'");
 }
