@@ -105,7 +105,7 @@ public:
     virtual Bus& setV(double v) = 0;
 
 protected:
-    Bus(const std::string& id, const std::string& name);
+    Bus(const std::string& id, const std::string& name, bool fictitious);
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;

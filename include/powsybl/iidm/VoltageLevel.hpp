@@ -183,7 +183,7 @@ public:
     VoltageLevel& setNominalVoltage(double nominalVoltage);
 
 protected:
-    VoltageLevel(const std::string& id, const std::string& name, Substation& substation,
+    VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
                  double nominalVoltage, double lowVoltageLimit, double highVoltageLimit);
 
     virtual stdcxx::const_range<Terminal> getTerminals() const = 0;

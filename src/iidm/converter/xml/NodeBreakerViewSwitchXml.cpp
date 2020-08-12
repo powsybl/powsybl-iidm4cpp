@@ -28,13 +28,15 @@ Switch& NodeBreakerViewSwitchXml::readRootElementAttributes(VoltageLevel::NodeBr
     const auto& open = context.getReader().getAttributeValue<bool>(OPEN);
     const auto& kind = Enum::fromString<SwitchKind>(context.getReader().getAttributeValue(KIND));
     const auto& retained = context.getReader().getAttributeValue<bool>(RETAINED);
-    const auto& fictitious = context.getReader().getOptionalAttributeValue(FICTITIOUS, false);
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&context, &adder]() {
+        bool fictitious = context.getReader().getOptionalAttributeValue(FICTITIOUS, false);
+        adder.setFictitious(fictitious);
+    });
     const auto& node1 = context.getReader().getAttributeValue<unsigned long>(NODE1);
     const auto& node2 = context.getReader().getAttributeValue<unsigned long>(NODE2);
     return adder.setKind(kind)
         .setRetained(retained)
         .setOpen(open)
-        .setFictitious(fictitious)
         .setNode1(node1)
         .setNode2(node2)
         .add();

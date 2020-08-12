@@ -56,7 +56,7 @@ public: // VoltageLevel
     void invalidateCache() override;
 
 public:
-    BusBreakerVoltageLevel(const std::string& id, const std::string& name, Substation& substation,
+    BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
                            double nominalVoltage, double lowVoltageLimit, double highVoltagelimit);
 
     ~BusBreakerVoltageLevel() noexcept override = default;

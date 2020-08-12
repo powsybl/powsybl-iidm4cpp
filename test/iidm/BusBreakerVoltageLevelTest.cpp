@@ -96,9 +96,9 @@ BOOST_AUTO_TEST_CASE(SwitchTest) {
     BOOST_TEST(!aSwitch.isOpen());
     BOOST_TEST(aSwitch.isRetained());
 
-    aSwitch.setFictitious(true)
-        .setOpen(true);
+    aSwitch.setFictitious(true);
     BOOST_TEST(aSwitch.isFictitious());
+    aSwitch.setOpen(true);
     BOOST_TEST(aSwitch.isOpen());
 
     const Network& cNetwork = network;

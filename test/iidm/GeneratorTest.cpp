@@ -30,6 +30,7 @@ Network createGeneratorTestNetwork() {
     Substation& s = network.newSubstation()
         .setId("S")
         .setCountry(Country::FR)
+        .setFictitious(false)
         .add();
 
     VoltageLevel& vl = s.newVoltageLevel()
@@ -38,6 +39,7 @@ Network createGeneratorTestNetwork() {
         .setNominalVoltage(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
+        .setFictitious(false)
         .add();
 
     vl.getNodeBreakerView().newBusbarSection()
@@ -102,6 +104,7 @@ Network createGeneratorTestNetwork() {
         .setLoadType(LoadType::UNDEFINED)
         .setP0(50.0)
         .setQ0(40.0)
+        .setFictitious(false)
         .add();
 
     return network;
@@ -250,6 +253,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     Terminal& terminal2 = network.getLoad("LOAD1").getTerminal();
     gen.setRegulatingTerminal(stdcxx::ref<Terminal>(terminal2));
+
+    gen.setFictitious(true);
+    BOOST_CHECK(gen.isFictitious());
+    gen.setFictitious(false);
+    BOOST_CHECK(!gen.isFictitious());
 
     //Terminal from other network
     POWSYBL_ASSERT_THROW(gen.setRegulatingTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2())), ValidationException, "Generator 'GEN1': Regulating terminal is not part of the network");

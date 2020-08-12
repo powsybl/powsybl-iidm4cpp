@@ -85,6 +85,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(100, load1.getQ0(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(load1.setQ0(stdcxx::nan()), ValidationException, "Load 'LOAD1': q0 is invalid");
 
+    load1.setFictitious(true);
+    BOOST_CHECK(load1.isFictitious());
+    load1.setFictitious(false);
+    BOOST_CHECK(!load1.isFictitious());
+
     load1.remove();
     POWSYBL_ASSERT_THROW(network.getLoad("LOAD1"), PowsyblException, "Unable to find to the identifiable 'LOAD1'");
 }

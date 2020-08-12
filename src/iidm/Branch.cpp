@@ -38,8 +38,8 @@ const CurrentLimits::TemporaryLimit& Branch::Overload::getTemporaryLimit() const
     return m_temporaryLimit;
 }
 
-Branch::Branch(const std::string& id, const std::string& name, const ConnectableType& connectableType) :
-    Connectable(id, name, connectableType) {
+Branch::Branch(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType) :
+    Connectable(id, name, fictitious, connectableType) {
 }
 
 bool Branch::checkPermanentLimit(const Side& side) const {

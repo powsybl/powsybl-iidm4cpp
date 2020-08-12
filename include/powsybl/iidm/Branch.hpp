@@ -113,7 +113,7 @@ public:
     CurrentLimitsAdder<Side, Branch> newCurrentLimits2();
 
 protected:
-    Branch(const std::string& id, const std::string& name, const ConnectableType& connectableType);
+    Branch(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType);
 
 private:
     const std::unique_ptr<CurrentLimits>& getCurrentLimitsPtr(const Side& side) const;

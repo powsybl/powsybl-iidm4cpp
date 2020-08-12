@@ -22,7 +22,7 @@ public: // HvdcConverterStation
     VscConverterStation& setLossFactor(double lossFactor) override;
 
 public:
-    VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint);
+    VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint);
 
     ~VscConverterStation() noexcept override = default;
 

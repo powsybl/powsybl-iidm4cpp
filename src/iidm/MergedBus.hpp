@@ -56,7 +56,7 @@ public:
      * @param name the name of this bus
      * @param buses the list of ConfiguredBus aggregated in this bus
      */
-    MergedBus(const std::string& id, const std::string& name, BusSet buses);
+    MergedBus(const std::string& id, const std::string& name, bool fictitious, BusSet buses);
 
     ~MergedBus() noexcept override = default;
 

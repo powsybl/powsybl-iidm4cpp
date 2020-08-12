@@ -10,6 +10,8 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/stdcxx/format.hpp>
@@ -32,6 +34,10 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::read(Parent& parent, Network
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     const std::string& name = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(NAME, ""));
     adder.setId(id).setName(name);
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &adder]() {
+        bool fictitious = context.getReader().getOptionalAttributeValue(FICTITIOUS, false);
+        adder.setFictitious(fictitious);
+    });
     Added& identifiable = readRootElementAttributes(adder, context);
     readSubElements(identifiable, context);
 }
@@ -54,6 +60,11 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::write(const Added& identifia
     if (!name.empty()) {
         context.getWriter().writeAttribute(NAME, context.getAnonymizer().anonymizeString(name));
     }
+
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &identifiable]() {
+        context.getWriter().writeOptionalAttribute(FICTITIOUS, identifiable.isFictitious(), false);
+    });
+
     writeRootElementAttributes(identifiable, parent, context);
 
     PropertiesXml::write(identifiable, context);

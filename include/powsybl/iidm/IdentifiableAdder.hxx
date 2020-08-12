@@ -52,8 +52,19 @@ const std::string& IdentifiableAdder<Adder>::getName() const {
 }
 
 template <typename Adder>
+bool IdentifiableAdder<Adder>::isFictitious() const {
+    return m_fictitious;
+}
+
+template <typename Adder>
 Adder& IdentifiableAdder<Adder>::setEnsureIdUnicity(bool ensureIdUnicity) {
     m_ensureIdUnicity = ensureIdUnicity;
+    return static_cast<Adder&>(*this);
+}
+
+template <typename Adder>
+Adder& IdentifiableAdder<Adder>::setFictitious(bool fictitious) {
+    m_fictitious = fictitious;
     return static_cast<Adder&>(*this);
 }
 

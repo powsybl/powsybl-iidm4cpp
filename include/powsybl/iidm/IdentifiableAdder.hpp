@@ -30,6 +30,8 @@ public:
 
     Adder& setEnsureIdUnicity(bool ensureIdUnicity);
 
+    Adder& setFictitious(bool fictitious);
+
     virtual Adder& setId(const std::string& id);
 
     virtual Adder& setName(const std::string& name);
@@ -43,6 +45,8 @@ protected:
 
     virtual Network& getNetwork() = 0;
 
+    bool isFictitious() const;
+
 private:
     virtual const std::string& getTypeDescription() const = 0;
 
@@ -52,6 +56,8 @@ private:
     bool m_ensureIdUnicity = false;
 
     std::string m_name;
+
+    bool m_fictitious = false;
 };
 
 }  // namespace iidm

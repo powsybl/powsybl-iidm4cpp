@@ -37,7 +37,7 @@ public:  // Identifiable
     Network& getNetwork() override;
 
 public:
-    Substation(Network& network, const std::string& id, const std::string& name, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags);
+    Substation(Network& network, const std::string& id, const std::string& name, bool fictitious, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags);
 
     ~Substation() noexcept override = default;
 

@@ -13,12 +13,11 @@ namespace powsybl {
 
 namespace iidm {
 
-Switch::Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, SwitchKind kind, bool open,
-               bool retained, bool fictitious) :
-    Identifiable(id, name),
+Switch::Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, bool fictitious, SwitchKind kind, bool open,
+               bool retained) :
+    Identifiable(id, name, fictitious),
     m_voltageLevel(voltageLevel),
     m_kind(kind),
-    m_fictitious(fictitious),
     m_open(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), open),
     m_retained(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), retained) {
 }
@@ -65,10 +64,6 @@ VoltageLevel& Switch::getVoltageLevel() {
     return m_voltageLevel.get();
 }
 
-bool Switch::isFictitious() const {
-    return m_fictitious;
-}
-
 bool Switch::isOpen() const {
     return m_open[m_voltageLevel.get().getNetwork().getVariantIndex()];
 }
@@ -82,14 +77,12 @@ void Switch::reduceVariantArraySize(unsigned long number) {
     m_retained.resize(m_retained.size() - number);
 }
 
-Switch& Switch::setFictitious(bool fictitious) {
-    bool oldValue = m_fictitious;
+void Switch::setFictitious(bool fictitious) {
+    bool oldValue = isFictitious();
     if (oldValue != fictitious) {
-        m_fictitious = fictitious;
+        Identifiable::setFictitious(fictitious);
         m_voltageLevel.get().invalidateCache();
     }
-
-    return *this;
 }
 
 Switch& Switch::setOpen(bool open) {

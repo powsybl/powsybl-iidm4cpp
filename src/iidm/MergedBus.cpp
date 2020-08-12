@@ -21,8 +21,8 @@ namespace powsybl {
 
 namespace iidm {
 
-MergedBus::MergedBus(const std::string& id, const std::string& name, BusSet buses) :
-    Bus(id, name),
+MergedBus::MergedBus(const std::string& id, const std::string& name, bool fictitious, BusSet buses) :
+    Bus(id, name, fictitious),
     m_buses(std::move(buses)) {
 
     if (m_buses.empty()) {

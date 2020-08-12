@@ -13,9 +13,9 @@ namespace powsybl {
 
 namespace iidm {
 
-Battery::Battery(VariantManagerHolder& network, const std::string& id, const std::string& name,
+Battery::Battery(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
     double p0, double q0, double minP, double maxP) :
-    Injection(id, name, ConnectableType::BATTERY),
+    Injection(id, name, fictitious, ConnectableType::BATTERY),
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
     m_minP(checkMinP(*this, minP)),

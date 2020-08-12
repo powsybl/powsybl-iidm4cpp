@@ -48,19 +48,8 @@ const std::string& AbstractSwitchAdder<SwitchAdder>::getTypeDescription() const 
 }
 
 template <typename SwitchAdder>
-bool AbstractSwitchAdder<SwitchAdder>::isFictitious() const {
-    return m_fictitious;
-}
-
-template <typename SwitchAdder>
 bool AbstractSwitchAdder<SwitchAdder>::isOpen() const {
     return m_open;
-}
-
-template <typename SwitchAdder>
-SwitchAdder& AbstractSwitchAdder<SwitchAdder>::setFictitious(bool fictitious) {
-    m_fictitious = fictitious;
-    return static_cast<SwitchAdder&>(*this);
 }
 
 template <typename SwitchAdder>

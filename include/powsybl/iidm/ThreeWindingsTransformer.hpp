@@ -142,7 +142,7 @@ public:
     };
 
 public:
-    ThreeWindingsTransformer(const std::string& id, const std::string& name, std::unique_ptr<Leg> leg1, std::unique_ptr<Leg> leg2, std::unique_ptr<Leg> leg3, double ratedU0);
+    ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<Leg> leg1, std::unique_ptr<Leg> leg2, std::unique_ptr<Leg> leg3, double ratedU0);
 
     ~ThreeWindingsTransformer() noexcept override = default;
 

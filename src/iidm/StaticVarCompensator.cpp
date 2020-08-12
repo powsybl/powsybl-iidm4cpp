@@ -16,9 +16,9 @@ namespace powsybl {
 
 namespace iidm {
 
-StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name,
+StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
         double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, Terminal& regulatingTerminal) :
-    Injection(id, name, ConnectableType::STATIC_VAR_COMPENSATOR),
+    Injection(id, name, fictitious, ConnectableType::STATIC_VAR_COMPENSATOR),
     m_bMin(checkBmin(*this, bMin)),
     m_bMax(checkBmax(*this, bMax)),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),

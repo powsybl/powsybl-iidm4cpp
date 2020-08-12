@@ -521,6 +521,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(!leg3.hasPhaseTapChanger());
     BOOST_TEST(!cLeg3.getOptionalPhaseTapChanger());
 
+    transformer.setFictitious(true);
+    BOOST_CHECK(transformer.isFictitious());
+    transformer.setFictitious(false);
+    BOOST_CHECK(!transformer.isFictitious());
+
     transformer.remove();
     POWSYBL_ASSERT_THROW(network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3"), PowsyblException, "Unable to find to the identifiable '3WT_VL1_VL2_VL3'");
 }
