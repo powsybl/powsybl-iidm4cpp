@@ -13,6 +13,7 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
 #include <powsybl/iidm/extensions/entsoe/MergedXnode.hpp>
+#include <powsybl/iidm/extensions/entsoe/MergedXnodeAdder.hpp>
 
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
@@ -30,11 +31,6 @@ MergedXnodeXmlSerializer::MergedXnodeXmlSerializer() :
 }
 
 Extension& MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
-    if (!stdcxx::isInstanceOf<Line>(extendable)) {
-        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
-    }
-    auto& line = dynamic_cast<Line&>(extendable);
-
     const auto& rdp = context.getReader().getAttributeValue<double>("rdp");
     const auto& xdp = context.getReader().getAttributeValue<double>("xdp");
     const auto& xnodeP1 = context.getReader().getAttributeValue<double>("xnodeP1");
@@ -43,7 +39,7 @@ Extension& MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml
     const auto& xnodeQ2 = context.getReader().getAttributeValue<double>("xnodeQ2");
     const auto& code = context.getReader().getAttributeValue("code");
 
-    extendable.addExtension(stdcxx::make_unique<MergedXnode>(line, rdp, xdp, xnodeP1, xnodeQ1, xnodeP2, xnodeQ2, "", "", code));
+    extendable.newExtension<MergedXnodeAdder>().withRdp(rdp).withXdp(xdp).withXnodeP1(xnodeP1).withXnodeQ1(xnodeQ1).withXnodeP2(xnodeP2).withXnodeQ2(xnodeQ2).withLine1Name("").withLine2Name("").withCode(code).add();
     return extendable.getExtension<MergedXnode>();
 }
 

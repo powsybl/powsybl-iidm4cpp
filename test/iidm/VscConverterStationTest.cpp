@@ -37,7 +37,9 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': loss factor is invalid");
     adder.setLossFactor(-10.0);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': loss factor must be >= 0");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': loss factor must be >= 0 and <= 100");
+    adder.setLossFactor(101.0);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': loss factor must be >= 0 and <= 100");
     adder.setLossFactor(10.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': voltage regulator status is not set");
@@ -97,7 +99,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(100.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(vsc.getLossFactor(), hvdc.getLossFactor(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(vsc.setLossFactor(stdcxx::nan()), ValidationException, "vscConverterStation 'VSC1': loss factor is invalid");
-    POWSYBL_ASSERT_THROW(vsc.setLossFactor(-100.0), ValidationException, "vscConverterStation 'VSC1': loss factor must be >= 0");
+    POWSYBL_ASSERT_THROW(vsc.setLossFactor(-100.0), ValidationException, "vscConverterStation 'VSC1': loss factor must be >= 0 and <= 100");
 
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(stdcxx::nan())));
@@ -161,11 +163,11 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(vsc.isVoltageRegulatorOn());
-    vsc.setLossFactor(150.0).setVoltageSetpoint(250.0).setReactivePowerSetpoint(350.0).setVoltageRegulatorOn(false);
+    vsc.setLossFactor(70.0).setVoltageSetpoint(250.0).setReactivePowerSetpoint(350.0).setVoltageRegulatorOn(false);
 
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    BOOST_CHECK_CLOSE(150.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(70.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(350.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!vsc.isVoltageRegulatorOn());
@@ -173,7 +175,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    BOOST_CHECK_CLOSE(150.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(70.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(vsc.isVoltageRegulatorOn());
@@ -185,7 +187,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     network.getVariantManager().setWorkingVariant("s3");
     BOOST_CHECK_EQUAL("VSC1", vsc.getId());
     POWSYBL_ASSERT_ENUM_EQ(HvdcConverterStation::HvdcType::VSC, vsc.getHvdcType());
-    BOOST_CHECK_CLOSE(150.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(70.0, vsc.getLossFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(350.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!vsc.isVoltageRegulatorOn());

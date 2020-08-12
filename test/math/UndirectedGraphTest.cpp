@@ -90,6 +90,15 @@ BOOST_AUTO_TEST_CASE(getEdgeObject) {
     for (const auto& obj : objects) {
         BOOST_TEST(stdcxx::areSame(expected, obj.get()));
     }
+
+    graph.addVertex();
+    graph.addVertex();
+    graph.removeVertex(2UL);
+    BOOST_CHECK(graph.vertexExists(0UL));
+    BOOST_CHECK(graph.vertexExists(1UL));
+    BOOST_CHECK(!graph.vertexExists(2UL));
+    BOOST_CHECK(graph.vertexExists(3UL));
+    BOOST_CHECK(!graph.vertexExists(4UL));
 }
 
 BOOST_AUTO_TEST_CASE(getEdges) {

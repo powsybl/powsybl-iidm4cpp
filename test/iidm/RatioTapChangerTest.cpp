@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     Network network = createRatioTapChangerTestNetwork();
     const Terminal& terminal = network.getLoad("LOAD1").getTerminal();
 
-    RatioTapChanger& ratioTapChanger = network.getTwoWindingsTransformer("2WT_VL1_VL2").getRatioTapChanger().get();
+    RatioTapChanger& ratioTapChanger = network.getTwoWindingsTransformer("2WT_VL1_VL2").getRatioTapChanger();
     const RatioTapChanger& cRatioTapChanger = ratioTapChanger;
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -219,7 +219,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createRatioTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
-    RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger().get();
+    RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger();
 
     POWSYBL_ASSERT_THROW(ratioTapChanger.setTapPosition(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position -1 [1, 3]");
     POWSYBL_ASSERT_THROW(ratioTapChanger.setTapPosition(6), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 6 [1, 3]");
@@ -305,16 +305,16 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(ratioTapChanger.setTargetDeadband(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
 
     BOOST_CHECK_NO_THROW(ratioTapChanger.remove());
-    BOOST_TEST(!transformer.getRatioTapChanger());
+    BOOST_TEST(!transformer.hasRatioTapChanger());
 }
 
 BOOST_AUTO_TEST_CASE(adder) {
     Network network = createRatioTapChangerTestNetwork();
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
-    BOOST_TEST(transformer.getRatioTapChanger());
-    transformer.getRatioTapChanger().get().remove();
-    BOOST_TEST(!transformer.getRatioTapChanger());
+    BOOST_TEST(transformer.hasRatioTapChanger());
+    transformer.getRatioTapChanger().remove();
+    BOOST_TEST(!transformer.hasRatioTapChanger());
     RatioTapChangerAdder adder = transformer.newRatioTapChanger();
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': tap position is not set");
@@ -374,24 +374,37 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     adder.setTargetDeadband(2.0);
     BOOST_CHECK_NO_THROW(adder.add());
-    BOOST_TEST(transformer.getRatioTapChanger());
+    BOOST_TEST(transformer.hasRatioTapChanger());
 }
 
 BOOST_AUTO_TEST_CASE(holder) {
     Network network = createRatioTapChangerTestNetwork();
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
-    RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger().get();
+    RatioTapChanger& ratioTapChanger = transformer.getRatioTapChanger();
 
     BOOST_TEST(stdcxx::areSame(network, transformer.getNetwork()));
     BOOST_TEST(stdcxx::areSame(network, cTransformer.getNetwork()));
 
-    BOOST_TEST(stdcxx::areSame(ratioTapChanger, transformer.getRatioTapChanger().get()));
-    BOOST_TEST(stdcxx::areSame(ratioTapChanger, cTransformer.getRatioTapChanger().get()));
+    BOOST_TEST(stdcxx::areSame(ratioTapChanger, transformer.getRatioTapChanger()));
+    BOOST_TEST(stdcxx::areSame(ratioTapChanger, cTransformer.getRatioTapChanger()));
 
-    BOOST_TEST(transformer.getRatioTapChanger());
+    BOOST_TEST(stdcxx::areSame(ratioTapChanger, transformer.getOptionalRatioTapChanger().get()));
+    BOOST_TEST(stdcxx::areSame(ratioTapChanger, cTransformer.getOptionalRatioTapChanger().get()));
+
+    BOOST_TEST(transformer.hasRatioTapChanger());
+    BOOST_TEST(cTransformer.hasRatioTapChanger());
+
     ratioTapChanger.remove();
-    BOOST_TEST(!transformer.getRatioTapChanger());
+
+    BOOST_TEST(!transformer.hasRatioTapChanger());
+    BOOST_TEST(!cTransformer.hasRatioTapChanger());
+
+    BOOST_TEST(!transformer.getOptionalRatioTapChanger());
+    BOOST_TEST(!cTransformer.getOptionalRatioTapChanger());
+
+    POWSYBL_ASSERT_THROW(transformer.getRatioTapChanger(), PowsyblException, "Ratio tap changer not set");
+    POWSYBL_ASSERT_THROW(cTransformer.getRatioTapChanger(), PowsyblException, "Ratio tap changer not set");
 
     BOOST_CHECK_NO_THROW(transformer.newRatioTapChanger());
 }

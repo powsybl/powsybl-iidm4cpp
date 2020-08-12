@@ -53,13 +53,6 @@ stdcxx::range<Battery> VoltageLevel::getBatteries() {
     return getConnectables<Battery>();
 }
 
-unsigned long VoltageLevel::getConnectableCount() const {
-    const auto& terminals = getTerminals();
-    return std::count_if(std::begin(terminals), std::end(terminals), [](const Terminal& terminal) {
-        return terminal.getConnectable();
-    });
-}
-
 unsigned long VoltageLevel::getDanglingLineCount() const {
     return getConnectableCount<DanglingLine>();
 }

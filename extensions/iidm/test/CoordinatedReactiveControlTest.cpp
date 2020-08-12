@@ -16,6 +16,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControl.hpp>
+#include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -67,16 +68,16 @@ BOOST_AUTO_TEST_CASE(CoordinatedReactiveControlTest) {
     Network network = createNetwork();
     Generator& gen = network.getGenerator("GEN");
 
-    POWSYBL_ASSERT_THROW(CoordinatedReactiveControl(gen, -1.0), PowsyblException, "Unexpected value for qPercent: -1");
-    POWSYBL_ASSERT_THROW(CoordinatedReactiveControl(gen, 101.0), PowsyblException, "Unexpected value for qPercent: 101");
+    BOOST_CHECK_NO_THROW(CoordinatedReactiveControl(gen, -1.0));
+    BOOST_CHECK_NO_THROW(CoordinatedReactiveControl(gen, 101.0));
+
     POWSYBL_ASSERT_THROW(CoordinatedReactiveControl(gen, stdcxx::nan()), PowsyblException, "Undefined value for qPercent");
 
     CoordinatedReactiveControl crc(gen, 50.0);
     BOOST_CHECK_EQUAL("coordinatedReactiveControl", crc.getName());
     BOOST_CHECK_CLOSE(50.0, crc.getQPercent(), std::numeric_limits<double>::epsilon());
 
-    POWSYBL_ASSERT_THROW(crc.setQPercent(101), PowsyblException, "Unexpected value for qPercent: 101");
-    POWSYBL_ASSERT_THROW(crc.setQPercent(-1), PowsyblException, "Unexpected value for qPercent: -1");
+    POWSYBL_ASSERT_THROW(crc.setQPercent(stdcxx::nan()), PowsyblException, "Undefined value for qPercent");
 
     BOOST_CHECK(stdcxx::areSame(gen, crc.getExtendable<Generator>().get()));
     POWSYBL_ASSERT_THROW(crc.getExtendable<Load>(), AssertionError, "Unexpected extendable type: powsybl::iidm::Load (powsybl::iidm::Generator expected)");
@@ -87,7 +88,7 @@ BOOST_FIXTURE_TEST_CASE(CoordinatedReactiveControlXmlSerializerTest, test::Resou
     network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));
 
     Generator& gen = network.getGenerator("GEN");
-    gen.addExtension(Extension::create<CoordinatedReactiveControl>(gen, 100.0));
+    gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(100.0).add();
 
     const std::string& networkStr = ResourceFixture::getResource("coordinatedReactiveControl.xml");
 

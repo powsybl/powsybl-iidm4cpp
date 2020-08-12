@@ -85,15 +85,13 @@ public:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::Reference<T> getConnectable(const std::string& id);
 
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    template <typename T = Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     unsigned long getConnectableCount() const;
 
-    unsigned long getConnectableCount() const;
-
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    template <typename T = Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::const_range<T> getConnectables() const;
 
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
+    template <typename T = Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::range<T> getConnectables();
 
     unsigned long getDanglingLineCount() const;

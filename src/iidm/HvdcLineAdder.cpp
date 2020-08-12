@@ -27,8 +27,8 @@ HvdcLine& HvdcLineAdder::add() {
     checkOptional(*this, m_convertersMode, "converter mode is invalid");
     checkConvertersMode(*this, *m_convertersMode);
     checkNominalVoltage(*this, m_nominalVoltage);
-    checkActivePowerSetpoint(*this, m_activePowerSetpoint);
-    checkMaxP(*this, m_maxP);
+    checkHvdcActivePowerSetpoint(*this, m_activePowerSetpoint);
+    checkHvdcMaxP(*this, m_maxP);
 
     HvdcConverterStation& converterStation1 = getConverterStation(m_converterStationId1, 1U);
     HvdcConverterStation& converterStation2 = getConverterStation(m_converterStationId2, 2U);
