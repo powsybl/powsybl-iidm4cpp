@@ -31,11 +31,6 @@ double HvdcConverterStation::getLossFactor() const {
     return m_lossFactor;
 }
 
-HvdcConverterStation& HvdcConverterStation::setFictitious(bool fictitious) {
-    Injection::setFictitious(fictitious);
-    return *this;
-}
-
 void HvdcConverterStation::setHvdcLine(const stdcxx::Reference<HvdcLine>& hvdcLine) {
     m_hvdcLine = hvdcLine;
 }

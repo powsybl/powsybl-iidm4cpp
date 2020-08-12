@@ -144,9 +144,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(load1, vl.getConnectable<Load>("LOAD1").get()));
     POWSYBL_ASSERT_REF_FALSE(vl.getConnectable<Generator>("LOAD1"));
 
-    BOOST_TEST(stdcxx::areSame(vl1, vl1.setFictitious(true)));
+    vl1.setFictitious(true);
     BOOST_CHECK(vl1.isFictitious());
-    vl1.setFictitious(false).setHighVoltageLimit(stdcxx::nan());
+    vl1.setFictitious(false);
     BOOST_CHECK(!vl1.isFictitious());
 }
 

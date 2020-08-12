@@ -187,7 +187,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(tieLine.setB1(500), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
     POWSYBL_ASSERT_THROW(tieLine.setB2(600), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
 
-    BOOST_TEST(stdcxx::areSame(tieLine, tieLine.setFictitious(true)));
+    tieLine.setFictitious(true);
     BOOST_CHECK(tieLine.isFictitious());
     tieLine.setFictitious(false);
     BOOST_CHECK(!tieLine.isFictitious());

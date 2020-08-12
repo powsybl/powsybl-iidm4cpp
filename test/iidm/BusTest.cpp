@@ -86,9 +86,9 @@ BOOST_AUTO_TEST_CASE(range_batteries) {
     auto& bus = network.get<Bus>("Bus1");
     const auto& cBus = bus;
 
-    BOOST_TEST(stdcxx::areSame(bus, bus.setFictitious(true)));
+    bus.setFictitious(true);
     BOOST_CHECK(bus.isFictitious());
-    bus.setFictitious(false).setV(400);
+    bus.setFictitious(false);
     BOOST_CHECK(!bus.isFictitious());
 
     VoltageLevel& vl = network.getVoltageLevel("VL1");

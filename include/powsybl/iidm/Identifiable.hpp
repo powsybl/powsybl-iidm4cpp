@@ -59,15 +59,12 @@ public:
 
     bool isFictitious() const;
 
-    virtual Identifiable& setFictitious(bool fictitious);
+    virtual void setFictitious(bool fictitious);
 
     stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
 
 protected:
     Identifiable(const std::string& id, const std::string& name, bool fictitious);
-
-protected:
-    bool m_fictitious;
 
 private:
     virtual const std::string& getTypeDescription() const = 0;
@@ -76,6 +73,8 @@ private:
     std::string m_id;
 
     std::string m_name;
+
+    bool m_fictitious;
 
     stdcxx::Properties m_properties;
 };

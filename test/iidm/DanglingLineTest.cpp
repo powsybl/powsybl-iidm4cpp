@@ -146,9 +146,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(600.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(danglingLine.setX(stdcxx::nan()), ValidationException, "Dangling line 'DL1': x is invalid");
 
-    BOOST_TEST(stdcxx::areSame(danglingLine, danglingLine.setFictitious(true)));
+    danglingLine.setFictitious(true);
     BOOST_CHECK(danglingLine.isFictitious());
-    danglingLine.setFictitious(false).setQ0(400.0);
+    danglingLine.setFictitious(false);
     BOOST_CHECK(!danglingLine.isFictitious());
 
     danglingLine.remove();

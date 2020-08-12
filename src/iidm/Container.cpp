@@ -25,11 +25,6 @@ const Container::Type& Container::getContainerType() const {
     return m_type;
 }
 
-Container& Container::setFictitious(bool fictitious) {
-    Identifiable::setFictitious(fictitious);
-    return *this;
-}
-
 }  // namespace iidm
 
 }  // namespace powsybl

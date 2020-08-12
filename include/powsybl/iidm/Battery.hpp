@@ -16,9 +16,6 @@ namespace powsybl {
 namespace iidm {
 
 class Battery : public Injection, public ReactiveLimitsHolder {
-public:  // Identifiable
-    Battery& setFictitious(bool fictitious) override;
-
 public:
     Battery(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
         double p0, double q0, double minP, double maxP);

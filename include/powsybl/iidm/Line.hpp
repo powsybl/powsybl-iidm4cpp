@@ -16,9 +16,6 @@ namespace powsybl {
 namespace iidm {
 
 class Line : public Branch {
-public:  // Identifiable
-    Line& setFictitious(bool fictitious) override;
-
 public:
     Line(const std::string& id, const std::string& name, bool fictitious, double r, double x, double g1, double b1, double g2, double b2);
 

@@ -359,9 +359,9 @@ BOOST_AUTO_TEST_CASE(fictitious) {
     Network network("id", "test");
 
     BOOST_CHECK(!network.isFictitious());
-    BOOST_TEST(stdcxx::areSame(network, network.setFictitious(true)));
+    network.setFictitious(true);
     BOOST_CHECK(network.isFictitious());
-    network.setFictitious(false).setForecastDistance(1);
+    network.setFictitious(false);
     BOOST_CHECK(!network.isFictitious());
 }
 

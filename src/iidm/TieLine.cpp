@@ -188,11 +188,6 @@ TieLine& TieLine::setB2(double /*b2*/) {
     throw ValidationException(*this, "direct modification of characteristics not supported for tie lines");
 }
 
-TieLine& TieLine::setFictitious(bool fictitious) {
-    Line::setFictitious(fictitious);
-    return *this;
-}
-
 TieLine& TieLine::setG1(double /*g1*/) {
     throw ValidationException(*this, "direct modification of characteristics not supported for tie lines");
 }

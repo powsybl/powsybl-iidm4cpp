@@ -77,13 +77,12 @@ void Switch::reduceVariantArraySize(unsigned long number) {
     m_retained.resize(m_retained.size() - number);
 }
 
-Switch& Switch::setFictitious(bool fictitious) {
-    bool oldValue = m_fictitious;
+void Switch::setFictitious(bool fictitious) {
+    bool oldValue = isFictitious();
     if (oldValue != fictitious) {
         Identifiable::setFictitious(fictitious);
         m_voltageLevel.get().invalidateCache();
     }
-    return *this;
 }
 
 Switch& Switch::setOpen(bool open) {

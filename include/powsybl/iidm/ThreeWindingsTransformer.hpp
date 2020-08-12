@@ -27,9 +27,6 @@ public:
         THREE
     };
 
-public:  // Identifiable
-    ThreeWindingsTransformer& setFictitious(bool fictitious) override;
-
 public:
     class Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
     public:  // Validable

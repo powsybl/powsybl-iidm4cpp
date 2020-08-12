@@ -24,9 +24,6 @@ public:
         TWO
     };
 
-public:  // Identifiable
-    Branch& setFictitious(bool fictitious) override;
-
 public:
     class Overload {
     public:

@@ -232,11 +232,6 @@ void Branch::setCurrentLimits(const Branch::Side& side, std::unique_ptr<CurrentL
     }
 }
 
-Branch& Branch::setFictitious(bool fictitious) {
-    Connectable::setFictitious(fictitious);
-    return *this;
-}
-
 namespace Enum {
 
 template <>

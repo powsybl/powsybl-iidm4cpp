@@ -88,9 +88,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(400.0, lcc.getPowerFactor(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(lcc.setPowerFactor(stdcxx::nan()), ValidationException, "lccConverterStation 'LCC1': power factor is invalid");
 
-    BOOST_TEST(stdcxx::areSame(lcc, lcc.setFictitious(true)));
+    lcc.setFictitious(true);
     BOOST_CHECK(lcc.isFictitious());
-    lcc.setFictitious(false).setPowerFactor(300.0);
+    lcc.setFictitious(false);
     BOOST_CHECK(!lcc.isFictitious());
 
     lcc.remove();

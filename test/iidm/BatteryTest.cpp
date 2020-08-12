@@ -154,9 +154,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(battery.setMaxP(-400.0), ValidationException, "Battery 'BAT1': Invalid active limits [-90, -400]");
     POWSYBL_ASSERT_THROW(battery.setMaxP(-40.0), ValidationException, "Battery 'BAT1': Invalid active power p > maxP: 0 > -40");
 
-    BOOST_TEST(stdcxx::areSame(battery, battery.setFictitious(true)));
+    battery.setFictitious(true);
     BOOST_CHECK(battery.isFictitious());
-    battery.setFictitious(false).setMaxP(500.0);
+    battery.setFictitious(false);
     BOOST_CHECK(!battery.isFictitious());
 
     battery.remove();

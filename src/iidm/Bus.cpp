@@ -143,11 +143,6 @@ const std::string& Bus::getTypeDescription() const {
     return s_typeDescription;
 }
 
-Bus& Bus::setFictitious(bool fictitious) {
-    Identifiable::setFictitious(fictitious);
-    return *this;
-}
-
 }  // namespace iidm
 
 }  // namespace powsybl

@@ -190,9 +190,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     substation.addGeographicalTag("IT");
     BOOST_CHECK_EQUAL(4, substation.getGeographicalTags().size());
 
-    BOOST_TEST(stdcxx::areSame(substation, substation.setFictitious(true)));
+    substation.setFictitious(true);
     BOOST_CHECK(substation.isFictitious());
-    substation.setFictitious(false).setCountry(Country::BE);
+    substation.setFictitious(false);
     BOOST_CHECK(!substation.isFictitious());
 }
 

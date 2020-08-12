@@ -210,15 +210,6 @@ VscConverterStationAdder VoltageLevel::newVscConverterStation() {
     return VscConverterStationAdder(*this);
 }
 
-VoltageLevel& VoltageLevel::setFictitious(bool fictitious) {
-    bool oldValue = m_fictitious;
-    if (oldValue != fictitious) {
-        Container::setFictitious(fictitious);
-        invalidateCache();
-    }
-    return *this;
-}
-
 VoltageLevel& VoltageLevel::setHighVoltageLimit(double highVoltageLimit) {
     checkVoltageLimits(*this, m_lowVoltageLimit, highVoltageLimit);
     m_highVoltageLimit = highVoltageLimit;

@@ -161,11 +161,6 @@ TwoWindingsTransformer& TwoWindingsTransformer::setB(double b) {
     return *this;
 }
 
-TwoWindingsTransformer& TwoWindingsTransformer::setFictitious(bool fictitious) {
-    Branch::setFictitious(fictitious);
-    return *this;
-}
-
 TwoWindingsTransformer& TwoWindingsTransformer::setG(double g) {
     m_g = checkG(*this, g);
     return *this;

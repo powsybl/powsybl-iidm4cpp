@@ -228,9 +228,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(400.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(hvdc.setR(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': r is invalid");
 
-    BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setFictitious(true)));
+    hvdc.setFictitious(true);
     BOOST_CHECK(hvdc.isFictitious());
-    hvdc.setFictitious(false).setR(400.0);
+    hvdc.setFictitious(false);
     BOOST_CHECK(!hvdc.isFictitious());
 
     hvdc.remove();

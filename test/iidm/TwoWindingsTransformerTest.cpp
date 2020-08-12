@@ -288,9 +288,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(std::isnan(transformer.getRatedS()));
     POWSYBL_ASSERT_THROW(transformer.setRatedS(-1.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': Invalid rated S value: -1");
 
-    BOOST_TEST(stdcxx::areSame(transformer, transformer.setFictitious(true)));
+    transformer.setFictitious(true);
     BOOST_CHECK(transformer.isFictitious());
-    transformer.setFictitious(false).setRatedU2(600.0);
+    transformer.setFictitious(false);
     BOOST_CHECK(!transformer.isFictitious());
 
     transformer.remove();

@@ -15,9 +15,6 @@ namespace powsybl {
 namespace iidm {
 
 class LccConverterStation : public HvdcConverterStation {
-public:  // Identifiable
-    LccConverterStation& setFictitious(bool fictitious) override;
-
 public: // HvdcConverterStation
     HvdcConverterStation::HvdcType getHvdcType() const override;
 

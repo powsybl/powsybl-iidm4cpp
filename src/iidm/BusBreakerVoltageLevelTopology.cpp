@@ -31,7 +31,7 @@ std::unique_ptr<MergedBus> CalculatedBusTopology::createMergedBus(unsigned long 
     const std::string& mergedBusId = stdcxx::format("%1%_%2%", m_voltageLevel.getId(), busCount);
     const std::string& mergedBusName = m_voltageLevel.getOptionalName().empty() ? "" : stdcxx::format("%1%_%2%", m_voltageLevel.getOptionalName(), busCount);
 
-    return stdcxx::make_unique<MergedBus>(mergedBusId, mergedBusName, m_voltageLevel.m_fictitious, busSet);
+    return stdcxx::make_unique<MergedBus>(mergedBusId, mergedBusName, m_voltageLevel.isFictitious(), busSet);
 }
 
 stdcxx::Reference<MergedBus> CalculatedBusTopology::getMergedBus(const std::string& id, bool throwException) {

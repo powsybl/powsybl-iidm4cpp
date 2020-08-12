@@ -32,7 +32,7 @@ Network createGeneratorTestNetwork() {
         .setCountry(Country::FR)
         .add();
 
-    s.setFictitious(false).setCountry(Country::FR);
+    s.setCountry(Country::FR).setFictitious(false);
 
     VoltageLevel& vl = s.newVoltageLevel()
         .setId("VL")
@@ -40,9 +40,8 @@ Network createGeneratorTestNetwork() {
         .setNominalVoltage(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
+        .setFictitious(false)
         .add();
-
-    vl.setFictitious(false).setHighVoltageLimit(420.0);
 
     vl.getNodeBreakerView().newBusbarSection()
         .setId("BBS")
@@ -99,16 +98,15 @@ Network createGeneratorTestNetwork() {
         .setOpen(false)
         .add();
 
-    Load& load = vl.newLoad()
+    vl.newLoad()
         .setId("LOAD1")
         .setNode(4)
         .setName("LOAD1_NAME")
         .setLoadType(LoadType::UNDEFINED)
         .setP0(50.0)
         .setQ0(40.0)
+        .setFictitious(false)
         .add();
-
-    load.setFictitious(false).setQ0(40.0);
 
     return network;
 }
@@ -257,9 +255,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     Terminal& terminal2 = network.getLoad("LOAD1").getTerminal();
     gen.setRegulatingTerminal(stdcxx::ref<Terminal>(terminal2));
 
-    BOOST_TEST(stdcxx::areSame(gen, gen.setFictitious(true)));
+    gen.setFictitious(true);
     BOOST_CHECK(gen.isFictitious());
-    gen.setFictitious(false).setVoltageRegulatorOn(true);
+    gen.setFictitious(false);
     BOOST_CHECK(!gen.isFictitious());
 
     //Terminal from other network

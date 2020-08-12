@@ -144,11 +144,6 @@ Substation& Substation::setCountry(const stdcxx::optional<Country>& country) {
     return *this;
 }
 
-Substation& Substation::setFictitious(bool fictitious) {
-    Container::setFictitious(fictitious);
-    return *this;
-}
-
 void Substation::setNetworkRef(Network& network) {
     m_network.set(network);
 }

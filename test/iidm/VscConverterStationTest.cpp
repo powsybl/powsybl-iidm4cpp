@@ -121,9 +121,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(400.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
 
-    BOOST_TEST(stdcxx::areSame(vsc, vsc.setFictitious(true)));
+    vsc.setFictitious(true);
     BOOST_CHECK(vsc.isFictitious());
-    vsc.setFictitious(false).setVoltageRegulatorOn(false);
+    vsc.setFictitious(false);
     BOOST_CHECK(!vsc.isFictitious());
 
     vsc.remove();

@@ -489,7 +489,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     leg3.getRatioTapChanger().get().remove();
     BOOST_TEST(!leg3.getRatioTapChanger());
 
-    BOOST_TEST(stdcxx::areSame(transformer, transformer.setFictitious(true)));
+    transformer.setFictitious(true);
     BOOST_CHECK(transformer.isFictitious());
     transformer.setFictitious(false);
     BOOST_CHECK(!transformer.isFictitious());

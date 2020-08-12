@@ -100,11 +100,6 @@ StaticVarCompensator& StaticVarCompensator::setBmin(double bMin) {
     return *this;
 }
 
-StaticVarCompensator& StaticVarCompensator::setFictitious(bool fictitious) {
-    Injection::setFictitious(fictitious);
-    return *this;
-}
-
 StaticVarCompensator& StaticVarCompensator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
     checkSvcRegulator(*this, getVoltageSetpoint(), reactivePowerSetpoint, getRegulationMode());
     m_reactivePowerSetpoint[getNetwork().getVariantIndex()] = reactivePowerSetpoint;

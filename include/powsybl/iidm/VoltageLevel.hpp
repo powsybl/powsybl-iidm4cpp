@@ -54,8 +54,6 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
-    VoltageLevel& setFictitious(bool fictitious) override;
-
 public:
     ~VoltageLevel() noexcept override = default;
 

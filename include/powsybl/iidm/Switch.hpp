@@ -27,7 +27,7 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
-    Switch& setFictitious(bool fictitious) override;
+    void setFictitious(bool fictitious) override;
 
 public:
     Switch(VoltageLevel& voltageLevel, const std::string& id, const std::string& name, bool fictitious, SwitchKind kind, bool open,

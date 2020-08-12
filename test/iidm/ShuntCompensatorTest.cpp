@@ -234,9 +234,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     const ShuntCompensator& cShunt = shunt;
     BOOST_TEST(stdcxx::areSame(cShunt.getTerminal(), cShunt.getRegulatingTerminal()));
 
-    BOOST_TEST(stdcxx::areSame(shunt, shunt.setFictitious(true)));
+    shunt.setFictitious(true);
     BOOST_CHECK(shunt.isFictitious());
-    shunt.setFictitious(false).setCurrentSectionCount(350UL);
+    shunt.setFictitious(false);
     BOOST_CHECK(!shunt.isFictitious());
 
     shunt.remove();

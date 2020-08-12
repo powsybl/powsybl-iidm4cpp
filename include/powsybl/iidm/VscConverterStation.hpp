@@ -16,9 +16,6 @@ namespace powsybl {
 namespace iidm {
 
 class VscConverterStation : public HvdcConverterStation, public ReactiveLimitsHolder {
-public:  // Identifiable
-    VscConverterStation& setFictitious(bool fictitious) override;
-
 public: // HvdcConverterStation
     HvdcType getHvdcType() const override;
 

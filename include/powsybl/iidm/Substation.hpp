@@ -36,8 +36,6 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
-    Substation& setFictitious(bool fictitious) override;
-
 public:
     Substation(Network& network, const std::string& id, const std::string& name, bool fictitious, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags);
 

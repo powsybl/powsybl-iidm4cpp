@@ -71,11 +71,6 @@ void VscConverterStation::reduceVariantArraySize(unsigned long number) {
     m_voltageSetpoint.resize(m_voltageSetpoint.size() - number);
 }
 
-VscConverterStation& VscConverterStation::setFictitious(bool fictitious) {
-    HvdcConverterStation::setFictitious(fictitious);
-    return *this;
-}
-
 VscConverterStation& VscConverterStation::setLossFactor(double lossFactor) {
     return dynamic_cast<VscConverterStation&>(HvdcConverterStation::setLossFactor(lossFactor));
 }
