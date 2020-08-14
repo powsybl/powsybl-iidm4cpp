@@ -11,8 +11,8 @@
 #include <map>
 #include <string>
 
-#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/math/UndirectedGraph.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 #include "BusBreakerVoltageLevelVariant.hpp"
