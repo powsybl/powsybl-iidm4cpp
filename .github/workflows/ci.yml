@@ -24,11 +24,18 @@ jobs:
           cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-linux
           -DCMAKE_BUILD_TYPE=Release
           -DBUILD_EXAMPLES=ON
-          -DCMAKE_CXX_CLANG_TIDY=clang-tidy
           -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
+          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Build
         run: cmake --build $GITHUB_WORKSPACE/build-linux --parallel 3
+
+      - name: Clang Tidy
+        run: |
+          export MODIFIED_FILES=$(git diff -U0 HEAD^ --name-only |grep -E "\.(cpp|hpp|hxx)$")
+          if [ -n "$MODIFIED_FILES" ]; then
+              clang-tidy $MODIFIED_FILES -p $GITHUB_WORKSPACE/build-linux
+          fi
 
       - name: Tests
         run: cmake --build $GITHUB_WORKSPACE/build-linux --target test
