@@ -249,12 +249,16 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_TEST(!line.getCurrentLimits2());
     auto adder = line.newCurrentLimits2();
 
+    BOOST_CHECK(!adder.hasTemporaryLimits());
+
     adder.setPermanentLimit(-10.0);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
     adder.setPermanentLimit(100.0);
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_TEST(line.getCurrentLimits2());
+
+    BOOST_CHECK(!adder.hasTemporaryLimits());
 
     auto adder2 = adder;
     auto tempAdder = adder2.beginTemporaryLimit();
@@ -269,6 +273,9 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': name is not set");
     tempAdder.setName("TL_1");
     BOOST_CHECK_NO_THROW(tempAdder.endTemporaryLimit());
+
+    BOOST_CHECK(!adder.hasTemporaryLimits());
+    BOOST_CHECK(adder2.hasTemporaryLimits());
 
     logging::ContainerLogger& logger = dynamic_cast<logging::ContainerLogger&>(logging::LoggerFactory::getLogger("powsybl::iidm"));
     BOOST_CHECK_EQUAL(0, logger.size());
