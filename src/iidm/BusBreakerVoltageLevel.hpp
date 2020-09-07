@@ -15,8 +15,6 @@
 #include <powsybl/math/UndirectedGraph.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
-
-
 #include "BusBreakerVoltageLevelVariant.hpp"
 #include "BusBreakerVoltageLevelViews.hpp"
 #include "BusTerminalViews.hpp"

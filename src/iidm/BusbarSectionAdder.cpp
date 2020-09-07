@@ -14,8 +14,6 @@
 
 #include "NodeBreakerVoltageLevel.hpp"
 
-
-
 namespace powsybl {
 
 namespace iidm {
