@@ -128,7 +128,6 @@ jobs:
           -DCODE_COVERAGE=TRUE
           -DBUILD_EXAMPLES=ON
           -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
-          -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
       - name: Build
         run:  >
