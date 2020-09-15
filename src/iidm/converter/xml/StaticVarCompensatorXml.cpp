@@ -37,8 +37,14 @@ const char* StaticVarCompensatorXml::getRootElementName() const {
 StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticVarCompensatorAdder& adder, NetworkXmlReaderContext& context) const {
     const auto& bMin = context.getReader().getAttributeValue<double>(B_MIN);
     const auto& bMax = context.getReader().getAttributeValue<double>(B_MAX);
-    double voltageSetpoint = context.getReader().getOptionalAttributeValue(VOLTAGE_SET_POINT, stdcxx::nan());
-    double reactivePowerSetpoint = context.getReader().getOptionalAttributeValue(REACTIVE_POWER_SET_POINT, stdcxx::nan());
+    std::string voltageSetpointName = VOLTAGE_SETPOINT;
+    std::string reactivePowerSetpointName = REACTIVE_POWER_SETPOINT;
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&voltageSetpointName, &reactivePowerSetpointName]() {
+        voltageSetpointName = VOLTAGE_SET_POINT;
+        reactivePowerSetpointName = REACTIVE_POWER_SET_POINT;
+    });
+    double voltageSetpoint = context.getReader().getOptionalAttributeValue(voltageSetpointName, stdcxx::nan());
+    double reactivePowerSetpoint = context.getReader().getOptionalAttributeValue(reactivePowerSetpointName, stdcxx::nan());
     const auto& regulationMode = Enum::fromString<StaticVarCompensator::RegulationMode>(context.getReader().getAttributeValue(REGULATION_MODE));
     adder.setBmin(bMin)
             .setBmax(bMax)
@@ -69,8 +75,14 @@ void StaticVarCompensatorXml::readSubElements(StaticVarCompensator& svc, Network
 void StaticVarCompensatorXml::writeRootElementAttributes(const StaticVarCompensator& svc, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(B_MIN, svc.getBmin());
     context.getWriter().writeAttribute(B_MAX, svc.getBmax());
-    context.getWriter().writeAttribute(VOLTAGE_SET_POINT, svc.getVoltageSetpoint());
-    context.getWriter().writeAttribute(REACTIVE_POWER_SET_POINT, svc.getReactivePowerSetpoint());
+    std::string voltageSetpointName = VOLTAGE_SETPOINT;
+    std::string reactivePowerSetpointName = REACTIVE_POWER_SETPOINT;
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&voltageSetpointName, &reactivePowerSetpointName]() {
+        voltageSetpointName = VOLTAGE_SET_POINT;
+        reactivePowerSetpointName = REACTIVE_POWER_SET_POINT;
+    });
+    context.getWriter().writeAttribute(voltageSetpointName, svc.getVoltageSetpoint());
+    context.getWriter().writeAttribute(reactivePowerSetpointName, svc.getReactivePowerSetpoint());
     context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(svc.getRegulationMode()));
     writeNodeOrBus(svc.getTerminal(), context);
     writePQ(svc.getTerminal(), context.getWriter());
