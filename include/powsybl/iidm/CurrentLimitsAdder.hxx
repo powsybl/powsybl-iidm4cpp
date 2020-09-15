@@ -50,6 +50,11 @@ CurrentLimitsAdder<S, O>& CurrentLimitsAdder<S, O>::TemporaryLimitAdder::endTemp
 }
 
 template <typename S, typename O>
+bool CurrentLimitsAdder<S, O>::hasTemporaryLimits() const {
+    return !m_temporaryLimits.empty();
+}
+
+template <typename S, typename O>
 typename CurrentLimitsAdder<S, O>::TemporaryLimitAdder& CurrentLimitsAdder<S, O>::TemporaryLimitAdder::setAcceptableDuration(unsigned long duration) {
     m_acceptableDuration = duration;
     return *this;

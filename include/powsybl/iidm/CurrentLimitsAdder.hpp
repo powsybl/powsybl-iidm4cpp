@@ -59,6 +59,8 @@ public:
 
     TemporaryLimitAdder beginTemporaryLimit();
 
+    bool hasTemporaryLimits() const;
+
     CurrentLimitsAdder<S, O>& setPermanentLimit(double limit);
 
 private:
