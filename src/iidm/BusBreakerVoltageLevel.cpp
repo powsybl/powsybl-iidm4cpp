@@ -51,6 +51,7 @@ Switch& BusBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, c
 }
 
 void BusBreakerVoltageLevel::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    VoltageLevel::allocateVariantArrayElement(indexes, sourceIndex);
     m_variants.allocateVariantArrayElement(indexes, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
@@ -98,6 +99,7 @@ bool BusBreakerVoltageLevel::connect(Terminal& terminal) {
 
 
 void BusBreakerVoltageLevel::deleteVariantArrayElement(unsigned long index) {
+    VoltageLevel::deleteVariantArrayElement(index);
     m_variants.deleteVariantArrayElement(index);
 }
 
@@ -129,8 +131,8 @@ bool BusBreakerVoltageLevel::disconnect(Terminal& terminal) {
     return true;
 }
 
-
 void BusBreakerVoltageLevel::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    VoltageLevel::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
@@ -290,6 +292,7 @@ void BusBreakerVoltageLevel::invalidateCache() {
 }
 
 void BusBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
+    VoltageLevel::reduceVariantArraySize(number);
     m_variants.reduceVariantArraySize(number);
 }
 
