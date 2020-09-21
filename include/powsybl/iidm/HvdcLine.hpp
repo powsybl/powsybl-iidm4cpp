@@ -12,7 +12,6 @@
 #include <vector>
 
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -22,7 +21,7 @@ namespace iidm {
 class HvdcConverterStation;
 class Network;
 
-class HvdcLine : public Identifiable, public MultiVariantObject {
+class HvdcLine : public Identifiable {
 public:
     enum class ConvertersMode : unsigned char {
         SIDE_1_RECTIFIER_SIDE_2_INVERTER,

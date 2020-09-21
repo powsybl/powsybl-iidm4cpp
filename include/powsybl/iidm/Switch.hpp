@@ -11,7 +11,6 @@
 #include <vector>
 
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/SwitchKind.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -21,7 +20,7 @@ namespace iidm {
 
 class VoltageLevel;
 
-class Switch : public Identifiable, public MultiVariantObject {
+class Switch : public Identifiable {
 public:  // Identifiable
     const Network& getNetwork() const override;
 

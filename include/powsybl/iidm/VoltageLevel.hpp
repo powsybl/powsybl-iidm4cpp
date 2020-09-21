@@ -10,7 +10,6 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Container.hpp>
-#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/range.hpp>
@@ -41,7 +40,7 @@ class Terminal;
 class VscConverterStation;
 class VscConverterStationAdder;
 
-class VoltageLevel : public Container, public MultiVariantObject {
+class VoltageLevel : public Container {
 public:
     using BusBreakerView = voltage_level::BusBreakerView;
 
