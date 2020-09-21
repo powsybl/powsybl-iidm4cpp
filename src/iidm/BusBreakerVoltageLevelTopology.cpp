@@ -78,10 +78,10 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                 case ConnectableType::TWO_WINDINGS_TRANSFORMER:
                 case ConnectableType::THREE_WINDINGS_TRANSFORMER:
                 case ConnectableType::HVDC_CONVERTER_STATION:
+                case ConnectableType::DANGLING_LINE:
                     ++branchCount;
                     break;
 
-                case ConnectableType::DANGLING_LINE:
                 case ConnectableType::LOAD:
                 case ConnectableType::GENERATOR:
                 case ConnectableType::BATTERY:
