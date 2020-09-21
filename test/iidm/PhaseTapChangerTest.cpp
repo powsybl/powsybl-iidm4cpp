@@ -220,6 +220,18 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(22.0, step.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(23.0, step.getRho(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(24.0, step.getX(), std::numeric_limits<double>::epsilon());
+
+    auto stepMap = phaseTapChanger.getAllSteps();
+    BOOST_CHECK_EQUAL(3, stepMap.size());
+    BOOST_CHECK(stdcxx::areSame(stepMap.find(1L)->second.get(), phaseTapChanger.getStep(1)));
+    BOOST_CHECK(stdcxx::areSame(stepMap.find(2L)->second.get(), phaseTapChanger.getStep(2)));
+    BOOST_CHECK(stdcxx::areSame(stepMap.find(3L)->second.get(), phaseTapChanger.getStep(3)));
+
+    auto cStepMap = cPhaseTapChanger.getAllSteps();
+    BOOST_CHECK_EQUAL(3, cStepMap.size());
+    BOOST_CHECK(stdcxx::areSame(cStepMap.find(1L)->second.get(), cPhaseTapChanger.getStep(1)));
+    BOOST_CHECK(stdcxx::areSame(cStepMap.find(2L)->second.get(), cPhaseTapChanger.getStep(2)));
+    BOOST_CHECK(stdcxx::areSame(cStepMap.find(3L)->second.get(), cPhaseTapChanger.getStep(3)));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {

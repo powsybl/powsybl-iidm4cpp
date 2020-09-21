@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_TAPCHANGER_HPP
 #define POWSYBL_IIDM_TAPCHANGER_HPP
 
+#include <functional>
+#include <map>
 #include <set>
 #include <string>
 #include <vector>
@@ -37,6 +39,10 @@ public: // MultiVariantObject
 
 public:
     ~TapChanger() noexcept override = default;
+
+    std::map<long, std::reference_wrapper<const S>> getAllSteps() const;
+
+    std::map<long, std::reference_wrapper<S>> getAllSteps();
 
     const S& getCurrentStep() const;
 
