@@ -15,6 +15,9 @@ set(EXT_SOURCES
     src/CoordinatedReactiveControlAdder.cpp
     src/CoordinatedReactiveControlXmlSerializer.cpp
     src/Iidm.cpp
+    src/LoadDetail.cpp
+    src/LoadDetailAdder.cpp
+    src/LoadDetailXmlSerializer.cpp
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
     src/ThreeWindingsTransformerPhaseAngleClockAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.cpp
@@ -30,6 +33,7 @@ set(UNIT_TEST_SOURCES
     test/ActivePowerControlTest.cpp
     test/CoordinatedReactiveControlTest.cpp
     test/iidm.cpp
+    test/LoadDetailTest.cpp
     test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
     test/TwoWindingsTransformerPhaseAngleClockTest.cpp
     test/VoltagePerReactivePowerControlTest.cpp
