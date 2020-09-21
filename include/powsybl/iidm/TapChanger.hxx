@@ -57,6 +57,24 @@ void TapChanger<H, C, S>::extendVariantArraySize(unsigned long /*initVariantArra
 }
 
 template<typename H, typename C, typename S>
+std::map<long, std::reference_wrapper<const S>> TapChanger<H, C, S>::getAllSteps() const {
+    std::map<long, std::reference_wrapper<const S>> allSteps;
+    for (unsigned int i = 0U; i < getStepCount(); ++i) {
+        allSteps.emplace(std::make_pair(i + getLowTapPosition(), std::cref(m_steps[i])));
+    }
+    return allSteps;
+}
+
+template<typename H, typename C, typename S>
+std::map<long, std::reference_wrapper<S>> TapChanger<H, C, S>::getAllSteps() {
+    std::map<long, std::reference_wrapper<S>> allSteps;
+    for (unsigned int i = 0U; i < getStepCount(); ++i) {
+        allSteps.emplace(std::make_pair(i + getLowTapPosition(), std::ref(m_steps[i])));
+    }
+    return allSteps;
+}
+
+template<typename H, typename C, typename S>
 const S& TapChanger<H, C, S>::getCurrentStep() const {
     return getStep(getTapPosition());
 }
