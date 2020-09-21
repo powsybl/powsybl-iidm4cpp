@@ -57,6 +57,8 @@ public:
     template <typename Callback>
     static void testForAllPreviousVersions(const iidm::converter::xml::IidmXmlVersion& maxVersion, Callback callback);
 
+    static void writeXmlTest(const iidm::Network& network, const Writer& out, const std::string& ref);
+
 private:
     static std::string write(const iidm::Network& network, const Writer& out, const Comparator& compare, const std::string& ref);
 };

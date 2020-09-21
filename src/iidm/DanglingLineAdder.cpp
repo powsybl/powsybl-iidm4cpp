@@ -30,7 +30,16 @@ DanglingLine& DanglingLineAdder::add() {
     checkG(*this, m_g);
     checkB(*this, m_b);
 
-    std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode);
+    std::unique_ptr<DanglingLine::Generation> generation;
+    if (m_generationAdder.is_initialized()) {
+        generation = stdcxx::make_unique<DanglingLine::Generation>(m_generationAdder->m_minP,
+                                                                   m_generationAdder->m_maxP,
+                                                                   m_generationAdder->m_targetP,
+                                                                   m_generationAdder->m_targetQ,
+                                                                   m_generationAdder->m_voltageRegulationOn,
+                                                                   m_generationAdder->m_targetV);
+    }
+    std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode, std::move(generation));
     auto& danglingLine = getNetwork().checkAndAdd<DanglingLine>(std::move(ptrDanglingLine));
 
     Terminal& terminal = danglingLine.addTerminal(checkAndGetTerminal());
@@ -43,6 +52,11 @@ const std::string& DanglingLineAdder::getTypeDescription() const {
     static std::string s_typeDescription = "Dangling line";
 
     return s_typeDescription;
+}
+
+DanglingLineAdder::GenerationAdder& DanglingLineAdder::newGeneration() {
+    m_generationAdder = GenerationAdder(*this);
+    return *m_generationAdder;
 }
 
 DanglingLineAdder& DanglingLineAdder::setB(double b) {

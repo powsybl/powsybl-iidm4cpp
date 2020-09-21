@@ -43,6 +43,8 @@ set(IIDM_SOURCES
     iidm/ExtensionAdder.cpp
     iidm/ExtensionProvider.cpp
     iidm/ExtensionProviders.cpp
+    iidm/Generation.cpp
+    iidm/GenerationAdder.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp

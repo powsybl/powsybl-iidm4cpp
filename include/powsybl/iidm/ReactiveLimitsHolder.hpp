@@ -21,6 +21,8 @@ class ReactiveLimits;
 
 class ReactiveLimitsHolder {
 public:
+    explicit ReactiveLimitsHolder(std::unique_ptr<ReactiveLimits>&& limits);
+
     virtual ~ReactiveLimitsHolder() noexcept = default;
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<ReactiveLimits, T>::value>::type>
@@ -33,12 +35,12 @@ public:
 
     ReactiveCapabilityCurveAdder newReactiveCapabilityCurve();
 
+    void setReactiveLimits(std::unique_ptr<ReactiveLimits>&& limits);
+
 protected:
     ReactiveLimitsHolder();
 
 private:
-    void setReactiveLimits(std::unique_ptr<ReactiveLimits>&& limits);
-
     friend MinMaxReactiveLimitsAdder;
 
     friend ReactiveCapabilityCurveAdder;

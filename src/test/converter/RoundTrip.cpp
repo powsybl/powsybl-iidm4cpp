@@ -117,6 +117,12 @@ std::string RoundTrip::write(const iidm::Network& network, const Writer& out, co
     return buffer.str();
 }
 
+void RoundTrip::writeXmlTest(const iidm::Network& network, const Writer& out, const std::string& ref) {
+    std::stringstream stream;
+    out(network, stream);
+    compareXml(ref, stream.str());
+}
+
 }  // namespace converter
 
 }  // namespace test
