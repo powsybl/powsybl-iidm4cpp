@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_LOADDETAIL_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_LOADDETAIL_HPP
 
-#include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
 
 namespace powsybl {
 
@@ -20,11 +20,20 @@ namespace extensions {
 
 namespace iidm {
 
-class LoadDetail : public Extension {
+class LoadDetail : public AbstractMultiVariantIdentifiableExtension {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
+
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
 
 public:
     /**
@@ -80,13 +89,13 @@ private:
     static double checkPower(double value, const std::string& message);
 
 private:
-    double m_fixedActivePower;
+    std::vector<double> m_fixedActivePower;
 
-    double m_fixedReactivePower;
+    std::vector<double> m_fixedReactivePower;
 
-    double m_variableActivePower;
+    std::vector<double> m_variableActivePower;
 
-    double m_variableReactivePower;
+    std::vector<double> m_variableReactivePower;
 };
 
 }  // namespace iidm

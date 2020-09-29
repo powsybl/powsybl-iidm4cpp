@@ -9,7 +9,7 @@ set(IIDM_SOURCES
     AssertionError.cpp
     PowsyblException.cpp
 
-    iidm/AbstractMultiVariantConnectableExtension.cpp
+    iidm/AbstractMultiVariantIdentifiableExtension.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
     iidm/Branch.cpp
