@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/extensions/iidm/LoadDetail.hpp>
+#include <powsybl/iidm/extensions/LoadDetail.hpp>
 
 #include <cmath>
 
@@ -19,8 +19,6 @@ namespace powsybl {
 namespace iidm {
 
 namespace extensions {
-
-namespace iidm {
 
 LoadDetail::LoadDetail(Load& load, double fixedActivePower, double fixedReactivePower, double variableActivePower, double variableReactivePower) :
     AbstractMultiVariantIdentifiableExtension(load) {
@@ -117,8 +115,6 @@ LoadDetail& LoadDetail::setVariableReactivePower(double variableReactivePower) {
     m_variableReactivePower[getVariantIndex()] = checkPower(variableReactivePower, stdcxx::format("Invalid variableReactivePower"));
     return *this;
 }
-
-}  // namespace iidm
 
 }  // namespace extensions
 

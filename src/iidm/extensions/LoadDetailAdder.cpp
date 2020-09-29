@@ -5,18 +5,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/extensions/iidm/LoadDetailAdder.hpp>
+#include <powsybl/iidm/extensions/LoadDetailAdder.hpp>
 
 #include <powsybl/iidm/Load.hpp>
-#include <powsybl/iidm/extensions/iidm/LoadDetail.hpp>
+#include <powsybl/iidm/extensions/LoadDetail.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
 namespace extensions {
-
-namespace iidm {
 
 LoadDetailAdder::LoadDetailAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
@@ -48,8 +46,6 @@ LoadDetailAdder& LoadDetailAdder::withVariableReactivePower(double variableReact
     m_variableReactivePower = variableReactivePower;
     return *this;
 }
-
-}  // namespace iidm
 
 }  // namespace extensions
 

@@ -12,8 +12,8 @@
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
-#include <powsybl/iidm/extensions/iidm/LoadDetail.hpp>
-#include <powsybl/iidm/extensions/iidm/LoadDetailAdder.hpp>
+#include <powsybl/iidm/extensions/LoadDetail.hpp>
+#include <powsybl/iidm/extensions/LoadDetailAdder.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>

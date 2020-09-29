@@ -14,8 +14,8 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/iidm/extensions/iidm/LoadDetail.hpp>
-#include <powsybl/iidm/extensions/iidm/LoadDetailAdder.hpp>
+#include <powsybl/iidm/extensions/LoadDetail.hpp>
+#include <powsybl/iidm/extensions/LoadDetailAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
