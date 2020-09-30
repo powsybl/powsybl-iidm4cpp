@@ -13,7 +13,6 @@
 
 #include <powsybl/iidm/ConnectableType.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 
 namespace powsybl {
@@ -22,7 +21,7 @@ namespace iidm {
 
 class Network;
 
-class Connectable : public Identifiable, public MultiVariantObject {
+class Connectable : public Identifiable {
 public:  // Identifiable
     const Network& getNetwork() const override;
 

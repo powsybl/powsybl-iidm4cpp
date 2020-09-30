@@ -23,17 +23,17 @@ Switch::Switch(VoltageLevel& voltageLevel, const std::string& id, const std::str
 }
 
 void Switch::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    Identifiable::allocateVariantArrayElement(indexes, sourceIndex);
+
     for (auto index : indexes) {
         m_open[index] = m_open[sourceIndex];
         m_retained[index] = m_retained[sourceIndex];
     }
 }
 
-void Switch::deleteVariantArrayElement(unsigned long /*index*/) {
-    // Nothing to do
-}
+void Switch::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    Identifiable::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
-void Switch::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
     m_open.resize(m_open.size() + number, m_open[sourceIndex]);
     m_retained.resize(m_retained.size() + number, m_retained[sourceIndex]);
 }
@@ -73,6 +73,8 @@ bool Switch::isRetained() const {
 }
 
 void Switch::reduceVariantArraySize(unsigned long number) {
+    Identifiable::reduceVariantArraySize(number);
+
     m_open.resize(m_open.size() - number);
     m_retained.resize(m_retained.size() - number);
 }

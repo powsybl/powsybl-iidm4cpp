@@ -28,6 +28,8 @@ HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& n
 }
 
 void HvdcLine::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    Identifiable::allocateVariantArrayElement(indexes, sourceIndex);
+
     for (auto index : indexes) {
         m_convertersMode[index] = m_convertersMode[sourceIndex];
         m_activePowerSetpoint[index] = m_activePowerSetpoint[sourceIndex];
@@ -39,11 +41,9 @@ HvdcConverterStation& HvdcLine::attach(HvdcConverterStation& converterStation) {
     return converterStation;
 }
 
-void HvdcLine::deleteVariantArrayElement(unsigned long /*index*/) {
-    // nothing to do
-}
+void HvdcLine::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    Identifiable::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
-void HvdcLine::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
     m_convertersMode.resize(m_convertersMode.size() + number, m_convertersMode[sourceIndex]);
     m_activePowerSetpoint.resize(m_activePowerSetpoint.size() + number, m_activePowerSetpoint[sourceIndex]);
 }
@@ -114,6 +114,8 @@ const std::string& HvdcLine::getTypeDescription() const {
 }
 
 void HvdcLine::reduceVariantArraySize(unsigned long number) {
+    Identifiable::reduceVariantArraySize(number);
+
     m_convertersMode.resize(m_convertersMode.size() - number);
     m_activePowerSetpoint.resize(m_activePowerSetpoint.size() - number);
 }

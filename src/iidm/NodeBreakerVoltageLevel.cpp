@@ -47,6 +47,7 @@ Switch& NodeBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, 
 }
 
 void NodeBreakerVoltageLevel::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    VoltageLevel::allocateVariantArrayElement(indexes, sourceIndex);
     m_variants.allocateVariantArrayElement(indexes, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
@@ -112,6 +113,7 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
 }
 
 void NodeBreakerVoltageLevel::deleteVariantArrayElement(unsigned long index) {
+    VoltageLevel::deleteVariantArrayElement(index);
     m_variants.deleteVariantArrayElement(index);
 }
 
@@ -170,6 +172,7 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
 }
 
 void NodeBreakerVoltageLevel::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    VoltageLevel::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
@@ -327,6 +330,7 @@ bool NodeBreakerVoltageLevel::isConnected(const Terminal& terminal) const {
 }
 
 void NodeBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
+    VoltageLevel::reduceVariantArraySize(number);
     m_variants.reduceVariantArraySize(number);
 }
 
