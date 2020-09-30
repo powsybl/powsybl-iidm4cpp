@@ -6,6 +6,8 @@
  */
 
 #include <powsybl/iidm/TieLine.hpp>
+
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -62,6 +64,10 @@ double TieLine::HalfLine::getXnodeQ() const {
     return m_xnodeQ;
 }
 
+bool TieLine::HalfLine::isFictitious() const {
+    return m_fictitious;
+}
+
 TieLine::HalfLine& TieLine::HalfLine::setB1(double b1) {
     m_lineCharacteristics.setB1(b1);
     return *this;
@@ -69,6 +75,11 @@ TieLine::HalfLine& TieLine::HalfLine::setB1(double b1) {
 
 TieLine::HalfLine& TieLine::HalfLine::setB2(double b2) {
     m_lineCharacteristics.setB2(b2);
+    return *this;
+}
+
+TieLine::HalfLine& TieLine::HalfLine::setFictitious(bool fictitious) {
+    m_fictitious = fictitious;
     return *this;
 }
 
@@ -140,6 +151,21 @@ double TieLine::getG1() const {
 
 double TieLine::getG2() const {
     return m_half1.getG2() + m_half2.getG2();
+}
+
+const TieLine::HalfLine& TieLine::getHalf(const Side& side) const {
+    switch (side) {
+        case Side::ONE:
+            return m_half1;
+        case Side::TWO:
+            return m_half2;
+        default:
+            throw AssertionError(stdcxx::format("Unknown branch side %1%", side));
+    }
+}
+
+TieLine::HalfLine& TieLine::getHalf(const Side& side) {
+    return const_cast<HalfLine&>(static_cast<const TieLine*>(this)->getHalf(side));
 }
 
 const TieLine::HalfLine& TieLine::getHalf1() const {

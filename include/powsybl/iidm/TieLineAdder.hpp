@@ -34,6 +34,8 @@ public:
 
     TieLineAdder& line2();
 
+    TieLineAdder& setFictitious(bool fictitious) override;
+
     TieLineAdder& setB1(double b1);
 
     TieLineAdder& setB2(double b2);
