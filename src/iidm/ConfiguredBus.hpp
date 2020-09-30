@@ -13,7 +13,6 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusAdder.hpp>
-#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -25,7 +24,7 @@ class BusTerminal;
 class Network;
 class Terminal;
 
-class ConfiguredBus : public Bus, public MultiVariantObject {
+class ConfiguredBus : public Bus {
 public: // Bus
     double getAngle() const override;
 

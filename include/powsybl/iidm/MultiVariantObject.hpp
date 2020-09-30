@@ -14,6 +14,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class Identifiable;
 class VariantManager;
 
 class MultiVariantObject {
@@ -30,6 +31,7 @@ protected:
     virtual void reduceVariantArraySize(unsigned long number) = 0;
 
 private:
+    friend class Identifiable;
     friend class VariantManager;
 };
 
