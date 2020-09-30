@@ -36,6 +36,8 @@ void ConfiguredBus::addTerminal(BusTerminal& terminal) {
 }
 
 void ConfiguredBus::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    Bus::allocateVariantArrayElement(indexes, sourceIndex);
+
     for (auto index : indexes) {
         m_terminals[index] = m_terminals[sourceIndex];
         m_v[index] = m_v[sourceIndex];
@@ -44,10 +46,14 @@ void ConfiguredBus::allocateVariantArrayElement(const std::set<unsigned long>& i
 }
 
 void ConfiguredBus::deleteVariantArrayElement(unsigned long index) {
+    Bus::deleteVariantArrayElement(index);
+
     m_terminals[index].clear();
 }
 
-void ConfiguredBus::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+void ConfiguredBus::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    Bus::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+
     m_terminals.resize(m_terminals.size() + number, m_terminals[sourceIndex]);
     m_v.resize(m_v.size() + number, m_v[sourceIndex]);
     m_angle.resize(m_angle.size() + number, m_angle[sourceIndex]);
@@ -127,6 +133,8 @@ VoltageLevel& ConfiguredBus::getVoltageLevel() {
 }
 
 void ConfiguredBus::reduceVariantArraySize(unsigned long number) {
+    Bus::reduceVariantArraySize(number);
+
     m_terminals.resize(m_terminals.size() - number);
     m_v.resize(m_v.size() - number);
     m_angle.resize(m_angle.size() - number);

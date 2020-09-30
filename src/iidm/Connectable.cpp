@@ -20,6 +20,8 @@ Connectable::Connectable(const std::string& id, const std::string& name, bool fi
 }
 
 void Connectable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    Identifiable::allocateVariantArrayElement(indexes, sourceIndex);
+
     for (auto& terminal : m_terminals) {
         terminal->allocateVariantArrayElement(indexes, sourceIndex);
     }
@@ -33,12 +35,16 @@ Terminal& Connectable::addTerminal(std::unique_ptr<Terminal>&& terminal) {
 }
 
 void Connectable::deleteVariantArrayElement(unsigned long index) {
+    Identifiable::deleteVariantArrayElement(index);
+
     for (auto& terminal : m_terminals) {
         terminal->deleteVariantArrayElement(index);
     }
 }
 
 void Connectable::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    Identifiable::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+
     for (auto& terminal : m_terminals) {
         terminal->extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
@@ -79,6 +85,8 @@ std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals() const
 }
 
 void Connectable::reduceVariantArraySize(unsigned long number) {
+    Identifiable::reduceVariantArraySize(number);
+
     for (auto& terminal : m_terminals) {
         terminal->reduceVariantArraySize(number);
     }

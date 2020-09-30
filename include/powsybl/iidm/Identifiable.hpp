@@ -11,6 +11,7 @@
 #include <string>
 
 #include <powsybl/iidm/Extendable.hpp>
+#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/stdcxx/optional.hpp>
@@ -22,7 +23,7 @@ namespace iidm {
 
 class Network;
 
-class Identifiable : public virtual Validable, public Extendable {
+class Identifiable : public virtual Validable, public Extendable, public MultiVariantObject {
 public: // Validable
     std::string getMessageHeader() const override;
 
@@ -62,6 +63,15 @@ public:
     virtual void setFictitious(bool fictitious);
 
     stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
+
+protected:  // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
 
 protected:
     Identifiable(const std::string& id, const std::string& name, bool fictitious);
