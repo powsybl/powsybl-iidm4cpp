@@ -24,7 +24,8 @@ public:
     enum class Type : unsigned char {
         BOOLEAN,
         STRING,
-        STRING_LIST
+        STRING_LIST,
+        DOUBLE
     };
 
 public:
@@ -45,6 +46,8 @@ public:
     bool getBooleanDefaultValue() const;
 
     const std::string& getDescription() const;
+
+    double getDoubleDefaultValue() const;
 
     const std::string& getName() const;
 

@@ -37,6 +37,10 @@ const std::string& Parameter::getDescription() const {
     return m_description;
 }
 
+double Parameter::getDoubleDefaultValue() const {
+    return std::stod(m_defaultValue);
+}
+
 const std::string& Parameter::getName() const {
     return m_names.front();
 }
