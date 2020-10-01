@@ -37,6 +37,10 @@ const std::string& Parameter::getDescription() const {
     return m_description;
 }
 
+double Parameter::getDoubleDefaultValue() const {
+    return std::stod(m_defaultValue);
+}
+
 const std::string& Parameter::getName() const {
     return m_names.front();
 }
@@ -49,8 +53,8 @@ const std::string& Parameter::getStringDefaultValue() const {
     return m_defaultValue;
 }
 
-const std::vector<std::string>& Parameter::getStringListDefaultValue() const {
-    static std::vector<std::string> values;
+std::vector<std::string> Parameter::getStringListDefaultValue() const {
+    std::vector<std::string> values;
     if (!m_defaultValue.empty()) {
         boost::algorithm::split(values, m_defaultValue, boost::is_any_of(",:"));
     }
