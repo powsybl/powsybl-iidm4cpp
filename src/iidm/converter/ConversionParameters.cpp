@@ -30,6 +30,15 @@ bool ConversionParameters::readBooleanParameter(const stdcxx::Properties& parame
     return configuredParameter.getBooleanDefaultValue();
 }
 
+double ConversionParameters::readDoubleParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter) {
+    for (const std::string& name : configuredParameter.getNames()) {
+        if (parameters.contains(name)) {
+            return std::stod(parameters.get(name));
+        }
+    }
+    return configuredParameter.getDoubleDefaultValue();
+}
+
 std::vector<std::string> ConversionParameters::readStringListParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter) {
     for (const std::string& name : configuredParameter.getNames()) {
         if (parameters.contains(name)) {

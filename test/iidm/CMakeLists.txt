@@ -39,6 +39,7 @@ set(UNIT_TEST_SOURCES
     VoltageLevelTest.cpp
     VscConverterStationTest.cpp
 
+    converter/ConversionParametersTest.cpp
     converter/ExportOptionsTest.cpp
     converter/FakeAnonymizerTest.cpp
     converter/ImportOptionsTest.cpp

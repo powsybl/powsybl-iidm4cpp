@@ -24,7 +24,8 @@ public:
     enum class Type : unsigned char {
         BOOLEAN,
         STRING,
-        STRING_LIST
+        STRING_LIST,
+        DOUBLE
     };
 
 public:
@@ -46,13 +47,15 @@ public:
 
     const std::string& getDescription() const;
 
+    double getDoubleDefaultValue() const;
+
     const std::string& getName() const;
 
     const std::vector<std::string>& getNames() const;
 
     const std::string& getStringDefaultValue() const;
 
-    const std::vector<std::string>& getStringListDefaultValue() const;
+    std::vector<std::string> getStringListDefaultValue() const;
 
     const Type& getType() const;
 
