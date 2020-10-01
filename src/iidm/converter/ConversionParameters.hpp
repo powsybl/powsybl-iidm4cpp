@@ -25,6 +25,8 @@ class ConversionParameters {
 public:
     static bool readBooleanParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
+    static double readDoubleParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
+
     static std::vector<std::string> readStringListParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
     static const std::string& readStringParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
