@@ -53,9 +53,8 @@ const std::string& Parameter::getStringDefaultValue() const {
     return m_defaultValue;
 }
 
-const std::vector<std::string>& Parameter::getStringListDefaultValue() const {
-    static std::vector<std::string> values;
-    values.clear();
+std::vector<std::string> Parameter::getStringListDefaultValue() const {
+    std::vector<std::string> values;
     if (!m_defaultValue.empty()) {
         boost::algorithm::split(values, m_defaultValue, boost::is_any_of(",:"));
     }

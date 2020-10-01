@@ -55,7 +55,7 @@ public:
 
     const std::string& getStringDefaultValue() const;
 
-    const std::vector<std::string>& getStringListDefaultValue() const;
+    std::vector<std::string> getStringListDefaultValue() const;
 
     const Type& getType() const;
 

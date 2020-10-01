@@ -40,15 +40,9 @@ BOOST_AUTO_TEST_CASE(testConversionParameters) {
     BOOST_CHECK_EQUAL("TestProperty", ConversionParameters::readStringParameter(properties, paramString));
     BOOST_CHECK_EQUAL("TestParam", ConversionParameters::readStringParameter(properties, paramString2));
 
-    std::vector<std::string> stringList;
-    stringList.emplace_back("Test1Property");
-    stringList.emplace_back("Test2Property");
-    std::vector<std::string> stringList2;
-    stringList2.emplace_back("Test1Param");
-    stringList2.emplace_back("Test2Param");
-    properties.set("test-param-string-list", boost::algorithm::join(stringList, ","));
-    Parameter paramStringList("test-param-string-list", Parameter::Type::STRING_LIST, "", boost::algorithm::join(stringList2, ","));
-    Parameter paramStringList2("test-param-string-list2", Parameter::Type::STRING_LIST, "", boost::algorithm::join(stringList2, ","));
+    properties.set("test-param-string-list", "Test1Property,Test2Property");
+    Parameter paramStringList("test-param-string-list", Parameter::Type::STRING_LIST, "", "Test1Param,Test2Param");
+    Parameter paramStringList2("test-param-string-list2", Parameter::Type::STRING_LIST, "", "Test1Param,Test2Param");
     BOOST_CHECK_EQUAL("Test1Property", ConversionParameters::readStringListParameter(properties, paramStringList)[0]);
     BOOST_CHECK_EQUAL("Test2Property", ConversionParameters::readStringListParameter(properties, paramStringList)[1]);
     BOOST_CHECK_EQUAL("Test1Param", ConversionParameters::readStringListParameter(properties, paramStringList2)[0]);
@@ -57,11 +51,13 @@ BOOST_AUTO_TEST_CASE(testConversionParameters) {
     properties.set("test-param-double", "0.06");
     Parameter paramDouble("test-param-double", Parameter::Type::DOUBLE, "", "0.08");
     Parameter paramDouble2("test-param-double2", Parameter::Type::DOUBLE, "", "0.08");
+    Parameter paramDoubleNaN("test-param-doubleNaN", Parameter::Type::DOUBLE, "", "NaN");
     BOOST_CHECK_CLOSE(0.06, ConversionParameters::readDoubleParameter(properties, paramDouble), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.08, ConversionParameters::readDoubleParameter(properties, paramDouble2), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(ConversionParameters::readDoubleParameter(properties, paramDoubleNaN)));
 }
 
-}
+BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace converter
 
