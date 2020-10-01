@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/format.hpp>
+#include <powsybl/stdcxx/instanceof.hpp>
 
 namespace stdcxx {
 
@@ -35,6 +36,30 @@ Identifiable::Identifiable(Identifiable&& identifiable) noexcept :
     m_id(std::move(identifiable.m_id)),
     m_name(std::move(identifiable.m_name)),
     m_properties(std::move(identifiable.m_properties)) {
+}
+
+void Identifiable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (Extension& extension : getExtensions()) {
+        if (stdcxx::isInstanceOf<MultiVariantObject>(extension)) {
+            dynamic_cast<MultiVariantObject&>(extension).allocateVariantArrayElement(indexes, sourceIndex);
+        }
+    }
+}
+
+void Identifiable::deleteVariantArrayElement(unsigned long index) {
+    for (Extension& extension : getExtensions()) {
+        if (stdcxx::isInstanceOf<MultiVariantObject>(extension)) {
+            dynamic_cast<MultiVariantObject&>(extension).deleteVariantArrayElement(index);
+        }
+    }
+}
+
+void Identifiable::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    for (Extension& extension : getExtensions()) {
+        if (stdcxx::isInstanceOf<MultiVariantObject>(extension)) {
+            dynamic_cast<MultiVariantObject&>(extension).extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+        }
+    }
 }
 
 const std::string& Identifiable::getId() const {
@@ -75,6 +100,14 @@ bool Identifiable::hasProperty(const std::string& key) const {
 
 bool Identifiable::isFictitious() const {
     return m_fictitious;
+}
+
+void Identifiable::reduceVariantArraySize(unsigned long number) {
+    for (Extension& extension : getExtensions()) {
+        if (stdcxx::isInstanceOf<MultiVariantObject>(extension)) {
+            dynamic_cast<MultiVariantObject&>(extension).reduceVariantArraySize(number);
+        }
+    }
 }
 
 void Identifiable::setFictitious(bool fictitious) {

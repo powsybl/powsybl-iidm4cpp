@@ -26,7 +26,7 @@ jobs:
 
       - name: Clang Tidy
         run: |
-          export MODIFIED_FILES=$(git diff --name-only origin/${{ github.base_ref }} origin/${{ github.head_ref }}  | grep -E "\.(cpp|hpp|hxx)$")
+          export MODIFIED_FILES=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }} origin/${{ github.head_ref }}  | grep -E "\.(cpp|hpp|hxx)$")
           if [ -n "$MODIFIED_FILES" ]; then
               clang-tidy $MODIFIED_FILES -p $GITHUB_WORKSPACE/build
           fi

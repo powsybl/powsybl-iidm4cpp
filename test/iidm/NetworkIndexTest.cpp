@@ -58,8 +58,8 @@ BOOST_AUTO_TEST_CASE(RangeTest) {
     BOOST_CHECK_EQUAL_COLLECTIONS(expectedVL.cbegin(), expectedVL.cend(), actualConstVL.cbegin(), actualConstVL.cend());
 
     // StatefulObjects
-    BOOST_CHECK_EQUAL(4UL, boost::size(cNetwork.getStatefulObjects()));
-    BOOST_CHECK_EQUAL(4UL, boost::size(network.getStatefulObjects()));
+    BOOST_CHECK_EQUAL(5UL, boost::size(cNetwork.getStatefulObjects()));
+    BOOST_CHECK_EQUAL(5UL, boost::size(network.getStatefulObjects()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
