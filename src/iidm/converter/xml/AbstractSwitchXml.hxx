@@ -5,6 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTSWITCHXML_HXX
+#define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTSWITCHXML_HXX
+
 #include "AbstractSwitchXml.hpp"
 
 #include <powsybl/iidm/SwitchKind.hpp>
@@ -49,3 +52,4 @@ void AbstractSwitchXml<Adder>::writeRootElementAttributes(const Switch& sw, cons
 
 }  // namespace powsybl
 
+#endif  // POWSYBL_IIDM_CONVERTER_XML_ABSTRACTSWITCHXML_HXX
