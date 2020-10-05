@@ -64,7 +64,7 @@ void GeneratorXml::readSubElements(Generator& generator, NetworkXmlReaderContext
             const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(ID, ""));
             const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
             context.addEndTask([&generator, id, side]() {
-                generator.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(generator.getTerminal().getVoltageLevel().getSubstation().getNetwork(), id, side)));
+                generator.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(generator.getNetwork(), id, side)));
             });
         } else if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
                    context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
