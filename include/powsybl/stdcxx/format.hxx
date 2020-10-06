@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_STDCXX_MESSAGEFORMAT_HXX
-#define POWSYBL_STDCXX_MESSAGEFORMAT_HXX
+#ifndef POWSYBL_STDCXX_FORMAT_HXX
+#define POWSYBL_STDCXX_FORMAT_HXX
 
 #include <powsybl/stdcxx/format.hpp>
 
@@ -105,4 +105,4 @@ std::ostream& operator<<(std::ostream& stream, const std::reference_wrapper<T>& 
 
 }  // namespace stdcxx
 
-#endif  // POWSYBL_STDCXX_MESSAGEFORMAT_HXX
+#endif  // POWSYBL_STDCXX_FORMAT_HXX
