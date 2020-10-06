@@ -44,6 +44,8 @@ public:
 
     static void roundTripAllPreviousVersionedXmlTest(const std::string& filename);
 
+    static void roundTripVersionedXmlFromMinToCurrentVersionTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& minVersion);
+
     static void roundTripVersionedXmlTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
 
     static void roundTripVersionedXmlTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersions& versions);

@@ -7,6 +7,7 @@
 
 #include <powsybl/test/converter/RoundTrip.hpp>
 
+#include <boost/range/adaptor/filtered.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/converter/ExportOptions.hpp>
@@ -51,6 +52,17 @@ void RoundTrip::roundTripAllPreviousVersionedXmlTest(const std::string& filename
     versions.pop_back();
 
     roundTripVersionedXmlTest(filename, versions);
+}
+
+void RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& minVersion) {
+    auto filter = [&minVersion](const iidm::converter::xml::IidmXmlVersion& version) {
+        return version >= minVersion && version < iidm::converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION();
+    };
+
+    const auto& newerVersions = iidm::converter::xml::IidmXmlVersion::all() | boost::adaptors::filtered(filter);
+    for (const auto& version : newerVersions) {
+        roundTripVersionedXmlTest(filename, version);
+    }
 }
 
 void RoundTrip::roundTripVersionedXmlTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
