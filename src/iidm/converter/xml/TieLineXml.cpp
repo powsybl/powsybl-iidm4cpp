@@ -7,6 +7,9 @@
 
 #include "TieLineXml.hpp"
 
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -49,6 +52,11 @@ void TieLineXml::readHalf(TieLineAdder& adder, const NetworkXmlReaderContext& co
         .setB2(b2)
         .setXnodeP(xnodeP)
         .setXnodeQ(xnodeQ);
+
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &side, &adder]() {
+        bool fictitious = context.getReader().getOptionalAttributeValue(toString(FICTITIOUS_, side), false);
+        adder.setFictitious(fictitious);
+    });
 }
 
 TieLine& TieLineXml::readRootElementAttributes(TieLineAdder& adder, NetworkXmlReaderContext& context) const  {
@@ -89,6 +97,10 @@ void TieLineXml::writeHalf(const TieLine::HalfLine& halfLine, NetworkXmlWriterCo
     context.getWriter().writeAttribute(toString(B2_, side), halfLine.getB2());
     context.getWriter().writeAttribute(toString(XNODE_P_, side), halfLine.getXnodeP());
     context.getWriter().writeAttribute(toString(XNODE_Q_, side), halfLine.getXnodeQ());
+
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &side, &halfLine]() {
+        context.getWriter().writeOptionalAttribute(toString(FICTITIOUS_, side), halfLine.isFictitious(), false);
+    });
 }
 
 void TieLineXml::writeRootElementAttributes(const TieLine& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
