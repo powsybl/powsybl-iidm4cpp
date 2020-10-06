@@ -42,9 +42,13 @@ public:
 
         double getXnodeQ() const;
 
+        bool isFictitious() const;
+
         HalfLine& setB1(double b1);
 
         HalfLine& setB2(double b2);
+
+        HalfLine& setFictitious(bool fictitious);
 
         HalfLine& setG1(double g1);
 
@@ -83,6 +87,8 @@ public:
         double m_xnodeP = stdcxx::nan();
 
         double m_xnodeQ = stdcxx::nan();
+
+        bool m_fictitious = false;
     };
 
 public: // Line
@@ -116,6 +122,10 @@ public:
     TieLine(const std::string& id, const std::string& name, bool fictitious, const std::string& ucteXnodeCode, HalfLine& half1, HalfLine& half2);
 
     ~TieLine() noexcept override = default;
+
+    const HalfLine& getHalf(const Side& side) const;
+
+    HalfLine& getHalf(const Side& side);
 
     const HalfLine& getHalf1() const;
 
