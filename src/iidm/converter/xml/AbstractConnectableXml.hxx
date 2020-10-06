@@ -5,6 +5,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HXX
+#define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HXX
+
+#include "AbstractConnectableXml.hpp"
+
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -156,3 +161,4 @@ void AbstractConnectableXml<Added, Adder, Parent>::writePQ(const Terminal& termi
 
 }  // namespace powsybl
 
+#endif  // POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HXX
