@@ -50,11 +50,11 @@ std::string ThreeWindingsTransformer::Leg::getMessageHeader() const {
 }
 
 const Network& ThreeWindingsTransformer::Leg::getNetwork() const {
-    return m_transformer.get().getSubstation().getNetwork();
+    return m_transformer.get().getNetwork();
 }
 
 Network& ThreeWindingsTransformer::Leg::getNetwork() {
-    return m_transformer.get().getSubstation().getNetwork();
+    return m_transformer.get().getNetwork();
 }
 
 const PhaseTapChanger& ThreeWindingsTransformer::Leg::getPhaseTapChanger() const {
