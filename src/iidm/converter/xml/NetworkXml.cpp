@@ -27,8 +27,10 @@
 
 #include "xml/XmlEncoding.hpp"
 
+#include "AliasesXml.hpp"
 #include "HvdcLineXml.hpp"
 #include "LineXml.hpp"
+#include "PropertiesXml.hpp"
 #include "SubstationXml.hpp"
 #include "TieLineXml.hpp"
 
@@ -222,7 +224,10 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
     std::set<std::string> extensionsNotFound;
 
     context.getReader().readUntilEndElement(NETWORK, [&network, &context, &extensionsNotFound]() {
-        if (context.getReader().getLocalName() == PROPERTY) {
+        if (context.getReader().getLocalName() == ALIAS) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context.getVersion());
+            AliasesXml::read(network, context);
+        } else if (context.getReader().getLocalName() == PROPERTY) {
             PropertiesXml::read(network, context);
         } else if (context.getReader().getLocalName() == SUBSTATION) {
             SubstationXml::getInstance().read(network, context);
@@ -281,6 +286,7 @@ std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Netwo
     writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
 
+    AliasesXml::write(network, NETWORK, context);
     PropertiesXml::write(network, context);
 
     for (const auto& substation : network.getSubstations()) {

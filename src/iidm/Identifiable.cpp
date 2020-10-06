@@ -38,6 +38,12 @@ Identifiable::Identifiable(Identifiable&& identifiable) noexcept :
     m_properties(std::move(identifiable.m_properties)) {
 }
 
+void Identifiable::addAlias(const std::string& alias) {
+    if (getNetwork().getIndex().addAlias(*this, alias)) {
+        m_aliases.emplace(alias);
+    }
+}
+
 void Identifiable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     for (Extension& extension : getExtensions()) {
         if (stdcxx::isInstanceOf<MultiVariantObject>(extension)) {
@@ -60,6 +66,10 @@ void Identifiable::extendVariantArraySize(unsigned long initVariantArraySize, un
             dynamic_cast<MultiVariantObject&>(extension).extendVariantArraySize(initVariantArraySize, number, sourceIndex);
         }
     }
+}
+
+const std::set<std::string>& Identifiable::getAliases() const {
+    return m_aliases;
 }
 
 const std::string& Identifiable::getId() const {
@@ -90,6 +100,10 @@ stdcxx::const_range<std::string> Identifiable::getPropertyNames() const {
     return m_properties.getKeys();
 }
 
+bool Identifiable::hasAliases() const {
+    return !m_aliases.empty();
+}
+
 bool Identifiable::hasProperty() const {
     return !m_properties.isEmpty();
 }
@@ -108,6 +122,11 @@ void Identifiable::reduceVariantArraySize(unsigned long number) {
             dynamic_cast<MultiVariantObject&>(extension).reduceVariantArraySize(number);
         }
     }
+}
+
+void Identifiable::removeAlias(const std::string& alias) {
+    getNetwork().getIndex().removeAlias(*this, alias);
+    m_aliases.erase(alias);
 }
 
 void Identifiable::setFictitious(bool fictitious) {

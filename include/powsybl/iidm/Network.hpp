@@ -219,6 +219,10 @@ public:
 
     stdcxx::range<Identifiable> getIdentifiables();
 
+    const NetworkIndex& getIndex() const;
+
+    NetworkIndex& getIndex();
+
     const LccConverterStation& getLccConverterStation(const std::string& id) const;
 
     LccConverterStation& getLccConverterStation(const std::string& id);

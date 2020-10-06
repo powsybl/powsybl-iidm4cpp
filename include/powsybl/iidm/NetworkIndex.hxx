@@ -49,14 +49,9 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
 
 template<typename T>
 const T& NetworkIndex::get(const std::string& id) const {
-    checkId(id);
+    const Identifiable& obj = get(id);
 
-    const auto& it = m_objectsById.find(id);
-    if (it == m_objectsById.end()) {
-        throw PowsyblException(stdcxx::format("Unable to find to the identifiable '%1%'", id));
-    }
-
-    auto* identifiable = dynamic_cast<T*>(it->second.get());
+    const auto* identifiable = dynamic_cast<const T*>(&obj);
     if (identifiable == nullptr) {
         throw PowsyblException(stdcxx::format("Identifiable '%1%' is not a %2%", id, stdcxx::demangle<T>()));
     }

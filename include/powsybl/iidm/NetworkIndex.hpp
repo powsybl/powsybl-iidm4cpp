@@ -39,6 +39,8 @@ public:
 
     NetworkIndex& operator=(NetworkIndex&&) noexcept = delete;
 
+    bool addAlias(const Identifiable& obj, const std::string& alias);
+
     template <typename T>
     T& checkAndAdd(std::unique_ptr<T>&& identifiable);
 
@@ -47,6 +49,10 @@ public:
 
     template <typename T>
     T& get(const std::string& id);
+
+    const Identifiable& get(const std::string& idOrAlias) const;
+
+    Identifiable& get(const std::string& idOrAlias);
 
     template <typename T, typename U = T>
     stdcxx::const_range<U> getAll() const;
@@ -65,6 +71,8 @@ public:
 
     void remove(Identifiable& identifiable);
 
+    void removeAlias(const Identifiable& obj, const std::string& alias);
+
 private:
     static void checkId(const std::string& id);
 
@@ -73,6 +81,8 @@ private:
     public:
         void operator()(Identifiable* ptr) const;
     };
+
+    using IdByAlias = std::map<std::string, std::string>;
 
     using IdentifiableById = std::map<std::string, std::unique_ptr<Identifiable, Deleter> >;
 
@@ -84,6 +94,8 @@ private:
     IdentifiableById m_objectsById;
 
     mutable IdentifiablesByType m_objectsByType;
+
+    IdByAlias m_idByAlias;
 };
 
 template <>
