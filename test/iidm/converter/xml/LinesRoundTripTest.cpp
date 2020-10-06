@@ -28,6 +28,10 @@ BOOST_FIXTURE_TEST_CASE(TieLineTest, test::ResourceFixture) {
     test::converter::RoundTrip::roundTripVersionedXmlTest("tieline.xml", IidmXmlVersion::all());
 }
 
+BOOST_FIXTURE_TEST_CASE(TieLineFictitiousTest, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("tielineFictitious.xml", IidmXmlVersion::all());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml

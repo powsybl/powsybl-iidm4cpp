@@ -30,7 +30,7 @@ public:
 
     Adder& setEnsureIdUnicity(bool ensureIdUnicity);
 
-    Adder& setFictitious(bool fictitious);
+    virtual Adder& setFictitious(bool fictitious);
 
     virtual Adder& setId(const std::string& id);
 
