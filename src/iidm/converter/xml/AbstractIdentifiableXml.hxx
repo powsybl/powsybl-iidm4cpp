@@ -5,6 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTIDENTIFIABLEXML_HXX
+#define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTIDENTIFIABLEXML_HXX
+
 #include "AbstractIdentifiableXml.hpp"
 
 #include <powsybl/PowsyblException.hpp>
@@ -88,3 +91,5 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::writeSubElements(const Added
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#endif  // POWSYBL_IIDM_CONVERTER_XML_ABSTRACTIDENTIFIABLEXML_HXX

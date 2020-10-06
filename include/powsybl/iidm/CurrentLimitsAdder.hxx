@@ -8,11 +8,12 @@
 #ifndef POWSYBL_IIDM_CURRENTLIMITSADDER_HXX
 #define POWSYBL_IIDM_CURRENTLIMITSADDER_HXX
 
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
+
 #include <cmath>
 #include <unordered_set>
 
 #include <powsybl/iidm/CurrentLimits.hpp>
-#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>

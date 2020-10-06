@@ -5,6 +5,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTTRANSFORMERXML_HXX
+#define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTTRANSFORMERXML_HXX
+
 #include "AbstractTransformerXml.hpp"
 
 #include <powsybl/iidm/PhaseTapChanger.hpp>
@@ -273,3 +276,4 @@ void AbstractTransformerXml<Added, Adder>::writeTargetDeadband(double targetDead
 
 }  // namespace powsybl
 
+#endif  // POWSYBL_IIDM_CONVERTER_XML_ABSTRACTTRANSFORMERXML_HXX
