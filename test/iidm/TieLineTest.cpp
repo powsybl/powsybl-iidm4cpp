@@ -128,11 +128,12 @@ Network createTieLineTestNetwork() {
 BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createTieLineTestNetwork();
+    Network network = createTieLineTestNetwork();
 
     BOOST_CHECK_EQUAL(1UL, network.getLineCount());
 
-    const TieLine& tieLine = dynamic_cast<const TieLine&>(network.getLine("TL_VL1_VL3"));
+    TieLine& modifiableTieLine = dynamic_cast<TieLine&>(network.getLine("TL_VL1_VL3"));
+    const auto& tieLine = dynamic_cast<const TieLine&>(modifiableTieLine);
     BOOST_CHECK_EQUAL("TL_VL1_VL3", tieLine.getId());
     BOOST_CHECK(tieLine.getOptionalName().empty());
     BOOST_CHECK_EQUAL(ConnectableType::LINE, tieLine.getType());
@@ -171,6 +172,11 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(1.2, half2.getB2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.0, half2.getXnodeP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, half2.getXnodeQ(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK(stdcxx::areSame(half1, tieLine.getHalf(Branch::Side::ONE)));
+    BOOST_CHECK(stdcxx::areSame(half2, tieLine.getHalf(Branch::Side::TWO)));
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableTieLine.getHalf(Branch::Side::ONE)));
+    BOOST_CHECK(stdcxx::areSame(half2, modifiableTieLine.getHalf(Branch::Side::TWO)));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
@@ -363,9 +369,65 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 2");
     tieLineAdder.setXnodeQ(40.0);
 
+    tieLineAdder.setFictitious(true);
+
     BOOST_CHECK_NO_THROW(tieLineAdder.add());
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "The network test already contains an object 'TieLine' with the id 'UNIQUE_TIE_LINE_ID'");
     BOOST_CHECK_EQUAL(2UL, network.getLineCount());
+
+    TieLine& line = static_cast<TieLine&>(network.getLine("UNIQUE_TIE_LINE_ID"));
+    BOOST_CHECK(!line.getHalf(Branch::Side::ONE).isFictitious());
+    BOOST_CHECK(line.getHalf(Branch::Side::TWO).isFictitious());
+    BOOST_CHECK(!line.isFictitious());
+}
+
+BOOST_AUTO_TEST_CASE(fictitious) {
+    Network network = createTieLineTestNetwork();
+
+    TieLineAdder tieLineAdder = network.newTieLine()
+        .setVoltageLevel1("VL2")
+        .setVoltageLevel2("VL4")
+        .setBus1("")
+        .setConnectableBus1("VL2_BUS1")
+        .setBus2("")
+        .setConnectableBus2("VL4_BUS1")
+        .setUcteXnodeCode("UcteXnodeCodeTest")
+        .setName("TL_VL2_VL4")
+        .setId("UNIQUE_TIE_LINE_ID")
+        .setFictitious(true); // test that generated TieLine can be fictitious
+
+    //Half1
+    tieLineAdder.line1()
+        .setName("H1_TL_VL2_VL4")
+        .setId("H1_TL_VL2_VL4")
+        .setB1(4.0)
+        .setB2(5.0)
+        .setG1(2.0)
+        .setG2(3.0)
+        .setR(60.0)
+        .setX(660.0)
+        .setXnodeP(10.0)
+        .setXnodeQ(20.0)
+        .setFictitious(true);
+
+    //Half2
+    tieLineAdder.line2()
+        .setName("H2_TL_VL2_VL4")
+        .setId("H2_TL_VL2_VL4")
+        .setB1(7.0)
+        .setB2(12.0)
+        .setG1(6.0)
+        .setG2(9.0)
+        .setR(70.0)
+        .setX(700.0)
+        .setXnodeP(30.0)
+        .setXnodeQ(40.0)
+        .setFictitious(false);
+
+    TieLine& line = tieLineAdder.add();
+    BOOST_CHECK(line.getHalf(Branch::Side::ONE).isFictitious());
+    BOOST_CHECK(!line.getHalf(Branch::Side::TWO).isFictitious());
+    BOOST_CHECK(line.isFictitious());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

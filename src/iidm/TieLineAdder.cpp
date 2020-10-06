@@ -77,6 +77,15 @@ TieLineAdder& TieLineAdder::line2() {
     return *this;
 }
 
+TieLineAdder& TieLineAdder::setFictitious(bool fictitious) {
+    if (!m_activeHalf) {
+        BranchAdder<TieLineAdder>::setFictitious(fictitious);
+    } else {
+        m_activeHalf.get().setFictitious(fictitious);
+    }
+    return *this;
+}
+
 TieLineAdder& TieLineAdder::setB1(double b1) {
     getActiveHalf().setB1(b1);
     return *this;
