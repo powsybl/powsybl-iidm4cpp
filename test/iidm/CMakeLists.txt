@@ -45,6 +45,9 @@ set(UNIT_TEST_SOURCES
     converter/ImportOptionsTest.cpp
 
     extensions/LoadDetailTest.cpp
+    extensions/SlackTerminalTest.cpp
+
+    util/TerminalFinderTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})

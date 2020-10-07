@@ -10,6 +10,8 @@
 
 #include <memory>
 
+#include <powsybl/stdcxx/reference_wrapper.hpp>
+
 namespace stdcxx {
 
 template <typename Base, typename T>
@@ -20,6 +22,16 @@ inline bool isInstanceOf(const T& object) {
 template <typename Base, typename T>
 inline bool isInstanceOf(const std::unique_ptr<T>& pointer) {
     return dynamic_cast<Base*>(pointer.get()) != nullptr;
+}
+
+template <typename Base, typename T>
+inline bool isInstanceOf(const stdcxx::CReference<T>& object) {
+    return static_cast<bool>(object) && std::is_same<Base, T>::value ? true : dynamic_cast<const Base*>(&object.get()) != nullptr;
+}
+
+template <typename Base, typename T>
+inline bool isInstanceOf(const stdcxx::Reference<T>& object) {
+    return static_cast<bool>(object) && std::is_same<Base, T>::value ? true : dynamic_cast<const Base*>(&object.get()) != nullptr;
 }
 
 }  // namespace stdcxx
