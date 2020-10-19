@@ -47,6 +47,21 @@ double MergedBus::getAngle() const {
     return stdcxx::nan();
 }
 
+stdcxx::CReference<Component> MergedBus::getConnectedComponent() const {
+    checkValidity();
+    for (const auto& it : m_buses) {
+        const auto& cc = it.get().getConnectedComponent();
+        if (cc) {
+            return stdcxx::cref(cc);
+        }
+    }
+    throw AssertionError("Should not happen");
+}
+
+stdcxx::Reference<Component> MergedBus::getConnectedComponent() {
+    return stdcxx::ref(const_cast<const MergedBus*>(this)->getConnectedComponent());
+}
+
 unsigned long MergedBus::getConnectedTerminalCount() const {
     checkValidity();
 
@@ -82,6 +97,21 @@ stdcxx::range<Terminal> MergedBus::getConnectedTerminals() {
     return range;
 }
 
+stdcxx::CReference<Component> MergedBus::getSynchronousComponent() const {
+    checkValidity();
+    for (const auto& it : m_buses) {
+        const auto& sc = it.get().getSynchronousComponent();
+        if (static_cast<bool>(sc)) {
+            return stdcxx::cref<Component>(sc);
+        }
+    }
+    throw AssertionError("Should not happen");
+}
+
+stdcxx::Reference<Component> MergedBus::getSynchronousComponent() {
+    return stdcxx::ref(const_cast<const MergedBus*>(this)->getSynchronousComponent());
+}
+
 double MergedBus::getV() const {
     for (const auto& it : m_buses) {
         if (!std::isnan(it.get().getV())) {
@@ -107,6 +137,22 @@ void MergedBus::invalidate() {
     m_buses.clear();
 }
 
+bool MergedBus::isInMainConnectedComponent() const {
+    if (!m_buses.empty()) {
+        return m_buses.front().get().isInMainConnectedComponent();
+    }
+
+    return false;
+}
+
+bool MergedBus::isInMainSynchronousComponent() const {
+    if (!m_buses.empty()) {
+        return m_buses.front().get().isInMainSynchronousComponent();
+    }
+
+    return false;
+}
+
 Bus& MergedBus::setAngle(double angle) {
     checkValidity();
     for (const auto& it : m_buses) {
@@ -114,6 +160,20 @@ Bus& MergedBus::setAngle(double angle) {
     }
 
     return *this;
+}
+
+void MergedBus::setConnectedComponentNumber(const stdcxx::optional<unsigned long>& connectedComponentNumber) {
+    checkValidity();
+    for (auto& it : m_buses) {
+        it.get().setConnectedComponentNumber(connectedComponentNumber);
+    }
+}
+
+void MergedBus::setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& componentNumber) {
+    checkValidity();
+    for (auto& it : m_buses) {
+        it.get().setSynchronousComponentNumber(componentNumber);
+    }
 }
 
 Bus& MergedBus::setV(double v) {

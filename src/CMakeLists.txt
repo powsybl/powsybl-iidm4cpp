@@ -10,6 +10,9 @@ set(IIDM_SOURCES
     PowsyblException.cpp
 
     iidm/AbstractMultiVariantIdentifiableExtension.cpp
+    iidm/AbstractComponent.cpp
+    iidm/AbstractConnectedComponent.cpp
+    iidm/AbstractSynchronousComponent.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
     iidm/Branch.cpp
@@ -28,6 +31,8 @@ set(IIDM_SOURCES
     iidm/ConfiguredBus.cpp
     iidm/Connectable.cpp
     iidm/ConnectableType.cpp
+    iidm/ConnectedComponent.cpp
+    iidm/ConnectedComponentsManager.cpp
     iidm/Container.cpp
     iidm/Country.cpp
     iidm/CurrentLimits.cpp
@@ -62,7 +67,7 @@ set(IIDM_SOURCES
     iidm/MultipleVariantContext.cpp
     iidm/Network.cpp
     iidm/NetworkIndex.cpp
-    iidm/NetworkRef.cpp
+    iidm/NetworkVariant.cpp
     iidm/NetworkViews.cpp
     iidm/NodeBreakerVoltageLevel.cpp
     iidm/NodeBreakerVoltageLevelBusCache.cpp
@@ -92,6 +97,8 @@ set(IIDM_SOURCES
     iidm/Switch.cpp
     iidm/SwitchAdder.cpp
     iidm/SwitchKind.cpp
+    iidm/SynchronousComponent.cpp
+    iidm/SynchronousComponentsManager.cpp
     iidm/Terminal.cpp
     iidm/TerminalBuilder.cpp
     iidm/ThreeWindingsTransformer.cpp
@@ -157,6 +164,7 @@ set(IIDM_SOURCES
     iidm/extensions/LoadDetailAdder.cpp
     iidm/extensions/LoadDetailXmlSerializer.cpp
 
+    iidm/util/ConnectedComponents.cpp
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
@@ -168,6 +176,8 @@ set(IIDM_SOURCES
     logging/LoggerFactory.cpp
     logging/LogMessage.cpp
     logging/NoopLogger.cpp
+
+    math/GraphUtil.cpp
 
     network/BatteryNetworkFactory.cpp
     network/EurostagFactory.cpp

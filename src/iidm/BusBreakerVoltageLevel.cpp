@@ -11,8 +11,10 @@
 
 #include <boost/range/join.hpp>
 
+#include <powsybl/iidm/ConnectedComponentsManager.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 
 #include "BusTerminal.hpp"
@@ -24,7 +26,7 @@ namespace iidm {
 BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
                                                double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, fictitious, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit),
-    m_variants(*this, [this]() { return stdcxx::make_unique<bus_breaker_voltage_level::VariantImpl>(*this); }),
+    m_variants(substation.getNetwork(), [this]() { return stdcxx::make_unique<bus_breaker_voltage_level::VariantImpl>(*this); }),
     m_busBreakerView(*this),
     m_busView(*this) {
 }
@@ -287,8 +289,8 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
 void BusBreakerVoltageLevel::invalidateCache() {
     m_variants.get().getCalculatedBusTopology().invalidateCache();
 
-    // getNetwork().getConnectedComponentsManager().invalidate();
-    // getNetwork().getSynchronousComponentsManager().invalidate();
+    getNetwork().getConnectedComponentsManager().invalidate();
+    getNetwork().getSynchronousComponentsManager().invalidate();
 }
 
 void BusBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
@@ -357,6 +359,10 @@ void BusBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
     const auto& aSwitch = m_graph.removeEdge(it->second);
     m_switches.erase(it);
     getNetwork().remove(aSwitch.get());
+}
+
+void BusBreakerVoltageLevel::setNetworkRef(Network& network) {
+    m_variants.setVariantManagerHolder(network);
 }
 
 }  // namespace iidm

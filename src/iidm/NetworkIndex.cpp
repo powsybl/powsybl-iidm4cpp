@@ -31,6 +31,10 @@ NetworkIndex::NetworkIndex(Network& network, NetworkIndex&& networkIndex) noexce
     for (Substation& substation : getAll<Substation>()) {
         substation.setNetworkRef(network);
     }
+
+    for (VoltageLevel& voltageLevel : getAll<VoltageLevel>()) {
+        voltageLevel.setNetworkRef(network);
+    }
 }
 
 void NetworkIndex::checkId(const std::string& id) {

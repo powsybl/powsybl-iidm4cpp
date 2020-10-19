@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_NODETERMINAL_HPP
 
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 #include "NodeTerminalViews.hpp"
 
@@ -56,9 +57,17 @@ public:
 
     NodeTerminal& operator=(NodeTerminal&& nodeTerminal) = delete;
 
+    const stdcxx::optional<unsigned long>& getConnectedComponentNumber() const;
+
     unsigned long getNode() const;
 
+    const stdcxx::optional<unsigned long>& getSynchronousComponentNumber() const;
+
     NodeTerminal& setAngle(double angle);
+
+    NodeTerminal& setConnectedComponentNumber(const stdcxx::optional<unsigned long>& connectedComponentNumber);
+
+    NodeTerminal& setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& synchronousComponentNumber);
 
     NodeTerminal& setV(double v);
 
@@ -76,12 +85,15 @@ private:
 
     std::vector<double> m_angle;
 
+    std::vector<stdcxx::optional<unsigned long>> m_connectedComponentNumber;
+
+    std::vector<stdcxx::optional<unsigned long>> m_synchronousComponentNumber;
+
     node_terminal::NodeBreakerViewImpl m_nodeBreakerView;
 
     node_terminal::BusBreakerViewImpl m_busBreakerView;
 
     node_terminal::BusViewImpl m_busView;
-
 };
 
 }  // namespace iidm

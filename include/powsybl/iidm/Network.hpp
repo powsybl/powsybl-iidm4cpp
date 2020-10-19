@@ -9,9 +9,13 @@
 #define POWSYBL_IIDM_NETWORK_HPP
 
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/NetworkIndex.hpp>
+#include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/NetworkViews.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
+#include <powsybl/iidm/Variant.hpp>
+#include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
@@ -26,6 +30,7 @@ class Battery;
 class Branch;
 class BusbarSection;
 class Connectable;
+class ConnectedComponentsManager;
 class DanglingLine;
 class Generator;
 class HvdcConverterStation;
@@ -40,6 +45,7 @@ class StaticVarCompensator;
 class Substation;
 class SubstationAdder;
 class Switch;
+class SynchronousComponentsManager;
 class ThreeWindingsTransformer;
 class TieLineAdder;
 class TwoWindingsTransformer;
@@ -81,6 +87,15 @@ public: // VariantManagerHolder
     const VariantManager& getVariantManager() const override;
 
     VariantManager& getVariantManager() override;
+
+public:  // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
 
 public:
     Network(const std::string& id, const std::string& sourceFormat);
@@ -158,6 +173,10 @@ public:
 
     template <typename T = Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::range<T> getConnectables();
+
+    const ConnectedComponentsManager& getConnectedComponentsManager() const;
+
+    ConnectedComponentsManager& getConnectedComponentsManager();
 
     unsigned long getCountryCount() const;
 
@@ -287,6 +306,10 @@ public:
 
     stdcxx::range<Switch> getSwitches();
 
+    const SynchronousComponentsManager& getSynchronousComponentsManager() const;
+
+    SynchronousComponentsManager& getSynchronousComponentsManager();
+
     const ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id) const;
 
     ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id);
@@ -345,6 +368,9 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
+    using VariantImpl = network::VariantImpl;
+
+private:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     unsigned long getObjectCount() const;
 
@@ -362,6 +388,8 @@ private:
     BusBreakerView m_busBreakerView;
 
     BusView m_busView;
+
+    VariantArray<VariantImpl> m_variants;
 };
 
 }  // namespace iidm

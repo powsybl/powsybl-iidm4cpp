@@ -5,37 +5,45 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/NetworkRef.hpp>
+#ifndef POWSYBL_IIDM_REF_HXX
+#define POWSYBL_IIDM_REF_HXX
+
+#include <powsybl/iidm/Ref.hpp>
 
 #include <powsybl/AssertionError.hpp>
-#include <powsybl/iidm/Network.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-NetworkRef::NetworkRef(Network& network) :
-    m_pointer(&network) {
+template <typename T>
+Ref<T>::Ref(T& object) :
+    m_pointer(&object) {
 }
 
-const Network& NetworkRef::get() const {
+template <typename T>
+const T& Ref<T>::get() const {
     if (m_pointer == nullptr) {
         throw AssertionError("m_pointer is null");
     }
     return *m_pointer;
 }
 
-Network& NetworkRef::get() {
+template <typename T>
+T& Ref<T>::get() {
     if (m_pointer == nullptr) {
         throw AssertionError("m_pointer is null");
     }
     return *m_pointer;
 }
 
-void NetworkRef::set(Network& network) {
-    m_pointer = &network;
+template <typename T>
+void Ref<T>::set(T& object) {
+    m_pointer = &object;
 }
 
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#endif  // POWSYBL_IIDM_REF_HXX

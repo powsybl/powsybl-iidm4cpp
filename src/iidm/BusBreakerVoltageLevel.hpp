@@ -11,6 +11,7 @@
 #include <map>
 #include <string>
 
+#include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/math/UndirectedGraph.hpp>
 #include <powsybl/stdcxx/optional.hpp>
@@ -18,7 +19,6 @@
 #include "BusBreakerVoltageLevelVariant.hpp"
 #include "BusBreakerVoltageLevelViews.hpp"
 #include "BusTerminalViews.hpp"
-#include "VariantArray.hpp"
 
 namespace powsybl {
 
@@ -54,6 +54,8 @@ public: // VoltageLevel
     const TopologyKind& getTopologyKind() const override;
 
     void invalidateCache() override;
+
+    void setNetworkRef(Network& network) override;
 
 public:
     BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,

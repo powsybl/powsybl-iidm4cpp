@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/ConnectedComponent.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
@@ -536,6 +537,42 @@ BOOST_AUTO_TEST_CASE(Properties) {
     POWSYBL_ASSERT_THROW(n.getProperty("key3"),
                          stdcxx::PropertyNotFoundException, "Property key3 does not exist");
     BOOST_CHECK_EQUAL("value3", n.getProperty("key3", "value3"));
+}
+
+BOOST_AUTO_TEST_CASE(multivariant) {
+    Network network = createTestNetwork();
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().setWorkingVariant("s1");
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().setWorkingVariant("s2");
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().removeVariant("s1");
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().cloneVariant("s2", "s3");
+    network.getVariantManager().setWorkingVariant("s3");
+
+    BOOST_CHECK_EQUAL(1UL, boost::size(network.getBusView().getConnectedComponents()));
+
+    network.getVariantManager().removeVariant("s3");
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    network.getVariantManager().removeVariant("s2");
+    BOOST_CHECK_EQUAL(1UL, network.getVariantManager().getVariantArraySize());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

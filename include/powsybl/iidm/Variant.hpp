@@ -14,16 +14,22 @@ namespace powsybl {
 
 namespace iidm {
 
+class VariantManagerHolder;
+
 template <typename T>
 class Variant {
 public:
     virtual ~Variant() noexcept = default;
 
     virtual std::unique_ptr<T> copy() const = 0;
+
+    virtual void setVariantManagerHolder(VariantManagerHolder& variantManagerHolder);
 };
 
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/Variant.hxx>
 
 #endif  // POWSYBL_IIDM_VARIANT_HPP

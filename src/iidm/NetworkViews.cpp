@@ -12,6 +12,7 @@
 #include <boost/range/join.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/ConnectedComponentsManager.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -140,6 +141,14 @@ stdcxx::range<Bus> BusView::getBuses() {
     }
 
     return range;
+}
+
+stdcxx::const_range<ConnectedComponent> BusView::getConnectedComponents() const {
+    return m_network.getConnectedComponentsManager().getConnectedComponents();
+}
+
+stdcxx::range<ConnectedComponent> BusView::getConnectedComponents() {
+    return m_network.getConnectedComponentsManager().getConnectedComponents();
 }
 
 }  // namespace network

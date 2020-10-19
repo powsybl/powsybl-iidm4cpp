@@ -11,14 +11,17 @@
 #include <functional>
 #include <memory>
 #include <set>
+#include <vector>
 
-#include "Variant.hpp"
+#include <powsybl/iidm/Ref.hpp>
+#include <powsybl/iidm/Variant.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class VoltageLevel;
+class Network;
+class VariantManagerHolder;
 
 template <typename T>
 class VariantArray {
@@ -26,7 +29,9 @@ public:
     using VariantFactory = std::function<std::unique_ptr<T>()>;
 
 public:
-    VariantArray(VoltageLevel& voltageLevel, const VariantFactory& variantFactory);
+    VariantArray(VariantManagerHolder& variantManagerHolder, const VariantFactory& variantFactory);
+
+    VariantArray(VariantArray&& variantArray) noexcept;
 
     ~VariantArray() noexcept = default;
 
@@ -44,8 +49,10 @@ public:
 
     void reduceVariantArraySize(unsigned long number);
 
+    void setVariantManagerHolder(VariantManagerHolder& variantManagerHolder);
+
 private:
-    VoltageLevel& m_voltageLevel;
+    Ref<VariantManagerHolder> m_variantManagerHolder;
 
     std::vector<std::unique_ptr<T> > m_variants;
 };

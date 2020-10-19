@@ -15,7 +15,7 @@
 
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/Country.hpp>
-#include <powsybl/iidm/NetworkRef.hpp>
+#include <powsybl/iidm/Ref.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 

@@ -30,6 +30,7 @@ class LccConverterStationAdder;
 class Load;
 class LoadAdder;
 class Network;
+class NetworkIndex;
 class ShuntCompensator;
 class ShuntCompensatorAdder;
 class StaticVarCompensator;
@@ -191,6 +192,11 @@ protected:
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
+
+private:
+    virtual void setNetworkRef(Network& network) = 0;
+
+    friend class NetworkIndex;
 
 private:
     stdcxx::Reference<Substation> m_substation;

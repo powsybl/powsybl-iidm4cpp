@@ -7,8 +7,10 @@
 
 #include "NodeBreakerVoltageLevel.hpp"
 
+#include <powsybl/iidm/ConnectedComponentsManager.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -23,7 +25,7 @@ NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const st
                                                  double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, fictitious, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit),
     m_busNamingStrategy(*this),
-    m_variants(*this, [this]() { return stdcxx::make_unique<node_breaker_voltage_level::VariantImpl>(*this); }),
+    m_variants(substation.getNetwork(), [this]() { return stdcxx::make_unique<node_breaker_voltage_level::VariantImpl>(*this); }),
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {
@@ -320,7 +322,8 @@ void NodeBreakerVoltageLevel::invalidateCache() {
     m_variants.get().getCalculatedBusTopology().invalidateCache();
     m_variants.get().getCalculatedBusBreakerTopology().invalidateCache();
 
-    // TODO(mathbagu): invalidate the connected and synchronous components
+    getNetwork().getConnectedComponentsManager().invalidate();
+    getNetwork().getSynchronousComponentsManager().invalidate();
 }
 
 bool NodeBreakerVoltageLevel::isConnected(const Terminal& terminal) const {
@@ -361,6 +364,10 @@ void NodeBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
 
     m_switches.erase(it);
     getNetwork().remove(aSwitch.get());
+}
+
+void NodeBreakerVoltageLevel::setNetworkRef(Network& network) {
+    m_variants.setVariantManagerHolder(network);
 }
 
 }  // namespace iidm

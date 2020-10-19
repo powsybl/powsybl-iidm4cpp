@@ -6,11 +6,14 @@
 #
 
 set(UNIT_TEST_SOURCES
+    AbstractMainConnectedComponentWithSwitchTest.cpp
+    AbstractVscTest.cpp
     BatteryTest.cpp
     BranchTest.cpp
     BusbarSectionTest.cpp
     BusBreakerVoltageLevelTest.cpp
     BusTest.cpp
+    ComponentsTest.cpp
     CountryTest.cpp
     CurrentLimitsTest.cpp
     DanglingLineTest.cpp

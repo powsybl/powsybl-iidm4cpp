@@ -8,23 +8,30 @@
 #ifndef POWSYBL_IIDM_VARIANTARRAY_HXX
 #define POWSYBL_IIDM_VARIANTARRAY_HXX
 
-#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantArray.hpp>
 
-#include "VariantArray.hpp"
+#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
 template <typename T>
-VariantArray<T>::VariantArray(VoltageLevel& voltageLevel, const VariantFactory& variantFactory) :
-    m_voltageLevel(voltageLevel) {
+VariantArray<T>::VariantArray(VariantManagerHolder& variantManagerHolder, const VariantFactory& variantFactory) :
+    m_variantManagerHolder(variantManagerHolder) {
 
-    const auto& variantManager = voltageLevel.getNetwork().getVariantManager();
+    const auto& variantManager = m_variantManagerHolder.get().getVariantManager();
     m_variants.resize(variantManager.getVariantArraySize());
     for (unsigned long i : variantManager.getVariantIndices()) {
         m_variants.at(i) = variantFactory();
     }
+}
+
+template <typename T>
+VariantArray<T>::VariantArray(VariantArray&& variantArray) noexcept :
+    m_variantManagerHolder(variantArray.m_variantManagerHolder.get()),
+    m_variants(std::move(variantArray.m_variants)) {
 }
 
 template <typename T>
@@ -53,17 +60,25 @@ void VariantArray<T>::extendVariantArraySize(unsigned long /*initVariantArraySiz
 
 template <typename T>
 const T& VariantArray<T>::get() const {
-    return *m_variants.at(m_voltageLevel.getNetwork().getVariantIndex());
+    return *m_variants.at(m_variantManagerHolder.get().getVariantManager().getVariantIndex());
 }
 
 template <typename T>
 T& VariantArray<T>::get() {
-    return *m_variants.at(m_voltageLevel.getNetwork().getVariantIndex());
+    return *m_variants.at(m_variantManagerHolder.get().getVariantManager().getVariantIndex());
 }
 
 template <typename T>
 void VariantArray<T>::reduceVariantArraySize(unsigned long number) {
     m_variants.resize(m_variants.size() - number);
+}
+
+template <typename T>
+void VariantArray<T>::setVariantManagerHolder(VariantManagerHolder& variantManagerHolder) {
+    m_variantManagerHolder.set(variantManagerHolder);
+    for (auto& variant : m_variants) {
+        variant->setVariantManagerHolder(variantManagerHolder);
+    }
 }
 
 }  // namespace iidm
