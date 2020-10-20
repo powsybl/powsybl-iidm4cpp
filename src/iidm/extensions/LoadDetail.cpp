@@ -53,7 +53,6 @@ double LoadDetail::checkPower(double value, const std::string& message) {
 
 void LoadDetail::deleteVariantArrayElement(unsigned long /*index*/) {
     // Does nothing
-    // TODO: maybe set default/undefined values for deleted variant index
 }
 
 void LoadDetail::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
