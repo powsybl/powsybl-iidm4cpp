@@ -50,11 +50,15 @@ public:
     void loadExtensions(const boost::filesystem::path& directory, const std::regex& pattern);
 
 private:
-    ExtensionProviders() = default;
+    ExtensionProviders();
 
     ~ExtensionProviders() noexcept = default;
 
+    const std::string& getSymbolName() const;
+
     void loadLibrary(const boost::filesystem::path& libraryPath);
+
+    void registerExtension(std::unique_ptr<T> provider, const boost::filesystem::path& libraryPath = boost::filesystem::path());
 
 private:
     std::map<boost::filesystem::path, boost::dll::shared_library> m_loadedLibraries;

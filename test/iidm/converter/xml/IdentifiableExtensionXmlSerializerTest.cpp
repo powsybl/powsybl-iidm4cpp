@@ -31,10 +31,14 @@ namespace xml {
 BOOST_AUTO_TEST_SUITE(IdentifiableExtensionXml)
 
 BOOST_AUTO_TEST_CASE(ExtensionXmlSerializerTest) {
+    // Number of extensions provided by powsybl-iidm4cpp without any extension library
+    // - LoadDetail
+    const unsigned int DEFAULT_EXTENSION_COUNT = 1;
+
     auto& providers = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
     const auto& cProviders = providers;
-    BOOST_CHECK_EQUAL(5, boost::size(providers.getProviders()));
-    BOOST_CHECK_EQUAL(5, boost::size(cProviders.getProviders()));
+    BOOST_CHECK_EQUAL(5 + DEFAULT_EXTENSION_COUNT, boost::size(providers.getProviders()));
+    BOOST_CHECK_EQUAL(5 + DEFAULT_EXTENSION_COUNT, boost::size(cProviders.getProviders()));
 
     const auto& serializer = providers.findProvider("loadMock");
     BOOST_CHECK_EQUAL(true, static_cast<bool>(serializer));
