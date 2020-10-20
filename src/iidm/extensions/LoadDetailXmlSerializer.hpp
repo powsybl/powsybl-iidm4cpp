@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_LOADDETAILXMLSERIALIZER_HPP
-#define POWSYBL_IIDM_EXTENSIONS_IIDM_LOADDETAILXMLSERIALIZER_HPP
+#ifndef POWSYBL_IIDM_EXTENSIONS_LOADDETAILXMLSERIALIZER_HPP
+#define POWSYBL_IIDM_EXTENSIONS_LOADDETAILXMLSERIALIZER_HPP
 
 #include <powsybl/iidm/converter/xml/AbstractExtensionXmlSerializer.hpp>
 
@@ -15,8 +15,6 @@ namespace powsybl {
 namespace iidm {
 
 namespace extensions {
-
-namespace iidm {
 
 class LoadDetailXmlSerializer : public converter::xml::AbstractExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
@@ -30,12 +28,10 @@ public:
     ~LoadDetailXmlSerializer() noexcept override = default;
 };
 
-}  // namespace iidm
-
 }  // namespace extensions
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_EXTENSIONS_IIDM_LOADDETAILXMLSERIALIZER_HPP
+#endif  // POWSYBL_IIDM_EXTENSIONS_LOADDETAILXMLSERIALIZER_HPP
