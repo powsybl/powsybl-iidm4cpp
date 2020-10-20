@@ -34,35 +34,9 @@ public: // MultiVariantObject
     void reduceVariantArraySize(unsigned long number) override;
 
 public:
-    /**
-     * Constructor
-     */
     LoadDetail(Load& load, double fixedActivePower, double fixedReactivePower, double variableActivePower, double variableReactivePower);
 
-    /**
-     * Destructor
-     */
     ~LoadDetail() noexcept override = default;
-
-    /**
-     * Copy constructor
-     */
-    LoadDetail(const LoadDetail&) = default;
-
-    /**
-     * Move constructor
-     */
-    LoadDetail(LoadDetail&&) = default;
-
-    /**
-     * Copy assignment operator
-     */
-    LoadDetail& operator=(const LoadDetail&) = default;
-
-    /**
-     * Move assignment operator
-     */
-    LoadDetail& operator=(LoadDetail&&) = default;
 
     double getFixedActivePower() const;
 

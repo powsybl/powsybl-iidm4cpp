@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/extensions/iidm/LoadDetailXmlSerializer.hpp>
+#include "LoadDetailXmlSerializer.hpp"
 
 #include <cmath>
 
@@ -14,7 +14,6 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/iidm/extensions/LoadDetail.hpp>
 #include <powsybl/iidm/extensions/LoadDetailAdder.hpp>
-#include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
@@ -24,8 +23,6 @@ namespace powsybl {
 namespace iidm {
 
 namespace extensions {
-
-namespace iidm {
 
 LoadDetailXmlSerializer::LoadDetailXmlSerializer() :
     converter::xml::AbstractExtensionXmlSerializer("detail", "network", "ld", "http://www.itesla_project.eu/schema/iidm/ext/load_detail/1_0") {
@@ -51,19 +48,22 @@ Extension& LoadDetailXmlSerializer::read(Extendable& extendable, converter::xml:
     if (std::isnan(variableReactivePower)) {
         variableReactivePower = context.getReader().getAttributeValue<double>("subLoad2ReactivePower");
     }
-    extendable.newExtension<LoadDetailAdder>().withFixedActivePower(fixedActivePower).withFixedReactivePower(fixedReactivePower).withVariableActivePower(variableActivePower).withVariableReactivePower(variableReactivePower).add();
-    return extendable.getExtension<LoadDetail>();
+    extendable.newExtension<iidm::extensions::LoadDetailAdder>()
+            .withFixedActivePower(fixedActivePower)
+            .withFixedReactivePower(fixedReactivePower)
+            .withVariableActivePower(variableActivePower)
+            .withVariableReactivePower(variableReactivePower)
+            .add();
+    return extendable.getExtension<iidm::extensions::LoadDetail>();
 }
 
 void LoadDetailXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
-    const auto& detail = safeCast<LoadDetail>(extension);
+    const auto& detail = safeCast<iidm::extensions::LoadDetail>(extension);
     context.getExtensionsWriter().writeAttribute("fixedActivePower", detail.getFixedActivePower());
     context.getExtensionsWriter().writeAttribute("fixedReactivePower", detail.getFixedReactivePower());
     context.getExtensionsWriter().writeAttribute("variableActivePower", detail.getVariableActivePower());
     context.getExtensionsWriter().writeAttribute("variableReactivePower", detail.getVariableReactivePower());
 }
-
-}  // namespace iidm
 
 }  // namespace extensions
 

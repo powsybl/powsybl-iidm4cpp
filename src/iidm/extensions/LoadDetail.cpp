@@ -23,10 +23,10 @@ namespace extensions {
 LoadDetail::LoadDetail(Load& load, double fixedActivePower, double fixedReactivePower, double variableActivePower, double variableReactivePower) :
     AbstractMultiVariantIdentifiableExtension(load) {
     unsigned long variantArraySize = getVariantManagerHolder().getVariantManager().getVariantArraySize();
-    m_fixedActivePower.resize(variantArraySize, checkPower(fixedActivePower, stdcxx::format("Invalid fixedActivePower")));
-    m_fixedReactivePower.resize(variantArraySize, checkPower(fixedReactivePower, stdcxx::format("Invalid fixedReactivePower")));
-    m_variableActivePower.resize(variantArraySize, checkPower(variableActivePower, stdcxx::format("Invalid variableActivePower")));
-    m_variableReactivePower.resize(variantArraySize, checkPower(variableReactivePower, stdcxx::format("Invalid variableReactivePower")));
+    m_fixedActivePower.resize(variantArraySize, checkPower(fixedActivePower, "Invalid fixedActivePower"));
+    m_fixedReactivePower.resize(variantArraySize, checkPower(fixedReactivePower, "Invalid fixedReactivePower"));
+    m_variableActivePower.resize(variantArraySize, checkPower(variableActivePower, "Invalid variableActivePower"));
+    m_variableReactivePower.resize(variantArraySize, checkPower(variableReactivePower, "Invalid variableReactivePower"));
 }
 
 void LoadDetail::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -97,22 +97,22 @@ void LoadDetail::reduceVariantArraySize(unsigned long number) {
 }
 
 LoadDetail& LoadDetail::setFixedActivePower(double fixedActivePower) {
-    m_fixedActivePower[getVariantIndex()] = checkPower(fixedActivePower, stdcxx::format("Invalid fixedActivePower"));
+    m_fixedActivePower[getVariantIndex()] = checkPower(fixedActivePower, "Invalid fixedActivePower");
     return *this;
 }
 
 LoadDetail& LoadDetail::setFixedReactivePower(double fixedReactivePower) {
-    m_fixedReactivePower[getVariantIndex()] = checkPower(fixedReactivePower, stdcxx::format("Invalid fixedReactivePower"));
+    m_fixedReactivePower[getVariantIndex()] = checkPower(fixedReactivePower, "Invalid fixedReactivePower");
     return *this;
 }
 
 LoadDetail& LoadDetail::setVariableActivePower(double variableActivePower) {
-    m_variableActivePower[getVariantIndex()] = checkPower(variableActivePower, stdcxx::format("Invalid variableActivePower"));
+    m_variableActivePower[getVariantIndex()] = checkPower(variableActivePower, "Invalid variableActivePower");
     return *this;
 }
 
 LoadDetail& LoadDetail::setVariableReactivePower(double variableReactivePower) {
-    m_variableReactivePower[getVariantIndex()] = checkPower(variableReactivePower, stdcxx::format("Invalid variableReactivePower"));
+    m_variableReactivePower[getVariantIndex()] = checkPower(variableReactivePower, "Invalid variableReactivePower");
     return *this;
 }
 

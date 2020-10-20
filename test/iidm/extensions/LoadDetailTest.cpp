@@ -58,7 +58,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createNetwork();
     Load& load = network.getLoad("L");
 
-    load.newExtension<LoadDetailAdder>().withFixedActivePower(1.1).withFixedReactivePower(2.2).withVariableActivePower(3.3).withVariableReactivePower(4.4).add();
+    load.newExtension<LoadDetailAdder>()
+            .withFixedActivePower(1.1)
+            .withFixedReactivePower(2.2)
+            .withVariableActivePower(3.3)
+            .withVariableReactivePower(4.4)
+            .add();
     auto& extension = load.getExtension<LoadDetail>();
     BOOST_CHECK_EQUAL("detail", extension.getName());
     BOOST_CHECK(stdcxx::areSame(load, extension.getExtendable().get()));
@@ -152,16 +157,21 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 BOOST_FIXTURE_TEST_CASE(LoadDetailXmlSerializerTest, test::ResourceFixture) {
     Network network = createNetwork();
     Load& load = network.getLoad("L");
-    load.newExtension<LoadDetailAdder>().withFixedActivePower(40.0).withFixedReactivePower(20.0).withVariableActivePower(60.0).withVariableReactivePower(30.0).add();
+    load.newExtension<LoadDetailAdder>()
+            .withFixedActivePower(40.0)
+            .withFixedReactivePower(20.0)
+            .withVariableActivePower(60.0)
+            .withVariableReactivePower(30.0)
+            .add();
 
-    const std::string& networkStr = ResourceFixture::getResource("/loadDetailRef.xml");
+    const std::string& networkStr = test::converter::RoundTrip::getVersionedNetwork("loadDetailRef.xml", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 
     test::converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_FIXTURE_TEST_CASE(LoadDetailXmlSerializerOldRefTest, test::ResourceFixture) {
-    Network network = Network::readXml(ResourceFixture::getResource("/loadDetailOldRef.xml"));
-    const std::string& refNetwork = ResourceFixture::getResource("/loadDetailRef.xml");
+    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetwork("loadDetailOldRef.xml", converter::xml::IidmXmlVersion::V1_2()));
+    const std::string& refNetwork = test::converter::RoundTrip::getVersionedNetwork("loadDetailRef.xml", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 
     std::stringstream ostream;
     Network::writeXml(ostream, network);
