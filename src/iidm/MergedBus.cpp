@@ -109,7 +109,7 @@ void MergedBus::invalidate() {
 
 Bus& MergedBus::setAngle(double angle) {
     checkValidity();
-    for (auto& it : m_buses) {
+    for (const auto& it : m_buses) {
         it.get().setAngle(angle);
     }
 
@@ -118,7 +118,7 @@ Bus& MergedBus::setAngle(double angle) {
 
 Bus& MergedBus::setV(double v) {
     checkValidity();
-    for (auto& it : m_buses) {
+    for (const auto& it : m_buses) {
         it.get().setV(v);
     }
 

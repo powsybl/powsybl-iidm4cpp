@@ -100,8 +100,8 @@ void UndirectedGraph<V, E>::checkVertex(unsigned long v) const {
 
 template <typename V, typename E>
 void UndirectedGraph<V, E>::cleanVertices(unsigned long v) {
-    for (unsigned long i = v; i >= 0; --i) {
-        const auto& it = m_availableVertices.find(i);
+    for (unsigned long i = 0; i <= v; ++i) {
+        const auto& it = m_availableVertices.find(v - i);
         if (it == m_availableVertices.end()) {
             return;
         }
