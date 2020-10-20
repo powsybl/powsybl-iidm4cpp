@@ -7,7 +7,7 @@
 
 #include <powsybl/logging/LoggerFactory.hpp>
 
-#include "powsybl/logging/NoopLogger.hpp"
+#include <powsybl/logging/NoopLogger.hpp>
 
 namespace powsybl {
 

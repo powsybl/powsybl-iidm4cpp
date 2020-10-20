@@ -14,8 +14,8 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/iidm/extensions/iidm/LoadDetail.hpp>
-#include <powsybl/iidm/extensions/iidm/LoadDetailAdder.hpp>
+#include <powsybl/iidm/extensions/LoadDetail.hpp>
+#include <powsybl/iidm/extensions/LoadDetailAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
@@ -26,8 +26,6 @@ namespace powsybl {
 namespace iidm {
 
 namespace extensions {
-
-namespace iidm {
 
 Network createNetwork() {
     Network network("test", "test");
@@ -60,7 +58,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createNetwork();
     Load& load = network.getLoad("L");
 
-    load.newExtension<LoadDetailAdder>().withFixedActivePower(1.1).withFixedReactivePower(2.2).withVariableActivePower(3.3).withVariableReactivePower(4.4).add();
+    load.newExtension<LoadDetailAdder>()
+            .withFixedActivePower(1.1)
+            .withFixedReactivePower(2.2)
+            .withVariableActivePower(3.3)
+            .withVariableReactivePower(4.4)
+            .add();
     auto& extension = load.getExtension<LoadDetail>();
     BOOST_CHECK_EQUAL("detail", extension.getName());
     BOOST_CHECK(stdcxx::areSame(load, extension.getExtendable().get()));
@@ -98,19 +101,77 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(load.newExtension<LoadDetailAdder>().withFixedActivePower(1.1).withFixedReactivePower(2.2).withVariableActivePower(3.3).withVariableReactivePower(stdcxx::nan()).add(), PowsyblException, "Invalid variableReactivePower");
 }
 
-BOOST_FIXTURE_TEST_CASE(LoadDetailXmlSerializerTest, test::ResourceFixture) {
+BOOST_AUTO_TEST_CASE(multivariant) {
+    std::string variant1("variant1");
+    std::string variant2("variant2");
+    std::string variant3("variant3");
+
     Network network = createNetwork();
     Load& load = network.getLoad("L");
     load.newExtension<LoadDetailAdder>().withFixedActivePower(40.0).withFixedReactivePower(20.0).withVariableActivePower(60.0).withVariableReactivePower(30.0).add();
+    auto& ld = load.getExtension<LoadDetail>();
 
-    const std::string& networkStr = ResourceFixture::getResource("/loadDetailRef.xml");
+    VariantManager& variantManager = network.getVariantManager();
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), variant1);
+    variantManager.cloneVariant(variant1, variant2);
+    variantManager.setWorkingVariant(variant1);
+    BOOST_CHECK_CLOSE(40.0, ld.getFixedActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, ld.getFixedReactivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(60.0, ld.getVariableActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(30.0, ld.getVariableReactivePower(), std::numeric_limits<double>::epsilon());
+
+    // Testing setting different values in the cloned variant and going back to the initial one
+    ld.setFixedActivePower(60.0).setFixedReactivePower(30.0).setVariableActivePower(40.0).setVariableReactivePower(20.0);
+    BOOST_CHECK_CLOSE(60.0, ld.getFixedActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(30.0, ld.getFixedReactivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(40.0, ld.getVariableActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, ld.getVariableReactivePower(), std::numeric_limits<double>::epsilon());
+
+    variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
+    BOOST_CHECK_CLOSE(40.0, ld.getFixedActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, ld.getFixedReactivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(60.0, ld.getVariableActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(30.0, ld.getVariableReactivePower(), std::numeric_limits<double>::epsilon());
+
+    // Removes a variant then adds another variant to test variant recycling (hence calling allocateVariantArrayElement)
+    variantManager.removeVariant(variant1);
+    auto targetVariantIds = {variant1, variant3};
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), targetVariantIds);
+    variantManager.setWorkingVariant(variant1);
+    BOOST_CHECK_CLOSE(40.0, ld.getFixedActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, ld.getFixedReactivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(60.0, ld.getVariableActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(30.0, ld.getVariableReactivePower(), std::numeric_limits<double>::epsilon());
+
+    variantManager.setWorkingVariant(variant3);
+    BOOST_CHECK_CLOSE(40.0, ld.getFixedActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, ld.getFixedReactivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(60.0, ld.getVariableActivePower(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(30.0, ld.getVariableReactivePower(), std::numeric_limits<double>::epsilon());
+
+    // Test removing current variant
+    variantManager.removeVariant(variant3);
+    POWSYBL_ASSERT_THROW(ld.getFixedActivePower(), PowsyblException, "Variant index not set");
+}
+
+BOOST_FIXTURE_TEST_CASE(LoadDetailXmlSerializerTest, test::ResourceFixture) {
+    Network network = createNetwork();
+    Load& load = network.getLoad("L");
+    load.newExtension<LoadDetailAdder>()
+            .withFixedActivePower(40.0)
+            .withFixedReactivePower(20.0)
+            .withVariableActivePower(60.0)
+            .withVariableReactivePower(30.0)
+            .add();
+
+    const std::string& networkStr = test::converter::RoundTrip::getVersionedNetwork("loadDetailRef.xml", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 
     test::converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_FIXTURE_TEST_CASE(LoadDetailXmlSerializerOldRefTest, test::ResourceFixture) {
-    Network network = Network::readXml(ResourceFixture::getResource("/loadDetailOldRef.xml"));
-    const std::string& refNetwork = ResourceFixture::getResource("/loadDetailRef.xml");
+    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetwork("loadDetailOldRef.xml", converter::xml::IidmXmlVersion::V1_2()));
+    const std::string& refNetwork = test::converter::RoundTrip::getVersionedNetwork("loadDetailRef.xml", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 
     std::stringstream ostream;
     Network::writeXml(ostream, network);
@@ -118,8 +179,6 @@ BOOST_FIXTURE_TEST_CASE(LoadDetailXmlSerializerOldRefTest, test::ResourceFixture
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
-}  // namespace iidm
 
 }  // namespace extensions
 

@@ -5,10 +5,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_LOADDETAIL_HPP
-#define POWSYBL_IIDM_EXTENSIONS_IIDM_LOADDETAIL_HPP
+#ifndef POWSYBL_IIDM_EXTENSIONS_LOADDETAIL_HPP
+#define POWSYBL_IIDM_EXTENSIONS_LOADDETAIL_HPP
 
-#include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
 
 namespace powsybl {
 
@@ -18,44 +18,25 @@ class Load;
 
 namespace extensions {
 
-namespace iidm {
-
-class LoadDetail : public Extension {
+class LoadDetail : public AbstractMultiVariantIdentifiableExtension {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
 
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
+
 public:
-    /**
-     * Constructor
-     */
     LoadDetail(Load& load, double fixedActivePower, double fixedReactivePower, double variableActivePower, double variableReactivePower);
 
-    /**
-     * Destructor
-     */
     ~LoadDetail() noexcept override = default;
-
-    /**
-     * Copy constructor
-     */
-    LoadDetail(const LoadDetail&) = default;
-
-    /**
-     * Move constructor
-     */
-    LoadDetail(LoadDetail&&) = default;
-
-    /**
-     * Copy assignment operator
-     */
-    LoadDetail& operator=(const LoadDetail&) = default;
-
-    /**
-     * Move assignment operator
-     */
-    LoadDetail& operator=(LoadDetail&&) = default;
 
     double getFixedActivePower() const;
 
@@ -80,16 +61,14 @@ private:
     static double checkPower(double value, const std::string& message);
 
 private:
-    double m_fixedActivePower;
+    std::vector<double> m_fixedActivePower;
 
-    double m_fixedReactivePower;
+    std::vector<double> m_fixedReactivePower;
 
-    double m_variableActivePower;
+    std::vector<double> m_variableActivePower;
 
-    double m_variableReactivePower;
+    std::vector<double> m_variableReactivePower;
 };
-
-}  // namespace iidm
 
 }  // namespace extensions
 
@@ -97,4 +76,4 @@ private:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_EXTENSIONS_IIDM_LOADDETAIL_HPP
+#endif  // POWSYBL_IIDM_EXTENSIONS_LOADDETAIL_HPP

@@ -9,7 +9,7 @@ set(IIDM_SOURCES
     AssertionError.cpp
     PowsyblException.cpp
 
-    iidm/AbstractMultiVariantConnectableExtension.cpp
+    iidm/AbstractMultiVariantIdentifiableExtension.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
     iidm/Branch.cpp
@@ -152,6 +152,10 @@ set(IIDM_SOURCES
     iidm/converter/xml/VersionsCompatibility.cpp
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
+
+    iidm/extensions/LoadDetail.cpp
+    iidm/extensions/LoadDetailAdder.cpp
+    iidm/extensions/LoadDetailXmlSerializer.cpp
 
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp

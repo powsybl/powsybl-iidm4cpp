@@ -18,9 +18,16 @@
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
+#include "extensions/LoadDetailXmlSerializer.hpp"
+
 namespace powsybl {
 
 namespace iidm {
+
+template <>
+ExtensionProviders<converter::xml::ExtensionXmlSerializer, void>::ExtensionProviders() {
+    registerExtension(stdcxx::make_unique<extensions::LoadDetailXmlSerializer>());
+}
 
 template <typename T, typename Dummy>
 stdcxx::CReference<T> ExtensionProviders<T, Dummy>::findProvider(const std::string& name) const {
@@ -59,6 +66,13 @@ stdcxx::range<T> ExtensionProviders<T, Dummy>::getProviders() {
     return boost::adaptors::values(m_providers) | boost::adaptors::indirected;
 }
 
+template <>
+const std::string& ExtensionProviders<converter::xml::ExtensionXmlSerializer, void>::getSymbolName() const {
+    static std::string s_symbolName = "createSerializers";
+
+    return s_symbolName;
+}
+
 template <typename T, typename Dummy>
 void ExtensionProviders<T, Dummy>::loadExtensions(const boost::filesystem::path& directory, const std::regex& pattern) {
     if (!boost::filesystem::exists(directory)) {
@@ -83,23 +97,32 @@ void ExtensionProviders<T, Dummy>::loadLibrary(const boost::filesystem::path& li
     if (m_loadedLibraries.find(libraryPath) == m_loadedLibraries.end()) {
         try {
             boost::dll::shared_library library(libraryPath);
-            if (library.has("createSerializers")) {
-                const auto& createSerializers = boost::dll::import_alias<std::vector<std::unique_ptr<T>>()>(library, "createSerializers");
+            if (library.has(getSymbolName())) {
+                const auto& createSerializers = boost::dll::import_alias<std::vector<std::unique_ptr<T>>()>(library, getSymbolName());
                 std::vector<std::unique_ptr<T>> serializers = createSerializers();
                 for (auto& it : serializers) {
-                    const std::string& extensionName = it->getExtensionName();
-                    const auto& status = m_providers.emplace(std::make_pair(extensionName, std::move(it)));
-                    if (!status.second) {
-                        throw PowsyblException(stdcxx::format("Unable to load file %1%: Extension %2% is already registered", libraryPath, status.first->first));
-                    }
-                    logger.debug(stdcxx::format("Extension %1% has been loaded from %2%", extensionName, libraryPath));
+                    registerExtension(std::move(it), libraryPath);
                 }
                 m_loadedLibraries.insert(std::make_pair(libraryPath, library));
+            } else {
+                logger.error("Symbol not found");
             }
         } catch (const boost::system::system_error& err) {
             logger.info(stdcxx::format("Unable to load file %1%: %2%", libraryPath, err.what()));
         }
     }
+}
+
+template <typename T, typename Dummy>
+void ExtensionProviders<T, Dummy>::registerExtension(std::unique_ptr<T> provider, const boost::filesystem::path& libraryPath) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
+
+    const std::string& extensionName = provider->getExtensionName();
+    const auto& status = m_providers.emplace(std::make_pair(extensionName, std::move(provider)));
+    if (!status.second) {
+        throw PowsyblException(stdcxx::format("Unable to load file %1%: Extension %2% is already registered", libraryPath, status.first->first));
+    }
+    logger.debug(stdcxx::format("Extension %1% has been loaded from %2%", extensionName, libraryPath));
 }
 
 template class
