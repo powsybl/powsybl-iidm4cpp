@@ -33,6 +33,14 @@ public:
 
     virtual ~Extension() noexcept = default;
 
+    Extension(const Extension&) = delete;
+
+    Extension(Extension&&) noexcept = default;
+
+    Extension& operator=(const Extension&) = delete;
+
+    Extension& operator=(Extension&&) noexcept = default;
+
     template <typename E = Extendable, typename = typename std::enable_if<std::is_base_of<Extendable, E>::value>::type>
     stdcxx::CReference<E> getExtendable() const;
 
