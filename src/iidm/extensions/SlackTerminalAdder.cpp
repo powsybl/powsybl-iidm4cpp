@@ -26,11 +26,11 @@ std::unique_ptr<Extension> SlackTerminalAdder::createExtension(Extendable& exten
         throw PowsyblException("Terminal needs to be set to create a SlackTerminal extension");
     }
     if (stdcxx::isInstanceOf<VoltageLevel>(extendable)) {
-        const auto& voltageLevel = dynamic_cast<const VoltageLevel&>(extendable);
+        auto& voltageLevel = dynamic_cast<VoltageLevel&>(extendable);
         if (!stdcxx::areSame(m_terminal.get().getVoltageLevel(), extendable)) {
             throw PowsyblException(stdcxx::format("Terminal given is not in the right VoltageLevel (%1% instead of %2%)", m_terminal.get().getVoltageLevel().getId(), voltageLevel.getId()));
         }
-        return stdcxx::make_unique<SlackTerminal>(dynamic_cast<VoltageLevel&>(extendable), m_terminal.get());
+        return stdcxx::make_unique<SlackTerminal>(voltageLevel, m_terminal.get());
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<VoltageLevel>()));
 }

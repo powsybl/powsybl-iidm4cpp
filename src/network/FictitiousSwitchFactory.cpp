@@ -36,6 +36,19 @@ namespace powsybl {
 
 namespace network {
 
+void createSwitch(iidm::VoltageLevel& vl, const std::string& id, const std::string& name, const iidm::SwitchKind& kind, bool retained, bool open, bool fictitious, unsigned long node1, unsigned long node2) {
+    vl.getNodeBreakerView().newSwitch()
+        .setId(id)
+        .setName(name)
+        .setKind(kind)
+        .setRetained(retained)
+        .setOpen(open)
+        .setFictitious(fictitious)
+        .setNode1(node1)
+        .setNode2(node2)
+        .add();
+}
+
 iidm::Network FictitiousSwitchFactory::create() {
     iidm::Network network("fictitious", "test");
     network.setCaseDate(stdcxx::DateTime::parse("2017-06-25T17:43:00.000+01:00"));
@@ -332,19 +345,6 @@ iidm::Network FictitiousSwitchFactory::create() {
         .setAngle(15.250391);
 
     return network;
-}
-
-void FictitiousSwitchFactory::createSwitch(iidm::VoltageLevel& vl, const std::string& id, const std::string& name, const iidm::SwitchKind& kind, bool retained, bool open, bool fictitious, unsigned long node1, unsigned long node2) {
-    vl.getNodeBreakerView().newSwitch()
-        .setId(id)
-        .setName(name)
-        .setKind(kind)
-        .setRetained(retained)
-        .setOpen(open)
-        .setFictitious(fictitious)
-        .setNode1(node1)
-        .setNode2(node2)
-        .add();
 }
 
 }  // namespace network

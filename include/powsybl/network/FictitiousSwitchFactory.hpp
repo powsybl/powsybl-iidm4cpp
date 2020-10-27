@@ -29,9 +29,6 @@ public:
 
 public:
     FictitiousSwitchFactory() = delete;
-
-private:
-    static void createSwitch(iidm::VoltageLevel& vl, const std::string& id, const std::string& name, const iidm::SwitchKind& kind, bool retained, bool open, bool fictitious, unsigned long node1, unsigned long node2);
 };
 
 }  // namespace network
