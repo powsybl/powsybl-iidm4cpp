@@ -9,7 +9,6 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Component.hpp>
-#include <powsybl/iidm/ComponentConstants.hpp>
 
 namespace powsybl {
 
@@ -18,24 +17,28 @@ namespace iidm {
 namespace ConnectedComponents {
 
 stdcxx::optional<unsigned long> getCcNum(const stdcxx::CReference<Bus>& bus) {
-    stdcxx::optional<unsigned long> ccNum;
-
     if (static_cast<bool>(bus)) {
-        const auto& cc = bus.get().getConnectedComponent();
-        if (static_cast<bool>(cc)) {
-            ccNum = cc.get().getNum();
-        }
+        return getCcNum(bus.get());
     }
-
-    return ccNum;
+    return {};
 }
 
 stdcxx::optional<unsigned long> getCcNum(const stdcxx::Reference<Bus>& bus) {
-    return getCcNum(stdcxx::cref<Bus>(bus));
+    if (static_cast<bool>(bus)) {
+        return getCcNum(bus.get());
+    }
+    return {};
 }
 
 stdcxx::optional<unsigned long> getCcNum(const Bus& bus) {
-    return getCcNum(stdcxx::cref<Bus>(bus));
+    stdcxx::optional<unsigned long> ccNum;
+
+    const auto& cc = bus.getConnectedComponent();
+    if (static_cast<bool>(cc)) {
+        ccNum = cc.get().getNum();
+    }
+
+    return ccNum;
 }
 
 }  // namespace ConnectedComponents

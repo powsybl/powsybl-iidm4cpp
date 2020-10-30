@@ -22,8 +22,6 @@ VariantImpl::VariantImpl(Network& network) :
     m_synchronousComponentsManager(stdcxx::make_unique<SynchronousComponentsManager>(network)) {
 }
 
-VariantImpl::~VariantImpl() noexcept = default;
-
 std::unique_ptr<VariantImpl> VariantImpl::copy() const {
     return stdcxx::make_unique<VariantImpl>(m_connectedComponentsManager->getNetwork());
 }

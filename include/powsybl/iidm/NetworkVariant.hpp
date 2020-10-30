@@ -27,7 +27,7 @@ public: // Variant
 public:
     explicit VariantImpl(Network& network);
 
-    ~VariantImpl() noexcept override;
+    ~VariantImpl() noexcept override = default;
 
     const ConnectedComponentsManager& getConnectedComponentsManager() const;
 

@@ -15,7 +15,6 @@ namespace powsybl {
 namespace iidm {
 
 ConnectedComponentsManager::ConnectedComponentsManager(Network& network) :
-    AbstractComponentsManager<ConnectedComponent>("Connected"),
     m_network(network) {
 }
 
@@ -30,6 +29,11 @@ void ConnectedComponentsManager::fillAdjacencyList(const std::map<std::string, u
         const auto& bus2 = line.getConverterStation2().get().getTerminal().getBusView().getBus();
         addToAdjacencyList(bus1, bus2, id2num, adjacencyList);
     }
+}
+
+const std::string& ConnectedComponentsManager::getComponentLabel() const {
+    static std::string s_label = "Connected";
+    return s_label;
 }
 
 const Network& ConnectedComponentsManager::getNetwork() const {

@@ -15,12 +15,8 @@ class ConnectedComponent {
 public:
     explicit ConnectedComponent(unsigned long size);
 
-    unsigned long getOrderedNumber() const;
-
-    unsigned long getSize() const;
-
 private:
-    ConnectedComponent& setOrderedNumber(unsigned long orderedNumber);
+    friend class GraphUtil;
 
 private:
     unsigned long m_size;
@@ -30,19 +26,6 @@ private:
 
 ConnectedComponent::ConnectedComponent(unsigned long size) :
     m_size(size) {
-}
-
-unsigned long ConnectedComponent::getOrderedNumber() const {
-    return m_orderedNumber;
-}
-
-unsigned long ConnectedComponent::getSize() const {
-    return m_size;
-}
-
-ConnectedComponent& ConnectedComponent::setOrderedNumber(unsigned long orderedNumber) {
-    m_orderedNumber = orderedNumber;
-    return *this;
 }
 
 GraphUtil::ConnectedComponentsComputationResult GraphUtil::computeConnectedComponents(const std::vector<std::vector<unsigned long>>& adjacencyList) {
@@ -57,31 +40,31 @@ GraphUtil::ConnectedComponentsComputationResult GraphUtil::computeConnectedCompo
     }
 
     // sort components by size
-    std::vector<std::shared_ptr<std::pair<unsigned long, stdcxx::optional<unsigned long>>>> components;
+    std::vector<std::shared_ptr<ConnectedComponent>> components;
     components.reserve(c);
-    std::vector<std::shared_ptr<std::pair<unsigned long, stdcxx::optional<unsigned long>>>> orderedComponents;
+    std::vector<std::shared_ptr<ConnectedComponent>> orderedComponents;
     orderedComponents.reserve(c);
 
     for (unsigned long i = 0UL; i < c; i++) {
-        auto comp = std::make_shared<std::pair<unsigned long, stdcxx::optional<unsigned long>>>(componentSize[i], stdcxx::optional<unsigned long>());
+        auto comp = std::make_shared<ConnectedComponent>(componentSize[i]);
         components.push_back(comp);
         orderedComponents.push_back(comp);
     }
-    auto compare = [](const std::shared_ptr<std::pair<unsigned long, stdcxx::optional<unsigned long>>>& o1, const std::shared_ptr<std::pair<unsigned long, stdcxx::optional<unsigned long>>>& o2) {
-        return o2->first < o1->first;
+    auto compare = [](const std::shared_ptr<ConnectedComponent>& o1, const std::shared_ptr<ConnectedComponent>& o2) {
+        return o2->m_size < o1->m_size;
     };
     std::sort(orderedComponents.begin(), orderedComponents.end(), compare);
     for (unsigned long i = 0UL; i < orderedComponents.size(); i++) {
-        orderedComponents[i]->second = i;
+        orderedComponents[i]->m_orderedNumber = i;
     }
 
     componentSize = std::vector<unsigned long>(orderedComponents.size());
     for (const auto& cc : orderedComponents) {
-        componentSize[*cc->second] = cc->first;
+        componentSize[cc->m_orderedNumber] = cc->m_size;
     }
     for (unsigned long i = 0UL; i < componentNumber.size();) {
         const auto& cc = components[*componentNumber[i]];
-        componentNumber[i] = cc->second;
+        componentNumber[i] = cc->m_orderedNumber;
         ++i;
     }
     return ConnectedComponentsComputationResult(std::move(componentNumber), componentSize);

@@ -37,7 +37,7 @@ public:
     void update();
 
 protected:
-    explicit AbstractComponentsManager(std::string&& label);
+    AbstractComponentsManager() = default;
 
     virtual ~AbstractComponentsManager() noexcept = default;
 
@@ -54,11 +54,9 @@ protected:
     virtual void setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) = 0;
 
 private:
-    const std::string& getComponentLabel() const;
+    virtual const std::string& getComponentLabel() const = 0;
 
 private:
-    std::string m_label;
-
     std::vector<std::unique_ptr<C>> m_components;
 };
 

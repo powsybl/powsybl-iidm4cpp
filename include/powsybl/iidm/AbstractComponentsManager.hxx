@@ -26,11 +26,6 @@ namespace powsybl {
 namespace iidm {
 
 template <typename C>
-AbstractComponentsManager<C>::AbstractComponentsManager(std::string&& label) :
-    m_label(std::move(label)) {
-}
-
-template <typename C>
 void AbstractComponentsManager<C>::addToAdjacencyList(const stdcxx::CReference<Bus>& bus1, const stdcxx::CReference<Bus>& bus2, const std::map<std::string, unsigned long>& id2num, std::vector<std::vector<unsigned long>>& adjacencyList) const {
     if (bus1 && bus2) {
         unsigned long busNum1 = id2num.find(bus1.get().getId())->second;
@@ -68,11 +63,6 @@ stdcxx::CReference<C> AbstractComponentsManager<C>::getComponent(const stdcxx::o
     // trigger a new component computation and so on a change in the value of the num component already passed
     // (and outdated consequently) in parameter of this method
     return num.is_initialized() ? stdcxx::cref(*m_components[*num]) : stdcxx::cref<C>();
-}
-
-template <typename C>
-const std::string& AbstractComponentsManager<C>::getComponentLabel() const {
-    return m_label;
 }
 
 template <typename C>

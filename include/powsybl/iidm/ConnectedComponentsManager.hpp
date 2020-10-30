@@ -33,6 +33,9 @@ protected:
 
     void setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) override;
 
+private:  // AbstractComponentsManager
+    const std::string& getComponentLabel() const override;
+
 private:
     void setNetworkRef(Network& network);
 
