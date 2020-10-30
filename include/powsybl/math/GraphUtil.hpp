@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include <powsybl/math/ConnectedComponentsComputationResult.hpp>
 #include <powsybl/math/UndirectedGraph.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -19,53 +20,19 @@ namespace math {
 
 class GraphUtil {
 public:
-    class ConnectedComponentsComputationResult {
-    public:
-        ConnectedComponentsComputationResult(const std::vector<stdcxx::optional<unsigned long>>& componentNumber, const std::vector<unsigned long>& orderedComponents);
-
-        const std::vector<stdcxx::optional<unsigned long>>& getComponentNumber() const;
-
-        std::vector<stdcxx::optional<unsigned long>>& getComponentNumber();
-
-        const std::vector<unsigned long>& getComponentSize() const;
-
-        std::vector<unsigned long>& getComponentSize();
-
-    private:
-
-        std::vector<stdcxx::optional<unsigned long>> m_componentNumber;
-
-        std::vector<unsigned long> m_componentSize;
-    };
+    using ConnectedComponentsComputationResult = graph_util::ConnectedComponentsComputationResult;
 
 public:
     static ConnectedComponentsComputationResult computeConnectedComponents(const std::vector<std::vector<unsigned long>>& adjacencyList);
 
-    template <typename V, typename E>
-    void removeIsolatedVertices(UndirectedGraph<V, E>& graph);
-
 public:
     GraphUtil() = delete;
 
+    template <typename V, typename E>
+    void removeIsolatedVertices(UndirectedGraph<V, E>& graph);
+
 private:
     static void computeConnectedComponents(unsigned long v1, unsigned long c, std::vector<unsigned long>& componentSize, const std::vector<std::vector<unsigned long>>& adjacencyList, std::vector<stdcxx::optional<unsigned long>>& componentNumber);
-
-private:
-    class ConnectedComponent {
-    public:
-        explicit ConnectedComponent(unsigned long size);
-
-        unsigned long getOrderedNumber() const;
-
-        unsigned long getSize() const;
-
-        ConnectedComponent& setOrderedNumber(unsigned long orderedNumber);
-
-    private:
-        unsigned long m_size;
-
-        unsigned long m_orderedNumber = 0UL;
-    };
 };
 
 }  // namespace math

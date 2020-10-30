@@ -14,13 +14,14 @@ namespace powsybl {
 
 namespace iidm {
 
-AbstractSynchronousComponent::AbstractSynchronousComponent(unsigned long num, unsigned long size) :
-    Component(num, size) {
+AbstractSynchronousComponent::AbstractSynchronousComponent(unsigned long num, unsigned long size, Network& network) :
+    Component(num, size, network) {
 }
 
 Component::Predicate AbstractSynchronousComponent::getBusPredicate() const {
+    //static Component::Predicate s_predicate =
     return [this](const Bus& bus) {
-        auto component = bus.getSynchronousComponent();
+        const auto& component = bus.getSynchronousComponent();
         return static_cast<bool>(component) && stdcxx::areSame(component.get(), *this);
     };
 }

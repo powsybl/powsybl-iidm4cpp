@@ -19,7 +19,7 @@ protected:  // Component
     Predicate getBusPredicate() const override;
 
 protected:
-    AbstractSynchronousComponent(unsigned long num, unsigned long size);
+    AbstractSynchronousComponent(unsigned long num, unsigned long size, Network& network);
 
     ~AbstractSynchronousComponent() noexcept override = default;
 };

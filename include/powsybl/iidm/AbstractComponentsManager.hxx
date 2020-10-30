@@ -99,6 +99,8 @@ void AbstractComponentsManager<C>::update() {
         return;
     }
 
+    logging::Logger& logger = logging::LoggerFactory::getLogger<AbstractComponentsManager>();
+
     auto startTime = std::chrono::high_resolution_clock::now();
 
     // reset
@@ -136,7 +138,6 @@ void AbstractComponentsManager<C>::update() {
 
     auto endTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = endTime - startTime;
-    logging::Logger& logger = logging::LoggerFactory::getLogger<AbstractComponentsManager>();
     logger.debug(stdcxx::format("%1% components computed in %2% ms", getComponentLabel(), diff.count() * 1000.0));
 }
 

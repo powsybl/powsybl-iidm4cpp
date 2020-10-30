@@ -61,7 +61,7 @@ public: // Bus
 
     void setConnectedComponentNumber(const stdcxx::optional<unsigned long>& connectedComponentNumber) override;
 
-    void setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& componentNumber) override;
+    void setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& synchronousComponentNumber) override;
 
     Bus& setV(double v) override;
 

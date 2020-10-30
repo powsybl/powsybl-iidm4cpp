@@ -70,9 +70,9 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, false, Container::Type::NETWORK),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_variantManager(*this),
+    m_variants(*this, [this]() { return stdcxx::make_unique<VariantImpl>(*this); }),
     m_busBreakerView(*this),
-    m_busView(*this),
-    m_variants(*this, [this]() { return stdcxx::make_unique<VariantImpl>(*this); }) {
+    m_busView(*this) {
 }
 
 Network::Network(Network&& network) noexcept :
@@ -83,9 +83,9 @@ Network::Network(Network&& network) noexcept :
     m_sourceFormat(std::move(network.m_sourceFormat)),
     m_networkIndex(*this, std::move(network.m_networkIndex)),
     m_variantManager(*this, std::move(network.m_variantManager)),
+    m_variants(std::move(network.m_variants)),
     m_busBreakerView(*this),
-    m_busView(*this),
-    m_variants(std::move(network.m_variants)) {
+    m_busView(*this) {
     m_variants.setVariantManagerHolder(*this);
 }
 

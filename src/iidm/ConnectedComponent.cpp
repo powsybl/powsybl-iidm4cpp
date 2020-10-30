@@ -12,16 +12,7 @@ namespace powsybl {
 namespace iidm {
 
 ConnectedComponent::ConnectedComponent(unsigned long num, unsigned long size, Network& network) :
-    AbstractConnectedComponent(num, size),
-    m_network(network) {
-}
-
-const Network& ConnectedComponent::getNetwork() const {
-    return m_network;
-}
-
-Network& ConnectedComponent::getNetwork() {
-    return m_network;
+    AbstractConnectedComponent(num, size, network) {
 }
 
 }  // namespace iidm

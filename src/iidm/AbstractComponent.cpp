@@ -15,9 +15,10 @@ namespace powsybl {
 
 namespace iidm {
 
-Component::Component(unsigned long num, unsigned long size) :
+Component::Component(unsigned long num, unsigned long size, Network& network) :
     m_num(num),
-    m_size(size) {
+    m_size(size),
+    m_network(network) {
 }
 
 stdcxx::const_range<Bus> Component::getBuses() const {
@@ -26,6 +27,14 @@ stdcxx::const_range<Bus> Component::getBuses() const {
 
 stdcxx::range<Bus> Component::getBuses() {
     return getNetwork().getBusView().getBuses() | boost::adaptors::filtered(getBusPredicate());
+}
+
+const Network& Component::getNetwork() const {
+    return m_network;
+}
+
+Network& Component::getNetwork() {
+    return m_network;
 }
 
 unsigned long Component::getNum() const {

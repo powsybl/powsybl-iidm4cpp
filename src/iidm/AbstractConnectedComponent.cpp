@@ -14,13 +14,13 @@ namespace powsybl {
 
 namespace iidm {
 
-AbstractConnectedComponent::AbstractConnectedComponent(unsigned long num, unsigned long size) :
-    Component(num, size) {
+AbstractConnectedComponent::AbstractConnectedComponent(unsigned long num, unsigned long size, Network& network) :
+    Component(num, size, network) {
 }
 
 Component::Predicate AbstractConnectedComponent::getBusPredicate() const {
     return [this](const Bus& bus) {
-        auto component = bus.getConnectedComponent();
+        const auto& component = bus.getConnectedComponent();
         return static_cast<bool>(component) && stdcxx::areSame(component.get(), *this);
     };
 }

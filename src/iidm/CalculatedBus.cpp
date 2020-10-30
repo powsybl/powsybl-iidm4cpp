@@ -142,10 +142,10 @@ void CalculatedBus::setConnectedComponentNumber(const stdcxx::optional<unsigned 
     }
 }
 
-void CalculatedBus::setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& componentNumber) {
+void CalculatedBus::setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& synchronousComponentNumber) {
     checkValidity();
     for (auto terminal : m_terminals) {
-        terminal.get().setSynchronousComponentNumber(componentNumber);
+        terminal.get().setSynchronousComponentNumber(synchronousComponentNumber);
     }
 }
 

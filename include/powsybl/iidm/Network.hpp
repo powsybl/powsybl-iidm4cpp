@@ -385,11 +385,11 @@ private:
 
     VariantManager m_variantManager;
 
+    VariantArray<VariantImpl> m_variants;
+
     BusBreakerView m_busBreakerView;
 
     BusView m_busView;
-
-    VariantArray<VariantImpl> m_variants;
 };
 
 }  // namespace iidm

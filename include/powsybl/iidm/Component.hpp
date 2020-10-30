@@ -31,20 +31,22 @@ public:
     unsigned long getSize() const;
 
 protected:
-    Component(unsigned long num, unsigned long size);
+    Component(unsigned long num, unsigned long size, Network& network);
 
     virtual ~Component() noexcept = default;
 
     virtual Predicate getBusPredicate() const = 0;
 
-    virtual const Network& getNetwork() const = 0;
+    const Network& getNetwork() const;
 
-    virtual Network& getNetwork() = 0;
+    Network& getNetwork();
 
 private:
     unsigned long m_num;
 
     unsigned long m_size;
+
+    Network& m_network;
 };
 
 }  // namespace iidm

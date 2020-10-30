@@ -15,18 +15,10 @@ namespace powsybl {
 namespace iidm {
 
 class ConnectedComponent : public AbstractConnectedComponent {
-public:  // Component
-    const Network& getNetwork() const override;
-
-    Network& getNetwork() override;
-
 public:
     ConnectedComponent(unsigned long num, unsigned long size, Network& network);
 
     ~ConnectedComponent() noexcept override = default;
-
-private:
-    Network& m_network;
 };
 
 }  // namespace iidm

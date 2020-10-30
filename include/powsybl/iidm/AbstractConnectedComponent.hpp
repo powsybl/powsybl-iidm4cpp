@@ -19,7 +19,7 @@ protected:  // Component
     Predicate getBusPredicate() const override;
 
 protected:
-    AbstractConnectedComponent(unsigned long num, unsigned long size);
+    AbstractConnectedComponent(unsigned long num, unsigned long size, Network& network);
 };
 
 }  // namespace iidm

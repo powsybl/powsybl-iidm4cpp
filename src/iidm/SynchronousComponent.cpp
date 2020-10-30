@@ -12,16 +12,7 @@ namespace powsybl {
 namespace iidm {
 
 SynchronousComponent::SynchronousComponent(unsigned long num, unsigned long size, Network& network) :
-    AbstractSynchronousComponent(num, size),
-    m_network(network) {
-}
-
-const Network& SynchronousComponent::getNetwork() const {
-    return m_network;
-}
-
-Network& SynchronousComponent::getNetwork() {
-    return m_network;
+    AbstractSynchronousComponent(num, size, network) {
 }
 
 }  // namespace iidm

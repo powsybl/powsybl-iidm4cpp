@@ -169,10 +169,10 @@ void MergedBus::setConnectedComponentNumber(const stdcxx::optional<unsigned long
     }
 }
 
-void MergedBus::setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& componentNumber) {
+void MergedBus::setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& synchronousComponentNumber) {
     checkValidity();
     for (auto& it : m_buses) {
-        it.get().setSynchronousComponentNumber(componentNumber);
+        it.get().setSynchronousComponentNumber(synchronousComponentNumber);
     }
 }
 

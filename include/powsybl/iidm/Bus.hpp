@@ -125,9 +125,10 @@ protected:
 private:
     virtual void setConnectedComponentNumber(const stdcxx::optional<unsigned long>& connectedComponentNumber) = 0;
 
-    virtual void setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& componentNumber) = 0;
+    virtual void setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& synchronousComponentNumber) = 0;
 
     friend class ConnectedComponentsManager;
+
     friend class SynchronousComponentsManager;
 
 private: // Identifiable

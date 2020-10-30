@@ -11,40 +11,36 @@ namespace powsybl {
 
 namespace math {
 
-GraphUtil::ConnectedComponentsComputationResult::ConnectedComponentsComputationResult(const std::vector<stdcxx::optional<unsigned long>>& componentNumber, const std::vector<unsigned long>& orderedComponents) :
-    m_componentNumber(componentNumber),
-    m_componentSize(orderedComponents) {
-}
+class ConnectedComponent {
+public:
+    explicit ConnectedComponent(unsigned long size);
 
-const std::vector<stdcxx::optional<unsigned long>>& GraphUtil::ConnectedComponentsComputationResult::getComponentNumber() const {
-    return m_componentNumber;
-}
+    unsigned long getOrderedNumber() const;
 
-std::vector<stdcxx::optional<unsigned long >>& GraphUtil::ConnectedComponentsComputationResult::getComponentNumber() {
-    return m_componentNumber;
-}
+    unsigned long getSize() const;
 
-const std::vector<unsigned long>& GraphUtil::ConnectedComponentsComputationResult::getComponentSize() const {
-    return m_componentSize;
-}
+private:
+    ConnectedComponent& setOrderedNumber(unsigned long orderedNumber);
 
-std::vector<unsigned long>& GraphUtil::ConnectedComponentsComputationResult::getComponentSize() {
-    return m_componentSize;
-}
+private:
+    unsigned long m_size;
 
-GraphUtil::ConnectedComponent::ConnectedComponent(unsigned long size) :
+    unsigned long m_orderedNumber = 0UL;
+};
+
+ConnectedComponent::ConnectedComponent(unsigned long size) :
     m_size(size) {
 }
 
-unsigned long GraphUtil::ConnectedComponent::getOrderedNumber() const {
+unsigned long ConnectedComponent::getOrderedNumber() const {
     return m_orderedNumber;
 }
 
-unsigned long GraphUtil::ConnectedComponent::getSize() const {
+unsigned long ConnectedComponent::getSize() const {
     return m_size;
 }
 
-GraphUtil::ConnectedComponent& GraphUtil::ConnectedComponent::setOrderedNumber(unsigned long orderedNumber) {
+ConnectedComponent& ConnectedComponent::setOrderedNumber(unsigned long orderedNumber) {
     m_orderedNumber = orderedNumber;
     return *this;
 }
@@ -88,7 +84,7 @@ GraphUtil::ConnectedComponentsComputationResult GraphUtil::computeConnectedCompo
         componentNumber[i] = cc->second;
         ++i;
     }
-    return ConnectedComponentsComputationResult(componentNumber, componentSize);
+    return ConnectedComponentsComputationResult(std::move(componentNumber), componentSize);
 }
 
 void GraphUtil::computeConnectedComponents(unsigned long v1, unsigned long c, std::vector<unsigned long>& componentSize, const std::vector<std::vector<unsigned long>>& adjacencyList, std::vector<stdcxx::optional<unsigned long>>& componentNumber) {

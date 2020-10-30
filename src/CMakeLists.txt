@@ -177,6 +177,7 @@ set(IIDM_SOURCES
     logging/LogMessage.cpp
     logging/NoopLogger.cpp
 
+    math/ConnectedComponentsComputationResult.cpp
     math/GraphUtil.cpp
 
     network/BatteryNetworkFactory.cpp
