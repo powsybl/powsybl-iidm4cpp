@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/ConnectedComponentsManager.hpp>
 
+#include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
@@ -14,11 +15,21 @@ namespace powsybl {
 namespace iidm {
 
 ConnectedComponentsManager::ConnectedComponentsManager(Network& network) :
+    AbstractComponentsManager<ConnectedComponent>("Connected"),
     m_network(network) {
 }
 
 std::unique_ptr<ConnectedComponent> ConnectedComponentsManager::createComponent(unsigned long num, unsigned long size) {
     return stdcxx::make_unique<ConnectedComponent>(num, size, m_network.get());
+}
+
+void ConnectedComponentsManager::fillAdjacencyList(const std::map<std::string, unsigned long>& id2num, std::vector<std::vector<unsigned long>>& adjacencyList) const {
+    AbstractComponentsManager<ConnectedComponent>::fillAdjacencyList(id2num, adjacencyList);
+    for (const HvdcLine& line : this->getNetwork().getHvdcLines()) {
+        const auto& bus1 = line.getConverterStation1().get().getTerminal().getBusView().getBus();
+        const auto& bus2 = line.getConverterStation2().get().getTerminal().getBusView().getBus();
+        addToAdjacencyList(bus1, bus2, id2num, adjacencyList);
+    }
 }
 
 const Network& ConnectedComponentsManager::getNetwork() const {

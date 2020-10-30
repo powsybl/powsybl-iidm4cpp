@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_SYNCHRONOUSCOMPONENTSMANAGER_HPP
 #define POWSYBL_IIDM_SYNCHRONOUSCOMPONENTSMANAGER_HPP
 
-#include <powsybl/iidm/AbstractSynchronousComponentsManager.hpp>
+#include <powsybl/iidm/AbstractComponentsManager.hpp>
 #include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/Ref.hpp>
 #include <powsybl/iidm/SynchronousComponent.hpp>
@@ -17,7 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class SynchronousComponentsManager : public AbstractSynchronousComponentsManager<SynchronousComponent> {
+class SynchronousComponentsManager : public AbstractComponentsManager<SynchronousComponent> {
 public:
     explicit SynchronousComponentsManager(Network& network);
 

@@ -14,6 +14,7 @@ namespace powsybl {
 namespace iidm {
 
 SynchronousComponentsManager::SynchronousComponentsManager(Network& network) :
+    AbstractComponentsManager<SynchronousComponent>("Synchronous"),
     m_network(network) {
 }
 

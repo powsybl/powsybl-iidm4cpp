@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_CONNECTEDCOMPONENTSMANAGER_HPP
 #define POWSYBL_IIDM_CONNECTEDCOMPONENTSMANAGER_HPP
 
-#include <powsybl/iidm/AbstractConnectedComponentsManager.hpp>
+#include <powsybl/iidm/AbstractComponentsManager.hpp>
 #include <powsybl/iidm/ConnectedComponent.hpp>
 #include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/Ref.hpp>
@@ -17,9 +17,12 @@ namespace powsybl {
 
 namespace iidm {
 
-class ConnectedComponentsManager : public AbstractConnectedComponentsManager<ConnectedComponent> {
+class ConnectedComponentsManager : public AbstractComponentsManager<ConnectedComponent> {
 public:
     explicit ConnectedComponentsManager(Network& network);
+
+protected:  // AbstractComponentsManager
+    void fillAdjacencyList(const std::map<std::string, unsigned long>& id2num, std::vector<std::vector<unsigned long>>& adjacencyList) const override;
 
 protected:
     std::unique_ptr<ConnectedComponent> createComponent(unsigned long num, unsigned long size) override;

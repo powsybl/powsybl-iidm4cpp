@@ -25,4 +25,4 @@ public:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_SynchronousComponent_HPP
+#endif  // POWSYBL_IIDM_SYNCHRONOUSCOMPONENT_HPP
