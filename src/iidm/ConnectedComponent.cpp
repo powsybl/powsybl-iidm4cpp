@@ -7,12 +7,22 @@
 
 #include <powsybl/iidm/ConnectedComponent.hpp>
 
+#include <powsybl/iidm/Bus.hpp>
+#include <powsybl/stdcxx/memory.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
 ConnectedComponent::ConnectedComponent(unsigned long num, unsigned long size, Network& network) :
-    AbstractConnectedComponent(num, size, network) {
+    Component(num, size, network) {
+}
+
+Component::Predicate ConnectedComponent::getBusPredicate() const {
+    return [this](const Bus& bus) {
+        const auto& component = bus.getConnectedComponent();
+        return static_cast<bool>(component) && stdcxx::areSame(component.get(), *this);
+    };
 }
 
 }  // namespace iidm

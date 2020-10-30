@@ -8,13 +8,16 @@
 #ifndef POWSYBL_IIDM_CONNECTEDCOMPONENT_HPP
 #define POWSYBL_IIDM_CONNECTEDCOMPONENT_HPP
 
-#include <powsybl/iidm/AbstractConnectedComponent.hpp>
+#include <powsybl/iidm/Component.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class ConnectedComponent : public AbstractConnectedComponent {
+class ConnectedComponent : public Component {
+protected:  // Component
+    Predicate getBusPredicate() const override;
+
 public:
     ConnectedComponent(unsigned long num, unsigned long size, Network& network);
 

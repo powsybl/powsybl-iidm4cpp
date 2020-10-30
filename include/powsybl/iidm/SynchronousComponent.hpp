@@ -8,13 +8,16 @@
 #ifndef POWSYBL_IIDM_SYNCHRONOUSCOMPONENT_HPP
 #define POWSYBL_IIDM_SYNCHRONOUSCOMPONENT_HPP
 
-#include <powsybl/iidm/AbstractSynchronousComponent.hpp>
+#include <powsybl/iidm/Component.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class SynchronousComponent : public AbstractSynchronousComponent {
+class SynchronousComponent : public Component {
+protected:  // Component
+    Predicate getBusPredicate() const override;
+
 public:
     SynchronousComponent(unsigned long num, unsigned long size, Network& network);
 
