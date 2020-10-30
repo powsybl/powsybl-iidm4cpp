@@ -10,7 +10,6 @@
 
 #include <powsybl/iidm/AbstractComponentsManager.hpp>
 #include <powsybl/iidm/ConnectedComponent.hpp>
-#include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/Ref.hpp>
 
 namespace powsybl {
@@ -27,22 +26,10 @@ protected:  // AbstractComponentsManager
 protected:
     std::unique_ptr<ConnectedComponent> createComponent(unsigned long num, unsigned long size) override;
 
-    const Network& getNetwork() const override;
-
-    Network& getNetwork() override;
-
     void setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) override;
 
 private:  // AbstractComponentsManager
     const std::string& getComponentLabel() const override;
-
-private:
-    void setNetworkRef(Network& network);
-
-    friend class network::VariantImpl;
-
-private:
-    NetworkRef m_network;
 };
 
 }  // namespace iidm

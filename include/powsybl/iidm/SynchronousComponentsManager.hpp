@@ -9,7 +9,6 @@
 #define POWSYBL_IIDM_SYNCHRONOUSCOMPONENTSMANAGER_HPP
 
 #include <powsybl/iidm/AbstractComponentsManager.hpp>
-#include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/Ref.hpp>
 #include <powsybl/iidm/SynchronousComponent.hpp>
 
@@ -24,22 +23,10 @@ public:
 protected:
     std::unique_ptr<SynchronousComponent> createComponent(unsigned long num, unsigned long size) override;
 
-    const Network& getNetwork() const override;
-
-    Network& getNetwork() override;
-
     void setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) override;
 
 private:  // AbstractComponentsManager
     const std::string& getComponentLabel() const override;
-
-private:
-    void setNetworkRef(Network& network);
-
-    friend class network::VariantImpl;
-
-private:
-    NetworkRef m_network;
 };
 
 }  // namespace iidm

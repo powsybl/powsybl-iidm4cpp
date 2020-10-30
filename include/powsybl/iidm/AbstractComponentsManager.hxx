@@ -26,6 +26,11 @@ namespace powsybl {
 namespace iidm {
 
 template <typename C>
+AbstractComponentsManager<C>::AbstractComponentsManager(Network& network) :
+    m_network(network) {
+}
+
+template <typename C>
 void AbstractComponentsManager<C>::addToAdjacencyList(const stdcxx::CReference<Bus>& bus1, const stdcxx::CReference<Bus>& bus2, const std::map<std::string, unsigned long>& id2num, std::vector<std::vector<unsigned long>>& adjacencyList) const {
     if (bus1 && bus2) {
         unsigned long busNum1 = id2num.find(bus1.get().getId())->second;
@@ -75,6 +80,16 @@ template <typename C>
 stdcxx::range<C> AbstractComponentsManager<C>::getConnectedComponents() {
     update();
     return m_components | boost::adaptors::indirected;
+}
+
+template <typename C>
+const Network& AbstractComponentsManager<C>::getNetwork() const {
+    return m_network.get();
+}
+
+template <typename C>
+Network& AbstractComponentsManager<C>::getNetwork() {
+    return m_network.get();
 }
 
 template <typename C>
@@ -129,6 +144,11 @@ void AbstractComponentsManager<C>::update() {
     auto endTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = endTime - startTime;
     logger.debug(stdcxx::format("%1% components computed in %2% ms", getComponentLabel(), diff.count() * 1000.0));
+}
+
+template <typename C>
+void AbstractComponentsManager<C>::setNetworkRef(Network& network) {
+    m_network.set(network);
 }
 
 }  // namespace iidm

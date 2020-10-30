@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include <powsybl/iidm/NetworkVariant.hpp>
+#include <powsybl/iidm/Ref.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
@@ -37,7 +39,7 @@ public:
     void update();
 
 protected:
-    AbstractComponentsManager() = default;
+    explicit AbstractComponentsManager(Network& network);
 
     virtual ~AbstractComponentsManager() noexcept = default;
 
@@ -47,17 +49,23 @@ protected:
 
     virtual void fillAdjacencyList(const std::map<std::string, unsigned long>& id2num, std::vector<std::vector<unsigned long>>& adjacencyList) const;
 
-    virtual const Network& getNetwork() const = 0;
+    const Network& getNetwork() const;
 
-    virtual Network& getNetwork() = 0;
+    Network& getNetwork();
 
     virtual void setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) = 0;
 
 private:
     virtual const std::string& getComponentLabel() const = 0;
 
+    void setNetworkRef(Network& network);
+
+    friend class network::VariantImpl;
+
 private:
     std::vector<std::unique_ptr<C>> m_components;
+
+    NetworkRef m_network;
 };
 
 }  // namespace iidm

@@ -14,11 +14,11 @@ namespace powsybl {
 namespace iidm {
 
 SynchronousComponentsManager::SynchronousComponentsManager(Network& network) :
-    m_network(network) {
+    AbstractComponentsManager<SynchronousComponent>(network) {
 }
 
 std::unique_ptr<SynchronousComponent> SynchronousComponentsManager::createComponent(unsigned long num, unsigned long size) {
-    return stdcxx::make_unique<SynchronousComponent>(num, size, m_network.get());
+    return stdcxx::make_unique<SynchronousComponent>(num, size, getNetwork());
 }
 
 const std::string& SynchronousComponentsManager::getComponentLabel() const {
@@ -26,20 +26,8 @@ const std::string& SynchronousComponentsManager::getComponentLabel() const {
     return s_label;
 }
 
-const Network& SynchronousComponentsManager::getNetwork() const {
-    return m_network.get();
-}
-
-Network& SynchronousComponentsManager::getNetwork() {
-    return m_network.get();
-}
-
 void SynchronousComponentsManager::setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) {
     bus.setSynchronousComponentNumber(num);
-}
-
-void SynchronousComponentsManager::setNetworkRef(Network& network) {
-    m_network.set(network);
 }
 
 }  // namespace iidm

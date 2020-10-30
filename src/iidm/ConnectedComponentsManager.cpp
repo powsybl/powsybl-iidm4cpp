@@ -15,11 +15,11 @@ namespace powsybl {
 namespace iidm {
 
 ConnectedComponentsManager::ConnectedComponentsManager(Network& network) :
-    m_network(network) {
+    AbstractComponentsManager<ConnectedComponent>(network) {
 }
 
 std::unique_ptr<ConnectedComponent> ConnectedComponentsManager::createComponent(unsigned long num, unsigned long size) {
-    return stdcxx::make_unique<ConnectedComponent>(num, size, m_network.get());
+    return stdcxx::make_unique<ConnectedComponent>(num, size, getNetwork());
 }
 
 void ConnectedComponentsManager::fillAdjacencyList(const std::map<std::string, unsigned long>& id2num, std::vector<std::vector<unsigned long>>& adjacencyList) const {
@@ -36,20 +36,8 @@ const std::string& ConnectedComponentsManager::getComponentLabel() const {
     return s_label;
 }
 
-const Network& ConnectedComponentsManager::getNetwork() const {
-    return m_network.get();
-}
-
-Network& ConnectedComponentsManager::getNetwork() {
-    return m_network.get();
-}
-
 void ConnectedComponentsManager::setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) {
     bus.setConnectedComponentNumber(num);
-}
-
-void ConnectedComponentsManager::setNetworkRef(Network& network) {
-    m_network.set(network);
 }
 
 }  // namespace iidm
