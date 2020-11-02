@@ -30,7 +30,7 @@ public:
 
     unsigned long getSize() const;
 
-protected:
+public:
     Component(unsigned long num, unsigned long size, Network& network);
 
     virtual ~Component() noexcept = default;

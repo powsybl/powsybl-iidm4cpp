@@ -920,12 +920,25 @@ Network createComponentsTestNetworkNB() {
     return network;
 }
 
+Network createNetwork2() {
+    Network network = createComponentsTestNetworkNB();
+    for (const auto& bus : network.getBusView().getBuses()) {
+        std::cout << "MBA::bus[" << bus.getId() << "] = " << bus.getConnectedComponent().get().getNum() << std::endl;
+    }
+    return network;
+}
+
 BOOST_AUTO_TEST_SUITE(ComponentsTestSuite)
 
 BOOST_AUTO_TEST_CASE(NodeBreakerTest)
 {
     logging::LoggerFactory::getInstance().addLogger("powsybl::iidm", stdcxx::make_unique<logging::ContainerLogger>());
-    Network network = createComponentsTestNetworkNB();
+    // MBA: Network network = createComponentsTestNetworkNB();
+    Network network = createNetwork2();
+    std::cout << "MBA::network = " << std::addressof(network) << std::endl;
+    for (const auto& bus : network.getBusView().getBuses()) {
+        std::cout << "MBA::bus.getConnectedComponent().getNetwork() = " << std::addressof(bus.getConnectedComponent().get().getNetwork()) << std::endl;
+    }
     const Network& cNetwork = network;
 
     BOOST_CHECK_EQUAL(10UL, boost::size(network.getBusBreakerView().getBuses()));
