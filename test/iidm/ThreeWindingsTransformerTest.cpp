@@ -288,8 +288,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(!leg1.getCurrentLimits());
     BOOST_TEST(!cLeg1.getCurrentLimits());
 
-    BOOST_TEST(stdcxx::areSame(terminal1, leg1.getTerminal().get()));
-    BOOST_TEST(stdcxx::areSame(cTerminal1, cLeg1.getTerminal().get()));
+    BOOST_TEST(stdcxx::areSame(terminal1, leg1.getTerminal()));
+    BOOST_TEST(stdcxx::areSame(cTerminal1, cLeg1.getTerminal()));
 
     // Leg 2 tests
     ThreeWindingsTransformer::Leg& leg2 = transformer.getLeg2();
@@ -306,8 +306,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(!leg2.hasRatioTapChanger());
     BOOST_TEST(!cLeg2.hasRatioTapChanger());
 
-    BOOST_TEST(stdcxx::areSame(terminal2, leg2.getTerminal().get()));
-    BOOST_TEST(stdcxx::areSame(cTerminal2, cLeg2.getTerminal().get()));
+    BOOST_TEST(stdcxx::areSame(terminal2, leg2.getTerminal()));
+    BOOST_TEST(stdcxx::areSame(cTerminal2, cLeg2.getTerminal()));
     BOOST_TEST(stdcxx::areSame(network, leg2.getNetwork()));
     BOOST_TEST(stdcxx::areSame(network, cLeg2.getNetwork()));
 
@@ -325,8 +325,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(!leg3.hasRatioTapChanger());
     BOOST_TEST(!cLeg3.hasRatioTapChanger());
 
-    BOOST_TEST(stdcxx::areSame(terminal3, leg3.getTerminal().get()));
-    BOOST_TEST(stdcxx::areSame(cTerminal3, cLeg3.getTerminal().get()));
+    BOOST_TEST(stdcxx::areSame(terminal3, leg3.getTerminal()));
+    BOOST_TEST(stdcxx::areSame(cTerminal3, cLeg3.getTerminal()));
     BOOST_TEST(stdcxx::areSame(network, leg3.getNetwork()));
     BOOST_TEST(stdcxx::areSame(network, cLeg3.getNetwork()));
 }
