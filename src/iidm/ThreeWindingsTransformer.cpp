@@ -115,15 +115,12 @@ unsigned long ThreeWindingsTransformer::Leg::getRegulatingTapChangerCount() cons
     return count;
 }
 
-stdcxx::CReference<Terminal> ThreeWindingsTransformer::Leg::getTerminal() const {
-    if (m_transformer) {
-        return stdcxx::cref<Terminal>(m_transformer.get().Connectable::getTerminal(m_legNumber - 1));
-    }
-    return {};
+const Terminal& ThreeWindingsTransformer::Leg::getTerminal() const {
+    return m_transformer.get().Connectable::getTerminal(m_legNumber - 1);
 }
 
-stdcxx::Reference<Terminal> ThreeWindingsTransformer::Leg::getTerminal() {
-    return stdcxx::ref(static_cast<const ThreeWindingsTransformer::Leg*>(this)->getTerminal());
+Terminal& ThreeWindingsTransformer::Leg::getTerminal() {
+    return m_transformer.get().Connectable::getTerminal(m_legNumber - 1);
 }
 
 const std::string& ThreeWindingsTransformer::Leg::getTypeDescription() const {
@@ -316,34 +313,34 @@ double ThreeWindingsTransformer::getRatedU0() const {
 }
 
 ThreeWindingsTransformer::Side ThreeWindingsTransformer::getSide(const Terminal& terminal) const {
-    if (stdcxx::areSame(m_leg1->getTerminal().get(), terminal)) {
+    if (stdcxx::areSame(m_leg1->getTerminal(), terminal)) {
         return Side::ONE;
     }
-    if (stdcxx::areSame(m_leg2->getTerminal().get(), terminal)) {
+    if (stdcxx::areSame(m_leg2->getTerminal(), terminal)) {
         return Side::TWO;
     }
-    if (stdcxx::areSame(m_leg3->getTerminal().get(), terminal)) {
+    if (stdcxx::areSame(m_leg3->getTerminal(), terminal)) {
         return Side::THREE;
     }
     throw AssertionError("The terminal is not connected to this three windings transformer");
 }
 
 const Substation& ThreeWindingsTransformer::getSubstation() const {
-    return m_leg1->getTerminal().get().getVoltageLevel().getSubstation();
+    return m_leg1->getTerminal().getVoltageLevel().getSubstation();
 }
 
 Substation& ThreeWindingsTransformer::getSubstation() {
-    return m_leg1->getTerminal().get().getVoltageLevel().getSubstation();
+    return m_leg1->getTerminal().getVoltageLevel().getSubstation();
 }
 
 const Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) const {
     switch (side) {
         case Side::ONE:
-            return m_leg1->getTerminal().get();
+            return m_leg1->getTerminal();
         case Side::TWO:
-            return m_leg2->getTerminal().get();
+            return m_leg2->getTerminal();
         case Side::THREE:
-            return m_leg3->getTerminal().get();
+            return m_leg3->getTerminal();
         default:
             throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
     }
