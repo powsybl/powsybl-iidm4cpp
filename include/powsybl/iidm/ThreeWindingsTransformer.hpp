@@ -74,9 +74,9 @@ public:
 
         double getRatedU() const;
 
-        virtual stdcxx::CReference<Terminal> getTerminal() const;
+        const Terminal& getTerminal() const;
 
-        virtual stdcxx::Reference<Terminal> getTerminal();
+        Terminal& getTerminal();
 
         double getX() const;
 
