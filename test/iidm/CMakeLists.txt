@@ -22,6 +22,7 @@ set(UNIT_TEST_SOURCES
     LccConverterStationTest.cpp
     LineTest.cpp
     LoadTest.cpp
+    NetworkExtension.cpp
     NetworkFactory.cpp
     NetworkIndexTest.cpp
     NetworkTest.cpp

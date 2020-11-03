@@ -72,6 +72,7 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     m_variantManager(*this),
     m_busBreakerView(*this),
     m_busView(*this) {
+    checkAndAdd(std::unique_ptr<Network>(this));
 }
 
 Network::Network(Network&& network) noexcept :
