@@ -54,6 +54,9 @@ public:
 
     static iidm::Network runXml(const iidm::Network& network, const std::string& ref);
 
+    template <typename Callback>
+    static void testForAllPreviousVersions(const iidm::converter::xml::IidmXmlVersion& maxVersion, Callback callback);
+
 private:
     static std::string write(const iidm::Network& network, const Writer& out, const Comparator& compare, const std::string& ref);
 };
@@ -63,5 +66,7 @@ private:
 }  // namespace test
 
 }  // namespace powsybl
+
+#include <powsybl/test/converter/RoundTrip.hxx>
 
 #endif  // POWSYBL_TEST_CONVERTER_ROUNDTRIP_HPP
