@@ -27,6 +27,8 @@
 
 #include <powsybl/test/AssertionUtils.hpp>
 
+#include "NetworkExtension.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -536,6 +538,26 @@ BOOST_AUTO_TEST_CASE(Properties) {
     POWSYBL_ASSERT_THROW(n.getProperty("key3"),
                          stdcxx::PropertyNotFoundException, "Property key3 does not exist");
     BOOST_CHECK_EQUAL("value3", n.getProperty("key3", "value3"));
+}
+
+BOOST_AUTO_TEST_CASE(MultiVariant) {
+    Network n("test", "test");
+    n.addExtension(stdcxx::make_unique<NetworkExtension>(n, true));
+
+    auto& ext = n.getExtension<NetworkExtension>();
+    n.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"v1", "v2"});
+
+    n.getVariantManager().setWorkingVariant("v1");
+    ext.setValue(false);
+    BOOST_CHECK_EQUAL(false, ext.getValue());
+
+    n.getVariantManager().setWorkingVariant("v2");
+    BOOST_CHECK_EQUAL(true, ext.getValue());
+    n.getVariantManager().removeVariant("v2");
+
+    n.getVariantManager().cloneVariant("v1", "v2");
+    n.getVariantManager().setWorkingVariant("v2");
+    BOOST_CHECK_EQUAL(false, ext.getValue());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

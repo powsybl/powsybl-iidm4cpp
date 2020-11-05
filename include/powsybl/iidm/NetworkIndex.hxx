@@ -38,7 +38,8 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
         throw PowsyblException(stdcxx::format("Object '%1%' already exists (%2%)", identifiable->getId(), stdcxx::demangle(*other->second)));
     }
 
-    auto it = m_objectsById.emplace(std::make_pair(identifiable->getId(), std::move(identifiable)));
+    auto ptrIdentifiable = std::unique_ptr<Identifiable, Deleter>(identifiable.release());
+    auto it = m_objectsById.emplace(std::make_pair(ptrIdentifiable->getId(), std::move(ptrIdentifiable)));
 
     std::reference_wrapper<Identifiable> refIdentifiable = *it.first->second;
     m_objectsByType[typeid(T)].emplace_back(refIdentifiable);
