@@ -23,13 +23,17 @@ BOOST_AUTO_TEST_CASE(RangeTest) {
     Network network = createNetwork();
     const Network& cNetwork = network;
 
+    // Network
+    const Identifiable& movedNetwork = network.getIdentifiable("test");
+    BOOST_CHECK(stdcxx::areSame(network, movedNetwork));
+
     // Substations
     BOOST_CHECK_EQUAL(1UL, cNetwork.getSubstationCount());
     BOOST_CHECK_EQUAL(1UL, boost::size(cNetwork.getSubstations()));
     BOOST_CHECK_EQUAL(1UL, boost::size(network.getSubstations()));
 
     // Identifiables
-    std::set<std::string> expected = {"LOAD1", "S1", "VL1", "VL1_BUS1", "VL2"};
+    std::set<std::string> expected = {"test", "LOAD1", "S1", "VL1", "VL1_BUS1", "VL2"};
     std::set<std::string> actual;
     std::set<std::string> actualConst;
     for (const auto& identifiable : network.getIdentifiables()) {
@@ -58,8 +62,8 @@ BOOST_AUTO_TEST_CASE(RangeTest) {
     BOOST_CHECK_EQUAL_COLLECTIONS(expectedVL.cbegin(), expectedVL.cend(), actualConstVL.cbegin(), actualConstVL.cend());
 
     // StatefulObjects
-    BOOST_CHECK_EQUAL(5UL, boost::size(cNetwork.getStatefulObjects()));
-    BOOST_CHECK_EQUAL(5UL, boost::size(network.getStatefulObjects()));
+    BOOST_CHECK_EQUAL(6UL, boost::size(cNetwork.getStatefulObjects()));
+    BOOST_CHECK_EQUAL(6UL, boost::size(network.getStatefulObjects()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
