@@ -69,7 +69,12 @@ private:
     static void checkId(const std::string& id);
 
 private:
-    using IdentifiableById = std::map<std::string, std::unique_ptr<Identifiable> >;
+    class Deleter {
+    public:
+        void operator()(Identifiable* ptr) const;
+    };
+
+    using IdentifiableById = std::map<std::string, std::unique_ptr<Identifiable, Deleter> >;
 
     using Identifiables = std::vector<std::reference_wrapper<Identifiable> >;
 

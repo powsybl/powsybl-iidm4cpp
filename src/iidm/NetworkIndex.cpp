@@ -24,9 +24,25 @@ namespace powsybl {
 
 namespace iidm {
 
+/**
+ * This functor overrides the default deleter of the {@link std::unique_ptr}.
+ * Delete the pointer for all {@link Identifiable} subclasses except {@link Network}.
+ *
+ * This hack allows to store the network instance in the NetworkIndex without a double-free corruption.
+ */
+void NetworkIndex::Deleter::operator()(Identifiable* ptr) const {
+    if (!stdcxx::isInstanceOf<Network, Identifiable>(ptr)) {
+        delete ptr;
+    }
+}
+
 NetworkIndex::NetworkIndex(Network& network, NetworkIndex&& networkIndex) noexcept :
     m_objectsById(std::move(networkIndex.m_objectsById)),
     m_objectsByType(std::move(networkIndex.m_objectsByType)) {
+
+    // Replace the references to the old network by the new one
+    m_objectsById[network.getId()].reset(&network);
+    m_objectsByType[typeid(Network)][0] = std::ref<Identifiable>(network);
 
     for (Substation& substation : getAll<Substation>()) {
         substation.setNetworkRef(network);

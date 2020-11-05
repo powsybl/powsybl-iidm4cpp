@@ -13,8 +13,13 @@
 namespace stdcxx {
 
 template <typename Base, typename T>
+inline bool isInstanceOf(const T* object) {
+    return dynamic_cast<const Base*>(object) != nullptr;
+}
+
+template <typename Base, typename T>
 inline bool isInstanceOf(const T& object) {
-    return std::is_same<Base, T>::value ? true : dynamic_cast<const Base*>(&object) != nullptr;
+    return isInstanceOf<Base, T>(&object);
 }
 
 template <typename Base, typename T>
