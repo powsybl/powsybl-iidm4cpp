@@ -10,8 +10,10 @@
 
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/NetworkIndex.hpp>
+#include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/NetworkViews.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
+#include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
@@ -75,7 +77,7 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
-public: // VariantManagerHolder
+public:  // VariantManagerHolder
     unsigned long getVariantIndex() const override;
 
     const VariantManager& getVariantManager() const override;
@@ -341,7 +343,16 @@ public:
 
     Network& setForecastDistance(int forecastDistance);
 
-private: // Identifiable
+protected:  // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
+
+private:  // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
@@ -358,6 +369,8 @@ private:
     NetworkIndex m_networkIndex;
 
     VariantManager m_variantManager;
+
+    VariantArray<network::VariantImpl> m_variants;
 
     BusBreakerView m_busBreakerView;
 

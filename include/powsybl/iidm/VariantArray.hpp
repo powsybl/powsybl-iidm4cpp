@@ -11,24 +11,32 @@
 #include <functional>
 #include <memory>
 #include <set>
+#include <vector>
 
-#include "Variant.hpp"
+#include <powsybl/iidm/Variant.hpp>
+#include <powsybl/iidm/VariantManagerSupplier.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class VoltageLevel;
-
-template <typename T>
+template <typename T, typename = typename std::enable_if<std::is_base_of<Variant<T>, T>::value>::type>
 class VariantArray {
 public:
     using VariantFactory = std::function<std::unique_ptr<T>()>;
 
 public:
-    VariantArray(VoltageLevel& voltageLevel, const VariantFactory& variantFactory);
+    VariantArray(const VariantManagerSupplier& holder, const VariantFactory& variantFactory);
+
+    VariantArray(const VariantArray& variantArray) = delete;
+
+    VariantArray(VariantArray&& variantArray) noexcept = delete;
 
     ~VariantArray() noexcept = default;
+
+    VariantArray& operator=(const VariantArray& variantArray) = delete;
+
+    VariantArray& operator=(VariantArray&& variantArray) noexcept = delete;
 
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, const VariantFactory& variantFactory);
 
@@ -45,7 +53,7 @@ public:
     void reduceVariantArraySize(unsigned long number);
 
 private:
-    VoltageLevel& m_voltageLevel;
+    VariantManagerSupplier m_supplier;
 
     std::vector<std::unique_ptr<T> > m_variants;
 };
@@ -54,6 +62,6 @@ private:
 
 }  // namespace powsybl
 
-#include "VariantArray.hxx"
+#include <powsybl/iidm/VariantArray.hxx>
 
 #endif  // POWSYBL_IIDM_VARIANTARRAY_HPP
