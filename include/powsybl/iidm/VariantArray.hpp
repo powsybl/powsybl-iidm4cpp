@@ -26,7 +26,7 @@ public:
     using VariantFactory = std::function<std::unique_ptr<T>()>;
 
 public:
-    VariantArray(const VariantManagerSupplier& holder, const VariantFactory& variantFactory);
+    VariantArray(const VariantManagerSupplier& supplier, const VariantFactory& variantFactory);
 
     VariantArray(const VariantArray& variantArray) = delete;
 
