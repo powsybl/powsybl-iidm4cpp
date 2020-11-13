@@ -56,7 +56,7 @@ StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticV
 void StaticVarCompensatorXml::readSubElements(StaticVarCompensator& svc, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(STATIC_VAR_COMPENSATOR, [this, &svc, &context]() {
         if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
-            IidmXmlUtil::assertMinimumVersion(STATIC_VAR_COMPENSATOR, REGULATING_TERMINAL, xml::ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion());
+            IidmXmlUtil::assertMinimumVersion(STATIC_VAR_COMPENSATOR, REGULATING_TERMINAL, xml::ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
             const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
             context.addEndTask([id, side, &svc]() {
@@ -82,7 +82,7 @@ void StaticVarCompensatorXml::writeRootElementAttributes(const StaticVarCompensa
 
 void StaticVarCompensatorXml::writeSubElements(const StaticVarCompensator& svc, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(!stdcxx::areSame(svc, svc.getRegulatingTerminal().getConnectable().get()),
-        STATIC_VAR_COMPENSATOR, REGULATING_TERMINAL, ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context.getVersion(), [&svc, &context]() {
+        STATIC_VAR_COMPENSATOR, REGULATING_TERMINAL, ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context, [&svc, &context]() {
         TerminalRefXml::writeTerminalRef(svc.getRegulatingTerminal(), context, REGULATING_TERMINAL);
     });
 }

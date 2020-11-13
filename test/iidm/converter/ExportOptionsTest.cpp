@@ -59,19 +59,30 @@ BOOST_AUTO_TEST_CASE(constructor) {
                           true,  // onlyMainCc
                           TopologyLevel::BUS_BREAKER,  // topologyLevel
                           true,  // throwExceptionIfExtensionNotFound
-                          "V1.0");
+                          "V1.0",
+                          ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION);
 
     BOOST_CHECK(!options.isIndent());
-
     BOOST_CHECK(options.isOnlyMainCc());
-
     BOOST_CHECK(options.isThrowExceptionIfExtensionNotFound());
-
     BOOST_CHECK_EQUAL(static_cast<int>(TopologyLevel::BUS_BREAKER), static_cast<int>(options.getTopologyLevel()));
-
     BOOST_CHECK(options.isWithBranchSV());
-
     BOOST_TEST("V1.0", options.getVersion());
+    BOOST_CHECK_EQUAL(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION, options.getIidmVersionIncompatibilityBehavior());
+
+    ExportOptions options2(true,  // withBranchSV
+                          false,  // indent
+                          true,  // onlyMainCc
+                          TopologyLevel::BUS_BREAKER,  // topologyLevel
+                          true,  // throwExceptionIfExtensionNotFound
+                          "V1.0");
+    BOOST_CHECK(!options2.isIndent());
+    BOOST_CHECK(options2.isOnlyMainCc());
+    BOOST_CHECK(options2.isThrowExceptionIfExtensionNotFound());
+    BOOST_CHECK_EQUAL(TopologyLevel::BUS_BREAKER, options2.getTopologyLevel());
+    BOOST_CHECK(options2.isWithBranchSV());
+    BOOST_TEST("V1.0", options2.getVersion());
+    BOOST_CHECK_EQUAL(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION, options2.getIidmVersionIncompatibilityBehavior());
 }
 
 BOOST_AUTO_TEST_CASE(initFromProperties) {
@@ -84,6 +95,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     properties.set(ExportOptions::WITH_BRANCH_STATE_VARIABLES, "true");
     properties.set(ExportOptions::EXTENSIONS_LIST, "");
     properties.set(ExportOptions::VERSION, "1.0");
+    properties.set(ExportOptions::IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR, "LOG_ERROR");
 
     ExportOptions options(properties);
 
@@ -96,6 +108,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     BOOST_CHECK(!options.withExtension("abc"));
     BOOST_CHECK(!options.withExtension("def"));
     BOOST_CHECK_EQUAL("1.0", options.getVersion());
+    BOOST_CHECK_EQUAL(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR, options.getIidmVersionIncompatibilityBehavior());
 }
 
 BOOST_AUTO_TEST_CASE(checkAllExtensions) {

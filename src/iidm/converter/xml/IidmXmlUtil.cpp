@@ -7,8 +7,13 @@
 
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 
+#include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/Enum.hpp>
+#include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
@@ -21,38 +26,68 @@ namespace converter {
 
 namespace xml {
 
+std::string message(const std::string& elementName, const char* errorMessage, const IidmXmlVersion& version, const IidmXmlVersion& contextVersion, const std::string& reason) {
+    return stdcxx::format("%1% is %2% for IIDM-XML version %3%. %4%%5%", elementName, errorMessage, contextVersion.toString("."), reason, version.toString("."));
+}
+
+PowsyblException createException(const std::string& elementName, const char* errorMessage, const IidmXmlVersion& version, const IidmXmlVersion& contextVersion, const std::string& reason) {
+    return PowsyblException(message(elementName, errorMessage, version, contextVersion, reason));
+}
+
 PowsyblException createException(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& version, const IidmXmlVersion& contextVersion, const std::string& reason) {
-    return PowsyblException(stdcxx::format("%1%.%2% is %3% for IIDM-XML version %4%. %5%%6%", rootElementName, elementName, errorMessage, contextVersion.toString("."), reason, version.toString(".")));
+    return createException(stdcxx::format("%1%.%2%", rootElementName, elementName), errorMessage, version, contextVersion, reason);
 }
 
-void IidmXmlUtil::assertMaximumVersion(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& maxVersion, const IidmXmlVersion& contextVersion) {
-    if (contextVersion > maxVersion) {
-        throw createException(rootElementName, elementName, errorMessage, maxVersion, contextVersion, "IIDM-XML version should be <= ");
+void createExceptionOrLogError(const std::string& elementName, const char* errorMessage, const IidmXmlVersion& refVersion, const std::string& reason, const NetworkXmlWriterContext& context) {
+    static logging::Logger& S_LOGGER = logging::LoggerFactory::getLogger<IidmXmlUtil>();
+    if (context.getOptions().getIidmVersionIncompatibilityBehavior() == ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION) {
+        throw createException(elementName, errorMessage, refVersion, context.getVersion(), reason);
+    }
+    if (context.getOptions().getIidmVersionIncompatibilityBehavior() == ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR) {
+        S_LOGGER.error(message(elementName, errorMessage, refVersion, context.getVersion(), reason));
+    } else {
+        throw AssertionError(stdcxx::format("Unexpected behaviour: %1%", context.getOptions().getIidmVersionIncompatibilityBehavior()));
     }
 }
 
-void IidmXmlUtil::assertMinimumVersion(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const IidmXmlVersion& contextVersion) {
-    if (contextVersion < minVersion) {
-        throw createException(rootElementName, elementName, errorMessage, minVersion, contextVersion, "IIDM-XML version should be >= ");
+void createExceptionOrLogError(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& refVersion, const std::string& reason, const NetworkXmlWriterContext& context) {
+    createExceptionOrLogError(stdcxx::format("%1%.%2%", rootElementName, elementName), errorMessage, refVersion, reason, context);
+}
+
+void IidmXmlUtil::assertMaximumVersion(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& maxVersion, const NetworkXmlWriterContext& context) {
+    if (context.getVersion() > maxVersion) {
+        createExceptionOrLogError(rootElementName, elementName, errorMessage, maxVersion, MAXIMUM_REASON, context);
     }
 }
 
-void IidmXmlUtil::assertMinimumVersionIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const IidmXmlVersion& contextVersion) {
+void IidmXmlUtil::assertMinimumVersion(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlReaderContext& context) {
+    if (context.getVersion() < minVersion) {
+        throw createException(rootElementName, elementName, errorMessage, minVersion, context.getVersion(), MINIMUM_REASON);
+    }
+}
+
+void IidmXmlUtil::assertMinimumVersion(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlWriterContext& context) {
+    if (context.getVersion() < minVersion) {
+        createExceptionOrLogError(rootElementName, elementName, errorMessage, minVersion, MINIMUM_REASON, context);
+    }
+}
+
+void IidmXmlUtil::assertMinimumVersionIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlWriterContext& context) {
     if (valueIsNotDefault) {
-        assertMinimumVersion(rootElementName, elementName, errorMessage, minVersion, contextVersion);
+        assertMinimumVersion(rootElementName, elementName, errorMessage, minVersion, context);
     }
 }
 
-void IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const IidmXmlVersion& contextVersion, const std::function<void()>& runnable) {
+void IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlWriterContext& context, const std::function<void()>& runnable) {
     if (valueIsNotDefault) {
-        assertMinimumVersion(rootElementName, elementName, errorMessage, minVersion, contextVersion);
+        assertMinimumVersion(rootElementName, elementName, errorMessage, minVersion, context);
         runnable();
     }
 }
 
-void IidmXmlUtil::assertStrictMaximumVersion(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& maxVersion, const IidmXmlVersion& contextVersion) {
-    if (contextVersion >= maxVersion) {
-        throw createException(rootElementName, elementName, errorMessage, maxVersion, contextVersion, "IIDM-XML version should be < ");
+void IidmXmlUtil::assertStrictMaximumVersion(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& maxVersion, const NetworkXmlWriterContext& context) {
+    if (context.getVersion() >= maxVersion) {
+        createExceptionOrLogError(rootElementName, elementName, errorMessage, maxVersion, "IIDM-XML version should be < ", context);
     }
 }
 
@@ -69,7 +104,7 @@ void IidmXmlUtil::runUntilMaximumVersion(const IidmXmlVersion& maxVersion, const
 }
 
 void IidmXmlUtil::writeBooleanAttributeFromMinimumVersion(const std::string& rootElementName, const std::string& attributeName, bool value, bool defaultValue, const char* errorMessage, const IidmXmlVersion& minVersion, NetworkXmlWriterContext& context) {
-    writeAttributeFromMinimumVersion(rootElementName, attributeName, value != defaultValue, errorMessage, minVersion, context.getVersion(), [&context, &attributeName, &value]() {
+    writeAttributeFromMinimumVersion(rootElementName, attributeName, value != defaultValue, errorMessage, minVersion, context, [&context, &attributeName, &value]() {
         context.getWriter().writeAttribute(attributeName, value);
     });
 }
@@ -79,16 +114,16 @@ void IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(const std::string& root
 }
 
 void IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(const std::string& rootElementName, const std::string& attributeName, double value, double defaultValue, const char* errorMessage, const IidmXmlVersion& minVersion, NetworkXmlWriterContext& context) {
-    writeAttributeFromMinimumVersion(rootElementName, attributeName, !stdcxx::isEqual(value, defaultValue), errorMessage, minVersion, context.getVersion(), [&context, &attributeName, &value]() {
+    writeAttributeFromMinimumVersion(rootElementName, attributeName, !stdcxx::isEqual(value, defaultValue), errorMessage, minVersion, context, [&context, &attributeName, &value]() {
         context.getWriter().writeAttribute(attributeName, value);
     });
 }
 
-void IidmXmlUtil::writeAttributeFromMinimumVersion(const std::string& rootElementName, const std::string& attributeName, bool isNotDefaultValue, const char* errorMessage, const IidmXmlVersion& minVersion, const IidmXmlVersion& contextVersion, const std::function<void()>& write) {
-    if (contextVersion >= minVersion) {
+void IidmXmlUtil::writeAttributeFromMinimumVersion(const std::string& rootElementName, const std::string& attributeName, bool isNotDefaultValue, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlWriterContext& context, const std::function<void()>& write) {
+    if (context.getVersion() >= minVersion) {
         write();
     } else {
-        assertMinimumVersionIfNotDefault(isNotDefaultValue, rootElementName, attributeName, errorMessage, minVersion, contextVersion);
+        assertMinimumVersionIfNotDefault(isNotDefaultValue, rootElementName, attributeName, errorMessage, minVersion, context);
     }
 }
 

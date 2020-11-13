@@ -71,7 +71,7 @@ void VoltageLevelXml::readBusBreakerTopology(VoltageLevel& voltageLevel, Network
 }
 
 void VoltageLevelXml::readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlReaderContext& context) const {
-    IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, BUS, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_1(), context.getVersion());
+    IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, BUS, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_1(), context);
     double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
     double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
     const std::string& strNodes = context.getReader().getAttributeValue(NODES);

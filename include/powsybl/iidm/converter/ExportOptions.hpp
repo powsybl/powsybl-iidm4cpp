@@ -12,6 +12,7 @@
 #include <set>
 #include <string>
 
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 
@@ -27,12 +28,18 @@ class ExportOptions {
 public:
     static constexpr const char* const ANONYMISED = "iidm.export.xml.anonymised";
     static constexpr const char* const EXTENSIONS_LIST = "iidm.export.xml.extensions";
+    static constexpr const char* const IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR = "iidm.export.xml.iidm-version-incompatibility-behavior";
     static constexpr const char* const INDENT = "iidm.export.xml.indent";
     static constexpr const char* const ONLY_MAIN_CC = "iidm.export.xml.only-main-cc";
     static constexpr const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.export.xml.throw-exception-if-extension-not-found";
     static constexpr const char* const TOPOLOGY_LEVEL = "iidm.export.xml.topology-level";
     static constexpr const char* const VERSION = "iidm.export.xml.version";
     static constexpr const char* const WITH_BRANCH_STATE_VARIABLES = "iidm.export.xml.with-branch-state-variables";
+
+    enum class IidmVersionIncompatibilityBehavior : unsigned char {
+        THROW_EXCEPTION,
+        LOG_ERROR
+    };
 
 public:
     /**
@@ -52,6 +59,21 @@ public:
      */
     ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
                   bool throwExceptionIfExtensionNotFound, const std::string& version);
+
+    /**
+     * Constructor
+     *
+     * @param withBranchSV
+     * @param indent The indentation status
+     * @param onlyMainCc The connected components status
+     * @param topologyLevel The maximum topology level to use
+     * @param throwExceptionIfExtensionNotFound The extension's serializer lookup mode
+     * @param version The expected XIIDM version
+     * @param iidmVersionIncompatibilityBehavior The expected behaviour when an IIDM's version incompatibility occurs
+     */
+    ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
+                  bool throwExceptionIfExtensionNotFound, const std::string& version,
+                  const IidmVersionIncompatibilityBehavior& iidmVersionIncompatibilityBehavior);
 
     /**
      * Constructor
@@ -95,6 +117,13 @@ public:
      * @return the version in which the extension should be exported or an empty string if the extension is not found
      */
     const std::string& getExtensionVersion(const std::string& extensionName) const;
+
+    /**
+     * Return the expecting behaviour if an IIDM's version incompatibility occurs
+     *
+     * @return the expecting behaviour if an IIDM's version incompatibility occurs
+     */
+    const IidmVersionIncompatibilityBehavior& getIidmVersionIncompatibilityBehavior() const;
 
     /**
      * Return the XIIDM version to use
@@ -173,6 +202,15 @@ public:
      * @return this ExportOptions object
      */
     ExportOptions& setExtensions(const std::set<std::string>& extensions);
+
+    /**
+     * Set the expected behaviour if an IIDM's version incompatibility occurs
+     *
+     * @param iidmVersionIncompatibilityBehavior The behaviour if an IIDM's version incompatibility occurs
+     *
+     * @return this ExportOptions object
+     */
+    ExportOptions& setIidmVersionIncompatibilityBehavior(const IidmVersionIncompatibilityBehavior& iidmVersionIncompatibilityBehavior);
 
     /**
      * Enable/disable the indentation of the XML
@@ -255,7 +293,11 @@ private:
     std::map<std::string, std::string> m_extensionsVersions;
 
     std::string m_version;
+
+    IidmVersionIncompatibilityBehavior m_iidmVersionIncompatibilityBehavior = IidmVersionIncompatibilityBehavior::THROW_EXCEPTION;
 };
+
+std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value);
 
 }  // namespace converter
 
