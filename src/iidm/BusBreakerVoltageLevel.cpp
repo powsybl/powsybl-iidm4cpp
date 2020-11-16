@@ -21,8 +21,8 @@ namespace powsybl {
 
 namespace iidm {
 
-BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious,
-Substation& substation, double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
+BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
+                                               double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, fictitious, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit),
     m_variants(
             [this]() -> const VariantManager& { return getNetwork().getVariantManager(); },
