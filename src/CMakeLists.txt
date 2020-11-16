@@ -157,11 +157,14 @@ set(IIDM_SOURCES
     iidm/extensions/LoadDetail.cpp
     iidm/extensions/LoadDetailAdder.cpp
     iidm/extensions/LoadDetailXmlSerializer.cpp
+    iidm/extensions/SlackTerminal.cpp
+    iidm/extensions/SlackTerminalAdder.cpp
 
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
     iidm/util/Networks.cpp
+    iidm/util/TerminalFinder.cpp
 
     logging/ConsoleLogger.cpp
     logging/ContainerLogger.cpp
@@ -172,6 +175,7 @@ set(IIDM_SOURCES
 
     network/BatteryNetworkFactory.cpp
     network/EurostagFactory.cpp
+    network/FictitiousSwitchFactory.cpp
     network/LoadBarExt.cpp
     network/LoadFooExt.cpp
     network/MultipleExtensionsTestNetworkFactory.cpp
