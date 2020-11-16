@@ -63,6 +63,7 @@ set(IIDM_SOURCES
     iidm/Network.cpp
     iidm/NetworkIndex.cpp
     iidm/NetworkRef.cpp
+    iidm/NetworkVariant.cpp
     iidm/NetworkViews.cpp
     iidm/NodeBreakerVoltageLevel.cpp
     iidm/NodeBreakerVoltageLevelBusCache.cpp
