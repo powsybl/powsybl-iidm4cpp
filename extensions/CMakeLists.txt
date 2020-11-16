@@ -7,3 +7,4 @@
 
 add_subdirectory(entsoe)
 add_subdirectory(iidm)
+add_subdirectory(sld)
