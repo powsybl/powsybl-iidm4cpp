@@ -61,7 +61,7 @@ ConnectablePosition::Feeder& ConnectablePosition::Feeder::setName(const std::str
     return *this;
 }
 
-ConnectablePosition::Feeder& ConnectablePosition::Feeder::setOrder(int order) {
+ConnectablePosition::Feeder& ConnectablePosition::Feeder::setOrder(unsigned long order) {
     m_order = order;
     return *this;
 }

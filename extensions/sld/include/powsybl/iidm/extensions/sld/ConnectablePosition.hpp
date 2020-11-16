@@ -44,7 +44,7 @@ public:
 
         Feeder& setName(const std::string& name);
 
-        Feeder& setOrder(int order);
+        Feeder& setOrder(unsigned long order);
 
     private:
         std::string m_name;
