@@ -8,8 +8,9 @@
 #ifndef POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVARIANT_HPP
 #define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVARIANT_HPP
 
+#include <powsybl/iidm/Variant.hpp>
+
 #include "BusBreakerVoltageLevelTopology.hpp"
-#include "Variant.hpp"
 
 namespace powsybl {
 

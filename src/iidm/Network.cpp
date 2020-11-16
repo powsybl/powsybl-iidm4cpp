@@ -70,6 +70,10 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, false, Container::Type::NETWORK),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_variantManager(*this),
+    m_variants(
+            [this]() -> const VariantManager& { return getVariantManager(); },
+            []() { return stdcxx::make_unique<network::VariantImpl>(); }
+    ),
     m_busBreakerView(*this),
     m_busView(*this) {
     checkAndAdd(std::unique_ptr<Network>(this));
@@ -83,8 +87,30 @@ Network::Network(Network&& network) noexcept :
     m_sourceFormat(std::move(network.m_sourceFormat)),
     m_networkIndex(*this, std::move(network.m_networkIndex)),
     m_variantManager(*this, std::move(network.m_variantManager)),
+    m_variants(
+            [this]() -> const VariantManager& { return getVariantManager(); },
+            []() { return stdcxx::make_unique<network::VariantImpl>(); }  // FIXME(mathbagu): how to move the variants?
+    ),
     m_busBreakerView(*this),
     m_busView(*this) {
+}
+
+void Network::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    Container::allocateVariantArrayElement(indexes, sourceIndex);
+
+    m_variants.allocateVariantArrayElement(indexes, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
+}
+
+void Network::deleteVariantArrayElement(unsigned long index) {
+    Container::deleteVariantArrayElement(index);
+
+    m_variants.deleteVariantArrayElement(index);
+}
+
+void Network::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    Container::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+
+    m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
 const Battery& Network::getBattery(const std::string& id) const {
@@ -567,6 +593,12 @@ SubstationAdder Network::newSubstation() {
 
 TieLineAdder Network::newTieLine() {
     return TieLineAdder(*this);
+}
+
+void Network::reduceVariantArraySize(unsigned long number) {
+    Container::reduceVariantArraySize(number);
+
+    m_variants.reduceVariantArraySize(number);
 }
 
 void Network::remove(Identifiable& identifiable) {
