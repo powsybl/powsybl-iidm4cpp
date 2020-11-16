@@ -19,7 +19,7 @@ class Extendable;
 class VariantManagerHolder;
 
 class AbstractMultiVariantIdentifiableExtension : public Extension, public MultiVariantObject {
-public:
+protected:
     explicit AbstractMultiVariantIdentifiableExtension(Extendable& extendable);
 
     unsigned long getVariantIndex() const;
