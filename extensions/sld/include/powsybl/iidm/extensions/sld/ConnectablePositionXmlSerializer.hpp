@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/converter/xml/AbstractExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/sld/ConnectablePosition.hpp>
+#include <powsybl/iidm/extensions/sld/ConnectablePositionAdder.hpp>
 
 namespace powsybl {
 
@@ -31,7 +32,7 @@ public:
     ~ConnectablePositionXmlSerializer() noexcept override = default;
 
 private:
-    ConnectablePosition::Feeder readPosition(converter::xml::NetworkXmlReaderContext& context) const;
+    void readPosition(converter::xml::NetworkXmlReaderContext& context, ConnectablePositionAdder::FeederAdder& feederAdder) const;
 
     void writePosition(const ConnectablePosition::Feeder& feeder, converter::xml::NetworkXmlWriterContext& context, const boost::optional<int>& index = boost::optional<int>()) const;
 };

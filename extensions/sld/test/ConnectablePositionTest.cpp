@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/extensions/sld/ConnectablePosition.hpp>
+#include <powsybl/iidm/extensions/sld/ConnectablePositionAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
@@ -56,7 +57,11 @@ BOOST_AUTO_TEST_CASE(ConnectablePositionConstructor) {
         .setDirection(ConnectablePosition::Direction::BOTTOM)
         .setName("feeder3");
 
-    ConnectablePosition extension(load, refFeeder, refFeederNull, refFeederNull, refFeederNull);
+    POWSYBL_ASSERT_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").add().add(), PowsyblException, "Feeder order is not set");
+    POWSYBL_ASSERT_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").withOrder(0).add().add(), PowsyblException, "Feeder direction is not set");
+    BOOST_CHECK_NO_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").withOrder(0).withDirection(ConnectablePosition::Direction::TOP).add().add());
+
+    auto& extension = load.getExtension<ConnectablePosition>();
     BOOST_CHECK_EQUAL("position", extension.getName());
     BOOST_CHECK(stdcxx::areSame(load, extension.getExtendable().get()));
     BOOST_CHECK_EQUAL("feeder", extension.getFeeder().get().getName());
@@ -87,7 +92,7 @@ BOOST_FIXTURE_TEST_CASE(ConnectablePositionXmlSerializerFeeder0Test, test::Resou
     ConnectablePosition::OptionalFeeder refFeederNull;
     ConnectablePosition::OptionalFeeder refFeeder(feeder);
 
-    load.addExtension(Extension::create<ConnectablePosition>(load, refFeeder, refFeederNull, refFeederNull, refFeederNull));
+    load.newExtension<ConnectablePositionAdder>().newFeeder().withOrder(0).withName("feeder").withDirection(ConnectablePosition::Direction::BOTTOM).add().add();
 
     const std::string& networkStr = ResourceFixture::getResource("/connectablePositionFeeder0.xml");
     test::converter::RoundTrip::runXml(network, networkStr);
@@ -98,15 +103,23 @@ BOOST_FIXTURE_TEST_CASE(ConnectablePositionXmlSerializerFeeders123Test, test::Re
     network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
     Load& load = network.getLoad("LOAD");
 
-    ConnectablePosition::Feeder feeder1("feeder1", 1, ConnectablePosition::Direction::BOTTOM);
-    ConnectablePosition::Feeder feeder2("feeder2", 2, ConnectablePosition::Direction::TOP);
-    ConnectablePosition::Feeder feeder3("feeder3", 3, ConnectablePosition::Direction::BOTTOM);
-
-    ConnectablePosition::OptionalFeeder refFeeder1(feeder1);
-    ConnectablePosition::OptionalFeeder refFeeder2(feeder2);
-    ConnectablePosition::OptionalFeeder refFeeder3(feeder3);
-
-    load.addExtension(Extension::create<ConnectablePosition>(load, ConnectablePosition::OptionalFeeder(), refFeeder1, refFeeder2, refFeeder3));
+    load.newExtension<ConnectablePositionAdder>()
+        .newFeeder1()
+        .withOrder(1)
+        .withName("feeder1")
+        .withDirection(ConnectablePosition::Direction::BOTTOM)
+        .add()
+        .newFeeder2()
+        .withOrder(2)
+        .withName("feeder2")
+        .withDirection(ConnectablePosition::Direction::TOP)
+        .add()
+        .newFeeder3()
+        .withOrder(3)
+        .withName("feeder3")
+        .withDirection(ConnectablePosition::Direction::BOTTOM)
+        .add()
+        .add();
 
     const std::string& networkStr = ResourceFixture::getResource("/connectablePositionFeeders123.xml");
     test::converter::RoundTrip::runXml(network, networkStr);

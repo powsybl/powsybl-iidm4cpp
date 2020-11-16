@@ -12,6 +12,7 @@ set(EXT_SOURCES
     src/BusbarSectionPositionAdder.cpp
     src/BusbarSectionPositionXmlSerializer.cpp
     src/ConnectablePosition.cpp
+    src/ConnectablePositionAdder.cpp
     src/ConnectablePositionXmlSerializer.cpp
     src/Sld.cpp
 )

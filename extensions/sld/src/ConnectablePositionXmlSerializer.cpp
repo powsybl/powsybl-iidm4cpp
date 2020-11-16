@@ -31,36 +31,34 @@ Extension& ConnectablePositionXmlSerializer::read(Extendable& extendable, conver
     if (!stdcxx::isInstanceOf<Connectable>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Connectable>()));
     }
-    auto& connectable = dynamic_cast<Connectable&>(extendable);
+    auto adder = extendable.newExtension<ConnectablePositionAdder>();
 
-    ConnectablePosition::OptionalFeeder feeder;
-    ConnectablePosition::OptionalFeeder feeder1;
-    ConnectablePosition::OptionalFeeder feeder2;
-    ConnectablePosition::OptionalFeeder feeder3;
-
-    context.getReader().readUntilEndElement(getExtensionName(), [this, &context, &feeder, &feeder1, &feeder2, &feeder3]() {
+    context.getReader().readUntilEndElement(getExtensionName(), [this, &context, &adder]() {
         if (context.getReader().getLocalName() == "feeder") {
-            feeder = readPosition(context);
+            ConnectablePositionAdder::FeederAdder feederAdder = adder.newFeeder();
+            readPosition(context, feederAdder);
         } else if (context.getReader().getLocalName() == "feeder1") {
-            feeder1 = readPosition(context);
+            ConnectablePositionAdder::FeederAdder feederAdder = adder.newFeeder1();
+            readPosition(context, feederAdder);
         } else if (context.getReader().getLocalName() == "feeder2") {
-            feeder2 = readPosition(context);
+            ConnectablePositionAdder::FeederAdder feederAdder = adder.newFeeder2();
+            readPosition(context, feederAdder);
         } else if (context.getReader().getLocalName() == "feeder3") {
-            feeder3 = readPosition(context);
+            ConnectablePositionAdder::FeederAdder feederAdder = adder.newFeeder3();
+            readPosition(context, feederAdder);
         } else {
             throw AssertionError(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));
         }
     });
-
-    extendable.addExtension(stdcxx::make_unique<ConnectablePosition>(connectable, feeder, feeder1, feeder2, feeder3));
+    adder.add();
     return extendable.getExtension<ConnectablePosition>();
 }
 
-ConnectablePosition::Feeder ConnectablePositionXmlSerializer::readPosition(converter::xml::NetworkXmlReaderContext& context) const {
+void ConnectablePositionXmlSerializer::readPosition(converter::xml::NetworkXmlReaderContext& context, ConnectablePositionAdder::FeederAdder& feederAdder) const {
     const std::string& name = context.getReader().getAttributeValue("name");
     const auto& order = context.getReader().getAttributeValue<unsigned long>("order");
     const auto& direction = Enum::fromString<ConnectablePosition::Direction>(context.getReader().getAttributeValue("direction"));
-    return ConnectablePosition::Feeder(name, order, direction);
+    feederAdder.withName(name).withOrder(order).withDirection(direction).add();
 }
 
 void ConnectablePositionXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
