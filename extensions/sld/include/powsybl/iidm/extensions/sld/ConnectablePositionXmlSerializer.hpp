@@ -32,7 +32,7 @@ public:
     ~ConnectablePositionXmlSerializer() noexcept override = default;
 
 private:
-    void readPosition(converter::xml::NetworkXmlReaderContext& context, ConnectablePositionAdder::FeederAdder& feederAdder) const;
+    void readPosition(const converter::xml::NetworkXmlReaderContext& context, ConnectablePositionAdder::FeederAdder& feederAdder) const;
 
     void writePosition(const ConnectablePosition::Feeder& feeder, converter::xml::NetworkXmlWriterContext& context, const boost::optional<int>& index = boost::optional<int>()) const;
 };
