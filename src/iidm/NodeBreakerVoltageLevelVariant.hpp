@@ -8,8 +8,9 @@
 #ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVARIANT_HPP
 #define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVARIANT_HPP
 
+#include <powsybl/iidm/Variant.hpp>
+
 #include "NodeBreakerVoltageLevelTopology.hpp"
-#include "Variant.hpp"
 
 namespace powsybl {
 
