@@ -66,11 +66,19 @@ public:
 
     const OptionalFeeder& getFeeder() const;
 
+    OptionalFeeder& getFeeder();
+
     const OptionalFeeder& getFeeder1() const;
+
+    OptionalFeeder& getFeeder1();
 
     const OptionalFeeder& getFeeder2() const;
 
+    OptionalFeeder& getFeeder2();
+
     const OptionalFeeder& getFeeder3() const;
+
+    OptionalFeeder& getFeeder3();
 
     ConnectablePosition& setFeeders(const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3);
 
@@ -89,6 +97,8 @@ private:
 
     OptionalFeeder m_feeder3;
 };
+
+std::ostream& operator<<(std::ostream& stream, const ConnectablePosition::Direction& value);
 
 }  // namespace sld
 

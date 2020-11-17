@@ -18,24 +18,23 @@ namespace extensions {
 
 namespace sld {
 
-ConnectablePositionAdder::ConnectablePositionAdder(Extendable& extendable) :
-    ExtensionAdder(extendable) {
-}
-
 ConnectablePositionAdder::FeederAdder::FeederAdder(ConnectablePositionAdder& parent, ConnectablePosition::OptionalFeeder& feeder) :
     m_parent(parent),
     m_feeder(feeder) {
 }
 
 ConnectablePositionAdder& ConnectablePositionAdder::FeederAdder::add() {
+    if (m_name.empty()) {
+        throw PowsyblException("Feeder name is empty");
+    }
     if (!m_order.is_initialized()) {
         throw PowsyblException("Feeder order is not set");
     }
     if (!m_direction.is_initialized()) {
         throw PowsyblException("Feeder direction is not set");
     }
-    m_feeder.get() = ConnectablePosition::Feeder(m_name, *m_order, *m_direction);
-    return m_parent.get();
+    m_feeder = ConnectablePosition::Feeder(m_name, *m_order, *m_direction);
+    return m_parent;
 }
 
 ConnectablePositionAdder::FeederAdder& ConnectablePositionAdder::FeederAdder::withDirection(const ConnectablePosition::Direction& direction) {
@@ -51,6 +50,10 @@ ConnectablePositionAdder::FeederAdder& ConnectablePositionAdder::FeederAdder::wi
 ConnectablePositionAdder::FeederAdder& ConnectablePositionAdder::FeederAdder::withOrder(unsigned long order) {
     m_order = order;
     return *this;
+}
+
+ConnectablePositionAdder::ConnectablePositionAdder(Extendable& extendable) :
+    ExtensionAdder(extendable) {
 }
 
 std::unique_ptr<Extension> ConnectablePositionAdder::createExtension(Extendable& extendable) {

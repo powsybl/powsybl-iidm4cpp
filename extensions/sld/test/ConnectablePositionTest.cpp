@@ -57,20 +57,32 @@ BOOST_AUTO_TEST_CASE(ConnectablePositionConstructor) {
         .setDirection(ConnectablePosition::Direction::BOTTOM)
         .setName("feeder3");
 
+    POWSYBL_ASSERT_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().add().add(), PowsyblException, "Feeder name is empty");
     POWSYBL_ASSERT_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").add().add(), PowsyblException, "Feeder order is not set");
     POWSYBL_ASSERT_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").withOrder(0).add().add(), PowsyblException, "Feeder direction is not set");
     BOOST_CHECK_NO_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").withOrder(0).withDirection(ConnectablePosition::Direction::TOP).add().add());
 
     auto& extension = load.getExtension<ConnectablePosition>();
+    const auto& cExtension = load.getExtension<ConnectablePosition>();
     BOOST_CHECK_EQUAL("position", extension.getName());
     BOOST_CHECK(stdcxx::areSame(load, extension.getExtendable().get()));
     BOOST_CHECK_EQUAL("feeder", extension.getFeeder().get().getName());
     BOOST_CHECK_EQUAL(static_cast<char>(ConnectablePosition::Direction::TOP), static_cast<char>(extension.getFeeder().get().getDirection()));
     BOOST_CHECK_EQUAL(0, extension.getFeeder().get().getOrder());
 
+    BOOST_CHECK(stdcxx::areSame(extension.getFeeder().get(), extension.getFeeder().get().setOrder(1)));
+    BOOST_CHECK_EQUAL(1, extension.getFeeder().get().getOrder());
+    BOOST_CHECK(stdcxx::areSame(extension.getFeeder().get(), extension.getFeeder().get().setName("test")));
+    BOOST_CHECK_EQUAL("test", extension.getFeeder().get().getName());
+    BOOST_CHECK(stdcxx::areSame(extension.getFeeder().get(), extension.getFeeder().get().setDirection(ConnectablePosition::Direction::BOTTOM)));
+    BOOST_CHECK_EQUAL(ConnectablePosition::Direction::BOTTOM, extension.getFeeder().get().getDirection());
+
     BOOST_CHECK(!extension.getFeeder1());
     BOOST_CHECK(!extension.getFeeder2());
     BOOST_CHECK(!extension.getFeeder3());
+    BOOST_CHECK(!cExtension.getFeeder1());
+    BOOST_CHECK(!cExtension.getFeeder2());
+    BOOST_CHECK(!cExtension.getFeeder3());
 
     extension.setFeeders(refFeederNull, refFeeder1, refFeeder2, refFeeder3);
 

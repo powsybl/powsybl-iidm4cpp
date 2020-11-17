@@ -55,7 +55,7 @@ Extension& ConnectablePositionXmlSerializer::read(Extendable& extendable, conver
 }
 
 void ConnectablePositionXmlSerializer::readPosition(const converter::xml::NetworkXmlReaderContext& context, ConnectablePositionAdder::FeederAdder& feederAdder) const {
-    const std::string& name = context.getReader().getAttributeValue("name");
+    const auto& name = context.getReader().getAttributeValue("name");
     const auto& order = context.getReader().getAttributeValue<unsigned long>("order");
     const auto& direction = Enum::fromString<ConnectablePosition::Direction>(context.getReader().getAttributeValue("direction"));
     feederAdder.withName(name).withOrder(order).withDirection(direction).add();

@@ -107,7 +107,15 @@ const ConnectablePosition::OptionalFeeder& ConnectablePosition::getFeeder() cons
     return m_feeder;
 }
 
+ConnectablePosition::OptionalFeeder& ConnectablePosition::getFeeder() {
+    return m_feeder;
+}
+
 const ConnectablePosition::OptionalFeeder& ConnectablePosition::getFeeder1() const {
+    return m_feeder1;
+}
+
+ConnectablePosition::OptionalFeeder& ConnectablePosition::getFeeder1() {
     return m_feeder1;
 }
 
@@ -115,7 +123,15 @@ const ConnectablePosition::OptionalFeeder& ConnectablePosition::getFeeder2() con
     return m_feeder2;
 }
 
+ConnectablePosition::OptionalFeeder& ConnectablePosition::getFeeder2() {
+    return m_feeder2;
+}
+
 const ConnectablePosition::OptionalFeeder& ConnectablePosition::getFeeder3() const {
+    return m_feeder3;
+}
+
+ConnectablePosition::OptionalFeeder& ConnectablePosition::getFeeder3() {
     return m_feeder3;
 }
 
@@ -136,6 +152,11 @@ ConnectablePosition& ConnectablePosition::setFeeders(const OptionalFeeder& feede
     m_feeder2 = feeder2;
     m_feeder3 = feeder3;
     return *this;
+}
+
+std::ostream& operator<<(std::ostream& stream, const ConnectablePosition::Direction& value) {
+    stream << iidm::Enum::toString(value);
+    return stream;
 }
 
 }  // namespace sld

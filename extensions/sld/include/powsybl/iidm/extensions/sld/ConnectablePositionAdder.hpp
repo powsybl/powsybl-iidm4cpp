@@ -41,9 +41,9 @@ public:
 
         stdcxx::optional<ConnectablePosition::Direction> m_direction;
 
-        std::reference_wrapper<ConnectablePositionAdder> m_parent;
+        ConnectablePositionAdder& m_parent;
 
-        std::reference_wrapper<ConnectablePosition::OptionalFeeder> m_feeder;
+        ConnectablePosition::OptionalFeeder& m_feeder;
     };
 
 public:
