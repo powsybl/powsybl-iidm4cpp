@@ -60,7 +60,12 @@ BOOST_AUTO_TEST_CASE(ConnectablePositionConstructor) {
     POWSYBL_ASSERT_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().add().add(), PowsyblException, "Feeder name is empty");
     POWSYBL_ASSERT_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").add().add(), PowsyblException, "Feeder order is not set");
     POWSYBL_ASSERT_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").withOrder(0).add().add(), PowsyblException, "Feeder direction is not set");
-    BOOST_CHECK_NO_THROW(load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").withOrder(0).withDirection(ConnectablePosition::Direction::TOP).add().add());
+
+    ConnectablePositionAdder adder = load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").withOrder(0).withDirection(ConnectablePosition::Direction::TOP).add();
+    BOOST_CHECK_NO_THROW(adder.add());
+
+    // make sure adder context is cleaned after add()
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "invalid feeder");
 
     auto& extension = load.getExtension<ConnectablePosition>();
     const auto& cExtension = load.getExtension<ConnectablePosition>();
@@ -83,16 +88,6 @@ BOOST_AUTO_TEST_CASE(ConnectablePositionConstructor) {
     BOOST_CHECK(!cExtension.getFeeder1());
     BOOST_CHECK(!cExtension.getFeeder2());
     BOOST_CHECK(!cExtension.getFeeder3());
-
-    extension.setFeeders(refFeederNull, refFeeder1, refFeeder2, refFeeder3);
-
-    // error cases
-    POWSYBL_ASSERT_THROW(extension.setFeeders(refFeederNull, refFeederNull, refFeederNull, refFeederNull), PowsyblException, "invalid feeder");
-    POWSYBL_ASSERT_THROW(extension.setFeeders(refFeeder, refFeederNull, refFeeder2, refFeederNull), PowsyblException, "feeder and feeder 1|2|3 are exclusives");
-    POWSYBL_ASSERT_THROW(extension.setFeeders(refFeeder, refFeederNull, refFeederNull, refFeeder3), PowsyblException, "feeder and feeder 1|2|3 are exclusives");
-    POWSYBL_ASSERT_THROW(extension.setFeeders(refFeederNull, refFeeder1, refFeederNull, refFeeder3), PowsyblException, "feeder 1|2|3 have to be set in the right order");
-    POWSYBL_ASSERT_THROW(extension.setFeeders(refFeederNull, refFeederNull, refFeeder2, refFeederNull), PowsyblException, "feeder 1|2|3 have to be set in the right order");
-    POWSYBL_ASSERT_THROW(extension.setFeeders(refFeederNull, refFeederNull, refFeederNull, refFeeder3), PowsyblException, "feeder 1|2|3 have to be set in the right order");
 }
 
 BOOST_FIXTURE_TEST_CASE(ConnectablePositionXmlSerializerFeeder0Test, test::ResourceFixture) {

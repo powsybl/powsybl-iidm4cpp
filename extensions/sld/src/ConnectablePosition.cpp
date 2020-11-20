@@ -66,6 +66,15 @@ ConnectablePosition::Feeder& ConnectablePosition::Feeder::setOrder(unsigned long
     return *this;
 }
 
+ConnectablePosition::ConnectablePosition(Connectable& connectable, OptionalFeeder&& feeder, OptionalFeeder&& feeder1, OptionalFeeder&& feeder2, OptionalFeeder&& feeder3) :
+    Extension(connectable),
+    m_feeder(std::move(feeder)),
+    m_feeder1(std::move(feeder1)),
+    m_feeder2(std::move(feeder2)),
+    m_feeder3(std::move(feeder3)) {
+    check(feeder, feeder1, feeder2, feeder3);
+}
+
 void ConnectablePosition::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<Connectable>(extendable.get())) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Connectable>()));
@@ -92,15 +101,6 @@ void ConnectablePosition::check(const OptionalFeeder& feeder, const OptionalFeed
     if (error) {
         throw PowsyblException(stdcxx::format("feeder 1|2|3 have to be set in the right order"));
     }
-}
-
-ConnectablePosition::ConnectablePosition(Connectable& connectable, const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3) :
-    Extension(connectable),
-    m_feeder(feeder),
-    m_feeder1(feeder1),
-    m_feeder2(feeder2),
-    m_feeder3(feeder3) {
-    check(feeder, feeder1, feeder2, feeder3);
 }
 
 const ConnectablePosition::OptionalFeeder& ConnectablePosition::getFeeder() const {
@@ -143,15 +143,6 @@ const std::string& ConnectablePosition::getName() const {
 const std::type_index& ConnectablePosition::getType() const {
     static std::type_index s_type = typeid(ConnectablePosition);
     return s_type;
-}
-
-ConnectablePosition& ConnectablePosition::setFeeders(const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3) {
-    check(feeder, feeder1, feeder2, feeder3);
-    m_feeder = feeder;
-    m_feeder1 = feeder1;
-    m_feeder2 = feeder2;
-    m_feeder3 = feeder3;
-    return *this;
 }
 
 std::ostream& operator<<(std::ostream& stream, const ConnectablePosition::Direction& value) {
