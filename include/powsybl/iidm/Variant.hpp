@@ -14,14 +14,14 @@ namespace powsybl {
 
 namespace iidm {
 
-template <typename T>
+template <typename Owner, typename V>
 class Variant {
 public:
-    Variant() = default;
+    Variant(Owner& owner);
 
     Variant(const Variant& variant) = default;
 
-    Variant(Variant&& variant) noexcept = default;
+    Variant(Variant&& variant) noexcept = delete;
 
     virtual ~Variant() noexcept = default;
 
@@ -29,11 +29,16 @@ public:
 
     Variant& operator=(Variant&& variant) noexcept = delete;
 
-    virtual std::unique_ptr<T> copy() const = 0;
+    virtual std::unique_ptr<V> copy() const = 0;
+
+protected:
+    Owner& m_owner;
 };
 
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/Variant.hxx>
 
 #endif  // POWSYBL_IIDM_VARIANT_HPP
