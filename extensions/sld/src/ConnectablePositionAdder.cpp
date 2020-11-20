@@ -58,12 +58,7 @@ ConnectablePositionAdder::ConnectablePositionAdder(Extendable& extendable) :
 
 std::unique_ptr<Extension> ConnectablePositionAdder::createExtension(Extendable& extendable) {
     if (stdcxx::isInstanceOf<Connectable>(extendable)) {
-        auto extension = stdcxx::make_unique<ConnectablePosition>(dynamic_cast<Connectable&>(extendable), std::move(m_feeder), std::move(m_feeder1), std::move(m_feeder2), std::move(m_feeder3));
-        m_feeder.reset();
-        m_feeder1.reset();
-        m_feeder2.reset();
-        m_feeder3.reset();
-        return std::move(extension);
+        return stdcxx::make_unique<ConnectablePosition>(dynamic_cast<Connectable&>(extendable), m_feeder, m_feeder1, m_feeder2, m_feeder3);
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Connectable>()));
 }

@@ -64,9 +64,6 @@ BOOST_AUTO_TEST_CASE(ConnectablePositionConstructor) {
     ConnectablePositionAdder adder = load.newExtension<ConnectablePositionAdder>().newFeeder().withName("feeder").withOrder(0).withDirection(ConnectablePosition::Direction::TOP).add();
     BOOST_CHECK_NO_THROW(adder.add());
 
-    // make sure adder context is cleaned after add()
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "invalid feeder");
-
     auto& extension = load.getExtension<ConnectablePosition>();
     const auto& cExtension = load.getExtension<ConnectablePosition>();
     BOOST_CHECK_EQUAL("position", extension.getName());

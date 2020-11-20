@@ -62,7 +62,7 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    ConnectablePosition(Connectable& connectable, OptionalFeeder&& feeder, OptionalFeeder&& feeder1, OptionalFeeder&& feeder2, OptionalFeeder&& feeder3);
+    ConnectablePosition(Connectable& connectable, const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3);
 
     const OptionalFeeder& getFeeder() const;
 

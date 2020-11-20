@@ -66,12 +66,12 @@ ConnectablePosition::Feeder& ConnectablePosition::Feeder::setOrder(unsigned long
     return *this;
 }
 
-ConnectablePosition::ConnectablePosition(Connectable& connectable, OptionalFeeder&& feeder, OptionalFeeder&& feeder1, OptionalFeeder&& feeder2, OptionalFeeder&& feeder3) :
+ConnectablePosition::ConnectablePosition(Connectable& connectable, const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3) :
     Extension(connectable),
-    m_feeder(std::move(feeder)),
-    m_feeder1(std::move(feeder1)),
-    m_feeder2(std::move(feeder2)),
-    m_feeder3(std::move(feeder3)) {
+    m_feeder(feeder),
+    m_feeder1(feeder1),
+    m_feeder2(feeder2),
+    m_feeder3(feeder3) {
     check(feeder, feeder1, feeder2, feeder3);
 }
 
