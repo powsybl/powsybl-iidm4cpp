@@ -47,6 +47,7 @@ set(IIDM_SOURCES
     iidm/ExtensionProviders.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
+    iidm/HalfLineAdder.cpp
     iidm/HvdcConverterStation.cpp
     iidm/HvdcLine.cpp
     iidm/HvdcLineAdder.cpp

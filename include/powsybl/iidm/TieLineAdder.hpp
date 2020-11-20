@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_TIELINEADDER_HPP
 
 #include <powsybl/iidm/BranchAdder.hpp>
+#include <powsybl/iidm/HalfLineAdder.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 
 namespace powsybl {
@@ -18,10 +19,8 @@ namespace iidm {
 class Network;
 
 class TieLineAdder : public BranchAdder<TieLineAdder> {
-public: // IdentifiableAdder
-    TieLineAdder& setId(const std::string& id) override;
-
-    TieLineAdder& setName(const std::string& name) override;
+public:
+    using HalfLineAdder = tie_line_adder::HalfLineAdder;
 
 public:
     explicit TieLineAdder(Network& network);
@@ -30,29 +29,11 @@ public:
 
     TieLine& add();
 
-    TieLineAdder& line1();
+    HalfLineAdder newHalfLine1();
 
-    TieLineAdder& line2();
-
-    TieLineAdder& setFictitious(bool fictitious) override;
-
-    TieLineAdder& setB1(double b1);
-
-    TieLineAdder& setB2(double b2);
-
-    TieLineAdder& setG1(double g1);
-
-    TieLineAdder& setG2(double g2);
-
-    TieLineAdder& setR(double r);
+    HalfLineAdder newHalfLine2();
 
     TieLineAdder& setUcteXnodeCode(const std::string& ucteXnodeCode);
-
-    TieLineAdder& setX(double x);
-
-    TieLineAdder& setXnodeP(double xnodeP);
-
-    TieLineAdder& setXnodeQ(double xnodeQ);
 
 protected: // IdentifiableAdder
     const Network& getNetwork() const override;
@@ -63,16 +44,14 @@ private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:
-    TieLine::HalfLine& getActiveHalf() const;
+    friend class tie_line_adder::HalfLineAdder;
 
 private:
     Network& m_network;
 
-    TieLine::HalfLine m_half1;
+    stdcxx::optional<HalfLineAdder> m_halfLineAdder1;
 
-    TieLine::HalfLine m_half2;
-
-    stdcxx::Reference<TieLine::HalfLine> m_activeHalf;
+    stdcxx::optional<HalfLineAdder> m_halfLineAdder2;
 
     std::string m_ucteXnodeCode;
 };

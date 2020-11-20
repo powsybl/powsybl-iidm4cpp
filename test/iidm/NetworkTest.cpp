@@ -180,7 +180,7 @@ Network createTestNetwork() {
         .setBus2(vl3Bus1.getId())
         .setConnectableBus2(vl3Bus1.getId())
         .setUcteXnodeCode("UcteXnodeCode")
-        .line1()
+        .newHalfLine1()
         .setId("H1_TL_VL1_VL3")
         .setXnodeP(1)
         .setXnodeQ(2)
@@ -190,7 +190,8 @@ Network createTestNetwork() {
         .setB1(0.4)
         .setG2(0.3)
         .setB2(0.5)
-        .line2()
+        .add()
+        .newHalfLine2()
         .setId("H2_TL_VL1_VL3")
         .setXnodeP(3)
         .setXnodeQ(4)
@@ -200,6 +201,7 @@ Network createTestNetwork() {
         .setB1(0.7)
         .setG2(0.9)
         .setB2(1.2)
+        .add()
         .add();
 
     network.newSubstation()
