@@ -195,6 +195,14 @@ const stdcxx::DateTime& Network::getCaseDate() const {
     return m_caseDate;
 }
 
+const ConnectedComponentsManager& Network::getConnectedComponentsManager() const {
+    return m_variants.get().getConnectedComponentsManager();
+}
+
+ConnectedComponentsManager& Network::getConnectedComponentsManager() {
+    return m_variants.get().getConnectedComponentsManager();
+}
+
 unsigned long Network::getCountryCount() const {
     std::unordered_set<Country, stdcxx::hash<Country>> countries;
     for (const auto& substation : getSubstations()) {
@@ -473,6 +481,14 @@ stdcxx::const_range<Switch> Network::getSwitches() const {
 
 stdcxx::range<Switch> Network::getSwitches() {
     return m_networkIndex.getAll<Switch>();
+}
+
+const SynchronousComponentsManager& Network::getSynchronousComponentsManager() const {
+    return m_variants.get().getSynchronousComponentsManager();
+}
+
+SynchronousComponentsManager& Network::getSynchronousComponentsManager() {
+    return m_variants.get().getSynchronousComponentsManager();
 }
 
 const ThreeWindingsTransformer& Network::getThreeWindingsTransformer(const std::string& id) const {

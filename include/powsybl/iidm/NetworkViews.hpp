@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include <powsybl/iidm/Component.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
@@ -61,7 +62,9 @@ public:
 
     stdcxx::range<Bus> getBuses();
 
-    //TODO(thiebarr) getConnectedComponents
+    stdcxx::const_range<Component> getConnectedComponents() const;
+
+    stdcxx::range<Component> getConnectedComponents();
 
 private:
     Network& m_network;

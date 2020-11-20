@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_NETWORKVARIANT_HPP
 #define POWSYBL_IIDM_NETWORKVARIANT_HPP
 
+#include <powsybl/iidm/ConnectedComponentsManager.hpp>
+#include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/Variant.hpp>
 #include <powsybl/iidm/VariantArray.hpp>
 
@@ -37,6 +39,19 @@ public:
     VariantImpl& operator=(const VariantImpl&) = delete;
 
     VariantImpl& operator=(VariantImpl&&) noexcept = delete;
+
+    const ConnectedComponentsManager& getConnectedComponentsManager() const;
+
+    ConnectedComponentsManager& getConnectedComponentsManager();
+
+    const SynchronousComponentsManager& getSynchronousComponentsManager() const;
+
+    SynchronousComponentsManager& getSynchronousComponentsManager();
+
+private:
+    ConnectedComponentsManager m_connectedComponentsManager;
+
+    SynchronousComponentsManager m_synchronousComponentsManager;
 };
 
 using VariantArray = iidm::VariantArray<Network, VariantImpl>;
