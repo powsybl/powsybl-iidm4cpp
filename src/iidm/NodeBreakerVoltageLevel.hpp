@@ -146,7 +146,7 @@ private:
 
     node_breaker_voltage_level::BusNamingStrategy m_busNamingStrategy;
 
-    VariantArray<node_breaker_voltage_level::VariantImpl> m_variants;
+    node_breaker_voltage_level::VariantArray m_variants;
 
     node_breaker_voltage_level::NodeBreakerViewImpl m_nodeBreakerView;
 

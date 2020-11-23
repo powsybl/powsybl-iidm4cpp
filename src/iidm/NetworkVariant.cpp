@@ -15,8 +15,16 @@ namespace iidm {
 
 namespace network {
 
+VariantImpl::VariantImpl(Network& network) :
+    Variant(network) {
+}
+
+VariantImpl::VariantImpl(Network& network, VariantImpl&& /*variant*/) noexcept :
+    Variant(network) {
+}
+
 std::unique_ptr<VariantImpl> VariantImpl::copy() const {
-    return stdcxx::make_unique<VariantImpl>();
+    return stdcxx::make_unique<VariantImpl>(m_owner);
 }
 
 }  // namespace network
