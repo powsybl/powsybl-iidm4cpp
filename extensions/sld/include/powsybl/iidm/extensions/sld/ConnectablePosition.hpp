@@ -8,9 +8,8 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_SLD_CONNECTABLEPOSITION_HPP
 #define POWSYBL_IIDM_EXTENSIONS_SLD_CONNECTABLEPOSITION_HPP
 
-#include <boost/optional.hpp>
-
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -54,7 +53,7 @@ public:
         Direction m_direction;
     };
 
-    using OptionalFeeder = boost::optional<Feeder>;
+    using OptionalFeeder = stdcxx::optional<Feeder>;
 
 public:  // Extension
     const std::string& getName() const override;
@@ -64,21 +63,21 @@ public:  // Extension
 public:
     ConnectablePosition(Connectable& connectable, const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3);
 
-    const OptionalFeeder& getFeeder() const;
+    stdcxx::CReference<Feeder> getFeeder() const;
 
-    OptionalFeeder& getFeeder();
+    stdcxx::Reference<Feeder> getFeeder();
 
-    const OptionalFeeder& getFeeder1() const;
+    stdcxx::CReference<Feeder> getFeeder1() const;
 
-    OptionalFeeder& getFeeder1();
+    stdcxx::Reference<Feeder> getFeeder1();
 
-    const OptionalFeeder& getFeeder2() const;
+    stdcxx::CReference<Feeder> getFeeder2() const;
 
-    OptionalFeeder& getFeeder2();
+    stdcxx::Reference<Feeder> getFeeder2();
 
-    const OptionalFeeder& getFeeder3() const;
+    stdcxx::CReference<Feeder> getFeeder3() const;
 
-    OptionalFeeder& getFeeder3();
+    stdcxx::Reference<Feeder> getFeeder3();
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;

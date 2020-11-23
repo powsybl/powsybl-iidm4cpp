@@ -64,16 +64,16 @@ void ConnectablePositionXmlSerializer::readPosition(const converter::xml::Networ
 void ConnectablePositionXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& connectablePosition = safeCast<ConnectablePosition>(extension);
     if (connectablePosition.getFeeder()) {
-        writePosition(*connectablePosition.getFeeder(), context);
+        writePosition(connectablePosition.getFeeder().get(), context);
     }
     if (connectablePosition.getFeeder1()) {
-        writePosition(*connectablePosition.getFeeder1(), context, 1);
+        writePosition(connectablePosition.getFeeder1().get(), context, 1);
     }
     if (connectablePosition.getFeeder2()) {
-        writePosition(*connectablePosition.getFeeder2(), context, 2);
+        writePosition(connectablePosition.getFeeder2().get(), context, 2);
     }
     if (connectablePosition.getFeeder3()) {
-        writePosition(*connectablePosition.getFeeder3(), context, 3);
+        writePosition(connectablePosition.getFeeder3().get(), context, 3);
     }
 }
 
