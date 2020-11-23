@@ -19,15 +19,15 @@ class Variant {
 public:
     Variant(Owner& owner);
 
-    Variant(const Variant& variant) = default;
+    Variant(const Variant&) = default;
 
-    Variant(Variant&& variant) noexcept = delete;
+    Variant(Variant&&) noexcept = delete;
 
     virtual ~Variant() noexcept = default;
 
-    Variant& operator=(const Variant& variant) = delete;
+    Variant& operator=(const Variant&) = delete;
 
-    Variant& operator=(Variant&& variant) noexcept = delete;
+    Variant& operator=(Variant&&) noexcept = delete;
 
     virtual std::unique_ptr<V> copy() const = 0;
 

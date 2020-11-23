@@ -58,7 +58,7 @@ void VariantArray<Owner, V, Dummy>::deleteVariantArrayElement(unsigned long inde
 template <typename Owner, typename V, typename Dummy>
 void VariantArray<Owner, V, Dummy>::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, const VariantFactory& variantFactory) {
     for (unsigned long i = 0; i < number; ++i) {
-        m_variants.emplace_back(std::move(variantFactory()));
+        m_variants.emplace_back(variantFactory());
     }
 }
 

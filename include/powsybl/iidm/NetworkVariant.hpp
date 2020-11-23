@@ -26,17 +26,17 @@ public: // Variant
 public:
     VariantImpl(Network& network);
 
-    VariantImpl(const VariantImpl& variant) = delete;
+    VariantImpl(const VariantImpl&) = delete;
 
-    VariantImpl(VariantImpl&& variant) noexcept = delete;
+    VariantImpl(VariantImpl&&) noexcept = delete;
 
     VariantImpl(Network& network, VariantImpl&& variant) noexcept;
 
     ~VariantImpl() noexcept override = default;
 
-    VariantImpl& operator=(const VariantImpl& variant) = delete;
+    VariantImpl& operator=(const VariantImpl&) = delete;
 
-    VariantImpl& operator=(VariantImpl&& variant) noexcept = delete;
+    VariantImpl& operator=(VariantImpl&&) noexcept = delete;
 };
 
 using VariantArray = iidm::VariantArray<Network, VariantImpl>;
