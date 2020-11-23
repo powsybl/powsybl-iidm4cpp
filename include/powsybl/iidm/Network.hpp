@@ -370,7 +370,7 @@ private:
 
     VariantManager m_variantManager;
 
-    VariantArray<network::VariantImpl> m_variants;
+    network::VariantArray m_variants;
 
     BusBreakerView m_busBreakerView;
 

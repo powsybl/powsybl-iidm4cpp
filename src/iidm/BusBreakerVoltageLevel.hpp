@@ -133,7 +133,7 @@ private:
 
     std::map<std::string, unsigned long> m_switches;
 
-    VariantArray<bus_breaker_voltage_level::VariantImpl> m_variants;
+    bus_breaker_voltage_level::VariantArray m_variants;
 
     bus_breaker_voltage_level::BusBreakerViewImpl m_busBreakerView;
 
