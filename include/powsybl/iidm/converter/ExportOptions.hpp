@@ -56,19 +56,6 @@ public:
      * @param topologyLevel The maximum topology level to use
      * @param throwExceptionIfExtensionNotFound The extension's serializer lookup mode
      * @param version The expected XIIDM version
-     */
-    ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
-                  bool throwExceptionIfExtensionNotFound, const std::string& version);
-
-    /**
-     * Constructor
-     *
-     * @param withBranchSV
-     * @param indent The indentation status
-     * @param onlyMainCc The connected components status
-     * @param topologyLevel The maximum topology level to use
-     * @param throwExceptionIfExtensionNotFound The extension's serializer lookup mode
-     * @param version The expected XIIDM version
      * @param iidmVersionIncompatibilityBehavior The expected behaviour when an IIDM's version incompatibility occurs
      */
     ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,

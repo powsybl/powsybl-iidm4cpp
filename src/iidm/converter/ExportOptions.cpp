@@ -52,11 +52,6 @@ std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionI
 }
 
 ExportOptions::ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
-                             bool throwExceptionIfExtensionNotFound, const std::string& version) :
-    ExportOptions(withBranchSV, indent, onlyMainCc, topologyLevel, throwExceptionIfExtensionNotFound, version, IidmVersionIncompatibilityBehavior::THROW_EXCEPTION) {
-}
-
-ExportOptions::ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
                              bool throwExceptionIfExtensionNotFound, const std::string& version,
                              const IidmVersionIncompatibilityBehavior& iidmVersionIncompatibilityBehavior) :
     m_indent(indent),
