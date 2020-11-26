@@ -12,7 +12,6 @@
 #include <set>
 #include <string>
 
-#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 

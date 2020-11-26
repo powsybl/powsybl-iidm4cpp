@@ -37,10 +37,8 @@ const std::string& networkStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 BOOST_AUTO_TEST_CASE(testReadMaximumVersion) {
     std::stringstream ss;
     ss << networkStr;
-    FakeAnonymizer anonymizer;
     powsybl::xml::XmlStreamReader reader(ss);
-    ImportOptions options;
-    NetworkXmlReaderContext context(anonymizer, reader, options, IidmXmlVersion::V1_1());
+    NetworkXmlReaderContext context(FakeAnonymizer(), reader, ImportOptions(), IidmXmlVersion::V1_1());
 
     POWSYBL_ASSERT_THROW(IidmXmlUtil::assertMaximumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_0(), context), PowsyblException, "root.element is not supported for IIDM-XML version 1.1. IIDM-XML version should be <= 1.0");
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertMaximumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context));
@@ -55,20 +53,20 @@ BOOST_AUTO_TEST_CASE(testWriteMaximumVersion) {
     Network network("test", "test");
     BusFilter busFilter = BusFilter::create(network, options);
 
-    NetworkXmlWriterContext contextThrow(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION), busFilter, IidmXmlVersion::V1_1());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION);
+    NetworkXmlWriterContext contextThrow(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_1());
     POWSYBL_ASSERT_THROW(IidmXmlUtil::assertMaximumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_0(), contextThrow), PowsyblException, "root.element is not supported for IIDM-XML version 1.1. IIDM-XML version should be <= 1.0");
 
-    NetworkXmlWriterContext contextLog(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR), busFilter, IidmXmlVersion::V1_1());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR);
+    NetworkXmlWriterContext contextLog(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_1());
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertMaximumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_0(), contextLog));
 }
 
 BOOST_AUTO_TEST_CASE(testReadStrictMaximumVersion) {
     std::stringstream ss;
     ss << networkStr;
-    FakeAnonymizer anonymizer;
     powsybl::xml::XmlStreamReader reader(ss);
-    ImportOptions options;
-    NetworkXmlReaderContext context(anonymizer, reader, options, IidmXmlVersion::V1_1());
+    NetworkXmlReaderContext context(FakeAnonymizer(), reader, ImportOptions(), IidmXmlVersion::V1_1());
 
     POWSYBL_ASSERT_THROW(IidmXmlUtil::assertStrictMaximumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context), PowsyblException, "root.element is not supported for IIDM-XML version 1.1. IIDM-XML version should be < 1.1");
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertStrictMaximumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_2(), context));
@@ -82,20 +80,20 @@ BOOST_AUTO_TEST_CASE(testWriteStrictMaximumVersion) {
     Network network("test", "test");
     BusFilter busFilter = BusFilter::create(network, options);
 
-    NetworkXmlWriterContext contextThrow(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION), busFilter, IidmXmlVersion::V1_1());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION);
+    NetworkXmlWriterContext contextThrow(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_1());
     POWSYBL_ASSERT_THROW(IidmXmlUtil::assertStrictMaximumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_0(), contextThrow), PowsyblException, "root.element is not supported for IIDM-XML version 1.1. IIDM-XML version should be < 1.0");
 
-    NetworkXmlWriterContext contextLog(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR), busFilter, IidmXmlVersion::V1_1());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR);
+    NetworkXmlWriterContext contextLog(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_1());
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertStrictMaximumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_0(), contextLog));
 }
 
 BOOST_AUTO_TEST_CASE(testReadMinimumVersion) {
     std::stringstream ss;
     ss << networkStr;
-    FakeAnonymizer anonymizer;
     powsybl::xml::XmlStreamReader reader(ss);
-    ImportOptions options;
-    NetworkXmlReaderContext context(anonymizer, reader, options, IidmXmlVersion::V1_1());
+    NetworkXmlReaderContext context(FakeAnonymizer(), reader, ImportOptions(), IidmXmlVersion::V1_1());
 
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertMinimumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_0(), context));
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertMinimumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context));
@@ -110,20 +108,20 @@ BOOST_AUTO_TEST_CASE(testWriteMinimumVersion) {
     Network network("test", "test");
     BusFilter busFilter = BusFilter::create(network, options);
 
-    NetworkXmlWriterContext contextThrow(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION), busFilter, IidmXmlVersion::V1_0());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION);
+    NetworkXmlWriterContext contextThrow(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_0());
     POWSYBL_ASSERT_THROW(IidmXmlUtil::assertMinimumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), contextThrow), PowsyblException, "root.element is not supported for IIDM-XML version 1.0. IIDM-XML version should be >= 1.1");
 
-    NetworkXmlWriterContext contextLog(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR), busFilter, IidmXmlVersion::V1_0());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR);
+    NetworkXmlWriterContext contextLog(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_0());
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertMinimumVersion(ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), contextLog));
 }
 
 BOOST_AUTO_TEST_CASE(testReadMinimumVersionIfNotDefault) {
     std::stringstream ss;
     ss << networkStr;
-    FakeAnonymizer anonymizer;
     powsybl::xml::XmlStreamReader reader(ss);
-    ImportOptions options;
-    NetworkXmlReaderContext context(anonymizer, reader, options, IidmXmlVersion::V1_1());
+    NetworkXmlReaderContext context(FakeAnonymizer(), reader, ImportOptions(), IidmXmlVersion::V1_1());
 
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertMinimumVersionIfNotDefault(true, ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_0(), context));
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertMinimumVersionIfNotDefault(true, ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context));
@@ -141,10 +139,12 @@ BOOST_AUTO_TEST_CASE(testWriteMinimumVersionIfNotDefault) {
     Network network("test", "test");
     BusFilter busFilter = BusFilter::create(network, options);
 
-    NetworkXmlWriterContext contextThrow(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION), busFilter, IidmXmlVersion::V1_0());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION);
+    NetworkXmlWriterContext contextThrow(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_0());
     POWSYBL_ASSERT_THROW(IidmXmlUtil::assertMinimumVersionIfNotDefault(true, ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), contextThrow), PowsyblException, "root.element is not supported for IIDM-XML version 1.0. IIDM-XML version should be >= 1.1");
 
-    NetworkXmlWriterContext contextLog(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR), busFilter, IidmXmlVersion::V1_0());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR);
+    NetworkXmlWriterContext contextLog(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_0());
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertMinimumVersionIfNotDefault(true, ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), contextLog));
 }
 
@@ -183,10 +183,12 @@ BOOST_AUTO_TEST_CASE(testWriteMinimumVersionAndRunIfNotDefault) {
     Network network("test", "test");
     BusFilter busFilter = BusFilter::create(network, options);
 
-    NetworkXmlWriterContext contextThrow(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION), busFilter, IidmXmlVersion::V1_0());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION);
+    NetworkXmlWriterContext contextThrow(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_0());
     POWSYBL_ASSERT_THROW(IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(true, ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), contextThrow, [](){}), PowsyblException, "root.element is not supported for IIDM-XML version 1.0. IIDM-XML version should be >= 1.1");
 
-    NetworkXmlWriterContext contextLog(anonymizer, writer, options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR), busFilter, IidmXmlVersion::V1_0());
+    options.setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR);
+    NetworkXmlWriterContext contextLog(anonymizer, writer, options, busFilter, IidmXmlVersion::V1_0());
     BOOST_CHECK_NO_THROW(IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(true, ROOT, ELEMENT, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), contextLog, [](){}));
 }
 
