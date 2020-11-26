@@ -11,11 +11,15 @@ set(EXT_SOURCES
     src/BusbarSectionPosition.cpp
     src/BusbarSectionPositionAdder.cpp
     src/BusbarSectionPositionXmlSerializer.cpp
+    src/ConnectablePosition.cpp
+    src/ConnectablePositionAdder.cpp
+    src/ConnectablePositionXmlSerializer.cpp
     src/Sld.cpp
 )
 
 set(UNIT_TEST_SOURCES
     test/BusbarSectionPositionTest.cpp
+    test/ConnectablePositionTest.cpp
     test/sld.cpp
 )
 
