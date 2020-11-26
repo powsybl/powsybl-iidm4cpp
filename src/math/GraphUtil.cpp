@@ -74,9 +74,9 @@ ConnectedComponentsComputationResult computeConnectedComponents(const AdjacencyL
     }
 
     // componentNumber contains for each bus, its component number
-    for (unsigned long i = 0; i < componentNumber.size(); ++i) {
-        const auto& comp = components[*componentNumber[i]];
-        componentNumber[i] = comp.orderedNumber;
+    for (auto& it : componentNumber) {
+        const auto& comp = components[*it];
+        it = comp.orderedNumber;
     }
 
     return ConnectedComponentsComputationResult(componentNumber, componentSize);

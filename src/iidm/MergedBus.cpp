@@ -164,14 +164,14 @@ Bus& MergedBus::setAngle(double angle) {
 
 void MergedBus::setConnectedComponentNumber(const stdcxx::optional<unsigned long>& connectedComponentNumber) {
     checkValidity();
-    for (auto& it : m_buses) {
+    for (const auto& it : m_buses) {
         it.get().setConnectedComponentNumber(connectedComponentNumber);
     }
 }
 
 void MergedBus::setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& synchronousComponentNumber) {
     checkValidity();
-    for (auto& it : m_buses) {
+    for (const auto& it : m_buses) {
         it.get().setSynchronousComponentNumber(synchronousComponentNumber);
     }
 }
