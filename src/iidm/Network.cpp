@@ -70,10 +70,7 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
     Container(id, id, false, Container::Type::NETWORK),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_variantManager(*this),
-    m_variants(
-            [this]() -> const VariantManager& { return getVariantManager(); },
-            []() { return stdcxx::make_unique<network::VariantImpl>(); }
-    ),
+    m_variants(*this, [this]() { return stdcxx::make_unique<network::VariantImpl>(*this); }),
     m_busBreakerView(*this),
     m_busView(*this) {
     checkAndAdd(std::unique_ptr<Network>(this));
@@ -87,10 +84,7 @@ Network::Network(Network&& network) noexcept :
     m_sourceFormat(std::move(network.m_sourceFormat)),
     m_networkIndex(*this, std::move(network.m_networkIndex)),
     m_variantManager(*this, std::move(network.m_variantManager)),
-    m_variants(
-            [this]() -> const VariantManager& { return getVariantManager(); },
-            []() { return stdcxx::make_unique<network::VariantImpl>(); }  // FIXME(mathbagu): how to move the variants?
-    ),
+    m_variants(*this, std::move(network.m_variants)),
     m_busBreakerView(*this),
     m_busView(*this) {
 }
@@ -199,6 +193,14 @@ Network::BusView& Network::getBusView() {
 
 const stdcxx::DateTime& Network::getCaseDate() const {
     return m_caseDate;
+}
+
+const ConnectedComponentsManager& Network::getConnectedComponentsManager() const {
+    return m_variants.get().getConnectedComponentsManager();
+}
+
+ConnectedComponentsManager& Network::getConnectedComponentsManager() {
+    return m_variants.get().getConnectedComponentsManager();
 }
 
 unsigned long Network::getCountryCount() const {
@@ -479,6 +481,14 @@ stdcxx::const_range<Switch> Network::getSwitches() const {
 
 stdcxx::range<Switch> Network::getSwitches() {
     return m_networkIndex.getAll<Switch>();
+}
+
+const SynchronousComponentsManager& Network::getSynchronousComponentsManager() const {
+    return m_variants.get().getSynchronousComponentsManager();
+}
+
+SynchronousComponentsManager& Network::getSynchronousComponentsManager() {
+    return m_variants.get().getSynchronousComponentsManager();
 }
 
 const ThreeWindingsTransformer& Network::getThreeWindingsTransformer(const std::string& id) const {

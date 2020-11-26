@@ -16,12 +16,12 @@ namespace iidm {
 namespace bus_breaker_voltage_level {
 
 VariantImpl::VariantImpl(BusBreakerVoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel),
+    Variant(voltageLevel),
     m_calculatedBusTopology(voltageLevel) {
 }
 
 std::unique_ptr<VariantImpl> VariantImpl::copy() const {
-    return stdcxx::make_unique<VariantImpl>(m_voltageLevel);
+    return stdcxx::make_unique<VariantImpl>(m_owner);
 }
 
 CalculatedBusTopology& VariantImpl::getCalculatedBusTopology() {

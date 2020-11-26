@@ -14,23 +14,24 @@
 #include <vector>
 
 #include <powsybl/iidm/Variant.hpp>
-#include <powsybl/iidm/VariantManagerSupplier.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-template <typename T, typename = typename std::enable_if<std::is_base_of<Variant<T>, T>::value>::type>
+template <typename Owner, typename V, typename = typename std::enable_if<std::is_base_of<Variant<Owner, V>, V>::value>>
 class VariantArray {
 public:
-    using VariantFactory = std::function<std::unique_ptr<T>()>;
+    using VariantFactory = std::function<std::unique_ptr<V>()>;
 
 public:
-    VariantArray(const VariantManagerSupplier& supplier, const VariantFactory& variantFactory);
+    VariantArray(Owner& owner, const VariantFactory& variantFactory);
 
     VariantArray(const VariantArray& variantArray) = delete;
 
     VariantArray(VariantArray&& variantArray) noexcept = delete;
+
+    VariantArray(Owner& owner, VariantArray&& variantArray);
 
     ~VariantArray() noexcept = default;
 
@@ -40,22 +41,22 @@ public:
 
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, const VariantFactory& variantFactory);
 
-    std::unique_ptr<T> copy(unsigned long index) const;
+    std::unique_ptr<V> copy(unsigned long index) const;
 
     void deleteVariantArrayElement(unsigned long index);
 
     void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, const VariantFactory& variantFactory);
 
-    const T& get() const;
+    const V& get() const;
 
-    T& get();
+    V& get();
 
     void reduceVariantArraySize(unsigned long number);
 
 private:
-    VariantManagerSupplier m_supplier;
+    Owner& m_owner;
 
-    std::vector<std::unique_ptr<T> > m_variants;
+    std::vector<std::unique_ptr<V> > m_variants;
 };
 
 }  // namespace iidm

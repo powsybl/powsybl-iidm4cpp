@@ -24,10 +24,7 @@ namespace iidm {
 BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
                                                double nominalVoltage, double lowVoltageLimit, double highVoltagelimit) :
     VoltageLevel(id, name, fictitious, substation, nominalVoltage, lowVoltageLimit, highVoltagelimit),
-    m_variants(
-            [this]() -> const VariantManager& { return getNetwork().getVariantManager(); },
-            [this]() { return stdcxx::make_unique<bus_breaker_voltage_level::VariantImpl>(*this); }
-    ),
+    m_variants(*this, [this]() { return stdcxx::make_unique<bus_breaker_voltage_level::VariantImpl>(*this); }),
     m_busBreakerView(*this),
     m_busView(*this) {
 }
@@ -290,8 +287,8 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
 void BusBreakerVoltageLevel::invalidateCache() {
     m_variants.get().getCalculatedBusTopology().invalidateCache();
 
-    // getNetwork().getConnectedComponentsManager().invalidate();
-    // getNetwork().getSynchronousComponentsManager().invalidate();
+    getNetwork().getConnectedComponentsManager().invalidate();
+    getNetwork().getSynchronousComponentsManager().invalidate();
 }
 
 void BusBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {

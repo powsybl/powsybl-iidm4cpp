@@ -28,6 +28,7 @@ class Battery;
 class Branch;
 class BusbarSection;
 class Connectable;
+class ConnectedComponentsManager;
 class DanglingLine;
 class Generator;
 class HvdcConverterStation;
@@ -42,6 +43,7 @@ class StaticVarCompensator;
 class Substation;
 class SubstationAdder;
 class Switch;
+class SynchronousComponentsManager;
 class ThreeWindingsTransformer;
 class TieLineAdder;
 class TwoWindingsTransformer;
@@ -160,6 +162,10 @@ public:
 
     template <typename T = Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::range<T> getConnectables();
+
+    const ConnectedComponentsManager& getConnectedComponentsManager() const;
+
+    ConnectedComponentsManager& getConnectedComponentsManager();
 
     unsigned long getCountryCount() const;
 
@@ -289,6 +295,10 @@ public:
 
     stdcxx::range<Switch> getSwitches();
 
+    const SynchronousComponentsManager& getSynchronousComponentsManager() const;
+
+    SynchronousComponentsManager& getSynchronousComponentsManager();
+
     const ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id) const;
 
     ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id);
@@ -370,7 +380,7 @@ private:
 
     VariantManager m_variantManager;
 
-    VariantArray<network::VariantImpl> m_variants;
+    network::VariantArray m_variants;
 
     BusBreakerView m_busBreakerView;
 

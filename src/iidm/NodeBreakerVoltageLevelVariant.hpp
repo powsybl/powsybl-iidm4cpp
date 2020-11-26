@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVARIANT_HPP
 
 #include <powsybl/iidm/Variant.hpp>
+#include <powsybl/iidm/VariantArray.hpp>
 
 #include "NodeBreakerVoltageLevelTopology.hpp"
 
@@ -18,7 +19,7 @@ namespace iidm {
 
 namespace node_breaker_voltage_level {
 
-class VariantImpl : public Variant<VariantImpl> {
+class VariantImpl : public Variant<NodeBreakerVoltageLevel, VariantImpl> {
 public: // Variant
     std::unique_ptr<VariantImpl> copy() const override;
 
@@ -34,12 +35,12 @@ public:
     CalculatedBusTopology& getCalculatedBusTopology();
 
 private:
-    NodeBreakerVoltageLevel& m_voltageLevel;
-
     CalculatedBusBreakerTopology m_calculatedBusBreakerTopology;
 
     CalculatedBusTopology m_calculatedBusTopology;
 };
+
+using VariantArray = iidm::VariantArray<NodeBreakerVoltageLevel, VariantImpl>;
 
 }  // namespace node_breaker_voltage_level
 

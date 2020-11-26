@@ -374,8 +374,8 @@ void UndirectedGraph<V, E>::removeIsolatedVertices() {
 
     std::set<unsigned long> connectedVertices;
     for (const auto& e : getEdges()) {
-        connectedVertices.insert(getVertex1(e));
-        connectedVertices.insert(getVertex2(e));
+        connectedVertices.emplace(getVertex1(e));
+        connectedVertices.emplace(getVertex2(e));
     }
 
     for (const auto& v : getVertices()) {
