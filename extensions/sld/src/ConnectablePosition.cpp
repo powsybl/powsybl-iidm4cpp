@@ -145,11 +145,6 @@ const std::type_index& ConnectablePosition::getType() const {
     return s_type;
 }
 
-std::ostream& operator<<(std::ostream& stream, const ConnectablePosition::Direction& value) {
-    stream << iidm::Enum::toString(value);
-    return stream;
-}
-
 }  // namespace sld
 
 }  // namespace extensions

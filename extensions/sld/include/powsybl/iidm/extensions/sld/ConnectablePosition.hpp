@@ -95,8 +95,6 @@ private:
     OptionalFeeder m_feeder3;
 };
 
-std::ostream& operator<<(std::ostream& stream, const ConnectablePosition::Direction& value);
-
 }  // namespace sld
 
 }  // namespace extensions

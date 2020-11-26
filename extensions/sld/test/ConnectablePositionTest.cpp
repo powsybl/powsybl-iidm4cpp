@@ -7,6 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/extensions/sld/ConnectablePosition.hpp>
@@ -25,16 +26,23 @@ namespace extensions {
 
 namespace sld {
 
+std::ostream& operator<<(std::ostream& stream, const ConnectablePosition::Direction& direction) {
+    stream << Enum::toString(direction);
+    return stream;
+}
+
 BOOST_AUTO_TEST_SUITE(ConnectablePositionTestSuite)
 
 BOOST_AUTO_TEST_CASE(ConnectablePositionConstructor) {
-    Network network = ::powsybl::network::EurostagFactory::createTutorial1Network();
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     Load& load = network.getLoad("LOAD");
 
     ConnectablePosition::Feeder feeder("feeder", 0, ConnectablePosition::Direction::TOP);
     ConnectablePosition::Feeder feeder1("feeder1", 1, ConnectablePosition::Direction::BOTTOM);
     ConnectablePosition::Feeder feeder2("feeder2", 2, ConnectablePosition::Direction::TOP);
     ConnectablePosition::Feeder feeder3("feeder3", 3, ConnectablePosition::Direction::BOTTOM);
+
+    std::cout << "BOTTOM = " << ConnectablePosition::Direction::BOTTOM << std::endl;
 
     BOOST_CHECK_EQUAL("feeder3", feeder3.getName());
     BOOST_CHECK_EQUAL(3, feeder3.getOrder());
