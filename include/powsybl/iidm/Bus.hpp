@@ -20,6 +20,7 @@ namespace powsybl {
 namespace iidm {
 
 class Battery;
+class Component;
 class DanglingLine;
 class Generator;
 class LccConverterStation;
@@ -47,6 +48,10 @@ public:
     stdcxx::const_range<Battery> getBatteries() const;
 
     stdcxx::range<Battery> getBatteries();
+
+    virtual stdcxx::CReference<Component> getConnectedComponent() const = 0;
+
+    virtual stdcxx::Reference<Component> getConnectedComponent() = 0;
 
     virtual unsigned long getConnectedTerminalCount() const = 0;
 
@@ -82,6 +87,10 @@ public:
 
     stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
+    virtual stdcxx::CReference<Component> getSynchronousComponent() const = 0;
+
+    virtual stdcxx::Reference<Component> getSynchronousComponent() = 0;
+
     stdcxx::const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
 
     stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
@@ -100,6 +109,10 @@ public:
 
     stdcxx::range<VscConverterStation> getVscConverterStations();
 
+    virtual bool isInMainConnectedComponent() const;
+
+    virtual bool isInMainSynchronousComponent() const;
+
     virtual Bus& setAngle(double angle) = 0;
 
     virtual Bus& setV(double v) = 0;
@@ -107,15 +120,23 @@ public:
 protected:
     Bus(const std::string& id, const std::string& name, bool fictitious);
 
-private: // Identifiable
+private:  // Identifiable
     const std::string& getTypeDescription() const override;
 
+private:
     template <typename T>
     stdcxx::const_range<T> getAll() const;
 
     template <typename T>
     stdcxx::range<T> getAll();
 
+    virtual void setConnectedComponentNumber(const stdcxx::optional<unsigned long>& connectedComponentNumber) = 0;
+
+    virtual void setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& synchronousComponentNumber) = 0;
+
+    friend class ConnectedComponentsManager;
+
+    friend class SynchronousComponentsManager;
 };
 
 }  // namespace iidm

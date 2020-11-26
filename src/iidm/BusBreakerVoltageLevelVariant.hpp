@@ -18,7 +18,7 @@ namespace iidm {
 
 namespace bus_breaker_voltage_level {
 
-class VariantImpl : public Variant<VariantImpl> {
+class VariantImpl : public Variant<BusBreakerVoltageLevel, VariantImpl> {
 public: // Variant
     std::unique_ptr<VariantImpl> copy() const override;
 
@@ -30,10 +30,10 @@ public:
     CalculatedBusTopology& getCalculatedBusTopology();
 
 private:
-    BusBreakerVoltageLevel& m_voltageLevel;
-
     CalculatedBusTopology m_calculatedBusTopology;
 };
+
+using VariantArray = iidm::VariantArray<BusBreakerVoltageLevel, VariantImpl>;
 
 }  // namespace bus_breaker_voltage_level
 

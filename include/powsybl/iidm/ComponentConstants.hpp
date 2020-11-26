@@ -5,21 +5,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_VARIANTMANAGERSUPPLIER_HPP
-#define POWSYBL_IIDM_VARIANTMANAGERSUPPLIER_HPP
-
-#include <functional>
+#ifndef POWSYBL_IIDM_COMPONENTCONSTANTS_HPP
+#define POWSYBL_IIDM_COMPONENTCONSTANTS_HPP
 
 namespace powsybl {
 
 namespace iidm {
 
-class VariantManager;
+namespace ComponentConstants {
 
-using VariantManagerSupplier = std::function<const VariantManager&()>;
+const unsigned long MAIN_NUM = 0UL;
+
+}  // namespace ComponentConstants
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_VARIANTMANAGERSUPPLIER_HPP
+#endif  // POWSYBL_IIDM_COMPONENTCONSTANTS_HPP
