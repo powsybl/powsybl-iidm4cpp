@@ -21,26 +21,46 @@ namespace powsybl {
 
 namespace iidm {
 
+namespace Enum {
+
+template <>
+const std::initializer_list<std::string>& getNames<converter::ExportOptions::IidmVersionIncompatibilityBehavior>() {
+    static std::initializer_list<std::string> s_names {
+        "THROW_EXCEPTION",
+        "LOG_ERROR"
+    };
+    return s_names;
+}
+
+}  // namespace Enum
+
 namespace converter {
 
 static const Parameter ANONYMISED_PARAMETER(ExportOptions::ANONYMISED, Parameter::Type::BOOLEAN, "Anonymize exported network", "false");
 static const Parameter EXTENSIONS_LIST_PARAMETER(ExportOptions::EXTENSIONS_LIST, Parameter::Type::STRING_LIST, "The list of exported extensions", "");
+static const Parameter IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER (ExportOptions::IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR, Parameter::Type::STRING, "Behavior when there is an IIDM version incompatibility", "THROW_EXCEPTION");
 static const Parameter INDENT_PARAMETER(ExportOptions::INDENT, Parameter::Type::BOOLEAN, "Indent export output file", "true");
 static const Parameter ONLY_MAIN_CC_PARAMETER(ExportOptions::ONLY_MAIN_CC, Parameter::Type::BOOLEAN, "Export only main CC", "false");
-static const Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parameter(ExportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false")
-    .addAdditionalNames({"throwExceptionIfExtensionNotFound"});
+static const Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parameter(ExportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false").addAdditionalNames({"throwExceptionIfExtensionNotFound"});
 static const Parameter TOPOLOGY_LEVEL_PARAMETER(ExportOptions::TOPOLOGY_LEVEL, Parameter::Type::STRING, "Export network in this topology level", "NODE_BREAKER");
 static const Parameter VERSION_PARAMETER(ExportOptions::VERSION, Parameter::Type::STRING, "IIDM-XML version in which files will be generated", xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString("."));
 static const Parameter WITH_BRANCH_STATE_VARIABLES_PARAMETER(ExportOptions::WITH_BRANCH_STATE_VARIABLES, Parameter::Type::BOOLEAN, "Export network with branch state variables", "true");
 
+std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value) {
+    stream << iidm::Enum::toString(value);
+    return stream;
+}
+
 ExportOptions::ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
-                             bool throwExceptionIfExtensionNotFound, const std::string& version) :
+                             bool throwExceptionIfExtensionNotFound, const std::string& version,
+                             const IidmVersionIncompatibilityBehavior& iidmVersionIncompatibilityBehavior) :
     m_indent(indent),
     m_onlyMainCc(onlyMainCc),
     m_throwExceptionIfExtensionNotFound(throwExceptionIfExtensionNotFound),
     m_topologyLevel(topologyLevel),
     m_withBranchSV(withBranchSV),
-    m_version(version) {
+    m_version(version),
+    m_iidmVersionIncompatibilityBehavior(iidmVersionIncompatibilityBehavior) {
 }
 
 ExportOptions::ExportOptions(const stdcxx::Properties& parameters) :
@@ -51,7 +71,8 @@ ExportOptions::ExportOptions(const stdcxx::Properties& parameters) :
     m_topologyLevel(Enum::fromString<TopologyLevel>(ConversionParameters::readStringParameter(parameters, TOPOLOGY_LEVEL_PARAMETER))),
     m_withBranchSV(ConversionParameters::readBooleanParameter(parameters, WITH_BRANCH_STATE_VARIABLES_PARAMETER)),
     m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))),
-    m_version(ConversionParameters::readStringParameter(parameters, VERSION_PARAMETER)) {
+    m_version(ConversionParameters::readStringParameter(parameters, VERSION_PARAMETER)),
+    m_iidmVersionIncompatibilityBehavior(Enum::fromString<IidmVersionIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER))) {
 }
 
 ExportOptions& ExportOptions::addExtension(const std::string& extension) {
@@ -79,6 +100,11 @@ const std::string& ExportOptions::getExtensionVersion(const std::string& extensi
 
     return it == m_extensionsVersions.end() ? s_noVersion : it->second;
 }
+
+const ExportOptions::IidmVersionIncompatibilityBehavior& ExportOptions::getIidmVersionIncompatibilityBehavior() const {
+    return m_iidmVersionIncompatibilityBehavior;
+}
+
 
 const std::string& ExportOptions::getVersion() const {
     return m_version;
@@ -127,6 +153,11 @@ ExportOptions& ExportOptions::setAnonymized(bool anonymized) {
 
 ExportOptions& ExportOptions::setExtensions(const std::set<std::string>& extensions) {
     m_extensions = extensions;
+    return *this;
+}
+
+ExportOptions& ExportOptions::setIidmVersionIncompatibilityBehavior(const IidmVersionIncompatibilityBehavior& iidmVersionIncompatibilityBehavior) {
+    m_iidmVersionIncompatibilityBehavior = iidmVersionIncompatibilityBehavior;
     return *this;
 }
 
