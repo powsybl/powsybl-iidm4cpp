@@ -7,8 +7,6 @@
 
 #include <powsybl/iidm/NetworkViews.hpp>
 
-#include <numeric>
-
 #include <boost/range/join.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
@@ -140,6 +138,14 @@ stdcxx::range<Bus> BusView::getBuses() {
     }
 
     return range;
+}
+
+stdcxx::const_range<Component> BusView::getConnectedComponents() const {
+    return m_network.getConnectedComponentsManager().getConnectedComponents();
+}
+
+stdcxx::range<Component> BusView::getConnectedComponents() {
+    return m_network.getConnectedComponentsManager().getConnectedComponents();
 }
 
 }  // namespace network

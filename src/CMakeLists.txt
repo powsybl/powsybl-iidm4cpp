@@ -9,6 +9,7 @@ set(IIDM_SOURCES
     AssertionError.cpp
     PowsyblException.cpp
 
+    iidm/AbstractComponentsManager.cpp
     iidm/AbstractMultiVariantIdentifiableExtension.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
@@ -25,9 +26,12 @@ set(IIDM_SOURCES
     iidm/BusTerminal.cpp
     iidm/BusTerminalViews.cpp
     iidm/CalculatedBus.cpp
+    iidm/Component.cpp
     iidm/ConfiguredBus.cpp
     iidm/Connectable.cpp
     iidm/ConnectableType.cpp
+    iidm/ConnectedComponent.cpp
+    iidm/ConnectedComponentsManager.cpp
     iidm/Container.cpp
     iidm/Country.cpp
     iidm/CurrentLimits.cpp
@@ -93,6 +97,8 @@ set(IIDM_SOURCES
     iidm/Switch.cpp
     iidm/SwitchAdder.cpp
     iidm/SwitchKind.cpp
+    iidm/SynchronousComponent.cpp
+    iidm/SynchronousComponentsManager.cpp
     iidm/Terminal.cpp
     iidm/TerminalBuilder.cpp
     iidm/ThreeWindingsTransformer.cpp
@@ -160,6 +166,7 @@ set(IIDM_SOURCES
     iidm/extensions/SlackTerminal.cpp
     iidm/extensions/SlackTerminalAdder.cpp
 
+    iidm/util/ConnectedComponents.cpp
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
@@ -172,6 +179,9 @@ set(IIDM_SOURCES
     logging/LoggerFactory.cpp
     logging/LogMessage.cpp
     logging/NoopLogger.cpp
+
+    math/ConnectedComponentsComputationResult.cpp
+    math/GraphUtil.cpp
 
     network/BatteryNetworkFactory.cpp
     network/EurostagFactory.cpp

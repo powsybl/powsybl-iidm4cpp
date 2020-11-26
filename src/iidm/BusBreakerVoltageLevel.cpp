@@ -287,8 +287,8 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
 void BusBreakerVoltageLevel::invalidateCache() {
     m_variants.get().getCalculatedBusTopology().invalidateCache();
 
-    // getNetwork().getConnectedComponentsManager().invalidate();
-    // getNetwork().getSynchronousComponentsManager().invalidate();
+    getNetwork().getConnectedComponentsManager().invalidate();
+    getNetwork().getSynchronousComponentsManager().invalidate();
 }
 
 void BusBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
