@@ -11,11 +11,11 @@ namespace powsybl {
 
 namespace math {
 
-namespace graph_util {
+namespace GraphUtil {
 
-ConnectedComponentsComputationResult::ConnectedComponentsComputationResult(std::vector<stdcxx::optional<unsigned long>>&& componentNumber, const std::vector<unsigned long>& orderedComponents) :
+ConnectedComponentsComputationResult::ConnectedComponentsComputationResult(std::vector<stdcxx::optional<unsigned long>> componentNumber, std::vector<unsigned long> orderedComponents) :
     m_componentNumber(std::move(componentNumber)),
-    m_componentSize(orderedComponents) {
+    m_componentSize(std::move(orderedComponents)) {
 }
 
 const std::vector<stdcxx::optional<unsigned long>>& ConnectedComponentsComputationResult::getComponentNumber() const {
@@ -26,7 +26,7 @@ const std::vector<unsigned long>& ConnectedComponentsComputationResult::getCompo
     return m_componentSize;
 }
 
-}  // namespace graph_util
+}  // namespace GraphUtil
 
 }  // namespace math
 

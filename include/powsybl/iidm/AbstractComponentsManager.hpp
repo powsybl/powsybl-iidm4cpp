@@ -31,17 +31,17 @@ public:
 public:
     AbstractComponentsManager(Network& network, const ComponentFactory& factory);
 
-    AbstractComponentsManager(const AbstractComponentsManager& manager) = delete;
+    AbstractComponentsManager(const AbstractComponentsManager&) = delete;
 
-    AbstractComponentsManager(AbstractComponentsManager&& manager) noexcept = delete;
+    AbstractComponentsManager(AbstractComponentsManager&&) noexcept = delete;
 
     AbstractComponentsManager(Network& network, AbstractComponentsManager&& manager) noexcept;
 
     virtual ~AbstractComponentsManager() noexcept = default;
 
-    AbstractComponentsManager& operator=(const AbstractComponentsManager& manager) = delete;
+    AbstractComponentsManager& operator=(const AbstractComponentsManager&) = delete;
 
-    AbstractComponentsManager& operator=(AbstractComponentsManager&& manager) noexcept = delete;
+    AbstractComponentsManager& operator=(AbstractComponentsManager&&) noexcept = delete;
 
     stdcxx::CReference<Component> getComponent(const stdcxx::optional<unsigned long>& num) const;
 

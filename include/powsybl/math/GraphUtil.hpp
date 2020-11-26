@@ -18,27 +18,16 @@ namespace powsybl {
 
 namespace math {
 
-class GraphUtil {
-public:
-    using ConnectedComponentsComputationResult = graph_util::ConnectedComponentsComputationResult;
+namespace GraphUtil {
 
-public:
-    static ConnectedComponentsComputationResult computeConnectedComponents(const std::vector<std::vector<unsigned long>>& adjacencyList);
+using AdjacencyList = std::vector<std::vector<unsigned long>>;
 
-public:
-    GraphUtil() = delete;
+ConnectedComponentsComputationResult computeConnectedComponents(const AdjacencyList& adjacencyList);
 
-    template <typename V, typename E>
-    void removeIsolatedVertices(UndirectedGraph<V, E>& graph);
-
-private:
-    static void computeConnectedComponents(unsigned long v1, unsigned long c, std::vector<unsigned long>& componentSize, const std::vector<std::vector<unsigned long>>& adjacencyList, std::vector<stdcxx::optional<unsigned long>>& componentNumber);
-};
+}  // namespace GraphUtil
 
 }  // namespace math
 
 }  // namespace powsybl
-
-#include <powsybl/math/GraphUtil.hxx>
 
 #endif  // POWSYBL_MATH_GRAPHUTIL_HPP

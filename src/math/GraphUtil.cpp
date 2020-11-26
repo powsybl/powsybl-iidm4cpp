@@ -11,66 +11,16 @@ namespace powsybl {
 
 namespace math {
 
-class ConnectedComponent {
-public:
-    explicit ConnectedComponent(unsigned long size);
+namespace GraphUtil {
 
-private:
-    friend class GraphUtil;
+struct ConnectedComponent {
+    unsigned long size;
 
-private:
-    unsigned long m_size;
-
-    unsigned long m_orderedNumber = 0UL;
+    unsigned long orderedNumber;
 };
 
-ConnectedComponent::ConnectedComponent(unsigned long size) :
-    m_size(size) {
-}
-
-GraphUtil::ConnectedComponentsComputationResult GraphUtil::computeConnectedComponents(const std::vector<std::vector<unsigned long>>& adjacencyList) {
-    std::vector<stdcxx::optional<unsigned long>> componentNumber(adjacencyList.size());
-    unsigned long c = 0UL;
-    std::vector<unsigned long> componentSize(adjacencyList.size(), 0UL);
-    for (unsigned long v = 0UL; v < adjacencyList.size(); v++) {
-        if (!componentNumber[v].is_initialized()) {
-            computeConnectedComponents(v, c, componentSize, adjacencyList, componentNumber);
-            c++;
-        }
-    }
-
-    // sort components by size
-    std::vector<std::shared_ptr<ConnectedComponent>> components;
-    components.reserve(c);
-    std::vector<std::shared_ptr<ConnectedComponent>> orderedComponents;
-    orderedComponents.reserve(c);
-
-    for (unsigned long i = 0UL; i < c; i++) {
-        auto comp = std::make_shared<ConnectedComponent>(componentSize[i]);
-        components.push_back(comp);
-        orderedComponents.push_back(comp);
-    }
-    auto compare = [](const std::shared_ptr<ConnectedComponent>& o1, const std::shared_ptr<ConnectedComponent>& o2) {
-        return o2->m_size < o1->m_size;
-    };
-    std::sort(orderedComponents.begin(), orderedComponents.end(), compare);
-    for (unsigned long i = 0UL; i < orderedComponents.size(); i++) {
-        orderedComponents[i]->m_orderedNumber = i;
-    }
-
-    componentSize = std::vector<unsigned long>(orderedComponents.size());
-    for (const auto& cc : orderedComponents) {
-        componentSize[cc->m_orderedNumber] = cc->m_size;
-    }
-    for (unsigned long i = 0UL; i < componentNumber.size();) {
-        const auto& cc = components[*componentNumber[i]];
-        componentNumber[i] = cc->m_orderedNumber;
-        ++i;
-    }
-    return ConnectedComponentsComputationResult(std::move(componentNumber), componentSize);
-}
-
-void GraphUtil::computeConnectedComponents(unsigned long v1, unsigned long c, std::vector<unsigned long>& componentSize, const std::vector<std::vector<unsigned long>>& adjacencyList, std::vector<stdcxx::optional<unsigned long>>& componentNumber) {
+void computeConnectedComponents(unsigned long v1, unsigned long c, std::vector<unsigned long>& componentSize,
+                                const AdjacencyList & adjacencyList, std::vector<stdcxx::optional<unsigned long>>& componentNumber) {
     componentNumber[v1] = c;
     ++componentSize[c];
     const std::vector<unsigned long>& ls = adjacencyList[v1];
@@ -80,6 +30,59 @@ void GraphUtil::computeConnectedComponents(unsigned long v1, unsigned long c, st
         }
     }
 }
+
+ConnectedComponentsComputationResult computeConnectedComponents(const AdjacencyList& adjacencyList) {
+    // componentNumber contains for each bus, its component number
+    std::vector<stdcxx::optional<unsigned long>> componentNumber(adjacencyList.size());
+
+    // componentSize contains the size (number of buses) of each component
+    std::vector<unsigned long> componentSize(adjacencyList.size());
+
+    // Fill componentSize and componentNumber based on the adjacency list
+    unsigned long c = 0;
+    for (unsigned long v = 0; v < adjacencyList.size(); v++) {
+        if (!componentNumber[v].is_initialized()) {
+            computeConnectedComponents(v, c, componentSize, adjacencyList, componentNumber);
+            c++;
+        }
+    }
+
+    // Initialize the components with their computed size and prepare the orderedComponents with references
+    std::vector<ConnectedComponent> components(c);
+    std::vector<std::reference_wrapper<ConnectedComponent>> orderedComponents;
+    orderedComponents.reserve(components.size());
+    for (unsigned long i = 0; i < c; ++i) {
+        auto& component = components[i];
+        component.size = componentSize[i];
+        orderedComponents.emplace_back(component);
+    }
+
+    // Sort the components by their size (the main component is the bigger one)
+    std::sort(orderedComponents.begin(), orderedComponents.end(), [](const std::reference_wrapper<ConnectedComponent>& c1, const std::reference_wrapper<ConnectedComponent>& c2) {
+        return c2.get().size < c1.get().size;
+    });
+
+    // Assign the component number based on their order
+    for (unsigned long i = 0; i < orderedComponents.size(); ++i) {
+        orderedComponents[i].get().orderedNumber = i;
+    }
+
+    // componentSize contains the size (number of buses) of each component
+    componentSize.resize(orderedComponents.size());
+    for (const auto& comp : orderedComponents) {
+        componentSize[comp.get().orderedNumber] = comp.get().size;
+    }
+
+    // componentNumber contains for each bus, its component number
+    for (unsigned long i = 0; i < componentNumber.size(); ++i) {
+        const auto& comp = components[*componentNumber[i]];
+        componentNumber[i] = comp.orderedNumber;
+    }
+
+    return ConnectedComponentsComputationResult(componentNumber, componentSize);
+}
+
+}  // namespace GraphUtil
 
 }  // namespace math
 
