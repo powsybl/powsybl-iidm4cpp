@@ -10,6 +10,8 @@
 #include <boost/range/adaptor/filtered.hpp>
 
 #include <powsybl/iidm/Battery.hpp>
+#include <powsybl/iidm/Component.hpp>
+#include <powsybl/iidm/ComponentConstants.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
@@ -141,6 +143,16 @@ const std::string& Bus::getTypeDescription() const {
     static std::string s_typeDescription = "Bus";
 
     return s_typeDescription;
+}
+
+bool Bus::isInMainConnectedComponent() const {
+    const auto& cc = getConnectedComponent();
+    return static_cast<bool>(cc) && (cc.get().getNum() == ComponentConstants::MAIN_NUM);
+}
+
+bool Bus::isInMainSynchronousComponent() const {
+    const auto& sc = getSynchronousComponent();
+    return static_cast<bool>(sc) && (sc.get().getNum() == ComponentConstants::MAIN_NUM);
 }
 
 }  // namespace iidm

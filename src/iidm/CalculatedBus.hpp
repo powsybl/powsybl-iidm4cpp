@@ -28,11 +28,19 @@ class CalculatedBus : public Bus {
 public: // Bus
     double getAngle() const override;
 
+    stdcxx::CReference<Component> getConnectedComponent() const override;
+
+    stdcxx::Reference<Component> getConnectedComponent() override;
+
     unsigned long getConnectedTerminalCount() const override;
 
     stdcxx::const_range<Terminal> getConnectedTerminals() const override;
 
     stdcxx::range<Terminal> getConnectedTerminals() override;
+
+    stdcxx::CReference<Component> getSynchronousComponent() const override;
+
+    stdcxx::Reference<Component> getSynchronousComponent() override;
 
     double getV() const override;
 
@@ -41,6 +49,10 @@ public: // Bus
     VoltageLevel& getVoltageLevel() override;
 
     Bus& setAngle(double angle) override;
+
+    void setConnectedComponentNumber(const stdcxx::optional<unsigned long>& connectedComponentNumber) override;
+
+    void setSynchronousComponentNumber(const stdcxx::optional<unsigned long>& synchronousComponentNumber) override;
 
     Bus& setV(double v) override;
 
@@ -71,7 +83,7 @@ private:
 private:
     stdcxx::Reference<NodeBreakerVoltageLevel> m_voltageLevel;
 
-    bool m_valid{true};
+    bool m_valid = true;
 
     std::vector<std::reference_wrapper<NodeTerminal> > m_terminals;
 

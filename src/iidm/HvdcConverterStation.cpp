@@ -40,6 +40,19 @@ HvdcConverterStation& HvdcConverterStation::setLossFactor(double lossFactor) {
     return *this;
 }
 
+namespace Enum {
+
+template <>
+const std::initializer_list<std::string>& getNames<HvdcConverterStation::HvdcType>() {
+    static std::initializer_list<std::string> s_typeNames {
+            "LCC",
+            "VSC"
+    };
+    return s_typeNames;
+}
+
+}  // namespace Enum
+
 }  // namespace iidm
 
 }  // namespace powsybl
