@@ -24,6 +24,7 @@ set(UNIT_TEST_SOURCES
     EurostagTest.cpp
     FictitiousSwitchTest.cpp
     IdentifiableExtensionXmlSerializerTest.cpp
+    IidmXmlUtilTest.cpp
     InternalConnectionsRoundTripTest.cpp
     LinesRoundTripTest.cpp
     LccRoundTripRef.cpp
