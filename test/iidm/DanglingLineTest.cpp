@@ -187,6 +187,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(3.0, danglingLine.getP0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, danglingLine.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL("ucteXnodeCodeTest", danglingLine.getUcteXnodeCode());
     BOOST_CHECK_EQUAL(1, boost::size(network.getDanglingLines()));

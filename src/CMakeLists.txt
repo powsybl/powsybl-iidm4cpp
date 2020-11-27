@@ -92,6 +92,12 @@ set(IIDM_SOURCES
     iidm/ReactiveLimitsHolder.cpp
     iidm/ShuntCompensator.cpp
     iidm/ShuntCompensatorAdder.cpp
+    iidm/ShuntCompensatorLinearModel.cpp
+    iidm/ShuntCompensatorLinearModelAdder.cpp
+    iidm/ShuntCompensatorModel.cpp
+    iidm/ShuntCompensatorModelType.cpp
+    iidm/ShuntCompensatorNonLinearModel.cpp
+    iidm/ShuntCompensatorNonLinearModelAdder.cpp
     iidm/StaticVarCompensator.cpp
     iidm/StaticVarCompensatorAdder.cpp
     iidm/Substation.cpp

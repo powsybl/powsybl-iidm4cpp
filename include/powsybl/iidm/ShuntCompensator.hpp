@@ -12,6 +12,8 @@
 #include <vector>
 
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/ShuntCompensatorModel.hpp>
+#include <powsybl/iidm/ShuntCompensatorModelType.hpp>
 
 namespace powsybl {
 
@@ -21,25 +23,38 @@ class Terminal;
 
 class ShuntCompensator : public Injection {
 public:
-    ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-                     double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount, Terminal& terminal,
-                     bool voltageRegulatorOn, double targetV, double targetDeadband);
+    ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
+                     unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband);
 
     ~ShuntCompensator() noexcept override = default;
 
-    double getbPerSection() const;
+    double getB() const;
 
-    double getCurrentB() const;
+    double getB(unsigned long sectionCount) const;
 
-    unsigned long getCurrentSectionCount() const;
+    double getG() const;
 
-    double getMaximumB() const;
+    double getG(unsigned long sectionCount) const;
 
     unsigned long getMaximumSectionCount() const;
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<ShuntCompensatorModel, T>::value>::type>
+    const T& getModel() const;
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<ShuntCompensatorModel, T>::value>::type>
+    T& getModel();
+
+    const ShuntCompensatorModel& getModel() const;
+
+    ShuntCompensatorModel& getModel();
+
+    const ShuntCompensatorModelType& getModelType() const;
 
     const Terminal& getRegulatingTerminal() const;
 
     Terminal& getRegulatingTerminal();
+
+    unsigned long getSectionCount() const;
 
     double getTargetDeadband() const;
 
@@ -47,13 +62,9 @@ public:
 
     bool isVoltageRegulatorOn() const;
 
-    ShuntCompensator& setbPerSection(double bPerSection);
-
-    ShuntCompensator& setCurrentSectionCount(unsigned long currentSectionCount);
-
-    ShuntCompensator& setMaximumSectionCount(unsigned long maximumSectionCount);
-
     ShuntCompensator& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
+
+    ShuntCompensator& setSectionCount(unsigned long sectionCount);
 
     ShuntCompensator& setTargetDeadband(double targetDeadband);
 
@@ -72,11 +83,13 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    double m_bPerSection;
+    std::unique_ptr<ShuntCompensatorModel>& attach(std::unique_ptr<ShuntCompensatorModel>& model);
 
-    unsigned long m_maximumSectionCount;
+private:
+    std::unique_ptr<ShuntCompensatorModel> m_model;
 
-    std::vector<unsigned long> m_currentSectionCount;
+    /* the current number of section switched on */
+    std::vector<unsigned long> m_sectionCount;
 
     std::reference_wrapper<Terminal> m_regulatingTerminal;
 
@@ -90,5 +103,7 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/ShuntCompensator.hxx>
 
 #endif  // POWSYBL_IIDM_SHUNTCOMPENSATOR_HPP

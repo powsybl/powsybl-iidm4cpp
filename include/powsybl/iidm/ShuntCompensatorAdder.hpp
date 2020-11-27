@@ -8,8 +8,15 @@
 #ifndef POWSYBL_IIDM_SHUNTCOMPENSATORADDER_HPP
 #define POWSYBL_IIDM_SHUNTCOMPENSATORADDER_HPP
 
+#include <vector>
+
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/iidm/ShuntCompensatorLinearModel.hpp>
+#include <powsybl/iidm/ShuntCompensatorLinearModelAdder.hpp>
+#include <powsybl/iidm/ShuntCompensatorNonLinearModel.hpp>
+#include <powsybl/iidm/ShuntCompensatorNonLinearModelAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -21,17 +28,22 @@ class VoltageLevel;
 
 class ShuntCompensatorAdder : public InjectionAdder<ShuntCompensatorAdder> {
 public:
+    using ShuntCompensatorLinearModelAdder = shunt_compensator_view::ShuntCompensatorLinearModelAdder;
+
+    using ShuntCompensatorNonLinearModelAdder = shunt_compensator_view::ShuntCompensatorNonLinearModelAdder;
+
+public:
     ~ShuntCompensatorAdder() noexcept override = default;
 
     ShuntCompensator& add();
 
-    ShuntCompensatorAdder& setbPerSection(double bPerSection);
+    ShuntCompensatorLinearModelAdder newLinearModel();
 
-    ShuntCompensatorAdder& setCurrentSectionCount(unsigned long currentSectionCount);
-
-    ShuntCompensatorAdder& setMaximumSectionCount(unsigned long maximumSectionCount);
+    ShuntCompensatorNonLinearModelAdder newNonLinearModel();
 
     ShuntCompensatorAdder& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
+
+    ShuntCompensatorAdder& setSectionCount(unsigned long sectionCount);
 
     ShuntCompensatorAdder& setTargetDeadband(double targetDeadband);
 
@@ -47,12 +59,12 @@ private:
 
     friend class VoltageLevel;
 
+    friend class shunt_compensator_view::ShuntCompensatorLinearModelAdder;
+
+    friend class shunt_compensator_view::ShuntCompensatorNonLinearModelAdder;
+
 private:
-    double m_bPerSection = stdcxx::nan();
-
-    unsigned long m_currentSectionCount = 0;
-
-    unsigned long m_maximumSectionCount = 0;
+    boost::optional<unsigned long> m_sectionCount;
 
     double m_targetDeadband = stdcxx::nan();
 
@@ -61,6 +73,10 @@ private:
     stdcxx::Reference<Terminal> m_regulatingTerminal;
 
     bool m_voltageRegulatorOn = false;
+
+    stdcxx::optional<ShuntCompensatorLinearModelAdder> m_shuntCompensatorLinearModelAdder;
+
+    stdcxx::optional<ShuntCompensatorNonLinearModelAdder> m_shuntCompensatorNonLinearModelAdder;
 };
 
 }  // namespace iidm

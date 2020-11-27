@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/ShuntCompensator.hpp>
 
+#include <powsybl/iidm/ShuntCompensatorModel.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 
@@ -14,58 +15,73 @@ namespace powsybl {
 
 namespace iidm {
 
-ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-    double bPerSection, unsigned long maximumSectionCount, unsigned long currentSectionCount, Terminal& terminal,
-    bool voltageRegulatorOn, double targetV, double targetDeadband) :
+ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
+    unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband) :
     Injection(id, name, fictitious, ConnectableType::SHUNT_COMPENSATOR),
-    m_bPerSection(checkbPerSection(*this, bPerSection)),
-    m_maximumSectionCount(maximumSectionCount),
-    m_currentSectionCount(network.getVariantManager().getVariantArraySize(), currentSectionCount),
+    m_model(std::move(attach(model))),
+    m_sectionCount(network.getVariantManager().getVariantArraySize(), currentSectionCount),
     m_regulatingTerminal(terminal),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
     m_targetV(network.getVariantManager().getVariantArraySize(), targetV),
     m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband) {
-    checkSections(*this, currentSectionCount, maximumSectionCount);
+    checkSections(*this, currentSectionCount, getMaximumSectionCount());
 }
 
 void ShuntCompensator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     Injection::allocateVariantArrayElement(indexes, sourceIndex);
 
     for (auto index : indexes) {
-        m_currentSectionCount[index] = m_currentSectionCount[sourceIndex];
+        m_sectionCount[index] = m_sectionCount[sourceIndex];
         m_voltageRegulatorOn[index] = m_voltageRegulatorOn[sourceIndex];
         m_targetV[index] = m_targetV[sourceIndex];
         m_targetDeadband[index] = m_targetDeadband[sourceIndex];
     }
 }
 
+std::unique_ptr<ShuntCompensatorModel>& ShuntCompensator::attach(std::unique_ptr<ShuntCompensatorModel>& model) {
+    model->setShuntCompensator(*this);
+    return model;
+}
+
 void ShuntCompensator::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     Injection::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
-    m_currentSectionCount.resize(m_currentSectionCount.size() + number, m_currentSectionCount[sourceIndex]);
+    m_sectionCount.resize(m_sectionCount.size() + number, m_sectionCount[sourceIndex]);
     m_voltageRegulatorOn.resize(m_voltageRegulatorOn.size() + number, m_voltageRegulatorOn[sourceIndex]);
     m_targetV.resize(m_targetV.size() + number, m_targetV[sourceIndex]);
     m_targetDeadband.resize(m_targetDeadband.size() + number, m_targetDeadband[sourceIndex]);
 }
 
-double ShuntCompensator::getbPerSection() const {
-    return m_bPerSection;
+double ShuntCompensator::getB() const {
+    return m_model->getB(m_sectionCount[getNetwork().getVariantIndex()]);
 }
 
-double ShuntCompensator::getCurrentB() const {
-    return m_bPerSection * getCurrentSectionCount();
+double ShuntCompensator::getB(unsigned long sectionCount) const {
+    return m_model->getB(sectionCount);
 }
 
-unsigned long ShuntCompensator::getCurrentSectionCount() const {
-    return m_currentSectionCount.at(getNetwork().getVariantIndex());
+double ShuntCompensator::getG() const {
+    return m_model->getG(m_sectionCount[getNetwork().getVariantIndex()]);
 }
 
-double ShuntCompensator::getMaximumB() const {
-    return m_bPerSection * m_maximumSectionCount;
+double ShuntCompensator::getG(unsigned long sectionCount) const {
+    return m_model->getG(sectionCount);
 }
 
 unsigned long ShuntCompensator::getMaximumSectionCount() const {
-    return m_maximumSectionCount;
+    return m_model->getMaximumSectionCount();
+}
+
+const ShuntCompensatorModel& ShuntCompensator::getModel() const {
+    return *m_model;
+}
+
+ShuntCompensatorModel& ShuntCompensator::getModel() {
+    return *m_model;
+}
+
+const ShuntCompensatorModelType& ShuntCompensator::getModelType() const {
+    return m_model->getType();
 }
 
 const Terminal& ShuntCompensator::getRegulatingTerminal() const {
@@ -74,6 +90,10 @@ const Terminal& ShuntCompensator::getRegulatingTerminal() const {
 
 Terminal& ShuntCompensator::getRegulatingTerminal() {
     return m_regulatingTerminal.get();
+}
+
+unsigned long ShuntCompensator::getSectionCount() const {
+    return m_sectionCount[getNetwork().getVariantIndex()];
 }
 
 double ShuntCompensator::getTargetDeadband() const {
@@ -97,36 +117,23 @@ const std::string& ShuntCompensator::getTypeDescription() const {
 void ShuntCompensator::reduceVariantArraySize(unsigned long number) {
     Injection::reduceVariantArraySize(number);
 
-    m_currentSectionCount.resize(m_currentSectionCount.size() - number);
+    m_sectionCount.resize(m_sectionCount.size() - number);
     m_voltageRegulatorOn.resize(m_voltageRegulatorOn.size() - number);
     m_targetV.resize(m_targetV.size() - number);
     m_targetDeadband.resize(m_targetDeadband.size() - number);
-}
-
-ShuntCompensator& ShuntCompensator::setbPerSection(double bPerSection) {
-    m_bPerSection = checkbPerSection(*this, bPerSection);
-
-    return *this;
-}
-
-ShuntCompensator& ShuntCompensator::setCurrentSectionCount(unsigned long currentSectionCount) {
-    checkSections(*this, currentSectionCount, m_maximumSectionCount);
-    m_currentSectionCount[getNetwork().getVariantIndex()] = currentSectionCount;
-
-    return *this;
-}
-
-ShuntCompensator& ShuntCompensator::setMaximumSectionCount(unsigned long maximumSectionCount) {
-    checkSections(*this, getCurrentSectionCount(), maximumSectionCount);
-    m_maximumSectionCount = maximumSectionCount;
-
-    return *this;
 }
 
 ShuntCompensator& ShuntCompensator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
     checkRegulatingTerminal(*this, regulatingTerminal, getNetwork());
     m_regulatingTerminal = regulatingTerminal ? regulatingTerminal.get() : getTerminal();
 
+    return *this;
+}
+
+ShuntCompensator& ShuntCompensator::setSectionCount(unsigned long sectionCount) {
+    checkSections(*this, sectionCount, m_model->getMaximumSectionCount());
+    unsigned long variantIndex = getNetwork().getVariantIndex();
+    m_sectionCount[variantIndex] = sectionCount;
     return *this;
 }
 
