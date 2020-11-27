@@ -101,14 +101,14 @@ template <typename SinglePassRange>
 using FlattenRange = boost::iterator_range<FlatteningIterator<typename boost::range_iterator<SinglePassRange>::type>>;
 
 template <typename SinglePassRange>
-FlattenRange<SinglePassRange> operator|(SinglePassRange& range, FlattenForwarder) {
+FlattenRange<SinglePassRange> operator|(SinglePassRange& range, FlattenForwarder /* unused */) {
     using Iterator = typename boost::range_iterator<SinglePassRange>::type;
 
     return boost::make_iterator_range(FlatteningIterator<Iterator>(boost::begin(range), boost::end(range)), FlatteningIterator<Iterator>(boost::end(range)));
 }
 
 template <typename SinglePassRange>
-FlattenRange<SinglePassRange> operator|(const SinglePassRange& range, FlattenForwarder) {
+FlattenRange<SinglePassRange> operator|(const SinglePassRange& range, FlattenForwarder /* unused */) {
     using Iterator = typename boost::range_iterator<const SinglePassRange>::type;
 
     return boost::make_iterator_range(FlatteningIterator<Iterator>(boost::begin(range), boost::end(range)), FlatteningIterator<Iterator>(boost::end(range)));
