@@ -8,13 +8,14 @@
 #include <powsybl/iidm/Substation.hpp>
 
 #include <boost/range/adaptor/filtered.hpp>
-#include <boost/range/join.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/util/DistinctPredicate.hpp>
+#include <powsybl/stdcxx/flattened.hpp>
 
 namespace powsybl {
 
@@ -58,23 +59,19 @@ unsigned long Substation::getThreeWindingsTransformerCount() const {
 }
 
 stdcxx::const_range<ThreeWindingsTransformer> Substation::getThreeWindingsTransformers() const {
-    stdcxx::const_range<ThreeWindingsTransformer> range;
+    const auto& mapper = [](const std::reference_wrapper<VoltageLevel>& voltageLevel) {
+        return voltageLevel.get().getConnectables<ThreeWindingsTransformer>();
+    };
 
-    for (const auto& it : m_voltageLevels) {
-        range = boost::range::join(range, it.get().getConnectables<ThreeWindingsTransformer>());
-    }
-
-    return range | boost::adaptors::filtered(DistinctPredicate());
+    return m_voltageLevels | boost::adaptors::transformed(mapper) | stdcxx::flattened | boost::adaptors::filtered(DistinctPredicate());
 }
 
 stdcxx::range<ThreeWindingsTransformer> Substation::getThreeWindingsTransformers() {
-    stdcxx::range<ThreeWindingsTransformer> range;
+    const auto& mapper = [](const std::reference_wrapper<VoltageLevel>& voltageLevel) {
+        return voltageLevel.get().getConnectables<ThreeWindingsTransformer>();
+    };
 
-    for (const auto& it : m_voltageLevels) {
-        range = boost::range::join(range, it.get().getConnectables<ThreeWindingsTransformer>());
-    }
-
-    return range | boost::adaptors::filtered(DistinctPredicate());
+    return m_voltageLevels | boost::adaptors::transformed(mapper) | stdcxx::flattened | boost::adaptors::filtered(DistinctPredicate());
 }
 
 const std::string& Substation::getTso() const {
@@ -86,23 +83,19 @@ unsigned long Substation::getTwoWindingsTransformerCount() const {
 }
 
 stdcxx::const_range<TwoWindingsTransformer> Substation::getTwoWindingsTransformers() const {
-    stdcxx::const_range<TwoWindingsTransformer> range;
+    const auto& mapper = [](const std::reference_wrapper<VoltageLevel>& voltageLevel) {
+        return voltageLevel.get().getConnectables<TwoWindingsTransformer>();
+    };
 
-    for (const auto& it : m_voltageLevels) {
-        range = boost::range::join(range, it.get().getConnectables<TwoWindingsTransformer>());
-    }
-
-    return range | boost::adaptors::filtered(DistinctPredicate());
+    return m_voltageLevels | boost::adaptors::transformed(mapper) | stdcxx::flattened | boost::adaptors::filtered(DistinctPredicate());
 }
 
 stdcxx::range<TwoWindingsTransformer> Substation::getTwoWindingsTransformers() {
-    stdcxx::range<TwoWindingsTransformer> range;
+    const auto& mapper = [](const std::reference_wrapper<VoltageLevel>& voltageLevel) {
+        return voltageLevel.get().getConnectables<TwoWindingsTransformer>();
+    };
 
-    for (const auto& it : m_voltageLevels) {
-        range = boost::range::join(range, it.get().getConnectables<TwoWindingsTransformer>());
-    }
-
-    return range | boost::adaptors::filtered(DistinctPredicate());
+    return m_voltageLevels | boost::adaptors::transformed(mapper) | stdcxx::flattened | boost::adaptors::filtered(DistinctPredicate());
 }
 
 const std::string& Substation::getTypeDescription() const {
