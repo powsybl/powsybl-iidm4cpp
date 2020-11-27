@@ -39,7 +39,7 @@ public:
 public:
     FlatteningIterator() = default;
 
-    FlatteningIterator(Iterator it) :
+    explicit FlatteningIterator(Iterator it) :
         base(it),
         m_outer_end(it),
         m_inner_begin(),
@@ -56,6 +56,16 @@ public:
             skipEmptyRanges();
         }
     }
+
+    FlatteningIterator(const FlatteningIterator&) = default;
+
+    FlatteningIterator(FlatteningIterator&&) noexcept = default;
+
+    ~FlatteningIterator() noexcept = default;
+
+    FlatteningIterator& operator=(const FlatteningIterator&) = default;
+
+    FlatteningIterator& operator=(FlatteningIterator&&) noexcept = default;
 
 private:
     void increment() {
@@ -91,11 +101,7 @@ private:
 
 struct FlattenForwarder {};
 
-namespace {
-
 const FlattenForwarder flattened;
-
-}  // namespace
 
 template <typename SinglePassRange>
 using FlattenRange = boost::iterator_range<FlatteningIterator<typename boost::range_iterator<SinglePassRange>::type>>;
