@@ -9,11 +9,12 @@
 
 #include <cassert>
 
-#include <boost/range/join.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/stdcxx/flattened.hpp>
 
 #include "BusTerminal.hpp"
 
@@ -243,25 +244,19 @@ stdcxx::range<Switch> BusBreakerVoltageLevel::getSwitches() {
 }
 
 stdcxx::const_range<Terminal> BusBreakerVoltageLevel::getTerminals() const {
-    stdcxx::const_range<Terminal> terminals;
-    for (const auto& bus : m_graph.getVertexObjects()) {
-        if (bus) {
-            terminals = boost::range::join(terminals, bus.get().getTerminals());
-        }
-    }
+    const auto& mapper = [](const stdcxx::Reference<ConfiguredBus>& bus) {
+        return bus.get().getTerminals();
+    };
 
-    return terminals;
+    return m_graph.getVertexObjects() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 stdcxx::range<Terminal> BusBreakerVoltageLevel::getTerminals() {
-    stdcxx::range<Terminal> terminals;
-    for (const auto& bus : m_graph.getVertexObjects()) {
-        if (bus) {
-            terminals = boost::range::join(terminals, bus.get().getTerminals());
-        }
-    }
+    const auto& mapper = [](const stdcxx::Reference<ConfiguredBus>& bus) {
+        return bus.get().getTerminals();
+    };
 
-    return terminals;
+    return m_graph.getVertexObjects() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 const TopologyKind& BusBreakerVoltageLevel::getTopologyKind() const {

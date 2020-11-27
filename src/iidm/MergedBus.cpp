@@ -10,11 +10,12 @@
 #include <cassert>
 #include <cmath>
 
-#include <boost/range/join.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/flattened.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -76,25 +77,21 @@ unsigned long MergedBus::getConnectedTerminalCount() const {
 stdcxx::const_range<Terminal> MergedBus::getConnectedTerminals() const {
     checkValidity();
 
-    stdcxx::const_range<Terminal> range;
+    const auto& mapper = [](const std::reference_wrapper<ConfiguredBus>& bus) {
+        return bus.get().getConnectedTerminals();
+    };
 
-    for (const auto& bus : m_buses) {
-        range = boost::range::join(range, bus.get().getConnectedTerminals());
-    }
-
-    return range;
+    return m_buses | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 stdcxx::range<Terminal> MergedBus::getConnectedTerminals() {
     checkValidity();
 
-    stdcxx::range<Terminal> range;
+    const auto& mapper = [](const std::reference_wrapper<ConfiguredBus>& bus) {
+        return bus.get().getConnectedTerminals();
+    };
 
-    for (const auto& bus : m_buses) {
-        range = boost::range::join(range, bus.get().getConnectedTerminals());
-    }
-
-    return range;
+    return m_buses | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 stdcxx::CReference<Component> MergedBus::getSynchronousComponent() const {

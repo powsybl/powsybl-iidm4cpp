@@ -7,12 +7,13 @@
 
 #include <powsybl/iidm/NetworkViews.hpp>
 
-#include <boost/range/join.hpp>
+#include <boost/range/adaptor/transformed.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/flattened.hpp>
 
 #include "BusBreakerVoltageLevelViews.hpp"
 
@@ -47,23 +48,19 @@ stdcxx::Reference<Bus> BusBreakerView::getBus(const std::string& id) {
 }
 
 stdcxx::const_range<Bus> BusBreakerView::getBuses() const {
-    stdcxx::const_range<Bus> range;
+    const auto& mapper = [](const VoltageLevel& voltageLevel) {
+        return voltageLevel.getBusBreakerView().getBuses();
+    };
 
-    for (const auto& vl : m_network.getVoltageLevels()) {
-        range = boost::range::join(range, vl.getBusBreakerView().getBuses());
-    }
-
-    return range;
+    return m_network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 stdcxx::range<Bus> BusBreakerView::getBuses() {
-    stdcxx::range<Bus> range;
+    const auto& mapper = [](const VoltageLevel& voltageLevel) {
+        return voltageLevel.getBusBreakerView().getBuses();
+    };
 
-    for (auto& vl : m_network.getVoltageLevels()) {
-        range = boost::range::join(range, vl.getBusBreakerView().getBuses());
-    }
-
-    return range;
+    return m_network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 unsigned long BusBreakerView::getSwitchCount() const {
@@ -77,23 +74,19 @@ unsigned long BusBreakerView::getSwitchCount() const {
 }
 
 stdcxx::const_range<Switch> BusBreakerView::getSwitches() const {
-    stdcxx::const_range<Switch> range;
+    const auto& mapper = [](const VoltageLevel& voltageLevel) {
+        return voltageLevel.getBusBreakerView().getSwitches();
+    };
 
-    for (const auto& vl : m_network.getVoltageLevels()) {
-        range = boost::range::join(range, vl.getBusBreakerView().getSwitches());
-    }
-
-    return range;
+    return m_network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 stdcxx::range<Switch> BusBreakerView::getSwitches() {
-    stdcxx::range<Switch> range;
+    const auto& mapper = [](const VoltageLevel& voltageLevel) {
+        return voltageLevel.getBusBreakerView().getSwitches();
+    };
 
-    for (auto& vl : m_network.getVoltageLevels()) {
-        range = boost::range::join(range, vl.getBusBreakerView().getSwitches());
-    }
-
-    return range;
+    return m_network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 BusView::BusView(Network& network) :
@@ -121,23 +114,19 @@ stdcxx::Reference<Bus> BusView::getBus(const std::string& id) {
 }
 
 stdcxx::const_range<Bus> BusView::getBuses() const {
-    stdcxx::const_range<Bus> range;
+    const auto& mapper = [](const VoltageLevel& voltageLevel) {
+        return voltageLevel.getBusView().getBuses();
+    };
 
-    for (const auto& vl : m_network.getVoltageLevels()) {
-        range = boost::range::join(range, vl.getBusView().getBuses());
-    }
-
-    return range;
+    return m_network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 stdcxx::range<Bus> BusView::getBuses() {
-    stdcxx::range<Bus> range;
+    const auto& mapper = [](const VoltageLevel& voltageLevel) {
+        return voltageLevel.getBusView().getBuses();
+    };
 
-    for (auto& vl : m_network.getVoltageLevels()) {
-        range = boost::range::join(range, vl.getBusView().getBuses());
-    }
-
-    return range;
+    return m_network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
 stdcxx::const_range<Component> BusView::getConnectedComponents() const {
