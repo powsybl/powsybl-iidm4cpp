@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_GENERATION_HPP
-#define POWSYBL_IIDM_GENERATION_HPP
+#ifndef POWSYBL_IIDM_DANGLINGLINEGENERATION_HPP
+#define POWSYBL_IIDM_DANGLINGLINEGENERATION_HPP
 
 #include <memory>
 #include <set>
@@ -23,14 +23,14 @@ namespace iidm {
 class DanglingLine;
 class VariantManagerHolder;
 
-namespace dangling_line_views {
+namespace dangling_line {
 
-class Generation : public Validable, public ReactiveLimitsHolder {
+class DanglingLineGeneration : public Validable, public ReactiveLimitsHolder {
 public:  // Validable
     std::string getMessageHeader() const override;
 
 public:
-    Generation(double minP, double maxP, double targetP, double targetQ, bool voltageRegulationOn, double targetV);
+    DanglingLineGeneration(DanglingLine& danglingLine, double minP, double maxP, double targetP, double targetQ, bool voltageRegulationOn, double targetV);
 
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex);
 
@@ -50,55 +50,41 @@ public:
 
     void reduceVariantArraySize(unsigned long number);
 
-    Generation& setMaxP(double maxP);
+    DanglingLineGeneration& setMaxP(double maxP);
 
-    Generation& setMinP(double minP);
+    DanglingLineGeneration& setMinP(double minP);
 
-    Generation& setTargetP(double targetP);
+    DanglingLineGeneration& setTargetP(double targetP);
 
-    Generation& setTargetQ(double targetQ);
+    DanglingLineGeneration& setTargetQ(double targetQ);
 
-    Generation& setTargetV(double targetV);
+    DanglingLineGeneration& setTargetV(double targetV);
 
-    Generation& setVoltageRegulationOn(bool voltageRegulationOn);
+    DanglingLineGeneration& setVoltageRegulationOn(bool voltageRegulationOn);
 
 private:
-    Generation& setDanglingLine(const VariantManagerHolder& network, const DanglingLine& danglingLine);
-
     friend class iidm::DanglingLine;
 
 private:
-    stdcxx::Reference<DanglingLine> m_danglingLine;
-
-    std::unique_ptr<ReactiveLimitsHolder> m_reactiveLimits;
+    std::reference_wrapper<DanglingLine> m_danglingLine;
 
     double m_minP;
 
     double m_maxP;
 
-    double m_initialTargetP;
-
-    double m_initialTargetQ;
-
-    bool m_initialVoltageRegulationOn;
-
-    double m_initialTargetV;
-
-    // attributes depending on the variant
-
     std::vector<double> m_targetP;
 
     std::vector<double> m_targetQ;
 
-    std::vector<bool> m_voltageRegulationOn;
-
     std::vector<double> m_targetV;
+
+    std::vector<bool> m_voltageRegulationOn;
 };
 
-}  // namespace dangling_line_views
+}  // namespace dangling_line
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_GENERATION_HPP
+#endif  // POWSYBL_IIDM_DANGLINGLINEGENERATION_HPP

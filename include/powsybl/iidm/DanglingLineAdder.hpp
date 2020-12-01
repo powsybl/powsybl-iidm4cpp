@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_DANGLINGLINEADDER_HPP
 #define POWSYBL_IIDM_DANGLINGLINEADDER_HPP
 
-#include <powsybl/iidm/GenerationAdder.hpp>
+#include <powsybl/iidm/DanglingLineGenerationAdder.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
@@ -23,7 +23,7 @@ class VoltageLevel;
 
 class DanglingLineAdder : public InjectionAdder<DanglingLineAdder> {
 public:
-    using GenerationAdder = dangling_line_views::GenerationAdder;
+    using GenerationAdder = dangling_line::DanglingLineGenerationAdder;
 
 public:
     DanglingLine& add();

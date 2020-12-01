@@ -15,8 +15,7 @@ namespace powsybl {
 namespace iidm {
 
 DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-                           double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode,
-                           std::unique_ptr<Generation>&& generation) :
+                           double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode) :
     Injection(id, name, fictitious, ConnectableType::DANGLING_LINE),
     m_b(checkB(*this, b)),
     m_g(checkG(*this, g)),
@@ -24,11 +23,7 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     m_x(checkX(*this, x)),
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
-    m_ucteXnodeCode(ucteXnodeCode),
-    m_generation(std::move(generation)) {
-    if (m_generation) {
-        m_generation->setDanglingLine(network, *this);
-    }
+    m_ucteXnodeCode(ucteXnodeCode) {
 }
 
 void DanglingLine::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -72,11 +67,11 @@ double DanglingLine::getG() const {
 }
 
 stdcxx::CReference<DanglingLine::Generation> DanglingLine::getGeneration() const {
-    return m_generation ? stdcxx::cref(*m_generation) : stdcxx::cref<Generation>();
+    return stdcxx::cref<Generation>(m_generation);
 }
 
 stdcxx::Reference<DanglingLine::Generation> DanglingLine::getGeneration() {
-    return m_generation ? stdcxx::ref(*m_generation) : stdcxx::ref<Generation>();
+    return stdcxx::ref<Generation>(m_generation);
 }
 
 double DanglingLine::getP0() const {
@@ -133,6 +128,11 @@ void DanglingLine::setCurrentLimits(std::nullptr_t /*side*/, std::unique_ptr<Cur
 DanglingLine& DanglingLine::setG(double g) {
     m_g = checkG(*this, g);
 
+    return *this;
+}
+
+DanglingLine& DanglingLine::setGeneration(std::unique_ptr<Generation>&& generation) {
+    m_generation = std::move(generation);
     return *this;
 }
 

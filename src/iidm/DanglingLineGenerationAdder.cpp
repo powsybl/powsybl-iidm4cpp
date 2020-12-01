@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/GenerationAdder.hpp>
+#include <powsybl/iidm/DanglingLineGenerationAdder.hpp>
 
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
@@ -14,50 +14,50 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace dangling_line_views {
+namespace dangling_line {
 
-GenerationAdder::GenerationAdder(DanglingLineAdder& danglingLineAdder) :
+DanglingLineGenerationAdder::DanglingLineGenerationAdder(DanglingLineAdder& danglingLineAdder) :
     m_danglingLineAdder(danglingLineAdder) {
 }
 
-DanglingLineAdder& GenerationAdder::add() {
+DanglingLineAdder& DanglingLineGenerationAdder::add() {
     checkActivePowerLimits(m_danglingLineAdder, m_minP, m_maxP);
     checkActivePowerSetpoint(m_danglingLineAdder, m_targetP);
     checkVoltageControl(m_danglingLineAdder, m_voltageRegulationOn, m_targetV, m_targetQ);
     return m_danglingLineAdder;
 }
 
-GenerationAdder& GenerationAdder::setMaxP(double maxP) {
+DanglingLineGenerationAdder& DanglingLineGenerationAdder::setMaxP(double maxP) {
     m_maxP = maxP;
     return *this;
 }
 
-GenerationAdder& GenerationAdder::setMinP(double minP) {
+DanglingLineGenerationAdder& DanglingLineGenerationAdder::setMinP(double minP) {
     m_minP = minP;
     return *this;
 }
 
-GenerationAdder& GenerationAdder::setTargetP(double targetP) {
+DanglingLineGenerationAdder& DanglingLineGenerationAdder::setTargetP(double targetP) {
     m_targetP = targetP;
     return *this;
 }
 
-GenerationAdder& GenerationAdder::setTargetQ(double targetQ) {
+DanglingLineGenerationAdder& DanglingLineGenerationAdder::setTargetQ(double targetQ) {
     m_targetQ = targetQ;
     return *this;
 }
 
-GenerationAdder& GenerationAdder::setTargetV(double targetV) {
+DanglingLineGenerationAdder& DanglingLineGenerationAdder::setTargetV(double targetV) {
     m_targetV = targetV;
     return *this;
 }
 
-GenerationAdder& GenerationAdder::setVoltageRegulationOn(bool voltageRegulationOn) {
+DanglingLineGenerationAdder& DanglingLineGenerationAdder::setVoltageRegulationOn(bool voltageRegulationOn) {
     m_voltageRegulationOn = voltageRegulationOn;
     return *this;
 }
 
-}  // namespace dangling_line_views
+}  // namespace dangling_line
 
 }  // namespace iidm
 

@@ -123,12 +123,12 @@ void DanglingLineXml::writeRootElementAttributes(const DanglingLine& line, const
     writePQ(line.getTerminal(), context.getWriter());
 }
 
-void DanglingLineXml::writeSubElements(const DanglingLine& line, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    if (line.getGeneration()) {
-        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &line]() { ReactiveLimitsXml::getInstance().write(line.getGeneration().get(), context); });
+void DanglingLineXml::writeSubElements(const DanglingLine& dl, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
+    if (dl.getGeneration()) {
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &dl]() { ReactiveLimitsXml::getInstance().write(dl.getGeneration().get(), context); });
     }
-    if (line.getCurrentLimits()) {
-        writeCurrentLimits(line.getCurrentLimits(), context.getWriter(), context.getVersion());
+    if (dl.getCurrentLimits()) {
+        writeCurrentLimits(dl.getCurrentLimits(), context.getWriter(), context.getVersion());
     }
 }
 

@@ -59,8 +59,7 @@ void RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest(const std::stri
         return version >= minVersion && version < iidm::converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION();
     };
 
-    const auto& newerVersions = iidm::converter::xml::IidmXmlVersion::all() | boost::adaptors::filtered(filter);
-    for (const auto& version : newerVersions) {
+    for (const auto& version : iidm::converter::xml::IidmXmlVersion::all() | boost::adaptors::filtered(filter)) {
         roundTripVersionedXmlTest(filename, version);
     }
 }
@@ -118,9 +117,7 @@ std::string RoundTrip::write(const iidm::Network& network, const Writer& out, co
 }
 
 void RoundTrip::writeXmlTest(const iidm::Network& network, const Writer& out, const std::string& ref) {
-    std::stringstream stream;
-    out(network, stream);
-    compareXml(ref, stream.str());
+    write(network, out, compareXml, ref);
 }
 
 }  // namespace converter

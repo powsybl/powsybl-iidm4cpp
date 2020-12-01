@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_GENERATIONADDER_HPP
-#define POWSYBL_IIDM_GENERATIONADDER_HPP
+#ifndef POWSYBL_IIDM_DANGLINGLINEGENERATIONADDER_HPP
+#define POWSYBL_IIDM_DANGLINGLINEGENERATIONADDER_HPP
 
 #include <functional>
 
@@ -18,25 +18,25 @@ namespace iidm {
 
 class DanglingLineAdder;
 
-namespace dangling_line_views {
+namespace dangling_line {
 
-class GenerationAdder {
+class DanglingLineGenerationAdder {
 public:
-    explicit GenerationAdder(DanglingLineAdder& adder);
+    explicit DanglingLineGenerationAdder(DanglingLineAdder& adder);
 
     DanglingLineAdder& add();
 
-    GenerationAdder& setMaxP(double maxP);
+    DanglingLineGenerationAdder& setMaxP(double maxP);
 
-    GenerationAdder& setMinP(double minP);
+    DanglingLineGenerationAdder& setMinP(double minP);
 
-    GenerationAdder& setTargetP(double targetP);
+    DanglingLineGenerationAdder& setTargetP(double targetP);
 
-    GenerationAdder& setTargetQ(double targetQ);
+    DanglingLineGenerationAdder& setTargetQ(double targetQ);
 
-    GenerationAdder& setTargetV(double targetV);
+    DanglingLineGenerationAdder& setTargetV(double targetV);
 
-    GenerationAdder& setVoltageRegulationOn(bool voltageRegulationOn);
+    DanglingLineGenerationAdder& setVoltageRegulationOn(bool voltageRegulationOn);
 
 private:
     friend class iidm::DanglingLineAdder;
@@ -52,15 +52,15 @@ private:
 
     double m_targetQ = stdcxx::nan();
 
-    bool m_voltageRegulationOn = false;
-
     double m_targetV = stdcxx::nan();
+
+    bool m_voltageRegulationOn = false;
 };
 
-}  // namespace dangling_line_views
+}  // namespace dangling_line
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_GENERATIONADDER_HPP
+#endif  // POWSYBL_IIDM_DANGLINGLINEGENERATIONADDER_HPP

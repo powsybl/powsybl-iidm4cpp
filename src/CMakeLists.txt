@@ -37,14 +37,14 @@ set(IIDM_SOURCES
     iidm/CurrentLimits.cpp
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
+    iidm/DanglingLineGeneration.cpp
+    iidm/DanglingLineGenerationAdder.cpp
     iidm/EnergySource.cpp
     iidm/Extendable.cpp
     iidm/Extension.cpp
     iidm/ExtensionAdder.cpp
     iidm/ExtensionProvider.cpp
     iidm/ExtensionProviders.cpp
-    iidm/Generation.cpp
-    iidm/GenerationAdder.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HvdcConverterStation.cpp

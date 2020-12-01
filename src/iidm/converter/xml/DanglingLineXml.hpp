@@ -37,7 +37,7 @@ protected:  // AbstractIdentifiableXml
 
     void writeRootElementAttributes(const DanglingLine& line, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
-    void writeSubElements(const DanglingLine& line, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+    void writeSubElements(const DanglingLine& dl, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
 private:
     DanglingLineXml() = default;
