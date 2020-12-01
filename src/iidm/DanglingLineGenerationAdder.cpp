@@ -16,15 +16,30 @@ namespace iidm {
 
 namespace dangling_line {
 
-DanglingLineGenerationAdder::DanglingLineGenerationAdder(DanglingLineAdder& danglingLineAdder) :
-    m_danglingLineAdder(danglingLineAdder) {
+DanglingLineGenerationAdder::DanglingLineGenerationAdder(DanglingLineAdder& parent, stdcxx::optional<DanglingLineGenerationAdder>& adder) :
+    m_parent(parent),
+    m_adder(adder) {
+}
+
+// NOLINTNEXTLINE
+DanglingLineGenerationAdder& DanglingLineGenerationAdder::operator=(const DanglingLineGenerationAdder& adder) {
+    m_parent = adder.m_parent;
+    m_adder = adder.m_adder;
+    m_minP = adder.m_minP;
+    m_maxP = adder.m_maxP;
+    m_targetP = adder.m_targetP;
+    m_targetQ = adder.m_targetQ;
+    m_targetV = adder.m_targetV;
+    m_voltageRegulationOn = adder.m_voltageRegulationOn;
+    return *this;
 }
 
 DanglingLineAdder& DanglingLineGenerationAdder::add() {
-    checkActivePowerLimits(m_danglingLineAdder, m_minP, m_maxP);
-    checkActivePowerSetpoint(m_danglingLineAdder, m_targetP);
-    checkVoltageControl(m_danglingLineAdder, m_voltageRegulationOn, m_targetV, m_targetQ);
-    return m_danglingLineAdder;
+    checkActivePowerLimits(m_parent, m_minP, m_maxP);
+    checkActivePowerSetpoint(m_parent, m_targetP);
+    checkVoltageControl(m_parent, m_voltageRegulationOn, m_targetV, m_targetQ);
+    m_adder = *this;
+    return m_parent;
 }
 
 DanglingLineGenerationAdder& DanglingLineGenerationAdder::setMaxP(double maxP) {

@@ -11,6 +11,7 @@
 #include <functional>
 
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -22,7 +23,10 @@ namespace dangling_line {
 
 class DanglingLineGenerationAdder {
 public:
-    explicit DanglingLineGenerationAdder(DanglingLineAdder& adder);
+    DanglingLineGenerationAdder(DanglingLineAdder& parent, stdcxx::optional<DanglingLineGenerationAdder>& adder);
+
+    // NOLINTNEXTLINE
+    DanglingLineGenerationAdder& operator=(const DanglingLineGenerationAdder& adder);
 
     DanglingLineAdder& add();
 
@@ -42,7 +46,9 @@ private:
     friend class iidm::DanglingLineAdder;
 
 private:
-    std::reference_wrapper<DanglingLineAdder> m_danglingLineAdder;
+    std::reference_wrapper<DanglingLineAdder> m_parent;
+
+    stdcxx::optional<DanglingLineGenerationAdder>& m_adder;
 
     double m_minP = stdcxx::nan();
 

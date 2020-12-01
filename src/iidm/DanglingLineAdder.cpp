@@ -56,9 +56,8 @@ const std::string& DanglingLineAdder::getTypeDescription() const {
     return s_typeDescription;
 }
 
-DanglingLineAdder::GenerationAdder& DanglingLineAdder::newGeneration() {
-    m_generationAdder = GenerationAdder(*this);
-    return *m_generationAdder;
+DanglingLineAdder::GenerationAdder DanglingLineAdder::newGeneration() {
+    return GenerationAdder(*this, m_generationAdder);
 }
 
 DanglingLineAdder& DanglingLineAdder::setB(double b) {

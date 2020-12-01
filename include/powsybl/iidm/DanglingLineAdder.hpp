@@ -28,7 +28,7 @@ public:
 public:
     DanglingLine& add();
 
-    GenerationAdder& newGeneration();
+    GenerationAdder newGeneration();
 
     DanglingLineAdder& setB(double b);
 

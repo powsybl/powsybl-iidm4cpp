@@ -114,7 +114,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     adder.setId("DL2");
 
-    DanglingLineAdder::GenerationAdder& gAdder = adder.newGeneration();
+    DanglingLineAdder::GenerationAdder gAdder = adder.newGeneration();
 
     POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Active power setpoint is not set");
     gAdder.setMinP(100).setMaxP(50);
