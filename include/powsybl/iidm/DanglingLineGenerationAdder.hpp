@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_DANGLINGLINEGENERATIONADDER_HPP
 
 #include <functional>
+#include <memory>
 
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
@@ -17,16 +18,16 @@ namespace powsybl {
 
 namespace iidm {
 
+class DanglingLine;
 class DanglingLineAdder;
 
 namespace dangling_line {
 
+class DanglingLineGeneration;
+
 class DanglingLineGenerationAdder {
 public:
-    DanglingLineGenerationAdder(DanglingLineAdder& parent, stdcxx::optional<DanglingLineGenerationAdder>& adder);
-
-    // NOLINTNEXTLINE
-    DanglingLineGenerationAdder& operator=(const DanglingLineGenerationAdder& adder);
+    DanglingLineGenerationAdder(DanglingLineAdder& parent);
 
     DanglingLineAdder& add();
 
@@ -43,12 +44,12 @@ public:
     DanglingLineGenerationAdder& setVoltageRegulationOn(bool voltageRegulationOn);
 
 private:
+    std::unique_ptr<dangling_line::DanglingLineGeneration> build(DanglingLine& danglingLine) const;
+
     friend class iidm::DanglingLineAdder;
 
 private:
     std::reference_wrapper<DanglingLineAdder> m_parent;
-
-    stdcxx::optional<DanglingLineGenerationAdder>& m_adder;
 
     double m_minP = stdcxx::nan();
 

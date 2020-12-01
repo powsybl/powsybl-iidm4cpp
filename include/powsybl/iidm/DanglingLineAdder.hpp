@@ -50,7 +50,11 @@ private: // IdentifiableAdder
 private:
     explicit DanglingLineAdder(VoltageLevel& voltageLevel);
 
+    void setGenerationAdder(const GenerationAdder& generationAdder);
+
     friend class VoltageLevel;
+
+    friend class dangling_line::DanglingLineGenerationAdder;
 
 private:
     stdcxx::optional<GenerationAdder> m_generationAdder;

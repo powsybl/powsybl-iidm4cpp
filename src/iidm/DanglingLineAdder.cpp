@@ -37,14 +37,7 @@ DanglingLine& DanglingLineAdder::add() {
     getVoltageLevel().attach(terminal, false);
 
     if (m_generationAdder.is_initialized()) {
-        auto generation = stdcxx::make_unique<DanglingLine::Generation>(danglingLine,
-                                                                        m_generationAdder->m_minP,
-                                                                        m_generationAdder->m_maxP,
-                                                                        m_generationAdder->m_targetP,
-                                                                        m_generationAdder->m_targetQ,
-                                                                        m_generationAdder->m_voltageRegulationOn,
-                                                                        m_generationAdder->m_targetV);
-        danglingLine.setGeneration(std::move(generation));
+        danglingLine.setGeneration(m_generationAdder->build(danglingLine));
     }
 
     return danglingLine;
@@ -57,7 +50,7 @@ const std::string& DanglingLineAdder::getTypeDescription() const {
 }
 
 DanglingLineAdder::GenerationAdder DanglingLineAdder::newGeneration() {
-    return GenerationAdder(*this, m_generationAdder);
+    return {*this};
 }
 
 DanglingLineAdder& DanglingLineAdder::setB(double b) {
@@ -68,6 +61,10 @@ DanglingLineAdder& DanglingLineAdder::setB(double b) {
 DanglingLineAdder& DanglingLineAdder::setG(double g) {
     m_g = g;
     return *this;
+}
+
+void DanglingLineAdder::setGenerationAdder(const GenerationAdder& generationAdder) {
+    m_generationAdder = generationAdder;
 }
 
 DanglingLineAdder& DanglingLineAdder::setP0(double p0) {

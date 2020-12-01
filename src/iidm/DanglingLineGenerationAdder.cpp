@@ -8,6 +8,7 @@
 #include <powsybl/iidm/DanglingLineGenerationAdder.hpp>
 
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/DanglingLineGeneration.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
@@ -16,30 +17,20 @@ namespace iidm {
 
 namespace dangling_line {
 
-DanglingLineGenerationAdder::DanglingLineGenerationAdder(DanglingLineAdder& parent, stdcxx::optional<DanglingLineGenerationAdder>& adder) :
-    m_parent(parent),
-    m_adder(adder) {
-}
-
-// NOLINTNEXTLINE
-DanglingLineGenerationAdder& DanglingLineGenerationAdder::operator=(const DanglingLineGenerationAdder& adder) {
-    m_parent = adder.m_parent;
-    m_adder = adder.m_adder;
-    m_minP = adder.m_minP;
-    m_maxP = adder.m_maxP;
-    m_targetP = adder.m_targetP;
-    m_targetQ = adder.m_targetQ;
-    m_targetV = adder.m_targetV;
-    m_voltageRegulationOn = adder.m_voltageRegulationOn;
-    return *this;
+DanglingLineGenerationAdder::DanglingLineGenerationAdder(DanglingLineAdder& parent) :
+    m_parent(parent) {
 }
 
 DanglingLineAdder& DanglingLineGenerationAdder::add() {
     checkActivePowerLimits(m_parent, m_minP, m_maxP);
     checkActivePowerSetpoint(m_parent, m_targetP);
     checkVoltageControl(m_parent, m_voltageRegulationOn, m_targetV, m_targetQ);
-    m_adder = *this;
+    m_parent.get().setGenerationAdder(*this);
     return m_parent;
+}
+
+std::unique_ptr<dangling_line::DanglingLineGeneration> DanglingLineGenerationAdder::build(DanglingLine& danglingLine) const {
+    return stdcxx::make_unique<dangling_line::DanglingLineGeneration>(danglingLine, m_minP, m_maxP, m_targetP, m_targetQ, m_voltageRegulationOn, m_targetV);
 }
 
 DanglingLineGenerationAdder& DanglingLineGenerationAdder::setMaxP(double maxP) {
