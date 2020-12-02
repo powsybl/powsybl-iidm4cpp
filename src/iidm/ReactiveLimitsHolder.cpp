@@ -18,6 +18,10 @@ ReactiveLimitsHolder::ReactiveLimitsHolder() :
     m_reactiveLimits(stdcxx::make_unique<MinMaxReactiveLimits>()) {
 }
 
+ReactiveLimitsHolder::ReactiveLimitsHolder(std::unique_ptr<ReactiveLimits>&& limits) :
+    m_reactiveLimits(std::move(limits)) {
+}
+
 MinMaxReactiveLimitsAdder ReactiveLimitsHolder::newMinMaxReactiveLimits() {
     return MinMaxReactiveLimitsAdder(*this);
 }
