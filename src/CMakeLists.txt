@@ -37,6 +37,8 @@ set(IIDM_SOURCES
     iidm/CurrentLimits.cpp
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
+    iidm/DanglingLineGeneration.cpp
+    iidm/DanglingLineGenerationAdder.cpp
     iidm/EnergySource.cpp
     iidm/Extendable.cpp
     iidm/Extension.cpp

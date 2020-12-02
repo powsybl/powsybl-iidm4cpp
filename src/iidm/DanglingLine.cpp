@@ -33,6 +33,10 @@ void DanglingLine::allocateVariantArrayElement(const std::set<unsigned long>& in
         m_p0[index] = m_p0[sourceIndex];
         m_q0[index] = m_q0[sourceIndex];
     }
+
+    if (m_generation) {
+        m_generation->allocateVariantArrayElement(indexes, sourceIndex);
+    }
 }
 
 void DanglingLine::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
@@ -40,6 +44,10 @@ void DanglingLine::extendVariantArraySize(unsigned long initVariantArraySize, un
 
     m_p0.resize(m_p0.size() + number, m_p0[sourceIndex]);
     m_q0.resize(m_q0.size() + number, m_q0[sourceIndex]);
+
+    if (m_generation) {
+        m_generation->extendVariantArraySize(number, sourceIndex);
+    }
 }
 
 double DanglingLine::getB() const {
@@ -56,6 +64,14 @@ stdcxx::Reference<CurrentLimits> DanglingLine::getCurrentLimits() {
 
 double DanglingLine::getG() const {
     return m_g;
+}
+
+stdcxx::CReference<DanglingLine::Generation> DanglingLine::getGeneration() const {
+    return stdcxx::cref<Generation>(m_generation);
+}
+
+stdcxx::Reference<DanglingLine::Generation> DanglingLine::getGeneration() {
+    return stdcxx::ref<Generation>(m_generation);
 }
 
 double DanglingLine::getP0() const {
@@ -93,6 +109,10 @@ void DanglingLine::reduceVariantArraySize(unsigned long number) {
 
     m_p0.resize(m_p0.size() - number);
     m_q0.resize(m_q0.size() - number);
+
+    if (m_generation) {
+        m_generation->reduceVariantArraySize(number);
+    }
 }
 
 DanglingLine& DanglingLine::setB(double b) {
@@ -108,6 +128,11 @@ void DanglingLine::setCurrentLimits(std::nullptr_t /*side*/, std::unique_ptr<Cur
 DanglingLine& DanglingLine::setG(double g) {
     m_g = checkG(*this, g);
 
+    return *this;
+}
+
+DanglingLine& DanglingLine::setGeneration(std::unique_ptr<Generation>&& generation) {
+    m_generation = std::move(generation);
     return *this;
 }
 
