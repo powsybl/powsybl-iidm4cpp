@@ -33,9 +33,9 @@ protected:  // AbstractIdentifiableXml
 
     DanglingLine& readRootElementAttributes(DanglingLineAdder& adder, NetworkXmlReaderContext& context) const override;
 
-    void readSubElements(DanglingLine& line, NetworkXmlReaderContext& context) const override;
+    void readSubElements(DanglingLine& dl, NetworkXmlReaderContext& context) const override;
 
-    void writeRootElementAttributes(const DanglingLine& line, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+    void writeRootElementAttributes(const DanglingLine& dl, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
     void writeSubElements(const DanglingLine& dl, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 

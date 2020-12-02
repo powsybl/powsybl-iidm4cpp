@@ -23,7 +23,7 @@ class VoltageLevel;
 
 class DanglingLineAdder : public InjectionAdder<DanglingLineAdder> {
 public:
-    using GenerationAdder = dangling_line::DanglingLineGenerationAdder;
+    using GenerationAdder = dangling_line::GenerationAdder;
 
 public:
     DanglingLine& add();
@@ -54,7 +54,7 @@ private:
 
     friend class VoltageLevel;
 
-    friend class dangling_line::DanglingLineGenerationAdder;
+    friend class dangling_line::GenerationAdder;
 
 private:
     stdcxx::optional<GenerationAdder> m_generationAdder;

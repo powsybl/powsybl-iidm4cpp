@@ -23,28 +23,28 @@ class DanglingLineAdder;
 
 namespace dangling_line {
 
-class DanglingLineGeneration;
+class Generation;
 
-class DanglingLineGenerationAdder {
+class GenerationAdder {
 public:
-    DanglingLineGenerationAdder(DanglingLineAdder& parent);
+    GenerationAdder(DanglingLineAdder& parent);
 
     DanglingLineAdder& add();
 
-    DanglingLineGenerationAdder& setMaxP(double maxP);
+    GenerationAdder& setMaxP(double maxP);
 
-    DanglingLineGenerationAdder& setMinP(double minP);
+    GenerationAdder& setMinP(double minP);
 
-    DanglingLineGenerationAdder& setTargetP(double targetP);
+    GenerationAdder& setTargetP(double targetP);
 
-    DanglingLineGenerationAdder& setTargetQ(double targetQ);
+    GenerationAdder& setTargetQ(double targetQ);
 
-    DanglingLineGenerationAdder& setTargetV(double targetV);
+    GenerationAdder& setTargetV(double targetV);
 
-    DanglingLineGenerationAdder& setVoltageRegulationOn(bool voltageRegulationOn);
+    GenerationAdder& setVoltageRegulationOn(bool voltageRegulationOn);
 
 private:
-    std::unique_ptr<dangling_line::DanglingLineGeneration> build(DanglingLine& danglingLine) const;
+    std::unique_ptr<Generation> build(DanglingLine& danglingLine) const;
 
     friend class iidm::DanglingLineAdder;
 

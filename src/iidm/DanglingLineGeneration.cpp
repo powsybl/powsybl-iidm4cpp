@@ -20,7 +20,7 @@ namespace iidm {
 
 namespace dangling_line {
 
-DanglingLineGeneration::DanglingLineGeneration(DanglingLine& danglingLine, double minP, double maxP, double targetP, double targetQ, bool voltageRegulationOn, double targetV) :
+Generation::Generation(DanglingLine& danglingLine, double minP, double maxP, double targetP, double targetQ, double targetV, bool voltageRegulationOn) :
     ReactiveLimitsHolder(stdcxx::make_unique<MinMaxReactiveLimits>(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max())),
     m_danglingLine(danglingLine),
     m_minP(std::isnan(minP) ? -std::numeric_limits<double>::max() : minP),
@@ -32,7 +32,7 @@ DanglingLineGeneration::DanglingLineGeneration(DanglingLine& danglingLine, doubl
     m_voltageRegulationOn.resize(variantArraySize, voltageRegulationOn);
 }
 
-void DanglingLineGeneration::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+void Generation::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     for (unsigned long index : indexes) {
         m_targetP[index] = m_targetP[sourceIndex];
         m_targetQ[index] = m_targetQ[sourceIndex];
@@ -41,84 +41,84 @@ void DanglingLineGeneration::allocateVariantArrayElement(const std::set<unsigned
     }
 }
 
-void DanglingLineGeneration::extendVariantArraySize(unsigned long number, unsigned long sourceIndex) {
+void Generation::extendVariantArraySize(unsigned long number, unsigned long sourceIndex) {
     m_targetP.resize(m_targetP.size() + number, m_targetP[sourceIndex]);
     m_targetQ.resize(m_targetQ.size() + number, m_targetQ[sourceIndex]);
     m_voltageRegulationOn.resize(m_voltageRegulationOn.size() + number, m_voltageRegulationOn[sourceIndex]);
     m_targetV.resize(m_targetV.size() + number, m_targetV[sourceIndex]);
 }
 
-double DanglingLineGeneration::getMaxP() const {
+double Generation::getMaxP() const {
     return m_maxP;
 }
 
-double DanglingLineGeneration::getMinP() const {
+double Generation::getMinP() const {
     return m_minP;
 }
 
-std::string DanglingLineGeneration::getMessageHeader() const {
+std::string Generation::getMessageHeader() const {
     return m_danglingLine.get().getMessageHeader();
 }
 
-double DanglingLineGeneration::getTargetP() const {
+double Generation::getTargetP() const {
     return m_targetP[m_danglingLine.get().getNetwork().getVariantIndex()];
 }
 
-double DanglingLineGeneration::getTargetQ() const {
+double Generation::getTargetQ() const {
     return m_targetQ[m_danglingLine.get().getNetwork().getVariantIndex()];
 }
 
-double DanglingLineGeneration::getTargetV() const {
+double Generation::getTargetV() const {
     return m_targetV[m_danglingLine.get().getNetwork().getVariantIndex()];
 }
 
-bool DanglingLineGeneration::isVoltageRegulationOn() const {
+bool Generation::isVoltageRegulationOn() const {
     return m_voltageRegulationOn[m_danglingLine.get().getNetwork().getVariantIndex()];
 }
 
-void DanglingLineGeneration::reduceVariantArraySize(unsigned long number) {
+void Generation::reduceVariantArraySize(unsigned long number) {
     m_targetP.resize(m_targetP.size() - number);
     m_targetQ.resize(m_targetQ.size() - number);
     m_voltageRegulationOn.resize(m_voltageRegulationOn.size() - number);
     m_targetV.resize(m_targetV.size() - number);
 }
 
-DanglingLineGeneration& DanglingLineGeneration::setMaxP(double maxP) {
+Generation& Generation::setMaxP(double maxP) {
     checkMaxP(m_danglingLine, maxP);
     checkActivePowerLimits(m_danglingLine, m_minP, maxP);
     m_maxP = maxP;
     return *this;
 }
 
-DanglingLineGeneration& DanglingLineGeneration::setMinP(double minP) {
+Generation& Generation::setMinP(double minP) {
     checkMinP(m_danglingLine, minP);
     checkActivePowerLimits(m_danglingLine, minP, m_maxP);
     m_minP = minP;
     return *this;
 }
 
-DanglingLineGeneration& DanglingLineGeneration::setTargetP(double targetP) {
+Generation& Generation::setTargetP(double targetP) {
     checkActivePowerSetpoint(m_danglingLine, targetP);
     unsigned long variantIndex = m_danglingLine.get().getNetwork().getVariantIndex();
     m_targetP[variantIndex] = targetP;
     return *this;
 }
 
-DanglingLineGeneration& DanglingLineGeneration::setTargetQ(double targetQ) {
+Generation& Generation::setTargetQ(double targetQ) {
     unsigned long variantIndex = m_danglingLine.get().getNetwork().getVariantIndex();
     checkVoltageControl(m_danglingLine, m_voltageRegulationOn[variantIndex], m_targetV[variantIndex], targetQ);
     m_targetQ[variantIndex] = targetQ;
     return *this;
 }
 
-DanglingLineGeneration& DanglingLineGeneration::setTargetV(double targetV) {
+Generation& Generation::setTargetV(double targetV) {
     unsigned long variantIndex = m_danglingLine.get().getNetwork().getVariantIndex();
     checkVoltageControl(m_danglingLine, m_voltageRegulationOn[variantIndex], targetV, m_targetQ[variantIndex]);
     m_targetV[variantIndex] = targetV;
     return *this;
 }
 
-DanglingLineGeneration& DanglingLineGeneration::setVoltageRegulationOn(bool voltageRegulationOn) {
+Generation& Generation::setVoltageRegulationOn(bool voltageRegulationOn) {
     unsigned long variantIndex = m_danglingLine.get().getNetwork().getVariantIndex();
     checkVoltageControl(m_danglingLine, voltageRegulationOn, m_targetV[variantIndex], m_targetQ[variantIndex]);
     m_voltageRegulationOn[variantIndex] = voltageRegulationOn;

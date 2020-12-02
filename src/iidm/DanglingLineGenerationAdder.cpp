@@ -17,11 +17,11 @@ namespace iidm {
 
 namespace dangling_line {
 
-DanglingLineGenerationAdder::DanglingLineGenerationAdder(DanglingLineAdder& parent) :
+GenerationAdder::GenerationAdder(DanglingLineAdder& parent) :
     m_parent(parent) {
 }
 
-DanglingLineAdder& DanglingLineGenerationAdder::add() {
+DanglingLineAdder& GenerationAdder::add() {
     checkActivePowerLimits(m_parent, m_minP, m_maxP);
     checkActivePowerSetpoint(m_parent, m_targetP);
     checkVoltageControl(m_parent, m_voltageRegulationOn, m_targetV, m_targetQ);
@@ -29,36 +29,36 @@ DanglingLineAdder& DanglingLineGenerationAdder::add() {
     return m_parent;
 }
 
-std::unique_ptr<dangling_line::DanglingLineGeneration> DanglingLineGenerationAdder::build(DanglingLine& danglingLine) const {
-    return stdcxx::make_unique<dangling_line::DanglingLineGeneration>(danglingLine, m_minP, m_maxP, m_targetP, m_targetQ, m_voltageRegulationOn, m_targetV);
+std::unique_ptr<Generation> GenerationAdder::build(DanglingLine& danglingLine) const {
+    return stdcxx::make_unique<Generation>(danglingLine, m_minP, m_maxP, m_targetP, m_targetQ, m_targetV, m_voltageRegulationOn);
 }
 
-DanglingLineGenerationAdder& DanglingLineGenerationAdder::setMaxP(double maxP) {
+GenerationAdder& GenerationAdder::setMaxP(double maxP) {
     m_maxP = maxP;
     return *this;
 }
 
-DanglingLineGenerationAdder& DanglingLineGenerationAdder::setMinP(double minP) {
+GenerationAdder& GenerationAdder::setMinP(double minP) {
     m_minP = minP;
     return *this;
 }
 
-DanglingLineGenerationAdder& DanglingLineGenerationAdder::setTargetP(double targetP) {
+GenerationAdder& GenerationAdder::setTargetP(double targetP) {
     m_targetP = targetP;
     return *this;
 }
 
-DanglingLineGenerationAdder& DanglingLineGenerationAdder::setTargetQ(double targetQ) {
+GenerationAdder& GenerationAdder::setTargetQ(double targetQ) {
     m_targetQ = targetQ;
     return *this;
 }
 
-DanglingLineGenerationAdder& DanglingLineGenerationAdder::setTargetV(double targetV) {
+GenerationAdder& GenerationAdder::setTargetV(double targetV) {
     m_targetV = targetV;
     return *this;
 }
 
-DanglingLineGenerationAdder& DanglingLineGenerationAdder::setVoltageRegulationOn(bool voltageRegulationOn) {
+GenerationAdder& GenerationAdder::setVoltageRegulationOn(bool voltageRegulationOn) {
     m_voltageRegulationOn = voltageRegulationOn;
     return *this;
 }

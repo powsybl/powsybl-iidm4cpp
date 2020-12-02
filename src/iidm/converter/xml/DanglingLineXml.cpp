@@ -70,25 +70,25 @@ DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adde
     return dl;
 }
 
-void DanglingLineXml::readSubElements(DanglingLine& line, NetworkXmlReaderContext& context) const {
-    context.getReader().readUntilEndElement(DANGLING_LINE, [this, &line, &context]() {
+void DanglingLineXml::readSubElements(DanglingLine& dl, NetworkXmlReaderContext& context) const {
+    context.getReader().readUntilEndElement(DANGLING_LINE, [this, &dl, &context]() {
         if (context.getReader().getLocalName() == CURRENT_LIMITS) {
-            CurrentLimitsAdder<std::nullptr_t, DanglingLine> adder = line.newCurrentLimits();
+            CurrentLimitsAdder<std::nullptr_t, DanglingLine> adder = dl.newCurrentLimits();
             readCurrentLimits(adder, context.getReader());
         } else if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
                    context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
             IidmXmlUtil::assertMinimumVersion(stdcxx::format("%1%.generation", DANGLING_LINE), "reactiveLimits", ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
-            ReactiveLimitsXml::getInstance().read(line.getGeneration().get(), context);
+            ReactiveLimitsXml::getInstance().read(dl.getGeneration(), context);
         } else {
-            AbstractConnectableXml<DanglingLine, DanglingLineAdder, VoltageLevel>::readSubElements(line, context);
+            AbstractIdentifiableXml::readSubElements(dl, context);
         }
     });
 }
 
-void DanglingLineXml::writeRootElementAttributes(const DanglingLine& line, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const  {
-    const auto& generation = line.getGeneration();
-    double p0 = line.getP0();
-    double q0 = line.getQ0();
+void DanglingLineXml::writeRootElementAttributes(const DanglingLine& dl, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const  {
+    const auto& generation = dl.getGeneration();
+    double p0 = dl.getP0();
+    double q0 = dl.getQ0();
     if (generation) {
         IidmXmlUtil::assertMinimumVersion(DANGLING_LINE, GENERATION, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
         IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&p0, &q0, &generation]() {
@@ -102,10 +102,10 @@ void DanglingLineXml::writeRootElementAttributes(const DanglingLine& line, const
     }
     context.getWriter().writeAttribute(P0, p0);
     context.getWriter().writeAttribute(Q0, q0);
-    context.getWriter().writeAttribute(R, line.getR());
-    context.getWriter().writeAttribute(X, line.getX());
-    context.getWriter().writeAttribute(G, line.getG());
-    context.getWriter().writeAttribute(B, line.getB());
+    context.getWriter().writeAttribute(R, dl.getR());
+    context.getWriter().writeAttribute(X, dl.getX());
+    context.getWriter().writeAttribute(G, dl.getG());
+    context.getWriter().writeAttribute(B, dl.getB());
     if (generation) {
         IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &generation]() {
             context.getWriter().writeAttribute(GENERATION_MIN_P, generation.get().getMinP());
@@ -116,16 +116,16 @@ void DanglingLineXml::writeRootElementAttributes(const DanglingLine& line, const
             context.getWriter().writeAttribute(GENERATION_TARGET_Q, generation.get().getTargetQ());
         });
     }
-    if (!line.getUcteXnodeCode().empty()) {
-        context.getWriter().writeAttribute(UCTE_XNODE_CODE, line.getUcteXnodeCode());
+    if (!dl.getUcteXnodeCode().empty()) {
+        context.getWriter().writeAttribute(UCTE_XNODE_CODE, dl.getUcteXnodeCode());
     }
-    writeNodeOrBus(line.getTerminal(), context);
-    writePQ(line.getTerminal(), context.getWriter());
+    writeNodeOrBus(dl.getTerminal(), context);
+    writePQ(dl.getTerminal(), context.getWriter());
 }
 
 void DanglingLineXml::writeSubElements(const DanglingLine& dl, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     if (dl.getGeneration()) {
-        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &dl]() { ReactiveLimitsXml::getInstance().write(dl.getGeneration().get(), context); });
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &dl]() { ReactiveLimitsXml::getInstance().write(dl.getGeneration(), context); });
     }
     if (dl.getCurrentLimits()) {
         writeCurrentLimits(dl.getCurrentLimits(), context.getWriter(), context.getVersion());

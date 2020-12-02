@@ -19,7 +19,7 @@ namespace iidm {
 
 class DanglingLine : public Injection {
 public:
-    using Generation = dangling_line::DanglingLineGeneration;
+    using Generation = dangling_line::Generation;
 
 public:
     DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
@@ -98,9 +98,9 @@ private:
 
     std::string m_ucteXnodeCode;
 
-    std::unique_ptr<CurrentLimits> m_limits;
-
     std::unique_ptr<Generation> m_generation;
+
+    std::unique_ptr<CurrentLimits> m_limits;
 };
 
 }  // namespace iidm
