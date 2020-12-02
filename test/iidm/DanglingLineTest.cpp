@@ -20,7 +20,7 @@ namespace powsybl {
 
 namespace iidm {
 
-Network createDanglingLineTestNetwork() {
+Network createDanglingLineTestNetwork(bool withGeneration) {
     Network network("test", "test");
     Substation& substation = network.newSubstation()
         .setId("S1")
@@ -42,8 +42,8 @@ Network createDanglingLineTestNetwork() {
         .setId("VL1_BUS1")
         .add();
 
-    vl1.newDanglingLine()
-        .setId("DL1")
+    DanglingLineAdder adder = vl1.newDanglingLine();
+    adder.setId("DL1")
         .setName("DL1_NAME")
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
@@ -53,8 +53,20 @@ Network createDanglingLineTestNetwork() {
         .setQ0(4.0)
         .setR(5.0)
         .setX(6.0)
-        .setUcteXnodeCode("ucteXnodeCodeTest")
-        .add();
+        .setUcteXnodeCode("ucteXnodeCodeTest");
+
+    if (withGeneration) {
+        adder.newGeneration()
+            .setMinP(100)
+            .setMaxP(200)
+            .setTargetP(120)
+            .setTargetQ(140)
+            .setTargetV(160)
+            .setVoltageRegulationOn(true)
+            .add();
+    }
+
+    adder.add();
 
     return network;
 }
@@ -62,7 +74,7 @@ Network createDanglingLineTestNetwork() {
 BOOST_AUTO_TEST_SUITE(DanglingLineTestSuite)
 
 BOOST_AUTO_TEST_CASE(adder) {
-    Network network = createDanglingLineTestNetwork();
+    Network network = createDanglingLineTestNetwork(false);
 
     unsigned long danglingLineCount = network.getDanglingLineCount();
 
@@ -96,10 +108,72 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK_EQUAL(danglingLineCount + 1, network.getDanglingLineCount());
     BOOST_CHECK_EQUAL(danglingLineCount + 1, boost::size(network.getDanglingLines()));
     BOOST_TEST(network.getDanglingLine("DL1#0").getUcteXnodeCode().empty());
+
+    DanglingLine& dl = network.getDanglingLine("DL1");
+    BOOST_CHECK(!dl.getGeneration());
+
+    adder.setId("DL2");
+
+    DanglingLineAdder::GenerationAdder gAdder = adder.newGeneration();
+
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Active power setpoint is not set");
+    gAdder.setMinP(100).setMaxP(50);
+
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid active limits [100, 50]");
+    gAdder.setMinP(100).setMaxP(200);
+
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Active power setpoint is not set");
+    gAdder.setTargetP(120);
+
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid reactive power setpoint (nan) while voltage regulator is off");
+    gAdder.setTargetQ(140);
+    gAdder.setVoltageRegulationOn(true);
+
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid voltage setpoint value (nan) while voltage regulator is on");
+    gAdder.setTargetV(-1);
+
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid voltage setpoint value (-1) while voltage regulator is on");
+    gAdder.setTargetV(0);
+
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid voltage setpoint value (0) while voltage regulator is on");
+    gAdder.setTargetV(160);
+
+    BOOST_CHECK_NO_THROW(gAdder.add().add());
+
+    DanglingLine& dl2 = network.getDanglingLine("DL2");
+    BOOST_CHECK(dl2.getGeneration());
+
+    BOOST_CHECK_CLOSE(100, dl2.getGeneration().get().getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(dl2.getGeneration().get(), dl2.getGeneration().get().setMinP(101)));
+    BOOST_CHECK_CLOSE(101, dl2.getGeneration().get().getMinP(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK_CLOSE(200, dl2.getGeneration().get().getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(dl2.getGeneration().get(), dl2.getGeneration().get().setMaxP(201)));
+    BOOST_CHECK_CLOSE(201, dl2.getGeneration().get().getMaxP(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK_CLOSE(120, dl2.getGeneration().get().getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(dl2.getGeneration().get(), dl2.getGeneration().get().setTargetP(121)));
+    BOOST_CHECK_CLOSE(121, dl2.getGeneration().get().getTargetP(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK_CLOSE(140, dl2.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(dl2.getGeneration().get(), dl2.getGeneration().get().setTargetQ(141)));
+    BOOST_CHECK_CLOSE(141, dl2.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK_CLOSE(160, dl2.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(dl2.getGeneration().get(), dl2.getGeneration().get().setTargetV(161)));
+    BOOST_CHECK_CLOSE(161, dl2.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK(dl2.getGeneration().get().isVoltageRegulationOn());
+    BOOST_CHECK(stdcxx::areSame(dl2.getGeneration().get(), dl2.getGeneration().get().setVoltageRegulationOn(false)));
+    BOOST_CHECK(!dl2.getGeneration().get().isVoltageRegulationOn());
+
+    // Test if new Generation is instantiate at each add
+    DanglingLine& dl3 = adder.setId("DL3").add();
+    BOOST_CHECK(!stdcxx::areSame(dl2.getGeneration(), dl3.getGeneration()));
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createDanglingLineTestNetwork();
+    const Network& network = createDanglingLineTestNetwork(false);
 
     const DanglingLine& danglingLine = network.getDanglingLine("DL1");
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
@@ -119,7 +193,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
-    Network network = createDanglingLineTestNetwork();
+    Network network = createDanglingLineTestNetwork(false);
     DanglingLine& danglingLine = network.getDanglingLine("DL1");
 
     BOOST_TEST(stdcxx::areSame(danglingLine, danglingLine.setB(100.0)));
@@ -156,7 +230,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 }
 
 BOOST_AUTO_TEST_CASE(multivariant) {
-    Network network = createDanglingLineTestNetwork();
+    Network network = createDanglingLineTestNetwork(true);
 
     DanglingLine& danglingLine = network.getDanglingLine("DL1");
 
@@ -173,6 +247,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(6.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL("ucteXnodeCodeTest", danglingLine.getUcteXnodeCode());
     danglingLine.setB(100.0).setG(200.0).setP0(300.0).setQ0(400).setR(500.0).setX(600.0);
+    danglingLine.getGeneration().get().setMinP(101).setMaxP(201).setTargetP(121).setTargetQ(141).setTargetV(161).setVoltageRegulationOn(false);
 
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
     BOOST_CHECK_CLOSE(100.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());
@@ -181,6 +256,12 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(400.0, danglingLine.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(500.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(600.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(101.0, danglingLine.getGeneration().get().getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(201.0, danglingLine.getGeneration().get().getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(121.0, danglingLine.getGeneration().get().getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(141.0, danglingLine.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(161.0, danglingLine.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(!danglingLine.getGeneration().get().isVoltageRegulationOn());
     BOOST_CHECK_EQUAL("ucteXnodeCodeTest", danglingLine.getUcteXnodeCode());
 
     network.getVariantManager().setWorkingVariant("s2");
@@ -191,7 +272,14 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(4.0, danglingLine.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(500.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(600.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(101.0, danglingLine.getGeneration().get().getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(201.0, danglingLine.getGeneration().get().getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(120.0, danglingLine.getGeneration().get().getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(140.0, danglingLine.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(160.0, danglingLine.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(danglingLine.getGeneration().get().isVoltageRegulationOn());
     danglingLine.setB(150.0).setG(250.0).setP0(350.0).setQ0(450).setR(550.0).setX(650.0);
+    danglingLine.getGeneration().get().setMinP(102).setMaxP(202).setTargetP(122).setTargetQ(142).setTargetV(162).setVoltageRegulationOn(true);
 
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
     BOOST_CHECK_CLOSE(150.0, danglingLine.getB(), std::numeric_limits<double>::epsilon());
@@ -200,6 +288,12 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(450.0, danglingLine.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(550.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(650.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(102.0, danglingLine.getGeneration().get().getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(202.0, danglingLine.getGeneration().get().getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(122.0, danglingLine.getGeneration().get().getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(142.0, danglingLine.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(162.0, danglingLine.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(danglingLine.getGeneration().get().isVoltageRegulationOn());
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
@@ -209,6 +303,12 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(4.0, danglingLine.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(550.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(650.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(102.0, danglingLine.getGeneration().get().getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(202.0, danglingLine.getGeneration().get().getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(120.0, danglingLine.getGeneration().get().getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(140.0, danglingLine.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(160.0, danglingLine.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(danglingLine.getGeneration().get().isVoltageRegulationOn());
 
     network.getVariantManager().removeVariant("s1");
     BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
@@ -222,6 +322,12 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(450.0, danglingLine.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(550.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(650.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(102.0, danglingLine.getGeneration().get().getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(202.0, danglingLine.getGeneration().get().getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(122.0, danglingLine.getGeneration().get().getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(142.0, danglingLine.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(162.0, danglingLine.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(danglingLine.getGeneration().get().isVoltageRegulationOn());
 
     network.getVariantManager().removeVariant("s3");
     BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
@@ -231,7 +337,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 }
 
 BOOST_AUTO_TEST_CASE(currentLimits) {
-    Network network = createDanglingLineTestNetwork();
+    Network network = createDanglingLineTestNetwork(false);
 
     DanglingLine& danglingLine = network.getDanglingLine("DL1");
     const DanglingLine& cDanglingLine = danglingLine;

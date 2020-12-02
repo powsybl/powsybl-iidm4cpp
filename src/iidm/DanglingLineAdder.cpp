@@ -36,6 +36,10 @@ DanglingLine& DanglingLineAdder::add() {
     Terminal& terminal = danglingLine.addTerminal(checkAndGetTerminal());
     getVoltageLevel().attach(terminal, false);
 
+    if (m_generationAdder.is_initialized()) {
+        danglingLine.setGeneration(m_generationAdder->build(danglingLine));
+    }
+
     return danglingLine;
 }
 
@@ -43,6 +47,10 @@ const std::string& DanglingLineAdder::getTypeDescription() const {
     static std::string s_typeDescription = "Dangling line";
 
     return s_typeDescription;
+}
+
+DanglingLineAdder::GenerationAdder DanglingLineAdder::newGeneration() {
+    return {*this};
 }
 
 DanglingLineAdder& DanglingLineAdder::setB(double b) {
@@ -53,6 +61,10 @@ DanglingLineAdder& DanglingLineAdder::setB(double b) {
 DanglingLineAdder& DanglingLineAdder::setG(double g) {
     m_g = g;
     return *this;
+}
+
+void DanglingLineAdder::setGenerationAdder(const GenerationAdder& generationAdder) {
+    m_generationAdder = generationAdder;
 }
 
 DanglingLineAdder& DanglingLineAdder::setP0(double p0) {

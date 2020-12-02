@@ -36,6 +36,8 @@ public:
 protected:
     ReactiveLimitsHolder();
 
+    explicit ReactiveLimitsHolder(std::unique_ptr<ReactiveLimits>&& limits);
+
 private:
     void setReactiveLimits(std::unique_ptr<ReactiveLimits>&& limits);
 
