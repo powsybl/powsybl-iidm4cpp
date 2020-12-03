@@ -7,6 +7,8 @@
 
 #include "ShuntCompensatorXml.hpp"
 
+#include <powsybl/iidm/ShuntCompensatorLinearModel.hpp>
+#include <powsybl/iidm/ShuntCompensatorNonLinearModel.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
 

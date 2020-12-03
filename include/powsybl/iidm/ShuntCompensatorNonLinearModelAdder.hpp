@@ -8,8 +8,7 @@
 #ifndef POWSYBL_IIDM_SHUNTCOMPENSATORNONLINEARMODELADDER_HPP
 #define POWSYBL_IIDM_SHUNTCOMPENSATORNONLINEARMODELADDER_HPP
 
-#include <functional>
-
+#include <powsybl/iidm/ShuntCompensatorModelAdder.hpp>
 #include <powsybl/iidm/ShuntCompensatorNonLinearModel.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -19,13 +18,13 @@ namespace iidm {
 
 class ShuntCompensatorAdder;
 
-namespace shunt_compensator_view {
+namespace shunt_compensator {
 
-class ShuntCompensatorNonLinearModelAdder {
+class ShuntCompensatorNonLinearModelAdder : public ShuntCompensatorModelAdder {
 public:
     class SectionAdder {
     public:
-        SectionAdder(ShuntCompensatorAdder& adder, ShuntCompensatorNonLinearModelAdder& parent, unsigned long index, std::vector<ShuntCompensatorNonLinearModel::Section>& sections);
+        SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, std::vector<ShuntCompensatorNonLinearModel::Section>& sections);
 
         ShuntCompensatorNonLinearModelAdder& endSection();
 
@@ -34,38 +33,33 @@ public:
         SectionAdder& setG(double g);
 
     private:
+        ShuntCompensatorNonLinearModelAdder& m_parent;
+
         double m_b = stdcxx::nan();
 
         double m_g = stdcxx::nan();
 
-        ShuntCompensatorAdder& m_adder;
-
-        ShuntCompensatorNonLinearModelAdder& m_parent;
-
-        unsigned long m_index;
-
         std::vector<ShuntCompensatorNonLinearModel::Section>& m_sections;
     };
+
+public:  // ShuntCompensatorModelAdder
+    ShuntCompensatorAdder& add() override;
 
 public:
     explicit ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent);
 
-    ShuntCompensatorAdder& add();
-
     SectionAdder beginSection();
 
-private:
-    friend class iidm::ShuntCompensatorAdder;
+private:  // ShuntCompensatorModelAdder
+    std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const override;
+
+    std::unique_ptr<ShuntCompensatorModelAdder> clone() const override;
 
 private:
     std::vector<ShuntCompensatorNonLinearModel::Section> m_sections;
-
-    unsigned long m_index = 1;
-
-    std::reference_wrapper<ShuntCompensatorAdder> m_parent;
 };
 
-}  // namespace shunt_compensator_view
+}  // namespace shunt_compensator
 
 }  // namespace iidm
 

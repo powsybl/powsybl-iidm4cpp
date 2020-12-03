@@ -23,7 +23,7 @@ class Terminal;
 
 class ShuntCompensator : public Injection {
 public:
-    ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
+    ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                      unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband);
 
     ~ShuntCompensator() noexcept override = default;
@@ -83,7 +83,9 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    std::unique_ptr<ShuntCompensatorModel>& attach(std::unique_ptr<ShuntCompensatorModel>& model);
+    void setModel(std::unique_ptr<ShuntCompensatorModel>&& model);
+
+    friend class ShuntCompensatorAdder;
 
 private:
     std::unique_ptr<ShuntCompensatorModel> m_model;

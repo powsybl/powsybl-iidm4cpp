@@ -7,7 +7,9 @@
 
 #include <powsybl/iidm/ShuntCompensatorLinearModelAdder.hpp>
 
+#include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
+#include <powsybl/iidm/ShuntCompensatorLinearModel.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 
@@ -15,18 +17,26 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace shunt_compensator_view {
+namespace shunt_compensator {
 
 ShuntCompensatorLinearModelAdder::ShuntCompensatorLinearModelAdder(ShuntCompensatorAdder& parent) :
-    m_parent(parent) {
+    ShuntCompensatorModelAdder(parent) {
 }
 
 iidm::ShuntCompensatorAdder& ShuntCompensatorLinearModelAdder::add() {
     checkLinearBPerSection(m_parent, m_bPerSection);
     checkMaximumSectionCount(m_parent, m_maximumSectionCount);
-    m_parent.get().m_shuntCompensatorLinearModelAdder = *this;
-    m_parent.get().m_shuntCompensatorNonLinearModelAdder.reset();
-    return m_parent.get();
+    m_parent.setShuntCompensatorModelAdder(stdcxx::make_unique<ShuntCompensatorLinearModelAdder>(*this));
+    return m_parent;
+}
+
+std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorLinearModelAdder::build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const {
+    checkSections(m_parent, sectionCount, *m_maximumSectionCount);
+    return stdcxx::make_unique<ShuntCompensatorLinearModel>(shuntCompensator, m_bPerSection, m_gPerSection, *m_maximumSectionCount);
+}
+
+std::unique_ptr<ShuntCompensatorModelAdder> ShuntCompensatorLinearModelAdder::clone() const {
+    return stdcxx::make_unique<ShuntCompensatorLinearModelAdder>(*this);
 }
 
 ShuntCompensatorLinearModelAdder& ShuntCompensatorLinearModelAdder::setBPerSection(double bPerSection) {
@@ -44,7 +54,7 @@ ShuntCompensatorLinearModelAdder& ShuntCompensatorLinearModelAdder::setMaximumSe
     return *this;
 }
 
-}  // namespace shunt_compensator_view
+}  // namespace shunt_compensator
 
 }  // namespace iidm
 

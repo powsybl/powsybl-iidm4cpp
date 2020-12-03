@@ -23,7 +23,10 @@ public:
     virtual ~ShuntCompensatorModel() noexcept = default;
 
 protected:
-    stdcxx::Reference<ShuntCompensator> m_shuntCompensator;
+    explicit ShuntCompensatorModel(ShuntCompensator& shuntCompensator);
+
+protected:
+    ShuntCompensator& m_shuntCompensator;
 
 private:
     virtual double getB(unsigned long sectionCount) const = 0;
@@ -32,14 +35,17 @@ private:
 
     virtual unsigned long getMaximumSectionCount() const = 0;
 
+    const ShuntCompensator& getShuntCompensator() const;
+
+    ShuntCompensator& getShuntCompensator();
+
     virtual const ShuntCompensatorModelType& getType() const = 0;
 
     friend class ShuntCompensator;
 
     friend class ShuntCompensatorAdder;
 
-private:
-    virtual void setShuntCompensator(ShuntCompensator& shuntCompensator);
+    friend class ShuntCompensatorNonLinearModel;
 };
 
 }  // namespace iidm

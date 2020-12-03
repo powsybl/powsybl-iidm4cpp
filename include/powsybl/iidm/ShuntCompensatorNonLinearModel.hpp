@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <powsybl/iidm/ShuntCompensatorModel.hpp>
+#include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
@@ -20,7 +21,7 @@ class ShuntCompensatorNonLinearModel : public ShuntCompensatorModel {
 public:
     class Section {
     public:
-        Section(unsigned long index, double b, double g);
+        Section(double b, double g);
 
         double getB() const;
 
@@ -31,14 +32,12 @@ public:
         Section& setG(double g);
 
     private:
-        Section& setShuntCompensator(ShuntCompensator& shuntCompensator);
+        void setModel(ShuntCompensatorNonLinearModel& model);
 
         friend class ShuntCompensatorNonLinearModel;
 
     private:
-        stdcxx::Reference<ShuntCompensator> m_shuntCompensator;
-
-        unsigned long m_index;
+        stdcxx::Reference<ShuntCompensatorNonLinearModel> m_model;
 
         double m_b;
 
@@ -46,13 +45,13 @@ public:
     };
 
 public:
-    explicit ShuntCompensatorNonLinearModel(const std::vector<Section>& sections);
+    explicit ShuntCompensatorNonLinearModel(ShuntCompensator& shuntCompensator, const std::vector<Section>& sections);
 
     ~ShuntCompensatorNonLinearModel() noexcept override = default;
 
-    const std::vector<Section>& getAllSections() const;
+    stdcxx::const_range<Section> getAllSections() const;
 
-    std::vector<Section>& getAllSections();
+    stdcxx::range<Section> getAllSections();
 
 private:
     double getB(unsigned long sectionCount) const override;
@@ -62,8 +61,6 @@ private:
     unsigned long getMaximumSectionCount() const override;
 
     const ShuntCompensatorModelType& getType() const override;
-
-    void setShuntCompensator(ShuntCompensator& shuntCompensator) override;
 
 private:
     std::vector<Section> m_sections;

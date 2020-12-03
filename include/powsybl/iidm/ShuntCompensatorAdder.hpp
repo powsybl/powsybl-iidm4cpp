@@ -8,12 +8,9 @@
 #ifndef POWSYBL_IIDM_SHUNTCOMPENSATORADDER_HPP
 #define POWSYBL_IIDM_SHUNTCOMPENSATORADDER_HPP
 
-#include <vector>
-
 #include <powsybl/iidm/InjectionAdder.hpp>
-#include <powsybl/iidm/ShuntCompensatorLinearModel.hpp>
 #include <powsybl/iidm/ShuntCompensatorLinearModelAdder.hpp>
-#include <powsybl/iidm/ShuntCompensatorNonLinearModel.hpp>
+#include <powsybl/iidm/ShuntCompensatorModelAdder.hpp>
 #include <powsybl/iidm/ShuntCompensatorNonLinearModelAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
@@ -28,12 +25,14 @@ class VoltageLevel;
 
 class ShuntCompensatorAdder : public InjectionAdder<ShuntCompensatorAdder> {
 public:
-    using ShuntCompensatorLinearModelAdder = shunt_compensator_view::ShuntCompensatorLinearModelAdder;
+    using ShuntCompensatorLinearModelAdder = shunt_compensator::ShuntCompensatorLinearModelAdder;
 
-    using ShuntCompensatorNonLinearModelAdder = shunt_compensator_view::ShuntCompensatorNonLinearModelAdder;
+    using ShuntCompensatorNonLinearModelAdder = shunt_compensator::ShuntCompensatorNonLinearModelAdder;
 
 public:
     ~ShuntCompensatorAdder() noexcept override = default;
+
+    ShuntCompensatorAdder(const ShuntCompensatorAdder& adder);
 
     ShuntCompensator& add();
 
@@ -57,11 +56,13 @@ private: // IdentifiableAdder
 private:
     explicit ShuntCompensatorAdder(VoltageLevel& voltageLevel);
 
+    void setShuntCompensatorModelAdder(std::unique_ptr<ShuntCompensatorModelAdder>&& adder);
+
     friend class VoltageLevel;
 
-    friend class shunt_compensator_view::ShuntCompensatorLinearModelAdder;
+    friend class shunt_compensator::ShuntCompensatorLinearModelAdder;
 
-    friend class shunt_compensator_view::ShuntCompensatorNonLinearModelAdder;
+    friend class shunt_compensator::ShuntCompensatorNonLinearModelAdder;
 
 private:
     boost::optional<unsigned long> m_sectionCount;
@@ -74,9 +75,7 @@ private:
 
     bool m_voltageRegulatorOn = false;
 
-    stdcxx::optional<ShuntCompensatorLinearModelAdder> m_shuntCompensatorLinearModelAdder;
-
-    stdcxx::optional<ShuntCompensatorNonLinearModelAdder> m_shuntCompensatorNonLinearModelAdder;
+    std::unique_ptr<ShuntCompensatorModelAdder> m_shuntCompensatorModelAdder;
 };
 
 }  // namespace iidm

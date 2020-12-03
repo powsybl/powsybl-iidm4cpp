@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/ShuntCompensatorNonLinearModel.hpp>
 
+#include <boost/range/adaptor/transformed.hpp>
+
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
@@ -15,8 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-ShuntCompensatorNonLinearModel::Section::Section(unsigned long index, double b, double g) :
-    m_index(index),
+ShuntCompensatorNonLinearModel::Section::Section(double b, double g) :
     m_b(b),
     m_g(g) {
 }
@@ -30,47 +31,53 @@ double ShuntCompensatorNonLinearModel::Section::getG() const {
 }
 
 ShuntCompensatorNonLinearModel::Section& ShuntCompensatorNonLinearModel::Section::setB(double b) {
-    checkB(m_shuntCompensator.get(), b);
+    checkB(m_model.get().getShuntCompensator(), b);
     m_b = b;
     return *this;
 }
 
 ShuntCompensatorNonLinearModel::Section& ShuntCompensatorNonLinearModel::Section::setG(double g) {
-    checkG(m_shuntCompensator.get(), g);
+    checkG(m_model.get().getShuntCompensator(), g);
     m_g = g;
     return *this;
 }
 
-ShuntCompensatorNonLinearModel::Section& ShuntCompensatorNonLinearModel::Section::setShuntCompensator(ShuntCompensator& shuntCompensator) {
-    if (m_shuntCompensator) {
-        throw PowsyblException(stdcxx::format("Shunt compensator %1% has been set twice for the section %2%", shuntCompensator.getId(), m_index));
-    }
-    m_shuntCompensator = stdcxx::ref(shuntCompensator);
-    return *this;
+void ShuntCompensatorNonLinearModel::Section::setModel(ShuntCompensatorNonLinearModel& model) {
+    m_model = stdcxx::ref(model);
 }
 
-ShuntCompensatorNonLinearModel::ShuntCompensatorNonLinearModel(const std::vector<Section>& sections) :
+ShuntCompensatorNonLinearModel::ShuntCompensatorNonLinearModel(ShuntCompensator& shuntCompensator, const std::vector<Section>& sections) :
+    ShuntCompensatorModel(shuntCompensator),
     m_sections(sections) {
+    for (Section& section : m_sections) {
+        section.setModel(*this);
+    }
 }
 
-const std::vector<ShuntCompensatorNonLinearModel::Section>& ShuntCompensatorNonLinearModel::getAllSections() const {
-    return m_sections;
+stdcxx::const_range<ShuntCompensatorNonLinearModel::Section> ShuntCompensatorNonLinearModel::getAllSections() const {
+    const auto& mapper = [](const Section& section) -> const Section& {
+        return section;
+    };
+    return m_sections | boost::adaptors::transformed(mapper);
 }
 
-std::vector<ShuntCompensatorNonLinearModel::Section>& ShuntCompensatorNonLinearModel::getAllSections() {
-    return m_sections;
+stdcxx::range<ShuntCompensatorNonLinearModel::Section> ShuntCompensatorNonLinearModel::getAllSections() {
+    const auto& mapper = [](Section& section) -> Section& {
+        return section;
+    };
+    return m_sections | boost::adaptors::transformed(mapper);
 }
 
 double ShuntCompensatorNonLinearModel::getB(unsigned long sectionCount) const {
     if (sectionCount > m_sections.size()) {
-        throw ValidationException(m_shuntCompensator.get(), "invalid section count (must be in [0;maximumSectionCount])");
+        throw ValidationException(m_shuntCompensator, "invalid section count (must be in [0;maximumSectionCount])");
     }
     return sectionCount == 0 ? 0 : m_sections[sectionCount - 1].getB();
 }
 
 double ShuntCompensatorNonLinearModel::getG(unsigned long sectionCount) const {
     if (sectionCount > m_sections.size()) {
-        throw ValidationException(m_shuntCompensator.get(), "invalid section count (must be in [0;maximumSectionCount])");
+        throw ValidationException(m_shuntCompensator, "invalid section count (must be in [0;maximumSectionCount])");
     }
     return sectionCount == 0 ? 0 : m_sections[sectionCount - 1].getG();
 }
@@ -82,16 +89,6 @@ unsigned long ShuntCompensatorNonLinearModel::getMaximumSectionCount() const {
 const ShuntCompensatorModelType& ShuntCompensatorNonLinearModel::getType() const {
     static ShuntCompensatorModelType s_type = ShuntCompensatorModelType::NON_LINEAR;
     return s_type;
-}
-
-void ShuntCompensatorNonLinearModel::setShuntCompensator(ShuntCompensator& shuntCompensator) {
-    if (m_shuntCompensator) {
-        throw PowsyblException("Owner (shunt compensator) already defined");
-    }
-    m_shuntCompensator = stdcxx::ref(shuntCompensator);
-    for (Section& section : m_sections) {
-        section.setShuntCompensator(shuntCompensator);
-    }
 }
 
 }  // namespace iidm

@@ -11,11 +11,16 @@ namespace powsybl {
 
 namespace iidm {
 
-void ShuntCompensatorModel::setShuntCompensator(ShuntCompensator& shuntCompensator) {
-    if (m_shuntCompensator) {
-        throw PowsyblException("Owner (shunt compensator) already defined");
-    }
-    m_shuntCompensator = stdcxx::ref(shuntCompensator);
+ShuntCompensatorModel::ShuntCompensatorModel(ShuntCompensator& shuntCompensator) :
+    m_shuntCompensator(shuntCompensator) {
+}
+
+const ShuntCompensator& ShuntCompensatorModel::getShuntCompensator() const {
+    return m_shuntCompensator;
+}
+
+ShuntCompensator& ShuntCompensatorModel::getShuntCompensator() {
+    return m_shuntCompensator;
 }
 
 }  // namespace iidm

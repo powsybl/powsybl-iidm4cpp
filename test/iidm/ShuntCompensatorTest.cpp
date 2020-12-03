@@ -12,6 +12,8 @@
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
+#include <powsybl/iidm/ShuntCompensatorLinearModel.hpp>
+#include <powsybl/iidm/ShuntCompensatorNonLinearModel.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -69,38 +71,39 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
     Bus& vl1Bus1 = network.getBusBreakerView().getBus("VL1_BUS1");
-    ShuntCompensatorAdder adder = vl1.newShuntCompensator()
-        .setId("SHUNT1")
-        .setBus("VL1_BUS1");
-
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Shunt compensator 'SHUNT1': the shunt compensator model has not been defined");
+    ShuntCompensatorAdder adder = vl1.newShuntCompensator();
+    adder.setId("SHUNT1")
+        .setBus("VL1_BUS1")
+        .setConnectableBus(vl1Bus1.getId());
 
     ShuntCompensatorAdder::ShuntCompensatorLinearModelAdder linearModel = adder.newLinearModel();
-    POWSYBL_ASSERT_THROW(linearModel.add().add(), ValidationException, "Shunt compensator 'SHUNT1': susceptance per section is invalid");
+    POWSYBL_ASSERT_THROW(linearModel.add().add(), PowsyblException, "Shunt compensator 'SHUNT1': susceptance per section is invalid");
     linearModel.setBPerSection(0.0);
 
-    POWSYBL_ASSERT_THROW(linearModel.add().add(), ValidationException, "Shunt compensator 'SHUNT1': susceptance per section is equal to zero");
+    POWSYBL_ASSERT_THROW(linearModel.add().add(), PowsyblException, "Shunt compensator 'SHUNT1': susceptance per section is equal to zero");
     linearModel.setBPerSection(0.25);
 
-    POWSYBL_ASSERT_THROW(linearModel.add().add(), ValidationException, "Shunt compensator 'SHUNT1': the maximum number of section is not set");
+    POWSYBL_ASSERT_THROW(linearModel.add().add(), PowsyblException, "Shunt compensator 'SHUNT1': the maximum number of section is not set");
     linearModel.setMaximumSectionCount(0);
 
-    POWSYBL_ASSERT_THROW(linearModel.add().add(), ValidationException, "Shunt compensator 'SHUNT1': the maximum number of section (0) should be greater than 0");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': section count is not set");
+    adder.setSectionCount(20);
 
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ShuntCompensator' with the id 'SHUNT1'");
+    adder.setEnsureIdUnicity(true);
+
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': the shunt compensator model has not been defined");
     adder.newLinearModel()
         .setBPerSection(0.25)
         .setGPerSection(0.75)
         .setMaximumSectionCount(10)
         .add();
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Shunt compensator 'SHUNT1': section count is not set");
-    adder.setSectionCount(20);
-
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Shunt compensator 'SHUNT1': the current number (20) of section should be lesser than the maximum number of section (10)");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': the current number (20) of section should be lesser than the maximum number of section (10)");
     adder.setSectionCount(5);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ShuntCompensator' with the id 'SHUNT1'");
-    adder.setEnsureIdUnicity(true);
+    POWSYBL_ASSERT_THROW(linearModel.add().add(), PowsyblException, "Shunt compensator 'SHUNT1': the maximum number of section (0) should be greater than 0");
+
 
     // check with regulating = true
     adder.setVoltageRegulatorOn(true);
@@ -200,20 +203,13 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK(stdcxx::areSame(sc4.getModel(), sc4.getModel<ShuntCompensatorNonLinearModel>()));
     BOOST_CHECK(stdcxx::areSame(sc4.getModel(), cSc4.getModel<ShuntCompensatorNonLinearModel>()));
 
-    BOOST_CHECK_EQUAL(3, sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().size());
-    BOOST_CHECK_EQUAL(3, cSc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().size());
+    BOOST_CHECK_EQUAL(3, boost::size(sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections()));
+    BOOST_CHECK_EQUAL(3, boost::size(cSc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections()));
     BOOST_CHECK_EQUAL(3, sc4.getMaximumSectionCount());
     BOOST_CHECK_EQUAL(ShuntCompensatorModelType::NON_LINEAR, sc4.getModelType());
 
     BOOST_CHECK_CLOSE(2.0, sc4.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(11.0, sc4.getG(), std::numeric_limits<double>::epsilon());
-
-    BOOST_CHECK_CLOSE(1.0, sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().at(0).getB(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().at(0).getG(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(2.0, sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().at(1).getB(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(11.0, sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().at(1).getG(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(3.0, sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().at(2).getB(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(11.0, sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().at(2).getG(), std::numeric_limits<double>::epsilon());
 
     BOOST_CHECK_CLOSE(0.0, sc4.getB(0), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, sc4.getG(0), std::numeric_limits<double>::epsilon());
@@ -226,15 +222,6 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     POWSYBL_ASSERT_THROW(sc4.getB(11), PowsyblException, "Shunt compensator 'SHUNT4': invalid section count (must be in [0;maximumSectionCount])");
     POWSYBL_ASSERT_THROW(sc4.getG(11), PowsyblException, "Shunt compensator 'SHUNT4': invalid section count (must be in [0;maximumSectionCount])");
-
-    POWSYBL_ASSERT_THROW(sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().front().setB(stdcxx::nan()), PowsyblException, "Shunt compensator 'SHUNT4': b is invalid");
-    POWSYBL_ASSERT_THROW(sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().front().setG(stdcxx::nan()), PowsyblException, "Shunt compensator 'SHUNT4': g is invalid");
-
-    auto& firstSection = sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections().front();
-    BOOST_CHECK(stdcxx::areSame(firstSection, firstSection.setB(7.0)));
-    BOOST_CHECK(stdcxx::areSame(firstSection, firstSection.setG(8.0)));
-    BOOST_CHECK_CLOSE(7.0, sc4.getB(1), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(8.0, sc4.getG(1), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {

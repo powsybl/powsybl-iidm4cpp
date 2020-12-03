@@ -8,8 +8,7 @@
 #ifndef POWSYBL_IIDM_SHUNTCOMPENSATORLINEARMODELADDER_HPP
 #define POWSYBL_IIDM_SHUNTCOMPENSATORLINEARMODELADDER_HPP
 
-#include <functional>
-
+#include <powsybl/iidm/ShuntCompensatorModelAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -19,13 +18,14 @@ namespace iidm {
 
 class ShuntCompensatorAdder;
 
-namespace shunt_compensator_view {
+namespace shunt_compensator {
 
-class ShuntCompensatorLinearModelAdder {
+class ShuntCompensatorLinearModelAdder : public ShuntCompensatorModelAdder {
+public:  // ShuntCompensatorModelAdder
+    ShuntCompensatorAdder& add() override;
+
 public:
     explicit ShuntCompensatorLinearModelAdder(ShuntCompensatorAdder& parent);
-
-    ShuntCompensatorAdder& add();
 
     ShuntCompensatorLinearModelAdder& setBPerSection(double bPerSection);
 
@@ -33,8 +33,10 @@ public:
 
     ShuntCompensatorLinearModelAdder& setMaximumSectionCount(unsigned long maximumSectionCount);
 
-private:
-    friend class iidm::ShuntCompensatorAdder;
+private:  // ShuntCompensatorModelAdder
+    std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const override;
+
+    std::unique_ptr<ShuntCompensatorModelAdder> clone() const override;
 
 private:
     double m_bPerSection = stdcxx::nan();
@@ -42,11 +44,9 @@ private:
     double m_gPerSection = stdcxx::nan();
 
     stdcxx::optional<unsigned long> m_maximumSectionCount;
-
-    std::reference_wrapper<ShuntCompensatorAdder> m_parent;
 };
 
-}  // namespace shunt_compensator_view
+}  // namespace shunt_compensator
 
 }  // namespace iidm
 

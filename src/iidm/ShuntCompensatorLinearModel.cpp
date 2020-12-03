@@ -14,7 +14,8 @@ namespace powsybl {
 
 namespace iidm {
 
-ShuntCompensatorLinearModel::ShuntCompensatorLinearModel(double bPerSection, double gPerSection, unsigned long maximumSectionCount) :
+ShuntCompensatorLinearModel::ShuntCompensatorLinearModel(ShuntCompensator& shuntCompensator, double bPerSection, double gPerSection, unsigned long maximumSectionCount) :
+    ShuntCompensatorModel(shuntCompensator),
     m_bPerSection(bPerSection),
     m_gPerSection(gPerSection),
     m_maximumSectionCount(maximumSectionCount) {
@@ -52,7 +53,7 @@ const ShuntCompensatorModelType& ShuntCompensatorLinearModel::getType() const {
 }
 
 ShuntCompensatorLinearModel& ShuntCompensatorLinearModel::setBPerSection(double bPerSection) {
-    checkLinearBPerSection(m_shuntCompensator.get(), bPerSection);
+    checkLinearBPerSection(m_shuntCompensator, bPerSection);
     m_bPerSection = bPerSection;
     return *this;
 }
@@ -63,7 +64,7 @@ ShuntCompensatorLinearModel& ShuntCompensatorLinearModel::setGPerSection(double 
 }
 
 ShuntCompensatorLinearModel& ShuntCompensatorLinearModel::setMaximumSectionCount(unsigned long maximumSectionCount) {
-    checkSections(m_shuntCompensator, m_shuntCompensator.get().getSectionCount(), maximumSectionCount);
+    checkSections(m_shuntCompensator, m_shuntCompensator.getSectionCount(), maximumSectionCount);
     m_maximumSectionCount = maximumSectionCount;
     return *this;
 }

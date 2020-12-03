@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/ShuntCompensatorNonLinearModelAdder.hpp>
 
+#include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
@@ -15,21 +16,19 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace shunt_compensator_view {
+namespace shunt_compensator {
 
 ShuntCompensatorNonLinearModelAdder::ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent) :
-    m_parent(parent) {
+    ShuntCompensatorModelAdder(parent) {
 }
 
-ShuntCompensatorNonLinearModelAdder::SectionAdder::SectionAdder(ShuntCompensatorAdder& adder, ShuntCompensatorNonLinearModelAdder& parent, unsigned long index, std::vector<ShuntCompensatorNonLinearModel::Section>& sections) :
-    m_adder(adder),
+ShuntCompensatorNonLinearModelAdder::SectionAdder::SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, std::vector<ShuntCompensatorNonLinearModel::Section>& sections) :
     m_parent(parent),
-    m_index(index),
     m_sections(sections) {
 }
 
 ShuntCompensatorNonLinearModelAdder& ShuntCompensatorNonLinearModelAdder::SectionAdder::endSection() {
-    checkbPerSection(m_adder, m_b);
+    checkbPerSection(m_parent.m_parent, m_b);
     if (std::isnan(m_g)) {
         if (m_sections.empty()) {
             m_g = 0.0;
@@ -37,8 +36,7 @@ ShuntCompensatorNonLinearModelAdder& ShuntCompensatorNonLinearModelAdder::Sectio
             m_g = m_sections.back().getG();
         }
     }
-    m_sections.emplace_back(ShuntCompensatorNonLinearModel::Section(m_index, m_b, m_g));
-    m_index++;
+    m_sections.emplace_back(ShuntCompensatorNonLinearModel::Section(m_b, m_g));
     return m_parent;
 }
 
@@ -56,16 +54,24 @@ ShuntCompensatorAdder& ShuntCompensatorNonLinearModelAdder::add() {
     if (m_sections.empty()) {
         throw ValidationException(m_parent, "a shunt compensator must have at least one section");
     }
-    m_parent.get().m_shuntCompensatorLinearModelAdder.reset();
-    m_parent.get().m_shuntCompensatorNonLinearModelAdder = *this;
-    return m_parent.get();
+    m_parent.setShuntCompensatorModelAdder(stdcxx::make_unique<ShuntCompensatorNonLinearModelAdder>(*this));
+    return m_parent;
 }
 
 ShuntCompensatorNonLinearModelAdder::SectionAdder ShuntCompensatorNonLinearModelAdder::beginSection() {
-    return {m_parent, *this, m_index, m_sections};
+    return {*this, m_sections};
 }
 
-}  // namespace shunt_compensator_view
+std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorNonLinearModelAdder::build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const {
+    checkSections(m_parent, sectionCount, m_sections.size());
+    return stdcxx::make_unique<ShuntCompensatorNonLinearModel>(shuntCompensator, m_sections);
+}
+
+std::unique_ptr<ShuntCompensatorModelAdder> ShuntCompensatorNonLinearModelAdder::clone() const {
+    return stdcxx::make_unique<ShuntCompensatorNonLinearModelAdder>(*this);
+}
+
+}  // namespace shunt_compensator
 
 }  // namespace iidm
 

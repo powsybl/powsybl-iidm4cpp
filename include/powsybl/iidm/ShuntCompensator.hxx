@@ -17,6 +17,9 @@ namespace iidm {
 
 template <typename T, typename>
 const T& ShuntCompensator::getModel() const {
+    if (!m_model) {
+        throw ValidationException(*this, "shunt compensator model is null");
+    }
     if (stdcxx::isInstanceOf<T>(m_model)) {
         return *dynamic_cast<const T*>(m_model.get());
     }

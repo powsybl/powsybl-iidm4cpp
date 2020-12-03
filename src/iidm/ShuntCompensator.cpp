@@ -15,16 +15,14 @@ namespace powsybl {
 
 namespace iidm {
 
-ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
-    unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband) :
+ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
+                                   unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband) :
     Injection(id, name, fictitious, ConnectableType::SHUNT_COMPENSATOR),
-    m_model(std::move(attach(model))),
     m_sectionCount(network.getVariantManager().getVariantArraySize(), currentSectionCount),
     m_regulatingTerminal(terminal),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
     m_targetV(network.getVariantManager().getVariantArraySize(), targetV),
     m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband) {
-    checkSections(*this, currentSectionCount, getMaximumSectionCount());
 }
 
 void ShuntCompensator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -36,11 +34,6 @@ void ShuntCompensator::allocateVariantArrayElement(const std::set<unsigned long>
         m_targetV[index] = m_targetV[sourceIndex];
         m_targetDeadband[index] = m_targetDeadband[sourceIndex];
     }
-}
-
-std::unique_ptr<ShuntCompensatorModel>& ShuntCompensator::attach(std::unique_ptr<ShuntCompensatorModel>& model) {
-    model->setShuntCompensator(*this);
-    return model;
 }
 
 void ShuntCompensator::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
@@ -121,6 +114,10 @@ void ShuntCompensator::reduceVariantArraySize(unsigned long number) {
     m_voltageRegulatorOn.resize(m_voltageRegulatorOn.size() - number);
     m_targetV.resize(m_targetV.size() - number);
     m_targetDeadband.resize(m_targetDeadband.size() - number);
+}
+
+void ShuntCompensator::setModel(std::unique_ptr<ShuntCompensatorModel>&& model) {
+    m_model = std::move(model);
 }
 
 ShuntCompensator& ShuntCompensator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {

@@ -18,7 +18,7 @@ class ShuntCompensator;
 
 class ShuntCompensatorLinearModel : public ShuntCompensatorModel {
 public:
-    ShuntCompensatorLinearModel(double bPerSection, double gPerSection, unsigned long maximumSectionCount);
+    ShuntCompensatorLinearModel(ShuntCompensator& shuntCompensator, double bPerSection, double gPerSection, unsigned long maximumSectionCount);
 
     ~ShuntCompensatorLinearModel() noexcept override = default;
 
@@ -47,7 +47,7 @@ public:
      */
     ShuntCompensatorLinearModel& setMaximumSectionCount(unsigned long maximumSectionCount);
 
-private:
+private:  // ShuntCompensatorModel
     double getB(unsigned long sectionCount) const override;
 
     double getG(unsigned long sectionCount) const override;
