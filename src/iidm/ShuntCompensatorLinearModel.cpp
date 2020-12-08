@@ -25,7 +25,7 @@ double ShuntCompensatorLinearModel::getB(unsigned long sectionCount) const {
     if (sectionCount > m_maximumSectionCount) {
         throw PowsyblException(stdcxx::format("the given count of sections in service (%1%) is strictly greater than the maximum sections count", sectionCount));
     }
-    return m_bPerSection * static_cast<double>(sectionCount);
+    return m_bPerSection * sectionCount;
 }
 
 double ShuntCompensatorLinearModel::getBPerSection() const {
@@ -36,7 +36,7 @@ double ShuntCompensatorLinearModel::getG(unsigned long sectionCount) const {
     if (sectionCount > m_maximumSectionCount) {
         throw PowsyblException(stdcxx::format("the given count of sections in service (%1%) is strictly greater than the maximum sections count", sectionCount));
     }
-    return std::isnan(m_gPerSection) ? 0 : m_gPerSection * static_cast<double>(sectionCount);
+    return std::isnan(m_gPerSection) ? 0 : m_gPerSection * sectionCount;
 }
 
 double ShuntCompensatorLinearModel::getGPerSection() const {

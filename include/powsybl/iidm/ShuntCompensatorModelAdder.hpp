@@ -32,7 +32,7 @@ protected:
 private:
     virtual std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const = 0;
 
-    virtual std::unique_ptr<ShuntCompensatorModelAdder> clone() const = 0;
+    virtual std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const = 0;
 
     friend class ShuntCompensatorAdder;
 };

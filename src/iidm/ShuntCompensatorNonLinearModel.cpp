@@ -55,17 +55,11 @@ ShuntCompensatorNonLinearModel::ShuntCompensatorNonLinearModel(ShuntCompensator&
 }
 
 stdcxx::const_range<ShuntCompensatorNonLinearModel::Section> ShuntCompensatorNonLinearModel::getAllSections() const {
-    const auto& mapper = [](const Section& section) -> const Section& {
-        return section;
-    };
-    return m_sections | boost::adaptors::transformed(mapper);
+    return m_sections;
 }
 
 stdcxx::range<ShuntCompensatorNonLinearModel::Section> ShuntCompensatorNonLinearModel::getAllSections() {
-    const auto& mapper = [](Section& section) -> Section& {
-        return section;
-    };
-    return m_sections | boost::adaptors::transformed(mapper);
+    return m_sections;
 }
 
 double ShuntCompensatorNonLinearModel::getB(unsigned long sectionCount) const {

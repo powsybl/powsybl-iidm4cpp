@@ -18,10 +18,6 @@ namespace iidm {
 
 namespace shunt_compensator {
 
-ShuntCompensatorNonLinearModelAdder::ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent) :
-    ShuntCompensatorModelAdder(parent) {
-}
-
 ShuntCompensatorNonLinearModelAdder::SectionAdder::SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, std::vector<ShuntCompensatorNonLinearModel::Section>& sections) :
     m_parent(parent),
     m_sections(sections) {
@@ -50,11 +46,20 @@ ShuntCompensatorNonLinearModelAdder::SectionAdder& ShuntCompensatorNonLinearMode
     return *this;
 }
 
+ShuntCompensatorNonLinearModelAdder::ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent) :
+    ShuntCompensatorModelAdder(parent) {
+}
+
+ShuntCompensatorNonLinearModelAdder::ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent, const ShuntCompensatorNonLinearModelAdder& adder) :
+    ShuntCompensatorModelAdder(parent),
+    m_sections(adder.m_sections) {
+}
+
 ShuntCompensatorAdder& ShuntCompensatorNonLinearModelAdder::add() {
     if (m_sections.empty()) {
         throw ValidationException(m_parent, "a shunt compensator must have at least one section");
     }
-    m_parent.setShuntCompensatorModelAdder(stdcxx::make_unique<ShuntCompensatorNonLinearModelAdder>(*this));
+    m_parent.setShuntCompensatorModelAdder(*this);
     return m_parent;
 }
 
@@ -67,8 +72,8 @@ std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorNonLinearModelAdder::buil
     return stdcxx::make_unique<ShuntCompensatorNonLinearModel>(shuntCompensator, m_sections);
 }
 
-std::unique_ptr<ShuntCompensatorModelAdder> ShuntCompensatorNonLinearModelAdder::clone() const {
-    return stdcxx::make_unique<ShuntCompensatorNonLinearModelAdder>(*this);
+std::unique_ptr<ShuntCompensatorModelAdder> ShuntCompensatorNonLinearModelAdder::clone(ShuntCompensatorAdder& parent) const {
+    return stdcxx::make_unique<ShuntCompensatorNonLinearModelAdder>(parent, *this);
 }
 
 }  // namespace shunt_compensator

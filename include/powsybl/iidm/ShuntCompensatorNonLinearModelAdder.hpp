@@ -48,12 +48,14 @@ public:  // ShuntCompensatorModelAdder
 public:
     explicit ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent);
 
+    ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent, const ShuntCompensatorNonLinearModelAdder& adder);
+
     SectionAdder beginSection();
 
 private:  // ShuntCompensatorModelAdder
     std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const override;
 
-    std::unique_ptr<ShuntCompensatorModelAdder> clone() const override;
+    std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const override;
 
 private:
     std::vector<ShuntCompensatorNonLinearModel::Section> m_sections;
