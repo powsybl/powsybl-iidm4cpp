@@ -384,12 +384,15 @@ void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference
     }
 }
 
-void checkSections(const Validable& validable, unsigned long currentSectionCount, unsigned long maximumSectionCount) {
+void checkSections(const Validable& validable, const stdcxx::optional<unsigned long>& currentSectionCount, unsigned long maximumSectionCount) {
+    if (!currentSectionCount.is_initialized()) {
+        throw ValidationException(validable, "section count is not set");
+    }
     if (maximumSectionCount == 0UL) {
         throw ValidationException(validable, stdcxx::format("the maximum number of section (%1%) should be greater than 0", maximumSectionCount));
     }
-    if (currentSectionCount > maximumSectionCount) {
-        throw ValidationException(validable, stdcxx::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", currentSectionCount, maximumSectionCount));
+    if (*currentSectionCount > maximumSectionCount) {
+        throw ValidationException(validable, stdcxx::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", *currentSectionCount, maximumSectionCount));
     }
 }
 

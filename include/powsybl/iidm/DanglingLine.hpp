@@ -76,7 +76,7 @@ private: // Identifiable
 private:
     void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
 
-    DanglingLine& setGeneration(std::unique_ptr<Generation>&& generation);
+    void setGeneration(std::unique_ptr<Generation>&& generation);
 
 private:
     friend class CurrentLimitsAdder<std::nullptr_t, DanglingLine>;

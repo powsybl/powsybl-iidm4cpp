@@ -20,11 +20,11 @@ namespace iidm {
 namespace shunt_compensator {
 
 ShuntCompensatorLinearModelAdder::ShuntCompensatorLinearModelAdder(ShuntCompensatorAdder& parent) :
-    ShuntCompensatorModelAdder(parent) {
+    m_parent(parent) {
 }
 
 ShuntCompensatorLinearModelAdder::ShuntCompensatorLinearModelAdder(ShuntCompensatorAdder& parent, const ShuntCompensatorLinearModelAdder& adder) :
-    ShuntCompensatorModelAdder(parent),
+    m_parent(parent),
     m_bPerSection(adder.m_bPerSection),
     m_gPerSection(adder.m_gPerSection),
     m_maximumSectionCount(adder.m_maximumSectionCount) {
@@ -33,17 +33,20 @@ ShuntCompensatorLinearModelAdder::ShuntCompensatorLinearModelAdder(ShuntCompensa
 iidm::ShuntCompensatorAdder& ShuntCompensatorLinearModelAdder::add() {
     checkLinearBPerSection(m_parent, m_bPerSection);
     checkMaximumSectionCount(m_parent, m_maximumSectionCount);
-    m_parent.setShuntCompensatorModelAdder(*this);
+    m_parent.setShuntCompensatorModelBuilder(*this);
     return m_parent;
 }
 
-std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorLinearModelAdder::build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const {
-    checkSections(m_parent, sectionCount, *m_maximumSectionCount);
+std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorLinearModelAdder::build(ShuntCompensator& shuntCompensator) const {
     return stdcxx::make_unique<ShuntCompensatorLinearModel>(shuntCompensator, m_bPerSection, m_gPerSection, *m_maximumSectionCount);
 }
 
 std::unique_ptr<ShuntCompensatorModelAdder> ShuntCompensatorLinearModelAdder::clone(ShuntCompensatorAdder& parent) const {
     return stdcxx::make_unique<ShuntCompensatorLinearModelAdder>(parent, *this);
+}
+
+unsigned long ShuntCompensatorLinearModelAdder::getMaximumSectionCount() const {
+    return *m_maximumSectionCount;
 }
 
 ShuntCompensatorLinearModelAdder& ShuntCompensatorLinearModelAdder::setBPerSection(double bPerSection) {

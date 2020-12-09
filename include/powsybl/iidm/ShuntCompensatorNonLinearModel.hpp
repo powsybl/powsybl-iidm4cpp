@@ -21,7 +21,7 @@ class ShuntCompensatorNonLinearModel : public ShuntCompensatorModel {
 public:
     class Section {
     public:
-        Section(double b, double g);
+        Section(ShuntCompensator& shuntCompensator, double b, double g);
 
         double getB() const;
 
@@ -32,12 +32,7 @@ public:
         Section& setG(double g);
 
     private:
-        void setModel(ShuntCompensatorNonLinearModel& model);
-
-        friend class ShuntCompensatorNonLinearModel;
-
-    private:
-        stdcxx::Reference<ShuntCompensatorNonLinearModel> m_model;
+        ShuntCompensator& m_shuntCompensator;
 
         double m_b;
 
@@ -45,7 +40,7 @@ public:
     };
 
 public:
-    explicit ShuntCompensatorNonLinearModel(ShuntCompensator& shuntCompensator, const std::vector<Section>& sections);
+    explicit ShuntCompensatorNonLinearModel(ShuntCompensator& shuntCompensator, std::vector<Section>&& sections);
 
     ~ShuntCompensatorNonLinearModel() noexcept override = default;
 
@@ -53,7 +48,7 @@ public:
 
     stdcxx::range<Section> getAllSections();
 
-private:
+private:  // ShuntCompensatorModel
     double getB(unsigned long sectionCount) const override;
 
     double getG(unsigned long sectionCount) const override;
@@ -63,6 +58,8 @@ private:
     const ShuntCompensatorModelType& getType() const override;
 
 private:
+    ShuntCompensator& m_shuntCompensator;
+
     std::vector<Section> m_sections;
 };
 

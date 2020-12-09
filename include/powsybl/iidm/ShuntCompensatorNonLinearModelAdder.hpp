@@ -24,8 +24,6 @@ class ShuntCompensatorNonLinearModelAdder : public ShuntCompensatorModelAdder {
 public:
     class SectionAdder {
     public:
-        SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, std::vector<ShuntCompensatorNonLinearModel::Section>& sections);
-
         ShuntCompensatorNonLinearModelAdder& endSection();
 
         SectionAdder& setB(double b);
@@ -33,13 +31,18 @@ public:
         SectionAdder& setG(double g);
 
     private:
+        SectionAdder(ShuntCompensatorNonLinearModelAdder& parent);
+
+        SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, const SectionAdder& adder);
+
+        friend class ShuntCompensatorNonLinearModelAdder;
+
+    private:
         ShuntCompensatorNonLinearModelAdder& m_parent;
 
         double m_b = stdcxx::nan();
 
         double m_g = stdcxx::nan();
-
-        std::vector<ShuntCompensatorNonLinearModel::Section>& m_sections;
     };
 
 public:  // ShuntCompensatorModelAdder
@@ -53,12 +56,23 @@ public:
     SectionAdder beginSection();
 
 private:  // ShuntCompensatorModelAdder
-    std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const override;
+    std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator) const override;
 
     std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const override;
 
+    unsigned long getMaximumSectionCount() const override;
+
 private:
-    std::vector<ShuntCompensatorNonLinearModel::Section> m_sections;
+    std::vector<SectionAdder>& getSectionAdders();
+
+    const ShuntCompensatorAdder& getShuntCompensatorAdder() const;
+
+    friend class SectionAdder;
+
+private:
+    ShuntCompensatorAdder& m_parent;
+
+    std::vector<SectionAdder> m_sectionAdders;
 };
 
 }  // namespace shunt_compensator

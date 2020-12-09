@@ -129,7 +129,7 @@ void checkRatioTapChangerRegulation(const Validable& validable, bool regulating,
 
 void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network);
 
-void checkSections(const Validable& validable, unsigned long currentSectionCount, unsigned long maximumSectionCount);
+void checkSections(const Validable& validable, const stdcxx::optional<unsigned long>& currentSectionCount, unsigned long maximumSectionCount);
 
 void checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode);
 

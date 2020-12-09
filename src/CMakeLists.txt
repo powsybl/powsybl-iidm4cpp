@@ -94,8 +94,6 @@ set(IIDM_SOURCES
     iidm/ShuntCompensatorAdder.cpp
     iidm/ShuntCompensatorLinearModel.cpp
     iidm/ShuntCompensatorLinearModelAdder.cpp
-    iidm/ShuntCompensatorModel.cpp
-    iidm/ShuntCompensatorModelAdder.cpp
     iidm/ShuntCompensatorModelType.cpp
     iidm/ShuntCompensatorNonLinearModel.cpp
     iidm/ShuntCompensatorNonLinearModelAdder.cpp

@@ -15,7 +15,7 @@ namespace powsybl {
 namespace iidm {
 
 ShuntCompensatorLinearModel::ShuntCompensatorLinearModel(ShuntCompensator& shuntCompensator, double bPerSection, double gPerSection, unsigned long maximumSectionCount) :
-    ShuntCompensatorModel(shuntCompensator),
+    m_shuntCompensator(shuntCompensator),
     m_bPerSection(bPerSection),
     m_gPerSection(gPerSection),
     m_maximumSectionCount(maximumSectionCount) {

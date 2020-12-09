@@ -57,6 +57,8 @@ private:  // ShuntCompensatorModel
     const ShuntCompensatorModelType& getType() const override;
 
 private:
+    ShuntCompensator& m_shuntCompensator;
+
     double m_bPerSection;
 
     double m_gPerSection;

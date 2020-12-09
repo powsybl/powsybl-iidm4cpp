@@ -20,19 +20,18 @@ class ShuntCompensatorModel;
 
 class ShuntCompensatorModelAdder {
 public:
-    explicit ShuntCompensatorModelAdder(ShuntCompensatorAdder& parent);
+    ShuntCompensatorModelAdder() = default;
 
     virtual ~ShuntCompensatorModelAdder() noexcept = default;
 
     virtual ShuntCompensatorAdder& add() = 0;
 
-protected:
-    ShuntCompensatorAdder& m_parent;
-
 private:
-    virtual std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const = 0;
+    virtual std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator) const = 0;
 
     virtual std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const = 0;
+
+    virtual unsigned long getMaximumSectionCount() const = 0;
 
     friend class ShuntCompensatorAdder;
 };

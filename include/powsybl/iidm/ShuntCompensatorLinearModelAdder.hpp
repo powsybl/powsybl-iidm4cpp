@@ -36,11 +36,15 @@ public:
     ShuntCompensatorLinearModelAdder& setMaximumSectionCount(unsigned long maximumSectionCount);
 
 private:  // ShuntCompensatorModelAdder
-    std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator, unsigned long sectionCount) const override;
+    std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator) const override;
 
     std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const override;
 
+    unsigned long getMaximumSectionCount() const override;
+
 private:
+    ShuntCompensatorAdder& m_parent;
+
     double m_bPerSection = stdcxx::nan();
 
     double m_gPerSection = stdcxx::nan();

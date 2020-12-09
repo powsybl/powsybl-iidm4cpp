@@ -9,24 +9,18 @@
 #define POWSYBL_IIDM_SHUNTCOMPENSATORMODEL_HPP
 
 #include <powsybl/iidm/ShuntCompensatorModelType.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
 class ShuntCompensator;
-class ShuntCompensatorAdder;
 
 class ShuntCompensatorModel {
 public:
+    ShuntCompensatorModel() = default;
+
     virtual ~ShuntCompensatorModel() noexcept = default;
-
-protected:
-    explicit ShuntCompensatorModel(ShuntCompensator& shuntCompensator);
-
-protected:
-    ShuntCompensator& m_shuntCompensator;
 
 private:
     virtual double getB(unsigned long sectionCount) const = 0;
@@ -35,17 +29,9 @@ private:
 
     virtual unsigned long getMaximumSectionCount() const = 0;
 
-    const ShuntCompensator& getShuntCompensator() const;
-
-    ShuntCompensator& getShuntCompensator();
-
     virtual const ShuntCompensatorModelType& getType() const = 0;
 
     friend class ShuntCompensator;
-
-    friend class ShuntCompensatorAdder;
-
-    friend class ShuntCompensatorNonLinearModel;
 };
 
 }  // namespace iidm

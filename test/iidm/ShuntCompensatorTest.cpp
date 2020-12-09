@@ -77,33 +77,36 @@ BOOST_AUTO_TEST_CASE(adder) {
         .setConnectableBus(vl1Bus1.getId());
 
     ShuntCompensatorAdder::ShuntCompensatorLinearModelAdder linearModel = adder.newLinearModel();
-    POWSYBL_ASSERT_THROW(linearModel.add().add(), PowsyblException, "Shunt compensator 'SHUNT1': susceptance per section is invalid");
+    POWSYBL_ASSERT_THROW(linearModel.add(), PowsyblException, "Shunt compensator 'SHUNT1': susceptance per section is invalid");
     linearModel.setBPerSection(0.0);
 
-    POWSYBL_ASSERT_THROW(linearModel.add().add(), PowsyblException, "Shunt compensator 'SHUNT1': susceptance per section is equal to zero");
+    POWSYBL_ASSERT_THROW(linearModel.add(), PowsyblException, "Shunt compensator 'SHUNT1': susceptance per section is equal to zero");
     linearModel.setBPerSection(0.25);
 
-    POWSYBL_ASSERT_THROW(linearModel.add().add(), PowsyblException, "Shunt compensator 'SHUNT1': the maximum number of section is not set");
+    POWSYBL_ASSERT_THROW(linearModel.add(), PowsyblException, "Shunt compensator 'SHUNT1': the maximum number of section is not set");
+
     linearModel.setMaximumSectionCount(0);
+    POWSYBL_ASSERT_THROW(linearModel.add(), PowsyblException, "Shunt compensator 'SHUNT1': the maximum number of section (0) should be greater than 0");
+
+    linearModel.setMaximumSectionCount(10);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': the shunt compensator model has not been defined");
+    BOOST_CHECK_NO_THROW(linearModel.add());
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': section count is not set");
     adder.setSectionCount(20);
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ShuntCompensator' with the id 'SHUNT1'");
-    adder.setEnsureIdUnicity(true);
-
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': the shunt compensator model has not been defined");
     adder.newLinearModel()
         .setBPerSection(0.25)
         .setGPerSection(0.75)
         .setMaximumSectionCount(10)
         .add();
 
+
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': the current number (20) of section should be lesser than the maximum number of section (10)");
     adder.setSectionCount(5);
 
-    POWSYBL_ASSERT_THROW(linearModel.add().add(), PowsyblException, "Shunt compensator 'SHUNT1': the maximum number of section (0) should be greater than 0");
-
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ShuntCompensator' with the id 'SHUNT1'");
+    adder.setEnsureIdUnicity(true);
 
     // check with regulating = true
     adder.setVoltageRegulatorOn(true);

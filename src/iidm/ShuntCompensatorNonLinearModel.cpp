@@ -17,7 +17,8 @@ namespace powsybl {
 
 namespace iidm {
 
-ShuntCompensatorNonLinearModel::Section::Section(double b, double g) :
+ShuntCompensatorNonLinearModel::Section::Section(ShuntCompensator& shuntCompensator, double b, double g) :
+    m_shuntCompensator(shuntCompensator),
     m_b(b),
     m_g(g) {
 }
@@ -31,27 +32,20 @@ double ShuntCompensatorNonLinearModel::Section::getG() const {
 }
 
 ShuntCompensatorNonLinearModel::Section& ShuntCompensatorNonLinearModel::Section::setB(double b) {
-    checkB(m_model.get().getShuntCompensator(), b);
+    checkB(m_shuntCompensator, b);
     m_b = b;
     return *this;
 }
 
 ShuntCompensatorNonLinearModel::Section& ShuntCompensatorNonLinearModel::Section::setG(double g) {
-    checkG(m_model.get().getShuntCompensator(), g);
+    checkG(m_shuntCompensator, g);
     m_g = g;
     return *this;
 }
 
-void ShuntCompensatorNonLinearModel::Section::setModel(ShuntCompensatorNonLinearModel& model) {
-    m_model = stdcxx::ref(model);
-}
-
-ShuntCompensatorNonLinearModel::ShuntCompensatorNonLinearModel(ShuntCompensator& shuntCompensator, const std::vector<Section>& sections) :
-    ShuntCompensatorModel(shuntCompensator),
+ShuntCompensatorNonLinearModel::ShuntCompensatorNonLinearModel(ShuntCompensator& shuntCompensator, std::vector<Section>&& sections) :
+    m_shuntCompensator(shuntCompensator),
     m_sections(sections) {
-    for (Section& section : m_sections) {
-        section.setModel(*this);
-    }
 }
 
 stdcxx::const_range<ShuntCompensatorNonLinearModel::Section> ShuntCompensatorNonLinearModel::getAllSections() const {

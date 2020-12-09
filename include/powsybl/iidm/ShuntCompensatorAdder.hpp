@@ -62,7 +62,7 @@ private: // IdentifiableAdder
 private:
     explicit ShuntCompensatorAdder(VoltageLevel& voltageLevel);
 
-    void setShuntCompensatorModelAdder(const ShuntCompensatorModelAdder& adder);
+    void setShuntCompensatorModelBuilder(const ShuntCompensatorModelAdder& adder);
 
     friend class VoltageLevel;
 
@@ -81,7 +81,7 @@ private:
 
     bool m_voltageRegulatorOn = false;
 
-    std::unique_ptr<ShuntCompensatorModelAdder> m_shuntCompensatorModelAdder;
+    std::unique_ptr<ShuntCompensatorModelAdder> m_modelBuilder;
 };
 
 }  // namespace iidm
