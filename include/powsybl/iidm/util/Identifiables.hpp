@@ -16,27 +16,11 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace util {
+namespace Identifiables {
 
-class Identifiables {
-public:
-    static std::string getUniqueId(const std::string& baseId, const stdcxx::Predicate<std::string>& containsId);
+std::string getUniqueId(const std::string& baseId, const stdcxx::Predicate<std::string>& containsId);
 
-public:
-    Identifiables() = delete;
-
-    Identifiables(const Identifiables&) = delete;
-
-    Identifiables(Identifiables&&) noexcept = delete;
-
-    ~Identifiables() = delete;
-
-    Identifiables& operator=(const Identifiables&) = delete;
-
-    Identifiables& operator=(Identifiables&&) noexcept = delete;
-};
-
-}  // namespace util
+}  // namespace Identifiables
 
 }  // namespace iidm
 

@@ -14,10 +14,10 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace util {
+namespace Identifiables {
 
-std::string Identifiables::getUniqueId(const std::string& baseId, const stdcxx::Predicate<std::string>& containsId) {
-    logging::Logger& logger = logging::LoggerFactory::getLogger<Identifiables>();
+std::string getUniqueId(const std::string& baseId, const stdcxx::Predicate<std::string>& containsId) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger("Identifiables");
 
     std::string checkedBaseId;
     if (!baseId.empty()) {
@@ -41,7 +41,7 @@ std::string Identifiables::getUniqueId(const std::string& baseId, const stdcxx::
     return uniqueId;
 }
 
-}  // namespace util
+}  // namespace Identifiables
 
 }  // namespace iidm
 

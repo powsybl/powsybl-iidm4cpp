@@ -19,8 +19,6 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace util {
-
 BOOST_AUTO_TEST_SUITE(TerminalFinderTestSuite)
 
 BOOST_AUTO_TEST_CASE(testBbsTerminal) {
@@ -30,7 +28,7 @@ BOOST_AUTO_TEST_CASE(testBbsTerminal) {
     BOOST_CHECK(static_cast<bool>(optTerminalN0));
 
     const auto& terminalStream = optTerminalN0.get().getBusBreakerView().getBus().get().getConnectedTerminals();
-    stdcxx::Reference<Terminal> bestOptTerminal = util::TerminalFinder::getDefault().find(terminalStream);
+    stdcxx::Reference<Terminal> bestOptTerminal = TerminalFinder::find(terminalStream);
     BOOST_CHECK(static_cast<bool>(bestOptTerminal));
 
     Terminal& bestTerminal = bestOptTerminal.get();
@@ -43,12 +41,10 @@ BOOST_AUTO_TEST_CASE(testNoTerminal) {
     Network network = powsybl::network::FictitiousSwitchFactory::create();
     VoltageLevel& vlN = network.getVoltageLevel("N");
 
-    const util::TerminalFinder& slackTerminalFinder = util::TerminalFinder::getDefault();
-
     Bus& bus = vlN.getBusBreakerView().getBus("N_13");
 
     const auto& terminalIter = bus.getConnectedTerminals();
-    BOOST_CHECK(!static_cast<bool>(slackTerminalFinder.find(terminalIter)));
+    BOOST_CHECK(!static_cast<bool>(TerminalFinder::find(terminalIter)));
 }
 
 BOOST_AUTO_TEST_CASE(testLineTerminal1) {
@@ -58,7 +54,7 @@ BOOST_AUTO_TEST_CASE(testLineTerminal1) {
     Bus& bus = vlhv2.getBusBreakerView().getBus("NHV1");
 
     const auto& terminalStream = bus.getConnectedTerminals();
-    stdcxx::Reference<Terminal> bestOptTerminal = util::TerminalFinder::getDefault().find(terminalStream);
+    stdcxx::Reference<Terminal> bestOptTerminal = TerminalFinder::find(terminalStream);
     BOOST_CHECK(static_cast<bool>(bestOptTerminal));
 
     Terminal& bestTerminal = bestOptTerminal.get();
@@ -74,7 +70,7 @@ BOOST_AUTO_TEST_CASE(testLineTerminal2) {
     Bus& bus = vlhv2.getBusBreakerView().getBus("NHV2");
 
     const auto& terminalStream = bus.getConnectedTerminals();
-    stdcxx::Reference<Terminal> bestOptTerminal = util::TerminalFinder::getDefault().find(terminalStream);
+    stdcxx::Reference<Terminal> bestOptTerminal = TerminalFinder::find(terminalStream);
     BOOST_CHECK(static_cast<bool>(bestOptTerminal));
 
     Terminal& bestTerminal = bestOptTerminal.get();
@@ -87,10 +83,14 @@ BOOST_AUTO_TEST_CASE(testGeneratorTerminal) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     VoltageLevel& vlgen = network.getVoltageLevel("VLGEN");
 
-    Bus& bus = vlgen.getBusBreakerView().getBus("NGEN");
+    const Bus& cBus = vlgen.getBusBreakerView().getBus("NGEN");
+    const auto& cTerminalStream = cBus.getConnectedTerminals();
+    stdcxx::CReference<Terminal> cBestOptTerminal = TerminalFinder::find(cTerminalStream);
+    BOOST_CHECK(static_cast<bool>(cBestOptTerminal));
 
+    Bus& bus = vlgen.getBusBreakerView().getBus("NGEN");
     const auto& terminalStream = bus.getConnectedTerminals();
-    stdcxx::Reference<Terminal> bestOptTerminal = util::TerminalFinder::getDefault().find(terminalStream);
+    stdcxx::Reference<Terminal> bestOptTerminal = TerminalFinder::find(terminalStream);
     BOOST_CHECK(static_cast<bool>(bestOptTerminal));
 
     Terminal& bestTerminal = bestOptTerminal.get();
@@ -102,28 +102,31 @@ BOOST_AUTO_TEST_CASE(testGeneratorTerminal) {
 BOOST_AUTO_TEST_CASE(testTerminalFromComparator) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     VoltageLevel& vlgen = network.getVoltageLevel("VLGEN");
+    const Bus& cBus = vlgen.getBusBreakerView().getBus("NGEN");
     Bus& bus = vlgen.getBusBreakerView().getBus("NGEN");
 
+    const auto& cTerminalStream = cBus.getConnectedTerminals();
     const auto& terminalStream = bus.getConnectedTerminals();
 
     // sort by id alphabetically
-    util::TerminalFinder terminalFinderLess([](const Terminal& t1, const Terminal& t2) {
+    const TerminalFinder::Comparator& terminalFinderLess = [](const Terminal& t1, const Terminal& t2) {
         return t1.getConnectable().get().getId() < t2.getConnectable().get().getId();
-    });
-    Terminal& bestLessTerminal = terminalFinderLess.find(terminalStream).get();
+    };
+    const Terminal& cBestLessTerminal = TerminalFinder::find(terminalFinderLess, cTerminalStream).get();
+    BOOST_CHECK_EQUAL("NGEN_NHV1", cBestLessTerminal.getConnectable().get().getNameOrId());
+
+    Terminal& bestLessTerminal = TerminalFinder::find(terminalFinderLess, terminalStream).get();
     BOOST_CHECK_EQUAL("NGEN_NHV1", bestLessTerminal.getConnectable().get().getNameOrId());
 
     // sort by id reverse alphabetically
-    util::TerminalFinder terminalFinderMore([](const Terminal& t1, const Terminal& t2) {
+    const TerminalFinder::Comparator& terminalFinderMore([](const Terminal& t1, const Terminal& t2) {
         return t1.getConnectable().get().getId() > t2.getConnectable().get().getId();
     });
-    Terminal& bestMoreTerminal = terminalFinderMore.find(terminalStream).get();
+    Terminal& bestMoreTerminal = TerminalFinder::find(terminalFinderMore, terminalStream).get();
     BOOST_CHECK_EQUAL("GEN", bestMoreTerminal.getConnectable().get().getNameOrId());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
-}  // namespace util
 
 }  // namespace iidm
 

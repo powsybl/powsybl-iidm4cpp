@@ -244,7 +244,7 @@ void VoltageLevelXml::writeNodeBreakerTopology(const VoltageLevel& voltageLevel,
     writeNodeBreakerTopologyInternalConnections(voltageLevel, context);
 
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&context, &voltageLevel]() {
-        const auto& nodesByBus = util::Networks::getNodesByBus(voltageLevel);
+        const auto& nodesByBus = Networks::getNodesByBus(voltageLevel);
         for (const auto& pair : nodesByBus) {
             const stdcxx::CReference<Bus>& bus = voltageLevel.getBusView().getBus(pair.first);
             if (bus && (!std::isnan(bus.get().getV()) || !std::isnan(bus.get().getAngle()))) {
