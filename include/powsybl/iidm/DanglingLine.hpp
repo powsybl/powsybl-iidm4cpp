@@ -23,7 +23,8 @@ public:
 
 public:
     DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-                 double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode);
+                 double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode,
+                 std::unique_ptr<Generation>&& generation);
 
     ~DanglingLine() noexcept override = default;
 
@@ -76,12 +77,8 @@ private: // Identifiable
 private:
     void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
 
-    DanglingLine& setGeneration(std::unique_ptr<Generation>&& generation);
-
 private:
     friend class CurrentLimitsAdder<std::nullptr_t, DanglingLine>;
-
-    friend class DanglingLineAdder;
 
 private:
     double m_b;
