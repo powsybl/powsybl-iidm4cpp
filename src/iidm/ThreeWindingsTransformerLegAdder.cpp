@@ -63,7 +63,6 @@ ThreeWindingsTransformerAdder& LegAdder::add() {
 
         default:
             throw ValidationException(*this, "Unexpected leg number");
-            break;
     }
     return m_parent;
 }
