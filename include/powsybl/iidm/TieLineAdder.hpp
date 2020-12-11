@@ -20,7 +20,7 @@ class Network;
 
 class TieLineAdder : public BranchAdder<TieLineAdder> {
 public:
-    using HalfLineAdder = tie_line_adder::HalfLineAdder;
+    using HalfLineAdder = tie_line::HalfLineAdder;
 
 public:
     explicit TieLineAdder(Network& network);
@@ -44,11 +44,7 @@ private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:
-    void setHalfLineAdder1(HalfLineAdder& adder);
-
-    void setHalfLineAdder2(HalfLineAdder& adder);
-
-    friend class tie_line_adder::HalfLineAdder;
+    friend class tie_line::HalfLineAdder;
 
 private:
     Network& m_network;

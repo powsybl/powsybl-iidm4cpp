@@ -20,7 +20,7 @@ namespace iidm {
 
 class TieLineAdder;
 
-namespace tie_line_adder {
+namespace tie_line {
 
 class HalfLineAdder : public Validable {
 public:  // Validable
@@ -84,7 +84,7 @@ private:
     double m_b2 = stdcxx::nan();
 };
 
-}  // namespace tie_line_adder
+}  // namespace tie_line
 
 }  // namespace iidm
 

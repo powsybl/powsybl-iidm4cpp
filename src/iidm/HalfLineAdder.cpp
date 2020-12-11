@@ -15,7 +15,7 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace tie_line_adder {
+namespace tie_line {
 
 HalfLineAdder::HalfLineAdder(TieLineAdder& parent, int num) :
     m_parent(parent),
@@ -125,7 +125,7 @@ HalfLineAdder& HalfLineAdder::setXnodeQ(double xnodeQ) {
     return *this;
 }
 
-}  // namespace tie_line_adder
+}  // namespace tie_line
 
 }  // namespace iidm
 
