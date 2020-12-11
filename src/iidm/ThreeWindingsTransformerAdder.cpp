@@ -25,14 +25,50 @@ ThreeWindingsTransformerAdder::LegAdder::LegAdder(ThreeWindingsTransformerAdder&
     m_legNumber(legNumber) {
 }
 
+ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::LegAdder::operator=(const LegAdder& adder) {
+    m_legNumber = adder.m_legNumber;
+    m_voltageLevelId = adder.m_voltageLevelId;
+    m_node = adder.m_node;
+    m_bus = adder.m_bus;
+    m_connectableBus = adder.m_connectableBus;
+    m_r = adder.m_r;
+    m_x = adder.m_x;
+    m_g = adder.m_g;
+    m_b = adder.m_b;
+    m_ratedU = adder.m_ratedU;
+    m_ratedS = adder.m_ratedS;
+    return *this;
+}
+
 ThreeWindingsTransformerAdder& ThreeWindingsTransformerAdder::LegAdder::add() {
-    checkParams();
+    checkOptional(*this, m_r, "r is not set");
+    checkOptional(*this, m_x, "x is not set");
+    checkOptional(*this, m_g, "g is not set");
+    checkOptional(*this, m_b, "b is not set");
+    checkOptional(*this, m_ratedU, "rated U is not set");
+    checkRatedS(*this, m_ratedS);
+
+    switch (m_legNumber) {
+        case 1:
+            m_parent.setLegAdder1(*this);
+            break;
+
+        case 2:
+            m_parent.setLegAdder2(*this);
+            break;
+
+        case 3:
+            m_parent.setLegAdder3(*this);
+            break;
+
+        default:
+            throw ValidationException(*this, "Unexpected leg number");
+            break;
+    }
     return m_parent;
 }
 
-std::unique_ptr<ThreeWindingsTransformer::Leg> ThreeWindingsTransformerAdder::LegAdder::checkAndGetLeg() const {
-    checkParams();
-
+std::unique_ptr<ThreeWindingsTransformer::Leg> ThreeWindingsTransformerAdder::LegAdder::build() const {
     return stdcxx::make_unique<ThreeWindingsTransformer::Leg>(m_legNumber, m_r, m_x, m_g, m_b, m_ratedU, m_ratedS);
 }
 
@@ -56,29 +92,6 @@ VoltageLevel& ThreeWindingsTransformerAdder::LegAdder::checkAndGetVoltageLevel()
     }
 
     return voltageLevel.get();
-}
-
-void ThreeWindingsTransformerAdder::LegAdder::checkParams() const {
-    checkOptional(*this, m_r, "r is not set");
-    checkOptional(*this, m_x, "x is not set");
-    checkOptional(*this, m_g, "g is not set");
-    checkOptional(*this, m_b, "b is not set");
-    checkOptional(*this, m_ratedU, "rated U is not set");
-    checkRatedS(*this, m_ratedS);
-}
-
-ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::LegAdder::clear() {
-    m_voltageLevelId.clear();
-    m_node.reset();
-    m_bus.clear();
-    m_connectableBus.clear();
-    m_r = stdcxx::nan();
-    m_x = stdcxx::nan();
-    m_g = stdcxx::nan();
-    m_b = stdcxx::nan();
-    m_ratedU = stdcxx::nan();
-
-    return *this;
 }
 
 std::string ThreeWindingsTransformerAdder::LegAdder::getMessageHeader() const {
@@ -142,26 +155,32 @@ ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::LegAdder
 }
 
 ThreeWindingsTransformerAdder::ThreeWindingsTransformerAdder(Substation& substation) :
-    m_substation(substation),
-    m_adder1(*this, 1),
-    m_adder2(*this, 2),
-    m_adder3(*this, 3) {
+    m_substation(substation) {
 }
 
 ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     logging::Logger& logger = logging::LoggerFactory::getLogger<ThreeWindingsTransformer>();
 
-    std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg1 = m_adder1.checkAndGetLeg();
-    VoltageLevel& voltageLevel1 = m_adder1.checkAndGetVoltageLevel();
-    std::unique_ptr<Terminal> ptrTerminal1 = m_adder1.checkAndGetTerminal(voltageLevel1);
+    if (!m_adder1.is_initialized()) {
+        throw ValidationException(newLeg1(), "leg 1 is not defined");
+    }
+    std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg1 = m_adder1->build();
+    VoltageLevel& voltageLevel1 = m_adder1->checkAndGetVoltageLevel();
+    std::unique_ptr<Terminal> ptrTerminal1 = m_adder1->checkAndGetTerminal(voltageLevel1);
 
-    std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg2 = m_adder2.checkAndGetLeg();
-    VoltageLevel& voltageLevel2 = m_adder2.checkAndGetVoltageLevel();
-    std::unique_ptr<Terminal> ptrTerminal2 = m_adder2.checkAndGetTerminal(voltageLevel2);
+    if (!m_adder2.is_initialized()) {
+        throw ValidationException(newLeg2(), "leg 2 is not defined");
+    }
+    std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg2 = m_adder2->build();
+    VoltageLevel& voltageLevel2 = m_adder2->checkAndGetVoltageLevel();
+    std::unique_ptr<Terminal> ptrTerminal2 = m_adder2->checkAndGetTerminal(voltageLevel2);
 
-    std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg3 = m_adder3.checkAndGetLeg();
-    VoltageLevel& voltageLevel3 = m_adder3.checkAndGetVoltageLevel();
-    std::unique_ptr<Terminal> ptrTerminal3 = m_adder3.checkAndGetTerminal(voltageLevel3);
+    if (!m_adder3.is_initialized()) {
+        throw ValidationException(newLeg3(), "leg 3 is not defined");
+    }
+    std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg3 = m_adder3->build();
+    VoltageLevel& voltageLevel3 = m_adder3->checkAndGetVoltageLevel();
+    std::unique_ptr<Terminal> ptrTerminal3 = m_adder3->checkAndGetTerminal(voltageLevel3);
 
     // check that the 3 windings transformer is attachable on the 3 sides
     voltageLevel1.attach(*ptrTerminal1, true);
@@ -209,16 +228,28 @@ const std::string& ThreeWindingsTransformerAdder::getTypeDescription() const {
     return s_typeDescription;
 }
 
-ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::newLeg1() {
-    return m_adder1.clear();
+ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg1() {
+    return ThreeWindingsTransformerAdder::LegAdder(*this, 1);
 }
 
-ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::newLeg2() {
-    return m_adder2.clear().setB(0).setG(0);
+ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg2() {
+    return ThreeWindingsTransformerAdder::LegAdder(*this, 2).setB(0).setG(0);
 }
 
-ThreeWindingsTransformerAdder::LegAdder& ThreeWindingsTransformerAdder::newLeg3() {
-    return m_adder3.clear().setB(0).setG(0);
+ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg3() {
+    return ThreeWindingsTransformerAdder::LegAdder(*this, 3).setB(0).setG(0);
+}
+
+void ThreeWindingsTransformerAdder::setLegAdder1(LegAdder& legAdder) {
+    m_adder1.emplace(legAdder);
+}
+
+void ThreeWindingsTransformerAdder::setLegAdder2(LegAdder& legAdder) {
+    m_adder2.emplace(legAdder);
+}
+
+void ThreeWindingsTransformerAdder::setLegAdder3(LegAdder& legAdder) {
+    m_adder3.emplace(legAdder);
 }
 
 ThreeWindingsTransformerAdder& ThreeWindingsTransformerAdder::setRatedU0(double ratedU0) {

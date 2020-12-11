@@ -54,17 +54,14 @@ public:
     private:
         LegAdder(ThreeWindingsTransformerAdder& parent, unsigned long legNumber);
 
-        std::unique_ptr<ThreeWindingsTransformer::Leg> checkAndGetLeg() const;
+        LegAdder& operator=(const LegAdder& adder);
+
+        std::unique_ptr<ThreeWindingsTransformer::Leg> build() const;
 
         std::unique_ptr<Terminal> checkAndGetTerminal(VoltageLevel& voltageLevel);
 
         VoltageLevel& checkAndGetVoltageLevel();
 
-        LegAdder& clear();
-
-        void checkParams() const;
-
-    private:
         friend class ThreeWindingsTransformerAdder;
 
     private:
@@ -100,11 +97,11 @@ public:
 
     ThreeWindingsTransformer& add();
 
-    LegAdder& newLeg1();
+    LegAdder newLeg1();
 
-    LegAdder& newLeg2();
+    LegAdder newLeg2();
 
-    LegAdder& newLeg3();
+    LegAdder newLeg3();
 
     ThreeWindingsTransformerAdder& setRatedU0(double ratedU0);
 
@@ -119,14 +116,20 @@ private: // IdentifiableAdder
 private:
     Substation& getSubstation();
 
+    void setLegAdder1(LegAdder& legAdder);
+
+    void setLegAdder2(LegAdder& legAdder);
+
+    void setLegAdder3(LegAdder& legAdder);
+
 private:
     Substation& m_substation;
 
-    LegAdder m_adder1;
+    stdcxx::optional<LegAdder> m_adder1;
 
-    LegAdder m_adder2;
+    stdcxx::optional<LegAdder> m_adder2;
 
-    LegAdder m_adder3;
+    stdcxx::optional<LegAdder> m_adder3;
 
     double m_ratedU0 = stdcxx::nan();
 };
