@@ -56,7 +56,7 @@ public:
 
         LegAdder& operator=(const LegAdder& adder);
 
-        std::unique_ptr<ThreeWindingsTransformer::Leg> build() const;
+        ThreeWindingsTransformer::Leg build() const;
 
         std::unique_ptr<Terminal> checkAndGetTerminal(VoltageLevel& voltageLevel);
 

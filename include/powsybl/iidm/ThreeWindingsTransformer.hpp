@@ -58,6 +58,14 @@ public:
     public:
         Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU, double ratedS);
 
+        Leg(const Leg&) = delete;
+
+        Leg(Leg&&) noexcept = default;
+
+        Leg& operator=(const Leg&) = delete;
+
+        Leg& operator=(Leg&&) noexcept = default;
+
         ~Leg() noexcept override = default;
 
         double getB() const;
@@ -142,7 +150,7 @@ public:
     };
 
 public:
-    ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<Leg> leg1, std::unique_ptr<Leg> leg2, std::unique_ptr<Leg> leg3, double ratedU0);
+    ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Leg&& leg1, Leg&& leg2, Leg&& leg3, double ratedU0);
 
     ~ThreeWindingsTransformer() noexcept override = default;
 
@@ -186,11 +194,11 @@ private:
     friend class ThreeWindingsTransformerAdder;
 
 private:
-    std::unique_ptr<Leg> m_leg1;
+    Leg m_leg1;
 
-    std::unique_ptr<Leg> m_leg2;
+    Leg m_leg2;
 
-    std::unique_ptr<Leg> m_leg3;
+    Leg m_leg3;
 
     double m_ratedU0;
 };

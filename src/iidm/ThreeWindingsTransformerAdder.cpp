@@ -68,8 +68,8 @@ ThreeWindingsTransformerAdder& ThreeWindingsTransformerAdder::LegAdder::add() {
     return m_parent;
 }
 
-std::unique_ptr<ThreeWindingsTransformer::Leg> ThreeWindingsTransformerAdder::LegAdder::build() const {
-    return stdcxx::make_unique<ThreeWindingsTransformer::Leg>(m_legNumber, m_r, m_x, m_g, m_b, m_ratedU, m_ratedS);
+ThreeWindingsTransformer::Leg ThreeWindingsTransformerAdder::LegAdder::build() const {
+    return ThreeWindingsTransformer::Leg(m_legNumber, m_r, m_x, m_g, m_b, m_ratedU, m_ratedS);
 }
 
 std::unique_ptr<Terminal> ThreeWindingsTransformerAdder::LegAdder::checkAndGetTerminal(VoltageLevel& voltageLevel) {
@@ -164,21 +164,21 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     if (!m_adder1.is_initialized()) {
         throw ValidationException(newLeg1(), "leg 1 is not defined");
     }
-    std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg1 = m_adder1->build();
+    ThreeWindingsTransformer::Leg leg1 = m_adder1->build();
     VoltageLevel& voltageLevel1 = m_adder1->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal1 = m_adder1->checkAndGetTerminal(voltageLevel1);
 
     if (!m_adder2.is_initialized()) {
         throw ValidationException(newLeg2(), "leg 2 is not defined");
     }
-    std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg2 = m_adder2->build();
+    ThreeWindingsTransformer::Leg leg2 = m_adder2->build();
     VoltageLevel& voltageLevel2 = m_adder2->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal2 = m_adder2->checkAndGetTerminal(voltageLevel2);
 
     if (!m_adder3.is_initialized()) {
         throw ValidationException(newLeg3(), "leg 3 is not defined");
     }
-    std::unique_ptr<ThreeWindingsTransformer::Leg> ptrLeg3 = m_adder3->build();
+    ThreeWindingsTransformer::Leg leg3 = m_adder3->build();
     VoltageLevel& voltageLevel3 = m_adder3->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal3 = m_adder3->checkAndGetTerminal(voltageLevel3);
 
@@ -189,11 +189,11 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
 
     // Define ratedU0 equal to ratedU1 if it has not been defined
     if (std::isnan(m_ratedU0)) {
-        m_ratedU0 = ptrLeg1->getRatedU();
-        logger.info(stdcxx::format("RatedU0 is not set. Fixed to leg1 ratedU: %1%", ptrLeg1->getRatedU()));
+        m_ratedU0 = leg1.getRatedU();
+        logger.info(stdcxx::format("RatedU0 is not set. Fixed to leg1 ratedU: %1%", leg1.getRatedU()));
     }
 
-    std::unique_ptr<ThreeWindingsTransformer> ptrTransformer = stdcxx::make_unique<ThreeWindingsTransformer>(checkAndGetUniqueId(), getName(), isFictitious(), std::move(ptrLeg1), std::move(ptrLeg2), std::move(ptrLeg3), m_ratedU0);
+    std::unique_ptr<ThreeWindingsTransformer> ptrTransformer = stdcxx::make_unique<ThreeWindingsTransformer>(checkAndGetUniqueId(), getName(), isFictitious(), std::move(leg1), std::move(leg2), std::move(leg3), m_ratedU0);
     auto& transformer = getNetwork().checkAndAdd<ThreeWindingsTransformer>(std::move(ptrTransformer));
     transformer.getLeg1().setTransformer(transformer);
     transformer.getLeg2().setTransformer(transformer);
