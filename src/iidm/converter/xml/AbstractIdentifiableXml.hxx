@@ -41,6 +41,11 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::read(Parent& parent, Network
         bool fictitious = context.getReader().getOptionalAttributeValue(FICTITIOUS, false);
         adder.setFictitious(fictitious);
     });
+    readElement(id, adder, context);
+}
+
+template <typename Added, typename Adder, typename Parent>
+void AbstractIdentifiableXml<Added, Adder, Parent>::readElement(const std::string& /*id*/, Adder& adder, NetworkXmlReaderContext& context) const {
     Added& identifiable = readRootElementAttributes(adder, context);
     readSubElements(identifiable, context);
 }

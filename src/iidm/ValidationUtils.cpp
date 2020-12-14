@@ -86,9 +86,6 @@ double checkbPerSection(const Validable& validable, double bPerSection) {
     if (std::isnan(bPerSection)) {
         throw ValidationException(validable, "susceptance per section is invalid");
     }
-    if (stdcxx::isEqual(bPerSection, 0.0)) {
-        throw ValidationException(validable, "susceptance per section is equal to zero");
-    }
     return bPerSection;
 }
 
@@ -178,6 +175,24 @@ double checkHvdcMaxP(const Validable& validable, double maxP) {
         throw createInvalidValueException(validable, maxP, "maximum P");
     }
     return maxP;
+}
+
+double checkLinearBPerSection(const Validable& validable, double bPerSection) {
+    checkbPerSection(validable, bPerSection);
+    if (stdcxx::isEqual(bPerSection, 0.0)) {
+        throw ValidationException(validable, "susceptance per section is equal to zero");
+    }
+    return bPerSection;
+}
+
+unsigned long checkMaximumSectionCount(const Validable& validable, const stdcxx::optional<unsigned long>& maximumSectionCount) {
+    if (!maximumSectionCount.is_initialized()) {
+        throw ValidationException(validable, "the maximum number of section is not set");
+    }
+    if (*maximumSectionCount == 0UL) {
+        throw ValidationException(validable, stdcxx::format("the maximum number of section (%1%) should be greater than 0", *maximumSectionCount));
+    }
+    return *maximumSectionCount;
 }
 
 const LoadType& checkLoadType(const Validable& /*validable*/, const LoadType& loadType) {
@@ -369,12 +384,15 @@ void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference
     }
 }
 
-void checkSections(const Validable& validable, unsigned long currentSectionCount, unsigned long maximumSectionCount) {
+void checkSections(const Validable& validable, const stdcxx::optional<unsigned long>& currentSectionCount, unsigned long maximumSectionCount) {
+    if (!currentSectionCount.is_initialized()) {
+        throw ValidationException(validable, "section count is not set");
+    }
     if (maximumSectionCount == 0UL) {
         throw ValidationException(validable, stdcxx::format("the maximum number of section (%1%) should be greater than 0", maximumSectionCount));
     }
-    if (currentSectionCount > maximumSectionCount) {
-        throw ValidationException(validable, stdcxx::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", currentSectionCount, maximumSectionCount));
+    if (*currentSectionCount > maximumSectionCount) {
+        throw ValidationException(validable, stdcxx::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", *currentSectionCount, maximumSectionCount));
     }
 }
 
