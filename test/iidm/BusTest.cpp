@@ -243,9 +243,12 @@ BOOST_AUTO_TEST_CASE(range_shuntCompensators) {
     vl.newShuntCompensator()
         .setId("Shunt")
         .setBus("Bus1")
-        .setbPerSection(0.25)
-        .setCurrentSectionCount(1)
-        .setMaximumSectionCount(1)
+        .setSectionCount(1)
+        .newLinearModel()
+        .setBPerSection(0.25)
+        .setGPerSection(0.75)
+        .setMaximumSectionCount(3)
+        .add()
         .add();
 
     BOOST_CHECK_EQUAL(1, network.getShuntCompensatorCount());

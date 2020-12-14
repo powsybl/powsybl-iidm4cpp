@@ -60,9 +60,13 @@ double checkHvdcActivePowerSetpoint(const Validable& validable, double activePow
 
 double checkHvdcMaxP(const Validable& validable, double maxP);
 
+double checkLinearBPerSection(const Validable& validable, double bPerSection);
+
 const LoadType& checkLoadType(const Validable& validable, const LoadType& loadType);
 
 double checkLossFactor(const Validable& validable, double lossFactor);
+
+unsigned long checkMaximumSectionCount(const Validable& validable, const stdcxx::optional<unsigned long>& maximumSectionCount);
 
 double checkMaxP(const Validable& validable, double maxP);
 
@@ -125,7 +129,7 @@ void checkRatioTapChangerRegulation(const Validable& validable, bool regulating,
 
 void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network);
 
-void checkSections(const Validable& validable, unsigned long currentSectionCount, unsigned long maximumSectionCount);
+void checkSections(const Validable& validable, const stdcxx::optional<unsigned long>& currentSectionCount, unsigned long maximumSectionCount);
 
 void checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode);
 

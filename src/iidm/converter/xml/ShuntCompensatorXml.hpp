@@ -31,11 +31,16 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
+    void readElement(const std::string& id, ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const override;
+
     ShuntCompensator& readRootElementAttributes(ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const override;
 
-    void readSubElements(ShuntCompensator& shuntCompensator, NetworkXmlReaderContext& context) const override;
-
     void writeRootElementAttributes(const ShuntCompensator& shuntCompensator, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+
+    void writeSubElements(const ShuntCompensator& sc, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+
+private:
+    static void writeModel(const ShuntCompensator& sc, NetworkXmlWriterContext& context);
 
 private:
     ShuntCompensatorXml() = default;

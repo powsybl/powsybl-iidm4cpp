@@ -42,6 +42,11 @@ public:
 
     reference_wrapper& operator=(reference_wrapper&&) noexcept = default;
 
+    reference_wrapper& operator=(T& reference) {
+        m_pointer = std::addressof(reference);
+        return *this;
+    }
+
     bool operator==(const reference_wrapper& reference) const {
         return m_pointer == reference.m_pointer;
     }
