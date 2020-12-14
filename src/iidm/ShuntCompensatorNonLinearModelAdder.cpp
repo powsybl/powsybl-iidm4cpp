@@ -22,10 +22,10 @@ ShuntCompensatorNonLinearModelAdder::SectionAdder::SectionAdder(ShuntCompensator
     m_parent(parent) {
 }
 
-ShuntCompensatorNonLinearModelAdder::SectionAdder::SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, const SectionAdder& adder) :
+ShuntCompensatorNonLinearModelAdder::SectionAdder::SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, double b, double g) :
     m_parent(parent),
-    m_b(adder.m_b),
-    m_g(adder.m_g) {
+    m_b(b),
+    m_g(g) {
 }
 
 ShuntCompensatorNonLinearModelAdder& ShuntCompensatorNonLinearModelAdder::SectionAdder::endSection() {
@@ -55,10 +55,10 @@ ShuntCompensatorNonLinearModelAdder::ShuntCompensatorNonLinearModelAdder(ShuntCo
     m_parent(parent) {
 }
 
-ShuntCompensatorNonLinearModelAdder::ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent, const ShuntCompensatorNonLinearModelAdder& adder) :
-    m_parent(parent) {
+ShuntCompensatorNonLinearModelAdder::ShuntCompensatorNonLinearModelAdder(ShuntCompensatorNonLinearModelAdder&& adder) noexcept :
+    m_parent(adder.m_parent) {
     for (const auto& sectionAdder : adder.m_sectionAdders) {
-        m_sectionAdders.push_back(SectionAdder(*this, sectionAdder));
+        m_sectionAdders.emplace_back(SectionAdder(*this, sectionAdder.m_b, sectionAdder.m_g));
     }
 }
 
@@ -66,7 +66,7 @@ ShuntCompensatorAdder& ShuntCompensatorNonLinearModelAdder::add() {
     if (m_sectionAdders.empty()) {
         throw ValidationException(m_parent, "a shunt compensator must have at least one section");
     }
-    m_parent.setShuntCompensatorModelBuilder(stdcxx::make_unique<ShuntCompensatorNonLinearModelAdder>(std::move(*this)));
+    m_parent.setShuntCompensatorModelBuilder(stdcxx::move_to_unique(this));
     return m_parent;
 }
 
@@ -81,10 +81,6 @@ std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorNonLinearModelAdder::buil
     }
 
     return stdcxx::make_unique<ShuntCompensatorNonLinearModel>(std::move(sections));
-}
-
-std::unique_ptr<ShuntCompensatorModelAdder> ShuntCompensatorNonLinearModelAdder::clone(ShuntCompensatorAdder& parent) const {
-    return stdcxx::make_unique<ShuntCompensatorNonLinearModelAdder>(parent, *this);
 }
 
 unsigned long ShuntCompensatorNonLinearModelAdder::getMaximumSectionCount() const {

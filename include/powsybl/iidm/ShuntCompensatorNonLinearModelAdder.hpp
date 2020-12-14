@@ -33,7 +33,7 @@ public:
     private:
         SectionAdder(ShuntCompensatorNonLinearModelAdder& parent);
 
-        SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, const SectionAdder& adder);
+        SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, double b, double g);
 
         friend class ShuntCompensatorNonLinearModelAdder;
 
@@ -51,14 +51,12 @@ public:  // ShuntCompensatorModelAdder
 public:
     explicit ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent);
 
-    ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent, const ShuntCompensatorNonLinearModelAdder& adder);
+    ShuntCompensatorNonLinearModelAdder(ShuntCompensatorNonLinearModelAdder&& adder) noexcept;
 
     SectionAdder beginSection();
 
 private:  // ShuntCompensatorModelAdder
     std::unique_ptr<ShuntCompensatorModel> build() const override;
-
-    std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const override;
 
     unsigned long getMaximumSectionCount() const override;
 

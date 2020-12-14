@@ -119,10 +119,6 @@ void ShuntCompensator::reduceVariantArraySize(unsigned long number) {
     m_targetDeadband.resize(m_targetDeadband.size() - number);
 }
 
-void ShuntCompensator::setModel(std::unique_ptr<ShuntCompensatorModel>&& model) {
-    m_model = std::move(model);
-}
-
 ShuntCompensator& ShuntCompensator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
     checkRegulatingTerminal(*this, regulatingTerminal, getNetwork());
     m_regulatingTerminal = regulatingTerminal ? regulatingTerminal.get() : getTerminal();

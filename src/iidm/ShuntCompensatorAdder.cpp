@@ -49,11 +49,11 @@ const std::string& ShuntCompensatorAdder::getTypeDescription() const {
 }
 
 ShuntCompensatorAdder::ShuntCompensatorLinearModelAdder ShuntCompensatorAdder::newLinearModel() {
-    return ShuntCompensatorAdder::ShuntCompensatorLinearModelAdder(*this);
+    return ShuntCompensatorLinearModelAdder(*this);
 }
 
 ShuntCompensatorAdder::ShuntCompensatorNonLinearModelAdder ShuntCompensatorAdder::newNonLinearModel() {
-    return ShuntCompensatorAdder::ShuntCompensatorNonLinearModelAdder(*this);
+    return ShuntCompensatorNonLinearModelAdder(*this);
 }
 
 ShuntCompensatorAdder& ShuntCompensatorAdder::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {

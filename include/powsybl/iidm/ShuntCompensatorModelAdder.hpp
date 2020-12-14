@@ -29,8 +29,6 @@ public:
 private:
     virtual std::unique_ptr<ShuntCompensatorModel> build() const = 0;
 
-    virtual std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const = 0;
-
     virtual unsigned long getMaximumSectionCount() const = 0;
 
     friend class ShuntCompensatorAdder;

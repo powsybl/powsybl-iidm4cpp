@@ -83,11 +83,6 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    void setModel(std::unique_ptr<ShuntCompensatorModel>&& model);
-
-    friend class ShuntCompensatorAdder;
-
-private:
     std::unique_ptr<ShuntCompensatorModel> m_model;
 
     /* the current number of section switched on */

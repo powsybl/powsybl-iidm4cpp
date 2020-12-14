@@ -27,7 +27,7 @@ public:  // ShuntCompensatorModelAdder
 public:
     explicit ShuntCompensatorLinearModelAdder(ShuntCompensatorAdder& parent);
 
-    ShuntCompensatorLinearModelAdder(ShuntCompensatorAdder& parent, const ShuntCompensatorLinearModelAdder& adder);
+    ShuntCompensatorLinearModelAdder(ShuntCompensatorLinearModelAdder&& adder) noexcept = default;
 
     ShuntCompensatorLinearModelAdder& setBPerSection(double bPerSection);
 
@@ -37,8 +37,6 @@ public:
 
 private:  // ShuntCompensatorModelAdder
     std::unique_ptr<ShuntCompensatorModel> build() const override;
-
-    std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const override;
 
     unsigned long getMaximumSectionCount() const override;
 
