@@ -33,11 +33,6 @@ public:
 
     reference_wrapper(reference_wrapper&&) noexcept = default;
 
-    reference_wrapper& operator=(T& reference) {
-        m_pointer = std::addressof(reference);
-        return *this;
-    }
-
     reference_wrapper& operator=(const reference_wrapper&) = default;
 
     reference_wrapper& operator=(reference_wrapper&&) noexcept = default;
