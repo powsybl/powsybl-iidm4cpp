@@ -56,7 +56,7 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::readSubElements(Added& ident
     if (context.getReader().getLocalName() == PROPERTY) {
         PropertiesXml::read(identifiable, context);
     } else if (context.getReader().getLocalName() == ALIAS) {
-        IidmXmlUtil::assertMinimumVersion(getRootElementName(), ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context.getVersion());
+        IidmXmlUtil::assertMinimumVersion(getRootElementName(), ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
         AliasesXml::read(identifiable, context);
     } else {
         throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), identifiable.getId()));

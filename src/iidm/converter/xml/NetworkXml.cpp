@@ -225,7 +225,7 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
 
     context.getReader().readUntilEndElement(NETWORK, [&network, &context, &extensionsNotFound]() {
         if (context.getReader().getLocalName() == ALIAS) {
-            IidmXmlUtil::assertMinimumVersion(NETWORK, ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context.getVersion());
+            IidmXmlUtil::assertMinimumVersion(NETWORK, ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
             AliasesXml::read(network, context);
         } else if (context.getReader().getLocalName() == PROPERTY) {
             PropertiesXml::read(network, context);

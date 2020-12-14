@@ -30,7 +30,7 @@ void AliasesXml::read(Identifiable& identifiable, const NetworkXmlReaderContext&
 }
 
 void AliasesXml::write(const Identifiable& identifiable, const std::string& rootElementName, NetworkXmlWriterContext& context) {
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(!identifiable.getAliases().empty(), rootElementName, ALIAS, ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_3(), context.getVersion());
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(!identifiable.getAliases().empty(), rootElementName, ALIAS, ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
     for (const std::string& alias : identifiable.getAliases()) {
         context.getWriter().writeStartElement(context.getVersion().getPrefix(), ALIAS);
         context.getWriter().writeCharacters(context.getAnonymizer().anonymizeString(alias));
