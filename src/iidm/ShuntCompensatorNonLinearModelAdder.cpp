@@ -66,7 +66,7 @@ ShuntCompensatorAdder& ShuntCompensatorNonLinearModelAdder::add() {
     if (m_sectionAdders.empty()) {
         throw ValidationException(m_parent, "a shunt compensator must have at least one section");
     }
-    m_parent.setShuntCompensatorModelBuilder(*this);
+    m_parent.setShuntCompensatorModelBuilder(stdcxx::make_unique<ShuntCompensatorNonLinearModelAdder>(std::move(*this)));
     return m_parent;
 }
 

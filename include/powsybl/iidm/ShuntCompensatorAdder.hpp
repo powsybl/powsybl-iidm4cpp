@@ -30,15 +30,9 @@ public:
     using ShuntCompensatorNonLinearModelAdder = shunt_compensator::ShuntCompensatorNonLinearModelAdder;
 
 public:
-    ShuntCompensatorAdder(const ShuntCompensatorAdder& adder);
-
-    ShuntCompensatorAdder(ShuntCompensatorAdder&& adder) noexcept;
+    ShuntCompensatorAdder(ShuntCompensatorAdder&&) noexcept = default;
 
     ~ShuntCompensatorAdder() noexcept override = default;
-
-    ShuntCompensatorAdder& operator=(const ShuntCompensatorAdder& adder);
-
-    ShuntCompensatorAdder& operator=(ShuntCompensatorAdder&& adder) noexcept;
 
     ShuntCompensator& add();
 
@@ -62,7 +56,7 @@ private: // IdentifiableAdder
 private:
     explicit ShuntCompensatorAdder(VoltageLevel& voltageLevel);
 
-    void setShuntCompensatorModelBuilder(const ShuntCompensatorModelAdder& adder);
+    void setShuntCompensatorModelBuilder(std::unique_ptr<ShuntCompensatorModelAdder>&& adder);
 
     friend class VoltageLevel;
 

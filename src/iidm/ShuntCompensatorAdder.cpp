@@ -20,52 +20,6 @@ ShuntCompensatorAdder::ShuntCompensatorAdder(VoltageLevel& voltageLevel) :
     InjectionAdder(voltageLevel) {
 }
 
-ShuntCompensatorAdder::ShuntCompensatorAdder(const ShuntCompensatorAdder& adder) :
-    InjectionAdder(adder),
-    m_sectionCount(adder.m_sectionCount),
-    m_targetDeadband(adder.m_targetDeadband),
-    m_targetV(adder.m_targetV),
-    m_regulatingTerminal(adder.m_regulatingTerminal),
-    m_voltageRegulatorOn(adder.m_voltageRegulatorOn),
-    m_modelBuilder(adder.m_modelBuilder ? adder.m_modelBuilder->clone(*this) : nullptr) {
-}
-
-ShuntCompensatorAdder::ShuntCompensatorAdder(ShuntCompensatorAdder&& adder) noexcept :
-    InjectionAdder(adder),
-    m_sectionCount(adder.m_sectionCount),
-    m_targetDeadband(adder.m_targetDeadband),
-    m_targetV(adder.m_targetV),
-    m_regulatingTerminal(adder.m_regulatingTerminal),
-    m_voltageRegulatorOn(adder.m_voltageRegulatorOn),
-    m_modelBuilder(adder.m_modelBuilder ? adder.m_modelBuilder->clone(*this) : nullptr) {
-}
-
-ShuntCompensatorAdder& ShuntCompensatorAdder::operator=(const ShuntCompensatorAdder& adder) {
-    if (&adder != this) {
-        m_sectionCount = adder.m_sectionCount;
-        m_targetDeadband = adder.m_targetDeadband;
-        m_targetV = adder.m_targetV;
-        m_regulatingTerminal = adder.m_regulatingTerminal;
-        m_voltageRegulatorOn = adder.m_voltageRegulatorOn;
-        m_modelBuilder = adder.m_modelBuilder ? adder.m_modelBuilder->clone(*this) : nullptr;
-    }
-
-    return *this;
-}
-
-ShuntCompensatorAdder& ShuntCompensatorAdder::operator=(ShuntCompensatorAdder&& adder) noexcept {
-    if (&adder != this) {
-        m_sectionCount = adder.m_sectionCount;
-        m_targetDeadband = adder.m_targetDeadband;
-        m_targetV = adder.m_targetV;
-        m_regulatingTerminal = adder.m_regulatingTerminal;
-        m_voltageRegulatorOn = adder.m_voltageRegulatorOn;
-        m_modelBuilder = adder.m_modelBuilder ? adder.m_modelBuilder->clone(*this) : nullptr;
-    }
-
-    return *this;
-}
-
 ShuntCompensator& ShuntCompensatorAdder::add() {
     checkRegulatingTerminal(*this, m_regulatingTerminal, getNetwork());
     checkVoltageControl(*this, m_voltageRegulatorOn, m_targetV);
@@ -112,8 +66,8 @@ ShuntCompensatorAdder& ShuntCompensatorAdder::setSectionCount(unsigned long sect
     return *this;
 }
 
-void ShuntCompensatorAdder::setShuntCompensatorModelBuilder(const ShuntCompensatorModelAdder& adder) {
-    m_modelBuilder = adder.clone(*this);
+void ShuntCompensatorAdder::setShuntCompensatorModelBuilder(std::unique_ptr<ShuntCompensatorModelAdder>&& adder) {
+    m_modelBuilder = std::move(adder);
 }
 
 ShuntCompensatorAdder& ShuntCompensatorAdder::setTargetDeadband(double targetDeadband) {
