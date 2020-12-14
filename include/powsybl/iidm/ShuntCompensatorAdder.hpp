@@ -30,7 +30,7 @@ public:
     using ShuntCompensatorNonLinearModelAdder = shunt_compensator::ShuntCompensatorNonLinearModelAdder;
 
 public:
-    ShuntCompensatorAdder(ShuntCompensatorAdder&&) noexcept = default;
+    ShuntCompensatorAdder(ShuntCompensatorAdder&&) = default;
 
     ~ShuntCompensatorAdder() noexcept override = default;
 
