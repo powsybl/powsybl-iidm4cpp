@@ -39,6 +39,9 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     }
 
     auto ptrIdentifiable = std::unique_ptr<Identifiable, Deleter>(identifiable.release());
+    for (const std::string& alias : ptrIdentifiable->getAliases()) {
+        addAlias(*ptrIdentifiable, alias);
+    }
     auto it = m_objectsById.emplace(std::make_pair(ptrIdentifiable->getId(), std::move(ptrIdentifiable)));
 
     std::reference_wrapper<Identifiable> refIdentifiable = *it.first->second;
