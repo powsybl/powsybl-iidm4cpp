@@ -23,6 +23,8 @@ public:
     virtual ~ShuntCompensatorModel() noexcept = default;
 
 private:
+    virtual ShuntCompensatorModel& attach(ShuntCompensator& shuntCompensator) = 0;
+
     virtual double getB(unsigned long sectionCount) const = 0;
 
     virtual double getG(unsigned long sectionCount) const = 0;

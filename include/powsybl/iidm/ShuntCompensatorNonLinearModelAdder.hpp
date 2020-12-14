@@ -56,7 +56,7 @@ public:
     SectionAdder beginSection();
 
 private:  // ShuntCompensatorModelAdder
-    std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator) const override;
+    std::unique_ptr<ShuntCompensatorModel> build() const override;
 
     std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const override;
 

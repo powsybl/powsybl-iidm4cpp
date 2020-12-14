@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/ShuntCompensatorModel.hpp>
 #include <powsybl/stdcxx/range.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -21,7 +22,7 @@ class ShuntCompensatorNonLinearModel : public ShuntCompensatorModel {
 public:
     class Section {
     public:
-        Section(ShuntCompensator& shuntCompensator, double b, double g);
+        Section(double b, double g);
 
         double getB() const;
 
@@ -32,7 +33,10 @@ public:
         Section& setG(double g);
 
     private:
-        ShuntCompensator& m_shuntCompensator;
+        Section& attach(ShuntCompensator& shuntCompensator);
+
+    private:
+        stdcxx::Reference<ShuntCompensator> m_shuntCompensator;
 
         double m_b;
 
@@ -40,7 +44,7 @@ public:
     };
 
 public:
-    explicit ShuntCompensatorNonLinearModel(ShuntCompensator& shuntCompensator, std::vector<Section>&& sections);
+    explicit ShuntCompensatorNonLinearModel(std::vector<Section>&& sections);
 
     ~ShuntCompensatorNonLinearModel() noexcept override = default;
 
@@ -49,6 +53,8 @@ public:
     stdcxx::range<Section> getAllSections();
 
 private:  // ShuntCompensatorModel
+    ShuntCompensatorNonLinearModel& attach(ShuntCompensator& shuntCompensator) override;
+
     double getB(unsigned long sectionCount) const override;
 
     double getG(unsigned long sectionCount) const override;
@@ -58,7 +64,7 @@ private:  // ShuntCompensatorModel
     const ShuntCompensatorModelType& getType() const override;
 
 private:
-    ShuntCompensator& m_shuntCompensator;
+    stdcxx::Reference<ShuntCompensator> m_shuntCompensator;
 
     std::vector<Section> m_sections;
 };

@@ -23,7 +23,7 @@ class Terminal;
 
 class ShuntCompensator : public Injection {
 public:
-    ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
+    ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
                      unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband);
 
     ~ShuntCompensator() noexcept override = default;

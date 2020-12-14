@@ -27,7 +27,7 @@ public:
     virtual ShuntCompensatorAdder& add() = 0;
 
 private:
-    virtual std::unique_ptr<ShuntCompensatorModel> build(ShuntCompensator& shuntCompensator) const = 0;
+    virtual std::unique_ptr<ShuntCompensatorModel> build() const = 0;
 
     virtual std::unique_ptr<ShuntCompensatorModelAdder> clone(ShuntCompensatorAdder& parent) const = 0;
 

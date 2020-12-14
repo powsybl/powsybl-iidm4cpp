@@ -74,13 +74,13 @@ ShuntCompensatorNonLinearModelAdder::SectionAdder ShuntCompensatorNonLinearModel
     return {*this};
 }
 
-std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorNonLinearModelAdder::build(ShuntCompensator& shuntCompensator) const {
+std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorNonLinearModelAdder::build() const {
     std::vector<ShuntCompensatorNonLinearModel::Section> sections;
     for (const auto& adder : m_sectionAdders) {
-        sections.emplace_back(ShuntCompensatorNonLinearModel::Section(shuntCompensator, adder.m_b, adder.m_g));
+        sections.emplace_back(ShuntCompensatorNonLinearModel::Section(adder.m_b, adder.m_g));
     }
 
-    return stdcxx::make_unique<ShuntCompensatorNonLinearModel>(shuntCompensator, std::move(sections));
+    return stdcxx::make_unique<ShuntCompensatorNonLinearModel>(std::move(sections));
 }
 
 std::unique_ptr<ShuntCompensatorModelAdder> ShuntCompensatorNonLinearModelAdder::clone(ShuntCompensatorAdder& parent) const {

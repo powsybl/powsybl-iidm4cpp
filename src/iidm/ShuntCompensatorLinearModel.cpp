@@ -7,18 +7,27 @@
 
 #include <powsybl/iidm/ShuntCompensatorLinearModel.hpp>
 
+#include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-ShuntCompensatorLinearModel::ShuntCompensatorLinearModel(ShuntCompensator& shuntCompensator, double bPerSection, double gPerSection, unsigned long maximumSectionCount) :
-    m_shuntCompensator(shuntCompensator),
+ShuntCompensatorLinearModel::ShuntCompensatorLinearModel(double bPerSection, double gPerSection, unsigned long maximumSectionCount) :
     m_bPerSection(bPerSection),
     m_gPerSection(gPerSection),
     m_maximumSectionCount(maximumSectionCount) {
+}
+
+ShuntCompensatorLinearModel& ShuntCompensatorLinearModel::attach(ShuntCompensator& shuntCompensator) {
+    if (m_shuntCompensator) {
+        throw AssertionError(stdcxx::format("ShuntCompensatorLinearModel already attached to %1%", m_shuntCompensator.get().getId()));
+    }
+    m_shuntCompensator = shuntCompensator;
+    return *this;
 }
 
 double ShuntCompensatorLinearModel::getB(unsigned long sectionCount) const {
@@ -64,7 +73,7 @@ ShuntCompensatorLinearModel& ShuntCompensatorLinearModel::setGPerSection(double 
 }
 
 ShuntCompensatorLinearModel& ShuntCompensatorLinearModel::setMaximumSectionCount(unsigned long maximumSectionCount) {
-    checkSections(m_shuntCompensator, m_shuntCompensator.getSectionCount(), maximumSectionCount);
+    checkSections(m_shuntCompensator, m_shuntCompensator.get().getSectionCount(), maximumSectionCount);
     m_maximumSectionCount = maximumSectionCount;
     return *this;
 }

@@ -15,14 +15,17 @@ namespace powsybl {
 
 namespace iidm {
 
-ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
+ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
                                    unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband) :
     Injection(id, name, fictitious, ConnectableType::SHUNT_COMPENSATOR),
+    m_model(std::move(model)),
     m_sectionCount(network.getVariantManager().getVariantArraySize(), currentSectionCount),
     m_regulatingTerminal(terminal),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
     m_targetV(network.getVariantManager().getVariantArraySize(), targetV),
     m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband) {
+
+    m_model->attach(*this);
 }
 
 void ShuntCompensator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {

@@ -17,10 +17,17 @@ namespace powsybl {
 
 namespace iidm {
 
-ShuntCompensatorNonLinearModel::Section::Section(ShuntCompensator& shuntCompensator, double b, double g) :
-    m_shuntCompensator(shuntCompensator),
+ShuntCompensatorNonLinearModel::Section::Section(double b, double g) :
     m_b(b),
     m_g(g) {
+}
+
+ShuntCompensatorNonLinearModel::Section& ShuntCompensatorNonLinearModel::Section::attach(ShuntCompensator& shuntCompensator) {
+    if (m_shuntCompensator) {
+        throw AssertionError(stdcxx::format("Section already attached to " + m_shuntCompensator.get().getId()));
+    }
+    m_shuntCompensator = shuntCompensator;
+    return *this;
 }
 
 double ShuntCompensatorNonLinearModel::Section::getB() const {
@@ -43,9 +50,16 @@ ShuntCompensatorNonLinearModel::Section& ShuntCompensatorNonLinearModel::Section
     return *this;
 }
 
-ShuntCompensatorNonLinearModel::ShuntCompensatorNonLinearModel(ShuntCompensator& shuntCompensator, std::vector<Section>&& sections) :
-    m_shuntCompensator(shuntCompensator),
+ShuntCompensatorNonLinearModel::ShuntCompensatorNonLinearModel(std::vector<Section>&& sections) :
     m_sections(sections) {
+}
+
+ShuntCompensatorNonLinearModel& ShuntCompensatorNonLinearModel::attach(ShuntCompensator& shuntCompensator) {
+    if (m_shuntCompensator) {
+        throw AssertionError(stdcxx::format("ShuntCompensatorNonLinearModel already attached to %1%", m_shuntCompensator.get().getId()));
+    }
+    m_shuntCompensator = shuntCompensator;
+    return *this;
 }
 
 stdcxx::const_range<ShuntCompensatorNonLinearModel::Section> ShuntCompensatorNonLinearModel::getAllSections() const {

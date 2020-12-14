@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_SHUNTCOMPENSATORLINEARMODEL_HPP
 
 #include <powsybl/iidm/ShuntCompensatorModel.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
@@ -18,7 +19,7 @@ class ShuntCompensator;
 
 class ShuntCompensatorLinearModel : public ShuntCompensatorModel {
 public:
-    ShuntCompensatorLinearModel(ShuntCompensator& shuntCompensator, double bPerSection, double gPerSection, unsigned long maximumSectionCount);
+    ShuntCompensatorLinearModel(double bPerSection, double gPerSection, unsigned long maximumSectionCount);
 
     ~ShuntCompensatorLinearModel() noexcept override = default;
 
@@ -48,6 +49,8 @@ public:
     ShuntCompensatorLinearModel& setMaximumSectionCount(unsigned long maximumSectionCount);
 
 private:  // ShuntCompensatorModel
+    ShuntCompensatorLinearModel& attach(ShuntCompensator& shuntCompensator) override;
+
     double getB(unsigned long sectionCount) const override;
 
     double getG(unsigned long sectionCount) const override;
@@ -57,7 +60,7 @@ private:  // ShuntCompensatorModel
     const ShuntCompensatorModelType& getType() const override;
 
 private:
-    ShuntCompensator& m_shuntCompensator;
+    stdcxx::Reference<ShuntCompensator> m_shuntCompensator;
 
     double m_bPerSection;
 
