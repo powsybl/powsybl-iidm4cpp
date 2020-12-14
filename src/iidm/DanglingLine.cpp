@@ -131,11 +131,9 @@ DanglingLine& DanglingLine::setG(double g) {
     return *this;
 }
 
-void DanglingLine::setGeneration(std::unique_ptr<Generation>&& generation) {
-    if (m_generation) {
-        throw AssertionError("DanglingLine generation assignment after its creation is forbidden");
-    }
+DanglingLine& DanglingLine::setGeneration(std::unique_ptr<Generation>&& generation) {
     m_generation = std::move(generation);
+    return *this;
 }
 
 DanglingLine& DanglingLine::setP0(double p0) {
