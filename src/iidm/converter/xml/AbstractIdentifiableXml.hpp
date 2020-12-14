@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTIDENTIFIABLEXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTIDENTIFIABLEXML_HPP
 
+#include <string>
+
 namespace powsybl {
 
 namespace iidm {
@@ -34,6 +36,8 @@ protected:
     virtual Adder createAdder(Parent& parent) const = 0;
 
     virtual const char* getRootElementName() const = 0;
+
+    virtual void readElement(const std::string& id, Adder& adder, NetworkXmlReaderContext& context) const;
 
     virtual Added& readRootElementAttributes(Adder& adder, NetworkXmlReaderContext& context) const = 0;
 

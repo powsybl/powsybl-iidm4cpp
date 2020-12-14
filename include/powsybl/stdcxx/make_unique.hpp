@@ -17,6 +17,11 @@ std::unique_ptr<B> make_unique(Args&&... args) {
     return std::unique_ptr<B>(new D(std::forward<Args>(args)...));
 }
 
+template <typename T>
+std::unique_ptr<T> move_to_unique(T* pointer) {
+    return pointer != nullptr ? stdcxx::make_unique<T>(std::move(*pointer)) : std::unique_ptr<T>();
+}
+
 }  // namespace stdcxx
 
 #endif  // POWSYBL_STDCXX_MAKE_UNIQUE_HPP
