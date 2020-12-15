@@ -22,6 +22,9 @@ ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const 
     m_leg2(std::move(leg2)),
     m_leg3(std::move(leg3)),
     m_ratedU0(ratedU0) {
+    m_leg1.setTransformer(*this);
+    m_leg2.setTransformer(*this);
+    m_leg3.setTransformer(*this);
 }
 
 void ThreeWindingsTransformer::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {

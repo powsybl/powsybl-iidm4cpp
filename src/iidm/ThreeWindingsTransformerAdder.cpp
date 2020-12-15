@@ -57,9 +57,6 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
 
     std::unique_ptr<ThreeWindingsTransformer> ptrTransformer = stdcxx::make_unique<ThreeWindingsTransformer>(checkAndGetUniqueId(), getName(), isFictitious(), std::move(leg1), std::move(leg2), std::move(leg3), m_ratedU0);
     auto& transformer = getNetwork().checkAndAdd<ThreeWindingsTransformer>(std::move(ptrTransformer));
-    transformer.getLeg1().setTransformer(transformer);
-    transformer.getLeg2().setTransformer(transformer);
-    transformer.getLeg3().setTransformer(transformer);
 
     Terminal& terminal1 = transformer.addTerminal(std::move(ptrTerminal1));
     Terminal& terminal2 = transformer.addTerminal(std::move(ptrTerminal2));
