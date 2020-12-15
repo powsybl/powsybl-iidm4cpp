@@ -193,7 +193,7 @@ void NetworkIndex::removeAlias(const Identifiable& obj, const std::string& alias
     }
     const std::string& idForAlias = it->second;
     if (idForAlias != obj.getId()) {
-        throw PowsyblException(stdcxx::format("Alias '%1%' do not correspond to object '%2%'", alias, obj.getId()));
+        throw PowsyblException(stdcxx::format("Alias '%1%' does not correspond to object '%2%'", alias, obj.getId()));
     }
     m_idByAlias.erase(it);
 }

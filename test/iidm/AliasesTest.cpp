@@ -180,7 +180,7 @@ BOOST_AUTO_TEST_CASE(failWhenRemovingBadAlias) {
     load.addAlias("Load alias");
     generator.addAlias("Generator alias");
 
-    POWSYBL_ASSERT_THROW(load.removeAlias("Generator alias"), PowsyblException, "Alias 'Generator alias' do not correspond to object 'load1'");
+    POWSYBL_ASSERT_THROW(load.removeAlias("Generator alias"), PowsyblException, "Alias 'Generator alias' does not correspond to object 'load1'");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

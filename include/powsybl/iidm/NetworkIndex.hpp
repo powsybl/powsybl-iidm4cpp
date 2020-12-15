@@ -50,10 +50,6 @@ public:
     template <typename T>
     T& get(const std::string& id);
 
-    const Identifiable& get(const std::string& idOrAlias) const;
-
-    Identifiable& get(const std::string& idOrAlias);
-
     template <typename T, typename U = T>
     stdcxx::const_range<U> getAll() const;
 
@@ -75,6 +71,11 @@ public:
 
 private:
     static void checkId(const std::string& id);
+
+private:
+    const Identifiable& get(const std::string& idOrAlias) const;
+
+    Identifiable& get(const std::string& idOrAlias);
 
 private:
     class Deleter {
