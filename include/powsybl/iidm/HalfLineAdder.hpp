@@ -57,7 +57,7 @@ private:
     friend class iidm::TieLineAdder;
 
 private:
-    std::reference_wrapper<TieLineAdder> m_parent;
+    TieLineAdder& m_parent;
 
     int m_num;
 

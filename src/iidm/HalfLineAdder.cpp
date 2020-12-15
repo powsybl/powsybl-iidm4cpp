@@ -24,39 +24,46 @@ HalfLineAdder::HalfLineAdder(TieLineAdder& parent, int num) :
 
 TieLineAdder& HalfLineAdder::add() {
     if (m_id.empty()) {
-        throw ValidationException(m_parent.get(), stdcxx::format("id is not set for half line %1%", m_num));
+        throw ValidationException(m_parent, stdcxx::format("id is not set for half line %1%", m_num));
     }
     if (std::isnan(m_r)) {
-        throw ValidationException(m_parent.get(), stdcxx::format("r is not set for half line %1%", m_num));
+        throw ValidationException(m_parent, stdcxx::format("r is not set for half line %1%", m_num));
     }
     if (std::isnan(m_x)) {
-        throw ValidationException(m_parent.get(), stdcxx::format("x is not set for half line %1%", m_num));
+        throw ValidationException(m_parent, stdcxx::format("x is not set for half line %1%", m_num));
     }
     if (std::isnan(m_g1)) {
-        throw ValidationException(m_parent.get(), stdcxx::format("g1 is not set for half line %1%", m_num));
+        throw ValidationException(m_parent, stdcxx::format("g1 is not set for half line %1%", m_num));
     }
     if (std::isnan(m_b1)) {
-        throw ValidationException(m_parent.get(), stdcxx::format("b1 is not set for half line %1%", m_num));
+        throw ValidationException(m_parent, stdcxx::format("b1 is not set for half line %1%", m_num));
     }
     if (std::isnan(m_g2)) {
-        throw ValidationException(m_parent.get(), stdcxx::format("g2 is not set for half line %1%", m_num));
+        throw ValidationException(m_parent, stdcxx::format("g2 is not set for half line %1%", m_num));
     }
     if (std::isnan(m_b2)) {
-        throw ValidationException(m_parent.get(), stdcxx::format("b2 is not set for half line %1%", m_num));
+        throw ValidationException(m_parent, stdcxx::format("b2 is not set for half line %1%", m_num));
     }
     if (std::isnan(m_xnodeP)) {
-        throw ValidationException(m_parent.get(), stdcxx::format("xnodeP is not set for half line %1%", m_num));
+        throw ValidationException(m_parent, stdcxx::format("xnodeP is not set for half line %1%", m_num));
     }
     if (std::isnan(m_xnodeQ)) {
-        throw ValidationException(m_parent.get(), stdcxx::format("xnodeQ is not set for half line %1%", m_num));
+        throw ValidationException(m_parent, stdcxx::format("xnodeQ is not set for half line %1%", m_num));
     }
-    if (m_num == 1) {
-        m_parent.get().m_halfLineAdder1 = *this;
+    switch (m_num) {
+        case 1
+            m_parent.setHalfLineAdder1(*this);
+            break;
+
+        case 2:
+            m_parent.setHalfLineAdder2(*this);
+            break;
+
+        default:
+            throw ValidationException(m_parent, stdcxx::format("Unexpected half line number %1%", m_num));
     }
-    if (m_num == 2) {
-        m_parent.get().m_halfLineAdder2 = *this;
-    }
-    return m_parent.get();
+
+    return m_parent;
 }
 
 std::string HalfLineAdder::getMessageHeader() const {

@@ -44,6 +44,10 @@ private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:
+    void setHalfLineAdder1(HalfLineAdder& adder);
+
+    void setHalfLineAdder2(HalfLineAdder& adder);
+
     friend class tie_line_adder::HalfLineAdder;
 
 private:

@@ -102,6 +102,14 @@ TieLineAdder::HalfLineAdder TieLineAdder::newHalfLine2() {
     return TieLineAdder::HalfLineAdder(*this, 2);
 }
 
+void TieLineAdder::setHalfLineAdder1(HalfLineAdder& adder) {
+    m_halfLineAdder1 = adder;
+}
+
+void TieLineAdder::setHalfLineAdder2(HalfLineAdder& adder) {
+    m_halfLineAdder2 = adder;
+}
+
 TieLineAdder& TieLineAdder::setUcteXnodeCode(const std::string& ucteXnodeCode) {
     m_ucteXnodeCode = ucteXnodeCode;
     return *this;
