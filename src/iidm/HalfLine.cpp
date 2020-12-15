@@ -107,7 +107,7 @@ void HalfLine::setName(const std::string& name) {
 }
 
 void HalfLine::setParent(TieLine& parent) {
-    m_parent = stdcxx::ref(parent);
+    m_parent = parent;
 }
 
 HalfLine& HalfLine::setR(double r) {
