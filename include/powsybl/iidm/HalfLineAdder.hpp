@@ -11,6 +11,7 @@
 #include <functional>
 #include <string>
 
+#include <powsybl/iidm/HalfLine.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -54,6 +55,8 @@ public:
     HalfLineAdder& setXnodeQ(double xnodeQ);
 
 private:
+    HalfLine build() const;
+
     friend class iidm::TieLineAdder;
 
 private:

@@ -62,8 +62,23 @@ TieLineAdder& HalfLineAdder::add() {
     default:
         throw ValidationException(m_parent, stdcxx::format("Unexpected half line number %1%", m_num));
     }
-
     return m_parent;
+}
+
+HalfLine HalfLineAdder::build() const {
+    HalfLine halfLine;
+    halfLine.setId(m_id);
+    halfLine.setName(m_name);
+    halfLine.setFictitious(m_fictitious);
+    halfLine.setXnodeP(m_xnodeP);
+    halfLine.setXnodeQ(m_xnodeQ);
+    halfLine.setR(m_r);
+    halfLine.setX(m_x);
+    halfLine.setG1(m_g1);
+    halfLine.setG2(m_g2);
+    halfLine.setB1(m_b1);
+    halfLine.setB2(m_b2);
+    return halfLine;
 }
 
 std::string HalfLineAdder::getMessageHeader() const {

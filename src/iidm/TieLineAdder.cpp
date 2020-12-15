@@ -36,31 +36,8 @@ TieLine& TieLineAdder::add() {
         throw ValidationException(*this, "half line 2 is not set");
     }
 
-    TieLine::HalfLine half1;
-    half1.setId(m_halfLineAdder1->m_id);
-    half1.setName(m_halfLineAdder1->m_name);
-    half1.setFictitious(m_halfLineAdder1->m_fictitious);
-    half1.setXnodeP(m_halfLineAdder1->m_xnodeP);
-    half1.setXnodeQ(m_halfLineAdder1->m_xnodeQ);
-    half1.setR(m_halfLineAdder1->m_r);
-    half1.setX(m_halfLineAdder1->m_x);
-    half1.setG1(m_halfLineAdder1->m_g1);
-    half1.setG2(m_halfLineAdder1->m_g2);
-    half1.setB1(m_halfLineAdder1->m_b1);
-    half1.setB2(m_halfLineAdder1->m_b2);
-
-    TieLine::HalfLine half2;
-    half2.setId(m_halfLineAdder2->m_id);
-    half2.setName(m_halfLineAdder2->m_name);
-    half2.setFictitious(m_halfLineAdder2->m_fictitious);
-    half2.setXnodeP(m_halfLineAdder2->m_xnodeP);
-    half2.setXnodeQ(m_halfLineAdder2->m_xnodeQ);
-    half2.setR(m_halfLineAdder2->m_r);
-    half2.setX(m_halfLineAdder2->m_x);
-    half2.setG1(m_halfLineAdder2->m_g1);
-    half2.setG2(m_halfLineAdder2->m_g2);
-    half2.setB1(m_halfLineAdder2->m_b1);
-    half2.setB2(m_halfLineAdder2->m_b2);
+    TieLine::HalfLine half1 = m_halfLineAdder1->build();
+    TieLine::HalfLine half2 = m_halfLineAdder2->build();
 
     checkHalf(*this, half1, 1);
     checkHalf(*this, half2, 2);

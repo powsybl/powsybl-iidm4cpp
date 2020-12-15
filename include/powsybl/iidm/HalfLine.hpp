@@ -24,6 +24,8 @@ class TieLineAdder;
 
 namespace tie_line {
 
+class HalfLineAdder;
+
 class HalfLine : public Validable {
 public: // Validable
     std::string getMessageHeader() const override;
@@ -81,6 +83,8 @@ private:
     friend class iidm::TieLine;
 
     friend class iidm::TieLineAdder;
+
+    friend class HalfLineAdder;
 
 private:
     stdcxx::Reference<TieLine> m_parent;
