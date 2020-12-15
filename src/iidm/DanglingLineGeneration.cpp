@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/DanglingLineGeneration.hpp>
 
+#include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/MinMaxReactiveLimits.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -20,12 +21,11 @@ namespace iidm {
 
 namespace dangling_line {
 
-Generation::Generation(DanglingLine& danglingLine, double minP, double maxP, double targetP, double targetQ, double targetV, bool voltageRegulationOn) :
+Generation::Generation(VariantManagerHolder& network, double minP, double maxP, double targetP, double targetQ, double targetV, bool voltageRegulationOn) :
     ReactiveLimitsHolder(stdcxx::make_unique<MinMaxReactiveLimits>(-std::numeric_limits<double>::max(), std::numeric_limits<double>::max())),
-    m_danglingLine(danglingLine),
     m_minP(std::isnan(minP) ? -std::numeric_limits<double>::max() : minP),
     m_maxP(std::isnan(maxP) ? std::numeric_limits<double>::max() : maxP) {
-    unsigned long variantArraySize = danglingLine.getNetwork().getVariantManager().getVariantArraySize();
+    unsigned long variantArraySize = network.getVariantManager().getVariantArraySize();
     m_targetP.resize(variantArraySize, targetP);
     m_targetQ.resize(variantArraySize, targetQ);
     m_targetV.resize(variantArraySize, targetV);
@@ -39,6 +39,14 @@ void Generation::allocateVariantArrayElement(const std::set<unsigned long>& inde
         m_voltageRegulationOn[index] = m_voltageRegulationOn[sourceIndex];
         m_targetV[index] = m_targetV[sourceIndex];
     }
+}
+
+Generation& Generation::attach(DanglingLine& danglineLine) {
+    if (m_danglingLine) {
+        throw AssertionError(stdcxx::format("DanglingLine.Generation already attached to %1%", m_danglingLine.get().getId()));
+    }
+    m_danglingLine = danglineLine;
+    return *this;
 }
 
 void Generation::extendVariantArraySize(unsigned long number, unsigned long sourceIndex) {
