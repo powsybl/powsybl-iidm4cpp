@@ -17,7 +17,7 @@ namespace iidm {
 
 namespace tie_line {
 
-HalfLineAdder::HalfLineAdder(TieLineAdder& parent, int num) :
+HalfLineAdder::HalfLineAdder(TieLineAdder& parent, unsigned long num) :
     m_parent(parent),
     m_num(num) {
 }
@@ -51,16 +51,16 @@ TieLineAdder& HalfLineAdder::add() {
         throw ValidationException(m_parent, stdcxx::format("xnodeQ is not set for half line %1%", m_num));
     }
     switch (m_num) {
-        case 1
-            m_parent.setHalfLineAdder1(*this);
-            break;
+    case 1:
+        m_parent.setHalfLineAdder1(*this);
+        break;
 
-        case 2:
-            m_parent.setHalfLineAdder2(*this);
-            break;
+    case 2:
+        m_parent.setHalfLineAdder2(*this);
+        break;
 
-        default:
-            throw ValidationException(m_parent, stdcxx::format("Unexpected half line number %1%", m_num));
+    default:
+        throw ValidationException(m_parent, stdcxx::format("Unexpected half line number %1%", m_num));
     }
 
     return m_parent;

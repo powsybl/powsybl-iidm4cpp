@@ -16,10 +16,10 @@ namespace powsybl {
 
 namespace iidm {
 
-TieLine::TieLine(const std::string& id, const std::string& name, bool fictitious, const std::string& ucteXnodeCode, HalfLine& half1, HalfLine& half2) :
+TieLine::TieLine(const std::string& id, const std::string& name, bool fictitious, const std::string& ucteXnodeCode, HalfLine&& half1, HalfLine&& half2) :
     Line(id, name, fictitious),
-    m_half1(attach(half1)),
-    m_half2(attach(half2)),
+    m_half1(std::move(attach(half1))),
+    m_half2(std::move(attach(half2))),
     m_ucteXnodeCode(ucteXnodeCode) {
 }
 

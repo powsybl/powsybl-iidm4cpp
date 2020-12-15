@@ -27,7 +27,7 @@ public:  // Validable
     std::string getMessageHeader() const override;
 
 public:
-    HalfLineAdder(TieLineAdder& parent, int num);
+    HalfLineAdder(TieLineAdder& parent, unsigned long num);
 
     TieLineAdder& add();
 
@@ -59,7 +59,7 @@ private:
 private:
     TieLineAdder& m_parent;
 
-    int m_num;
+    unsigned long m_num;
 
     std::string m_id;
 

@@ -48,7 +48,7 @@ public: // Line
     TieLine& setX(double x) override;
 
 public:
-    TieLine(const std::string& id, const std::string& name, bool fictitious, const std::string& ucteXnodeCode, HalfLine& half1, HalfLine& half2);
+    TieLine(const std::string& id, const std::string& name, bool fictitious, const std::string& ucteXnodeCode, HalfLine&& half1, HalfLine&& half2);
 
     ~TieLine() noexcept override = default;
 
