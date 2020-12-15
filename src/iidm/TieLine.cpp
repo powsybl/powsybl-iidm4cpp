@@ -21,8 +21,8 @@ TieLine::TieLine(const std::string& id, const std::string& name, bool fictitious
     m_half1(std::move(half1)),
     m_half2(std::move(half2)),
     m_ucteXnodeCode(ucteXnodeCode) {
-    m_half1.setParent(*this);
-    m_half2.setParent(*this);
+    attach(m_half1);
+    attach(m_half2);
 }
 
 TieLine::HalfLine& TieLine::attach(TieLine::HalfLine& halfLine) {
