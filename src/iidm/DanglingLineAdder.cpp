@@ -30,15 +30,14 @@ DanglingLine& DanglingLineAdder::add() {
     checkG(*this, m_g);
     checkB(*this, m_b);
 
-    std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode);
+    std::unique_ptr<DanglingLine::Generation> ptrGeneration = m_generationAdder.is_initialized() ? m_generationAdder->build() : nullptr;
+
+    std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(),
+                                                                                      m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode, std::move(ptrGeneration));
     auto& danglingLine = getNetwork().checkAndAdd<DanglingLine>(std::move(ptrDanglingLine));
 
     Terminal& terminal = danglingLine.addTerminal(checkAndGetTerminal());
     getVoltageLevel().attach(terminal, false);
-
-    if (m_generationAdder.is_initialized()) {
-        danglingLine.setGeneration(m_generationAdder->build(danglingLine));
-    }
 
     return danglingLine;
 }
@@ -64,7 +63,7 @@ DanglingLineAdder& DanglingLineAdder::setG(double g) {
 }
 
 void DanglingLineAdder::setGenerationAdder(const GenerationAdder& generationAdder) {
-    m_generationAdder = generationAdder;
+    m_generationAdder.emplace(generationAdder);
 }
 
 DanglingLineAdder& DanglingLineAdder::setP0(double p0) {

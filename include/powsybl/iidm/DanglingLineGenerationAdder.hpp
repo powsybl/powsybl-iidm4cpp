@@ -44,12 +44,12 @@ public:
     GenerationAdder& setVoltageRegulationOn(bool voltageRegulationOn);
 
 private:
-    std::unique_ptr<Generation> build(DanglingLine& danglingLine) const;
+    std::unique_ptr<Generation> build() const;
 
     friend class iidm::DanglingLineAdder;
 
 private:
-    std::reference_wrapper<DanglingLineAdder> m_parent;
+    DanglingLineAdder& m_parent;
 
     double m_minP = stdcxx::nan();
 
