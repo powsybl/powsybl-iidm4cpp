@@ -538,10 +538,11 @@ BOOST_AUTO_TEST_CASE(adders) {
     BOOST_CHECK_EQUAL(1UL, threeWindingsTransformerCount);
 
     ThreeWindingsTransformerAdder adder = substation2.newThreeWindingsTransformer();
+    adder.setId("TWT");
 
     // Leg 1 tests
     ThreeWindingsTransformerAdder::LegAdder l1Adder = adder.newLeg1();
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1: leg 1 is not defined");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer 'TWT': leg 1 is not defined");
 
     POWSYBL_ASSERT_THROW(l1Adder.add(), ValidationException, "3 windings transformer leg1: r is not set");
     l1Adder.setR(1.0);
@@ -593,7 +594,7 @@ BOOST_AUTO_TEST_CASE(adders) {
 
     // Leg 2 tests
     ThreeWindingsTransformerAdder::LegAdder l2Adder = adder.newLeg2();
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2: leg 2 is not defined");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer 'TWT': leg 2 is not defined");
 
     POWSYBL_ASSERT_THROW(l2Adder.add(), ValidationException, "3 windings transformer leg2: r is not set");
     l2Adder.setR(2.0);
@@ -642,7 +643,7 @@ BOOST_AUTO_TEST_CASE(adders) {
 
     // Leg 3 tests
     ThreeWindingsTransformerAdder::LegAdder l3Adder = adder.newLeg3();
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3: leg 3 is not defined");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer 'TWT': leg 3 is not defined");
 
     POWSYBL_ASSERT_THROW(l3Adder.add(), ValidationException, "3 windings transformer leg3: r is not set");
     l3Adder.setR(3.0);
@@ -686,6 +687,7 @@ BOOST_AUTO_TEST_CASE(adders) {
         .setConnectableBus("VL4_BUS1")
         .add();
 
+    adder.setId("");
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "3 windings transformer id is not set");
     adder.setId("3WT_VL1_VL2_VL3");
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ThreeWindingsTransformer' with the id '3WT_VL1_VL2_VL3'");

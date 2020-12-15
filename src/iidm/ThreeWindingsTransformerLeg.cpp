@@ -201,7 +201,7 @@ void Leg::setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) {
 }
 
 void Leg::setTransformer(ThreeWindingsTransformer& transformer) {
-    m_transformer = stdcxx::ref(transformer);
+    m_transformer = transformer;
 }
 
 std::string Leg::toString() const {

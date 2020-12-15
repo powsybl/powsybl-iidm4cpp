@@ -24,21 +24,21 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     logging::Logger& logger = logging::LoggerFactory::getLogger<ThreeWindingsTransformer>();
 
     if (!m_adder1.is_initialized()) {
-        throw ValidationException(newLeg1(), "leg 1 is not defined");
+        throw ValidationException(*this, "leg 1 is not defined");
     }
     ThreeWindingsTransformer::Leg leg1 = m_adder1->build();
     VoltageLevel& voltageLevel1 = m_adder1->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal1 = m_adder1->checkAndGetTerminal(voltageLevel1);
 
     if (!m_adder2.is_initialized()) {
-        throw ValidationException(newLeg2(), "leg 2 is not defined");
+        throw ValidationException(*this, "leg 2 is not defined");
     }
     ThreeWindingsTransformer::Leg leg2 = m_adder2->build();
     VoltageLevel& voltageLevel2 = m_adder2->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal2 = m_adder2->checkAndGetTerminal(voltageLevel2);
 
     if (!m_adder3.is_initialized()) {
-        throw ValidationException(newLeg3(), "leg 3 is not defined");
+        throw ValidationException(*this, "leg 3 is not defined");
     }
     ThreeWindingsTransformer::Leg leg3 = m_adder3->build();
     VoltageLevel& voltageLevel3 = m_adder3->checkAndGetVoltageLevel();
@@ -91,26 +91,26 @@ const std::string& ThreeWindingsTransformerAdder::getTypeDescription() const {
 }
 
 ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg1() {
-    return ThreeWindingsTransformerAdder::LegAdder(*this, 1);
+    return LegAdder(*this, 1);
 }
 
 ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg2() {
-    return ThreeWindingsTransformerAdder::LegAdder(*this, 2).setB(0).setG(0);
+    return LegAdder(*this, 2).setB(0).setG(0);
 }
 
 ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg3() {
-    return ThreeWindingsTransformerAdder::LegAdder(*this, 3).setB(0).setG(0);
+    return LegAdder(*this, 3).setB(0).setG(0);
 }
 
-void ThreeWindingsTransformerAdder::setLegAdder1(LegAdder& legAdder) {
+void ThreeWindingsTransformerAdder::setLegAdder1(const LegAdder& legAdder) {
     m_adder1.emplace(legAdder);
 }
 
-void ThreeWindingsTransformerAdder::setLegAdder2(LegAdder& legAdder) {
+void ThreeWindingsTransformerAdder::setLegAdder2(const LegAdder& legAdder) {
     m_adder2.emplace(legAdder);
 }
 
-void ThreeWindingsTransformerAdder::setLegAdder3(LegAdder& legAdder) {
+void ThreeWindingsTransformerAdder::setLegAdder3(const LegAdder& legAdder) {
     m_adder3.emplace(legAdder);
 }
 

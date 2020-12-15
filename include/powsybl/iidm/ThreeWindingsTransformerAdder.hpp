@@ -51,11 +51,11 @@ private: // IdentifiableAdder
 private:
     Substation& getSubstation();
 
-    void setLegAdder1(LegAdder& legAdder);
+    void setLegAdder1(const LegAdder& legAdder);
 
-    void setLegAdder2(LegAdder& legAdder);
+    void setLegAdder2(const LegAdder& legAdder);
 
-    void setLegAdder3(LegAdder& legAdder);
+    void setLegAdder3(const LegAdder& legAdder);
 
     friend class three_windings_transformer::LegAdder;
 

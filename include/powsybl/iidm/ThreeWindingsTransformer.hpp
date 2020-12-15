@@ -70,8 +70,6 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    friend class ThreeWindingsTransformerAdder;
-
     friend class three_windings_transformer::Leg;
 
 private:

@@ -25,21 +25,6 @@ LegAdder::LegAdder(ThreeWindingsTransformerAdder& parent, unsigned long legNumbe
     m_legNumber(legNumber) {
 }
 
-LegAdder& LegAdder::operator=(const LegAdder& adder) {
-    m_legNumber = adder.m_legNumber;
-    m_voltageLevelId = adder.m_voltageLevelId;
-    m_node = adder.m_node;
-    m_bus = adder.m_bus;
-    m_connectableBus = adder.m_connectableBus;
-    m_r = adder.m_r;
-    m_x = adder.m_x;
-    m_g = adder.m_g;
-    m_b = adder.m_b;
-    m_ratedU = adder.m_ratedU;
-    m_ratedS = adder.m_ratedS;
-    return *this;
-}
-
 ThreeWindingsTransformerAdder& LegAdder::add() {
     checkOptional(*this, m_r, "r is not set");
     checkOptional(*this, m_x, "x is not set");
