@@ -15,8 +15,14 @@ namespace iidm {
 
 namespace tie_line {
 
-HalfLine::HalfLine() :
-    m_lineCharacteristics(*this) {
+HalfLine::HalfLine(const std::string& id, const std::string& name, bool fictitious, double xnodeP, double xnodeQ,
+                   double r, double x, double g1, double b1, double g2, double b2) :
+    m_id(id),
+    m_name(name),
+    m_lineCharacteristics(*this, r, x, g1, b1, g2, b2),
+    m_xnodeP(xnodeP),
+    m_xnodeQ(xnodeQ),
+    m_fictitious(fictitious) {
 }
 
 double HalfLine::getB1() const {

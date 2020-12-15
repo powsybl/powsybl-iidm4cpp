@@ -72,7 +72,8 @@ public:
     HalfLine& setXnodeQ(double xnodeQ);
 
 private:
-    HalfLine();
+    HalfLine(const std::string& id, const std::string& name, bool fictitious, double xnodeP, double xnodeQ,
+             double r, double x, double g1, double b1, double g2, double b2);
 
     void setId(const std::string& id);
 

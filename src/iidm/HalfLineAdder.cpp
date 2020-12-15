@@ -66,19 +66,7 @@ TieLineAdder& HalfLineAdder::add() {
 }
 
 HalfLine HalfLineAdder::build() const {
-    HalfLine halfLine;
-    halfLine.setId(m_id);
-    halfLine.setName(m_name);
-    halfLine.setFictitious(m_fictitious);
-    halfLine.setXnodeP(m_xnodeP);
-    halfLine.setXnodeQ(m_xnodeQ);
-    halfLine.setR(m_r);
-    halfLine.setX(m_x);
-    halfLine.setG1(m_g1);
-    halfLine.setG2(m_g2);
-    halfLine.setB1(m_b1);
-    halfLine.setB2(m_b2);
-    return halfLine;
+    return HalfLine(m_id, m_name, m_fictitious, m_xnodeP, m_xnodeQ, m_r, m_x, m_g1, m_b1, m_g2, m_b2);
 }
 
 std::string HalfLineAdder::getMessageHeader() const {

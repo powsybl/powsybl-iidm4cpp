@@ -39,9 +39,6 @@ TieLine& TieLineAdder::add() {
     TieLine::HalfLine half1 = m_halfLineAdder1->build();
     TieLine::HalfLine half2 = m_halfLineAdder2->build();
 
-    checkHalf(*this, half1, 1);
-    checkHalf(*this, half2, 2);
-
     // check that the line is attachable on both side
     voltageLevel1.attach(*ptrTerminal1, true);
     voltageLevel2.attach(*ptrTerminal2, true);

@@ -18,9 +18,11 @@ namespace iidm {
 
 TieLine::TieLine(const std::string& id, const std::string& name, bool fictitious, const std::string& ucteXnodeCode, HalfLine&& half1, HalfLine&& half2) :
     Line(id, name, fictitious),
-    m_half1(std::move(attach(half1))),
-    m_half2(std::move(attach(half2))),
+    m_half1(std::move(half1)),
+    m_half2(std::move(half2)),
     m_ucteXnodeCode(ucteXnodeCode) {
+    m_half1.setParent(*this);
+    m_half2.setParent(*this);
 }
 
 TieLine::HalfLine& TieLine::attach(TieLine::HalfLine& halfLine) {
