@@ -79,11 +79,11 @@ TieLineAdder::HalfLineAdder TieLineAdder::newHalfLine2() {
     return HalfLineAdder(*this, 2);
 }
 
-void TieLineAdder::setHalfLineAdder1(HalfLineAdder& adder) {
+void TieLineAdder::setHalfLineAdder1(const HalfLineAdder& adder) {
     m_halfLineAdder1.emplace(adder);
 }
 
-void TieLineAdder::setHalfLineAdder2(HalfLineAdder& adder) {
+void TieLineAdder::setHalfLineAdder2(const HalfLineAdder& adder) {
     m_halfLineAdder2.emplace(adder);
 }
 
