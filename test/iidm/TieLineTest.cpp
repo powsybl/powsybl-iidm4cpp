@@ -163,6 +163,44 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(1.0, half1.getXnodeP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, half1.getXnodeQ(), std::numeric_limits<double>::epsilon());
 
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setR(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setX(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setG1(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setB1(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setG2(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setB2(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+
+    TieLine::HalfLine& modifiableHalfLine = modifiableTieLine.getHalf1();
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setR(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': r is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setR(1.0)));
+    BOOST_CHECK_CLOSE(1.0, half1.getR(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setX(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': x is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setX(2.0)));
+    BOOST_CHECK_CLOSE(2.0, half1.getX(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setG1(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': g1 is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setG1(3.0)));
+    BOOST_CHECK_CLOSE(3.0, half1.getG1(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setB1(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': b1 is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setB1(4.0)));
+    BOOST_CHECK_CLOSE(4.0, half1.getB1(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setG2(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': g2 is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setG2(5.0)));
+    BOOST_CHECK_CLOSE(5.0, half1.getG2(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setB2(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': b2 is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setB2(6.0)));
+    BOOST_CHECK_CLOSE(6.0, half1.getB2(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setXnodeP(7.0)));
+    BOOST_CHECK_CLOSE(7.0, half1.getXnodeP(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setXnodeQ(8.0)));
+    BOOST_CHECK_CLOSE(8.0, half1.getXnodeQ(), std::numeric_limits<double>::epsilon());
+
     const TieLine::HalfLine& half2 = tieLine.getHalf2();
     BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", half2.getId());
     BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", half2.getName());

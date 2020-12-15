@@ -25,6 +25,16 @@ HalfLine::HalfLine(const std::string& id, const std::string& name, bool fictitio
     m_fictitious(fictitious) {
 }
 
+HalfLine::HalfLine(HalfLine&& halfLine) noexcept :
+    m_parent(halfLine.m_parent),
+    m_id(std::move(halfLine.m_id)),
+    m_name(std::move(halfLine.m_name)),
+    m_lineCharacteristics(*this, halfLine.getR(), halfLine.getX(), halfLine.getG1(), halfLine.getB1(), halfLine.getG2(), halfLine.getB2()),
+    m_xnodeP(halfLine.m_xnodeP),
+    m_xnodeQ(halfLine.m_xnodeQ),
+    m_fictitious(halfLine.m_fictitious) {
+}
+
 double HalfLine::getB1() const {
     return m_lineCharacteristics.getB1();
 }
@@ -96,14 +106,6 @@ HalfLine& HalfLine::setG1(double g1) {
 HalfLine& HalfLine::setG2(double g2) {
     m_lineCharacteristics.setG2(g2);
     return *this;
-}
-
-void HalfLine::setId(const std::string& id) {
-    m_id = id;
-}
-
-void HalfLine::setName(const std::string& name) {
-    m_name = name;
 }
 
 void HalfLine::setParent(TieLine& parent) {
