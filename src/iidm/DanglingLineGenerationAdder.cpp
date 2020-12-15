@@ -25,12 +25,12 @@ DanglingLineAdder& GenerationAdder::add() {
     checkActivePowerLimits(m_parent, m_minP, m_maxP);
     checkActivePowerSetpoint(m_parent, m_targetP);
     checkVoltageControl(m_parent, m_voltageRegulationOn, m_targetV, m_targetQ);
-    m_parent.get().setGenerationAdder(*this);
+    m_parent.setGenerationAdder(*this);
     return m_parent;
 }
 
-std::unique_ptr<Generation> GenerationAdder::build(DanglingLine& danglingLine) const {
-    return stdcxx::make_unique<Generation>(danglingLine, m_minP, m_maxP, m_targetP, m_targetQ, m_targetV, m_voltageRegulationOn);
+std::unique_ptr<Generation> GenerationAdder::build() const {
+    return stdcxx::make_unique<Generation>(m_parent.getNetwork(), m_minP, m_maxP, m_targetP, m_targetQ, m_targetV, m_voltageRegulationOn);
 }
 
 GenerationAdder& GenerationAdder::setMaxP(double maxP) {
