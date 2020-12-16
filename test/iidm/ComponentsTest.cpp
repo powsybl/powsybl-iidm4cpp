@@ -211,7 +211,7 @@ Network createComponentsTestNetworkBB() {
         .setVoltageLevel2(vl6.getId())
         .setBus2(vl6Bus1.getId())
         .setUcteXnodeCode("UcteXnodeCode")
-        .line1()
+        .newHalfLine1()
         .setId("H1_TL_VL4_VL6")
         .setXnodeP(1)
         .setXnodeQ(2)
@@ -221,7 +221,8 @@ Network createComponentsTestNetworkBB() {
         .setB1(0.4)
         .setG2(0.3)
         .setB2(0.5)
-        .line2()
+        .add()
+        .newHalfLine2()
         .setId("H2_TL_VL4_VL6")
         .setXnodeP(3)
         .setXnodeQ(4)
@@ -231,6 +232,7 @@ Network createComponentsTestNetworkBB() {
         .setB1(0.7)
         .setG2(0.9)
         .setB2(1.2)
+        .add()
         .add();
 
     Substation& substation4 = network.newSubstation()
@@ -602,7 +604,7 @@ Network createComponentsTestNetworkNB() {
         .setVoltageLevel2(vl6.getId())
         .setNode2(2)
         .setUcteXnodeCode("UcteXnodeCode")
-        .line1()
+        .newHalfLine1()
         .setId("H1_TL_VL4_VL6")
         .setXnodeP(1)
         .setXnodeQ(2)
@@ -612,7 +614,8 @@ Network createComponentsTestNetworkNB() {
         .setB1(0.4)
         .setG2(0.3)
         .setB2(0.5)
-        .line2()
+        .add()
+        .newHalfLine2()
         .setId("H2_TL_VL4_VL6")
         .setXnodeP(3)
         .setXnodeQ(4)
@@ -622,6 +625,7 @@ Network createComponentsTestNetworkNB() {
         .setB1(0.7)
         .setG2(0.9)
         .setB2(1.2)
+        .add()
         .add();
 
     Substation& substation4 = network.newSubstation()
