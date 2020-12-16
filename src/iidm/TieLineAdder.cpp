@@ -28,14 +28,22 @@ TieLine& TieLineAdder::add() {
     std::unique_ptr<Terminal> ptrTerminal2 = checkAndGetTerminal2(voltageLevel2);
 
     checkNotEmpty(*this, m_ucteXnodeCode, "ucteXnodeCode is not set");
-    checkHalf(*this, m_half1, 1);
-    checkHalf(*this, m_half2, 2);
+
+    if (!m_halfLineAdder1.is_initialized()) {
+        throw ValidationException(*this, "half line 1 is not set");
+    }
+    if (!m_halfLineAdder2.is_initialized()) {
+        throw ValidationException(*this, "half line 2 is not set");
+    }
+
+    TieLine::HalfLine half1 = m_halfLineAdder1->build();
+    TieLine::HalfLine half2 = m_halfLineAdder2->build();
 
     // check that the line is attachable on both side
     voltageLevel1.attach(*ptrTerminal1, true);
     voltageLevel2.attach(*ptrTerminal2, true);
 
-    std::unique_ptr<TieLine> ptrTieLine = stdcxx::make_unique<TieLine>(checkAndGetUniqueId(), getName(), isFictitious(), m_ucteXnodeCode, m_half1, m_half2);
+    std::unique_ptr<TieLine> ptrTieLine = stdcxx::make_unique<TieLine>(checkAndGetUniqueId(), getName(), isFictitious(), m_ucteXnodeCode, std::move(half1), std::move(half2));
     auto& tieLine = m_network.checkAndAdd<TieLine>(std::move(ptrTieLine));
 
     Terminal& terminal1 = tieLine.addTerminal(std::move(ptrTerminal1));
@@ -44,13 +52,6 @@ TieLine& TieLineAdder::add() {
     voltageLevel2.attach(terminal2, false);
 
     return tieLine;
-}
-
-TieLine::HalfLine& TieLineAdder::getActiveHalf() const {
-    if (!m_activeHalf) {
-        throw ValidationException(*this, "No active half of the line");
-    }
-    return m_activeHalf.get();
 }
 
 const Network& TieLineAdder::getNetwork() const {
@@ -67,85 +68,24 @@ const std::string& TieLineAdder::getTypeDescription() const {
     return s_typeDescription;
 }
 
-TieLineAdder& TieLineAdder::line1() {
-    m_activeHalf = stdcxx::ref<TieLine::HalfLine>(m_half1);
-    return *this;
+TieLineAdder::HalfLineAdder TieLineAdder::newHalfLine1() {
+    return HalfLineAdder(*this, 1);
 }
 
-TieLineAdder& TieLineAdder::line2() {
-    m_activeHalf = stdcxx::ref<TieLine::HalfLine>(m_half2);
-    return *this;
+TieLineAdder::HalfLineAdder TieLineAdder::newHalfLine2() {
+    return HalfLineAdder(*this, 2);
 }
 
-TieLineAdder& TieLineAdder::setFictitious(bool fictitious) {
-    if (!m_activeHalf) {
-        BranchAdder<TieLineAdder>::setFictitious(fictitious);
-    } else {
-        m_activeHalf.get().setFictitious(fictitious);
-    }
-    return *this;
+void TieLineAdder::setHalfLineAdder1(const HalfLineAdder& adder) {
+    m_halfLineAdder1.emplace(adder);
 }
 
-TieLineAdder& TieLineAdder::setB1(double b1) {
-    getActiveHalf().setB1(b1);
-    return *this;
-}
-
-TieLineAdder& TieLineAdder::setB2(double b2) {
-    getActiveHalf().setB2(b2);
-    return *this;
-}
-
-TieLineAdder& TieLineAdder::setG1(double g1) {
-    getActiveHalf().setG1(g1);
-    return *this;
-}
-
-TieLineAdder& TieLineAdder::setG2(double g2) {
-    getActiveHalf().setG2(g2);
-    return *this;
-}
-
-TieLineAdder& TieLineAdder::setId(const std::string& id) {
-    if (!m_activeHalf) {
-        BranchAdder::setId(id);
-    } else {
-        getActiveHalf().setId(id);
-    }
-    return *this;
-}
-
-TieLineAdder& TieLineAdder::setName(const std::string& name) {
-    if (!m_activeHalf) {
-        BranchAdder::setName(name);
-    } else {
-        getActiveHalf().setName(name);
-    }
-    return *this;
-}
-
-TieLineAdder& TieLineAdder::TieLineAdder::setR(double r) {
-    getActiveHalf().setR(r);
-    return *this;
+void TieLineAdder::setHalfLineAdder2(const HalfLineAdder& adder) {
+    m_halfLineAdder2.emplace(adder);
 }
 
 TieLineAdder& TieLineAdder::setUcteXnodeCode(const std::string& ucteXnodeCode) {
     m_ucteXnodeCode = ucteXnodeCode;
-    return *this;
-}
-
-TieLineAdder& TieLineAdder::setX(double x) {
-    getActiveHalf().setX(x);
-    return *this;
-}
-
-TieLineAdder& TieLineAdder::setXnodeP(double xnodeP) {
-    getActiveHalf().setXnodeP(xnodeP);
-    return *this;
-}
-
-TieLineAdder& TieLineAdder::setXnodeQ(double xnodeQ) {
-    getActiveHalf().setXnodeQ(xnodeQ);
     return *this;
 }
 
