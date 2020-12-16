@@ -31,7 +31,7 @@ const char* TieLineXml::getRootElementName() const  {
     return TIE_LINE;
 }
 
-void TieLineXml::readHalf(TieLineAdder& adder, const NetworkXmlReaderContext& context, int side) {
+void TieLineXml::readHalf(TieLineAdder::HalfLineAdder adder, const NetworkXmlReaderContext& context, int side) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(toString(ID_, side)));
     const std::string& name = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(toString(NAME_ , side), ""));
     const auto& r = context.getReader().getAttributeValue<double>(toString(R_, side));
@@ -57,14 +57,15 @@ void TieLineXml::readHalf(TieLineAdder& adder, const NetworkXmlReaderContext& co
         bool fictitious = context.getReader().getOptionalAttributeValue(toString(FICTITIOUS_, side), false);
         adder.setFictitious(fictitious);
     });
+    adder.add();
 }
 
 TieLine& TieLineXml::readRootElementAttributes(TieLineAdder& adder, NetworkXmlReaderContext& context) const  {
-    readHalf(adder.line1(), context, 1);
-    readHalf(adder.line2(), context, 2);
+    readHalf(adder.newHalfLine1(), context, 1);
+    readHalf(adder.newHalfLine2(), context, 2);
     readNodeOrBus(adder, context);
     const std::string& ucteXnodeCode = context.getReader().getOptionalAttributeValue(UCTE_XNODE_CODE, "");
-    TieLine& tl  = adder.setUcteXnodeCode(ucteXnodeCode).add();
+    TieLine& tl = adder.setUcteXnodeCode(ucteXnodeCode).add();
     readPQ(tl.getTerminal1(), context.getReader(), 1);
     readPQ(tl.getTerminal2(), context.getReader(), 2);
     return tl;

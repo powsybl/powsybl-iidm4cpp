@@ -100,7 +100,7 @@ Network createTieLineTestNetwork() {
         .setBus2(vl3Bus1.getId())
         .setConnectableBus2(vl3Bus1.getId())
         .setUcteXnodeCode("UcteXnodeCode")
-        .line1()
+        .newHalfLine1()
         .setId("H1_TL_VL1_VL3")
         .setXnodeP(1)
         .setXnodeQ(2)
@@ -110,7 +110,8 @@ Network createTieLineTestNetwork() {
         .setB1(0.4)
         .setG2(0.3)
         .setB2(0.5)
-        .line2()
+        .add()
+        .newHalfLine2()
         .setId("H2_TL_VL1_VL3")
         .setXnodeP(3)
         .setXnodeQ(4)
@@ -120,6 +121,7 @@ Network createTieLineTestNetwork() {
         .setB1(0.7)
         .setG2(0.9)
         .setB2(1.2)
+        .add()
         .add();
 
     return network;
@@ -160,6 +162,44 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(0.5, half1.getB2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.0, half1.getXnodeP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, half1.getXnodeQ(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setR(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setX(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setG1(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setB1(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setG2(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+    POWSYBL_ASSERT_THROW(modifiableTieLine.setB2(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
+
+    TieLine::HalfLine& modifiableHalfLine = modifiableTieLine.getHalf1();
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setR(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': r is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setR(1.0)));
+    BOOST_CHECK_CLOSE(1.0, half1.getR(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setX(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': x is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setX(2.0)));
+    BOOST_CHECK_CLOSE(2.0, half1.getX(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setG1(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': g1 is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setG1(3.0)));
+    BOOST_CHECK_CLOSE(3.0, half1.getG1(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setB1(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': b1 is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setB1(4.0)));
+    BOOST_CHECK_CLOSE(4.0, half1.getB1(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setG2(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': g2 is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setG2(5.0)));
+    BOOST_CHECK_CLOSE(5.0, half1.getG2(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(modifiableHalfLine.setB2(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL1_VL3': b2 is invalid");
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setB2(6.0)));
+    BOOST_CHECK_CLOSE(6.0, half1.getB2(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setXnodeP(7.0)));
+    BOOST_CHECK_CLOSE(7.0, half1.getXnodeP(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setXnodeQ(8.0)));
+    BOOST_CHECK_CLOSE(8.0, half1.getXnodeQ(), std::numeric_limits<double>::epsilon());
 
     const TieLine::HalfLine& half2 = tieLine.getHalf2();
     BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", half2.getId());
@@ -213,7 +253,7 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .setBus2("VL4_BUS1")
         .setConnectableBus2("VL4_BUS1")
         .setUcteXnodeCode("UcteXnodeCodeTest")
-        .line1()
+        .newHalfLine1()
         .setId("H1_TL_VL2_VL4")
         .setXnodeP(10)
         .setXnodeQ(20)
@@ -223,7 +263,8 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .setB1(4.0)
         .setG2(3.0)
         .setB2(5.0)
-        .line2()
+        .add()
+        .newHalfLine2()
         .setId("H2_TL_VL2_VL4")
         .setXnodeP(30)
         .setXnodeQ(40)
@@ -232,7 +273,8 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .setG1(6.0)
         .setB1(7.0)
         .setG2(9.0)
-        .setB2(12.0);
+        .setB2(12.0)
+        .add();
 
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "AC tie line id is not set");
 
@@ -285,91 +327,74 @@ BOOST_AUTO_TEST_CASE(adder) {
     tieLineAdder.setUcteXnodeCode("UcteXnodeCodeTest");
     tieLineAdder.setName("TL_VL2_VL4");
     tieLineAdder.setId("UNIQUE_TIE_LINE_ID");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setR(1.0), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': No active half of the line");
 
     //Half1
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': id is not set for half line 1");
-    tieLineAdder.line1();
-    tieLineAdder.setName("H1_TL_VL2_VL4");
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': id is not set for half line 1");
-    tieLineAdder.setId("H1_TL_VL2_VL4");
+    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': half line 1 is not set");
+    auto halfLineAdder1 = tieLineAdder.newHalfLine1();
+    halfLineAdder1.setName("H1_TL_VL2_VL4");
+    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': id is not set for half line 1");
+    halfLineAdder1.setId("H1_TL_VL2_VL4");
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b1 is not set for half line 1");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setB1(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL2_VL4': b1 is invalid");
-    tieLineAdder.setB1(4.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': r is not set for half line 1");
+    halfLineAdder1.setR(60.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b2 is not set for half line 1");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setB2(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL2_VL4': b2 is invalid");
-    tieLineAdder.setB2(5.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': x is not set for half line 1");
+    halfLineAdder1.setX(660.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g1 is not set for half line 1");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setG1(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL2_VL4': g1 is invalid");
-    tieLineAdder.setG1(2.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g1 is not set for half line 1");
+    halfLineAdder1.setG1(2.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g2 is not set for half line 1");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setG2(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL2_VL4': g2 is invalid");
-    tieLineAdder.setG2(3.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b1 is not set for half line 1");
+    halfLineAdder1.setB1(4.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': r is not set for half line 1");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setR(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL2_VL4': r is invalid");
-    tieLineAdder.setR(60.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g2 is not set for half line 1");
+    halfLineAdder1.setG2(3.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': x is not set for half line 1");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setX(stdcxx::nan()), ValidationException, "Half line 'H1_TL_VL2_VL4': x is invalid");
-    tieLineAdder.setX(660.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b2 is not set for half line 1");
+    halfLineAdder1.setB2(5.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeP is not set for half line 1");
-    tieLineAdder.setXnodeP(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeP is not set for half line 1");
-    tieLineAdder.setXnodeP(10.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeP is not set for half line 1");
+    halfLineAdder1.setXnodeP(10.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 1");
-    tieLineAdder.setXnodeQ(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 1");
-    tieLineAdder.setXnodeQ(20.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 1");
+    halfLineAdder1.setXnodeQ(20.0);
+    halfLineAdder1.add();
+
+    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': half line 2 is not set");
 
     //Half2
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': id is not set for half line 2");
-    tieLineAdder.line2();
-    tieLineAdder.setName("H2_TL_VL2_VL4");
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': id is not set for half line 2");
-    tieLineAdder.setId("H2_TL_VL2_VL4");
+    auto halfLineAdder2 = tieLineAdder.newHalfLine2();
+    halfLineAdder2.setName("H2_TL_VL2_VL4");
+    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': id is not set for half line 2");
+    halfLineAdder2.setId("H2_TL_VL2_VL4");
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b1 is not set for half line 2");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setB1(stdcxx::nan()), ValidationException, "Half line 'H2_TL_VL2_VL4': b1 is invalid");
-    tieLineAdder.setB1(7.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': r is not set for half line 2");
+    halfLineAdder2.setR(70.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b2 is not set for half line 2");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setB2(stdcxx::nan()), ValidationException, "Half line 'H2_TL_VL2_VL4': b2 is invalid");
-    tieLineAdder.setB2(12.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': x is not set for half line 2");
+    halfLineAdder2.setX(700.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g1 is not set for half line 2");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setG1(stdcxx::nan()), ValidationException, "Half line 'H2_TL_VL2_VL4': g1 is invalid");
-    tieLineAdder.setG1(6.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g1 is not set for half line 2");
+    halfLineAdder2.setG1(6.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g2 is not set for half line 2");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setG2(stdcxx::nan()), ValidationException, "Half line 'H2_TL_VL2_VL4': g2 is invalid");
-    tieLineAdder.setG2(9.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b1 is not set for half line 2");
+    halfLineAdder2.setB1(7.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': r is not set for half line 2");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setR(stdcxx::nan()), ValidationException, "Half line 'H2_TL_VL2_VL4': r is invalid");
-    tieLineAdder.setR(70.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g2 is not set for half line 2");
+    halfLineAdder2.setG2(9.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': x is not set for half line 2");
-    POWSYBL_ASSERT_THROW(tieLineAdder.setX(stdcxx::nan()), ValidationException, "Half line 'H2_TL_VL2_VL4': x is invalid");
-    tieLineAdder.setX(700.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b2 is not set for half line 2");
+    halfLineAdder2.setB2(12.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeP is not set for half line 2");
-    tieLineAdder.setXnodeP(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeP is not set for half line 2");
-    tieLineAdder.setXnodeP(30.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeP is not set for half line 2");
+    halfLineAdder2.setXnodeP(30.0);
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 2");
-    tieLineAdder.setXnodeQ(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 2");
-    tieLineAdder.setXnodeQ(40.0);
+    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 2");
+    halfLineAdder2.setXnodeQ(40.0);
+    halfLineAdder2.add();
 
-    tieLineAdder.setFictitious(true);
+    halfLineAdder2.setFictitious(true);
+    halfLineAdder2.add();
 
     BOOST_CHECK_NO_THROW(tieLineAdder.add());
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "The network test already contains an object 'TieLine' with the id 'UNIQUE_TIE_LINE_ID'");
@@ -397,7 +422,7 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .setFictitious(true); // test that generated TieLine can be fictitious
 
     //Half1
-    tieLineAdder.line1()
+    tieLineAdder.newHalfLine1()
         .setName("H1_TL_VL2_VL4")
         .setId("H1_TL_VL2_VL4")
         .setB1(4.0)
@@ -408,10 +433,11 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .setX(660.0)
         .setXnodeP(10.0)
         .setXnodeQ(20.0)
-        .setFictitious(true);
+        .setFictitious(true)
+        .add();
 
     //Half2
-    tieLineAdder.line2()
+    tieLineAdder.newHalfLine2()
         .setName("H2_TL_VL2_VL4")
         .setId("H2_TL_VL2_VL4")
         .setB1(7.0)
@@ -422,7 +448,8 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .setX(700.0)
         .setXnodeP(30.0)
         .setXnodeQ(40.0)
-        .setFictitious(false);
+        .setFictitious(false)
+        .add();
 
     TieLine& line = tieLineAdder.add();
     BOOST_CHECK(line.getHalf(Branch::Side::ONE).isFictitious());
