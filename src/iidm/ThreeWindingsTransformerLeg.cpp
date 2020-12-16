@@ -117,11 +117,11 @@ unsigned long Leg::getRegulatingTapChangerCount() const {
 }
 
 const Terminal& Leg::getTerminal() const {
-    return m_transformer.get().Connectable::getTerminal(m_legNumber - 1);
+    return m_transformer.get().getTerminal(m_legNumber - 1);
 }
 
 Terminal& Leg::getTerminal() {
-    return m_transformer.get().Connectable::getTerminal(m_legNumber - 1);
+    return m_transformer.get().getTerminal(m_legNumber - 1);
 }
 
 const std::string& Leg::getTypeDescription() const {
