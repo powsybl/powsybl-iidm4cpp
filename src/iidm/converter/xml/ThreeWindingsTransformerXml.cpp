@@ -45,17 +45,17 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
     const auto& r3 = context.getReader().getAttributeValue<double>(R3);
     const auto& x3 = context.getReader().getAttributeValue<double>(X3);
     const auto& ratedU3 = context.getReader().getAttributeValue<double>(RATED_U3);
-    ThreeWindingsTransformerAdder::LegAdder& legAdder1 = adder.newLeg1()
+    ThreeWindingsTransformerAdder::LegAdder legAdder1 = adder.newLeg1()
         .setR(r1)
         .setX(x1)
         .setG(g1)
         .setB(b1)
         .setRatedU(ratedU1);
-    ThreeWindingsTransformerAdder::LegAdder& legAdder2 = adder.newLeg2()
+    ThreeWindingsTransformerAdder::LegAdder legAdder2 = adder.newLeg2()
         .setR(r2)
         .setX(x2)
         .setRatedU(ratedU2);
-    ThreeWindingsTransformerAdder::LegAdder& legAdder3 = adder.newLeg3()
+    ThreeWindingsTransformerAdder::LegAdder legAdder3 = adder.newLeg3()
         .setR(r3)
         .setX(x3)
         .setRatedU(ratedU3);
