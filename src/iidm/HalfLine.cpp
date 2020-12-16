@@ -7,6 +7,7 @@
  
 #include <powsybl/iidm/HalfLine.hpp>
 
+#include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
@@ -109,6 +110,9 @@ HalfLine& HalfLine::setG2(double g2) {
 }
 
 void HalfLine::setParent(TieLine& parent) {
+    if (m_parent) {
+        throw AssertionError(stdcxx::format("TieLine.HalfLine already attached to %1%", m_parent.get().getId()));
+    }
     m_parent = parent;
 }
 
