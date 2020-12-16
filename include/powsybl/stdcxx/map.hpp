@@ -42,6 +42,11 @@ private:
     std::map<K, V> m_items;
 };
 
+template <typename Key, typename Value>
+Value getOrDefault(const std::map<Key, Value>& map, const Key& key, const Value& defaultValue);
+
 }  // namespace stdcxx
+
+#include <powsybl/stdcxx/map.hxx>
 
 #endif  // POWSYBL_STDCXX_MAP_HPP

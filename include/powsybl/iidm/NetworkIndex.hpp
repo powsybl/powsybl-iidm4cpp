@@ -83,8 +83,6 @@ private:
         void operator()(Identifiable* ptr) const;
     };
 
-    using IdByAlias = std::map<std::string, std::string>;
-
     using IdentifiableById = std::map<std::string, std::unique_ptr<Identifiable, Deleter> >;
 
     using Identifiables = std::vector<std::reference_wrapper<Identifiable> >;
@@ -96,7 +94,7 @@ private:
 
     mutable IdentifiablesByType m_objectsByType;
 
-    IdByAlias m_idByAlias;
+    std::map<std::string, std::string> m_idByAlias;
 };
 
 template <>

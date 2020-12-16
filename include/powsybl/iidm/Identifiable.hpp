@@ -95,9 +95,9 @@ private:
 
     bool m_fictitious;
 
-    std::set<std::string> m_aliases;
-
     stdcxx::Properties m_properties;
+
+    std::set<std::string> m_aliases;
 };
 
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable);

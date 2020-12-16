@@ -15,6 +15,7 @@
 
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/stdcxx/map.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"
@@ -83,14 +84,7 @@ void NetworkIndex::checkId(const std::string& id) {
 
 template <>
 const Identifiable& NetworkIndex::get(const std::string& id) const {
-    checkId(id);
-
-    const auto& it = m_objectsById.find(id);
-    if (it == m_objectsById.end()) {
-        throw PowsyblException(stdcxx::format("Unable to find to the identifiable '%1%'", id));
-    }
-
-    return *(it->second.get());
+    return get(id);
 }
 
 template <>
@@ -99,8 +93,7 @@ Identifiable& NetworkIndex::get(const std::string& id) {
 }
 
 const Identifiable& NetworkIndex::get(const std::string& idOrAlias) const {
-    auto aliasIt = m_idByAlias.find(idOrAlias);
-    const std::string& id = aliasIt != m_idByAlias.end() ? aliasIt->second : idOrAlias;
+    const std::string& id = stdcxx::getOrDefault(m_idByAlias, idOrAlias, idOrAlias);
     checkId(id);
     const auto& it = m_objectsById.find(id);
     if (it == m_objectsById.end()) {
@@ -191,8 +184,7 @@ void NetworkIndex::removeAlias(const Identifiable& obj, const std::string& alias
     if (it == m_idByAlias.end()) {
         throw PowsyblException(stdcxx::format("No alias '%1%' found in the network", alias));
     }
-    const std::string& idForAlias = it->second;
-    if (idForAlias != obj.getId()) {
+    if (it->second != obj.getId()) {
         throw PowsyblException(stdcxx::format("Alias '%1%' does not correspond to object '%2%'", alias, obj.getId()));
     }
     m_idByAlias.erase(it);
