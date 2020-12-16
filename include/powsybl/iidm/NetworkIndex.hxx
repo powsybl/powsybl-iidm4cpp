@@ -52,7 +52,7 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
 
 template<typename T>
 const T& NetworkIndex::get(const std::string& id) const {
-    const Identifiable& obj = get(id);
+    const Identifiable& obj = get<Identifiable>(id);
 
     const auto* identifiable = dynamic_cast<const T*>(&obj);
     if (identifiable == nullptr) {

@@ -73,11 +73,6 @@ private:
     static void checkId(const std::string& id);
 
 private:
-    const Identifiable& get(const std::string& idOrAlias) const;
-
-    Identifiable& get(const std::string& idOrAlias);
-
-private:
     class Deleter {
     public:
         void operator()(Identifiable* ptr) const;
