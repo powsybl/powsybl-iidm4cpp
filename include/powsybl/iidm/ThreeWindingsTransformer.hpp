@@ -72,6 +72,8 @@ private: // Identifiable
 private:
     friend class three_windings_transformer::Leg;
 
+    using Connectable::getTerminal;
+
 private:
     Leg m_leg1;
 

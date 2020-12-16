@@ -114,7 +114,6 @@ private:
 
     void setTransformer(ThreeWindingsTransformer& transformer);
 
-private:
     friend class CurrentLimitsAdder<const std::nullptr_t, Leg>;
 
     friend class iidm::ThreeWindingsTransformer;

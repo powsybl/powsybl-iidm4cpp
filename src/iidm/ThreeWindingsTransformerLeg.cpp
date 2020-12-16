@@ -126,10 +126,10 @@ Terminal& Leg::getTerminal() {
 
 const std::string& Leg::getTypeDescription() const {
     static std::array<std::string, 3> s_typeDescriptions {{
-                                                              u8"3 windings transformer leg1",
-                                                              u8"3 windings transformer leg2",
-                                                              u8"3 windings transformer leg3"
-                                                          }};
+        u8"3 windings transformer leg1",
+        u8"3 windings transformer leg2",
+        u8"3 windings transformer leg3"
+    }};
 
     return s_typeDescriptions[m_legNumber - 1];
 }

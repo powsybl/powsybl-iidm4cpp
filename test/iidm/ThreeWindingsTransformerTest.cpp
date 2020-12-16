@@ -698,6 +698,15 @@ BOOST_AUTO_TEST_CASE(adders) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'ThreeWindingsTransformer' with the id 'UNIQUE_3WT_ID'");
 
     BOOST_CHECK_EQUAL(threeWindingsTransformerCount + 1, network.getThreeWindingsTransformerCount());
+
+    ThreeWindingsTransformer& twt = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
+    POWSYBL_ASSERT_THROW(twt.getLeg1().setR(stdcxx::nan()), ValidationException, "3 windings transformer leg1 '3WT_VL1_VL2_VL3': r is invalid");
+    BOOST_CHECK(stdcxx::areSame(twt.getLeg1(), twt.getLeg1().setR(1.1)));
+    BOOST_CHECK_CLOSE(1.1, twt.getLeg1().getR(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(twt.getLeg1().setG(stdcxx::nan()), ValidationException, "3 windings transformer leg1 '3WT_VL1_VL2_VL3': g is invalid");
+    BOOST_CHECK(stdcxx::areSame(twt.getLeg1(), twt.getLeg1().setG(2.2)));
+    BOOST_CHECK_CLOSE(2.2, twt.getLeg1().getG(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(multivariant) {
