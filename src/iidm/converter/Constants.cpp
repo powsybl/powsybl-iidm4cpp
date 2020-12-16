@@ -6,6 +6,8 @@
  */
 
 #include <powsybl/iidm/converter/Constants.hpp>
+
+#include <powsybl/stdcxx/optional.hpp>
  
 namespace powsybl {
 
@@ -13,7 +15,7 @@ namespace iidm {
 
 namespace converter {
 
-std::string toString(const char* attribute, boost::optional<int> index) {
+std::string toString(const char* attribute, stdcxx::optional<int> index) {
     std::string str = attribute;
     if (index) {
         str += std::to_string(*index);

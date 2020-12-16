@@ -27,7 +27,7 @@ namespace xml {
 
 template <typename Added, typename Adder, typename Parent>
 template <typename S, typename O>
-void AbstractConnectableXml<Added, Adder, Parent>::readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
+void AbstractConnectableXml<Added, Adder, Parent>::readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
     CurrentLimitsXml::readCurrentLimits(adder, reader, index);
 }
 
@@ -99,14 +99,14 @@ void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(int index, Thre
 }
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
+void AbstractConnectableXml<Added, Adder, Parent>::readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
     const double& p = reader.getOptionalAttributeValue(toString(P, index), stdcxx::nan());
     const double& q = reader.getOptionalAttributeValue(toString(Q, index), stdcxx::nan());
     terminal.setP(p).setQ(q);
 }
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
+void AbstractConnectableXml<Added, Adder, Parent>::writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
     if (bus) {
         context.getWriter().writeAttribute(toString(BUS, index), context.getAnonymizer().anonymizeString(bus.get().getId()));
     }
@@ -116,17 +116,17 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeBus(const stdcxx::CRefer
 }
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const boost::optional<int>& index) {
+void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
     CurrentLimitsXml::writeCurrentLimits(limits, writer, version.getPrefix(), version, index);
 }
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
+void AbstractConnectableXml<Added, Adder, Parent>::writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
     context.getWriter().writeAttribute(toString(NODE, index), terminal.getNodeBreakerView().getNode());
 }
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index) {
+void AbstractConnectableXml<Added, Adder, Parent>::writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
     const TopologyLevel& topologyLevel = getMinTopologyLevel(terminal.getVoltageLevel().getTopologyKind(), context.getOptions().getTopologyLevel());
     switch (topologyLevel) {
         case TopologyLevel::NODE_BREAKER:
@@ -148,7 +148,7 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeNodeOrBus(const Terminal
 }
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index) {
+void AbstractConnectableXml<Added, Adder, Parent>::writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const stdcxx::optional<int>& index) {
     writer.writeOptionalAttribute(toString(P, index), terminal.getP());
     writer.writeOptionalAttribute(toString(Q, index), terminal.getQ());
 }
