@@ -47,6 +47,8 @@ set(IIDM_SOURCES
     iidm/ExtensionProviders.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
+    iidm/HalfLine.cpp
+    iidm/HalfLineAdder.cpp
     iidm/HvdcConverterStation.cpp
     iidm/HvdcLine.cpp
     iidm/HvdcLineAdder.cpp
@@ -109,6 +111,8 @@ set(IIDM_SOURCES
     iidm/Terminal.cpp
     iidm/TerminalBuilder.cpp
     iidm/ThreeWindingsTransformer.cpp
+    iidm/ThreeWindingsTransformerLeg.cpp
+    iidm/ThreeWindingsTransformerLegAdder.cpp
     iidm/ThreeWindingsTransformerAdder.cpp
     iidm/TieLine.cpp
     iidm/TieLineAdder.cpp

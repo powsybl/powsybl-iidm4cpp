@@ -8,18 +8,19 @@
 #ifndef POWSYBL_IIDM_DANGLINGLINEGENERATION_HPP
 #define POWSYBL_IIDM_DANGLINGLINEGENERATION_HPP
 
-#include <functional>
 #include <set>
 #include <vector>
 
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
 #include <powsybl/iidm/Validable.hpp>
+#include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
 class DanglingLine;
+class VariantManagerHolder;
 
 namespace dangling_line {
 
@@ -28,7 +29,7 @@ public:  // Validable
     std::string getMessageHeader() const override;
 
 public:
-    Generation(DanglingLine& danglingLine, double minP, double maxP, double targetP, double targetQ, double targetV, bool voltageRegulationOn);
+    Generation(VariantManagerHolder& network, double minP, double maxP, double targetP, double targetQ, double targetV, bool voltageRegulationOn);
 
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex);
 
@@ -61,7 +62,12 @@ public:
     Generation& setVoltageRegulationOn(bool voltageRegulationOn);
 
 private:
-    std::reference_wrapper<DanglingLine> m_danglingLine;
+    Generation& attach(DanglingLine& danglineLine);
+
+    friend DanglingLine;
+
+private:
+    stdcxx::Reference<DanglingLine> m_danglingLine;
 
     double m_minP;
 

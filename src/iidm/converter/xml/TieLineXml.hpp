@@ -40,7 +40,7 @@ protected:  // AbstractIdentifiableXml
     void writeSubElements(const TieLine& line, const Network& network, NetworkXmlWriterContext& context) const override;
 
 private:
-    static void readHalf(TieLineAdder& adder, const NetworkXmlReaderContext& context, int side);
+    static void readHalf(TieLineAdder::HalfLineAdder adder, const NetworkXmlReaderContext& context, int side);
 
     static void writeHalf(const TieLine::HalfLine& halfLine, NetworkXmlWriterContext& context, int side);
 
