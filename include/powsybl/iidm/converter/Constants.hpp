@@ -20,6 +20,7 @@ namespace converter {
 
 static const char* const ACCEPTABLE_DURATION = "acceptableDuration";
 static const char* const ACTIVE_POWER_SETPOINT = "activePowerSetpoint";
+static const char* const ALIAS = "alias";
 static const char* const ALPHA = "alpha";
 static const char* const ANGLE = "angle";
 static const char* const B = "b";

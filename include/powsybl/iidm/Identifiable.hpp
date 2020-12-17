@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_IDENTIFIABLE_HPP
 #define POWSYBL_IIDM_IDENTIFIABLE_HPP
 
+#include <set>
 #include <string>
 
 #include <powsybl/iidm/Extendable.hpp>
@@ -38,6 +39,10 @@ public:
 
     Identifiable& operator=(Identifiable&&) noexcept = delete;
 
+    void addAlias(const std::string& alias);
+
+    const std::set<std::string>& getAliases() const;
+
     const std::string& getId() const;
 
     const std::string& getNameOrId() const;
@@ -54,11 +59,15 @@ public:
 
     stdcxx::const_range<std::string> getPropertyNames() const;
 
+    bool hasAliases() const;
+
     bool hasProperty() const;
 
     bool hasProperty(const std::string& key) const;
 
     bool isFictitious() const;
+
+    void removeAlias(const std::string& alias);
 
     virtual void setFictitious(bool fictitious);
 
@@ -87,6 +96,8 @@ private:
     bool m_fictitious;
 
     stdcxx::Properties m_properties;
+
+    std::set<std::string> m_aliases;
 };
 
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable);

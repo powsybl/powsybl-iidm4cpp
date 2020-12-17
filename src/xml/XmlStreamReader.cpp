@@ -264,6 +264,11 @@ int XmlStreamReader::next() const {
     return getCurrentNodeType();
 }
 
+std::string XmlStreamReader::readCharacters() const {
+    xmlTextReaderRead(m_reader.get());
+    return getText();
+}
+
 std::string XmlStreamReader::readUntilEndElement(const std::string& elementName) const {
     return readUntilEndElement(elementName, [](){});
 }

@@ -39,6 +39,8 @@ public:
 
     NetworkIndex& operator=(NetworkIndex&&) noexcept = delete;
 
+    bool addAlias(const Identifiable& obj, const std::string& alias);
+
     template <typename T>
     T& checkAndAdd(std::unique_ptr<T>&& identifiable);
 
@@ -65,6 +67,8 @@ public:
 
     void remove(Identifiable& identifiable);
 
+    void removeAlias(const Identifiable& obj, const std::string& alias);
+
 private:
     static void checkId(const std::string& id);
 
@@ -84,13 +88,12 @@ private:
     IdentifiableById m_objectsById;
 
     mutable IdentifiablesByType m_objectsByType;
+
+    std::map<std::string, std::string> m_idByAlias;
 };
 
 template <>
 const Identifiable& NetworkIndex::get(const std::string& id) const;
-
-template <>
-Identifiable& NetworkIndex::get(const std::string& id);
 
 template <>
 unsigned long NetworkIndex::getObjectCount<VoltageLevel>() const;

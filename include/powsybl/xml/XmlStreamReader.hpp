@@ -67,6 +67,8 @@ public:
 
     std::string getText() const;
 
+    std::string readCharacters() const;
+
     std::string readUntilEndElement(const std::string& elementName) const;
 
     std::string readUntilEndElement(const std::string& elementName, const ReadCallback& callback) const;
