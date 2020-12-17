@@ -6,6 +6,7 @@
 #
 
 set(UNIT_TEST_SOURCES
+    AliasesTest.cpp
     BatteryTest.cpp
     BranchTest.cpp
     BusbarSectionTest.cpp

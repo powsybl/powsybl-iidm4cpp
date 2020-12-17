@@ -40,6 +40,7 @@ set(UNIT_TEST_SOURCES
     StaticVarCompensatorRoundTripTest.cpp
     TerminalRefTest.cpp
     ThreeWindingsTransformerRoundTripTest.cpp
+    TieLineWithAliasesXmlTest.cpp
     VscRoundTripTest.cpp
     xiidm.cpp
 )

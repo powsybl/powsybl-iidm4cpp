@@ -369,6 +369,12 @@ private:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     unsigned long getObjectCount() const;
 
+    const NetworkIndex& getIndex() const;
+
+    NetworkIndex& getIndex();
+
+    friend class Identifiable;
+
 private:
     stdcxx::DateTime m_caseDate;
 

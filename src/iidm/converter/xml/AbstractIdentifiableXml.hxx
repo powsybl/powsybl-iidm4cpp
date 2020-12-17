@@ -21,6 +21,7 @@
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
+#include "iidm/converter/xml/AliasesXml.hpp"
 #include "iidm/converter/xml/PropertiesXml.hpp"
 
 namespace powsybl {
@@ -54,6 +55,9 @@ template <typename Added, typename Adder, typename Parent>
 void AbstractIdentifiableXml<Added, Adder, Parent>::readSubElements(Added& identifiable, NetworkXmlReaderContext& context) const {
     if (context.getReader().getLocalName() == PROPERTY) {
         PropertiesXml::read(identifiable, context);
+    } else if (context.getReader().getLocalName() == ALIAS) {
+        IidmXmlUtil::assertMinimumVersion(getRootElementName(), ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
+        AliasesXml::read(identifiable, context);
     } else {
         throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), identifiable.getId()));
     }
@@ -74,6 +78,10 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::write(const Added& identifia
     });
 
     writeRootElementAttributes(identifiable, parent, context);
+
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [this, &context, &identifiable]() {
+        AliasesXml::write(identifiable, getRootElementName(), context);
+    });
 
     PropertiesXml::write(identifiable, context);
 

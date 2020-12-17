@@ -39,6 +39,9 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
     }
 
     auto ptrIdentifiable = std::unique_ptr<Identifiable, Deleter>(identifiable.release());
+    for (const std::string& alias : ptrIdentifiable->getAliases()) {
+        addAlias(*ptrIdentifiable, alias);
+    }
     auto it = m_objectsById.emplace(std::make_pair(ptrIdentifiable->getId(), std::move(ptrIdentifiable)));
 
     std::reference_wrapper<Identifiable> refIdentifiable = *it.first->second;
@@ -49,14 +52,9 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
 
 template<typename T>
 const T& NetworkIndex::get(const std::string& id) const {
-    checkId(id);
+    const Identifiable& obj = get<Identifiable>(id);
 
-    const auto& it = m_objectsById.find(id);
-    if (it == m_objectsById.end()) {
-        throw PowsyblException(stdcxx::format("Unable to find to the identifiable '%1%'", id));
-    }
-
-    auto* identifiable = dynamic_cast<T*>(it->second.get());
+    const auto* identifiable = dynamic_cast<const T*>(&obj);
     if (identifiable == nullptr) {
         throw PowsyblException(stdcxx::format("Identifiable '%1%' is not a %2%", id, stdcxx::demangle<T>()));
     }
