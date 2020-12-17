@@ -319,6 +319,14 @@ stdcxx::range<Identifiable> Network::getIdentifiables() {
     return m_networkIndex.getAll<Identifiable>();
 }
 
+const NetworkIndex& Network::getIndex() const {
+    return m_networkIndex;
+}
+
+NetworkIndex& Network::getIndex() {
+    return m_networkIndex;
+}
+
 const LccConverterStation& Network::getLccConverterStation(const std::string& id) const {
     return get<LccConverterStation>(id);
 }

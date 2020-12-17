@@ -15,6 +15,7 @@
 
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/stdcxx/map.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"
@@ -49,25 +50,47 @@ NetworkIndex::NetworkIndex(Network& network, NetworkIndex&& networkIndex) noexce
     }
 }
 
+bool NetworkIndex::addAlias(const Identifiable& obj, const std::string& alias) {
+    auto objectIter = m_objectsById.find(alias);
+    if (objectIter != m_objectsById.end()) {
+        const Identifiable& aliasConflict = *objectIter->second;
+        if (stdcxx::areSame(aliasConflict, obj)) {
+            // Silently ignore affecting the objects id to its own aliases
+            return false;
+        }
+        const std::string& message = stdcxx::format("Object (%1%) with alias '%2%' cannot be created because alias already refers to object (%3%) with ID '%4%'",
+                                                    stdcxx::demangle(obj), alias, stdcxx::demangle(aliasConflict), aliasConflict.getId());
+        throw PowsyblException(message);
+    }
+    auto aliasIter = m_idByAlias.find(alias);
+    if (aliasIter != m_idByAlias.end()) {
+        const std::string& id = aliasIter->second;
+        const Identifiable& aliasConflict = *m_objectsById[id];
+        if (stdcxx::areSame(aliasConflict, obj)) {
+            // Silently ignore affecting the same alias twice to an object
+            return false;
+        }
+        const std::string& message = stdcxx::format("Object (%1%) with alias '%2%' cannot be created because alias already refers to object (%3%) with ID '%4%'",
+                                                    stdcxx::demangle(obj), alias, stdcxx::demangle(aliasConflict), aliasConflict.getId());
+        throw PowsyblException(message);
+    }
+    m_idByAlias.emplace(alias, obj.getId());
+    return true;
+}
+
 void NetworkIndex::checkId(const std::string& id) {
     checkNotEmpty(id, "Invalid id '" + id + "'");
 }
 
 template <>
 const Identifiable& NetworkIndex::get(const std::string& id) const {
-    checkId(id);
-
-    const auto& it = m_objectsById.find(id);
+    const auto& resolvedId = stdcxx::getOrDefault(m_idByAlias, id, id);
+    checkId(resolvedId);
+    const auto& it = m_objectsById.find(resolvedId);
     if (it == m_objectsById.end()) {
-        throw PowsyblException(stdcxx::format("Unable to find to the identifiable '%1%'", id));
+        throw PowsyblException(stdcxx::format("Unable to find to the identifiable '%1%'", resolvedId));
     }
-
-    return *(it->second.get());
-}
-
-template <>
-Identifiable& NetworkIndex::get(const std::string& id) {
-    return const_cast<Identifiable&>(static_cast<const NetworkIndex*>(this)->get<Identifiable>(id));
+    return *it->second;
 }
 
 template <>
@@ -133,10 +156,25 @@ void NetworkIndex::remove(Identifiable& identifiable) {
         });
 
         if (itIdentifiable != identifiables.end()) {
+            for (const std::string& alias : identifiable.getAliases()) {
+                m_idByAlias.erase(alias);
+            }
+
             identifiables.erase(itIdentifiable);
             m_objectsById.erase(identifiable.getId());
         }
     }
+}
+
+void NetworkIndex::removeAlias(const Identifiable& obj, const std::string& alias) {
+    auto it = m_idByAlias.find(alias);
+    if (it == m_idByAlias.end()) {
+        throw PowsyblException(stdcxx::format("No alias '%1%' found in the network", alias));
+    }
+    if (it->second != obj.getId()) {
+        throw PowsyblException(stdcxx::format("Alias '%1%' does not correspond to object '%2%'", alias, obj.getId()));
+    }
+    m_idByAlias.erase(it);
 }
 
 }  // namespace iidm

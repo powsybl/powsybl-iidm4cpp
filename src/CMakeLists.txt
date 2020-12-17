@@ -139,6 +139,7 @@ set(IIDM_SOURCES
 
     iidm/converter/xml/AbstractExtensionXmlSerializer.cpp
     iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.cpp
+    iidm/converter/xml/AliasesXml.cpp
     iidm/converter/xml/BatteryXml.cpp
     iidm/converter/xml/BusbarSectionXml.cpp
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp

@@ -62,7 +62,8 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
     std::string regId;
     std::string regSide;
     stdcxx::Properties properties;
-    context.getReader().readUntilEndElement(SHUNT, [&context, &adder, &regId, &regSide, &properties, &id]() {
+    std::set<std::string> aliases;
+    context.getReader().readUntilEndElement(SHUNT, [&context, &adder, &regId, &regSide, &properties, &id, &aliases]() {
         if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
             regId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             regSide = context.getReader().getOptionalAttributeValue(SIDE, "");
@@ -70,6 +71,9 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
             const std::string& name = context.getReader().getAttributeValue(NAME);
             const std::string& value = context.getReader().getAttributeValue(VALUE);
             properties.set(name, value);
+        } else if (context.getReader().getLocalName() == ALIAS) {
+            IidmXmlUtil::assertMinimumVersion(SHUNT, ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
+            aliases.emplace(context.getReader().readUntilEndElement(ALIAS));
         } else if (context.getReader().getLocalName() == SHUNT_LINEAR_MODEL) {
             IidmXmlUtil::assertMinimumVersion(SHUNT, SHUNT_LINEAR_MODEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
             auto bPerSection = context.getReader().getAttributeValue<double>(B_PER_SECTION);
@@ -110,6 +114,9 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
 
     for (const auto& it : properties) {
         sc.setProperty(it.first, it.second);
+    }
+    for (const auto& alias : aliases) {
+        sc.addAlias(alias);
     }
     sc.getTerminal().setP(p).setQ(q);
 }
