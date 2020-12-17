@@ -84,18 +84,13 @@ void NetworkIndex::checkId(const std::string& id) {
 
 template <>
 const Identifiable& NetworkIndex::get(const std::string& id) const {
-    const std::string& resolvedId = stdcxx::getOrDefault(m_idByAlias, id, id);
+    const auto& resolvedId = stdcxx::getOrDefault(m_idByAlias, id, id);
     checkId(resolvedId);
     const auto& it = m_objectsById.find(resolvedId);
     if (it == m_objectsById.end()) {
         throw PowsyblException(stdcxx::format("Unable to find to the identifiable '%1%'", resolvedId));
     }
     return *it->second;
-}
-
-template <>
-Identifiable& NetworkIndex::get(const std::string& id) {
-    return const_cast<Identifiable&>(static_cast<const NetworkIndex*>(this)->get<Identifiable>(id));
 }
 
 template <>

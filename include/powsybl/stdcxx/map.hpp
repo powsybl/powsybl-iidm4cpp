@@ -43,10 +43,11 @@ private:
 };
 
 template <typename Key, typename Value>
-Value getOrDefault(const std::map<Key, Value>& map, const Key& key, const Value& defaultValue);
+const Value& getOrDefault(const std::map<Key, Value>& map, const Key& key, const Value& defaultValue) {
+    const auto& it = map.find(key);
+    return it != map.end() ? it->second : defaultValue;
+}
 
 }  // namespace stdcxx
-
-#include <powsybl/stdcxx/map.hxx>
 
 #endif  // POWSYBL_STDCXX_MAP_HPP

@@ -26,8 +26,7 @@ namespace converter {
 namespace xml {
 
 void AliasesXml::read(Identifiable& identifiable, const NetworkXmlReaderContext& context) {
-    const auto& alias = context.getAnonymizer().deanonymizeString(context.getReader().readCharacters());
-    identifiable.addAlias(alias);
+    identifiable.addAlias(context.getAnonymizer().deanonymizeString(context.getReader().readCharacters()));
 }
 
 void AliasesXml::write(const Identifiable& identifiable, const std::string& rootElementName, NetworkXmlWriterContext& context) {
