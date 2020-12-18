@@ -50,7 +50,7 @@ protected:
     /**
      * Copy constructor
      */
-    ExtensionAdder(const ExtensionAdder& extendable) = default;
+    ExtensionAdder(const ExtensionAdder&) = default;
 
     /**
      * Move constructor

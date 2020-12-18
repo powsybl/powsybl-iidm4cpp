@@ -27,7 +27,7 @@ public:  // ShuntCompensatorModelAdder
 public:
     explicit ShuntCompensatorLinearModelAdder(ShuntCompensatorAdder& parent);
 
-    ShuntCompensatorLinearModelAdder(ShuntCompensatorLinearModelAdder&& adder) noexcept = default;
+    ShuntCompensatorLinearModelAdder(ShuntCompensatorLinearModelAdder&&) noexcept = default;
 
     ShuntCompensatorLinearModelAdder& setBPerSection(double bPerSection);
 
