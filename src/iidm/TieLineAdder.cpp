@@ -29,10 +29,10 @@ TieLine& TieLineAdder::add() {
 
     checkNotEmpty(*this, m_ucteXnodeCode, "ucteXnodeCode is not set");
 
-    if (!m_halfLineAdder1.is_initialized()) {
+    if (!m_halfLineAdder1) {
         throw ValidationException(*this, "half line 1 is not set");
     }
-    if (!m_halfLineAdder2.is_initialized()) {
+    if (!m_halfLineAdder2) {
         throw ValidationException(*this, "half line 2 is not set");
     }
 

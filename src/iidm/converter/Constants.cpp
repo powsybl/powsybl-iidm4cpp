@@ -6,8 +6,6 @@
  */
 
 #include <powsybl/iidm/converter/Constants.hpp>
-
-#include <powsybl/stdcxx/optional.hpp>
  
 namespace powsybl {
 

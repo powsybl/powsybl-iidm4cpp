@@ -142,7 +142,7 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeNodeOrBus(const Terminal
             throw powsybl::xml::XmlStreamException(stdcxx::format("Unexpected TopologyLevel value: ", topologyLevel));
     }
 
-    if (index.is_initialized()) {
+    if (index) {
         context.getWriter().writeAttribute(toString(VOLTAGE_LEVEL_ID, index), context.getAnonymizer().anonymizeString(terminal.getVoltageLevel().getId()));
     }
 }

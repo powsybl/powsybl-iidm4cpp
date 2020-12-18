@@ -257,7 +257,7 @@ stdcxx::CReference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string&
     stdcxx::Reference<Switch> aSwitch;
 
     const auto& e = getEdge(switchId, false);
-    if (e.is_initialized()) {
+    if (e) {
         aSwitch = m_graph.getEdgeObject(*e);
         if (aSwitch.get().getId() != switchId) {
             throw PowsyblException(stdcxx::format("Invalid switch id (expected: '%1%', actual: '%2%')", switchId, aSwitch.get().getId()));
