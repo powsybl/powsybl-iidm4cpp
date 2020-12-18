@@ -59,13 +59,15 @@ public:
 
     FlatteningIterator(const FlatteningIterator&) = default;
 
-    FlatteningIterator(FlatteningIterator&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of boost::range_detail::default_constructible_unary_fn_wrapper is not marked noexcept
+    FlatteningIterator(FlatteningIterator&&) = default;
 
     ~FlatteningIterator() noexcept = default;
 
     FlatteningIterator& operator=(const FlatteningIterator&) = default;
 
-    FlatteningIterator& operator=(FlatteningIterator&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of boost::range_detail::default_constructible_unary_fn_wrapper is not marked noexcept
+    FlatteningIterator& operator=(FlatteningIterator&&) = default;
 
 private:
     void increment() {
