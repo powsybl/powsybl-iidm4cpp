@@ -45,6 +45,10 @@ public:
 
     Leg& getLeg3();
 
+    std::vector<std::reference_wrapper<const Leg>> getLegs() const;
+
+    std::vector<std::reference_wrapper<Leg>> getLegs();
+
     double getRatedU0() const;
 
     Side getSide(const Terminal& terminal) const;

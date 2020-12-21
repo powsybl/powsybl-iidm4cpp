@@ -329,6 +329,18 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(cTerminal3, cLeg3.getTerminal()));
     BOOST_TEST(stdcxx::areSame(network, leg3.getNetwork()));
     BOOST_TEST(stdcxx::areSame(network, cLeg3.getNetwork()));
+
+    const auto& legs = transformer.getLegs();
+    BOOST_CHECK_EQUAL(3, legs.size());
+    BOOST_CHECK(stdcxx::areSame(leg1, legs.at(0).get()));
+    BOOST_CHECK(stdcxx::areSame(leg2, legs.at(1).get()));
+    BOOST_CHECK(stdcxx::areSame(leg3, legs.at(2).get()));
+
+    const auto& cLegs = cTransformer.getLegs();
+    BOOST_CHECK_EQUAL(3, cLegs.size());
+    BOOST_CHECK(stdcxx::areSame(leg1, cLegs.at(0).get()));
+    BOOST_CHECK(stdcxx::areSame(leg2, cLegs.at(1).get()));
+    BOOST_CHECK(stdcxx::areSame(leg3, cLegs.at(2).get()));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {

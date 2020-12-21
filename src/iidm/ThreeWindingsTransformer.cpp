@@ -120,6 +120,14 @@ ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg3() {
     return m_leg3;
 }
 
+std::vector<std::reference_wrapper<const ThreeWindingsTransformer::Leg>> ThreeWindingsTransformer::getLegs() const {
+    return {std::cref(m_leg1), std::cref(m_leg2), std::cref(m_leg3)};
+}
+
+std::vector<std::reference_wrapper<ThreeWindingsTransformer::Leg>> ThreeWindingsTransformer::getLegs() {
+    return {std::ref(m_leg1), std::ref(m_leg2), std::ref(m_leg3)};
+}
+
 double ThreeWindingsTransformer::getRatedU0() const {
     return m_ratedU0;
 }
