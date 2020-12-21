@@ -38,11 +38,13 @@ public:
 
     TerminalFinder(const TerminalFinder&) = delete;
 
-    TerminalFinder(TerminalFinder&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::function is not marked noexcept
+    TerminalFinder(TerminalFinder&&) = default;
 
     TerminalFinder& operator=(const TerminalFinder&) = delete;
 
-    TerminalFinder& operator=(TerminalFinder&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::function is not marked noexcept
+    TerminalFinder& operator=(TerminalFinder&&) = default;
 
     stdcxx::CReference<Terminal> find(const stdcxx::const_range<Terminal>& terminals) const;
 
