@@ -146,15 +146,10 @@ $> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE>
 - BUILD_DOXYGEN: Generate the API documentation using doxygen (Default is **OFF**)
 - BUILD_EXAMPLES: Build the examples (Default is **OFF**)
 
-**Note:** Under Windows the **Boost** libraries or **LibXML** libraries could be installed in a custom third parties folder, so you would have to help `cmake` to find the required packages, using the `-DCMAKE_PREFIX_PATH` options:
+**Note:** If you want to use custom version of **Boost** or **LibXML**, you would have to help `cmake` to find the required packages, using the `-DCMAKE_PREFIX_PATH` options:
 ```
-$> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE> -DCMAKE_PREFIX_PATH=<BOOST_PREFIX>;<LIBXML2_PREFIX>
+$> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_PREFIX_PATH=<BOOST_PREFIX>;<LIBXML2_PREFIX>
 ``` 
-
-**Note:** Under MacOS the **Boost** libraries could be installed in a custom third parties folder, so you would have to help `cmake` to find the required package, using the `-DCMAKE_PREFIX_PATH` options:
-```
-$> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE> -DCMAKE_PREFIX_PATH=<BOOST_PREFIX>
-```
 
 3. Build the sources
 ```
@@ -164,6 +159,12 @@ $> cmake --build .
 4. Install the libraries
 ```
 $> cmake --build . --target install
+```
+
+**Note:** With MSVC, to specify the build type, you have to use the `--config` option instead of `-DCMAKE_BUILD_TYPE`:
+```
+$> cmake --build . --config Release
+$> cmake --build . --target install --config Release
 ```
 
 ### Build the examples
