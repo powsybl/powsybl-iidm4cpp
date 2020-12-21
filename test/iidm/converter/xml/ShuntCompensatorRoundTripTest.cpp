@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2019, RTE (http://www.rte-france.com)
+ * Copyright (c) 2020, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -95,11 +95,7 @@ Network createNonLinear() {
     return network;
 }
 
-BOOST_AUTO_TEST_SUITE(LccRoundTrip)
-
-BOOST_FIXTURE_TEST_CASE(LccRoundTripTest, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("LccRoundTripRef.xml", IidmXmlVersion::all());
-}
+BOOST_AUTO_TEST_SUITE(ShuntCompensatorRoundTrip)
 
 BOOST_FIXTURE_TEST_CASE(ShuntLinearRoundTripTest, test::ResourceFixture) {
     test::converter::RoundTrip::roundTripVersionedXmlTest("shuntRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
@@ -111,8 +107,8 @@ BOOST_FIXTURE_TEST_CASE(ShuntLinearRoundTripTest, test::ResourceFixture) {
 BOOST_FIXTURE_TEST_CASE(ShuntNonLinearRoundTripTest, test::ResourceFixture) {
     test::converter::RoundTrip::roundTripVersionedXmlTest("nonLinearShuntRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 
-    // backward compatibility from version 1.2
-    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("nonLinearShuntRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    // backward compatibility from version 1.3
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("nonLinearShuntRoundTripRef.xml", IidmXmlVersion::V1_3());
 
     Network network = createNonLinear();
 
@@ -142,4 +138,3 @@ BOOST_AUTO_TEST_SUITE_END()
 }  // namespace iidm
 
 }  // namespace powsybl
-
