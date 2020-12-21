@@ -37,6 +37,8 @@ protected:  // AbstractIdentifiableXml
 
     void writeRootElementAttributes(const ShuntCompensator& shuntCompensator, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
+    void writeSubElements(const ShuntCompensator& shuntCompensator, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+
 private:
     ShuntCompensatorXml() = default;
 

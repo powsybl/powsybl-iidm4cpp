@@ -145,7 +145,7 @@ jobs:
         run: |
           export MODIFIED_FILES=$(git diff -U0 HEAD^ --name-only | grep -E "\.(cpp|hpp|hxx)$")
           if [ -n "$MODIFIED_FILES" ]; then
-              clang-tidy $MODIFIED_FILES -p $GITHUB_WORKSPACE/build-linux
+              clang-tidy $MODIFIED_FILES -p $GITHUB_WORKSPACE/build
           fi
 
       - name: Tests
