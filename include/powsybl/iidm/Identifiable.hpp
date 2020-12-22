@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_IDENTIFIABLE_HPP
 #define POWSYBL_IIDM_IDENTIFIABLE_HPP
 
+#include <map>
 #include <set>
 #include <string>
 
@@ -42,7 +43,19 @@ public:
 
     void addAlias(const std::string& alias);
 
-    const std::set<std::string>& getAliases() const;
+    void addAlias(const std::string& alias, bool ensureAliasUnicity);
+
+    void addAlias(const std::string& alias, const std::string& aliasType);
+
+    void addAlias(const std::string& alias, const char* aliasType);
+
+    void addAlias(const std::string& alias, const std::string& aliasType, bool ensureAliasUnicity);
+
+    std::set<std::string> getAliases() const;
+
+    stdcxx::optional<std::string> getAliasFromType(const std::string& aliasType) const;
+
+    stdcxx::optional<std::string> getAliasType(const std::string& alias) const;
 
     const std::string& getId() const;
 
@@ -98,7 +111,9 @@ private:
 
     stdcxx::Properties m_properties;
 
-    std::set<std::string> m_aliases;
+    std::set<std::string> m_aliasesWithoutType;
+
+    std::map<std::string, std::string> m_aliasesByType;
 };
 
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable);
