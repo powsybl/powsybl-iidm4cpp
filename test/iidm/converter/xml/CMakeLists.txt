@@ -23,11 +23,11 @@ set(UNIT_TEST_SOURCES
     BatteryRoundTripTest.cpp
     EurostagTest.cpp
     FictitiousSwitchTest.cpp
+    HvdcRoundTripTest.cpp
     IdentifiableExtensionXmlSerializerTest.cpp
     IidmXmlUtilTest.cpp
     InternalConnectionsRoundTripTest.cpp
     LinesRoundTripTest.cpp
-    LccRoundTripRef.cpp
     NetworkXmlTest.cpp
     NetworkXmlReaderContextTest.cpp
     NetworkXmlWriterContextTest.cpp
@@ -41,7 +41,6 @@ set(UNIT_TEST_SOURCES
     TerminalRefTest.cpp
     ThreeWindingsTransformerRoundTripTest.cpp
     TieLineWithAliasesXmlTest.cpp
-    VscRoundTripTest.cpp
     xiidm.cpp
 )
 
