@@ -17,6 +17,7 @@
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/format.hpp>
+#include <powsybl/stdcxx/map.hpp>
 #include <powsybl/stdcxx/reference_wrapper.hpp>
 
 namespace powsybl {
@@ -114,9 +115,10 @@ unsigned long NetworkIndex::getObjectCount() const {
 
 template <typename T>
 stdcxx::CReference<T> NetworkIndex::find(const std::string& id) const {
-    checkId(id);
+    const auto& resolvedId = stdcxx::getOrDefault(m_idByAlias, id, id);
+    checkId(resolvedId);
 
-    const auto& it = m_objectsById.find(id);
+    const auto& it = m_objectsById.find(resolvedId);
     if (it != m_objectsById.end()) {
         auto* identifiable = dynamic_cast<T*>(it->second.get());
         if (identifiable != nullptr) {
