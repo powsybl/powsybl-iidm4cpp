@@ -14,6 +14,7 @@
 
 #include <libxml/parser.h>
 
+#include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
@@ -65,8 +66,11 @@ void readOptions(stdcxx::Properties& properties, const boost::program_options::v
         for (const auto& property : options.as<std::vector<std::string>>()) {
             std::vector<std::string> result;
             boost::split(result, property, boost::is_any_of("="));
-
-            properties.set(result[0], result[1]);
+            if (result.size() == 2) {
+                properties.set(result[0], result[1]);
+            } else {
+                throw powsybl::PowsyblException(stdcxx::format("Malformed option: %1%", property));
+            }
         }
     }
 }
@@ -83,8 +87,8 @@ int main(int argc, char** argv) {
         (INPUT_FILE, boost::program_options::value<std::string>()->required())
         (OUTPUT_FILE, boost::program_options::value<std::string>()->required())
         (EXT_PATH, boost::program_options::value<std::string>()->default_value(""))
-        (",E", boost::program_options::value<std::vector<std::string>>()->composing())
-        (",I", boost::program_options::value<std::vector<std::string>>()->composing());
+        (",E", boost::program_options::value<std::vector<std::string>>())
+        (",I", boost::program_options::value<std::vector<std::string>>());
 
     try {
         // Use the RAII to load/unload LibXml2
