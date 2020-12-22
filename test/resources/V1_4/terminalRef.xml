@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_4" id="terminalRef" caseDate="2014-11-08T19:00:00+01:00" forecastDistance="0" sourceFormat="test">
+    <iidm:substation id="S1" country="FR" tso="RTE">
+        <iidm:voltageLevel id="VL4" nominalV="90" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="VL41" v="91.126113899999993" angle="-11.178720500000001"/>
+            </iidm:busBreakerTopology>
+            <iidm:shunt id="SHUNT_VL4.11" sectionCount="1" voltageRegulatorOn="false" connectableBus="VL41" q="9999">
+                <iidm:shuntLinearModel bPerSection="0.0035802468191832304" maximumSectionCount="1"/>
+            </iidm:shunt>
+            <iidm:shunt id="SHUNT_VL4.21" sectionCount="1" voltageRegulatorOn="false" connectableBus="VL41" q="9999">
+                <iidm:shuntLinearModel bPerSection="0.0037037036381661892" maximumSectionCount="1"/>
+            </iidm:shunt>
+            <iidm:shunt id="SHUNT_VL4.31" sectionCount="1" voltageRegulatorOn="false" connectableBus="VL41" q="9999">
+                <iidm:shuntLinearModel bPerSection="0.0037037036381661892" maximumSectionCount="1"/>
+            </iidm:shunt>
+        </iidm:voltageLevel>
+        <iidm:voltageLevel id="VL6" nominalV="225" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="VL61" v="237.97369399999999" angle="-9.0618209800000002"/>
+            </iidm:busBreakerTopology>
+            <iidm:generator id="GEN" energySource="OTHER" minP="-9999.9899999999998" maxP="9999.9899999999998" voltageRegulatorOn="true" targetP="100" targetV="225" targetQ="0" bus="VL61" connectableBus="VL61">
+                <iidm:regulatingTerminal id="SHUNT_VL4.31"/>
+                <iidm:minMaxReactiveLimits minQ="-9999.9899999999998" maxQ="9999.9899999999998"/>
+            </iidm:generator>
+        </iidm:voltageLevel>
+        <iidm:twoWindingsTransformer id="VLY641" r="1.549974799156189" x="58.800025939941406" g="0" b="0" ratedU1="90" ratedU2="225" bus1="VL41" connectableBus1="VL41" voltageLevelId1="VL4" bus2="VL61" connectableBus2="VL61" voltageLevelId2="VL6" p1="-35.508800506591797" q1="-0.79081434011459351" p2="35.543498992919922" q2="2.1071410179138184">
+            <iidm:ratioTapChanger lowTapPosition="0" tapPosition="1" loadTapChangingCapabilities="true" regulating="false" targetV="91.128028869628906">
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.01900005"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.0080000200000001"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="0.995999992"/>
+            </iidm:ratioTapChanger>
+        </iidm:twoWindingsTransformer>
+        <iidm:twoWindingsTransformer id="VL642" r="1.8199917078018188" x="62.600349426269531" g="0" b="0" ratedU1="90" ratedU2="225" bus1="VL41" connectableBus1="VL41" voltageLevelId1="VL4" bus2="VL61" connectableBus2="VL61" voltageLevelId2="VL6" p1="-33.338603973388672" q1="-2.3741626739501953" p2="33.374824523925781" q2="3.6199276447296143">
+            <iidm:ratioTapChanger lowTapPosition="0" tapPosition="1" loadTapChangingCapabilities="true" regulating="false" targetV="91.128028869628906">
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.0160000300000001"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.0039999500000001"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="0.991999984"/>
+            </iidm:ratioTapChanger>
+        </iidm:twoWindingsTransformer>
+        <iidm:twoWindingsTransformer id="VLY643" r="0.047249999999999993" x="4.0497243656204551" g="0" b="0" ratedU1="400" ratedU2="158" bus1="VL41" connectableBus1="VL41" voltageLevelId1="VL4" bus2="VL61" connectableBus2="VL61" voltageLevelId2="VL6">
+            <iidm:phaseTapChanger lowTapPosition="0" tapPosition="1" regulationMode="FIXED_TAP" regulationValue="200">
+                <iidm:step r="0" x="0" g="0" b="0" rho="0.85056669052441913" alpha="-1"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.0006666666666666" alpha="0"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.1507666428089141" alpha="1"/>
+            </iidm:phaseTapChanger>
+        </iidm:twoWindingsTransformer>
+        <iidm:twoWindingsTransformer id="VLY644" r="0.047249999999999993" x="4.0497243656204551" g="0" b="0" ratedU1="400" ratedU2="158" bus1="VL41" connectableBus1="VL41" voltageLevelId1="VL4" bus2="VL61" connectableBus2="VL61" voltageLevelId2="VL6">
+            <iidm:phaseTapChanger lowTapPosition="0" tapPosition="1" regulationMode="FIXED_TAP" regulationValue="200">
+                <iidm:step r="0" x="0" g="0" b="0" rho="0.85056669052441913" alpha="-1"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.0006666666666666" alpha="0"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.1507666428089141" alpha="1"/>
+            </iidm:phaseTapChanger>
+        </iidm:twoWindingsTransformer>
+    </iidm:substation>
+</iidm:network>
