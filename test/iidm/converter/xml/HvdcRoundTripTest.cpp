@@ -18,7 +18,11 @@ namespace converter {
 
 namespace xml {
 
-BOOST_AUTO_TEST_SUITE(VscRoundTrip)
+BOOST_AUTO_TEST_SUITE(HvdcRoundTrip)
+
+BOOST_FIXTURE_TEST_CASE(LccRoundTripTest, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("LccRoundTripRef.xml", IidmXmlVersion::all());
+}
 
 BOOST_FIXTURE_TEST_CASE(VscRoundTripTest, test::ResourceFixture) {
     test::converter::RoundTrip::roundTripVersionedXmlTest("VscRoundTripRef.xml", IidmXmlVersion::all());
