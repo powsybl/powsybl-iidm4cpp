@@ -18,114 +18,114 @@ namespace iidm {
 
 ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Leg&& leg1, Leg&& leg2, Leg&& leg3, double ratedU0) :
     Connectable(id, name, fictitious, ConnectableType::THREE_WINDINGS_TRANSFORMER),
-    m_leg1(std::move(leg1)),
-    m_leg2(std::move(leg2)),
-    m_leg3(std::move(leg3)),
     m_ratedU0(ratedU0) {
-    m_leg1.setTransformer(*this);
-    m_leg2.setTransformer(*this);
-    m_leg3.setTransformer(*this);
+    m_legs.emplace_back(std::move(leg1));
+    m_legs.emplace_back(std::move(leg2));
+    m_legs.emplace_back(std::move(leg3));
+    for (Leg& leg : m_legs) {
+        leg.setTransformer(*this);
+    }
 }
 
 void ThreeWindingsTransformer::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     Connectable::allocateVariantArrayElement(indexes, sourceIndex);
 
-    if (m_leg1.hasRatioTapChanger()) {
-        m_leg1.getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
+    if (m_legs[0].hasRatioTapChanger()) {
+        m_legs[0].getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
     }
-    if (m_leg1.hasPhaseTapChanger()) {
-        m_leg1.getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
+    if (m_legs[0].hasPhaseTapChanger()) {
+        m_legs[0].getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
     }
-    if (m_leg2.hasRatioTapChanger()) {
-        m_leg2.getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
+    if (m_legs[1].hasRatioTapChanger()) {
+        m_legs[1].getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
     }
-    if (m_leg2.hasPhaseTapChanger()) {
-        m_leg2.getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
+    if (m_legs[1].hasPhaseTapChanger()) {
+        m_legs[1].getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
     }
-    if (m_leg3.hasRatioTapChanger()) {
-        m_leg3.getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
+    if (m_legs[2].hasRatioTapChanger()) {
+        m_legs[2].getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
     }
-    if (m_leg3.hasPhaseTapChanger()) {
-        m_leg3.getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
+    if (m_legs[2].hasPhaseTapChanger()) {
+        m_legs[2].getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
     }
 }
 
 void ThreeWindingsTransformer::deleteVariantArrayElement(unsigned long index) {
     Connectable::deleteVariantArrayElement(index);
 
-    if (m_leg1.hasRatioTapChanger()) {
-        m_leg1.getRatioTapChanger().deleteVariantArrayElement(index);
+    if (m_legs[0].hasRatioTapChanger()) {
+        m_legs[0].getRatioTapChanger().deleteVariantArrayElement(index);
     }
-    if (m_leg1.hasPhaseTapChanger()) {
-        m_leg1.getPhaseTapChanger().deleteVariantArrayElement(index);
+    if (m_legs[0].hasPhaseTapChanger()) {
+        m_legs[0].getPhaseTapChanger().deleteVariantArrayElement(index);
     }
-    if (m_leg2.hasRatioTapChanger()) {
-        m_leg2.getRatioTapChanger().deleteVariantArrayElement(index);
+    if (m_legs[1].hasRatioTapChanger()) {
+        m_legs[1].getRatioTapChanger().deleteVariantArrayElement(index);
     }
-    if (m_leg2.hasPhaseTapChanger()) {
-        m_leg2.getPhaseTapChanger().deleteVariantArrayElement(index);
+    if (m_legs[1].hasPhaseTapChanger()) {
+        m_legs[1].getPhaseTapChanger().deleteVariantArrayElement(index);
     }
-    if (m_leg3.hasRatioTapChanger()) {
-        m_leg3.getRatioTapChanger().deleteVariantArrayElement(index);
+    if (m_legs[2].hasRatioTapChanger()) {
+        m_legs[2].getRatioTapChanger().deleteVariantArrayElement(index);
     }
-    if (m_leg3.hasPhaseTapChanger()) {
-        m_leg3.getPhaseTapChanger().deleteVariantArrayElement(index);
+    if (m_legs[2].hasPhaseTapChanger()) {
+        m_legs[2].getPhaseTapChanger().deleteVariantArrayElement(index);
     }
 }
 
 void ThreeWindingsTransformer::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     Connectable::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
-    if (m_leg1.hasRatioTapChanger()) {
-        m_leg1.getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    if (m_legs[0].hasRatioTapChanger()) {
+        m_legs[0].getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
-    if (m_leg1.hasPhaseTapChanger()) {
-        m_leg1.getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    if (m_legs[0].hasPhaseTapChanger()) {
+        m_legs[0].getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
-    if (m_leg2.hasRatioTapChanger()) {
-        m_leg2.getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    if (m_legs[1].hasRatioTapChanger()) {
+        m_legs[1].getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
-    if (m_leg2.hasPhaseTapChanger()) {
-        m_leg2.getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    if (m_legs[1].hasPhaseTapChanger()) {
+        m_legs[1].getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
-    if (m_leg3.hasRatioTapChanger()) {
-        m_leg3.getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    if (m_legs[2].hasRatioTapChanger()) {
+        m_legs[2].getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
-    if (m_leg3.hasPhaseTapChanger()) {
-        m_leg3.getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    if (m_legs[2].hasPhaseTapChanger()) {
+        m_legs[2].getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
 }
 
 const ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg1() const {
-    return m_leg1;
+    return m_legs[0];
 }
 
 ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg1() {
-    return m_leg1;
+    return m_legs[0];
 }
 
 const ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg2() const {
-    return m_leg2;
+    return m_legs[1];
 }
 
 ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg2() {
-    return m_leg2;
+    return m_legs[1];
 }
 
 const ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg3() const {
-    return m_leg3;
+    return m_legs[2];
 }
 
 ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg3() {
-    return m_leg3;
+    return m_legs[2];
 }
 
-std::vector<std::reference_wrapper<const ThreeWindingsTransformer::Leg>> ThreeWindingsTransformer::getLegs() const {
-    return {std::cref(m_leg1), std::cref(m_leg2), std::cref(m_leg3)};
+stdcxx::const_range<ThreeWindingsTransformer::Leg> ThreeWindingsTransformer::getLegs() const {
+    return m_legs;
 }
 
-std::vector<std::reference_wrapper<ThreeWindingsTransformer::Leg>> ThreeWindingsTransformer::getLegs() {
-    return {std::ref(m_leg1), std::ref(m_leg2), std::ref(m_leg3)};
+stdcxx::range<ThreeWindingsTransformer::Leg> ThreeWindingsTransformer::getLegs() {
+    return m_legs;
 }
 
 double ThreeWindingsTransformer::getRatedU0() const {
@@ -133,34 +133,34 @@ double ThreeWindingsTransformer::getRatedU0() const {
 }
 
 ThreeWindingsTransformer::Side ThreeWindingsTransformer::getSide(const Terminal& terminal) const {
-    if (stdcxx::areSame(m_leg1.getTerminal(), terminal)) {
+    if (stdcxx::areSame(m_legs[0].getTerminal(), terminal)) {
         return Side::ONE;
     }
-    if (stdcxx::areSame(m_leg2.getTerminal(), terminal)) {
+    if (stdcxx::areSame(m_legs[1].getTerminal(), terminal)) {
         return Side::TWO;
     }
-    if (stdcxx::areSame(m_leg3.getTerminal(), terminal)) {
+    if (stdcxx::areSame(m_legs[2].getTerminal(), terminal)) {
         return Side::THREE;
     }
     throw AssertionError("The terminal is not connected to this three windings transformer");
 }
 
 const Substation& ThreeWindingsTransformer::getSubstation() const {
-    return m_leg1.getTerminal().getVoltageLevel().getSubstation();
+    return m_legs[0].getTerminal().getVoltageLevel().getSubstation();
 }
 
 Substation& ThreeWindingsTransformer::getSubstation() {
-    return m_leg1.getTerminal().getVoltageLevel().getSubstation();
+    return m_legs[0].getTerminal().getVoltageLevel().getSubstation();
 }
 
 const Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) const {
     switch (side) {
         case Side::ONE:
-            return m_leg1.getTerminal();
+            return m_legs[0].getTerminal();
         case Side::TWO:
-            return m_leg2.getTerminal();
+            return m_legs[1].getTerminal();
         case Side::THREE:
-            return m_leg3.getTerminal();
+            return m_legs[2].getTerminal();
         default:
             throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
     }
@@ -181,23 +181,23 @@ const std::string& ThreeWindingsTransformer::getTypeDescription() const {
 void ThreeWindingsTransformer::reduceVariantArraySize(unsigned long number) {
     Connectable::reduceVariantArraySize(number);
 
-    if (m_leg1.hasRatioTapChanger()) {
-        m_leg1.getRatioTapChanger().reduceVariantArraySize(number);
+    if (m_legs[0].hasRatioTapChanger()) {
+        m_legs[0].getRatioTapChanger().reduceVariantArraySize(number);
     }
-    if (m_leg1.hasPhaseTapChanger()) {
-        m_leg1.getPhaseTapChanger().reduceVariantArraySize(number);
+    if (m_legs[0].hasPhaseTapChanger()) {
+        m_legs[0].getPhaseTapChanger().reduceVariantArraySize(number);
     }
-    if (m_leg2.hasRatioTapChanger()) {
-        m_leg2.getRatioTapChanger().reduceVariantArraySize(number);
+    if (m_legs[1].hasRatioTapChanger()) {
+        m_legs[1].getRatioTapChanger().reduceVariantArraySize(number);
     }
-    if (m_leg2.hasPhaseTapChanger()) {
-        m_leg2.getPhaseTapChanger().reduceVariantArraySize(number);
+    if (m_legs[1].hasPhaseTapChanger()) {
+        m_legs[1].getPhaseTapChanger().reduceVariantArraySize(number);
     }
-    if (m_leg3.hasRatioTapChanger()) {
-        m_leg3.getRatioTapChanger().reduceVariantArraySize(number);
+    if (m_legs[2].hasRatioTapChanger()) {
+        m_legs[2].getRatioTapChanger().reduceVariantArraySize(number);
     }
-    if (m_leg3.hasPhaseTapChanger()) {
-        m_leg3.getPhaseTapChanger().reduceVariantArraySize(number);
+    if (m_legs[2].hasPhaseTapChanger()) {
+        m_legs[2].getPhaseTapChanger().reduceVariantArraySize(number);
     }
 }
 

@@ -331,16 +331,50 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(network, cLeg3.getNetwork()));
 
     const auto& legs = transformer.getLegs();
-    BOOST_CHECK_EQUAL(3, legs.size());
-    BOOST_CHECK(stdcxx::areSame(leg1, legs.at(0).get()));
-    BOOST_CHECK(stdcxx::areSame(leg2, legs.at(1).get()));
-    BOOST_CHECK(stdcxx::areSame(leg3, legs.at(2).get()));
+    BOOST_CHECK_EQUAL(3, boost::size(legs));
+    int index = 0;
+    for (const auto& leg : legs) {
+        switch (index) {
+            case 0:
+                BOOST_CHECK(stdcxx::areSame(leg1, leg));
+                break;
+
+            case 1:
+                BOOST_CHECK(stdcxx::areSame(leg2, leg));
+                break;
+
+            case 2:
+                BOOST_CHECK(stdcxx::areSame(leg3, leg));
+                break;
+
+            default:
+                break;
+        }
+        index++;
+    }
 
     const auto& cLegs = cTransformer.getLegs();
-    BOOST_CHECK_EQUAL(3, cLegs.size());
-    BOOST_CHECK(stdcxx::areSame(leg1, cLegs.at(0).get()));
-    BOOST_CHECK(stdcxx::areSame(leg2, cLegs.at(1).get()));
-    BOOST_CHECK(stdcxx::areSame(leg3, cLegs.at(2).get()));
+    BOOST_CHECK_EQUAL(3, boost::size(cLegs));
+    index = 0;
+    for (const auto& leg : cLegs) {
+        switch (index) {
+            case 0:
+                BOOST_CHECK(stdcxx::areSame(leg1, leg));
+                break;
+
+            case 1:
+                BOOST_CHECK(stdcxx::areSame(leg2, leg));
+                break;
+
+            case 2:
+                BOOST_CHECK(stdcxx::areSame(leg3, leg));
+                break;
+
+            default:
+                break;
+        }
+        index++;
+    }
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {

@@ -45,9 +45,9 @@ public:
 
     Leg& getLeg3();
 
-    std::vector<std::reference_wrapper<const Leg>> getLegs() const;
+    stdcxx::const_range<Leg> getLegs() const;
 
-    std::vector<std::reference_wrapper<Leg>> getLegs();
+    stdcxx::range<Leg> getLegs();
 
     double getRatedU0() const;
 
@@ -79,11 +79,8 @@ private:
     using Connectable::getTerminal;
 
 private:
-    Leg m_leg1;
-
-    Leg m_leg2;
-
-    Leg m_leg3;
+    // The legs of this transformer, in the natural order (leg1, leg2 and leg3)
+    std::vector<Leg> m_legs;
 
     double m_ratedU0;
 };
