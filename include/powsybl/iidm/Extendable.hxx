@@ -55,6 +55,22 @@ E& Extendable::getExtension() {
     return const_cast<E&>(static_cast<const Extendable*>(this)->getExtension<E>());
 }
 
+template <typename E, typename>
+stdcxx::CReference<E> Extendable::getExtensionByName(const std::string& name) const {
+    auto it = m_extensionsByName.find(name);
+    if (it != m_extensionsByName.end()) {
+        if (stdcxx::isInstanceOf<E>(*it->second)) {
+            return stdcxx::cref<E>(dynamic_cast<const E&>(*it->second));
+        }
+    }
+    return stdcxx::cref<E>();
+}
+
+template <typename E, typename>
+stdcxx::Reference<E> Extendable::getExtensionByName(const std::string& name) {
+    return stdcxx::ref(const_cast<const Extendable*>(this)->getExtensionByName<E>(name));
+}
+
 template <typename Adder, typename>
 Adder Extendable::newExtension() {
     return Adder(*this);
