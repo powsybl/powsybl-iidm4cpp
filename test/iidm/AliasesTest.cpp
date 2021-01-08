@@ -183,6 +183,14 @@ BOOST_AUTO_TEST_CASE(failWhenRemovingBadAlias) {
     POWSYBL_ASSERT_THROW(load.removeAlias("Generator alias"), PowsyblException, "Alias 'Generator alias' does not correspond to object 'load1'");
 }
 
+BOOST_AUTO_TEST_CASE(FindIdentifiableFromAlias) {
+    Network network = createNetwork();
+    Load& load = network.getLoad("load1");
+    load.addAlias("Load alias");
+
+    BOOST_CHECK(stdcxx::areSame(load, network.find("Load alias").get()));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
