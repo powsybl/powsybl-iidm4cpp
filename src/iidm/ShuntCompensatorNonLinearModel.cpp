@@ -51,7 +51,7 @@ ShuntCompensatorNonLinearModel::Section& ShuntCompensatorNonLinearModel::Section
 }
 
 ShuntCompensatorNonLinearModel::ShuntCompensatorNonLinearModel(std::vector<Section>&& sections) :
-    m_sections(sections) {
+    m_sections(std::move(sections)) {
 }
 
 ShuntCompensatorNonLinearModel& ShuntCompensatorNonLinearModel::attach(ShuntCompensator& shuntCompensator) {

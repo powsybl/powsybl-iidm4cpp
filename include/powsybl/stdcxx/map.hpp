@@ -34,7 +34,7 @@ public:
     }
 
     MapBuilder& put(K&& key, V&& value) {
-        m_items.emplace(std::make_pair(key, value));
+        m_items.emplace(std::make_pair(std::move(key), std::move(value)));
         return *this;
     }
 
