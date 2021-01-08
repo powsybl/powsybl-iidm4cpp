@@ -31,7 +31,7 @@ public: // Validable
 public:
     Identifiable(const Identifiable&) = delete;
 
-    Identifiable(Identifiable&& identifiable) noexcept;
+    Identifiable(Identifiable&& identifiable) noexcept = default;
 
     ~Identifiable() noexcept override = default;
 

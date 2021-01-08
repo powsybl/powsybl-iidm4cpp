@@ -31,7 +31,7 @@ public:
         SectionAdder& setG(double g);
 
     private:
-        SectionAdder(ShuntCompensatorNonLinearModelAdder& parent);
+        explicit SectionAdder(ShuntCompensatorNonLinearModelAdder& parent);
 
         SectionAdder(ShuntCompensatorNonLinearModelAdder& parent, double b, double g);
 
@@ -51,7 +51,9 @@ public:  // ShuntCompensatorModelAdder
 public:
     explicit ShuntCompensatorNonLinearModelAdder(ShuntCompensatorAdder& parent);
 
-    ShuntCompensatorNonLinearModelAdder(ShuntCompensatorNonLinearModelAdder&& adder) noexcept;
+    ~ShuntCompensatorNonLinearModelAdder() noexcept override = default;
+
+    ShuntCompensatorNonLinearModelAdder(ShuntCompensatorNonLinearModelAdder&& adder) noexcept = default;
 
     SectionAdder beginSection();
 

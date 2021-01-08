@@ -58,7 +58,7 @@ const TieLine::HalfLine& TieLine::getHalf(const Side& side) const {
 }
 
 TieLine::HalfLine& TieLine::getHalf(const Side& side) {
-    return const_cast<HalfLine&>(static_cast<const TieLine*>(this)->getHalf(side));
+    return const_cast<HalfLine&>(static_cast<const TieLine*>(this)->getHalf(side)); //NOSONAR
 }
 
 const TieLine::HalfLine& TieLine::getHalf1() const {

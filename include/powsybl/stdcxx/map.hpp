@@ -20,14 +20,14 @@ public:
     MapBuilder(const MapBuilder&) = default;
 
     // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept
-    MapBuilder(MapBuilder&&) = default;
+    MapBuilder(MapBuilder&&) = default; //NOSONAR
 
     ~MapBuilder() = default;
 
     MapBuilder& operator=(const MapBuilder&) = default;
 
     // NOLINTNEXTLINE(performance-noexcept-move-constructor): move operator of std::map is not marked noexcept
-    MapBuilder& operator=(MapBuilder&&) = default;
+    MapBuilder& operator=(MapBuilder&&) = default; //NOSONAR
 
     std::map<K, V> build() {
         return m_items;

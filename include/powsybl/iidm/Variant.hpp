@@ -17,7 +17,7 @@ namespace iidm {
 template <typename Owner, typename V>
 class Variant {
 public:
-    Variant(Owner& owner);
+    explicit Variant(Owner& owner);
 
     Variant(const Variant&) = default;
 
