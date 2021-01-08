@@ -53,9 +53,13 @@ T& NetworkIndex::checkAndAdd(std::unique_ptr<T>&& identifiable) {
 
 template<typename T>
 const T& NetworkIndex::get(const std::string& id) const {
-    const Identifiable& obj = get<Identifiable>(id);
+    const auto& obj = find<Identifiable>(id);
 
-    const auto* identifiable = dynamic_cast<const T*>(&obj);
+    if (!obj) {
+        throw PowsyblException(stdcxx::format("Unable to find to the identifiable '%1%'", id));
+    }
+
+    const auto* identifiable = dynamic_cast<const T*>(&obj.get());
     if (identifiable == nullptr) {
         throw PowsyblException(stdcxx::format("Identifiable '%1%' is not a %2%", id, stdcxx::demangle<T>()));
     }
@@ -115,17 +119,13 @@ unsigned long NetworkIndex::getObjectCount() const {
 
 template <typename T>
 stdcxx::CReference<T> NetworkIndex::find(const std::string& id) const {
-    const auto& resolvedId = stdcxx::getOrDefault(m_idByAlias, id, id);
-    checkId(resolvedId);
-
-    const auto& it = m_objectsById.find(resolvedId);
-    if (it != m_objectsById.end()) {
-        auto* identifiable = dynamic_cast<T*>(it->second.get());
+    const auto& obj = find<Identifiable>(id);
+    if (obj) {
+        const auto* identifiable = dynamic_cast<const T*>(&obj.get());
         if (identifiable != nullptr) {
             return stdcxx::cref<T>(*identifiable);
         }
     }
-
     return stdcxx::CReference<T>();
 }
 
