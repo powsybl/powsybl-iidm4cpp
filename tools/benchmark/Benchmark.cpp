@@ -14,8 +14,12 @@
 
 #include <libxml/parser.h>
 
+#include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/converter/ExportOptions.hpp>
+#include <powsybl/iidm/converter/FakeAnonymizer.hpp>
+#include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/logging/ConsoleLogger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
@@ -57,16 +61,34 @@ void loadExtensions(const std::string& strPaths) {
     }
 }
 
+void readOptions(stdcxx::Properties& properties, const boost::program_options::variable_value& options) {
+    if (!options.empty()) {
+        for (const auto& property : options.as<std::vector<std::string>>()) {
+            std::vector<std::string> result;
+            boost::split(result, property, boost::is_any_of("="));
+            if (result.size() == 2) {
+                properties.set(result[0], result[1]);
+            } else {
+                throw powsybl::PowsyblException(stdcxx::format("Malformed option: %1%", property));
+            }
+        }
+    }
+}
+
 int main(int argc, char** argv) {
     const char* const INPUT_FILE = "input-file";
     const char* const OUTPUT_FILE = "output-file";
     const char* const EXT_PATH = "ext-path";
+    const char* const EXPORT_OPTION = "-E";
+    const char* const IMPORT_OPTION = "-I";
 
     boost::program_options::options_description desc("Options");
     desc.add_options()
         (INPUT_FILE, boost::program_options::value<std::string>()->required())
         (OUTPUT_FILE, boost::program_options::value<std::string>()->required())
-        (EXT_PATH, boost::program_options::value<std::string>()->default_value(""));
+        (EXT_PATH, boost::program_options::value<std::string>()->default_value(""))
+        (",E", boost::program_options::value<std::vector<std::string>>())
+        (",I", boost::program_options::value<std::vector<std::string>>());
 
     try {
         // Use the RAII to load/unload LibXml2
@@ -75,6 +97,10 @@ int main(int argc, char** argv) {
         boost::program_options::variables_map vm;
         boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
         boost::program_options::notify(vm);
+
+        stdcxx::Properties options;
+        readOptions(options, vm[EXPORT_OPTION]);
+        readOptions(options, vm[IMPORT_OPTION]);
 
         // Setup the logger
         auto logger = stdcxx::make_unique<powsybl::logging::ConsoleLogger>(powsybl::logging::Level::DEBUG);
@@ -97,8 +123,8 @@ int main(int argc, char** argv) {
             return EXIT_FAILURE;
         }
 
-        const powsybl::iidm::Network& network = powsybl::iidm::Network::readXml(inputStream);
-        powsybl::iidm::Network::writeXml(outputStream, network);
+        const powsybl::iidm::Network& network = powsybl::iidm::Network::readXml(inputStream, powsybl::iidm::converter::ImportOptions(options), powsybl::iidm::converter::FakeAnonymizer());
+        powsybl::iidm::Network::writeXml(outputStream, network, powsybl::iidm::converter::ExportOptions(options));
 
         inputStream.close();
         outputStream.close();
