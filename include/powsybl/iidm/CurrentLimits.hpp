@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_CURRENTLIMITS_HPP
 #define POWSYBL_IIDM_CURRENTLIMITS_HPP
 
+#include <functional>
 #include <map>
 #include <string>
 #include <vector>
