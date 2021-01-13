@@ -55,7 +55,7 @@ protected:
 private:
     virtual SwitchPredicate createSwitchPredicate() const;
 
-    virtual bool isBusValid(const typename node_breaker_voltage_level::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) const;
+    virtual bool isBusValid(const node_breaker_voltage_level::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) const;
 
     void traverse(unsigned long v, std::vector<bool>& encountered, const CalculatedBusTopology::SwitchPredicate& terminate, BusCache::CalculatedBusById& busById, BusCache::CalculatedBusByNode& busByNode);
 
