@@ -27,7 +27,7 @@ class Generation;
 
 class GenerationAdder {
 public:
-    GenerationAdder(DanglingLineAdder& parent);
+    explicit GenerationAdder(DanglingLineAdder& parent);
 
     DanglingLineAdder& add();
 

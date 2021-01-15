@@ -77,6 +77,8 @@ private:
 
     HalfLine(HalfLine&& halfLine) noexcept;
 
+    ~HalfLine() override = default;
+
     void setParent(TieLine& parent);
 
     friend class iidm::TieLine;

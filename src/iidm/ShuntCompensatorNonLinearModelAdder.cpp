@@ -55,13 +55,6 @@ ShuntCompensatorNonLinearModelAdder::ShuntCompensatorNonLinearModelAdder(ShuntCo
     m_parent(parent) {
 }
 
-ShuntCompensatorNonLinearModelAdder::ShuntCompensatorNonLinearModelAdder(ShuntCompensatorNonLinearModelAdder&& adder) noexcept :
-    m_parent(adder.m_parent) {
-    for (const auto& sectionAdder : adder.m_sectionAdders) {
-        m_sectionAdders.emplace_back(SectionAdder(*this, sectionAdder.m_b, sectionAdder.m_g));
-    }
-}
-
 ShuntCompensatorAdder& ShuntCompensatorNonLinearModelAdder::add() {
     if (m_sectionAdders.empty()) {
         throw ValidationException(m_parent, "a shunt compensator must have at least one section");
@@ -71,7 +64,7 @@ ShuntCompensatorAdder& ShuntCompensatorNonLinearModelAdder::add() {
 }
 
 ShuntCompensatorNonLinearModelAdder::SectionAdder ShuntCompensatorNonLinearModelAdder::beginSection() {
-    return {*this};
+    return ShuntCompensatorNonLinearModelAdder::SectionAdder(*this);
 }
 
 std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorNonLinearModelAdder::build() const {
