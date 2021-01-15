@@ -26,7 +26,7 @@ public: // Variant
     std::unique_ptr<VariantImpl> copy() const override;
 
 public:
-    VariantImpl(Network& network);
+    explicit VariantImpl(Network& network);
 
     VariantImpl(const VariantImpl&) = delete;
 

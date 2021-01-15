@@ -49,7 +49,7 @@ const std::string& DanglingLineAdder::getTypeDescription() const {
 }
 
 DanglingLineAdder::GenerationAdder DanglingLineAdder::newGeneration() {
-    return {*this};
+    return GenerationAdder(*this);
 }
 
 DanglingLineAdder& DanglingLineAdder::setB(double b) {

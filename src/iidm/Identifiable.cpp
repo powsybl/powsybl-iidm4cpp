@@ -30,14 +30,6 @@ Identifiable::Identifiable(const std::string& id, const std::string& name, bool 
     m_fictitious(fictitious) {
 }
 
-Identifiable::Identifiable(Identifiable&& identifiable) noexcept :
-    Validable(std::move(identifiable)),
-    Extendable(std::move(identifiable)),
-    m_id(std::move(identifiable.m_id)),
-    m_name(std::move(identifiable.m_name)),
-    m_properties(std::move(identifiable.m_properties)) {
-}
-
 void Identifiable::addAlias(const std::string& alias) {
     if (getNetwork().getIndex().addAlias(*this, alias)) {
         m_aliases.emplace(alias);
