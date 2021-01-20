@@ -16,37 +16,37 @@
 namespace stdcxx {
 
 template <typename T>
-class reference_wrapper {
+class Reference {
 public:
     using type = T;
 
 public:
-    reference_wrapper() noexcept = default;
+    Reference() noexcept = default;
 
-    explicit reference_wrapper(T& reference) noexcept :
+    explicit Reference(T& reference) noexcept :
         m_pointer(std::addressof(reference)) {
     }
 
-    reference_wrapper(const reference_wrapper&) = default;
+    Reference(const Reference&) = default;
 
-    reference_wrapper(T&& reference) noexcept = delete;
+    Reference(T&& reference) noexcept = delete;
 
-    reference_wrapper(reference_wrapper&&) noexcept = default;
+    Reference(Reference&&) noexcept = default;
 
-    reference_wrapper& operator=(const reference_wrapper&) = default;
+    Reference& operator=(const Reference&) = default;
 
-    reference_wrapper& operator=(reference_wrapper&&) noexcept = default;
+    Reference& operator=(Reference&&) noexcept = default;
 
-    reference_wrapper& operator=(T& reference) {
+    Reference& operator=(T& reference) {
         m_pointer = std::addressof(reference);
         return *this;
     }
 
-    bool operator==(const reference_wrapper& reference) const {
+    bool operator==(const Reference& reference) const {
         return m_pointer == reference.m_pointer;
     }
 
-    bool operator!=(const reference_wrapper& reference) const {
+    bool operator!=(const Reference& reference) const {
         return m_pointer != reference.m_pointer;
     }
 
@@ -85,9 +85,7 @@ private:
     T* m_pointer = nullptr;
 };
 
-template <typename T> using CReference = reference_wrapper<const T>;
-
-template <typename T> using Reference = reference_wrapper<T>;
+template <typename T> using CReference = Reference<const T>;
 
 template <typename T>
 CReference<T> cref() {
@@ -145,7 +143,7 @@ Reference<T> ref(const T& reference) {
 }
 
 /**
- * Upcast / Downcast a reference_wrapper instance from U to T
+ * Upcast / Downcast a Reference instance from U to T
  */
 template <typename T, typename U, typename = typename std::enable_if<!std::is_same<T, U>::value>::type>
 Reference<T> ref(const Reference<U>& reference) {
