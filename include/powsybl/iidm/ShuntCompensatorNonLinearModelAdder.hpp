@@ -53,7 +53,7 @@ public:
 
     ~ShuntCompensatorNonLinearModelAdder() noexcept override = default;
 
-    ShuntCompensatorNonLinearModelAdder(ShuntCompensatorNonLinearModelAdder&& adder) noexcept = default;
+    ShuntCompensatorNonLinearModelAdder(ShuntCompensatorNonLinearModelAdder&&) noexcept = default;
 
     SectionAdder beginSection();
 

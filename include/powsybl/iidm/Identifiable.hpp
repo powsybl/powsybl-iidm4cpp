@@ -31,7 +31,8 @@ public: // Validable
 public:
     Identifiable(const Identifiable&) = delete;
 
-    Identifiable(Identifiable&& identifiable) noexcept = default;
+    // Move constructor of stdcxx::Properties is not marked noexcept
+    Identifiable(Identifiable&&) = default;  // NOSONAR
 
     ~Identifiable() noexcept override = default;
 
