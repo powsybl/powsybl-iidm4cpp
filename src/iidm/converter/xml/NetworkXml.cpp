@@ -162,17 +162,18 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
 void writeExtension(const Extension& extension, NetworkXmlWriterContext& context) {
     powsybl::xml::XmlStreamWriter& writer = context.getExtensionsWriter();
     stdcxx::CReference<ExtensionXmlSerializer> serializer = getExtensionSerializer(context.getOptions(), extension.getName());
-
-    if (serializer) {
-        const std::string& version = context.getExtensionVersion(extension.getName());
-        if (!version.empty()) {
-            serializer.get().checkExtensionVersionSupported(version);
-        }
-
-        writer.writeStartElement(serializer.get().getNamespacePrefix(), extension.getName());
-        serializer.get().write(extension, context);
-        writer.writeEndElement();
+    if (!serializer) {
+        throw AssertionError(stdcxx::format("Extension XML Serializer of %1% should not be null", extension.getName()));
     }
+
+    const std::string& version = context.getExtensionVersion(extension.getName());
+    if (!version.empty()) {
+        serializer.get().checkExtensionVersionSupported(version);
+    }
+
+    writer.writeStartElement(serializer.get().getNamespacePrefix(), extension.getName());
+    serializer.get().write(extension, context);
+    writer.writeEndElement();
 }
 
 void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
