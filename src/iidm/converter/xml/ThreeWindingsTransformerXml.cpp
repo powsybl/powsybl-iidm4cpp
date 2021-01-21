@@ -123,7 +123,7 @@ void ThreeWindingsTransformerXml::readSubElements(ThreeWindingsTransformer& twt,
             IidmXmlUtil::assertMinimumVersion(THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER3, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
             readPhaseTapChanger(3, twt.getLeg3(), context);
         } else {
-            AbstractIdentifiableXml::readSubElements(twt, context);
+            AbstractTransformerXml::readSubElements(twt, context);
         }
     });
 }
