@@ -29,7 +29,7 @@ public:
 
     reference_wrapper(const reference_wrapper&) = default;
 
-    reference_wrapper(T&& reference) noexcept = delete;
+    reference_wrapper(T&&) noexcept = delete;
 
     reference_wrapper(reference_wrapper&&) noexcept = default;
 

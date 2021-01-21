@@ -16,15 +16,15 @@ class XmlFixture {
 public:
     XmlFixture();
 
-    XmlFixture(const XmlFixture& fixture) = default;
+    XmlFixture(const XmlFixture&) = default;
 
-    XmlFixture(XmlFixture&& fixture) = default;
+    XmlFixture(XmlFixture&&) = default;
 
     ~XmlFixture();
 
-    XmlFixture& operator=(const XmlFixture& fixture) = default;
+    XmlFixture& operator=(const XmlFixture&) = default;
 
-    XmlFixture& operator=(XmlFixture&& fixture) = default;
+    XmlFixture& operator=(XmlFixture&&) = default;
 };
 
 }  // namespace test

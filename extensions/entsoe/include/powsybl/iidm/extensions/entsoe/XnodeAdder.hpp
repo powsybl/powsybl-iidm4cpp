@@ -35,7 +35,7 @@ public:
     /**
      * Copy constructor
      */
-    XnodeAdder(const XnodeAdder& extendable) = default;
+    XnodeAdder(const XnodeAdder&) = default;
 
     /**
      * Move constructor

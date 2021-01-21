@@ -86,9 +86,9 @@ public:
     static const IidmXmlVersion& of(const std::string& version, const std::string& separator);
 
 public:
-    IidmXmlVersion(const IidmXmlVersion& version) = delete;
+    IidmXmlVersion(const IidmXmlVersion&) = delete;
 
-    IidmXmlVersion(IidmXmlVersion&& version) = delete;
+    IidmXmlVersion(IidmXmlVersion&&) = delete;
 
     ~IidmXmlVersion() = default;
 
