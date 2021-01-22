@@ -19,80 +19,47 @@ namespace iidm {
 ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Leg&& leg1, Leg&& leg2, Leg&& leg3, double ratedU0) :
     Connectable(id, name, fictitious, ConnectableType::THREE_WINDINGS_TRANSFORMER),
     m_ratedU0(ratedU0) {
-    m_legs.emplace_back(std::move(leg1));
-    m_legs.emplace_back(std::move(leg2));
-    m_legs.emplace_back(std::move(leg3));
-    for (Leg& leg : m_legs) {
-        leg.setTransformer(*this);
-    }
+    m_legs.emplace_back(std::move(leg1.setTransformer(*this)));
+    m_legs.emplace_back(std::move(leg2.setTransformer(*this)));
+    m_legs.emplace_back(std::move(leg3.setTransformer(*this)));
 }
 
 void ThreeWindingsTransformer::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     Connectable::allocateVariantArrayElement(indexes, sourceIndex);
 
-    if (m_legs[0].hasRatioTapChanger()) {
-        m_legs[0].getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
-    }
-    if (m_legs[0].hasPhaseTapChanger()) {
-        m_legs[0].getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
-    }
-    if (m_legs[1].hasRatioTapChanger()) {
-        m_legs[1].getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
-    }
-    if (m_legs[1].hasPhaseTapChanger()) {
-        m_legs[1].getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
-    }
-    if (m_legs[2].hasRatioTapChanger()) {
-        m_legs[2].getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
-    }
-    if (m_legs[2].hasPhaseTapChanger()) {
-        m_legs[2].getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
+    for (Leg& leg : m_legs) {
+        if (leg.hasRatioTapChanger()) {
+            leg.getRatioTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
+        }
+        if (leg.hasPhaseTapChanger()) {
+            leg.getPhaseTapChanger().allocateVariantArrayElement(indexes, sourceIndex);
+        }
     }
 }
 
 void ThreeWindingsTransformer::deleteVariantArrayElement(unsigned long index) {
     Connectable::deleteVariantArrayElement(index);
 
-    if (m_legs[0].hasRatioTapChanger()) {
-        m_legs[0].getRatioTapChanger().deleteVariantArrayElement(index);
-    }
-    if (m_legs[0].hasPhaseTapChanger()) {
-        m_legs[0].getPhaseTapChanger().deleteVariantArrayElement(index);
-    }
-    if (m_legs[1].hasRatioTapChanger()) {
-        m_legs[1].getRatioTapChanger().deleteVariantArrayElement(index);
-    }
-    if (m_legs[1].hasPhaseTapChanger()) {
-        m_legs[1].getPhaseTapChanger().deleteVariantArrayElement(index);
-    }
-    if (m_legs[2].hasRatioTapChanger()) {
-        m_legs[2].getRatioTapChanger().deleteVariantArrayElement(index);
-    }
-    if (m_legs[2].hasPhaseTapChanger()) {
-        m_legs[2].getPhaseTapChanger().deleteVariantArrayElement(index);
+    for (Leg& leg : m_legs) {
+        if (leg.hasRatioTapChanger()) {
+            leg.getRatioTapChanger().deleteVariantArrayElement(index);
+        }
+        if (leg.hasPhaseTapChanger()) {
+            leg.getPhaseTapChanger().deleteVariantArrayElement(index);
+        }
     }
 }
 
 void ThreeWindingsTransformer::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     Connectable::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
-    if (m_legs[0].hasRatioTapChanger()) {
-        m_legs[0].getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
-    }
-    if (m_legs[0].hasPhaseTapChanger()) {
-        m_legs[0].getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
-    }
-    if (m_legs[1].hasRatioTapChanger()) {
-        m_legs[1].getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
-    }
-    if (m_legs[1].hasPhaseTapChanger()) {
-        m_legs[1].getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
-    }
-    if (m_legs[2].hasRatioTapChanger()) {
-        m_legs[2].getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
-    }
-    if (m_legs[2].hasPhaseTapChanger()) {
-        m_legs[2].getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    for (Leg& leg : m_legs) {
+        if (leg.hasRatioTapChanger()) {
+            leg.getRatioTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+        }
+        if (leg.hasPhaseTapChanger()) {
+            leg.getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+        }
     }
 }
 
@@ -181,23 +148,13 @@ const std::string& ThreeWindingsTransformer::getTypeDescription() const {
 void ThreeWindingsTransformer::reduceVariantArraySize(unsigned long number) {
     Connectable::reduceVariantArraySize(number);
 
-    if (m_legs[0].hasRatioTapChanger()) {
-        m_legs[0].getRatioTapChanger().reduceVariantArraySize(number);
-    }
-    if (m_legs[0].hasPhaseTapChanger()) {
-        m_legs[0].getPhaseTapChanger().reduceVariantArraySize(number);
-    }
-    if (m_legs[1].hasRatioTapChanger()) {
-        m_legs[1].getRatioTapChanger().reduceVariantArraySize(number);
-    }
-    if (m_legs[1].hasPhaseTapChanger()) {
-        m_legs[1].getPhaseTapChanger().reduceVariantArraySize(number);
-    }
-    if (m_legs[2].hasRatioTapChanger()) {
-        m_legs[2].getRatioTapChanger().reduceVariantArraySize(number);
-    }
-    if (m_legs[2].hasPhaseTapChanger()) {
-        m_legs[2].getPhaseTapChanger().reduceVariantArraySize(number);
+    for (Leg& leg : m_legs) {
+        if (leg.hasRatioTapChanger()) {
+            leg.getRatioTapChanger().reduceVariantArraySize(number);
+        }
+        if (leg.hasPhaseTapChanger()) {
+            leg.getPhaseTapChanger().reduceVariantArraySize(number);
+        }
     }
 }
 

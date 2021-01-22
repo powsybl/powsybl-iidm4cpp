@@ -162,28 +162,28 @@ void addPhaseTapChangerLeg2(ThreeWindingsTransformer& transformer, Terminal& ter
         .setTapPosition(2L)
         .setLowTapPosition(1L)
         .beginStep()
-        .setAlpha(9.0)
-        .setB(10.0)
-        .setG(11.0)
-        .setR(12.0)
-        .setRho(13.0)
-        .setX(14.0)
+            .setAlpha(9.0)
+            .setB(10.0)
+            .setG(11.0)
+            .setR(12.0)
+            .setRho(13.0)
+            .setX(14.0)
         .endStep()
         .beginStep()
-        .setAlpha(14.5)
-        .setB(15.0)
-        .setG(16.0)
-        .setR(17.0)
-        .setRho(18.0)
-        .setX(19.0)
+            .setAlpha(14.5)
+            .setB(15.0)
+            .setG(16.0)
+            .setR(17.0)
+            .setRho(18.0)
+            .setX(19.0)
         .endStep()
         .beginStep()
-        .setAlpha(20.5)
-        .setB(20.0)
-        .setG(21.0)
-        .setR(22.0)
-        .setRho(23.0)
-        .setX(24.0)
+            .setAlpha(20.5)
+            .setB(20.0)
+            .setG(21.0)
+            .setR(22.0)
+            .setRho(23.0)
+            .setX(24.0)
         .endStep()
         .setRegulationMode(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL)
         .setRegulating(true)
@@ -198,28 +198,28 @@ void addPhaseTapChangerLeg3(ThreeWindingsTransformer& transformer, Terminal& ter
         .setTapPosition(-2L)
         .setLowTapPosition(-3L)
         .beginStep()
-        .setAlpha(-9.0)
-        .setB(-10.0)
-        .setG(-11.0)
-        .setR(-12.0)
-        .setRho(-13.0)
-        .setX(-14.0)
+            .setAlpha(-9.0)
+            .setB(-10.0)
+            .setG(-11.0)
+            .setR(-12.0)
+            .setRho(-13.0)
+            .setX(-14.0)
         .endStep()
         .beginStep()
-        .setAlpha(-14.5)
-        .setB(-15.0)
-        .setG(-16.0)
-        .setR(-17.0)
-        .setRho(-18.0)
-        .setX(-19.0)
+            .setAlpha(-14.5)
+            .setB(-15.0)
+            .setG(-16.0)
+            .setR(-17.0)
+            .setRho(-18.0)
+            .setX(-19.0)
         .endStep()
         .beginStep()
-        .setAlpha(-20.5)
-        .setB(-20.0)
-        .setG(-21.0)
-        .setR(-22.0)
-        .setRho(-23.0)
-        .setX(-24.0)
+            .setAlpha(-20.5)
+            .setB(-20.0)
+            .setG(-21.0)
+            .setR(-22.0)
+            .setRho(-23.0)
+            .setX(-24.0)
         .endStep()
         .setRegulationMode(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL)
         .setRegulating(false)
@@ -234,25 +234,25 @@ void addRatioTapChangerLeg2(ThreeWindingsTransformer& transformer, Terminal& ter
         .setTapPosition(2L)
         .setLowTapPosition(1L)
         .beginStep()
-        .setB(10.0)
-        .setG(11.0)
-        .setR(12.0)
-        .setRho(13.0)
-        .setX(14.0)
+            .setB(10.0)
+            .setG(11.0)
+            .setR(12.0)
+            .setRho(13.0)
+            .setX(14.0)
         .endStep()
         .beginStep()
-        .setB(15.0)
-        .setG(16.0)
-        .setR(17.0)
-        .setRho(18.0)
-        .setX(19.0)
+            .setB(15.0)
+            .setG(16.0)
+            .setR(17.0)
+            .setRho(18.0)
+            .setX(19.0)
         .endStep()
         .beginStep()
-        .setB(20.0)
-        .setG(21.0)
-        .setR(22.0)
-        .setRho(23.0)
-        .setX(24.0)
+            .setB(20.0)
+            .setG(21.0)
+            .setR(22.0)
+            .setRho(23.0)
+            .setX(24.0)
         .endStep()
         .setLoadTapChangingCapabilities(true)
         .setRegulating(true)
@@ -267,25 +267,25 @@ void addRatioTapChangerLeg3(ThreeWindingsTransformer& transformer, Terminal& ter
         .setTapPosition(-2L)
         .setLowTapPosition(-3L)
         .beginStep()
-        .setB(-10.0)
-        .setG(-11.0)
-        .setR(-12.0)
-        .setRho(-13.0)
-        .setX(-14.0)
+            .setB(-10.0)
+            .setG(-11.0)
+            .setR(-12.0)
+            .setRho(-13.0)
+            .setX(-14.0)
         .endStep()
         .beginStep()
-        .setB(-15.0)
-        .setG(-16.0)
-        .setR(-17.0)
-        .setRho(-18.0)
-        .setX(-19.0)
+            .setB(-15.0)
+            .setG(-16.0)
+            .setR(-17.0)
+            .setRho(-18.0)
+            .setX(-19.0)
         .endStep()
         .beginStep()
-        .setB(-20.0)
-        .setG(-21.0)
-        .setR(-22.0)
-        .setRho(-23.0)
-        .setX(-24.0)
+            .setB(-20.0)
+            .setG(-21.0)
+            .setR(-22.0)
+            .setRho(-23.0)
+            .setX(-24.0)
         .endStep()
         .setLoadTapChangingCapabilities(true)
         .setRegulating(false)
@@ -404,51 +404,14 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(network, leg3.getNetwork()));
     BOOST_TEST(stdcxx::areSame(network, cLeg3.getNetwork()));
 
-    const auto& legs = transformer.getLegs();
-    BOOST_CHECK_EQUAL(3, boost::size(legs));
-    int index = 0;
-    for (const auto& leg : legs) {
-        switch (index) {
-            case 0:
-                BOOST_CHECK(stdcxx::areSame(leg1, leg));
-                break;
+    std::vector<std::reference_wrapper<ThreeWindingsTransformer::Leg>> expected = {leg1, leg2, leg3};
 
-            case 1:
-                BOOST_CHECK(stdcxx::areSame(leg2, leg));
-                break;
+    const auto& legComparator = [](const ThreeWindingsTransformer::Leg& l1, const ThreeWindingsTransformer::Leg& l2) {
+        return stdcxx::areSame(l1, l2);
+    };
 
-            case 2:
-                BOOST_CHECK(stdcxx::areSame(leg3, leg));
-                break;
-
-            default:
-                break;
-        }
-        index++;
-    }
-
-    const auto& cLegs = cTransformer.getLegs();
-    BOOST_CHECK_EQUAL(3, boost::size(cLegs));
-    index = 0;
-    for (const auto& leg : cLegs) {
-        switch (index) {
-            case 0:
-                BOOST_CHECK(stdcxx::areSame(leg1, leg));
-                break;
-
-            case 1:
-                BOOST_CHECK(stdcxx::areSame(leg2, leg));
-                break;
-
-            case 2:
-                BOOST_CHECK(stdcxx::areSame(leg3, leg));
-                break;
-
-            default:
-                break;
-        }
-        index++;
-    }
+    POWSYBL_ASSERT_COLLECTIONS_EQUAL(expected, transformer.getLegs(), legComparator);
+    POWSYBL_ASSERT_COLLECTIONS_EQUAL(expected, cTransformer.getLegs(), legComparator);
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {

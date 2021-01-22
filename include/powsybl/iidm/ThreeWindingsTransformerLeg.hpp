@@ -112,7 +112,7 @@ private:
 
     void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
 
-    void setTransformer(ThreeWindingsTransformer& transformer);
+    Leg& setTransformer(ThreeWindingsTransformer& transformer);
 
     friend class CurrentLimitsAdder<const std::nullptr_t, Leg>;
 
