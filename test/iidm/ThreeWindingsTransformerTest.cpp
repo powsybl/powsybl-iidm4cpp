@@ -30,6 +30,10 @@ namespace powsybl {
 
 namespace iidm {
 
+bool operator!=(const ThreeWindingsTransformer::Leg& leg1, const ThreeWindingsTransformer::Leg& leg2) {
+    return !stdcxx::areSame(leg1, leg2);
+}
+
 Network createThreeWindingsTransformerTestNetwork() {
     Network network("test", "test");
      Substation& substation = network.newSubstation()
@@ -187,7 +191,7 @@ void addPhaseTapChangerLeg2(ThreeWindingsTransformer& transformer, Terminal& ter
         .endStep()
         .setRegulationMode(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL)
         .setRegulating(true)
-        .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
+        .setRegulationTerminal(stdcxx::ref(terminal))
         .setRegulationValue(25.0)
         .setTargetDeadband(0.0)
         .add();
@@ -223,7 +227,7 @@ void addPhaseTapChangerLeg3(ThreeWindingsTransformer& transformer, Terminal& ter
         .endStep()
         .setRegulationMode(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL)
         .setRegulating(false)
-        .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
+        .setRegulationTerminal(stdcxx::ref(terminal))
         .setRegulationValue(25.0)
         .setTargetDeadband(0.0)
         .add();
@@ -256,7 +260,7 @@ void addRatioTapChangerLeg2(ThreeWindingsTransformer& transformer, Terminal& ter
         .endStep()
         .setLoadTapChangingCapabilities(true)
         .setRegulating(true)
-        .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
+        .setRegulationTerminal(stdcxx::ref(terminal))
         .setTargetV(25.0)
         .setTargetDeadband(1.0)
         .add();
@@ -289,7 +293,7 @@ void addRatioTapChangerLeg3(ThreeWindingsTransformer& transformer, Terminal& ter
         .endStep()
         .setLoadTapChangingCapabilities(true)
         .setRegulating(false)
-        .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
+        .setRegulationTerminal(stdcxx::ref(terminal))
         .setTargetV(26.0)
         .setTargetDeadband(2.0)
         .add();
@@ -406,12 +410,11 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     std::vector<std::reference_wrapper<ThreeWindingsTransformer::Leg>> expected = {leg1, leg2, leg3};
 
-    const auto& legComparator = [](const ThreeWindingsTransformer::Leg& l1, const ThreeWindingsTransformer::Leg& l2) {
-        return stdcxx::areSame(l1, l2);
-    };
+    const auto& legs = transformer.getLegs();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), legs.begin(), legs.end());
 
-    POWSYBL_ASSERT_COLLECTIONS_EQUAL(expected, transformer.getLegs(), legComparator);
-    POWSYBL_ASSERT_COLLECTIONS_EQUAL(expected, cTransformer.getLegs(), legComparator);
+    const auto& cLegs = cTransformer.getLegs();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), cLegs.begin(), cLegs.end());
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {

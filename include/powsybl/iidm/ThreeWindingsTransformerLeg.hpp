@@ -144,6 +144,8 @@ private:
 
 }  // namespace three_windings_transformer
 
+std::ostream& operator<<(std::ostream& stream, const three_windings_transformer::Leg& leg);
+
 }  // namespace iidm
 
 }  // namespace powsybl

@@ -61,7 +61,4 @@ bool isSameEnumValue(const T& val1, const T& val2) {
 #define POWSYBL_ASSERT_ENUM_EQ(left, right) \
 BOOST_TEST(isSameEnumValue((left), (right)))
 
-#define POWSYBL_ASSERT_COLLECTIONS_EQUAL(left, right, binaryPredicate) \
-BOOST_CHECK(std::equal(left.begin(), left.end(), right.begin(), binaryPredicate));
-
 #endif  // POWSYBL_TEST_ASSERTIONUTILS_HPP

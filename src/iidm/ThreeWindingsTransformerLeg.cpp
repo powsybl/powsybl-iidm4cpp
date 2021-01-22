@@ -211,6 +211,12 @@ std::string Leg::toString() const {
 
 }  // namespace three_windings_transformer
 
+std::ostream& operator<<(std::ostream& stream, const three_windings_transformer::Leg& leg) {
+    stream << leg.toString();
+
+    return stream;
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl
