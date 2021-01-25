@@ -47,6 +47,11 @@ public:
      */
     static const IidmXmlVersion& V1_3();
 
+    /**
+     * IIDM V1.4 (http://www.powsybl.org)
+     */
+    static const IidmXmlVersion& V1_4();
+
 public:
     /**
      * Return the list of all supported XIIDM versions
