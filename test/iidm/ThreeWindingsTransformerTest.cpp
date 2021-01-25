@@ -12,6 +12,8 @@
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
+#include <powsybl/iidm/PhaseTapChanger.hpp>
+#include <powsybl/iidm/PhaseTapChangerAdder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/RatioTapChangerStep.hpp>
@@ -27,6 +29,10 @@
 namespace powsybl {
 
 namespace iidm {
+
+bool operator!=(const ThreeWindingsTransformer::Leg& leg1, const ThreeWindingsTransformer::Leg& leg2) {
+    return !stdcxx::areSame(leg1, leg2);
+}
 
 Network createThreeWindingsTransformerTestNetwork() {
     Network network("test", "test");
@@ -155,34 +161,106 @@ Network createThreeWindingsTransformerTestNetwork() {
      return network;
 }
 
+void addPhaseTapChangerLeg2(ThreeWindingsTransformer& transformer, Terminal& terminal) {
+    transformer.getLeg2().newPhaseTapChanger()
+        .setTapPosition(2L)
+        .setLowTapPosition(1L)
+        .beginStep()
+            .setAlpha(9.0)
+            .setB(10.0)
+            .setG(11.0)
+            .setR(12.0)
+            .setRho(13.0)
+            .setX(14.0)
+        .endStep()
+        .beginStep()
+            .setAlpha(14.5)
+            .setB(15.0)
+            .setG(16.0)
+            .setR(17.0)
+            .setRho(18.0)
+            .setX(19.0)
+        .endStep()
+        .beginStep()
+            .setAlpha(20.5)
+            .setB(20.0)
+            .setG(21.0)
+            .setR(22.0)
+            .setRho(23.0)
+            .setX(24.0)
+        .endStep()
+        .setRegulationMode(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL)
+        .setRegulating(true)
+        .setRegulationTerminal(stdcxx::ref(terminal))
+        .setRegulationValue(25.0)
+        .setTargetDeadband(0.0)
+        .add();
+}
+
+void addPhaseTapChangerLeg3(ThreeWindingsTransformer& transformer, Terminal& terminal) {
+    transformer.getLeg3().newPhaseTapChanger()
+        .setTapPosition(-2L)
+        .setLowTapPosition(-3L)
+        .beginStep()
+            .setAlpha(-9.0)
+            .setB(-10.0)
+            .setG(-11.0)
+            .setR(-12.0)
+            .setRho(-13.0)
+            .setX(-14.0)
+        .endStep()
+        .beginStep()
+            .setAlpha(-14.5)
+            .setB(-15.0)
+            .setG(-16.0)
+            .setR(-17.0)
+            .setRho(-18.0)
+            .setX(-19.0)
+        .endStep()
+        .beginStep()
+            .setAlpha(-20.5)
+            .setB(-20.0)
+            .setG(-21.0)
+            .setR(-22.0)
+            .setRho(-23.0)
+            .setX(-24.0)
+        .endStep()
+        .setRegulationMode(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL)
+        .setRegulating(false)
+        .setRegulationTerminal(stdcxx::ref(terminal))
+        .setRegulationValue(25.0)
+        .setTargetDeadband(0.0)
+        .add();
+}
+
 void addRatioTapChangerLeg2(ThreeWindingsTransformer& transformer, Terminal& terminal) {
     transformer.getLeg2().newRatioTapChanger()
         .setTapPosition(2L)
         .setLowTapPosition(1L)
         .beginStep()
-        .setB(10.0)
-        .setG(11.0)
-        .setR(12.0)
-        .setRho(13.0)
-        .setX(14.0)
+            .setB(10.0)
+            .setG(11.0)
+            .setR(12.0)
+            .setRho(13.0)
+            .setX(14.0)
         .endStep()
         .beginStep()
-        .setB(15.0)
-        .setG(16.0)
-        .setR(17.0)
-        .setRho(18.0)
-        .setX(19.0)
+            .setB(15.0)
+            .setG(16.0)
+            .setR(17.0)
+            .setRho(18.0)
+            .setX(19.0)
         .endStep()
         .beginStep()
-        .setB(20.0)
-        .setG(21.0)
-        .setR(22.0)
-        .setRho(23.0)
-        .setX(24.0)
+            .setB(20.0)
+            .setG(21.0)
+            .setR(22.0)
+            .setRho(23.0)
+            .setX(24.0)
         .endStep()
         .setLoadTapChangingCapabilities(true)
         .setRegulating(true)
-        .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
+        .setRegulationTerminal(stdcxx::ref(terminal))
         .setTargetV(25.0)
         .setTargetDeadband(1.0)
         .add();
@@ -193,29 +271,29 @@ void addRatioTapChangerLeg3(ThreeWindingsTransformer& transformer, Terminal& ter
         .setTapPosition(-2L)
         .setLowTapPosition(-3L)
         .beginStep()
-        .setB(-10.0)
-        .setG(-11.0)
-        .setR(-12.0)
-        .setRho(-13.0)
-        .setX(-14.0)
+            .setB(-10.0)
+            .setG(-11.0)
+            .setR(-12.0)
+            .setRho(-13.0)
+            .setX(-14.0)
         .endStep()
         .beginStep()
-        .setB(-15.0)
-        .setG(-16.0)
-        .setR(-17.0)
-        .setRho(-18.0)
-        .setX(-19.0)
+            .setB(-15.0)
+            .setG(-16.0)
+            .setR(-17.0)
+            .setRho(-18.0)
+            .setX(-19.0)
         .endStep()
         .beginStep()
-        .setB(-20.0)
-        .setG(-21.0)
-        .setR(-22.0)
-        .setRho(-23.0)
-        .setX(-24.0)
+            .setB(-20.0)
+            .setG(-21.0)
+            .setR(-22.0)
+            .setRho(-23.0)
+            .setX(-24.0)
         .endStep()
         .setLoadTapChangingCapabilities(true)
         .setRegulating(false)
-        .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
+        .setRegulationTerminal(stdcxx::ref(terminal))
         .setTargetV(26.0)
         .setTargetDeadband(2.0)
         .add();
@@ -329,6 +407,14 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(cTerminal3, cLeg3.getTerminal()));
     BOOST_TEST(stdcxx::areSame(network, leg3.getNetwork()));
     BOOST_TEST(stdcxx::areSame(network, cLeg3.getNetwork()));
+
+    std::vector<std::reference_wrapper<ThreeWindingsTransformer::Leg>> expected = {leg1, leg2, leg3};
+
+    const auto& legs = transformer.getLegs();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), legs.begin(), legs.end());
+
+    const auto& cLegs = cTransformer.getLegs();
+    BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), cLegs.begin(), cLegs.end());
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
@@ -709,7 +795,7 @@ BOOST_AUTO_TEST_CASE(adders) {
     BOOST_CHECK_CLOSE(2.2, twt.getLeg1().getG(), std::numeric_limits<double>::epsilon());
 }
 
-BOOST_AUTO_TEST_CASE(multivariant) {
+BOOST_AUTO_TEST_CASE(multivariantRTC) {
     Network network = createThreeWindingsTransformerTestNetwork();
     ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
     Terminal& terminal = network.getLoad("LOAD1").getTerminal();
@@ -965,6 +1051,246 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_TEST(ratioTapChangerLeg3.hasLoadTapChangingCapabilities());
     BOOST_CHECK_CLOSE(250.0, ratioTapChangerLeg3.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChangerLeg3.getRegulationTerminal().get()));
+
+    network.getVariantManager().removeVariant("s3");
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    network.getVariantManager().removeVariant("s2");
+    BOOST_CHECK_EQUAL(1UL, network.getVariantManager().getVariantArraySize());
+}
+
+BOOST_AUTO_TEST_CASE(multivariantPTC) {
+    Network network = createThreeWindingsTransformerTestNetwork();
+    ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
+    Terminal& terminal = network.getLoad("LOAD1").getTerminal();
+    Terminal& terminal2 = network.getLoad("LOAD2").getTerminal();
+    addPhaseTapChangerLeg2(transformer, terminal);
+    addPhaseTapChangerLeg3(transformer, terminal2);
+
+    ThreeWindingsTransformer::Leg& leg1 = transformer.getLeg1();
+    ThreeWindingsTransformer::Leg& leg2 = transformer.getLeg2();
+    ThreeWindingsTransformer::Leg& leg3 = transformer.getLeg3();
+    PhaseTapChanger& phaseTapChangerLeg2 = leg2.getPhaseTapChanger();
+    PhaseTapChanger& phaseTapChangerLeg3 = leg3.getPhaseTapChanger();
+
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"});
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    network.getVariantManager().setWorkingVariant("s1");
+
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
+    BOOST_CHECK_CLOSE(1.3, leg1.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.4, leg1.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.6, leg1.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.7, leg1.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.1, leg1.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg1.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg2", leg2.toString());
+    BOOST_CHECK_CLOSE(2.3, leg2.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.4, leg2.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.1, leg2.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg2.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg3", leg3.toString());
+    BOOST_CHECK_CLOSE(3.3, leg3.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.4, leg3.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.1, leg3.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg3.getCurrentLimits());
+
+    BOOST_CHECK_EQUAL(1L, phaseTapChangerLeg2.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChangerLeg2.getHighTapPosition());
+    BOOST_CHECK_EQUAL(2L, phaseTapChangerLeg2.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg2.getStepCount());
+    BOOST_TEST(phaseTapChangerLeg2.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChangerLeg2.getRegulationTerminal().get()));
+
+    BOOST_CHECK_EQUAL(-3L, phaseTapChangerLeg3.getLowTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChangerLeg3.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-2L, phaseTapChangerLeg3.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg3.getStepCount());
+    BOOST_TEST(!phaseTapChangerLeg3.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal2, phaseTapChangerLeg3.getRegulationTerminal().get()));
+
+    leg1.setR(1.31).setX(1.41).setG(1.61).setB(1.71).setRatedU(1.11);
+    leg2.setR(2.31).setX(2.41).setRatedU(2.11);
+    leg3.setR(3.31).setX(3.41).setRatedU(3.11);
+    phaseTapChangerLeg2.setTapPosition(1L).setRegulating(false).setRegulationTerminal(stdcxx::ref<Terminal>(terminal2));
+    phaseTapChangerLeg3.setTapPosition(-3L).setRegulating(false).setRegulationTerminal(stdcxx::ref<Terminal>(terminal));
+
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
+    BOOST_CHECK_CLOSE(1.31, leg1.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.41, leg1.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.61, leg1.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.71, leg1.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.11, leg1.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg1.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg2", leg2.toString());
+    BOOST_CHECK_CLOSE(2.31, leg2.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.41, leg2.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.11, leg2.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg2.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg3", leg3.toString());
+    BOOST_CHECK_CLOSE(3.31, leg3.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.41, leg3.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.11, leg3.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg3.getCurrentLimits());
+
+    BOOST_CHECK_EQUAL(1L, phaseTapChangerLeg2.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChangerLeg2.getHighTapPosition());
+    BOOST_CHECK_EQUAL(1L, phaseTapChangerLeg2.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg2.getStepCount());
+    BOOST_TEST(!phaseTapChangerLeg2.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal2, phaseTapChangerLeg2.getRegulationTerminal().get()));
+
+    BOOST_CHECK_EQUAL(-3L, phaseTapChangerLeg3.getLowTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChangerLeg3.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-3L, phaseTapChangerLeg3.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg3.getStepCount());
+    BOOST_TEST(!phaseTapChangerLeg3.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChangerLeg3.getRegulationTerminal().get()));
+
+    network.getVariantManager().setWorkingVariant("s2");
+
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
+    BOOST_CHECK_CLOSE(1.31, leg1.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.41, leg1.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.61, leg1.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.71, leg1.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.11, leg1.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg1.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg2", leg2.toString());
+    BOOST_CHECK_CLOSE(2.31, leg2.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.41, leg2.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.11, leg2.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg2.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg3", leg3.toString());
+    BOOST_CHECK_CLOSE(3.31, leg3.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.41, leg3.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.11, leg3.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg3.getCurrentLimits());
+
+    BOOST_CHECK_EQUAL(1L, phaseTapChangerLeg2.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChangerLeg2.getHighTapPosition());
+    BOOST_CHECK_EQUAL(2L, phaseTapChangerLeg2.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg2.getStepCount());
+    BOOST_TEST(phaseTapChangerLeg2.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal2, phaseTapChangerLeg2.getRegulationTerminal().get()));
+
+    BOOST_CHECK_EQUAL(-3L, phaseTapChangerLeg3.getLowTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChangerLeg3.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-2L, phaseTapChangerLeg3.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg3.getStepCount());
+    BOOST_TEST(!phaseTapChangerLeg3.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChangerLeg3.getRegulationTerminal().get()));
+
+    leg1.setRatedU(1.12).setR(1.32).setX(1.42).setG(1.62).setB(1.72);
+    leg2.setRatedU(2.12).setR(2.32).setX(2.42);
+    leg3.setRatedU(3.12).setR(3.32).setX(3.42);
+    phaseTapChangerLeg2.setTapPosition(3L).setRegulationTerminal(stdcxx::ref<Terminal>(terminal)).setRegulating(false);
+    phaseTapChangerLeg3.setTapPosition(-1L).setRegulationTerminal(stdcxx::ref<Terminal>(terminal2)).setRegulating(false);
+
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
+    BOOST_CHECK_CLOSE(1.32, leg1.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.42, leg1.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.62, leg1.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.72, leg1.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.12, leg1.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg1.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg2", leg2.toString());
+    BOOST_CHECK_CLOSE(2.32, leg2.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.42, leg2.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.12, leg2.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg2.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg3", leg3.toString());
+    BOOST_CHECK_CLOSE(3.32, leg3.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.42, leg3.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.12, leg3.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg3.getCurrentLimits());
+
+    BOOST_CHECK_EQUAL(1L, phaseTapChangerLeg2.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChangerLeg2.getHighTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChangerLeg2.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg2.getStepCount());
+    BOOST_TEST(!phaseTapChangerLeg2.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChangerLeg2.getRegulationTerminal().get()));
+
+    BOOST_CHECK_EQUAL(-3L, phaseTapChangerLeg3.getLowTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChangerLeg3.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChangerLeg3.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg3.getStepCount());
+    BOOST_TEST(!phaseTapChangerLeg3.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal2, phaseTapChangerLeg3.getRegulationTerminal().get()));
+
+    network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
+
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
+    BOOST_CHECK_CLOSE(1.32, leg1.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.42, leg1.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.62, leg1.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.72, leg1.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.12, leg1.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg1.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg2", leg2.toString());
+    BOOST_CHECK_CLOSE(2.32, leg2.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.42, leg2.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.12, leg2.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg2.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg3", leg3.toString());
+    BOOST_CHECK_CLOSE(3.32, leg3.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.42, leg3.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.12, leg3.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg3.getCurrentLimits());
+
+    BOOST_CHECK_EQUAL(1L, phaseTapChangerLeg2.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChangerLeg2.getHighTapPosition());
+    BOOST_CHECK_EQUAL(2L, phaseTapChangerLeg2.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg2.getStepCount());
+    BOOST_TEST(phaseTapChangerLeg2.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChangerLeg2.getRegulationTerminal().get()));
+
+    BOOST_CHECK_EQUAL(-3L, phaseTapChangerLeg3.getLowTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChangerLeg3.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-2L, phaseTapChangerLeg3.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg3.getStepCount());
+    BOOST_TEST(!phaseTapChangerLeg3.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal2, phaseTapChangerLeg3.getRegulationTerminal().get()));
+
+    network.getVariantManager().removeVariant("s1");
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    network.getVariantManager().cloneVariant("s2", "s3");
+    network.getVariantManager().setWorkingVariant("s3");
+
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
+    BOOST_CHECK_CLOSE(1.32, leg1.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.42, leg1.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.62, leg1.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.72, leg1.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.12, leg1.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg1.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg2", leg2.toString());
+    BOOST_CHECK_CLOSE(2.32, leg2.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.42, leg2.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.12, leg2.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg2.getCurrentLimits());
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg3", leg3.toString());
+    BOOST_CHECK_CLOSE(3.32, leg3.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.42, leg3.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(3.12, leg3.getRatedU(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(!leg3.getCurrentLimits());
+
+    BOOST_CHECK_EQUAL(1L, phaseTapChangerLeg2.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChangerLeg2.getHighTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChangerLeg2.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg2.getStepCount());
+    BOOST_TEST(!phaseTapChangerLeg2.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal, phaseTapChangerLeg2.getRegulationTerminal().get()));
+
+    BOOST_CHECK_EQUAL(-3L, phaseTapChangerLeg3.getLowTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChangerLeg3.getHighTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChangerLeg3.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChangerLeg3.getStepCount());
+    BOOST_TEST(!phaseTapChangerLeg3.isRegulating());
+    BOOST_TEST(stdcxx::areSame(terminal2, phaseTapChangerLeg3.getRegulationTerminal().get()));
 
     network.getVariantManager().removeVariant("s3");
     BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
