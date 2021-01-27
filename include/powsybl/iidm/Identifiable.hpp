@@ -51,7 +51,13 @@ public:
 
     void addAlias(const std::string& alias, const std::string& aliasType, bool ensureAliasUnicity);
 
-    std::set<std::string> getAliases() const;
+    void addAlias(const std::string& alias, const char* aliasType, bool ensureAliasUnicity);
+
+    void addAlias(const std::string& alias, const stdcxx::optional<std::string>& aliasType);
+
+    void addAlias(const std::string& alias, const stdcxx::optional<std::string>& aliasType, bool ensureAliasUnicity);
+
+    stdcxx::const_range<std::string> getAliases() const;
 
     stdcxx::optional<std::string> getAliasFromType(const std::string& aliasType) const;
 

@@ -112,18 +112,18 @@ BOOST_AUTO_TEST_CASE(canAddAliases) {
     load.addAlias("Load alias");
 
     const auto& aliases = load.getAliases();
-    BOOST_CHECK_EQUAL(1, aliases.size());
-    BOOST_CHECK(aliases.find("Load alias") != aliases.end());
+    BOOST_CHECK_EQUAL(1, boost::size(aliases));
+    BOOST_CHECK(std::find(aliases.begin(), aliases.end(), "Load alias") != aliases.end());
     BOOST_CHECK_NO_THROW(network.getLoad("Load alias"));
     BOOST_CHECK(stdcxx::areSame(network.getLoad("Load alias"), load));
-    BOOST_CHECK(!network.getLoad("load1").getAliasType("Load alias").is_initialized());
+    BOOST_CHECK(!network.getLoad("load1").getAliasType("Load alias"));
 }
 
 BOOST_AUTO_TEST_CASE(canAddAliasesWithTypes) {
     Network network = createNetwork();
     Load& load = network.getLoad("load1");
     BOOST_CHECK(load.getAliases().empty());
-    BOOST_CHECK(!load.getAliasFromType("alias type").is_initialized());
+    BOOST_CHECK(!load.getAliasFromType("alias type"));
     load.addAlias("Load alias", "alias type");
 
     POWSYBL_ASSERT_THROW(load.addAlias("Load alias", "alias type"), PowsyblException, "load1 already has an alias of type alias type");
@@ -131,19 +131,19 @@ BOOST_AUTO_TEST_CASE(canAddAliasesWithTypes) {
     load.addAlias("Load alias");
 
     const auto& aliases = load.getAliases();
-    BOOST_CHECK_EQUAL(1, aliases.size());
-    BOOST_CHECK(aliases.find("Load alias") != aliases.end());
-    BOOST_CHECK(load.getAliasFromType("alias type").is_initialized());
-    BOOST_CHECK(aliases.find("Load alias") != aliases.end());
+    BOOST_CHECK_EQUAL(1, boost::size(aliases));
+    BOOST_CHECK(std::find(aliases.begin(), aliases.end(), "Load alias") != aliases.end());
+    BOOST_CHECK(load.getAliasFromType("alias type"));
+    BOOST_CHECK(std::find(aliases.begin(), aliases.end(), "Load alias") != aliases.end());
     BOOST_CHECK_EQUAL("Load alias", *load.getAliasFromType("alias type"));
     BOOST_CHECK_NO_THROW(network.getLoad("Load alias"));
     BOOST_CHECK(stdcxx::areSame(load, network.getLoad("Load alias")));
     BOOST_CHECK_EQUAL("alias type", *load.getAliasType("Load alias"));
 
     load.addAlias("Another alias2");
-    BOOST_CHECK_EQUAL(2, load.getAliases().size());
+    BOOST_CHECK_EQUAL(2, boost::size(load.getAliases()));
     load.removeAlias("Another alias2");
-    BOOST_CHECK(load.getAliasFromType("alias type").is_initialized());
+    BOOST_CHECK(load.getAliasFromType("alias type"));
 }
 
 BOOST_AUTO_TEST_CASE(canRemoveAliases) {
@@ -154,8 +154,8 @@ BOOST_AUTO_TEST_CASE(canRemoveAliases) {
     load.addAlias("Load alias");
 
     const auto& aliases = load.getAliases();
-    BOOST_CHECK_EQUAL(1, aliases.size());
-    BOOST_CHECK(aliases.find("Load alias") != aliases.end());
+    BOOST_CHECK_EQUAL(1, boost::size(aliases));
+    BOOST_CHECK(std::find(aliases.begin(), aliases.end(), "Load alias") != aliases.end());
 
     load.removeAlias("Load alias");
     BOOST_CHECK(!load.hasAliases());
@@ -179,8 +179,8 @@ BOOST_AUTO_TEST_CASE(silentlyIgnoreAffectingTwiceSameIdToAnObject) {
     load.addAlias("Load alias");
 
     const auto& aliases = load.getAliases();
-    BOOST_CHECK_EQUAL(1, aliases.size());
-    BOOST_CHECK(aliases.find("Load alias") != aliases.end());
+    BOOST_CHECK_EQUAL(1, boost::size(aliases));
+    BOOST_CHECK(std::find(aliases.begin(), aliases.end(), "Load alias") != aliases.end());
 }
 
 BOOST_AUTO_TEST_CASE(ensureAliasUnicityFromId) {
@@ -188,8 +188,8 @@ BOOST_AUTO_TEST_CASE(ensureAliasUnicityFromId) {
     Load& load = network.getLoad("load1");
     load.addAlias("generator1", true);
     const auto& aliases = load.getAliases();
-    BOOST_CHECK(aliases.find("generator1") == aliases.end());
-    BOOST_CHECK(aliases.find("generator1#0") != aliases.end());
+    BOOST_CHECK(std::find(aliases.begin(), aliases.end(), "generator1") == aliases.end());
+    BOOST_CHECK(std::find(aliases.begin(), aliases.end(), "generator1#0") != aliases.end());
 }
 
 BOOST_AUTO_TEST_CASE(ensureAliasUnicityFromAlias) {
@@ -201,11 +201,11 @@ BOOST_AUTO_TEST_CASE(ensureAliasUnicityFromAlias) {
     generator.addAlias("alias", true);
 
     const auto& loadAliases = load.getAliases();
-    BOOST_CHECK(loadAliases.find("alias") != loadAliases.end());
+    BOOST_CHECK(std::find(loadAliases.begin(), loadAliases.end(), "alias") != loadAliases.end());
 
     const auto& generatorAliases = generator.getAliases();
-    BOOST_CHECK(generatorAliases.find("alias") == generatorAliases.end());
-    BOOST_CHECK(generatorAliases.find("alias#0") != generatorAliases.end());
+    BOOST_CHECK(std::find(generatorAliases.begin(), generatorAliases.end(), "alias") == generatorAliases.end());
+    BOOST_CHECK(std::find(generatorAliases.begin(), generatorAliases.end(), "alias#0") != generatorAliases.end());
 }
 
 BOOST_AUTO_TEST_CASE(failWhenDuplicatedAlias) {
@@ -245,6 +245,28 @@ BOOST_AUTO_TEST_CASE(FindIdentifiableFromAlias) {
     load.addAlias("Load alias");
 
     BOOST_CHECK(stdcxx::areSame(load, network.find("Load alias").get()));
+}
+
+BOOST_AUTO_TEST_CASE(emptyAliasType) {
+    Network network = createNetwork();
+    Load& load = network.getLoad("load1");
+
+    load.addAlias("Load alias#0");
+    BOOST_CHECK_EQUAL(1, boost::size(load.getAliases()));
+    BOOST_CHECK(!load.getAliasFromType(""));
+    BOOST_CHECK(!load.getAliasType(""));
+
+    load.addAlias("Load alias#0", true);
+    BOOST_CHECK_EQUAL(2, boost::size(load.getAliases()));
+    BOOST_CHECK(!load.getAliasFromType(""));
+    BOOST_CHECK(!load.getAliasType(""));
+
+    load.addAlias("Load alias#1", "");
+    BOOST_CHECK_EQUAL(3, boost::size(load.getAliases()));
+    BOOST_CHECK_EQUAL("Load alias#1", *load.getAliasFromType(""));
+    BOOST_CHECK_EQUAL("", *load.getAliasType("Load alias#1"));
+
+    POWSYBL_ASSERT_THROW(load.addAlias("Load alias#1", "", true), PowsyblException, "load1 already has an alias of type ");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

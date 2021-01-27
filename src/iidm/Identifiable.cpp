@@ -8,6 +8,7 @@
 #include <powsybl/iidm/Identifiable.hpp>
 
 #include <boost/range/adaptor/map.hpp>
+#include <boost/range/join.hpp>
 
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/format.hpp>
@@ -37,7 +38,7 @@ void Identifiable::addAlias(const std::string& alias) {
 }
 
 void Identifiable::addAlias(const std::string& alias, bool ensureAliasUnicity) {
-    addAlias(alias, "", ensureAliasUnicity);
+    addAlias(alias, stdcxx::optional<std::string>(), ensureAliasUnicity);
 }
 
 void Identifiable::addAlias(const std::string& alias, const std::string& aliasType) {
@@ -45,22 +46,34 @@ void Identifiable::addAlias(const std::string& alias, const std::string& aliasTy
 }
 
 void Identifiable::addAlias(const std::string& alias, const char* aliasType) {
-    addAlias(alias, aliasType, false);
+    addAlias(alias, std::string(aliasType), false);
 }
 
 void Identifiable::addAlias(const std::string& alias, const std::string& aliasType, bool ensureAliasUnicity) {
+    addAlias(alias, stdcxx::optional<std::string>(aliasType), ensureAliasUnicity);
+}
+
+void Identifiable::addAlias(const std::string& alias, const char* aliasType, bool ensureAliasUnicity) {
+    addAlias(alias, std::string(aliasType), ensureAliasUnicity);
+}
+
+void Identifiable::addAlias(const std::string& alias, const stdcxx::optional<std::string>& aliasType) {
+    addAlias(alias, aliasType, false);
+}
+
+void Identifiable::addAlias(const std::string& alias, const stdcxx::optional<std::string>& aliasType, bool ensureAliasUnicity) {
     std::string uniqueAlias = alias;
     if (ensureAliasUnicity) {
         uniqueAlias = util::Identifiables::getUniqueId(alias, [this](const std::string& alias) {
             return static_cast<bool>(getNetwork().find(alias));
         });
     }
-    if (!aliasType.empty() && m_aliasesByType.find(aliasType) != m_aliasesByType.end()) {
-        throw PowsyblException(stdcxx::format("%1% already has an alias of type %2%", m_id, aliasType));
+    if (aliasType && m_aliasesByType.find(*aliasType) != m_aliasesByType.end()) {
+        throw PowsyblException(stdcxx::format("%1% already has an alias of type %2%", m_id, *aliasType));
     }
     if (getNetwork().getIndex().addAlias(*this, uniqueAlias)) {
-        if (!aliasType.empty()) {
-            m_aliasesByType[aliasType] = uniqueAlias;
+        if (aliasType) {
+            m_aliasesByType[*aliasType] = uniqueAlias;
         } else {
             m_aliasesWithoutType.emplace(uniqueAlias);
         }
@@ -91,12 +104,8 @@ void Identifiable::extendVariantArraySize(unsigned long initVariantArraySize, un
     }
 }
 
-std::set<std::string> Identifiable::getAliases() const {
-    auto aliases = m_aliasesWithoutType;
-    for (const auto& aliasType : m_aliasesByType | boost::adaptors::map_values) {
-        aliases.emplace(aliasType);
-    }
-    return aliases;
+stdcxx::const_range<std::string> Identifiable::getAliases() const {
+    return boost::range::join(m_aliasesWithoutType, m_aliasesByType | boost::adaptors::map_values);
 }
 
 stdcxx::optional<std::string> Identifiable::getAliasFromType(const std::string& aliasType) const {
