@@ -38,7 +38,7 @@ void Identifiable::addAlias(const std::string& alias) {
 }
 
 void Identifiable::addAlias(const std::string& alias, bool ensureAliasUnicity) {
-    addAlias(alias, stdcxx::optional<std::string>(), ensureAliasUnicity);
+    addAlias(alias, "", ensureAliasUnicity);
 }
 
 void Identifiable::addAlias(const std::string& alias, const std::string& aliasType) {
@@ -50,34 +50,26 @@ void Identifiable::addAlias(const std::string& alias, const char* aliasType) {
 }
 
 void Identifiable::addAlias(const std::string& alias, const std::string& aliasType, bool ensureAliasUnicity) {
-    addAlias(alias, stdcxx::optional<std::string>(aliasType), ensureAliasUnicity);
-}
-
-void Identifiable::addAlias(const std::string& alias, const char* aliasType, bool ensureAliasUnicity) {
-    addAlias(alias, std::string(aliasType), ensureAliasUnicity);
-}
-
-void Identifiable::addAlias(const std::string& alias, const stdcxx::optional<std::string>& aliasType) {
-    addAlias(alias, aliasType, false);
-}
-
-void Identifiable::addAlias(const std::string& alias, const stdcxx::optional<std::string>& aliasType, bool ensureAliasUnicity) {
     std::string uniqueAlias = alias;
     if (ensureAliasUnicity) {
         uniqueAlias = util::Identifiables::getUniqueId(alias, [this](const std::string& alias) {
             return static_cast<bool>(getNetwork().find(alias));
         });
     }
-    if (aliasType && m_aliasesByType.find(*aliasType) != m_aliasesByType.end()) {
-        throw PowsyblException(stdcxx::format("%1% already has an alias of type %2%", m_id, *aliasType));
+    if (!aliasType.empty() && m_aliasesByType.find(aliasType) != m_aliasesByType.end()) {
+        throw PowsyblException(stdcxx::format("%1% already has an alias of type %2%", m_id, aliasType));
     }
     if (getNetwork().getIndex().addAlias(*this, uniqueAlias)) {
-        if (aliasType) {
-            m_aliasesByType[*aliasType] = uniqueAlias;
+        if (!aliasType.empty()) {
+            m_aliasesByType[aliasType] = uniqueAlias;
         } else {
             m_aliasesWithoutType.emplace(uniqueAlias);
         }
     }
+}
+
+void Identifiable::addAlias(const std::string& alias, const char* aliasType, bool ensureAliasUnicity) {
+    addAlias(alias, std::string(aliasType), ensureAliasUnicity);
 }
 
 void Identifiable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -113,14 +105,14 @@ stdcxx::optional<std::string> Identifiable::getAliasFromType(const std::string& 
     return it != m_aliasesByType.end() ? it->second : stdcxx::optional<std::string>();
 }
 
-stdcxx::optional<std::string> Identifiable::getAliasType(const std::string& alias) const {
+std::string Identifiable::getAliasType(const std::string& alias) const {
     if (m_aliasesWithoutType.find(alias) != m_aliasesWithoutType.end()) {
-        return stdcxx::optional<std::string>();
+        return "";
     }
     auto it = std::find_if(m_aliasesByType.begin(), m_aliasesByType.end(), [&alias](const std::pair<std::string, std::string>& entry) {
         return entry.second == alias;
     });
-    return it != m_aliasesByType.end() ? it->first : stdcxx::optional<std::string>();
+    return it != m_aliasesByType.end() ? it->first : "";
 }
 
 const std::string& Identifiable::getId() const {

@@ -26,9 +26,9 @@ namespace converter {
 namespace xml {
 
 void AliasesXml::read(Identifiable& identifiable, const NetworkXmlReaderContext& context) {
-    stdcxx::optional<std::string> aliasType;
+    std::string aliasType;
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_4(), context.getVersion(), [&context, &aliasType]() {
-        aliasType = context.getReader().getOptionalAttributeValue<std::string>(TYPE);
+        aliasType = context.getReader().getOptionalAttributeValue(TYPE, "");
     });
     identifiable.addAlias(context.getAnonymizer().deanonymizeString(context.getReader().readCharacters()), aliasType);
 }
@@ -39,8 +39,8 @@ void AliasesXml::write(const Identifiable& identifiable, const std::string& root
         context.getWriter().writeStartElement(context.getVersion().getPrefix(), ALIAS);
         IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_4(), context.getVersion(), [&context, &alias, &identifiable]() {
             const auto& typeAlias = identifiable.getAliasType(alias);
-            if (typeAlias) {
-                context.getWriter().writeAttribute(TYPE, *typeAlias);
+            if (!typeAlias.empty()) {
+                context.getWriter().writeAttribute(TYPE, typeAlias);
             }
         });
         context.getWriter().writeCharacters(context.getAnonymizer().anonymizeString(alias));
