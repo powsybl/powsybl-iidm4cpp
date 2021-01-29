@@ -257,7 +257,8 @@ BOOST_AUTO_TEST_CASE(emptyAliasType) {
 
     load.addAlias("Load alias#0", true);
     BOOST_CHECK_EQUAL(2, boost::size(load.getAliases()));
-    BOOST_CHECK(!load.getAliasFromType(""));
+    POWSYBL_ASSERT_THROW(load.getAliasFromType(""), PowsyblException, "Invalid alias type: ");
+    BOOST_CHECK(!load.getAliasFromType("fake"));
     BOOST_CHECK(load.getAliasType("").empty());
 
     load.addAlias("Load alias#1", "");

@@ -60,10 +60,10 @@ void Identifiable::addAlias(const std::string& alias, const std::string& aliasTy
         throw PowsyblException(stdcxx::format("%1% already has an alias of type %2%", m_id, aliasType));
     }
     if (getNetwork().getIndex().addAlias(*this, uniqueAlias)) {
-        if (!aliasType.empty()) {
-            m_aliasesByType[aliasType] = uniqueAlias;
-        } else {
+        if (aliasType.empty()) {
             m_aliasesWithoutType.emplace(uniqueAlias);
+        } else {
+            m_aliasesByType[aliasType] = uniqueAlias;
         }
     }
 }
@@ -101,6 +101,9 @@ stdcxx::const_range<std::string> Identifiable::getAliases() const {
 }
 
 stdcxx::optional<std::string> Identifiable::getAliasFromType(const std::string& aliasType) const {
+    if (aliasType.empty()) {
+        throw PowsyblException(stdcxx::format("Invalid alias type: %1%", aliasType));
+    }
     auto it = m_aliasesByType.find(aliasType);
     return it != m_aliasesByType.end() ? it->second : stdcxx::optional<std::string>();
 }
