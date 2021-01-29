@@ -102,7 +102,7 @@ stdcxx::const_range<std::string> Identifiable::getAliases() const {
 
 stdcxx::optional<std::string> Identifiable::getAliasFromType(const std::string& aliasType) const {
     if (aliasType.empty()) {
-        throw PowsyblException(stdcxx::format("Invalid alias type: %1%", aliasType));
+        throw PowsyblException(stdcxx::format("Alias type must not be empty"));
     }
     auto it = m_aliasesByType.find(aliasType);
     return it != m_aliasesByType.end() ? it->second : stdcxx::optional<std::string>();
