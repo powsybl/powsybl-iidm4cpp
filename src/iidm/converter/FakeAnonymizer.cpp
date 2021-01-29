@@ -29,6 +29,14 @@ std::string FakeAnonymizer::deanonymizeString(const std::string& anonymousStr) c
     return anonymousStr;
 }
 
+void FakeAnonymizer::read(std::istream& /*stream*/) {
+    // Nothing to do
+}
+
+void FakeAnonymizer::write(std::ostream& /*stream*/) const {
+    // Nothing to do
+}
+
 }  // namespace converter
 
 }  // namespace iidm

@@ -48,6 +48,7 @@ set(UNIT_TEST_SOURCES
     converter/ExportOptionsTest.cpp
     converter/FakeAnonymizerTest.cpp
     converter/ImportOptionsTest.cpp
+    converter/SimpleAnonymizerTest.cpp
 
     extensions/LoadDetailTest.cpp
     extensions/SlackTerminalTest.cpp

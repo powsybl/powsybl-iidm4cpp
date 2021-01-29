@@ -136,6 +136,7 @@ set(IIDM_SOURCES
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
     iidm/converter/Parameter.cpp
+    iidm/converter/SimpleAnonymizer.cpp
 
     iidm/converter/xml/AbstractExtensionXmlSerializer.cpp
     iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.cpp

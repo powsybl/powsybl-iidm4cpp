@@ -13,6 +13,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
+#include <powsybl/iidm/converter/SimpleAnonymizer.hpp>
 #include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
@@ -271,9 +272,12 @@ std::unique_ptr<Anonymizer> NetworkXml::write(const std::string& /*filename*/, s
 
     powsybl::xml::XmlStreamWriter writer(os, options.isIndent());
 
-    // FIXME(sebalaig): for now on, only one kind of anonymizer = FakeAnonymizer
-    // later, a real anonymizer will be instantiated depending on options.isAnonymized()
-    std::unique_ptr<Anonymizer> anonymizer(stdcxx::make_unique<FakeAnonymizer>());
+    std::unique_ptr<Anonymizer> anonymizer;
+    if (options.isAnonymized()) {
+        anonymizer = stdcxx::make_unique<SimpleAnonymizer>();
+    } else {
+        anonymizer = stdcxx::make_unique<FakeAnonymizer>();
+    }
 
     const BusFilter& filter = BusFilter::create(network, options);
 
