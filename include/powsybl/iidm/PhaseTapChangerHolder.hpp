@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_PHASETAPCHANGERHOLDER_HPP
 
 #include <powsybl/iidm/TapChangerHolder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

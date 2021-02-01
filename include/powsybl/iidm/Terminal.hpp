@@ -13,7 +13,7 @@
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TerminalViews.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

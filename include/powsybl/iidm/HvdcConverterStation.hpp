@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_HVDCCONVERTERSTATION_HPP
 
 #include <powsybl/iidm/Injection.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

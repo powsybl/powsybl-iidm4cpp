@@ -14,7 +14,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 #include "MergedBus.hpp"
 

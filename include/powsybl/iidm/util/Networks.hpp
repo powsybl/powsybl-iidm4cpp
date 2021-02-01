@@ -12,7 +12,7 @@
 #include <set>
 #include <string>
 
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

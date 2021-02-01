@@ -13,7 +13,7 @@
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/range.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

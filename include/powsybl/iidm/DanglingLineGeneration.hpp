@@ -13,7 +13,7 @@
 
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
 #include <powsybl/iidm/Validable.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

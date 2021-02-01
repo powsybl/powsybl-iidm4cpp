@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_STDCXX_REFERENCE_WRAPPER_HPP
-#define POWSYBL_STDCXX_REFERENCE_WRAPPER_HPP
+#ifndef POWSYBL_STDCXX_REFERENCE_HPP
+#define POWSYBL_STDCXX_REFERENCE_HPP
 
 #include <memory>
 
@@ -200,4 +200,4 @@ public:
 
 }  // namespace stdcxx
 
-#endif  // POWSYBL_STDCXX_REFERENCE_WRAPPER_HPP
+#endif  // POWSYBL_STDCXX_REFERENCE_HPP
