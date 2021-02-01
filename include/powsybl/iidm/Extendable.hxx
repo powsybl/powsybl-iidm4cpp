@@ -58,10 +58,8 @@ E& Extendable::getExtension() {
 template <typename E, typename>
 stdcxx::CReference<E> Extendable::getExtensionByName(const std::string& name) const {
     auto it = m_extensionsByName.find(name);
-    if (it != m_extensionsByName.end()) {
-        if (stdcxx::isInstanceOf<E>(*it->second)) {
-            return stdcxx::cref<E>(dynamic_cast<const E&>(*it->second));
-        }
+    if (it != m_extensionsByName.end() && stdcxx::isInstanceOf<E>(*it->second)) {
+        return stdcxx::cref<E>(dynamic_cast<const E&>(*it->second));
     }
     return stdcxx::cref<E>();
 }
