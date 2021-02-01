@@ -52,8 +52,8 @@ void Identifiable::addAlias(const std::string& alias, const char* aliasType) {
 void Identifiable::addAlias(const std::string& alias, const std::string& aliasType, bool ensureAliasUnicity) {
     std::string uniqueAlias = alias;
     if (ensureAliasUnicity) {
-        uniqueAlias = util::Identifiables::getUniqueId(alias, [this](const std::string& alias) {
-            return static_cast<bool>(getNetwork().find(alias));
+        uniqueAlias = util::Identifiables::getUniqueId(alias, [this](const std::string& idOrAlias) {
+            return static_cast<bool>(getNetwork().find(idOrAlias));
         });
     }
     if (!aliasType.empty() && m_aliasesByType.find(aliasType) != m_aliasesByType.end()) {
