@@ -264,6 +264,7 @@ BOOST_AUTO_TEST_CASE(emptyAliasType) {
     load.addAlias("Load alias#1", "");
     BOOST_CHECK_EQUAL(3, boost::size(load.getAliases()));
     BOOST_CHECK_EQUAL("", load.getAliasType("Load alias#1"));
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
