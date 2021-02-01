@@ -53,16 +53,8 @@ void VariantManager::allocateVariantArrayElement(unsigned long sourceIndex, cons
     }
 }
 
-void VariantManager::cloneVariant(const std::string& sourceVariantId, const std::string& targetVariantId) {
-    cloneVariant(sourceVariantId, { targetVariantId }, false);
-}
-
 void VariantManager::cloneVariant(const std::string& sourceVariantId, const std::string& targetVariantId, bool mayOverwrite) {
     cloneVariant(sourceVariantId, { targetVariantId }, mayOverwrite);
-}
-
-void VariantManager::cloneVariant(const std::string& sourceVariantId, const std::initializer_list<std::string>& targetVariantIds) {
-    cloneVariant(sourceVariantId, targetVariantIds, false);
 }
 
 void VariantManager::cloneVariant(const std::string& sourceVariantId, const std::initializer_list<std::string>& targetVariantIds, bool mayOverwrite) {
