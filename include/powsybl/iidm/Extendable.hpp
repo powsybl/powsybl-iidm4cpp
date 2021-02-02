@@ -50,6 +50,12 @@ public:
     template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
     E& getExtension();
 
+    template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
+    stdcxx::CReference<E> getExtensionByName(const std::string& name) const;
+
+    template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
+    stdcxx::Reference<E> getExtensionByName(const std::string& name);
+
     stdcxx::const_range<Extension> getExtensions() const;
 
     stdcxx::range<Extension> getExtensions();
