@@ -200,8 +200,9 @@ void Leg::setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) {
     m_ratioTapChanger = std::move(ratioTapChanger);
 }
 
-void Leg::setTransformer(ThreeWindingsTransformer& transformer) {
+Leg& Leg::setTransformer(ThreeWindingsTransformer& transformer) {
     m_transformer = transformer;
+    return *this;
 }
 
 std::string Leg::toString() const {
@@ -209,6 +210,12 @@ std::string Leg::toString() const {
 }
 
 }  // namespace three_windings_transformer
+
+std::ostream& operator<<(std::ostream& stream, const three_windings_transformer::Leg& leg) {
+    stream << leg.toString();
+
+    return stream;
+}
 
 }  // namespace iidm
 
