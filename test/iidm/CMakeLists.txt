@@ -40,6 +40,7 @@ set(UNIT_TEST_SOURCES
     ThreeWindingsTransformerTest.cpp
     TieLineTest.cpp
     TwoWindingsTransformerTest.cpp
+    VariantManagerTest.cpp
     VoltageLevelTest.cpp
     VscConverterStationTest.cpp
 
