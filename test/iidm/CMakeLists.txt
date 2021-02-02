@@ -17,6 +17,7 @@ set(UNIT_TEST_SOURCES
     CurrentLimitsTest.cpp
     DanglingLineTest.cpp
     EnergySourceTest.cpp
+    ExtensionTest.cpp
     ExtensionAdderTest.cpp
     GeneratorTest.cpp
     HvdcLineTest.cpp
@@ -39,6 +40,7 @@ set(UNIT_TEST_SOURCES
     ThreeWindingsTransformerTest.cpp
     TieLineTest.cpp
     TwoWindingsTransformerTest.cpp
+    VariantManagerTest.cpp
     VoltageLevelTest.cpp
     VscConverterStationTest.cpp
 

@@ -124,6 +124,8 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
     assert(node < m_graph.getVertexCount());
     assert(stdcxx::areSame(m_graph.getVertexObject(node).get(), nodeTerminal));
 
+    invalidateCache();
+
     // remove the link terminal <-> graph vertex
     m_graph.setVertexObject(node, stdcxx::ref<NodeTerminal>());
     clean();
