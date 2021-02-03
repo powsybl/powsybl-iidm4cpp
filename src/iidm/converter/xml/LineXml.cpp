@@ -57,7 +57,7 @@ void LineXml::readSubElements(Line& line, NetworkXmlReaderContext& context) cons
             CurrentLimitsAdder<Branch::Side, Branch> adder = line.newCurrentLimits2();
             readCurrentLimits(adder, context.getReader(), 2);
         } else {
-            AbstractIdentifiableXml::readSubElements(line, context);
+            AbstractConnectableXml::readSubElements(line, context);
         }
     });
 }

@@ -52,7 +52,7 @@ void VscConverterStationXml::readSubElements(VscConverterStation& converterStati
             context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
             ReactiveLimitsXml::getInstance().read(converterStation, context);
         } else {
-            AbstractIdentifiableXml::readSubElements(converterStation, context);
+            AbstractConnectableXml::readSubElements(converterStation, context);
         }
     });
 }

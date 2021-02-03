@@ -80,7 +80,7 @@ void DanglingLineXml::readSubElements(DanglingLine& dl, NetworkXmlReaderContext&
             IidmXmlUtil::assertMinimumVersion(stdcxx::format("%1%.generation", DANGLING_LINE), "reactiveLimits", ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
             ReactiveLimitsXml::getInstance().read(dl.getGeneration(), context);
         } else {
-            AbstractIdentifiableXml::readSubElements(dl, context);
+            AbstractConnectableXml::readSubElements(dl, context);
         }
     });
 }

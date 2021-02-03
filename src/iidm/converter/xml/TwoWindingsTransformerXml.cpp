@@ -64,7 +64,7 @@ void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, Net
         } else if (context.getReader().getLocalName() == PHASE_TAP_CHANGER) {
             readPhaseTapChanger(twt, context);
         } else {
-            AbstractIdentifiableXml::readSubElements(twt, context);
+            AbstractTransformerXml::readSubElements(twt, context);
         }
     });
 }
