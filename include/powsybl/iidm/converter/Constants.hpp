@@ -165,6 +165,7 @@ static const char* const TIE_LINE = "tieLine";
 static const char* const TOPOLOGY_KIND = "topologyKind";
 static const char* const TSO = "tso";
 static const char* const TWO_WINDINGS_TRANSFORMER = "twoWindingsTransformer";
+static const char* const TYPE = "type";
 static const char* const UCTE_XNODE_CODE = "ucteXnodeCode";
 static const char* const V = "v";
 static const char* const VALUE = "value";

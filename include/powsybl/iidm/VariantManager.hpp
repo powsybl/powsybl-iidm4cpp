@@ -42,9 +42,9 @@ public:
 
     VariantManager& operator=(VariantManager&&) noexcept = delete;
 
-    void cloneVariant(const std::string& sourceVariantId, const std::string& targetVariantId);
+    void cloneVariant(const std::string& sourceVariantId, const std::string& targetVariantId, bool mayOverwrite = false);
 
-    void cloneVariant(const std::string& sourceVariantId, const std::initializer_list<std::string>& targetVariantIds);
+    void cloneVariant(const std::string& sourceVariantId, const std::initializer_list<std::string>& targetVariantIds, bool mayOverwrite = false);
 
     void forEachVariant(const std::function<void()>& function);
 
@@ -66,6 +66,8 @@ private:
     static constexpr unsigned long INITIAL_VARIANT_INDEX = 0;
 
 private:
+    void allocateVariantArrayElement(unsigned long sourceIndex, const std::set<unsigned long>& recycled, const std::set<unsigned long>& overwritten);
+
     unsigned long getVariantIndex(const std::string& variantId) const;
 
 private:
