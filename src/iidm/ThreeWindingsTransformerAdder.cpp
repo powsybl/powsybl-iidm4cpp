@@ -23,21 +23,21 @@ ThreeWindingsTransformerAdder::ThreeWindingsTransformerAdder(Substation& substat
 ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     logging::Logger& logger = logging::LoggerFactory::getLogger<ThreeWindingsTransformer>();
 
-    if (!m_adder1.is_initialized()) {
+    if (!m_adder1) {
         throw ValidationException(*this, "leg 1 is not defined");
     }
     ThreeWindingsTransformer::Leg leg1 = m_adder1->build();
     VoltageLevel& voltageLevel1 = m_adder1->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal1 = m_adder1->checkAndGetTerminal(voltageLevel1);
 
-    if (!m_adder2.is_initialized()) {
+    if (!m_adder2) {
         throw ValidationException(*this, "leg 2 is not defined");
     }
     ThreeWindingsTransformer::Leg leg2 = m_adder2->build();
     VoltageLevel& voltageLevel2 = m_adder2->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal2 = m_adder2->checkAndGetTerminal(voltageLevel2);
 
-    if (!m_adder3.is_initialized()) {
+    if (!m_adder3) {
         throw ValidationException(*this, "leg 3 is not defined");
     }
     ThreeWindingsTransformer::Leg leg3 = m_adder3->build();

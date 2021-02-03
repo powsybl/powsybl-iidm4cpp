@@ -25,7 +25,7 @@ void computeConnectedComponents(unsigned long v1, unsigned long c, std::vector<u
     ++componentSize[c];
     const std::vector<unsigned long>& ls = adjacencyList[v1];
     for (unsigned long v2 : ls) {
-        if (!componentNumber[v2].is_initialized()) {
+        if (!componentNumber[v2]) {
             computeConnectedComponents(v2, c, componentSize, adjacencyList, componentNumber);
         }
     }
@@ -41,7 +41,7 @@ ConnectedComponentsComputationResult computeConnectedComponents(const AdjacencyL
     // Fill componentSize and componentNumber based on the adjacency list
     unsigned long c = 0;
     for (unsigned long v = 0; v < adjacencyList.size(); v++) {
-        if (!componentNumber[v].is_initialized()) {
+        if (!componentNumber[v]) {
             computeConnectedComponents(v, c, componentSize, adjacencyList, componentNumber);
             c++;
         }

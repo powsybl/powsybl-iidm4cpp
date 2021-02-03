@@ -65,7 +65,7 @@ private:
     friend class shunt_compensator::ShuntCompensatorNonLinearModelAdder;
 
 private:
-    boost::optional<unsigned long> m_sectionCount;
+    stdcxx::optional<unsigned long> m_sectionCount;
 
     double m_targetDeadband = stdcxx::nan();
 

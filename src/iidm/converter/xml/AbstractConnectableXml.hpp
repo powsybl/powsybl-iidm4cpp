@@ -12,6 +12,7 @@
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 #include "AbstractIdentifiableXml.hpp"
 
@@ -38,9 +39,9 @@ template <typename Added, typename Adder, typename Parent>
 class AbstractConnectableXml : public AbstractIdentifiableXml<Added, Adder, Parent> {
 public:
     template <typename S, typename O>
-    static void readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index = boost::optional<int>());
+    static void readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
-    static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const boost::optional<int>& index = boost::optional<int>());
+    static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
 protected:
     static void readNodeOrBus(BranchAdder<Adder>& adder, const NetworkXmlReaderContext& context);
@@ -49,11 +50,11 @@ protected:
 
     static void readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder& adder, const NetworkXmlReaderContext& context);
 
-    static void readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index = boost::optional<int>());
+    static void readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
-    static void writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index = boost::optional<int>());
+    static void writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
-    static void writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const boost::optional<int>& index = boost::optional<int>());
+    static void writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
 protected:
     AbstractConnectableXml() = default;
@@ -61,9 +62,9 @@ protected:
     ~AbstractConnectableXml() noexcept override = default;
 
 private:
-    static void writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const boost::optional<int>& index = boost::optional<int>());
+    static void writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
-    static void writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const boost::optional<int>& index = boost::optional<int>());
+    static void writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 };
 
 }  // namespace xml

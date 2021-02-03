@@ -79,13 +79,7 @@ VoltageLevel& LegAdder::checkAndGetVoltageLevel() {
 }
 
 std::string LegAdder::getMessageHeader() const {
-    static std::array<std::string, 3> s_messageHeaders {{
-        u8"3 windings transformer leg1: ",
-        u8"3 windings transformer leg2: ",
-        u8"3 windings transformer leg3: "
-    }};
-
-    return s_messageHeaders[m_legNumber - 1];
+    return stdcxx::format("3 windings transformer leg%1% in substation %2%: ", m_legNumber, m_parent.getSubstation());
 }
 
 LegAdder& LegAdder::setB(double b) {

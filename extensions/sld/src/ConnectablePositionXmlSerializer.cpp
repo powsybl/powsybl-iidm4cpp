@@ -77,7 +77,7 @@ void ConnectablePositionXmlSerializer::write(const Extension& extension, convert
     }
 }
 
-void ConnectablePositionXmlSerializer::writePosition(const ConnectablePosition::Feeder& feeder, converter::xml::NetworkXmlWriterContext& context, const boost::optional<int>& index) const {
+void ConnectablePositionXmlSerializer::writePosition(const ConnectablePosition::Feeder& feeder, converter::xml::NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) const {
     std::string elementName = "feeder";
     if (index) {
         elementName += std::to_string(*index);

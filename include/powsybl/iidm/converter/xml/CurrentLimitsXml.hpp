@@ -10,10 +10,9 @@
 
 #include <string>
 
-#include <boost/optional.hpp>
-
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -33,9 +32,9 @@ namespace xml {
 class CurrentLimitsXml {
 public:
     template <typename S, typename O>
-    static void readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index = boost::optional<int>());
+    static void readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
-    static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const boost::optional<int>& index = boost::optional<int>());
+    static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 };
 
 }  // namespace xml
