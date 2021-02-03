@@ -27,17 +27,17 @@ public:
 public:
     VariantArray(Owner& owner, const VariantFactory& variantFactory);
 
-    VariantArray(const VariantArray& variantArray) = delete;
+    VariantArray(const VariantArray&) = delete;
 
-    VariantArray(VariantArray&& variantArray) noexcept = delete;
+    VariantArray(VariantArray&&) noexcept = delete;
 
     VariantArray(Owner& owner, VariantArray&& variantArray);
 
     ~VariantArray() noexcept = default;
 
-    VariantArray& operator=(const VariantArray& variantArray) = delete;
+    VariantArray& operator=(const VariantArray&) = delete;
 
-    VariantArray& operator=(VariantArray&& variantArray) noexcept = delete;
+    VariantArray& operator=(VariantArray&&) noexcept = delete;
 
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, const VariantFactory& variantFactory);
 
