@@ -18,15 +18,15 @@ class ExtensionFixture : public ResourceFixture {
 public:
     ExtensionFixture();
 
-    ExtensionFixture(const ExtensionFixture& fixture) = default;
+    ExtensionFixture(const ExtensionFixture&) = default;
 
-    ExtensionFixture(ExtensionFixture&& fixture) = default;
+    ExtensionFixture(ExtensionFixture&&) = default;
 
     ~ExtensionFixture() = default;
 
-    ExtensionFixture& operator=(const ExtensionFixture& fixture) = default;
+    ExtensionFixture& operator=(const ExtensionFixture&) = default;
 
-    ExtensionFixture& operator=(ExtensionFixture&& fixture) = default;
+    ExtensionFixture& operator=(ExtensionFixture&&) = default;
 };
 
 }  // namespace test

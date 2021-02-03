@@ -47,15 +47,15 @@ public: // Terminal
 public:
     NodeTerminal(VoltageLevel& voltageLevel, unsigned long node);
 
-    NodeTerminal(const NodeTerminal& nodeTerminal) = delete;
+    NodeTerminal(const NodeTerminal&) = delete;
 
-    NodeTerminal(NodeTerminal&& nodeTerminal) = delete;
+    NodeTerminal(NodeTerminal&&) = delete;
 
     ~NodeTerminal() noexcept override = default;
 
-    NodeTerminal& operator=(const NodeTerminal& nodeTerminal) = delete;
+    NodeTerminal& operator=(const NodeTerminal&) = delete;
 
-    NodeTerminal& operator=(NodeTerminal&& nodeTerminal) = delete;
+    NodeTerminal& operator=(NodeTerminal&&) = delete;
 
     const stdcxx::optional<unsigned long>& getConnectedComponentNumber() const;
 
