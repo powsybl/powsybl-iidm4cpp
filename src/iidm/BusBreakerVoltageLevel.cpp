@@ -161,7 +161,7 @@ stdcxx::CReference<ConfiguredBus> BusBreakerVoltageLevel::getConfiguredBus(const
     stdcxx::Reference<ConfiguredBus> bus;
 
     const auto& v = getVertex(busId, throwException);
-    if (v.is_initialized()) {
+    if (v) {
         bus = m_graph.getVertexObject(*v);
         if (bus.get().getId() != busId) {
             throw PowsyblException(stdcxx::format("Invalid bus id (expected: '%1%', actual: '%2%')", busId, bus.get().getId()));
@@ -221,7 +221,7 @@ stdcxx::Reference<Switch> BusBreakerVoltageLevel::getSwitch(const std::string& s
     stdcxx::Reference<Switch> aSwitch;
 
     const auto& e = getEdge(switchId, throwException);
-    if (e.is_initialized()) {
+    if (e) {
         aSwitch = m_graph.getEdgeObject(*e);
         if (aSwitch.get().getId() != switchId) {
             throw PowsyblException(stdcxx::format("Invalid switch id (expected: '%1%', actual: '%2%')", switchId, aSwitch.get().getId()));
