@@ -124,6 +124,8 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
     assert(node < m_graph.getVertexCount());
     assert(stdcxx::areSame(m_graph.getVertexObject(node).get(), nodeTerminal));
 
+    invalidateCache();
+
     // remove the link terminal <-> graph vertex
     m_graph.setVertexObject(node, stdcxx::ref<NodeTerminal>());
     clean();
@@ -257,7 +259,7 @@ stdcxx::CReference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string&
     stdcxx::Reference<Switch> aSwitch;
 
     const auto& e = getEdge(switchId, false);
-    if (e.is_initialized()) {
+    if (e) {
         aSwitch = m_graph.getEdgeObject(*e);
         if (aSwitch.get().getId() != switchId) {
             throw PowsyblException(stdcxx::format("Invalid switch id (expected: '%1%', actual: '%2%')", switchId, aSwitch.get().getId()));

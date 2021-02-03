@@ -21,11 +21,11 @@ class VariantContextGuard {
 public:
     explicit VariantContextGuard(VariantContext& context);
 
-    VariantContextGuard(const VariantContextGuard& guard) = delete;
+    VariantContextGuard(const VariantContextGuard&) = delete;
 
     ~VariantContextGuard() noexcept;
 
-    VariantContextGuard& operator=(const VariantContextGuard& guard) = delete;
+    VariantContextGuard& operator=(const VariantContextGuard&) = delete;
 
 private:
     VariantContext& m_context;

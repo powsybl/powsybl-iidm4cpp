@@ -186,7 +186,7 @@ double checkLinearBPerSection(const Validable& validable, double bPerSection) {
 }
 
 unsigned long checkMaximumSectionCount(const Validable& validable, const stdcxx::optional<unsigned long>& maximumSectionCount) {
-    if (!maximumSectionCount.is_initialized()) {
+    if (!maximumSectionCount) {
         throw ValidationException(validable, "the maximum number of section is not set");
     }
     if (*maximumSectionCount == 0UL) {
@@ -263,12 +263,7 @@ void checkOnlyOneTapChangerRegulatingEnabled(const Validable& validable, unsigne
 }
 
 const double& checkOptional(const Validable& validable, const stdcxx::optional<double>& value, const std::string& message) {
-#if __cplusplus >= 201703L
-    bool isInitialized = value.has_value();
-#else
-    bool isInitialized = value.is_initialized();
-#endif
-    if (!isInitialized || std::isnan(*value)) {
+    if (!value || std::isnan(*value)) {
         throw ValidationException(validable, message);
     }
     return *value;
@@ -347,7 +342,7 @@ double checkRatedS(const Validable& validable, double ratedS) {
 
 double checkRatedU(const Validable& validable, double ratedU, const stdcxx::optional<unsigned long>& num) {
     if (std::isnan(ratedU)) {
-        std::string strNum = num.is_initialized() ? std::to_string(num.get()) : "";
+        std::string strNum = num ? std::to_string(*num) : "";
         throw ValidationException(validable, stdcxx::format("rated U%1% is invalid", strNum));
     }
     return ratedU;
@@ -385,7 +380,7 @@ void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference
 }
 
 void checkSections(const Validable& validable, const stdcxx::optional<unsigned long>& currentSectionCount, unsigned long maximumSectionCount) {
-    if (!currentSectionCount.is_initialized()) {
+    if (!currentSectionCount) {
         throw ValidationException(validable, "section count is not set");
     }
     if (maximumSectionCount == 0UL) {

@@ -104,35 +104,35 @@ void ConnectablePosition::check(const OptionalFeeder& feeder, const OptionalFeed
 }
 
 stdcxx::CReference<ConnectablePosition::Feeder> ConnectablePosition::getFeeder() const {
-    return m_feeder.is_initialized() ? stdcxx::cref(*m_feeder) : stdcxx::cref<Feeder>();
+    return m_feeder ? stdcxx::cref(*m_feeder) : stdcxx::cref<Feeder>();
 }
 
 stdcxx::Reference<ConnectablePosition::Feeder> ConnectablePosition::getFeeder() {
-    return m_feeder.is_initialized() ? stdcxx::ref(*m_feeder) : stdcxx::ref<Feeder>();
+    return m_feeder ? stdcxx::ref(*m_feeder) : stdcxx::ref<Feeder>();
 }
 
 stdcxx::CReference<ConnectablePosition::Feeder> ConnectablePosition::getFeeder1() const {
-    return m_feeder1.is_initialized() ? stdcxx::cref(*m_feeder1) : stdcxx::cref<Feeder>();
+    return m_feeder1 ? stdcxx::cref(*m_feeder1) : stdcxx::cref<Feeder>();
 }
 
 stdcxx::Reference<ConnectablePosition::Feeder> ConnectablePosition::getFeeder1() {
-    return m_feeder1.is_initialized() ? stdcxx::ref(*m_feeder1) : stdcxx::ref<Feeder>();
+    return m_feeder1 ? stdcxx::ref(*m_feeder1) : stdcxx::ref<Feeder>();
 }
 
 stdcxx::CReference<ConnectablePosition::Feeder> ConnectablePosition::getFeeder2() const {
-    return m_feeder2.is_initialized() ? stdcxx::cref(*m_feeder2) : stdcxx::cref<Feeder>();
+    return m_feeder2 ? stdcxx::cref(*m_feeder2) : stdcxx::cref<Feeder>();
 }
 
 stdcxx::Reference<ConnectablePosition::Feeder> ConnectablePosition::getFeeder2() {
-    return m_feeder2.is_initialized() ? stdcxx::ref(*m_feeder2) : stdcxx::ref<Feeder>();
+    return m_feeder2 ? stdcxx::ref(*m_feeder2) : stdcxx::ref<Feeder>();
 }
 
 stdcxx::CReference<ConnectablePosition::Feeder> ConnectablePosition::getFeeder3() const {
-    return m_feeder3.is_initialized() ? stdcxx::cref(*m_feeder3) : stdcxx::cref<Feeder>();
+    return m_feeder3 ? stdcxx::cref(*m_feeder3) : stdcxx::cref<Feeder>();
 }
 
 stdcxx::Reference<ConnectablePosition::Feeder> ConnectablePosition::getFeeder3() {
-    return m_feeder3.is_initialized() ? stdcxx::ref(*m_feeder3) : stdcxx::ref<Feeder>();
+    return m_feeder3 ? stdcxx::ref(*m_feeder3) : stdcxx::ref<Feeder>();
 }
 
 const std::string& ConnectablePosition::getName() const {

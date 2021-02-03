@@ -67,7 +67,7 @@ stdcxx::Reference<CalculatedBus> CalculatedBusBreakerTopology::getBus2(const std
 }
 
 stdcxx::Reference<Switch> CalculatedBusBreakerTopology::getRetainedSwitch(const stdcxx::optional<unsigned long>& e) const {
-    if (static_cast<bool>(e)) {
+    if (e) {
         const auto& aSwitch = getVoltageLevel().getGraph().getEdgeObject(*e);
         if (aSwitch.get().isRetained()) {
             return aSwitch;

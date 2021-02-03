@@ -50,15 +50,15 @@ public: // Terminal
 public:
     BusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);
 
-    BusTerminal(const BusTerminal& nodeTerminal) = delete;
+    BusTerminal(const BusTerminal&) = delete;
 
-    BusTerminal(BusTerminal&& nodeTerminal) = delete;
+    BusTerminal(BusTerminal&&) = delete;
 
     ~BusTerminal() noexcept override = default;
 
-    BusTerminal& operator=(const BusTerminal& nodeTerminal) = delete;
+    BusTerminal& operator=(const BusTerminal&) = delete;
 
-    BusTerminal& operator=(BusTerminal&& nodeTerminal) = delete;
+    BusTerminal& operator=(BusTerminal&&) = delete;
 
     const std::string& getConnectableBusId() const;
 
