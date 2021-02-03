@@ -22,7 +22,7 @@ namespace converter {
 namespace xml {
 
 template <typename S, typename O>
-void CurrentLimitsXml::readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const boost::optional<int>& index) {
+void CurrentLimitsXml::readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
     const double& permanentLimit = reader.getOptionalAttributeValue(PERMANENT_LIMIT, stdcxx::nan());
     adder.setPermanentLimit(permanentLimit);
     reader.readUntilEndElement(toString(CURRENT_LIMITS, index), [&adder, &reader]() {

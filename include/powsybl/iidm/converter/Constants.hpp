@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include <boost/optional.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -185,7 +185,7 @@ static const char* const X3 = "x3";
 static const char* const XNODE_P_ = "xnodeP_";
 static const char* const XNODE_Q_ = "xnodeQ_";
 
-std::string toString(const char* attribute, boost::optional<int> index);
+std::string toString(const char* attribute, stdcxx::optional<int> index);
 
 }  // namespace converter
 
