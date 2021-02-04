@@ -11,6 +11,7 @@ set(IIDM_SOURCES
 
     iidm/AbstractComponentsManager.cpp
     iidm/AbstractMultiVariantIdentifiableExtension.cpp
+    iidm/AbstractTerminalTopologyVisitor.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
     iidm/Branch.cpp

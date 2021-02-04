@@ -158,6 +158,10 @@ Bus& CalculatedBus::setV(double v) {
     return *this;
 }
 
+void CalculatedBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) {
+    visitEquipments<Terminal>(m_terminals, visitor);
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

@@ -155,6 +155,10 @@ bool Bus::isInMainSynchronousComponent() const {
     return static_cast<bool>(sc) && (sc.get().getNum() == ComponentConstants::MAIN_NUM);
 }
 
+void Bus::visitConnectedEquipments(TopologyVisitor& visitor) {
+    visitEquipments<Terminal>(getConnectedTerminals(), visitor);
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

@@ -56,6 +56,8 @@ public: // Bus
 
     Bus& setV(double v) override;
 
+    void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) override;
+
 public:
     ConfiguredBus(const std::string& id, const std::string& name, bool fictitious, BusBreakerVoltageLevel& voltageLevel);
 

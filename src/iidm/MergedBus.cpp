@@ -182,6 +182,12 @@ Bus& MergedBus::setV(double v) {
     return *this;
 }
 
+void MergedBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) {
+    for (ConfiguredBus& bus : m_buses) {
+        bus.visitConnectedOrConnectableEquipments(visitor);
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

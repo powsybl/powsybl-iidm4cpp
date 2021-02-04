@@ -65,6 +65,8 @@ public: // Bus
 
     Bus& setV(double v) override;
 
+    void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) override;
+
 public:
     /**
      * Create a new MergedBus from a list of ConfiguredBus references

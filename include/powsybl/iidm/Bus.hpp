@@ -30,6 +30,7 @@ class ShuntCompensator;
 class StaticVarCompensator;
 class Terminal;
 class ThreeWindingsTransformer;
+class TopologyVisitor;
 class TwoWindingsTransformer;
 class VoltageLevel;
 class VscConverterStation;
@@ -117,8 +118,15 @@ public:
 
     virtual Bus& setV(double v) = 0;
 
+    void visitConnectedEquipments(TopologyVisitor& visitor);
+
+    virtual void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) = 0;
+
 protected:
     Bus(const std::string& id, const std::string& name, bool fictitious);
+
+    template <typename T>
+    void visitEquipments(const stdcxx::const_range<T>& terminals, TopologyVisitor& visitor) const;
 
 private:  // Identifiable
     const std::string& getTypeDescription() const override;
@@ -142,5 +150,7 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/Bus.hxx>
 
 #endif  // POWSYBL_IIDM_BUS_HPP

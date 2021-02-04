@@ -209,6 +209,10 @@ Bus& ConfiguredBus::setV(double v) {
     return *this;
 }
 
+void ConfiguredBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) {
+    visitEquipments<BusTerminal>(getTerminals(), visitor);
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl
