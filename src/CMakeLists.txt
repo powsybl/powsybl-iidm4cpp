@@ -262,4 +262,6 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/powsybl
     PATTERN "test/*" EXCLUDE
 )
 
-add_subdirectory(test)
+if (BUILD_TESTS)
+    add_subdirectory(test)
+endif()
