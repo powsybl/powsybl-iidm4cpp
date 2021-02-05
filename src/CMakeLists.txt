@@ -201,6 +201,7 @@ set(IIDM_SOURCES
     network/BatteryNetworkFactory.cpp
     network/EurostagFactory.cpp
     network/FictitiousSwitchFactory.cpp
+    network/FourSubstationsNodeBreakerFactory.cpp
     network/LoadBarExt.cpp
     network/LoadFooExt.cpp
     network/MultipleExtensionsTestNetworkFactory.cpp
