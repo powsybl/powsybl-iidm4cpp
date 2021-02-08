@@ -12,7 +12,7 @@
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/SwitchKind.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

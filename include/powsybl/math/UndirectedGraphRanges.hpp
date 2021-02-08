@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_UNDIRECTEDGRAPHRANGES_HPP
 
 #include <powsybl/stdcxx/range.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

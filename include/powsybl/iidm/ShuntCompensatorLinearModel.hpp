@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_SHUNTCOMPENSATORLINEARMODEL_HPP
 
 #include <powsybl/iidm/ShuntCompensatorModel.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

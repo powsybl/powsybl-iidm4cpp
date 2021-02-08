@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(Constructor) {
     powsybl::xml::XmlStreamWriter writer(istream, true);
     ExportOptions exportOptions;
     FakeAnonymizer fakeAnonymizer;
-    stdcxx::reference_wrapper<Anonymizer> anonymizer(fakeAnonymizer);
+    stdcxx::Reference<Anonymizer> anonymizer(fakeAnonymizer);
     Network network("id_network", "name_network");
     const BusFilter& filter = BusFilter::create(network, exportOptions);
     NetworkXmlWriterContext context(anonymizer, writer, exportOptions, filter, IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
