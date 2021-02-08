@@ -32,7 +32,7 @@ std::string IdentifiableAdder<Adder>::checkAndGetUniqueId() const {
 
     std::string uniqueId;
     if (m_ensureIdUnicity) {
-        uniqueId = util::Identifiables::getUniqueId(m_id, [&network](const std::string& id) {
+        uniqueId = Identifiables::getUniqueId(m_id, [&network](const std::string& id) {
             return static_cast<bool>(network.find(id));
         });
     } else {
