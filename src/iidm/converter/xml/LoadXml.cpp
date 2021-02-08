@@ -51,7 +51,7 @@ Load& LoadXml::readRootElementAttributes(LoadAdder& loadAdder, NetworkXmlReaderC
 
 void LoadXml::readSubElements(Load& load, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(LOAD, [this, &load, &context]() {
-        AbstractIdentifiableXml::readSubElements(load, context);
+        AbstractConnectableXml::readSubElements(load, context);
     });
 }
 

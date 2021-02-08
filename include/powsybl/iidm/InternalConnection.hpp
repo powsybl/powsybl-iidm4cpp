@@ -20,7 +20,7 @@ class InternalConnection {
 public:
     InternalConnection(unsigned long node1, unsigned long node2);
 
-    InternalConnection(const InternalConnection& internalConnection) = default;
+    InternalConnection(const InternalConnection&) = default;
 
     ~InternalConnection() = default;
 

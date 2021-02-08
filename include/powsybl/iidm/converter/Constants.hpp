@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include <boost/optional.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -165,6 +165,7 @@ static const char* const TIE_LINE = "tieLine";
 static const char* const TOPOLOGY_KIND = "topologyKind";
 static const char* const TSO = "tso";
 static const char* const TWO_WINDINGS_TRANSFORMER = "twoWindingsTransformer";
+static const char* const TYPE = "type";
 static const char* const UCTE_XNODE_CODE = "ucteXnodeCode";
 static const char* const V = "v";
 static const char* const VALUE = "value";
@@ -184,7 +185,7 @@ static const char* const X3 = "x3";
 static const char* const XNODE_P_ = "xnodeP_";
 static const char* const XNODE_Q_ = "xnodeQ_";
 
-std::string toString(const char* attribute, boost::optional<int> index);
+std::string toString(const char* attribute, stdcxx::optional<int> index);
 
 }  // namespace converter
 

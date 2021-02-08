@@ -30,7 +30,7 @@ DanglingLine& DanglingLineAdder::add() {
     checkG(*this, m_g);
     checkB(*this, m_b);
 
-    std::unique_ptr<DanglingLine::Generation> ptrGeneration = m_generationAdder.is_initialized() ? m_generationAdder->build() : nullptr;
+    std::unique_ptr<DanglingLine::Generation> ptrGeneration = m_generationAdder ? m_generationAdder->build() : nullptr;
 
     std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(),
                                                                                       m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode, std::move(ptrGeneration));

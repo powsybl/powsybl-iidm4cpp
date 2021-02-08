@@ -69,7 +69,7 @@ stdcxx::CReference<Component> AbstractComponentsManager::getComponent(const stdc
     // update() must not be put here, but explicitly called each time before because update may
     // trigger a new component computation and so on a change in the value of the num component already passed
     // (and outdated consequently) in parameter of this method
-    return num.is_initialized() ? stdcxx::cref(*m_components[*num]) : stdcxx::cref<Component>();
+    return num ? stdcxx::cref(*m_components[*num]) : stdcxx::cref<Component>();
 }
 
 stdcxx::const_range<Component> AbstractComponentsManager::getConnectedComponents() const {

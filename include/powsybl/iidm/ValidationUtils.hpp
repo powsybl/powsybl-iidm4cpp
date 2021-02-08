@@ -82,23 +82,14 @@ void checkOnlyOneTapChangerRegulatingEnabled(const Validable& validable, unsigne
 
 template <typename T>
 bool checkOptional(const stdcxx::optional<T>& value) {
-#if __cplusplus >= 201703L
-    return value.has_value();
-#else
-    return value.is_initialized();
-#endif
+    return static_cast<bool>(value);
 }
 
 const double& checkOptional(const Validable& validable, const stdcxx::optional<double>& value, const std::string& message);
 
 template <typename T>
 const T& checkOptional(const Validable& validable, const stdcxx::optional<T>& value, const std::string& message) {
-#if __cplusplus >= 201703L
-    bool isInitialized = value.has_value();
-#else
-    bool isInitialized = value.is_initialized();
-#endif
-    if (!isInitialized) {
+    if (!value) {
         throw ValidationException(validable, message);
     }
     return *value;
