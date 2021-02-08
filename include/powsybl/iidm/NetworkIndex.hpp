@@ -14,7 +14,7 @@
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/stdcxx/range.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

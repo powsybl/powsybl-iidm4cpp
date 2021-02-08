@@ -12,7 +12,7 @@
 #include <set>
 #include <string>
 
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
@@ -33,7 +33,7 @@ public:
      * @param voltageLevel The voltage level to traverse
      * @param node The starting node
      *
-     * @return A terminal for the specified node or an invalid {@link stdcxx::reference_wrapper}.
+     * @return A terminal for the specified node or an invalid {@link stdcxx::Reference}.
      */
     static stdcxx::CReference<Terminal> getEquivalentTerminal(const VoltageLevel& voltageLevel, unsigned long node);
 

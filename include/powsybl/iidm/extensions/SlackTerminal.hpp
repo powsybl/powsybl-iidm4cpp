@@ -11,7 +11,7 @@
 #include <vector>
 
 #include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

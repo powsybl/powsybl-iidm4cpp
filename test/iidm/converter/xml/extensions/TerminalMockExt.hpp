@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_CONVERTER_XML_EXTENSIONS_TERMINALMOCKEXT_HPP
 
 #include <powsybl/iidm/Extension.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

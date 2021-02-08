@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_TERMINALVIEWS_HPP
 #define POWSYBL_IIDM_TERMINALVIEWS_HPP
 
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

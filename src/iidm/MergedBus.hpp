@@ -14,7 +14,7 @@
 #include <vector>
 
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 #include <powsybl/stdcxx/set.hpp>
 
 #include "ConfiguredBus.hpp"

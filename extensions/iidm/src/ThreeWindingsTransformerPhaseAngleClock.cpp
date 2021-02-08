@@ -15,7 +15,7 @@
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
