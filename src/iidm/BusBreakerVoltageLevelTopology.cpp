@@ -12,7 +12,7 @@
 #include <powsybl/math/TraverseResult.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 #include <powsybl/stdcxx/set.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"

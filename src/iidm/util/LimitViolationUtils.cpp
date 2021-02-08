@@ -9,7 +9,7 @@
 
 #include <powsybl/iidm/CurrentLimits.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

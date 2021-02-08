@@ -11,7 +11,7 @@
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/DanglingLineGeneration.hpp>
 #include <powsybl/iidm/Injection.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

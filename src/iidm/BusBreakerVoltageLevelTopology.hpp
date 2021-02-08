@@ -12,7 +12,7 @@
 #include <memory>
 #include <vector>
 
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 #include "BusBreakerVoltageLevelBusCache.hpp"
 #include "MergedBus.hpp"
