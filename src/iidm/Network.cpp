@@ -50,7 +50,7 @@ Network Network::readXml(const boost::filesystem::path& path, const converter::I
     if (!is.is_open()) {
         throw PowsyblException(stdcxx::format("Unable to open file '%1%' for reading", path.filename().string()));
     }
-    return readXml(path.filename().string(), is, options);
+    return converter::xml::NetworkXml::read(path.filename().string(), is, options);
 }
 
 Network Network::readXml(const std::string& filename, std::istream& istream, const converter::ImportOptions& options) {
@@ -62,7 +62,7 @@ void Network::writeXml(const boost::filesystem::path& path, const Network& netwo
     if (!os.is_open()) {
         throw PowsyblException(stdcxx::format("Unable to open file '%1%' for writing", path.filename().string()));
     }
-    writeXml(path.filename().string(), os, network, options);
+    converter::xml::NetworkXml::write(path.filename().string(), os, network, options);
 }
 
 void Network::writeXml(const std::string& filename, std::ostream& ostream, const Network& network, const converter::ExportOptions& options) {
