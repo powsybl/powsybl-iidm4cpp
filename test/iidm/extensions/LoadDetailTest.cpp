@@ -170,11 +170,12 @@ BOOST_FIXTURE_TEST_CASE(LoadDetailXmlSerializerTest, test::ResourceFixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(LoadDetailXmlSerializerOldRefTest, test::ResourceFixture) {
-    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetwork("loadDetailOldRef.xml", converter::xml::IidmXmlVersion::V1_2()));
+    std::istringstream stream(test::converter::RoundTrip::getVersionedNetwork("loadDetailOldRef.xml", converter::xml::IidmXmlVersion::V1_2()));
+    Network network = Network::readXml("network.xiidm", stream);
     const std::string& refNetwork = test::converter::RoundTrip::getVersionedNetwork("loadDetailRef.xml", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 
     std::stringstream ostream;
-    Network::writeXml(ostream, network);
+    Network::writeXml(stdcxx::format("%1%.xiidm", network.getId()), ostream, network);
     BOOST_CHECK_EQUAL(refNetwork, ostream.str());
 }
 
