@@ -272,12 +272,7 @@ std::unique_ptr<Anonymizer> NetworkXml::write(const std::string& /*filename*/, s
 
     powsybl::xml::XmlStreamWriter writer(os, options.isIndent());
 
-    std::unique_ptr<Anonymizer> anonymizer;
-    if (options.isAnonymized()) {
-        anonymizer = stdcxx::make_unique<SimpleAnonymizer>();
-    } else {
-        anonymizer = stdcxx::make_unique<FakeAnonymizer>();
-    }
+    std::unique_ptr<Anonymizer> anonymizer = options.isAnonymized() ? stdcxx::make_unique<Anonymizer, SimpleAnonymizer>() : stdcxx::make_unique<Anonymizer, FakeAnonymizer>();
 
     const BusFilter& filter = BusFilter::create(network, options);
 

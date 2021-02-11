@@ -26,13 +26,17 @@ Country SimpleAnonymizer::anonymizeCountry(const Country& country) {
 }
 
 std::string SimpleAnonymizer::anonymizeString(const std::string& str) {
-    auto it = m_mapping.find(str);
-    if (it != m_mapping.end()) {
+    if (str.empty()) {
+        return "";
+    }
+
+    auto it = m_mapping.left.find(str);
+    if (it != m_mapping.left.end()) {
         return it->second;
     }
-    auto status = m_mapping.emplace(str, getAlpha(m_mapping.size() + 1));
-    m_reverseMapping[status.first->second] = str;
-    return status.first->second;
+    const std::string& anonymizedStr = getAlpha(m_mapping.size() + 1);
+    m_mapping.insert(Mapping::value_type(str, anonymizedStr));
+    return anonymizedStr;
 }
 
 Country SimpleAnonymizer::deanonymizeCountry(const Country& country) const {
@@ -43,8 +47,9 @@ std::string SimpleAnonymizer::deanonymizeString(const std::string& anonymousStr)
     if (anonymousStr.empty()) {
         return "";
     }
-    auto it = m_reverseMapping.find(anonymousStr);
-    if (it == m_reverseMapping.end()) {
+
+    auto it = m_mapping.right.find(anonymousStr);
+    if (it == m_mapping.right.end()) {
         throw PowsyblException(stdcxx::format("Mapping not found for anonymized string '%1%'", anonymousStr));
     }
     return it->second;
@@ -78,13 +83,12 @@ void SimpleAnonymizer::read(std::istream& stream) {
             throw PowsyblException(stdcxx::format("Invalid line '%1%'", line));
         }
 
-        m_mapping[cells[0]] = cells[1];
-        m_reverseMapping[cells[1]] = cells[0];
+        m_mapping.insert(Mapping::value_type(cells[0], cells[1]));
     }
 }
 
 void SimpleAnonymizer::write(std::ostream& stream) const {
-    for (const auto& pair : m_mapping) {
+    for (const auto& pair : m_mapping.left) {
         stream << pair.first << ';' << pair.second << std::endl;
     }
 }

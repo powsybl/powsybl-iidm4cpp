@@ -34,6 +34,14 @@ public:
     FakeAnonymizer() = default;
 
     ~FakeAnonymizer() override = default;
+
+    FakeAnonymizer(const FakeAnonymizer&) = default;
+
+    FakeAnonymizer(FakeAnonymizer&&) noexcept = default;
+
+    FakeAnonymizer& operator=(const FakeAnonymizer&) = default;
+
+    FakeAnonymizer& operator=(FakeAnonymizer&&) noexcept = default;
 };
 
 }  // namespace converter

@@ -40,10 +40,12 @@ BOOST_AUTO_TEST_CASE(SimpleAnonymizationTest) {
     BOOST_CHECK_EQUAL("A", anonymizer.anonymizeString("test"));
     BOOST_CHECK_EQUAL("B", anonymizer.anonymizeString("a"));
     BOOST_CHECK_EQUAL("C", anonymizer.anonymizeString("b"));
+    BOOST_CHECK_EQUAL("", anonymizer.anonymizeString(""));
 
     BOOST_CHECK_EQUAL("test", anonymizer.deanonymizeString("A"));
     BOOST_CHECK_EQUAL("a", anonymizer.deanonymizeString("B"));
     BOOST_CHECK_EQUAL("b", anonymizer.deanonymizeString("C"));
+    BOOST_CHECK_EQUAL("", anonymizer.deanonymizeString(""));
 
     POWSYBL_ASSERT_THROW(anonymizer.deanonymizeString("FAKE"), PowsyblException, "Mapping not found for anonymized string 'FAKE'");
 }

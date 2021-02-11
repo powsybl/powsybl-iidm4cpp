@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_CONVERTER_SIMPLEANONYMIZER_HPP
 #define POWSYBL_IIDM_CONVERTER_SIMPLEANONYMIZER_HPP
 
-#include <map>
+#include <boost/bimap.hpp>
 
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 
@@ -39,13 +39,11 @@ public:
 
     SimpleAnonymizer(const SimpleAnonymizer&) = default;
 
-    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept
-    SimpleAnonymizer(SimpleAnonymizer&&) = default;  // NOSONAR
+    SimpleAnonymizer(SimpleAnonymizer&&) = default;
 
     SimpleAnonymizer& operator=(const SimpleAnonymizer&) = default;
 
-    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept
-    SimpleAnonymizer& operator=(SimpleAnonymizer&&) = default;  // NOSONAR
+    SimpleAnonymizer& operator=(SimpleAnonymizer&&) = default;
 
     unsigned long getStringCount() const;
 
@@ -53,9 +51,10 @@ private:
     static std::string getAlpha(unsigned long num);
 
 private:
-    std::map<std::string, std::string> m_mapping;
+    using Mapping = boost::bimap<std::string, std::string>;
 
-    std::map<std::string, std::string> m_reverseMapping;
+private:
+    Mapping m_mapping;
 };
 
 }  // namespace converter
