@@ -21,8 +21,18 @@ public:
 
     ~MultipleVariantContext() noexcept override = default;
 
+    MultipleVariantContext(const MultipleVariantContext&) = default;
+
+    MultipleVariantContext(MultipleVariantContext&&) = default;
+
+    MultipleVariantContext& operator=(const MultipleVariantContext&) = default;
+
+    MultipleVariantContext& operator=(MultipleVariantContext&&) = default;
+
 protected: // VariantContext
     unsigned long getVariantIndex() const override;
+
+    bool isIndexSet() const override;
 
     void resetIfVariantIndexIs(unsigned long index) override;
 

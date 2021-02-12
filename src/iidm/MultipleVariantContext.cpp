@@ -24,6 +24,10 @@ unsigned long MultipleVariantContext::getVariantIndex() const {
     return m_index.get();
 }
 
+bool MultipleVariantContext::isIndexSet() const {
+    return static_cast<bool>(m_index);
+}
+
 void MultipleVariantContext::resetIfVariantIndexIs(unsigned long index) {
     if (m_index == index) {
         m_index.reset();

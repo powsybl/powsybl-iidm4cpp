@@ -111,6 +111,7 @@ set(IIDM_SOURCES
     iidm/SynchronousComponentsManager.cpp
     iidm/Terminal.cpp
     iidm/TerminalBuilder.cpp
+    iidm/ThreadLocalMultipleVariantContext.cpp
     iidm/ThreeWindingsTransformer.cpp
     iidm/ThreeWindingsTransformerLeg.cpp
     iidm/ThreeWindingsTransformerLegAdder.cpp
