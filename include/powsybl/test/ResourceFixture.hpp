@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include <boost/filesystem/path.hpp>
+
 #include <powsybl/test/CommandLine.hpp>
 
 namespace powsybl {
@@ -21,6 +23,8 @@ public:
     ResourceFixture();
 
     std::string getResource(const std::string& name) const;
+
+    boost::filesystem::path getResourcePath(const std::string& name) const;
 };
 
 }  // namespace test
