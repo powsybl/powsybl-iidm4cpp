@@ -40,11 +40,13 @@ std::string RoundTrip::getVersionDir(const iidm::converter::xml::IidmXmlVersion&
 std::string RoundTrip::getVersionedNetwork(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
     ResourceFixture fixture;
 
-    return fixture.getResource(getVersionedNetworkPath(filename, version));
+    return fixture.getResource(getVersionDir(version) + filename);
 }
 
-std::string RoundTrip::getVersionedNetworkPath(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
-    return getVersionDir(version) + filename;
+boost::filesystem::path RoundTrip::getVersionedNetworkPath(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version) {
+    ResourceFixture fixture;
+
+    return fixture.getResourcePath(getVersionDir(version) + filename);
 }
 
 void RoundTrip::roundTripAllPreviousVersionedXmlTest(const std::string& filename) {

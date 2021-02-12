@@ -56,9 +56,7 @@ BOOST_AUTO_TEST_CASE(TerminalExtension) {
     Load& load = network.getLoad("LOAD");
     load.addExtension(stdcxx::make_unique<extensions::TerminalMockExt>(load));
 
-    const std::string& filename = "eurostag-tutorial-example1-with-terminalMock-ext.xml";
-    std::istringstream stream(test::converter::RoundTrip::getVersionedNetwork(filename, IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
-    Network network2 = Network::readXml(filename, stream);
+    Network network2 = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("eurostag-tutorial-example1-with-terminalMock-ext.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
     Load& load2 = network2.getLoad("LOAD");
     const auto& terminalMockExt = load2.getExtension<extensions::TerminalMockExt>();
     BOOST_TEST(stdcxx::areSame(load2.getTerminal(), terminalMockExt.getTerminal()));
@@ -67,19 +65,13 @@ BOOST_AUTO_TEST_CASE(TerminalExtension) {
 }
 
 BOOST_AUTO_TEST_CASE(IncompatibleExtensionVersion) {
-    const std::string& filename = "eurostag-tutorial-example1-with-bad-loadMockExt.xml";
-    const std::string& strNetwork = test::converter::RoundTrip::getVersionedNetwork(filename, IidmXmlVersion::V1_1());
-
-    std::istringstream stream(strNetwork);
-    POWSYBL_ASSERT_THROW(Network::readXml(filename, stream), PowsyblException, "IIDM-XML version of network (1.1) is not compatible with the loadMock extension's namespace URI");
+    const auto& path = test::converter::RoundTrip::getVersionedNetworkPath("eurostag-tutorial-example1-with-bad-loadMockExt.xml", IidmXmlVersion::V1_1());
+    POWSYBL_ASSERT_THROW(Network::readXml(path), PowsyblException, "IIDM-XML version of network (1.1) is not compatible with the loadMock extension's namespace URI");
 }
 
 BOOST_AUTO_TEST_CASE(UnsupportedExtensionVersion) {
-    const std::string& filename = "eurostag-tutorial-example1-with-bad-loadQuxExt.xml";
-    const std::string& strNetwork = test::converter::RoundTrip::getVersionedNetwork(filename, IidmXmlVersion::V1_1());
-
-    std::istringstream stream(strNetwork);
-    POWSYBL_ASSERT_THROW(Network::readXml(filename, stream), PowsyblException, "IIDM-XML version of network (1.1) is not supported by the loadQux extension's XML serializer");
+    const auto& path = test::converter::RoundTrip::getVersionedNetworkPath("eurostag-tutorial-example1-with-bad-loadQuxExt.xml", IidmXmlVersion::V1_1());
+    POWSYBL_ASSERT_THROW(Network::readXml(path), PowsyblException, "IIDM-XML version of network (1.1) is not supported by the loadQux extension's XML serializer");
 }
 
 BOOST_AUTO_TEST_CASE(MultipleExtensionRoundTrip) {
@@ -88,8 +80,7 @@ BOOST_AUTO_TEST_CASE(MultipleExtensionRoundTrip) {
 
 BOOST_AUTO_TEST_CASE(NotLatestVersionTerminalExtension) {
     const std::string& filename = "eurostag-tutorial-example1-with-loadMockExt-1_2.xml";
-    std::istringstream stream(test::converter::RoundTrip::getVersionedNetwork(filename, IidmXmlVersion::V1_1()));
-    const auto& network = Network::readXml(filename, stream);
+    const auto& network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath(filename, IidmXmlVersion::V1_1()));
 
     // properties specify that IIDM-XML network version to export is 1.1
     // FIXME(mathbag): Implement properties
@@ -108,12 +99,10 @@ BOOST_AUTO_TEST_CASE(NotLatestVersionTerminalExtension) {
 }
 
 BOOST_AUTO_TEST_CASE(ThrowErrorIncompatibleExtensionVersion) {
-    const std::string& filename = "eurostag-tutorial-example1-with-bad-loadMockExt.xml";
-    const auto& strNetwork = test::converter::RoundTrip::getVersionedNetwork(filename, IidmXmlVersion::V1_1());
+    const auto& path = test::converter::RoundTrip::getVersionedNetworkPath("eurostag-tutorial-example1-with-bad-loadMockExt.xml", IidmXmlVersion::V1_1());
 
     // should fail while trying to import a file in IIDM-XML network version 1.1 and loadMock in v1.0 (not compatible)
-    std::istringstream stream(strNetwork);
-    POWSYBL_ASSERT_THROW(Network::readXml(filename, stream), PowsyblException, "IIDM-XML version of network (1.1) is not compatible with the loadMock extension's namespace URI");
+    POWSYBL_ASSERT_THROW(Network::readXml(path), PowsyblException, "IIDM-XML version of network (1.1) is not compatible with the loadMock extension's namespace URI");
 }
 
 BOOST_AUTO_TEST_CASE(ThrowErrorUnsupportedExtensionVersion1) {
@@ -129,12 +118,10 @@ BOOST_AUTO_TEST_CASE(ThrowErrorUnsupportedExtensionVersion1) {
 }
 
 BOOST_AUTO_TEST_CASE(ThrowErrorUnsupportedExtensionVersion2) {
-    const std::string& filename = "eurostag-tutorial-example1-with-bad-loadQuxExt.xml";
-    const auto& strNetwork = test::converter::RoundTrip::getVersionedNetwork(filename, IidmXmlVersion::V1_1());
+    const auto& path = test::converter::RoundTrip::getVersionedNetworkPath("eurostag-tutorial-example1-with-bad-loadQuxExt.xml", IidmXmlVersion::V1_1());
 
     // should fail while trying to import a file in IIDM-XML network version 1.1 and loadMock in v1.0 (not compatible)
-    std::istringstream stream(strNetwork);
-    POWSYBL_ASSERT_THROW(Network::readXml(filename, stream), PowsyblException, "IIDM-XML version of network (1.1) is not supported by the loadQux extension's XML serializer");
+    POWSYBL_ASSERT_THROW(Network::readXml(path), PowsyblException, "IIDM-XML version of network (1.1) is not supported by the loadQux extension's XML serializer");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -25,9 +25,7 @@ BOOST_AUTO_TEST_SUITE(OptionalLoadTypeTest)
 
 BOOST_AUTO_TEST_CASE(OptionalLoadTypeFromXml) {
     for (const auto& version : IidmXmlVersion::all()) {
-        const std::string& filename = "optionalLoadTypeBug.xml";
-        std::istringstream stream(test::converter::RoundTrip::getVersionedNetwork(filename, version.get()));
-        Network network = Network::readXml(filename, stream);
+        Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("optionalLoadTypeBug.xml", version.get()));
         BOOST_CHECK_EQUAL(LoadType::UNDEFINED, network.getLoad("L").getLoadType());
     }
 }
