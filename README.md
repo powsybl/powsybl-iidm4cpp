@@ -18,6 +18,7 @@
 - [Build from sources](#build-from-sources)
     - [Build the examples](#build-the-examples)
     - [Generate the documentation](#generate-the-documentation)
+    - [Disable unit tests generation](#disable-tests-generation)
 - [Link with powsybl-iidm4cpp](#link-with-powsybl-iidm4cpp)
 - [Contributing](#contributing)
 
@@ -145,6 +146,7 @@ $> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE>
 **Available options:**
 - BUILD_DOXYGEN: Generate the API documentation using doxygen (Default is **OFF**)
 - BUILD_EXAMPLES: Build the examples (Default is **OFF**)
+- BUILD_TESTS: Generate unit tests (Default is **ON**)
 
 **Note:** Under Windows the **Boost** libraries or **LibXML** libraries could be installed in a custom third parties folder, so you would have to help `cmake` to find the required packages, using the `-DCMAKE_PREFIX_PATH` options:
 ```
@@ -182,6 +184,14 @@ $> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE> -DBU
 $> cmake --build . --target doxygen
 ```
 The HTML documentation is available in `<BUILD_DIR>/doc/html/index.html`.
+
+### Disable unit tests generation
+Unit tests generation may be disabled to increase compilation time. When disabled, `Boost::unit_test_framework` is not necessary to build successfully.
+To disable tests generation, add `-DBUILD_TESTS=OFF` flag to the configure command line.
+```
+$> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE> -DBUILD_TESTS=OFF
+$> cmake --build .
+```
 
 ## Link with powsybl-iidm4cpp
 We provide cmake script files that make it easy to use `powsybl-iidm4cpp` in a CMake project, that are installed in the `<PREFIX>/LibIIDM/cmake` folder.

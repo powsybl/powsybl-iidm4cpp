@@ -22,6 +22,7 @@ set(INSTALL_DOC_DIR share CACHE PATH "Installation directory for doxygen files")
 
 option(BUILD_DOXYGEN "Enable/Disable the generation of the Doxygen." OFF)
 option(BUILD_EXAMPLES "Enable/Disable the compilation of the examples." OFF)
+option(BUILD_TESTS "Enable/Disable the compilation of unit tests." ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -41,7 +42,11 @@ elseif (MSVC)
 endif ()
 
 set(Boost_USE_STATIC_LIBS OFF)
-find_package(Boost 1.65 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
+if (BUILD_TESTS)
+    find_package(Boost 1.65 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
+else ()
+    find_package(Boost 1.65 REQUIRED COMPONENTS date_time filesystem program_options system)
+endif()
 find_package(LibXml2 REQUIRED)
 
 if (WIN32)
@@ -55,6 +60,9 @@ enable_testing()
 
 set(CODE_COVERAGE FALSE CACHE BOOL "Enable code coverage")
 if (CODE_COVERAGE)
+    # if code-coverage is ON, force tests build
+    set(BUILD_TESTS ON)
+
     include(CodeCoverage)
     code_coverage(NAME code-coverage
         OUTPUT_DIR coverage
@@ -67,9 +75,13 @@ if (BUILD_DOXYGEN)
 endif ()
 
 add_subdirectory(src)
-add_subdirectory(test)
 add_subdirectory(extensions)
 add_subdirectory(tools)
+
+if (BUILD_TESTS)
+    add_subdirectory(test)
+endif ()
+
 if (BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif ()
