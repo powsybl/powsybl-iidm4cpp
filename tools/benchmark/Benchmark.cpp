@@ -109,25 +109,9 @@ int main(int argc, char** argv) {
         // Load the XIIDM extensions
         loadExtensions(vm[EXT_PATH].as<std::string>());
 
-        const auto& inputFile = vm[INPUT_FILE].as<std::string>();
-        std::ifstream inputStream(inputFile);
-        if (!inputStream.is_open()) {
-            std::cerr << stdcxx::format("Unable to open file '%1%' for reading", inputFile) << std::endl;
-            return EXIT_FAILURE;
-        }
+        const powsybl::iidm::Network& network = powsybl::iidm::Network::readXml(vm[INPUT_FILE].as<std::string>(), powsybl::iidm::converter::ImportOptions(options));
+        powsybl::iidm::Network::writeXml(vm[OUTPUT_FILE].as<std::string>(), network, powsybl::iidm::converter::ExportOptions(options));
 
-        const auto& outputFile = vm[OUTPUT_FILE].as<std::string>();
-        std::ofstream outputStream(outputFile);
-        if (!outputStream.is_open()) {
-            std::cerr << stdcxx::format("Unable to open file '%1%' for writing", outputFile) << std::endl;
-            return EXIT_FAILURE;
-        }
-
-        const powsybl::iidm::Network& network = powsybl::iidm::Network::readXml(inputStream, powsybl::iidm::converter::ImportOptions(options), powsybl::iidm::converter::FakeAnonymizer());
-        powsybl::iidm::Network::writeXml(outputStream, network, powsybl::iidm::converter::ExportOptions(options));
-
-        inputStream.close();
-        outputStream.close();
     } catch (const boost::program_options::error& e) {
         std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
         std::cerr << desc << std::endl;
