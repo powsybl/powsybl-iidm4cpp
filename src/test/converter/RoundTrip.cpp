@@ -73,8 +73,8 @@ void RoundTrip::roundTripVersionedXmlTest(const std::string& filename, const iid
         iidm::Network::writeXml(filename, stream, n, options);
     };
 
-    const auto& reader = [&filename](const std::string& networkStr) {
-        std::istringstream stream(networkStr);
+    const auto& reader = [&filename](const std::string& xmlBytes) {
+        std::istringstream stream(xmlBytes);
         return iidm::Network::readXml(filename, stream);
     };
 
@@ -98,14 +98,15 @@ iidm::Network RoundTrip::run(const iidm::Network& network, const Writer& out, co
 }
 
 iidm::Network RoundTrip::runXml(const iidm::Network& network, const std::string& ref) {
-    const auto& writer = [](const iidm::Network& n, std::ostream& stream) {
-        const std::string& filename = stdcxx::format("%1%.xiidm", n.getId());
+    const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
+
+    const auto& writer = [&filename](const iidm::Network& n, std::ostream& stream) {
         iidm::Network::writeXml(filename, stream, n);
     };
 
-    const auto& reader = [](const std::string& networkStr) {
-        std::istringstream stream(networkStr);
-        return iidm::Network::readXml("network.xiidm", stream);
+    const auto& reader = [&filename](const std::string& xmlBytes) {
+        std::istringstream stream(xmlBytes);
+        return iidm::Network::readXml(filename, stream);
     };
 
     return run(network, writer, reader, compareXml, ref);
