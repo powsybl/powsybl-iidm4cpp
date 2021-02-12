@@ -121,14 +121,15 @@ BOOST_FIXTURE_TEST_CASE(DanglingLineWithGenerationTest, test::ResourceFixture) {
     test::converter::RoundTrip::testForAllPreviousVersions(IidmXmlVersion::V1_3(), [&network](const iidm::converter::xml::IidmXmlVersion& version) {
         std::stringstream ss;
         ExportOptions options = ExportOptions().setVersion(version.toString("."));
-        POWSYBL_ASSERT_THROW(Network::writeXml(ss, network, options), PowsyblException, stdcxx::format("danglingLine.generation is not null and not supported for IIDM-XML version %1%. IIDM-XML version should be >= 1.3", version.toString(".")).c_str());
+        const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
+        POWSYBL_ASSERT_THROW(Network::writeXml(filename, ss, network, options), PowsyblException, stdcxx::format("danglingLine.generation is not null and not supported for IIDM-XML version %1%. IIDM-XML version should be >= 1.3", version.toString(".")).c_str());
     });
 
     // check it doesn't fail for all versions < 1.3 if IidmVersionIncompatibilityBehavior is to log error
     test::converter::RoundTrip::testForAllPreviousVersions(IidmXmlVersion::V1_3(), [&network](const iidm::converter::xml::IidmXmlVersion& version) {
         ExportOptions options = ExportOptions().setVersion(version.toString(".")).setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR);
         const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
-            iidm::Network::writeXml(stream, n, options);
+            iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);
         };
         test::converter::RoundTrip::writeXmlTest(network, writer, test::converter::RoundTrip::getVersionedNetwork("danglingLineWithGeneration.xml", version));
     });

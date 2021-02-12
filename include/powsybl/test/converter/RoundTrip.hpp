@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include <boost/filesystem/path.hpp>
+
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 
@@ -40,7 +42,7 @@ public:
 
     static std::string getVersionedNetwork(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
 
-    static std::string getVersionedNetworkPath(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
+    static boost::filesystem::path getVersionedNetworkPath(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& version);
 
     static void roundTripAllPreviousVersionedXmlTest(const std::string& filename);
 

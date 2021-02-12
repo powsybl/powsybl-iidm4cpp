@@ -32,7 +32,7 @@ public: // Validable
 public:
     Identifiable(const Identifiable&) = delete;
 
-    // Move constructor of stdcxx::Properties is not marked noexcept
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of stdcxx::Properties is not marked noexcept
     Identifiable(Identifiable&&) = default;  // NOSONAR
 
     ~Identifiable() noexcept override = default;

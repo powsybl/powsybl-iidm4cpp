@@ -10,6 +10,7 @@
 #include <sstream>
 #include <unordered_set>
 
+#include <boost/filesystem/fstream.hpp>
 #include <boost/range/join.hpp>
 
 #include <powsybl/iidm/Battery.hpp>
@@ -44,26 +45,28 @@ namespace powsybl {
 
 namespace iidm {
 
-Network Network::readXml(const std::string& data) {
-    std::stringstream stream(data);
-    return readXml(stream);
+Network Network::readXml(const boost::filesystem::path& path, const converter::ImportOptions& options) {
+    boost::filesystem::ifstream is(path);
+    if (!is.is_open()) {
+        throw PowsyblException(stdcxx::format("Unable to open file '%1%' for reading", path.filename().string()));
+    }
+    return converter::xml::NetworkXml::read(path.filename().string(), is, options);
 }
 
-Network Network::readXml(std::istream& istream) {
-    return readXml(istream, converter::ImportOptions(), converter::FakeAnonymizer());
+Network Network::readXml(const std::string& filename, std::istream& istream, const converter::ImportOptions& options) {
+    return converter::xml::NetworkXml::read(filename, istream, options);
 }
 
-Network Network::readXml(std::istream& istream, const converter::ImportOptions& options, const converter::Anonymizer& anonymizer) {
-    return converter::xml::NetworkXml::read(istream, options, anonymizer);
+void Network::writeXml(const boost::filesystem::path& path, const Network& network, const converter::ExportOptions& options) {
+    boost::filesystem::ofstream os(path);
+    if (!os.is_open()) {
+        throw PowsyblException(stdcxx::format("Unable to open file '%1%' for writing", path.filename().string()));
+    }
+    converter::xml::NetworkXml::write(path.filename().string(), os, network, options);
 }
 
-std::unique_ptr<converter::Anonymizer> Network::writeXml(std::ostream& ostream, const Network& network) {
-    converter::ExportOptions options;
-    return writeXml(ostream, network, options);
-}
-
-std::unique_ptr<converter::Anonymizer> Network::writeXml(std::ostream& ostream, const Network& network, const converter::ExportOptions& options) {
-    return converter::xml::NetworkXml::write(ostream, network, options);
+void Network::writeXml(const std::string& filename, std::ostream& ostream, const Network& network, const converter::ExportOptions& options) {
+    converter::xml::NetworkXml::write(filename, ostream, network, options);
 }
 
 Network::Network(const std::string& id, const std::string& sourceFormat) :

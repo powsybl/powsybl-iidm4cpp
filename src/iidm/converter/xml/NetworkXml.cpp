@@ -192,7 +192,7 @@ void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
     }
 }
 
-Network NetworkXml::read(std::istream& is, const ImportOptions& options, const Anonymizer& anonymizer) {
+Network NetworkXml::read(const std::string& /*filename*/, std::istream& is, const ImportOptions& options) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
 
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -216,6 +216,10 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
     } catch (const PowsyblException& err) {
         throw powsybl::xml::XmlStreamException(err.what());
     }
+
+    // TODO(sebalaig) handle anonymization by reading csv file if it exists
+    // For now on, use a FakeAnonymizer
+    FakeAnonymizer anonymizer;
 
     NetworkXmlReaderContext context(anonymizer, reader, options, version);
 
@@ -260,12 +264,12 @@ Network NetworkXml::read(std::istream& is, const ImportOptions& options, const A
     return network;
 }
 
-std::unique_ptr<Anonymizer> NetworkXml::write(std::ostream& ostream, const Network& network, const ExportOptions& options) {
+std::unique_ptr<Anonymizer> NetworkXml::write(const std::string& /*filename*/, std::ostream& os, const Network& network, const ExportOptions& options) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
-    powsybl::xml::XmlStreamWriter writer(ostream, options.isIndent());
+    powsybl::xml::XmlStreamWriter writer(os, options.isIndent());
 
     // FIXME(sebalaig): for now on, only one kind of anonymizer = FakeAnonymizer
     // later, a real anonymizer will be instantiated depending on options.isAnonymized()
