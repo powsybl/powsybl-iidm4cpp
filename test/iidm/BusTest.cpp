@@ -38,8 +38,9 @@
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
-#include <powsybl/network/FourSubstationsNodeBreakerFactory.hpp>
 #include <powsybl/stdcxx/range.hpp>
+
+#include "NetworkFactory.hpp"
 
 namespace powsybl {
 
@@ -612,18 +613,31 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorAll) {
 }
 
 BOOST_AUTO_TEST_CASE(TerminalVisitor) {
-    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    Network network("test", "test");
+
+    Substation& s = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+
+    VoltageLevel& vl = s.newVoltageLevel()
+        .setId("VL")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalVoltage(400.0)
+        .add();
+
+    BusbarSection& bbs = vl.getNodeBreakerView().newBusbarSection()
+        .setId("BBS")
+        .setName("BBS_NAME")
+        .setNode(0)
+        .add();
 
     TerminalTopologyVisitor connectedEquipmentsVisitor;
 
-    network.getBusbarSection("S1VL1_BBS").getTerminal().getBusView().getBus().get().visitConnectedOrConnectableEquipments(connectedEquipmentsVisitor);
-    network.getBusbarSection("S1VL2_BBS1").getTerminal().getBusView().getBus().get().visitConnectedOrConnectableEquipments(connectedEquipmentsVisitor);
-    network.getBusbarSection("S1VL2_BBS2").getTerminal().getBusView().getBus().get().visitConnectedOrConnectableEquipments(connectedEquipmentsVisitor);
-    network.getBusbarSection("S2VL1_BBS").getTerminal().getBusView().getBus().get().visitConnectedOrConnectableEquipments(connectedEquipmentsVisitor);
-    network.getBusbarSection("S3VL1_BBS").getTerminal().getBusView().getBus().get().visitConnectedOrConnectableEquipments(connectedEquipmentsVisitor);
-    BOOST_CHECK_EQUAL(7, boost::size(connectedEquipmentsVisitor.getConnectables()));
+    network.getBusbarSection("BBS").getTerminal().getBusBreakerView().getBus().get().visitConnectedOrConnectableEquipments(connectedEquipmentsVisitor);
+    BOOST_CHECK_EQUAL(33, boost::size(connectedEquipmentsVisitor.getConnectables()));
 
-    std::set<std::string> connectedBbs = { "S1VL1_BBS", "S1VL2_BBS1", "S1VL2_BBS2", "S2VL1_BBS", "S3VL1_BBS" };
+    std::set<std::string> connectedBbs = { "BBS" };
     BOOST_CHECK(connectedBbs == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::BUSBAR_SECTION)->second);
 
     std::set<std::string> connectedLines = { "LINE_S2S3", "LINE_S3S4" };
