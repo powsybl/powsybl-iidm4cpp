@@ -33,6 +33,9 @@ public:  // Anonymizer
     void write(std::ostream& stream) const override;
 
 public:
+    static std::string getAlpha(unsigned long num);
+
+public:
     SimpleAnonymizer() = default;
 
     ~SimpleAnonymizer() override = default;
@@ -46,9 +49,6 @@ public:
     SimpleAnonymizer& operator=(SimpleAnonymizer&&) = default;
 
     unsigned long getStringCount() const;
-
-private:
-    static std::string getAlpha(unsigned long num);
 
 private:
     using Mapping = boost::bimap<std::string, std::string>;

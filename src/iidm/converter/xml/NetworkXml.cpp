@@ -9,6 +9,8 @@
 
 #include <chrono>
 
+#include <boost/filesystem/fstream.hpp>
+
 #include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
@@ -193,7 +195,7 @@ void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
     }
 }
 
-Network NetworkXml::read(const std::string& /*filename*/, std::istream& is, const ImportOptions& options) {
+Network NetworkXml::read(const std::string& filename, std::istream& is, const ImportOptions& options) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
 
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -218,11 +220,21 @@ Network NetworkXml::read(const std::string& /*filename*/, std::istream& is, cons
         throw powsybl::xml::XmlStreamException(err.what());
     }
 
-    // TODO(sebalaig) handle anonymization by reading csv file if it exists
-    // For now on, use a FakeAnonymizer
-    FakeAnonymizer anonymizer;
+    boost::filesystem::path csvPath = boost::filesystem::path(filename).replace_extension("csv");
+    std::unique_ptr<Anonymizer> anonymizer;
 
-    NetworkXmlReaderContext context(anonymizer, reader, options, version);
+    if (boost::filesystem::exists(csvPath)) {
+        anonymizer = stdcxx::make_unique<SimpleAnonymizer>();
+        boost::filesystem::ifstream csvStream(csvPath);
+        if (!csvStream.is_open()) {
+            throw PowsyblException(stdcxx::format("Unable to open file '%1%' for reading", csvPath.filename().string()));
+        }
+        anonymizer->read(csvStream);
+    } else {
+        anonymizer = stdcxx::make_unique<FakeAnonymizer>();
+    }
+
+    NetworkXmlReaderContext context(*anonymizer, reader, options, version);
 
     const auto& extensionProviders = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
     context.buildExtensionNamespaceUriList(extensionProviders.getProviders());
@@ -265,7 +277,7 @@ Network NetworkXml::read(const std::string& /*filename*/, std::istream& is, cons
     return network;
 }
 
-std::unique_ptr<Anonymizer> NetworkXml::write(const std::string& /*filename*/, std::ostream& os, const Network& network, const ExportOptions& options) {
+std::unique_ptr<Anonymizer> NetworkXml::write(const std::string& filename, std::ostream& os, const Network& network, const ExportOptions& options) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
 
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -319,6 +331,15 @@ std::unique_ptr<Anonymizer> NetworkXml::write(const std::string& /*filename*/, s
 
     writer.writeEndElement();
     writer.writeEndDocument();
+
+    if (options.isAnonymized()) {
+        boost::filesystem::path csvPath = boost::filesystem::path(filename).replace_extension("csv");
+        boost::filesystem::ofstream oStream(csvPath);
+        if (!oStream.is_open()) {
+            throw PowsyblException(stdcxx::format("Unable to open file '%1%' for writing", csvPath.string()));
+        }
+        anonymizer->write(oStream);
+    }
 
     auto endTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = endTime - startTime;

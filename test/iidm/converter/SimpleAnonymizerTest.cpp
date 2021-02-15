@@ -47,37 +47,43 @@ BOOST_AUTO_TEST_CASE(SimpleAnonymizationTest) {
     BOOST_CHECK_EQUAL("b", anonymizer.deanonymizeString("C"));
     BOOST_CHECK_EQUAL("", anonymizer.deanonymizeString(""));
 
+    BOOST_CHECK_EQUAL(3, anonymizer.getStringCount());
+
     POWSYBL_ASSERT_THROW(anonymizer.deanonymizeString("FAKE"), PowsyblException, "Mapping not found for anonymized string 'FAKE'");
+
+    std::stringstream csvStream;
+    anonymizer.write(csvStream);
+
+    const std::string& ref = "a;B\n"
+                             "b;C\n"
+                             "test;A\n";
+
+    BOOST_CHECK_EQUAL(ref, csvStream.str());
 }
 
 BOOST_AUTO_TEST_CASE(anonymizedRoadTrip) {
-    const std::string& ref = test::converter::RoundTrip::getVersionedNetwork("eurostag-tutorial-example1.xml", xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
-    Network network = Network::readXml(ref);
+    const std::string& filename = "eurostag-tutorial-example1.xml";
+    std::stringstream refStream(test::converter::RoundTrip::getVersionedNetwork(filename, xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
+    Network refNetwork = Network::readXml(filename, refStream);
 
     // write anonymously
     stdcxx::Properties properties;
     properties.set(ExportOptions::ANONYMISED, "true");
     std::stringstream anonymizedStream;
-    std::unique_ptr<Anonymizer> anonymizer = Network::writeXml(anonymizedStream, network, ExportOptions(properties));
-
-    const auto& simpleAnonymizerTmp = dynamic_cast<const SimpleAnonymizer&>(*anonymizer);
-    BOOST_CHECK_EQUAL(19, simpleAnonymizerTmp.getStringCount());
-
-    // write mapping file
-    std::stringstream mappingStream;
-    anonymizer->write(mappingStream);
+    const std::string& anonymizedFilename = "eurostag-tutorial-example1-anonymous.xml";
+    Network::writeXml(anonymizedFilename, anonymizedStream, refNetwork, ExportOptions(properties));
 
     BOOST_CHECK(anonymizedStream.str().find("VLGEN") == std::string::npos);
 
-    // read using a new SimpleAnonymizer instance
-    std::unique_ptr<Anonymizer> simpleAnonymizer = stdcxx::make_unique<SimpleAnonymizer>();
-    simpleAnonymizer->read(mappingStream);
-    Network::readXml(anonymizedStream, ImportOptions(), *simpleAnonymizer);
+    // read anonymized network
+    Network deanonymized = Network::readXml(anonymizedFilename, anonymizedStream);
 
+    // write deanonymized network
     std::stringstream deanonymizedStream;
-    Network::writeXml(deanonymizedStream, network);
+    const std::string& deanonymizedFilename = "eurostag-tutorial-example1-deanonymized.xml";
+    Network::writeXml(deanonymizedFilename, deanonymizedStream, deanonymized);
 
-    BOOST_CHECK_EQUAL(ref, deanonymizedStream.str());
+    BOOST_CHECK_EQUAL(refStream.str(), deanonymizedStream.str());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
