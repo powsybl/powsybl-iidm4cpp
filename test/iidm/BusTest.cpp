@@ -37,8 +37,11 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/stdcxx/range.hpp>
+#include <powsybl/test/ResourceFixture.hpp>
+#include <powsybl/test/converter/RoundTrip.hpp>
 
 #include "NetworkFactory.hpp"
 
@@ -429,7 +432,7 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorEurostag) {
     BOOST_CHECK(connected2WT_NHV1 == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::TWO_WINDINGS_TRANSFORMER)->second);
 }
 
-BOOST_AUTO_TEST_CASE(TerminalVisitorAll) {
+BOOST_AUTO_TEST_CASE(TerminalVisitorAllBbk) {
     Network network = create();
 
     VoltageLevel& vl = network.getVoltageLevel("VL1");
@@ -612,51 +615,16 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorAll) {
     BOOST_CHECK(connected3WT_Buses123 == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::THREE_WINDINGS_TRANSFORMER)->second);
 }
 
-BOOST_AUTO_TEST_CASE(TerminalVisitor) {
-    Network network("test", "test");
-
-    Substation& s = network.newSubstation()
-        .setId("S")
-        .setCountry(Country::FR)
-        .add();
-
-    VoltageLevel& vl = s.newVoltageLevel()
-        .setId("VL")
-        .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
-        .add();
-
-    BusbarSection& bbs = vl.getNodeBreakerView().newBusbarSection()
-        .setId("BBS")
-        .setName("BBS_NAME")
-        .setNode(0)
-        .add();
+BOOST_FIXTURE_TEST_CASE(TerminalVisitorBusbarSection, test::ResourceFixture) {
+    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("fictitiousSwitchRef.xml", converter::xml::IidmXmlVersion::V1_4()));
 
     TerminalTopologyVisitor connectedEquipmentsVisitor;
 
-    network.getBusbarSection("BBS").getTerminal().getBusBreakerView().getBus().get().visitConnectedOrConnectableEquipments(connectedEquipmentsVisitor);
-    BOOST_CHECK_EQUAL(33, boost::size(connectedEquipmentsVisitor.getConnectables()));
+    network.getBusbarSection("D").getTerminal().getBusBreakerView().getBus().get().visitConnectedOrConnectableEquipments(connectedEquipmentsVisitor);
+    BOOST_CHECK_EQUAL(1, boost::size(connectedEquipmentsVisitor.getConnectables()));
 
-    std::set<std::string> connectedBbs = { "BBS" };
+    std::set<std::string> connectedBbs = { "D" };
     BOOST_CHECK(connectedBbs == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::BUSBAR_SECTION)->second);
-
-    std::set<std::string> connectedLines = { "LINE_S2S3", "LINE_S3S4" };
-    BOOST_CHECK(connectedLines == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::LINE)->second);
-
-    std::set<std::string> connected2WT = { "TWT" };
-    BOOST_CHECK(connected2WT == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::TWO_WINDINGS_TRANSFORMER)->second);
-
-    std::set<std::string> connectedGenerators = { "GH1", "GH2", "GH3", "GTH1", "GTH2" };
-    BOOST_CHECK(connectedGenerators == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::GENERATOR)->second);
-
-    std::set<std::string> connectedLoads = { "LD1", "LD2", "LD3", "LD4", "LD5" };
-    BOOST_CHECK(connectedLoads == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::LOAD)->second);
-
-    std::set<std::string> connectedShunts = { "SHUNT" };
-    BOOST_CHECK(connectedShunts == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::SHUNT_COMPENSATOR)->second);
-
-    std::set<std::string> connectedHvdcs = { "LCC1", "LCC2", "VSC1", "VSC2" };
-    BOOST_CHECK(connectedHvdcs == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::HVDC_CONVERTER_STATION)->second);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
