@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/MultipleVariantContext.hpp>
+#include "MultipleVariantContext.hpp"
 
 #include <powsybl/PowsyblException.hpp>
 

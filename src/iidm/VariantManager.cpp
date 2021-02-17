@@ -10,12 +10,13 @@
 #include <algorithm>
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
-#include <powsybl/iidm/MultipleVariantContext.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/ThreadLocalMultipleVariantContext.hpp>
 #include <powsybl/iidm/VariantContextGuard.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
+
+#include "MultipleVariantContext.hpp"
+#include "ThreadLocalMultipleVariantContext.hpp"
 
 namespace powsybl {
 
