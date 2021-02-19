@@ -613,6 +613,10 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorAllBbk) {
     network.get<Bus>("Bus3").visitConnectedEquipments(connectedEquipmentsVisitor);
     std::set<std::string> connected3WT_Buses123 = { "3WT" };
     BOOST_CHECK(connected3WT_Buses123 == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::THREE_WINDINGS_TRANSFORMER)->second);
+
+    connectedEquipmentsVisitor.clear();
+    vl.visitEquipments(connectedEquipmentsVisitor);
+    BOOST_CHECK_EQUAL(10, boost::size(connectedEquipmentsVisitor.getConnectables()));
 }
 
 BOOST_FIXTURE_TEST_CASE(TerminalVisitorBusbarSection, test::ResourceFixture) {

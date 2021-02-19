@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
+#include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
@@ -218,6 +219,10 @@ VoltageLevel& VoltageLevel::setLowVoltageLimit(double lowVoltageLimit) {
 VoltageLevel& VoltageLevel::setNominalVoltage(double nominalVoltage) {
     m_nominalVoltage = checkNominalVoltage(*this, nominalVoltage);
     return *this;
+}
+
+void VoltageLevel::visitEquipments(TopologyVisitor& visitor) const {
+    Bus::visitEquipments<Terminal>(getTerminals(), visitor);
 }
 
 }  // namespace iidm

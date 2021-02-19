@@ -123,10 +123,11 @@ public:
     virtual void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) = 0;
 
 protected:
-    Bus(const std::string& id, const std::string& name, bool fictitious);
-
     template <typename T>
-    void visitEquipments(const stdcxx::const_range<T>& terminals, TopologyVisitor& visitor) const;
+    static void visitEquipments(const stdcxx::const_range<T>& terminals, TopologyVisitor& visitor);
+
+protected:
+    Bus(const std::string& id, const std::string& name, bool fictitious);
 
 private:  // Identifiable
     const std::string& getTypeDescription() const override;
@@ -145,6 +146,8 @@ private:
     friend class ConnectedComponentsManager;
 
     friend class SynchronousComponentsManager;
+
+    friend class VoltageLevel;
 };
 
 }  // namespace iidm

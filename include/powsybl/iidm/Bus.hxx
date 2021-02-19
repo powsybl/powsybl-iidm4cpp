@@ -30,7 +30,7 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T>
-void Bus::visitEquipments(const stdcxx::const_range<T>& terminals, TopologyVisitor& visitor) const {
+void Bus::visitEquipments(const stdcxx::const_range<T>& terminals, TopologyVisitor& visitor) {
     for (const Terminal& terminal : terminals) {
         const Connectable& connectable = terminal.getConnectable();
         switch (connectable.getType()) {
