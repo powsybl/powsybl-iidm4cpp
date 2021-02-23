@@ -115,15 +115,16 @@ BOOST_FIXTURE_TEST_CASE(ShuntNonLinearRoundTripTest, test::ResourceFixture) {
     // check that it fails for versions previous to 1.2
     test::converter::RoundTrip::testForAllPreviousVersions(IidmXmlVersion::V1_3(), [&network](const iidm::converter::xml::IidmXmlVersion& version) {
         std::stringstream ss;
+        const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
         ExportOptions options = ExportOptions().setVersion(version.toString("."));
-        POWSYBL_ASSERT_THROW(Network::writeXml(ss, network, options), PowsyblException, stdcxx::format("shunt.shuntNonLinearModel is not supported for IIDM-XML version %1%. IIDM-XML version should be >= 1.3", version.toString(".")).c_str());
+        POWSYBL_ASSERT_THROW(Network::writeXml(filename, ss, network, options), PowsyblException, stdcxx::format("shunt.shuntNonLinearModel is not supported for IIDM-XML version %1%. IIDM-XML version should be >= 1.3", version.toString(".")).c_str());
     });
 
     // check that it doesn't fail for versions previous to 1.2 when log error is the IIDM version incompatibility behavior
     test::converter::RoundTrip::testForAllPreviousVersions(IidmXmlVersion::V1_3(), [&network](const iidm::converter::xml::IidmXmlVersion& version) {
         ExportOptions options = ExportOptions().setVersion(version.toString(".")).setIidmVersionIncompatibilityBehavior(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR);
         const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
-            iidm::Network::writeXml(stream, n, options);
+            iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);
         };
         test::converter::RoundTrip::writeXmlTest(network, writer, test::converter::RoundTrip::getVersionedNetwork("nonLinearShuntRoundTripRef.xml", version));
     });

@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_NETWORK_HPP
 #define POWSYBL_IIDM_NETWORK_HPP
 
+#include <boost/filesystem/path.hpp>
+
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/NetworkIndex.hpp>
 #include <powsybl/iidm/NetworkVariant.hpp>
@@ -16,7 +18,8 @@
 #include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/iidm/converter/Anonymizer.hpp>
+#include <powsybl/iidm/converter/ExportOptions.hpp>
+#include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/stdcxx/DateTime.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
@@ -50,13 +53,6 @@ class TwoWindingsTransformer;
 class VoltageLevel;
 class VscConverterStation;
 
-namespace converter {
-
-class ExportOptions;
-class ImportOptions;
-
-}  // namespace converter
-
 class Network : public Container, public VariantManagerHolder {
 public:
     using BusBreakerView = network::BusBreakerView;
@@ -64,15 +60,13 @@ public:
     using BusView = network::BusView;
 
 public:
-    static Network readXml(const std::string& data);
+    static Network readXml(const boost::filesystem::path& path, const converter::ImportOptions& options = converter::ImportOptions());
 
-    static Network readXml(std::istream& istream);
+    static Network readXml(const std::string& filename, std::istream& istream, const converter::ImportOptions& options = converter::ImportOptions());
 
-    static Network readXml(std::istream& istream, const converter::ImportOptions& options, const converter::Anonymizer& anonymizer);
+    static void writeXml(const boost::filesystem::path& path, const Network& network, const converter::ExportOptions& options = converter::ExportOptions());
 
-    static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network);
-
-    static std::unique_ptr<converter::Anonymizer> writeXml(std::ostream& ostream, const Network& network, const converter::ExportOptions& options);
+    static void writeXml(const std::string& filename, std::ostream& ostream, const Network& network, const converter::ExportOptions& options = converter::ExportOptions());
 
 public:  // Identifiable
     const Network& getNetwork() const override;

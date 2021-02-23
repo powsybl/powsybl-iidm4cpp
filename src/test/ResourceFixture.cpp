@@ -29,8 +29,7 @@ ResourceFixture::ResourceFixture() {
 }
 
 std::string ResourceFixture::getResource(const std::string& name) const {
-    boost::filesystem::path path(getOptionValue("resources").as<std::string>());
-    path /= name;
+    const boost::filesystem::path& path = getResourcePath(name);
 
     if (!boost::filesystem::exists(path)) {
         throw powsybl::AssertionError(stdcxx::format("Unable to find the resource: %1%", path.string()));
@@ -45,6 +44,12 @@ std::string ResourceFixture::getResource(const std::string& name) const {
     buffer << stream.rdbuf();
 
     return buffer.str();
+}
+
+boost::filesystem::path ResourceFixture::getResourcePath(const std::string& name) const {
+    boost::filesystem::path path(getOptionValue("resources").as<std::string>());
+    path /= name;
+    return path;
 }
 
 }  // namespace test

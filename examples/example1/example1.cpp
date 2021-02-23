@@ -27,11 +27,9 @@ int main(int argc, char** argv) {
     try {
         xmlInitParser();
 
-        std::ifstream inputStream(argv[1]);
-        powsybl::iidm::Network network = powsybl::iidm::Network::readXml(inputStream);
+        powsybl::iidm::Network network = powsybl::iidm::Network::readXml(argv[1]);
 
-        std::ofstream outputStream(argv[2]);
-        powsybl::iidm::Network::writeXml(outputStream, network);
+        powsybl::iidm::Network::writeXml(argv[2], network);
 
         xmlCleanupParser();
 
