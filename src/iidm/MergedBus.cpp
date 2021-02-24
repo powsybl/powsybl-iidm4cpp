@@ -183,6 +183,7 @@ Bus& MergedBus::setV(double v) {
 }
 
 void MergedBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) {
+    checkValidity();
     for (ConfiguredBus& bus : m_buses) {
         bus.visitConnectedOrConnectableEquipments(visitor);
     }

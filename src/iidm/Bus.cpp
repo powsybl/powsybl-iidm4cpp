@@ -21,6 +21,7 @@
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/TopologyVisitor.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
@@ -156,7 +157,7 @@ bool Bus::isInMainSynchronousComponent() const {
 }
 
 void Bus::visitConnectedEquipments(TopologyVisitor& visitor) {
-    visitEquipments<Terminal>(getConnectedTerminals(), visitor);
+    visitor.visitEquipments(getConnectedTerminals());
 }
 
 }  // namespace iidm

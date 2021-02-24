@@ -19,6 +19,7 @@
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
 
@@ -29,18 +30,7 @@ void AbstractTerminalTopologyVisitor::visitBattery(const Battery& battery) {
 }
 
 void AbstractTerminalTopologyVisitor::visitBranch(const Branch& branch, const Branch::Side& side) {
-    switch (side) {
-        case Branch::Side::ONE:
-            visitTerminal(branch.getTerminal1());
-            break;
-
-        case Branch::Side::TWO:
-            visitTerminal(branch.getTerminal2());
-            break;
-
-        default:
-            throw AssertionError("Unexpected branch side");
-    }
+    visitTerminal(branch.getTerminal(side));
 }
 
 void AbstractTerminalTopologyVisitor::visitBusbarSection(const BusbarSection& section) {
@@ -94,7 +84,7 @@ void AbstractTerminalTopologyVisitor::visitThreeWindingsTransformer(const ThreeW
             break;
 
         default:
-            throw AssertionError("Unexpected 3WT side");
+            throw AssertionError(stdcxx::format("Unexpected 3WT side %1%", side));
     }
 }
 

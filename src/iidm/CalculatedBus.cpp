@@ -10,7 +10,9 @@
 #include <powsybl/iidm/ConnectedComponentsManager.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
+#include <powsybl/iidm/TopologyVisitor.hpp>
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/upcast.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
 #include "NodeTerminal.hpp"
@@ -159,7 +161,8 @@ Bus& CalculatedBus::setV(double v) {
 }
 
 void CalculatedBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) {
-    visitEquipments<Terminal>(m_terminals, visitor);
+    const auto& mapper = stdcxx::upcast<NodeTerminal, Terminal>;
+    visitor.visitEquipments(m_terminals | boost::adaptors::transformed(mapper));
 }
 
 }  // namespace iidm

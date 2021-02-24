@@ -22,6 +22,7 @@
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensatorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/TopologyVisitor.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
@@ -222,7 +223,7 @@ VoltageLevel& VoltageLevel::setNominalVoltage(double nominalVoltage) {
 }
 
 void VoltageLevel::visitEquipments(TopologyVisitor& visitor) const {
-    Bus::visitEquipments<Terminal>(getTerminals(), visitor);
+    visitor.visitEquipments(getTerminals());
 }
 
 }  // namespace iidm

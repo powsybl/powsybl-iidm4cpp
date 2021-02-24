@@ -123,10 +123,6 @@ public:
     virtual void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) = 0;
 
 protected:
-    template <typename T>
-    static void visitEquipments(const stdcxx::const_range<T>& terminals, TopologyVisitor& visitor);
-
-protected:
     Bus(const std::string& id, const std::string& name, bool fictitious);
 
 private:  // Identifiable
@@ -146,14 +142,10 @@ private:
     friend class ConnectedComponentsManager;
 
     friend class SynchronousComponentsManager;
-
-    friend class VoltageLevel;
 };
 
 }  // namespace iidm
 
 }  // namespace powsybl
-
-#include <powsybl/iidm/Bus.hxx>
 
 #endif  // POWSYBL_IIDM_BUS_HPP

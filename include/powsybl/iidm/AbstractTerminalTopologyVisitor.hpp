@@ -41,6 +41,18 @@ public:  // TopologyVisitor
     void visitTwoWindingsTransformer(const TwoWindingsTransformer& transformer, const Branch::Side& side) override;
 
 public:
+    AbstractTerminalTopologyVisitor() = default;
+
+    ~AbstractTerminalTopologyVisitor() noexcept override = default;
+
+    AbstractTerminalTopologyVisitor(const AbstractTerminalTopologyVisitor&) = default;
+
+    AbstractTerminalTopologyVisitor(AbstractTerminalTopologyVisitor&&) noexcept = default;
+
+    AbstractTerminalTopologyVisitor& operator=(const AbstractTerminalTopologyVisitor&) = default;
+
+    AbstractTerminalTopologyVisitor& operator=(AbstractTerminalTopologyVisitor&&) noexcept = default;
+
     virtual void visitTerminal(const Terminal& terminal) = 0;
 
 private:

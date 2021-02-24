@@ -28,27 +28,41 @@ class TwoWindingsTransformer;
 
 class TopologyVisitor {
 public:
-    virtual void visitBattery(const Battery& battery) = 0;
+    TopologyVisitor() = default;
 
-    virtual void visitBusbarSection(const BusbarSection& section) = 0;
+    virtual ~TopologyVisitor() noexcept = default;
 
-    virtual void visitDanglingLine(const DanglingLine& danglingLine) = 0;
+    TopologyVisitor(const TopologyVisitor&) = default;
 
-    virtual void visitGenerator(const Generator& generator) = 0;
+    TopologyVisitor(TopologyVisitor&&) noexcept = default;
 
-    virtual void visitHvdcConverterStation(const HvdcConverterStation& converterStation) = 0;
+    TopologyVisitor& operator=(const TopologyVisitor&) = default;
 
-    virtual void visitLine(const Line& line, const Branch::Side& side) = 0;
+    TopologyVisitor& operator=(TopologyVisitor&&) noexcept = default;
 
-    virtual void visitLoad(const Load& load) = 0;
+    virtual void visitBattery(const Battery& battery);
 
-    virtual void visitShuntCompensator(const ShuntCompensator& sc) = 0;
+    virtual void visitBusbarSection(const BusbarSection& section);
 
-    virtual void visitStaticVarCompensator(const StaticVarCompensator& staticVarCompensator) = 0;
+    virtual void visitDanglingLine(const DanglingLine& danglingLine);
 
-    virtual void visitThreeWindingsTransformer(const ThreeWindingsTransformer& transformer, const ThreeWindingsTransformer::Side& side) = 0;
+    void visitEquipments(const stdcxx::const_range<Terminal>& terminals);
 
-    virtual void visitTwoWindingsTransformer(const TwoWindingsTransformer& transformer, const Branch::Side& side) = 0;
+    virtual void visitGenerator(const Generator& generator);
+
+    virtual void visitHvdcConverterStation(const HvdcConverterStation& converterStation);
+
+    virtual void visitLine(const Line& line, const Branch::Side& side);
+
+    virtual void visitLoad(const Load& load);
+
+    virtual void visitShuntCompensator(const ShuntCompensator& sc);
+
+    virtual void visitStaticVarCompensator(const StaticVarCompensator& staticVarCompensator);
+
+    virtual void visitThreeWindingsTransformer(const ThreeWindingsTransformer& transformer, const ThreeWindingsTransformer::Side& side);
+
+    virtual void visitTwoWindingsTransformer(const TwoWindingsTransformer& transformer, const Branch::Side& side);
 };
 
 }  // namespace iidm
