@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_CONVERTER_XML_NETWORKXMLWRITERCONTEXT_HPP
 
 #include <functional>
+#include <memory>
 #include <set>
 #include <string>
 
@@ -36,7 +37,7 @@ namespace xml {
 
 class NetworkXmlWriterContext {
 public:
-    NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version);
+    NetworkXmlWriterContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version);
 
     ~NetworkXmlWriterContext() = default;
 
@@ -69,7 +70,7 @@ private:
 
     std::reference_wrapper<powsybl::xml::XmlStreamWriter> m_extensionsWriter;
 
-    Anonymizer& m_anonymizer;
+    std::unique_ptr<Anonymizer> m_anonymizer;
 
     ExportOptions m_options;
 

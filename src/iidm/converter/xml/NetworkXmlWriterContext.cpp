@@ -8,6 +8,7 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
 #include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/iidm/converter/Anonymizer.hpp>
 
 namespace powsybl {
 
@@ -17,10 +18,10 @@ namespace converter {
 
 namespace xml {
 
-NetworkXmlWriterContext::NetworkXmlWriterContext(Anonymizer& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version) :
+NetworkXmlWriterContext::NetworkXmlWriterContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version) :
     m_writer(writer),
     m_extensionsWriter(writer),
-    m_anonymizer(anonymizer),
+    m_anonymizer(std::move(anonymizer)),
     m_options(options),
     m_version(version),
     m_filter(filter) {
@@ -32,11 +33,11 @@ void NetworkXmlWriterContext::addExportedEquipment(const Identifiable& identifia
 }
 
 const Anonymizer& NetworkXmlWriterContext::getAnonymizer() const {
-    return m_anonymizer;
+    return *m_anonymizer;
 }
 
 Anonymizer& NetworkXmlWriterContext::getAnonymizer() {
-    return m_anonymizer;
+    return *m_anonymizer;
 }
 
 const std::set<std::string>& NetworkXmlWriterContext::getExportedEquipments() const {

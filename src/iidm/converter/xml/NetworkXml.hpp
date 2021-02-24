@@ -30,7 +30,7 @@ class NetworkXml {
 public:
     static Network read(const std::string& filename, std::istream& is, const ImportOptions& options);
 
-    static std::unique_ptr<Anonymizer> write(const std::string& filename, std::ostream& os, const Network& network, const ExportOptions& options);
+    static void write(const std::string& filename, std::ostream& os, const Network& network, const ExportOptions& options);
 
 public:
     NetworkXml() = delete;
