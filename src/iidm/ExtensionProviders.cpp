@@ -114,7 +114,7 @@ void ExtensionProviders<T, Dummy>::loadLibrary(const boost::filesystem::path& li
 }
 
 template <typename T, typename Dummy>
-void ExtensionProviders<T, Dummy>::registerExtension(std::unique_ptr<T> provider, const boost::filesystem::path& libraryPath) {
+void ExtensionProviders<T, Dummy>::registerExtension(std::unique_ptr<T>&& provider, const boost::filesystem::path& libraryPath) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
 
     const std::string& extensionName = provider->getExtensionName();

@@ -97,10 +97,10 @@ private:
     unsigned long getRegulatingTapChangerCount() const override;
 
 private:  // RatioTapChangerHolder
-    void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) override;
+    void setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger) override;
 
 private:  // PhaseTapChangerHolder
-    void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger> phaseTapChanger) override;
+    void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger>&& phaseTapChanger) override;
 
 private:
     friend class PhaseTapChanger;

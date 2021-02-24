@@ -36,7 +36,7 @@ protected:
     RatioTapChangerHolder() noexcept = default;
 
 private:
-    virtual void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) = 0;
+    virtual void setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger) = 0;
 
 private:
     friend class RatioTapChanger;
