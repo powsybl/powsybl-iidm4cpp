@@ -178,7 +178,7 @@ TwoWindingsTransformer& TwoWindingsTransformer::setG(double g) {
     return *this;
 }
 
-void TwoWindingsTransformer::setPhaseTapChanger(std::unique_ptr<PhaseTapChanger> phaseTapChanger) {
+void TwoWindingsTransformer::setPhaseTapChanger(std::unique_ptr<PhaseTapChanger>&& phaseTapChanger) {
     m_phaseTapChanger = std::move(phaseTapChanger);
 }
 
@@ -202,7 +202,7 @@ TwoWindingsTransformer& TwoWindingsTransformer::setRatedU2(double ratedU2) {
     return *this;
 }
 
-void TwoWindingsTransformer::setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) {
+void TwoWindingsTransformer::setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger) {
     m_ratioTapChanger = std::move(ratioTapChanger);
 }
 
