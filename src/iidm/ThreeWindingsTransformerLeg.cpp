@@ -192,11 +192,11 @@ Leg& Leg::setX(double x) {
     return *this;
 }
 
-void Leg::setPhaseTapChanger(std::unique_ptr<PhaseTapChanger> phaseTapChanger) {
+void Leg::setPhaseTapChanger(std::unique_ptr<PhaseTapChanger>&& phaseTapChanger) {
     m_phaseTapChanger = std::move(phaseTapChanger);
 }
 
-void Leg::setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) {
+void Leg::setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger) {
     m_ratioTapChanger = std::move(ratioTapChanger);
 }
 
