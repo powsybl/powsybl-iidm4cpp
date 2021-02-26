@@ -11,6 +11,9 @@ jobs:
     name: Linux
     runs-on: ubuntu-latest
     steps:
+      - name: Install Boost
+        run: sudo apt install -y libboost-all-dev
+
       - name: Checkout sources
         uses: actions/checkout@v1
 
@@ -19,7 +22,6 @@ jobs:
           cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-linux
           -DCMAKE_BUILD_TYPE=Release
           -DBUILD_EXAMPLES=ON
-          -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
 
       - name: Build
         run: cmake --build $GITHUB_WORKSPACE/build-linux --parallel 3
@@ -33,7 +35,7 @@ jobs:
     name: MacOS
     runs-on: macos-latest
     steps:
-      - name: Pre-requisites
+      - name: Install Boost
         run: brew install boost
 
       - name: Checkout sources
@@ -51,20 +53,31 @@ jobs:
           CTEST_OUTPUT_ON_FAILURE: 1
 
   windows:
+    env:
+      BOOST_ROOT: C:\thirdparties\boost-1.72.0
+      BOOST_URL: https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/boost_1_72_0-msvc-14.2-64.exe/download
+      LIBXML2_ROOT: C:\thirdparties\libxml2-2.9.10
+      LIBXML2_URL: https://github.com/GNOME/libxml2/archive/v2.9.10.zip
     name: Windows
     runs-on: windows-latest
     steps:
-      - name: Pre-requisites
+      - name: Install LibXml2
         shell: cmd
         run: |
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           choco install wget --no-progress
-          wget -nv https://github.com/GNOME/libxml2/archive/v2.9.10.zip
+          wget -nv %LIBXML2_URL%
           7z x v2.9.10.zip
           cd libxml2-2.9.10/win32
-          cscript configure.js compiler=msvc prefix=C:\thirdparties\libxml2-2.9.10 iconv=no
+          cscript configure.js compiler=msvc prefix=%LIBXML2_ROOT% iconv=no
           nmake -f Makefile.msvc
           nmake -f Makefile.msvc install
+
+      - name: Install Boost
+        shell: cmd
+        run: |
+          wget -nv -O boost-installer.exe %BOOST_URL%
+          boost-installer.exe /dir=%BOOST_ROOT% /sp- /verysilent /suppressmsgboxes /norestart
 
       - name: Checkout sources
         uses: actions/checkout@v1
@@ -74,7 +87,6 @@ jobs:
         run: >
           cmake -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build-windows
           -DBUILD_EXAMPLES=ON
-          -DCMAKE_PREFIX_PATH=%BOOST_ROOT_1_72_0%;C:\thirdparties\libxml2-2.9.10
 
       - name: Build
         shell: cmd
@@ -85,7 +97,7 @@ jobs:
       - name: Tests
         shell: cmd
         run: |
-          set PATH=%PATH%;C:\thirdparties\libxml2-2.9.10\bin;%BOOST_ROOT_1_72_0%\lib;%GITHUB_WORKSPACE%\build-windows\src\Release;%GITHUB_WORKSPACE%\build-windows\src\test\Release
+          set PATH=%PATH%;%LIBXML2_ROOT%\bin;%BOOST_ROOT%\lib64-msvc-14.2;%GITHUB_WORKSPACE%\build-windows\src\Release;%GITHUB_WORKSPACE%\build-windows\src\test\Release
           cmake --build %GITHUB_WORKSPACE%\build-windows --target RUN_TESTS --config Release --verbose
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
@@ -118,6 +130,9 @@ jobs:
         env:
           SONAR_SCANNER_VERSION: 3.3.0.1492
 
+      - name: Install Boost
+        run: sudo apt install -y libboost-all-dev
+
       - name: Checkout sources
         uses: actions/checkout@v1
 
@@ -127,7 +142,6 @@ jobs:
           -DCMAKE_BUILD_TYPE=Debug
           -DCODE_COVERAGE=TRUE
           -DBUILD_EXAMPLES=ON
-          -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
 
       - name: Build
         run:  >
