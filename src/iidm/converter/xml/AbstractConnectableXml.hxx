@@ -50,7 +50,7 @@ void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(BranchAdder<Add
     if (node1) {
         adder.setNode1(*node1);
     }
-    adder.setVoltageLevel1(voltageLevelId1);
+    adder.setVoltageLevel1(context.getAnonymizer().deanonymizeString(voltageLevelId1));
     if (bus2) {
         adder.setBus2(context.getAnonymizer().deanonymizeString(*bus2));
     }
@@ -60,7 +60,7 @@ void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(BranchAdder<Add
     if (node2) {
         adder.setNode2(*node2);
     }
-    adder.setVoltageLevel2(voltageLevelId2);
+    adder.setVoltageLevel2(context.getAnonymizer().deanonymizeString(voltageLevelId2));
 }
 
 template <typename Added, typename Adder, typename Parent>

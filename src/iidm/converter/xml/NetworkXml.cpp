@@ -9,10 +9,13 @@
 
 #include <chrono>
 
+#include <boost/filesystem/fstream.hpp>
+
 #include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
+#include <powsybl/iidm/converter/SimpleAnonymizer.hpp>
 #include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
@@ -192,7 +195,7 @@ void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
     }
 }
 
-Network NetworkXml::read(const std::string& /*filename*/, std::istream& is, const ImportOptions& options) {
+Network NetworkXml::read(const std::string& filename, std::istream& is, const ImportOptions& options) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
 
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -217,11 +220,21 @@ Network NetworkXml::read(const std::string& /*filename*/, std::istream& is, cons
         throw powsybl::xml::XmlStreamException(err.what());
     }
 
-    // TODO(sebalaig) handle anonymization by reading csv file if it exists
-    // For now on, use a FakeAnonymizer
-    FakeAnonymizer anonymizer;
+    boost::filesystem::path csvPath = boost::filesystem::path(filename).replace_extension("csv");
+    std::unique_ptr<Anonymizer> anonymizer;
 
-    NetworkXmlReaderContext context(anonymizer, reader, options, version);
+    if (boost::filesystem::exists(csvPath)) {
+        anonymizer = stdcxx::make_unique<SimpleAnonymizer>();
+        boost::filesystem::ifstream csvStream(csvPath);
+        if (!csvStream.is_open()) {
+            throw PowsyblException(stdcxx::format("Unable to open file '%1%' for reading", csvPath.filename().string()));
+        }
+        anonymizer->read(csvStream);
+    } else {
+        anonymizer = stdcxx::make_unique<FakeAnonymizer>();
+    }
+
+    NetworkXmlReaderContext context(std::move(anonymizer), reader, options, version);
 
     const auto& extensionProviders = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
     context.buildExtensionNamespaceUriList(extensionProviders.getProviders());
@@ -264,21 +277,19 @@ Network NetworkXml::read(const std::string& /*filename*/, std::istream& is, cons
     return network;
 }
 
-std::unique_ptr<Anonymizer> NetworkXml::write(const std::string& /*filename*/, std::ostream& os, const Network& network, const ExportOptions& options) {
+void NetworkXml::write(const std::string& filename, std::ostream& os, const Network& network, const ExportOptions& options) {
     logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
 
     auto startTime = std::chrono::high_resolution_clock::now();
 
     powsybl::xml::XmlStreamWriter writer(os, options.isIndent());
 
-    // FIXME(sebalaig): for now on, only one kind of anonymizer = FakeAnonymizer
-    // later, a real anonymizer will be instantiated depending on options.isAnonymized()
-    std::unique_ptr<Anonymizer> anonymizer(stdcxx::make_unique<FakeAnonymizer>());
+    std::unique_ptr<Anonymizer> anonymizer = options.isAnonymized() ? stdcxx::make_unique<Anonymizer, SimpleAnonymizer>() : stdcxx::make_unique<Anonymizer, FakeAnonymizer>();
 
     const BusFilter& filter = BusFilter::create(network, options);
 
     const IidmXmlVersion& version = options.getVersion().empty() ? IidmXmlVersion::CURRENT_IIDM_XML_VERSION() : IidmXmlVersion::of(options.getVersion(), ".");
-    NetworkXmlWriterContext context(*anonymizer, writer, options, filter, version);
+    NetworkXmlWriterContext context(std::move(anonymizer), writer, options, filter, version);
 
     writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");
 
@@ -321,11 +332,18 @@ std::unique_ptr<Anonymizer> NetworkXml::write(const std::string& /*filename*/, s
     writer.writeEndElement();
     writer.writeEndDocument();
 
+    if (options.isAnonymized()) {
+        boost::filesystem::path csvPath = boost::filesystem::path(filename).replace_extension("csv");
+        boost::filesystem::ofstream csvStream(csvPath);
+        if (!csvStream.is_open()) {
+            throw PowsyblException(stdcxx::format("Unable to open file '%1%' for writing", csvPath.string()));
+        }
+        context.getAnonymizer().write(csvStream);
+    }
+
     auto endTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = endTime - startTime;
     logger.debug("XIIDM export done in %1% ms", diff.count() * 1000.0);
-
-    return anonymizer;
 }
 
 }  // namespace xml

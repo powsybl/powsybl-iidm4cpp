@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2019, RTE (http://www.rte-france.com)
+ * Copyright (c) 2021, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_CONVERTER_FAKEANONYMIZER_HPP
-#define POWSYBL_IIDM_CONVERTER_FAKEANONYMIZER_HPP
+#ifndef POWSYBL_IIDM_CONVERTER_SIMPLEANONYMIZER_HPP
+#define POWSYBL_IIDM_CONVERTER_SIMPLEANONYMIZER_HPP
+
+#include <boost/bimap.hpp>
 
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 
@@ -16,7 +18,7 @@ namespace iidm {
 
 namespace converter {
 
-class FakeAnonymizer : public Anonymizer {
+class SimpleAnonymizer : public Anonymizer {
 public:  // Anonymizer
     Country anonymizeCountry(const Country& country) override;
 
@@ -31,17 +33,28 @@ public:  // Anonymizer
     void write(std::ostream& stream) const override;
 
 public:
-    FakeAnonymizer() = default;
+    static std::string getAlpha(unsigned long num);
 
-    ~FakeAnonymizer() override = default;
+public:
+    SimpleAnonymizer() = default;
 
-    FakeAnonymizer(const FakeAnonymizer&) = default;
+    ~SimpleAnonymizer() override = default;
 
-    FakeAnonymizer(FakeAnonymizer&&) noexcept = default;
+    SimpleAnonymizer(const SimpleAnonymizer&) = default;
 
-    FakeAnonymizer& operator=(const FakeAnonymizer&) = default;
+    SimpleAnonymizer(SimpleAnonymizer&&) = default;
 
-    FakeAnonymizer& operator=(FakeAnonymizer&&) noexcept = default;
+    SimpleAnonymizer& operator=(const SimpleAnonymizer&) = default;
+
+    SimpleAnonymizer& operator=(SimpleAnonymizer&&) = default;
+
+    unsigned long getStringCount() const;
+
+private:
+    using Mapping = boost::bimap<std::string, std::string>;
+
+private:
+    Mapping m_mapping;
 };
 
 }  // namespace converter
@@ -50,4 +63,4 @@ public:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_CONVERTER_FAKEANONYMIZER_HPP
+#endif  // POWSYBL_IIDM_CONVERTER_SIMPLEANONYMIZER_HPP
