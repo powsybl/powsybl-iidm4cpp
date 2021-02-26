@@ -67,8 +67,9 @@ jobs:
           cscript configure.js compiler=msvc prefix=C:\thirdparties\libxml2-2.9.10 iconv=no
           nmake -f Makefile.msvc
           nmake -f Makefile.msvc install
-          wget -nv -O boost_1_72_0-msvc-14.2-64.exe https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/boost_1_72_0-msvc-14.2-64.exe/download
-          boost_1_72_0-msvc-14.2-64.exe /dir="C:\thirdparties\boost-1.72.0" /sp- /verysilent /suppressmsgboxes /norestart
+          wget -nv -O boost-installer.exe https://sourceforge.net/projects/boost/files/boost-binaries/1.72.0/boost_1_72_0-msvc-14.2-64.exe/download
+          echo "BOOST_INSTALL_DIR=C:\thirdparties\boost-1.72.0" >> $GITHUB_ENV
+          boost-installer.exe /dir="%BOOST_INSTALL_DIR%" /sp- /verysilent /suppressmsgboxes /norestart
 
       - name: Checkout sources
         uses: actions/checkout@v1
@@ -78,7 +79,7 @@ jobs:
         run: >
           cmake -S %GITHUB_WORKSPACE% -B %GITHUB_WORKSPACE%\build-windows
           -DBUILD_EXAMPLES=ON
-          -DCMAKE_PREFIX_PATH=C:\thirdparties\boost-1.72.0;C:\thirdparties\libxml2-2.9.10
+          -DCMAKE_PREFIX_PATH=%BOOST_INSTALL_DIR%;C:\thirdparties\libxml2-2.9.10
 
       - name: Build
         shell: cmd
@@ -89,7 +90,7 @@ jobs:
       - name: Tests
         shell: cmd
         run: |
-          set PATH=%PATH%;C:\thirdparties\libxml2-2.9.10\bin;C:\thirdparties\boost-1.72.0\lib64-msvc-14.2;%GITHUB_WORKSPACE%\build-windows\src\Release;%GITHUB_WORKSPACE%\build-windows\src\test\Release
+          set PATH=%PATH%;C:\thirdparties\libxml2-2.9.10\bin;%BOOST_INSTALL_DIR%\lib64-msvc-14.2;%GITHUB_WORKSPACE%\build-windows\src\Release;%GITHUB_WORKSPACE%\build-windows\src\test\Release
           cmake --build %GITHUB_WORKSPACE%\build-windows --target RUN_TESTS --config Release --verbose
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
@@ -134,7 +135,6 @@ jobs:
           -DCMAKE_BUILD_TYPE=Debug
           -DCODE_COVERAGE=TRUE
           -DBUILD_EXAMPLES=ON
-          -DCMAKE_PREFIX_PATH=$BOOST_ROOT_1_72_0
 
       - name: Build
         run:  >
