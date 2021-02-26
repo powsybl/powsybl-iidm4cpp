@@ -48,9 +48,9 @@ namespace iidm {
 Network Network::readXml(const boost::filesystem::path& path, const converter::ImportOptions& options) {
     boost::filesystem::ifstream is(path);
     if (!is.is_open()) {
-        throw PowsyblException(stdcxx::format("Unable to open file '%1%' for reading", path.filename().string()));
+        throw PowsyblException(stdcxx::format("Unable to open file '%1%' for reading", path.string()));
     }
-    return converter::xml::NetworkXml::read(path.filename().string(), is, options);
+    return converter::xml::NetworkXml::read(path.string(), is, options);
 }
 
 Network Network::readXml(const std::string& filename, std::istream& istream, const converter::ImportOptions& options) {
@@ -60,9 +60,9 @@ Network Network::readXml(const std::string& filename, std::istream& istream, con
 void Network::writeXml(const boost::filesystem::path& path, const Network& network, const converter::ExportOptions& options) {
     boost::filesystem::ofstream os(path);
     if (!os.is_open()) {
-        throw PowsyblException(stdcxx::format("Unable to open file '%1%' for writing", path.filename().string()));
+        throw PowsyblException(stdcxx::format("Unable to open file '%1%' for writing", path.string()));
     }
-    converter::xml::NetworkXml::write(path.filename().string(), os, network, options);
+    converter::xml::NetworkXml::write(path.string(), os, network, options);
 }
 
 void Network::writeXml(const std::string& filename, std::ostream& ostream, const Network& network, const converter::ExportOptions& options) {

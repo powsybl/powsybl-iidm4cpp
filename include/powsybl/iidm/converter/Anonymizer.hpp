@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_CONVERTER_ANONYMIZER_HPP
 #define POWSYBL_IIDM_CONVERTER_ANONYMIZER_HPP
 
-#include <string>
+#include <iosfwd>
 
 #include <powsybl/iidm/Country.hpp>
 
@@ -32,9 +32,9 @@ public:
 
     virtual std::string deanonymizeString(const std::string& anonymousStr) const = 0;
 
-    // TODO(sebalaig) Add missing methods:
-    // void read(BufferedReader reader);
-    // void write(BufferedWriter writer);
+    virtual void read(std::istream& stream) = 0;
+
+    virtual void write(std::ostream& stream) const = 0;
 };
 
 }  // namespace converter

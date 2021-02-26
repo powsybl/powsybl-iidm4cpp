@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <list>
+#include <memory>
 
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
@@ -34,7 +35,7 @@ namespace xml {
 
 class NetworkXmlReaderContext {
 public:
-    NetworkXmlReaderContext(const Anonymizer& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options, const IidmXmlVersion& version);
+    NetworkXmlReaderContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options, const IidmXmlVersion& version);
 
     void addEndTask(const std::function<void()>& endTask);
 
@@ -55,7 +56,7 @@ public:
 private:
     powsybl::xml::XmlStreamReader& m_reader;
 
-    const Anonymizer& m_anonymizer;
+    std::unique_ptr<Anonymizer> m_anonymizer;
 
     std::list<std::function<void()>> m_endTasks;
 
