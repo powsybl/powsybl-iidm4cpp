@@ -93,7 +93,7 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
         return static_cast<bool>(refTerminal) && refTerminal.get().getConnectable().get().getType() == ConnectableType::BUSBAR_SECTION;
     };
     node_breaker_voltage_level::Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
-        return aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
+        return static_cast<bool>(aSwitch) && aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
     };
     const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedDisconnector);
 
@@ -101,7 +101,11 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
     if (!paths.empty()) {
         const auto& shortestPath = paths[0];
         for (unsigned long e : shortestPath) {
-            Switch& aSwitch = m_graph.getEdgeObject(e).get();
+            const auto& aSwitchRef = m_graph.getEdgeObject(e);
+            if (!static_cast<bool>(aSwitchRef)) {
+                continue;
+            }
+            Switch& aSwitch = aSwitchRef.get();
             if (aSwitch.getKind() == SwitchKind::BREAKER && aSwitch.isOpen()) {
                 aSwitch.setOpen(false);
                 connected = true;
@@ -139,7 +143,7 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
         return static_cast<bool>(refTerminal) && refTerminal.get().getConnectable().get().getType() == ConnectableType::BUSBAR_SECTION;
     };
     node_breaker_voltage_level::Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
-        return aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
+        return static_cast<bool>(aSwitch) && aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
     };
     const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedDisconnector);
 
@@ -150,7 +154,11 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
     for (const auto& path : paths) {
         bool pathOpen = false;
         for (unsigned long e : path) {
-            Switch& aSwitch = m_graph.getEdgeObject(e).get();
+            const auto& aSwitchRef = m_graph.getEdgeObject(e);
+            if (!static_cast<bool>(aSwitchRef)) {
+                continue;
+            }
+            Switch& aSwitch = aSwitchRef.get();
             if (aSwitch.getKind() == SwitchKind::BREAKER) {
                 if (!aSwitch.isOpen()) {
                     aSwitch.setOpen(true);
