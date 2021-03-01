@@ -1020,9 +1020,14 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     vl.getNodeBreakerView().newBreaker()
         .setId("SWB1")
         .setNode1(1)
-        .setNode2(2)
+        .setNode2(99)
         .setRetained(false)
         .setOpen(false)
+        .add();
+
+    vl.getNodeBreakerView().newInternalConnection()
+        .setNode1(99)
+        .setNode2(2)
         .add();
 
     Load& l1 = vl.newLoad()
