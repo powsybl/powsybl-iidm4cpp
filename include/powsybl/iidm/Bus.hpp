@@ -30,6 +30,7 @@ class ShuntCompensator;
 class StaticVarCompensator;
 class Terminal;
 class ThreeWindingsTransformer;
+class TopologyVisitor;
 class TwoWindingsTransformer;
 class VoltageLevel;
 class VscConverterStation;
@@ -116,6 +117,10 @@ public:
     virtual Bus& setAngle(double angle) = 0;
 
     virtual Bus& setV(double v) = 0;
+
+    void visitConnectedEquipments(TopologyVisitor& visitor);
+
+    virtual void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) = 0;
 
 protected:
     Bus(const std::string& id, const std::string& name, bool fictitious);

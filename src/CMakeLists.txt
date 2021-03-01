@@ -11,6 +11,7 @@ set(IIDM_SOURCES
 
     iidm/AbstractComponentsManager.cpp
     iidm/AbstractMultiVariantIdentifiableExtension.cpp
+    iidm/AbstractTerminalTopologyVisitor.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
     iidm/Branch.cpp
@@ -118,6 +119,7 @@ set(IIDM_SOURCES
     iidm/TieLineAdder.cpp
     iidm/TopologyKind.cpp
     iidm/TopologyLevel.cpp
+    iidm/TopologyVisitor.cpp
     iidm/TwoWindingsTransformer.cpp
     iidm/TwoWindingsTransformerAdder.cpp
     iidm/ValidationException.cpp
