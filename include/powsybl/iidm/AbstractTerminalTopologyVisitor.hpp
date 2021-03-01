@@ -43,11 +43,11 @@ public:  // TopologyVisitor
 public:
     AbstractTerminalTopologyVisitor() = default;
 
-    ~AbstractTerminalTopologyVisitor() noexcept override = default;
-
     AbstractTerminalTopologyVisitor(const AbstractTerminalTopologyVisitor&) = default;
 
     AbstractTerminalTopologyVisitor(AbstractTerminalTopologyVisitor&&) noexcept = default;
+
+    ~AbstractTerminalTopologyVisitor() noexcept override = default;
 
     AbstractTerminalTopologyVisitor& operator=(const AbstractTerminalTopologyVisitor&) = default;
 

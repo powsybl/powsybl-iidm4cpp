@@ -30,11 +30,11 @@ class TopologyVisitor {
 public:
     TopologyVisitor() = default;
 
-    virtual ~TopologyVisitor() noexcept = default;
-
     TopologyVisitor(const TopologyVisitor&) = default;
 
     TopologyVisitor(TopologyVisitor&&) noexcept = default;
+
+    virtual ~TopologyVisitor() noexcept = default;
 
     TopologyVisitor& operator=(const TopologyVisitor&) = default;
 

@@ -48,9 +48,9 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
 
             case ConnectableType::LINE: {
                 const auto& line = dynamic_cast<const Line&>(connectable);
-                visitLine(line, stdcxx::areSame(line.getTerminal1(), terminal) ? Branch::Side::ONE : Branch::Side::TWO);
-            }
+                visitLine(line, line.getSide(terminal));
                 break;
+            }
 
             case ConnectableType::GENERATOR:
                 visitGenerator(dynamic_cast<const Generator&>(connectable));
@@ -66,23 +66,15 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
 
             case ConnectableType::TWO_WINDINGS_TRANSFORMER: {
                 const auto& twt = dynamic_cast<const TwoWindingsTransformer&>(connectable);
-                visitTwoWindingsTransformer(twt, stdcxx::areSame(twt.getTerminal1(), terminal) ? Branch::Side::ONE : Branch::Side::TWO);
-            }
+                visitTwoWindingsTransformer(twt, twt.getSide(terminal));
                 break;
+            }
 
             case ConnectableType::THREE_WINDINGS_TRANSFORMER: {
-                const auto& thwt = dynamic_cast<const ThreeWindingsTransformer&>(connectable);
-                ThreeWindingsTransformer::Side side;
-                if (stdcxx::areSame(thwt.getLeg1().getTerminal(), terminal)) {
-                    side = ThreeWindingsTransformer::Side::ONE;
-                } else if (stdcxx::areSame(thwt.getLeg2().getTerminal(), terminal)) {
-                    side = ThreeWindingsTransformer::Side::TWO;
-                } else {
-                    side = ThreeWindingsTransformer::Side::THREE;
-                }
-                visitThreeWindingsTransformer(thwt, side);
-            }
+                const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(connectable);
+                visitThreeWindingsTransformer(twt, twt.getSide(terminal));
                 break;
+            }
 
             case ConnectableType::LOAD:
                 visitLoad(dynamic_cast<const Load&>(connectable));
