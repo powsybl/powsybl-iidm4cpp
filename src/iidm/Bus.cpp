@@ -157,7 +157,7 @@ bool Bus::isInMainSynchronousComponent() const {
 }
 
 void Bus::visitConnectedEquipments(TopologyVisitor& visitor) {
-    visitor.visitEquipments(getConnectedTerminals());
+    TopologyVisitor::visitEquipments(getConnectedTerminals(), visitor);
 }
 
 }  // namespace iidm

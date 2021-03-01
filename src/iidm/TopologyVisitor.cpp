@@ -38,58 +38,58 @@ void TopologyVisitor::visitDanglingLine(const DanglingLine& /*danglingLine*/) {
     // nothing to do
 }
 
-void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& terminals) {
+void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& terminals, TopologyVisitor& visitor) {
     for (const Terminal& terminal : terminals) {
         const Connectable& connectable = terminal.getConnectable();
         switch (connectable.getType()) {
             case ConnectableType::BUSBAR_SECTION:
-                visitBusbarSection(dynamic_cast<const BusbarSection&>(connectable));
+                visitor.visitBusbarSection(dynamic_cast<const BusbarSection&>(connectable));
                 break;
 
             case ConnectableType::LINE: {
                 const auto& line = dynamic_cast<const Line&>(connectable);
-                visitLine(line, line.getSide(terminal));
+                visitor.visitLine(line, line.getSide(terminal));
                 break;
             }
 
             case ConnectableType::GENERATOR:
-                visitGenerator(dynamic_cast<const Generator&>(connectable));
+                visitor.visitGenerator(dynamic_cast<const Generator&>(connectable));
                 break;
 
             case ConnectableType::BATTERY:
-                visitBattery(dynamic_cast<const Battery&>(connectable));
+                visitor.visitBattery(dynamic_cast<const Battery&>(connectable));
                 break;
 
             case ConnectableType::SHUNT_COMPENSATOR:
-                visitShuntCompensator(dynamic_cast<const ShuntCompensator&>(connectable));
+                visitor.visitShuntCompensator(dynamic_cast<const ShuntCompensator&>(connectable));
                 break;
 
             case ConnectableType::TWO_WINDINGS_TRANSFORMER: {
                 const auto& twt = dynamic_cast<const TwoWindingsTransformer&>(connectable);
-                visitTwoWindingsTransformer(twt, twt.getSide(terminal));
+                visitor.visitTwoWindingsTransformer(twt, twt.getSide(terminal));
                 break;
             }
 
             case ConnectableType::THREE_WINDINGS_TRANSFORMER: {
                 const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(connectable);
-                visitThreeWindingsTransformer(twt, twt.getSide(terminal));
+                visitor.visitThreeWindingsTransformer(twt, twt.getSide(terminal));
                 break;
             }
 
             case ConnectableType::LOAD:
-                visitLoad(dynamic_cast<const Load&>(connectable));
+                visitor.visitLoad(dynamic_cast<const Load&>(connectable));
                 break;
 
             case ConnectableType::DANGLING_LINE:
-                visitDanglingLine(dynamic_cast<const DanglingLine&>(connectable));
+                visitor.visitDanglingLine(dynamic_cast<const DanglingLine&>(connectable));
                 break;
 
             case ConnectableType::STATIC_VAR_COMPENSATOR:
-                visitStaticVarCompensator(dynamic_cast<const StaticVarCompensator&>(connectable));
+                visitor.visitStaticVarCompensator(dynamic_cast<const StaticVarCompensator&>(connectable));
                 break;
 
             case ConnectableType::HVDC_CONVERTER_STATION:
-                visitHvdcConverterStation(dynamic_cast<const HvdcConverterStation&>(connectable));
+                visitor.visitHvdcConverterStation(dynamic_cast<const HvdcConverterStation&>(connectable));
                 break;
 
             default:

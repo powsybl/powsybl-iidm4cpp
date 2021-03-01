@@ -213,7 +213,7 @@ Bus& ConfiguredBus::setV(double v) {
 
 void ConfiguredBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) {
     const auto& mapper = stdcxx::upcast<BusTerminal, Terminal>;
-    visitor.visitEquipments(getTerminals() | boost::adaptors::transformed(mapper));
+    TopologyVisitor::visitEquipments(getTerminals() | boost::adaptors::transformed(mapper), visitor);
 }
 
 }  // namespace iidm

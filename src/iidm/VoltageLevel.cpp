@@ -223,7 +223,7 @@ VoltageLevel& VoltageLevel::setNominalVoltage(double nominalVoltage) {
 }
 
 void VoltageLevel::visitEquipments(TopologyVisitor& visitor) const {
-    visitor.visitEquipments(getTerminals());
+    TopologyVisitor::visitEquipments(getTerminals(), visitor);
 }
 
 }  // namespace iidm

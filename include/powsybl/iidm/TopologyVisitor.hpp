@@ -28,6 +28,9 @@ class TwoWindingsTransformer;
 
 class TopologyVisitor {
 public:
+    static void visitEquipments(const stdcxx::const_range<Terminal>& terminals, TopologyVisitor& visitor);
+
+public:
     TopologyVisitor() = default;
 
     TopologyVisitor(const TopologyVisitor&) = default;
@@ -45,8 +48,6 @@ public:
     virtual void visitBusbarSection(const BusbarSection& section);
 
     virtual void visitDanglingLine(const DanglingLine& danglingLine);
-
-    void visitEquipments(const stdcxx::const_range<Terminal>& terminals);
 
     virtual void visitGenerator(const Generator& generator);
 
