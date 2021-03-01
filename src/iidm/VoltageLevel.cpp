@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
+#include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
@@ -21,6 +22,7 @@
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensatorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/TopologyVisitor.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
@@ -218,6 +220,10 @@ VoltageLevel& VoltageLevel::setLowVoltageLimit(double lowVoltageLimit) {
 VoltageLevel& VoltageLevel::setNominalVoltage(double nominalVoltage) {
     m_nominalVoltage = checkNominalVoltage(*this, nominalVoltage);
     return *this;
+}
+
+void VoltageLevel::visitEquipments(TopologyVisitor& visitor) const {
+    TopologyVisitor::visitEquipments(getTerminals(), visitor);
 }
 
 }  // namespace iidm

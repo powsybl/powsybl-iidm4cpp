@@ -37,6 +37,7 @@ class StaticVarCompensatorAdder;
 class Switch;
 class Substation;
 class Terminal;
+class TopologyVisitor;
 class VscConverterStation;
 class VscConverterStationAdder;
 
@@ -180,6 +181,8 @@ public:
     VoltageLevel& setLowVoltageLimit(double lowVoltageLimit);
 
     VoltageLevel& setNominalVoltage(double nominalVoltage);
+
+    void visitEquipments(TopologyVisitor& visitor) const;
 
 protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,

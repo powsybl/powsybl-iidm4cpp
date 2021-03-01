@@ -56,6 +56,8 @@ public: // Bus
 
     Bus& setV(double v) override;
 
+    void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) override;
+
 public:
     /**
      * Create a new CalculatedBus from a list of NodeTerminal references

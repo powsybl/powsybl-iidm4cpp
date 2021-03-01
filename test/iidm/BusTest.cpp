@@ -5,11 +5,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <set>
+
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/AbstractTerminalTopologyVisitor.hpp>
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
@@ -33,7 +37,13 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+#include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/stdcxx/range.hpp>
+#include <powsybl/test/ResourceFixture.hpp>
+#include <powsybl/test/converter/RoundTrip.hpp>
+
+#include "NetworkFactory.hpp"
 
 namespace powsybl {
 
@@ -372,6 +382,250 @@ BOOST_AUTO_TEST_CASE(range_vscConverterStations) {
     BOOST_CHECK_EQUAL(1, vl.getVscConverterStationCount());
     BOOST_CHECK_EQUAL(1, boost::size(vl.getVscConverterStations()));
     BOOST_CHECK_EQUAL(1, boost::size(cVL.getVscConverterStations()));
+}
+
+class TerminalTopologyVisitor : public AbstractTerminalTopologyVisitor {
+public:
+    TerminalTopologyVisitor() = default;
+
+    const std::map<ConnectableType, std::set<std::string>>& getConnectables() const {
+        return m_equipments;
+    }
+
+    void visitTerminal(const Terminal& terminal) override {
+        m_equipments[terminal.getConnectable().get().getType()].emplace(terminal.getConnectable().get().getId());
+    }
+
+private:
+    std::map<ConnectableType, std::set<std::string>> m_equipments;
+};
+
+BOOST_AUTO_TEST_CASE(TerminalVisitorEurostag) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+
+    TerminalTopologyVisitor connectableEquipmentsVisitor;
+
+    network.get<Bus>("NHV2").visitConnectedOrConnectableEquipments(connectableEquipmentsVisitor);
+    BOOST_CHECK_EQUAL(2, boost::size(connectableEquipmentsVisitor.getConnectables()));
+
+    std::set<std::string> connectedLines_NHV2 = { "NHV1_NHV2_1", "NHV1_NHV2_2" };
+    BOOST_CHECK(connectedLines_NHV2 == connectableEquipmentsVisitor.getConnectables().find(ConnectableType::LINE)->second);
+
+    std::set<std::string> connected2WT_NHV2 = { "NHV2_NLOAD" };
+    BOOST_CHECK(connected2WT_NHV2 == connectableEquipmentsVisitor.getConnectables().find(ConnectableType::TWO_WINDINGS_TRANSFORMER)->second);
+
+    TerminalTopologyVisitor connectedEquipmentsVisitor;
+    Line& line = network.getLine("NHV1_NHV2_1");
+    line.getTerminal1().disconnect();
+
+    network.get<Bus>("NHV1").visitConnectedEquipments(connectedEquipmentsVisitor);
+    BOOST_CHECK_EQUAL(2, boost::size(connectedEquipmentsVisitor.getConnectables()));
+
+    std::set<std::string> connectedLines_NHV1 = { "NHV1_NHV2_2" };
+    BOOST_CHECK(connectedLines_NHV1 == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::LINE)->second);
+
+    std::set<std::string> connected2WT_NHV1 = { "NGEN_NHV1" };
+    BOOST_CHECK(connected2WT_NHV1 == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::TWO_WINDINGS_TRANSFORMER)->second);
+}
+
+BOOST_AUTO_TEST_CASE(TerminalVisitorAllBbk) {
+    Network network = create();
+
+    VoltageLevel& vl = network.getVoltageLevel("VL1");
+
+    vl.newBattery()
+        .setId("BATTERY")
+        .setBus("Bus1")
+        .setP0(0.0)
+        .setQ0(0.0)
+        .setMinP(0.0)
+        .setMaxP(100.0)
+        .add();
+
+    vl.newStaticVarCompensator()
+        .setId("SVC")
+        .setBus("Bus1")
+        .setBmin(0.0)
+        .setBmax(10.0)
+        .setRegulationMode(StaticVarCompensator::RegulationMode::OFF)
+        .add();
+
+    vl.newVscConverterStation()
+        .setId("VSC_S")
+        .setBus("Bus1")
+        .setLossFactor(0.6)
+        .setVoltageRegulatorOn(false)
+        .setReactivePowerSetpoint(50.0)
+        .add();
+
+    vl.newShuntCompensator()
+        .setId("SHUNT")
+        .setBus("Bus1")
+        .setSectionCount(1)
+        .newLinearModel()
+        .setBPerSection(0.25)
+        .setGPerSection(0.75)
+        .setMaximumSectionCount(3)
+        .add()
+        .add();
+
+    vl.newLoad()
+        .setId("LOAD")
+        .setBus("Bus1")
+        .setP0(0.0)
+        .setQ0(0.0)
+        .add();
+
+    network.newLine()
+        .setId("LINE")
+        .setVoltageLevel1("VL1")
+        .setBus1("Bus1")
+        .setVoltageLevel2("VL2")
+        .setBus2("Bus2")
+        .setR(1.0)
+        .setX(0.1)
+        .setB1(0.00005)
+        .setB2(0.00005)
+        .setG1(0.00005)
+        .setG2(0.00005)
+        .add();
+
+    vl.newLccConverterStation()
+        .setId("LCC_S")
+        .setBus("Bus1")
+        .setLossFactor(0.6)
+        .setPowerFactor(1.0)
+        .add();
+
+    vl.newGenerator()
+        .setId("GENERATOR")
+        .setBus("Bus1")
+        .setMinP(0)
+        .setMaxP(100)
+        .setTargetP(90)
+        .setTargetQ(35)
+        .setVoltageRegulatorOn(false)
+        .add();
+
+    vl.newDanglingLine()
+        .setId("DANGLINE_LINE")
+        .setBus("Bus1")
+        .setP0(0.0)
+        .setQ0(0.0)
+        .setR(1.0)
+        .setX(0.1)
+        .setG(0.00005)
+        .setB(0.00005)
+        .add();
+
+    network.getSubstation("S").newTwoWindingsTransformer()
+        .setId("2WT")
+        .setVoltageLevel1("VL1")
+        .setBus1("Bus1")
+        .setVoltageLevel2("VL2")
+        .setBus2("Bus2")
+        .setR(1.0)
+        .setX(0.1)
+        .setB(0.00005)
+        .setG(0.00005)
+        .setRatedU1(1.0)
+        .setRatedU2(1.0)
+        .add();
+
+    network.getSubstation("S").newThreeWindingsTransformer()
+        .setId("3WT")
+        .newLeg1()
+            .setVoltageLevel("VL1")
+            .setBus("Bus1")
+            .setR(1.0)
+            .setX(0.1)
+            .setB(0.00005)
+            .setG(0.00005)
+            .setRatedU(1.0)
+            .add()
+        .newLeg2()
+            .setVoltageLevel("VL2")
+            .setBus("Bus2")
+            .setR(1.1)
+            .setX(0.11)
+            .setG(0.0)
+            .setB(0.0)
+            .setRatedU(1.1)
+            .add()
+        .newLeg3()
+            .setVoltageLevel("VL3")
+            .setBus("Bus3")
+            .setR(1.2)
+            .setX(0.12)
+            .setG(0.0)
+            .setB(0.0)
+            .setRatedU(1.2)
+            .add()
+        .add();
+
+    TerminalTopologyVisitor connectedEquipmentsVisitor;
+
+    network.get<Bus>("Bus1").visitConnectedEquipments(connectedEquipmentsVisitor);
+    BOOST_CHECK_EQUAL(10, boost::size(connectedEquipmentsVisitor.getConnectables()));
+
+    std::set<std::string> connectedLines = { "LINE" };
+    BOOST_CHECK(connectedLines == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::LINE)->second);
+
+    std::set<std::string> connected2WT = { "2WT" };
+    BOOST_CHECK(connected2WT == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::TWO_WINDINGS_TRANSFORMER)->second);
+
+    std::set<std::string> connected3WT = { "3WT" };
+    BOOST_CHECK(connected3WT == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::THREE_WINDINGS_TRANSFORMER)->second);
+
+    std::set<std::string> connectedGenerators = { "GENERATOR" };
+    BOOST_CHECK(connectedGenerators == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::GENERATOR)->second);
+
+    std::set<std::string> connectedBatteries = { "BATTERY" };
+    BOOST_CHECK(connectedBatteries == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::BATTERY)->second);
+
+    std::set<std::string> connectedLoads = { "LOAD" };
+    BOOST_CHECK(connectedLoads == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::LOAD)->second);
+
+    std::set<std::string> connectedShunts = { "SHUNT" };
+    BOOST_CHECK(connectedShunts == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::SHUNT_COMPENSATOR)->second);
+
+    std::set<std::string> connectedDanglingLines = { "DANGLINE_LINE" };
+    BOOST_CHECK(connectedDanglingLines == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::DANGLING_LINE)->second);
+
+    std::set<std::string> connectedSvc = { "SVC" };
+    BOOST_CHECK(connectedSvc == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::STATIC_VAR_COMPENSATOR)->second);
+
+    std::set<std::string> connectedHvdc = { "VSC_S", "LCC_S" };
+    BOOST_CHECK(connectedHvdc == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::HVDC_CONVERTER_STATION)->second);
+
+    // visit Bus2
+    TerminalTopologyVisitor bus2Visitor;
+    network.get<Bus>("Bus2").visitConnectedEquipments(bus2Visitor);
+    std::set<std::string> connected3WT_Buses12 = { "3WT" };
+    BOOST_CHECK(connected3WT_Buses12 == bus2Visitor.getConnectables().find(ConnectableType::THREE_WINDINGS_TRANSFORMER)->second);
+
+    // visit Bus3
+    TerminalTopologyVisitor bus3Visitor;
+    network.get<Bus>("Bus3").visitConnectedEquipments(bus3Visitor);
+    std::set<std::string> connected3WT_Buses123 = { "3WT" };
+    BOOST_CHECK(connected3WT_Buses123 == bus3Visitor.getConnectables().find(ConnectableType::THREE_WINDINGS_TRANSFORMER)->second);
+
+    // visit VoltageLevel
+    TerminalTopologyVisitor voltageLevelVisitor;
+    vl.visitEquipments(voltageLevelVisitor);
+    BOOST_CHECK_EQUAL(10, boost::size(voltageLevelVisitor.getConnectables()));
+}
+
+BOOST_FIXTURE_TEST_CASE(TerminalVisitorBusbarSection, test::ResourceFixture) {
+    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("fictitiousSwitchRef.xml", converter::xml::IidmXmlVersion::V1_4()));
+
+    TerminalTopologyVisitor connectedEquipmentsVisitor;
+
+    network.getBusbarSection("D").getTerminal().getBusBreakerView().getBus().get().visitConnectedOrConnectableEquipments(connectedEquipmentsVisitor);
+    BOOST_CHECK_EQUAL(1, boost::size(connectedEquipmentsVisitor.getConnectables()));
+
+    std::set<std::string> connectedBbs = { "D" };
+    BOOST_CHECK(connectedBbs == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::BUSBAR_SECTION)->second);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
