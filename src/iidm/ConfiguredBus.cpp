@@ -14,10 +14,12 @@
 #include <powsybl/iidm/ConnectedComponentsManager.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
+#include <powsybl/iidm/TopologyVisitor.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
+#include <powsybl/stdcxx/upcast.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"
 #include "BusTerminal.hpp"
@@ -207,6 +209,11 @@ Bus& ConfiguredBus::setV(double v) {
     m_v[getNetwork().getVariantIndex()] = v;
 
     return *this;
+}
+
+void ConfiguredBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) {
+    const auto& mapper = stdcxx::upcast<BusTerminal, Terminal>;
+    TopologyVisitor::visitEquipments(getTerminals() | boost::adaptors::transformed(mapper), visitor);
 }
 
 }  // namespace iidm
