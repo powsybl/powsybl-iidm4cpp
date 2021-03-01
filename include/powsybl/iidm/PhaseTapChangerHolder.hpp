@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_PHASETAPCHANGERHOLDER_HPP
 
 #include <powsybl/iidm/TapChangerHolder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
@@ -36,7 +36,7 @@ protected:
     PhaseTapChangerHolder() noexcept = default;
 
 private:
-    virtual void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger> ratioTapChanger) = 0;
+    virtual void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger>&& phaseTapChanger) = 0;
 
 private:
     friend class PhaseTapChanger;

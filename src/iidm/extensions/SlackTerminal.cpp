@@ -41,7 +41,7 @@ void SlackTerminal::assertExtendable(const stdcxx::Reference<Extendable>& extend
 
 void SlackTerminal::attach(Bus& bus) {
     VoltageLevel& vl = bus.getVoltageLevel();
-    stdcxx::Reference<Terminal> terminal = util::TerminalFinder::getDefault().find(bus.getConnectedTerminals());
+    stdcxx::Reference<Terminal> terminal = TerminalFinder::find(bus.getConnectedTerminals());
     if (!terminal) {
         throw PowsyblException(stdcxx::format("Unable to find a terminal in the bus %1%", bus.getId()));
     }

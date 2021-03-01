@@ -7,6 +7,8 @@
 
 #include "ShuntCompensatorXml.hpp"
 
+#include <map>
+
 #include <powsybl/iidm/ShuntCompensatorLinearModel.hpp>
 #include <powsybl/iidm/ShuntCompensatorNonLinearModel.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
@@ -62,7 +64,7 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
     std::string regId;
     std::string regSide;
     stdcxx::Properties properties;
-    std::set<std::string> aliases;
+    std::map<std::string, std::string> aliases;
     context.getReader().readUntilEndElement(SHUNT, [&context, &adder, &regId, &regSide, &properties, &id, &aliases]() {
         if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
             regId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
@@ -73,7 +75,9 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
             properties.set(name, value);
         } else if (context.getReader().getLocalName() == ALIAS) {
             IidmXmlUtil::assertMinimumVersion(SHUNT, ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
-            aliases.emplace(context.getReader().readUntilEndElement(ALIAS));
+            const auto& aliasType = context.getReader().getOptionalAttributeValue(TYPE, "");
+            const auto& alias = context.getAnonymizer().deanonymizeString(context.getReader().readCharacters());
+            aliases[alias] = aliasType;
         } else if (context.getReader().getLocalName() == SHUNT_LINEAR_MODEL) {
             IidmXmlUtil::assertMinimumVersion(SHUNT, SHUNT_LINEAR_MODEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
             auto bPerSection = context.getReader().getAttributeValue<double>(B_PER_SECTION);
@@ -116,7 +120,7 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
         sc.setProperty(it.first, it.second);
     }
     for (const auto& alias : aliases) {
-        sc.addAlias(alias);
+        sc.addAlias(alias.first, alias.second);
     }
     sc.getTerminal().setP(p).setQ(q);
 }

@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 #include "CalculatedBus.hpp"
 

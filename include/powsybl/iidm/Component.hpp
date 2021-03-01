@@ -21,15 +21,15 @@ class Component {
 public:
     Component(Network& network, unsigned long num, unsigned long size);
 
-    Component(const Component& component) = delete;
+    Component(const Component&) = delete;
 
-    Component(Component&& component) noexcept = delete;
+    Component(Component&&) noexcept = delete;
 
     virtual ~Component() noexcept = default;
 
-    Component& operator=(const Component& component) = delete;
+    Component& operator=(const Component&) = delete;
 
-    Component& operator=(Component&& component) noexcept = delete;
+    Component& operator=(Component&&) noexcept = delete;
 
     stdcxx::const_range<Bus> getBuses() const;
 

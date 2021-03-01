@@ -102,17 +102,17 @@ private:  // TapChangerHolder
     unsigned long getRegulatingTapChangerCount() const override;
 
 private:  // RatioTapChangerHolder
-    void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) override;
+    void setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger) override;
 
 private:  // PhaseTapChangerHolder
-    void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger> phaseTapChanger) override;
+    void setPhaseTapChanger(std::unique_ptr<PhaseTapChanger>&& phaseTapChanger) override;
 
 private:
     const std::string& getTypeDescription() const;
 
     void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
 
-    void setTransformer(ThreeWindingsTransformer& transformer);
+    Leg& setTransformer(ThreeWindingsTransformer& transformer);
 
     friend class CurrentLimitsAdder<const std::nullptr_t, Leg>;
 
@@ -143,6 +143,8 @@ private:
 };
 
 }  // namespace three_windings_transformer
+
+std::ostream& operator<<(std::ostream& stream, const three_windings_transformer::Leg& leg);
 
 }  // namespace iidm
 

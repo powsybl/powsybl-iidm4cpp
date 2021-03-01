@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_RATIOTAPCHANGERHOLDER_HPP
 
 #include <powsybl/iidm/TapChangerHolder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
@@ -36,7 +36,7 @@ protected:
     RatioTapChangerHolder() noexcept = default;
 
 private:
-    virtual void setRatioTapChanger(std::unique_ptr<RatioTapChanger> ratioTapChanger) = 0;
+    virtual void setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger) = 0;
 
 private:
     friend class RatioTapChanger;

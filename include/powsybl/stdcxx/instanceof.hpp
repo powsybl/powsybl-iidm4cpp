@@ -10,7 +10,7 @@
 
 #include <memory>
 
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace stdcxx {
 

@@ -13,7 +13,7 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusAdder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

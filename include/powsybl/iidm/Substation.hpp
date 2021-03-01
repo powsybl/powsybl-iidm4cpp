@@ -17,7 +17,7 @@
 #include <powsybl/iidm/Country.hpp>
 #include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

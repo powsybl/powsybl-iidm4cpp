@@ -39,7 +39,7 @@ DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adde
     const auto& b = context.getReader().getAttributeValue<double>(B);
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &adder]() {
         const auto& voltageRegulationOnStr = context.getReader().getOptionalAttributeValue<bool>(GENERATION_VOLTAGE_REGULATION_ON);
-        if (voltageRegulationOnStr.is_initialized()) {
+        if (voltageRegulationOnStr) {
             double minP = context.getReader().getOptionalAttributeValue(GENERATION_MIN_P, stdcxx::nan());
             double maxP = context.getReader().getOptionalAttributeValue(GENERATION_MAX_P, stdcxx::nan());
             bool voltageRegulationOn = *voltageRegulationOnStr;
@@ -80,7 +80,7 @@ void DanglingLineXml::readSubElements(DanglingLine& dl, NetworkXmlReaderContext&
             IidmXmlUtil::assertMinimumVersion(stdcxx::format("%1%.generation", DANGLING_LINE), "reactiveLimits", ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
             ReactiveLimitsXml::getInstance().read(dl.getGeneration(), context);
         } else {
-            AbstractIdentifiableXml::readSubElements(dl, context);
+            AbstractConnectableXml::readSubElements(dl, context);
         }
     });
 }

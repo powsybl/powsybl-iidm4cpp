@@ -19,7 +19,7 @@
 
 #include <powsybl/iidm/ExtensionProvider.hpp>
 #include <powsybl/stdcxx/range.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
@@ -58,7 +58,7 @@ private:
 
     void loadLibrary(const boost::filesystem::path& libraryPath);
 
-    void registerExtension(std::unique_ptr<T> provider, const boost::filesystem::path& libraryPath = boost::filesystem::path());
+    void registerExtension(std::unique_ptr<T>&& provider, const boost::filesystem::path& libraryPath = boost::filesystem::path());
 
 private:
     std::map<boost::filesystem::path, boost::dll::shared_library> m_loadedLibraries;

@@ -47,6 +47,11 @@ public:
      */
     static const IidmXmlVersion& V1_3();
 
+    /**
+     * IIDM V1.4 (http://www.powsybl.org)
+     */
+    static const IidmXmlVersion& V1_4();
+
 public:
     /**
      * Return the list of all supported XIIDM versions
@@ -86,9 +91,9 @@ public:
     static const IidmXmlVersion& of(const std::string& version, const std::string& separator);
 
 public:
-    IidmXmlVersion(const IidmXmlVersion& version) = delete;
+    IidmXmlVersion(const IidmXmlVersion&) = delete;
 
-    IidmXmlVersion(IidmXmlVersion&& version) = delete;
+    IidmXmlVersion(IidmXmlVersion&&) = delete;
 
     ~IidmXmlVersion() = default;
 

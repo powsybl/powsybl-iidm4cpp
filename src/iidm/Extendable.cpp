@@ -11,7 +11,7 @@
 #include <boost/range/adaptor/map.hpp>
 
 #include <powsybl/iidm/Extension.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

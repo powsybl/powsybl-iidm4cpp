@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_IDENTIFIABLE_HPP
 #define POWSYBL_IIDM_IDENTIFIABLE_HPP
 
+#include <map>
 #include <set>
 #include <string>
 
@@ -31,7 +32,7 @@ public: // Validable
 public:
     Identifiable(const Identifiable&) = delete;
 
-    // Move constructor of stdcxx::Properties is not marked noexcept
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of stdcxx::Properties is not marked noexcept
     Identifiable(Identifiable&&) = default;  // NOSONAR
 
     ~Identifiable() noexcept override = default;
@@ -42,7 +43,21 @@ public:
 
     void addAlias(const std::string& alias);
 
-    const std::set<std::string>& getAliases() const;
+    void addAlias(const std::string& alias, bool ensureAliasUnicity);
+
+    void addAlias(const std::string& alias, const std::string& aliasType);
+
+    void addAlias(const std::string& alias, const char* aliasType);
+
+    void addAlias(const std::string& alias, const std::string& aliasType, bool ensureAliasUnicity);
+
+    void addAlias(const std::string& alias, const char* aliasType, bool ensureAliasUnicity);
+
+    stdcxx::const_range<std::string> getAliases() const;
+
+    stdcxx::optional<std::string> getAliasFromType(const std::string& aliasType) const;
+
+    std::string getAliasType(const std::string& alias) const;
 
     const std::string& getId() const;
 
@@ -98,7 +113,9 @@ private:
 
     stdcxx::Properties m_properties;
 
-    std::set<std::string> m_aliases;
+    std::set<std::string> m_aliasesWithoutType;
+
+    std::map<std::string, std::string> m_aliasesByType;
 };
 
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable);

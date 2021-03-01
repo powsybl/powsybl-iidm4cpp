@@ -11,6 +11,7 @@
 #include <powsybl/iidm/converter/xml/AbstractExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/sld/ConnectablePosition.hpp>
 #include <powsybl/iidm/extensions/sld/ConnectablePositionAdder.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -34,7 +35,7 @@ public:
 private:
     void readPosition(const converter::xml::NetworkXmlReaderContext& context, ConnectablePositionAdder::FeederAdder& feederAdder) const;
 
-    void writePosition(const ConnectablePosition::Feeder& feeder, converter::xml::NetworkXmlWriterContext& context, const boost::optional<int>& index = boost::optional<int>()) const;
+    void writePosition(const ConnectablePosition::Feeder& feeder, converter::xml::NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>()) const;
 };
 
 }  // namespace sld

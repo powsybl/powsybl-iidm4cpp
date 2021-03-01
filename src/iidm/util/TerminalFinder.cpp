@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/util/TerminalFinder.hpp>
 
+#include <vector>
+
 #include <powsybl/iidm/Branch.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
@@ -18,27 +20,11 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace util {
+namespace TerminalFinder {
 
-TerminalFinder::TerminalFinder(const std::vector<Predicate>& predicates) :
-    m_comparator(getComparator(predicates)) {
-}
+using Predicate = std::function<bool(const Terminal&)>;
 
-TerminalFinder::TerminalFinder(const Comparator& comparator) :
-    m_comparator(comparator) {
-}
-
-stdcxx::CReference<Terminal> TerminalFinder::find(const stdcxx::const_range<Terminal>& terminals) const {
-    auto it = std::max_element(terminals.begin(), terminals.end(), m_comparator);
-    return it != terminals.end() ? stdcxx::cref(*it) : stdcxx::cref<Terminal>();
-}
-
-stdcxx::Reference<Terminal> TerminalFinder::find(const stdcxx::range<Terminal>& terminals) const {
-    auto it = std::max_element(terminals.begin(), terminals.end(), m_comparator);
-    return it != terminals.end() ? stdcxx::ref(*it) : stdcxx::ref<Terminal>();
-}
-
-TerminalFinder::Comparator TerminalFinder::getComparator(const std::vector<Predicate>& predicates) {
+Comparator getComparator(const std::vector<Predicate>& predicates) {
     return [&predicates](const Terminal& t1, const Terminal& t2) {
         if (stdcxx::areSame(t1, t2)) {
             return false;
@@ -52,11 +38,7 @@ TerminalFinder::Comparator TerminalFinder::getComparator(const std::vector<Predi
     };
 }
 
-TerminalFinder TerminalFinder::getDefault() {
-    return TerminalFinder(getDefaultRules());
-}
-
-const std::vector<TerminalFinder::Predicate>& TerminalFinder::getDefaultRules() {
+const std::vector<TerminalFinder::Predicate>& getDefaultRules() {
     static std::vector<Predicate> s_rules = {
         [](const Terminal& t) { return stdcxx::isInstanceOf<BusbarSection>(t.getConnectable()); },
         [](const Terminal& t) { return stdcxx::isInstanceOf<Injection>(t.getConnectable()); },
@@ -67,7 +49,25 @@ const std::vector<TerminalFinder::Predicate>& TerminalFinder::getDefaultRules() 
     return s_rules;
 }
 
-}  // namespace util
+stdcxx::CReference<Terminal> find(const stdcxx::const_range<Terminal>& terminals) {
+    return find(getComparator(getDefaultRules()), terminals);
+}
+
+stdcxx::Reference<Terminal> find(const stdcxx::range<Terminal>& terminals) {
+    return find(getComparator(getDefaultRules()), terminals);
+}
+
+stdcxx::CReference<Terminal> find(const Comparator& comparator, const stdcxx::const_range<Terminal>& terminals) {
+    auto it = std::max_element(terminals.begin(), terminals.end(), comparator);
+    return it != terminals.end() ? stdcxx::cref(*it) : stdcxx::cref<Terminal>();
+}
+
+stdcxx::Reference<Terminal> find(const Comparator& comparator, const stdcxx::range<Terminal>& terminals) {
+    auto it = std::max_element(terminals.begin(), terminals.end(), comparator);
+    return it != terminals.end() ? stdcxx::ref(*it) : stdcxx::ref<Terminal>();
+}
+
+}  // namespace TerminalFinder
 
 }  // namespace iidm
 

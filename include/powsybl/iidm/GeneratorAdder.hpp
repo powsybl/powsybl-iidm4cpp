@@ -11,7 +11,7 @@
 #include <powsybl/iidm/EnergySource.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 

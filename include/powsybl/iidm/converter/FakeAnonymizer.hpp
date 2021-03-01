@@ -17,11 +17,7 @@ namespace iidm {
 namespace converter {
 
 class FakeAnonymizer : public Anonymizer {
-public:
-    FakeAnonymizer() = default;
-
-    ~FakeAnonymizer() override = default;
-
+public:  // Anonymizer
     Country anonymizeCountry(const Country& country) override;
 
     std::string anonymizeString(const std::string& str) override;
@@ -29,6 +25,23 @@ public:
     Country deanonymizeCountry(const Country& country) const override;
 
     std::string deanonymizeString(const std::string& anonymousStr) const override;
+
+    void read(std::istream& stream) override;
+
+    void write(std::ostream& stream) const override;
+
+public:
+    FakeAnonymizer() = default;
+
+    ~FakeAnonymizer() override = default;
+
+    FakeAnonymizer(const FakeAnonymizer&) = default;
+
+    FakeAnonymizer(FakeAnonymizer&&) noexcept = default;
+
+    FakeAnonymizer& operator=(const FakeAnonymizer&) = default;
+
+    FakeAnonymizer& operator=(FakeAnonymizer&&) noexcept = default;
 };
 
 }  // namespace converter

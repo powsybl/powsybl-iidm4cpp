@@ -136,6 +136,7 @@ set(IIDM_SOURCES
     iidm/converter/FakeAnonymizer.cpp
     iidm/converter/ImportOptions.cpp
     iidm/converter/Parameter.cpp
+    iidm/converter/SimpleAnonymizer.cpp
 
     iidm/converter/xml/AbstractExtensionXmlSerializer.cpp
     iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.cpp
@@ -262,4 +263,6 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/powsybl
     PATTERN "test/*" EXCLUDE
 )
 
-add_subdirectory(test)
+if (BUILD_TESTS)
+    add_subdirectory(test)
+endif()

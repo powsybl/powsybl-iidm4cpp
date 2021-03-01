@@ -9,10 +9,9 @@
 #define POWSYBL_IIDM_UTIL_TERMINALFINDER_HPP
 
 #include <functional>
-#include <vector>
 
 #include <powsybl/stdcxx/range.hpp>
-#include <powsybl/stdcxx/reference_wrapper.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
@@ -20,46 +19,19 @@ namespace iidm {
 
 class Terminal;
 
-namespace util {
+namespace TerminalFinder {
 
-class TerminalFinder {
-public:
-    using Comparator = std::function<bool(const Terminal& t1, const Terminal& t2)>;
+using Comparator = std::function<bool(const Terminal& t1, const Terminal& t2)>;
 
-    using Predicate = std::function<bool(const Terminal&)>;
+stdcxx::CReference<Terminal> find(const stdcxx::const_range<Terminal>& terminals);
 
-public:
-    static TerminalFinder getDefault();
+stdcxx::Reference<Terminal> find(const stdcxx::range<Terminal>& terminals);
 
-public:
-    explicit TerminalFinder(const std::vector<Predicate>& predicates);
+stdcxx::CReference<Terminal> find(const Comparator& comparator, const stdcxx::const_range<Terminal>& terminals);
 
-    explicit TerminalFinder(const Comparator& comparator);
+stdcxx::Reference<Terminal> find(const Comparator& comparator, const stdcxx::range<Terminal>& terminals);
 
-    TerminalFinder(const TerminalFinder&) = delete;
-
-    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::function is not marked noexcept
-    TerminalFinder(TerminalFinder&&) = default;
-
-    TerminalFinder& operator=(const TerminalFinder&) = delete;
-
-    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::function is not marked noexcept
-    TerminalFinder& operator=(TerminalFinder&&) = default;
-
-    stdcxx::CReference<Terminal> find(const stdcxx::const_range<Terminal>& terminals) const;
-
-    stdcxx::Reference<Terminal> find(const stdcxx::range<Terminal>& terminals) const;
-
-private:
-    static Comparator getComparator(const std::vector<Predicate>& predicates);
-
-    static const std::vector<Predicate>& getDefaultRules();
-
-private:
-    Comparator m_comparator;
-};
-
-}  // namespace util
+}  // namespace TerminalFinder
 
 }  // namespace iidm
 

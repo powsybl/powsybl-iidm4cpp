@@ -34,7 +34,8 @@ namespace xml {
 BOOST_AUTO_TEST_SUITE(SkipExtensionTestSuite)
 
 BOOST_FIXTURE_TEST_CASE(SkipExtensionTest, test::ResourceFixture) {
-    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetwork("multiple-extensions.xml", IidmXmlVersion::V1_0()));
+    const std::string& filename = "multiple-extensions.xml";
+    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath(filename, IidmXmlVersion::V1_0()));
     const std::string& refNetwork = test::converter::RoundTrip::getVersionedNetwork("noExtension.xml", IidmXmlVersion::V1_0());
 
     stdcxx::Properties properties;
@@ -42,47 +43,36 @@ BOOST_FIXTURE_TEST_CASE(SkipExtensionTest, test::ResourceFixture) {
 
     properties.set(ExportOptions::EXTENSIONS_LIST, "");
     properties.set(ExportOptions::VERSION, "1.0");
-    Network::writeXml(ostream, network, ExportOptions(properties));
+    Network::writeXml(filename, ostream, network, ExportOptions(properties));
     BOOST_CHECK_EQUAL(refNetwork, ostream.str());
 }
 
 BOOST_FIXTURE_TEST_CASE(checkSomeFiltered, test::ResourceFixture) {
-    std::stringstream stream;
-    stream << test::converter::RoundTrip::getVersionedNetwork("multiple-extensions.xml", IidmXmlVersion::V1_0());
-    FakeAnonymizer anonymizer;
-
+    const std::string& filename = "multiple-extensions.xml";
     stdcxx::Properties properties;
     properties.set(ImportOptions::EXTENSIONS_LIST, "loadFoo");
 
-    Network network = Network::readXml(stream, ImportOptions(properties), anonymizer);
+    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath(filename, IidmXmlVersion::V1_0()), ImportOptions(properties));
     network.getLoad("LOAD").getExtension<powsybl::network::LoadFooExt>();
     POWSYBL_ASSERT_THROW(network.getLoad("LOAD").getExtension<powsybl::network::LoadBarExt>(), PowsyblException, "Extension powsybl::network::LoadBarExt not found");
     network.getLoad("LOAD2").getExtension<powsybl::network::LoadFooExt>();
 }
 
 BOOST_FIXTURE_TEST_CASE(checkReadNoExtension, test::ResourceFixture) {
-    std::stringstream stream;
-    stream << test::converter::RoundTrip::getVersionedNetwork("multiple-extensions.xml", IidmXmlVersion::V1_0());
-    FakeAnonymizer anonymizer;
-
     stdcxx::Properties properties;
     properties.set(ImportOptions::EXTENSIONS_LIST, "");
 
-    Network network = Network::readXml(stream, ImportOptions(properties), anonymizer);
+    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("multiple-extensions.xml", IidmXmlVersion::V1_0()), ImportOptions(properties));
     POWSYBL_ASSERT_THROW(network.getLoad("LOAD").getExtension<powsybl::network::LoadFooExt>(), PowsyblException, "Extension powsybl::network::LoadFooExt not found");
     POWSYBL_ASSERT_THROW(network.getLoad("LOAD").getExtension<powsybl::network::LoadBarExt>(), PowsyblException, "Extension powsybl::network::LoadBarExt not found");
     POWSYBL_ASSERT_THROW(network.getLoad("LOAD2").getExtension<powsybl::network::LoadFooExt>(), PowsyblException, "Extension powsybl::network::LoadFooExt not found");
 }
 
 BOOST_FIXTURE_TEST_CASE(checkReadAllExtensions, test::ResourceFixture) {
-    std::stringstream stream;
-    stream << test::converter::RoundTrip::getVersionedNetwork("multiple-extensions.xml", IidmXmlVersion::V1_0());
-    FakeAnonymizer anonymizer;
-
     stdcxx::Properties properties;
     properties.set(ImportOptions::EXTENSIONS_LIST, "loadFoo,loadBar");
 
-    Network network = Network::readXml(stream, ImportOptions(properties), anonymizer);
+    Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("multiple-extensions.xml", IidmXmlVersion::V1_0()), ImportOptions(properties));
     network.getLoad("LOAD").getExtension<powsybl::network::LoadFooExt>();
     network.getLoad("LOAD").getExtension<powsybl::network::LoadBarExt>();
     network.getLoad("LOAD2").getExtension<powsybl::network::LoadFooExt>();
