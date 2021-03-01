@@ -1025,10 +1025,10 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
         .setOpen(false)
         .add();
 
-	vl.getNodeBreakerView().newInternalConnection()
-		.setNode1(99)
-		.setNode2(2)
-		.add();
+    vl.getNodeBreakerView().newInternalConnection()
+        .setNode1(99)
+        .setNode2(2)
+        .add();
 
     Load& l1 = vl.newLoad()
         .setId("LOAD1")
