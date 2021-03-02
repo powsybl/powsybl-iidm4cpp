@@ -20,9 +20,6 @@ class Network;
 
 template<typename Adder>
 class IdentifiableAdder : public Validable {
-public: // Validable
-    std::string getMessageHeader() const override;
-
 public:
     IdentifiableAdder() = default;
 
@@ -46,6 +43,9 @@ protected:
     virtual Network& getNetwork() = 0;
 
     bool isFictitious() const;
+
+private: // Validable
+    std::string getMessageHeader() const override;
 
 private:
     virtual const std::string& getTypeDescription() const = 0;

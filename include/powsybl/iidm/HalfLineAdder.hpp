@@ -24,9 +24,6 @@ class TieLineAdder;
 namespace tie_line {
 
 class HalfLineAdder : public Validable {
-public:  // Validable
-    std::string getMessageHeader() const override;
-
 public:
     HalfLineAdder(TieLineAdder& parent, unsigned long num);
 
@@ -53,6 +50,9 @@ public:
     HalfLineAdder& setXnodeP(double xnodeP);
 
     HalfLineAdder& setXnodeQ(double xnodeQ);
+
+private:  // Validable
+    std::string getMessageHeader() const override;
 
 private:
     HalfLine build() const;

@@ -27,9 +27,6 @@ namespace tie_line {
 class HalfLineAdder;
 
 class HalfLine : public Validable {
-public: // Validable
-    std::string getMessageHeader() const override;
-
 public:
     double getB1() const;
 
@@ -70,6 +67,9 @@ public:
     HalfLine& setXnodeP(double xnodeP);
 
     HalfLine& setXnodeQ(double xnodeQ);
+
+private: // Validable
+    std::string getMessageHeader() const override;
 
 private:
     HalfLine(const std::string& id, const std::string& name, bool fictitious, double xnodeP, double xnodeQ,

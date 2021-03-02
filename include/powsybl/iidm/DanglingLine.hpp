@@ -80,6 +80,8 @@ private:
 private:
     friend class CurrentLimitsAdder<std::nullptr_t, DanglingLine>;
 
+    friend class dangling_line::Generation;
+
 private:
     double m_b;
 

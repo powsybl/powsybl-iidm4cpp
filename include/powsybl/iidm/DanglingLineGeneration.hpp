@@ -25,9 +25,6 @@ class VariantManagerHolder;
 namespace dangling_line {
 
 class Generation : public Validable, public ReactiveLimitsHolder {
-public:  // Validable
-    std::string getMessageHeader() const override;
-
 public:
     Generation(VariantManagerHolder& network, double minP, double maxP, double targetP, double targetQ, double targetV, bool voltageRegulationOn);
 
@@ -60,6 +57,9 @@ public:
     Generation& setTargetV(double targetV);
 
     Generation& setVoltageRegulationOn(bool voltageRegulationOn);
+
+private:  // Validable
+    std::string getMessageHeader() const override;
 
 private:
     Generation& attach(DanglingLine& danglineLine);

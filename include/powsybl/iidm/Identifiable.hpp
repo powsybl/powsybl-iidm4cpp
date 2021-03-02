@@ -26,9 +26,6 @@ namespace iidm {
 class Network;
 
 class Identifiable : public virtual Validable, public Extendable, public MultiVariantObject {
-public: // Validable
-    std::string getMessageHeader() const override;
-
 public:
     Identifiable(const Identifiable&) = delete;
 
@@ -88,6 +85,9 @@ public:
     virtual void setFictitious(bool fictitious);
 
     stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
+
+protected: // Validable
+    std::string getMessageHeader() const override;
 
 protected:  // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

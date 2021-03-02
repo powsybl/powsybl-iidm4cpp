@@ -26,10 +26,7 @@ class VoltageLevel;
 
 namespace three_windings_transformer {
 
-class LegAdder : public virtual Validable {
-public:  // Validable
-    std::string getMessageHeader() const override;
-
+class LegAdder : public Validable {
 public:
     ~LegAdder() noexcept override = default;
 
@@ -54,6 +51,9 @@ public:
     LegAdder& setVoltageLevel(const std::string& voltageLevelId);
 
     LegAdder& setX(double x);
+
+private:  // Validable
+    std::string getMessageHeader() const override;
 
 private:
     LegAdder(ThreeWindingsTransformerAdder& parent, unsigned long legNumber);

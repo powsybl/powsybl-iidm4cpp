@@ -23,9 +23,6 @@ class ThreeWindingsTransformerAdder;
 namespace three_windings_transformer {
 
 class Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
-public:  // Validable
-    std::string getMessageHeader() const override;
-
 public:  // TapChangerHolder
     const Network& getNetwork() const override;
 
@@ -97,6 +94,9 @@ public:
     Leg& setX(double x);
 
     std::string toString() const;
+
+private:  // Validable
+    std::string getMessageHeader() const override;
 
 private:  // TapChangerHolder
     unsigned long getRegulatingTapChangerCount() const override;

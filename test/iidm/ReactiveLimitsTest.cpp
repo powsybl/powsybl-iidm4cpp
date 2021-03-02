@@ -20,7 +20,7 @@ namespace powsybl {
 namespace iidm {
 
 class ReactiveLimitsHolderMock : public ReactiveLimitsHolder, public Validable {
-public:
+private:
     std::string getMessageHeader() const override { return ""; };
 };
 
