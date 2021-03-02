@@ -80,6 +80,10 @@ public:
 
     stdcxx::range<Load> getLoads();
 
+    double getP() const;
+
+    double getQ() const;
+
     stdcxx::const_range<ShuntCompensator> getShuntCompensators() const;
 
     stdcxx::range<ShuntCompensator> getShuntCompensators();
