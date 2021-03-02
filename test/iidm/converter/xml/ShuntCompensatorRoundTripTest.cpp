@@ -42,7 +42,7 @@ Network createNonLinear() {
         .add();
     VoltageLevel& vl1 = s1.newVoltageLevel()
         .setId("VL1")
-        .setNominalVoltage(380)
+        .setNominalV(380)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
     vl1.getBusBreakerView().newBus()
@@ -55,7 +55,7 @@ Network createNonLinear() {
         .add();
     VoltageLevel& vl2 = s2.newVoltageLevel()
         .setId("VL2")
-        .setNominalVoltage(220)
+        .setNominalV(220)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
     vl2.getBusBreakerView().newBus()

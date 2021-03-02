@@ -36,7 +36,7 @@ public:
 
     HvdcLineAdder& setMaxP(double maxP);
 
-    HvdcLineAdder& setNominalV(double nominalVoltage);
+    HvdcLineAdder& setNominalV(double nominalV);
 
     HvdcLineAdder& setR(double r);
 

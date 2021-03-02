@@ -43,7 +43,7 @@ Network createBusbarSectionNetwork() {
     VoltageLevel& vl = s.newVoltageLevel()
         .setId("VL")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();

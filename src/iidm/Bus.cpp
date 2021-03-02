@@ -126,7 +126,7 @@ double Bus::getP() const {
                 }
                 break;
             default:
-                throw new AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
+                throw AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
         }
     }
     return p;
@@ -158,7 +158,7 @@ double Bus::getQ() const {
                 }
                 break;
             default:
-                throw new AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
+                throw AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
         }
     }
     return q;

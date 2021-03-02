@@ -59,7 +59,7 @@ Network create() {
 
     VoltageLevel& vl1 = s.newVoltageLevel()
         .setId("VL1")
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
 
@@ -69,7 +69,7 @@ Network create() {
 
     VoltageLevel& vl2 = s.newVoltageLevel()
         .setId("VL2")
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
 
@@ -79,7 +79,7 @@ Network create() {
 
     VoltageLevel& vl3 = s.newVoltageLevel()
         .setId("VL3")
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
 
@@ -104,7 +104,7 @@ BOOST_AUTO_TEST_CASE(testSetterGetter) {
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .setId("bbVL")
         .setName("bbVL_name")
-        .setNominalVoltage(200.0)
+        .setNominalV(200.0)
         .add();
     // ConfiguredBus
     Bus& bus = voltageLevel.getBusBreakerView()

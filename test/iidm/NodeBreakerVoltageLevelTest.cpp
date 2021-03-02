@@ -41,7 +41,7 @@ Network createCalculatedBusSwitchTestNetwork() {
     VoltageLevel& vl = s1.newVoltageLevel()
         .setId("B")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .setLowVoltageLimit(0.0)
         .setHighVoltageLimit(250.0)
         .add();
@@ -75,7 +75,7 @@ Network createCalculatedBusSwitchTestNetwork() {
     VoltageLevel& vl2 = s2.newVoltageLevel()
         .setId("G")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .setLowVoltageLimit(0.0)
         .setHighVoltageLimit(250.0)
         .add();
@@ -144,7 +144,7 @@ Network createCalculatedBusSwitchTestNetwork() {
     VoltageLevel& vl3 = s3.newVoltageLevel()
         .setId("VL")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -189,7 +189,7 @@ void createNetwork(Network& network) {
         .add();
     VoltageLevel& vl = s.newVoltageLevel()
         .setId(S5_10K_V)
-        .setNominalVoltage(10.0)
+        .setNominalV(10.0)
         .setTopologyKind(TopologyKind::NODE_BREAKER)
         .add();
     vl.getNodeBreakerView().newBusbarSection()
@@ -257,7 +257,7 @@ void createNetwork(Network& network) {
         .add();
     s4.newVoltageLevel()
     .setId("S4 10kV")
-    .setNominalVoltage(10.0)
+    .setNominalV(10.0)
     .setTopologyKind(TopologyKind::NODE_BREAKER)
     .add();
     network.newLine()
@@ -564,7 +564,7 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     VoltageLevel& vl = s.newVoltageLevel()
         .setId("VL")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -614,7 +614,7 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     VoltageLevel& vl2 = s.newVoltageLevel()
         .setId("VL2")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -742,7 +742,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     VoltageLevel& vl = s.newVoltageLevel()
         .setId("VL")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -789,7 +789,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     VoltageLevel& vl2 = s.newVoltageLevel()
         .setId("VL2")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -859,7 +859,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology2) {
     VoltageLevel& vl = s.newVoltageLevel()
         .setId("VL")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .add();
 
     auto& l1 = vl.newLoad()
@@ -884,7 +884,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
     VoltageLevel& vl1 = s1.newVoltageLevel()
         .setId("VL")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(1.0)
+        .setNominalV(1.0)
         .add();
 
     vl1.getNodeBreakerView().newBusbarSection()
@@ -998,7 +998,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
         .setId("VL")
         .setName("VL_name")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -1067,7 +1067,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     VoltageLevel& vl2 = s.newVoltageLevel()
         .setId("VL2")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -1089,7 +1089,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     VoltageLevel& vl3 = s.newVoltageLevel()
         .setId("VL3")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setLowVoltageLimit(380.0)
         .setHighVoltageLimit(420.0)
         .add();

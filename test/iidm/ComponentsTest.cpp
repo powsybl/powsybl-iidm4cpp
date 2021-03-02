@@ -35,7 +35,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl1 = substation.newVoltageLevel()
         .setId("VL1")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
     Bus& vl1Bus1 = vl1.getBusBreakerView().newBus()
@@ -52,7 +52,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl2 = substation.newVoltageLevel()
         .setId("VL2")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .add();
 
     Bus& vl2Bus1 = vl2.getBusBreakerView().newBus()
@@ -69,7 +69,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl3 = substation.newVoltageLevel()
         .setId("VL3")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(90.0)
+        .setNominalV(90.0)
         .add();
 
     Bus& vl3Bus1 = vl3.getBusBreakerView().newBus()
@@ -117,7 +117,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl4 = substation2.newVoltageLevel()
         .setId("VL4")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
     Bus& vl4Bus1 = vl4.getBusBreakerView().newBus()
@@ -134,7 +134,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl5 = substation2.newVoltageLevel()
         .setId("VL5")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .add();
 
     Bus& vl5Bus1 = vl5.getBusBreakerView().newBus()
@@ -183,7 +183,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl6 = substation3.newVoltageLevel()
         .setId("VL6")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
     Bus& vl6Bus1 = vl6.getBusBreakerView().newBus()
@@ -242,7 +242,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl7 = substation4.newVoltageLevel()
         .setId("VL7")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
     Bus& vl7Bus1 = vl7.getBusBreakerView().newBus()
@@ -277,7 +277,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl8 = substation4.newVoltageLevel()
         .setId("VL8")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .add();
 
     Bus& vl8Bus1 = vl8.getBusBreakerView().newBus()
@@ -298,7 +298,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl9 = substation5.newVoltageLevel()
         .setId("VL9")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
     Bus& vl9Bus1 = vl9.getBusBreakerView().newBus()
@@ -329,7 +329,7 @@ Network createComponentsTestNetworkBB() {
     VoltageLevel& vl10 = substation5.newVoltageLevel()
         .setId("VL10")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .add();
 
     Bus& vl10Bus1 = vl10.getBusBreakerView().newBus()
@@ -369,7 +369,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl1 = substation.newVoltageLevel()
         .setId("VL1")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
      vl1.newLoad()
@@ -390,7 +390,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl2 = substation.newVoltageLevel()
         .setId("VL2")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .add();
 
     vl2.newLoad()
@@ -419,7 +419,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl3 = substation.newVoltageLevel()
         .setId("VL3")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(90.0)
+        .setNominalV(90.0)
         .add();
 
     vl3.newLoad()
@@ -472,7 +472,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl4 = substation2.newVoltageLevel()
         .setId("VL4")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
     vl4.newLoad()
@@ -501,7 +501,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl5 = substation2.newVoltageLevel()
         .setId("VL5")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .add();
 
     vl5.newLoad()
@@ -562,7 +562,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl6 = substation3.newVoltageLevel()
         .setId("VL6")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
     vl6.newLoad()
@@ -635,7 +635,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl7 = substation4.newVoltageLevel()
         .setId("VL7")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
     vl7.newLoad()
@@ -684,7 +684,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl8 = substation4.newVoltageLevel()
         .setId("VL8")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .add();
 
     vl8.newLoad()
@@ -709,7 +709,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl9 = substation5.newVoltageLevel()
         .setId("VL9")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .add();
 
     vl9.newLoad()
@@ -744,7 +744,7 @@ Network createComponentsTestNetworkNB() {
     VoltageLevel& vl10 = substation5.newVoltageLevel()
         .setId("VL10")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .add();
 
     vl10.newLoad()
@@ -791,7 +791,7 @@ Network createMultiConnectedComponentsNetwork() {
             .add();
     VoltageLevel& vl1 = s1.newVoltageLevel()
             .setId("B")
-            .setNominalVoltage(225.0)
+            .setNominalV(225.0)
             .setLowVoltageLimit(0.0)
             .setTopologyKind(TopologyKind::NODE_BREAKER)
             .add();
@@ -822,7 +822,7 @@ Network createMultiConnectedComponentsNetwork() {
             .add();
     VoltageLevel& vl2 = s2.newVoltageLevel()
             .setId("G")
-            .setNominalVoltage(225.0)
+            .setNominalV(225.0)
             .setLowVoltageLimit(0.0)
             .setTopologyKind(TopologyKind::NODE_BREAKER)
             .add();
@@ -891,7 +891,7 @@ Network createNetworkWithHvdcLine() {
             .add();
     VoltageLevel& vl1 = s1.newVoltageLevel()
             .setId("VL1")
-            .setNominalVoltage(400)
+            .setNominalV(400)
             .setTopologyKind(TopologyKind::BUS_BREAKER)
             .add();
     vl1.getBusBreakerView().newBus()
@@ -903,7 +903,7 @@ Network createNetworkWithHvdcLine() {
             .add();
     VoltageLevel& vl2 = s2.newVoltageLevel()
             .setId("VL2")
-            .setNominalVoltage(400)
+            .setNominalV(400)
             .setTopologyKind(TopologyKind::NODE_BREAKER)
             .add();
     vl2.getNodeBreakerView().newBusbarSection()
