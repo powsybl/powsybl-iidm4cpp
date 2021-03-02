@@ -206,16 +206,19 @@ ConnectedComponentsManager& Network::getConnectedComponentsManager() {
     return m_variants.get().getConnectedComponentsManager();
 }
 
-unsigned long Network::getCountryCount() const {
-    std::unordered_set<Country, stdcxx::hash<Country>> countries;
+std::set<Country> Network::getCountries() const {
+    std::set<Country> countries;
     for (const auto& substation : getSubstations()) {
         const stdcxx::optional<Country>& country = substation.getCountry();
         if (country) {
             countries.emplace(*country);
         }
     }
+    return countries;
+}
 
-    return countries.size();
+unsigned long Network::getCountryCount() const {
+    return getCountries().size();
 }
 
 const DanglingLine& Network::getDanglingLine(const std::string& id) const {

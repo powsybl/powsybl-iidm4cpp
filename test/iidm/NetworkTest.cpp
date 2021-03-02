@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -372,11 +373,19 @@ BOOST_AUTO_TEST_CASE(fictitious) {
     BOOST_CHECK(!network.isFictitious());
 }
 
+std::ostream& operator<<(std::ostream& stream, const Country& country) {
+    stream << Enum::toString(country);
+    return stream;
+}
+
 BOOST_AUTO_TEST_CASE(country) {
     Network network = createTestNetwork();
 
     BOOST_CHECK_EQUAL(4, network.getSubstationCount());
     BOOST_CHECK_EQUAL(2, network.getCountryCount());
+
+    const std::set<Country>& countries = { Country::ES, Country::FR };
+    BOOST_CHECK(countries ==  network.getCountries());
 
     network.getSubstation("S2").setCountry(stdcxx::optional<Country>());
     BOOST_CHECK_EQUAL(1, network.getCountryCount());
