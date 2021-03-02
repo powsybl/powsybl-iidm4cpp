@@ -270,7 +270,7 @@ Network createComponentsTestNetworkBB() {
         .setConverterStationId1("LCC1")
         .setConverterStationId2("LCC2")
         .setMaxP(12.0)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .setR(14.0)
         .add();
 
@@ -677,7 +677,7 @@ Network createComponentsTestNetworkNB() {
         .setConverterStationId1("VSC1")
         .setConverterStationId2("VSC2")
         .setMaxP(12.0)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .setR(14.0)
         .add();
 
@@ -969,7 +969,7 @@ Network createNetworkWithHvdcLine() {
             .setConverterStationId1("C1")
             .setConverterStationId2("C2")
             .setR(1)
-            .setNominalVoltage(400)
+            .setNominalV(400)
             .setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER)
             .setMaxP(300.0)
             .setActivePowerSetpoint(280)

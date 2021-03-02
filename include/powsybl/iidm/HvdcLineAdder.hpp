@@ -36,7 +36,7 @@ public:
 
     HvdcLineAdder& setMaxP(double maxP);
 
-    HvdcLineAdder& setNominalVoltage(double nominalVoltage);
+    HvdcLineAdder& setNominalV(double nominalVoltage);
 
     HvdcLineAdder& setR(double r);
 
@@ -64,7 +64,7 @@ private:
 
     double m_r = stdcxx::nan();
 
-    double m_nominalVoltage = stdcxx::nan();
+    double m_nominalV = stdcxx::nan();
 
     double m_maxP = stdcxx::nan();
 
