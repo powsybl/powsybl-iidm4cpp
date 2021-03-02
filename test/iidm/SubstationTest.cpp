@@ -443,6 +443,32 @@ BOOST_AUTO_TEST_CASE(threeWindingsTransformerCount) {
     BOOST_CHECK_EQUAL(5UL, substation.getThreeWindingsTransformerCount());
 }
 
+BOOST_AUTO_TEST_CASE(remove) {
+    Network network = createSubstationTransformerCountTestNetwork();
+    Substation& s1 = network.getSubstation("S1");
+    network.getVoltageLevel("VL1");
+    network.getVoltageLevel("VL2");
+    network.getVoltageLevel("VL3");
+
+    s1.remove();
+
+    POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL1"), PowsyblException, "Unable to find to the identifiable 'VL1'");
+    POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL2"), PowsyblException, "Unable to find to the identifiable 'VL2'");
+    POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL3"), PowsyblException, "Unable to find to the identifiable 'VL3'");
+
+    Substation& s2 = network.getSubstation("S2");
+    network.getVoltageLevel("VL4");
+    network.getTwoWindingsTransformer("2WT_VL4_VL4");
+    network.getThreeWindingsTransformer("3WT_VL4_VL4_VL4");
+
+    s2.remove();
+
+    POWSYBL_ASSERT_THROW(network.getSubstation("S2"), PowsyblException, "Unable to find to the identifiable 'S2'");
+    POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL4"), PowsyblException, "Unable to find to the identifiable 'VL4'");
+    POWSYBL_ASSERT_THROW(network.getTwoWindingsTransformer("2WT_VL4_VL4"), PowsyblException, "Unable to find to the identifiable '2WT_VL4_VL4'");
+    POWSYBL_ASSERT_THROW(network.getThreeWindingsTransformer("3WT_VL4_VL4_VL4"), PowsyblException, "Unable to find to the identifiable '3WT_VL4_VL4_VL4'");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

@@ -115,6 +115,8 @@ private:
 
     void removeSwitch(const std::string& switchId);
 
+    void removeTopology() override;
+
 private:
     friend class bus_breaker_voltage_level::BusBreakerViewImpl;
 

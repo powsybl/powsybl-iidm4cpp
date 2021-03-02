@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/VoltageLevel.hpp>
 
+#include <boost/range/adaptor/reversed.hpp>
+
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
@@ -26,6 +28,7 @@
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
+#include <powsybl/iidm/util/VoltageLevels.hpp>
 
 namespace powsybl {
 
@@ -203,6 +206,26 @@ StaticVarCompensatorAdder VoltageLevel::newStaticVarCompensator() {
 
 VscConverterStationAdder VoltageLevel::newVscConverterStation() {
     return VscConverterStationAdder(*this);
+}
+
+void VoltageLevel::remove() {
+    VoltageLevels::checkRemovability(*this);
+
+    // Remove all connectables
+    std::vector<std::reference_wrapper<Connectable>> connectables;
+    for (Connectable& connectable : getConnectables()) {
+        connectables.emplace_back(std::ref(connectable));
+    }
+    for (Connectable& connectable : connectables | boost::adaptors::reversed) {
+        connectable.remove();
+    }
+
+    // Remove the topology
+    removeTopology();
+
+    // Remove this voltage level from the network
+    getSubstation().remove(*this);
+    getNetwork().getIndex().remove(*this);
 }
 
 VoltageLevel& VoltageLevel::setHighVoltageLimit(double highVoltageLimit) {

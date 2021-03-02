@@ -201,6 +201,10 @@ public:
 
     HvdcLine& getHvdcLine(const std::string& id);
 
+    const HvdcLine& getHvdcLine(const HvdcConverterStation& station) const;
+
+    HvdcLine& getHvdcLine(const HvdcConverterStation& station);
+
     unsigned long getHvdcLineCount() const;
 
     stdcxx::const_range<HvdcLine> getHvdcLines() const;
@@ -370,6 +374,10 @@ private:
     NetworkIndex& getIndex();
 
     friend class Identifiable;
+
+    friend class VoltageLevel;
+
+    friend class NodeBreakerVoltageLevel;
 
 private:
     stdcxx::DateTime m_caseDate;

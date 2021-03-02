@@ -187,7 +187,9 @@ set(IIDM_SOURCES
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
     iidm/util/Networks.cpp
+    iidm/util/Substations.cpp
     iidm/util/TerminalFinder.cpp
+    iidm/util/VoltageLevels.cpp
 
     logging/ConsoleLogger.cpp
     logging/ContainerLogger.cpp

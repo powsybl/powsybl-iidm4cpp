@@ -122,6 +122,8 @@ private:
 
     void removeSwitch(const std::string& switchId);
 
+    void removeTopology() override;
+
 private:
     friend class node_breaker_voltage_level::NodeBreakerViewImpl;
 

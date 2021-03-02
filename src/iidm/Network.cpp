@@ -297,6 +297,14 @@ HvdcLine& Network::getHvdcLine(const std::string& id) {
     return get<HvdcLine>(id);
 }
 
+const HvdcLine& Network::getHvdcLine(const HvdcConverterStation& station) const {
+    return get<HvdcLine>(station.getId());
+}
+
+HvdcLine& Network::getHvdcLine(const HvdcConverterStation& station) {
+    return get<HvdcLine>(station.getId());
+}
+
 unsigned long Network::getHvdcLineCount() const {
     return getObjectCount<HvdcLine>();
 }
@@ -628,7 +636,6 @@ void Network::reduceVariantArraySize(unsigned long number) {
 void Network::remove(Identifiable& identifiable) {
     m_networkIndex.remove(identifiable);
 }
-
 
 Network& Network::setCaseDate(const stdcxx::DateTime& caseDate) {
     m_caseDate = caseDate;
