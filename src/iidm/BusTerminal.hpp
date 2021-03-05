@@ -47,6 +47,10 @@ public: // Terminal
 
     bool isConnected() const override;
 
+    void traverse(VoltageLevel::TopologyTraverser& traverser) override;
+
+    void traverse(VoltageLevel::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) override;
+
 public:
     BusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);
 

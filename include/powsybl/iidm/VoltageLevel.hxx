@@ -22,6 +22,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/iidm/util/DistinctPredicate.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>

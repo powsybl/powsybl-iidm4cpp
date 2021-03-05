@@ -75,6 +75,10 @@ public:
 
     bool isConnected(const Terminal& terminal) const;
 
+    void traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser);
+
+    void traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals);
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

@@ -11,7 +11,6 @@
 #include <functional>
 
 #include <powsybl/iidm/Connectable.hpp>
-#include <powsybl/iidm/Terminal.hpp>
 
 namespace powsybl {
 

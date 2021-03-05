@@ -49,6 +49,14 @@ public:
 
     using NodeBreakerView = voltage_level::NodeBreakerView;
 
+public:
+    class TopologyTraverser {
+    public:
+        virtual bool traverse(Terminal& terminal, bool connected) = 0;
+
+        virtual bool traverse(Switch& aSwitch) = 0;
+    };
+
 public:  // Identifiable
     const Network& getNetwork() const override;
 
@@ -183,6 +191,9 @@ public:
     VoltageLevel& setNominalVoltage(double nominalVoltage);
 
     void visitEquipments(TopologyVisitor& visitor) const;
+
+protected:
+    static void addNextTerminals(Terminal& otherTerminal, std::vector<std::reference_wrapper<Terminal>>& nextTerminals);
 
 protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
