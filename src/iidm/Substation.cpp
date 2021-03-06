@@ -131,7 +131,12 @@ VoltageLevelAdder Substation::newVoltageLevel() {
 void Substation::remove() {
     Substations::checkRemovability(*this);
 
-    for (VoltageLevel& vl : m_voltageLevels | boost::adaptors::reversed) {
+    std::vector<std::reference_wrapper<VoltageLevel>> voltageLevels;
+    for (VoltageLevel& vl : m_voltageLevels) {
+        voltageLevels.emplace_back(vl);
+    }
+
+    for (VoltageLevel& vl : voltageLevels | boost::adaptors::reversed) {
         std::vector<std::reference_wrapper<Connectable>> connectables;
         for (Connectable& connectable : vl.getConnectables()) {
             connectables.emplace_back(std::ref(connectable));

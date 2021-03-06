@@ -110,6 +110,18 @@ void Network::extendVariantArraySize(unsigned long initVariantArraySize, unsigne
     m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
+stdcxx::CReference<HvdcLine> Network::findHvdcLine(const HvdcConverterStation& station) const {
+    const auto& filter = [&station](const HvdcLine& line) {
+        return stdcxx::areSame(line.getConverterStation1().get(), station) || stdcxx::areSame(line.getConverterStation2().get(), station);
+    };
+    auto lines = getHvdcLines() | boost::adaptors::filtered(filter);
+    return boost::size(lines) > 0 ? stdcxx::cref(*lines.begin()) : stdcxx::cref<HvdcLine>();
+}
+
+stdcxx::Reference<HvdcLine> Network::findHvdcLine(const HvdcConverterStation& station) {
+    return stdcxx::ref(const_cast<const Network*>(this)->findHvdcLine(station));
+}
+
 const Battery& Network::getBattery(const std::string& id) const {
     return get<Battery>(id);
 }
@@ -298,11 +310,15 @@ HvdcLine& Network::getHvdcLine(const std::string& id) {
 }
 
 const HvdcLine& Network::getHvdcLine(const HvdcConverterStation& station) const {
-    return get<HvdcLine>(station.getId());
+    auto hvdcLine = findHvdcLine(station);
+    if (!hvdcLine) {
+        throw PowsyblException(stdcxx::format("Unable to find to the HVDC line for station '%1%'", station.getId()));
+    }
+    return hvdcLine.get();
 }
 
 HvdcLine& Network::getHvdcLine(const HvdcConverterStation& station) {
-    return get<HvdcLine>(station.getId());
+    return const_cast<HvdcLine&>(static_cast<const Network*>(this)->getHvdcLine(station));
 }
 
 unsigned long Network::getHvdcLineCount() const {

@@ -8,12 +8,15 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/HvdcLine.hpp>
+#include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/network/FourSubstationsNodeBreakerFactory.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -444,29 +447,61 @@ BOOST_AUTO_TEST_CASE(threeWindingsTransformerCount) {
 }
 
 BOOST_AUTO_TEST_CASE(remove) {
-    Network network = createSubstationTransformerCountTestNetwork();
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
     Substation& s1 = network.getSubstation("S1");
-    network.getVoltageLevel("VL1");
-    network.getVoltageLevel("VL2");
-    network.getVoltageLevel("VL3");
-
-    s1.remove();
-
-    POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL1"), PowsyblException, "Unable to find to the identifiable 'VL1'");
-    POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL2"), PowsyblException, "Unable to find to the identifiable 'VL2'");
-    POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL3"), PowsyblException, "Unable to find to the identifiable 'VL3'");
-
     Substation& s2 = network.getSubstation("S2");
-    network.getVoltageLevel("VL4");
-    network.getTwoWindingsTransformer("2WT_VL4_VL4");
-    network.getThreeWindingsTransformer("3WT_VL4_VL4_VL4");
+    Substation& s3 = network.getSubstation("S3");
+    Substation& s4 = network.getSubstation("S4");
 
+    POWSYBL_ASSERT_THROW(s1.remove(), PowsyblException, "The substation S1 is still connected to another substation");
+    POWSYBL_ASSERT_THROW(s2.remove(), PowsyblException, "The substation S2 is still connected to another substation");
+    POWSYBL_ASSERT_THROW(s3.remove(), PowsyblException, "The substation S3 is still connected to another substation");
+    POWSYBL_ASSERT_THROW(s4.remove(), PowsyblException, "The substation S4 is still connected to another substation");
+
+    VoltageLevel& s1VL1 = network.getVoltageLevel("S1VL1");
+
+    POWSYBL_ASSERT_THROW(s1VL1.remove(), AssertionError, "The voltage level 'S1VL1' cannot be removed because of a remaining TWO_WINDINGS_TRANSFORMER");
+
+    POWSYBL_ASSERT_THROW(s1VL1.remove(), AssertionError, "The voltage level 'S1VL1' cannot be removed because of a remaining TWO_WINDINGS_TRANSFORMER");
+    network.getTwoWindingsTransformer("TWT").remove();
+
+    s1VL1.remove();
+    POWSYBL_ASSERT_THROW(s1.remove(), PowsyblException, "The substation S1 is still connected to another substation");
+
+    VoltageLevel& s2vl1 = network.getVoltageLevel("S2VL1");
+    POWSYBL_ASSERT_THROW(s2vl1.remove(), AssertionError, "The voltage level 'S2VL1' cannot be removed because of a remaining HVDC line");
+
+    VoltageLevel& s3VL1 = network.getVoltageLevel("S3VL1");
+    POWSYBL_ASSERT_THROW(s3VL1.remove(), AssertionError, "The voltage level 'S3VL1' cannot be removed because of a remaining LINE");
+
+    VoltageLevel& s4VL1 = network.getVoltageLevel("S4VL1");
+    POWSYBL_ASSERT_THROW(s4VL1.remove(), AssertionError, "The voltage level 'S4VL1' cannot be removed because of a remaining LINE");
+
+    // s3 and s4 are linked through LINE_S3S4
+    network.getLine("LINE_S3S4").remove();
+
+    // s4 is removable
+    s4.remove();
+
+    // s2 and s3 are linked by Line LINE_S2S3
+    network.getLine("LINE_S2S3").remove();
+
+    // s3 linked to s1 thought HVDC2
+    network.getHvdcLine("HVDC2").remove();
+    network.getVscConverterStation("VSC2").remove();
+    network.getLccConverterStation("LCC2").remove();
+
+    // s3 is isolated => removable
+    s3.remove();
+
+    // s1 and s2 are linked by HVDC1
+    network.getHvdcLine("HVDC1").remove();
+    network.getVscConverterStation("VSC1").remove();
+    network.getLccConverterStation("LCC1").remove();
+
+    // s1 and s2 are isolated => removable
+    s1.remove();
     s2.remove();
-
-    POWSYBL_ASSERT_THROW(network.getSubstation("S2"), PowsyblException, "Unable to find to the identifiable 'S2'");
-    POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL4"), PowsyblException, "Unable to find to the identifiable 'VL4'");
-    POWSYBL_ASSERT_THROW(network.getTwoWindingsTransformer("2WT_VL4_VL4"), PowsyblException, "Unable to find to the identifiable '2WT_VL4_VL4'");
-    POWSYBL_ASSERT_THROW(network.getThreeWindingsTransformer("3WT_VL4_VL4_VL4"), PowsyblException, "Unable to find to the identifiable '3WT_VL4_VL4_VL4'");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

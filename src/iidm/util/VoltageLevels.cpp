@@ -29,7 +29,7 @@ void checkRemovability(const VoltageLevel& voltageLevel) {
             // Reject lines, 2WT and 3WT
             throw AssertionError(stdcxx::format("The voltage level '%1%' cannot be removed because of a remaining %2%", voltageLevel.getId(), type));
         }
-        if (type == ConnectableType::HVDC_CONVERTER_STATION && network.find<HvdcLine>(connectable.getId())) {
+        if (type == ConnectableType::HVDC_CONVERTER_STATION && network.findHvdcLine(dynamic_cast<const HvdcConverterStation&>(connectable))) {
             // Reject all converter stations connected to a HVDC line
             throw AssertionError(stdcxx::format("The voltage level '%1%' cannot be removed because of a remaining HVDC line", voltageLevel.getId()));
         }

@@ -102,6 +102,10 @@ public:
     template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     stdcxx::Reference<T> find(const std::string& id);
 
+    stdcxx::CReference<HvdcLine> findHvdcLine(const HvdcConverterStation& station) const;
+
+    stdcxx::Reference<HvdcLine> findHvdcLine(const HvdcConverterStation& station);
+
     template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     const T& get(const std::string& id) const;
 

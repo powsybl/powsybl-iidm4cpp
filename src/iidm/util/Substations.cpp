@@ -58,11 +58,13 @@ void checkRemovability(const Substation& substation, const ThreeWindingsTransfor
 }
 
 void checkRemovability(const Substation& substation, const HvdcConverterStation& station) {
-    const HvdcLine& hvdcLine = substation.getNetwork().getHvdcLine(station);
-    const Substation& s1 = hvdcLine.getConverterStation1().get().getTerminal().getVoltageLevel().getSubstation();
-    const Substation& s2 = hvdcLine.getConverterStation2().get().getTerminal().getVoltageLevel().getSubstation();
-    if (!stdcxx::areSame(s1, substation) || !stdcxx::areSame(s2, substation)) {
-        throw createIsolationException(substation);
+    const auto& hvdcLine = substation.getNetwork().findHvdcLine(station);
+    if (hvdcLine) {
+        const Substation& s1 = hvdcLine.get().getConverterStation1().get().getTerminal().getVoltageLevel().getSubstation();
+        const Substation& s2 = hvdcLine.get().getConverterStation2().get().getTerminal().getVoltageLevel().getSubstation();
+        if (!stdcxx::areSame(s1, substation) || !stdcxx::areSame(s2, substation)) {
+            throw createIsolationException(substation);
+        }
     }
 }
 
