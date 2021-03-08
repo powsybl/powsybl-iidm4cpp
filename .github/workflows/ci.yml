@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install Boost
-        run: sudo apt update -y && sudo apt install -y libboost-all-dev
+        run: sudo apt-get update -y && sudo apt-get install -y libboost-all-dev
 
       - name: Checkout sources
         uses: actions/checkout@v1
@@ -131,7 +131,7 @@ jobs:
           SONAR_SCANNER_VERSION: 3.3.0.1492
 
       - name: Install Boost
-        run: sudo apt update -y && sudo apt install -y libboost-all-dev
+        run: sudo apt-get update -y && sudo apt-get install -y libboost-all-dev
 
       - name: Checkout sources
         uses: actions/checkout@v1
