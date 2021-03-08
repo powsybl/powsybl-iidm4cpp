@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install Boost
-        run: sudo apt install -y libboost-all-dev
+        run: sudo apt update -y && sudo apt install -y libboost-all-dev
 
       - name: Install clang-tidy
         run: |
