@@ -19,15 +19,15 @@ class MultipleVariantContext : public VariantContext {
 public:
     explicit MultipleVariantContext(unsigned long index);
 
-    ~MultipleVariantContext() noexcept override = default;
-
     MultipleVariantContext(const MultipleVariantContext&) = default;
 
-    MultipleVariantContext(MultipleVariantContext&&) = default;
+    MultipleVariantContext(MultipleVariantContext&&) noexcept = default;
+
+    ~MultipleVariantContext() noexcept override = default;
 
     MultipleVariantContext& operator=(const MultipleVariantContext&) = default;
 
-    MultipleVariantContext& operator=(MultipleVariantContext&&) = default;
+    MultipleVariantContext& operator=(MultipleVariantContext&&) noexcept = default;
 
 protected: // VariantContext
     unsigned long getVariantIndex() const override;

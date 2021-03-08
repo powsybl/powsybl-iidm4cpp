@@ -28,15 +28,15 @@ public:  // VariantContext
 public:
     ThreadLocalMultipleVariantContext() = default;
 
-    ~ThreadLocalMultipleVariantContext() noexcept override = default;
-
     ThreadLocalMultipleVariantContext(const ThreadLocalMultipleVariantContext&) = default;
 
-    ThreadLocalMultipleVariantContext(ThreadLocalMultipleVariantContext&&) = default;
+    ThreadLocalMultipleVariantContext(ThreadLocalMultipleVariantContext&&) noexcept = default;
+
+    ~ThreadLocalMultipleVariantContext() noexcept override = default;
 
     ThreadLocalMultipleVariantContext& operator=(const ThreadLocalMultipleVariantContext&) = default;
 
-    ThreadLocalMultipleVariantContext& operator=(ThreadLocalMultipleVariantContext&&) = default;
+    ThreadLocalMultipleVariantContext& operator=(ThreadLocalMultipleVariantContext&&) noexcept = default;
 
     void reset();
 

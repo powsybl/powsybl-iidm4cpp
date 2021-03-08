@@ -63,7 +63,7 @@ void VariantManager::allowVariantMultiThreadAccess(bool allow) {
         if (m_variantContext->isIndexSet()) {
             newVariantContext->setVariantIndex(m_variantContext->getVariantIndex());
         }
-        m_variantContext.reset(newVariantContext.release());
+        m_variantContext.swap(newVariantContext);
     } else if (!allow && !stdcxx::isInstanceOf<MultipleVariantContext>(*m_variantContext)) {
         if (m_variantContext->isIndexSet()) {
             m_variantContext = stdcxx::make_unique<MultipleVariantContext>(m_variantContext->getVariantIndex());
