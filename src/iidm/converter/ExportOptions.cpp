@@ -105,13 +105,12 @@ const ExportOptions::IidmVersionIncompatibilityBehavior& ExportOptions::getIidmV
     return m_iidmVersionIncompatibilityBehavior;
 }
 
+const TopologyLevel& ExportOptions::getTopologyLevel() const {
+    return m_topologyLevel;
+}
 
 const std::string& ExportOptions::getVersion() const {
     return m_version;
-}
-
-const TopologyLevel& ExportOptions::getTopologyLevel() const {
-    return m_topologyLevel;
 }
 
 bool ExportOptions::hasAtLeastOneExtension(const stdcxx::const_range<Extension>& extensions) const {

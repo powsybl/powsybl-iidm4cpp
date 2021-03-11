@@ -89,6 +89,23 @@ public:
 
     /**
      * Assert that the context's IIDM-XML version equals or is more recent than a given IIDM-XML version if the value of an attribute or the state of an equipment
+     * is not default (interpretable for previous versions).
+     * If the value is not default and no exception has been thrown, run a given runnable.
+     *
+     * @param valueIsNotDefault assert only if this parameter is true
+     * @param rootElementName the name of the XML root element
+     * @param elementName the name of the XML element
+     * @param errorMessage the type of error message in case of an exception is thrown
+     * @param minVersion the IIDM-XML version in which the element has been added
+     * @param context the context
+     * @param runnable the function to run
+     *
+     * @throw a {@link PowsyblException} if the context's version is less recent than the minVersion and valueIsNotDefault is true
+     */
+    static void assertMinimumVersionAndRunIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlReaderContext& context, const std::function<void()>& runnable);
+
+    /**
+     * Assert that the context's IIDM-XML version equals or is more recent than a given IIDM-XML version if the value of an attribute or the state of an equipment
      * is not default (interpretable for previous versions)
      *
      * @param valueIsNotDefault assert only if this parameter is true
@@ -116,23 +133,6 @@ public:
      * @throw a {@link PowsyblException} if the context's version less recent than the minVersion
      */
     static void assertMinimumVersionIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlWriterContext& context);
-
-    /**
-     * Assert that the context's IIDM-XML version equals or is more recent than a given IIDM-XML version if the value of an attribute or the state of an equipment
-     * is not default (interpretable for previous versions).
-     * If the value is not default and no exception has been thrown, run a given runnable.
-     *
-     * @param valueIsNotDefault assert only if this parameter is true
-     * @param rootElementName the name of the XML root element
-     * @param elementName the name of the XML element
-     * @param errorMessage the type of error message in case of an exception is thrown
-     * @param minVersion the IIDM-XML version in which the element has been added
-     * @param context the context
-     * @param runnable the function to run
-     *
-     * @throw a {@link PowsyblException} if the context's version is less recent than the minVersion and valueIsNotDefault is true
-     */
-    static void assertMinimumVersionAndRunIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlReaderContext& context, const std::function<void()>& runnable);
 
     /**
      * Assert that the context's IIDM-XML version equals or is more recent than a given IIDM-XML version if the value of an attribute or the state of an equipment
