@@ -8,6 +8,7 @@
 #include <powsybl/iidm/Connectable.hpp>
 
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
 namespace powsybl {
@@ -18,6 +19,8 @@ Connectable::Connectable(const std::string& id, const std::string& name, bool fi
     Identifiable(id, name, fictitious),
     m_connectableType(connectableType) {
 }
+
+Connectable::~Connectable() noexcept = default;
 
 void Connectable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     Identifiable::allocateVariantArrayElement(indexes, sourceIndex);

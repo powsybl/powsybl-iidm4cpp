@@ -11,6 +11,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/stdcxx/format.hpp>
 

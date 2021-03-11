@@ -19,6 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 class Terminal;
+class VariantManagerHolder;
 
 class Generator : public Injection, public ReactiveLimitsHolder {
 public:

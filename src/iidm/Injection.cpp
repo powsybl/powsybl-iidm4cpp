@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/Injection.hpp>
 
+#include <powsybl/iidm/Terminal.hpp>
+
 namespace powsybl {
 
 namespace iidm {

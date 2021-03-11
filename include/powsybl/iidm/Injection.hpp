@@ -17,6 +17,8 @@ namespace powsybl {
 
 namespace iidm {
 
+class Terminal;
+
 class Injection : public Connectable {
 public:
     ~Injection() noexcept override = default;

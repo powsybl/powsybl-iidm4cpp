@@ -13,13 +13,13 @@
 
 #include <powsybl/iidm/ConnectableType.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/Terminal.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
 class Network;
+class Terminal;
 
 class Connectable : public Identifiable {
 public:  // Identifiable
@@ -28,7 +28,7 @@ public:  // Identifiable
     Network& getNetwork() override;
 
 public:
-    ~Connectable() noexcept override = default;
+    ~Connectable() noexcept override;
 
     Terminal& addTerminal(std::unique_ptr<Terminal>&& terminal);
 
