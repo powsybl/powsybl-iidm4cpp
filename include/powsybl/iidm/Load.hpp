@@ -17,6 +17,8 @@ namespace powsybl {
 
 namespace iidm {
 
+class VariantManagerHolder;
+
 class Load : public Injection {
 public:
     Load(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const LoadType& loadType,

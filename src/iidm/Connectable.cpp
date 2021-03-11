@@ -8,6 +8,7 @@
 #include <powsybl/iidm/Connectable.hpp>
 
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
 namespace powsybl {
@@ -17,6 +18,11 @@ namespace iidm {
 Connectable::Connectable(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType) :
     Identifiable(id, name, fictitious),
     m_connectableType(connectableType) {
+}
+
+// NOLINTNEXTLINE(modernize-use-equals-default,-warnings-as-errors) use forward declaration of Terminal to workaround include circular dependency on Terminal.hpp
+Connectable::~Connectable() noexcept {  // NOSONAR
+
 }
 
 void Connectable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
