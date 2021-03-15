@@ -28,7 +28,7 @@ void CurrentLimitsXml::readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const 
     reader.readUntilEndElement(toString(CURRENT_LIMITS, index), [&adder, &reader]() {
         if (reader.getLocalName() == TEMPORARY_LIMIT) {
             const std::string& name = reader.getAttributeValue(NAME);
-            int acceptableDuration = reader.getOptionalAttributeValue(ACCEPTABLE_DURATION, std::numeric_limits<int>::max());
+            unsigned long acceptableDuration = reader.getOptionalAttributeValue(ACCEPTABLE_DURATION, std::numeric_limits<unsigned long>::max());
             double value = reader.getOptionalAttributeValue(VALUE, std::numeric_limits<double>::max());
             bool fictitious = reader.getOptionalAttributeValue(FICTITIOUS, false);
             adder.beginTemporaryLimit()

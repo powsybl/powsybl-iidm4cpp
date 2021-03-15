@@ -23,6 +23,7 @@ set(UNIT_TEST_SOURCES
     BatteryRoundTripTest.cpp
     EurostagTest.cpp
     FictitiousSwitchTest.cpp
+    FourSubstationsNodeBreakerTest.cpp
     HvdcRoundTripTest.cpp
     IdentifiableExtensionXmlSerializerTest.cpp
     IidmXmlUtilTest.cpp
