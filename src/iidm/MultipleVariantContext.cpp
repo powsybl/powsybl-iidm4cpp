@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/MultipleVariantContext.hpp>
+#include "MultipleVariantContext.hpp"
 
 #include <powsybl/PowsyblException.hpp>
 
@@ -22,6 +22,10 @@ unsigned long MultipleVariantContext::getVariantIndex() const {
         throw PowsyblException("Variant index not set");
     }
     return m_index.get();
+}
+
+bool MultipleVariantContext::isIndexSet() const {
+    return static_cast<bool>(m_index);
 }
 
 void MultipleVariantContext::resetIfVariantIndexIs(unsigned long index) {

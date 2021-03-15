@@ -22,7 +22,7 @@ void CurrentLimitsXml::writeCurrentLimits(const CurrentLimits& limits, powsybl::
         writer.writeStartElement(nsPrefix, toString(CURRENT_LIMITS, index));
         writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
 
-        constexpr unsigned long undefinedAcceptableDuration = std::numeric_limits<int>::max();
+        constexpr unsigned long undefinedAcceptableDuration = std::numeric_limits<unsigned long>::max();
 
         for (const auto& tl : limits.getTemporaryLimits()) {
             writer.writeStartElement(version.getPrefix(), TEMPORARY_LIMIT);

@@ -21,6 +21,8 @@ public:
 protected:
     virtual unsigned long getVariantIndex() const = 0;
 
+    virtual bool isIndexSet() const = 0;
+
     virtual void resetIfVariantIndexIs(unsigned long index) = 0;
 
     virtual void setVariantIndex(unsigned long index) = 0;
