@@ -112,13 +112,6 @@ public:
     const IidmVersionIncompatibilityBehavior& getIidmVersionIncompatibilityBehavior() const;
 
     /**
-     * Return the XIIDM version to use
-     *
-     * @return the XIIDM version
-     */
-    const std::string& getVersion() const;
-
-    /**
      * Return the maximal topology level to use
      *
      * The TopologyLevel is used to decrease the level of detail of a voltage level topology.
@@ -126,6 +119,13 @@ public:
      * @return the maximal TopologyLevel to use
      */
     const TopologyLevel& getTopologyLevel() const;
+
+    /**
+     * Return the XIIDM version to use
+     *
+     * @return the XIIDM version
+     */
+    const std::string& getVersion() const;
 
     /**
      * Return true if one (or more) extension of the given list should be exported
