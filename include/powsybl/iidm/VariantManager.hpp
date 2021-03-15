@@ -42,6 +42,8 @@ public:
 
     VariantManager& operator=(VariantManager&&) noexcept = delete;
 
+    void allowVariantMultiThreadAccess(bool allow);
+
     void cloneVariant(const std::string& sourceVariantId, const std::string& targetVariantId, bool mayOverwrite = false);
 
     void cloneVariant(const std::string& sourceVariantId, const std::initializer_list<std::string>& targetVariantIds, bool mayOverwrite = false);
@@ -57,6 +59,8 @@ public:
     std::set<unsigned long> getVariantIndices() const;
 
     const std::string& getWorkingVariantId() const;
+
+    bool isVariantMultiThreadAccessAllowed() const;
 
     void removeVariant(const std::string& variantId);
 
