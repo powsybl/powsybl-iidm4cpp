@@ -81,6 +81,13 @@ void IidmXmlUtil::assertMinimumVersion(const std::string& rootElementName, const
     }
 }
 
+void IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlReaderContext& context, const std::function<void()>& runnable) {
+    if (valueIsNotDefault) {
+        assertMinimumVersion(rootElementName, elementName, errorMessage, minVersion, context);
+        runnable();
+    }
+}
+
 void IidmXmlUtil::assertMinimumVersionIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlReaderContext& context) {
     if (valueIsNotDefault) {
         assertMinimumVersion(rootElementName, elementName, errorMessage, minVersion, context);
@@ -90,13 +97,6 @@ void IidmXmlUtil::assertMinimumVersionIfNotDefault(bool valueIsNotDefault, const
 void IidmXmlUtil::assertMinimumVersionIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlWriterContext& context) {
     if (valueIsNotDefault) {
         assertMinimumVersion(rootElementName, elementName, errorMessage, minVersion, context);
-    }
-}
-
-void IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(bool valueIsNotDefault, const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& minVersion, const NetworkXmlReaderContext& context, const std::function<void()>& runnable) {
-    if (valueIsNotDefault) {
-        assertMinimumVersion(rootElementName, elementName, errorMessage, minVersion, context);
-        runnable();
     }
 }
 
