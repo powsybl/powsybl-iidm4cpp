@@ -141,8 +141,6 @@ double Bus::getQ() const {
         const Connectable& connectable = terminal.getConnectable();
         switch (connectable.getType()) {
             case ConnectableType::BUSBAR_SECTION:
-            case ConnectableType::SHUNT_COMPENSATOR:
-            case ConnectableType::STATIC_VAR_COMPENSATOR:
             case ConnectableType::LINE:
             case ConnectableType::TWO_WINDINGS_TRANSFORMER:
             case ConnectableType::THREE_WINDINGS_TRANSFORMER:
@@ -152,6 +150,8 @@ double Bus::getQ() const {
             case ConnectableType::GENERATOR:
             case ConnectableType::BATTERY:
             case ConnectableType::LOAD:
+            case ConnectableType::SHUNT_COMPENSATOR:
+            case ConnectableType::STATIC_VAR_COMPENSATOR:
             case ConnectableType::HVDC_CONVERTER_STATION:
                 if (!std::isnan(terminal.getQ())) {
                     q += terminal.getQ();
