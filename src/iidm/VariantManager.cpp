@@ -10,11 +10,13 @@
 #include <algorithm>
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
-#include <powsybl/iidm/MultipleVariantContext.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/VariantContextGuard.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
+
+#include "MultipleVariantContext.hpp"
+#include "ThreadLocalMultipleVariantContext.hpp"
 
 namespace powsybl {
 
@@ -50,6 +52,26 @@ void VariantManager::allocateVariantArrayElement(unsigned long sourceIndex, cons
             multiVariantObject.allocateVariantArrayElement(overwritten, sourceIndex);
         }
         logger.trace("Overwriting variant array indexes %1%", stdcxx::toString(overwritten));
+    }
+}
+
+void VariantManager::allowVariantMultiThreadAccess(bool allow) {
+    if (allow && !stdcxx::isInstanceOf<ThreadLocalMultipleVariantContext>(m_variantContext)) {
+        std::unique_ptr<VariantContext> newVariantContext = stdcxx::make_unique<VariantContext, ThreadLocalMultipleVariantContext>();
+        // For multithreaded VariantContext, don't set the variantIndex to a default
+        // value if it is not set, so that missing initializations fail fast.
+        if (m_variantContext->isIndexSet()) {
+            newVariantContext->setVariantIndex(m_variantContext->getVariantIndex());
+        }
+        m_variantContext.swap(newVariantContext);
+    } else if (!allow && !stdcxx::isInstanceOf<MultipleVariantContext>(*m_variantContext)) {
+        if (m_variantContext->isIndexSet()) {
+            m_variantContext = stdcxx::make_unique<MultipleVariantContext>(m_variantContext->getVariantIndex());
+        } else {
+            // For singlethreaded VariantContext, set the variantIndex to a default value
+            // if it is not set, because missing initialization error are rare.
+            m_variantContext = stdcxx::make_unique<MultipleVariantContext>(INITIAL_VARIANT_INDEX);
+        }
     }
 }
 
@@ -171,6 +193,10 @@ const std::string& VariantManager::getWorkingVariantId() const {
     });
 
     return it->first;
+}
+
+bool VariantManager::isVariantMultiThreadAccessAllowed() const {
+    return stdcxx::isInstanceOf<ThreadLocalMultipleVariantContext>(*m_variantContext);
 }
 
 void VariantManager::removeVariant(const std::string& variantId) {

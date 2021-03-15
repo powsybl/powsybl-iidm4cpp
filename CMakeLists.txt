@@ -44,6 +44,7 @@ else ()
     find_package(Boost 1.65 REQUIRED COMPONENTS date_time filesystem program_options system)
 endif()
 find_package(LibXml2 REQUIRED)
+find_package(Threads REQUIRED)
 
 if (WIN32)
     # On windows, also force prefix to avoid conflict between import file (for shared compilation) and static file
