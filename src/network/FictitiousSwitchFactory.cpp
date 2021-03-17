@@ -60,7 +60,7 @@ iidm::Network FictitiousSwitchFactory::create() {
         .add();
     iidm::VoltageLevel& vlC = s.newVoltageLevel()
         .setId("C")
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .setLowVoltageLimit(0.0)
         .setTopologyKind(iidm::TopologyKind::NODE_BREAKER)
         .add();
@@ -76,7 +76,7 @@ iidm::Network FictitiousSwitchFactory::create() {
 
     iidm::VoltageLevel& vlN = s.newVoltageLevel()
         .setId("N")
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .setLowVoltageLimit(220.0)
         .setHighVoltageLimit(245.00002)
         .setTopologyKind(iidm::TopologyKind::NODE_BREAKER)

@@ -43,7 +43,7 @@ Network createNetwork() {
         .add();
     VoltageLevel& vlgen = p1.newVoltageLevel()
         .setId("VLGEN")
-        .setNominalVoltage(24.0)
+        .setNominalV(24.0)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
     Bus& ngen = vlgen.getBusBreakerView().newBus()

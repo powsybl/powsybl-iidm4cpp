@@ -29,7 +29,7 @@ iidm::Network MultipleExtensionsTestNetworkFactory::create() {
     iidm::VoltageLevel& vl = s.newVoltageLevel()
         .setId("VL")
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(20.0F)
+        .setNominalV(20.0F)
         .setLowVoltageLimit(15.0F)
         .setHighVoltageLimit(25.0F)
         .add();

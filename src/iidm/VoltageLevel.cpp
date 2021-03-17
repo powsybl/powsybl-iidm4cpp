@@ -32,14 +32,14 @@ namespace powsybl {
 namespace iidm {
 
 VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
-                           double nominalVoltage, double lowVoltageLimit, double highVoltageLimit) :
+                           double nominalV, double lowVoltageLimit, double highVoltageLimit) :
     Container(id, name, fictitious, Container::Type::VOLTAGE_LEVEL),
     m_substation(substation),
     m_highVoltageLimit(highVoltageLimit),
     m_lowVoltageLimit(lowVoltageLimit),
-    m_nominalVoltage(nominalVoltage) {
+    m_nominalV(nominalV) {
 
-    checkNominalVoltage(*this, m_nominalVoltage);
+    checkNominalVoltage(*this, m_nominalV);
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
 }
 
@@ -119,8 +119,8 @@ Network& VoltageLevel::getNetwork() {
     return getSubstation().getNetwork();
 }
 
-double VoltageLevel::getNominalVoltage() const {
-    return m_nominalVoltage;
+double VoltageLevel::getNominalV() const {
+    return m_nominalV;
 }
 
 unsigned long VoltageLevel::getShuntCompensatorCount() const {
@@ -217,8 +217,8 @@ VoltageLevel& VoltageLevel::setLowVoltageLimit(double lowVoltageLimit) {
     return *this;
 }
 
-VoltageLevel& VoltageLevel::setNominalVoltage(double nominalVoltage) {
-    m_nominalVoltage = checkNominalVoltage(*this, nominalVoltage);
+VoltageLevel& VoltageLevel::setNominalV(double nominalV) {
+    m_nominalV = checkNominalVoltage(*this, nominalV);
     return *this;
 }
 

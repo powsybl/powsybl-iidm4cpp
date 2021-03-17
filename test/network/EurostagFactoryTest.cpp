@@ -79,28 +79,28 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_CHECK_EQUAL_COLLECTIONS(expected2.cbegin(), expected2.cend(), actual2.cbegin(), actual2.cend());
 
     const auto& vlGen = network.getVoltageLevel("VLGEN");
-    BOOST_CHECK_CLOSE(24.0, vlGen.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(24.0, vlGen.getNominalV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(std::isnan(vlGen.getLowVoltageLimit()));
     BOOST_TEST(std::isnan(vlGen.getHighVoltageLimit()));
     BOOST_CHECK_EQUAL(iidm::TopologyKind::BUS_BREAKER, vlGen.getTopologyKind());
     BOOST_CHECK_EQUAL(2UL, vlGen.getConnectableCount());
 
     const auto& vlHv1 = network.getVoltageLevel("VLHV1");
-    BOOST_CHECK_CLOSE(380.0, vlHv1.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(380.0, vlHv1.getNominalV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(std::isnan(vlHv1.getLowVoltageLimit()));
     BOOST_TEST(std::isnan(vlHv1.getHighVoltageLimit()));
     BOOST_CHECK_EQUAL(iidm::TopologyKind::BUS_BREAKER, vlHv1.getTopologyKind());
     BOOST_CHECK_EQUAL(3UL, vlHv1.getConnectableCount());
 
     const auto& vlHv2 = network.getVoltageLevel("VLHV2");
-    BOOST_CHECK_CLOSE(380.0, vlHv2.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(380.0, vlHv2.getNominalV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(std::isnan(vlHv2.getLowVoltageLimit()));
     BOOST_TEST(std::isnan(vlHv2.getHighVoltageLimit()));
     BOOST_CHECK_EQUAL(iidm::TopologyKind::BUS_BREAKER, vlHv2.getTopologyKind());
     BOOST_CHECK_EQUAL(3UL, vlHv2.getConnectableCount());
 
     const auto& vlLoad = network.getVoltageLevel("VLLOAD");
-    BOOST_CHECK_CLOSE(150.0, vlLoad.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(150.0, vlLoad.getNominalV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(std::isnan(vlLoad.getLowVoltageLimit()));
     BOOST_TEST(std::isnan(vlLoad.getHighVoltageLimit()));
     BOOST_CHECK_EQUAL(iidm::TopologyKind::BUS_BREAKER, vlLoad.getTopologyKind());
@@ -298,28 +298,28 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_EQUAL_COLLECTIONS(expected2.cbegin(), expected2.cend(), actual2.cbegin(), actual2.cend());
 
     const auto& vlGen = network.getVoltageLevel("VLGEN");
-    BOOST_CHECK_CLOSE(24.0, vlGen.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(24.0, vlGen.getNominalV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(std::isnan(vlGen.getLowVoltageLimit()));
     BOOST_TEST(std::isnan(vlGen.getHighVoltageLimit()));
     BOOST_CHECK_EQUAL(iidm::TopologyKind::BUS_BREAKER, vlGen.getTopologyKind());
     BOOST_CHECK_EQUAL(3UL, vlGen.getConnectableCount());
 
     const auto& vlHv1 = network.getVoltageLevel("VLHV1");
-    BOOST_CHECK_CLOSE(380.0, vlHv1.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(380.0, vlHv1.getNominalV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(400.0, vlHv1.getLowVoltageLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(500.0, vlHv1.getHighVoltageLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(iidm::TopologyKind::BUS_BREAKER, vlHv1.getTopologyKind());
     BOOST_CHECK_EQUAL(3UL, vlHv1.getConnectableCount());
 
     const auto& vlHv2 = network.getVoltageLevel("VLHV2");
-    BOOST_CHECK_CLOSE(380.0, vlHv2.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(380.0, vlHv2.getNominalV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(300.0, vlHv2.getLowVoltageLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(500.0, vlHv2.getHighVoltageLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(iidm::TopologyKind::BUS_BREAKER, vlHv2.getTopologyKind());
     BOOST_CHECK_EQUAL(3UL, vlHv2.getConnectableCount());
 
     const auto& vlLoad = network.getVoltageLevel("VLLOAD");
-    BOOST_CHECK_CLOSE(150.0, vlLoad.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(150.0, vlLoad.getNominalV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(std::isnan(vlLoad.getLowVoltageLimit()));
     BOOST_TEST(std::isnan(vlLoad.getHighVoltageLimit()));
     BOOST_CHECK_EQUAL(iidm::TopologyKind::BUS_BREAKER, vlLoad.getTopologyKind());

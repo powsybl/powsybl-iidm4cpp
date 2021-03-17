@@ -36,7 +36,7 @@ Network createStaticVarCompensatorTestNetwork() {
         .setId("VL1")
         .setName("VL1_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .setLowVoltageLimit(340.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -69,7 +69,7 @@ Network createSvcNetwork() {
         .add();
     VoltageLevel& vl1 = s1.newVoltageLevel()
         .setId("VL1")
-        .setNominalVoltage(380)
+        .setNominalV(380)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
     vl1.getBusBreakerView().newBus()
@@ -91,7 +91,7 @@ Network createSvcNetwork() {
         .add();
     VoltageLevel& vl2 = s2.newVoltageLevel()
         .setId("VL2")
-        .setNominalVoltage(380)
+        .setNominalV(380)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
     vl2.getBusBreakerView().newBus()

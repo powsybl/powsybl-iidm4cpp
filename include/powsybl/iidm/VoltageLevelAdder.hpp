@@ -30,7 +30,7 @@ public:
 
     VoltageLevelAdder& setLowVoltageLimit(double lowVoltageLimit);
 
-    VoltageLevelAdder& setNominalVoltage(double nominalVoltage);
+    VoltageLevelAdder& setNominalV(double nominalV);
 
     VoltageLevelAdder& setTopologyKind(const TopologyKind& topologyKind);
 
@@ -54,7 +54,7 @@ private:
 
     double m_lowVoltageLimit = stdcxx::nan();
 
-    double m_nominalVoltage = stdcxx::nan();
+    double m_nominalV = stdcxx::nan();
 
     stdcxx::optional<TopologyKind> m_topologyKind;
 

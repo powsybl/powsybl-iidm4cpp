@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -46,7 +47,7 @@ Network createTestNetwork() {
         .setId("VL1")
         .setName("VL1_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .setLowVoltageLimit(340.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -59,7 +60,7 @@ Network createTestNetwork() {
         .setId("VL2")
         .setName("VL2_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .setLowVoltageLimit(200.0)
         .setHighVoltageLimit(260.0)
         .add();
@@ -95,7 +96,7 @@ Network createTestNetwork() {
         .setId("VL3")
         .setName("VL3_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .setLowVoltageLimit(340.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -146,7 +147,7 @@ Network createTestNetwork() {
         .setId("VL4")
         .setName("VL4_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .setLowVoltageLimit(200.0)
         .setHighVoltageLimit(260.0)
         .add();
@@ -245,7 +246,7 @@ Network createTestNodeBreakerNetwork() {
         .setId("VL5")
         .setName("VL5_NAME")
         .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalVoltage(225.0)
+        .setNominalV(225.0)
         .setLowVoltageLimit(200.0)
         .setHighVoltageLimit(260.0)
         .add();
@@ -377,6 +378,9 @@ BOOST_AUTO_TEST_CASE(country) {
 
     BOOST_CHECK_EQUAL(4, network.getSubstationCount());
     BOOST_CHECK_EQUAL(2, network.getCountryCount());
+
+    const std::set<Country>& countries = { Country::ES, Country::FR };
+    BOOST_CHECK(countries == network.getCountries());
 
     network.getSubstation("S2").setCountry(stdcxx::optional<Country>());
     BOOST_CHECK_EQUAL(1, network.getCountryCount());

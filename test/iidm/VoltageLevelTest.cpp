@@ -42,7 +42,7 @@ Network createLineTestNetwork2() {
         .setId("VL1")
         .setName("VL1_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .setLowVoltageLimit(340.0)
         .setHighVoltageLimit(420.0)
         .add();
@@ -86,13 +86,13 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, vl1.getTopologyKind());
     BOOST_CHECK_CLOSE(340, vl1.getLowVoltageLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(420, vl1.getHighVoltageLimit(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(380, vl1.getNominalVoltage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(380, vl1.getNominalV(), std::numeric_limits<double>::epsilon());
 
     Substation& s1 = network.getSubstation("S1");
     VoltageLevelAdder adder = s1.newVoltageLevel().setId("VL1");
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
 
-    adder.setNominalVoltage(50).setLowVoltageLimit(-100);
+    adder.setNominalV(50).setLowVoltageLimit(-100);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Low voltage limit is < 0");
 
     adder.setLowVoltageLimit(100).setHighVoltageLimit(-10);
@@ -126,15 +126,15 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(network.getVoltageLevel("LOAD1"), PowsyblException, "Identifiable 'LOAD1' is not a powsybl::iidm::VoltageLevel");
 
     VoltageLevel& vl1 = network.getVoltageLevel("VL1");
-    BOOST_CHECK_EQUAL(380, vl1.getNominalVoltage());
+    BOOST_CHECK_EQUAL(380, vl1.getNominalV());
     BOOST_CHECK_EQUAL(340, vl1.getLowVoltageLimit());
     BOOST_CHECK_EQUAL(420, vl1.getHighVoltageLimit());
 
-    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(-10), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
-    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(0), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
-    POWSYBL_ASSERT_THROW(vl1.setNominalVoltage(stdcxx::nan()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
-    BOOST_TEST(stdcxx::areSame(vl1, vl1.setNominalVoltage(100)));
-    BOOST_CHECK_EQUAL(100, vl1.getNominalVoltage());
+    POWSYBL_ASSERT_THROW(vl1.setNominalV(-10), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
+    POWSYBL_ASSERT_THROW(vl1.setNominalV(0), ValidationException, "Voltage level 'VL1': Nominal voltage is <= 0");
+    POWSYBL_ASSERT_THROW(vl1.setNominalV(stdcxx::nan()), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
+    BOOST_TEST(stdcxx::areSame(vl1, vl1.setNominalV(100)));
+    BOOST_CHECK_EQUAL(100, vl1.getNominalV());
 
     POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(-10), ValidationException, "Voltage level 'VL1': Low voltage limit is < 0");
     POWSYBL_ASSERT_THROW(vl1.setLowVoltageLimit(440), ValidationException, "Voltage level 'VL1': Inconsistent voltage limit range [440, 420]");

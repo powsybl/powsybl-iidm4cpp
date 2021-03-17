@@ -73,7 +73,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
             .add();
     iidm::VoltageLevel& s1vl1 = s1.newVoltageLevel()
             .setId("S1VL1")
-            .setNominalVoltage(225.0)
+            .setNominalV(225.0)
             .setLowVoltageLimit(220.0)
             .setHighVoltageLimit(240.0)
             .setTopologyKind(iidm::TopologyKind::NODE_BREAKER)
@@ -85,7 +85,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
             .add();
     iidm::VoltageLevel& s1vl2 = s1.newVoltageLevel()
             .setId("S1VL2")
-            .setNominalVoltage(400.0)
+            .setNominalV(400.0)
             .setLowVoltageLimit(390.0)
             .setHighVoltageLimit(440.0)
             .setTopologyKind(iidm::TopologyKind::NODE_BREAKER)
@@ -107,7 +107,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
             .add();
     iidm::VoltageLevel& s2vl1 = s2.newVoltageLevel()
             .setId("S2VL1")
-            .setNominalVoltage(400.0)
+            .setNominalV(400.0)
             .setLowVoltageLimit(390.0)
             .setHighVoltageLimit(440.0)
             .setTopologyKind(iidm::TopologyKind::NODE_BREAKER)
@@ -124,7 +124,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
             .add();
     iidm::VoltageLevel& s3vl1 = s3.newVoltageLevel()
             .setId("S3VL1")
-            .setNominalVoltage(400.0)
+            .setNominalV(400.0)
             .setLowVoltageLimit(390.0)
             .setHighVoltageLimit(440.0)
             .setTopologyKind(iidm::TopologyKind::NODE_BREAKER)
@@ -141,7 +141,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
             .add();
     iidm::VoltageLevel& s4vl1 = s4.newVoltageLevel()
             .setId("S4VL1")
-            .setNominalVoltage(400.0)
+            .setNominalV(400.0)
             .setLowVoltageLimit(390.0)
             .setHighVoltageLimit(440.0)
             .setTopologyKind(iidm::TopologyKind::NODE_BREAKER)
@@ -469,7 +469,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
             .setConverterStationId1("VSC1")
             .setConverterStationId2("VSC2")
             .setR(1)
-            .setNominalVoltage(400)
+            .setNominalV(400)
             .setConvertersMode(iidm::HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER)
             .setMaxP(300.0)
             .setActivePowerSetpoint(10)
@@ -593,7 +593,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
             .setConverterStationId1("LCC1")
             .setConverterStationId2("LCC2")
             .setR(1)
-            .setNominalVoltage(400)
+            .setNominalV(400)
             .setConvertersMode(iidm::HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER)
             .setMaxP(300.0)
             .setActivePowerSetpoint(80)
