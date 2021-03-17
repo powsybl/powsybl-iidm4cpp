@@ -37,7 +37,7 @@ static Network createNetwork() {
         .add();
     VoltageLevel& voltageLevel1 = substation1.newVoltageLevel()
         .setId("voltageLevel1")
-        .setNominalVoltage(400)
+        .setNominalV(400)
         .setTopologyKind(TopologyKind::NODE_BREAKER)
         .add();
     VoltageLevel::NodeBreakerView& topology1 = voltageLevel1.getNodeBreakerView();

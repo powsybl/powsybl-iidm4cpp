@@ -38,22 +38,22 @@ iidm::Network EurostagFactory::createTutorial1Network() {
         .add();
     iidm::VoltageLevel& vlgen = p1.newVoltageLevel()
         .setId("VLGEN")
-        .setNominalVoltage(24.0)
+        .setNominalV(24.0)
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
         .add();
     iidm::VoltageLevel& vlhv1 = p1.newVoltageLevel()
         .setId("VLHV1")
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
         .add();
     iidm::VoltageLevel& vlhv2 = p2.newVoltageLevel()
         .setId("VLHV2")
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
         .add();
     iidm::VoltageLevel& vlload = p2.newVoltageLevel()
         .setId("VLLOAD")
-        .setNominalVoltage(150.0)
+        .setNominalV(150.0)
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
         .add();
     iidm::Bus& ngen = vlgen.getBusBreakerView().newBus()

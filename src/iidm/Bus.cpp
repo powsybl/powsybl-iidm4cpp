@@ -100,6 +100,70 @@ Network& Bus::getNetwork() {
     return getVoltageLevel().getNetwork();
 }
 
+double Bus::getP() const {
+    if (getConnectedTerminalCount() == 0) {
+        return stdcxx::nan();
+    }
+    double p = 0;
+    for (const Terminal& terminal : getConnectedTerminals()) {
+        const Connectable& connectable = terminal.getConnectable();
+        switch (connectable.getType()) {
+            case ConnectableType::BUSBAR_SECTION:
+            case ConnectableType::SHUNT_COMPENSATOR:
+            case ConnectableType::STATIC_VAR_COMPENSATOR:
+            case ConnectableType::LINE:
+            case ConnectableType::TWO_WINDINGS_TRANSFORMER:
+            case ConnectableType::THREE_WINDINGS_TRANSFORMER:
+            case ConnectableType::DANGLING_LINE:
+                // skip
+                break;
+            case ConnectableType::GENERATOR:
+            case ConnectableType::BATTERY:
+            case ConnectableType::LOAD:
+            case ConnectableType::HVDC_CONVERTER_STATION:
+                if (!std::isnan(terminal.getP())) {
+                    p += terminal.getP();
+                }
+                break;
+            default:
+                throw AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
+        }
+    }
+    return p;
+}
+
+double Bus::getQ() const {
+    if (getConnectedTerminalCount() == 0) {
+        return stdcxx::nan();
+    }
+    double q = 0;
+    for (const Terminal& terminal : getConnectedTerminals()) {
+        const Connectable& connectable = terminal.getConnectable();
+        switch (connectable.getType()) {
+            case ConnectableType::BUSBAR_SECTION:
+            case ConnectableType::LINE:
+            case ConnectableType::TWO_WINDINGS_TRANSFORMER:
+            case ConnectableType::THREE_WINDINGS_TRANSFORMER:
+            case ConnectableType::DANGLING_LINE:
+                // skip
+                break;
+            case ConnectableType::GENERATOR:
+            case ConnectableType::BATTERY:
+            case ConnectableType::LOAD:
+            case ConnectableType::SHUNT_COMPENSATOR:
+            case ConnectableType::STATIC_VAR_COMPENSATOR:
+            case ConnectableType::HVDC_CONVERTER_STATION:
+                if (!std::isnan(terminal.getQ())) {
+                    q += terminal.getQ();
+                }
+                break;
+            default:
+                throw AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
+        }
+    }
+    return q;
+}
+
 stdcxx::const_range<ShuntCompensator> Bus::getShuntCompensators() const {
     return getAll<ShuntCompensator>();
 }

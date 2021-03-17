@@ -40,6 +40,7 @@
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/stdcxx/range.hpp>
+#include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -58,7 +59,7 @@ Network create() {
 
     VoltageLevel& vl1 = s.newVoltageLevel()
         .setId("VL1")
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
 
@@ -68,7 +69,7 @@ Network create() {
 
     VoltageLevel& vl2 = s.newVoltageLevel()
         .setId("VL2")
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
 
@@ -78,7 +79,7 @@ Network create() {
 
     VoltageLevel& vl3 = s.newVoltageLevel()
         .setId("VL3")
-        .setNominalVoltage(400.0)
+        .setNominalV(400.0)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
 
@@ -90,6 +91,71 @@ Network create() {
 }
 
 BOOST_AUTO_TEST_SUITE(BusTestSuite)
+
+BOOST_AUTO_TEST_CASE(testSetterGetter) {
+    Network network("test", "test");
+    Substation& substation = network.newSubstation()
+        .setCountry(Country::AF)
+        .setTso("tso")
+        .setName("sub")
+        .setId("subId")
+        .add();
+    VoltageLevel& voltageLevel = substation.newVoltageLevel()
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setId("bbVL")
+        .setName("bbVL_name")
+        .setNominalV(200.0)
+        .add();
+    // ConfiguredBus
+    Bus& bus = voltageLevel.getBusBreakerView()
+        .newBus()
+        .setName("bus1Name")
+        .setId("bus1")
+        .add();
+
+    BOOST_CHECK_EQUAL("bus1", network.getBusBreakerView().getBus("bus1").get().getId());
+    BOOST_CHECK_EQUAL("bus1", bus.getId());
+    BOOST_CHECK_EQUAL("bus1Name", bus.getNameOrId());
+
+    LccConverterStation& lccConverterStation = voltageLevel.newLccConverterStation()
+        .setId("lcc")
+        .setName("lcc")
+        .setBus("bus1")
+        .setLossFactor(0.011)
+        .setPowerFactor(0.5)
+        .setConnectableBus("bus1")
+        .add();
+    VscConverterStation& vscConverterStation = voltageLevel.newVscConverterStation()
+        .setId("vsc")
+        .setName("vsc")
+        .setBus("bus1")
+        .setLossFactor(0.011)
+        .setVoltageRegulatorOn(false)
+        .setReactivePowerSetpoint(1.0)
+        .setConnectableBus("bus1")
+        .add();
+    BOOST_CHECK_EQUAL(HvdcConverterStation::HvdcType::LCC, lccConverterStation.getHvdcType());
+    BOOST_CHECK_EQUAL(HvdcConverterStation::HvdcType::VSC, vscConverterStation.getHvdcType());
+    double p1 = 1.0;
+    double q1 = 2.0;
+    double p2 = 10.0;
+    double q2 = 20.0;
+    lccConverterStation.getTerminal().setP(p1);
+    lccConverterStation.getTerminal().setQ(q1);
+    vscConverterStation.getTerminal().setP(p2);
+    vscConverterStation.getTerminal().setQ(q2);
+
+    BOOST_CHECK(stdcxx::areSame(voltageLevel, bus.getVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(network, bus.getNetwork()));
+    POWSYBL_ASSERT_THROW(bus.setV(-1.0), PowsyblException, "Bus 'bus1': voltage cannot be < 0");
+    bus.setV(200.0);
+    BOOST_CHECK_CLOSE(200.0, bus.getV(), std::numeric_limits<double>::epsilon());
+    bus.setAngle(30.0);
+    BOOST_CHECK_CLOSE(30.0, bus.getAngle(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK_CLOSE(p1 + p2, bus.getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(q1 + q2, bus.getQ(), std::numeric_limits<double>::epsilon());
+}
 
 BOOST_AUTO_TEST_CASE(range_batteries) {
     Network network = create();

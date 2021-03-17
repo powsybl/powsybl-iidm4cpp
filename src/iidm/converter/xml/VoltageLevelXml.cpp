@@ -109,11 +109,11 @@ void VoltageLevelXml::readNodeBreakerTopology(VoltageLevel& voltageLevel, Networ
 }
 
 VoltageLevel& VoltageLevelXml::readRootElementAttributes(VoltageLevelAdder& adder, NetworkXmlReaderContext& context) const {
-    auto nominalVoltage = context.getReader().getAttributeValue<double>(NOMINAL_V);
+    auto nominalV = context.getReader().getAttributeValue<double>(NOMINAL_V);
     double lowVoltageLimit = context.getReader().getOptionalAttributeValue(LOW_VOLTAGE_LIMIT, stdcxx::nan());
     double highVoltageLimit = context.getReader().getOptionalAttributeValue(HIGH_VOLTAGE_LIMIT, stdcxx::nan());
     const auto& topologyKing = Enum::fromString<TopologyKind>(context.getReader().getAttributeValue(TOPOLOGY_KIND));
-    return adder.setNominalVoltage(nominalVoltage)
+    return adder.setNominalV(nominalV)
                 .setLowVoltageLimit(lowVoltageLimit)
                 .setHighVoltageLimit(highVoltageLimit)
                 .setTopologyKind(topologyKing)
@@ -263,7 +263,7 @@ void VoltageLevelXml::writeNodeBreakerTopologyInternalConnections(const VoltageL
 }
 
 void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLevel, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeAttribute(NOMINAL_V, voltageLevel.getNominalVoltage());
+    context.getWriter().writeAttribute(NOMINAL_V, voltageLevel.getNominalV());
     context.getWriter().writeOptionalAttribute(LOW_VOLTAGE_LIMIT, voltageLevel.getLowVoltageLimit());
     context.getWriter().writeOptionalAttribute(HIGH_VOLTAGE_LIMIT, voltageLevel.getHighVoltageLimit());
     const TopologyLevel& topologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), context.getOptions().getTopologyLevel());

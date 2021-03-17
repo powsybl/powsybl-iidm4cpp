@@ -41,7 +41,7 @@ Network createNetwork() {
         .add();
     VoltageLevel& vl1 = s1.newVoltageLevel()
         .setId("VL1")
-        .setNominalVoltage(400)
+        .setNominalV(400)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
     vl1.getBusBreakerView().newBus()
@@ -53,7 +53,7 @@ Network createNetwork() {
         .add();
     VoltageLevel& vl2 = s2.newVoltageLevel()
         .setId("VL2")
-        .setNominalVoltage(400)
+        .setNominalV(400)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
     vl2.getBusBreakerView().newBus()

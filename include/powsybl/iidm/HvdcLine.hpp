@@ -39,7 +39,7 @@ public:  // Identifiable
     Network& getNetwork() override;
 
 public:
-    HvdcLine(Network& network, const std::string& id, const std::string& name, bool fictitious, double r, double nominalVoltage, double maxP,
+    HvdcLine(Network& network, const std::string& id, const std::string& name, bool fictitious, double r, double nominalV, double maxP,
              const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2);
 
     ~HvdcLine() noexcept override = default;
@@ -62,7 +62,7 @@ public:
 
     double getMaxP() const;
 
-    double getNominalVoltage() const;
+    double getNominalV() const;
 
     double getR() const;
 
@@ -74,7 +74,7 @@ public:
 
     HvdcLine& setMaxP(double maxP);
 
-    HvdcLine& setNominalVoltage(double nominalVoltage);
+    HvdcLine& setNominalV(double nominalV);
 
     HvdcLine& setR(double r);
 
@@ -98,7 +98,7 @@ private:
 
     double m_r;
 
-    double m_nominalVoltage;
+    double m_nominalV;
 
     double m_maxP;
 

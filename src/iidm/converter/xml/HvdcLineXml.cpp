@@ -39,7 +39,7 @@ HvdcLine& HvdcLineXml::readRootElementAttributes(HvdcLineAdder& adder, NetworkXm
     const std::string& converterStation1 = context.getReader().getAttributeValue(CONVERTER_STATION1);
     const std::string& converterStation2 = context.getReader().getAttributeValue(CONVERTER_STATION2);
     return adder.setR(r)
-        .setNominalVoltage(nominalV) // called setNominalV() in Java code
+        .setNominalV(nominalV)
         .setConvertersMode(convertersMode)
         .setActivePowerSetpoint(activePowerSetpoint)
         .setMaxP(maxP)
@@ -56,7 +56,7 @@ void HvdcLineXml::readSubElements(HvdcLine& line, NetworkXmlReaderContext& conte
 
 void HvdcLineXml::writeRootElementAttributes(const HvdcLine& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(R, line.getR());
-    context.getWriter().writeAttribute(NOMINAL_V, line.getNominalVoltage());
+    context.getWriter().writeAttribute(NOMINAL_V, line.getNominalV());
     context.getWriter().writeAttribute(CONVERTERS_MODE, Enum::toString(line.getConvertersMode()));
     context.getWriter().writeAttribute(ACTIVE_POWER_SETPOINT, line.getActivePowerSetpoint());
     context.getWriter().writeAttribute(MAX_P, line.getMaxP());

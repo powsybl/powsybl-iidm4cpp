@@ -48,12 +48,12 @@ iidm::Network BatteryNetworkFactory::create() {
     // 2 VoltageLevels
     iidm::VoltageLevel& vlgen = p1.newVoltageLevel()
         .setId("VLGEN")
-        .setNominalVoltage(400)
+        .setNominalV(400)
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
         .add();
     iidm::VoltageLevel& vlbat = p2.newVoltageLevel()
         .setId("VLBAT")
-        .setNominalVoltage(400)
+        .setNominalV(400)
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
         .add();
 

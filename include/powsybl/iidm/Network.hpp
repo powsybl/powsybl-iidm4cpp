@@ -161,6 +161,8 @@ public:
 
     ConnectedComponentsManager& getConnectedComponentsManager();
 
+    std::set<Country> getCountries() const;
+
     unsigned long getCountryCount() const;
 
     const DanglingLine& getDanglingLine(const std::string& id) const;

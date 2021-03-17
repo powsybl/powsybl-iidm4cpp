@@ -38,7 +38,7 @@ iidm::Network ThreeWindingsTransformerNetworkFactory::create() {
         .add();
     iidm::VoltageLevel& vl1 = substation.newVoltageLevel()
         .setId("VL_132")
-        .setNominalVoltage(132.0)
+        .setNominalV(132.0)
         .setLowVoltageLimit(118.8)
         .setHighVoltageLimit(145.2)
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
@@ -59,7 +59,7 @@ iidm::Network ThreeWindingsTransformerNetworkFactory::create() {
 
     iidm::VoltageLevel& vl2 = substation.newVoltageLevel()
         .setId("VL_33")
-        .setNominalVoltage(33.0)
+        .setNominalV(33.0)
         .setLowVoltageLimit(29.7)
         .setHighVoltageLimit(36.3)
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
@@ -80,7 +80,7 @@ iidm::Network ThreeWindingsTransformerNetworkFactory::create() {
 
     iidm::VoltageLevel& vl3 = substation.newVoltageLevel()
         .setId("VL_11")
-        .setNominalVoltage(11.0)
+        .setNominalV(11.0)
         .setLowVoltageLimit(9.9)
         .setHighVoltageLimit(12.1)
         .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)

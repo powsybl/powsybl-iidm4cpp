@@ -33,7 +33,7 @@ Network createDanglingLineTestNetwork(bool withGeneration) {
         .setId("VL1")
         .setName("VL1_NAME")
         .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalVoltage(380.0)
+        .setNominalV(380.0)
         .setLowVoltageLimit(340.0)
         .setHighVoltageLimit(420.0)
         .add();

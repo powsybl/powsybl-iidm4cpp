@@ -15,13 +15,13 @@ namespace powsybl {
 
 namespace iidm {
 
-HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& name, bool fictitious, double r, double nominalVoltage, double maxP,
+HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& name, bool fictitious, double r, double nominalV, double maxP,
                    const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2) :
     Identifiable(id, name, fictitious),
     m_converterStation1(attach(converterStation1)),
     m_converterStation2(attach(converterStation2)),
     m_r(checkR(*this, r)),
-    m_nominalVoltage(checkNominalVoltage(*this, nominalVoltage)),
+    m_nominalV(checkNominalVoltage(*this, nominalV)),
     m_maxP(checkHvdcMaxP(*this, maxP)),
     m_convertersMode(network.getVariantManager().getVariantArraySize(), checkConvertersMode(*this, convertersMode)),
     m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), checkHvdcActivePowerSetpoint(*this, activePowerSetpoint)) {
@@ -99,8 +99,8 @@ Network& HvdcLine::getNetwork() {
     return const_cast<Network&>(static_cast<const HvdcLine*>(this)->getNetwork());
 }
 
-double HvdcLine::getNominalVoltage() const {
-    return m_nominalVoltage;
+double HvdcLine::getNominalV() const {
+    return m_nominalV;
 }
 
 double HvdcLine::getR() const {
@@ -150,8 +150,8 @@ HvdcLine& HvdcLine::setMaxP(double maxP) {
     return *this;
 }
 
-HvdcLine& HvdcLine::setNominalVoltage(double nominalVoltage) {
-    m_nominalVoltage = checkNominalVoltage(*this, nominalVoltage);
+HvdcLine& HvdcLine::setNominalV(double nominalV) {
+    m_nominalV = checkNominalVoltage(*this, nominalV);
 
     return *this;
 }

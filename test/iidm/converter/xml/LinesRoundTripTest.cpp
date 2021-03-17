@@ -38,7 +38,7 @@ Network createDlGenerationLinear() {
         .add();
     VoltageLevel& voltageLevel = substation.newVoltageLevel()
         .setId("VL")
-        .setNominalVoltage(100.0)
+        .setNominalV(100.0)
         .setLowVoltageLimit(80.0)
         .setHighVoltageLimit(120.0)
         .setTopologyKind(TopologyKind::BUS_BREAKER)

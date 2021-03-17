@@ -24,7 +24,7 @@ VoltageLevelAdder::VoltageLevelAdder(Substation& substation) :
 
 VoltageLevel& VoltageLevelAdder::add() {
     // TODO(thiebarr) : check that there are not another voltage level with same base voltage
-    checkNominalVoltage(*this, m_nominalVoltage);
+    checkNominalVoltage(*this, m_nominalV);
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
     checkOptional(*this, m_topologyKind, "TopologyKind is not set");
 
@@ -32,12 +32,12 @@ VoltageLevel& VoltageLevelAdder::add() {
     switch (*m_topologyKind) {
         case TopologyKind::NODE_BREAKER:
             voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<NodeBreakerVoltageLevel>(
-                stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit)));
+                stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
             break;
 
         case TopologyKind::BUS_BREAKER:
             voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<BusBreakerVoltageLevel>(
-                stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_nominalVoltage, m_lowVoltageLimit, m_highVoltageLimit)));
+                stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
             break;
 
         default:
@@ -72,8 +72,8 @@ VoltageLevelAdder& VoltageLevelAdder::setLowVoltageLimit(double lowVoltageLimit)
     return *this;
 }
 
-VoltageLevelAdder& VoltageLevelAdder::setNominalVoltage(double nominalVoltage) {
-    m_nominalVoltage = nominalVoltage;
+VoltageLevelAdder& VoltageLevelAdder::setNominalV(double nominalV) {
+    m_nominalV = nominalV;
     return *this;
 }
 

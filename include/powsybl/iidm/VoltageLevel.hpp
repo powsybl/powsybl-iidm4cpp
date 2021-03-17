@@ -126,7 +126,7 @@ public:
 
     virtual NodeBreakerView& getNodeBreakerView() = 0;
 
-    double getNominalVoltage() const;
+    double getNominalV() const;
 
     unsigned long getShuntCompensatorCount() const;
 
@@ -180,13 +180,13 @@ public:
 
     VoltageLevel& setLowVoltageLimit(double lowVoltageLimit);
 
-    VoltageLevel& setNominalVoltage(double nominalVoltage);
+    VoltageLevel& setNominalV(double nominalV);
 
     void visitEquipments(TopologyVisitor& visitor) const;
 
 protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
-                 double nominalVoltage, double lowVoltageLimit, double highVoltageLimit);
+                 double nominalV, double lowVoltageLimit, double highVoltageLimit);
 
     virtual stdcxx::const_range<Terminal> getTerminals() const = 0;
 
@@ -202,7 +202,7 @@ private:
 
     double m_lowVoltageLimit;
 
-    double m_nominalVoltage;
+    double m_nominalV;
 };
 
 }  // namespace iidm
