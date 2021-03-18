@@ -34,7 +34,7 @@ To build powsybl-iidm4cpp, you need:
 ### Ubuntu 20.04
 ```
 $> apt install -y cmake g++ git libboost-all-dev libxml2-dev make
-``` 
+```
 
 ### Ubuntu 18.04
 ```
@@ -147,6 +147,7 @@ $> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE>
 - BUILD_DOXYGEN: Generate the API documentation using doxygen (Default is **OFF**)
 - BUILD_EXAMPLES: Build the examples (Default is **OFF**)
 - BUILD_TESTS: Generate unit tests (Default is **ON**)
+- BUILD_TOOLS: Build the tools (Default is **ON**)
 
 **Note:** Under Windows the **Boost** libraries or **LibXML** libraries could be installed in a custom third parties folder, so you would have to help `cmake` to find the required packages, using the `-DCMAKE_PREFIX_PATH` options:
 ```
@@ -173,9 +174,9 @@ To build the examples, you have to pass the `-DBUILD_EXAMPLES=ON` flag to the co
 ```
 $> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE> -DBUILD_EXAMPLES=ON
 $> cmake --build .
-``` 
+```
 
-Click [here](examples/README.md) to see the list of available examples. 
+Click [here](examples/README.md) to see the list of available examples.
 
 ### Generate the documentation
 This project uses [doxygen](http://www.doxygen.nl/) to generate code documentation. To generate the API documentation using doxygen, add `-DBUILD_DOXYGEN=ON` flag to the configure command line. This will create a new `doxygen` target.
@@ -199,14 +200,14 @@ We provide cmake script files that make it easy to use `powsybl-iidm4cpp` in a C
 To use the library in your project, add the `find_package` instruction to your `CMakeLists.txt` file:
 ```
 find_package(LibIIDM REQUIRED)
-``` 
+```
 
 Then configure your project passing the `-DCMAKE_PREFIX_PATH=<IIDM4CPP_PREFIX>` option to the cmake command:
 ```
 $> cmake ... -DCMAKE_PREFIX_PATH=<IIDM4CPP_PREFIX>
 ```
 
-A complete example is available [here](examples/example2). 
+A complete example is available [here](examples/example2).
 
 ## Contributing
 
@@ -224,4 +225,4 @@ $> cmake --build .
 $> cmake --build . --target test
 $> cmake --build . --target code-coverage
 ```
-The HTML report is available in `<BUILD_DIR>/coverage/index.html`. 
+The HTML report is available in `<BUILD_DIR>/coverage/index.html`.
