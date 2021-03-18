@@ -89,6 +89,9 @@ protected: // VoltageLevel
 
     stdcxx::range<Terminal> getTerminals() override;
 
+private:  // VoltageLevel
+    void removeTopology() override;
+
 private:
     void checkTerminal(Terminal& terminal) const;
 
@@ -121,8 +124,6 @@ private:
     void removeInternalConnections(unsigned long node1, unsigned long node2);
 
     void removeSwitch(const std::string& switchId);
-
-    void removeTopology() override;
 
 private:
     friend class node_breaker_voltage_level::NodeBreakerViewImpl;

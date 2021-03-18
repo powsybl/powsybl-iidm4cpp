@@ -7,8 +7,6 @@
 
 #include <powsybl/iidm/VoltageLevel.hpp>
 
-#include <boost/range/adaptor/reversed.hpp>
-
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
@@ -212,11 +210,7 @@ void VoltageLevel::remove() {
     VoltageLevels::checkRemovability(*this);
 
     // Remove all connectables
-    std::vector<std::reference_wrapper<Connectable>> connectables;
     for (Connectable& connectable : getConnectables()) {
-        connectables.emplace_back(std::ref(connectable));
-    }
-    for (Connectable& connectable : connectables | boost::adaptors::reversed) {
         connectable.remove();
     }
 

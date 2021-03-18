@@ -8,7 +8,6 @@
 #include <powsybl/iidm/Substation.hpp>
 
 #include <boost/range/adaptor/filtered.hpp>
-#include <boost/range/adaptor/reversed.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
 #include <powsybl/iidm/HvdcLine.hpp>
@@ -131,24 +130,17 @@ VoltageLevelAdder Substation::newVoltageLevel() {
 void Substation::remove() {
     Substations::checkRemovability(*this);
 
-    std::vector<std::reference_wrapper<VoltageLevel>> voltageLevels;
     for (VoltageLevel& vl : m_voltageLevels) {
-        voltageLevels.emplace_back(vl);
-    }
-
-    for (VoltageLevel& vl : voltageLevels | boost::adaptors::reversed) {
-        std::vector<std::reference_wrapper<Connectable>> connectables;
-        for (Connectable& connectable : vl.getConnectables()) {
-            connectables.emplace_back(std::ref(connectable));
-        }
         // Remove all branches, transformers and HVDC lines
-        for (Connectable& connectable : connectables | boost::adaptors::reversed) {
+        for (Connectable& connectable : vl.getConnectables()) {
             ConnectableType type = connectable.getType();
             if (VoltageLevels::MULTIPLE_TERMINALS_CONNECTABLE_TYPES.find(type) != VoltageLevels::MULTIPLE_TERMINALS_CONNECTABLE_TYPES.end()) {
                 connectable.remove();
             } else if (type == ConnectableType::HVDC_CONVERTER_STATION) {
-                HvdcLine& hvdcLine = getNetwork().getHvdcLine(dynamic_cast<HvdcConverterStation&>(connectable));
-                hvdcLine.remove();
+                const auto& hvdcLine = getNetwork().findHvdcLine(dynamic_cast<HvdcConverterStation&>(connectable));
+                if (hvdcLine) {
+                    hvdcLine.get().remove();
+                }
             }
         }
 

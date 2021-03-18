@@ -495,7 +495,6 @@ BOOST_AUTO_TEST_CASE(remove) {
     s3.remove();
 
     // s1 and s2 are linked by HVDC1
-    network.getHvdcLine("HVDC1").remove();
     network.getVscConverterStation("VSC1").remove();
     network.getLccConverterStation("LCC1").remove();
 

@@ -111,11 +111,11 @@ void Network::extendVariantArraySize(unsigned long initVariantArraySize, unsigne
 }
 
 stdcxx::CReference<HvdcLine> Network::findHvdcLine(const HvdcConverterStation& station) const {
-    const auto& filter = [&station](const HvdcLine& line) {
-        return stdcxx::areSame(line.getConverterStation1().get(), station) || stdcxx::areSame(line.getConverterStation2().get(), station);
+    const auto& filter = [&station](const HvdcLine& hvdcLine) {
+        return stdcxx::areSame(hvdcLine.getConverterStation1().get(), station) || stdcxx::areSame(hvdcLine.getConverterStation2().get(), station);
     };
-    auto lines = getHvdcLines() | boost::adaptors::filtered(filter);
-    return boost::size(lines) > 0 ? stdcxx::cref(*lines.begin()) : stdcxx::cref<HvdcLine>();
+    auto hvdcLines = getHvdcLines() | boost::adaptors::filtered(filter);
+    return hvdcLines.empty() ? stdcxx::cref<HvdcLine>() : stdcxx::cref(*hvdcLines.begin());
 }
 
 stdcxx::Reference<HvdcLine> Network::findHvdcLine(const HvdcConverterStation& station) {

@@ -20,7 +20,7 @@ class VoltageLevel;
 
 namespace VoltageLevels {
 
-const std::set<ConnectableType> MULTIPLE_TERMINALS_CONNECTABLE_TYPES = {
+static const std::set<ConnectableType> MULTIPLE_TERMINALS_CONNECTABLE_TYPES = {
     ConnectableType::LINE,
     ConnectableType::TWO_WINDINGS_TRANSFORMER,
     ConnectableType::THREE_WINDINGS_TRANSFORMER

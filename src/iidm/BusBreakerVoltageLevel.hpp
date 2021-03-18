@@ -84,6 +84,8 @@ private: // VoltageLevel
 
     NodeBreakerView& getNodeBreakerView() override;
 
+    void removeTopology() override;
+
 private:
     void checkTerminal(Terminal& terminal) const;
 
@@ -114,8 +116,6 @@ private:
     void removeBus(const std::string& busId);
 
     void removeSwitch(const std::string& switchId);
-
-    void removeTopology() override;
 
 private:
     friend class bus_breaker_voltage_level::BusBreakerViewImpl;
