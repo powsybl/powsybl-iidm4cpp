@@ -28,27 +28,52 @@ set(UNIT_TEST_SOURCES
     test/XnodeTest.cpp
 )
 
-# Shared library
-add_library(${EXT_NAME} SHARED ${EXT_SOURCES})
-set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION} OUTPUT_NAME iidm-${EXT_NAME})
-target_include_directories(${EXT_NAME}
-    INTERFACE
-        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
-target_link_libraries(${EXT_NAME} PUBLIC iidm)
+if (BUILD_SHARED_EXTENSIONS)
+    # Shared library
+    add_library(${EXT_NAME} SHARED ${EXT_SOURCES})
+    set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION} OUTPUT_NAME iidm-${EXT_NAME})
+    target_include_directories(${EXT_NAME}
+        INTERFACE
+            $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
+    if (BUILD_STATIC_LIBS AND NOT BUILD_SHARED_LIBS)
+        target_link_libraries(${EXT_NAME} PUBLIC iidm-static)
+    else ()
+        target_link_libraries(${EXT_NAME} PUBLIC iidm)
+    endif ()
 
-# Static library
-add_library(${EXT_NAME}-static STATIC ${EXT_SOURCES})
-set_target_properties(${EXT_NAME}-static PROPERTIES OUTPUT_NAME iidm-${EXT_NAME})
-target_include_directories(${EXT_NAME}-static
-    INTERFACE
-        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
-target_link_libraries(${EXT_NAME}-static PUBLIC iidm-static)
+
+    # Installation
+    install(TARGETS ${EXT_NAME}
+        EXPORT iidm-targets
+        LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+        ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+        RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+    )
+endif ()
+
+if (BUILD_STATIC_EXTENSIONS)
+    # Static library
+    add_library(${EXT_NAME}-static STATIC ${EXT_SOURCES})
+    set_target_properties(${EXT_NAME}-static PROPERTIES OUTPUT_NAME iidm-${EXT_NAME})
+    target_include_directories(${EXT_NAME}-static
+        INTERFACE
+            $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
+    target_link_libraries(${EXT_NAME}-static PUBLIC iidm-static)
+
+    # Installation
+    install(TARGETS ${EXT_NAME}-static
+        EXPORT iidm-targets
+        LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+        ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+        RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+    )
+endif ()
 
 if (BUILD_TESTS)
     # Unit tests
@@ -58,14 +83,6 @@ if (BUILD_TESTS)
 
     add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} -- --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)
 endif()
-
-# Installation
-install(TARGETS ${EXT_NAME} ${EXT_NAME}-static
-    EXPORT iidm-targets
-    LIBRARY DESTINATION ${INSTALL_LIB_DIR}
-    ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
-    RUNTIME DESTINATION ${INSTALL_BIN_DIR}
-)
 
 install(DIRECTORY include/powsybl
     DESTINATION ${INSTALL_INCLUDE_DIR}

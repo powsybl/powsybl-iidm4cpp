@@ -223,46 +223,61 @@ set(IIDM_SOURCES
 )
 
 # Shared library
-add_library(iidm SHARED ${IIDM_SOURCES})
-set_target_properties(iidm PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION})
-target_include_directories(iidm SYSTEM
-    PUBLIC
-        $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:LibXml2::LibXml2,INTERFACE_INCLUDE_DIRECTORIES>
-)
-target_include_directories(iidm
-    INTERFACE
-        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-)
-target_link_libraries(iidm PUBLIC LibXml2::LibXml2 Boost::disable_autolinking Boost::date_time Boost::dynamic_linking Boost::filesystem Boost::system ${CMAKE_DL_LIBS} Threads::Threads)
+if (BUILD_SHARED_LIBS)
+    add_library(iidm SHARED ${IIDM_SOURCES})
+    set_target_properties(iidm PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION})
+    target_include_directories(iidm SYSTEM
+        PUBLIC
+            $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:LibXml2::LibXml2,INTERFACE_INCLUDE_DIRECTORIES>
+    )
+    target_include_directories(iidm
+        INTERFACE
+            $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    )
+    target_link_libraries(iidm PUBLIC LibXml2::LibXml2 Boost::disable_autolinking Boost::date_time Boost::dynamic_linking Boost::filesystem Boost::system ${CMAKE_DL_LIBS} Threads::Threads)
 
-# Static library
-add_library(iidm-static STATIC ${IIDM_SOURCES})
-set_target_properties(iidm-static PROPERTIES OUTPUT_NAME iidm)
-target_include_directories(iidm-static SYSTEM
-    PUBLIC
-        $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:LibXml2::LibXml2,INTERFACE_INCLUDE_DIRECTORIES>
-)
-target_include_directories(iidm-static
-    INTERFACE
-        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-)
-target_link_libraries(iidm-static PUBLIC LibXml2::LibXml2 Boost::disable_autolinking Boost::date_time Boost::dynamic_linking Boost::filesystem Boost::system ${CMAKE_DL_LIBS} Threads::Threads)
+    # Installation
+    install(TARGETS iidm
+        EXPORT iidm-targets
+        LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+        ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+        RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+    )
+endif ()
 
-# Installation
-install(TARGETS iidm iidm-static
-    EXPORT iidm-targets
-    LIBRARY DESTINATION ${INSTALL_LIB_DIR}
-    ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
-    RUNTIME DESTINATION ${INSTALL_BIN_DIR}
-)
+if (BUILD_STATIC_LIBS)
+    # Static library
+    add_library(iidm-static STATIC ${IIDM_SOURCES})
+    set_target_properties(iidm-static PROPERTIES OUTPUT_NAME iidm)
+    target_include_directories(iidm-static SYSTEM
+        PUBLIC
+            $<TARGET_PROPERTY:Boost::boost,INTERFACE_INCLUDE_DIRECTORIES>
+            $<TARGET_PROPERTY:LibXml2::LibXml2,INTERFACE_INCLUDE_DIRECTORIES>
+    )
+    target_include_directories(iidm-static
+        INTERFACE
+            $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    )
+    if (NOT BOOST_STATIC_LIBS)
+        target_link_libraries(iidm-static PUBLIC Boost::dynamic_linking)
+    endif ()
+    target_link_libraries(iidm-static PUBLIC LibXml2::LibXml2 Boost::disable_autolinking Boost::date_time Boost::filesystem Boost::system ${CMAKE_DL_LIBS} Threads::Threads)
+
+    # Installation
+    install(TARGETS iidm-static
+        EXPORT iidm-targets
+        LIBRARY DESTINATION ${INSTALL_LIB_DIR}
+        ARCHIVE DESTINATION ${INSTALL_LIB_DIR}
+        RUNTIME DESTINATION ${INSTALL_BIN_DIR}
+    )
+endif ()
 
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/powsybl
     DESTINATION ${INSTALL_INCLUDE_DIR}
