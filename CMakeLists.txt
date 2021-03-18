@@ -23,6 +23,7 @@ set(INSTALL_DOC_DIR share CACHE PATH "Installation directory for doxygen files")
 option(BUILD_DOXYGEN "Enable/Disable the generation of the Doxygen." OFF)
 option(BUILD_EXAMPLES "Enable/Disable the compilation of the examples." OFF)
 option(BUILD_TESTS "Enable/Disable the compilation of unit tests." ON)
+option(BUILD_TOOLS "Enable/Disable the compilation of tools." ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
@@ -73,7 +74,10 @@ endif ()
 
 add_subdirectory(src)
 add_subdirectory(extensions)
-add_subdirectory(tools)
+
+if (BUILD_TOOLS)
+    add_subdirectory(tools)
+endif ()
 
 if (BUILD_TESTS)
     add_subdirectory(test)
