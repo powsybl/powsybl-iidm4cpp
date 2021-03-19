@@ -5,5 +5,5 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-add_subdirectory(example1)
-add_subdirectory(example3)
+add_executable(example3 example3.cpp)
+target_link_libraries(example3 PRIVATE iidm-static ext-iidm-static)

@@ -60,7 +60,7 @@ cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 project(my-project)
 
 # Find the required dependencies: Boost, LibXML2 and IIDM and import the targets
-find_package(Boost 1.56 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
+find_package(Boost 1.65 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
 find_package(LibXml2 REQUIRED)
 find_package(LibIIDM REQUIRED)
 
