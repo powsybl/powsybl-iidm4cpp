@@ -169,7 +169,8 @@ BOOST_AUTO_TEST_CASE(adder) {
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {
-    const Network& network = createHvdcLineTestNetwork();
+    Network network = createHvdcLineTestNetwork();
+    const Network& cNetwork = network;
     BOOST_CHECK_EQUAL(1UL, boost::size(network.getHvdcLines()));
 
     const HvdcLine& hvdc = network.getHvdcLine("HVDC1");
@@ -183,6 +184,27 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(13.0, hvdc.getNominalV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(14.0, hvdc.getR(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(network, hvdc.getNetwork()));
+
+    const LccConverterStation& lcc1 = network.getLccConverterStation("LCC1");
+    const LccConverterStation& lcc2 = network.getLccConverterStation("LCC2");
+    const VscConverterStation& vsc1 = network.getVscConverterStation("VSC1");
+    const VscConverterStation& vsc2 = network.getVscConverterStation("VSC2");
+
+    BOOST_CHECK(stdcxx::areSame(hvdc, network.getHvdcLine(lcc1)));
+    BOOST_CHECK(stdcxx::areSame(hvdc, network.getHvdcLine(lcc2)));
+    BOOST_CHECK(stdcxx::areSame(hvdc, cNetwork.getHvdcLine(lcc1)));
+    BOOST_CHECK(stdcxx::areSame(hvdc, cNetwork.getHvdcLine(lcc2)));
+    POWSYBL_ASSERT_THROW(network.getHvdcLine(vsc1), PowsyblException, "Unable to find to the HVDC line for station 'VSC1'");
+    POWSYBL_ASSERT_THROW(network.getHvdcLine(vsc2), PowsyblException, "Unable to find to the HVDC line for station 'VSC2'");
+
+    BOOST_CHECK(stdcxx::areSame(hvdc, network.findHvdcLine(lcc1).get()));
+    BOOST_CHECK(stdcxx::areSame(hvdc, network.findHvdcLine(lcc2).get()));
+    BOOST_CHECK(stdcxx::areSame(hvdc, cNetwork.findHvdcLine(lcc1).get()));
+    BOOST_CHECK(stdcxx::areSame(hvdc, cNetwork.findHvdcLine(lcc2).get()));
+    BOOST_CHECK(!network.findHvdcLine(vsc1));
+    BOOST_CHECK(!network.findHvdcLine(vsc2));
+    BOOST_CHECK(!cNetwork.findHvdcLine(vsc1));
+    BOOST_CHECK(!cNetwork.findHvdcLine(vsc2));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {

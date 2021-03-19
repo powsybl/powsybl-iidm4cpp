@@ -26,6 +26,7 @@
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
+#include <powsybl/iidm/util/VoltageLevels.hpp>
 
 namespace powsybl {
 
@@ -203,6 +204,22 @@ StaticVarCompensatorAdder VoltageLevel::newStaticVarCompensator() {
 
 VscConverterStationAdder VoltageLevel::newVscConverterStation() {
     return VscConverterStationAdder(*this);
+}
+
+void VoltageLevel::remove() {
+    VoltageLevels::checkRemovability(*this);
+
+    // Remove all connectables
+    for (Connectable& connectable : getConnectables()) {
+        connectable.remove();
+    }
+
+    // Remove the topology
+    removeTopology();
+
+    // Remove this voltage level from the network
+    getSubstation().remove(*this);
+    getNetwork().getIndex().remove(*this);
 }
 
 VoltageLevel& VoltageLevel::setHighVoltageLimit(double highVoltageLimit) {

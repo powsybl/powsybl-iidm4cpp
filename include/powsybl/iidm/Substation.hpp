@@ -71,6 +71,8 @@ public:
 
     VoltageLevelAdder newVoltageLevel();
 
+    void remove();
+
     Substation& setCountry(const stdcxx::optional<Country>& country);
 
     Substation& setTso(const std::string& tso);
@@ -81,7 +83,11 @@ private: // Identifiable
 private:
     void addVoltageLevel(VoltageLevel& voltageLevel);
 
+    void remove(const VoltageLevel& voltageLevel);
+
     void setNetworkRef(Network& network);
+
+    friend class VoltageLevel;
 
     friend class VoltageLevelAdder;
 

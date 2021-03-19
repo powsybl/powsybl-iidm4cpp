@@ -84,6 +84,8 @@ private: // VoltageLevel
 
     NodeBreakerView& getNodeBreakerView() override;
 
+    void removeTopology() override;
+
 private:
     void checkTerminal(Terminal& terminal) const;
 

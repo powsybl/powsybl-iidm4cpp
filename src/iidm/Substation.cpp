@@ -10,11 +10,14 @@
 #include <boost/range/adaptor/filtered.hpp>
 #include <boost/range/adaptor/transformed.hpp>
 
+#include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/util/DistinctPredicate.hpp>
+#include <powsybl/iidm/util/Substations.hpp>
+#include <powsybl/iidm/util/VoltageLevels.hpp>
 #include <powsybl/stdcxx/flattened.hpp>
 
 namespace powsybl {
@@ -122,6 +125,40 @@ TwoWindingsTransformerAdder Substation::newTwoWindingsTransformer() {
 
 VoltageLevelAdder Substation::newVoltageLevel() {
     return VoltageLevelAdder(*this);
+}
+
+void Substation::remove() {
+    Substations::checkRemovability(*this);
+
+    for (VoltageLevel& vl : m_voltageLevels) {
+        // Remove all branches, transformers and HVDC lines
+        for (Connectable& connectable : vl.getConnectables()) {
+            ConnectableType type = connectable.getType();
+            if (VoltageLevels::MULTIPLE_TERMINALS_CONNECTABLE_TYPES.find(type) != VoltageLevels::MULTIPLE_TERMINALS_CONNECTABLE_TYPES.end()) {
+                connectable.remove();
+            } else if (type == ConnectableType::HVDC_CONVERTER_STATION) {
+                const auto& hvdcLine = getNetwork().findHvdcLine(dynamic_cast<HvdcConverterStation&>(connectable));
+                if (hvdcLine) {
+                    hvdcLine.get().remove();
+                }
+            }
+        }
+
+        // Then remove the voltage level (bus, switches and injections) from the network
+        vl.remove();
+    }
+
+    // Remove this substation from the network
+    getNetwork().remove(*this);
+}
+
+void Substation::remove(const VoltageLevel& voltageLevel) {
+    auto it = std::find_if(m_voltageLevels.begin(), m_voltageLevels.end(), [&voltageLevel](const std::reference_wrapper<VoltageLevel>& vl) {
+        return stdcxx::areSame(voltageLevel, vl.get());
+    });
+    if (it != m_voltageLevels.end()) {
+        m_voltageLevels.erase(it);
+    }
 }
 
 Substation& Substation::setCountry(const stdcxx::optional<Country>& country) {

@@ -36,7 +36,7 @@ public:
 
     std::vector<std::reference_wrapper<Terminal> > getTerminals() const;
 
-    void remove();
+    virtual void remove();
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

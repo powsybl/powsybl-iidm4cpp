@@ -102,6 +102,10 @@ public:
     template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     stdcxx::Reference<T> find(const std::string& id);
 
+    stdcxx::CReference<HvdcLine> findHvdcLine(const HvdcConverterStation& station) const;
+
+    stdcxx::Reference<HvdcLine> findHvdcLine(const HvdcConverterStation& station);
+
     template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     const T& get(const std::string& id) const;
 
@@ -200,6 +204,10 @@ public:
     const HvdcLine& getHvdcLine(const std::string& id) const;
 
     HvdcLine& getHvdcLine(const std::string& id);
+
+    const HvdcLine& getHvdcLine(const HvdcConverterStation& station) const;
+
+    HvdcLine& getHvdcLine(const HvdcConverterStation& station);
 
     unsigned long getHvdcLineCount() const;
 
@@ -370,6 +378,10 @@ private:
     NetworkIndex& getIndex();
 
     friend class Identifiable;
+
+    friend class VoltageLevel;
+
+    friend class NodeBreakerVoltageLevel;
 
 private:
     stdcxx::DateTime m_caseDate;

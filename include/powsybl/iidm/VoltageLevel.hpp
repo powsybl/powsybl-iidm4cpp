@@ -176,6 +176,8 @@ public:
 
     VscConverterStationAdder newVscConverterStation();
 
+    void remove();
+
     VoltageLevel& setHighVoltageLimit(double highVoltageLimit);
 
     VoltageLevel& setLowVoltageLimit(double lowVoltageLimit);
@@ -194,6 +196,9 @@ protected:
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
+
+private:
+    virtual void removeTopology() = 0;
 
 private:
     stdcxx::Reference<Substation> m_substation;

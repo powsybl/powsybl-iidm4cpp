@@ -365,6 +365,14 @@ void NodeBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
     getNetwork().remove(aSwitch.get());
 }
 
+void NodeBreakerVoltageLevel::removeTopology() {
+    for (Switch& s : m_graph.getEdgeObjects()) {
+        getNetwork().getIndex().remove(s);
+    }
+    m_graph.removeAllEdges();
+    m_switches.clear();
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl
