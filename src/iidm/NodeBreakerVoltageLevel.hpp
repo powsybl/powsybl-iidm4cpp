@@ -89,6 +89,9 @@ protected: // VoltageLevel
 
     stdcxx::range<Terminal> getTerminals() override;
 
+private:  // VoltageLevel
+    void removeTopology() override;
+
 private:
     void checkTerminal(Terminal& terminal) const;
 
