@@ -18,6 +18,9 @@ namespace iidm {
 class HvdcLine;
 
 class HvdcConverterStation : public Injection {
+public:  // Connectable
+    void remove() override;
+
 public:
     enum class HvdcType {
         VSC,

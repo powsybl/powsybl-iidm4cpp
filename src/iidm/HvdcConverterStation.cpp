@@ -31,6 +31,13 @@ double HvdcConverterStation::getLossFactor() const {
     return m_lossFactor;
 }
 
+void HvdcConverterStation::remove() {
+    if (m_hvdcLine) {
+        throw ValidationException(*this, stdcxx::format("Impossible to remove this converter station (still attached to '%1%')", m_hvdcLine.get().getId()));
+    }
+    Injection::remove();
+}
+
 void HvdcConverterStation::setHvdcLine(const stdcxx::Reference<HvdcLine>& hvdcLine) {
     m_hvdcLine = hvdcLine;
 }

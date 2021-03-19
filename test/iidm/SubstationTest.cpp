@@ -486,17 +486,20 @@ BOOST_AUTO_TEST_CASE(remove) {
     // s2 and s3 are linked by Line LINE_S2S3
     network.getLine("LINE_S2S3").remove();
 
+    POWSYBL_ASSERT_THROW(network.getVscConverterStation("VSC1").remove(), PowsyblException, "vscConverterStation 'VSC1': Impossible to remove this converter station (still attached to 'HVDC1')");
+
     // s3 linked to s1 thought HVDC2
     network.getHvdcLine("HVDC2").remove();
-    network.getVscConverterStation("VSC2").remove();
+    network.getLccConverterStation("LCC1").remove();
     network.getLccConverterStation("LCC2").remove();
 
     // s3 is isolated => removable
     s3.remove();
 
     // s1 and s2 are linked by HVDC1
+    network.getHvdcLine("HVDC1").remove();
     network.getVscConverterStation("VSC1").remove();
-    network.getLccConverterStation("LCC1").remove();
+    network.getVscConverterStation("VSC2").remove();
 
     // s1 and s2 are isolated => removable
     s1.remove();
