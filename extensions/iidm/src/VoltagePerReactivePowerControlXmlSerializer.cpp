@@ -40,7 +40,7 @@ Extension& VoltagePerReactivePowerControlXmlSerializer::read(Extendable& extenda
 void VoltagePerReactivePowerControlXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& ext = safeCast<VoltagePerReactivePowerControl>(extension);
 
-    context.getExtensionsWriter().writeAttribute("slope", ext.getSlope());
+    context.getWriter().writeAttribute("slope", ext.getSlope());
 }
 
 }  // namespace iidm

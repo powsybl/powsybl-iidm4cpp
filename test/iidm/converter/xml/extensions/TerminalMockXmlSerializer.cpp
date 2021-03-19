@@ -74,7 +74,7 @@ Extension& TerminalMockXmlSerializer::read(Extendable& extendable, NetworkXmlRea
 
 void TerminalMockXmlSerializer::write(const Extension& extension, NetworkXmlWriterContext& context) const {
     const auto& terminalMockExt = safeCast<TerminalMockExt>(extension);
-    TerminalRefXml::writeTerminalRef(terminalMockExt.getTerminal(), context, getNamespacePrefix(), "terminal", context.getExtensionsWriter());
+    TerminalRefXml::writeTerminalRef(terminalMockExt.getTerminal(), context, getNamespacePrefix(), "terminal", context.getWriter());
 }
 
 }  // namespace extensions

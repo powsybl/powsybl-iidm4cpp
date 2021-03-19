@@ -45,8 +45,8 @@ Extension& ActivePowerControlXmlSerializer::read(Extendable& extendable, convert
 void ActivePowerControlXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& apc = safeCast<ActivePowerControl>(extension);
 
-    context.getExtensionsWriter().writeAttribute("participate", apc.isParticipate());
-    context.getExtensionsWriter().writeAttribute("droop", apc.getDroop());
+    context.getWriter().writeAttribute("participate", apc.isParticipate());
+    context.getWriter().writeAttribute("droop", apc.getDroop());
 }
 
 }  // namespace iidm
