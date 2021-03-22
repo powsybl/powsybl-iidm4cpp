@@ -43,7 +43,7 @@ target_include_directories(${EXT_NAME}-static
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
-target_link_libraries(${EXT_NAME}-static PUBLIC iidm)
+target_link_libraries(${EXT_NAME}-static PUBLIC iidm-static)
 
 if (BUILD_TESTS)
     # Unit tests
