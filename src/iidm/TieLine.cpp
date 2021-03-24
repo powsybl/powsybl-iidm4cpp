@@ -21,12 +21,13 @@ TieLine::TieLine(const std::string& id, const std::string& name, bool fictitious
     m_half1(std::move(half1)),
     m_half2(std::move(half2)),
     m_ucteXnodeCode(ucteXnodeCode) {
-    attach(m_half1);
-    attach(m_half2);
+    attach(m_half1, [this]() -> const Terminal& { return getTerminal1(); });
+    attach(m_half2, [this]() -> const Terminal& { return getTerminal2(); });
 }
 
-TieLine::HalfLine& TieLine::attach(TieLine::HalfLine& halfLine) {
+TieLine::HalfLine& TieLine::attach(TieLine::HalfLine& halfLine, const std::function<const Terminal&()>& terminalSupplier) {
     halfLine.setParent(*this);
+    halfLine.m_boundary = stdcxx::make_unique<HalfLine::Boundary>(halfLine, terminalSupplier);
     return halfLine;
 }
 

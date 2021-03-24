@@ -8,6 +8,8 @@
 #ifndef POWSYBL_STDCXX_MATH_HPP
 #define POWSYBL_STDCXX_MATH_HPP
 
+#define _USE_MATH_DEFINES
+
 #include <cmath>
 #include <limits>
 #include <sstream>
@@ -34,6 +36,10 @@ std::string to_string(const T& value) {
     out << value;
     return out.str();
 }
+
+double toDegrees(double angleRad);
+
+double toRadians(double angleDeg);
 
 }  // namespace stdcxx
 

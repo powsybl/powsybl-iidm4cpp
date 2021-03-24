@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_DANGLINGLINE_HPP
 
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/iidm/DanglingLineBoundary.hpp>
 #include <powsybl/iidm/DanglingLineGeneration.hpp>
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -21,6 +22,8 @@ class DanglingLine : public Injection {
 public:
     using Generation = dangling_line::Generation;
 
+    using Boundary = dangling_line::Boundary;
+
 public:
     DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                  double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode,
@@ -29,6 +32,10 @@ public:
     ~DanglingLine() noexcept override = default;
 
     double getB() const;
+
+    const Boundary& getBoundary() const;
+
+    Boundary& getBoundary();
 
     stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
 
@@ -98,6 +105,8 @@ private:
     std::unique_ptr<Generation> m_generation;
 
     std::unique_ptr<CurrentLimits> m_limits;
+
+    std::unique_ptr<Boundary> m_boundary;
 };
 
 }  // namespace iidm

@@ -102,8 +102,6 @@ Network createTieLineTestNetwork() {
         .setUcteXnodeCode("UcteXnodeCode")
         .newHalfLine1()
         .setId("H1_TL_VL1_VL3")
-        .setXnodeP(1)
-        .setXnodeQ(2)
         .setR(6.0)
         .setX(66.0)
         .setG1(0.2)
@@ -113,8 +111,6 @@ Network createTieLineTestNetwork() {
         .add()
         .newHalfLine2()
         .setId("H2_TL_VL1_VL3")
-        .setXnodeP(3)
-        .setXnodeQ(4)
         .setR(7.0)
         .setX(77.0)
         .setG1(0.6)
@@ -160,8 +156,6 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(0.4, half1.getB1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.3, half1.getG2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.5, half1.getB2(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(1.0, half1.getXnodeP(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(2.0, half1.getXnodeQ(), std::numeric_limits<double>::epsilon());
 
     POWSYBL_ASSERT_THROW(modifiableTieLine.setR(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
     POWSYBL_ASSERT_THROW(modifiableTieLine.setX(0), ValidationException, "AC tie line 'TL_VL1_VL3': direct modification of characteristics not supported for tie lines");
@@ -195,12 +189,6 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setB2(6.0)));
     BOOST_CHECK_CLOSE(6.0, half1.getB2(), std::numeric_limits<double>::epsilon());
 
-    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setXnodeP(7.0)));
-    BOOST_CHECK_CLOSE(7.0, half1.getXnodeP(), std::numeric_limits<double>::epsilon());
-
-    BOOST_CHECK(stdcxx::areSame(half1, modifiableHalfLine.setXnodeQ(8.0)));
-    BOOST_CHECK_CLOSE(8.0, half1.getXnodeQ(), std::numeric_limits<double>::epsilon());
-
     const TieLine::HalfLine& half2 = tieLine.getHalf2();
     BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", half2.getId());
     BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", half2.getName());
@@ -210,8 +198,6 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(0.7, half2.getB1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.9, half2.getG2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.2, half2.getB2(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(3.0, half2.getXnodeP(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(4.0, half2.getXnodeQ(), std::numeric_limits<double>::epsilon());
 
     BOOST_CHECK(stdcxx::areSame(half1, tieLine.getHalf(Branch::Side::ONE)));
     BOOST_CHECK(stdcxx::areSame(half2, tieLine.getHalf(Branch::Side::TWO)));
@@ -255,8 +241,6 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .setUcteXnodeCode("UcteXnodeCodeTest")
         .newHalfLine1()
         .setId("H1_TL_VL2_VL4")
-        .setXnodeP(10)
-        .setXnodeQ(20)
         .setR(60.0)
         .setX(660.0)
         .setG1(2.0)
@@ -266,8 +250,6 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .add()
         .newHalfLine2()
         .setId("H2_TL_VL2_VL4")
-        .setXnodeP(30)
-        .setXnodeQ(40)
         .setR(70.0)
         .setX(770.0)
         .setG1(6.0)
@@ -353,11 +335,6 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b2 is not set for half line 1");
     halfLineAdder1.setB2(5.0);
 
-    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeP is not set for half line 1");
-    halfLineAdder1.setXnodeP(10.0);
-
-    POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 1");
-    halfLineAdder1.setXnodeQ(20.0);
     halfLineAdder1.add();
 
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': half line 2 is not set");
@@ -385,12 +362,6 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b2 is not set for half line 2");
     halfLineAdder2.setB2(12.0);
-
-    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeP is not set for half line 2");
-    halfLineAdder2.setXnodeP(30.0);
-
-    POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': xnodeQ is not set for half line 2");
-    halfLineAdder2.setXnodeQ(40.0);
     halfLineAdder2.add();
 
     halfLineAdder2.setFictitious(true);
@@ -431,8 +402,6 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .setG2(3.0)
         .setR(60.0)
         .setX(660.0)
-        .setXnodeP(10.0)
-        .setXnodeQ(20.0)
         .setFictitious(true)
         .add();
 
@@ -446,8 +415,6 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .setG2(9.0)
         .setR(70.0)
         .setX(700.0)
-        .setXnodeP(30.0)
-        .setXnodeQ(40.0)
         .setFictitious(false)
         .add();
 
@@ -455,6 +422,23 @@ BOOST_AUTO_TEST_CASE(fictitious) {
     BOOST_CHECK(line.getHalf(Branch::Side::ONE).isFictitious());
     BOOST_CHECK(!line.getHalf(Branch::Side::TWO).isFictitious());
     BOOST_CHECK(line.isFictitious());
+}
+
+BOOST_AUTO_TEST_CASE(getBoundary) {
+    Network network = createTieLineTestNetwork();
+    TieLine& tieLine = dynamic_cast<TieLine&>(network.getLine("TL_VL1_VL3"));
+    const TieLine& cTieLine = dynamic_cast<const TieLine&>(network.getLine("TL_VL1_VL3"));
+
+    tieLine.getTerminal1().getBusView().getBus().get().setAngle(2);
+    tieLine.getTerminal1().setP(3);
+    tieLine.getTerminal1().setQ(4);
+    tieLine.getTerminal1().getBusView().getBus().get().setV(5);
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getHalf1().getBoundary(), tieLine.getHalf1().getBoundary()));
+    Boundary& boundary = tieLine.getHalf1().getBoundary();
+    BOOST_CHECK_CLOSE(168.31385922271897, boundary.getAngle(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(10051.099999999999, boundary.getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-16154.5, boundary.getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(182.584227139148, boundary.getV(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

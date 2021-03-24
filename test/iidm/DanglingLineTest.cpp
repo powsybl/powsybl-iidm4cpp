@@ -372,6 +372,23 @@ BOOST_AUTO_TEST_CASE(currentLimits) {
     BOOST_TEST(danglingLine.getCurrentLimits());
 }
 
+BOOST_AUTO_TEST_CASE(getBoundary) {
+    Network network = createDanglingLineTestNetwork(false);
+    DanglingLine& danglingLine = network.getDanglingLine("DL1");
+    const DanglingLine& cDanglingLine = network.getDanglingLine("DL1");
+
+    danglingLine.getTerminal().getBusView().getBus().get().setAngle(2);
+    danglingLine.getTerminal().setP(3);
+    danglingLine.getTerminal().setQ(4);
+    danglingLine.getTerminal().getBusView().getBus().get().setV(5);
+    BOOST_CHECK(stdcxx::areSame(cDanglingLine.getBoundary(), danglingLine.getBoundary()));
+    Boundary& boundary = danglingLine.getBoundary();
+    BOOST_CHECK_CLOSE(82.47271661854765, boundary.getAngle(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2065.500000000001, boundary.getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-781.1250000000001, boundary.getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(43.5, boundary.getV(), std::numeric_limits<double>::epsilon());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

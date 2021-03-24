@@ -44,12 +44,6 @@ TieLineAdder& HalfLineAdder::add() {
     if (std::isnan(m_b2)) {
         throw ValidationException(m_parent, stdcxx::format("b2 is not set for half line %1%", m_num));
     }
-    if (std::isnan(m_xnodeP)) {
-        throw ValidationException(m_parent, stdcxx::format("xnodeP is not set for half line %1%", m_num));
-    }
-    if (std::isnan(m_xnodeQ)) {
-        throw ValidationException(m_parent, stdcxx::format("xnodeQ is not set for half line %1%", m_num));
-    }
     switch (m_num) {
     case 1:
         m_parent.setHalfLineAdder1(*this);
@@ -66,7 +60,7 @@ TieLineAdder& HalfLineAdder::add() {
 }
 
 HalfLine HalfLineAdder::build() const {
-    return HalfLine(m_id, m_name, m_fictitious, m_xnodeP, m_xnodeQ, m_r, m_x, m_g1, m_b1, m_g2, m_b2);
+    return HalfLine(m_id, m_name, m_fictitious, m_r, m_x, m_g1, m_b1, m_g2, m_b2);
 }
 
 std::string HalfLineAdder::getMessageHeader() const {
@@ -115,16 +109,6 @@ HalfLineAdder& HalfLineAdder::setR(double r) {
 
 HalfLineAdder& HalfLineAdder::setX(double x) {
     m_x = x;
-    return *this;
-}
-
-HalfLineAdder& HalfLineAdder::setXnodeP(double xnodeP) {
-    m_xnodeP = xnodeP;
-    return *this;
-}
-
-HalfLineAdder& HalfLineAdder::setXnodeQ(double xnodeQ) {
-    m_xnodeQ = xnodeQ;
     return *this;
 }
 

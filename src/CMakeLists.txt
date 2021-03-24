@@ -38,6 +38,7 @@ set(IIDM_SOURCES
     iidm/CurrentLimits.cpp
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
+    iidm/DanglingLineBoundary.cpp
     iidm/DanglingLineGeneration.cpp
     iidm/DanglingLineGenerationAdder.cpp
     iidm/EnergySource.cpp
@@ -50,6 +51,7 @@ set(IIDM_SOURCES
     iidm/GeneratorAdder.cpp
     iidm/HalfLine.cpp
     iidm/HalfLineAdder.cpp
+    iidm/HalfLineBoundary.cpp
     iidm/HvdcConverterStation.cpp
     iidm/HvdcLine.cpp
     iidm/HvdcLineAdder.cpp
@@ -188,6 +190,7 @@ set(IIDM_SOURCES
     iidm/util/LimitViolationUtils.cpp
     iidm/util/Networks.cpp
     iidm/util/Substations.cpp
+    iidm/util/SV.cpp
     iidm/util/TerminalFinder.cpp
     iidm/util/VoltageLevels.cpp
 
@@ -213,6 +216,7 @@ set(IIDM_SOURCES
     stdcxx/DateTime.cpp
     stdcxx/demangle.cpp
     stdcxx/exception.cpp
+    stdcxx/math.cpp
     stdcxx/Properties.cpp
     stdcxx/time.cpp
 

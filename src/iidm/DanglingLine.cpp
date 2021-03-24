@@ -25,7 +25,8 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
     m_ucteXnodeCode(ucteXnodeCode),
-    m_generation(std::move(generation)) {
+    m_generation(std::move(generation)),
+    m_boundary(stdcxx::make_unique<Boundary>(*this)) {
 
     if (m_generation) {
         m_generation->attach(*this);
@@ -58,6 +59,14 @@ void DanglingLine::extendVariantArraySize(unsigned long initVariantArraySize, un
 
 double DanglingLine::getB() const {
     return m_b;
+}
+
+const dangling_line::Boundary& DanglingLine::getBoundary() const {
+    return *m_boundary;
+}
+
+dangling_line::Boundary& DanglingLine::getBoundary() {
+    return *m_boundary;
 }
 
 stdcxx::CReference<CurrentLimits> DanglingLine::getCurrentLimits() const {

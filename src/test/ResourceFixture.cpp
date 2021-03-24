@@ -9,6 +9,8 @@
 
 #include <fstream>
 
+#include <boost/algorithm/string.hpp>
+#include <boost/config.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 
@@ -26,6 +28,19 @@ ResourceFixture::ResourceFixture() {
          "Path where the test resources are stored");
 
     parse(desc);
+}
+
+std::string getOSName() {
+    std::string osName = BOOST_PLATFORM;
+    boost::replace_all(osName, " ", "_");
+    boost::replace_all(osName, "/", "_");
+    boost::to_lower(osName);
+    return osName;
+}
+
+const std::string& getNormalizedOSName() {
+    static std::string s_osName = getOSName();
+    return s_osName;
 }
 
 std::string ResourceFixture::getResource(const std::string& name) const {
@@ -48,8 +63,11 @@ std::string ResourceFixture::getResource(const std::string& name) const {
 
 boost::filesystem::path ResourceFixture::getResourcePath(const std::string& name) const {
     boost::filesystem::path path(getOptionValue("resources").as<std::string>());
-    path /= name;
-    return path;
+    const std::string& osCustomName = (path / name).string() + "." + getNormalizedOSName();
+    if (boost::filesystem::exists(osCustomName)) {
+        return osCustomName;
+    }
+    return path / name;
 }
 
 }  // namespace test

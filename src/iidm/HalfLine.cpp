@@ -16,13 +16,11 @@ namespace iidm {
 
 namespace tie_line {
 
-HalfLine::HalfLine(const std::string& id, const std::string& name, bool fictitious, double xnodeP, double xnodeQ,
+HalfLine::HalfLine(const std::string& id, const std::string& name, bool fictitious,
                    double r, double x, double g1, double b1, double g2, double b2) :
     m_id(id),
     m_name(name),
     m_lineCharacteristics(*this, r, x, g1, b1, g2, b2),
-    m_xnodeP(xnodeP),
-    m_xnodeQ(xnodeQ),
     m_fictitious(fictitious) {
 }
 
@@ -31,8 +29,6 @@ HalfLine::HalfLine(HalfLine&& halfLine) noexcept :
     m_id(std::move(halfLine.m_id)),
     m_name(std::move(halfLine.m_name)),
     m_lineCharacteristics(*this, halfLine.getR(), halfLine.getX(), halfLine.getG1(), halfLine.getB1(), halfLine.getG2(), halfLine.getB2()),
-    m_xnodeP(halfLine.m_xnodeP),
-    m_xnodeQ(halfLine.m_xnodeQ),
     m_fictitious(halfLine.m_fictitious) {
 }
 
@@ -42,6 +38,14 @@ double HalfLine::getB1() const {
 
 double HalfLine::getB2() const {
     return m_lineCharacteristics.getB2();
+}
+
+const half_line::Boundary& HalfLine::getBoundary() const {
+    return *m_boundary;
+}
+
+half_line::Boundary& HalfLine::getBoundary() {
+    return *m_boundary;
 }
 
 double HalfLine::getG1() const {
@@ -70,14 +74,6 @@ double HalfLine::getR() const {
 
 double HalfLine::getX() const {
     return m_lineCharacteristics.getX();
-}
-
-double HalfLine::getXnodeP() const {
-    return m_xnodeP;
-}
-
-double HalfLine::getXnodeQ() const {
-    return m_xnodeQ;
 }
 
 bool HalfLine::isFictitious() const {
@@ -125,17 +121,6 @@ HalfLine& HalfLine::setX(double x) {
     m_lineCharacteristics.setX(x);
     return *this;
 }
-
-HalfLine& HalfLine::setXnodeP(double xnodeP) {
-    m_xnodeP = xnodeP;
-    return *this;
-}
-
-HalfLine& HalfLine::setXnodeQ(double xnodeQ) {
-    m_xnodeQ = xnodeQ;
-    return *this;
-}
-
 
 }  // namespace tie_line
 
