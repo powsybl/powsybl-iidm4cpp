@@ -63,6 +63,10 @@ public: // VoltageLevel
 
     void invalidateCache() override;
 
+    void traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const;
+
+    void traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) const;
+
 public:
     NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
                             double nominalV, double lowVoltageLimit, double highVoltagelimit);

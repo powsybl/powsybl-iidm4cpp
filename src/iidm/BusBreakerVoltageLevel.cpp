@@ -359,6 +359,65 @@ void BusBreakerVoltageLevel::removeTopology() {
     removeAllBuses();
 }
 
+void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const {
+    std::vector<std::reference_wrapper<Terminal>> traversedTerminals;
+    traverse(terminal, traverser, traversedTerminals);
+}
+
+void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) const {
+    auto it = std::find_if(traversedTerminals.begin(), traversedTerminals.end(), [&terminal](const std::reference_wrapper<Terminal>& t) {
+        return stdcxx::areSame(terminal, t.get());
+    });
+
+    if (it != traversedTerminals.end()) {
+        return;
+    }
+
+    std::vector<std::reference_wrapper<Terminal>> nextTerminals;
+
+    // check if we are allowed to traverse the terminal itself
+    if (traverser.traverse(terminal, terminal.isConnected())) {
+        traversedTerminals.emplace_back(terminal);
+
+        addNextTerminals(terminal, nextTerminals);
+
+        // then check we can traverse terminal connected to same bus
+        unsigned long v = *getVertex(terminal.getConnectableBusId(), true);
+        ConfiguredBus& bus = m_graph.getVertexObject(v);
+
+        const stdcxx::range<BusTerminal>& busTerminals = bus.getTerminals();
+        for (Terminal& t : busTerminals) {
+            if (traverser.traverse(t, t.isConnected())) {
+                addNextTerminals(t, nextTerminals);
+            }
+        }
+
+        // then go through other buses of the substation
+        m_graph.traverse(v, [this, &traverser, &traversedTerminals, &nextTerminals](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
+            Switch& aSwitch = m_graph.getEdgeObject(e);
+            ConfiguredBus& otherBus = m_graph.getVertexObject(v2);
+            if (traverser.traverse(aSwitch)) {
+                if (otherBus.getTerminalCount() == 0) {
+                    return math::TraverseResult::CONTINUE;
+                }
+
+                BusTerminal& otherTerminal = *otherBus.getTerminals().begin();
+                if (traverser.traverse(otherTerminal, otherTerminal.isConnected())) {
+                    traversedTerminals.emplace_back(std::ref(otherTerminal));
+
+                    addNextTerminals(otherTerminal, nextTerminals);
+                    return math::TraverseResult::CONTINUE;
+                }
+            }
+            return math::TraverseResult::TERMINATE;
+        });
+
+        for (Terminal& t : nextTerminals) {
+            t.traverse(traverser, traversedTerminals);
+        }
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

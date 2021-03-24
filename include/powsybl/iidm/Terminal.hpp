@@ -13,6 +13,7 @@
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TerminalViews.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
+#include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -82,6 +83,10 @@ public:
     Terminal& setP(double p);
 
     Terminal& setQ(double q);
+
+    virtual void traverse(voltage_level::TopologyTraverser& traverser) = 0;
+
+    virtual void traverse(voltage_level::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) = 0;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

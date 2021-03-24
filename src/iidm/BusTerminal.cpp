@@ -13,6 +13,8 @@
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
+#include "BusBreakerVoltageLevel.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -109,6 +111,15 @@ BusTerminal& BusTerminal::setConnected(bool connected) {
 
     return *this;
 }
+
+void BusTerminal::traverse(voltage_level::TopologyTraverser& traverser) {
+    dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser);
+}
+
+void BusTerminal::traverse(voltage_level::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) {
+    dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser, traversedTerminals);
+}
+
 
 std::ostream& operator<<(std::ostream& stream, const BusTerminal& busTerminal) {
     stream << stdcxx::simpleClassName(busTerminal) << "[" << busTerminal.getConnectableBusId() << "]";

@@ -49,6 +49,8 @@ public:
 
     using NodeBreakerView = voltage_level::NodeBreakerView;
 
+    using TopologyTraverser = voltage_level::TopologyTraverser;
+
 public:  // Identifiable
     const Network& getNetwork() const override;
 
@@ -185,6 +187,9 @@ public:
     VoltageLevel& setNominalV(double nominalV);
 
     void visitEquipments(TopologyVisitor& visitor) const;
+
+protected:
+    static void addNextTerminals(Terminal& otherTerminal, std::vector<std::reference_wrapper<Terminal>>& nextTerminals);
 
 protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,

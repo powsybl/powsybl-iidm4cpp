@@ -45,6 +45,10 @@ public: // Terminal
 
     bool isConnected() const override;
 
+    void traverse(voltage_level::TopologyTraverser& traverser) override;
+
+    void traverse(voltage_level::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) override;
+
 public:
     NodeTerminal(VoltageLevel& voltageLevel, unsigned long node);
 

@@ -65,6 +65,10 @@ public:
 
     Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2);
 
+    void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser) const;
+
+    void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) const;
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
