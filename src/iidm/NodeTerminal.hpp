@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_NODETERMINAL_HPP
 
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 #include "NodeTerminalViews.hpp"

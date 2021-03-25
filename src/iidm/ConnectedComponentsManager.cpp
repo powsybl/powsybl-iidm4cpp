@@ -11,6 +11,7 @@
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 #include "ConnectedComponent.hpp"
