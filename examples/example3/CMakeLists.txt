@@ -1,9 +1,9 @@
 #
-# Copyright (c) 2020, RTE (http://www.rte-france.com)
+# Copyright (c) 2021, RTE (http://www.rte-france.com)
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
 
-add_subdirectory(example1)
-add_subdirectory(example3)
+add_executable(example3 example3.cpp)
+target_link_libraries(example3 PRIVATE iidm-static ext-iidm-static)
