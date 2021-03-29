@@ -18,7 +18,6 @@ namespace powsybl {
 namespace iidm {
 
 class Terminal;
-class VariantManagerHolder;
 
 class StaticVarCompensator : public Injection {
 public:

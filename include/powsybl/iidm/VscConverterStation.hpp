@@ -15,8 +15,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class VariantManagerHolder;
-
 class VscConverterStation : public HvdcConverterStation, public ReactiveLimitsHolder {
 public: // HvdcConverterStation
     HvdcType getHvdcType() const override;

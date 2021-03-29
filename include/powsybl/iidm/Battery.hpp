@@ -15,8 +15,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class VariantManagerHolder;
-
 class Battery : public Injection, public ReactiveLimitsHolder {
 public:
     Battery(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,

@@ -20,7 +20,6 @@ namespace powsybl {
 namespace iidm {
 
 class Terminal;
-class VariantManagerHolder;
 
 class ShuntCompensator : public Injection {
 public:

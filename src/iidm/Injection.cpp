@@ -7,9 +7,6 @@
 
 #include <powsybl/iidm/Injection.hpp>
 
-#include <powsybl/iidm/Terminal.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
-
 namespace powsybl {
 
 namespace iidm {

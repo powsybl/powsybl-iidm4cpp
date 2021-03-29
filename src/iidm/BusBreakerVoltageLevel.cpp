@@ -385,8 +385,10 @@ void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::Topol
         unsigned long v = *getVertex(terminal.getConnectableBusId(), true);
         ConfiguredBus& bus = m_graph.getVertexObject(v);
 
-        const stdcxx::range<BusTerminal>& busTerminals = bus.getTerminals();
-        for (Terminal& t : busTerminals) {
+        const auto& filterOtherTerminals = [&terminal](const BusTerminal& t) {
+            return !stdcxx::areSame(t, terminal);
+        };
+        for (Terminal& t : bus.getTerminals() | boost::adaptors::filtered(filterOtherTerminals)) {
             if (traverser.traverse(t, t.isConnected())) {
                 addNextTerminals(t, nextTerminals);
             }

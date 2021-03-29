@@ -174,25 +174,6 @@ public:
     virtual void traverse(unsigned long node, const Traverser& traverser) const = 0;
 };
 
-class TopologyTraverser {
-public:
-    TopologyTraverser() = default;
-
-    TopologyTraverser(const TopologyTraverser&) = default;
-
-    TopologyTraverser(TopologyTraverser&&) noexcept = default;
-
-    virtual ~TopologyTraverser() noexcept = default;
-
-    TopologyTraverser& operator=(const TopologyTraverser&) = default;
-
-    TopologyTraverser& operator=(TopologyTraverser&&) noexcept = default;
-
-    virtual bool traverse(Terminal& terminal, bool connected) = 0;
-
-    virtual bool traverse(Switch& aSwitch) = 0;
-};
-
 }  // namespace voltage_level
 
 }  // namespace iidm

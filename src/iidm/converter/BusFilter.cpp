@@ -10,9 +10,7 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 
 namespace powsybl {

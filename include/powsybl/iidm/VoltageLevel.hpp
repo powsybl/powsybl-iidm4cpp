@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
+#include <powsybl/iidm/VoltageLevelTopologyTraverser.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
