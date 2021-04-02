@@ -361,16 +361,16 @@ void BusBreakerVoltageLevel::removeTopology() {
 }
 
 void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const {
-    std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>> traversedTerminals;
+    TerminalSet traversedTerminals;
     traverse(terminal, traverser, traversedTerminals);
 }
 
-void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) const {
+void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
     if (traversedTerminals.find(terminal) != traversedTerminals.end()) {
         return;
     }
 
-    std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>> nextTerminals;
+    TerminalSet nextTerminals;
 
     // check if we are allowed to traverse the terminal itself
     if (traverser.traverse(terminal, terminal.isConnected())) {

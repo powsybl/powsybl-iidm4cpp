@@ -375,11 +375,11 @@ void NodeBreakerVoltageLevel::removeTopology() {
 }
 
 void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const {
-    std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>> traversedTerminals;
+    TerminalSet traversedTerminals;
     traverse(terminal, traverser, traversedTerminals);
 }
 
-void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) const {
+void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
     if (traversedTerminals.find(terminal) != traversedTerminals.end()) {
         return;
     }
@@ -388,7 +388,7 @@ void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::Top
         traversedTerminals.emplace(terminal);
 
         unsigned long node = terminal.getNode();
-        std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>> nextTerminals;
+        TerminalSet nextTerminals;
 
         addNextTerminals(terminal, nextTerminals);
 

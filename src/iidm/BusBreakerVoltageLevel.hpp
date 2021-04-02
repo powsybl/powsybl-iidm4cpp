@@ -68,7 +68,7 @@ public:
 
     void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser) const;
 
-    void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) const;
+    void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

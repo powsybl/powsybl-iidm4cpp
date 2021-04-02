@@ -44,7 +44,7 @@ VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool 
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
 }
 
-void VoltageLevel::addNextTerminals(Terminal& otherTerminal, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& nextTerminals) {
+void VoltageLevel::addNextTerminals(Terminal& otherTerminal, TerminalSet& nextTerminals) {
     Connectable& otherConnectable = otherTerminal.getConnectable();
     if (stdcxx::isInstanceOf<Branch>(otherConnectable)) {
         auto& branch = dynamic_cast<Branch&>(otherConnectable);

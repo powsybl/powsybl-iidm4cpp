@@ -12,6 +12,7 @@
 #include <vector>
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TerminalViews.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/iidm/VoltageLevelTopologyTraverser.hpp>
@@ -87,7 +88,7 @@ public:
 
     virtual void traverse(voltage_level::TopologyTraverser& traverser) = 0;
 
-    virtual void traverse(voltage_level::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) = 0;
+    virtual void traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) = 0;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

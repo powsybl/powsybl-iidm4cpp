@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/iidm/VoltageLevelTopologyTraverser.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
@@ -192,7 +193,7 @@ public:
     void visitEquipments(TopologyVisitor& visitor) const;
 
 protected:
-    static void addNextTerminals(Terminal& otherTerminal, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& nextTerminals);
+    static void addNextTerminals(Terminal& otherTerminal, TerminalSet& nextTerminals);
 
 protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
