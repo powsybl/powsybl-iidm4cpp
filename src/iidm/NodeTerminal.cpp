@@ -139,7 +139,7 @@ void NodeTerminal::traverse(voltage_level::TopologyTraverser& traverser) {
     dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser);
 }
 
-void NodeTerminal::traverse(voltage_level::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) {
+void NodeTerminal::traverse(voltage_level::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) {
     dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser, traversedTerminals);
 }
 

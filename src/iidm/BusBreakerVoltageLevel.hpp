@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVEL_HPP
 
 #include <map>
+#include <set>
 #include <string>
 
 #include <powsybl/iidm/VariantArray.hpp>
@@ -67,7 +68,7 @@ public:
 
     void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser) const;
 
-    void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) const;
+    void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) const;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

@@ -15,6 +15,7 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/flattened.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 #include "BusTerminal.hpp"
 
@@ -360,36 +361,28 @@ void BusBreakerVoltageLevel::removeTopology() {
 }
 
 void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const {
-    std::vector<std::reference_wrapper<Terminal>> traversedTerminals;
+    std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>> traversedTerminals;
     traverse(terminal, traverser, traversedTerminals);
 }
 
-void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) const {
-    auto it = std::find_if(traversedTerminals.begin(), traversedTerminals.end(), [&terminal](const std::reference_wrapper<Terminal>& t) {
-        return stdcxx::areSame(terminal, t.get());
-    });
-
-    if (it != traversedTerminals.end()) {
+void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) const {
+    if (traversedTerminals.find(terminal) != traversedTerminals.end()) {
         return;
     }
 
-    std::vector<std::reference_wrapper<Terminal>> nextTerminals;
+    std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>> nextTerminals;
 
     // check if we are allowed to traverse the terminal itself
     if (traverser.traverse(terminal, terminal.isConnected())) {
-        traversedTerminals.emplace_back(terminal);
+        traversedTerminals.emplace(terminal);
 
         addNextTerminals(terminal, nextTerminals);
 
         // then check we can traverse terminal connected to same bus
         unsigned long v = *getVertex(terminal.getConnectableBusId(), true);
         ConfiguredBus& bus = m_graph.getVertexObject(v);
-
-        const auto& filterOtherTerminals = [&terminal](const BusTerminal& t) {
-            return !stdcxx::areSame(t, terminal);
-        };
-        for (Terminal& t : bus.getTerminals() | boost::adaptors::filtered(filterOtherTerminals)) {
-            if (traverser.traverse(t, t.isConnected())) {
+        for (Terminal& t : bus.getTerminals()) {
+            if (!stdcxx::areSame(t, terminal) && traverser.traverse(t, t.isConnected())) {
                 addNextTerminals(t, nextTerminals);
             }
         }
@@ -405,7 +398,7 @@ void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::Topol
 
                 BusTerminal& otherTerminal = *otherBus.getTerminals().begin();
                 if (traverser.traverse(otherTerminal, otherTerminal.isConnected())) {
-                    traversedTerminals.emplace_back(std::ref(otherTerminal));
+                    traversedTerminals.emplace(std::ref(otherTerminal));
 
                     addNextTerminals(otherTerminal, nextTerminals);
                     return math::TraverseResult::CONTINUE;

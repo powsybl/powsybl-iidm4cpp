@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_BUSTERMINAL_HPP
 
 #include <iosfwd>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -49,7 +50,7 @@ public: // Terminal
 
     void traverse(voltage_level::TopologyTraverser& traverser) override;
 
-    void traverse(voltage_level::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) override;
+    void traverse(voltage_level::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) override;
 
 public:
     BusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);

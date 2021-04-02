@@ -44,28 +44,28 @@ VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool 
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
 }
 
-void VoltageLevel::addNextTerminals(Terminal& otherTerminal, std::vector<std::reference_wrapper<Terminal>>& nextTerminals) {
+void VoltageLevel::addNextTerminals(Terminal& otherTerminal, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& nextTerminals) {
     Connectable& otherConnectable = otherTerminal.getConnectable();
     if (stdcxx::isInstanceOf<Branch>(otherConnectable)) {
         auto& branch = dynamic_cast<Branch&>(otherConnectable);
         if (stdcxx::areSame(branch.getTerminal1(), otherTerminal)) {
-            nextTerminals.emplace_back(branch.getTerminal2());
+            nextTerminals.emplace(branch.getTerminal2());
         } else if (stdcxx::areSame(branch.getTerminal2(), otherTerminal)) {
-            nextTerminals.emplace_back(branch.getTerminal1());
+            nextTerminals.emplace(branch.getTerminal1());
         } else {
             throw AssertionError("Terminal is not one the branch terminals");
         }
     } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(otherConnectable)) {
         auto& ttc = dynamic_cast<ThreeWindingsTransformer&>(otherConnectable);
         if (stdcxx::areSame(ttc.getLeg1().getTerminal(), otherTerminal)) {
-            nextTerminals.emplace_back(ttc.getLeg2().getTerminal());
-            nextTerminals.emplace_back(ttc.getLeg3().getTerminal());
+            nextTerminals.emplace(ttc.getLeg2().getTerminal());
+            nextTerminals.emplace(ttc.getLeg3().getTerminal());
         } else if (stdcxx::areSame(ttc.getLeg2().getTerminal(), otherTerminal)) {
-            nextTerminals.emplace_back(ttc.getLeg1().getTerminal());
-            nextTerminals.emplace_back(ttc.getLeg3().getTerminal());
+            nextTerminals.emplace(ttc.getLeg1().getTerminal());
+            nextTerminals.emplace(ttc.getLeg3().getTerminal());
         } else if (stdcxx::areSame(ttc.getLeg3().getTerminal(), otherTerminal)) {
-            nextTerminals.emplace_back(ttc.getLeg1().getTerminal());
-            nextTerminals.emplace_back(ttc.getLeg2().getTerminal());
+            nextTerminals.emplace(ttc.getLeg1().getTerminal());
+            nextTerminals.emplace(ttc.getLeg2().getTerminal());
         } else {
             throw AssertionError("Terminal is not one the 3 legs terminals");
         }

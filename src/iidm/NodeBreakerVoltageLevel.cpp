@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/memory.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 #include "NodeBreakerVoltageLevelBusCache.hpp"
 #include "NodeTerminal.hpp"
@@ -374,24 +375,20 @@ void NodeBreakerVoltageLevel::removeTopology() {
 }
 
 void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const {
-    std::vector<std::reference_wrapper<Terminal>> traversedTerminals;
+    std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>> traversedTerminals;
     traverse(terminal, traverser, traversedTerminals);
 }
 
-void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) const {
-    auto it = std::find_if(traversedTerminals.begin(), traversedTerminals.end(), [&terminal](const std::reference_wrapper<Terminal>& t) {
-        return stdcxx::areSame(terminal, t.get());
-    });
-
-    if (it != traversedTerminals.end()) {
+void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) const {
+    if (traversedTerminals.find(terminal) != traversedTerminals.end()) {
         return;
     }
 
     if (traverser.traverse(terminal, true)) {
-        traversedTerminals.emplace_back(terminal);
+        traversedTerminals.emplace(terminal);
 
         unsigned long node = terminal.getNode();
-        std::vector<std::reference_wrapper<Terminal>> nextTerminals;
+        std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>> nextTerminals;
 
         addNextTerminals(terminal, nextTerminals);
 
@@ -404,7 +401,7 @@ void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::Top
                     return math::TraverseResult::CONTINUE;
                 }
                 if (traverser.traverse(otherTerminal.get(), true)) {
-                    traversedTerminals.emplace_back(otherTerminal.get());
+                    traversedTerminals.emplace(otherTerminal.get());
 
                     addNextTerminals(otherTerminal.get(), nextTerminals);
                     return math::TraverseResult::CONTINUE;

@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_TERMINAL_HPP
 #define POWSYBL_IIDM_TERMINAL_HPP
 
+#include <set>
 #include <vector>
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
@@ -86,7 +87,7 @@ public:
 
     virtual void traverse(voltage_level::TopologyTraverser& traverser) = 0;
 
-    virtual void traverse(voltage_level::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) = 0;
+    virtual void traverse(voltage_level::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) = 0;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

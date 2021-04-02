@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_NODETERMINAL_HPP
 #define POWSYBL_IIDM_NODETERMINAL_HPP
 
+#include <set>
+
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -46,7 +48,7 @@ public: // Terminal
 
     void traverse(voltage_level::TopologyTraverser& traverser) override;
 
-    void traverse(voltage_level::TopologyTraverser& traverser, std::vector<std::reference_wrapper<Terminal>>& traversedTerminals) override;
+    void traverse(voltage_level::TopologyTraverser& traverser, std::set<std::reference_wrapper<Terminal>, stdcxx::less<Terminal>>& traversedTerminals) override;
 
 public:
     NodeTerminal(VoltageLevel& voltageLevel, unsigned long node);
