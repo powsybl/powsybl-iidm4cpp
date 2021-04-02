@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/memory.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 #include "NodeBreakerVoltageLevelBusCache.hpp"
 #include "NodeTerminal.hpp"
@@ -371,6 +372,49 @@ void NodeBreakerVoltageLevel::removeTopology() {
     }
     m_graph.removeAllEdges();
     m_switches.clear();
+}
+
+void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const {
+    TerminalSet traversedTerminals;
+    traverse(terminal, traverser, traversedTerminals);
+}
+
+void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
+    if (traversedTerminals.find(terminal) != traversedTerminals.end()) {
+        return;
+    }
+
+    if (traverser.traverse(terminal, true)) {
+        traversedTerminals.emplace(terminal);
+
+        unsigned long node = terminal.getNode();
+        TerminalSet nextTerminals;
+
+        addNextTerminals(terminal, nextTerminals);
+
+        m_graph.traverse(node, [this, &traverser, &traversedTerminals, &nextTerminals](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
+            const stdcxx::Reference<Switch>& aSwitch = m_graph.getEdgeObject(e);
+            const stdcxx::Reference<NodeTerminal>& otherTerminal = m_graph.getVertexObject(v2);
+            if (!aSwitch // internal connection case
+                || traverser.traverse(aSwitch)) {
+                if (!otherTerminal) {
+                    return math::TraverseResult::CONTINUE;
+                }
+                if (traverser.traverse(otherTerminal.get(), true)) {
+                    traversedTerminals.emplace(otherTerminal.get());
+
+                    addNextTerminals(otherTerminal.get(), nextTerminals);
+                    return math::TraverseResult::CONTINUE;
+                }
+                return math::TraverseResult::TERMINATE;
+            }
+            return math::TraverseResult::TERMINATE;
+        });
+
+        for (auto nextTerminal : nextTerminals) {
+            nextTerminal.get().traverse(traverser, traversedTerminals);
+        }
+    }
 }
 
 }  // namespace iidm

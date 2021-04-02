@@ -8,9 +8,13 @@
 #ifndef POWSYBL_IIDM_VOLTAGELEVEL_HPP
 #define POWSYBL_IIDM_VOLTAGELEVEL_HPP
 
+#include <set>
+
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
+#include <powsybl/iidm/VoltageLevelTopologyTraverser.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -48,6 +52,8 @@ public:
     using BusView = voltage_level::BusView;
 
     using NodeBreakerView = voltage_level::NodeBreakerView;
+
+    using TopologyTraverser = voltage_level::TopologyTraverser;
 
 public:  // Identifiable
     const Network& getNetwork() const override;
@@ -185,6 +191,9 @@ public:
     VoltageLevel& setNominalV(double nominalV);
 
     void visitEquipments(TopologyVisitor& visitor) const;
+
+protected:
+    static void addNextTerminals(Terminal& otherTerminal, TerminalSet& nextTerminals);
 
 protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,

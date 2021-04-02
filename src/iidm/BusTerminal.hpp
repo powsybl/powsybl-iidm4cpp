@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_BUSTERMINAL_HPP
 
 #include <iosfwd>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -46,6 +47,10 @@ public: // Terminal
     double getV() const override;
 
     bool isConnected() const override;
+
+    void traverse(voltage_level::TopologyTraverser& traverser) override;
+
+    void traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) override;
 
 public:
     BusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);
