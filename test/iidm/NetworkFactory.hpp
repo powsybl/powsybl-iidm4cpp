@@ -15,6 +15,10 @@ namespace iidm {
 class Network;
 class Terminal;
 
+Network createComponentsTestNetworkBB();
+
+Network createComponentsTestNetworkNB();
+
 Network createHvdcConverterStationTestNetwork();
 
 Network createNetwork();

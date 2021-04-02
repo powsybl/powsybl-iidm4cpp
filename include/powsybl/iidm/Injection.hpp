@@ -11,11 +11,12 @@
 #include <functional>
 
 #include <powsybl/iidm/Connectable.hpp>
-#include <powsybl/iidm/Terminal.hpp>
 
 namespace powsybl {
 
 namespace iidm {
+
+class Terminal;
 
 class Injection : public Connectable {
 public:

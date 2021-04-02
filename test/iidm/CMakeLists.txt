@@ -36,6 +36,7 @@ set(UNIT_TEST_SOURCES
     ShuntCompensatorTest.cpp
     StaticVarCompensatorTest.cpp
     SubstationTest.cpp
+    TerminalTest.cpp
     TopologyLevelTest.cpp
     ThreeWindingsTransformerTest.cpp
     TieLineTest.cpp

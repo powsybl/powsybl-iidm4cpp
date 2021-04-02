@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_NODETERMINAL_HPP
 #define POWSYBL_IIDM_NODETERMINAL_HPP
 
+#include <set>
+
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -43,6 +45,10 @@ public: // Terminal
     double getV() const override;
 
     bool isConnected() const override;
+
+    void traverse(voltage_level::TopologyTraverser& traverser) override;
+
+    void traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) override;
 
 public:
     NodeTerminal(VoltageLevel& voltageLevel, unsigned long node);

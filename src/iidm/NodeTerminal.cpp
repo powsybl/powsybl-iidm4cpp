@@ -135,6 +135,14 @@ NodeTerminal& NodeTerminal::setV(double v) {
     return *this;
 }
 
+void NodeTerminal::traverse(voltage_level::TopologyTraverser& traverser) {
+    dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser);
+}
+
+void NodeTerminal::traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) {
+    dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser, traversedTerminals);
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

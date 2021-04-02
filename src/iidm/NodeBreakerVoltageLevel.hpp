@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVEL_HPP
 
 #include <map>
+#include <set>
 #include <string>
 
 #include <powsybl/iidm/VariantArray.hpp>
@@ -62,6 +63,10 @@ public: // VoltageLevel
     const TopologyKind& getTopologyKind() const override;
 
     void invalidateCache() override;
+
+    void traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const;
+
+    void traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
 
 public:
     NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
