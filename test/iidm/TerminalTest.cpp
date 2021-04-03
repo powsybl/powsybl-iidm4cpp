@@ -40,13 +40,13 @@ public:
 
     CustomTopologyTraverser(const CustomTopologyTraverser&) = default;
 
-    CustomTopologyTraverser(CustomTopologyTraverser&&) noexcept = default;
+    CustomTopologyTraverser(CustomTopologyTraverser&&) = default;
 
     ~CustomTopologyTraverser() noexcept override = default;
 
     CustomTopologyTraverser& operator=(const CustomTopologyTraverser&) = default;
 
-    CustomTopologyTraverser& operator=(CustomTopologyTraverser&&) noexcept = default;
+    CustomTopologyTraverser& operator=(CustomTopologyTraverser&&) = default;
 
     const std::set<std::string>& getTraversedConnectables() const {
         return m_traversedConnectables;

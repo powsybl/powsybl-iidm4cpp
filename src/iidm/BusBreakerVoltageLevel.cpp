@@ -398,7 +398,7 @@ void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::Topol
 
                 BusTerminal& otherTerminal = *otherBus.getTerminals().begin();
                 if (traverser.traverse(otherTerminal, otherTerminal.isConnected())) {
-                    traversedTerminals.emplace(std::ref(otherTerminal));
+                    traversedTerminals.emplace(otherTerminal);
 
                     addNextTerminals(otherTerminal, nextTerminals);
                     return math::TraverseResult::CONTINUE;
