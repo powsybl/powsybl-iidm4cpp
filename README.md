@@ -148,6 +148,10 @@ $> cmake .. -DCMAKE_INSTALL_PREFIX=<PREFIX> -DCMAKE_BUILD_TYPE=<BUILD_TYPE>
 - BUILD_EXAMPLES: Build the examples (Default is **OFF**)
 - BUILD_TESTS: Generate unit tests (Default is **ON**)
 - BUILD_TOOLS: Build the tools (Default is **ON**)
+- BUILD_SHARED_LIBS: Build shared version of the library (Default is **ON**)
+- BUILD_STATIC_LIBS: Build static version of library (Default is **ON**)
+- BOOST_STATIC_LIBS: Use static version of Boost libraries (Default is **OFF**)
+- MSVC_STATIC_RUNTIME_LIBRARY: Use MSVC static runtime (Default is **OFF**)
 
 **Note:** If you want to use custom version of **Boost** or **LibXML**, you would have to help `cmake` to find the required packages, using the `-DCMAKE_PREFIX_PATH` options:
 ```

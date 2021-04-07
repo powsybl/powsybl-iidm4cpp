@@ -58,8 +58,10 @@ set(UNIT_TEST_SOURCES
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
-target_compile_definitions(unit-tests-iidm PRIVATE BOOST_TEST_DYN_LINK)
-target_link_libraries(unit-tests-iidm PRIVATE iidm-tests)
+if (BUILD_SHARED_LIBS)
+    target_compile_definitions(unit-tests-iidm PRIVATE BOOST_TEST_DYN_LINK)
+endif ()
+target_link_libraries(unit-tests-iidm PRIVATE iidm-tests${TARGET_POSTFIX})
 
 add_test(NAME iidm COMMAND unit-tests-iidm -- --resources=${CMAKE_SOURCE_DIR}/test/resources)
 

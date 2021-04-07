@@ -8,14 +8,41 @@
 #define BOOST_TEST_MODULE sld
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/ExtensionProviders.hpp>
+#include <powsybl/iidm/extensions/sld/BusbarSectionPositionXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/sld/ConnectablePositionXmlSerializer.hpp>
 #include <powsybl/test/ExtensionFixture.hpp>
 #include <powsybl/test/XmlFixture.hpp>
+
+namespace xml = powsybl::iidm::converter::xml;
+namespace ext = powsybl::iidm::extensions::sld;
 
 namespace powsybl {
 
 namespace test {
 
-BOOST_TEST_GLOBAL_FIXTURE(ExtensionFixture);
+class ExtensionFixtureSld : public ResourceFixture {
+ public:
+  ExtensionFixtureSld();
+
+  ExtensionFixtureSld(const ExtensionFixtureSld&) = default;
+
+  ExtensionFixtureSld(ExtensionFixtureSld&&) = default;
+
+  ~ExtensionFixtureSld() = default;
+
+  ExtensionFixtureSld& operator=(const ExtensionFixtureSld&) = default;
+
+  ExtensionFixtureSld& operator=(ExtensionFixtureSld&&) = default;
+};
+
+ExtensionFixtureSld::ExtensionFixtureSld() {
+  auto& extProvider = powsybl::iidm::ExtensionProviders<xml::ExtensionXmlSerializer>::getInstance();
+  extProvider.registerExtension(stdcxx::make_unique<ext::BusbarSectionPositionXmlSerializer>());
+  extProvider.registerExtension(stdcxx::make_unique<ext::ConnectablePositionXmlSerializer>());
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(ExtensionFixtureSld);
 BOOST_TEST_GLOBAL_FIXTURE(XmlFixture);
 
 }  // namespace test

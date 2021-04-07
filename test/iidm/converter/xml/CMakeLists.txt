@@ -45,31 +45,38 @@ set(UNIT_TEST_SOURCES
     xiidm.cpp
 )
 
-# Shared library
-add_library(${EXT_NAME} SHARED ${EXT_SOURCES})
-set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION} OUTPUT_NAME iidm-${EXT_NAME})
-target_include_directories(${EXT_NAME}
-    INTERFACE
-        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
-target_link_libraries(${EXT_NAME} PUBLIC iidm)
+if (BUILD_SHARED_LIBS)
+    # Shared library
+    add_library(${EXT_NAME} SHARED ${EXT_SOURCES})
+    set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION} OUTPUT_NAME iidm-${EXT_NAME})
+    target_include_directories(${EXT_NAME}
+        INTERFACE
+            $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
+    target_link_libraries(${EXT_NAME} PUBLIC iidm)
+endif ()
 
-# Static library
-add_library(${EXT_NAME}-static STATIC ${EXT_SOURCES})
-set_target_properties(${EXT_NAME}-static PROPERTIES OUTPUT_NAME iidm-${EXT_NAME})
-target_include_directories(${EXT_NAME}-static
-    INTERFACE
-        $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-)
-target_link_libraries(${EXT_NAME}-static PUBLIC iidm)
+if (BUILD_STATIC_LIBS)
+    # Static library
+    add_library(${EXT_NAME}-static STATIC ${EXT_SOURCES})
+    set_target_properties(${EXT_NAME}-static PROPERTIES OUTPUT_NAME iidm-${EXT_NAME})
+    target_include_directories(${EXT_NAME}-static
+        INTERFACE
+            $<INSTALL_INTERFACE:${INSTALL_INCLUDE_DIR}>
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
+    target_link_libraries(${EXT_NAME}-static PUBLIC iidm-static)
+endif ()
+
 
 # Unit tests
 add_executable(unit-tests-iidm-xml ${UNIT_TEST_SOURCES})
-target_compile_definitions(unit-tests-iidm-xml PRIVATE BOOST_TEST_DYN_LINK)
-target_link_libraries(unit-tests-iidm-xml PRIVATE ${EXT_NAME} iidm-tests)
+if (BUILD_SHARED_LIBS)
+    target_compile_definitions(unit-tests-iidm-xml PRIVATE BOOST_TEST_DYN_LINK)
+endif ()
+target_link_libraries(unit-tests-iidm-xml PRIVATE ${EXT_NAME}${TARGET_POSTFIX} iidm-tests${TARGET_POSTFIX})
 
 add_test(NAME iidm-xml COMMAND unit-tests-iidm-xml -- --resources=${CMAKE_SOURCE_DIR}/test/resources)

@@ -6,4 +6,6 @@
 #
 
 add_subdirectory(example1)
-add_subdirectory(example3)
+if (BUILD_STATIC_LIBS)
+    add_subdirectory(example3)
+endif ()

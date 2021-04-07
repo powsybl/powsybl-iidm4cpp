@@ -8,14 +8,44 @@
 #define BOOST_TEST_MODULE entsoe
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/ExtensionProviders.hpp>
+#include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/entsoe/EntsoeAreaXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/entsoe/MergedXnodeXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/entsoe/XnodeXmlSerializer.hpp>
 #include <powsybl/test/ExtensionFixture.hpp>
 #include <powsybl/test/XmlFixture.hpp>
+
+namespace xml = powsybl::iidm::converter::xml;
+namespace ext = powsybl::iidm::extensions::entsoe;
 
 namespace powsybl {
 
 namespace test {
 
-BOOST_TEST_GLOBAL_FIXTURE(ExtensionFixture);
+class ExtensionFixtureEnstsoe : public ResourceFixture {
+ public:
+  ExtensionFixtureEnstsoe();
+
+  ExtensionFixtureEnstsoe(const ExtensionFixtureEnstsoe&) = default;
+
+  ExtensionFixtureEnstsoe(ExtensionFixtureEnstsoe&&) = default;
+
+  ~ExtensionFixtureEnstsoe() = default;
+
+  ExtensionFixtureEnstsoe& operator=(const ExtensionFixtureEnstsoe&) = default;
+
+  ExtensionFixtureEnstsoe& operator=(ExtensionFixtureEnstsoe&&) = default;
+};
+
+ExtensionFixtureEnstsoe::ExtensionFixtureEnstsoe() {
+  auto& extProvider = powsybl::iidm::ExtensionProviders<xml::ExtensionXmlSerializer>::getInstance();
+  extProvider.registerExtension(stdcxx::make_unique<ext::EntsoeAreaXmlSerializer>());
+  extProvider.registerExtension(stdcxx::make_unique<ext::MergedXnodeXmlSerializer>());
+  extProvider.registerExtension(stdcxx::make_unique<ext::XnodeXmlSerializer>());
+}
+
+BOOST_TEST_GLOBAL_FIXTURE(ExtensionFixtureEnstsoe);
 BOOST_TEST_GLOBAL_FIXTURE(XmlFixture);
 
 }  // namespace test
