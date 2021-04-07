@@ -35,7 +35,7 @@ set(UNIT_TEST_SOURCES
     test/VoltagePerReactivePowerControlTest.cpp
 )
 
-if (BUILD_SHARED_EXTENSIONS)
+if (BUILD_SHARED_LIBS)
     # Shared library
     add_library(${EXT_NAME} SHARED ${EXT_SOURCES})
     set_target_properties(${EXT_NAME} PROPERTIES SOVERSION ${IIDM_SOVERSION} VERSION ${IIDM_VERSION} OUTPUT_NAME iidm-${EXT_NAME})
@@ -45,11 +45,7 @@ if (BUILD_SHARED_EXTENSIONS)
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     )
-    if (BUILD_STATIC_LIBS AND NOT BUILD_SHARED_LIBS)
-        target_link_libraries(${EXT_NAME} PUBLIC iidm-static)
-    else ()
-        target_link_libraries(${EXT_NAME} PUBLIC iidm)
-    endif ()
+    target_link_libraries(${EXT_NAME} PUBLIC iidm)
 
     # Installation
     install(TARGETS ${EXT_NAME}
@@ -60,7 +56,7 @@ if (BUILD_SHARED_EXTENSIONS)
     )
 endif ()
 
-if (BUILD_STATIC_EXTENSIONS)
+if (BUILD_STATIC_LIBS)
     # Static library
     add_library(${EXT_NAME}-static STATIC ${EXT_SOURCES})
     set_target_properties(${EXT_NAME}-static PROPERTIES OUTPUT_NAME iidm-${EXT_NAME})
@@ -84,8 +80,10 @@ endif ()
 if (BUILD_TESTS)
     # Unit tests
     add_executable(unit-tests-${EXT_NAME} ${UNIT_TEST_SOURCES})
-    target_compile_definitions(unit-tests-${EXT_NAME} PRIVATE BOOST_TEST_DYN_LINK)
-    target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME} iidm-tests)
+    if (BUILD_SHARED_LIBS)
+        target_compile_definitions(unit-tests-${EXT_NAME} PRIVATE BOOST_TEST_DYN_LINK)
+    endif ()
+    target_link_libraries(unit-tests-${EXT_NAME} PRIVATE ${EXT_NAME}${TARGET_POSTFIX} iidm-tests${TARGET_POSTFIX})
 
     add_test(NAME ${EXT_NAME} COMMAND unit-tests-${EXT_NAME} -- --resources=${CMAKE_CURRENT_SOURCE_DIR}/resources)
 endif()

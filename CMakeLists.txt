@@ -4,13 +4,14 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 #
-cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.15 FATAL_ERROR)
 
-if(${CMAKE_VERSION} VERSION_GREATER "3.15.0")
-    if(POLICY CMP0091)
+if (${CMAKE_VERSION} VERSION_GREATER "3.15.0")
+    # Policy to activate a way to choose MSVC runtime. https://cmake.org/cmake/help/v3.15/policy/CMP0091.html
+    if (POLICY CMP0091)
         cmake_policy(SET CMP0091 NEW)
-    endif()
-endif()
+    endif ()
+endif ()
 
 project(powsybl-iidm4cpp)
 
@@ -31,23 +32,18 @@ option(BUILD_EXAMPLES "Enable/Disable the compilation of the examples." OFF)
 option(BUILD_TESTS "Enable/Disable the compilation of unit tests." ON)
 option(BUILD_TOOLS "Enable/Disable the compilation of tools." ON)
 option(BUILD_SHARED_LIBS "Enable/disable build of shared libraries." ON)
-option(BUILD_SHARED_EXTENSIONS "Enable/disable build of shared extensions." ON)
 option(BUILD_STATIC_LIBS "Enable/disable build of static libraries." ON)
-option(BUILD_STATIC_EXTENSIONS "Enable/disable build of static extensions." ON)
-option(MSVC_STATIC_RUNTIME_LIBRARY "Enable/disable static runtime on Windows." OFF)
 option(BOOST_STATIC_LIBS "Use static version of boost libraries." OFF)
+option(MSVC_STATIC_RUNTIME_LIBRARY "Enable/disable static runtime on Windows." OFF)
 
+# Handle options compatibility
 if (BOOST_STATIC_LIBS AND BUILD_SHARED_LIBS)
-    set(BOOST_STATIC_LIBS OFF)
-    message(WARNING "BOOST_STATIC_LIBS disabled if you want to build shared libraries. Use this option with BUILD_SHARED_LIBS=OFF")
+    message(FATAL_ERROR "BOOST_STATIC_LIBS and BUILD_SHARED_LIBS are ON and should not be used together.
+     BOOST_STATIC_LIBS should only be used with BUILD_STATIC_LIBS=ON and BUILD_SHARED_LIBS=OFF.")
 endif ()
 
-if (BUILD_TESTS AND NOT BUILD_SHARED_LIBS)
-    message(FATAL_ERROR "BUILD_TESTS is ON but BUILD_SHARED_LIBS is OFF, you should turn ON BUILD_SHARED_LIBS or turn off BUILD_TESTS.")
-endif ()
-
-if (BUILD_STATIC_EXTENSIONS AND NOT BUILD_STATIC_LIBS)
-    message(FATAL_ERROR "BUILD_STATIC_EXTENSIONS is ON but BUILD_STATIC_LIBS is OFF, you should turn ON BUILD_STATIC_LIBS or turn off BUILD_STATIC_EXTENSIONS.")
+if (BUILD_STATIC_LIBS AND NOT BUILD_SHARED_LIBS)
+    set(TARGET_POSTFIX "-static")
 endif ()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -72,17 +68,8 @@ elseif (MSVC)
     endif ()
 endif ()
 
-if (BOOST_STATIC_LIBS)
-    set(Boost_USE_STATIC_LIBS ON)
-    if (MSVC_STATIC_RUNTIME_LIBRARY)
-        set(Boost_USE_STATIC_RUNTIME ON)
-    else ()
-        set(Boost_USE_STATIC_RUNTIME OFF)
-    endif ()
-else ()
-    set(Boost_USE_STATIC_LIBS OFF)
-    set(Boost_USE_STATIC_RUNTIME OFF)
-endif ()
+set(Boost_USE_STATIC_LIBS ${BOOST_STATIC_LIBS})
+set(Boost_USE_STATIC_RUNTIME ${MSVC_STATIC_RUNTIME_LIBRARY})
 if (BUILD_TESTS)
     find_package(Boost 1.65 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
 else ()
