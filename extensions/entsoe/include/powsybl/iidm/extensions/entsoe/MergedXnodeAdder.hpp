@@ -29,11 +29,6 @@ public:
     explicit MergedXnodeAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~MergedXnodeAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     MergedXnodeAdder(const MergedXnodeAdder&) = default;
@@ -42,6 +37,11 @@ public:
      * Move constructor
      */
     MergedXnodeAdder(MergedXnodeAdder&&) noexcept = default;
+
+    /**
+     * Destructor
+     */
+    ~MergedXnodeAdder() noexcept override = default;
 
     /**
      * Copy assignment operator

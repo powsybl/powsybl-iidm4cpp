@@ -28,11 +28,6 @@ public:
     explicit EntsoeAreaAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~EntsoeAreaAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     EntsoeAreaAdder(const EntsoeAreaAdder&) = default;
@@ -41,6 +36,11 @@ public:
      * Move constructor
      */
     EntsoeAreaAdder(EntsoeAreaAdder&&) = default;
+
+    /**
+     * Destructor
+     */
+    ~EntsoeAreaAdder() noexcept override = default;
 
     /**
      * Copy assignment operator

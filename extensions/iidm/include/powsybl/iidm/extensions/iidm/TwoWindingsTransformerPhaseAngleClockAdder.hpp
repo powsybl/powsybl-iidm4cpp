@@ -24,11 +24,6 @@ public:
     explicit TwoWindingsTransformerPhaseAngleClockAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~TwoWindingsTransformerPhaseAngleClockAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     TwoWindingsTransformerPhaseAngleClockAdder(const TwoWindingsTransformerPhaseAngleClockAdder&) = default;
@@ -37,6 +32,11 @@ public:
      * Move constructor
      */
     TwoWindingsTransformerPhaseAngleClockAdder(TwoWindingsTransformerPhaseAngleClockAdder&&) = default;
+
+    /**
+     * Destructor
+     */
+    ~TwoWindingsTransformerPhaseAngleClockAdder() noexcept override = default;
 
     /**
      * Copy assignment operator
