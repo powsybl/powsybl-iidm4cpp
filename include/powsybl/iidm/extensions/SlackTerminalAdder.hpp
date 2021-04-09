@@ -27,11 +27,6 @@ public:
     explicit SlackTerminalAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~SlackTerminalAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     SlackTerminalAdder(const SlackTerminalAdder&) = default;
@@ -40,6 +35,11 @@ public:
      * Move constructor
      */
     SlackTerminalAdder(SlackTerminalAdder&&) = default;
+
+    /**
+     * Destructor
+     */
+    ~SlackTerminalAdder() noexcept override = default;
 
     /**
      * Copy assignment operator
