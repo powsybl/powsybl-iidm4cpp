@@ -134,6 +134,7 @@ enum class Country : unsigned int {
     KI,
     KP,
     KR,
+    XK,
     KW,
     KG,
     LA,
