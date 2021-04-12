@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_THREEWINDINGSTRANSFORMERLEG_HPP
 #define POWSYBL_IIDM_THREEWINDINGSTRANSFORMERLEG_HPP
 
-#include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/iidm/FlowsLimitsHolder.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
 
@@ -16,15 +16,45 @@ namespace powsybl {
 
 namespace iidm {
 
+class ActivePowerLimits;
+class ActivePowerLimitsAdder;
+class ApparentPowerLimits;
+class ApparentPowerLimitsAdder;
+class CurrentLimits;
+class CurrentLimitsAdder;
+class OperationalLimitsHolder;
 class Terminal;
 class ThreeWindingsTransformer;
 class ThreeWindingsTransformerAdder;
 
 namespace three_windings_transformer {
 
-class Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
+class Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder, public FlowsLimitsHolder {
 public:  // Validable
     std::string getMessageHeader() const override;
+
+public:  // FlowsLimitsHolder
+    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const override;
+
+    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits() override;
+
+    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits() const override;
+
+    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits() override;
+
+    stdcxx::CReference<CurrentLimits> getCurrentLimits() const override;
+
+    stdcxx::Reference<CurrentLimits> getCurrentLimits() override;
+
+    stdcxx::const_range<OperationalLimits> getOperationalLimits() const override;
+
+    stdcxx::range<OperationalLimits> getOperationalLimits() override;
+
+    ActivePowerLimitsAdder newActivePowerLimits() override;
+
+    ApparentPowerLimitsAdder newApparentPowerLimits() override;
+
+    CurrentLimitsAdder newCurrentLimits() override;
 
 public:  // TapChangerHolder
     const Network& getNetwork() const override;
@@ -64,10 +94,6 @@ public:
 
     double getB() const;
 
-    stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
-
-    stdcxx::Reference<CurrentLimits> getCurrentLimits();
-
     double getG() const;
 
     double getR() const;
@@ -81,8 +107,6 @@ public:
     Terminal& getTerminal();
 
     double getX() const;
-
-    CurrentLimitsAdder<const std::nullptr_t, Leg> newCurrentLimits();
 
     Leg& setB(double b);
 
@@ -110,16 +134,14 @@ private:  // PhaseTapChangerHolder
 private:
     const std::string& getTypeDescription() const;
 
-    void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
-
     Leg& setTransformer(ThreeWindingsTransformer& transformer);
-
-    friend class CurrentLimitsAdder<const std::nullptr_t, Leg>;
 
     friend class iidm::ThreeWindingsTransformer;
 
 private:
     stdcxx::Reference<ThreeWindingsTransformer> m_transformer;
+
+    std::unique_ptr<OperationalLimitsHolder> m_operationalLimitsHolder;
 
     unsigned long m_legNumber;
 
@@ -134,8 +156,6 @@ private:
     double m_ratedU;
 
     double m_ratedS;
-
-    std::unique_ptr<CurrentLimits> m_limits;
 
     std::unique_ptr<PhaseTapChanger> m_phaseTapChanger;
 

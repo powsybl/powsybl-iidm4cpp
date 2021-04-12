@@ -9,81 +9,32 @@
 #define POWSYBL_IIDM_CURRENTLIMITSADDER_HPP
 
 #include <powsybl/iidm/CurrentLimits.hpp>
-#include <powsybl/stdcxx/math.hpp>
-#include <powsybl/stdcxx/optional.hpp>
+#include <powsybl/iidm/LoadingLimitsAdder.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-template <typename S, typename O>
-class CurrentLimitsAdder {
-public:
-    class TemporaryLimitAdder {
-    public:
-        ~TemporaryLimitAdder() noexcept = default;
-
-        CurrentLimitsAdder<S, O>& endTemporaryLimit();
-
-        TemporaryLimitAdder& setAcceptableDuration(unsigned long duration);
-
-        TemporaryLimitAdder& setFictitious(bool fictitious);
-
-        TemporaryLimitAdder& setName(const std::string& name);
-
-        TemporaryLimitAdder& setValue(double value);
-
-    private:
-        explicit TemporaryLimitAdder(CurrentLimitsAdder<S, O>& parent);
-
-        friend class CurrentLimitsAdder;
-
-    private:
-        CurrentLimitsAdder<S, O>& m_parent;
-
-        std::string m_name;
-
-        double m_value{stdcxx::nan()};
-
-        stdcxx::optional<unsigned long> m_acceptableDuration;
-
-        bool m_fictitious{false};
-    };
+class CurrentLimitsAdder : public LoadingLimitsAdder<CurrentLimits, CurrentLimitsAdder> {
+public:  // OperationalLimitsAdder
+    CurrentLimits& add() override;
 
 public:
-    CurrentLimitsAdder(const S& side, O& owner);
+    explicit CurrentLimitsAdder(OperationalLimitsHolder& owner);
 
-    ~CurrentLimitsAdder() noexcept = default;
+    CurrentLimitsAdder(const CurrentLimitsAdder&) = default;
 
-    CurrentLimits& add();
+    CurrentLimitsAdder(CurrentLimitsAdder&&) noexcept = default;
 
-    TemporaryLimitAdder beginTemporaryLimit();
+    ~CurrentLimitsAdder() noexcept override = default;
 
-    bool hasTemporaryLimits() const;
+    CurrentLimitsAdder& operator=(const CurrentLimitsAdder&) = delete;
 
-    CurrentLimitsAdder<S, O>& setPermanentLimit(double limit);
-
-private:
-    CurrentLimitsAdder<S, O>& addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious);
-
-    void checkTemporaryLimits() const;
-
-    const O& getOwner() const;
-
-private:
-    S m_side;
-
-    O& m_owner;
-
-    double m_permanentLimit = stdcxx::nan();
-
-    CurrentLimits::TemporaryLimits m_temporaryLimits;
+    CurrentLimitsAdder& operator=(CurrentLimitsAdder&&) noexcept = delete;
 };
 
 }  // namespace iidm
 
 }  // namespace powsybl
-
-#include <powsybl/iidm/CurrentLimitsAdder.hxx>
 
 #endif  // POWSYBL_IIDM_CURRENTLIMITSADDER_HPP

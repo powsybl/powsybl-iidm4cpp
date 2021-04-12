@@ -7,6 +7,13 @@
 
 #include <powsybl/iidm/ThreeWindingsTransformerLeg.hpp>
 
+#include <powsybl/iidm/ActivePowerLimits.hpp>
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimits.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
+#include <powsybl/iidm/CurrentLimits.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/iidm/OperationalLimitsHolder.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
@@ -30,16 +37,40 @@ Leg::Leg(unsigned long legNumber, double r, double x, double g, double b, double
     m_ratedS(checkRatedS(*this, ratedS)) {
 }
 
-double Leg::getB() const {
-    return m_b;
+stdcxx::CReference<ActivePowerLimits> Leg::getActivePowerLimits() const {
+    return stdcxx::cref(m_operationalLimitsHolder->getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER));
+}
+
+stdcxx::Reference<ActivePowerLimits> Leg::getActivePowerLimits() {
+    return m_operationalLimitsHolder->getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
+}
+
+stdcxx::CReference<ApparentPowerLimits> Leg::getApparentPowerLimits() const {
+    return stdcxx::cref(m_operationalLimitsHolder->getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER));
+}
+
+stdcxx::Reference<ApparentPowerLimits> Leg::getApparentPowerLimits() {
+    return m_operationalLimitsHolder->getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
 }
 
 stdcxx::CReference<CurrentLimits> Leg::getCurrentLimits() const {
-    return stdcxx::cref(m_limits);
+    return stdcxx::cref(m_operationalLimitsHolder->getOperationalLimits<CurrentLimits>(LimitType::CURRENT));
 }
 
 stdcxx::Reference<CurrentLimits> Leg::getCurrentLimits() {
-    return stdcxx::ref<CurrentLimits>(m_limits);
+    return m_operationalLimitsHolder->getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
+}
+
+stdcxx::const_range<OperationalLimits> Leg::getOperationalLimits() const {
+    return m_operationalLimitsHolder->getOperationalLimits();
+}
+
+stdcxx::range<OperationalLimits> Leg::getOperationalLimits() {
+    return m_operationalLimitsHolder->getOperationalLimits();
+}
+
+double Leg::getB() const {
+    return m_b;
 }
 
 double Leg::getG() const {
@@ -146,17 +177,21 @@ bool Leg::hasRatioTapChanger() const {
     return static_cast<bool>(m_ratioTapChanger);
 }
 
-CurrentLimitsAdder<const std::nullptr_t, Leg> Leg::newCurrentLimits() {
-    return CurrentLimitsAdder<const std::nullptr_t, Leg>(nullptr, *this);
+ActivePowerLimitsAdder Leg::newActivePowerLimits() {
+    return m_operationalLimitsHolder->newActivePowerLimits();
+}
+
+ApparentPowerLimitsAdder Leg::newApparentPowerLimits() {
+    return m_operationalLimitsHolder->newApparentPowerLimits();
+}
+
+CurrentLimitsAdder Leg::newCurrentLimits() {
+    return m_operationalLimitsHolder->newCurrentLimits();
 }
 
 Leg& Leg::setB(double b) {
     m_b = checkB(*this, b);
     return *this;
-}
-
-void Leg::setCurrentLimits(std::nullptr_t /*side*/, std::unique_ptr<CurrentLimits> limits) {
-    m_limits = std::move(limits);
 }
 
 Leg& Leg::setG(double g) {
@@ -202,6 +237,7 @@ void Leg::setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger)
 
 Leg& Leg::setTransformer(ThreeWindingsTransformer& transformer) {
     m_transformer = transformer;
+    m_operationalLimitsHolder = stdcxx::make_unique<OperationalLimitsHolder>(m_transformer.get(), stdcxx::format("limits%1%", m_legNumber));
     return *this;
 }
 

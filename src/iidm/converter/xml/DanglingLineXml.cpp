@@ -7,6 +7,10 @@
 
 #include "DanglingLineXml.hpp"
 
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
+
 #include "ReactiveLimitsXml.hpp"
 
 namespace powsybl {
@@ -72,9 +76,18 @@ DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adde
 
 void DanglingLineXml::readSubElements(DanglingLine& dl, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(DANGLING_LINE, [this, &dl, &context]() {
-        if (context.getReader().getLocalName() == CURRENT_LIMITS) {
-            CurrentLimitsAdder<std::nullptr_t, DanglingLine> adder = dl.newCurrentLimits();
-            readCurrentLimits(adder, context.getReader());
+        if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &dl]() {
+                readActivePowerLimits([&dl]() { return dl.newActivePowerLimits(); }, context.getReader());
+            });
+        } else if (context.getReader().getLocalName() == APPARENT_POWER_LIMITS) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), APPARENT_POWER_LIMITS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &dl]() {
+                readApparentPowerLimits([&dl]() { return dl.newApparentPowerLimits(); }, context.getReader());
+            });
+        } else if (context.getReader().getLocalName() == CURRENT_LIMITS) {
+            readCurrentLimits([&dl]() { return dl.newCurrentLimits(); }, context.getReader());
         } else if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
                    context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
             IidmXmlUtil::assertMinimumVersion(stdcxx::format("%1%.generation", DANGLING_LINE), "reactiveLimits", ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
@@ -127,8 +140,16 @@ void DanglingLineXml::writeSubElements(const DanglingLine& dl, const VoltageLeve
     if (dl.getGeneration()) {
         IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &dl]() { ReactiveLimitsXml::getInstance().write(dl.getGeneration(), context); });
     }
+    if (dl.getActivePowerLimits()) {
+        IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&dl, &context]() { writeActivePowerLimits(dl.getActivePowerLimits().get(), context.getWriter(), context.getVersion()); });
+    }
+    if (dl.getApparentPowerLimits()) {
+        IidmXmlUtil::assertMinimumVersion(getRootElementName(), APPARENT_POWER_LIMITS, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&dl, &context]() { writeApparentPowerLimits(dl.getApparentPowerLimits().get(), context.getWriter(), context.getVersion()); });
+    }
     if (dl.getCurrentLimits()) {
-        writeCurrentLimits(dl.getCurrentLimits(), context.getWriter(), context.getVersion());
+        writeCurrentLimits(dl.getCurrentLimits().get(), context.getWriter(), context.getVersion());
     }
 }
 

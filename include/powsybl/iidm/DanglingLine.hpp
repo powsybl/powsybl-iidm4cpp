@@ -9,16 +9,24 @@
 #define POWSYBL_IIDM_DANGLINGLINE_HPP
 
 #include <powsybl/iidm/Boundary.hpp>
-#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/DanglingLineGeneration.hpp>
+#include <powsybl/iidm/FlowsLimitsHolder.hpp>
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/OperationalLimitsHolder.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class DanglingLine : public Injection {
+class ActivePowerLimits;
+class ActivePowerLimitsAdder;
+class ApparentPowerLimits;
+class ApparentPowerLimitsAdder;
+class CurrentLimits;
+class CurrentLimitsAdder;
+
+class DanglingLine : public Injection, public FlowsLimitsHolder {
 public:
     using Generation = dangling_line::Generation;
 
@@ -29,21 +37,33 @@ public:
 
     ~DanglingLine() noexcept override = default;
 
+    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const override;
+
+    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits() override;
+
+    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits() const override;
+
+    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits() override;
+
     double getB() const;
 
     const Boundary& getBoundary() const;
 
     Boundary& getBoundary();
 
-    stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
+    stdcxx::CReference<CurrentLimits> getCurrentLimits() const override;
 
-    stdcxx::Reference<CurrentLimits> getCurrentLimits();
+    stdcxx::Reference<CurrentLimits> getCurrentLimits() override;
 
     double getG() const;
 
     stdcxx::CReference<Generation> getGeneration() const;
 
     stdcxx::Reference<Generation> getGeneration();
+
+    stdcxx::const_range<OperationalLimits> getOperationalLimits() const override;
+
+    stdcxx::range<OperationalLimits> getOperationalLimits() override;
 
     double getP0() const;
 
@@ -55,7 +75,11 @@ public:
 
     double getX() const;
 
-    CurrentLimitsAdder<std::nullptr_t, DanglingLine> newCurrentLimits();
+    ActivePowerLimitsAdder newActivePowerLimits() override;
+
+    ApparentPowerLimitsAdder newApparentPowerLimits() override;
+
+    CurrentLimitsAdder newCurrentLimits() override;
 
     DanglingLine& setB(double b);
 
@@ -80,12 +104,6 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
-
-private:
-    friend class CurrentLimitsAdder<std::nullptr_t, DanglingLine>;
-
-private:
     double m_b;
 
     double m_g;
@@ -102,7 +120,7 @@ private:
 
     std::unique_ptr<Generation> m_generation;
 
-    std::unique_ptr<CurrentLimits> m_limits;
+    OperationalLimitsHolder m_operationalLimitsHolder;
 
     std::unique_ptr<Boundary> m_boundary;
 };

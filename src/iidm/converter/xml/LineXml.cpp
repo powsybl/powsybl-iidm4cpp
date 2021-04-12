@@ -7,6 +7,10 @@
 
 #include "LineXml.hpp"
 
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -50,12 +54,22 @@ Line& LineXml::readRootElementAttributes(LineAdder& adder, NetworkXmlReaderConte
 
 void LineXml::readSubElements(Line& line, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(LINE, [this, &line, &context]() {
-        if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
-            CurrentLimitsAdder<Branch::Side, Branch> adder = line.newCurrentLimits1();
-            readCurrentLimits(adder, context.getReader(), 1);
+        if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_1) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &line]() { readActivePowerLimits([&line]() { return line.newActivePowerLimits1(); }, context.getReader(), 1); });
+        } else if (context.getReader().getLocalName() == APPARENT_POWER_LIMITS_1) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), APPARENT_POWER_LIMITS_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &line]() { readApparentPowerLimits([&line]() { return line.newApparentPowerLimits1(); }, context.getReader(), 1); });
+        } else if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
+            readCurrentLimits([&line]() { return line.newCurrentLimits1(); }, context.getReader(), 1);
+        } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_2) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &line]() { readActivePowerLimits([&line]() { return line.newActivePowerLimits2(); }, context.getReader(), 2); });
+        } else if (context.getReader().getLocalName() == APPARENT_POWER_LIMITS_2) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), APPARENT_POWER_LIMITS_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &line]() { readApparentPowerLimits([&line]() { return line.newApparentPowerLimits2(); }, context.getReader(), 2); });
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
-            CurrentLimitsAdder<Branch::Side, Branch> adder = line.newCurrentLimits2();
-            readCurrentLimits(adder, context.getReader(), 2);
+            readCurrentLimits([&line]() { return line.newCurrentLimits2(); }, context.getReader(), 2);
         } else {
             AbstractConnectableXml::readSubElements(line, context);
         }
@@ -78,8 +92,24 @@ void LineXml::writeRootElementAttributes(const Line& line, const Network& /*netw
 }
 
 void LineXml::writeSubElements(const Line& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
+    if (line.getActivePowerLimits1()) {
+        IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(ACTIVE_POWER_LIMITS.c_str(), 1), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&line, &context]() { writeActivePowerLimits(line.getActivePowerLimits1(), context.getWriter(), context.getVersion(), 1); });
+    }
+    if (line.getApparentPowerLimits1()) {
+        IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(APPARENT_POWER_LIMITS.c_str(), 1), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&line, &context]() { writeApparentPowerLimits(line.getApparentPowerLimits1(), context.getWriter(), context.getVersion(), 1); });
+    }
     if (line.getCurrentLimits1()) {
         writeCurrentLimits(line.getCurrentLimits1(), context.getWriter(), context.getVersion(), 1);
+    }
+    if (line.getActivePowerLimits2()) {
+        IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(ACTIVE_POWER_LIMITS.c_str(), 2), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&line, &context]() { writeActivePowerLimits(line.getActivePowerLimits2(), context.getWriter(), context.getVersion(), 2); });
+    }
+    if (line.getApparentPowerLimits2()) {
+        IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(APPARENT_POWER_LIMITS.c_str(), 2), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&line, &context]() { writeApparentPowerLimits(line.getApparentPowerLimits2(), context.getWriter(), context.getVersion(), 2); });
     }
     if (line.getCurrentLimits2()) {
         writeCurrentLimits(line.getCurrentLimits2(), context.getWriter(), context.getVersion(), 2);

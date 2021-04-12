@@ -27,6 +27,8 @@ class XmlStreamWriter;
 
 namespace iidm {
 
+class ActivePowerLimits;
+class ApparentPowerLimits;
 class Bus;
 class CurrentLimits;
 class Terminal;
@@ -38,8 +40,15 @@ namespace xml {
 template <typename Added, typename Adder, typename Parent>
 class AbstractConnectableXml : public AbstractIdentifiableXml<Added, Adder, Parent> {
 public:
-    template <typename S, typename O>
-    static void readCurrentLimits(CurrentLimitsAdder<S, O>& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readActivePowerLimits(const std::function<ActivePowerLimitsAdder()>& activePowerLimitsOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void readApparentPowerLimits(const std::function<ApparentPowerLimitsAdder()>& apparentPowerLimitsOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void readCurrentLimits(const std::function<CurrentLimitsAdder()>& currentLimitOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void writeActivePowerLimits(const ActivePowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void writeApparentPowerLimits(const ApparentPowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
@@ -62,7 +71,13 @@ protected:
     ~AbstractConnectableXml() noexcept override = default;
 
 private:
+    template <typename LimitsAdder>
+    static void readLoadingLimits(const std::string& type, const std::function<LimitsAdder()>& limitOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
     static void writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    template <typename Limits>
+    static void writeLoadingLimits(const Limits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const std::string& type, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 };
