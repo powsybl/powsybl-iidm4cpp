@@ -45,13 +45,13 @@ Extension& MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml
 
 void MergedXnodeXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& mergedXnode = safeCast<MergedXnode>(extension);
-    context.getExtensionsWriter().writeAttribute("rdp", mergedXnode.getRdp());
-    context.getExtensionsWriter().writeAttribute("xdp", mergedXnode.getXdp());
-    context.getExtensionsWriter().writeAttribute("xnodeP1", mergedXnode.getXnodeP1());
-    context.getExtensionsWriter().writeAttribute("xnodeQ1", mergedXnode.getXnodeQ1());
-    context.getExtensionsWriter().writeAttribute("xnodeP2", mergedXnode.getXnodeP2());
-    context.getExtensionsWriter().writeAttribute("xnodeQ2", mergedXnode.getXnodeQ2());
-    context.getExtensionsWriter().writeAttribute("code", mergedXnode.getCode());
+    context.getWriter().writeAttribute("rdp", mergedXnode.getRdp());
+    context.getWriter().writeAttribute("xdp", mergedXnode.getXdp());
+    context.getWriter().writeAttribute("xnodeP1", mergedXnode.getXnodeP1());
+    context.getWriter().writeAttribute("xnodeQ1", mergedXnode.getXnodeQ1());
+    context.getWriter().writeAttribute("xnodeP2", mergedXnode.getXnodeP2());
+    context.getWriter().writeAttribute("xnodeQ2", mergedXnode.getXnodeQ2());
+    context.getWriter().writeAttribute("code", mergedXnode.getCode());
 }
 
 }  // namespace entsoe

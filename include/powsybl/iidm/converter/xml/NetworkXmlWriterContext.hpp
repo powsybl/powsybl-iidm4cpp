@@ -51,8 +51,6 @@ public:
 
     const std::string& getExtensionVersion(const std::string& extensionName) const;
 
-    powsybl::xml::XmlStreamWriter& getExtensionsWriter();
-
     const BusFilter& getFilter() const;
 
     const ExportOptions& getOptions() const;
@@ -63,12 +61,8 @@ public:
 
     bool isExportedEquipment(const std::string& id);
 
-    void setExtensionsWriter(powsybl::xml::XmlStreamWriter& extensionsWriter);
-
 private:
     powsybl::xml::XmlStreamWriter& m_writer;
-
-    std::reference_wrapper<powsybl::xml::XmlStreamWriter> m_extensionsWriter;
 
     std::unique_ptr<Anonymizer> m_anonymizer;
 
