@@ -45,8 +45,8 @@ Extension& ThreeWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable
     void ThreeWindingsTransformerPhaseAngleClockXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
         const auto& ext = safeCast<ThreeWindingsTransformerPhaseAngleClock>(extension);
 
-        context.getExtensionsWriter().writeOptionalAttribute("phaseAngleClockLeg2", ext.getPhaseAngleClockLeg2(), 0UL);
-        context.getExtensionsWriter().writeOptionalAttribute("phaseAngleClockLeg3", ext.getPhaseAngleClockLeg3(), 0UL);
+        context.getWriter().writeOptionalAttribute("phaseAngleClockLeg2", ext.getPhaseAngleClockLeg2(), 0UL);
+        context.getWriter().writeOptionalAttribute("phaseAngleClockLeg3", ext.getPhaseAngleClockLeg3(), 0UL);
     }
 
 }  // namespace iidm

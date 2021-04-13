@@ -38,7 +38,7 @@ Extension& XnodeXmlSerializer::read(Extendable& extendable, converter::xml::Netw
 
 void XnodeXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& xnode = safeCast<Xnode>(extension);
-    context.getExtensionsWriter().writeAttribute("code", xnode.getCode());
+    context.getWriter().writeAttribute("code", xnode.getCode());
 }
 
 }  // namespace entsoe

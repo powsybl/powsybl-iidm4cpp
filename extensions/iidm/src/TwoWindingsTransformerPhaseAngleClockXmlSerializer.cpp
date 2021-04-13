@@ -42,7 +42,7 @@ Extension& TwoWindingsTransformerPhaseAngleClockXmlSerializer::read(Extendable& 
 void TwoWindingsTransformerPhaseAngleClockXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& ext = safeCast<TwoWindingsTransformerPhaseAngleClock>(extension);
 
-    context.getExtensionsWriter().writeOptionalAttribute("phaseAngleClock", ext.getPhaseAngleClock(), 0UL);
+    context.getWriter().writeOptionalAttribute("phaseAngleClock", ext.getPhaseAngleClock(), 0UL);
 }
 
 }  // namespace iidm

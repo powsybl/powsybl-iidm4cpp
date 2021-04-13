@@ -82,11 +82,11 @@ void ConnectablePositionXmlSerializer::writePosition(const ConnectablePosition::
     if (index) {
         elementName += std::to_string(*index);
     }
-    context.getExtensionsWriter().writeStartElement(getNamespacePrefix(), elementName);
-    context.getExtensionsWriter().writeAttribute("name", feeder.getName());
-    context.getExtensionsWriter().writeAttribute("order", feeder.getOrder());
-    context.getExtensionsWriter().writeAttribute("direction", Enum::toString(feeder.getDirection()));
-    context.getExtensionsWriter().writeEndElement();
+    context.getWriter().writeStartElement(getNamespacePrefix(), elementName);
+    context.getWriter().writeAttribute("name", feeder.getName());
+    context.getWriter().writeAttribute("order", feeder.getOrder());
+    context.getWriter().writeAttribute("direction", Enum::toString(feeder.getDirection()));
+    context.getWriter().writeEndElement();
 }
 
 }  // namespace sld

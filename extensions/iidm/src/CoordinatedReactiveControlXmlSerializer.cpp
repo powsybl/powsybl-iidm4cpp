@@ -43,7 +43,7 @@ Extension& CoordinatedReactiveControlXmlSerializer::read(Extendable& extendable,
 
 void CoordinatedReactiveControlXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& crc = safeCast<CoordinatedReactiveControl>(extension);
-    context.getExtensionsWriter().writeAttribute("qPercent", crc.getQPercent());
+    context.getWriter().writeAttribute("qPercent", crc.getQPercent());
 }
 
 }  // namespace iidm

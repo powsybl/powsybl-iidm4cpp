@@ -59,10 +59,10 @@ Extension& LoadDetailXmlSerializer::read(Extendable& extendable, converter::xml:
 
 void LoadDetailXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& detail = safeCast<iidm::extensions::LoadDetail>(extension);
-    context.getExtensionsWriter().writeAttribute("fixedActivePower", detail.getFixedActivePower());
-    context.getExtensionsWriter().writeAttribute("fixedReactivePower", detail.getFixedReactivePower());
-    context.getExtensionsWriter().writeAttribute("variableActivePower", detail.getVariableActivePower());
-    context.getExtensionsWriter().writeAttribute("variableReactivePower", detail.getVariableReactivePower());
+    context.getWriter().writeAttribute("fixedActivePower", detail.getFixedActivePower());
+    context.getWriter().writeAttribute("fixedReactivePower", detail.getFixedReactivePower());
+    context.getWriter().writeAttribute("variableActivePower", detail.getVariableActivePower());
+    context.getWriter().writeAttribute("variableReactivePower", detail.getVariableReactivePower());
 }
 
 }  // namespace extensions

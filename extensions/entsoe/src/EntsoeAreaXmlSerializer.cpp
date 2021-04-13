@@ -43,7 +43,7 @@ Extension& EntsoeAreaXmlSerializer::read(Extendable& extendable, converter::xml:
 
 void EntsoeAreaXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& entsoeArea = safeCast<EntsoeArea>(extension);
-    context.getExtensionsWriter().writeCharacters(Enum::toString<EntsoeGeographicalCode>(entsoeArea.getCode()));
+    context.getWriter().writeCharacters(Enum::toString<EntsoeGeographicalCode>(entsoeArea.getCode()));
 }
 
 }  // namespace entsoe
