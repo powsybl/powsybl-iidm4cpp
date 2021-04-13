@@ -163,7 +163,7 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
 }
 
 void writeExtension(const Extension& extension, NetworkXmlWriterContext& context) {
-    powsybl::xml::XmlStreamWriter& writer = context.getExtensionsWriter();
+    powsybl::xml::XmlStreamWriter& writer = context.getWriter();
     stdcxx::CReference<ExtensionXmlSerializer> serializer = getExtensionSerializer(context.getOptions(), extension.getName());
     if (!serializer) {
         throw AssertionError(stdcxx::format("Extension XML Serializer of %1% should not be null", extension.getName()));
@@ -184,14 +184,14 @@ void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
         if (!context.isExportedEquipment(identifiable.getId()) || boost::empty(identifiable.getExtensions()) || !context.getOptions().hasAtLeastOneExtension(identifiable.getExtensions())) {
             continue;
         }
-        context.getExtensionsWriter().writeStartElement(context.getVersion().getPrefix(), EXTENSION);
-        context.getExtensionsWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
+        context.getWriter().writeStartElement(context.getVersion().getPrefix(), EXTENSION);
+        context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
         for (const auto& extension : identifiable.getExtensions()) {
             if (context.getOptions().withExtension(extension.getName())) {
                 writeExtension(extension, context);
             }
         }
-        context.getExtensionsWriter().writeEndElement();
+        context.getWriter().writeEndElement();
     }
 }
 

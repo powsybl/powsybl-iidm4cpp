@@ -39,8 +39,8 @@ Extension& BusbarSectionPositionXmlSerializer::read(Extendable& extendable, conv
 
 void BusbarSectionPositionXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& busbarSectionPosition = safeCast<BusbarSectionPosition>(extension);
-    context.getExtensionsWriter().writeAttribute("busbarIndex", busbarSectionPosition.getBusbarIndex());
-    context.getExtensionsWriter().writeAttribute("sectionIndex", busbarSectionPosition.getSectionIndex());
+    context.getWriter().writeAttribute("busbarIndex", busbarSectionPosition.getBusbarIndex());
+    context.getWriter().writeAttribute("sectionIndex", busbarSectionPosition.getSectionIndex());
 }
 
 }  // namespace sld
