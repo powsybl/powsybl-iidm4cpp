@@ -19,12 +19,7 @@ namespace iidm {
 
 class Bus;
 class Terminal;
-
-namespace tie_line {
-
-class HalfLine;
-
-}  // namespace tie_line
+class TieLine;
 
 namespace half_line {
 
@@ -32,14 +27,27 @@ class Boundary : public iidm::Boundary {
 public:  // iidm::Boundary
     double getAngle() const override;
 
+    const Connectable& getConnectable() const override;
+
+    Connectable& getConnectable() override;
+
     double getP() const override;
 
     double getQ() const override;
 
+    stdcxx::optional<Branch::Side> getSide() const override;
+
     double getV() const override;
 
+    const VoltageLevel& getVoltageLevel() const override;
+
+    VoltageLevel& getVoltageLevel() override;
+
 public:
-    Boundary(tie_line::HalfLine& halfLine, const std::function<const Terminal&()>& terminalSupplier);
+    using TerminalSupplier = std::function<const Terminal&()>;
+
+public:
+    Boundary(TieLine& tieLine, const Branch::Side& side, const TerminalSupplier& terminalSupplier);
 
     Boundary(const Boundary&) = default;
 
@@ -53,14 +61,11 @@ public:
     Boundary& operator=(Boundary&&) noexcept = delete;
 
 private:
-    static double getAngle(const stdcxx::CReference<Bus>& bus);
+    TieLine& m_parent;
 
-    static double getV(const stdcxx::CReference<Bus>& bus);
+    Branch::Side m_side;
 
-private:
-    tie_line::HalfLine& m_halfLine;
-
-    std::function<const Terminal&()> m_terminalSupplier;
+    TerminalSupplier m_terminalSupplier;
 };
 
 }  // namespace half_line

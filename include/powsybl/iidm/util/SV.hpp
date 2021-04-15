@@ -10,8 +10,6 @@
 
 #include <complex>
 
-#include <powsybl/iidm/TieLine.hpp>
-
 namespace powsybl {
 
 namespace iidm {
@@ -19,6 +17,12 @@ namespace iidm {
 class DanglingLine;
 class Line;
 class TwoWindingsTransformer;
+
+namespace tie_line {
+
+class HalfLine;
+
+}  // namespace tie_line
 
 class SV {
 public:
@@ -49,35 +53,35 @@ public:
 
     SV otherSide(const TwoWindingsTransformer& twt) const;
 
-    SV otherSide(const Line& l) const;
+    SV otherSide(const Line& line) const;
 
-    SV otherSide(const DanglingLine& dl) const;
+    SV otherSide(const DanglingLine& danglingLine) const;
 
     double otherSideA(double r, double x, double g1, double b1, double rho) const;
 
-    double otherSideA(const TieLine::HalfLine& hl) const;
+    double otherSideA(const tie_line::HalfLine& halfLine) const;
 
-    double otherSideA(const DanglingLine& dl) const;
+    double otherSideA(const DanglingLine& danglingLine) const;
 
     double otherSideP(double r, double x, double g1, double b1, double g2, double b2, double rho) const;
 
-    double otherSideP(const DanglingLine& dl) const;
+    double otherSideP(const DanglingLine& danglingLine) const;
 
-    double otherSideP(const TieLine::HalfLine& hl) const;
+    double otherSideP(const tie_line::HalfLine& halfLine) const;
 
     double otherSideQ(double r, double x, double g1, double b1, double g2, double b2, double rho) const;
 
-    double otherSideQ(const TieLine::HalfLine& hl) const;
+    double otherSideQ(const tie_line::HalfLine& halfLine) const;
 
-    double otherSideQ(const DanglingLine& dl) const;
+    double otherSideQ(const DanglingLine& danglingLine) const;
 
     double otherSideU(double r, double x, double g1, double b1, double rho) const;
 
-    double otherSideU(const TieLine::HalfLine& hl) const;
+    double otherSideU(const tie_line::HalfLine& halfLine) const;
 
-    double otherSideU(const DanglingLine& dl) const;
+    double otherSideU(const DanglingLine& danglingLine) const;
 
-    SV otherSideY1Y2(const Line& l) const;
+    SV otherSideY1Y2(const Line& line) const;
 
 private:
     std::complex<double> computeS2(const std::complex<double>& y1, const std::complex<double>& y2, const std::complex<double>& z, double rho) const;

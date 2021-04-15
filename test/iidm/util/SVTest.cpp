@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Terminal.hpp>
@@ -66,7 +67,7 @@ BOOST_AUTO_TEST_SUITE(SVTestSuite)
 
 // computation are not the same for every platforms (due to complex<double> support)
 // => increase tolerance by using a threshold bigger than std::numeric_limits<double>::epsilon()
-double ACCEPTABLE_THRESHOLD = 1e-6;
+constexpr double ACCEPTABLE_THRESHOLD = 1e-6;
 
 BOOST_AUTO_TEST_CASE(OtherSideTwtTest) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();

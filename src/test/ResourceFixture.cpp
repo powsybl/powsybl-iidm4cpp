@@ -32,8 +32,8 @@ ResourceFixture::ResourceFixture() {
 
 std::string getOSName() {
     std::string osName = BOOST_PLATFORM;
-    boost::replace_all(osName, " ", "_");
-    boost::replace_all(osName, "/", "_");
+    boost::replace_all(osName, " ", "");
+    boost::replace_all(osName, "/", "");
     boost::to_lower(osName);
     return osName;
 }

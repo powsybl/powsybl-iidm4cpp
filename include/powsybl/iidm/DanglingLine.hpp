@@ -106,7 +106,7 @@ private:
 
     std::unique_ptr<CurrentLimits> m_limits;
 
-    std::unique_ptr<Boundary> m_boundary;
+    Boundary m_boundary;
 };
 
 }  // namespace iidm

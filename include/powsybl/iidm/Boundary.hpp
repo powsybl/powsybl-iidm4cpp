@@ -8,9 +8,18 @@
 #ifndef POWSYBL_IIDM_BOUNDARY_HPP
 #define POWSYBL_IIDM_BOUNDARY_HPP
 
+#include <powsybl/stdcxx/optional.hpp>
+#include <powsybl/stdcxx/reference.hpp>
+
+#include <powsybl/iidm/Branch.hpp>
+
 namespace powsybl {
 
 namespace iidm {
+
+class Bus;
+class Connectable;
+class VoltageLevel;
 
 class Boundary {
 public:
@@ -18,8 +27,7 @@ public:
 
     Boundary(const Boundary&) = default;
 
-    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::function marked noexcept (see half_line::Boundary)
-    Boundary(Boundary&&) = default;  // NOSONAR
+    Boundary(Boundary&&) noexcept = default;
 
     virtual ~Boundary() noexcept = default;
 
@@ -29,11 +37,26 @@ public:
 
     virtual double getAngle() const = 0;
 
+    virtual const Connectable& getConnectable() const = 0;
+
+    virtual Connectable& getConnectable() = 0;
+
     virtual double getP() const = 0;
 
     virtual double getQ() const = 0;
 
+    virtual stdcxx::optional<Branch::Side> getSide() const = 0;
+
     virtual double getV() const = 0;
+
+    virtual const VoltageLevel& getVoltageLevel() const = 0;
+
+    virtual VoltageLevel& getVoltageLevel() = 0;
+
+protected:
+    static double getAngle(const stdcxx::CReference<Bus>& bus);
+
+    static double getV(const stdcxx::CReference<Bus>& bus);
 };
 
 }  // namespace iidm

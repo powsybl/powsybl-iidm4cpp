@@ -26,33 +26,45 @@ Boundary::Boundary(DanglingLine& parent) :
 double Boundary::getAngle() const {
     const Terminal& t = m_parent.getTerminal();
     const stdcxx::CReference<Bus>& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), getV(b), getAngle(b)).otherSideA(m_parent);
+    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b)).otherSideA(m_parent);
 }
 
-double Boundary::getAngle(const stdcxx::CReference<Bus>& bus) {
-    return bus ? bus.get().getAngle() : stdcxx::nan();
+const Connectable& Boundary::getConnectable() const {
+    return m_parent;
+}
+
+Connectable& Boundary::getConnectable() {
+    return m_parent;
 }
 
 double Boundary::getP() const {
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), getV(b), getAngle(b)).otherSideP(m_parent);
+    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b)).otherSideP(m_parent);
 }
 
 double Boundary::getQ() const {
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), getV(b), getAngle(b)).otherSideQ(m_parent);
+    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b)).otherSideQ(m_parent);
+}
+
+stdcxx::optional<Branch::Side> Boundary::getSide() const {
+    return {};
 }
 
 double Boundary::getV() const {
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), getV(b), getAngle(b)).otherSideU(m_parent);
+    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b)).otherSideU(m_parent);
 }
 
-double Boundary::getV(const stdcxx::CReference<Bus>& bus) {
-    return bus ? bus.get().getV() : stdcxx::nan();
+const VoltageLevel& Boundary::getVoltageLevel() const {
+    return m_parent.getTerminal().getVoltageLevel();
+}
+
+VoltageLevel& Boundary::getVoltageLevel() {
+    return m_parent.getTerminal().getVoltageLevel();
 }
 
 }  // namespace dangling_line

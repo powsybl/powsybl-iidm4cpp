@@ -382,11 +382,17 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     danglingLine.getTerminal().setQ(4);
     danglingLine.getTerminal().getBusView().getBus().get().setV(5);
     BOOST_CHECK(stdcxx::areSame(cDanglingLine.getBoundary(), danglingLine.getBoundary()));
+    const Boundary& cBoundary = danglingLine.getBoundary();
     Boundary& boundary = danglingLine.getBoundary();
     BOOST_CHECK_CLOSE(82.47271661854765, boundary.getAngle(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2065.500000000001, boundary.getP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-781.1250000000001, boundary.getQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(43.5, boundary.getV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(cDanglingLine, cBoundary.getConnectable()));
+    BOOST_CHECK(stdcxx::areSame(cDanglingLine, boundary.getConnectable()));
+    BOOST_CHECK(!boundary.getSide());
+    BOOST_CHECK(stdcxx::areSame(cDanglingLine.getTerminal().getVoltageLevel(), cBoundary.getVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(danglingLine.getTerminal().getVoltageLevel(), boundary.getVoltageLevel()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

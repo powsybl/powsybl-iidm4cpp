@@ -434,11 +434,17 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     tieLine.getTerminal1().setQ(4);
     tieLine.getTerminal1().getBusView().getBus().get().setV(5);
     BOOST_CHECK(stdcxx::areSame(cTieLine.getHalf1().getBoundary(), tieLine.getHalf1().getBoundary()));
+    const Boundary& cBoundary = tieLine.getHalf1().getBoundary();
     Boundary& boundary = tieLine.getHalf1().getBoundary();
     BOOST_CHECK_CLOSE(168.31385922271897, boundary.getAngle(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(10051.099999999999, boundary.getP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-16154.5, boundary.getQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(182.584227139148, boundary.getV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(cTieLine, cBoundary.getConnectable()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine, boundary.getConnectable()));
+    BOOST_CHECK_EQUAL(Branch::Side::ONE, *boundary.getSide());
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getTerminal(Branch::Side::ONE).getVoltageLevel(), cBoundary.getVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getTerminal(Branch::Side::ONE).getVoltageLevel(), boundary.getVoltageLevel()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

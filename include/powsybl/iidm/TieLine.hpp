@@ -70,7 +70,7 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    HalfLine& attach(HalfLine& halfLine, const std::function<const Terminal&()>& terminalSupplier);
+    HalfLine& attach(HalfLine& halfLine, const Side& side, const HalfLine::Boundary::TerminalSupplier& terminalSupplier);
 
 private:
     HalfLine m_half1;

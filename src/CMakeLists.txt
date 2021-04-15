@@ -14,6 +14,7 @@ set(IIDM_SOURCES
     iidm/AbstractTerminalTopologyVisitor.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
+    iidm/Boundary.cpp
     iidm/Branch.cpp
     iidm/Bus.cpp
     iidm/BusAdder.cpp
@@ -216,7 +217,6 @@ set(IIDM_SOURCES
     stdcxx/DateTime.cpp
     stdcxx/demangle.cpp
     stdcxx/exception.cpp
-    stdcxx/math.cpp
     stdcxx/Properties.cpp
     stdcxx/time.cpp
 

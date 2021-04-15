@@ -24,30 +24,34 @@ class Boundary : public iidm::Boundary {
 public:  // iidm::Boundary
     double getAngle() const override;
 
+    const Connectable& getConnectable() const override;
+
+    Connectable& getConnectable() override;
+
     double getP() const override;
 
     double getQ() const override;
 
+    stdcxx::optional<Branch::Side> getSide() const override;
+
     double getV() const override;
+
+    const VoltageLevel& getVoltageLevel() const override;
+
+    VoltageLevel& getVoltageLevel() override;
 
 public:
     explicit Boundary(DanglingLine& parent);
 
     Boundary(const Boundary&) = default;
 
-    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::function marked noexcept (see half_line::Boundary)
-    Boundary(Boundary&&) = default;  // NOSONAR
+    Boundary(Boundary&&) noexcept = delete;
 
     ~Boundary() noexcept override = default;
 
     Boundary& operator=(const Boundary&) = delete;
 
     Boundary& operator=(Boundary&&) noexcept = delete;
-
-private:
-    static double getAngle(const stdcxx::CReference<Bus>& bus);
-
-    static double getV(const stdcxx::CReference<Bus>& bus);
 
 private:
     DanglingLine& m_parent;

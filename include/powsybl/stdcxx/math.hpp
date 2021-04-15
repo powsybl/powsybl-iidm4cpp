@@ -8,13 +8,36 @@
 #ifndef POWSYBL_STDCXX_MATH_HPP
 #define POWSYBL_STDCXX_MATH_HPP
 
-#define _USE_MATH_DEFINES
-
 #include <cmath>
 #include <limits>
 #include <sstream>
 
+#if __cplusplus >= 201703L
+
+#include <numbers>
+
 namespace stdcxx {
+
+constexpr double PI = std::numbers::pi;
+
+}  // namespace stdcxx
+
+#else
+
+#include <boost/math/constants/constants.hpp>
+
+namespace stdcxx {
+
+constexpr double PI = boost::math::constants::pi<double>();
+
+}  // namespace stdcxx
+
+#endif
+
+namespace stdcxx {
+
+constexpr double toDegrees = 180.0 / PI;
+constexpr double toRadians = PI / 180.0;
 
 template <typename T = double>
 inline bool isEqual(const T& v1, const T& v2) {
@@ -36,10 +59,6 @@ std::string to_string(const T& value) {
     out << value;
     return out.str();
 }
-
-double toDegrees(double angleRad);
-
-double toRadians(double angleDeg);
 
 }  // namespace stdcxx
 
