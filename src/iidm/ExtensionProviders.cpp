@@ -45,7 +45,7 @@ template <typename T, typename Dummy>
 const T& ExtensionProviders<T, Dummy>::findProviderOrThrowException(const std::string& name) const {
     const auto& it = m_providers.find(name);
     if (it == m_providers.end()) {
-        throw PowsyblException(stdcxx::format("No provider found for extension '%1'", name));
+        throw PowsyblException(stdcxx::format("No provider found for extension '%1%'", name));
     }
     return *it->second;
 }
