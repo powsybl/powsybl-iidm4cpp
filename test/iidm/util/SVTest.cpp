@@ -45,20 +45,19 @@ Network createDanglingLineTestNetwork() {
         .setId("VL1_BUS1")
         .add();
 
-    DanglingLineAdder adder = vl1.newDanglingLine();
-    adder.setId("DL1")
+    vl1.newDanglingLine()
+        .setId("DL1")
         .setName("DL1_NAME")
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
-        .setB(1.0)
-        .setG(2.0)
-        .setP0(3.0)
-        .setQ0(4.0)
-        .setR(5.0)
-        .setX(6.0)
-        .setUcteXnodeCode("ucteXnodeCodeTest");
-
-    adder.add();
+        .setB(0.000193)
+        .setG(0.0)
+        .setP0(-300)
+        .setQ0(-100)
+        .setR(1.5)
+        .setX(16.5)
+        .setUcteXnodeCode("ucteXnodeCodeTest")
+        .add();
 
     return network;
 }
@@ -82,10 +81,10 @@ BOOST_AUTO_TEST_CASE(OtherSideTwtTest) {
     SV sv(terminal1.getP(), terminal1.getQ(), bus1.getV(), bus1.getAngle());
 
     const SV& otherSide = sv.otherSide(twt);
-    BOOST_CHECK_CLOSE(5.3007050229466078e-08, otherSide.getA(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_CLOSE(-604.89090825537278, otherSide.getP(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_CLOSE(-197.48047051265698, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_CLOSE(402.142839934194, otherSide.getU(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(5.3007050229466078e-08, otherSide.getA(), ACCEPTABLE_THRESHOLD);
 }
 
 BOOST_AUTO_TEST_CASE(OtherSideLineTest) {
@@ -96,34 +95,34 @@ BOOST_AUTO_TEST_CASE(OtherSideLineTest) {
 
     terminal1.setP(302.44406127929688);
     terminal1.setQ(98.740272521972656);
-    bus1.setV(24.500000610351563);
-    bus1.setAngle(2.3259763717651367);
+    bus1.setV(402.14284515380859);
+    bus1.setAngle(0);
     SV sv(terminal1.getP(), terminal1.getQ(), bus1.getV(), bus1.getAngle());
 
     const SV& otherSide = sv.otherSide(line);
-    BOOST_CHECK_CLOSE(-107.92734374890613, otherSide.getA(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(203.68433094987836, otherSide.getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(5468.4403454874146, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(421.3032485774321, otherSide.getU(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-300.26535137698056, otherSide.getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-137.19794660913607, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(387.38198654517674, otherSide.getU(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-3.4951525055825536, otherSide.getA(), ACCEPTABLE_THRESHOLD);
 }
 
 BOOST_AUTO_TEST_CASE(OtherSideDanglingLineTest) {
     Network network = createDanglingLineTestNetwork();
-    DanglingLine& line = network.getDanglingLine("DL1");
-    Terminal& terminal = line.getTerminal();
-    Bus& bus1 = terminal.getBusBreakerView().getBus().get();
+    DanglingLine& dl = network.getDanglingLine("DL1");
+    Terminal& terminal1 = dl.getTerminal();
+    Bus& bus1 = terminal1.getBusBreakerView().getBus().get();
 
-    terminal.setP(11);
-    terminal.setQ(22);
-    bus1.setV(33);
-    bus1.setAngle(44);
-    SV sv(terminal.getP(), terminal.getQ(), bus1.getV(), bus1.getAngle());
+    terminal1.setP(302.44406127929688);
+    terminal1.setQ(98.740272521972656);
+    bus1.setV(402.14284515380859);
+    bus1.setAngle(0);
+    SV sv(terminal1.getP(), terminal1.getQ(), bus1.getV(), bus1.getAngle());
 
-    const SV& otherSide = sv.otherSide(line);
-    BOOST_CHECK_CLOSE(115.67693698810611, otherSide.getA(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(96028.166666666715, otherSide.getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-36466.236111111131, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(296.88573372408604, otherSide.getU(), ACCEPTABLE_THRESHOLD);
+    const SV& otherSide = sv.otherSide(dl);
+    BOOST_CHECK_CLOSE(-301.47434650169686, otherSide.getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-118.85058330380885, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(396.50418762074077, otherSide.getU(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-1.7318099978500625, otherSide.getA(), ACCEPTABLE_THRESHOLD);
 }
 
 BOOST_AUTO_TEST_CASE(OtherSideY1Y2) {
@@ -134,15 +133,15 @@ BOOST_AUTO_TEST_CASE(OtherSideY1Y2) {
 
     terminal1.setP(302.44406127929688);
     terminal1.setQ(98.740272521972656);
-    bus1.setV(24.500000610351563);
-    bus1.setAngle(2.3259763717651367);
+    bus1.setV(402.14284515380859);
+    bus1.setAngle(0);
     SV sv(terminal1.getP(), terminal1.getQ(), bus1.getV(), bus1.getAngle());
 
     const SV& otherSide = sv.otherSideY1Y2(line);
-    BOOST_CHECK_CLOSE(-107.90676503314124, otherSide.getA(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(203.56978848587823, otherSide.getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(5433.0460315531218, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(421.26256741485383, otherSide.getU(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-300.43390740755751, otherSide.getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-137.18849721702034, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(389.95267268210063, otherSide.getU(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-3.5063579035161601, otherSide.getA(), ACCEPTABLE_THRESHOLD);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
