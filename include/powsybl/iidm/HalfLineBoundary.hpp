@@ -8,14 +8,17 @@
 #ifndef POWSYBL_IIDM_HALFLINEBOUNDARY_HPP
 #define POWSYBL_IIDM_HALFLINEBOUNDARY_HPP
 
-#include <functional>
-
 #include <powsybl/iidm/Boundary.hpp>
-#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
 namespace iidm {
+
+namespace tie_line {
+
+class HalfLine;
+
+}  // namespace tie_line
 
 class Bus;
 class Terminal;
@@ -44,15 +47,11 @@ public:  // iidm::Boundary
     VoltageLevel& getVoltageLevel() override;
 
 public:
-    using TerminalSupplier = std::function<const Terminal&()>;
+    Boundary(tie_line::HalfLine& halfLine, const Branch::Side& side);
 
-public:
-    Boundary(TieLine& tieLine, const Branch::Side& side, const TerminalSupplier& terminalSupplier);
+    Boundary(const Boundary&) = delete;
 
-    Boundary(const Boundary&) = default;
-
-    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::function marked noexcept
-    Boundary(Boundary&&) = default;  // NOSONAR
+    Boundary(Boundary&&) = delete;
 
     ~Boundary() noexcept override = default;
 
@@ -61,11 +60,14 @@ public:
     Boundary& operator=(Boundary&&) noexcept = delete;
 
 private:
-    TieLine& m_parent;
+    const TieLine& getTieLine() const;
+
+    TieLine& getTieLine();
+
+private:
+    tie_line::HalfLine& m_parent;
 
     Branch::Side m_side;
-
-    TerminalSupplier m_terminalSupplier;
 };
 
 }  // namespace half_line

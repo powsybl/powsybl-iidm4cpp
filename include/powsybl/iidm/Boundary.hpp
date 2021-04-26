@@ -8,10 +8,9 @@
 #ifndef POWSYBL_IIDM_BOUNDARY_HPP
 #define POWSYBL_IIDM_BOUNDARY_HPP
 
+#include <powsybl/iidm/Branch.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/reference.hpp>
-
-#include <powsybl/iidm/Branch.hpp>
 
 namespace powsybl {
 

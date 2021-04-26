@@ -73,17 +73,23 @@ public:
 
 private:
     HalfLine(const std::string& id, const std::string& name, bool fictitious,
-             double r, double x, double g1, double b1, double g2, double b2);
+             double r, double x, double g1, double b1, double g2, double b2, const Branch::Side& side);
 
     HalfLine(HalfLine&& halfLine) noexcept;
 
     ~HalfLine() override = default;
+
+    const TieLine& getParent() const;
+
+    TieLine& getParent();
 
     void setParent(TieLine& parent);
 
     friend class iidm::TieLine;
 
     friend class iidm::TieLineAdder;
+
+    friend class half_line::Boundary;
 
     friend class HalfLineAdder;
 

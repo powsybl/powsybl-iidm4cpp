@@ -60,7 +60,8 @@ TieLineAdder& HalfLineAdder::add() {
 }
 
 HalfLine HalfLineAdder::build() const {
-    return HalfLine(m_id, m_name, m_fictitious, m_r, m_x, m_g1, m_b1, m_g2, m_b2);
+    Branch::Side side = (m_num == 1) ? Branch::Side::ONE : Branch::Side::TWO;
+    return HalfLine(m_id, m_name, m_fictitious, m_r, m_x, m_g1, m_b1, m_g2, m_b2, side);
 }
 
 std::string HalfLineAdder::getMessageHeader() const {

@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_DANGLINGLINEBOUNDARY_HPP
 
 #include <powsybl/iidm/Boundary.hpp>
+#include <powsybl/iidm/HalfLine.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -43,7 +44,7 @@ public:  // iidm::Boundary
 public:
     explicit Boundary(DanglingLine& parent);
 
-    Boundary(const Boundary&) = default;
+    Boundary(const Boundary&) = delete;
 
     Boundary(Boundary&&) noexcept = delete;
 

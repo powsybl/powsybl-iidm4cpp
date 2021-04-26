@@ -17,11 +17,12 @@ namespace iidm {
 namespace tie_line {
 
 HalfLine::HalfLine(const std::string& id, const std::string& name, bool fictitious,
-                   double r, double x, double g1, double b1, double g2, double b2) :
+                   double r, double x, double g1, double b1, double g2, double b2, const Branch::Side& side) :
     m_id(id),
     m_name(name),
     m_lineCharacteristics(*this, r, x, g1, b1, g2, b2),
-    m_fictitious(fictitious) {
+    m_fictitious(fictitious),
+    m_boundary(stdcxx::make_unique<Boundary>(*this, side)) {
 }
 
 HalfLine::HalfLine(HalfLine&& halfLine) noexcept :
@@ -29,7 +30,8 @@ HalfLine::HalfLine(HalfLine&& halfLine) noexcept :
     m_id(std::move(halfLine.m_id)),
     m_name(std::move(halfLine.m_name)),
     m_lineCharacteristics(*this, halfLine.getR(), halfLine.getX(), halfLine.getG1(), halfLine.getB1(), halfLine.getG2(), halfLine.getB2()),
-    m_fictitious(halfLine.m_fictitious) {
+    m_fictitious(halfLine.m_fictitious),
+    m_boundary(stdcxx::make_unique<Boundary>(*this, *halfLine.getBoundary().getSide())) {
 }
 
 double HalfLine::getB1() const {
@@ -66,6 +68,14 @@ std::string HalfLine::getMessageHeader() const {
 
 const std::string& HalfLine::getName() const {
     return m_name.empty() ? m_id : m_name;
+}
+
+const TieLine& HalfLine::getParent() const {
+    return m_parent;
+}
+
+TieLine& HalfLine::getParent() {
+    return m_parent;
 }
 
 double HalfLine::getR() const {
