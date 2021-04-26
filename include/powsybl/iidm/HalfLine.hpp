@@ -10,7 +10,7 @@
 
 #include <string>
 
-#include <powsybl/iidm/HalfLineBoundary.hpp>
+#include <powsybl/iidm/Boundary.hpp>
 #include <powsybl/iidm/LineCharacteristics.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -23,14 +23,17 @@ namespace iidm {
 class TieLine;
 class TieLineAdder;
 
+namespace half_line {
+
+class Boundary;
+
+}  // namespace half_line
+
 namespace tie_line {
 
 class HalfLineAdder;
 
 class HalfLine : public Validable {
-public:
-    using Boundary = half_line::Boundary;
-
 public: // Validable
     std::string getMessageHeader() const override;
 

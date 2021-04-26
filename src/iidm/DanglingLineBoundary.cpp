@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/DanglingLineBoundary.hpp>
+#include "DanglingLineBoundary.hpp"
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>

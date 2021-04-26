@@ -10,6 +10,8 @@
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
+#include "HalfLineBoundary.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -22,7 +24,7 @@ HalfLine::HalfLine(const std::string& id, const std::string& name, bool fictitio
     m_name(name),
     m_lineCharacteristics(*this, r, x, g1, b1, g2, b2),
     m_fictitious(fictitious),
-    m_boundary(stdcxx::make_unique<Boundary>(*this, side)) {
+    m_boundary(stdcxx::make_unique<half_line::Boundary>(*this, side)) {
 }
 
 HalfLine::HalfLine(HalfLine&& halfLine) noexcept :
@@ -31,7 +33,7 @@ HalfLine::HalfLine(HalfLine&& halfLine) noexcept :
     m_name(std::move(halfLine.m_name)),
     m_lineCharacteristics(*this, halfLine.getR(), halfLine.getX(), halfLine.getG1(), halfLine.getB1(), halfLine.getG2(), halfLine.getB2()),
     m_fictitious(halfLine.m_fictitious),
-    m_boundary(stdcxx::make_unique<Boundary>(*this, *halfLine.getBoundary().getSide())) {
+    m_boundary(stdcxx::make_unique<half_line::Boundary>(*this, *halfLine.getBoundary().getSide())) {
 }
 
 double HalfLine::getB1() const {
@@ -42,11 +44,11 @@ double HalfLine::getB2() const {
     return m_lineCharacteristics.getB2();
 }
 
-const half_line::Boundary& HalfLine::getBoundary() const {
+const Boundary& HalfLine::getBoundary() const {
     return *m_boundary;
 }
 
-half_line::Boundary& HalfLine::getBoundary() {
+Boundary& HalfLine::getBoundary() {
     return *m_boundary;
 }
 

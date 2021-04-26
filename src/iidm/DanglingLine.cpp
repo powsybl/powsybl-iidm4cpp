@@ -10,6 +10,8 @@
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 
+#include "DanglingLineBoundary.hpp"
+
 namespace powsybl {
 
 namespace iidm {
@@ -26,7 +28,7 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
     m_ucteXnodeCode(ucteXnodeCode),
     m_generation(std::move(generation)),
-    m_boundary(*this) {
+    m_boundary(stdcxx::make_unique<dangling_line::Boundary>(*this)) {
 
     if (m_generation) {
         m_generation->attach(*this);
@@ -61,12 +63,12 @@ double DanglingLine::getB() const {
     return m_b;
 }
 
-const dangling_line::Boundary& DanglingLine::getBoundary() const {
-    return m_boundary;
+const Boundary& DanglingLine::getBoundary() const {
+    return *m_boundary;
 }
 
-dangling_line::Boundary& DanglingLine::getBoundary() {
-    return m_boundary;
+Boundary& DanglingLine::getBoundary() {
+    return *m_boundary;
 }
 
 stdcxx::CReference<CurrentLimits> DanglingLine::getCurrentLimits() const {
