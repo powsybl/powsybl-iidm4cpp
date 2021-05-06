@@ -9,6 +9,7 @@
 
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Branch.hpp>
+#include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
@@ -18,6 +19,7 @@
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
 namespace powsybl {
@@ -56,6 +58,11 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
     const auto& c = terminal.getConnectable();
     if (!context.getFilter().test(c)) {
         throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
+    }
+    if (terminal.getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER
+        && context.getOptions().getTopologyLevel() != TopologyLevel::NODE_BREAKER
+        && stdcxx::isInstanceOf<BusbarSection>(terminal.getConnectable())) {
+        throw PowsyblException(stdcxx::format("Terminal ref should not point to a busbar section (here %1%). Try to export in node-breaker or delete this terminal ref.", terminal.getConnectable().get().getId()));
     }
     writer.writeStartElement(nsPrefix, elementName);
     writer.writeAttribute(ID, context.getAnonymizer().anonymizeString(c.get().getId()));
