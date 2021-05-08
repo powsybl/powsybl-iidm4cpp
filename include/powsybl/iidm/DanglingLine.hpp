@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_DANGLINGLINE_HPP
 #define POWSYBL_IIDM_DANGLINGLINE_HPP
 
+#include <powsybl/iidm/Boundary.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/DanglingLineGeneration.hpp>
 #include <powsybl/iidm/Injection.hpp>
@@ -29,6 +30,10 @@ public:
     ~DanglingLine() noexcept override = default;
 
     double getB() const;
+
+    const Boundary& getBoundary() const;
+
+    Boundary& getBoundary();
 
     stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
 
@@ -98,6 +103,8 @@ private:
     std::unique_ptr<Generation> m_generation;
 
     std::unique_ptr<CurrentLimits> m_limits;
+
+    std::unique_ptr<Boundary> m_boundary;
 };
 
 }  // namespace iidm
