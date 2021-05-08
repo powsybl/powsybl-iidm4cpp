@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include <powsybl/iidm/Boundary.hpp>
 #include <powsybl/iidm/LineCharacteristics.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -21,6 +22,12 @@ namespace iidm {
 
 class TieLine;
 class TieLineAdder;
+
+namespace half_line {
+
+class Boundary;
+
+}  // namespace half_line
 
 namespace tie_line {
 
@@ -35,6 +42,10 @@ public:
 
     double getB2() const;
 
+    const Boundary& getBoundary() const;
+
+    Boundary& getBoundary();
+
     double getG1() const;
 
     double getG2() const;
@@ -46,10 +57,6 @@ public:
     double getR() const;
 
     double getX() const;
-
-    double getXnodeP() const;
-
-    double getXnodeQ() const;
 
     bool isFictitious() const;
 
@@ -67,23 +74,25 @@ public:
 
     HalfLine& setX(double x);
 
-    HalfLine& setXnodeP(double xnodeP);
-
-    HalfLine& setXnodeQ(double xnodeQ);
-
 private:
-    HalfLine(const std::string& id, const std::string& name, bool fictitious, double xnodeP, double xnodeQ,
-             double r, double x, double g1, double b1, double g2, double b2);
+    HalfLine(const std::string& id, const std::string& name, bool fictitious,
+             double r, double x, double g1, double b1, double g2, double b2, const Branch::Side& side);
 
     HalfLine(HalfLine&& halfLine) noexcept;
 
     ~HalfLine() override = default;
+
+    const TieLine& getParent() const;
+
+    TieLine& getParent();
 
     void setParent(TieLine& parent);
 
     friend class iidm::TieLine;
 
     friend class iidm::TieLineAdder;
+
+    friend class half_line::Boundary;
 
     friend class HalfLineAdder;
 
@@ -96,11 +105,9 @@ private:
 
     LineCharacteristics m_lineCharacteristics;
 
-    double m_xnodeP = stdcxx::nan();
-
-    double m_xnodeQ = stdcxx::nan();
-
     bool m_fictitious = false;
+
+    std::unique_ptr<Boundary> m_boundary;
 };
 
 }  // namespace tie_line
