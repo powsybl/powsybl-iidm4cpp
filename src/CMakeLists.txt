@@ -14,6 +14,7 @@ set(IIDM_SOURCES
     iidm/AbstractTerminalTopologyVisitor.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
+    iidm/Boundary.cpp
     iidm/Branch.cpp
     iidm/Bus.cpp
     iidm/BusAdder.cpp
@@ -38,6 +39,7 @@ set(IIDM_SOURCES
     iidm/CurrentLimits.cpp
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
+    iidm/DanglingLineBoundary.cpp
     iidm/DanglingLineGeneration.cpp
     iidm/DanglingLineGenerationAdder.cpp
     iidm/EnergySource.cpp
@@ -50,6 +52,7 @@ set(IIDM_SOURCES
     iidm/GeneratorAdder.cpp
     iidm/HalfLine.cpp
     iidm/HalfLineAdder.cpp
+    iidm/HalfLineBoundary.cpp
     iidm/HvdcConverterStation.cpp
     iidm/HvdcLine.cpp
     iidm/HvdcLineAdder.cpp
@@ -188,6 +191,7 @@ set(IIDM_SOURCES
     iidm/util/LimitViolationUtils.cpp
     iidm/util/Networks.cpp
     iidm/util/Substations.cpp
+    iidm/util/SV.cpp
     iidm/util/TerminalFinder.cpp
     iidm/util/VoltageLevels.cpp
 
