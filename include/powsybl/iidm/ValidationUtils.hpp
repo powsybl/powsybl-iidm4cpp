@@ -54,8 +54,6 @@ double checkG1(const Validable& validable, double g1);
 
 double checkG2(const Validable& validable, double g2);
 
-void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int num);
-
 double checkHvdcActivePowerSetpoint(const Validable& validable, double activePowerSetpoint);
 
 double checkHvdcMaxP(const Validable& validable, double maxP);

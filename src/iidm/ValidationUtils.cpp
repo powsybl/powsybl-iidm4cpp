@@ -129,34 +129,6 @@ double checkG2(const Validable& validable, double g2) {
     return g2;
 }
 
-void checkHalf(const Validable& validable, const TieLine::HalfLine& half, int num) {
-    checkNotEmpty(validable, half.getId(), stdcxx::format("id is not set for half line %1%", num));
-    if (std::isnan(half.getB1())) {
-        throw ValidationException(validable, stdcxx::format("b1 is not set for half line %1%", num));
-    }
-    if (std::isnan(half.getB2())) {
-        throw ValidationException(validable, stdcxx::format("b2 is not set for half line %1%", num));
-    }
-    if (std::isnan(half.getG1())) {
-        throw ValidationException(validable, stdcxx::format("g1 is not set for half line %1%", num));
-    }
-    if (std::isnan(half.getG2())) {
-        throw ValidationException(validable, stdcxx::format("g2 is not set for half line %1%", num));
-    }
-    if (std::isnan(half.getR())) {
-        throw ValidationException(validable, stdcxx::format("r is not set for half line %1%", num));
-    }
-    if (std::isnan(half.getX())) {
-        throw ValidationException(validable, stdcxx::format("x is not set for half line %1%", num));
-    }
-    if (std::isnan(half.getXnodeP())) {
-        throw ValidationException(validable, stdcxx::format("xnodeP is not set for half line %1%", num));
-    }
-    if (std::isnan(half.getXnodeQ())) {
-        throw ValidationException(validable, stdcxx::format("xnodeQ is not set for half line %1%", num));
-    }
-}
-
 double checkHvdcActivePowerSetpoint(const Validable& validable, double activePowerSetpoint) {
     if (std::isnan(activePowerSetpoint)) {
         throw createInvalidValueException(validable, activePowerSetpoint, "active power setpoint");
