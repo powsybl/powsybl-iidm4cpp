@@ -25,7 +25,8 @@ public:
 
     ApparentPowerLimits(const ApparentPowerLimits&) = default;
 
-    ApparentPowerLimits(ApparentPowerLimits&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of LoadingLimits is not marked noexcept
+    ApparentPowerLimits(ApparentPowerLimits&&) = default;  // NOSONAR
 
     ~ApparentPowerLimits() override = default;
 

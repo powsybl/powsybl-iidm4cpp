@@ -56,7 +56,8 @@ public:
 
     LoadingLimits(const LoadingLimits&) = default;
 
-    LoadingLimits(LoadingLimits&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept
+    LoadingLimits(LoadingLimits&&) = default;  // NOSONAR
 
     ~LoadingLimits() override = default;
 

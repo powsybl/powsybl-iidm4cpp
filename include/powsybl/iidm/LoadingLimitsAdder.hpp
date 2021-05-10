@@ -64,13 +64,15 @@ public:
 
     LoadingLimitsAdder(const LoadingLimitsAdder&) = default;
 
-    LoadingLimitsAdder(LoadingLimitsAdder&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept
+    LoadingLimitsAdder(LoadingLimitsAdder&&) = default;  // NOSONAR
 
     ~LoadingLimitsAdder() noexcept override = default;
 
     LoadingLimitsAdder& operator=(const LoadingLimitsAdder&) = default;
 
-    LoadingLimitsAdder& operator=(LoadingLimitsAdder&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept
+    LoadingLimitsAdder& operator=(LoadingLimitsAdder&&) = default;  // NOSONAR
 
     TemporaryLimitAdder beginTemporaryLimit();
 

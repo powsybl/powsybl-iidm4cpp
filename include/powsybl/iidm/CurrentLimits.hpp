@@ -30,7 +30,8 @@ public:
 
     CurrentLimits(const CurrentLimits&) = default;
 
-    CurrentLimits(CurrentLimits&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of LoadingLimits is not marked noexcept
+    CurrentLimits(CurrentLimits&&) = default;  // NOSONAR
 
     ~CurrentLimits() override = default;
 

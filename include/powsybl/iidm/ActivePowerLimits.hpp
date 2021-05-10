@@ -25,7 +25,8 @@ public:
 
     ActivePowerLimits(const ActivePowerLimits&) = default;
 
-    ActivePowerLimits(ActivePowerLimits&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of LoadingLimits is not marked noexcept
+    ActivePowerLimits(ActivePowerLimits&&) = default;  // NOSONAR
 
     ~ActivePowerLimits() override = default;
 

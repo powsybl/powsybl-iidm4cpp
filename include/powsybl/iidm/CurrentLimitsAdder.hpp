@@ -24,7 +24,8 @@ public:
 
     CurrentLimitsAdder(const CurrentLimitsAdder&) = default;
 
-    CurrentLimitsAdder(CurrentLimitsAdder&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of LoadingLimitsAdder is not marked noexcept
+    CurrentLimitsAdder(CurrentLimitsAdder&&) = default;  // NOSONAR
 
     ~CurrentLimitsAdder() noexcept override = default;
 

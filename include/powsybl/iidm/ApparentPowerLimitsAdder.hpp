@@ -24,7 +24,8 @@ public:
 
     ApparentPowerLimitsAdder(const ApparentPowerLimitsAdder&) = default;
 
-    ApparentPowerLimitsAdder(ApparentPowerLimitsAdder&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of LoadingLimitsAdder is not marked noexcept
+    ApparentPowerLimitsAdder(ApparentPowerLimitsAdder&&) = default;  // NOSONAR
 
     ~ApparentPowerLimitsAdder() noexcept override = default;
 
