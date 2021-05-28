@@ -12,6 +12,7 @@ project(my-project)
 
 # Find the required dependencies: Boost, LibXML2 and IIDM and import the targets
 find_package(Boost 1.65 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
+find_package(Threads REQUIRED)
 find_package(LibXml2 REQUIRED)
 find_package(LibIIDM REQUIRED)
 
@@ -19,4 +20,4 @@ find_package(LibIIDM REQUIRED)
 add_executable(my-executable ../example1/example1.cpp)
 
 # Link the executable with the IIDM shared library
-target_link_libraries(my-executable PRIVATE IIDM::iidm-static)
+target_link_libraries(my-executable PRIVATE IIDM::iidm)
