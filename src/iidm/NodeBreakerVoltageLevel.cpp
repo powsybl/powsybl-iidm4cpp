@@ -86,6 +86,10 @@ void NodeBreakerVoltageLevel::clean() {
 bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
 
+    if (terminal.isConnected()) {
+        return false;
+    }
+
     unsigned long node = nodeTerminal.getNode();
 
     // find all paths starting from the current terminal to a busbar section that does not contain an open disconnector
@@ -134,6 +138,10 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
 
 bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
+
+    if (!terminal.isConnected()) {
+        return false;
+    }
 
     unsigned long node = nodeTerminal.getNode();
 
