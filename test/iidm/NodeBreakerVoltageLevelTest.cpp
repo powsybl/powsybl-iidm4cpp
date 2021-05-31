@@ -1231,9 +1231,10 @@ BOOST_AUTO_TEST_CASE(NbkComprehensiveErrorMessage) {
     stdcxx::Properties properties;
     properties.set(converter::ExportOptions::TOPOLOGY_LEVEL, "NODE_BREAKER");
 
+    std::stringstream ss;
+
     // make sure no error is thrown while exporting to NODE_BREAKER topology
     BOOST_CHECK_NO_THROW({
-         std::stringstream ss;
          Network::writeXml("network.xiidm", ss, network, converter::ExportOptions(properties));
          Network::readXml("network.xiidm", ss);
     });

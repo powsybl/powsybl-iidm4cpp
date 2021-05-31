@@ -59,9 +59,9 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
     if (!context.getFilter().test(c)) {
         throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
     }
-    if (terminal.getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER
-        && context.getOptions().getTopologyLevel() != TopologyLevel::NODE_BREAKER
-        && stdcxx::isInstanceOf<BusbarSection>(terminal.getConnectable())) {
+    if (terminal.getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER &&
+            context.getOptions().getTopologyLevel() != TopologyLevel::NODE_BREAKER &&
+            stdcxx::isInstanceOf<BusbarSection>(terminal.getConnectable())) {
         throw PowsyblException(stdcxx::format("Terminal ref should not point to a busbar section (here %1%). Try to export in node-breaker or delete this terminal ref.", terminal.getConnectable().get().getId()));
     }
     writer.writeStartElement(nsPrefix, elementName);
