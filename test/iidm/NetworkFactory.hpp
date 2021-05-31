@@ -25,6 +25,8 @@ Network createNetwork();
 
 Terminal& getTerminalFromNetwork2();
 
+Network createDanglingLineNetwork();
+
 }  // namespace iidm
 
 }  // namespace powsybl
