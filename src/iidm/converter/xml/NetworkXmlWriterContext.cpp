@@ -20,7 +20,6 @@ namespace xml {
 
 NetworkXmlWriterContext::NetworkXmlWriterContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version) :
     m_writer(writer),
-    m_extensionsWriter(writer),
     m_anonymizer(std::move(anonymizer)),
     m_options(options),
     m_version(version),
@@ -48,10 +47,6 @@ const std::string& NetworkXmlWriterContext::getExtensionVersion(const std::strin
     return m_options.getExtensionVersion(extensionName);
 }
 
-powsybl::xml::XmlStreamWriter& NetworkXmlWriterContext::getExtensionsWriter() {
-    return m_extensionsWriter.get();
-}
-
 const BusFilter& NetworkXmlWriterContext::getFilter() const {
     return m_filter;
 }
@@ -70,10 +65,6 @@ powsybl::xml::XmlStreamWriter& NetworkXmlWriterContext::getWriter() {
 
 bool NetworkXmlWriterContext::isExportedEquipment(const std::string& id) {
     return m_exportedEquipments.find(id) != m_exportedEquipments.end();
-}
-
-void NetworkXmlWriterContext::setExtensionsWriter(powsybl::xml::XmlStreamWriter& extensionsWriter) {
-    m_extensionsWriter = std::ref(extensionsWriter);
 }
 
 }  // namespace xml

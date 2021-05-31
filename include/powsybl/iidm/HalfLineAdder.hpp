@@ -50,10 +50,6 @@ public:
 
     HalfLineAdder& setX(double x);
 
-    HalfLineAdder& setXnodeP(double xnodeP);
-
-    HalfLineAdder& setXnodeQ(double xnodeQ);
-
 private:
     HalfLine build() const;
 
@@ -69,10 +65,6 @@ private:
     std::string m_name;
 
     bool m_fictitious = false;
-
-    double m_xnodeP = stdcxx::nan();
-
-    double m_xnodeQ = stdcxx::nan();
 
     double m_r = stdcxx::nan();
 

@@ -40,6 +40,7 @@ const std::initializer_list<std::string>& getNames<powsybl::iidm::extensions::en
         "HR",
         "HU",
         "IT",
+        "KS",
         "LU",
         "LT",
         "MA",

@@ -29,6 +29,7 @@ set(UNIT_TEST_SOURCES
     NetworkFactory.cpp
     NetworkIndexTest.cpp
     NetworkTest.cpp
+    NodeBreakerConnectTest.cpp
     NodeBreakerVoltageLevelTest.cpp
     PhaseTapChangerTest.cpp
     RatioTapChangerTest.cpp
@@ -54,6 +55,7 @@ set(UNIT_TEST_SOURCES
     extensions/LoadDetailTest.cpp
     extensions/SlackTerminalTest.cpp
 
+    util/SVTest.cpp
     util/TerminalFinderTest.cpp
 )
 

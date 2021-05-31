@@ -18,6 +18,13 @@ namespace converter {
 
 namespace xml {
 
+void TieLineXml::checkBoundaryValue(double imported, double calculated, const std::string& name, const std::string& tlId) {
+    if (!std::isnan(imported) && imported != calculated) {
+        logging::Logger& logger = logging::LoggerFactory::getLogger<TieLineXml>();
+        logger.info(stdcxx::format("%1% of TieLine %2% is recalculated. Its imported value is not used (imported value = %3%; calculated value = %4%)", name, tlId, imported, calculated));
+    }
+}
+
 TieLineAdder TieLineXml::createAdder(Network& network) const {
     return network.newTieLine();
 }
@@ -40,8 +47,6 @@ void TieLineXml::readHalf(TieLineAdder::HalfLineAdder adder, const NetworkXmlRea
     const auto& b1 = context.getReader().getAttributeValue<double>(toString(B1_, side));
     const auto& g2 = context.getReader().getAttributeValue<double>(toString(G2_, side));
     const auto& b2 = context.getReader().getAttributeValue<double>(toString(B2_, side));
-    const auto& xnodeP = context.getReader().getAttributeValue<double>(toString(XNODE_P_, side));
-    const auto& xnodeQ = context.getReader().getAttributeValue<double>(toString(XNODE_Q_, side));
     adder.setId(id)
         .setName(name)
         .setR(r)
@@ -49,9 +54,7 @@ void TieLineXml::readHalf(TieLineAdder::HalfLineAdder adder, const NetworkXmlRea
         .setG1(g1)
         .setB1(b1)
         .setG2(g2)
-        .setB2(b2)
-        .setXnodeP(xnodeP)
-        .setXnodeQ(xnodeQ);
+        .setB2(b2);
 
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &side, &adder]() {
         bool fictitious = context.getReader().getOptionalAttributeValue(toString(FICTITIOUS_, side), false);
@@ -68,6 +71,18 @@ TieLine& TieLineXml::readRootElementAttributes(TieLineAdder& adder, NetworkXmlRe
     TieLine& tl = adder.setUcteXnodeCode(ucteXnodeCode).add();
     readPQ(tl.getTerminal1(), context.getReader(), 1);
     readPQ(tl.getTerminal2(), context.getReader(), 2);
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_4(), context.getVersion(), [&context, &tl]() {
+        double half1BoundaryP = context.getReader().getOptionalAttributeValue(toString(XNODE_P_, 1), stdcxx::nan());
+        double half2BoundaryP = context.getReader().getOptionalAttributeValue(toString(XNODE_P_, 2), stdcxx::nan());
+        double half1BoundaryQ = context.getReader().getOptionalAttributeValue(toString(XNODE_Q_, 1), stdcxx::nan());
+        double half2BoundaryQ = context.getReader().getOptionalAttributeValue(toString(XNODE_Q_, 1), stdcxx::nan());
+        context.addEndTask([&tl, half1BoundaryP, half2BoundaryP, half1BoundaryQ, half2BoundaryQ]() {
+            checkBoundaryValue(half1BoundaryP, tl.getHalf1().getBoundary().getP(), toString(XNODE_P_, 1), tl.getId());
+            checkBoundaryValue(half2BoundaryP, tl.getHalf2().getBoundary().getP(), toString(XNODE_P_, 2), tl.getId());
+            checkBoundaryValue(half1BoundaryQ, tl.getHalf1().getBoundary().getQ(), toString(XNODE_Q_, 1), tl.getId());
+            checkBoundaryValue(half2BoundaryQ, tl.getHalf2().getBoundary().getQ(), toString(XNODE_P_, 2), tl.getId());
+        });
+    });
     return tl;
 }
 
@@ -86,6 +101,7 @@ void TieLineXml::readSubElements(TieLine& line, NetworkXmlReaderContext& context
 }
 
 void TieLineXml::writeHalf(const TieLine::HalfLine& halfLine, NetworkXmlWriterContext& context, int side) {
+    const Boundary& boundary = halfLine.getBoundary();
     context.getWriter().writeAttribute(toString(ID_, side), context.getAnonymizer().anonymizeString(halfLine.getId()));
     if (halfLine.getId() != halfLine.getName()) {
         context.getWriter().writeAttribute(toString(NAME_, side), context.getAnonymizer().anonymizeString(halfLine.getName()));
@@ -96,8 +112,10 @@ void TieLineXml::writeHalf(const TieLine::HalfLine& halfLine, NetworkXmlWriterCo
     context.getWriter().writeAttribute(toString(B1_, side), halfLine.getB1());
     context.getWriter().writeAttribute(toString(G2_, side), halfLine.getG2());
     context.getWriter().writeAttribute(toString(B2_, side), halfLine.getB2());
-    context.getWriter().writeAttribute(toString(XNODE_P_, side), halfLine.getXnodeP());
-    context.getWriter().writeAttribute(toString(XNODE_Q_, side), halfLine.getXnodeQ());
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_4(), context.getVersion(), [&context, &side, &boundary]() {
+        context.getWriter().writeAttribute(toString(XNODE_P_, side), boundary.getP());
+        context.getWriter().writeAttribute(toString(XNODE_Q_, side), boundary.getQ());
+    });
 
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &side, &halfLine]() {
         context.getWriter().writeOptionalAttribute(toString(FICTITIOUS_, side), halfLine.isFictitious(), false);

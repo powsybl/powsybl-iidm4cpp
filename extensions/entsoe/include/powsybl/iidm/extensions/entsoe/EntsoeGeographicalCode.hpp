@@ -39,6 +39,7 @@ enum class EntsoeGeographicalCode : unsigned int {
     HR,
     HU,
     IT,
+    KS,
     LU,
     LT,
     MA,

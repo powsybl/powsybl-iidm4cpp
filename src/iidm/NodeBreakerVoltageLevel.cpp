@@ -68,6 +68,10 @@ void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
 
         // create the link terminal <-> graph vertex
         m_graph.setVertexObject(node, stdcxx::ref(nodeTerminal));
+
+        getNetwork().getVariantManager().forEachVariant([this]() {
+            invalidateCache();
+        });
     }
 }
 
@@ -85,6 +89,10 @@ void NodeBreakerVoltageLevel::clean() {
 
 bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
+
+    if (terminal.isConnected()) {
+        return false;
+    }
 
     unsigned long node = nodeTerminal.getNode();
 
@@ -125,7 +133,9 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
     assert(node < m_graph.getVertexCount());
     assert(stdcxx::areSame(m_graph.getVertexObject(node).get(), nodeTerminal));
 
-    invalidateCache();
+    getNetwork().getVariantManager().forEachVariant([this]() {
+        invalidateCache();
+    });
 
     // remove the link terminal <-> graph vertex
     m_graph.setVertexObject(node, stdcxx::ref<NodeTerminal>());
@@ -134,6 +144,10 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
 
 bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
+
+    if (!terminal.isConnected()) {
+        return false;
+    }
 
     unsigned long node = nodeTerminal.getNode();
 
