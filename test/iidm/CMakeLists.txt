@@ -29,6 +29,7 @@ set(UNIT_TEST_SOURCES
     NetworkFactory.cpp
     NetworkIndexTest.cpp
     NetworkTest.cpp
+    NodeBreakerConnectTest.cpp
     NodeBreakerVoltageLevelTest.cpp
     PhaseTapChangerTest.cpp
     RatioTapChangerTest.cpp
