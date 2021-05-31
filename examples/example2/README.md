@@ -61,6 +61,7 @@ project(my-project)
 
 # Find the required dependencies: Boost, LibXML2 and IIDM and import the targets
 find_package(Boost 1.65 REQUIRED COMPONENTS date_time filesystem program_options system unit_test_framework)
+find_package(Threads REQUIRED)
 find_package(LibXml2 REQUIRED)
 find_package(LibIIDM REQUIRED)
 
@@ -82,6 +83,15 @@ $> cmake -DCMAKE_PREFIX_PATH=/tmp/powsybl-iidm4cpp
 --   program_options
 --   system
 --   unit_test_framework
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Looking for pthread_create
+-- Looking for pthread_create - not found
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - found
+-- Found Threads: TRUE
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/user/powsybl-iidm4cpp/examples/example2/build
@@ -139,6 +149,15 @@ $> cmake --build .
 --   program_options
 --   system
 --   unit_test_framework
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Looking for pthread_create
+-- Looking for pthread_create - not found
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - found
+-- Found Threads: TRUE
 -- Configuring done
 -- Generating done
 -- Build files have been written to: /home/user/powsybl-iidm4cpp/examples/example2/build
