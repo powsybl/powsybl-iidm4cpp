@@ -19,8 +19,10 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
+#include <powsybl/network/FourSubstationsNodeBreakerFactory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 
@@ -1218,6 +1220,28 @@ BOOST_AUTO_TEST_CASE(issue318_invalidateCache) {
 
     // Without the fix, this call throws an exception (ArrayIndexOutOfBoundsException), but an invalid reference is expected
     BOOST_CHECK(!bbs2.getTerminal().getBusView().getBus());
+}
+
+BOOST_AUTO_TEST_CASE(NbkComprehensiveErrorMessage) {
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    BusbarSection& busbarSection = network.getBusbarSection("S1VL2_BBS1");
+    TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("TWT");
+    twt.getPhaseTapChanger().setRegulationTerminal(stdcxx::ref(busbarSection.getTerminal()));
+
+    stdcxx::Properties properties;
+    properties.set(converter::ExportOptions::TOPOLOGY_LEVEL, "NODE_BREAKER");
+
+    std::stringstream ss;
+
+    // make sure no error is thrown while exporting to NODE_BREAKER topology
+    BOOST_CHECK_NO_THROW({
+         Network::writeXml("network.xiidm", ss, network, converter::ExportOptions(properties));
+         Network::readXml("network.xiidm", ss);
+    });
+
+    // make sure an error is thrown when exporting to BUS_BREAKER topology (see #295)
+    properties.set(converter::ExportOptions::TOPOLOGY_LEVEL, "BUS_BREAKER");
+    POWSYBL_ASSERT_THROW(Network::writeXml("network.xiidm", ss, network, converter::ExportOptions(properties)), PowsyblException, "Terminal ref should not point to a busbar section (here S1VL2_BBS1). Try to export in node-breaker or delete this terminal ref.");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
