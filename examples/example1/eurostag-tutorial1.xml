@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Copyright (c) 2021, RTE (http://www.rte-france.com)
+	This Source Code Form is subject to the terms of the Mozilla Public
+	License, v. 2.0. If a copy of the MPL was not distributed with this
+	file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
 <iidm:network xmlns:iidm="http://www.itesla_project.eu/schema/iidm/1_0" id="sim1" caseDate="2013-01-15T18:45:00+01:00" forecastDistance="0" sourceFormat="test">
     <iidm:substation id="P1" country="FR" tso="RTE" geographicalTags="A">
         <iidm:voltageLevel id="VLGEN" nominalV="24" topologyKind="BUS_BREAKER">
