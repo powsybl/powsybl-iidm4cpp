@@ -337,7 +337,8 @@ void NodeBreakerVoltageLevel::invalidateCache() {
     m_variants.get().getCalculatedBusTopology().invalidateCache();
     m_variants.get().getCalculatedBusBreakerTopology().invalidateCache();
 
-    // TODO(mathbagu): invalidate the connected and synchronous components
+    getNetwork().getConnectedComponentsManager().invalidate();
+    getNetwork().getSynchronousComponentsManager().invalidate();
 }
 
 bool NodeBreakerVoltageLevel::isConnected(const Terminal& terminal) const {
