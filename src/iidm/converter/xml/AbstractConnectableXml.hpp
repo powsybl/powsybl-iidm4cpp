@@ -40,11 +40,11 @@ namespace xml {
 template <typename Added, typename Adder, typename Parent>
 class AbstractConnectableXml : public AbstractIdentifiableXml<Added, Adder, Parent> {
 public:
-    static void readActivePowerLimits(const std::function<ActivePowerLimitsAdder()>& activePowerLimitsOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readActivePowerLimits(ActivePowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
-    static void readApparentPowerLimits(const std::function<ApparentPowerLimitsAdder()>& apparentPowerLimitsOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readApparentPowerLimits(ApparentPowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
-    static void readCurrentLimits(const std::function<CurrentLimitsAdder()>& currentLimitOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readCurrentLimits(CurrentLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeActivePowerLimits(const ActivePowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
@@ -72,7 +72,7 @@ protected:
 
 private:
     template <typename LimitsAdder>
-    static void readLoadingLimits(const std::string& type, const std::function<LimitsAdder()>& limitOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readLoadingLimits(const std::string& type, LimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 

@@ -39,8 +39,8 @@ bool LoadingLimits::TemporaryLimit::isFictitious() const {
     return m_isFictitious;
 }
 
-LoadingLimits::LoadingLimits(OperationalLimitsHolder& owner, double permanentLimit, TemporaryLimits temporaryLimits) :
-    m_owner(owner),
+LoadingLimits::LoadingLimits(OperationalLimitsHolder& owner, double permanentLimit, TemporaryLimits&& temporaryLimits) :
+    OperationalLimits(owner),
     m_permanentLimit(permanentLimit),
     m_temporaryLimits(std::move(temporaryLimits)) {
 }
@@ -57,25 +57,12 @@ LoadingLimits::TemporaryLimit& LoadingLimits::getTemporaryLimit(unsigned long ac
     return m_temporaryLimits.at(acceptableDuration);
 }
 
-std::vector<std::reference_wrapper<const LoadingLimits::TemporaryLimit>> LoadingLimits::getTemporaryLimits() const {
-    // to be discussed: return a range here? => some unit tests may be removed (CurrentLimitsTest.cpp)
-    std::vector<std::reference_wrapper<const TemporaryLimit>> limits;
-
-    for (const auto& itLimit : m_temporaryLimits) {
-        limits.emplace_back(std::cref(itLimit.second));
-    }
-
-    return limits;
+stdcxx::const_range<LoadingLimits::TemporaryLimit> LoadingLimits::getTemporaryLimits() const {
+    return m_temporaryLimits | boost::adaptors::map_values;
 }
 
-std::vector<std::reference_wrapper<LoadingLimits::TemporaryLimit>> LoadingLimits::getTemporaryLimits() {
-    std::vector<std::reference_wrapper<TemporaryLimit>> limits;
-
-    for (auto& itLimit : m_temporaryLimits) {
-        limits.emplace_back(std::ref(itLimit.second));
-    }
-
-    return limits;
+stdcxx::range<LoadingLimits::TemporaryLimit> LoadingLimits::getTemporaryLimits() {
+    return m_temporaryLimits | boost::adaptors::map_values;
 }
 
 double LoadingLimits::getTemporaryLimitValue(unsigned long acceptableDuration) const {

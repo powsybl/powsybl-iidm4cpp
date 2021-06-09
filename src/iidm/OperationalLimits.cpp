@@ -7,12 +7,18 @@
 
 #include <powsybl/iidm/OperationalLimits.hpp>
 
+#include <powsybl/iidm/OperationalLimitsHolder.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
+OperationalLimits::OperationalLimits(OperationalLimitsHolder& owner) :
+    m_owner(owner) {
+}
+
 void OperationalLimits::remove() {
-    // do nothing
+    m_owner.setOperationalLimits(getLimitType(), std::unique_ptr<OperationalLimits>());
 }
 
 }  // namespace iidm

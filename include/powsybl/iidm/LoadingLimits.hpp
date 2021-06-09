@@ -52,7 +52,7 @@ public:
     using TemporaryLimits = std::map<unsigned long, TemporaryLimit, std::greater<unsigned long> >;
 
 public:
-    LoadingLimits(OperationalLimitsHolder& owner, double permanentLimit, TemporaryLimits temporaryLimits);
+    LoadingLimits(OperationalLimitsHolder& owner, double permanentLimit, TemporaryLimits&& temporaryLimits);
 
     LoadingLimits(const LoadingLimits&) = default;
 
@@ -71,16 +71,13 @@ public:
 
     TemporaryLimit& getTemporaryLimit(unsigned long acceptableDuration);
 
-    std::vector<std::reference_wrapper<const TemporaryLimit>> getTemporaryLimits() const;
+    stdcxx::const_range<TemporaryLimit> getTemporaryLimits() const;
 
-    std::vector<std::reference_wrapper<TemporaryLimit>> getTemporaryLimits();
+    stdcxx::range<TemporaryLimit> getTemporaryLimits();
 
     double getTemporaryLimitValue(unsigned long acceptableDuration) const;
 
     LoadingLimits& setPermanentLimit(double permanentLimit);
-
-protected:
-    OperationalLimitsHolder& m_owner;
 
 private:
     double m_permanentLimit;

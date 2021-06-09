@@ -24,34 +24,24 @@ namespace converter {
 
 namespace xml {
 
-const std::string ACTIVE_POWER_LIMITS = "activePowerLimits";
-const std::string APPARENT_POWER_LIMITS = "apparentPowerLimits";
-const std::string ACTIVE_POWER_LIMITS_1 = "activePowerLimits1";
-const std::string ACTIVE_POWER_LIMITS_2 = "activePowerLimits2";
-const std::string APPARENT_POWER_LIMITS_1 = "apparentPowerLimits1";
-const std::string APPARENT_POWER_LIMITS_2 = "apparentPowerLimits2";
-const std::string ACTIVE_POWER_LIMITS_3 = "activePowerLimits3";
-const std::string APPARENT_POWER_LIMITS_3 = "apparentPowerLimits3";
-
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readActivePowerLimits(const std::function<ActivePowerLimitsAdder()>& activePowerLimitsOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    readLoadingLimits(ACTIVE_POWER_LIMITS, activePowerLimitsOwner, reader, index);
+void AbstractConnectableXml<Added, Adder, Parent>::readActivePowerLimits(ActivePowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
+    readLoadingLimits(ACTIVE_POWER_LIMITS, adder, reader, index);
 }
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readApparentPowerLimits(const std::function<ApparentPowerLimitsAdder()>& apparentPowerLimitsOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    readLoadingLimits(APPARENT_POWER_LIMITS, apparentPowerLimitsOwner, reader, index);
+void AbstractConnectableXml<Added, Adder, Parent>::readApparentPowerLimits(ApparentPowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
+    readLoadingLimits(APPARENT_POWER_LIMITS, adder, reader, index);
 }
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readCurrentLimits(const std::function<CurrentLimitsAdder()>& currentLimitOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    readLoadingLimits(CURRENT_LIMITS, currentLimitOwner, reader, index);
+void AbstractConnectableXml<Added, Adder, Parent>::readCurrentLimits(CurrentLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
+    readLoadingLimits(CURRENT_LIMITS, adder, reader, index);
 }
 
 template <typename Added, typename Adder, typename Parent>
 template <typename LimitsAdder>
-void AbstractConnectableXml<Added, Adder, Parent>::readLoadingLimits(const std::string& type, const std::function<LimitsAdder()>& limitOwner, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    LimitsAdder adder = limitOwner();
+void AbstractConnectableXml<Added, Adder, Parent>::readLoadingLimits(const std::string& type, LimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
     double permanentLimit = reader.getOptionalAttributeValue(PERMANENT_LIMIT, stdcxx::nan());
     adder.setPermanentLimit(permanentLimit);
     reader.readUntilEndElement(toString(type.c_str(), index), [&reader, &adder]() {
@@ -179,10 +169,10 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeLoadingLimits(const Limi
 
         for (const auto& tl : limits.getTemporaryLimits()) {
             writer.writeStartElement(version.getPrefix(), TEMPORARY_LIMIT);
-            writer.writeAttribute(NAME, tl.get().getName());
-            writer.writeOptionalAttribute(ACCEPTABLE_DURATION, tl.get().getAcceptableDuration(), std::numeric_limits<unsigned long>::max());
-            writer.writeOptionalAttribute(VALUE, tl.get().getValue(), std::numeric_limits<double>::max());
-            writer.writeOptionalAttribute(FICTITIOUS, tl.get().isFictitious(), false);
+            writer.writeAttribute(NAME, tl.getName());
+            writer.writeOptionalAttribute(ACCEPTABLE_DURATION, tl.getAcceptableDuration(), std::numeric_limits<unsigned long>::max());
+            writer.writeOptionalAttribute(VALUE, tl.getValue(), std::numeric_limits<double>::max());
+            writer.writeOptionalAttribute(FICTITIOUS, tl.isFictitious(), false);
             writer.writeEndElement();
         }
         writer.writeEndElement();

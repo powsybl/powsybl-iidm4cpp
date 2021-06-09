@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_OperationalLimitsHolder_HPP
-#define POWSYBL_IIDM_OperationalLimitsHolder_HPP
+#ifndef POWSYBL_IIDM_OPERATIONALLIMITSHOLDER_HPP
+#define POWSYBL_IIDM_OPERATIONALLIMITSHOLDER_HPP
 
 #include <map>
 #include <memory>
@@ -32,7 +32,7 @@ public:  // Validable
     std::string getMessageHeader() const override;
 
 public:
-    OperationalLimitsHolder(Identifiable& identifiable, std::string attributeName);
+    OperationalLimitsHolder(Identifiable& identifiable, std::string&& attributeName);
 
     OperationalLimitsHolder(const OperationalLimitsHolder&) = default;
 
@@ -61,7 +61,8 @@ public:
 
     CurrentLimitsAdder newCurrentLimits();
 
-    void setOperationalLimits(const LimitType& limitType, std::unique_ptr<OperationalLimits>&& operationalLimits);
+    template <typename T>
+    stdcxx::Reference<T> setOperationalLimits(const LimitType& limitType, std::unique_ptr<T>&& operationalLimits);
 
 private:
     std::map<LimitType, std::unique_ptr<OperationalLimits>> m_operationalLimits;
@@ -77,4 +78,4 @@ private:
 
 #include <powsybl/iidm/OperationalLimitsHolder.hxx>
 
-#endif  // POWSYBL_IIDM_OperationalLimitsHolder_HPP
+#endif  // POWSYBL_IIDM_OPERATIONALLIMITSHOLDER_HPP

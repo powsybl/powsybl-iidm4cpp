@@ -19,7 +19,7 @@ namespace powsybl {
 
 namespace iidm {
 
-OperationalLimitsHolder::OperationalLimitsHolder(Identifiable& identifiable, std::string attributeName) :
+OperationalLimitsHolder::OperationalLimitsHolder(Identifiable& identifiable, std::string&& attributeName) :
     m_identifiable(identifiable),
     m_attributeName(std::move(attributeName)) {
 }
@@ -46,10 +46,6 @@ ApparentPowerLimitsAdder OperationalLimitsHolder::newApparentPowerLimits() {
 
 CurrentLimitsAdder OperationalLimitsHolder::newCurrentLimits() {
     return CurrentLimitsAdder(*this);
-}
-
-void OperationalLimitsHolder::setOperationalLimits(const LimitType& limitType, std::unique_ptr<OperationalLimits>&& operationalLimits) {
-    m_operationalLimits[limitType] = std::move(operationalLimits);
 }
 
 }  // namespace iidm

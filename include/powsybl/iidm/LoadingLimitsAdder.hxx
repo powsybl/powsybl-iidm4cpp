@@ -106,7 +106,7 @@ LoadingLimitsAdder<L, A>::LoadingLimitsAdder(OperationalLimitsHolder& owner) :
 
 template <typename L, typename A>
 LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious) {
-    m_temporaryLimits.emplace(std::make_pair(acceptableDuration, CurrentLimits::TemporaryLimit(name, value, acceptableDuration, fictitious)));
+    m_temporaryLimits.emplace(acceptableDuration, CurrentLimits::TemporaryLimit(name, value, acceptableDuration, fictitious));
     return *this;
 }
 
@@ -133,10 +133,8 @@ void LoadingLimitsAdder<L, A>::checkTemporaryLimits() const {
         }
         if (std::isnan(previousLimit)) {
             previousLimit = tl.getValue();
-        } else {
-            if (tl.getValue() <= previousLimit) {
-                logger.debug(stdcxx::format("%1%temporary limits should be in ascending value order", m_owner.getMessageHeader()));
-            }
+        } else if (tl.getValue() <= previousLimit) {
+            logger.debug(stdcxx::format("%1%temporary limits should be in ascending value order", m_owner.getMessageHeader()));
         }
     }
 

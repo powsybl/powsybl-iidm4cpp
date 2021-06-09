@@ -13,17 +13,13 @@ namespace powsybl {
 
 namespace iidm {
 
-ActivePowerLimits::ActivePowerLimits(OperationalLimitsHolder& owner, double permanentLimit, TemporaryLimits temporaryLimits) :
+ActivePowerLimits::ActivePowerLimits(OperationalLimitsHolder& owner, double permanentLimit, TemporaryLimits&& temporaryLimits) :
     LoadingLimits(owner, permanentLimit, std::move(temporaryLimits)) {
 }
 
 const LimitType& ActivePowerLimits::getLimitType() const {
     static LimitType s_type = LimitType::ACTIVE_POWER;
     return s_type;
-}
-
-void ActivePowerLimits::remove() {
-    m_owner.setOperationalLimits(LimitType::ACTIVE_POWER, std::unique_ptr<OperationalLimits>());
 }
 
 }  // namespace iidm

@@ -82,14 +82,14 @@ Network createDanglingLineNetwork() {
     danglingLine.newCurrentLimits()
         .setPermanentLimit(100.0)
         .beginTemporaryLimit()
-        .setName("20'")
-        .setValue(120.0)
-        .setAcceptableDuration(20 * 60)
+            .setName("20'")
+            .setValue(120.0)
+            .setAcceptableDuration(20 * 60)
         .endTemporaryLimit()
         .beginTemporaryLimit()
-        .setName("10'")
-        .setValue(140.0)
-        .setAcceptableDuration(10 * 60)
+            .setName("10'")
+            .setValue(140.0)
+            .setAcceptableDuration(10 * 60)
         .endTemporaryLimit()
         .add();
 
@@ -100,14 +100,14 @@ template <typename L, typename A>
 void createLoadingLimits(LoadingLimitsAdder<L, A>& adder) {
     adder.setPermanentLimit(350)
         .beginTemporaryLimit()
-        .setValue(370)
-        .setAcceptableDuration(20 * 60)
-        .setName("20'")
+            .setValue(370)
+            .setAcceptableDuration(20 * 60)
+            .setName("20'")
         .endTemporaryLimit()
         .beginTemporaryLimit()
-        .setValue(380)
-        .setAcceptableDuration(10 * 60)
-        .setName("10'")
+            .setValue(380)
+            .setAcceptableDuration(10 * 60)
+            .setName("10'")
         .endTemporaryLimit()
         .add();
 }
@@ -162,8 +162,8 @@ BOOST_FIXTURE_TEST_CASE(DanglingLineLoadingLimitsTest, test::ResourceFixture) {
     DanglingLine& danglingLine = network.getDanglingLine("DL");
     ApparentPowerLimitsAdder activePowerLimitsAdder = danglingLine.newApparentPowerLimits();
     createLoadingLimits(activePowerLimitsAdder);
-    ActivePowerLimitsAdder ApparentPowerLimitsAdder = danglingLine.newActivePowerLimits();
-    createLoadingLimits(ApparentPowerLimitsAdder);
+    ActivePowerLimitsAdder apparentPowerLimitsAdder = danglingLine.newActivePowerLimits();
+    createLoadingLimits(apparentPowerLimitsAdder);
     CurrentLimitsAdder currentLimitsAdder = danglingLine.newCurrentLimits();
     createLoadingLimits(currentLimitsAdder);
 

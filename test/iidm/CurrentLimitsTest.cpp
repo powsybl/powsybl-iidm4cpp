@@ -163,24 +163,20 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(limits, cLimits));
     BOOST_CHECK_CLOSE(4.0, limits.getPermanentLimit(), std::numeric_limits<double>::epsilon());
 
-    std::vector<std::reference_wrapper<CurrentLimits::TemporaryLimit>> tempLimits = limits.getTemporaryLimits();
-    BOOST_CHECK_EQUAL(3, tempLimits.size());
+    stdcxx::range<CurrentLimits::TemporaryLimit> tempLimits = limits.getTemporaryLimits();
+    BOOST_CHECK_EQUAL(3, boost::size(tempLimits));
     CurrentLimits::TemporaryLimit tl = limits.getTemporaryLimit(3UL);
     CurrentLimits::TemporaryLimit tl2 = cLimits.getTemporaryLimit(3UL);
     unsigned int index = 0;
 
     BOOST_CHECK_EQUAL(3UL, tl.getAcceptableDuration());
     BOOST_CHECK_EQUAL(3UL, tl2.getAcceptableDuration());
-    BOOST_CHECK_EQUAL(3UL, tempLimits.at(index).get().getAcceptableDuration());
     BOOST_CHECK_EQUAL("TL3", tl.getName());
     BOOST_CHECK_EQUAL("TL3", tl2.getName());
-    BOOST_CHECK_EQUAL("TL3", tempLimits.at(index).get().getName());
     BOOST_CHECK_CLOSE(5.0, tl.getValue(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, tl2.getValue(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(5.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!tl.isFictitious());
     BOOST_TEST(!tl2.isFictitious());
-    BOOST_TEST(!tempLimits.at(index).get().isFictitious());
     BOOST_CHECK_CLOSE(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     tl = limits.getTemporaryLimit(2UL);
@@ -189,16 +185,12 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_CHECK_EQUAL(2UL, tl.getAcceptableDuration());
     BOOST_CHECK_EQUAL(2UL, tl2.getAcceptableDuration());
-    BOOST_CHECK_EQUAL(2UL, tempLimits.at(index).get().getAcceptableDuration());
     BOOST_CHECK_EQUAL("TL2", tl.getName());
     BOOST_CHECK_EQUAL("TL2", tl2.getName());
-    BOOST_CHECK_EQUAL("TL2", tempLimits.at(index).get().getName());
     BOOST_CHECK_CLOSE(6.0, tl.getValue(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, tl2.getValue(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(6.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(tl.isFictitious());
     BOOST_TEST(tl2.isFictitious());
-    BOOST_TEST(tempLimits.at(index).get().isFictitious());
     BOOST_CHECK_CLOSE(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     tl = limits.getTemporaryLimit(1UL);
@@ -207,16 +199,12 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_CHECK_EQUAL(1UL, tl.getAcceptableDuration());
     BOOST_CHECK_EQUAL(1UL, tl2.getAcceptableDuration());
-    BOOST_CHECK_EQUAL(1UL, tempLimits.at(index).get().getAcceptableDuration());
     BOOST_CHECK_EQUAL("TL1", tl.getName());
     BOOST_CHECK_EQUAL("TL1", tl2.getName());
-    BOOST_CHECK_EQUAL("TL1", tempLimits.at(index).get().getName());
     BOOST_CHECK_CLOSE(7.0, tl.getValue(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(7.0, tl2.getValue(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(7.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!tl.isFictitious());
     BOOST_TEST(!tl2.isFictitious());
-    BOOST_TEST(!tempLimits.at(index).get().isFictitious());
     BOOST_CHECK_CLOSE(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 }
 
@@ -443,17 +431,11 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     BOOST_CHECK_CLOSE(4.0, overload.getPreviousLimit(), std::numeric_limits<double>::epsilon());
     const CurrentLimits::TemporaryLimit& tl = overload.getTemporaryLimit();
     auto limits = line.getCurrentLimits1().get();
-    const auto& tempLimits = limits.getTemporaryLimits();
-    unsigned long index = 0;
 
     BOOST_CHECK_EQUAL(3UL, tl.getAcceptableDuration());
-    BOOST_CHECK_EQUAL(3UL, tempLimits.at(index).get().getAcceptableDuration());
     BOOST_CHECK_EQUAL("TL3", tl.getName());
-    BOOST_CHECK_EQUAL("TL3", tempLimits.at(index).get().getName());
     BOOST_CHECK_CLOSE(5.0, tl.getValue(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(5.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!tl.isFictitious());
-    BOOST_TEST(!tempLimits.at(index).get().isFictitious());
     BOOST_CHECK_CLOSE(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     t1.setP(11.0);
@@ -463,15 +445,10 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     const CurrentLimits::TemporaryLimit& tl2 = overload2.getTemporaryLimit();
     BOOST_CHECK_EQUAL("TL3", overload2.getPreviousLimitName());
     BOOST_CHECK_CLOSE(5.0, overload2.getPreviousLimit(), std::numeric_limits<double>::epsilon());
-    index = 1;
     BOOST_CHECK_EQUAL(2UL, tl2.getAcceptableDuration());
-    BOOST_CHECK_EQUAL(2UL, tempLimits.at(index).get().getAcceptableDuration());
     BOOST_CHECK_EQUAL("TL2", tl2.getName());
-    BOOST_CHECK_EQUAL("TL2", tempLimits.at(index).get().getName());
     BOOST_CHECK_CLOSE(6.0, tl2.getValue(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(6.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(tl2.isFictitious());
-    BOOST_TEST(tempLimits.at(index).get().isFictitious());
     BOOST_CHECK_CLOSE(tl2.getValue(), limits.getTemporaryLimitValue(tl2.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     t1.setP(13.0);
@@ -481,15 +458,10 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     const CurrentLimits::TemporaryLimit& tl3 = overload3.getTemporaryLimit();
     BOOST_CHECK_EQUAL("TL2", overload3.getPreviousLimitName());
     BOOST_CHECK_CLOSE(6.0, overload3.getPreviousLimit(), std::numeric_limits<double>::epsilon());
-    index = 2;
     BOOST_CHECK_EQUAL(1UL, tl3.getAcceptableDuration());
-    BOOST_CHECK_EQUAL(1UL, tempLimits.at(index).get().getAcceptableDuration());
     BOOST_CHECK_EQUAL("TL1", tl3.getName());
-    BOOST_CHECK_EQUAL("TL1", tempLimits.at(index).get().getName());
     BOOST_CHECK_CLOSE(7.0, tl3.getValue(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(7.0, tempLimits.at(index).get().getValue(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!tl3.isFictitious());
-    BOOST_TEST(!tempLimits.at(index).get().isFictitious());
     BOOST_CHECK_CLOSE(tl3.getValue(), limits.getTemporaryLimitValue(tl3.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     t1.setP(15.0);
