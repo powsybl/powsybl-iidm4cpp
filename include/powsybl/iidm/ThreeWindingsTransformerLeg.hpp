@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_THREEWINDINGSTRANSFORMERLEG_HPP
 
 #include <powsybl/iidm/FlowsLimitsHolder.hpp>
+#include <powsybl/iidm/OperationalLimitsHolder.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
 
@@ -141,7 +142,7 @@ private:
 private:
     stdcxx::Reference<ThreeWindingsTransformer> m_transformer;
 
-    std::unique_ptr<OperationalLimitsHolder> m_operationalLimitsHolder;
+    OperationalLimitsHolder m_operationalLimitsHolder;
 
     unsigned long m_legNumber;
 

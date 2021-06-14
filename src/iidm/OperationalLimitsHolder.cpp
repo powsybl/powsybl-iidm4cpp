@@ -24,8 +24,12 @@ OperationalLimitsHolder::OperationalLimitsHolder(Identifiable& identifiable, std
     m_attributeName(std::move(attributeName)) {
 }
 
+OperationalLimitsHolder::OperationalLimitsHolder(std::string&& attributeName) :
+    m_attributeName(std::move(attributeName)) {
+}
+
 std::string OperationalLimitsHolder::getMessageHeader() const {
-    return m_identifiable.getMessageHeader();
+    return m_identifiable.get().getMessageHeader();
 }
 
 stdcxx::const_range<OperationalLimits> OperationalLimitsHolder::getOperationalLimits() const {
@@ -46,6 +50,10 @@ ApparentPowerLimitsAdder OperationalLimitsHolder::newApparentPowerLimits() {
 
 CurrentLimitsAdder OperationalLimitsHolder::newCurrentLimits() {
     return CurrentLimitsAdder(*this);
+}
+
+void OperationalLimitsHolder::setIdentifiable(Identifiable& identifiable) {
+    m_identifiable = identifiable;
 }
 
 }  // namespace iidm

@@ -68,20 +68,22 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(activePowerLimitsAdder.beginTemporaryLimit().setValue(1.0).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': acceptable duration is not set");
     POWSYBL_ASSERT_THROW(activePowerLimitsAdder.beginTemporaryLimit().setValue(1.0).setAcceptableDuration(20 * 60).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': name is not set");
 
-    const ActivePowerLimits& apl = activePowerLimitsAdder
-        .beginTemporaryLimit()
-        .setName("20'")
-        .setValue(100.0)
-        .setAcceptableDuration(20 * 60)
+    activePowerLimitsAdder.beginTemporaryLimit()
+            .setName("20'")
+            .setValue(100.0)
+            .setAcceptableDuration(20 * 60)
         .endTemporaryLimit()
         .beginTemporaryLimit()
-        .setName("20'")
-        .ensureNameUnicity()
-        .setValue(200.0)
-        .setAcceptableDuration(30 * 60)
-        .setFictitious(true)
+            .setName("20'")
+            .ensureNameUnicity()
+            .setValue(200.0)
+            .setAcceptableDuration(30 * 60)
+            .setFictitious(true)
         .endTemporaryLimit()
         .add();
+
+    // to ensure adder reusability
+    const ActivePowerLimits& apl = activePowerLimitsAdder.add();
 
     const ActivePowerLimits::TemporaryLimit& tl1 = apl.getTemporaryLimit(20 * 60);
     BOOST_CHECK_EQUAL("20'", tl1.getName());

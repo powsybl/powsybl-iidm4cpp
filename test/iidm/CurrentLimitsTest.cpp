@@ -308,6 +308,13 @@ BOOST_AUTO_TEST_CASE(adder) {
     adder.beginTemporaryLimit().setAcceptableDuration(2UL).setFictitious(false).setName("TL_2").setValue(120.0).endTemporaryLimit();
     adder.beginTemporaryLimit().setAcceptableDuration(3UL).setFictitious(true).setName("TL_3").setValue(110.0).endTemporaryLimit();
     BOOST_CHECK_NO_THROW(adder.add());
+
+    // to ensure adder reusability
+    BOOST_CHECK_NO_THROW(adder.add());
+    BOOST_CHECK_EQUAL("TL_1", line.getCurrentLimits2().get().getTemporaryLimit(1UL).getName());
+    BOOST_CHECK_EQUAL("TL_2", line.getCurrentLimits2().get().getTemporaryLimit(2UL).getName());
+    BOOST_CHECK_EQUAL("TL_3", line.getCurrentLimits2().get().getTemporaryLimit(3UL).getName());
+
     BOOST_CHECK_EQUAL(2, logger.size());
     BOOST_TEST(line.getCurrentLimits2());
 

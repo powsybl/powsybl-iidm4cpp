@@ -53,7 +53,7 @@ void LoadingLimitsAdder<L, A>::TemporaryLimitAdder::checkAndGetUniqueName() {
     if (m_ensureNameUnicity) {
         unsigned long i = 0UL;
         std::string uniqueName = m_name;
-        while (i < std::numeric_limits<unsigned long>::max() && nameExists(uniqueName)) {
+        while (i < std::numeric_limits<unsigned long>::max() && m_parent.nameExists(uniqueName)) {
             uniqueName = m_name + stdcxx::format("#%1%", i);
             i++;
         }
@@ -65,14 +65,6 @@ template <typename L, typename A>
 typename LoadingLimitsAdder<L, A>::TemporaryLimitAdder& LoadingLimitsAdder<L, A>::TemporaryLimitAdder::ensureNameUnicity() {
     m_ensureNameUnicity = true;
     return *this;
-}
-
-template <typename L, typename A>
-bool LoadingLimitsAdder<L, A>::TemporaryLimitAdder::nameExists(const std::string& name) const {
-    auto it = std::find_if(m_parent.m_temporaryLimits.begin(), m_parent.m_temporaryLimits.end(), [&name](const std::pair<unsigned long, LoadingLimits::TemporaryLimit>& item) {
-        return item.second.getName() == name;
-    });
-    return it != m_parent.m_temporaryLimits.end();
 }
 
 template <typename L, typename A>
@@ -151,6 +143,14 @@ void LoadingLimitsAdder<L, A>::checkTemporaryLimits() const {
 template <typename L, typename A>
 bool LoadingLimitsAdder<L, A>::hasTemporaryLimits() const {
     return !m_temporaryLimits.empty();
+}
+
+template <typename L, typename A>
+bool LoadingLimitsAdder<L, A>::nameExists(const std::string& name) const {
+    auto it = std::find_if(m_temporaryLimits.begin(), m_temporaryLimits.end(), [&name](const std::pair<unsigned long, LoadingLimits::TemporaryLimit>& item) {
+        return item.second.getName() == name;
+    });
+    return it != m_temporaryLimits.end();
 }
 
 template <typename L, typename A>

@@ -28,6 +28,7 @@ namespace iidm {
 namespace three_windings_transformer {
 
 Leg::Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU, double ratedS) :
+    m_operationalLimitsHolder(stdcxx::format("limits%1%", m_legNumber)),
     m_legNumber(legNumber),
     m_r(checkR(*this, r)),
     m_x(checkX(*this, x)),
@@ -38,35 +39,35 @@ Leg::Leg(unsigned long legNumber, double r, double x, double g, double b, double
 }
 
 stdcxx::CReference<ActivePowerLimits> Leg::getActivePowerLimits() const {
-    return stdcxx::cref(m_operationalLimitsHolder->getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER));
+    return m_operationalLimitsHolder.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
 }
 
 stdcxx::Reference<ActivePowerLimits> Leg::getActivePowerLimits() {
-    return m_operationalLimitsHolder->getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
+    return m_operationalLimitsHolder.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
 }
 
 stdcxx::CReference<ApparentPowerLimits> Leg::getApparentPowerLimits() const {
-    return stdcxx::cref(m_operationalLimitsHolder->getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER));
+    return m_operationalLimitsHolder.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
 }
 
 stdcxx::Reference<ApparentPowerLimits> Leg::getApparentPowerLimits() {
-    return m_operationalLimitsHolder->getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
+    return m_operationalLimitsHolder.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
 }
 
 stdcxx::CReference<CurrentLimits> Leg::getCurrentLimits() const {
-    return stdcxx::cref(m_operationalLimitsHolder->getOperationalLimits<CurrentLimits>(LimitType::CURRENT));
+    return stdcxx::cref(m_operationalLimitsHolder.getOperationalLimits<CurrentLimits>(LimitType::CURRENT));
 }
 
 stdcxx::Reference<CurrentLimits> Leg::getCurrentLimits() {
-    return m_operationalLimitsHolder->getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
+    return m_operationalLimitsHolder.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
 }
 
 stdcxx::const_range<OperationalLimits> Leg::getOperationalLimits() const {
-    return m_operationalLimitsHolder->getOperationalLimits();
+    return m_operationalLimitsHolder.getOperationalLimits();
 }
 
 stdcxx::range<OperationalLimits> Leg::getOperationalLimits() {
-    return m_operationalLimitsHolder->getOperationalLimits();
+    return m_operationalLimitsHolder.getOperationalLimits();
 }
 
 double Leg::getB() const {
@@ -178,15 +179,15 @@ bool Leg::hasRatioTapChanger() const {
 }
 
 ActivePowerLimitsAdder Leg::newActivePowerLimits() {
-    return m_operationalLimitsHolder->newActivePowerLimits();
+    return m_operationalLimitsHolder.newActivePowerLimits();
 }
 
 ApparentPowerLimitsAdder Leg::newApparentPowerLimits() {
-    return m_operationalLimitsHolder->newApparentPowerLimits();
+    return m_operationalLimitsHolder.newApparentPowerLimits();
 }
 
 CurrentLimitsAdder Leg::newCurrentLimits() {
-    return m_operationalLimitsHolder->newCurrentLimits();
+    return m_operationalLimitsHolder.newCurrentLimits();
 }
 
 Leg& Leg::setB(double b) {
@@ -237,7 +238,7 @@ void Leg::setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger)
 
 Leg& Leg::setTransformer(ThreeWindingsTransformer& transformer) {
     m_transformer = transformer;
-    m_operationalLimitsHolder = stdcxx::make_unique<OperationalLimitsHolder>(m_transformer.get(), stdcxx::format("limits%1%", m_legNumber));
+    m_operationalLimitsHolder.setIdentifiable(transformer);
     return *this;
 }
 

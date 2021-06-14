@@ -27,12 +27,20 @@ class ApparentPowerLimitsAdder;
 class CurrentLimitsAdder;
 class Identifiable;
 
+namespace three_windings_transformer {
+
+class Leg;
+
+}  // namespace three_windings_transformer
+
 class OperationalLimitsHolder : public Validable {
 public:  // Validable
     std::string getMessageHeader() const override;
 
 public:
     OperationalLimitsHolder(Identifiable& identifiable, std::string&& attributeName);
+
+    OperationalLimitsHolder(std::string&& attributeName);
 
     OperationalLimitsHolder(const OperationalLimitsHolder&) = default;
 
@@ -41,9 +49,9 @@ public:
 
     ~OperationalLimitsHolder() noexcept override = default;
 
-    OperationalLimitsHolder& operator=(const OperationalLimitsHolder&) = delete;
+    OperationalLimitsHolder& operator=(const OperationalLimitsHolder&) = default;
 
-    OperationalLimitsHolder& operator=(OperationalLimitsHolder&&) = delete;
+    OperationalLimitsHolder& operator=(OperationalLimitsHolder&&) = default;
 
     stdcxx::const_range<OperationalLimits> getOperationalLimits() const;
 
@@ -65,9 +73,15 @@ public:
     stdcxx::Reference<T> setOperationalLimits(const LimitType& limitType, std::unique_ptr<T>&& operationalLimits);
 
 private:
+    friend class three_windings_transformer::Leg;
+
+private:
+    void setIdentifiable(Identifiable& identifiable);
+
+private:
     std::map<LimitType, std::unique_ptr<OperationalLimits>> m_operationalLimits;
 
-    Identifiable& m_identifiable;
+    stdcxx::Reference<Identifiable> m_identifiable;
 
     std::string m_attributeName;
 };

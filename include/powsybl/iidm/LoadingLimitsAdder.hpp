@@ -41,8 +41,6 @@ public:
     private:
         void checkAndGetUniqueName();
 
-        bool nameExists(const std::string& name) const;
-
     private:
         OperationalLimitsHolder& m_owner;
 
@@ -87,6 +85,8 @@ private:
     LoadingLimitsAdder<L, A>& addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious);
 
     void checkTemporaryLimits() const;
+
+    bool nameExists(const std::string& name) const;
 
 protected:
     OperationalLimitsHolder& m_owner;

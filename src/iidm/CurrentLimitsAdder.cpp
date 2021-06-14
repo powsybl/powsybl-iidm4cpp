@@ -20,7 +20,7 @@ CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsHolder& owner) :
 
 CurrentLimits& CurrentLimitsAdder::add() {
     checkLoadingLimits();
-    return m_owner.setOperationalLimits(LimitType::CURRENT, stdcxx::make_unique<CurrentLimits>(m_owner, m_permanentLimit, std::move(m_temporaryLimits))).get();
+    return m_owner.setOperationalLimits(LimitType::CURRENT, stdcxx::make_unique<CurrentLimits>(m_owner, m_permanentLimit, m_temporaryLimits)).get();
 }
 
 }  // namespace iidm

@@ -13,8 +13,8 @@ namespace powsybl {
 
 namespace iidm {
 
-ApparentPowerLimits::ApparentPowerLimits(OperationalLimitsHolder& owner, double permanentLimit, TemporaryLimits&& temporaryLimits) :
-    LoadingLimits(owner, permanentLimit, std::move(temporaryLimits)) {
+ApparentPowerLimits::ApparentPowerLimits(OperationalLimitsHolder& owner, double permanentLimit, const TemporaryLimits& temporaryLimits) :
+    LoadingLimits(owner, permanentLimit, temporaryLimits) {
 }
 
 const LimitType& ApparentPowerLimits::getLimitType() const {

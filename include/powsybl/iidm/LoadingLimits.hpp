@@ -52,7 +52,7 @@ public:
     using TemporaryLimits = std::map<unsigned long, TemporaryLimit, std::greater<unsigned long> >;
 
 public:
-    LoadingLimits(OperationalLimitsHolder& owner, double permanentLimit, TemporaryLimits&& temporaryLimits);
+    LoadingLimits(OperationalLimitsHolder& owner, double permanentLimit, const TemporaryLimits& temporaryLimits);
 
     LoadingLimits(const LoadingLimits&) = default;
 
