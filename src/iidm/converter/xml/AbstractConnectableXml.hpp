@@ -72,7 +72,7 @@ protected:
 
 private:
     template <typename LimitsAdder>
-    static void readLoadingLimits(const std::string& type, LimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readLoadingLimits(const std::string& type, LimitsAdder&& adderValue, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 

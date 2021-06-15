@@ -41,7 +41,8 @@ void AbstractConnectableXml<Added, Adder, Parent>::readCurrentLimits(CurrentLimi
 
 template <typename Added, typename Adder, typename Parent>
 template <typename LimitsAdder>
-void AbstractConnectableXml<Added, Adder, Parent>::readLoadingLimits(const std::string& type, LimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
+void AbstractConnectableXml<Added, Adder, Parent>::readLoadingLimits(const std::string& type, LimitsAdder&& adderValue, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
+    LimitsAdder&& adder = std::forward<LimitsAdder>(adderValue);
     double permanentLimit = reader.getOptionalAttributeValue(PERMANENT_LIMIT, stdcxx::nan());
     adder.setPermanentLimit(permanentLimit);
     reader.readUntilEndElement(toString(type.c_str(), index), [&reader, &adder]() {

@@ -18,7 +18,7 @@ class OperationalLimitsHolder;
 
 class OperationalLimits {
 public:
-    OperationalLimits(OperationalLimitsHolder& owner);
+    explicit OperationalLimits(OperationalLimitsHolder& owner);
 
     OperationalLimits(const OperationalLimits&) = default;
 

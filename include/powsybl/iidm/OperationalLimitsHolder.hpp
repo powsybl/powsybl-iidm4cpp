@@ -40,7 +40,7 @@ public:  // Validable
 public:
     OperationalLimitsHolder(Identifiable& identifiable, std::string&& attributeName);
 
-    OperationalLimitsHolder(std::string&& attributeName);
+    explicit OperationalLimitsHolder(std::string&& attributeName);
 
     OperationalLimitsHolder(const OperationalLimitsHolder&) = default;
 
