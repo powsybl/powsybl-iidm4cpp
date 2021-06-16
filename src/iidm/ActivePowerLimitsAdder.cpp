@@ -19,7 +19,7 @@ ActivePowerLimitsAdder::ActivePowerLimitsAdder(OperationalLimitsHolder& owner) :
 
 ActivePowerLimits& ActivePowerLimitsAdder::add() {
     checkLoadingLimits();
-    return m_owner.setOperationalLimits(LimitType::ACTIVE_POWER, stdcxx::make_unique<ActivePowerLimits>(m_owner, m_permanentLimit, m_temporaryLimits)).get();
+    return m_owner.setOperationalLimits(LimitType::ACTIVE_POWER, stdcxx::make_unique<ActivePowerLimits>(m_owner, getPermanentLimit(), getTemporaryLimits())).get();
 }
 
 }  // namespace iidm

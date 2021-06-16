@@ -141,6 +141,16 @@ void LoadingLimitsAdder<L, A>::checkTemporaryLimits() const {
 }
 
 template <typename L, typename A>
+double LoadingLimitsAdder<L, A>::getPermanentLimit() const {
+    return m_permanentLimit;
+}
+
+template <typename L, typename A>
+const LoadingLimits::TemporaryLimits& LoadingLimitsAdder<L, A>::getTemporaryLimits() const {
+    return m_temporaryLimits;
+}
+
+template <typename L, typename A>
 bool LoadingLimitsAdder<L, A>::hasTemporaryLimits() const {
     return !m_temporaryLimits.empty();
 }

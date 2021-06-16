@@ -17,7 +17,7 @@ ApparentPowerLimitsAdder::ApparentPowerLimitsAdder(OperationalLimitsHolder& owne
 
 ApparentPowerLimits& ApparentPowerLimitsAdder::add() {
     checkLoadingLimits();
-    return m_owner.setOperationalLimits(LimitType::APPARENT_POWER, stdcxx::make_unique<ApparentPowerLimits>(m_owner, m_permanentLimit, m_temporaryLimits)).get();
+    return m_owner.setOperationalLimits(LimitType::APPARENT_POWER, stdcxx::make_unique<ApparentPowerLimits>(m_owner, getPermanentLimit(), getTemporaryLimits())).get();
 }
 
 }  // namespace iidm

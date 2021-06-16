@@ -81,6 +81,13 @@ public:
 protected:
     void checkLoadingLimits() const;
 
+    double getPermanentLimit() const;
+
+    const LoadingLimits::TemporaryLimits& getTemporaryLimits() const;
+
+protected:
+    OperationalLimitsHolder& m_owner;
+
 private:
     LoadingLimitsAdder<L, A>& addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious);
 
@@ -88,9 +95,7 @@ private:
 
     bool nameExists(const std::string& name) const;
 
-protected:
-    OperationalLimitsHolder& m_owner;
-
+private:
     double m_permanentLimit = stdcxx::nan();
 
     LoadingLimits::TemporaryLimits m_temporaryLimits;
