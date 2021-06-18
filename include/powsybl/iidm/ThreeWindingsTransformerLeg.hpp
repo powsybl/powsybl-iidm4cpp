@@ -34,29 +34,6 @@ class Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChanger
 public:  // Validable
     std::string getMessageHeader() const override;
 
-public:  // FlowsLimitsHolder
-    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const override;
-
-    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits() override;
-
-    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits() const override;
-
-    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits() override;
-
-    stdcxx::CReference<CurrentLimits> getCurrentLimits() const override;
-
-    stdcxx::Reference<CurrentLimits> getCurrentLimits() override;
-
-    stdcxx::const_range<OperationalLimits> getOperationalLimits() const override;
-
-    stdcxx::range<OperationalLimits> getOperationalLimits() override;
-
-    ActivePowerLimitsAdder newActivePowerLimits() override;
-
-    ApparentPowerLimitsAdder newApparentPowerLimits() override;
-
-    CurrentLimitsAdder newCurrentLimits() override;
-
 public:  // TapChangerHolder
     const Network& getNetwork() const override;
 
@@ -141,8 +118,6 @@ private:
 
 private:
     stdcxx::Reference<ThreeWindingsTransformer> m_transformer;
-
-    OperationalLimitsHolder m_operationalLimitsHolder;
 
     unsigned long m_legNumber;
 

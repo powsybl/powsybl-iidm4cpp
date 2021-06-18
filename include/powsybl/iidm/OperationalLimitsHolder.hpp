@@ -25,13 +25,8 @@ namespace iidm {
 class ActivePowerLimitsAdder;
 class ApparentPowerLimitsAdder;
 class CurrentLimitsAdder;
+class FlowsLimitsHolder;
 class Identifiable;
-
-namespace three_windings_transformer {
-
-class Leg;
-
-}  // namespace three_windings_transformer
 
 class OperationalLimitsHolder : public Validable {
 public:  // Validable
@@ -73,7 +68,7 @@ public:
     stdcxx::Reference<T> setOperationalLimits(const LimitType& limitType, std::unique_ptr<T>&& operationalLimits);
 
 private:
-    friend class three_windings_transformer::Leg;
+    friend class FlowsLimitsHolder;
 
 private:
     void setIdentifiable(Identifiable& identifiable);

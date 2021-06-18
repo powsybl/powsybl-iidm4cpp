@@ -37,33 +37,17 @@ public:
 
     ~DanglingLine() noexcept override = default;
 
-    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const override;
-
-    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits() override;
-
-    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits() const override;
-
-    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits() override;
-
     double getB() const;
 
     const Boundary& getBoundary() const;
 
     Boundary& getBoundary();
 
-    stdcxx::CReference<CurrentLimits> getCurrentLimits() const override;
-
-    stdcxx::Reference<CurrentLimits> getCurrentLimits() override;
-
     double getG() const;
 
     stdcxx::CReference<Generation> getGeneration() const;
 
     stdcxx::Reference<Generation> getGeneration();
-
-    stdcxx::const_range<OperationalLimits> getOperationalLimits() const override;
-
-    stdcxx::range<OperationalLimits> getOperationalLimits() override;
 
     double getP0() const;
 
@@ -74,12 +58,6 @@ public:
     const std::string& getUcteXnodeCode() const;
 
     double getX() const;
-
-    ActivePowerLimitsAdder newActivePowerLimits() override;
-
-    ApparentPowerLimitsAdder newApparentPowerLimits() override;
-
-    CurrentLimitsAdder newCurrentLimits() override;
 
     DanglingLine& setB(double b);
 
@@ -119,8 +97,6 @@ private:
     std::string m_ucteXnodeCode;
 
     std::unique_ptr<Generation> m_generation;
-
-    OperationalLimitsHolder m_operationalLimitsHolder;
 
     std::unique_ptr<Boundary> m_boundary;
 };

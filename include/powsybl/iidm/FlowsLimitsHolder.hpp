@@ -12,6 +12,7 @@
 #include <vector>
 
 #include <powsybl/iidm/OperationalLimits.hpp>
+#include <powsybl/iidm/OperationalLimitsHolder.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
@@ -25,30 +26,51 @@ class ApparentPowerLimits;
 class ApparentPowerLimitsAdder;
 class CurrentLimits;
 class CurrentLimitsAdder;
+class Identifiable;
 
 class FlowsLimitsHolder {
 public:
-    virtual stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const = 0;
+    FlowsLimitsHolder(Identifiable& identifiable, std::string&& attributeName);
 
-    virtual stdcxx::Reference<ActivePowerLimits> getActivePowerLimits() = 0;
+    explicit FlowsLimitsHolder(std::string&& attributeName);
 
-    virtual stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits() const = 0;
+    FlowsLimitsHolder(const FlowsLimitsHolder&) = default;
 
-    virtual stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits() = 0;
+    FlowsLimitsHolder(FlowsLimitsHolder&&) noexcept = default;
 
-    virtual stdcxx::CReference<CurrentLimits> getCurrentLimits() const = 0;
+    ~FlowsLimitsHolder() noexcept = default;
 
-    virtual stdcxx::Reference<CurrentLimits> getCurrentLimits() = 0;
+    FlowsLimitsHolder& operator=(const FlowsLimitsHolder&) = default;
 
-    virtual stdcxx::const_range<OperationalLimits> getOperationalLimits() const = 0;
+    FlowsLimitsHolder& operator=(FlowsLimitsHolder&&) noexcept = default;
 
-    virtual stdcxx::range<OperationalLimits> getOperationalLimits() = 0;
+    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const;
 
-    virtual ActivePowerLimitsAdder newActivePowerLimits() = 0;
+    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits();
 
-    virtual ApparentPowerLimitsAdder newApparentPowerLimits() = 0;
+    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits() const;
 
-    virtual CurrentLimitsAdder newCurrentLimits() = 0;
+    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits();
+
+    stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
+
+    stdcxx::Reference<CurrentLimits> getCurrentLimits();
+
+    stdcxx::const_range<OperationalLimits> getOperationalLimits() const;
+
+    stdcxx::range<OperationalLimits> getOperationalLimits();
+
+    ActivePowerLimitsAdder newActivePowerLimits();
+
+    ApparentPowerLimitsAdder newApparentPowerLimits();
+
+    CurrentLimitsAdder newCurrentLimits();
+
+protected:
+    void setIdentifiable(Identifiable& identifiable);
+
+private:
+    OperationalLimitsHolder m_operationalLimitsHolder;
 };
 
 }  // namespace iidm
