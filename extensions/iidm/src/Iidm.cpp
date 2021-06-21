@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/extensions/iidm/ActivePowerControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/VoltagePerReactivePowerControlXmlSerializer.hpp>
@@ -29,6 +30,7 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     std::vector<std::unique_ptr<ExtensionProvider>> serializers;
     serializers.emplace_back(stdcxx::make_unique<ActivePowerControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<HvdcAngleDroopActivePowerControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<ThreeWindingsTransformerPhaseAngleClockXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<TwoWindingsTransformerPhaseAngleClockXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<VoltagePerReactivePowerControlXmlSerializer>());
