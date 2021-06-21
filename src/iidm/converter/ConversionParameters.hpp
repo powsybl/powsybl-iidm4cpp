@@ -34,11 +34,11 @@ public:
 public:
     ConversionParameters() = delete;
 
-    ~ConversionParameters() = delete;
-
     ConversionParameters(const ConversionParameters&) = delete;
 
     ConversionParameters(ConversionParameters&&) noexcept = delete;
+
+    ~ConversionParameters() = delete;
 
     ConversionParameters& operator=(const ConversionParameters&) = delete;
 

@@ -56,11 +56,11 @@ public:
 
     Leg(Leg&&) noexcept = default;
 
+    ~Leg() noexcept override = default;
+
     Leg& operator=(const Leg&) = delete;
 
     Leg& operator=(Leg&&) noexcept = default;
-
-    ~Leg() noexcept override = default;
 
     double getB() const;
 
