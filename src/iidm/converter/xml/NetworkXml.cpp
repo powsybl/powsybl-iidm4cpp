@@ -54,7 +54,7 @@ void checkExtensionsNotFound(const NetworkXmlReaderContext& context, const std::
         }
 
         logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
-        logger.error(message);
+        logger.warn(message);
     }
 }
 
