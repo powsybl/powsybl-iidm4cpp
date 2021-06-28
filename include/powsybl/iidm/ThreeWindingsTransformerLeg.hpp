@@ -17,13 +17,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class ActivePowerLimits;
-class ActivePowerLimitsAdder;
-class ApparentPowerLimits;
-class ApparentPowerLimitsAdder;
-class CurrentLimits;
-class CurrentLimitsAdder;
-class OperationalLimitsHolder;
 class Terminal;
 class ThreeWindingsTransformer;
 class ThreeWindingsTransformerAdder;

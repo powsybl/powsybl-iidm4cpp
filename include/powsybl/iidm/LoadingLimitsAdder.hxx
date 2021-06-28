@@ -98,7 +98,7 @@ LoadingLimitsAdder<L, A>::LoadingLimitsAdder(OperationalLimitsHolder& owner) :
 
 template <typename L, typename A>
 LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious) {
-    m_temporaryLimits.emplace(acceptableDuration, CurrentLimits::TemporaryLimit(name, value, acceptableDuration, fictitious));
+    m_temporaryLimits.emplace(acceptableDuration, LoadingLimits::TemporaryLimit(name, value, acceptableDuration, fictitious));
     return *this;
 }
 
@@ -132,7 +132,7 @@ void LoadingLimitsAdder<L, A>::checkTemporaryLimits() const {
 
     // check name unicity
     std::unordered_set<std::string> names;
-    std::for_each(m_temporaryLimits.cbegin(), m_temporaryLimits.cend(), [this, &names](const std::pair<unsigned long, CurrentLimits::TemporaryLimit>& element) {
+    std::for_each(m_temporaryLimits.cbegin(), m_temporaryLimits.cend(), [this, &names](const std::pair<unsigned long, LoadingLimits::TemporaryLimit>& element) {
         const auto& res = names.insert(element.second.getName());
         if (!res.second) {
             throw ValidationException(m_owner, stdcxx::format("2 temporary limits have the same name %1%", element.second.getName()));
