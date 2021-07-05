@@ -33,11 +33,11 @@ public:  // Anonymizer
 public:
     FakeAnonymizer() = default;
 
-    ~FakeAnonymizer() override = default;
-
     FakeAnonymizer(const FakeAnonymizer&) = default;
 
     FakeAnonymizer(FakeAnonymizer&&) noexcept = default;
+
+    ~FakeAnonymizer() override = default;
 
     FakeAnonymizer& operator=(const FakeAnonymizer&) = default;
 

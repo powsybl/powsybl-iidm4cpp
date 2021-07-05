@@ -27,11 +27,6 @@ public:
     explicit CoordinatedReactiveControlAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~CoordinatedReactiveControlAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     CoordinatedReactiveControlAdder(const CoordinatedReactiveControlAdder&) = default;
@@ -40,6 +35,11 @@ public:
      * Move constructor
      */
     CoordinatedReactiveControlAdder(CoordinatedReactiveControlAdder&&) = default;
+
+    /**
+     * Destructor
+     */
+    ~CoordinatedReactiveControlAdder() noexcept override = default;
 
     /**
      * Copy assignment operator

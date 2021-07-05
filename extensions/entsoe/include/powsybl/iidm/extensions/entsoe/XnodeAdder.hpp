@@ -28,11 +28,6 @@ public:
     explicit XnodeAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~XnodeAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     XnodeAdder(const XnodeAdder&) = default;
@@ -41,6 +36,11 @@ public:
      * Move constructor
      */
     XnodeAdder(XnodeAdder&&) noexcept = default;
+
+    /**
+     * Destructor
+     */
+    ~XnodeAdder() noexcept override = default;
 
     /**
      * Copy assignment operator

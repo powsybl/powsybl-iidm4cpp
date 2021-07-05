@@ -25,10 +25,6 @@ public:
      */
     explicit ActivePowerControlAdder(Extendable& extendable);
 
-    /**
-     * Destructor
-     */
-    ~ActivePowerControlAdder() noexcept override = default;
 
     /**
      * Copy constructor
@@ -39,6 +35,11 @@ public:
      * Move constructor
      */
     ActivePowerControlAdder(ActivePowerControlAdder&&) = default;
+
+    /**
+     * Destructor
+     */
+    ~ActivePowerControlAdder() noexcept override = default;
 
     /**
      * Copy assignment operator

@@ -42,10 +42,6 @@ protected:
      */
     explicit ExtensionAdder(Extendable& extendable);
 
-    /**
-     * Destructor
-     */
-    virtual ~ExtensionAdder() noexcept = default;
 
     /**
      * Copy constructor
@@ -56,6 +52,11 @@ protected:
      * Move constructor
      */
     ExtensionAdder(ExtensionAdder&&) noexcept = default;
+
+    /**
+     * Destructor
+     */
+    virtual ~ExtensionAdder() noexcept = default;
 
 private:
     /**
