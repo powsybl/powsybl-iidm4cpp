@@ -14,6 +14,12 @@ set(EXT_SOURCES
     src/CoordinatedReactiveControl.cpp
     src/CoordinatedReactiveControlAdder.cpp
     src/CoordinatedReactiveControlXmlSerializer.cpp
+    src/HvdcAngleDroopActivePowerControl.cpp
+    src/HvdcAngleDroopActivePowerControlAdder.cpp
+    src/HvdcAngleDroopActivePowerControlXmlSerializer.cpp
+    src/HvdcOperatorActivePowerRange.cpp
+    src/HvdcOperatorActivePowerRangeAdder.cpp
+    src/HvdcOperatorActivePowerRangeXmlSerializer.cpp
     src/Iidm.cpp
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
     src/ThreeWindingsTransformerPhaseAngleClockAdder.cpp
@@ -29,6 +35,8 @@ set(EXT_SOURCES
 set(UNIT_TEST_SOURCES
     test/ActivePowerControlTest.cpp
     test/CoordinatedReactiveControlTest.cpp
+    test/HvdcAngleDroopActivePowerControlTest.cpp
+    test/HvdcOperatorActivePowerRangeTest.cpp
     test/iidm.cpp
     test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
     test/TwoWindingsTransformerPhaseAngleClockTest.cpp
