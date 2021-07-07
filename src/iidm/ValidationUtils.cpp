@@ -353,10 +353,6 @@ void checkRatioTapChangerRegulation(const Validable& validable, bool regulating,
     }
 }
 
-void checkRatioTapChangerRegulation(const Validable& validable, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network) {
-    checkRatioTapChangerRegulation(validable, regulating, true, regulationTerminal, targetV, network);
-}
-
 void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network) {
     if (regulatingTerminal && !stdcxx::areSame(regulatingTerminal.get().getVoltageLevel().getNetwork(), network)) {
         throw ValidationException(validable, "Regulating terminal is not part of the network");
