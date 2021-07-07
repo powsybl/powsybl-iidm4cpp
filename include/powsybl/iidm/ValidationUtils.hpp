@@ -114,6 +114,8 @@ double checkRatedU1(const Validable& validable, double ratedU1);
 
 double checkRatedU2(const Validable& validable, double ratedU2);
 
+void checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network);
+
 void checkRatioTapChangerRegulation(const Validable& validable, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network);
 
 void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network);
