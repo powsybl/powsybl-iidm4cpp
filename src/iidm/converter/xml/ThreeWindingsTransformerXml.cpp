@@ -176,20 +176,20 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
 }
 
 void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg1().hasRatioTapChanger(), THREE_WINDINGS_TRANSFORMER, RATIO_TAP_CHANGER1,
-        ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
-    writeRatioTapChanger(twt.getLeg1().getOptionalRatioTapChanger(), 1, context);
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg1().hasPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER1,
-        ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
-    writePhaseTapChanger(twt.getLeg1().getOptionalPhaseTapChanger(), 1, context);
+    IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(twt.getLeg1().hasRatioTapChanger(), THREE_WINDINGS_TRANSFORMER, RATIO_TAP_CHANGER1, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context, [&twt, &context]() {
+        writeRatioTapChanger(twt.getLeg1().getOptionalRatioTapChanger(), 1, context);
+    });
+    IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(twt.getLeg1().hasPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER1, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context, [&twt, &context]() {
+        writePhaseTapChanger(twt.getLeg1().getOptionalPhaseTapChanger(), 1, context);
+    });
     writeRatioTapChanger(twt.getLeg2().getOptionalRatioTapChanger(), 2, context);
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg2().hasPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER2,
-        ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
-    writePhaseTapChanger(twt.getLeg2().getOptionalPhaseTapChanger(), 2, context);
+    IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(twt.getLeg2().hasPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER2, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context, [&twt, &context]() {
+        writePhaseTapChanger(twt.getLeg2().getOptionalPhaseTapChanger(), 2, context);
+    });
     writeRatioTapChanger(twt.getLeg3().getOptionalRatioTapChanger(), 3, context);
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(twt.getLeg3().hasPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER3,
-        ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
-    writePhaseTapChanger(twt.getLeg3().getOptionalPhaseTapChanger(), 3, context);
+    IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(twt.getLeg3().hasPhaseTapChanger(), THREE_WINDINGS_TRANSFORMER, PHASE_TAP_CHANGER3, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context, [&twt, &context]() {
+        writePhaseTapChanger(twt.getLeg3().getOptionalPhaseTapChanger(), 3, context);
+    });
 
     if (twt.getLeg1().getCurrentLimits()) {
         writeCurrentLimits(twt.getLeg1().getCurrentLimits(), context.getWriter(), context.getVersion(), 1);
