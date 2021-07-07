@@ -20,8 +20,9 @@
 #include <powsybl/iidm/extensions/SlackTerminalAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/stdcxx/DateTime.hpp>
-
 #include <powsybl/test/AssertionUtils.hpp>
+#include <powsybl/test/ResourceFixture.hpp>
+#include <powsybl/test/converter/RoundTrip.hpp>
 
 namespace powsybl {
 
@@ -240,6 +241,20 @@ BOOST_AUTO_TEST_CASE(variantsResetTest) {
     SlackTerminal::reset(network);
     POWSYBL_ASSERT_THROW(vlgen.getExtension<SlackTerminal>(), PowsyblException, "Extension powsybl::iidm::extensions::SlackTerminal not found");
     POWSYBL_ASSERT_THROW(vlhv1.getExtension<SlackTerminal>(), PowsyblException, "Extension powsybl::iidm::extensions::SlackTerminal not found");
+}
+
+BOOST_FIXTURE_TEST_CASE(SlackTerminalXmlSerializerTest, test::ResourceFixture) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));
+    VoltageLevel& voltageLevel = network.getVoltageLevel("VLHV2");
+    Bus& bus = network.getBusBreakerView().getBus("NHV2");
+    Terminal& terminal = *bus.getConnectedTerminals().begin();
+
+    voltageLevel.newExtension<SlackTerminalAdder>().withTerminal(terminal).add();
+
+    const std::string& networkStr = test::converter::RoundTrip::getVersionedNetwork("slackTerminal.xml", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+
+    test::converter::RoundTrip::runXml(network, networkStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -96,6 +96,13 @@ public:
     virtual const std::string& getVersion() const;
 
     /**
+     * Return true if the extension is serializable, false else
+     *
+     * @return true if the extension is serializable, false else
+     */
+    virtual bool isSerializable(const Extension& extension) const;
+
+    /**
      * Create an extension from its XML serialization
      *
      * @param extendable The holder of the new extension
