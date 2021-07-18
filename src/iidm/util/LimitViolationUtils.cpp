@@ -32,12 +32,12 @@ std::unique_ptr<Branch::Overload> checkTemporaryLimits(const Branch& branch, con
         std::string previousLimitName;
         double previousLimit = limits.get().getPermanentLimit();
         for (const auto& tl : limits.get().getTemporaryLimits()) { // iterate in ascending order
-            if (std::isgreaterequal(i, previousLimit * limitReduction) && std::isless(i, tl.get().getValue() * limitReduction)) {
-                res = stdcxx::make_unique<Branch::Overload>(tl.get(), previousLimitName, previousLimit);
+            if (std::isgreaterequal(i, previousLimit * limitReduction) && std::isless(i, tl.getValue() * limitReduction)) {
+                res = stdcxx::make_unique<Branch::Overload>(tl, previousLimitName, previousLimit);
                 break;
             }
-            previousLimitName = tl.get().getName();
-            previousLimit = tl.get().getValue();
+            previousLimitName = tl.getName();
+            previousLimit = tl.getValue();
         }
     }
 

@@ -13,65 +13,29 @@
 #include <string>
 #include <vector>
 
+#include <powsybl/iidm/LoadingLimits.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
-class Validable;
-
-class CurrentLimits {
-public:
-    class TemporaryLimit {
-    public:
-        TemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious);
-
-        ~TemporaryLimit() noexcept = default;
-
-        unsigned long getAcceptableDuration() const;
-
-        const std::string& getName() const;
-
-        double getValue() const;
-
-        bool isFictitious() const;
-
-    private:
-        std::string m_name;
-
-        double m_value;
-
-        unsigned long m_acceptableDuration;
-
-        bool m_fictitious;
-    };
-
-    using TemporaryLimits = std::map<unsigned long, TemporaryLimit, std::greater<unsigned long> >;
+class CurrentLimits : public LoadingLimits {
+public:  // OperationalLimits
+    const LimitType& getLimitType() const override;
 
 public:
-    CurrentLimits(Validable& owner, double permanentLimit, TemporaryLimits temporaryLimits);
+    CurrentLimits(OperationalLimitsHolder& owner, double permanentLimit, const TemporaryLimits& temporaryLimits);
 
-    ~CurrentLimits() noexcept = default;
+    CurrentLimits(const CurrentLimits&) = default;
 
-    double getPermanentLimit() const;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of LoadingLimits is not marked noexcept
+    CurrentLimits(CurrentLimits&&) = default;  // NOSONAR
 
-    const TemporaryLimit& getTemporaryLimit(unsigned long acceptableDuration) const;
+    ~CurrentLimits() override = default;
 
-    TemporaryLimit& getTemporaryLimit(unsigned long acceptableDuration);
+    CurrentLimits& operator=(const CurrentLimits&) = delete;
 
-    std::vector<std::reference_wrapper<const TemporaryLimit>> getTemporaryLimits() const;
-
-    std::vector<std::reference_wrapper<TemporaryLimit>> getTemporaryLimits();
-
-    double getTemporaryLimitValue(unsigned long acceptableDuration) const;
-
-    CurrentLimits& setPermanentLimit(double permanentLimit);
-
-private:
-    Validable& m_owner;
-
-    double m_permanentLimit;
-
-    TemporaryLimits m_temporaryLimits;
+    CurrentLimits& operator=(CurrentLimits&&) noexcept = delete;
 };
 
 }  // namespace iidm

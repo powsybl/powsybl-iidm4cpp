@@ -11,6 +11,7 @@
 #include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Country.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
