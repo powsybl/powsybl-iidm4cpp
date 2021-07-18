@@ -19,10 +19,18 @@ namespace iidm {
 namespace converter {
 
 static const char* const ACCEPTABLE_DURATION = "acceptableDuration";
+static const char* const ACTIVE_POWER_LIMITS = "activePowerLimits";
+static const char* const ACTIVE_POWER_LIMITS_1 = "activePowerLimits1";
+static const char* const ACTIVE_POWER_LIMITS_2 = "activePowerLimits2";
+static const char* const ACTIVE_POWER_LIMITS_3 = "activePowerLimits3";
 static const char* const ACTIVE_POWER_SETPOINT = "activePowerSetpoint";
 static const char* const ALIAS = "alias";
 static const char* const ALPHA = "alpha";
 static const char* const ANGLE = "angle";
+static const char* const APPARENT_POWER_LIMITS = "apparentPowerLimits";
+static const char* const APPARENT_POWER_LIMITS_1 = "apparentPowerLimits1";
+static const char* const APPARENT_POWER_LIMITS_2 = "apparentPowerLimits2";
+static const char* const APPARENT_POWER_LIMITS_3 = "apparentPowerLimits3";
 static const char* const B = "b";
 static const char* const B_MIN = "bMin";
 static const char* const B_MAX = "bMax";

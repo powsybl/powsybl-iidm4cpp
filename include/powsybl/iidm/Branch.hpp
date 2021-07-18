@@ -11,11 +11,18 @@
 #include <iosfwd>
 
 #include <powsybl/iidm/Connectable.hpp>
-#include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/iidm/CurrentLimits.hpp>
+#include <powsybl/iidm/OperationalLimitsHolder.hpp>
 
 namespace powsybl {
 
 namespace iidm {
+
+class ActivePowerLimits;
+class ActivePowerLimitsAdder;
+class ApparentPowerLimits;
+class ApparentPowerLimitsAdder;
+class CurrentLimitsAdder;
 
 class Branch : public Connectable {
 public:
@@ -72,6 +79,30 @@ public:
 
     std::unique_ptr<Overload> checkTemporaryLimits2(double limitReduction) const;
 
+    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits(const Side& side) const;
+
+    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits(const Side& side);
+
+    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits1() const;
+
+    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits1();
+
+    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits2() const;
+
+    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits2();
+
+    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits(const Side& side) const;
+
+    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits(const Side& side);
+
+    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits1() const;
+
+    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits1();
+
+    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits2() const;
+
+    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits2();
+
     stdcxx::CReference<CurrentLimits> getCurrentLimits(const Side& side) const;
 
     stdcxx::Reference<CurrentLimits> getCurrentLimits(const Side& side);
@@ -108,25 +139,28 @@ public:
 
     bool isOverloaded(double limitReduction) const;
 
-    CurrentLimitsAdder<Side, Branch> newCurrentLimits1();
+    ActivePowerLimitsAdder newActivePowerLimits1();
 
-    CurrentLimitsAdder<Side, Branch> newCurrentLimits2();
+    ActivePowerLimitsAdder newActivePowerLimits2();
+
+    ApparentPowerLimitsAdder newApparentPowerLimits1();
+
+    ApparentPowerLimitsAdder newApparentPowerLimits2();
+
+    CurrentLimitsAdder newCurrentLimits1();
+
+    CurrentLimitsAdder newCurrentLimits2();
 
 protected:
     Branch(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType);
 
 private:
-    const std::unique_ptr<CurrentLimits>& getCurrentLimitsPtr(const Side& side) const;
-
-    void setCurrentLimits(const Side& side, std::unique_ptr<CurrentLimits> limits);
+    friend class CurrentLimitsAdder;
 
 private:
-    friend class CurrentLimitsAdder<Side, Branch>;
+    OperationalLimitsHolder m_operationalLimitsHolder1;
 
-private:
-    std::unique_ptr<CurrentLimits> m_limits1;
-
-    std::unique_ptr<CurrentLimits> m_limits2;
+    OperationalLimitsHolder m_operationalLimitsHolder2;
 };
 
 }  // namespace iidm

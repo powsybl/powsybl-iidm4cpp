@@ -21,6 +21,7 @@ namespace iidm {
 namespace three_windings_transformer {
 
 Leg::Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU, double ratedS) :
+    FlowsLimitsHolder(stdcxx::format("limits%1%", m_legNumber)),
     m_legNumber(legNumber),
     m_r(checkR(*this, r)),
     m_x(checkX(*this, x)),
@@ -32,14 +33,6 @@ Leg::Leg(unsigned long legNumber, double r, double x, double g, double b, double
 
 double Leg::getB() const {
     return m_b;
-}
-
-stdcxx::CReference<CurrentLimits> Leg::getCurrentLimits() const {
-    return stdcxx::cref(m_limits);
-}
-
-stdcxx::Reference<CurrentLimits> Leg::getCurrentLimits() {
-    return stdcxx::ref<CurrentLimits>(m_limits);
 }
 
 double Leg::getG() const {
@@ -146,17 +139,9 @@ bool Leg::hasRatioTapChanger() const {
     return static_cast<bool>(m_ratioTapChanger);
 }
 
-CurrentLimitsAdder<const std::nullptr_t, Leg> Leg::newCurrentLimits() {
-    return CurrentLimitsAdder<const std::nullptr_t, Leg>(nullptr, *this);
-}
-
 Leg& Leg::setB(double b) {
     m_b = checkB(*this, b);
     return *this;
-}
-
-void Leg::setCurrentLimits(std::nullptr_t /*side*/, std::unique_ptr<CurrentLimits> limits) {
-    m_limits = std::move(limits);
 }
 
 Leg& Leg::setG(double g) {
@@ -202,6 +187,7 @@ void Leg::setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger)
 
 Leg& Leg::setTransformer(ThreeWindingsTransformer& transformer) {
     m_transformer = transformer;
+    setIdentifiable(transformer);
     return *this;
 }
 
