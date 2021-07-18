@@ -40,6 +40,8 @@ public:
 
     static void writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& nsPrefix, const std::string& elementName, powsybl::xml::XmlStreamWriter& writer);
 
+    static void writeTerminalRefAttribute(const Terminal& terminal, NetworkXmlWriterContext& context);
+
 private:
     TerminalRefXml() = default;
 

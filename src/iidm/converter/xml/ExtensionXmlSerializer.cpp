@@ -46,6 +46,10 @@ const std::string& ExtensionXmlSerializer::getVersion() const {
     return s_version;
 }
 
+bool ExtensionXmlSerializer::isSerializable(const Extension& /*extension*/) const {
+    return true;
+}
+
 }  // namespace xml
 
 }  // namespace converter

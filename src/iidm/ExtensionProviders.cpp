@@ -19,6 +19,7 @@
 #include <powsybl/stdcxx/format.hpp>
 
 #include "extensions/LoadDetailXmlSerializer.hpp"
+#include "extensions/SlackTerminalXmlSerializer.hpp"
 
 namespace powsybl {
 
@@ -27,6 +28,7 @@ namespace iidm {
 template <>
 ExtensionProviders<converter::xml::ExtensionXmlSerializer, void>::ExtensionProviders() {
     registerExtension(stdcxx::make_unique<extensions::LoadDetailXmlSerializer>());
+    registerExtension(stdcxx::make_unique<extensions::SlackTerminalXmlSerializer>());
 }
 
 template <typename T, typename Dummy>
