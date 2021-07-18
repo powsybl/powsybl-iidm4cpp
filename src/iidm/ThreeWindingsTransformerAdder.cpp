@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
