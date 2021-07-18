@@ -20,7 +20,7 @@ RatioTapChanger::RatioTapChanger(RatioTapChangerHolder& parent, long lowTapPosit
     m_loadTapChangingCapabilities(loadTapChangingCapabilities),
     m_targetV(parent.getNetwork().getVariantManager().getVariantArraySize(), targetV) {
     checkTapPosition(parent, tapPosition, lowTapPosition, getHighTapPosition());
-    checkRatioTapChangerRegulation(parent, regulating, regulationTerminal, targetV, parent.getNetwork());
+    checkRatioTapChangerRegulation(parent, regulating, loadTapChangingCapabilities, regulationTerminal, targetV, parent.getNetwork());
 }
 
 void RatioTapChanger::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -56,23 +56,23 @@ void RatioTapChanger::remove() {
 }
 
 RatioTapChanger& RatioTapChanger::setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) {
-    checkRatioTapChangerRegulation(getParent(), isRegulating(), getRegulationTerminal(), getTargetV(), getNetwork());
+    checkRatioTapChangerRegulation(getParent(), isRegulating(), m_loadTapChangingCapabilities, getRegulationTerminal(), getTargetV(), getNetwork());
     m_loadTapChangingCapabilities = loadTapChangingCapabilities;
     return *this;
 }
 
 RatioTapChanger& RatioTapChanger::setRegulating(bool regulating) {
-    checkRatioTapChangerRegulation(getParent(), regulating, getRegulationTerminal(), getTargetV(), getNetwork());
+    checkRatioTapChangerRegulation(getParent(), regulating, m_loadTapChangingCapabilities, getRegulationTerminal(), getTargetV(), getNetwork());
     return TapChanger::setRegulating(regulating);
 }
 
 RatioTapChanger& RatioTapChanger::setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) {
-    checkRatioTapChangerRegulation(getParent(), isRegulating(), regulationTerminal, getTargetV(), getNetwork());
+    checkRatioTapChangerRegulation(getParent(), isRegulating(), m_loadTapChangingCapabilities, regulationTerminal, getTargetV(), getNetwork());
     return TapChanger::setRegulationTerminal(regulationTerminal);
 }
 
 RatioTapChanger& RatioTapChanger::setTargetV(double targetV) {
-    checkRatioTapChangerRegulation(getParent(), isRegulating(), getRegulationTerminal(), targetV, getNetwork());
+    checkRatioTapChangerRegulation(getParent(), isRegulating(), m_loadTapChangingCapabilities, getRegulationTerminal(), targetV, getNetwork());
     m_targetV[getNetwork().getVariantIndex()] = targetV;
     return *this;
 }

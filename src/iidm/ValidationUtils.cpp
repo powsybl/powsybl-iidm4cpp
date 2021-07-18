@@ -11,12 +11,22 @@
 
 #include <powsybl/iidm/LoadType.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
 namespace iidm {
+
+void throwExceptionOrWarningForRtc(const Validable& validable, bool loadTapChangingCapabilities, const std::string& message) {
+    if (loadTapChangingCapabilities) {
+        throw ValidationException(validable, message);
+    }
+    logging::Logger& logger = logging::LoggerFactory::getLogger("powsybl::iidm::ValidationUtils");
+    logger.warn(message);
+}
 
 ValidationException createInvalidValueException(const Validable& validable, double value, const std::string& valueName, const std::string& reason = "") {
     std::string r = reason.empty() ? "" : stdcxx::format(" (%1%)", reason);
@@ -328,19 +338,19 @@ double checkRatedU2(const Validable& validable, double ratedU2) {
     return checkRatedU(validable, ratedU2, 2);
 }
 
-void checkRatioTapChangerRegulation(const Validable& validable, bool regulating, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network) {
+void checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network) {
     if (regulating) {
         if (std::isnan(targetV)) {
-            throw ValidationException(validable, "a target voltage has to be set for a regulating ratio tap changer");
+            throwExceptionOrWarningForRtc(validable, loadTapChangingCapabilities, "a target voltage has to be set for a regulating ratio tap changer");
         }
         if (std::islessequal(targetV, 0.0)) {
-            throw ValidationException(validable, stdcxx::format("bad target voltage %1%", targetV));
+            throwExceptionOrWarningForRtc(validable, loadTapChangingCapabilities, stdcxx::format("bad target voltage %1%", targetV));
         }
-        if (!static_cast<bool>(regulationTerminal)) {
-            throw ValidationException(validable, "a regulation terminal has to be set for a regulating ratio tap changer");
+        if (!regulationTerminal) {
+            throwExceptionOrWarningForRtc(validable, loadTapChangingCapabilities, "a regulation terminal has to be set for a regulating ratio tap changer");
         }
         if (!stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
-            throw ValidationException(validable, "regulation terminal is not part of the network");
+            throwExceptionOrWarningForRtc(validable, loadTapChangingCapabilities, "regulation terminal is not part of the network");
         }
     }
 }
