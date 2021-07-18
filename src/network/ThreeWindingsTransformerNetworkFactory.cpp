@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Country.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>

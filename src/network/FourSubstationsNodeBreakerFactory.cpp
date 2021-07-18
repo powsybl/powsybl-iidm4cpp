@@ -11,6 +11,7 @@
 #include <powsybl/iidm/BusAdder.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>

@@ -7,6 +7,7 @@
 
 #include <powsybl/network/MultipleExtensionsTestNetworkFactory.hpp>
 
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>

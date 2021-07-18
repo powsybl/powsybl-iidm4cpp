@@ -10,6 +10,9 @@
 #include <limits>
 
 #include <powsybl/AssertionError.hpp>
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
@@ -39,7 +42,9 @@ const CurrentLimits::TemporaryLimit& Branch::Overload::getTemporaryLimit() const
 }
 
 Branch::Branch(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType) :
-    Connectable(id, name, fictitious, connectableType) {
+    Connectable(id, name, fictitious, connectableType),
+    m_operationalLimitsHolder1(*this, "limits1"),
+    m_operationalLimitsHolder2(*this, "limits2") {
 }
 
 bool Branch::checkPermanentLimit(const Side& side) const {
@@ -90,41 +95,99 @@ std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits2(double limitRedu
     return checkTemporaryLimits(Side::TWO, limitReduction);
 }
 
+stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits(const Side& side) const {
+    switch (side) {
+        case Side::ONE:
+            return getActivePowerLimits1();
+        case Side::TWO:
+            return getActivePowerLimits2();
+        default:
+            throw AssertionError(stdcxx::format("Unexpected side: %1%", side));
+    }
+}
+
+stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits(const Side& side) {
+    return stdcxx::ref(const_cast<const Branch*>(this)->getActivePowerLimits(side));
+}
+
+stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits1() const {
+    return m_operationalLimitsHolder1.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
+}
+
+stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits1() {
+    return m_operationalLimitsHolder1.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
+}
+
+stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits2() const {
+    return m_operationalLimitsHolder2.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
+}
+
+stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits2() {
+    return m_operationalLimitsHolder2.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
+}
+
+stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits(const Side& side) const {
+    switch (side) {
+        case Side::ONE:
+            return getApparentPowerLimits1();
+        case Side::TWO:
+            return getApparentPowerLimits2();
+        default:
+            throw AssertionError(stdcxx::format("Unexpected side: %1%", side));
+    }
+}
+
+stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits(const Side& side) {
+    return stdcxx::ref(const_cast<const Branch*>(this)->getApparentPowerLimits(side));
+}
+
+stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits1() const {
+    return m_operationalLimitsHolder1.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
+}
+
+stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits1() {
+    return m_operationalLimitsHolder1.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
+}
+
+stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits2() const {
+    return m_operationalLimitsHolder2.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
+}
+
+stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits2() {
+    return m_operationalLimitsHolder2.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
+}
+
 stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits(const Side& side) const {
-    return stdcxx::cref(getCurrentLimitsPtr(side));
+    switch (side) {
+        case Side::ONE:
+            return getCurrentLimits1();
+
+        case Side::TWO:
+            return getCurrentLimits2();
+
+        default:
+            throw AssertionError(stdcxx::format("Unexpected side: %1%", side));
+    }
 }
 
 stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits(const Side& side) {
-    return stdcxx::ref(getCurrentLimitsPtr(side));
+    return stdcxx::ref(const_cast<const Branch*>(this)->getCurrentLimits(side));
 }
 
 stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits1() const {
-    return getCurrentLimits(Side::ONE);
+    return m_operationalLimitsHolder1.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
 }
 
 stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits1() {
-    return getCurrentLimits(Side::ONE);
+    return m_operationalLimitsHolder1.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
 }
 
 stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits2() const {
-    return getCurrentLimits(Side::TWO);
+    return m_operationalLimitsHolder2.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
 }
 
 stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits2() {
-    return getCurrentLimits(Side::TWO);
-}
-
-const std::unique_ptr<CurrentLimits>& Branch::getCurrentLimitsPtr(const Side& side) const {
-    switch (side) {
-        case Side::ONE:
-            return m_limits1;
-
-        case Side::TWO:
-            return m_limits2;
-
-        default:
-            throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
-    }
+    return m_operationalLimitsHolder2.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
 }
 
 unsigned long Branch::getOverloadDuration() const {
@@ -209,27 +272,28 @@ bool Branch::isOverloaded(double limitReduction) const {
     return checkPermanentLimit1(limitReduction) || checkPermanentLimit2(limitReduction);
 }
 
-CurrentLimitsAdder<Branch::Side, Branch> Branch::newCurrentLimits1() {
-    return CurrentLimitsAdder<Branch::Side, Branch>(Side::ONE, *this);
+ActivePowerLimitsAdder Branch::newActivePowerLimits1() {
+    return m_operationalLimitsHolder1.newActivePowerLimits();
 }
 
-CurrentLimitsAdder<Branch::Side, Branch> Branch::newCurrentLimits2() {
-    return CurrentLimitsAdder<Branch::Side, Branch>(Side::TWO, *this);
+ActivePowerLimitsAdder Branch::newActivePowerLimits2() {
+    return m_operationalLimitsHolder2.newActivePowerLimits();
 }
 
-void Branch::setCurrentLimits(const Branch::Side& side, std::unique_ptr<CurrentLimits> limits) {
-    switch (side) {
-        case Side::ONE:
-            m_limits1 = std::move(limits);
-            break;
+ApparentPowerLimitsAdder Branch::newApparentPowerLimits1() {
+    return m_operationalLimitsHolder1.newApparentPowerLimits();
+}
 
-        case Side::TWO:
-            m_limits2 = std::move(limits);
-            break;
+ApparentPowerLimitsAdder Branch::newApparentPowerLimits2() {
+    return m_operationalLimitsHolder2.newApparentPowerLimits();
+}
 
-        default:
-            throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
-    }
+CurrentLimitsAdder Branch::newCurrentLimits1() {
+    return m_operationalLimitsHolder1.newCurrentLimits();
+}
+
+CurrentLimitsAdder Branch::newCurrentLimits2() {
+    return m_operationalLimitsHolder2.newCurrentLimits();
 }
 
 namespace Enum {
