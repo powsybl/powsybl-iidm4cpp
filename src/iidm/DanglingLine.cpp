@@ -20,6 +20,7 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
                            double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode,
                            std::unique_ptr<Generation>&& generation) :
     Injection(id, name, fictitious, ConnectableType::DANGLING_LINE),
+    FlowsLimitsHolder(*this, "limits"),
     m_b(checkB(*this, b)),
     m_g(checkG(*this, g)),
     m_r(checkR(*this, r)),
@@ -71,14 +72,6 @@ Boundary& DanglingLine::getBoundary() {
     return *m_boundary;
 }
 
-stdcxx::CReference<CurrentLimits> DanglingLine::getCurrentLimits() const {
-    return stdcxx::cref(m_limits);
-}
-
-stdcxx::Reference<CurrentLimits> DanglingLine::getCurrentLimits() {
-    return stdcxx::ref<CurrentLimits>(m_limits);
-}
-
 double DanglingLine::getG() const {
     return m_g;
 }
@@ -117,10 +110,6 @@ double DanglingLine::getX() const {
     return m_x;
 }
 
-CurrentLimitsAdder<std::nullptr_t, DanglingLine> DanglingLine::newCurrentLimits() {
-    return CurrentLimitsAdder<std::nullptr_t, DanglingLine>(nullptr, *this);
-}
-
 void DanglingLine::reduceVariantArraySize(unsigned long number) {
     Injection::reduceVariantArraySize(number);
 
@@ -136,10 +125,6 @@ DanglingLine& DanglingLine::setB(double b) {
     m_b = checkB(*this, b);
 
     return *this;
-}
-
-void DanglingLine::setCurrentLimits(std::nullptr_t /*side*/, std::unique_ptr<CurrentLimits> limits) {
-    m_limits = std::move(limits);
 }
 
 DanglingLine& DanglingLine::setG(double g) {

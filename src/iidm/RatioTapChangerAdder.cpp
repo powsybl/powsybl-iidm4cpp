@@ -11,6 +11,8 @@
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerStep.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 #include <powsybl/stdcxx/math.hpp>
 

@@ -8,7 +8,8 @@
 #ifndef POWSYBL_IIDM_THREEWINDINGSTRANSFORMERLEG_HPP
 #define POWSYBL_IIDM_THREEWINDINGSTRANSFORMERLEG_HPP
 
-#include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/iidm/FlowsLimitsHolder.hpp>
+#include <powsybl/iidm/OperationalLimitsHolder.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
 
@@ -22,7 +23,7 @@ class ThreeWindingsTransformerAdder;
 
 namespace three_windings_transformer {
 
-class Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
+class Leg : public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder, public FlowsLimitsHolder {
 public:  // Validable
     std::string getMessageHeader() const override;
 
@@ -64,10 +65,6 @@ public:
 
     double getB() const;
 
-    stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
-
-    stdcxx::Reference<CurrentLimits> getCurrentLimits();
-
     double getG() const;
 
     double getR() const;
@@ -81,8 +78,6 @@ public:
     Terminal& getTerminal();
 
     double getX() const;
-
-    CurrentLimitsAdder<const std::nullptr_t, Leg> newCurrentLimits();
 
     Leg& setB(double b);
 
@@ -110,11 +105,7 @@ private:  // PhaseTapChangerHolder
 private:
     const std::string& getTypeDescription() const;
 
-    void setCurrentLimits(std::nullptr_t side, std::unique_ptr<CurrentLimits> limits);
-
     Leg& setTransformer(ThreeWindingsTransformer& transformer);
-
-    friend class CurrentLimitsAdder<const std::nullptr_t, Leg>;
 
     friend class iidm::ThreeWindingsTransformer;
 
@@ -134,8 +125,6 @@ private:
     double m_ratedU;
 
     double m_ratedS;
-
-    std::unique_ptr<CurrentLimits> m_limits;
 
     std::unique_ptr<PhaseTapChanger> m_phaseTapChanger;
 
