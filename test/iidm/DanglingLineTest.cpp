@@ -7,7 +7,10 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -346,30 +349,95 @@ BOOST_AUTO_TEST_CASE(currentLimits) {
     BOOST_TEST(!cDanglingLine.getCurrentLimits());
     BOOST_TEST(!danglingLine.getCurrentLimits());
 
+    BOOST_CHECK_EQUAL(0, boost::size(cDanglingLine.getOperationalLimits()));
+    BOOST_CHECK_EQUAL(0, boost::size(danglingLine.getOperationalLimits()));
+
     danglingLine.newCurrentLimits()
         .setPermanentLimit(10.0)
         .beginTemporaryLimit()
-        .setName("TL1")
-        .setValue(13.0)
-        .setAcceptableDuration(1UL)
-        .setFictitious(false)
+            .setName("TL1")
+            .setValue(13.0)
+            .setAcceptableDuration(1UL)
+            .setFictitious(false)
         .endTemporaryLimit()
         .beginTemporaryLimit()
-        .setName("TL2")
-        .setValue(12.0)
-        .setAcceptableDuration(2UL)
-        .setFictitious(true)
+            .setName("TL2")
+            .setValue(12.0)
+            .setAcceptableDuration(2UL)
+            .setFictitious(true)
         .endTemporaryLimit()
         .beginTemporaryLimit()
-        .setName("TL3")
-        .setValue(11.0)
-        .setAcceptableDuration(3UL)
-        .setFictitious(false)
+            .setName("TL3")
+            .setValue(11.0)
+            .setAcceptableDuration(3UL)
+            .setFictitious(false)
         .endTemporaryLimit()
         .add();
 
     BOOST_TEST(cDanglingLine.getCurrentLimits());
     BOOST_TEST(danglingLine.getCurrentLimits());
+
+    BOOST_CHECK_EQUAL(1, boost::size(cDanglingLine.getOperationalLimits()));
+    BOOST_CHECK_EQUAL(1, boost::size(danglingLine.getOperationalLimits()));
+
+    BOOST_CHECK(!cDanglingLine.getActivePowerLimits());
+    BOOST_CHECK(!danglingLine.getActivePowerLimits());
+
+    danglingLine.newActivePowerLimits()
+        .setPermanentLimit(10.0)
+        .beginTemporaryLimit()
+            .setName("TL1")
+            .setValue(13.0)
+            .setAcceptableDuration(1UL)
+            .setFictitious(false)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("TL2")
+            .setValue(12.0)
+            .setAcceptableDuration(2UL)
+            .setFictitious(true)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("TL3")
+            .setValue(11.0)
+            .setAcceptableDuration(3UL)
+            .setFictitious(false)
+        .endTemporaryLimit()
+        .add();
+
+    BOOST_CHECK(cDanglingLine.getActivePowerLimits());
+    BOOST_CHECK(danglingLine.getActivePowerLimits());
+
+    BOOST_CHECK_EQUAL(2, boost::size(cDanglingLine.getOperationalLimits()));
+    BOOST_CHECK_EQUAL(2, boost::size(danglingLine.getOperationalLimits()));
+
+    danglingLine.newApparentPowerLimits()
+        .setPermanentLimit(10.0)
+        .beginTemporaryLimit()
+            .setName("TL1")
+            .setValue(13.0)
+            .setAcceptableDuration(1UL)
+            .setFictitious(false)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("TL2")
+            .setValue(12.0)
+            .setAcceptableDuration(2UL)
+            .setFictitious(true)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("TL3")
+            .setValue(11.0)
+            .setAcceptableDuration(3UL)
+            .setFictitious(false)
+        .endTemporaryLimit()
+        .add();
+
+    BOOST_CHECK(cDanglingLine.getApparentPowerLimits());
+    BOOST_CHECK(danglingLine.getApparentPowerLimits());
+
+    BOOST_CHECK_EQUAL(3, boost::size(cDanglingLine.getOperationalLimits()));
+    BOOST_CHECK_EQUAL(3, boost::size(danglingLine.getOperationalLimits()));
 }
 
 BOOST_AUTO_TEST_CASE(getBoundary) {

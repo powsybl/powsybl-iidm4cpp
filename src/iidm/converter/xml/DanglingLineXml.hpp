@@ -22,7 +22,7 @@ namespace converter {
 
 namespace xml {
 
-class DanglingLineXml : public AbstractConnectableXml<DanglingLine, DanglingLineAdder, VoltageLevel>{
+class DanglingLineXml : public AbstractConnectableXml<DanglingLine, DanglingLineAdder, VoltageLevel> {
 public:
     static const DanglingLineXml& getInstance();
 

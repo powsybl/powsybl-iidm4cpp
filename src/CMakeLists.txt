@@ -12,6 +12,10 @@ set(IIDM_SOURCES
     iidm/AbstractComponentsManager.cpp
     iidm/AbstractMultiVariantIdentifiableExtension.cpp
     iidm/AbstractTerminalTopologyVisitor.cpp
+    iidm/ActivePowerLimits.cpp
+    iidm/ActivePowerLimitsAdder.cpp
+    iidm/ApparentPowerLimits.cpp
+    iidm/ApparentPowerLimitsAdder.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
     iidm/Boundary.cpp
@@ -37,6 +41,7 @@ set(IIDM_SOURCES
     iidm/Container.cpp
     iidm/Country.cpp
     iidm/CurrentLimits.cpp
+    iidm/CurrentLimitsAdder.cpp
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
     iidm/DanglingLineBoundary.cpp
@@ -48,6 +53,7 @@ set(IIDM_SOURCES
     iidm/ExtensionAdder.cpp
     iidm/ExtensionProvider.cpp
     iidm/ExtensionProviders.cpp
+    iidm/FlowsLimitsHolder.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
     iidm/HalfLine.cpp
@@ -62,11 +68,13 @@ set(IIDM_SOURCES
     iidm/InternalConnectionAdder.cpp
     iidm/LccConverterStation.cpp
     iidm/LccConverterStationAdder.cpp
+    iidm/LimitType.cpp
     iidm/Line.cpp
     iidm/LineAdder.cpp
     iidm/LineCharacteristics.cpp
     iidm/Load.cpp
     iidm/LoadAdder.cpp
+    iidm/LoadingLimits.cpp
     iidm/LoadType.cpp
     iidm/MergedBus.cpp
     iidm/MinMaxReactiveLimits.cpp
@@ -85,6 +93,8 @@ set(IIDM_SOURCES
     iidm/NodeBreakerVoltageLevelViews.cpp
     iidm/NodeTerminal.cpp
     iidm/NodeTerminalViews.cpp
+    iidm/OperationalLimits.cpp
+    iidm/OperationalLimitsHolder.cpp
     iidm/PhaseTapChanger.cpp
     iidm/PhaseTapChangerAdder.cpp
     iidm/PhaseTapChangerHolder.cpp
@@ -151,7 +161,6 @@ set(IIDM_SOURCES
     iidm/converter/xml/BusbarSectionXml.cpp
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp
     iidm/converter/xml/BusXml.cpp
-    iidm/converter/xml/CurrentLimitsXml.cpp
     iidm/converter/xml/DanglingLineXml.cpp
     iidm/converter/xml/ExtensionXmlSerializer.cpp
     iidm/converter/xml/GeneratorXml.cpp

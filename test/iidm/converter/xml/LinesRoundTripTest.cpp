@@ -7,6 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
