@@ -68,17 +68,21 @@ std::set<std::string> getExtensionNames(const Network& network) {
     return names;
 }
 
-stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOptions& options, const std::string& extensionName) {
+stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOptions& options, const Extension& extension) {
     powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>& extensionProviders = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance();
 
     stdcxx::CReference<ExtensionXmlSerializer> serializer;
     if (options.isThrowExceptionIfExtensionNotFound()) {
-        serializer = stdcxx::cref(extensionProviders.findProviderOrThrowException(extensionName));
+        serializer = stdcxx::cref(extensionProviders.findProviderOrThrowException(extension.getName()));
     } else {
-        serializer = extensionProviders.findProvider(extensionName);
-        if (!serializer) {
+        serializer = extensionProviders.findProvider(extension.getName());
+        if (serializer) {
+            if (!serializer.get().isSerializable(extension)) {
+                serializer.reset();
+            }
+        } else {
             logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
-            logger.warn("No extension XML serializer for %1%", extensionName);
+            logger.warn("No extension XML serializer for %1%", extension.getName());
         }
     }
 
@@ -164,7 +168,7 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
 
 void writeExtension(const Extension& extension, NetworkXmlWriterContext& context) {
     powsybl::xml::XmlStreamWriter& writer = context.getWriter();
-    stdcxx::CReference<ExtensionXmlSerializer> serializer = getExtensionSerializer(context.getOptions(), extension.getName());
+    stdcxx::CReference<ExtensionXmlSerializer> serializer = getExtensionSerializer(context.getOptions(), extension);
     if (!serializer) {
         throw AssertionError(stdcxx::format("Extension XML Serializer of %1% should not be null", extension.getName()));
     }

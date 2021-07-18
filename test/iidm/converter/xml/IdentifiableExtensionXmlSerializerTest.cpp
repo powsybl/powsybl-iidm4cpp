@@ -33,7 +33,7 @@ BOOST_AUTO_TEST_SUITE(IdentifiableExtensionXml)
 BOOST_AUTO_TEST_CASE(ExtensionXmlSerializerTest) {
     // Number of extensions provided by powsybl-iidm4cpp without any extension library
     // - LoadDetail
-    const unsigned int DEFAULT_EXTENSION_COUNT = 1;
+    const unsigned int DEFAULT_EXTENSION_COUNT = 2;
 
     auto& providers = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
     const auto& cProviders = providers;

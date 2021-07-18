@@ -65,21 +65,34 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
         throw PowsyblException(stdcxx::format("Terminal ref should not point to a busbar section (here %1%). Try to export in node-breaker or delete this terminal ref.", terminal.getConnectable().get().getId()));
     }
     writer.writeStartElement(nsPrefix, elementName);
-    writer.writeAttribute(ID, context.getAnonymizer().anonymizeString(c.get().getId()));
+    writeTerminalRefAttribute(terminal, context);
+    writer.writeEndElement();
+}
+
+void TerminalRefXml::writeTerminalRefAttribute(const Terminal& terminal, NetworkXmlWriterContext& context) {
+    const auto& c = terminal.getConnectable();
+    if (!context.getFilter().test(c)) {
+        throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
+    }
+    if (terminal.getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER &&
+        context.getOptions().getTopologyLevel() != TopologyLevel::NODE_BREAKER &&
+        stdcxx::isInstanceOf<BusbarSection>(terminal.getConnectable())) {
+        throw PowsyblException(stdcxx::format("Terminal ref should not point to a busbar section (here %1%). Try to export in node-breaker or delete this terminal ref.", terminal.getConnectable().get().getId()));
+    }
+    context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(c.get().getId()));
     if (c.get().getTerminals().size() > 1) {
         if (stdcxx::isInstanceOf<Injection>(c.get())) {
             // nothing to do
         } else if (stdcxx::isInstanceOf<Branch>(c.get())) {
             const auto& branch = dynamic_cast<const Branch&>(c.get());
-            writer.writeAttribute(SIDE, Enum::toString(branch.getSide(terminal)));
+            context.getWriter().writeAttribute(SIDE, Enum::toString(branch.getSide(terminal)));
         } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(c.get())) {
             const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(c.get());
-            writer.writeAttribute(SIDE, Enum::toString(twt.getSide(terminal)));
+            context.getWriter().writeAttribute(SIDE, Enum::toString(twt.getSide(terminal)));
         } else {
             throw AssertionError(stdcxx::format("Unexpected Connectable instance: %1%", stdcxx::demangle(c.get())));
         }
     }
-    writer.writeEndElement();
 }
 
 }  // namespace xml
