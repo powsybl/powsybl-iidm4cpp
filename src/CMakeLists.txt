@@ -193,6 +193,7 @@ set(IIDM_SOURCES
     iidm/extensions/LoadDetailXmlSerializer.cpp
     iidm/extensions/SlackTerminal.cpp
     iidm/extensions/SlackTerminalAdder.cpp
+    iidm/extensions/SlackTerminalXmlSerializer.cpp
 
     iidm/util/ConnectedComponents.cpp
     iidm/util/DistinctPredicate.cpp

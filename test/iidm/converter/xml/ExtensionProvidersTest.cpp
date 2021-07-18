@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_CASE(findProvider) {
     BOOST_CHECK(extProvider.findProvider("loadBar"));
     BOOST_CHECK_NO_THROW(extProvider.findProviderOrThrowException("loadBar"));
 
-    BOOST_CHECK_EQUAL(6, boost::size(extProvider.getProviders()));
+    BOOST_CHECK_EQUAL(7, boost::size(extProvider.getProviders()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
