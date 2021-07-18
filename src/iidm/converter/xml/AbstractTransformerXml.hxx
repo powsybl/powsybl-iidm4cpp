@@ -114,10 +114,8 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
         .setTapPosition(tapPosition)
         .setTargetDeadband(targetDeadband)
         .setLoadTapChangingCapabilities(loadTapChangingCapabilities)
-        .setTargetV(targetV);
-    if (loadTapChangingCapabilities) {
-        adder->setRegulating(regulating);
-    }
+        .setTargetV(targetV)
+        .setRegulating(regulating);
     bool hasTerminalRef = false;
     context.getReader().readUntilEndElement(elementName, [&adder, &context, &terminal, &hasTerminalRef]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
@@ -223,9 +221,7 @@ void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::strin
     if (rtc.hasLoadTapChangingCapabilities() || rtc.isRegulating()) {
         context.getWriter().writeAttribute(REGULATING, rtc.isRegulating());
     }
-    if (rtc.hasLoadTapChangingCapabilities() || !std::isnan(rtc.getTargetV())) {
-        context.getWriter().writeAttribute(TARGET_V, rtc.getTargetV());
-    }
+    context.getWriter().writeAttribute(TARGET_V, rtc.getTargetV());
     if (rtc.getRegulationTerminal()) {
         TerminalRefXml::writeTerminalRef(rtc.getRegulationTerminal(), context, TERMINAL_REF);
     }
