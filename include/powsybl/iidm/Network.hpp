@@ -53,12 +53,6 @@ class TwoWindingsTransformer;
 class VoltageLevel;
 class VscConverterStation;
 
-namespace bus_breaker_voltage_level {
-
-class BusBreakerViewImpl;
-
-}  // namespace bus_breaker_voltage_level
-
 class Network : public Container, public VariantManagerHolder {
 public:
     using BusBreakerView = network::BusBreakerView;
@@ -388,8 +382,6 @@ private:
     friend class VoltageLevel;
 
     friend class NodeBreakerVoltageLevel;
-
-    friend class bus_breaker_voltage_level::BusBreakerViewImpl;
 
 private:
     stdcxx::DateTime m_caseDate;
