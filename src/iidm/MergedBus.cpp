@@ -11,7 +11,6 @@
 #include <cmath>
 
 #include <boost/range/adaptor/transformed.hpp>
-#include <boost/range/numeric.hpp>
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Terminal.hpp>
@@ -67,11 +66,12 @@ stdcxx::Reference<Component> MergedBus::getConnectedComponent() {
 unsigned long MergedBus::getConnectedTerminalCount() const {
     checkValidity();
 
-    const auto& mapper = [](const std::reference_wrapper<ConfiguredBus>& bus) {
-        return bus.get().getConnectedTerminalCount();
-    };
+    unsigned long count = 0;
+    for (const auto& it : m_buses) {
+        count += it.get().getConnectedTerminalCount();
+    }
 
-    return boost::accumulate(m_buses | boost::adaptors::transformed(mapper), 0);
+    return count;
 }
 
 stdcxx::const_range<Terminal> MergedBus::getConnectedTerminals() const {
