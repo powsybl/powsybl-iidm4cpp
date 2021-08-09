@@ -90,6 +90,92 @@ Network create() {
     return network;
 }
 
+Network createConnectedTerminalNetwork() {
+    Network network("test", "test");
+    Substation& s = network.newSubstation()
+        .setId("S1")
+        .setCountry(Country::FR)
+        .setTso("TSO1")
+        .setGeographicalTags({"region1"})
+        .add();
+    VoltageLevel& vl1 = s.newVoltageLevel()
+        .setId("VL1")
+        .setNominalV(400.0)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    vl1.getBusBreakerView().newBus()
+        .setId("B1")
+        .add();
+    vl1.getBusBreakerView().newBus()
+        .setId("B2")
+        .add();
+    vl1.getBusBreakerView().newSwitch()
+        .setId("BR1")
+        .setBus1("B1")
+        .setBus2("B2")
+        .setOpen(false)
+        .add();
+
+    vl1.newGenerator()
+        .setId("G")
+        .setBus("B1")
+        .setMaxP(100.0)
+        .setMinP(50.0)
+        .setTargetP(100.0)
+        .setTargetV(400.0)
+        .setVoltageRegulatorOn(true)
+        .add();
+    vl1.newLoad()
+        .setId("LD1")
+        .setConnectableBus("B1")
+        .setBus("B1")
+        .setP0(1.0)
+        .setQ0(1.0)
+        .add();
+
+    vl1.newLoad()
+        .setId("LD2")
+        .setConnectableBus("B2")
+        .setBus("B2")
+        .setP0(1.0)
+        .setQ0(1.0)
+        .add();
+
+    VoltageLevel& vl2 = s.newVoltageLevel()
+        .setId("VL2")
+        .setNominalV(400.0)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    vl2.getBusBreakerView().newBus()
+        .setId("B21")
+        .add();
+    vl2.newGenerator()
+        .setId("G2")
+        .setBus("B21")
+        .setMaxP(100.0)
+        .setMinP(50.0)
+        .setTargetP(100.0)
+        .setTargetV(400.0)
+        .setVoltageRegulatorOn(true)
+        .add();
+
+    network.newLine()
+        .setId("L1")
+        .setVoltageLevel1("VL1")
+        .setBus1("B1")
+        .setVoltageLevel2("VL2")
+        .setBus2("B21")
+        .setR(1.0)
+        .setX(1.0)
+        .setG1(0.0)
+        .setB1(0.0)
+        .setG2(0.0)
+        .setB2(0.0)
+        .add();
+
+    return network;
+}
+
 BOOST_AUTO_TEST_SUITE(BusTestSuite)
 
 BOOST_AUTO_TEST_CASE(testSetterGetter) {
@@ -692,6 +778,63 @@ BOOST_FIXTURE_TEST_CASE(TerminalVisitorBusbarSection, test::ResourceFixture) {
 
     std::set<std::string> connectedBbs = { "D" };
     BOOST_CHECK(connectedBbs == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::BUSBAR_SECTION)->second);
+}
+
+BOOST_AUTO_TEST_CASE(testConnectedTerminals) {
+    Network network = createConnectedTerminalNetwork();
+    const VoltageLevel& vl1 = network.getVoltageLevel("VL1");
+
+    const Terminal& gt = network.getGenerator("G").getTerminal();
+    const Terminal& ld1t = network.getLoad("LD1").getTerminal();
+    const Terminal& ld2t = network.getLoad("LD2").getTerminal();
+    const Terminal& l1t = network.getLine("L1").getTerminal1();
+
+    BOOST_CHECK(gt.isConnected());
+    BOOST_CHECK(ld1t.isConnected());
+    BOOST_CHECK(ld2t.isConnected());
+    BOOST_CHECK(l1t.isConnected());
+
+    BOOST_CHECK_EQUAL(1, boost::size(vl1.getBusView().getBuses()));
+
+    BOOST_CHECK(stdcxx::areSame(gt.getBusView().getBus().get(), gt.getBusView().getConnectableBus().get()));
+    BOOST_CHECK(stdcxx::areSame(ld1t.getBusView().getBus().get(), ld1t.getBusView().getConnectableBus().get()));
+    BOOST_CHECK(stdcxx::areSame(ld2t.getBusView().getBus().get(), ld2t.getBusView().getConnectableBus().get()));
+    BOOST_CHECK(stdcxx::areSame(l1t.getBusView().getBus().get(), l1t.getBusView().getConnectableBus().get()));
+
+    BOOST_CHECK_EQUAL(4, vl1.getBusView().getBus("VL1_0").get().getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(4, boost::size(vl1.getBusView().getBus("VL1_0").get().getConnectedTerminals()));
+}
+
+BOOST_AUTO_TEST_CASE(testDisconnectConnect) {
+    Network network = createConnectedTerminalNetwork();
+    VoltageLevel& vl1 = network.getVoltageLevel("VL1");
+
+    Terminal& gt = network.getGenerator("G").getTerminal();
+    Terminal& l1t = network.getLine("L1").getTerminal1();
+
+    BOOST_CHECK(gt.disconnect());
+    BOOST_CHECK(!gt.isConnected());
+    BOOST_CHECK(!gt.getBusView().getBus());
+    BOOST_CHECK(gt.getBusView().getConnectableBus());
+    BOOST_CHECK(stdcxx::areSame(vl1.getBusView().getBus("VL1_0").get(), gt.getBusView().getConnectableBus().get()));
+    BOOST_CHECK_EQUAL(3, vl1.getBusView().getBus("VL1_0").get().getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(3, boost::size(vl1.getBusView().getBus("VL1_0").get().getConnectedTerminals()));
+
+    BOOST_CHECK(l1t.disconnect());
+    BOOST_CHECK(!l1t.isConnected());
+    BOOST_CHECK_EQUAL(0, boost::size(vl1.getBusView().getBuses())); // Because no line in the VL
+    BOOST_CHECK(!l1t.getBusView().getBus());
+    BOOST_CHECK(!l1t.getBusView().getConnectableBus()); // Because no buses
+    BOOST_CHECK(!l1t.getBusView().getConnectableBus() && !vl1.getBusView().getBus("VL1_0"));
+    BOOST_CHECK(l1t.connect());
+    BOOST_CHECK(l1t.isConnected());
+
+    BOOST_CHECK(gt.connect());
+    BOOST_CHECK(gt.isConnected());
+    BOOST_CHECK(stdcxx::areSame(vl1.getBusView().getBus("VL1_0").get(), gt.getBusView().getConnectableBus().get()));
+
+    BOOST_CHECK_EQUAL(4, vl1.getBusView().getBus("VL1_0").get().getConnectedTerminalCount());
+    BOOST_CHECK_EQUAL(4, boost::size(vl1.getBusView().getBus("VL1_0").get().getConnectedTerminals()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()
