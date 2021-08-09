@@ -30,6 +30,10 @@ stdcxx::CReference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) con
 }
 
 stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) {
+    const auto& bus = m_voltageLevel.getNetwork().find<Bus>(busId);
+    if (bus) {
+        return stdcxx::ref(bus.get());
+    }
     return stdcxx::ref<Bus>(m_voltageLevel.getConfiguredBus(busId, false));
 }
 
