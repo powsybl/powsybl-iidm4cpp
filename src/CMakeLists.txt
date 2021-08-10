@@ -29,6 +29,7 @@ set(IIDM_SOURCES
     iidm/BusBreakerVoltageLevelTopology.cpp
     iidm/BusBreakerVoltageLevelVariant.cpp
     iidm/BusBreakerVoltageLevelViews.cpp
+    iidm/BusRef.cpp
     iidm/BusTerminal.cpp
     iidm/BusTerminalViews.cpp
     iidm/CalculatedBus.cpp
@@ -62,6 +63,7 @@ set(IIDM_SOURCES
     iidm/HvdcConverterStation.cpp
     iidm/HvdcLine.cpp
     iidm/HvdcLineAdder.cpp
+    iidm/IdBasedBusRef.cpp
     iidm/Identifiable.cpp
     iidm/Injection.cpp
     iidm/InternalConnection.cpp
