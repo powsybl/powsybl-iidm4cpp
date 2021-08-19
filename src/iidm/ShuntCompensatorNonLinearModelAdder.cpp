@@ -29,7 +29,7 @@ ShuntCompensatorNonLinearModelAdder::SectionAdder::SectionAdder(ShuntCompensator
 }
 
 ShuntCompensatorNonLinearModelAdder& ShuntCompensatorNonLinearModelAdder::SectionAdder::endSection() {
-    checkbPerSection(m_parent.getShuntCompensatorAdder(), m_b);
+    checkBPerSection(m_parent.getShuntCompensatorAdder(), m_b);
     if (std::isnan(m_g)) {
         if (m_parent.getSectionAdders().empty()) {
             m_g = 0.0;
