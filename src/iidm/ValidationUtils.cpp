@@ -92,7 +92,7 @@ double checkBmin(const Validable& validable, double bMin) {
     return bMin;
 }
 
-double checkbPerSection(const Validable& validable, double bPerSection) {
+double checkBPerSection(const Validable& validable, double bPerSection) {
     if (std::isnan(bPerSection)) {
         throw ValidationException(validable, "susceptance per section is invalid");
     }
@@ -157,14 +157,6 @@ double checkHvdcMaxP(const Validable& validable, double maxP) {
         throw createInvalidValueException(validable, maxP, "maximum P");
     }
     return maxP;
-}
-
-double checkLinearBPerSection(const Validable& validable, double bPerSection) {
-    checkbPerSection(validable, bPerSection);
-    if (stdcxx::isEqual(bPerSection, 0.0)) {
-        throw ValidationException(validable, "susceptance per section is equal to zero");
-    }
-    return bPerSection;
 }
 
 unsigned long checkMaximumSectionCount(const Validable& validable, const stdcxx::optional<unsigned long>& maximumSectionCount) {

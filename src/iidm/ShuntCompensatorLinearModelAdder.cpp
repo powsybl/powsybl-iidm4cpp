@@ -24,7 +24,7 @@ ShuntCompensatorLinearModelAdder::ShuntCompensatorLinearModelAdder(ShuntCompensa
 }
 
 iidm::ShuntCompensatorAdder& ShuntCompensatorLinearModelAdder::add() {
-    checkLinearBPerSection(m_parent, m_bPerSection);
+    checkBPerSection(m_parent, m_bPerSection);
     checkMaximumSectionCount(m_parent, m_maximumSectionCount);
     m_parent.setShuntCompensatorModelBuilder(stdcxx::move_to_unique(this));
     return m_parent;
