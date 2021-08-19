@@ -89,6 +89,10 @@ stdcxx::range<Switch> BusBreakerView::getSwitches() {
     return m_network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
 }
 
+void BusBreakerView::invalidateCache() {
+    m_network.m_variants.get().m_busBreakerViewCache.invalidate();
+}
+
 BusView::BusView(Network& network) :
     m_network(network) {
 }
@@ -135,6 +139,10 @@ stdcxx::const_range<Component> BusView::getConnectedComponents() const {
 
 stdcxx::range<Component> BusView::getConnectedComponents() {
     return m_network.getConnectedComponentsManager().getConnectedComponents();
+}
+
+void BusView::invalidateCache() {
+    m_network.m_variants.get().m_busViewCache.invalidate();
 }
 
 }  // namespace network

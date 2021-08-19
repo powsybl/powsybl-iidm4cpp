@@ -26,15 +26,15 @@ BusBreakerViewImpl::BusBreakerViewImpl(BusBreakerVoltageLevel& voltageLevel) :
 }
 
 stdcxx::CReference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) const {
-    return stdcxx::cref<Bus>(m_voltageLevel.getConfiguredBus(busId, false));
+    const auto& bus = m_voltageLevel.getNetwork().find<Bus>(busId);
+    if (bus) {
+        return stdcxx::cref(bus.get());
+    }
+    return m_voltageLevel.getNetwork().getVariants().get().getBusBreakerViewCache().getBus(busId);
 }
 
 stdcxx::Reference<Bus> BusBreakerViewImpl::getBus(const std::string& busId) {
-    const auto& bus = m_voltageLevel.getNetwork().find<Bus>(busId);
-    if (bus) {
-        return stdcxx::ref(bus.get());
-    }
-    return stdcxx::ref<Bus>(m_voltageLevel.getConfiguredBus(busId, false));
+    return stdcxx::ref(const_cast<const BusBreakerViewImpl*>(this)->getBus(busId));
 }
 
 stdcxx::CReference<Bus> BusBreakerViewImpl::getBus1(const std::string& switchId) const {
@@ -130,11 +130,11 @@ BusViewImpl::BusViewImpl(BusBreakerVoltageLevel& voltageLevel) :
 }
 
 stdcxx::CReference<Bus> BusViewImpl::getBus(const std::string& busId) const {
-    return stdcxx::cref<Bus>(m_voltageLevel.getMergedBus(busId, false));
+    return m_voltageLevel.getNetwork().getVariants().get().getBusViewCache().getBus(busId);
 }
 
 stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) {
-    return stdcxx::ref<Bus>(m_voltageLevel.getMergedBus(busId, false));
+    return stdcxx::ref(m_voltageLevel.getNetwork().getVariants().get().getBusViewCache().getBus(busId));
 }
 
 stdcxx::const_range<Bus> BusViewImpl::getBuses() const {

@@ -29,6 +29,7 @@ set(IIDM_SOURCES
     iidm/BusBreakerVoltageLevelTopology.cpp
     iidm/BusBreakerVoltageLevelVariant.cpp
     iidm/BusBreakerVoltageLevelViews.cpp
+    iidm/BusCache.cpp
     iidm/BusTerminal.cpp
     iidm/BusTerminalViews.cpp
     iidm/CalculatedBus.cpp

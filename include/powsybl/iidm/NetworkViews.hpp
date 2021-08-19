@@ -44,6 +44,8 @@ public:
 
     stdcxx::range<Switch> getSwitches();
 
+    void invalidateCache();
+
 private:
     Network& m_network;
 };
@@ -65,6 +67,8 @@ public:
     stdcxx::const_range<Component> getConnectedComponents() const;
 
     stdcxx::range<Component> getConnectedComponents();
+
+    void invalidateCache();
 
 private:
     Network& m_network;
