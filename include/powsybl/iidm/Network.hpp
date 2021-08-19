@@ -323,6 +323,8 @@ public:
 
     stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
 
+    const network::VariantArray& getVariants() const;
+
     const VoltageLevel& getVoltageLevel(const std::string& id) const;
 
     VoltageLevel& getVoltageLevel(const std::string& id);
@@ -382,6 +384,10 @@ private:
     friend class VoltageLevel;
 
     friend class NodeBreakerVoltageLevel;
+
+    friend class network::BusView;
+
+    friend class network::BusBreakerView;
 
 private:
     stdcxx::DateTime m_caseDate;

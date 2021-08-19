@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_NETWORKVARIANT_HPP
 #define POWSYBL_IIDM_NETWORKVARIANT_HPP
 
+#include <powsybl/iidm/BusCache.hpp>
 #include <powsybl/iidm/ConnectedComponentsManager.hpp>
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/Variant.hpp>
@@ -20,6 +21,9 @@ namespace iidm {
 class Network;
 
 namespace network {
+
+class BusBreakerView;
+class BusView;
 
 class VariantImpl : public Variant<Network, VariantImpl> {
 public: // Variant
@@ -40,6 +44,10 @@ public:
 
     VariantImpl& operator=(VariantImpl&&) noexcept = delete;
 
+    const BusCache& getBusBreakerViewCache() const;
+
+    const BusCache& getBusViewCache() const;
+
     const ConnectedComponentsManager& getConnectedComponentsManager() const;
 
     ConnectedComponentsManager& getConnectedComponentsManager();
@@ -49,9 +57,18 @@ public:
     SynchronousComponentsManager& getSynchronousComponentsManager();
 
 private:
+    friend class network::BusView;
+
+    friend class network::BusBreakerView;
+
+private:
     ConnectedComponentsManager m_connectedComponentsManager;
 
     SynchronousComponentsManager m_synchronousComponentsManager;
+
+    BusCache m_busViewCache;
+
+    BusCache m_busBreakerViewCache;
 };
 
 using VariantArray = iidm::VariantArray<Network, VariantImpl>;

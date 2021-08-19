@@ -575,6 +575,10 @@ const std::string& Network::getTypeDescription() const {
     return s_typeDescription;
 }
 
+const network::VariantArray& Network::getVariants() const {
+    return m_variants;
+}
+
 unsigned long Network::getVariantIndex() const {
     return m_variantManager.getVariantIndex();
 }

@@ -7,8 +7,13 @@
 
 #include <powsybl/iidm/NetworkVariant.hpp>
 
+#include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/ConnectedComponentsManager.hpp>
+#include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/NetworkViews.hpp>
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/flattened.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
@@ -20,17 +25,62 @@ namespace network {
 VariantImpl::VariantImpl(Network& network) :
     Variant(network),
     m_connectedComponentsManager(network),
-    m_synchronousComponentsManager(network) {
+    m_synchronousComponentsManager(network),
+    m_busViewCache([&network]() {
+        const auto& mapper = [](const VoltageLevel& voltageLevel) {
+            return voltageLevel.getBusView().getBuses();
+        };
+
+        return network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
+    }),
+    m_busBreakerViewCache([&network]() {
+        const auto& filter = [](const VoltageLevel& voltageLevel) {
+            return voltageLevel.getTopologyKind() != TopologyKind::BUS_BREAKER;
+        };
+
+        const auto& mapper = [](const VoltageLevel& voltageLevel) {
+            return voltageLevel.getBusBreakerView().getBuses();
+        };
+
+        return network.getVoltageLevels() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper) | stdcxx::flattened;
+    }) {
+
 }
 
 VariantImpl::VariantImpl(Network& network, VariantImpl&& variant) noexcept :
     Variant(network),
     m_connectedComponentsManager(network, std::move(variant.m_connectedComponentsManager)),
-    m_synchronousComponentsManager(network, std::move(variant.m_synchronousComponentsManager)) {
+    m_synchronousComponentsManager(network, std::move(variant.m_synchronousComponentsManager)),
+    m_busViewCache([&network]() {
+        const auto& mapper = [](const VoltageLevel& voltageLevel) {
+            return voltageLevel.getBusView().getBuses();
+        };
+
+        return network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
+    }),
+    m_busBreakerViewCache([&network]() {
+        const auto& filter = [](const VoltageLevel& voltageLevel) {
+            return voltageLevel.getTopologyKind() != TopologyKind::BUS_BREAKER;
+        };
+
+        const auto& mapper = [](const VoltageLevel& voltageLevel) {
+            return voltageLevel.getBusBreakerView().getBuses();
+        };
+
+        return network.getVoltageLevels() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper) | stdcxx::flattened;
+    }) {
 }
 
 std::unique_ptr<VariantImpl> VariantImpl::copy() const {
     return stdcxx::make_unique<VariantImpl>(m_owner);
+}
+
+const BusCache& VariantImpl::getBusBreakerViewCache() const {
+    return m_busBreakerViewCache;
+}
+
+const BusCache& VariantImpl::getBusViewCache() const {
+    return m_busViewCache;
 }
 
 const ConnectedComponentsManager& VariantImpl::getConnectedComponentsManager() const {
