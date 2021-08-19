@@ -42,7 +42,7 @@ double checkBmax(const Validable& validable, double bMax);
 
 double checkBmin(const Validable& validable, double bMin);
 
-double checkbPerSection(const Validable& validable, double bPerSection);
+double checkBPerSection(const Validable& validable, double bPerSection);
 
 const HvdcLine::ConvertersMode& checkConvertersMode(const Validable& validable, const HvdcLine::ConvertersMode& converterMode);
 
@@ -57,8 +57,6 @@ double checkG2(const Validable& validable, double g2);
 double checkHvdcActivePowerSetpoint(const Validable& validable, double activePowerSetpoint);
 
 double checkHvdcMaxP(const Validable& validable, double maxP);
-
-double checkLinearBPerSection(const Validable& validable, double bPerSection);
 
 const LoadType& checkLoadType(const Validable& validable, const LoadType& loadType);
 

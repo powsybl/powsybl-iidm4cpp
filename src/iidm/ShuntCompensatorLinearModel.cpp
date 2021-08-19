@@ -62,7 +62,7 @@ const ShuntCompensatorModelType& ShuntCompensatorLinearModel::getType() const {
 }
 
 ShuntCompensatorLinearModel& ShuntCompensatorLinearModel::setBPerSection(double bPerSection) {
-    checkLinearBPerSection(m_shuntCompensator, bPerSection);
+    checkBPerSection(m_shuntCompensator, bPerSection);
     m_bPerSection = bPerSection;
     return *this;
 }
