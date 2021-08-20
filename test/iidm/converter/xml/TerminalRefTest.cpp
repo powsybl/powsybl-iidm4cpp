@@ -7,6 +7,9 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/Network.hpp>
+#include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -22,6 +25,11 @@ BOOST_AUTO_TEST_SUITE(XmlRoundTrip)
 
 BOOST_FIXTURE_TEST_CASE(TerminalRef, test::ResourceFixture) {
     test::converter::RoundTrip::roundTripVersionedXmlTest("terminalRef.xml", IidmXmlVersion::all());
+}
+
+BOOST_FIXTURE_TEST_CASE(TerminalRefNotFoundTest, test::ResourceFixture) {
+    const auto& filePath = test::converter::RoundTrip::getVersionedNetworkPath("terminalRefNotFound.xml", IidmXmlVersion::V1_5());
+    POWSYBL_ASSERT_THROW(Network::readXml(filePath), PowsyblException, "Terminal reference identifiable not found: '\?\?\?\?'");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
