@@ -28,6 +28,8 @@ Extendable::Extendable(Extendable&& extendable) noexcept :
 
 void Extendable::addExtension(std::unique_ptr<Extension>&& extension) {
     extension->setExtendable(*this);
+    m_extensionsByName.erase(extension->getName());
+    m_extensionsByType.erase(extension->getType());
     auto it = m_extensionsByName.emplace(std::make_pair(extension->getName(), std::move(extension)));
 
     std::reference_wrapper<Extension> refExtension = *it.first->second;
