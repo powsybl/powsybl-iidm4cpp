@@ -26,7 +26,7 @@ HvdcOperatorActivePowerRangeAdder::HvdcOperatorActivePowerRangeAdder(Extendable&
 
 std::unique_ptr<Extension> HvdcOperatorActivePowerRangeAdder::createExtension(Extendable& extendable) {
     if (stdcxx::isInstanceOf<HvdcLine>(extendable)) {
-        return stdcxx::make_unique<HvdcOperatorActivePowerRange>(dynamic_cast<HvdcLine&>(extendable), m_oprFromCS1toCS2, m_oprFromCS2toCS1);
+        return std::unique_ptr<HvdcOperatorActivePowerRange>(new HvdcOperatorActivePowerRange(dynamic_cast<HvdcLine&>(extendable), m_oprFromCS1toCS2, m_oprFromCS2toCS1));
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<HvdcLine>()));
 }

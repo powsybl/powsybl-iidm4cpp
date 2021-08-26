@@ -27,8 +27,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    TwoWindingsTransformerPhaseAngleClock(TwoWindingsTransformer& transformer, unsigned long phaseAngleClock);
-
     unsigned long getPhaseAngleClock() const;
 
     TwoWindingsTransformerPhaseAngleClock& setPhaseAngleClock(unsigned long phaseAngleClock);
@@ -36,7 +34,12 @@ public:
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
+private:
+    TwoWindingsTransformerPhaseAngleClock(TwoWindingsTransformer& transformer, unsigned long phaseAngleClock);
+
     unsigned long checkPhaseAngleClock(unsigned long phaseAngleClock) const;
+
+    friend class TwoWindingsTransformerPhaseAngleClockAdder;
 
 private:
     unsigned long m_phaseAngleClock;

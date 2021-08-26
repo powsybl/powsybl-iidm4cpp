@@ -23,13 +23,7 @@ class Extendable;
 
 class Extension {
 public:
-    template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type, typename... Args>
-    static std::unique_ptr<Extension> create(Args&&... args);
-
-public:
-    Extension() = default;
-
-    explicit Extension(Extendable& extendable);
+    Extension() = delete;
 
     virtual ~Extension() noexcept = default;
 
@@ -54,6 +48,9 @@ public:
     void setExtendable(Extendable& extendable);
 
     void setExtendable(const stdcxx::Reference<Extendable>& extendable);
+
+protected:
+    explicit Extension(Extendable& extendable);
 
 private:
     virtual void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const = 0;

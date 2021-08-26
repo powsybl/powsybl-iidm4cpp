@@ -28,8 +28,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    HvdcOperatorActivePowerRange(HvdcLine& hvdcLine, double oprFromCS1toCS2, double oprFromCS2toCS1);
-
     double getOprFromCS1toCS2() const;
 
     double getOprFromCS2toCS1() const;
@@ -43,6 +41,11 @@ private:  // Extension
 
 private:
     static double checkOPR(double opr, const HvdcConverterStation& from, const HvdcConverterStation& to);
+
+private:
+    HvdcOperatorActivePowerRange(HvdcLine& hvdcLine, double oprFromCS1toCS2, double oprFromCS2toCS1);
+
+    friend class HvdcOperatorActivePowerRangeAdder;
 
 private:
     /**
