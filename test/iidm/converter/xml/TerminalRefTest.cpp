@@ -29,7 +29,7 @@ BOOST_FIXTURE_TEST_CASE(TerminalRef, test::ResourceFixture) {
 
 BOOST_FIXTURE_TEST_CASE(TerminalRefNotFoundTest, test::ResourceFixture) {
     const auto& filePath = test::converter::RoundTrip::getVersionedNetworkPath("terminalRefNotFound.xml", IidmXmlVersion::V1_5());
-    POWSYBL_ASSERT_THROW(Network::readXml(filePath), PowsyblException, "Terminal reference identifiable not found: '\?\?\?\?'");
+    POWSYBL_ASSERT_THROW(Network::readXml(filePath), PowsyblException, "Terminal reference identifiable not found: 'UNKNOWN'");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
