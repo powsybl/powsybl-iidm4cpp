@@ -26,11 +26,12 @@ IdBasedBusRef::IdBasedBusRef(const std::string& id, const Branch::Side& side) :
 }
 
 stdcxx::CReference<Bus> IdBasedBusRef::resolveByLevel(const Network& network, const TopologyLevel& level) {
+    const auto& identifiable = network.find(m_id);
+    if (!identifiable) {
+        return stdcxx::cref<Bus>();
+    }
+
     if (!m_side) {
-        const auto& identifiable = network.find(m_id);
-        if (!identifiable) {
-            return stdcxx::cref<Bus>();
-        }
         if (stdcxx::isInstanceOf<Bus>(identifiable.get())) {
             const auto& bus = dynamic_cast<const Bus&>(identifiable.get());
             if (level == TopologyLevel::BUS_BRANCH) {
@@ -48,22 +49,22 @@ stdcxx::CReference<Bus> IdBasedBusRef::resolveByLevel(const Network& network, co
         }
         throw PowsyblException(stdcxx::format("%1% is not a bus or injection.", m_id));
     }
-    const auto& branch = network.find<Branch>(m_id);
-    if (!branch) {
-        return stdcxx::cref<Bus>();
+    if (stdcxx::isInstanceOf<Branch>(identifiable.get())) {
+        const auto& branch = dynamic_cast<const Branch&>(identifiable.get());
+        stdcxx::Reference<Terminal> terminal;
+        switch (*m_side) {
+            case Branch::Side::ONE:
+                terminal = stdcxx::ref(branch.getTerminal1());
+                break;
+            case Branch::Side::TWO:
+                terminal = stdcxx::ref(branch.getTerminal2());
+                break;
+            default:
+                throw AssertionError(stdcxx::format("Unexpected side: ", *m_side));
+        }
+        return chooseBusByLevel(terminal, level);
     }
-    stdcxx::Reference<Terminal> terminal;
-    switch (*m_side) {
-        case Branch::Side::ONE:
-            terminal = stdcxx::ref(branch.get().getTerminal1());
-            break;
-        case Branch::Side::TWO:
-            terminal = stdcxx::ref(branch.get().getTerminal2());
-            break;
-        default:
-            throw AssertionError(stdcxx::format("Unexpected side: ", *m_side));
-    }
-    return chooseBusByLevel(terminal, level);
+    throw PowsyblException(stdcxx::format("%1% is not a branch.", m_id));
 }
 
 }  // namespace iidm
