@@ -22,27 +22,27 @@ namespace iidm {
 
 namespace network {
 
+const auto& busViewMapper = [](const VoltageLevel& voltageLevel) {
+    return voltageLevel.getBusView().getBuses();
+};
+
+const auto& busBreakerViewMapper = [](const VoltageLevel& voltageLevel) {
+    return voltageLevel.getBusBreakerView().getBuses();
+};
+
+const auto& filterNonBusBreaker = [](const VoltageLevel& voltageLevel) {
+    return voltageLevel.getTopologyKind() != TopologyKind::BUS_BREAKER;
+};
+
 VariantImpl::VariantImpl(Network& network) :
     Variant(network),
     m_connectedComponentsManager(network),
     m_synchronousComponentsManager(network),
     m_busViewCache([&network]() {
-        const auto& mapper = [](const VoltageLevel& voltageLevel) {
-            return voltageLevel.getBusView().getBuses();
-        };
-
-        return network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
+        return network.getVoltageLevels() | boost::adaptors::transformed(busViewMapper) | stdcxx::flattened;
     }),
     m_busBreakerViewCache([&network]() {
-        const auto& filter = [](const VoltageLevel& voltageLevel) {
-            return voltageLevel.getTopologyKind() != TopologyKind::BUS_BREAKER;
-        };
-
-        const auto& mapper = [](const VoltageLevel& voltageLevel) {
-            return voltageLevel.getBusBreakerView().getBuses();
-        };
-
-        return network.getVoltageLevels() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper) | stdcxx::flattened;
+        return network.getVoltageLevels() | boost::adaptors::filtered(filterNonBusBreaker) | boost::adaptors::transformed(busBreakerViewMapper) | stdcxx::flattened;
     }) {
 
 }
@@ -52,22 +52,10 @@ VariantImpl::VariantImpl(Network& network, VariantImpl&& variant) noexcept :
     m_connectedComponentsManager(network, std::move(variant.m_connectedComponentsManager)),
     m_synchronousComponentsManager(network, std::move(variant.m_synchronousComponentsManager)),
     m_busViewCache([&network]() {
-        const auto& mapper = [](const VoltageLevel& voltageLevel) {
-            return voltageLevel.getBusView().getBuses();
-        };
-
-        return network.getVoltageLevels() | boost::adaptors::transformed(mapper) | stdcxx::flattened;
+        return network.getVoltageLevels() | boost::adaptors::transformed(busViewMapper) | stdcxx::flattened;
     }),
     m_busBreakerViewCache([&network]() {
-        const auto& filter = [](const VoltageLevel& voltageLevel) {
-            return voltageLevel.getTopologyKind() != TopologyKind::BUS_BREAKER;
-        };
-
-        const auto& mapper = [](const VoltageLevel& voltageLevel) {
-            return voltageLevel.getBusBreakerView().getBuses();
-        };
-
-        return network.getVoltageLevels() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper) | stdcxx::flattened;
+        return network.getVoltageLevels() | boost::adaptors::filtered(filterNonBusBreaker) | boost::adaptors::transformed(busBreakerViewMapper) | stdcxx::flattened;
     }) {
 }
 
