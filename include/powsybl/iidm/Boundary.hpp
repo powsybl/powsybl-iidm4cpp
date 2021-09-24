@@ -34,22 +34,50 @@ public:
 
     Boundary& operator=(Boundary&&) noexcept = default;
 
+    /**
+     * Get the angle of the boundary fictitious bus.
+     */
     virtual double getAngle() const = 0;
 
+    /**
+     * Get the equipment the boundary is associated to.
+     */
     virtual const Connectable& getConnectable() const = 0;
 
+    /**
+     * Get the equipment the boundary is associated to.
+     */
     virtual Connectable& getConnectable() = 0;
 
+    /**
+     * Get the active power at the fictitious terminal going from the boundary fictitious bus to the network.
+     */
     virtual double getP() const = 0;
 
+    /**
+     * Get the reactive power at the fictitious terminal going from the boundary fictitious bus to the network.
+     */
     virtual double getQ() const = 0;
 
+    /**
+     * A Boundary could be associated with one side of a branch to determine P and Q.
+     * Get the branch side the boundary refers to.
+     */
     virtual stdcxx::optional<Branch::Side> getSide() const = 0;
 
+    /**
+     * Get the voltage of the boundary fictitious bus.
+     */
     virtual double getV() const = 0;
 
+    /**
+     * Get the voltage level at network side.
+     */
     virtual const VoltageLevel& getVoltageLevel() const = 0;
 
+    /**
+     * Get the voltage level at network side.
+     */
     virtual VoltageLevel& getVoltageLevel() = 0;
 
 protected:
