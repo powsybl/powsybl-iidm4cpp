@@ -137,6 +137,14 @@ stdcxx::range<Component> BusView::getConnectedComponents() {
     return m_network.getConnectedComponentsManager().getConnectedComponents();
 }
 
+stdcxx::const_range<Component> BusView::getSynchronousComponents() const {
+    return m_network.getSynchronousComponentsManager().getConnectedComponents();
+}
+
+stdcxx::range<Component> BusView::getSynchronousComponents() {
+    return m_network.getSynchronousComponentsManager().getConnectedComponents();
+}
+
 }  // namespace network
 
 }  // namespace iidm
