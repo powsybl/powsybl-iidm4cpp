@@ -31,7 +31,11 @@ namespace converter {
 namespace xml {
 
 Terminal& TerminalRefXml::readTerminalRef(Network& network, const std::string& id, const std::string& side) {
-    auto& identifiable = network.get<Identifiable>(id);
+    const auto& identifiableRef = network.find<Identifiable>(id);
+    if (!identifiableRef) {
+        throw PowsyblException(stdcxx::format("Terminal reference identifiable not found: '%1%'", id));
+    }
+    auto& identifiable = identifiableRef.get();
     if (stdcxx::isInstanceOf<Injection>(identifiable)) {
         return dynamic_cast<Injection&>(identifiable).getTerminal();
     }
@@ -43,7 +47,7 @@ Terminal& TerminalRefXml::readTerminalRef(Network& network, const std::string& i
         return twt.getTerminal(Enum::fromString<ThreeWindingsTransformer::Side>(side));
     }
 
-    throw AssertionError(stdcxx::format("Unexpected Identifiable instance: %1%", stdcxx::demangle(identifiable)));
+    throw PowsyblException(stdcxx::format("Unexpected terminal reference identifiable instance: %1%", stdcxx::demangle(identifiable)));
 }
 
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& elementName) {

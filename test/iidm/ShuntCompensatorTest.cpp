@@ -78,9 +78,6 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     ShuntCompensatorAdder::ShuntCompensatorLinearModelAdder linearModel = adder.newLinearModel();
     POWSYBL_ASSERT_THROW(linearModel.add(), PowsyblException, "Shunt compensator 'SHUNT1': susceptance per section is invalid");
-    linearModel.setBPerSection(0.0);
-
-    POWSYBL_ASSERT_THROW(linearModel.add(), PowsyblException, "Shunt compensator 'SHUNT1': susceptance per section is equal to zero");
     linearModel.setBPerSection(0.25);
 
     POWSYBL_ASSERT_THROW(linearModel.add(), PowsyblException, "Shunt compensator 'SHUNT1': the maximum number of section is not set");
@@ -255,7 +252,8 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(100.0, shunt.getModel<ShuntCompensatorLinearModel>().getBPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200.0, shunt.getB(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(shunt.getModel<ShuntCompensatorLinearModel>().setBPerSection(stdcxx::nan()), ValidationException, "Shunt compensator 'SHUNT1': susceptance per section is invalid");
-    POWSYBL_ASSERT_THROW(shunt.getModel<ShuntCompensatorLinearModel>().setBPerSection(0.0), ValidationException, "Shunt compensator 'SHUNT1': susceptance per section is equal to zero");
+    BOOST_CHECK_NO_THROW(shunt.getModel<ShuntCompensatorLinearModel>().setBPerSection(0.0));
+    shunt.getModel<ShuntCompensatorLinearModel>().setBPerSection(100.0);
 
     BOOST_TEST(stdcxx::areSame(shunt.getModel<ShuntCompensatorLinearModel>(), shunt.getModel<ShuntCompensatorLinearModel>().setGPerSection(120.0)));
     BOOST_CHECK_CLOSE(120.0, shunt.getModel<ShuntCompensatorLinearModel>().getGPerSection(), std::numeric_limits<double>::epsilon());
