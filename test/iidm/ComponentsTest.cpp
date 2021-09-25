@@ -383,6 +383,9 @@ BOOST_AUTO_TEST_CASE(BusViewTest) {
     BOOST_CHECK_EQUAL(2UL, boost::size(network.getBusView().getConnectedComponents()));
     BOOST_CHECK_EQUAL(10UL, boost::size(network.getBusView().getBuses()));
 
+    BOOST_CHECK_EQUAL(3UL, boost::size(cNetwork.getBusView().getSynchronousComponents()));
+    BOOST_CHECK_EQUAL(3UL, boost::size(network.getBusView().getSynchronousComponents()));
+
     Bus& bus = network.getBusView().getBus("VL1_0");
     const Bus& cBus = cNetwork.getBusView().getBus("VL1_0");
     BOOST_TEST(bus.isInMainConnectedComponent());
