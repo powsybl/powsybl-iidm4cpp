@@ -66,6 +66,10 @@ public:
 
     stdcxx::range<Component> getConnectedComponents();
 
+    stdcxx::const_range<Component> getSynchronousComponents() const;
+
+    stdcxx::range<Component> getSynchronousComponents();
+
 private:
     Network& m_network;
 };
