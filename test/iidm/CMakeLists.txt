@@ -24,6 +24,7 @@ set(UNIT_TEST_SOURCES
     GeneratorTest.cpp
     HvdcLineTest.cpp
     iidm.cpp
+    IdBasedBusRefTest.cpp
     LccConverterStationTest.cpp
     LineTest.cpp
     LoadTest.cpp
