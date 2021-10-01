@@ -157,6 +157,18 @@ BOOST_AUTO_TEST_CASE(testDanglingLine) {
     BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(dl, false), tol);
     BOOST_CHECK_CLOSE(v1, svB2.otherSideU(dl, false), tol);
     BOOST_CHECK_CLOSE(a1, svB2.otherSideA(dl, false), tol);
+
+    SV svB1_noSplit = svB2.otherSide(dl, false);
+    BOOST_CHECK_CLOSE(p1, svB1_noSplit.getP(), tol);
+    BOOST_CHECK_CLOSE(q1, svB1_noSplit.getQ(), tol);
+    BOOST_CHECK_CLOSE(v1, svB1_noSplit.getU(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1_noSplit.getA(), tol);
+
+    SV svB1_split = svB2.otherSide(dl, true);
+    BOOST_CHECK_CLOSE(164.26909345746856, svB1_split.getP(), tol);
+    BOOST_CHECK_CLOSE(-65.013195498595877, svB1_split.getQ(), tol);
+    BOOST_CHECK_CLOSE(124.29901066736439, svB1_split.getU(), tol);
+    BOOST_CHECK_CLOSE(13.624022208160760, svB1_split.getA(), tol);
 }
 
 BOOST_AUTO_TEST_CASE(testTwoWindingsTransformer) {
@@ -208,6 +220,7 @@ BOOST_AUTO_TEST_CASE(testTwoWindingsTransformer) {
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
     BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
+    BOOST_CHECK_EQUAL(Branch::Side::TWO, svA2.getSide());
     BOOST_CHECK_SMALL(std::abs(a2 - svA2.getA()), tol);
 
     SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
@@ -216,6 +229,18 @@ BOOST_AUTO_TEST_CASE(testTwoWindingsTransformer) {
     BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
     BOOST_CHECK_CLOSE(v1, svB1.getU(), tol);
     BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
+
+    SV svB1_noSplit = svB2.otherSide(twt, false);
+    BOOST_CHECK_CLOSE(p1, svB1_noSplit.getP(), tol);
+    BOOST_CHECK_CLOSE(q1, svB1_noSplit.getQ(), tol);
+    BOOST_CHECK_CLOSE(v1, svB1_noSplit.getU(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1_noSplit.getA(), tol);
+
+    SV svB1_split = svB2.otherSide(twt, true);
+    BOOST_CHECK_CLOSE(220.64483202933764, svB1_split.getP(), tol);
+    BOOST_CHECK_CLOSE(8.6992618987675883, svB1_split.getQ(), tol);
+    BOOST_CHECK_CLOSE(197.66467838729912, svB1_split.getU(), tol);
+    BOOST_CHECK_CLOSE(19.983494806925435, svB1_split.getA(), tol);
 }
 
 BOOST_AUTO_TEST_CASE(testTwoWindingsTransformerWithoutRtc) {

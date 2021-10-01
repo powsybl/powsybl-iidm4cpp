@@ -16,15 +16,14 @@ namespace iidm {
 
 namespace LinkData {
 
-struct BranchAdmittanceMatrix {
+struct Flow {
 public:
-    struct Flow {
-    public:
-        std::complex<double> fromTo;
+    std::complex<double> fromTo;
 
-        std::complex<double> toFrom;
-    };
+    std::complex<double> toFrom;
+};
 
+struct BranchAdmittanceMatrix {
 public:
     std::complex<double> y11;
 
@@ -37,21 +36,6 @@ public:
 
 BranchAdmittanceMatrix calculateBranchAdmittance(double r, double x, double ratio1, double angle1,
                                                  double ratio2, double angle2, const std::complex<double>& ysh1, const std::complex<double>& ysh2);
-
-BranchAdmittanceMatrix::Flow flowBothEnds(const std::complex<double>& y11, const std::complex<double>& y12, const std::complex<double>& y21, const std::complex<double>& y22,
-                                          const std::complex<double>& v1, const std::complex<double>& v2);
-
-std::complex<double> flowYshunt(const std::complex<double>& ysh, double u, double theta);
-
-double getFixedX(double x, double epsilonX, bool applyReactanceCorrection);
-
-double getPhaseAngleClockDegrees(int phaseAngleClock);
-
-std::complex<double> kronAntenna(const std::complex<double>& y11, const std::complex<double>& y12, const std::complex<double>& y21, const std::complex<double>& y22, bool isOpenFrom);
-
-BranchAdmittanceMatrix kronChain(const std::complex<double>& yFirstConnected11, const std::complex<double>& yFirstConnected12,
-                                 const std::complex<double>& yFirstConnected21, const std::complex<double>& yFirstConnected22, const std::complex<double>& ySecondConnected11,
-                                 const std::complex<double>& ySecondConnected12, const std::complex<double>& ySecondConnected21, const std::complex<double>& ySecondConnected22);
 
 }  // namespace LinkData
 
