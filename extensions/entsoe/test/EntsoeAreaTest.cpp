@@ -39,6 +39,21 @@ Network createNetwork() {
     return network;
 }
 
+BOOST_AUTO_TEST_CASE(checkMultipleAdd) {
+    Network network("test", "test");
+    network.setCaseDate(stdcxx::DateTime::parse("2016-06-27T12:27:58.535+02:00"));
+    Substation& substation = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+
+    substation.newExtension<EntsoeAreaAdder>().withCode(EntsoeGeographicalCode::FR).add();
+    substation.newExtension<EntsoeAreaAdder>().withCode(EntsoeGeographicalCode::BE).add();
+
+    auto& extension = substation.getExtension<EntsoeArea>();
+    BOOST_CHECK(static_cast<int>(EntsoeGeographicalCode::BE) == static_cast<int>(extension.getCode()));
+}
+
 BOOST_AUTO_TEST_CASE(EntsoeAreaConstructor) {
     Network network = createNetwork();
     Substation& substation = network.getSubstation("S");

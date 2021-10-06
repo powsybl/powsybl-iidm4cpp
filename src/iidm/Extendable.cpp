@@ -27,10 +27,18 @@ Extendable::Extendable(Extendable&& extendable) noexcept :
 }
 
 void Extendable::addExtension(std::unique_ptr<Extension>&& extension) {
-    extension->setExtendable(*this);
-    auto it = m_extensionsByName.emplace(std::make_pair(extension->getName(), std::move(extension)));
+    auto it = m_extensionsByName.find(extension->getName());
+    if (it != m_extensionsByName.end()) {
+        // Clean the existing extension
+        it->second->setExtendable(stdcxx::ref<Extendable>());
+        m_extensionsByName.erase(extension->getName());
+        m_extensionsByType.erase(extension->getType());
+    }
 
-    std::reference_wrapper<Extension> refExtension = *it.first->second;
+    extension->setExtendable(*this);
+    auto newIt = m_extensionsByName.emplace(std::make_pair(extension->getName(), std::move(extension)));
+
+    std::reference_wrapper<Extension> refExtension = *newIt.first->second;
     m_extensionsByType.emplace(std::make_pair(refExtension.get().getType(), refExtension));
 }
 
