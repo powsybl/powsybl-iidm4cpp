@@ -24,7 +24,7 @@ CoordinatedReactiveControlAdder::CoordinatedReactiveControlAdder(Extendable& ext
 
 std::unique_ptr<Extension> CoordinatedReactiveControlAdder::createExtension(Extendable& extendable) {
     if (stdcxx::isInstanceOf<Generator>(extendable)) {
-        return std::unique_ptr<CoordinatedReactiveControl>(new CoordinatedReactiveControl(dynamic_cast<Generator&>(extendable), m_qPercent));
+        return stdcxx::make_unique<CoordinatedReactiveControl>(dynamic_cast<Generator&>(extendable), m_qPercent);
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
 }

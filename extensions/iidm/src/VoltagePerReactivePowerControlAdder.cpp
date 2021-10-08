@@ -26,7 +26,7 @@ VoltagePerReactivePowerControlAdder::VoltagePerReactivePowerControlAdder(Extenda
 
 std::unique_ptr<Extension> VoltagePerReactivePowerControlAdder::createExtension(Extendable& extendable) {
     if (stdcxx::isInstanceOf<StaticVarCompensator>(extendable)) {
-        return std::unique_ptr<VoltagePerReactivePowerControl>(new VoltagePerReactivePowerControl(dynamic_cast<StaticVarCompensator&>(extendable), m_slope));
+        return stdcxx::make_unique<VoltagePerReactivePowerControl>(dynamic_cast<StaticVarCompensator&>(extendable), m_slope);
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<StaticVarCompensator>()));
 }

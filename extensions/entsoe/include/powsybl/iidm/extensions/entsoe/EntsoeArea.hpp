@@ -42,7 +42,8 @@ private:  // Extension
 private:
     EntsoeArea(Substation& substation, const EntsoeGeographicalCode& code);
 
-    friend class EntsoeAreaAdder;
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     EntsoeGeographicalCode m_code;

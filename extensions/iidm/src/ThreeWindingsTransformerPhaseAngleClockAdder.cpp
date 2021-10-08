@@ -30,7 +30,7 @@ std::unique_ptr<Extension> ThreeWindingsTransformerPhaseAngleClockAdder::createE
         throw PowsyblException(stdcxx::format("Undefined value for phaseAngleClockLeg3"));
     }
     if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(extendable)) {
-        return std::unique_ptr<ThreeWindingsTransformerPhaseAngleClock>(new ThreeWindingsTransformerPhaseAngleClock(dynamic_cast<ThreeWindingsTransformer&>(extendable), *m_phaseAngleClockLeg2, *m_phaseAngleClockLeg3));
+        return stdcxx::make_unique<ThreeWindingsTransformerPhaseAngleClock>(dynamic_cast<ThreeWindingsTransformer&>(extendable), *m_phaseAngleClockLeg2, *m_phaseAngleClockLeg3);
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<ThreeWindingsTransformer>()));
 }

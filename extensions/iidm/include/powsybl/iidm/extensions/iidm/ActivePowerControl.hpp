@@ -46,7 +46,8 @@ private:
 
     ActivePowerControl(Generator& generator, bool participate, double droop);
 
-    friend class ActivePowerControlAdder;
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     bool m_participate;

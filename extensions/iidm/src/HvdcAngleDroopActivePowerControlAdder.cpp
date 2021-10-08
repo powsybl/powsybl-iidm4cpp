@@ -24,7 +24,7 @@ HvdcAngleDroopActivePowerControlAdder::HvdcAngleDroopActivePowerControlAdder(Ext
 
 std::unique_ptr<Extension> HvdcAngleDroopActivePowerControlAdder::createExtension(Extendable& extendable) {
     if (stdcxx::isInstanceOf<HvdcLine>(extendable)) {
-        return std::unique_ptr<HvdcAngleDroopActivePowerControl>(new HvdcAngleDroopActivePowerControl(dynamic_cast<HvdcLine&>(extendable), m_p0, m_droop, m_enabled));
+        return stdcxx::make_unique<HvdcAngleDroopActivePowerControl>(dynamic_cast<HvdcLine&>(extendable), m_p0, m_droop, m_enabled);
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<HvdcLine>()));
 }

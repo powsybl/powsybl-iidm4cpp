@@ -50,7 +50,8 @@ private:
 private:
     HvdcAngleDroopActivePowerControl(HvdcLine& hvdcLine, double p0, double droop, bool enabled);
 
-    friend class HvdcAngleDroopActivePowerControlAdder;
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     /**
