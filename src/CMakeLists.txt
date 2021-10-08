@@ -206,6 +206,7 @@ set(IIDM_SOURCES
     iidm/util/Networks.cpp
     iidm/util/Substations.cpp
     iidm/util/SV.cpp
+    iidm/util/SwitchesFlow.cpp
     iidm/util/TerminalFinder.cpp
     iidm/util/VoltageLevels.cpp
 
