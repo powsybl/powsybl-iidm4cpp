@@ -61,8 +61,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    ConnectablePosition(Connectable& connectable, const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3);
-
     stdcxx::CReference<Feeder> getFeeder() const;
 
     stdcxx::Reference<Feeder> getFeeder();
@@ -84,6 +82,12 @@ private:  // Extension
 
 private:
     static void check(const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3);
+
+private:
+    ConnectablePosition(Connectable& connectable, const OptionalFeeder& feeder, const OptionalFeeder& feeder1, const OptionalFeeder& feeder2, const OptionalFeeder& feeder3);
+
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     OptionalFeeder m_feeder;

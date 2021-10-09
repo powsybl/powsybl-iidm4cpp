@@ -27,8 +27,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    Xnode(DanglingLine& dl, const std::string& code);
-
     ~Xnode() noexcept override = default;
 
     const std::string& getCode() const;
@@ -37,6 +35,12 @@ public:
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
+
+private:
+    Xnode(DanglingLine& dl, const std::string& code);
+
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     std::string m_code;

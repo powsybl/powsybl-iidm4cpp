@@ -33,7 +33,6 @@ BOOST_AUTO_TEST_CASE(integrity) {
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("NHV2_NLOAD");
     POWSYBL_ASSERT_THROW(transformer.newExtension<TwoWindingsTransformerPhaseAngleClockAdder>().add(), PowsyblException, "Undefined value for phaseAngleClock");
     POWSYBL_ASSERT_THROW(transformer.newExtension<TwoWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClock(12UL).add(), PowsyblException, "Unexpected value for phaseAngleClock: 12");
-    POWSYBL_ASSERT_THROW(TwoWindingsTransformerPhaseAngleClock(transformer, 12UL), PowsyblException, "Unexpected value for phaseAngleClock: 12");
 
     transformer.newExtension<TwoWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClock(3UL).add();
 

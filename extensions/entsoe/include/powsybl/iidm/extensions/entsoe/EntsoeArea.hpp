@@ -30,8 +30,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    EntsoeArea(Substation& substation, const EntsoeGeographicalCode& code);
-
     ~EntsoeArea() noexcept override = default;
 
     const EntsoeGeographicalCode& getCode() const;
@@ -40,6 +38,12 @@ public:
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
+
+private:
+    EntsoeArea(Substation& substation, const EntsoeGeographicalCode& code);
+
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     EntsoeGeographicalCode m_code;
