@@ -60,7 +60,8 @@ BOOST_AUTO_TEST_CASE(EntsoeAreaConstructor) {
 
     POWSYBL_ASSERT_THROW(substation.newExtension<EntsoeAreaAdder>().add(), PowsyblException, "code is undefined");
 
-    EntsoeArea extension(substation, EntsoeGeographicalCode::FR);
+    substation.newExtension<EntsoeAreaAdder>().withCode(EntsoeGeographicalCode::FR).add();
+    auto& extension = substation.getExtension<EntsoeArea>();
     BOOST_CHECK_EQUAL("entsoeArea", extension.getName());
     BOOST_CHECK(static_cast<int>(EntsoeGeographicalCode::FR) == static_cast<int>(extension.getCode()));
     BOOST_CHECK(stdcxx::areSame(substation, extension.getExtendable().get()));

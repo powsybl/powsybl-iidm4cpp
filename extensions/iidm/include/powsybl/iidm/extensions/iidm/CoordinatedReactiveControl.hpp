@@ -27,8 +27,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    CoordinatedReactiveControl(Generator& generator, double qPercent);
-
     ~CoordinatedReactiveControl() noexcept override = default;
 
     double getQPercent() const;
@@ -40,6 +38,12 @@ private:  // Extension
 
 private:
     static double checkQPercent(const Generator& generator, double qPercent);
+
+private:
+    CoordinatedReactiveControl(Generator& generator, double qPercent);
+
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     double m_qPercent;

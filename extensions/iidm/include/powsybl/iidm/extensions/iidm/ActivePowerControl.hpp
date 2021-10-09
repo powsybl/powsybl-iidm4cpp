@@ -28,10 +28,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    ActivePowerControl(Battery& battery, bool participate, double droop);
-
-    ActivePowerControl(Generator& generator, bool participate, double droop);
-
     ~ActivePowerControl() noexcept override = default;
 
     double getDroop() const;
@@ -44,6 +40,14 @@ public:
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
+
+private:
+    ActivePowerControl(Battery& battery, bool participate, double droop);
+
+    ActivePowerControl(Generator& generator, bool participate, double droop);
+
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     bool m_participate;
