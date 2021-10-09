@@ -27,8 +27,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    VoltagePerReactivePowerControl(StaticVarCompensator& svc, double slope);
-
     ~VoltagePerReactivePowerControl() noexcept override = default;
 
     /**
@@ -51,7 +49,12 @@ private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
+    VoltagePerReactivePowerControl(StaticVarCompensator& svc, double slope);
+
     double checkSlope(double slope);
+
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     double m_slope;

@@ -27,8 +27,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    BusbarSectionPosition(BusbarSection& busbarSection, unsigned long busbarIndex, unsigned long sectionIndex);
-
     unsigned long getBusbarIndex() const;
 
     unsigned long getSectionIndex() const;
@@ -39,6 +37,12 @@ public:
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
+
+private:
+    BusbarSectionPosition(BusbarSection& busbarSection, unsigned long busbarIndex, unsigned long sectionIndex);
+
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     unsigned long m_busbarIndex;

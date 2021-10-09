@@ -68,12 +68,13 @@ BOOST_AUTO_TEST_CASE(CoordinatedReactiveControlTest) {
     Network network = createNetwork();
     Generator& gen = network.getGenerator("GEN");
 
-    BOOST_CHECK_NO_THROW(CoordinatedReactiveControl(gen, -1.0));
-    BOOST_CHECK_NO_THROW(CoordinatedReactiveControl(gen, 101.0));
+    BOOST_CHECK_NO_THROW(gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(-1.0).add());
+    BOOST_CHECK_NO_THROW(gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(101.0).add());
 
-    POWSYBL_ASSERT_THROW(CoordinatedReactiveControl(gen, stdcxx::nan()), PowsyblException, "Undefined value for qPercent");
+    POWSYBL_ASSERT_THROW(gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(stdcxx::nan()).add(), PowsyblException, "Undefined value for qPercent");
 
-    CoordinatedReactiveControl crc(gen, 50.0);
+    gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(50).add();
+    auto& crc = gen.getExtension<CoordinatedReactiveControl>();
     BOOST_CHECK_EQUAL("coordinatedReactiveControl", crc.getName());
     BOOST_CHECK_CLOSE(50.0, crc.getQPercent(), std::numeric_limits<double>::epsilon());
 

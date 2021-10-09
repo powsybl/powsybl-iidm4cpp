@@ -27,9 +27,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    MergedXnode(Line& line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2, double xnodeQ2,
-                const std::string& line1Name, const std::string& line2Name, const std::string& code);
-
     ~MergedXnode() noexcept override = default;
 
     const std::string& getCode() const;
@@ -75,6 +72,13 @@ private:
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
+
+private:
+    MergedXnode(Line& line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2, double xnodeQ2,
+                const std::string& line1Name, const std::string& line2Name, const std::string& code);
+
+    template <typename B, typename D, typename, typename... Args>
+    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
 
 private:
     double m_rdp; // r divider position 1 -> 2

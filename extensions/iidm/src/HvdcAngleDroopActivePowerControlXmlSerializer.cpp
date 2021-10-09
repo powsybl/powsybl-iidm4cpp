@@ -11,6 +11,7 @@
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControl.hpp>
+#include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControlAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
@@ -31,12 +32,10 @@ Extension& HvdcAngleDroopActivePowerControlXmlSerializer::read(Extendable& exten
     if (!stdcxx::isInstanceOf<HvdcLine>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<HvdcLine>()));
     }
-    auto& hvdcLine = dynamic_cast<HvdcLine&>(extendable);
-
     const double& p0 = context.getReader().getAttributeValue<double>("p0");
     const double& droop = context.getReader().getAttributeValue<double>("droop");
     const auto& enabled = context.getReader().getAttributeValue<bool>("enabled");
-    extendable.addExtension(stdcxx::make_unique<HvdcAngleDroopActivePowerControl>(hvdcLine, p0, droop, enabled));
+    extendable.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(p0).withDroop(droop).withEnabled(enabled).add();
     return extendable.getExtension<HvdcAngleDroopActivePowerControl>();
 }
 
