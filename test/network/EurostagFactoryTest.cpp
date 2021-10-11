@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/LimitType.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/MinMaxReactiveLimits.hpp>
@@ -138,8 +139,8 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_CHECK_CLOSE(386E-6 / 2.0, line1.getB2(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_REF_FALSE(line1.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(line1.getCurrentLimits2());
-    POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits1());
-    POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits2());
+    POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
+    POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
     BOOST_TEST(!line1.isOverloaded());
 
     const auto& line2 = network.getLine("NHV1_NHV2_2");
@@ -154,8 +155,8 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_CHECK_CLOSE(386E-6 / 2.0, line2.getB2(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_REF_FALSE(line2.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(line2.getCurrentLimits2());
-    POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits1());
-    POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits2());
+    POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
+    POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
     BOOST_TEST(!line2.isOverloaded());
 
     const auto& transfo1 = network.getTwoWindingsTransformer("NGEN_NHV1");
@@ -171,8 +172,8 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_TEST(!transfo1.hasPhaseTapChanger());
     POWSYBL_ASSERT_REF_FALSE(transfo1.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo1.getCurrentLimits2());
-    POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits1());
-    POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits2());
+    POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
+    POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
     BOOST_TEST(!transfo1.isOverloaded());
 
     const auto& transfo2 = network.getTwoWindingsTransformer("NHV2_NLOAD");
@@ -187,8 +188,8 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     BOOST_TEST(!transfo2.hasPhaseTapChanger());
     POWSYBL_ASSERT_REF_FALSE(transfo2.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo2.getCurrentLimits2());
-    POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits1());
-    POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits2());
+    POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
+    POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
     BOOST_TEST(!transfo2.isOverloaded());
 
     const auto& ratioTapChanger = transfo2.getRatioTapChanger();
@@ -358,8 +359,8 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(550.0, line1.getTerminal1().getQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(560.0, line1.getTerminal2().getP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(550.0, line1.getTerminal2().getQ(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits1());
-    POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits2());
+    POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
+    POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
     BOOST_TEST(!line1.isOverloaded());
     const auto& line1CurLimit1 = line1.getCurrentLimits1().get();
     BOOST_CHECK_CLOSE(500.0, line1CurLimit1.getPermanentLimit(), std::numeric_limits<double>::epsilon());
@@ -391,8 +392,8 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(550.0, line2.getTerminal1().getQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(560.0, line2.getTerminal2().getP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(550.0, line2.getTerminal2().getQ(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits1());
-    POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits2());
+    POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
+    POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
     BOOST_TEST(!line2.isOverloaded());
     const auto& line2CurLimit1 = line2.getCurrentLimits1().get();
     BOOST_CHECK_CLOSE(1100.0, line2CurLimit1.getPermanentLimit(), std::numeric_limits<double>::epsilon());
@@ -418,8 +419,8 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_TEST(!transfo1.hasPhaseTapChanger());
     POWSYBL_ASSERT_REF_FALSE(transfo1.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo1.getCurrentLimits2());
-    POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits1());
-    POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits2());
+    POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
+    POWSYBL_ASSERT_REF_FALSE(transfo1.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
     BOOST_TEST(!transfo1.isOverloaded());
 
     const auto& transfo2 = network.getTwoWindingsTransformer("NHV2_NLOAD");
@@ -433,8 +434,8 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_TEST(!transfo2.hasPhaseTapChanger());
     POWSYBL_ASSERT_REF_FALSE(transfo2.getCurrentLimits1());
     POWSYBL_ASSERT_REF_FALSE(transfo2.getCurrentLimits2());
-    POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits1());
-    POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits2());
+    POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
+    POWSYBL_ASSERT_REF_FALSE(transfo2.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
     BOOST_TEST(!transfo2.isOverloaded());
 
     const auto& ratioTapChanger = transfo2.getRatioTapChanger();
