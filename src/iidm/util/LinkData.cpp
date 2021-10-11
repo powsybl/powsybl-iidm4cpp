@@ -19,9 +19,7 @@ BranchAdmittanceMatrix calculateBranchAdmittance(double r, double x, double rati
     std::complex<double> a2 = std::polar(ratio2, angle2);
 
     std::complex<double> ytr;
-    if (r == 0.0 && x == 0.0) {
-        ytr = std::complex<double>();
-    } else {
+    if (r != 0.0 || x != 0.0) {
         ytr = std::complex<double>(1) / std::complex<double>(r, x);
     }
 
