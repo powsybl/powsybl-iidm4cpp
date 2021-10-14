@@ -201,6 +201,7 @@ set(IIDM_SOURCES
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
+    iidm/util/LinkData.cpp
     iidm/util/Networks.cpp
     iidm/util/Substations.cpp
     iidm/util/SV.cpp

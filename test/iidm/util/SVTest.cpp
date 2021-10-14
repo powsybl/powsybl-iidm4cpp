@@ -12,12 +12,17 @@
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/SV.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
+#include <powsybl/network/FourSubstationsNodeBreakerFactory.hpp>
+
+#include "../NetworkFactory.hpp" // TODO(sebalaig) To be discussed...
 
 namespace powsybl {
 
@@ -50,12 +55,12 @@ Network createDanglingLineTestNetwork() {
         .setName("DL1_NAME")
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
-        .setB(0.000193)
-        .setG(0.0)
+        .setB(0.0016)
+        .setG(0.01)
         .setP0(-300)
         .setQ0(-100)
-        .setR(1.5)
-        .setX(16.5)
+        .setR(10.30)
+        .setX(40.20)
         .setUcteXnodeCode("ucteXnodeCodeTest")
         .add();
 
@@ -64,84 +69,301 @@ Network createDanglingLineTestNetwork() {
 
 BOOST_AUTO_TEST_SUITE(SVTestSuite)
 
-// computation are not the same for every platforms (due to complex<double> support)
-// => increase tolerance by using a threshold bigger than std::numeric_limits<double>::epsilon()
-constexpr double ACCEPTABLE_THRESHOLD = 1e-6;
-
-BOOST_AUTO_TEST_CASE(OtherSideTwtTest) {
-    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
-    TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("NGEN_NHV1");
-    Terminal& terminal1 = twt.getTerminal1();
-    Bus& bus1 = terminal1.getBusBreakerView().getBus().get();
-
-    terminal1.setP(605.558349609375);
-    terminal1.setQ(225.28251647949219);
-    bus1.setV(24.500000610351563);
-    bus1.setAngle(2.3259763717651367);
-    SV sv(terminal1.getP(), terminal1.getQ(), bus1.getV(), bus1.getAngle());
-
-    const SV& otherSide = sv.otherSide(twt);
-    BOOST_CHECK_CLOSE(-604.89090825537278, otherSide.getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-197.48047051265698, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(402.142839934194, otherSide.getU(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(5.3007050229466078e-08, otherSide.getA(), ACCEPTABLE_THRESHOLD);
-}
-
-BOOST_AUTO_TEST_CASE(OtherSideLineTest) {
+BOOST_AUTO_TEST_CASE(testLine) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     Line& line = network.getLine("NHV1_NHV2_1");
-    Terminal& terminal1 = line.getTerminal1();
-    Bus& bus1 = terminal1.getBusBreakerView().getBus().get();
+    line.setR(0.15);
+    line.setX(0.25);
+    line.setG1(0.01);
+    line.setB1(0.0020);
+    line.setG2(0.01);
+    line.setB2(0.0020);
 
-    terminal1.setP(302.44406127929688);
-    terminal1.setQ(98.740272521972656);
-    bus1.setV(402.14284515380859);
-    bus1.setAngle(0);
-    SV sv(terminal1.getP(), terminal1.getQ(), bus1.getV(), bus1.getAngle());
+    double tol = 0.0001;
+    double p1 = 485.306701;
+    double q1 = 48.537745;
+    double v1 = 138.0;
+    double a1 = 0.0;
 
-    const SV& otherSide = sv.otherSide(line);
-    BOOST_CHECK_CLOSE(-300.26535137698056, otherSide.getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-137.19794660913607, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(387.38198654517674, otherSide.getU(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-3.4951525055825536, otherSide.getA(), ACCEPTABLE_THRESHOLD);
+    double p2 = -104.996276;
+    double q2 = -123.211145;
+    double v2 = 137.5232696533203;
+    double a2 = -0.18332427740097046;
+
+    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA2 = svA1.otherSide(line);
+    BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
+    BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
+    BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
+    BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
+
+    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB1 = svB2.otherSide(line);
+    BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
+    BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
+    BOOST_CHECK_CLOSE(v1, svB1.getU(), tol);
+    BOOST_CHECK_SMALL(svB1.getA(), tol);
 }
 
-BOOST_AUTO_TEST_CASE(OtherSideDanglingLineTest) {
+BOOST_AUTO_TEST_CASE(testDanglingLine) {
     Network network = createDanglingLineTestNetwork();
     DanglingLine& dl = network.getDanglingLine("DL1");
-    Terminal& terminal1 = dl.getTerminal();
-    Bus& bus1 = terminal1.getBusBreakerView().getBus().get();
+    dl.setR(10.30);
+    dl.setX(40.20);
+    dl.setG(0.01);
+    dl.setB(0.0016);
 
-    terminal1.setP(302.44406127929688);
-    terminal1.setQ(98.740272521972656);
-    bus1.setV(402.14284515380859);
-    bus1.setAngle(0);
-    SV sv(terminal1.getP(), terminal1.getQ(), bus1.getV(), bus1.getAngle());
+    double tol = 0.0001;
+    double p1 = 126.818177;
+    double q1 = -77.444122;
+    double v1 = 118.13329315185547;
+    double a1 = 0.19568365812301636;
 
-    const SV& otherSide = sv.otherSide(dl);
-    BOOST_CHECK_CLOSE(-301.47434650169686, otherSide.getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-118.85058330380885, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(396.50418762074077, otherSide.getU(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-1.7318099978500625, otherSide.getA(), ACCEPTABLE_THRESHOLD);
+    double p2 = 15.098317;
+    double q2 = 64.333028;
+    double v2 = 138.0;
+    double a2 = 0.0;
+
+    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA2 = svA1.otherSide(dl);
+    BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
+    BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
+    BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
+    BOOST_CHECK_SMALL(svA2.getA(), tol);
+
+    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB1 = svB2.otherSide(dl);
+    BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
+    BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
+    BOOST_CHECK_CLOSE(v1, svB1.getU(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
+
+    BOOST_CHECK_CLOSE(p2, svA1.otherSideP(dl), tol);
+    BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(dl), tol);
+    BOOST_CHECK_CLOSE(v2, svA1.otherSideU(dl), tol);
+    BOOST_CHECK_SMALL(svA1.otherSideA(dl), tol);
+
+    BOOST_CHECK_CLOSE(p1, svB2.otherSideP(dl), tol);
+    BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(dl), tol);
+    BOOST_CHECK_CLOSE(v1, svB2.otherSideU(dl), tol);
+    BOOST_CHECK_CLOSE(a1, svB2.otherSideA(dl), tol);
+
+    BOOST_CHECK_CLOSE(p2, svA1.otherSideP(dl, false), tol);
+    BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(dl, false), tol);
+    BOOST_CHECK_CLOSE(v2, svA1.otherSideU(dl, false), tol);
+    BOOST_CHECK_SMALL(svA1.otherSideA(dl, false), tol);
+
+    BOOST_CHECK_CLOSE(p1, svB2.otherSideP(dl, false), tol);
+    BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(dl, false), tol);
+    BOOST_CHECK_CLOSE(v1, svB2.otherSideU(dl, false), tol);
+    BOOST_CHECK_CLOSE(a1, svB2.otherSideA(dl, false), tol);
+
+    SV svB1_noSplit = svB2.otherSide(dl, false);
+    BOOST_CHECK_CLOSE(p1, svB1_noSplit.getP(), tol);
+    BOOST_CHECK_CLOSE(q1, svB1_noSplit.getQ(), tol);
+    BOOST_CHECK_CLOSE(v1, svB1_noSplit.getU(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1_noSplit.getA(), tol);
+
+    SV svB1_split = svB2.otherSide(dl, true);
+    BOOST_CHECK_CLOSE(164.26909345746856, svB1_split.getP(), tol);
+    BOOST_CHECK_CLOSE(-65.013195498595877, svB1_split.getQ(), tol);
+    BOOST_CHECK_CLOSE(124.29901066736439, svB1_split.getU(), tol);
+    BOOST_CHECK_CLOSE(13.624022208160760, svB1_split.getA(), tol);
 }
 
-BOOST_AUTO_TEST_CASE(OtherSideY1Y2) {
+BOOST_AUTO_TEST_CASE(testTwoWindingsTransformer) {
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("TWT");
+    twt.setR(0.43);
+    twt.setX(15.90);
+    twt.setG(0.0);
+    twt.setB(0.0);
+
+    twt.getPhaseTapChanger().getCurrentStep().setRho(0.98);
+    twt.getPhaseTapChanger().getCurrentStep().setAlpha(-5.0);
+    twt.getPhaseTapChanger().getCurrentStep().setR(0.0);
+    twt.getPhaseTapChanger().getCurrentStep().setX(0.0);
+    twt.getPhaseTapChanger().getCurrentStep().setG(0.0);
+    twt.getPhaseTapChanger().getCurrentStep().setB(0.0);
+
+    twt.setRatedU1(230.0);
+    twt.setRatedU2(138.0);
+
+    twt.newRatioTapChanger()
+        .beginStep()
+            .setRho(1)
+            .setR(0.0)
+            .setX(0.0)
+            .setG(0.0)
+            .setB(0.0)
+        .endStep()
+        .setTapPosition(0)
+        .setLoadTapChangingCapabilities(true)
+        .setRegulating(false)
+        .setTargetV(158.0)
+        .setTargetDeadband(0.0)
+        .add();
+
+    double tol = 0.0001;
+    double p1 = 220.644832;
+    double q1 = 8.699260;
+    double v1 = 197.66468811035156;
+    double a1 = 19.98349380493164;
+
+    double p2 = -219.092739;
+    double q2 = 48.692085;
+    double v2 = 118.13329315185547;
+    double a2 = 0.19568365812301636;
+
+    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA2 = svA1.otherSide(twt);
+    BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
+    BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
+    BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
+    BOOST_CHECK_EQUAL(Branch::Side::TWO, svA2.getSide());
+    BOOST_CHECK_SMALL(std::abs(a2 - svA2.getA()), tol);
+
+    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB1 = svB2.otherSide(twt);
+    BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
+    BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
+    BOOST_CHECK_CLOSE(v1, svB1.getU(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
+
+    SV svB1_noSplit = svB2.otherSide(twt, false);
+    BOOST_CHECK_CLOSE(p1, svB1_noSplit.getP(), tol);
+    BOOST_CHECK_CLOSE(q1, svB1_noSplit.getQ(), tol);
+    BOOST_CHECK_CLOSE(v1, svB1_noSplit.getU(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1_noSplit.getA(), tol);
+
+    SV svB1_split = svB2.otherSide(twt, true);
+    BOOST_CHECK_CLOSE(220.64483202933764, svB1_split.getP(), tol);
+    BOOST_CHECK_CLOSE(8.6992618987675883, svB1_split.getQ(), tol);
+    BOOST_CHECK_CLOSE(197.66467838729912, svB1_split.getU(), tol);
+    BOOST_CHECK_CLOSE(19.983494806925435, svB1_split.getA(), tol);
+}
+
+BOOST_AUTO_TEST_CASE(testTwoWindingsTransformerWithoutRtc) {
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("TWT");
+    twt.setR(0.43);
+    twt.setX(15.90);
+    twt.setG(0.0);
+    twt.setB(0.0);
+
+    twt.getPhaseTapChanger().getCurrentStep().setRho(0.98);
+    twt.getPhaseTapChanger().getCurrentStep().setAlpha(-5.0);
+    twt.getPhaseTapChanger().getCurrentStep().setR(0.0);
+    twt.getPhaseTapChanger().getCurrentStep().setX(0.0);
+    twt.getPhaseTapChanger().getCurrentStep().setG(0.0);
+    twt.getPhaseTapChanger().getCurrentStep().setB(0.0);
+
+    twt.setRatedU1(230.0);
+    twt.setRatedU2(138.0);
+
+    double tol = 0.0001;
+    double p1 = 220.644832;
+    double q1 = 8.699260;
+    double v1 = 197.66468811035156;
+    double a1 = 19.98349380493164;
+
+    double p2 = -219.092739;
+    double q2 = 48.692085;
+    double v2 = 118.13329315185547;
+    double a2 = 0.19568365812301636;
+
+    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA2 = svA1.otherSide(twt);
+    BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
+    BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
+    BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
+    BOOST_CHECK_SMALL(std::abs(a2 - svA2.getA()), tol);
+
+    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB1 = svB2.otherSide(twt);
+    BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
+    BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
+    BOOST_CHECK_CLOSE(v1, svB1.getU(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
+}
+
+BOOST_AUTO_TEST_CASE(testTwoWindingsTransformerWithoutPtc) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
-    Line& line = network.getLine("NHV1_NHV2_1");
-    Terminal& terminal1 = line.getTerminal1();
-    Bus& bus1 = terminal1.getBusBreakerView().getBus().get();
+    TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("NHV2_NLOAD");
+    twt.setR(0.43);
+    twt.setX(15.90);
+    twt.setG(0.0);
+    twt.setB(0.0);
 
-    terminal1.setP(302.44406127929688);
-    terminal1.setQ(98.740272521972656);
-    bus1.setV(402.14284515380859);
-    bus1.setAngle(0);
-    SV sv(terminal1.getP(), terminal1.getQ(), bus1.getV(), bus1.getAngle());
+    twt.getRatioTapChanger().getCurrentStep().setRho(0.98);
+    twt.getRatioTapChanger().getCurrentStep().setR(0.0);
+    twt.getRatioTapChanger().getCurrentStep().setX(0.0);
+    twt.getRatioTapChanger().getCurrentStep().setG(0.0);
+    twt.getRatioTapChanger().getCurrentStep().setB(0.0);
 
-    const SV& otherSide = sv.otherSideY1Y2(line);
-    BOOST_CHECK_CLOSE(-300.43390740755751, otherSide.getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-137.18849721702034, otherSide.getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(389.95267268210063, otherSide.getU(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-3.5063579035161601, otherSide.getA(), ACCEPTABLE_THRESHOLD);
+    twt.setRatedU1(230.0);
+    twt.setRatedU2(138.0);
+
+    double tol = 0.0001;
+    double p1 = 220.644832;
+    double q1 = 8.699260;
+    double v1 = 197.66468811035156;
+    double a1 = 19.98349380493164;
+
+    double p2 = -219.092739124819760;
+    double q2 = 48.692081198528110;
+    double v2 = 118.133298648525750;
+    double a2 = 5.195684102383955;
+
+    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA2 = svA1.otherSide(twt);
+    BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
+    BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
+    BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
+    BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
+
+    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB1 = svB2.otherSide(twt);
+    BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
+    BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
+    BOOST_CHECK_CLOSE(v1, svB1.getU(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
+}
+
+BOOST_AUTO_TEST_CASE(testHalfLine) {
+    Network network = createComponentsTestNetworkBB();
+    auto& tieLine = dynamic_cast<TieLine&>(network.getLine("TL_VL4_VL6"));
+    TieLine::HalfLine& halfLine = tieLine.getHalf1();
+    halfLine.setR(0.15);
+    halfLine.setX(0.25);
+    halfLine.setG1(0.01);
+    halfLine.setB1(0.0020);
+    halfLine.setG2(0.01);
+    halfLine.setB2(0.0020);
+
+    double tol = 0.0001;
+    double p1 = 485.306701;
+    double q1 = 48.537745;
+    double v1 = 138.0;
+    double a1 = 0.0;
+
+    double p2 = -104.996276;
+    double q2 = -123.211145;
+    double v2 = 137.5232696533203;
+    double a2 = -0.18332427740097046;
+
+    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+
+    BOOST_CHECK_CLOSE(p2, svA1.otherSideP(halfLine), tol);
+    BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(halfLine), tol);
+    BOOST_CHECK_CLOSE(v2, svA1.otherSideU(halfLine), tol);
+    BOOST_CHECK_CLOSE(a2, svA1.otherSideA(halfLine), tol);
+
+    BOOST_CHECK_CLOSE(p1, svB2.otherSideP(halfLine), tol);
+    BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(halfLine), tol);
+    BOOST_CHECK_CLOSE(v1, svB2.otherSideU(halfLine), tol);
+    BOOST_CHECK_SMALL(svB2.otherSideA(halfLine), tol);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
