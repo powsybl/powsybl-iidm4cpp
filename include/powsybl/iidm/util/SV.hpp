@@ -10,6 +10,9 @@
 
 #include <complex>
 
+#include <powsybl/iidm/Branch.hpp>
+#include <powsybl/iidm/util/LinkData.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -26,6 +29,71 @@ class HalfLine;
 
 class SV {
 public:
+    SV(double p, double q, double u, double a, const Branch::Side& side);
+
+    double getA() const;
+
+    const Branch::Side& getSide() const;
+
+    double getP() const;
+
+    double getQ() const;
+
+    double getU() const;
+
+    SV otherSide(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
+
+    SV otherSide(const TwoWindingsTransformer& twt) const;
+
+    SV otherSide(const TwoWindingsTransformer& twt, bool splitShuntAdmittance) const;
+
+    SV otherSide(const Line& line) const;
+
+    SV otherSide(const DanglingLine& dl) const;
+
+    SV otherSide(const DanglingLine& dl, bool splitShuntAdmittance) const;
+
+    double otherSideA(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
+
+    double otherSideA(const tie_line::HalfLine& halfLine) const;
+
+    double otherSideA(const DanglingLine& dl) const;
+
+    double otherSideA(const DanglingLine& dl, bool splitShuntAdmittance) const;
+
+    double otherSideP(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
+
+    double otherSideP(const tie_line::HalfLine& halfLine) const;
+
+    double otherSideP(const DanglingLine& dl) const;
+
+    double otherSideP(const DanglingLine& dl, bool splitShuntAdmittance) const;
+
+    double otherSideQ(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
+
+    double otherSideQ(const tie_line::HalfLine& halfLine) const;
+
+    double otherSideQ(const DanglingLine& dl) const;
+
+    double otherSideQ(const DanglingLine& dl, bool splitShuntAdmittance) const;
+
+    double otherSideU(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
+
+    double otherSideU(const tie_line::HalfLine& halfLine) const;
+
+    double otherSideU(const DanglingLine& dl) const;
+
+    double otherSideU(const DanglingLine& dl, bool splitShuntAdmittance) const;
+
+private:
+    // Get S1 from Y11.V1 + Y12.V2 = S1* / V1*
+    static std::complex<double> flowAtEnd1(const LinkData::BranchAdmittanceMatrix& adm, const std::complex<double>& vEnd1, const std::complex<double>& vEnd2);
+
+    // Get S2 from Y21.V1 + Y22.V2 = S2* / V2*
+    static std::complex<double> flowAtEnd2(const LinkData::BranchAdmittanceMatrix& adm, const std::complex<double>& vEnd1, const std::complex<double>& vEnd2);
+
+    static double getAlpha(const TwoWindingsTransformer& twt);
+
     static double getB(const TwoWindingsTransformer& twt);
 
     static double getG(const TwoWindingsTransformer& twt);
@@ -36,61 +104,24 @@ public:
 
     static double getX(const TwoWindingsTransformer& twt);
 
-public:
-    SV(double p, double q, double u, double a);
+    // Get V1 from Y21.V1 + Y22.V2 = S2* / V2*
+    static std::complex<double> voltageAtEnd1(const LinkData::BranchAdmittanceMatrix& adm, const std::complex<double>& vEnd2, const std::complex<double>& sEnd2);
 
-    double getA() const;
-
-    double getP() const;
-
-    double getQ() const;
-
-    double getU() const;
-
-    SV otherSide(double r, double x, double g, double b, double rho) const;
-
-    SV otherSide(double r, double x, double g1, double b1, double g2, double b2, double rho) const;
-
-    SV otherSide(const TwoWindingsTransformer& twt) const;
-
-    SV otherSide(const Line& line) const;
-
-    SV otherSide(const DanglingLine& danglingLine) const;
-
-    double otherSideA(double r, double x, double g1, double b1, double rho) const;
-
-    double otherSideA(const tie_line::HalfLine& halfLine) const;
-
-    double otherSideA(const DanglingLine& danglingLine) const;
-
-    double otherSideP(double r, double x, double g1, double b1, double g2, double b2, double rho) const;
-
-    double otherSideP(const DanglingLine& danglingLine) const;
-
-    double otherSideP(const tie_line::HalfLine& halfLine) const;
-
-    double otherSideQ(double r, double x, double g1, double b1, double g2, double b2, double rho) const;
-
-    double otherSideQ(const tie_line::HalfLine& halfLine) const;
-
-    double otherSideQ(const DanglingLine& danglingLine) const;
-
-    double otherSideU(double r, double x, double g1, double b1, double rho) const;
-
-    double otherSideU(const tie_line::HalfLine& halfLine) const;
-
-    double otherSideU(const DanglingLine& danglingLine) const;
-
-    SV otherSideY1Y2(const Line& line) const;
+    // Get V2 from Y11.V1 + Y12.V2 = S1* / V1*
+    static std::complex<double> voltageAtEnd2(const LinkData::BranchAdmittanceMatrix& adm, const std::complex<double>& vEnd1, const std::complex<double>& sEnd1);
 
 private:
-    std::complex<double> computeS2(const std::complex<double>& y1, const std::complex<double>& y2, const std::complex<double>& z, double rho) const;
+    SV otherSide(const LinkData::BranchAdmittanceMatrix& adm) const;
 
-    std::complex<double> computeS2(const std::complex<double>& y, const std::complex<double>& z, double rho) const;
+    double otherSideA(const LinkData::BranchAdmittanceMatrix& adm) const;
 
-    std::complex<double> computeU2(const std::complex<double>& y1, const std::complex<double>& y2, const std::complex<double>& z, double rho) const;
+    double otherSideP(const LinkData::BranchAdmittanceMatrix& adm) const;
 
-    std::complex<double> computeU2(const std::complex<double>& y, const std::complex<double>& z, double rho) const;
+    double otherSideQ(const LinkData::BranchAdmittanceMatrix& adm) const;
+
+    double otherSideU(const LinkData::BranchAdmittanceMatrix& adm) const;
+
+    std::complex<double> otherSideV(const LinkData::BranchAdmittanceMatrix& adm) const;
 
 private:
     double m_p;
@@ -101,13 +132,7 @@ private:
 
     double m_a;
 
-    std::complex<double> m_s1;
-
-    std::complex<double> m_u1;
-
-    std::complex<double> m_v1;
-
-    std::complex<double> m_i1;
+    Branch::Side m_side;
 };
 
 }  // namespace iidm

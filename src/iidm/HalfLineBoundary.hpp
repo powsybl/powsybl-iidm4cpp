@@ -27,6 +27,10 @@ class TieLine;
 namespace half_line {
 
 class Boundary : public iidm::Boundary {
+    // side represents the network side.
+    // side here is Side.ONE for the half line 1 of a tie line.
+    // side is Side.TWO for the half line 2 of a tie line.
+
 public:  // iidm::Boundary
     double getAngle() const override;
 

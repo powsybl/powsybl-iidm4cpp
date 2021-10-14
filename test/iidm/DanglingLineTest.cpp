@@ -452,10 +452,12 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     BOOST_CHECK(stdcxx::areSame(cDanglingLine.getBoundary(), danglingLine.getBoundary()));
     const Boundary& cBoundary = danglingLine.getBoundary();
     Boundary& boundary = danglingLine.getBoundary();
-    BOOST_CHECK_CLOSE(82.47271661854765, boundary.getAngle(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(2065.500000000001, boundary.getP(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(-781.1250000000001, boundary.getQ(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(43.5, boundary.getV(), std::numeric_limits<double>::epsilon());
+
+    constexpr double ACCEPTABLE_THRESHOLD = 1e-6;
+    BOOST_CHECK_CLOSE(82.47271661854765, boundary.getAngle(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(2065.500000000001, boundary.getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-781.1250000000001, boundary.getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(43.5, boundary.getV(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK(stdcxx::areSame(cDanglingLine, cBoundary.getConnectable()));
     BOOST_CHECK(stdcxx::areSame(cDanglingLine, boundary.getConnectable()));
     BOOST_CHECK(!boundary.getSide());
