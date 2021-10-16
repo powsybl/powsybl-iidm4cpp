@@ -22,9 +22,6 @@ class Network;
 
 namespace network {
 
-class BusBreakerView;
-class BusView;
-
 class VariantImpl : public Variant<Network, VariantImpl> {
 public: // Variant
     std::unique_ptr<VariantImpl> copy() const override;
@@ -46,7 +43,11 @@ public:
 
     const BusCache& getBusBreakerViewCache() const;
 
+    BusCache& getBusBreakerViewCache();
+
     const BusCache& getBusViewCache() const;
+
+    BusCache& getBusViewCache();
 
     const ConnectedComponentsManager& getConnectedComponentsManager() const;
 
@@ -55,11 +56,6 @@ public:
     const SynchronousComponentsManager& getSynchronousComponentsManager() const;
 
     SynchronousComponentsManager& getSynchronousComponentsManager();
-
-private:
-    friend class network::BusView;
-
-    friend class network::BusBreakerView;
 
 private:
     ConnectedComponentsManager m_connectedComponentsManager;

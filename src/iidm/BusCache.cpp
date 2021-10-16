@@ -23,7 +23,7 @@ stdcxx::CReference<Bus> BusCache::getBus(const std::string& id) const {
     return it != cache.end() ? stdcxx::cref(it->second) : stdcxx::cref<Bus>();
 }
 
-std::map<std::string, std::reference_wrapper<const Bus>> BusCache::getCache() const {
+const std::map<std::string, std::reference_wrapper<const Bus>>& BusCache::getCache() const {
     std::lock_guard<std::mutex> lock(m_mutex);
     if (!m_cache) {
         m_cache = std::map<std::string, std::reference_wrapper<const Bus>>();

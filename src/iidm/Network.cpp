@@ -198,12 +198,28 @@ Network::BusBreakerView& Network::getBusBreakerView() {
     return m_busBreakerView;
 }
 
+const BusCache& Network::getBusBreakerViewCache() const {
+    return m_variants.get().getBusBreakerViewCache();
+}
+
+BusCache& Network::getBusBreakerViewCache() {
+    return m_variants.get().getBusBreakerViewCache();
+}
+
 const Network::BusView& Network::getBusView() const {
     return m_busView;
 }
 
 Network::BusView& Network::getBusView() {
     return m_busView;
+}
+
+const BusCache& Network::getBusViewCache() const {
+    return m_variants.get().getBusViewCache();
+}
+
+BusCache& Network::getBusViewCache() {
+    return m_variants.get().getBusViewCache();
 }
 
 const stdcxx::DateTime& Network::getCaseDate() const {
@@ -573,10 +589,6 @@ const std::string& Network::getTypeDescription() const {
     static std::string s_typeDescription = "Network";
 
     return s_typeDescription;
-}
-
-const network::VariantArray& Network::getVariants() const {
-    return m_variants;
 }
 
 unsigned long Network::getVariantIndex() const {

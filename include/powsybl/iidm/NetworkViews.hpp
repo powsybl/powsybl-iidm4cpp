@@ -19,7 +19,9 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
+class BusBreakerVoltageLevel;
 class Network;
+class NodeBreakerVoltageLevel;
 class Switch;
 
 namespace network {
@@ -44,7 +46,12 @@ public:
 
     stdcxx::range<Switch> getSwitches();
 
+private:
     void invalidateCache();
+
+    friend class iidm::BusBreakerVoltageLevel;
+
+    friend class iidm::NodeBreakerVoltageLevel;
 
 private:
     Network& m_network;
@@ -72,7 +79,12 @@ public:
 
     stdcxx::range<Component> getSynchronousComponents();
 
+private:
     void invalidateCache();
+
+    friend class iidm::BusBreakerVoltageLevel;
+
+    friend class iidm::NodeBreakerVoltageLevel;
 
 private:
     Network& m_network;
