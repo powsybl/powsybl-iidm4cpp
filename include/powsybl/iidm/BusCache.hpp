@@ -42,7 +42,7 @@ public:
 
     stdcxx::CReference<Bus> getBus(const std::string& id) const;
 
-    std::map<std::string, std::reference_wrapper<const Bus>> getCache() const;
+    const std::map<std::string, std::reference_wrapper<const Bus>>& getCache() const;
 
     void invalidate();
 

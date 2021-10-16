@@ -67,7 +67,15 @@ const BusCache& VariantImpl::getBusBreakerViewCache() const {
     return m_busBreakerViewCache;
 }
 
+BusCache& VariantImpl::getBusBreakerViewCache() {
+    return m_busBreakerViewCache;
+}
+
 const BusCache& VariantImpl::getBusViewCache() const {
+    return m_busViewCache;
+}
+
+BusCache& VariantImpl::getBusViewCache() {
     return m_busViewCache;
 }
 

@@ -28,23 +28,19 @@ BusBreakerView::BusBreakerView(Network& network) :
 }
 
 stdcxx::CReference<Bus> BusBreakerView::getBus(const std::string& id) const {
-    stdcxx::CReference<Bus> bus;
-
-    for (const auto& vl : m_network.getVoltageLevels()) {
-        const auto& vlBus = vl.getBusBreakerView().getBus(id);
-        if (static_cast<bool>(vlBus)) {
-            bus = stdcxx::cref<Bus>(vlBus);
-            break;
-        }
+    const auto& refBus = m_network.find<Bus>(id);
+    if (refBus) {
+        return stdcxx::cref(refBus);
     }
-
-    return bus;
+    return m_network.getBusBreakerViewCache().getBus(id);
 }
 
 stdcxx::Reference<Bus> BusBreakerView::getBus(const std::string& id) {
-    const auto& bus = static_cast<const BusBreakerView*>(this)->getBus(id);
-
-    return stdcxx::ref(bus);
+    const auto& refBus = m_network.find<Bus>(id);
+    if (refBus) {
+        return refBus;
+    }
+    return stdcxx::ref(m_network.getBusBreakerViewCache().getBus(id));
 }
 
 stdcxx::const_range<Bus> BusBreakerView::getBuses() const {
@@ -90,7 +86,7 @@ stdcxx::range<Switch> BusBreakerView::getSwitches() {
 }
 
 void BusBreakerView::invalidateCache() {
-    m_network.m_variants.get().m_busBreakerViewCache.invalidate();
+    m_network.getBusViewCache().invalidate();
 }
 
 BusView::BusView(Network& network) :
@@ -98,23 +94,11 @@ BusView::BusView(Network& network) :
 }
 
 stdcxx::CReference<Bus> BusView::getBus(const std::string& id) const {
-    stdcxx::CReference<Bus> bus;
-
-    for (const auto& vl : m_network.getVoltageLevels()) {
-        const auto& vlBus = vl.getBusView().getBus(id);
-        if (static_cast<bool>(vlBus)) {
-            bus = stdcxx::cref<Bus>(vlBus);
-            break;
-        }
-    }
-
-    return bus;
+    return m_network.getBusViewCache().getBus(id);
 }
 
 stdcxx::Reference<Bus> BusView::getBus(const std::string& id) {
-    const auto& bus = static_cast<const BusView*>(this)->getBus(id);
-
-    return stdcxx::ref(bus);
+    return stdcxx::ref(m_network.getBusViewCache().getBus(id));
 }
 
 stdcxx::const_range<Bus> BusView::getBuses() const {
@@ -142,7 +126,7 @@ stdcxx::range<Component> BusView::getConnectedComponents() {
 }
 
 void BusView::invalidateCache() {
-    m_network.m_variants.get().m_busViewCache.invalidate();
+    m_network.getBusViewCache().invalidate();
 }
 
 }  // namespace network

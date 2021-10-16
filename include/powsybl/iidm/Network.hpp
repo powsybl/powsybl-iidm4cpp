@@ -29,6 +29,7 @@ namespace iidm {
 
 class Battery;
 class Branch;
+class BusCache;
 class BusbarSection;
 class Connectable;
 class ConnectedComponentsManager;
@@ -323,8 +324,6 @@ public:
 
     stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
 
-    const network::VariantArray& getVariants() const;
-
     const VoltageLevel& getVoltageLevel(const std::string& id) const;
 
     VoltageLevel& getVoltageLevel(const std::string& id);
@@ -372,6 +371,14 @@ private:  // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
+    const BusCache& getBusBreakerViewCache() const;
+
+    BusCache& getBusBreakerViewCache();
+
+    const BusCache& getBusViewCache() const;
+
+    BusCache& getBusViewCache();
+
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     unsigned long getObjectCount() const;
 
