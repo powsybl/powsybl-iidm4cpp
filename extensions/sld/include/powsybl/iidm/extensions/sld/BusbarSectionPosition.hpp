@@ -41,8 +41,7 @@ private:  // Extension
 private:
     BusbarSectionPosition(BusbarSection& busbarSection, unsigned long busbarIndex, unsigned long sectionIndex);
 
-    template <typename B, typename D, typename, typename... Args>
-    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
+    friend class BusbarSectionPositionAdder;
 
 private:
     unsigned long m_busbarIndex;
