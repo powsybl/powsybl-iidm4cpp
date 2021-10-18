@@ -27,7 +27,7 @@ XnodeAdder::XnodeAdder(Extendable& extendable) :
 
 std::unique_ptr<Extension> XnodeAdder::createExtension(Extendable& extendable) {
     if (stdcxx::isInstanceOf<DanglingLine>(extendable)) {
-        return stdcxx::make_unique<Xnode>(dynamic_cast<DanglingLine&>(extendable), m_code);
+        return std::unique_ptr<Xnode>(new Xnode(dynamic_cast<DanglingLine&>(extendable), m_code));
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<DanglingLine>()));
 }

@@ -45,8 +45,7 @@ private:
 private:
     HvdcOperatorActivePowerRange(HvdcLine& hvdcLine, double oprFromCS1toCS2, double oprFromCS2toCS1);
 
-    template <typename B, typename D, typename, typename... Args>
-    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
+    friend class HvdcOperatorActivePowerRangeAdder;
 
 private:
     /**
