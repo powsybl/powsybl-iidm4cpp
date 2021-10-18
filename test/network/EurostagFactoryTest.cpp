@@ -7,6 +7,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/ActivePowerLimits.hpp>
+#include <powsybl/iidm/ApparentPowerLimits.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Generator.hpp>
@@ -507,6 +509,80 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(607, gen2.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(301.0, gen2.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(301.0, gen2.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_AUTO_TEST_CASE(createWithFixedLimitsTest) {
+    const iidm::Network& network = EurostagFactory::createWithFixedLimits();
+
+    const auto& gen = network.getGenerator("GEN2");
+    BOOST_CHECK_CLOSE(-9999.99, gen.getMinP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(9999.99, gen.getMaxP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(24.5, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(607.0, gen.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(301.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(gen.isVoltageRegulatorOn());
+
+    const auto& bus1 = static_cast<const iidm::Bus&>(network.getIdentifiable("NHV1"));
+    BOOST_CHECK_CLOSE(380.0, bus1.getVoltageLevel().getNominalV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(400.0, bus1.getVoltageLevel().getLowVoltageLimit(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(500.0, bus1.getVoltageLevel().getHighVoltageLimit(), std::numeric_limits<double>::epsilon());
+
+    const auto& bus2 = static_cast<const iidm::Bus&>(network.getIdentifiable("NHV2"));
+    BOOST_CHECK_CLOSE(380.0, bus2.getVoltageLevel().getNominalV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300.0, bus2.getVoltageLevel().getLowVoltageLimit(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(500.0, bus2.getVoltageLevel().getHighVoltageLimit(), std::numeric_limits<double>::epsilon());
+
+    const iidm::Line& line = network.getLine("NHV1_NHV2_1");
+    BOOST_CHECK_CLOSE(560.0, line.getTerminal1().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(550.0, line.getTerminal1().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(560.0, line.getTerminal2().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(550.0, line.getTerminal2().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1100.0, line.getActivePowerLimits1().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
+
+    const iidm::ActivePowerLimits& acpl = line.getActivePowerLimits1().get();
+    BOOST_CHECK_EQUAL("10'", acpl.getTemporaryLimit(10 * 60).getName());
+    BOOST_CHECK_CLOSE(10.0 * 60.0, acpl.getTemporaryLimit(10 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1200.0, acpl.getTemporaryLimit(10 * 60).getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL("1'", acpl.getTemporaryLimit(60).getName());
+    BOOST_CHECK_CLOSE(60.0, acpl.getTemporaryLimit(60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1500.0, acpl.getTemporaryLimit(60).getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL("N/A", acpl.getTemporaryLimit(0).getName());
+    BOOST_CHECK_CLOSE(0.0, acpl.getTemporaryLimit(0).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), acpl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
+
+    const iidm::ApparentPowerLimits& appl = line.getApparentPowerLimits1().get();
+    BOOST_CHECK_EQUAL("10'", appl.getTemporaryLimit(10 * 60).getName());
+    BOOST_CHECK_CLOSE(10.0 * 60.0, appl.getTemporaryLimit(10 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1200.0, appl.getTemporaryLimit(10 * 60).getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL("1'", appl.getTemporaryLimit(60).getName());
+    BOOST_CHECK_CLOSE(60.0, appl.getTemporaryLimit(60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1500.0, appl.getTemporaryLimit(60).getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL("N/A", appl.getTemporaryLimit(0).getName());
+    BOOST_CHECK_CLOSE(0.0, appl.getTemporaryLimit(0).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), appl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
+
+    const iidm::Line& line2 = network.getLine("NHV1_NHV2_2");
+    BOOST_CHECK_CLOSE(560.0, line.getTerminal1().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(550.0, line.getTerminal1().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(560.0, line.getTerminal2().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(550.0, line.getTerminal2().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1100.0, line.getApparentPowerLimits1().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
+
+//    const iidm::ActivePowerLimits& acpl2 = line2.getActivePowerLimits1().get();
+//    BOOST_CHECK_EQUAL("20'", acpl2.getTemporaryLimit(20 * 60).getName());
+//    BOOST_CHECK_CLOSE(20.0 * 60.0, acpl2.getTemporaryLimit(20 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+//    BOOST_CHECK_CLOSE(1200.0, acpl2.getTemporaryLimit(20 * 60).getValue(), std::numeric_limits<double>::epsilon());
+//    BOOST_CHECK_EQUAL("N/A", acpl2.getTemporaryLimit(0).getName());
+//    BOOST_CHECK_CLOSE(60.0, acpl2.getTemporaryLimit(0).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+//    BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), acpl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
+//
+//    const iidm::ApparentPowerLimits& appl2 = line2.getApparentPowerLimits1().get();
+//    BOOST_CHECK_EQUAL("20'", appl2.getTemporaryLimit(20 * 60).getName());
+//    BOOST_CHECK_CLOSE(20.0 * 60.0, appl2.getTemporaryLimit(20 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+//    BOOST_CHECK_CLOSE(1200.0, appl2.getTemporaryLimit(20 * 60).getValue(), std::numeric_limits<double>::epsilon());
+//    BOOST_CHECK_EQUAL("N/A", appl2.getTemporaryLimit(0).getName());
+//    BOOST_CHECK_CLOSE(60.0, appl2.getTemporaryLimit(0).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+//    BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), appl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
