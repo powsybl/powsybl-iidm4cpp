@@ -113,6 +113,11 @@ CReference<T> cref(const Reference<T>& reference) {
 }
 
 template <typename T>
+CReference<T> cref(const std::reference_wrapper<const T>& reference) {
+    return CReference<T>(reference.get());
+}
+
+template <typename T>
 Reference<T> ref() {
     return Reference<T>();
 }

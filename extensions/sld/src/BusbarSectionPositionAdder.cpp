@@ -32,7 +32,7 @@ std::unique_ptr<Extension> BusbarSectionPositionAdder::createExtension(Extendabl
         throw PowsyblException("Undefined value for section index");
     }
     if (stdcxx::isInstanceOf<BusbarSection>(extendable)) {
-        return stdcxx::make_unique<BusbarSectionPosition>(dynamic_cast<BusbarSection&>(extendable), *m_busbarIndex, *m_sectionIndex);
+        return std::unique_ptr<BusbarSectionPosition>(new BusbarSectionPosition(dynamic_cast<BusbarSection&>(extendable), *m_busbarIndex, *m_sectionIndex));
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<BusbarSection>()));
 }

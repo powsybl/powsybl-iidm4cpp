@@ -39,8 +39,7 @@ private:  // Extension
 private:
     Xnode(DanglingLine& dl, const std::string& code);
 
-    template <typename B, typename D, typename, typename... Args>
-    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
+    friend class XnodeAdder;
 
 private:
     std::string m_code;

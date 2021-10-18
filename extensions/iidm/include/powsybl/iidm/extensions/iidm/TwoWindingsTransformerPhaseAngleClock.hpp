@@ -39,8 +39,7 @@ private:
 
     unsigned long checkPhaseAngleClock(unsigned long phaseAngleClock) const;
 
-    template <typename B, typename D, typename, typename... Args>
-    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
+    friend class TwoWindingsTransformerPhaseAngleClockAdder;
 
 private:
     unsigned long m_phaseAngleClock;
