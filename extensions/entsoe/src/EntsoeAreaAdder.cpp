@@ -27,7 +27,7 @@ std::unique_ptr<Extension> EntsoeAreaAdder::createExtension(Extendable& extendab
         throw PowsyblException(stdcxx::format("code is undefined"));
     }
     if (stdcxx::isInstanceOf<Substation>(extendable)) {
-        return stdcxx::make_unique<EntsoeArea>(dynamic_cast<Substation&>(extendable), *m_code);
+        return std::unique_ptr<EntsoeArea>(new EntsoeArea(dynamic_cast<Substation&>(extendable), *m_code));
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Substation>()));
 }
