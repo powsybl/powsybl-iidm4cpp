@@ -336,7 +336,8 @@ const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
 void NodeBreakerVoltageLevel::invalidateCache() {
     m_variants.get().getCalculatedBusTopology().invalidateCache();
     m_variants.get().getCalculatedBusBreakerTopology().invalidateCache();
-
+    getNetwork().getBusBreakerView().invalidateCache();
+    getNetwork().getBusView().invalidateCache();
     getNetwork().getConnectedComponentsManager().invalidate();
     getNetwork().getSynchronousComponentsManager().invalidate();
 }
