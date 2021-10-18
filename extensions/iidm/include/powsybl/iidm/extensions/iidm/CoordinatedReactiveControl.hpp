@@ -42,8 +42,7 @@ private:
 private:
     CoordinatedReactiveControl(Generator& generator, double qPercent);
 
-    template <typename B, typename D, typename, typename... Args>
-    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
+    friend class CoordinatedReactiveControlAdder;
 
 private:
     double m_qPercent;
