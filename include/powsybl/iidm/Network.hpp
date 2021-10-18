@@ -29,6 +29,7 @@ namespace iidm {
 
 class Battery;
 class Branch;
+class BusCache;
 class BusbarSection;
 class Connectable;
 class ConnectedComponentsManager;
@@ -370,6 +371,14 @@ private:  // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
+    const BusCache& getBusBreakerViewCache() const;
+
+    BusCache& getBusBreakerViewCache();
+
+    const BusCache& getBusViewCache() const;
+
+    BusCache& getBusViewCache();
+
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     unsigned long getObjectCount() const;
 
@@ -382,6 +391,10 @@ private:
     friend class VoltageLevel;
 
     friend class NodeBreakerVoltageLevel;
+
+    friend class network::BusView;
+
+    friend class network::BusBreakerView;
 
 private:
     stdcxx::DateTime m_caseDate;
