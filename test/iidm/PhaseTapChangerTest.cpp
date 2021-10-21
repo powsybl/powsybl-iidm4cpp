@@ -295,7 +295,6 @@ BOOST_AUTO_TEST_CASE(integrity) {
     //TODO(thiebarr) POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
     BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationValue(stdcxx::nan())));
     BOOST_TEST(std::isnan(phaseTapChanger.getRegulationValue()));
-    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
     BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationValue(-15.0)));
     BOOST_CHECK_CLOSE(-15.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
@@ -393,13 +392,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     transformer.getPhaseTapChanger().remove();
     BOOST_TEST(!transformer.hasPhaseTapChanger());
 
-    adder.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
-    adder.setRegulationValue(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
     adder.setRegulationValue(55.0);
-    adder.setRegulationTerminal(stdcxx::Reference<Terminal>());
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and regulated terminal is not set");
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2()));
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     adder.setRegulationTerminal(stdcxx::ref<Terminal>(network.getLoad("LOAD1").getTerminal()));
