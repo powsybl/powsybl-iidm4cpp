@@ -537,9 +537,10 @@ BOOST_AUTO_TEST_CASE(createWithFixedLimitsTest) {
     BOOST_CHECK_CLOSE(550.0, line.getTerminal1().getQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(560.0, line.getTerminal2().getP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(550.0, line.getTerminal2().getQ(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(1100.0, line.getActivePowerLimits1().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(500.0, line.getActivePowerLimits1().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
 
-    const iidm::ActivePowerLimits& acpl = line.getActivePowerLimits1().get();
+    const iidm::ActivePowerLimits& acpl = line.getActivePowerLimits2().get();
+    BOOST_CHECK_CLOSE(1100.0, acpl.getPermanentLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL("10'", acpl.getTemporaryLimit(10 * 60).getName());
     BOOST_CHECK_CLOSE(10.0 * 60.0, acpl.getTemporaryLimit(10 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1200.0, acpl.getTemporaryLimit(10 * 60).getValue(), std::numeric_limits<double>::epsilon());
@@ -550,7 +551,7 @@ BOOST_AUTO_TEST_CASE(createWithFixedLimitsTest) {
     BOOST_CHECK_CLOSE(0.0, acpl.getTemporaryLimit(0).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), acpl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
 
-    const iidm::ApparentPowerLimits& appl = line.getApparentPowerLimits1().get();
+    const iidm::ApparentPowerLimits& appl = line.getApparentPowerLimits2().get();
     BOOST_CHECK_EQUAL("10'", appl.getTemporaryLimit(10 * 60).getName());
     BOOST_CHECK_CLOSE(10.0 * 60.0, appl.getTemporaryLimit(10 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1200.0, appl.getTemporaryLimit(10 * 60).getValue(), std::numeric_limits<double>::epsilon());
@@ -562,27 +563,27 @@ BOOST_AUTO_TEST_CASE(createWithFixedLimitsTest) {
     BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), appl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
 
     const iidm::Line& line2 = network.getLine("NHV1_NHV2_2");
-    BOOST_CHECK_CLOSE(560.0, line.getTerminal1().getP(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(550.0, line.getTerminal1().getQ(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(560.0, line.getTerminal2().getP(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(550.0, line.getTerminal2().getQ(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(1100.0, line.getApparentPowerLimits1().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(560.0, line2.getTerminal1().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(550.0, line2.getTerminal1().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(560.0, line2.getTerminal2().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(550.0, line2.getTerminal2().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(500.0, line2.getApparentPowerLimits2().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
 
-//    const iidm::ActivePowerLimits& acpl2 = line2.getActivePowerLimits1().get();
-//    BOOST_CHECK_EQUAL("20'", acpl2.getTemporaryLimit(20 * 60).getName());
-//    BOOST_CHECK_CLOSE(20.0 * 60.0, acpl2.getTemporaryLimit(20 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
-//    BOOST_CHECK_CLOSE(1200.0, acpl2.getTemporaryLimit(20 * 60).getValue(), std::numeric_limits<double>::epsilon());
-//    BOOST_CHECK_EQUAL("N/A", acpl2.getTemporaryLimit(0).getName());
-//    BOOST_CHECK_CLOSE(60.0, acpl2.getTemporaryLimit(0).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
-//    BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), acpl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
-//
-//    const iidm::ApparentPowerLimits& appl2 = line2.getApparentPowerLimits1().get();
-//    BOOST_CHECK_EQUAL("20'", appl2.getTemporaryLimit(20 * 60).getName());
-//    BOOST_CHECK_CLOSE(20.0 * 60.0, appl2.getTemporaryLimit(20 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
-//    BOOST_CHECK_CLOSE(1200.0, appl2.getTemporaryLimit(20 * 60).getValue(), std::numeric_limits<double>::epsilon());
-//    BOOST_CHECK_EQUAL("N/A", appl2.getTemporaryLimit(0).getName());
-//    BOOST_CHECK_CLOSE(60.0, appl2.getTemporaryLimit(0).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
-//    BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), appl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
+    const iidm::ActivePowerLimits& acpl2 = line2.getActivePowerLimits1().get();
+    BOOST_CHECK_EQUAL("20'", acpl2.getTemporaryLimit(20 * 60).getName());
+    BOOST_CHECK_CLOSE(20.0 * 60.0, acpl2.getTemporaryLimit(20 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1200.0, acpl2.getTemporaryLimit(20 * 60).getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL("N/A", acpl2.getTemporaryLimit(60).getName());
+    BOOST_CHECK_CLOSE(60.0, acpl2.getTemporaryLimit(60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), acpl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
+
+    const iidm::ApparentPowerLimits& appl2 = line2.getApparentPowerLimits1().get();
+    BOOST_CHECK_EQUAL("20'", appl2.getTemporaryLimit(20 * 60).getName());
+    BOOST_CHECK_CLOSE(20.0 * 60.0, appl2.getTemporaryLimit(20 * 60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1200.0, appl2.getTemporaryLimit(20 * 60).getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL("N/A", appl2.getTemporaryLimit(60).getName());
+    BOOST_CHECK_CLOSE(60.0, appl2.getTemporaryLimit(60).getAcceptableDuration(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(std::numeric_limits<double>::max(), appl.getTemporaryLimit(0).getValue(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

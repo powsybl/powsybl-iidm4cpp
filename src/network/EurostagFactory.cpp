@@ -259,8 +259,8 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
     iidm::Line& line = network.getLine("NHV1_NHV2_1");
     line.getTerminal1().setP(560.0).setQ(550.0);
     line.getTerminal2().setP(560.0).setQ(550.0);
-    line.newActivePowerLimits1().setPermanentLimit(500).add();  // FIXME(sla) to be discussed with mathbagu
-    line.newActivePowerLimits1()
+    line.newActivePowerLimits1().setPermanentLimit(500).add();
+    line.newActivePowerLimits2()
         .setPermanentLimit(1100)
         .beginTemporaryLimit()
             .setName("10'")
@@ -279,8 +279,8 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
         .endTemporaryLimit()
         .add();
 
-    line.newApparentPowerLimits1().setPermanentLimit(500).add(); // FIXME(sla) to be discussed with mathbagu
-    line.newApparentPowerLimits1()
+    line.newApparentPowerLimits1().setPermanentLimit(500).add();
+    line.newApparentPowerLimits2()
         .setPermanentLimit(1100)
         .beginTemporaryLimit()
             .setName("10'")
@@ -315,7 +315,7 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
             .setValue(std::numeric_limits<double>::max())
         .endTemporaryLimit()
         .add();
-    line2.newActivePowerLimits1().setPermanentLimit(500).add();  // FIXME(sla) to be discussed with mathbagu
+    line2.newActivePowerLimits2().setPermanentLimit(500).add();
 
     line2.newApparentPowerLimits1()
         .setPermanentLimit(1100)
@@ -330,7 +330,7 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
             .setValue(std::numeric_limits<double>::max())
         .endTemporaryLimit()
         .add();
-    line2.newApparentPowerLimits1().setPermanentLimit(500).add();  // FIXME(sla) to be discussed with mathbagu
+    line2.newApparentPowerLimits2().setPermanentLimit(500).add();
 
     return network;
 }
