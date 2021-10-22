@@ -33,9 +33,9 @@ public:  // Extension
 public:
     ~RemoteReactivePowerControl() noexcept override = default;
 
-    stdcxx::CReference<Terminal> getRegulatingTerminal() const;
+    const Terminal& getRegulatingTerminal() const;
 
-    stdcxx::Reference<Terminal> getRegulatingTerminal();
+    Terminal& getRegulatingTerminal();
 
     double getTargetQ() const;
 
@@ -45,14 +45,14 @@ private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
-    RemoteReactivePowerControl(Generator& generator, double targetQ, const stdcxx::Reference<Terminal>& terminal, bool enabled);
+    RemoteReactivePowerControl(Generator& generator, double targetQ, Terminal& terminal, bool enabled);
 
     friend RemoteReactivePowerControlAdder;
 
 private:
     double m_targetQ;
 
-    stdcxx::Reference<Terminal> m_regulatingTerminal;
+    std::reference_wrapper<Terminal> m_regulatingTerminal;
 
     bool m_enabled;
 };

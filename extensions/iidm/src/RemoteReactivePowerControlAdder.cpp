@@ -27,7 +27,7 @@ RemoteReactivePowerControlAdder::RemoteReactivePowerControlAdder(Extendable& ext
 
 std::unique_ptr<Extension> RemoteReactivePowerControlAdder::createExtension(Extendable& extendable) {
     if (stdcxx::isInstanceOf<Generator>(extendable)) {
-        return std::unique_ptr<RemoteReactivePowerControl>(new RemoteReactivePowerControl(dynamic_cast<Generator&>(extendable), m_targetQ, m_regulatingTerminal, m_enabled));
+        return std::unique_ptr<RemoteReactivePowerControl>(new RemoteReactivePowerControl(dynamic_cast<Generator&>(extendable), m_targetQ, m_regulatingTerminal.get(), m_enabled));
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
 }

@@ -20,8 +20,11 @@ namespace extensions {
 
 namespace iidm {
 
-RemoteReactivePowerControl::RemoteReactivePowerControl(Generator& generator, double targetQ, const stdcxx::Reference<Terminal>& terminal, bool enabled) :
-    Extension(generator), m_targetQ(targetQ), m_regulatingTerminal(terminal), m_enabled(enabled) {
+RemoteReactivePowerControl::RemoteReactivePowerControl(Generator& generator, double targetQ, Terminal& terminal, bool enabled) :
+    Extension(generator),
+    m_targetQ(targetQ),
+    m_regulatingTerminal(terminal),
+    m_enabled(enabled) {
 }
 
 void RemoteReactivePowerControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -35,12 +38,12 @@ const std::string& RemoteReactivePowerControl::getName() const {
     return s_name;
 }
 
-stdcxx::CReference<Terminal> RemoteReactivePowerControl::getRegulatingTerminal() const {
-    return stdcxx::cref(m_regulatingTerminal);
+const Terminal& RemoteReactivePowerControl::getRegulatingTerminal() const {
+    return m_regulatingTerminal.get();
 }
 
-stdcxx::Reference<Terminal> RemoteReactivePowerControl::getRegulatingTerminal() {
-    return m_regulatingTerminal;
+Terminal& RemoteReactivePowerControl::getRegulatingTerminal() {
+    return m_regulatingTerminal.get();
 }
 
 double RemoteReactivePowerControl::getTargetQ() const {

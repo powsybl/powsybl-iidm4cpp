@@ -13,6 +13,7 @@
 #include <powsybl/iidm/extensions/iidm/RemoteReactivePowerControl.hpp>
 #include <powsybl/iidm/extensions/iidm/RemoteReactivePowerControlAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
+#include <powsybl/test/AssertionUtils.hpp>
 
 namespace powsybl {
 
@@ -28,19 +29,15 @@ BOOST_AUTO_TEST_CASE(integrity) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
 
     Generator& generator = network.getGenerator("GEN");
-    generator.newExtension<RemoteReactivePowerControlAdder>().withTargetQ(1.0).withEnabled(true).add();
-
-    const RemoteReactivePowerControl& extension = generator.getExtension<RemoteReactivePowerControl>();
-    BOOST_CHECK_CLOSE(1.0, extension.getTargetQ(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(!extension.getRegulatingTerminal());
-    BOOST_CHECK(extension.isEnabled());
+    auto adder = generator.newExtension<RemoteReactivePowerControlAdder>().withTargetQ(1.0).withEnabled(true);
+    POWSYBL_ASSERT_THROW(adder.add(), std::runtime_error, "m_pointer is null");
 
     Terminal& terminal = network.getLine("NHV1_NHV2_1").getTerminal1();
     generator.newExtension<RemoteReactivePowerControlAdder>().withTargetQ(2.0).withRegulatingTerminal(terminal).withEnabled(false).add();
-    auto& extensionRegulatingTerm = generator.getExtension<RemoteReactivePowerControl>();
-    BOOST_CHECK_CLOSE(2.0, extensionRegulatingTerm.getTargetQ(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(stdcxx::areSame(terminal, extensionRegulatingTerm.getRegulatingTerminal().get()));
-    BOOST_CHECK(!extensionRegulatingTerm.isEnabled());
+    auto& ext = generator.getExtension<RemoteReactivePowerControl>();
+    BOOST_CHECK_CLOSE(2.0, ext.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(terminal, ext.getRegulatingTerminal()));
+    BOOST_CHECK(!ext.isEnabled());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
