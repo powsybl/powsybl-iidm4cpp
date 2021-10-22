@@ -27,9 +27,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    MergedXnode(Line& line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2, double xnodeQ2,
-                const std::string& line1Name, const std::string& line2Name, const std::string& code);
-
     ~MergedXnode() noexcept override = default;
 
     const std::string& getCode() const;
@@ -75,6 +72,12 @@ private:
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
+
+private:
+    MergedXnode(Line& line, double rdp, double xdp, double xnodeP1, double xnodeQ1, double xnodeP2, double xnodeQ2,
+                const std::string& line1Name, const std::string& line2Name, const std::string& code);
+
+    friend class MergedXnodeAdder;
 
 private:
     double m_rdp; // r divider position 1 -> 2

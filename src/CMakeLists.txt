@@ -29,6 +29,7 @@ set(IIDM_SOURCES
     iidm/BusBreakerVoltageLevelTopology.cpp
     iidm/BusBreakerVoltageLevelVariant.cpp
     iidm/BusBreakerVoltageLevelViews.cpp
+    iidm/BusCache.cpp
     iidm/BusRef.cpp
     iidm/BusTerminal.cpp
     iidm/BusTerminalViews.cpp
@@ -201,6 +202,7 @@ set(IIDM_SOURCES
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
+    iidm/util/LinkData.cpp
     iidm/util/Networks.cpp
     iidm/util/Substations.cpp
     iidm/util/SV.cpp

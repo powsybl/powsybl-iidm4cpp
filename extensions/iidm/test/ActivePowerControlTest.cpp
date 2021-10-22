@@ -32,7 +32,7 @@ Network createNetwork() {
     Network network = powsybl::network::BatteryNetworkFactory::create();
 
     Battery& battery = network.getBattery("BAT");
-    battery.addExtension(Extension::create<ActivePowerControl>(battery, true, 4.0));
+    battery.newExtension<ActivePowerControlAdder>().withParticipate(true).withDroop(4.0).add();
 
     Generator& generator = network.getGenerator("GEN");
     generator.newExtension<ActivePowerControlAdder>().withParticipate(false).withDroop(3.0).add();

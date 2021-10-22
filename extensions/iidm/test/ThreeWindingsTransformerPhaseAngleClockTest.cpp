@@ -37,8 +37,6 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(transformer.newExtension<ThreeWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClockLeg2(12UL).add(), PowsyblException, "Undefined value for phaseAngleClockLeg3");
     POWSYBL_ASSERT_THROW(transformer.newExtension<ThreeWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClockLeg2(12UL).withPhaseAngleClockLeg3(0UL).add(), PowsyblException, "Unexpected value for phaseAngleClock: 12");
     POWSYBL_ASSERT_THROW(transformer.newExtension<ThreeWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClockLeg2(0UL).withPhaseAngleClockLeg3(12UL).add(), PowsyblException, "Unexpected value for phaseAngleClock: 12");
-    POWSYBL_ASSERT_THROW(ThreeWindingsTransformerPhaseAngleClock(transformer, 12UL, 0UL), PowsyblException, "Unexpected value for phaseAngleClock: 12");
-    POWSYBL_ASSERT_THROW(ThreeWindingsTransformerPhaseAngleClock(transformer, 0UL, 12UL), PowsyblException, "Unexpected value for phaseAngleClock: 12");
 
     transformer.newExtension<ThreeWindingsTransformerPhaseAngleClockAdder>().withPhaseAngleClockLeg2(2UL).withPhaseAngleClockLeg3(3UL).add();
 

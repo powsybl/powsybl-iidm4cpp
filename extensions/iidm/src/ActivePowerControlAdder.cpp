@@ -26,10 +26,10 @@ ActivePowerControlAdder::ActivePowerControlAdder(Extendable& extendable) :
 
 std::unique_ptr<Extension> ActivePowerControlAdder::createExtension(Extendable& extendable) {
     if (stdcxx::isInstanceOf<Battery>(extendable)) {
-        return stdcxx::make_unique<ActivePowerControl>(dynamic_cast<Battery&>(extendable), m_participate, m_droop);
+        return std::unique_ptr<ActivePowerControl>(new ActivePowerControl(dynamic_cast<Battery&>(extendable), m_participate, m_droop));
     }
     if (stdcxx::isInstanceOf<Generator>(extendable)) {
-        return stdcxx::make_unique<ActivePowerControl>(dynamic_cast<Generator&>(extendable), m_participate, m_droop);
+        return std::unique_ptr<ActivePowerControl>(new ActivePowerControl(dynamic_cast<Generator&>(extendable), m_participate, m_droop));
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% or %3% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Battery>(), stdcxx::demangle<Generator>()));
 }

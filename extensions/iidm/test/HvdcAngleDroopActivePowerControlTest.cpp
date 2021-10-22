@@ -31,10 +31,11 @@ BOOST_FIXTURE_TEST_CASE(HvdcAngleDroopActivePowerControlConstructor, test::Resou
     Network network = Network::readXml(ResourceFixture::getResourcePath("VscRoundTripRef.xml"));
     HvdcLine& line = network.getHvdcLine("L");
 
-    POWSYBL_ASSERT_THROW(HvdcAngleDroopActivePowerControl(line, stdcxx::nan(), 2.0, true), PowsyblException, "p0 is not set");
-    POWSYBL_ASSERT_THROW(HvdcAngleDroopActivePowerControl(line, 1.0, stdcxx::nan(), true), PowsyblException, "droop is not set");
+    POWSYBL_ASSERT_THROW(line.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(stdcxx::nan()).withDroop(2.0).withEnabled(true).add(), PowsyblException, "p0 is not set");
+    POWSYBL_ASSERT_THROW(line.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(1.0).withDroop(stdcxx::nan()).withEnabled(true).add(), PowsyblException, "droop is not set");
 
-    HvdcAngleDroopActivePowerControl extension(line, 1.0, 2.0, true);
+    line.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(1.0).withDroop(2.0).withEnabled(true).add();
+    auto& extension = line.getExtension<HvdcAngleDroopActivePowerControl>();
     BOOST_CHECK_EQUAL("hvdcAngleDroopActivePowerControl", extension.getName());
     BOOST_CHECK(stdcxx::areSame(line, extension.getExtendable().get()));
     BOOST_CHECK_CLOSE(1.0, extension.getP0(), std::numeric_limits<double>::epsilon());

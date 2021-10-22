@@ -26,7 +26,7 @@ Boundary::Boundary(DanglingLine& parent) :
 double Boundary::getAngle() const {
     const Terminal& t = m_parent.getTerminal();
     const stdcxx::CReference<Bus>& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b)).otherSideA(m_parent);
+    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideA(m_parent, true);
 }
 
 const Connectable& Boundary::getConnectable() const {
@@ -40,13 +40,13 @@ Connectable& Boundary::getConnectable() {
 double Boundary::getP() const {
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b)).otherSideP(m_parent);
+    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideP(m_parent, true);
 }
 
 double Boundary::getQ() const {
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b)).otherSideQ(m_parent);
+    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideQ(m_parent, true);
 }
 
 stdcxx::optional<Branch::Side> Boundary::getSide() const {
@@ -56,7 +56,7 @@ stdcxx::optional<Branch::Side> Boundary::getSide() const {
 double Boundary::getV() const {
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b)).otherSideU(m_parent);
+    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideU(m_parent, true);
 }
 
 const VoltageLevel& Boundary::getVoltageLevel() const {

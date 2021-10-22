@@ -96,28 +96,42 @@ BOOST_AUTO_TEST_CASE(MergedXnodeTest) {
     BOOST_CHECK_CLOSE(3.0, extension.getXnodeP2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(4.0, extension.getXnodeQ2(), std::numeric_limits<double>::epsilon());
 
-    POWSYBL_ASSERT_THROW(MergedXnode(line, stdcxx::nan(), 0.2, 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: nan");
+    MergedXnodeAdder adder = line.newExtension<MergedXnodeAdder>();
+    adder.withRdp(stdcxx::nan()).withXdp(0.2).withXnodeP1(0.3).withXnodeQ1(0.4).withXnodeP2(0.5).withXnodeQ2(0.6).withLine1Name("").withLine2Name("").withCode("");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Invalid divider position: nan");
     POWSYBL_ASSERT_THROW(extension.setRdp(stdcxx::nan()), PowsyblException, "Invalid divider position: nan");
 
-    POWSYBL_ASSERT_THROW(MergedXnode(line, 10, 0.2, 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: 10");
+    adder.withRdp(10.0);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Invalid divider position: 10");
     POWSYBL_ASSERT_THROW(extension.setRdp(10), PowsyblException, "Invalid divider position: 10");
 
-    POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, stdcxx::nan(), 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: nan");
+    adder.withRdp(0.1);
+    adder.withXdp(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Invalid divider position: nan");
     POWSYBL_ASSERT_THROW(extension.setXdp(stdcxx::nan()), PowsyblException, "Invalid divider position: nan");
 
-    POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, 10, 0.3, 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Invalid divider position: 10");
+    adder.withXdp(10.0);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Invalid divider position: 10");
     POWSYBL_ASSERT_THROW(extension.setXdp(10), PowsyblException, "Invalid divider position: 10");
 
-    POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, 0.2, stdcxx::nan(), 0.4, 0.5, 0.6, "", "", ""), PowsyblException, "Power flow is invalid");
+    adder.withXdp(0.2);
+    adder.withXnodeP1(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Power flow is invalid");
     POWSYBL_ASSERT_THROW(extension.setXnodeP1(stdcxx::nan()), PowsyblException, "Power flow is invalid");
 
-    POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, 0.2, 0.3, stdcxx::nan(), 0.5, 0.6, "", "", ""), PowsyblException, "Power flow is invalid");
+    adder.withXnodeP1(0.3);
+    adder.withXnodeP2(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Power flow is invalid");
     POWSYBL_ASSERT_THROW(extension.setXnodeQ1(stdcxx::nan()), PowsyblException, "Power flow is invalid");
 
-    POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, 0.2, 0.3, 0.4, stdcxx::nan(), 0.6, "", "", ""), PowsyblException, "Power flow is invalid");
+    adder.withXnodeP2(0.4);
+    adder.withXnodeQ1(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Power flow is invalid");
     POWSYBL_ASSERT_THROW(extension.setXnodeP2(stdcxx::nan()), PowsyblException, "Power flow is invalid");
 
-    POWSYBL_ASSERT_THROW(MergedXnode(line, 0.1, 0.2, 0.3, 0.4, 0.5, stdcxx::nan(), "", "", ""), PowsyblException, "Power flow is invalid");
+    adder.withXnodeQ1(0.5);
+    adder.withXnodeQ2(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Power flow is invalid");
     POWSYBL_ASSERT_THROW(extension.setXnodeQ2(stdcxx::nan()), PowsyblException, "Power flow is invalid");
 }
 

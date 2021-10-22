@@ -20,11 +20,6 @@ namespace powsybl {
 
 namespace iidm {
 
-template <typename E, typename, typename... Args>
-std::unique_ptr<Extension> Extension::create(Args&&... args) {
-    return stdcxx::make_unique<Extension, E>(std::forward<Args>(args)...);
-}
-
 template <typename E, typename>
 stdcxx::CReference<E> Extension::getExtendable() const {
     if (m_extendable && !stdcxx::isInstanceOf<E>(m_extendable.get())) {

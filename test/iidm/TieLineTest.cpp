@@ -436,10 +436,12 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     BOOST_CHECK(stdcxx::areSame(cTieLine.getHalf1().getBoundary(), tieLine.getHalf1().getBoundary()));
     const Boundary& cBoundary = tieLine.getHalf1().getBoundary();
     Boundary& boundary = tieLine.getHalf1().getBoundary();
+
+    constexpr double ACCEPTABLE_THRESHOLD = 1e-6;
     BOOST_CHECK_CLOSE(168.31385922271897, boundary.getAngle(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(10051.099999999999, boundary.getP(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(-16154.5, boundary.getQ(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(182.584227139148, boundary.getV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(10051.099999999999, boundary.getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(-16154.5, boundary.getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(182.584227139148, boundary.getV(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK(stdcxx::areSame(cTieLine, cBoundary.getConnectable()));
     BOOST_CHECK(stdcxx::areSame(cTieLine, boundary.getConnectable()));
     BOOST_CHECK_EQUAL(Branch::Side::ONE, *boundary.getSide());

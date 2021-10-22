@@ -121,11 +121,9 @@ BOOST_AUTO_TEST_CASE(VoltagePerReactivePowerControlTest) {
     BOOST_CHECK_CLOSE(11.0, vprpc.getSlope(), std::numeric_limits<double>::epsilon());
 
     POWSYBL_ASSERT_THROW(vprpc.setSlope(stdcxx::nan()), PowsyblException, "Undefined value for slope");
-    POWSYBL_ASSERT_THROW(VoltagePerReactivePowerControl(svc, stdcxx::nan()), PowsyblException, "Undefined value for slope");
     POWSYBL_ASSERT_THROW(svc.newExtension<VoltagePerReactivePowerControlAdder>().withSlope(stdcxx::nan()).add(), PowsyblException, "Undefined value for slope");
 
     POWSYBL_ASSERT_THROW(vprpc.setSlope(-1.0), PowsyblException, "Slope value of SVC SVC2 must be positive: -1");
-    POWSYBL_ASSERT_THROW(VoltagePerReactivePowerControl(svc, -1.0), PowsyblException, "Slope value of SVC SVC2 must be positive: -1");
     POWSYBL_ASSERT_THROW(svc.newExtension<VoltagePerReactivePowerControlAdder>().withSlope(-1.0).add(), PowsyblException, "Slope value of SVC SVC2 must be positive: -1");
 
     BOOST_CHECK(stdcxx::areSame(svc, vprpc.getExtendable<StaticVarCompensator>().get()));

@@ -24,7 +24,7 @@ MergedXnodeAdder::MergedXnodeAdder(Extendable& extendable) :
 
 std::unique_ptr<Extension> MergedXnodeAdder::createExtension(Extendable& extendable) {
     if (stdcxx::isInstanceOf<Line>(extendable)) {
-        return stdcxx::make_unique<MergedXnode>(dynamic_cast<Line&>(extendable), m_rdp, m_xdp, m_xnodeP1, m_xnodeQ1, m_xnodeP2, m_xnodeQ2, m_line1Name, m_line2Name, m_code);
+        return std::unique_ptr<MergedXnode>(new MergedXnode(dynamic_cast<Line&>(extendable), m_rdp, m_xdp, m_xnodeP1, m_xnodeQ1, m_xnodeP2, m_xnodeQ2, m_line1Name, m_line2Name, m_code));
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
 }

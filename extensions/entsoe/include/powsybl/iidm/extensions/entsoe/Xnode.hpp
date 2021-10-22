@@ -27,8 +27,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    Xnode(DanglingLine& dl, const std::string& code);
-
     ~Xnode() noexcept override = default;
 
     const std::string& getCode() const;
@@ -37,6 +35,11 @@ public:
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
+
+private:
+    Xnode(DanglingLine& dl, const std::string& code);
+
+    friend class XnodeAdder;
 
 private:
     std::string m_code;

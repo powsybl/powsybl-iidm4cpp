@@ -27,8 +27,6 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    HvdcAngleDroopActivePowerControl(HvdcLine& hvdcLine, double p0, double droop, bool enabled);
-
     double getDroop() const;
 
     double getP0() const;
@@ -48,6 +46,11 @@ private:
     static double checkDroop(double droop);
 
     static double checkP0(double p0);
+
+private:
+    HvdcAngleDroopActivePowerControl(HvdcLine& hvdcLine, double p0, double droop, bool enabled);
+
+    friend class HvdcAngleDroopActivePowerControlAdder;
 
 private:
     /**
