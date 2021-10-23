@@ -53,8 +53,7 @@ private:
 
     double checkSlope(double slope);
 
-    template <typename B, typename D, typename, typename... Args>
-    friend std::unique_ptr<B> stdcxx::make_unique(Args&&... args);
+    friend class VoltagePerReactivePowerControlAdder;
 
 private:
     double m_slope;
