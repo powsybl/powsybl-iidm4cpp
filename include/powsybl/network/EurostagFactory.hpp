@@ -20,6 +20,8 @@ public:
 
     static iidm::Network createWithCurrentLimits();
 
+    static iidm::Network createWithFixedLimits();
+
 public:
     EurostagFactory() = delete;
 };

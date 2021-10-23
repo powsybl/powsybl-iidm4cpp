@@ -55,29 +55,29 @@ public:
 public:
     ~Branch() noexcept override = default;
 
-    bool checkPermanentLimit(const Side& side) const;
+    bool checkPermanentLimit(const Side& side, const LimitType& type) const;
 
-    bool checkPermanentLimit(const Side& side, double limitReduction) const;
+    bool checkPermanentLimit(const Side& side, double limitReduction, const LimitType& type) const;
 
-    bool checkPermanentLimit1() const;
+    bool checkPermanentLimit1(const LimitType& type) const;
 
-    bool checkPermanentLimit1(double limitReduction) const;
+    bool checkPermanentLimit1(double limitReduction, const LimitType& type) const;
 
-    bool checkPermanentLimit2() const;
+    bool checkPermanentLimit2(const LimitType& type) const;
 
-    bool checkPermanentLimit2(double limitReduction) const;
+    bool checkPermanentLimit2(double limitReduction, const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side) const;
+    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, double limitReduction) const;
+    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, double limitReduction, const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits1() const;
+    std::unique_ptr<Overload> checkTemporaryLimits1(const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits1(double limitReduction) const;
+    std::unique_ptr<Overload> checkTemporaryLimits1(double limitReduction, const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits2() const;
+    std::unique_ptr<Overload> checkTemporaryLimits2(const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits2(double limitReduction) const;
+    std::unique_ptr<Overload> checkTemporaryLimits2(double limitReduction, const LimitType& type) const;
 
     stdcxx::CReference<ActivePowerLimits> getActivePowerLimits(const Side& side) const;
 
@@ -114,6 +114,10 @@ public:
     stdcxx::CReference<CurrentLimits> getCurrentLimits2() const;
 
     stdcxx::Reference<CurrentLimits> getCurrentLimits2();
+
+    stdcxx::CReference<LoadingLimits> getLimits(const LimitType& type, const Side& side) const;
+
+    stdcxx::Reference<LoadingLimits> getLimits(const LimitType& type, const Side& side);
 
     unsigned long getOverloadDuration() const;
 
@@ -155,6 +159,8 @@ protected:
     Branch(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType);
 
 private:
+    double getValueForLimit(const Terminal& terminal, const LimitType& type) const;
+
     friend class CurrentLimitsAdder;
 
 private:

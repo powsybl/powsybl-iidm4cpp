@@ -17,17 +17,17 @@ namespace iidm {
 
 namespace LimitViolationUtils {
 
-bool checkPermanentLimit(const Branch& branch, const Branch::Side& side, double limitReduction, double i) {
-    stdcxx::CReference<CurrentLimits> limits = branch.getCurrentLimits(side);
+bool checkPermanentLimit(const Branch& branch, const Branch::Side& side, double limitReduction, double i, const LimitType& type) {
+    stdcxx::CReference<LoadingLimits> limits = branch.getLimits(type, side);
     return static_cast<bool>(limits)
            && !std::isnan(limits.get().getPermanentLimit())
            && !std::isnan(i)
            && std::isgreaterequal(i, limits.get().getPermanentLimit() * limitReduction);
 }
 
-std::unique_ptr<Branch::Overload> checkTemporaryLimits(const Branch& branch, const Branch::Side& side, double limitReduction, double i) {
+std::unique_ptr<Branch::Overload> checkTemporaryLimits(const Branch& branch, const Branch::Side& side, double limitReduction, double i, const LimitType& type) {
     std::unique_ptr<Branch::Overload> res;
-    stdcxx::CReference<CurrentLimits> limits = branch.getCurrentLimits(side);
+    stdcxx::CReference<LoadingLimits> limits = branch.getLimits(type, side);
     if (static_cast<bool>(limits) && !std::isnan(limits.get().getPermanentLimit()) && !std::isnan(i)) {
         std::string previousLimitName;
         double previousLimit = limits.get().getPermanentLimit();
