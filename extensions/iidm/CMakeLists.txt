@@ -21,6 +21,8 @@ set(EXT_SOURCES
     src/HvdcOperatorActivePowerRangeAdder.cpp
     src/HvdcOperatorActivePowerRangeXmlSerializer.cpp
     src/Iidm.cpp
+    src/RemoteReactivePowerControl.cpp
+    src/RemoteReactivePowerControlAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
     src/ThreeWindingsTransformerPhaseAngleClockAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.cpp
@@ -38,6 +40,7 @@ set(UNIT_TEST_SOURCES
     test/HvdcAngleDroopActivePowerControlTest.cpp
     test/HvdcOperatorActivePowerRangeTest.cpp
     test/iidm.cpp
+    test/RemoteReactivePowerControlTest.cpp
     test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
     test/TwoWindingsTransformerPhaseAngleClockTest.cpp
     test/VoltagePerReactivePowerControlTest.cpp
