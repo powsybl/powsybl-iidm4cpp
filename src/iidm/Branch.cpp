@@ -47,52 +47,70 @@ Branch::Branch(const std::string& id, const std::string& name, bool fictitious, 
     m_operationalLimitsHolder2(*this, "limits2") {
 }
 
-bool Branch::checkPermanentLimit(const Side& side) const {
-    return checkPermanentLimit(side, 1.0);
+bool Branch::checkPermanentLimit(const Side& side, const LimitType& type) const {
+    return checkPermanentLimit(side, 1.0, type);
 }
 
-bool Branch::checkPermanentLimit(const Side& side, double limitReduction) const {
-    return LimitViolationUtils::checkPermanentLimit(*this, side, limitReduction, getTerminal(side).getI());
+bool Branch::checkPermanentLimit(const Side& side, double limitReduction, const LimitType& type) const {
+    switch (side) {
+        case Side::ONE:
+            return checkPermanentLimit1(limitReduction, type);
+
+        case Side::TWO:
+            return checkPermanentLimit2(limitReduction, type);
+
+        default:
+            throw AssertionError(stdcxx::format("Unexpected side %1%", side));
+    }
 }
 
-bool Branch::checkPermanentLimit1() const {
-    return checkPermanentLimit1(1.0);
+bool Branch::checkPermanentLimit1(const LimitType& type) const {
+    return checkPermanentLimit1(1.0, type);
 }
 
-bool Branch::checkPermanentLimit1(double limitReduction) const {
-    return checkPermanentLimit(Side::ONE, limitReduction);
+bool Branch::checkPermanentLimit1(double limitReduction, const LimitType& type) const {
+    return LimitViolationUtils::checkPermanentLimit(*this, Side::ONE, limitReduction, getValueForLimit(getTerminal1(), type), type);
 }
 
-bool Branch::checkPermanentLimit2() const {
-    return checkPermanentLimit2(1.0);
+bool Branch::checkPermanentLimit2(const LimitType& type) const {
+    return checkPermanentLimit2(1.0, type);
 }
 
-bool Branch::checkPermanentLimit2(double limitReduction) const {
-    return checkPermanentLimit(Side::TWO, limitReduction);
+bool Branch::checkPermanentLimit2(double limitReduction, const LimitType& type) const {
+    return LimitViolationUtils::checkPermanentLimit(*this, Side::TWO, limitReduction, getValueForLimit(getTerminal2(), type), type);
 }
 
-std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits(const Side& side) const {
-    return checkTemporaryLimits(side, 1.0);
+std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits(const Side& side, const LimitType& type) const {
+    return checkTemporaryLimits(side, 1.0, type);
 }
 
-std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits(const Side& side, double limitReduction) const {
-    return LimitViolationUtils::checkTemporaryLimits(*this, side, limitReduction, getTerminal(side).getI());
+std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits(const Side& side, double limitReduction, const LimitType& type) const {
+    switch (side) {
+        case Side::ONE:
+            return checkTemporaryLimits1(limitReduction, type);
+
+        case Side::TWO:
+            return checkTemporaryLimits2(limitReduction, type);
+
+        default:
+            throw AssertionError(stdcxx::format("Unexpected side %1%", side));
+    }
 }
 
-std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits1() const {
-    return checkTemporaryLimits1(1.0);
+std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits1(const LimitType& type) const {
+    return checkTemporaryLimits1(1.0, type);
 }
 
-std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits1(double limitReduction) const {
-    return checkTemporaryLimits(Side::ONE, limitReduction);
+std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits1(double limitReduction, const LimitType& type) const {
+    return LimitViolationUtils::checkTemporaryLimits(*this, Side::ONE, limitReduction, getValueForLimit(getTerminal1(), type), type);
 }
 
-std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits2() const {
-    return checkTemporaryLimits2(1.0);
+std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits2(const LimitType& type) const {
+    return checkTemporaryLimits2(1.0, type);
 }
 
-std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits2(double limitReduction) const {
-    return checkTemporaryLimits(Side::TWO, limitReduction);
+std::unique_ptr<Branch::Overload> Branch::checkTemporaryLimits2(double limitReduction, const LimitType& type) const {
+    return LimitViolationUtils::checkTemporaryLimits(*this, Side::TWO, limitReduction, getValueForLimit(getTerminal2(), type), type);
 }
 
 stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits(const Side& side) const {
@@ -190,9 +208,30 @@ stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits2() {
     return m_operationalLimitsHolder2.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
 }
 
+stdcxx::CReference<LoadingLimits> Branch::getLimits(const LimitType& type, const Side& side) const {
+    switch (type) {
+        case LimitType::CURRENT:
+            return stdcxx::cref<LoadingLimits>(getCurrentLimits(side));
+
+        case LimitType::ACTIVE_POWER:
+            return stdcxx::cref<LoadingLimits>(getActivePowerLimits(side));
+
+        case LimitType::APPARENT_POWER:
+            return stdcxx::cref<LoadingLimits>(getApparentPowerLimits(side));
+
+        case LimitType::VOLTAGE:
+        default:
+            throw AssertionError(stdcxx::format("Getting %1% limits is not supported.", type));
+    }
+}
+
+stdcxx::Reference<LoadingLimits> Branch::getLimits(const LimitType& type, const Side& side) {
+    return stdcxx::ref(const_cast<const Branch*>(this)->getLimits(type, side));
+}
+
 unsigned long Branch::getOverloadDuration() const {
-    std::unique_ptr<Overload> o1 = checkTemporaryLimits1();
-    std::unique_ptr<Overload> o2 = checkTemporaryLimits2();
+    std::unique_ptr<Overload> o1 = checkTemporaryLimits1(LimitType::CURRENT);
+    std::unique_ptr<Overload> o2 = checkTemporaryLimits2(LimitType::CURRENT);
 
     unsigned long duration1 = o1 ? o1->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
     unsigned long duration2 = o2 ? o2->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
@@ -264,12 +303,29 @@ Terminal& Branch::getTerminal2() {
     return getTerminal(Side::TWO);
 }
 
+double Branch::getValueForLimit(const Terminal& terminal, const LimitType& type) const {
+    switch (type) {
+        case LimitType::ACTIVE_POWER:
+            return terminal.getP();
+
+        case LimitType::APPARENT_POWER:
+            return std::sqrt(terminal.getP() * terminal.getP() + terminal.getQ() * terminal.getQ());
+
+        case LimitType::CURRENT:
+            return terminal.getI();
+
+        case LimitType::VOLTAGE:
+        default:
+            throw AssertionError(stdcxx::format("Getting %1% limits is not supported", type));
+    }
+}
+
 bool Branch::isOverloaded() const {
     return isOverloaded(1.0);
 }
 
 bool Branch::isOverloaded(double limitReduction) const {
-    return checkPermanentLimit1(limitReduction) || checkPermanentLimit2(limitReduction);
+    return checkPermanentLimit1(limitReduction, LimitType::CURRENT) || checkPermanentLimit2(limitReduction, LimitType::CURRENT);
 }
 
 ActivePowerLimitsAdder Branch::newActivePowerLimits1() {

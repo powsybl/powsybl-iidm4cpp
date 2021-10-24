@@ -257,18 +257,19 @@ void checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapCh
         default:
             throw AssertionError(stdcxx::format("Unexpected regulation mode value: %1%", regulationMode));
     }
-
-    if ((regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP) && std::isnan(regulationValue)) {
-        throw ValidationException(validable, "phase regulation is on and threshold/setpoint value is not set");
-    }
-    if ((regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP) && !regulationTerminal) {
-        throw ValidationException(validable, "phase regulation is on and regulated terminal is not set");
+    if (regulating) {
+        if (regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP && std::isnan(regulationValue)) {
+            throw ValidationException(validable, "phase regulation is on and threshold/setpoint value is not set");
+        }
+        if (regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP && !regulationTerminal) {
+            throw ValidationException(validable, "phase regulation is on and regulated terminal is not set");
+        }
+        if (regulationMode == PhaseTapChanger::RegulationMode::FIXED_TAP) {
+            throw ValidationException(validable, "phase regulation cannot be on if mode is FIXED");
+        }
     }
     if (regulationTerminal && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
         throw ValidationException(validable, "phase regulation terminal is not part of the network");
-    }
-    if ((regulationMode == PhaseTapChanger::RegulationMode::FIXED_TAP) && regulating) {
-        throw ValidationException(validable, "phase regulation cannot be on if mode is FIXED");
     }
 }
 
