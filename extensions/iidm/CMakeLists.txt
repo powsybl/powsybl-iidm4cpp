@@ -14,6 +14,12 @@ set(EXT_SOURCES
     src/CoordinatedReactiveControl.cpp
     src/CoordinatedReactiveControlAdder.cpp
     src/CoordinatedReactiveControlXmlSerializer.cpp
+    src/DiscreteMeasurement.cpp
+    src/DiscreteMeasurementAdder.cpp
+    src/DiscreteMeasurements.cpp
+    src/DiscreteMeasurementsAdder.cpp
+    src/DiscreteMeasurementsXmlSerializer.cpp
+    src/DiscreteMeasurementValidationUtil.cpp
     src/HvdcAngleDroopActivePowerControl.cpp
     src/HvdcAngleDroopActivePowerControlAdder.cpp
     src/HvdcAngleDroopActivePowerControlXmlSerializer.cpp
@@ -21,6 +27,12 @@ set(EXT_SOURCES
     src/HvdcOperatorActivePowerRangeAdder.cpp
     src/HvdcOperatorActivePowerRangeXmlSerializer.cpp
     src/Iidm.cpp
+    src/Measurement.cpp
+    src/MeasurementAdder.cpp
+    src/Measurements.cpp
+    src/MeasurementsAdder.cpp
+    src/MeasurementsXmlSerializer.cpp
+    src/MeasurementValidationUtil.cpp
     src/RemoteReactivePowerControl.cpp
     src/RemoteReactivePowerControlAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
@@ -37,9 +49,11 @@ set(EXT_SOURCES
 set(UNIT_TEST_SOURCES
     test/ActivePowerControlTest.cpp
     test/CoordinatedReactiveControlTest.cpp
+    test/DiscreteMeasurementsTest.cpp
     test/HvdcAngleDroopActivePowerControlTest.cpp
     test/HvdcOperatorActivePowerRangeTest.cpp
     test/iidm.cpp
+    test/MeasurementsTest.cpp
     test/RemoteReactivePowerControlTest.cpp
     test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
     test/TwoWindingsTransformerPhaseAngleClockTest.cpp
