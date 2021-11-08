@@ -27,11 +27,6 @@ public:
     explicit BusbarSectionPositionAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~BusbarSectionPositionAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     BusbarSectionPositionAdder(const BusbarSectionPositionAdder&) = default;
@@ -40,6 +35,11 @@ public:
      * Move constructor
      */
     BusbarSectionPositionAdder(BusbarSectionPositionAdder&&) = default;
+
+    /**
+     * Destructor
+     */
+    ~BusbarSectionPositionAdder() noexcept override = default;
 
     /**
      * Copy assignment operator

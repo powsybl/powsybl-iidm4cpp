@@ -38,11 +38,11 @@ public:
 public:
     SimpleAnonymizer() = default;
 
-    ~SimpleAnonymizer() override = default;
-
     SimpleAnonymizer(const SimpleAnonymizer&) = default;
 
     SimpleAnonymizer(SimpleAnonymizer&&) = default;
+
+    ~SimpleAnonymizer() override = default;
 
     SimpleAnonymizer& operator=(const SimpleAnonymizer&) = default;
 

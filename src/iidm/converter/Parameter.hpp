@@ -31,11 +31,11 @@ public:
 public:
     Parameter(std::string&& name, const Type& type, std::string&& description, std::string&& defaultValue);
 
-    ~Parameter() = default;
-
     Parameter(const Parameter&) = default;
 
     Parameter(Parameter&&) noexcept = default;
+
+    ~Parameter() = default;
 
     Parameter& operator=(const Parameter&) = default;
 

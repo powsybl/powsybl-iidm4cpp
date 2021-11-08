@@ -53,11 +53,6 @@ public:
     explicit ConnectablePositionAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~ConnectablePositionAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     ConnectablePositionAdder(const ConnectablePositionAdder&) = default;
@@ -66,6 +61,11 @@ public:
      * Move constructor
      */
     ConnectablePositionAdder(ConnectablePositionAdder&&) = default;
+
+    /**
+     * Destructor
+     */
+    ~ConnectablePositionAdder() noexcept override = default;
 
     /**
      * Copy assignment operator

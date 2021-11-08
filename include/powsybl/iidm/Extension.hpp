@@ -25,11 +25,11 @@ class Extension {
 public:
     Extension() = delete;
 
-    virtual ~Extension() noexcept = default;
-
     Extension(const Extension&) = delete;
 
     Extension(Extension&&) noexcept = delete;
+
+    virtual ~Extension() noexcept = default;
 
     Extension& operator=(const Extension&) = delete;
 

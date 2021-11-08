@@ -24,11 +24,6 @@ public:
     explicit LoadDetailAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~LoadDetailAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     LoadDetailAdder(const LoadDetailAdder&) = default;
@@ -37,6 +32,11 @@ public:
      * Move constructor
      */
     LoadDetailAdder(LoadDetailAdder&&) = default;
+
+    /**
+     * Destructor
+     */
+    ~LoadDetailAdder() noexcept override = default;
 
     /**
      * Copy assignment operator

@@ -27,11 +27,6 @@ public:
     explicit VoltagePerReactivePowerControlAdder(Extendable& extendable);
 
     /**
-     * Destructor
-     */
-    ~VoltagePerReactivePowerControlAdder() noexcept override = default;
-
-    /**
      * Copy constructor
      */
     VoltagePerReactivePowerControlAdder(const VoltagePerReactivePowerControlAdder&) = default;
@@ -40,6 +35,11 @@ public:
      * Move constructor
      */
     VoltagePerReactivePowerControlAdder(VoltagePerReactivePowerControlAdder&&) = default;
+
+    /**
+     * Destructor
+     */
+    ~VoltagePerReactivePowerControlAdder() noexcept override = default;
 
     /**
      * Copy assignment operator
