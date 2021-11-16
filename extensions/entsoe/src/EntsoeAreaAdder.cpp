@@ -22,7 +22,7 @@ EntsoeAreaAdder::EntsoeAreaAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> EntsoeAreaAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> EntsoeAreaAdder::createExtension(Extendable& extendable) const {
     if (!m_code) {
         throw PowsyblException(stdcxx::format("code is undefined"));
     }

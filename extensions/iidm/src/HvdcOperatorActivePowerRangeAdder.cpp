@@ -24,7 +24,7 @@ HvdcOperatorActivePowerRangeAdder::HvdcOperatorActivePowerRangeAdder(Extendable&
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> HvdcOperatorActivePowerRangeAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> HvdcOperatorActivePowerRangeAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<HvdcLine>(extendable)) {
         return std::unique_ptr<HvdcOperatorActivePowerRange>(new HvdcOperatorActivePowerRange(dynamic_cast<HvdcLine&>(extendable), m_oprFromCS1toCS2, m_oprFromCS2toCS1));
     }

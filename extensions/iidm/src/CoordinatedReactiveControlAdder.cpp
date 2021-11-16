@@ -22,7 +22,7 @@ CoordinatedReactiveControlAdder::CoordinatedReactiveControlAdder(Extendable& ext
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> CoordinatedReactiveControlAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> CoordinatedReactiveControlAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Generator>(extendable)) {
         return std::unique_ptr<CoordinatedReactiveControl>(new CoordinatedReactiveControl(dynamic_cast<Generator&>(extendable), m_qPercent));
     }

@@ -25,7 +25,7 @@ XnodeAdder::XnodeAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> XnodeAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> XnodeAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<DanglingLine>(extendable)) {
         return std::unique_ptr<Xnode>(new Xnode(dynamic_cast<DanglingLine&>(extendable), m_code));
     }

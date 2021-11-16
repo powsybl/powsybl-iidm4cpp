@@ -65,7 +65,7 @@ private:
      *
      * @return the extension
      */
-    virtual std::unique_ptr<Extension> createExtension(Extendable& extendable) = 0;
+    virtual std::unique_ptr<Extension> createExtension(Extendable& extendable) const = 0;
 
 private:
     Extendable& m_extendable;

@@ -25,7 +25,7 @@ RemoteReactivePowerControlAdder::RemoteReactivePowerControlAdder(Extendable& ext
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> RemoteReactivePowerControlAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> RemoteReactivePowerControlAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Generator>(extendable)) {
         return std::unique_ptr<RemoteReactivePowerControl>(new RemoteReactivePowerControl(dynamic_cast<Generator&>(extendable), m_targetQ, m_regulatingTerminal.get(), m_enabled));
     }
