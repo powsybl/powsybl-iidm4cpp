@@ -42,8 +42,6 @@ BOOST_AUTO_TEST_CASE(ConnectablePositionConstructor) {
     ConnectablePosition::Feeder feeder2("feeder2", 2, ConnectablePosition::Direction::TOP);
     ConnectablePosition::Feeder feeder3("feeder3", 3, ConnectablePosition::Direction::BOTTOM);
 
-    std::cout << "BOTTOM = " << ConnectablePosition::Direction::BOTTOM << std::endl;
-
     BOOST_CHECK_EQUAL("feeder3", feeder3.getName());
     BOOST_CHECK_EQUAL(3, feeder3.getOrder());
     BOOST_CHECK_EQUAL(static_cast<int>(ConnectablePosition::Direction::BOTTOM), static_cast<int>(feeder3.getDirection()));
