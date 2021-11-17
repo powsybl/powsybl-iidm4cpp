@@ -48,7 +48,7 @@ public: // VoltageLevel
      *
      * @return the highest index of used nodes.
      */
-    unsigned long getMaximumNodeIndex() const;
+    long getMaximumNodeIndex() const;
 
     const NodeBreakerView& getNodeBreakerView() const override;
 
