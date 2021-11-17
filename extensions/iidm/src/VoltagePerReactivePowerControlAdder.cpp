@@ -24,7 +24,7 @@ VoltagePerReactivePowerControlAdder::VoltagePerReactivePowerControlAdder(Extenda
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> VoltagePerReactivePowerControlAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> VoltagePerReactivePowerControlAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<StaticVarCompensator>(extendable)) {
         return std::unique_ptr<VoltagePerReactivePowerControl>(new VoltagePerReactivePowerControl(dynamic_cast<StaticVarCompensator&>(extendable), m_slope));
     }

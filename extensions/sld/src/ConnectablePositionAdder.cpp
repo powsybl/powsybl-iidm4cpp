@@ -56,7 +56,7 @@ ConnectablePositionAdder::ConnectablePositionAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> ConnectablePositionAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> ConnectablePositionAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Connectable>(extendable)) {
         return std::unique_ptr<ConnectablePosition>(new ConnectablePosition(dynamic_cast<Connectable&>(extendable), m_feeder, m_feeder1, m_feeder2, m_feeder3));
     }

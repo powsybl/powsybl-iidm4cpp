@@ -24,7 +24,7 @@ BusbarSectionPositionAdder::BusbarSectionPositionAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> BusbarSectionPositionAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> BusbarSectionPositionAdder::createExtension(Extendable& extendable) const {
     if (!m_busbarIndex) {
         throw PowsyblException("Undefined value for busbar index");
     }

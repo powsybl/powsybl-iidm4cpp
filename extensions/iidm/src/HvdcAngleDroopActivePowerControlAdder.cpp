@@ -22,7 +22,7 @@ HvdcAngleDroopActivePowerControlAdder::HvdcAngleDroopActivePowerControlAdder(Ext
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> HvdcAngleDroopActivePowerControlAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> HvdcAngleDroopActivePowerControlAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<HvdcLine>(extendable)) {
         return std::unique_ptr<HvdcAngleDroopActivePowerControl>(new HvdcAngleDroopActivePowerControl(dynamic_cast<HvdcLine&>(extendable), m_p0, m_droop, m_enabled));
     }
