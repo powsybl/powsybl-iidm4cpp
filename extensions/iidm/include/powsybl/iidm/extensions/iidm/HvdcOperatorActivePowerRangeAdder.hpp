@@ -76,7 +76,7 @@ protected:
      *
      * @return the extension
      */
-    std::unique_ptr<Extension> createExtension(Extendable& extendable) override;
+    std::unique_ptr<Extension> createExtension(Extendable& extendable) const override;
 
 private:
     double m_oprFromCS1toCS2 = 0.0;

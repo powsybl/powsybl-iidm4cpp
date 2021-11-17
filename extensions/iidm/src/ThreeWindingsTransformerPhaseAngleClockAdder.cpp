@@ -22,7 +22,7 @@ ThreeWindingsTransformerPhaseAngleClockAdder::ThreeWindingsTransformerPhaseAngle
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> ThreeWindingsTransformerPhaseAngleClockAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> ThreeWindingsTransformerPhaseAngleClockAdder::createExtension(Extendable& extendable) const {
     if (!m_phaseAngleClockLeg2) {
         throw PowsyblException(stdcxx::format("Undefined value for phaseAngleClockLeg2"));
     }
