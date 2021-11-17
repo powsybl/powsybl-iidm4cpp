@@ -121,7 +121,7 @@ public:
 
     virtual stdcxx::const_range<InternalConnection> getInternalConnections() const = 0;
 
-    virtual unsigned long getMaximumNodeIndex() const = 0;
+    virtual long getMaximumNodeIndex() const = 0;
 
     virtual unsigned long getNode1(const std::string& switchId) const = 0;
 
