@@ -77,7 +77,7 @@ protected:
      *
      * @return the extension
      */
-    std::unique_ptr<Extension> createExtension(Extendable& extendable) override;
+    std::unique_ptr<Extension> createExtension(Extendable& extendable) const override;
 
 private:
     stdcxx::Reference<Terminal> m_terminal;

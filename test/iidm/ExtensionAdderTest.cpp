@@ -47,7 +47,7 @@ public:
         ExtensionAdder(extendable) {
     }
 
-    std::unique_ptr<Extension> createExtension(Extendable& extendable) override {
+    std::unique_ptr<Extension> createExtension(Extendable& extendable) const override {
         return stdcxx::make_unique<SimpleExtensionImpl>(extendable);
     }
 };
