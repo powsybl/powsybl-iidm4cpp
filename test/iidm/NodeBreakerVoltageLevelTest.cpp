@@ -1244,6 +1244,74 @@ BOOST_AUTO_TEST_CASE(NbkComprehensiveErrorMessage) {
     POWSYBL_ASSERT_THROW(Network::writeXml("network.xiidm", ss, network, converter::ExportOptions(properties)), PowsyblException, "Terminal ref should not point to a busbar section (here S1VL2_BBS1). Try to export in node-breaker or delete this terminal ref.");
 }
 
+BOOST_AUTO_TEST_CASE(getMaximumNodeIndexTest) {
+    Network network("test", "test");
+
+    Substation& substation = network.newSubstation()
+        .setId("S1")
+        .add();
+
+    VoltageLevel& vl1 = substation.newVoltageLevel()
+        .setId("VL1")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalV(380.0)
+        .add();
+
+    vl1.newLoad()
+        .setId("LOAD1")
+        .setNode(0)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
+    vl1.getNodeBreakerView().newBreaker()
+        .setId("SWB1")
+        .setNode1(0)
+        .setNode2(1)
+        .setRetained(false)
+        .setOpen(false)
+        .add();
+    BOOST_CHECK_EQUAL(1, vl1.getNodeBreakerView().getMaximumNodeIndex());
+
+    VoltageLevel& vl2 = substation.newVoltageLevel()
+        .setId("VL2")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalV(225.0)
+        .add();
+
+    vl2.newLoad()
+        .setId("LOAD2")
+        .setNode(0)
+        .setP0(60.0)
+        .setQ0(70.0)
+        .add();
+
+    vl2.getNodeBreakerView().newBreaker()
+        .setId("SWB2")
+        .setNode1(0)
+        .setNode2(1)
+        .setRetained(false)
+        .setOpen(false)
+        .add();
+
+    vl2.getNodeBreakerView().newBreaker()
+        .setId("SWB3")
+        .setNode1(1)
+        .setNode2(12)
+        .setRetained(false)
+        .setOpen(false)
+        .add();
+
+    BOOST_CHECK_EQUAL(12, vl2.getNodeBreakerView().getMaximumNodeIndex());
+
+    VoltageLevel& vl3 = substation.newVoltageLevel()
+        .setId("VL3")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalV(225.0)
+        .add();
+    BOOST_CHECK_EQUAL(-1, vl3.getNodeBreakerView().getMaximumNodeIndex());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

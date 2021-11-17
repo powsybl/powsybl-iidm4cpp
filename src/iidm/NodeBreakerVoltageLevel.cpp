@@ -248,7 +248,7 @@ unsigned long NodeBreakerVoltageLevel::getInternalConnectionCount() const {
     return std::count(std::begin(switches), std::end(switches), stdcxx::ref<Switch>());
 }
 
-unsigned long NodeBreakerVoltageLevel::getMaximumNodeIndex() const {
+long NodeBreakerVoltageLevel::getMaximumNodeIndex() const {
     return m_graph.getVertexCapacity() - 1;
 }
 
