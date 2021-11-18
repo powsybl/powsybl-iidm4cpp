@@ -21,7 +21,7 @@ SlackTerminalAdder::SlackTerminalAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> SlackTerminalAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> SlackTerminalAdder::createExtension(Extendable& extendable) const {
     if (!m_terminal) {
         throw PowsyblException("Terminal needs to be set to create a SlackTerminal extension");
     }

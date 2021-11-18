@@ -20,7 +20,7 @@ LoadDetailAdder::LoadDetailAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> LoadDetailAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> LoadDetailAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Load>(extendable)) {
         return stdcxx::make_unique<LoadDetail>(dynamic_cast<Load&>(extendable), m_fixedActivePower, m_fixedReactivePower, m_variableActivePower, m_variableReactivePower);
     }

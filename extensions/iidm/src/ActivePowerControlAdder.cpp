@@ -24,7 +24,7 @@ ActivePowerControlAdder::ActivePowerControlAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> ActivePowerControlAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> ActivePowerControlAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Battery>(extendable)) {
         return std::unique_ptr<ActivePowerControl>(new ActivePowerControl(dynamic_cast<Battery&>(extendable), m_participate, m_droop));
     }

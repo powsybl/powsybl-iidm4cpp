@@ -32,7 +32,7 @@ public: // NodeBreakerView
 
     stdcxx::const_range<InternalConnection> getInternalConnections() const override;
 
-    unsigned long getMaximumNodeIndex() const override;
+    long getMaximumNodeIndex() const override;
 
     unsigned long getNode1(const std::string& switchId) const override;
 
