@@ -26,7 +26,7 @@ DiscreteMeasurementsAdder::DiscreteMeasurementsAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> DiscreteMeasurementsAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> DiscreteMeasurementsAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Identifiable>(extendable)) {
         return std::unique_ptr<DiscreteMeasurements>(new DiscreteMeasurements(dynamic_cast<Identifiable&>(extendable)));
     }

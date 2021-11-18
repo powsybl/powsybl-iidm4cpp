@@ -31,6 +31,11 @@ DiscreteMeasurementsXmlSerializer::DiscreteMeasurementsXmlSerializer() :
     converter::xml::AbstractExtensionXmlSerializer("discreteMeasurements", "network", "dm", "http://www.powsybl.org/schema/iidm/ext/discrete_measurements/1_0") {
 }
 
+bool DiscreteMeasurementsXmlSerializer::isSerializable(const Extension& extension) const {
+    const auto& discreteMeasurements = safeCast<DiscreteMeasurements>(extension);
+    return !discreteMeasurements.getDiscreteMeasurements().empty();
+}
+
 Extension& DiscreteMeasurementsXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     extendable.newExtension<DiscreteMeasurementsAdder>().add();
     auto& discreteMeasurements = extendable.getExtension<DiscreteMeasurements>();
@@ -43,48 +48,6 @@ Extension& DiscreteMeasurementsXmlSerializer::read(Extendable& extendable, conve
         }
     });
     return discreteMeasurements;
-}
-
-void DiscreteMeasurementsXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
-    auto& discreteMeasurements = safeCast<DiscreteMeasurements>(extension);
-    xml::XmlStreamWriter& writer = context.getWriter();
-    for (const DiscreteMeasurement& discreteMeasurement : discreteMeasurements.getDiscreteMeasurements()) {
-        writer.writeStartElement(getNamespacePrefix(), "discreteMeasurement");
-        if (!discreteMeasurement.getId().empty()) {
-            writer.writeAttribute(converter::ID, discreteMeasurement.getId());
-        }
-        writer.writeAttribute(converter::TYPE, Enum::toString(discreteMeasurement.getType()));
-        if (discreteMeasurement.getTapChanger()) {
-            writer.writeAttribute("tapChanger", Enum::toString(*discreteMeasurement.getTapChanger()));
-        }
-        writer.writeAttribute("valueType", Enum::toString(discreteMeasurement.getValueType()));
-        switch (discreteMeasurement.getValueType()) {
-            case DiscreteMeasurement::ValueType::BOOLEAN:
-                writer.writeAttribute(converter::VALUE, discreteMeasurement.getValueAsBoolean());
-                break;
-
-            case DiscreteMeasurement::ValueType::INT:
-                writer.writeAttribute(converter::VALUE, discreteMeasurement.getValueAsInt());
-                break;
-
-            case DiscreteMeasurement::ValueType::STRING:
-                if (!discreteMeasurement.getValueAsString().empty()) {
-                    writer.writeAttribute(converter::VALUE, discreteMeasurement.getValueAsString());
-                }
-                break;
-
-            default:
-                throw PowsyblException(stdcxx::format("Unsupported serialization for value type: %1%", discreteMeasurement.getValueType()));
-        }
-        writer.writeAttribute("valid", discreteMeasurement.isValid());
-        for (const std::string& name : discreteMeasurement.getPropertyNames()) {
-            writer.writeStartElement(getNamespacePrefix(), converter::PROPERTY);
-            writer.writeAttribute(converter::NAME, name);
-            writer.writeAttribute(converter::VALUE, discreteMeasurement.getProperty(name));
-            writer.writeEndElement();
-        }
-        writer.writeEndElement();
-    }
 }
 
 void DiscreteMeasurementsXmlSerializer::readDiscreteMeasurement(DiscreteMeasurements& discreteMeasurements, const xml::XmlStreamReader& reader) {
@@ -123,6 +86,48 @@ void DiscreteMeasurementsXmlSerializer::readDiscreteMeasurement(DiscreteMeasurem
         }
     });
     adder.add();
+}
+
+void DiscreteMeasurementsXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
+    const auto& discreteMeasurements = safeCast<DiscreteMeasurements>(extension);
+    xml::XmlStreamWriter& writer = context.getWriter();
+    for (const DiscreteMeasurement& discreteMeasurement : discreteMeasurements.getDiscreteMeasurements()) {
+        writer.writeStartElement(getNamespacePrefix(), "discreteMeasurement");
+        if (!discreteMeasurement.getId().empty()) {
+            writer.writeAttribute(converter::ID, discreteMeasurement.getId());
+        }
+        writer.writeAttribute(converter::TYPE, Enum::toString(discreteMeasurement.getType()));
+        if (discreteMeasurement.getTapChanger()) {
+            writer.writeAttribute("tapChanger", Enum::toString(*discreteMeasurement.getTapChanger()));
+        }
+        writer.writeAttribute("valueType", Enum::toString(discreteMeasurement.getValueType()));
+        switch (discreteMeasurement.getValueType()) {
+            case DiscreteMeasurement::ValueType::BOOLEAN:
+                writer.writeAttribute(converter::VALUE, discreteMeasurement.getValueAsBoolean());
+                break;
+
+            case DiscreteMeasurement::ValueType::INT:
+                writer.writeAttribute(converter::VALUE, discreteMeasurement.getValueAsInt());
+                break;
+
+            case DiscreteMeasurement::ValueType::STRING:
+                if (!discreteMeasurement.getValueAsString().empty()) {
+                    writer.writeAttribute(converter::VALUE, discreteMeasurement.getValueAsString());
+                }
+                break;
+
+            default:
+                throw PowsyblException(stdcxx::format("Unsupported serialization for value type: %1%", discreteMeasurement.getValueType()));
+        }
+        writer.writeAttribute("valid", discreteMeasurement.isValid());
+        for (const std::string& name : discreteMeasurement.getPropertyNames()) {
+            writer.writeStartElement(getNamespacePrefix(), converter::PROPERTY);
+            writer.writeAttribute(converter::NAME, name);
+            writer.writeAttribute(converter::VALUE, discreteMeasurement.getProperty(name));
+            writer.writeEndElement();
+        }
+        writer.writeEndElement();
+    }
 }
 
 }  // namespace iidm

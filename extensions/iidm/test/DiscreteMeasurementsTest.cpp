@@ -159,6 +159,8 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     DiscreteMeasurementAdder swMeasurementAdder = switchMeasurements.newDiscreteMeasurement();
 
+    POWSYBL_ASSERT_THROW(swMeasurementAdder.putProperty("", "value1"), PowsyblException, "Unexpected empty property name");
+
     swMeasurementAdder.setId("m1");
     POWSYBL_ASSERT_THROW(swMeasurementAdder.add(), PowsyblException, "There is already a discrete measurement with ID m1");
 

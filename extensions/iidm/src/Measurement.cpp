@@ -76,8 +76,8 @@ const std::string& Measurement::getId() const {
 }
 
 std::string Measurement::getProperty(const std::string& name) const {
-    auto it = m_properties.find(name);
-    return it != m_properties.end() ? it->second : "";
+    const auto& it = m_properties.find(name);
+    return it != m_properties.cend() ? it->second : "";
 }
 
 stdcxx::const_range<std::string> Measurement::getPropertyNames() const {

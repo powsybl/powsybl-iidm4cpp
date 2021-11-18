@@ -20,6 +20,8 @@ namespace iidm {
 
 class MeasurementsXmlSerializer : public converter::xml::AbstractExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
+    bool isSerializable(const Extension& extension) const override;
+
     Extension& read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 
     void write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const override;

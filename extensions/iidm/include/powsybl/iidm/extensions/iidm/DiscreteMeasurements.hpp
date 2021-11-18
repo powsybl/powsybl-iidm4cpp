@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_DISCRETEMEASUREMENTS_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_DISCRETEMEASUREMENTS_HPP
 
-#include <list>
+#include <vector>
 
 #include <powsybl/iidm/Extension.hpp>
 
@@ -34,6 +34,8 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
+    ~DiscreteMeasurements() noexcept override = default;
+
     DiscreteMeasurements& add(std::unique_ptr<DiscreteMeasurement>&& discreteMeasurement);
 
     void cleanIfEmpty();
@@ -63,7 +65,7 @@ private:
     friend class DiscreteMeasurementsAdder;
 
 private:
-    std::list<std::unique_ptr<DiscreteMeasurement>> m_discreteMeasurements;
+    std::vector<std::unique_ptr<DiscreteMeasurement>> m_discreteMeasurements;
 };
 
 }  // namespace iidm

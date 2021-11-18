@@ -20,10 +20,38 @@ namespace iidm {
 
 class DiscreteMeasurementsAdder : public ExtensionAdder {
 public:
+    /**
+     * Constructor
+     */
     explicit DiscreteMeasurementsAdder(Extendable& extendable);
 
+    /**
+     * Copy constructor
+     */
+    DiscreteMeasurementsAdder(const DiscreteMeasurementsAdder&) = default;
+
+    /**
+     * Move constructor
+     */
+    DiscreteMeasurementsAdder(DiscreteMeasurementsAdder&&) noexcept = default;
+
+    /**
+     * Destructor
+     */
+    ~DiscreteMeasurementsAdder() noexcept override = default;
+
+    /**
+     * Copy assignment operator
+     */
+    DiscreteMeasurementsAdder& operator=(const DiscreteMeasurementsAdder&) = delete;
+
+    /**
+     * Move assignment operator
+     */
+    DiscreteMeasurementsAdder& operator=(DiscreteMeasurementsAdder&&) = delete;
+
 private:  // ExtensionAdder
-    std::unique_ptr<Extension> createExtension(Extendable& extendable) override;
+    std::unique_ptr<Extension> createExtension(Extendable& extendable) const override;
 };
 
 }  // namespace iidm

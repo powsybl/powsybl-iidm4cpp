@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_MEASUREMENT_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_MEASUREMENT_HPP
 
+#include <iosfwd>
 #include <map>
 #include <string>
 

@@ -8,8 +8,8 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_MEASUREMENTS_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_MEASUREMENTS_HPP
 
-#include <list>
 #include <string>
+#include <vector>
 
 #include <powsybl/iidm/Extension.hpp>
 #include <powsybl/iidm/extensions/iidm/Measurement.hpp>
@@ -37,6 +37,8 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
+    ~Measurements() noexcept override = default;
+
     void add(std::unique_ptr<Measurement>&& measurement);
 
     void cleanIfEmpty();
@@ -64,7 +66,7 @@ private:
     friend class MeasurementsAdder;
 
 private:
-    std::list<std::unique_ptr<Measurement>> m_measurements;
+    std::vector<std::unique_ptr<Measurement>> m_measurements;
 };
 
 }  // namespace iidm

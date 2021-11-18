@@ -27,11 +27,40 @@ class Measurements;
 
 class MeasurementAdder {
 public:
+    /**
+     * Constructor
+     */
     explicit MeasurementAdder(Measurements& measurements);
+
+    /**
+     * Copy constructor
+     */
+    MeasurementAdder(const MeasurementAdder&) = default;
+
+    /**
+     * Move constructor
+     */
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept
+    MeasurementAdder(MeasurementAdder&&) = default;  // NOSONAR
+
+    /**
+     * Destructor
+     */
+    ~MeasurementAdder() noexcept = default;
+
+    /**
+     * Copy assignment operator
+     */
+    MeasurementAdder& operator=(const MeasurementAdder&) = delete;
+
+    /**
+     * Move assignment operator
+     */
+    MeasurementAdder& operator=(MeasurementAdder&&) = delete;
 
     Measurement& add();
 
-    MeasurementAdder& putProperty(const std::string& name, const std::string&  property);
+    MeasurementAdder& putProperty(const std::string& name, const std::string& value);
 
     MeasurementAdder& setId(const std::string& id);
 

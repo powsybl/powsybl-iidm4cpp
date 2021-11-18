@@ -25,7 +25,7 @@ MeasurementsAdder::MeasurementsAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> MeasurementsAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> MeasurementsAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Identifiable>(extendable)) {
         return std::unique_ptr<Measurements>(new Measurements(dynamic_cast<Identifiable&>(extendable)));
     }

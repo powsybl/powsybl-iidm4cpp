@@ -35,8 +35,11 @@ Measurement& MeasurementAdder::add() {
     return m_measurements.getMeasurement(m_id).get();
 }
 
-MeasurementAdder& MeasurementAdder::putProperty(const std::string& name, const std::string&  property) {
-    m_properties[name] = property;
+MeasurementAdder& MeasurementAdder::putProperty(const std::string& name, const std::string& value) {
+    if (name.empty()) {
+        throw PowsyblException("Unexpected empty property name");
+    }
+    m_properties[name] = value;
     return *this;
 }
 

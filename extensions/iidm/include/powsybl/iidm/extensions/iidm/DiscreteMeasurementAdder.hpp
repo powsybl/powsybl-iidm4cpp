@@ -22,7 +22,36 @@ namespace iidm {
 
 class DiscreteMeasurementAdder {
 public:
+    /**
+     * Constructor
+     */
     explicit DiscreteMeasurementAdder(DiscreteMeasurements& discreteMeasurements);
+
+    /**
+     * Copy constructor
+     */
+    DiscreteMeasurementAdder(const DiscreteMeasurementAdder&) = default;
+
+    /**
+     * Move constructor
+     */
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept
+    DiscreteMeasurementAdder(DiscreteMeasurementAdder&&) = default;  // NOSONAR
+
+    /**
+     * Destructor
+     */
+    ~DiscreteMeasurementAdder() noexcept = default;
+
+    /**
+     * Copy assignment operator
+     */
+    DiscreteMeasurementAdder& operator=(const DiscreteMeasurementAdder&) = delete;
+
+    /**
+     * Move assignment operator
+     */
+    DiscreteMeasurementAdder& operator=(DiscreteMeasurementAdder&&) = delete;
 
     DiscreteMeasurement& add();
 

@@ -96,8 +96,8 @@ const std::string& DiscreteMeasurement::getId() const {
 }
 
 std::string DiscreteMeasurement::getProperty(const std::string& name) const {
-    auto it = m_properties.find(name);
-    return it != m_properties.end() ? it->second : "";
+    const auto& it = m_properties.find(name);
+    return it != m_properties.cend() ? it->second : "";
 }
 
 stdcxx::const_range<std::string> DiscreteMeasurement::getPropertyNames() const {
@@ -177,15 +177,15 @@ DiscreteMeasurement& DiscreteMeasurement::setValue(const char* value) {
     return *this;
 }
 
-DiscreteMeasurement& DiscreteMeasurement::setValue(int value) {
-    m_value = value;
-    m_valueType = ValueType::INT;
-    return *this;
-}
-
 DiscreteMeasurement& DiscreteMeasurement::setValue(bool value) {
     m_value = value;
     m_valueType = ValueType::BOOLEAN;
+    return *this;
+}
+
+DiscreteMeasurement& DiscreteMeasurement::setValue(int value) {
+    m_value = value;
+    m_valueType = ValueType::INT;
     return *this;
 }
 

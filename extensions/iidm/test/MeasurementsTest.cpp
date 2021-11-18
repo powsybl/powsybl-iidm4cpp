@@ -105,6 +105,8 @@ BOOST_AUTO_TEST_CASE(adder) {
         .putProperty("prop2_m1", "value2")
         .add();
 
+    POWSYBL_ASSERT_THROW(measurements.newMeasurement().putProperty("", "value1"), PowsyblException, "Unexpected empty property name");
+
     MeasurementAdder adder = measurements.newMeasurement();
     adder.setId("m1");
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "There is already a measurement with ID m1");

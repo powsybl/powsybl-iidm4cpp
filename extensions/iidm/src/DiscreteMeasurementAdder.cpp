@@ -35,6 +35,9 @@ DiscreteMeasurement& DiscreteMeasurementAdder::add() {
 }
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::putProperty(const std::string& name, const std::string& value) {
+    if (name.empty()) {
+        throw PowsyblException("Unexpected empty property name");
+    }
     m_properties[name] = value;
     return *this;
 }

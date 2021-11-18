@@ -31,6 +31,11 @@ MeasurementsXmlSerializer::MeasurementsXmlSerializer() :
     converter::xml::AbstractExtensionXmlSerializer("measurements", "network", "m", "http://www.powsybl.org/schema/iidm/ext/measurements/1_0") {
 }
 
+bool MeasurementsXmlSerializer::isSerializable(const Extension& extension) const {
+    const auto& measurements = safeCast<Measurements>(extension);
+    return !measurements.getMeasurements().empty();
+}
+
 Extension& MeasurementsXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     if (!stdcxx::isInstanceOf<Identifiable>(extendable)) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Identifiable>()));

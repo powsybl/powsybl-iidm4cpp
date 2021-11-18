@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_DISCRETEMEASUREMENT_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_DISCRETEMEASUREMENT_HPP
 
+#include <iosfwd>
 #include <map>
 #include <string>
 
@@ -153,14 +154,14 @@ public:
     DiscreteMeasurement& setValue(const char* value);
 
     /**
-     * Set the discrete measured value and set the value type as INT (see {@link ValueType}).
-     */
-    DiscreteMeasurement& setValue(int value);
-
-    /**
      * Set the discrete measured value and set the value type as BOOLEAN (see {@link ValueType}).
      */
     DiscreteMeasurement& setValue(bool value);
+
+    /**
+     * Set the discrete measured value and set the value type as INT (see {@link ValueType}).
+     */
+    DiscreteMeasurement& setValue(int value);
 
 private:
     DiscreteMeasurements& m_discreteMeasurements;
