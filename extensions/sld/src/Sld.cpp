@@ -10,6 +10,7 @@
 
 #include <boost/dll/alias.hpp>
 
+#include <powsybl/iidm/extensions/sld/BranchStatusXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/sld/BusbarSectionPositionXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/sld/ConnectablePositionXmlSerializer.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
@@ -24,6 +25,7 @@ namespace sld {
 
 std::vector<std::unique_ptr<ExtensionProvider>> create() {
     std::vector<std::unique_ptr<ExtensionProvider>> serializers;
+    serializers.emplace_back(stdcxx::make_unique<BranchStatusXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<BusbarSectionPositionXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<ConnectablePositionXmlSerializer>());
 
