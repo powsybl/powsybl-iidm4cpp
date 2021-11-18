@@ -23,7 +23,7 @@ BranchStatusAdder::BranchStatusAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> BranchStatusAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> BranchStatusAdder::createExtension(Extendable& extendable) const {
     if (!m_status) {
         throw PowsyblException("Undefined status value");
     }
