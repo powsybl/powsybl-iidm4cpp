@@ -9,9 +9,9 @@
 
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/iidm/extensions/iidm/Constants.hpp>
 #include <powsybl/iidm/extensions/iidm/DiscreteMeasurement.hpp>
 #include <powsybl/iidm/extensions/iidm/DiscreteMeasurementAdder.hpp>
 #include <powsybl/iidm/extensions/iidm/DiscreteMeasurements.hpp>
@@ -40,8 +40,8 @@ Extension& DiscreteMeasurementsXmlSerializer::read(Extendable& extendable, conve
     extendable.newExtension<DiscreteMeasurementsAdder>().add();
     auto& discreteMeasurements = extendable.getExtension<DiscreteMeasurements>();
     const xml::XmlStreamReader& reader = context.getReader();
-    context.getReader().readUntilEndElement("discreteMeasurements", [&reader, &discreteMeasurements](){
-        if (reader.getLocalName() == "discreteMeasurement") {
+    context.getReader().readUntilEndElement(DISCRETE_MEASUREMENTS, [&reader, &discreteMeasurements](){
+        if (reader.getLocalName() == DISCRETE_MEASUREMENT) {
             readDiscreteMeasurement(discreteMeasurements, reader);
         } else {
             throw PowsyblException(stdcxx::format("Unexpected element: %1%", reader.getLocalName()));
@@ -52,35 +52,35 @@ Extension& DiscreteMeasurementsXmlSerializer::read(Extendable& extendable, conve
 
 void DiscreteMeasurementsXmlSerializer::readDiscreteMeasurement(DiscreteMeasurements& discreteMeasurements, const xml::XmlStreamReader& reader) {
     DiscreteMeasurementAdder adder = discreteMeasurements.newDiscreteMeasurement()
-        .setId(reader.getAttributeValue(converter::ID))
-        .setType(Enum::fromString<DiscreteMeasurement::Type>(reader.getAttributeValue(converter::TYPE)))
-        .setValid(reader.getAttributeValue<bool>("valid"));
-    const std::string& tapChanger = reader.getOptionalAttributeValue("tapChanger", "");
+        .setId(reader.getAttributeValue(ID))
+        .setType(Enum::fromString<DiscreteMeasurement::Type>(reader.getAttributeValue(TYPE)))
+        .setValid(reader.getAttributeValue<bool>(VALID));
+    const std::string& tapChanger = reader.getOptionalAttributeValue(TAP_CHANGER, "");
     if (!tapChanger.empty()) {
         adder.setTapChanger(Enum::fromString<DiscreteMeasurement::TapChanger>(tapChanger));
     }
-    auto valueType = Enum::fromString<DiscreteMeasurement::ValueType>(reader.getAttributeValue("valueType"));
-    if (!reader.getOptionalAttributeValue(converter::VALUE, "").empty()) {
+    auto valueType = Enum::fromString<DiscreteMeasurement::ValueType>(reader.getAttributeValue(VALUE_TYPE));
+    if (!reader.getOptionalAttributeValue(VALUE, "").empty()) {
         switch (valueType) {
             case DiscreteMeasurement::ValueType::BOOLEAN:
-                adder.setValue(reader.getAttributeValue<bool>(converter::VALUE));
+                adder.setValue(reader.getAttributeValue<bool>(VALUE));
                 break;
 
             case DiscreteMeasurement::ValueType::INT:
-                adder.setValue(reader.getAttributeValue<int>(converter::VALUE));
+                adder.setValue(reader.getAttributeValue<int>(VALUE));
                 break;
 
             case DiscreteMeasurement::ValueType::STRING:
-                adder.setValue(reader.getAttributeValue(converter::VALUE));
+                adder.setValue(reader.getAttributeValue(VALUE));
                 break;
 
             default:
                 throw PowsyblException(stdcxx::format("Unsupported value type: %1%", valueType));
         }
     }
-    reader.readUntilEndElement("discreteMeasurement", [&reader, &adder]() {
-        if (reader.getLocalName() == converter::PROPERTY) {
-            adder.putProperty(reader.getAttributeValue(converter::NAME), reader.getAttributeValue(converter::VALUE));
+    reader.readUntilEndElement(DISCRETE_MEASUREMENT, [&reader, &adder]() {
+        if (reader.getLocalName() == PROPERTY) {
+            adder.putProperty(reader.getAttributeValue(NAME), reader.getAttributeValue(VALUE));
         } else {
             throw PowsyblException(stdcxx::format("Unexpected element: %1%", reader.getLocalName()));
         }
@@ -92,38 +92,38 @@ void DiscreteMeasurementsXmlSerializer::write(const Extension& extension, conver
     const auto& discreteMeasurements = safeCast<DiscreteMeasurements>(extension);
     xml::XmlStreamWriter& writer = context.getWriter();
     for (const DiscreteMeasurement& discreteMeasurement : discreteMeasurements.getDiscreteMeasurements()) {
-        writer.writeStartElement(getNamespacePrefix(), "discreteMeasurement");
+        writer.writeStartElement(getNamespacePrefix(), DISCRETE_MEASUREMENT);
         if (!discreteMeasurement.getId().empty()) {
-            writer.writeAttribute(converter::ID, discreteMeasurement.getId());
+            writer.writeAttribute(ID, discreteMeasurement.getId());
         }
-        writer.writeAttribute(converter::TYPE, Enum::toString(discreteMeasurement.getType()));
+        writer.writeAttribute(TYPE, Enum::toString(discreteMeasurement.getType()));
         if (discreteMeasurement.getTapChanger()) {
-            writer.writeAttribute("tapChanger", Enum::toString(*discreteMeasurement.getTapChanger()));
+            writer.writeAttribute(TAP_CHANGER, Enum::toString(*discreteMeasurement.getTapChanger()));
         }
-        writer.writeAttribute("valueType", Enum::toString(discreteMeasurement.getValueType()));
+        writer.writeAttribute(VALUE_TYPE, Enum::toString(discreteMeasurement.getValueType()));
         switch (discreteMeasurement.getValueType()) {
             case DiscreteMeasurement::ValueType::BOOLEAN:
-                writer.writeAttribute(converter::VALUE, discreteMeasurement.getValueAsBoolean());
+                writer.writeAttribute(VALUE, discreteMeasurement.getValueAsBoolean());
                 break;
 
             case DiscreteMeasurement::ValueType::INT:
-                writer.writeAttribute(converter::VALUE, discreteMeasurement.getValueAsInt());
+                writer.writeAttribute(VALUE, discreteMeasurement.getValueAsInt());
                 break;
 
             case DiscreteMeasurement::ValueType::STRING:
                 if (!discreteMeasurement.getValueAsString().empty()) {
-                    writer.writeAttribute(converter::VALUE, discreteMeasurement.getValueAsString());
+                    writer.writeAttribute(VALUE, discreteMeasurement.getValueAsString());
                 }
                 break;
 
             default:
                 throw PowsyblException(stdcxx::format("Unsupported serialization for value type: %1%", discreteMeasurement.getValueType()));
         }
-        writer.writeAttribute("valid", discreteMeasurement.isValid());
+        writer.writeAttribute(VALID, discreteMeasurement.isValid());
         for (const std::string& name : discreteMeasurement.getPropertyNames()) {
-            writer.writeStartElement(getNamespacePrefix(), converter::PROPERTY);
-            writer.writeAttribute(converter::NAME, name);
-            writer.writeAttribute(converter::VALUE, discreteMeasurement.getProperty(name));
+            writer.writeStartElement(getNamespacePrefix(), PROPERTY);
+            writer.writeAttribute(NAME, name);
+            writer.writeAttribute(VALUE, discreteMeasurement.getProperty(name));
             writer.writeEndElement();
         }
         writer.writeEndElement();
