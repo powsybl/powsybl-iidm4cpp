@@ -64,9 +64,7 @@ public:
     };
 
 public:
-    DiscreteMeasurement(DiscreteMeasurements& discreteMeasurements, const std::string& id, const Type& type,
-                        const stdcxx::optional<TapChanger>& tapChanger, const std::map<std::string, std::string>& properties,
-                        const ValueType& valueType, const boost::any& value, bool valid);
+    ~DiscreteMeasurement() = default;
 
     /**
      * Get ID of the measurement if it exists. It is optional (can be empty).
@@ -162,6 +160,13 @@ public:
      * Set the discrete measured value and set the value type as INT (see {@link ValueType}).
      */
     DiscreteMeasurement& setValue(int value);
+
+private:
+    DiscreteMeasurement(DiscreteMeasurements& discreteMeasurements, const std::string& id, const Type& type,
+                        const stdcxx::optional<TapChanger>& tapChanger, const std::map<std::string, std::string>& properties,
+                        const ValueType& valueType, const boost::any& value, bool valid);
+
+    friend class DiscreteMeasurementAdder;
 
 private:
     DiscreteMeasurements& m_discreteMeasurements;

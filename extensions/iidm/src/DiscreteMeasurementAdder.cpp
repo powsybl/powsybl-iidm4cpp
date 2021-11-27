@@ -29,8 +29,11 @@ DiscreteMeasurement& DiscreteMeasurementAdder::add() {
     DiscreteMeasurementValidationUtil::checkType(m_type, m_discreteMeasurements.getExtendable<Identifiable>().get());
     DiscreteMeasurementValidationUtil::checkTapChanger(m_tapChanger, m_type, m_discreteMeasurements.getExtendable<Identifiable>().get());
     DiscreteMeasurementValidationUtil::checkValue(m_value, m_valid);
-    auto discreteMeasurement = stdcxx::make_unique<DiscreteMeasurement>(m_discreteMeasurements, m_id, m_type, m_tapChanger, m_properties, DiscreteMeasurementValidationUtil::getValueType(m_value), m_value, m_valid);
+
+    auto discreteMeasurement = std::unique_ptr<DiscreteMeasurement>(
+        new DiscreteMeasurement(m_discreteMeasurements, m_id, m_type, m_tapChanger, m_properties, DiscreteMeasurementValidationUtil::getValueType(m_value), m_value, m_valid));
     m_discreteMeasurements.add(std::move(discreteMeasurement));
+
     return m_discreteMeasurements.getDiscreteMeasurement(m_id);
 }
 
@@ -44,41 +47,49 @@ DiscreteMeasurementAdder& DiscreteMeasurementAdder::putProperty(const std::strin
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::setId(const std::string& id) {
     m_id = id;
+
     return *this;
 }
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::setTapChanger(const DiscreteMeasurement::TapChanger& tapChanger) {
     m_tapChanger = tapChanger;
+
     return *this;
 }
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::setType(const DiscreteMeasurement::Type& type) {
     m_type = type;
+
     return *this;
 }
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::setValid(bool valid) {
     m_valid = valid;
+
     return *this;
 }
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::setValue(const std::string& value) {
     m_value = value;
+
     return *this;
 }
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::setValue(const char* value) {
     m_value = std::string(value);
+
     return *this;
 }
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::setValue(bool value) {
     m_value = value;
+
     return *this;
 }
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::setValue(int value) {
     m_value = value;
+
     return *this;
 }
 
