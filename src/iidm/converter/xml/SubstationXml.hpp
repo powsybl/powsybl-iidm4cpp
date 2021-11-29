@@ -11,8 +11,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
-
-#include "AbstractIdentifiableXml.hpp"
+#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
 
 namespace powsybl {
 
