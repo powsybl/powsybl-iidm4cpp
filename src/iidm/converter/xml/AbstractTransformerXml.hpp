@@ -13,8 +13,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TapChanger.hpp>
 #include <powsybl/iidm/TapChangerStep.hpp>
-
-#include "AbstractConnectableXml.hpp"
+#include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
 namespace powsybl {
 

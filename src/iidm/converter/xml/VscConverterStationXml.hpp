@@ -8,11 +8,10 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_VSCCONVERTERSTATIONXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_VSCCONVERTERSTATIONXML_HPP
 
-#include "AbstractConnectableXml.hpp"
-
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
+#include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
 namespace powsybl {
 

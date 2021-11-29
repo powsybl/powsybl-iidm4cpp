@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HXX
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HXX
 
-#include "AbstractConnectableXml.hpp"
+#include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Terminal.hpp>
@@ -159,6 +159,11 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeApparentPowerLimits(cons
 template <typename Added, typename Adder, typename Parent>
 void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
     writeLoadingLimits(limits, writer, version.getPrefix(), version, CURRENT_LIMITS, index);
+}
+
+template <typename Added, typename Adder, typename Parent>
+void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
+    writeLoadingLimits(limits, writer, nsPrefix, version, CURRENT_LIMITS, index);
 }
 
 template <typename Added, typename Adder, typename Parent>

@@ -17,10 +17,12 @@
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/SimpleAnonymizer.hpp>
 #include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
+#include <powsybl/iidm/converter/xml/AliasesXml.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/iidm/converter/xml/PropertiesXml.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
@@ -30,10 +32,8 @@
 
 #include "xml/XmlEncoding.hpp"
 
-#include "AliasesXml.hpp"
 #include "HvdcLineXml.hpp"
 #include "LineXml.hpp"
-#include "PropertiesXml.hpp"
 #include "SubstationXml.hpp"
 #include "TieLineXml.hpp"
 

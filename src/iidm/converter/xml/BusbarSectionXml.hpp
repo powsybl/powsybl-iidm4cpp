@@ -11,8 +11,7 @@
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-
-#include "AbstractIdentifiableXml.hpp"
+#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
 
 namespace powsybl {
 
