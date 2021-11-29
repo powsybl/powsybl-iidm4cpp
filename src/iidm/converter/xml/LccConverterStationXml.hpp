@@ -11,8 +11,7 @@
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-
-#include "AbstractConnectableXml.hpp"
+#include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
 namespace powsybl {
 
