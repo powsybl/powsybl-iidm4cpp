@@ -11,8 +11,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
-
-#include "AbstractIdentifiableXml.hpp"
+#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
 
 namespace powsybl {
 

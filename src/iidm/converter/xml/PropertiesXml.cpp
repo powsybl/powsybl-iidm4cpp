@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "PropertiesXml.hpp"
+#include <powsybl/iidm/converter/xml/PropertiesXml.hpp>
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>

@@ -8,11 +8,10 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_LOADXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_LOADXML_HPP
 
-#include "AbstractConnectableXml.hpp"
-
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
 namespace powsybl {
 
