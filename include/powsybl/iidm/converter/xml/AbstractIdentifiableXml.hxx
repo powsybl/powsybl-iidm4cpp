@@ -8,21 +8,20 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTIDENTIFIABLEXML_HXX
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTIDENTIFIABLEXML_HXX
 
-#include "AbstractIdentifiableXml.hpp"
+#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
+#include <powsybl/iidm/converter/xml/AliasesXml.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/iidm/converter/xml/PropertiesXml.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
-
-#include "iidm/converter/xml/AliasesXml.hpp"
-#include "iidm/converter/xml/PropertiesXml.hpp"
 
 namespace powsybl {
 

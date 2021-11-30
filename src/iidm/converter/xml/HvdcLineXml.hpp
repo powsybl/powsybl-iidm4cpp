@@ -11,8 +11,7 @@
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/HvdcLineAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
-
-#include "AbstractIdentifiableXml.hpp"
+#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
 
 namespace powsybl {
 

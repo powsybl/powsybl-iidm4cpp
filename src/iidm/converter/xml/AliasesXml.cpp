@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "AliasesXml.hpp"
+#include <powsybl/iidm/converter/xml/AliasesXml.hpp>
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>

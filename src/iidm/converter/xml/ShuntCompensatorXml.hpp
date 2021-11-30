@@ -11,8 +11,7 @@
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-
-#include "AbstractConnectableXml.hpp"
+#include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
 namespace powsybl {
 
