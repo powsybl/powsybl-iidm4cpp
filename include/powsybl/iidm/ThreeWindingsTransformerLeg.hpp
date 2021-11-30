@@ -55,11 +55,12 @@ public:
 
     Leg(const Leg&) = delete;
 
-    Leg(Leg&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of FlowsLimitsHolder is not marked noexcept
+    Leg(Leg&&) = default;  // NOSONAR
 
     Leg& operator=(const Leg&) = delete;
 
-    Leg& operator=(Leg&&) noexcept = default;
+    Leg& operator=(Leg&&) = default;
 
     ~Leg() noexcept override = default;
 
