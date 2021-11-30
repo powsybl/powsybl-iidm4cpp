@@ -32,7 +32,7 @@ public:
 
     IdBasedBusRef& operator=(const IdBasedBusRef&) = default;
 
-    IdBasedBusRef& operator=(IdBasedBusRef&&) noexcept = default;
+    IdBasedBusRef& operator=(IdBasedBusRef&&) = default;
 
 protected:
     stdcxx::CReference<Bus> resolveByLevel(const Network& network, const TopologyLevel& level) override;

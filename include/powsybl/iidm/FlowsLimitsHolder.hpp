@@ -36,13 +36,14 @@ public:
 
     FlowsLimitsHolder(const FlowsLimitsHolder&) = default;
 
-    FlowsLimitsHolder(FlowsLimitsHolder&&) noexcept = default;
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of OperationalLimitsHolder is not marked noexcept
+    FlowsLimitsHolder(FlowsLimitsHolder&&) = default;  // NOSONAR
 
     ~FlowsLimitsHolder() noexcept = default;
 
     FlowsLimitsHolder& operator=(const FlowsLimitsHolder&) = default;
 
-    FlowsLimitsHolder& operator=(FlowsLimitsHolder&&) noexcept = default;
+    FlowsLimitsHolder& operator=(FlowsLimitsHolder&&) = default;
 
     stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const;
 
