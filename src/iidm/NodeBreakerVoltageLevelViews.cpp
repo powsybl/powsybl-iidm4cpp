@@ -193,7 +193,7 @@ stdcxx::const_range<NodeBreakerViewImpl::InternalConnection> NodeBreakerViewImpl
     return m_voltageLevel.getGraph().getEdges() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
-unsigned long NodeBreakerViewImpl::getMaximumNodeIndex() const {
+long NodeBreakerViewImpl::getMaximumNodeIndex() const {
     return m_voltageLevel.getMaximumNodeIndex();
 }
 

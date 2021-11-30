@@ -22,7 +22,7 @@ TwoWindingsTransformerPhaseAngleClockAdder::TwoWindingsTransformerPhaseAngleCloc
     ExtensionAdder(extendable) {
 }
 
-std::unique_ptr<Extension> TwoWindingsTransformerPhaseAngleClockAdder::createExtension(Extendable& extendable) {
+std::unique_ptr<Extension> TwoWindingsTransformerPhaseAngleClockAdder::createExtension(Extendable& extendable) const {
     if (!m_phaseAngleClock) {
         throw PowsyblException(stdcxx::format("Undefined value for phaseAngleClock"));
     }

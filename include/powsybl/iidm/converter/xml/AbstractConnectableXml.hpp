@@ -12,9 +12,8 @@
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
+#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
 #include <powsybl/stdcxx/optional.hpp>
-
-#include "AbstractIdentifiableXml.hpp"
 
 namespace powsybl {
 
@@ -51,6 +50,8 @@ public:
     static void writeApparentPowerLimits(const ApparentPowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
 protected:
     static void readNodeOrBus(BranchAdder<Adder>& adder, const NetworkXmlReaderContext& context);

@@ -8,6 +8,9 @@
 set(EXT_NAME ext-sld)
 
 set(EXT_SOURCES
+    src/BranchStatus.cpp
+    src/BranchStatusAdder.cpp
+    src/BranchStatusXmlSerializer.cpp
     src/BusbarSectionPosition.cpp
     src/BusbarSectionPositionAdder.cpp
     src/BusbarSectionPositionXmlSerializer.cpp
@@ -18,6 +21,7 @@ set(EXT_SOURCES
 )
 
 set(UNIT_TEST_SOURCES
+    test/BranchStatusTest.cpp
     test/BusbarSectionPositionTest.cpp
     test/ConnectablePositionTest.cpp
     test/sld.cpp
