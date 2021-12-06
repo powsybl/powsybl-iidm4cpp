@@ -27,12 +27,17 @@ set(EXT_SOURCES
     src/HvdcOperatorActivePowerRangeAdder.cpp
     src/HvdcOperatorActivePowerRangeXmlSerializer.cpp
     src/Iidm.cpp
+    src/InjectionObservability.cpp
+    src/InjectionObservabilityAdder.cpp
+    src/InjectionObservabilityXmlSerializer.cpp
     src/Measurement.cpp
     src/MeasurementAdder.cpp
     src/Measurements.cpp
     src/MeasurementsAdder.cpp
     src/MeasurementsXmlSerializer.cpp
     src/MeasurementValidationUtil.cpp
+    src/Observability.cpp
+    src/ObservabilityQuality.cpp
     src/RemoteReactivePowerControl.cpp
     src/RemoteReactivePowerControlAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
@@ -53,6 +58,7 @@ set(UNIT_TEST_SOURCES
     test/HvdcAngleDroopActivePowerControlTest.cpp
     test/HvdcOperatorActivePowerRangeTest.cpp
     test/iidm.cpp
+    test/InjectionObservabilityTest.cpp
     test/MeasurementsTest.cpp
     test/RemoteReactivePowerControlTest.cpp
     test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
