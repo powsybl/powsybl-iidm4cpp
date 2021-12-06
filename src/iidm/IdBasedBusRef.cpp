@@ -35,11 +35,11 @@ stdcxx::CReference<Bus> IdBasedBusRef::resolveByLevel(const Network& network, co
         if (stdcxx::isInstanceOf<Bus>(identifiable.get())) {
             const auto& bus = dynamic_cast<const Bus&>(identifiable.get());
             if (level == TopologyLevel::BUS_BRANCH) {
-                for (const auto& terminal : bus.getConnectedTerminals()) {
-                    if (terminal.getBusView().getBus()) {
-                        return terminal.getBusView().getBus();
-                    }
-                }
+                const auto& terminals = bus.getConnectedTerminals();
+                auto it = std::find_if(terminals.begin(), terminals.end(), [](const Terminal& terminal) {
+                    return static_cast<bool>(terminal.getBusView().getBus());
+                });
+                return it != terminals.end() ? it->getBusView().getBus() : stdcxx::cref<Bus>();
             }
             return stdcxx::cref(bus);
         }
