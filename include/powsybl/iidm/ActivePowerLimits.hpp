@@ -19,7 +19,7 @@ public:  // LoadingLimits
     const LimitType& getLimitType() const override;
 
 public:
-    ActivePowerLimits(OperationalLimitsHolder& owner, double permanentLimit, const TemporaryLimits& temporaryLimits);
+    ActivePowerLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits);
 
     ActivePowerLimits(const ActivePowerLimits&) = default;
 

@@ -56,6 +56,16 @@ void OperationalLimitsHolder::setIdentifiable(Identifiable& identifiable) {
     m_identifiable = identifiable;
 }
 
+stdcxx::Reference<OperationalLimits> OperationalLimitsHolder::setOperationalLimits(const LimitType& limitType, std::unique_ptr<OperationalLimits>&& operationalLimits) {
+    if (!operationalLimits) {
+        m_operationalLimits.erase(limitType);
+    } else {
+        m_operationalLimits[limitType] = std::move(operationalLimits);
+        return stdcxx::ref(*m_operationalLimits.find(limitType)->second);
+    }
+    return stdcxx::ref<OperationalLimits>();
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

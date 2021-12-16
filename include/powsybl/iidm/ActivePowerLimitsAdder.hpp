@@ -20,7 +20,7 @@ public:  // OperationalLimitsAdder
     ActivePowerLimits& add() override;
 
 public:
-    explicit ActivePowerLimitsAdder(OperationalLimitsHolder& owner);
+    explicit ActivePowerLimitsAdder(OperationalLimitsOwner& owner);
 
     ActivePowerLimitsAdder(const ActivePowerLimitsAdder&) = default;
 
