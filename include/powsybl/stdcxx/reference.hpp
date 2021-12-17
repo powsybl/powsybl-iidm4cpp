@@ -138,6 +138,11 @@ Reference<T> ref(U& reference) {
 }
 
 template <typename T>
+Reference<T> ref(const Reference<T>& reference) {
+    return Reference<T>(reference);
+}
+
+template <typename T>
 Reference<T> ref(const CReference<T>& reference) {
     return static_cast<bool>(reference) ? Reference<T>(const_cast<T&>(reference.get())) : Reference<T>();
 }
