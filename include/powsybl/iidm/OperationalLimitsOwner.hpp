@@ -22,6 +22,18 @@ class OperationalLimits;
 
 class OperationalLimitsOwner : public Validable {
 public:
+    OperationalLimitsOwner() = default;
+
+    OperationalLimitsOwner(const OperationalLimitsOwner&) = default;
+
+    OperationalLimitsOwner(OperationalLimitsOwner&&) noexcept = default;
+
+    virtual ~OperationalLimitsOwner() noexcept = default;
+
+    OperationalLimitsOwner& operator=(const OperationalLimitsOwner&) = default;
+
+    OperationalLimitsOwner& operator=(OperationalLimitsOwner&&) noexcept = default;
+
     virtual stdcxx::Reference<OperationalLimits> setOperationalLimits(const LimitType& limitType, std::unique_ptr<OperationalLimits>&& operationalLimits) = 0;
 };
 
