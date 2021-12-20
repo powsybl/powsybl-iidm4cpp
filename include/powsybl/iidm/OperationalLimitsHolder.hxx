@@ -36,17 +36,6 @@ stdcxx::Reference<T> OperationalLimitsHolder::getOperationalLimits(const LimitTy
     return stdcxx::ref(const_cast<const OperationalLimitsHolder*>(this)->getOperationalLimits<const T>(type));
 }
 
-template <typename T>
-stdcxx::Reference<T> OperationalLimitsHolder::setOperationalLimits(const LimitType& limitType, std::unique_ptr<T>&& operationalLimits) {
-    if (!operationalLimits) {
-        m_operationalLimits.erase(limitType);
-    } else {
-        m_operationalLimits[limitType] = std::move(operationalLimits);
-        return stdcxx::ref<T>(dynamic_cast<T&>(*m_operationalLimits.find(limitType)->second));
-    }
-    return stdcxx::ref<T>();
-}
-
 }  // namespace iidm
 
 }  // namespace powsybl

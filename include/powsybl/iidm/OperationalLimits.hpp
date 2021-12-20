@@ -14,11 +14,11 @@ namespace powsybl {
 
 namespace iidm {
 
-class OperationalLimitsHolder;
+class OperationalLimitsOwner;
 
 class OperationalLimits {
 public:
-    explicit OperationalLimits(OperationalLimitsHolder& owner);
+    explicit OperationalLimits(OperationalLimitsOwner& owner);
 
     OperationalLimits(const OperationalLimits&) = default;
 
@@ -35,7 +35,7 @@ public:
     void remove();
 
 protected:
-    OperationalLimitsHolder& m_owner;
+    OperationalLimitsOwner& m_owner;
 };
 
 }  // namespace iidm
