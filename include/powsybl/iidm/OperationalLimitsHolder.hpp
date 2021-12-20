@@ -14,6 +14,7 @@
 
 #include <powsybl/iidm/LimitType.hpp>
 #include <powsybl/iidm/OperationalLimits.hpp>
+#include <powsybl/iidm/OperationalLimitsOwner.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -28,9 +29,12 @@ class CurrentLimitsAdder;
 class FlowsLimitsHolder;
 class Identifiable;
 
-class OperationalLimitsHolder : public Validable {
+class OperationalLimitsHolder : public OperationalLimitsOwner {
 public:  // Validable
     std::string getMessageHeader() const override;
+
+public:  // OperationalLimitsOwner
+    stdcxx::Reference<OperationalLimits> setOperationalLimits(const LimitType& limitType, std::unique_ptr<OperationalLimits>&& operationalLimits) override;
 
 public:
     OperationalLimitsHolder(Identifiable& identifiable, std::string&& attributeName);
@@ -63,9 +67,6 @@ public:
     ApparentPowerLimitsAdder newApparentPowerLimits();
 
     CurrentLimitsAdder newCurrentLimits();
-
-    template <typename T>
-    stdcxx::Reference<T> setOperationalLimits(const LimitType& limitType, std::unique_ptr<T>&& operationalLimits);
 
 private:
     friend class FlowsLimitsHolder;

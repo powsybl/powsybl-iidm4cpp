@@ -17,14 +17,14 @@ namespace powsybl {
 
 namespace iidm {
 
-class OperationalLimitsHolder;
+class OperationalLimitsOwner;
 
 template <typename L, typename A>
 class LoadingLimitsAdder : public OperationalLimitsAdder<L> {
 public:
     class TemporaryLimitAdder {
     public:
-        TemporaryLimitAdder(OperationalLimitsHolder& owner, LoadingLimitsAdder<L, A>& parent);
+        TemporaryLimitAdder(OperationalLimitsOwner& owner, LoadingLimitsAdder<L, A>& parent);
 
         LoadingLimitsAdder<L, A>& endTemporaryLimit();
 
@@ -42,7 +42,7 @@ public:
         void checkAndGetUniqueName();
 
     private:
-        OperationalLimitsHolder& m_owner;
+        OperationalLimitsOwner& m_owner;
 
         LoadingLimitsAdder<L, A>& m_parent;
 
@@ -58,7 +58,7 @@ public:
     };
 
 public:
-    explicit LoadingLimitsAdder(OperationalLimitsHolder& owner);
+    explicit LoadingLimitsAdder(OperationalLimitsOwner& owner);
 
     LoadingLimitsAdder(const LoadingLimitsAdder&) = default;
 
@@ -86,7 +86,7 @@ protected:
     const LoadingLimits::TemporaryLimits& getTemporaryLimits() const;
 
 protected:
-    OperationalLimitsHolder& m_owner;
+    OperationalLimitsOwner& m_owner;
 
 private:
     LoadingLimitsAdder<L, A>& addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious);

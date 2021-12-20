@@ -14,13 +14,14 @@ namespace powsybl {
 
 namespace iidm {
 
-CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsHolder& owner) :
+CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsOwner& owner) :
     LoadingLimitsAdder(owner) {
 }
 
 CurrentLimits& CurrentLimitsAdder::add() {
     checkLoadingLimits();
-    return m_owner.setOperationalLimits(LimitType::CURRENT, stdcxx::make_unique<CurrentLimits>(m_owner, getPermanentLimit(), getTemporaryLimits())).get();
+    auto limit = m_owner.setOperationalLimits(LimitType::CURRENT, stdcxx::make_unique<CurrentLimits>(m_owner, getPermanentLimit(), getTemporaryLimits()));
+    return static_cast<CurrentLimits&>(limit.get());
 }
 
 }  // namespace iidm

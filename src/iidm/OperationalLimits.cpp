@@ -13,7 +13,7 @@ namespace powsybl {
 
 namespace iidm {
 
-OperationalLimits::OperationalLimits(OperationalLimitsHolder& owner) :
+OperationalLimits::OperationalLimits(OperationalLimitsOwner& owner) :
     m_owner(owner) {
 }
 

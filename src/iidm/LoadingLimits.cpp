@@ -39,7 +39,7 @@ bool LoadingLimits::TemporaryLimit::isFictitious() const {
     return m_isFictitious;
 }
 
-LoadingLimits::LoadingLimits(OperationalLimitsHolder& owner, double permanentLimit, const TemporaryLimits& temporaryLimits) :
+LoadingLimits::LoadingLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits) :
     OperationalLimits(owner),
     m_permanentLimit(permanentLimit),
     m_temporaryLimits(temporaryLimits) {

@@ -21,7 +21,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class OperationalLimitsHolder;
+class OperationalLimitsOwner;
 
 class LoadingLimits : public OperationalLimits {
 public:
@@ -52,7 +52,7 @@ public:
     using TemporaryLimits = std::map<unsigned long, TemporaryLimit, std::greater<unsigned long> >;
 
 public:
-    LoadingLimits(OperationalLimitsHolder& owner, double permanentLimit, const TemporaryLimits& temporaryLimits);
+    LoadingLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits);
 
     LoadingLimits(const LoadingLimits&) = default;
 
