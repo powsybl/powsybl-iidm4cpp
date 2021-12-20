@@ -12,6 +12,7 @@ set(UNIT_TEST_SOURCES
     MathTest.cpp
     MessageFormatTest.cpp
     PropertiesTest.cpp
+    ReferenceTest.cpp
 )
 
 add_executable(unit-tests-stdcxx ${UNIT_TEST_SOURCES})
