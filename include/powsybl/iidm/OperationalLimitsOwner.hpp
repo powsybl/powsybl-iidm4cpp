@@ -28,7 +28,7 @@ public:
 
     OperationalLimitsOwner(OperationalLimitsOwner&&) noexcept = default;
 
-    virtual ~OperationalLimitsOwner() noexcept = default;
+    ~OperationalLimitsOwner() noexcept override = default;
 
     OperationalLimitsOwner& operator=(const OperationalLimitsOwner&) = default;
 
