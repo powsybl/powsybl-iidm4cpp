@@ -7,6 +7,7 @@
 
 set(UNIT_TEST_SOURCES
     stdcxx.cpp
+    CastTest.cpp
     DateTimeTest.cpp
     DemangleTest.cpp
     MathTest.cpp

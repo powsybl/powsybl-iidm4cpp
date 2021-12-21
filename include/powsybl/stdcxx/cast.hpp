@@ -8,9 +8,20 @@
 #ifndef POWSYBL_STDCXX_UPCAST_HPP
 #define POWSYBL_STDCXX_UPCAST_HPP
 
+#include <memory>
 #include <type_traits>
 
 namespace stdcxx {
+
+template <typename Derived, typename Base, typename = typename std::enable_if<std::is_base_of<Base, Derived>::value>::type>
+std::unique_ptr<Derived> downcast(std::unique_ptr<Base>& ptr) {
+    return std::unique_ptr<Derived>(dynamic_cast<Derived*>(ptr.release()));
+}
+
+template <typename Base, typename Derived, typename = typename std::enable_if<std::is_base_of<Base, Derived>::value>::type>
+std::unique_ptr<Base> upcast(std::unique_ptr<Derived>& ptr) {
+    return std::unique_ptr<Base>(ptr.release());
+}
 
 template <typename Derived, typename Base, typename = typename std::enable_if<std::is_base_of<Base, Derived>::value>::type>
 const Base& upcast(const Derived& value) {

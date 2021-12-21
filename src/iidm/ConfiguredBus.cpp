@@ -16,10 +16,10 @@
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/TopologyVisitor.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/stdcxx/cast.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
-#include <powsybl/stdcxx/upcast.hpp>
 
 #include "BusBreakerVoltageLevel.hpp"
 #include "BusTerminal.hpp"
