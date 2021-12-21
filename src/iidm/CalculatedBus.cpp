@@ -11,8 +11,8 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/TopologyVisitor.hpp>
+#include <powsybl/stdcxx/cast.hpp>
 #include <powsybl/stdcxx/math.hpp>
-#include <powsybl/stdcxx/upcast.hpp>
 
 #include "NodeBreakerVoltageLevel.hpp"
 #include "NodeTerminal.hpp"
