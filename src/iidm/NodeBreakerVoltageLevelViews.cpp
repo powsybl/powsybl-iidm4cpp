@@ -9,7 +9,7 @@
 
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Switch.hpp>
-#include <powsybl/stdcxx/upcast.hpp>
+#include <powsybl/stdcxx/cast.hpp>
 
 #include "CalculatedBus.hpp"
 #include "NodeBreakerVoltageLevel.hpp"
