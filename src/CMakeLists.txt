@@ -46,7 +46,6 @@ set(IIDM_SOURCES
     iidm/CurrentLimitsAdder.cpp
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
-    iidm/DanglingLineBoundary.cpp
     iidm/DanglingLineGeneration.cpp
     iidm/DanglingLineGenerationAdder.cpp
     iidm/EnergySource.cpp
@@ -198,7 +197,9 @@ set(IIDM_SOURCES
     iidm/extensions/SlackTerminalAdder.cpp
     iidm/extensions/SlackTerminalXmlSerializer.cpp
 
+    iidm/util/AbstractHalfLineBoundary.cpp
     iidm/util/ConnectedComponents.cpp
+    iidm/util/DanglingLineBoundary.cpp
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp

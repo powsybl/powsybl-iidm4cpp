@@ -9,8 +9,7 @@
 
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
-
-#include "DanglingLineBoundary.hpp"
+#include <powsybl/iidm/util/DanglingLineBoundary.hpp>
 
 namespace powsybl {
 
@@ -29,7 +28,7 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
     m_ucteXnodeCode(ucteXnodeCode),
     m_generation(std::move(generation)),
-    m_boundary(stdcxx::make_unique<dangling_line::Boundary>(*this)) {
+    m_boundary(stdcxx::make_unique<util::dangling_line::Boundary>(*this)) {
 
     if (m_generation) {
         m_generation->attach(*this);
