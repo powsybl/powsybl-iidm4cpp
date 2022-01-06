@@ -42,8 +42,8 @@ Bus& BusBreakerVoltageLevel::addBus(std::unique_ptr<ConfiguredBus>&& ptrBus) {
 }
 
 Switch& BusBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2) {
-    unsigned long v1 = getVertex(busId1, true).get();
-    unsigned long v2 = getVertex(busId2, true).get();
+    unsigned long v1 = *getVertex(busId1, true);
+    unsigned long v2 = *getVertex(busId2, true);
 
     Switch& aSwitch = getNetwork().checkAndAdd(std::move(ptrSwitch));
     unsigned long e = m_graph.addEdge(v1, v2, stdcxx::ref(aSwitch));

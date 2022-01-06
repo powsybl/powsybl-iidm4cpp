@@ -21,7 +21,7 @@ unsigned long MultipleVariantContext::getVariantIndex() const {
     if (!m_index) {
         throw PowsyblException("Variant index not set");
     }
-    return m_index.get();
+    return *m_index;
 }
 
 bool MultipleVariantContext::isIndexSet() const {
