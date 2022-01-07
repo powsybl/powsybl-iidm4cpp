@@ -69,8 +69,8 @@ public: // VoltageLevel
     void traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
 
 public:
-    NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
-                            double nominalV, double lowVoltageLimit, double highVoltagelimit);
+    NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                            const stdcxx::Reference<Network>& networkRef, double nominalV, double lowVoltageLimit, double highVoltagelimit);
 
     ~NodeBreakerVoltageLevel() noexcept override = default;
 

@@ -12,6 +12,7 @@
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerLegAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
@@ -26,6 +27,8 @@ public:
     using LegAdder = three_windings_transformer::LegAdder;
 
 public:
+    explicit ThreeWindingsTransformerAdder(Network& network);
+
     explicit ThreeWindingsTransformerAdder(Substation& substation);
 
     ~ThreeWindingsTransformerAdder() noexcept override = default;
@@ -49,7 +52,7 @@ private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:
-    Substation& getSubstation();
+    stdcxx::Reference<Substation> getSubstation();
 
     void setLegAdder1(const LegAdder& legAdder);
 
@@ -60,7 +63,9 @@ private:
     friend class three_windings_transformer::LegAdder;
 
 private:
-    Substation& m_substation;
+    stdcxx::Reference<Network> m_network;
+
+    stdcxx::Reference<Substation> m_substation;
 
     stdcxx::optional<LegAdder> m_adder1;
 

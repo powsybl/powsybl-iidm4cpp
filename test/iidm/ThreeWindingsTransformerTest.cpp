@@ -327,8 +327,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     oss << transformer.getType();
     BOOST_CHECK_EQUAL("THREE_WINDINGS_TRANSFORMER", oss.str());
 
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
-    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
 
     Terminal& terminal1 = transformer.getTerminal(ThreeWindingsTransformer::Side::ONE);
     Terminal& terminal2 = transformer.getTerminal(ThreeWindingsTransformer::Side::TWO);

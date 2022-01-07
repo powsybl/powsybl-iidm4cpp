@@ -18,6 +18,10 @@ namespace powsybl {
 
 namespace iidm {
 
+VoltageLevelAdder::VoltageLevelAdder(Network& network) :
+    m_network(network) {
+}
+
 VoltageLevelAdder::VoltageLevelAdder(Substation& substation) :
     m_substation(substation) {
 }
@@ -32,28 +36,36 @@ VoltageLevel& VoltageLevelAdder::add() {
     switch (*m_topologyKind) {
         case TopologyKind::NODE_BREAKER:
             voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<NodeBreakerVoltageLevel>(
-                stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
+                stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
             break;
 
         case TopologyKind::BUS_BREAKER:
             voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<BusBreakerVoltageLevel>(
-                stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
+                stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
             break;
 
         default:
             throw AssertionError(stdcxx::format("Unexpected TopologyKind value: %1%", *m_topologyKind));
     }
 
-    m_substation.addVoltageLevel(voltageLevel);
+    if (static_cast<bool>(m_substation)) {
+        m_substation.get().addVoltageLevel(voltageLevel);
+    }
     return voltageLevel;
 }
 
 const Network& VoltageLevelAdder::getNetwork() const {
-    return m_substation.getNetwork();
+    if (static_cast<bool>(m_network)) {
+        return m_network.get();
+    }
+    if (static_cast<bool>(m_substation)) {
+        return m_substation.get().getNetwork();
+    }
+    throw PowsyblException("Voltage level has no container");
 }
 
 Network& VoltageLevelAdder::getNetwork() {
-    return m_substation.getNetwork();
+    return const_cast<Network&>(static_cast<const VoltageLevelAdder*>(this)->getNetwork());
 }
 
 const std::string& VoltageLevelAdder::getTypeDescription() const {

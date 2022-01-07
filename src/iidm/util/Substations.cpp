@@ -41,18 +41,20 @@ void checkRemovability(const Substation& substation) {
 }
 
 void checkRemovability(const Substation& substation, const Branch& branch) {
-    const Substation& s1 = branch.getTerminal1().getVoltageLevel().getSubstation();
-    const Substation& s2 = branch.getTerminal2().getVoltageLevel().getSubstation();
-    if (!stdcxx::areSame(s1, substation) || !stdcxx::areSame(s2, substation)) {
+    const auto& s1 = branch.getTerminal1().getVoltageLevel().getSubstation();
+    const auto& s2 = branch.getTerminal2().getVoltageLevel().getSubstation();
+    if ((static_cast<bool>(s1) && !stdcxx::areSame(s1.get(), substation)) || (static_cast<bool>(s2) && !stdcxx::areSame(s2.get(), substation))) {
         throw createIsolationException(substation);
     }
 }
 
 void checkRemovability(const Substation& substation, const ThreeWindingsTransformer& twt) {
-    const Substation& s1 = twt.getLeg1().getTerminal().getVoltageLevel().getSubstation();
-    const Substation& s2 = twt.getLeg2().getTerminal().getVoltageLevel().getSubstation();
-    const Substation& s3 = twt.getLeg3().getTerminal().getVoltageLevel().getSubstation();
-    if (!stdcxx::areSame(s1, substation) || !stdcxx::areSame(s2, substation) || !stdcxx::areSame(s3, substation)) {
+    const auto& s1 = twt.getLeg1().getTerminal().getVoltageLevel().getSubstation();
+    const auto& s2 = twt.getLeg2().getTerminal().getVoltageLevel().getSubstation();
+    const auto& s3 = twt.getLeg3().getTerminal().getVoltageLevel().getSubstation();
+    if ((static_cast<bool>(s1) && !stdcxx::areSame(s1.get(), substation)) ||
+        (static_cast<bool>(s2) && !stdcxx::areSame(s2.get(), substation)) ||
+        (static_cast<bool>(s3) && !stdcxx::areSame(s3.get(), substation))) {
         throw createIsolationException(substation);
     }
 }
@@ -60,9 +62,9 @@ void checkRemovability(const Substation& substation, const ThreeWindingsTransfor
 void checkRemovability(const Substation& substation, const HvdcConverterStation& station) {
     const auto& hvdcLine = substation.getNetwork().findHvdcLine(station);
     if (hvdcLine) {
-        const Substation& s1 = hvdcLine.get().getConverterStation1().get().getTerminal().getVoltageLevel().getSubstation();
-        const Substation& s2 = hvdcLine.get().getConverterStation2().get().getTerminal().getVoltageLevel().getSubstation();
-        if (!stdcxx::areSame(s1, substation) || !stdcxx::areSame(s2, substation)) {
+        const auto& s1 = hvdcLine.get().getConverterStation1().get().getTerminal().getVoltageLevel().getSubstation();
+        const auto& s2 = hvdcLine.get().getConverterStation2().get().getTerminal().getVoltageLevel().getSubstation();
+        if ((static_cast<bool>(s1) && !stdcxx::areSame(s1.get(), substation)) || (static_cast<bool>(s2) && !stdcxx::areSame(s2.get(), substation))) {
             throw createIsolationException(substation);
         }
     }

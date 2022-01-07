@@ -12,6 +12,7 @@
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
@@ -43,12 +44,18 @@ private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:
+    explicit VoltageLevelAdder(Network& network);
+
     explicit VoltageLevelAdder(Substation& substation);
+
+    friend class Network;
 
     friend class Substation;
 
 private:
-    Substation& m_substation;
+    stdcxx::Reference<Network> m_network;
+
+    stdcxx::Reference<Substation> m_substation;
 
     double m_highVoltageLimit = stdcxx::nan();
 

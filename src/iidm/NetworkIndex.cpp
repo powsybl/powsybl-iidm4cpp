@@ -45,6 +45,10 @@ NetworkIndex::NetworkIndex(Network& network, NetworkIndex&& networkIndex) noexce
     m_objectsById[network.getId()].reset(&network);
     m_objectsByType[typeid(Network)][0] = std::ref<Identifiable>(network);
 
+    for (VoltageLevel& voltageLevel : getAll<VoltageLevel>()) {
+        voltageLevel.setNetworkRef(network);
+    }
+
     for (Substation& substation : getAll<Substation>()) {
         substation.setNetworkRef(network);
     }

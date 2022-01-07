@@ -182,7 +182,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     // test const version
     const VoltageLevel& vl = vl1;
     BOOST_TEST(stdcxx::areSame(network, vl.getNetwork()));
-    BOOST_TEST(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation().get()));
 
     POWSYBL_ASSERT_REF_TRUE(vl.getConnectable<Connectable>("LOAD1"));
     BOOST_TEST(stdcxx::areSame(load1, vl.getConnectable<Connectable>("LOAD1").get()));

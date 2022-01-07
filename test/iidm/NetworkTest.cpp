@@ -562,6 +562,26 @@ BOOST_AUTO_TEST_CASE(MultiVariant) {
     BOOST_CHECK_EQUAL(false, ext.getValue());
 }
 
+BOOST_AUTO_TEST_CASE(NullSubstationTestNBK) {
+    Network network("test", "test");
+    VoltageLevel& voltageLevel = network.newVoltageLevel()
+        .setId("VL")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalV(340.0)
+        .add();
+    BOOST_CHECK(!static_cast<bool>(voltageLevel.getSubstation()));
+}
+
+BOOST_AUTO_TEST_CASE(NullSubstationTestBBK) {
+    Network network("test", "test");
+    VoltageLevel& voltageLevel = network.newVoltageLevel()
+        .setId("VL")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(340.0)
+        .add();
+    BOOST_CHECK(!static_cast<bool>(voltageLevel.getSubstation()));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

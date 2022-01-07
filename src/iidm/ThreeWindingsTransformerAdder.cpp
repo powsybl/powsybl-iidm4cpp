@@ -17,6 +17,10 @@ namespace powsybl {
 
 namespace iidm {
 
+ThreeWindingsTransformerAdder::ThreeWindingsTransformerAdder(Network& network) :
+    m_network(network) {
+}
+
 ThreeWindingsTransformerAdder::ThreeWindingsTransformerAdder(Substation& substation) :
     m_substation(substation) {
 }
@@ -45,6 +49,20 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     VoltageLevel& voltageLevel3 = m_adder3->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal3 = m_adder3->checkAndGetTerminal(voltageLevel3);
 
+    if (static_cast<bool>(m_substation)) {
+        if ((!static_cast<bool>(voltageLevel1.getSubstation()) || !stdcxx::areSame(voltageLevel1.getSubstation().get(), m_substation.get())) ||
+            (!static_cast<bool>(voltageLevel2.getSubstation()) || !stdcxx::areSame(voltageLevel2.getSubstation().get(), m_substation.get()))) {
+            const std::string& vl1SubstationId = voltageLevel1.getSubstation() ? voltageLevel1.getSubstation().get().getId() : "null";
+            const std::string& vl2SubstationId = voltageLevel2.getSubstation() ? voltageLevel2.getSubstation().get().getId() : "null";
+            const std::string& vl3SubstationId = voltageLevel3.getSubstation() ? voltageLevel3.getSubstation().get().getId() : "null";
+            throw ValidationException(*this, stdcxx::format("the 3 windings of the transformer shall belong to the substation '%1%' ('%2', '%3%', '%4%')",
+                m_substation.get().getId(), vl1SubstationId, vl2SubstationId, vl3SubstationId));
+        }
+    } else if (static_cast<bool>(voltageLevel1.getSubstation()) && voltageLevel2.getSubstation() && voltageLevel3.getSubstation()) {
+        throw ValidationException(*this, stdcxx::format("the 3 windings of the transformer shall belong to a substation since there are located in voltage levels with substations ('%1%', '%2%', '%3%')",
+            voltageLevel1.getId(), voltageLevel2.getId(), voltageLevel3.getId()));
+    }
+
     // check that the 3 windings transformer is attachable on the 3 sides
     voltageLevel1.attach(*ptrTerminal1, true);
     voltageLevel2.attach(*ptrTerminal2, true);
@@ -71,14 +89,20 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
 }
 
 const Network& ThreeWindingsTransformerAdder::getNetwork() const {
-    return m_substation.getNetwork();
+    if (static_cast<bool>(m_network)) {
+        return m_network.get();
+    }
+    if (static_cast<bool>(m_substation)) {
+        return m_substation.get().getNetwork();
+    }
+    throw PowsyblException("Three windings transformer has no container");
 }
 
 Network& ThreeWindingsTransformerAdder::getNetwork() {
-    return m_substation.getNetwork();
+    return const_cast<Network&>(static_cast<const ThreeWindingsTransformerAdder*>(this)->getNetwork());
 }
 
-Substation& ThreeWindingsTransformerAdder::getSubstation() {
+stdcxx::Reference<Substation> ThreeWindingsTransformerAdder::getSubstation() {
     return m_substation;
 }
 
