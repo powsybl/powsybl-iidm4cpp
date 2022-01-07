@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_6" xmlns:dm="http://www.powsybl.org/schema/iidm/ext/discrete_measurements/1_0" id="fourSubstations" caseDate="2016-06-27T12:27:58.535000+02:00" forecastDistance="0" sourceFormat="test">
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_6" id="fourSubstations" caseDate="2017-06-25T17:43:00+01:00" forecastDistance="0" sourceFormat="test">
     <iidm:substation id="S1">
         <iidm:voltageLevel id="S1VL1" nominalV="225" lowVoltageLimit="220" highVoltageLimit="240" topologyKind="NODE_BREAKER">
             <iidm:nodeBreakerTopology>
@@ -199,28 +199,4 @@
     </iidm:line>
     <iidm:hvdcLine id="HVDC1" name="HVDC1" r="1" nominalV="400" convertersMode="SIDE_1_RECTIFIER_SIDE_2_INVERTER" activePowerSetpoint="10" maxP="300" converterStation1="VSC1" converterStation2="VSC2"/>
     <iidm:hvdcLine id="HVDC2" name="HVDC2" r="1" nominalV="400" convertersMode="SIDE_1_RECTIFIER_SIDE_2_INVERTER" activePowerSetpoint="80" maxP="300" converterStation1="LCC1" converterStation2="LCC2"/>
-    <iidm:extension id="S1VL1_BBS_LD1_DISCONNECTOR">
-        <dm:discreteMeasurements>
-            <dm:discreteMeasurement id="DIS_MEAS_SW_POS" type="SWITCH_POSITION" valueType="STRING" value="CLOSED" valid="false">
-                <dm:property name="source" value="test"/>
-            </dm:discreteMeasurement>
-        </dm:discreteMeasurements>
-    </iidm:extension>
-    <iidm:extension id="S1VL1_BBS_TWT_DISCONNECTOR">
-        <dm:discreteMeasurements>
-            <dm:discreteMeasurement type="SWITCH_POSITION" valueType="STRING" value="CLOSED" valid="false">
-                <dm:property name="source" value="test"/>
-            </dm:discreteMeasurement>
-            <dm:discreteMeasurement type="OTHER" valueType="STRING" value="CLOSED" valid="false">
-                <dm:property name="source" value="test"/>
-            </dm:discreteMeasurement>
-        </dm:discreteMeasurements>
-    </iidm:extension>
-    <iidm:extension id="TWT">
-        <dm:discreteMeasurements>
-            <dm:discreteMeasurement id="DIS_MEAS_TAP_POS" type="TAP_POSITION" tapChanger="PHASE_TAP_CHANGER" valueType="INT" value="15" valid="true">
-                <dm:property name="source" value="test2"/>
-            </dm:discreteMeasurement>
-        </dm:discreteMeasurements>
-    </iidm:extension>
 </iidm:network>
