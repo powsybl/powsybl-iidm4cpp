@@ -22,8 +22,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class Bus;
-
 class BusCache {
 public:
     using BusSupplier = std::function<stdcxx::const_range<Bus>()>;
