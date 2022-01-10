@@ -103,7 +103,7 @@ private:
 
 struct FlattenForwarder {};
 
-const FlattenForwarder flattened;
+const FlattenForwarder flattened {};
 
 template <typename SinglePassRange>
 using FlattenRange = boost::iterator_range<FlatteningIterator<typename boost::range_iterator<SinglePassRange>::type>>;
