@@ -45,17 +45,11 @@ public:
 
     stdcxx::Reference<ObservabilityQuality> getQualityV();
 
-    InjectionObservability& setQualityP(double standardDeviation, const stdcxx::optional<bool>& redundant);
+    InjectionObservability& setQualityP(double standardDeviation, const stdcxx::optional<bool>& redundant = stdcxx::optional<bool>());
 
-    InjectionObservability& setQualityP(double standardDeviation);
+    InjectionObservability& setQualityQ(double standardDeviation, const stdcxx::optional<bool>& redundant = stdcxx::optional<bool>());
 
-    InjectionObservability& setQualityQ(double standardDeviation, const stdcxx::optional<bool>& redundant);
-
-    InjectionObservability& setQualityQ(double standardDeviation);
-
-    InjectionObservability& setQualityV(double standardDeviation, const stdcxx::optional<bool>& redundant);
-
-    InjectionObservability& setQualityV(double standardDeviation);
+    InjectionObservability& setQualityV(double standardDeviation, const stdcxx::optional<bool>& redundant = stdcxx::optional<bool>());
 
 protected:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;

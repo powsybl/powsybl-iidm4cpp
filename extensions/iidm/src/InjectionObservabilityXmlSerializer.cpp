@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -38,17 +38,20 @@ Extension& InjectionObservabilityXmlSerializer::read(Extendable& extendable, con
 
     context.getReader().readUntilEndElement(getExtensionName(), [&adder, &context]() {
         if (context.getReader().getLocalName() == QUALITY_P) {
-            const auto& standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            const auto& redundant = context.getReader().getAttributeValue<bool>(REDUNDANT);
-            adder.withStandardDeviationP(standardDeviation).withRedundantP(redundant);
+            auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
+            auto redundant = context.getReader().getAttributeValue<bool>(REDUNDANT);
+            adder.withStandardDeviationP(standardDeviation)
+                    .withRedundantP(redundant);
         } else if (context.getReader().getLocalName() == QUALITY_Q) {
-            const auto& standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            const auto& redundant = context.getReader().getAttributeValue<bool>(REDUNDANT);
-            adder.withStandardDeviationQ(standardDeviation).withRedundantQ(redundant);
+            auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
+            auto redundant = context.getReader().getAttributeValue<bool>(REDUNDANT);
+            adder.withStandardDeviationQ(standardDeviation)
+                    .withRedundantQ(redundant);
         } else if (context.getReader().getLocalName() == QUALITY_V) {
-            const auto& standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            const auto& redundant = context.getReader().getAttributeValue<bool>(REDUNDANT);
-            adder.withStandardDeviationV(standardDeviation).withRedundantV(redundant);
+            auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
+            auto redundant = context.getReader().getAttributeValue<bool>(REDUNDANT);
+            adder.withStandardDeviationV(standardDeviation)
+                    .withRedundantV(redundant);
         } else {
             throw PowsyblException(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));
         }

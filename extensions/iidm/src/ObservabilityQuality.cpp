@@ -20,10 +20,6 @@ ObservabilityQuality::ObservabilityQuality(double standardDeviation, const stdcx
     m_redundant(redundant) {
 }
 
-ObservabilityQuality::ObservabilityQuality(double standardDeviation) :
-    m_standardDeviation(standardDeviation) {
-}
-
 double ObservabilityQuality::getStandardDeviation() const {
     return m_standardDeviation;
 }
