@@ -54,11 +54,21 @@ public:
 
     const stdcxx::Reference<E>& getEdgeObject(unsigned long e) const;
 
+    const_range<E> getEdgeObjectsConnectedToVertex(unsigned long vertex) const;
+
+    const std::vector<unsigned long>& getEdgeConnectedToVertex(unsigned long vertex) const;
+
+    std::vector<unsigned long> getEdgesConnectedToVertex(unsigned long vertex) const;
+
     const_range<E> getEdgeObjects() const;
 
     range<E> getEdgeObjects();
 
     const_range<E> getEdgeObjects(unsigned long v1, unsigned long v2) const;
+
+    unsigned long getEdgeVertex1(unsigned long edge) const;
+
+    unsigned long getEdgeVertex2(unsigned long edge) const;
 
     const_range<unsigned long> getEdges() const;
 

@@ -12,6 +12,7 @@
 #include <set>
 #include <string>
 
+#include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/math/UndirectedGraph.hpp>

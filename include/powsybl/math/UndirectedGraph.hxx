@@ -217,6 +217,26 @@ const stdcxx::Reference<E>& UndirectedGraph<V, E>::getEdgeObject(unsigned long e
 }
 
 template <typename V, typename E>
+typename UndirectedGraph<V, E>::template const_range<E> UndirectedGraph<V, E>::getEdgeObjectsConnectedToVertex(unsigned long vertex) const {
+    const auto& edgeMapper = [this](const unsigned long& e) {
+        return getEdgeObject(e);
+    };
+
+    return getEdgeConnectedToVertex(vertex) | boost::adaptors::transformed(edgeMapper);
+}
+
+template <typename V, typename E>
+const std::vector<unsigned long>& UndirectedGraph<V, E>::getEdgeConnectedToVertex(unsigned long vertex) const {
+    checkVertex(vertex);
+    return getAdjacencyList()[vertex];
+}
+
+template <typename V, typename E>
+std::vector<unsigned long> UndirectedGraph<V, E>::getEdgesConnectedToVertex(unsigned long vertex) const {
+    return getEdgeConnectedToVertex(vertex);
+}
+
+template <typename V, typename E>
 typename UndirectedGraph<V, E>::template const_range<E> UndirectedGraph<V, E>::getEdgeObjects() const {
     const auto& filter = [](const std::unique_ptr<Edge>& edge) {
         return static_cast<bool>(edge);
@@ -253,6 +273,18 @@ typename UndirectedGraph<V, E>::template const_range<E> UndirectedGraph<V, E>::g
         boost::adaptors::transformed(edgeMapper) |
         boost::adaptors::filtered(edgeFilter) |
         boost::adaptors::transformed(Edge::map);
+}
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::getEdgeVertex1(unsigned long edge) const {
+    checkEdge(edge);
+    return m_edges[edge]->getVertex1();
+}
+
+template <typename V, typename E>
+unsigned long UndirectedGraph<V, E>::getEdgeVertex2(unsigned long edge) const {
+    checkEdge(edge);
+    return m_edges[edge]->getVertex2();
 }
 
 template <typename V, typename E>

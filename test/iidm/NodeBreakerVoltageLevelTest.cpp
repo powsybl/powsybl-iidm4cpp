@@ -1434,6 +1434,89 @@ BOOST_AUTO_TEST_CASE(testCalculatedBus) {
     BOOST_CHECK(!network.getBusBreakerView().getBus("unknownBus"));
 }
 
+BOOST_AUTO_TEST_CASE(getSwitches) {
+    Network network("test", "test");
+    Substation& s = network.newSubstation()
+        .setId("S")
+        .setCountry(Country::FR)
+        .add();
+    VoltageLevel& vl = s.newVoltageLevel()
+        .setId("VL")
+        .setNominalV(400.0)
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .add();
+    vl.getNodeBreakerView().newBusbarSection()
+        .setId("BBS1")
+        .setNode(0)
+        .add();
+    vl.getNodeBreakerView().newBusbarSection()
+        .setId("BBS2")
+        .setNode(1)
+        .add();
+    vl.getNodeBreakerView().newBreaker()
+        .setId("C")
+        .setNode1(1)
+        .setNode2(0)
+        .setOpen(true)
+        .add();
+    vl.getNodeBreakerView().newBreaker()
+        .setId("B2")
+        .setNode1(0)
+        .setNode2(2)
+        .setOpen(true)
+        .add();
+    vl.getNodeBreakerView().newBreaker()
+        .setId("B1")
+        .setNode1(2)
+        .setNode2(3)
+        .setOpen(false)
+        .add();
+    vl.getNodeBreakerView().newBreaker()
+        .setId("B3")
+        .setNode1(3)
+        .setNode2(1)
+        .setOpen(false)
+        .add();
+    vl.newLoad()
+        .setId("LD")
+        .setNode(2)
+        .setP0(1)
+        .setQ0(1)
+        .add();
+
+    vl.getNodeBreakerView().newInternalConnection().setNode1(2).setNode2(0).add();
+    vl.getNodeBreakerView().newInternalConnection().setNode1(0).setNode2(1).add();
+    vl.getNodeBreakerView().newInternalConnection().setNode1(3).setNode2(0).add();
+
+    const VoltageLevel& cVl = vl;
+
+    auto switches = vl.getNodeBreakerView().getSwitches(0);
+    const auto& cSwitches = cVl.getNodeBreakerView().getSwitches(0);
+    BOOST_CHECK_EQUAL(2, boost::size(switches));
+    BOOST_CHECK_EQUAL(2, boost::size(cSwitches));
+
+    for (const std::string& name : {"C", "B2"}) {
+        const auto& lookup = [&name](const Switch& sw) {
+            return sw.getId() == name;
+        };
+        auto it = std::find_if(switches.begin(), switches.end(), lookup);
+        BOOST_CHECK(it != switches.end());
+    }
+
+    auto internalConnections = vl.getNodeBreakerView().getNodesInternalConnectedTo(0);
+    const auto& cInternalConnections = cVl.getNodeBreakerView().getNodesInternalConnectedTo(0);
+    BOOST_CHECK_EQUAL(3, boost::size(internalConnections));
+    BOOST_CHECK_EQUAL(3, boost::size(cInternalConnections));
+
+    for (const unsigned long expectedNode : {1, 2, 3}) {
+        const auto& lookup = [&expectedNode](unsigned long node) {
+            return node == expectedNode;
+        };
+        const auto& it = std::find_if(internalConnections.begin(), internalConnections.end(), lookup);
+        BOOST_CHECK(it != internalConnections.end());
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

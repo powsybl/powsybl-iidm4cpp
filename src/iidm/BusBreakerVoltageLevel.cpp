@@ -99,7 +99,6 @@ bool BusBreakerVoltageLevel::connect(Terminal& terminal) {
     return true;
 }
 
-
 void BusBreakerVoltageLevel::deleteVariantArrayElement(unsigned long index) {
     VoltageLevel::deleteVariantArrayElement(index);
     m_variants.deleteVariantArrayElement(index);
