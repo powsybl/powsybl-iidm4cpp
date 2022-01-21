@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_INJECTIONOBSERVABILITYADDER_HPP
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
-#include <powsybl/stdcxx/optional.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -71,17 +71,17 @@ private:  // ExtensionAdder
 private:
     bool m_observable = false;
 
-    stdcxx::optional<double> m_standardDeviationP;
+    double m_standardDeviationP = stdcxx::nan();
 
-    stdcxx::optional<double> m_standardDeviationQ;
+    double m_standardDeviationQ = stdcxx::nan();
 
-    stdcxx::optional<double> m_standardDeviationV;
+    double m_standardDeviationV = stdcxx::nan();
 
-    stdcxx::optional<bool> m_redundantP;
+    bool m_redundantP = false;
 
-    stdcxx::optional<bool> m_redundantQ;
+    bool m_redundantQ = false;
 
-    stdcxx::optional<bool> m_redundantV;
+    bool m_redundantV = false;
 };
 
 }  // namespace iidm

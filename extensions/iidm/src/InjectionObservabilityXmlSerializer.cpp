@@ -39,17 +39,17 @@ Extension& InjectionObservabilityXmlSerializer::read(Extendable& extendable, con
     context.getReader().readUntilEndElement(getExtensionName(), [&adder, &context]() {
         if (context.getReader().getLocalName() == QUALITY_P) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            auto redundant = context.getReader().getAttributeValue<bool>(REDUNDANT);
+            auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
             adder.withStandardDeviationP(standardDeviation)
                     .withRedundantP(redundant);
         } else if (context.getReader().getLocalName() == QUALITY_Q) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            auto redundant = context.getReader().getAttributeValue<bool>(REDUNDANT);
+            auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
             adder.withStandardDeviationQ(standardDeviation)
                     .withRedundantQ(redundant);
         } else if (context.getReader().getLocalName() == QUALITY_V) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            auto redundant = context.getReader().getAttributeValue<bool>(REDUNDANT);
+            auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
             adder.withStandardDeviationV(standardDeviation)
                     .withRedundantV(redundant);
         } else {
@@ -73,9 +73,7 @@ void InjectionObservabilityXmlSerializer::writeOptionalQuality(const std::string
     if (quality) {
         writer.writeStartElement(getNamespacePrefix(), elementName);
         writer.writeAttribute(STANDARD_DEVIATION, quality.get().getStandardDeviation());
-        if (quality.get().isRedundant()) {
-            writer.writeAttribute(REDUNDANT, *quality.get().isRedundant());
-        }
+        writer.writeOptionalAttribute(REDUNDANT, quality.get().isRedundant(), false);
         writer.writeEndElement();
     }
 }

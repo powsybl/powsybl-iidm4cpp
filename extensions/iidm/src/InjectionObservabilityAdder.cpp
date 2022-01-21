@@ -28,14 +28,14 @@ InjectionObservabilityAdder::InjectionObservabilityAdder(Extendable& extendable)
 std::unique_ptr<Extension> InjectionObservabilityAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Injection>(extendable)) {
         auto extension = std::unique_ptr<InjectionObservability>(new InjectionObservability(dynamic_cast<Injection&>(extendable), m_observable));
-        if (m_standardDeviationP) {
-            extension->setQualityP(*m_standardDeviationP, m_redundantP);
+        if (!std::isnan(m_standardDeviationP)) {
+            extension->setQualityP(m_standardDeviationP, m_redundantP);
         }
-        if (m_standardDeviationQ) {
-            extension->setQualityQ(*m_standardDeviationQ, m_redundantQ);
+        if (!std::isnan(m_standardDeviationQ)) {
+            extension->setQualityQ(m_standardDeviationQ, m_redundantQ);
         }
-        if (m_standardDeviationV) {
-            extension->setQualityV(*m_standardDeviationV, m_redundantV);
+        if (!std::isnan(m_standardDeviationV)) {
+            extension->setQualityV(m_standardDeviationV, m_redundantV);
         }
         return extension;
     }

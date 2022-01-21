@@ -62,19 +62,19 @@ const std::type_index& InjectionObservability::getType() const {
     return s_type;
 }
 
-InjectionObservability& InjectionObservability::setQualityP(double standardDeviation, const stdcxx::optional<bool>& redundant) {
+InjectionObservability& InjectionObservability::setQualityP(double standardDeviation, bool redundant) {
     m_qualityP = ObservabilityQuality(standardDeviation, redundant);
 
     return *this;
 }
 
-InjectionObservability& InjectionObservability::setQualityQ(double standardDeviation, const stdcxx::optional<bool>& redundant) {
+InjectionObservability& InjectionObservability::setQualityQ(double standardDeviation, bool redundant) {
     m_qualityQ = ObservabilityQuality(standardDeviation, redundant);
 
     return *this;
 }
 
-InjectionObservability& InjectionObservability::setQualityV(double standardDeviation, const stdcxx::optional<bool>& redundant) {
+InjectionObservability& InjectionObservability::setQualityV(double standardDeviation, bool redundant) {
     m_qualityV = ObservabilityQuality(standardDeviation, redundant);
 
     return *this;

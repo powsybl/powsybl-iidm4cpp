@@ -49,26 +49,26 @@ BOOST_AUTO_TEST_CASE(injectionObservability) {
 
     extension.setQualityP(2.2, true);
     BOOST_CHECK_CLOSE(2.2, extension.getQualityP().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(*extension.getQualityP().get().isRedundant());
+    BOOST_CHECK(extension.getQualityP().get().isRedundant());
 
     extension.setQualityQ(3.3);
     BOOST_CHECK_CLOSE(3.3, extension.getQualityQ().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
 
     extension.setQualityQ(4.4, true);
     BOOST_CHECK_CLOSE(4.4, extension.getQualityQ().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(*extension.getQualityQ().get().isRedundant());
+    BOOST_CHECK(extension.getQualityQ().get().isRedundant());
 
     extension.setQualityV(5.5);
     BOOST_CHECK_CLOSE(5.5, extension.getQualityV().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
 
     extension.setQualityV(6.6, true);
     BOOST_CHECK_CLOSE(6.6, extension.getQualityV().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(*extension.getQualityV().get().isRedundant());
+    BOOST_CHECK(extension.getQualityV().get().isRedundant());
 
     BOOST_CHECK(stdcxx::areSame(extension.getQualityV().get(), extension.getQualityV().get().setRedundant(false)));
-    BOOST_CHECK(!*extension.getQualityV().get().isRedundant());
+    BOOST_CHECK(!extension.getQualityV().get().isRedundant());
     extension.getQualityV().get().setRedundant(true);
-    BOOST_CHECK(*extension.getQualityV().get().isRedundant());
+    BOOST_CHECK(extension.getQualityV().get().isRedundant());
 
     BOOST_CHECK(stdcxx::areSame(extension.getQualityV().get(), extension.getQualityV().get().setStandardDeviation(7.7)));
     BOOST_CHECK_CLOSE(7.7, extension.getQualityV().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
@@ -97,9 +97,9 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK_CLOSE(2.2, extension.getQualityQ().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.3, extension.getQualityV().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
 
-    BOOST_CHECK((*extension.getQualityP().get().isRedundant()));
-    BOOST_CHECK(!(*extension.getQualityQ().get().isRedundant()));
-    BOOST_CHECK((*extension.getQualityV().get().isRedundant()));
+    BOOST_CHECK(extension.getQualityP().get().isRedundant());
+    BOOST_CHECK(!extension.getQualityQ().get().isRedundant());
+    BOOST_CHECK(extension.getQualityV().get().isRedundant());
 }
 
 BOOST_FIXTURE_TEST_CASE(InjectionObservabilityXmlSerializerTest, test::ResourceFixture) {
