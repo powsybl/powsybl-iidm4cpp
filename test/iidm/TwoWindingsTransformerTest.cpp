@@ -392,6 +392,87 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK_EQUAL(twoWindingsTransformerCount + 1, network.getTwoWindingsTransformerCount());
 }
 
+BOOST_AUTO_TEST_CASE(invalidSubstationContainer) {
+    Network network("test", "test");
+    Substation& substation = network.newSubstation()
+        .setId("sub")
+        .setCountry(Country::FR)
+        .setTso("RTE")
+        .add();
+    VoltageLevel& voltageLevelA = substation.newVoltageLevel()
+        .setId("vl1")
+        .setName("vl1")
+        .setNominalV(440.0)
+        .setHighVoltageLimit(400.0)
+        .setLowVoltageLimit(200.0)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    voltageLevelA.getBusBreakerView().newBus()
+        .setId("busA")
+        .setName("busA")
+        .add();
+    VoltageLevel& voltageLevelB = substation.newVoltageLevel()
+        .setId("vl2").setName("vl2")
+        .setNominalV(200.0)
+        .setHighVoltageLimit(400.0)
+        .setLowVoltageLimit(200.0)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    voltageLevelB.getBusBreakerView().newBus()
+        .setId("busB")
+        .setName("busB")
+        .add();
+    network.newVoltageLevel()
+        .setId("no_substation")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(200.0)
+        .setLowVoltageLimit(180.0)
+        .setHighVoltageLimit(220.0)
+        .add()
+        .getBusBreakerView().newBus().setId("no_substation_bus").add();
+    network.newVoltageLevel()
+        .setId("no_substation2")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(200.0)
+        .setLowVoltageLimit(180.0)
+        .setHighVoltageLimit(220.0)
+        .add()
+        .getBusBreakerView().newBus().setId("no_substation2_bus").add();
+    TwoWindingsTransformerAdder adder = substation.newTwoWindingsTransformer()
+        .setId("twt")
+        .setName("twt_name")
+        .setR(1.0)
+        .setX(2.0)
+        .setG(3.0)
+        .setB(4.0)
+        .setRatedU1(5.0)
+        .setRatedU2(6.0)
+        .setRatedS(7.0)
+        .setVoltageLevel1("no_substation")
+        .setVoltageLevel2("vl2")
+        .setConnectableBus1("no_substation_bus")
+        .setConnectableBus2("busB");
+
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "2 windings transformer 'twt': the 2 windings of the transformer shall belong to the substation 'sub' ('null', 'sub')");
+
+    TwoWindingsTransformerAdder adderNoSubstation = network.newTwoWindingsTransformer()
+        .setId("twt")
+        .setName("twt_name")
+        .setR(1.0)
+        .setX(2.0)
+        .setG(3.0)
+        .setB(4.0)
+        .setRatedU1(5.0)
+        .setRatedU2(6.0)
+        .setRatedS(7.0)
+        .setVoltageLevel1("vl1")
+        .setVoltageLevel2("vl2")
+        .setConnectableBus1("busA")
+        .setConnectableBus2("busB");
+
+    POWSYBL_ASSERT_THROW(adderNoSubstation.add(), PowsyblException, "2 windings transformer 'twt': the 2 windings of the transformer shall belong to a substation since there are located in voltage levels with substations ('vl1', 'vl2')");
+}
+
 BOOST_AUTO_TEST_CASE(multivariant) {
     Network network = createTwoWindingsTransformerTestNetwork();
     const Substation& substation = network.getSubstation("S1");

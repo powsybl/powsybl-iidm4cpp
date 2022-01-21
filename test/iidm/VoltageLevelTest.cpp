@@ -208,6 +208,37 @@ BOOST_AUTO_TEST_CASE(getConnectablesCheckUnique) {
     BOOST_CHECK_EQUAL(1UL, vl.getConnectableCount());
 }
 
+Network createVoltageLevelNoSubstationNetwork() {
+    Network network("test", "test");
+
+    VoltageLevel& voltageLevel = network.newVoltageLevel()
+        .setId("no_substation")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(200.0)
+        .setLowVoltageLimit(180.0)
+        .setHighVoltageLimit(220.0)
+        .add();
+
+    voltageLevel.getBusBreakerView().newBus()
+        .setId("no_substation_bus")
+        .add();
+
+    return network;
+}
+
+BOOST_AUTO_TEST_CASE(noSubstation) {
+    Network network = createVoltageLevelNoSubstationNetwork();
+
+    VoltageLevel& voltageLevel = network.getVoltageLevel("no_substation");
+    const VoltageLevel& cVoltageLevel = voltageLevel;
+
+    BOOST_CHECK(!voltageLevel.getNullableSubstation());
+    BOOST_CHECK(!cVoltageLevel.getNullableSubstation());
+
+    // make sure that network ref of the voltage level has been updated when the network is moved
+    BOOST_CHECK(stdcxx::areSame(voltageLevel.getNetwork(), network));
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

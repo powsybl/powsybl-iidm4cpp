@@ -1409,6 +1409,73 @@ BOOST_AUTO_TEST_CASE(operationalLimits) {
     BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg3().getOperationalLimits()));
 }
 
+BOOST_AUTO_TEST_CASE(noSubstation) {
+    Network network("test", "test");
+
+    VoltageLevel& vl1 = network.newVoltageLevel()
+        .setId("VL1_NOSUBSTATION")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(90.0)
+        .add();
+
+    Bus& vl1Bus1 = vl1.getBusBreakerView().newBus()
+        .setId("VL1BUS1_NOSUBSTATION")
+        .add();
+
+    VoltageLevel& vl2 = network.newVoltageLevel()
+        .setId("VL2_NOSUBSTATION")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(90.0)
+        .add();
+
+    Bus& vl2Bus1 = vl2.getBusBreakerView().newBus()
+        .setId("VL2BUS1_NOSUBSTATION")
+        .add();
+
+    VoltageLevel& vl3 = network.newVoltageLevel()
+        .setId("VL3_NOSUBSTATION")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(90.0)
+        .add();
+
+    Bus& vl3Bus1 = vl3.getBusBreakerView().newBus()
+        .setId("VL3BUS1_NOSUBSTATION")
+        .add();
+
+    network.newThreeWindingsTransformer()
+        .setId("3wt")
+        .newLeg1()
+            .setR(1.3)
+            .setX(1.4)
+            .setG(1.6)
+            .setB(1.7)
+            .setRatedU(1.1)
+            .setVoltageLevel(vl1.getId())
+            .setBus(vl1Bus1.getId())
+            .add()
+        .newLeg2()
+            .setR(2.3)
+            .setX(2.4)
+            .setRatedU(2.1)
+            .setVoltageLevel(vl2.getId())
+            .setBus(vl2Bus1.getId())
+            .add()
+        .newLeg3()
+            .setR(3.3)
+            .setX(3.4)
+            .setRatedU(3.1)
+            .setVoltageLevel(vl3.getId())
+            .setBus(vl3Bus1.getId())
+            .add()
+        .add();
+
+    ThreeWindingsTransformer& twt = network.getThreeWindingsTransformer("3wt");
+    const ThreeWindingsTransformer& cTwt = twt;
+
+    BOOST_CHECK(!twt.getNullableSubstation());
+    BOOST_CHECK(!cTwt.getNullableSubstation());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
