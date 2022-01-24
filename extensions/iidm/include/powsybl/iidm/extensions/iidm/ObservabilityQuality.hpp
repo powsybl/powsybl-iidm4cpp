@@ -36,7 +36,7 @@ public:
 private:
     double m_standardDeviation;
 
-    bool m_redundant = false;
+    bool m_redundant;
 };
 
 }  // namespace iidm
