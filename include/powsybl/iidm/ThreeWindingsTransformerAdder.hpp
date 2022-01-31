@@ -63,7 +63,7 @@ private:
     friend class three_windings_transformer::LegAdder;
 
 private:
-    stdcxx::Reference<Network> m_network;
+    Network& m_network;
 
     stdcxx::Reference<Substation> m_substation;
 

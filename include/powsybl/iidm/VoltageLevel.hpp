@@ -151,9 +151,9 @@ public:
 
     stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
-    stdcxx::CReference<Substation> getSubstation() const;
+    const Substation& getSubstation() const;
 
-    stdcxx::Reference<Substation> getSubstation();
+    Substation& getSubstation();
 
     virtual unsigned long getSwitchCount() const = 0;
 
@@ -202,7 +202,7 @@ protected:
 
 protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                 const stdcxx::Reference<Network>& networkRef, double nominalV, double lowVoltageLimit, double highVoltageLimit);
+                 Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit);
 
     virtual stdcxx::const_range<Terminal> getTerminals() const = 0;
 

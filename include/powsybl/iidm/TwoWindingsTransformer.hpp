@@ -65,9 +65,9 @@ public:
 
     double getRatedU2() const;
 
-    stdcxx::CReference<Substation> getSubstation() const;
+    const Substation& getSubstation() const;
 
-    stdcxx::Reference<Substation> getSubstation();
+    Substation& getSubstation();
 
     double getX() const;
 

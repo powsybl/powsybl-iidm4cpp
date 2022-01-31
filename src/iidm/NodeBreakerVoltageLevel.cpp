@@ -21,8 +21,8 @@ namespace powsybl {
 namespace iidm {
 
 NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                                                 const stdcxx::Reference<Network>& networkRef, double nominalV, double lowVoltageLimit, double highVoltagelimit) :
-    VoltageLevel(id, name, fictitious, substation, networkRef, nominalV, lowVoltageLimit, highVoltagelimit),
+                                                 Network& network, double nominalV, double lowVoltageLimit, double highVoltagelimit) :
+    VoltageLevel(id, name, fictitious, substation, network, nominalV, lowVoltageLimit, highVoltagelimit),
     m_busNamingStrategy(*this),
     m_variants(*this, [this]() { return stdcxx::make_unique<node_breaker_voltage_level::VariantImpl>(*this); }),
     m_nodeBreakerView(*this),

@@ -327,8 +327,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     oss << transformer.getType();
     BOOST_CHECK_EQUAL("THREE_WINDINGS_TRANSFORMER", oss.str());
 
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
-    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation()));
 
     Terminal& terminal1 = transformer.getTerminal(ThreeWindingsTransformer::Side::ONE);
     Terminal& terminal2 = transformer.getTerminal(ThreeWindingsTransformer::Side::TWO);
@@ -1474,6 +1474,9 @@ BOOST_AUTO_TEST_CASE(noSubstation) {
 
     BOOST_CHECK(!twt.getNullableSubstation());
     BOOST_CHECK(!cTwt.getNullableSubstation());
+
+    POWSYBL_ASSERT_THROW(twt.getSubstation(), PowsyblException, "Substation not set");
+    POWSYBL_ASSERT_THROW(cTwt.getSubstation(), PowsyblException, "Substation not set");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

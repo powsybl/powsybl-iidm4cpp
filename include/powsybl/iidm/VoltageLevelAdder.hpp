@@ -53,7 +53,7 @@ private:
     friend class Substation;
 
 private:
-    stdcxx::Reference<Network> m_network;
+    Network& m_network;
 
     stdcxx::Reference<Substation> m_substation;
 

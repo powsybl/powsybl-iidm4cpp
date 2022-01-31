@@ -23,6 +23,7 @@ TwoWindingsTransformerAdder::TwoWindingsTransformerAdder(Network& network) :
 }
 
 TwoWindingsTransformerAdder::TwoWindingsTransformerAdder(Substation& substation) :
+    m_network(substation.getNetwork()),
     m_substation(substation) {
 }
 
@@ -30,14 +31,14 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
     VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
     if (static_cast<bool>(m_substation)) {
-        if ((!static_cast<bool>(voltageLevel1.getSubstation()) || !stdcxx::areSame(voltageLevel1.getSubstation().get(), m_substation.get())) ||
-            (!static_cast<bool>(voltageLevel2.getSubstation()) || !stdcxx::areSame(voltageLevel2.getSubstation().get(), m_substation.get()))) {
-            const std::string& vl1SubstationId = voltageLevel1.getSubstation() ? voltageLevel1.getSubstation().get().getId() : "null";
-            const std::string& vl2SubstationId = voltageLevel2.getSubstation() ? voltageLevel2.getSubstation().get().getId() : "null";
+        if ((!static_cast<bool>(voltageLevel1.getNullableSubstation()) || !stdcxx::areSame(voltageLevel1.getSubstation(), m_substation.get())) ||
+            (!static_cast<bool>(voltageLevel2.getNullableSubstation()) || !stdcxx::areSame(voltageLevel2.getSubstation(), m_substation.get()))) {
+            const std::string& vl1SubstationId = voltageLevel1.getNullableSubstation() ? voltageLevel1.getSubstation().getId() : "null";
+            const std::string& vl2SubstationId = voltageLevel2.getNullableSubstation() ? voltageLevel2.getSubstation().getId() : "null";
             throw ValidationException(*this, stdcxx::format("the 2 windings of the transformer shall belong to the substation '%1%' ('%2%', '%3%')",
                                                             m_substation.get().getId(), vl1SubstationId, vl2SubstationId));
         }
-    } else if (static_cast<bool>(voltageLevel1.getSubstation()) && static_cast<bool>(voltageLevel2.getSubstation())) {
+    } else if (static_cast<bool>(voltageLevel1.getNullableSubstation()) && static_cast<bool>(voltageLevel2.getNullableSubstation())) {
         throw ValidationException(*this, stdcxx::format("the 2 windings of the transformer shall belong to a substation since there are located in voltage levels with substations ('%1%', '%2%')", voltageLevel1.getId(), voltageLevel2.getId()));
     }
     std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1(voltageLevel1);
@@ -67,17 +68,11 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
 }
 
 const Network& TwoWindingsTransformerAdder::getNetwork() const {
-    if (static_cast<bool>(m_network)) {
-        return m_network.get();
-    }
-    if (static_cast<bool>(m_substation)) {
-        return m_substation.get().getNetwork();
-    }
-    throw PowsyblException("Two windings transformer has no container");
+    return m_network;
 }
 
 Network& TwoWindingsTransformerAdder::getNetwork() {
-    return const_cast<Network&>(static_cast<const TwoWindingsTransformerAdder*>(this)->getNetwork());
+    return m_network;
 }
 
 const std::string& TwoWindingsTransformerAdder::getTypeDescription() const {

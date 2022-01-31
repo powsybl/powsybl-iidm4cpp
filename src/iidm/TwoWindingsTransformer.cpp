@@ -131,12 +131,18 @@ RatioTapChanger& TwoWindingsTransformer::getRatioTapChanger() {
     return *m_ratioTapChanger;
 }
 
-stdcxx::CReference<Substation> TwoWindingsTransformer::getSubstation() const {
-    return stdcxx::cref(m_substation);
+const Substation& TwoWindingsTransformer::getSubstation() const {
+    if (!m_substation) {
+        throw PowsyblException("Substation not set");
+    }
+    return m_substation.get();
 }
 
-stdcxx::Reference<Substation> TwoWindingsTransformer::getSubstation() {
-    return m_substation;
+Substation& TwoWindingsTransformer::getSubstation() {
+    if (!m_substation) {
+        throw PowsyblException("Substation not set");
+    }
+    return m_substation.get();
 }
 
 const std::string& TwoWindingsTransformer::getTypeDescription() const {

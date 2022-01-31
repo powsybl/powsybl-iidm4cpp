@@ -23,6 +23,7 @@ VoltageLevelAdder::VoltageLevelAdder(Network& network) :
 }
 
 VoltageLevelAdder::VoltageLevelAdder(Substation& substation) :
+    m_network(substation.getNetwork()),
     m_substation(substation) {
 }
 
@@ -55,17 +56,11 @@ VoltageLevel& VoltageLevelAdder::add() {
 }
 
 const Network& VoltageLevelAdder::getNetwork() const {
-    if (static_cast<bool>(m_network)) {
-        return m_network.get();
-    }
-    if (static_cast<bool>(m_substation)) {
-        return m_substation.get().getNetwork();
-    }
-    throw PowsyblException("Voltage level has no container");
+    return m_network;
 }
 
 Network& VoltageLevelAdder::getNetwork() {
-    return const_cast<Network&>(static_cast<const VoltageLevelAdder*>(this)->getNetwork());
+    return m_network;
 }
 
 const std::string& VoltageLevelAdder::getTypeDescription() const {

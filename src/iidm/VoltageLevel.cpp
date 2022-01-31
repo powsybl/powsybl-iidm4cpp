@@ -33,9 +33,9 @@ namespace powsybl {
 namespace iidm {
 
 VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                           const stdcxx::Reference<Network>& networkRef, double nominalV, double lowVoltageLimit, double highVoltageLimit) :
+                           Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit) :
     Container(id, name, fictitious, Container::Type::VOLTAGE_LEVEL),
-    m_networkRef(networkRef),
+    m_networkRef(network),
     m_substation(substation),
     m_highVoltageLimit(highVoltageLimit),
     m_lowVoltageLimit(lowVoltageLimit),
@@ -145,8 +145,8 @@ const Network& VoltageLevel::getNetwork() const {
     if (static_cast<bool>(m_networkRef)) {
         return m_networkRef.get();
     }
-    if (static_cast<bool>(getSubstation())) {
-        return getSubstation().get().getNetwork();
+    if (static_cast<bool>(m_substation)) {
+        return m_substation.get().getNetwork();
     }
     throw PowsyblException(stdcxx::format("Voltage level %1% has no container", getId()));
 }
@@ -191,12 +191,18 @@ stdcxx::range<StaticVarCompensator> VoltageLevel::getStaticVarCompensators() {
     return getConnectables<StaticVarCompensator>();
 }
 
-stdcxx::CReference<Substation> VoltageLevel::getSubstation() const {
-    return stdcxx::cref(m_substation);
+const Substation& VoltageLevel::getSubstation() const {
+    if (!m_substation) {
+        throw PowsyblException("Substation not set");
+    }
+    return m_substation.get();
 }
 
-stdcxx::Reference<Substation> VoltageLevel::getSubstation() {
-    return m_substation;
+Substation& VoltageLevel::getSubstation() {
+    if (!m_substation) {
+        throw PowsyblException("Substation not set");
+    }
+    return m_substation.get();
 }
 
 const std::string& VoltageLevel::getTypeDescription() const {
@@ -260,9 +266,9 @@ void VoltageLevel::remove() {
     // Remove the topology
     removeTopology();
 
-    if (getSubstation()) {
+    if (static_cast<bool>(m_substation)) {
         // Remove this voltage level from the network
-        getSubstation().get().remove(*this);
+        m_substation.get().remove(*this);
     }
     getNetwork().getIndex().remove(*this);
 }

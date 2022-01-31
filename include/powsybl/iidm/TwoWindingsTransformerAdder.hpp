@@ -52,7 +52,7 @@ private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:
-    stdcxx::Reference<Network> m_network;
+    Network& m_network;
 
     stdcxx::Reference<Substation> m_substation;
 
