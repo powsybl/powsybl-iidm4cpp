@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_VSCCONVERTERSTATION_HPP
 #define POWSYBL_IIDM_VSCCONVERTERSTATION_HPP
 
+#include <functional>
+
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
 
@@ -22,17 +24,23 @@ public: // HvdcConverterStation
     VscConverterStation& setLossFactor(double lossFactor) override;
 
 public:
-    VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint);
+    VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint, Terminal& regulatingTerminal);
 
     ~VscConverterStation() noexcept override = default;
 
     double getReactivePowerSetpoint() const;
+
+    const Terminal& getRegulatingTerminal() const;
+
+    Terminal& getRegulatingTerminal();
 
     double getVoltageSetpoint() const;
 
     bool isVoltageRegulatorOn() const;
 
     VscConverterStation& setReactivePowerSetpoint(double reactivePowerSetpoint);
+
+    VscConverterStation& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
 
     VscConverterStation& setVoltageRegulatorOn(bool voltageRegulatorOn);
 
@@ -54,6 +62,8 @@ private:
     std::vector<double> m_reactivePowerSetpoint;
 
     std::vector<double> m_voltageSetpoint;
+
+    std::reference_wrapper<Terminal> m_regulatingTerminal;
 };
 
 }  // namespace iidm
