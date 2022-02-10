@@ -71,15 +71,14 @@ VoltageLevel& LegAdder::checkAndGetVoltageLevel() {
     if (!voltageLevel) {
         throw ValidationException(*this, stdcxx::format("voltage level '%1%' not found", m_voltageLevelId));
     }
-    if (static_cast<bool>(m_parent.getSubstation()) && (static_cast<bool>(voltageLevel.get().getNullableSubstation()) && !stdcxx::areSame(voltageLevel.get().getSubstation(), m_parent.getSubstation().get()))) {
-        throw ValidationException(*this, stdcxx::format("voltage level shall belong to the substation '%1%'", m_parent.getSubstation().get().getId()));
-    }
 
     return voltageLevel.get();
 }
 
 std::string LegAdder::getMessageHeader() const {
-    return stdcxx::format("3 windings transformer leg%1% in substation %2%: ", m_legNumber, m_parent.getSubstation().get());
+    const std::string& substationId = m_parent.getSubstation() ? m_parent.getSubstation().get().getId() : "";
+
+    return stdcxx::format("3 windings transformer leg%1% in substation %2%: ", m_legNumber, substationId);
 }
 
 LegAdder& LegAdder::setB(double b) {

@@ -376,13 +376,13 @@ void NetworkXml::writeSubstations(const Network& network, NetworkXmlWriterContex
 
 void NetworkXml::writeTransformers(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context) {
     for (const TwoWindingsTransformer& twt : network.getTwoWindingsTransformers()) {
-        if (!twt.getNullableSubstation() && filter.test(twt)) {
+        if (!twt.getSubstation() && filter.test(twt)) {
             IidmXmlUtil::assertMinimumVersion(NETWORK, TWO_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
             TwoWindingsTransformerXml::getInstance().write(twt, network, context);
         }
     }
     for (const ThreeWindingsTransformer& twt : network.getThreeWindingsTransformers()) {
-        if (!twt.getNullableSubstation() && filter.test(twt)) {
+        if (!twt.getSubstation() && filter.test(twt)) {
             IidmXmlUtil::assertMinimumVersion(NETWORK, THREE_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
             ThreeWindingsTransformerXml::getInstance().write(twt, network, context);
         }
@@ -391,7 +391,7 @@ void NetworkXml::writeTransformers(const BusFilter& filter, const Network& netwo
 
 void NetworkXml::writeVoltageLevels(const Network& network, NetworkXmlWriterContext& context) {
     for (const VoltageLevel& voltageLevel : network.getVoltageLevels()) {
-        if (!voltageLevel.getNullableSubstation()) {
+        if (!voltageLevel.getSubstation()) {
             IidmXmlUtil::assertMinimumVersion(NETWORK, VOLTAGE_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
             VoltageLevelXml::getInstance().write(voltageLevel, network, context);
         }

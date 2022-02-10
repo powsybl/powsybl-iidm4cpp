@@ -95,19 +95,6 @@ stdcxx::range<ThreeWindingsTransformer::Leg> ThreeWindingsTransformer::getLegs()
     return m_legs;
 }
 
-stdcxx::CReference<Substation> ThreeWindingsTransformer::getNullableSubstation() const {
-    for (const Leg& leg : m_legs) {
-        if (static_cast<bool>(leg.getTerminal().getVoltageLevel().getNullableSubstation())) {
-            return stdcxx::cref(leg.getTerminal().getVoltageLevel().getSubstation());
-        }
-    }
-    return stdcxx::cref<Substation>();
-}
-
-stdcxx::Reference<Substation> ThreeWindingsTransformer::getNullableSubstation() {
-    return stdcxx::ref(static_cast<const ThreeWindingsTransformer*>(this)->getNullableSubstation());
-}
-
 double ThreeWindingsTransformer::getRatedU0() const {
     return m_ratedU0;
 }
@@ -125,15 +112,16 @@ ThreeWindingsTransformer::Side ThreeWindingsTransformer::getSide(const Terminal&
     throw AssertionError("The terminal is not connected to this three windings transformer");
 }
 
-const Substation& ThreeWindingsTransformer::getSubstation() const {
-    const auto& substation = getNullableSubstation();
-    if (!substation) {
-        throw PowsyblException("Substation not set");
+stdcxx::CReference<Substation> ThreeWindingsTransformer::getSubstation() const {
+    for (const Leg& leg : m_legs) {
+        if (leg.getTerminal().getVoltageLevel().getSubstation()) {
+            return leg.getTerminal().getVoltageLevel().getSubstation();
+        }
     }
-    return substation.get();
+    return stdcxx::cref<Substation>();
 }
 
-Substation& ThreeWindingsTransformer::getSubstation() {
+stdcxx::Reference<Substation> ThreeWindingsTransformer::getSubstation() {
     return stdcxx::ref(static_cast<const ThreeWindingsTransformer*>(this)->getSubstation());
 }
 

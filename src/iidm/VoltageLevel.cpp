@@ -159,14 +159,6 @@ double VoltageLevel::getNominalV() const {
     return m_nominalV;
 }
 
-stdcxx::CReference<Substation> VoltageLevel::getNullableSubstation() const {
-    return stdcxx::cref(m_substation);
-}
-
-stdcxx::Reference<Substation> VoltageLevel::getNullableSubstation() {
-    return m_substation;
-}
-
 unsigned long VoltageLevel::getShuntCompensatorCount() const {
     return getConnectableCount<ShuntCompensator>();
 }
@@ -191,18 +183,12 @@ stdcxx::range<StaticVarCompensator> VoltageLevel::getStaticVarCompensators() {
     return getConnectables<StaticVarCompensator>();
 }
 
-const Substation& VoltageLevel::getSubstation() const {
-    if (!m_substation) {
-        throw PowsyblException("Substation not set");
-    }
-    return m_substation.get();
+stdcxx::CReference<Substation> VoltageLevel::getSubstation() const {
+    return stdcxx::cref(m_substation);
 }
 
-Substation& VoltageLevel::getSubstation() {
-    if (!m_substation) {
-        throw PowsyblException("Substation not set");
-    }
-    return m_substation.get();
+stdcxx::Reference<Substation> VoltageLevel::getSubstation() {
+    return m_substation;
 }
 
 const std::string& VoltageLevel::getTypeDescription() const {

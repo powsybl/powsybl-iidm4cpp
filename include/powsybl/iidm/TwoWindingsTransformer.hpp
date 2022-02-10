@@ -53,10 +53,6 @@ public:
 
     double getG() const;
 
-    stdcxx::CReference<Substation> getNullableSubstation() const;
-
-    stdcxx::Reference<Substation> getNullableSubstation();
-
     double getR() const;
 
     double getRatedS() const;
@@ -65,9 +61,9 @@ public:
 
     double getRatedU2() const;
 
-    const Substation& getSubstation() const;
+    stdcxx::CReference<Substation> getSubstation() const;
 
-    Substation& getSubstation();
+    stdcxx::Reference<Substation> getSubstation();
 
     double getX() const;
 

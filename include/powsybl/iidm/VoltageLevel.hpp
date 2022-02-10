@@ -135,10 +135,6 @@ public:
 
     double getNominalV() const;
 
-    stdcxx::CReference<Substation> getNullableSubstation() const;
-
-    stdcxx::Reference<Substation> getNullableSubstation();
-
     unsigned long getShuntCompensatorCount() const;
 
     stdcxx::const_range<ShuntCompensator> getShuntCompensators() const;
@@ -151,9 +147,9 @@ public:
 
     stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
-    const Substation& getSubstation() const;
+    stdcxx::CReference<Substation> getSubstation() const;
 
-    Substation& getSubstation();
+    stdcxx::Reference<Substation> getSubstation();
 
     virtual unsigned long getSwitchCount() const = 0;
 

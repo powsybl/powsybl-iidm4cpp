@@ -79,14 +79,6 @@ Network& TwoWindingsTransformer::getNetwork() {
     return Branch::getNetwork();
 }
 
-stdcxx::CReference<Substation> TwoWindingsTransformer::getNullableSubstation() const {
-    return stdcxx::cref(m_substation);
-}
-
-stdcxx::Reference<Substation> TwoWindingsTransformer::getNullableSubstation() {
-    return m_substation;
-}
-
 const PhaseTapChanger& TwoWindingsTransformer::getPhaseTapChanger() const {
     if (!m_phaseTapChanger) {
         throw PowsyblException("Phase tap changer not set");
@@ -131,18 +123,12 @@ RatioTapChanger& TwoWindingsTransformer::getRatioTapChanger() {
     return *m_ratioTapChanger;
 }
 
-const Substation& TwoWindingsTransformer::getSubstation() const {
-    if (!m_substation) {
-        throw PowsyblException("Substation not set");
-    }
-    return m_substation.get();
+stdcxx::CReference<Substation> TwoWindingsTransformer::getSubstation() const {
+    return stdcxx::cref(m_substation);
 }
 
-Substation& TwoWindingsTransformer::getSubstation() {
-    if (!m_substation) {
-        throw PowsyblException("Substation not set");
-    }
-    return m_substation.get();
+stdcxx::Reference<Substation> TwoWindingsTransformer::getSubstation() {
+    return m_substation;
 }
 
 const std::string& TwoWindingsTransformer::getTypeDescription() const {

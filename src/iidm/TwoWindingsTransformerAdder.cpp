@@ -30,15 +30,16 @@ TwoWindingsTransformerAdder::TwoWindingsTransformerAdder(Substation& substation)
 TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
     VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
-    if (static_cast<bool>(m_substation)) {
-        if ((!static_cast<bool>(voltageLevel1.getNullableSubstation()) || !stdcxx::areSame(voltageLevel1.getSubstation(), m_substation.get())) ||
-            (!static_cast<bool>(voltageLevel2.getNullableSubstation()) || !stdcxx::areSame(voltageLevel2.getSubstation(), m_substation.get()))) {
-            const std::string& vl1SubstationId = voltageLevel1.getNullableSubstation() ? voltageLevel1.getSubstation().getId() : "null";
-            const std::string& vl2SubstationId = voltageLevel2.getNullableSubstation() ? voltageLevel2.getSubstation().getId() : "null";
+    if (m_substation) {
+        if (!voltageLevel1.getSubstation() || voltageLevel1.getSubstation() != m_substation  ||
+            !voltageLevel2.getSubstation() || voltageLevel2.getSubstation() != m_substation) {
+            const std::string& substationId1 = voltageLevel1.getSubstation() ? voltageLevel1.getSubstation().get().getId() : "null";
+            const std::string& substationId2 = voltageLevel2.getSubstation() ? voltageLevel2.getSubstation().get().getId() : "null";
+
             throw ValidationException(*this, stdcxx::format("the 2 windings of the transformer shall belong to the substation '%1%' ('%2%', '%3%')",
-                                                            m_substation.get().getId(), vl1SubstationId, vl2SubstationId));
+                                                            m_substation.get().getId(), substationId1, substationId2));
         }
-    } else if (static_cast<bool>(voltageLevel1.getNullableSubstation()) && static_cast<bool>(voltageLevel2.getNullableSubstation())) {
+    } else if (voltageLevel1.getSubstation() || voltageLevel2.getSubstation()) {
         throw ValidationException(*this, stdcxx::format("the 2 windings of the transformer shall belong to a substation since there are located in voltage levels with substations ('%1%', '%2%')", voltageLevel1.getId(), voltageLevel2.getId()));
     }
     std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1(voltageLevel1);

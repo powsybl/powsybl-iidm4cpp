@@ -569,8 +569,7 @@ BOOST_AUTO_TEST_CASE(NullSubstationTestNBK) {
         .setTopologyKind(TopologyKind::NODE_BREAKER)
         .setNominalV(340.0)
         .add();
-    BOOST_CHECK(!static_cast<bool>(voltageLevel.getNullableSubstation()));
-    POWSYBL_ASSERT_THROW(voltageLevel.getSubstation(), PowsyblException, "Substation not set");
+    BOOST_CHECK(!voltageLevel.getSubstation());
 }
 
 BOOST_AUTO_TEST_CASE(NullSubstationTestBBK) {
@@ -580,8 +579,7 @@ BOOST_AUTO_TEST_CASE(NullSubstationTestBBK) {
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .setNominalV(340.0)
         .add();
-    BOOST_CHECK(!static_cast<bool>(voltageLevel.getNullableSubstation()));
-    POWSYBL_ASSERT_THROW(voltageLevel.getSubstation(), PowsyblException, "Substation not set");
+    BOOST_CHECK(!voltageLevel.getSubstation());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

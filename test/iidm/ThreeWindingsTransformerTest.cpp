@@ -327,8 +327,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     oss << transformer.getType();
     BOOST_CHECK_EQUAL("THREE_WINDINGS_TRANSFORMER", oss.str());
 
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
-    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
 
     Terminal& terminal1 = transformer.getTerminal(ThreeWindingsTransformer::Side::ONE);
     Terminal& terminal2 = transformer.getTerminal(ThreeWindingsTransformer::Side::TWO);
@@ -654,9 +654,6 @@ BOOST_AUTO_TEST_CASE(adders) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: voltage level 'INVALID' not found");
     l1Adder.setVoltageLevel("VL1").add();
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: voltage level shall belong to the substation 'S2'");
-    l1Adder.setVoltageLevel("VL4").add();
-
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: connectable bus is not set");
     l1Adder.setConnectableBus("VL4_BUS1").add();
 
@@ -700,11 +697,8 @@ BOOST_AUTO_TEST_CASE(adders) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: voltage level 'INVALID' not found");
     l2Adder.setVoltageLevel("VL1").add();
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: voltage level shall belong to the substation 'S2'");
-    l2Adder.setVoltageLevel("VL4").add();
-
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: connectable bus is not set");
-    l2Adder.setConnectableBus("VL4_BUS1");
+    l2Adder.setConnectableBus("VL4_BUS1").add();
 
     POWSYBL_ASSERT_THROW(l2Adder.setRatedS(-1.0).add(), ValidationException, "3 windings transformer leg2 in substation S2: Invalid rated S value: -1");
     l2Adder.setRatedS(1.0).add();
@@ -749,9 +743,6 @@ BOOST_AUTO_TEST_CASE(adders) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: voltage level 'INVALID' not found");
     l3Adder.setVoltageLevel("VL1").add();
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: voltage level shall belong to the substation 'S2'");
-    l3Adder.setVoltageLevel("VL4").add();
-
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: connectable bus is not set");
     l3Adder.setConnectableBus("VL4_BUS1");
 
@@ -766,6 +757,18 @@ BOOST_AUTO_TEST_CASE(adders) {
         .setNode(1UL)
         .add();
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: connection node and connection bus are exclusives");
+
+    adder.newLeg3()
+        .setR(3.0)
+        .setX(3.1)
+        .setG(0.0)
+        .setB(0.0)
+        .setRatedU(3.2)
+        .setVoltageLevel("VL1")
+        .setConnectableBus("VL1_BUS1")
+        .add();
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer 'TWT': the 3 windings of the transformer shall belong to the substation 'S2' ('S2', 'S2', 'S1')");
+
     adder.newLeg3()
         .setR(3.0)
         .setX(3.1)
@@ -1472,11 +1475,8 @@ BOOST_AUTO_TEST_CASE(noSubstation) {
     ThreeWindingsTransformer& twt = network.getThreeWindingsTransformer("3wt");
     const ThreeWindingsTransformer& cTwt = twt;
 
-    BOOST_CHECK(!twt.getNullableSubstation());
-    BOOST_CHECK(!cTwt.getNullableSubstation());
-
-    POWSYBL_ASSERT_THROW(twt.getSubstation(), PowsyblException, "Substation not set");
-    POWSYBL_ASSERT_THROW(cTwt.getSubstation(), PowsyblException, "Substation not set");
+    BOOST_CHECK(!twt.getSubstation());
+    BOOST_CHECK(!cTwt.getSubstation());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

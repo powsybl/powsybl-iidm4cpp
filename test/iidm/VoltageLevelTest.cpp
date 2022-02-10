@@ -182,7 +182,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     // test const version
     const VoltageLevel& vl = vl1;
     BOOST_TEST(stdcxx::areSame(network, vl.getNetwork()));
-    BOOST_TEST(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation().get()));
 
     POWSYBL_ASSERT_REF_TRUE(vl.getConnectable<Connectable>("LOAD1"));
     BOOST_TEST(stdcxx::areSame(load1, vl.getConnectable<Connectable>("LOAD1").get()));
@@ -232,8 +232,8 @@ BOOST_AUTO_TEST_CASE(noSubstation) {
     VoltageLevel& voltageLevel = network.getVoltageLevel("no_substation");
     const VoltageLevel& cVoltageLevel = voltageLevel;
 
-    BOOST_CHECK(!voltageLevel.getNullableSubstation());
-    BOOST_CHECK(!cVoltageLevel.getNullableSubstation());
+    BOOST_CHECK(!voltageLevel.getSubstation());
+    BOOST_CHECK(!cVoltageLevel.getSubstation());
 
     // make sure that network ref of the voltage level has been updated when the network is moved
     BOOST_CHECK(stdcxx::areSame(voltageLevel.getNetwork(), network));

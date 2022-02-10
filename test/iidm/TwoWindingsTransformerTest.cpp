@@ -241,14 +241,14 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.0, transformer.getRatedS(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(network, transformer.getNetwork()));
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
     BOOST_TEST(!transformer.hasRatioTapChanger());
     BOOST_TEST(!transformer.hasPhaseTapChanger());
 
     const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_TEST(stdcxx::areSame(transformer, cTransformer));
     BOOST_TEST(stdcxx::areSame(network, cTransformer.getNetwork()));
-    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
     BOOST_TEST(!cTransformer.hasRatioTapChanger());
     BOOST_TEST(!cTransformer.hasPhaseTapChanger());
 }
@@ -517,7 +517,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -548,7 +548,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(-0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -577,7 +577,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(-0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -608,7 +608,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -637,7 +637,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -670,7 +670,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -738,11 +738,8 @@ BOOST_AUTO_TEST_CASE(noSubstation) {
 
     const TwoWindingsTransformer& cTwt = twt;
 
-    BOOST_CHECK(!twt.getNullableSubstation());
-    BOOST_CHECK(!cTwt.getNullableSubstation());
-
-    POWSYBL_ASSERT_THROW(twt.getSubstation(), PowsyblException, "Substation not set");
-    POWSYBL_ASSERT_THROW(cTwt.getSubstation(), PowsyblException, "Substation not set");
+    BOOST_CHECK(!twt.getSubstation());
+    BOOST_CHECK(!cTwt.getSubstation());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
