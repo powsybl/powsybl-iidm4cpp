@@ -698,7 +698,7 @@ BOOST_AUTO_TEST_CASE(adders) {
     l2Adder.setVoltageLevel("VL1").add();
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: connectable bus is not set");
-    l2Adder.setConnectableBus("VL4_BUS1").add();
+    l2Adder.setConnectableBus("VL4_BUS1");
 
     POWSYBL_ASSERT_THROW(l2Adder.setRatedS(-1.0).add(), ValidationException, "3 windings transformer leg2 in substation S2: Invalid rated S value: -1");
     l2Adder.setRatedS(1.0).add();
