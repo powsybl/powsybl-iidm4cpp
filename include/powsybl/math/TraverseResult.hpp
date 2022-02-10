@@ -13,8 +13,14 @@ namespace powsybl {
 namespace math {
 
 enum class TraverseResult {
+    /** Indicates that traversal should continue */
     CONTINUE,
-    TERMINATE
+
+    /** Indicates that traversal should terminate on current path */
+    TERMINATE_PATH,
+
+    /** Indicates that traversal should break, i.e., terminate on all paths */
+    TERMINATE_TRAVERSER
 };
 
 }  // namespace math

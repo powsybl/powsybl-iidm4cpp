@@ -23,6 +23,8 @@ Network createHvdcConverterStationTestNetwork();
 
 Network createNetwork();
 
+Network createNetworkTest1();
+
 Terminal& getTerminalFromNetwork2();
 
 Network createDanglingLineNetwork();

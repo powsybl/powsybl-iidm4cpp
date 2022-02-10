@@ -60,6 +60,7 @@ set(UNIT_TEST_SOURCES
     extensions/SlackTerminalTest.cpp
 
     util/SVTest.cpp
+    util/NodeBreakerTopologyTest.cpp
     util/TerminalFinderTest.cpp
 )
 

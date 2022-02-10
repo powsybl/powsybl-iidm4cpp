@@ -168,11 +168,11 @@ stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long no
         if (static_cast<bool>(connectableBus)) {
             // traverse does not stop the algorithm when TERMINATE, it only stops searching in a given direction
             // this condition insures that while checking all the edges (in every direction) of a node, if a bus is found, it will not be lost
-            return math::TraverseResult::TERMINATE;
+            return math::TraverseResult::TERMINATE_PATH;
         }
         connectableBus = getBus(v2);
 
-        return static_cast<bool>(connectableBus) ? math::TraverseResult::TERMINATE : math::TraverseResult::CONTINUE;
+        return static_cast<bool>(connectableBus) ? math::TraverseResult::TERMINATE_PATH : math::TraverseResult::CONTINUE;
     });
 
     // if nothing found, just take the first bus
@@ -261,7 +261,7 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
         graph.traverse(v, [&graph, &terminate, &vertices](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
             const stdcxx::Reference<Switch> aSwitch = graph.getEdgeObject(e);
             if (static_cast<bool>(aSwitch) && terminate(aSwitch)) {
-                return math::TraverseResult::TERMINATE;
+                return math::TraverseResult::TERMINATE_PATH;
             }
 
             vertices.push_back(v2);

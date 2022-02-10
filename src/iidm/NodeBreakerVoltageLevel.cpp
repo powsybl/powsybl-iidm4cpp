@@ -422,9 +422,9 @@ void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::Top
                     addNextTerminals(otherTerminal.get(), nextTerminals);
                     return math::TraverseResult::CONTINUE;
                 }
-                return math::TraverseResult::TERMINATE;
+                return math::TraverseResult::TERMINATE_PATH;
             }
-            return math::TraverseResult::TERMINATE;
+            return math::TraverseResult::TERMINATE_PATH;
         });
 
         for (auto nextTerminal : nextTerminals) {

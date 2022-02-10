@@ -405,7 +405,7 @@ void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::Topol
                     return math::TraverseResult::CONTINUE;
                 }
             }
-            return math::TraverseResult::TERMINATE;
+            return math::TraverseResult::TERMINATE_PATH;
         });
 
         for (Terminal& t : nextTerminals) {

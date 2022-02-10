@@ -84,6 +84,8 @@ public: // NodeBreakerView
 
     void traverse(unsigned long node, const Traverser& traverser) const override;
 
+    void traverse(stdcxx::const_range<unsigned long>& nodes, const Traverser& traverser) const override;
+
 public:
     explicit NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
 
@@ -120,6 +122,8 @@ public: // BusBreakerView
     stdcxx::range<Switch> getSwitches() override;
 
     unsigned long getSwitchCount() const override;
+
+    void traverse(const Bus& bus, Traverser& traverser) override;
 
 public:
     explicit BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
