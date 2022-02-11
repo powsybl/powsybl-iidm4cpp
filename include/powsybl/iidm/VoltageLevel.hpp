@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/iidm/VoltageLevelTopologyTraverser.hpp>
@@ -34,6 +35,7 @@ class LccConverterStationAdder;
 class Load;
 class LoadAdder;
 class Network;
+class NetworkIndex;
 class ShuntCompensator;
 class ShuntCompensatorAdder;
 class StaticVarCompensator;
@@ -146,9 +148,9 @@ public:
 
     stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
-    const Substation& getSubstation() const;
+    stdcxx::CReference<Substation> getSubstation() const;
 
-    Substation& getSubstation();
+    stdcxx::Reference<Substation> getSubstation();
 
     virtual unsigned long getSwitchCount() const = 0;
 
@@ -196,8 +198,8 @@ protected:
     static void addNextTerminals(Terminal& otherTerminal, TerminalSet& nextTerminals);
 
 protected:
-    VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
-                 double nominalV, double lowVoltageLimit, double highVoltageLimit);
+    VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                 Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit);
 
     virtual stdcxx::const_range<Terminal> getTerminals() const = 0;
 
@@ -209,7 +211,13 @@ private: // Identifiable
 private:
     virtual void removeTopology() = 0;
 
+    void setNetworkRef(Network& network);
+
+    friend class NetworkIndex;
+
 private:
+    NetworkRef m_network;
+
     stdcxx::Reference<Substation> m_substation;
 
     double m_highVoltageLimit;
