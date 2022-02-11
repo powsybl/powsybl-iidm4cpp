@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/iidm/VoltageLevelTopologyTraverser.hpp>
@@ -218,7 +219,7 @@ private:
     friend class NetworkIndex;
 
 private:
-    stdcxx::Reference<Network> m_networkRef;
+    NetworkRef m_network;
 
     stdcxx::Reference<Substation> m_substation;
 

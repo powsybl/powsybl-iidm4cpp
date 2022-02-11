@@ -34,7 +34,7 @@ namespace iidm {
 
 template <typename T, typename>
 stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const {
-    stdcxx::CReference<T> connectable = getConnectable<T>(id, stdcxx::cref(m_substation), stdcxx::cref(m_networkRef));
+    stdcxx::CReference<T> connectable = getConnectable<T>(id, stdcxx::cref(m_substation), stdcxx::cref(m_network.get()));
 
     if (static_cast<bool>(connectable)) {
         if (stdcxx::isInstanceOf<Injection>(connectable.get())) {

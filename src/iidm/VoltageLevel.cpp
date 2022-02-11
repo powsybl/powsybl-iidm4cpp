@@ -35,7 +35,7 @@ namespace iidm {
 VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
                            Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit) :
     Container(id, name, fictitious, Container::Type::VOLTAGE_LEVEL),
-    m_networkRef(network),
+    m_network(network),
     m_substation(substation),
     m_highVoltageLimit(highVoltageLimit),
     m_lowVoltageLimit(lowVoltageLimit),
@@ -142,10 +142,10 @@ double VoltageLevel::getLowVoltageLimit() const {
 }
 
 const Network& VoltageLevel::getNetwork() const {
-    if (static_cast<bool>(m_networkRef)) {
-        return m_networkRef.get();
+    if (m_network) {
+        return m_network.get();
     }
-    if (static_cast<bool>(m_substation)) {
+    if (m_substation) {
         return m_substation.get().getNetwork();
     }
     throw PowsyblException(stdcxx::format("Voltage level %1% has no container", getId()));
@@ -272,9 +272,7 @@ VoltageLevel& VoltageLevel::setLowVoltageLimit(double lowVoltageLimit) {
 }
 
 void VoltageLevel::setNetworkRef(Network& network) {
-    if (static_cast<bool>(m_networkRef)) {
-        m_networkRef = network;
-    }
+    m_network.set(network);
 }
 
 VoltageLevel& VoltageLevel::setNominalV(double nominalV) {
