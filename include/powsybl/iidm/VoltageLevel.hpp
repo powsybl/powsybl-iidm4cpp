@@ -209,9 +209,6 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
-    stdcxx::CReference<T> getConnectable(const std::string& id, const stdcxx::CReference<Substation>& substation, const stdcxx::CReference<Network>& networkRef) const;
-
     virtual void removeTopology() = 0;
 
     void setNetworkRef(Network& network);

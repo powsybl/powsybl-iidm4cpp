@@ -34,7 +34,7 @@ namespace iidm {
 
 template <typename T, typename>
 stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const {
-    stdcxx::CReference<T> connectable = getConnectable<T>(id, stdcxx::cref(m_substation), stdcxx::cref(m_network.get()));
+    stdcxx::CReference<T> connectable = getNetwork().find<T>(id);
 
     if (static_cast<bool>(connectable)) {
         if (stdcxx::isInstanceOf<Injection>(connectable.get())) {
@@ -68,17 +68,6 @@ stdcxx::Reference<T> VoltageLevel::getConnectable(const std::string& id) {
     const auto& connectable = static_cast<const VoltageLevel*>(this)->getConnectable<T>(id);
 
     return stdcxx::ref(connectable);
-}
-
-template <typename T, typename>
-stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id, const stdcxx::CReference<Substation>& substation, const stdcxx::CReference<Network>& networkRef) const {
-    if (static_cast<bool>(substation)) {
-        return substation.get().getNetwork().find<T>(id);
-    }
-    if (static_cast<bool>(networkRef)) {
-        return networkRef.get().find<T>(id);
-    }
-    throw PowsyblException(stdcxx::format("Voltage level %1% has no container", getId()));
 }
 
 template <typename T, typename>
