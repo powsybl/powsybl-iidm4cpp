@@ -49,9 +49,12 @@ class SubstationAdder;
 class Switch;
 class SynchronousComponentsManager;
 class ThreeWindingsTransformer;
+class ThreeWindingsTransformerAdder;
 class TieLineAdder;
 class TwoWindingsTransformer;
+class TwoWindingsTransformerAdder;
 class VoltageLevel;
+class VoltageLevelAdder;
 class VscConverterStation;
 
 class Network : public Container, public VariantManagerHolder {
@@ -350,7 +353,13 @@ public:
 
     SubstationAdder newSubstation();
 
+    ThreeWindingsTransformerAdder newThreeWindingsTransformer();
+
     TieLineAdder newTieLine();
+
+    TwoWindingsTransformerAdder newTwoWindingsTransformer();
+
+    VoltageLevelAdder newVoltageLevel();
 
     void remove(Identifiable& identifiable);
 

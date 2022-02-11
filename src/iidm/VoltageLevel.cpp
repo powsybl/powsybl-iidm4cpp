@@ -32,9 +32,10 @@ namespace powsybl {
 
 namespace iidm {
 
-VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
-                           double nominalV, double lowVoltageLimit, double highVoltageLimit) :
+VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                           Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit) :
     Container(id, name, fictitious, Container::Type::VOLTAGE_LEVEL),
+    m_network(network),
     m_substation(substation),
     m_highVoltageLimit(highVoltageLimit),
     m_lowVoltageLimit(lowVoltageLimit),
@@ -141,11 +142,17 @@ double VoltageLevel::getLowVoltageLimit() const {
 }
 
 const Network& VoltageLevel::getNetwork() const {
-    return getSubstation().getNetwork();
+    if (m_network) {
+        return m_network.get();
+    }
+    if (m_substation) {
+        return m_substation.get().getNetwork();
+    }
+    throw PowsyblException(stdcxx::format("Voltage level %1% has no container", getId()));
 }
 
 Network& VoltageLevel::getNetwork() {
-    return getSubstation().getNetwork();
+    return const_cast<Network&>(static_cast<const VoltageLevel*>(this)->getNetwork());
 }
 
 double VoltageLevel::getNominalV() const {
@@ -176,12 +183,12 @@ stdcxx::range<StaticVarCompensator> VoltageLevel::getStaticVarCompensators() {
     return getConnectables<StaticVarCompensator>();
 }
 
-const Substation& VoltageLevel::getSubstation() const {
-    return m_substation.get();
+stdcxx::CReference<Substation> VoltageLevel::getSubstation() const {
+    return stdcxx::cref(m_substation);
 }
 
-Substation& VoltageLevel::getSubstation() {
-    return m_substation.get();
+stdcxx::Reference<Substation> VoltageLevel::getSubstation() {
+    return m_substation;
 }
 
 const std::string& VoltageLevel::getTypeDescription() const {
@@ -245,8 +252,10 @@ void VoltageLevel::remove() {
     // Remove the topology
     removeTopology();
 
-    // Remove this voltage level from the network
-    getSubstation().remove(*this);
+    if (static_cast<bool>(m_substation)) {
+        // Remove this voltage level from the network
+        m_substation.get().remove(*this);
+    }
     getNetwork().getIndex().remove(*this);
 }
 
@@ -260,6 +269,10 @@ VoltageLevel& VoltageLevel::setLowVoltageLimit(double lowVoltageLimit) {
     checkVoltageLimits(*this, lowVoltageLimit, m_highVoltageLimit);
     m_lowVoltageLimit = lowVoltageLimit;
     return *this;
+}
+
+void VoltageLevel::setNetworkRef(Network& network) {
+    m_network.set(network);
 }
 
 VoltageLevel& VoltageLevel::setNominalV(double nominalV) {

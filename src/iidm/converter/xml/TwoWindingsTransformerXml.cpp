@@ -19,8 +19,14 @@ namespace converter {
 
 namespace xml {
 
-TwoWindingsTransformerAdder TwoWindingsTransformerXml::createAdder(Substation& substation) const {
-    return substation.newTwoWindingsTransformer();
+TwoWindingsTransformerAdder TwoWindingsTransformerXml::createAdder(Container& container) const {
+    if (stdcxx::isInstanceOf<Network>(container)) {
+        return dynamic_cast<Network&>(container).newTwoWindingsTransformer();
+    }
+    if (stdcxx::isInstanceOf<Substation>(container)) {
+        return dynamic_cast<Substation&>(container).newTwoWindingsTransformer();
+    }
+    throw AssertionError("Unexpected container type");
 }
 
 const TwoWindingsTransformerXml& TwoWindingsTransformerXml::getInstance() {
@@ -83,7 +89,7 @@ void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, Net
     });
 }
 
-void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
+void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTransformer& twt, const Container& /*container*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(R, twt.getR());
     context.getWriter().writeAttribute(X, twt.getX());
     context.getWriter().writeAttribute(G, twt.getG());
@@ -99,7 +105,7 @@ void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTran
     }
 }
 
-void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
+void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& twt, const Container& /*container*/, NetworkXmlWriterContext& context) const {
     if (twt.hasRatioTapChanger()) {
         writeRatioTapChanger(RATIO_TAP_CHANGER, twt.getRatioTapChanger(), context);
     }
