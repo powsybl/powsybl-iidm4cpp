@@ -18,7 +18,7 @@ namespace powsybl {
 
 namespace iidm {
 
-TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS) :
+TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS) :
     Branch(id, name, fictitious, ConnectableType::TWO_WINDINGS_TRANSFORMER),
     m_substation(substation),
     m_r(checkR(*this, r)),
@@ -124,7 +124,7 @@ RatioTapChanger& TwoWindingsTransformer::getRatioTapChanger() {
 }
 
 stdcxx::CReference<Substation> TwoWindingsTransformer::getSubstation() const {
-    return stdcxx::cref<Substation>(m_substation);
+    return stdcxx::cref(m_substation);
 }
 
 stdcxx::Reference<Substation> TwoWindingsTransformer::getSubstation() {

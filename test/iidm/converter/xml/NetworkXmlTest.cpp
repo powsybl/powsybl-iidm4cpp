@@ -15,9 +15,12 @@
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/network/MultipleExtensionsTestNetworkFactory.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
+#include <powsybl/test/ResourceFixture.hpp>
+#include <powsybl/test/converter/RoundTrip.hpp>
 
 namespace powsybl {
 
@@ -199,6 +202,13 @@ BOOST_AUTO_TEST_CASE(ReadFromParametersCheckExtensions) {
     Network allExtNetwork = Network::readXml(filename, inputStream, ImportOptions(properties));
     BOOST_CHECK_EQUAL(2UL, boost::size(allExtNetwork.getLoad("LOAD").getExtensions()));
     BOOST_CHECK_EQUAL(1UL, boost::size(allExtNetwork.getLoad("LOAD2").getExtensions()));
+}
+
+BOOST_FIXTURE_TEST_CASE(testOptionalSubstation, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("eurostag-tutorial-example1-opt-sub.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+
+    // backward compatibility checks from version 1.6
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("eurostag-tutorial-example1-opt-sub.xml", IidmXmlVersion::V1_6());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

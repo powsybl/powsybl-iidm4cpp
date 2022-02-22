@@ -112,12 +112,17 @@ ThreeWindingsTransformer::Side ThreeWindingsTransformer::getSide(const Terminal&
     throw AssertionError("The terminal is not connected to this three windings transformer");
 }
 
-const Substation& ThreeWindingsTransformer::getSubstation() const {
-    return m_legs[0].getTerminal().getVoltageLevel().getSubstation();
+stdcxx::CReference<Substation> ThreeWindingsTransformer::getSubstation() const {
+    for (const Leg& leg : m_legs) {
+        if (leg.getTerminal().getVoltageLevel().getSubstation()) {
+            return leg.getTerminal().getVoltageLevel().getSubstation();
+        }
+    }
+    return stdcxx::cref<Substation>();
 }
 
-Substation& ThreeWindingsTransformer::getSubstation() {
-    return m_legs[0].getTerminal().getVoltageLevel().getSubstation();
+stdcxx::Reference<Substation> ThreeWindingsTransformer::getSubstation() {
+    return stdcxx::ref(static_cast<const ThreeWindingsTransformer*>(this)->getSubstation());
 }
 
 const Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) const {
