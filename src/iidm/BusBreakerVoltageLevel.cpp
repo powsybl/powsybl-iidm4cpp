@@ -23,9 +23,9 @@ namespace powsybl {
 
 namespace iidm {
 
-BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
-                                               double nominalV, double lowVoltageLimit, double highVoltagelimit) :
-    VoltageLevel(id, name, fictitious, substation, nominalV, lowVoltageLimit, highVoltagelimit),
+BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                                               Network& network, double nominalV, double lowVoltageLimit, double highVoltagelimit) :
+    VoltageLevel(id, name, fictitious, substation, network, nominalV, lowVoltageLimit, highVoltagelimit),
     m_variants(*this, [this]() { return stdcxx::make_unique<bus_breaker_voltage_level::VariantImpl>(*this); }),
     m_busBreakerView(*this),
     m_busView(*this) {
@@ -388,7 +388,7 @@ void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::Topol
             }
         }
 
-        // then go through other buses of the substation
+        // then go through other buses of the voltage level
         m_graph.traverse(v, [this, &traverser, &traversedTerminals, &nextTerminals](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
             Switch& aSwitch = m_graph.getEdgeObject(e);
             ConfiguredBus& otherBus = m_graph.getVertexObject(v2);
