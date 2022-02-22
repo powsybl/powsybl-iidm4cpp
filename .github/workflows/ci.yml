@@ -73,7 +73,7 @@ jobs:
       - name: Install LibXml2
         shell: cmd
         run: |
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           choco install wget --no-progress
           wget -nv %LIBXML2_URL%
           7z x v2.9.10.zip
