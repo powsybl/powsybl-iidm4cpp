@@ -23,7 +23,7 @@ public:
 
     VscConverterStationAdder& setReactivePowerSetpoint(double reactivePowerSetpoint);
 
-    VscConverterStationAdder& setRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal);
+    VscConverterStationAdder& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
 
     VscConverterStationAdder& setVoltageRegulatorOn(bool voltageRegulatorOn);
 

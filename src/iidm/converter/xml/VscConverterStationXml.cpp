@@ -81,7 +81,9 @@ void VscConverterStationXml::writeSubElements(const VscConverterStation& convert
     ReactiveLimitsXml::getInstance().write(converterStation, context);
     IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(!stdcxx::areSame(converterStation, converterStation.getRegulatingTerminal().getConnectable().get()),
         VSC_CONVERTER_STATION, REGULATING_TERMINAL, ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED,
-        IidmXmlVersion::V1_6(), context, [&converterStation, &context]() { TerminalRefXml::writeTerminalRef(converterStation.getRegulatingTerminal(), context, REGULATING_TERMINAL); });
+        IidmXmlVersion::V1_6(), context, [&converterStation, &context]() {
+            TerminalRefXml::writeTerminalRef(converterStation.getRegulatingTerminal(), context, REGULATING_TERMINAL);
+        });
 }
 
 }  // namespace xml

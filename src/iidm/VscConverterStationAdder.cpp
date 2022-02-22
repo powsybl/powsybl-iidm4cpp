@@ -21,9 +21,10 @@ VscConverterStationAdder::VscConverterStationAdder(VoltageLevel& voltageLevel) :
 }
 
 VscConverterStation& VscConverterStationAdder::add() {
+    auto terminalPtr = checkAndGetTerminal();
+
     validate();
 
-    auto terminalPtr = checkAndGetTerminal();
     Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *terminalPtr;
     std::unique_ptr<VscConverterStation> ptrVsc = stdcxx::make_unique<VscConverterStation>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), getLossFactor(), *m_voltageRegulatorOn, m_reactivePowerSetpoint, m_voltageSetpoint, regulatingTerminal);
     auto& vsc = getNetwork().checkAndAdd<VscConverterStation>(std::move(ptrVsc));
@@ -45,8 +46,8 @@ VscConverterStationAdder& VscConverterStationAdder::setReactivePowerSetpoint(dou
     return *this;
 }
 
-VscConverterStationAdder& VscConverterStationAdder::setRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal) {
-    m_regulatingTerminal = terminal;
+VscConverterStationAdder& VscConverterStationAdder::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
+    m_regulatingTerminal = regulatingTerminal;
     return *this;
 }
 
