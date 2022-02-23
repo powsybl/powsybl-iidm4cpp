@@ -21,12 +21,15 @@ VscConverterStationAdder::VscConverterStationAdder(VoltageLevel& voltageLevel) :
 }
 
 VscConverterStation& VscConverterStationAdder::add() {
+    auto terminalPtr = checkAndGetTerminal();
+
     validate();
 
-    std::unique_ptr<VscConverterStation> ptrVsc = stdcxx::make_unique<VscConverterStation>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), getLossFactor(), *m_voltageRegulatorOn, m_reactivePowerSetpoint, m_voltageSetpoint);
+    Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *terminalPtr;
+    std::unique_ptr<VscConverterStation> ptrVsc = stdcxx::make_unique<VscConverterStation>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), getLossFactor(), *m_voltageRegulatorOn, m_reactivePowerSetpoint, m_voltageSetpoint, regulatingTerminal);
     auto& vsc = getNetwork().checkAndAdd<VscConverterStation>(std::move(ptrVsc));
 
-    Terminal& terminal = vsc.addTerminal(checkAndGetTerminal());
+    Terminal& terminal = vsc.addTerminal(std::move(terminalPtr));
     getVoltageLevel().attach(terminal, false);
 
     return vsc;
@@ -40,6 +43,11 @@ const std::string& VscConverterStationAdder::getTypeDescription() const {
 
 VscConverterStationAdder& VscConverterStationAdder::setReactivePowerSetpoint(double reactivePowerSetpoint) {
     m_reactivePowerSetpoint = reactivePowerSetpoint;
+    return *this;
+}
+
+VscConverterStationAdder& VscConverterStationAdder::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
+    m_regulatingTerminal = regulatingTerminal;
     return *this;
 }
 
@@ -57,6 +65,7 @@ void VscConverterStationAdder::validate() const {
     HvdcConverterStationAdder::validate();
     checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set");
     checkVoltageControl(*this, *m_voltageRegulatorOn, m_voltageSetpoint, m_reactivePowerSetpoint);
+    checkRegulatingTerminal(*this, m_regulatingTerminal, getNetwork());
 }
 
 }  // namespace iidm
