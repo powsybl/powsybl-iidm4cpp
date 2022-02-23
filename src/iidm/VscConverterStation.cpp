@@ -15,11 +15,12 @@ namespace powsybl {
 
 namespace iidm {
 
-VscConverterStation::VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint) :
+VscConverterStation::VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint, Terminal& regulatingTerminal) :
     HvdcConverterStation(id, name, fictitious, lossFactor),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
-    m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint) {
+    m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),
+    m_regulatingTerminal(regulatingTerminal) {
     checkVoltageControl(*this, voltageRegulatorOn, voltageSetpoint, reactivePowerSetpoint);
 }
 
@@ -55,6 +56,14 @@ double VscConverterStation::getReactivePowerSetpoint() const {
     return m_reactivePowerSetpoint.at(getNetwork().getVariantIndex());
 }
 
+const Terminal& VscConverterStation::getRegulatingTerminal() const {
+    return m_regulatingTerminal.get();
+}
+
+Terminal& VscConverterStation::getRegulatingTerminal() {
+    return m_regulatingTerminal.get();
+}
+
 double VscConverterStation::getVoltageSetpoint() const {
     return m_voltageSetpoint.at(getNetwork().getVariantIndex());
 }
@@ -78,6 +87,12 @@ VscConverterStation& VscConverterStation::setLossFactor(double lossFactor) {
 VscConverterStation& VscConverterStation::setReactivePowerSetpoint(double reactivePowerSetpoint) {
     checkVoltageControl(*this, isVoltageRegulatorOn(), getVoltageSetpoint(), reactivePowerSetpoint);
     m_reactivePowerSetpoint[getNetwork().getVariantIndex()] = reactivePowerSetpoint;
+    return *this;
+}
+
+VscConverterStation& VscConverterStation::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
+    checkRegulatingTerminal(*this, regulatingTerminal, getNetwork());
+    m_regulatingTerminal = regulatingTerminal ? regulatingTerminal : getTerminal();
     return *this;
 }
 

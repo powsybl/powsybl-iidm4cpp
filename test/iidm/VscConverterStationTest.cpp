@@ -59,9 +59,15 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'VscConverterStation' with the id 'VSC1'");
     adder.setEnsureIdUnicity(true);
 
+    Terminal& regulatingTerminal = network.getLccConverterStation("LCC1").getTerminal();
+    adder.setRegulatingTerminal(stdcxx::ref(regulatingTerminal));
+
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(vscCount + 1, network.getVscConverterStationCount());
     BOOST_CHECK_EQUAL(hvdcCount + 1, network.getHvdcConverterStationCount());
+
+    VscConverterStation& vsc = network.getVscConverterStation("VSC1#0");
+    BOOST_CHECK(stdcxx::areSame(vsc.getRegulatingTerminal(), regulatingTerminal));
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {
@@ -126,6 +132,16 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK(vsc.isFictitious());
     vsc.setFictitious(false);
     BOOST_CHECK(!vsc.isFictitious());
+
+    Network network2 = createHvdcConverterStationTestNetwork();
+    VscConverterStation& vsc2 = network2.getVscConverterStation("VSC1");
+    POWSYBL_ASSERT_THROW(vsc2.setRegulatingTerminal(stdcxx::ref(network.getLccConverterStation("LCC1").getTerminal())), ValidationException, "vscConverterStation 'VSC1': Regulating terminal is not part of the network");
+
+    vsc.setRegulatingTerminal(stdcxx::ref(network.getLccConverterStation("LCC1").getTerminal()));
+    BOOST_CHECK(stdcxx::areSame(network.getLccConverterStation("LCC1").getTerminal(), vsc.getRegulatingTerminal()));
+
+    vsc.setRegulatingTerminal(stdcxx::ref<Terminal>());
+    BOOST_CHECK(stdcxx::areSame(vsc.getTerminal(), vsc.getRegulatingTerminal()));
 
     vsc.remove();
     POWSYBL_ASSERT_THROW(network.getVscConverterStation("VSC1"), PowsyblException, "Unable to find to the identifiable 'VSC1'");
