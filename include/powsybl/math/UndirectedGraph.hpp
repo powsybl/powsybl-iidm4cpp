@@ -94,7 +94,7 @@ public:
 
     bool traverse(unsigned long v, const Traverser& traverser) const;
 
-    bool traverse(stdcxx::const_range<unsigned long>& startingVertices, const Traverser& traverser) const;
+    bool traverse(const stdcxx::const_range<unsigned long>& startingVertices, const Traverser& traverser) const;
 
     bool traverse(unsigned long v, const Traverser& traverser, std::vector<bool>& encountered) const;
 

@@ -425,14 +425,12 @@ bool UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser
 }
 
 template <typename V, typename E>
-bool UndirectedGraph<V, E>::traverse(stdcxx::const_range<unsigned long>& startingVertices, const Traverser& traverser) const {
+bool UndirectedGraph<V, E>::traverse(const stdcxx::const_range<unsigned long>& startingVertices, const Traverser& traverser) const {
     std::vector<bool> encountered(m_vertices.size(), false);
 
     for (unsigned long startingVertex : startingVertices) {
-        if (!encountered[startingVertex]) {
-            if (!traverse(startingVertex, traverser, encountered)) {
-                return false;
-            }
+        if (!encountered[startingVertex] && !traverse(startingVertex, traverser, encountered)) {
+            return false;
         }
     }
     return true;
