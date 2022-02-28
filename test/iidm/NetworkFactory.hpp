@@ -25,6 +25,8 @@ Network createNetwork();
 
 Network createNetworkTest1();
 
+Network createSwitchBBKNetwork();
+
 Terminal& getTerminalFromNetwork2();
 
 Network createDanglingLineNetwork();

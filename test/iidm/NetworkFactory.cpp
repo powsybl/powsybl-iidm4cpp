@@ -9,6 +9,8 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
+#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
@@ -197,6 +199,201 @@ Network createNetworkTest1() {
         .setNode1(6)
         .setNode2(voltageLevel1BusbarSection2.getTerminal().getNodeBreakerView().getNode())
         .add();
+    return network;
+}
+
+Network createSwitchBBKNetwork() {
+    Network network("test", "test");
+    Substation& substation = network.newSubstation()
+        .setId("S1")
+        .setName("S1_NAME")
+        .setCountry(Country::FR)
+        .setTso("TSO")
+        .add();
+
+    VoltageLevel& vl1 = substation.newVoltageLevel()
+        .setId("VL1")
+        .setName("VL1_NAME")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(380.0)
+        .setLowVoltageLimit(340.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    Bus& vl1Bus1 = vl1.getBusBreakerView().newBus()
+        .setId("VL1_BUS1")
+        .add();
+
+    VoltageLevel& vl2 = substation.newVoltageLevel()
+        .setId("VL2")
+        .setName("VL2_NAME")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(225.0)
+        .setLowVoltageLimit(200.0)
+        .setHighVoltageLimit(260.0)
+        .add();
+
+    Bus& vl2Bus1 = vl2.getBusBreakerView().newBus()
+        .setId("VL2_BUS1")
+        .add();
+
+    substation.newTwoWindingsTransformer()
+        .setId("2WT_VL1_VL2")
+        .setVoltageLevel1(vl1.getId())
+        .setBus1(vl1Bus1.getId())
+        .setConnectableBus1(vl1Bus1.getId())
+        .setVoltageLevel2(vl2.getId())
+        .setBus2(vl2Bus1.getId())
+        .setConnectableBus2(vl2Bus1.getId())
+        .setR(3.0)
+        .setX(33.0)
+        .setG(1.0)
+        .setB(0.2)
+        .setRatedU1(2.0)
+        .setRatedU2(0.4)
+        .add();
+
+    Substation& substation2 = network.newSubstation()
+        .setId("S2")
+        .setName("S2_NAME")
+        .setCountry(Country::ES)
+        .setTso("TSO2")
+        .add();
+
+    VoltageLevel& vl3 = substation2.newVoltageLevel()
+        .setId("VL3")
+        .setName("VL3_NAME")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(380.0)
+        .setLowVoltageLimit(340.0)
+        .setHighVoltageLimit(420.0)
+        .add();
+
+    Bus& vl3Bus1 = vl3.getBusBreakerView().newBus()
+        .setId("VL3_BUS1")
+        .add();
+
+    vl3.newLoad()
+        .setId("LOAD1")
+        .setBus(vl3Bus1.getId())
+        .setConnectableBus(vl3Bus1.getId())
+        .setP0(600.0)
+        .setQ0(200.0)
+        .add();
+
+    Bus& vl3Bus2 = vl3.getBusBreakerView().newBus()
+        .setId("VL3_BUS2")
+        .add();
+
+    vl3.newLoad()
+        .setId("LOAD2")
+        .setBus(vl3Bus2.getId())
+        .setConnectableBus(vl3Bus2.getId())
+        .setP0(500.0)
+        .setQ0(100.0)
+        .add();
+
+    Bus& vl3Bus3 = vl3.getBusBreakerView().newBus()
+        .setId("VL3_BUS3")
+        .add();
+
+    vl3.getBusBreakerView().newSwitch()
+        .setId("SW1")
+        .setName("SW1_NAME")
+        .setBus1(vl3Bus1.getId())
+        .setBus2(vl3Bus2.getId())
+        .add();
+
+    vl3.getBusBreakerView().newSwitch()
+        .setId("SW2")
+        .setName("SW2_NAME")
+        .setBus1(vl3Bus2.getId())
+        .setBus2(vl3Bus3.getId())
+        .add();
+
+    VoltageLevel& vl4 = substation2.newVoltageLevel()
+        .setId("VL4")
+        .setName("VL4_NAME")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(225.0)
+        .setLowVoltageLimit(200.0)
+        .setHighVoltageLimit(260.0)
+        .add();
+
+    Bus& vl4Bus1 = vl4.getBusBreakerView().newBus()
+        .setId("VL4_BUS1")
+        .add();
+
+    network.newLine()
+        .setId("VL2_VL4")
+        .setVoltageLevel1(vl2.getId())
+        .setBus1(vl2Bus1.getId())
+        .setConnectableBus1(vl2Bus1.getId())
+        .setVoltageLevel2(vl4.getId())
+        .setBus2(vl4Bus1.getId())
+        .setConnectableBus2(vl4Bus1.getId())
+        .setR(3.0)
+        .setX(33.0)
+        .setG1(1.0)
+        .setB1(0.2)
+        .setG2(2.0)
+        .setB2(0.4)
+    .add();
+
+    network.newTieLine()
+        .setId("TL_VL1_VL3")
+        .setVoltageLevel1(vl1.getId())
+        .setBus1(vl1Bus1.getId())
+        .setConnectableBus1(vl1Bus1.getId())
+        .setVoltageLevel2(vl3.getId())
+        .setBus2(vl3Bus1.getId())
+        .setConnectableBus2(vl3Bus1.getId())
+        .setUcteXnodeCode("UcteXnodeCode")
+        .newHalfLine1()
+            .setId("H1_TL_VL1_VL3")
+            .setR(6.0)
+            .setX(66.0)
+            .setG1(0.2)
+            .setB1(0.4)
+            .setG2(0.3)
+            .setB2(0.5)
+        .add()
+        .newHalfLine2()
+            .setId("H2_TL_VL1_VL3")
+            .setR(7.0)
+            .setX(77.0)
+            .setG1(0.6)
+            .setB1(0.7)
+            .setG2(0.9)
+            .setB2(1.2)
+            .add()
+        .add();
+
+    network.newSubstation()
+        .setId("S3")
+        .setName("S3_NAME")
+        .setCountry(Country::FR)
+        .setTso("TSO")
+        .add();
+
+    network.newSubstation()
+        .setId("S4")
+        .add();
+
+    vl1.newDanglingLine()
+        .setId("DL1")
+        .setName("DL1_NAME")
+        .setBus(vl1Bus1.getId())
+        .setConnectableBus(vl1Bus1.getId())
+        .setB(1.0)
+        .setG(2.0)
+        .setP0(3.0)
+        .setQ0(4.0)
+        .setR(5.0)
+        .setX(6.0)
+        .setUcteXnodeCode("ucteXnodeCodeTest")
+        .add();
+
     return network;
 }
 
