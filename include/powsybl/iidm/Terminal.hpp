@@ -88,7 +88,7 @@ public:
 
     virtual void traverse(voltage_level::TopologyTraverser& traverser) = 0;
 
-    virtual void traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) = 0;
+    virtual bool traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) = 0;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

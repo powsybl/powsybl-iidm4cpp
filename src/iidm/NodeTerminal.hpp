@@ -48,7 +48,7 @@ public: // Terminal
 
     void traverse(voltage_level::TopologyTraverser& traverser) override;
 
-    void traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) override;
+    bool traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) override;
 
 public:
     NodeTerminal(VoltageLevel& voltageLevel, unsigned long node);

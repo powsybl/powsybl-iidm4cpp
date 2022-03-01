@@ -50,7 +50,7 @@ public: // Terminal
 
     void traverse(voltage_level::TopologyTraverser& traverser) override;
 
-    void traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) override;
+    bool traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) override;
 
 public:
     BusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);

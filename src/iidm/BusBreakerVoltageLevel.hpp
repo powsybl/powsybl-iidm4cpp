@@ -68,7 +68,7 @@ public:
 
     void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser) const;
 
-    void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
+    bool traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -90,6 +90,9 @@ private: // VoltageLevel
     NodeBreakerView& getNodeBreakerView() override;
 
     void removeTopology() override;
+
+private:
+    static math::TraverseResult getTraverserResult(TerminalSet& visitedTerminals, BusTerminal& terminal, TopologyTraverser& traverser);
 
 private:
     void checkTerminal(Terminal& terminal) const;

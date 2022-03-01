@@ -139,8 +139,8 @@ void NodeTerminal::traverse(voltage_level::TopologyTraverser& traverser) {
     dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser);
 }
 
-void NodeTerminal::traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) {
-    dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser, traversedTerminals);
+bool NodeTerminal::traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) {
+    return dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser, traversedTerminals);
 }
 
 }  // namespace iidm

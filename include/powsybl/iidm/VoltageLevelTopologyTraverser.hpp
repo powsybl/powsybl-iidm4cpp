@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_VOLTAGELEVELTOPOLOGYTRAVERSER_HPP
 #define POWSYBL_IIDM_VOLTAGELEVELTOPOLOGYTRAVERSER_HPP
 
+#include <powsybl/math/TraverseResult.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -31,9 +33,9 @@ public:
 
     TopologyTraverser& operator=(TopologyTraverser&&) noexcept = default;
 
-    virtual bool traverse(Terminal& terminal, bool connected) = 0;
+    virtual math::TraverseResult traverse(Terminal& terminal, bool connected) = 0;
 
-    virtual bool traverse(Switch& aSwitch) = 0;
+    virtual math::TraverseResult traverse(Switch& aSwitch) = 0;
 };
 
 }  // namespace voltage_level

@@ -116,10 +116,9 @@ void BusTerminal::traverse(voltage_level::TopologyTraverser& traverser) {
     dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser);
 }
 
-void BusTerminal::traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) {
-    dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser, traversedTerminals);
+bool BusTerminal::traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) {
+    return dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser, traversedTerminals);
 }
-
 
 std::ostream& operator<<(std::ostream& stream, const BusTerminal& busTerminal) {
     stream << stdcxx::simpleClassName(busTerminal) << "[" << busTerminal.getConnectableBusId() << "]";
