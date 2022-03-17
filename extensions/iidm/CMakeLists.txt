@@ -11,6 +11,9 @@ set(EXT_SOURCES
     src/ActivePowerControl.cpp
     src/ActivePowerControlAdder.cpp
     src/ActivePowerControlXmlSerializer.cpp
+    src/BranchObservability.cpp
+    src/BranchObservabilityAdder.cpp
+    src/BranchObservabilityXmlSerializer.cpp
     src/CoordinatedReactiveControl.cpp
     src/CoordinatedReactiveControlAdder.cpp
     src/CoordinatedReactiveControlXmlSerializer.cpp
@@ -53,6 +56,7 @@ set(EXT_SOURCES
 
 set(UNIT_TEST_SOURCES
     test/ActivePowerControlTest.cpp
+    test/BranchObservabilityTest.cpp
     test/CoordinatedReactiveControlTest.cpp
     test/DiscreteMeasurementsTest.cpp
     test/HvdcAngleDroopActivePowerControlTest.cpp

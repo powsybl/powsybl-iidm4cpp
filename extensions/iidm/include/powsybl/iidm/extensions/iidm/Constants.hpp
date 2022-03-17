@@ -26,6 +26,7 @@ static const char* const QUALITY_P = "qualityP";
 static const char* const QUALITY_Q = "qualityQ";
 static const char* const QUALITY_V = "qualityV";
 static const char* const REDUNDANT = "redundant";
+static const char* const SIDE = "side";
 static const char* const STANDARD_DEVIATION = "standardDeviation";
 static const char* const TAP_CHANGER = "tapChanger";
 static const char* const TYPE = "type";
