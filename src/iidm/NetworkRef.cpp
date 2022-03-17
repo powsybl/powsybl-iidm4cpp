@@ -18,6 +18,10 @@ NetworkRef::NetworkRef(Network& network) :
     m_pointer(&network) {
 }
 
+NetworkRef::operator bool() const noexcept {
+    return m_pointer != nullptr;
+}
+
 const Network& NetworkRef::get() const {
     if (m_pointer == nullptr) {
         throw AssertionError("m_pointer is null");

@@ -53,9 +53,9 @@ public:
 
     Side getSide(const Terminal& terminal) const;
 
-    const Substation& getSubstation() const;
+    stdcxx::CReference<Substation> getSubstation() const;
 
-    Substation& getSubstation();
+    stdcxx::Reference<Substation> getSubstation();
 
     const Terminal& getTerminal(const Side& side) const;
 

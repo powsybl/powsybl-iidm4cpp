@@ -34,6 +34,7 @@ static const char* const RATIO_TAP_CHANGER_1_STATUS = "ratioTapChanger1Status";
 static const char* const RATIO_TAP_CHANGER_2_STATUS = "ratioTapChanger2Status";
 static const char* const RATIO_TAP_CHANGER_3_STATUS = "ratioTapChanger3Status";
 static const char* const REDUNDANT = "redundant";
+static const char* const SIDE = "side";
 static const char* const STANDARD_DEVIATION = "standardDeviation";
 static const char* const TAP_CHANGER = "tapChanger";
 static const char* const TYPE = "type";
