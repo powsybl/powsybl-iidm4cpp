@@ -19,7 +19,9 @@
 #include <powsybl/iidm/extensions/iidm/InjectionObservabilityXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/MeasurementsXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerToBeEstimatedXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerToBeEstimatedXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/VoltagePerReactivePowerControlXmlSerializer.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
@@ -42,7 +44,9 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     serializers.emplace_back(stdcxx::make_unique<InjectionObservabilityXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<MeasurementsXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<ThreeWindingsTransformerPhaseAngleClockXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<ThreeWindingsTransformerToBeEstimatedXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<TwoWindingsTransformerPhaseAngleClockXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<TwoWindingsTransformerToBeEstimatedXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<VoltagePerReactivePowerControlXmlSerializer>());
 
     return serializers;

@@ -46,9 +46,15 @@ set(EXT_SOURCES
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
     src/ThreeWindingsTransformerPhaseAngleClockAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.cpp
+    src/ThreeWindingsTransformerToBeEstimated.cpp
+    src/ThreeWindingsTransformerToBeEstimatedAdder.cpp
+    src/ThreeWindingsTransformerToBeEstimatedXmlSerializer.cpp
     src/TwoWindingsTransformerPhaseAngleClock.cpp
     src/TwoWindingsTransformerPhaseAngleClockAdder.cpp
     src/TwoWindingsTransformerPhaseAngleClockXmlSerializer.cpp
+    src/TwoWindingsTransformerToBeEstimated.cpp
+    src/TwoWindingsTransformerToBeEstimatedAdder.cpp
+    src/TwoWindingsTransformerToBeEstimatedXmlSerializer.cpp
     src/VoltagePerReactivePowerControl.cpp
     src/VoltagePerReactivePowerControlAdder.cpp
     src/VoltagePerReactivePowerControlXmlSerializer.cpp
@@ -66,7 +72,9 @@ set(UNIT_TEST_SOURCES
     test/MeasurementsTest.cpp
     test/RemoteReactivePowerControlTest.cpp
     test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
+    test/ThreeWindingsTransformerToBeEstimatedTest.cpp
     test/TwoWindingsTransformerPhaseAngleClockTest.cpp
+    test/TwoWindingsTransformerToBeEstimatedTest.cpp
     test/VoltagePerReactivePowerControlTest.cpp
 )
 
