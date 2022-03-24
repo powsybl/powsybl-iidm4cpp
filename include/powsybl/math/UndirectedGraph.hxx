@@ -75,7 +75,7 @@ void UndirectedGraph<V, E>::addVertexIfNotPresent(unsigned long v) {
             m_availableVertices.erase(it);
         }
     } else {
-        for (unsigned int i = m_vertices.size(); i < v; ++i) {
+        for (auto i = m_vertices.size(); i < v; ++i) {
             m_availableVertices.insert(i);
         }
         m_vertices.resize(v + 1);
