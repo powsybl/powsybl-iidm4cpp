@@ -210,13 +210,13 @@ stdcxx::const_range<unsigned long> NodeBreakerViewImpl::getNodes() const {
 }
 
 stdcxx::const_range<unsigned long> NodeBreakerViewImpl::getNodesInternalConnectedTo(unsigned long node) const {
-    const auto& isNull = [this](unsigned long edge) {
+    const auto& isNull = [this](const unsigned long& edge) {
         return !static_cast<bool>(m_voltageLevel.getGraph().getEdgeObject(edge));
     };
 
-    const auto& mapper = [this, node](unsigned long edge) {
+    const auto& mapper = [this, node](const unsigned long& edge) -> const unsigned long& {
         unsigned long vertex1 = m_voltageLevel.getGraph().getEdgeVertex1(edge);
-        return vertex1 != node ? vertex1 : m_voltageLevel.getGraph().getEdgeVertex2(edge);
+        return vertex1 != node ? m_voltageLevel.getGraph().getEdgeVertex1(edge) : m_voltageLevel.getGraph().getEdgeVertex2(edge);
     };
 
     return m_voltageLevel.getGraph().getEdgeConnectedToVertex(node) | boost::adaptors::filtered(isNull) | boost::adaptors::transformed(mapper);
@@ -285,7 +285,7 @@ stdcxx::range<Switch> NodeBreakerViewImpl::getSwitches(unsigned long node) {
         return static_cast<bool>(sw);
     };
 
-    const auto& deref = [](const stdcxx::Reference<Switch>& sw) -> const Switch& {
+    const auto& deref = [](const stdcxx::Reference<Switch>& sw) -> Switch& {
         return sw.get();
     };
 

@@ -218,7 +218,7 @@ const stdcxx::Reference<E>& UndirectedGraph<V, E>::getEdgeObject(unsigned long e
 
 template <typename V, typename E>
 typename UndirectedGraph<V, E>::template const_range<E> UndirectedGraph<V, E>::getEdgeObjectsConnectedToVertex(unsigned long vertex) const {
-    const auto& edgeMapper = [this](const unsigned long& e) {
+    const auto& edgeMapper = [this](const unsigned long& e) -> const stdcxx::Reference<E>& {
         return getEdgeObject(e);
     };
 
@@ -232,7 +232,7 @@ const std::vector<unsigned long>& UndirectedGraph<V, E>::getEdgeConnectedToVerte
 }
 
 template <typename V, typename E>
-std::vector<unsigned long> UndirectedGraph<V, E>::getEdgesConnectedToVertex(unsigned long vertex) const {
+const std::vector<unsigned long>& UndirectedGraph<V, E>::getEdgesConnectedToVertex(unsigned long vertex) const {
     return getEdgeConnectedToVertex(vertex);
 }
 
@@ -276,13 +276,13 @@ typename UndirectedGraph<V, E>::template const_range<E> UndirectedGraph<V, E>::g
 }
 
 template <typename V, typename E>
-unsigned long UndirectedGraph<V, E>::getEdgeVertex1(unsigned long edge) const {
+const unsigned long& UndirectedGraph<V, E>::getEdgeVertex1(unsigned long edge) const {
     checkEdge(edge);
     return m_edges[edge]->getVertex1();
 }
 
 template <typename V, typename E>
-unsigned long UndirectedGraph<V, E>::getEdgeVertex2(unsigned long edge) const {
+const unsigned long& UndirectedGraph<V, E>::getEdgeVertex2(unsigned long edge) const {
     checkEdge(edge);
     return m_edges[edge]->getVertex2();
 }
@@ -302,13 +302,13 @@ unsigned long UndirectedGraph<V, E>::getMaxVertex() const {
 }
 
 template <typename V, typename E>
-unsigned long UndirectedGraph<V, E>::getVertex1(unsigned long e) const {
+const unsigned long& UndirectedGraph<V, E>::getVertex1(unsigned long e) const {
     checkEdge(e);
     return m_edges.at(e).get()->getVertex1();
 }
 
 template <typename V, typename E>
-unsigned long UndirectedGraph<V, E>::getVertex2(unsigned long e) const {
+const unsigned long& UndirectedGraph<V, E>::getVertex2(unsigned long e) const {
     checkEdge(e);
     return m_edges.at(e).get()->getVertex2();
 }
@@ -506,12 +506,12 @@ const stdcxx::Reference<E>& UndirectedGraph<V, E>::Edge::map(const typename Undi
 }
 
 template <typename V, typename E>
-unsigned long UndirectedGraph<V, E>::Edge::getVertex1() const {
+const unsigned long& UndirectedGraph<V, E>::Edge::getVertex1() const {
     return m_vertex1;
 }
 
 template <typename V, typename E>
-unsigned long UndirectedGraph<V, E>::Edge::getVertex2() const {
+const unsigned long& UndirectedGraph<V, E>::Edge::getVertex2() const {
     return m_vertex2;
 }
 

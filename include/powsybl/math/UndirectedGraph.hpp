@@ -58,7 +58,7 @@ public:
 
     const std::vector<unsigned long>& getEdgeConnectedToVertex(unsigned long vertex) const;
 
-    std::vector<unsigned long> getEdgesConnectedToVertex(unsigned long vertex) const;
+    const std::vector<unsigned long>& getEdgesConnectedToVertex(unsigned long vertex) const;
 
     const_range<E> getEdgeObjects() const;
 
@@ -66,17 +66,17 @@ public:
 
     const_range<E> getEdgeObjects(unsigned long v1, unsigned long v2) const;
 
-    unsigned long getEdgeVertex1(unsigned long edge) const;
+    const unsigned long& getEdgeVertex1(unsigned long edge) const;
 
-    unsigned long getEdgeVertex2(unsigned long edge) const;
+    const unsigned long& getEdgeVertex2(unsigned long edge) const;
 
     const_range<unsigned long> getEdges() const;
 
     unsigned long getMaxVertex() const;
 
-    unsigned long getVertex1(unsigned long e) const;
+    const unsigned long& getVertex1(unsigned long e) const;
 
-    unsigned long getVertex2(unsigned long e) const;
+    const unsigned long& getVertex2(unsigned long e) const;
 
     unsigned long getVertexCapacity() const;
 
@@ -156,9 +156,9 @@ public:
 
     const stdcxx::Reference<E>& getObject() const;
 
-    unsigned long getVertex1() const;
+    const unsigned long& getVertex1() const;
 
-    unsigned long getVertex2() const;
+    const unsigned long& getVertex2() const;
 
     void setObject(const stdcxx::Reference<E>& object);
 

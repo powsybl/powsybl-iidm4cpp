@@ -1503,12 +1503,9 @@ BOOST_AUTO_TEST_CASE(getSwitches) {
         BOOST_CHECK(it != switches.end());
     }
 
-    auto internalConnections = vl.getNodeBreakerView().getNodesInternalConnectedTo(0);
-    const auto& cInternalConnections = cVl.getNodeBreakerView().getNodesInternalConnectedTo(0);
+    const auto& internalConnections = vl.getNodeBreakerView().getNodesInternalConnectedTo(0);
     BOOST_CHECK_EQUAL(3, boost::size(internalConnections));
-    BOOST_CHECK_EQUAL(3, boost::size(cInternalConnections));
-
-    for (const unsigned long expectedNode : {1, 2, 3}) {
+    for (unsigned long expectedNode : {1, 2, 3}) {
         const auto& lookup = [&expectedNode](unsigned long node) {
             return node == expectedNode;
         };
