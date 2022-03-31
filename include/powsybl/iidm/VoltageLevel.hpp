@@ -15,7 +15,6 @@
 #include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
-#include <powsybl/iidm/VoltageLevelTopologyTraverser.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -54,8 +53,6 @@ public:
     using BusView = voltage_level::BusView;
 
     using NodeBreakerView = voltage_level::NodeBreakerView;
-
-    using TopologyTraverser = voltage_level::TopologyTraverser;
 
 public:  // Identifiable
     const Network& getNetwork() const override;

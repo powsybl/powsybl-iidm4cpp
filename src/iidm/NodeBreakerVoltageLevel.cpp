@@ -333,7 +333,7 @@ const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
     return s_topologyKind;
 }
 
-math::TraverseResult NodeBreakerVoltageLevel::getTraverseResult(TerminalSet& visitedTerminals, NodeTerminal& terminal, TopologyTraverser& traverser) {
+math::TraverseResult NodeBreakerVoltageLevel::getTraverseResult(TerminalSet& visitedTerminals, NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) {
     auto pair = visitedTerminals.insert(terminal);
     return pair.second ? traverser.traverse(terminal, true) : math::TraverseResult::TERMINATE_PATH;
 }
@@ -395,12 +395,12 @@ void NodeBreakerVoltageLevel::removeTopology() {
     m_switches.clear();
 }
 
-void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const {
+void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const {
     TerminalSet traversedTerminals;
     traverse(terminal, traverser, traversedTerminals);
 }
 
-bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
+bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
     const math::TraverseResult& termTraverseResult = getTraverseResult(traversedTerminals, terminal, traverser);
     if (termTraverseResult == math::TraverseResult::TERMINATE_TRAVERSER) {
         return false;

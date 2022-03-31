@@ -20,7 +20,7 @@ namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(TerminalTestSuite)
 
-class CustomTopologyTraverser : public VoltageLevel::TopologyTraverser {
+class CustomTopologyTraverser : public Terminal::TopologyTraverser {
 public:  // VoltageLevel::TopologyTraverser
     math::TraverseResult traverse(Terminal& terminal, bool /*connected*/) override {
         m_traversedConnectables.insert(terminal.getConnectable().get().getId());

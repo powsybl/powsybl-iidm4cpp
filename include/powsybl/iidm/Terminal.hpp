@@ -13,9 +13,9 @@
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TerminalSet.hpp>
+#include <powsybl/iidm/TerminalTopologyTraverser.hpp>
 #include <powsybl/iidm/TerminalViews.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
-#include <powsybl/iidm/VoltageLevelTopologyTraverser.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -33,6 +33,8 @@ public:
     using BusView = terminal::BusView;
 
     using NodeBreakerView = terminal::NodeBreakerView;
+
+    using TopologyTraverser = terminal::TopologyTraverser;
 
 public:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
@@ -86,9 +88,9 @@ public:
 
     Terminal& setQ(double q);
 
-    virtual void traverse(voltage_level::TopologyTraverser& traverser) = 0;
+    virtual void traverse(TopologyTraverser& traverser) = 0;
 
-    virtual bool traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) = 0;
+    virtual bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals) = 0;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

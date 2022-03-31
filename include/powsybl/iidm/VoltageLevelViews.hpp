@@ -37,7 +37,7 @@ class BusBreakerView {
 public:
     using SwitchAdder = bus_breaker_view::SwitchAdder;
 
-    using Traverser = std::function<math::TraverseResult(const Bus& bus1, const stdcxx::Reference<Switch>& sw, const Bus& bus2)>;
+    using TopologyTraverser = std::function<math::TraverseResult(const Bus& bus1, const stdcxx::Reference<Switch>& sw, const Bus& bus2)>;
 
 public:
     virtual ~BusBreakerView() noexcept = default;
@@ -80,7 +80,7 @@ public:
 
     virtual void removeSwitch(const std::string& switchId) = 0;
 
-    virtual void traverse(const Bus& bus, Traverser& traverser) = 0;
+    virtual void traverse(const Bus& bus, TopologyTraverser& traverser) = 0;
 };
 
 class BusView {
@@ -108,7 +108,7 @@ public:
 
     using SwitchAdder = node_breaker_view::SwitchAdder;
 
-    using Traverser = std::function<math::TraverseResult(unsigned long node1, const stdcxx::Reference<Switch>& sw, unsigned long node2)>;
+    using TopologyTraverser = std::function<math::TraverseResult(unsigned long node1, const stdcxx::Reference<Switch>& sw, unsigned long node2)>;
 
 public:
     virtual ~NodeBreakerView() noexcept = default;
@@ -177,9 +177,9 @@ public:
 
     virtual void removeSwitch(const std::string& switchId) = 0;
 
-    virtual void traverse(unsigned long node, const Traverser& traverser) const = 0;
+    virtual void traverse(unsigned long node, const TopologyTraverser& traverser) const = 0;
 
-    virtual void traverse(stdcxx::const_range<unsigned long>& nodes, const Traverser& traverser) const = 0;
+    virtual void traverse(stdcxx::const_range<unsigned long>& nodes, const TopologyTraverser& traverser) const = 0;
 };
 
 }  // namespace voltage_level

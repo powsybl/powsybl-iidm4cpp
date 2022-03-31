@@ -46,9 +46,9 @@ public: // Terminal
 
     bool isConnected() const override;
 
-    void traverse(voltage_level::TopologyTraverser& traverser) override;
+    void traverse(TopologyTraverser& traverser) override;
 
-    bool traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) override;
+    bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals) override;
 
 public:
     NodeTerminal(VoltageLevel& voltageLevel, unsigned long node);

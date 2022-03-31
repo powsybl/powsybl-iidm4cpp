@@ -64,9 +64,9 @@ public: // VoltageLevel
 
     void invalidateCache() override;
 
-    void traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const;
+    void traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const;
 
-    bool traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
+    bool traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
 
 public:
     NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
@@ -98,7 +98,7 @@ private:  // VoltageLevel
     void removeTopology() override;
 
 private:
-    static math::TraverseResult getTraverseResult(TerminalSet& visitedTerminals, NodeTerminal& terminal, TopologyTraverser& traverser);
+    static math::TraverseResult getTraverseResult(TerminalSet& visitedTerminals, NodeTerminal& terminal, Terminal::TopologyTraverser& traverser);
 
 private:
     void checkTerminal(Terminal& terminal) const;

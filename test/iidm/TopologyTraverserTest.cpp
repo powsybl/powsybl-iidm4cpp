@@ -43,7 +43,7 @@ using IdPos = std::pair<std::string, int>;
 
 using IdPosSet = std::set<IdPos, std::less<IdPos>>;
 
-class CustomTopologyTraverser : public voltage_level::TopologyTraverser {
+class CustomTopologyTraverser : public Terminal::TopologyTraverser {
 public:
     using SwitchTest = std::function<math::TraverseResult(Switch&)>;
 

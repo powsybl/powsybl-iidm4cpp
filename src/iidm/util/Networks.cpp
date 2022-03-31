@@ -26,7 +26,7 @@ stdcxx::CReference<Terminal> getEquivalentTerminal(const VoltageLevel& voltageLe
 
     stdcxx::CReference<Terminal> equivalentTerminal;
 
-    VoltageLevel::NodeBreakerView::Traverser traverser = [&equivalentTerminal, &voltageLevel](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long node2) {
+    VoltageLevel::NodeBreakerView::TopologyTraverser traverser = [&equivalentTerminal, &voltageLevel](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long node2) {
         if (sw && sw.get().isOpen()) {
             return math::TraverseResult::TERMINATE_PATH;
         }

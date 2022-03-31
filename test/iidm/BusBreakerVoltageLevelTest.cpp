@@ -502,7 +502,7 @@ BOOST_AUTO_TEST_CASE(expandBusBranch) {
     Switch& sw1 = network.getSwitch("SW1");
 
     std::vector<std::reference_wrapper<const Bus>> buses;
-    voltage_level::BusBreakerView::Traverser traverser = [&buses, &sw1](const Bus& /*bus1*/, const stdcxx::Reference<Switch>& sw, const Bus& bus2) {
+    voltage_level::BusBreakerView::TopologyTraverser traverser = [&buses, &sw1](const Bus& /*bus1*/, const stdcxx::Reference<Switch>& sw, const Bus& bus2) {
         if (sw && stdcxx::areSame(sw.get(), sw1)) {
             return math::TraverseResult::TERMINATE_PATH;
         }

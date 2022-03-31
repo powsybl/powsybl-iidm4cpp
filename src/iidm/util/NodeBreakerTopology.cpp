@@ -50,7 +50,7 @@ void removeIsolatedSwitches(voltage_level::NodeBreakerView& topo) {
     stdcxx::const_range<unsigned long> nodesWithTerminal = topo.getNodes() | boost::adaptors::filtered(filter);
 
     std::vector<std::reference_wrapper<Switch>> encounteredSwitches;
-    voltage_level::NodeBreakerView::Traverser traverser = [&encounteredSwitches](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long /*node2*/) {
+    voltage_level::NodeBreakerView::TopologyTraverser traverser = [&encounteredSwitches](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long /*node2*/) {
         encounteredSwitches.emplace_back(std::ref(sw.get())); // the traversing started from a terminal, thus the switch is not isolated
         return math::TraverseResult::CONTINUE; // if n2 has a terminal, we could also choose to stop as it will be or has already been traversed
     };

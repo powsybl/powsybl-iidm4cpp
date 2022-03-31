@@ -112,11 +112,11 @@ BusTerminal& BusTerminal::setConnected(bool connected) {
     return *this;
 }
 
-void BusTerminal::traverse(voltage_level::TopologyTraverser& traverser) {
+void BusTerminal::traverse(TopologyTraverser& traverser) {
     dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser);
 }
 
-bool BusTerminal::traverse(voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) {
+bool BusTerminal::traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals) {
     return dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel()).traverse(*this, traverser, traversedTerminals);
 }
 

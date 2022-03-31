@@ -266,7 +266,7 @@ const TopologyKind& BusBreakerVoltageLevel::getTopologyKind() const {
     return s_topologyKind;
 }
 
-math::TraverseResult BusBreakerVoltageLevel::getTraverserResult(TerminalSet& visitedTerminals, BusTerminal& terminal, TopologyTraverser& traverser) {
+math::TraverseResult BusBreakerVoltageLevel::getTraverserResult(TerminalSet& visitedTerminals, BusTerminal& terminal, Terminal::TopologyTraverser& traverser) {
     auto pair = visitedTerminals.insert(terminal);
     return pair.second ? traverser.traverse(terminal, true) : math::TraverseResult::TERMINATE_PATH;
 }
@@ -366,12 +366,12 @@ void BusBreakerVoltageLevel::removeTopology() {
     removeAllBuses();
 }
 
-void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const {
+void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser) const {
     TerminalSet traversedTerminals;
     traverse(terminal, traverser, traversedTerminals);
 }
 
-bool BusBreakerVoltageLevel::traverse(BusTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
+bool BusBreakerVoltageLevel::traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
     // check if we are allowed to traverse the terminal itself
     math::TraverseResult termTraverseResult = getTraverserResult(traversedTerminals, terminal, traverser);
     if (termTraverseResult == math::TraverseResult::TERMINATE_TRAVERSER) {
