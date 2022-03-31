@@ -8,7 +8,7 @@
 #include <powsybl/iidm/util/NodeBreakerTopology.hpp>
 
 #include <functional>
-#include <vector>
+#include <set>
 
 #include <boost/range/adaptor/filtered.hpp>
 
@@ -49,18 +49,15 @@ void removeIsolatedSwitches(voltage_level::NodeBreakerView& topo) {
     };
     stdcxx::const_range<unsigned long> nodesWithTerminal = topo.getNodes() | boost::adaptors::filtered(filter);
 
-    std::vector<std::reference_wrapper<Switch>> encounteredSwitches;
-    voltage_level::NodeBreakerView::TopologyTraverser traverser = [&encounteredSwitches](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long /*node2*/) {
-        encounteredSwitches.emplace_back(std::ref(sw.get())); // the traversing started from a terminal, thus the switch is not isolated
+    std::set<std::string> encounteredSwitchIds;
+    voltage_level::NodeBreakerView::TopologyTraverser traverser = [&encounteredSwitchIds](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long /*node2*/) {
+        encounteredSwitchIds.emplace(sw.get().getId()); // the traversing started from a terminal, thus the switch is not isolated
         return math::TraverseResult::CONTINUE; // if n2 has a terminal, we could also choose to stop as it will be or has already been traversed
     };
     topo.traverse(nodesWithTerminal, traverser);
 
-    const auto& filterNotEncounteredSwitches = [&encounteredSwitches](const Switch& sw) {
-        auto it = std::find_if(encounteredSwitches.begin(), encounteredSwitches.end(), [&sw](const std::reference_wrapper<Switch>& swInList) {
-            return stdcxx::areSame(sw, swInList.get());
-        });
-        return it == encounteredSwitches.end();
+    const auto& filterNotEncounteredSwitches = [&encounteredSwitchIds](const Switch& sw) {
+        return encounteredSwitchIds.find(sw.getId()) == encounteredSwitchIds.end();
     };
     for (const Switch& sw : topo.getSwitches() | boost::adaptors::filtered(filterNotEncounteredSwitches)) {
         topo.removeSwitch(sw.getId());
