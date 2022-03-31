@@ -267,8 +267,10 @@ const TopologyKind& BusBreakerVoltageLevel::getTopologyKind() const {
 }
 
 math::TraverseResult BusBreakerVoltageLevel::getTraverserResult(TerminalSet& visitedTerminals, BusTerminal& terminal, Terminal::TopologyTraverser& traverser) {
-    auto pair = visitedTerminals.insert(terminal);
-    return pair.second ? traverser.traverse(terminal, true) : math::TraverseResult::TERMINATE_PATH;
+    if (visitedTerminals.insert(terminal).second) {
+        return traverser.traverse(terminal, true);
+    }
+    return math::TraverseResult::TERMINATE_PATH;
 }
 
 stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::string& busId, bool throwException) const {

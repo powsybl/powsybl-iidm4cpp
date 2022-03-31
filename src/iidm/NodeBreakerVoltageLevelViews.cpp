@@ -109,8 +109,8 @@ void BusBreakerViewImpl::removeSwitch(const std::string& /*switchId*/) {
     throw AssertionError("Not implemented");
 }
 
-void BusBreakerViewImpl::traverse(const Bus& /*bus*/, TopologyTraverser& /*traverser*/) {
-    throw AssertionError("Not implemented");
+void BusBreakerViewImpl::traverse(const Bus& /*bus*/, const TopologyTraverser& /*traverser*/) {
+    throw PowsyblException("Not supported in a node/breaker topology");
 }
 
 BusViewImpl::BusViewImpl(NodeBreakerVoltageLevel& voltageLevel) :

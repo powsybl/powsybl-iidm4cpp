@@ -334,8 +334,10 @@ const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
 }
 
 math::TraverseResult NodeBreakerVoltageLevel::getTraverseResult(TerminalSet& visitedTerminals, NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) {
-    auto pair = visitedTerminals.insert(terminal);
-    return pair.second ? traverser.traverse(terminal, true) : math::TraverseResult::TERMINATE_PATH;
+    if (visitedTerminals.insert(terminal).second) {
+        return traverser.traverse(terminal, true);
+    }
+    return math::TraverseResult::TERMINATE_PATH;
 }
 
 void NodeBreakerVoltageLevel::invalidateCache() {

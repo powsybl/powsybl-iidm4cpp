@@ -59,7 +59,7 @@ public: // BusBreakerView
 
     void removeSwitch(const std::string& switchId) override;
 
-    void traverse(const Bus& bus, TopologyTraverser& traverser) override;
+    void traverse(const Bus& bus, const TopologyTraverser& traverser) override;
 
 public:
     explicit BusBreakerViewImpl(BusBreakerVoltageLevel& voltageLevel);

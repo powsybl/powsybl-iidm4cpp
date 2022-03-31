@@ -33,8 +33,9 @@ stdcxx::CReference<Terminal> getEquivalentTerminal(const VoltageLevel& voltageLe
         const auto& terminal = voltageLevel.getNodeBreakerView().getTerminal(node2);
         if (terminal) {
             equivalentTerminal = terminal;
+            return math::TraverseResult::TERMINATE_TRAVERSER;
         }
-        return terminal ? math::TraverseResult::TERMINATE_TRAVERSER : math::TraverseResult::CONTINUE;
+        return math::TraverseResult::CONTINUE;
     };
 
     voltageLevel.getNodeBreakerView().traverse(node, traverser);

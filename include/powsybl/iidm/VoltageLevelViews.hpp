@@ -80,7 +80,7 @@ public:
 
     virtual void removeSwitch(const std::string& switchId) = 0;
 
-    virtual void traverse(const Bus& bus, TopologyTraverser& traverser) = 0;
+    virtual void traverse(const Bus& bus, const TopologyTraverser& traverser) = 0;
 };
 
 class BusView {
