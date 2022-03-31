@@ -14,7 +14,7 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/NodeBreakerTopology.hpp>
 
-#include "../NetworkFactory.hpp"
+#include "NetworkFactory.hpp"
 
 namespace powsybl {
 
