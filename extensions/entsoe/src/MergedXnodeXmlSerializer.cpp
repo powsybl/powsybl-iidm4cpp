@@ -38,8 +38,8 @@ MergedXnodeXmlSerializer::MergedXnodeXmlSerializer() :
             .put(converter::xml::IidmXmlVersion::V1_6(), {"1.0", "1.1"})
             .build(),
         stdcxx::MapBuilder<std::string, std::string>()
-            .put("1.0", "http://www.itesla_project.eu/schema/iidm/ext/voltage_regulation/1_0")
-            .put("1.1", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_1")
+            .put("1.0", "http://www.itesla_project.eu/schema/iidm/ext/merged_xnode/1_0")
+            .put("1.1", "http://www.powsybl.org/schema/iidm/ext/merged_xnode/1_1")
             .build()) {
 }
 
@@ -65,7 +65,12 @@ Extension& MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml
     }
 
     extendable.newExtension<MergedXnodeAdder>().withRdp(rdp).withXdp(xdp).withXnodeP1(xnodeP1).withXnodeQ1(xnodeQ1)
-        .withXnodeP2(xnodeP2).withXnodeQ2(xnodeQ2).withLine1Name(line1Name).withLine2Name(line2Name).withCode(code).add();
+        .withXnodeP2(xnodeP2)
+        .withXnodeQ2(xnodeQ2)
+        .withLine1Name(line1Name)
+        .withLine2Name(line2Name)
+        .withCode(code)
+        .add();
     return extendable.getExtension<MergedXnode>();
 }
 
