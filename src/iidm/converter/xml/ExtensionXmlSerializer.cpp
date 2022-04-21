@@ -46,6 +46,11 @@ const std::string& ExtensionXmlSerializer::getVersion() const {
     return s_version;
 }
 
+stdcxx::const_range<std::string> ExtensionXmlSerializer::getVersions() const {
+    static std::set<std::string> s_versions = {"1.0"};
+    return s_versions;
+}
+
 bool ExtensionXmlSerializer::isSerializable(const Extension& /*extension*/) const {
     return true;
 }
