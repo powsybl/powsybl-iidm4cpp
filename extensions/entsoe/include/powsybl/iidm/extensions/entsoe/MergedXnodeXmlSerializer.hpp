@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_ENTSOE_MERGEDXNODEXMLSERIALIZER_HPP
 #define POWSYBL_IIDM_EXTENSIONS_ENTSOE_MERGEDXNODEXMLSERIALIZER_HPP
 
-#include <powsybl/iidm/converter/xml/AbstractExtensionXmlSerializer.hpp>
+#include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
 
 namespace powsybl {
 
@@ -18,7 +18,9 @@ namespace extensions {
 
 namespace entsoe {
 
-class MergedXnodeXmlSerializer : public converter::xml::AbstractExtensionXmlSerializer {
+class MergedXnode;
+
+class MergedXnodeXmlSerializer : public converter::xml::AbstractVersionableExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
     Extension& read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 
@@ -28,6 +30,9 @@ public:
     MergedXnodeXmlSerializer();
 
     ~MergedXnodeXmlSerializer() noexcept override = default;
+
+private:
+    void writeLinesNames(const MergedXnode& xnode, converter::xml::NetworkXmlWriterContext& context) const;
 };
 
 }  // namespace entsoe

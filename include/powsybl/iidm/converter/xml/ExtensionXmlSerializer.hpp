@@ -15,6 +15,7 @@
 
 #include <powsybl/iidm/Extendable.hpp>
 #include <powsybl/iidm/ExtensionProvider.hpp>
+#include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
 
@@ -94,6 +95,13 @@ public:
      * @return the current version of this serializer
      */
     virtual const std::string& getVersion() const;
+
+    /**
+     * Return all supported versions for the serialization of this extension.
+     *
+     * @return all supported versions for the serialization of this extension.
+     */
+    virtual stdcxx::const_range<std::string> getVersions() const;
 
     /**
      * Return true if the extension is serializable, false else
