@@ -64,7 +64,11 @@ Extension& MergedXnodeXmlSerializer::read(Extendable& extendable, converter::xml
         line2Name = context.getReader().getAttributeValue("line2Name");
     }
 
-    extendable.newExtension<MergedXnodeAdder>().withRdp(rdp).withXdp(xdp).withXnodeP1(xnodeP1).withXnodeQ1(xnodeQ1)
+    extendable.newExtension<MergedXnodeAdder>()
+        .withRdp(rdp)
+        .withXdp(xdp)
+        .withXnodeP1(xnodeP1)
+        .withXnodeQ1(xnodeQ1)
         .withXnodeP2(xnodeP2)
         .withXnodeQ2(xnodeQ2)
         .withLine1Name(line1Name)
