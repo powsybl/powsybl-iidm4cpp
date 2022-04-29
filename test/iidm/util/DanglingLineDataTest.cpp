@@ -53,10 +53,7 @@ Network createDanglingDataNetwork() {
 
 bool dlCompareBoundaryBusVoltage(const DanglingLineData& dlData, double boundaryBusU, double boundaryBusAngle) {
     double tol = 0.00001;
-    if (std::abs(dlData.getBoundaryBusU() - boundaryBusU) > tol || std::abs(stdcxx::toDegrees * dlData.getBoundaryBusTheta() - boundaryBusAngle) > tol) {
-        return false;
-    }
-    return true;
+    return !(std::abs(dlData.getBoundaryBusU() - boundaryBusU) > tol || std::abs(stdcxx::toDegrees * dlData.getBoundaryBusTheta() - boundaryBusAngle) > tol);
 }
 
 BOOST_AUTO_TEST_SUITE(DanglingLineDataTestSuite)

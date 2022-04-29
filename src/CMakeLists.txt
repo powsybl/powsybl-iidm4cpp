@@ -209,6 +209,7 @@ set(IIDM_SOURCES
     iidm/util/Substations.cpp
     iidm/util/SV.cpp
     iidm/util/TerminalFinder.cpp
+    iidm/util/TwtData.cpp
     iidm/util/VoltageLevels.cpp
 
     logging/ConsoleLogger.cpp

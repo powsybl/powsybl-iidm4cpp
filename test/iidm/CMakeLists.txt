@@ -61,6 +61,7 @@ set(UNIT_TEST_SOURCES
     util/DanglingLineDataTest.cpp
     util/SVTest.cpp
     util/TerminalFinderTest.cpp
+    util/TwtDataTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
