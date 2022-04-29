@@ -58,6 +58,7 @@ set(UNIT_TEST_SOURCES
     extensions/LoadDetailTest.cpp
     extensions/SlackTerminalTest.cpp
 
+    util/DanglingLineDataTest.cpp
     util/SVTest.cpp
     util/TerminalFinderTest.cpp
 )

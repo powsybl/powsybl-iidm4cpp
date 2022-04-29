@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/util/DanglingLineData.hpp>
 #include <powsybl/iidm/util/SV.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -26,6 +27,11 @@ Boundary::Boundary(DanglingLine& parent) :
 }
 
 double Boundary::getAngle() const {
+    if (valid(m_parent.getP0(), m_parent.getQ0())) {
+        DanglingLineData danglingLineData(m_parent, true);
+        return stdcxx::toDegrees * danglingLineData.getBoundaryBusTheta();
+    }
+
     const Terminal& t = m_parent.getTerminal();
     const stdcxx::CReference<Bus>& b = t.getBusView().getBus();
     return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideA(m_parent, true);
@@ -40,12 +46,20 @@ Connectable& Boundary::getConnectable() {
 }
 
 double Boundary::getP() const {
+    if (valid(m_parent.getP0(), m_parent.getQ0())) {
+        return -m_parent.getP0();
+    }
+
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
     return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideP(m_parent, true);
 }
 
 double Boundary::getQ() const {
+    if (valid(m_parent.getP0(), m_parent.getQ0())) {
+        return -m_parent.getQ0();
+    }
+
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
     return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideQ(m_parent, true);
@@ -56,6 +70,11 @@ stdcxx::optional<Branch::Side> Boundary::getSide() const {
 }
 
 double Boundary::getV() const {
+    if (valid(m_parent.getP0(), m_parent.getQ0())) {
+        DanglingLineData danglingLineData(m_parent, true);
+        return danglingLineData.getBoundaryBusU();
+    }
+
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
     return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideU(m_parent, true);
@@ -67,6 +86,10 @@ const VoltageLevel& Boundary::getVoltageLevel() const {
 
 VoltageLevel& Boundary::getVoltageLevel() {
     return m_parent.getTerminal().getVoltageLevel();
+}
+
+bool Boundary::valid(double p0, double q0) {
+    return !std::isnan(p0) && !std::isnan(q0);
 }
 
 }  // namespace dangling_line

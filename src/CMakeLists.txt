@@ -200,6 +200,7 @@ set(IIDM_SOURCES
     iidm/util/AbstractHalfLineBoundary.cpp
     iidm/util/ConnectedComponents.cpp
     iidm/util/DanglingLineBoundary.cpp
+    iidm/util/DanglingLineData.cpp
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
@@ -217,6 +218,7 @@ set(IIDM_SOURCES
     logging/LogMessage.cpp
     logging/NoopLogger.cpp
 
+    math/ComplexUtils.cpp
     math/ConnectedComponentsComputationResult.cpp
     math/GraphUtil.cpp
 

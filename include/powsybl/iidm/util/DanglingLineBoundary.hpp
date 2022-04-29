@@ -60,6 +60,9 @@ public:
     Boundary& operator=(Boundary&&) noexcept = delete;
 
 private:
+    static bool valid(double p0, double q0);
+
+private:
     DanglingLine& m_parent;
 };
 
