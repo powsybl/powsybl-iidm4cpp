@@ -125,6 +125,18 @@ stdcxx::range<LccConverterStation> VoltageLevel::getLccConverterStations() {
     return getConnectables<LccConverterStation>();
 }
 
+unsigned long VoltageLevel::getLineCount() const {
+    return getConnectableCount<Line>();
+}
+
+stdcxx::const_range<Line> VoltageLevel::getLines() const {
+    return getConnectables<Line>();
+}
+
+stdcxx::range<Line> VoltageLevel::getLines() {
+    return getConnectables<Line>();
+}
+
 unsigned long VoltageLevel::getLoadCount() const {
     return getConnectableCount<Load>();
 }
@@ -189,6 +201,30 @@ stdcxx::CReference<Substation> VoltageLevel::getSubstation() const {
 
 stdcxx::Reference<Substation> VoltageLevel::getSubstation() {
     return m_substation;
+}
+
+unsigned long VoltageLevel::getThreeWindingsTransformerCount() const {
+    return getConnectableCount<ThreeWindingsTransformer>();
+}
+
+stdcxx::const_range<ThreeWindingsTransformer> VoltageLevel::getThreeWindingsTransformers() const {
+    return getConnectables<ThreeWindingsTransformer>();
+}
+
+stdcxx::range<ThreeWindingsTransformer> VoltageLevel::getThreeWindingsTransformers() {
+    return getConnectables<ThreeWindingsTransformer>();
+}
+
+unsigned long VoltageLevel::getTwoWindingsTransformerCount() const {
+    return getConnectableCount<TwoWindingsTransformer>();
+}
+
+stdcxx::const_range<TwoWindingsTransformer> VoltageLevel::getTwoWindingsTransformers() const {
+    return getConnectables<TwoWindingsTransformer>();
+}
+
+stdcxx::range<TwoWindingsTransformer> VoltageLevel::getTwoWindingsTransformers() {
+    return getConnectables<TwoWindingsTransformer>();
 }
 
 const std::string& VoltageLevel::getTypeDescription() const {
