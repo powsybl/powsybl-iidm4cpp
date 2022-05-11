@@ -31,6 +31,8 @@ set(EXT_SOURCES
     src/HvdcOperatorActivePowerRange.cpp
     src/HvdcOperatorActivePowerRangeAdder.cpp
     src/HvdcOperatorActivePowerRangeXmlSerializer.cpp
+    src/IdentifiableShortCircuit.cpp
+    src/IdentifiableShortCircuitAdder.cpp
     src/Iidm.cpp
     src/InjectionObservability.cpp
     src/InjectionObservabilityAdder.cpp
@@ -71,6 +73,7 @@ set(UNIT_TEST_SOURCES
     test/HvdcAngleDroopActivePowerControlTest.cpp
     test/HvdcOperatorActivePowerRangeTest.cpp
     test/iidm.cpp
+    test/IdentifiableShortCircuitTest.cpp
     test/InjectionObservabilityTest.cpp
     test/MeasurementsTest.cpp
     test/RemoteReactivePowerControlTest.cpp
