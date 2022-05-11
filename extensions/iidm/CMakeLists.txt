@@ -25,6 +25,7 @@ set(EXT_SOURCES
     src/DiscreteMeasurementValidationUtil.cpp
     src/GeneratorShortCircuit.cpp
     src/GeneratorShortCircuitAdder.cpp
+    src/GeneratorShortCircuitXmlSerializer.cpp
     src/HvdcAngleDroopActivePowerControl.cpp
     src/HvdcAngleDroopActivePowerControlAdder.cpp
     src/HvdcAngleDroopActivePowerControlXmlSerializer.cpp

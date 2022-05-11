@@ -16,6 +16,8 @@ namespace extensions {
 
 namespace iidm {
 
+static const char* const DIRECT_SUBTRANS_X = "directSubtransX";
+static const char* const DIRECT_TRANS_X = "directTransX";
 static const char* const DISCRETE_MEASUREMENT = "discreteMeasurement";
 static const char* const DISCRETE_MEASUREMENTS = "discreteMeasurements";
 static const char* const ID = "id";
@@ -36,6 +38,7 @@ static const char* const RATIO_TAP_CHANGER_3_STATUS = "ratioTapChanger3Status";
 static const char* const REDUNDANT = "redundant";
 static const char* const SIDE = "side";
 static const char* const STANDARD_DEVIATION = "standardDeviation";
+static const char* const STEP_UP_TRANSFORMER_X = "stepUpTransformerX";
 static const char* const TAP_CHANGER = "tapChanger";
 static const char* const TYPE = "type";
 static const char* const VALID = "valid";
