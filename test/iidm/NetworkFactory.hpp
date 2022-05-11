@@ -21,6 +21,8 @@ Network createComponentsTestNetworkNB();
 
 Network createHvdcConverterStationTestNetwork();
 
+Network createMixedTopolyKindNetwork();
+
 Network createNetwork();
 
 Terminal& getTerminalFromNetwork2();

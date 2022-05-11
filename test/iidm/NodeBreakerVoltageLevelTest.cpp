@@ -1100,126 +1100,13 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
 }
 
 BOOST_AUTO_TEST_CASE(TerminalTest) {
-    Network network("test", "test");
-
-    Substation& s = network.newSubstation()
-        .setId("S")
-        .setCountry(Country::FR)
-        .add();
-
-    VoltageLevel& vl = s.newVoltageLevel()
-        .setId("VL")
-        .setName("VL_name")
-        .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalV(400.0)
-        .setLowVoltageLimit(380.0)
-        .setHighVoltageLimit(420.0)
-        .add();
-
-    vl.getNodeBreakerView().newBusbarSection()
-        .setId("BBS")
-        .setName("BBS_NAME")
-        .setNode(0)
-        .add();
-
-    vl.getNodeBreakerView().newDisconnector()
-        .setId("SWD1")
-        .setNode1(0)
-        .setNode2(1)
-        .setRetained(false)
-        .setOpen(false)
-        .add();
-
-    vl.getNodeBreakerView().newBreaker()
-        .setId("SWB1")
-        .setNode1(1)
-        .setNode2(99)
-        .setRetained(false)
-        .setOpen(false)
-        .add();
-
-    vl.getNodeBreakerView().newInternalConnection()
-        .setNode1(99)
-        .setNode2(2)
-        .add();
-
-    Load& l1 = vl.newLoad()
-        .setId("LOAD1")
-        .setNode(2)
-        .setName("LOAD1_NAME")
-        .setLoadType(LoadType::UNDEFINED)
-        .setP0(50.0)
-        .setQ0(40.0)
-        .add();
-
-    vl.getNodeBreakerView().newDisconnector()
-        .setId("SWD2")
-        .setNode1(0)
-        .setNode2(3)
-        .setRetained(false)
-        .setOpen(false)
-        .add();
-
-    Load& l2 = vl.newLoad()
-        .setId("LOAD2")
-        .setNode(3)
-        .setName("LOAD2_NAME")
-        .setLoadType(LoadType::UNDEFINED)
-        .setP0(50.0)
-        .setQ0(40.0)
-        .add();
-
-    vl.getNodeBreakerView().newBreaker()
-        .setId("SWB2")
-        .setNode1(3)
-        .setNode2(4)
-        .setRetained(false)
-        .setOpen(false)
-        .add();
-
-    VoltageLevel& vl2 = s.newVoltageLevel()
-        .setId("VL2")
-        .setTopologyKind(TopologyKind::NODE_BREAKER)
-        .setNominalV(400.0)
-        .setLowVoltageLimit(380.0)
-        .setHighVoltageLimit(420.0)
-        .add();
-
-    Line& line = network.newLine()
-        .setId("VL1_VL2")
-        .setVoltageLevel1(vl.getId())
-        .setNode1(4)
-        .setVoltageLevel2(vl2.getId())
-        .setNode2(0)
-        .setR(3.0)
-        .setX(33.0)
-        .setG1(1.0)
-        .setB1(0.2)
-        .setG2(2.0)
-        .setB2(0.4)
-        .add();
-
-    VoltageLevel& vl3 = s.newVoltageLevel()
-        .setId("VL3")
-        .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalV(400.0)
-        .setLowVoltageLimit(380.0)
-        .setHighVoltageLimit(420.0)
-        .add();
-
-    vl3.getBusBreakerView().newBus()
-        .setId("VL3_BUS1")
-        .add();
-
-    Load& l3 = vl3.newLoad()
-        .setId("LOAD3")
-        .setBus("VL3_BUS1")
-        .setConnectableBus("VL3_BUS1")
-        .setName("LOAD3_NAME")
-        .setLoadType(LoadType::UNDEFINED)
-        .setP0(50.0)
-        .setQ0(40.0)
-        .add();
+    Network network = createMixedTopolyKindNetwork();
+    VoltageLevel& vl = network.getVoltageLevel("VL");
+    VoltageLevel& vl3 = network.getVoltageLevel("VL3");
+    Line& line = network.getLine("VL1_VL2");
+    Load& l1 = network.getLoad("LOAD1");
+    Load& l2 = network.getLoad("LOAD2");
+    Load& l3 = network.getLoad("LOAD3");
 
     Terminal& terminal = l1.getTerminal();
     BOOST_TEST(std::isnan(terminal.getV()));
