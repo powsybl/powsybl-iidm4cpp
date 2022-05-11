@@ -21,6 +21,19 @@ namespace iidm {
 
 class Network;
 
+namespace bus_terminal {
+
+class BusBreakerViewImpl;
+
+}  // namespace bus_terminal
+
+namespace node_terminal {
+
+class BusBreakerViewImpl;
+class NodeBreakerViewImpl;
+
+}  // namespace node_terminal
+
 class Connectable : public Identifiable {
 public:  // Identifiable
     const Network& getNetwork() const override;
@@ -53,6 +66,18 @@ protected:
     const Terminal& getTerminal(unsigned long index) const;
 
     Terminal& getTerminal(unsigned long index);
+
+    void move(Terminal& oldTerminal, const std::string& oldConnectionInfo, const std::string& busId, bool connected);
+
+    void move(Terminal& oldTerminal, const std::string& oldConnectionInfo, unsigned long node, const std::string& voltageLevelId);
+
+private:
+    void attachTerminal(Terminal& oldTerminal, const std::string& oldConnectionInfo, VoltageLevel& voltageLevel, std::unique_ptr<Terminal>&& terminal);
+
+    friend class bus_terminal::BusBreakerViewImpl;
+
+    friend class node_terminal::BusBreakerViewImpl;
+    friend class node_terminal::NodeBreakerViewImpl;
 
 private:
     ConnectableType m_connectableType;

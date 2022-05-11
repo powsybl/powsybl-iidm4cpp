@@ -199,6 +199,20 @@ Network createMixedTopolyKindNetwork() {
         .setQ0(40.0)
         .add();
 
+    vl3.getBusBreakerView().newBus()
+        .setId("VL3_BUS2")
+        .add();
+
+    vl3.newLoad()
+        .setId("LOAD4")
+        .setBus("VL3_BUS2")
+        .setConnectableBus("VL3_BUS2")
+        .setName("LOAD4_NAME")
+        .setLoadType(LoadType::UNDEFINED)
+        .setP0(50.0)
+        .setQ0(40.0)
+        .add();
+
     return network;
 }
 

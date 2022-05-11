@@ -75,6 +75,11 @@ BusTerminal::BusView& BusTerminal::getBusView() {
     return m_busView;
 }
 
+const std::string& BusTerminal::getConnectionInfo() const {
+    static std::string s_connectionInfo = stdcxx::format("bus %1%, %2%", getBusBreakerView().getConnectableBus().get().getId(), getBusBreakerView().getBus() ? "connected" : "disconnected");
+    return s_connectionInfo;
+}
+
 const BusTerminal::NodeBreakerView& BusTerminal::getNodeBreakerView() const {
     throw AssertionError("Not implemented");
 }

@@ -44,6 +44,10 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
     return voltageLevel.getCalculatedBusBreakerTopology().getConnectableBus(m_terminal.getNode());
 }
 
+void BusBreakerViewImpl::moveConnectable(const std::string& busId, bool connected) {
+    m_terminal.getConnectable().get().move(m_terminal, m_terminal.getConnectionInfo(), busId, connected);
+}
+
 void BusBreakerViewImpl::setConnectableBus(const std::string& /*busId*/) {
     throw AssertionError("Not implemented");
 }
@@ -82,6 +86,10 @@ NodeBreakerViewImpl::NodeBreakerViewImpl(NodeTerminal& terminal):
 
 unsigned long NodeBreakerViewImpl::getNode() const {
     return m_terminal.getNode();
+}
+
+void NodeBreakerViewImpl::moveConnectable(unsigned long node, const std::string& voltageLevelId) {
+    m_terminal.getConnectable().get().move(m_terminal, m_terminal.getConnectionInfo(), node, voltageLevelId);
 }
 
 }  // namespace node_terminal

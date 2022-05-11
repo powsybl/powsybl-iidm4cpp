@@ -28,6 +28,8 @@ public: // BusBreakerView
 
     stdcxx::Reference<Bus> getConnectableBus() override;
 
+    void moveConnectable(const std::string& busId, bool connected) override;
+
     void setConnectableBus(const std::string& busId) override;
 
 public:
@@ -61,6 +63,8 @@ private:
 class NodeBreakerViewImpl : public terminal::NodeBreakerView {
 public: // NodeBreakerView
     unsigned long getNode() const override;
+
+    void moveConnectable(unsigned long node, const std::string& voltageLevelId) override;
 
 public:
     explicit NodeBreakerViewImpl(NodeTerminal& terminal);

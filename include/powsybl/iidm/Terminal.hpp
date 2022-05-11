@@ -62,6 +62,8 @@ public:
 
     stdcxx::Reference<Connectable> getConnectable();
 
+    virtual const std::string& getConnectionInfo() const = 0;
+
     double getI() const;
 
     virtual const NodeBreakerView& getNodeBreakerView() const = 0;
