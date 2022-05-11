@@ -59,7 +59,7 @@ public:
 
 protected:
     /**
-     * Creates the CoordinatedReactiveControl extension.
+     * Creates the HvdcAngleDroopActivePowerControl extension.
      *
      * @param extendable the extendable
      *
