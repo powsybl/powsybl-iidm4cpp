@@ -34,6 +34,7 @@ set(EXT_SOURCES
     src/HvdcOperatorActivePowerRangeXmlSerializer.cpp
     src/IdentifiableShortCircuit.cpp
     src/IdentifiableShortCircuitAdder.cpp
+    src/IdentifiableShortCircuitXmlSerializer.cpp
     src/Iidm.cpp
     src/InjectionObservability.cpp
     src/InjectionObservabilityAdder.cpp

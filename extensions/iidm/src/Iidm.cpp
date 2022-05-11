@@ -17,6 +17,7 @@
 #include <powsybl/iidm/extensions/iidm/GeneratorShortCircuitXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcOperatorActivePowerRangeXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/IdentifiableShortCircuitXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/InjectionObservabilityXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/MeasurementsXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
@@ -43,6 +44,7 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     serializers.emplace_back(stdcxx::make_unique<GeneratorShortCircuitXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<HvdcAngleDroopActivePowerControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<HvdcOperatorActivePowerRangeXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<IdentifiableShortCircuitXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<InjectionObservabilityXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<MeasurementsXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<ThreeWindingsTransformerPhaseAngleClockXmlSerializer>());
