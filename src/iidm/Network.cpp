@@ -588,6 +588,11 @@ stdcxx::range<TwoWindingsTransformer> Network::getTwoWindingsTransformers() {
     return m_networkIndex.getAll<TwoWindingsTransformer>();
 }
 
+const IdentifiableType& Network::getType() const {
+    static IdentifiableType s_type = IdentifiableType::NETWORK;
+    return s_type;
+}
+
 const std::string& Network::getTypeDescription() const {
     static std::string s_typeDescription = "Network";
 

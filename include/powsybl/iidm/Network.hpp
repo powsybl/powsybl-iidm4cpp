@@ -77,6 +77,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    const IdentifiableType& getType() const override;
+
 public:  // VariantManagerHolder
     unsigned long getVariantIndex() const override;
 

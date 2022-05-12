@@ -38,6 +38,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    const IdentifiableType& getType() const override;
+
 public:
     HvdcLine(Network& network, const std::string& id, const std::string& name, bool fictitious, double r, double nominalV, double maxP,
              const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2);

@@ -56,7 +56,7 @@ stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const 
                 throw PowsyblException(stdcxx::format("The 3 windings transformer '%1%' is not connected to the voltage level '%2%'", id, getId()));
             }
         } else {
-            throw AssertionError(stdcxx::format("Unexpected ConnectableType value: %1%", connectable.get().getType()));
+            throw AssertionError(stdcxx::format("Unexpected IdentifiableType value: %1%", connectable.get().getType()));
         }
     }
 

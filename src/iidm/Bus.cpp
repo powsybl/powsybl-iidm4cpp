@@ -108,23 +108,29 @@ double Bus::getP() const {
     for (const Terminal& terminal : getConnectedTerminals()) {
         const Connectable& connectable = terminal.getConnectable();
         switch (connectable.getType()) {
-            case ConnectableType::BUSBAR_SECTION:
-            case ConnectableType::SHUNT_COMPENSATOR:
-            case ConnectableType::STATIC_VAR_COMPENSATOR:
-            case ConnectableType::LINE:
-            case ConnectableType::TWO_WINDINGS_TRANSFORMER:
-            case ConnectableType::THREE_WINDINGS_TRANSFORMER:
-            case ConnectableType::DANGLING_LINE:
+            case IdentifiableType::BUSBAR_SECTION:
+            case IdentifiableType::SHUNT_COMPENSATOR:
+            case IdentifiableType::STATIC_VAR_COMPENSATOR:
+            case IdentifiableType::LINE:
+            case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
+            case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
+            case IdentifiableType::DANGLING_LINE:
                 // skip
                 break;
-            case ConnectableType::GENERATOR:
-            case ConnectableType::BATTERY:
-            case ConnectableType::LOAD:
-            case ConnectableType::HVDC_CONVERTER_STATION:
+            case IdentifiableType::GENERATOR:
+            case IdentifiableType::BATTERY:
+            case IdentifiableType::LOAD:
+            case IdentifiableType::HVDC_CONVERTER_STATION:
                 if (!std::isnan(terminal.getP())) {
                     p += terminal.getP();
                 }
                 break;
+            case IdentifiableType::NETWORK:
+            case IdentifiableType::SUBSTATION:
+            case IdentifiableType::VOLTAGE_LEVEL:
+            case IdentifiableType::HVDC_LINE:
+            case IdentifiableType::BUS:
+            case IdentifiableType::SWITCH:
             default:
                 throw AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
         }
@@ -140,23 +146,29 @@ double Bus::getQ() const {
     for (const Terminal& terminal : getConnectedTerminals()) {
         const Connectable& connectable = terminal.getConnectable();
         switch (connectable.getType()) {
-            case ConnectableType::BUSBAR_SECTION:
-            case ConnectableType::LINE:
-            case ConnectableType::TWO_WINDINGS_TRANSFORMER:
-            case ConnectableType::THREE_WINDINGS_TRANSFORMER:
-            case ConnectableType::DANGLING_LINE:
+            case IdentifiableType::BUSBAR_SECTION:
+            case IdentifiableType::LINE:
+            case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
+            case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
+            case IdentifiableType::DANGLING_LINE:
                 // skip
                 break;
-            case ConnectableType::GENERATOR:
-            case ConnectableType::BATTERY:
-            case ConnectableType::LOAD:
-            case ConnectableType::SHUNT_COMPENSATOR:
-            case ConnectableType::STATIC_VAR_COMPENSATOR:
-            case ConnectableType::HVDC_CONVERTER_STATION:
+            case IdentifiableType::GENERATOR:
+            case IdentifiableType::BATTERY:
+            case IdentifiableType::LOAD:
+            case IdentifiableType::SHUNT_COMPENSATOR:
+            case IdentifiableType::STATIC_VAR_COMPENSATOR:
+            case IdentifiableType::HVDC_CONVERTER_STATION:
                 if (!std::isnan(terminal.getQ())) {
                     q += terminal.getQ();
                 }
                 break;
+            case IdentifiableType::NETWORK:
+            case IdentifiableType::SUBSTATION:
+            case IdentifiableType::VOLTAGE_LEVEL:
+            case IdentifiableType::HVDC_LINE:
+            case IdentifiableType::BUS:
+            case IdentifiableType::SWITCH:
             default:
                 throw AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
         }
@@ -196,18 +208,23 @@ stdcxx::range<TwoWindingsTransformer> Bus::getTwoWindingsTransformers() {
     return getAll<TwoWindingsTransformer>();
 }
 
-stdcxx::const_range<VscConverterStation> Bus::getVscConverterStations() const {
-    return getAll<VscConverterStation>();
-}
-
-stdcxx::range<VscConverterStation> Bus::getVscConverterStations() {
-    return getAll<VscConverterStation>();
+const IdentifiableType& Bus::getType() const {
+    static IdentifiableType s_type = IdentifiableType::BUS;
+    return s_type;
 }
 
 const std::string& Bus::getTypeDescription() const {
     static std::string s_typeDescription = "Bus";
 
     return s_typeDescription;
+}
+
+stdcxx::const_range<VscConverterStation> Bus::getVscConverterStations() const {
+    return getAll<VscConverterStation>();
+}
+
+stdcxx::range<VscConverterStation> Bus::getVscConverterStations() {
+    return getAll<VscConverterStation>();
 }
 
 bool Bus::isInMainConnectedComponent() const {
