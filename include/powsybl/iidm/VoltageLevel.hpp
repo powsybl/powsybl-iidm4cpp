@@ -122,6 +122,12 @@ public:
 
     stdcxx::range<LccConverterStation> getLccConverterStations();
 
+    unsigned long getLineCount() const;
+
+    stdcxx::const_range<Line> getLines() const;
+
+    stdcxx::range<Line> getLines();
+
     unsigned long getLoadCount() const;
 
     stdcxx::const_range<Load> getLoads() const;
@@ -158,7 +164,19 @@ public:
 
     virtual stdcxx::range<Switch> getSwitches() = 0;
 
+    unsigned long getThreeWindingsTransformerCount() const;
+
+    stdcxx::const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
+
+    stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
+
     virtual const TopologyKind& getTopologyKind() const = 0;
+
+    unsigned long getTwoWindingsTransformerCount() const;
+
+    stdcxx::const_range<TwoWindingsTransformer> getTwoWindingsTransformers() const;
+
+    stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
 
     unsigned long getVscConverterStationCount() const;
 
