@@ -31,6 +31,8 @@ public:
     virtual stdcxx::Reference<Bus> getConnectableBus() = 0;
 
     virtual void setConnectableBus(const std::string& busId) = 0;
+
+    virtual void moveConnectable(const std::string& busId, bool connected) = 0;
 };
 
 class BusView {
@@ -51,6 +53,8 @@ public:
     virtual ~NodeBreakerView() noexcept = default;
 
     virtual unsigned long getNode() const = 0;
+
+    virtual void moveConnectable(unsigned long node, const std::string& voltageLevelId) = 0;
 };
 
 }  // namespace terminal

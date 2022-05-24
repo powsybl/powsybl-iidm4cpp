@@ -28,6 +28,8 @@ public: // BusBreakerView
 
     stdcxx::Reference<Bus> getConnectableBus() override;
 
+    void moveConnectable(const std::string& busId, bool connected) override;
+
     void setConnectableBus(const std::string& busId) override;
 
 public:

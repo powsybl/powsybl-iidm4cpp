@@ -42,6 +42,10 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
     return stdcxx::ref<Bus>(voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true));
 }
 
+void BusBreakerViewImpl::moveConnectable(const std::string& busId, bool connected) {
+    m_terminal.getConnectable().get().move(m_terminal, busId, connected);
+}
+
 void BusBreakerViewImpl::setConnectableBus(const std::string& busId) {
     checkNotEmpty(busId, "busId is empty");
 

@@ -7,10 +7,12 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/test/AssertionUtils.hpp>
 
 #include "NetworkFactory.hpp"
 
@@ -114,6 +116,35 @@ BOOST_AUTO_TEST_CASE(traverseNodeBreaker) {
     const std::set<std::string>& partialExpectedConnectables = { "LOAD1" };
     BOOST_CHECK_EQUAL_COLLECTIONS(partialExpectedConnectables.begin(), partialExpectedConnectables.end(), partialTraversedConnectables.begin(), partialTraversedConnectables.end());
     BOOST_CHECK(partialTraverser.getTraversedSwitches().empty());
+}
+
+BOOST_AUTO_TEST_CASE(moveBbk) {
+    Network network = createMixedTopolyKindNetwork();
+    Load& load = network.getLoad("LOAD3");
+
+    POWSYBL_ASSERT_THROW(load.getTerminal().getBusBreakerView().moveConnectable("wrongBusId", true), PowsyblException, "Bus 'wrongBusId' not found");
+
+    BOOST_CHECK(load.getTerminal().isConnected());
+    load.getTerminal().getBusBreakerView().moveConnectable("VL3_BUS2", false);
+    BOOST_CHECK(!load.getTerminal().isConnected());
+
+    load.getTerminal().getBusBreakerView().moveConnectable("VL3_BUS2", true);
+    BOOST_CHECK(load.getTerminal().isConnected());
+    BOOST_CHECK_EQUAL("VL3_BUS2", load.getTerminal().getBusBreakerView().getBus().get().getId());
+    BOOST_CHECK_EQUAL("VL3_BUS2", load.getTerminal().getBusBreakerView().getConnectableBus().get().getId());
+}
+
+BOOST_AUTO_TEST_CASE(moveNbk) {
+    Network network = createMixedTopolyKindNetwork();
+    Load& load = network.getLoad("LOAD1");
+
+    BOOST_CHECK_EQUAL(2, load.getTerminal().getNodeBreakerView().getNode());
+
+    POWSYBL_ASSERT_THROW(load.getTerminal().getNodeBreakerView().moveConnectable(100, "wrongVoltageLevelId"), PowsyblException, "Voltage level 'wrongVoltageLevelId' not found");
+    POWSYBL_ASSERT_THROW(load.getTerminal().getNodeBreakerView().moveConnectable(100, "VL3"), PowsyblException, "Trying to move connectable LOAD1 to node 100 of voltage level VL3, which is a bus breaker voltage level");
+
+    load.getTerminal().getNodeBreakerView().moveConnectable(100, "VL2");
+    BOOST_CHECK_EQUAL(100, load.getTerminal().getNodeBreakerView().getNode());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
