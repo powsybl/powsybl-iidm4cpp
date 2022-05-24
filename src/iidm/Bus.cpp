@@ -132,7 +132,7 @@ double Bus::getP() const {
             case IdentifiableType::BUS:
             case IdentifiableType::SWITCH:
             default:
-                throw AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
+                throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }
     }
     return p;
@@ -170,7 +170,7 @@ double Bus::getQ() const {
             case IdentifiableType::BUS:
             case IdentifiableType::SWITCH:
             default:
-                throw AssertionError(stdcxx::format("Unexpected connectable type: %1%", connectable.getType()));
+                throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }
     }
     return q;

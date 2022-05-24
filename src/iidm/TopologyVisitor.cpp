@@ -99,7 +99,7 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
             case IdentifiableType::BUS:
             case IdentifiableType::SWITCH:
             default:
-                throw AssertionError(stdcxx::format("Unexpected connectable type %1%", connectable.getType()));
+                throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }
     }
 }

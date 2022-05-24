@@ -96,7 +96,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                 case IdentifiableType::BUS:
                 case IdentifiableType::SWITCH:
                 case IdentifiableType::BUSBAR_SECTION: // must not happen in a bus/breaker topology
-                    throw AssertionError(stdcxx::format("Unexpected IdentifiableType value: %1%", connectable.getType()));
+                    throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
             }
         }
     }
