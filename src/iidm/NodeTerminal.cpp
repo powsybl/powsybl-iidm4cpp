@@ -79,11 +79,6 @@ const stdcxx::optional<unsigned long>& NodeTerminal::getConnectedComponentNumber
     return m_connectedComponentNumber[getNetwork().getVariantIndex()];
 }
 
-const std::string& NodeTerminal::getConnectionInfo() const {
-    static std::string s_connectionInfo = stdcxx::format("bus %1%, %2%", getBusBreakerView().getConnectableBus().get().getId(), getBusBreakerView().getBus() ? "connected" : "disconnected");
-    return s_connectionInfo;
-}
-
 unsigned long NodeTerminal::getNode() const {
     return m_node;
 }

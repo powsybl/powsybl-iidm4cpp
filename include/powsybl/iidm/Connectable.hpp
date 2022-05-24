@@ -67,12 +67,12 @@ protected:
 
     Terminal& getTerminal(unsigned long index);
 
-    void move(Terminal& oldTerminal, const std::string& oldConnectionInfo, const std::string& busId, bool connected);
+    void move(Terminal& oldTerminal, const std::string& busId, bool connected);
 
-    void move(Terminal& oldTerminal, const std::string& oldConnectionInfo, unsigned long node, const std::string& voltageLevelId);
+    void move(Terminal& oldTerminal, unsigned long node, const std::string& voltageLevelId);
 
 private:
-    void attachTerminal(Terminal& oldTerminal, const std::string& oldConnectionInfo, VoltageLevel& voltageLevel, std::unique_ptr<Terminal>&& terminal);
+    void attachTerminal(Terminal& oldTerminal, VoltageLevel& voltageLevel, std::unique_ptr<Terminal>&& terminal);
 
     friend class bus_terminal::BusBreakerViewImpl;
 

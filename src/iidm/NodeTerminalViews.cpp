@@ -45,7 +45,7 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
 }
 
 void BusBreakerViewImpl::moveConnectable(const std::string& busId, bool connected) {
-    m_terminal.getConnectable().get().move(m_terminal, m_terminal.getConnectionInfo(), busId, connected);
+    m_terminal.getConnectable().get().move(m_terminal, busId, connected);
 }
 
 void BusBreakerViewImpl::setConnectableBus(const std::string& /*busId*/) {
@@ -89,7 +89,7 @@ unsigned long NodeBreakerViewImpl::getNode() const {
 }
 
 void NodeBreakerViewImpl::moveConnectable(unsigned long node, const std::string& voltageLevelId) {
-    m_terminal.getConnectable().get().move(m_terminal, m_terminal.getConnectionInfo(), node, voltageLevelId);
+    m_terminal.getConnectable().get().move(m_terminal, node, voltageLevelId);
 }
 
 }  // namespace node_terminal

@@ -38,8 +38,6 @@ public: // Terminal
 
     BusView& getBusView() override;
 
-    const std::string& getConnectionInfo() const override;
-
     const NodeBreakerView& getNodeBreakerView() const override;
 
     NodeBreakerView& getNodeBreakerView() override;

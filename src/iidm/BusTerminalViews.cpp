@@ -43,7 +43,7 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
 }
 
 void BusBreakerViewImpl::moveConnectable(const std::string& busId, bool connected) {
-    m_terminal.getConnectable().get().move(m_terminal, m_terminal.getConnectionInfo(), busId, connected);
+    m_terminal.getConnectable().get().move(m_terminal, busId, connected);
 }
 
 void BusBreakerViewImpl::setConnectableBus(const std::string& busId) {

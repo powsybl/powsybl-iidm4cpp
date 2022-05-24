@@ -35,7 +35,7 @@ Terminal& Connectable::addTerminal(std::unique_ptr<Terminal>&& terminal) {
     return *m_terminals.back();
 }
 
-void Connectable::attachTerminal(Terminal& oldTerminal, const std::string& /*oldConnectionInfo*/, VoltageLevel& voltageLevel, std::unique_ptr<Terminal>&& terminal) {
+void Connectable::attachTerminal(Terminal& oldTerminal, VoltageLevel& voltageLevel, std::unique_ptr<Terminal>&& terminal) {
     // first, attach new terminal to connectable and to voltage level of destination, to ensure that the new terminal is valid
     terminal->setConnectable(stdcxx::ref(*this));
     voltageLevel.attach(*terminal, false);
@@ -100,7 +100,7 @@ std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals() const
     return terminals;
 }
 
-void Connectable::move(Terminal& oldTerminal, const std::string& oldConnectionInfo, const std::string& busId, bool connected) {
+void Connectable::move(Terminal& oldTerminal, const std::string& busId, bool connected) {
     const auto& bus = getNetwork().getBusBreakerView().getBus(busId);
     if (!bus) {
         throw PowsyblException(stdcxx::format("Bus '%1%' not found", busId));
@@ -119,10 +119,10 @@ void Connectable::move(Terminal& oldTerminal, const std::string& oldConnectionIn
         .build();
 
     // detach the terminal from its previous voltage level
-    attachTerminal(oldTerminal, oldConnectionInfo, bus.get().getVoltageLevel(), std::move(terminalExt));
+    attachTerminal(oldTerminal, bus.get().getVoltageLevel(), std::move(terminalExt));
 }
 
-void Connectable::move(Terminal& oldTerminal, const std::string& oldConnectionInfo, unsigned long node, const std::string& voltageLevelId) {
+void Connectable::move(Terminal& oldTerminal, unsigned long node, const std::string& voltageLevelId) {
     const auto& voltageLevel = getNetwork().find<VoltageLevel>(voltageLevelId);
     if (! voltageLevel) {
         throw PowsyblException(stdcxx::format("Voltage level '%1%' not found", voltageLevelId));
@@ -140,7 +140,7 @@ void Connectable::move(Terminal& oldTerminal, const std::string& oldConnectionIn
         .build();
 
     // detach the terminal from its previous voltage level
-    attachTerminal(oldTerminal, oldConnectionInfo, voltageLevel, std::move(terminalExt));
+    attachTerminal(oldTerminal, voltageLevel, std::move(terminalExt));
 }
 
 void Connectable::reduceVariantArraySize(unsigned long number) {
