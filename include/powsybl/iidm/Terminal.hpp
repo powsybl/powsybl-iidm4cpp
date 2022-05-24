@@ -88,7 +88,7 @@ public:
 
     Terminal& setQ(double q);
 
-    virtual void traverse(TopologyTraverser& traverser) = 0;
+    virtual bool traverse(TopologyTraverser& traverser) = 0;
 
     virtual bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals) = 0;
 

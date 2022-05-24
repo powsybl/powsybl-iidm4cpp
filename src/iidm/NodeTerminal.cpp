@@ -135,9 +135,9 @@ NodeTerminal& NodeTerminal::setV(double v) {
     return *this;
 }
 
-void NodeTerminal::traverse(TopologyTraverser& traverser) {
+bool NodeTerminal::traverse(TopologyTraverser& traverser) {
     auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel());
-    voltageLevel.traverse(*this, traverser);
+    return voltageLevel.traverse(*this, traverser);
 }
 
 bool NodeTerminal::traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals) {

@@ -64,7 +64,7 @@ public: // VoltageLevel
 
     void invalidateCache() override;
 
-    void traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const;
+    bool traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const;
 
     bool traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
 

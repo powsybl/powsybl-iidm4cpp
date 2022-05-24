@@ -66,7 +66,7 @@ public:
 
     Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2);
 
-    void traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser) const;
+    bool traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser) const;
 
     bool traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
 

@@ -397,9 +397,9 @@ void NodeBreakerVoltageLevel::removeTopology() {
     m_switches.clear();
 }
 
-void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const {
+bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const {
     TerminalSet traversedTerminals;
-    traverse(terminal, traverser, traversedTerminals);
+    return traverse(terminal, traverser, traversedTerminals);
 }
 
 bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {

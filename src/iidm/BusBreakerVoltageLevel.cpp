@@ -368,9 +368,9 @@ void BusBreakerVoltageLevel::removeTopology() {
     removeAllBuses();
 }
 
-void BusBreakerVoltageLevel::traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser) const {
+bool BusBreakerVoltageLevel::traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser) const {
     TerminalSet traversedTerminals;
-    traverse(terminal, traverser, traversedTerminals);
+    return traverse(terminal, traverser, traversedTerminals);
 }
 
 bool BusBreakerVoltageLevel::traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {

@@ -46,7 +46,7 @@ public: // Terminal
 
     bool isConnected() const override;
 
-    void traverse(TopologyTraverser& traverser) override;
+    bool traverse(TopologyTraverser& traverser) override;
 
     bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals) override;
 
