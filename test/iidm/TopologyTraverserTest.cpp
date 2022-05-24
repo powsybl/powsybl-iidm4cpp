@@ -23,6 +23,7 @@
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
+#include <powsybl/network/FictitiousSwitchFactory.hpp>
 
 #include "NetworkFactory.hpp"
 
@@ -198,6 +199,51 @@ BOOST_AUTO_TEST_CASE(test5) {
                           {"NHV1_NHV2_2", 1}, {"NHV2_NLOAD", 0}, {"NHV2_NLOAD", 1}, {"LOAD", 0} };
 
     BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), res.begin(), res.end());
+}
+
+BOOST_AUTO_TEST_CASE(testTerminateTraverser) {
+    Network network = createMixedNodeBreakerBusBreakerNetwork();
+    Terminal& startGNbv = network.getGenerator("G").getTerminal();
+    const auto& visited1 = getVisitedList(startGNbv,
+                                          [](Switch& sw) { return sw.getId() == "BR2" ? math::TraverseResult::TERMINATE_TRAVERSER : math::TraverseResult::CONTINUE; });
+    IdPosSet expectedVisited1 = { {"BBS1", 0}, {"G", 0} };
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedVisited1.begin(), expectedVisited1.end(), visited1.begin(), visited1.end());
+
+    const auto& visited2 = getVisitedList(startGNbv,
+                                          [](Switch& /*sw*/) { return math::TraverseResult::CONTINUE; },
+                                          [](Terminal& /*terminal*/) { return math::TraverseResult::TERMINATE_TRAVERSER; });
+    IdPosSet expectedVisited2 = { {"G", 0} };
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedVisited2.begin(), expectedVisited2.end(), visited2.begin(), visited2.end());
+
+    const auto& visited3 = getVisitedList(startGNbv,
+                                          [](Switch& /*sw*/) { return math::TraverseResult::CONTINUE; },
+                                          [](Terminal& terminal) { return stdcxx::isInstanceOf<BusbarSection>(terminal.getConnectable()) ? math::TraverseResult::TERMINATE_TRAVERSER : math::TraverseResult::CONTINUE; });
+    IdPosSet expectedVisited3 = { {"BBS1", 0}, {"G", 0} };
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedVisited3.begin(), expectedVisited3.end(), visited3.begin(), visited3.end());
+
+    Terminal& startLBbv = network.getLoad("LD2").getTerminal();
+    const auto& visited4 = getVisitedList(startLBbv,
+                                          [](Switch& /*sw*/) { return math::TraverseResult::CONTINUE; },
+                                          [](Terminal& /*terminal*/) { return math::TraverseResult::TERMINATE_TRAVERSER; });
+    IdPosSet expectedVisited4 = { {"LD2", 0} };
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedVisited4.begin(), expectedVisited4.end(), visited4.begin(), visited4.end());
+
+    const auto& visited5 = getVisitedList(startLBbv,
+                                          [](Switch& /*sw*/) { return math::TraverseResult::CONTINUE; },
+                                          [](Terminal& terminal) { return terminal.getConnectable().get().getId() == "L2" ? math::TraverseResult::TERMINATE_TRAVERSER : math::TraverseResult::CONTINUE; });
+    IdPosSet expectedVisited5 = { {"LD2", 0}, {"L2", 1} };
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedVisited5.begin(), expectedVisited5.end(), visited5.begin(), visited5.end());
+}
+
+BOOST_AUTO_TEST_CASE(testTraversalOrder) {
+    Network network = powsybl::network::FictitiousSwitchFactory::create();
+    const auto& visited = getVisitedList(network.getGenerator("CB").getTerminal(),
+                                         [](Switch& /*sw*/) { return math::TraverseResult::CONTINUE; });
+    IdPosSet expectedVisited = { {"CB", 0}, {"O", 0}, {"P", 0}, {"CF", 0},
+                                 {"CH", 0}, {"CC", 0}, {"CD", 0}, {"CE", 0},
+                                 {"CJ", 1}, {"CI", 1}, {"CG", 0}, {"CJ", 0},
+                                 {"D", 0}, {"CI", 0} };
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedVisited.begin(), expectedVisited.end(), visited.begin(), visited.end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
