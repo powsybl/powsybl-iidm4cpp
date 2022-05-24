@@ -210,7 +210,7 @@ TwtData::TwtData(const ThreeWindingsTransformer& twt, int phaseAngleClock2, int 
 }
 
 double TwtData::alpha(const ThreeWindingsTransformer::Leg& leg) {
-    return leg.getOptionalPhaseTapChanger() ? leg.getPhaseTapChanger().getCurrentStep().getAlpha() : 0.0;
+    return leg.getOptionalPhaseTapChanger() ? stdcxx::toRadians * leg.getPhaseTapChanger().getCurrentStep().getAlpha() : 0.0;
 }
 
 std::complex<double> TwtData::calculateOneConnectedLegFlow(double u, double theta,
@@ -313,7 +313,7 @@ std::complex<double> TwtData::calculateTwoConnectedLegsStarBusVoltage(double u1,
     std::complex<double> v2 = math::ComplexUtils::polar2Complex(u2, theta2);
 
     std::complex<double> yshO = LinkData::kronAntenna(admittanceMatrixOpenLeg.y11, admittanceMatrixOpenLeg.y12, admittanceMatrixOpenLeg.y21, admittanceMatrixOpenLeg.y22, true);
-    return -(admittanceMatrixLeg1.y21 * v1 + (admittanceMatrixLeg2.y21 * v2))
+    return -(admittanceMatrixLeg1.y21 * v1 + admittanceMatrixLeg2.y21 * v2)
         / (admittanceMatrixLeg1.y22 + admittanceMatrixLeg2.y22 + yshO);
 }
 

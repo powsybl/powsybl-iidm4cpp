@@ -25,12 +25,13 @@ public:
     std::complex<double> toFrom;
 };
 
-struct BranchAdmittanceMatrix {
+class BranchAdmittanceMatrix {
 public:
     BranchAdmittanceMatrix() = default;
 
     BranchAdmittanceMatrix(const std::complex<double>& y11, const std::complex<double>& y12, const std::complex<double>& y21, const std::complex<double>& y22);
 
+public:
     std::complex<double> y11;
 
     std::complex<double> y12;

@@ -68,7 +68,7 @@ Flow flowBothEnds(const std::complex<double>& y11, const std::complex<double>& y
 std::complex<double> flowYshunt(const std::complex<double>& ysh, double u, double theta) {
     std::complex<double> v = math::ComplexUtils::polar2Complex(u, theta);
 
-    return std::conj(ysh) * std::conj(v) *v;
+    return std::conj(ysh) * std::conj(v) * v;
 }
 
 double getFixedX(double x, double epsilonX, bool applyReactanceCorrection) {
@@ -76,9 +76,7 @@ double getFixedX(double x, double epsilonX, bool applyReactanceCorrection) {
 }
 
 double getPhaseAngleClockDegrees(int phaseAngleClock) {
-    double phaseAngleClockDegree = 0.0;
-    phaseAngleClockDegree += phaseAngleClock * 30.0;
-    phaseAngleClockDegree = std::remainder(phaseAngleClockDegree, 360.0);
+    double phaseAngleClockDegree = std::remainder(phaseAngleClock * 30.0, 360.0);
     if (phaseAngleClockDegree > 180.0) {
         phaseAngleClockDegree -= 360.0;
     }
@@ -139,8 +137,8 @@ BranchAdmittanceMatrix kronChain(const BranchAdmittanceMatrix& firstAdm, const B
     }
 
     admittance.y11 = yFirst11 - (yFirst1C * yFirstC1 / (yFirstCC + ySecondCC));
-    admittance.y12 = yFirst1C * ySecondC2 / -(yFirstCC + ySecondCC);
-    admittance.y21 = ySecond2C * yFirstC1 / -(yFirstCC + ySecondCC);
+    admittance.y12 = - yFirst1C * ySecondC2 / (yFirstCC + ySecondCC);
+    admittance.y21 = - ySecond2C * yFirstC1 / (yFirstCC + ySecondCC);
     admittance.y22 = ySecond22 - (ySecond2C * ySecondC2 / (yFirstCC + ySecondCC));
 
     return admittance;

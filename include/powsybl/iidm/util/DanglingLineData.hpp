@@ -38,19 +38,7 @@ private:
     static bool valid(double v, double theta);
 
 private:
-    std::string m_id;
-
-    double m_r;
-    double m_x;
-    double m_g1;
-    double m_g2;
-    double m_b1;
-    double m_b2;
-
-    double m_u1;
-    double m_theta1;
-    double m_p0;
-    double m_q0;
+    const DanglingLine& m_danglingLine;
 
     double m_boundaryBusU = stdcxx::nan();
     double m_boundaryBusTheta = stdcxx::nan();
