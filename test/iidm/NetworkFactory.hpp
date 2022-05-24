@@ -21,11 +21,17 @@ Network createComponentsTestNetworkNB();
 
 Network createHvdcConverterStationTestNetwork();
 
+Network createMixedNodeBreakerBusBreakerNetwork();
+
 Network createNetwork();
 
-Terminal& getTerminalFromNetwork2();
+Network createNetworkTest1();
 
-Network createDanglingLineNetwork();
+Network createNodeBreakerNetwork();
+
+Network createSwitchBBKNetwork();
+
+Terminal& getTerminalFromNetwork2();
 
 }  // namespace iidm
 

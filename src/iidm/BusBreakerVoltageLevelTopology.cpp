@@ -126,7 +126,7 @@ void CalculatedBusTopology::updateCache() {
             graph.traverse(v, [&busSet, &graph](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
                 stdcxx::Reference<Switch> aSwitch = graph.getEdgeObject(e);
                 if (aSwitch.get().isOpen()) {
-                    return math::TraverseResult::TERMINATE;
+                    return math::TraverseResult::TERMINATE_PATH;
                 }
 
                 busSet.push_back(std::ref(graph.getVertexObject(v2).get()));

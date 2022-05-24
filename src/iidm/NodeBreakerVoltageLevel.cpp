@@ -333,6 +333,13 @@ const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
     return s_topologyKind;
 }
 
+math::TraverseResult NodeBreakerVoltageLevel::getTraverseResult(TerminalSet& visitedTerminals, NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) {
+    if (visitedTerminals.insert(terminal).second) {
+        return traverser.traverse(terminal, true);
+    }
+    return math::TraverseResult::TERMINATE_PATH;
+}
+
 void NodeBreakerVoltageLevel::invalidateCache() {
     m_variants.get().getCalculatedBusTopology().invalidateCache();
     m_variants.get().getCalculatedBusBreakerTopology().invalidateCache();
@@ -390,47 +397,47 @@ void NodeBreakerVoltageLevel::removeTopology() {
     m_switches.clear();
 }
 
-void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser) const {
+bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const {
     TerminalSet traversedTerminals;
-    traverse(terminal, traverser, traversedTerminals);
+    return traverse(terminal, traverser, traversedTerminals);
 }
 
-void NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, VoltageLevel::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
-    if (traversedTerminals.find(terminal) != traversedTerminals.end()) {
-        return;
+bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
+    const math::TraverseResult& termTraverseResult = getTraverseResult(traversedTerminals, terminal, traverser);
+    if (termTraverseResult == math::TraverseResult::TERMINATE_TRAVERSER) {
+        return false;
     }
-
-    if (traverser.traverse(terminal, true)) {
-        traversedTerminals.emplace(terminal);
-
-        unsigned long node = terminal.getNode();
+    if (termTraverseResult == math::TraverseResult::CONTINUE) {
         TerminalSet nextTerminals;
-
         addNextTerminals(terminal, nextTerminals);
 
-        m_graph.traverse(node, [this, &traverser, &traversedTerminals, &nextTerminals](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
-            const stdcxx::Reference<Switch>& aSwitch = m_graph.getEdgeObject(e);
-            const stdcxx::Reference<NodeTerminal>& otherTerminal = m_graph.getVertexObject(v2);
-            if (!aSwitch // internal connection case
-                || traverser.traverse(aSwitch)) {
-                if (!otherTerminal) {
-                    return math::TraverseResult::CONTINUE;
+        unsigned long node = terminal.getNode();
+        bool traverseTerminated = !m_graph.traverse(node, [this, &traverser, &traversedTerminals, &nextTerminals](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
+            const auto& aSwitch = m_graph.getEdgeObject(e);
+            const auto& otherTerminal = m_graph.getVertexObject(v2);
+            const math::TraverseResult& edgeTraverseResult = aSwitch ? traverser.traverse(aSwitch) : math::TraverseResult::CONTINUE; // internal connection case
+            if (edgeTraverseResult == math::TraverseResult::CONTINUE && otherTerminal) {
+                math::TraverseResult otherTermTraverseResult = getTraverseResult(traversedTerminals, otherTerminal, traverser);
+                if (otherTermTraverseResult == math::TraverseResult::CONTINUE) {
+                    addNextTerminals(otherTerminal, nextTerminals);
                 }
-                if (traverser.traverse(otherTerminal.get(), true)) {
-                    traversedTerminals.emplace(otherTerminal.get());
-
-                    addNextTerminals(otherTerminal.get(), nextTerminals);
-                    return math::TraverseResult::CONTINUE;
-                }
-                return math::TraverseResult::TERMINATE;
+                return otherTermTraverseResult;
             }
-            return math::TraverseResult::TERMINATE;
+            return edgeTraverseResult;
         });
 
-        for (auto nextTerminal : nextTerminals) {
-            nextTerminal.get().traverse(traverser, traversedTerminals);
+        if (traverseTerminated) {
+            return false;
+        }
+
+        for (Terminal& nextTerminal : nextTerminals) {
+            if (!nextTerminal.traverse(traverser, traversedTerminals)) {
+                return false;
+            }
         }
     }
+
+    return true;
 }
 
 }  // namespace iidm

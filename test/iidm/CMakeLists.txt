@@ -43,6 +43,7 @@ set(UNIT_TEST_SOURCES
     SubstationTest.cpp
     TerminalTest.cpp
     TopologyLevelTest.cpp
+    TopologyTraverserTest.cpp
     ThreeWindingsTransformerTest.cpp
     TieLineTest.cpp
     TwoWindingsTransformerTest.cpp
@@ -60,6 +61,7 @@ set(UNIT_TEST_SOURCES
     extensions/SlackTerminalTest.cpp
 
     util/SVTest.cpp
+    util/NodeBreakerTopologyTest.cpp
     util/TerminalFinderTest.cpp
 )
 
