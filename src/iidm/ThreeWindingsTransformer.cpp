@@ -17,7 +17,7 @@ namespace powsybl {
 namespace iidm {
 
 ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Leg&& leg1, Leg&& leg2, Leg&& leg3, double ratedU0) :
-    Connectable(id, name, fictitious, ConnectableType::THREE_WINDINGS_TRANSFORMER),
+    Connectable(id, name, fictitious),
     m_ratedU0(ratedU0) {
     m_legs.emplace_back(std::move(leg1.setTransformer(*this)));
     m_legs.emplace_back(std::move(leg2.setTransformer(*this)));
@@ -142,6 +142,11 @@ Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) {
     const auto& terminal = static_cast<const ThreeWindingsTransformer*>(this)->getTerminal(side);
 
     return const_cast<Terminal&>(terminal);
+}
+
+const IdentifiableType& ThreeWindingsTransformer::getType() const {
+    static IdentifiableType s_type = IdentifiableType::THREE_WINDINGS_TRANSFORMER;
+    return s_type;
 }
 
 const std::string& ThreeWindingsTransformer::getTypeDescription() const {

@@ -13,6 +13,7 @@
 #include <string>
 
 #include <powsybl/iidm/Extendable.hpp>
+#include <powsybl/iidm/IdentifiableType.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
@@ -74,6 +75,8 @@ public:
     const std::string& getProperty(const std::string& key, const std::string& defaultValue) const;
 
     stdcxx::const_range<std::string> getPropertyNames() const;
+
+    virtual const IdentifiableType& getType() const = 0;
 
     bool hasAliases() const;
 

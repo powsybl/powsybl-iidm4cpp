@@ -62,6 +62,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    const IdentifiableType& getType() const override;
+
 public:
     ~VoltageLevel() noexcept override = default;
 
