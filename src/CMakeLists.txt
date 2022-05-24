@@ -205,6 +205,7 @@ set(IIDM_SOURCES
     iidm/util/LimitViolationUtils.cpp
     iidm/util/LinkData.cpp
     iidm/util/Networks.cpp
+    iidm/util/NodeBreakerTopology.cpp
     iidm/util/Substations.cpp
     iidm/util/SV.cpp
     iidm/util/TerminalFinder.cpp
