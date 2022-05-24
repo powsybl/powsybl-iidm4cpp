@@ -37,6 +37,7 @@ BOOST_AUTO_TEST_CASE(identifiableShortCircuit) {
     BOOST_CHECK(stdcxx::areSame(extension, extension.setIpMin(11.1)));
     BOOST_CHECK_CLOSE(11.1, extension.getIpMin(), std::numeric_limits<double>::epsilon());
 
+    POWSYBL_ASSERT_THROW(extension.setIpMax(stdcxx::nan()), PowsyblException, "Undefined ipMax");
     BOOST_CHECK(stdcxx::areSame(extension, extension.setIpMax(22.2)));
     BOOST_CHECK_CLOSE(22.2, extension.getIpMax(), std::numeric_limits<double>::epsilon());
 }

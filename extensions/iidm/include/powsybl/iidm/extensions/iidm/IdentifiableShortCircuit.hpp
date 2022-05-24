@@ -28,7 +28,7 @@ public:  // Extension
 
 public:
     /**
-     * Get maximum allowable peak short-circuit current
+     * Get maximum allowable peak short-circuit current [A]
      */
     double getIpMax() const;
 
@@ -38,7 +38,7 @@ public:
     double getIpMin() const;
 
     /**
-     * Set maximum allowable peak short-circuit current
+     * Set maximum allowable peak short-circuit current [A]
      */
     IdentifiableShortCircuit& setIpMax(double ipMax);
 

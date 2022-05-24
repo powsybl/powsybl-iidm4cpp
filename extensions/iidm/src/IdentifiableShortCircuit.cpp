@@ -48,6 +48,9 @@ const std::type_index& IdentifiableShortCircuit::getType() const {
 }
 
 IdentifiableShortCircuit& IdentifiableShortCircuit::setIpMax(double ipMax) {
+    if (std::isnan(ipMax)) {
+        throw PowsyblException("Undefined ipMax");
+    }
     m_ipMax = ipMax;
     return *this;
 }
