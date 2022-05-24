@@ -407,7 +407,7 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
 
     BOOST_CHECK_EQUAL("BBS", bbs.getId());
     BOOST_CHECK_EQUAL("BBS_NAME", bbs.getOptionalName());
-    BOOST_CHECK_EQUAL(ConnectableType::BUSBAR_SECTION, bbs.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::BUSBAR_SECTION, bbs.getType());
     std::ostringstream oss;
     oss << bbs.getType();
     BOOST_CHECK_EQUAL("BUSBAR_SECTION", oss.str());

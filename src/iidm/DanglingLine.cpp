@@ -18,7 +18,7 @@ namespace iidm {
 DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                            double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode,
                            std::unique_ptr<Generation>&& generation) :
-    Injection(id, name, fictitious, ConnectableType::DANGLING_LINE),
+    Injection(id, name, fictitious),
     FlowsLimitsHolder(*this, "limits"),
     m_b(checkB(*this, b)),
     m_g(checkG(*this, g)),
@@ -93,6 +93,11 @@ double DanglingLine::getQ0() const {
 
 double DanglingLine::getR() const {
     return m_r;
+}
+
+const IdentifiableType& DanglingLine::getType() const {
+    static IdentifiableType s_type = IdentifiableType::DANGLING_LINE;
+    return s_type;
 }
 
 const std::string& DanglingLine::getTypeDescription() const {

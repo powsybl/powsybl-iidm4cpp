@@ -231,7 +231,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     ShuntCompensator& shunt = network.getShuntCompensator("SHUNT1");
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_EQUAL("SHUNT1_NAME", shunt.getOptionalName());
-    BOOST_CHECK_EQUAL(ConnectableType::SHUNT_COMPENSATOR, shunt.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::SHUNT_COMPENSATOR, shunt.getType());
     std::ostringstream oss;
     oss << shunt.getType();
     BOOST_CHECK_EQUAL("SHUNT_COMPENSATOR", oss.str());

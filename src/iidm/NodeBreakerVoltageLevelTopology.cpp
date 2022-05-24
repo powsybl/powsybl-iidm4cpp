@@ -217,29 +217,35 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
             const auto& connectableType = connectable.get().getType();
 
             switch (connectableType) {
-                case ConnectableType::LINE:
-                case ConnectableType::TWO_WINDINGS_TRANSFORMER:
-                case ConnectableType::THREE_WINDINGS_TRANSFORMER:
-                case ConnectableType::HVDC_CONVERTER_STATION:
-                case ConnectableType::DANGLING_LINE:
+                case IdentifiableType::LINE:
+                case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
+                case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
+                case IdentifiableType::HVDC_CONVERTER_STATION:
+                case IdentifiableType::DANGLING_LINE:
                     ++branchCount;
                     ++feederCount;
                     break;
 
-                case ConnectableType::LOAD:
-                case ConnectableType::GENERATOR:
-                case ConnectableType::BATTERY:
-                case ConnectableType::SHUNT_COMPENSATOR:
-                case ConnectableType::STATIC_VAR_COMPENSATOR:
+                case IdentifiableType::LOAD:
+                case IdentifiableType::GENERATOR:
+                case IdentifiableType::BATTERY:
+                case IdentifiableType::SHUNT_COMPENSATOR:
+                case IdentifiableType::STATIC_VAR_COMPENSATOR:
                     ++feederCount;
                     break;
 
-                case ConnectableType::BUSBAR_SECTION:
+                case IdentifiableType::BUSBAR_SECTION:
                     ++busbarSectionCount;
                     break;
 
+                case IdentifiableType::NETWORK:
+                case IdentifiableType::SUBSTATION:
+                case IdentifiableType::VOLTAGE_LEVEL:
+                case IdentifiableType::HVDC_LINE:
+                case IdentifiableType::BUS:
+                case IdentifiableType::SWITCH:
                 default:
-                    throw AssertionError(stdcxx::format("Unexpected ConnectableType value: %1%", connectableType));
+                    throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectableType));
             }
         }
     }

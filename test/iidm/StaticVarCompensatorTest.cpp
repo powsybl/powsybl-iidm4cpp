@@ -184,7 +184,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     const StaticVarCompensator& svc = network.getStaticVarCompensator("SVC1");
     BOOST_CHECK_EQUAL("SVC1", svc.getId());
     BOOST_CHECK_EQUAL("SVC1_NAME", svc.getOptionalName());
-    BOOST_CHECK_EQUAL(ConnectableType::STATIC_VAR_COMPENSATOR, svc.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::STATIC_VAR_COMPENSATOR, svc.getType());
     std::ostringstream oss;
     oss << svc.getType();
     BOOST_CHECK_EQUAL("STATIC_VAR_COMPENSATOR", oss.str());
