@@ -163,7 +163,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     Generator& gen = network.getGenerator("GEN1");
     BOOST_CHECK_EQUAL("GEN1", gen.getId());
     BOOST_CHECK_EQUAL("GEN1_NAME", gen.getOptionalName());
-    BOOST_CHECK_EQUAL(ConnectableType::GENERATOR, gen.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::GENERATOR, gen.getType());
     std::ostringstream oss;
     oss << gen.getType();
     BOOST_CHECK_EQUAL("GENERATOR", oss.str());

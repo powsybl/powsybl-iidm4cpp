@@ -227,6 +227,11 @@ stdcxx::range<TwoWindingsTransformer> VoltageLevel::getTwoWindingsTransformers()
     return getConnectables<TwoWindingsTransformer>();
 }
 
+const IdentifiableType& VoltageLevel::getType() const {
+    static IdentifiableType s_type = IdentifiableType::VOLTAGE_LEVEL;
+    return s_type;
+}
+
 const std::string& VoltageLevel::getTypeDescription() const {
     static std::string s_typeDescription = "Voltage level";
 

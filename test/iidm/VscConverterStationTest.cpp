@@ -80,7 +80,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(vsc.getId(), hvdc.getId());
     BOOST_CHECK_EQUAL("VSC1_NAME", vsc.getOptionalName());
     BOOST_CHECK_EQUAL(vsc.getOptionalName(), hvdc.getOptionalName());
-    BOOST_CHECK_EQUAL(ConnectableType::HVDC_CONVERTER_STATION, vsc.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::HVDC_CONVERTER_STATION, vsc.getType());
     std::ostringstream oss;
     oss << vsc.getType();
     BOOST_CHECK_EQUAL("HVDC_CONVERTER_STATION", oss.str());

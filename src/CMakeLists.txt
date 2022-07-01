@@ -37,7 +37,6 @@ set(IIDM_SOURCES
     iidm/Component.cpp
     iidm/ConfiguredBus.cpp
     iidm/Connectable.cpp
-    iidm/ConnectableType.cpp
     iidm/ConnectedComponent.cpp
     iidm/ConnectedComponentsManager.cpp
     iidm/Container.cpp
@@ -65,6 +64,7 @@ set(IIDM_SOURCES
     iidm/HvdcLineAdder.cpp
     iidm/IdBasedBusRef.cpp
     iidm/Identifiable.cpp
+    iidm/IdentifiableType.cpp
     iidm/Injection.cpp
     iidm/InternalConnection.cpp
     iidm/InternalConnectionAdder.cpp
@@ -205,6 +205,7 @@ set(IIDM_SOURCES
     iidm/util/LimitViolationUtils.cpp
     iidm/util/LinkData.cpp
     iidm/util/Networks.cpp
+    iidm/util/NodeBreakerTopology.cpp
     iidm/util/Substations.cpp
     iidm/util/SV.cpp
     iidm/util/TerminalFinder.cpp

@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_CHECK_EQUAL("BAT1", battery.getId());
     BOOST_CHECK_EQUAL("BAT1_NAME", battery.getOptionalName());
-    BOOST_CHECK_EQUAL(ConnectableType::BATTERY, battery.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::BATTERY, battery.getType());
     std::ostringstream oss;
     oss << battery.getType();
     BOOST_CHECK_EQUAL("BATTERY", oss.str());
