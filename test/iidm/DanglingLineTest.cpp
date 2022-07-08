@@ -181,7 +181,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     const DanglingLine& danglingLine = network.getDanglingLine("DL1");
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());
     BOOST_CHECK_EQUAL("DL1_NAME", danglingLine.getOptionalName());
-    BOOST_CHECK_EQUAL(ConnectableType::DANGLING_LINE, danglingLine.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::DANGLING_LINE, danglingLine.getType());
     std::ostringstream oss;
     oss << danglingLine.getType();
     BOOST_CHECK_EQUAL("DANGLING_LINE", oss.str());

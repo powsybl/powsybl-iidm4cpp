@@ -28,6 +28,9 @@ public:
 public:
     using Leg = three_windings_transformer::Leg;
 
+public:  // Identifiable
+    const IdentifiableType& getType() const override;
+
 public:
     ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Leg&& leg1, Leg&& leg2, Leg&& leg3, double ratedU0);
 
