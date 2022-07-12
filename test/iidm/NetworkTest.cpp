@@ -343,9 +343,16 @@ BOOST_AUTO_TEST_CASE(Properties) {
 
     BOOST_CHECK_EQUAL("value1", n.getProperty("key1"));
 
-    POWSYBL_ASSERT_THROW(n.getProperty("key3"),
-                         stdcxx::PropertyNotFoundException, "Property key3 does not exist");
+    POWSYBL_ASSERT_THROW(n.getProperty("key3"), stdcxx::PropertyNotFoundException, "Property key3 does not exist");
     BOOST_CHECK_EQUAL("value3", n.getProperty("key3", "value3"));
+
+    BOOST_CHECK_EQUAL(2, boost::size(n.getPropertyNames()));
+    BOOST_CHECK(n.removeProperty("key2"));
+    BOOST_CHECK_EQUAL(1, boost::size(n.getPropertyNames()));
+
+    BOOST_CHECK(!n.hasProperty("key2"));
+
+    BOOST_CHECK(!n.removeProperty("badKey"));
 }
 
 BOOST_AUTO_TEST_CASE(MultiVariant) {
