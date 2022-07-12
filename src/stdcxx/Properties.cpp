@@ -69,9 +69,14 @@ bool Properties::isEmpty() const {
     return m_properties.empty();
 }
 
-Properties& Properties::remove(const std::string& key) {
-    m_properties.erase(key);
-    return *this;
+stdcxx::optional<std::string> Properties::remove(const std::string& key) {
+    auto it = m_properties.find(key);
+    if (it != m_properties.end()) {
+        std::string oldValue = it->second;
+        m_properties.erase(it);
+        return oldValue;
+    }
+    return {};
 }
 
 stdcxx::optional<std::string> Properties::set(const std::string& key, const std::string& value) {

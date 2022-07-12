@@ -88,6 +88,8 @@ public:
 
     void removeAlias(const std::string& alias);
 
+    bool removeProperty(const std::string& key);
+
     virtual void setFictitious(bool fictitious);
 
     stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
