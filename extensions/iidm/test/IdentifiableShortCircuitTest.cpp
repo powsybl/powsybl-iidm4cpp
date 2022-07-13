@@ -9,10 +9,13 @@
 
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/iidm/IdentifiableShortCircuit.hpp>
 #include <powsybl/iidm/extensions/iidm/IdentifiableShortCircuitAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
+#include <powsybl/test/ResourceFixture.hpp>
+#include <powsybl/test/converter/RoundTrip.hpp>
 
 namespace powsybl {
 
@@ -56,6 +59,20 @@ BOOST_AUTO_TEST_CASE(adder) {
     auto& extension = Identifiable.getExtension<IdentifiableShortCircuit>();
     BOOST_CHECK(std::isnan(extension.getIpMin()));
     BOOST_CHECK_CLOSE(1.0, extension.getIpMax(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_FIXTURE_TEST_CASE(IdentifiableShortCircuitXmlSerializerTest, test::ResourceFixture) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2016-12-07T11:18:52.881+01:00"));
+    VoltageLevel& vlhv1 = network.getVoltageLevel("VLHV1");
+    vlhv1.newExtension<IdentifiableShortCircuitAdder>()
+        .withIpMin(500)
+        .withIpMax(1500)
+        .add();
+
+    const std::string& networkStrRef = ResourceFixture::getResource("/voltageLevelShortCircuitRef.xml");
+
+    test::converter::RoundTrip::runXml(network, networkStrRef);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

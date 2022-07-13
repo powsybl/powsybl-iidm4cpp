@@ -13,6 +13,8 @@
 #include <powsybl/iidm/extensions/iidm/GeneratorShortCircuitAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
+#include <powsybl/test/ResourceFixture.hpp>
+#include <powsybl/test/converter/RoundTrip.hpp>
 
 namespace powsybl {
 
@@ -61,6 +63,21 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK(std::isnan(extension.getDirectSubtransX()));
     BOOST_CHECK_CLOSE(0.0, extension.getDirectTransX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(std::isnan(extension.getStepUpTransformerX()));
+}
+
+BOOST_FIXTURE_TEST_CASE(GeneratorShortCircuitXmlSerializerTest, test::ResourceFixture) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2016-12-07T11:18:52.881+01:00"));
+    Generator& gen = network.getGenerator("GEN");
+    gen.newExtension<GeneratorShortCircuitAdder>()
+        .withDirectTransX(20)
+        .withDirectSubtransX(20)
+        .withStepUpTransformerX(20)
+        .add();
+
+    const std::string& networkStrRef = ResourceFixture::getResource("/generatorShortCircuitRef.xml");
+
+    test::converter::RoundTrip::runXml(network, networkStrRef);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
