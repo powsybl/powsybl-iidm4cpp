@@ -1,12 +1,14 @@
 /**
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2022, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_VOLTAGELEVELTOPOLOGYTRAVERSER_HPP
-#define POWSYBL_IIDM_VOLTAGELEVELTOPOLOGYTRAVERSER_HPP
+#ifndef POWSYBL_IIDM_TERMINALTOPOLOGYTRAVERSER_HPP
+#define POWSYBL_IIDM_TERMINALTOPOLOGYTRAVERSER_HPP
+
+#include <powsybl/math/TraverseResult.hpp>
 
 namespace powsybl {
 
@@ -15,7 +17,7 @@ namespace iidm {
 class Switch;
 class Terminal;
 
-namespace voltage_level {
+namespace terminal {
 
 class TopologyTraverser {
 public:
@@ -31,15 +33,15 @@ public:
 
     TopologyTraverser& operator=(TopologyTraverser&&) noexcept = default;
 
-    virtual bool traverse(Terminal& terminal, bool connected) = 0;
+    virtual math::TraverseResult traverse(Terminal& terminal, bool connected) = 0;
 
-    virtual bool traverse(Switch& aSwitch) = 0;
+    virtual math::TraverseResult traverse(Switch& aSwitch) = 0;
 };
 
-}  // namespace voltage_level
+}  // namespace terminal
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_VOLTAGELEVELTOPOLOGYTRAVERSER_HPP
+#endif  // POWSYBL_IIDM_TERMINALTOPOLOGYTRAVERSER_HPP

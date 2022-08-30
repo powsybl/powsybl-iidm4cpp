@@ -22,6 +22,9 @@ namespace iidm {
 class Terminal;
 
 class ShuntCompensator : public Injection {
+public:  // Identifiable
+    const IdentifiableType& getType() const override;
+
 public:
     ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
                      unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband);

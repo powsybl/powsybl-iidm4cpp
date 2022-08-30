@@ -17,6 +17,8 @@
 #include <powsybl/iidm/InternalConnection.hpp>
 #include <powsybl/iidm/InternalConnectionAdder.hpp>
 #include <powsybl/iidm/SwitchAdder.hpp>
+#include <powsybl/math/TraverseResult.hpp>
+#include <powsybl/math/Traverser.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
@@ -34,6 +36,8 @@ namespace voltage_level {
 class BusBreakerView {
 public:
     using SwitchAdder = bus_breaker_view::SwitchAdder;
+
+    using TopologyTraverser = std::function<math::TraverseResult(const Bus& bus1, const stdcxx::Reference<Switch>& sw, const Bus& bus2)>;
 
 public:
     virtual ~BusBreakerView() noexcept = default;
@@ -75,6 +79,8 @@ public:
     virtual void removeBus(const std::string& busId) = 0;
 
     virtual void removeSwitch(const std::string& switchId) = 0;
+
+    virtual void traverse(const Bus& bus, const TopologyTraverser& traverser) = 0;
 };
 
 class BusView {
@@ -102,7 +108,7 @@ public:
 
     using SwitchAdder = node_breaker_view::SwitchAdder;
 
-    using Traverser = std::function<bool(unsigned long node1, const stdcxx::Reference<Switch>& sw, unsigned long node2)>;
+    using TopologyTraverser = std::function<math::TraverseResult(unsigned long node1, const stdcxx::Reference<Switch>& sw, unsigned long node2)>;
 
 public:
     virtual ~NodeBreakerView() noexcept = default;
@@ -171,7 +177,9 @@ public:
 
     virtual void removeSwitch(const std::string& switchId) = 0;
 
-    virtual void traverse(unsigned long node, const Traverser& traverser) const = 0;
+    virtual void traverse(unsigned long node, const TopologyTraverser& traverser) const = 0;
+
+    virtual void traverse(stdcxx::const_range<unsigned long>& nodes, const TopologyTraverser& traverser) const = 0;
 };
 
 }  // namespace voltage_level
