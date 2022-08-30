@@ -13,6 +13,7 @@
 #include <string>
 
 #include <powsybl/iidm/Extendable.hpp>
+#include <powsybl/iidm/IdentifiableType.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
@@ -75,6 +76,8 @@ public:
 
     stdcxx::const_range<std::string> getPropertyNames() const;
 
+    virtual const IdentifiableType& getType() const = 0;
+
     bool hasAliases() const;
 
     bool hasProperty() const;
@@ -84,6 +87,8 @@ public:
     bool isFictitious() const;
 
     void removeAlias(const std::string& alias);
+
+    bool removeProperty(const std::string& key);
 
     virtual void setFictitious(bool fictitious);
 

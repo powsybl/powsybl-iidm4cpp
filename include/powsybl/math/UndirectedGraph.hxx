@@ -450,14 +450,26 @@ void UndirectedGraph<V, E>::setVertexObject(unsigned long v, const stdcxx::Refer
 }
 
 template <typename V, typename E>
-void UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser) const {
+bool UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser) const {
     std::vector<bool> encountered(m_vertices.size(), false);
 
-    traverse(v, traverser, encountered);
+    return traverse(v, traverser, encountered);
 }
 
 template <typename V, typename E>
-void UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser, std::vector<bool>& encountered) const {
+bool UndirectedGraph<V, E>::traverse(const stdcxx::const_range<unsigned long>& startingVertices, const Traverser& traverser) const {
+    std::vector<bool> encountered(m_vertices.size(), false);
+
+    for (unsigned long startingVertex : startingVertices) {
+        if (!encountered[startingVertex] && !traverse(startingVertex, traverser, encountered)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template <typename V, typename E>
+bool UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser, std::vector<bool>& encountered) const {
     checkVertex(v);
 
     encountered.resize(m_vertices.size(), false);
@@ -466,20 +478,34 @@ void UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser
     const std::vector<unsigned long>& adjacentEdges = adjacencyList[v];
 
     encountered[v] = true;
+    bool keepGoing = true;
     for (unsigned long e : adjacentEdges) {
         const std::unique_ptr<Edge>& edge = m_edges[e];
         unsigned long v1 = edge->getVertex1();
         unsigned long v2 = edge->getVertex2();
         if (!encountered[v1]) {
-            if (traverser(v2, e, v1) == TraverseResult::CONTINUE) {
+            const TraverseResult& traverserResult = traverser(v2, e, v1);
+            if (traverserResult == TraverseResult::CONTINUE) {
                 encountered[v1] = true;
-                traverse(v1, traverser, encountered);
+                keepGoing = traverse(v1, traverser, encountered);
+            } else if (traverserResult == TraverseResult::TERMINATE_TRAVERSER) {
+                keepGoing = false;
             }
-        } else if (!encountered[v2] && (traverser(v1, e, v2) == TraverseResult::CONTINUE)) {
-            encountered[v2] = true;
-            traverse(v2, traverser, encountered);
+        } else if (!encountered[v2]) {
+            const TraverseResult& traverserResult = traverser(v1, e, v2);
+            if (traverserResult == TraverseResult::CONTINUE) {
+                encountered[v2] = true;
+                keepGoing = traverse(v2, traverser, encountered);
+            } else if (traverserResult == TraverseResult::TERMINATE_TRAVERSER) {
+                keepGoing = false;
+            }
+        }
+        if (!keepGoing) {
+            break;
         }
     }
+
+    return keepGoing;
 }
 
 template <typename V, typename E>

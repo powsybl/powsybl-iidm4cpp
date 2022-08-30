@@ -11,6 +11,7 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/TopologyVisitor.hpp>
+#include <powsybl/iidm/util/Networks.hpp>
 #include <powsybl/stdcxx/cast.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -38,23 +39,7 @@ stdcxx::CReference<NodeTerminal> CalculatedBus::findTerminal(const NodeBreakerVo
     if (!terminals.empty()) {
         return stdcxx::cref<NodeTerminal>(terminals.front().get());
     }
-
-    stdcxx::CReference<Terminal> terminal;
-
-    VoltageLevel::NodeBreakerView::Traverser traverser = [&terminal, &voltageLevel](unsigned long /*node1*/, const stdcxx::Reference<Switch>& sw, unsigned long node2) {
-        if (terminal) {
-            return false;
-        }
-
-        if (static_cast<bool>(sw) && sw.get().isOpen()) {
-            return false;
-        }
-        terminal = voltageLevel.getNodeBreakerView().getTerminal(node2);
-        return !static_cast<bool>(terminal);
-    };
-    voltageLevel.getNodeBreakerView().traverse(nodes.front(), traverser);
-
-    return stdcxx::cref<NodeTerminal>(terminal);
+    return stdcxx::cref<NodeTerminal>(Networks::getEquivalentTerminal(voltageLevel, nodes.front()));
 }
 
 double CalculatedBus::getAngle() const {

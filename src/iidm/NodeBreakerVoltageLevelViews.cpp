@@ -109,6 +109,10 @@ void BusBreakerViewImpl::removeSwitch(const std::string& /*switchId*/) {
     throw AssertionError("Not implemented");
 }
 
+void BusBreakerViewImpl::traverse(const Bus& /*bus*/, const TopologyTraverser& /*traverser*/) {
+    throw PowsyblException("Not supported in a node/breaker topology");
+}
+
 BusViewImpl::BusViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
@@ -348,12 +352,20 @@ void NodeBreakerViewImpl::removeSwitch(const std::string& switchId) {
     m_voltageLevel.removeSwitch(switchId);
 }
 
-void NodeBreakerViewImpl::traverse(unsigned long node, const Traverser& traverser) const {
-    powsybl::math::Traverser graphTraverser = [this, &traverser](unsigned long v1, unsigned long e, unsigned long v2) {
-        return traverser(v1, m_voltageLevel.getGraph().getEdgeObject(e), v2) ? powsybl::math::TraverseResult::CONTINUE : powsybl::math::TraverseResult::TERMINATE;
+void NodeBreakerViewImpl::traverse(unsigned long node, const TopologyTraverser& traverser) const {
+    math::Traverser graphTraverser = [this, &traverser](unsigned long v1, unsigned long e, unsigned long v2) {
+        return traverser(v1, m_voltageLevel.getGraph().getEdgeObject(e), v2);
     };
 
     m_voltageLevel.getGraph().traverse(node, graphTraverser);
+}
+
+void NodeBreakerViewImpl::traverse(stdcxx::const_range<unsigned long>& nodes, const TopologyTraverser& traverser) const {
+    powsybl::math::Traverser graphTraverser = [this, &traverser](unsigned long v1, unsigned long e, unsigned long v2) {
+        return traverser(v1, m_voltageLevel.getGraph().getEdgeObject(e), v2);
+    };
+
+    m_voltageLevel.getGraph().traverse(nodes, graphTraverser);
 }
 
 }  // namespace node_breaker_voltage_level

@@ -14,7 +14,7 @@ namespace powsybl {
 namespace iidm {
 
 HvdcConverterStation::HvdcConverterStation(const std::string& id, const std::string& name, bool fictitious, double lossFactor) :
-    Injection(id, name, fictitious, ConnectableType::HVDC_CONVERTER_STATION),
+    Injection(id, name, fictitious),
     m_lossFactor(checkLossFactor(*this, lossFactor)) {
 
 }
@@ -29,6 +29,11 @@ stdcxx::Reference<HvdcLine> HvdcConverterStation::getHvdcLine() {
 
 double HvdcConverterStation::getLossFactor() const {
     return m_lossFactor;
+}
+
+const IdentifiableType& HvdcConverterStation::getType() const {
+    static IdentifiableType s_type = IdentifiableType::HVDC_CONVERTER_STATION;
+    return s_type;
 }
 
 void HvdcConverterStation::remove() {

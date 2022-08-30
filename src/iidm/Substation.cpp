@@ -101,6 +101,11 @@ stdcxx::range<TwoWindingsTransformer> Substation::getTwoWindingsTransformers() {
     return m_voltageLevels | boost::adaptors::transformed(mapper) | stdcxx::flattened | boost::adaptors::filtered(DistinctPredicate());
 }
 
+const IdentifiableType& Substation::getType() const {
+    static IdentifiableType s_type = IdentifiableType::SUBSTATION;
+    return s_type;
+}
+
 const std::string& Substation::getTypeDescription() const {
     static std::string s_typeDescription = "Substation";
 
@@ -133,10 +138,10 @@ void Substation::remove() {
     for (VoltageLevel& vl : m_voltageLevels) {
         // Remove all branches, transformers and HVDC lines
         for (Connectable& connectable : vl.getConnectables()) {
-            ConnectableType type = connectable.getType();
+            IdentifiableType type = connectable.getType();
             if (VoltageLevels::MULTIPLE_TERMINALS_CONNECTABLE_TYPES.find(type) != VoltageLevels::MULTIPLE_TERMINALS_CONNECTABLE_TYPES.end()) {
                 connectable.remove();
-            } else if (type == ConnectableType::HVDC_CONVERTER_STATION) {
+            } else if (type == IdentifiableType::HVDC_CONVERTER_STATION) {
                 const auto& hvdcLine = getNetwork().findHvdcLine(dynamic_cast<HvdcConverterStation&>(connectable));
                 if (hvdcLine) {
                     hvdcLine.get().remove();

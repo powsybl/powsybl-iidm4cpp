@@ -14,9 +14,8 @@ namespace powsybl {
 
 namespace iidm {
 
-Connectable::Connectable(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType) :
-    Identifiable(id, name, fictitious),
-    m_connectableType(connectableType) {
+Connectable::Connectable(const std::string& id, const std::string& name, bool fictitious) :
+    Identifiable(id, name, fictitious) {
 }
 
 void Connectable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -48,10 +47,6 @@ void Connectable::extendVariantArraySize(unsigned long initVariantArraySize, uns
     for (auto& terminal : m_terminals) {
         terminal->extendVariantArraySize(initVariantArraySize, number, sourceIndex);
     }
-}
-
-const ConnectableType& Connectable::getType() const {
-    return m_connectableType;
 }
 
 const Network& Connectable::getNetwork() const {

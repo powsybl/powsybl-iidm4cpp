@@ -23,12 +23,18 @@ set(EXT_SOURCES
     src/DiscreteMeasurementsAdder.cpp
     src/DiscreteMeasurementsXmlSerializer.cpp
     src/DiscreteMeasurementValidationUtil.cpp
+    src/GeneratorShortCircuit.cpp
+    src/GeneratorShortCircuitAdder.cpp
+    src/GeneratorShortCircuitXmlSerializer.cpp
     src/HvdcAngleDroopActivePowerControl.cpp
     src/HvdcAngleDroopActivePowerControlAdder.cpp
     src/HvdcAngleDroopActivePowerControlXmlSerializer.cpp
     src/HvdcOperatorActivePowerRange.cpp
     src/HvdcOperatorActivePowerRangeAdder.cpp
     src/HvdcOperatorActivePowerRangeXmlSerializer.cpp
+    src/IdentifiableShortCircuit.cpp
+    src/IdentifiableShortCircuitAdder.cpp
+    src/IdentifiableShortCircuitXmlSerializer.cpp
     src/Iidm.cpp
     src/InjectionObservability.cpp
     src/InjectionObservabilityAdder.cpp
@@ -65,9 +71,11 @@ set(UNIT_TEST_SOURCES
     test/BranchObservabilityTest.cpp
     test/CoordinatedReactiveControlTest.cpp
     test/DiscreteMeasurementsTest.cpp
+    test/GeneratorShortCircuitTest.cpp
     test/HvdcAngleDroopActivePowerControlTest.cpp
     test/HvdcOperatorActivePowerRangeTest.cpp
     test/iidm.cpp
+    test/IdentifiableShortCircuitTest.cpp
     test/InjectionObservabilityTest.cpp
     test/MeasurementsTest.cpp
     test/RemoteReactivePowerControlTest.cpp

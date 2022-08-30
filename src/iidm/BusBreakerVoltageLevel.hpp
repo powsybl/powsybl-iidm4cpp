@@ -67,9 +67,9 @@ public:
 
     Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2);
 
-    void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser) const;
+    bool traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser) const;
 
-    void traverse(BusTerminal& terminal, voltage_level::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
+    bool traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -91,6 +91,9 @@ private: // VoltageLevel
     NodeBreakerView& getNodeBreakerView() override;
 
     void removeTopology() override;
+
+private:
+    static math::TraverseResult getTraverserResult(TerminalSet& visitedTerminals, BusTerminal& terminal, Terminal::TopologyTraverser& traverser);
 
 private:
     void checkTerminal(Terminal& terminal) const;
