@@ -82,7 +82,7 @@ BOOST_AUTO_TEST_CASE(getEdgeObject) {
     graph.addVertex();
     graph.addEdge(0, 1, stdcxx::ref(expected));
 
-    const stdcxx::Reference<E>& edge = graph.getEdgeObject(0);
+    stdcxx::Reference<E> edge = graph.getEdgeObject(0);
     BOOST_TEST(stdcxx::areSame(expected, edge.get()));
 
     const auto& objects = graph.getEdgeObjects();
@@ -346,6 +346,57 @@ BOOST_AUTO_TEST_CASE(traverse) {
     // Only vertices on first path encountering 0 are encountered
     std::vector<bool> encounteredExpected3 = {false, true, false, false, true, true};
     BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredExpected3.begin(), encounteredExpected3.end());
+}
+
+BOOST_AUTO_TEST_CASE(testGetEdgesFromVertex) {
+    UndirectedGraph<V, E> graph;
+    graph.addVertex();
+    graph.addVertex();
+    graph.addVertex();
+    graph.addEdge(0, 1, stdcxx::ref<E>());
+    graph.addEdge(1, 2, stdcxx::ref<E>());
+
+    const std::vector<unsigned long>& connectedTo1Ref = {0UL, 1UL};
+    const std::vector<unsigned long>& connectedTo1 = graph.getEdgesConnectedToVertex(1);
+    BOOST_CHECK_EQUAL_COLLECTIONS(connectedTo1Ref.begin(), connectedTo1Ref.end(), connectedTo1.begin(), connectedTo1.end());
+
+    const std::vector<unsigned long>& connectedTo0Ref = {0UL};
+    const std::vector<unsigned long>& connectedTo0 = graph.getEdgesConnectedToVertex(0);
+    BOOST_CHECK_EQUAL_COLLECTIONS(connectedTo0Ref.begin(), connectedTo0Ref.end(), connectedTo0.begin(), connectedTo0.end());
+}
+
+BOOST_AUTO_TEST_CASE(testGetEdgeObjectFromVertex) {
+    UndirectedGraph<V, E> graph;
+    graph.addVertex();
+    graph.addVertex();
+    graph.addVertex();
+
+    E arrow01("Arrow01");
+    E arrow12("Arrow12");
+    graph.addEdge(0, 1, stdcxx::ref(arrow01));
+    graph.addEdge(1, 2, stdcxx::ref(arrow12));
+
+    const auto& connectedTo0 = graph.getEdgeObjectsConnectedToVertex(0);
+    BOOST_CHECK_EQUAL(1, boost::size(connectedTo0));
+    std::vector<std::string> refConnectedTo0 = {"Arrow01"};
+    for (const std::string& name : refConnectedTo0) {
+        const auto& lookup = [&name](const stdcxx::Reference<E>& edge) {
+            return edge.get().getName() == name;
+        };
+        auto it = std::find_if(connectedTo0.begin(), connectedTo0.end(), lookup);
+        BOOST_CHECK(it != connectedTo0.end());
+    }
+
+    const auto& connectedTo1 = graph.getEdgeObjectsConnectedToVertex(1);
+    BOOST_CHECK_EQUAL(2, boost::size(connectedTo1));
+    std::vector<std::string> refConnectedTo1 = {"Arrow01", "Arrow12"};
+    for (const std::string& name : refConnectedTo1) {
+        const auto& lookup = [&name](const stdcxx::Reference<E>& edge) {
+            return edge.get().getName() == name;
+        };
+        auto it = std::find_if(connectedTo1.begin(), connectedTo1.end(), lookup);
+        BOOST_CHECK(it != connectedTo1.end());
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

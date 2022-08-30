@@ -213,6 +213,19 @@ stdcxx::const_range<unsigned long> NodeBreakerViewImpl::getNodes() const {
     return m_voltageLevel.getGraph().getVertices();
 }
 
+stdcxx::const_range<unsigned long> NodeBreakerViewImpl::getNodesInternalConnectedTo(unsigned long node) const {
+    const auto& isNull = [this](const unsigned long& edge) {
+        return !static_cast<bool>(m_voltageLevel.getGraph().getEdgeObject(edge));
+    };
+
+    const auto& mapper = [this, node](const unsigned long& edge) -> const unsigned long& {
+        unsigned long vertex1 = m_voltageLevel.getGraph().getEdgeVertex1(edge);
+        return vertex1 != node ? m_voltageLevel.getGraph().getEdgeVertex1(edge) : m_voltageLevel.getGraph().getEdgeVertex2(edge);
+    };
+
+    return m_voltageLevel.getGraph().getEdgeConnectedToVertex(node) | boost::adaptors::filtered(isNull) | boost::adaptors::transformed(mapper);
+}
+
 stdcxx::CReference<Terminal> NodeBreakerViewImpl::getOptionalTerminal(unsigned long node) const {
     if (m_voltageLevel.getGraph().vertexExists(node)) {
         return stdcxx::cref<Terminal>(m_voltageLevel.getGraph().getVertexObject(node));
@@ -257,6 +270,30 @@ stdcxx::range<Switch> NodeBreakerViewImpl::getSwitches() {
     const auto& mapper = stdcxx::map<stdcxx::Reference<Switch>, Switch>;
 
     return m_voltageLevel.getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+}
+
+stdcxx::const_range<Switch> NodeBreakerViewImpl::getSwitches(unsigned long node) const {
+    const auto& notNull = [](const stdcxx::Reference<Switch>& sw) {
+        return static_cast<bool>(sw);
+    };
+
+    const auto& deref = [](const stdcxx::Reference<Switch>& sw) -> const Switch& {
+        return sw.get();
+    };
+
+    return m_voltageLevel.getGraph().getEdgeObjectsConnectedToVertex(node) | boost::adaptors::filtered(notNull) | boost::adaptors::transformed(deref);
+}
+
+stdcxx::range<Switch> NodeBreakerViewImpl::getSwitches(unsigned long node) {
+    const auto& notNull = [](const stdcxx::Reference<Switch>& sw) {
+        return static_cast<bool>(sw);
+    };
+
+    const auto& deref = [](const stdcxx::Reference<Switch>& sw) -> Switch& {
+        return sw.get();
+    };
+
+    return m_voltageLevel.getGraph().getEdgeObjectsConnectedToVertex(node) | boost::adaptors::filtered(notNull) | boost::adaptors::transformed(deref);
 }
 
 stdcxx::CReference<Terminal> NodeBreakerViewImpl::getTerminal(unsigned long node) const {

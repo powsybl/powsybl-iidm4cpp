@@ -135,6 +135,8 @@ public:
 
     virtual stdcxx::const_range<unsigned long> getNodes() const = 0;
 
+    virtual stdcxx::const_range<unsigned long> getNodesInternalConnectedTo(unsigned long node) const = 0;
+
     virtual stdcxx::CReference<Terminal> getOptionalTerminal(unsigned long node) const = 0;
 
     virtual stdcxx::Reference<Terminal> getOptionalTerminal(unsigned long node) = 0;
@@ -148,6 +150,10 @@ public:
     virtual stdcxx::const_range<Switch> getSwitches() const = 0;
 
     virtual stdcxx::range<Switch> getSwitches() = 0;
+
+    virtual stdcxx::const_range<Switch> getSwitches(unsigned long node) const = 0;
+
+    virtual stdcxx::range<Switch> getSwitches(unsigned long node) = 0;
 
     virtual stdcxx::CReference<Terminal> getTerminal(unsigned long node) const = 0;
 
