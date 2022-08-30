@@ -445,19 +445,26 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     DanglingLine& danglingLine = network.getDanglingLine("DL1");
     const DanglingLine& cDanglingLine = network.getDanglingLine("DL1");
 
+    danglingLine.setB(0.0);
+    danglingLine.setG(2.0);
+    danglingLine.setP0(-200.0);
+    danglingLine.setQ0(0);
+    danglingLine.setR(5.0);
+    danglingLine.setX(0.0);
+
     danglingLine.getTerminal().getBusView().getBus().get().setAngle(2);
     danglingLine.getTerminal().setP(3);
-    danglingLine.getTerminal().setQ(4);
+    danglingLine.getTerminal().setQ(0);
     danglingLine.getTerminal().getBusView().getBus().get().setV(5);
     BOOST_CHECK(stdcxx::areSame(cDanglingLine.getBoundary(), danglingLine.getBoundary()));
     const Boundary& cBoundary = danglingLine.getBoundary();
     Boundary& boundary = danglingLine.getBoundary();
 
     constexpr double ACCEPTABLE_THRESHOLD = 1e-6;
-    BOOST_CHECK_CLOSE(82.47271661854765, boundary.getAngle(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(2065.500000000001, boundary.getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-781.1250000000001, boundary.getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(43.5, boundary.getV(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(2.0, boundary.getAngle(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(200, boundary.getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(0, boundary.getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(13.333333333, boundary.getV(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK(stdcxx::areSame(cDanglingLine, cBoundary.getConnectable()));
     BOOST_CHECK(stdcxx::areSame(cDanglingLine, boundary.getConnectable()));
     BOOST_CHECK(!boundary.getSide());
