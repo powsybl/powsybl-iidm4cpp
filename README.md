@@ -228,3 +228,4 @@ $> cmake --build . --target test
 $> cmake --build . --target code-coverage
 ```
 The HTML report is available in `<BUILD_DIR>/coverage/index.html`.
+
