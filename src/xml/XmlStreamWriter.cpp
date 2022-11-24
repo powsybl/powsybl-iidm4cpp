@@ -82,10 +82,9 @@ void XmlStreamWriter::writeEmptyElement(const std::string& uri, const std::strin
 }
 
 void XmlStreamWriter::writeEndDocument() {
-    int written = xmlTextWriterEndDocument(m_writer.get());
-    if (written < 0) {
-        throw XmlStreamException("Failed to write end document");
-    }
+    // deleting the xmlTextWriter pointer automatically calls xmlTextWriterFlush() and write to stream
+    // m_writer is instanciated in writeStartElement, so it must be deleted here
+    m_writer.reset();
 }
 
 void XmlStreamWriter::writeEndElement() {
