@@ -113,6 +113,8 @@ jobs:
         run: |
           set PATH=%PATH%;%LIBXML2_ROOT%\bin;%BOOST_ROOT%\lib64-msvc-14.2;%GITHUB_WORKSPACE%\build-windows\src\Release;%GITHUB_WORKSPACE%\build-windows\src\test\Release
           cmake --build %GITHUB_WORKSPACE%\build-windows --target RUN_TESTS --config Release --verbose
+          %GITHUB_WORKSPACE%\build-windows\tools\benchmark\Release\iidm-benchmark.exe --input-file %GITHUB_WORKSPACE%\test\resources\V1_5\eurostag-tutorial-example1.xml --output-file out.xml
+          type out.xml
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
 
