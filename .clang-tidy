@@ -22,6 +22,7 @@ Checks: '-*,
   -readability-magic-numbers,
   -readability-redundant-declaration,
   -readability-redundant-access-specifiers,
+  -readability-identifier-length
 '
 
 WarningsAsErrors: '*'
