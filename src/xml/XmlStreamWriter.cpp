@@ -149,11 +149,9 @@ void XmlStreamWriter::writeStartDocument(const std::string& encoding, const std:
     auto writeCallback = [](void* context, const char* buffer, int len) {
         XmlStreamWriter& writer = *static_cast<XmlStreamWriter*>(context);
 
-        size_t beforeWrite = writer.m_stream.tellp();
         writer.m_stream.write(buffer, len);
-        size_t afterWrite = writer.m_stream.tellp();
 
-        return static_cast<int>(afterWrite - beforeWrite);
+        return len;
     };
 
     auto closeCallback = [](void* /*context*/) {
