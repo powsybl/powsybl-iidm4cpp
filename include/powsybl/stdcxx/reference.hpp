@@ -108,8 +108,8 @@ CReference<T> cref(const std::unique_ptr<T>& pointer) {
     return static_cast<bool>(pointer) ? CReference<T>(*pointer) : CReference<T>();
 }
 
-template <typename T, typename = typename std::enable_if<!std::is_abstract<T>::value>::type>
-CReference<T> cref(const stdcxx::optional<T>& optional) {
+template <typename T, typename U, typename = typename std::enable_if<!std::is_abstract<U>::value && std::is_same<T, U>::value>::type>
+CReference<T> cref(const stdcxx::optional<U>& optional) {
     return static_cast<bool>(optional) ? CReference<T>(*optional) : CReference<T>();
 }
 
@@ -138,8 +138,8 @@ Reference<T> ref(const std::unique_ptr<T>& pointer) {
     return static_cast<bool>(pointer) ? Reference<T>(*pointer) : Reference<T>();
 }
 
-template <typename T, typename = typename std::enable_if<!std::is_abstract<T>::value>::type>
-Reference<T> ref(stdcxx::optional<T>& optional) {
+template <typename T, typename U, typename = typename std::enable_if<!std::is_abstract<U>::value && std::is_same<T, U>::value>::type>
+Reference<T> ref(stdcxx::optional<U>& optional) {
     return static_cast<bool>(optional) ? Reference<T>(*optional) : Reference<T>();
 }
 

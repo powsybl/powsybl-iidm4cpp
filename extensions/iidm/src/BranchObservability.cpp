@@ -34,35 +34,35 @@ const std::string& BranchObservability::getName() const {
 }
 
 stdcxx::CReference<ObservabilityQuality> BranchObservability::getQualityP1() const {
-    return stdcxx::cref(m_qualityP1);
+    return stdcxx::cref<ObservabilityQuality>(m_qualityP1);
 }
 
 stdcxx::Reference<ObservabilityQuality> BranchObservability::getQualityP1() {
-    return stdcxx::ref(m_qualityP1);
+    return stdcxx::ref<ObservabilityQuality>(m_qualityP1);
 }
 
 stdcxx::CReference<ObservabilityQuality> BranchObservability::getQualityP2() const {
-    return stdcxx::cref(m_qualityP2);
+    return stdcxx::cref<ObservabilityQuality>(m_qualityP2);
 }
 
 stdcxx::Reference<ObservabilityQuality> BranchObservability::getQualityP2() {
-    return stdcxx::ref(m_qualityP2);
+    return stdcxx::ref<ObservabilityQuality>(m_qualityP2);
 }
 
 stdcxx::CReference<ObservabilityQuality> BranchObservability::getQualityQ1() const {
-    return stdcxx::cref(m_qualityQ1);
+    return stdcxx::cref<ObservabilityQuality>(m_qualityQ1);
 }
 
 stdcxx::Reference<ObservabilityQuality> BranchObservability::getQualityQ1() {
-    return stdcxx::ref(m_qualityQ1);
+    return stdcxx::ref<ObservabilityQuality>(m_qualityQ1);
 }
 
 stdcxx::CReference<ObservabilityQuality> BranchObservability::getQualityQ2() const {
-    return stdcxx::cref(m_qualityQ2);
+    return stdcxx::cref<ObservabilityQuality>(m_qualityQ2);
 }
 
 stdcxx::Reference<ObservabilityQuality> BranchObservability::getQualityQ2() {
-    return stdcxx::ref(m_qualityQ2);
+    return stdcxx::ref<ObservabilityQuality>(m_qualityQ2);
 }
 
 const std::type_index& BranchObservability::getType() const {
