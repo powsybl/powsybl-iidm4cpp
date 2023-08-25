@@ -18,6 +18,7 @@
 #include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
+#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/stdcxx/DateTime.hpp>
@@ -259,6 +260,8 @@ public:
 
     stdcxx::range<Load> getLoads();
 
+    const std::string& getMinimumValidationLevel() const;
+
     const ShuntCompensator& getShuntCompensator(const std::string& id) const;
 
     ShuntCompensator& getShuntCompensator(const std::string& id);
@@ -369,6 +372,8 @@ public:
 
     Network& setForecastDistance(int forecastDistance);
 
+    Network& setMinimumValidationLevel(const std::string& minimumValidationLevel);
+
 protected:  // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -413,6 +418,8 @@ private:
     int m_forecastDistance = 0;
 
     std::string m_sourceFormat;
+
+    std::string m_minimumValidationLevel{converter::STEADY_STATE_HYPOTHESIS};
 
     NetworkIndex m_networkIndex;
 

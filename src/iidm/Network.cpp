@@ -88,6 +88,7 @@ Network::Network(Network&& network) noexcept :
     m_caseDate(std::move(network.m_caseDate)),
     m_forecastDistance(network.m_forecastDistance),
     m_sourceFormat(std::move(network.m_sourceFormat)),
+    m_minimumValidationLevel(std::move(network.m_minimumValidationLevel)),
     m_networkIndex(*this, std::move(network.m_networkIndex)),
     m_variantManager(*this, std::move(network.m_variantManager)),
     m_variants(*this, std::move(network.m_variants)),
@@ -440,6 +441,10 @@ stdcxx::range<Load> Network::getLoads() {
     return m_networkIndex.getAll<Load>();
 }
 
+const std::string& Network::getMinimumValidationLevel() const {
+    return m_minimumValidationLevel;
+}
+
 const Network& Network::getNetwork() const {
     return *this;
 }
@@ -696,6 +701,11 @@ Network& Network::setCaseDate(const stdcxx::DateTime& caseDate) {
 
 Network& Network::setForecastDistance(int forecastDistance) {
     m_forecastDistance = checkForecastDistance(*this, forecastDistance);
+    return *this;
+}
+
+Network& Network::setMinimumValidationLevel(const std::string& minimumValidationLevel) {
+    m_minimumValidationLevel = checkNotEmpty(*this, minimumValidationLevel, "Minimum validation level is empty");
     return *this;
 }
 

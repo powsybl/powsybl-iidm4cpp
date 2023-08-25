@@ -217,9 +217,12 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
     const std::string& sourceFormat = reader.getAttributeValue(SOURCE_FORMAT);
     int forecastDistance = reader.getOptionalAttributeValue(FORECAST_DISTANCE, 0);
     const std::string& caseDateStr = reader.getAttributeValue(CASE_DATE);
+    std::string minimumValidationLevel{STEADY_STATE_HYPOTHESIS};
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&minimumValidationLevel, &reader] { minimumValidationLevel = reader.getAttributeValue(MINIMUM_VALIDATION_LEVEL); });
 
     Network network(id, sourceFormat);
     network.setForecastDistance(forecastDistance);
+    network.setMinimumValidationLevel(minimumValidationLevel);
 
     try {
         network.setCaseDate(stdcxx::DateTime::parse(caseDateStr));
@@ -317,6 +320,7 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     writer.writeAttribute(CASE_DATE, network.getCaseDate().toString());
     writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&writer, &network] { writer.writeAttribute(MINIMUM_VALIDATION_LEVEL, network.getMinimumValidationLevel()); });
 
     AliasesXml::write(network, NETWORK, context);
     PropertiesXml::write(network, context);
