@@ -158,6 +158,14 @@ NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) 
     m_voltageLevel(voltageLevel) {
 }
 
+double NodeBreakerViewImpl::getFictitiousP0(unsigned long node) const {
+    return m_voltageLevel.getFictitiousP0(node);
+}
+
+double NodeBreakerViewImpl::getFictitiousQ0(unsigned long node) const {
+    return m_voltageLevel.getFictitiousQ0(node);
+}
+
 stdcxx::CReference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& bbsId) const {
     return stdcxx::cref(m_voltageLevel.getConnectable<BusbarSection>(bbsId));
 }
@@ -313,6 +321,16 @@ void NodeBreakerViewImpl::removeInternalConnections(unsigned long node1, unsigne
 
 void NodeBreakerViewImpl::removeSwitch(const std::string& switchId) {
     m_voltageLevel.removeSwitch(switchId);
+}
+
+voltage_level::NodeBreakerView& NodeBreakerViewImpl::setFictitiousP0(unsigned long node, double p0) {
+    m_voltageLevel.setFictitiousP0(node, p0);
+    return *this;
+}
+
+voltage_level::NodeBreakerView& NodeBreakerViewImpl::setFictitiousQ0(unsigned long node, double q0) {
+    m_voltageLevel.setFictitiousQ0(node, q0);
+    return *this;
 }
 
 void NodeBreakerViewImpl::traverse(unsigned long node, const TopologyTraverser& traverser) const {
