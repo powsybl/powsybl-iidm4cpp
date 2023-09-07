@@ -239,6 +239,24 @@ stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::stri
     throw PowsyblException(stdcxx::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getId()));
 }
 
+double NodeBreakerVoltageLevel::getFictitiousP0(unsigned long node) const {
+    const auto& it = m_fictitiousP0ByNode.find(node);
+    if (it != m_fictitiousP0ByNode.end()) {
+        return it->second;
+    }
+
+    return stdcxx::nan();
+}
+
+double NodeBreakerVoltageLevel::getFictitiousQ0(unsigned long node) const {
+    const auto& it = m_fictitiousQ0ByNode.find(node);
+    if (it != m_fictitiousQ0ByNode.end()) {
+        return it->second;
+    }
+
+    return stdcxx::nan();
+}
+
 const node_breaker_voltage_level::Graph& NodeBreakerVoltageLevel::getGraph() const {
     return m_graph;
 }
@@ -395,6 +413,14 @@ void NodeBreakerVoltageLevel::removeTopology() {
     }
     m_graph.removeAllEdges();
     m_switches.clear();
+}
+
+void NodeBreakerVoltageLevel::setFictitiousP0(unsigned long node, double p0) {
+    m_fictitiousP0ByNode[node] = p0;
+}
+
+void NodeBreakerVoltageLevel::setFictitiousQ0(unsigned long node, double q0) {
+    m_fictitiousQ0ByNode[node] = q0;
 }
 
 bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const {

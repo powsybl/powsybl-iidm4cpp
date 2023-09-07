@@ -175,6 +175,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/NetworkXml.cpp
     iidm/converter/xml/NetworkXmlReaderContext.cpp
     iidm/converter/xml/NetworkXmlWriterContext.cpp
+    iidm/converter/xml/NodeBreakerViewFictitiousInjectionXml.cpp
     iidm/converter/xml/NodeBreakerViewInternalConnectionXml.cpp
     iidm/converter/xml/NodeBreakerViewSwitchXml.cpp
     iidm/converter/xml/PropertiesXml.cpp

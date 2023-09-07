@@ -31,6 +31,7 @@
 #include "GeneratorXml.hpp"
 #include "LccConverterStationXml.hpp"
 #include "LoadXml.hpp"
+#include "NodeBreakerViewFictitiousInjectionXml.hpp"
 #include "NodeBreakerViewInternalConnectionXml.hpp"
 #include "NodeBreakerViewSwitchXml.hpp"
 #include "ShuntCompensatorXml.hpp"
@@ -108,6 +109,9 @@ void VoltageLevelXml::readNodeBreakerTopology(VoltageLevel& voltageLevel, Networ
             NodeBreakerViewInternalConnectionXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == BUS) {
             readCalculatedBus(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == FICTITIOUS_INJECTION) {
+            IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, FICTITIOUS_INJECTION, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_8(), context);
+            NodeBreakerViewFictitiousInjectionXml::getInstance().read(voltageLevel, context);
         } else {
             throw AssertionError(stdcxx::format("Unexpected element %1%", context.getReader().getLocalName()));
         }
@@ -255,6 +259,16 @@ void VoltageLevelXml::writeNodeBreakerTopology(const VoltageLevel& voltageLevel,
             const stdcxx::CReference<Bus>& bus = voltageLevel.getBusView().getBus(pair.first);
             if (bus && (!std::isnan(bus.get().getV()) || !std::isnan(bus.get().getAngle()))) {
                 writeCalculatedBus(bus.get(), pair.second, context);
+            }
+        }
+    });
+
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_8(), context.getVersion(), [&context, &voltageLevel]() {
+        for (const auto& node : voltageLevel.getNodeBreakerView().getNodes()) {
+            const auto fictP0 = voltageLevel.getNodeBreakerView().getFictitiousP0(node);
+            const auto fictQ0 = voltageLevel.getNodeBreakerView().getFictitiousQ0(node);
+            if (!std::isnan(fictP0) || !std::isnan(fictQ0)) {
+                NodeBreakerViewFictitiousInjectionXml::getInstance().write(node, fictP0, fictQ0, context);
             }
         }
     });
