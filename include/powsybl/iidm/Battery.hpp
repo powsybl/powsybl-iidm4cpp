@@ -21,7 +21,7 @@ public:  // Identifiable
 
 public:
     Battery(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-        double p0, double q0, double minP, double maxP);
+        double targetP, double targetQ, double minP, double maxP);
 
     ~Battery() noexcept override = default;
 
@@ -29,17 +29,17 @@ public:
 
     double getMinP() const;
 
-    double getP0() const;
+    double getTargetP() const;
 
-    double getQ0() const;
+    double getTargetQ() const;
 
     Battery& setMaxP(double maxP);
 
     Battery& setMinP(double minP);
 
-    Battery& setP0(double p0);
+    Battery& setTargetP(double targetP);
 
-    Battery& setQ0(double q0);
+    Battery& setTargetQ(double targetQ);
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -52,9 +52,9 @@ private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    std::vector<double> m_p0;
+    std::vector<double> m_targetP;
 
-    std::vector<double> m_q0;
+    std::vector<double> m_targetQ;
 
     double m_minP;
 

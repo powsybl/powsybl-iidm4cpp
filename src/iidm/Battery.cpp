@@ -14,10 +14,10 @@ namespace powsybl {
 namespace iidm {
 
 Battery::Battery(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-    double p0, double q0, double minP, double maxP) :
+    double targetP, double targetQ, double minP, double maxP) :
     Injection(id, name, fictitious),
-    m_p0(network.getVariantManager().getVariantArraySize(), p0),
-    m_q0(network.getVariantManager().getVariantArraySize(), q0),
+    m_targetP(network.getVariantManager().getVariantArraySize(), targetP),
+    m_targetQ(network.getVariantManager().getVariantArraySize(), targetQ),
     m_minP(checkMinP(*this, minP)),
     m_maxP(checkMaxP(*this, maxP)) {
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
@@ -25,8 +25,8 @@ Battery::Battery(VariantManagerHolder& network, const std::string& id, const std
         auto& n = dynamic_cast<Network&>(network);
         vl = n.getMinimumValidationLevel();
     }
-    checkP0(*this, p0, vl);
-    checkQ0(*this, q0, vl);
+    checkP0(*this, targetP, vl);
+    checkQ0(*this, targetQ, vl);
     checkActivePowerLimits(*this, minP, maxP);
 }
 
@@ -34,16 +34,16 @@ void Battery::allocateVariantArrayElement(const std::set<unsigned long>& indexes
     Injection::allocateVariantArrayElement(indexes, sourceIndex);
 
     for (auto index : indexes) {
-        m_p0[index] = m_p0[sourceIndex];
-        m_q0[index] = m_q0[sourceIndex];
+        m_targetP[index] = m_targetP[sourceIndex];
+        m_targetQ[index] = m_targetQ[sourceIndex];
     }
 }
 
 void Battery::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     Injection::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
-    m_p0.resize(m_p0.size() + number, m_p0[sourceIndex]);
-    m_q0.resize(m_q0.size() + number, m_q0[sourceIndex]);
+    m_targetP.resize(m_targetP.size() + number, m_targetP[sourceIndex]);
+    m_targetQ.resize(m_targetQ.size() + number, m_targetQ[sourceIndex]);
 }
 
 double Battery::getMaxP() const {
@@ -54,12 +54,12 @@ double Battery::getMinP() const {
     return m_minP;
 }
 
-double Battery::getP0() const {
-    return m_p0.at(getNetwork().getVariantIndex());
+double Battery::getTargetP() const {
+    return m_targetP.at(getNetwork().getVariantIndex());
 }
 
-double Battery::getQ0() const {
-    return m_q0.at(getNetwork().getVariantIndex());
+double Battery::getTargetQ() const {
+    return m_targetQ.at(getNetwork().getVariantIndex());
 }
 
 const IdentifiableType& Battery::getType() const {
@@ -76,8 +76,8 @@ const std::string& Battery::getTypeDescription() const {
 void Battery::reduceVariantArraySize(unsigned long number) {
     Injection::reduceVariantArraySize(number);
 
-    m_p0.resize(m_p0.size() - number);
-    m_q0.resize(m_q0.size() - number);
+    m_targetP.resize(m_targetP.size() - number);
+    m_targetQ.resize(m_targetQ.size() - number);
 }
 
 Battery& Battery::setMaxP(double maxP) {
@@ -96,20 +96,20 @@ Battery& Battery::setMinP(double minP) {
     return *this;
 }
 
-Battery& Battery::setP0(double p0) {
-    checkP0(*this, p0, getNetwork().getMinimumValidationLevel());
+Battery& Battery::setTargetP(double targetP) {
+    checkP0(*this, targetP, getNetwork().getMinimumValidationLevel());
 
-    m_p0[getNetwork().getVariantIndex()] = p0;
+    m_targetP[getNetwork().getVariantIndex()] = targetP;
 
     getNetwork().invalidateValidationLevel();
 
     return *this;
 }
 
-Battery& Battery::setQ0(double q0) {
-    checkQ0(*this, q0, getNetwork().getMinimumValidationLevel());
+Battery& Battery::setTargetQ(double targetQ) {
+    checkQ0(*this, targetQ, getNetwork().getMinimumValidationLevel());
 
-    m_q0[getNetwork().getVariantIndex()] = q0;
+    m_targetQ[getNetwork().getVariantIndex()] = targetQ;
 
     getNetwork().invalidateValidationLevel();
 
