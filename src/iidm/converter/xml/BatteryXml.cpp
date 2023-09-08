@@ -31,13 +31,15 @@ const char* BatteryXml::getRootElementName() const {
 }
 
 Battery& BatteryXml::readRootElementAttributes(BatteryAdder& adder, NetworkXmlReaderContext& context) const {
-    const auto& p0 = context.getReader().getAttributeValue<double>(P0);
-    const auto& q0 = context.getReader().getAttributeValue<double>(Q0);
+    const std::string& targetPName = context.getVersion() <= IidmXmlVersion::V1_7() ? P0 : TARGET_P;
+    const std::string& targetQName = context.getVersion() <= IidmXmlVersion::V1_7() ? Q0 : TARGET_Q;
+    const auto& targetP = context.getReader().getAttributeValue<double>(targetPName);
+    const auto& targetQ = context.getReader().getAttributeValue<double>(targetQName);
     const auto& minP = context.getReader().getAttributeValue<double>(MIN_P);
     const auto& maxP = context.getReader().getAttributeValue<double>(MAX_P);
     readNodeOrBus(adder, context);
-    Battery& battery = adder.setP0(p0)
-        .setQ0(q0)
+    Battery& battery = adder.setTargetP(targetP)
+        .setTargetQ(targetQ)
         .setMinP(minP)
         .setMaxP(maxP)
         .add();
@@ -57,8 +59,10 @@ void BatteryXml::readSubElements(Battery& battery, NetworkXmlReaderContext& cont
 }
 
 void BatteryXml::writeRootElementAttributes(const Battery& battery, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeAttribute(P0, battery.getP0());
-    context.getWriter().writeAttribute(Q0, battery.getQ0());
+    const std::string& targetPName = context.getVersion() <= IidmXmlVersion::V1_7() ? P0 : TARGET_P;
+    const std::string& targetQName = context.getVersion() <= IidmXmlVersion::V1_7() ? Q0 : TARGET_Q;
+    context.getWriter().writeAttribute(targetPName, battery.getTargetP());
+    context.getWriter().writeAttribute(targetQName, battery.getTargetQ());
     context.getWriter().writeAttribute(MIN_P, battery.getMinP());
     context.getWriter().writeAttribute(MAX_P, battery.getMaxP());
     writeNodeOrBus(battery.getTerminal(), context);
