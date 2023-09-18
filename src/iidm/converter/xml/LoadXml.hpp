@@ -36,6 +36,8 @@ protected:  // AbstractIdentifiableXml
 
     void writeRootElementAttributes(const Load& load, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
+    void writeSubElements(const Load& load, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+
 private:
     LoadXml() = default;
 

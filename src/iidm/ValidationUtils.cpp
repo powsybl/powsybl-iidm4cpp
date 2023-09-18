@@ -124,6 +124,20 @@ double checkBPerSection(const Validable& validable, double bPerSection) {
     return bPerSection;
 }
 
+double checkCoefficient(const Validable& validable, double coefficient) {
+    if (std::isnan(coefficient) || coefficient < 0) {
+        throw ValidationException(validable, stdcxx::format("Invalid zip load model coefficient: %1%", coefficient));
+    }
+    return coefficient;
+}
+
+double checkExponent(const Validable& validable, double n) {
+    if (std::isnan(n) || n < 0) {
+        throw ValidationException(validable, stdcxx::format("Invalid load model exponential value: %1%", n));
+    }
+    return n;
+}
+
 ValidationLevel checkConvertersMode(const Validable& /*validable*/, const HvdcLine::ConvertersMode& converterMode, const ValidationLevel& /*vl*/) {
     switch (converterMode) {
         case HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER:

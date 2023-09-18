@@ -11,6 +11,8 @@
 
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
+#include <powsybl/iidm/LoadExponentialModel.hpp>
+#include <powsybl/iidm/LoadZipModel.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 
@@ -51,7 +53,23 @@ Load& LoadXml::readRootElementAttributes(LoadAdder& loadAdder, NetworkXmlReaderC
 
 void LoadXml::readSubElements(Load& load, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(LOAD, [this, &load, &context]() {
-        AbstractConnectableXml::readSubElements(load, context);
+        if (context.getReader().getLocalName() == ZIP_MODEL) {
+            IidmXmlUtil::assertMinimumVersion(LOAD, ZIP_MODEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_10(), context);
+            const auto& c0p = context.getReader().getAttributeValue<double>(C0P);
+            const auto& c1p = context.getReader().getAttributeValue<double>(C1P);
+            const auto& c2p = context.getReader().getAttributeValue<double>(C2P);
+            const auto& c0q = context.getReader().getAttributeValue<double>(C0Q);
+            const auto& c1q = context.getReader().getAttributeValue<double>(C1Q);
+            const auto& c2q = context.getReader().getAttributeValue<double>(C2Q);
+            load.setModel(LoadZipModel::build(load, c0p, c1p, c2p, c0q, c1q, c2q));
+        } else if (context.getReader().getLocalName() == EXPONENTIAL_MODEL) {
+            IidmXmlUtil::assertMinimumVersion(LOAD, EXPONENTIAL_MODEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_10(), context);
+            const auto& np = context.getReader().getAttributeValue<double>(NP);
+            const auto& nq = context.getReader().getAttributeValue<double>(NQ);
+            load.setModel(LoadExponentialModel::build(load, np, nq));
+        } else {
+            AbstractConnectableXml::readSubElements(load, context);
+        }
     });
 }
 
@@ -61,6 +79,26 @@ void LoadXml::writeRootElementAttributes(const Load& load, const VoltageLevel& /
     context.getWriter().writeOptionalAttribute(Q0, load.getQ0());
     writeNodeOrBus(load.getTerminal(), context);
     writePQ(load.getTerminal(), context.getWriter());
+}
+
+void LoadXml::writeSubElements(const Load& load, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_10(), context.getVersion(), [&context, &load]() {
+        if (LoadModelType::ZIP == load.getModelType()) {
+            context.getWriter().writeStartElement(context.getVersion().getPrefix(), ZIP_MODEL);
+            context.getWriter().writeAttribute(C0P, load.getModel<LoadZipModel>().getC0p());
+            context.getWriter().writeAttribute(C1P, load.getModel<LoadZipModel>().getC1p());
+            context.getWriter().writeAttribute(C2P, load.getModel<LoadZipModel>().getC2p());
+            context.getWriter().writeAttribute(C0Q, load.getModel<LoadZipModel>().getC0q());
+            context.getWriter().writeAttribute(C1Q, load.getModel<LoadZipModel>().getC1q());
+            context.getWriter().writeAttribute(C2Q, load.getModel<LoadZipModel>().getC2q());
+            context.getWriter().writeEndElement();
+        } else if (LoadModelType::EXPONENTIAL == load.getModelType()) {
+            context.getWriter().writeStartElement(context.getVersion().getPrefix(), EXPONENTIAL_MODEL);
+            context.getWriter().writeAttribute(NP, load.getModel<LoadExponentialModel>().getNp());
+            context.getWriter().writeAttribute(NQ, load.getModel<LoadExponentialModel>().getNq());
+            context.getWriter().writeEndElement();
+        }
+    });
 }
 
 }  // namespace xml

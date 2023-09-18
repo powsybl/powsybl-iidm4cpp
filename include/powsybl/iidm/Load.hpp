@@ -8,9 +8,11 @@
 #ifndef POWSYBL_IIDM_LOAD_HPP
 #define POWSYBL_IIDM_LOAD_HPP
 
+#include <memory>
 #include <vector>
 
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/LoadModel.hpp>
 #include <powsybl/iidm/LoadType.hpp>
 
 namespace powsybl {
@@ -29,11 +31,25 @@ public:
 
     const LoadType& getLoadType() const;
 
+    template <typename T, typename = typename std::enable_if<std::is_base_of<LoadModel, T>::value>::type>
+    const T& getModel() const;
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<LoadModel, T>::value>::type>
+    T& getModel();
+
+    const LoadModel& getModel() const;
+
+    LoadModel& getModel();
+
+    const LoadModelType& getModelType() const;
+
     double getP0() const;
 
     double getQ0() const;
 
     Load& setLoadType(const LoadType& loadType);
+
+    Load& setModel(std::unique_ptr<LoadModel>&& model);
 
     Load& setP0(double p0);
 
@@ -52,6 +68,8 @@ private: // Identifiable
 private:
     LoadType m_loadType;
 
+    std::unique_ptr<LoadModel> m_model;
+
     std::vector<double> m_p0;
 
     std::vector<double> m_q0;
@@ -60,5 +78,7 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/Load.hxx>
 
 #endif  // POWSYBL_IIDM_LOAD_HPP
