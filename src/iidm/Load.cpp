@@ -43,6 +43,19 @@ const LoadType& Load::getLoadType() const {
     return m_loadType;
 }
 
+const LoadModel& Load::getModel() const {
+    return *m_model;
+}
+
+LoadModel& Load::getModel() {
+    return *m_model;
+}
+
+const LoadModelType& Load::getModelType() const {
+    static LoadModelType s_type = LoadModelType::NONE;
+    return m_model ? m_model->getType() : s_type;
+}
+
 double Load::getP0() const {
     return m_p0.at(getNetwork().getVariantIndex());
 }
@@ -71,6 +84,12 @@ void Load::reduceVariantArraySize(unsigned long number) {
 
 Load& Load::setLoadType(const LoadType& loadType) {
     m_loadType = checkLoadType(*this, loadType);
+
+    return *this;
+}
+
+Load& Load::setModel(std::unique_ptr<LoadModel>&& model) {
+    m_model = std::move(model);
 
     return *this;
 }
