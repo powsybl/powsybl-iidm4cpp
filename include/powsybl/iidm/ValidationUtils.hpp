@@ -42,7 +42,11 @@ double checkBmin(const Validable& validable, double bMin);
 
 double checkBPerSection(const Validable& validable, double bPerSection);
 
+double checkCoefficient(const Validable& validable, double coefficient);
+
 const HvdcLine::ConvertersMode& checkConvertersMode(const Validable& validable, const HvdcLine::ConvertersMode& converterMode);
+
+double checkExponent(const Validable& validable, double n);
 
 int checkForecastDistance(const Validable& validable, int forecastDistance);
 

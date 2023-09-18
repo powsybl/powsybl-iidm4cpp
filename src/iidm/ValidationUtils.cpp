@@ -88,6 +88,13 @@ double checkBPerSection(const Validable& validable, double bPerSection) {
     return bPerSection;
 }
 
+double checkCoefficient(const Validable& validable, double coefficient) {
+    if (std::isnan(coefficient) || coefficient < 0) {
+        throw ValidationException(validable, stdcxx::format("Invalid zip load model coefficient: %1%", coefficient));
+    }
+    return coefficient;
+}
+
 const HvdcLine::ConvertersMode& checkConvertersMode(const Validable& /*validable*/, const HvdcLine::ConvertersMode& converterMode) {
     switch (converterMode) {
         case HvdcLine::ConvertersMode::SIDE_1_RECTIFIER_SIDE_2_INVERTER:
@@ -98,6 +105,13 @@ const HvdcLine::ConvertersMode& checkConvertersMode(const Validable& /*validable
             throw AssertionError(stdcxx::format("Unexpected converter mode value: %1%", converterMode));
     }
     return converterMode;
+}
+
+double checkExponent(const Validable& validable, double n) {
+    if (std::isnan(n) || n < 0) {
+        throw ValidationException(validable, stdcxx::format("Invalid load model exponential value: %1%", n));
+    }
+    return n;
 }
 
 int checkForecastDistance(const Validable& validable, int forecastDistance) {

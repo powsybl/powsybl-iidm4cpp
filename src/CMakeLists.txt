@@ -77,7 +77,9 @@ set(IIDM_SOURCES
     iidm/Load.cpp
     iidm/LoadAdder.cpp
     iidm/LoadingLimits.cpp
+    iidm/LoadExponentialModel.cpp
     iidm/LoadType.cpp
+    iidm/LoadZipModel.cpp
     iidm/MergedBus.cpp
     iidm/MinMaxReactiveLimits.cpp
     iidm/MinMaxReactiveLimitsAdder.cpp
