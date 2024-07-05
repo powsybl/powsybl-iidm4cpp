@@ -52,9 +52,12 @@ Extension& DiscreteMeasurementsXmlSerializer::read(Extendable& extendable, conve
 
 void DiscreteMeasurementsXmlSerializer::readDiscreteMeasurement(DiscreteMeasurements& discreteMeasurements, const xml::XmlStreamReader& reader) {
     DiscreteMeasurementAdder adder = discreteMeasurements.newDiscreteMeasurement()
-        .setId(reader.getAttributeValue(ID))
         .setType(Enum::fromString<DiscreteMeasurement::Type>(reader.getAttributeValue(TYPE)))
         .setValid(reader.getAttributeValue<bool>(VALID));
+    const std::string& dmId = reader.getOptionalAttributeValue(ID, "");
+    if (!dmId.empty()) {
+        adder.setId(dmId);
+    }
     const std::string& tapChanger = reader.getOptionalAttributeValue(TAP_CHANGER, "");
     if (!tapChanger.empty()) {
         adder.setTapChanger(Enum::fromString<DiscreteMeasurement::TapChanger>(tapChanger));
