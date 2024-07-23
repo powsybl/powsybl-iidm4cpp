@@ -230,8 +230,9 @@ BOOST_FIXTURE_TEST_CASE(MeasurementsXmlSerializerTest, test::ResourceFixture) {
         .setValid(true)
         .putProperty("source", "test2")
         .add();
+
     const std::string& networkStrRef = ResourceFixture::getResource("/measRef.xml");
-    powsybl::iidm::Network::writeXml("/home/aouizerategil/Projects/powsybl-my-examples/mes2.xml", network);
+
     test::converter::RoundTrip::runXml(network, networkStrRef);
 }
 
