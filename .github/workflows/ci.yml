@@ -119,6 +119,8 @@ jobs:
   qa:
     name: QA
     runs-on: ubuntu-latest
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
     steps:
       - name: Install Java 17
         uses: actions/setup-java@99b8673ff64fbf99d8d325f52d9a5bdedb8483e9 # v4.2.1
@@ -131,22 +133,6 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y gcovr
 
-      - name: Install Sonar wrapper
-        working-directory: ${{ runner.workspace }}
-        run: |
-          wget https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
-          unzip build-wrapper-linux-x86.zip
-
-      - name: Install Sonar scanner
-        working-directory: ${{ runner.workspace }}
-        run: |
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-          unzip sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-          ln -s sonar-scanner-${SONAR_SCANNER_VERSION} sonar
-          rm sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-        env:
-          SONAR_SCANNER_VERSION: 3.3.0.1492
-
       - name: Install Boost
         run: |
           sudo apt-get update -y
@@ -155,18 +141,13 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@v1
 
-      - name: Configure CMake
-        run: >
-          cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build
-          -DCMAKE_BUILD_TYPE=Debug
-          -DCODE_COVERAGE=TRUE
-          -DBUILD_EXAMPLES=ON
+      - name: Install sonar-scanner and build-wrapper
+        uses: SonarSource/sonarcloud-github-c-cpp@816b1822d71776ee0d32bc012e95024ec52ac1fc # v3.1.0
 
       - name: Build
-        run:  >
-          ${{ runner.workspace }}/build-wrapper-linux-x86/build-wrapper-linux-x86-64
-          --out-dir $GITHUB_WORKSPACE/build/output
-          cmake --build $GITHUB_WORKSPACE/build --parallel 2
+        run: |
+          cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=TRUE -DBUILD_EXAMPLES=ON
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build $GITHUB_WORKSPACE/build --parallel 2
 
       - name: Tests
         run: >
@@ -178,10 +159,9 @@ jobs:
         run: cmake --build $GITHUB_WORKSPACE/build --target code-coverage
 
       - name: Sonarcloud
-        working-directory: ${{ runner.workspace }}/powsybl-iidm4cpp
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: >
-          ${{ runner.workspace }}/sonar/bin/sonar-scanner
-          -Dsonar.host.url=https://sonarcloud.io
+        run: |
+          sonar-scanner --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json"
+
