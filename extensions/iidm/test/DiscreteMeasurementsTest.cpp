@@ -227,6 +227,23 @@ BOOST_FIXTURE_TEST_CASE(DiscreteMeasurementsXmlSerializerTest, test::ResourceFix
         .putProperty("source", "test2")
         .add();
 
+    Switch& sw2 = network.getSwitch("S1VL1_BBS_TWT_DISCONNECTOR");
+    sw2.newExtension<DiscreteMeasurementsAdder>().add();
+    sw2.getExtension<DiscreteMeasurements>()
+        .newDiscreteMeasurement()
+        .setType(DiscreteMeasurement::Type::SWITCH_POSITION)
+        .setValue("CLOSED")
+        .setValid(false)
+        .putProperty("source", "test")
+        .add();
+    sw2.getExtension<DiscreteMeasurements>()
+        .newDiscreteMeasurement()
+        .setType(DiscreteMeasurement::Type::OTHER)
+        .setValue("CLOSED")
+        .setValid(false)
+        .putProperty("source", "test")
+        .add();
+
     const std::string& networkStrRef = ResourceFixture::getResource("/disMeasRef.xml");
 
     test::converter::RoundTrip::runXml(network, networkStrRef);

@@ -52,6 +52,10 @@
             <m:measurement id="MEAS_TWT_Q_1" type="REACTIVE_POWER" side="ONE" value="605.20000000000005" standardDeviation="9.6999999999999993" valid="true">
                 <m:property name="source" value="test2"/>
             </m:measurement>
+            <m:measurement type="ACTIVE_POWER" side="TWO" value="-300" standardDeviation="10.199999999999999" valid="true"/>
+            <m:measurement type="ACTIVE_POWER" side="ONE" value="301.19999999999999" standardDeviation="9.6999999999999993" valid="true">
+                <m:property name="source" value="test2"/>
+            </m:measurement>
         </m:measurements>
     </iidm:extension>
 </iidm:network>
