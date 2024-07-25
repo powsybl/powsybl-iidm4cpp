@@ -45,11 +45,14 @@ Extension& MeasurementsXmlSerializer::read(Extendable& extendable, converter::xm
     context.getReader().readUntilEndElement("measurements", [&measurements, &context]() {
         if (context.getReader().getLocalName() == "measurement") {
             MeasurementAdder adder = measurements.newMeasurement()
-                .setId(context.getReader().getAttributeValue(converter::ID))
                 .setType(Enum::fromString<Measurement::Type>(context.getReader().getAttributeValue(converter::TYPE)))
                 .setValue(context.getReader().getOptionalAttributeValue(converter::VALUE, stdcxx::nan()))
                 .setStandardDeviation(context.getReader().getOptionalAttributeValue("standardDeviation", stdcxx::nan()))
                 .setValid(context.getReader().getAttributeValue<bool>("valid"));
+            const std::string& mId = context.getReader().getOptionalAttributeValue(converter::ID, "");
+            if (!mId.empty()) {
+                adder.setId(mId);
+            }
             const std::string& side = context.getReader().getOptionalAttributeValue(converter::SIDE, "");
             if (!side.empty()) {
                 adder.setSide(Enum::fromString<Measurement::Side>(side));

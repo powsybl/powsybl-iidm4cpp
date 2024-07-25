@@ -213,6 +213,23 @@ BOOST_FIXTURE_TEST_CASE(MeasurementsXmlSerializerTest, test::ResourceFixture) {
         .setValid(true)
         .putProperty("source", "test2")
         .add();
+    twt.getExtension<Measurements>()
+        .newMeasurement()
+        .setType(Measurement::Type::ACTIVE_POWER)
+        .setSide(Measurement::Side::TWO)
+        .setValue(-300.0)
+        .setStandardDeviation(10.2)
+        .setValid(true)
+        .add();
+    twt.getExtension<Measurements>()
+        .newMeasurement()
+        .setType(Measurement::Type::ACTIVE_POWER)
+        .setSide(Measurement::Side::ONE)
+        .setValue(301.2)
+        .setStandardDeviation(9.7)
+        .setValid(true)
+        .putProperty("source", "test2")
+        .add();
 
     const std::string& networkStrRef = ResourceFixture::getResource("/measRef.xml");
 
