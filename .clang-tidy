@@ -27,3 +27,7 @@ Checks: '-*,
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: 'include/powsybl/.*|src/.*|extensions/.*|test/.*'
+
+CheckOptions:
+- key:             readability-function-cognitive-complexity.IgnoreMacros
+- value:           'true'
