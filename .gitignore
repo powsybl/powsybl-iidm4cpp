@@ -16,3 +16,6 @@ cmake-build*/
 .cproject
 .project
 .settings/
+
+# Generated readthedocs pages
+build-docs/
