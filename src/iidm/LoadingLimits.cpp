@@ -39,10 +39,12 @@ bool LoadingLimits::TemporaryLimit::isFictitious() const {
     return m_isFictitious;
 }
 
-LoadingLimits::LoadingLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits) :
+LoadingLimits::LoadingLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, 
+const FictitiousLimits& fictitiousLimits) :
     OperationalLimits(owner),
     m_permanentLimit(permanentLimit),
-    m_temporaryLimits(temporaryLimits) {
+    m_temporaryLimits(temporaryLimits),
+    m_fictitiousLimits(fictitiousLimits) {
 }
 
 double LoadingLimits::getPermanentLimit() const {
@@ -63,6 +65,14 @@ stdcxx::const_range<LoadingLimits::TemporaryLimit> LoadingLimits::getTemporaryLi
 
 stdcxx::range<LoadingLimits::TemporaryLimit> LoadingLimits::getTemporaryLimits() {
     return m_temporaryLimits | boost::adaptors::map_values;
+}
+
+stdcxx::const_range<LoadingLimits::TemporaryLimit> LoadingLimits::getFictitiousLimits() const {
+    return m_fictitiousLimits | boost::adaptors::map_values;
+}
+
+stdcxx::range<LoadingLimits::TemporaryLimit> LoadingLimits::getFictitiousLimits() {
+    return m_fictitiousLimits | boost::adaptors::map_values;
 }
 
 double LoadingLimits::getTemporaryLimitValue(unsigned long acceptableDuration) const {
