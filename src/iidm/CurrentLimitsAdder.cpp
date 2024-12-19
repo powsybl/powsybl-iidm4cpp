@@ -20,7 +20,7 @@ CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsOwner& owner) :
 
 CurrentLimits& CurrentLimitsAdder::add() {
     checkLoadingLimits();
-    auto limit = m_owner.setOperationalLimits(LimitType::CURRENT, stdcxx::make_unique<CurrentLimits>(m_owner, getPermanentLimit(), getTemporaryLimits()));
+    auto limit = m_owner.setOperationalLimits(LimitType::CURRENT, stdcxx::make_unique<CurrentLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits()));
     return static_cast<CurrentLimits&>(limit.get());
 }
 
