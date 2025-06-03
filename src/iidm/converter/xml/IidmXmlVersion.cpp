@@ -108,7 +108,7 @@ std::string IidmXmlVersion::getXsd() const {
 const IidmXmlVersion& IidmXmlVersion::of(const std::string& version, const std::string& separator) {
     for (const auto& v : all()) {
         if (v.get().toString(separator) == version) {
-            return v;
+            return v.get();
         }
     }
 

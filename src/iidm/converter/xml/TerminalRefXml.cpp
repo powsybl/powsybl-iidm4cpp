@@ -59,9 +59,10 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
 }
 
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& nsPrefix, const std::string& elementName, powsybl::xml::XmlStreamWriter& writer) {
-    const auto& c = terminal.getConnectable();
+    stdcxx::CReference<Connectable> refConnectable = terminal.getConnectable();
+    const auto& c = refConnectable.get();
     if (!context.getFilter().test(c)) {
-        throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
+        throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.getId()));
     }
     if (terminal.getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER &&
             context.getOptions().getTopologyLevel() != TopologyLevel::NODE_BREAKER &&

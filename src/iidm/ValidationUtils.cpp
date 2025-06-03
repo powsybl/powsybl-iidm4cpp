@@ -331,7 +331,7 @@ void checkRatioTapChangerRegulation(const Validable& validable, bool regulating,
         if (!regulationTerminal) {
             throwExceptionOrWarningForRtc(validable, loadTapChangingCapabilities, "a regulation terminal has to be set for a regulating ratio tap changer");
         }
-        if (!stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
+        if (regulationTerminal && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
             throwExceptionOrWarningForRtc(validable, loadTapChangingCapabilities, "regulation terminal is not part of the network");
         }
     }
