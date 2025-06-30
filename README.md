@@ -34,12 +34,12 @@ To build powsybl-iidm4cpp, you need:
 
 ### Ubuntu 20.04
 ```
-$> apt install -y cmake g++ git libboost-all-dev libxml2-dev make
+$> apt install -y cmake g++ git libboost1.74-all-dev libxml2-dev make
 ```
 
 ### Ubuntu 18.04
 ```
-$> apt install -y g++ git libboost-all-dev libxml2-dev make wget
+$> apt install -y g++ git libboost1.74-all-dev libxml2-dev make wget
 ```
 
 **Note:** Under Ubuntu 18.04, the default CMake package is too old (3.10), so you have to install it manually:

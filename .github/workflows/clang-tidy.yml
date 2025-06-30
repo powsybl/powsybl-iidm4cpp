@@ -19,7 +19,7 @@ jobs:
       - name: Install Boost
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y libboost-all-dev
+          sudo apt-get install -y libboost1.74-all-dev
 
       - name: Install clang-tidy
         run: |

@@ -18,6 +18,8 @@
 #include <powsybl/math/GraphUtil.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
+#include <chrono>
+
 namespace powsybl {
 
 namespace iidm {
