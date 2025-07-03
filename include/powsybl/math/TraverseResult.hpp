@@ -8,11 +8,13 @@
 #ifndef POWSYBL_MATH_TRAVERSERESULT_HPP
 #define POWSYBL_MATH_TRAVERSERESULT_HPP
 
+#include <cstdint>
+
 namespace powsybl {
 
 namespace math {
 
-enum class TraverseResult {
+enum class TraverseResult : std::uint8_t {
     /** Indicates that traversal should continue */
     CONTINUE,
 

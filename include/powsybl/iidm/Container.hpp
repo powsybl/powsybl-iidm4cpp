@@ -10,13 +10,15 @@
 
 #include <powsybl/iidm/Identifiable.hpp>
 
+#include <cstdint>
+
 namespace powsybl {
 
 namespace iidm {
 
 class Container : public Identifiable {
 public:
-    enum class Type {
+    enum class Type : std::uint8_t {
         NETWORK,
         SUBSTATION,
         VOLTAGE_LEVEL

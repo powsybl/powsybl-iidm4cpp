@@ -11,6 +11,8 @@
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
+#include <cstdint>
+
 namespace powsybl {
 
 namespace iidm {
@@ -25,7 +27,7 @@ public:  // Connectable
     void remove() override;
 
 public:
-    enum class HvdcType {
+    enum class HvdcType : std::uint8_t {
         VSC,
         LCC
     };

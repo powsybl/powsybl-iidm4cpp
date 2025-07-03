@@ -58,12 +58,12 @@ void AbstractComponentsManager::fillAdjacencyList(const std::map<std::string, un
         addToAdjacencyList(bus1, bus2, id2num, adjacencyList);
     }
     for (const ThreeWindingsTransformer& twt : getNetwork().getThreeWindingsTransformers()) {
-        const auto& bus1 = twt.getLeg1().getTerminal().getBusView().getBus();
-        const auto& bus2 = twt.getLeg2().getTerminal().getBusView().getBus();
-        const auto& bus3 = twt.getLeg3().getTerminal().getBusView().getBus();
-        addToAdjacencyList(bus1, bus2, id2num, adjacencyList);
-        addToAdjacencyList(bus1, bus3, id2num, adjacencyList);
-        addToAdjacencyList(bus2, bus3, id2num, adjacencyList);
+        const auto& busA = twt.getLeg1().getTerminal().getBusView().getBus();
+        const auto& busB = twt.getLeg2().getTerminal().getBusView().getBus();
+        const auto& busC = twt.getLeg3().getTerminal().getBusView().getBus();
+        addToAdjacencyList(busA, busB, id2num, adjacencyList);
+        addToAdjacencyList(busA, busC, id2num, adjacencyList);
+        addToAdjacencyList(busB, busC, id2num, adjacencyList);
     }
 }
 
