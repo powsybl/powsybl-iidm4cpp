@@ -8,11 +8,13 @@
 #ifndef POWSYBL_IIDM_LOADTYPE_HPP
 #define POWSYBL_IIDM_LOADTYPE_HPP
 
+#include <cstdint>
+
 namespace powsybl {
 
 namespace iidm {
 
-enum class LoadType : unsigned int {
+enum class LoadType : std::uint8_t {
     UNDEFINED,
     AUXILIARY,
     FICTITIOUS

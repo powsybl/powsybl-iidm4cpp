@@ -8,11 +8,13 @@
 #ifndef POWSYBL_IIDM_REACTIVELIMITSKIND_HPP
 #define POWSYBL_IIDM_REACTIVELIMITSKIND_HPP
 
+#include <cstdint>
+
 namespace powsybl {
 
 namespace iidm {
 
-enum class ReactiveLimitsKind {
+enum class ReactiveLimitsKind : std::uint8_t {
     MIN_MAX,
     CURVE
 };
