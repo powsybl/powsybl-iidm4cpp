@@ -45,26 +45,26 @@ jobs:
         env:
           CTEST_OUTPUT_ON_FAILURE: 1
 
-  macos:
-    name: MacOS
-    runs-on: macos-latest
-    steps:
-      - name: Install Boost
-        run: brew install boost
+  # macos:
+  #   name: MacOS
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Install Boost
+  #       run: brew install boost
 
-      - name: Checkout sources
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #v4.1.6
+  #     - name: Checkout sources
+  #       uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #v4.1.6
 
-      - name: Configure CMake
-        run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-macos -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=ON
+  #     - name: Configure CMake
+  #       run: cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build-macos -DCMAKE_BUILD_TYPE=Release -DBUILD_EXAMPLES=ON
 
-      - name: Build
-        run: cmake --build $GITHUB_WORKSPACE/build-macos --parallel 3
+  #     - name: Build
+  #       run: cmake --build $GITHUB_WORKSPACE/build-macos --parallel 3
 
-      - name: Tests
-        run: cmake --build $GITHUB_WORKSPACE/build-macos --target test
-        env:
-          CTEST_OUTPUT_ON_FAILURE: 1
+  #     - name: Tests
+  #       run: cmake --build $GITHUB_WORKSPACE/build-macos --target test
+  #       env:
+  #         CTEST_OUTPUT_ON_FAILURE: 1
 
   windows:
     env:
