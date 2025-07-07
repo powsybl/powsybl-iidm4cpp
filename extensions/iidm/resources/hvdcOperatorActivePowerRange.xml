@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_6" xmlns:hopr="http://www.itesla_project.eu/schema/iidm/ext/hvdc_operator_active_power_range/1_0" id="hvdctest" caseDate="2016-06-27T16:34:55.930000+02:00" forecastDistance="0" sourceFormat="test">
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_7" xmlns:hopr="http://www.itesla_project.eu/schema/iidm/ext/hvdc_operator_active_power_range/1_0" id="hvdctest" caseDate="2016-06-27T16:34:55.930000+02:00" forecastDistance="0" sourceFormat="test" minimumValidationLevel="STEADY_STATE_HYPOTHESIS">
     <iidm:substation id="S1" country="FR">
         <iidm:voltageLevel id="VL1" nominalV="400" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
@@ -22,6 +22,7 @@
             </iidm:nodeBreakerTopology>
             <iidm:vscConverterStation id="C2" name="Converter2" voltageRegulatorOn="false" lossFactor="1.1000000238418579" reactivePowerSetpoint="123" node="2">
                 <iidm:minMaxReactiveLimits minQ="0" maxQ="10"/>
+                <iidm:regulatingTerminal id="C1"/>
             </iidm:vscConverterStation>
         </iidm:voltageLevel>
     </iidm:substation>
