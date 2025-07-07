@@ -8,6 +8,9 @@
 #ifndef POWSYBL_STDCXX_HASH_HPP
 #define POWSYBL_STDCXX_HASH_HPP
 
+#include <functional>
+#include <type_traits>
+
 namespace stdcxx {
 
 /**

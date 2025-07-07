@@ -11,7 +11,6 @@
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/HvdcLineAdder.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
-#include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
