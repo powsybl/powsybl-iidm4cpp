@@ -51,6 +51,17 @@ const std::list<std::function<void()>>& NetworkXmlReaderContext::getEndTasks() c
     return m_endTasks;
 }
 
+const std::string& NetworkXmlReaderContext::getExtensionVersion(const ExtensionXmlSerializer& extensionXmlSerializer) const {
+    static std::string s_version;
+    for (const std::string& version : extensionXmlSerializer.getVersions()) {
+        auto it = m_extensionsNamespaceUri.find(extensionXmlSerializer.getNamespaceUri(version));
+        if (it != m_extensionsNamespaceUri.end()) {
+            return version;
+        }
+    }
+    return s_version;
+}
+
 const ImportOptions& NetworkXmlReaderContext::getOptions() const {
     return m_options;
 }

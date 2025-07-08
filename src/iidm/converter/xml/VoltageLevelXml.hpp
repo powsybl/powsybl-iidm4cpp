@@ -21,12 +21,12 @@ namespace converter {
 
 namespace xml {
 
-class VoltageLevelXml : public AbstractIdentifiableXml<VoltageLevel, VoltageLevelAdder, Substation> {
+class VoltageLevelXml : public AbstractIdentifiableXml<VoltageLevel, VoltageLevelAdder, Container> {
 public:
     static const VoltageLevelXml& getInstance();
 
 protected:  // AbstractIdentifiableXml
-    VoltageLevelAdder createAdder(Substation& substation) const override;
+    VoltageLevelAdder createAdder(Container& container) const override;
 
     const char* getRootElementName() const override;
 
@@ -34,9 +34,9 @@ protected:  // AbstractIdentifiableXml
 
     void readSubElements(VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const override;
 
-    void writeRootElementAttributes(const VoltageLevel& voltageLevel, const Substation& substation, NetworkXmlWriterContext& context) const override;
+    void writeRootElementAttributes(const VoltageLevel& voltageLevel, const Container& container, NetworkXmlWriterContext& context) const override;
 
-    void writeSubElements(const VoltageLevel& voltageLevel, const Substation& substation, NetworkXmlWriterContext& context) const override;
+    void writeSubElements(const VoltageLevel& voltageLevel, const Container& container, NetworkXmlWriterContext& context) const override;
 
 private:
     static void writeCalculatedBus(const Bus& bus, const std::set<unsigned long>& nodes, NetworkXmlWriterContext& context);

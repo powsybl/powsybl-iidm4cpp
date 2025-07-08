@@ -14,12 +14,12 @@ namespace powsybl {
 namespace iidm {
 
 Line::Line(const std::string& id, const std::string& name, bool fictitious) :
-    Branch(id, name, fictitious, ConnectableType::LINE),
+    Branch(id, name, fictitious),
     m_lineCharacteristics(*this) {
 }
 
 Line::Line(const std::string& id, const std::string& name, bool fictitious, double r, double x, double g1, double b1, double g2, double b2) :
-    Branch(id, name, fictitious, ConnectableType::LINE),
+    Branch(id, name, fictitious),
     m_lineCharacteristics(*this, r, x, g1, b1, g2, b2) {
 }
 
@@ -41,6 +41,11 @@ double Line::getG2() const {
 
 double Line::getR() const {
     return m_lineCharacteristics.getR();
+}
+
+const IdentifiableType& Line::getType() const {
+    static IdentifiableType s_type = IdentifiableType::LINE;
+    return s_type;
 }
 
 const std::string& Line::getTypeDescription() const {

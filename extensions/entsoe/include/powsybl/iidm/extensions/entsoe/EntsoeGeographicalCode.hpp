@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_ENTSOE_ENTSOEGEOGRAPHICALCODE_HPP
 #define POWSYBL_IIDM_EXTENSIONS_ENTSOE_ENTSOEGEOGRAPHICALCODE_HPP
 
+#include <cstdint>
+
 namespace powsybl {
 
 namespace iidm {
@@ -16,7 +18,7 @@ namespace extensions {
 
 namespace entsoe {
 
-enum class EntsoeGeographicalCode : unsigned int {
+enum class EntsoeGeographicalCode : std::uint8_t {
     AL,
     AT,
     BA,

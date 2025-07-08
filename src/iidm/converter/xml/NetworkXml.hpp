@@ -21,10 +21,13 @@ class Network;
 namespace converter {
 
 class Anonymizer;
+class BusFilter;
 class ExportOptions;
 class ImportOptions;
 
 namespace xml {
+
+class NetworkXmlWriterContext;
 
 class NetworkXml {
 public:
@@ -34,6 +37,17 @@ public:
 
 public:
     NetworkXml() = delete;
+
+private:
+    static void writeHvdcLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context);
+
+    static void writeLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context);
+
+    static void writeSubstations(const Network& network, NetworkXmlWriterContext& context);
+
+    static void writeTransformers(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context);
+
+    static void writeVoltageLevels(const Network& network, NetworkXmlWriterContext& context);
 };
 
 }  // namespace xml

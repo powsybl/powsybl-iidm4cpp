@@ -22,7 +22,7 @@
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/network/FourSubstationsNodeBreakerFactory.hpp>
 
-#include "../NetworkFactory.hpp" // TODO(sebalaig) To be discussed...
+#include "NetworkFactory.hpp"
 
 namespace powsybl {
 

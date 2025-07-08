@@ -21,6 +21,9 @@ namespace iidm {
 class Terminal;
 
 class Generator : public Injection, public ReactiveLimitsHolder {
+public:  // Identifiable
+    const IdentifiableType& getType() const override;
+
 public:
     Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const EnergySource& energySource,
         double minP, double maxP, bool voltageRegulatorOn, Terminal& regulatingTerminal,

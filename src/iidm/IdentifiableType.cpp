@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/ConnectableType.hpp>
+#include <powsybl/iidm/IdentifiableType.hpp>
 
 #include <powsybl/iidm/Enum.hpp>
 
@@ -16,8 +16,14 @@ namespace iidm {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<ConnectableType>() {
+const std::initializer_list<std::string>& getNames<IdentifiableType>() {
     static std::initializer_list<std::string> s_typeNames {
+        "NETWORK",
+        "SUBSTATION",
+        "VOLTAGE_LEVEL",
+        "HVDC_LINE",
+        "BUS",
+        "SWITCH",
         "BUSBAR_SECTION",
         "LINE",
         "TWO_WINDINGS_TRANSFORMER",

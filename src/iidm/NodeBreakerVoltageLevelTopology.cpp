@@ -168,11 +168,11 @@ stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long no
         if (static_cast<bool>(connectableBus)) {
             // traverse does not stop the algorithm when TERMINATE, it only stops searching in a given direction
             // this condition insures that while checking all the edges (in every direction) of a node, if a bus is found, it will not be lost
-            return math::TraverseResult::TERMINATE;
+            return math::TraverseResult::TERMINATE_PATH;
         }
         connectableBus = getBus(v2);
 
-        return static_cast<bool>(connectableBus) ? math::TraverseResult::TERMINATE : math::TraverseResult::CONTINUE;
+        return static_cast<bool>(connectableBus) ? math::TraverseResult::TERMINATE_PATH : math::TraverseResult::CONTINUE;
     });
 
     // if nothing found, just take the first bus
@@ -217,29 +217,35 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
             const auto& connectableType = connectable.get().getType();
 
             switch (connectableType) {
-                case ConnectableType::LINE:
-                case ConnectableType::TWO_WINDINGS_TRANSFORMER:
-                case ConnectableType::THREE_WINDINGS_TRANSFORMER:
-                case ConnectableType::HVDC_CONVERTER_STATION:
-                case ConnectableType::DANGLING_LINE:
+                case IdentifiableType::LINE:
+                case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
+                case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
+                case IdentifiableType::HVDC_CONVERTER_STATION:
+                case IdentifiableType::DANGLING_LINE:
                     ++branchCount;
                     ++feederCount;
                     break;
 
-                case ConnectableType::LOAD:
-                case ConnectableType::GENERATOR:
-                case ConnectableType::BATTERY:
-                case ConnectableType::SHUNT_COMPENSATOR:
-                case ConnectableType::STATIC_VAR_COMPENSATOR:
+                case IdentifiableType::LOAD:
+                case IdentifiableType::GENERATOR:
+                case IdentifiableType::BATTERY:
+                case IdentifiableType::SHUNT_COMPENSATOR:
+                case IdentifiableType::STATIC_VAR_COMPENSATOR:
                     ++feederCount;
                     break;
 
-                case ConnectableType::BUSBAR_SECTION:
+                case IdentifiableType::BUSBAR_SECTION:
                     ++busbarSectionCount;
                     break;
 
+                case IdentifiableType::NETWORK:
+                case IdentifiableType::SUBSTATION:
+                case IdentifiableType::VOLTAGE_LEVEL:
+                case IdentifiableType::HVDC_LINE:
+                case IdentifiableType::BUS:
+                case IdentifiableType::SWITCH:
                 default:
-                    throw AssertionError(stdcxx::format("Unexpected ConnectableType value: %1%", connectableType));
+                    throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectableType));
             }
         }
     }
@@ -255,7 +261,7 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
         graph.traverse(v, [&graph, &terminate, &vertices](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
             const stdcxx::Reference<Switch> aSwitch = graph.getEdgeObject(e);
             if (static_cast<bool>(aSwitch) && terminate(aSwitch)) {
-                return math::TraverseResult::TERMINATE;
+                return math::TraverseResult::TERMINATE_PATH;
             }
 
             vertices.push_back(v2);

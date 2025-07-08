@@ -10,11 +10,13 @@
 
 #include <string>
 
+#include <cstdint>
+
 namespace powsybl {
 
 namespace iidm {
 
-enum class Country : unsigned int {
+enum class Country : std::uint8_t {
     AF,
     AX,
     AL,

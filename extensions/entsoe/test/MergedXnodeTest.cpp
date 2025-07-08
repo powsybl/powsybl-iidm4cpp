@@ -135,8 +135,11 @@ BOOST_AUTO_TEST_CASE(MergedXnodeTest) {
     POWSYBL_ASSERT_THROW(extension.setXnodeQ2(stdcxx::nan()), PowsyblException, "Power flow is invalid");
 }
 
-BOOST_FIXTURE_TEST_CASE(XnodeXmlSerializerTest, test::ResourceFixture) {
+BOOST_FIXTURE_TEST_CASE(MergedXnodeXmlSerializerTest, test::ResourceFixture) {
     Network network = createNetwork();
+    auto& extension = network.getLine("L").getExtension<MergedXnode>();
+    extension.setLine1Name("");
+    extension.setLine2Name("");
 
     const std::string& networkStr = ResourceFixture::getResource("mergedXnode.xml");
 

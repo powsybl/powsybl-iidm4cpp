@@ -63,7 +63,7 @@ stdcxx::Reference<Connectable> Terminal::getConnectable() {
 }
 
 double Terminal::getI() const {
-    if (m_connectable.get().getType() == ConnectableType::BUSBAR_SECTION) {
+    if (m_connectable.get().getType() == IdentifiableType::BUSBAR_SECTION) {
         return 0;
     }
 
@@ -108,10 +108,10 @@ Terminal& Terminal::setConnectable(const stdcxx::Reference<Connectable>& connect
 Terminal& Terminal::setP(double p) {
     const Connectable& connectable = m_connectable.get();
 
-    if (connectable.getType() == ConnectableType::BUSBAR_SECTION) {
+    if (connectable.getType() == IdentifiableType::BUSBAR_SECTION) {
         throw ValidationException(connectable, "cannot set active power on a busbar section");
     }
-    if (!std::isnan(p) && connectable.getType() == ConnectableType::SHUNT_COMPENSATOR) {
+    if (!std::isnan(p) && connectable.getType() == IdentifiableType::SHUNT_COMPENSATOR) {
         throw ValidationException(connectable, "cannot set active power on a shunt compensator");
     }
 
@@ -123,7 +123,7 @@ Terminal& Terminal::setP(double p) {
 Terminal& Terminal::setQ(double q) {
     const Connectable& connectable = m_connectable.get();
 
-    if (connectable.getType() == ConnectableType::BUSBAR_SECTION) {
+    if (connectable.getType() == IdentifiableType::BUSBAR_SECTION) {
         throw ValidationException(connectable, "cannot set reactive power on a busbar section");
     }
 

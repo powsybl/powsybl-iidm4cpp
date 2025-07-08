@@ -22,7 +22,7 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class LoadType : unsigned int;
+enum class LoadType : std::uint8_t;
 class Network;
 class Terminal;
 

@@ -41,8 +41,8 @@ const CurrentLimits::TemporaryLimit& Branch::Overload::getTemporaryLimit() const
     return m_temporaryLimit;
 }
 
-Branch::Branch(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType) :
-    Connectable(id, name, fictitious, connectableType),
+Branch::Branch(const std::string& id, const std::string& name, bool fictitious) :
+    Connectable(id, name, fictitious),
     m_operationalLimitsHolder1(*this, "limits1"),
     m_operationalLimitsHolder2(*this, "limits2") {
 }

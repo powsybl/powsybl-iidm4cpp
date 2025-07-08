@@ -47,6 +47,8 @@ public:
 
     const std::list<std::function<void()>>& getEndTasks() const;
 
+    const std::string& getExtensionVersion(const ExtensionXmlSerializer& extensionXmlSerializer) const;
+
     const ImportOptions& getOptions() const;
 
     const powsybl::xml::XmlStreamReader& getReader() const;

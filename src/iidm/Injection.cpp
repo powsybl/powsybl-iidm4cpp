@@ -11,8 +11,8 @@ namespace powsybl {
 
 namespace iidm {
 
-Injection::Injection(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType) :
-    Connectable(id, name, fictitious, connectableType) {
+Injection::Injection(const std::string& id, const std::string& name, bool fictitious) :
+    Connectable(id, name, fictitious) {
 }
 
 const Terminal& Injection::getTerminal() const {

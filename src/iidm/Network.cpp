@@ -26,9 +26,12 @@
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
@@ -585,6 +588,11 @@ stdcxx::range<TwoWindingsTransformer> Network::getTwoWindingsTransformers() {
     return m_networkIndex.getAll<TwoWindingsTransformer>();
 }
 
+const IdentifiableType& Network::getType() const {
+    static IdentifiableType s_type = IdentifiableType::NETWORK;
+    return s_type;
+}
+
 const std::string& Network::getTypeDescription() const {
     static std::string s_typeDescription = "Network";
 
@@ -655,8 +663,20 @@ SubstationAdder Network::newSubstation() {
     return SubstationAdder(*this);
 }
 
+ThreeWindingsTransformerAdder Network::newThreeWindingsTransformer() {
+    return ThreeWindingsTransformerAdder(*this);
+}
+
 TieLineAdder Network::newTieLine() {
     return TieLineAdder(*this);
+}
+
+TwoWindingsTransformerAdder Network::newTwoWindingsTransformer() {
+    return TwoWindingsTransformerAdder(*this);
+}
+
+VoltageLevelAdder Network::newVoltageLevel() {
+    return VoltageLevelAdder(*this);
 }
 
 void Network::reduceVariantArraySize(unsigned long number) {

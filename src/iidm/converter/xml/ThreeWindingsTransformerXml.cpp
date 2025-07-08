@@ -7,6 +7,7 @@
 
 #include "ThreeWindingsTransformerXml.hpp"
 
+#include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
 #include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
@@ -14,6 +15,7 @@
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/stdcxx/format.hpp>
+#include <powsybl/stdcxx/instanceof.hpp>
 
 namespace powsybl {
 
@@ -23,8 +25,14 @@ namespace converter {
 
 namespace xml {
 
-ThreeWindingsTransformerAdder ThreeWindingsTransformerXml::createAdder(Substation& substation) const {
-    return substation.newThreeWindingsTransformer();
+ThreeWindingsTransformerAdder ThreeWindingsTransformerXml::createAdder(Container& container) const {
+    if (stdcxx::isInstanceOf<Network>(container)) {
+        return dynamic_cast<Network&>(container).newThreeWindingsTransformer();
+    }
+    if (stdcxx::isInstanceOf<Substation>(container)) {
+        return dynamic_cast<Substation&>(container).newThreeWindingsTransformer();
+    }
+    throw AssertionError("Unexpected container type");
 }
 
 const ThreeWindingsTransformerXml& ThreeWindingsTransformerXml::getInstance() {
@@ -170,7 +178,7 @@ void ThreeWindingsTransformerXml::writeRatioTapChanger(const stdcxx::CReference<
     }
 }
 
-void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
+void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindingsTransformer& twt, const Container& /*container*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(R1, twt.getLeg1().getR());
     context.getWriter().writeAttribute(X1, twt.getLeg1().getX());
     context.getWriter().writeAttribute(G1, twt.getLeg1().getG());
@@ -205,7 +213,7 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
     }
 }
 
-void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
+void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransformer& twt, const Container& /*container*/, NetworkXmlWriterContext& context) const {
     IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(twt.getLeg1().hasRatioTapChanger(), THREE_WINDINGS_TRANSFORMER, RATIO_TAP_CHANGER1, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context, [&twt, &context]() {
         writeRatioTapChanger(twt.getLeg1().getOptionalRatioTapChanger(), 1, context);
     });

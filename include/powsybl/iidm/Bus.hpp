@@ -41,6 +41,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    const IdentifiableType& getType() const override;
+
 public:
     ~Bus() noexcept override = default;
 

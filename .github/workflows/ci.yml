@@ -26,7 +26,7 @@ jobs:
       - name: Install Boost
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y libboost-all-dev
+          sudo apt-get install -y libboost1.74-all-dev
 
       - name: Checkout sources
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #v4.1.6
@@ -136,7 +136,7 @@ jobs:
       - name: Install Boost
         run: |
           sudo apt-get update -y
-          sudo apt-get install -y libboost-all-dev
+          sudo apt-get install -y libboost1.74-all-dev
    
       - name: Checkout sources
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #v4.1.6

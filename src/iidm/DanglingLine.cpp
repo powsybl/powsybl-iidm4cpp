@@ -9,8 +9,7 @@
 
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
-
-#include "DanglingLineBoundary.hpp"
+#include <powsybl/iidm/util/DanglingLineBoundary.hpp>
 
 namespace powsybl {
 
@@ -19,7 +18,7 @@ namespace iidm {
 DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                            double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode,
                            std::unique_ptr<Generation>&& generation) :
-    Injection(id, name, fictitious, ConnectableType::DANGLING_LINE),
+    Injection(id, name, fictitious),
     FlowsLimitsHolder(*this, "limits"),
     m_b(checkB(*this, b)),
     m_g(checkG(*this, g)),
@@ -29,7 +28,7 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
     m_ucteXnodeCode(ucteXnodeCode),
     m_generation(std::move(generation)),
-    m_boundary(stdcxx::make_unique<dangling_line::Boundary>(*this)) {
+    m_boundary(stdcxx::make_unique<util::dangling_line::Boundary>(*this)) {
 
     if (m_generation) {
         m_generation->attach(*this);
@@ -94,6 +93,11 @@ double DanglingLine::getQ0() const {
 
 double DanglingLine::getR() const {
     return m_r;
+}
+
+const IdentifiableType& DanglingLine::getType() const {
+    static IdentifiableType s_type = IdentifiableType::DANGLING_LINE;
+    return s_type;
 }
 
 const std::string& DanglingLine::getTypeDescription() const {

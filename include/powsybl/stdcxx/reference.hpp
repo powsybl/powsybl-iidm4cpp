@@ -12,6 +12,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/stdcxx/hash.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace stdcxx {
 
@@ -107,6 +108,11 @@ CReference<T> cref(const std::unique_ptr<T>& pointer) {
     return static_cast<bool>(pointer) ? CReference<T>(*pointer) : CReference<T>();
 }
 
+template <typename T, typename U, typename = typename std::enable_if<!std::is_abstract<U>::value && std::is_same<T, U>::value>::type>
+CReference<T> cref(const stdcxx::optional<U>& optional) {
+    return static_cast<bool>(optional) ? CReference<T>(*optional) : CReference<T>();
+}
+
 template <typename T>
 CReference<T> cref(const Reference<T>& reference) {
     return static_cast<bool>(reference) ? CReference<T>(reference.get()) : CReference<T>();
@@ -130,6 +136,11 @@ Reference<T> ref(T& reference) {
 template <typename T>
 Reference<T> ref(const std::unique_ptr<T>& pointer) {
     return static_cast<bool>(pointer) ? Reference<T>(*pointer) : Reference<T>();
+}
+
+template <typename T, typename U, typename = typename std::enable_if<!std::is_abstract<U>::value && std::is_same<T, U>::value>::type>
+Reference<T> ref(stdcxx::optional<U>& optional) {
+    return static_cast<bool>(optional) ? Reference<T>(*optional) : Reference<T>();
 }
 
 template <typename T, typename U, typename = typename std::enable_if<std::is_base_of<T, U>::value && !std::is_same<T, U>::value>::type>

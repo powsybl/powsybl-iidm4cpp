@@ -20,16 +20,16 @@ namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(TerminalTestSuite)
 
-class CustomTopologyTraverser : public VoltageLevel::TopologyTraverser {
+class CustomTopologyTraverser : public Terminal::TopologyTraverser {
 public:  // VoltageLevel::TopologyTraverser
-    bool traverse(Terminal& terminal, bool /*connected*/) override {
+    math::TraverseResult traverse(Terminal& terminal, bool /*connected*/) override {
         m_traversedConnectables.insert(terminal.getConnectable().get().getId());
-        return m_traverseTerminals;
+        return m_traverseTerminals ? math::TraverseResult::CONTINUE : math::TraverseResult::TERMINATE_PATH;
     }
 
-    bool traverse(Switch& aSwitch) override {
+    math::TraverseResult traverse(Switch& aSwitch) override {
         m_traversedSwitches.insert(aSwitch.getId());
-        return m_traverseSwitches;
+        return m_traverseSwitches ? math::TraverseResult::CONTINUE : math::TraverseResult::TERMINATE_PATH;
     }
 
 public:

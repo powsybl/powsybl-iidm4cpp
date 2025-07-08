@@ -35,7 +35,10 @@
 #include "HvdcLineXml.hpp"
 #include "LineXml.hpp"
 #include "SubstationXml.hpp"
+#include "ThreeWindingsTransformerXml.hpp"
 #include "TieLineXml.hpp"
+#include "TwoWindingsTransformerXml.hpp"
+#include "VoltageLevelXml.hpp"
 
 namespace powsybl {
 
@@ -251,8 +254,17 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
             AliasesXml::read(network, context);
         } else if (context.getReader().getLocalName() == PROPERTY) {
             PropertiesXml::read(network, context);
+        } else if (context.getReader().getLocalName() == VOLTAGE_LEVEL) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, VOLTAGE_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
+            VoltageLevelXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == SUBSTATION) {
             SubstationXml::getInstance().read(network, context);
+        } else if (context.getReader().getLocalName() == TWO_WINDINGS_TRANSFORMER) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, TWO_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
+            TwoWindingsTransformerXml::getInstance().read(network, context);
+        } else if (context.getReader().getLocalName() == THREE_WINDINGS_TRANSFORMER) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, THREE_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
+            ThreeWindingsTransformerXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == LINE) {
             LineXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == TIE_LINE) {
@@ -309,27 +321,11 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     AliasesXml::write(network, NETWORK, context);
     PropertiesXml::write(network, context);
 
-    for (const auto& substation : network.getSubstations()) {
-        SubstationXml::getInstance().write(substation, network, context);
-    }
-
-    for (const auto& line : network.getLines()) {
-        if (!filter.test(line)) {
-            continue;
-        }
-        if (line.isTieLine()) {
-            TieLineXml::getInstance().write(dynamic_cast<const TieLine&>(line), network, context);
-        } else {
-            LineXml::getInstance().write(line, network, context);
-        }
-    }
-
-    for (const auto& line : network.getHvdcLines()) {
-        if (!filter.test(line.getConverterStation1()) || !filter.test(line.getConverterStation2())) {
-            continue;
-        }
-        HvdcLineXml::getInstance().write(line, network, context);
-    }
+    writeVoltageLevels(network, context);
+    writeSubstations(network, context);
+    writeTransformers(filter, network, context);
+    writeLines(filter, network, context);
+    writeHvdcLines(filter, network, context);
 
     writeExtensions(network, context);
 
@@ -348,6 +344,58 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     auto endTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = endTime - startTime;
     logger.debug("XIIDM export done in %1% ms", diff.count() * 1000.0);
+}
+
+void NetworkXml::writeHvdcLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context) {
+    for (const HvdcLine& line : network.getHvdcLines()) {
+        if (!filter.test(line.getConverterStation1()) || !filter.test(line.getConverterStation2())) {
+            continue;
+        }
+        HvdcLineXml::getInstance().write(line, network, context);
+    }
+}
+
+void NetworkXml::writeLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context) {
+    for (const Line& line : network.getLines()) {
+        if (!filter.test(line)) {
+            continue;
+        }
+        if (line.isTieLine()) {
+            TieLineXml::getInstance().write(dynamic_cast<const TieLine&>(line), network, context);
+        } else {
+            LineXml::getInstance().write(line, network, context);
+        }
+    }
+}
+
+void NetworkXml::writeSubstations(const Network& network, NetworkXmlWriterContext& context) {
+    for (const Substation& substation : network.getSubstations()) {
+        SubstationXml::getInstance().write(substation, network, context);
+    }
+}
+
+void NetworkXml::writeTransformers(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context) {
+    for (const TwoWindingsTransformer& twt : network.getTwoWindingsTransformers()) {
+        if (!twt.getSubstation() && filter.test(twt)) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, TWO_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
+            TwoWindingsTransformerXml::getInstance().write(twt, network, context);
+        }
+    }
+    for (const ThreeWindingsTransformer& twt : network.getThreeWindingsTransformers()) {
+        if (!twt.getSubstation() && filter.test(twt)) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, THREE_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
+            ThreeWindingsTransformerXml::getInstance().write(twt, network, context);
+        }
+    }
+}
+
+void NetworkXml::writeVoltageLevels(const Network& network, NetworkXmlWriterContext& context) {
+    for (const VoltageLevel& voltageLevel : network.getVoltageLevels()) {
+        if (!voltageLevel.getSubstation()) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, VOLTAGE_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
+            VoltageLevelXml::getInstance().write(voltageLevel, network, context);
+        }
+    }
 }
 
 }  // namespace xml

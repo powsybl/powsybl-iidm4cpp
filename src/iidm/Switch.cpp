@@ -50,6 +50,11 @@ Network& Switch::getNetwork() {
     return getVoltageLevel().getNetwork();
 }
 
+const IdentifiableType& Switch::getType() const {
+    static IdentifiableType s_type = IdentifiableType::SWITCH;
+    return s_type;
+}
+
 const std::string& Switch::getTypeDescription() const {
     static std::string s_typeDescription = "Switch";
 

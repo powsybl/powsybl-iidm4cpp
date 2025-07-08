@@ -45,8 +45,14 @@ namespace converter {
 
 namespace xml {
 
-VoltageLevelAdder VoltageLevelXml::createAdder(Substation& substation) const {
-    return substation.newVoltageLevel();
+VoltageLevelAdder VoltageLevelXml::createAdder(Container& container) const {
+    if (stdcxx::isInstanceOf<Network>(container)) {
+        return dynamic_cast<Network&>(container).newVoltageLevel();
+    }
+    if (stdcxx::isInstanceOf<Substation>(container)) {
+        return dynamic_cast<Substation&>(container).newVoltageLevel();
+    }
+    throw AssertionError("Unexpected container type");
 }
 
 const VoltageLevelXml& VoltageLevelXml::getInstance() {
@@ -262,7 +268,7 @@ void VoltageLevelXml::writeNodeBreakerTopologyInternalConnections(const VoltageL
     }
 }
 
-void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLevel, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
+void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLevel, const Container& /*container*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(NOMINAL_V, voltageLevel.getNominalV());
     context.getWriter().writeOptionalAttribute(LOW_VOLTAGE_LIMIT, voltageLevel.getLowVoltageLimit());
     context.getWriter().writeOptionalAttribute(HIGH_VOLTAGE_LIMIT, voltageLevel.getHighVoltageLimit());
@@ -289,7 +295,7 @@ void VoltageLevelXml::writeStaticVarCompensators(const VoltageLevel& voltageLeve
     }
 }
 
-void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
+void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const Container& /*container*/, NetworkXmlWriterContext& context) const {
     TopologyLevel topologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), context.getOptions().getTopologyLevel());
     switch (topologyLevel) {
         case TopologyLevel::BUS_BREAKER:

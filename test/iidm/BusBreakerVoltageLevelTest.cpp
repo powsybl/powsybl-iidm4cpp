@@ -10,6 +10,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
@@ -17,6 +18,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
+#include <powsybl/network/EurostagFactory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 
@@ -489,6 +491,34 @@ BOOST_AUTO_TEST_CASE(TestRemoveVoltageLevel) {
     Network network = createNetwork();
     network.remove(network.getVoltageLevel("VL2"));
     POWSYBL_ASSERT_THROW(network.getVoltageLevel("VL2"), PowsyblException, "Unable to find to the identifiable 'VL2'");
+}
+
+BOOST_AUTO_TEST_CASE(expandBusBranch) {
+    Network network = createSwitchBBKNetwork();
+    VoltageLevel& voltageLevel = network.getVoltageLevel("VL3");
+    Bus& b1 = network.getBusBreakerView().getBus("VL3_BUS1");
+    Bus& b2 = network.getBusBreakerView().getBus("VL3_BUS2");
+    Bus& b3 = network.getBusBreakerView().getBus("VL3_BUS3");
+    Switch& sw1 = network.getSwitch("SW1");
+
+    std::vector<std::reference_wrapper<const Bus>> buses;
+    voltage_level::BusBreakerView::TopologyTraverser traverser = [&buses, &sw1](const Bus& /*bus1*/, const stdcxx::Reference<Switch>& sw, const Bus& bus2) {
+        if (sw && stdcxx::areSame(sw.get(), sw1)) {
+            return math::TraverseResult::TERMINATE_PATH;
+        }
+        buses.emplace_back(std::ref(bus2));
+        return math::TraverseResult::CONTINUE;
+    };
+
+    voltageLevel.getBusBreakerView().traverse(b1, traverser);
+    BOOST_CHECK_EQUAL(0, buses.size());
+
+    voltageLevel.getBusBreakerView().traverse(b2, traverser);
+    BOOST_CHECK(stdcxx::areSame(b3, (*buses.begin()).get()));
+
+    buses.clear();
+    voltageLevel.getBusBreakerView().traverse(b3, traverser);
+    BOOST_CHECK(stdcxx::areSame(b2, (*buses.begin()).get()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

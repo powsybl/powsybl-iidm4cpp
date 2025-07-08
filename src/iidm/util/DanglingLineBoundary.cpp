@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "DanglingLineBoundary.hpp"
+#include <powsybl/iidm/util/DanglingLineBoundary.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
@@ -16,6 +16,8 @@
 namespace powsybl {
 
 namespace iidm {
+
+namespace util {
 
 namespace dangling_line {
 
@@ -68,6 +70,8 @@ VoltageLevel& Boundary::getVoltageLevel() {
 }
 
 }  // namespace dangling_line
+
+}  // namespace util
 
 }  // namespace iidm
 
