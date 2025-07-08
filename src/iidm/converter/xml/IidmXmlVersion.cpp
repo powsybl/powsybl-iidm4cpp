@@ -81,10 +81,14 @@ const IidmXmlVersion& IidmXmlVersion::CURRENT_IIDM_XML_VERSION() {
 const IidmXmlVersion& IidmXmlVersion::fromNamespaceURI(const std::string& namespaceURI) {
     const std::string version = namespaceURI.substr(namespaceURI.find_last_of('/') + 1);
     const IidmXmlVersion& v = of(version, "_");
-    if (namespaceURI != v.getNamespaceUri()) {
+    std::string namespaceUriV = v.getNamespaceUri();
+    if (namespaceURI != namespaceUriV) {
+        if(v >= V1_7() && namespaceURI == v.getNamespaceUri(false)){
+            return v;
+        }
         throw PowsyblException(stdcxx::format(
             "Namespace %1% is not supported. The namespace for IIDM XML version %2% is: %3%.",
-            namespaceURI, v.toString("."), v.getNamespaceUri()));
+            namespaceURI, v.toString("."), namespaceUriV));
     }
 
     return v;
@@ -97,6 +101,16 @@ const std::string& IidmXmlVersion::getDefaultPrefix() {
 
 std::string IidmXmlVersion::getNamespaceUri() const {
     return stdcxx::format("http://www.%1%/schema/iidm/%2%", m_domain, toString("_"));
+}
+
+std::string IidmXmlVersion::getNamespaceUri(bool valid) const {
+    if(valid){
+        return getNamespaceUri();
+    }
+    if(*this < V1_7()){
+        throw PowsyblException("Network in Equipment mode not supported for IIDM version < 1.7");
+    }
+    return stdcxx::format("http://www.%1%/schema/iidm/equipment/%2%", m_domain, toString("_"));
 }
 
 const std::string& IidmXmlVersion::getPrefix() const {
