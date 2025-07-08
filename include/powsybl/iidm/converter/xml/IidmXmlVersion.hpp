@@ -156,6 +156,15 @@ public:
     std::string getNamespaceUri() const;
 
     /**
+     * Get the namespace URI associated to this IIDM version
+     *
+     * @param valid false to get equipment namespace Uri, valid from IIDM v1_7
+     *
+     * @return the namespace URI of this version
+     */
+    std::string getNamespaceUri(bool valid) const;
+
+    /**
      * Get the XML prefix associated to this IIDM version
      *
      * @return the XML prefix of this version
