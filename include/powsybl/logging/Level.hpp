@@ -10,11 +10,13 @@
 
 #include <string>
 
+#include <cstdint>
+
 namespace powsybl {
 
 namespace logging {
 
-enum class Level : unsigned int {
+enum class Level : std::uint8_t {
     TRACE,
     DEBUG,
     INFO,
