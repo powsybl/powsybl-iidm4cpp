@@ -213,8 +213,9 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
     for (unsigned long vertex : vertices) {
         const auto& terminal = graph.getVertexObject(vertex);
         if (static_cast<bool>(terminal)) {
-            const auto& connectable = terminal.get().getConnectable();
-            const auto& connectableType = connectable.get().getType();
+            stdcxx::Reference<Connectable> refConnectable = terminal.get().getConnectable();
+            const auto& connectable = refConnectable.get();
+            const auto& connectableType = connectable.getType();
 
             switch (connectableType) {
                 case ConnectableType::LINE:

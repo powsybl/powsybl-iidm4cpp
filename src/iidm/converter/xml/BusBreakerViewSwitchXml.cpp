@@ -46,8 +46,10 @@ Switch& BusBreakerViewSwitchXml::readRootElementAttributes(VoltageLevel::BusBrea
 void BusBreakerViewSwitchXml::writeRootElementAttributes(const Switch& sw, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     AbstractSwitchXml::writeRootElementAttributes(sw, voltageLevel, context);
     const VoltageLevel::BusBreakerView& view = voltageLevel.getBusBreakerView();
-    const Bus& bus1 = view.getBus1(sw.getId());
-    const Bus& bus2 = view.getBus2(sw.getId());
+    stdcxx::CReference<powsybl::iidm::Bus> refBus1 = view.getBus1(sw.getId());
+    stdcxx::CReference<powsybl::iidm::Bus> refBus2 = view.getBus2(sw.getId());
+    const Bus& bus1 = refBus1.get();
+    const Bus& bus2 = refBus2.get();
     context.getWriter().writeAttribute(BUS1, context.getAnonymizer().anonymizeString(bus1.getId()));
     context.getWriter().writeAttribute(BUS2, context.getAnonymizer().anonymizeString(bus2.getId()));
 }
