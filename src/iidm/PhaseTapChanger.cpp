@@ -55,7 +55,6 @@ void PhaseTapChanger::reduceVariantArraySize(unsigned long number) {
 
 void PhaseTapChanger::remove() {
     getParent().setPhaseTapChanger(std::unique_ptr<PhaseTapChanger>());
-    return;
 }
 
 PhaseTapChanger& PhaseTapChanger::setRegulationMode(const RegulationMode& regulationMode) {
