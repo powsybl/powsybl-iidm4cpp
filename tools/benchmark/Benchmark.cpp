@@ -113,17 +113,17 @@ int main(int argc, char** argv) {
         powsybl::iidm::Network::writeXml(vm[OUTPUT_FILE].as<std::string>(), network, powsybl::iidm::converter::ExportOptions(options));
 
     } catch (const boost::program_options::error& e) {
-        std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
-        std::cerr << desc << std::endl;
+        std::cerr << "ERROR: " << e.what() << "\n\n";
+        std::cerr << desc << '\n' << std::flush;
         return EXIT_FAILURE;
     } catch (const powsybl::PowsyblException& e) {
-        std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+        std::cerr << "ERROR: " << e.what() << "\n\n" << std::flush;
         return EXIT_FAILURE;
     } catch (const std::exception& e) {
-        std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
+        std::cerr << "ERROR: " << e.what() << "\n\n" << std::flush;
         return EXIT_FAILURE;
     } catch (...) {
-        std::cerr << "ERROR: unexpected exception" << std::endl << std::endl;
+        std::cerr << "ERROR: unexpected exception" << "\n\n" << std::flush;
         return EXIT_FAILURE;
     }
 

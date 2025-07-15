@@ -72,6 +72,7 @@ Terminal& Connectable::getTerminal(unsigned long index) {
 std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals() const {
     std::vector<std::reference_wrapper<Terminal> > terminals;
 
+    terminals.reserve(m_terminals.size());
     for (const auto& terminal : m_terminals) {
         terminals.push_back(std::ref(*terminal));
     }

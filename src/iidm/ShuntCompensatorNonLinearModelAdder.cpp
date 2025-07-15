@@ -69,6 +69,7 @@ ShuntCompensatorNonLinearModelAdder::SectionAdder ShuntCompensatorNonLinearModel
 
 std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorNonLinearModelAdder::build() const {
     std::vector<ShuntCompensatorNonLinearModel::Section> sections;
+    sections.reserve(m_sectionAdders.size());
     for (const auto& adder : m_sectionAdders) {
         sections.emplace_back(ShuntCompensatorNonLinearModel::Section(adder.m_b, adder.m_g));
     }

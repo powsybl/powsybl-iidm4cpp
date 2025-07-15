@@ -30,7 +30,7 @@ namespace ext = powsybl::iidm::extensions::iidm;
  */
 int main(int argc, char** argv) {
     if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " <output-file>" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <output-file>" << '\n' << std::flush;
         return EXIT_FAILURE;
     }
 
@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
         xmlCleanupParser();
 
     } catch (const powsybl::PowsyblException& e) {
-        std::cout << e.what() << std::endl;
+        std::cout << e.what() << '\n' << std::flush;
         return EXIT_FAILURE;
     }
 

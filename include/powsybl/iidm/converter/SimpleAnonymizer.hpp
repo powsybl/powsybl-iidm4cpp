@@ -42,10 +42,12 @@ public:
 
     SimpleAnonymizer(const SimpleAnonymizer&) = default;
 
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): boost::bimap is not marked noexcept
     SimpleAnonymizer(SimpleAnonymizer&&) = default;
 
     SimpleAnonymizer& operator=(const SimpleAnonymizer&) = default;
 
+    // NOLINTNEXTLINE(performance-noexcept-move-constructor): boost::bimap is not marked noexcept
     SimpleAnonymizer& operator=(SimpleAnonymizer&&) = default;
 
     unsigned long getStringCount() const;
