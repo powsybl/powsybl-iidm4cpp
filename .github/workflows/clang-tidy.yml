@@ -10,9 +10,6 @@ name: clang-tidy
 on:
   pull_request:
     types: [opened, synchronize, edited]
-  push:
-    branches:
-      - 460_*
 
 jobs:
   qa:
@@ -40,15 +37,9 @@ jobs:
           -DBUILD_EXAMPLES=ON
           -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
-      - name: Full Clang Tidy check
-        run: |
-          clang-tidy --version
-          export MODIFIED_FILES=$(git ls-tree -r --name-only HEAD | grep -E "\.(cpp|hpp|hxx)$")
-          /usr/bin/clang-tidy-14 $MODIFIED_FILES -p $GITHUB_WORKSPACE/build
-
       - name: Clang Tidy
         run: |
           export MODIFIED_FILES=$(git diff --name-only --diff-filter=d origin/${{ github.base_ref }} origin/${{ github.head_ref }}  | grep -E "\.(cpp|hpp|hxx)$")
           if [ -n "$MODIFIED_FILES" ]; then
-              clang-tidy $MODIFIED_FILES -p $GITHUB_WORKSPACE/build
+              /usr/bin/clang-tidy-14 $MODIFIED_FILES -p $GITHUB_WORKSPACE/build
           fi
