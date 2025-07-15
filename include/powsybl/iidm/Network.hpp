@@ -14,6 +14,7 @@
 #include <powsybl/iidm/NetworkIndex.hpp>
 #include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/NetworkViews.hpp>
+#include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
@@ -260,7 +261,7 @@ public:
 
     stdcxx::range<Load> getLoads();
 
-    const std::string& getMinimumValidationLevel() const;
+    const ValidationLevel& getMinimumValidationLevel() const;
 
     const ShuntCompensator& getShuntCompensator(const std::string& id) const;
 
@@ -372,7 +373,16 @@ public:
 
     Network& setForecastDistance(int forecastDistance);
 
-    Network& setMinimumValidationLevel(const std::string& minimumValidationLevel);
+    ValidationLevel runValidationChecks();
+    ValidationLevel runValidationChecks(const ValidationLevel& vl);
+
+    const ValidationLevel& getValidationLevel();
+
+    Network& setMinimumValidationLevel(const ValidationLevel& minimumValidationLevel);
+    Network& setMinimumAcceptableValidationLevel(const ValidationLevel& vl);
+
+    Network& setValidationLevelIfGreaterThan(const ValidationLevel& vl);
+    Network& invalidateValidationLevel();
 
 protected:  // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -419,7 +429,8 @@ private:
 
     std::string m_sourceFormat;
 
-    std::string m_minimumValidationLevel{converter::STEADY_STATE_HYPOTHESIS};
+    ValidationLevel m_minimumValidationLevel{ValidationLevel::STEADY_STATE_HYPOTHESIS};
+    ValidationLevel m_validationLevel{ValidationLevel::UNVALID};
 
     NetworkIndex m_networkIndex;
 
