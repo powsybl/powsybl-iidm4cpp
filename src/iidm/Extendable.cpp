@@ -36,10 +36,10 @@ void Extendable::addExtension(std::unique_ptr<Extension>&& extension) {
     }
 
     extension->setExtendable(*this);
-    auto newIt = m_extensionsByName.emplace(std::make_pair(extension->getName(), std::move(extension)));
+    auto newIt = m_extensionsByName.emplace(extension->getName(), std::move(extension));
 
     std::reference_wrapper<Extension> refExtension = *newIt.first->second;
-    m_extensionsByType.emplace(std::make_pair(refExtension.get().getType(), refExtension));
+    m_extensionsByType.emplace(refExtension.get().getType(), refExtension);
 }
 
 stdcxx::const_range<Extension> Extendable::getExtensions() const {

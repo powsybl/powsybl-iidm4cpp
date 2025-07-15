@@ -28,6 +28,7 @@ Checks: '-*,
 
 WarningsAsErrors: '*'
 HeaderFilterRegex: 'include/powsybl/.*|src/.*|extensions/.*|test/.*'
+ExcludeHeaderFilterRegex: 'boost/mpl/.*'
 
 CheckOptions:
 - { key: readability-function-cognitive-complexity.IgnoreMacros, value: true }

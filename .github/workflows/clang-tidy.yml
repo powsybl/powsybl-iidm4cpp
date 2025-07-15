@@ -44,7 +44,7 @@ jobs:
         run: |
           clang-tidy --version
           export MODIFIED_FILES=$(git ls-tree -r --name-only HEAD | grep -E "\.(cpp|hpp|hxx)$")
-          clang-tidy $MODIFIED_FILES -p $GITHUB_WORKSPACE/build
+          /usr/bin/clang-tidy-14 $MODIFIED_FILES -p $GITHUB_WORKSPACE/build
 
       - name: Clang Tidy
         run: |
