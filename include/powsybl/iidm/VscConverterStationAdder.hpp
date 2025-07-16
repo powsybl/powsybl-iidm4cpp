@@ -23,6 +23,8 @@ public:
 
     VscConverterStationAdder& setReactivePowerSetpoint(double reactivePowerSetpoint);
 
+    VscConverterStationAdder& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
+
     VscConverterStationAdder& setVoltageRegulatorOn(bool voltageRegulatorOn);
 
     VscConverterStationAdder& setVoltageSetpoint(double voltageSetpoint);
@@ -44,6 +46,8 @@ private:
     double m_reactivePowerSetpoint = stdcxx::nan();
 
     double m_voltageSetpoint = stdcxx::nan();
+
+    stdcxx::Reference<Terminal> m_regulatingTerminal;
 };
 
 }  // namespace iidm

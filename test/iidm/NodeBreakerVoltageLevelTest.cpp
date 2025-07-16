@@ -407,7 +407,7 @@ BOOST_AUTO_TEST_CASE(busbarSection) {
 
     BOOST_CHECK_EQUAL("BBS", bbs.getId());
     BOOST_CHECK_EQUAL("BBS_NAME", bbs.getOptionalName());
-    BOOST_CHECK_EQUAL(ConnectableType::BUSBAR_SECTION, bbs.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::BUSBAR_SECTION, bbs.getType());
     std::ostringstream oss;
     oss << bbs.getType();
     BOOST_CHECK_EQUAL("BUSBAR_SECTION", oss.str());
@@ -614,8 +614,8 @@ BOOST_AUTO_TEST_CASE(NodeBreakerViewTest) {
 
     POWSYBL_ASSERT_THROW(voltageLevel.getNodeBreakerView().getNode1("UNKNOWN"), PowsyblException, "Switch 'UNKNOWN' not found in the voltage level 'VL2'");
 
-    VoltageLevel::NodeBreakerView::Traverser traverser = [=](unsigned long /*node1*/, const stdcxx::Reference<Switch>& /*sw*/, unsigned long node2) {
-        return (node2 < (NODE_COUNT - 1));
+    VoltageLevel::NodeBreakerView::TopologyTraverser traverser = [=](unsigned long /*node1*/, const stdcxx::Reference<Switch>& /*sw*/, unsigned long node2) {
+        return (node2 < (NODE_COUNT - 1)) ? math::TraverseResult::CONTINUE : math::TraverseResult::TERMINATE_TRAVERSER;
     };
     voltageLevel.getNodeBreakerView().traverse(0, traverser);
 

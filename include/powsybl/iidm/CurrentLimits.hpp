@@ -24,7 +24,7 @@ public:  // OperationalLimits
     const LimitType& getLimitType() const override;
 
 public:
-    CurrentLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits);
+    CurrentLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
 
     CurrentLimits(const CurrentLimits&) = default;
 

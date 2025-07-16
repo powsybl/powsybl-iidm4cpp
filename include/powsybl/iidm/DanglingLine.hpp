@@ -30,6 +30,9 @@ class DanglingLine : public Injection, public FlowsLimitsHolder {
 public:
     using Generation = dangling_line::Generation;
 
+public:  // Identifiable
+    const IdentifiableType& getType() const override;
+
 public:
     DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                  double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode,

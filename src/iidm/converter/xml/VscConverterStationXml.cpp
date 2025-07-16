@@ -7,6 +7,10 @@
 
 #include "VscConverterStationXml.hpp"
 
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
+#include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
+#include <powsybl/stdcxx/memory.hpp>
+
 #include "ReactiveLimitsXml.hpp"
 
 namespace powsybl {
@@ -51,6 +55,13 @@ void VscConverterStationXml::readSubElements(VscConverterStation& converterStati
         if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
             context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
             ReactiveLimitsXml::getInstance().read(converterStation, context);
+        } else if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
+            IidmXmlUtil::assertMinimumVersion(VSC_CONVERTER_STATION, REGULATING_TERMINAL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
+            const auto& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+            const auto& side = context.getReader().getOptionalAttributeValue(SIDE, "");
+            context.addEndTask([&converterStation, id, side]() {
+                converterStation.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(converterStation.getNetwork(), id, side)));
+            });
         } else {
             AbstractConnectableXml::readSubElements(converterStation, context);
         }
@@ -68,6 +79,11 @@ void VscConverterStationXml::writeRootElementAttributes(const VscConverterStatio
 
 void VscConverterStationXml::writeSubElements(const VscConverterStation& converterStation, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     ReactiveLimitsXml::getInstance().write(converterStation, context);
+    IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(!stdcxx::areSame(converterStation, converterStation.getRegulatingTerminal().getConnectable().get()),
+        VSC_CONVERTER_STATION, REGULATING_TERMINAL, ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED,
+        IidmXmlVersion::V1_6(), context, [&converterStation, &context]() {
+            TerminalRefXml::writeTerminalRef(converterStation.getRegulatingTerminal(), context, REGULATING_TERMINAL);
+        });
 }
 
 }  // namespace xml

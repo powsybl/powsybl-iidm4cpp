@@ -18,7 +18,7 @@ Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::st
                      const EnergySource& energySource, double minP, double maxP, bool voltageRegulatorOn,
                      Terminal& regulatingTerminal, double activePowerSetpoint,
                      double reactivePowerSetpoint, double voltageSetpoint, double ratedS) :
-    Injection(id, name, fictitious, ConnectableType::GENERATOR),
+    Injection(id, name, fictitious),
     m_energySource(energySource),
     m_minP(checkMinP(*this, minP)),
     m_maxP(checkMaxP(*this, maxP)),
@@ -94,6 +94,11 @@ double Generator::getTargetQ() const {
 
 double Generator::getTargetV() const {
     return getVoltageSetpoint();
+}
+
+const IdentifiableType& Generator::getType() const {
+    static IdentifiableType s_type = IdentifiableType::GENERATOR;
+    return s_type;
 }
 
 const std::string& Generator::getTypeDescription() const {

@@ -19,7 +19,7 @@ ActivePowerLimitsAdder::ActivePowerLimitsAdder(OperationalLimitsOwner& owner) :
 
 ActivePowerLimits& ActivePowerLimitsAdder::add() {
     checkLoadingLimits();
-    auto limit = m_owner.setOperationalLimits(LimitType::ACTIVE_POWER, stdcxx::make_unique<ActivePowerLimits>(m_owner, getPermanentLimit(), getTemporaryLimits()));
+    auto limit = m_owner.setOperationalLimits(LimitType::ACTIVE_POWER, stdcxx::make_unique<ActivePowerLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits()));
     return static_cast<ActivePowerLimits&>(limit.get());
 }
 

@@ -169,10 +169,18 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const Curr
 template <typename Added, typename Adder, typename Parent>
 template <typename Limits>
 void AbstractConnectableXml<Added, Adder, Parent>::writeLoadingLimits(const Limits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const std::string& type, const stdcxx::optional<int>& index) {
-    if (!std::isnan(limits.getPermanentLimit()) || !boost::empty(limits.getTemporaryLimits())) {
+    if (!std::isnan(limits.getPermanentLimit()) || !boost::empty(limits.getTemporaryLimits()) || !boost::empty(limits.getFictitiousLimits())) {
         writer.writeStartElement(nsPrefix, toString(type.c_str(), index));
         writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
 
+        for (const auto& fl : limits.getFictitiousLimits()) {
+            writer.writeStartElement(version.getPrefix(), TEMPORARY_LIMIT);
+            writer.writeAttribute(NAME, fl.getName());
+            writer.writeOptionalAttribute(ACCEPTABLE_DURATION, fl.getAcceptableDuration(), std::numeric_limits<unsigned long>::max());
+            writer.writeOptionalAttribute(VALUE, fl.getValue(), std::numeric_limits<double>::max());
+            writer.writeOptionalAttribute(FICTITIOUS, fl.isFictitious(), false); // for fictitious limits that attribute is supposed to be true.
+            writer.writeEndElement();
+        }
         for (const auto& tl : limits.getTemporaryLimits()) {
             writer.writeStartElement(version.getPrefix(), TEMPORARY_LIMIT);
             writer.writeAttribute(NAME, tl.getName());

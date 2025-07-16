@@ -26,7 +26,7 @@ public:
     static const TwoWindingsTransformerXml& getInstance();
 
 protected:  // AbstractIdentifiableXml
-    TwoWindingsTransformerAdder createAdder(Substation& substation) const override;
+    TwoWindingsTransformerAdder createAdder(Container& container) const override;
 
     const char* getRootElementName() const override;
 
@@ -34,9 +34,9 @@ protected:  // AbstractIdentifiableXml
 
     void readSubElements(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) const override;
 
-    void writeRootElementAttributes(const TwoWindingsTransformer& twt, const Substation& substation, NetworkXmlWriterContext& context) const override;
+    void writeRootElementAttributes(const TwoWindingsTransformer& twt, const Container& container, NetworkXmlWriterContext& context) const override;
 
-    void writeSubElements(const TwoWindingsTransformer& twt, const Substation& substation, NetworkXmlWriterContext& context) const override;
+    void writeSubElements(const TwoWindingsTransformer& twt, const Container& container, NetworkXmlWriterContext& context) const override;
 
 private:
     TwoWindingsTransformerXml() = default;

@@ -85,6 +85,8 @@ protected:
 
     const LoadingLimits::TemporaryLimits& getTemporaryLimits() const;
 
+    const LoadingLimits::FictitiousLimits& getFictitiousLimits() const;
+
 protected:
     OperationalLimitsOwner& m_owner;
 
@@ -99,6 +101,8 @@ private:
     double m_permanentLimit = stdcxx::nan();
 
     LoadingLimits::TemporaryLimits m_temporaryLimits;
+
+    LoadingLimits::FictitiousLimits m_fictitiousLimits;
 };
 
 }  // namespace iidm

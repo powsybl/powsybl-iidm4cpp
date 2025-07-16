@@ -182,6 +182,10 @@ void Identifiable::removeAlias(const std::string& alias) {
     }
 }
 
+bool Identifiable::removeProperty(const std::string& key) {
+    return static_cast<bool>(m_properties.remove(key));
+}
+
 void Identifiable::setFictitious(bool fictitious) {
     m_fictitious = fictitious;
 }

@@ -26,6 +26,8 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    const IdentifiableType& getType() const override;
+
     void setFictitious(bool fictitious) override;
 
 public:

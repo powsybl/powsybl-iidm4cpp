@@ -98,7 +98,11 @@ LoadingLimitsAdder<L, A>::LoadingLimitsAdder(OperationalLimitsOwner& owner) :
 
 template <typename L, typename A>
 LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious) {
-    m_temporaryLimits.emplace(acceptableDuration, LoadingLimits::TemporaryLimit(name, value, acceptableDuration, fictitious));
+    if (fictitious && acceptableDuration == std::numeric_limits<unsigned long>::max()) {
+        m_fictitiousLimits.emplace(name, LoadingLimits::TemporaryLimit(name, value, acceptableDuration, fictitious));
+    } else {
+        m_temporaryLimits.emplace(acceptableDuration, LoadingLimits::TemporaryLimit(name, value, acceptableDuration, fictitious));
+    }
     return *this;
 }
 
@@ -148,6 +152,11 @@ double LoadingLimitsAdder<L, A>::getPermanentLimit() const {
 template <typename L, typename A>
 const LoadingLimits::TemporaryLimits& LoadingLimitsAdder<L, A>::getTemporaryLimits() const {
     return m_temporaryLimits;
+}
+
+template <typename L, typename A>
+const LoadingLimits::FictitiousLimits& LoadingLimitsAdder<L, A>::getFictitiousLimits() const {
+    return m_fictitiousLimits;
 }
 
 template <typename L, typename A>

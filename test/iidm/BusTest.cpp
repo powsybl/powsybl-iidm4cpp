@@ -540,7 +540,7 @@ class TerminalTopologyVisitor : public AbstractTerminalTopologyVisitor {
 public:
     TerminalTopologyVisitor() = default;
 
-    const std::map<ConnectableType, std::set<std::string>>& getConnectables() const {
+    const std::map<IdentifiableType, std::set<std::string>>& getConnectables() const {
         return m_equipments;
     }
 
@@ -549,7 +549,7 @@ public:
     }
 
 private:
-    std::map<ConnectableType, std::set<std::string>> m_equipments;
+    std::map<IdentifiableType, std::set<std::string>> m_equipments;
 };
 
 BOOST_AUTO_TEST_CASE(TerminalVisitorEurostag) {
@@ -561,10 +561,10 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorEurostag) {
     BOOST_CHECK_EQUAL(2, boost::size(connectableEquipmentsVisitor.getConnectables()));
 
     std::set<std::string> connectedLines_NHV2 = { "NHV1_NHV2_1", "NHV1_NHV2_2" };
-    BOOST_CHECK(connectedLines_NHV2 == connectableEquipmentsVisitor.getConnectables().find(ConnectableType::LINE)->second);
+    BOOST_CHECK(connectedLines_NHV2 == connectableEquipmentsVisitor.getConnectables().find(IdentifiableType::LINE)->second);
 
     std::set<std::string> connected2WT_NHV2 = { "NHV2_NLOAD" };
-    BOOST_CHECK(connected2WT_NHV2 == connectableEquipmentsVisitor.getConnectables().find(ConnectableType::TWO_WINDINGS_TRANSFORMER)->second);
+    BOOST_CHECK(connected2WT_NHV2 == connectableEquipmentsVisitor.getConnectables().find(IdentifiableType::TWO_WINDINGS_TRANSFORMER)->second);
 
     TerminalTopologyVisitor connectedEquipmentsVisitor;
     Line& line = network.getLine("NHV1_NHV2_1");
@@ -574,10 +574,10 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorEurostag) {
     BOOST_CHECK_EQUAL(2, boost::size(connectedEquipmentsVisitor.getConnectables()));
 
     std::set<std::string> connectedLines_NHV1 = { "NHV1_NHV2_2" };
-    BOOST_CHECK(connectedLines_NHV1 == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::LINE)->second);
+    BOOST_CHECK(connectedLines_NHV1 == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::LINE)->second);
 
     std::set<std::string> connected2WT_NHV1 = { "NGEN_NHV1" };
-    BOOST_CHECK(connected2WT_NHV1 == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::TWO_WINDINGS_TRANSFORMER)->second);
+    BOOST_CHECK(connected2WT_NHV1 == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::TWO_WINDINGS_TRANSFORMER)->second);
 }
 
 BOOST_AUTO_TEST_CASE(TerminalVisitorAllBbk) {
@@ -721,46 +721,46 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorAllBbk) {
     BOOST_CHECK_EQUAL(10, boost::size(connectedEquipmentsVisitor.getConnectables()));
 
     std::set<std::string> connectedLines = { "LINE" };
-    BOOST_CHECK(connectedLines == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::LINE)->second);
+    BOOST_CHECK(connectedLines == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::LINE)->second);
 
     std::set<std::string> connected2WT = { "2WT" };
-    BOOST_CHECK(connected2WT == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::TWO_WINDINGS_TRANSFORMER)->second);
+    BOOST_CHECK(connected2WT == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::TWO_WINDINGS_TRANSFORMER)->second);
 
     std::set<std::string> connected3WT = { "3WT" };
-    BOOST_CHECK(connected3WT == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::THREE_WINDINGS_TRANSFORMER)->second);
+    BOOST_CHECK(connected3WT == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::THREE_WINDINGS_TRANSFORMER)->second);
 
     std::set<std::string> connectedGenerators = { "GENERATOR" };
-    BOOST_CHECK(connectedGenerators == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::GENERATOR)->second);
+    BOOST_CHECK(connectedGenerators == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::GENERATOR)->second);
 
     std::set<std::string> connectedBatteries = { "BATTERY" };
-    BOOST_CHECK(connectedBatteries == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::BATTERY)->second);
+    BOOST_CHECK(connectedBatteries == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::BATTERY)->second);
 
     std::set<std::string> connectedLoads = { "LOAD" };
-    BOOST_CHECK(connectedLoads == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::LOAD)->second);
+    BOOST_CHECK(connectedLoads == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::LOAD)->second);
 
     std::set<std::string> connectedShunts = { "SHUNT" };
-    BOOST_CHECK(connectedShunts == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::SHUNT_COMPENSATOR)->second);
+    BOOST_CHECK(connectedShunts == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::SHUNT_COMPENSATOR)->second);
 
     std::set<std::string> connectedDanglingLines = { "DANGLINE_LINE" };
-    BOOST_CHECK(connectedDanglingLines == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::DANGLING_LINE)->second);
+    BOOST_CHECK(connectedDanglingLines == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::DANGLING_LINE)->second);
 
     std::set<std::string> connectedSvc = { "SVC" };
-    BOOST_CHECK(connectedSvc == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::STATIC_VAR_COMPENSATOR)->second);
+    BOOST_CHECK(connectedSvc == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::STATIC_VAR_COMPENSATOR)->second);
 
     std::set<std::string> connectedHvdc = { "VSC_S", "LCC_S" };
-    BOOST_CHECK(connectedHvdc == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::HVDC_CONVERTER_STATION)->second);
+    BOOST_CHECK(connectedHvdc == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::HVDC_CONVERTER_STATION)->second);
 
     // visit Bus2
     TerminalTopologyVisitor bus2Visitor;
     network.get<Bus>("Bus2").visitConnectedEquipments(bus2Visitor);
     std::set<std::string> connected3WT_Buses12 = { "3WT" };
-    BOOST_CHECK(connected3WT_Buses12 == bus2Visitor.getConnectables().find(ConnectableType::THREE_WINDINGS_TRANSFORMER)->second);
+    BOOST_CHECK(connected3WT_Buses12 == bus2Visitor.getConnectables().find(IdentifiableType::THREE_WINDINGS_TRANSFORMER)->second);
 
     // visit Bus3
     TerminalTopologyVisitor bus3Visitor;
     network.get<Bus>("Bus3").visitConnectedEquipments(bus3Visitor);
     std::set<std::string> connected3WT_Buses123 = { "3WT" };
-    BOOST_CHECK(connected3WT_Buses123 == bus3Visitor.getConnectables().find(ConnectableType::THREE_WINDINGS_TRANSFORMER)->second);
+    BOOST_CHECK(connected3WT_Buses123 == bus3Visitor.getConnectables().find(IdentifiableType::THREE_WINDINGS_TRANSFORMER)->second);
 
     // visit VoltageLevel
     TerminalTopologyVisitor voltageLevelVisitor;
@@ -777,7 +777,7 @@ BOOST_FIXTURE_TEST_CASE(TerminalVisitorBusbarSection, test::ResourceFixture) {
     BOOST_CHECK_EQUAL(1, boost::size(connectedEquipmentsVisitor.getConnectables()));
 
     std::set<std::string> connectedBbs = { "D" };
-    BOOST_CHECK(connectedBbs == connectedEquipmentsVisitor.getConnectables().find(ConnectableType::BUSBAR_SECTION)->second);
+    BOOST_CHECK(connectedBbs == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::BUSBAR_SECTION)->second);
 }
 
 BOOST_AUTO_TEST_CASE(testConnectedTerminals) {

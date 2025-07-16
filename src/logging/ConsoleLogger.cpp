@@ -44,7 +44,7 @@ bool ConsoleLogger::isWarnEnabled() const {
 }
 
 void ConsoleLogger::log(const Level& level, const std::string& message) {
-    std::clog << LogMessage(level, message) << std::endl;
+    std::clog << LogMessage(level, message) << '\n' << std::flush;
 }
 
 }  // namespace logging

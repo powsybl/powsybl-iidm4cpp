@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
 
+#include <boost/range/adaptor/map.hpp>
+
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
@@ -78,6 +80,10 @@ const std::string& AbstractVersionableExtensionXmlSerializer::getVersion() const
 
 const std::string& AbstractVersionableExtensionXmlSerializer::getVersion(const IidmXmlVersion& networkVersion) const {
     return m_extensionVersions.at(networkVersion.toString(".")).back();
+}
+
+stdcxx::const_range<std::string> AbstractVersionableExtensionXmlSerializer::getVersions() const {
+    return m_namespaceUris | boost::adaptors::map_keys;
 }
 
 }  // namespace xml

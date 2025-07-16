@@ -15,7 +15,7 @@ namespace iidm {
 
 Battery::Battery(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
     double p0, double q0, double minP, double maxP) :
-    Injection(id, name, fictitious, ConnectableType::BATTERY),
+    Injection(id, name, fictitious),
     m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
     m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
     m_minP(checkMinP(*this, minP)),
@@ -53,6 +53,11 @@ double Battery::getP0() const {
 
 double Battery::getQ0() const {
     return m_q0.at(getNetwork().getVariantIndex());
+}
+
+const IdentifiableType& Battery::getType() const {
+    static IdentifiableType s_type = IdentifiableType::BATTERY;
+    return s_type;
 }
 
 const std::string& Battery::getTypeDescription() const {

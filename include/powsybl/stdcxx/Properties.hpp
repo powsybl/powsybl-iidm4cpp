@@ -60,7 +60,7 @@ public:
 
     bool isEmpty() const;
 
-    Properties& remove(const std::string& key);
+    stdcxx::optional<std::string> remove(const std::string& key);
 
     stdcxx::optional<std::string> set(const std::string& key, const std::string& value);
 

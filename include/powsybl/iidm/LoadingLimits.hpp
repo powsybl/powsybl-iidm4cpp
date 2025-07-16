@@ -50,9 +50,11 @@ public:
     };
 
     using TemporaryLimits = std::map<unsigned long, TemporaryLimit, std::greater<unsigned long> >;
+    
+    using FictitiousLimits = std::map<std::string, TemporaryLimit, std::greater<std::string > >;
 
 public:
-    LoadingLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits);
+    LoadingLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
 
     LoadingLimits(const LoadingLimits&) = default;
 
@@ -75,6 +77,10 @@ public:
 
     stdcxx::range<TemporaryLimit> getTemporaryLimits();
 
+    stdcxx::const_range<TemporaryLimit> getFictitiousLimits() const;
+
+    stdcxx::range<TemporaryLimit> getFictitiousLimits();
+
     double getTemporaryLimitValue(unsigned long acceptableDuration) const;
 
     LoadingLimits& setPermanentLimit(double permanentLimit);
@@ -83,6 +89,8 @@ private:
     double m_permanentLimit;
 
     TemporaryLimits m_temporaryLimits;
+
+    FictitiousLimits m_fictitiousLimits;
 };
 
 }  // namespace iidm

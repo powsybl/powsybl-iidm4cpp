@@ -10,7 +10,7 @@
 
 #include <set>
 
-#include <powsybl/iidm/ConnectableType.hpp>
+#include <powsybl/iidm/IdentifiableType.hpp>
 
 namespace powsybl {
 
@@ -20,10 +20,10 @@ class VoltageLevel;
 
 namespace VoltageLevels {
 
-static const std::set<ConnectableType> MULTIPLE_TERMINALS_CONNECTABLE_TYPES = {
-    ConnectableType::LINE,
-    ConnectableType::TWO_WINDINGS_TRANSFORMER,
-    ConnectableType::THREE_WINDINGS_TRANSFORMER
+static const std::set<IdentifiableType> MULTIPLE_TERMINALS_CONNECTABLE_TYPES = {
+    IdentifiableType::LINE,
+    IdentifiableType::TWO_WINDINGS_TRANSFORMER,
+    IdentifiableType::THREE_WINDINGS_TRANSFORMER
 };
 
 void checkRemovability(const VoltageLevel& voltageLevel);

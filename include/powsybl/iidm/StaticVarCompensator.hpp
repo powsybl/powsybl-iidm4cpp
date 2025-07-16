@@ -20,6 +20,9 @@ namespace iidm {
 class Terminal;
 
 class StaticVarCompensator : public Injection {
+public:  // Identifiable
+    const IdentifiableType& getType() const override;
+
 public:
     enum class RegulationMode : unsigned char {
         VOLTAGE,

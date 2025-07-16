@@ -167,7 +167,6 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(3, boost::size(tempLimits));
     CurrentLimits::TemporaryLimit tl = limits.getTemporaryLimit(3UL);
     CurrentLimits::TemporaryLimit tl2 = cLimits.getTemporaryLimit(3UL);
-    unsigned int index = 0;
 
     BOOST_CHECK_EQUAL(3UL, tl.getAcceptableDuration());
     BOOST_CHECK_EQUAL(3UL, tl2.getAcceptableDuration());
@@ -181,7 +180,6 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     tl = limits.getTemporaryLimit(2UL);
     tl2 = cLimits.getTemporaryLimit(2UL);
-    index++;
 
     BOOST_CHECK_EQUAL(2UL, tl.getAcceptableDuration());
     BOOST_CHECK_EQUAL(2UL, tl2.getAcceptableDuration());
@@ -195,7 +193,6 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     tl = limits.getTemporaryLimit(1UL);
     tl2 = cLimits.getTemporaryLimit(1UL);
-    index++;
 
     BOOST_CHECK_EQUAL(1UL, tl.getAcceptableDuration());
     BOOST_CHECK_EQUAL(1UL, tl2.getAcceptableDuration());

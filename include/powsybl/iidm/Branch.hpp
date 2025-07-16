@@ -156,7 +156,7 @@ public:
     CurrentLimitsAdder newCurrentLimits2();
 
 protected:
-    Branch(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType);
+    Branch(const std::string& id, const std::string& name, bool fictitious);
 
 private:
     double getValueForLimit(const Terminal& terminal, const LimitType& type) const;

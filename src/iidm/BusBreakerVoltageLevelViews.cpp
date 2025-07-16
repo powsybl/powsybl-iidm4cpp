@@ -125,6 +125,15 @@ void BusBreakerViewImpl::removeSwitch(const std::string& switchId) {
     m_voltageLevel.removeSwitch(switchId);
 }
 
+void BusBreakerViewImpl::traverse(const Bus& bus, const TopologyTraverser& traverser) {
+    const auto& graph = m_voltageLevel.getGraph();
+    math::Traverser graphTraverser = [&graph, &traverser](unsigned long v1, unsigned long e, unsigned long v2) {
+        return traverser(graph.getVertexObject(v1), graph.getEdgeObject(e), graph.getVertexObject(v2));
+    };
+
+    graph.traverse(*m_voltageLevel.getVertex(bus.getId(), true), graphTraverser);
+}
+
 BusViewImpl::BusViewImpl(BusBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }

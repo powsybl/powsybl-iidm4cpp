@@ -15,6 +15,9 @@ namespace powsybl {
 namespace iidm {
 
 class BusbarSection : public Injection {
+public:  // Identifiable
+    const IdentifiableType& getType() const override;
+
 public:
     BusbarSection(const std::string& id, const std::string& name, bool fictitious);
 

@@ -10,7 +10,7 @@
 
 #include <memory>
 
-#include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/TapChanger.hpp>
 #include <powsybl/iidm/TapChangerStep.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
@@ -35,7 +35,7 @@ namespace converter {
 namespace xml {
 
 template <typename Added, typename Adder>
-class AbstractTransformerXml : public AbstractConnectableXml<Added, Adder, Substation> {
+class AbstractTransformerXml : public AbstractConnectableXml<Added, Adder, Container> {
 protected:
     AbstractTransformerXml() = default;
 

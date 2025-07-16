@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_CASE(testBbsTerminal) {
     BOOST_CHECK(static_cast<bool>(bestOptTerminal));
 
     Terminal& bestTerminal = bestOptTerminal.get();
-    BOOST_CHECK_EQUAL(ConnectableType::BUSBAR_SECTION, bestTerminal.getConnectable().get().getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::BUSBAR_SECTION, bestTerminal.getConnectable().get().getType());
     BOOST_CHECK_EQUAL("N_0", bestTerminal.getBusBreakerView().getBus().get().getId());
     BOOST_CHECK_EQUAL("N_0", bestTerminal.getBusView().getBus().get().getId());
 }
@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(testLineTerminal1) {
     BOOST_CHECK(static_cast<bool>(bestOptTerminal));
 
     Terminal& bestTerminal = bestOptTerminal.get();
-    BOOST_CHECK_EQUAL(ConnectableType::LINE, bestTerminal.getConnectable().get().getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::LINE, bestTerminal.getConnectable().get().getType());
     BOOST_CHECK_EQUAL("NHV1", bestTerminal.getBusBreakerView().getBus().get().getId());
     BOOST_CHECK_EQUAL("VLHV1_0", bestTerminal.getBusView().getBus().get().getId());
 }
@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(testLineTerminal2) {
     BOOST_CHECK(static_cast<bool>(bestOptTerminal));
 
     Terminal& bestTerminal = bestOptTerminal.get();
-    BOOST_CHECK_EQUAL(ConnectableType::LINE, bestTerminal.getConnectable().get().getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::LINE, bestTerminal.getConnectable().get().getType());
     BOOST_CHECK_EQUAL("NHV2", bestTerminal.getBusBreakerView().getBus().get().getId());
     BOOST_CHECK_EQUAL("VLHV2_0", bestTerminal.getBusView().getBus().get().getId());
 }
@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(testGeneratorTerminal) {
     BOOST_CHECK(static_cast<bool>(bestOptTerminal));
 
     Terminal& bestTerminal = bestOptTerminal.get();
-    BOOST_CHECK_EQUAL(ConnectableType::GENERATOR, bestTerminal.getConnectable().get().getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::GENERATOR, bestTerminal.getConnectable().get().getType());
     BOOST_CHECK_EQUAL("NGEN", bestTerminal.getBusBreakerView().getBus().get().getId());
     BOOST_CHECK_EQUAL("VLGEN_0", bestTerminal.getBusView().getBus().get().getId());
 }

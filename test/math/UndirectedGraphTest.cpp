@@ -308,15 +308,44 @@ BOOST_AUTO_TEST_CASE(traverse) {
     graph.addEdge(4, 5, stdcxx::ref<E>());
     graph.addEdge(3, 5, stdcxx::ref<E>());
 
-    Traverser traverser = [](unsigned long /*v1*/, unsigned long e, unsigned long /*v2*/) {
-        return (e == 3 || e == 4 || e == 6) ? TraverseResult::TERMINATE : TraverseResult::CONTINUE;
+    const Traverser& traverser = [](unsigned long v1, unsigned long e, unsigned long v2) {
+        if (v1 == 4 && e == 3 && v2 == 1) {
+            return TraverseResult::TERMINATE_PATH;
+        }
+        if (v1 == 4 && e == 4 && v2 == 2) {
+            return TraverseResult::TERMINATE_PATH;
+        }
+        if (v1 == 5 && e == 6 && v2 == 3) {
+            return TraverseResult::TERMINATE_PATH;
+        }
+        return TraverseResult::CONTINUE;
     };
 
-    std::vector<bool> encountered(graph.getVertexCount(), false);
+    std::vector<bool> encountered(graph.getVertexCount());
+    std::fill(encountered.begin(), encountered.end(), false);
+    std::vector<bool> encounteredExpected = {false, false, false, false, true, true};
     graph.traverse(5, traverser, encountered);
-    graph.traverse(5, traverser);
+    BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredExpected.begin(), encounteredExpected.end());
 
-    BOOST_CHECK_EQUAL_COLLECTIONS(expected.cbegin(), expected.cend(), encountered.cbegin(), encountered.cend());
+    std::fill(encountered.begin(), encountered.end(), false);
+    const Traverser& traverser2 = [&](unsigned long v1, unsigned long /*e*/, unsigned long v2) {
+        encountered[v1] = true;
+        return v2 == 1 || v2 == 2 || v2 == 3 ? TraverseResult::TERMINATE_PATH : TraverseResult::CONTINUE;
+    };
+    graph.traverse(4, traverser2);
+    // Only vertex 4 and 5 encountered
+    std::vector<bool> encounteredExpected2 = {false, false, false, false, true, true};
+    BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredExpected2.begin(), encounteredExpected2.end());
+
+    const Traverser& traverser3 = [&](unsigned long v1, unsigned long /*e*/, unsigned long v2) {
+        encountered[v1] = true;
+        return v2 == 0 ? TraverseResult::TERMINATE_TRAVERSER : TraverseResult::CONTINUE;
+    };
+    std::fill(encountered.begin(), encountered.end(), false);
+    graph.traverse(5, traverser3, encountered);
+    // Only vertices on first path encountering 0 are encountered
+    std::vector<bool> encounteredExpected3 = {false, true, false, false, true, true};
+    BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredExpected3.begin(), encounteredExpected3.end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

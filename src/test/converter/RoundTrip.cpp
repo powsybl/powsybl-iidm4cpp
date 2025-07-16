@@ -22,9 +22,9 @@ namespace converter {
 void RoundTrip::compareTxt(const std::string& expected, const std::string& actual) {
     if (expected != actual) {
         std::ostringstream oss;
-        oss << std::endl
-            << "=== Expected ===" << std::endl << expected << std::endl
-            << "=== Actual ===" << std::endl << actual << std::endl;
+        oss << '\n'
+            << "=== Expected ===" << '\n' << expected << '\n' << std::flush
+            << "=== Actual ===" << '\n' << actual << '\n' << std::flush;
         BOOST_FAIL(oss.str());
     }
 }

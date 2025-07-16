@@ -122,7 +122,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("VL1_VL3", line.getId());
     BOOST_CHECK(line.getOptionalName().empty());
     BOOST_CHECK_EQUAL("VL1_VL3", line.getNameOrId());
-    BOOST_CHECK_EQUAL(ConnectableType::LINE, line.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::LINE, line.getType());
     std::ostringstream oss;
     oss << line.getType();
     BOOST_CHECK_EQUAL("LINE", oss.str());

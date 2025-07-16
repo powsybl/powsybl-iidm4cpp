@@ -18,6 +18,9 @@ namespace powsybl {
 namespace iidm {
 
 class Load : public Injection {
+public:  // Identifiable
+    const IdentifiableType& getType() const override;
+
 public:
     Load(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const LoadType& loadType,
          double p0, double q0);

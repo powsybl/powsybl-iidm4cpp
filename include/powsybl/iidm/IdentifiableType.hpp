@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_CONNECTABLETYPE_HPP
-#define POWSYBL_IIDM_CONNECTABLETYPE_HPP
+#ifndef POWSYBL_IIDM_IDENTIFIABLETYPE_HPP
+#define POWSYBL_IIDM_IDENTIFIABLETYPE_HPP
 
 #include <iosfwd>
 
@@ -14,7 +14,13 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class ConnectableType : unsigned char {
+enum class IdentifiableType : unsigned char {
+    NETWORK,
+    SUBSTATION,
+    VOLTAGE_LEVEL,
+    HVDC_LINE,
+    BUS,
+    SWITCH,
     BUSBAR_SECTION,
     LINE,
     TWO_WINDINGS_TRANSFORMER,
@@ -32,4 +38,4 @@ enum class ConnectableType : unsigned char {
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_CONNECTABLETYPE_HPP
+#endif  // POWSYBL_IIDM_IDENTIFIABLETYPE_HPP

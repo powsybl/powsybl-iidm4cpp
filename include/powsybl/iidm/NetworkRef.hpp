@@ -52,6 +52,12 @@ public:
     NetworkRef& operator=(NetworkRef&&) noexcept = delete;
 
     /**
+     * Return true if the reference to the network is valid, false otherwise
+     * @return true if the reference to the network is valid, false otherwise
+     */
+    operator bool() const noexcept;
+
+    /**
      * Get the {@link Network} object pointed by this reference.
      * @return a network object
      */

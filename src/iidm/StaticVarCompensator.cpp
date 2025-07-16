@@ -18,7 +18,7 @@ namespace iidm {
 
 StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
         double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, Terminal& regulatingTerminal) :
-    Injection(id, name, fictitious, ConnectableType::STATIC_VAR_COMPENSATOR),
+    Injection(id, name, fictitious),
     m_bMin(checkBmin(*this, bMin)),
     m_bMax(checkBmax(*this, bMax)),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),
@@ -68,6 +68,11 @@ Terminal& StaticVarCompensator::getRegulatingTerminal() {
 
 const StaticVarCompensator::RegulationMode& StaticVarCompensator::getRegulationMode() const {
     return m_regulationMode.at(getNetwork().getVariantIndex());
+}
+
+const IdentifiableType& StaticVarCompensator::getType() const {
+    static IdentifiableType s_type = IdentifiableType::STATIC_VAR_COMPENSATOR;
+    return s_type;
 }
 
 const std::string& StaticVarCompensator::getTypeDescription() const {

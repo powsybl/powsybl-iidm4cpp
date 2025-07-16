@@ -57,14 +57,14 @@ BOOST_AUTO_TEST_CASE(RemoveProperty) {
     props.set("key4", "value4");
     BOOST_CHECK_EQUAL(4UL, props.size());
 
-    props.remove("key3");
+    BOOST_CHECK_EQUAL("value3", *props.remove("key3"));
     BOOST_CHECK_EQUAL(3UL, props.size());
 
-    props.remove("key4");
+    BOOST_CHECK_EQUAL("value4", *props.remove("key4"));
     BOOST_CHECK_EQUAL(2UL, props.size());
 
-    // removing a key that does not exists does nothing
-    props.remove("key5");
+    // removing a key that does not exists does nothing but returning an invalid stdcxx::optional
+    BOOST_CHECK(!props.remove("key5"));
     BOOST_CHECK_EQUAL(2UL, props.size());
 
     char suffix = '1';
