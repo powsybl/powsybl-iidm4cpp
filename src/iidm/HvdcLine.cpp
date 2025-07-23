@@ -23,8 +23,10 @@ HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& n
     m_r(checkR(*this, r)),
     m_nominalV(checkNominalVoltage(*this, nominalV)),
     m_maxP(checkHvdcMaxP(*this, maxP)),
-    m_convertersMode(network.getVariantManager().getVariantArraySize(), checkConvertersMode(*this, convertersMode)),
-    m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), checkHvdcActivePowerSetpoint(*this, activePowerSetpoint)) {
+    m_convertersMode(network.getVariantManager().getVariantArraySize(), convertersMode),
+    m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), activePowerSetpoint) {
+    checkConvertersMode(*this, convertersMode, network.getMinimumValidationLevel());
+    checkHvdcActivePowerSetpoint(*this, activePowerSetpoint, network.getMinimumValidationLevel());
 }
 
 void HvdcLine::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -138,14 +140,16 @@ void HvdcLine::remove() {
 }
 
 HvdcLine& HvdcLine::setActivePowerSetpoint(double activePowerSetpoint) {
-    m_activePowerSetpoint[getNetwork().getVariantIndex()] = checkHvdcActivePowerSetpoint(*this, activePowerSetpoint);
-
+    checkHvdcActivePowerSetpoint(*this, activePowerSetpoint, getNetwork().getMinimumValidationLevel());
+    m_activePowerSetpoint[getNetwork().getVariantIndex()] = activePowerSetpoint;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 HvdcLine& HvdcLine::setConvertersMode(const ConvertersMode& mode) {
-    m_convertersMode[getNetwork().getVariantIndex()] = checkConvertersMode(*this, mode);
-
+    checkConvertersMode(*this, mode, getNetwork().getMinimumValidationLevel());
+    m_convertersMode[getNetwork().getVariantIndex()] = mode;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 

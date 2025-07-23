@@ -142,7 +142,7 @@ ValidationLevel checkSections(const Validable& validable, const stdcxx::optional
 
 ValidationLevel checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode, const ValidationLevel& vl);
 
-long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
+ValidationLevel checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition, const ValidationLevel& vl);
 
 ValidationLevel checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband, const ValidationLevel& vl);
 

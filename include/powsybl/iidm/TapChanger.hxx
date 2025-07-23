@@ -19,8 +19,8 @@ namespace powsybl {
 
 namespace iidm {
 
-long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
-double checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband);
+ValidationLevel checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition, const ValidationLevel& vl);
+ValidationLevel checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband, const ValidationLevel& vl);
 
 template<typename H, typename C, typename S>
 TapChanger<H, C, S>::TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
@@ -126,13 +126,13 @@ stdcxx::Reference<Terminal> TapChanger<H, C, S>::getRegulationTerminal() {
 
 template<typename H, typename C, typename S>
 const S& TapChanger<H, C, S>::getStep(long tapPosition) const {
-    checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition());
+    checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition(), ValidationLevel::STEADY_STATE_HYPOTHESIS);
     return m_steps[tapPosition - m_lowTapPosition];
 }
 
 template<typename H, typename C, typename S>
 S& TapChanger<H, C, S>::getStep(long tapPosition) {
-    checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition());
+    checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition(), ValidationLevel::STEADY_STATE_HYPOTHESIS);
     return m_steps[tapPosition - m_lowTapPosition];
 }
 
@@ -174,9 +174,9 @@ C& TapChanger<H, C, S>::setLowTapPosition(long lowTapPosition) {
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setRegulating(bool regulating) {
-    checkTargetDeadband(m_parent, m_type, regulating, m_targetDeadband[getNetwork().getVariantIndex()]);
+    checkTargetDeadband(m_parent, m_type, regulating, m_targetDeadband[getNetwork().getVariantIndex()], getNetwork().getMinimumValidationLevel());
     m_regulating[getNetwork().getVariantIndex()] = regulating;
-
+    getNetwork().invalidateValidationLevel();
     return static_cast<C&>(*this);
 }
 
@@ -192,15 +192,17 @@ C& TapChanger<H, C, S>::setRegulationTerminal(const stdcxx::Reference<Terminal>&
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setTapPosition(long tapPosition) {
-    m_tapPosition[getNetwork().getVariantIndex()] = checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition());
-
+    checkTapPosition(m_parent, tapPosition, m_lowTapPosition, getHighTapPosition(), ValidationLevel::STEADY_STATE_HYPOTHESIS);
+    m_tapPosition[getNetwork().getVariantIndex()] = tapPosition;
+    getNetwork().invalidateValidationLevel();
     return static_cast<C&>(*this);
 }
 
 template<typename H, typename C, typename S>
 C& TapChanger<H, C, S>::setTargetDeadband(double targetDeadband) {
-    m_targetDeadband[getNetwork().getVariantIndex()] = checkTargetDeadband(m_parent, m_type, m_regulating[getNetwork().getVariantIndex()], targetDeadband);
-
+    checkTargetDeadband(m_parent, m_type, m_regulating[getNetwork().getVariantIndex()], targetDeadband, getNetwork().getMinimumValidationLevel());
+    m_targetDeadband[getNetwork().getVariantIndex()] = targetDeadband;
+    getNetwork().invalidateValidationLevel();
     return static_cast<C&>(*this);
 }
 

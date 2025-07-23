@@ -217,12 +217,9 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
     const std::string& sourceFormat = reader.getAttributeValue(SOURCE_FORMAT);
     int forecastDistance = reader.getOptionalAttributeValue(FORECAST_DISTANCE, 0);
     const std::string& caseDateStr = reader.getAttributeValue(CASE_DATE);
-    std::string minimumValidationLevel{STEADY_STATE_HYPOTHESIS};
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&minimumValidationLevel, &reader] { minimumValidationLevel = reader.getAttributeValue(MINIMUM_VALIDATION_LEVEL); });
 
     Network network(id, sourceFormat);
     network.setForecastDistance(forecastDistance);
-    network.setMinimumValidationLevel(minimumValidationLevel);
 
     try {
         network.setCaseDate(stdcxx::DateTime::parse(caseDateStr));
@@ -245,6 +242,12 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
     }
 
     NetworkXmlReaderContext context(std::move(anonymizer), reader, options, version);
+
+    std::string minimumValidationLevel{STEADY_STATE_HYPOTHESIS};
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&minimumValidationLevel, &reader] { minimumValidationLevel = reader.getAttributeValue(MINIMUM_VALIDATION_LEVEL); });
+    ValidationLevel minValidationLevel = minimumValidationLevel.empty() ? ValidationLevel::UNVALID : Enum::fromString<ValidationLevel>(minimumValidationLevel);
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(minValidationLevel != ValidationLevel::STEADY_STATE_HYPOTHESIS, NETWORK, MINIMUM_VALIDATION_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_7(), context);
+    network.setMinimumAcceptableValidationLevel(minValidationLevel);
 
     const auto& extensionProviders = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
     context.buildExtensionNamespaceUriList(extensionProviders.getProviders());
@@ -308,19 +311,23 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     const BusFilter& filter = BusFilter::create(network, options);
 
     const IidmXmlVersion& version = options.getVersion().empty() ? IidmXmlVersion::CURRENT_IIDM_XML_VERSION() : IidmXmlVersion::of(options.getVersion(), ".");
-    NetworkXmlWriterContext context(std::move(anonymizer), writer, options, filter, version);
+    
+    ValidationLevel networkValidationLevel = network.getValidationLevel();
+    NetworkXmlWriterContext context(std::move(anonymizer), writer, options, filter, version, networkValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS);
 
     writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");
 
+    writer.setPrefix(context.getVersion().getPrefix(), version.getNamespaceUri(networkValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS));
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(networkValidationLevel != ValidationLevel::STEADY_STATE_HYPOTHESIS, NETWORK, MINIMUM_VALIDATION_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_7(), context);
+    
     writer.writeStartElement(context.getVersion().getPrefix(), NETWORK);
-    writer.setPrefix(context.getVersion().getPrefix(), version.getNamespaceUri());
     writeExtensionNamespaces(network, context);
 
     writer.writeAttribute(ID, network.getId());
     writer.writeAttribute(CASE_DATE, network.getCaseDate().toString());
     writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&writer, &network] { writer.writeAttribute(MINIMUM_VALIDATION_LEVEL, network.getMinimumValidationLevel()); });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&writer, &networkValidationLevel] { writer.writeAttribute(MINIMUM_VALIDATION_LEVEL, Enum::toString(networkValidationLevel)); });
 
     AliasesXml::write(network, NETWORK, context);
     PropertiesXml::write(network, context);

@@ -106,30 +106,38 @@ Generation& Generation::setMinP(double minP) {
 }
 
 Generation& Generation::setTargetP(double targetP) {
-    checkActivePowerSetpoint(m_danglingLine, targetP);
-    unsigned long variantIndex = m_danglingLine.get().getNetwork().getVariantIndex();
+    Network& n = m_danglingLine.get().getNetwork();
+    checkActivePowerSetpoint(m_danglingLine, targetP, n.getMinimumValidationLevel());
+    unsigned long variantIndex = n.getVariantIndex();
     m_targetP[variantIndex] = targetP;
+    n.invalidateValidationLevel();
     return *this;
 }
 
 Generation& Generation::setTargetQ(double targetQ) {
-    unsigned long variantIndex = m_danglingLine.get().getNetwork().getVariantIndex();
-    checkVoltageControl(m_danglingLine, m_voltageRegulationOn[variantIndex], m_targetV[variantIndex], targetQ);
+    Network& n = m_danglingLine.get().getNetwork();
+    unsigned long variantIndex = n.getVariantIndex();
+    checkVoltageControl(m_danglingLine, m_voltageRegulationOn[variantIndex], m_targetV[variantIndex], targetQ, n.getMinimumValidationLevel());
     m_targetQ[variantIndex] = targetQ;
+    n.invalidateValidationLevel();
     return *this;
 }
 
 Generation& Generation::setTargetV(double targetV) {
-    unsigned long variantIndex = m_danglingLine.get().getNetwork().getVariantIndex();
-    checkVoltageControl(m_danglingLine, m_voltageRegulationOn[variantIndex], targetV, m_targetQ[variantIndex]);
+    Network& n = m_danglingLine.get().getNetwork();
+    unsigned long variantIndex = n.getVariantIndex();
+    checkVoltageControl(m_danglingLine, m_voltageRegulationOn[variantIndex], targetV, m_targetQ[variantIndex], n.getMinimumValidationLevel());
     m_targetV[variantIndex] = targetV;
+    n.invalidateValidationLevel();
     return *this;
 }
 
 Generation& Generation::setVoltageRegulationOn(bool voltageRegulationOn) {
-    unsigned long variantIndex = m_danglingLine.get().getNetwork().getVariantIndex();
-    checkVoltageControl(m_danglingLine, voltageRegulationOn, m_targetV[variantIndex], m_targetQ[variantIndex]);
+    Network& n = m_danglingLine.get().getNetwork();
+    unsigned long variantIndex = n.getVariantIndex();
+    checkVoltageControl(m_danglingLine, voltageRegulationOn, m_targetV[variantIndex], m_targetQ[variantIndex], n.getMinimumValidationLevel());
     m_voltageRegulationOn[variantIndex] = voltageRegulationOn;
+    n.invalidateValidationLevel();
     return *this;
 }
 

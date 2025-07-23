@@ -60,7 +60,8 @@ BOOST_AUTO_TEST_SUITE(NetworkXmlTest)
 Network createScadaNetwork() {
     Network network("scada", "test");
     network.setCaseDate(stdcxx::DateTime::parse("2017-06-25T17:43:00.000+01:00"));
-    network.setMinimumValidationLevel("EQUIPMENT");
+    std::string minimumValidationLevel{"EQUIPMENT"};
+    network.setMinimumAcceptableValidationLevel(Enum::fromString<ValidationLevel>(minimumValidationLevel));
 
     Substation &sub = network.newSubstation()
                           .setId("sub")
