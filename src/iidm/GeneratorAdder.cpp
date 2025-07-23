@@ -22,22 +22,29 @@ GeneratorAdder::GeneratorAdder(powsybl::iidm::VoltageLevel& voltageLevel) :
 }
 
 Generator& GeneratorAdder::add() {
+    Network& n = getNetwork();
+    if(n.getMinimumValidationLevel() == ValidationLevel::EQUIPMENT && !m_voltageRegulatorOn) {
+        m_voltageRegulatorOn = false;
+    }
     checkMinP(*this, m_minP);
     checkMaxP(*this, m_maxP);
-    checkRegulatingTerminal(*this, m_regulatingTerminal, getNetwork());
-    checkActivePowerSetpoint(*this, m_activePowerSetpoint);
+    checkRegulatingTerminal(*this, m_regulatingTerminal, n);
+    
 
-    checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set");
-    checkVoltageControl(*this, *m_voltageRegulatorOn, m_voltageSetpoint, m_reactivePowerSetpoint);
+    checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set", n.getMinimumValidationLevel());
+
+    n.setValidationLevelIfGreaterThan(checkActivePowerSetpoint(*this, m_activePowerSetpoint, n.getMinimumValidationLevel()));
+    n.setValidationLevelIfGreaterThan(checkVoltageControl(*this, *m_voltageRegulatorOn, m_voltageSetpoint, m_reactivePowerSetpoint, n.getMinimumValidationLevel()));
+
     checkActivePowerLimits(*this, m_minP, m_maxP);
     checkRatedS(*this, m_ratedS);
 
     auto terminalPtr = checkAndGetTerminal();
     Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal : *terminalPtr;
-    std::unique_ptr<Generator> ptrGenerator = stdcxx::make_unique<Generator>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(),
+    std::unique_ptr<Generator> ptrGenerator = stdcxx::make_unique<Generator>(n, checkAndGetUniqueId(), getName(), isFictitious(),
         m_energySource, m_minP, m_maxP, *m_voltageRegulatorOn, regulatingTerminal,
         m_activePowerSetpoint, m_reactivePowerSetpoint, m_voltageSetpoint, m_ratedS);
-    auto& generator = getNetwork().checkAndAdd(std::move(ptrGenerator));
+    auto& generator = n.checkAndAdd(std::move(ptrGenerator));
 
     Terminal& terminal = generator.addTerminal(std::move(terminalPtr));
     getVoltageLevel().attach(terminal, false);

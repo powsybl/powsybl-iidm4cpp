@@ -373,15 +373,48 @@ public:
 
     Network& setForecastDistance(int forecastDistance);
 
+    /*
+    * If network is valid, does nothing.
+    * Else, runs a validation check on each network component. 
+    * Exception is thrown if one component is not valid.
+    * Network validation status id updated.
+    * @return resulting ValidationLevel of the network
+    */
     ValidationLevel runValidationChecks();
+    /*
+    * If network is valid, does nothing.
+    * Else, runs a validation check on each network component. 
+    * If given ValidationLevel is STEADY_SATE_HYPOTHESIS, exception is thrown if one component is not valid.
+    * Network validation status id updated.
+    * @return resulting ValidationLevel of the network
+    */
     ValidationLevel runValidationChecks(const ValidationLevel& vl);
 
-    const ValidationLevel& getValidationLevel();
+    /*
+    * If network validation level not evaluated, runs validation checks and updates network validation level.
+    */
+    const ValidationLevel& validate();
+    /*
+    * If network validation level not evaluated, runs validation checks.
+    * Returns network's validation level. 
+    * Does NOT update network validation level value.
+    */
+    ValidationLevel getValidationLevel() const;
 
-    Network& setMinimumValidationLevel(const ValidationLevel& minimumValidationLevel);
-    Network& setMinimumAcceptableValidationLevel(const ValidationLevel& vl);
+    /*
+    * Set the minimum validation level of the network
+    * If the given validation level value is not matched by the current network validation status, an Exception is thrown.
+    */
+    Network& setMinimumAcceptableValidationLevel(const ValidationLevel& minimumValidationLevel);
 
+    /*
+    * Update networtk validation level to the minimum between current status and given validation level
+    */
     Network& setValidationLevelIfGreaterThan(const ValidationLevel& vl);
+    /*
+    * If minimum validation level is STEADY STATE HYPOTHESIS, does nothing.
+    * Else, unvalid the network validation level status. A new check will have to be performed.
+    */
     Network& invalidateValidationLevel();
 
 protected:  // MultiVariantObject

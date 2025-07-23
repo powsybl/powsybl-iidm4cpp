@@ -22,12 +22,15 @@ VscConverterStationAdder::VscConverterStationAdder(VoltageLevel& voltageLevel) :
 
 VscConverterStation& VscConverterStationAdder::add() {
     auto terminalPtr = checkAndGetTerminal();
-
+    Network& n = getNetwork();
+    if(n.getMinimumValidationLevel() == ValidationLevel::EQUIPMENT && !m_voltageRegulatorOn) {
+        m_voltageRegulatorOn = false;
+    }
     validate();
 
     Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *terminalPtr;
-    std::unique_ptr<VscConverterStation> ptrVsc = stdcxx::make_unique<VscConverterStation>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), getLossFactor(), *m_voltageRegulatorOn, m_reactivePowerSetpoint, m_voltageSetpoint, regulatingTerminal);
-    auto& vsc = getNetwork().checkAndAdd<VscConverterStation>(std::move(ptrVsc));
+    std::unique_ptr<VscConverterStation> ptrVsc = stdcxx::make_unique<VscConverterStation>(n, checkAndGetUniqueId(), getName(), isFictitious(), getLossFactor(), *m_voltageRegulatorOn, m_reactivePowerSetpoint, m_voltageSetpoint, regulatingTerminal);
+    auto& vsc = n.checkAndAdd<VscConverterStation>(std::move(ptrVsc));
 
     Terminal& terminal = vsc.addTerminal(std::move(terminalPtr));
     getVoltageLevel().attach(terminal, false);
@@ -61,10 +64,10 @@ VscConverterStationAdder& VscConverterStationAdder::setVoltageSetpoint(double vo
     return *this;
 }
 
-void VscConverterStationAdder::validate() const {
+void VscConverterStationAdder::validate() {
     HvdcConverterStationAdder::validate();
-    checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set");
-    checkVoltageControl(*this, *m_voltageRegulatorOn, m_voltageSetpoint, m_reactivePowerSetpoint);
+    checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set", getNetwork().getMinimumValidationLevel());
+    getNetwork().setValidationLevelIfGreaterThan(checkVoltageControl(*this, *m_voltageRegulatorOn, m_voltageSetpoint, m_reactivePowerSetpoint, getNetwork().getMinimumValidationLevel()));
     checkRegulatingTerminal(*this, m_regulatingTerminal, getNetwork());
 }
 

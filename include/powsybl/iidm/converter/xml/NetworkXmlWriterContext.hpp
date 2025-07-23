@@ -37,7 +37,7 @@ namespace xml {
 
 class NetworkXmlWriterContext {
 public:
-    NetworkXmlWriterContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version);
+    NetworkXmlWriterContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version = IidmXmlVersion::CURRENT_IIDM_XML_VERSION(), bool valid = true);
 
     ~NetworkXmlWriterContext() = default;
 
@@ -57,6 +57,8 @@ public:
 
     const IidmXmlVersion& getVersion() const;
 
+    bool isValid() const;
+
     powsybl::xml::XmlStreamWriter& getWriter();
 
     bool isExportedEquipment(const std::string& id);
@@ -73,6 +75,8 @@ private:
     std::set<std::string> m_exportedEquipments;
 
     BusFilter m_filter;
+
+    bool m_valid;
 };
 
 }  // namespace xml
