@@ -73,7 +73,7 @@ ShuntCompensatorLinearModel& ShuntCompensatorLinearModel::setGPerSection(double 
 }
 
 ShuntCompensatorLinearModel& ShuntCompensatorLinearModel::setMaximumSectionCount(unsigned long maximumSectionCount) {
-    checkSections(m_shuntCompensator, m_shuntCompensator.get().getSectionCount(), maximumSectionCount);
+    checkSections(m_shuntCompensator, m_shuntCompensator.get().getSectionCount(), maximumSectionCount, m_shuntCompensator.get().getNetwork().getMinimumValidationLevel());
     m_maximumSectionCount = maximumSectionCount;
     return *this;
 }

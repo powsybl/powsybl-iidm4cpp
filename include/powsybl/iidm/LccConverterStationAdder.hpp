@@ -26,7 +26,7 @@ public:
     LccConverterStationAdder& setPowerFactor(double powerFactor);
 
 protected: // HvdcConverterStationAdder
-    void validate() const override;
+    void validate() override;
 
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;

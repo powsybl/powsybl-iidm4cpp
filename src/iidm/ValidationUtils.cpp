@@ -256,12 +256,12 @@ const std::string& checkNotEmpty(const Validable& validable, const std::string& 
     return value;
 }
 
-const ValidationLevel& checkMinValidationLevel(const Validable& validable, const ValidationLevel& minValidationLevel) {
+const ValidationLevel& checkMinValidationLevel(const Validable& /*validable*/, const ValidationLevel& minValidationLevel) {
     switch (minValidationLevel) {
         case ValidationLevel::EQUIPMENT:
         case ValidationLevel::STEADY_STATE_HYPOTHESIS:
             break;
-
+        case ValidationLevel::UNVALID:
         default:
             throw AssertionError(stdcxx::format("Unexpected mininimum Validation Level value: %1%", minValidationLevel));
     }
@@ -460,11 +460,12 @@ ValidationLevel checkSvcRegulator(const Validable& validable, double voltageSetp
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;
 }
 
-long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition) {
+ValidationLevel checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition, const ValidationLevel& vl) {
     if ((tapPosition < lowTapPosition) || (tapPosition > highTapPosition)) {
-        throw ValidationException(validable, stdcxx::format("incorrect tap position %1% [%2%, %3%]", tapPosition, lowTapPosition, highTapPosition));
+        throwExceptionOrLogError(validable, stdcxx::format("incorrect tap position %1% [%2%, %3%]", tapPosition, lowTapPosition, highTapPosition), vl);
+        return ValidationLevel::EQUIPMENT;
     }
-    return tapPosition;
+    return ValidationLevel::STEADY_STATE_HYPOTHESIS;
 }
 
 ValidationLevel checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband, const ValidationLevel& vl) {
@@ -535,7 +536,6 @@ double checkX(const Validable& validable, double x) {
 
 ValidationLevel checkRtc(const Validable& validable, const RatioTapChanger& rtc, const Network& network, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
-
     checkValidationLevel = validationLevel::min(checkValidationLevel, checkRatioTapChangerRegulation(validable, rtc.isRegulating(), rtc.hasLoadTapChangingCapabilities(), rtc.getRegulationTerminal(), rtc.getTargetV(), network, vl));
     checkValidationLevel = validationLevel::min(checkValidationLevel, checkTargetDeadband(validable, "ratio tap changer", rtc.isRegulating(), rtc.getTargetDeadband(), vl));
     return checkValidationLevel;

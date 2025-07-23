@@ -25,7 +25,12 @@ StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const 
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_regulatingTerminal(regulatingTerminal),
     m_regulationMode(network.getVariantManager().getVariantArraySize(), regulationMode) {
-    checkSvcRegulator(*this, voltageSetpoint, reactivePowerSetpoint, regulationMode);
+    ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+    if (stdcxx::isInstanceOf<Network>(network)) {
+        Network& n = dynamic_cast<Network&>(network);
+        vl = n.getMinimumValidationLevel();
+    }
+    checkSvcRegulator(*this, voltageSetpoint, reactivePowerSetpoint, regulationMode, vl);
 }
 
 void StaticVarCompensator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -106,9 +111,9 @@ StaticVarCompensator& StaticVarCompensator::setBmin(double bMin) {
 }
 
 StaticVarCompensator& StaticVarCompensator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
-    checkSvcRegulator(*this, getVoltageSetpoint(), reactivePowerSetpoint, getRegulationMode());
+    checkSvcRegulator(*this, getVoltageSetpoint(), reactivePowerSetpoint, getRegulationMode(), getNetwork().getMinimumValidationLevel());
     m_reactivePowerSetpoint[getNetwork().getVariantIndex()] = reactivePowerSetpoint;
-
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
@@ -119,16 +124,16 @@ StaticVarCompensator& StaticVarCompensator::setRegulatingTerminal(const stdcxx::
 }
 
 StaticVarCompensator& StaticVarCompensator::setRegulationMode(const RegulationMode& regulationMode) {
-    checkSvcRegulator(*this, getVoltageSetpoint(), getReactivePowerSetpoint(), regulationMode);
+    checkSvcRegulator(*this, getVoltageSetpoint(), getReactivePowerSetpoint(), regulationMode, getNetwork().getMinimumValidationLevel());
     m_regulationMode[getNetwork().getVariantIndex()] = regulationMode;
-
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 StaticVarCompensator& StaticVarCompensator::setVoltageSetpoint(double voltageSetpoint) {
-    checkSvcRegulator(*this, voltageSetpoint, getReactivePowerSetpoint(), getRegulationMode());
+    checkSvcRegulator(*this, voltageSetpoint, getReactivePowerSetpoint(), getRegulationMode(), getNetwork().getMinimumValidationLevel());
     m_voltageSetpoint[getNetwork().getVariantIndex()] = voltageSetpoint;
-
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 

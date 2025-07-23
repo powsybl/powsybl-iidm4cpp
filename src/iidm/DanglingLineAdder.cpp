@@ -23,8 +23,9 @@ DanglingLineAdder::DanglingLineAdder(VoltageLevel& voltageLevel) :
 }
 
 DanglingLine& DanglingLineAdder::add() {
-    checkP0(*this, m_p0);
-    checkQ0(*this, m_q0);
+    Network&  network = getNetwork();
+    network.setValidationLevelIfGreaterThan(checkP0(*this, m_p0, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkQ0(*this, m_q0, network.getMinimumValidationLevel()));
     checkR(*this, m_r);
     checkX(*this, m_x);
     checkG(*this, m_g);
@@ -32,9 +33,9 @@ DanglingLine& DanglingLineAdder::add() {
 
     std::unique_ptr<DanglingLine::Generation> ptrGeneration = m_generationAdder ? m_generationAdder->build() : nullptr;
 
-    std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(),
+    std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(network, checkAndGetUniqueId(), getName(), isFictitious(),
                                                                                       m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode, std::move(ptrGeneration));
-    auto& danglingLine = getNetwork().checkAndAdd<DanglingLine>(std::move(ptrDanglingLine));
+    auto& danglingLine = network.checkAndAdd<DanglingLine>(std::move(ptrDanglingLine));
 
     Terminal& terminal = danglingLine.addTerminal(checkAndGetTerminal());
     getVoltageLevel().attach(terminal, false);

@@ -22,16 +22,17 @@ StaticVarCompensatorAdder::StaticVarCompensatorAdder(VoltageLevel& voltageLevel)
 }
 
 StaticVarCompensator& StaticVarCompensatorAdder::add() {
+    Network& network = getNetwork();
     checkBmin(*this, m_bMin);
     checkBmax(*this, m_bMax);
-    checkRegulatingTerminal(*this, m_regulatingTerminal, getNetwork());
-    checkSvcRegulator(*this, m_voltageSetpoint, m_reactivePowerSetpoint, m_regulationMode);
+    checkRegulatingTerminal(*this, m_regulatingTerminal, network);
+    network.setValidationLevelIfGreaterThan(checkSvcRegulator(*this, m_voltageSetpoint, m_reactivePowerSetpoint, m_regulationMode, network.getMinimumValidationLevel()));
 
     std::unique_ptr<Terminal> ptrTerminal = checkAndGetTerminal();
     Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *ptrTerminal;
-    std::unique_ptr<StaticVarCompensator> ptrSvc = stdcxx::make_unique<StaticVarCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_bMin, m_bMax, m_voltageSetpoint,
+    std::unique_ptr<StaticVarCompensator> ptrSvc = stdcxx::make_unique<StaticVarCompensator>(network, checkAndGetUniqueId(), getName(), isFictitious(), m_bMin, m_bMax, m_voltageSetpoint,
         m_reactivePowerSetpoint, *m_regulationMode, regulatingTerminal);
-    auto& svc = getNetwork().checkAndAdd<StaticVarCompensator>(std::move(ptrSvc));
+    auto& svc = network.checkAndAdd<StaticVarCompensator>(std::move(ptrSvc));
 
     Terminal& terminal = svc.addTerminal(std::move(ptrTerminal));
     getVoltageLevel().attach(terminal, false);

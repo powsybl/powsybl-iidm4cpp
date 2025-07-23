@@ -18,12 +18,13 @@ namespace converter {
 
 namespace xml {
 
-NetworkXmlWriterContext::NetworkXmlWriterContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version) :
+NetworkXmlWriterContext::NetworkXmlWriterContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version, bool valid) :
     m_writer(writer),
     m_anonymizer(std::move(anonymizer)),
     m_options(options),
     m_version(version),
-    m_filter(filter) {
+    m_filter(filter),
+    m_valid(valid) {
 
 }
 
@@ -57,6 +58,10 @@ const ExportOptions& NetworkXmlWriterContext::getOptions() const {
 
 const IidmXmlVersion& NetworkXmlWriterContext::getVersion() const {
     return m_version;
+}
+
+bool NetworkXmlWriterContext::isValid() const {
+    return m_valid;
 }
 
 powsybl::xml::XmlStreamWriter& NetworkXmlWriterContext::getWriter() {

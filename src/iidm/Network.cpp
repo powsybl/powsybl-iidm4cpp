@@ -705,19 +705,14 @@ Network& Network::setForecastDistance(int forecastDistance) {
     return *this;
 }
 
-Network& Network::setMinimumValidationLevel(const ValidationLevel& minimumValidationLevel) {
-    m_minimumValidationLevel = checkMinValidationLevel(*this, minimumValidationLevel);
-    return *this;
-}
-
-Network& Network::setMinimumAcceptableValidationLevel(const ValidationLevel& vl) {
-    if(vl == ValidationLevel::UNVALID) {
+Network& Network::setMinimumAcceptableValidationLevel(const ValidationLevel& minimumValidationLevel) {
+    if(m_validationLevel == ValidationLevel::UNVALID) {
         m_validationLevel = validateIdentifiables(getIdentifiables(), false, m_validationLevel, ValidationLevel::UNVALID);
     }
-    if (m_validationLevel < vl) {
-        throw ValidationException(*this,stdcxx::format("Network should be corrected in order to correspond to validation level %1%", vl) );
+    if (m_validationLevel < minimumValidationLevel) {
+        throw ValidationException(*this,stdcxx::format("Network should be corrected in order to correspond to validation level %1%", minimumValidationLevel) );
     }
-    m_minimumValidationLevel = vl;
+    m_minimumValidationLevel = checkMinValidationLevel(*this, minimumValidationLevel);
     return *this;
 }
 
@@ -729,11 +724,19 @@ ValidationLevel Network::runValidationChecks(const ValidationLevel& vl) {
     return m_validationLevel;
 }
 
-const ValidationLevel& Network::getValidationLevel() {
+const ValidationLevel& Network::validate() {
     if (m_validationLevel == ValidationLevel::UNVALID) {
         m_validationLevel = validateIdentifiables(getIdentifiables(), false, m_minimumValidationLevel, ValidationLevel::UNVALID);
     }
     return m_validationLevel;
+}
+
+ValidationLevel Network::getValidationLevel() const {
+    ValidationLevel vl = m_validationLevel;
+    if (vl == ValidationLevel::UNVALID) {
+        vl = validateIdentifiables(getIdentifiables(), false, m_minimumValidationLevel, ValidationLevel::UNVALID);
+    }
+    return vl;
 }
 
 Network& Network::setValidationLevelIfGreaterThan(const ValidationLevel& vl) {

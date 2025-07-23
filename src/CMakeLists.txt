@@ -139,6 +139,7 @@ set(IIDM_SOURCES
     iidm/TwoWindingsTransformer.cpp
     iidm/TwoWindingsTransformerAdder.cpp
     iidm/ValidationException.cpp
+    iidm/ValidationLevel.cpp
     iidm/ValidationUtils.cpp
     iidm/VariantContextGuard.cpp
     iidm/VariantManager.cpp

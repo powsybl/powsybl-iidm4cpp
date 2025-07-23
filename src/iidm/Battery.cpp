@@ -20,8 +20,13 @@ Battery::Battery(VariantManagerHolder& network, const std::string& id, const std
     m_q0(network.getVariantManager().getVariantArraySize(), q0),
     m_minP(checkMinP(*this, minP)),
     m_maxP(checkMaxP(*this, maxP)) {
-    checkP0(*this, p0, getNetwork().getMinimumValidationLevel());
-    checkQ0(*this, q0, getNetwork().getMinimumValidationLevel());
+    ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+    if (stdcxx::isInstanceOf<Network>(network)) {
+        Network& n = dynamic_cast<Network&>(network);
+        vl = n.getMinimumValidationLevel();
+    }
+    checkP0(*this, p0, vl);
+    checkQ0(*this, q0, vl);
     checkActivePowerLimits(*this, minP, maxP);
 }
 

@@ -70,22 +70,24 @@ PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent) :
 
 PhaseTapChanger& PhaseTapChangerAdder::add() {
     logging::Logger& logger = logging::LoggerFactory::getLogger<PhaseTapChangerAdder>();
-
-    checkOptional(m_parent, m_tapPosition, "tap position is not set");
+    Network& network = getNetwork();
+    network.setValidationLevelIfGreaterThan(checkOptional(m_parent, m_tapPosition, "tap position is not set", network.getMinimumValidationLevel()));
     if (m_steps.empty()) {
         throw ValidationException(m_parent, "a phase tap changer should have at least one step");
     }
     long highTapPosition = m_lowTapPosition + m_steps.size() - 1;
-    checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition);
-    checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, m_regulationTerminal, getNetwork());
-    checkTargetDeadband(m_parent, "phase tap changer", m_regulating, m_targetDeadband);
+    if(m_tapPosition) {
+        network.setValidationLevelIfGreaterThan(checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel()));
+    }
+    network.setValidationLevelIfGreaterThan(checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, stdcxx::cref(m_regulationTerminal.get()), network, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkTargetDeadband(m_parent, "phase tap changer", m_regulating, m_targetDeadband, network.getMinimumValidationLevel()));
 
     std::unique_ptr<PhaseTapChanger> ptrPhaseTapChanger = stdcxx::make_unique<PhaseTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
                                                                                                *m_tapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
 
     bool wasRegulating = m_parent.hasPhaseTapChanger() && m_parent.getPhaseTapChanger().isRegulating();
     unsigned long count = m_parent.getRegulatingTapChangerCount() - (wasRegulating ? 1 : 0);
-    checkOnlyOneTapChangerRegulatingEnabled(m_parent, count, m_regulating);
+    network.setValidationLevelIfGreaterThan(checkOnlyOneTapChangerRegulatingEnabled(m_parent, count, m_regulating, network.getMinimumValidationLevel()));
 
     if (m_parent.hasRatioTapChanger()) {
         logger.warn("%1% both Ratio and Phase Tap Changer are defined", m_parent.getMessageHeader());
