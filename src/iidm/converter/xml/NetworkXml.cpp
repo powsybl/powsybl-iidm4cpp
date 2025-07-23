@@ -314,13 +314,12 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     
     ValidationLevel networkValidationLevel = network.getValidationLevel();
     NetworkXmlWriterContext context(std::move(anonymizer), writer, options, filter, version, networkValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS);
-
-    writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");
-
-    writer.setPrefix(context.getVersion().getPrefix(), version.getNamespaceUri(networkValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS));
     IidmXmlUtil::assertMinimumVersionIfNotDefault(networkValidationLevel != ValidationLevel::STEADY_STATE_HYPOTHESIS, NETWORK, MINIMUM_VALIDATION_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_7(), context);
     
+    writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");
     writer.writeStartElement(context.getVersion().getPrefix(), NETWORK);
+    writer.setPrefix(context.getVersion().getPrefix(), version.getNamespaceUri(networkValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS));
+    
     writeExtensionNamespaces(network, context);
 
     writer.writeAttribute(ID, network.getId());
