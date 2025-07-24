@@ -31,8 +31,8 @@ const char* BatteryXml::getRootElementName() const {
 }
 
 Battery& BatteryXml::readRootElementAttributes(BatteryAdder& adder, NetworkXmlReaderContext& context) const {
-    const auto& p0 = context.getReader().getAttributeValue<double>(P0);
-    const auto& q0 = context.getReader().getAttributeValue<double>(Q0);
+    double p0 = context.getReader().getOptionalAttributeValue(P0, stdcxx::nan());
+    double q0 = context.getReader().getOptionalAttributeValue(Q0, stdcxx::nan());
     const auto& minP = context.getReader().getAttributeValue<double>(MIN_P);
     const auto& maxP = context.getReader().getAttributeValue<double>(MAX_P);
     readNodeOrBus(adder, context);

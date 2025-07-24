@@ -144,7 +144,9 @@ void TieLineXml::writeHalf(const TieLine::HalfLine& halfLine, NetworkXmlWriterCo
 }
 
 void TieLineXml::writeRootElementAttributes(const TieLine& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeAttribute(UCTE_XNODE_CODE, line.getUcteXnodeCode());
+    if(!line.getUcteXnodeCode().empty()) {
+        context.getWriter().writeAttribute(UCTE_XNODE_CODE, line.getUcteXnodeCode());
+    }
     writeNodeOrBus(line.getTerminal1(), context, 1);
     writeNodeOrBus(line.getTerminal2(), context, 2);
     if (context.getOptions().isWithBranchSV()) {

@@ -38,8 +38,8 @@ const char* LoadXml::getRootElementName() const {
 Load& LoadXml::readRootElementAttributes(LoadAdder& loadAdder, NetworkXmlReaderContext& context) const {
     const std::string& loadTypeName = context.getReader().getOptionalAttributeValue(LOAD_TYPE, "");
     const auto& loadType = loadTypeName.empty() ? LoadType::UNDEFINED : Enum::fromString<LoadType>(loadTypeName);
-    const auto& p0 = context.getReader().getAttributeValue<double>(P0);
-    const auto& q0 = context.getReader().getAttributeValue<double>(Q0);
+    double p0 = context.getReader().getOptionalAttributeValue(P0, stdcxx::nan());
+    double q0 = context.getReader().getOptionalAttributeValue(Q0, stdcxx::nan());
     readNodeOrBus(loadAdder, context);
     Load& load = loadAdder.setLoadType(loadType)
         .setP0(p0)

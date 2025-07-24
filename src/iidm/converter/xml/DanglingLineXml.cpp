@@ -35,8 +35,8 @@ const char* DanglingLineXml::getRootElementName() const  {
 }
 
 DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adder, NetworkXmlReaderContext& context) const  {
-    const auto& p0 = context.getReader().getAttributeValue<double>(P0);
-    const auto& q0 = context.getReader().getAttributeValue<double>(Q0);
+    double p0 = context.getReader().getOptionalAttributeValue(P0, stdcxx::nan());
+    double q0 = context.getReader().getOptionalAttributeValue(Q0, stdcxx::nan());
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);
     const auto& g = context.getReader().getAttributeValue<double>(G);
