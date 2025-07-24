@@ -44,6 +44,7 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
             .setTargetV(targetV)
             .setTargetDeadband(targetDeadband);
     });
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&adder](){ adder.setVoltageRegulatorOn(false); });
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &adder]() {
         auto bPerSection = context.getReader().getAttributeValue<double>(B_PER_SECTION);
         auto maximumSectionCount = context.getReader().getAttributeValue<unsigned long>(MAXIMUM_SECTION_COUNT);

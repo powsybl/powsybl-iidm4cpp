@@ -41,12 +41,15 @@ StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticV
     const std::string& reactivePowerSetpointName = context.getVersion() <= IidmXmlVersion::V1_2() ? REACTIVE_POWER_SET_POINT : REACTIVE_POWER_SETPOINT;
     double voltageSetpoint = context.getReader().getOptionalAttributeValue(voltageSetpointName, stdcxx::nan());
     double reactivePowerSetpoint = context.getReader().getOptionalAttributeValue(reactivePowerSetpointName, stdcxx::nan());
-    const auto& regulationMode = Enum::fromString<StaticVarCompensator::RegulationMode>(context.getReader().getAttributeValue(REGULATION_MODE));
+    const auto& optRegulationMode = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
     adder.setBmin(bMin)
             .setBmax(bMax)
             .setVoltageSetpoint(voltageSetpoint)
-            .setReactivePowerSetpoint(reactivePowerSetpoint)
-            .setRegulationMode(regulationMode);
+            .setReactivePowerSetpoint(reactivePowerSetpoint);
+    if(optRegulationMode.has_value()) {
+        const auto& regulationMode = Enum::fromString<StaticVarCompensator::RegulationMode>(*optRegulationMode);
+        adder.setRegulationMode(regulationMode);
+    }
     readNodeOrBus(adder, context);
     StaticVarCompensator& svc = adder.add();
     readPQ(svc.getTerminal(), context.getReader());
