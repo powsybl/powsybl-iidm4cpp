@@ -13,8 +13,8 @@ namespace powsybl {
 
 namespace iidm {
 
-CurrentLimits::CurrentLimits(OperationalLimitsOwner& owner, double permanentLimit, const LoadingLimits::TemporaryLimits& temporaryLimits) :
-    LoadingLimits(owner, permanentLimit, temporaryLimits) {
+CurrentLimits::CurrentLimits(OperationalLimitsOwner& owner, double permanentLimit, const LoadingLimits::TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits) :
+    LoadingLimits(owner, permanentLimit, temporaryLimits, fictitiousLimits) {
 }
 
 const LimitType& CurrentLimits::getLimitType() const {

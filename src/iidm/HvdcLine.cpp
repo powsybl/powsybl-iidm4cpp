@@ -107,6 +107,11 @@ double HvdcLine::getR() const {
     return m_r;
 }
 
+const IdentifiableType& HvdcLine::getType() const {
+    static IdentifiableType s_type = IdentifiableType::HVDC_LINE;
+    return s_type;
+}
+
 const std::string& HvdcLine::getTypeDescription() const {
     static std::string s_typeDescription = "hvdcLine";
 

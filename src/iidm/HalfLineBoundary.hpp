@@ -8,47 +8,23 @@
 #ifndef POWSYBL_IIDM_HALFLINEBOUNDARY_HPP
 #define POWSYBL_IIDM_HALFLINEBOUNDARY_HPP
 
-#include <powsybl/iidm/Boundary.hpp>
+#include <powsybl/iidm/util/AbstractHalfLineBoundary.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-namespace tie_line {
-
-class HalfLine;
-
-}  // namespace tie_line
-
-class Bus;
-class Terminal;
-class TieLine;
-
 namespace half_line {
 
-class Boundary : public iidm::Boundary {
+class Boundary : public util::half_line::AbstractHalfLineBoundary {
     // side represents the network side.
     // side here is Side.ONE for the half line 1 of a tie line.
     // side is Side.TWO for the half line 2 of a tie line.
 
 public:  // iidm::Boundary
-    double getAngle() const override;
-
     const Connectable& getConnectable() const override;
 
     Connectable& getConnectable() override;
-
-    double getP() const override;
-
-    double getQ() const override;
-
-    stdcxx::optional<Branch::Side> getSide() const override;
-
-    double getV() const override;
-
-    const VoltageLevel& getVoltageLevel() const override;
-
-    VoltageLevel& getVoltageLevel() override;
 
 public:
     Boundary(tie_line::HalfLine& halfLine, const Branch::Side& side);
@@ -62,16 +38,6 @@ public:
     Boundary& operator=(const Boundary&) = delete;
 
     Boundary& operator=(Boundary&&) noexcept = delete;
-
-private:
-    const TieLine& getTieLine() const;
-
-    TieLine& getTieLine();
-
-private:
-    tie_line::HalfLine& m_parent;
-
-    Branch::Side m_side;
 };
 
 }  // namespace half_line

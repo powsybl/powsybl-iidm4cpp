@@ -12,9 +12,9 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
-#include <powsybl/iidm/VoltageLevelTopologyTraverser.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -34,6 +34,7 @@ class LccConverterStationAdder;
 class Load;
 class LoadAdder;
 class Network;
+class NetworkIndex;
 class ShuntCompensator;
 class ShuntCompensatorAdder;
 class StaticVarCompensator;
@@ -53,12 +54,12 @@ public:
 
     using NodeBreakerView = voltage_level::NodeBreakerView;
 
-    using TopologyTraverser = voltage_level::TopologyTraverser;
-
 public:  // Identifiable
     const Network& getNetwork() const override;
 
     Network& getNetwork() override;
+
+    const IdentifiableType& getType() const override;
 
 public:
     ~VoltageLevel() noexcept override = default;
@@ -120,6 +121,12 @@ public:
 
     stdcxx::range<LccConverterStation> getLccConverterStations();
 
+    unsigned long getLineCount() const;
+
+    stdcxx::const_range<Line> getLines() const;
+
+    stdcxx::range<Line> getLines();
+
     unsigned long getLoadCount() const;
 
     stdcxx::const_range<Load> getLoads() const;
@@ -146,9 +153,9 @@ public:
 
     stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
-    const Substation& getSubstation() const;
+    stdcxx::CReference<Substation> getSubstation() const;
 
-    Substation& getSubstation();
+    stdcxx::Reference<Substation> getSubstation();
 
     virtual unsigned long getSwitchCount() const = 0;
 
@@ -156,7 +163,19 @@ public:
 
     virtual stdcxx::range<Switch> getSwitches() = 0;
 
+    unsigned long getThreeWindingsTransformerCount() const;
+
+    stdcxx::const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
+
+    stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
+
     virtual const TopologyKind& getTopologyKind() const = 0;
+
+    unsigned long getTwoWindingsTransformerCount() const;
+
+    stdcxx::const_range<TwoWindingsTransformer> getTwoWindingsTransformers() const;
+
+    stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
 
     unsigned long getVscConverterStationCount() const;
 
@@ -196,8 +215,8 @@ protected:
     static void addNextTerminals(Terminal& otherTerminal, TerminalSet& nextTerminals);
 
 protected:
-    VoltageLevel(const std::string& id, const std::string& name, bool fictitious, Substation& substation,
-                 double nominalV, double lowVoltageLimit, double highVoltageLimit);
+    VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                 Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit);
 
     virtual stdcxx::const_range<Terminal> getTerminals() const = 0;
 
@@ -209,7 +228,13 @@ private: // Identifiable
 private:
     virtual void removeTopology() = 0;
 
+    void setNetworkRef(Network& network);
+
+    friend class NetworkIndex;
+
 private:
+    NetworkRef m_network;
+
     stdcxx::Reference<Substation> m_substation;
 
     double m_highVoltageLimit;

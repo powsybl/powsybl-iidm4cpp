@@ -11,8 +11,8 @@
 #include <memory>
 #include <vector>
 
-#include <powsybl/iidm/ConnectableType.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/iidm/IdentifiableType.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 
 namespace powsybl {
@@ -32,8 +32,6 @@ public:
 
     Terminal& addTerminal(std::unique_ptr<Terminal>&& terminal);
 
-    const ConnectableType& getType() const;
-
     std::vector<std::reference_wrapper<Terminal> > getTerminals() const;
 
     virtual void remove();
@@ -48,15 +46,13 @@ protected: // MultiVariantObject
     void reduceVariantArraySize(unsigned long number) override;
 
 protected:
-    Connectable(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType);
+    Connectable(const std::string& id, const std::string& name, bool fictitious);
 
     const Terminal& getTerminal(unsigned long index) const;
 
     Terminal& getTerminal(unsigned long index);
 
 private:
-    ConnectableType m_connectableType;
-
     std::vector<std::unique_ptr<Terminal> > m_terminals;
 };
 

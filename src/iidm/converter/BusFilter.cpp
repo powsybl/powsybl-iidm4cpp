@@ -52,13 +52,11 @@ bool BusFilter::test(const Connectable& connectable) const {
     if (m_buses.empty()) {
         return true;
     }
-    for (const Terminal& t : connectable.getTerminals()) {
+
+    return (std::none_of(connectable.getTerminals().begin(), connectable.getTerminals().end(), [=](const Terminal& t) {
         const stdcxx::CReference<Bus>& b = m_options.getTopologyLevel() == TopologyLevel::BUS_BRANCH ? t.getBusView().getConnectableBus() : t.getBusBreakerView().getConnectableBus();
-        if (b && m_buses.find(b.get().getId()) != m_buses.end()) {
-            return false;
-        }
-    }
-    return true;
+        return (b && m_buses.find(b.get().getId()) != m_buses.end());
+    } ));
 }
 
 }  // namespace converter

@@ -20,7 +20,7 @@ do { \
         statement; \
         std::ostringstream oss; \
         oss << "Expected: " << #statement << " throws an exception of type "; \
-        oss << stdcxx::demangle(typeid(expected_exception)) << std::endl; \
+        oss << stdcxx::demangle(typeid(expected_exception)) << '\n'; \
         oss << "  Actual: no exception thrown"; \
         BOOST_ERROR(oss.str().c_str()); \
     } catch (const expected_exception& e) { \
@@ -30,14 +30,14 @@ do { \
     } catch (const std::exception& e) { \
         std::ostringstream oss; \
         oss << "Expected: " << #statement << " throws an exception of type "; \
-        oss << stdcxx::demangle(typeid(expected_exception)) << std::endl; \
+        oss << stdcxx::demangle(typeid(expected_exception)) << '\n'; \
         oss << "  Actual: it throws an exception of type "; \
         oss << stdcxx::demangle(e); \
         BOOST_FAIL(oss.str().c_str()); \
     } catch (...) { \
         std::ostringstream oss; \
         oss << "Expected: " << #statement << " throws an exception of type "; \
-        oss << stdcxx::demangle(typeid(expected_exception)) << std::endl; \
+        oss << stdcxx::demangle(typeid(expected_exception)) << '\n'; \
         oss << "  Actual: it throws an exception of unknown type"; \
         BOOST_FAIL(oss.str().c_str()); \
     } \

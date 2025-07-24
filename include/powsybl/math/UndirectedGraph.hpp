@@ -92,9 +92,11 @@ public:
 
     void setVertexObject(unsigned long v, const stdcxx::Reference<V>& object);
 
-    void traverse(unsigned long v, const Traverser& traverser) const;
+    bool traverse(unsigned long v, const Traverser& traverser) const;
 
-    void traverse(unsigned long v, const Traverser& traverser, std::vector<bool>& encountered) const;
+    bool traverse(const stdcxx::const_range<unsigned long>& startingVertices, const Traverser& traverser) const;
+
+    bool traverse(unsigned long v, const Traverser& traverser, std::vector<bool>& encountered) const;
 
     bool vertexExists(unsigned long v) const;
 

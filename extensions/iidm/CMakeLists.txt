@@ -11,6 +11,9 @@ set(EXT_SOURCES
     src/ActivePowerControl.cpp
     src/ActivePowerControlAdder.cpp
     src/ActivePowerControlXmlSerializer.cpp
+    src/BranchObservability.cpp
+    src/BranchObservabilityAdder.cpp
+    src/BranchObservabilityXmlSerializer.cpp
     src/CoordinatedReactiveControl.cpp
     src/CoordinatedReactiveControlAdder.cpp
     src/CoordinatedReactiveControlXmlSerializer.cpp
@@ -20,27 +23,44 @@ set(EXT_SOURCES
     src/DiscreteMeasurementsAdder.cpp
     src/DiscreteMeasurementsXmlSerializer.cpp
     src/DiscreteMeasurementValidationUtil.cpp
+    src/GeneratorShortCircuit.cpp
+    src/GeneratorShortCircuitAdder.cpp
+    src/GeneratorShortCircuitXmlSerializer.cpp
     src/HvdcAngleDroopActivePowerControl.cpp
     src/HvdcAngleDroopActivePowerControlAdder.cpp
     src/HvdcAngleDroopActivePowerControlXmlSerializer.cpp
     src/HvdcOperatorActivePowerRange.cpp
     src/HvdcOperatorActivePowerRangeAdder.cpp
     src/HvdcOperatorActivePowerRangeXmlSerializer.cpp
+    src/IdentifiableShortCircuit.cpp
+    src/IdentifiableShortCircuitAdder.cpp
+    src/IdentifiableShortCircuitXmlSerializer.cpp
     src/Iidm.cpp
+    src/InjectionObservability.cpp
+    src/InjectionObservabilityAdder.cpp
+    src/InjectionObservabilityXmlSerializer.cpp
     src/Measurement.cpp
     src/MeasurementAdder.cpp
     src/Measurements.cpp
     src/MeasurementsAdder.cpp
     src/MeasurementsXmlSerializer.cpp
     src/MeasurementValidationUtil.cpp
+    src/Observability.cpp
+    src/ObservabilityQuality.cpp
     src/RemoteReactivePowerControl.cpp
     src/RemoteReactivePowerControlAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
     src/ThreeWindingsTransformerPhaseAngleClockAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.cpp
+    src/ThreeWindingsTransformerToBeEstimated.cpp
+    src/ThreeWindingsTransformerToBeEstimatedAdder.cpp
+    src/ThreeWindingsTransformerToBeEstimatedXmlSerializer.cpp
     src/TwoWindingsTransformerPhaseAngleClock.cpp
     src/TwoWindingsTransformerPhaseAngleClockAdder.cpp
     src/TwoWindingsTransformerPhaseAngleClockXmlSerializer.cpp
+    src/TwoWindingsTransformerToBeEstimated.cpp
+    src/TwoWindingsTransformerToBeEstimatedAdder.cpp
+    src/TwoWindingsTransformerToBeEstimatedXmlSerializer.cpp
     src/VoltagePerReactivePowerControl.cpp
     src/VoltagePerReactivePowerControlAdder.cpp
     src/VoltagePerReactivePowerControlXmlSerializer.cpp
@@ -48,15 +68,21 @@ set(EXT_SOURCES
 
 set(UNIT_TEST_SOURCES
     test/ActivePowerControlTest.cpp
+    test/BranchObservabilityTest.cpp
     test/CoordinatedReactiveControlTest.cpp
     test/DiscreteMeasurementsTest.cpp
+    test/GeneratorShortCircuitTest.cpp
     test/HvdcAngleDroopActivePowerControlTest.cpp
     test/HvdcOperatorActivePowerRangeTest.cpp
     test/iidm.cpp
+    test/IdentifiableShortCircuitTest.cpp
+    test/InjectionObservabilityTest.cpp
     test/MeasurementsTest.cpp
     test/RemoteReactivePowerControlTest.cpp
     test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
+    test/ThreeWindingsTransformerToBeEstimatedTest.cpp
     test/TwoWindingsTransformerPhaseAngleClockTest.cpp
+    test/TwoWindingsTransformerToBeEstimatedTest.cpp
     test/VoltagePerReactivePowerControlTest.cpp
 )
 

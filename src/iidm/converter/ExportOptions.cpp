@@ -117,12 +117,9 @@ bool ExportOptions::hasAtLeastOneExtension(const stdcxx::const_range<Extension>&
     if (m_extensions.empty()) {
         return true;
     }
-    for (const auto& extension : extensions) {
-        if (m_extensions.find(extension.getName()) != m_extensions.end()) {
-            return true;
-        }
-    }
-    return false;
+    return (std::any_of(extensions.begin(), extensions.end(), [=](const Extension& extension) { 
+                return m_extensions.find(extension.getName()) != m_extensions.end(); 
+        } ));
 }
 
 bool ExportOptions::isAnonymized() const {

@@ -42,58 +42,64 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
     for (const Terminal& terminal : terminals) {
         const Connectable& connectable = terminal.getConnectable();
         switch (connectable.getType()) {
-            case ConnectableType::BUSBAR_SECTION:
+            case IdentifiableType::BUSBAR_SECTION:
                 visitor.visitBusbarSection(dynamic_cast<const BusbarSection&>(connectable));
                 break;
 
-            case ConnectableType::LINE: {
+            case IdentifiableType::LINE: {
                 const auto& line = dynamic_cast<const Line&>(connectable);
                 visitor.visitLine(line, line.getSide(terminal));
                 break;
             }
 
-            case ConnectableType::GENERATOR:
+            case IdentifiableType::GENERATOR:
                 visitor.visitGenerator(dynamic_cast<const Generator&>(connectable));
                 break;
 
-            case ConnectableType::BATTERY:
+            case IdentifiableType::BATTERY:
                 visitor.visitBattery(dynamic_cast<const Battery&>(connectable));
                 break;
 
-            case ConnectableType::SHUNT_COMPENSATOR:
+            case IdentifiableType::SHUNT_COMPENSATOR:
                 visitor.visitShuntCompensator(dynamic_cast<const ShuntCompensator&>(connectable));
                 break;
 
-            case ConnectableType::TWO_WINDINGS_TRANSFORMER: {
+            case IdentifiableType::TWO_WINDINGS_TRANSFORMER: {
                 const auto& twt = dynamic_cast<const TwoWindingsTransformer&>(connectable);
                 visitor.visitTwoWindingsTransformer(twt, twt.getSide(terminal));
                 break;
             }
 
-            case ConnectableType::THREE_WINDINGS_TRANSFORMER: {
+            case IdentifiableType::THREE_WINDINGS_TRANSFORMER: {
                 const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(connectable);
                 visitor.visitThreeWindingsTransformer(twt, twt.getSide(terminal));
                 break;
             }
 
-            case ConnectableType::LOAD:
+            case IdentifiableType::LOAD:
                 visitor.visitLoad(dynamic_cast<const Load&>(connectable));
                 break;
 
-            case ConnectableType::DANGLING_LINE:
+            case IdentifiableType::DANGLING_LINE:
                 visitor.visitDanglingLine(dynamic_cast<const DanglingLine&>(connectable));
                 break;
 
-            case ConnectableType::STATIC_VAR_COMPENSATOR:
+            case IdentifiableType::STATIC_VAR_COMPENSATOR:
                 visitor.visitStaticVarCompensator(dynamic_cast<const StaticVarCompensator&>(connectable));
                 break;
 
-            case ConnectableType::HVDC_CONVERTER_STATION:
+            case IdentifiableType::HVDC_CONVERTER_STATION:
                 visitor.visitHvdcConverterStation(dynamic_cast<const HvdcConverterStation&>(connectable));
                 break;
 
+            case IdentifiableType::NETWORK:
+            case IdentifiableType::SUBSTATION:
+            case IdentifiableType::VOLTAGE_LEVEL:
+            case IdentifiableType::HVDC_LINE:
+            case IdentifiableType::BUS:
+            case IdentifiableType::SWITCH:
             default:
-                throw AssertionError(stdcxx::format("Unexpected connectable type %1%", connectable.getType()));
+                throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }
     }
 }

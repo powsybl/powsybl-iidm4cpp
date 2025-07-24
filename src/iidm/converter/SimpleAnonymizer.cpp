@@ -89,8 +89,9 @@ void SimpleAnonymizer::read(std::istream& stream) {
 
 void SimpleAnonymizer::write(std::ostream& stream) const {
     for (const auto& pair : m_mapping.left) {
-        stream << pair.first << ';' << pair.second << std::endl;
+        stream << pair.first << ';' << pair.second << '\n';
     }
+    stream.flush();
 }
 
 }  // namespace converter

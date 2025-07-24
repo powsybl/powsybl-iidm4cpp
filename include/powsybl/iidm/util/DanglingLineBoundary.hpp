@@ -19,6 +19,8 @@ namespace iidm {
 class Bus;
 class DanglingLine;
 
+namespace util {
+
 namespace dangling_line {
 
 class Boundary : public iidm::Boundary {
@@ -62,6 +64,8 @@ private:
 };
 
 }  // namespace dangling_line
+
+}  // namespace util
 
 }  // namespace iidm
 

@@ -31,6 +31,8 @@ public:  // ExtensionXmlSerializer
 
     const std::string& getVersion() const override;
 
+    stdcxx::const_range<std::string> getVersions() const override;
+
 public:
     AbstractVersionableExtensionXmlSerializer(std::string&& extensionName, std::string&& extensionCategory, std::string&& namespacePrefix,
                                               VersionsCompatibility&& extensionVersions, std::map<std::string, std::string>&& namespaceUris);

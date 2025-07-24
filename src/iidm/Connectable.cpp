@@ -14,9 +14,8 @@ namespace powsybl {
 
 namespace iidm {
 
-Connectable::Connectable(const std::string& id, const std::string& name, bool fictitious, const ConnectableType& connectableType) :
-    Identifiable(id, name, fictitious),
-    m_connectableType(connectableType) {
+Connectable::Connectable(const std::string& id, const std::string& name, bool fictitious) :
+    Identifiable(id, name, fictitious) {
 }
 
 void Connectable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -50,10 +49,6 @@ void Connectable::extendVariantArraySize(unsigned long initVariantArraySize, uns
     }
 }
 
-const ConnectableType& Connectable::getType() const {
-    return m_connectableType;
-}
-
 const Network& Connectable::getNetwork() const {
     if (m_terminals.empty()) {
         throw PowsyblException(getId() + " is not attached to a network");
@@ -77,6 +72,7 @@ Terminal& Connectable::getTerminal(unsigned long index) {
 std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals() const {
     std::vector<std::reference_wrapper<Terminal> > terminals;
 
+    terminals.reserve(m_terminals.size());
     for (const auto& terminal : m_terminals) {
         terminals.push_back(std::ref(*terminal));
     }

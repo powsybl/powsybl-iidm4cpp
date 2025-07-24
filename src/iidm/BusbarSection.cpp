@@ -14,13 +14,18 @@ namespace powsybl {
 namespace iidm {
 
 BusbarSection::BusbarSection(const std::string& id, const std::string& name, bool fictitious) :
-    Injection(id, name, fictitious, ConnectableType::BUSBAR_SECTION) {
+    Injection(id, name, fictitious) {
 }
 
 double BusbarSection::getAngle() const {
     const auto& terminal = dynamic_cast<const NodeTerminal&>(getTerminal());
 
     return terminal.getAngle();
+}
+
+const IdentifiableType& BusbarSection::getType() const {
+    static IdentifiableType s_type = IdentifiableType::BUSBAR_SECTION;
+    return s_type;
 }
 
 const std::string& BusbarSection::getTypeDescription() const {

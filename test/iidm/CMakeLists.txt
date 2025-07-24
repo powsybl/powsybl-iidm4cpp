@@ -25,6 +25,7 @@ set(UNIT_TEST_SOURCES
     HvdcLineTest.cpp
     iidm.cpp
     IdBasedBusRefTest.cpp
+    IdentifiableTypeTest.cpp
     LccConverterStationTest.cpp
     LineTest.cpp
     LoadTest.cpp
@@ -42,6 +43,7 @@ set(UNIT_TEST_SOURCES
     SubstationTest.cpp
     TerminalTest.cpp
     TopologyLevelTest.cpp
+    TopologyTraverserTest.cpp
     ThreeWindingsTransformerTest.cpp
     TieLineTest.cpp
     TwoWindingsTransformerTest.cpp
@@ -59,11 +61,13 @@ set(UNIT_TEST_SOURCES
     extensions/SlackTerminalTest.cpp
 
     util/SVTest.cpp
+    util/NodeBreakerTopologyTest.cpp
     util/TerminalFinderTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
 target_compile_definitions(unit-tests-iidm PRIVATE BOOST_TEST_DYN_LINK)
+target_include_directories(unit-tests-iidm PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(unit-tests-iidm PRIVATE iidm-tests)
 
 add_test(NAME iidm COMMAND unit-tests-iidm -- --resources=${CMAKE_SOURCE_DIR}/test/resources)

@@ -182,7 +182,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     // test const version
     const VoltageLevel& vl = vl1;
     BOOST_TEST(stdcxx::areSame(network, vl.getNetwork()));
-    BOOST_TEST(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(network.getSubstation("S1"), vl.getSubstation().get()));
 
     POWSYBL_ASSERT_REF_TRUE(vl.getConnectable<Connectable>("LOAD1"));
     BOOST_TEST(stdcxx::areSame(load1, vl.getConnectable<Connectable>("LOAD1").get()));
@@ -206,6 +206,138 @@ BOOST_AUTO_TEST_CASE(getConnectablesCheckUnique) {
 
     BOOST_CHECK_EQUAL(1UL, boost::size(vl.getConnectables()));
     BOOST_CHECK_EQUAL(1UL, vl.getConnectableCount());
+}
+
+Network createVoltageLevelNoSubstationNetwork() {
+    Network network("test", "test");
+
+    VoltageLevel& voltageLevel = network.newVoltageLevel()
+        .setId("no_substation")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(200.0)
+        .setLowVoltageLimit(180.0)
+        .setHighVoltageLimit(220.0)
+        .add();
+
+    voltageLevel.getBusBreakerView().newBus()
+        .setId("no_substation_bus")
+        .add();
+
+    return network;
+}
+
+BOOST_AUTO_TEST_CASE(noSubstation) {
+    Network network = createVoltageLevelNoSubstationNetwork();
+
+    VoltageLevel& voltageLevel = network.getVoltageLevel("no_substation");
+    const VoltageLevel& cVoltageLevel = voltageLevel;
+
+    BOOST_CHECK(!voltageLevel.getSubstation());
+    BOOST_CHECK(!cVoltageLevel.getSubstation());
+
+    // make sure that network ref of the voltage level has been updated when the network is moved
+    BOOST_CHECK(stdcxx::areSame(voltageLevel.getNetwork(), network));
+}
+
+BOOST_AUTO_TEST_CASE(getLines) {
+    Network network = createComponentsTestNetworkBB();
+    VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
+    const VoltageLevel& cVoltageLevel = voltageLevel;
+
+    const Line& line2 = network.newLine()
+        .setId("VL2_VL9")
+        .setVoltageLevel1(voltageLevel.getId())
+        .setBus1("VL2_BUS1")
+        .setVoltageLevel2("VL9")
+        .setBus2("VL9_BUS1")
+        .setR(3.0)
+        .setX(33.0)
+        .setG1(1.0)
+        .setB1(0.2)
+        .setG2(2.0)
+        .setB2(0.4)
+        .add();
+
+    const Line& line = network.getLine("VL2_VL5");
+
+    BOOST_CHECK_EQUAL(2, cVoltageLevel.getLineCount());
+    BOOST_CHECK_EQUAL(2, boost::size(voltageLevel.getLines()));
+    BOOST_CHECK_EQUAL(2, boost::size(cVoltageLevel.getLines()));
+
+    const std::vector<std::reference_wrapper<const Line>>& expected = {line, line2};
+
+    const auto& lines = cVoltageLevel.getLines();
+    const auto& cLines = voltageLevel.getLines();
+
+    for (const Line& expectedLine : expected) {
+        auto it = std::find_if(lines.begin(), lines.end(), [&expectedLine](const Line& line) {
+            return stdcxx::areSame(expectedLine, line);
+        });
+        BOOST_CHECK(it != lines.end());
+
+        auto cIt = std::find_if(cLines.begin(), cLines.end(), [&expectedLine](const Line& line) {
+            return stdcxx::areSame(expectedLine, line);
+        });
+        BOOST_CHECK(cIt != cLines.end());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(getThreeWindingsTransformer) {
+    Network network = createComponentsTestNetworkBB();
+    VoltageLevel& voltageLevel = network.getVoltageLevel("VL2");
+    const VoltageLevel& cVoltageLevel = voltageLevel;
+
+    const ThreeWindingsTransformer& twt = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
+
+    BOOST_CHECK_EQUAL(1, cVoltageLevel.getThreeWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(1, boost::size(voltageLevel.getThreeWindingsTransformers()));
+    BOOST_CHECK_EQUAL(1, boost::size(cVoltageLevel.getThreeWindingsTransformers()));
+
+    const std::vector<std::reference_wrapper<const ThreeWindingsTransformer>>& expected = {twt};
+
+    const auto& twts = cVoltageLevel.getThreeWindingsTransformers();
+    const auto& cTwts = voltageLevel.getThreeWindingsTransformers();
+
+    for (const ThreeWindingsTransformer& expectedTwt : expected) {
+        auto it = std::find_if(twts.begin(), twts.end(), [&expectedTwt](const ThreeWindingsTransformer& returnedTwt) {
+            return stdcxx::areSame(expectedTwt, returnedTwt);
+        });
+        BOOST_CHECK(it != twts.end());
+
+        auto cIt = std::find_if(cTwts.begin(), cTwts.end(), [&expectedTwt](const ThreeWindingsTransformer& returnedTwt) {
+            return stdcxx::areSame(expectedTwt, returnedTwt);
+        });
+        BOOST_CHECK(cIt != cTwts.end());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(getTwoWindingsTransformer) {
+    Network network = createComponentsTestNetworkBB();
+    VoltageLevel& voltageLevel = network.getVoltageLevel("VL4");
+    const VoltageLevel& cVoltageLevel = voltageLevel;
+
+    const TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("2WT_VL4_VL5");
+
+    BOOST_CHECK_EQUAL(1, cVoltageLevel.getTwoWindingsTransformerCount());
+    BOOST_CHECK_EQUAL(1, boost::size(voltageLevel.getTwoWindingsTransformers()));
+    BOOST_CHECK_EQUAL(1, boost::size(cVoltageLevel.getTwoWindingsTransformers()));
+
+    const std::vector<std::reference_wrapper<const TwoWindingsTransformer>>& expected = {twt};
+
+    const auto& twts = cVoltageLevel.getTwoWindingsTransformers();
+    const auto& cTwts = voltageLevel.getTwoWindingsTransformers();
+
+    for (const TwoWindingsTransformer& expectedTwt : expected) {
+        auto it = std::find_if(twts.begin(), twts.end(), [&expectedTwt](const TwoWindingsTransformer& returnedTwt) {
+            return stdcxx::areSame(expectedTwt, returnedTwt);
+        });
+        BOOST_CHECK(it != twts.end());
+
+        auto cIt = std::find_if(cTwts.begin(), cTwts.end(), [&expectedTwt](const TwoWindingsTransformer& returnedTwt) {
+            return stdcxx::areSame(expectedTwt, returnedTwt);
+        });
+        BOOST_CHECK(cIt != cTwts.end());
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()

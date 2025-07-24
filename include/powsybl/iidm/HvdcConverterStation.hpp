@@ -20,6 +20,9 @@ namespace iidm {
 class HvdcLine;
 
 class HvdcConverterStation : public Injection {
+public:  // Identifiable
+    const IdentifiableType& getType() const override;
+
 public:  // Connectable
     void remove() override;
 

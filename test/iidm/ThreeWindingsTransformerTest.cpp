@@ -322,13 +322,13 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3", transformer.getId());
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3_NAME", transformer.getOptionalName());
-    BOOST_CHECK_EQUAL(ConnectableType::THREE_WINDINGS_TRANSFORMER, transformer.getType());
+    BOOST_CHECK_EQUAL(IdentifiableType::THREE_WINDINGS_TRANSFORMER, transformer.getType());
     std::ostringstream oss;
     oss << transformer.getType();
     BOOST_CHECK_EQUAL("THREE_WINDINGS_TRANSFORMER", oss.str());
 
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
-    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
 
     Terminal& terminal1 = transformer.getTerminal(ThreeWindingsTransformer::Side::ONE);
     Terminal& terminal2 = transformer.getTerminal(ThreeWindingsTransformer::Side::TWO);
@@ -654,9 +654,6 @@ BOOST_AUTO_TEST_CASE(adders) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: voltage level 'INVALID' not found");
     l1Adder.setVoltageLevel("VL1").add();
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: voltage level shall belong to the substation 'S2'");
-    l1Adder.setVoltageLevel("VL4").add();
-
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: connectable bus is not set");
     l1Adder.setConnectableBus("VL4_BUS1").add();
 
@@ -699,9 +696,6 @@ BOOST_AUTO_TEST_CASE(adders) {
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: voltage level 'INVALID' not found");
     l2Adder.setVoltageLevel("VL1").add();
-
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: voltage level shall belong to the substation 'S2'");
-    l2Adder.setVoltageLevel("VL4").add();
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: connectable bus is not set");
     l2Adder.setConnectableBus("VL4_BUS1");
@@ -749,9 +743,6 @@ BOOST_AUTO_TEST_CASE(adders) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: voltage level 'INVALID' not found");
     l3Adder.setVoltageLevel("VL1").add();
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: voltage level shall belong to the substation 'S2'");
-    l3Adder.setVoltageLevel("VL4").add();
-
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: connectable bus is not set");
     l3Adder.setConnectableBus("VL4_BUS1");
 
@@ -766,6 +757,18 @@ BOOST_AUTO_TEST_CASE(adders) {
         .setNode(1UL)
         .add();
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: connection node and connection bus are exclusives");
+
+    adder.newLeg3()
+        .setR(3.0)
+        .setX(3.1)
+        .setG(0.0)
+        .setB(0.0)
+        .setRatedU(3.2)
+        .setVoltageLevel("VL1")
+        .setConnectableBus("VL1_BUS1")
+        .add();
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer 'TWT': the 3 windings of the transformer shall belong to the substation 'S2' ('S2', 'S2', 'S1')");
+
     adder.newLeg3()
         .setR(3.0)
         .setX(3.1)
@@ -1407,6 +1410,73 @@ BOOST_AUTO_TEST_CASE(operationalLimits) {
     BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg1().getOperationalLimits()));
     BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg2().getOperationalLimits()));
     BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg3().getOperationalLimits()));
+}
+
+BOOST_AUTO_TEST_CASE(noSubstation) {
+    Network network("test", "test");
+
+    VoltageLevel& vl1 = network.newVoltageLevel()
+        .setId("VL1_NOSUBSTATION")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(90.0)
+        .add();
+
+    Bus& vl1Bus1 = vl1.getBusBreakerView().newBus()
+        .setId("VL1BUS1_NOSUBSTATION")
+        .add();
+
+    VoltageLevel& vl2 = network.newVoltageLevel()
+        .setId("VL2_NOSUBSTATION")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(90.0)
+        .add();
+
+    Bus& vl2Bus1 = vl2.getBusBreakerView().newBus()
+        .setId("VL2BUS1_NOSUBSTATION")
+        .add();
+
+    VoltageLevel& vl3 = network.newVoltageLevel()
+        .setId("VL3_NOSUBSTATION")
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .setNominalV(90.0)
+        .add();
+
+    Bus& vl3Bus1 = vl3.getBusBreakerView().newBus()
+        .setId("VL3BUS1_NOSUBSTATION")
+        .add();
+
+    network.newThreeWindingsTransformer()
+        .setId("3wt")
+        .newLeg1()
+            .setR(1.3)
+            .setX(1.4)
+            .setG(1.6)
+            .setB(1.7)
+            .setRatedU(1.1)
+            .setVoltageLevel(vl1.getId())
+            .setBus(vl1Bus1.getId())
+            .add()
+        .newLeg2()
+            .setR(2.3)
+            .setX(2.4)
+            .setRatedU(2.1)
+            .setVoltageLevel(vl2.getId())
+            .setBus(vl2Bus1.getId())
+            .add()
+        .newLeg3()
+            .setR(3.3)
+            .setX(3.4)
+            .setRatedU(3.1)
+            .setVoltageLevel(vl3.getId())
+            .setBus(vl3Bus1.getId())
+            .add()
+        .add();
+
+    ThreeWindingsTransformer& twt = network.getThreeWindingsTransformer("3wt");
+    const ThreeWindingsTransformer& cTwt = twt;
+
+    BOOST_CHECK(!twt.getSubstation());
+    BOOST_CHECK(!cTwt.getSubstation());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
