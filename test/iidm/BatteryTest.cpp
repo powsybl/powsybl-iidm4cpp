@@ -76,10 +76,10 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': q0 is invalid");
     adder.setQ0(50.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': Minimum active power is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': invalid value (nan) for minP");
     adder.setMinP(60.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': Maximum active power is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': invalid value (nan) for maxP");
     adder.setMaxP(55.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': Invalid active limits [60, 55]");
@@ -138,12 +138,12 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(battery, battery.setMinP(-90.0)));
     BOOST_CHECK_CLOSE(-90.0, battery.getMinP(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(battery.setMinP(stdcxx::nan()), ValidationException, "Battery 'BAT1': Minimum active power is not set");
+    POWSYBL_ASSERT_THROW(battery.setMinP(stdcxx::nan()), ValidationException, "Battery 'BAT1': invalid value (nan) for minP");
     POWSYBL_ASSERT_THROW(battery.setMinP(400.0), ValidationException, "Battery 'BAT1': Invalid active limits [400, 300]");
 
     BOOST_TEST(stdcxx::areSame(battery, battery.setMaxP(500.0)));
     BOOST_CHECK_CLOSE(500.0, battery.getMaxP(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(battery.setMaxP(stdcxx::nan()), ValidationException, "Battery 'BAT1': Maximum active power is not set");
+    POWSYBL_ASSERT_THROW(battery.setMaxP(stdcxx::nan()), ValidationException, "Battery 'BAT1': invalid value (nan) for maxP");
     POWSYBL_ASSERT_THROW(battery.setMaxP(-91.0), ValidationException, "Battery 'BAT1': Invalid active limits [-90, -91]");
 
     battery.setFictitious(true);

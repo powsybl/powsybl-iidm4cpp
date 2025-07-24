@@ -56,7 +56,7 @@ void logError(const Validable& validable, const std::string& message) {
 
 void throwExceptionOrLogError(const Validable& validable, const std::string& message, const ValidationLevel& vl) {
     if(vl >= ValidationLevel::STEADY_STATE_HYPOTHESIS) {
-        throw new ValidationException(validable, message);
+        throw ValidationException(validable, message);
     }
     logError(validable, message);
 }
@@ -306,8 +306,8 @@ double checkPermanentLimit(const Validable& validable, double permanentLimit) {
     return permanentLimit;
 }
 
-ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
-                                    const stdcxx::CReference<Terminal>& regulationTerminal, const Network& network, const ValidationLevel& vl) {
+ValidationLevel checkPhaseTapChangerRegulationWithouthTerminal(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
+                                    const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     switch (regulationMode) {
         case PhaseTapChanger::RegulationMode::CURRENT_LIMITER:
@@ -321,20 +321,47 @@ ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const
     if (regulating) {
         if (regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP && std::isnan(regulationValue)) {
             throwExceptionOrLogError(validable, "phase regulation is on and threshold/setpoint value is not set",vl);
-            checkValidationLevel = ValidationLevel::EQUIPMENT;
-        }
-        if (regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP && !regulationTerminal) {
-            throwExceptionOrLogError(validable, "phase regulation is on and regulated terminal is not set", vl);
-            checkValidationLevel = ValidationLevel::EQUIPMENT;
+            checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
         }
         if (regulationMode == PhaseTapChanger::RegulationMode::FIXED_TAP) {
             throwExceptionOrLogError(validable, "phase regulation cannot be on if mode is FIXED", vl);
-            checkValidationLevel = ValidationLevel::EQUIPMENT;
+            checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
         }
+    }
+    return checkValidationLevel;
+}
+
+ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
+                                    const stdcxx::CReference<Terminal>& regulationTerminal, const Network& network, const ValidationLevel& vl) {
+    ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+
+    checkValidationLevel = validationLevel::min(checkValidationLevel, checkPhaseTapChangerRegulationWithouthTerminal(validable, regulationMode, regulationValue, regulating, vl));
+
+    if (regulating && regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP && !regulationTerminal) {
+        throwExceptionOrLogError(validable, "phase regulation is on and regulated terminal is not set", vl);
+        checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
     }
     if (regulationTerminal && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
         throw ValidationException(validable, "phase regulation terminal is not part of the network");
     }
+
+    return checkValidationLevel;
+}
+ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
+                                    const stdcxx::Reference<Terminal>& regulationTerminal, const Network& network, const ValidationLevel& vl) {
+    ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+
+    checkValidationLevel = validationLevel::min(checkValidationLevel, checkPhaseTapChangerRegulationWithouthTerminal(validable, regulationMode, regulationValue, regulating, vl));
+
+    if(regulating && regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP && !regulationTerminal) {
+        throwExceptionOrLogError(validable, "phase regulation is on and regulated terminal is not set", vl);
+        checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
+    }
+
+    if (regulationTerminal && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
+        throw ValidationException(validable, "phase regulation terminal is not part of the network");
+    }
+    
     return checkValidationLevel;
 }
 
@@ -386,7 +413,8 @@ double checkRatedU2(const Validable& validable, double ratedU2) {
     return checkRatedU(validable, ratedU2, 2);
 }
 
-ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::CReference<Terminal>& regulationTerminal, double targetV, const Network& network, const ValidationLevel& vl) {
+ValidationLevel checkRatioTapChangerRegulationWithouthTerminal(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, double targetV,
+                                    const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (regulating) {
         if (std::isnan(targetV)) {
@@ -395,13 +423,35 @@ ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool 
         if (std::islessequal(targetV, 0.0)) {
             throw ValidationException(validable, stdcxx::format("bad target voltage %1%", targetV));
         }
-        if (!regulationTerminal) {
-            checkValidationLevel = validationLevel::min(checkValidationLevel,errorOrWarningForRtc(validable, loadTapChangingCapabilities, "a regulation terminal has to be set for a regulating ratio tap changer", vl));
-        }
+    }
+    return checkValidationLevel;
+}
+ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::CReference<Terminal>& regulationTerminal, double targetV, const Network& network, const ValidationLevel& vl) {
+    ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+
+    checkValidationLevel = validationLevel::min(checkValidationLevel, checkRatioTapChangerRegulationWithouthTerminal(validable, regulating, loadTapChangingCapabilities, targetV, vl));
+
+    if (regulating && !regulationTerminal) {
+        checkValidationLevel = validationLevel::min(checkValidationLevel,errorOrWarningForRtc(validable, loadTapChangingCapabilities, "a regulation terminal has to be set for a regulating ratio tap changer", vl));
     }
     if (regulationTerminal && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
         throw ValidationException(validable, "regulation terminal is not part of the network");
     }
+
+    return checkValidationLevel;
+}
+ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network, const ValidationLevel& vl) {
+    ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+
+    checkValidationLevel = validationLevel::min(checkValidationLevel, checkRatioTapChangerRegulationWithouthTerminal(validable, regulating, loadTapChangingCapabilities, targetV, vl));
+
+    if (regulating && !regulationTerminal) {
+        checkValidationLevel = validationLevel::min(checkValidationLevel,errorOrWarningForRtc(validable, loadTapChangingCapabilities, "a regulation terminal has to be set for a regulating ratio tap changer", vl));
+    }
+    if (regulationTerminal && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), network)) {
+        throw ValidationException(validable, "regulation terminal is not part of the network");
+    }
+    
     return checkValidationLevel;
 }
 
@@ -543,7 +593,6 @@ ValidationLevel checkRtc(const Validable& validable, const RatioTapChanger& rtc,
 
 ValidationLevel checkPtc(const Validable& validable, const PhaseTapChanger& ptc, const Network& network, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
-    
     checkValidationLevel = validationLevel::min(checkValidationLevel, checkPhaseTapChangerRegulation(validable, ptc.getRegulationMode(), ptc.getRegulationValue(), ptc.isRegulating(), ptc.getRegulationTerminal(), network, vl));
     checkValidationLevel = validationLevel::min(checkValidationLevel, checkTargetDeadband(validable, "phase tap changer", ptc.isRegulating(), ptc.getTargetDeadband(), vl));
     return checkValidationLevel;

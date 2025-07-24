@@ -30,10 +30,8 @@ Generator& GeneratorAdder::add() {
     checkMaxP(*this, m_maxP);
     checkRegulatingTerminal(*this, m_regulatingTerminal, n);
     
-
-    checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set", n.getMinimumValidationLevel());
-
     n.setValidationLevelIfGreaterThan(checkActivePowerSetpoint(*this, m_activePowerSetpoint, n.getMinimumValidationLevel()));
+    checkOptional(*this, m_voltageRegulatorOn, "voltage regulator status is not set", n.getMinimumValidationLevel());
     n.setValidationLevelIfGreaterThan(checkVoltageControl(*this, *m_voltageRegulatorOn, m_voltageSetpoint, m_reactivePowerSetpoint, n.getMinimumValidationLevel()));
 
     checkActivePowerLimits(*this, m_minP, m_maxP);

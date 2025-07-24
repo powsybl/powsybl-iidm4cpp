@@ -74,7 +74,7 @@ RatioTapChanger& RatioTapChangerAdder::add() {
     if(m_tapPosition) {
         network.setValidationLevelIfGreaterThan(checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel()));
     }
-    network.setValidationLevelIfGreaterThan(checkRatioTapChangerRegulation(m_parent, m_regulating, m_loadTapChangingCapabilities, stdcxx::cref(m_regulationTerminal.get()), m_targetV, network, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkRatioTapChangerRegulation(m_parent, m_regulating, m_loadTapChangingCapabilities, m_regulationTerminal, m_targetV, network, network.getMinimumValidationLevel()));
     network.setValidationLevelIfGreaterThan(checkTargetDeadband(m_parent, "ratio tap changer", m_regulating, m_targetDeadband, network.getMinimumValidationLevel()));
 
     std::unique_ptr<RatioTapChanger> ptrRatioTapChanger = stdcxx::make_unique<RatioTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,

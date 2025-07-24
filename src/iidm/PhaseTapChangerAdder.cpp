@@ -79,7 +79,8 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
     if(m_tapPosition) {
         network.setValidationLevelIfGreaterThan(checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel()));
     }
-    network.setValidationLevelIfGreaterThan(checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, stdcxx::cref(m_regulationTerminal.get()), network, network.getMinimumValidationLevel()));
+
+    network.setValidationLevelIfGreaterThan(checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, m_regulationTerminal, network, network.getMinimumValidationLevel()));
     network.setValidationLevelIfGreaterThan(checkTargetDeadband(m_parent, "phase tap changer", m_regulating, m_targetDeadband, network.getMinimumValidationLevel()));
 
     std::unique_ptr<PhaseTapChanger> ptrPhaseTapChanger = stdcxx::make_unique<PhaseTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,

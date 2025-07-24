@@ -45,15 +45,15 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': voltage regulator status is not set");
     adder.setVoltageRegulatorOn(true);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': Invalid voltage setpoint value (nan) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': invalid value (nan) for voltageSetpoint (voltage regulator is on)");
     adder.setVoltageSetpoint(-20.0);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': Invalid voltage setpoint value (-20) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': invalid value (-20) for voltageSetpoint (voltage regulator is on)");
     adder.setVoltageSetpoint(0.0);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': Invalid voltage setpoint value (0) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': invalid value (0) for voltageSetpoint (voltage regulator is on)");
     adder.setVoltageSetpoint(20.0);
     adder.setVoltageRegulatorOn(false);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': Invalid reactive power setpoint (nan) while voltage regulator is off");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "vscConverterStation 'VSC1': invalid value (nan) for reactivePowerSetpoint (voltage regulator is off)");
     adder.setReactivePowerSetpoint(30.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'VscConverterStation' with the id 'VSC1'");
@@ -110,20 +110,20 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(stdcxx::nan())));
     BOOST_TEST(std::isnan(vsc.getVoltageSetpoint()));
-    POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(true), ValidationException, "vscConverterStation 'VSC1': Invalid voltage setpoint value (nan) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(true), ValidationException, "vscConverterStation 'VSC1': invalid value (nan) for voltageSetpoint (voltage regulator is on)");
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(-300.0)));
     BOOST_CHECK_CLOSE(-300.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(true), ValidationException, "vscConverterStation 'VSC1': Invalid voltage setpoint value (-300) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(true), ValidationException, "vscConverterStation 'VSC1': invalid value (-300) for voltageSetpoint (voltage regulator is on)");
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(0.0)));
     BOOST_CHECK_CLOSE(0.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(true), ValidationException, "vscConverterStation 'VSC1': Invalid voltage setpoint value (0) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(true), ValidationException, "vscConverterStation 'VSC1': invalid value (0) for voltageSetpoint (voltage regulator is on)");
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageSetpoint(300.0)));
     BOOST_CHECK_CLOSE(300.0, vsc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
 
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(true)));
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setReactivePowerSetpoint(stdcxx::nan())));
     BOOST_TEST(std::isnan(vsc.getReactivePowerSetpoint()));
-    POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(false), ValidationException, "vscConverterStation 'VSC1': Invalid reactive power setpoint (nan) while voltage regulator is off");
+    POWSYBL_ASSERT_THROW(vsc.setVoltageRegulatorOn(false), ValidationException, "vscConverterStation 'VSC1': invalid value (nan) for reactivePowerSetpoint (voltage regulator is off)");
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setReactivePowerSetpoint(400.0)));
     BOOST_CHECK_CLOSE(400.0, vsc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(vsc, vsc.setVoltageRegulatorOn(false)));
