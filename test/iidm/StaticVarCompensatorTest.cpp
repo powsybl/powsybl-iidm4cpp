@@ -166,7 +166,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': Regulation mode is invalid");
     adder.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltage setpoint");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltageSetpoint");
     adder.setVoltageSetpoint(30.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'StaticVarCompensator' with the id 'SVC1'");
@@ -220,8 +220,8 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(500, svc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(svc.setReactivePowerSetpoint(stdcxx::nan()));
 
-    POWSYBL_ASSERT_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for reactive power setpoint");
-    POWSYBL_ASSERT_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltage setpoint");
+    POWSYBL_ASSERT_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for reactivePowerSetpoint");
+    POWSYBL_ASSERT_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltageSetpoint");
 
     svc.setVoltageSetpoint(600);
     BOOST_CHECK_NO_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE));

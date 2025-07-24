@@ -119,26 +119,26 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     DanglingLineAdder::GenerationAdder gAdder = adder.newGeneration();
 
-    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Active power setpoint is not set");
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': invalid value (nan) for activePowerSetpoint");
     gAdder.setMinP(100).setMaxP(50);
 
     POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid active limits [100, 50]");
     gAdder.setMinP(100).setMaxP(200);
 
-    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Active power setpoint is not set");
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': invalid value (nan) for activePowerSetpoint");
     gAdder.setTargetP(120);
 
-    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid reactive power setpoint (nan) while voltage regulator is off");
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': invalid value (nan) for reactivePowerSetpoint (voltage regulator is off)");
     gAdder.setTargetQ(140);
     gAdder.setVoltageRegulationOn(true);
 
-    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid voltage setpoint value (nan) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': invalid value (nan) for voltageSetpoint (voltage regulator is on)");
     gAdder.setTargetV(-1);
 
-    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid voltage setpoint value (-1) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': invalid value (-1) for voltageSetpoint (voltage regulator is on)");
     gAdder.setTargetV(0);
 
-    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': Invalid voltage setpoint value (0) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(gAdder.add(), PowsyblException, "Dangling line 'DL2': invalid value (0) for voltageSetpoint (voltage regulator is on)");
     gAdder.setTargetV(160);
 
     BOOST_CHECK_NO_THROW(gAdder.add().add());

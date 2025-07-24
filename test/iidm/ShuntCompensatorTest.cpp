@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': the shunt compensator model has not been defined");
     BOOST_CHECK_NO_THROW(linearModel.add());
 
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': section count is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': the current section count is not set");
     adder.setSectionCount(20);
 
     adder.newLinearModel()
@@ -107,10 +107,10 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     // check with regulating = true
     adder.setVoltageRegulatorOn(true);
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': Invalid voltage setpoint value (nan) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': invalid value (nan) for voltageSetpoint (voltage regulator is on)");
 
     adder.setTargetV(-1.0);
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': Invalid voltage setpoint value (-1) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': invalid value (-1) for voltageSetpoint (voltage regulator is on)");
 
     adder.setTargetV(1.0);
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Shunt compensator 'SHUNT1': Undefined value for target deadband of regulating shunt compensator");
@@ -291,9 +291,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(!shunt.isVoltageRegulatorOn());
 
     shunt.setTargetV(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(shunt.setVoltageRegulatorOn(true), ValidationException, "Shunt compensator 'SHUNT1': Invalid voltage setpoint value (nan) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(shunt.setVoltageRegulatorOn(true), ValidationException, "Shunt compensator 'SHUNT1': invalid value (nan) for voltageSetpoint (voltage regulator is on)");
     shunt.setTargetV(-1.0);
-    POWSYBL_ASSERT_THROW(shunt.setVoltageRegulatorOn(true), ValidationException, "Shunt compensator 'SHUNT1': Invalid voltage setpoint value (-1) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(shunt.setVoltageRegulatorOn(true), ValidationException, "Shunt compensator 'SHUNT1': invalid value (-1) for voltageSetpoint (voltage regulator is on)");
 
     Load& load = vl1.newLoad()
         .setId("LOAD1")
