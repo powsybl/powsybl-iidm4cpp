@@ -43,18 +43,23 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(int leg, ThreeWin
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
-    const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
-    bool regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
-    const double& targetDeadband = readTargetDeadband(regulating, context);
-    const auto& regulationMode = Enum::fromString<PhaseTapChanger::RegulationMode>(context.getReader().getAttributeValue(REGULATION_MODE));
+    const double& targetDeadband = readTargetDeadband(context);
     const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
-
     adder->setLowTapPosition(lowTapPosition)
-        .setTapPosition(tapPosition)
         .setTargetDeadband(targetDeadband)
-        .setRegulationMode(regulationMode)
-        .setRegulationValue(regulationValue)
-        .setRegulating(regulating);
+        .setRegulationValue(regulationValue);
+    const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
+    const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
+    const auto& regModeStr = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
+    if(tapPosition) {
+        adder->setTapPosition(*tapPosition);
+    }
+    if(regulating) {
+        adder->setRegulating(*regulating);
+    }
+    if(regModeStr) {
+        adder->setRegulationMode(Enum::fromString<PhaseTapChanger::RegulationMode>(*regModeStr));
+    }
     bool hasTerminalRef = false;
     context.getReader().readUntilEndElement(elementName, [&adder, &context, &hasTerminalRef, &terminal]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
@@ -105,17 +110,21 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(int leg, ThreeWin
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
-    const auto& tapPosition = context.getReader().getAttributeValue<long>(TAP_POSITION);
-    const auto& regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
-    const double& targetDeadband = readTargetDeadband(regulating, context);
+    const double& targetDeadband = readTargetDeadband(context);
     const auto& loadTapChangingCapabilities = context.getReader().getAttributeValue<bool>(LOAD_TAP_CHANGING_CAPABILITIES);
     double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
     adder->setLowTapPosition(lowTapPosition)
-        .setTapPosition(tapPosition)
         .setTargetDeadband(targetDeadband)
         .setLoadTapChangingCapabilities(loadTapChangingCapabilities)
-        .setTargetV(targetV)
-        .setRegulating(regulating);
+        .setTargetV(targetV);
+    const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
+    const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
+    if(tapPosition) {
+        adder->setTapPosition(*tapPosition);
+    }
+    if(regulating) {
+        adder->setRegulating(*regulating);
+    }
     bool hasTerminalRef = false;
     context.getReader().readUntilEndElement(elementName, [&adder, &context, &terminal, &hasTerminalRef]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
@@ -154,10 +163,11 @@ void AbstractTransformerXml<Added, Adder>::readSteps(const NetworkXmlReaderConte
 }
 
 template <typename Added, typename Adder>
-double AbstractTransformerXml<Added, Adder>::readTargetDeadband(bool regulating, NetworkXmlReaderContext& context) {
+double AbstractTransformerXml<Added, Adder>::readTargetDeadband(NetworkXmlReaderContext& context) {
     double targetDeadband = stdcxx::nan();
-    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&context, &targetDeadband, regulating]() {
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&context, &targetDeadband]() {
         targetDeadband = context.getReader().getOptionalAttributeValue(TARGET_DEADBAND, stdcxx::nan());
+        bool regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
         // in IIDM-XML version 1.0, NaN as targetDeadband when regulating is allowed.
         // in IIDM-XML version 1.1 and more recent, it is forbidden and throws an exception
         // to prevent issues, targetDeadband is set to 0 in this case

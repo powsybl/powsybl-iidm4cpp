@@ -23,6 +23,9 @@
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+
+#include <powsybl/network/ScadaNetworkFactory.hpp>
+
 #include <powsybl/stdcxx/exception.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -393,6 +396,58 @@ BOOST_AUTO_TEST_CASE(NullSubstationTestBBK) {
         .setNominalV(340.0)
         .add();
     BOOST_CHECK(!voltageLevel.getSubstation());
+}
+
+BOOST_AUTO_TEST_CASE(Validation) {
+    Network network = createNetworkTest1();
+
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getMinimumValidationLevel());
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getValidationLevel());
+    BOOST_CHECK_NO_THROW(network.runValidationChecks(ValidationLevel::STEADY_STATE_HYPOTHESIS));
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getValidationLevel());
+
+    POWSYBL_ASSERT_THROW(network.setMinimumAcceptableValidationLevel(ValidationLevel::UNVALID), AssertionError, "Unexpected mininimum Validation Level value: UNVALID");
+    BOOST_CHECK_NO_THROW(network.setMinimumAcceptableValidationLevel(ValidationLevel::EQUIPMENT));
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.getMinimumValidationLevel());
+    
+    network.invalidateValidationLevel();
+
+    VoltageLevel& vl = network.getVoltageLevel("voltageLevel1");
+    vl.newLoad()
+        .setId("unchecked")
+        .setP0(1.0)
+        .setQ0(1.0)
+        .setNode(3)
+        .add();
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getValidationLevel());
+    BOOST_CHECK_NO_THROW(network.runValidationChecks(ValidationLevel::STEADY_STATE_HYPOTHESIS));
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getValidationLevel());
+
+    Load& load = vl.newLoad()
+        .setId("unchecked2")
+        .setNode(10)
+        .add();
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.getValidationLevel());
+    POWSYBL_ASSERT_THROW(network.setMinimumAcceptableValidationLevel(ValidationLevel::STEADY_STATE_HYPOTHESIS), ValidationException, "Network 'network': Network should be corrected in order to correspond to validation level STEADY_STATE_HYPOTHESIS");
+
+    load.setP0(0.0).setQ0(0.0);
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getValidationLevel());
+
+    BOOST_CHECK_NO_THROW(network.setMinimumAcceptableValidationLevel(ValidationLevel::STEADY_STATE_HYPOTHESIS));
+
+}
+
+BOOST_AUTO_TEST_CASE(ScadaNetwork) {
+    Network network = powsybl::network::ScadaNetworkFactory::create();
+
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.getValidationLevel());
+    BOOST_CHECK_NO_THROW(network.runValidationChecks(ValidationLevel::EQUIPMENT));
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.getValidationLevel());
+
+    POWSYBL_ASSERT_THROW(network.runValidationChecks(ValidationLevel::STEADY_STATE_HYPOTHESIS), ValidationException, "Battery 'battery': p0 is invalid");
+
+    POWSYBL_ASSERT_THROW(network.setMinimumAcceptableValidationLevel(ValidationLevel::STEADY_STATE_HYPOTHESIS), ValidationException, "Network 'scada': Network should be corrected in order to correspond to validation level STEADY_STATE_HYPOTHESIS");
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
