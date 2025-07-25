@@ -56,8 +56,10 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
             .add();
     });
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &adder]() {
-        auto sectionCount = context.getReader().getAttributeValue<unsigned long>(SECTION_COUNT);
-        adder.setSectionCount(sectionCount);
+        auto sectionCount = context.getReader().getOptionalAttributeValue<unsigned long>(SECTION_COUNT);
+        if(sectionCount) {
+            adder.setSectionCount(*sectionCount);
+        }
     });
     readNodeOrBus(adder, context);
     double p = context.getReader().getOptionalAttributeValue(P, stdcxx::nan());
