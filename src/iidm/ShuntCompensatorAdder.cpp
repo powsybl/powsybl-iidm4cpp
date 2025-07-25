@@ -32,6 +32,9 @@ ShuntCompensator& ShuntCompensatorAdder::add() {
 
     auto ptrTerminal = checkAndGetTerminal();
     Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *ptrTerminal;
+    if(network.getMinimumValidationLevel() == ValidationLevel::EQUIPMENT && !m_sectionCount) {
+        m_sectionCount = 0UL;
+    }
     std::unique_ptr<ShuntCompensator> ptrShunt = stdcxx::make_unique<ShuntCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_modelBuilder->build(),
                                                                                        *m_sectionCount, regulatingTerminal, m_voltageRegulatorOn, m_targetV, m_targetDeadband);
     auto& shunt = getNetwork().checkAndAdd<ShuntCompensator>(std::move(ptrShunt));
