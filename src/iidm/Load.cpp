@@ -22,7 +22,7 @@ Load::Load(VariantManagerHolder& network, const std::string& id, const std::stri
     m_q0(network.getVariantManager().getVariantArraySize(), q0) {
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (stdcxx::isInstanceOf<Network>(network)) {
-        Network& n = dynamic_cast<Network&>(network);
+        auto& n = dynamic_cast<Network&>(network);
         vl = n.getMinimumValidationLevel();
     }
     checkP0(*this, p0, vl);

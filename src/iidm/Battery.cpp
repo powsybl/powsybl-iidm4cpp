@@ -22,7 +22,7 @@ Battery::Battery(VariantManagerHolder& network, const std::string& id, const std
     m_maxP(checkMaxP(*this, maxP)) {
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (stdcxx::isInstanceOf<Network>(network)) {
-        Network& n = dynamic_cast<Network&>(network);
+        auto& n = dynamic_cast<Network&>(network);
         vl = n.getMinimumValidationLevel();
     }
     checkP0(*this, p0, vl);

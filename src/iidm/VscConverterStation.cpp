@@ -23,7 +23,7 @@ VscConverterStation::VscConverterStation(VariantManagerHolder& network, const st
     m_regulatingTerminal(regulatingTerminal) {
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (stdcxx::isInstanceOf<Network>(network)) {
-        Network& n = dynamic_cast<Network&>(network);
+        auto& n = dynamic_cast<Network&>(network);
         vl = n.getMinimumValidationLevel();
     }
     checkVoltageControl(*this, voltageRegulatorOn, voltageSetpoint, reactivePowerSetpoint, vl);
