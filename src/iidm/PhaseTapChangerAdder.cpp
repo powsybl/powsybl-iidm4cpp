@@ -76,12 +76,11 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
         throw ValidationException(m_parent, "a phase tap changer should have at least one step");
     }
     long highTapPosition = m_lowTapPosition + m_steps.size() - 1;
-    if(network.getMinimumValidationLevel() == ValidationLevel::EQUIPMENT && !m_tapPosition) {
+    if(!m_tapPosition) {
         m_tapPosition = 0L;
     }
-    if(m_tapPosition) {
-        network.setValidationLevelIfGreaterThan(checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel()));
-    }
+    network.setValidationLevelIfGreaterThan(checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel()));
+
 
     network.setValidationLevelIfGreaterThan(checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, m_regulationTerminal, network, network.getMinimumValidationLevel()));
     network.setValidationLevelIfGreaterThan(checkTargetDeadband(m_parent, "phase tap changer", m_regulating, m_targetDeadband, network.getMinimumValidationLevel()));
