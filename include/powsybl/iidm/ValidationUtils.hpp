@@ -15,13 +15,13 @@
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/Load.hpp>
-#include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
+#include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/Validable.hpp>
-#include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -159,7 +159,7 @@ void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, doub
 
 double checkX(const Validable& validable, double x);
 
-ValidationLevel validateIdentifiables(stdcxx::const_range<Identifiable> identifiables, bool allChecks, const ValidationLevel& previous, const ValidationLevel& vl);
+ValidationLevel validateIdentifiables(const stdcxx::const_range<Identifiable>& identifiables, bool allChecks, const ValidationLevel& previous, const ValidationLevel& vl);
 
 }  // namespace iidm
 

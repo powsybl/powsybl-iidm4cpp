@@ -169,7 +169,8 @@ ValidationLevel checkHvdcActivePowerSetpoint(const Validable& validable, double 
     if (std::isnan(activePowerSetpoint)) {
         throwExceptionOrLogErrorForInvalidValue(validable, activePowerSetpoint, converter::ACTIVE_POWER_SETPOINT, vl);
         return ValidationLevel::EQUIPMENT;
-    } else if (activePowerSetpoint < 0) {
+    } 
+    if (activePowerSetpoint < 0) {
         throw createInvalidValueException(validable, activePowerSetpoint, converter::ACTIVE_POWER_SETPOINT, "active power setpoint should not be negative");
     }
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;
@@ -466,14 +467,15 @@ ValidationLevel checkSections(const Validable& validable, const stdcxx::optional
     if (!currentSectionCount) {
         throwExceptionOrLogError(validable, "the current section count is not set", vl);
         return ValidationLevel::EQUIPMENT;
-    } else {
-        if (maximumSectionCount == 0UL) {
-            throw ValidationException(validable, stdcxx::format("the maximum number of section (%1%) should be greater than 0", maximumSectionCount));
-        }
-        if (*currentSectionCount > maximumSectionCount) {
-            throw ValidationException(validable, stdcxx::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", *currentSectionCount, maximumSectionCount));
-        }
+    } 
+
+    if (maximumSectionCount == 0UL) {
+        throw ValidationException(validable, stdcxx::format("the maximum number of section (%1%) should be greater than 0", maximumSectionCount));
     }
+    if (*currentSectionCount > maximumSectionCount) {
+        throw ValidationException(validable, stdcxx::format("the current number (%1%) of section should be lesser than the maximum number of section (%2%)", *currentSectionCount, maximumSectionCount));
+    }
+
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;
 }
 
@@ -615,7 +617,7 @@ ValidationLevel checkThreeWindingsTransformer(const Validable& validable, const 
             }
         }
     }
-    if(regulatingTc) {
+    if(regulatingTc > 0) {
         checkValidationLevel = validationLevel::min(checkValidationLevel, checkOnlyOneTapChangerRegulatingEnabled(validable, regulatingTc, true, vl));
     }
     return checkValidationLevel;
@@ -636,7 +638,7 @@ ValidationLevel checkTwoWindingsTransformer(const Validable& validable, const Tw
             regulatingTc += 1;
         }
     }
-    if (regulatingTc) {
+    if (regulatingTc > 0) {
         checkValidationLevel = validationLevel::min(checkValidationLevel, checkOnlyOneTapChangerRegulatingEnabled(validable, regulatingTc, true, vl));
     }
     return checkValidationLevel;
@@ -645,13 +647,13 @@ ValidationLevel checkTwoWindingsTransformer(const Validable& validable, const Tw
 ValidationLevel checkIdentifiable(const Identifiable& identifiable,const ValidationLevel& previous, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = previous;
     if (stdcxx::isInstanceOf<Validable>(identifiable)) {
-        const Validable& validable = dynamic_cast<const Validable&>(identifiable);
+        const auto& validable = dynamic_cast<const Validable&>(identifiable);
         if (stdcxx::isInstanceOf<Battery>(identifiable)) {
-            const Battery& battery = dynamic_cast<const Battery&>(identifiable);
+            const auto& battery = dynamic_cast<const Battery&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkP0(validable, battery.getP0(), vl));
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkQ0(validable, battery.getQ0(), vl));
         } else if (stdcxx::isInstanceOf<DanglingLine>(identifiable)) {
-            const DanglingLine& danglingLine = dynamic_cast<const DanglingLine&>(identifiable);
+            const auto& danglingLine = dynamic_cast<const DanglingLine&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkP0(validable, danglingLine.getP0(), vl));
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkQ0(validable, danglingLine.getQ0(), vl));
             const auto& generation = danglingLine.getGeneration();
@@ -660,40 +662,40 @@ ValidationLevel checkIdentifiable(const Identifiable& identifiable,const Validat
                 checkValidationLevel = validationLevel::min(checkValidationLevel, checkVoltageControl(validable, generation.get().isVoltageRegulationOn(), generation.get().getTargetV(), generation.get().getTargetQ(), vl));
             }
         } else if (stdcxx::isInstanceOf<Generator>(identifiable)) {
-            const Generator& generator = dynamic_cast<const Generator&>(identifiable);
+            const auto& generator = dynamic_cast<const Generator&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkActivePowerSetpoint(validable, generator.getTargetP(), vl));
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkVoltageControl(validable, generator.isVoltageRegulatorOn(), generator.getTargetV(), generator.getTargetQ(), vl));
         } else if (stdcxx::isInstanceOf<HvdcLine>(identifiable)) {
-            const HvdcLine& hvdcLine = dynamic_cast<const HvdcLine&>(identifiable);
+            const auto& hvdcLine = dynamic_cast<const HvdcLine&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkConvertersMode(validable, hvdcLine.getConvertersMode(), vl));
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkHvdcActivePowerSetpoint(validable, hvdcLine.getActivePowerSetpoint(), vl));
         } else if (stdcxx::isInstanceOf<Load>(identifiable)) {
-            const Load& load = dynamic_cast<const Load&>(identifiable);
+            const auto& load = dynamic_cast<const Load&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkP0(validable, load.getP0(), vl));
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkQ0(validable, load.getQ0(), vl));
         } else if (stdcxx::isInstanceOf<ShuntCompensator>(identifiable)) {
-            const ShuntCompensator& shunt = dynamic_cast<const ShuntCompensator&>(identifiable);
+            const auto& shunt = dynamic_cast<const ShuntCompensator&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkVoltageControl(validable, shunt.isVoltageRegulatorOn(), shunt.getTargetV(), vl));
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkTargetDeadband(validable, "shunt compensator", shunt.isVoltageRegulatorOn(), shunt.getTargetDeadband(), vl));
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkSections(validable, shunt.getSectionCount(), shunt.getMaximumSectionCount(), vl));
         } else if (stdcxx::isInstanceOf<StaticVarCompensator>(identifiable)) {
-            const StaticVarCompensator& svc = dynamic_cast<const StaticVarCompensator&>(identifiable);
+            const auto& svc = dynamic_cast<const StaticVarCompensator&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkSvcRegulator(validable, svc.getVoltageSetpoint(), svc.getReactivePowerSetpoint(), svc.getRegulationMode(), vl));
         } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
-            const ThreeWindingsTransformer& threewt = dynamic_cast<const ThreeWindingsTransformer&>(identifiable);
+            const auto& threewt = dynamic_cast<const ThreeWindingsTransformer&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkThreeWindingsTransformer(validable, threewt, vl));
         } else if (stdcxx::isInstanceOf<TwoWindingsTransformer>(identifiable)) {
-            const TwoWindingsTransformer& twowt = dynamic_cast<const TwoWindingsTransformer&>(identifiable);
+            const auto& twowt = dynamic_cast<const TwoWindingsTransformer&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkTwoWindingsTransformer(validable, twowt, vl));
         } else if (stdcxx::isInstanceOf<VscConverterStation>(identifiable)) {
-            const VscConverterStation& converterStation = dynamic_cast<const VscConverterStation&>(identifiable);
+            const auto& converterStation = dynamic_cast<const VscConverterStation&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkVoltageControl(validable, converterStation.isVoltageRegulatorOn(), converterStation.getVoltageSetpoint(), converterStation.getReactivePowerSetpoint(), vl));
         }
     }
     return checkValidationLevel;
 }
 
-ValidationLevel validateIdentifiables(stdcxx::const_range<Identifiable> identifiables, bool allChecks, const ValidationLevel& previous, const ValidationLevel& vl) {
+ValidationLevel validateIdentifiables(const stdcxx::const_range<Identifiable>& identifiables, bool allChecks, const ValidationLevel& previous, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if(previous >= ValidationLevel::STEADY_STATE_HYPOTHESIS) {
         return previous;

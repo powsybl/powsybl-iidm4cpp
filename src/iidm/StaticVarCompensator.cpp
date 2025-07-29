@@ -27,7 +27,7 @@ StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const 
     m_regulationMode(network.getVariantManager().getVariantArraySize(), regulationMode) {
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (stdcxx::isInstanceOf<Network>(network)) {
-        Network& n = dynamic_cast<Network&>(network);
+        auto& n = dynamic_cast<Network&>(network);
         vl = n.getMinimumValidationLevel();
     }
     checkSvcRegulator(*this, voltageSetpoint, reactivePowerSetpoint, regulationMode, vl);

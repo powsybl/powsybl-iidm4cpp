@@ -14,8 +14,8 @@
 #include <powsybl/iidm/NetworkIndex.hpp>
 #include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/NetworkViews.hpp>
-#include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
+#include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>

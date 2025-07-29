@@ -31,7 +31,7 @@ Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::st
     checkActivePowerLimits(*this, minP, maxP);
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (stdcxx::isInstanceOf<Network>(network)) {
-        Network& n = dynamic_cast<Network&>(network);
+        auto& n = dynamic_cast<Network&>(network);
         vl = n.getMinimumValidationLevel();
     }
     checkActivePowerSetpoint(*this, activePowerSetpoint, vl);
