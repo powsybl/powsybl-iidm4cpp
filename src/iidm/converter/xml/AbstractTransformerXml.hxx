@@ -51,13 +51,13 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string
     const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
     const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
     const auto& regModeStr = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
-    if(tapPosition) {
+    if(tapPosition.has_value()) {
         adder->setTapPosition(*tapPosition);
     }
-    if(regulating) {
+    if(regulating.has_value()) {
         adder->setRegulating(*regulating);
     }
-    if(regModeStr) {
+    if(regModeStr.has_value()) {
         adder->setRegulationMode(Enum::fromString<PhaseTapChanger::RegulationMode>(*regModeStr));
     }
     bool hasTerminalRef = false;
@@ -119,10 +119,10 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
         .setTargetV(targetV);
     const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
     const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
-    if(tapPosition) {
+    if(tapPosition.has_value()) {
         adder->setTapPosition(*tapPosition);
     }
-    if(regulating) {
+    if(regulating.has_value()) {
         adder->setRegulating(*regulating);
     }
     bool hasTerminalRef = false;

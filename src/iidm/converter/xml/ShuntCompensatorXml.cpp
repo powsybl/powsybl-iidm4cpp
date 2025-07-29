@@ -57,7 +57,7 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
     });
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &adder]() {
         auto sectionCount = context.getReader().getOptionalAttributeValue<unsigned long>(SECTION_COUNT);
-        if(sectionCount) {
+        if(sectionCount.has_value()) {
             adder.setSectionCount(*sectionCount);
         }
     });
