@@ -62,6 +62,11 @@ public:
      */
     static const IidmXmlVersion& V1_6();
 
+    /**
+     * IIDM V1.7 (http://www.powsybl.org)
+     */
+    static const IidmXmlVersion& V1_7();
+
 public:
     /**
      * Return the list of all supported XIIDM versions
@@ -149,6 +154,15 @@ public:
      * @return the namespace URI of this version
      */
     std::string getNamespaceUri() const;
+
+    /**
+     * Get the namespace URI associated to this IIDM version
+     *
+     * @param valid false to get equipment namespace Uri, valid from IIDM v1_7
+     *
+     * @return the namespace URI of this version
+     */
+    std::string getNamespaceUri(bool valid) const;
 
     /**
      * Get the XML prefix associated to this IIDM version

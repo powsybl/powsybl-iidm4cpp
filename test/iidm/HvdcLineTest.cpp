@@ -143,10 +143,10 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': Nominal voltage is undefined");
     adder.setNominalV(30.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for active power setpoint");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for activePowerSetpoint");
     adder.setActivePowerSetpoint(40.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for maximum P");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for maxP");
     adder.setMaxP(50.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Side 1 converter station not set");
@@ -232,7 +232,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setActivePowerSetpoint(100.0)));
     BOOST_CHECK_CLOSE(100.0, hvdc.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(hvdc.setActivePowerSetpoint(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for active power setpoint");
+    POWSYBL_ASSERT_THROW(hvdc.setActivePowerSetpoint(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for activePowerSetpoint");
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER)));
     BOOST_CHECK_EQUAL(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER, hvdc.getConvertersMode());
@@ -240,7 +240,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setMaxP(200.0)));
     BOOST_CHECK_CLOSE(200.0, hvdc.getMaxP(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(hvdc.setMaxP(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for maximum P");
+    POWSYBL_ASSERT_THROW(hvdc.setMaxP(stdcxx::nan()), ValidationException, "hvdcLine 'HVDC1': invalid value (nan) for maxP");
 
     BOOST_TEST(stdcxx::areSame(hvdc, hvdc.setNominalV(300.0)));
     BOOST_CHECK_CLOSE(300.0, hvdc.getNominalV(), std::numeric_limits<double>::epsilon());

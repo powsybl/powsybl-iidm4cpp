@@ -44,6 +44,7 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
             .setTargetV(targetV)
             .setTargetDeadband(targetDeadband);
     });
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&adder](){ adder.setVoltageRegulatorOn(false); });
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &adder]() {
         auto bPerSection = context.getReader().getAttributeValue<double>(B_PER_SECTION);
         auto maximumSectionCount = context.getReader().getAttributeValue<unsigned long>(MAXIMUM_SECTION_COUNT);
@@ -55,8 +56,10 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
             .add();
     });
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &adder]() {
-        auto sectionCount = context.getReader().getAttributeValue<unsigned long>(SECTION_COUNT);
-        adder.setSectionCount(sectionCount);
+        auto sectionCount = context.getReader().getOptionalAttributeValue<unsigned long>(SECTION_COUNT);
+        if(sectionCount.has_value()) {
+            adder.setSectionCount(*sectionCount);
+        }
     });
     readNodeOrBus(adder, context);
     double p = context.getReader().getOptionalAttributeValue(P, stdcxx::nan());

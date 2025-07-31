@@ -34,7 +34,7 @@ Adder& HvdcConverterStationAdder<Adder>::setLossFactor(double lossFactor) {
 }
 
 template<typename Adder>
-void HvdcConverterStationAdder<Adder>::validate() const {
+void HvdcConverterStationAdder<Adder>::validate() {
     checkLossFactor(*this, m_lossFactor);
 }
 

@@ -88,6 +88,8 @@ Network::Network(Network&& network) noexcept :
     m_caseDate(std::move(network.m_caseDate)),
     m_forecastDistance(network.m_forecastDistance),
     m_sourceFormat(std::move(network.m_sourceFormat)),
+    m_minimumValidationLevel(network.m_minimumValidationLevel),
+    m_validationLevel(network.m_validationLevel),
     m_networkIndex(*this, std::move(network.m_networkIndex)),
     m_variantManager(*this, std::move(network.m_variantManager)),
     m_variants(*this, std::move(network.m_variants)),
@@ -440,6 +442,10 @@ stdcxx::range<Load> Network::getLoads() {
     return m_networkIndex.getAll<Load>();
 }
 
+const ValidationLevel& Network::getMinimumValidationLevel() const {
+    return m_minimumValidationLevel;
+}
+
 const Network& Network::getNetwork() const {
     return *this;
 }
@@ -696,6 +702,52 @@ Network& Network::setCaseDate(const stdcxx::DateTime& caseDate) {
 
 Network& Network::setForecastDistance(int forecastDistance) {
     m_forecastDistance = checkForecastDistance(*this, forecastDistance);
+    return *this;
+}
+
+Network& Network::setMinimumAcceptableValidationLevel(const ValidationLevel& minimumValidationLevel) {
+    if(m_validationLevel == ValidationLevel::UNVALID) {
+        m_validationLevel = validateIdentifiables(getIdentifiables(), false, m_validationLevel, ValidationLevel::UNVALID);
+    }
+    if (m_validationLevel < minimumValidationLevel) {
+        throw ValidationException(*this,stdcxx::format("Network should be corrected in order to correspond to validation level %1%", minimumValidationLevel) );
+    }
+    m_minimumValidationLevel = checkMinValidationLevel(*this, minimumValidationLevel);
+    return *this;
+}
+
+ValidationLevel Network::runValidationChecks() {
+    return runValidationChecks(ValidationLevel::STEADY_STATE_HYPOTHESIS);
+}
+ValidationLevel Network::runValidationChecks(const ValidationLevel& vl) {
+    m_validationLevel = validateIdentifiables(getIdentifiables(), true, m_validationLevel != ValidationLevel::UNVALID ? m_validationLevel : m_minimumValidationLevel, vl);
+    return m_validationLevel;
+}
+
+const ValidationLevel& Network::validate() {
+    if (m_validationLevel == ValidationLevel::UNVALID) {
+        m_validationLevel = validateIdentifiables(getIdentifiables(), false, m_minimumValidationLevel, ValidationLevel::UNVALID);
+    }
+    return m_validationLevel;
+}
+
+ValidationLevel Network::getValidationLevel() const {
+    ValidationLevel vl = m_validationLevel;
+    if (vl == ValidationLevel::UNVALID) {
+        vl = validateIdentifiables(getIdentifiables(), false, m_minimumValidationLevel, ValidationLevel::UNVALID);
+    }
+    return vl;
+}
+
+Network& Network::setValidationLevelIfGreaterThan(const ValidationLevel& vl) {
+    m_validationLevel = validationLevel::min(m_validationLevel, vl);
+    return *this;
+}
+
+Network& Network::invalidateValidationLevel() {
+    if (m_minimumValidationLevel < ValidationLevel::STEADY_STATE_HYPOTHESIS) {
+        m_validationLevel = ValidationLevel::UNVALID;
+    }
     return *this;
 }
 

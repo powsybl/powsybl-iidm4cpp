@@ -10,12 +10,18 @@
 
 #include <string>
 
+#include <powsybl/iidm/Battery.hpp>
+#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
+#include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
+#include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -26,9 +32,15 @@ enum class LoadType : std::uint8_t;
 class Network;
 class Terminal;
 
+PowsyblException createUndefinedValueGetterException();
+
+PowsyblException createUnsetMethodException();
+
+void throwExceptionOrLogError(const Validable& validable, const std::string& message, const ValidationLevel& vl);
+
 void checkActivePowerLimits(const Validable& validable, double minP, double maxP);
 
-double checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint);
+ValidationLevel checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint, const ValidationLevel& vl);
 
 double checkB(const Validable& validable, double b);
 
@@ -42,7 +54,7 @@ double checkBmin(const Validable& validable, double bMin);
 
 double checkBPerSection(const Validable& validable, double bPerSection);
 
-const HvdcLine::ConvertersMode& checkConvertersMode(const Validable& validable, const HvdcLine::ConvertersMode& converterMode);
+ValidationLevel checkConvertersMode(const Validable& validable, const HvdcLine::ConvertersMode& converterMode, const ValidationLevel& vl);
 
 int checkForecastDistance(const Validable& validable, int forecastDistance);
 
@@ -52,7 +64,7 @@ double checkG1(const Validable& validable, double g1);
 
 double checkG2(const Validable& validable, double g2);
 
-double checkHvdcActivePowerSetpoint(const Validable& validable, double activePowerSetpoint);
+ValidationLevel checkHvdcActivePowerSetpoint(const Validable& validable, double activePowerSetpoint, const ValidationLevel& vl);
 
 double checkHvdcMaxP(const Validable& validable, double maxP);
 
@@ -72,7 +84,9 @@ const std::string& checkNotEmpty(const std::string& value, const std::string& me
 
 const std::string& checkNotEmpty(const Validable& validable, const std::string& value, const std::string& message);
 
-void checkOnlyOneTapChangerRegulatingEnabled(const Validable& validable, unsigned long regulatingTapChangerCount, bool regulating);
+const ValidationLevel& checkMinValidationLevel(const Validable& validable, const ValidationLevel& minValidationLevel); 
+
+ValidationLevel checkOnlyOneTapChangerRegulatingEnabled(const Validable& validable, unsigned long regulatingTapChangerCount, bool regulating, const ValidationLevel& vl);
 
 template <typename T>
 bool checkOptional(const stdcxx::optional<T>& value) {
@@ -80,6 +94,7 @@ bool checkOptional(const stdcxx::optional<T>& value) {
 }
 
 const double& checkOptional(const Validable& validable, const stdcxx::optional<double>& value, const std::string& message);
+ValidationLevel checkOptional(const Validable& validable, const stdcxx::optional<double>& value, const std::string& message, const ValidationLevel& vl);
 
 template <typename T>
 const T& checkOptional(const Validable& validable, const stdcxx::optional<T>& value, const std::string& message) {
@@ -89,16 +104,27 @@ const T& checkOptional(const Validable& validable, const stdcxx::optional<T>& va
     return *value;
 }
 
-double checkP0(const Validable& validable, double p0);
+template <typename T>
+ValidationLevel checkOptional(const Validable& validable, const stdcxx::optional<T>& value, const std::string& message, const ValidationLevel& vl) {
+    if (!value) {
+        throwExceptionOrLogError(validable, message, vl);
+        return ValidationLevel::EQUIPMENT;
+    }
+    return ValidationLevel::STEADY_STATE_HYPOTHESIS;
+}
+
+ValidationLevel checkP0(const Validable& validable, double p0, const ValidationLevel& vl);
 
 double checkPermanentLimit(const Validable& validable, double permanentLimit);
 
-void checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
-                                    const stdcxx::Reference<Terminal>& regulationTerminal, const Network& network);
+ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
+                                    const stdcxx::CReference<Terminal>& regulationTerminal, const Network& network, const ValidationLevel& vl);
+ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
+                                    const stdcxx::Reference<Terminal>& regulationTerminal, const Network& network, const ValidationLevel& vl);
 
 double checkPowerFactor(const Validable& validable, double powerFactor);
 
-double checkQ0(const Validable& validable, double q0);
+ValidationLevel checkQ0(const Validable& validable, double q0, const ValidationLevel& vl);
 
 double checkR(const Validable& validable, double r);
 
@@ -110,27 +136,30 @@ double checkRatedU1(const Validable& validable, double ratedU1);
 
 double checkRatedU2(const Validable& validable, double ratedU2);
 
-void checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network);
+ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::CReference<Terminal>& regulationTerminal, double targetV, const Network& network, const ValidationLevel& vl);
+ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network, const ValidationLevel& vl);
 
 void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network);
 
-void checkSections(const Validable& validable, const stdcxx::optional<unsigned long>& currentSectionCount, unsigned long maximumSectionCount);
+ValidationLevel checkSections(const Validable& validable, const stdcxx::optional<unsigned long>& currentSectionCount, unsigned long maximumSectionCount, const ValidationLevel& vl);
 
-void checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode);
+ValidationLevel checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode, const ValidationLevel& vl);
 
-long checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition);
+ValidationLevel checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition, const ValidationLevel& vl);
 
-double checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband);
+ValidationLevel checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband, const ValidationLevel& vl);
 
 double checkVoltage(const Validable& validable, double voltage);
 
-bool checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint);
+ValidationLevel checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint, const ValidationLevel& vl);
 
-void checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint, double reactivePowerSetpoint);
+ValidationLevel checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint, double reactivePowerSetpoint, const ValidationLevel& vl);
 
 void checkVoltageLimits(const Validable& validable, double lowVoltageLimit, double highVoltageLimit);
 
 double checkX(const Validable& validable, double x);
+
+ValidationLevel validateIdentifiables(const stdcxx::const_range<Identifiable>& identifiables, bool allChecks, const ValidationLevel& previous, const ValidationLevel& vl);
 
 }  // namespace iidm
 

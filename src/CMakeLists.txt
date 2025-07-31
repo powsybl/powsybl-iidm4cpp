@@ -139,6 +139,7 @@ set(IIDM_SOURCES
     iidm/TwoWindingsTransformer.cpp
     iidm/TwoWindingsTransformerAdder.cpp
     iidm/ValidationException.cpp
+    iidm/ValidationLevel.cpp
     iidm/ValidationUtils.cpp
     iidm/VariantContextGuard.cpp
     iidm/VariantManager.cpp
@@ -228,6 +229,7 @@ set(IIDM_SOURCES
     network/LoadBarExt.cpp
     network/LoadFooExt.cpp
     network/MultipleExtensionsTestNetworkFactory.cpp
+    network/ScadaNetworkFactory.cpp
     network/ThreeWindingsTransformerNetworkFactory.cpp
 
     stdcxx/DateTime.cpp

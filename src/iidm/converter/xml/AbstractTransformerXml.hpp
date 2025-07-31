@@ -59,7 +59,7 @@ protected:
     template <typename StepConsumer>
     static void readSteps(const NetworkXmlReaderContext& context, const StepConsumer& consumer);
 
-    static double readTargetDeadband(bool regulating, NetworkXmlReaderContext& context);
+    static double readTargetDeadband(NetworkXmlReaderContext& context);
 
     template <typename TerminalRefConsumer>
     static void readTerminalRef(NetworkXmlReaderContext& context, bool& hasTerminalRef, const TerminalRefConsumer& consumer);

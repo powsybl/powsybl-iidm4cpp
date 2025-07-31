@@ -30,7 +30,7 @@ protected:
 
     double getLossFactor() const;
 
-    virtual void validate() const;
+    virtual void validate();
 
 private:
     double m_lossFactor = stdcxx::nan();

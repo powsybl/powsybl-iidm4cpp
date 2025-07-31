@@ -18,9 +18,15 @@ Load::Load(VariantManagerHolder& network, const std::string& id, const std::stri
            double p0, double q0) :
     Injection(id, name, fictitious),
     m_loadType(checkLoadType(*this, loadType)),
-    m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
-    m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)) {
-
+    m_p0(network.getVariantManager().getVariantArraySize(), p0),
+    m_q0(network.getVariantManager().getVariantArraySize(), q0) {
+    ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+    if (stdcxx::isInstanceOf<Network>(network)) {
+        auto& n = dynamic_cast<Network&>(network);
+        vl = n.getMinimumValidationLevel();
+    }
+    checkP0(*this, p0, vl);
+    checkQ0(*this, q0, vl);
 }
 
 void Load::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -76,14 +82,16 @@ Load& Load::setLoadType(const LoadType& loadType) {
 }
 
 Load& Load::setP0(double p0) {
-    m_p0[getNetwork().getVariantIndex()] = checkP0(*this, p0);
-
+    checkP0(*this, p0, getNetwork().getMinimumValidationLevel());
+    m_p0[getNetwork().getVariantIndex()] = p0;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 Load& Load::setQ0(double q0) {
-    m_q0[getNetwork().getVariantIndex()] = checkQ0(*this, q0);
-
+    checkQ0(*this, q0, getNetwork().getMinimumValidationLevel());
+    m_q0[getNetwork().getVariantIndex()] = q0;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 

@@ -34,7 +34,7 @@ HvdcLine& HvdcLineXml::readRootElementAttributes(HvdcLineAdder& adder, NetworkXm
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& nominalV = context.getReader().getAttributeValue<double>(NOMINAL_V);
     const auto& convertersMode = Enum::fromString<HvdcLine::ConvertersMode>(context.getReader().getAttributeValue(CONVERTERS_MODE));
-    const auto& activePowerSetpoint = context.getReader().getAttributeValue<double>(ACTIVE_POWER_SETPOINT);
+    double activePowerSetpoint = context.getReader().getOptionalAttributeValue(ACTIVE_POWER_SETPOINT, stdcxx::nan());
     const auto& maxP = context.getReader().getAttributeValue<double>(MAX_P);
     const std::string& converterStation1 = context.getReader().getAttributeValue(CONVERTER_STATION1);
     const std::string& converterStation2 = context.getReader().getAttributeValue(CONVERTER_STATION2);

@@ -121,19 +121,19 @@ BOOST_AUTO_TEST_CASE(constructor) {
     VoltageLevel& vl1 = network.getVoltageLevel("VL");
     GeneratorAdder adder = vl1.newGenerator().setId("GEN1").setNode(3);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': Minimum active power is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': invalid value (nan) for minP");
     adder.setMinP(50.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': Maximum active power is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': invalid value (nan) for maxP");
     adder.setMaxP(40.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': Active power setpoint is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': invalid value (nan) for activePowerSetpoint");
     adder.setTargetP(45.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': voltage regulator status is not set");
     adder.setVoltageRegulatorOn(false);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': Invalid reactive power setpoint (nan) while voltage regulator is off");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': invalid value (nan) for reactivePowerSetpoint (voltage regulator is off)");
     adder.setTargetQ(60.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': Invalid active limits [50, 40]");
@@ -183,19 +183,19 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(gen, gen.setActivePowerSetpoint(100)));
     BOOST_CHECK_CLOSE(100, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(gen.getTargetP(), gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(gen.setActivePowerSetpoint(stdcxx::nan()), ValidationException, "Generator 'GEN1': Active power setpoint is not set");
+    POWSYBL_ASSERT_THROW(gen.setActivePowerSetpoint(stdcxx::nan()), ValidationException, "Generator 'GEN1': invalid value (nan) for activePowerSetpoint");
 
     BOOST_TEST(stdcxx::areSame(gen, gen.setEnergySource(EnergySource::SOLAR)));
     POWSYBL_ASSERT_ENUM_EQ(EnergySource::SOLAR, gen.getEnergySource());
 
     BOOST_TEST(stdcxx::areSame(gen, gen.setMaxP(200)));
     BOOST_CHECK_CLOSE(200, gen.getMaxP(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(gen.setMaxP(stdcxx::nan()), ValidationException, "Generator 'GEN1': Maximum active power is not set");
+    POWSYBL_ASSERT_THROW(gen.setMaxP(stdcxx::nan()), ValidationException, "Generator 'GEN1': invalid value (nan) for maxP");
 
     POWSYBL_ASSERT_THROW(gen.setMinP(300), ValidationException, "Generator 'GEN1': Invalid active limits [300, 200]");
     BOOST_TEST(stdcxx::areSame(gen, gen.setMinP(150)));
     BOOST_CHECK_CLOSE(150, gen.getMinP(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(gen.setMinP(stdcxx::nan()), ValidationException, "Generator 'GEN1': Minimum active power is not set");
+    POWSYBL_ASSERT_THROW(gen.setMinP(stdcxx::nan()), ValidationException, "Generator 'GEN1': invalid value (nan) for minP");
 
     BOOST_TEST(stdcxx::areSame(gen, gen.setRatedS(400)));
     BOOST_CHECK_CLOSE(400, gen.getRatedS(), std::numeric_limits<double>::epsilon());
@@ -207,21 +207,21 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(500, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(gen.getTargetQ(), gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(gen.setReactivePowerSetpoint(stdcxx::nan()));
-    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(false), ValidationException, "Generator 'GEN1': Invalid reactive power setpoint (nan) while voltage regulator is off");
+    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(false), ValidationException, "Generator 'GEN1': invalid value (nan) for reactivePowerSetpoint (voltage regulator is off)");
     gen.setReactivePowerSetpoint(500);
     BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(false));
 
     BOOST_TEST(stdcxx::areSame(gen, gen.setTargetP(600)));
     BOOST_CHECK_CLOSE(600, gen.getTargetP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(gen.getTargetP(), gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(gen.setTargetP(stdcxx::nan()), ValidationException, "Generator 'GEN1': Active power setpoint is not set");
+    POWSYBL_ASSERT_THROW(gen.setTargetP(stdcxx::nan()), ValidationException, "Generator 'GEN1': invalid value (nan) for activePowerSetpoint");
 
     gen.setVoltageRegulatorOn(true);
     BOOST_TEST(stdcxx::areSame(gen, gen.setTargetQ(700)));
     BOOST_CHECK_CLOSE(700, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(gen.getTargetQ(), gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(gen.setTargetQ(stdcxx::nan()));
-    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(false), ValidationException, "Generator 'GEN1': Invalid reactive power setpoint (nan) while voltage regulator is off");
+    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(false), ValidationException, "Generator 'GEN1': invalid value (nan) for reactivePowerSetpoint (voltage regulator is off)");
     gen.setTargetQ(700);
     BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(false));
 
@@ -230,9 +230,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(800, gen.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(gen.getTargetV(), gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(gen.setTargetV(stdcxx::nan()));
-    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': Invalid voltage setpoint value (nan) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': invalid value (nan) for voltageSetpoint (voltage regulator is on)");
     BOOST_CHECK_NO_THROW(gen.setTargetV(-20));
-    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': Invalid voltage setpoint value (-20) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': invalid value (-20) for voltageSetpoint (voltage regulator is on)");
     gen.setTargetV(800);
     BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(true));
 
@@ -241,9 +241,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(900, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(gen.getTargetV(), gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(gen.setVoltageSetpoint(stdcxx::nan()));
-    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': Invalid voltage setpoint value (nan) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': invalid value (nan) for voltageSetpoint (voltage regulator is on)");
     BOOST_CHECK_NO_THROW(gen.setVoltageSetpoint(-20));
-    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': Invalid voltage setpoint value (-20) while voltage regulator is on");
+    POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': invalid value (-20) for voltageSetpoint (voltage regulator is on)");
     gen.setVoltageSetpoint(800);
     BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(true));
 
