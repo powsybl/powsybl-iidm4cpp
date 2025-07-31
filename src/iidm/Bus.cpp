@@ -31,9 +31,7 @@ namespace powsybl {
 namespace iidm {
 
 Bus::Bus(const std::string& id, const std::string& name, bool fictitious) :
-    Identifiable(id, name, fictitious),
-    m_fictitiousP0(stdcxx::nan()),
-    m_fictitiousQ0(stdcxx::nan()) {
+    Identifiable(id, name, fictitious) {
 }
 
 template <typename T>
@@ -63,11 +61,11 @@ stdcxx::range<DanglingLine> Bus::getDanglingLines() {
 }
 
 double Bus::getFictitiousP0() const {
-    return m_fictitiousP0;
+    return stdcxx::nan();
 }
 
 double Bus::getFictitiousQ0() const {
-    return m_fictitiousQ0;
+    return stdcxx::nan();
 }
 
 stdcxx::const_range<Generator> Bus::getGenerators() const {
@@ -247,13 +245,13 @@ bool Bus::isInMainSynchronousComponent() const {
     return static_cast<bool>(sc) && (sc.get().getNum() == ComponentConstants::MAIN_NUM);
 }
 
-Bus& Bus::setFictitiousP0(double p0) {
-    m_fictitiousP0 = p0;
+Bus& Bus::setFictitiousP0(double /*p0*/) {
+    // do nothing
     return *this;
 }
 
-Bus& Bus::setFictitiousQ0(double q0) {
-    m_fictitiousQ0 = q0;
+Bus& Bus::setFictitiousQ0(double /*q0*/) {
+    // do nothing
     return *this;
 }
 

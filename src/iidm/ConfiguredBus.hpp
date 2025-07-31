@@ -58,6 +58,14 @@ public: // Bus
 
     void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) override;
 
+    double getFictitiousP0() const override;
+
+    double getFictitiousQ0() const override;
+
+    Bus& setFictitiousP0(double p0) override;
+
+    Bus& setFictitiousQ0(double q0) override;
+
 public:
     ConfiguredBus(const std::string& id, const std::string& name, bool fictitious, BusBreakerVoltageLevel& voltageLevel);
 
@@ -90,6 +98,9 @@ private:
     std::vector<double> m_v;
 
     std::vector<double> m_angle;
+
+    std::vector<double> m_fictitiousP0;
+    std::vector<double> m_fictitiousQ0;
 
     std::vector<stdcxx::optional<unsigned long>> m_connectedComponentNumber;
 

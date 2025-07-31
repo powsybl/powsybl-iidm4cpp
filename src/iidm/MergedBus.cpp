@@ -189,6 +189,58 @@ void MergedBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) 
     }
 }
 
+double MergedBus::getFictitiousP0() const {
+    double fictP0 = 0.0;
+    bool hasValue = false;
+    for (const auto& bus : m_buses){
+        double bfictP0 = bus.get().getFictitiousP0();
+        if(!std::isnan(bfictP0)){
+            fictP0 += bfictP0;
+            hasValue = true;
+        }
+    }
+    if(hasValue) {
+        return fictP0;
+    }
+    return stdcxx::nan();
+}
+
+double MergedBus::getFictitiousQ0() const {
+    double fictQ0 = 0.0;
+    bool hasValue = false;
+    for (const auto& bus : m_buses){
+        double bfictQ0 = bus.get().getFictitiousQ0();
+        if(!std::isnan(bfictQ0)){
+            fictQ0 += bfictQ0;
+            hasValue = true;
+        }
+    }
+    if(hasValue) {
+        return fictQ0;
+    }
+    return stdcxx::nan();
+}
+
+Bus& MergedBus::setFictitiousP0(double p0) {
+
+    for (const auto& bus : m_buses){
+        bus.get().setFictitiousP0(0.0);
+    }
+    m_buses.begin()->get().setFictitiousP0(p0);
+
+    return *this;
+}
+
+Bus& MergedBus::setFictitiousQ0(double q0) {
+
+    for (const auto& bus : m_buses){
+        bus.get().setFictitiousQ0(0.0);
+    }
+    m_buses.begin()->get().setFictitiousQ0(q0);
+
+    return *this;
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

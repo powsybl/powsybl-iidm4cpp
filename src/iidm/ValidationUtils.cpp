@@ -650,8 +650,8 @@ ValidationLevel checkIdentifiable(const Identifiable& identifiable,const Validat
         const auto& validable = dynamic_cast<const Validable&>(identifiable);
         if (stdcxx::isInstanceOf<Battery>(identifiable)) {
             const auto& battery = dynamic_cast<const Battery&>(identifiable);
-            checkValidationLevel = validationLevel::min(checkValidationLevel, checkP0(validable, battery.getP0(), vl));
-            checkValidationLevel = validationLevel::min(checkValidationLevel, checkQ0(validable, battery.getQ0(), vl));
+            checkValidationLevel = validationLevel::min(checkValidationLevel, checkP0(validable, battery.getTargetP(), vl));
+            checkValidationLevel = validationLevel::min(checkValidationLevel, checkQ0(validable, battery.getTargetQ(), vl));
         } else if (stdcxx::isInstanceOf<DanglingLine>(identifiable)) {
             const auto& danglingLine = dynamic_cast<const DanglingLine&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkP0(validable, danglingLine.getP0(), vl));

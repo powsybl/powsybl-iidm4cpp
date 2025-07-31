@@ -251,6 +251,7 @@ iidm::Network FictitiousSwitchFactory::create() {
         .setB(3.2E-5)
         .setRatedU1(225.0)
         .setRatedU2(225.0)
+        .setRatedS(1.0)
         .setNode1(2)
         .setVoltageLevel1("C")
         .setNode2(10)

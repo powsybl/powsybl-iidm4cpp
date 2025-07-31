@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/cast.hpp>
 
 #include "CalculatedBus.hpp"
@@ -156,14 +157,24 @@ stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& busbarSectio
 
 NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
+    m_fictitiousP0ByNode = std::map<unsigned long, std::vector<double>>();
+    m_fictitiousQ0ByNode = std::map<unsigned long, std::vector<double>>();
 }
 
 double NodeBreakerViewImpl::getFictitiousP0(unsigned long node) const {
-    return m_voltageLevel.getFictitiousP0(node);
+    const auto& it = m_fictitiousP0ByNode.find(node);
+    if(it!=m_fictitiousP0ByNode.cend()) {
+        return it->second.at(m_voltageLevel.getNetwork().getVariantIndex());
+    }
+    return stdcxx::nan();
 }
 
 double NodeBreakerViewImpl::getFictitiousQ0(unsigned long node) const {
-    return m_voltageLevel.getFictitiousQ0(node);
+    const auto& it = m_fictitiousQ0ByNode.find(node);
+    if(it!=m_fictitiousQ0ByNode.cend()) {
+        return it->second.at(m_voltageLevel.getNetwork().getVariantIndex());
+    }
+    return stdcxx::nan();
 }
 
 stdcxx::CReference<BusbarSection> NodeBreakerViewImpl::getBusbarSection(const std::string& bbsId) const {
@@ -324,13 +335,51 @@ void NodeBreakerViewImpl::removeSwitch(const std::string& switchId) {
 }
 
 voltage_level::NodeBreakerView& NodeBreakerViewImpl::setFictitiousP0(unsigned long node, double p0) {
-    m_voltageLevel.setFictitiousP0(node, p0);
+    const Network& network = m_voltageLevel.getNetwork();
+    checkP0(m_voltageLevel, p0, network.getMinimumValidationLevel());
+
+    if(m_fictitiousP0ByNode.find(node) == m_fictitiousP0ByNode.cend()) {
+        m_fictitiousP0ByNode[node] = std::vector<double>(network.getVariantManager().getVariantArraySize(), stdcxx::nan());
+    }
+    m_fictitiousP0ByNode.at(node)[network.getVariantIndex()] = p0;
+    
+    std::set<unsigned long> nodesToRemove = clearFictitiousInjections(m_fictitiousP0ByNode);
+    for(const auto& node : nodesToRemove) {
+        m_fictitiousP0ByNode.erase(node);
+    }
+    
     return *this;
 }
 
 voltage_level::NodeBreakerView& NodeBreakerViewImpl::setFictitiousQ0(unsigned long node, double q0) {
-    m_voltageLevel.setFictitiousQ0(node, q0);
+    const Network& network = m_voltageLevel.getNetwork();
+    checkQ0(m_voltageLevel, q0, network.getMinimumValidationLevel());
+
+    if(m_fictitiousQ0ByNode.find(node) == m_fictitiousQ0ByNode.cend()) {
+        m_fictitiousQ0ByNode[node] = std::vector<double>(network.getVariantManager().getVariantArraySize(), stdcxx::nan());
+    }
+    m_fictitiousQ0ByNode.at(node)[network.getVariantIndex()] = q0;
+    
+    std::set<unsigned long> nodesToRemove = clearFictitiousInjections(m_fictitiousQ0ByNode);
+    for(const auto& node : nodesToRemove) {
+        m_fictitiousQ0ByNode.erase(node);
+    }
+    
     return *this;
+}
+
+std::set<unsigned long> NodeBreakerViewImpl::clearFictitiousInjections(const std::map<unsigned long,std::vector<double>>& fictitiousInjectionsByNode) {
+    std::set<unsigned long> toRemove;
+    for(const auto& it : fictitiousInjectionsByNode) {
+        toRemove.insert(it.first);
+        for(const auto& vect : it.second) {
+            if(!std::isnan(vect)) {
+                toRemove.erase(it.first);
+                break;
+            }
+        }
+    }
+    return toRemove;
 }
 
 void NodeBreakerViewImpl::traverse(unsigned long node, const TopologyTraverser& traverser) const {

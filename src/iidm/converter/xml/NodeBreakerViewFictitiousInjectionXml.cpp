@@ -29,8 +29,8 @@ const NodeBreakerViewFictitiousInjectionXml& NodeBreakerViewFictitiousInjectionX
 
 void NodeBreakerViewFictitiousInjectionXml::read(VoltageLevel& voltageLevel, const NetworkXmlReaderContext& context) const {
     const auto& node = context.getReader().getAttributeValue<unsigned long>(NODE);
-    const auto& fictP0 = context.getReader().getOptionalAttributeValue(FICTITIOUS_P0, stdcxx::nan());
-    const auto& fictQ0 = context.getReader().getOptionalAttributeValue(FICTITIOUS_Q0, stdcxx::nan());
+    const double& fictP0 = context.getReader().getOptionalAttributeValue(FICTITIOUS_P0, stdcxx::nan());
+    const double& fictQ0 = context.getReader().getOptionalAttributeValue(FICTITIOUS_Q0, stdcxx::nan());
     if (!std::isnan(fictP0)) {
         voltageLevel.getNodeBreakerView().setFictitiousP0(node, fictP0);
     }
@@ -42,8 +42,8 @@ void NodeBreakerViewFictitiousInjectionXml::read(VoltageLevel& voltageLevel, con
 void NodeBreakerViewFictitiousInjectionXml::write(unsigned long node, double fictP0, double fictQ0, NetworkXmlWriterContext& context) const {
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), FICTITIOUS_INJECTION);
     context.getWriter().writeAttribute(NODE, node);
-    context.getWriter().writeOptionalAttribute(FICTITIOUS_P0, fictP0, 0.0);
-    context.getWriter().writeOptionalAttribute(FICTITIOUS_Q0, fictQ0, 0.0);
+    context.getWriter().writeOptionalAttribute(FICTITIOUS_P0, fictP0);
+    context.getWriter().writeOptionalAttribute(FICTITIOUS_Q0, fictQ0);
     context.getWriter().writeEndElement();
 }
 

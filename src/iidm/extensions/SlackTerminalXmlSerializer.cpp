@@ -35,7 +35,7 @@ SlackTerminalXmlSerializer::SlackTerminalXmlSerializer() :
               .put(converter::xml::IidmXmlVersion::V1_5(), {"1.2"})
               .put(converter::xml::IidmXmlVersion::V1_6(), {"1.3"})
               .put(converter::xml::IidmXmlVersion::V1_7(), {"1.4"})
-              .put(converter::xml::IidmXmlVersion::V1_8(), {"1.2"})
+              .put(converter::xml::IidmXmlVersion::V1_8(), {"1.5"})
               .build(),
           stdcxx::MapBuilder<std::string, std::string>()
               .put("1.0", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_0")
@@ -43,6 +43,7 @@ SlackTerminalXmlSerializer::SlackTerminalXmlSerializer() :
               .put("1.2", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_2")
               .put("1.3", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_3")
               .put("1.4", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_4")
+              .put("1.5", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_5")
               .build()) {
 }
 

@@ -80,10 +80,6 @@ public:
 
     bool isConnected(const Terminal& terminal) const;
 
-    void setFictitiousP0(unsigned long node, double p0);
-
-    void setFictitiousQ0(unsigned long node, double q0);
-
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -118,10 +114,6 @@ private:
     node_breaker_voltage_level::CalculatedBusTopology& getCalculatedBusTopology();
 
     stdcxx::optional<unsigned long> getEdge(const std::string& switchId, bool throwException) const;
-
-    double getFictitiousP0(unsigned long node) const;
-
-    double getFictitiousQ0(unsigned long node) const;
 
     const node_breaker_voltage_level::Graph& getGraph() const;
 
@@ -159,9 +151,6 @@ private:
     friend class node_terminal::BusViewImpl;
 
 private:
-    std::map<unsigned long, double> m_fictitiousP0ByNode;
-
-    std::map<unsigned long, double> m_fictitiousQ0ByNode;
 
     node_breaker_voltage_level::Graph m_graph;
 

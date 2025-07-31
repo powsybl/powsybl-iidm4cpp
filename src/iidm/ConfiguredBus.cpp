@@ -34,6 +34,8 @@ ConfiguredBus::ConfiguredBus(const std::string& id, const std::string& name, boo
     m_terminals(voltageLevel.getNetwork().getVariantManager().getVariantArraySize()),
     m_v(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
     m_angle(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
+    m_fictitiousP0(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
+    m_fictitiousQ0(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
     m_connectedComponentNumber(m_voltageLevel.get().getNetwork().getNetwork().getVariantManager().getVariantArraySize(), stdcxx::optional<unsigned long>()),
     m_synchronousComponentNumber(m_voltageLevel.get().getNetwork().getVariantManager().getVariantArraySize(), stdcxx::optional<unsigned long>()) {
 
@@ -50,6 +52,8 @@ void ConfiguredBus::allocateVariantArrayElement(const std::set<unsigned long>& i
         m_terminals[index] = m_terminals[sourceIndex];
         m_v[index] = m_v[sourceIndex];
         m_angle[index] = m_angle[sourceIndex];
+        m_fictitiousP0[index] = m_fictitiousP0[sourceIndex];
+        m_fictitiousQ0[index] = m_fictitiousQ0[sourceIndex];
         m_connectedComponentNumber[index] = m_connectedComponentNumber[sourceIndex];
         m_synchronousComponentNumber[index] = m_synchronousComponentNumber[sourceIndex];
     }
@@ -67,6 +71,8 @@ void ConfiguredBus::extendVariantArraySize(unsigned long initVariantArraySize, u
     m_terminals.resize(m_terminals.size() + number, m_terminals[sourceIndex]);
     m_v.resize(m_v.size() + number, m_v[sourceIndex]);
     m_angle.resize(m_angle.size() + number, m_angle[sourceIndex]);
+    m_fictitiousP0.resize(m_fictitiousP0.size() + number, m_fictitiousP0[sourceIndex]);
+    m_fictitiousQ0.resize(m_fictitiousQ0.size() + number, m_fictitiousQ0[sourceIndex]);
     m_connectedComponentNumber.resize(m_connectedComponentNumber.size() + number, m_connectedComponentNumber[sourceIndex]);
     m_synchronousComponentNumber.resize(m_synchronousComponentNumber.size() + number, m_synchronousComponentNumber[sourceIndex]);
 }
@@ -170,6 +176,8 @@ void ConfiguredBus::reduceVariantArraySize(unsigned long number) {
     m_terminals.resize(m_terminals.size() - number);
     m_v.resize(m_v.size() - number);
     m_angle.resize(m_angle.size() - number);
+    m_fictitiousP0.resize(m_fictitiousP0.size() - number);
+    m_fictitiousQ0.resize(m_fictitiousQ0.size() - number);
     m_connectedComponentNumber.resize(m_connectedComponentNumber.size() - number);
     m_synchronousComponentNumber.resize(m_synchronousComponentNumber.size() - number);
 }
@@ -214,6 +222,30 @@ Bus& ConfiguredBus::setV(double v) {
 void ConfiguredBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) {
     const auto& mapper = stdcxx::upcast<BusTerminal, Terminal>;
     TopologyVisitor::visitEquipments(getTerminals() | boost::adaptors::transformed(mapper), visitor);
+}
+
+double ConfiguredBus::getFictitiousP0() const {
+    return m_fictitiousP0.at(getNetwork().getVariantIndex());
+}
+
+double ConfiguredBus::getFictitiousQ0() const {
+    return m_fictitiousQ0.at(getNetwork().getVariantIndex());
+}
+
+Bus& ConfiguredBus::setFictitiousP0(double p0) {
+    checkP0(*this, p0, getNetwork().getMinimumValidationLevel());
+
+    m_fictitiousP0[getNetwork().getVariantIndex()] = p0;
+
+    return *this;
+}
+
+Bus& ConfiguredBus::setFictitiousQ0(double q0) {
+    checkQ0(*this, q0, getNetwork().getMinimumValidationLevel());
+
+    m_fictitiousQ0[getNetwork().getVariantIndex()] = q0;
+
+    return *this;
 }
 
 }  // namespace iidm

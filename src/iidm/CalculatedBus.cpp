@@ -22,11 +22,12 @@ namespace powsybl {
 
 namespace iidm {
 
-CalculatedBus::CalculatedBus(const std::string& id, const std::string& name, bool fictitious, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals) :
+CalculatedBus::CalculatedBus(const std::string& id, const std::string& name, bool fictitious, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals, const std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)>& getBusFromTerminalFunc) :
     Bus(id, name, fictitious),
     m_voltageLevel(voltageLevel),
     m_terminals(std::move(terminals)),
-    m_terminalRef(findTerminal(voltageLevel, nodes, m_terminals)) {
+    m_terminalRef(findTerminal(voltageLevel, nodes, m_terminals)),
+    m_getBusFromTerminalFunc(std::move(getBusFromTerminalFunc)) {
 }
 
 void CalculatedBus::checkValidity() const {
@@ -148,6 +149,76 @@ Bus& CalculatedBus::setV(double v) {
 void CalculatedBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) {
     const auto& mapper = stdcxx::upcast<NodeTerminal, Terminal>;
     TopologyVisitor::visitEquipments(m_terminals | boost::adaptors::transformed(mapper), visitor);
+}
+
+double CalculatedBus::getFictitiousP0() const {
+    checkValidity();
+    std::set<unsigned long> nodes = Networks::getNodes(getId(), m_voltageLevel, m_getBusFromTerminalFunc);
+    double fictP0 = 0.0;
+    bool hasValue = false;
+    for (auto& node : nodes) {
+        double nfictP0 = m_voltageLevel.get().getNodeBreakerView().getFictitiousP0(node);
+        if(!std::isnan(nfictP0)) {
+            fictP0 += nfictP0;
+            hasValue = true;
+        }
+    }
+    if(hasValue) {
+        return fictP0;
+    }
+    return stdcxx::nan();
+}
+
+double CalculatedBus::getFictitiousQ0() const {
+    checkValidity();
+    std::set<unsigned long> nodes = Networks::getNodes(getId(), m_voltageLevel, m_getBusFromTerminalFunc);
+    double fictQ0 = 0.0;
+    bool hasValue = false;
+    for (auto& node : nodes) {
+        double nFictQ0 = m_voltageLevel.get().getNodeBreakerView().getFictitiousQ0(node);
+        if(!std::isnan(nFictQ0)) {
+            fictQ0 += nFictQ0;
+            hasValue = true;
+        }
+    }
+    if(hasValue) {
+        return fictQ0;
+    }
+    return stdcxx::nan();
+}
+
+Bus& CalculatedBus::setFictitiousP0(double p0) {
+    checkValidity();
+
+    std::set<unsigned long> nodes = Networks::getNodes(getId(), m_voltageLevel, m_getBusFromTerminalFunc);
+    for (auto& node : nodes) {
+        m_voltageLevel.get().getNodeBreakerView().setFictitiousP0(node, stdcxx::nan());
+    }
+
+    if(nodes.size() > 0){
+        m_voltageLevel.get().getNodeBreakerView().setFictitiousP0(*nodes.begin(),p0);
+    } else {
+        throw PowsyblException(stdcxx::format("Bus %1% should contain at least one node", getId()));
+    }
+
+    return *this;
+}
+
+Bus& CalculatedBus::setFictitiousQ0(double q0) {
+    checkValidity();
+
+    std::set<unsigned long> nodes = Networks::getNodes(getId(), m_voltageLevel, m_getBusFromTerminalFunc);
+    for (auto& node : nodes) {
+        m_voltageLevel.get().getNodeBreakerView().setFictitiousQ0(node, stdcxx::nan());
+    }
+
+    if(nodes.size() > 0){
+        m_voltageLevel.get().getNodeBreakerView().setFictitiousQ0(*nodes.begin(),q0);
+    } else {
+        throw PowsyblException(stdcxx::format("Bus %1% should contain at least one node", getId()));
+    }
+
+    return *this;
 }
 
 }  // namespace iidm

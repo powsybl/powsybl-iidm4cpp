@@ -100,7 +100,15 @@ public:
     ~NodeBreakerViewImpl() noexcept override = default;
 
 private:
+    std::set<unsigned long> clearFictitiousInjections(const std::map<unsigned long,std::vector<double>>& fictitiousInjectionsByNode);
+
+private:
     NodeBreakerVoltageLevel& m_voltageLevel;
+
+    std::map<unsigned long, std::vector<double>> m_fictitiousP0ByNode;
+
+    std::map<unsigned long, std::vector<double>> m_fictitiousQ0ByNode;
+
 };
 
 class BusBreakerViewImpl : public voltage_level::BusBreakerView {

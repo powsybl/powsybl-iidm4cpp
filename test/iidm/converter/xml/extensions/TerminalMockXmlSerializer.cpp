@@ -41,6 +41,7 @@ TerminalMockXmlSerializer::TerminalMockXmlSerializer() :
             .put(IidmXmlVersion::V1_5(), {"1.5"})
             .put(IidmXmlVersion::V1_6(), {"1.6"})
             .put(IidmXmlVersion::V1_7(), {"1.7"})
+            .put(IidmXmlVersion::V1_8(), {"1.8"})
             .build(),
         stdcxx::MapBuilder<std::string, std::string>()
             .put("1.0", "http://www.itesla_project.eu/schema/iidm/ext/terminal_mock/1_0")
@@ -51,6 +52,7 @@ TerminalMockXmlSerializer::TerminalMockXmlSerializer() :
             .put("1.5", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_5")
             .put("1.6", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_6")
             .put("1.7", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_7")
+            .put("1.8", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_8")
             .build()) {
 }
 

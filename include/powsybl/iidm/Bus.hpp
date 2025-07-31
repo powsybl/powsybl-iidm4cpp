@@ -129,13 +129,13 @@ public:
     virtual void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) = 0;
 
 public:
-    double getFictitiousP0() const;
+    virtual double getFictitiousP0() const;
 
-    double getFictitiousQ0() const;
+    virtual double getFictitiousQ0() const;
 
-    Bus& setFictitiousP0(double p0);
+    virtual Bus& setFictitiousP0(double p0);
 
-    Bus& setFictitiousQ0(double q0);
+    virtual Bus& setFictitiousQ0(double q0);
 
 protected:
     Bus(const std::string& id, const std::string& name, bool fictitious);
@@ -158,10 +158,6 @@ private:
 
     friend class SynchronousComponentsManager;
 
-private:
-    double m_fictitiousP0;
-
-    double m_fictitiousQ0;
 };
 
 }  // namespace iidm

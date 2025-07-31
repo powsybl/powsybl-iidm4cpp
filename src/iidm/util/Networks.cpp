@@ -71,6 +71,34 @@ std::map<std::string, std::set<unsigned long>> getNodesByBus(const VoltageLevel&
     return nodesByBus;
 }
 
+std::set<unsigned long> getNodes(const std::string& busId, const VoltageLevel& voltageLevel, const std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)>& getBusFromTerminalFunc){
+    if (voltageLevel.getTopologyKind() != TopologyKind::NODE_BREAKER) {
+        throw PowsyblException(stdcxx::format("The voltage level %1% is not described in Node/Breaker topology", voltageLevel.getId()));
+    }
+
+    std::set<unsigned long> nodes;
+    for (unsigned long node : voltageLevel.getNodeBreakerView().getNodes()){
+        const auto& terminal = voltageLevel.getNodeBreakerView().getTerminal(node);
+        if(terminal) {
+            stdcxx::CReference<Bus> bus = getBusFromTerminalFunc(terminal);
+            if(bus && bus.get().getId() == busId) {
+                nodes.insert(node);
+            }
+        } else {
+            // If no terminal, try to find one traversing the topology:
+            stdcxx::CReference<Terminal> equivalentTerminal = Networks::getEquivalentTerminal(voltageLevel, node);
+            if(equivalentTerminal) {
+                stdcxx::CReference<Bus> bus = getBusFromTerminalFunc(equivalentTerminal);
+                if(bus && bus.get().getId() == busId) {
+                    nodes.insert(node);
+                }
+            }
+        }
+    }
+
+    return nodes;
+}
+
 }  // namespace Networks
 
 }  // namespace iidm
