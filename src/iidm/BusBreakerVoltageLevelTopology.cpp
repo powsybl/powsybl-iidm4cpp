@@ -72,7 +72,8 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
 
     for (const auto& bus : buses) {
         for (const auto& terminal : bus.get().getConnectedTerminals()) {
-            const auto& connectable = terminal.getConnectable().get();
+            stdcxx::CReference<Connectable> refConnectable = terminal.getConnectable();
+            const auto& connectable = refConnectable.get();
             switch (connectable.getType()) {
                 case IdentifiableType::LINE:
                 case IdentifiableType::TWO_WINDINGS_TRANSFORMER:

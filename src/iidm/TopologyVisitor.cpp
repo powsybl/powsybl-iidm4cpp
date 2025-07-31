@@ -40,7 +40,8 @@ void TopologyVisitor::visitDanglingLine(const DanglingLine& /*danglingLine*/) {
 
 void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& terminals, TopologyVisitor& visitor) {
     for (const Terminal& terminal : terminals) {
-        const Connectable& connectable = terminal.getConnectable();
+        stdcxx::CReference<Connectable> refConnectable = terminal.getConnectable();
+        const Connectable& connectable = refConnectable.get();
         switch (connectable.getType()) {
             case IdentifiableType::BUSBAR_SECTION:
                 visitor.visitBusbarSection(dynamic_cast<const BusbarSection&>(connectable));

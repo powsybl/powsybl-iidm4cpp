@@ -183,8 +183,10 @@ void VoltageLevelXml::writeBusBreakerTopology(const VoltageLevel& voltageLevel, 
         BusXml::getInstance().write(bus, voltageLevel, context);
     }
     for (const Switch& sw : voltageLevel.getBusBreakerView().getSwitches()) {
-        const Bus& b1 = voltageLevel.getBusBreakerView().getBus1(context.getAnonymizer().anonymizeString(sw.getId()));
-        const Bus& b2 = voltageLevel.getBusBreakerView().getBus2(context.getAnonymizer().anonymizeString(sw.getId()));
+        stdcxx::CReference<powsybl::iidm::Bus> refBus1 = voltageLevel.getBusBreakerView().getBus1(context.getAnonymizer().anonymizeString(sw.getId()));
+        stdcxx::CReference<powsybl::iidm::Bus> refBus2 = voltageLevel.getBusBreakerView().getBus2(context.getAnonymizer().anonymizeString(sw.getId()));
+        const Bus& b1 = refBus1.get();
+        const Bus& b2 = refBus2.get();
         if (!context.getFilter().test(b1) || !context.getFilter().test(b2)) {
             continue;
         }

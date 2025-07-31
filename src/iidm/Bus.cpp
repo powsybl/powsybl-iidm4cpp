@@ -106,7 +106,8 @@ double Bus::getP() const {
     }
     double p = 0;
     for (const Terminal& terminal : getConnectedTerminals()) {
-        const Connectable& connectable = terminal.getConnectable();
+        stdcxx::CReference<Connectable> refConnectable = terminal.getConnectable();
+        const Connectable& connectable = refConnectable.get();
         switch (connectable.getType()) {
             case IdentifiableType::BUSBAR_SECTION:
             case IdentifiableType::SHUNT_COMPENSATOR:
@@ -144,7 +145,8 @@ double Bus::getQ() const {
     }
     double q = 0;
     for (const Terminal& terminal : getConnectedTerminals()) {
-        const Connectable& connectable = terminal.getConnectable();
+        stdcxx::CReference<Connectable> refConnectable = terminal.getConnectable();
+        const Connectable& connectable = refConnectable.get();
         switch (connectable.getType()) {
             case IdentifiableType::BUSBAR_SECTION:
             case IdentifiableType::LINE:
