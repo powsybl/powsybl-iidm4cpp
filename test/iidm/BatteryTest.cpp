@@ -50,8 +50,8 @@ Network createBatteryTestNetwork() {
         .setName("BAT1_NAME")
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
-        .setP0(100.0)
-        .setQ0(200.0)
+        .setTargetP(100.0)
+        .setTargetQ(200.0)
         .setMinP(-200.0)
         .setMaxP(300.0)
         .add();
@@ -71,10 +71,10 @@ BOOST_AUTO_TEST_CASE(adder) {
         .setBus("VL1_BUS1");
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': p0 is invalid");
-    adder.setP0(40.0);
+    adder.setTargetP(40.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': q0 is invalid");
-    adder.setQ0(50.0);
+    adder.setTargetQ(50.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': invalid value (nan) for minP");
     adder.setMinP(60.0);
@@ -89,7 +89,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Battery 'BAT1': Invalid active limits [80, 70]");
     adder.setMinP(60.0);
 
-    adder.setP0(65.0);
+    adder.setTargetP(65.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'Battery' with the id 'BAT1'");
     adder.setEnsureIdUnicity(true);
@@ -110,8 +110,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     std::ostringstream oss;
     oss << battery.getType();
     BOOST_CHECK_EQUAL("BATTERY", oss.str());
-    BOOST_CHECK_CLOSE(100.0, battery.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(200.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(100.0, battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, battery.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-200.0, battery.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(300.0, battery.getMaxP(), std::numeric_limits<double>::epsilon());
 }
@@ -122,19 +122,19 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     Battery& battery = network.getBattery("BAT1");
 
-    BOOST_TEST(stdcxx::areSame(battery, battery.setP0(110.0)));
-    BOOST_CHECK_CLOSE(110.0, battery.getP0(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(battery.setP0(stdcxx::nan()), ValidationException, "Battery 'BAT1': p0 is invalid");
-    BOOST_TEST(stdcxx::areSame(battery, battery.setP0(battery.getMinP())));
-    BOOST_CHECK_CLOSE(battery.getMinP(), battery.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(battery, battery.setP0(battery.getMaxP())));
-    BOOST_CHECK_CLOSE(battery.getMaxP(), battery.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(battery, battery.setP0(0.0)));
-    BOOST_CHECK_CLOSE(0.0, battery.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(battery, battery.setTargetP(110.0)));
+    BOOST_CHECK_CLOSE(110.0, battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_THROW(battery.setTargetP(stdcxx::nan()), ValidationException, "Battery 'BAT1': p0 is invalid");
+    BOOST_TEST(stdcxx::areSame(battery, battery.setTargetP(battery.getMinP())));
+    BOOST_CHECK_CLOSE(battery.getMinP(), battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(battery, battery.setTargetP(battery.getMaxP())));
+    BOOST_CHECK_CLOSE(battery.getMaxP(), battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_TEST(stdcxx::areSame(battery, battery.setTargetP(0.0)));
+    BOOST_CHECK_CLOSE(0.0, battery.getTargetP(), std::numeric_limits<double>::epsilon());
 
-    BOOST_TEST(stdcxx::areSame(battery, battery.setQ0(210.0)));
-    BOOST_CHECK_CLOSE(210.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(battery.setQ0(stdcxx::nan()), ValidationException, "Battery 'BAT1': q0 is invalid");
+    BOOST_TEST(stdcxx::areSame(battery, battery.setTargetQ(210.0)));
+    BOOST_CHECK_CLOSE(210.0, battery.getTargetQ(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_THROW(battery.setTargetQ(stdcxx::nan()), ValidationException, "Battery 'BAT1': q0 is invalid");
 
     BOOST_TEST(stdcxx::areSame(battery, battery.setMinP(-90.0)));
     BOOST_CHECK_CLOSE(-90.0, battery.getMinP(), std::numeric_limits<double>::epsilon());
@@ -195,32 +195,32 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s1");
-    BOOST_CHECK_CLOSE(100.0, battery.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(200.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(100.0, battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, battery.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-200, battery.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(300, battery.getMaxP(), std::numeric_limits<double>::epsilon());
-    battery.setP0(110).setQ0(210).setMinP(-210).setMaxP(310);
+    battery.setTargetP(110).setTargetQ(210).setMinP(-210).setMaxP(310);
 
-    BOOST_CHECK_CLOSE(110.0, battery.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(210.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(110.0, battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(210.0, battery.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-210, battery.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(310, battery.getMaxP(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().setWorkingVariant("s2");
-    BOOST_CHECK_CLOSE(100.0, battery.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(200.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(100.0, battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, battery.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-210, battery.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(310, battery.getMaxP(), std::numeric_limits<double>::epsilon());
-    battery.setP0(120).setQ0(220).setMinP(-220).setMaxP(320);
+    battery.setTargetP(120).setTargetQ(220).setMinP(-220).setMaxP(320);
 
-    BOOST_CHECK_CLOSE(120.0, battery.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(220.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(120.0, battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(220.0, battery.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-220, battery.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(320, battery.getMaxP(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
-    BOOST_CHECK_CLOSE(100.0, battery.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(200.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(100.0, battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, battery.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-220, battery.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(320, battery.getMaxP(), std::numeric_limits<double>::epsilon());
 
@@ -229,8 +229,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");
-    BOOST_CHECK_CLOSE(120.0, battery.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(220.0, battery.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(120.0, battery.getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(220.0, battery.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-220, battery.getMinP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(320, battery.getMaxP(), std::numeric_limits<double>::epsilon());
 

@@ -24,6 +24,8 @@
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 
+#include <powsybl/iidm/util/Networks.hpp>
+
 #include <powsybl/network/ScadaNetworkFactory.hpp>
 
 #include <powsybl/stdcxx/exception.hpp>
@@ -396,6 +398,32 @@ BOOST_AUTO_TEST_CASE(NullSubstationTestBBK) {
         .setNominalV(340.0)
         .add();
     BOOST_CHECK(!voltageLevel.getSubstation());
+}
+
+BOOST_AUTO_TEST_CASE(GetNodesByBus) {
+    Network network = createNetworkTest1();
+
+    VoltageLevel& vl = network.getVoltageLevel("voltageLevel1");
+    BOOST_CHECK_EQUAL("voltageLevel1",vl.getId());
+    VoltageLevel::NodeBreakerView& topology = vl.getNodeBreakerView();
+    
+    BOOST_CHECK(std::isnan(topology.getFictitiousP0(0)));
+    BOOST_CHECK(std::isnan(topology.getFictitiousQ0(0)));
+    topology.setFictitiousP0(0, 1.0).setFictitiousQ0(0, 2.0);
+    BOOST_CHECK_CLOSE(1.0, topology.getFictitiousP0(0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, topology.getFictitiousQ0(0), std::numeric_limits<double>::epsilon());
+    
+    const auto& nodesByBus = Networks::getNodesByBus(vl);
+    for (const auto& pair : nodesByBus) {
+        if (pair.second.find(0)!=pair.second.end()) {
+            BOOST_CHECK_CLOSE(1.0, vl.getBusView().getBus(pair.first).get().getFictitiousP0(), std::numeric_limits<double>::epsilon());
+        } else if (pair.second.find(1)!=pair.second.end()) {
+            BOOST_CHECK_CLOSE(2.0, vl.getBusView().getBus(pair.first).get().getFictitiousP0(), std::numeric_limits<double>::epsilon());
+        }
+    }
+    topology.setFictitiousP0(0, 0.0).setFictitiousQ0(0,0.0);
+    BOOST_CHECK_CLOSE(0.0, topology.getFictitiousP0(0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, topology.getFictitiousQ0(0), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(Validation) {

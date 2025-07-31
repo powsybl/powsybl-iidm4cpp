@@ -20,6 +20,7 @@ namespace iidm {
 
 class VoltageLevel;
 class Terminal;
+class Bus;
 
 namespace Networks {
 
@@ -44,6 +45,8 @@ stdcxx::CReference<Terminal> getEquivalentTerminal(const VoltageLevel& voltageLe
  * @return the list of nodes (N/B topology) for each bus of a Bus view
  */
 std::map<std::string, std::set<unsigned long>> getNodesByBus(const VoltageLevel& voltageLevel);
+
+std::set<unsigned long> getNodes(const std::string& busId, const VoltageLevel& voltageLevel, const std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)>& getBusFromTerminalFunc);
 
 }  // namespace Networks
 

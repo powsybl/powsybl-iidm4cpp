@@ -30,8 +30,8 @@ Battery& BatteryAdder::add() {
     checkMaxP(*this, m_maxP);
     checkActivePowerLimits(*this, m_minP, m_maxP);
 
-    std::unique_ptr<Battery> ptrBattery = stdcxx::make_unique<Battery>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_targetP, m_targetQ, m_minP, m_maxP);
-    auto& battery = getNetwork().checkAndAdd<Battery>(std::move(ptrBattery));
+    std::unique_ptr<Battery> ptrBattery = stdcxx::make_unique<Battery>(network, checkAndGetUniqueId(), getName(), isFictitious(), m_targetP, m_targetQ, m_minP, m_maxP);
+    auto& battery = network.checkAndAdd<Battery>(std::move(ptrBattery));
 
     Terminal& terminal = battery.addTerminal(checkAndGetTerminal());
     getVoltageLevel().attach(terminal, false);
