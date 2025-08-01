@@ -28,7 +28,11 @@ CalculatedBusTopology::CalculatedBusTopology(BusBreakerVoltageLevel& voltageLeve
 }
 
 std::unique_ptr<MergedBus> CalculatedBusTopology::createMergedBus(unsigned long busCount, const MergedBus::BusSet& busSet) const {
-    const std::string& mergedBusId = stdcxx::format("%1%_%2%", m_voltageLevel.getId(), busCount);
+
+    const Network& network = m_voltageLevel.getNetwork();
+    const std::string& mergedBusId = Identifiables::getUniqueId(stdcxx::format("%1%_%2%", m_voltageLevel.getId(), busCount), [&network](const std::string& id) {
+            return static_cast<bool>(network.find(id));
+        });
     const std::string& mergedBusName = m_voltageLevel.getOptionalName().empty() ? "" : stdcxx::format("%1%_%2%", m_voltageLevel.getOptionalName(), busCount);
 
     return stdcxx::make_unique<MergedBus>(mergedBusId, mergedBusName, m_voltageLevel.isFictitious(), busSet);

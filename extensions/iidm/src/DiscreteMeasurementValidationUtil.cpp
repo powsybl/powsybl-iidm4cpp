@@ -12,6 +12,10 @@
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/extensions/iidm/DiscreteMeasurements.hpp>
+
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 
@@ -25,10 +29,24 @@ namespace iidm {
 
 namespace DiscreteMeasurementValidationUtil {
 
-void checkId(const std::string& id, const DiscreteMeasurements& discreteMeasurements) {
+std::string checkId(const std::string& id, const DiscreteMeasurements& discreteMeasurements) {
+    return checkId(id, false, discreteMeasurements);
+}
+
+std::string checkId(const std::string& id, bool idUnicity, const DiscreteMeasurements& discreteMeasurements) {
+    std::string finalId = id;
     if (!id.empty() && discreteMeasurements.getDiscreteMeasurement(id)) {
-        throw PowsyblException(stdcxx::format("There is already a discrete measurement with ID %1%", id));
+        if(idUnicity) {
+            finalId = Identifiables::getUniqueId(id, [&discreteMeasurements](const std::string& id) {
+                return static_cast<bool>(discreteMeasurements.getDiscreteMeasurement(id)) ;
+            });
+            logging::Logger& logger = logging::LoggerFactory::getLogger<DiscreteMeasurements>();
+            logger.warn(stdcxx::format("Ensure ID %1% unicity: %2%", id, finalId));
+        } else {
+            throw PowsyblException(stdcxx::format("There is already a discrete measurement with ID %1%", id));
+        }
     }
+    return finalId;
 }
 
 void checkTapChanger(const stdcxx::optional<DiscreteMeasurement::TapChanger>& tapChanger, const DiscreteMeasurement::Type& type, const Identifiable& identifiable) {

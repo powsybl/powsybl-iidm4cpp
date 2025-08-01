@@ -1432,6 +1432,14 @@ BOOST_AUTO_TEST_CASE(testCalculatedBus) {
     BOOST_CHECK_EQUAL("VL_0", busL0.get().getId());
 
     BOOST_CHECK(!network.getBusBreakerView().getBus("unknownBus"));
+
+
+    network.getVoltageLevel("VL").getNodeBreakerView().newBusbarSection() 
+        .setId("VL_0")
+        .setNode(10)
+        .add();
+    const auto& busL0bis = network.getLoad("L0").getTerminal().getBusBreakerView().getBus();
+    BOOST_CHECK_EQUAL("VL_0#0", busL0bis.get().getId());
 }
 
 BOOST_AUTO_TEST_SUITE_END()
