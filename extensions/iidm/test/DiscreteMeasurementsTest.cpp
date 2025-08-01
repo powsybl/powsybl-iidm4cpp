@@ -175,7 +175,18 @@ BOOST_AUTO_TEST_CASE(adder) {
     swMeasurementAdder.setTapChanger(DiscreteMeasurement::TapChanger::PHASE_TAP_CHANGER);
     POWSYBL_ASSERT_THROW(swMeasurementAdder.add(), PowsyblException, "A tap changer is specified when the measured equipment is not a tap changer");
 
-    
+    DiscreteMeasurementAdder unicityAdder = switchMeasurements.newDiscreteMeasurement();
+    unicityAdder.setId("m1")
+        .setType(DiscreteMeasurement::Type::SHUNT_COMPENSATOR_SECTION)
+        .setValue("abcdef")
+        .setValid(false)
+        .putProperty("prop1_m1", "value1")
+        .putProperty("prop2_m1", "value2");
+    POWSYBL_ASSERT_THROW(unicityAdder.add(), PowsyblException, "There is already a discrete measurement with ID m1");
+
+    DiscreteMeasurement& discreteUniqueMeasurement = unicityAdder.setEnsureIdUnicity(true).add();
+    BOOST_CHECK_EQUAL("m1#0", discreteUniqueMeasurement.getId());
+
     TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("TWT");
     twt.newExtension<DiscreteMeasurementsAdder>().add();
     auto& twtMeasurements = twt.getExtension<DiscreteMeasurements>();

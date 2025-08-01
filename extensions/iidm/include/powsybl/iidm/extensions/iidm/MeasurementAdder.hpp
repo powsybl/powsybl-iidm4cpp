@@ -74,6 +74,8 @@ public:
 
     MeasurementAdder& setValue(double value);
 
+    MeasurementAdder& setEnsureIdUnicity(bool idUnicity);
+
 private:
     Measurements& m_measurements;
 
@@ -88,6 +90,8 @@ private:
     double m_standardDeviation = stdcxx::nan();
 
     bool m_valid = true;
+
+    bool m_idUnicity = false;
 
     stdcxx::optional<Measurement::Side> m_side;
 };

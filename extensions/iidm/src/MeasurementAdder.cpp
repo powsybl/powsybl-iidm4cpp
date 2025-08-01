@@ -24,7 +24,7 @@ MeasurementAdder::MeasurementAdder(Measurements& measurements) :
 }
 
 Measurement& MeasurementAdder::add() {
-    MeasurementValidationUtil::checkId(m_id, m_measurements);
+    m_id = MeasurementValidationUtil::checkId(m_id, m_idUnicity, m_measurements);
     if (!m_type) {
         throw PowsyblException("Measurement type can not be null");
     }
@@ -70,6 +70,12 @@ MeasurementAdder& MeasurementAdder::setValid(bool valid) {
 
 MeasurementAdder& MeasurementAdder::setValue(double value) {
     m_value = value;
+    return *this;
+}
+
+MeasurementAdder& MeasurementAdder::setEnsureIdUnicity(bool idUnicity) {
+    m_idUnicity = idUnicity;
+
     return *this;
 }
 

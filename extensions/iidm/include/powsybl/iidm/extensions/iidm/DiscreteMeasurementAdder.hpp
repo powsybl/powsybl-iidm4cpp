@@ -73,6 +73,8 @@ public:
 
     DiscreteMeasurementAdder& setValue(int value);
 
+    DiscreteMeasurementAdder& setEnsureIdUnicity(bool idUnicity);
+
 private:
     DiscreteMeasurements& m_discreteMeasurements;
 
@@ -87,6 +89,8 @@ private:
     boost::any m_value;
 
     bool m_valid = true;
+
+    bool m_idUnicity = false;
 };
 
 }  // namespace iidm

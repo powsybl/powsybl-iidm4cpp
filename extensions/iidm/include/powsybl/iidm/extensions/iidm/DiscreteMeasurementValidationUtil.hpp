@@ -25,7 +25,8 @@ namespace iidm {
 
 namespace DiscreteMeasurementValidationUtil {
 
-void checkId(const std::string& id, const DiscreteMeasurements& discreteMeasurements);
+std::string checkId(const std::string& id, const DiscreteMeasurements& discreteMeasurements);
+std::string checkId(const std::string& id, bool idUnicity, const DiscreteMeasurements& discreteMeasurements);
 
 void checkTapChanger(const stdcxx::optional<DiscreteMeasurement::TapChanger>& tapChanger, const DiscreteMeasurement::Type& type, const Identifiable& identifiable);
 

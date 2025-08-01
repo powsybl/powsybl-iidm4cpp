@@ -268,7 +268,10 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
             return math::TraverseResult::CONTINUE;
         }, encountered);
 
-        std::string busId = m_voltageLevel.getBusNamingStrategy().getId(vertices);
+        const Network& network = m_voltageLevel.getNetwork();
+        std::string busId = Identifiables::getUniqueId(m_voltageLevel.getBusNamingStrategy().getId(vertices),[&network](const std::string& id){
+            return static_cast<bool>(network.find(id));
+        });
         std::vector<std::reference_wrapper<NodeTerminal> > terminals;
         terminals.reserve(vertices.size());
         for (unsigned long vertex : vertices) {

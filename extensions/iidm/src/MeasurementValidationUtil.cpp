@@ -8,9 +8,14 @@
 #include <powsybl/iidm/extensions/iidm/MeasurementValidationUtil.hpp>
 
 #include <powsybl/PowsyblException.hpp>
+
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/extensions/iidm/Measurement.hpp>
 #include <powsybl/iidm/extensions/iidm/Measurements.hpp>
+#include <powsybl/iidm/util/Identifiables.hpp>
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
 #include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
@@ -23,10 +28,24 @@ namespace iidm {
 
 namespace MeasurementValidationUtil {
 
-void checkId(const std::string& id, const Measurements& measurements) {
+std::string checkId(const std::string& id, const Measurements& measurements) {
+    return checkId(id, false, measurements);
+}
+
+std::string checkId(const std::string& id, bool idUnicity, const Measurements& measurements) {
+    std::string finalId = id;
     if (!id.empty() && measurements.getMeasurement(id)) {
-        throw PowsyblException(stdcxx::format("There is already a measurement with ID %1%", id));
+        if(idUnicity) {
+            finalId = Identifiables::getUniqueId(id, [&measurements](const std::string& id) {
+                return static_cast<bool>(measurements.getMeasurement(id)) ;
+            });
+            logging::Logger& logger = logging::LoggerFactory::getLogger<Measurements>();
+            logger.warn(stdcxx::format("Ensure ID %1% unicity: %2%", id, finalId));
+        } else {
+            throw PowsyblException(stdcxx::format("There is already a measurement with ID %1%", id));
+        }
     }
+    return finalId;
 }
 
 void checkSide(const Measurement::Type& type, const stdcxx::optional<Measurement::Side>& side, const Connectable& connectable) {
