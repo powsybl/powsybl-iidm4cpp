@@ -11,6 +11,7 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
+#include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/InternalConnection.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
@@ -1441,6 +1442,33 @@ BOOST_AUTO_TEST_CASE(testCalculatedBus) {
     const auto& busL0bis = network.getLoad("L0").getTerminal().getBusBreakerView().getBus();
     BOOST_CHECK_EQUAL("VL_0#0", busL0bis.get().getId());
 }
+
+BOOST_AUTO_TEST_CASE(testRemove) {
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+
+    Substation& sub = network.getSubstation("S1");
+
+    // Disconnect the substation from the network
+    network.getHvdcLine("HVDC1").remove();
+    network.getHvdcLine("HVDC2").remove();
+    sub.getVoltageLevels();
+
+    for (auto& voltageLevel : sub.getVoltageLevels()) {
+        for (auto& vscConverter : voltageLevel.getVscConverterStations()) {
+            vscConverter.remove();
+        }
+    }
+
+    // Remove 1 switch
+    VoltageLevel& vl1 = network.getVoltageLevel("S1VL1");
+    vl1.getNodeBreakerView().removeSwitch("S1VL1_LD1_BREAKER");
+    BOOST_CHECK(!vl1.getNodeBreakerView().getSwitch("S1VL1_LD1_BREAKER"));
+
+    // Remove substation
+    sub.remove();
+    POWSYBL_ASSERT_THROW(network.getSubstation("S1"), PowsyblException, "Unable to find to the identifiable 'S1'");
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
