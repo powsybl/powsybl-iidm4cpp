@@ -139,6 +139,24 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(1UL, network.getVariantManager().getVariantArraySize());
 }
 
+BOOST_AUTO_TEST_CASE(setOptionalName) {
+    Network network = createNetwork();
+
+    Load& load1 = network.getLoad("LOAD1");
+    BOOST_CHECK_EQUAL("LOAD1", load1.getId());
+    BOOST_CHECK_EQUAL("LOAD1_NAME", load1.getOptionalName());
+    BOOST_CHECK_EQUAL("LOAD1_NAME", load1.getNameOrId());
+
+    load1.setOptionalName("");
+    BOOST_CHECK(load1.getOptionalName().empty());
+    BOOST_CHECK_EQUAL("LOAD1", load1.getNameOrId());
+
+    load1.setOptionalName("LOAD1#");
+    BOOST_CHECK_EQUAL("LOAD1#", load1.getOptionalName());
+    BOOST_CHECK_EQUAL("LOAD1#", load1.getNameOrId());
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
