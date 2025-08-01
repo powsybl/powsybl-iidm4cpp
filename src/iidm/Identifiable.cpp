@@ -134,6 +134,12 @@ const std::string& Identifiable::getOptionalName() const {
     return m_name;
 }
 
+Identifiable& Identifiable::setOptionalName(const std::string& name) {
+    m_name = name;
+
+    return *this;
+}
+
 const std::string& Identifiable::getProperty(const std::string& key) const {
     return m_properties.get(key);
 }
