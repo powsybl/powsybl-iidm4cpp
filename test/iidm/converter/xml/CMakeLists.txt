@@ -31,6 +31,7 @@ set(UNIT_TEST_SOURCES
     IidmXmlUtilTest.cpp
     InternalConnectionsRoundTripTest.cpp
     LinesRoundTripTest.cpp
+    LoadingLimitsBugTest.cpp
     LoadingLimitsXmlTest.cpp
     NetworkXmlTest.cpp
     NetworkXmlReaderContextTest.cpp
