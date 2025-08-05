@@ -257,6 +257,36 @@ BOOST_FIXTURE_TEST_CASE(SlackTerminalXmlSerializerTest, test::ResourceFixture) {
     test::converter::RoundTrip::runXml(network, networkStr);
 }
 
+BOOST_AUTO_TEST_CASE(UnsupportedExtensionVersion) {
+
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));
+    VoltageLevel& voltageLevel = network.getVoltageLevel("VLHV2");
+    Bus& bus = network.getBusBreakerView().getBus("NHV2");
+    Terminal& terminal = *bus.getConnectedTerminals().begin();
+
+    voltageLevel.newExtension<SlackTerminalAdder>().withTerminal(terminal).add();
+
+    powsybl::iidm::converter::ExportOptions options = powsybl::iidm::converter::ExportOptions()
+        .setVersion(converter::xml::IidmXmlVersion::V1_2().toString("."))
+        .setThrowExceptionIfExtensionNotFound(true);
+    const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
+
+    const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
+        iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);
+    };
+
+    std::stringstream buffer;
+    POWSYBL_ASSERT_THROW(writer(network, buffer),PowsyblException, "Version 1.2 does not support slackTerminal extension");
+    buffer.str("");
+    
+    const std::string& networkRef = test::converter::RoundTrip::getVersionedNetwork("extensionTooRecentExportTest.xml", converter::xml::IidmXmlVersion::V1_2());
+    options.setThrowExceptionIfExtensionNotFound(false);
+    writer(network, buffer);
+    test::converter::RoundTrip::compareXml(networkRef, buffer.str());
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace extensions

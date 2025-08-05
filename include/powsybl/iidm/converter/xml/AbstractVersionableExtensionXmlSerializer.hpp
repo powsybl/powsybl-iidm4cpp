@@ -31,6 +31,9 @@ public:  // ExtensionXmlSerializer
 
     const std::string& getVersion() const override;
 
+    bool versionExists(const std::string& networkVersion) const;
+    bool versionExists(const IidmXmlVersion& networkVersion) const;
+
     stdcxx::const_range<std::string> getVersions() const override;
 
 public:

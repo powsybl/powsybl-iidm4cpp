@@ -48,27 +48,39 @@ namespace converter {
 
 namespace xml {
 
-void checkExtensionsNotFound(const NetworkXmlReaderContext& context, const std::set<std::string>& extensionsNotFound) {
-    if (!extensionsNotFound.empty()) {
-        const std::string& message = stdcxx::format("Extensions %1% not found!", stdcxx::toString(extensionsNotFound));
-
-        if (context.getOptions().isThrowExceptionIfExtensionNotFound()) {
-            throw PowsyblException(message);
-        }
-
+void throwExceptionIfOption(bool throwExceptionOption, const std::string& message) {
+    if(throwExceptionOption) {
+        throw PowsyblException(message);
+    } else {
         logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
         logger.warn(message);
     }
 }
 
-std::set<std::string> getExtensionNames(const Network& network) {
-    std::set<std::string> names;
-    for (const auto& identifiable : network.getIdentifiables()) {
-        for (const auto& extension : identifiable.getExtensions()) {
-            names.insert(extension.getName());
-        }
+void checkExtensionsNotFound(const NetworkXmlReaderContext& context, const std::set<std::string>& extensionsNotFound) {
+    if (!extensionsNotFound.empty()) {
+        const std::string& message = stdcxx::format("Extensions %1% not found!", stdcxx::toString(extensionsNotFound));
+
+        throwExceptionIfOption(context.getOptions().isThrowExceptionIfExtensionNotFound(), message);
     }
-    return names;
+}
+
+bool canExtensionBeWritten(const stdcxx::CReference<ExtensionXmlSerializer>& extensionXmlSerializer, const IidmXmlVersion& version, const ExportOptions& options) {
+    if(!extensionXmlSerializer) {
+        return false;
+    }
+
+    bool versionExists = true;
+    if (stdcxx::isInstanceOf<AbstractVersionableExtensionXmlSerializer>(extensionXmlSerializer)) {
+        const auto& serializer = dynamic_cast<const AbstractVersionableExtensionXmlSerializer&>(extensionXmlSerializer.get());
+        versionExists = serializer.versionExists(version);
+    }
+    if(!versionExists) {
+        const std::string& message = stdcxx::format("Version %1% does not support %2% extension", version.toString("."), extensionXmlSerializer.get().getExtensionName());
+        throwExceptionIfOption(options.isThrowExceptionIfExtensionNotFound(),message);
+    }
+
+    return versionExists;
 }
 
 stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOptions& options, const Extension& extension) {
@@ -90,6 +102,19 @@ stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOp
     }
 
     return serializer;
+}
+
+std::set<std::string> getExtensionNames(const Network& network,const IidmXmlVersion& version, const ExportOptions& options) {
+    std::set<std::string> names;
+    for (const auto& identifiable : network.getIdentifiables()) {
+        for (const auto& extension : identifiable.getExtensions()) {
+            if(canExtensionBeWritten(getExtensionSerializer(options,extension), version, options)) {
+                names.insert(extension.getName());
+            }
+        }
+    }
+
+    return names;
 }
 
 const std::string& getNamespaceUri(const ExtensionXmlSerializer& extensionXmlSerializer, const ExportOptions& options, const IidmXmlVersion& networkVersion) {
@@ -143,7 +168,7 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
     std::set<std::string> extensionUris;
     std::set<std::string> extensionPrefixes;
 
-    const auto& extensions = getExtensionNames(network);
+    const auto& extensions = getExtensionNames(network, context.getVersion(), context.getOptions());
     for (const auto& extension : extensions) {
         if (context.getOptions().withExtension(extension)) {
             stdcxx::CReference<ExtensionXmlSerializer> serializer = extensionProviders.findProvider(extension);
@@ -191,14 +216,28 @@ void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
         if (!context.isExportedEquipment(identifiable.getId()) || boost::empty(identifiable.getExtensions()) || !context.getOptions().hasAtLeastOneExtension(identifiable.getExtensions())) {
             continue;
         }
-        context.getWriter().writeStartElement(context.getVersion().getPrefix(), EXTENSION);
-        context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
+
+        bool atLeastOneExtensionToWrite = false;
         for (const auto& extension : identifiable.getExtensions()) {
-            if (context.getOptions().withExtension(extension.getName())) {
-                writeExtension(extension, context);
+            if(canExtensionBeWritten(getExtensionSerializer(context.getOptions(),extension), context.getVersion(), context.getOptions())) {
+                atLeastOneExtensionToWrite = true;
+                break;
             }
         }
-        context.getWriter().writeEndElement();
+
+        if(atLeastOneExtensionToWrite) {
+            context.getWriter().writeStartElement(context.getVersion().getPrefix(), EXTENSION);
+            context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
+
+            for (const auto& extension : identifiable.getExtensions()) {
+                bool canBeWritten = canExtensionBeWritten(getExtensionSerializer(context.getOptions(),extension), context.getVersion(), context.getOptions());
+                if (canBeWritten && context.getOptions().withExtension(extension.getName())) {
+                    writeExtension(extension, context);
+                }
+            }
+            context.getWriter().writeEndElement();
+        }
+        
     }
 }
 

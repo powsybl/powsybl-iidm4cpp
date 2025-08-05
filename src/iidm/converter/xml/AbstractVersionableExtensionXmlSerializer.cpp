@@ -78,8 +78,23 @@ const std::string& AbstractVersionableExtensionXmlSerializer::getVersion() const
     return getVersion(IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 }
 
+bool AbstractVersionableExtensionXmlSerializer::versionExists(const std::string& networkVersion) const {
+    return m_extensionVersions.find(networkVersion) != m_extensionVersions.end();
+}
+
+bool AbstractVersionableExtensionXmlSerializer::versionExists(const IidmXmlVersion& networkVersion) const {
+    const std::string strNetworkVersion = networkVersion.toString(".");
+    return versionExists(strNetworkVersion);
+}
+
 const std::string& AbstractVersionableExtensionXmlSerializer::getVersion(const IidmXmlVersion& networkVersion) const {
-    return m_extensionVersions.at(networkVersion.toString(".")).back();
+    std::string version = networkVersion.toString(".");
+    const auto& it = m_extensionVersions.find(version);
+    if (it == m_extensionVersions.end()) {
+        throw PowsyblException(stdcxx::format("No compatible version for %1% extension's version %2%", getExtensionName(), version));
+    }
+
+    return it->second.back();
 }
 
 stdcxx::const_range<std::string> AbstractVersionableExtensionXmlSerializer::getVersions() const {
