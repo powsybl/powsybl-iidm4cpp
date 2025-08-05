@@ -45,7 +45,7 @@ namespace xml {
 BOOST_AUTO_TEST_SUITE(LoadingLimitsBugTestRoundTrip)
 
 
-BOOST_FIXTURE_TEST_CASE(LoadingLimitsBugTest, test::ResourceFixture) {
+BOOST_FIXTURE_TEST_CASE(LoadingLimitsBugTest_V1_5, test::ResourceFixture) {
     
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));
@@ -77,8 +77,8 @@ BOOST_FIXTURE_TEST_CASE(LoadingLimitsBugTest, test::ResourceFixture) {
     const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
         iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);
     };
-    
 
+    // check that XIIDM 1.5 is not ill-formed
     test::converter::RoundTrip::writeXmlTest(network, writer, test::converter::RoundTrip::getVersionedNetwork("loading-limits-bug.xml", IidmXmlVersion::V1_5()));
 
 
