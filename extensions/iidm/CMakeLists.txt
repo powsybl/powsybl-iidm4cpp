@@ -26,6 +26,9 @@ set(EXT_SOURCES
     src/GeneratorShortCircuit.cpp
     src/GeneratorShortCircuitAdder.cpp
     src/GeneratorShortCircuitXmlSerializer.cpp
+    src/GeneratorStartup.cpp
+    src/GeneratorStartupAdder.cpp
+    src/GeneratorStartupXmlSerializer.cpp
     src/HvdcAngleDroopActivePowerControl.cpp
     src/HvdcAngleDroopActivePowerControlAdder.cpp
     src/HvdcAngleDroopActivePowerControlXmlSerializer.cpp
@@ -72,6 +75,7 @@ set(UNIT_TEST_SOURCES
     test/CoordinatedReactiveControlTest.cpp
     test/DiscreteMeasurementsTest.cpp
     test/GeneratorShortCircuitTest.cpp
+    test/GeneratorStartupTest.cpp
     test/HvdcAngleDroopActivePowerControlTest.cpp
     test/HvdcOperatorActivePowerRangeTest.cpp
     test/iidm.cpp
