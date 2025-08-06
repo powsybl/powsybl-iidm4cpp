@@ -23,6 +23,9 @@ set(EXT_SOURCES
     src/DiscreteMeasurementsAdder.cpp
     src/DiscreteMeasurementsXmlSerializer.cpp
     src/DiscreteMeasurementValidationUtil.cpp
+    src/GeneratorEntsoeCategory.cpp
+    src/GeneratorEntsoeCategoryAdder.cpp
+    src/GeneratorEntsoeCategoryXmlSerializer.cpp
     src/GeneratorShortCircuit.cpp
     src/GeneratorShortCircuitAdder.cpp
     src/GeneratorShortCircuitXmlSerializer.cpp
@@ -74,6 +77,7 @@ set(UNIT_TEST_SOURCES
     test/BranchObservabilityTest.cpp
     test/CoordinatedReactiveControlTest.cpp
     test/DiscreteMeasurementsTest.cpp
+    test/GeneratorEntsoeCategoryTest.cpp
     test/GeneratorShortCircuitTest.cpp
     test/GeneratorStartupTest.cpp
     test/HvdcAngleDroopActivePowerControlTest.cpp
