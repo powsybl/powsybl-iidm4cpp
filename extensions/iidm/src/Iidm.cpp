@@ -14,6 +14,7 @@
 #include <powsybl/iidm/extensions/iidm/BranchObservabilityXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/DiscreteMeasurementsXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/GeneratorEntsoeCategoryXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/GeneratorShortCircuitXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/GeneratorStartupXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControlXmlSerializer.hpp>
@@ -42,6 +43,7 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     serializers.emplace_back(stdcxx::make_unique<BranchObservabilityXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<DiscreteMeasurementsXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<GeneratorEntsoeCategoryXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<GeneratorShortCircuitXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<GeneratorStartupXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<HvdcAngleDroopActivePowerControlXmlSerializer>());
