@@ -16,6 +16,7 @@ namespace extensions {
 
 namespace iidm {
 
+static const char* const COORDINATE = "coordinate";
 static const char* const DIRECT_SUBTRANS_X = "directSubtransX";
 static const char* const DIRECT_TRANS_X = "directTransX";
 static const char* const DISCRETE_MEASUREMENT = "discreteMeasurement";
@@ -23,6 +24,8 @@ static const char* const DISCRETE_MEASUREMENTS = "discreteMeasurements";
 static const char* const ID = "id";
 static const char* const IP_MAX = "ipMax";
 static const char* const IP_MIN = "ipMin";
+static const char* const LATITUDE = "latitude";
+static const char* const LONGITUDE = "longitude";
 static const char* const NAME = "name";
 static const char* const OBSERVABLE = "observable";
 static const char* const PHASE_TAP_CHANGER_STATUS = "phaseTapChangerStatus";
