@@ -101,6 +101,10 @@ const std::string& IidmXmlVersion::getDefaultPrefix() {
     return s_prefix;
 }
 
+bool IidmXmlVersion::supportEquipmentValidationLevel() const {
+    return (*this >= V1_7());
+}
+
 std::string IidmXmlVersion::getNamespaceUri() const {
     return stdcxx::format("http://www.%1%/schema/iidm/%2%", m_domain, toString("_"));
 }
