@@ -159,6 +159,11 @@ public:
     bool operator>=(const IidmXmlVersion& version) const;
 
     /**
+     * Return if this IidmXmlVersion supports Equipment Validation Level.
+     */
+    bool supportEquipmentValidationLevel() const;
+
+    /**
      * Get the namespace URI associated to this IIDM version
      *
      * @return the namespace URI of this version

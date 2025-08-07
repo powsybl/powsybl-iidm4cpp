@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_9" id="sim1" caseDate="2013-01-15T18:45:00+01:00" forecastDistance="0" sourceFormat="test" minimumValidationLevel="STEADY_STATE_HYPOTHESIS">
+    <iidm:substation id="P1" country="FR" tso="RTE" geographicalTags="A">
+        <iidm:voltageLevel id="VLGEN" nominalV="24" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="NGEN" v="24.500000610351563" angle="2.3259763717651367"/>
+            </iidm:busBreakerTopology>
+            <iidm:generator id="GEN" energySource="OTHER" minP="-9999.9899999999998" maxP="9999.9899999999998" voltageRegulatorOn="true" targetP="607" targetV="24.5" targetQ="301" bus="NGEN" connectableBus="NGEN" p="-605.558349609375" q="-225.28251647949219">
+                <iidm:minMaxReactiveLimits minQ="-9999.9899999999998" maxQ="9999.9899999999998"/>
+            </iidm:generator>
+        </iidm:voltageLevel>
+        <iidm:voltageLevel id="VLHV1" nominalV="380" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="NHV1" v="402.14284515380859" angle="0"/>
+            </iidm:busBreakerTopology>
+        </iidm:voltageLevel>
+        <iidm:twoWindingsTransformer id="NGEN_NHV1" r="0.26658461538461536" x="11.104492831516762" g="0" b="0" ratedU1="24" ratedU2="400" bus1="NGEN" connectableBus1="NGEN" voltageLevelId1="VLGEN" bus2="NHV1" connectableBus2="NHV1" voltageLevelId2="VLHV1" p1="605.558349609375" q1="225.28251647949219" p2="-604.89093017578125" q2="-197.48046875"/>
+    </iidm:substation>
+    <iidm:substation id="P2" country="FR" tso="RTE" geographicalTags="B">
+        <iidm:voltageLevel id="VLHV2" nominalV="380" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="NHV2" v="389.95267639160159" angle="-3.5063576698303223"/>
+            </iidm:busBreakerTopology>
+        </iidm:voltageLevel>
+        <iidm:voltageLevel id="VLLOAD" nominalV="150" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="NLOAD" v="147.57861328125" angle="-9.6144866943359375"/>
+            </iidm:busBreakerTopology>
+            <iidm:load id="LOAD" loadType="UNDEFINED" p0="600" q0="200" bus="NLOAD" connectableBus="NLOAD" p="600" q="200"/>
+        </iidm:voltageLevel>
+        <iidm:twoWindingsTransformer id="NHV2_NLOAD" r="0.047249999999999993" x="4.0497243656204551" g="0" b="0" ratedU1="400" ratedU2="158" bus1="NHV2" connectableBus1="NHV2" voltageLevelId1="VLHV2" bus2="NLOAD" connectableBus2="NLOAD" voltageLevelId2="VLLOAD" p1="600.8677978515625" q1="274.37698364257" p2="-600" q2="-200">
+            <iidm:ratioTapChanger lowTapPosition="0" tapPosition="1" targetDeadband="0" loadTapChangingCapabilities="true" regulating="true" targetV="158">
+                <iidm:terminalRef id="NHV2_NLOAD" side="TWO"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="0.85056669052441913"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.0006666666666666"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.1507666428089141"/>
+            </iidm:ratioTapChanger>
+        </iidm:twoWindingsTransformer>
+    </iidm:substation>
+    <iidm:tieLine id="NHV1_NHV2_1" ucteXnodeCode="X1" bus1="NHV1" connectableBus1="NHV1" voltageLevelId1="VLHV1" bus2="NHV2" connectableBus2="NHV2" voltageLevelId2="VLHV2" p1="302.44406127929688" q1="98.740272521972656" p2="-300.43389892578125" q2="-137.18849182128906" id_1="NHV1_NHV2_1.1" r_1="1.5" x_1="16.5" g1_1="0" b1_1="9.6500000000000001e-05" g2_1="0" b2_1="9.6500000000000001e-05" fictitious_1="true" id_2="NHV1_NHV2_1.2" r_2="1.5" x_2="16.5" g1_2="0" b1_2="9.6500000000000001e-05" g2_2="0" b2_2="9.6500000000000001e-05"/>
+    <iidm:tieLine id="NHV1_NHV2_2" ucteXnodeCode="X2" bus1="NHV1" connectableBus1="NHV1" voltageLevelId1="VLHV1" bus2="NHV2" connectableBus2="NHV2" voltageLevelId2="VLHV2" p1="302.44406127929688" q1="98.740272521972656" p2="-300.43389892578125" q2="-137.18849182128906" id_1="NHV1_NHV2_2.1" r_1="1.5" x_1="16.5" g1_1="0" b1_1="9.6500000000000001e-05" g2_1="0" b2_1="9.6500000000000001e-05" id_2="NHV1_NHV2_2.2" r_2="1.5" x_2="16.5" g1_2="0" b1_2="9.6500000000000001e-05" g2_2="0" b2_2="9.6500000000000001e-05" fictitious_2="true"/>
+</iidm:network>
