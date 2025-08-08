@@ -21,6 +21,7 @@ namespace iidm {
 
 class ObservabilityQuality {
 public:
+    ObservabilityQuality(double standardDeviation);
     ObservabilityQuality(double standardDeviation, bool redundant);
 
     ~ObservabilityQuality() noexcept = default;
@@ -28,6 +29,7 @@ public:
     double getStandardDeviation() const;
 
     bool isRedundant() const;
+    stdcxx::optional<bool> getRedundant() const;
 
     ObservabilityQuality& setRedundant(bool redundant);
 
@@ -36,7 +38,7 @@ public:
 private:
     double m_standardDeviation;
 
-    bool m_redundant;
+    stdcxx::optional<bool> m_redundant;
 };
 
 }  // namespace iidm
