@@ -21,6 +21,7 @@ set(EXT_SOURCES
 
 set(UNIT_TEST_SOURCES
     BatteryRoundTripTest.cpp
+    EncodingTest.cpp
     EurostagTest.cpp
     ExtensionProvidersTest.cpp
     FictitiousInjectionsXmlTest.cpp

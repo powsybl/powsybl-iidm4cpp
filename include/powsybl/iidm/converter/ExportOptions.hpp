@@ -14,6 +14,7 @@
 
 #include <powsybl/iidm/TopologyLevel.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
+#include <powsybl/xml/XmlEncoding.hpp>
 
 namespace powsybl {
 
@@ -261,6 +262,9 @@ public:
      */
     bool withExtension(const std::string& extension) const;
 
+    const std::string& getXmlEncoding() const;
+    void setXmlEncoding(const std::string& encoding);
+
 private:
     bool m_anonymized = false;
 
@@ -281,6 +285,8 @@ private:
     std::string m_version;
 
     IidmVersionIncompatibilityBehavior m_iidmVersionIncompatibilityBehavior = IidmVersionIncompatibilityBehavior::THROW_EXCEPTION;
+
+    std::string m_encoding = powsybl::xml::DEFAULT_ENCODING;
 };
 
 std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value);
