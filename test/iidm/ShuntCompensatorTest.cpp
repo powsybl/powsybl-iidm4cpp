@@ -268,7 +268,8 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(shunt.setSectionCount(500UL), ValidationException, "Shunt compensator 'SHUNT1': the current number (500) of section should be lesser than the maximum number of section (400)");
     POWSYBL_ASSERT_THROW(shunt.getModel<ShuntCompensatorLinearModel>().setMaximumSectionCount(250UL), ValidationException, "Shunt compensator 'SHUNT1': the current number (350) of section should be lesser than the maximum number of section (250)");
 
-    POWSYBL_ASSERT_THROW(shunt.getTerminal().setP(1.0), ValidationException, "Shunt compensator 'SHUNT1': cannot set active power on a shunt compensator");
+    //now possible to set active power on shunt compensators
+    shunt.getTerminal().setP(1.0);
 
     shunt.setTargetDeadband(stdcxx::nan());
     BOOST_TEST(std::isnan(shunt.getTargetDeadband()));
