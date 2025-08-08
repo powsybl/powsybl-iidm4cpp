@@ -12,9 +12,8 @@
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlCharConversion.hpp>
+#include <powsybl/xml/XmlEncoding.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
-
-#include "XmlEncoding.hpp"
 
 namespace powsybl {
 
