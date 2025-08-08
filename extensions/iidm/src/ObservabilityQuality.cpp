@@ -15,6 +15,11 @@ namespace extensions {
 
 namespace iidm {
 
+ObservabilityQuality::ObservabilityQuality(double standardDeviation) :
+    m_standardDeviation(standardDeviation) {
+    m_redundant.reset();
+}
+
 ObservabilityQuality::ObservabilityQuality(double standardDeviation, bool redundant) :
     m_standardDeviation(standardDeviation),
     m_redundant(redundant) {
@@ -25,6 +30,10 @@ double ObservabilityQuality::getStandardDeviation() const {
 }
 
 bool ObservabilityQuality::isRedundant() const {
+    return m_redundant.has_value() && m_redundant.get();
+}
+
+stdcxx::optional<bool> ObservabilityQuality::getRedundant() const {
     return m_redundant;
 }
 

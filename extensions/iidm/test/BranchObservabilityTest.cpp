@@ -44,34 +44,42 @@ BOOST_AUTO_TEST_CASE(branchObservability) {
 
     BOOST_CHECK(stdcxx::areSame(extension.setQualityP1(1.1), extension));
     BOOST_CHECK_CLOSE(1.1, extension.getQualityP1().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityP1().get().getRedundant().has_value());
     BOOST_CHECK(!extension.getQualityP1().get().isRedundant());
 
     BOOST_CHECK(stdcxx::areSame(extension.setQualityP1(2.2, true), extension));
     BOOST_CHECK_CLOSE(2.2, extension.getQualityP1().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityP1().get().getRedundant().has_value());
     BOOST_CHECK(extension.getQualityP1().get().isRedundant());
 
     BOOST_CHECK(stdcxx::areSame(extension.setQualityP2(3.3), extension));
     BOOST_CHECK_CLOSE(3.3, extension.getQualityP2().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityP2().get().getRedundant().has_value());
     BOOST_CHECK(!extension.getQualityP2().get().isRedundant());
 
     BOOST_CHECK(stdcxx::areSame(extension.setQualityP2(4.4, true), extension));
     BOOST_CHECK_CLOSE(4.4, extension.getQualityP2().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityP2().get().getRedundant().has_value());
     BOOST_CHECK(extension.getQualityP2().get().isRedundant());
 
     BOOST_CHECK(stdcxx::areSame(extension.setQualityQ1(5.5), extension));
     BOOST_CHECK_CLOSE(5.5, extension.getQualityQ1().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityQ1().get().getRedundant().has_value());
     BOOST_CHECK(!extension.getQualityQ1().get().isRedundant());
 
     BOOST_CHECK(stdcxx::areSame(extension.setQualityQ1(6.6, true), extension));
     BOOST_CHECK_CLOSE(6.6, extension.getQualityQ1().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityQ1().get().getRedundant().has_value());
     BOOST_CHECK(extension.getQualityQ1().get().isRedundant());
 
     BOOST_CHECK(stdcxx::areSame(extension.setQualityQ2(7.7), extension));
     BOOST_CHECK_CLOSE(7.7, extension.getQualityQ2().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityQ2().get().getRedundant().has_value());
     BOOST_CHECK(!extension.getQualityQ2().get().isRedundant());
 
     BOOST_CHECK(stdcxx::areSame(extension.setQualityQ2(8.8, true), extension));
     BOOST_CHECK_CLOSE(8.8, extension.getQualityQ2().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityQ2().get().getRedundant().has_value());
     BOOST_CHECK(extension.getQualityQ2().get().isRedundant());
 }
 
@@ -102,15 +110,19 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK(extension.isObservable());
 
     BOOST_CHECK_CLOSE(1.1, extension.getQualityP1().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityP1().get().getRedundant().has_value());
     BOOST_CHECK(extension.getQualityP1().get().isRedundant());
 
     BOOST_CHECK_CLOSE(2.2, extension.getQualityP2().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityP2().get().getRedundant().has_value());
     BOOST_CHECK(!extension.getQualityP2().get().isRedundant());
 
     BOOST_CHECK_CLOSE(3.3, extension.getQualityQ1().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityQ1().get().getRedundant().has_value());
     BOOST_CHECK(extension.getQualityQ1().get().isRedundant());
 
     BOOST_CHECK_CLOSE(4.4, extension.getQualityQ2().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(extension.getQualityQ2().get().getRedundant().has_value());
     BOOST_CHECK(!extension.getQualityQ2().get().isRedundant());
 }
 

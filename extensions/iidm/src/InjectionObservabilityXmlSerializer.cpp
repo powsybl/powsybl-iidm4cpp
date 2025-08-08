@@ -73,7 +73,9 @@ void InjectionObservabilityXmlSerializer::writeOptionalQuality(const std::string
     if (quality) {
         writer.writeStartElement(getNamespacePrefix(), elementName);
         writer.writeAttribute(STANDARD_DEVIATION, quality.get().getStandardDeviation());
-        writer.writeOptionalAttribute(REDUNDANT, quality.get().isRedundant(), false);
+        if(quality.get().getRedundant().has_value()) {
+            writer.writeAttribute(REDUNDANT, quality.get().isRedundant());
+        }
         writer.writeEndElement();
     }
 }
