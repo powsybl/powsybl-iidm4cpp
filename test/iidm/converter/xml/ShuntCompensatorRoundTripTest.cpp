@@ -32,7 +32,7 @@ namespace converter {
 
 namespace xml {
 
-Network createNonLinear() {
+Network createBaseNetwork() {
     Network network("shuntTestCase", "test");
     network.setCaseDate(stdcxx::DateTime::parse("2019-09-30T16:29:18.263+02:00"));
 
@@ -70,7 +70,38 @@ Network createNonLinear() {
         .setQ0(50.0)
         .add();
 
-    ShuntCompensator& sc = vl1.newShuntCompensator()
+    return network;
+}
+
+Network createWithActivePower() {
+    Network network = createBaseNetwork();
+
+    ShuntCompensator& sc = network.getVoltageLevel("VL1").newShuntCompensator()
+            .setId("SHUNT")
+            .setBus("B1")
+            .setConnectableBus("B1")
+            .setSectionCount(1)
+            .setVoltageRegulatorOn(true)
+            .setRegulatingTerminal(stdcxx::ref<iidm::Terminal>(network.getLoad("LOAD").getTerminal()))
+            .setTargetV(200)
+            .setTargetDeadband(5.0)
+            .newLinearModel()
+                .setMaximumSectionCount(1)
+                .setBPerSection(1e-5)
+                .add()
+            .add();
+    sc.addAlias("Alias");
+
+    sc.setProperty("test", "test");
+    sc.getTerminal().setP(1.0);
+
+    return network;
+}
+
+Network createNonLinear() {
+    Network network = createBaseNetwork();
+
+    ShuntCompensator& sc = network.getVoltageLevel("VL1").newShuntCompensator()
         .setId("SHUNT")
         .setBus("B1")
         .setConnectableBus("B1")
@@ -102,6 +133,11 @@ BOOST_FIXTURE_TEST_CASE(ShuntLinearRoundTripTest, test::ResourceFixture) {
 
     // backward compatibility
     test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("shuntRoundTripRef.xml", IidmXmlVersion::V1_2());
+
+    Network network = createWithActivePower();
+
+    test::converter::RoundTrip::runXml(network,test::converter::RoundTrip::getVersionedNetwork("shuntRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
+
 }
 
 BOOST_FIXTURE_TEST_CASE(ShuntNonLinearRoundTripTest, test::ResourceFixture) {
