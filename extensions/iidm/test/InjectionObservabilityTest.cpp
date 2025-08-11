@@ -45,9 +45,9 @@ BOOST_AUTO_TEST_CASE(injectionObservability) {
 
     extension.setQualityP(1.1);
     BOOST_CHECK_CLOSE(1.1, extension.getQualityP().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(extension.getQualityP().get().getRedundant().has_value());
+    BOOST_CHECK(!extension.getQualityP().get().getRedundant().has_value());
     BOOST_CHECK(!extension.getQualityP().get().isRedundant());
-
+    
     extension.setQualityP(2.2, true);
     BOOST_CHECK_CLOSE(2.2, extension.getQualityP().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(extension.getQualityP().get().getRedundant().has_value());
@@ -55,6 +55,8 @@ BOOST_AUTO_TEST_CASE(injectionObservability) {
 
     extension.setQualityQ(3.3);
     BOOST_CHECK_CLOSE(3.3, extension.getQualityQ().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(!extension.getQualityQ().get().getRedundant().has_value());
+    BOOST_CHECK(!extension.getQualityQ().get().isRedundant());
 
     extension.setQualityQ(4.4, true);
     BOOST_CHECK_CLOSE(4.4, extension.getQualityQ().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
@@ -63,6 +65,8 @@ BOOST_AUTO_TEST_CASE(injectionObservability) {
 
     extension.setQualityV(5.5);
     BOOST_CHECK_CLOSE(5.5, extension.getQualityV().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(!extension.getQualityV().get().getRedundant().has_value());
+    BOOST_CHECK(!extension.getQualityV().get().isRedundant());
 
     extension.setQualityV(6.6, true);
     BOOST_CHECK_CLOSE(6.6, extension.getQualityV().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
@@ -75,6 +79,10 @@ BOOST_AUTO_TEST_CASE(injectionObservability) {
     extension.getQualityV().get().setRedundant(true);
     BOOST_CHECK(extension.getQualityV().get().getRedundant().has_value());
     BOOST_CHECK(extension.getQualityV().get().isRedundant());
+    extension.getQualityV().get().resetRedundant();
+    BOOST_CHECK(!extension.getQualityV().get().getRedundant().has_value());
+    BOOST_CHECK(!extension.getQualityV().get().isRedundant());
+
 
     BOOST_CHECK(stdcxx::areSame(extension.getQualityV().get(), extension.getQualityV().get().setStandardDeviation(7.7)));
     BOOST_CHECK_CLOSE(7.7, extension.getQualityV().get().getStandardDeviation(), std::numeric_limits<double>::epsilon());
@@ -131,7 +139,6 @@ BOOST_FIXTURE_TEST_CASE(InjectionObservabilityXmlSerializerTest, test::ResourceF
         .withStandardDeviationP(0.02)
         .withRedundantP(true)
         .withStandardDeviationQ(0.5)
-        .withRedundantQ(true)
         .withStandardDeviationV(0.0)
         .withRedundantV(true)
         .add();

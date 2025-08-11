@@ -22,6 +22,10 @@ namespace iidm {
 
 BranchObservabilityAdder::BranchObservabilityAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
+    m_redundantP1.reset();
+    m_redundantP2.reset();
+    m_redundantQ1.reset();
+    m_redundantQ2.reset();
 }
 
 std::unique_ptr<Extension> BranchObservabilityAdder::createExtension(Extendable& extendable) const {

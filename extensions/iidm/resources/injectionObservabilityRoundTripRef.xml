@@ -38,7 +38,7 @@
     <iidm:extension id="GEN">
         <io:injectionObservability>
             <io:qualityP standardDeviation="0.02" redundant="true"/>
-            <io:qualityQ standardDeviation="0.5" redundant="true"/>
+            <io:qualityQ standardDeviation="0.5"/>
             <io:qualityV standardDeviation="0" redundant="true"/>
         </io:injectionObservability>
     </iidm:extension>

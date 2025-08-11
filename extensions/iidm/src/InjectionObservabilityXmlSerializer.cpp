@@ -39,19 +39,25 @@ Extension& InjectionObservabilityXmlSerializer::read(Extendable& extendable, con
     context.getReader().readUntilEndElement(getExtensionName(), [&adder, &context]() {
         if (context.getReader().getLocalName() == QUALITY_P) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
-            adder.withStandardDeviationP(standardDeviation)
-                    .withRedundantP(redundant);
+            auto redundant = context.getReader().getOptionalAttributeValue<bool>(REDUNDANT);
+            adder.withStandardDeviationP(standardDeviation);
+            if(redundant.has_value()) {
+                adder.withRedundantP(*redundant);
+            }
         } else if (context.getReader().getLocalName() == QUALITY_Q) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
-            adder.withStandardDeviationQ(standardDeviation)
-                    .withRedundantQ(redundant);
+            auto redundant = context.getReader().getOptionalAttributeValue<bool>(REDUNDANT);
+            adder.withStandardDeviationQ(standardDeviation);
+            if(redundant.has_value()) {
+                adder.withRedundantQ(*redundant);
+            }
         } else if (context.getReader().getLocalName() == QUALITY_V) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
-            adder.withStandardDeviationV(standardDeviation)
-                    .withRedundantV(redundant);
+            auto redundant = context.getReader().getOptionalAttributeValue<bool>(REDUNDANT);
+            adder.withStandardDeviationV(standardDeviation);
+            if(redundant.has_value()) {
+                adder.withRedundantV(*redundant);
+            }
         } else {
             throw PowsyblException(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));
         }

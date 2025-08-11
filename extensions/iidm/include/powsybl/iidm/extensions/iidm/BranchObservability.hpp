@@ -49,13 +49,17 @@ public:
 
     stdcxx::Reference<ObservabilityQuality> getQualityQ2();
 
-    BranchObservability& setQualityP1(double standardDeviation, bool redundant = false);
+    BranchObservability& setQualityP1(double standardDeviation);
+    BranchObservability& setQualityP1(double standardDeviation, stdcxx::optional<bool> redundant);
 
-    BranchObservability& setQualityP2(double standardDeviation, bool redundant = false);
+    BranchObservability& setQualityP2(double standardDeviation);
+    BranchObservability& setQualityP2(double standardDeviation, stdcxx::optional<bool> redundant);
 
-    BranchObservability& setQualityQ1(double standardDeviation, bool redundant = false);
+    BranchObservability& setQualityQ1(double standardDeviation);
+    BranchObservability& setQualityQ1(double standardDeviation, stdcxx::optional<bool> redundant);
 
-    BranchObservability& setQualityQ2(double standardDeviation, bool redundant = false);
+    BranchObservability& setQualityQ2(double standardDeviation);
+    BranchObservability& setQualityQ2(double standardDeviation, stdcxx::optional<bool> redundant);
 
 protected:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;

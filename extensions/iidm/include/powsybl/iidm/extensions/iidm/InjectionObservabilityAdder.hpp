@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -77,11 +78,11 @@ private:
 
     double m_standardDeviationV = stdcxx::nan();
 
-    bool m_redundantP = false;
+    stdcxx::optional<bool> m_redundantP;
 
-    bool m_redundantQ = false;
+    stdcxx::optional<bool> m_redundantQ;
 
-    bool m_redundantV = false;
+    stdcxx::optional<bool> m_redundantV;
 };
 
 }  // namespace iidm
