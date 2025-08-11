@@ -61,6 +61,10 @@ std::vector<std::string> Parameter::getStringListDefaultValue() const {
     return values;
 }
 
+int Parameter::getIntDefaultValue() const {
+    return std::stoi(m_defaultValue);
+}
+
 const Parameter::Type& Parameter::getType() const {
     return m_type;
 }

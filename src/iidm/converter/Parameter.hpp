@@ -25,7 +25,8 @@ public:
         BOOLEAN,
         STRING,
         STRING_LIST,
-        DOUBLE
+        DOUBLE,
+        INTEGER
     };
 
 public:
@@ -56,6 +57,8 @@ public:
     const std::string& getStringDefaultValue() const;
 
     std::vector<std::string> getStringListDefaultValue() const;
+
+    int getIntDefaultValue() const;
 
     const Type& getType() const;
 
