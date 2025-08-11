@@ -32,7 +32,7 @@
     <iidm:extension id="NHV1_NHV2_1">
         <bo:branchObservability observable="true">
             <bo:qualityP side="ONE" standardDeviation="0.029999999999999999" redundant="false"/>
-            <bo:qualityP side="TWO" standardDeviation="0.59999999999999998" redundant="false"/>
+            <bo:qualityP side="TWO" standardDeviation="0.59999999999999998"/>
             <bo:qualityQ side="ONE" standardDeviation="0.10000000000000001" redundant="false"/>
             <bo:qualityQ side="TWO" standardDeviation="0.040000000000000001" redundant="true"/>
         </bo:branchObservability>
