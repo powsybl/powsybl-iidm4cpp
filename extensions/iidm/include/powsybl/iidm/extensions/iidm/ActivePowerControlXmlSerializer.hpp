@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_ACTIVEPOWERCONTROLXMLSERIALIZER_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_ACTIVEPOWERCONTROLXMLSERIALIZER_HPP
 
-#include <powsybl/iidm/converter/xml/AbstractExtensionXmlSerializer.hpp>
+#include <powsybl/iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.hpp>
 
 namespace powsybl {
 
@@ -18,8 +18,8 @@ namespace extensions {
 
 namespace iidm {
 
-class ActivePowerControlXmlSerializer : public converter::xml::AbstractExtensionXmlSerializer {
-public:  // ExtensionXmlSerializer
+class ActivePowerControlXmlSerializer : public converter::xml::AbstractVersionableExtensionXmlSerializer {
+public:  // AbstractVersionableExtensionXmlSerializer
     Extension& read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 
     void write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const override;

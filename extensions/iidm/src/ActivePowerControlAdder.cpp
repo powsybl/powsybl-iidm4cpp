@@ -26,10 +26,10 @@ ActivePowerControlAdder::ActivePowerControlAdder(Extendable& extendable) :
 
 std::unique_ptr<Extension> ActivePowerControlAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Battery>(extendable)) {
-        return std::unique_ptr<ActivePowerControl>(new ActivePowerControl(dynamic_cast<Battery&>(extendable), m_participate, m_droop));
+        return std::unique_ptr<ActivePowerControl>(new ActivePowerControl(dynamic_cast<Battery&>(extendable), m_participate, m_droop, m_participationFactor));
     }
     if (stdcxx::isInstanceOf<Generator>(extendable)) {
-        return std::unique_ptr<ActivePowerControl>(new ActivePowerControl(dynamic_cast<Generator&>(extendable), m_participate, m_droop));
+        return std::unique_ptr<ActivePowerControl>(new ActivePowerControl(dynamic_cast<Generator&>(extendable), m_participate, m_droop, m_participationFactor));
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% or %3% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Battery>(), stdcxx::demangle<Generator>()));
 }
@@ -41,6 +41,11 @@ ActivePowerControlAdder& ActivePowerControlAdder::withDroop(double droop) {
 
 ActivePowerControlAdder& ActivePowerControlAdder::withParticipate(bool participate) {
     m_participate = participate;
+    return *this;
+}
+
+ActivePowerControlAdder& ActivePowerControlAdder::withParticipationFactor(double participationFactor) {
+    m_participationFactor = participationFactor;
     return *this;
 }
 
