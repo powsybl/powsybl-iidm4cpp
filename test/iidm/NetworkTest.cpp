@@ -11,6 +11,7 @@
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
+#include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -26,6 +27,7 @@
 
 #include <powsybl/iidm/util/Networks.hpp>
 
+#include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/network/ScadaNetworkFactory.hpp>
 
 #include <powsybl/stdcxx/exception.hpp>
@@ -232,6 +234,16 @@ BOOST_AUTO_TEST_CASE(getConnectablesTest) {
     BOOST_CHECK_EQUAL(0, boost::size(network.getConnectables<ThreeWindingsTransformer>()));
     BOOST_CHECK_EQUAL(0, boost::size(cNetwork.getConnectables<ThreeWindingsTransformer>()));
     BOOST_CHECK_EQUAL(0UL, network.getConnectableCount<ThreeWindingsTransformer>());
+}
+
+BOOST_AUTO_TEST_CASE(getConnectableTest) {
+    Network n = powsybl::network::EurostagFactory::createTutorial1Network();
+    BOOST_CHECK_EQUAL(6, n.getConnectableCount());
+    Identifiable& gen = n.get("GEN");
+    BOOST_CHECK(stdcxx::isInstanceOf<Connectable>(gen));
+    BOOST_CHECK(stdcxx::isInstanceOf<Generator>(gen));
+    BOOST_CHECK_EQUAL("GEN", gen.getId());
+
 }
 
 BOOST_AUTO_TEST_CASE(branch) {
