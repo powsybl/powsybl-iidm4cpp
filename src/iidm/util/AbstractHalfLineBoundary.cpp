@@ -70,11 +70,11 @@ double AbstractHalfLineBoundary::getV() const {
     return SV(t.getP(), t.getQ(), Boundary::getV(b), Boundary::getAngle(b), m_side).otherSideU(m_parent);
 }
 
-const VoltageLevel& AbstractHalfLineBoundary::getVoltageLevel() const {
+const VoltageLevel& AbstractHalfLineBoundary::getNetworkSideVoltageLevel() const {
     return getTieLine().getTerminal(m_side).getVoltageLevel();
 }
 
-VoltageLevel& AbstractHalfLineBoundary::getVoltageLevel() {
+VoltageLevel& AbstractHalfLineBoundary::getNetworkSideVoltageLevel() {
     return getTieLine().getTerminal(m_side).getVoltageLevel();
 }
 

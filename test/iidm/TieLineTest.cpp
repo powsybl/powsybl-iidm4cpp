@@ -445,8 +445,8 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     BOOST_CHECK(stdcxx::areSame(cTieLine, cBoundary.getConnectable()));
     BOOST_CHECK(stdcxx::areSame(cTieLine, boundary.getConnectable()));
     BOOST_CHECK_EQUAL(Branch::Side::ONE, *boundary.getSide());
-    BOOST_CHECK(stdcxx::areSame(cTieLine.getTerminal(Branch::Side::ONE).getVoltageLevel(), cBoundary.getVoltageLevel()));
-    BOOST_CHECK(stdcxx::areSame(cTieLine.getTerminal(Branch::Side::ONE).getVoltageLevel(), boundary.getVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getTerminal(Branch::Side::ONE).getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getTerminal(Branch::Side::ONE).getVoltageLevel(), boundary.getNetworkSideVoltageLevel()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

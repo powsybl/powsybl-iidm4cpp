@@ -44,9 +44,9 @@ public:  // iidm::Boundary
 
     double getV() const override;
 
-    const VoltageLevel& getVoltageLevel() const override;
+    const VoltageLevel& getNetworkSideVoltageLevel() const override;
 
-    VoltageLevel& getVoltageLevel() override;
+    VoltageLevel& getNetworkSideVoltageLevel() override;
 
 public:
     AbstractHalfLineBoundary(tie_line::HalfLine& halfLine, const Branch::Side& side);
