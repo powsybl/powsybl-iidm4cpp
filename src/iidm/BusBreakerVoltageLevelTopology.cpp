@@ -72,7 +72,7 @@ void CalculatedBusTopology::invalidateCache() {
 }
 
 bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
-    unsigned long branchCount = 0;
+    unsigned long feederCount = 0;
 
     for (const auto& bus : buses) {
         for (const auto& terminal : bus.get().getConnectedTerminals()) {
@@ -83,16 +83,13 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                 case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
                 case IdentifiableType::HVDC_CONVERTER_STATION:
                 case IdentifiableType::DANGLING_LINE:
-                    ++branchCount;
-                    break;
-
                 case IdentifiableType::LOAD:
                 case IdentifiableType::GENERATOR:
                 case IdentifiableType::BATTERY:
                 case IdentifiableType::SHUNT_COMPENSATOR:
                 case IdentifiableType::STATIC_VAR_COMPENSATOR:
+                    feederCount++;
                     break;
-
                 case IdentifiableType::NETWORK:
                 case IdentifiableType::SUBSTATION:
                 case IdentifiableType::VOLTAGE_LEVEL:
@@ -105,7 +102,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
         }
     }
 
-    return branchCount >= 1;
+    return feederCount >= 1;
 }
 
 void CalculatedBusTopology::updateCache() {

@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Component.hpp>
 #include <powsybl/iidm/ComponentConstants.hpp>
+#include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/HvdcLineAdder.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
@@ -220,6 +221,84 @@ Network createNetworkWithHvdcLine() {
             .setMaxP(300.0)
             .setActivePowerSetpoint(280)
             .add();
+    return network;
+}
+
+Network createSmallDcNetwork() {
+    Network network("smallDc", "test");
+
+    VoltageLevel& vl1 = network.newVoltageLevel()
+        .setId("voltageLevel1")
+        .setNominalV(400)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    Bus& bus1 = vl1.getBusBreakerView().newBus()
+        .setId("Bus1")
+        .add();
+    vl1.newLoad().setId("Load1")
+        .setP0(100).setQ0(20)
+        .setLoadType(LoadType::UNDEFINED)
+        .setBus(bus1.getId())
+        .setConnectableBus(bus1.getId())
+        .add();
+    vl1.newGenerator().setId("Gen1")
+        .setMinP(-500)
+        .setMaxP(500)
+        .setTargetP(150)
+        .setTargetV(405)
+        .setVoltageRegulatorOn(true)
+        .setBus(bus1.getId())
+        .setConnectableBus(bus1.getId())
+        .add();
+    VoltageLevel& vl2  = network.newVoltageLevel()
+        .setId("voltageLevel2")
+        .setNominalV(400)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    Bus& bus2 = vl2.getBusBreakerView().newBus()
+        .setId("Bus2")
+        .add();
+    vl2.newLoad().setId("Load2")
+        .setP0(100).setQ0(20)
+        .setLoadType(LoadType::UNDEFINED)
+        .setBus(bus2.getId())
+        .setConnectableBus(bus2.getId())
+        .add();
+    vl2.newGenerator().setId("Gen2")
+        .setMinP(-500)
+        .setMaxP(500)
+        .setTargetP(50)
+        .setTargetV(405.0)
+        .setVoltageRegulatorOn(true)
+        .setBus(bus2.getId())
+        .setConnectableBus(bus2.getId())
+        .add();
+
+    vl1.newLccConverterStation()
+                .setId("Lcc1")
+                .setBus(bus1.getId())
+                .setConnectableBus(bus1.getId())
+                .setPowerFactor(0.95f)
+                .setLossFactor(0.99f)
+                .add();
+    vl2.newLccConverterStation()
+                .setId("Lcc2")
+                .setBus(bus2.getId())
+                .setConnectableBus(bus2.getId())
+                .setPowerFactor(0.95f)
+                .setLossFactor(0.99f)
+                .add();
+    network.newHvdcLine()
+                .setId("DcLine")
+                .setR(1)
+                .setNominalV(300)
+                .setConverterStationId1("Lcc1")
+                .setConverterStationId2("Lcc2")
+                .setMaxP(2000)
+                .setActivePowerSetpoint(50)
+                .setConvertersMode(HvdcLine::ConvertersMode::SIDE_1_INVERTER_SIDE_2_RECTIFIER)
+                .add();
+
     return network;
 }
 
@@ -508,6 +587,47 @@ BOOST_AUTO_TEST_CASE(ComponentsWithHvdcLine) {
     BOOST_CHECK(!bus2.isInMainSynchronousComponent());
     BOOST_CHECK(!stdcxx::areSame(sComp1, sComp2));
 }
+
+BOOST_AUTO_TEST_CASE(dcLineConnected) {
+    Network network = createSmallDcNetwork();
+    auto connectedComponents = network.getBusView().getConnectedComponents();
+    auto synchronousComponents = network.getBusView().getSynchronousComponents();
+
+    // one connected component of size 2
+    BOOST_CHECK_EQUAL(1, boost::size(connectedComponents));
+    for( auto& cc : connectedComponents) {
+        BOOST_CHECK_EQUAL(2, cc.getSize());
+    }
+
+    // two synchronous components of size 1
+    BOOST_CHECK_EQUAL(2, boost::size(synchronousComponents));
+    for( auto& sc : synchronousComponents) {
+        BOOST_CHECK_EQUAL(1, sc.getSize());
+    }
+    
+}
+BOOST_AUTO_TEST_CASE(dcLineDisconnected) {
+    Network network = createSmallDcNetwork();
+    network.getLccConverterStation("Lcc1").getTerminal().disconnect();
+    network.getLccConverterStation("Lcc2").getTerminal().disconnect();
+    auto connectedComponents = network.getBusView().getConnectedComponents();
+    auto synchronousComponents = network.getBusView().getSynchronousComponents();
+
+    // two connected components of size 1
+    BOOST_CHECK_EQUAL(2, boost::size(connectedComponents));
+    for( auto& cc : connectedComponents) {
+        BOOST_CHECK_EQUAL(1, cc.getSize());
+    }
+
+    // two synchronous components of size 1
+    BOOST_CHECK_EQUAL(2, boost::size(synchronousComponents));
+    for( auto& sc : synchronousComponents) {
+        BOOST_CHECK_EQUAL(1, sc.getSize());
+    }
+
+}
+
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
