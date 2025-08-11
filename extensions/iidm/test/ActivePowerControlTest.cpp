@@ -32,10 +32,10 @@ Network createNetwork() {
     Network network = powsybl::network::BatteryNetworkFactory::create();
 
     Battery& battery = network.getBattery("BAT");
-    battery.newExtension<ActivePowerControlAdder>().withParticipate(true).withDroop(4.0).add();
+    battery.newExtension<ActivePowerControlAdder>().withParticipate(true).withDroop(4.0).withParticipationFactor(1.2).add();
 
     Generator& generator = network.getGenerator("GEN");
-    generator.newExtension<ActivePowerControlAdder>().withParticipate(false).withDroop(3.0).add();
+    generator.newExtension<ActivePowerControlAdder>().withParticipate(false).withDroop(3.0).withParticipationFactor(1).add();
 
     return network;
 }
@@ -47,6 +47,7 @@ BOOST_AUTO_TEST_CASE(ActivePowerControlTest) {
     const ActivePowerControl& apcGen = generator.getExtension<ActivePowerControl>();
     BOOST_CHECK_EQUAL("activePowerControl", apcGen.getName());
     BOOST_CHECK_CLOSE(3, apcGen.getDroop(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1, apcGen.getParticipationFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(!apcGen.isParticipate());
     BOOST_CHECK(stdcxx::areSame(generator, apcGen.getExtendable<Generator>().get()));
 
@@ -54,6 +55,7 @@ BOOST_AUTO_TEST_CASE(ActivePowerControlTest) {
     const ActivePowerControl& apcBat = battery.getExtension<ActivePowerControl>();
     BOOST_CHECK_EQUAL("activePowerControl", apcBat.getName());
     BOOST_CHECK_CLOSE(4, apcBat.getDroop(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.2, apcBat.getParticipationFactor(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(apcBat.isParticipate());
     BOOST_CHECK(stdcxx::areSame(battery, apcBat.getExtendable<Battery>().get()));
 }
