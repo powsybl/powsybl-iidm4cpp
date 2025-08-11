@@ -305,7 +305,7 @@ BOOST_AUTO_TEST_CASE(views) {
     BOOST_CHECK_EQUAL(6, boost::size(cBuses));
 
     const auto& cBuses2 = cNetwork1.getBusView().getBuses();
-    BOOST_CHECK_EQUAL(4, boost::size(cBuses2));
+    BOOST_CHECK_EQUAL(5, boost::size(cBuses2));
     POWSYBL_ASSERT_REF_TRUE(cNetwork1.getBusView().getBus("VL1_0"));
     POWSYBL_ASSERT_REF_FALSE(cNetwork1.getBusView().getBus("UNKNOWN"));
 
