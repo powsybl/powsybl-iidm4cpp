@@ -31,6 +31,8 @@ public:
 
     static const std::string& readStringParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
+    static int readIntParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
+
 public:
     ConversionParameters() = delete;
 

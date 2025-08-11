@@ -55,6 +55,16 @@ BOOST_AUTO_TEST_CASE(testConversionParameters) {
     BOOST_CHECK_CLOSE(0.06, ConversionParameters::readDoubleParameter(properties, paramDouble), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.08, ConversionParameters::readDoubleParameter(properties, paramDouble2), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(std::isnan(ConversionParameters::readDoubleParameter(properties, paramDoubleNaN)));
+
+    properties.set("test-param-int", "1.0");
+    properties.set("test-param-int2", "1.1");
+    Parameter paramInt1("test-param-int", Parameter::Type::INTEGER, "", "0");
+    Parameter paramInt2("test-param-int2", Parameter::Type::INTEGER, "", "2");
+    Parameter paramInt3("test-param-int3", Parameter::Type::INTEGER, "", "-1");
+    BOOST_CHECK_EQUAL(1, ConversionParameters::readIntParameter(properties, paramInt1));
+    BOOST_CHECK_EQUAL(1, ConversionParameters::readIntParameter(properties, paramInt2));
+    BOOST_CHECK_EQUAL(-1, ConversionParameters::readIntParameter(properties, paramInt3));
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
