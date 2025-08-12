@@ -84,6 +84,12 @@
             <iidm:lccConverterStation id="LCC1" name="LCC1" lossFactor="1.1000000000000001" powerFactor="0.59999999999999998" node="21" p="80.879999999999995"/>
         </iidm:voltageLevel>
         <iidm:twoWindingsTransformer id="TWT" r="2" x="14.744999999999999" g="0" b="3.1999999999999999e-05" ratedU1="225" ratedU2="400" node1="4" voltageLevelId1="S1VL1" node2="3" voltageLevelId2="S1VL2" p1="-80" q1="-10" p2="80.0809" q2="5.4856999999999996">
+            <iidm:ratioTapChanger lowTapPosition="0" tapPosition="1" targetDeadband="0" loadTapChangingCapabilities="true" regulating="true" targetV="225">
+                <iidm:terminalRef id="TWT" side="ONE"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="0.84999999999999998"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1"/>
+                <iidm:step r="0" x="0" g="0" b="0" rho="1.1499999999999999"/>
+            </iidm:ratioTapChanger>
             <iidm:phaseTapChanger lowTapPosition="0" tapPosition="15" regulationMode="FIXED_TAP">
                 <iidm:terminalRef id="TWT" side="ONE"/>
                 <iidm:step r="39.784730000000003" x="29.784725000000002" g="0" b="0" rho="1" alpha="-42.799999999999997"/>
