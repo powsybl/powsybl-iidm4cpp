@@ -65,7 +65,14 @@ std::unique_ptr<Terminal> LegAdder::checkAndGetTerminal(VoltageLevel& voltageLev
 }
 
 VoltageLevel& LegAdder::checkAndGetVoltageLevel() {
-    checkNotEmpty(*this, m_voltageLevelId, "voltage level is not set");
+    if(m_voltageLevelId.empty()) {
+        std::string defaultVoltageLevelId = checkAndGetDefaultVoltageLevelId();
+        if(defaultVoltageLevelId.empty()) {
+            throw ValidationException(*this, "voltage level is not set and has no default value");
+        } else {
+            m_voltageLevelId = defaultVoltageLevelId;
+        }
+    }
 
     stdcxx::Reference<VoltageLevel> voltageLevel = m_parent.getNetwork().template find<VoltageLevel>(m_voltageLevelId);
     if (!voltageLevel) {
@@ -73,6 +80,23 @@ VoltageLevel& LegAdder::checkAndGetVoltageLevel() {
     }
 
     return voltageLevel.get();
+}
+
+std::string LegAdder::checkAndGetDefaultVoltageLevelId() {
+    if(m_connectableBus.empty()) {
+        return "";
+    }
+    stdcxx::Reference<Bus> bus = m_parent.getNetwork().getBusBreakerView().getBus(m_connectableBus);
+    if(!bus) {
+        throw ValidationException(*this, stdcxx::format("Bus '%1%' not found", m_connectableBus));
+    }
+    return bus.get().getVoltageLevel().getId();
+}
+
+void LegAdder::checkConnectableBus() {
+    if (m_connectableBus.empty() && !m_bus.empty()) {
+        m_connectableBus = m_bus;
+    }
 }
 
 std::string LegAdder::getMessageHeader() const {

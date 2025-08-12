@@ -33,6 +33,7 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
         throw ValidationException(*this, "leg 1 is not defined");
     }
     ThreeWindingsTransformer::Leg leg1 = m_adder1->build();
+    m_adder1->checkConnectableBus();
     VoltageLevel& voltageLevel1 = m_adder1->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal1 = m_adder1->checkAndGetTerminal(voltageLevel1);
 
@@ -40,6 +41,7 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
         throw ValidationException(*this, "leg 2 is not defined");
     }
     ThreeWindingsTransformer::Leg leg2 = m_adder2->build();
+    m_adder2->checkConnectableBus();
     VoltageLevel& voltageLevel2 = m_adder2->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal2 = m_adder2->checkAndGetTerminal(voltageLevel2);
 
@@ -47,6 +49,7 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
         throw ValidationException(*this, "leg 3 is not defined");
     }
     ThreeWindingsTransformer::Leg leg3 = m_adder3->build();
+    m_adder3->checkConnectableBus();
     VoltageLevel& voltageLevel3 = m_adder3->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal3 = m_adder3->checkAndGetTerminal(voltageLevel3);
 
@@ -114,11 +117,11 @@ ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg1()
 }
 
 ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg2() {
-    return LegAdder(*this, 2).setB(0).setG(0);
+    return LegAdder(*this, 2);
 }
 
 ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg3() {
-    return LegAdder(*this, 3).setB(0).setG(0);
+    return LegAdder(*this, 3);
 }
 
 void ThreeWindingsTransformerAdder::setLegAdder1(const LegAdder& legAdder) {

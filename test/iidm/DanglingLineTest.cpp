@@ -98,9 +98,11 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Dangling line 'DL1': x is invalid");
     adder.setX(10.0);
 
+    adder.setG(stdcxx::nan());
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Dangling line 'DL1': g is invalid");
     adder.setG(11.0);
 
+    adder.setB(stdcxx::nan());
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Dangling line 'DL1': b is invalid");
     adder.setB(12.0);
 

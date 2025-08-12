@@ -39,7 +39,12 @@ std::unique_ptr<Terminal> BranchAdder<Adder>::checkAndGetTerminal2(VoltageLevel&
 template <typename Adder>
 VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel1() {
     if (m_voltageLevelId1.empty()) {
-        throw ValidationException(*this, "First voltage level is not set");
+        std::string defaultVoltageLevelId1 = checkAndGetDefaultVoltageLevelId(m_connectableBus1);
+        if(defaultVoltageLevelId1.empty()) {
+            throw ValidationException(*this, "First voltage level is not set and has no default value");
+        } else {
+            m_voltageLevelId1 = defaultVoltageLevelId1;
+        }
     }
 
     stdcxx::Reference<VoltageLevel> voltageLevel1 = this->getNetwork().template find<VoltageLevel>(m_voltageLevelId1);
@@ -53,7 +58,12 @@ VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel1() {
 template <typename Adder>
 VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel2() {
     if (m_voltageLevelId2.empty()) {
-        throw ValidationException(*this, "Second voltage level is not set");
+        std::string defaultVoltageLevelId2 = checkAndGetDefaultVoltageLevelId(m_connectableBus2);
+        if(defaultVoltageLevelId2.empty()) {
+            throw ValidationException(*this, "Second voltage level is not set and has no default value");
+        } else {
+            m_voltageLevelId2 = defaultVoltageLevelId2;
+        }
     }
 
     stdcxx::Reference<VoltageLevel> voltageLevel2 = this->getNetwork().template find<VoltageLevel>(m_voltageLevelId2);
@@ -62,6 +72,28 @@ VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel2() {
     }
 
     return voltageLevel2.get();
+}
+
+template <typename Adder>
+std::string BranchAdder<Adder>::checkAndGetDefaultVoltageLevelId(const std::string& connectableBusId) {
+    if(connectableBusId.empty()) {
+        return "";
+    }
+    stdcxx::Reference<Bus> bus = this->getNetwork().getBusBreakerView().getBus(connectableBusId);
+    if(!bus) {
+        throw ValidationException(*this, stdcxx::format("Bus '%1%' not found", connectableBusId));
+    }
+    return bus.get().getVoltageLevel().getId();
+}
+
+template <typename Adder>
+void BranchAdder<Adder>::checkConnectableBuses() {
+    if(m_connectableBus1.empty() && !m_bus1.empty()) {
+        m_connectableBus1 = m_bus1;
+    }
+    if(m_connectableBus2.empty() && !m_bus2.empty()) {
+        m_connectableBus2 = m_bus2;
+    }
 }
 
 template <typename Adder>

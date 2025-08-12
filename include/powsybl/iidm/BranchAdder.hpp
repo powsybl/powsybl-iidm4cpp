@@ -52,7 +52,11 @@ protected:
 
     VoltageLevel& checkAndGetVoltageLevel2();
 
+    void checkConnectableBuses();
+
 private:
+    std::string checkAndGetDefaultVoltageLevelId(const std::string& connectableBusId);
+
     std::string m_bus1;
 
     std::string m_bus2;

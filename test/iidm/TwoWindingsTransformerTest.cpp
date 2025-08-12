@@ -306,12 +306,12 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     TwoWindingsTransformerAdder adder = substation2.newTwoWindingsTransformer();
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': First voltage level is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': First voltage level is not set and has no default value");
     adder.setVoltageLevel1("INVALID");
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': First voltage level 'INVALID' not found");
     adder.setVoltageLevel1("VL1");
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': Second voltage level is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': Second voltage level is not set and has no default value");
     adder.setVoltageLevel2("INVALID");
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': Second voltage level 'INVALID' not found");
     adder.setVoltageLevel2("VL2");
@@ -358,25 +358,16 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': x is invalid");
     adder.setX(200.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': g is invalid");
     adder.setG(stdcxx::nan());
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': g is invalid");
     adder.setG(300.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': b is invalid");
     adder.setB(stdcxx::nan());
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': b is invalid");
     adder.setB(400.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': rated U1 is invalid");
-    adder.setRatedU1(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': rated U1 is invalid");
-    adder.setRatedU1(500.0);
-
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': rated U2 is invalid");
-    adder.setRatedU2(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': rated U2 is invalid");
-    adder.setRatedU2(600.0);
+    adder.setRatedU1(500.0)
+        .setRatedU2(600.0);
 
     adder.setRatedS(-1.0);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '': Invalid rated S value: -1");
