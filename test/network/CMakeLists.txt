@@ -7,7 +7,8 @@
 
 set(UNIT_TEST_SOURCES
     EurostagFactoryTest.cpp
-    network.cpp)
+    network.cpp
+    SecurityAnalysisTestNetwork.cpp)
 
 add_executable(unit-tests-network ${UNIT_TEST_SOURCES})
 target_compile_definitions(unit-tests-network PRIVATE BOOST_TEST_DYN_LINK)
