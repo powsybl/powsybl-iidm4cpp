@@ -63,9 +63,9 @@ private:
 
     double m_x = stdcxx::nan();
 
-    double m_g = stdcxx::nan();
+    double m_g = 0.0;
 
-    double m_b = stdcxx::nan();
+    double m_b = 0.0;
 
     double m_p0 = stdcxx::nan();
 

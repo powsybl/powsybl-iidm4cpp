@@ -639,16 +639,14 @@ BOOST_AUTO_TEST_CASE(adders) {
     POWSYBL_ASSERT_THROW(l1Adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: x is not set");
     l1Adder.setX(1.1);
 
-    POWSYBL_ASSERT_THROW(l1Adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: g is not set");
     l1Adder.setG(1.3);
 
-    POWSYBL_ASSERT_THROW(l1Adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: b is not set");
     l1Adder.setB(1.4);
 
     POWSYBL_ASSERT_THROW(l1Adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: rated U is not set");
     BOOST_CHECK_NO_THROW(l1Adder.setRatedU(1.2).add());
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: voltage level is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: voltage level is not set and has no default value");
     l1Adder.setVoltageLevel("INVALID").add();
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg1 in substation S2: voltage level 'INVALID' not found");
@@ -691,7 +689,7 @@ BOOST_AUTO_TEST_CASE(adders) {
     POWSYBL_ASSERT_THROW(l2Adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: rated U is not set");
     BOOST_CHECK_NO_THROW(l2Adder.setRatedU(2.2).add());
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: voltage level is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: voltage level is not set and has no default value");
     l2Adder.setVoltageLevel("INVALID").add();
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg2 in substation S2: voltage level 'INVALID' not found");
@@ -737,7 +735,7 @@ BOOST_AUTO_TEST_CASE(adders) {
     POWSYBL_ASSERT_THROW(l3Adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: rated U is not set");
     BOOST_CHECK_NO_THROW(l3Adder.setRatedU(3.2).add());
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: voltage level is not set");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: voltage level is not set and has no default value");
     l3Adder.setVoltageLevel("INVALID").add();
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "3 windings transformer leg3 in substation S2: voltage level 'INVALID' not found");

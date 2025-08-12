@@ -269,12 +269,12 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     TieLineAdder tieLineAdder = network.newTieLine();
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line '': First voltage level is not set");
+    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line '': First voltage level is not set and has no default value");
     tieLineAdder.setVoltageLevel1("INVALID");
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line '': First voltage level 'INVALID' not found");
     tieLineAdder.setVoltageLevel1("VL2");
 
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line '': Second voltage level is not set");
+    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line '': Second voltage level is not set and has no default value");
     tieLineAdder.setVoltageLevel2("INVALID");
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line '': Second voltage level 'INVALID' not found");
     tieLineAdder.setVoltageLevel2("VL4");
@@ -323,15 +323,19 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': x is not set for half line 1");
     halfLineAdder1.setX(660.0);
 
+    halfLineAdder1.setG1(stdcxx::nan());
     POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g1 is not set for half line 1");
     halfLineAdder1.setG1(2.0);
 
+    halfLineAdder1.setB1(stdcxx::nan());
     POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b1 is not set for half line 1");
     halfLineAdder1.setB1(4.0);
 
+    halfLineAdder1.setG2(stdcxx::nan());
     POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g2 is not set for half line 1");
     halfLineAdder1.setG2(3.0);
 
+    halfLineAdder1.setB2(stdcxx::nan());
     POWSYBL_ASSERT_THROW(halfLineAdder1.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b2 is not set for half line 1");
     halfLineAdder1.setB2(5.0);
 
@@ -351,15 +355,19 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': x is not set for half line 2");
     halfLineAdder2.setX(700.0);
 
+    halfLineAdder2.setG1(stdcxx::nan());
     POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g1 is not set for half line 2");
     halfLineAdder2.setG1(6.0);
 
+    halfLineAdder2.setB1(stdcxx::nan());
     POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b1 is not set for half line 2");
     halfLineAdder2.setB1(7.0);
 
+    halfLineAdder2.setG2(stdcxx::nan());
     POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': g2 is not set for half line 2");
     halfLineAdder2.setG2(9.0);
 
+    halfLineAdder2.setB2(stdcxx::nan());
     POWSYBL_ASSERT_THROW(halfLineAdder2.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': b2 is not set for half line 2");
     halfLineAdder2.setB2(12.0);
     halfLineAdder2.add();
@@ -447,6 +455,108 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     BOOST_CHECK_EQUAL(Branch::Side::ONE, *boundary.getSide());
     BOOST_CHECK(stdcxx::areSame(cTieLine.getTerminal(Branch::Side::ONE).getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));
     BOOST_CHECK(stdcxx::areSame(cTieLine.getTerminal(Branch::Side::ONE).getVoltageLevel(), boundary.getNetworkSideVoltageLevel()));
+}
+
+BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
+    Network network("test", "test");
+    Substation& substation = network.newSubstation()
+        .setId("sub")
+        .setCountry(Country::FR)
+        .setTso("RTE")
+        .add();
+    VoltageLevel& voltageLevelA = substation.newVoltageLevel()
+        .setId("vl1")
+        .setName("vl1")
+        .setNominalV(440.0)
+        .setHighVoltageLimit(400.0)
+        .setLowVoltageLimit(200.0)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    voltageLevelA.getBusBreakerView().newBus()
+        .setId("busA")
+        .setName("busA")
+        .add();
+    VoltageLevel& voltageLevelB = substation.newVoltageLevel()
+        .setId("vl2").setName("vl2")
+        .setNominalV(200.0)
+        .setHighVoltageLimit(400.0)
+        .setLowVoltageLimit(200.0)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+    voltageLevelB.getBusBreakerView().newBus()
+        .setId("busB")
+        .setName("busB")
+        .add();
+
+    Substation& s1 = network.newSubstation()
+                        .setId("S1")
+                        .add();
+    VoltageLevel& s1vl1 = s1.newVoltageLevel()
+                             .setId("S1VL1")
+                             .setNominalV(1.0)
+                             .setLowVoltageLimit(0.95)
+                             .setHighVoltageLimit(1.05)
+                             .setTopologyKind(TopologyKind::BUS_BREAKER)
+                             .add();
+
+    s1vl1.getBusBreakerView()
+            .newBus()
+            .setName("S1VL1-BUS")
+            .setId("S1VL1-BUS")
+            .add();
+
+    Substation& s2 = network.newSubstation()
+                        .setId("S2")
+                        .add();
+    VoltageLevel& s2vl1 = s2.newVoltageLevel()
+                             .setId("S2VL1")
+                             .setNominalV(1.0)
+                             .setLowVoltageLimit(0.95)
+                             .setHighVoltageLimit(1.05)
+                             .setTopologyKind(TopologyKind::BUS_BREAKER)
+                             .add();
+
+    s2vl1.getBusBreakerView()
+            .newBus()
+            .setName("S2VL1-BUS")
+            .setId("S2VL1-BUS")
+            .add();
+
+    std::string boundarySide1 = "Branch::Side::ONE";
+    std::string boundarySide2 = "Branch::Side::TWO";
+    TieLineAdder adder = network.newTieLine()
+                             .setId(boundarySide1 + " + " + boundarySide2)
+                             .setName(boundarySide1 + " + " + boundarySide2)
+                             .newHalfLine1()
+                                .setId(boundarySide1)
+                                .setName(boundarySide1)
+                                .setR(1.0)
+                                .setX(2.0)
+                             .add()
+                             .newHalfLine2()
+                                .setId(boundarySide2)
+                                .setName(boundarySide2)
+                                .setR(1.0)
+                                .setX(2.0)
+                             .add();
+
+    adder.setBus1("S1VL1-BUS")
+        .setBus2("S2VL1-BUS")
+        .setUcteXnodeCode("UcteNode");
+    TieLine& tieLine = adder.add();
+
+    BOOST_CHECK_CLOSE(0.0, tieLine.getHalf1().getG1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getHalf1().getG2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getHalf1().getB1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getHalf1().getB2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getHalf1().getG1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getHalf1().getG2(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getHalf1().getB1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getHalf1().getB2(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK(stdcxx::areSame(s1vl1, tieLine.getTerminal1().getVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(s2vl1, tieLine.getTerminal2().getVoltageLevel()));
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()
