@@ -97,7 +97,7 @@ Switch& Switch::setOpen(bool open) {
     bool oldValue = m_open[index];
     if (oldValue != open) {
         m_open[index] = open;
-        m_voltageLevel.get().invalidateCache();
+        m_voltageLevel.get().invalidateCache(isRetained());
     }
 
     return *this;

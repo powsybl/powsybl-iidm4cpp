@@ -287,7 +287,7 @@ stdcxx::optional<unsigned long> BusBreakerVoltageLevel::getVertex(const std::str
     throw PowsyblException(stdcxx::format("Bus '%1%' not found in the voltage level '%2%'", busId, getId()));
 }
 
-void BusBreakerVoltageLevel::invalidateCache() {
+void BusBreakerVoltageLevel::invalidateCache(bool /*exceptBusBreakerView*/) {
     m_variants.get().getCalculatedBusTopology().invalidateCache();
     getNetwork().getBusView().invalidateCache();
     getNetwork().getBusBreakerView().invalidateCache();
