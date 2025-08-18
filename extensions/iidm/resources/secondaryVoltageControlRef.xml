@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_9" xmlns:cp="http://www.powsybl.org/schema/iidm/ext/connectable_position/1_1" id="sim1" caseDate="2013-01-15T18:45:00+01:00" forecastDistance="0" sourceFormat="test" minimumValidationLevel="STEADY_STATE_HYPOTHESIS">
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_9" xmlns:svc="http://www.powsybl.org/schema/iidm/ext/secondary_voltage_control/1_0" id="sim1" caseDate="2023-01-07T20:43:11.819000+01:00" forecastDistance="0" sourceFormat="test" minimumValidationLevel="STEADY_STATE_HYPOTHESIS">
     <iidm:substation id="P1" country="FR" tso="RTE" geographicalTags="A">
         <iidm:voltageLevel id="VLGEN" nominalV="24" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
@@ -7,6 +7,13 @@
             </iidm:busBreakerTopology>
             <iidm:generator id="GEN" energySource="OTHER" minP="-9999.9899999999998" maxP="9999.9899999999998" voltageRegulatorOn="true" targetP="607" targetV="24.5" targetQ="301" bus="NGEN" connectableBus="NGEN">
                 <iidm:minMaxReactiveLimits minQ="-9999.9899999999998" maxQ="9999.9899999999998"/>
+            </iidm:generator>
+            <iidm:generator id="GEN2" energySource="OTHER" minP="-9999.9899999999998" maxP="9999.9899999999998" voltageRegulatorOn="true" targetP="607" targetV="24.5" targetQ="301" bus="NGEN" connectableBus="NGEN">
+                <iidm:reactiveCapabilityCurve>
+                    <iidm:point p="0" minQ="6" maxQ="7"/>
+                    <iidm:point p="1" minQ="4" maxQ="5"/>
+                    <iidm:point p="3" minQ="4" maxQ="5"/>
+                </iidm:reactiveCapabilityCurve>
             </iidm:generator>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="VLHV1" nominalV="380" topologyKind="BUS_BREAKER">
@@ -39,11 +46,22 @@
     </iidm:substation>
     <iidm:line id="NHV1_NHV2_1" r="3" x="33" g1="0" b1="0.000193" g2="0" b2="0.000193" bus1="NHV1" connectableBus1="NHV1" voltageLevelId1="VLHV1" bus2="NHV2" connectableBus2="NHV2" voltageLevelId2="VLHV2"/>
     <iidm:line id="NHV1_NHV2_2" r="3" x="33" g1="0" b1="0.000193" g2="0" b2="0.000193" bus1="NHV1" connectableBus1="NHV1" voltageLevelId1="VLHV1" bus2="NHV2" connectableBus2="NHV2" voltageLevelId2="VLHV2"/>
-    <iidm:extension id="LOAD">
-        <cp:position>
-            <cp:feeder1 name="feeder1" order="1" direction="BOTTOM"/>
-            <cp:feeder2 name="feeder2" order="2" direction="TOP"/>
-            <cp:feeder3 name="feeder3" order="3" direction="BOTTOM"/>
-        </cp:position>
+    <iidm:extension id="sim1">
+        <svc:secondaryVoltageControl>
+            <svc:controlZone name="z1">
+                <svc:pilotPoint targetV="15">
+                    <svc:busbarSectionOrBusId>NLOAD</svc:busbarSectionOrBusId>
+                </svc:pilotPoint>
+                <svc:controlUnit participate="false">GEN</svc:controlUnit>
+                <svc:controlUnit participate="true">GEN2</svc:controlUnit>
+            </svc:controlZone>
+            <svc:controlZone name="z2">
+                <svc:pilotPoint targetV="15.199999999999999">
+                    <svc:busbarSectionOrBusId>NLOAD</svc:busbarSectionOrBusId>
+                    <svc:busbarSectionOrBusId>NLOAD2</svc:busbarSectionOrBusId>
+                </svc:pilotPoint>
+                <svc:controlUnit participate="true">GEN</svc:controlUnit>
+            </svc:controlZone>
+        </svc:secondaryVoltageControl>
     </iidm:extension>
 </iidm:network>

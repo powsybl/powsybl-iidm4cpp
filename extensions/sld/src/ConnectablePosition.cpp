@@ -33,21 +33,21 @@ namespace extensions {
 
 namespace sld {
 
-ConnectablePosition::Feeder::Feeder(const std::string& name, unsigned long order, const Direction& direction) :
+ConnectablePosition::Feeder::Feeder(const Direction& direction, const stdcxx::optional<std::string>& name, const stdcxx::optional<unsigned long>& order) :
+    m_direction(direction),
     m_name(name),
-    m_order(order),
-    m_direction(direction) {
+    m_order(order) {
 }
 
 const ConnectablePosition::Direction& ConnectablePosition::Feeder::getDirection() const {
     return m_direction;
 }
 
-const std::string& ConnectablePosition::Feeder::getName() const {
+stdcxx::optional<std::string> ConnectablePosition::Feeder::getName() const {
     return m_name;
 }
 
-unsigned long ConnectablePosition::Feeder::getOrder() const {
+stdcxx::optional<unsigned long> ConnectablePosition::Feeder::getOrder() const {
     return m_order;
 }
 
@@ -63,6 +63,16 @@ ConnectablePosition::Feeder& ConnectablePosition::Feeder::setName(const std::str
 
 ConnectablePosition::Feeder& ConnectablePosition::Feeder::setOrder(unsigned long order) {
     m_order = order;
+    return *this;
+}
+
+ConnectablePosition::Feeder& ConnectablePosition::Feeder::removeOrder() {
+    m_order.reset();
+    return *this;
+}
+
+ConnectablePosition::Feeder& ConnectablePosition::Feeder::removeName() {
+    m_name.reset();
     return *this;
 }
 
