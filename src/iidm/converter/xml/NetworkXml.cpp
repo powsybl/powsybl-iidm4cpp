@@ -366,6 +366,9 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&writer, &networkValidationLevel] { writer.writeAttribute(MINIMUM_VALIDATION_LEVEL, Enum::toString(networkValidationLevel)); });
 
+    //consider the network as exported so its extensions will be written
+    context.addExportedEquipment(network);
+
     AliasesXml::write(network, NETWORK, context);
     PropertiesXml::write(network, context);
 

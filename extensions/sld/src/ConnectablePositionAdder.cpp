@@ -24,16 +24,11 @@ ConnectablePositionAdder::FeederAdder::FeederAdder(ConnectablePositionAdder& par
 }
 
 ConnectablePositionAdder& ConnectablePositionAdder::FeederAdder::add() {
-    if (m_name.empty()) {
-        throw PowsyblException("Feeder name is empty");
-    }
-    if (!m_order) {
-        throw PowsyblException("Feeder order is not set");
-    }
     if (!m_direction) {
         throw PowsyblException("Feeder direction is not set");
     }
-    m_feeder = ConnectablePosition::Feeder(m_name, *m_order, *m_direction);
+    m_feeder = ConnectablePosition::Feeder(*m_direction, m_name, m_order);
+
     return m_parent;
 }
 

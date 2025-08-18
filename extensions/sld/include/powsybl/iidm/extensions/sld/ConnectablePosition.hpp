@@ -31,26 +31,29 @@ public:
 
     class Feeder {
     public:
-        Feeder(const std::string& name, unsigned long order, const Direction& direction);
+        Feeder(const Direction& direction, const stdcxx::optional<std::string>& name = stdcxx::optional<std::string>(), const stdcxx::optional<unsigned long>& order = stdcxx::optional<unsigned long>());
 
         const Direction& getDirection() const;
 
-        const std::string& getName() const;
+        stdcxx::optional<std::string> getName() const;
 
-        unsigned long getOrder() const;
+        stdcxx::optional<unsigned long> getOrder() const;
 
         Feeder& setDirection(const Direction& direction);
 
         Feeder& setName(const std::string& name);
 
         Feeder& setOrder(unsigned long order);
+        
+        Feeder& removeOrder();
+        Feeder& removeName();
 
     private:
-        std::string m_name;
-
-        unsigned long m_order;
-
         Direction m_direction;
+
+        stdcxx::optional<std::string> m_name;
+
+        stdcxx::optional<unsigned long> m_order;
     };
 
     using OptionalFeeder = stdcxx::optional<Feeder>;
