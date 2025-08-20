@@ -250,20 +250,6 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
 
     const IidmXmlVersion& version = IidmXmlVersion::fromNamespaceURI(reader.getNamespaceOrDefault(IidmXmlVersion::getDefaultPrefix()));
 
-    const std::string& id = reader.getAttributeValue(ID);
-    const std::string& sourceFormat = reader.getAttributeValue(SOURCE_FORMAT);
-    int forecastDistance = reader.getOptionalAttributeValue(FORECAST_DISTANCE, 0);
-    const std::string& caseDateStr = reader.getAttributeValue(CASE_DATE);
-
-    Network network(id, sourceFormat);
-    network.setForecastDistance(forecastDistance);
-
-    try {
-        network.setCaseDate(stdcxx::DateTime::parse(caseDateStr));
-    } catch (const PowsyblException& err) {
-        throw powsybl::xml::XmlStreamException(err.what());
-    }
-
     boost::filesystem::path csvPath = boost::filesystem::path(filename).replace_extension("csv");
     std::unique_ptr<Anonymizer> anonymizer;
 
@@ -279,6 +265,20 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
     }
 
     NetworkXmlReaderContext context(std::move(anonymizer), reader, options, version);
+
+    const std::string& id = context.getAnonymizer().deanonymizeString(reader.getAttributeValue(ID));
+    const std::string& sourceFormat = reader.getAttributeValue(SOURCE_FORMAT);
+    int forecastDistance = reader.getOptionalAttributeValue(FORECAST_DISTANCE, 0);
+    const std::string& caseDateStr = reader.getAttributeValue(CASE_DATE);
+
+    Network network(id, sourceFormat);
+    network.setForecastDistance(forecastDistance);
+
+    try {
+        network.setCaseDate(stdcxx::DateTime::parse(caseDateStr));
+    } catch (const PowsyblException& err) {
+        throw powsybl::xml::XmlStreamException(err.what());
+    }
 
     std::string minimumValidationLevel{STEADY_STATE_HYPOTHESIS};
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&minimumValidationLevel, &reader] { minimumValidationLevel = reader.getAttributeValue(MINIMUM_VALIDATION_LEVEL); });
@@ -359,7 +359,7 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     
     writeExtensionNamespaces(network, context);
 
-    writer.writeAttribute(ID, network.getId());
+    writer.writeAttribute(ID, context.getAnonymizer().anonymizeString(network.getId()));
     writer.writeAttribute(CASE_DATE, network.getCaseDate().toString());
     writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
