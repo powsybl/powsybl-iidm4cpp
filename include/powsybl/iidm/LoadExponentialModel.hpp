@@ -20,17 +20,18 @@ class Load;
 
 class LoadExponentialModel : public LoadModel {
 public:
-    LoadExponentialModel(double np, double nq);
-
+    LoadExponentialModel() = delete;
     ~LoadExponentialModel() noexcept override = default;
-
-    static std::unique_ptr<LoadModel> build(Load& load, double np, double nq);
 
     double getNp() const;
 
     double getNq() const;
 
 private:  // LoadModel
+
+    LoadExponentialModel(double np, double nq);
+
+    friend class LoadExponentialModelAdder;
 
     const LoadModelType& getType() const override;
 

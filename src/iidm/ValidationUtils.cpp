@@ -125,7 +125,7 @@ double checkBPerSection(const Validable& validable, double bPerSection) {
 }
 
 double checkCoefficient(const Validable& validable, double coefficient) {
-    if (std::isnan(coefficient) || coefficient < 0) {
+    if (std::isnan(coefficient)) {
         throw ValidationException(validable, stdcxx::format("Invalid zip load model coefficient: %1%", coefficient));
     }
     return coefficient;

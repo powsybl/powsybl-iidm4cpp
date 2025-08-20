@@ -20,13 +20,6 @@ LoadExponentialModel::LoadExponentialModel(double np, double nq) :
     m_nq(nq) {
 }
 
-std::unique_ptr<LoadModel> LoadExponentialModel::build(Load& load, double np, double nq) {
-    checkExponent(load, np);
-    checkExponent(load, nq);
-
-    return stdcxx::make_unique<LoadExponentialModel>(np, nq);
-}
-
 double LoadExponentialModel::getNp() const {
     return m_np;
 }

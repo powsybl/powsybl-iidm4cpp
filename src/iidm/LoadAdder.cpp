@@ -8,6 +8,8 @@
 #include <powsybl/iidm/LoadAdder.hpp>
 
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/LoadZipModelAdder.hpp>
+#include <powsybl/iidm/LoadExponentialModelAdder.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
@@ -28,6 +30,17 @@ Load& LoadAdder::add() {
     network.setValidationLevelIfGreaterThan(checkQ0(*this, m_q0, network.getMinimumValidationLevel()));
 
     std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(network, checkAndGetUniqueId(), getName(), isFictitious(), m_loadType, m_p0, m_q0);
+
+    std::unique_ptr<LoadModel> ptrLoadModel = nullptr;
+    if(m_loadZipAdder.has_value()) {
+        ptrLoadModel = m_loadZipAdder->build();
+    } else if(m_loadExpAdder.has_value()) {
+        ptrLoadModel = m_loadExpAdder->build();
+    }
+    if(static_cast<bool>(ptrLoadModel)) {
+        ptrLoad->setModel(std::move(ptrLoadModel));
+    }
+
     auto& load = network.checkAndAdd<Load>(std::move(ptrLoad));
 
     Terminal& terminal = load.addTerminal(checkAndGetTerminal());
@@ -45,6 +58,23 @@ const std::string& LoadAdder::getTypeDescription() const {
 LoadAdder& LoadAdder::setLoadType(const LoadType& loadType) {
     m_loadType = loadType;
     return *this;
+}
+
+void LoadAdder::setZipModelAdder(const LoadZipModelAdder& zipModelAdder) {
+    m_loadZipAdder.emplace(zipModelAdder);
+    m_loadExpAdder.reset();
+}
+
+void LoadAdder::setExpModelAdder(const LoadExponentialModelAdder& expModelAdder) {
+    m_loadExpAdder.emplace(expModelAdder);
+    m_loadZipAdder.reset();
+}
+
+LoadZipModelAdder LoadAdder::newZipModel() {
+    return LoadZipModelAdder(*this);
+}
+LoadExponentialModelAdder LoadAdder::newExponentialModel() {
+    return LoadExponentialModelAdder(*this);
 }
 
 LoadAdder& LoadAdder::setP0(double p0) {

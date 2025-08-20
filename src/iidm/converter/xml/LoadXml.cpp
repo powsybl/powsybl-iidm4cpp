@@ -12,7 +12,9 @@
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/LoadExponentialModel.hpp>
+#include <powsybl/iidm/LoadExponentialModelAdder.hpp>
 #include <powsybl/iidm/LoadZipModel.hpp>
+#include <powsybl/iidm/LoadZipModelAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 
@@ -61,12 +63,12 @@ void LoadXml::readSubElements(Load& load, NetworkXmlReaderContext& context) cons
             const auto& c0q = context.getReader().getAttributeValue<double>(C0Q);
             const auto& c1q = context.getReader().getAttributeValue<double>(C1Q);
             const auto& c2q = context.getReader().getAttributeValue<double>(C2Q);
-            load.setModel(LoadZipModel::build(load, c0p, c1p, c2p, c0q, c1q, c2q));
+            LoadZipModelAdder::addNewModel(load, c0p, c1p, c2p, c0q, c1q, c2q);
         } else if (context.getReader().getLocalName() == EXPONENTIAL_MODEL) {
             IidmXmlUtil::assertMinimumVersion(LOAD, EXPONENTIAL_MODEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_10(), context);
             const auto& np = context.getReader().getAttributeValue<double>(NP);
             const auto& nq = context.getReader().getAttributeValue<double>(NQ);
-            load.setModel(LoadExponentialModel::build(load, np, nq));
+            LoadExponentialModelAdder::addNewModel(load, np, nq);
         } else {
             AbstractConnectableXml::readSubElements(load, context);
         }
@@ -82,23 +84,26 @@ void LoadXml::writeRootElementAttributes(const Load& load, const VoltageLevel& /
 }
 
 void LoadXml::writeSubElements(const Load& load, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_10(), context.getVersion(), [&context, &load]() {
-        if (LoadModelType::ZIP == load.getModelType()) {
-            context.getWriter().writeStartElement(context.getVersion().getPrefix(), ZIP_MODEL);
-            context.getWriter().writeAttribute(C0P, load.getModel<LoadZipModel>().getC0p());
-            context.getWriter().writeAttribute(C1P, load.getModel<LoadZipModel>().getC1p());
-            context.getWriter().writeAttribute(C2P, load.getModel<LoadZipModel>().getC2p());
-            context.getWriter().writeAttribute(C0Q, load.getModel<LoadZipModel>().getC0q());
-            context.getWriter().writeAttribute(C1Q, load.getModel<LoadZipModel>().getC1q());
-            context.getWriter().writeAttribute(C2Q, load.getModel<LoadZipModel>().getC2q());
-            context.getWriter().writeEndElement();
-        } else if (LoadModelType::EXPONENTIAL == load.getModelType()) {
-            context.getWriter().writeStartElement(context.getVersion().getPrefix(), EXPONENTIAL_MODEL);
-            context.getWriter().writeAttribute(NP, load.getModel<LoadExponentialModel>().getNp());
-            context.getWriter().writeAttribute(NQ, load.getModel<LoadExponentialModel>().getNq());
-            context.getWriter().writeEndElement();
-        }
-    });
+    if(load.hasModel()) {
+        IidmXmlUtil::assertMinimumVersion(LOAD, "model", ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_10(), context);
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_10(), context.getVersion(), [&context, &load]() {
+            if (LoadModelType::ZIP == load.getModelType()) {
+                context.getWriter().writeStartElement(context.getVersion().getPrefix(), ZIP_MODEL);
+                context.getWriter().writeAttribute(C0P, load.getModel<LoadZipModel>().getC0p());
+                context.getWriter().writeAttribute(C1P, load.getModel<LoadZipModel>().getC1p());
+                context.getWriter().writeAttribute(C2P, load.getModel<LoadZipModel>().getC2p());
+                context.getWriter().writeAttribute(C0Q, load.getModel<LoadZipModel>().getC0q());
+                context.getWriter().writeAttribute(C1Q, load.getModel<LoadZipModel>().getC1q());
+                context.getWriter().writeAttribute(C2Q, load.getModel<LoadZipModel>().getC2q());
+                context.getWriter().writeEndElement();
+            } else if (LoadModelType::EXPONENTIAL == load.getModelType()) {
+                context.getWriter().writeStartElement(context.getVersion().getPrefix(), EXPONENTIAL_MODEL);
+                context.getWriter().writeAttribute(NP, load.getModel<LoadExponentialModel>().getNp());
+                context.getWriter().writeAttribute(NQ, load.getModel<LoadExponentialModel>().getNq());
+                context.getWriter().writeEndElement();
+            }
+        });
+    }
 }
 
 }  // namespace xml

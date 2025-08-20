@@ -9,6 +9,9 @@
 
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
+#include <powsybl/iidm/LoadExponentialModelAdder.hpp>
+#include <powsybl/iidm/LoadModel.hpp>
+#include <powsybl/iidm/LoadZipModelAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -156,6 +159,70 @@ BOOST_AUTO_TEST_CASE(setOptionalName) {
     BOOST_CHECK_EQUAL("LOAD1#", load1.getNameOrId());
 
 }
+
+BOOST_AUTO_TEST_CASE(ZipLoadModel) {
+    Network network = createNetwork();
+    VoltageLevel& vl1 = network.getVoltageLevel("VL1");
+
+    Load& load = vl1.newLoad()
+                        .setId("newZipLoad")
+                        .setBus("VL1_BUS1")
+                        .setP0(2.0)
+                        .setQ0(2.0)
+                        .newZipModel()
+                            .setC0p(0.3)
+                            .setC1p(0.5)
+                            .setC2p(0.2)
+                            .setC0q(0.1)
+                            .setC1q(0.2)
+                            .setC2q(0.7)
+                            .add()
+                        .add();
+    BOOST_CHECK_CLOSE(2.0, load.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, load.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(load.hasModel());
+    BOOST_CHECK(load.getModelType() == LoadModelType::ZIP);
+    LoadZipModel& loadModel = load.getModel<LoadZipModel>();
+    BOOST_CHECK_CLOSE(0.3, loadModel.getC0p(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.5, loadModel.getC1p(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.2, loadModel.getC2p(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.1, loadModel.getC0q(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.2, loadModel.getC1q(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.7, loadModel.getC2q(), std::numeric_limits<double>::epsilon());
+
+    POWSYBL_ASSERT_THROW(LoadZipModelAdder::addNewModel(load, 0.31, 0.51, 0.21, 0.11, 0.22, 0.71), ValidationException, "Load 'newZipLoad': Sum of c0p, c1p and c2p should be 1");
+    POWSYBL_ASSERT_THROW(LoadZipModelAdder::addNewModel(load, stdcxx::nan(), 0.51, 0.21, 0.11, 0.22, 0.71), ValidationException, "Load 'newZipLoad': Invalid zip load model coefficient: nan");
+}
+
+BOOST_AUTO_TEST_CASE(ExponentialLoadModel) {
+    Network network = createNetwork();
+    VoltageLevel& vl1 = network.getVoltageLevel("VL1");
+
+    Load& load = vl1.newLoad()
+                        .setId("newExpLoad")
+                        .setBus("VL1_BUS1")
+                        .setP0(2.0)
+                        .setQ0(2.0)
+                        .newExponentialModel()
+                            .setNp(0.6)
+                            .setNq(0.5)
+                            .add()
+                        .add();
+    BOOST_CHECK_CLOSE(2.0, load.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, load.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(load.hasModel());
+    BOOST_CHECK(load.getModelType() == LoadModelType::EXPONENTIAL);
+    LoadExponentialModel& loadModel = load.getModel<LoadExponentialModel>();
+    BOOST_CHECK_CLOSE(0.6, loadModel.getNp(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.5, loadModel.getNq(), std::numeric_limits<double>::epsilon());
+    LoadExponentialModelAdder::addNewModel(load, 0.61, 0.51);
+    loadModel = load.getModel<LoadExponentialModel>();
+    BOOST_CHECK_CLOSE(0.61, loadModel.getNp(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.51, loadModel.getNq(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_THROW(LoadExponentialModelAdder::addNewModel(load, -2, 0.51), ValidationException, "Load 'newExpLoad': Invalid load model exponential value: -2");
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

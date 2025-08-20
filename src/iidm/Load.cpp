@@ -49,11 +49,21 @@ const LoadType& Load::getLoadType() const {
     return m_loadType;
 }
 
+bool Load::hasModel() const {
+    return static_cast<bool>(m_model);
+}
+
 const LoadModel& Load::getModel() const {
+    if (!hasModel()) {
+        throw ValidationException(*this, "load model is not set");
+    }
     return *m_model;
 }
 
 LoadModel& Load::getModel() {
+    if (!hasModel()) {
+        throw ValidationException(*this, "load model is not set");
+    }
     return *m_model;
 }
 
@@ -96,7 +106,6 @@ Load& Load::setLoadType(const LoadType& loadType) {
 
 Load& Load::setModel(std::unique_ptr<LoadModel>&& model) {
     m_model = std::move(model);
-
     return *this;
 }
 

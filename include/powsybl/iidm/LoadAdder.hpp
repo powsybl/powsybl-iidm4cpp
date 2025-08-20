@@ -9,8 +9,12 @@
 #define POWSYBL_IIDM_LOADADDER_HPP
 
 #include <powsybl/iidm/InjectionAdder.hpp>
+#include <powsybl/iidm/LoadExponentialModelAdder.hpp>
+#include <powsybl/iidm/LoadModel.hpp>
 #include <powsybl/iidm/LoadType.hpp>
+#include <powsybl/iidm/LoadZipModelAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
 
@@ -28,6 +32,9 @@ public:
 
     LoadAdder& setLoadType(const LoadType& loadType);
 
+    LoadZipModelAdder newZipModel();
+    LoadExponentialModelAdder newExponentialModel();
+
     LoadAdder& setP0(double p0);
 
     LoadAdder& setQ0(double q0);
@@ -40,8 +47,16 @@ private:
 
     friend class VoltageLevel;
 
+    void setZipModelAdder(const LoadZipModelAdder& zipModelAdder);
+    friend class LoadZipModelAdder;
+    void setExpModelAdder(const LoadExponentialModelAdder& expModelAdder);
+    friend class LoadExponentialModelAdder;
+
 private:
     LoadType m_loadType = LoadType::UNDEFINED;
+
+    stdcxx::optional<LoadZipModelAdder> m_loadZipAdder;
+    stdcxx::optional<LoadExponentialModelAdder> m_loadExpAdder;
 
     double m_p0 = stdcxx::nan();
 

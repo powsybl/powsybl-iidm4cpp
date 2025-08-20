@@ -20,11 +20,8 @@ class Load;
 
 class LoadZipModel : public LoadModel {
 public:
-    LoadZipModel(double c0p, double c1p, double c2p, double c0q, double c1q, double c2q);
-
+    LoadZipModel() = delete;
     ~LoadZipModel() noexcept override = default;
-
-    static std::unique_ptr<LoadModel> build(Load& load, double c0p, double c1p, double c2p, double c0q, double c1q, double c2q);
 
     double getC0p() const;
 
@@ -39,6 +36,10 @@ public:
     double getC2q() const;
 
 private:  // LoadModel
+
+    LoadZipModel(double c0p, double c1p, double c2p, double c0q, double c1q, double c2q);
+
+    friend class LoadZipModelAdder;
 
     const LoadModelType& getType() const override;
 

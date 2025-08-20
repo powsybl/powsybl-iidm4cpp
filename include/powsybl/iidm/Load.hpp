@@ -31,6 +31,8 @@ public:
 
     const LoadType& getLoadType() const;
 
+    bool hasModel() const;
+
     template <typename T, typename = typename std::enable_if<std::is_base_of<LoadModel, T>::value>::type>
     const T& getModel() const;
 
@@ -68,7 +70,7 @@ private: // Identifiable
 private:
     LoadType m_loadType;
 
-    std::unique_ptr<LoadModel> m_model;
+    std::unique_ptr<LoadModel> m_model = nullptr;
 
     std::vector<double> m_p0;
 

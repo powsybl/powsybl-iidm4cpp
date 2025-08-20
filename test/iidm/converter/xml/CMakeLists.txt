@@ -34,6 +34,7 @@ set(UNIT_TEST_SOURCES
     LinesRoundTripTest.cpp
     LoadingLimitsBugTest.cpp
     LoadingLimitsXmlTest.cpp
+    LoadModelXmlTest.cpp
     NetworkXmlTest.cpp
     NetworkXmlReaderContextTest.cpp
     NetworkXmlWriterContextTest.cpp
