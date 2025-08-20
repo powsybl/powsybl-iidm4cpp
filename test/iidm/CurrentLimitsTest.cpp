@@ -16,6 +16,7 @@
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/iidm/util/LimitViolationUtils.hpp>
 #include <powsybl/logging/ContainerLogger.hpp>
 #include <powsybl/logging/LogMessage.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -431,7 +432,7 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
     Branch::Overload& overload = *ptrOverload;
-    BOOST_CHECK_EQUAL("", overload.getPreviousLimitName());
+    BOOST_CHECK_EQUAL(LimitViolationUtils::PERMANENT_LIMIT_NAME, overload.getPreviousLimitName());
     BOOST_CHECK_CLOSE(4.0, overload.getPreviousLimit(), std::numeric_limits<double>::epsilon());
     const CurrentLimits::TemporaryLimit& tl = overload.getTemporaryLimit();
     auto limits = line.getCurrentLimits1().get();

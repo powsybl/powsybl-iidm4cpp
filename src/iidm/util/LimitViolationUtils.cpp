@@ -29,7 +29,7 @@ std::unique_ptr<Branch::Overload> checkTemporaryLimits(const Branch& branch, con
     std::unique_ptr<Branch::Overload> res;
     stdcxx::CReference<LoadingLimits> limits = branch.getLimits(type, side);
     if (static_cast<bool>(limits) && !std::isnan(limits.get().getPermanentLimit()) && !std::isnan(i)) {
-        std::string previousLimitName;
+        std::string previousLimitName = PERMANENT_LIMIT_NAME;
         double previousLimit = limits.get().getPermanentLimit();
         for (const auto& tl : limits.get().getTemporaryLimits()) { // iterate in ascending order
             if (std::isgreaterequal(i, previousLimit * limitReduction) && std::isless(i, tl.getValue() * limitReduction)) {
