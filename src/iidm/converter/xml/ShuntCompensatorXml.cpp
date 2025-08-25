@@ -14,6 +14,11 @@
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
 
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
+#include <powsybl/stdcxx/format.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -123,7 +128,14 @@ void ShuntCompensatorXml::readSubElements(const std::string& id, ShuntCompensato
 void ShuntCompensatorXml::writeModel(const ShuntCompensator& sc, NetworkXmlWriterContext& context) {
     if (sc.getModelType() == ShuntCompensatorModelType::LINEAR) {
         context.getWriter().writeStartElement(context.getVersion().getPrefix(), SHUNT_LINEAR_MODEL);
-        context.getWriter().writeAttribute(B_PER_SECTION, sc.getModel<ShuntCompensatorLinearModel>().getBPerSection());
+        double bPerSection = sc.getModel<ShuntCompensatorLinearModel>().getBPerSection();
+        if(bPerSection == 0.0 && context.getVersion() <= IidmXmlVersion::V1_4()) {
+            logging::Logger& logger = logging::LoggerFactory::getLogger<ShuntCompensatorXml>();
+            logger.warn(stdcxx::format("bPerSection of %1% is 0. It is set as %2% since XIIDM version < 1.5 (%3%)", sc.getId(), 
+                std::numeric_limits<double>::min(), context.getVersion().toString(".")));
+            bPerSection = std::numeric_limits<double>::min();
+        }
+        context.getWriter().writeAttribute(B_PER_SECTION, bPerSection);
         context.getWriter().writeAttribute(G_PER_SECTION, sc.getModel<ShuntCompensatorLinearModel>().getGPerSection());
         context.getWriter().writeAttribute(MAXIMUM_SECTION_COUNT, sc.getMaximumSectionCount());
         context.getWriter().writeEndElement();
@@ -150,6 +162,12 @@ void ShuntCompensatorXml::writeRootElementAttributes(const ShuntCompensator& shu
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &shuntCompensator]() {
         const ShuntCompensatorModel& model = shuntCompensator.getModel();
         double bPerSection = stdcxx::isInstanceOf<ShuntCompensatorLinearModel>(model) ? shuntCompensator.getModel<ShuntCompensatorLinearModel>().getBPerSection() : shuntCompensator.getB();
+        if(bPerSection == 0.0) {
+            logging::Logger& logger = logging::LoggerFactory::getLogger<ShuntCompensatorXml>();
+            logger.warn(stdcxx::format("bPerSection of %1% is 0. It is set as %2% since XIIDM version < 1.5 (%3%)", shuntCompensator.getId(), 
+                std::numeric_limits<double>::min(), context.getVersion().toString(".")));
+            bPerSection = std::numeric_limits<double>::min();
+        }
         context.getWriter().writeAttribute(B_PER_SECTION, bPerSection);
         unsigned long maximumSectionCount = stdcxx::isInstanceOf<ShuntCompensatorLinearModel>(model) ? shuntCompensator.getMaximumSectionCount() : 1;
         context.getWriter().writeAttribute(MAXIMUM_SECTION_COUNT, maximumSectionCount);

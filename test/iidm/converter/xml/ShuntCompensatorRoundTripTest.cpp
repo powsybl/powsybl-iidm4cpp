@@ -14,6 +14,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
+#include <powsybl/iidm/ShuntCompensatorLinearModel.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/Terminal.hpp>
@@ -126,6 +127,28 @@ Network createNonLinear() {
     return network;
 }
 
+Network createWithBPerSection(double bPerSection) {
+    Network network = createBaseNetwork();
+
+    network.getVoltageLevel("VL1").newShuntCompensator()
+                .setId("SHUNT")
+                .setBus("B1")
+                .setConnectableBus("B1")
+                .setSectionCount(1)
+                .setVoltageRegulatorOn(true)
+                .setRegulatingTerminal(stdcxx::ref(network.getLoad("LOAD").getTerminal()))
+                .setTargetV(200)
+                .setTargetDeadband(5.0)
+                .newLinearModel()
+                    .setMaximumSectionCount(1)
+                    .setBPerSection(bPerSection)
+                    .add()
+                .add()
+                .addAlias("Alias");
+
+    return network;
+}
+
 BOOST_AUTO_TEST_SUITE(ShuntCompensatorRoundTrip)
 
 BOOST_FIXTURE_TEST_CASE(ShuntLinearRoundTripTest, test::ResourceFixture) {
@@ -164,6 +187,39 @@ BOOST_FIXTURE_TEST_CASE(ShuntNonLinearRoundTripTest, test::ResourceFixture) {
         };
         test::converter::RoundTrip::writeXmlTest(network, writer, test::converter::RoundTrip::getVersionedNetwork("nonLinearShuntRoundTripRef.xml", version));
     });
+}
+
+BOOST_AUTO_TEST_CASE(ShuntLinearNullBPerSection) {
+
+    Network network = createWithBPerSection(0.0);
+
+    const std::string& filename = stdcxx::format("shunt.xml");
+    std::stringstream stream;
+    ExportOptions options = ExportOptions().setVersion(IidmXmlVersion::V1_4().toString("."));
+    Network::writeXml(filename, stream, network, options);
+    std::string refString = stream.str();
+    stream.str(refString);
+    stream.clear();
+    Network n = Network::readXml(filename, stream);
+    ShuntCompensator& sc = n.getShuntCompensator("SHUNT");
+    double bPerSection = sc.getModel<ShuntCompensatorLinearModel>().getBPerSection();
+    BOOST_CHECK_EQUAL(std::numeric_limits<double>::min(), bPerSection);
+
+    std::stringstream stream2;
+    network.getShuntCompensator("SHUNT")
+                .setVoltageRegulatorOn(false)
+                .setTargetV(stdcxx::nan())
+                .setTargetDeadband(stdcxx::nan())
+                .setRegulatingTerminal(stdcxx::ref<Terminal>());
+    options.setVersion(IidmXmlVersion::V1_1().toString("."));
+    Network::writeXml(filename, stream2, network, options);
+    std::string refString2 = stream.str();
+    stream2.str(refString2);
+    stream2.clear();
+    Network n2 = Network::readXml(filename, stream2);
+    ShuntCompensator& sc2 = n2.getShuntCompensator("SHUNT");
+    double bPerSection2 = sc2.getModel<ShuntCompensatorLinearModel>().getBPerSection();
+    BOOST_CHECK_EQUAL(std::numeric_limits<double>::min(), bPerSection2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
