@@ -19,13 +19,13 @@ namespace powsybl {
 
 namespace iidm {
 
-template <typename Adder>
-InjectionAdder<Adder>::InjectionAdder(VoltageLevel& voltageLevel) :
+template <typename Added, typename Adder>
+InjectionAdder<Added, Adder>::InjectionAdder(VoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
-template <typename Adder>
-std::unique_ptr<Terminal> InjectionAdder<Adder>::checkAndGetTerminal() {
+template <typename Added, typename Adder>
+std::unique_ptr<Terminal> InjectionAdder<Added, Adder>::checkAndGetTerminal() {
     return TerminalBuilder(m_voltageLevel, *this)
                .setNode(m_node)
                .setBus(m_bus)
@@ -33,40 +33,40 @@ std::unique_ptr<Terminal> InjectionAdder<Adder>::checkAndGetTerminal() {
                .build();
 }
 
-template <typename Adder>
-const Network& InjectionAdder<Adder>::getNetwork() const {
+template <typename Added, typename Adder>
+const Network& InjectionAdder<Added, Adder>::getNetwork() const {
     return m_voltageLevel.getNetwork();
 }
 
-template <typename Adder>
-Network& InjectionAdder<Adder>::getNetwork() {
+template <typename Added, typename Adder>
+Network& InjectionAdder<Added, Adder>::getNetwork() {
     return m_voltageLevel.getNetwork();
 }
 
-template <typename Adder>
-const VoltageLevel& InjectionAdder<Adder>::getVoltageLevel() const {
+template <typename Added, typename Adder>
+const VoltageLevel& InjectionAdder<Added, Adder>::getVoltageLevel() const {
     return m_voltageLevel;
 }
 
-template <typename Adder>
-VoltageLevel& InjectionAdder<Adder>::getVoltageLevel() {
+template <typename Added, typename Adder>
+VoltageLevel& InjectionAdder<Added, Adder>::getVoltageLevel() {
     return m_voltageLevel;
 }
 
-template <typename Adder>
-Adder& InjectionAdder<Adder>::setBus(const std::string& bus) {
+template <typename Added, typename Adder>
+Adder& InjectionAdder<Added, Adder>::setBus(const std::string& bus) {
     m_bus = bus;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& InjectionAdder<Adder>::setConnectableBus(const std::string& connectableBus) {
+template <typename Added, typename Adder>
+Adder& InjectionAdder<Added, Adder>::setConnectableBus(const std::string& connectableBus) {
     m_connectableBus = connectableBus;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& InjectionAdder<Adder>::setNode(unsigned long node) {
+template <typename Added, typename Adder>
+Adder& InjectionAdder<Added, Adder>::setNode(unsigned long node) {
     m_node = node;
     return static_cast<Adder&>(*this);
 }

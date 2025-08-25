@@ -30,7 +30,7 @@ const char* AbstractSwitchXml<Adder>::getRootElementName() const {
 template <typename Adder>
 void AbstractSwitchXml<Adder>::readSubElements(Switch& sw, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(SWITCH, [this, &sw, &context]() {
-        AbstractIdentifiableXml<Switch, Adder, VoltageLevel>::readSubElements(sw, context);
+        AbstractSimpleIdentifiableXml<Switch, Adder, VoltageLevel>::readSubElements(sw, context);
     });
 }
 

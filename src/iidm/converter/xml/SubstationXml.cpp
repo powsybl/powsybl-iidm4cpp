@@ -73,7 +73,7 @@ void SubstationXml::readSubElements(Substation& substation, NetworkXmlReaderCont
         } else if (context.getReader().getLocalName() == THREE_WINDINGS_TRANSFORMER) {
             ThreeWindingsTransformerXml::getInstance().read(substation, context);
         } else {
-            AbstractIdentifiableXml::readSubElements(substation, context);
+            AbstractSimpleIdentifiableXml::readSubElements(substation, context);
         }
     });
 }

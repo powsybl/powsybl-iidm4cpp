@@ -20,11 +20,11 @@ namespace iidm {
 class HvdcConverterStation;
 class Network;
 
-class HvdcLineAdder : public IdentifiableAdder<HvdcLineAdder> {
+class HvdcLineAdder : public IdentifiableAdder<HvdcLine, HvdcLineAdder> {
 public:
     ~HvdcLineAdder() noexcept override = default;
 
-    HvdcLine& add();
+    HvdcLine& add() override;
 
     HvdcLineAdder& setActivePowerSetpoint(double activePowerSetpoint);
 

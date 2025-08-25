@@ -17,11 +17,11 @@ namespace powsybl {
 
 namespace iidm {
 
-class StaticVarCompensatorAdder : public InjectionAdder<StaticVarCompensatorAdder> {
+class StaticVarCompensatorAdder : public InjectionAdder<StaticVarCompensator, StaticVarCompensatorAdder> {
 public:
     ~StaticVarCompensatorAdder() noexcept override = default;
 
-    StaticVarCompensator& add();
+    StaticVarCompensator& add() override;
 
     StaticVarCompensatorAdder& setBmax(double bMax);
 

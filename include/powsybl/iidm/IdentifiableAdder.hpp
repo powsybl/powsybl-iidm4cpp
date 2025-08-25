@@ -18,7 +18,7 @@ namespace iidm {
 
 class Network;
 
-template<typename Adder>
+template<typename Added, typename Adder>
 class IdentifiableAdder : public Validable {
 public: // Validable
     std::string getMessageHeader() const override;
@@ -35,6 +35,8 @@ public:
     virtual Adder& setId(const std::string& id);
 
     virtual Adder& setName(const std::string& name);
+
+    virtual Added& add() = 0;
 
 protected:
     std::string checkAndGetUniqueId() const;

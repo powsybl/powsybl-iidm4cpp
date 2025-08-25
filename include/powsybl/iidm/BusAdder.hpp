@@ -17,9 +17,9 @@ namespace iidm {
 class Bus;
 class VoltageLevel;
 
-class BusAdder : public IdentifiableAdder<BusAdder> {
+class BusAdder : public IdentifiableAdder<Bus, BusAdder> {
 public:
-    Bus& add();
+    Bus& add() override;
 
 protected: // IdentifiableAdder
     const Network& getNetwork() const override;

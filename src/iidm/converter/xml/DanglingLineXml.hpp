@@ -12,6 +12,7 @@
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +22,7 @@ namespace converter {
 
 namespace xml {
 
-class DanglingLineXml : public AbstractConnectableXml<DanglingLine, DanglingLineAdder, VoltageLevel> {
+class DanglingLineXml : public AbstractSimpleIdentifiableXml<DanglingLine, DanglingLineAdder, VoltageLevel>, public AbstractConnectableXml {
 public:
     static const DanglingLineXml& getInstance();
 

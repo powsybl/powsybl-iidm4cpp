@@ -17,11 +17,11 @@ namespace iidm {
 
 class LccConverterStation;
 
-class LccConverterStationAdder : public HvdcConverterStationAdder<LccConverterStationAdder> {
+class LccConverterStationAdder : public HvdcConverterStationAdder<LccConverterStation, LccConverterStationAdder> {
 public:
     ~LccConverterStationAdder() noexcept override = default;
 
-    LccConverterStation& add();
+    LccConverterStation& add() override;
 
     LccConverterStationAdder& setPowerFactor(double powerFactor);
 

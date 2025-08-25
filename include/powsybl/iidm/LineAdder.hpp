@@ -18,13 +18,13 @@ namespace iidm {
 class Line;
 class Network;
 
-class LineAdder : public BranchAdder<LineAdder> {
+class LineAdder : public BranchAdder<Line, LineAdder> {
 public:
     explicit LineAdder(Network& network);
 
     ~LineAdder() noexcept override = default;
 
-    Line& add();
+    Line& add() override;
 
     LineAdder& setB1(double b1);
 

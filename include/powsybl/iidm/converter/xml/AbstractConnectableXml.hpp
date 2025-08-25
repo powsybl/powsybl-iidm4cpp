@@ -8,12 +8,17 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HPP
 
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/BranchAdder.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/InjectionAdder.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
-#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+#include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
+#include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/stdcxx/optional.hpp>
+
 
 namespace powsybl {
 
@@ -36,8 +41,7 @@ namespace converter {
 
 namespace xml {
 
-template <typename Added, typename Adder, typename Parent>
-class AbstractConnectableXml : public AbstractIdentifiableXml<Added, Adder, Parent> {
+class AbstractConnectableXml {
 public:
     static void readActivePowerLimits(ActivePowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
@@ -54,9 +58,11 @@ public:
     static void writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
 protected:
-    static void readNodeOrBus(BranchAdder<Adder>& adder, const NetworkXmlReaderContext& context);
+    template <typename Added, typename Adder>
+    static void readNodeOrBus(BranchAdder<Added, Adder>& adder, const NetworkXmlReaderContext& context);
 
-    static void readNodeOrBus(InjectionAdder<Adder>& adder, const NetworkXmlReaderContext& context);
+    template <typename Added, typename Adder>
+    static void readNodeOrBus(InjectionAdder<Added, Adder>& adder, const NetworkXmlReaderContext& context);
 
     static void readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder& adder, const NetworkXmlReaderContext& context);
 
@@ -69,7 +75,7 @@ protected:
 protected:
     AbstractConnectableXml() = default;
 
-    ~AbstractConnectableXml() noexcept override = default;
+    ~AbstractConnectableXml() noexcept = default;
 
 private:
     template <typename LimitsAdder>

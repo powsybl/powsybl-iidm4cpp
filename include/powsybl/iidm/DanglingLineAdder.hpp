@@ -21,12 +21,12 @@ class DanglingLine;
 class Network;
 class VoltageLevel;
 
-class DanglingLineAdder : public InjectionAdder<DanglingLineAdder> {
+class DanglingLineAdder : public InjectionAdder<DanglingLine, DanglingLineAdder> {
 public:
     using GenerationAdder = dangling_line::GenerationAdder;
 
 public:
-    DanglingLine& add();
+    DanglingLine& add() override;
 
     GenerationAdder newGeneration();
 

@@ -11,7 +11,7 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
-#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +21,7 @@ namespace converter {
 
 namespace xml {
 
-class VoltageLevelXml : public AbstractIdentifiableXml<VoltageLevel, VoltageLevelAdder, Container> {
+class VoltageLevelXml : public AbstractSimpleIdentifiableXml<VoltageLevel, VoltageLevelAdder, Container> {
 public:
     static const VoltageLevelXml& getInstance();
 

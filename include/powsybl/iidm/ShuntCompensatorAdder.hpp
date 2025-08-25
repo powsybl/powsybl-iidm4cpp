@@ -23,7 +23,7 @@ class Network;
 class ShuntCompensator;
 class VoltageLevel;
 
-class ShuntCompensatorAdder : public InjectionAdder<ShuntCompensatorAdder> {
+class ShuntCompensatorAdder : public InjectionAdder<ShuntCompensator, ShuntCompensatorAdder> {
 public:
     using ShuntCompensatorLinearModelAdder = shunt_compensator::ShuntCompensatorLinearModelAdder;
 
@@ -34,7 +34,7 @@ public:
 
     ~ShuntCompensatorAdder() noexcept override = default;
 
-    ShuntCompensator& add();
+    ShuntCompensator& add() override;
 
     ShuntCompensatorLinearModelAdder newLinearModel();
 

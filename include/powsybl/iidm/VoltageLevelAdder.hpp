@@ -21,11 +21,11 @@ namespace iidm {
 class Substation;
 class VoltageLevel;
 
-class VoltageLevelAdder : public IdentifiableAdder<VoltageLevelAdder> {
+class VoltageLevelAdder : public IdentifiableAdder<VoltageLevel, VoltageLevelAdder> {
 public:
     ~VoltageLevelAdder() noexcept override = default;
 
-    VoltageLevel& add();
+    VoltageLevel& add() override;
 
     VoltageLevelAdder& setHighVoltageLimit(double highVoltageLimit);
 

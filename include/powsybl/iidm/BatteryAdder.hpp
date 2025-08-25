@@ -19,11 +19,11 @@ class Battery;
 class Network;
 class VoltageLevel;
 
-class BatteryAdder : public InjectionAdder<BatteryAdder> {
+class BatteryAdder : public InjectionAdder<Battery, BatteryAdder> {
 public:
     ~BatteryAdder() noexcept override = default;
 
-    Battery& add();
+    Battery& add() override;
 
     BatteryAdder& setMaxP(double maxP);
 

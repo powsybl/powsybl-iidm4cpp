@@ -22,7 +22,7 @@ class Substation;
 class Terminal;
 class VoltageLevel;
 
-class ThreeWindingsTransformerAdder : public IdentifiableAdder<ThreeWindingsTransformerAdder> {
+class ThreeWindingsTransformerAdder : public IdentifiableAdder<ThreeWindingsTransformer, ThreeWindingsTransformerAdder> {
 public:
     using LegAdder = three_windings_transformer::LegAdder;
 
@@ -33,7 +33,7 @@ public:
 
     ~ThreeWindingsTransformerAdder() noexcept override = default;
 
-    ThreeWindingsTransformer& add();
+    ThreeWindingsTransformer& add() override;
 
     LegAdder newLeg1();
 

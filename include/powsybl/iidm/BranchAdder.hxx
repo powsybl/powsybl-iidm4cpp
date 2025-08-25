@@ -18,8 +18,8 @@ namespace powsybl {
 
 namespace iidm {
 
-template <typename Adder>
-std::unique_ptr<Terminal> BranchAdder<Adder>::checkAndGetTerminal1(VoltageLevel& voltageLevel) {
+template <typename Added, typename Adder>
+std::unique_ptr<Terminal> BranchAdder<Added, Adder>::checkAndGetTerminal1(VoltageLevel& voltageLevel) {
     return TerminalBuilder(voltageLevel, *this)
                .setNode(m_node1)
                .setBus(m_bus1)
@@ -27,8 +27,8 @@ std::unique_ptr<Terminal> BranchAdder<Adder>::checkAndGetTerminal1(VoltageLevel&
                .build();
 }
 
-template <typename Adder>
-std::unique_ptr<Terminal> BranchAdder<Adder>::checkAndGetTerminal2(VoltageLevel& voltageLevel) {
+template <typename Added, typename Adder>
+std::unique_ptr<Terminal> BranchAdder<Added, Adder>::checkAndGetTerminal2(VoltageLevel& voltageLevel) {
     return TerminalBuilder(voltageLevel, *this)
                .setNode(m_node2)
                .setBus(m_bus2)
@@ -36,8 +36,8 @@ std::unique_ptr<Terminal> BranchAdder<Adder>::checkAndGetTerminal2(VoltageLevel&
                .build();
 }
 
-template <typename Adder>
-VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel1() {
+template <typename Added, typename Adder>
+VoltageLevel& BranchAdder<Added, Adder>::checkAndGetVoltageLevel1() {
     if (m_voltageLevelId1.empty()) {
         std::string defaultVoltageLevelId1 = checkAndGetDefaultVoltageLevelId(m_connectableBus1);
         if(defaultVoltageLevelId1.empty()) {
@@ -54,8 +54,8 @@ VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel1() {
     return voltageLevel1.get();
 }
 
-template <typename Adder>
-VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel2() {
+template <typename Added, typename Adder>
+VoltageLevel& BranchAdder<Added, Adder>::checkAndGetVoltageLevel2() {
     if (m_voltageLevelId2.empty()) {
         std::string defaultVoltageLevelId2 = checkAndGetDefaultVoltageLevelId(m_connectableBus2);
         if(defaultVoltageLevelId2.empty()) {
@@ -72,8 +72,8 @@ VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel2() {
     return voltageLevel2.get();
 }
 
-template <typename Adder>
-std::string BranchAdder<Adder>::checkAndGetDefaultVoltageLevelId(const std::string& connectableBusId) {
+template <typename Added, typename Adder>
+std::string BranchAdder<Added, Adder>::checkAndGetDefaultVoltageLevelId(const std::string& connectableBusId) {
     if(connectableBusId.empty()) {
         return "";
     }
@@ -84,8 +84,8 @@ std::string BranchAdder<Adder>::checkAndGetDefaultVoltageLevelId(const std::stri
     return bus.get().getVoltageLevel().getId();
 }
 
-template <typename Adder>
-void BranchAdder<Adder>::checkConnectableBuses() {
+template <typename Added, typename Adder>
+void BranchAdder<Added, Adder>::checkConnectableBuses() {
     if(m_connectableBus1.empty() && !m_bus1.empty()) {
         m_connectableBus1 = m_bus1;
     }
@@ -94,50 +94,50 @@ void BranchAdder<Adder>::checkConnectableBuses() {
     }
 }
 
-template <typename Adder>
-Adder& BranchAdder<Adder>::setBus1(const std::string& bus1) {
+template <typename Added, typename Adder>
+Adder& BranchAdder<Added, Adder>::setBus1(const std::string& bus1) {
     m_bus1 = bus1;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& BranchAdder<Adder>::setBus2(const std::string& bus2) {
+template <typename Added, typename Adder>
+Adder& BranchAdder<Added, Adder>::setBus2(const std::string& bus2) {
     m_bus2 = bus2;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& BranchAdder<Adder>::setConnectableBus1(const std::string& connectableBus1) {
+template <typename Added, typename Adder>
+Adder& BranchAdder<Added, Adder>::setConnectableBus1(const std::string& connectableBus1) {
     m_connectableBus1 = connectableBus1;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& BranchAdder<Adder>::setConnectableBus2(const std::string& connectableBus2) {
+template <typename Added, typename Adder>
+Adder& BranchAdder<Added, Adder>::setConnectableBus2(const std::string& connectableBus2) {
     m_connectableBus2 = connectableBus2;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& BranchAdder<Adder>::setNode1(unsigned long node1) {
+template <typename Added, typename Adder>
+Adder& BranchAdder<Added, Adder>::setNode1(unsigned long node1) {
     m_node1 = node1;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& BranchAdder<Adder>::setNode2(unsigned long node2) {
+template <typename Added, typename Adder>
+Adder& BranchAdder<Added, Adder>::setNode2(unsigned long node2) {
     m_node2 = node2;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& BranchAdder<Adder>::setVoltageLevel1(const std::string& voltageLevelId1) {
+template <typename Added, typename Adder>
+Adder& BranchAdder<Added, Adder>::setVoltageLevel1(const std::string& voltageLevelId1) {
     m_voltageLevelId1 = voltageLevelId1;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& BranchAdder<Adder>::setVoltageLevel2(const std::string& voltageLevelId2) {
+template <typename Added, typename Adder>
+Adder& BranchAdder<Added, Adder>::setVoltageLevel2(const std::string& voltageLevelId2) {
     m_voltageLevelId2 = voltageLevelId2;
     return static_cast<Adder&>(*this);
 }

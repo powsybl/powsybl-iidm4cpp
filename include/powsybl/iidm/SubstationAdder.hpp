@@ -22,11 +22,11 @@ namespace iidm {
 class Network;
 class Substation;
 
-class SubstationAdder : public IdentifiableAdder<SubstationAdder> {
+class SubstationAdder : public IdentifiableAdder<Substation, SubstationAdder> {
 public:
     ~SubstationAdder() noexcept override = default;
 
-    Substation& add();
+    Substation& add() override;
 
     SubstationAdder& addGeographicalTag(const std::string& geographicalTag);
 

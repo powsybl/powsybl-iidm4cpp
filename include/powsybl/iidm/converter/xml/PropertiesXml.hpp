@@ -8,6 +8,9 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_PROPERTIESXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_PROPERTIESXML_HPP
 
+#include <functional>
+#include <vector>
+
 namespace powsybl {
 
 namespace iidm {
@@ -25,9 +28,13 @@ class PropertiesXml {
 public:
     static void read(Identifiable& identifiable, NetworkXmlReaderContext& context);
 
+    static void read(std::vector<std::function<void(Identifiable&)>>& toApply, const NetworkXmlReaderContext& context);
+
     static void write(const Identifiable& identifiable, NetworkXmlWriterContext& context);
 
 private:
+    static std::function<void(Identifiable&)> read(const NetworkXmlReaderContext& context);
+
     PropertiesXml() = default;
 
     ~PropertiesXml() noexcept = default;

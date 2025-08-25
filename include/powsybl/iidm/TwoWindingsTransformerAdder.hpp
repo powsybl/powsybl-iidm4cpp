@@ -19,7 +19,7 @@ class Network;
 class Substation;
 class TwoWindingsTransformer;
 
-class TwoWindingsTransformerAdder : public BranchAdder<TwoWindingsTransformerAdder> {
+class TwoWindingsTransformerAdder : public BranchAdder<TwoWindingsTransformer, TwoWindingsTransformerAdder> {
 public:
     explicit TwoWindingsTransformerAdder(Network& network);
 
@@ -27,7 +27,7 @@ public:
 
     ~TwoWindingsTransformerAdder() noexcept override = default;
 
-    TwoWindingsTransformer& add();
+    TwoWindingsTransformer& add() override;
 
     TwoWindingsTransformerAdder& setB(double b);
 

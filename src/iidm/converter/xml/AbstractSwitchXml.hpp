@@ -10,7 +10,7 @@
 
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +21,7 @@ namespace converter {
 namespace xml {
 
 template <typename Adder>
-class AbstractSwitchXml : public AbstractIdentifiableXml<Switch, Adder, VoltageLevel> {
+class AbstractSwitchXml : public AbstractSimpleIdentifiableXml<Switch, Adder, VoltageLevel> {
 public:  // AbstractIdentifiableXml
     const char* getRootElementName() const override;
 

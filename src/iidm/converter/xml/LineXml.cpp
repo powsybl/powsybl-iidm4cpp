@@ -71,7 +71,7 @@ void LineXml::readSubElements(Line& line, NetworkXmlReaderContext& context) cons
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
             readCurrentLimits(line.newCurrentLimits2(), context.getReader(), 2);
         } else {
-            AbstractConnectableXml::readSubElements(line, context);
+            AbstractSimpleIdentifiableXml::readSubElements(line, context);
         }
     });
 }

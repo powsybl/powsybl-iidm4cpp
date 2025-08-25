@@ -20,8 +20,8 @@ namespace iidm {
 class Terminal;
 class VoltageLevel;
 
-template <typename Adder>
-class InjectionAdder : public IdentifiableAdder<Adder> {
+template <typename Added, typename Adder>
+class InjectionAdder : public IdentifiableAdder<Added, Adder> {
 public:
     ~InjectionAdder() noexcept override = default;
 

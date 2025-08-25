@@ -12,6 +12,7 @@
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +22,7 @@ namespace converter {
 
 namespace xml {
 
-class VscConverterStationXml : public AbstractConnectableXml<VscConverterStation, VscConverterStationAdder, VoltageLevel> {
+class VscConverterStationXml : public AbstractSimpleIdentifiableXml<VscConverterStation, VscConverterStationAdder, VoltageLevel>, public AbstractConnectableXml {
 public:
     static const VscConverterStationXml& getInstance();
 

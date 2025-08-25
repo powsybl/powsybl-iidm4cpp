@@ -42,7 +42,7 @@ LccConverterStation& LccConverterStationXml::readRootElementAttributes(LccConver
 
 void LccConverterStationXml::readSubElements(LccConverterStation& converterStation, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(LCC_CONVERTER_STATION, [this, &converterStation, &context]() {
-        AbstractConnectableXml::readSubElements(converterStation, context);
+        AbstractSimpleIdentifiableXml::readSubElements(converterStation, context);
     });
 }
 

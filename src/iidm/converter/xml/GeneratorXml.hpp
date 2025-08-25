@@ -12,6 +12,7 @@
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +22,7 @@ namespace converter {
 
 namespace xml {
 
-class GeneratorXml : public AbstractConnectableXml<Generator, GeneratorAdder, VoltageLevel> {
+class GeneratorXml : public AbstractSimpleIdentifiableXml<Generator, GeneratorAdder, VoltageLevel>, public AbstractConnectableXml {
 public:
     static const GeneratorXml& getInstance();
 

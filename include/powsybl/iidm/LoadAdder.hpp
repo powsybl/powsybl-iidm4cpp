@@ -24,11 +24,11 @@ class Load;
 class Network;
 class VoltageLevel;
 
-class LoadAdder : public InjectionAdder<LoadAdder> {
+class LoadAdder : public InjectionAdder<Load, LoadAdder> {
 public:
     ~LoadAdder() noexcept override = default;
 
-    Load& add();
+    Load& add() override;
 
     LoadAdder& setLoadType(const LoadType& loadType);
 

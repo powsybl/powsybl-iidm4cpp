@@ -23,9 +23,26 @@ namespace converter {
 namespace xml {
 
 void PropertiesXml::read(Identifiable& identifiable, NetworkXmlReaderContext& context) {
+    read(context)(identifiable);
+}
+
+void PropertiesXml::read(std::vector<std::function<void(Identifiable&)>>& toApply, const NetworkXmlReaderContext& context) {
+    toApply.emplace_back(read(context));
+}
+
+std::function<void(Identifiable&)> PropertiesXml::read(const NetworkXmlReaderContext& context) {
+    if(context.getReader().getLocalName() != PROPERTY) {
+        throw PowsyblException(stdcxx::format("Unexpected element name <%1%> (expected <%2%>)", context.getReader().getLocalName(), PROPERTY));
+    }
+
     const std::string& name = context.getReader().getAttributeValue(NAME);
     const std::string& value = context.getReader().getAttributeValue(VALUE);
-    identifiable.setProperty(name, value);
+
+    std::function<void(Identifiable &)> fun = [name,value](Identifiable &identifiable) {
+        identifiable.setProperty(name, value);
+    };
+
+    return fun;
 }
 
 void PropertiesXml::write(const Identifiable& identifiable, NetworkXmlWriterContext& context) {

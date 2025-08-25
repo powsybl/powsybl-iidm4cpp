@@ -12,6 +12,7 @@
 #include <powsybl/iidm/StaticVarCompensatorAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +22,7 @@ namespace converter {
 
 namespace xml {
 
-class StaticVarCompensatorXml : public AbstractConnectableXml<StaticVarCompensator, StaticVarCompensatorAdder, VoltageLevel> {
+class StaticVarCompensatorXml : public AbstractSimpleIdentifiableXml<StaticVarCompensator, StaticVarCompensatorAdder, VoltageLevel>, public AbstractConnectableXml {
 public:
     static const StaticVarCompensatorXml& getInstance();
 

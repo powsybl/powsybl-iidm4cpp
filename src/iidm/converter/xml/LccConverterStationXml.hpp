@@ -12,6 +12,7 @@
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +22,7 @@ namespace converter {
 
 namespace xml {
 
-class LccConverterStationXml : public AbstractConnectableXml<LccConverterStation, LccConverterStationAdder, VoltageLevel> {
+class LccConverterStationXml : public AbstractSimpleIdentifiableXml<LccConverterStation, LccConverterStationAdder, VoltageLevel>, public AbstractConnectableXml{
 public:
     static const LccConverterStationXml& getInstance();
 

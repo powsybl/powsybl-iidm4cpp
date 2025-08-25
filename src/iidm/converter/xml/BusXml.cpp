@@ -49,7 +49,7 @@ Bus& BusXml::readRootElementAttributes(BusAdder& adder, NetworkXmlReaderContext&
 
 void BusXml::readSubElements(Bus& bus, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(SUBSTATION, [this, &bus, &context]() {
-        AbstractIdentifiableXml::readSubElements(bus, context);
+        AbstractSimpleIdentifiableXml::readSubElements(bus, context);
     });
 }
 

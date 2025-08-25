@@ -59,7 +59,7 @@ void BusbarSectionXml::writeRootElementAttributes(const BusbarSection& busbarSec
 
 void BusbarSectionXml::readSubElements(BusbarSection& busbarSection, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(BUSBAR_SECTION, [this, &busbarSection, &context]() {
-        AbstractIdentifiableXml::readSubElements(busbarSection, context);
+        AbstractSimpleIdentifiableXml::readSubElements(busbarSection, context);
     });
 }
 

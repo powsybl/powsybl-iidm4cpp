@@ -70,7 +70,7 @@ void GeneratorXml::readSubElements(Generator& generator, NetworkXmlReaderContext
                    context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
             ReactiveLimitsXml::getInstance().read(generator, context);
         } else {
-            AbstractConnectableXml::readSubElements(generator, context);
+            AbstractSimpleIdentifiableXml::readSubElements(generator, context);
         }
     });
 }

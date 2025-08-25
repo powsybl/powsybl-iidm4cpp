@@ -20,8 +20,8 @@ namespace iidm {
 class Terminal;
 class VoltageLevel;
 
-template<typename Adder>
-class BranchAdder : public IdentifiableAdder<Adder> {
+template<typename Added, typename Adder>
+class BranchAdder : public IdentifiableAdder<Added, Adder> {
 public:
     BranchAdder() = default;
 

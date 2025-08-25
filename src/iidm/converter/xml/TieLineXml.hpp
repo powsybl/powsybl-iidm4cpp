@@ -12,6 +12,7 @@
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +22,7 @@ namespace converter {
 
 namespace xml {
 
-class TieLineXml : public AbstractConnectableXml<TieLine, TieLineAdder, Network> {
+class TieLineXml : public AbstractSimpleIdentifiableXml<TieLine, TieLineAdder, Network>, public AbstractConnectableXml {
 public:
     static const TieLineXml& getInstance();
 

@@ -70,7 +70,7 @@ void LoadXml::readSubElements(Load& load, NetworkXmlReaderContext& context) cons
             const auto& nq = context.getReader().getAttributeValue<double>(NQ);
             LoadExponentialModelAdder::addNewModel(load, np, nq);
         } else {
-            AbstractConnectableXml::readSubElements(load, context);
+            AbstractSimpleIdentifiableXml::readSubElements(load, context);
         }
     });
 }

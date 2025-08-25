@@ -66,7 +66,7 @@ void StaticVarCompensatorXml::readSubElements(StaticVarCompensator& svc, Network
                 svc.setRegulatingTerminal(stdcxx::ref<Terminal>(TerminalRefXml::readTerminalRef(svc.getNetwork(), id, side)));
             });
         } else {
-            AbstractConnectableXml::readSubElements(svc, context);
+            AbstractSimpleIdentifiableXml::readSubElements(svc, context);
         }
     });
 }

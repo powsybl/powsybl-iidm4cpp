@@ -17,13 +17,13 @@ namespace powsybl {
 
 namespace iidm {
 
-template <typename Adder>
-std::string IdentifiableAdder<Adder>::getMessageHeader() const {
+template <typename Added, typename Adder>
+std::string IdentifiableAdder<Added, Adder>::getMessageHeader() const {
     return getTypeDescription() + " '" + m_id + "': ";
 }
 
-template <typename Adder>
-std::string IdentifiableAdder<Adder>::checkAndGetUniqueId() const {
+template <typename Added, typename Adder>
+std::string IdentifiableAdder<Added, Adder>::checkAndGetUniqueId() const {
     if (m_id.empty()) {
         throw PowsyblException(stdcxx::format("%1% id is not set", getTypeDescription()));
     }
@@ -46,36 +46,36 @@ std::string IdentifiableAdder<Adder>::checkAndGetUniqueId() const {
     return uniqueId;
 }
 
-template <typename Adder>
-const std::string& IdentifiableAdder<Adder>::getName() const {
+template <typename Added, typename Adder>
+const std::string& IdentifiableAdder<Added, Adder>::getName() const {
     return m_name;
 }
 
-template <typename Adder>
-bool IdentifiableAdder<Adder>::isFictitious() const {
+template <typename Added, typename Adder>
+bool IdentifiableAdder<Added, Adder>::isFictitious() const {
     return m_fictitious;
 }
 
-template <typename Adder>
-Adder& IdentifiableAdder<Adder>::setEnsureIdUnicity(bool ensureIdUnicity) {
+template <typename Added, typename Adder>
+Adder& IdentifiableAdder<Added, Adder>::setEnsureIdUnicity(bool ensureIdUnicity) {
     m_ensureIdUnicity = ensureIdUnicity;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& IdentifiableAdder<Adder>::setFictitious(bool fictitious) {
+template <typename Added, typename Adder>
+Adder& IdentifiableAdder<Added, Adder>::setFictitious(bool fictitious) {
     m_fictitious = fictitious;
     return static_cast<Adder&>(*this);
 }
 
-template <typename Adder>
-Adder& IdentifiableAdder<Adder>::setId(const std::string& id) {
+template <typename Added, typename Adder>
+Adder& IdentifiableAdder<Added, Adder>::setId(const std::string& id) {
     m_id = id;
     return static_cast<Adder&>(*this);
 }
 
-template<typename Adder>
-Adder& IdentifiableAdder<Adder>::setName(const std::string& name) {
+template<typename Added, typename Adder>
+Adder& IdentifiableAdder<Added, Adder>::setName(const std::string& name) {
     m_name = name;
     return static_cast<Adder&>(*this);
 }

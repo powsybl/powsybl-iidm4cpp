@@ -32,8 +32,7 @@ namespace converter {
 namespace xml {
 
 template <typename Added, typename Adder, typename Parent>
-void AbstractIdentifiableXml<Added, Adder, Parent>::read(Parent& parent, NetworkXmlReaderContext& context) const {
-    Adder adder = createAdder(parent);
+const std::string& AbstractIdentifiableXml<Added, Adder, Parent>::readIdentifierAttributes(Adder& adder, NetworkXmlReaderContext& context) const {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     const std::string& name = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(NAME, ""));
     adder.setId(id).setName(name);
@@ -41,25 +40,7 @@ void AbstractIdentifiableXml<Added, Adder, Parent>::read(Parent& parent, Network
         bool fictitious = context.getReader().getOptionalAttributeValue(FICTITIOUS, false);
         adder.setFictitious(fictitious);
     });
-    readElement(id, adder, context);
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractIdentifiableXml<Added, Adder, Parent>::readElement(const std::string& /*id*/, Adder& adder, NetworkXmlReaderContext& context) const {
-    Added& identifiable = readRootElementAttributes(adder, context);
-    readSubElements(identifiable, context);
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractIdentifiableXml<Added, Adder, Parent>::readSubElements(Added& identifiable, NetworkXmlReaderContext& context) const {
-    if (context.getReader().getLocalName() == PROPERTY) {
-        PropertiesXml::read(identifiable, context);
-    } else if (context.getReader().getLocalName() == ALIAS) {
-        IidmXmlUtil::assertMinimumVersion(getRootElementName(), ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
-        AliasesXml::read(identifiable, context);
-    } else {
-        throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), identifiable.getId()));
-    }
+    return id;
 }
 
 template <typename Added, typename Adder, typename Parent>

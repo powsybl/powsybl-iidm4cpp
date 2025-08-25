@@ -153,7 +153,7 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
         } else if (context.getReader().getLocalName() == LCC_CONVERTER_STATION) {
             LccConverterStationXml::getInstance().read(voltageLevel, context);
         } else {
-            AbstractIdentifiableXml::readSubElements(voltageLevel, context);
+            AbstractSimpleIdentifiableXml::readSubElements(voltageLevel, context);
         }
     });
 }

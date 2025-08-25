@@ -22,11 +22,11 @@ class Network;
 class Terminal;
 class VoltageLevel;
 
-class GeneratorAdder : public InjectionAdder<GeneratorAdder> {
+class GeneratorAdder : public InjectionAdder<Generator, GeneratorAdder> {
 public:
     ~GeneratorAdder() noexcept override = default;
 
-    Generator& add();
+    Generator& add() override;
 
     GeneratorAdder& setActivePowerSetpoint(double activePowerSetpoint);
 

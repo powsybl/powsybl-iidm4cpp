@@ -18,7 +18,7 @@ namespace iidm {
 
 class Network;
 
-class TieLineAdder : public BranchAdder<TieLineAdder> {
+class TieLineAdder : public BranchAdder<TieLine, TieLineAdder> {
 public:
     using HalfLineAdder = tie_line::HalfLineAdder;
 
@@ -27,7 +27,7 @@ public:
 
     ~TieLineAdder() noexcept override = default;
 
-    TieLine& add();
+    TieLine& add() override;
 
     HalfLineAdder newHalfLine1();
 

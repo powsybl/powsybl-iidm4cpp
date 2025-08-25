@@ -21,7 +21,7 @@ class Switch;
 class VoltageLevel;
 
 template <typename SwitchAdder>
-class AbstractSwitchAdder : public IdentifiableAdder<SwitchAdder> {
+class AbstractSwitchAdder : public IdentifiableAdder<Switch, SwitchAdder> {
 public:
     ~AbstractSwitchAdder() noexcept override = default;
 

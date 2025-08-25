@@ -35,7 +35,7 @@ const char* ShuntCompensatorXml::getRootElementName() const {
     return SHUNT;
 }
 
-void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const {
+void ShuntCompensatorXml::readRootElementAttributes(ShuntCompensatorAdder& adder, std::vector<std::function<void(Identifiable&)>>& toApply ,NetworkXmlReaderContext& context) const {
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &adder]() {
         bool voltageRegulatorOn = context.getReader().getOptionalAttributeValue(VOLTAGE_REGULATOR_ON, false);
         double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
@@ -64,23 +64,30 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
     readNodeOrBus(adder, context);
     double p = context.getReader().getOptionalAttributeValue(P, stdcxx::nan());
     double q = context.getReader().getOptionalAttributeValue(Q, stdcxx::nan());
-    std::string regId;
-    std::string regSide;
-    stdcxx::Properties properties;
-    std::map<std::string, std::string> aliases;
-    context.getReader().readUntilEndElement(SHUNT, [&context, &adder, &regId, &regSide, &properties, &id, &aliases]() {
+
+    std::function<void(Identifiable&)> fun = [p, q](Identifiable &shuntCompensator) {
+        ShuntCompensator& shunt = dynamic_cast<ShuntCompensator&>(shuntCompensator);
+        shunt.getTerminal().setP(p).setQ(q);
+    };
+
+    toApply.emplace_back(fun);
+}
+
+void ShuntCompensatorXml::readSubElements(const std::string& id, ShuntCompensatorAdder& adder, std::vector<std::function<void(Identifiable&)>>& toApply, NetworkXmlReaderContext& context) const {
+    context.getReader().readUntilEndElement(SHUNT, [this, &toApply, &context, &adder, &id]() {
         if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
-            regId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
-            regSide = context.getReader().getOptionalAttributeValue(SIDE, "");
-        } else if (context.getReader().getLocalName() == PROPERTY) {
-            const std::string& name = context.getReader().getAttributeValue(NAME);
-            const std::string& value = context.getReader().getAttributeValue(VALUE);
-            properties.set(name, value);
-        } else if (context.getReader().getLocalName() == ALIAS) {
-            IidmXmlUtil::assertMinimumVersion(SHUNT, ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
-            const auto& aliasType = context.getReader().getOptionalAttributeValue(TYPE, "");
-            const auto& alias = context.getAnonymizer().deanonymizeString(context.getReader().readCharacters());
-            aliases[alias] = aliasType;
+            std::string regId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+            std::string regSide = context.getReader().getOptionalAttributeValue(SIDE, "");
+
+            if (!regId.empty()) {
+                std::function<void(Identifiable&)> fun = [&context, regId, regSide](Identifiable &shuntCompensator) {
+                    ShuntCompensator& sc = dynamic_cast<ShuntCompensator&>(shuntCompensator);
+                    context.addEndTask([&sc, regId, regSide]() {
+                        sc.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(sc.getNetwork(), regId, regSide)));
+                    });
+                };
+                toApply.emplace_back(fun);
+            }
         } else if (context.getReader().getLocalName() == SHUNT_LINEAR_MODEL) {
             IidmXmlUtil::assertMinimumVersion(SHUNT, SHUNT_LINEAR_MODEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
             auto bPerSection = context.getReader().getAttributeValue<double>(B_PER_SECTION);
@@ -108,28 +115,9 @@ void ShuntCompensatorXml::readElement(const std::string& id, ShuntCompensatorAdd
             });
             modelAdder.add();
         } else {
-            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), id));
+            AbstractComplexIdentifiableXml::readSubElements(id, toApply, context);
         }
     });
-
-    ShuntCompensator& sc = adder.add();
-    if (!regId.empty()) {
-        context.addEndTask([&sc, regId, regSide]() {
-            sc.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(sc.getNetwork(), regId, regSide)));
-        });
-    }
-
-    for (const auto& it : properties) {
-        sc.setProperty(it.first, it.second);
-    }
-    for (const auto& alias : aliases) {
-        sc.addAlias(alias.first, alias.second);
-    }
-    sc.getTerminal().setP(p).setQ(q);
-}
-
-ShuntCompensator& ShuntCompensatorXml::readRootElementAttributes(ShuntCompensatorAdder& /*adder*/, NetworkXmlReaderContext& /*context*/) const {
-    throw PowsyblException("Unsupported operation");
 }
 
 void ShuntCompensatorXml::writeModel(const ShuntCompensator& sc, NetworkXmlWriterContext& context) {

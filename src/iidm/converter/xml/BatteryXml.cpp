@@ -53,7 +53,7 @@ void BatteryXml::readSubElements(Battery& battery, NetworkXmlReaderContext& cont
             context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
             ReactiveLimitsXml::getInstance().read(battery, context);
         } else {
-            AbstractConnectableXml::readSubElements(battery, context);
+            AbstractSimpleIdentifiableXml::readSubElements(battery, context);
         }
     });
 }

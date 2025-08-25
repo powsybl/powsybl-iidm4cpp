@@ -50,7 +50,7 @@ HvdcLine& HvdcLineXml::readRootElementAttributes(HvdcLineAdder& adder, NetworkXm
 
 void HvdcLineXml::readSubElements(HvdcLine& line, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(HVDC_LINE, [this, &line, &context]() {
-        AbstractIdentifiableXml::readSubElements(line, context);
+        AbstractSimpleIdentifiableXml::readSubElements(line, context);
     });
 }
 

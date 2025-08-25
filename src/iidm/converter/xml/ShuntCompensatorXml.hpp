@@ -11,6 +11,7 @@
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/converter/xml/AbstractComplexIdentifiableXml.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
 namespace powsybl {
@@ -21,19 +22,24 @@ namespace converter {
 
 namespace xml {
 
-class ShuntCompensatorXml : public AbstractConnectableXml<ShuntCompensator, ShuntCompensatorAdder, VoltageLevel> {
+class ShuntCompensatorXml : public AbstractComplexIdentifiableXml<ShuntCompensator, ShuntCompensatorAdder, VoltageLevel>, public AbstractConnectableXml {
 public:
     static const ShuntCompensatorXml& getInstance();
 
-protected:  // AbstractIdentifiableXml
+protected:  
+    // AbstractIdentifiableXml
     ShuntCompensatorAdder createAdder(VoltageLevel& voltageLevel) const override;
 
+    // AbstractIdentifiableXml
     const char* getRootElementName() const override;
 
-    void readElement(const std::string& id, ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const override;
+    // AbstractComplexIdentifiableXml
+    void readRootElementAttributes(ShuntCompensatorAdder& adder, std::vector<std::function<void(Identifiable&)>>& toApply ,NetworkXmlReaderContext& context) const override;
 
-    ShuntCompensator& readRootElementAttributes(ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const override;
+    // AbstractComplexIdentifiableXml
+    void readSubElements(const std::string& id, ShuntCompensatorAdder& adder, std::vector<std::function<void(Identifiable&)>>& toApply, NetworkXmlReaderContext& context) const override;
 
+    // AbstractIdentifiableXml
     void writeRootElementAttributes(const ShuntCompensator& shuntCompensator, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
     void writeSubElements(const ShuntCompensator& sc, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;

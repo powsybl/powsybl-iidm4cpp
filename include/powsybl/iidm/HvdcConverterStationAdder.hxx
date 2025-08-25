@@ -17,24 +17,24 @@ namespace powsybl {
 
 namespace iidm {
 
-template<typename Adder>
-HvdcConverterStationAdder<Adder>::HvdcConverterStationAdder(VoltageLevel& voltageLevel) :
-    InjectionAdder<Adder>(voltageLevel) {
+template<typename Added, typename Adder>
+HvdcConverterStationAdder<Added, Adder>::HvdcConverterStationAdder(VoltageLevel& voltageLevel) :
+    InjectionAdder<Added, Adder>(voltageLevel) {
 }
 
-template<typename Adder>
-double HvdcConverterStationAdder<Adder>::getLossFactor() const {
+template<typename Added, typename Adder>
+double HvdcConverterStationAdder<Added, Adder>::getLossFactor() const {
     return m_lossFactor;
 }
 
-template<typename Adder>
-Adder& HvdcConverterStationAdder<Adder>::setLossFactor(double lossFactor) {
+template<typename Added, typename Adder>
+Adder& HvdcConverterStationAdder<Added, Adder>::setLossFactor(double lossFactor) {
     m_lossFactor = lossFactor;
     return static_cast<Adder&>(*this);
 }
 
-template<typename Adder>
-void HvdcConverterStationAdder<Adder>::validate() {
+template<typename Added, typename Adder>
+void HvdcConverterStationAdder<Added, Adder>::validate() {
     checkLossFactor(*this, m_lossFactor);
 }
 

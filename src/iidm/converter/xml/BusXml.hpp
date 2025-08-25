@@ -11,7 +11,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +21,7 @@ namespace converter {
 
 namespace xml {
 
-class BusXml : public AbstractIdentifiableXml<Bus, BusAdder, VoltageLevel> {
+class BusXml : public AbstractSimpleIdentifiableXml<Bus, BusAdder, VoltageLevel> {
 public:
     static const BusXml& getInstance();
 

@@ -19,13 +19,13 @@ class BusbarSection;
 class Network;
 class NodeBreakerVoltageLevel;
 
-class BusbarSectionAdder : public IdentifiableAdder<BusbarSectionAdder> {
+class BusbarSectionAdder : public IdentifiableAdder<BusbarSection, BusbarSectionAdder> {
 public:
     explicit BusbarSectionAdder(NodeBreakerVoltageLevel& voltageLevel);
 
     ~BusbarSectionAdder() noexcept override = default;
 
-    BusbarSection& add();
+    BusbarSection& add() override;
 
     BusbarSectionAdder& setNode(unsigned long node);
 

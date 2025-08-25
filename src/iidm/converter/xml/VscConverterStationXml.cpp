@@ -63,7 +63,7 @@ void VscConverterStationXml::readSubElements(VscConverterStation& converterStati
                 converterStation.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(converterStation.getNetwork(), id, side)));
             });
         } else {
-            AbstractConnectableXml::readSubElements(converterStation, context);
+            AbstractSimpleIdentifiableXml::readSubElements(converterStation, context);
         }
     });
 }

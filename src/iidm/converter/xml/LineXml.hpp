@@ -12,6 +12,7 @@
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +22,7 @@ namespace converter {
 
 namespace xml {
 
-class LineXml : public AbstractConnectableXml<Line, LineAdder, Network> {
+class LineXml : public AbstractSimpleIdentifiableXml<Line, LineAdder, Network>, public AbstractConnectableXml {
 public:
     static const LineXml& getInstance();
 

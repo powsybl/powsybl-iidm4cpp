@@ -8,7 +8,9 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ALIASESXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_ALIASESXML_HPP
 
+#include <functional>
 #include <string>
+#include <vector>
 
 namespace powsybl {
 
@@ -27,9 +29,14 @@ class AliasesXml {
 public:
     static void read(Identifiable& identifiable, const NetworkXmlReaderContext& context);
 
+    static void read(std::vector<std::function<void(Identifiable&)>>& toApply, const NetworkXmlReaderContext& context);
+
     static void write(const Identifiable& identifiable, const std::string& rootElementName, NetworkXmlWriterContext& context);
 
 private:
+
+    static std::function<void(Identifiable&)> read(const NetworkXmlReaderContext& context);
+
     AliasesXml() = default;
 
     ~AliasesXml() noexcept = default;

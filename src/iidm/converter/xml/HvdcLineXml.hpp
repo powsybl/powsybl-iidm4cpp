@@ -11,7 +11,7 @@
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/HvdcLineAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
-#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +21,7 @@ namespace converter {
 
 namespace xml {
 
-class HvdcLineXml : public AbstractIdentifiableXml<HvdcLine, HvdcLineAdder, Network> {
+class HvdcLineXml : public AbstractSimpleIdentifiableXml<HvdcLine, HvdcLineAdder, Network> {
 public:
     static const HvdcLineXml& getInstance();
 

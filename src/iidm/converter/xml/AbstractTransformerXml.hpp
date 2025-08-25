@@ -14,6 +14,7 @@
 #include <powsybl/iidm/TapChanger.hpp>
 #include <powsybl/iidm/TapChangerStep.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -35,7 +36,7 @@ namespace converter {
 namespace xml {
 
 template <typename Added, typename Adder>
-class AbstractTransformerXml : public AbstractConnectableXml<Added, Adder, Container> {
+class AbstractTransformerXml : public AbstractSimpleIdentifiableXml<Added, Adder, Container> , public AbstractConnectableXml {
 protected:
     AbstractTransformerXml() = default;
 

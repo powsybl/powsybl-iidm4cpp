@@ -11,7 +11,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
-#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +21,7 @@ namespace converter {
 
 namespace xml {
 
-class SubstationXml : public AbstractIdentifiableXml<Substation, SubstationAdder, Network> {
+class SubstationXml : public AbstractSimpleIdentifiableXml<Substation, SubstationAdder, Network> {
 public:
     static const SubstationXml& getInstance();
 

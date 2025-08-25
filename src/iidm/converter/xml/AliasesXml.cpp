@@ -26,11 +26,28 @@ namespace converter {
 namespace xml {
 
 void AliasesXml::read(Identifiable& identifiable, const NetworkXmlReaderContext& context) {
+    read(context)(identifiable);
+}
+
+void AliasesXml::read(std::vector<std::function<void(Identifiable&)>>& toApply, const NetworkXmlReaderContext& context) {
+    toApply.emplace_back(read(context));
+}
+
+std::function<void(Identifiable&)> AliasesXml::read(const NetworkXmlReaderContext& context) {
+    if(context.getReader().getLocalName() != ALIAS) {
+        throw PowsyblException(stdcxx::format("Unexpected element name <%1%> (expected <%2%>)", context.getReader().getLocalName(), ALIAS));
+    }
     std::string aliasType;
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_4(), context.getVersion(), [&context, &aliasType]() {
         aliasType = context.getReader().getOptionalAttributeValue(TYPE, "");
     });
-    identifiable.addAlias(context.getAnonymizer().deanonymizeString(context.getReader().readCharacters()), aliasType);
+    std::string alias = context.getAnonymizer().deanonymizeString(context.getReader().readCharacters());
+
+    std::function<void(Identifiable &)> fun = [alias,aliasType](Identifiable &identifiable) {
+        identifiable.addAlias(alias, aliasType);
+    };
+
+    return fun;
 }
 
 void AliasesXml::write(const Identifiable& identifiable, const std::string& rootElementName, NetworkXmlWriterContext& context) {

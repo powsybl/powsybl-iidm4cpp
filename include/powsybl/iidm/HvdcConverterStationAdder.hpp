@@ -18,8 +18,8 @@ namespace iidm {
 class Network;
 class VoltageLevel;
 
-template<typename Adder>
-class HvdcConverterStationAdder : public InjectionAdder<Adder> {
+template<typename Added, typename Adder>
+class HvdcConverterStationAdder : public InjectionAdder<Added, Adder> {
 public:
     ~HvdcConverterStationAdder() noexcept override = default;
 

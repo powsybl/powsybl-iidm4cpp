@@ -15,11 +15,11 @@ namespace powsybl {
 
 namespace iidm {
 
-class VscConverterStationAdder : public HvdcConverterStationAdder<VscConverterStationAdder> {
+class VscConverterStationAdder : public HvdcConverterStationAdder<VscConverterStation, VscConverterStationAdder> {
 public:
     ~VscConverterStationAdder() noexcept override = default;
 
-    VscConverterStation& add();
+    VscConverterStation& add() override;
 
     VscConverterStationAdder& setReactivePowerSetpoint(double reactivePowerSetpoint);
 

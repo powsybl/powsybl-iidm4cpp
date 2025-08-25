@@ -13,8 +13,11 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
+#include <powsybl/xml/XmlStreamReader.hpp>
+#include <powsybl/xml/XmlStreamWriter.hpp>
 
 namespace powsybl {
 
@@ -24,24 +27,8 @@ namespace converter {
 
 namespace xml {
 
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readActivePowerLimits(ActivePowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    readLoadingLimits(ACTIVE_POWER_LIMITS, std::move(adder), reader, index);
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readApparentPowerLimits(ApparentPowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    readLoadingLimits(APPARENT_POWER_LIMITS, std::move(adder), reader, index);
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readCurrentLimits(CurrentLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    readLoadingLimits(CURRENT_LIMITS, std::move(adder), reader, index);
-}
-
-template <typename Added, typename Adder, typename Parent>
 template <typename LimitsAdder>
-void AbstractConnectableXml<Added, Adder, Parent>::readLoadingLimits(const std::string& type, LimitsAdder&& adderValue, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
+void AbstractConnectableXml::readLoadingLimits(const std::string& type, LimitsAdder&& adderValue, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
     auto&& adder = std::forward<LimitsAdder>(adderValue);
     double permanentLimit = reader.getOptionalAttributeValue(PERMANENT_LIMIT, stdcxx::nan());
     adder.setPermanentLimit(permanentLimit);
@@ -62,8 +49,8 @@ void AbstractConnectableXml<Added, Adder, Parent>::readLoadingLimits(const std::
     adder.add();
 }
 
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(BranchAdder<Adder>& adder, const NetworkXmlReaderContext& context) {
+template <typename Added, typename Adder>
+void AbstractConnectableXml::readNodeOrBus(BranchAdder<Added, Adder>& adder, const NetworkXmlReaderContext& context) {
     const auto& bus1 = context.getReader().getOptionalAttributeValue<std::string>(BUS1);
     const auto& connectableBus1 = context.getReader().getOptionalAttributeValue<std::string>(CONNECTABLE_BUS1);
     const auto& node1 = context.getReader().getOptionalAttributeValue<int>(NODE1);
@@ -94,8 +81,8 @@ void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(BranchAdder<Add
     adder.setVoltageLevel2(context.getAnonymizer().deanonymizeString(voltageLevelId2));
 }
 
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(InjectionAdder<Adder>& adder, const NetworkXmlReaderContext& context) {
+template <typename Added, typename Adder>
+void AbstractConnectableXml::readNodeOrBus(InjectionAdder<Added, Adder>& adder, const NetworkXmlReaderContext& context) {
     const auto& bus = context.getReader().getOptionalAttributeValue<std::string>(BUS);
     const auto& connectableBus = context.getReader().getOptionalAttributeValue<std::string>(CONNECTABLE_BUS);
     const auto& node = context.getReader().getOptionalAttributeValue<unsigned long>(NODE);
@@ -111,64 +98,8 @@ void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(InjectionAdder<
     }
 }
 
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder& adder, const NetworkXmlReaderContext& context) {
-    const auto& bus = context.getReader().getOptionalAttributeValue<std::string>(toString(BUS, index));
-    const auto& connectableBus = context.getReader().getOptionalAttributeValue<std::string>(toString(CONNECTABLE_BUS, index));
-    const auto& node = context.getReader().getOptionalAttributeValue<unsigned long>(toString(NODE, index));
-    const std::string& voltageLevelId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(toString(VOLTAGE_LEVEL_ID, index)));
-    if (bus) {
-        adder.setBus(context.getAnonymizer().deanonymizeString(*bus));
-    }
-    if (connectableBus) {
-        adder.setConnectableBus(context.getAnonymizer().deanonymizeString(*connectableBus));
-    }
-    if (node) {
-        adder.setNode(*node);
-    }
-    adder.setVoltageLevel(voltageLevelId);
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    const double& p = reader.getOptionalAttributeValue(toString(P, index), stdcxx::nan());
-    const double& q = reader.getOptionalAttributeValue(toString(Q, index), stdcxx::nan());
-    terminal.setP(p).setQ(q);
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
-    if (bus) {
-        context.getWriter().writeAttribute(toString(BUS, index), context.getAnonymizer().anonymizeString(bus.get().getId()));
-    }
-    if (connectableBus) {
-        context.getWriter().writeAttribute(toString(CONNECTABLE_BUS, index), context.getAnonymizer().anonymizeString(connectableBus.get().getId()));
-    }
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeActivePowerLimits(const ActivePowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
-    writeLoadingLimits(limits, writer, version.getPrefix(), version, ACTIVE_POWER_LIMITS, index);
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeApparentPowerLimits(const ApparentPowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
-    writeLoadingLimits(limits, writer, version.getPrefix(), version, APPARENT_POWER_LIMITS, index);
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
-    writeLoadingLimits(limits, writer, version.getPrefix(), version, CURRENT_LIMITS, index);
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
-    writeLoadingLimits(limits, writer, nsPrefix, version, CURRENT_LIMITS, index);
-}
-
-template <typename Added, typename Adder, typename Parent>
 template <typename Limits>
-void AbstractConnectableXml<Added, Adder, Parent>::writeLoadingLimits(const Limits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const std::string& type, const stdcxx::optional<int>& index) {
+void AbstractConnectableXml::writeLoadingLimits(const Limits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const std::string& type, const stdcxx::optional<int>& index) {
     if (!std::isnan(limits.getPermanentLimit()) || !boost::empty(limits.getTemporaryLimits()) || !boost::empty(limits.getFictitiousLimits())) {
         writer.writeStartElement(nsPrefix, toString(type.c_str(), index));
         writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
@@ -191,39 +122,6 @@ void AbstractConnectableXml<Added, Adder, Parent>::writeLoadingLimits(const Limi
         }
         writer.writeEndElement();
     }
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
-    context.getWriter().writeAttribute(toString(NODE, index), terminal.getNodeBreakerView().getNode());
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
-    const TopologyLevel& topologyLevel = getMinTopologyLevel(terminal.getVoltageLevel().getTopologyKind(), context.getOptions().getTopologyLevel());
-    switch (topologyLevel) {
-        case TopologyLevel::NODE_BREAKER:
-            writeNode(terminal, context, index);
-            break;
-        case TopologyLevel::BUS_BREAKER:
-            writeBus(terminal.getBusBreakerView().getBus(), terminal.getBusBreakerView().getConnectableBus(), context, index);
-            break;
-        case TopologyLevel::BUS_BRANCH:
-            writeBus(terminal.getBusView().getBus(), terminal.getBusView().getConnectableBus(), context, index);
-            break;
-        default:
-            throw powsybl::xml::XmlStreamException(stdcxx::format("Unexpected TopologyLevel value: ", topologyLevel));
-    }
-
-    if (index) {
-        context.getWriter().writeAttribute(toString(VOLTAGE_LEVEL_ID, index), context.getAnonymizer().anonymizeString(terminal.getVoltageLevel().getId()));
-    }
-}
-
-template <typename Added, typename Adder, typename Parent>
-void AbstractConnectableXml<Added, Adder, Parent>::writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const stdcxx::optional<int>& index) {
-    writer.writeOptionalAttribute(toString(P, index), terminal.getP());
-    writer.writeOptionalAttribute(toString(Q, index), terminal.getQ());
 }
 
 }  // namespace xml

@@ -11,7 +11,7 @@
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
+#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
 namespace powsybl {
 
@@ -21,7 +21,7 @@ namespace converter {
 
 namespace xml {
 
-class BusbarSectionXml : public AbstractIdentifiableXml<BusbarSection, BusbarSectionAdder, VoltageLevel> {
+class BusbarSectionXml : public AbstractSimpleIdentifiableXml<BusbarSection, BusbarSectionAdder, VoltageLevel> {
 public:
     static const BusbarSectionXml& getInstance();
 
