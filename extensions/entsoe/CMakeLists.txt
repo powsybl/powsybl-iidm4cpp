@@ -13,19 +13,11 @@ set(EXT_SOURCES
     src/EntsoeAreaAdder.cpp
     src/EntsoeAreaXmlSerializer.cpp
     src/EntsoeGeographicalCode.cpp
-    src/MergedXnode.cpp
-    src/MergedXnodeAdder.cpp
-    src/MergedXnodeXmlSerializer.cpp
-    src/Xnode.cpp
-    src/XnodeAdder.cpp
-    src/XnodeXmlSerializer.cpp
 )
 
 set(UNIT_TEST_SOURCES
     test/entsoe.cpp
     test/EntsoeAreaTest.cpp
-    test/MergedXnodeTest.cpp
-    test/XnodeTest.cpp
 )
 
 # Shared library
