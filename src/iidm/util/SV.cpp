@@ -117,9 +117,16 @@ double SV::getX(const TwoWindingsTransformer& twt) {
 }
 
 SV SV::otherSide(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
-    LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
+    if(isAllDataForCalculatingOtherSide()) {
+        LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
                                                                              std::complex<double>(g1, b1), std::complex<double>(g2, b2));
-    return otherSide(adm);
+        return otherSide(adm);
+    } else if(isAllDataForCalculatingOterSideDcApproximation()) {
+        return otherSideDcApproximation(x, 1 / rho, -alpha, true); // we always consider useRatio true
+    } else {
+        Branch::Side otherSide = (m_side == Branch::Side::ONE) ? Branch::Side::TWO : Branch::Side::ONE;
+        return {stdcxx::nan(), stdcxx::nan(), stdcxx::nan(), stdcxx::nan(), otherSide};
+    }
 }
 
 SV SV::otherSide(const TwoWindingsTransformer& twt) const {
@@ -170,6 +177,22 @@ SV SV::otherSide(const LinkData::BranchAdmittanceMatrix& adm) const {
         otherSide = Branch::Side::ONE;
     }
     return {std::real(s), std::imag(s), std::abs(v), std::arg(v) * stdcxx::toDegrees, otherSide};
+}
+
+SV SV::otherSideDcApproximation(double x, double ratio, double angle, bool useRatio) const {
+    double pOtherSide = -m_p;
+    double b = useRatio ? 1 / (x * ratio) : 1 / x;
+    double aOtherSide;
+    Branch::Side otherSide;
+    if (m_side == Branch::Side::ONE) {
+        aOtherSide = (stdcxx::toRadians * m_a - angle - m_p / b) * stdcxx::toDegrees;
+        otherSide = Branch::Side::TWO;
+    } else {
+        aOtherSide = (stdcxx::toRadians * m_a + angle - m_p / b) * stdcxx::toDegrees;
+        otherSide = Branch::Side::ONE;
+    }
+
+    return {pOtherSide, stdcxx::nan(), stdcxx::nan(), aOtherSide, otherSide};
 }
 
 double SV::otherSideA(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
@@ -276,6 +299,14 @@ std::complex<double> SV::voltageAtEnd1(const LinkData::BranchAdmittanceMatrix& a
 
 std::complex<double> SV::voltageAtEnd2(const LinkData::BranchAdmittanceMatrix& adm, const std::complex<double>& vEnd1, const std::complex<double>& sEnd1) {
     return (std::conj(sEnd1) / std::conj(vEnd1) - adm.y11 * vEnd1) / adm.y12;
+}
+
+bool SV::isAllDataForCalculatingOtherSide() const {
+    return !(std::isnan(m_p) || std::isnan(m_q) || std::isnan(m_u) || std::isnan(m_a));
+}
+
+bool SV::isAllDataForCalculatingOterSideDcApproximation() const {
+    return !(std::isnan(m_p) || std::isnan(m_a));
 }
 
 }  // namespace iidm

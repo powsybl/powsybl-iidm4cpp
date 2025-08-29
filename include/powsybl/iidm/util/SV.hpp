@@ -103,8 +103,14 @@ private:
     // Get V2 from Y11.V1 + Y12.V2 = S1* / V1*
     static std::complex<double> voltageAtEnd2(const LinkData::BranchAdmittanceMatrix& adm, const std::complex<double>& vEnd1, const std::complex<double>& sEnd1);
 
+    bool isAllDataForCalculatingOtherSide() const;
+
+    bool isAllDataForCalculatingOterSideDcApproximation() const;
+
 private:
     SV otherSide(const LinkData::BranchAdmittanceMatrix& adm) const;
+
+    SV otherSideDcApproximation(double x, double ratio, double angle, bool useRatio) const;
 
     double otherSideA(const LinkData::BranchAdmittanceMatrix& adm) const;
 

@@ -330,6 +330,117 @@ BOOST_AUTO_TEST_CASE(testTwoWindingsTransformerWithoutPtc) {
     BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
 }
 
+BOOST_AUTO_TEST_CASE(testDCLine) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    Line& line = network.getLine("NHV1_NHV2_1");
+    line.setR(0.0);
+    line.setX(5.917E-4);
+    line.setG1(0.01);
+    line.setB1(0.0020);
+    line.setG2(0.01);
+    line.setB2(0.0020);
+
+    double tol = 0.0001;
+    double p1 = 148.70937259543686;
+    double q1 = stdcxx::nan();
+    double v1 = stdcxx::nan();
+    double a1 = 0.0;
+
+    double p2 = -148.70937259543686;
+    double q2 = stdcxx::nan();
+    double v2 = stdcxx::nan();
+    double a2 = -5.041532173036991;
+
+    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA2 = svA1.otherSide(line);
+    BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
+    BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
+
+    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB1 = svB2.otherSide(line);
+    BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
+    BOOST_CHECK_SMALL(svB1.getA(), tol);
+}
+
+BOOST_AUTO_TEST_CASE(testDCTwoWindingsTransformer) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("NHV2_NLOAD");
+    twt.setR(0.0043);
+    twt.setX(0.0055618);
+    twt.setG(0.0);
+    twt.setB(0.0);
+
+    twt.getRatioTapChanger().getCurrentStep().setRho(1.0);
+    twt.getRatioTapChanger().getCurrentStep().setR(0.0);
+    twt.getRatioTapChanger().getCurrentStep().setX(0.0);
+    twt.getRatioTapChanger().getCurrentStep().setG(0.0);
+    twt.getRatioTapChanger().getCurrentStep().setB(0.0);
+
+    twt.setRatedU1(0.969);
+    twt.setRatedU2(1.0);
+
+    double tol = 0.0001;
+    double p1 = 1.4792780985886924;
+    double q1 = stdcxx::nan();
+    double v1 = stdcxx::nan();
+    double a1 = -10.76932587556957;
+
+    double p2 = -1.4792780985886924;
+    double q2 = stdcxx::nan();
+    double v2 = stdcxx::nan();
+    double a2 = -11.226110634252219;
+
+    SV svA1 = SV(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA2 = svA1.otherSide(twt);
+    BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
+    BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
+
+    SV svB2 = SV(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB1 = svB2.otherSide(twt);
+    BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
+}
+
+BOOST_AUTO_TEST_CASE(testDCPhaseShifter) {
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("TWT");
+    twt.setR(0.0043);
+    twt.setX(0.0020912);
+    twt.setG(0.0);
+    twt.setB(0.0);
+
+    twt.getPhaseTapChanger().getCurrentStep().setRho(1.0);
+    twt.getPhaseTapChanger().getCurrentStep().setAlpha(10.0);
+    twt.getPhaseTapChanger().getCurrentStep().setR(0.0);
+    twt.getPhaseTapChanger().getCurrentStep().setX(0.0);
+    twt.getPhaseTapChanger().getCurrentStep().setG(0.0);
+    twt.getPhaseTapChanger().getCurrentStep().setB(0.0);
+
+    twt.setRatedU1(0.978);
+    twt.setRatedU2(1.0);
+
+    double tol = 0.0001;
+    double p1 = 58.02489256054598;
+    double q1 = stdcxx::nan();
+    double v1 = stdcxx::nan();
+    double a1 = -10.76932587556957;
+
+    double p2 = -58.02489256054598;
+    double q2 = stdcxx::nan();
+    double v2 = stdcxx::nan();
+    double a2 = -7.56873858064591;
+
+    SV svA1 = SV(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA2 = svA1.otherSide(twt);
+    BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
+    BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
+
+    SV svB2 = SV(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB1 = svB2.otherSide(twt);
+    BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
+    BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
