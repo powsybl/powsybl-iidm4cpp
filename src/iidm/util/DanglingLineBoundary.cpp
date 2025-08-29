@@ -31,11 +31,11 @@ double Boundary::getAngle() const {
     return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideA(m_parent, true);
 }
 
-const Connectable& Boundary::getConnectable() const {
+const DanglingLine& Boundary::getDanglingLine() const {
     return m_parent;
 }
 
-Connectable& Boundary::getConnectable() {
+DanglingLine& Boundary::getDanglingLine() {
     return m_parent;
 }
 
@@ -49,10 +49,6 @@ double Boundary::getQ() const {
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
     return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideQ(m_parent, true);
-}
-
-stdcxx::optional<Branch::Side> Boundary::getSide() const {
-    return {};
 }
 
 double Boundary::getV() const {

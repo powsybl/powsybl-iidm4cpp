@@ -460,9 +460,9 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     BOOST_CHECK_CLOSE(2065.500000000001, boundary.getP(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_CLOSE(-781.1250000000001, boundary.getQ(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_CLOSE(43.5, boundary.getV(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK(stdcxx::areSame(cDanglingLine, cBoundary.getConnectable()));
-    BOOST_CHECK(stdcxx::areSame(cDanglingLine, boundary.getConnectable()));
-    BOOST_CHECK(!boundary.getSide());
+    BOOST_CHECK(stdcxx::areSame(cDanglingLine, cBoundary.getDanglingLine()));
+    BOOST_CHECK(stdcxx::areSame(cDanglingLine, boundary.getDanglingLine()));
+
     BOOST_CHECK(stdcxx::areSame(cDanglingLine.getTerminal().getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));
     BOOST_CHECK(stdcxx::areSame(danglingLine.getTerminal().getVoltageLevel(), boundary.getNetworkSideVoltageLevel()));
 }

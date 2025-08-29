@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_DANGLINGLINEBOUNDARY_HPP
 
 #include <powsybl/iidm/Boundary.hpp>
-#include <powsybl/iidm/HalfLine.hpp>
+
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -30,15 +30,13 @@ class Boundary : public iidm::Boundary {
 public:  // iidm::Boundary
     double getAngle() const override;
 
-    const Connectable& getConnectable() const override;
+    const DanglingLine& getDanglingLine() const override;
 
-    Connectable& getConnectable() override;
+    DanglingLine& getDanglingLine() override;
 
     double getP() const override;
 
     double getQ() const override;
-
-    stdcxx::optional<Branch::Side> getSide() const override;
 
     double getV() const override;
 

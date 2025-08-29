@@ -16,10 +16,12 @@
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/HvdcLineAdder.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
+#include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
@@ -161,17 +163,13 @@ unsigned long Network::getBranchCount() const {
 
 stdcxx::const_range<Branch> Network::getBranches() const {
     return boost::range::join(
-        boost::range::join(
             m_networkIndex.getAll<Line, Branch>(),
-            m_networkIndex.getAll<TieLine, Branch>()),
         m_networkIndex.getAll<TwoWindingsTransformer, Branch>());
 }
 
 stdcxx::range<Branch> Network::getBranches() {
     return boost::range::join(
-        boost::range::join(
             m_networkIndex.getAll<Line, Branch>(),
-            m_networkIndex.getAll<TieLine, Branch>()),
         m_networkIndex.getAll<TwoWindingsTransformer, Branch>());
 }
 
@@ -266,12 +264,20 @@ unsigned long Network::getDanglingLineCount() const {
     return getObjectCount<DanglingLine>();
 }
 
+stdcxx::const_range<DanglingLine> Network::getDanglingLines(const DanglingLineFilter& filter) const {
+    return m_networkIndex.getAll<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+}
+
+stdcxx::range<DanglingLine> Network::getDanglingLines(const DanglingLineFilter& filter) {
+    return m_networkIndex.getAll<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+}
+
 stdcxx::const_range<DanglingLine> Network::getDanglingLines() const {
-    return m_networkIndex.getAll<DanglingLine>();
+    return getDanglingLines(DanglingLineFilter::ALL());
 }
 
 stdcxx::range<DanglingLine> Network::getDanglingLines() {
-    return m_networkIndex.getAll<DanglingLine>();
+    return getDanglingLines(DanglingLineFilter::ALL());
 }
 
 int Network::getForecastDistance() const {
@@ -407,19 +413,35 @@ Line& Network::getLine(const std::string& id) {
 }
 
 unsigned long Network::getLineCount() const {
-    return getObjectCount<Line>() + getObjectCount<TieLine>();
+    return getObjectCount<Line>();
 }
 
 stdcxx::const_range<Line> Network::getLines() const {
-    return boost::range::join(
-        m_networkIndex.getAll<Line>(),
-        m_networkIndex.getAll<TieLine, Line>());
+    return m_networkIndex.getAll<Line>();
 }
 
 stdcxx::range<Line> Network::getLines() {
-    return boost::range::join(
-        m_networkIndex.getAll<Line>(),
-        m_networkIndex.getAll<TieLine, Line>());
+    return  m_networkIndex.getAll<Line>();
+}
+
+const TieLine& Network::getTieLine(const std::string& id) const {
+    return get<TieLine>(id);
+}
+
+TieLine& Network::getTieLine(const std::string& id) {
+    return get<TieLine>(id);
+}
+
+unsigned long Network::getTieLineCount() const {
+    return getObjectCount<TieLine>();
+}
+
+stdcxx::const_range<TieLine> Network::getTieLines() const {
+    return m_networkIndex.getAll<TieLine>();
+}
+
+stdcxx::range<TieLine> Network::getTieLines() {
+    return m_networkIndex.getAll<TieLine>();
 }
 
 const Load& Network::getLoad(const std::string& id) const {

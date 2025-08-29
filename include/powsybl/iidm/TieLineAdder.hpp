@@ -8,8 +8,8 @@
 #ifndef POWSYBL_IIDM_TIELINEADDER_HPP
 #define POWSYBL_IIDM_TIELINEADDER_HPP
 
-#include <powsybl/iidm/BranchAdder.hpp>
-#include <powsybl/iidm/HalfLineAdder.hpp>
+#include <powsybl/iidm/IdentifiableAdder.hpp>
+
 #include <powsybl/iidm/TieLine.hpp>
 
 namespace powsybl {
@@ -18,22 +18,18 @@ namespace iidm {
 
 class Network;
 
-class TieLineAdder : public BranchAdder<TieLine, TieLineAdder> {
+class TieLineAdder : public IdentifiableAdder<TieLine, TieLineAdder> {
 public:
-    using HalfLineAdder = tie_line::HalfLineAdder;
 
-public:
     explicit TieLineAdder(Network& network);
 
     ~TieLineAdder() noexcept override = default;
 
     TieLine& add() override;
 
-    HalfLineAdder newHalfLine1();
+    TieLineAdder& setDanglingLine1(const std::string& id);
 
-    HalfLineAdder newHalfLine2();
-
-    TieLineAdder& setUcteXnodeCode(const std::string& ucteXnodeCode);
+    TieLineAdder& setDanglingLine2(const std::string& id);
 
 protected: // IdentifiableAdder
     const Network& getNetwork() const override;
@@ -44,20 +40,10 @@ private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:
-    void setHalfLineAdder1(const HalfLineAdder& adder);
-
-    void setHalfLineAdder2(const HalfLineAdder& adder);
-
-    friend class tie_line::HalfLineAdder;
-
-private:
     Network& m_network;
 
-    stdcxx::optional<HalfLineAdder> m_halfLineAdder1;
-
-    stdcxx::optional<HalfLineAdder> m_halfLineAdder2;
-
-    std::string m_ucteXnodeCode;
+    std::string m_dlId1;
+    std::string m_dlId2;
 };
 
 }  // namespace iidm

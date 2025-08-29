@@ -38,7 +38,7 @@ const char* TwoWindingsTransformerXml::getRootElementName() const {
     return TWO_WINDINGS_TRANSFORMER;
 }
 
-TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(TwoWindingsTransformerAdder& adder, NetworkXmlReaderContext& context) const {
+TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(TwoWindingsTransformerAdder& adder, Container& /*container*/, NetworkXmlReaderContext& context) const {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);
     const auto& g = context.getReader().getAttributeValue<double>(G);

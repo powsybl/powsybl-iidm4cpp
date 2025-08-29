@@ -43,6 +43,8 @@ private:
 
     static void writeLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context);
 
+    static void writeTieLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context);
+
     static void writeSubstations(const Network& network, NetworkXmlWriterContext& context);
 
     static void writeTransformers(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context);

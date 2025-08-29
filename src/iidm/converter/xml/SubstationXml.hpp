@@ -30,7 +30,7 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    Substation& readRootElementAttributes(SubstationAdder& adder, NetworkXmlReaderContext& context) const override;
+    Substation& readRootElementAttributes(SubstationAdder& adder, Network& network, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(Substation& substation, NetworkXmlReaderContext& context) const override;
 

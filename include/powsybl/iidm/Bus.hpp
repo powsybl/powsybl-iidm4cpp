@@ -22,6 +22,7 @@ namespace iidm {
 class Battery;
 class Component;
 class DanglingLine;
+class DanglingLineFilter;
 class Generator;
 class LccConverterStation;
 class Line;
@@ -65,6 +66,10 @@ public:
     stdcxx::const_range<DanglingLine> getDanglingLines() const;
 
     stdcxx::range<DanglingLine> getDanglingLines();
+
+    stdcxx::const_range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) const;
+
+    stdcxx::range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter);
 
     stdcxx::const_range<Generator> getGenerators() const;
 

@@ -17,7 +17,7 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
-class Connectable;
+class DanglingLine;
 class VoltageLevel;
 
 class Boundary {
@@ -40,14 +40,14 @@ public:
     virtual double getAngle() const = 0;
 
     /**
-     * Get the equipment the boundary is associated to.
+     * Get the danglingLine the boundary is associated to.
      */
-    virtual const Connectable& getConnectable() const = 0;
+    virtual const DanglingLine& getDanglingLine() const = 0;
 
     /**
-     * Get the equipment the boundary is associated to.
+     * Get the danglingLine the boundary is associated to.
      */
-    virtual Connectable& getConnectable() = 0;
+    virtual DanglingLine& getDanglingLine() = 0;
 
     /**
      * Get the active power at the fictitious terminal going from the boundary fictitious bus to the network.
@@ -58,12 +58,6 @@ public:
      * Get the reactive power at the fictitious terminal going from the boundary fictitious bus to the network.
      */
     virtual double getQ() const = 0;
-
-    /**
-     * A Boundary could be associated with one side of a branch to determine P and Q.
-     * Get the branch side the boundary refers to.
-     */
-    virtual stdcxx::optional<Branch::Side> getSide() const = 0;
 
     /**
      * Get the voltage of the boundary fictitious bus.

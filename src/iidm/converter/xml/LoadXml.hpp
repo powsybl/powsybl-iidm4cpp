@@ -31,7 +31,7 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    Load& readRootElementAttributes(LoadAdder& loadAdder, NetworkXmlReaderContext& context) const override;
+    Load& readRootElementAttributes(LoadAdder& loadAdder, VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(Load& load, NetworkXmlReaderContext& context) const override;
 

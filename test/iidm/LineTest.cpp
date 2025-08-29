@@ -126,7 +126,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     std::ostringstream oss;
     oss << line.getType();
     BOOST_CHECK_EQUAL("LINE", oss.str());
-    BOOST_TEST(!line.isTieLine());
+
     BOOST_CHECK_CLOSE(3.0, line.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.0, line.getG1(), std::numeric_limits<double>::epsilon());

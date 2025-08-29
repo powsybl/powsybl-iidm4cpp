@@ -118,7 +118,7 @@ void VoltageLevelXml::readNodeBreakerTopology(VoltageLevel& voltageLevel, Networ
     });
 }
 
-VoltageLevel& VoltageLevelXml::readRootElementAttributes(VoltageLevelAdder& adder, NetworkXmlReaderContext& context) const {
+VoltageLevel& VoltageLevelXml::readRootElementAttributes(VoltageLevelAdder& adder, Container& /*container*/, NetworkXmlReaderContext& context) const {
     auto nominalV = context.getReader().getAttributeValue<double>(NOMINAL_V);
     double lowVoltageLimit = context.getReader().getOptionalAttributeValue(LOW_VOLTAGE_LIMIT, stdcxx::nan());
     double highVoltageLimit = context.getReader().getOptionalAttributeValue(HIGH_VOLTAGE_LIMIT, stdcxx::nan());
@@ -208,7 +208,7 @@ void VoltageLevelXml::writeCalculatedBus(const Bus& bus, const std::set<unsigned
 
 void VoltageLevelXml::writeDanglingLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
     for (const auto& dl : voltageLevel.getDanglingLines()) {
-        if (!context.getFilter().test(dl)) {
+        if (!context.getFilter().test(dl) || (context.getVersion() < IidmXmlVersion::V1_10() && dl.isPaired())) {
             continue;
         }
         DanglingLineXml::getInstance().write(dl, voltageLevel, context);

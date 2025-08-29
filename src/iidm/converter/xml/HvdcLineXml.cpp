@@ -30,7 +30,7 @@ const char* HvdcLineXml::getRootElementName() const {
     return HVDC_LINE;
 }
 
-HvdcLine& HvdcLineXml::readRootElementAttributes(HvdcLineAdder& adder, NetworkXmlReaderContext& context) const {
+HvdcLine& HvdcLineXml::readRootElementAttributes(HvdcLineAdder& adder, Network& /*network*/, NetworkXmlReaderContext& context) const {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& nominalV = context.getReader().getAttributeValue<double>(NOMINAL_V);
     const auto& convertersMode = Enum::fromString<HvdcLine::ConvertersMode>(context.getReader().getAttributeValue(CONVERTERS_MODE));

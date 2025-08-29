@@ -45,6 +45,7 @@ set(IIDM_SOURCES
     iidm/CurrentLimitsAdder.cpp
     iidm/DanglingLine.cpp
     iidm/DanglingLineAdder.cpp
+    iidm/DanglingLineFilter.cpp
     iidm/DanglingLineGeneration.cpp
     iidm/DanglingLineGenerationAdder.cpp
     iidm/EnergySource.cpp
@@ -56,9 +57,6 @@ set(IIDM_SOURCES
     iidm/FlowsLimitsHolder.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
-    iidm/HalfLine.cpp
-    iidm/HalfLineAdder.cpp
-    iidm/HalfLineBoundary.cpp
     iidm/HvdcConverterStation.cpp
     iidm/HvdcLine.cpp
     iidm/HvdcLineAdder.cpp
@@ -204,7 +202,6 @@ set(IIDM_SOURCES
     iidm/extensions/SlackTerminalAdder.cpp
     iidm/extensions/SlackTerminalXmlSerializer.cpp
 
-    iidm/util/AbstractHalfLineBoundary.cpp
     iidm/util/ConnectedComponents.cpp
     iidm/util/DanglingLineBoundary.cpp
     iidm/util/DistinctPredicate.cpp
@@ -216,6 +213,7 @@ set(IIDM_SOURCES
     iidm/util/Substations.cpp
     iidm/util/SV.cpp
     iidm/util/TerminalFinder.cpp
+    iidm/util/TieLineUtil.cpp
     iidm/util/VoltageLevels.cpp
 
     logging/ConsoleLogger.cpp

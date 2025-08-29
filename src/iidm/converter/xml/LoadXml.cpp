@@ -39,7 +39,7 @@ const char* LoadXml::getRootElementName() const {
     return LOAD;
 }
 
-Load& LoadXml::readRootElementAttributes(LoadAdder& loadAdder, NetworkXmlReaderContext& context) const {
+Load& LoadXml::readRootElementAttributes(LoadAdder& loadAdder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     const std::string& loadTypeName = context.getReader().getOptionalAttributeValue(LOAD_TYPE, "");
     const auto& loadType = loadTypeName.empty() ? LoadType::UNDEFINED : Enum::fromString<LoadType>(loadTypeName);
     double p0 = context.getReader().getOptionalAttributeValue(P0, stdcxx::nan());

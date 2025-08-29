@@ -10,6 +10,7 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TopologyLevel.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 
@@ -57,6 +58,24 @@ bool BusFilter::test(const Connectable& connectable) const {
         const stdcxx::CReference<Bus>& b = m_options.getTopologyLevel() == TopologyLevel::BUS_BRANCH ? t.getBusView().getConnectableBus() : t.getBusBreakerView().getConnectableBus();
         return (b && m_buses.find(b.get().getId()) != m_buses.end());
     } ));
+}
+
+bool BusFilter::test(const TieLine& tl) const {
+    if(m_buses.empty()) {
+        return true;
+    }
+
+    auto b = m_options.getTopologyLevel() == TopologyLevel::BUS_BRANCH ?
+            tl.getDanglingLine1().getTerminal().getBusView().getConnectableBus() : tl.getDanglingLine1().getTerminal().getBusBreakerView().getConnectableBus();
+    if(static_cast<bool>(b) && m_buses.find(b.get().getId()) == m_buses.cend() ){
+        return false;
+    }
+    b = m_options.getTopologyLevel() == TopologyLevel::BUS_BRANCH ?
+            tl.getDanglingLine2().getTerminal().getBusView().getConnectableBus() : tl.getDanglingLine2().getTerminal().getBusBreakerView().getConnectableBus();
+    if(static_cast<bool>(b) && m_buses.find(b.get().getId()) == m_buses.cend() ){
+        return false;
+    }
+    return true;
 }
 
 }  // namespace converter

@@ -33,6 +33,51 @@ BranchAdmittanceMatrix calculateBranchAdmittance(double r, double x, double rati
     return branchAdmittance;
 }
 
+BranchAdmittanceMatrix kronChain(const BranchAdmittanceMatrix& firstAdm, const Branch::Side& firstChainNodeSide,
+                                 const BranchAdmittanceMatrix& secondAdm, const Branch::Side& secondChainNodeSide) {
+
+    BranchAdmittanceMatrix admittance;
+
+    std::complex<double> yFirst11;
+    std::complex<double> yFirst1C;
+    std::complex<double> yFirstC1;
+    std::complex<double> yFirstCC;
+    if (firstChainNodeSide == Branch::Side::TWO) {
+        yFirst11 = firstAdm.y11;
+        yFirst1C = firstAdm.y12;
+        yFirstC1 = firstAdm.y21;
+        yFirstCC = firstAdm.y22;
+    } else {
+        yFirst11 = firstAdm.y22;
+        yFirst1C = firstAdm.y21;
+        yFirstC1 = firstAdm.y12;
+        yFirstCC = firstAdm.y11;
+    }
+
+    std::complex<double> ySecond22;
+    std::complex<double> ySecond2C;
+    std::complex<double> ySecondC2;
+    std::complex<double> ySecondCC;
+    if (secondChainNodeSide == Branch::Side::TWO){
+        ySecond22 = secondAdm.y11;
+        ySecond2C = secondAdm.y12;
+        ySecondC2 = secondAdm.y21;
+        ySecondCC = secondAdm.y22;
+    } else {
+        ySecond22 = secondAdm.y22;
+        ySecond2C = secondAdm.y21;
+        ySecondC2 = secondAdm.y12;
+        ySecondCC = secondAdm.y11;
+    }
+
+    admittance.y11 = yFirst11 - (yFirst1C * yFirstC1 / (yFirstCC + ySecondCC));
+    admittance.y12 = - yFirst1C * ySecondC2 / (yFirstCC + ySecondCC);
+    admittance.y21 = - ySecond2C * yFirstC1 / (yFirstCC + ySecondCC);
+    admittance.y22 = ySecond22 - (ySecond2C * ySecondC2 / (yFirstCC + ySecondCC));
+
+    return admittance;
+}
+
 }  // namespace LinkData
 
 }  // namespace iidm

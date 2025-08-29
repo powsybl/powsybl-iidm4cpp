@@ -28,7 +28,7 @@ const char* LccConverterStationXml::getRootElementName() const {
     return LCC_CONVERTER_STATION;
 }
 
-LccConverterStation& LccConverterStationXml::readRootElementAttributes(LccConverterStationAdder& adder, NetworkXmlReaderContext& context) const {
+LccConverterStation& LccConverterStationXml::readRootElementAttributes(LccConverterStationAdder& adder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     const auto& lossFactor = context.getReader().getAttributeValue<double>(LOSS_FACTOR);
     const double& powerFactor = context.getReader().getOptionalAttributeValue(POWER_FACTOR, stdcxx::nan());
     readNodeOrBus(adder, context);

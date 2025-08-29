@@ -31,7 +31,7 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    StaticVarCompensator& readRootElementAttributes(StaticVarCompensatorAdder& adder, NetworkXmlReaderContext& context) const override;
+    StaticVarCompensator& readRootElementAttributes(StaticVarCompensatorAdder& adder, VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(StaticVarCompensator& svc, NetworkXmlReaderContext& context) const override;
 

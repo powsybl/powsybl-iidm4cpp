@@ -52,6 +52,7 @@ class Switch;
 class SynchronousComponentsManager;
 class ThreeWindingsTransformer;
 class ThreeWindingsTransformerAdder;
+class TieLine;
 class TieLineAdder;
 class TwoWindingsTransformer;
 class TwoWindingsTransformerAdder;
@@ -183,6 +184,10 @@ public:
 
     unsigned long getDanglingLineCount() const;
 
+    stdcxx::const_range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) const;
+
+    stdcxx::range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter);
+
     stdcxx::const_range<DanglingLine> getDanglingLines() const;
 
     stdcxx::range<DanglingLine> getDanglingLines();
@@ -250,6 +255,16 @@ public:
     stdcxx::const_range<Line> getLines() const;
 
     stdcxx::range<Line> getLines();
+
+    const TieLine& getTieLine(const std::string& id) const;
+
+    TieLine& getTieLine(const std::string& id);
+
+    unsigned long getTieLineCount() const;
+
+    stdcxx::const_range<TieLine> getTieLines() const;
+
+    stdcxx::range<TieLine> getTieLines();
 
     const Load& getLoad(const std::string& id) const;
 

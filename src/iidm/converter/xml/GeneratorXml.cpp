@@ -34,7 +34,7 @@ const char* GeneratorXml::getRootElementName() const {
     return GENERATOR;
 }
 
-Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdder, NetworkXmlReaderContext& context) const {
+Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     const auto& energySource = Enum::fromString<EnergySource>(context.getReader().getAttributeValue(ENERGY_SOURCE));
     double minP = context.getReader().getOptionalAttributeValue(MIN_P, stdcxx::nan());
     double maxP = context.getReader().getOptionalAttributeValue(MAX_P, stdcxx::nan());

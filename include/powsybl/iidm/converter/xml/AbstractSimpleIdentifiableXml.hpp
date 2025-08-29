@@ -31,7 +31,7 @@ public:
 protected:
     virtual void readSubElements(Added& identifiable, NetworkXmlReaderContext& context) const;
 
-    virtual Added& readRootElementAttributes(Adder& adder, NetworkXmlReaderContext& context) const = 0;
+    virtual Added& readRootElementAttributes(Adder& adder, Parent& parent, NetworkXmlReaderContext& context) const = 0;
 };
 
 }  // namespace xml

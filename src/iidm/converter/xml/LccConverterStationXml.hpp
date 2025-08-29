@@ -31,7 +31,7 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    LccConverterStation& readRootElementAttributes(LccConverterStationAdder& adder, NetworkXmlReaderContext& context) const override;
+    LccConverterStation& readRootElementAttributes(LccConverterStationAdder& adder, VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(LccConverterStation& converterStation, NetworkXmlReaderContext& context) const override;
 

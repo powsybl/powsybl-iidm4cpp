@@ -26,6 +26,7 @@ const std::initializer_list<std::string>& getNames<IdentifiableType>() {
         "SWITCH",
         "BUSBAR_SECTION",
         "LINE",
+        "TIE_LINE",
         "TWO_WINDINGS_TRANSFORMER",
         "THREE_WINDINGS_TRANSFORMER",
         "GENERATOR",

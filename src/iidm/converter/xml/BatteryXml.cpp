@@ -30,7 +30,7 @@ const char* BatteryXml::getRootElementName() const {
     return BATTERY;
 }
 
-Battery& BatteryXml::readRootElementAttributes(BatteryAdder& adder, NetworkXmlReaderContext& context) const {
+Battery& BatteryXml::readRootElementAttributes(BatteryAdder& adder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     const std::string& targetPName = context.getVersion() <= IidmXmlVersion::V1_7() ? P0 : TARGET_P;
     const std::string& targetQName = context.getVersion() <= IidmXmlVersion::V1_7() ? Q0 : TARGET_Q;
     double targetP = context.getReader().getOptionalAttributeValue(targetPName, stdcxx::nan());

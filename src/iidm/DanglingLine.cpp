@@ -7,9 +7,12 @@
 
 #include <powsybl/iidm/DanglingLine.hpp>
 
+#include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/util/DanglingLineBoundary.hpp>
+
+#include <powsybl/PowsyblException.hpp>
 
 namespace powsybl {
 
@@ -41,6 +44,7 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     checkP0(*this, p0, vl);
     checkQ0(*this, q0, vl);
 
+    m_tieLine.reset();
 }
 
 void DanglingLine::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -79,6 +83,28 @@ Boundary& DanglingLine::getBoundary() {
     return *m_boundary;
 }
 
+stdcxx::CReference<TieLine> DanglingLine::getTieLine() const {
+    return stdcxx::cref<TieLine>(m_tieLine);
+}
+stdcxx::Reference<TieLine> DanglingLine::getTieLine() {
+    return m_tieLine;
+}
+
+DanglingLine& DanglingLine::setTieLine(TieLine& tieLine) {
+    m_tieLine = tieLine;
+    return *this;
+}
+
+void DanglingLine::remove() {
+    if(static_cast<bool>(m_tieLine)) {
+        throw PowsyblException(stdcxx::format("Parent tie line %1% should be removed before the child dangling line", m_tieLine.get().getId()));
+    }
+    Injection::remove();
+}
+void DanglingLine::removeTieLine(){
+    m_tieLine.reset();
+}
+
 double DanglingLine::getG() const {
     return m_g;
 }
@@ -89,6 +115,10 @@ stdcxx::CReference<DanglingLine::Generation> DanglingLine::getGeneration() const
 
 stdcxx::Reference<DanglingLine::Generation> DanglingLine::getGeneration() {
     return stdcxx::ref<Generation>(m_generation);
+}
+
+bool DanglingLine::isPaired() const {
+    return static_cast<bool>(m_tieLine);
 }
 
 double DanglingLine::getP0() const {

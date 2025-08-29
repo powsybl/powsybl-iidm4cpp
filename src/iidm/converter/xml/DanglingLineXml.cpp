@@ -34,7 +34,7 @@ const char* DanglingLineXml::getRootElementName() const  {
     return DANGLING_LINE;
 }
 
-DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adder, NetworkXmlReaderContext& context) const  {
+DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const  {
     double p0 = context.getReader().getOptionalAttributeValue(P0, stdcxx::nan());
     double q0 = context.getReader().getOptionalAttributeValue(Q0, stdcxx::nan());
     const auto& r = context.getReader().getAttributeValue<double>(R);
@@ -60,16 +60,18 @@ DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adde
                 .add();
         }
     });
-    const std::string& ucteXnodeCode = context.getReader().getOptionalAttributeValue(UCTE_XNODE_CODE, "");
+    
     readNodeOrBus(adder, context);
-    DanglingLine& dl = adder.setP0(p0)
+    adder.setP0(p0)
         .setQ0(q0)
         .setR(r)
         .setX(x)
         .setG(g)
-        .setB(b)
-        .setUcteXnodeCode(ucteXnodeCode)
-        .add();
+        .setB(b);
+
+    const std::string& ucteXnodeCode = context.getReader().getOptionalAttributeValue(UCTE_XNODE_CODE, "");
+    adder.setUcteXnodeCode(ucteXnodeCode);
+    DanglingLine& dl = adder.add();
     readPQ(dl.getTerminal(), context.getReader());
     return dl;
 }

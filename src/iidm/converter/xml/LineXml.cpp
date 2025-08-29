@@ -32,7 +32,7 @@ const char* LineXml::getRootElementName() const {
     return LINE;
 }
 
-Line& LineXml::readRootElementAttributes(LineAdder& adder, NetworkXmlReaderContext& context) const {
+Line& LineXml::readRootElementAttributes(LineAdder& adder, Network& /*network*/, NetworkXmlReaderContext& context) const {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);
     const auto& g1 = context.getReader().getAttributeValue<double>(G1);

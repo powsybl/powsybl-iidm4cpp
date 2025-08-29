@@ -12,9 +12,11 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
+#include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
@@ -90,11 +92,19 @@ unsigned long VoltageLevel::getDanglingLineCount() const {
 }
 
 stdcxx::const_range<DanglingLine> VoltageLevel::getDanglingLines() const {
-    return getConnectables<DanglingLine>();
+    return getDanglingLines(DanglingLineFilter::ALL());
 }
 
 stdcxx::range<DanglingLine> VoltageLevel::getDanglingLines() {
-    return getConnectables<DanglingLine>();
+    return getDanglingLines(DanglingLineFilter::ALL());
+}
+
+stdcxx::const_range<DanglingLine> VoltageLevel::getDanglingLines(const DanglingLineFilter& filter) const {
+    return getConnectables<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+}
+
+stdcxx::range<DanglingLine> VoltageLevel::getDanglingLines(const DanglingLineFilter& filter) {
+    return getConnectables<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
 }
 
 unsigned long VoltageLevel::getGeneratorCount() const {

@@ -44,7 +44,7 @@ const char* ThreeWindingsTransformerXml::getRootElementName() const {
     return THREE_WINDINGS_TRANSFORMER;
 }
 
-ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes(ThreeWindingsTransformerAdder& adder, NetworkXmlReaderContext& context) const {
+ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes(ThreeWindingsTransformerAdder& adder, Container& /*container*/, NetworkXmlReaderContext& context) const {
     const auto& r1 = context.getReader().getAttributeValue<double>(R1);
     const auto& x1 = context.getReader().getAttributeValue<double>(X1);
     const auto& g1 = context.getReader().getAttributeValue<double>(G1);

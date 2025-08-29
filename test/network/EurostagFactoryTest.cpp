@@ -132,7 +132,6 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     const auto& line1 = network.getLine("NHV1_NHV2_1");
     BOOST_CHECK(line1.getOptionalName().empty());
     BOOST_CHECK_EQUAL("NHV1_NHV2_1", line1.getNameOrId());
-    BOOST_TEST(!line1.isTieLine());
     BOOST_CHECK_CLOSE(3.0, line1.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line1.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, line1.getG1(), std::numeric_limits<double>::epsilon());
@@ -148,7 +147,6 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
     const auto& line2 = network.getLine("NHV1_NHV2_2");
     BOOST_CHECK(line2.getOptionalName().empty());
     BOOST_CHECK_EQUAL("NHV1_NHV2_2", line2.getNameOrId());
-    BOOST_TEST(!line2.isTieLine());
     BOOST_CHECK_CLOSE(3.0, line2.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line2.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, line2.getG1(), std::numeric_limits<double>::epsilon());
@@ -350,7 +348,6 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
 
     const auto& line1 = network.getLine("NHV1_NHV2_1");
     BOOST_CHECK(line1.getOptionalName().empty());
-    BOOST_TEST(!line1.isTieLine());
     BOOST_CHECK_CLOSE(3.0, line1.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line1.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, line1.getG1(), std::numeric_limits<double>::epsilon());
@@ -383,7 +380,6 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
 
     const auto& line2 = network.getLine("NHV1_NHV2_2");
     BOOST_CHECK(line2.getOptionalName().empty());
-    BOOST_TEST(!line2.isTieLine());
     BOOST_CHECK_CLOSE(3.0, line2.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(33.0, line2.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, line2.getG1(), std::numeric_limits<double>::epsilon());

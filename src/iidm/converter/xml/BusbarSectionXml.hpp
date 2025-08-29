@@ -30,7 +30,7 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    BusbarSection& readRootElementAttributes(BusbarSectionAdder& adder, NetworkXmlReaderContext& context) const override;
+    BusbarSection& readRootElementAttributes(BusbarSectionAdder& adder, VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(BusbarSection& busbarSection, NetworkXmlReaderContext& context) const override;
 

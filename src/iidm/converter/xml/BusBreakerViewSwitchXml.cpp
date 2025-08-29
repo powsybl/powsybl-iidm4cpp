@@ -29,7 +29,7 @@ const BusBreakerViewSwitchXml& BusBreakerViewSwitchXml::getInstance() {
     return s_instance;
 }
 
-Switch& BusBreakerViewSwitchXml::readRootElementAttributes(VoltageLevel::BusBreakerView::SwitchAdder& adder, NetworkXmlReaderContext& context) const {
+Switch& BusBreakerViewSwitchXml::readRootElementAttributes(VoltageLevel::BusBreakerView::SwitchAdder& adder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     const auto& open = context.getReader().getAttributeValue<bool>(OPEN);
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_1(), context.getVersion(), [&context, &adder]() {
         bool fictitious = context.getReader().getOptionalAttributeValue(FICTITIOUS, false);

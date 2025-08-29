@@ -58,10 +58,6 @@ double Line::getX() const {
     return m_lineCharacteristics.getX();
 }
 
-bool Line::isTieLine() const {
-    return false;
-}
-
 Line& Line::setB1(double b1) {
     m_lineCharacteristics.setB1(b1);
     return *this;

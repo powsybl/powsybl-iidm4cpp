@@ -39,7 +39,7 @@ const char* SubstationXml::getRootElementName() const {
     return SUBSTATION;
 }
 
-Substation& SubstationXml::readRootElementAttributes(SubstationAdder& adder, NetworkXmlReaderContext& context) const {
+Substation& SubstationXml::readRootElementAttributes(SubstationAdder& adder, Network& /*network*/, NetworkXmlReaderContext& context) const {
     const std::string& countryCode = context.getReader().getOptionalAttributeValue(COUNTRY, "");
     if (!countryCode.empty()) {
         const auto& country = Enum::fromString<Country>(countryCode);

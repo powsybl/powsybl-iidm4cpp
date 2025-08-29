@@ -18,6 +18,7 @@ namespace iidm {
 class Bus;
 class Connectable;
 class Network;
+class TieLine;
 
 namespace converter {
 
@@ -31,6 +32,8 @@ public:
     bool test(const Bus& bus) const;
 
     bool test(const Connectable& connectable) const;
+
+    bool test(const TieLine& tl) const;
 
 private:
     BusFilter(const std::set<std::string>& buses, const ExportOptions& options);

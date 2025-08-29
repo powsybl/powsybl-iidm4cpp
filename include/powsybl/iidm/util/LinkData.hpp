@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_UTIL_LINKDATA_HPP
 #define POWSYBL_IIDM_UTIL_LINKDATA_HPP
 
+#include <powsybl/iidm/Branch.hpp>
+
 #include <complex>
 
 namespace powsybl {
@@ -36,6 +38,9 @@ public:
 
 BranchAdmittanceMatrix calculateBranchAdmittance(double r, double x, double ratio1, double angle1,
                                                  double ratio2, double angle2, const std::complex<double>& ysh1, const std::complex<double>& ysh2);
+
+BranchAdmittanceMatrix kronChain(const BranchAdmittanceMatrix& firstAdm, const Branch::Side& firstChainNodeSide,
+                                 const BranchAdmittanceMatrix& secondAdm, const Branch::Side& secondChainNodeSide);
 
 }  // namespace LinkData
 

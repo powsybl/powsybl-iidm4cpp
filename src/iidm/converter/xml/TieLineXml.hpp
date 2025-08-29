@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_TIELINEXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_TIELINEXML_HPP
 
+#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
@@ -31,7 +33,7 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    TieLine& readRootElementAttributes(TieLineAdder& adder, NetworkXmlReaderContext& context) const override;
+    TieLine& readRootElementAttributes(TieLineAdder& adder, Network& network, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(TieLine& line, NetworkXmlReaderContext& context) const override;
 
@@ -42,9 +44,10 @@ protected:  // AbstractIdentifiableXml
 private:
     static void checkBoundaryValue(double imported, double calculated, const std::string& name, const std::string& tlId);
 
-    static void readHalf(TieLineAdder::HalfLineAdder adder, const NetworkXmlReaderContext& context, int side);
+    static DanglingLine& readDanglingLine(DanglingLineAdder& adder, const NetworkXmlReaderContext& context, int side);
+    static DanglingLineAdder readVlAndNodeOrBus(const NetworkXmlReaderContext& context, Network& network, int side);
 
-    static void writeHalf(const TieLine::HalfLine& halfLine, NetworkXmlWriterContext& context, int side);
+    static void writeDanglingLine(const DanglingLine& dl, NetworkXmlWriterContext& context, int side);
 
 private:
     TieLineXml() = default;

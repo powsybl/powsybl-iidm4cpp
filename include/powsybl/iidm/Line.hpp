@@ -24,31 +24,29 @@ public:
 
     ~Line() noexcept override = default;
 
-    virtual double getB1() const;
+    double getB1() const;
 
-    virtual double getB2() const;
+    double getB2() const;
 
-    virtual double getG1() const;
+    double getG1() const;
 
-    virtual double getG2() const;
+    double getG2() const;
 
-    virtual double getR() const;
+    double getR() const;
 
-    virtual double getX() const;
+    double getX() const;
 
-    virtual bool isTieLine() const;
+    Line& setB1(double b1);
 
-    virtual Line& setB1(double b1);
+    Line& setB2(double b2);
 
-    virtual Line& setB2(double b2);
+    Line& setG1(double g1);
 
-    virtual Line& setG1(double g1);
+    Line& setG2(double g2);
 
-    virtual Line& setG2(double g2);
+    Line& setR(double r);
 
-    virtual Line& setR(double r);
-
-    virtual Line& setX(double x);
+    Line& setX(double x);
 
 protected:
     Line(const std::string& id, const std::string& name, bool fictitious);

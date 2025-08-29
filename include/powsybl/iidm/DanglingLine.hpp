@@ -25,6 +25,7 @@ class ApparentPowerLimits;
 class ApparentPowerLimitsAdder;
 class CurrentLimits;
 class CurrentLimitsAdder;
+class TieLine;
 
 class DanglingLine : public Injection, public FlowsLimitsHolder {
 public:
@@ -46,11 +47,21 @@ public:
 
     Boundary& getBoundary();
 
+    stdcxx::CReference<TieLine> getTieLine() const;
+    stdcxx::Reference<TieLine> getTieLine();
+
+    DanglingLine& setTieLine(TieLine& tieLine);
+
+    void remove() override;
+    void removeTieLine();
+
     double getG() const;
 
     stdcxx::CReference<Generation> getGeneration() const;
 
     stdcxx::Reference<Generation> getGeneration();
+
+    bool isPaired() const;
 
     double getP0() const;
 
@@ -102,6 +113,8 @@ private:
     std::unique_ptr<Generation> m_generation;
 
     std::unique_ptr<Boundary> m_boundary;
+
+    stdcxx::Reference<TieLine> m_tieLine;
 };
 
 }  // namespace iidm

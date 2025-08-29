@@ -28,7 +28,7 @@ const char* BusXml::getRootElementName() const {
     return BUS;
 }
 
-Bus& BusXml::readRootElementAttributes(BusAdder& adder, NetworkXmlReaderContext& context) const {
+Bus& BusXml::readRootElementAttributes(BusAdder& adder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
     double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
     Bus& b = adder.add();

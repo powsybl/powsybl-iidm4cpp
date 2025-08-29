@@ -137,6 +137,10 @@ SV SV::otherSide(const Line& line) const {
     return otherSide(line.getR(), line.getX(), line.getG1(), line.getB1(), line.getG2(), line.getB2(), 1.0, 0.0);
 }
 
+SV SV::otherSide(const TieLine& tieLine) const {
+    return otherSide(tieLine.getR(), tieLine.getX(), tieLine.getG1(), tieLine.getB1(), tieLine.getG2(), tieLine.getB2(), 1.0, 0.0);
+}
+
 SV SV::otherSide(const DanglingLine& dl) const {
     return otherSide(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0);
 }
@@ -174,10 +178,6 @@ double SV::otherSideA(double r, double x, double g1, double b1, double g2, doubl
     return otherSideA(adm);
 }
 
-double SV::otherSideA(const TieLine::HalfLine& halfLine) const {
-    return otherSideA(halfLine.getR(), halfLine.getX(), halfLine.getG1(), halfLine.getB1(), halfLine.getG2(), halfLine.getB2(), 1.0, 0.0);
-}
-
 double SV::otherSideA(const DanglingLine& dl) const {
     return otherSideA(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0);
 }
@@ -197,10 +197,6 @@ double SV::otherSideP(double r, double x, double g1, double b1, double g2, doubl
     LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
                                                                                std::complex<double>(g1, b1), std::complex<double>(g2, b2));
     return otherSideP(adm);
-}
-
-double SV::otherSideP(const TieLine::HalfLine& halfLine) const {
-    return otherSideP(halfLine.getR(), halfLine.getX(), halfLine.getG1(), halfLine.getB1(), halfLine.getG2(), halfLine.getB2(), 1.0, 0.0);
 }
 
 double SV::otherSideP(const DanglingLine& dl) const {
@@ -224,10 +220,6 @@ double SV::otherSideQ(double r, double x, double g1, double b1, double g2, doubl
     return otherSideQ(adm);
 }
 
-double SV::otherSideQ(const TieLine::HalfLine& halfLine) const {
-    return otherSideQ(halfLine.getR(), halfLine.getX(), halfLine.getG1(), halfLine.getB1(), halfLine.getG2(), halfLine.getB2(), 1.0, 0.0);
-}
-
 double SV::otherSideQ(const DanglingLine& dl) const {
     return otherSideQ(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0);
 }
@@ -247,10 +239,6 @@ double SV::otherSideU(double r, double x, double g1, double b1, double g2, doubl
     LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
                                                                                std::complex<double>(g1, b1), std::complex<double>(g2, b2));
     return otherSideU(adm);
-}
-
-double SV::otherSideU(const TieLine::HalfLine& halfLine) const {
-    return otherSideU(halfLine.getR(), halfLine.getX(), halfLine.getG1(), halfLine.getB1(), halfLine.getG2(), halfLine.getB2(), 1.0, 0.0);
 }
 
 double SV::otherSideU(const DanglingLine& dl) const {

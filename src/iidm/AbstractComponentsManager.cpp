@@ -9,9 +9,11 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Component.hpp>
+#include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
@@ -50,6 +52,11 @@ void AbstractComponentsManager::fillAdjacencyList(const std::map<std::string, un
     for (const Line& line : getNetwork().getLines()) {
         const auto& bus1 = line.getTerminal1().getBusView().getBus();
         const auto& bus2 = line.getTerminal2().getBusView().getBus();
+        addToAdjacencyList(bus1, bus2, id2num, adjacencyList);
+    }
+    for (const TieLine& tl : getNetwork().getTieLines()) {
+        const auto& bus1 = tl.getDanglingLine1().getTerminal().getBusView().getBus();
+        const auto& bus2 = tl.getDanglingLine2().getTerminal().getBusView().getBus();
         addToAdjacencyList(bus1, bus2, id2num, adjacencyList);
     }
     for (const TwoWindingsTransformer& twt : getNetwork().getTwoWindingsTransformers()) {

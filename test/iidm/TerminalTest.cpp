@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE(traverseBusBreaker) {
     CustomTopologyTraverser fullTraverser(true, true);
     network.getLoad("LOAD1").getTerminal().traverse(fullTraverser);
     const auto& fullTraversedConnectables = fullTraverser.getTraversedConnectables();
-    const std::set<std::string>& fullExpectedConnectables = { "2WT_VL4_VL5", "3WT_VL1_VL2_VL3", "LCC1", "LOAD1", "LOAD2", "LOAD3", "LOAD4", "LOAD5", "LOAD6", "TL_VL4_VL6", "VL2_VL5" };
+    const std::set<std::string>& fullExpectedConnectables = { "2WT_VL4_VL5", "3WT_VL1_VL2_VL3", "H1_TL_VL4_VL6", "LOAD1", "LOAD2", "LOAD3", "LOAD4", "LOAD5", "VL2_VL5" };
     BOOST_CHECK_EQUAL_COLLECTIONS(fullExpectedConnectables.begin(), fullExpectedConnectables.end(), fullTraversedConnectables.begin(), fullTraversedConnectables.end());
     BOOST_CHECK(fullTraverser.getTraversedSwitches().empty());
 
@@ -103,9 +103,10 @@ BOOST_AUTO_TEST_CASE(traverseNodeBreaker) {
     network.getLoad("LOAD1").getTerminal().traverse(fullTraverser);
     const auto& fullTraversedConnectables = fullTraverser.getTraversedConnectables();
     const auto& fullTraversedSwitches = fullTraverser.getTraversedSwitches();
-    const std::set<std::string>& fullExpectedConnectables = { "2WT_VL4_VL5", "3WT_VL1_VL2_VL3", "LOAD1", "LOAD2", "LOAD3", "LOAD4", "LOAD5", "LOAD6", "TL_VL4_VL6", "VL2_VL5", "VSC1" };
+
+    const std::set<std::string>& fullExpectedConnectables = { "2WT_VL4_VL5", "3WT_VL1_VL2_VL3", "H1_TL_VL4_VL6", "LOAD1", "LOAD2", "LOAD3", "LOAD4", "LOAD5", "VL2_VL5"};
     BOOST_CHECK_EQUAL_COLLECTIONS(fullExpectedConnectables.begin(), fullExpectedConnectables.end(), fullTraversedConnectables.begin(), fullTraversedConnectables.end());
-    const std::set<std::string>& fullExpectedSwitches = { "SWB1", "SWB10", "SWB2", "SWB3", "SWB4", "SWB5", "SWB6", "SWB7", "SWB8", "SWB9" };
+    const std::set<std::string>& fullExpectedSwitches = { "SWB1", "SWB2", "SWB3", "SWB4", "SWB5", "SWB6", "SWB7", "SWB8" };
     BOOST_CHECK_EQUAL_COLLECTIONS(fullExpectedSwitches.begin(), fullExpectedSwitches.end(), fullTraversedSwitches.begin(), fullTraversedSwitches.end());
 
     CustomTopologyTraverser partialTraverser(false, true);

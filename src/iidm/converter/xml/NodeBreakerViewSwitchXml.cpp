@@ -24,7 +24,7 @@ const NodeBreakerViewSwitchXml& NodeBreakerViewSwitchXml::getInstance() {
     return s_instance;
 }
 
-Switch& NodeBreakerViewSwitchXml::readRootElementAttributes(VoltageLevel::NodeBreakerView::SwitchAdder& adder, NetworkXmlReaderContext& context) const {
+Switch& NodeBreakerViewSwitchXml::readRootElementAttributes(VoltageLevel::NodeBreakerView::SwitchAdder& adder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     const auto& open = context.getReader().getAttributeValue<bool>(OPEN);
     const auto& kind = Enum::fromString<SwitchKind>(context.getReader().getAttributeValue(KIND));
     const auto& retained = context.getReader().getAttributeValue<bool>(RETAINED);

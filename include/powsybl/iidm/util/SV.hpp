@@ -20,10 +20,9 @@ namespace iidm {
 class DanglingLine;
 class Line;
 class TwoWindingsTransformer;
+class TieLine;
 
 namespace tie_line {
-
-class HalfLine;
 
 }  // namespace tie_line
 
@@ -49,13 +48,13 @@ public:
 
     SV otherSide(const Line& line) const;
 
+    SV otherSide(const TieLine& tieLine) const;
+
     SV otherSide(const DanglingLine& dl) const;
 
     SV otherSide(const DanglingLine& dl, bool splitShuntAdmittance) const;
 
     double otherSideA(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
-
-    double otherSideA(const tie_line::HalfLine& halfLine) const;
 
     double otherSideA(const DanglingLine& dl) const;
 
@@ -63,23 +62,17 @@ public:
 
     double otherSideP(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
 
-    double otherSideP(const tie_line::HalfLine& halfLine) const;
-
     double otherSideP(const DanglingLine& dl) const;
 
     double otherSideP(const DanglingLine& dl, bool splitShuntAdmittance) const;
 
     double otherSideQ(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
 
-    double otherSideQ(const tie_line::HalfLine& halfLine) const;
-
     double otherSideQ(const DanglingLine& dl) const;
 
     double otherSideQ(const DanglingLine& dl, bool splitShuntAdmittance) const;
 
     double otherSideU(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
-
-    double otherSideU(const tie_line::HalfLine& halfLine) const;
 
     double otherSideU(const DanglingLine& dl) const;
 

@@ -8,76 +8,74 @@
 #ifndef POWSYBL_IIDM_TIELINE_HPP
 #define POWSYBL_IIDM_TIELINE_HPP
 
-#include <powsybl/iidm/HalfLine.hpp>
-#include <powsybl/iidm/Line.hpp>
+#include <powsybl/iidm/Branch.hpp>
+#include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/NetworkRef.hpp>
+
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class TieLine : public Line {
-public:
-    using HalfLine = tie_line::HalfLine;
+class TieLine : public Identifiable {
+public: // Identifiable
+    const Network& getNetwork() const override;
 
-public: // Line
-    double getB1() const override;
+    Network& getNetwork() override;
 
-    double getB2() const override;
+    const IdentifiableType& getType() const;
 
-    double getG1() const override;
+    // LineCharacteristics
+    double getB1() const;
 
-    double getG2() const override;
+    double getB2() const;
 
-    double getR() const override;
+    double getG1() const;
 
-    double getX() const override;
+    double getG2() const;
 
-    bool isTieLine() const override;
+    double getR() const;
 
-    TieLine& setB1(double b1) override;
-
-    TieLine& setB2(double b2) override;
-
-    TieLine& setG1(double g1) override;
-
-    TieLine& setG2(double g2) override;
-
-    TieLine& setR(double r) override;
-
-    TieLine& setX(double x) override;
+    double getX() const;
 
 public:
-    TieLine(const std::string& id, const std::string& name, bool fictitious, const std::string& ucteXnodeCode, HalfLine&& half1, HalfLine&& half2);
-
     ~TieLine() noexcept override = default;
 
-    const HalfLine& getHalf(const Side& side) const;
+    const DanglingLine& getDanglingLine1() const;
+    DanglingLine& getDanglingLine1();
 
-    HalfLine& getHalf(const Side& side);
+    const DanglingLine& getDanglingLine2() const;
+    DanglingLine& getDanglingLine2();
 
-    const HalfLine& getHalf1() const;
+    const DanglingLine& getDanglingLine(const Branch::Side& branchSide) const;
+    DanglingLine& getDanglingLine(const Branch::Side& branchSide);
+    
+    const DanglingLine& getDanglingLine(const std::string& voltageLevelId) const;
+    DanglingLine& getDanglingLine(const std::string& voltageLevelId);
 
-    HalfLine& getHalf1();
+    std::string getUcteXnodeCode() const;
 
-    const HalfLine& getHalf2() const;
-
-    HalfLine& getHalf2();
-
-    const std::string& getUcteXnodeCode() const;
+    void remove();
 
 private: // Identifiable
-    const std::string& getTypeDescription() const override;
+    const std::string& getTypeDescription() const;
 
 private:
-    HalfLine& attach(HalfLine& halfLine);
+    TieLine(Network& network, const std::string& id, const std::string& name, bool fictitious);
+    void attachDanglingLines(DanglingLine& dl1, DanglingLine& dl2);
+    DanglingLine& attach(DanglingLine& dl);
+
+    friend class TieLineAdder;
 
 private:
-    HalfLine m_half1;
+    NetworkRef m_network;
 
-    HalfLine m_half2;
+    stdcxx::Reference<DanglingLine> m_danglingLine1;
 
-    std::string m_ucteXnodeCode;
+    stdcxx::Reference<DanglingLine> m_danglingLine2;
 };
 
 }  // namespace iidm

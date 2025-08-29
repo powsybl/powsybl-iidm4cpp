@@ -9,6 +9,8 @@
 
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/util/TieLineUtil.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -16,69 +18,118 @@ namespace powsybl {
 
 namespace iidm {
 
-TieLine::TieLine(const std::string& id, const std::string& name, bool fictitious, const std::string& ucteXnodeCode, HalfLine&& half1, HalfLine&& half2) :
-    Line(id, name, fictitious),
-    m_half1(std::move(half1)),
-    m_half2(std::move(half2)),
-    m_ucteXnodeCode(ucteXnodeCode) {
-    attach(m_half1);
-    attach(m_half2);
+TieLine::TieLine(Network& network, const std::string& id, const std::string& name, bool fictitious) :
+    Identifiable(id, name, fictitious),
+    m_network(network) {
+    m_danglingLine1.reset();
+    m_danglingLine2.reset();
 }
 
-TieLine::HalfLine& TieLine::attach(TieLine::HalfLine& halfLine) {
-    halfLine.setParent(*this);
-    return halfLine;
+void TieLine::attachDanglingLines(DanglingLine& dl1, DanglingLine& dl2) {
+    m_danglingLine1 = attach(dl1);
+    m_danglingLine2 = attach(dl2);
+}
+DanglingLine& TieLine::attach(DanglingLine& dl) {
+    dl.setTieLine(*this);
+    return dl;
+}
+
+const Network& TieLine::getNetwork() const {
+    return m_network.get();
+}
+
+Network& TieLine::getNetwork() {
+    return m_network.get();
 }
 
 double TieLine::getB1() const {
-    return m_half1.getB1() + m_half2.getB1();
+    return TieLineUtil::getB1(getDanglingLine1(), getDanglingLine2());
 }
 
 double TieLine::getB2() const {
-    return m_half1.getB2() + m_half2.getB2();
+    return TieLineUtil::getB2(getDanglingLine1(), getDanglingLine2());
 }
 
 double TieLine::getG1() const {
-    return m_half1.getG1() + m_half2.getG1();
+    return TieLineUtil::getG1(getDanglingLine1(), getDanglingLine2());
 }
 
 double TieLine::getG2() const {
-    return m_half1.getG2() + m_half2.getG2();
-}
-
-const TieLine::HalfLine& TieLine::getHalf(const Side& side) const {
-    switch (side) {
-        case Side::ONE:
-            return m_half1;
-        case Side::TWO:
-            return m_half2;
-        default:
-            throw AssertionError(stdcxx::format("Unknown branch side %1%", side));
-    }
-}
-
-TieLine::HalfLine& TieLine::getHalf(const Side& side) {
-    return const_cast<HalfLine&>(static_cast<const TieLine*>(this)->getHalf(side)); //NOSONAR
-}
-
-const TieLine::HalfLine& TieLine::getHalf1() const {
-    return m_half1;
-}
-
-TieLine::HalfLine& TieLine::getHalf1() {
-    return m_half1;
-}
-
-const TieLine::HalfLine& TieLine::getHalf2() const {
-    return m_half2;
-}
-
-TieLine::HalfLine& TieLine::getHalf2() {
-    return m_half2;
+    return TieLineUtil::getG2(getDanglingLine1(), getDanglingLine2());
 }
 
 double TieLine::getR() const {
-    return m_half1.getR() + m_half2.getR();
+    return TieLineUtil::getR(getDanglingLine1(), getDanglingLine2());
+}
+
+double TieLine::getX() const {
+    return TieLineUtil::getX(getDanglingLine1(), getDanglingLine2());
+}
+
+
+const DanglingLine& TieLine::getDanglingLine1() const {
+    if(!static_cast<bool>(m_danglingLine1)) {
+        throw AssertionError(stdcxx::format("dangling line 1 missing from tie line %1%", getId()));
+    }
+    return stdcxx::cref<DanglingLine>(m_danglingLine1).get();
+}
+DanglingLine& TieLine::getDanglingLine1() {
+    if(!static_cast<bool>(m_danglingLine1)) {
+        throw AssertionError(stdcxx::format("dangling line 1 missing from tie line %1%", getId()));
+    }
+    return m_danglingLine1.get();
+}
+
+const DanglingLine& TieLine::getDanglingLine2() const {
+    if(!static_cast<bool>(m_danglingLine2)) {
+        throw AssertionError(stdcxx::format("dangling line 2 missing from tie line %1%", getId()));
+    }
+    return stdcxx::cref<DanglingLine>(m_danglingLine2).get();
+}
+DanglingLine& TieLine::getDanglingLine2() {
+    if(!static_cast<bool>(m_danglingLine2)) {
+        throw AssertionError(stdcxx::format("dangling line 2 missing from tie line %1%", getId()));
+    }
+    return m_danglingLine2.get();
+}
+
+const DanglingLine& TieLine::getDanglingLine(const Branch::Side& branchSide) const {
+    switch (branchSide) {
+        case Branch::Side::ONE:
+            if(!static_cast<bool>(m_danglingLine1)) {
+                throw AssertionError(stdcxx::format("dangling line 1 missing from tie line %1%", getId()));
+            }
+            return m_danglingLine1.get();
+        case Branch::Side::TWO:
+            if(!static_cast<bool>(m_danglingLine2)) {
+                throw AssertionError(stdcxx::format("dangling line 2 missing from tie line %1%", getId()));
+            }
+            return m_danglingLine2.get();
+        default:
+            throw AssertionError(stdcxx::format("Unknown branch side %1%", branchSide));
+    }
+}
+DanglingLine& TieLine::getDanglingLine(const Branch::Side& branchSide) {
+    return const_cast<DanglingLine&>(static_cast<const TieLine*>(this)->getDanglingLine(branchSide)); //NOSONAR
+}
+
+const DanglingLine& TieLine::getDanglingLine(const std::string& voltageLevelId) const {
+    if(static_cast<bool>(m_danglingLine1) && m_danglingLine1.get().getTerminal().getVoltageLevel().getId() == voltageLevelId) {
+        return m_danglingLine1.get();
+    } else if (static_cast<bool>(m_danglingLine1) && m_danglingLine2.get().getTerminal().getVoltageLevel().getId() == voltageLevelId) {
+        return m_danglingLine2.get();
+    } else {
+        throw AssertionError(stdcxx::format("Voltage level %1% not found on attached dangling lines", voltageLevelId));
+    }
+}
+
+DanglingLine& TieLine::getDanglingLine(const std::string& voltageLevelId) {
+    return const_cast<DanglingLine&>(static_cast<const TieLine*>(this)->getDanglingLine(voltageLevelId)); //NOSONAR
+}
+
+const IdentifiableType& TieLine::getType() const {
+    static IdentifiableType s_type = IdentifiableType::TIE_LINE;
+    return s_type;
 }
 
 const std::string& TieLine::getTypeDescription() const {
@@ -87,40 +138,29 @@ const std::string& TieLine::getTypeDescription() const {
     return s_typeDescription;
 }
 
-const std::string& TieLine::getUcteXnodeCode() const {
-    return m_ucteXnodeCode;
+std::string TieLine::getUcteXnodeCode() const {
+    std::string ucteXnodeCode = "";
+    if(static_cast<bool>(m_danglingLine1) && !m_danglingLine1.get().getUcteXnodeCode().empty()) {
+        ucteXnodeCode = m_danglingLine1.get().getUcteXnodeCode();
+    } else if(static_cast<bool>(m_danglingLine2) && !m_danglingLine2.get().getUcteXnodeCode().empty()) {
+        ucteXnodeCode = m_danglingLine2.get().getUcteXnodeCode();
+    }
+    return ucteXnodeCode;
 }
 
-double TieLine::getX() const {
-    return m_half1.getX() + m_half2.getX();
-}
+void TieLine::remove() {
+    //detach dangling lines
+    if(static_cast<bool>(m_danglingLine1)) {
+        m_danglingLine1.get().removeTieLine();
+        m_danglingLine1.reset();
+    }
+    if(static_cast<bool>(m_danglingLine2)) {
+        m_danglingLine2.get().removeTieLine();
+        m_danglingLine2.reset();
+    }
 
-bool TieLine::isTieLine() const {
-    return true;
-}
-
-TieLine& TieLine::setB1(double /*b1*/) {
-    throw ValidationException(*this, "direct modification of characteristics not supported for tie lines");
-}
-
-TieLine& TieLine::setB2(double /*b2*/) {
-    throw ValidationException(*this, "direct modification of characteristics not supported for tie lines");
-}
-
-TieLine& TieLine::setG1(double /*g1*/) {
-    throw ValidationException(*this, "direct modification of characteristics not supported for tie lines");
-}
-
-TieLine& TieLine::setG2(double /*g2*/) {
-    throw ValidationException(*this, "direct modification of characteristics not supported for tie lines");
-}
-
-TieLine& TieLine::setR(double /*r*/) {
-    throw ValidationException(*this, "direct modification of characteristics not supported for tie lines");
-}
-
-TieLine& TieLine::setX(double /*x*/) {
-    throw ValidationException(*this, "direct modification of characteristics not supported for tie lines");
+    // Remove this from the network
+    getNetwork().remove(*this);
 }
 
 }  // namespace iidm

@@ -107,6 +107,10 @@ public:
 
     stdcxx::range<DanglingLine> getDanglingLines();
 
+    stdcxx::const_range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) const;
+
+    stdcxx::range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter);
+
     unsigned long getGeneratorCount() const;
 
     stdcxx::const_range<Generator> getGenerators() const;

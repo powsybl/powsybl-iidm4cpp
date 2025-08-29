@@ -64,6 +64,9 @@ protected:
     template <typename Added, typename Adder>
     static void readNodeOrBus(InjectionAdder<Added, Adder>& adder, const NetworkXmlReaderContext& context);
 
+    template <typename Added, typename Adder>
+    static void readNodeOrBus(InjectionAdder<Added, Adder>& adder,const std::string& suffix, const NetworkXmlReaderContext& context);
+
     static void readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder& adder, const NetworkXmlReaderContext& context);
 
     static void readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());

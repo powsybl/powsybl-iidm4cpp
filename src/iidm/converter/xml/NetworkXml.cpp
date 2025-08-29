@@ -375,6 +375,7 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     writeSubstations(network, context);
     writeTransformers(filter, network, context);
     writeLines(filter, network, context);
+    writeTieLines(filter, network, context);
     writeHvdcLines(filter, network, context);
 
     writeExtensions(network, context);
@@ -410,11 +411,16 @@ void NetworkXml::writeLines(const BusFilter& filter, const Network& network, Net
         if (!filter.test(line)) {
             continue;
         }
-        if (line.isTieLine()) {
-            TieLineXml::getInstance().write(dynamic_cast<const TieLine&>(line), network, context);
-        } else {
-            LineXml::getInstance().write(line, network, context);
+        LineXml::getInstance().write(line, network, context);
+    }
+}
+
+void NetworkXml::writeTieLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context) {
+    for (const TieLine& tl : network.getTieLines()) {
+        if (!filter.test(tl)) {
+            continue;
         }
+        TieLineXml::getInstance().write(tl, network, context);
     }
 }
 

@@ -34,7 +34,7 @@ const char* StaticVarCompensatorXml::getRootElementName() const {
     return STATIC_VAR_COMPENSATOR;
 }
 
-StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticVarCompensatorAdder& adder, NetworkXmlReaderContext& context) const {
+StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticVarCompensatorAdder& adder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     const auto& bMin = context.getReader().getAttributeValue<double>(B_MIN);
     const auto& bMax = context.getReader().getAttributeValue<double>(B_MAX);
     const std::string& voltageSetpointName = context.getVersion() <= IidmXmlVersion::V1_2() ? VOLTAGE_SET_POINT : VOLTAGE_SETPOINT;

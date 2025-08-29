@@ -11,7 +11,9 @@
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
+#include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {
 
@@ -22,35 +24,31 @@ TieLineAdder::TieLineAdder(Network& network) :
 }
 
 TieLine& TieLineAdder::add() {
-    checkConnectableBuses();
-    VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
-    VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
-    std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1(voltageLevel1);
-    std::unique_ptr<Terminal> ptrTerminal2 = checkAndGetTerminal2(voltageLevel2);
-
-    checkNotEmpty(*this, m_ucteXnodeCode, "ucteXnodeCode is not set");
-
-    if (!m_halfLineAdder1) {
-        throw ValidationException(*this, "half line 1 is not set");
-    }
-    if (!m_halfLineAdder2) {
-        throw ValidationException(*this, "half line 2 is not set");
+    
+    if(m_dlId1.empty() || m_dlId2.empty()) {
+        throw ValidationException(*this, "undefined dangling line");
     }
 
-    TieLine::HalfLine half1 = m_halfLineAdder1->build();
-    TieLine::HalfLine half2 = m_halfLineAdder2->build();
+    DanglingLine& dl1 = m_network.getDanglingLine(m_dlId1);
+    DanglingLine& dl2 = m_network.getDanglingLine(m_dlId2);
 
-    // check that the line is attachable on both side
-    voltageLevel1.attach(*ptrTerminal1, true);
-    voltageLevel2.attach(*ptrTerminal2, true);
+    if(stdcxx::areSame(dl1, dl2)) {
+        throw ValidationException(*this, stdcxx::format("danglingLine1 and danglingLine2 are identical (%1%)", m_dlId1));
+    }
 
-    std::unique_ptr<TieLine> ptrTieLine = stdcxx::make_unique<TieLine>(checkAndGetUniqueId(), getName(), isFictitious(), m_ucteXnodeCode, std::move(half1), std::move(half2));
+    if (static_cast<bool>(dl1.getTieLine())) {
+        throw ValidationException(*this, stdcxx::format("danglingLine1 (%1%) already has a tie line", m_dlId1));
+    } else if (static_cast<bool>(dl2.getTieLine())) {
+        throw ValidationException(*this, stdcxx::format("danglingLine2 (%1%) already has a tie line", m_dlId2));
+    }
+
+    if (!dl1.getUcteXnodeCode().empty() && !dl2.getUcteXnodeCode().empty() && dl1.getUcteXnodeCode() != dl2.getUcteXnodeCode()) {
+        throw ValidationException(*this, "ucteXnodeCode is not consistent");
+    }
+    
+    std::unique_ptr<TieLine> ptrTieLine = std::unique_ptr<TieLine>(new TieLine(m_network, checkAndGetUniqueId(), getName(), isFictitious()));
     auto& tieLine = m_network.checkAndAdd<TieLine>(std::move(ptrTieLine));
-
-    Terminal& terminal1 = tieLine.addTerminal(std::move(ptrTerminal1));
-    Terminal& terminal2 = tieLine.addTerminal(std::move(ptrTerminal2));
-    voltageLevel1.attach(terminal1, false);
-    voltageLevel2.attach(terminal2, false);
+    tieLine.attachDanglingLines(dl1, dl2);
 
     return tieLine;
 }
@@ -69,24 +67,13 @@ const std::string& TieLineAdder::getTypeDescription() const {
     return s_typeDescription;
 }
 
-TieLineAdder::HalfLineAdder TieLineAdder::newHalfLine1() {
-    return HalfLineAdder(*this, 1);
+TieLineAdder& TieLineAdder::setDanglingLine1(const std::string& id) {
+    m_dlId1 = id;
+    return *this;
 }
 
-TieLineAdder::HalfLineAdder TieLineAdder::newHalfLine2() {
-    return HalfLineAdder(*this, 2);
-}
-
-void TieLineAdder::setHalfLineAdder1(const HalfLineAdder& adder) {
-    m_halfLineAdder1.emplace(adder);
-}
-
-void TieLineAdder::setHalfLineAdder2(const HalfLineAdder& adder) {
-    m_halfLineAdder2.emplace(adder);
-}
-
-TieLineAdder& TieLineAdder::setUcteXnodeCode(const std::string& ucteXnodeCode) {
-    m_ucteXnodeCode = ucteXnodeCode;
+TieLineAdder& TieLineAdder::setDanglingLine2(const std::string& id) {
+    m_dlId2 = id;
     return *this;
 }
 

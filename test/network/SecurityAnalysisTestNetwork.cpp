@@ -14,6 +14,7 @@
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
+#include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>

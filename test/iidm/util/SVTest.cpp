@@ -330,42 +330,6 @@ BOOST_AUTO_TEST_CASE(testTwoWindingsTransformerWithoutPtc) {
     BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
 }
 
-BOOST_AUTO_TEST_CASE(testHalfLine) {
-    Network network = createComponentsTestNetworkBB();
-    auto& tieLine = dynamic_cast<TieLine&>(network.getLine("TL_VL4_VL6"));
-    TieLine::HalfLine& halfLine = tieLine.getHalf1();
-    halfLine.setR(0.15);
-    halfLine.setX(0.25);
-    halfLine.setG1(0.01);
-    halfLine.setB1(0.0020);
-    halfLine.setG2(0.01);
-    halfLine.setB2(0.0020);
-
-    double tol = 0.0001;
-    double p1 = 485.306701;
-    double q1 = 48.537745;
-    double v1 = 138.0;
-    double a1 = 0.0;
-
-    double p2 = -104.996276;
-    double q2 = -123.211145;
-    double v2 = 137.5232696533203;
-    double a2 = -0.18332427740097046;
-
-    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
-    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
-
-    BOOST_CHECK_CLOSE(p2, svA1.otherSideP(halfLine), tol);
-    BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(halfLine), tol);
-    BOOST_CHECK_CLOSE(v2, svA1.otherSideU(halfLine), tol);
-    BOOST_CHECK_CLOSE(a2, svA1.otherSideA(halfLine), tol);
-
-    BOOST_CHECK_CLOSE(p1, svB2.otherSideP(halfLine), tol);
-    BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(halfLine), tol);
-    BOOST_CHECK_CLOSE(v1, svB2.otherSideU(halfLine), tol);
-    BOOST_CHECK_SMALL(svB2.otherSideA(halfLine), tol);
-}
-
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

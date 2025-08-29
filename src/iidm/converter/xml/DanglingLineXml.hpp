@@ -31,7 +31,7 @@ protected:  // AbstractIdentifiableXml
 
     const char* getRootElementName() const override;
 
-    DanglingLine& readRootElementAttributes(DanglingLineAdder& adder, NetworkXmlReaderContext& context) const override;
+    DanglingLine& readRootElementAttributes(DanglingLineAdder& adder, VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(DanglingLine& dl, NetworkXmlReaderContext& context) const override;
 

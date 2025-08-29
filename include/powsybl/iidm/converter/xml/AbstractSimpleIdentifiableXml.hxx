@@ -35,7 +35,7 @@ void AbstractSimpleIdentifiableXml<Added, Adder, Parent>::read(Parent& parent, N
     Adder adder = this->createAdder(parent);
     AbstractIdentifiableXml<Added, Adder, Parent>::readIdentifierAttributes(adder, context);
 
-    Added& identifiable = readRootElementAttributes(adder, context);
+    Added& identifiable = readRootElementAttributes(adder, parent, context);
     readSubElements(identifiable, context);
 }
 

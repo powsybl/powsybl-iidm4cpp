@@ -203,33 +203,29 @@ BOOST_AUTO_TEST_CASE(getConnectablesTest) {
     BOOST_CHECK_EQUAL(2, boost::size(cNetwork.getConnectables<Load>()));
     BOOST_CHECK_EQUAL(2UL, network.getConnectableCount<Load>());
 
-    BOOST_CHECK_EQUAL(2, boost::size(network.getConnectables<Line>()));
-    BOOST_CHECK_EQUAL(2, boost::size(cNetwork.getConnectables<Line>()));
-    BOOST_CHECK_EQUAL(2UL, network.getConnectableCount<Line>());
+    BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<Line>()));
+    BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<Line>()));
+    BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<Line>());
 
-    BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<TieLine>()));
-    BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<TieLine>()));
-    BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<TieLine>());
-
-    BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<DanglingLine>()));
-    BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<DanglingLine>()));
-    BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<DanglingLine>());
+    BOOST_CHECK_EQUAL(3, boost::size(network.getConnectables<DanglingLine>()));
+    BOOST_CHECK_EQUAL(3, boost::size(cNetwork.getConnectables<DanglingLine>()));
+    BOOST_CHECK_EQUAL(3UL, network.getConnectableCount<DanglingLine>());
 
     BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<TwoWindingsTransformer>()));
     BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<TwoWindingsTransformer>()));
     BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<TwoWindingsTransformer>());
 
-    BOOST_CHECK_EQUAL(3, boost::size(network.getConnectables<Injection>()));
-    BOOST_CHECK_EQUAL(3, boost::size(cNetwork.getConnectables<Injection>()));
-    BOOST_CHECK_EQUAL(3UL, network.getConnectableCount<Injection>());
+    BOOST_CHECK_EQUAL(5, boost::size(network.getConnectables<Injection>()));
+    BOOST_CHECK_EQUAL(5, boost::size(cNetwork.getConnectables<Injection>()));
+    BOOST_CHECK_EQUAL(5UL, network.getConnectableCount<Injection>());
 
-    BOOST_CHECK_EQUAL(6UL, boost::size(network.getConnectables()));
-    BOOST_CHECK_EQUAL(6UL, boost::size(cNetwork.getConnectables()));
-    BOOST_CHECK_EQUAL(6UL, network.getConnectableCount());
+    BOOST_CHECK_EQUAL(7UL, boost::size(network.getConnectables()));
+    BOOST_CHECK_EQUAL(7UL, boost::size(cNetwork.getConnectables()));
+    BOOST_CHECK_EQUAL(7UL, network.getConnectableCount());
 
-    BOOST_CHECK_EQUAL(3UL, boost::size(network.getConnectables<Branch>()));
-    BOOST_CHECK_EQUAL(3UL, boost::size(cNetwork.getConnectables<Branch>()));
-    BOOST_CHECK_EQUAL(3UL, network.getConnectableCount<Branch>());
+    BOOST_CHECK_EQUAL(2UL, boost::size(network.getConnectables<Branch>()));
+    BOOST_CHECK_EQUAL(2UL, boost::size(cNetwork.getConnectables<Branch>()));
+    BOOST_CHECK_EQUAL(2UL, network.getConnectableCount<Branch>());
 
     BOOST_CHECK_EQUAL(0, boost::size(network.getConnectables<ThreeWindingsTransformer>()));
     BOOST_CHECK_EQUAL(0, boost::size(cNetwork.getConnectables<ThreeWindingsTransformer>()));
@@ -250,26 +246,30 @@ BOOST_AUTO_TEST_CASE(branch) {
     Network network = createSwitchBBKNetwork();
     const Network& cNetwork = network;
 
-    BOOST_CHECK_EQUAL(3, cNetwork.getBranchCount());
+    BOOST_CHECK_EQUAL(2, cNetwork.getBranchCount());
     POWSYBL_ASSERT_THROW(cNetwork.getBranch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network.getBranch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(cNetwork.getBranch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Branch");
     POWSYBL_ASSERT_THROW(network.getBranch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Branch");
-    BOOST_CHECK_NO_THROW(cNetwork.getBranch("TL_VL1_VL3"));
-    BOOST_CHECK_NO_THROW(network.getBranch("TL_VL1_VL3"));
+    POWSYBL_ASSERT_THROW(cNetwork.getBranch("TL_VL1_VL3"), PowsyblException, "Identifiable 'TL_VL1_VL3' is not a powsybl::iidm::Branch");
+    POWSYBL_ASSERT_THROW(network.getBranch("TL_VL1_VL3"), PowsyblException, "Identifiable 'TL_VL1_VL3' is not a powsybl::iidm::Branch");
 
     BOOST_CHECK_EQUAL(boost::size(network.getBranches()), boost::size(cNetwork.getBranches()));
     BOOST_CHECK_EQUAL(boost::size(network.getLines()), boost::size(cNetwork.getLines()));
+    BOOST_CHECK_EQUAL(boost::size(network.getTieLines()), boost::size(cNetwork.getTieLines()));
     BOOST_CHECK_EQUAL(boost::size(network.getTwoWindingsTransformers()), boost::size(cNetwork.getTwoWindingsTransformers()));
 
     unsigned long lineCount = cNetwork.getLineCount();
     unsigned long branchCount = cNetwork.getBranchCount();
+    unsigned long tieLineCount = cNetwork.getTieLineCount();
     BOOST_CHECK_EQUAL(lineCount + cNetwork.getTwoWindingsTransformerCount(), branchCount);
 
     unsigned long lineLoopCount = boost::size(network.getLines());
     unsigned long branchLoopCount = boost::size(network.getBranches());
+    unsigned long tielineLoopCount = boost::size(network.getTieLines());
     BOOST_CHECK_EQUAL(lineLoopCount, lineCount);
     BOOST_CHECK_EQUAL(branchLoopCount, branchCount);
+    BOOST_CHECK_EQUAL(tielineLoopCount, tieLineCount);
 }
 
 BOOST_AUTO_TEST_CASE(views) {

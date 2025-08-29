@@ -83,9 +83,14 @@ void AbstractConnectableXml::readNodeOrBus(BranchAdder<Added, Adder>& adder, con
 
 template <typename Added, typename Adder>
 void AbstractConnectableXml::readNodeOrBus(InjectionAdder<Added, Adder>& adder, const NetworkXmlReaderContext& context) {
-    const auto& bus = context.getReader().getOptionalAttributeValue<std::string>(BUS);
-    const auto& connectableBus = context.getReader().getOptionalAttributeValue<std::string>(CONNECTABLE_BUS);
-    const auto& node = context.getReader().getOptionalAttributeValue<unsigned long>(NODE);
+    readNodeOrBus(adder, "", context);
+}
+
+template <typename Added, typename Adder>
+void AbstractConnectableXml::readNodeOrBus(InjectionAdder<Added, Adder>& adder,const std::string& suffix, const NetworkXmlReaderContext& context) {
+    const auto& bus = context.getReader().getOptionalAttributeValue<std::string>(BUS + suffix);
+    const auto& connectableBus = context.getReader().getOptionalAttributeValue<std::string>(CONNECTABLE_BUS + suffix);
+    const auto& node = context.getReader().getOptionalAttributeValue<unsigned long>(NODE + suffix);
 
     if (bus) {
         adder.setBus(context.getAnonymizer().deanonymizeString(*bus));

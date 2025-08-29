@@ -34,7 +34,7 @@ const char* VscConverterStationXml::getRootElementName() const {
     return VSC_CONVERTER_STATION;
 }
 
-VscConverterStation& VscConverterStationXml::readRootElementAttributes(VscConverterStationAdder& adder, NetworkXmlReaderContext& context) const {
+VscConverterStation& VscConverterStationXml::readRootElementAttributes(VscConverterStationAdder& adder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     bool voltageRegulatorOn = context.getReader().getOptionalAttributeValue(VOLTAGE_REGULATOR_ON, false);
     auto lossFactor = context.getReader().getAttributeValue<double>(LOSS_FACTOR);
     double voltageSetpoint = context.getReader().getOptionalAttributeValue(VOLTAGE_SETPOINT, stdcxx::nan());

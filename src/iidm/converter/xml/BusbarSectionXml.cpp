@@ -32,7 +32,7 @@ const char* BusbarSectionXml::getRootElementName() const {
     return BUSBAR_SECTION;
 }
 
-BusbarSection& BusbarSectionXml::readRootElementAttributes(BusbarSectionAdder& adder, NetworkXmlReaderContext& context) const {
+BusbarSection& BusbarSectionXml::readRootElementAttributes(BusbarSectionAdder& adder, VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& context) const {
     const auto& node = context.getReader().getAttributeValue<unsigned long>(NODE);
     BusbarSection& bbs = adder.setNode(node)
         .add();

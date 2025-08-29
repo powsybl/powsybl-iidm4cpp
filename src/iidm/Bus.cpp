@@ -13,6 +13,7 @@
 #include <powsybl/iidm/Component.hpp>
 #include <powsybl/iidm/ComponentConstants.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/Line.hpp>
@@ -52,12 +53,20 @@ stdcxx::range<Battery> Bus::getBatteries() {
     return getAll<Battery>();
 }
 
+stdcxx::const_range<DanglingLine> Bus::getDanglingLines(const DanglingLineFilter& filter) const {
+    return getAll<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+}
+
+stdcxx::range<DanglingLine> Bus::getDanglingLines(const DanglingLineFilter& filter) {
+    return getAll<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+}
+
 stdcxx::const_range<DanglingLine> Bus::getDanglingLines() const {
-    return getAll<DanglingLine>();
+    return getDanglingLines(DanglingLineFilter::ALL());
 }
 
 stdcxx::range<DanglingLine> Bus::getDanglingLines() {
-    return getAll<DanglingLine>();
+    return getDanglingLines(DanglingLineFilter::ALL());
 }
 
 double Bus::getFictitiousP0() const {
@@ -139,6 +148,7 @@ double Bus::getP() const {
             case IdentifiableType::HVDC_LINE:
             case IdentifiableType::BUS:
             case IdentifiableType::SWITCH:
+            case IdentifiableType::TIE_LINE:
             default:
                 throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }
@@ -177,6 +187,7 @@ double Bus::getQ() const {
             case IdentifiableType::HVDC_LINE:
             case IdentifiableType::BUS:
             case IdentifiableType::SWITCH:
+            case IdentifiableType::TIE_LINE:
             default:
                 throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }

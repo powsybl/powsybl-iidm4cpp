@@ -98,6 +98,7 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
             case IdentifiableType::HVDC_LINE:
             case IdentifiableType::BUS:
             case IdentifiableType::SWITCH:
+            case IdentifiableType::TIE_LINE:
             default:
                 throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }
