@@ -105,22 +105,14 @@ private:
 
     bool isAllDataForCalculatingOtherSide() const;
 
-    bool isAllDataForCalculatingOterSideDcApproximation() const;
+    bool isAllDataForCalculatingOterSideDcApproximation(double zBase) const;
 
 private:
     SV otherSide(const LinkData::BranchAdmittanceMatrix& adm) const;
 
-    SV otherSideDcApproximation(double x, double ratio, double angle, bool useRatio) const;
+    SV otherSide(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha, double zb) const;
 
-    double otherSideA(const LinkData::BranchAdmittanceMatrix& adm) const;
-
-    double otherSideP(const LinkData::BranchAdmittanceMatrix& adm) const;
-
-    double otherSideQ(const LinkData::BranchAdmittanceMatrix& adm) const;
-
-    double otherSideU(const LinkData::BranchAdmittanceMatrix& adm) const;
-
-    std::complex<double> otherSideV(const LinkData::BranchAdmittanceMatrix& adm) const;
+    SV otherSideDcApproximation(double x, double ratio, double angle, double zb, bool useRatio) const;
 
 private:
     double m_p;

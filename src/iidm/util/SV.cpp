@@ -117,44 +117,41 @@ double SV::getX(const TwoWindingsTransformer& twt) {
 }
 
 SV SV::otherSide(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
-    if(isAllDataForCalculatingOtherSide()) {
-        LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
-                                                                             std::complex<double>(g1, b1), std::complex<double>(g2, b2));
-        return otherSide(adm);
-    } else if(isAllDataForCalculatingOterSideDcApproximation()) {
-        return otherSideDcApproximation(x, 1 / rho, -alpha, true); // we always consider useRatio true
-    } else {
-        Branch::Side otherSide = (m_side == Branch::Side::ONE) ? Branch::Side::TWO : Branch::Side::ONE;
-        return {stdcxx::nan(), stdcxx::nan(), stdcxx::nan(), stdcxx::nan(), otherSide};
-    }
+    return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan());
 }
 
 SV SV::otherSide(const TwoWindingsTransformer& twt) const {
-    return otherSide(getR(twt), getX(twt), getG(twt), getB(twt), 0.0, 0.0, getRho(twt), getAlpha(twt));
+    double zbase = twt.getTerminal2().getVoltageLevel().getNominalV() * twt.getTerminal2().getVoltageLevel().getNominalV();
+    return otherSide(getR(twt), getX(twt), getG(twt), getB(twt), 0.0, 0.0, getRho(twt), getAlpha(twt), zbase);
 }
 
 SV SV::otherSide(const TwoWindingsTransformer& twt, bool splitShuntAdmittance) const {
     if (splitShuntAdmittance) {
-        return otherSide(getR(twt), getX(twt), getG(twt) * 0.5, getB(twt) * 0.5, getG(twt) * 0.5, getB(twt) * 0.5, getRho(twt), getAlpha(twt));
+        double zbase = twt.getTerminal2().getVoltageLevel().getNominalV() * twt.getTerminal2().getVoltageLevel().getNominalV();
+        return otherSide(getR(twt), getX(twt), getG(twt) * 0.5, getB(twt) * 0.5, getG(twt) * 0.5, getB(twt) * 0.5, getRho(twt), getAlpha(twt), zbase);
     }
     return otherSide(twt);
 }
 
 SV SV::otherSide(const Line& line) const {
-    return otherSide(line.getR(), line.getX(), line.getG1(), line.getB1(), line.getG2(), line.getB2(), 1.0, 0.0);
+    double zbase = line.getTerminal1().getVoltageLevel().getNominalV() * line.getTerminal2().getVoltageLevel().getNominalV();
+    return otherSide(line.getR(), line.getX(), line.getG1(), line.getB1(), line.getG2(), line.getB2(), 1.0, 0.0, zbase);
 }
 
 SV SV::otherSide(const TieLine& tieLine) const {
-    return otherSide(tieLine.getR(), tieLine.getX(), tieLine.getG1(), tieLine.getB1(), tieLine.getG2(), tieLine.getB2(), 1.0, 0.0);
+    double zbase = tieLine.getDanglingLine1().getTerminal().getVoltageLevel().getNominalV() * tieLine.getDanglingLine2().getTerminal().getVoltageLevel().getNominalV();
+    return otherSide(tieLine.getR(), tieLine.getX(), tieLine.getG1(), tieLine.getB1(), tieLine.getG2(), tieLine.getB2(), 1.0, 0.0, zbase);
 }
 
 SV SV::otherSide(const DanglingLine& dl) const {
-    return otherSide(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0);
+    double zbase = dl.getTerminal().getVoltageLevel().getNominalV() * dl.getTerminal().getVoltageLevel().getNominalV();
+    return otherSide(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0, zbase);
 }
 
 SV SV::otherSide(const DanglingLine& dl, bool splitShuntAdmittance) const {
     if (splitShuntAdmittance) {
-        return otherSide(dl.getR(), dl.getX(), dl.getG() * 0.5, dl.getB() * 0.5, dl.getG() * 0.5, dl.getB() * 0.5, 1.0, 0.0);
+        double zbase = dl.getTerminal().getVoltageLevel().getNominalV() * dl.getTerminal().getVoltageLevel().getNominalV();
+        return otherSide(dl.getR(), dl.getX(), dl.getG() * 0.5, dl.getB() * 0.5, dl.getG() * 0.5, dl.getB() * 0.5, 1.0, 0.0, zbase);
     }
     return otherSide(dl);
 }
@@ -179,9 +176,10 @@ SV SV::otherSide(const LinkData::BranchAdmittanceMatrix& adm) const {
     return {std::real(s), std::imag(s), std::abs(v), std::arg(v) * stdcxx::toDegrees, otherSide};
 }
 
-SV SV::otherSideDcApproximation(double x, double ratio, double angle, bool useRatio) const {
+SV SV::otherSideDcApproximation(double x, double ratio, double angle, double zb, bool useRatio) const {
     double pOtherSide = -m_p;
-    double b = useRatio ? 1 / (x * ratio) : 1 / x;
+    double xpu = x / zb;
+    double b = useRatio ? 1 / (xpu * ratio) : 1 / xpu;
     double aOtherSide;
     Branch::Side otherSide;
     if (m_side == Branch::Side::ONE) {
@@ -196,101 +194,51 @@ SV SV::otherSideDcApproximation(double x, double ratio, double angle, bool useRa
 }
 
 double SV::otherSideA(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
-    LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
-                                                                               std::complex<double>(g1, b1), std::complex<double>(g2, b2));
-    return otherSideA(adm);
+    return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getA();
 }
 
 double SV::otherSideA(const DanglingLine& dl) const {
-    return otherSideA(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0);
+    return otherSide(dl).getA();
 }
 
 double SV::otherSideA(const DanglingLine& dl, bool splitShuntAdmittance) const {
-    if (splitShuntAdmittance) {
-        return otherSideA(dl.getR(), dl.getX(), dl.getG() * 0.5, dl.getB() * 0.5, dl.getG() * 0.5, dl.getB() * 0.5, 1.0, 0.0);
-    }
-    return otherSideA(dl);
-}
-
-double SV::otherSideA(const LinkData::BranchAdmittanceMatrix& adm) const {
-    return std::arg(otherSideV(adm)) * stdcxx::toDegrees;
+    return otherSide(dl, splitShuntAdmittance).getA();
 }
 
 double SV::otherSideP(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
-    LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
-                                                                               std::complex<double>(g1, b1), std::complex<double>(g2, b2));
-    return otherSideP(adm);
+    return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getP();
 }
 
 double SV::otherSideP(const DanglingLine& dl) const {
-    return otherSideP(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0);
+    return otherSide(dl).getP();
 }
 
 double SV::otherSideP(const DanglingLine& dl, bool splitShuntAdmittance) const {
-    if (splitShuntAdmittance) {
-        return otherSideP(dl.getR(), dl.getX(), dl.getG() * 0.5, dl.getB() * 0.5, dl.getG() * 0.5, dl.getB() * 0.5, 1.0, 0.0);
-    }
-    return otherSideP(dl);
-}
-
-double SV::otherSideP(const LinkData::BranchAdmittanceMatrix& adm) const {
-    return otherSide(adm).getP();
+    return otherSide(dl, splitShuntAdmittance).getP();
 }
 
 double SV::otherSideQ(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
-    LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
-                                                                               std::complex<double>(g1, b1), std::complex<double>(g2, b2));
-    return otherSideQ(adm);
+    return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getQ();
 }
 
 double SV::otherSideQ(const DanglingLine& dl) const {
-    return otherSideQ(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0);
+    return otherSide(dl).getQ();
 }
 
 double SV::otherSideQ(const DanglingLine& dl, bool splitShuntAdmittance) const {
-    if (splitShuntAdmittance) {
-        return otherSideQ(dl.getR(), dl.getX(), dl.getG() * 0.5, dl.getB() * 0.5, dl.getG() * 0.5, dl.getB() * 0.5, 1.0, 0.0);
-    }
-    return otherSideQ(dl);
-}
-
-double SV::otherSideQ(const LinkData::BranchAdmittanceMatrix& adm) const {
-    return otherSide(adm).getQ();
+    return otherSide(dl, splitShuntAdmittance).getQ();
 }
 
 double SV::otherSideU(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
-    LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
-                                                                               std::complex<double>(g1, b1), std::complex<double>(g2, b2));
-    return otherSideU(adm);
+    return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getU();
 }
 
 double SV::otherSideU(const DanglingLine& dl) const {
-    return otherSideU(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0);
+    return otherSide(dl).getU();
 }
 
 double SV::otherSideU(const DanglingLine& dl, bool splitShuntAdmittance) const {
-    if (splitShuntAdmittance) {
-        return otherSideU(dl.getR(), dl.getX(), dl.getG() * 0.5, dl.getB() * 0.5, dl.getG() * 0.5, dl.getB() * 0.5, 1.0, 0.0);
-    }
-    return otherSideU(dl);
-}
-
-double SV::otherSideU(const LinkData::BranchAdmittanceMatrix& adm) const {
-    return std::abs(otherSideV(adm));
-}
-
-std::complex<double> SV::otherSideV(const LinkData::BranchAdmittanceMatrix& adm) const {
-    std::complex<double> v;
-    if (m_side == Branch::Side::ONE) {
-        std::complex<double> v1 = std::polar(m_u, m_a * stdcxx::toRadians);
-        std::complex<double> s1(m_p, m_q);
-        v = voltageAtEnd2(adm, v1, s1);
-    } else {
-        std::complex<double> v2 = std::polar(m_u, m_a * stdcxx::toRadians);
-        std::complex<double> s2(m_p, m_q);
-        v = voltageAtEnd1(adm, v2, s2);
-    }
-    return v;
+    return otherSide(dl, splitShuntAdmittance).getU();
 }
 
 std::complex<double> SV::voltageAtEnd1(const LinkData::BranchAdmittanceMatrix& adm, const std::complex<double>& vEnd2, const std::complex<double>& sEnd2) {
@@ -305,8 +253,21 @@ bool SV::isAllDataForCalculatingOtherSide() const {
     return !(std::isnan(m_p) || std::isnan(m_q) || std::isnan(m_u) || std::isnan(m_a));
 }
 
-bool SV::isAllDataForCalculatingOterSideDcApproximation() const {
-    return !(std::isnan(m_p) || std::isnan(m_a));
+bool SV::isAllDataForCalculatingOterSideDcApproximation(double zBase) const {
+    return !(std::isnan(m_p) || std::isnan(m_a) || std::isnan(zBase));
+}
+
+SV SV::otherSide(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha, double zb) const {
+    if(isAllDataForCalculatingOtherSide()) {
+        LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(r, x, 1 / rho, -alpha, 1.0, 0.0,
+                                                                             std::complex<double>(g1, b1), std::complex<double>(g2, b2));
+        return otherSide(adm);
+    } else if(isAllDataForCalculatingOterSideDcApproximation(zb)) {
+        return otherSideDcApproximation(x, 1 / rho, -alpha, zb, true); // we always consider useRatio true
+    } else {
+        Branch::Side otherSide = (m_side == Branch::Side::ONE) ? Branch::Side::TWO : Branch::Side::ONE;
+        return {stdcxx::nan(), stdcxx::nan(), stdcxx::nan(), stdcxx::nan(), otherSide};
+    }
 }
 
 }  // namespace iidm
