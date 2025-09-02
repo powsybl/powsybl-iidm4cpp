@@ -17,7 +17,7 @@ namespace powsybl {
 namespace iidm {
 
 ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Leg&& leg1, Leg&& leg2, Leg&& leg3, double ratedU0) :
-    Connectable(id, name, fictitious),
+    Identifiable(id, name, fictitious),
     m_ratedU0(ratedU0) {
     m_legs.emplace_back(std::move(leg1.setTransformer(*this)));
     m_legs.emplace_back(std::move(leg2.setTransformer(*this)));

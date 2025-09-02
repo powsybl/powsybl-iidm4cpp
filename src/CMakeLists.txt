@@ -10,6 +10,7 @@ set(IIDM_SOURCES
     PowsyblException.cpp
 
     iidm/AbstractComponentsManager.cpp
+    iidm/AbstractConnectableBranch.cpp
     iidm/AbstractMultiVariantIdentifiableExtension.cpp
     iidm/AbstractTerminalTopologyVisitor.cpp
     iidm/ActivePowerLimits.cpp

@@ -139,7 +139,7 @@ SV SV::otherSide(const Line& line) const {
 }
 
 SV SV::otherSide(const TieLine& tieLine) const {
-    double zbase = tieLine.getDanglingLine1().getTerminal().getVoltageLevel().getNominalV() * tieLine.getDanglingLine2().getTerminal().getVoltageLevel().getNominalV();
+    double zbase = tieLine.getTerminal1().getVoltageLevel().getNominalV() * tieLine.getTerminal2().getVoltageLevel().getNominalV();
     return otherSide(tieLine.getR(), tieLine.getX(), tieLine.getG1(), tieLine.getB1(), tieLine.getG2(), tieLine.getB2(), 1.0, 0.0, zbase);
 }
 

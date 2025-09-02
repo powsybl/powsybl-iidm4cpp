@@ -14,10 +14,6 @@ namespace powsybl {
 
 namespace iidm {
 
-Connectable::Connectable(const std::string& id, const std::string& name, bool fictitious) :
-    Identifiable(id, name, fictitious) {
-}
-
 void Connectable::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     Identifiable::allocateVariantArrayElement(indexes, sourceIndex);
 

@@ -13,8 +13,7 @@ namespace powsybl {
 
 namespace iidm {
 
-HvdcConverterStation::HvdcConverterStation(const std::string& id, const std::string& name, bool fictitious, double lossFactor) :
-    Injection(id, name, fictitious),
+HvdcConverterStation::HvdcConverterStation(double lossFactor) :
     m_lossFactor(checkLossFactor(*this, lossFactor)) {
 
 }

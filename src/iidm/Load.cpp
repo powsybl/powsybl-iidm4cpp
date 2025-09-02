@@ -16,7 +16,7 @@ namespace iidm {
 
 Load::Load(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const LoadType& loadType,
            double p0, double q0) :
-    Injection(id, name, fictitious),
+    Identifiable(id, name, fictitious),
     m_loadType(checkLoadType(*this, loadType)),
     m_p0(network.getVariantManager().getVariantArraySize(), p0),
     m_q0(network.getVariantManager().getVariantArraySize(), q0) {

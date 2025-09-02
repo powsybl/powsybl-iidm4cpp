@@ -263,31 +263,31 @@ BOOST_AUTO_TEST_CASE(terminal) {
     Line& line = network.getLine("VL1_VL3");
     const Line& cLine = line;
 
-    Terminal& t1 = line.getTerminal("VL1");
+    Terminal& t1 = line.getTerminalFromVoltageLevel("VL1");
     BOOST_CHECK_EQUAL(Branch::Side::ONE, line.getSide(t1));
     BOOST_TEST(stdcxx::areSame(t1, line.getTerminal1()));
-    BOOST_TEST(stdcxx::areSame(t1, line.getTerminal(Branch::Side::ONE)));
+    BOOST_TEST(stdcxx::areSame(t1, line.getTerminalFromSide(Branch::Side::ONE)));
 
-    const Terminal& cT1 = cLine.getTerminal("VL1");
+    const Terminal& cT1 = cLine.getTerminalFromVoltageLevel("VL1");
     BOOST_CHECK_EQUAL(Branch::Side::ONE, cLine.getSide(cT1));
     BOOST_TEST(stdcxx::areSame(cT1, cLine.getTerminal1()));
-    BOOST_TEST(stdcxx::areSame(cT1, cLine.getTerminal(Branch::Side::ONE)));
+    BOOST_TEST(stdcxx::areSame(cT1, cLine.getTerminalFromSide(Branch::Side::ONE)));
 
-    Terminal& t2 = line.getTerminal("VL3");
+    Terminal& t2 = line.getTerminalFromVoltageLevel("VL3");
     BOOST_CHECK_EQUAL(Branch::Side::TWO, line.getSide(t2));
     BOOST_TEST(stdcxx::areSame(t2, line.getTerminal2()));
-    BOOST_TEST(stdcxx::areSame(t2, line.getTerminal(Branch::Side::TWO)));
+    BOOST_TEST(stdcxx::areSame(t2, line.getTerminalFromSide(Branch::Side::TWO)));
 
-    const Terminal& cT2 = cLine.getTerminal("VL3");
+    const Terminal& cT2 = cLine.getTerminalFromVoltageLevel("VL3");
     BOOST_CHECK_EQUAL(Branch::Side::TWO, cLine.getSide(cT2));
     BOOST_TEST(stdcxx::areSame(cT2, cLine.getTerminal2()));
-    BOOST_TEST(stdcxx::areSame(cT2, cLine.getTerminal(Branch::Side::TWO)));
+    BOOST_TEST(stdcxx::areSame(cT2, cLine.getTerminalFromSide(Branch::Side::TWO)));
 
     POWSYBL_ASSERT_THROW(line.getSide(getTerminalFromNetwork2()), AssertionError, "The terminal is not connected to this branch");
     POWSYBL_ASSERT_THROW(cLine.getSide(getTerminalFromNetwork2()), AssertionError, "The terminal is not connected to this branch");
 
-    POWSYBL_ASSERT_THROW(line.getTerminal("VL2"), PowsyblException, "No terminal connected to voltage level VL2");
-    POWSYBL_ASSERT_THROW(cLine.getTerminal("VL2"), PowsyblException, "No terminal connected to voltage level VL2");
+    POWSYBL_ASSERT_THROW(line.getTerminalFromVoltageLevel("VL2"), PowsyblException, "No terminal connected to voltage level VL2");
+    POWSYBL_ASSERT_THROW(cLine.getTerminalFromVoltageLevel("VL2"), PowsyblException, "No terminal connected to voltage level VL2");
 
     Line& line2 = network.newLine()
         .setId("VL2_VL2")
@@ -306,8 +306,8 @@ BOOST_AUTO_TEST_CASE(terminal) {
         .add();
     const Line& cLine2 = line2;
 
-    POWSYBL_ASSERT_THROW(line2.getTerminal("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
-    POWSYBL_ASSERT_THROW(cLine2.getTerminal("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
+    POWSYBL_ASSERT_THROW(line2.getTerminalFromVoltageLevel("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
+    POWSYBL_ASSERT_THROW(cLine2.getTerminalFromVoltageLevel("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

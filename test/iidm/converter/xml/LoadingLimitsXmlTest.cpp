@@ -248,17 +248,17 @@ BOOST_FIXTURE_TEST_CASE(TieLineLoadingLimitsTest, test::ResourceFixture) {
     std::stringstream stream(test::converter::RoundTrip::getVersionedNetwork("tieline.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
     Network network = Network::readXml("network.xiidm", stream);
     TieLine& tieLine = network.getTieLine("NHV1_NHV2_1");
-    ActivePowerLimitsAdder activePowerLimitsAdder1 = tieLine.getDanglingLine1().newActivePowerLimits();
+    ActivePowerLimitsAdder activePowerLimitsAdder1 = tieLine.newActivePowerLimits1();
     createLoadingLimits(activePowerLimitsAdder1);
-    ApparentPowerLimitsAdder apparentPowerLimitsAdder1 = tieLine.getDanglingLine1().newApparentPowerLimits();
+    ApparentPowerLimitsAdder apparentPowerLimitsAdder1 = tieLine.newApparentPowerLimits1();
     createLoadingLimits(apparentPowerLimitsAdder1);
-    CurrentLimitsAdder currentLimitsAdder1 = tieLine.getDanglingLine1().newCurrentLimits();
+    CurrentLimitsAdder currentLimitsAdder1 = tieLine.newCurrentLimits1();
     createLoadingLimits(currentLimitsAdder1);
-    ActivePowerLimitsAdder activePowerLimitsAdder2 = tieLine.getDanglingLine2().newActivePowerLimits();
+    ActivePowerLimitsAdder activePowerLimitsAdder2 = tieLine.newActivePowerLimits2();
     createLoadingLimits(activePowerLimitsAdder2);
-    ApparentPowerLimitsAdder apparentPowerLimitsAdder2 = tieLine.getDanglingLine2().newApparentPowerLimits();
+    ApparentPowerLimitsAdder apparentPowerLimitsAdder2 = tieLine.newApparentPowerLimits2();
     createLoadingLimits(apparentPowerLimitsAdder2);
-    CurrentLimitsAdder currentLimitsAdder2 = tieLine.getDanglingLine2().newCurrentLimits();
+    CurrentLimitsAdder currentLimitsAdder2 = tieLine.newCurrentLimits2();
     createLoadingLimits(currentLimitsAdder2);
 
     // check it fails for all versions < 1.5

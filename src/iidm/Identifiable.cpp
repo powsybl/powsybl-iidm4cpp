@@ -33,6 +33,12 @@ Identifiable::Identifiable(const std::string& id, const std::string& name, bool 
     m_fictitious(fictitious) {
 }
 
+Identifiable::Identifiable(){
+    //This function should not be called, it is only required for virtual inheritance.
+    //So we ensure, if we end up here, we throw Exception.
+    checkNotEmpty(m_id, "Invalid id");
+}
+
 void Identifiable::addAlias(const std::string& alias) {
     addAlias(alias, false);
 }

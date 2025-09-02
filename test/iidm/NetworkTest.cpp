@@ -223,9 +223,9 @@ BOOST_AUTO_TEST_CASE(getConnectablesTest) {
     BOOST_CHECK_EQUAL(7UL, boost::size(cNetwork.getConnectables()));
     BOOST_CHECK_EQUAL(7UL, network.getConnectableCount());
 
-    BOOST_CHECK_EQUAL(2UL, boost::size(network.getConnectables<Branch>()));
-    BOOST_CHECK_EQUAL(2UL, boost::size(cNetwork.getConnectables<Branch>()));
-    BOOST_CHECK_EQUAL(2UL, network.getConnectableCount<Branch>());
+    BOOST_CHECK_EQUAL(2UL, boost::size(network.getConnectables<AbstractConnectableBranch>()));
+    BOOST_CHECK_EQUAL(2UL, boost::size(cNetwork.getConnectables<AbstractConnectableBranch>()));
+    BOOST_CHECK_EQUAL(2UL, network.getConnectableCount<AbstractConnectableBranch>());
 
     BOOST_CHECK_EQUAL(0, boost::size(network.getConnectables<ThreeWindingsTransformer>()));
     BOOST_CHECK_EQUAL(0, boost::size(cNetwork.getConnectables<ThreeWindingsTransformer>()));
@@ -246,13 +246,13 @@ BOOST_AUTO_TEST_CASE(branch) {
     Network network = createSwitchBBKNetwork();
     const Network& cNetwork = network;
 
-    BOOST_CHECK_EQUAL(2, cNetwork.getBranchCount());
+    BOOST_CHECK_EQUAL(3, cNetwork.getBranchCount());
     POWSYBL_ASSERT_THROW(cNetwork.getBranch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network.getBranch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(cNetwork.getBranch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Branch");
     POWSYBL_ASSERT_THROW(network.getBranch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Branch");
-    POWSYBL_ASSERT_THROW(cNetwork.getBranch("TL_VL1_VL3"), PowsyblException, "Identifiable 'TL_VL1_VL3' is not a powsybl::iidm::Branch");
-    POWSYBL_ASSERT_THROW(network.getBranch("TL_VL1_VL3"), PowsyblException, "Identifiable 'TL_VL1_VL3' is not a powsybl::iidm::Branch");
+    BOOST_CHECK_NO_THROW(cNetwork.getBranch("TL_VL1_VL3"));
+    BOOST_CHECK_NO_THROW(network.getBranch("TL_VL1_VL3"));
 
     BOOST_CHECK_EQUAL(boost::size(network.getBranches()), boost::size(cNetwork.getBranches()));
     BOOST_CHECK_EQUAL(boost::size(network.getLines()), boost::size(cNetwork.getLines()));
@@ -262,7 +262,7 @@ BOOST_AUTO_TEST_CASE(branch) {
     unsigned long lineCount = cNetwork.getLineCount();
     unsigned long branchCount = cNetwork.getBranchCount();
     unsigned long tieLineCount = cNetwork.getTieLineCount();
-    BOOST_CHECK_EQUAL(lineCount + cNetwork.getTwoWindingsTransformerCount(), branchCount);
+    BOOST_CHECK_EQUAL(lineCount + cNetwork.getTwoWindingsTransformerCount() + tieLineCount, branchCount);
 
     unsigned long lineLoopCount = boost::size(network.getLines());
     unsigned long branchLoopCount = boost::size(network.getBranches());

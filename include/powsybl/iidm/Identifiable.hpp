@@ -107,6 +107,7 @@ protected:  // MultiVariantObject
 
 protected:
     Identifiable(const std::string& id, const std::string& name, bool fictitious);
+    Identifiable(); // Required for virtual inheritance, but not expected to be actually used
 
 private:
     virtual const std::string& getTypeDescription() const = 0;

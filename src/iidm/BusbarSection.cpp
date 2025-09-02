@@ -14,7 +14,7 @@ namespace powsybl {
 namespace iidm {
 
 BusbarSection::BusbarSection(const std::string& id, const std::string& name, bool fictitious) :
-    Injection(id, name, fictitious) {
+    Identifiable(id, name, fictitious) {
 }
 
 double BusbarSection::getAngle() const {

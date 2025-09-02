@@ -14,7 +14,8 @@ namespace powsybl {
 namespace iidm {
 
 LccConverterStation::LccConverterStation(const std::string& id, const std::string& name, bool fictitious, double lossFactor, double powerFactor) :
-    HvdcConverterStation(id, name, fictitious, lossFactor),
+    Identifiable(id, name, fictitious),
+    HvdcConverterStation(lossFactor),
     m_powerFactor(checkPowerFactor(*this, powerFactor)) {
 }
 

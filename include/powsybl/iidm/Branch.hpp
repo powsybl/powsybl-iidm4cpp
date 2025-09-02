@@ -10,9 +10,10 @@
 
 #include <iosfwd>
 
-#include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/CurrentLimits.hpp>
-#include <powsybl/iidm/OperationalLimitsHolder.hpp>
+#include <powsybl/iidm/Terminal.hpp>
+
 
 namespace powsybl {
 
@@ -24,7 +25,7 @@ class ApparentPowerLimits;
 class ApparentPowerLimitsAdder;
 class CurrentLimitsAdder;
 
-class Branch : public Connectable {
+class Branch : public virtual Identifiable {
 public:
     enum class Side : unsigned char {
         ONE,
@@ -83,37 +84,37 @@ public:
 
     stdcxx::Reference<ActivePowerLimits> getActivePowerLimits(const Side& side);
 
-    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits1() const;
+    virtual stdcxx::CReference<ActivePowerLimits> getActivePowerLimits1() const = 0;
 
-    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits1();
+    virtual stdcxx::Reference<ActivePowerLimits> getActivePowerLimits1() = 0;
 
-    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits2() const;
+    virtual stdcxx::CReference<ActivePowerLimits> getActivePowerLimits2() const = 0;
 
-    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits2();
+    virtual stdcxx::Reference<ActivePowerLimits> getActivePowerLimits2() = 0;
 
     stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits(const Side& side) const;
 
     stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits(const Side& side);
 
-    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits1() const;
+    virtual stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits1() const = 0;
 
-    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits1();
+    virtual stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits1() = 0;
 
-    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits2() const;
+    virtual stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits2() const = 0;
 
-    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits2();
+    virtual stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits2() = 0;
 
     stdcxx::CReference<CurrentLimits> getCurrentLimits(const Side& side) const;
 
     stdcxx::Reference<CurrentLimits> getCurrentLimits(const Side& side);
 
-    stdcxx::CReference<CurrentLimits> getCurrentLimits1() const;
+    virtual stdcxx::CReference<CurrentLimits> getCurrentLimits1() const = 0;
 
-    stdcxx::Reference<CurrentLimits> getCurrentLimits1();
+    virtual stdcxx::Reference<CurrentLimits> getCurrentLimits1() = 0;
 
-    stdcxx::CReference<CurrentLimits> getCurrentLimits2() const;
+    virtual stdcxx::CReference<CurrentLimits> getCurrentLimits2() const = 0;
 
-    stdcxx::Reference<CurrentLimits> getCurrentLimits2();
+    virtual stdcxx::Reference<CurrentLimits> getCurrentLimits2() = 0;
 
     stdcxx::CReference<LoadingLimits> getLimits(const LimitType& type, const Side& side) const;
 
@@ -123,50 +124,46 @@ public:
 
     Side getSide(const Terminal& terminal) const;
 
-    const Terminal& getTerminal(const Side& side) const;
+    const Terminal& getTerminalFromSide(const Side& side) const;
 
-    Terminal& getTerminal(const Side& side);
+    Terminal& getTerminalFromSide(const Side& side);
 
-    const Terminal& getTerminal(const std::string& voltageLevelId) const;
+    const Terminal& getTerminalFromVoltageLevel(const std::string& voltageLevelId) const;
 
-    Terminal& getTerminal(const std::string& voltageLevelId);
+    Terminal& getTerminalFromVoltageLevel(const std::string& voltageLevelId);
 
-    const Terminal& getTerminal1() const;
+    virtual const Terminal& getTerminal1() const = 0;
 
-    Terminal& getTerminal1();
+    virtual Terminal& getTerminal1() = 0;
 
-    const Terminal& getTerminal2() const;
+    virtual const Terminal& getTerminal2() const = 0;
 
-    Terminal& getTerminal2();
+    virtual Terminal& getTerminal2() = 0;
 
     bool isOverloaded() const;
 
     bool isOverloaded(double limitReduction) const;
 
-    ActivePowerLimitsAdder newActivePowerLimits1();
+    virtual ActivePowerLimitsAdder newActivePowerLimits1() = 0;
 
-    ActivePowerLimitsAdder newActivePowerLimits2();
+    virtual ActivePowerLimitsAdder newActivePowerLimits2() = 0;
 
-    ApparentPowerLimitsAdder newApparentPowerLimits1();
+    virtual ApparentPowerLimitsAdder newApparentPowerLimits1() = 0;
 
-    ApparentPowerLimitsAdder newApparentPowerLimits2();
+    virtual ApparentPowerLimitsAdder newApparentPowerLimits2() = 0;
 
-    CurrentLimitsAdder newCurrentLimits1();
+    virtual CurrentLimitsAdder newCurrentLimits1() = 0;
 
-    CurrentLimitsAdder newCurrentLimits2();
+    virtual CurrentLimitsAdder newCurrentLimits2() = 0;
 
 protected:
-    Branch(const std::string& id, const std::string& name, bool fictitious);
+    Branch() = default;
 
 private:
     double getValueForLimit(const Terminal& terminal, const LimitType& type) const;
 
     friend class CurrentLimitsAdder;
 
-private:
-    OperationalLimitsHolder m_operationalLimitsHolder1;
-
-    OperationalLimitsHolder m_operationalLimitsHolder2;
 };
 
 }  // namespace iidm

@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_TWOWINDINGSTRANSFORMER_HPP
 #define POWSYBL_IIDM_TWOWINDINGSTRANSFORMER_HPP
 
-#include <powsybl/iidm/Branch.hpp>
+#include <powsybl/iidm/AbstractConnectableBranch.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
@@ -20,7 +20,7 @@ namespace iidm {
 
 class Substation;
 
-class TwoWindingsTransformer : public virtual Branch, public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
+class TwoWindingsTransformer : public virtual AbstractConnectableBranch, public virtual RatioTapChangerHolder, public virtual PhaseTapChangerHolder {
 public:  // Identifiable
     const IdentifiableType& getType() const override;
 

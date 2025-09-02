@@ -19,7 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS) :
-    Branch(id, name, fictitious),
+    Identifiable(id, name, fictitious),
     m_substation(substation),
     m_r(checkR(*this, r)),
     m_x(checkX(*this, x)),
@@ -31,7 +31,7 @@ TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std:
 }
 
 void TwoWindingsTransformer::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
-    Branch::allocateVariantArrayElement(indexes, sourceIndex);
+    AbstractConnectableBranch::allocateVariantArrayElement(indexes, sourceIndex);
 
     if (m_ratioTapChanger) {
         m_ratioTapChanger->allocateVariantArrayElement(indexes, sourceIndex);
@@ -42,7 +42,7 @@ void TwoWindingsTransformer::allocateVariantArrayElement(const std::set<unsigned
 }
 
 void TwoWindingsTransformer::deleteVariantArrayElement(unsigned long index) {
-    Branch::deleteVariantArrayElement(index);
+    AbstractConnectableBranch::deleteVariantArrayElement(index);
 
     if (m_ratioTapChanger) {
         m_ratioTapChanger->deleteVariantArrayElement(index);
@@ -53,7 +53,7 @@ void TwoWindingsTransformer::deleteVariantArrayElement(unsigned long index) {
 }
 
 void TwoWindingsTransformer::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
-    Branch::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    AbstractConnectableBranch::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
     if (m_ratioTapChanger) {
         m_ratioTapChanger->extendVariantArraySize(initVariantArraySize, number, sourceIndex);
@@ -72,11 +72,11 @@ double TwoWindingsTransformer::getG() const {
 }
 
 const Network& TwoWindingsTransformer::getNetwork() const {
-    return Branch::getNetwork();
+    return AbstractConnectableBranch::getNetwork();
 }
 
 Network& TwoWindingsTransformer::getNetwork() {
-    return Branch::getNetwork();
+    return AbstractConnectableBranch::getNetwork();
 }
 
 const PhaseTapChanger& TwoWindingsTransformer::getPhaseTapChanger() const {
@@ -163,7 +163,7 @@ RatioTapChangerAdder TwoWindingsTransformer::newRatioTapChanger() {
 }
 
 void TwoWindingsTransformer::reduceVariantArraySize(unsigned long number) {
-    Branch::reduceVariantArraySize(number);
+    AbstractConnectableBranch::reduceVariantArraySize(number);
 
     if (m_ratioTapChanger) {
         m_ratioTapChanger->reduceVariantArraySize(number);

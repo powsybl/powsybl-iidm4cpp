@@ -8,14 +8,14 @@
 #ifndef POWSYBL_IIDM_LINE_HPP
 #define POWSYBL_IIDM_LINE_HPP
 
-#include <powsybl/iidm/Branch.hpp>
+#include <powsybl/iidm/AbstractConnectableBranch.hpp>
 #include <powsybl/iidm/LineCharacteristics.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class Line : public Branch {
+class Line : public AbstractConnectableBranch {
 public:  // Identifiable
     const IdentifiableType& getType() const override;
 

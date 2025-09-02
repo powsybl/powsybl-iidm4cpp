@@ -17,7 +17,7 @@ namespace iidm {
 
 ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
                                    unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband) :
-    Injection(id, name, fictitious),
+    Identifiable(id, name, fictitious),
     m_model(std::move(model)),
     m_sectionCount(network.getVariantManager().getVariantArraySize(), currentSectionCount),
     m_regulatingTerminal(terminal),

@@ -10,9 +10,9 @@
 #include <limits>
 
 #include <powsybl/AssertionError.hpp>
-#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
-#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
-#include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/iidm/ActivePowerLimits.hpp>
+#include <powsybl/iidm/ApparentPowerLimits.hpp>
+#include <powsybl/iidm/CurrentLimits.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
@@ -39,12 +39,6 @@ const std::string& Branch::Overload::getPreviousLimitName() const {
 
 const CurrentLimits::TemporaryLimit& Branch::Overload::getTemporaryLimit() const {
     return m_temporaryLimit;
-}
-
-Branch::Branch(const std::string& id, const std::string& name, bool fictitious) :
-    Connectable(id, name, fictitious),
-    m_operationalLimitsHolder1(*this, "limits1"),
-    m_operationalLimitsHolder2(*this, "limits2") {
 }
 
 bool Branch::checkPermanentLimit(const Side& side, const LimitType& type) const {
@@ -128,22 +122,6 @@ stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits(const Side& si
     return stdcxx::ref(const_cast<const Branch*>(this)->getActivePowerLimits(side));
 }
 
-stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits1() const {
-    return m_operationalLimitsHolder1.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
-}
-
-stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits1() {
-    return m_operationalLimitsHolder1.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
-}
-
-stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits2() const {
-    return m_operationalLimitsHolder2.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
-}
-
-stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits2() {
-    return m_operationalLimitsHolder2.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
-}
-
 stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits(const Side& side) const {
     switch (side) {
         case Side::ONE:
@@ -157,22 +135,6 @@ stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits(const Sid
 
 stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits(const Side& side) {
     return stdcxx::ref(const_cast<const Branch*>(this)->getApparentPowerLimits(side));
-}
-
-stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits1() const {
-    return m_operationalLimitsHolder1.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
-}
-
-stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits1() {
-    return m_operationalLimitsHolder1.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
-}
-
-stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits2() const {
-    return m_operationalLimitsHolder2.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
-}
-
-stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits2() {
-    return m_operationalLimitsHolder2.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
 }
 
 stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits(const Side& side) const {
@@ -190,22 +152,6 @@ stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits(const Side& side) con
 
 stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits(const Side& side) {
     return stdcxx::ref(const_cast<const Branch*>(this)->getCurrentLimits(side));
-}
-
-stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits1() const {
-    return m_operationalLimitsHolder1.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
-}
-
-stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits1() {
-    return m_operationalLimitsHolder1.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
-}
-
-stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits2() const {
-    return m_operationalLimitsHolder2.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
-}
-
-stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits2() {
-    return m_operationalLimitsHolder2.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
 }
 
 stdcxx::CReference<LoadingLimits> Branch::getLimits(const LimitType& type, const Side& side) const {
@@ -240,34 +186,34 @@ unsigned long Branch::getOverloadDuration() const {
 }
 
 Branch::Side Branch::getSide(const Terminal& terminal) const {
-    if (stdcxx::areSame(terminal, getTerminals().at(0).get())) {
+    if (stdcxx::areSame(terminal, getTerminal1())) {
         return Side::ONE;
     }
-    if (stdcxx::areSame(terminal, getTerminals().at(1).get())) {
+    if (stdcxx::areSame(terminal, getTerminal2())) {
         return Side::TWO;
     }
 
     throw AssertionError("The terminal is not connected to this branch");
 }
 
-const Terminal& Branch::getTerminal(const Side& side) const {
+const Terminal& Branch::getTerminalFromSide(const Side& side) const {
     switch (side) {
         case Side::ONE:
-            return getTerminals().at(0).get();
+            return getTerminal1();
 
         case Side::TWO:
-            return getTerminals().at(1).get();
+            return getTerminal2();
 
         default:
             throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
     }
 }
 
-Terminal& Branch::getTerminal(const Side& side) {
-    return const_cast<Terminal&>(static_cast<const Branch*>(this)->getTerminal(side));
+Terminal& Branch::getTerminalFromSide(const Side& side) {
+    return const_cast<Terminal&>(static_cast<const Branch*>(this)->getTerminalFromSide(side));
 }
 
-const Terminal& Branch::getTerminal(const std::string& voltageLevelId) const {
+const Terminal& Branch::getTerminalFromVoltageLevel(const std::string& voltageLevelId) const {
     bool side1 = getTerminal1().getVoltageLevel().getId() == voltageLevelId;
     bool side2 = getTerminal2().getVoltageLevel().getId() == voltageLevelId;
     if (side1 && side2) {
@@ -283,24 +229,8 @@ const Terminal& Branch::getTerminal(const std::string& voltageLevelId) const {
     throw PowsyblException(stdcxx::format("No terminal connected to voltage level %1%", voltageLevelId));
 }
 
-Terminal& Branch::getTerminal(const std::string& voltageLevelId) {
-    return const_cast<Terminal&>(static_cast<const Branch*>(this)->getTerminal(voltageLevelId));
-}
-
-const Terminal& Branch::getTerminal1() const {
-    return getTerminal(Side::ONE);
-}
-
-Terminal& Branch::getTerminal1() {
-    return getTerminal(Side::ONE);
-}
-
-const Terminal& Branch::getTerminal2() const {
-    return getTerminal(Side::TWO);
-}
-
-Terminal& Branch::getTerminal2() {
-    return getTerminal(Side::TWO);
+Terminal& Branch::getTerminalFromVoltageLevel(const std::string& voltageLevelId) {
+    return const_cast<Terminal&>(static_cast<const Branch*>(this)->getTerminalFromVoltageLevel(voltageLevelId));
 }
 
 double Branch::getValueForLimit(const Terminal& terminal, const LimitType& type) const {
@@ -326,30 +256,6 @@ bool Branch::isOverloaded() const {
 
 bool Branch::isOverloaded(double limitReduction) const {
     return checkPermanentLimit1(limitReduction, LimitType::CURRENT) || checkPermanentLimit2(limitReduction, LimitType::CURRENT);
-}
-
-ActivePowerLimitsAdder Branch::newActivePowerLimits1() {
-    return m_operationalLimitsHolder1.newActivePowerLimits();
-}
-
-ActivePowerLimitsAdder Branch::newActivePowerLimits2() {
-    return m_operationalLimitsHolder2.newActivePowerLimits();
-}
-
-ApparentPowerLimitsAdder Branch::newApparentPowerLimits1() {
-    return m_operationalLimitsHolder1.newApparentPowerLimits();
-}
-
-ApparentPowerLimitsAdder Branch::newApparentPowerLimits2() {
-    return m_operationalLimitsHolder2.newApparentPowerLimits();
-}
-
-CurrentLimitsAdder Branch::newCurrentLimits1() {
-    return m_operationalLimitsHolder1.newCurrentLimits();
-}
-
-CurrentLimitsAdder Branch::newCurrentLimits2() {
-    return m_operationalLimitsHolder2.newCurrentLimits();
 }
 
 namespace Enum {

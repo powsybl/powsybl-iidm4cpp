@@ -7,6 +7,9 @@
 
 #include <powsybl/iidm/TieLine.hpp>
 
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -161,6 +164,95 @@ void TieLine::remove() {
 
     // Remove this from the network
     getNetwork().remove(*this);
+}
+
+stdcxx::CReference<ActivePowerLimits> TieLine::getActivePowerLimits1() const {
+    return getDanglingLine1().getActivePowerLimits();
+}
+
+stdcxx::Reference<ActivePowerLimits> TieLine::getActivePowerLimits1() {
+    return getDanglingLine1().getActivePowerLimits();
+}
+
+stdcxx::CReference<ActivePowerLimits> TieLine::getActivePowerLimits2() const {
+    return getDanglingLine2().getActivePowerLimits();
+}
+
+stdcxx::Reference<ActivePowerLimits> TieLine::getActivePowerLimits2() {
+    return getDanglingLine2().getActivePowerLimits();
+}
+
+stdcxx::CReference<ApparentPowerLimits> TieLine::getApparentPowerLimits1() const {
+    return getDanglingLine1().getApparentPowerLimits();
+}
+
+stdcxx::Reference<ApparentPowerLimits> TieLine::getApparentPowerLimits1() {
+    return getDanglingLine1().getApparentPowerLimits();
+}
+
+stdcxx::CReference<ApparentPowerLimits> TieLine::getApparentPowerLimits2() const {
+    return getDanglingLine2().getApparentPowerLimits();
+}
+
+stdcxx::Reference<ApparentPowerLimits> TieLine::getApparentPowerLimits2() {
+    return getDanglingLine2().getApparentPowerLimits();
+}
+
+
+stdcxx::CReference<CurrentLimits> TieLine::getCurrentLimits1() const {
+    return getDanglingLine1().getCurrentLimits();
+}
+
+stdcxx::Reference<CurrentLimits> TieLine::getCurrentLimits1() {
+    return getDanglingLine1().getCurrentLimits();
+}
+
+stdcxx::CReference<CurrentLimits> TieLine::getCurrentLimits2() const {
+    return getDanglingLine2().getCurrentLimits();
+}
+
+stdcxx::Reference<CurrentLimits> TieLine::getCurrentLimits2() {
+    return getDanglingLine2().getCurrentLimits();
+}
+
+const Terminal& TieLine::getTerminal1() const {
+    return getDanglingLine1().getTerminal();
+}
+
+Terminal& TieLine::getTerminal1() {
+    return getDanglingLine1().getTerminal();
+}
+
+const Terminal& TieLine::getTerminal2() const {
+    return getDanglingLine2().getTerminal();
+}
+
+Terminal& TieLine::getTerminal2() {
+    return getDanglingLine2().getTerminal();
+}
+
+ActivePowerLimitsAdder TieLine::newActivePowerLimits1() {
+    return getDanglingLine1().newActivePowerLimits();
+}
+
+ActivePowerLimitsAdder TieLine::newActivePowerLimits2() {
+    return getDanglingLine2().newActivePowerLimits();
+}
+
+ApparentPowerLimitsAdder TieLine::newApparentPowerLimits1() {
+    return getDanglingLine1().newApparentPowerLimits();
+}
+
+ApparentPowerLimitsAdder TieLine::newApparentPowerLimits2() {
+    return getDanglingLine2().newApparentPowerLimits();
+}
+
+CurrentLimitsAdder TieLine::newCurrentLimits1() {
+    return getDanglingLine1().newCurrentLimits();
+}
+
+CurrentLimitsAdder TieLine::newCurrentLimits2() {
+    return getDanglingLine2().newCurrentLimits();
 }
 
 }  // namespace iidm

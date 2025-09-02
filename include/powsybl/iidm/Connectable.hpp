@@ -21,7 +21,7 @@ namespace iidm {
 
 class Network;
 
-class Connectable : public Identifiable {
+class Connectable : public virtual Identifiable {
 public:  // Identifiable
     const Network& getNetwork() const override;
 
@@ -46,7 +46,7 @@ protected: // MultiVariantObject
     void reduceVariantArraySize(unsigned long number) override;
 
 protected:
-    Connectable(const std::string& id, const std::string& name, bool fictitious);
+    Connectable() = default;
 
     const Terminal& getTerminal(unsigned long index) const;
 

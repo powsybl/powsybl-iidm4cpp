@@ -40,7 +40,7 @@ Terminal& TerminalRefXml::readTerminalRef(Network& network, const std::string& i
         return dynamic_cast<Injection&>(identifiable).getTerminal();
     }
     if (stdcxx::isInstanceOf<Branch>(identifiable)) {
-        return dynamic_cast<Branch&>(identifiable).getTerminal(Enum::fromString<Branch::Side>(side));
+        return dynamic_cast<Branch&>(identifiable).getTerminalFromSide(Enum::fromString<Branch::Side>(side));
     }
     if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
         auto& twt = dynamic_cast<ThreeWindingsTransformer&>(identifiable);

@@ -158,18 +158,22 @@ Branch& Network::getBranch(const std::string& id) {
 }
 
 unsigned long Network::getBranchCount() const {
-    return getLineCount() + getTwoWindingsTransformerCount();
+    return getLineCount() + getTwoWindingsTransformerCount() + getTieLineCount();
 }
 
 stdcxx::const_range<Branch> Network::getBranches() const {
     return boost::range::join(
+        boost::range::join(
             m_networkIndex.getAll<Line, Branch>(),
+            m_networkIndex.getAll<TieLine, Branch>()),
         m_networkIndex.getAll<TwoWindingsTransformer, Branch>());
 }
 
 stdcxx::range<Branch> Network::getBranches() {
     return boost::range::join(
+        boost::range::join(
             m_networkIndex.getAll<Line, Branch>(),
+            m_networkIndex.getAll<TieLine, Branch>()),
         m_networkIndex.getAll<TwoWindingsTransformer, Branch>());
 }
 

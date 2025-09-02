@@ -16,7 +16,8 @@ namespace powsybl {
 namespace iidm {
 
 VscConverterStation::VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint, Terminal& regulatingTerminal) :
-    HvdcConverterStation(id, name, fictitious, lossFactor),
+    Identifiable(id, name, fictitious),
+    HvdcConverterStation(lossFactor),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),

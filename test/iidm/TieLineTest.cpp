@@ -152,6 +152,11 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(1UL, network.getTieLineCount());
 
     TieLine& modifiableTieLine = network.getTieLine("TL_VL1_VL3");
+    BOOST_CHECK(stdcxx::isInstanceOf<Branch>(modifiableTieLine));
+
+    Branch& branchTieLine = network.getBranch("TL_VL1_VL3");
+    BOOST_CHECK(stdcxx::areSame(branchTieLine, modifiableTieLine));
+
     const auto& tieLine = dynamic_cast<const TieLine&>(modifiableTieLine);
     BOOST_CHECK_EQUAL("TL_VL1_VL3", tieLine.getId());
     BOOST_CHECK(tieLine.getOptionalName().empty());
@@ -206,6 +211,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(stdcxx::areSame(dl2, tieLine.getDanglingLine(Branch::Side::TWO)));
     BOOST_CHECK(stdcxx::areSame(dl1, modifiableTieLine.getDanglingLine(Branch::Side::ONE)));
     BOOST_CHECK(stdcxx::areSame(dl2, modifiableTieLine.getDanglingLine(Branch::Side::TWO)));
+    BOOST_CHECK(stdcxx::areSame(dl1.getTerminal(), tieLine.getTerminal1()));
+    BOOST_CHECK(stdcxx::areSame(dl2.getTerminal(), tieLine.getTerminal2()));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {

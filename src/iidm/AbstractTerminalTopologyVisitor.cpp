@@ -30,7 +30,7 @@ void AbstractTerminalTopologyVisitor::visitBattery(const Battery& battery) {
 }
 
 void AbstractTerminalTopologyVisitor::visitBranch(const Branch& branch, const Branch::Side& side) {
-    visitTerminal(branch.getTerminal(side));
+    visitTerminal(branch.getTerminalFromSide(side));
 }
 
 void AbstractTerminalTopologyVisitor::visitBusbarSection(const BusbarSection& section) {

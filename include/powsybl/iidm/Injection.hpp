@@ -27,7 +27,7 @@ public:
     Terminal& getTerminal();
 
 protected:
-    Injection(const std::string& id, const std::string& name, bool fictitious);
+    Injection() = default;
 };
 
 }  // namespace iidm
