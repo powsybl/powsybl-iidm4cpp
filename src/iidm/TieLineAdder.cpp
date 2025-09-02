@@ -50,6 +50,9 @@ TieLine& TieLineAdder::add() {
     auto& tieLine = m_network.checkAndAdd<TieLine>(std::move(ptrTieLine));
     tieLine.attachDanglingLines(dl1, dl2);
 
+    m_network.getConnectedComponentsManager().invalidate();
+    m_network.getSynchronousComponentsManager().invalidate();
+
     return tieLine;
 }
 

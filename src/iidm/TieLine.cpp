@@ -162,6 +162,9 @@ void TieLine::remove() {
         m_danglingLine2.reset();
     }
 
+    getNetwork().getConnectedComponentsManager().invalidate();
+    getNetwork().getSynchronousComponentsManager().invalidate();
+
     // Remove this from the network
     getNetwork().remove(*this);
 }
