@@ -71,7 +71,7 @@ void ThreeWindingsTransformerFortescueXmlSerializer::readLeg(LegFortescueAdder& 
     double rz = context.getReader().getOptionalAttributeValue(FORTESCUE_RZ, stdcxx::nan());
     double xz = context.getReader().getOptionalAttributeValue(FORTESCUE_XZ, stdcxx::nan());
     bool freeFluxes = context.getReader().getAttributeValue<bool>(FORTESCUE_FREE_FLUXES);
-    const auto& connectionType = Enum::fromString<WindingConnectionType>(context.getReader().getAttributeValue(FORTESCUE_CONNECTION));
+    const auto& connectionType = Enum::fromString<WindingConnectionType>(context.getReader().getAttributeValue(CONNECTION_TYPE));
     double groundingR = context.getReader().getOptionalAttributeValue(FORTESCUE_GROUNDING_R, 0.0);
     double groundingX = context.getReader().getOptionalAttributeValue(FORTESCUE_GROUNDING_X, 0.0);
     legAdder.withRz(rz)
@@ -89,7 +89,7 @@ void ThreeWindingsTransformerFortescueXmlSerializer::writeLeg(const std::string&
     context.getWriter().writeOptionalAttribute(FORTESCUE_RZ, leg.getRz());
     context.getWriter().writeOptionalAttribute(FORTESCUE_XZ, leg.getXz());
     context.getWriter().writeAttribute(FORTESCUE_FREE_FLUXES, leg.isFreeFluxes());
-    context.getWriter().writeAttribute(FORTESCUE_CONNECTION, Enum::toString(leg.getConnectionType()));
+    context.getWriter().writeAttribute(CONNECTION_TYPE, Enum::toString(leg.getConnectionType()));
     context.getWriter().writeOptionalAttribute(FORTESCUE_GROUNDING_R, leg.getGroundingR(), 0.0);
     context.getWriter().writeOptionalAttribute(FORTESCUE_GROUNDING_X, leg.getGroundingX(), 0.0);
 

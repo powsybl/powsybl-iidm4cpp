@@ -61,6 +61,10 @@ set(EXT_SOURCES
     src/LinePosition.cpp
     src/LinePositionAdder.cpp
     src/LinePositionXmlSerializer.cpp
+    src/LoadAsymmetrical.cpp
+    src/LoadAsymmetricalAdder.cpp
+    src/LoadAsymmetricalXmlSerializer.cpp
+    src/LoadConnectionType.cpp
     src/Measurement.cpp
     src/MeasurementAdder.cpp
     src/Measurements.cpp
@@ -121,6 +125,7 @@ set(UNIT_TEST_SOURCES
     test/iidm.cpp
     test/IdentifiableShortCircuitTest.cpp
     test/InjectionObservabilityTest.cpp
+    test/LoadAsymmetricalTest.cpp
     test/MeasurementsTest.cpp
     test/RemoteReactivePowerControlTest.cpp
     test/SecondaryVoltageControlTest.cpp

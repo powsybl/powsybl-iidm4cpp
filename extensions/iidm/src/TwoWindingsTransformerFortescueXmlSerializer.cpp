@@ -37,8 +37,8 @@ Extension& TwoWindingsTransformerFortescueXmlSerializer::read(Extendable& extend
     double rz = reader.getOptionalAttributeValue(FORTESCUE_RZ, stdcxx::nan());
     double xz = reader.getOptionalAttributeValue(FORTESCUE_XZ, stdcxx::nan());
     bool freefluxes = reader.getAttributeValue<bool>(FORTESCUE_FREE_FLUXES);
-    const auto& connectionType1 = Enum::fromString<WindingConnectionType>(reader.getAttributeValue(FORTESCUE_CONNECTION_1));
-    const auto& connectionType2 = Enum::fromString<WindingConnectionType>(reader.getAttributeValue(FORTESCUE_CONNECTION_2));
+    const auto& connectionType1 = Enum::fromString<WindingConnectionType>(reader.getAttributeValue(CONNECTION_TYPE_1));
+    const auto& connectionType2 = Enum::fromString<WindingConnectionType>(reader.getAttributeValue(CONNECTION_TYPE_2));
     double groundingR1 = reader.getOptionalAttributeValue(FORTESCUE_GROUNDING_R_1, 0.0);
     double groundingX1 = reader.getOptionalAttributeValue(FORTESCUE_GROUNDING_X_1, 0.0);
     double groundingR2 = reader.getOptionalAttributeValue(FORTESCUE_GROUNDING_R_2, 0.0);
@@ -65,8 +65,8 @@ void TwoWindingsTransformerFortescueXmlSerializer::write(const Extension& extens
     writer.writeOptionalAttribute(FORTESCUE_RZ,fortescuetwt.getRz());
     writer.writeOptionalAttribute(FORTESCUE_XZ,fortescuetwt.getXz());
     writer.writeAttribute(FORTESCUE_FREE_FLUXES, fortescuetwt.isFreeFluxes());
-    writer.writeAttribute(FORTESCUE_CONNECTION_1, Enum::toString(fortescuetwt.getConnectionType1()));
-    writer.writeAttribute(FORTESCUE_CONNECTION_2, Enum::toString(fortescuetwt.getConnectionType2()));
+    writer.writeAttribute(CONNECTION_TYPE_1, Enum::toString(fortescuetwt.getConnectionType1()));
+    writer.writeAttribute(CONNECTION_TYPE_2, Enum::toString(fortescuetwt.getConnectionType2()));
     writer.writeOptionalAttribute(FORTESCUE_GROUNDING_R_1,fortescuetwt.getGroundingR1(), 0.0);
     writer.writeOptionalAttribute(FORTESCUE_GROUNDING_X_1,fortescuetwt.getGroundingX1(), 0.0);
     writer.writeOptionalAttribute(FORTESCUE_GROUNDING_R_2,fortescuetwt.getGroundingR2(), 0.0);
