@@ -63,6 +63,8 @@ Network createLineFortescueNetwork() {
     l.newExtension<LineFortescueAdder>()
                 .withRz(0.1)
                 .withXz(2.0)
+                .withOpenPhaseA(true)
+                .withOpenPhaseC(true)
                 .add();
 
     return network;
@@ -156,10 +158,15 @@ BOOST_AUTO_TEST_CASE(FortescueConstructorTest) {
 
     BOOST_CHECK_CLOSE(0.1, fLine.getRz(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, fLine.getXz(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(fLine.isOpenPhaseA());
+    BOOST_CHECK(!fLine.isOpenPhaseB());
+    BOOST_CHECK(fLine.isOpenPhaseC());
     fLine.setRz(0.11);
     fLine.setXz(2.03);
+    fLine.setOpenPhaseA(false);
     BOOST_CHECK_CLOSE(0.11, fLine.getRz(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.03, fLine.getXz(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(!fLine.isOpenPhaseA());
 
     BOOST_CHECK_CLOSE(0.1, fTwoWT.getRz(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, fTwoWT.getXz(), std::numeric_limits<double>::epsilon());
@@ -253,6 +260,9 @@ BOOST_FIXTURE_TEST_CASE(LineFortescueXmlSerializerTest, test::ResourceFixture) {
 
     BOOST_CHECK_CLOSE(fLine.getRz(), fLine2.getRz(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(fLine.getXz(), fLine2.getXz(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(fLine2.isOpenPhaseA());
+    BOOST_CHECK(!fLine2.isOpenPhaseB());
+    BOOST_CHECK(fLine2.isOpenPhaseC());
 }
 
 BOOST_FIXTURE_TEST_CASE(TwoWTFortescueXmlSerializerTest, test::ResourceFixture) {

@@ -38,10 +38,16 @@ Extension& LineFortescueXmlSerializer::read(Extendable& extendable, converter::x
     const xml::XmlStreamReader& reader = context.getReader();
     double rz = reader.getOptionalAttributeValue(FORTESCUE_RZ, stdcxx::nan());
     double xz = reader.getOptionalAttributeValue(FORTESCUE_XZ, stdcxx::nan());
+    bool openPhaseA = reader.getOptionalAttributeValue(OPEN_PHASE_A, false);
+    bool openPhaseB = reader.getOptionalAttributeValue(OPEN_PHASE_B, false);
+    bool openPhaseC = reader.getOptionalAttributeValue(OPEN_PHASE_C, false);
 
     extendable.newExtension<LineFortescueAdder>()
                 .withRz(rz)
                 .withXz(xz)
+                .withOpenPhaseA(openPhaseA)
+                .withOpenPhaseB(openPhaseB)
+                .withOpenPhaseC(openPhaseC)
                 .add();
     return extendable.getExtension<LineFortescue>();
 }
@@ -52,6 +58,9 @@ void LineFortescueXmlSerializer::write(const Extension& extension, converter::xm
     xml::XmlStreamWriter& writer = context.getWriter();
     writer.writeOptionalAttribute(FORTESCUE_RZ,fortescueLine.getRz());
     writer.writeOptionalAttribute(FORTESCUE_XZ,fortescueLine.getXz());
+    writer.writeOptionalAttribute(OPEN_PHASE_A, fortescueLine.isOpenPhaseA(), false);
+    writer.writeOptionalAttribute(OPEN_PHASE_B, fortescueLine.isOpenPhaseB(), false);
+    writer.writeOptionalAttribute(OPEN_PHASE_C, fortescueLine.isOpenPhaseC(), false);
 }
 
 }  // namespace iidm

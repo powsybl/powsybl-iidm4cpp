@@ -55,6 +55,10 @@ public:
     LineFortescueAdder& withRz(double rz);
     LineFortescueAdder& withXz(double xz);
 
+    LineFortescueAdder& withOpenPhaseA(bool openPhaseA);
+    LineFortescueAdder& withOpenPhaseB(bool openPhaseB);
+    LineFortescueAdder& withOpenPhaseC(bool openPhaseC);
+
 protected:
     /**
      * Creates the LineFortescue extension.
@@ -69,6 +73,10 @@ private:
 
     double m_rz = stdcxx::nan();
     double m_xz = stdcxx::nan();
+
+    bool m_openPhaseA = false;
+    bool m_openPhaseB = false;
+    bool m_openPhaseC = false;
 
 };
 

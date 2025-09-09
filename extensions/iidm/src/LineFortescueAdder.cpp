@@ -26,7 +26,7 @@ LineFortescueAdder::LineFortescueAdder(Extendable& extendable) :
 
 std::unique_ptr<Extension> LineFortescueAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Line>(extendable)) {
-        return stdcxx::make_unique<LineFortescue>(dynamic_cast<Line&>(extendable), m_rz, m_xz);
+        return stdcxx::make_unique<LineFortescue>(dynamic_cast<Line&>(extendable), m_rz, m_xz, m_openPhaseA, m_openPhaseB, m_openPhaseC);
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
 }
@@ -37,6 +37,18 @@ LineFortescueAdder& LineFortescueAdder::withRz(double rz) {
 }
 LineFortescueAdder& LineFortescueAdder::withXz(double xz) {
     m_xz = xz;
+    return *this;
+}
+LineFortescueAdder& LineFortescueAdder::withOpenPhaseA(bool openPhaseA){
+    m_openPhaseA = openPhaseA;
+    return *this;
+}
+LineFortescueAdder& LineFortescueAdder::withOpenPhaseB(bool openPhaseB){
+    m_openPhaseB = openPhaseB;
+    return *this;
+}
+LineFortescueAdder& LineFortescueAdder::withOpenPhaseC(bool openPhaseC){
+    m_openPhaseC = openPhaseC;
     return *this;
 }
 

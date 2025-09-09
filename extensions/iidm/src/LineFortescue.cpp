@@ -19,10 +19,13 @@ namespace extensions {
 
 namespace iidm {
 
-LineFortescue::LineFortescue(Line& line, double rz, double xz) :
+LineFortescue::LineFortescue(Line& line, double rz, double xz, bool openPhaseA, bool openPhaseB, bool openPhaseC) :
     Extension(line),
     m_rz(rz),
-    m_xz(xz) {
+    m_xz(xz),
+    m_openPhaseA(openPhaseA),
+    m_openPhaseB(openPhaseB),
+    m_openPhaseC(openPhaseC) {
 }
 
 void LineFortescue::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -54,6 +57,29 @@ LineFortescue& LineFortescue::setRz(double rz) {
 }
 LineFortescue& LineFortescue::setXz(double xz) {
     m_xz = xz;
+    return *this;
+}
+
+bool LineFortescue::isOpenPhaseA() const {
+    return m_openPhaseA;
+}
+bool LineFortescue::isOpenPhaseB() const {
+    return m_openPhaseB;
+}
+bool LineFortescue::isOpenPhaseC() const {
+    return m_openPhaseC;
+}
+
+LineFortescue& LineFortescue::setOpenPhaseA(bool openPhaseA) {
+    m_openPhaseA = openPhaseA;
+    return *this;
+}
+LineFortescue& LineFortescue::setOpenPhaseB(bool openPhaseB) {
+    m_openPhaseB = openPhaseB;
+    return *this;
+}
+LineFortescue& LineFortescue::setOpenPhaseC(bool openPhaseC) {
+    m_openPhaseC = openPhaseC;
     return *this;
 }
 

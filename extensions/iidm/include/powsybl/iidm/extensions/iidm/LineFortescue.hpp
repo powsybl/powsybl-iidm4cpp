@@ -27,7 +27,7 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 
-    LineFortescue(Line& line, double rz, double xz);
+    LineFortescue(Line& line, double rz, double xz, bool openPhaseA, bool openPhaseB, bool openPhaseC);
 
     double getRz() const;
     double getXz() const;
@@ -35,11 +35,23 @@ public:  // Extension
     LineFortescue& setRz(double rz);
     LineFortescue& setXz(double xz);
 
+    bool isOpenPhaseA() const;
+    bool isOpenPhaseB() const;
+    bool isOpenPhaseC() const;
+
+    LineFortescue& setOpenPhaseA(bool openPhaseA);
+    LineFortescue& setOpenPhaseB(bool openPhaseB);
+    LineFortescue& setOpenPhaseC(bool openPhaseC);
+
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
     double m_rz;
     double m_xz;
+
+    bool m_openPhaseA;
+    bool m_openPhaseB;
+    bool m_openPhaseC;
 };
 
 }  // namespace iidm
