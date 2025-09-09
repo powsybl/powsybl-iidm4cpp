@@ -15,19 +15,23 @@
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/DiscreteMeasurementsXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/GeneratorEntsoeCategoryXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/GeneratorFortescueXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/GeneratorShortCircuitXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/GeneratorStartupXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcOperatorActivePowerRangeXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/IdentifiableShortCircuitXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/InjectionObservabilityXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/LineFortescueXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/LinePositionXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/MeasurementsXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/SecondaryVoltageControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/StandbyAutomatonXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/SubstationPositionXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerFortescueXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/ThreeWindingsTransformerToBeEstimatedXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerFortescueXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerPhaseAngleClockXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/TwoWindingsTransformerToBeEstimatedXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/VoltagePerReactivePowerControlXmlSerializer.hpp>
@@ -48,19 +52,23 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     serializers.emplace_back(stdcxx::make_unique<CoordinatedReactiveControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<DiscreteMeasurementsXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<GeneratorEntsoeCategoryXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<GeneratorFortescueXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<GeneratorShortCircuitXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<GeneratorStartupXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<HvdcAngleDroopActivePowerControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<HvdcOperatorActivePowerRangeXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<IdentifiableShortCircuitXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<InjectionObservabilityXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<LineFortescueXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<LinePositionXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<MeasurementsXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<SecondaryVoltageControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<StandbyAutomatonXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<SubstationPositionXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<ThreeWindingsTransformerFortescueXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<ThreeWindingsTransformerPhaseAngleClockXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<ThreeWindingsTransformerToBeEstimatedXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<TwoWindingsTransformerFortescueXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<TwoWindingsTransformerPhaseAngleClockXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<TwoWindingsTransformerToBeEstimatedXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<VoltagePerReactivePowerControlXmlSerializer>());

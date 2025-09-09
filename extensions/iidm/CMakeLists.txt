@@ -31,6 +31,9 @@ set(EXT_SOURCES
     src/GeneratorEntsoeCategory.cpp
     src/GeneratorEntsoeCategoryAdder.cpp
     src/GeneratorEntsoeCategoryXmlSerializer.cpp
+    src/GeneratorFortescue.cpp
+    src/GeneratorFortescueAdder.cpp
+    src/GeneratorFortescueXmlSerializer.cpp
     src/GeneratorShortCircuit.cpp
     src/GeneratorShortCircuitAdder.cpp
     src/GeneratorShortCircuitXmlSerializer.cpp
@@ -50,6 +53,11 @@ set(EXT_SOURCES
     src/InjectionObservability.cpp
     src/InjectionObservabilityAdder.cpp
     src/InjectionObservabilityXmlSerializer.cpp
+    src/LegFortescue.cpp
+    src/LegFortescueAdder.cpp
+    src/LineFortescue.cpp
+    src/LineFortescueAdder.cpp
+    src/LineFortescueXmlSerializer.cpp
     src/LinePosition.cpp
     src/LinePositionAdder.cpp
     src/LinePositionXmlSerializer.cpp
@@ -74,12 +82,18 @@ set(EXT_SOURCES
     src/SubstationPosition.cpp
     src/SubstationPositionAdder.cpp
     src/SubstationPositionXmlSerializer.cpp
+    src/ThreeWindingsTransformerFortescue.cpp
+    src/ThreeWindingsTransformerFortescueAdder.cpp
+    src/ThreeWindingsTransformerFortescueXmlSerializer.cpp
     src/ThreeWindingsTransformerPhaseAngleClock.cpp
     src/ThreeWindingsTransformerPhaseAngleClockAdder.cpp
     src/ThreeWindingsTransformerPhaseAngleClockXmlSerializer.cpp
     src/ThreeWindingsTransformerToBeEstimated.cpp
     src/ThreeWindingsTransformerToBeEstimatedAdder.cpp
     src/ThreeWindingsTransformerToBeEstimatedXmlSerializer.cpp
+    src/TwoWindingsTransformerFortescue.cpp
+    src/TwoWindingsTransformerFortescueAdder.cpp
+    src/TwoWindingsTransformerFortescueXmlSerializer.cpp
     src/TwoWindingsTransformerPhaseAngleClock.cpp
     src/TwoWindingsTransformerPhaseAngleClockAdder.cpp
     src/TwoWindingsTransformerPhaseAngleClockXmlSerializer.cpp
@@ -89,6 +103,7 @@ set(EXT_SOURCES
     src/VoltagePerReactivePowerControl.cpp
     src/VoltagePerReactivePowerControlAdder.cpp
     src/VoltagePerReactivePowerControlXmlSerializer.cpp
+    src/WindingConnectionType.cpp
 )
 
 set(UNIT_TEST_SOURCES
@@ -97,6 +112,7 @@ set(UNIT_TEST_SOURCES
     test/CoordinateTest.cpp
     test/CoordinatedReactiveControlTest.cpp
     test/DiscreteMeasurementsTest.cpp
+    test/FortescueTest.cpp
     test/GeneratorEntsoeCategoryTest.cpp
     test/GeneratorShortCircuitTest.cpp
     test/GeneratorStartupTest.cpp
