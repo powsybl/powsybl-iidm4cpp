@@ -50,6 +50,10 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) 
     return stdcxx::ref<Bus>(m_voltageLevel.getCalculatedBusBreakerTopology().getBus2(switchId, true));
 }
 
+unsigned long BusBreakerViewImpl::getBusCount() const {
+    return m_voltageLevel.getCalculatedBusBreakerTopology().getBusCount();
+}
+
 stdcxx::const_range<Bus> BusBreakerViewImpl::getBuses() const {
     const auto& calculatedBuses = m_voltageLevel.getCalculatedBusBreakerTopology().getBuses();
 
@@ -124,6 +128,10 @@ stdcxx::CReference<Bus> BusViewImpl::getBus(const std::string& busId) const {
 
 stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) {
     return stdcxx::ref<Bus>(m_voltageLevel.getCalculatedBusTopology().getBus(busId, false));
+}
+
+unsigned long BusViewImpl::getBusCount() const {
+    return m_voltageLevel.getCalculatedBusTopology().getBusCount();
 }
 
 stdcxx::const_range<Bus> BusViewImpl::getBuses() const {

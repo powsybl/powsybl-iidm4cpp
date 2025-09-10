@@ -814,6 +814,7 @@ BOOST_AUTO_TEST_CASE(testConnectedTerminals) {
     BOOST_CHECK(ld2t.isConnected());
     BOOST_CHECK(l1t.isConnected());
 
+    BOOST_CHECK_EQUAL(1, vl1.getBusView().getBusCount());
     BOOST_CHECK_EQUAL(1, boost::size(vl1.getBusView().getBuses()));
 
     BOOST_CHECK(stdcxx::areSame(gt.getBusView().getBus().get(), gt.getBusView().getConnectableBus().get()));
@@ -842,6 +843,7 @@ BOOST_AUTO_TEST_CASE(testDisconnectConnect) {
 
     BOOST_CHECK(l1t.disconnect());
     BOOST_CHECK(!l1t.isConnected());
+    BOOST_CHECK_EQUAL(1, vl1.getBusView().getBusCount());
     BOOST_CHECK_EQUAL(1, boost::size(vl1.getBusView().getBuses()));
     BOOST_CHECK(!l1t.getBusView().getBus());
     BOOST_CHECK(l1t.getBusView().getConnectableBus());

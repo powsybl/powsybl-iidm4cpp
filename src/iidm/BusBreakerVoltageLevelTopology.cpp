@@ -55,6 +55,11 @@ stdcxx::Reference<MergedBus> CalculatedBusTopology::getMergedBus(const stdcxx::R
     return m_cache->getMergedBus(bus);
 }
 
+unsigned long CalculatedBusTopology::getMergedBusesCount() {
+    updateCache();
+    return m_cache->getMergedBusesCount();
+}
+
 stdcxx::range<MergedBus> CalculatedBusTopology::getMergedBuses() {
     updateCache();
 

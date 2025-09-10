@@ -773,6 +773,7 @@ BOOST_AUTO_TEST_CASE(calculatedBusBreakerTopology) {
     POWSYBL_ASSERT_REF_TRUE(cBusBreakerView.getBus1("SW1"));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getBus2("SW1"));
     POWSYBL_ASSERT_REF_TRUE(cBusBreakerView.getBus2("SW1"));
+    BOOST_CHECK_EQUAL(3, busBreakerView.getBusCount());
     BOOST_CHECK_EQUAL(3, boost::size(busBreakerView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busBreakerView.getSwitch("SW1"));
     POWSYBL_ASSERT_REF_TRUE(cBusBreakerView.getSwitch("SW1"));
@@ -939,6 +940,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     VoltageLevel& vlTest = vl;
     auto& busView = vlTest.getBusView();
     const auto& cBusView = vlTest.getBusView();
+    BOOST_CHECK_EQUAL(1UL, busView.getBusCount());
     BOOST_CHECK_EQUAL(1UL, boost::size(busView.getBuses()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
@@ -949,15 +951,18 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology) {
     BOOST_CHECK(calculatedBus.getOptionalName().empty());
 
     sw.setOpen(true);
+    BOOST_CHECK_EQUAL(2UL, busView.getBusCount());
     BOOST_CHECK_EQUAL(2UL, boost::size(busView.getBuses()));
     BOOST_CHECK_EQUAL(2UL, boost::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_2"));
     sw.setOpen(false);
+    BOOST_CHECK_EQUAL(1UL, busView.getBusCount());
     BOOST_CHECK_EQUAL(1UL, boost::size(busView.getBuses()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
     POWSYBL_ASSERT_REF_TRUE(busView.getBus("VL_0"));
     sw.setRetained(true);
+    BOOST_CHECK_EQUAL(1UL, busView.getBusCount());
     BOOST_CHECK_EQUAL(1UL, boost::size(busView.getBuses()));
     BOOST_CHECK_EQUAL(1UL, boost::size(cBusView.getBuses()));
 }
@@ -1081,6 +1086,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
         .setOpen(false)
         .add();
 
+    BOOST_CHECK_EQUAL(2, network.getBusView().getBusCount());
     BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getBuses()));
 
     // load "L0" is connected to bus "VL_0"

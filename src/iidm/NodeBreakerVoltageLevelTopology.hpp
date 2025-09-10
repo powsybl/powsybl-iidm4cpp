@@ -36,6 +36,8 @@ public:
 
     stdcxx::Reference<CalculatedBus> getBus(const std::string& id, bool throwException);
 
+    unsigned long getBusCount();
+
     stdcxx::range<CalculatedBus> getBuses();
 
     stdcxx::Reference<Bus> getConnectableBus(unsigned long node);

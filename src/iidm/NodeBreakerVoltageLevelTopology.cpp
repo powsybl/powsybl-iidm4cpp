@@ -148,6 +148,12 @@ stdcxx::Reference<CalculatedBus> CalculatedBusTopology::getBus(const std::string
     return bus;
 }
 
+unsigned long CalculatedBusTopology::getBusCount() {
+    updateCache();
+
+    return m_cache->getBusCount();
+}
+
 stdcxx::range<CalculatedBus> CalculatedBusTopology::getBuses() {
     updateCache();
 

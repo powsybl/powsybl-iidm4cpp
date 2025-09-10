@@ -39,6 +39,8 @@ public:
 
     stdcxx::Reference<CalculatedBus> getBus(const std::string& id) const;
 
+    unsigned long getBusCount() const;
+
     stdcxx::const_range<CalculatedBus> getBuses() const;
 
     stdcxx::range<CalculatedBus> getBuses();

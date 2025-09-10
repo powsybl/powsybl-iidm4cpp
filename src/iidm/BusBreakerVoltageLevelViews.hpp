@@ -33,6 +33,8 @@ public: // BusBreakerView
 
     stdcxx::Reference<Bus> getBus2(const std::string& switchId) override;
 
+    unsigned long getBusCount() const override;
+
     stdcxx::const_range<Bus> getBuses() const override;
 
     stdcxx::range<Bus> getBuses() override;
@@ -75,6 +77,8 @@ public:
     stdcxx::CReference<Bus> getBus(const std::string& busId) const override;
 
     stdcxx::Reference<Bus> getBus(const std::string& busId) override;
+
+    unsigned long getBusCount() const override;
 
     stdcxx::const_range<Bus> getBuses() const override;
 

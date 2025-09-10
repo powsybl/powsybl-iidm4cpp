@@ -203,6 +203,7 @@ BOOST_AUTO_TEST_CASE(BusBreakerViewTest) {
     BOOST_TEST(stdcxx::areSame(bus3, cRefBus3.get()));
 
     const auto& buses = view.getBuses();
+    BOOST_CHECK_EQUAL(4, view.getBusCount());
     BOOST_CHECK_EQUAL(4, boost::size(buses));
 
     // // get bus from unknown switch
@@ -337,6 +338,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
         .setB2(0.5)
         .add();
 
+    BOOST_CHECK_EQUAL(1UL, vl.getBusView().getBusCount());
     BOOST_CHECK_EQUAL(1UL, boost::size(vl.getBusView().getBuses()));
     stdcxx::Reference<Bus> mergedBus1 = vl.getBusView().getMergedBus("BUS1");
     stdcxx::Reference<Bus> mergedBus2 = vl.getBusView().getMergedBus("BUS2");
@@ -348,6 +350,7 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopologyTest) {
     VoltageLevel& vlTest = vl;
     auto& busView = vlTest.getBusView();
     const auto& cBusView = vlTest.getBusView();
+    BOOST_CHECK_EQUAL(2UL, busView.getBusCount());
     BOOST_CHECK_EQUAL(2UL, boost::size(busView.getBuses()));
     BOOST_CHECK_EQUAL(2UL, boost::size(cBusView.getBuses()));
     mergedBus1 = busView.getMergedBus("BUS1");

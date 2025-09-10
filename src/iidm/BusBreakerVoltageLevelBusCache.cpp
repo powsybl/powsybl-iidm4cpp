@@ -37,6 +37,10 @@ stdcxx::Reference<MergedBus> BusCache::getMergedBus(const stdcxx::Reference<Conf
     return (it == m_mapping.end()) ? stdcxx::ref<MergedBus>() : stdcxx::ref<MergedBus>(it->second);
 }
 
+unsigned long BusCache::getMergedBusesCount() const {
+    return m_mergedBus.size();
+}
+
 stdcxx::const_range<MergedBus> BusCache::getMergedBuses() const {
     return boost::adaptors::values(m_mergedBus) | boost::adaptors::indirected;
 }

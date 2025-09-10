@@ -53,6 +53,10 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getBus2(const std::string& switchId) 
     return stdcxx::ref<Bus>(m_voltageLevel.getConfiguredBus2(switchId));
 }
 
+unsigned long BusBreakerViewImpl::getBusCount() const {
+    return m_voltageLevel.getGraph().getVertexCount();
+}
+
 stdcxx::const_range<Bus> BusBreakerViewImpl::getBuses() const {
     const auto& filter = [](const stdcxx::Reference<ConfiguredBus>& bus) {
         return static_cast<bool>(bus);
@@ -144,6 +148,10 @@ stdcxx::CReference<Bus> BusViewImpl::getBus(const std::string& busId) const {
 
 stdcxx::Reference<Bus> BusViewImpl::getBus(const std::string& busId) {
     return stdcxx::ref<Bus>(m_voltageLevel.getMergedBus(busId, false));
+}
+
+unsigned long BusViewImpl::getBusCount() const {
+    return m_voltageLevel.getCalculatedBusTopology().getMergedBusesCount();
 }
 
 stdcxx::const_range<Bus> BusViewImpl::getBuses() const {

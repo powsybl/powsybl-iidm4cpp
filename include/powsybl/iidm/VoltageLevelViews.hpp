@@ -54,6 +54,8 @@ public:
 
     virtual stdcxx::Reference<Bus> getBus2(const std::string& switchId) = 0;
 
+    virtual unsigned long getBusCount() const = 0;
+
     virtual stdcxx::const_range<Bus> getBuses() const = 0;
 
     virtual stdcxx::range<Bus> getBuses() = 0;
@@ -90,6 +92,8 @@ public:
     virtual stdcxx::CReference<Bus> getBus(const std::string& busId) const = 0;
 
     virtual stdcxx::Reference<Bus> getBus(const std::string& busId) = 0;
+
+    virtual unsigned long getBusCount() const = 0;
 
     virtual stdcxx::const_range<Bus> getBuses() const = 0;
 

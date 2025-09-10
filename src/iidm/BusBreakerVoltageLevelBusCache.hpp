@@ -39,6 +39,8 @@ public:
 
     stdcxx::Reference<MergedBus> getMergedBus(const stdcxx::Reference<ConfiguredBus>& bus) const;
 
+    unsigned long getMergedBusesCount() const;
+
     stdcxx::const_range<MergedBus> getMergedBuses() const;
 
     stdcxx::range<MergedBus> getMergedBuses();

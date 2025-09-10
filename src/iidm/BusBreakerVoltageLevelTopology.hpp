@@ -29,6 +29,8 @@ public:
 
     ~CalculatedBusTopology() noexcept = default;
 
+    unsigned long getMergedBusesCount();
+
     stdcxx::Reference<MergedBus> getMergedBus(const std::string& id, bool throwException);
 
     stdcxx::Reference<MergedBus> getMergedBus(const stdcxx::Reference<ConfiguredBus>& bus);

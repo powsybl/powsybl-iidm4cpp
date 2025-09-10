@@ -43,6 +43,16 @@ stdcxx::Reference<Bus> BusBreakerView::getBus(const std::string& id) {
     return stdcxx::ref(m_network.getBusBreakerViewCache().getBus(id));
 }
 
+unsigned long BusBreakerView::getBusCount() const {
+    unsigned long res = 0UL;
+
+    for (const auto& vl : m_network.getVoltageLevels()) {
+        res += vl.getBusBreakerView().getBusCount();
+    }
+
+    return res;
+}
+
 stdcxx::const_range<Bus> BusBreakerView::getBuses() const {
     const auto& mapper = [](const VoltageLevel& voltageLevel) {
         return voltageLevel.getBusBreakerView().getBuses();
@@ -99,6 +109,16 @@ stdcxx::CReference<Bus> BusView::getBus(const std::string& id) const {
 
 stdcxx::Reference<Bus> BusView::getBus(const std::string& id) {
     return stdcxx::ref(m_network.getBusViewCache().getBus(id));
+}
+
+unsigned long BusView::getBusCount() const {
+    unsigned long res = 0UL;
+
+    for (const auto& vl : m_network.getVoltageLevels()) {
+        res += vl.getBusView().getBusCount();
+    }
+
+    return res;
 }
 
 stdcxx::const_range<Bus> BusView::getBuses() const {

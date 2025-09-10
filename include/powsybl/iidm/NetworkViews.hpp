@@ -36,6 +36,8 @@ public:
 
     stdcxx::Reference<Bus> getBus(const std::string& id);
 
+    unsigned long getBusCount() const;
+
     stdcxx::const_range<Bus> getBuses() const;
 
     stdcxx::range<Bus> getBuses();
@@ -66,6 +68,8 @@ public:
     stdcxx::CReference<Bus> getBus(const std::string& id) const;
 
     stdcxx::Reference<Bus> getBus(const std::string& id);
+
+    unsigned long getBusCount() const;
 
     stdcxx::const_range<Bus> getBuses() const;
 

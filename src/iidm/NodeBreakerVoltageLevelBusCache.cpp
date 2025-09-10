@@ -31,6 +31,10 @@ stdcxx::Reference<CalculatedBus> BusCache::getBus(const std::string& id) const {
     return (it == m_busById.end()) ? stdcxx::Reference<CalculatedBus>() : stdcxx::ref<CalculatedBus>(it->second);
 }
 
+unsigned long BusCache::getBusCount() const{
+    return m_busById.size();
+}
+
 stdcxx::const_range<CalculatedBus> BusCache::getBuses() const {
     return boost::adaptors::values(m_busById) | boost::adaptors::indirected;
 }

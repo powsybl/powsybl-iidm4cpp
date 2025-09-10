@@ -281,9 +281,11 @@ BOOST_AUTO_TEST_CASE(views) {
     BOOST_CHECK_EQUAL(network1.getBusBreakerView().getSwitchCount(), boost::size(switches));
     POWSYBL_ASSERT_REF_TRUE(network1.getBusBreakerView().getBus("VL1_BUS1"));
     POWSYBL_ASSERT_REF_FALSE(network1.getBusBreakerView().getBus("UNKNOWN"));
+    BOOST_CHECK_EQUAL(6, network1.getBusBreakerView().getBusCount());
     auto buses = network1.getBusBreakerView().getBuses();
     BOOST_CHECK_EQUAL(6, boost::size(buses));
 
+    BOOST_CHECK_EQUAL(4, network1.getBusView().getBusCount());
     buses = network1.getBusView().getBuses();
     BOOST_CHECK_EQUAL(4, boost::size(buses));
     POWSYBL_ASSERT_REF_TRUE(network1.getBusView().getBus("VL1_0"));
@@ -301,9 +303,11 @@ BOOST_AUTO_TEST_CASE(views) {
     BOOST_CHECK_EQUAL(cNetwork1.getBusBreakerView().getSwitchCount(), boost::size(cSwitches));
     POWSYBL_ASSERT_REF_TRUE(cNetwork1.getBusBreakerView().getBus("VL1_BUS1"));
     POWSYBL_ASSERT_REF_FALSE(cNetwork1.getBusBreakerView().getBus("UNKNOWN"));
+    BOOST_CHECK_EQUAL(6, cNetwork1.getBusBreakerView().getBusCount());
     const auto& cBuses = cNetwork1.getBusBreakerView().getBuses();
     BOOST_CHECK_EQUAL(6, boost::size(cBuses));
 
+    BOOST_CHECK_EQUAL(5, cNetwork1.getBusView().getBusCount());
     const auto& cBuses2 = cNetwork1.getBusView().getBuses();
     BOOST_CHECK_EQUAL(5, boost::size(cBuses2));
     POWSYBL_ASSERT_REF_TRUE(cNetwork1.getBusView().getBus("VL1_0"));
@@ -317,9 +321,11 @@ BOOST_AUTO_TEST_CASE(views) {
     BOOST_CHECK_EQUAL(network2.getBusBreakerView().getSwitchCount(), boost::size(switches));
     POWSYBL_ASSERT_REF_TRUE(network2.getBusBreakerView().getBus("VL5_0"));
     POWSYBL_ASSERT_REF_FALSE(network2.getBusBreakerView().getBus("UNKNOWN"));
+    BOOST_CHECK_EQUAL(4, network2.getBusBreakerView().getBusCount());
     buses = network2.getBusBreakerView().getBuses();
     BOOST_CHECK_EQUAL(4, boost::size(buses));
 
+    BOOST_CHECK_EQUAL(1, network2.getBusView().getBusCount());
     buses = network2.getBusView().getBuses();
     BOOST_CHECK_EQUAL(1, boost::size(buses));
     POWSYBL_ASSERT_REF_TRUE(network2.getBusView().getBus("VL5_0"));
@@ -338,9 +344,11 @@ BOOST_AUTO_TEST_CASE(views) {
     BOOST_CHECK_EQUAL(cNetwork2.getBusBreakerView().getSwitchCount(), boost::size(cSwitches2));
     POWSYBL_ASSERT_REF_TRUE(cNetwork2.getBusBreakerView().getBus("VL5_0"));
     POWSYBL_ASSERT_REF_FALSE(cNetwork2.getBusBreakerView().getBus("UNKNOWN"));
+    BOOST_CHECK_EQUAL(4, cNetwork2.getBusBreakerView().getBusCount());
     const auto& cBuses3 = cNetwork2.getBusBreakerView().getBuses();
     BOOST_CHECK_EQUAL(4, boost::size(cBuses3));
 
+    BOOST_CHECK_EQUAL(0, cNetwork2.getBusView().getBusCount());
     const auto& cBuses4 = cNetwork2.getBusView().getBuses();
     BOOST_CHECK_EQUAL(0, boost::size(cBuses4));
     POWSYBL_ASSERT_REF_FALSE(cNetwork2.getBusView().getBus("UNKNOWN"));
