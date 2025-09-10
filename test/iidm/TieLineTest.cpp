@@ -12,12 +12,16 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/Line.hpp>
+#include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/util/SV.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -26,6 +30,90 @@
 namespace powsybl {
 
 namespace iidm {
+
+Network createEurostagExampleWithTieLines() {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+
+    network.getBusBreakerView().getBus("NGEN").get().setV(24.500000610351563).setAngle(2.3259763717651367);
+    network.getBusBreakerView().getBus("NHV1").get().setV(402.1428451538086).setAngle(0.0);
+    network.getBusBreakerView().getBus("NHV2").get().setV(389.9526763916016).setAngle(-3.5063576698303223);
+    network.getBusBreakerView().getBus("NLOAD").get().setV(147.57861328125).setAngle(-9.614486694335938);
+
+    network.getGenerator("GEN").getTerminal().setP(-605.558349609375).setQ(-225.2825164794922);
+    network.getTwoWindingsTransformer("NGEN_NHV1").getTerminal1().setP(605.558349609375).setQ(225.2825164794922);
+    network.getTwoWindingsTransformer("NGEN_NHV1").getTerminal2().setP(-604.8909301757812).setQ(-197.48046875);
+    network.getLoad("LOAD").getTerminal().setP(600.0).setQ(200.0);
+    network.getTwoWindingsTransformer("NHV2_NLOAD").getTerminal1().setP(600.8677978515625).setQ(274.3769836425781);
+    network.getTwoWindingsTransformer("NHV2_NLOAD").getTerminal2().setP(-600.0).setQ(-200.0);
+    network.getLine("NHV1_NHV2_1").getTerminal1().setP(302.4440612792969).setQ(98.74027252197266);
+    network.getLine("NHV1_NHV2_1").getTerminal2().setP(-300.43389892578125).setQ(-137.18849182128906);
+    network.getLine("NHV1_NHV2_2").getTerminal1().setP(302.4440612792969).setQ(98.74027252197266);
+    network.getLine("NHV1_NHV2_2").getTerminal2().setP(-300.43389892578125).setQ(-137.188491821289060);
+
+    network.getLine("NHV1_NHV2_1").remove();
+    network.getLine("NHV1_NHV2_2").remove();
+
+    DanglingLine& nhv1xnode1 = network.getVoltageLevel("VLHV1").newDanglingLine()
+                .setId("NHV1_XNODE1")
+                .setP0(0.0)
+                .setQ0(0.0)
+                .setR(1.5)
+                .setX(20.0)
+                .setG(1E-6)
+                .setB(386E-6 / 2)
+                .setBus("NHV1")
+                .setUcteXnodeCode("XNODE1")
+                .add();
+    DanglingLine& xnode1nhv2 = network.getVoltageLevel("VLHV2").newDanglingLine()
+                .setId("XNODE1_NHV2")
+                .setP0(0.0)
+                .setQ0(0.0)
+                .setR(1.5)
+                .setX(13.0)
+                .setG(2E-6)
+                .setB(386E-6 / 2)
+                .setBus("NHV2")
+                .setUcteXnodeCode("XNODE1")
+                .add();
+    network.newTieLine()
+                .setId("NHV1_NHV2_1")
+                .setDanglingLine1(nhv1xnode1.getId())
+                .setDanglingLine2(xnode1nhv2.getId())
+                .add();
+    DanglingLine& nvh1xnode2 = network.getVoltageLevel("VLHV1").newDanglingLine()
+                .setId("NVH1_XNODE2")
+                .setP0(0.0)
+                .setQ0(0.0)
+                .setR(1.5)
+                .setX(20.0)
+                .setG(1E-6)
+                .setB(386E-6 / 2)
+                .setBus("NHV1")
+                .setUcteXnodeCode("XNODE2")
+                .add();
+    DanglingLine& xnode2nhv2 = network.getVoltageLevel("VLHV2").newDanglingLine()
+                .setId("XNODE2_NHV2")
+                .setP0(0.0)
+                .setQ0(0.0)
+                .setR(1.5)
+                .setX(13.0)
+                .setG(2E-6)
+                .setB(386E-6 / 2)
+                .setBus("NHV2")
+                .setUcteXnodeCode("XNODE2")
+                .add();
+    network.newTieLine()
+                .setId("NHV1_NHV2_2")
+                .setDanglingLine1(nvh1xnode2.getId())
+                .setDanglingLine2(xnode2nhv2.getId())
+                .add();
+    network.getTieLine("NHV1_NHV2_1").getDanglingLine1().getTerminal().setP(302.4440612792969).setQ(98.74027252197266);
+    network.getTieLine("NHV1_NHV2_1").getDanglingLine2().getTerminal().setP(-300.43389892578125).setQ(-137.18849182128906);
+    network.getTieLine("NHV1_NHV2_2").getDanglingLine1().getTerminal().setP(302.4440612792969).setQ(98.74027252197266);
+    network.getTieLine("NHV1_NHV2_2").getDanglingLine2().getTerminal().setP(-300.43389892578125).setQ(-137.188491821289060);
+
+    return network;
+}
 
 Network createTieLineTestNetwork() {
     Network network("test", "test");
@@ -231,6 +319,130 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     tieLine.remove();
     POWSYBL_ASSERT_THROW(network.getTieLine("TL_VL1_VL3"), PowsyblException, "Unable to find to the identifiable 'TL_VL1_VL3'");
+}
+
+BOOST_AUTO_TEST_CASE(removeTieLine) {
+    Network network = createEurostagExampleWithTieLines();
+
+    TieLine& tl1 = network.getTieLine("NHV1_NHV2_1");
+    DanglingLine& dl1_1 = tl1.getDanglingLine1();
+    DanglingLine& dl1_2 = tl1.getDanglingLine2();
+    TieLine& tl2 = network.getTieLine("NHV1_NHV2_2");
+    DanglingLine& dl2_1 = tl2.getDanglingLine1();
+    DanglingLine& dl2_2 = tl2.getDanglingLine2();
+
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
+
+    tl1.remove(true);
+    tl2.remove(true);
+
+    BOOST_CHECK_CLOSE_FRACTION(301.316, dl1_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(116.525, dl1_1.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-301.782, dl1_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-116.442, dl1_2.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(301.316, dl2_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(116.525, dl2_1.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-301.782, dl2_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-116.442, dl2_2.getQ0(), 1e-4);
+}
+
+BOOST_AUTO_TEST_CASE(removeTieLineNotCalculated) {
+    Network network = createEurostagExampleWithTieLines();
+
+    TieLine& tl1 = network.getTieLine("NHV1_NHV2_1");
+    DanglingLine& dl1_1 = tl1.getDanglingLine1();
+    DanglingLine& dl1_2 = tl1.getDanglingLine2();
+    TieLine& tl2 = network.getTieLine("NHV1_NHV2_2");
+    DanglingLine& dl2_1 = tl2.getDanglingLine1();
+    DanglingLine& dl2_2 = tl2.getDanglingLine2();
+
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    // reset the terminal flows at dangling lines, we simulate we do not have calculated
+    tl1.getDanglingLine1().getTerminal().setP(stdcxx::nan());
+    tl1.getDanglingLine1().getTerminal().setQ(stdcxx::nan());
+    tl1.getDanglingLine2().getTerminal().setP(stdcxx::nan());
+    tl1.getDanglingLine2().getTerminal().setQ(stdcxx::nan());
+    tl2.getDanglingLine1().getTerminal().setP(stdcxx::nan());
+    tl2.getDanglingLine1().getTerminal().setQ(stdcxx::nan());
+    tl2.getDanglingLine2().getTerminal().setP(stdcxx::nan());
+    tl2.getDanglingLine2().getTerminal().setQ(stdcxx::nan());
+    // Set some non-zero p0, q0 values to check that:
+    // if we remove the tie line without flows calculated
+    // p0, q0 of dangling lines are preserved
+    tl1.getDanglingLine1().setP0(10);
+    tl1.getDanglingLine1().setQ0(20);
+    tl1.getDanglingLine2().setP0(-10);
+    tl1.getDanglingLine2().setQ0(-20);
+
+    tl1.remove(true);
+    tl2.remove(true);
+
+    BOOST_CHECK_CLOSE(10, dl1_1.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20, dl1_1.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-10, dl1_2.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-20, dl1_2.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0, dl2_1.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0, dl2_1.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0, dl2_2.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0, dl2_2.getQ0(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_AUTO_TEST_CASE(removeTieLineDCCalculated) {
+    Network network = createEurostagExampleWithTieLines();
+
+    TieLine &tl1 = network.getTieLine("NHV1_NHV2_1");
+    DanglingLine &dl1_1 = tl1.getDanglingLine1();
+    DanglingLine &dl1_2 = tl1.getDanglingLine2();
+    TieLine &tl2 = network.getTieLine("NHV1_NHV2_2");
+    DanglingLine &dl2_1 = tl2.getDanglingLine1();
+    DanglingLine &dl2_2 = tl2.getDanglingLine2();
+
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    // reset only the terminal q values (simulate only a dc load flow has been calculated)
+    tl1.getDanglingLine1().getTerminal().setQ(stdcxx::nan());
+    tl1.getDanglingLine2().getTerminal().setQ(stdcxx::nan());
+    tl2.getDanglingLine1().getTerminal().setQ(stdcxx::nan());
+    tl2.getDanglingLine2().getTerminal().setQ(stdcxx::nan());
+    // Set some non-zero p0, q0 values to check that:
+    // if we remove the tie line without flows calculated
+    // p0, q0 of dangling lines are preserved
+    tl1.getDanglingLine1().setP0(10);
+    tl1.getDanglingLine1().setQ0(20);
+    tl1.getDanglingLine2().setP0(-10);
+    tl1.getDanglingLine2().setQ0(-20);
+
+    tl1.remove(true);
+    tl2.remove(true);
+
+    BOOST_CHECK_CLOSE(302.444, dl1_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE(20, dl1_1.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-300.434, dl1_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE(-20, dl1_2.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(302.444, dl2_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE(0, dl2_1.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-300.434, dl2_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE(0, dl2_2.getQ0(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(adderFail) {

@@ -152,12 +152,22 @@ std::string TieLine::getUcteXnodeCode() const {
 }
 
 void TieLine::remove() {
+    remove(false);
+}
+
+void TieLine::remove(bool updateDanglingLines) {
     //detach dangling lines
     if(static_cast<bool>(m_danglingLine1)) {
+        if(updateDanglingLines) {
+            updateDanglingLine(m_danglingLine1.get());
+        }
         m_danglingLine1.get().removeTieLine();
         m_danglingLine1.reset();
     }
     if(static_cast<bool>(m_danglingLine2)) {
+        if(updateDanglingLines) {
+            updateDanglingLine(m_danglingLine2.get());
+        }
         m_danglingLine2.get().removeTieLine();
         m_danglingLine2.reset();
     }
@@ -256,6 +266,25 @@ CurrentLimitsAdder TieLine::newCurrentLimits1() {
 
 CurrentLimitsAdder TieLine::newCurrentLimits2() {
     return getDanglingLine2().newCurrentLimits();
+}
+
+void TieLine::updateDanglingLine(DanglingLine& danglingLine) {
+
+    // Only update if we have values
+    if(!std::isnan(danglingLine.getBoundary().getP())) {
+        danglingLine.setP0(-danglingLine.getBoundary().getP());
+        if (static_cast<bool>(danglingLine.getGeneration())) {
+            // We do not reset regulation if we only have computed a dc load flow
+            danglingLine.getGeneration().get().setTargetP(0.0);
+        }
+    }
+    if (!std::isnan(danglingLine.getBoundary().getQ())){
+        danglingLine.setQ0(-danglingLine.getBoundary().getQ());
+        if (static_cast<bool>(danglingLine.getGeneration())){
+            // If q values are available a complete ac load flow has been computed, we reset regulation
+            danglingLine.getGeneration().get().setTargetQ(0.0).setVoltageRegulationOn(false).setTargetV(stdcxx::nan());
+        }
+    }
 }
 
 }  // namespace iidm

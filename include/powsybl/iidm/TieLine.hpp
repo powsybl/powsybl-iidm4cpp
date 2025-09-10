@@ -59,6 +59,7 @@ public:
     std::string getUcteXnodeCode() const;
 
     void remove();
+    void remove(bool updateDanglingLines);
 
 //Branch:
     virtual stdcxx::CReference<ActivePowerLimits> getActivePowerLimits1() const override;
@@ -114,6 +115,8 @@ private:
     DanglingLine& attach(DanglingLine& dl);
 
     friend class TieLineAdder;
+
+    void updateDanglingLine(DanglingLine& danglingLine);
 
 private:
     NetworkRef m_network;
