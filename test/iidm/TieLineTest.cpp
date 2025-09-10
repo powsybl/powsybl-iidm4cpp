@@ -21,6 +21,7 @@
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/util/TieLineUtil.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
@@ -301,6 +302,12 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(stdcxx::areSame(dl2, modifiableTieLine.getDanglingLine(Branch::Side::TWO)));
     BOOST_CHECK(stdcxx::areSame(dl1.getTerminal(), tieLine.getTerminal1()));
     BOOST_CHECK(stdcxx::areSame(dl2.getTerminal(), tieLine.getTerminal2()));
+
+    //test retrieval paired danglingline
+    BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl1));
+    BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl2));
+    BOOST_CHECK(stdcxx::areSame(dl1, TieLineUtil::getPairedDanglingLine(dl2).get()));
+    BOOST_CHECK(stdcxx::areSame(dl2, TieLineUtil::getPairedDanglingLine(dl1).get()));
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
@@ -522,7 +529,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     danglingLineLineAdder1.setBus("VL2_BUS1");
     danglingLineLineAdder1.setConnectableBus("");
     danglingLineLineAdder1.setUcteXnodeCode("UcteXnodeCodeTest");
-    danglingLineLineAdder1.add();
+    auto& dl1 = danglingLineLineAdder1.add();
 
     tieLineAdder.setDanglingLine1("H1_TL_VL2_VL4");
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': undefined dangling line");
@@ -540,13 +547,19 @@ BOOST_AUTO_TEST_CASE(adder) {
         .setBus("VL4_BUS1")
         .setConnectableBus("")
         .setUcteXnodeCode("UcteXnodeCodeTest")
-        .setFictitious(true)
-        .add();
+        .setFictitious(true);
+    auto& dl2 = danglingLineLineAdder2.add();
     tieLineAdder.setDanglingLine2("H2_TL_VL2_VL4");
+
+    BOOST_CHECK(!TieLineUtil::getPairedDanglingLine(dl1));
+    BOOST_CHECK(!TieLineUtil::getPairedDanglingLine(dl2));
 
     BOOST_CHECK_NO_THROW(tieLineAdder.add());
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': danglingLine1 (H1_TL_VL2_VL4) already has a tie line");
     BOOST_CHECK_EQUAL(2UL, network.getTieLineCount());
+
+    BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl1));
+    BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl2));
 
     TieLine& line = network.getTieLine("UNIQUE_TIE_LINE_ID");
     BOOST_CHECK(!line.getDanglingLine(Branch::Side::ONE).isFictitious());

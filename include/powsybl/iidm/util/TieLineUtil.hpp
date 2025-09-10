@@ -11,6 +11,7 @@
 #include <complex>
 
 #include <powsybl/iidm/util/LinkData.hpp>
+#include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
@@ -30,6 +31,9 @@ double getB2(const DanglingLine& dl1, const DanglingLine& dl2);
 LinkData::BranchAdmittanceMatrix equivalentBranchAdmittanceMatrix(const DanglingLine& dl1, const DanglingLine& dl2);
 
 bool zeroImpedanceLine(const LinkData::BranchAdmittanceMatrix& adm);
+
+stdcxx::CReference<DanglingLine> getPairedDanglingLine(const DanglingLine& dl);
+stdcxx::Reference<DanglingLine> getPairedDanglingLine(DanglingLine& dl);
 
 }
 

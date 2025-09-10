@@ -8,6 +8,7 @@
 #include <powsybl/iidm/util/TieLineUtil.hpp>
 
 #include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/TieLine.hpp>
 
 namespace powsybl {
 
@@ -64,6 +65,31 @@ bool zeroImpedanceLine(const LinkData::BranchAdmittanceMatrix& adm) {
     } else {
         return (adm.y21.real() == 0.0 && adm.y22.imag() == 0.0);
     }
+}
+
+stdcxx::CReference<DanglingLine> getPairedDanglingLine(const DanglingLine& dl) {
+    stdcxx::CReference<TieLine> crefTl = dl.getTieLine();
+    if(static_cast<bool>(crefTl)) {
+        const TieLine& tl = crefTl.get();
+        if(stdcxx::areSame(tl.getDanglingLine1(), dl)) {
+            return stdcxx::cref(tl.getDanglingLine2());
+        } else {
+            return stdcxx::cref(tl.getDanglingLine1());
+        }
+    }
+    return stdcxx::cref<DanglingLine>();
+}
+stdcxx::Reference<DanglingLine> getPairedDanglingLine(DanglingLine& dl) {
+    stdcxx::Reference<TieLine> refTl = dl.getTieLine();
+    if(static_cast<bool>(refTl)) {
+        TieLine& tl = refTl.get();
+        if(stdcxx::areSame(tl.getDanglingLine1(), dl)) {
+            return stdcxx::ref(tl.getDanglingLine2());
+        } else {
+            return stdcxx::ref(tl.getDanglingLine1());
+        }
+    }
+    return stdcxx::ref<DanglingLine>();
 }
 
 }  // namespace TieLineUtil
