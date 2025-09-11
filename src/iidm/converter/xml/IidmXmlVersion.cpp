@@ -71,14 +71,15 @@ const IidmXmlVersions& IidmXmlVersion::all() {
         std::cref(IidmXmlVersion::V1_7()),
         std::cref(IidmXmlVersion::V1_8()),
         std::cref(IidmXmlVersion::V1_9()),
-        std::cref(IidmXmlVersion::V1_10())
+        std::cref(IidmXmlVersion::V1_10()),
+        std::cref(IidmXmlVersion::V1_11())
     }};
 
     return s_versions;
 }
 
 const IidmXmlVersion& IidmXmlVersion::CURRENT_IIDM_XML_VERSION() {
-    return V1_10();
+    return V1_11();
 }
 
 const IidmXmlVersion& IidmXmlVersion::fromNamespaceURI(const std::string& namespaceURI) {
@@ -197,6 +198,11 @@ const IidmXmlVersion& IidmXmlVersion::V1_9() {
 const IidmXmlVersion& IidmXmlVersion::V1_10() {
     static IidmXmlVersion V1_10("powsybl.org", {{1, 10}});
     return V1_10;
+}
+
+const IidmXmlVersion& IidmXmlVersion::V1_11() {
+    static IidmXmlVersion V1_11("powsybl.org", {{1, 11}});
+    return V1_11;
 }
 
 }  // namespace xml
