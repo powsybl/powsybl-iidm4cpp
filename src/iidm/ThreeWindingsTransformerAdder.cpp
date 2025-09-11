@@ -17,12 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-ThreeWindingsTransformerAdder::ThreeWindingsTransformerAdder(Network& network) :
-    m_network(network) {
-}
-
 ThreeWindingsTransformerAdder::ThreeWindingsTransformerAdder(Substation& substation) :
-    m_network(substation.getNetwork()),
     m_substation(substation) {
 }
 
@@ -53,20 +48,15 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     VoltageLevel& voltageLevel3 = m_adder3->checkAndGetVoltageLevel();
     std::unique_ptr<Terminal> ptrTerminal3 = m_adder3->checkAndGetTerminal(voltageLevel3);
 
-    if (m_substation) {
-        if (!voltageLevel1.getSubstation() || voltageLevel1.getSubstation() != m_substation ||
-            !voltageLevel2.getSubstation() || voltageLevel2.getSubstation() != m_substation ||
-            !voltageLevel3.getSubstation() || voltageLevel3.getSubstation() != m_substation) {
-            const std::string& substationId1 = voltageLevel1.getSubstation() ? voltageLevel1.getSubstation().get().getId() : "null";
-            const std::string& substationId2 = voltageLevel2.getSubstation() ? voltageLevel2.getSubstation().get().getId() : "null";
-            const std::string& substationId3 = voltageLevel3.getSubstation() ? voltageLevel3.getSubstation().get().getId() : "null";
+    if (!voltageLevel1.getSubstation() || voltageLevel1.getSubstation() != m_substation ||
+        !voltageLevel2.getSubstation() || voltageLevel2.getSubstation() != m_substation ||
+        !voltageLevel3.getSubstation() || voltageLevel3.getSubstation() != m_substation) {
+        const std::string& substationId1 = voltageLevel1.getSubstation() ? voltageLevel1.getSubstation().get().getId() : "null";
+        const std::string& substationId2 = voltageLevel2.getSubstation() ? voltageLevel2.getSubstation().get().getId() : "null";
+        const std::string& substationId3 = voltageLevel3.getSubstation() ? voltageLevel3.getSubstation().get().getId() : "null";
 
-            throw ValidationException(*this, stdcxx::format("the 3 windings of the transformer shall belong to the substation '%1%' ('%2%', '%3%', '%4%')",
-                m_substation.get().getId(), substationId1, substationId2, substationId3));
-        }
-    } else if (voltageLevel1.getSubstation() || voltageLevel2.getSubstation() || voltageLevel3.getSubstation()) {
-        throw ValidationException(*this, stdcxx::format("the 3 windings of the transformer shall belong to a substation since there are located in voltage levels with substations ('%1%', '%2%', '%3%')",
-            voltageLevel1.getId(), voltageLevel2.getId(), voltageLevel3.getId()));
+        throw ValidationException(*this, stdcxx::format("the 3 windings of the transformer shall belong to the substation '%1%' ('%2%', '%3%', '%4%')",
+            m_substation.getId(), substationId1, substationId2, substationId3));
     }
 
     // check that the 3 windings transformer is attachable on the 3 sides
@@ -95,14 +85,18 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
 }
 
 const Network& ThreeWindingsTransformerAdder::getNetwork() const {
-    return m_network;
+    return m_substation.getNetwork();
 }
 
 Network& ThreeWindingsTransformerAdder::getNetwork() {
-    return m_network;
+    return m_substation.getNetwork();
 }
 
-stdcxx::Reference<Substation> ThreeWindingsTransformerAdder::getSubstation() {
+const Substation& ThreeWindingsTransformerAdder::getSubstation() const {
+    return m_substation;
+}
+
+Substation& ThreeWindingsTransformerAdder::getSubstation() {
     return m_substation;
 }
 

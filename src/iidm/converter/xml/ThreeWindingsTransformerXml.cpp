@@ -25,14 +25,8 @@ namespace converter {
 
 namespace xml {
 
-ThreeWindingsTransformerAdder ThreeWindingsTransformerXml::createAdder(Container& container) const {
-    if (stdcxx::isInstanceOf<Network>(container)) {
-        return dynamic_cast<Network&>(container).newThreeWindingsTransformer();
-    }
-    if (stdcxx::isInstanceOf<Substation>(container)) {
-        return dynamic_cast<Substation&>(container).newThreeWindingsTransformer();
-    }
-    throw AssertionError("Unexpected container type");
+ThreeWindingsTransformerAdder ThreeWindingsTransformerXml::createAdder(Substation& substation) const {
+    return substation.newThreeWindingsTransformer();
 }
 
 const ThreeWindingsTransformerXml& ThreeWindingsTransformerXml::getInstance() {
@@ -44,7 +38,7 @@ const char* ThreeWindingsTransformerXml::getRootElementName() const {
     return THREE_WINDINGS_TRANSFORMER;
 }
 
-ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes(ThreeWindingsTransformerAdder& adder, Container& /*container*/, NetworkXmlReaderContext& context) const {
+ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes(ThreeWindingsTransformerAdder& adder, Substation& /*substation*/, NetworkXmlReaderContext& context) const {
     const auto& r1 = context.getReader().getAttributeValue<double>(R1);
     const auto& x1 = context.getReader().getAttributeValue<double>(X1);
     const auto& g1 = context.getReader().getAttributeValue<double>(G1);
@@ -178,7 +172,7 @@ void ThreeWindingsTransformerXml::writeRatioTapChanger(const stdcxx::CReference<
     }
 }
 
-void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindingsTransformer& twt, const Container& /*container*/, NetworkXmlWriterContext& context) const {
+void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(R1, twt.getLeg1().getR());
     context.getWriter().writeAttribute(X1, twt.getLeg1().getX());
     context.getWriter().writeAttribute(G1, twt.getLeg1().getG());
@@ -213,7 +207,7 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
     }
 }
 
-void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransformer& twt, const Container& /*container*/, NetworkXmlWriterContext& context) const {
+void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
     IidmXmlUtil::assertMinimumVersionAndRunIfNotDefault(twt.getLeg1().hasRatioTapChanger(), THREE_WINDINGS_TRANSFORMER, RATIO_TAP_CHANGER1, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_1(), context, [&twt, &context]() {
         writeRatioTapChanger(twt.getLeg1().getOptionalRatioTapChanger(), 1, context);
     });

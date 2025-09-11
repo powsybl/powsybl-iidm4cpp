@@ -99,7 +99,7 @@ void LegAdder::checkConnectableBus() {
 }
 
 std::string LegAdder::getMessageHeader() const {
-    const std::string& substationId = m_parent.getSubstation() ? m_parent.getSubstation().get().getId() : "";
+    const std::string& substationId = m_parent.getSubstation().getId();
 
     return stdcxx::format("3 windings transformer leg%1% in substation %2%: ", m_legNumber, substationId);
 }

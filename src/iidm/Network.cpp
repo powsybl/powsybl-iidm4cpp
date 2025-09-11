@@ -695,16 +695,8 @@ SubstationAdder Network::newSubstation() {
     return SubstationAdder(*this);
 }
 
-ThreeWindingsTransformerAdder Network::newThreeWindingsTransformer() {
-    return ThreeWindingsTransformerAdder(*this);
-}
-
 TieLineAdder Network::newTieLine() {
     return TieLineAdder(*this);
-}
-
-TwoWindingsTransformerAdder Network::newTwoWindingsTransformer() {
-    return TwoWindingsTransformerAdder(*this);
 }
 
 VoltageLevelAdder Network::newVoltageLevel() {

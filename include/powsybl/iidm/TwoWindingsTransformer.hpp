@@ -48,7 +48,7 @@ public:  // PhaseTapChangerHolder
     PhaseTapChangerAdder newPhaseTapChanger() override;
 
 public:
-    TwoWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS);
+    TwoWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS);
 
     ~TwoWindingsTransformer() noexcept override = default;
 
@@ -64,9 +64,9 @@ public:
 
     double getRatedU2() const;
 
-    stdcxx::CReference<Substation> getSubstation() const;
+    const Substation& getSubstation() const;
 
-    stdcxx::Reference<Substation> getSubstation();
+    Substation& getSubstation();
 
     double getX() const;
 
@@ -113,7 +113,7 @@ private:
     friend class TwoWindingsTransformerAdder;
 
 private:
-    stdcxx::Reference<Substation> m_substation;
+    Substation& m_substation;
 
     double m_r;
 

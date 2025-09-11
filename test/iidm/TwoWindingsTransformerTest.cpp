@@ -241,14 +241,14 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.0, transformer.getRatedS(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(network, transformer.getNetwork()));
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
     BOOST_TEST(!transformer.hasRatioTapChanger());
     BOOST_TEST(!transformer.hasPhaseTapChanger());
 
     const TwoWindingsTransformer& cTransformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_TEST(stdcxx::areSame(transformer, cTransformer));
     BOOST_TEST(stdcxx::areSame(network, cTransformer.getNetwork()));
-    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation()));
     BOOST_TEST(!cTransformer.hasRatioTapChanger());
     BOOST_TEST(!cTransformer.hasPhaseTapChanger());
 }
@@ -446,22 +446,6 @@ BOOST_AUTO_TEST_CASE(invalidSubstationContainer) {
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "2 windings transformer 'twt': the 2 windings of the transformer shall belong to the substation 'sub' ('null', 'sub')");
 
-    TwoWindingsTransformerAdder adderNoSubstation = network.newTwoWindingsTransformer()
-        .setId("twt")
-        .setName("twt_name")
-        .setR(1.0)
-        .setX(2.0)
-        .setG(3.0)
-        .setB(4.0)
-        .setRatedU1(5.0)
-        .setRatedU2(6.0)
-        .setRatedS(7.0)
-        .setVoltageLevel1("vl1")
-        .setVoltageLevel2("vl2")
-        .setConnectableBus1("busA")
-        .setConnectableBus2("busB");
-
-    POWSYBL_ASSERT_THROW(adderNoSubstation.add(), PowsyblException, "2 windings transformer 'twt': the 2 windings of the transformer shall belong to a substation since there are located in voltage levels with substations ('vl1', 'vl2')");
 }
 
 BOOST_AUTO_TEST_CASE(multivariant) {
@@ -508,7 +492,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -539,7 +523,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(-0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -568,7 +552,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(-0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -599,7 +583,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -628,7 +612,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -661,7 +645,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(0.2, transformer.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, transformer.getRatedU1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.4, transformer.getRatedU2(), std::numeric_limits<double>::epsilon());
-    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
+    BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation()));
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
@@ -686,51 +670,6 @@ BOOST_AUTO_TEST_CASE(multivariant) {
 
     network.getVariantManager().removeVariant("s2");
     BOOST_CHECK_EQUAL(1UL, network.getVariantManager().getVariantArraySize());
-}
-
-BOOST_AUTO_TEST_CASE(noSubstation) {
-    Network network("test", "test");
-
-    VoltageLevel& vl1 = network.newVoltageLevel()
-        .setId("VL1_NOSUBSTATION")
-        .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalV(90.0)
-        .add();
-
-    vl1.getBusBreakerView().newBus()
-        .setId("VL1BUS1_NOSUBSTATION")
-        .add();
-
-    VoltageLevel& vl2 = network.newVoltageLevel()
-        .setId("VL2_NOSUBSTATION")
-        .setTopologyKind(TopologyKind::BUS_BREAKER)
-        .setNominalV(90.0)
-        .add();
-
-    vl2.getBusBreakerView().newBus()
-        .setId("VL2BUS1_NOSUBSTATION")
-        .add();
-
-    TwoWindingsTransformer& twt = network.newTwoWindingsTransformer()
-        .setId("twt")
-        .setName("twt_name")
-        .setR(1.0)
-        .setX(2.0)
-        .setG(3.0)
-        .setB(4.0)
-        .setRatedU1(5.0)
-        .setRatedU2(6.0)
-        .setRatedS(7.0)
-        .setVoltageLevel1("VL1_NOSUBSTATION")
-        .setVoltageLevel2("VL2_NOSUBSTATION")
-        .setConnectableBus1("VL1BUS1_NOSUBSTATION")
-        .setConnectableBus2("VL2BUS1_NOSUBSTATION")
-        .add();
-
-    const TwoWindingsTransformer& cTwt = twt;
-
-    BOOST_CHECK(!twt.getSubstation());
-    BOOST_CHECK(!cTwt.getSubstation());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

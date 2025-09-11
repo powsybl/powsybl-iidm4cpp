@@ -18,7 +18,7 @@ namespace powsybl {
 
 namespace iidm {
 
-TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS) :
+TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS) :
     Identifiable(id, name, fictitious),
     m_substation(substation),
     m_r(checkR(*this, r)),
@@ -123,11 +123,11 @@ RatioTapChanger& TwoWindingsTransformer::getRatioTapChanger() {
     return *m_ratioTapChanger;
 }
 
-stdcxx::CReference<Substation> TwoWindingsTransformer::getSubstation() const {
-    return stdcxx::cref(m_substation);
+const Substation& TwoWindingsTransformer::getSubstation() const {
+    return m_substation;
 }
 
-stdcxx::Reference<Substation> TwoWindingsTransformer::getSubstation() {
+Substation& TwoWindingsTransformer::getSubstation() {
     return m_substation;
 }
 

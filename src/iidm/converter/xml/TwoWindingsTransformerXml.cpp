@@ -19,14 +19,8 @@ namespace converter {
 
 namespace xml {
 
-TwoWindingsTransformerAdder TwoWindingsTransformerXml::createAdder(Container& container) const {
-    if (stdcxx::isInstanceOf<Network>(container)) {
-        return dynamic_cast<Network&>(container).newTwoWindingsTransformer();
-    }
-    if (stdcxx::isInstanceOf<Substation>(container)) {
-        return dynamic_cast<Substation&>(container).newTwoWindingsTransformer();
-    }
-    throw AssertionError("Unexpected container type");
+TwoWindingsTransformerAdder TwoWindingsTransformerXml::createAdder(Substation& substation) const {
+    return substation.newTwoWindingsTransformer();
 }
 
 const TwoWindingsTransformerXml& TwoWindingsTransformerXml::getInstance() {
@@ -38,7 +32,7 @@ const char* TwoWindingsTransformerXml::getRootElementName() const {
     return TWO_WINDINGS_TRANSFORMER;
 }
 
-TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(TwoWindingsTransformerAdder& adder, Container& /*container*/, NetworkXmlReaderContext& context) const {
+TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(TwoWindingsTransformerAdder& adder, Substation& /*substation*/, NetworkXmlReaderContext& context) const {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);
     const auto& g = context.getReader().getAttributeValue<double>(G);
@@ -89,7 +83,7 @@ void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, Net
     });
 }
 
-void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTransformer& twt, const Container& /*container*/, NetworkXmlWriterContext& context) const {
+void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
     context.getWriter().writeAttribute(R, twt.getR());
     context.getWriter().writeAttribute(X, twt.getX());
     context.getWriter().writeAttribute(G, twt.getG());
@@ -105,7 +99,7 @@ void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTran
     }
 }
 
-void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& twt, const Container& /*container*/, NetworkXmlWriterContext& context) const {
+void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
     if (twt.hasRatioTapChanger()) {
         writeRatioTapChanger(RATIO_TAP_CHANGER, twt.getRatioTapChanger(), context);
     }

@@ -26,17 +26,17 @@ public:
     static const ThreeWindingsTransformerXml& getInstance();
 
 protected:  // AbstractIdentifiableXml
-    ThreeWindingsTransformerAdder createAdder(Container& container) const override;
+    ThreeWindingsTransformerAdder createAdder(Substation& substation) const override;
 
     const char* getRootElementName() const override;
 
-    ThreeWindingsTransformer& readRootElementAttributes(ThreeWindingsTransformerAdder& adder, Container& container, NetworkXmlReaderContext& context) const override;
+    ThreeWindingsTransformer& readRootElementAttributes(ThreeWindingsTransformerAdder& adder, Substation& substation, NetworkXmlReaderContext& context) const override;
 
     void readSubElements(ThreeWindingsTransformer& twt, NetworkXmlReaderContext& context) const override;
 
-    void writeRootElementAttributes(const ThreeWindingsTransformer& twt, const Container& container, NetworkXmlWriterContext& context) const override;
+    void writeRootElementAttributes(const ThreeWindingsTransformer& twt, const Substation& substation, NetworkXmlWriterContext& context) const override;
 
-    void writeSubElements(const ThreeWindingsTransformer& twt, const Container& container, NetworkXmlWriterContext& context) const override;
+    void writeSubElements(const ThreeWindingsTransformer& twt, const Substation& substation, NetworkXmlWriterContext& context) const override;
 
 private:
     static void writePhaseTapChanger(const stdcxx::CReference<PhaseTapChanger>& ptc, int index, NetworkXmlWriterContext& context);

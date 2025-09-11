@@ -302,12 +302,6 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
             VoltageLevelXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == SUBSTATION) {
             SubstationXml::getInstance().read(network, context);
-        } else if (context.getReader().getLocalName() == TWO_WINDINGS_TRANSFORMER) {
-            IidmXmlUtil::assertMinimumVersion(NETWORK, TWO_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
-            TwoWindingsTransformerXml::getInstance().read(network, context);
-        } else if (context.getReader().getLocalName() == THREE_WINDINGS_TRANSFORMER) {
-            IidmXmlUtil::assertMinimumVersion(NETWORK, THREE_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
-            ThreeWindingsTransformerXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == LINE) {
             LineXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == TIE_LINE) {
@@ -373,7 +367,6 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
 
     writeVoltageLevels(network, context);
     writeSubstations(network, context);
-    writeTransformers(filter, network, context);
     writeLines(filter, network, context);
     writeTieLines(filter, network, context);
     writeHvdcLines(filter, network, context);
@@ -427,21 +420,6 @@ void NetworkXml::writeTieLines(const BusFilter& filter, const Network& network, 
 void NetworkXml::writeSubstations(const Network& network, NetworkXmlWriterContext& context) {
     for (const Substation& substation : network.getSubstations()) {
         SubstationXml::getInstance().write(substation, network, context);
-    }
-}
-
-void NetworkXml::writeTransformers(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context) {
-    for (const TwoWindingsTransformer& twt : network.getTwoWindingsTransformers()) {
-        if (!twt.getSubstation() && filter.test(twt)) {
-            IidmXmlUtil::assertMinimumVersion(NETWORK, TWO_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
-            TwoWindingsTransformerXml::getInstance().write(twt, network, context);
-        }
-    }
-    for (const ThreeWindingsTransformer& twt : network.getThreeWindingsTransformers()) {
-        if (!twt.getSubstation() && filter.test(twt)) {
-            IidmXmlUtil::assertMinimumVersion(NETWORK, THREE_WINDINGS_TRANSFORMER, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
-            ThreeWindingsTransformerXml::getInstance().write(twt, network, context);
-        }
     }
 }
 

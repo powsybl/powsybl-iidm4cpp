@@ -27,8 +27,6 @@ public:
     using LegAdder = three_windings_transformer::LegAdder;
 
 public:
-    explicit ThreeWindingsTransformerAdder(Network& network);
-
     explicit ThreeWindingsTransformerAdder(Substation& substation);
 
     ~ThreeWindingsTransformerAdder() noexcept override = default;
@@ -52,7 +50,8 @@ private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:
-    stdcxx::Reference<Substation> getSubstation();
+    const Substation& getSubstation() const;
+    Substation& getSubstation();
 
     void setLegAdder1(const LegAdder& legAdder);
 
@@ -63,9 +62,7 @@ private:
     friend class three_windings_transformer::LegAdder;
 
 private:
-    Network& m_network;
-
-    stdcxx::Reference<Substation> m_substation;
+    Substation& m_substation;
 
     stdcxx::optional<LegAdder> m_adder1;
 

@@ -47,8 +47,6 @@ private:
 
     static void writeSubstations(const Network& network, NetworkXmlWriterContext& context);
 
-    static void writeTransformers(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context);
-
     static void writeVoltageLevels(const Network& network, NetworkXmlWriterContext& context);
 };
 

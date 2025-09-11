@@ -374,11 +374,7 @@ public:
 
     SubstationAdder newSubstation();
 
-    ThreeWindingsTransformerAdder newThreeWindingsTransformer();
-
     TieLineAdder newTieLine();
-
-    TwoWindingsTransformerAdder newTwoWindingsTransformer();
 
     VoltageLevelAdder newVoltageLevel();
 

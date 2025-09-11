@@ -230,13 +230,6 @@ BOOST_AUTO_TEST_CASE(ReadFromParametersCheckExtensions) {
     BOOST_CHECK_EQUAL(1UL, boost::size(allExtNetwork.getLoad("LOAD2").getExtensions()));
 }
 
-BOOST_FIXTURE_TEST_CASE(testOptionalSubstation, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("eurostag-tutorial-example1-opt-sub.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
-
-    // backward compatibility checks from version 1.6
-    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("eurostag-tutorial-example1-opt-sub.xml", IidmXmlVersion::V1_6());
-}
-
 BOOST_FIXTURE_TEST_CASE(testScada, test::ResourceFixture) {
 
     Network network = powsybl::network::ScadaNetworkFactory::create();

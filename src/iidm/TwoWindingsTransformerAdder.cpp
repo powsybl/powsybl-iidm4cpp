@@ -18,12 +18,7 @@ namespace powsybl {
 
 namespace iidm {
 
-TwoWindingsTransformerAdder::TwoWindingsTransformerAdder(Network& network) :
-    m_network(network) {
-}
-
 TwoWindingsTransformerAdder::TwoWindingsTransformerAdder(Substation& substation) :
-    m_network(substation.getNetwork()),
     m_substation(substation) {
 }
 
@@ -31,18 +26,16 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     checkConnectableBuses();
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
     VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
-    if (m_substation) {
-        if (!voltageLevel1.getSubstation() || voltageLevel1.getSubstation() != m_substation  ||
-            !voltageLevel2.getSubstation() || voltageLevel2.getSubstation() != m_substation) {
-            const std::string& substationId1 = voltageLevel1.getSubstation() ? voltageLevel1.getSubstation().get().getId() : "null";
-            const std::string& substationId2 = voltageLevel2.getSubstation() ? voltageLevel2.getSubstation().get().getId() : "null";
 
-            throw ValidationException(*this, stdcxx::format("the 2 windings of the transformer shall belong to the substation '%1%' ('%2%', '%3%')",
-                                                            m_substation.get().getId(), substationId1, substationId2));
-        }
-    } else if (voltageLevel1.getSubstation() || voltageLevel2.getSubstation()) {
-        throw ValidationException(*this, stdcxx::format("the 2 windings of the transformer shall belong to a substation since there are located in voltage levels with substations ('%1%', '%2%')", voltageLevel1.getId(), voltageLevel2.getId()));
+    if (!voltageLevel1.getSubstation() || voltageLevel1.getSubstation() != m_substation  ||
+        !voltageLevel2.getSubstation() || voltageLevel2.getSubstation() != m_substation) {
+        const std::string& substationId1 = voltageLevel1.getSubstation() ? voltageLevel1.getSubstation().get().getId() : "null";
+        const std::string& substationId2 = voltageLevel2.getSubstation() ? voltageLevel2.getSubstation().get().getId() : "null";
+
+        throw ValidationException(*this, stdcxx::format("the 2 windings of the transformer shall belong to the substation '%1%' ('%2%', '%3%')",
+                                                        m_substation.getId(), substationId1, substationId2));
     }
+
     if(std::isnan(m_ratedU1)) {
         m_ratedU1 = voltageLevel1.getNominalV();
     }
@@ -77,11 +70,11 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
 }
 
 const Network& TwoWindingsTransformerAdder::getNetwork() const {
-    return m_network;
+    return m_substation.getNetwork();
 }
 
 Network& TwoWindingsTransformerAdder::getNetwork() {
-    return m_network;
+    return m_substation.getNetwork();
 }
 
 const std::string& TwoWindingsTransformerAdder::getTypeDescription() const {
