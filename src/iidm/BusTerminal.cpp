@@ -113,13 +113,17 @@ BusTerminal& BusTerminal::setConnected(bool connected) {
 }
 
 bool BusTerminal::traverse(TopologyTraverser& traverser) {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel());
-    return voltageLevel.traverse(*this, traverser);
+    return traverse(traverser, math::TraversalType::DEPTH_FIRST);
 }
 
-bool BusTerminal::traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals) {
+bool BusTerminal::traverse(TopologyTraverser& traverser, math::TraversalType traversalType) {
     auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel());
-    return voltageLevel.traverse(*this, traverser, traversedTerminals);
+    return voltageLevel.traverse(*this, traverser, traversalType);
+}
+
+bool BusTerminal::traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) {
+    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel());
+    return voltageLevel.traverse(*this, traverser, traversedTerminals, traversalType);
 }
 
 std::ostream& operator<<(std::ostream& stream, const BusTerminal& busTerminal) {

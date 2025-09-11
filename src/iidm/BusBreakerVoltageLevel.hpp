@@ -66,9 +66,9 @@ public:
 
     Switch& addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2);
 
-    bool traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser) const;
+    bool traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser, math::TraversalType traversalType) const;
 
-    bool traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
+    bool traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) const;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

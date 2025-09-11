@@ -395,7 +395,7 @@ void NodeBreakerViewImpl::traverse(unsigned long node, const TopologyTraverser& 
         return traverser(v1, m_voltageLevel.getGraph().getEdgeObject(e), v2);
     };
 
-    m_voltageLevel.getGraph().traverse(node, graphTraverser);
+    m_voltageLevel.getGraph().traverse(node, math::TraversalType::DEPTH_FIRST, graphTraverser);
 }
 
 void NodeBreakerViewImpl::traverse(stdcxx::const_range<unsigned long>& nodes, const TopologyTraverser& traverser) const {
@@ -403,7 +403,7 @@ void NodeBreakerViewImpl::traverse(stdcxx::const_range<unsigned long>& nodes, co
         return traverser(v1, m_voltageLevel.getGraph().getEdgeObject(e), v2);
     };
 
-    m_voltageLevel.getGraph().traverse(nodes, graphTraverser);
+    m_voltageLevel.getGraph().traverse(nodes, math::TraversalType::DEPTH_FIRST, graphTraverser);
 }
 
 }  // namespace node_breaker_voltage_level

@@ -64,9 +64,9 @@ public: // VoltageLevel
 
     void invalidateCache(bool exceptBusBreakerView = false) override;
 
-    bool traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const;
+    bool traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, math::TraversalType traversalType) const;
 
-    bool traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const;
+    bool traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) const;
 
 public:
     NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,

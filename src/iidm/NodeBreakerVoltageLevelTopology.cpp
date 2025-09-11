@@ -170,7 +170,7 @@ stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long no
     // if not traverse the graph starting from the node (without stopping at open switches) until finding another
     // node associated to a bus
     const auto& graph = m_voltageLevel.getGraph();
-    graph.traverse(node, [this, &connectableBus](unsigned long /*v1*/, unsigned long /*e*/, unsigned long v2) {
+    graph.traverse(node, math::TraversalType::DEPTH_FIRST, [this, &connectableBus](unsigned long /*v1*/, unsigned long /*e*/, unsigned long v2) {
         if (static_cast<bool>(connectableBus)) {
             // traverse does not stop the algorithm when TERMINATE, it only stops searching in a given direction
             // this condition insures that while checking all the edges (in every direction) of a node, if a bus is found, it will not be lost
@@ -265,7 +265,7 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
         std::vector<unsigned long> vertices(1, v);
 
         const auto& graph = m_voltageLevel.getGraph();
-        graph.traverse(v, [&graph, &terminate, &vertices](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
+        graph.traverse(v, math::TraversalType::DEPTH_FIRST, [&graph, &terminate, &vertices](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
             const stdcxx::Reference<Switch> aSwitch = graph.getEdgeObject(e);
             if (static_cast<bool>(aSwitch) && terminate(aSwitch)) {
                 return math::TraverseResult::TERMINATE_PATH;

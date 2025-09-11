@@ -136,13 +136,17 @@ NodeTerminal& NodeTerminal::setV(double v) {
 }
 
 bool NodeTerminal::traverse(TopologyTraverser& traverser) {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel());
-    return voltageLevel.traverse(*this, traverser);
+    return traverse(traverser, math::TraversalType::DEPTH_FIRST);
 }
 
-bool NodeTerminal::traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals) {
+bool NodeTerminal::traverse(TopologyTraverser& traverser, math::TraversalType traversalType) {
     auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel());
-    return voltageLevel.traverse(*this, traverser, traversedTerminals);
+    return voltageLevel.traverse(*this, traverser, traversalType);
+}
+
+bool NodeTerminal::traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) {
+    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel());
+    return voltageLevel.traverse(*this, traverser, traversedTerminals, traversalType);
 }
 
 }  // namespace iidm

@@ -290,6 +290,35 @@ BOOST_AUTO_TEST_CASE(removeVertex) {
     BOOST_TEST(stdcxx::areSame(expected, vertex1.get()));
 }
 
+
+    /**
+     *           0
+     *           |
+     *         ---------
+     *         |   |   |
+     *         1   2   3
+     *         |   |   |
+     *         -----   |
+     *           |     |
+     *           4     |
+     *           |     |
+     *           -------
+     *              |
+     *              5
+     *  edges:
+     *  0 <-> 1 : 0
+     *  0 <-> 2 : 1
+     *  0 <-> 3 : 2
+     *  1 <-> 4 : 3
+     *  2 <-> 4 : 4
+     *  4 <-> 5 : 5
+     *  3 <-> 5 : 6
+     *
+     *  all paths (edge numbers) between vertex 0 and 5:
+     *  0, 3, 5
+     *  1, 4, 5
+     *  2, 6
+     */
 BOOST_AUTO_TEST_CASE(traverse) {
     std::vector<bool> expected = {false, false, false, false, true, true};
 
@@ -304,7 +333,7 @@ BOOST_AUTO_TEST_CASE(traverse) {
     graph.addEdge(0, 2, stdcxx::ref<E>());
     graph.addEdge(0, 3, stdcxx::ref<E>());
     graph.addEdge(1, 4, stdcxx::ref<E>());
-    graph.addEdge(2, 1, stdcxx::ref<E>());
+    graph.addEdge(2, 4, stdcxx::ref<E>());
     graph.addEdge(4, 5, stdcxx::ref<E>());
     graph.addEdge(3, 5, stdcxx::ref<E>());
 
@@ -324,7 +353,10 @@ BOOST_AUTO_TEST_CASE(traverse) {
     std::vector<bool> encountered(graph.getVertexCount());
     std::fill(encountered.begin(), encountered.end(), false);
     std::vector<bool> encounteredExpected = {false, false, false, false, true, true};
-    graph.traverse(5, traverser, encountered);
+    graph.traverse(5, TraversalType::DEPTH_FIRST ,traverser, encountered);
+    BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredExpected.begin(), encounteredExpected.end());
+    std::fill(encountered.begin(), encountered.end(), false);
+    graph.traverse(5, TraversalType::BREADTH_FIRST ,traverser, encountered);
     BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredExpected.begin(), encounteredExpected.end());
 
     std::fill(encountered.begin(), encountered.end(), false);
@@ -332,9 +364,12 @@ BOOST_AUTO_TEST_CASE(traverse) {
         encountered[v1] = true;
         return v2 == 1 || v2 == 2 || v2 == 3 ? TraverseResult::TERMINATE_PATH : TraverseResult::CONTINUE;
     };
-    graph.traverse(4, traverser2);
+    graph.traverse(4, TraversalType::DEPTH_FIRST, traverser2);
     // Only vertex 4 and 5 encountered
     std::vector<bool> encounteredExpected2 = {false, false, false, false, true, true};
+    BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredExpected2.begin(), encounteredExpected2.end());
+    std::fill(encountered.begin(), encountered.end(), false);
+    graph.traverse(4, TraversalType::BREADTH_FIRST, traverser2);
     BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredExpected2.begin(), encounteredExpected2.end());
 
     const Traverser& traverser3 = [&](unsigned long v1, unsigned long /*e*/, unsigned long v2) {
@@ -342,10 +377,14 @@ BOOST_AUTO_TEST_CASE(traverse) {
         return v2 == 0 ? TraverseResult::TERMINATE_TRAVERSER : TraverseResult::CONTINUE;
     };
     std::fill(encountered.begin(), encountered.end(), false);
-    graph.traverse(5, traverser3, encountered);
+    graph.traverse(5, TraversalType::DEPTH_FIRST, traverser3, encountered);
     // Only vertices on first path encountering 0 are encountered
-    std::vector<bool> encounteredExpected3 = {false, true, false, false, true, true};
-    BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredExpected3.begin(), encounteredExpected3.end());
+    std::vector<bool> encounteredDepthExpected3 = {false, true, false, false, true, true};
+    BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredDepthExpected3.begin(), encounteredDepthExpected3.end());
+    std::fill(encountered.begin(), encountered.end(), false);
+    std::vector<bool> encounteredBreadthExpected3 = {false, false, false, true, true, true};
+    graph.traverse(5, TraversalType::BREADTH_FIRST, traverser3);
+    BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredBreadthExpected3.begin(), encounteredBreadthExpected3.end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

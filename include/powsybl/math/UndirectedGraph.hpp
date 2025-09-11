@@ -13,6 +13,7 @@
 #include <set>
 #include <vector>
 
+#include <powsybl/math/TraversalType.hpp>
 #include <powsybl/math/Traverser.hpp>
 #include <powsybl/math/UndirectedGraphRanges.hpp>
 #include <powsybl/stdcxx/range.hpp>
@@ -92,11 +93,11 @@ public:
 
     void setVertexObject(unsigned long v, const stdcxx::Reference<V>& object);
 
-    bool traverse(unsigned long v, const Traverser& traverser) const;
+    bool traverse(unsigned long v, TraversalType traversalType, const Traverser& traverser) const;
 
-    bool traverse(const stdcxx::const_range<unsigned long>& startingVertices, const Traverser& traverser) const;
+    bool traverse(const stdcxx::const_range<unsigned long>& startingVertices, TraversalType traversalType, const Traverser& traverser) const;
 
-    bool traverse(unsigned long v, const Traverser& traverser, std::vector<bool>& encountered) const;
+    bool traverse(unsigned long v, TraversalType traversalType, const Traverser& traverser, std::vector<bool>& encountered) const;
 
     bool vertexExists(unsigned long v) const;
 
@@ -121,6 +122,9 @@ private:
     const std::vector<std::vector<unsigned long> >& getAdjacencyList() const;
 
     void invalidateAdjacencyList();
+
+    bool traverseDepthFirst(unsigned long v, const Traverser& traverser, const std::vector<std::vector<unsigned long> >& adjacencyList, std::vector<bool>& encountered) const;
+    bool traverseBreadthFirst(unsigned long v, const Traverser& traverser, const std::vector<std::vector<unsigned long> >& adjacencyList, std::vector<bool>& encountered) const;
 
 private:
     std::vector<std::unique_ptr<Vertex> > m_vertices;

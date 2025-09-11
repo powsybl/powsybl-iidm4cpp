@@ -399,12 +399,12 @@ void NodeBreakerVoltageLevel::removeTopology() {
     m_switches.clear();
 }
 
-bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const {
+bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, math::TraversalType traversalType) const {
     TerminalSet traversedTerminals;
-    return traverse(terminal, traverser, traversedTerminals);
+    return traverse(terminal, traverser, traversedTerminals, traversalType);
 }
 
-bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals) const {
+bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) const {
     const math::TraverseResult& termTraverseResult = getTraverseResult(traversedTerminals, terminal, traverser);
     if (termTraverseResult == math::TraverseResult::TERMINATE_TRAVERSER) {
         return false;
@@ -414,7 +414,7 @@ bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::Topolog
         addNextTerminals(terminal, nextTerminals);
 
         unsigned long node = terminal.getNode();
-        bool traverseTerminated = !m_graph.traverse(node, [this, &traverser, &traversedTerminals, &nextTerminals](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
+        bool traverseTerminated = !m_graph.traverse(node, traversalType, [this, &traverser, &traversedTerminals, &nextTerminals](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
             const auto& aSwitch = m_graph.getEdgeObject(e);
             const auto& otherTerminal = m_graph.getVertexObject(v2);
             const math::TraverseResult& edgeTraverseResult = aSwitch ? traverser.traverse(aSwitch) : math::TraverseResult::CONTINUE; // internal connection case
@@ -433,7 +433,7 @@ bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::Topolog
         }
 
         for (Terminal& nextTerminal : nextTerminals) {
-            if (!nextTerminal.traverse(traverser, traversedTerminals)) {
+            if (!nextTerminal.traverse(traverser, traversedTerminals, traversalType)) {
                 return false;
             }
         }

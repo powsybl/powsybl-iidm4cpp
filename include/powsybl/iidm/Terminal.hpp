@@ -16,6 +16,7 @@
 #include <powsybl/iidm/TerminalTopologyTraverser.hpp>
 #include <powsybl/iidm/TerminalViews.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
+#include <powsybl/math/TraversalType.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -89,8 +90,9 @@ public:
     Terminal& setQ(double q);
 
     virtual bool traverse(TopologyTraverser& traverser) = 0;
+    virtual bool traverse(TopologyTraverser& traverser, math::TraversalType traversalType) = 0;
 
-    virtual bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals) = 0;
+    virtual bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) = 0;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

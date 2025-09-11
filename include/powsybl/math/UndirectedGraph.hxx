@@ -20,6 +20,8 @@
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
+#include <deque>
+
 namespace powsybl {
 
 namespace math {
@@ -418,35 +420,11 @@ void UndirectedGraph<V, E>::setVertexObject(unsigned long v, const stdcxx::Refer
 }
 
 template <typename V, typename E>
-bool UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser) const {
-    std::vector<bool> encountered(m_vertices.size(), false);
-
-    return traverse(v, traverser, encountered);
-}
-
-template <typename V, typename E>
-bool UndirectedGraph<V, E>::traverse(const stdcxx::const_range<unsigned long>& startingVertices, const Traverser& traverser) const {
-    std::vector<bool> encountered(m_vertices.size(), false);
-
-    for (unsigned long startingVertex : startingVertices) {
-        if (!encountered[startingVertex] && !traverse(startingVertex, traverser, encountered)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-template <typename V, typename E>
-bool UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser, std::vector<bool>& encountered) const {
-    checkVertex(v);
-
-    encountered.resize(m_vertices.size(), false);
-
-    const std::vector<std::vector<unsigned long> >& adjacencyList = getAdjacencyList();
+bool UndirectedGraph<V, E>::traverseDepthFirst(unsigned long v, const Traverser& traverser, const std::vector<std::vector<unsigned long> >& adjacencyList, std::vector<bool>& encountered) const {
     const std::vector<unsigned long>& adjacentEdges = adjacencyList[v];
-
     encountered[v] = true;
     bool keepGoing = true;
+
     for (unsigned long e : adjacentEdges) {
         const std::unique_ptr<Edge>& edge = m_edges[e];
         unsigned long v1 = edge->getVertex1();
@@ -455,7 +433,7 @@ bool UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser
             const TraverseResult& traverserResult = traverser(v2, e, v1);
             if (traverserResult == TraverseResult::CONTINUE) {
                 encountered[v1] = true;
-                keepGoing = traverse(v1, traverser, encountered);
+                keepGoing = traverse(v1, TraversalType::DEPTH_FIRST, traverser, encountered);
             } else if (traverserResult == TraverseResult::TERMINATE_TRAVERSER) {
                 keepGoing = false;
             }
@@ -463,7 +441,7 @@ bool UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser
             const TraverseResult& traverserResult = traverser(v1, e, v2);
             if (traverserResult == TraverseResult::CONTINUE) {
                 encountered[v2] = true;
-                keepGoing = traverse(v2, traverser, encountered);
+                keepGoing = traverse(v2, TraversalType::DEPTH_FIRST, traverser, encountered);
             } else if (traverserResult == TraverseResult::TERMINATE_TRAVERSER) {
                 keepGoing = false;
             }
@@ -471,6 +449,99 @@ bool UndirectedGraph<V, E>::traverse(unsigned long v, const Traverser& traverser
         if (!keepGoing) {
             break;
         }
+    }
+
+    return keepGoing;
+}
+
+template <typename V, typename E>
+bool UndirectedGraph<V, E>::traverseBreadthFirst(unsigned long v, const Traverser& traverser, const std::vector<std::vector<unsigned long> >& adjacencyList, std::vector<bool>& encountered) const {
+    std::vector<bool> encounteredEdges(m_edges.size(), false);
+    bool keepGoing = true;
+
+    std::deque<unsigned long> vertexToTraverse;
+    vertexToTraverse.push_back(v);
+    while(!vertexToTraverse.empty()) {
+        unsigned long firstV = vertexToTraverse.front();
+        vertexToTraverse.pop_front();
+
+        if(encountered[firstV]) {
+            continue;
+        }
+        encountered[firstV] = true;
+
+        const std::vector<unsigned long>& adjacentEdges = adjacencyList[firstV];
+
+        for (unsigned long e : adjacentEdges) {
+            if(encounteredEdges[e]) {
+                continue;
+            }
+            encounteredEdges[e] = true;
+
+            const std::unique_ptr<Edge> &edge = m_edges[e];
+            unsigned long v1 = edge->getVertex1();
+            unsigned long v2 = edge->getVertex2();
+            if (!encountered[v1]) {
+                const TraverseResult &traverserResult = traverser(v2, e, v1);
+                if (traverserResult == TraverseResult::CONTINUE) {
+                    vertexToTraverse.push_back(v1);
+                } else if (traverserResult == TraverseResult::TERMINATE_TRAVERSER) {
+                    keepGoing = false;
+                }
+            } else if (!encountered[v2]) {
+                const TraverseResult &traverserResult = traverser(v1, e, v2);
+                if (traverserResult == TraverseResult::CONTINUE) {
+                    vertexToTraverse.push_back(v2);
+                } else if (traverserResult == TraverseResult::TERMINATE_TRAVERSER) {
+                    keepGoing = false;
+                }
+            }
+            if (!keepGoing) {
+                break;
+            }
+        }
+        if (!keepGoing) {
+            break;
+        }
+    }
+
+    return keepGoing;
+}
+
+template <typename V, typename E>
+bool UndirectedGraph<V, E>::traverse(unsigned long v, TraversalType traversalType, const Traverser& traverser) const {
+    std::vector<bool> encountered(m_vertices.size(), false);
+
+    return traverse(v, traversalType, traverser, encountered);
+}
+
+template <typename V, typename E>
+bool UndirectedGraph<V, E>::traverse(const stdcxx::const_range<unsigned long>& startingVertices, TraversalType traversalType, const Traverser& traverser) const {
+    std::vector<bool> encountered(m_vertices.size(), false);
+
+    for (unsigned long startingVertex : startingVertices) {
+        if (!encountered[startingVertex] && !traverse(startingVertex, traversalType, traverser, encountered)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+template <typename V, typename E>
+bool UndirectedGraph<V, E>::traverse(unsigned long v, TraversalType traversalType, const Traverser& traverser, std::vector<bool>& encountered) const {
+    checkVertex(v);
+
+    if (encountered.size() < m_vertices.size()) {
+        throw new PowsyblException("Encountered array is too small");
+    }
+
+    const std::vector<std::vector<unsigned long> >& adjacencyList = getAdjacencyList();
+    bool keepGoing = false;
+
+    if(traversalType == TraversalType::DEPTH_FIRST) {
+        keepGoing = traverseDepthFirst(v, traverser, adjacencyList, encountered);
+    } else if(traversalType == TraversalType::BREADTH_FIRST) {
+        keepGoing = traverseBreadthFirst(v, traverser, adjacencyList, encountered);
     }
 
     return keepGoing;

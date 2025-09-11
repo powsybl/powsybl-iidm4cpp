@@ -135,7 +135,7 @@ void BusBreakerViewImpl::traverse(const Bus& bus, const TopologyTraverser& trave
         return traverser(graph.getVertexObject(v1), graph.getEdgeObject(e), graph.getVertexObject(v2));
     };
 
-    graph.traverse(*m_voltageLevel.getVertex(bus.getId(), true), graphTraverser);
+    graph.traverse(*m_voltageLevel.getVertex(bus.getId(), true), math::TraversalType::DEPTH_FIRST, graphTraverser);
 }
 
 BusViewImpl::BusViewImpl(BusBreakerVoltageLevel& voltageLevel) :
