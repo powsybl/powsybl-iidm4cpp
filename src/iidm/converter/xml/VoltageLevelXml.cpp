@@ -21,6 +21,7 @@
 #include <powsybl/iidm/util/Networks.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
+#include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 
 #include "BatteryXml.hpp"
@@ -37,6 +38,8 @@
 #include "ShuntCompensatorXml.hpp"
 #include "StaticVarCompensatorXml.hpp"
 #include "VscConverterStationXml.hpp"
+
+
 
 namespace powsybl {
 
@@ -82,7 +85,19 @@ void VoltageLevelXml::readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlRe
     double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
     double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
     const std::string& strNodes = context.getReader().getAttributeValue(NODES);
-    context.addEndTask([v, angle, strNodes, &voltageLevel]() {
+
+    stdcxx::Properties properties;
+    context.getReader().readUntilEndElement(BUS, [&voltageLevel, &context, &properties]() {
+        if (context.getReader().getLocalName() == PROPERTY) {
+            std::string propName = context.getReader().getAttributeValue(NAME);
+            std::string propValue = context.getReader().getAttributeValue(VALUE);
+            properties.set(propName, propValue);
+        } else {
+            throw PowsyblException(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));
+        }
+    });
+
+    context.addEndTask([v, angle, strNodes, properties, &voltageLevel]() {
         std::vector<std::string> nodes;
         boost::algorithm::split(nodes, strNodes, [](char c) { return c == ','; });
         for (const std::string& nodeStr : nodes) {
@@ -92,6 +107,9 @@ void VoltageLevelXml::readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlRe
                 const auto& b = terminal.get().getBusView().getBus();
                 if (b) {
                     b.get().setV(v).setAngle(angle);
+                    for (const auto& prop : properties) {
+                        b.get().setProperty(prop.first, prop.second);
+                    }
                     break;
                 }
             }
@@ -203,6 +221,9 @@ void VoltageLevelXml::writeCalculatedBus(const Bus& bus, const std::set<unsigned
     context.getWriter().writeAttribute(ANGLE, bus.getAngle());
     const auto& mapper = [](unsigned long node) { return std::to_string(node); };
     context.getWriter().writeAttribute(NODES, boost::algorithm::join(nodes | boost::adaptors::transformed(mapper), ","));
+    if(context.getVersion() >= IidmXmlVersion::V1_11() && bus.hasProperty()) {
+        PropertiesXml::write(bus, context);
+    }
     context.getWriter().writeEndElement();
 }
 
