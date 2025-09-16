@@ -166,6 +166,7 @@ stdcxx::CReference<LoadingLimits> Branch::getLimits(const LimitType& type, const
             return stdcxx::cref<LoadingLimits>(getApparentPowerLimits(side));
 
         case LimitType::VOLTAGE:
+        case LimitType::VOLTAGE_ANGLE:
         default:
             throw AssertionError(stdcxx::format("Getting %1% limits is not supported.", type));
     }
@@ -245,6 +246,7 @@ double Branch::getValueForLimit(const Terminal& terminal, const LimitType& type)
             return terminal.getI();
 
         case LimitType::VOLTAGE:
+        case LimitType::VOLTAGE_ANGLE:
         default:
             throw AssertionError(stdcxx::format("Getting %1% limits is not supported", type));
     }

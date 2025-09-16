@@ -60,7 +60,7 @@ void VscConverterStationXml::readSubElements(VscConverterStation& converterStati
             const auto& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             const auto& side = context.getReader().getOptionalAttributeValue(SIDE, "");
             context.addEndTask([&converterStation, id, side]() {
-                converterStation.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(converterStation.getNetwork(), id, side)));
+                converterStation.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::resolve(id, side, converterStation.getNetwork())));
             });
         } else {
             AbstractSimpleIdentifiableXml::readSubElements(converterStation, context);

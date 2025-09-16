@@ -49,6 +49,7 @@ set(UNIT_TEST_SOURCES
     TerminalRefTest.cpp
     ThreeWindingsTransformerRoundTripTest.cpp
     TieLineWithAliasesXmlTest.cpp
+    VoltageAngleLimitXmlTest.cpp
     xiidm.cpp
 )
 

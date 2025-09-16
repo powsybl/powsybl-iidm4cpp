@@ -88,7 +88,7 @@ void ShuntCompensatorXml::readSubElements(const std::string& id, ShuntCompensato
                 std::function<void(Identifiable&)> fun = [&context, regId, regSide](Identifiable &shuntCompensator) {
                     ShuntCompensator& sc = dynamic_cast<ShuntCompensator&>(shuntCompensator);
                     context.addEndTask([&sc, regId, regSide]() {
-                        sc.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::readTerminalRef(sc.getNetwork(), regId, regSide)));
+                        sc.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::resolve(regId, regSide, sc.getNetwork())));
                     });
                 };
                 toApply.emplace_back(fun);

@@ -13,12 +13,17 @@ namespace powsybl {
 
 namespace iidm {
 
+OperationalLimits::OperationalLimits() {
+}
+
 OperationalLimits::OperationalLimits(OperationalLimitsOwner& owner) :
     m_owner(owner) {
 }
 
 void OperationalLimits::remove() {
-    m_owner.setOperationalLimits(getLimitType(), std::unique_ptr<OperationalLimits>());
+    if(m_owner){
+        m_owner.get().setOperationalLimits(getLimitType(), std::unique_ptr<OperationalLimits>());
+    }
 }
 
 }  // namespace iidm

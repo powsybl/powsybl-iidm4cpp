@@ -22,6 +22,8 @@ public:
 
     static iidm::Network createWithFixedLimits();
 
+    static iidm::Network createWithVoltageAngleLimit();
+
 public:
     EurostagFactory() = delete;
 };

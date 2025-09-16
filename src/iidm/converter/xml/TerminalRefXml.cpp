@@ -18,8 +18,10 @@
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
+#include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
+#include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
 namespace powsybl {
@@ -30,21 +32,30 @@ namespace converter {
 
 namespace xml {
 
-Terminal& TerminalRefXml::readTerminalRef(Network& network, const std::string& id, const std::string& side) {
+Terminal& TerminalRefXml::readTerminal(Network& network, NetworkXmlReaderContext& context) {
+    const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+    const std::string side = context.getReader().getOptionalAttributeValue(SIDE, "");
+    return TerminalRefXml::resolve(id, side, network);
+}
+
+Terminal& TerminalRefXml::resolve(const std::string& id, const std::string& side, Network& network) {
+    ThreeSides threeSide = ThreeSides::ONE;
+    if(!side.empty()) {
+        threeSide = Enum::fromString<ThreeSides>(side);
+    }
+    return TerminalRefXml::resolve(id, threeSide, network);
+}
+
+Terminal& TerminalRefXml::resolve(const std::string& id, ThreeSides side, Network& network) {
     const auto& identifiableRef = network.find<Identifiable>(id);
     if (!identifiableRef) {
         throw PowsyblException(stdcxx::format("Terminal reference identifiable not found: '%1%'", id));
     }
     auto& identifiable = identifiableRef.get();
-    if (stdcxx::isInstanceOf<Injection>(identifiable)) {
-        return dynamic_cast<Injection&>(identifiable).getTerminal();
-    }
-    if (stdcxx::isInstanceOf<Branch>(identifiable)) {
-        return dynamic_cast<Branch&>(identifiable).getTerminalFromSide(Enum::fromString<Branch::Side>(side));
-    }
-    if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
-        auto& twt = dynamic_cast<ThreeWindingsTransformer&>(identifiable);
-        return twt.getTerminal(Enum::fromString<ThreeWindingsTransformer::Side>(side));
+
+    if (stdcxx::isInstanceOf<Connectable>(identifiable)) {
+        Connectable& connectable = dynamic_cast<Connectable&>(identifiable);
+        return Terminal::getTerminal(connectable, side);
     }
 
     throw PowsyblException(stdcxx::format("Unexpected terminal reference identifiable instance: %1%", stdcxx::demangle(identifiable)));
@@ -84,19 +95,12 @@ void TerminalRefXml::writeTerminalRefAttribute(const Terminal& terminal, Network
         throw PowsyblException(stdcxx::format("Terminal ref should not point to a busbar section (here %1%). Try to export in node-breaker or delete this terminal ref.", terminal.getConnectable().get().getId()));
     }
     context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(c.get().getId()));
-    if (c.get().getTerminals().size() > 1) {
-        if (stdcxx::isInstanceOf<Injection>(c.get())) {
-            // nothing to do
-        } else if (stdcxx::isInstanceOf<Branch>(c.get())) {
-            const auto& branch = dynamic_cast<const Branch&>(c.get());
-            context.getWriter().writeAttribute(SIDE, Enum::toString(branch.getSide(terminal)));
-        } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(c.get())) {
-            const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(c.get());
-            context.getWriter().writeAttribute(SIDE, Enum::toString(twt.getSide(terminal)));
-        } else {
-            throw AssertionError(stdcxx::format("Unexpected Connectable instance: %1%", stdcxx::demangle(c.get())));
-        }
+
+    auto optSide = Terminal::getConnectableSide(terminal);
+    if(optSide.has_value()) {
+        context.getWriter().writeAttribute(SIDE, Enum::toString(*optSide));
     }
+
 }
 
 }  // namespace xml

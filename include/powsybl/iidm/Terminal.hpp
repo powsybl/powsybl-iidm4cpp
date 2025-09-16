@@ -15,6 +15,7 @@
 #include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TerminalTopologyTraverser.hpp>
 #include <powsybl/iidm/TerminalViews.hpp>
+#include <powsybl/iidm/ThreeSides.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/math/TraversalType.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -93,6 +94,9 @@ public:
     virtual bool traverse(TopologyTraverser& traverser, math::TraversalType traversalType) = 0;
 
     virtual bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) = 0;
+
+    static stdcxx::optional<ThreeSides> getConnectableSide(const Terminal& terminal);
+    static Terminal& getTerminal(Connectable& connectable, ThreeSides side);
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

@@ -81,7 +81,7 @@ double LoadingLimits::getTemporaryLimitValue(unsigned long acceptableDuration) c
 }
 
 LoadingLimits& LoadingLimits::setPermanentLimit(double permanentLimit) {
-    checkPermanentLimit(m_owner, permanentLimit);
+    checkPermanentLimit(m_owner.get(), permanentLimit);
     m_permanentLimit = permanentLimit;
     return *this;
 }

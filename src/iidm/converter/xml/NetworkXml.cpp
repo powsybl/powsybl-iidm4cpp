@@ -38,6 +38,7 @@
 #include "TieLineXml.hpp"
 #include "TwoWindingsTransformerXml.hpp"
 #include "VoltageLevelXml.hpp"
+#include "VoltageAngleLimitXml.hpp"
 
 namespace powsybl {
 
@@ -308,6 +309,8 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
             TieLineXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == HVDC_LINE) {
             HvdcLineXml::getInstance().read(network, context);
+        } else if (context.getReader().getLocalName() == VOLTAGE_ANGLE_LIMIT) { 
+            VoltageAngleLimitXml::getInstance().read(network, context);
         } else if (context.getReader().getLocalName() == EXTENSION) {
             const std::string& id2 = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             Identifiable& identifiable = network.get(id2);
@@ -370,6 +373,7 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     writeLines(filter, network, context);
     writeTieLines(filter, network, context);
     writeHvdcLines(filter, network, context);
+    writeVoltageAngleLimits(network, context);
 
     writeExtensions(network, context);
 
@@ -429,6 +433,12 @@ void NetworkXml::writeVoltageLevels(const Network& network, NetworkXmlWriterCont
             IidmXmlUtil::assertMinimumVersion(NETWORK, VOLTAGE_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
             VoltageLevelXml::getInstance().write(voltageLevel, network, context);
         }
+    }
+}
+
+void NetworkXml::writeVoltageAngleLimits(const Network& network, NetworkXmlWriterContext& context) {
+    for (const VoltageAngleLimit& limit : network.getVoltageAngleLimits()) {
+        VoltageAngleLimitXml::getInstance().write(limit, network, context);
     }
 }
 

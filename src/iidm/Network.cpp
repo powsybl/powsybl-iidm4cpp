@@ -11,6 +11,7 @@
 #include <unordered_set>
 
 #include <boost/filesystem/fstream.hpp>
+#include <boost/range/adaptor/map.hpp>
 #include <boost/range/join.hpp>
 
 #include <powsybl/iidm/Battery.hpp>
@@ -35,6 +36,8 @@
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/iidm/VoltageAngleLimit.hpp>
+#include <powsybl/iidm/VoltageAngleLimitAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
@@ -643,6 +646,34 @@ VariantManager& Network::getVariantManager() {
     return m_variantManager;
 }
 
+const VoltageAngleLimit& Network::getVoltageAngleLimit(const std::string& id) const {
+    if (m_voltageAngleLimitsIndex.find(id) == m_voltageAngleLimitsIndex.end()) {
+        throw PowsyblException(stdcxx::format("Unable to find to the voltage angle limit '%1%'", id));
+    }
+
+    return m_voltageAngleLimitsIndex.at(id);
+}
+
+VoltageAngleLimit& Network::getVoltageAngleLimit(const std::string& id) {
+    return const_cast<VoltageAngleLimit&>(static_cast<const Network*>(this)->getVoltageAngleLimit(id));
+}
+
+unsigned long Network::getVoltageAngleLimitsCount() const {
+    return m_voltageAngleLimitsIndex.size();
+}
+
+stdcxx::const_range<VoltageAngleLimit> Network::getVoltageAngleLimits() const {
+    return boost::adaptors::values(m_voltageAngleLimitsIndex);
+}
+
+stdcxx::range<VoltageAngleLimit> Network::getVoltageAngleLimits() {
+    return boost::adaptors::values(m_voltageAngleLimitsIndex);
+}
+
+std::map<std::string, VoltageAngleLimit>& Network::getVoltageAngleLimitsIndex() {
+    return m_voltageAngleLimitsIndex;
+}
+
 const VoltageLevel& Network::getVoltageLevel(const std::string& id) const {
     return get<VoltageLevel>(id);
 }
@@ -697,6 +728,10 @@ SubstationAdder Network::newSubstation() {
 
 TieLineAdder Network::newTieLine() {
     return TieLineAdder(*this);
+}
+
+VoltageAngleLimitAdder Network::newVoltageAngleLimit() {
+    return VoltageAngleLimitAdder(*this);
 }
 
 VoltageLevelAdder Network::newVoltageLevel() {

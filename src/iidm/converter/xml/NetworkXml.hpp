@@ -48,6 +48,8 @@ private:
     static void writeSubstations(const Network& network, NetworkXmlWriterContext& context);
 
     static void writeVoltageLevels(const Network& network, NetworkXmlWriterContext& context);
+
+    static void writeVoltageAngleLimits(const Network& network, NetworkXmlWriterContext& context);
 };
 
 }  // namespace xml

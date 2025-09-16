@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include <powsybl/iidm/ThreeSides.hpp>
+
 namespace powsybl {
 
 namespace xml {
@@ -32,7 +34,11 @@ class NetworkXmlWriterContext;
 
 class TerminalRefXml {
 public:
-    static Terminal& readTerminalRef(Network& network, const std::string& id, const std::string& side);
+    static Terminal& readTerminal(Network& network, NetworkXmlReaderContext& context);
+
+    static Terminal& resolve(const std::string& id, const std::string& side, Network& network);
+
+    static Terminal& resolve(const std::string& id, ThreeSides side, Network& network);
 
     static void writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& elementName);
 

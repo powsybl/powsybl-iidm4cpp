@@ -130,6 +130,7 @@ set(IIDM_SOURCES
     iidm/Terminal.cpp
     iidm/TerminalBuilder.cpp
     iidm/ThreadLocalMultipleVariantContext.cpp
+    iidm/ThreeSides.cpp
     iidm/ThreeWindingsTransformer.cpp
     iidm/ThreeWindingsTransformerLeg.cpp
     iidm/ThreeWindingsTransformerLegAdder.cpp
@@ -146,6 +147,8 @@ set(IIDM_SOURCES
     iidm/ValidationUtils.cpp
     iidm/VariantContextGuard.cpp
     iidm/VariantManager.cpp
+    iidm/VoltageAngleLimit.cpp
+    iidm/VoltageAngleLimitAdder.cpp
     iidm/VoltageLevel.cpp
     iidm/VoltageLevelAdder.cpp
     iidm/VscConverterStation.cpp
@@ -193,6 +196,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/TieLineXml.cpp
     iidm/converter/xml/TwoWindingsTransformerXml.cpp
     iidm/converter/xml/VersionsCompatibility.cpp
+    iidm/converter/xml/VoltageAngleLimitXml.cpp
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 

@@ -16,7 +16,8 @@ enum class LimitType : unsigned char {
     ACTIVE_POWER,
     APPARENT_POWER,
     CURRENT,
-    VOLTAGE
+    VOLTAGE,
+    VOLTAGE_ANGLE
 };
 
 }  // namespace iidm

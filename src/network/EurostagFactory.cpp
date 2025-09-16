@@ -20,8 +20,11 @@
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
+#include <powsybl/iidm/VoltageAngleLimit.hpp>
+#include <powsybl/iidm/VoltageAngleLimitAdder.hpp>
 
 namespace powsybl {
 
@@ -331,6 +334,35 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
         .endTemporaryLimit()
         .add();
     line2.newApparentPowerLimits2().setPermanentLimit(500).add();
+
+    return network;
+}
+
+iidm::Network EurostagFactory::createWithVoltageAngleLimit(){
+    iidm::Network network = createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2023-06-28T23:11:51.614+02:00"));
+
+    network.newVoltageAngleLimit()
+            .setId("VOLTAGE_ANGLE_LIMIT_NHV1_NHV2_1")
+            .from(stdcxx::ref<iidm::Terminal>(network.getLine("NHV1_NHV2_1").getTerminal1()))
+            .to(stdcxx::ref<iidm::Terminal>(network.getLine("NHV1_NHV2_1").getTerminal2()))
+            .setHighLimit(0.25)
+            .add();
+
+    network.newVoltageAngleLimit()
+            .setId("VOLTAGE_ANGLE_LIMIT_NHV1_NHV2_2")
+            .from(stdcxx::ref<iidm::Terminal>(network.getLine("NHV1_NHV2_2").getTerminal1()))
+            .to(stdcxx::ref<iidm::Terminal>(network.getLine("NHV1_NHV2_2").getTerminal2()))
+            .setLowLimit(0.20)
+            .add();
+
+    network.newVoltageAngleLimit()
+            .setId("VOLTAGE_ANGLE_LIMIT_NGEN_NHV1")
+            .from(stdcxx::ref<iidm::Terminal>(network.getGenerator("GEN").getTerminal()))
+            .to(stdcxx::ref<iidm::Terminal>(network.getTwoWindingsTransformer("NGEN_NHV1").getTerminal2()))
+            .setLowLimit(-0.20)
+            .setHighLimit(0.35)
+            .add();
 
     return network;
 }

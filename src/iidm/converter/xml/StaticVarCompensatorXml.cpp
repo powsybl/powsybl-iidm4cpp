@@ -63,7 +63,7 @@ void StaticVarCompensatorXml::readSubElements(StaticVarCompensator& svc, Network
             const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
             context.addEndTask([id, side, &svc]() {
-                svc.setRegulatingTerminal(stdcxx::ref<Terminal>(TerminalRefXml::readTerminalRef(svc.getNetwork(), id, side)));
+                svc.setRegulatingTerminal(stdcxx::ref<Terminal>(TerminalRefXml::resolve(id, side, svc.getNetwork())));
             });
         } else {
             AbstractSimpleIdentifiableXml::readSubElements(svc, context);

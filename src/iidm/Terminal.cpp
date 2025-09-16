@@ -137,6 +137,63 @@ std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, unsigne
     return stdcxx::make_unique<NodeTerminal>(voltageLevel, node);
 }
 
+stdcxx::optional<ThreeSides> Terminal::getConnectableSide(const Terminal& terminal) {
+    stdcxx::CReference<Connectable> connectable = terminal.getConnectable();
+    if(stdcxx::isInstanceOf<Injection>(connectable)) {
+        return stdcxx::optional<ThreeSides>();
+    } else if(stdcxx::isInstanceOf<Branch>(connectable)) {
+        const auto& branch = dynamic_cast<const Branch&>(connectable.get());
+        Branch::Side side = branch.getSide(terminal);
+        if(side == Branch::Side::ONE) {
+            return stdcxx::optional<ThreeSides>(ThreeSides::ONE);
+        } else if(side == Branch::Side::TWO) {
+            return stdcxx::optional<ThreeSides>(ThreeSides::TWO);
+        }
+    } else if(stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable)) {
+        const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(connectable.get());
+        ThreeWindingsTransformer::Side side = twt.getSide(terminal);
+        if(side == ThreeWindingsTransformer::Side::ONE) {
+            return stdcxx::optional<ThreeSides>(ThreeSides::ONE);
+        } else if(side == ThreeWindingsTransformer::Side::TWO) {
+            return stdcxx::optional<ThreeSides>(ThreeSides::TWO);
+        } else if(side == ThreeWindingsTransformer::Side::THREE) {
+            return stdcxx::optional<ThreeSides>(ThreeSides::THREE);
+        }
+    } else {
+        throw PowsyblException(stdcxx::format("Unexpected Connectable instance: %1%", stdcxx::demangle(connectable.get())));
+    }
+    return stdcxx::optional<ThreeSides>();
+}
+
+Terminal& Terminal::getTerminal(Connectable& connectable, ThreeSides side) {
+    if(stdcxx::isInstanceOf<Injection>(connectable)) {
+        auto& injection = dynamic_cast<Injection&>(connectable);
+        return injection.getTerminal();
+    } else if(stdcxx::isInstanceOf<Branch>(connectable)) {
+        auto& branch = dynamic_cast<Branch&>(connectable);
+        if(side == ThreeSides::ONE) {
+            return branch.getTerminal1();
+        } else if(side == ThreeSides::TWO) {
+            return branch.getTerminal2();
+        } else {
+            throw PowsyblException( stdcxx::format("Unexpected Branch side: %1%", Enum::toString(side)));
+        }
+    } else if(stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable)) {
+        auto& twt = dynamic_cast<ThreeWindingsTransformer&>(connectable);
+        if(side == ThreeSides::ONE) {
+            return twt.getLeg1().getTerminal();
+        } else if(side == ThreeSides::TWO) {
+            return twt.getLeg2().getTerminal();
+        } else if(side == ThreeSides::THREE) {
+            return twt.getLeg3().getTerminal();
+        } else {
+            throw PowsyblException( stdcxx::format("Unexpected side: %1%", Enum::toString(side)));
+        }
+    } else {
+        throw PowsyblException(stdcxx::format("Unexpected Connectable instance: %1%", stdcxx::demangle(connectable)));
+    } 
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

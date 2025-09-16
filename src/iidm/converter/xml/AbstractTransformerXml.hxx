@@ -64,7 +64,7 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string
     context.getReader().readUntilEndElement(elementName, [&adder, &context, &hasTerminalRef, &terminal]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
             readTerminalRef(context, hasTerminalRef, [adder, &terminal](const std::string& id, const std::string& side) {
-                adder->setRegulationTerminal(stdcxx::ref<Terminal>(TerminalRefXml::readTerminalRef(terminal.getVoltageLevel().getNetwork(), id, side)));
+                adder->setRegulationTerminal(stdcxx::ref<Terminal>(TerminalRefXml::resolve(id, side, terminal.getVoltageLevel().getNetwork())));
                 adder->add();
             });
         } else if (context.getReader().getLocalName() == STEP) {
@@ -129,7 +129,7 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
     context.getReader().readUntilEndElement(elementName, [&adder, &context, &terminal, &hasTerminalRef]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
             readTerminalRef(context, hasTerminalRef, [adder, &terminal](const std::string& id, const std::string& side) {
-                adder->setRegulationTerminal(stdcxx::ref<Terminal>(TerminalRefXml::readTerminalRef(terminal.getVoltageLevel().getNetwork(), id, side)));
+                adder->setRegulationTerminal(stdcxx::ref<Terminal>(TerminalRefXml::resolve(id, side, terminal.getVoltageLevel().getNetwork())));
                 adder->add();
             });
         } else if (context.getReader().getLocalName() == STEP) {

@@ -19,11 +19,14 @@
 #include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
+#include <powsybl/iidm/VoltageAngleLimit.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/stdcxx/DateTime.hpp>
 #include <powsybl/stdcxx/range.hpp>
+
+#include <map>
 
 namespace powsybl {
 
@@ -56,6 +59,7 @@ class TieLine;
 class TieLineAdder;
 class TwoWindingsTransformer;
 class TwoWindingsTransformerAdder;
+class VoltageAngleLimitAdder;
 class VoltageLevel;
 class VoltageLevelAdder;
 class VscConverterStation;
@@ -348,6 +352,18 @@ public:
 
     stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
 
+    const VoltageAngleLimit& getVoltageAngleLimit(const std::string& id) const;
+
+    VoltageAngleLimit& getVoltageAngleLimit(const std::string& id);
+
+    unsigned long getVoltageAngleLimitsCount() const;
+
+    stdcxx::const_range<VoltageAngleLimit> getVoltageAngleLimits() const;
+
+    stdcxx::range<VoltageAngleLimit> getVoltageAngleLimits();
+
+    std::map<std::string, VoltageAngleLimit>& getVoltageAngleLimitsIndex();
+
     const VoltageLevel& getVoltageLevel(const std::string& id) const;
 
     VoltageLevel& getVoltageLevel(const std::string& id);
@@ -375,6 +391,8 @@ public:
     SubstationAdder newSubstation();
 
     TieLineAdder newTieLine();
+
+    VoltageAngleLimitAdder newVoltageAngleLimit();
 
     VoltageLevelAdder newVoltageLevel();
 
@@ -485,6 +503,8 @@ private:
     BusBreakerView m_busBreakerView;
 
     BusView m_busView;
+
+    std::map<std::string, VoltageAngleLimit> m_voltageAngleLimitsIndex;
 };
 
 }  // namespace iidm
