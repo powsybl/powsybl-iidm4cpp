@@ -77,6 +77,7 @@ set(EXT_SOURCES
     src/PilotPointAdder.cpp
     src/RemoteReactivePowerControl.cpp
     src/RemoteReactivePowerControlAdder.cpp
+    src/RemoteReactivePowerControlXmlSerializer.cpp
     src/SecondaryVoltageControl.cpp
     src/SecondaryVoltageControlAdder.cpp
     src/SecondaryVoltageControlXmlSerializer.cpp

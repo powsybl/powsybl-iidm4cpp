@@ -26,6 +26,7 @@
 #include <powsybl/iidm/extensions/iidm/LinePositionXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/LoadAsymmetricalXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/MeasurementsXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/RemoteReactivePowerControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/SecondaryVoltageControlXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/StandbyAutomatonXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/SubstationPositionXmlSerializer.hpp>
@@ -64,6 +65,7 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     serializers.emplace_back(stdcxx::make_unique<LinePositionXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<LoadAsymmetricalXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<MeasurementsXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<RemoteReactivePowerControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<SecondaryVoltageControlXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<StandbyAutomatonXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<SubstationPositionXmlSerializer>());
