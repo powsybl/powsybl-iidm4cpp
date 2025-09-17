@@ -48,6 +48,7 @@ set(UNIT_TEST_SOURCES
     StaticVarCompensatorRoundTripTest.cpp
     TerminalRefTest.cpp
     ThreeWindingsTransformerRoundTripTest.cpp
+    TieLineTerminalRefBugTest.cpp
     TieLineWithAliasesXmlTest.cpp
     VoltageAngleLimitXmlTest.cpp
     xiidm.cpp

@@ -165,12 +165,12 @@ stdcxx::optional<ThreeSides> Terminal::getConnectableSide(const Terminal& termin
     return stdcxx::optional<ThreeSides>();
 }
 
-Terminal& Terminal::getTerminal(Connectable& connectable, ThreeSides side) {
-    if(stdcxx::isInstanceOf<Injection>(connectable)) {
-        auto& injection = dynamic_cast<Injection&>(connectable);
+Terminal& Terminal::getTerminal(Identifiable& identifiable, ThreeSides side) {
+    if(stdcxx::isInstanceOf<Injection>(identifiable)) {
+        auto& injection = dynamic_cast<Injection&>(identifiable);
         return injection.getTerminal();
-    } else if(stdcxx::isInstanceOf<Branch>(connectable)) {
-        auto& branch = dynamic_cast<Branch&>(connectable);
+    } else if(stdcxx::isInstanceOf<Branch>(identifiable)) {
+        auto& branch = dynamic_cast<Branch&>(identifiable);
         if(side == ThreeSides::ONE) {
             return branch.getTerminal1();
         } else if(side == ThreeSides::TWO) {
@@ -178,8 +178,8 @@ Terminal& Terminal::getTerminal(Connectable& connectable, ThreeSides side) {
         } else {
             throw PowsyblException( stdcxx::format("Unexpected Branch side: %1%", Enum::toString(side)));
         }
-    } else if(stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable)) {
-        auto& twt = dynamic_cast<ThreeWindingsTransformer&>(connectable);
+    } else if(stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
+        auto& twt = dynamic_cast<ThreeWindingsTransformer&>(identifiable);
         if(side == ThreeSides::ONE) {
             return twt.getLeg1().getTerminal();
         } else if(side == ThreeSides::TWO) {
@@ -190,8 +190,8 @@ Terminal& Terminal::getTerminal(Connectable& connectable, ThreeSides side) {
             throw PowsyblException( stdcxx::format("Unexpected side: %1%", Enum::toString(side)));
         }
     } else {
-        throw PowsyblException(stdcxx::format("Unexpected Connectable instance: %1%", stdcxx::demangle(connectable)));
-    } 
+        throw PowsyblException(stdcxx::format("Unexpected terminal reference identifiable instance: %1%", stdcxx::demangle(identifiable)));
+    }
 }
 
 }  // namespace iidm

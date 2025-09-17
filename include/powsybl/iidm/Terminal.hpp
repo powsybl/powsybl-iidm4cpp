@@ -96,7 +96,7 @@ public:
     virtual bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) = 0;
 
     static stdcxx::optional<ThreeSides> getConnectableSide(const Terminal& terminal);
-    static Terminal& getTerminal(Connectable& connectable, ThreeSides side);
+    static Terminal& getTerminal(Identifiable& identifiable, ThreeSides side);
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

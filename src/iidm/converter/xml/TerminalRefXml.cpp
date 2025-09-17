@@ -53,12 +53,7 @@ Terminal& TerminalRefXml::resolve(const std::string& id, ThreeSides side, Networ
     }
     auto& identifiable = identifiableRef.get();
 
-    if (stdcxx::isInstanceOf<Connectable>(identifiable)) {
-        Connectable& connectable = dynamic_cast<Connectable&>(identifiable);
-        return Terminal::getTerminal(connectable, side);
-    }
-
-    throw PowsyblException(stdcxx::format("Unexpected terminal reference identifiable instance: %1%", stdcxx::demangle(identifiable)));
+    return Terminal::getTerminal(identifiable, side);
 }
 
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& elementName) {
