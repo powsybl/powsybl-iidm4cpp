@@ -1410,6 +1410,33 @@ BOOST_AUTO_TEST_CASE(operationalLimits) {
     BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg3().getOperationalLimits()));
 }
 
+BOOST_AUTO_TEST_CASE(ThreeSidesConversions) {
+
+    ThreeSides one = ThreeSides(1);
+    ThreeSides two = ThreeSides(2);
+    ThreeSides three = ThreeSides(3);
+    ThreeSides four = ThreeSides(4);
+    ThreeSides zero = ThreeSides(0);
+    ThreeSides minusone = ThreeSides(-1);
+
+    BOOST_CHECK_EQUAL(0, (int)zero);
+    BOOST_CHECK_EQUAL(1, (int)one);
+    BOOST_CHECK_EQUAL(2, (int)two);
+    BOOST_CHECK_EQUAL(3, (int)three);
+    BOOST_CHECK_EQUAL(ThreeSides::UNDEFINED, zero);
+    BOOST_CHECK_EQUAL(ThreeSides::ONE, one);
+    BOOST_CHECK_EQUAL(ThreeSides::TWO, two);
+    BOOST_CHECK_EQUAL(ThreeSides::THREE, three);
+    BOOST_CHECK_EQUAL("UNDEFINED", Enum::toString(zero));
+    BOOST_CHECK_EQUAL("ONE", Enum::toString(one));
+    BOOST_CHECK_EQUAL("TWO", Enum::toString(two));
+    BOOST_CHECK_EQUAL("THREE", Enum::toString(three));
+
+    POWSYBL_ASSERT_THROW(std::cout << four, AssertionError, "Unexpected ThreeSides value: 4");
+    POWSYBL_ASSERT_THROW(std::cout << minusone, AssertionError, "Unexpected ThreeSides value: 255");
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

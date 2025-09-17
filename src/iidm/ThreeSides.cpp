@@ -18,6 +18,7 @@ namespace Enum {
 template <>
 const std::initializer_list<std::string>& getNames<ThreeSides>() {
     static std::initializer_list<std::string> s_names {
+        "UNDEFINED",
         "ONE",
         "TWO",
         "THREE"

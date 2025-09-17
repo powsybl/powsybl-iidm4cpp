@@ -16,9 +16,10 @@ namespace powsybl {
 namespace iidm {
 
 enum class ThreeSides : std::uint8_t {
-    ONE,
-    TWO,
-    THREE
+    UNDEFINED = 0,
+    ONE = 1,
+    TWO = 2,
+    THREE = 3
 };
 
 std::ostream& operator<<(std::ostream& stream, const ThreeSides& threeSide);

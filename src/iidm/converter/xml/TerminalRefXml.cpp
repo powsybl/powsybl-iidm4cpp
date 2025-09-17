@@ -92,7 +92,7 @@ void TerminalRefXml::writeTerminalRefAttribute(const Terminal& terminal, Network
     context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(c.get().getId()));
 
     auto optSide = Terminal::getConnectableSide(terminal);
-    if(optSide.has_value()) {
+    if(optSide.has_value() && *optSide != ThreeSides::UNDEFINED) {
         context.getWriter().writeAttribute(SIDE, Enum::toString(*optSide));
     }
 
