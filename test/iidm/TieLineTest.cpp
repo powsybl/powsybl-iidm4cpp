@@ -63,7 +63,7 @@ Network createEurostagExampleWithTieLines() {
                 .setG(1E-6)
                 .setB(386E-6 / 2)
                 .setBus("NHV1")
-                .setUcteXnodeCode("XNODE1")
+                .setPairingKey("XNODE1")
                 .add();
     DanglingLine& xnode1nhv2 = network.getVoltageLevel("VLHV2").newDanglingLine()
                 .setId("XNODE1_NHV2")
@@ -74,7 +74,7 @@ Network createEurostagExampleWithTieLines() {
                 .setG(2E-6)
                 .setB(386E-6 / 2)
                 .setBus("NHV2")
-                .setUcteXnodeCode("XNODE1")
+                .setPairingKey("XNODE1")
                 .add();
     network.newTieLine()
                 .setId("NHV1_NHV2_1")
@@ -90,7 +90,7 @@ Network createEurostagExampleWithTieLines() {
                 .setG(1E-6)
                 .setB(386E-6 / 2)
                 .setBus("NHV1")
-                .setUcteXnodeCode("XNODE2")
+                .setPairingKey("XNODE2")
                 .add();
     DanglingLine& xnode2nhv2 = network.getVoltageLevel("VLHV2").newDanglingLine()
                 .setId("XNODE2_NHV2")
@@ -101,7 +101,7 @@ Network createEurostagExampleWithTieLines() {
                 .setG(2E-6)
                 .setB(386E-6 / 2)
                 .setBus("NHV2")
-                .setUcteXnodeCode("XNODE2")
+                .setPairingKey("XNODE2")
                 .add();
     network.newTieLine()
                 .setId("NHV1_NHV2_2")
@@ -208,7 +208,7 @@ Network createTieLineTestNetwork() {
         .setQ0(0.0)
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("pairKey")
         .add();
     DanglingLine& dl2 = network.getVoltageLevel(vl3.getId()).newDanglingLine()
         .setId("H2_TL_VL1_VL3")
@@ -220,7 +220,7 @@ Network createTieLineTestNetwork() {
         .setQ0(0.0)
         .setBus(vl3Bus1.getId())
         .setConnectableBus(vl3Bus1.getId())
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("pairKey")
         .add();
     network.newTieLine()
         .setId("TL_VL1_VL3")
@@ -259,7 +259,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(0.085, tieLine.getB1(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_CLOSE(0.0265, tieLine.getG2(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_CLOSE(0.0285, tieLine.getB2(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_EQUAL("UcteXnodeCode", tieLine.getUcteXnodeCode());
+    BOOST_CHECK_EQUAL("pairKey", tieLine.getPairingKey());
 
     const DanglingLine& dl1 = tieLine.getDanglingLine1();
     BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", dl1.getId());
@@ -467,7 +467,7 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .setQ0(0.0)
         .setBus("VL2_BUS1")
         .setConnectableBus("VL2_BUS1")
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("pairKey")
         .add();
     DanglingLine& dl2 = network.getVoltageLevel("VL4").newDanglingLine()
         .setId("H2_TL_VL2_VL4")
@@ -479,7 +479,7 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .setQ0(0.0)
         .setBus("VL4_BUS1")
         .setConnectableBus("VL4_BUS1")
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("pairKey")
         .add();
     
     tieLineAdder.setDanglingLine1(dl1.getId())
@@ -528,7 +528,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     danglingLineLineAdder1.setBus("VL2_BUS1");
     danglingLineLineAdder1.setConnectableBus("");
-    danglingLineLineAdder1.setUcteXnodeCode("UcteXnodeCodeTest");
+    danglingLineLineAdder1.setPairingKey("pairKeyTest");
     auto& dl1 = danglingLineLineAdder1.add();
 
     tieLineAdder.setDanglingLine1("H1_TL_VL2_VL4");
@@ -546,7 +546,7 @@ BOOST_AUTO_TEST_CASE(adder) {
         .setX(4.0)
         .setBus("VL4_BUS1")
         .setConnectableBus("")
-        .setUcteXnodeCode("UcteXnodeCodeTest")
+        .setPairingKey("pairKeyTest")
         .setFictitious(true);
     auto& dl2 = danglingLineLineAdder2.add();
     tieLineAdder.setDanglingLine2("H2_TL_VL2_VL4");
@@ -587,7 +587,7 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .setQ0(0.0)
         .setBus("")
         .setConnectableBus("VL2_BUS1")
-        .setUcteXnodeCode("UcteXnodeCodeTest")
+        .setPairingKey("pairKeyTest")
         .setFictitious(true)
         .add();
 
@@ -603,7 +603,7 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .setQ0(0.0)
         .setBus("")
         .setConnectableBus("VL4_BUS1")
-        .setUcteXnodeCode("UcteXnodeCodeTest")
+        .setPairingKey("pairKeyTest")
         .setFictitious(false)
         .add();
 
@@ -733,7 +733,7 @@ BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
             .setP0(0.0)
             .setQ0(0.0)
             .setBus("S1VL1-BUS")
-            .setUcteXnodeCode("UcteNode")
+            .setPairingKey("pairKey")
             .add();
     s2vl1.newDanglingLine()
             .setId(boundarySide2)
@@ -743,7 +743,7 @@ BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
             .setP0(0.0)
             .setQ0(0.0)
             .setBus("S2VL1-BUS")
-            .setUcteXnodeCode("UcteNode")
+            .setPairingKey("pairKey")
             .add();
 
     TieLineAdder adder = network.newTieLine()

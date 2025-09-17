@@ -132,6 +132,7 @@ static const char* const NQ = "nq";
 static const char* const OPEN = "open";
 static const char* const P = "p";
 static const char* const P0 = "p0";
+static const char* const PAIRING_KEY = "pairingKey";
 static const char* const PERMANENT_LIMIT = "permanentLimit";
 static const char* const PHASE_TAP_CHANGER = "phaseTapChanger";
 static const char* const PHASE_TAP_CHANGER1 = "phaseTapChanger1";

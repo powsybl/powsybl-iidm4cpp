@@ -40,7 +40,7 @@ public:
 
     DanglingLineAdder& setR(double r);
 
-    DanglingLineAdder& setUcteXnodeCode(const std::string& ucteXnodeCode);
+    DanglingLineAdder& setPairingKey(const std::string& pairingKey);
 
     DanglingLineAdder& setX(double x);
 
@@ -71,7 +71,7 @@ private:
 
     double m_q0 = stdcxx::nan();
 
-    std::string m_ucteXnodeCode;
+    std::string m_pairingKey;
 };
 
 }  // namespace iidm

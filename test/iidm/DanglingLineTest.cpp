@@ -56,7 +56,7 @@ Network createDanglingLineTestNetwork(bool withGeneration) {
         .setQ0(4.0)
         .setR(5.0)
         .setX(6.0)
-        .setUcteXnodeCode("ucteXnodeCodeTest");
+        .setPairingKey("pairKeyTest");
 
     if (withGeneration) {
         adder.newGeneration()
@@ -112,7 +112,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(danglingLineCount + 1, network.getDanglingLineCount());
     BOOST_CHECK_EQUAL(danglingLineCount + 1, boost::size(network.getDanglingLines()));
-    BOOST_TEST(network.getDanglingLine("DL1#0").getUcteXnodeCode().empty());
+    BOOST_TEST(network.getDanglingLine("DL1#0").getPairingKey().empty());
 
     DanglingLine& dl = network.getDanglingLine("DL1");
     BOOST_CHECK(!dl.getGeneration());
@@ -193,7 +193,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(4.0, danglingLine.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_EQUAL("ucteXnodeCodeTest", danglingLine.getUcteXnodeCode());
+    BOOST_CHECK_EQUAL("pairKeyTest", danglingLine.getPairingKey());
     BOOST_CHECK_EQUAL(1, boost::size(network.getDanglingLines()));
 }
 
@@ -250,7 +250,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(4.0, danglingLine.getQ0(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, danglingLine.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, danglingLine.getX(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_EQUAL("ucteXnodeCodeTest", danglingLine.getUcteXnodeCode());
+    BOOST_CHECK_EQUAL("pairKeyTest", danglingLine.getPairingKey());
     danglingLine.setB(100.0).setG(200.0).setP0(300.0).setQ0(400).setR(500.0).setX(600.0);
     danglingLine.getGeneration().get().setMinP(101).setMaxP(201).setTargetP(121).setTargetQ(141).setTargetV(161).setVoltageRegulationOn(false);
 
@@ -267,7 +267,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(141.0, danglingLine.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(161.0, danglingLine.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(!danglingLine.getGeneration().get().isVoltageRegulationOn());
-    BOOST_CHECK_EQUAL("ucteXnodeCodeTest", danglingLine.getUcteXnodeCode());
+    BOOST_CHECK_EQUAL("pairKeyTest", danglingLine.getPairingKey());
 
     network.getVariantManager().setWorkingVariant("s2");
     BOOST_CHECK_EQUAL("DL1", danglingLine.getId());

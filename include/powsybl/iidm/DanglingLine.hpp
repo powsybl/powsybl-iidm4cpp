@@ -36,7 +36,7 @@ public:  // Identifiable
 
 public:
     DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-                 double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode,
+                 double p0, double q0, double r, double x, double g, double b, const std::string& pairingKey,
                  std::unique_ptr<Generation>&& generation);
 
     ~DanglingLine() noexcept override = default;
@@ -69,7 +69,7 @@ public:
 
     double getR() const;
 
-    const std::string& getUcteXnodeCode() const;
+    const std::string& getPairingKey() const;
 
     double getX() const;
 
@@ -108,7 +108,7 @@ private:
 
     std::vector<double> m_q0;
 
-    std::string m_ucteXnodeCode;
+    std::string m_pairingKey;
 
     std::unique_ptr<Generation> m_generation;
 

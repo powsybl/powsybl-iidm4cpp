@@ -34,7 +34,7 @@ DanglingLine& DanglingLineAdder::add() {
     std::unique_ptr<DanglingLine::Generation> ptrGeneration = m_generationAdder ? m_generationAdder->build() : nullptr;
 
     std::unique_ptr<DanglingLine> ptrDanglingLine = stdcxx::make_unique<DanglingLine>(network, checkAndGetUniqueId(), getName(), isFictitious(),
-                                                                                      m_p0, m_q0, m_r, m_x, m_g, m_b, m_ucteXnodeCode, std::move(ptrGeneration));
+                                                                                      m_p0, m_q0, m_r, m_x, m_g, m_b, m_pairingKey, std::move(ptrGeneration));
     auto& danglingLine = network.checkAndAdd<DanglingLine>(std::move(ptrDanglingLine));
 
     Terminal& terminal = danglingLine.addTerminal(checkAndGetTerminal());
@@ -82,8 +82,8 @@ DanglingLineAdder& DanglingLineAdder::setR(double r) {
     return *this;
 }
 
-DanglingLineAdder& DanglingLineAdder::setUcteXnodeCode(const std::string& ucteXnodeCode) {
-    m_ucteXnodeCode = ucteXnodeCode;
+DanglingLineAdder& DanglingLineAdder::setPairingKey(const std::string& pairingKey) {
+    m_pairingKey = pairingKey;
     return *this;
 }
 

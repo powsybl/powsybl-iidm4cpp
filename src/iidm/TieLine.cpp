@@ -141,14 +141,14 @@ const std::string& TieLine::getTypeDescription() const {
     return s_typeDescription;
 }
 
-std::string TieLine::getUcteXnodeCode() const {
-    std::string ucteXnodeCode = "";
-    if(static_cast<bool>(m_danglingLine1) && !m_danglingLine1.get().getUcteXnodeCode().empty()) {
-        ucteXnodeCode = m_danglingLine1.get().getUcteXnodeCode();
-    } else if(static_cast<bool>(m_danglingLine2) && !m_danglingLine2.get().getUcteXnodeCode().empty()) {
-        ucteXnodeCode = m_danglingLine2.get().getUcteXnodeCode();
+std::string TieLine::getPairingKey() const {
+    std::string pairingKey = "";
+    if(static_cast<bool>(m_danglingLine1) && !m_danglingLine1.get().getPairingKey().empty()) {
+        pairingKey = m_danglingLine1.get().getPairingKey();
+    } else if(static_cast<bool>(m_danglingLine2) && !m_danglingLine2.get().getPairingKey().empty()) {
+        pairingKey = m_danglingLine2.get().getPairingKey();
     }
-    return ucteXnodeCode;
+    return pairingKey;
 }
 
 void TieLine::remove() {

@@ -69,8 +69,15 @@ DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adde
         .setG(g)
         .setB(b);
 
-    const std::string& ucteXnodeCode = context.getReader().getOptionalAttributeValue(UCTE_XNODE_CODE, "");
-    adder.setUcteXnodeCode(ucteXnodeCode);
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_10(), context.getVersion(), [&context, &adder](){
+        const std::string& ucteXnodeCode = context.getReader().getOptionalAttributeValue(UCTE_XNODE_CODE, "");
+        adder.setPairingKey(ucteXnodeCode);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_11(), context.getVersion(), [&context, &adder](){
+        const std::string& pairingKey = context.getReader().getOptionalAttributeValue(PAIRING_KEY, "");
+        adder.setPairingKey(pairingKey);
+    });
+    
     DanglingLine& dl = adder.add();
     readPQ(dl.getTerminal(), context.getReader());
     return dl;
@@ -131,8 +138,13 @@ void DanglingLineXml::writeRootElementAttributes(const DanglingLine& dl, const V
             context.getWriter().writeAttribute(GENERATION_TARGET_Q, generation.get().getTargetQ());
         });
     }
-    if (!dl.getUcteXnodeCode().empty()) {
-        context.getWriter().writeAttribute(UCTE_XNODE_CODE, dl.getUcteXnodeCode());
+    if (!dl.getPairingKey().empty()) {
+        IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_10(), context.getVersion(), [&context, &dl](){
+            context.getWriter().writeAttribute(UCTE_XNODE_CODE, dl.getPairingKey());
+        });
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_11(), context.getVersion(), [&context, &dl](){
+            context.getWriter().writeAttribute(PAIRING_KEY, dl.getPairingKey());
+        });
     }
     writeNodeOrBus(dl.getTerminal(), context);
     writePQ(dl.getTerminal(), context.getWriter());

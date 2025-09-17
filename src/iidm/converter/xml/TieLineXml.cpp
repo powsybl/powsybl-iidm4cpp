@@ -50,7 +50,6 @@ DanglingLine& TieLineXml::readDanglingLine(DanglingLineAdder& adder, const Netwo
     const auto& b1 = context.getReader().getAttributeValue<double>(toString(B1_, side));
     const auto& g2 = context.getReader().getAttributeValue<double>(toString(G2_, side));
     const auto& b2 = context.getReader().getAttributeValue<double>(toString(B2_, side));
-    const std::string& ucteXnodeCode = context.getReader().getOptionalAttributeValue(UCTE_XNODE_CODE, "");
     adder.setId(id)
         .setName(name)
         .setR(r)
@@ -58,8 +57,16 @@ DanglingLine& TieLineXml::readDanglingLine(DanglingLineAdder& adder, const Netwo
         .setG(g1 + g2)
         .setB(b1 + b2)
         .setP0(0.0)
-        .setQ0(0.0)
-        .setUcteXnodeCode(ucteXnodeCode);
+        .setQ0(0.0);
+
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_10(), context.getVersion(), [&context, &adder](){
+        const std::string& ucteXnodeCode = context.getReader().getOptionalAttributeValue(UCTE_XNODE_CODE, "");
+        adder.setPairingKey(ucteXnodeCode);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_11(), context.getVersion(), [&context, &adder](){
+        const std::string& pairingKey = context.getReader().getOptionalAttributeValue(PAIRING_KEY, "");
+        adder.setPairingKey(pairingKey);
+    });
 
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &side, &adder]() {
         bool fictitious = context.getReader().getOptionalAttributeValue(toString(FICTITIOUS_, side), false);
@@ -188,8 +195,8 @@ void TieLineXml::writeRootElementAttributes(const TieLine& tl, const Network& /*
     });
 
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_9(), context.getVersion(), [this, &tl, &context](){
-        if(!tl.getUcteXnodeCode().empty()) {
-            context.getWriter().writeAttribute(UCTE_XNODE_CODE, tl.getUcteXnodeCode());
+        if(!tl.getPairingKey().empty()) {
+            context.getWriter().writeAttribute(UCTE_XNODE_CODE, tl.getPairingKey());
         }
         writeNodeOrBus(tl.getDanglingLine1().getTerminal(), context, 1);
         writeNodeOrBus(tl.getDanglingLine2().getTerminal(), context, 2);

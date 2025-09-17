@@ -127,7 +127,7 @@ Network createNodeBreakerDanglingLineNetwork() {
             .setB(0.0005)
             .setP0(70.0)
             .setQ0(10.0)
-            .setUcteXnodeCode("ucteNode")
+            .setPairingKey("ucteNode")
             .setNode(3)
             .setEnsureIdUnicity(false)
             .add();
@@ -183,7 +183,7 @@ Network createDanglingLineTestNetwork() {
         .setQ0(-100)
         .setR(10.30)
         .setX(40.20)
-        .setUcteXnodeCode("ucteXnodeCodeTest")
+        .setPairingKey("ucteXnodeCodeTest")
         .add();
 
     return network;

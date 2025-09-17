@@ -56,7 +56,7 @@ public:
     const DanglingLine& getDanglingLine(const std::string& voltageLevelId) const;
     DanglingLine& getDanglingLine(const std::string& voltageLevelId);
 
-    std::string getUcteXnodeCode() const;
+    std::string getPairingKey() const;
 
     void remove();
     void remove(bool updateDanglingLines);

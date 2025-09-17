@@ -493,7 +493,7 @@ Network createSwitchBBKNetwork() {
         .setQ0(0.0)
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("code")
         .add();
     DanglingLine& dl2 = network.getVoltageLevel(vl3.getId()).newDanglingLine()
         .setId("H2_TL_VL1_VL3")
@@ -505,7 +505,7 @@ Network createSwitchBBKNetwork() {
         .setQ0(0.0)
         .setBus(vl3Bus1.getId())
         .setConnectableBus(vl3Bus1.getId())
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("code")
         .add();
     network.newTieLine()
         .setId("TL_VL1_VL3")
@@ -535,7 +535,7 @@ Network createSwitchBBKNetwork() {
         .setQ0(4.0)
         .setR(5.0)
         .setX(6.0)
-        .setUcteXnodeCode("ucteXnodeCodeTest")
+        .setPairingKey("codeTest")
         .add();
 
     return network;
@@ -728,7 +728,7 @@ Network createComponentsTestNetworkBB() {
         .setP0(0.0)
         .setQ0(0.0)
         .setBus(vl4Bus1.getId())
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("code")
         .add();
     DanglingLine& dl2 = network.getVoltageLevel(vl6.getId()).newDanglingLine()
         .setId("H2_TL_VL4_VL6")
@@ -739,7 +739,7 @@ Network createComponentsTestNetworkBB() {
         .setP0(0.0)
         .setQ0(0.0)
         .setBus(vl6Bus1.getId())
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("code")
         .add();
     network.newTieLine()
         .setId("TL_VL4_VL6")
@@ -1118,7 +1118,7 @@ Network createComponentsTestNetworkNB() {
         .setP0(0.0)
         .setQ0(0.0)
         .setNode(2)
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("code")
         .add();
     DanglingLine& dl2 = network.getVoltageLevel(vl6.getId()).newDanglingLine()
         .setId("H2_TL_VL4_VL6")
@@ -1129,7 +1129,7 @@ Network createComponentsTestNetworkNB() {
         .setP0(0.0)
         .setQ0(0.0)
         .setNode(2)
-        .setUcteXnodeCode("UcteXnodeCode")
+        .setPairingKey("code")
         .add();
     network.newTieLine()
         .setId("TL_VL4_VL6")

@@ -19,7 +19,7 @@ namespace powsybl {
 namespace iidm {
 
 DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-                           double p0, double q0, double r, double x, double g, double b, const std::string& ucteXnodeCode,
+                           double p0, double q0, double r, double x, double g, double b, const std::string& pairingKey,
                            std::unique_ptr<Generation>&& generation) :
     Identifiable(id, name, fictitious),
     FlowsLimitsHolder(*this, "limits"),
@@ -29,7 +29,7 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     m_x(checkX(*this, x)),
     m_p0(network.getVariantManager().getVariantArraySize(), p0),
     m_q0(network.getVariantManager().getVariantArraySize(), q0),
-    m_ucteXnodeCode(ucteXnodeCode),
+    m_pairingKey(pairingKey),
     m_generation(std::move(generation)),
     m_boundary(stdcxx::make_unique<util::dangling_line::Boundary>(*this)) {
 
@@ -144,8 +144,8 @@ const std::string& DanglingLine::getTypeDescription() const {
     return s_typeDescription;
 }
 
-const std::string& DanglingLine::getUcteXnodeCode() const {
-    return m_ucteXnodeCode;
+const std::string& DanglingLine::getPairingKey() const {
+    return m_pairingKey;
 }
 
 double DanglingLine::getX() const {

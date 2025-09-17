@@ -42,8 +42,8 @@ TieLine& TieLineAdder::add() {
         throw ValidationException(*this, stdcxx::format("danglingLine2 (%1%) already has a tie line", m_dlId2));
     }
 
-    if (!dl1.getUcteXnodeCode().empty() && !dl2.getUcteXnodeCode().empty() && dl1.getUcteXnodeCode() != dl2.getUcteXnodeCode()) {
-        throw ValidationException(*this, "ucteXnodeCode is not consistent");
+    if (!dl1.getPairingKey().empty() && !dl2.getPairingKey().empty() && dl1.getPairingKey() != dl2.getPairingKey()) {
+        throw ValidationException(*this, "pairingKey is not consistent");
     }
     
     std::unique_ptr<TieLine> ptrTieLine = std::unique_ptr<TieLine>(new TieLine(m_network, checkAndGetUniqueId(), getName(), isFictitious()));
