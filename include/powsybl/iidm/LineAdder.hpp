@@ -21,6 +21,7 @@ class Network;
 class LineAdder : public BranchAdder<Line, LineAdder> {
 public:
     explicit LineAdder(Network& network);
+    explicit LineAdder(Network& network, const std::string& subNetworkId);
 
     ~LineAdder() noexcept override = default;
 
@@ -48,6 +49,7 @@ private: // IdentifiableAdder
 
 private:
     Network& m_network;
+    std::string m_subnetworkId;
 
     double m_b1 = 0.0;
 

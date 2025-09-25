@@ -12,8 +12,10 @@
 
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/NetworkIndex.hpp>
+#include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/NetworkViews.hpp>
+#include <powsybl/iidm/SubnetworkViews.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 #include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/iidm/VariantArray.hpp>
@@ -81,17 +83,25 @@ public:
 
 public:  // Identifiable
     const Network& getNetwork() const override;
-
     Network& getNetwork() override;
+
+    stdcxx::CReference<Network> getParentNetworkRef() const;
+    stdcxx::Reference<Network> getParentNetworkRef();
+
+    const Network& getRootNetwork() const;
+    Network& getRootNetwork();
+
+    bool contains(const Identifiable& identifiable) const;
+    bool contains(Identifiable& identifiable) const;
 
     const IdentifiableType& getType() const override;
 
 public:  // VariantManagerHolder
-    unsigned long getVariantIndex() const override;
+    virtual unsigned long getVariantIndex() const override;
 
-    const VariantManager& getVariantManager() const override;
+    virtual const VariantManager& getVariantManager() const override;
 
-    VariantManager& getVariantManager() override;
+    virtual VariantManager& getVariantManager() override;
 
 public:
     Network(const std::string& id, const std::string& sourceFormat);
@@ -115,9 +125,9 @@ public:
     template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     stdcxx::Reference<T> find(const std::string& id);
 
-    stdcxx::CReference<HvdcLine> findHvdcLine(const HvdcConverterStation& station) const;
+    virtual stdcxx::CReference<HvdcLine> findHvdcLine(const HvdcConverterStation& station) const;
 
-    stdcxx::Reference<HvdcLine> findHvdcLine(const HvdcConverterStation& station);
+    virtual stdcxx::Reference<HvdcLine> findHvdcLine(const HvdcConverterStation& station);
 
     template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     const T& get(const std::string& id) const;
@@ -125,43 +135,43 @@ public:
     template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     T& get(const std::string& id);
 
-    const Battery& getBattery(const std::string& id) const;
+    virtual const Battery& getBattery(const std::string& id) const;
 
-    Battery& getBattery(const std::string& id);
+    virtual Battery& getBattery(const std::string& id);
 
-    unsigned long getBatteryCount() const;
+    virtual unsigned long getBatteryCount() const;
 
-    stdcxx::const_range<Battery> getBatteries() const;
+    virtual stdcxx::const_range<Battery> getBatteries() const;
 
-    stdcxx::range<Battery> getBatteries();
+    virtual stdcxx::range<Battery> getBatteries();
 
-    const Branch& getBranch(const std::string& id) const;
+    virtual const Branch& getBranch(const std::string& id) const;
 
-    Branch& getBranch(const std::string& id);
+    virtual Branch& getBranch(const std::string& id);
 
-    unsigned long getBranchCount() const;
+    virtual unsigned long getBranchCount() const;
 
-    stdcxx::const_range<Branch> getBranches() const;
+    virtual stdcxx::const_range<Branch> getBranches() const;
 
-    stdcxx::range<Branch> getBranches();
+    virtual stdcxx::range<Branch> getBranches();
 
-    const BusbarSection& getBusbarSection(const std::string& id) const;
+    virtual const BusbarSection& getBusbarSection(const std::string& id) const;
 
-    BusbarSection& getBusbarSection(const std::string& id);
+    virtual BusbarSection& getBusbarSection(const std::string& id);
 
-    unsigned long getBusbarSectionCount() const;
+    virtual unsigned long getBusbarSectionCount() const;
 
-    stdcxx::const_range<BusbarSection> getBusbarSections() const;
+    virtual stdcxx::const_range<BusbarSection> getBusbarSections() const;
 
-    stdcxx::range<BusbarSection> getBusbarSections();
+    virtual stdcxx::range<BusbarSection> getBusbarSections();
 
-    const BusBreakerView& getBusBreakerView() const;
+    virtual const BusBreakerView& getBusBreakerView() const;
 
-    BusBreakerView& getBusBreakerView();
+    virtual BusBreakerView& getBusBreakerView();
 
-    const BusView& getBusView() const;
+    virtual const BusView& getBusView() const;
 
-    BusView& getBusView();
+    virtual BusView& getBusView();
 
     const stdcxx::DateTime& getCaseDate() const;
 
@@ -178,119 +188,119 @@ public:
 
     ConnectedComponentsManager& getConnectedComponentsManager();
 
-    std::set<Country> getCountries() const;
+    virtual std::set<Country> getCountries() const;
 
-    unsigned long getCountryCount() const;
+    virtual unsigned long getCountryCount() const;
 
-    const DanglingLine& getDanglingLine(const std::string& id) const;
+    virtual const DanglingLine& getDanglingLine(const std::string& id) const;
 
-    DanglingLine& getDanglingLine(const std::string& id);
+    virtual DanglingLine& getDanglingLine(const std::string& id);
 
-    unsigned long getDanglingLineCount() const;
+    virtual unsigned long getDanglingLineCount() const;
 
-    stdcxx::const_range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) const;
+    virtual stdcxx::const_range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) const;
 
-    stdcxx::range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter);
+    virtual stdcxx::range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter);
 
-    stdcxx::const_range<DanglingLine> getDanglingLines() const;
+    virtual stdcxx::const_range<DanglingLine> getDanglingLines() const;
 
-    stdcxx::range<DanglingLine> getDanglingLines();
+    virtual stdcxx::range<DanglingLine> getDanglingLines();
 
     int getForecastDistance() const;
 
-    const Generator& getGenerator(const std::string& id) const;
+    virtual const Generator& getGenerator(const std::string& id) const;
 
-    Generator& getGenerator(const std::string& id);
+    virtual Generator& getGenerator(const std::string& id);
 
-    unsigned long getGeneratorCount() const;
+    virtual unsigned long getGeneratorCount() const;
 
-    stdcxx::const_range<Generator> getGenerators() const;
+    virtual stdcxx::const_range<Generator> getGenerators() const;
 
-    stdcxx::range<Generator> getGenerators();
+    virtual stdcxx::range<Generator> getGenerators();
 
-    const HvdcConverterStation& getHvdcConverterStation(const std::string& id) const;
+    virtual const HvdcConverterStation& getHvdcConverterStation(const std::string& id) const;
 
-    HvdcConverterStation& getHvdcConverterStation(const std::string& id);
+    virtual HvdcConverterStation& getHvdcConverterStation(const std::string& id);
 
-    unsigned long getHvdcConverterStationCount() const;
+    virtual unsigned long getHvdcConverterStationCount() const;
 
-    stdcxx::const_range<HvdcConverterStation> getHvdcConverterStations() const;
+    virtual stdcxx::const_range<HvdcConverterStation> getHvdcConverterStations() const;
 
-    stdcxx::range<HvdcConverterStation> getHvdcConverterStations();
+    virtual stdcxx::range<HvdcConverterStation> getHvdcConverterStations();
 
-    const HvdcLine& getHvdcLine(const std::string& id) const;
+    virtual const HvdcLine& getHvdcLine(const std::string& id) const;
 
-    HvdcLine& getHvdcLine(const std::string& id);
+    virtual HvdcLine& getHvdcLine(const std::string& id);
 
-    const HvdcLine& getHvdcLine(const HvdcConverterStation& station) const;
+    virtual const HvdcLine& getHvdcLine(const HvdcConverterStation& station) const;
 
-    HvdcLine& getHvdcLine(const HvdcConverterStation& station);
+    virtual HvdcLine& getHvdcLine(const HvdcConverterStation& station);
 
-    unsigned long getHvdcLineCount() const;
+    virtual unsigned long getHvdcLineCount() const;
 
-    stdcxx::const_range<HvdcLine> getHvdcLines() const;
+    virtual stdcxx::const_range<HvdcLine> getHvdcLines() const;
 
-    stdcxx::range<HvdcLine> getHvdcLines();
+    virtual stdcxx::range<HvdcLine> getHvdcLines();
 
-    const Identifiable& getIdentifiable(const std::string& id) const;
+    virtual const Identifiable& getIdentifiable(const std::string& id) const;
 
-    Identifiable& getIdentifiable(const std::string& id);
+    virtual Identifiable& getIdentifiable(const std::string& id);
 
-    stdcxx::const_range<Identifiable> getIdentifiables() const;
+    virtual stdcxx::const_range<Identifiable> getIdentifiables() const;
 
-    stdcxx::range<Identifiable> getIdentifiables();
+    virtual stdcxx::range<Identifiable> getIdentifiables();
 
-    const LccConverterStation& getLccConverterStation(const std::string& id) const;
+    virtual const LccConverterStation& getLccConverterStation(const std::string& id) const;
 
-    LccConverterStation& getLccConverterStation(const std::string& id);
+    virtual LccConverterStation& getLccConverterStation(const std::string& id);
 
-    unsigned long getLccConverterStationCount() const;
+    virtual unsigned long getLccConverterStationCount() const;
 
-    stdcxx::const_range<LccConverterStation> getLccConverterStations() const;
+    virtual stdcxx::const_range<LccConverterStation> getLccConverterStations() const;
 
-    stdcxx::range<LccConverterStation> getLccConverterStations();
+    virtual stdcxx::range<LccConverterStation> getLccConverterStations();
 
-    const Line& getLine(const std::string& id) const;
+    virtual const Line& getLine(const std::string& id) const;
 
-    Line& getLine(const std::string& id);
+    virtual Line& getLine(const std::string& id);
 
-    unsigned long getLineCount() const;
+    virtual unsigned long getLineCount() const;
 
-    stdcxx::const_range<Line> getLines() const;
+    virtual stdcxx::const_range<Line> getLines() const;
 
-    stdcxx::range<Line> getLines();
+    virtual stdcxx::range<Line> getLines();
 
-    const TieLine& getTieLine(const std::string& id) const;
+    virtual const TieLine& getTieLine(const std::string& id) const;
 
-    TieLine& getTieLine(const std::string& id);
+    virtual TieLine& getTieLine(const std::string& id);
 
-    unsigned long getTieLineCount() const;
+    virtual unsigned long getTieLineCount() const;
 
-    stdcxx::const_range<TieLine> getTieLines() const;
+    virtual stdcxx::const_range<TieLine> getTieLines() const;
 
-    stdcxx::range<TieLine> getTieLines();
+    virtual stdcxx::range<TieLine> getTieLines();
 
-    const Load& getLoad(const std::string& id) const;
+    virtual const Load& getLoad(const std::string& id) const;
 
-    Load& getLoad(const std::string& id);
+    virtual Load& getLoad(const std::string& id);
 
-    unsigned long getLoadCount() const;
+    virtual unsigned long getLoadCount() const;
 
-    stdcxx::const_range<Load> getLoads() const;
+    virtual stdcxx::const_range<Load> getLoads() const;
 
-    stdcxx::range<Load> getLoads();
+    virtual stdcxx::range<Load> getLoads();
 
-    const ValidationLevel& getMinimumValidationLevel() const;
+    virtual const ValidationLevel& getMinimumValidationLevel() const;
 
-    const ShuntCompensator& getShuntCompensator(const std::string& id) const;
+    virtual const ShuntCompensator& getShuntCompensator(const std::string& id) const;
 
-    ShuntCompensator& getShuntCompensator(const std::string& id);
+    virtual ShuntCompensator& getShuntCompensator(const std::string& id);
 
-    unsigned long getShuntCompensatorCount() const;
+    virtual unsigned long getShuntCompensatorCount() const;
 
-    stdcxx::const_range<ShuntCompensator> getShuntCompensators() const;
+    virtual stdcxx::const_range<ShuntCompensator> getShuntCompensators() const;
 
-    stdcxx::range<ShuntCompensator> getShuntCompensators();
+    virtual stdcxx::range<ShuntCompensator> getShuntCompensators();
 
     const std::string& getSourceFormat() const;
 
@@ -298,105 +308,125 @@ public:
 
     stdcxx::range<MultiVariantObject> getStatefulObjects();
 
-    const StaticVarCompensator& getStaticVarCompensator(const std::string& id) const;
+    virtual const StaticVarCompensator& getStaticVarCompensator(const std::string& id) const;
 
-    StaticVarCompensator& getStaticVarCompensator(const std::string& id);
+    virtual StaticVarCompensator& getStaticVarCompensator(const std::string& id);
 
-    unsigned long getStaticVarCompensatorCount() const;
+    virtual unsigned long getStaticVarCompensatorCount() const;
 
-    stdcxx::const_range<StaticVarCompensator> getStaticVarCompensators() const;
+    virtual stdcxx::const_range<StaticVarCompensator> getStaticVarCompensators() const;
 
-    stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
+    virtual stdcxx::range<StaticVarCompensator> getStaticVarCompensators();
 
-    const Substation& getSubstation(const std::string& id) const;
+    virtual stdcxx::CReference<Network> getSubNetwork(const std::string& id) const;
 
-    Substation& getSubstation(const std::string& id);
+    virtual stdcxx::Reference<Network> getSubNetwork(const std::string& id);
 
-    unsigned long getSubstationCount() const;
+    virtual unsigned long getSubNetworksCount() const;
 
-    stdcxx::const_range<Substation> getSubstations() const;
+    virtual stdcxx::const_range<Network> getSubNetworks() const;
 
-    stdcxx::range<Substation> getSubstations();
+    virtual stdcxx::range<Network> getSubNetworks();
 
-    const Switch& getSwitch(const std::string& id) const;
+    virtual const Substation& getSubstation(const std::string& id) const;
 
-    Switch& getSwitch(const std::string& id);
+    virtual Substation& getSubstation(const std::string& id);
 
-    unsigned long getSwitchCount() const;
+    virtual unsigned long getSubstationCount() const;
 
-    stdcxx::const_range<Switch> getSwitches() const;
+    virtual stdcxx::const_range<Substation> getSubstations() const;
 
-    stdcxx::range<Switch> getSwitches();
+    virtual stdcxx::range<Substation> getSubstations();
+
+    virtual const Switch& getSwitch(const std::string& id) const;
+
+    virtual Switch& getSwitch(const std::string& id);
+
+    virtual unsigned long getSwitchCount() const;
+
+    virtual stdcxx::const_range<Switch> getSwitches() const;
+
+    virtual stdcxx::range<Switch> getSwitches();
 
     const SynchronousComponentsManager& getSynchronousComponentsManager() const;
 
     SynchronousComponentsManager& getSynchronousComponentsManager();
 
-    const ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id) const;
+    virtual const ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id) const;
 
-    ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id);
+    virtual ThreeWindingsTransformer& getThreeWindingsTransformer(const std::string& id);
 
-    unsigned long getThreeWindingsTransformerCount() const;
+    virtual unsigned long getThreeWindingsTransformerCount() const;
 
-    stdcxx::const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
+    virtual stdcxx::const_range<ThreeWindingsTransformer> getThreeWindingsTransformers() const;
 
-    stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
+    virtual stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
 
-    const TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id) const;
+    virtual const TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id) const;
 
-    TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id);
+    virtual TwoWindingsTransformer& getTwoWindingsTransformer(const std::string& id);
 
-    unsigned long getTwoWindingsTransformerCount() const;
+    virtual unsigned long getTwoWindingsTransformerCount() const;
 
-    stdcxx::const_range<TwoWindingsTransformer> getTwoWindingsTransformers() const;
+    virtual stdcxx::const_range<TwoWindingsTransformer> getTwoWindingsTransformers() const;
 
-    stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
+    virtual stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
 
-    const VoltageAngleLimit& getVoltageAngleLimit(const std::string& id) const;
+    virtual const VoltageAngleLimit& getVoltageAngleLimit(const std::string& id) const;
 
-    VoltageAngleLimit& getVoltageAngleLimit(const std::string& id);
+    virtual VoltageAngleLimit& getVoltageAngleLimit(const std::string& id);
 
-    unsigned long getVoltageAngleLimitsCount() const;
+    virtual unsigned long getVoltageAngleLimitsCount() const;
 
-    stdcxx::const_range<VoltageAngleLimit> getVoltageAngleLimits() const;
+    virtual stdcxx::const_range<VoltageAngleLimit> getVoltageAngleLimits() const;
 
-    stdcxx::range<VoltageAngleLimit> getVoltageAngleLimits();
+    virtual stdcxx::range<VoltageAngleLimit> getVoltageAngleLimits();
 
-    std::map<std::string, VoltageAngleLimit>& getVoltageAngleLimitsIndex();
+    virtual std::map<std::string, VoltageAngleLimit>& getVoltageAngleLimitsIndex();
 
-    const VoltageLevel& getVoltageLevel(const std::string& id) const;
+    virtual const VoltageLevel& getVoltageLevel(const std::string& id) const;
 
-    VoltageLevel& getVoltageLevel(const std::string& id);
+    virtual VoltageLevel& getVoltageLevel(const std::string& id);
 
-    unsigned long getVoltageLevelCount() const;
+    virtual unsigned long getVoltageLevelCount() const;
 
-    stdcxx::const_range<VoltageLevel> getVoltageLevels() const;
+    virtual stdcxx::const_range<VoltageLevel> getVoltageLevels() const;
 
-    stdcxx::range<VoltageLevel> getVoltageLevels();
+    virtual stdcxx::range<VoltageLevel> getVoltageLevels();
 
-    const VscConverterStation& getVscConverterStation(const std::string& id) const;
+    virtual const VscConverterStation& getVscConverterStation(const std::string& id) const;
 
-    VscConverterStation& getVscConverterStation(const std::string& id);
+    virtual VscConverterStation& getVscConverterStation(const std::string& id);
 
-    unsigned long getVscConverterStationCount() const;
+    virtual unsigned long getVscConverterStationCount() const;
 
-    stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
+    virtual stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
 
-    stdcxx::range<VscConverterStation> getVscConverterStations();
+    virtual stdcxx::range<VscConverterStation> getVscConverterStations();
 
-    HvdcLineAdder newHvdcLine();
+    virtual HvdcLineAdder newHvdcLine();
+    virtual HvdcLineAdder newHvdcLine(const std::string& subNetworkId);
 
-    LineAdder newLine();
+    virtual LineAdder newLine();
+    virtual LineAdder newLine(const std::string& subNetworkId);
 
-    SubstationAdder newSubstation();
+    /**
+     * Creates a new subnetwork inside this current network;
+     * @return created subnetwork
+     */
+    virtual Network& newSubnetwork(const std::string& id, const std::string& sourceFormat);
 
-    TieLineAdder newTieLine();
+    virtual SubstationAdder newSubstation();
 
-    VoltageAngleLimitAdder newVoltageAngleLimit();
+    virtual TieLineAdder newTieLine();
+    virtual TieLineAdder newTieLine(const std::string& subNetworkId);
 
-    VoltageLevelAdder newVoltageLevel();
+    virtual VoltageAngleLimitAdder newVoltageAngleLimit();
+    virtual VoltageAngleLimitAdder newVoltageAngleLimit(const std::string& subNetworkId);
 
-    void remove(Identifiable& identifiable);
+    virtual VoltageLevelAdder newVoltageLevel();
+
+    virtual void remove(Identifiable& identifiable);
 
     Network& setCaseDate(const stdcxx::DateTime& caseDate);
 
@@ -409,7 +439,7 @@ public:
     * Network validation status id updated.
     * @return resulting ValidationLevel of the network
     */
-    ValidationLevel runValidationChecks();
+    virtual ValidationLevel runValidationChecks();
     /*
     * If network is valid, does nothing.
     * Else, runs a validation check on each network component. 
@@ -417,34 +447,35 @@ public:
     * Network validation status id updated.
     * @return resulting ValidationLevel of the network
     */
-    ValidationLevel runValidationChecks(const ValidationLevel& vl);
+    virtual ValidationLevel runValidationChecks(const ValidationLevel& vl);
 
     /*
     * If network validation level not evaluated, runs validation checks and updates network validation level.
     */
-    const ValidationLevel& validate();
+    virtual const ValidationLevel& validate();
     /*
     * If network validation level not evaluated, runs validation checks.
     * Returns network's validation level. 
     * Does NOT update network validation level value.
     */
-    ValidationLevel getValidationLevel() const;
+    virtual ValidationLevel getValidationLevel() const;
 
     /*
     * Set the minimum validation level of the network
     * If the given validation level value is not matched by the current network validation status, an Exception is thrown.
     */
-    Network& setMinimumAcceptableValidationLevel(const ValidationLevel& minimumValidationLevel);
+    virtual Network& setMinimumAcceptableValidationLevel(const ValidationLevel& minimumValidationLevel);
 
     /*
     * Update networtk validation level to the minimum between current status and given validation level
     */
-    Network& setValidationLevelIfGreaterThan(const ValidationLevel& vl);
+    virtual Network& setValidationLevelIfGreaterThan(const ValidationLevel& vl);
     /*
     * If minimum validation level is STEADY STATE HYPOTHESIS, does nothing.
     * Else, unvalid the network validation level status. A new check will have to be performed.
     */
-    Network& invalidateValidationLevel();
+    virtual Network& invalidateValidationLevel();
+
 
 protected:  // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -455,10 +486,10 @@ protected:  // MultiVariantObject
 
     void reduceVariantArraySize(unsigned long number) override;
 
-private:  // Identifiable
-    const std::string& getTypeDescription() const override;
+    virtual const network::VariantArray& getVariants() const;
+    virtual network::VariantArray& getVariants();
 
-private:
+protected:
     const BusCache& getBusBreakerViewCache() const;
 
     BusCache& getBusBreakerViewCache();
@@ -470,19 +501,12 @@ private:
     template <typename T, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     unsigned long getObjectCount() const;
 
-    const NetworkIndex& getIndex() const;
+    virtual const NetworkIndex& getIndex() const;
 
-    NetworkIndex& getIndex();
+    virtual NetworkIndex& getIndex();
 
-    friend class Identifiable;
-
-    friend class VoltageLevel;
-
-    friend class NodeBreakerVoltageLevel;
-
-    friend class network::BusView;
-
-    friend class network::BusBreakerView;
+private:  // Identifiable
+    const std::string& getTypeDescription() const override;
 
 private:
     stdcxx::DateTime m_caseDate;
@@ -505,6 +529,23 @@ private:
     BusView m_busView;
 
     std::map<std::string, VoltageAngleLimit> m_voltageAngleLimitsIndex;
+
+    stdcxx::Reference<Network> m_parentNetworkRef;
+    std::map<std::string, stdcxx::Reference<Network>> m_subNetworksIndex;
+
+    friend class Identifiable;
+
+    friend class VoltageLevel;
+
+    friend class NodeBreakerVoltageLevel;
+
+    friend class network::BusView;
+    friend class subnetwork::BusView;
+
+    friend class network::BusBreakerView;
+    friend class subnetwork::BusBreakerView;
+
+    friend class Subnetwork;
 };
 
 }  // namespace iidm

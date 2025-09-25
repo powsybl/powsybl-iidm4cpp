@@ -71,6 +71,8 @@ public: // VoltageLevel
 public:
     NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
                             Network& network, double nominalV, double lowVoltageLimit, double highVoltagelimit);
+    NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                            Network& rootnetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltagelimit);
 
     ~NodeBreakerVoltageLevel() noexcept override = default;
 

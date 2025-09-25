@@ -27,6 +27,10 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    const Network& getParentNetwork() const override;
+
+    Network& getParentNetwork() override;
+
 public:
     ~Connectable() noexcept override = default;
 

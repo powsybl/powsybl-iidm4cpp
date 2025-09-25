@@ -50,6 +50,14 @@ Network& Switch::getNetwork() {
     return getVoltageLevel().getNetwork();
 }
 
+const Network& Switch::getParentNetwork() const {
+    return getVoltageLevel().getParentNetwork();
+}
+
+Network& Switch::getParentNetwork() {
+    return getVoltageLevel().getParentNetwork();
+}
+
 const IdentifiableType& Switch::getType() const {
     static IdentifiableType s_type = IdentifiableType::SWITCH;
     return s_type;

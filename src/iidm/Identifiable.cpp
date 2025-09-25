@@ -136,6 +136,14 @@ const std::string& Identifiable::getNameOrId() const {
     return m_name.empty() ? m_id : m_name;
 }
 
+const Network& Identifiable::getParentNetwork() const {
+    return getNetwork();
+}
+
+Network& Identifiable::getParentNetwork() {
+    return getNetwork();
+}
+
 const std::string& Identifiable::getOptionalName() const {
     return m_name;
 }

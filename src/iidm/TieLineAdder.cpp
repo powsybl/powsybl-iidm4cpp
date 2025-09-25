@@ -23,6 +23,11 @@ TieLineAdder::TieLineAdder(Network& network) :
     m_network(network) {
 }
 
+TieLineAdder::TieLineAdder(Network& network, const std::string& subNetworkId) :
+    TieLineAdder(network) {
+    m_subnetworkId = subNetworkId;
+}
+
 TieLine& TieLineAdder::add() {
     
     if(m_dlId1.empty() || m_dlId2.empty()) {
@@ -45,7 +50,13 @@ TieLine& TieLineAdder::add() {
     if (!dl1.getPairingKey().empty() && !dl2.getPairingKey().empty() && dl1.getPairingKey() != dl2.getPairingKey()) {
         throw ValidationException(*this, "pairingKey is not consistent");
     }
-    
+
+    VoltageLevel& vl1 = dl1.getTerminal().getVoltageLevel();
+    VoltageLevel& vl2 = dl2.getTerminal().getVoltageLevel();
+    if(!m_subnetworkId.empty() && (vl1.getSubnetworkId() != m_subnetworkId || vl2.getSubnetworkId() != m_subnetworkId)) {
+        throw ValidationException(*this, stdcxx::format("The involved dangling lines are not in the subnetwork '%1%'. Create this tie line from the parent network '%2%'", m_subnetworkId, getNetwork().getId()));
+    }
+
     std::unique_ptr<TieLine> ptrTieLine = std::unique_ptr<TieLine>(new TieLine(m_network, checkAndGetUniqueId(), getName(), isFictitious()));
     auto& tieLine = m_network.checkAndAdd<TieLine>(std::move(ptrTieLine));
     tieLine.attachDanglingLines(dl1, dl2);

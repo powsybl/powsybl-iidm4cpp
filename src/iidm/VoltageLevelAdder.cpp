@@ -22,8 +22,14 @@ VoltageLevelAdder::VoltageLevelAdder(Network& network) :
     m_network(network) {
 }
 
+VoltageLevelAdder::VoltageLevelAdder(Network& network, Network& subnetwork) :
+    m_network(network),
+    m_subNetworkRef(stdcxx::ref<Network>(subnetwork)) {
+}
+
 VoltageLevelAdder::VoltageLevelAdder(Substation& substation) :
     m_network(substation.getNetwork()),
+    m_subNetworkRef(substation.getSubNetworkRef()),
     m_substation(substation) {
 }
 
@@ -36,13 +42,23 @@ VoltageLevel& VoltageLevelAdder::add() {
     stdcxx::Reference<VoltageLevel> voltageLevel;
     switch (*m_topologyKind) {
         case TopologyKind::NODE_BREAKER:
-            voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<NodeBreakerVoltageLevel>(
-                stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
+            if(static_cast<bool>(m_subNetworkRef)) {
+                voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<NodeBreakerVoltageLevel>(
+                    stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_subNetworkRef.get(), m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
+            } else {
+                voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<NodeBreakerVoltageLevel>(
+                    stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
+            }
             break;
 
         case TopologyKind::BUS_BREAKER:
-            voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<BusBreakerVoltageLevel>(
-                stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
+            if(static_cast<bool>(m_subNetworkRef)) {
+                voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<BusBreakerVoltageLevel>(
+                    stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_subNetworkRef.get(), m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
+            } else {
+                voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<BusBreakerVoltageLevel>(
+                    stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
+            }
             break;
 
         default:

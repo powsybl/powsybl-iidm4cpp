@@ -24,9 +24,15 @@ namespace powsybl {
 
 namespace iidm {
 
+Substation::Substation(Network& rootNetwork, Network& subNetwork, const std::string& id, const std::string& name, bool fictitious, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags) :
+    Substation(rootNetwork, id, name, fictitious, country, tso, geographicalTags) {
+    setSubNetworkRef(stdcxx::ref<Network>(subNetwork));
+}
+
 Substation::Substation(Network& network, const std::string& id, const std::string& name, bool fictitious, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags) :
     Container(id, name, fictitious, Container::Type::SUBSTATION),
-    m_network(network),
+    m_rootNetwork(network),
+    m_subNetwork(),
     m_country(country),
     m_tso(tso),
     m_geographicalTags(geographicalTags) {
@@ -50,11 +56,25 @@ const std::set<std::string>& Substation::getGeographicalTags() const {
 }
 
 const Network& Substation::getNetwork() const {
-    return m_network.get();
+    return m_rootNetwork.get();
 }
 
 Network& Substation::getNetwork() {
-    return m_network.get();
+    return m_rootNetwork.get();
+}
+
+const Network& Substation::getParentNetwork() const {
+    if(static_cast<bool>(m_subNetwork)) {
+        return m_subNetwork.get();
+    }
+    return getNetwork();
+}
+
+Network& Substation::getParentNetwork() {
+    if(static_cast<bool>(m_subNetwork)) {
+        return m_subNetwork.get();
+    }
+    return getNetwork();
 }
 
 unsigned long Substation::getThreeWindingsTransformerCount() const {
@@ -172,7 +192,15 @@ Substation& Substation::setCountry(const stdcxx::optional<Country>& country) {
 }
 
 void Substation::setNetworkRef(Network& network) {
-    m_network.set(network);
+    m_rootNetwork.set(network);
+}
+
+stdcxx::Reference<Network>& Substation::getSubNetworkRef() {
+    return m_subNetwork;
+}
+
+void Substation::setSubNetworkRef(const stdcxx::Reference<Network>& subNetwork) {
+    m_subNetwork = subNetwork;
 }
 
 Substation& Substation::setTso(const std::string& tso) {

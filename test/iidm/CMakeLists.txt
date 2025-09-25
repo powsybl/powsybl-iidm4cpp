@@ -40,6 +40,8 @@ set(UNIT_TEST_SOURCES
     ReactiveLimitsTest.cpp
     ShuntCompensatorTest.cpp
     StaticVarCompensatorTest.cpp
+    SubnetworkCreationTest.cpp
+    SubnetworkExplorationTest.cpp
     SubstationTest.cpp
     TerminalTest.cpp
     TopologyLevelTest.cpp

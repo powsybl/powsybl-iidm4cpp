@@ -36,10 +36,15 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    const Network& getParentNetwork() const override;
+
+    Network& getParentNetwork() override;
+
     const IdentifiableType& getType() const override;
 
 public:
     Substation(Network& network, const std::string& id, const std::string& name, bool fictitious, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags);
+    Substation(Network& rootNetwork, Network& subNetwork, const std::string& id, const std::string& name, bool fictitious, const stdcxx::optional<Country>& country, const std::string& tso, const std::set<std::string>& geographicalTags);
 
     ~Substation() noexcept override = default;
 
@@ -89,6 +94,10 @@ private:
 
     void setNetworkRef(Network& network);
 
+    stdcxx::Reference<Network>& getSubNetworkRef();
+
+    void setSubNetworkRef(const stdcxx::Reference<Network>& subNetwork);
+
     friend class VoltageLevel;
 
     friend class VoltageLevelAdder;
@@ -96,7 +105,8 @@ private:
     friend class NetworkIndex;
 
 private:
-    NetworkRef m_network;
+    NetworkRef m_rootNetwork;
+    stdcxx::Reference<Network> m_subNetwork;
 
     stdcxx::optional<Country> m_country;
 

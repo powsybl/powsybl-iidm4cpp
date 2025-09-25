@@ -68,6 +68,10 @@ public:
 
     virtual Network& getNetwork() = 0;
 
+    virtual const Network& getParentNetwork() const;
+
+    virtual Network& getParentNetwork();
+
     const std::string& getOptionalName() const;
 
     virtual Identifiable& setOptionalName(const std::string& name);

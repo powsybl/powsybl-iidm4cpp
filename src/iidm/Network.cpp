@@ -27,6 +27,7 @@
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
+#include <powsybl/iidm/Subnetwork.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
@@ -102,22 +103,29 @@ Network::Network(Network&& network) noexcept :
     m_busView(*this) {
 }
 
+const network::VariantArray& Network::getVariants() const {
+    return m_variants;
+}
+network::VariantArray& Network::getVariants() {
+    return m_variants;
+}
+
 void Network::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     Container::allocateVariantArrayElement(indexes, sourceIndex);
 
-    m_variants.allocateVariantArrayElement(indexes, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
+    getVariants().allocateVariantArrayElement(indexes, [this, sourceIndex]() { return getVariants().copy(sourceIndex); });
 }
 
 void Network::deleteVariantArrayElement(unsigned long index) {
     Container::deleteVariantArrayElement(index);
 
-    m_variants.deleteVariantArrayElement(index);
+    getVariants().deleteVariantArrayElement(index);
 }
 
 void Network::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     Container::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
-    m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
+    getVariants().extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return getVariants().copy(sourceIndex); });
 }
 
 stdcxx::CReference<HvdcLine> Network::findHvdcLine(const HvdcConverterStation& station) const {
@@ -209,11 +217,11 @@ Network::BusBreakerView& Network::getBusBreakerView() {
 }
 
 const BusCache& Network::getBusBreakerViewCache() const {
-    return m_variants.get().getBusBreakerViewCache();
+    return getVariants().get().getBusBreakerViewCache();
 }
 
 BusCache& Network::getBusBreakerViewCache() {
-    return m_variants.get().getBusBreakerViewCache();
+    return getVariants().get().getBusBreakerViewCache();
 }
 
 const Network::BusView& Network::getBusView() const {
@@ -225,11 +233,11 @@ Network::BusView& Network::getBusView() {
 }
 
 const BusCache& Network::getBusViewCache() const {
-    return m_variants.get().getBusViewCache();
+    return getVariants().get().getBusViewCache();
 }
 
 BusCache& Network::getBusViewCache() {
-    return m_variants.get().getBusViewCache();
+    return getVariants().get().getBusViewCache();
 }
 
 const stdcxx::DateTime& Network::getCaseDate() const {
@@ -237,11 +245,11 @@ const stdcxx::DateTime& Network::getCaseDate() const {
 }
 
 const ConnectedComponentsManager& Network::getConnectedComponentsManager() const {
-    return m_variants.get().getConnectedComponentsManager();
+    return getVariants().get().getConnectedComponentsManager();
 }
 
 ConnectedComponentsManager& Network::getConnectedComponentsManager() {
-    return m_variants.get().getConnectedComponentsManager();
+    return getVariants().get().getConnectedComponentsManager();
 }
 
 std::set<Country> Network::getCountries() const {
@@ -478,9 +486,45 @@ const ValidationLevel& Network::getMinimumValidationLevel() const {
 const Network& Network::getNetwork() const {
     return *this;
 }
-
 Network& Network::getNetwork() {
     return *this;
+}
+
+stdcxx::CReference<Network> Network::getParentNetworkRef() const {
+    return stdcxx::cref(m_parentNetworkRef);
+}
+stdcxx::Reference<Network> Network::getParentNetworkRef() {
+    return m_parentNetworkRef;
+}
+
+const Network& Network::getRootNetwork() const {
+    if(static_cast<bool>(m_parentNetworkRef)) {
+        return m_parentNetworkRef.get().getRootNetwork();
+    }
+    return *this;
+}
+Network& Network::getRootNetwork() {
+    if(static_cast<bool>(m_parentNetworkRef)) {
+        return m_parentNetworkRef.get().getRootNetwork();
+    }
+    return *this;
+}
+
+bool Network::contains(const Identifiable& identifiable) const {
+    if( stdcxx::isInstanceOf<Network>(identifiable)) {
+        const auto& network = dynamic_cast<const Network&>(identifiable);
+        return stdcxx::areSame(network, *this) || stdcxx::areSame(network.getParentNetwork(), *this); 
+    } else {
+        return stdcxx::areSame(identifiable.getParentNetwork(), *this);
+    }
+}
+bool Network::contains(Identifiable& identifiable) const {
+    if( stdcxx::isInstanceOf<Network>(identifiable)) {
+        auto& network = dynamic_cast<Network&>(identifiable);
+        return stdcxx::areSame(network, *this) || stdcxx::areSame(network.getParentNetwork(), *this); 
+    } else {
+        return stdcxx::areSame(identifiable.getParentNetwork(), *this);
+    }
 }
 
 const ShuntCompensator& Network::getShuntCompensator(const std::string& id) const {
@@ -535,6 +579,34 @@ stdcxx::range<StaticVarCompensator> Network::getStaticVarCompensators() {
     return m_networkIndex.getAll<StaticVarCompensator>();
 }
 
+stdcxx::CReference<Network> Network::getSubNetwork(const std::string& id) const {
+    if (m_subNetworksIndex.find(id) == m_subNetworksIndex.end()) {
+        throw PowsyblException(stdcxx::format("Unable to find to the subnetwork '%1%'", id));
+    }
+
+    return stdcxx::cref(m_subNetworksIndex.at(id));
+}
+
+stdcxx::Reference<Network> Network::getSubNetwork(const std::string& id) {
+    if (m_subNetworksIndex.find(id) == m_subNetworksIndex.end()) {
+        throw PowsyblException(stdcxx::format("Unable to find to the subnetwork '%1%'", id));
+    }
+
+    return m_subNetworksIndex.at(id);
+}
+
+unsigned long Network::getSubNetworksCount() const {
+    return m_subNetworksIndex.size();
+}
+
+stdcxx::const_range<Network> Network::getSubNetworks() const {
+    return boost::adaptors::values(m_subNetworksIndex);
+}
+
+stdcxx::range<Network> Network::getSubNetworks() {
+    return boost::adaptors::values(m_subNetworksIndex);
+}
+
 const Substation& Network::getSubstation(const std::string& id) const {
     return get<Substation>(id);
 }
@@ -576,11 +648,11 @@ stdcxx::range<Switch> Network::getSwitches() {
 }
 
 const SynchronousComponentsManager& Network::getSynchronousComponentsManager() const {
-    return m_variants.get().getSynchronousComponentsManager();
+    return getVariants().get().getSynchronousComponentsManager();
 }
 
 SynchronousComponentsManager& Network::getSynchronousComponentsManager() {
-    return m_variants.get().getSynchronousComponentsManager();
+    return getVariants().get().getSynchronousComponentsManager();
 }
 
 const ThreeWindingsTransformer& Network::getThreeWindingsTransformer(const std::string& id) const {
@@ -659,7 +731,7 @@ VoltageAngleLimit& Network::getVoltageAngleLimit(const std::string& id) {
 }
 
 unsigned long Network::getVoltageAngleLimitsCount() const {
-    return m_voltageAngleLimitsIndex.size();
+    return boost::size(getVoltageAngleLimits());
 }
 
 stdcxx::const_range<VoltageAngleLimit> Network::getVoltageAngleLimits() const {
@@ -717,9 +789,26 @@ unsigned long Network::getVscConverterStationCount() const {
 HvdcLineAdder Network::newHvdcLine() {
     return HvdcLineAdder(*this);
 }
+HvdcLineAdder Network::newHvdcLine(const std::string& subNetworkId) {
+    return HvdcLineAdder(*this, subNetworkId);
+}
 
 LineAdder Network::newLine() {
     return LineAdder(*this);
+}
+LineAdder Network::newLine(const std::string& subNetworkId) {
+    return LineAdder(*this, subNetworkId);
+}
+
+Network& Network::newSubnetwork(const std::string& id, const std::string& sourceFormat) {
+    if(m_subNetworksIndex.find(id) != m_subNetworksIndex.end()){
+        throw PowsyblException(stdcxx::format("The network '%1%' already contains a subnetwork '%2%'", getId(), id));
+    }
+
+    stdcxx::Reference<Subnetwork> subnetwork;
+    subnetwork = stdcxx::ref<Subnetwork>(checkAndAdd<Subnetwork>(stdcxx::make_unique<Subnetwork>(*this, id, sourceFormat)));
+    m_subNetworksIndex.insert(std::make_pair(id, subnetwork));
+    return subnetwork;
 }
 
 SubstationAdder Network::newSubstation() {
@@ -729,9 +818,15 @@ SubstationAdder Network::newSubstation() {
 TieLineAdder Network::newTieLine() {
     return TieLineAdder(*this);
 }
+TieLineAdder Network::newTieLine(const std::string& subNetworkId) {
+    return TieLineAdder(*this, subNetworkId);
+}
 
 VoltageAngleLimitAdder Network::newVoltageAngleLimit() {
     return VoltageAngleLimitAdder(*this);
+}
+VoltageAngleLimitAdder Network::newVoltageAngleLimit(const std::string& subNetworkId) {
+    return VoltageAngleLimitAdder(*this, subNetworkId);
 }
 
 VoltageLevelAdder Network::newVoltageLevel() {
@@ -741,11 +836,11 @@ VoltageLevelAdder Network::newVoltageLevel() {
 void Network::reduceVariantArraySize(unsigned long number) {
     Container::reduceVariantArraySize(number);
 
-    m_variants.reduceVariantArraySize(number);
+    getVariants().reduceVariantArraySize(number);
 }
 
 void Network::remove(Identifiable& identifiable) {
-    m_networkIndex.remove(identifiable);
+    getIndex().remove(identifiable);
 }
 
 Network& Network::setCaseDate(const stdcxx::DateTime& caseDate) {

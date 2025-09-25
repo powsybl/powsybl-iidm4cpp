@@ -59,6 +59,12 @@ public:  // Identifiable
 
     Network& getNetwork() override;
 
+    const Network& getParentNetwork() const override;
+
+    Network& getParentNetwork() override;
+
+    std::string getSubnetworkId() const;
+
     const IdentifiableType& getType() const override;
 
 public:
@@ -221,6 +227,8 @@ protected:
 protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
                  Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit);
+    VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                 Network& rootNetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltageLimit);
 
     virtual stdcxx::const_range<Terminal> getTerminals() const = 0;
 
@@ -238,6 +246,7 @@ private:
 
 private:
     NetworkRef m_network;
+    stdcxx::Reference<Network> m_subnetworkRef;
 
     stdcxx::Reference<Substation> m_substation;
 

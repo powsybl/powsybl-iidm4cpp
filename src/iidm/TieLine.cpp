@@ -45,6 +45,25 @@ Network& TieLine::getNetwork() {
     return m_network.get();
 }
 
+const Network& TieLine::getParentNetwork() const {
+    if(m_danglingLine1 && m_danglingLine2) {
+        const Network& subNetwork1 = m_danglingLine1.get().getParentNetwork();
+        const Network& subNetwork2 = m_danglingLine2.get().getParentNetwork();
+        if(stdcxx::areSame(subNetwork1, subNetwork2)) {
+            return subNetwork1;
+        }
+    } else if(m_danglingLine1) {
+        return m_danglingLine1.get().getParentNetwork();
+    } else if(m_danglingLine2) {
+        return m_danglingLine2.get().getParentNetwork();
+    }
+    return getNetwork();
+}
+
+Network& TieLine::getParentNetwork() {
+    return const_cast<Network&>(static_cast<const TieLine*>(this)->getParentNetwork());
+}
+
 double TieLine::getB1() const {
     return TieLineUtil::getB1(getDanglingLine1(), getDanglingLine2());
 }

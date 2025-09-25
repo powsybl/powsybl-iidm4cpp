@@ -45,15 +45,18 @@ private: // IdentifiableAdder
 
 private:
     explicit VoltageLevelAdder(Network& network);
+    explicit VoltageLevelAdder(Network& network, Network& subnetwork);
 
     explicit VoltageLevelAdder(Substation& substation);
 
     friend class Network;
+    friend class Subnetwork;
 
     friend class Substation;
 
 private:
     Network& m_network;
+    stdcxx::Reference<Network> m_subNetworkRef;
 
     stdcxx::Reference<Substation> m_substation;
 

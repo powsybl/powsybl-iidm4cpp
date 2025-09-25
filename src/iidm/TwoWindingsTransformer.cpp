@@ -79,6 +79,14 @@ Network& TwoWindingsTransformer::getNetwork() {
     return AbstractConnectableBranch::getNetwork();
 }
 
+const Network& TwoWindingsTransformer::getParentNetwork() const {
+    return AbstractConnectableBranch::getParentNetwork();
+}
+
+Network& TwoWindingsTransformer::getParentNetwork() {
+    return AbstractConnectableBranch::getParentNetwork();
+}
+
 const PhaseTapChanger& TwoWindingsTransformer::getPhaseTapChanger() const {
     if (!m_phaseTapChanger) {
         throw PowsyblException("Phase tap changer not set");

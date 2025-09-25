@@ -16,12 +16,24 @@ namespace powsybl {
 namespace iidm {
 
 SubstationAdder::SubstationAdder(Network& network) :
-    m_network(network) {
+    m_rootNetwork(network) {
+}
+
+SubstationAdder::SubstationAdder(Network& rootNetwork, Network& subNetworkRef) :
+    m_rootNetwork(rootNetwork),
+    m_subNetworkRef(stdcxx::ref<Network>(subNetworkRef)) {
+
 }
 
 Substation& SubstationAdder::add() {
-    std::unique_ptr<Substation> ptrSubstation = stdcxx::make_unique<Substation>(m_network, checkAndGetUniqueId(), getName(), isFictitious(), m_country, m_tso, m_geographicalTags);
-    auto& substation = m_network.checkAndAdd<Substation>(std::move(ptrSubstation));
+    std::unique_ptr<Substation> ptrSubstation;
+    
+    if(static_cast<bool>(m_subNetworkRef)) {
+        ptrSubstation = stdcxx::make_unique<Substation>(m_rootNetwork, m_subNetworkRef.get(), checkAndGetUniqueId(), getName(), isFictitious(), m_country, m_tso, m_geographicalTags);
+    } else {
+        ptrSubstation = stdcxx::make_unique<Substation>(m_rootNetwork, checkAndGetUniqueId(), getName(), isFictitious(), m_country, m_tso, m_geographicalTags);
+    }
+    auto& substation = m_rootNetwork.checkAndAdd<Substation>(std::move(ptrSubstation));
 
     return substation;
 }
@@ -32,11 +44,11 @@ SubstationAdder& SubstationAdder::addGeographicalTag(const std::string& geograph
 }
 
 const Network& SubstationAdder::getNetwork() const {
-    return m_network;
+    return m_rootNetwork;
 }
 
 Network& SubstationAdder::getNetwork() {
-    return m_network;
+    return m_rootNetwork;
 }
 
 const std::string& SubstationAdder::getTypeDescription() const {

@@ -18,6 +18,7 @@ namespace iidm {
 HvdcLine::HvdcLine(Network& network, const std::string& id, const std::string& name, bool fictitious, double r, double nominalV, double maxP,
                    const ConvertersMode& convertersMode, double activePowerSetpoint, HvdcConverterStation& converterStation1, HvdcConverterStation& converterStation2) :
     Identifiable(id, name, fictitious),
+    m_network(network),
     m_converterStation1(attach(converterStation1)),
     m_converterStation2(attach(converterStation2)),
     m_r(checkR(*this, r)),
@@ -87,18 +88,30 @@ double HvdcLine::getMaxP() const {
 }
 
 const Network& HvdcLine::getNetwork() const {
-    if (m_converterStation1) {
-        return m_converterStation1.get().getNetwork();
-    }
-    if (m_converterStation2) {
-        return m_converterStation2.get().getNetwork();
-    }
-
-    throw PowsyblException(getId() + " is not attached to a network");
+    return m_network.get();
 }
 
 Network& HvdcLine::getNetwork() {
-    return const_cast<Network&>(static_cast<const HvdcLine*>(this)->getNetwork());
+    return m_network.get();
+}
+
+const Network& HvdcLine::getParentNetwork() const {
+    if(m_converterStation1 && m_converterStation2) {
+        const Network& subNetwork1 = m_converterStation1.get().getParentNetwork();
+        const Network& subNetwork2 = m_converterStation2.get().getParentNetwork();
+        if(stdcxx::areSame(subNetwork1, subNetwork2)) {
+            return subNetwork1;
+        }
+    } else if(m_converterStation1) {
+        return m_converterStation1.get().getParentNetwork();
+    } else if(m_converterStation2) {
+        return m_converterStation2.get().getParentNetwork();
+    }
+    return getNetwork();
+}
+
+Network& HvdcLine::getParentNetwork() {
+    return const_cast<Network&>(static_cast<const HvdcLine*>(this)->getParentNetwork());
 }
 
 double HvdcLine::getNominalV() const {

@@ -532,7 +532,7 @@ bool UndirectedGraph<V, E>::traverse(unsigned long v, TraversalType traversalTyp
     checkVertex(v);
 
     if (encountered.size() < m_vertices.size()) {
-        throw new PowsyblException("Encountered array is too small");
+        throw PowsyblException("Encountered array is too small");
     }
 
     const std::vector<std::vector<unsigned long> >& adjacencyList = getAdjacencyList();

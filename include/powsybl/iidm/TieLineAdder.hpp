@@ -22,6 +22,7 @@ class TieLineAdder : public IdentifiableAdder<TieLine, TieLineAdder> {
 public:
 
     explicit TieLineAdder(Network& network);
+    explicit TieLineAdder(Network& network, const std::string& subNetworkId);
 
     ~TieLineAdder() noexcept override = default;
 
@@ -41,6 +42,7 @@ private: // IdentifiableAdder
 
 private:
     Network& m_network;
+    std::string m_subnetworkId;
 
     std::string m_dlId1;
     std::string m_dlId2;

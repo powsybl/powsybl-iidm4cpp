@@ -25,6 +25,10 @@ public:
 
     virtual Network& getNetwork() = 0;
 
+    virtual const Network& getParentNetwork() const = 0;
+
+    virtual Network& getParentNetwork() = 0;
+
     virtual bool hasPhaseTapChanger() const = 0;
 
     virtual bool hasRatioTapChanger() const = 0;

@@ -46,11 +46,14 @@ private: // IdentifiableAdder
 
 private:
     explicit SubstationAdder(Network& network);
+    explicit SubstationAdder(Network& rootNetwork, Network& subNetworkRef);
 
     friend class Network;
+    friend class Subnetwork;
 
 private:
-    Network& m_network;
+    Network& m_rootNetwork;
+    stdcxx::Reference<Network> m_subNetworkRef;
 
     stdcxx::optional<Country> m_country;
 

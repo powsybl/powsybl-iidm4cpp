@@ -117,6 +117,13 @@ Network& Bus::getNetwork() {
     return getVoltageLevel().getNetwork();
 }
 
+const Network& Bus::getParentNetwork() const {
+    return getVoltageLevel().getParentNetwork();
+}
+Network& Bus::getParentNetwork()  {
+    return getVoltageLevel().getParentNetwork();
+}
+
 double Bus::getP() const {
     if (getConnectedTerminalCount() == 0) {
         return stdcxx::nan();

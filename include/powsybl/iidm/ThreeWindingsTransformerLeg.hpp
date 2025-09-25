@@ -32,6 +32,10 @@ public:  // TapChangerHolder
 
     Network& getNetwork() override;
 
+    const Network& getParentNetwork() const override;
+
+    Network& getParentNetwork() override;
+
 public:  // RatioTapChangerHolder
     const RatioTapChanger& getRatioTapChanger() const override;
 

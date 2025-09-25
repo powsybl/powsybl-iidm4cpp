@@ -38,6 +38,7 @@ VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool 
                            Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit) :
     Container(id, name, fictitious, Container::Type::VOLTAGE_LEVEL),
     m_network(network),
+    m_subnetworkRef(),
     m_substation(substation),
     m_highVoltageLimit(highVoltageLimit),
     m_lowVoltageLimit(lowVoltageLimit),
@@ -45,6 +46,12 @@ VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool 
 
     checkNominalVoltage(*this, m_nominalV);
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
+}
+
+VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                 Network& rootNetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltageLimit) : 
+    VoltageLevel(id, name, fictitious, substation, rootNetwork, nominalV, lowVoltageLimit, highVoltageLimit) {
+    m_subnetworkRef = subnetwork;
 }
 
 void VoltageLevel::addNextTerminals(Terminal& otherTerminal, TerminalSet& nextTerminals) {
@@ -175,6 +182,27 @@ const Network& VoltageLevel::getNetwork() const {
 
 Network& VoltageLevel::getNetwork() {
     return const_cast<Network&>(static_cast<const VoltageLevel*>(this)->getNetwork());
+}
+
+const Network& VoltageLevel::getParentNetwork() const {
+    if(static_cast<bool>(m_subnetworkRef)) {
+        return m_subnetworkRef.get();
+    }
+    return getNetwork();
+}
+
+Network& VoltageLevel::getParentNetwork() {
+    if(static_cast<bool>(m_subnetworkRef)) {
+        return m_subnetworkRef.get();
+    }
+    return getNetwork();
+}
+
+std::string VoltageLevel::getSubnetworkId() const {
+    if(static_cast<bool>(m_subnetworkRef)) {
+        return m_subnetworkRef.get().getId();
+    }
+    return "";
 }
 
 double VoltageLevel::getNominalV() const {

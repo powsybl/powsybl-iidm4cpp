@@ -22,6 +22,11 @@ HvdcLineAdder::HvdcLineAdder(Network& network) :
     m_network(network) {
 }
 
+HvdcLineAdder::HvdcLineAdder(Network& network, const std::string& subNetworkId) :
+    HvdcLineAdder(network) {
+    m_subnetworkId = subNetworkId;
+}
+
 HvdcLine& HvdcLineAdder::add() {
     Network& n = getNetwork();
     checkR(*this, m_r);
@@ -34,6 +39,12 @@ HvdcLine& HvdcLineAdder::add() {
     HvdcConverterStation& converterStation1 = getConverterStation(m_converterStationId1, 1U);
     HvdcConverterStation& converterStation2 = getConverterStation(m_converterStationId2, 2U);
 
+    VoltageLevel& vl1 = converterStation1.getTerminal().getVoltageLevel();
+    VoltageLevel& vl2 = converterStation2.getTerminal().getVoltageLevel();
+
+    if(!m_subnetworkId.empty() && (vl1.getSubnetworkId() != m_subnetworkId || vl2.getSubnetworkId() != m_subnetworkId)) {
+        throw ValidationException(*this, stdcxx::format("The converter stations are not in the subnetwork '%1%'. Create this Hvdc line from the parent network '%2%'", m_subnetworkId, getNetwork().getId()));
+    }
     std::unique_ptr<HvdcLine> ptrHvdcLine = stdcxx::make_unique<HvdcLine>(n, checkAndGetUniqueId(), getName(), isFictitious(), m_r, m_nominalV, m_maxP, *m_convertersMode, m_activePowerSetpoint,
                                                                           converterStation1, converterStation2);
     auto& line = m_network.checkAndAdd<HvdcLine>(std::move(ptrHvdcLine));

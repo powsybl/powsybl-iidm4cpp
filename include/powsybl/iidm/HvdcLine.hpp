@@ -12,6 +12,7 @@
 #include <vector>
 
 #include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -37,6 +38,10 @@ public:  // Identifiable
     const Network& getNetwork() const override;
 
     Network& getNetwork() override;
+
+    const Network& getParentNetwork() const override;
+
+    Network& getParentNetwork() override;
 
     const IdentifiableType& getType() const override;
 
@@ -94,6 +99,8 @@ private:
     HvdcConverterStation& attach(HvdcConverterStation& converterStation);
 
 private:
+    NetworkRef m_network;
+
     stdcxx::Reference<HvdcConverterStation> m_converterStation1;
 
     stdcxx::Reference<HvdcConverterStation> m_converterStation2;

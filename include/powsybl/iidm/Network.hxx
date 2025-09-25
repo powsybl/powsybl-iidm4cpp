@@ -21,17 +21,17 @@ namespace iidm {
 
 template <typename T>
 T& Network::checkAndAdd(std::unique_ptr<T>&& identifiable) {
-    return m_networkIndex.checkAndAdd(std::move(identifiable));
+    return getIndex().checkAndAdd(std::move(identifiable));
 }
 
 template <typename T, typename>
 const T& Network::get(const std::string& id) const {
-    return m_networkIndex.get<T>(id);
+    return getIndex().get<T>(id);
 }
 
 template <typename T, typename>
 T& Network::get(const std::string& id) {
-    return m_networkIndex.get<T>(id);
+    return getIndex().get<T>(id);
 }
 
 template <typename T, typename>
@@ -45,7 +45,7 @@ stdcxx::const_range<T> Network::getConnectables() const {
         return stdcxx::isInstanceOf<T>(identifiable);
     };
 
-    return m_networkIndex.getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(map<const T>);
+    return getIndex().getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(map<const T>);
 }
 
 template <typename T, typename>
@@ -54,22 +54,22 @@ stdcxx::range<T> Network::getConnectables() {
         return stdcxx::isInstanceOf<T>(identifiable);
     };
 
-    return m_networkIndex.getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(map<T>);
+    return getIndex().getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(map<T>);
 }
 
 template <typename T, typename>
 unsigned long Network::getObjectCount() const {
-    return m_networkIndex.getObjectCount<T>();
+    return getIndex().getObjectCount<T>();
 }
 
 template <typename T, typename>
 stdcxx::CReference<T> Network::find(const std::string& id) const {
-    return m_networkIndex.find<T>(id);
+    return getIndex().find<T>(id);
 }
 
 template <typename T, typename>
 stdcxx::Reference<T> Network::find(const std::string& id) {
-    return m_networkIndex.find<T>(id);
+    return getIndex().find<T>(id);
 }
 
 }  // namespace iidm

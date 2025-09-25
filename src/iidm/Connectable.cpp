@@ -57,6 +57,21 @@ Network& Connectable::getNetwork() {
     return const_cast<Network&>(static_cast<const Connectable*>(this)->getNetwork());
 }
 
+const Network& Connectable::getParentNetwork() const {
+    // the parent network is the network that contains all terminals of the connectable.
+    std::set<std::string> subnetworkIds;
+    for (const auto& terminal : m_terminals) {
+        subnetworkIds.emplace(terminal->getVoltageLevel().getParentNetwork().getId());
+    }
+    if(subnetworkIds.size() == 1) {
+        return m_terminals.at(0)->getVoltageLevel().getParentNetwork();
+    }
+    return getNetwork();
+}
+Network& Connectable::getParentNetwork() {
+    return const_cast<Network&>(static_cast<const Connectable*>(this)->getParentNetwork());
+}
+
 const Terminal& Connectable::getTerminal(unsigned long index) const {
     return *m_terminals.at(index);
 }

@@ -24,10 +24,18 @@ LineAdder::LineAdder(Network& network) :
     m_network(network) {
 }
 
+LineAdder::LineAdder(Network& network, const std::string& subNetworkId) :
+    LineAdder(network) {
+    m_subnetworkId = subNetworkId;
+}
+
 Line& LineAdder::add() {
     checkConnectableBuses();
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
     VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
+    if (!m_subnetworkId.empty() && (m_subnetworkId != voltageLevel1.getSubnetworkId() || m_subnetworkId != voltageLevel2.getSubnetworkId())) {
+        throw ValidationException(*this, stdcxx::format("The involved voltage levels are not in the subnetwork '%1%'. Create this line from the parent network '%2%'", m_subnetworkId, getNetwork().getId()));
+    }
     std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1(voltageLevel1);
     std::unique_ptr<Terminal> ptrTerminal2 = checkAndGetTerminal2(voltageLevel2);
 

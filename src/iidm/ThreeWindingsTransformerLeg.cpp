@@ -51,6 +51,14 @@ Network& Leg::getNetwork() {
     return m_transformer.get().getNetwork();
 }
 
+const Network& Leg::getParentNetwork() const {
+    return m_transformer.get().getParentNetwork();
+}
+
+Network& Leg::getParentNetwork() {
+    return m_transformer.get().getParentNetwork();
+}
+
 const PhaseTapChanger& Leg::getPhaseTapChanger() const {
     if (!m_phaseTapChanger) {
         throw PowsyblException("Phase tap changer not set");

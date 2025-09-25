@@ -50,13 +50,16 @@ private: // IdentifiableAdder
 
 private:
     explicit HvdcLineAdder(Network& network);
+    explicit HvdcLineAdder(Network& network, const std::string& subNetworkId);
 
     HvdcConverterStation& getConverterStation(const std::string& converterStationId, unsigned int side) const;
 
     friend class Network;
+    friend class Subnetwork;
 
 private:
     Network& m_network;
+    std::string m_subnetworkId;
 
     std::string m_converterStationId1;
 

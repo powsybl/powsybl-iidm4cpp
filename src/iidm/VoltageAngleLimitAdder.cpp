@@ -16,10 +16,16 @@ namespace powsybl {
 
 namespace iidm {
 
-// class VoltageAngleLimitAdder : public OperationalLimitsAdder<VoltageAngleLimitAdder> {
-
 VoltageAngleLimitAdder::VoltageAngleLimitAdder(Network& network) :
     m_network(network) {
+}
+VoltageAngleLimitAdder::VoltageAngleLimitAdder(Network& network, const std::string& subnetworkId) :
+    m_network(network),
+    m_subnetworkId(subnetworkId) {
+}
+
+std::string VoltageAngleLimitAdder::getMessageHeader() const {
+    return "VoltageAngleLimit '" + m_id + "': ";
 }
 
 VoltageAngleLimitAdder& VoltageAngleLimitAdder::setId(const std::string& id) {
@@ -57,6 +63,11 @@ VoltageAngleLimit& VoltageAngleLimitAdder::add() {
     if(!m_terminalFrom || !m_terminalTo) {
         throw PowsyblException("Voltage angle limit must be connected to terminals.");
     }
+    if(!m_subnetworkId.empty() && checkTerminalsInSubnetwork()) {
+        throw ValidationException(*this, 
+            stdcxx::format("The involved voltage levels are not in the subnetwork '%1%'. Create this VoltageAngleLimit from the parent network '%2%'",
+            m_subnetworkId, m_network.getId()));
+    }
 
     Terminal& terminalFrom = m_terminalFrom;
     Terminal& terminalTo = m_terminalTo;
@@ -65,6 +76,14 @@ VoltageAngleLimit& VoltageAngleLimitAdder::add() {
         terminalFrom, terminalTo, m_lowLimit, m_highLimit));
 
     return pairRslt.first->second;
+}
+
+bool VoltageAngleLimitAdder::checkTerminalsInSubnetwork() {
+    if(m_terminalFrom && m_terminalTo && !m_subnetworkId.empty()) {
+        return m_subnetworkId != m_terminalFrom.get().getVoltageLevel().getParentNetwork().getId()
+                || m_subnetworkId!=m_terminalTo.get().getVoltageLevel().getParentNetwork().getId();
+    }
+    return false;
 }
 
 }  // namespace iidm

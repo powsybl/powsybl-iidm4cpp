@@ -31,6 +31,14 @@ BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std:
     m_busView(*this) {
 }
 
+BusBreakerVoltageLevel::BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                           Network& rootnetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltagelimit) :
+    VoltageLevel(id, name, fictitious, substation, rootnetwork, subnetwork, nominalV, lowVoltageLimit, highVoltagelimit),
+    m_variants(*this, [this]() { return stdcxx::make_unique<bus_breaker_voltage_level::VariantImpl>(*this); }),
+    m_busBreakerView(*this),
+    m_busView(*this) {
+}
+
 Bus& BusBreakerVoltageLevel::addBus(std::unique_ptr<ConfiguredBus>&& ptrBus) {
     ConfiguredBus& bus = getNetwork().checkAndAdd(std::move(ptrBus));
 

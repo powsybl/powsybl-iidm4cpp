@@ -120,6 +120,8 @@ set(IIDM_SOURCES
     iidm/ShuntCompensatorNonLinearModelAdder.cpp
     iidm/StaticVarCompensator.cpp
     iidm/StaticVarCompensatorAdder.cpp
+    iidm/Subnetwork.cpp
+    iidm/SubnetworkViews.cpp
     iidm/Substation.cpp
     iidm/SubstationAdder.cpp
     iidm/Switch.cpp

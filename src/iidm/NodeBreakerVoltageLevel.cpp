@@ -30,6 +30,16 @@ NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const st
     m_busView(*this) {
 }
 
+NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
+                            Network& rootnetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltagelimit) :
+    VoltageLevel(id, name, fictitious, substation, rootnetwork, subnetwork, nominalV, lowVoltageLimit, highVoltagelimit),
+    m_busNamingStrategy(*this),
+    m_variants(*this, [this]() { return stdcxx::make_unique<node_breaker_voltage_level::VariantImpl>(*this); }),
+    m_nodeBreakerView(*this),
+    m_busBreakerView(*this),
+    m_busView(*this) {
+}
+
 void NodeBreakerVoltageLevel::addInternalConnection(unsigned long node1, unsigned long node2) {
     m_graph.addVertexIfNotPresent(node1);
     m_graph.addVertexIfNotPresent(node2);

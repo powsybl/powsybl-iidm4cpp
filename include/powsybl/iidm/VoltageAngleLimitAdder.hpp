@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_VOLTAGEANGLELIMITADDER_HPP
 
 #include <powsybl/iidm/OperationalLimitsAdder.hpp>
+#include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/VoltageAngleLimit.hpp>
 
 #include <powsybl/stdcxx/math.hpp>
@@ -20,10 +21,14 @@ namespace iidm {
 
 class Network;
 
-class VoltageAngleLimitAdder : public OperationalLimitsAdder<VoltageAngleLimit> {
+class VoltageAngleLimitAdder : public OperationalLimitsAdder<VoltageAngleLimit>, public Validable {
 
 public:
+    //Validable
+    std::string getMessageHeader() const override;
+
     explicit VoltageAngleLimitAdder(Network& network);
+    explicit VoltageAngleLimitAdder(Network& network, const std::string& subnetworkId);
 
     VoltageAngleLimitAdder(const VoltageAngleLimitAdder&) = default;
 
@@ -40,8 +45,10 @@ public:
     VoltageAngleLimit& add() override;
 
 private:
+    bool checkTerminalsInSubnetwork();
 
     Network& m_network;
+    std::string m_subnetworkId;
 
     std::string m_id;
 

@@ -32,9 +32,9 @@ public:
 
     ~BusBreakerView() noexcept = default;
 
-    stdcxx::CReference<Bus> getBus(const std::string& id) const;
+    virtual stdcxx::CReference<Bus> getBus(const std::string& id) const;
 
-    stdcxx::Reference<Bus> getBus(const std::string& id);
+    virtual stdcxx::Reference<Bus> getBus(const std::string& id);
 
     unsigned long getBusCount() const;
 
@@ -48,14 +48,14 @@ public:
 
     stdcxx::range<Switch> getSwitches();
 
-private:
+protected:
     void invalidateCache();
 
     friend class iidm::BusBreakerVoltageLevel;
 
     friend class iidm::NodeBreakerVoltageLevel;
 
-private:
+protected:
     Network& m_network;
 };
 
@@ -65,9 +65,9 @@ public:
 
     ~BusView() noexcept = default;
 
-    stdcxx::CReference<Bus> getBus(const std::string& id) const;
+    virtual stdcxx::CReference<Bus> getBus(const std::string& id) const;
 
-    stdcxx::Reference<Bus> getBus(const std::string& id);
+    virtual stdcxx::Reference<Bus> getBus(const std::string& id);
 
     unsigned long getBusCount() const;
 
@@ -75,22 +75,22 @@ public:
 
     stdcxx::range<Bus> getBuses();
 
-    stdcxx::const_range<Component> getConnectedComponents() const;
+    virtual stdcxx::const_range<Component> getConnectedComponents() const;
 
-    stdcxx::range<Component> getConnectedComponents();
+    virtual stdcxx::range<Component> getConnectedComponents();
 
-    stdcxx::const_range<Component> getSynchronousComponents() const;
+    virtual stdcxx::const_range<Component> getSynchronousComponents() const;
 
-    stdcxx::range<Component> getSynchronousComponents();
+    virtual stdcxx::range<Component> getSynchronousComponents();
 
-private:
+protected:
     void invalidateCache();
 
     friend class iidm::BusBreakerVoltageLevel;
 
     friend class iidm::NodeBreakerVoltageLevel;
 
-private:
+protected:
     Network& m_network;
 };
 
