@@ -8,6 +8,7 @@
 
 #include <powsybl/iidm/VoltageAngleLimit.hpp>
 
+#include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 
 namespace powsybl {
@@ -16,7 +17,8 @@ namespace iidm {
 
 // class OperationalLimitsOwner;
 
-VoltageAngleLimit::VoltageAngleLimit(const std::string& id, Terminal& terminalFrom, Terminal& terminalTo, double lowLimit, double highLimit) :
+VoltageAngleLimit::VoltageAngleLimit(Network& network, const std::string& id, Terminal& terminalFrom, Terminal& terminalTo, double lowLimit, double highLimit) :
+    m_network(network),
     m_id(id),
     m_fromTerminal(terminalFrom),
     m_toTerminal(terminalTo),
@@ -29,7 +31,9 @@ const LimitType& VoltageAngleLimit::getLimitType() const {
     return s_type;
 }
 void VoltageAngleLimit::remove() {
-    //do nothing
+    if(static_cast<bool>(m_network)) {
+        m_network.get().getVoltageAngleLimitsIndex().erase(m_id);
+    }
 }
 
 const std::string& VoltageAngleLimit::getId() const {

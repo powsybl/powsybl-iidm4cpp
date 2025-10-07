@@ -22,6 +22,8 @@
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/iidm/VoltageAngleLimit.hpp>
+#include <powsybl/iidm/VoltageAngleLimitAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
 
@@ -146,6 +148,11 @@ ThreeWindingsTransformer& addThreeWindingsTransformer(Substation& substation, co
                 .setBus(getBusId(vlId3))
                 .setVoltageLevel(vlId3)
                 .add()
+                .add();
+}
+
+VoltageAngleLimit& addVoltageAngleLimit(Network& network, const std::string& id, Terminal& from, Terminal& to) {
+    return network.newVoltageAngleLimit().setId(id).from(stdcxx::Reference<Terminal>(from)).to(stdcxx::Reference<Terminal>(to))
                 .add();
 }
 
@@ -407,6 +414,61 @@ BOOST_AUTO_TEST_CASE(ValidationLevelTest) {
     assertValidationLevels(ValidationLevel::STEADY_STATE_HYPOTHESIS, network);
     subnetwork1.setMinimumAcceptableValidationLevel(ValidationLevel::STEADY_STATE_HYPOTHESIS);
     network.runValidationChecks();
+}
+
+BOOST_AUTO_TEST_CASE(voltageAngleLimitCreationTest) {
+    Network network = CreateSubnetworksNetworkTest();
+    Network& subnetwork1 = network.getSubNetwork("Sub1").get();
+    Network& subnetwork2 = network.getSubNetwork("Sub2").get();
+
+    Substation& substation0 = addSubstation(network, "s0");
+    Substation& substation1 = addSubstation(subnetwork1, "s1");
+    Substation& substation2 = addSubstation(subnetwork2, "s2");
+    addVoltageLevel(substation0.newVoltageLevel(), "vl0_0");
+    addVoltageLevel(substation0.newVoltageLevel(), "vl0_1");
+    addVoltageLevel(substation1.newVoltageLevel(), "vl1_0");
+    addVoltageLevel(substation1.newVoltageLevel(), "vl1_1");
+    addVoltageLevel(substation2.newVoltageLevel(), "vl2_0");
+    addVoltageLevel(substation2.newVoltageLevel(), "vl2_1");
+            
+    Line& l0 = addLine(network, "l0", "vl0_0", "vl0_1");
+    Line& l1 = addLine(network, "l1", "vl1_0", "vl1_1");
+    Line& l2 = addLine(network, "l2", "vl2_0", "vl2_1");
+
+    // On root network, terminals both in root network
+    VoltageAngleLimit& vla0 = addVoltageAngleLimit(network, "vla0", l0.getTerminal1(), l0.getTerminal2());
+
+    // On root network, terminals both in subnetwork1
+    VoltageAngleLimit& vla1 = addVoltageAngleLimit(network, "vla1", l1.getTerminal1(), l1.getTerminal2());
+
+    // On subnetwork2, terminals both in subnetwork2
+    VoltageAngleLimit& vla2 = addVoltageAngleLimit(subnetwork2, "vla2", l2.getTerminal1(), l2.getTerminal2());
+
+    // On root network, terminals in different subnetworks
+    addVoltageAngleLimit(network, "vla3", l1.getTerminal1(), l2.getTerminal1());
+
+    // On root network, terminals in root network and subnetwork2
+    addVoltageAngleLimit(network, "vla4", l0.getTerminal1(), l2.getTerminal1());
+
+    // On subnetwork1, voltage levels in root network and subnetwork1
+    POWSYBL_ASSERT_THROW(addVoltageAngleLimit(subnetwork1, "vla", l0.getTerminal1(), l1.getTerminal1()), ValidationException, 
+    "VoltageAngleLimit 'vla': The involved voltage levels are not in the subnetwork 'Sub1'. Create this VoltageAngleLimit from the parent network 'Root'");
+
+    // On subnetwork1, voltage levels both in subnetwork2
+    POWSYBL_ASSERT_THROW(addVoltageAngleLimit(subnetwork1, "vla", l2.getTerminal1(), l2.getTerminal1()), ValidationException, 
+    "VoltageAngleLimit 'vla': The involved voltage levels are not in the subnetwork 'Sub1'. Create this VoltageAngleLimit from the parent network 'Root'");
+
+    
+    BOOST_CHECK_EQUAL(5, boost::size(network.getVoltageAngleLimits()));
+    BOOST_CHECK_EQUAL(1,  boost::size(subnetwork1.getVoltageAngleLimits()));
+    BOOST_CHECK_EQUAL(1,  boost::size(subnetwork2.getVoltageAngleLimits()));
+
+    BOOST_CHECK(stdcxx::areSame(vla0, network.getVoltageAngleLimit("vla0")));
+    BOOST_CHECK(stdcxx::areSame(vla1, network.getVoltageAngleLimit("vla1")));
+    BOOST_CHECK(stdcxx::areSame(vla1, subnetwork1.getVoltageAngleLimit("vla1")));
+    BOOST_CHECK(stdcxx::areSame(vla2, network.getVoltageAngleLimit("vla2")));
+    BOOST_CHECK(stdcxx::areSame(vla2, subnetwork2.getVoltageAngleLimit("vla2")));
+    POWSYBL_ASSERT_THROW(subnetwork2.getVoltageAngleLimit("vla4"), PowsyblException, "Voltage angle limit 'vla4' does not belong to the subnetwork 'Sub2'");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

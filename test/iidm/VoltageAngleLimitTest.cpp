@@ -130,6 +130,25 @@ BOOST_AUTO_TEST_CASE(missingTerminal) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Voltage angle limit must be connected to terminals.");
 }
 
+
+BOOST_AUTO_TEST_CASE(remove) {
+    std::string vaLimitId = "VOLTAGE_ANGLE_LIMIT_LINE_S2S3";
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    Line& lineS2S3 = network.getLine("LINE_S2S3");
+    network.newVoltageAngleLimit().setId(vaLimitId)
+        .from(stdcxx::ref<Terminal>(lineS2S3.getTerminal1()))
+        .to(stdcxx::ref<Terminal>(lineS2S3.getTerminal2()))
+        .setHighLimit(10.0)
+        .add();
+
+    BOOST_CHECK_NO_THROW(network.getVoltageAngleLimitsIndex().erase("missing"));
+
+    VoltageAngleLimit& val = network.getVoltageAngleLimit(vaLimitId);
+    val.remove();
+    BOOST_CHECK_EQUAL(0,network.getVoltageAngleLimitsCount());
+    POWSYBL_ASSERT_THROW(network.getVoltageAngleLimit(vaLimitId), PowsyblException, "Unable to find to the voltage angle limit 'VOLTAGE_ANGLE_LIMIT_LINE_S2S3'");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

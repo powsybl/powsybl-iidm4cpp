@@ -17,6 +17,7 @@ namespace powsybl {
 namespace iidm {
 
 // class OperationalLimitsOwner;
+class Network;
 class Terminal;
 
 class VoltageAngleLimit : public OperationalLimits {
@@ -43,9 +44,10 @@ public:
 
 private:
 
-    VoltageAngleLimit(const std::string& id, Terminal& terminalFrom, Terminal& terminalTo, double lowLimit, double highLimit);
+    VoltageAngleLimit(Network& network, const std::string& id, Terminal& terminalFrom, Terminal& terminalTo, double lowLimit, double highLimit);
     friend class VoltageAngleLimitAdder;
 
+    stdcxx::Reference<Network> m_network;
     std::string m_id;
 
     std::reference_wrapper<Terminal> m_fromTerminal;
