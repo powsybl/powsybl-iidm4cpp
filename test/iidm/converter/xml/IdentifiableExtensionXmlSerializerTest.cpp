@@ -37,8 +37,8 @@ BOOST_AUTO_TEST_CASE(ExtensionXmlSerializerTest) {
 
     auto& providers = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
     const auto& cProviders = providers;
-    BOOST_CHECK_EQUAL(5 + DEFAULT_EXTENSION_COUNT, boost::size(providers.getProviders()));
-    BOOST_CHECK_EQUAL(5 + DEFAULT_EXTENSION_COUNT, boost::size(cProviders.getProviders()));
+    BOOST_CHECK_EQUAL(6 + DEFAULT_EXTENSION_COUNT, boost::size(providers.getProviders()));
+    BOOST_CHECK_EQUAL(6 + DEFAULT_EXTENSION_COUNT, boost::size(cProviders.getProviders()));
 
     const auto& serializer = providers.findProvider("loadMock");
     BOOST_CHECK_EQUAL(true, static_cast<bool>(serializer));

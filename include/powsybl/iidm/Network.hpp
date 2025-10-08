@@ -82,8 +82,8 @@ public:
     static void writeXml(const std::string& filename, std::ostream& ostream, const Network& network, const converter::ExportOptions& options = converter::ExportOptions());
 
 public:  // Identifiable
-    const Network& getNetwork() const override;
-    Network& getNetwork() override;
+    virtual const Network& getNetwork() const override;
+    virtual Network& getNetwork() override;
 
     stdcxx::CReference<Network> getParentNetworkRef() const;
     stdcxx::Reference<Network> getParentNetworkRef();

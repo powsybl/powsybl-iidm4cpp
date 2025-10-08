@@ -11,11 +11,13 @@
 #include <iosfwd>
 #include <memory>
 #include <string>
+#include <set>
 
 namespace powsybl {
 
 namespace iidm {
 
+class Identifiable;
 class Network;
 
 namespace converter {
@@ -27,6 +29,7 @@ class ImportOptions;
 
 namespace xml {
 
+class NetworkXmlReaderContext;
 class NetworkXmlWriterContext;
 
 class NetworkXml {
@@ -39,6 +42,10 @@ public:
     NetworkXml() = delete;
 
 private:
+    static void writeNetwork(const Network& network, NetworkXmlWriterContext& context);
+
+    static void writeSubnetworks(const Network& network, NetworkXmlWriterContext& context);
+
     static void writeHvdcLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context);
 
     static void writeLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context);
@@ -50,6 +57,18 @@ private:
     static void writeVoltageLevels(const Network& network, NetworkXmlWriterContext& context);
 
     static void writeVoltageAngleLimits(const Network& network, NetworkXmlWriterContext& context);
+
+    static void writeExtensions(const Network& network, NetworkXmlWriterContext& context);
+
+    static bool isElementWrittenInsideNetwork(const Identifiable& element, const Network& network, NetworkXmlWriterContext& context);
+
+    static bool supportSubnetworksExport(NetworkXmlWriterContext& context);
+
+    static void initNetwork(Network& network, const NetworkXmlReaderContext& context);
+
+    static void readNetworkElements(Network& network, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound);
+
+    static void readSubnetwork(Network& parentnetwork, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound);
 };
 
 }  // namespace xml

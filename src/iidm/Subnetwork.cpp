@@ -67,6 +67,19 @@ Subnetwork::Subnetwork(Subnetwork&& network) noexcept :
     };
 }
 
+const Network& Subnetwork::getNetwork() const {
+    if(static_cast<bool>(m_parentNetworkRef)) {
+        return m_parentNetworkRef.get();
+    }
+    return *this;
+}
+Network& Subnetwork::getNetwork() {
+    if(static_cast<bool>(m_parentNetworkRef)) {
+        return m_parentNetworkRef.get();
+    }
+    return *this;
+}
+
 unsigned long Subnetwork::getVariantIndex() const {
     return getRootNetwork().m_variantManager.getVariantIndex();
 }

@@ -13,6 +13,7 @@
 
 #include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/Subnetwork.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/SimpleAnonymizer.hpp>
@@ -210,9 +211,11 @@ void writeExtension(const Extension& extension, NetworkXmlWriterContext& context
     writer.writeEndElement();
 }
 
-void writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
+void NetworkXml::writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
     for (const auto& identifiable : network.getIdentifiables()) {
-        if (!context.isExportedEquipment(identifiable.getId()) || boost::empty(identifiable.getExtensions()) || !context.getOptions().hasAtLeastOneExtension(identifiable.getExtensions())) {
+        if (!context.isExportedEquipment(identifiable.getId()) || boost::empty(identifiable.getExtensions()) 
+        || !isElementWrittenInsideNetwork(identifiable, network, context)
+        || !context.getOptions().hasAtLeastOneExtension(identifiable.getExtensions())) {
             continue;
         }
 
@@ -269,56 +272,15 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
 
     const std::string& id = context.getAnonymizer().deanonymizeString(reader.getAttributeValue(ID));
     const std::string& sourceFormat = reader.getAttributeValue(SOURCE_FORMAT);
-    int forecastDistance = reader.getOptionalAttributeValue(FORECAST_DISTANCE, 0);
-    const std::string& caseDateStr = reader.getAttributeValue(CASE_DATE);
-
     Network network(id, sourceFormat);
-    network.setForecastDistance(forecastDistance);
-
-    try {
-        network.setCaseDate(stdcxx::DateTime::parse(caseDateStr));
-    } catch (const PowsyblException& err) {
-        throw powsybl::xml::XmlStreamException(err.what());
-    }
-
-    std::string minimumValidationLevel{STEADY_STATE_HYPOTHESIS};
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&minimumValidationLevel, &reader] { minimumValidationLevel = reader.getAttributeValue(MINIMUM_VALIDATION_LEVEL); });
-    ValidationLevel minValidationLevel = minimumValidationLevel.empty() ? ValidationLevel::UNVALID : Enum::fromString<ValidationLevel>(minimumValidationLevel);
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(minValidationLevel != ValidationLevel::STEADY_STATE_HYPOTHESIS, NETWORK, MINIMUM_VALIDATION_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_7(), context);
-    network.setMinimumAcceptableValidationLevel(minValidationLevel);
+    initNetwork(network, context);
 
     const auto& extensionProviders = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
     context.buildExtensionNamespaceUriList(extensionProviders.getProviders());
 
     std::set<std::string> extensionsNotFound;
 
-    context.getReader().readUntilEndElement(NETWORK, [&network, &context, &extensionsNotFound]() {
-        if (context.getReader().getLocalName() == ALIAS) {
-            IidmXmlUtil::assertMinimumVersion(NETWORK, ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
-            AliasesXml::read(network, context);
-        } else if (context.getReader().getLocalName() == PROPERTY) {
-            PropertiesXml::read(network, context);
-        } else if (context.getReader().getLocalName() == VOLTAGE_LEVEL) {
-            IidmXmlUtil::assertMinimumVersion(NETWORK, VOLTAGE_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
-            VoltageLevelXml::getInstance().read(network, context);
-        } else if (context.getReader().getLocalName() == SUBSTATION) {
-            SubstationXml::getInstance().read(network, context);
-        } else if (context.getReader().getLocalName() == LINE) {
-            LineXml::getInstance().read(network, context);
-        } else if (context.getReader().getLocalName() == TIE_LINE) {
-            TieLineXml::getInstance().read(network, context);
-        } else if (context.getReader().getLocalName() == HVDC_LINE) {
-            HvdcLineXml::getInstance().read(network, context);
-        } else if (context.getReader().getLocalName() == VOLTAGE_ANGLE_LIMIT) { 
-            VoltageAngleLimitXml::getInstance().read(network, context);
-        } else if (context.getReader().getLocalName() == EXTENSION) {
-            const std::string& id2 = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
-            Identifiable& identifiable = network.get(id2);
-            readExtensions(identifiable, context, extensionsNotFound);
-        } else {
-            throw powsybl::xml::XmlStreamException(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));
-        }
-    });
+    readNetworkElements(network, context, extensionsNotFound);
 
     checkExtensionsNotFound(context, extensionsNotFound);
 
@@ -351,33 +313,9 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     IidmXmlUtil::assertMinimumVersionIfNotDefault(networkValidationLevel != ValidationLevel::STEADY_STATE_HYPOTHESIS, NETWORK, MINIMUM_VALIDATION_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_7(), context);
     
     writer.writeStartDocument(options.getXmlEncoding(), "1.0");
-    writer.writeStartElement(context.getVersion().getPrefix(), NETWORK);
-    writer.setPrefix(context.getVersion().getPrefix(), version.getNamespaceUri(networkValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS));
-    
-    writeExtensionNamespaces(network, context);
 
-    writer.writeAttribute(ID, context.getAnonymizer().anonymizeString(network.getId()));
-    writer.writeAttribute(CASE_DATE, network.getCaseDate().toString());
-    writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
-    writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&writer, &networkValidationLevel] { writer.writeAttribute(MINIMUM_VALIDATION_LEVEL, Enum::toString(networkValidationLevel)); });
+    writeNetwork(network, context);
 
-    //consider the network as exported so its extensions will be written
-    context.addExportedEquipment(network);
-
-    AliasesXml::write(network, NETWORK, context);
-    PropertiesXml::write(network, context);
-
-    writeVoltageLevels(network, context);
-    writeSubstations(network, context);
-    writeLines(filter, network, context);
-    writeTieLines(filter, network, context);
-    writeHvdcLines(filter, network, context);
-    writeVoltageAngleLimits(network, context);
-
-    writeExtensions(network, context);
-
-    writer.writeEndElement();
     writer.writeEndDocument();
 
     if (options.isAnonymized()) {
@@ -394,42 +332,92 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     logger.debug("XIIDM export done in %1% ms", diff.count() * 1000.0);
 }
 
+void NetworkXml::writeNetwork(const Network& network, NetworkXmlWriterContext& context) {
+    powsybl::xml::XmlStreamWriter& writer = context.getWriter();
+    const BusFilter& filter = context.getFilter();
+    const IidmXmlVersion& version = context.getVersion();
+    ValidationLevel networkValidationLevel = network.getValidationLevel();
+
+    writer.writeStartElement(context.getVersion().getPrefix(), NETWORK);
+
+    if(stdcxx::areSame(network.getParentNetwork(), network)) { //root network
+        writer.setPrefix(context.getVersion().getPrefix(), version.getNamespaceUri(networkValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS));
+
+        writeExtensionNamespaces(network, context);
+    }
+
+    //write main attributes
+    writer.writeAttribute(ID, context.getAnonymizer().anonymizeString(network.getId()));
+    writer.writeAttribute(CASE_DATE, network.getCaseDate().toString());
+    writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
+    writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&writer, &networkValidationLevel] { writer.writeAttribute(MINIMUM_VALIDATION_LEVEL, Enum::toString(networkValidationLevel)); });
+
+    //consider the network as exported so its extensions will be written
+    context.addExportedEquipment(network);
+
+    //Write "base" network
+    AliasesXml::write(network, NETWORK, context);
+    PropertiesXml::write(network, context);
+
+    if(supportSubnetworksExport(context)){
+        writeSubnetworks(network, context);
+    }
+
+    writeVoltageLevels(network, context);
+    writeSubstations(network, context);
+    writeLines(filter, network, context);
+    writeTieLines(filter, network, context);
+    writeHvdcLines(filter, network, context);
+    writeVoltageAngleLimits(network, context);
+
+    writeExtensions(network, context);
+
+    writer.writeEndElement();
+}
+
+void NetworkXml::writeSubnetworks(const Network& network, NetworkXmlWriterContext& context) {
+    for (const Network& subnetwork : network.getSubNetworks()) {
+        IidmXmlUtil::assertMinimumVersion(NETWORK, NETWORK, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_11(), context);
+        writeNetwork(subnetwork, context);
+    }
+}
+
 void NetworkXml::writeHvdcLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context) {
     for (const HvdcLine& line : network.getHvdcLines()) {
-        if (!filter.test(line.getConverterStation1()) || !filter.test(line.getConverterStation2())) {
-            continue;
+        if (isElementWrittenInsideNetwork(line, network, context) && filter.test(line.getConverterStation1()) && filter.test(line.getConverterStation2())) {
+            HvdcLineXml::getInstance().write(line, network, context);
         }
-        HvdcLineXml::getInstance().write(line, network, context);
     }
 }
 
 void NetworkXml::writeLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context) {
     for (const Line& line : network.getLines()) {
-        if (!filter.test(line)) {
-            continue;
+        if (isElementWrittenInsideNetwork(line, network, context) && filter.test(line)) {
+            LineXml::getInstance().write(line, network, context);
         }
-        LineXml::getInstance().write(line, network, context);
     }
 }
 
 void NetworkXml::writeTieLines(const BusFilter& filter, const Network& network, NetworkXmlWriterContext& context) {
     for (const TieLine& tl : network.getTieLines()) {
-        if (!filter.test(tl)) {
-            continue;
+        if (isElementWrittenInsideNetwork(tl, network, context) && filter.test(tl)) {
+            TieLineXml::getInstance().write(tl, network, context);
         }
-        TieLineXml::getInstance().write(tl, network, context);
     }
 }
 
 void NetworkXml::writeSubstations(const Network& network, NetworkXmlWriterContext& context) {
     for (const Substation& substation : network.getSubstations()) {
-        SubstationXml::getInstance().write(substation, network, context);
+        if(isElementWrittenInsideNetwork(substation, network, context)) {
+            SubstationXml::getInstance().write(substation, network, context);
+        }
     }
 }
 
 void NetworkXml::writeVoltageLevels(const Network& network, NetworkXmlWriterContext& context) {
     for (const VoltageLevel& voltageLevel : network.getVoltageLevels()) {
-        if (!voltageLevel.getSubstation()) {
+        if (isElementWrittenInsideNetwork(voltageLevel, network, context) && !voltageLevel.getSubstation()) {
             IidmXmlUtil::assertMinimumVersion(NETWORK, VOLTAGE_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
             VoltageLevelXml::getInstance().write(voltageLevel, network, context);
         }
@@ -440,6 +428,92 @@ void NetworkXml::writeVoltageAngleLimits(const Network& network, NetworkXmlWrite
     for (const VoltageAngleLimit& limit : network.getVoltageAngleLimits()) {
         VoltageAngleLimitXml::getInstance().write(limit, network, context);
     }
+}
+
+bool NetworkXml::isElementWrittenInsideNetwork(const Identifiable& element, const Network &network, NetworkXmlWriterContext &context) {
+    // if subnetworks not supported, all elements need to be written in the root network (in that case this is only called giving the root network)
+    if (!supportSubnetworksExport(context)) {
+        return true;
+    }
+    // corner case: if the element is the given network, it is considered as written within that network, as extensions have to be written within the network
+    if (network.getId() == element.getId()) {
+        return true;
+    }
+    // Main case: the element has to be written
+    // - if the element is directly in the network (not in one of its subnetworks)
+    // - and if it's not a network itself (linked to previous corner case)
+    return stdcxx::areSame(element.getParentNetwork(), network) && element.getType() != IdentifiableType::NETWORK;
+}
+
+bool NetworkXml::supportSubnetworksExport(NetworkXmlWriterContext& context) {
+    return context.getVersion() >= IidmXmlVersion::V1_11();
+}
+
+void NetworkXml::initNetwork(Network& network, const NetworkXmlReaderContext& context) {
+    int forecastDistance = context.getReader().getOptionalAttributeValue(FORECAST_DISTANCE, 0);
+    const std::string& caseDateStr = context.getReader().getAttributeValue(CASE_DATE);
+    
+    network.setForecastDistance(forecastDistance);
+
+    try {
+        network.setCaseDate(stdcxx::DateTime::parse(caseDateStr));
+    } catch (const PowsyblException& err) {
+        throw powsybl::xml::XmlStreamException(err.what());
+    }
+
+    std::string minimumValidationLevel{STEADY_STATE_HYPOTHESIS};
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), context.getVersion(), [&minimumValidationLevel, &context] { minimumValidationLevel = context.getReader().getAttributeValue(MINIMUM_VALIDATION_LEVEL); });
+    ValidationLevel minValidationLevel = minimumValidationLevel.empty() ? ValidationLevel::UNVALID : Enum::fromString<ValidationLevel>(minimumValidationLevel);
+    IidmXmlUtil::assertMinimumVersionIfNotDefault(minValidationLevel != ValidationLevel::STEADY_STATE_HYPOTHESIS, NETWORK, MINIMUM_VALIDATION_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_7(), context);
+    network.setMinimumAcceptableValidationLevel(minValidationLevel);
+}
+
+void NetworkXml::readNetworkElements(Network& network, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound) {
+    context.getReader().readUntilEndElement(NETWORK, [&network, &context, &extensionsNotFound]() {
+        std::string localName = context.getReader().getLocalName();
+        if (localName == ALIAS) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, ALIAS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
+            AliasesXml::read(network, context);
+        } else if (localName == PROPERTY) {
+            PropertiesXml::read(network, context);
+        } else if (localName == NETWORK) {
+            readSubnetwork(network, context, extensionsNotFound);
+        } else if (localName == VOLTAGE_LEVEL) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, VOLTAGE_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
+            VoltageLevelXml::getInstance().read(network, context);
+        } else if (localName == SUBSTATION) {
+            SubstationXml::getInstance().read(network, context);
+        } else if (localName == LINE) {
+            LineXml::getInstance().read(network, context);
+        } else if (localName == TIE_LINE) {
+            TieLineXml::getInstance().read(network, context);
+        } else if (localName == HVDC_LINE) {
+            HvdcLineXml::getInstance().read(network, context);
+        } else if (localName == VOLTAGE_ANGLE_LIMIT) { 
+            VoltageAngleLimitXml::getInstance().read(network, context);
+        } else if (localName == EXTENSION) {
+            const std::string& id2 = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+            Identifiable& identifiable = network.get(id2);
+            readExtensions(identifiable, context, extensionsNotFound);
+        } else {
+            throw powsybl::xml::XmlStreamException(stdcxx::format("Unexpected element: %1%", localName));
+        }
+    });
+}
+
+void NetworkXml::readSubnetwork(Network& parentnetwork, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound) {
+    IidmXmlUtil::assertMinimumVersion(NETWORK, NETWORK, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_11(), context);
+    if(static_cast<bool>(parentnetwork.getParentNetworkRef())) { //already on a subnetwork level
+        throw powsybl::xml::XmlStreamException("Only one level of subnetwork is currently supported.");
+    }
+    
+    //Create a new subnetwork
+    const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+    const std::string& sourceFormat = context.getReader().getAttributeValue(SOURCE_FORMAT);
+    Network& subnetwork = parentnetwork.newSubnetwork(id, sourceFormat);
+    initNetwork(subnetwork, context);
+
+    readNetworkElements(subnetwork, context, extensionsNotFound);
 }
 
 }  // namespace xml

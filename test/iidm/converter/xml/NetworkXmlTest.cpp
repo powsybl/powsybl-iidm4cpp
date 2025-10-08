@@ -32,6 +32,8 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
+#include <powsybl/iidm/TieLine.hpp>
+#include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -47,6 +49,9 @@
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
+
+#include "extensions/NetworkSourceExt.hpp"
+#include "extensions/TerminalMockExt.hpp"
 
 namespace powsybl {
 
@@ -64,6 +69,59 @@ void assertNetwork(const Network& network) {
     BOOST_CHECK_EQUAL(0, network.getForecastDistance());
     BOOST_CHECK_EQUAL("test", network.getSourceFormat());
 
+}
+
+Network& createSubnetwork(Network& rootnetwork, int num) {
+    std::string dlId = "dl" + std::to_string(num);
+    std::string voltageLevelId = "vl" + std::to_string(num);
+    std::string busId = "b" + std::to_string(num);
+
+    Network& network = rootnetwork.newSubnetwork("Network-" + std::to_string(num), "format");
+    Substation& s1 = network.newSubstation()
+                        .setId("s" + std::to_string(num))
+                        .setCountry(Country::FR)
+                        .add();
+    VoltageLevel& vl1 = s1.newVoltageLevel()
+                           .setId(voltageLevelId)
+                           .setNominalV(380)
+                           .setTopologyKind(TopologyKind::BUS_BREAKER)
+                           .add();
+    vl1.getBusBreakerView().newBus().setId(busId).add();
+    network.getVoltageLevel(voltageLevelId).newDanglingLine().setId(dlId).setName(dlId + "_name").setConnectableBus(busId).setBus(busId).setP0(0.0).setQ0(0.0).setR(1.0).setX(2.0).setG(4.0).setB(5.0).setPairingKey("code").add();
+
+    // Add an extension on the network and on an inner element
+    network.addExtension(stdcxx::make_unique<extensions::NetworkSourceExt>(network, "Source_" + std::to_string(num)));
+
+    if (num == 1) {
+        Generator& generator = vl1.newGenerator()
+                                  .setId("GEN")
+                                  .setBus(busId)
+                                  .setConnectableBus(busId)
+                                  .setMinP(-9999.99)
+                                  .setMaxP(9999.99)
+                                  .setVoltageRegulatorOn(true)
+                                  .setTargetV(24.5)
+                                  .setTargetP(607.0)
+                                  .setTargetQ(301.0)
+                                  .add();
+        generator.newMinMaxReactiveLimits()
+            .setMinQ(-9999.99)
+            .setMaxQ(9999.99)
+            .add();
+    } else if (num == 2) {
+        vl1.newLoad()
+            .setId("LOAD")
+            .setBus(busId)
+            .setConnectableBus(busId)
+            .setP0(600.0)
+            .setQ0(200.0)
+            .add();
+
+        // Add an extension on an inner element
+        Load& load = network.getLoad("LOAD");
+        load.addExtension(stdcxx::make_unique<extensions::TerminalMockExt>(load));
+    }
+    return network;
 }
 
 BOOST_AUTO_TEST_CASE(StartByComments) {
@@ -254,6 +312,49 @@ BOOST_FIXTURE_TEST_CASE(testScada, test::ResourceFixture) {
     test::converter::RoundTrip::compareXml(test::converter::RoundTrip::getVersionedNetwork("scadaNetworkRoundTrip.xml",IidmXmlVersion::CURRENT_IIDM_XML_VERSION()),buffer.str());
     test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("scadaNetworkRoundTrip.xml", IidmXmlVersion::V1_7());
 
+}
+
+BOOST_FIXTURE_TEST_CASE(subnetworksRoundTrip, test::ResourceFixture) {
+
+    Network n0 = Network("Network-0", "format");
+    n0.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:40:00+01:00"));
+
+    // add an extension at root network level
+    n0.addExtension(stdcxx::make_unique<extensions::NetworkSourceExt>(n0, "Source_0"));
+
+    Network& n1 = createSubnetwork(n0, 1);
+    Network& n2 = createSubnetwork(n0, 2);
+    n1.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:41:00+01:00"));
+    n2.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:42:00+01:00"));
+
+    n0.newTieLine().setId("dl1 + dl2")
+                    .setName("dl1_name + dl2_name")
+                    .setDanglingLine1("dl1")
+                    .setDanglingLine2("dl2")
+                    .add();
+
+    std::string filename = "subnetworks.xml";
+    for (const auto& version : iidm::converter::xml::IidmXmlVersion::all()) {
+        if(version.get() >= IidmXmlVersion::V1_5()) {
+            const auto& writer = [&version, &filename](const Network& n, std::ostream& stream) {
+                converter::ExportOptions options;
+                options.setVersion(version.get().toString("."));
+                Network::writeXml(filename, stream, n, options);
+            };
+            const auto& reader = [&filename](const std::string& xmlBytes) {
+                std::istringstream stream(xmlBytes);
+                return Network::readXml(filename, stream);
+            };
+            const auto& ref = test::converter::RoundTrip::getVersionedNetwork(filename, version);
+            test::converter::RoundTrip::run(n0, writer, reader, test::converter::RoundTrip::compareXml, ref.c_str());
+        }
+    }
+
+}
+
+BOOST_FIXTURE_TEST_CASE(failImportSeveralSubnetworkLevels, test::ResourceFixture) {
+    const auto& refXmlPath = test::converter::RoundTrip::getVersionedNetworkPath("multiple-subnetwork-levels.xml",IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    POWSYBL_ASSERT_THROW(Network::readXml(refXmlPath), PowsyblException, "Only one level of subnetwork is currently supported.");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

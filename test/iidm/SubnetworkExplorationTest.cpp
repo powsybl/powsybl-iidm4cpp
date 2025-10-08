@@ -382,11 +382,11 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     BOOST_CHECK(stdcxx::areSame(network, subnetwork1.getRootNetwork()));
     BOOST_CHECK(stdcxx::areSame(network, subnetwork2.getRootNetwork()));
     BOOST_CHECK(stdcxx::areSame(network, network.getNetwork()));
-    BOOST_CHECK(stdcxx::areSame(subnetwork1, subnetwork1.getNetwork()));
-    BOOST_CHECK(stdcxx::areSame(subnetwork2, subnetwork2.getNetwork()));
+    BOOST_CHECK(stdcxx::areSame(network, subnetwork1.getNetwork()));
+    BOOST_CHECK(stdcxx::areSame(network, subnetwork2.getNetwork()));
     BOOST_CHECK(stdcxx::areSame(network, network.getParentNetwork()));
-    BOOST_CHECK(stdcxx::areSame(subnetwork1, subnetwork1.getParentNetwork()));
-    BOOST_CHECK(stdcxx::areSame(subnetwork2, subnetwork2.getParentNetwork()));
+    BOOST_CHECK(stdcxx::areSame(network, subnetwork1.getParentNetwork()));
+    BOOST_CHECK(stdcxx::areSame(network, subnetwork2.getParentNetwork()));
     BOOST_CHECK(!network.getParentNetworkRef());
     BOOST_CHECK(subnetwork1.getParentNetworkRef());
     BOOST_CHECK(subnetwork2.getParentNetworkRef());

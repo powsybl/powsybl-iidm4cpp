@@ -15,6 +15,8 @@ set(EXT_SOURCES
     extensions/LoadMockExtXmlSerializer.cpp
     extensions/LoadQuxExt.cpp
     extensions/LoadQuxXmlSerializer.cpp
+    extensions/NetworkSourceExt.cpp
+    extensions/NetworkSourceXmlSerializer.cpp
     extensions/TerminalMockExt.cpp
     extensions/TerminalMockXmlSerializer.cpp
 )

@@ -29,6 +29,9 @@ public:
 
     Subnetwork& operator=(Subnetwork&&) noexcept = delete;
 
+public:  // Identifiable
+    const Network& getNetwork() const override;
+    Network& getNetwork() override;
 
 public:  // VariantManagerHolder
     unsigned long getVariantIndex() const override;
