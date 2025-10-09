@@ -16,10 +16,17 @@ namespace iidm {
 Battery::Battery(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
     double p0, double q0, double minP, double maxP) :
     Injection(id, name, fictitious),
-    m_p0(network.getVariantManager().getVariantArraySize(), checkP0(*this, p0)),
-    m_q0(network.getVariantManager().getVariantArraySize(), checkQ0(*this, q0)),
+    m_p0(network.getVariantManager().getVariantArraySize(), p0),
+    m_q0(network.getVariantManager().getVariantArraySize(), q0),
     m_minP(checkMinP(*this, minP)),
     m_maxP(checkMaxP(*this, maxP)) {
+    ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+    if (stdcxx::isInstanceOf<Network>(network)) {
+        auto& n = dynamic_cast<Network&>(network);
+        vl = n.getMinimumValidationLevel();
+    }
+    checkP0(*this, p0, vl);
+    checkQ0(*this, q0, vl);
     checkActivePowerLimits(*this, minP, maxP);
 }
 
@@ -90,14 +97,21 @@ Battery& Battery::setMinP(double minP) {
 }
 
 Battery& Battery::setP0(double p0) {
-    checkP0(*this, p0);
+    checkP0(*this, p0, getNetwork().getMinimumValidationLevel());
+
     m_p0[getNetwork().getVariantIndex()] = p0;
+
+    getNetwork().invalidateValidationLevel();
 
     return *this;
 }
 
 Battery& Battery::setQ0(double q0) {
-    m_q0[getNetwork().getVariantIndex()] = checkQ0(*this, q0);
+    checkQ0(*this, q0, getNetwork().getMinimumValidationLevel());
+
+    m_q0[getNetwork().getVariantIndex()] = q0;
+
+    getNetwork().invalidateValidationLevel();
 
     return *this;
 }

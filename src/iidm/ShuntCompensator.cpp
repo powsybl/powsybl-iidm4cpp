@@ -132,31 +132,32 @@ ShuntCompensator& ShuntCompensator::setRegulatingTerminal(const stdcxx::Referenc
 }
 
 ShuntCompensator& ShuntCompensator::setSectionCount(unsigned long sectionCount) {
-    checkSections(*this, sectionCount, m_model->getMaximumSectionCount());
+    checkSections(*this, sectionCount, m_model->getMaximumSectionCount(), getNetwork().getMinimumValidationLevel());
     unsigned long variantIndex = getNetwork().getVariantIndex();
     m_sectionCount[variantIndex] = sectionCount;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 ShuntCompensator& ShuntCompensator::setTargetDeadband(double targetDeadband) {
-    checkTargetDeadband(*this, "shunt compensator", isVoltageRegulatorOn(), targetDeadband);
+    checkTargetDeadband(*this, "shunt compensator", isVoltageRegulatorOn(), targetDeadband, getNetwork().getMinimumValidationLevel());
     m_targetDeadband[getNetwork().getVariantIndex()] = targetDeadband;
-
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 ShuntCompensator& ShuntCompensator::setTargetV(double targetV) {
-    checkVoltageControl(*this, isVoltageRegulatorOn(), targetV);
+    checkVoltageControl(*this, isVoltageRegulatorOn(), targetV, getNetwork().getMinimumValidationLevel());
     m_targetV[getNetwork().getVariantIndex()] = targetV;
-
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 ShuntCompensator& ShuntCompensator::setVoltageRegulatorOn(bool voltageRegulatorOn) {
-    checkVoltageControl(*this, voltageRegulatorOn, getTargetV());
-    checkTargetDeadband(*this, "shunt compensator", voltageRegulatorOn, m_targetDeadband[getNetwork().getVariantIndex()]);
+    checkVoltageControl(*this, voltageRegulatorOn, getTargetV(), getNetwork().getMinimumValidationLevel());
+    checkTargetDeadband(*this, "shunt compensator", voltageRegulatorOn, m_targetDeadband[getNetwork().getVariantIndex()], getNetwork().getMinimumValidationLevel());
     m_voltageRegulatorOn[getNetwork().getVariantIndex()] = voltageRegulatorOn;
-
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 

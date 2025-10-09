@@ -104,6 +104,7 @@ Network createVsc() {
         .setLossFactor(1.1F)
         .setReactivePowerSetpoint(123.0)
         .setVoltageRegulatorOn(false)
+        .setRegulatingTerminal(stdcxx::Reference<powsybl::iidm::Terminal>(cs1.getTerminal()))
         .add();
     cs2.newMinMaxReactiveLimits()
         .setMinQ(0.0)
@@ -149,6 +150,26 @@ BOOST_FIXTURE_TEST_CASE(HvdcOperatorActivePowerRangeXmlSerializerTest, test::Res
     Network network = createVsc();
     HvdcLine& hvdcLine = network.getHvdcLine("L");
     hvdcLine.newExtension<HvdcOperatorActivePowerRangeAdder>().withOprFromCS1toCS2(500).withOprFromCS2toCS1(700).add();
+
+    const std::string& networkStrRef = ResourceFixture::getResource("/hvdcOperatorActivePowerRange.xml");
+
+    test::converter::RoundTrip::runXml(network, networkStrRef);
+}
+
+BOOST_FIXTURE_TEST_CASE(HvdcOperatorActivePowerRangeXmlSerializerFromVscTest, test::ResourceFixture) {
+    Network network = Network::readXml(ResourceFixture::getResourcePath("VscRoundTripRef.xml"));
+    HvdcLine& hvdcLine = network.getHvdcLine("L");
+    hvdcLine.newExtension<HvdcOperatorActivePowerRangeAdder>().withOprFromCS1toCS2(500).withOprFromCS2toCS1(700).add();
+
+    for(VoltageLevel& vl : network.getSubstation("S2").getVoltageLevels()){
+        if(vl.getId() == "VL2"){
+            for (VscConverterStation& vsc : vl.getVscConverterStations()){
+                if(vsc.getId() == "C2"){
+                    vsc.setLossFactor(1.1F);
+                }
+            }
+        }
+    }
 
     const std::string& networkStrRef = ResourceFixture::getResource("/hvdcOperatorActivePowerRange.xml");
 

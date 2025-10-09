@@ -15,9 +15,11 @@
 #include <powsybl/iidm/NetworkVariant.hpp>
 #include <powsybl/iidm/NetworkViews.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
+#include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
+#include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/stdcxx/DateTime.hpp>
@@ -259,6 +261,8 @@ public:
 
     stdcxx::range<Load> getLoads();
 
+    const ValidationLevel& getMinimumValidationLevel() const;
+
     const ShuntCompensator& getShuntCompensator(const std::string& id) const;
 
     ShuntCompensator& getShuntCompensator(const std::string& id);
@@ -369,6 +373,50 @@ public:
 
     Network& setForecastDistance(int forecastDistance);
 
+    /*
+    * If network is valid, does nothing.
+    * Else, runs a validation check on each network component. 
+    * Exception is thrown if one component is not valid.
+    * Network validation status id updated.
+    * @return resulting ValidationLevel of the network
+    */
+    ValidationLevel runValidationChecks();
+    /*
+    * If network is valid, does nothing.
+    * Else, runs a validation check on each network component. 
+    * If given ValidationLevel is STEADY_SATE_HYPOTHESIS, exception is thrown if one component is not valid.
+    * Network validation status id updated.
+    * @return resulting ValidationLevel of the network
+    */
+    ValidationLevel runValidationChecks(const ValidationLevel& vl);
+
+    /*
+    * If network validation level not evaluated, runs validation checks and updates network validation level.
+    */
+    const ValidationLevel& validate();
+    /*
+    * If network validation level not evaluated, runs validation checks.
+    * Returns network's validation level. 
+    * Does NOT update network validation level value.
+    */
+    ValidationLevel getValidationLevel() const;
+
+    /*
+    * Set the minimum validation level of the network
+    * If the given validation level value is not matched by the current network validation status, an Exception is thrown.
+    */
+    Network& setMinimumAcceptableValidationLevel(const ValidationLevel& minimumValidationLevel);
+
+    /*
+    * Update networtk validation level to the minimum between current status and given validation level
+    */
+    Network& setValidationLevelIfGreaterThan(const ValidationLevel& vl);
+    /*
+    * If minimum validation level is STEADY STATE HYPOTHESIS, does nothing.
+    * Else, unvalid the network validation level status. A new check will have to be performed.
+    */
+    Network& invalidateValidationLevel();
+
 protected:  // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -413,6 +461,9 @@ private:
     int m_forecastDistance = 0;
 
     std::string m_sourceFormat;
+
+    ValidationLevel m_minimumValidationLevel{ValidationLevel::STEADY_STATE_HYPOTHESIS};
+    ValidationLevel m_validationLevel{ValidationLevel::UNVALID};
 
     NetworkIndex m_networkIndex;
 

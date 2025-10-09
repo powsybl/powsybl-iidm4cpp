@@ -23,8 +23,11 @@ GenerationAdder::GenerationAdder(DanglingLineAdder& parent) :
 
 DanglingLineAdder& GenerationAdder::add() {
     checkActivePowerLimits(m_parent, m_minP, m_maxP);
-    checkActivePowerSetpoint(m_parent, m_targetP);
-    checkVoltageControl(m_parent, m_voltageRegulationOn, m_targetV, m_targetQ);
+
+    Network& network = m_parent.getNetwork();
+    network.setValidationLevelIfGreaterThan(checkActivePowerSetpoint(m_parent, m_targetP, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkVoltageControl(m_parent, m_voltageRegulationOn, m_targetV, m_targetQ, network.getMinimumValidationLevel()));
+    
     m_parent.setGenerationAdder(*this);
     return m_parent;
 }

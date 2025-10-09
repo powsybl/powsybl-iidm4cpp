@@ -25,11 +25,17 @@ Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::st
     m_ratedS(checkRatedS(*this, ratedS)),
     m_regulatingTerminal(regulatingTerminal),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
-    m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), checkActivePowerSetpoint(*this, activePowerSetpoint)),
+    m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), activePowerSetpoint),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint) {
     checkActivePowerLimits(*this, minP, maxP);
-    checkVoltageControl(*this, voltageRegulatorOn, voltageSetpoint, reactivePowerSetpoint);
+    ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+    if (stdcxx::isInstanceOf<Network>(network)) {
+        auto& n = dynamic_cast<Network&>(network);
+        vl = n.getMinimumValidationLevel();
+    }
+    checkActivePowerSetpoint(*this, activePowerSetpoint, vl);
+    checkVoltageControl(*this, voltageRegulatorOn, voltageSetpoint, reactivePowerSetpoint, vl);
 }
 
 void Generator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -125,7 +131,9 @@ void Generator::reduceVariantArraySize(unsigned long number) {
 }
 
 Generator& Generator::setActivePowerSetpoint(double activePowerSetpoint) {
-    m_activePowerSetpoint[getNetwork().getVariantIndex()] = checkActivePowerSetpoint(*this, activePowerSetpoint);
+    checkActivePowerSetpoint(*this, activePowerSetpoint, getNetwork().getMinimumValidationLevel());
+    m_activePowerSetpoint[getNetwork().getVariantIndex()] = activePowerSetpoint;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
@@ -154,8 +162,9 @@ Generator& Generator::setRatedS(double ratedS) {
 }
 
 Generator& Generator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
-    checkVoltageControl(*this, isVoltageRegulatorOn(), getVoltageSetpoint(), reactivePowerSetpoint);
+    checkVoltageControl(*this, isVoltageRegulatorOn(), getVoltageSetpoint(), reactivePowerSetpoint, getNetwork().getMinimumValidationLevel());
     m_reactivePowerSetpoint[getNetwork().getVariantIndex()] = reactivePowerSetpoint;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
@@ -182,14 +191,16 @@ Generator& Generator::setTargetV(double voltageSetpoint) {
 }
 
 Generator& Generator::setVoltageRegulatorOn(bool voltageRegulatorOn) {
-    checkVoltageControl(*this, voltageRegulatorOn, getTargetV(), getTargetQ());
+    checkVoltageControl(*this, voltageRegulatorOn, getTargetV(), getTargetQ(), getNetwork().getMinimumValidationLevel());
     m_voltageRegulatorOn[getNetwork().getVariantIndex()] = voltageRegulatorOn;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 Generator& Generator::setVoltageSetpoint(double voltageSetpoint) {
-    checkVoltageControl(*this, isVoltageRegulatorOn(), voltageSetpoint, getReactivePowerSetpoint());
+    checkVoltageControl(*this, isVoltageRegulatorOn(), voltageSetpoint, getReactivePowerSetpoint(), getNetwork().getMinimumValidationLevel());
     m_voltageSetpoint[getNetwork().getVariantIndex()] = voltageSetpoint;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 

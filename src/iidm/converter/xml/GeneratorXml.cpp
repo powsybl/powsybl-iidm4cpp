@@ -36,11 +36,11 @@ const char* GeneratorXml::getRootElementName() const {
 
 Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdder, NetworkXmlReaderContext& context) const {
     const auto& energySource = Enum::fromString<EnergySource>(context.getReader().getAttributeValue(ENERGY_SOURCE));
-    const auto& minP = context.getReader().getAttributeValue<double>(MIN_P);
-    const auto& maxP = context.getReader().getAttributeValue<double>(MAX_P);
+    double minP = context.getReader().getOptionalAttributeValue(MIN_P, stdcxx::nan());
+    double maxP = context.getReader().getOptionalAttributeValue(MAX_P, stdcxx::nan());
     double ratedS = context.getReader().getOptionalAttributeValue(RATED_S, stdcxx::nan());
-    const auto& voltageRegulatorOn = context.getReader().getAttributeValue<bool>(VOLTAGE_REGULATOR_ON);
-    const auto& targetP = context.getReader().getAttributeValue<double>(TARGET_P);
+    bool voltageRegulatorOn = context.getReader().getOptionalAttributeValue(VOLTAGE_REGULATOR_ON, false);
+    double targetP = context.getReader().getOptionalAttributeValue(TARGET_P, stdcxx::nan());
     double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
     double targetQ = context.getReader().getOptionalAttributeValue(TARGET_Q, stdcxx::nan());
     readNodeOrBus(generatorAdder, context);

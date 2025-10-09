@@ -43,7 +43,7 @@ LccConverterStationAdder& LccConverterStationAdder::setPowerFactor(double powerF
     return *this;
 }
 
-void LccConverterStationAdder::validate() const {
+void LccConverterStationAdder::validate() {
     HvdcConverterStationAdder::validate();
     checkPowerFactor(*this, m_powerFactor);
 }

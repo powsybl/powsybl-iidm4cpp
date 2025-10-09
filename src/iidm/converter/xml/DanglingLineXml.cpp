@@ -35,15 +35,15 @@ const char* DanglingLineXml::getRootElementName() const  {
 }
 
 DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adder, NetworkXmlReaderContext& context) const  {
-    const auto& p0 = context.getReader().getAttributeValue<double>(P0);
-    const auto& q0 = context.getReader().getAttributeValue<double>(Q0);
+    double p0 = context.getReader().getOptionalAttributeValue(P0, stdcxx::nan());
+    double q0 = context.getReader().getOptionalAttributeValue(Q0, stdcxx::nan());
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);
     const auto& g = context.getReader().getAttributeValue<double>(G);
     const auto& b = context.getReader().getAttributeValue<double>(B);
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &adder]() {
         const auto& voltageRegulationOnStr = context.getReader().getOptionalAttributeValue<bool>(GENERATION_VOLTAGE_REGULATION_ON);
-        if (voltageRegulationOnStr) {
+        if (voltageRegulationOnStr.has_value()) {
             double minP = context.getReader().getOptionalAttributeValue(GENERATION_MIN_P, stdcxx::nan());
             double maxP = context.getReader().getOptionalAttributeValue(GENERATION_MAX_P, stdcxx::nan());
             bool voltageRegulationOn = *voltageRegulationOnStr;

@@ -184,6 +184,18 @@ stdcxx::optional<double> XmlStreamReader::getOptionalAttributeValue(const std::s
 }
 
 template <>
+stdcxx::optional<long> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
+    stdcxx::optional<long> value;
+
+    const XmlString& str = getAttributeValue(attributeName, false);
+    if (str) {
+        value = std::stol(XML2S(str.get()));
+    }
+
+    return value;
+}
+
+template <>
 stdcxx::optional<unsigned long> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
     stdcxx::optional<unsigned long> value;
 

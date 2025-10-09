@@ -21,17 +21,20 @@ ShuntCompensatorAdder::ShuntCompensatorAdder(VoltageLevel& voltageLevel) :
 }
 
 ShuntCompensator& ShuntCompensatorAdder::add() {
-    checkRegulatingTerminal(*this, m_regulatingTerminal, getNetwork());
-    checkVoltageControl(*this, m_voltageRegulatorOn, m_targetV);
-    checkTargetDeadband(*this, "shunt compensator", m_voltageRegulatorOn, m_targetDeadband);
-
+    Network& network = getNetwork();
     if (!m_modelBuilder) {
         throw ValidationException(*this, "the shunt compensator model has not been defined");
     }
-    checkSections(*this, m_sectionCount, m_modelBuilder->getMaximumSectionCount());
+    checkRegulatingTerminal(*this, m_regulatingTerminal, network);
+    network.setValidationLevelIfGreaterThan(checkVoltageControl(*this, m_voltageRegulatorOn, m_targetV, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkTargetDeadband(*this, "shunt compensator", m_voltageRegulatorOn, m_targetDeadband, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkSections(*this, m_sectionCount, m_modelBuilder->getMaximumSectionCount(), network.getMinimumValidationLevel()));
 
     auto ptrTerminal = checkAndGetTerminal();
     Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *ptrTerminal;
+    if(network.getMinimumValidationLevel() == ValidationLevel::EQUIPMENT && !m_sectionCount) {
+        m_sectionCount = 0UL;
+    }
     std::unique_ptr<ShuntCompensator> ptrShunt = stdcxx::make_unique<ShuntCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_modelBuilder->build(),
                                                                                        *m_sectionCount, regulatingTerminal, m_voltageRegulatorOn, m_targetV, m_targetDeadband);
     auto& shunt = getNetwork().checkAndAdd<ShuntCompensator>(std::move(ptrShunt));

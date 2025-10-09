@@ -23,11 +23,12 @@ LoadAdder::LoadAdder(VoltageLevel& voltageLevel) :
 
 Load& LoadAdder::add() {
     checkLoadType(*this, m_loadType);
-    checkP0(*this, m_p0);
-    checkQ0(*this, m_q0);
+    Network& network = getNetwork();
+    network.setValidationLevelIfGreaterThan(checkP0(*this, m_p0, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkQ0(*this, m_q0, network.getMinimumValidationLevel()));
 
-    std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_loadType, m_p0, m_q0);
-    auto& load = getNetwork().checkAndAdd<Load>(std::move(ptrLoad));
+    std::unique_ptr<Load> ptrLoad = stdcxx::make_unique<Load>(network, checkAndGetUniqueId(), getName(), isFictitious(), m_loadType, m_p0, m_q0);
+    auto& load = network.checkAndAdd<Load>(std::move(ptrLoad));
 
     Terminal& terminal = load.addTerminal(checkAndGetTerminal());
     getVoltageLevel().attach(terminal, false);

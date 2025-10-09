@@ -10,13 +10,39 @@
 #include <boost/algorithm/string/join.hpp>
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/BatteryAdder.hpp>
+#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/DanglingLineGeneration.hpp>
+#include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/GeneratorAdder.hpp>
+#include <powsybl/iidm/HvdcLine.hpp>
+#include <powsybl/iidm/HvdcLineAdder.hpp>
+#include <powsybl/iidm/LccConverterStation.hpp>
+#include <powsybl/iidm/LccConverterStationAdder.hpp>
+#include <powsybl/iidm/Line.hpp>
+#include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/PhaseTapChangerAdder.hpp>
+#include <powsybl/iidm/RatioTapChangerAdder.hpp>
+#include <powsybl/iidm/ShuntCompensatorAdder.hpp>
+#include <powsybl/iidm/StaticVarCompensatorAdder.hpp>
+#include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VscConverterStation.hpp>
+#include <powsybl/iidm/VscConverterStationAdder.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/network/MultipleExtensionsTestNetworkFactory.hpp>
+#include <powsybl/network/ScadaNetworkFactory.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
@@ -209,6 +235,32 @@ BOOST_FIXTURE_TEST_CASE(testOptionalSubstation, test::ResourceFixture) {
 
     // backward compatibility checks from version 1.6
     test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("eurostag-tutorial-example1-opt-sub.xml", IidmXmlVersion::V1_6());
+}
+
+BOOST_FIXTURE_TEST_CASE(testScada, test::ResourceFixture) {
+
+    Network network = powsybl::network::ScadaNetworkFactory::create();
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.getMinimumValidationLevel());
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.runValidationChecks(ValidationLevel::EQUIPMENT));
+
+    const auto& scadaRefXmlPath = test::converter::RoundTrip::getVersionedNetworkPath("scadaNetwork.xml",IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    Network networkRef = Network::readXml(scadaRefXmlPath);
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, networkRef.getMinimumValidationLevel());
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, networkRef.runValidationChecks(ValidationLevel::EQUIPMENT));
+    POWSYBL_ASSERT_THROW(networkRef.runValidationChecks(ValidationLevel::STEADY_STATE_HYPOTHESIS), ValidationException, "Battery 'battery': p0 is invalid");
+    
+
+    const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
+    const std::string& filenameRef = stdcxx::format("%1%.xiidm", networkRef.getId());
+    std::stringstream buffer;
+    iidm::Network::writeXml(filename, buffer, network);
+    std::stringstream bufferRef;
+    iidm::Network::writeXml(filenameRef, bufferRef, networkRef);
+
+    test::converter::RoundTrip::compareXml(bufferRef.str(), buffer.str());
+    test::converter::RoundTrip::compareXml(test::converter::RoundTrip::getVersionedNetwork("scadaNetworkRoundTrip.xml",IidmXmlVersion::CURRENT_IIDM_XML_VERSION()),buffer.str());
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("scadaNetworkRoundTrip.xml", IidmXmlVersion::V1_7());
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

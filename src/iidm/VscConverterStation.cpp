@@ -21,7 +21,12 @@ VscConverterStation::VscConverterStation(VariantManagerHolder& network, const st
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),
     m_regulatingTerminal(regulatingTerminal) {
-    checkVoltageControl(*this, voltageRegulatorOn, voltageSetpoint, reactivePowerSetpoint);
+    ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+    if (stdcxx::isInstanceOf<Network>(network)) {
+        auto& n = dynamic_cast<Network&>(network);
+        vl = n.getMinimumValidationLevel();
+    }
+    checkVoltageControl(*this, voltageRegulatorOn, voltageSetpoint, reactivePowerSetpoint, vl);
 }
 
 void VscConverterStation::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -85,8 +90,9 @@ VscConverterStation& VscConverterStation::setLossFactor(double lossFactor) {
 }
 
 VscConverterStation& VscConverterStation::setReactivePowerSetpoint(double reactivePowerSetpoint) {
-    checkVoltageControl(*this, isVoltageRegulatorOn(), getVoltageSetpoint(), reactivePowerSetpoint);
+    checkVoltageControl(*this, isVoltageRegulatorOn(), getVoltageSetpoint(), reactivePowerSetpoint, getNetwork().getMinimumValidationLevel());
     m_reactivePowerSetpoint[getNetwork().getVariantIndex()] = reactivePowerSetpoint;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
@@ -97,14 +103,16 @@ VscConverterStation& VscConverterStation::setRegulatingTerminal(const stdcxx::Re
 }
 
 VscConverterStation& VscConverterStation::setVoltageRegulatorOn(bool voltageRegulatorOn) {
-    checkVoltageControl(*this, voltageRegulatorOn, getVoltageSetpoint(), getReactivePowerSetpoint());
+    checkVoltageControl(*this, voltageRegulatorOn, getVoltageSetpoint(), getReactivePowerSetpoint(), getNetwork().getMinimumValidationLevel());
     m_voltageRegulatorOn[getNetwork().getVariantIndex()] = voltageRegulatorOn;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 VscConverterStation& VscConverterStation::setVoltageSetpoint(double voltageSetpoint) {
-    checkVoltageControl(*this, isVoltageRegulatorOn(), voltageSetpoint, getReactivePowerSetpoint());
+    checkVoltageControl(*this, isVoltageRegulatorOn(), voltageSetpoint, getReactivePowerSetpoint(), getNetwork().getMinimumValidationLevel());
     m_voltageSetpoint[getNetwork().getVariantIndex()] = voltageSetpoint;
+    getNetwork().invalidateValidationLevel();
     return *this;
 }
 }  // namespace iidm
