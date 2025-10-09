@@ -12,6 +12,7 @@
 #include <powsybl/iidm/OperationalLimitsHolder.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
+#include <powsybl/iidm/ThreeSides.hpp>
 
 namespace powsybl {
 
@@ -81,6 +82,8 @@ public:
     const Terminal& getTerminal() const;
 
     Terminal& getTerminal();
+
+    ThreeSides getSide() const;
 
     double getX() const;
 

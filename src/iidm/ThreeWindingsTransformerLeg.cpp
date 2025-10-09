@@ -125,6 +125,10 @@ Terminal& Leg::getTerminal() {
     return m_transformer.get().getTerminal(m_legNumber - 1);
 }
 
+ThreeSides Leg::getSide() const {
+    return ThreeSides(m_legNumber);
+}
+
 const std::string& Leg::getTypeDescription() const {
     static std::array<std::string, 3> s_typeDescriptions {{
         u8"3 windings transformer leg1",

@@ -360,6 +360,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(cLeg1, leg1));
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", cLeg1.toString());
+    BOOST_CHECK_EQUAL(ThreeSides::ONE, leg1.getSide());
+    BOOST_CHECK_EQUAL(ThreeSides::ONE, cLeg1.getSide());
     BOOST_CHECK_CLOSE(1.3, leg1.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.4, leg1.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.6, leg1.getG(), std::numeric_limits<double>::epsilon());
@@ -378,6 +380,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(cLeg2, leg2));
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg2", leg2.toString());
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg2", cLeg2.toString());
+    BOOST_CHECK_EQUAL(ThreeSides::TWO, leg2.getSide());
+    BOOST_CHECK_EQUAL(ThreeSides::TWO, cLeg2.getSide());
     BOOST_CHECK_CLOSE(2.3, leg2.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.4, leg2.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.1, leg2.getRatedU(), std::numeric_limits<double>::epsilon());
@@ -398,6 +402,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(cLeg3, leg3));
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg3", leg3.toString());
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg3", cLeg3.toString());
+    BOOST_CHECK_EQUAL(ThreeSides::THREE, leg3.getSide());
+    BOOST_CHECK_EQUAL(ThreeSides::THREE, cLeg3.getSide());
     BOOST_CHECK_CLOSE(3.3, leg3.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.4, leg3.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(3.1, leg3.getRatedU(), std::numeric_limits<double>::epsilon());
