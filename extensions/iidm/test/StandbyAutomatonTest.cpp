@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/extensions/iidm/StandbyAutomaton.hpp>
 #include <powsybl/iidm/extensions/iidm/StandbyAutomatonAdder.hpp>
 
@@ -66,21 +67,21 @@ BOOST_FIXTURE_TEST_CASE(StandbyAutomatonConstructor, test::ResourceFixture) {
     extension.setHighVoltageSetpoint(5.7);
 
     // error cases
-    POWSYBL_ASSERT_THROW(extension.setB0(stdcxx::nan()), PowsyblException, "b0 is invalid");
-    POWSYBL_ASSERT_THROW(extension.setLowVoltageSetpoint(stdcxx::nan()), PowsyblException, "lowVoltageSetpoint is invalid");
-    POWSYBL_ASSERT_THROW(extension.setHighVoltageSetpoint(stdcxx::nan()), PowsyblException, "highVoltageSetpoint is invalid");
-    POWSYBL_ASSERT_THROW(extension.setLowVoltageThreshold(stdcxx::nan()), PowsyblException, "lowVoltageThreshold is invalid");
-    POWSYBL_ASSERT_THROW(extension.setHighVoltageThreshold(stdcxx::nan()), PowsyblException, "highVoltageThreshold is invalid");
-    POWSYBL_ASSERT_THROW(extension.setLowVoltageThreshold(5.7), PowsyblException, "Inconsistent low (5.7) and high (5.6) voltage thresholds");
+    POWSYBL_ASSERT_THROW(extension.setB0(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC2': b0 (nan) is invalid");
+    POWSYBL_ASSERT_THROW(extension.setLowVoltageSetpoint(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC2': lowVoltageSetpoint (nan) is invalid");
+    POWSYBL_ASSERT_THROW(extension.setHighVoltageSetpoint(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC2': highVoltageSetpoint (nan) is invalid");
+    POWSYBL_ASSERT_THROW(extension.setLowVoltageThreshold(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC2': lowVoltageThreshold (nan) is invalid");
+    POWSYBL_ASSERT_THROW(extension.setHighVoltageThreshold(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC2': highVoltageThreshold (nan) is invalid");
+    POWSYBL_ASSERT_THROW(extension.setLowVoltageThreshold(5.7), ValidationException, "staticVarCompensator 'SVC2': Inconsistent low (5.7) and high (5.6) voltage thresholds");
 
     auto adder = svc.newExtension<StandbyAutomatonAdder>();
     
-    POWSYBL_ASSERT_THROW(adder.withB0(stdcxx::nan()).add(), PowsyblException, "b0 is invalid");
-    POWSYBL_ASSERT_THROW(adder.withB0(1.1).withStandby(true).withLowVoltageSetpoint(stdcxx::nan()).add(), PowsyblException, "lowVoltageSetpoint is invalid");
-    POWSYBL_ASSERT_THROW(adder.withLowVoltageSetpoint(2.2).withHighVoltageSetpoint(stdcxx::nan()).add(), PowsyblException, "highVoltageSetpoint is invalid");
-    POWSYBL_ASSERT_THROW(adder.withHighVoltageSetpoint(3.3).withLowVoltageThreshold(stdcxx::nan()).add(), PowsyblException, "lowVoltageThreshold is invalid");
-    POWSYBL_ASSERT_THROW(adder.withLowVoltageThreshold(4.4).withHighVoltageThreshold(stdcxx::nan()).add(), PowsyblException, "highVoltageThreshold is invalid");
-    POWSYBL_ASSERT_THROW(adder.withLowVoltageThreshold(4.4).withHighVoltageThreshold(4.3).add(), PowsyblException, "Inconsistent low (4.4) and high (4.3) voltage thresholds");
+    POWSYBL_ASSERT_THROW(adder.withB0(stdcxx::nan()).add(), ValidationException, "staticVarCompensator 'SVC2': b0 (nan) is invalid");
+    POWSYBL_ASSERT_THROW(adder.withB0(1.1).withStandby(true).withLowVoltageSetpoint(stdcxx::nan()).add(), ValidationException, "staticVarCompensator 'SVC2': lowVoltageSetpoint (nan) is invalid");
+    POWSYBL_ASSERT_THROW(adder.withLowVoltageSetpoint(2.2).withHighVoltageSetpoint(stdcxx::nan()).add(), ValidationException, "staticVarCompensator 'SVC2': highVoltageSetpoint (nan) is invalid");
+    POWSYBL_ASSERT_THROW(adder.withHighVoltageSetpoint(3.3).withLowVoltageThreshold(stdcxx::nan()).add(), ValidationException, "staticVarCompensator 'SVC2': lowVoltageThreshold (nan) is invalid");
+    POWSYBL_ASSERT_THROW(adder.withLowVoltageThreshold(4.4).withHighVoltageThreshold(stdcxx::nan()).add(), ValidationException, "staticVarCompensator 'SVC2': highVoltageThreshold (nan) is invalid");
+    POWSYBL_ASSERT_THROW(adder.withLowVoltageThreshold(4.4).withHighVoltageThreshold(4.3).add(), ValidationException, "staticVarCompensator 'SVC2': Inconsistent low (4.4) and high (4.3) voltage thresholds");
 }
 
 BOOST_FIXTURE_TEST_CASE(StandbyAutomatonXmlSerializerTest, test::ResourceFixture) {

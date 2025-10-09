@@ -43,9 +43,9 @@ private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
-    static double checkDroop(double droop);
+    static double checkDroop(double droop, const HvdcLine& line);
 
-    static double checkP0(double p0);
+    static double checkP0(double p0, const HvdcLine& line);
 
 private:
     HvdcAngleDroopActivePowerControl(HvdcLine& hvdcLine, double p0, double droop, bool enabled);

@@ -11,6 +11,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 
 namespace powsybl {
 
@@ -22,8 +23,8 @@ namespace iidm {
 
 HvdcAngleDroopActivePowerControl::HvdcAngleDroopActivePowerControl(HvdcLine& hvdcLine, double p0, double droop, bool enabled) :
     Extension(hvdcLine),
-    m_p0(checkP0(p0)),
-    m_droop(checkDroop(droop)),
+    m_p0(checkP0(p0, hvdcLine)),
+    m_droop(checkDroop(droop, hvdcLine)),
     m_enabled(enabled) {
 }
 
@@ -33,16 +34,16 @@ void HvdcAngleDroopActivePowerControl::assertExtendable(const stdcxx::Reference<
     }
 }
 
-double HvdcAngleDroopActivePowerControl::checkDroop(double droop) {
+double HvdcAngleDroopActivePowerControl::checkDroop(double droop, const HvdcLine& line) {
     if (std::isnan(droop)) {
-        throw PowsyblException("droop is not set");
+        throw ValidationException(line, stdcxx::format("droop value (%1%) is invalid", droop));
     }
     return droop;
 }
 
-double HvdcAngleDroopActivePowerControl::checkP0(double p0) {
+double HvdcAngleDroopActivePowerControl::checkP0(double p0, const HvdcLine& line) {
     if (std::isnan(p0)) {
-        throw PowsyblException("p0 is not set");
+        throw ValidationException(line, stdcxx::format("p0 value (%1%) is invalid", p0));
     }
     return p0;
 }
@@ -70,7 +71,8 @@ bool HvdcAngleDroopActivePowerControl::isEnabled() const {
 }
 
 HvdcAngleDroopActivePowerControl& HvdcAngleDroopActivePowerControl::setDroop(double droop) {
-    m_droop = checkDroop(droop);
+    const auto& hvdcLine = getExtendable<HvdcLine>().get();
+    m_droop = checkDroop(droop, hvdcLine);
     return *this;
 }
 
@@ -80,7 +82,8 @@ HvdcAngleDroopActivePowerControl& HvdcAngleDroopActivePowerControl::setEnabled(b
 }
 
 HvdcAngleDroopActivePowerControl& HvdcAngleDroopActivePowerControl::setP0(double p0) {
-    m_p0 = checkP0(p0);
+    const auto& hvdcLine = getExtendable<HvdcLine>().get();
+    m_p0 = checkP0(p0, hvdcLine);
     return *this;
 }
 

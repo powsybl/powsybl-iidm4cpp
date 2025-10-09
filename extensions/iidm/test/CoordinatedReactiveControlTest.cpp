@@ -14,6 +14,7 @@
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControl.hpp>
 #include <powsybl/iidm/extensions/iidm/CoordinatedReactiveControlAdder.hpp>
@@ -71,14 +72,14 @@ BOOST_AUTO_TEST_CASE(CoordinatedReactiveControlTest) {
     BOOST_CHECK_NO_THROW(gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(-1.0).add());
     BOOST_CHECK_NO_THROW(gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(101.0).add());
 
-    POWSYBL_ASSERT_THROW(gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(stdcxx::nan()).add(), PowsyblException, "Undefined value for qPercent");
+    POWSYBL_ASSERT_THROW(gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(stdcxx::nan()).add(), ValidationException, "Generator 'GEN': Undefined value (nan) for qPercent");
 
     gen.newExtension<CoordinatedReactiveControlAdder>().withQPercent(50).add();
     auto& crc = gen.getExtension<CoordinatedReactiveControl>();
     BOOST_CHECK_EQUAL("coordinatedReactiveControl", crc.getName());
     BOOST_CHECK_CLOSE(50.0, crc.getQPercent(), std::numeric_limits<double>::epsilon());
 
-    POWSYBL_ASSERT_THROW(crc.setQPercent(stdcxx::nan()), PowsyblException, "Undefined value for qPercent");
+    POWSYBL_ASSERT_THROW(crc.setQPercent(stdcxx::nan()), ValidationException, "Generator 'GEN': Undefined value (nan) for qPercent");
 
     BOOST_CHECK(stdcxx::areSame(gen, crc.getExtendable<Generator>().get()));
     POWSYBL_ASSERT_THROW(crc.getExtendable<Load>(), AssertionError, "Unexpected extendable type: powsybl::iidm::Load (powsybl::iidm::Generator expected)");

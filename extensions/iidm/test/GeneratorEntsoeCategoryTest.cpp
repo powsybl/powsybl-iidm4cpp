@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/extensions/iidm/GeneratorEntsoeCategory.hpp>
 #include <powsybl/iidm/extensions/iidm/GeneratorEntsoeCategoryAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
@@ -31,7 +32,7 @@ BOOST_AUTO_TEST_CASE(GeneratorEntsoeCategoryConstructor) {
     Generator& generator = network.getGenerator("GEN");
 
     GeneratorEntsoeCategoryAdder gecAdder = generator.newExtension<GeneratorEntsoeCategoryAdder>();
-    POWSYBL_ASSERT_THROW(gecAdder.add(), PowsyblException, "Bad generator ENTSO-E code 0");
+    POWSYBL_ASSERT_THROW(gecAdder.add(), ValidationException, "Generator 'GEN': Bad generator ENTSO-E code (0)");
 
     gecAdder.withCode(11)
         .add();
@@ -43,8 +44,8 @@ BOOST_AUTO_TEST_CASE(GeneratorEntsoeCategoryConstructor) {
     extension.setCode(12);
     BOOST_CHECK_EQUAL(12, extension.getCode());
 
-    POWSYBL_ASSERT_THROW(extension.setCode(0), PowsyblException, "Bad generator ENTSO-E code 0");
-    POWSYBL_ASSERT_THROW(GeneratorEntsoeCategory(generator, 0), PowsyblException, "Bad generator ENTSO-E code 0");
+    POWSYBL_ASSERT_THROW(extension.setCode(0), ValidationException, "Generator 'GEN': Bad generator ENTSO-E code (0)");
+    POWSYBL_ASSERT_THROW(GeneratorEntsoeCategory(generator, 0), ValidationException, "Generator 'GEN': Bad generator ENTSO-E code (0)");
     extension.setCode(-1);
 
 }

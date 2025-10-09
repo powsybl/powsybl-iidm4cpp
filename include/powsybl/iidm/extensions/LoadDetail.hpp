@@ -58,7 +58,7 @@ private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
-    static double checkPower(double value, const std::string& message);
+    static double checkPower(double value, const std::string& message, const Load& load);
 
 private:
     std::vector<double> m_fixedActivePower;

@@ -13,6 +13,7 @@
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/extensions/LoadDetail.hpp>
 #include <powsybl/iidm/extensions/LoadDetailAdder.hpp>
@@ -85,20 +86,20 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(44.4, extension.getVariableReactivePower(), std::numeric_limits<double>::epsilon());
 
     // error cases
-    POWSYBL_ASSERT_THROW(extension.setFixedActivePower(stdcxx::nan()), PowsyblException, "Invalid fixedActivePower");
-    POWSYBL_ASSERT_THROW(extension.setFixedReactivePower(stdcxx::nan()), PowsyblException, "Invalid fixedReactivePower");
-    POWSYBL_ASSERT_THROW(extension.setVariableActivePower(stdcxx::nan()), PowsyblException, "Invalid variableActivePower");
-    POWSYBL_ASSERT_THROW(extension.setVariableReactivePower(stdcxx::nan()), PowsyblException, "Invalid variableReactivePower");
+    POWSYBL_ASSERT_THROW(extension.setFixedActivePower(stdcxx::nan()), ValidationException, "Load 'L': Invalid fixedActivePower (nan)");
+    POWSYBL_ASSERT_THROW(extension.setFixedReactivePower(stdcxx::nan()), ValidationException, "Load 'L': Invalid fixedReactivePower (nan)");
+    POWSYBL_ASSERT_THROW(extension.setVariableActivePower(stdcxx::nan()), ValidationException, "Load 'L': Invalid variableActivePower (nan)");
+    POWSYBL_ASSERT_THROW(extension.setVariableReactivePower(stdcxx::nan()), ValidationException, "Load 'L': Invalid variableReactivePower (nan)");
 
-    POWSYBL_ASSERT_THROW(LoadDetail(load, stdcxx::nan(), 2.2, 3.3, 4.4), PowsyblException, "Invalid fixedActivePower");
-    POWSYBL_ASSERT_THROW(LoadDetail(load, 1.1, stdcxx::nan(), 3.3, 4.4), PowsyblException, "Invalid fixedReactivePower");
-    POWSYBL_ASSERT_THROW(LoadDetail(load, 1.1, 2.2, stdcxx::nan(), 4.4), PowsyblException, "Invalid variableActivePower");
-    POWSYBL_ASSERT_THROW(LoadDetail(load, 1.1, 2.2, 3.3, stdcxx::nan()), PowsyblException, "Invalid variableReactivePower");
+    POWSYBL_ASSERT_THROW(LoadDetail(load, stdcxx::nan(), 2.2, 3.3, 4.4), ValidationException, "Load 'L': Invalid fixedActivePower (nan)");
+    POWSYBL_ASSERT_THROW(LoadDetail(load, 1.1, stdcxx::nan(), 3.3, 4.4), ValidationException, "Load 'L': Invalid fixedReactivePower (nan)");
+    POWSYBL_ASSERT_THROW(LoadDetail(load, 1.1, 2.2, stdcxx::nan(), 4.4), ValidationException, "Load 'L': Invalid variableActivePower (nan)");
+    POWSYBL_ASSERT_THROW(LoadDetail(load, 1.1, 2.2, 3.3, stdcxx::nan()), ValidationException, "Load 'L': Invalid variableReactivePower (nan)");
 
-    POWSYBL_ASSERT_THROW(load.newExtension<LoadDetailAdder>().withFixedActivePower(stdcxx::nan()).withFixedReactivePower(2.2).withVariableActivePower(3.3).withVariableReactivePower(4.4).add(), PowsyblException, "Invalid fixedActivePower");
-    POWSYBL_ASSERT_THROW(load.newExtension<LoadDetailAdder>().withFixedActivePower(1.1).withFixedReactivePower(stdcxx::nan()).withVariableActivePower(3.3).withVariableReactivePower(4.4).add(), PowsyblException, "Invalid fixedReactivePower");
-    POWSYBL_ASSERT_THROW(load.newExtension<LoadDetailAdder>().withFixedActivePower(1.1).withFixedReactivePower(2.2).withVariableActivePower(stdcxx::nan()).withVariableReactivePower(4.4).add(), PowsyblException, "Invalid variableActivePower");
-    POWSYBL_ASSERT_THROW(load.newExtension<LoadDetailAdder>().withFixedActivePower(1.1).withFixedReactivePower(2.2).withVariableActivePower(3.3).withVariableReactivePower(stdcxx::nan()).add(), PowsyblException, "Invalid variableReactivePower");
+    POWSYBL_ASSERT_THROW(load.newExtension<LoadDetailAdder>().withFixedActivePower(stdcxx::nan()).withFixedReactivePower(2.2).withVariableActivePower(3.3).withVariableReactivePower(4.4).add(), ValidationException, "Load 'L': Invalid fixedActivePower (nan)");
+    POWSYBL_ASSERT_THROW(load.newExtension<LoadDetailAdder>().withFixedActivePower(1.1).withFixedReactivePower(stdcxx::nan()).withVariableActivePower(3.3).withVariableReactivePower(4.4).add(), ValidationException, "Load 'L': Invalid fixedReactivePower (nan)");
+    POWSYBL_ASSERT_THROW(load.newExtension<LoadDetailAdder>().withFixedActivePower(1.1).withFixedReactivePower(2.2).withVariableActivePower(stdcxx::nan()).withVariableReactivePower(4.4).add(), ValidationException, "Load 'L': Invalid variableActivePower (nan)");
+    POWSYBL_ASSERT_THROW(load.newExtension<LoadDetailAdder>().withFixedActivePower(1.1).withFixedReactivePower(2.2).withVariableActivePower(3.3).withVariableReactivePower(stdcxx::nan()).add(), ValidationException, "Load 'L': Invalid variableReactivePower (nan)");
 }
 
 BOOST_AUTO_TEST_CASE(multivariant) {

@@ -8,6 +8,7 @@
 #include <powsybl/iidm/extensions/iidm/VoltagePerReactivePowerControl.hpp>
 
 #include <powsybl/iidm/StaticVarCompensator.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 
 namespace powsybl {
 
@@ -29,11 +30,12 @@ void VoltagePerReactivePowerControl::assertExtendable(const stdcxx::Reference<Ex
 }
 
 double VoltagePerReactivePowerControl::checkSlope(double slope) {
+    const auto& svc = getExtendable<StaticVarCompensator>().get();
     if (std::isnan(slope)) {
-        throw PowsyblException("Undefined value for slope");
+        throw ValidationException(svc, "Undefined value for slope");
     }
     if (slope < 0) {
-        throw PowsyblException(stdcxx::format("Slope value of SVC %1% must be positive: %2%", getExtendable<StaticVarCompensator>().get().getId(), slope));
+        throw ValidationException(svc, stdcxx::format("Slope value (%1%) must be positive", slope));
     }
     return slope;
 }

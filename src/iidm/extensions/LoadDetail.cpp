@@ -11,6 +11,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
@@ -23,10 +24,10 @@ namespace extensions {
 LoadDetail::LoadDetail(Load& load, double fixedActivePower, double fixedReactivePower, double variableActivePower, double variableReactivePower) :
     AbstractMultiVariantIdentifiableExtension(load) {
     unsigned long variantArraySize = getVariantManagerHolder().getVariantManager().getVariantArraySize();
-    m_fixedActivePower.resize(variantArraySize, checkPower(fixedActivePower, "Invalid fixedActivePower"));
-    m_fixedReactivePower.resize(variantArraySize, checkPower(fixedReactivePower, "Invalid fixedReactivePower"));
-    m_variableActivePower.resize(variantArraySize, checkPower(variableActivePower, "Invalid variableActivePower"));
-    m_variableReactivePower.resize(variantArraySize, checkPower(variableReactivePower, "Invalid variableReactivePower"));
+    m_fixedActivePower.resize(variantArraySize, checkPower(fixedActivePower, "Invalid fixedActivePower", load));
+    m_fixedReactivePower.resize(variantArraySize, checkPower(fixedReactivePower, "Invalid fixedReactivePower", load));
+    m_variableActivePower.resize(variantArraySize, checkPower(variableActivePower, "Invalid variableActivePower", load));
+    m_variableReactivePower.resize(variantArraySize, checkPower(variableReactivePower, "Invalid variableReactivePower", load));
 }
 
 void LoadDetail::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -44,9 +45,9 @@ void LoadDetail::assertExtendable(const stdcxx::Reference<Extendable>& extendabl
     }
 }
 
-double LoadDetail::checkPower(double value, const std::string& message) {
+double LoadDetail::checkPower(double value, const std::string& message, const Load& load) {
     if (std::isnan(value)) {
-        throw PowsyblException(message);
+        throw ValidationException(load, stdcxx::format("%1% (%2%)", message, value));
     }
     return value;
 }
@@ -96,22 +97,26 @@ void LoadDetail::reduceVariantArraySize(unsigned long number) {
 }
 
 LoadDetail& LoadDetail::setFixedActivePower(double fixedActivePower) {
-    m_fixedActivePower[getVariantIndex()] = checkPower(fixedActivePower, "Invalid fixedActivePower");
+    const auto& load = getExtendable<Load>().get();
+    m_fixedActivePower[getVariantIndex()] = checkPower(fixedActivePower, "Invalid fixedActivePower", load);
     return *this;
 }
 
 LoadDetail& LoadDetail::setFixedReactivePower(double fixedReactivePower) {
-    m_fixedReactivePower[getVariantIndex()] = checkPower(fixedReactivePower, "Invalid fixedReactivePower");
+    const auto& load = getExtendable<Load>().get();
+    m_fixedReactivePower[getVariantIndex()] = checkPower(fixedReactivePower, "Invalid fixedReactivePower", load);
     return *this;
 }
 
 LoadDetail& LoadDetail::setVariableActivePower(double variableActivePower) {
-    m_variableActivePower[getVariantIndex()] = checkPower(variableActivePower, "Invalid variableActivePower");
+    const auto& load = getExtendable<Load>().get();
+    m_variableActivePower[getVariantIndex()] = checkPower(variableActivePower, "Invalid variableActivePower", load);
     return *this;
 }
 
 LoadDetail& LoadDetail::setVariableReactivePower(double variableReactivePower) {
-    m_variableReactivePower[getVariantIndex()] = checkPower(variableReactivePower, "Invalid variableReactivePower");
+    const auto& load = getExtendable<Load>().get();
+    m_variableReactivePower[getVariantIndex()] = checkPower(variableReactivePower, "Invalid variableReactivePower", load);
     return *this;
 }
 

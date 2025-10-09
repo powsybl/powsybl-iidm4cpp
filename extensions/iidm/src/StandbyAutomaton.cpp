@@ -11,6 +11,7 @@
 
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 
 #include <powsybl/logging/LoggerFactory.hpp>
 
@@ -40,8 +41,8 @@ StandbyAutomaton::StandbyAutomaton(StaticVarCompensator& svc, double b0, bool st
                                 double lowVoltageThreshold, double highVoltageThreshold) :
     Extension(svc),
     m_standby(standby) {
-    m_b0 = checkB0(b0);
-    checkVoltageConfig(lowVoltageSetpoint, highVoltageSetpoint, lowVoltageThreshold, highVoltageThreshold);
+    m_b0 = checkB0(b0, svc);
+    checkVoltageConfig(lowVoltageSetpoint, highVoltageSetpoint, lowVoltageThreshold, highVoltageThreshold, svc);
     m_lowVoltageSetpoint = lowVoltageSetpoint;
     m_highVoltageSetpoint = highVoltageSetpoint;
     m_lowVoltageThreshold = lowVoltageThreshold;
@@ -54,36 +55,36 @@ void StandbyAutomaton::assertExtendable(const stdcxx::Reference<Extendable>& ext
     }
 }
 
-double StandbyAutomaton::checkB0(double b0) {
+double StandbyAutomaton::checkB0(double b0, const StaticVarCompensator& svc) {
     if (std::isnan(b0)) {
-        throw PowsyblException(stdcxx::format("b0 is invalid"));
+        throw ValidationException(svc, stdcxx::format("b0 (%1%) is invalid", b0));
     }
     return b0;
 }
 
-void StandbyAutomaton::checkVoltageConfig(double lowVoltageSetpoint, double highVoltageSetpoint, double lowVoltageThreshold, double highVoltageThreshold) {
+void StandbyAutomaton::checkVoltageConfig(double lowVoltageSetpoint, double highVoltageSetpoint, double lowVoltageThreshold, double highVoltageThreshold, const StaticVarCompensator& svc) {
     if (std::isnan(lowVoltageSetpoint)) {
-        throw PowsyblException(stdcxx::format("lowVoltageSetpoint is invalid"));
+        throw ValidationException(svc, stdcxx::format("lowVoltageSetpoint (%1%) is invalid", lowVoltageSetpoint));
     }
     if (std::isnan(highVoltageSetpoint)) {
-        throw PowsyblException(stdcxx::format("highVoltageSetpoint is invalid"));
+        throw ValidationException(svc, stdcxx::format("highVoltageSetpoint (%1%) is invalid", highVoltageSetpoint));
     }
     if (std::isnan(lowVoltageThreshold)) {
-        throw PowsyblException(stdcxx::format("lowVoltageThreshold is invalid"));
+        throw ValidationException(svc, stdcxx::format("lowVoltageThreshold (%1%) is invalid", lowVoltageThreshold));
     }
     if (std::isnan(highVoltageThreshold)) {
-        throw PowsyblException(stdcxx::format("highVoltageThreshold is invalid"));
+        throw ValidationException(svc, stdcxx::format("highVoltageThreshold (%1%) is invalid", highVoltageThreshold));
     }
     if (lowVoltageThreshold >= highVoltageThreshold) {
-        throw PowsyblException(stdcxx::format("Inconsistent low (%1%) and high (%2%) voltage thresholds", lowVoltageThreshold, highVoltageThreshold));
+        throw ValidationException(svc, stdcxx::format("Inconsistent low (%1%) and high (%2%) voltage thresholds", lowVoltageThreshold, highVoltageThreshold));
     }
     if (lowVoltageSetpoint < lowVoltageThreshold) {
         logging::Logger& logger = logging::LoggerFactory::getLogger<StandbyAutomaton>();
-        logger.warn(stdcxx::format("Invalid low voltage setpoint %1% < threshold %2%", lowVoltageSetpoint, lowVoltageThreshold));
+        logger.warn(stdcxx::format("%1%Invalid low voltage setpoint %2% < threshold %3%", svc.getMessageHeader(),  lowVoltageSetpoint, lowVoltageThreshold));
     }
     if (highVoltageSetpoint > highVoltageThreshold) {
         logging::Logger& logger = logging::LoggerFactory::getLogger<StandbyAutomaton>();
-        logger.warn(stdcxx::format("Invalid high voltage setpoint %1% > threshold %2%", highVoltageSetpoint, highVoltageThreshold));
+        logger.warn(stdcxx::format("%1%Invalid high voltage setpoint %2% > threshold %3%", svc.getMessageHeader(), highVoltageSetpoint, highVoltageThreshold));
     }
 }
 
@@ -99,7 +100,8 @@ double StandbyAutomaton::getB0() const {
     return m_b0;
 }
 StandbyAutomaton& StandbyAutomaton::setB0(double b0) {
-    m_b0 = checkB0(b0);
+    const auto& svc = getExtendable<StaticVarCompensator>().get();
+    m_b0 = checkB0(b0, svc);
     return *this;
 }
 
@@ -107,7 +109,8 @@ double StandbyAutomaton::getHighVoltageSetpoint() const {
     return m_highVoltageSetpoint;
 }
 StandbyAutomaton& StandbyAutomaton::setHighVoltageSetpoint(double highVoltageSetpoint) {
-    checkVoltageConfig(m_lowVoltageSetpoint, highVoltageSetpoint, m_lowVoltageThreshold, m_highVoltageThreshold);
+    const auto& svc = getExtendable<StaticVarCompensator>().get();
+    checkVoltageConfig(m_lowVoltageSetpoint, highVoltageSetpoint, m_lowVoltageThreshold, m_highVoltageThreshold, svc);
     m_highVoltageSetpoint = highVoltageSetpoint;
     return *this;
 }
@@ -116,7 +119,8 @@ double StandbyAutomaton::getHighVoltageThreshold() const {
     return m_highVoltageThreshold;
 }
 StandbyAutomaton& StandbyAutomaton::setHighVoltageThreshold(double highVoltageThreshold) {
-    checkVoltageConfig(m_lowVoltageSetpoint, m_highVoltageSetpoint, m_lowVoltageThreshold, highVoltageThreshold);
+    const auto& svc = getExtendable<StaticVarCompensator>().get();
+    checkVoltageConfig(m_lowVoltageSetpoint, m_highVoltageSetpoint, m_lowVoltageThreshold, highVoltageThreshold, svc);
     m_highVoltageThreshold = highVoltageThreshold;
     return *this;
 }
@@ -125,7 +129,8 @@ double StandbyAutomaton::getLowVoltageSetpoint() const {
     return m_lowVoltageSetpoint;
 }
 StandbyAutomaton& StandbyAutomaton::setLowVoltageSetpoint(double lowVoltageSetpoint) {
-    checkVoltageConfig(lowVoltageSetpoint, m_highVoltageSetpoint, m_lowVoltageThreshold, m_highVoltageThreshold);
+    const auto& svc = getExtendable<StaticVarCompensator>().get();
+    checkVoltageConfig(lowVoltageSetpoint, m_highVoltageSetpoint, m_lowVoltageThreshold, m_highVoltageThreshold, svc);
     m_lowVoltageSetpoint = lowVoltageSetpoint;
     return *this;
 }
@@ -134,7 +139,8 @@ double StandbyAutomaton::getLowVoltageThreshold() const {
     return m_lowVoltageThreshold;
 }
 StandbyAutomaton& StandbyAutomaton::setLowVoltageThreshold(double lowVoltageThreshold) {
-    checkVoltageConfig(m_lowVoltageSetpoint, m_highVoltageSetpoint, lowVoltageThreshold, m_highVoltageThreshold);
+    const auto& svc = getExtendable<StaticVarCompensator>().get();
+    checkVoltageConfig(m_lowVoltageSetpoint, m_highVoltageSetpoint, lowVoltageThreshold, m_highVoltageThreshold, svc);
     m_lowVoltageThreshold = lowVoltageThreshold;
     return *this;
 }

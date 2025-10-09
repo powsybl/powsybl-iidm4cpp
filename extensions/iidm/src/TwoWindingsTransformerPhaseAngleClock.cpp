@@ -10,6 +10,7 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
@@ -36,7 +37,8 @@ void TwoWindingsTransformerPhaseAngleClock::assertExtendable(const stdcxx::Refer
 
 unsigned long TwoWindingsTransformerPhaseAngleClock::checkPhaseAngleClock(unsigned long phaseAngleClock) const {
     if (phaseAngleClock > 11) {
-        throw PowsyblException(stdcxx::format("Unexpected value for phaseAngleClock: %1%", phaseAngleClock));
+        const auto& twt = getExtendable<TwoWindingsTransformer>().get();
+        throw ValidationException(twt, stdcxx::format("Unexpected value for phaseAngleClock: %1%", phaseAngleClock));
     }
     return phaseAngleClock;
 }

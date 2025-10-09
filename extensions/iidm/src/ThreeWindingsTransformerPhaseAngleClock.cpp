@@ -12,6 +12,7 @@
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
@@ -39,7 +40,8 @@ void ThreeWindingsTransformerPhaseAngleClock::assertExtendable(const stdcxx::Ref
 
 unsigned long ThreeWindingsTransformerPhaseAngleClock::checkPhaseAngleClock(unsigned long phaseAngleClock) const {
     if (phaseAngleClock > 11) {
-        throw PowsyblException(stdcxx::format("Unexpected value for phaseAngleClock: %1%", phaseAngleClock));
+        const auto& twt = getExtendable<ThreeWindingsTransformer>().get();
+        throw ValidationException(twt, stdcxx::format("Unexpected value for phaseAngleClock: %1%", phaseAngleClock));
     }
     return phaseAngleClock;
 }

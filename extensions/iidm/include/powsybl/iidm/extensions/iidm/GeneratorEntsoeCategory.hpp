@@ -37,7 +37,7 @@ private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
-    static unsigned long checkCode(unsigned long code);
+    static unsigned long checkCode(unsigned long code, const Generator& generator);
 
 private:
     unsigned long m_code;

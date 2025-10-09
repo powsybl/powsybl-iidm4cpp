@@ -9,6 +9,7 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
@@ -21,7 +22,7 @@ namespace iidm {
 
 GeneratorEntsoeCategory::GeneratorEntsoeCategory(Generator& generator, unsigned long code) :
     Extension(generator),
-    m_code(checkCode(code)) {
+    m_code(checkCode(code, generator)) {
 }
 
 void GeneratorEntsoeCategory::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -30,9 +31,9 @@ void GeneratorEntsoeCategory::assertExtendable(const stdcxx::Reference<Extendabl
     }
 }
 
-unsigned long GeneratorEntsoeCategory::checkCode(unsigned long code) {
+unsigned long GeneratorEntsoeCategory::checkCode(unsigned long code, const Generator& generator) {
     if (code < 1) {
-        throw PowsyblException(stdcxx::format("Bad generator ENTSO-E code %1%", code));
+        throw ValidationException(generator, stdcxx::format("Bad generator ENTSO-E code (%1%)", code));
     }
     return code;
 }
@@ -52,7 +53,8 @@ const std::type_index& GeneratorEntsoeCategory::getType() const {
 }
 
 GeneratorEntsoeCategory& GeneratorEntsoeCategory::setCode(unsigned long code) {
-    m_code = checkCode(code);
+    const auto& gen = getExtendable<Generator>().get();
+    m_code = checkCode(code, gen);
     return *this;
 }
 

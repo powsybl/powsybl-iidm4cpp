@@ -10,6 +10,7 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControl.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControlAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -31,8 +32,8 @@ BOOST_FIXTURE_TEST_CASE(HvdcAngleDroopActivePowerControlConstructor, test::Resou
     Network network = Network::readXml(ResourceFixture::getResourcePath("VscRoundTripRef.xml"));
     HvdcLine& line = network.getHvdcLine("L");
 
-    POWSYBL_ASSERT_THROW(line.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(stdcxx::nan()).withDroop(2.0).withEnabled(true).add(), PowsyblException, "p0 is not set");
-    POWSYBL_ASSERT_THROW(line.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(1.0).withDroop(stdcxx::nan()).withEnabled(true).add(), PowsyblException, "droop is not set");
+    POWSYBL_ASSERT_THROW(line.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(stdcxx::nan()).withDroop(2.0).withEnabled(true).add(), ValidationException, "hvdcLine 'L': p0 value (nan) is invalid");
+    POWSYBL_ASSERT_THROW(line.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(1.0).withDroop(stdcxx::nan()).withEnabled(true).add(), ValidationException, "hvdcLine 'L': droop value (nan) is invalid");
 
     line.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(1.0).withDroop(2.0).withEnabled(true).add();
     auto& extension = line.getExtension<HvdcAngleDroopActivePowerControl>();
@@ -42,11 +43,11 @@ BOOST_FIXTURE_TEST_CASE(HvdcAngleDroopActivePowerControlConstructor, test::Resou
     BOOST_CHECK_CLOSE(2.0, extension.getDroop(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(extension.isEnabled());
 
-    POWSYBL_ASSERT_THROW(extension.setDroop(stdcxx::nan()), PowsyblException, "droop is not set");
+    POWSYBL_ASSERT_THROW(extension.setDroop(stdcxx::nan()), ValidationException, "hvdcLine 'L': droop value (nan) is invalid");
     extension.setDroop(11.0);
     BOOST_CHECK_CLOSE(11.0, extension.getDroop(), std::numeric_limits<double>::epsilon());
 
-    POWSYBL_ASSERT_THROW(extension.setP0(stdcxx::nan()), PowsyblException, "p0 is not set");
+    POWSYBL_ASSERT_THROW(extension.setP0(stdcxx::nan()), ValidationException, "hvdcLine 'L': p0 value (nan) is invalid");
     extension.setP0(22.0);
     BOOST_CHECK_CLOSE(22.0, extension.getP0(), std::numeric_limits<double>::epsilon());
 

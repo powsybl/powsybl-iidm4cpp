@@ -54,8 +54,8 @@ private:
                                 double lowVoltageSetpoint, double highVoltageSetpoint,
                                 double lowVoltageThreshold, double highVoltageThreshold);
 
-    double checkB0(double b0);
-    void checkVoltageConfig(double lowVoltageSetpoint, double highVoltageSetpoint, double lowVoltageThreshold, double highVoltageThreshold);
+    double checkB0(double b0, const StaticVarCompensator& svc);
+    void checkVoltageConfig(double lowVoltageSetpoint, double highVoltageSetpoint, double lowVoltageThreshold, double highVoltageThreshold, const StaticVarCompensator& svc);
 
     friend class StandbyAutomatonAdder;
 

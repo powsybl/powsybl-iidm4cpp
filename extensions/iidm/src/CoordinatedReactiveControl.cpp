@@ -12,6 +12,7 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/format.hpp>
@@ -37,7 +38,7 @@ void CoordinatedReactiveControl::assertExtendable(const stdcxx::Reference<Extend
 
 double CoordinatedReactiveControl::checkQPercent(const Generator& generator, double qPercent) {
     if (std::isnan(qPercent)) {
-        throw PowsyblException("Undefined value for qPercent");
+        throw ValidationException(generator, stdcxx::format("Undefined value (%1%) for qPercent", qPercent));
     }
     if (qPercent < 0.0 || qPercent > 100.0) {
         logging::Logger& logger = logging::LoggerFactory::getLogger<CoordinatedReactiveControl>();
