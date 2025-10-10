@@ -14,7 +14,12 @@
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/Overload.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformerLeg.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformerLegAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
 #include <powsybl/logging/ContainerLogger.hpp>
@@ -132,6 +137,120 @@ Network createCurrentLimitsTestNetwork() {
         .setFictitious(false)
         .endTemporaryLimit()
         .add();
+
+    return network;
+}
+
+Network createThreeWindingsTransformerCurrentLimitsTestNetwork() {
+    Network network("test_3wt", "test");
+    Substation& s1 = network.newSubstation()
+                        .setId("S1")
+                        .setCountry(Country::FR)
+                        .add();
+    VoltageLevel& vl1 = s1.newVoltageLevel()
+                           .setId("VL1")
+                           .setNominalV(400.0)
+                           .setTopologyKind(TopologyKind::BUS_BREAKER)
+                           .add();
+    vl1.getBusBreakerView().newBus().setId("B1").add();
+    VoltageLevel& vl2 = s1.newVoltageLevel()
+                           .setId("VL2")
+                           .setNominalV(400.0)
+                           .setTopologyKind(TopologyKind::BUS_BREAKER)
+                           .add();
+    vl2.getBusBreakerView().newBus().setId("B2").add();
+    VoltageLevel& vl3 = s1.newVoltageLevel()
+                           .setId("VL3")
+                           .setNominalV(400.0)
+                           .setTopologyKind(TopologyKind::BUS_BREAKER)
+                           .add();
+    vl3.getBusBreakerView().newBus().setId("B3").add();
+    ThreeWindingsTransformer& transformer = s1.newThreeWindingsTransformer()
+                                               .setId("3WT")
+                                               .setRatedU0(132.0)
+                                               .newLeg1()
+                                                    .setR(1.0)
+                                                    .setX(1.0)
+                                                    .setG(0.0)
+                                                    .setB(0.0)
+                                                    .setRatedU(132.0)
+                                                    .setVoltageLevel("VL1")
+                                                    .setBus("B1")
+                                                    .add()
+                                               .newLeg2()
+                                                    .setR(1.0)
+                                                    .setX(1.0)
+                                                    .setG(0.0)
+                                                    .setB(0.0)
+                                                    .setRatedU(132.0)
+                                                    .setVoltageLevel("VL2")
+                                                    .setBus("B2")
+                                                    .add()
+                                               .newLeg3()
+                                                    .setR(1.0)
+                                                    .setX(1.0)
+                                                    .setG(0.0)
+                                                    .setB(0.0)
+                                                    .setRatedU(132.0)
+                                                    .setVoltageLevel("VL3")
+                                                    .setBus("B3")
+                                                    .add()
+                                               .add();
+
+    transformer.getLeg1().newCurrentLimits()
+                    .setPermanentLimit(1000.0)
+                    .beginTemporaryLimit()
+                    .setName("20'")
+                    .setAcceptableDuration(20 * 60)
+                    .setValue(1200.0)
+                    .endTemporaryLimit()
+                    .beginTemporaryLimit()
+                    .setName("5'")
+                    .setAcceptableDuration(5 * 60)
+                    .setValue(1400.0)
+                    .endTemporaryLimit()
+                    .beginTemporaryLimit()
+                    .setName("1'")
+                    .setAcceptableDuration(60)
+                    .setValue(1600.0)
+                    .endTemporaryLimit()
+                    .add();
+    transformer.getLeg2().newCurrentLimits()
+                    .setPermanentLimit(1000.0)
+                    .beginTemporaryLimit()
+                    .setName("20'")
+                    .setAcceptableDuration(20 * 60)
+                    .setValue(1200.0)
+                    .endTemporaryLimit()
+                    .beginTemporaryLimit()
+                    .setName("5'")
+                    .setAcceptableDuration(5 * 60)
+                    .setValue(1400.0)
+                    .endTemporaryLimit()
+                    .beginTemporaryLimit()
+                    .setName("1'")
+                    .setAcceptableDuration(60)
+                    .setValue(1600.0)
+                    .endTemporaryLimit()
+                    .add();
+    transformer.getLeg3().newCurrentLimits()
+                    .setPermanentLimit(1000.0)
+                    .beginTemporaryLimit()
+                    .setName("20'")
+                    .setAcceptableDuration(20 * 60)
+                    .setValue(1200.0)
+                    .endTemporaryLimit()
+                    .beginTemporaryLimit()
+                    .setName("5'")
+                    .setAcceptableDuration(5 * 60)
+                    .setValue(1400.0)
+                    .endTemporaryLimit()
+                    .beginTemporaryLimit()
+                    .setName("1'")
+                    .setAcceptableDuration(60)
+                    .setValue(1600.0)
+                    .endTemporaryLimit()
+                    .add();
 
     return network;
 }
@@ -326,7 +445,6 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
     Terminal& t1 = line.getTerminal1();
     Terminal& t2 = line.getTerminal2();
     Bus& b1 = network.getVoltageLevel("VL1").getBusBreakerView().getBus("VL1_BUS1");
-    Bus& b2 = network.getVoltageLevel("VL3").getBusBreakerView().getBus("VL3_BUS1");
 
     BOOST_TEST(line.getCurrentLimits1());
     BOOST_TEST(std::isnan(t1.getI()));
@@ -335,16 +453,14 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
 
     b1.setV(1000.0 * std::sqrt(3.0));
     t1.setQ(0.0).setP(10.0);
-    BOOST_CHECK_CLOSE(t1.getP(), t1.getI(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(t1.getP() / (std::sqrt(3.0) * std::sqrt(3.0)), t1.getI(), std::numeric_limits<double>::epsilon());
 
-    BOOST_TEST(line.checkPermanentLimit1(2.0, LimitType::CURRENT));
-    BOOST_TEST(!line.checkPermanentLimit1(5.0, LimitType::CURRENT));
+    BOOST_TEST(line.checkPermanentLimit1(0.5, LimitType::CURRENT));
+    BOOST_TEST(!line.checkPermanentLimit1(LimitType::CURRENT));
 
-    BOOST_TEST(line.checkPermanentLimit(Branch::Side::ONE, 2.0, LimitType::CURRENT));
-    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::ONE, 5.0, LimitType::CURRENT));
+    BOOST_TEST(line.checkPermanentLimit(Branch::Side::ONE, 0.5, LimitType::CURRENT));
+    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::ONE, LimitType::CURRENT));
 
-    BOOST_TEST(line.checkPermanentLimit1(LimitType::CURRENT));
-    BOOST_TEST(line.checkPermanentLimit(Branch::Side::ONE, LimitType::CURRENT));
     t1.setP(1.0);
     BOOST_TEST(!line.checkPermanentLimit1(LimitType::CURRENT));
     BOOST_TEST(!line.checkPermanentLimit(Branch::Side::ONE, LimitType::CURRENT));
@@ -353,61 +469,97 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
     BOOST_TEST(!line.checkPermanentLimit2(2.0, LimitType::CURRENT));
 
     line.newCurrentLimits2()
-        .setPermanentLimit(8.0)
+        .setPermanentLimit(1000.0)
         .beginTemporaryLimit()
         .setName("TL1_2")
-        .setValue(11.0)
-        .setAcceptableDuration(4UL)
+        .setValue(1200.0)
+        .setAcceptableDuration(20*60)
         .setFictitious(false)
         .endTemporaryLimit()
         .beginTemporaryLimit()
         .setName("TL2_2")
-        .setValue(10.0)
-        .setAcceptableDuration(5UL)
+        .setValue(1400.0)
+        .setAcceptableDuration(5*60)
         .setFictitious(true)
         .endTemporaryLimit()
         .beginTemporaryLimit()
         .setName("TL3_2")
-        .setValue(9.0)
-        .setAcceptableDuration(6UL)
+        .setValue(1600.0)
+        .setAcceptableDuration(60)
         .setFictitious(false)
         .endTemporaryLimit()
         .add();
 
     BOOST_TEST(line.getCurrentLimits2());
-    BOOST_TEST(std::isnan(t2.getI()));
-    BOOST_TEST(std::isnan(b2.getV()));
-    BOOST_TEST(!line.checkPermanentLimit2(2.0, LimitType::CURRENT));
 
-    b2.setV(1000.0 * std::sqrt(3.0));
-    t2.setQ(0.0).setP(20.0);
-    BOOST_CHECK_CLOSE(t2.getP(), t2.getI(), std::numeric_limits<double>::epsilon());
-
-    BOOST_TEST(line.checkPermanentLimit2(2.0, LimitType::CURRENT));
-    BOOST_TEST(!line.checkPermanentLimit2(5.0, LimitType::CURRENT));
-
-    BOOST_TEST(line.checkPermanentLimit(Branch::Side::TWO, 2.0, LimitType::CURRENT));
-    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::TWO, 5.0, LimitType::CURRENT));
-
-    BOOST_TEST(line.checkPermanentLimit2(LimitType::CURRENT));
-    BOOST_TEST(line.checkPermanentLimit(Branch::Side::TWO, LimitType::CURRENT));
-    t2.setP(1.0);
+    line.getTerminal2().getBusBreakerView().getBus().get().setV(390);
+    line.getTerminal2().setP(100.0).setQ(50.0); // i = 165.5121
+    BOOST_TEST(!std::isnan(line.getTerminal2().getI()));
+    BOOST_TEST(!line.isOverloaded());
     BOOST_TEST(!line.checkPermanentLimit2(LimitType::CURRENT));
     BOOST_TEST(!line.checkPermanentLimit(Branch::Side::TWO, LimitType::CURRENT));
+    std::unique_ptr<Overload> ptrOverload = line.checkTemporaryLimits2(LimitType::CURRENT);
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
+
+    line.getTerminal2().setP(800.0).setQ(400.0); // i = 1324.09687
+    BOOST_TEST(line.isOverloaded());
+    BOOST_CHECK_EQUAL(5 * 60L, line.getOverloadDuration());
+    BOOST_TEST(line.checkPermanentLimit2(LimitType::CURRENT));
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, LimitType::CURRENT);
+    BOOST_TEST(static_cast<bool>(ptrOverload));
+    BOOST_CHECK_EQUAL(5 * 60L, ptrOverload->getTemporaryLimit().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("TL1_2", ptrOverload->getPreviousLimitName());
+    BOOST_CHECK_CLOSE(1200.0, ptrOverload->getPreviousLimit(), std::numeric_limits<double>::epsilon());
+
+    line.getTerminal2().setP(900.0).setQ(500.0); // i = 1524.149957
+    BOOST_CHECK_EQUAL(60, line.getOverloadDuration());
+    ptrOverload = line.checkTemporaryLimits2(LimitType::CURRENT);
+    BOOST_TEST(static_cast<bool>(ptrOverload));
+    BOOST_CHECK_EQUAL(60, ptrOverload->getTemporaryLimit().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("TL2_2", ptrOverload->getPreviousLimitName());
+    BOOST_CHECK_CLOSE(1400.0, ptrOverload->getPreviousLimit(), std::numeric_limits<double>::epsilon()); 
 
     POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(5), 3.0, LimitType::CURRENT), AssertionError, "Unexpected Side value: 5");
     POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(6), LimitType::CURRENT), AssertionError, "Unexpected Side value: 6");
 
     BOOST_TEST(!line.isOverloaded(2.0));
-    BOOST_TEST(!line.isOverloaded());
-    t2.setP(20.0);
-    BOOST_TEST(line.isOverloaded(2.0));
-    t1.setP(10.0);
-    BOOST_TEST(line.isOverloaded(2.0));
-    t2.setP(1.0);
-    BOOST_TEST(line.isOverloaded(2.0));
-
     BOOST_TEST(line.isOverloaded());
+    t2.setP(1.0);
+    BOOST_TEST(!line.isOverloaded(2.0));
+    BOOST_TEST(!line.isOverloaded());
+}
+
+BOOST_AUTO_TEST_CASE(checkLimits3wtLeg1) {
+    Network network = createThreeWindingsTransformerCurrentLimitsTestNetwork();
+    ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT");
+    ThreeWindingsTransformer::Leg& leg1 = transformer.getLeg(ThreeWindingsTransformer::Side::ONE);
+
+    BOOST_TEST(!transformer.isOverloaded());
+    leg1.getTerminal().getBusBreakerView().getBus().get().setV(390.0);
+    leg1.getTerminal().setP(100.0).setQ(50.0); // i = 165.5121
+    BOOST_TEST(!std::isnan(leg1.getTerminal().getI()));
+    BOOST_TEST(!transformer.isOverloaded());
+    BOOST_TEST(!transformer.checkPermanentLimit1(LimitType::CURRENT));
+    std::unique_ptr<Overload> ptrOverload = transformer.checkTemporaryLimits1(LimitType::CURRENT);
+    BOOST_TEST(!static_cast<bool>(ptrOverload));
+
+    leg1.getTerminal().setP(800.0).setQ(400.0); // i = 1324.09687
+    BOOST_TEST(transformer.isOverloaded());
+    BOOST_CHECK_EQUAL(5 * 60L, transformer.getOverloadDuration());
+    BOOST_TEST(transformer.checkPermanentLimit1(LimitType::CURRENT));
+    ptrOverload = transformer.checkTemporaryLimits1(LimitType::CURRENT);
+    BOOST_TEST(static_cast<bool>(ptrOverload));
+    BOOST_CHECK_EQUAL(5 * 60L, ptrOverload->getTemporaryLimit().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("20'", ptrOverload->getPreviousLimitName());
+    BOOST_CHECK_CLOSE(1200.0, ptrOverload->getPreviousLimit(), std::numeric_limits<double>::epsilon());
+
+    leg1.getTerminal().setP(900.0).setQ(500.0); // i = 1524.149957
+    BOOST_CHECK_EQUAL(60, transformer.getOverloadDuration());
+    ptrOverload = transformer.checkTemporaryLimits1(LimitType::CURRENT);
+    BOOST_TEST(static_cast<bool>(ptrOverload));
+    BOOST_CHECK_EQUAL(60, ptrOverload->getTemporaryLimit().getAcceptableDuration());
+    BOOST_CHECK_EQUAL("5'", ptrOverload->getPreviousLimitName());
+    BOOST_CHECK_CLOSE(1400.0, ptrOverload->getPreviousLimit(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
@@ -422,16 +574,16 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     BOOST_TEST(line.getCurrentLimits1());
     BOOST_TEST(std::isnan(t1.getI()));
     BOOST_TEST(std::isnan(b1.getV()));
-    std::unique_ptr<Branch::Overload> ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
+    std::unique_ptr<Overload> ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     b1.setV(1000.0 * std::sqrt(3.0));
     t1.setQ(0.0).setP(9.0);
-    BOOST_CHECK_CLOSE(t1.getP(), t1.getI(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(t1.getP() / (std::sqrt(3.0) * std::sqrt(3.0)), t1.getI(), std::numeric_limits<double>::epsilon());
 
-    ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits1(0.7, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
-    Branch::Overload& overload = *ptrOverload;
+    Overload& overload = *ptrOverload;
     BOOST_CHECK_EQUAL(LimitViolationUtils::PERMANENT_LIMIT_NAME, overload.getPreviousLimitName());
     BOOST_CHECK_CLOSE(4.0, overload.getPreviousLimit(), std::numeric_limits<double>::epsilon());
     const CurrentLimits::TemporaryLimit& tl = overload.getTemporaryLimit();
@@ -443,10 +595,10 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     BOOST_TEST(!tl.isFictitious());
     BOOST_CHECK_CLOSE(tl.getValue(), limits.getTemporaryLimitValue(tl.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
-    t1.setP(11.0);
-    ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
+    t1.setP(15.5);
+    ptrOverload = line.checkTemporaryLimits1(LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
-    Branch::Overload& overload2 = *ptrOverload;
+    Overload& overload2 = *ptrOverload;
     const CurrentLimits::TemporaryLimit& tl2 = overload2.getTemporaryLimit();
     BOOST_CHECK_EQUAL("TL3", overload2.getPreviousLimitName());
     BOOST_CHECK_CLOSE(5.0, overload2.getPreviousLimit(), std::numeric_limits<double>::epsilon());
@@ -456,10 +608,10 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     BOOST_TEST(tl2.isFictitious());
     BOOST_CHECK_CLOSE(tl2.getValue(), limits.getTemporaryLimitValue(tl2.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
-    t1.setP(13.0);
-    ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
+    t1.setP(18.5);
+    ptrOverload = line.checkTemporaryLimits1(LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
-    Branch::Overload& overload3 = *ptrOverload;
+    Overload& overload3 = *ptrOverload;
     const CurrentLimits::TemporaryLimit& tl3 = overload3.getTemporaryLimit();
     BOOST_CHECK_EQUAL("TL2", overload3.getPreviousLimitName());
     BOOST_CHECK_CLOSE(6.0, overload3.getPreviousLimit(), std::numeric_limits<double>::epsilon());
@@ -469,18 +621,18 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     BOOST_TEST(!tl3.isFictitious());
     BOOST_CHECK_CLOSE(tl3.getValue(), limits.getTemporaryLimitValue(tl3.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
-    t1.setP(15.0);
+    t1.setP(50.0);
     ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, 2.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
-    t1.setP(9.0);
+    t1.setP(30.0);
     ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, 2.0, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
 
-    t1.setP(5.0);
+    t1.setP(14.0);
     ptrOverload = line.checkTemporaryLimits1(LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, LimitType::CURRENT);
@@ -526,19 +678,19 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
 
     b2.setV(1000.0 * std::sqrt(3.0));
     t2.setQ(0.0).setP(20.0);
-    BOOST_CHECK_CLOSE(t2.getP(), t2.getI(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(t2.getP() / (std::sqrt(3.0) * std::sqrt(3.0)), t2.getI(), std::numeric_limits<double>::epsilon());
 
-    ptrOverload = line.checkTemporaryLimits2(2.0, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits2(0.7, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits2(5.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, 2.0, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, 0.7, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, 5.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
-    t2.setP(9.0);
+    t2.setP(25.0);
     ptrOverload = line.checkTemporaryLimits2(LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
     ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, LimitType::CURRENT);
@@ -553,14 +705,14 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(6), LimitType::CURRENT), AssertionError, "Unexpected Side value: 6");
 
     BOOST_CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), line.getOverloadDuration());
-    t1.setP(4.5);
+    t1.setP(13.0);
     BOOST_CHECK_EQUAL(3UL, line.getOverloadDuration());
     t1.setP(1.0);
-    t2.setP(10.5);
+    t2.setP(31.0);
     BOOST_CHECK_EQUAL(2UL, line.getOverloadDuration());
-    t1.setP(6.0);
+    t1.setP(18.5);
     BOOST_CHECK_EQUAL(1UL, line.getOverloadDuration());
-    t1.setP(4.5);
+    t1.setP(15.5);
     BOOST_CHECK_EQUAL(2UL, line.getOverloadDuration());
 }
 

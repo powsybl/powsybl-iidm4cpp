@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_THREEWINDINGSTRANSFORMERLEG_HPP
 
 #include <powsybl/iidm/FlowsLimitsHolder.hpp>
+#include <powsybl/iidm/LoadingLimits.hpp>
 #include <powsybl/iidm/OperationalLimitsHolder.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
@@ -84,6 +85,10 @@ public:
     Terminal& getTerminal();
 
     ThreeSides getSide() const;
+
+    stdcxx::CReference<LoadingLimits> getLimits(const LimitType& type) const;
+
+    stdcxx::Reference<LoadingLimits> getLimits(const LimitType& type);
 
     double getX() const;
 

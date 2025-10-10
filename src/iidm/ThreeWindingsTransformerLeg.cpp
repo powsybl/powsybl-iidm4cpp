@@ -7,6 +7,9 @@
 
 #include <powsybl/iidm/ThreeWindingsTransformerLeg.hpp>
 
+#include <powsybl/iidm/ActivePowerLimits.hpp>
+#include <powsybl/iidm/ApparentPowerLimits.hpp>
+#include <powsybl/iidm/CurrentLimits.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
@@ -127,6 +130,28 @@ Terminal& Leg::getTerminal() {
 
 ThreeSides Leg::getSide() const {
     return ThreeSides(m_legNumber);
+}
+
+stdcxx::CReference<LoadingLimits> Leg::getLimits(const LimitType& type) const {
+    switch (type) {
+        case LimitType::CURRENT:
+            return stdcxx::cref<LoadingLimits>(getCurrentLimits());
+
+        case LimitType::ACTIVE_POWER:
+            return stdcxx::cref<LoadingLimits>(getActivePowerLimits());
+
+        case LimitType::APPARENT_POWER:
+            return stdcxx::cref<LoadingLimits>(getApparentPowerLimits());
+
+        case LimitType::VOLTAGE:
+        case LimitType::VOLTAGE_ANGLE:
+        default:
+            throw AssertionError(stdcxx::format("Getting %1% limits is not supported.", type));
+    }
+}
+
+stdcxx::Reference<LoadingLimits> Leg::getLimits(const LimitType& type) {
+    return stdcxx::ref(const_cast<const Leg*>(this)->getLimits(type));
 }
 
 const std::string& Leg::getTypeDescription() const {

@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_THREEWINDINGSTRANSFORMER_HPP
 
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/Overload.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerLeg.hpp>
 
 namespace powsybl {
@@ -35,6 +36,10 @@ public:
     ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Leg&& leg1, Leg&& leg2, Leg&& leg3, double ratedU0);
 
     ~ThreeWindingsTransformer() noexcept override = default;
+
+    const Leg& getLeg(const Side& side) const;
+
+    Leg& getLeg(const Side& side);
 
     const Leg& getLeg1() const;
 
@@ -63,6 +68,44 @@ public:
     const Terminal& getTerminal(const Side& side) const;
 
     Terminal& getTerminal(const Side& side);
+
+    bool isOverloaded() const;
+
+    bool isOverloaded(double limitReduction) const;
+
+    unsigned long getOverloadDuration() const;
+
+    bool checkPermanentLimit(const Side& side, const LimitType& type) const;
+
+    bool checkPermanentLimit(const Side& side, double limitReduction, const LimitType& type) const;
+
+    bool checkPermanentLimit1(const LimitType& type) const;
+
+    bool checkPermanentLimit1(double limitReduction, const LimitType& type) const;
+
+    bool checkPermanentLimit2(const LimitType& type) const;
+
+    bool checkPermanentLimit2(double limitReduction, const LimitType& type) const;
+
+    bool checkPermanentLimit3(const LimitType& type) const;
+
+    bool checkPermanentLimit3(double limitReduction, const LimitType& type) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, const LimitType& type) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, double limitReduction, const LimitType& type) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits1(const LimitType& type) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits1(double limitReduction, const LimitType& type) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits2(const LimitType& type) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits2(double limitReduction, const LimitType& type) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits3(const LimitType& type) const;
+
+    std::unique_ptr<Overload> checkTemporaryLimits3(double limitReduction, const LimitType& type) const;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

@@ -11,6 +11,7 @@
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/util/LimitViolationUtils.hpp>
 
 namespace powsybl {
 
@@ -61,6 +62,24 @@ void ThreeWindingsTransformer::extendVariantArraySize(unsigned long initVariantA
             leg.getPhaseTapChanger().extendVariantArraySize(initVariantArraySize, number, sourceIndex);
         }
     }
+}
+
+const ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg(const Side& side) const {
+    switch (side) {
+        case Side::ONE:
+            return getLeg1();
+        case Side::TWO:
+            return getLeg2();
+        case Side::THREE:
+            return getLeg3();
+        default:
+            throw AssertionError(stdcxx::format("Unexpected side: %1%", side));
+    }
+}
+
+ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg(const Side& side) {
+    const auto& leg = static_cast<const ThreeWindingsTransformer*>(this)->getLeg(side);
+    return const_cast<ThreeWindingsTransformer::Leg&>(leg);
 }
 
 const ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg1() const {
@@ -142,6 +161,95 @@ Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) {
     const auto& terminal = static_cast<const ThreeWindingsTransformer*>(this)->getTerminal(side);
 
     return const_cast<Terminal&>(terminal);
+}
+
+
+bool ThreeWindingsTransformer::isOverloaded() const {
+    return isOverloaded(1.0);
+}
+
+bool ThreeWindingsTransformer::isOverloaded(double limitReduction) const {
+    return checkPermanentLimit1(limitReduction, LimitType::CURRENT)
+        || checkPermanentLimit2(limitReduction, LimitType::CURRENT)
+        || checkPermanentLimit3(limitReduction, LimitType::CURRENT);
+}
+
+unsigned long ThreeWindingsTransformer::getOverloadDuration() const {
+    std::unique_ptr<Overload> o1 = checkTemporaryLimits1(LimitType::CURRENT);
+    std::unique_ptr<Overload> o2 = checkTemporaryLimits2(LimitType::CURRENT);
+    std::unique_ptr<Overload> o3 = checkTemporaryLimits3(LimitType::CURRENT);
+
+    unsigned long duration1 = o1 ? o1->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
+    unsigned long duration2 = o2 ? o2->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
+    unsigned long duration3 = o3 ? o3->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
+
+    return std::min(std::min(duration1, duration2), duration3);
+}
+
+bool ThreeWindingsTransformer::checkPermanentLimit(const Side& side, const LimitType& type) const {
+    return checkPermanentLimit(side, 1.0, type);
+}
+
+bool ThreeWindingsTransformer::checkPermanentLimit(const Side& side, double limitReduction, const LimitType& type) const {
+    double limitValue = LimitViolationUtils::getValueForLimit(getTerminal(side), type);
+    return LimitViolationUtils::checkPermanentLimit(*this, side, limitReduction, limitValue, type);
+}
+
+bool ThreeWindingsTransformer::checkPermanentLimit1(const LimitType& type) const {
+    return checkPermanentLimit1(1.0, type);
+}
+
+bool ThreeWindingsTransformer::checkPermanentLimit1(double limitReduction, const LimitType& type) const {
+    return checkPermanentLimit(Side::ONE, limitReduction, type);
+}
+
+bool ThreeWindingsTransformer::checkPermanentLimit2(const LimitType& type) const {
+    return checkPermanentLimit2(1.0, type);
+}
+
+bool ThreeWindingsTransformer::checkPermanentLimit2(double limitReduction, const LimitType& type) const {
+    return checkPermanentLimit(Side::TWO, limitReduction, type);
+}
+
+bool ThreeWindingsTransformer::checkPermanentLimit3(const LimitType& type) const {
+    return checkPermanentLimit3(1.0, type);
+}
+
+bool ThreeWindingsTransformer::checkPermanentLimit3(double limitReduction, const LimitType& type) const  {
+    return checkPermanentLimit(Side::THREE, limitReduction, type);
+}
+
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits(const Side& side, const LimitType& type) const {
+    return checkTemporaryLimits(side, 1.0, type);
+}
+
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits(const Side& side, double limitReduction, const LimitType& type) const {
+    double limitValue = LimitViolationUtils::getValueForLimit(getTerminal(side), type);
+    return LimitViolationUtils::checkTemporaryLimits(*this, side, limitReduction, limitValue, type);
+}
+
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits1(const LimitType& type) const {
+    return checkTemporaryLimits1(1.0, type);
+}
+
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits1(double limitReduction, const LimitType& type) const {
+    return checkTemporaryLimits(Side::ONE, limitReduction, type);
+}
+
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits2(const LimitType& type) const {
+    return checkTemporaryLimits2(1.0, type);
+}
+
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits2(double limitReduction, const LimitType& type) const {
+    return checkTemporaryLimits(Side::TWO, limitReduction, type);
+}
+
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits3(const LimitType& type) const {
+    return checkTemporaryLimits3(1.0, type);
+}
+
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits3(double limitReduction, const LimitType& type) const {
+    return checkTemporaryLimits(Side::THREE, limitReduction, type);
 }
 
 const IdentifiableType& ThreeWindingsTransformer::getType() const {

@@ -359,8 +359,8 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(560.0, line1.getTerminal2().getP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(550.0, line1.getTerminal2().getQ(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
-    POWSYBL_ASSERT_REF_FALSE(line1.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
-    BOOST_TEST(!line1.isOverloaded());
+    POWSYBL_ASSERT_REF_TRUE(line1.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
+    BOOST_TEST(line1.isOverloaded());
     const auto& line1CurLimit1 = line1.getCurrentLimits1().get();
     BOOST_CHECK_CLOSE(500.0, line1CurLimit1.getPermanentLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(0, boost::size(line1CurLimit1.getTemporaryLimits()));
@@ -390,9 +390,9 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_CLOSE(550.0, line2.getTerminal1().getQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(560.0, line2.getTerminal2().getP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(550.0, line2.getTerminal2().getQ(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
+    POWSYBL_ASSERT_REF_TRUE(line2.checkTemporaryLimits1(powsybl::iidm::LimitType::CURRENT));
     POWSYBL_ASSERT_REF_FALSE(line2.checkTemporaryLimits2(powsybl::iidm::LimitType::CURRENT));
-    BOOST_TEST(!line2.isOverloaded());
+    BOOST_TEST(line2.isOverloaded());
     const auto& line2CurLimit1 = line2.getCurrentLimits1().get();
     BOOST_CHECK_CLOSE(1100.0, line2CurLimit1.getPermanentLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(1, boost::size(line2CurLimit1.getTemporaryLimits()));

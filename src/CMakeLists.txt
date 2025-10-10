@@ -100,6 +100,7 @@ set(IIDM_SOURCES
     iidm/NodeTerminalViews.cpp
     iidm/OperationalLimits.cpp
     iidm/OperationalLimitsHolder.cpp
+    iidm/Overload.cpp
     iidm/PhaseTapChanger.cpp
     iidm/PhaseTapChangerAdder.cpp
     iidm/PhaseTapChangerHolder.cpp

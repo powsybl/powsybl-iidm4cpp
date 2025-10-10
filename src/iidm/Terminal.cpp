@@ -67,7 +67,7 @@ double Terminal::getI() const {
         return 0;
     }
 
-    return std::hypot(getP(), getQ()) / std::sqrt(3.0) * getV() / 1000.0;
+    return std::hypot(getP(), getQ()) / (std::sqrt(3.0) * getV() / 1000.0);
 }
 
 const Network& Terminal::getNetwork() const {

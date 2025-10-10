@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/CurrentLimits.hpp>
+#include <powsybl/iidm/Overload.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 
 
@@ -30,27 +31,6 @@ public:
     enum class Side : unsigned char {
         ONE,
         TWO
-    };
-
-public:
-    class Overload {
-    public:
-        Overload(const CurrentLimits::TemporaryLimit& temporaryLimit, const std::string& previousLimitName, double previousLimit);
-
-        ~Overload() noexcept = default;
-
-        double getPreviousLimit() const;
-
-        const std::string& getPreviousLimitName() const;
-
-        const CurrentLimits::TemporaryLimit& getTemporaryLimit() const;
-
-    private:
-        CurrentLimits::TemporaryLimit m_temporaryLimit;
-
-        std::string m_previousLimitName;
-
-        double m_previousLimit;
     };
 
 public:
@@ -160,8 +140,6 @@ protected:
     Branch() = default;
 
 private:
-    double getValueForLimit(const Terminal& terminal, const LimitType& type) const;
-
     friend class CurrentLimitsAdder;
 
 };
