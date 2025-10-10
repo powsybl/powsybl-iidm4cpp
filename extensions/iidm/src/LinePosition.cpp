@@ -19,9 +19,9 @@ namespace extensions {
 
 namespace iidm {
 
-LinePosition::LinePosition(Line& line, std::vector<Coordinate> coords) :
-    Extension(line) {
-    m_coordinates = coords;
+LinePosition::LinePosition(Line& line, const std::vector<Coordinate>& coords) :
+    Extension(line),
+    m_coordinates(coords) {
 }
 
 void LinePosition::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {

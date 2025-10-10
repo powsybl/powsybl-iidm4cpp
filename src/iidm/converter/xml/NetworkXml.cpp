@@ -51,10 +51,9 @@ namespace xml {
 void throwExceptionIfOption(bool throwExceptionOption, const std::string& message) {
     if(throwExceptionOption) {
         throw PowsyblException(message);
-    } else {
-        logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
-        logger.warn(message);
-    }
+    } 
+    logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
+    logger.warn(message);
 }
 
 void checkExtensionsNotFound(const NetworkXmlReaderContext& context, const std::set<std::string>& extensionsNotFound) {

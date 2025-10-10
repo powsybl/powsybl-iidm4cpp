@@ -35,8 +35,8 @@ Extension& SubstationPositionXmlSerializer::read(Extendable& extendable, convert
     Coordinate coordinates;
     const xml::XmlStreamReader& reader = context.getReader();
     reader.readUntilEndElement("substationPosition", [&reader, &coordinates](){
-        double latitude = reader.getAttributeValue<double>(LATITUDE);
-        double longitude = reader.getAttributeValue<double>(LONGITUDE);
+        auto latitude = reader.getAttributeValue<double>(LATITUDE);
+        auto longitude = reader.getAttributeValue<double>(LONGITUDE);
         coordinates = Coordinate(latitude, longitude);
     });
 

@@ -61,7 +61,7 @@ public:
      *
      * @return this LinePositionAdder object
      */
-    LinePositionAdder& withCoordinates(std::vector<Coordinate> coords);
+    LinePositionAdder& withCoordinates(const std::vector<Coordinate>& coords);
 
 protected:
     /**

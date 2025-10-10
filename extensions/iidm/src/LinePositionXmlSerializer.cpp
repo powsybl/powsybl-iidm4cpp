@@ -40,8 +40,8 @@ Extension& LinePositionXmlSerializer::read(Extendable& extendable, converter::xm
     const xml::XmlStreamReader& reader = context.getReader();
     reader.readUntilEndElement("linePosition", [&reader, &coordinates](){
         if (reader.getLocalName() == COORDINATE) {
-            double latitude = reader.getAttributeValue<double>(LATITUDE);
-            double longitude = reader.getAttributeValue<double>(LONGITUDE);
+            auto latitude = reader.getAttributeValue<double>(LATITUDE);
+            auto longitude = reader.getAttributeValue<double>(LONGITUDE);
             coordinates.emplace_back(latitude, longitude);
         } else {
             throw PowsyblException(stdcxx::format("Unexpected element: %1%", reader.getLocalName()));

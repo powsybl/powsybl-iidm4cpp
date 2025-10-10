@@ -32,7 +32,7 @@ std::unique_ptr<Extension> LinePositionAdder::createExtension(Extendable& extend
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
 }
 
-LinePositionAdder& LinePositionAdder::withCoordinates(std::vector<Coordinate> coords) {
+LinePositionAdder& LinePositionAdder::withCoordinates(const std::vector<Coordinate>& coords) {
     m_coordinates = coords;
     return *this;
 }

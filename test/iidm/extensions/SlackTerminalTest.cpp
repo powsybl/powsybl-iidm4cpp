@@ -270,7 +270,6 @@ BOOST_AUTO_TEST_CASE(UnsupportedExtensionVersion) {
     powsybl::iidm::converter::ExportOptions options = powsybl::iidm::converter::ExportOptions()
         .setVersion(converter::xml::IidmXmlVersion::V1_2().toString("."))
         .setThrowExceptionIfExtensionNotFound(true);
-    const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
 
     const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
         iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);

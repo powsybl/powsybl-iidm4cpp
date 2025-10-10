@@ -31,7 +31,7 @@ public: // Extension
     const std::type_index& getType() const override;
 
 public:
-    LinePosition(Line& line, std::vector<Coordinate> coords);
+    LinePosition(Line& line, const std::vector<Coordinate>& coords);
 
     const std::vector<Coordinate>& getCoordinates() const;
 

@@ -20,10 +20,10 @@
 #include <powsybl/iidm/LoadingLimitsAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
-#include <powsybl/iidm/TwoWindingsTransformer.hpp>
-#include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/iidm/TieLine.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
+#include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
@@ -71,8 +71,6 @@ BOOST_FIXTURE_TEST_CASE(LoadingLimitsBugTest_V1_5, test::ResourceFixture) {
         .add();
 
     ExportOptions options = ExportOptions().setVersion(IidmXmlVersion::V1_5().toString("."));
-    std::stringstream ss;
-    const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
 
     const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
         iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);

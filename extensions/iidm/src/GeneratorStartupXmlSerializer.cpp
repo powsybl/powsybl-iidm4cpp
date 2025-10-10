@@ -54,10 +54,11 @@ Extension& GeneratorStartupXmlSerializer::read(Extendable& extendable, converter
 
     double predefinedActivePowerSetpoint = stdcxx::nan();
     double startupCost = stdcxx::nan();
-    const std::string extensionVersion = context.getExtensionVersion(*this);
+    const std::string& extensionVersion = context.getExtensionVersion(*this);
     if (extensionVersion.empty()) {
         throw AssertionError(stdcxx::format("No version found for startup extension"));
-    } else if(extensionVersion == "1.0" || extensionVersion == "1.0-itesla") {
+    }
+    if(extensionVersion == "1.0" || extensionVersion == "1.0-itesla") {
         predefinedActivePowerSetpoint = context.getReader().getOptionalAttributeValue("predefinedActivePowerSetpoint", stdcxx::nan());
         startupCost = context.getReader().getOptionalAttributeValue("startUpCost", stdcxx::nan());
     } else if(extensionVersion == "1.1") {
