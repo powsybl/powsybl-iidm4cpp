@@ -37,8 +37,8 @@ std::string checkId(const std::string& id, bool idUnicity, const DiscreteMeasure
     std::string finalId = id;
     if (!id.empty() && discreteMeasurements.getDiscreteMeasurement(id)) {
         if(idUnicity) {
-            finalId = Identifiables::getUniqueId(id, [&discreteMeasurements](const std::string& id) {
-                return static_cast<bool>(discreteMeasurements.getDiscreteMeasurement(id)) ;
+            finalId = Identifiables::getUniqueId(id, [&discreteMeasurements](const std::string& idPred) {
+                return static_cast<bool>(discreteMeasurements.getDiscreteMeasurement(idPred)) ;
             });
             logging::Logger& logger = logging::LoggerFactory::getLogger<DiscreteMeasurements>();
             logger.warn(stdcxx::format("Ensure ID %1% unicity: %2%", id, finalId));

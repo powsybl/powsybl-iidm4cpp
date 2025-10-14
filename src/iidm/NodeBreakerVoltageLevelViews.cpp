@@ -344,8 +344,8 @@ voltage_level::NodeBreakerView& NodeBreakerViewImpl::setFictitiousP0(unsigned lo
     m_fictitiousP0ByNode.at(node)[network.getVariantIndex()] = p0;
     
     std::set<unsigned long> nodesToRemove = clearFictitiousInjections(m_fictitiousP0ByNode);
-    for(const auto& node : nodesToRemove) {
-        m_fictitiousP0ByNode.erase(node);
+    for(const auto& nodeRemoved : nodesToRemove) {
+        m_fictitiousP0ByNode.erase(nodeRemoved);
     }
     
     return *this;
@@ -361,8 +361,8 @@ voltage_level::NodeBreakerView& NodeBreakerViewImpl::setFictitiousQ0(unsigned lo
     m_fictitiousQ0ByNode.at(node)[network.getVariantIndex()] = q0;
     
     std::set<unsigned long> nodesToRemove = clearFictitiousInjections(m_fictitiousQ0ByNode);
-    for(const auto& node : nodesToRemove) {
-        m_fictitiousQ0ByNode.erase(node);
+    for(const auto& nodeRemoved : nodesToRemove) {
+        m_fictitiousQ0ByNode.erase(nodeRemoved);
     }
     
     return *this;
