@@ -33,10 +33,12 @@ public: // VoltageLevel
     void attach(Terminal& terminal, bool test) override;
 
     bool connect(Terminal& terminal) override;
+    bool connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) override;
 
     void detach(Terminal& terminal) override;
 
     bool disconnect(Terminal& terminal) override;
+    bool disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) override;
 
     const BusBreakerView& getBusBreakerView() const override;
 

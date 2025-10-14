@@ -128,6 +128,7 @@ set(IIDM_SOURCES
     iidm/Switch.cpp
     iidm/SwitchAdder.cpp
     iidm/SwitchKind.cpp
+    iidm/SwitchPredicate.cpp
     iidm/SynchronousComponent.cpp
     iidm/SynchronousComponentsManager.cpp
     iidm/Terminal.cpp

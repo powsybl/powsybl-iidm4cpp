@@ -43,6 +43,7 @@ set(UNIT_TEST_SOURCES
     SubnetworkCreationTest.cpp
     SubnetworkExplorationTest.cpp
     SubstationTest.cpp
+    SwitchPredicateTest.cpp
     TerminalTest.cpp
     TopologyLevelTest.cpp
     TopologyTraverseDepthAndBreadthTest.cpp

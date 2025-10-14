@@ -17,6 +17,7 @@
 #include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/range.hpp>
+#include <powsybl/stdcxx/Predicate.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -73,10 +74,12 @@ public:
     virtual void attach(Terminal& terminal, bool test) = 0;
 
     virtual bool connect(Terminal& terminal) = 0;
+    virtual bool connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) = 0;
 
     virtual void detach(Terminal& terminal) = 0;
 
     virtual bool disconnect(Terminal& terminal) = 0;
+    virtual bool disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) = 0;
 
     unsigned long getBatteryCount() const;
 

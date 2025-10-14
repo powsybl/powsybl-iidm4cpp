@@ -106,6 +106,9 @@ bool BusBreakerVoltageLevel::connect(Terminal& terminal) {
 
     return true;
 }
+bool BusBreakerVoltageLevel::connect(Terminal& terminal, const stdcxx::Predicate<Switch>& /*isTypeSwitchToOperate*/) {
+    return connect(terminal);
+}
 
 
 void BusBreakerVoltageLevel::deleteVariantArrayElement(unsigned long index) {
@@ -139,6 +142,9 @@ bool BusBreakerVoltageLevel::disconnect(Terminal& terminal) {
     invalidateCache();
 
     return true;
+}
+bool BusBreakerVoltageLevel::disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& /*isSwitchOpenable*/) {
+    return disconnect(terminal);
 }
 
 void BusBreakerVoltageLevel::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {

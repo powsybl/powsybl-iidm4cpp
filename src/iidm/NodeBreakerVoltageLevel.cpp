@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/SwitchPredicate.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -98,6 +99,10 @@ void NodeBreakerVoltageLevel::clean() {
 }
 
 bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
+    //Only keep the closed non-fictionnal breakers in the nominal case
+    return connect(terminal, SwitchPredicate::IS_NONFICTIONAL_BREAKER());
+}
+bool NodeBreakerVoltageLevel::connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) {
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
 
     if (terminal.isConnected()) {
@@ -106,26 +111,29 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
 
     unsigned long node = nodeTerminal.getNode();
 
-    // find all paths starting from the current terminal to a busbar section that does not contain an open disconnector
+    // find all paths starting from the current terminal to a busbar section that does not contain an open switch
+    // that is not of the type of switch the user wants to disconnect
     // paths are already sorted
     node_breaker_voltage_level::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& refTerminal) {
         return static_cast<bool>(refTerminal) && refTerminal.get().getConnectable().get().getType() == IdentifiableType::BUSBAR_SECTION;
     };
-    node_breaker_voltage_level::Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
-        return aSwitch && aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
+    node_breaker_voltage_level::Graph::EdgeVisitor checkNonClosableSwitch = [&isTypeSwitchToOperate](const stdcxx::Reference<Switch>& aSwitch) {
+        return aSwitch && SwitchPredicate::IS_OPEN()(aSwitch.get()) && !isTypeSwitchToOperate(aSwitch.get());
     };
-    const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedDisconnector);
+    const auto& paths = m_graph.findAllPaths(node, isBusbarSection, checkNonClosableSwitch);
 
     bool connected = false;
     if (!paths.empty()) {
         const auto& shortestPath = paths[0];
+        //Close all open switches on the path
         for (unsigned long e : shortestPath) {
             const auto& aSwitch = m_graph.getEdgeObject(e);
-            if (aSwitch && aSwitch.get().getKind() == SwitchKind::BREAKER && aSwitch.get().isOpen()) {
+            if (aSwitch && SwitchPredicate::IS_OPEN()(aSwitch.get())) {
                 aSwitch.get().setOpen(false);
-                connected = true;
             }
         }
+        //check that the terminal is indeed connected
+        connected = terminal.isConnected();
     }
 
     return connected;
@@ -153,6 +161,10 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
 }
 
 bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
+    // Only keep the closed non-fictional breakers in the nominal case
+    return disconnect(terminal, SwitchPredicate::IS_CLOSED_BREAKER());
+}
+bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) {
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
 
     if (!terminal.isConnected()) {
@@ -161,14 +173,14 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
 
     unsigned long node = nodeTerminal.getNode();
 
-    // find all paths starting from the current terminal to a busbar section that does not contain an open disconnector
+    // find all paths starting from the current terminal to a busbar section that does not contain an open switch
     node_breaker_voltage_level::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& refTerminal) {
         return static_cast<bool>(refTerminal) && refTerminal.get().getConnectable().get().getType() == IdentifiableType::BUSBAR_SECTION;
     };
-    node_breaker_voltage_level::Graph::EdgeVisitor isOpenedDisconnector = [](const stdcxx::Reference<Switch>& aSwitch) {
-        return aSwitch && aSwitch.get().getKind() == SwitchKind::DISCONNECTOR && aSwitch.get().isOpen();
+    node_breaker_voltage_level::Graph::EdgeVisitor isOpenedSwitch = [](const stdcxx::Reference<Switch>& aSwitch) {
+        return aSwitch && SwitchPredicate::IS_OPEN()(aSwitch.get());
     };
-    const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedDisconnector);
+    const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedSwitch);
 
     if (paths.empty()) {
         return false;
@@ -176,19 +188,18 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
 
     for (const auto& path : paths) {
         bool pathOpen = false;
+
         for (unsigned long e : path) {
             const auto& aSwitch = m_graph.getEdgeObject(e);
-            if (aSwitch && aSwitch.get().getKind() == SwitchKind::BREAKER) {
-                if (!aSwitch.get().isOpen()) {
-                    aSwitch.get().setOpen(true);
-                }
-                // Open one breaker is sufficient to disconnect the terminal
+            if (aSwitch && isSwitchOpenable(aSwitch.get())) {
+                aSwitch.get().setOpen(true);
+                // Just opening the first one is sufficient to disconnect the terminal
                 pathOpen = true;
                 break;
             }
         }
 
-        // No breaker found, the terminal is still connected
+        // No switch found, the terminal is still connected
         if (!pathOpen) {
             return false;
         }

@@ -12,12 +12,14 @@
 #include <vector>
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TerminalTopologyTraverser.hpp>
 #include <powsybl/iidm/TerminalViews.hpp>
 #include <powsybl/iidm/ThreeSides.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/math/TraversalType.hpp>
+#include <powsybl/stdcxx/Predicate.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -49,8 +51,10 @@ public:
     ~Terminal() noexcept override = default;
 
     bool connect();
+    bool connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
 
     bool disconnect();
+    bool disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable);
 
     virtual double getAngle() const = 0;
 

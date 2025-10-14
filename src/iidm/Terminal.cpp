@@ -10,6 +10,7 @@
 #include <cmath>
 
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/SwitchPredicate.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -38,7 +39,10 @@ void Terminal::allocateVariantArrayElement(const std::set<unsigned long>& indexe
 }
 
 bool Terminal::connect() {
-    return m_voltageLevel.connect(*this);
+    return connect(SwitchPredicate::IS_NONFICTIONAL_BREAKER());
+}
+bool Terminal::connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate){
+    return m_voltageLevel.connect(*this, isTypeSwitchToOperate);
 }
 
 void Terminal::deleteVariantArrayElement(unsigned long /*index*/) {
@@ -46,7 +50,10 @@ void Terminal::deleteVariantArrayElement(unsigned long /*index*/) {
 }
 
 bool Terminal::disconnect() {
-    return m_voltageLevel.disconnect(*this);
+    return disconnect(SwitchPredicate::IS_CLOSED_BREAKER());
+}
+bool Terminal::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
+    return m_voltageLevel.disconnect(*this, isSwitchOpenable);
 }
 
 void Terminal::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
