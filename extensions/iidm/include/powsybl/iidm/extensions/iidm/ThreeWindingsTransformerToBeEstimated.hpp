@@ -26,9 +26,9 @@ public:  // Extension
     const std::type_index& getType() const override;
 
 public:
-    bool shouldEstimatePhaseTapChanger(const ThreeWindingsTransformer::Side& side) const;
+    bool shouldEstimatePhaseTapChanger(const ThreeSides& side) const;
 
-    ThreeWindingsTransformerToBeEstimated& shouldEstimatePhaseTapChanger(bool toBeEstimated, const ThreeWindingsTransformer::Side& side);
+    ThreeWindingsTransformerToBeEstimated& shouldEstimatePhaseTapChanger(bool toBeEstimated, const ThreeSides& side);
 
     bool shouldEstimatePhaseTapChanger1() const;
 
@@ -42,9 +42,9 @@ public:
 
     ThreeWindingsTransformerToBeEstimated& shouldEstimatePhaseTapChanger3(bool toBeEstimated);
 
-    bool shouldEstimateRatioTapChanger(const ThreeWindingsTransformer::Side& side) const;
+    bool shouldEstimateRatioTapChanger(const ThreeSides& side) const;
 
-    ThreeWindingsTransformerToBeEstimated& shouldEstimateRatioTapChanger(bool toBeEstimated, const ThreeWindingsTransformer::Side& side);
+    ThreeWindingsTransformerToBeEstimated& shouldEstimateRatioTapChanger(bool toBeEstimated, const ThreeSides& side);
 
     bool shouldEstimateRatioTapChanger1() const;
 

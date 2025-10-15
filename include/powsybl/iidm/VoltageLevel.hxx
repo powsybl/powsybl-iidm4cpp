@@ -50,9 +50,9 @@ stdcxx::CReference<T> VoltageLevel::getConnectable(const std::string& id) const 
             }
         } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable.get())) {
             const auto& transformer = dynamic_cast<const ThreeWindingsTransformer&>(connectable.get());
-            if (!stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::ONE).getVoltageLevel(), *this) &&
-                !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::TWO).getVoltageLevel(), *this) &&
-                !stdcxx::areSame(transformer.getTerminal(ThreeWindingsTransformer::Side::THREE).getVoltageLevel(), *this)) {
+            if (!stdcxx::areSame(transformer.getTerminal(ThreeSides::ONE).getVoltageLevel(), *this) &&
+                !stdcxx::areSame(transformer.getTerminal(ThreeSides::TWO).getVoltageLevel(), *this) &&
+                !stdcxx::areSame(transformer.getTerminal(ThreeSides::THREE).getVoltageLevel(), *this)) {
                 throw PowsyblException(stdcxx::format("The 3 windings transformer '%1%' is not connected to the voltage level '%2%'", id, getId()));
             }
         } else {

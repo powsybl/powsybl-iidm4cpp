@@ -12,6 +12,8 @@
 #include <map>
 #include <string>
 
+#include <powsybl/iidm/ThreeSides.hpp>
+
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
@@ -28,15 +30,6 @@ class Measurements;
 class Measurement {
 public:
     /**
-     * Specify which side of the equipment the measurement is applied on.
-     */
-    enum class Side : unsigned char {
-        ONE,
-        TWO,
-        THREE
-    };
-
-    /**
      * Specify what is measured.
      */
     enum class Type : unsigned char {
@@ -51,7 +44,7 @@ public:
     };
 
 public:
-    Measurement(Measurements& measurements, const std::string& id, const Measurement::Type& type, const std::map<std::string, std::string>& properties, double value, double standardDeviation, bool valid, const stdcxx::optional<Measurement::Side>& side);
+    Measurement(Measurements& measurements, const std::string& id, const Measurement::Type& type, const std::map<std::string, std::string>& properties, double value, double standardDeviation, bool valid, const stdcxx::optional<ThreeSides>& side);
 
     /**
      * Get ID of the measurement if it exists. It is optional (can be null).
@@ -69,9 +62,9 @@ public:
     stdcxx::const_range<std::string> getPropertyNames() const;
 
     /**
-     * Get which side the measurement is applied on (see {@link Side}).
+     * Get which side the measurement is applied on (see {@link ThreeSides}).
      */
-    const stdcxx::optional<Side>& getSide() const;
+    const stdcxx::optional<ThreeSides>& getSide() const;
 
     /**
      * Get the standard deviation. Return NaN if unspecified.
@@ -135,7 +128,7 @@ private:
 
     std::map<std::string, std::string> m_properties;
 
-    stdcxx::optional<Side> m_side;
+    stdcxx::optional<ThreeSides> m_side;
 
     double m_value;
 
@@ -143,8 +136,6 @@ private:
 
     bool m_valid;
 };
-
-std::ostream& operator<<(std::ostream& stream, const Measurement::Side& value);
 
 std::ostream& operator<<(std::ostream& stream, const Measurement::Type& value);
 

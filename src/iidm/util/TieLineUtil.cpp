@@ -55,7 +55,7 @@ LinkData::BranchAdmittanceMatrix equivalentBranchAdmittanceMatrix(const Dangling
     } else if(zeroImpedanceLine(adm1)) {
         return adm2;
     } else {
-        return LinkData::kronChain(adm1, Branch::Side::TWO, adm2, Branch::Side::ONE);
+        return LinkData::kronChain(adm1, TwoSides::TWO, adm2, TwoSides::ONE);
     }
 }
 

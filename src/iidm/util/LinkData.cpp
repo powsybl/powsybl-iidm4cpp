@@ -33,8 +33,8 @@ BranchAdmittanceMatrix calculateBranchAdmittance(double r, double x, double rati
     return branchAdmittance;
 }
 
-BranchAdmittanceMatrix kronChain(const BranchAdmittanceMatrix& firstAdm, const Branch::Side& firstChainNodeSide,
-                                 const BranchAdmittanceMatrix& secondAdm, const Branch::Side& secondChainNodeSide) {
+BranchAdmittanceMatrix kronChain(const BranchAdmittanceMatrix& firstAdm, const TwoSides& firstChainNodeSide,
+                                 const BranchAdmittanceMatrix& secondAdm, const TwoSides& secondChainNodeSide) {
 
     BranchAdmittanceMatrix admittance;
 
@@ -42,7 +42,7 @@ BranchAdmittanceMatrix kronChain(const BranchAdmittanceMatrix& firstAdm, const B
     std::complex<double> yFirst1C;
     std::complex<double> yFirstC1;
     std::complex<double> yFirstCC;
-    if (firstChainNodeSide == Branch::Side::TWO) {
+    if (firstChainNodeSide == TwoSides::TWO) {
         yFirst11 = firstAdm.y11;
         yFirst1C = firstAdm.y12;
         yFirstC1 = firstAdm.y21;
@@ -58,7 +58,7 @@ BranchAdmittanceMatrix kronChain(const BranchAdmittanceMatrix& firstAdm, const B
     std::complex<double> ySecond2C;
     std::complex<double> ySecondC2;
     std::complex<double> ySecondCC;
-    if (secondChainNodeSide == Branch::Side::TWO){
+    if (secondChainNodeSide == TwoSides::TWO){
         ySecond22 = secondAdm.y11;
         ySecond2C = secondAdm.y12;
         ySecondC2 = secondAdm.y21;

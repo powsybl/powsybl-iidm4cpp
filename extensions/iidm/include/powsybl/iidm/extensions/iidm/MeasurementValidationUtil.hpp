@@ -30,7 +30,7 @@ namespace MeasurementValidationUtil {
 std::string checkId(const std::string& id, const Measurements& measurements);
 std::string checkId(const std::string& id, bool idUnicity, const Measurements& measurements);
 
-void checkSide(const Measurement::Type& type, const stdcxx::optional<Measurement::Side>& side, const Connectable& connectable);
+void checkSide(const Measurement::Type& type, const stdcxx::optional<ThreeSides>& side, const Connectable& connectable);
 
 void checkValue(double value, bool valid);
 

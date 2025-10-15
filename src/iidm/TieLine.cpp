@@ -115,24 +115,25 @@ DanglingLine& TieLine::getDanglingLine2() {
     return m_danglingLine2.get();
 }
 
-const DanglingLine& TieLine::getDanglingLine(const Branch::Side& branchSide) const {
-    switch (branchSide) {
-        case Branch::Side::ONE:
+const DanglingLine& TieLine::getDanglingLine(const TwoSides& side) const {
+    switch (side) {
+        case TwoSides::ONE:
             if(!static_cast<bool>(m_danglingLine1)) {
                 throw AssertionError(stdcxx::format("dangling line 1 missing from tie line %1%", getId()));
             }
             return m_danglingLine1.get();
-        case Branch::Side::TWO:
+        case TwoSides::TWO:
             if(!static_cast<bool>(m_danglingLine2)) {
                 throw AssertionError(stdcxx::format("dangling line 2 missing from tie line %1%", getId()));
             }
             return m_danglingLine2.get();
+        case TwoSides::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unknown branch side %1%", branchSide));
+            throw AssertionError(stdcxx::format("Unknown branch side %1%", side));
     }
 }
-DanglingLine& TieLine::getDanglingLine(const Branch::Side& branchSide) {
-    return const_cast<DanglingLine&>(static_cast<const TieLine*>(this)->getDanglingLine(branchSide)); //NOSONAR
+DanglingLine& TieLine::getDanglingLine(const TwoSides& side) {
+    return const_cast<DanglingLine&>(static_cast<const TieLine*>(this)->getDanglingLine(side)); //NOSONAR
 }
 
 const DanglingLine& TieLine::getDanglingLine(const std::string& voltageLevelId) const {

@@ -54,8 +54,8 @@ public:
     const DanglingLine& getDanglingLine2() const;
     DanglingLine& getDanglingLine2();
 
-    const DanglingLine& getDanglingLine(const Branch::Side& branchSide) const;
-    DanglingLine& getDanglingLine(const Branch::Side& branchSide);
+    const DanglingLine& getDanglingLine(const TwoSides& side) const;
+    DanglingLine& getDanglingLine(const TwoSides& side);
     
     const DanglingLine& getDanglingLine(const std::string& voltageLevelId) const;
     DanglingLine& getDanglingLine(const std::string& voltageLevelId);

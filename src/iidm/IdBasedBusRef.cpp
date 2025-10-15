@@ -21,7 +21,7 @@ IdBasedBusRef::IdBasedBusRef(const std::string& id) :
     m_id(id) {
 }
 
-IdBasedBusRef::IdBasedBusRef(const std::string& id, const Branch::Side& side) :
+IdBasedBusRef::IdBasedBusRef(const std::string& id, const TwoSides& side) :
     m_id(id), m_side(side) {
 }
 
@@ -52,16 +52,7 @@ stdcxx::CReference<Bus> IdBasedBusRef::resolveByLevel(const Network& network, co
     if (stdcxx::isInstanceOf<Branch>(identifiable.get())) {
         const auto& branch = dynamic_cast<const Branch&>(identifiable.get());
         stdcxx::Reference<Terminal> terminal;
-        switch (*m_side) {
-            case Branch::Side::ONE:
-                terminal = stdcxx::ref(branch.getTerminal1());
-                break;
-            case Branch::Side::TWO:
-                terminal = stdcxx::ref(branch.getTerminal2());
-                break;
-            default:
-                throw AssertionError(stdcxx::format("Unexpected side: ", *m_side));
-        }
+        terminal = stdcxx::ref(branch.getTerminalFromSide(*m_side));
         return chooseBusByLevel(terminal, level);
     }
     throw PowsyblException(stdcxx::format("%1% is not a branch.", m_id));

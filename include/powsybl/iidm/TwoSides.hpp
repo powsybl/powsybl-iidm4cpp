@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_THREESIDES_HPP
-#define POWSYBL_IIDM_THREESIDES_HPP
+#ifndef POWSYBL_IIDM_TWOSIDES_HPP
+#define POWSYBL_IIDM_TWOSIDES_HPP
 
 #include <ostream>
 #include <cstdint>
@@ -15,17 +15,16 @@ namespace powsybl {
 
 namespace iidm {
 
-enum class ThreeSides : std::uint8_t {
+enum class TwoSides : std::uint8_t {
     UNDEFINED = 0,
     ONE = 1,
-    TWO = 2,
-    THREE = 3
+    TWO = 2
 };
 
-std::ostream& operator<<(std::ostream& stream, const ThreeSides& side);
+std::ostream& operator<<(std::ostream& stream, const TwoSides& side);
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_THREESIDES_HPP
+#endif  // POWSYBL_IIDM_TWOSIDES_HPP

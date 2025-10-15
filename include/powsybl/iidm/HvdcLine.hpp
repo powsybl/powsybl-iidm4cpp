@@ -13,6 +13,7 @@
 
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/NetworkRef.hpp>
+#include <powsybl/iidm/TwoSides.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -27,11 +28,6 @@ public:
     enum class ConvertersMode : unsigned char {
         SIDE_1_RECTIFIER_SIDE_2_INVERTER,
         SIDE_1_INVERTER_SIDE_2_RECTIFIER
-    };
-
-    enum class Side : unsigned char {
-        ONE,
-        TWO
     };
 
 public:  // Identifiable
@@ -55,9 +51,9 @@ public:
 
     const ConvertersMode& getConvertersMode() const;
 
-    stdcxx::CReference<HvdcConverterStation> getConverterStation(const Side& side) const;
+    stdcxx::CReference<HvdcConverterStation> getConverterStation(const TwoSides& side) const;
 
-    stdcxx::Reference<HvdcConverterStation> getConverterStation(const Side& side);
+    stdcxx::Reference<HvdcConverterStation> getConverterStation(const TwoSides& side);
 
     stdcxx::CReference<HvdcConverterStation> getConverterStation1() const;
 

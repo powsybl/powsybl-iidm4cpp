@@ -48,7 +48,7 @@ std::string checkId(const std::string& id, bool idUnicity, const Measurements& m
     return finalId;
 }
 
-void checkSide(const Measurement::Type& type, const stdcxx::optional<Measurement::Side>& side, const Connectable& connectable) {
+void checkSide(const Measurement::Type& type, const stdcxx::optional<ThreeSides>& side, const Connectable& connectable) {
     if (side && stdcxx::isInstanceOf<Injection>(connectable)) {
         throw PowsyblException("Inconsistent side for measurement of injection");
     }

@@ -39,6 +39,7 @@ set(UNIT_TEST_SOURCES
     PhaseTapChangerTest.cpp
     RatioTapChangerTest.cpp
     ReactiveLimitsTest.cpp
+    SidesTest.cpp
     ShuntCompensatorTest.cpp
     StaticVarCompensatorTest.cpp
     SubnetworkCreationTest.cpp

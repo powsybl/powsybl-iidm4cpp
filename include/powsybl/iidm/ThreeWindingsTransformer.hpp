@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/Overload.hpp>
+#include <powsybl/iidm/ThreeSides.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerLeg.hpp>
 
 namespace powsybl {
@@ -19,13 +20,6 @@ namespace iidm {
 class Substation;
 
 class ThreeWindingsTransformer : public Connectable {
-public:
-    enum class Side : unsigned char {
-        ONE,
-        TWO,
-        THREE
-    };
-
 public:
     using Leg = three_windings_transformer::Leg;
 
@@ -37,9 +31,9 @@ public:
 
     ~ThreeWindingsTransformer() noexcept override = default;
 
-    const Leg& getLeg(const Side& side) const;
+    const Leg& getLeg(const ThreeSides& side) const;
 
-    Leg& getLeg(const Side& side);
+    Leg& getLeg(const ThreeSides& side);
 
     const Leg& getLeg1() const;
 
@@ -59,15 +53,15 @@ public:
 
     double getRatedU0() const;
 
-    Side getSide(const Terminal& terminal) const;
+    ThreeSides getSide(const Terminal& terminal) const;
 
     stdcxx::CReference<Substation> getSubstation() const;
 
     stdcxx::Reference<Substation> getSubstation();
 
-    const Terminal& getTerminal(const Side& side) const;
+    const Terminal& getTerminal(const ThreeSides& side) const;
 
-    Terminal& getTerminal(const Side& side);
+    Terminal& getTerminal(const ThreeSides& side);
 
     bool isOverloaded() const;
 
@@ -75,9 +69,9 @@ public:
 
     unsigned long getOverloadDuration() const;
 
-    bool checkPermanentLimit(const Side& side, const LimitType& type) const;
+    bool checkPermanentLimit(const ThreeSides& side, const LimitType& type) const;
 
-    bool checkPermanentLimit(const Side& side, double limitReduction, const LimitType& type) const;
+    bool checkPermanentLimit(const ThreeSides& side, double limitReduction, const LimitType& type) const;
 
     bool checkPermanentLimit1(const LimitType& type) const;
 
@@ -91,9 +85,9 @@ public:
 
     bool checkPermanentLimit3(double limitReduction, const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, const LimitType& type) const;
+    std::unique_ptr<Overload> checkTemporaryLimits(const ThreeSides& side, const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, double limitReduction, const LimitType& type) const;
+    std::unique_ptr<Overload> checkTemporaryLimits(const ThreeSides& side, double limitReduction, const LimitType& type) const;
 
     std::unique_ptr<Overload> checkTemporaryLimits1(const LimitType& type) const;
 

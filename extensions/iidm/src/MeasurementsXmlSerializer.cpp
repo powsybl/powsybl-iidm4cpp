@@ -55,7 +55,7 @@ Extension& MeasurementsXmlSerializer::read(Extendable& extendable, converter::xm
             }
             const std::string& side = context.getReader().getOptionalAttributeValue(converter::SIDE, "");
             if (!side.empty()) {
-                adder.setSide(Enum::fromString<Measurement::Side>(side));
+                adder.setSide(Enum::fromString<ThreeSides>(side));
             }
             context.getReader().readUntilEndElement("measurement", [&context, &adder]() {
                 if (context.getReader().getLocalName() == converter::PROPERTY) {

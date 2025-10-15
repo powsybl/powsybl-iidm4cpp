@@ -267,16 +267,17 @@ BOOST_AUTO_TEST_CASE(constructor) {
 
     BOOST_TEST(line.getCurrentLimits1());
     BOOST_TEST(cLine.getCurrentLimits1());
-    BOOST_TEST(line.getCurrentLimits(Branch::Side::ONE));
-    BOOST_TEST(cLine.getCurrentLimits(Branch::Side::ONE));
+    BOOST_TEST(line.getCurrentLimits(TwoSides::ONE));
+    BOOST_TEST(cLine.getCurrentLimits(TwoSides::ONE));
 
     BOOST_TEST(!line.getCurrentLimits2());
     BOOST_TEST(!cLine.getCurrentLimits2());
-    BOOST_TEST(!line.getCurrentLimits(Branch::Side::TWO));
-    BOOST_TEST(!cLine.getCurrentLimits(Branch::Side::TWO));
+    BOOST_TEST(!line.getCurrentLimits(TwoSides::TWO));
+    BOOST_TEST(!cLine.getCurrentLimits(TwoSides::TWO));
 
-    POWSYBL_ASSERT_THROW(line.getCurrentLimits(static_cast<Branch::Side>(5)), AssertionError, "Unexpected Side value: 5");
-    POWSYBL_ASSERT_THROW(cLine.getCurrentLimits(static_cast<Branch::Side>(6)), AssertionError, "Unexpected Side value: 6");
+    POWSYBL_ASSERT_THROW(line.getCurrentLimits(static_cast<TwoSides>(0)), AssertionError, "Unexpected TwoSides value: UNDEFINED");
+    POWSYBL_ASSERT_THROW(line.getCurrentLimits(static_cast<TwoSides>(5)), AssertionError, "Unexpected TwoSides value: 5");
+    POWSYBL_ASSERT_THROW(cLine.getCurrentLimits(static_cast<TwoSides>(6)), AssertionError, "Unexpected TwoSides value: 6");
 
     CurrentLimits limits = line.getCurrentLimits1().get();
     const CurrentLimits& cLimits = limits;
@@ -341,8 +342,8 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(line.getCurrentLimits1());
     BOOST_TEST(cLine.getCurrentLimits1());
-    BOOST_TEST(line.getCurrentLimits(Branch::Side::ONE));
-    BOOST_TEST(cLine.getCurrentLimits(Branch::Side::ONE));
+    BOOST_TEST(line.getCurrentLimits(TwoSides::ONE));
+    BOOST_TEST(cLine.getCurrentLimits(TwoSides::ONE));
 }
 
 BOOST_AUTO_TEST_CASE(adder) {
@@ -458,12 +459,12 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
     BOOST_TEST(line.checkPermanentLimit1(0.5, LimitType::CURRENT));
     BOOST_TEST(!line.checkPermanentLimit1(LimitType::CURRENT));
 
-    BOOST_TEST(line.checkPermanentLimit(Branch::Side::ONE, 0.5, LimitType::CURRENT));
-    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::ONE, LimitType::CURRENT));
+    BOOST_TEST(line.checkPermanentLimit(TwoSides::ONE, 0.5, LimitType::CURRENT));
+    BOOST_TEST(!line.checkPermanentLimit(TwoSides::ONE, LimitType::CURRENT));
 
     t1.setP(1.0);
     BOOST_TEST(!line.checkPermanentLimit1(LimitType::CURRENT));
-    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::ONE, LimitType::CURRENT));
+    BOOST_TEST(!line.checkPermanentLimit(TwoSides::ONE, LimitType::CURRENT));
 
     BOOST_TEST(!line.getCurrentLimits2());
     BOOST_TEST(!line.checkPermanentLimit2(2.0, LimitType::CURRENT));
@@ -497,7 +498,7 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
     BOOST_TEST(!std::isnan(line.getTerminal2().getI()));
     BOOST_TEST(!line.isOverloaded());
     BOOST_TEST(!line.checkPermanentLimit2(LimitType::CURRENT));
-    BOOST_TEST(!line.checkPermanentLimit(Branch::Side::TWO, LimitType::CURRENT));
+    BOOST_TEST(!line.checkPermanentLimit(TwoSides::TWO, LimitType::CURRENT));
     std::unique_ptr<Overload> ptrOverload = line.checkTemporaryLimits2(LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
@@ -505,7 +506,7 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
     BOOST_TEST(line.isOverloaded());
     BOOST_CHECK_EQUAL(5 * 60L, line.getOverloadDuration());
     BOOST_TEST(line.checkPermanentLimit2(LimitType::CURRENT));
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(TwoSides::TWO, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
     BOOST_CHECK_EQUAL(5 * 60L, ptrOverload->getTemporaryLimit().getAcceptableDuration());
     BOOST_CHECK_EQUAL("TL1_2", ptrOverload->getPreviousLimitName());
@@ -519,8 +520,8 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
     BOOST_CHECK_EQUAL("TL2_2", ptrOverload->getPreviousLimitName());
     BOOST_CHECK_CLOSE(1400.0, ptrOverload->getPreviousLimit(), std::numeric_limits<double>::epsilon()); 
 
-    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(5), 3.0, LimitType::CURRENT), AssertionError, "Unexpected Side value: 5");
-    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<Branch::Side>(6), LimitType::CURRENT), AssertionError, "Unexpected Side value: 6");
+    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<TwoSides>(5), 3.0, LimitType::CURRENT), AssertionError, "Unexpected TwoSides value: 5");
+    POWSYBL_ASSERT_THROW(line.checkPermanentLimit(static_cast<TwoSides>(6), LimitType::CURRENT), AssertionError, "Unexpected TwoSides value: 6");
 
     BOOST_TEST(!line.isOverloaded(2.0));
     BOOST_TEST(line.isOverloaded());
@@ -532,7 +533,7 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
 BOOST_AUTO_TEST_CASE(checkLimits3wtLeg1) {
     Network network = createThreeWindingsTransformerCurrentLimitsTestNetwork();
     ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT");
-    ThreeWindingsTransformer::Leg& leg1 = transformer.getLeg(ThreeWindingsTransformer::Side::ONE);
+    ThreeWindingsTransformer::Leg& leg1 = transformer.getLeg(ThreeSides::ONE);
 
     BOOST_TEST(!transformer.isOverloaded());
     leg1.getTerminal().getBusBreakerView().getBus().get().setV(390.0);
@@ -625,23 +626,23 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, 2.0, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(TwoSides::ONE, 2.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     t1.setP(30.0);
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, 2.0, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(TwoSides::ONE, 2.0, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
 
     t1.setP(14.0);
     ptrOverload = line.checkTemporaryLimits1(LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(TwoSides::ONE, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
 
     t1.setP(1.0);
     ptrOverload = line.checkTemporaryLimits1(LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::ONE, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(TwoSides::ONE, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     BOOST_TEST(!line.getCurrentLimits2());
@@ -685,24 +686,24 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     ptrOverload = line.checkTemporaryLimits2(5.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, 0.7, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(TwoSides::TWO, 0.7, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, 5.0, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(TwoSides::TWO, 5.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
     t2.setP(25.0);
     ptrOverload = line.checkTemporaryLimits2(LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(TwoSides::TWO, LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
     t2.setP(1.0);
     ptrOverload = line.checkTemporaryLimits2(LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
-    ptrOverload = line.checkTemporaryLimits(Branch::Side::TWO, LimitType::CURRENT);
+    ptrOverload = line.checkTemporaryLimits(TwoSides::TWO, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
-    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(5), 3.0, LimitType::CURRENT), AssertionError, "Unexpected Side value: 5");
-    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<Branch::Side>(6), LimitType::CURRENT), AssertionError, "Unexpected Side value: 6");
+    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<TwoSides>(5), 3.0, LimitType::CURRENT), AssertionError, "Unexpected TwoSides value: 5");
+    POWSYBL_ASSERT_THROW(line.checkTemporaryLimits(static_cast<TwoSides>(6), LimitType::CURRENT), AssertionError, "Unexpected TwoSides value: 6");
 
     BOOST_CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), line.getOverloadDuration());
     t1.setP(13.0);

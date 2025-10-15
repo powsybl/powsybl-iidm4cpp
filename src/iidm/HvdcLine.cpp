@@ -59,12 +59,12 @@ const HvdcLine::ConvertersMode& HvdcLine::getConvertersMode() const {
     return m_convertersMode.at(getNetwork().getVariantIndex());
 }
 
-stdcxx::CReference<HvdcConverterStation> HvdcLine::getConverterStation(const HvdcLine::Side& side) const {
-    return side == Side::ONE ? getConverterStation1() : getConverterStation2();
+stdcxx::CReference<HvdcConverterStation> HvdcLine::getConverterStation(const TwoSides& side) const {
+    return side == TwoSides::ONE ? getConverterStation1() : getConverterStation2();
 }
 
-stdcxx::Reference<HvdcConverterStation> HvdcLine::getConverterStation(const HvdcLine::Side& side) {
-    return side == Side::ONE ? getConverterStation1() : getConverterStation2();
+stdcxx::Reference<HvdcConverterStation> HvdcLine::getConverterStation(const TwoSides& side) {
+    return side == TwoSides::ONE ? getConverterStation1() : getConverterStation2();
 }
 
 stdcxx::CReference<HvdcConverterStation> HvdcLine::getConverterStation1() const {

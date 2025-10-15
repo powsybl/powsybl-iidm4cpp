@@ -144,6 +144,7 @@ set(IIDM_SOURCES
     iidm/TopologyKind.cpp
     iidm/TopologyLevel.cpp
     iidm/TopologyVisitor.cpp
+    iidm/TwoSides.cpp
     iidm/TwoWindingsTransformer.cpp
     iidm/TwoWindingsTransformerAdder.cpp
     iidm/ValidationException.cpp

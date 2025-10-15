@@ -199,7 +199,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
             .setTapPosition(15)
             .setRegulationMode(iidm::PhaseTapChanger::RegulationMode::FIXED_TAP)
             .setRegulating(false)
-            .setRegulationTerminal(stdcxx::ref(twt.getTerminalFromSide(iidm::Branch::Side::ONE)))
+            .setRegulationTerminal(stdcxx::ref(twt.getTerminalFromSide(iidm::TwoSides::ONE)))
             .beginStep().setR(39.78473).setX(29.784725).setG(0.0).setB(0.0).setRho(1.0).setAlpha(-42.8).endStep()
             .beginStep().setR(31.720245).setX(21.720242).setG(0.0).setB(0.0).setRho(1.0).setAlpha(-40.18).endStep()
             .beginStep().setR(23.655737).setX(13.655735).setG(0.0).setB(0.0).setRho(1.0).setAlpha(-37.54).endStep()
@@ -244,7 +244,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
                 .setRegulating(true)
                 .setTargetV(225.0)
                 .setTargetDeadband(0)
-                .setRegulationTerminal(stdcxx::ref(twt.getTerminalFromSide(iidm::Branch::Side::ONE)))
+                .setRegulationTerminal(stdcxx::ref(twt.getTerminalFromSide(iidm::TwoSides::ONE)))
                 .add();
     twt.getTerminal1().setP(-80.0).setQ(-10.0);
     twt.getTerminal2().setP(80.0809).setQ(5.4857);

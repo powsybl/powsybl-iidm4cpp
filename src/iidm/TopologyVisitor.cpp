@@ -113,7 +113,7 @@ void TopologyVisitor::visitHvdcConverterStation(const HvdcConverterStation& /*co
     // nothing to do
 }
 
-void TopologyVisitor::visitLine(const Line& /*line*/, const Branch::Side& /*side*/) {
+void TopologyVisitor::visitLine(const Line& /*line*/, const TwoSides& /*side*/) {
     // nothing to do
 }
 
@@ -129,11 +129,11 @@ void TopologyVisitor::visitStaticVarCompensator(const StaticVarCompensator& /*st
     // nothing to do
 }
 
-void TopologyVisitor::visitThreeWindingsTransformer(const ThreeWindingsTransformer& /*transformer*/, const ThreeWindingsTransformer::Side& /*side*/) {
+void TopologyVisitor::visitThreeWindingsTransformer(const ThreeWindingsTransformer& /*transformer*/, const ThreeSides& /*side*/) {
     // nothing to do
 }
 
-void TopologyVisitor::visitTwoWindingsTransformer(const TwoWindingsTransformer& /*transformer*/, const Branch::Side& /*side*/) {
+void TopologyVisitor::visitTwoWindingsTransformer(const TwoWindingsTransformer& /*transformer*/, const TwoSides& /*side*/) {
     // nothing to do
 }
 

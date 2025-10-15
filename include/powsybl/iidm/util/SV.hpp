@@ -28,11 +28,11 @@ namespace tie_line {
 
 class SV {
 public:
-    SV(double p, double q, double u, double a, const Branch::Side& side);
+    SV(double p, double q, double u, double a, const TwoSides& side);
 
     double getA() const;
 
-    const Branch::Side& getSide() const;
+    const TwoSides& getSide() const;
 
     double getP() const;
 
@@ -123,7 +123,7 @@ private:
 
     double m_a;
 
-    Branch::Side m_side;
+    TwoSides m_side;
 };
 
 }  // namespace iidm

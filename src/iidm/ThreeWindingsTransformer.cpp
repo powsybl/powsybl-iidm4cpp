@@ -7,7 +7,6 @@
 
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 
-#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -64,20 +63,21 @@ void ThreeWindingsTransformer::extendVariantArraySize(unsigned long initVariantA
     }
 }
 
-const ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg(const Side& side) const {
+const ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg(const ThreeSides& side) const {
     switch (side) {
-        case Side::ONE:
+        case ThreeSides::ONE:
             return getLeg1();
-        case Side::TWO:
+        case ThreeSides::TWO:
             return getLeg2();
-        case Side::THREE:
+        case ThreeSides::THREE:
             return getLeg3();
+        case ThreeSides::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected side: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected ThreeSides value: %1%", side));
     }
 }
 
-ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg(const Side& side) {
+ThreeWindingsTransformer::Leg& ThreeWindingsTransformer::getLeg(const ThreeSides& side) {
     const auto& leg = static_cast<const ThreeWindingsTransformer*>(this)->getLeg(side);
     return const_cast<ThreeWindingsTransformer::Leg&>(leg);
 }
@@ -118,15 +118,15 @@ double ThreeWindingsTransformer::getRatedU0() const {
     return m_ratedU0;
 }
 
-ThreeWindingsTransformer::Side ThreeWindingsTransformer::getSide(const Terminal& terminal) const {
+ThreeSides ThreeWindingsTransformer::getSide(const Terminal& terminal) const {
     if (stdcxx::areSame(m_legs[0].getTerminal(), terminal)) {
-        return Side::ONE;
+        return ThreeSides::ONE;
     }
     if (stdcxx::areSame(m_legs[1].getTerminal(), terminal)) {
-        return Side::TWO;
+        return ThreeSides::TWO;
     }
     if (stdcxx::areSame(m_legs[2].getTerminal(), terminal)) {
-        return Side::THREE;
+        return ThreeSides::THREE;
     }
     throw AssertionError("The terminal is not connected to this three windings transformer");
 }
@@ -144,20 +144,21 @@ stdcxx::Reference<Substation> ThreeWindingsTransformer::getSubstation() {
     return stdcxx::ref(static_cast<const ThreeWindingsTransformer*>(this)->getSubstation());
 }
 
-const Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) const {
+const Terminal& ThreeWindingsTransformer::getTerminal(const ThreeSides& side) const {
     switch (side) {
-        case Side::ONE:
+        case ThreeSides::ONE:
             return m_legs[0].getTerminal();
-        case Side::TWO:
+        case ThreeSides::TWO:
             return m_legs[1].getTerminal();
-        case Side::THREE:
+        case ThreeSides::THREE:
             return m_legs[2].getTerminal();
+        case ThreeSides::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected ThreeSides value: %1%", side));
     }
 }
 
-Terminal& ThreeWindingsTransformer::getTerminal(const Side& side) {
+Terminal& ThreeWindingsTransformer::getTerminal(const ThreeSides& side) {
     const auto& terminal = static_cast<const ThreeWindingsTransformer*>(this)->getTerminal(side);
 
     return const_cast<Terminal&>(terminal);
@@ -186,11 +187,11 @@ unsigned long ThreeWindingsTransformer::getOverloadDuration() const {
     return std::min(std::min(duration1, duration2), duration3);
 }
 
-bool ThreeWindingsTransformer::checkPermanentLimit(const Side& side, const LimitType& type) const {
+bool ThreeWindingsTransformer::checkPermanentLimit(const ThreeSides& side, const LimitType& type) const {
     return checkPermanentLimit(side, 1.0, type);
 }
 
-bool ThreeWindingsTransformer::checkPermanentLimit(const Side& side, double limitReduction, const LimitType& type) const {
+bool ThreeWindingsTransformer::checkPermanentLimit(const ThreeSides& side, double limitReduction, const LimitType& type) const {
     double limitValue = LimitViolationUtils::getValueForLimit(getTerminal(side), type);
     return LimitViolationUtils::checkPermanentLimit(*this, side, limitReduction, limitValue, type);
 }
@@ -200,7 +201,7 @@ bool ThreeWindingsTransformer::checkPermanentLimit1(const LimitType& type) const
 }
 
 bool ThreeWindingsTransformer::checkPermanentLimit1(double limitReduction, const LimitType& type) const {
-    return checkPermanentLimit(Side::ONE, limitReduction, type);
+    return checkPermanentLimit(ThreeSides::ONE, limitReduction, type);
 }
 
 bool ThreeWindingsTransformer::checkPermanentLimit2(const LimitType& type) const {
@@ -208,7 +209,7 @@ bool ThreeWindingsTransformer::checkPermanentLimit2(const LimitType& type) const
 }
 
 bool ThreeWindingsTransformer::checkPermanentLimit2(double limitReduction, const LimitType& type) const {
-    return checkPermanentLimit(Side::TWO, limitReduction, type);
+    return checkPermanentLimit(ThreeSides::TWO, limitReduction, type);
 }
 
 bool ThreeWindingsTransformer::checkPermanentLimit3(const LimitType& type) const {
@@ -216,14 +217,14 @@ bool ThreeWindingsTransformer::checkPermanentLimit3(const LimitType& type) const
 }
 
 bool ThreeWindingsTransformer::checkPermanentLimit3(double limitReduction, const LimitType& type) const  {
-    return checkPermanentLimit(Side::THREE, limitReduction, type);
+    return checkPermanentLimit(ThreeSides::THREE, limitReduction, type);
 }
 
-std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits(const Side& side, const LimitType& type) const {
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits(const ThreeSides& side, const LimitType& type) const {
     return checkTemporaryLimits(side, 1.0, type);
 }
 
-std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits(const Side& side, double limitReduction, const LimitType& type) const {
+std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits(const ThreeSides& side, double limitReduction, const LimitType& type) const {
     double limitValue = LimitViolationUtils::getValueForLimit(getTerminal(side), type);
     return LimitViolationUtils::checkTemporaryLimits(*this, side, limitReduction, limitValue, type);
 }
@@ -233,7 +234,7 @@ std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits1(const 
 }
 
 std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits1(double limitReduction, const LimitType& type) const {
-    return checkTemporaryLimits(Side::ONE, limitReduction, type);
+    return checkTemporaryLimits(ThreeSides::ONE, limitReduction, type);
 }
 
 std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits2(const LimitType& type) const {
@@ -241,7 +242,7 @@ std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits2(const 
 }
 
 std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits2(double limitReduction, const LimitType& type) const {
-    return checkTemporaryLimits(Side::TWO, limitReduction, type);
+    return checkTemporaryLimits(ThreeSides::TWO, limitReduction, type);
 }
 
 std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits3(const LimitType& type) const {
@@ -249,7 +250,7 @@ std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits3(const 
 }
 
 std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits3(double limitReduction, const LimitType& type) const {
-    return checkTemporaryLimits(Side::THREE, limitReduction, type);
+    return checkTemporaryLimits(ThreeSides::THREE, limitReduction, type);
 }
 
 const IdentifiableType& ThreeWindingsTransformer::getType() const {
@@ -275,20 +276,6 @@ void ThreeWindingsTransformer::reduceVariantArraySize(unsigned long number) {
         }
     }
 }
-
-namespace Enum {
-
-template <>
-const std::initializer_list<std::string>& getNames<ThreeWindingsTransformer::Side>() {
-    static std::initializer_list<std::string> s_threeWindingsTransformerSideNames {
-        "ONE",
-        "TWO",
-        "THREE"
-    };
-    return s_threeWindingsTransformerSideNames;
-}
-
-}  // namespace Enum
 
 }  // namespace iidm
 

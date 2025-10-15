@@ -27,11 +27,11 @@ bool checkPermanentLimitIfAny(stdcxx::CReference<LoadingLimits>& limits, double 
            && std::isgreaterequal(i, limits.get().getPermanentLimit() * limitReduction);
 }
 
-bool checkPermanentLimit(const Branch& branch, const Branch::Side& side, double limitReduction, double i, const LimitType& type) {
+bool checkPermanentLimit(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type) {
     stdcxx::CReference<LoadingLimits> limits = branch.getLimits(type, side);
     return checkPermanentLimitIfAny(limits, limitReduction, i);
 }
-bool checkPermanentLimit(const ThreeWindingsTransformer& transformer, const ThreeWindingsTransformer::Side& side, double limitReduction, double i, const LimitType& type) {
+bool checkPermanentLimit(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, double i, const LimitType& type) {
     stdcxx::CReference<LoadingLimits> limits = transformer.getLeg(side).getLimits(type);
     return checkPermanentLimitIfAny(limits, limitReduction, i);
 }
@@ -55,11 +55,11 @@ std::unique_ptr<Overload> getOverload(stdcxx::CReference<LoadingLimits>& limits,
     return res;
 }
 
-std::unique_ptr<Overload> checkTemporaryLimits(const Branch& branch, const Branch::Side& side, double limitReduction, double i, const LimitType& type) {
+std::unique_ptr<Overload> checkTemporaryLimits(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type) {
     stdcxx::CReference<LoadingLimits> limits = branch.getLimits(type, side);
     return getOverload(limits, limitReduction, i);
 }
-std::unique_ptr<Overload> checkTemporaryLimits(const ThreeWindingsTransformer& transformer, const ThreeWindingsTransformer::Side& side, double limitReduction, double i, const LimitType& type) {
+std::unique_ptr<Overload> checkTemporaryLimits(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, double i, const LimitType& type) {
     stdcxx::CReference<LoadingLimits> limits = transformer.getLeg(side).getLimits(type);
     return getOverload(limits, limitReduction, i);
 }

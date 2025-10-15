@@ -64,7 +64,7 @@ public:
 
     MeasurementAdder& setId(const std::string& id);
 
-    MeasurementAdder& setSide(const Measurement::Side& side);
+    MeasurementAdder& setSide(const ThreeSides& side);
 
     MeasurementAdder& setStandardDeviation(double standardDeviation);
 
@@ -93,7 +93,7 @@ private:
 
     bool m_idUnicity = false;
 
-    stdcxx::optional<Measurement::Side> m_side;
+    stdcxx::optional<ThreeSides> m_side;
 };
 
 }  // namespace iidm

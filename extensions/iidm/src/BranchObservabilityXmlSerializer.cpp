@@ -41,12 +41,12 @@ Extension& BranchObservabilityXmlSerializer::read(Extendable& extendable, conver
         if (context.getReader().getLocalName() == QUALITY_P) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
             auto redundant = context.getReader().getOptionalAttributeValue<bool>(REDUNDANT);
-            const auto& side = Enum::fromString<Branch::Side>(context.getReader().getAttributeValue(SIDE));
+            const auto& side = Enum::fromString<TwoSides>(context.getReader().getAttributeValue(SIDE));
             readQualityP(standardDeviation, redundant, side, adder);
         } else if (context.getReader().getLocalName() == QUALITY_Q) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
             auto redundant = context.getReader().getOptionalAttributeValue<bool>(REDUNDANT);
-            const auto& side = Enum::fromString<Branch::Side>(context.getReader().getAttributeValue(SIDE));
+            const auto& side = Enum::fromString<TwoSides>(context.getReader().getAttributeValue(SIDE));
             readQualityQ(standardDeviation, redundant, side, adder);
         } else {
             throw PowsyblException(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));
@@ -57,13 +57,13 @@ Extension& BranchObservabilityXmlSerializer::read(Extendable& extendable, conver
     return extendable.getExtension<BranchObservability>();
 }
 
-void BranchObservabilityXmlSerializer::readQualityP(double standardDeviation, stdcxx::optional<bool> redundant, const Branch::Side& side, BranchObservabilityAdder& adder) {
-    if (side == Branch::Side::ONE) {
+void BranchObservabilityXmlSerializer::readQualityP(double standardDeviation, stdcxx::optional<bool> redundant, const TwoSides& side, BranchObservabilityAdder& adder) {
+    if (side == TwoSides::ONE) {
         adder.withStandardDeviationP1(standardDeviation);
         if (redundant.has_value()) {
             adder.withRedundantP1(*redundant);
         }
-    } else if (side == Branch::Side::TWO) {
+    } else if (side == TwoSides::TWO) {
         adder.withStandardDeviationP2(standardDeviation);
         if (redundant.has_value()) {
             adder.withRedundantP2(*redundant);
@@ -71,13 +71,13 @@ void BranchObservabilityXmlSerializer::readQualityP(double standardDeviation, st
     }
 }
 
-void BranchObservabilityXmlSerializer::readQualityQ(double standardDeviation, stdcxx::optional<bool> redundant, const Branch::Side& side, BranchObservabilityAdder& adder) {
-    if (side == Branch::Side::ONE) {
+void BranchObservabilityXmlSerializer::readQualityQ(double standardDeviation, stdcxx::optional<bool> redundant, const TwoSides& side, BranchObservabilityAdder& adder) {
+    if (side == TwoSides::ONE) {
         adder.withStandardDeviationQ1(standardDeviation);
         if (redundant.has_value()) {
             adder.withRedundantQ1(*redundant);
         }
-    } else if (side == Branch::Side::TWO) {
+    } else if (side == TwoSides::TWO) {
         adder.withStandardDeviationQ2(standardDeviation);
         if (redundant.has_value()) {
             adder.withRedundantQ2(*redundant);
@@ -88,13 +88,13 @@ void BranchObservabilityXmlSerializer::readQualityQ(double standardDeviation, st
 void BranchObservabilityXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& branchObservability = safeCast<BranchObservability>(extension);
     context.getWriter().writeOptionalAttribute(OBSERVABLE, branchObservability.isObservable(), false);
-    writeOptionalQuality(QUALITY_P, Branch::Side::ONE, branchObservability.getQualityP1(), context.getWriter());
-    writeOptionalQuality(QUALITY_P, Branch::Side::TWO, branchObservability.getQualityP2(), context.getWriter());
-    writeOptionalQuality(QUALITY_Q, Branch::Side::ONE, branchObservability.getQualityQ1(), context.getWriter());
-    writeOptionalQuality(QUALITY_Q, Branch::Side::TWO, branchObservability.getQualityQ2(), context.getWriter());
+    writeOptionalQuality(QUALITY_P, TwoSides::ONE, branchObservability.getQualityP1(), context.getWriter());
+    writeOptionalQuality(QUALITY_P, TwoSides::TWO, branchObservability.getQualityP2(), context.getWriter());
+    writeOptionalQuality(QUALITY_Q, TwoSides::ONE, branchObservability.getQualityQ1(), context.getWriter());
+    writeOptionalQuality(QUALITY_Q, TwoSides::TWO, branchObservability.getQualityQ2(), context.getWriter());
 }
 
-void BranchObservabilityXmlSerializer::writeOptionalQuality(const std::string& elementName, const Branch::Side& side, const stdcxx::CReference<ObservabilityQuality>& quality, xml::XmlStreamWriter& writer) const {
+void BranchObservabilityXmlSerializer::writeOptionalQuality(const std::string& elementName, const TwoSides& side, const stdcxx::CReference<ObservabilityQuality>& quality, xml::XmlStreamWriter& writer) const {
     if (quality) {
         writer.writeStartElement(getNamespacePrefix(), elementName);
         writer.writeAttribute(SIDE, Enum::toString(side));

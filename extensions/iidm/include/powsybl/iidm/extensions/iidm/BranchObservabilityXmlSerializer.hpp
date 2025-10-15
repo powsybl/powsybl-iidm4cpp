@@ -40,12 +40,12 @@ public:
     ~BranchObservabilityXmlSerializer() noexcept override = default;
 
 private:
-    static void readQualityP(double standardDeviation, stdcxx::optional<bool> redundant, const Branch::Side& side, BranchObservabilityAdder& adder);
+    static void readQualityP(double standardDeviation, stdcxx::optional<bool> redundant, const TwoSides& side, BranchObservabilityAdder& adder);
 
-    static void readQualityQ(double standardDeviation, stdcxx::optional<bool> redundant, const Branch::Side& side, BranchObservabilityAdder& adder);
+    static void readQualityQ(double standardDeviation, stdcxx::optional<bool> redundant, const TwoSides& side, BranchObservabilityAdder& adder);
 
 private:
-    void writeOptionalQuality(const std::string& elementName, const Branch::Side& side, const stdcxx::CReference<ObservabilityQuality>& quality, xml::XmlStreamWriter& writer) const;
+    void writeOptionalQuality(const std::string& elementName, const TwoSides& side, const stdcxx::CReference<ObservabilityQuality>& quality, xml::XmlStreamWriter& writer) const;
 };
 
 }  // namespace iidm

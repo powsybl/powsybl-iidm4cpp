@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE(badBranchSideResolve) {
     Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
 
     POWSYBL_ASSERT_THROW(TerminalRefXml::resolve("LINE_S2S3", ThreeSides::THREE, network)
-    , PowsyblException, "Unexpected Branch side: THREE");
+    , AssertionError, "Unexpected TwoSides value: 3");
 }
 
 BOOST_AUTO_TEST_CASE(badIdentifiableSideResolve) {

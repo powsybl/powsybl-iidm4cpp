@@ -48,7 +48,7 @@ MeasurementAdder& MeasurementAdder::setId(const std::string& id) {
     return *this;
 }
 
-MeasurementAdder& MeasurementAdder::setSide(const Measurement::Side& side) {
+MeasurementAdder& MeasurementAdder::setSide(const ThreeSides& side) {
     m_side = side;
     return *this;
 }

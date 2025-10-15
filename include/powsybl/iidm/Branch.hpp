@@ -14,6 +14,7 @@
 #include <powsybl/iidm/CurrentLimits.hpp>
 #include <powsybl/iidm/Overload.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/TwoSides.hpp>
 
 
 namespace powsybl {
@@ -28,17 +29,11 @@ class CurrentLimitsAdder;
 
 class Branch : public virtual Identifiable {
 public:
-    enum class Side : unsigned char {
-        ONE,
-        TWO
-    };
-
-public:
     ~Branch() noexcept override = default;
 
-    bool checkPermanentLimit(const Side& side, const LimitType& type) const;
+    bool checkPermanentLimit(const TwoSides& side, const LimitType& type) const;
 
-    bool checkPermanentLimit(const Side& side, double limitReduction, const LimitType& type) const;
+    bool checkPermanentLimit(const TwoSides& side, double limitReduction, const LimitType& type) const;
 
     bool checkPermanentLimit1(const LimitType& type) const;
 
@@ -48,9 +43,9 @@ public:
 
     bool checkPermanentLimit2(double limitReduction, const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, const LimitType& type) const;
+    std::unique_ptr<Overload> checkTemporaryLimits(const TwoSides& side, const LimitType& type) const;
 
-    std::unique_ptr<Overload> checkTemporaryLimits(const Side& side, double limitReduction, const LimitType& type) const;
+    std::unique_ptr<Overload> checkTemporaryLimits(const TwoSides& side, double limitReduction, const LimitType& type) const;
 
     std::unique_ptr<Overload> checkTemporaryLimits1(const LimitType& type) const;
 
@@ -60,9 +55,9 @@ public:
 
     std::unique_ptr<Overload> checkTemporaryLimits2(double limitReduction, const LimitType& type) const;
 
-    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits(const Side& side) const;
+    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits(const TwoSides& side) const;
 
-    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits(const Side& side);
+    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits(const TwoSides& side);
 
     virtual stdcxx::CReference<ActivePowerLimits> getActivePowerLimits1() const = 0;
 
@@ -72,9 +67,9 @@ public:
 
     virtual stdcxx::Reference<ActivePowerLimits> getActivePowerLimits2() = 0;
 
-    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits(const Side& side) const;
+    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits(const TwoSides& side) const;
 
-    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits(const Side& side);
+    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits(const TwoSides& side);
 
     virtual stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits1() const = 0;
 
@@ -84,9 +79,9 @@ public:
 
     virtual stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits2() = 0;
 
-    stdcxx::CReference<CurrentLimits> getCurrentLimits(const Side& side) const;
+    stdcxx::CReference<CurrentLimits> getCurrentLimits(const TwoSides& side) const;
 
-    stdcxx::Reference<CurrentLimits> getCurrentLimits(const Side& side);
+    stdcxx::Reference<CurrentLimits> getCurrentLimits(const TwoSides& side);
 
     virtual stdcxx::CReference<CurrentLimits> getCurrentLimits1() const = 0;
 
@@ -96,17 +91,17 @@ public:
 
     virtual stdcxx::Reference<CurrentLimits> getCurrentLimits2() = 0;
 
-    stdcxx::CReference<LoadingLimits> getLimits(const LimitType& type, const Side& side) const;
+    stdcxx::CReference<LoadingLimits> getLimits(const LimitType& type, const TwoSides& side) const;
 
-    stdcxx::Reference<LoadingLimits> getLimits(const LimitType& type, const Side& side);
+    stdcxx::Reference<LoadingLimits> getLimits(const LimitType& type, const TwoSides& side);
 
     unsigned long getOverloadDuration() const;
 
-    Side getSide(const Terminal& terminal) const;
+    TwoSides getSide(const Terminal& terminal) const;
 
-    const Terminal& getTerminalFromSide(const Side& side) const;
+    const Terminal& getTerminalFromSide(const TwoSides& side) const;
 
-    Terminal& getTerminalFromSide(const Side& side);
+    Terminal& getTerminalFromSide(const TwoSides& side);
 
     const Terminal& getTerminalFromVoltageLevel(const std::string& voltageLevelId) const;
 

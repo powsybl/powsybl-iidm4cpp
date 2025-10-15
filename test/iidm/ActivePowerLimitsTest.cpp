@@ -39,21 +39,22 @@ BOOST_AUTO_TEST_CASE(BranchApi) {
 
     BOOST_CHECK_EQUAL(LimitType::ACTIVE_POWER, apl.getLimitType());
 
-    BOOST_CHECK(stdcxx::areSame(apl, line.getActivePowerLimits(Branch::Side::ONE).get()));
+    BOOST_CHECK(stdcxx::areSame(apl, line.getActivePowerLimits(TwoSides::ONE).get()));
     BOOST_CHECK(stdcxx::areSame(apl, line.getActivePowerLimits1().get()));
-    BOOST_CHECK(!line.getActivePowerLimits(Branch::Side::TWO));
+    BOOST_CHECK(!line.getActivePowerLimits(TwoSides::TWO));
     BOOST_CHECK(!line.getActivePowerLimits2());
 
-    BOOST_CHECK(stdcxx::areSame(cApl, cLine.getActivePowerLimits(Branch::Side::ONE).get()));
+    BOOST_CHECK(stdcxx::areSame(cApl, cLine.getActivePowerLimits(TwoSides::ONE).get()));
     BOOST_CHECK(stdcxx::areSame(cApl, cLine.getActivePowerLimits1().get()));
-    BOOST_CHECK(!cLine.getActivePowerLimits(Branch::Side::TWO));
+    BOOST_CHECK(!cLine.getActivePowerLimits(TwoSides::TWO));
     BOOST_CHECK(!cLine.getActivePowerLimits2());
 
     apl.remove();
     BOOST_CHECK(!line.getActivePowerLimits1());
-    BOOST_CHECK(!line.getActivePowerLimits(Branch::Side::ONE));
+    BOOST_CHECK(!line.getActivePowerLimits(TwoSides::ONE));
 
-    POWSYBL_ASSERT_THROW(line.getActivePowerLimits(static_cast<Branch::Side>(5)), AssertionError, "Unexpected Side value: 5");
+    POWSYBL_ASSERT_THROW(line.getActivePowerLimits(static_cast<TwoSides>(5)), AssertionError, "Unexpected TwoSides value: 5");
+    POWSYBL_ASSERT_THROW(line.getActivePowerLimits(static_cast<TwoSides>(0)), AssertionError, "Unexpected TwoSides value: UNDEFINED");
 }
 
 BOOST_AUTO_TEST_CASE(adder) {

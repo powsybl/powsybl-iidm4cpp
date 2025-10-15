@@ -119,7 +119,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Valid measurement can not have an undefined value");
 
     adder.setValue(3.3);
-    adder.setSide(Measurement::Side::ONE);
+    adder.setSide(ThreeSides::ONE);
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Inconsistent side for measurement of injection");
 
     MeasurementAdder adderUnicity = measurements.newMeasurement();
@@ -209,7 +209,7 @@ BOOST_FIXTURE_TEST_CASE(MeasurementsXmlSerializerTest, test::ResourceFixture) {
         .newMeasurement()
         .setId("MEAS_TWT_Q_2")
         .setType(Measurement::Type::REACTIVE_POWER)
-        .setSide(Measurement::Side::TWO)
+        .setSide(ThreeSides::TWO)
         .setValue(-600.07)
         .setStandardDeviation(10.2)
         .setValid(true)
@@ -218,7 +218,7 @@ BOOST_FIXTURE_TEST_CASE(MeasurementsXmlSerializerTest, test::ResourceFixture) {
         .newMeasurement()
         .setId("MEAS_TWT_Q_1")
         .setType(Measurement::Type::REACTIVE_POWER)
-        .setSide(Measurement::Side::ONE)
+        .setSide(ThreeSides::ONE)
         .setValue(605.2)
         .setStandardDeviation(9.7)
         .setValid(true)
@@ -227,7 +227,7 @@ BOOST_FIXTURE_TEST_CASE(MeasurementsXmlSerializerTest, test::ResourceFixture) {
     twt.getExtension<Measurements>()
         .newMeasurement()
         .setType(Measurement::Type::ACTIVE_POWER)
-        .setSide(Measurement::Side::TWO)
+        .setSide(ThreeSides::TWO)
         .setValue(-300.0)
         .setStandardDeviation(10.2)
         .setValid(true)
@@ -235,7 +235,7 @@ BOOST_FIXTURE_TEST_CASE(MeasurementsXmlSerializerTest, test::ResourceFixture) {
     twt.getExtension<Measurements>()
         .newMeasurement()
         .setType(Measurement::Type::ACTIVE_POWER)
-        .setSide(Measurement::Side::ONE)
+        .setSide(ThreeSides::ONE)
         .setValue(301.2)
         .setStandardDeviation(9.7)
         .setValid(true)

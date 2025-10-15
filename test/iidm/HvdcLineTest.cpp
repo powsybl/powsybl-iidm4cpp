@@ -221,10 +221,10 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_EQUAL("LCC1", cs1.getId());
     BOOST_CHECK_EQUAL("LCC2", cs2.getId());
     BOOST_TEST(stdcxx::areSame(network, hvdc.getNetwork()));
-    BOOST_TEST(stdcxx::areSame(cs1, hvdc.getConverterStation(HvdcLine::Side::ONE).get()));
-    BOOST_TEST(stdcxx::areSame(cs2, hvdc.getConverterStation(HvdcLine::Side::TWO).get()));
-    BOOST_TEST(stdcxx::areSame(ccs1, cHvdc.getConverterStation(HvdcLine::Side::ONE).get()));
-    BOOST_TEST(stdcxx::areSame(ccs2, cHvdc.getConverterStation(HvdcLine::Side::TWO).get()));
+    BOOST_TEST(stdcxx::areSame(cs1, hvdc.getConverterStation(TwoSides::ONE).get()));
+    BOOST_TEST(stdcxx::areSame(cs2, hvdc.getConverterStation(TwoSides::TWO).get()));
+    BOOST_TEST(stdcxx::areSame(ccs1, cHvdc.getConverterStation(TwoSides::ONE).get()));
+    BOOST_TEST(stdcxx::areSame(ccs2, cHvdc.getConverterStation(TwoSides::TWO).get()));
     BOOST_TEST(stdcxx::areSame(hvdc, cs1.getHvdcLine().get()));
     BOOST_TEST(stdcxx::areSame(hvdc, cs2.getHvdcLine().get()));
     BOOST_TEST(stdcxx::areSame(cHvdc, ccs1.getHvdcLine().get()));

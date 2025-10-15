@@ -330,28 +330,30 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(substation, transformer.getSubstation().get()));
     BOOST_TEST(stdcxx::areSame(substation, cTransformer.getSubstation().get()));
 
-    Terminal& terminal1 = transformer.getTerminal(ThreeWindingsTransformer::Side::ONE);
-    Terminal& terminal2 = transformer.getTerminal(ThreeWindingsTransformer::Side::TWO);
-    Terminal& terminal3 = transformer.getTerminal(ThreeWindingsTransformer::Side::THREE);
-    POWSYBL_ASSERT_THROW(transformer.getTerminal(static_cast<ThreeWindingsTransformer::Side>(4)), AssertionError, "Unexpected Side value: 4");
+    Terminal& terminal1 = transformer.getTerminal(ThreeSides::ONE);
+    Terminal& terminal2 = transformer.getTerminal(ThreeSides::TWO);
+    Terminal& terminal3 = transformer.getTerminal(ThreeSides::THREE);
+    POWSYBL_ASSERT_THROW(transformer.getTerminal(static_cast<ThreeSides>(4)), AssertionError, "Unexpected ThreeSides value: 4");
+    POWSYBL_ASSERT_THROW(transformer.getTerminal(static_cast<ThreeSides>(0)), AssertionError, "Unexpected ThreeSides value: UNDEFINED");
 
 
-    const Terminal& cTerminal1 = cTransformer.getTerminal(ThreeWindingsTransformer::Side::ONE);
-    const Terminal& cTerminal2 = cTransformer.getTerminal(ThreeWindingsTransformer::Side::TWO);
-    const Terminal& cTerminal3 = cTransformer.getTerminal(ThreeWindingsTransformer::Side::THREE);
-    POWSYBL_ASSERT_THROW(cTransformer.getTerminal(static_cast<ThreeWindingsTransformer::Side>(5)), AssertionError, "Unexpected Side value: 5");
+    const Terminal& cTerminal1 = cTransformer.getTerminal(ThreeSides::ONE);
+    const Terminal& cTerminal2 = cTransformer.getTerminal(ThreeSides::TWO);
+    const Terminal& cTerminal3 = cTransformer.getTerminal(ThreeSides::THREE);
+    POWSYBL_ASSERT_THROW(cTransformer.getTerminal(static_cast<ThreeSides>(5)), AssertionError, "Unexpected ThreeSides value: 5");
+    POWSYBL_ASSERT_THROW(cTransformer.getTerminal(static_cast<ThreeSides>(0)), AssertionError, "Unexpected ThreeSides value: UNDEFINED");
 
     BOOST_TEST(stdcxx::areSame(terminal1, cTerminal1));
     BOOST_TEST(stdcxx::areSame(terminal2, cTerminal2));
     BOOST_TEST(stdcxx::areSame(terminal3, cTerminal3));
 
     const Terminal& load1Terminal = network.getLoad("LOAD1").getTerminal();
-    BOOST_CHECK_EQUAL(ThreeWindingsTransformer::Side::ONE, transformer.getSide(terminal1));
-    BOOST_CHECK_EQUAL(ThreeWindingsTransformer::Side::TWO, transformer.getSide(terminal2));
-    BOOST_CHECK_EQUAL(ThreeWindingsTransformer::Side::THREE, transformer.getSide(terminal3));
-    BOOST_CHECK_EQUAL(ThreeWindingsTransformer::Side::ONE, cTransformer.getSide(cTerminal1));
-    BOOST_CHECK_EQUAL(ThreeWindingsTransformer::Side::TWO, cTransformer.getSide(cTerminal2));
-    BOOST_CHECK_EQUAL(ThreeWindingsTransformer::Side::THREE, cTransformer.getSide(cTerminal3));
+    BOOST_CHECK_EQUAL(ThreeSides::ONE, transformer.getSide(terminal1));
+    BOOST_CHECK_EQUAL(ThreeSides::TWO, transformer.getSide(terminal2));
+    BOOST_CHECK_EQUAL(ThreeSides::THREE, transformer.getSide(terminal3));
+    BOOST_CHECK_EQUAL(ThreeSides::ONE, cTransformer.getSide(cTerminal1));
+    BOOST_CHECK_EQUAL(ThreeSides::TWO, cTransformer.getSide(cTerminal2));
+    BOOST_CHECK_EQUAL(ThreeSides::THREE, cTransformer.getSide(cTerminal3));
     POWSYBL_ASSERT_THROW(transformer.getSide(load1Terminal), AssertionError, "The terminal is not connected to this three windings transformer");
 
     // Leg 1 tests
@@ -1414,33 +1416,6 @@ BOOST_AUTO_TEST_CASE(operationalLimits) {
     BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg1().getOperationalLimits()));
     BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg2().getOperationalLimits()));
     BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg3().getOperationalLimits()));
-}
-
-BOOST_AUTO_TEST_CASE(ThreeSidesConversions) {
-
-    ThreeSides one = ThreeSides(1);
-    ThreeSides two = ThreeSides(2);
-    ThreeSides three = ThreeSides(3);
-    ThreeSides four = ThreeSides(4);
-    ThreeSides zero = ThreeSides(0);
-    ThreeSides minusone = ThreeSides(-1);
-
-    BOOST_CHECK_EQUAL(0, (int)zero);
-    BOOST_CHECK_EQUAL(1, (int)one);
-    BOOST_CHECK_EQUAL(2, (int)two);
-    BOOST_CHECK_EQUAL(3, (int)three);
-    BOOST_CHECK_EQUAL(ThreeSides::UNDEFINED, zero);
-    BOOST_CHECK_EQUAL(ThreeSides::ONE, one);
-    BOOST_CHECK_EQUAL(ThreeSides::TWO, two);
-    BOOST_CHECK_EQUAL(ThreeSides::THREE, three);
-    BOOST_CHECK_EQUAL("UNDEFINED", Enum::toString(zero));
-    BOOST_CHECK_EQUAL("ONE", Enum::toString(one));
-    BOOST_CHECK_EQUAL("TWO", Enum::toString(two));
-    BOOST_CHECK_EQUAL("THREE", Enum::toString(three));
-
-    POWSYBL_ASSERT_THROW(std::cout << four, AssertionError, "Unexpected ThreeSides value: 4");
-    POWSYBL_ASSERT_THROW(std::cout << minusone, AssertionError, "Unexpected ThreeSides value: 255");
-
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -212,14 +212,14 @@ BOOST_AUTO_TEST_CASE(testLine) {
     double v2 = 137.5232696533203;
     double a2 = -0.18332427740097046;
 
-    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA1(p1, q1, v1, a1, TwoSides::ONE);
     SV svA2 = svA1.otherSide(line);
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
     BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
     BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
 
-    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB2(p2, q2, v2, a2, TwoSides::TWO);
     SV svB1 = svB2.otherSide(line);
     BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
     BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
@@ -246,14 +246,14 @@ BOOST_AUTO_TEST_CASE(testDanglingLine) {
     double v2 = 138.0;
     double a2 = 0.0;
 
-    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA1(p1, q1, v1, a1, TwoSides::ONE);
     SV svA2 = svA1.otherSide(dl);
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
     BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
     BOOST_CHECK_SMALL(svA2.getA(), tol);
 
-    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB2(p2, q2, v2, a2, TwoSides::TWO);
     SV svB1 = svB2.otherSide(dl);
     BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
     BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
@@ -337,15 +337,15 @@ BOOST_AUTO_TEST_CASE(testTwoWindingsTransformer) {
     double v2 = 118.13329315185547;
     double a2 = 0.19568365812301636;
 
-    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA1(p1, q1, v1, a1, TwoSides::ONE);
     SV svA2 = svA1.otherSide(twt);
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
     BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
-    BOOST_CHECK_EQUAL(Branch::Side::TWO, svA2.getSide());
+    BOOST_CHECK_EQUAL(TwoSides::TWO, svA2.getSide());
     BOOST_CHECK_SMALL(std::abs(a2 - svA2.getA()), tol);
 
-    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB2(p2, q2, v2, a2, TwoSides::TWO);
     SV svB1 = svB2.otherSide(twt);
     BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
     BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
@@ -394,14 +394,14 @@ BOOST_AUTO_TEST_CASE(testTwoWindingsTransformerWithoutRtc) {
     double v2 = 118.13329315185547;
     double a2 = 0.19568365812301636;
 
-    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA1(p1, q1, v1, a1, TwoSides::ONE);
     SV svA2 = svA1.otherSide(twt);
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
     BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
     BOOST_CHECK_SMALL(std::abs(a2 - svA2.getA()), tol);
 
-    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB2(p2, q2, v2, a2, TwoSides::TWO);
     SV svB1 = svB2.otherSide(twt);
     BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
     BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
@@ -437,14 +437,14 @@ BOOST_AUTO_TEST_CASE(testTwoWindingsTransformerWithoutPtc) {
     double v2 = 118.133298648525750;
     double a2 = 5.195684102383955;
 
-    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA1(p1, q1, v1, a1, TwoSides::ONE);
     SV svA2 = svA1.otherSide(twt);
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
     BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
     BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
 
-    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB2(p2, q2, v2, a2, TwoSides::TWO);
     SV svB1 = svB2.otherSide(twt);
     BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
     BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
@@ -475,12 +475,12 @@ BOOST_AUTO_TEST_CASE(testDCLine) {
     double v2 = stdcxx::nan();
     double a2 = -5.041532173036991;
 
-    SV svA1(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA1(p1, q1, v1, a1, TwoSides::ONE);
     SV svA2 = svA1.otherSide(line);
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
 
-    SV svB2(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB2(p2, q2, v2, a2, TwoSides::TWO);
     SV svB1 = svB2.otherSide(line);
     BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
     BOOST_CHECK_SMALL(svB1.getA(), tol);
@@ -516,12 +516,12 @@ BOOST_AUTO_TEST_CASE(testDCTwoWindingsTransformer) {
     double v2 = stdcxx::nan();
     double a2 = -11.226110634252219;
 
-    SV svA1 = SV(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA1 = SV(p1, q1, v1, a1, TwoSides::ONE);
     SV svA2 = svA1.otherSide(twt);
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
 
-    SV svB2 = SV(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB2 = SV(p2, q2, v2, a2, TwoSides::TWO);
     SV svB1 = svB2.otherSide(twt);
     BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
     BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
@@ -558,12 +558,12 @@ BOOST_AUTO_TEST_CASE(testDCPhaseShifter) {
     double v2 = stdcxx::nan();
     double a2 = -7.56873858064591;
 
-    SV svA1 = SV(p1, q1, v1, a1, Branch::Side::ONE);
+    SV svA1 = SV(p1, q1, v1, a1, TwoSides::ONE);
     SV svA2 = svA1.otherSide(twt);
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(a2, svA2.getA(), tol);
 
-    SV svB2 = SV(p2, q2, v2, a2, Branch::Side::TWO);
+    SV svB2 = SV(p2, q2, v2, a2, TwoSides::TWO);
     SV svB1 = svB2.otherSide(twt);
     BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
     BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
@@ -586,14 +586,14 @@ BOOST_AUTO_TEST_CASE(testOlfRealNetwork) {
     dl.getTerminal().setP(70.000986).setQ(-15.176675);
 
     double tol = 0.00001;
-    SV svL1 = SV(line.getTerminal1().getP(), line.getTerminal1().getQ(), bus1.getV(), bus1.getAngle(), Branch::Side::ONE);
+    SV svL1 = SV(line.getTerminal1().getP(), line.getTerminal1().getQ(), bus1.getV(), bus1.getAngle(), TwoSides::ONE);
     SV svL1other = svL1.otherSide(line);
     BOOST_CHECK_CLOSE(line.getTerminal2().getP(), svL1other.getP(), tol);
     BOOST_CHECK_CLOSE(line.getTerminal2().getQ(), svL1other.getQ(), tol);
     BOOST_CHECK_CLOSE(bus2.getV(), svL1other.getU(), tol);
     BOOST_CHECK_CLOSE(bus2.getAngle(), svL1other.getA(), tol);
 
-    SV svL2 = SV(line.getTerminal2().getP(), line.getTerminal2().getQ(), bus2.getV(), bus2.getAngle(), Branch::Side::TWO);
+    SV svL2 = SV(line.getTerminal2().getP(), line.getTerminal2().getQ(), bus2.getV(), bus2.getAngle(), TwoSides::TWO);
     SV svL2other = svL2.otherSide(line);
     BOOST_CHECK_CLOSE(line.getTerminal1().getP(), svL2other.getP(), tol);
     BOOST_CHECK_CLOSE(line.getTerminal1().getQ(), svL2other.getQ(), tol);
@@ -605,7 +605,7 @@ BOOST_AUTO_TEST_CASE(testOlfRealNetwork) {
     BOOST_CHECK_CLOSE(bus1.getV(), svL2.otherSideU(line.getR(), line.getX(), line.getG1(), line.getB1(), line.getG2(), line.getB2(), 1.0, 0.0), tol);
     BOOST_CHECK_SMALL(svL2.otherSideA(line.getR(), line.getX(), line.getG1(), line.getB1(), line.getG2(), line.getB2(), 1.0, 0.0), tol);
 
-    SV svDl1 = SV(dl.getTerminal().getP(), dl.getTerminal().getQ(), bus2.getV(), bus2.getAngle(), Branch::Side::ONE);
+    SV svDl1 = SV(dl.getTerminal().getP(), dl.getTerminal().getQ(), bus2.getV(), bus2.getAngle(), TwoSides::ONE);
     SV svDl1other = svDl1.otherSide(dl);
     BOOST_CHECK_CLOSE(-dl.getP0(), svDl1other.getP(), tol);
     BOOST_CHECK_CLOSE(-dl.getQ0(), svDl1other.getQ(), tol);
@@ -631,17 +631,17 @@ BOOST_AUTO_TEST_CASE(testDcOlfRealNetwork) {
     dl.getTerminal().setP(70.0);
 
     double tol = 0.00001;
-    SV svL1 = SV(line.getTerminal1().getP(), line.getTerminal1().getQ(), bus1.getV(), bus1.getAngle(), Branch::Side::ONE);
+    SV svL1 = SV(line.getTerminal1().getP(), line.getTerminal1().getQ(), bus1.getV(), bus1.getAngle(), TwoSides::ONE);
     SV svL1other = svL1.otherSide(line);
     BOOST_CHECK_CLOSE(line.getTerminal2().getP(), svL1other.getP(), tol);
     BOOST_CHECK_CLOSE(bus2.getAngle(), svL1other.getA(), tol);
 
-    SV svL2 = SV(line.getTerminal2().getP(), line.getTerminal2().getQ(), bus2.getV(), bus2.getAngle(), Branch::Side::TWO);
+    SV svL2 = SV(line.getTerminal2().getP(), line.getTerminal2().getQ(), bus2.getV(), bus2.getAngle(), TwoSides::TWO);
     SV svL2other = svL2.otherSide(line);
     BOOST_CHECK_CLOSE(line.getTerminal1().getP(), svL2other.getP(), tol);
     BOOST_CHECK_SMALL(svL2other.getA(), tol);
 
-    SV svDl1 = SV(dl.getTerminal().getP(), dl.getTerminal().getQ(), bus2.getV(), bus2.getAngle(), Branch::Side::ONE);
+    SV svDl1 = SV(dl.getTerminal().getP(), dl.getTerminal().getQ(), bus2.getV(), bus2.getAngle(), TwoSides::ONE);
     SV svDl1other = svDl1.otherSide(dl);
     BOOST_CHECK_CLOSE(-dl.getP0(), svDl1other.getP(), tol);
     BOOST_CHECK_CLOSE(-0.4187543391573424, svDl1other.getA(), tol);

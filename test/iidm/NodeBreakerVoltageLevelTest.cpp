@@ -1441,7 +1441,7 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     Terminal& terminal3 = line.getTerminal1();
     Terminal& terminal4 = line.getTerminal2();
     BOOST_TEST(!stdcxx::areSame(terminal3, terminal4));
-    POWSYBL_ASSERT_THROW(line.getTerminalFromSide(static_cast<iidm::Branch::Side>(3U)), AssertionError, "Unexpected Side value: 3");
+    POWSYBL_ASSERT_THROW(line.getTerminalFromSide(static_cast<iidm::TwoSides>(3U)), AssertionError, "Unexpected TwoSides value: 3");
     BOOST_TEST(!terminal4.disconnect());
 
     BusbarSection& bbs = vl.getNodeBreakerView().getBusbarSection("BBS");

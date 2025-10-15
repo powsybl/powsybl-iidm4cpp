@@ -53,7 +53,7 @@ public:
 
     virtual void visitHvdcConverterStation(const HvdcConverterStation& converterStation);
 
-    virtual void visitLine(const Line& line, const Branch::Side& side);
+    virtual void visitLine(const Line& line, const TwoSides& side);
 
     virtual void visitLoad(const Load& load);
 
@@ -61,9 +61,9 @@ public:
 
     virtual void visitStaticVarCompensator(const StaticVarCompensator& staticVarCompensator);
 
-    virtual void visitThreeWindingsTransformer(const ThreeWindingsTransformer& transformer, const ThreeWindingsTransformer::Side& side);
+    virtual void visitThreeWindingsTransformer(const ThreeWindingsTransformer& transformer, const ThreeSides& side);
 
-    virtual void visitTwoWindingsTransformer(const TwoWindingsTransformer& transformer, const Branch::Side& side);
+    virtual void visitTwoWindingsTransformer(const TwoWindingsTransformer& transformer, const TwoSides& side);
 };
 
 }  // namespace iidm

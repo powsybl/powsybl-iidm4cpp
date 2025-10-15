@@ -39,8 +39,8 @@ public:
 BranchAdmittanceMatrix calculateBranchAdmittance(double r, double x, double ratio1, double angle1,
                                                  double ratio2, double angle2, const std::complex<double>& ysh1, const std::complex<double>& ysh2);
 
-BranchAdmittanceMatrix kronChain(const BranchAdmittanceMatrix& firstAdm, const Branch::Side& firstChainNodeSide,
-                                 const BranchAdmittanceMatrix& secondAdm, const Branch::Side& secondChainNodeSide);
+BranchAdmittanceMatrix kronChain(const BranchAdmittanceMatrix& firstAdm, const TwoSides& firstChainNodeSide,
+                                 const BranchAdmittanceMatrix& secondAdm, const TwoSides& secondChainNodeSide);
 
 }  // namespace LinkData
 

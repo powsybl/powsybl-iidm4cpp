@@ -264,24 +264,24 @@ BOOST_AUTO_TEST_CASE(terminal) {
     const Line& cLine = line;
 
     Terminal& t1 = line.getTerminalFromVoltageLevel("VL1");
-    BOOST_CHECK_EQUAL(Branch::Side::ONE, line.getSide(t1));
+    BOOST_CHECK_EQUAL(TwoSides::ONE, line.getSide(t1));
     BOOST_TEST(stdcxx::areSame(t1, line.getTerminal1()));
-    BOOST_TEST(stdcxx::areSame(t1, line.getTerminalFromSide(Branch::Side::ONE)));
+    BOOST_TEST(stdcxx::areSame(t1, line.getTerminalFromSide(TwoSides::ONE)));
 
     const Terminal& cT1 = cLine.getTerminalFromVoltageLevel("VL1");
-    BOOST_CHECK_EQUAL(Branch::Side::ONE, cLine.getSide(cT1));
+    BOOST_CHECK_EQUAL(TwoSides::ONE, cLine.getSide(cT1));
     BOOST_TEST(stdcxx::areSame(cT1, cLine.getTerminal1()));
-    BOOST_TEST(stdcxx::areSame(cT1, cLine.getTerminalFromSide(Branch::Side::ONE)));
+    BOOST_TEST(stdcxx::areSame(cT1, cLine.getTerminalFromSide(TwoSides::ONE)));
 
     Terminal& t2 = line.getTerminalFromVoltageLevel("VL3");
-    BOOST_CHECK_EQUAL(Branch::Side::TWO, line.getSide(t2));
+    BOOST_CHECK_EQUAL(TwoSides::TWO, line.getSide(t2));
     BOOST_TEST(stdcxx::areSame(t2, line.getTerminal2()));
-    BOOST_TEST(stdcxx::areSame(t2, line.getTerminalFromSide(Branch::Side::TWO)));
+    BOOST_TEST(stdcxx::areSame(t2, line.getTerminalFromSide(TwoSides::TWO)));
 
     const Terminal& cT2 = cLine.getTerminalFromVoltageLevel("VL3");
-    BOOST_CHECK_EQUAL(Branch::Side::TWO, cLine.getSide(cT2));
+    BOOST_CHECK_EQUAL(TwoSides::TWO, cLine.getSide(cT2));
     BOOST_TEST(stdcxx::areSame(cT2, cLine.getTerminal2()));
-    BOOST_TEST(stdcxx::areSame(cT2, cLine.getTerminalFromSide(Branch::Side::TWO)));
+    BOOST_TEST(stdcxx::areSame(cT2, cLine.getTerminalFromSide(TwoSides::TWO)));
 
     POWSYBL_ASSERT_THROW(line.getSide(getTerminalFromNetwork2()), AssertionError, "The terminal is not connected to this branch");
     POWSYBL_ASSERT_THROW(cLine.getSide(getTerminalFromNetwork2()), AssertionError, "The terminal is not connected to this branch");

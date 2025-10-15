@@ -17,8 +17,8 @@ namespace iidm {
 BOOST_AUTO_TEST_SUITE(BranchTestSuite)
 
 BOOST_AUTO_TEST_CASE(utils) {
-    BOOST_CHECK_EQUAL(Branch::Side::ONE, Enum::fromString<Branch::Side>(Enum::toString(Branch::Side::ONE)));
-    BOOST_CHECK_EQUAL(Branch::Side::TWO, Enum::fromString<Branch::Side>(Enum::toString(Branch::Side::TWO)));
+    BOOST_CHECK_EQUAL(TwoSides::ONE, Enum::fromString<TwoSides>(Enum::toString(TwoSides::ONE)));
+    BOOST_CHECK_EQUAL(TwoSides::TWO, Enum::fromString<TwoSides>(Enum::toString(TwoSides::TWO)));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

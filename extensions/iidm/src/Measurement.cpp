@@ -19,16 +19,6 @@ namespace iidm {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<extensions::iidm::Measurement::Side>() {
-    static std::initializer_list<std::string> s_sidesNames {
-        "ONE",
-        "TWO",
-        "THREE"
-    };
-    return s_sidesNames;
-}
-
-template <>
 const std::initializer_list<std::string>& getNames<extensions::iidm::Measurement::Type>() {
     static std::initializer_list<std::string> s_typesNames {
         "ANGLE",
@@ -49,18 +39,13 @@ namespace extensions {
 
 namespace iidm {
 
-std::ostream& operator<<(std::ostream& stream, const Measurement::Side& value) {
-    stream << Enum::toString(value);
-    return stream;
-}
-
 std::ostream& operator<<(std::ostream& stream, const Measurement::Type& value) {
     stream << Enum::toString(value);
     return stream;
 }
 
 Measurement::Measurement(Measurements& measurements, const std::string& id, const Measurement::Type& type, const std::map<std::string, std::string>& properties,
-                         double value, double standardDeviation, bool valid, const stdcxx::optional<Measurement::Side>& side) :
+                         double value, double standardDeviation, bool valid, const stdcxx::optional<ThreeSides>& side) :
     m_measurements(measurements),
     m_id(id),
     m_type(type),
@@ -84,7 +69,7 @@ stdcxx::const_range<std::string> Measurement::getPropertyNames() const {
     return m_properties | boost::adaptors::map_keys;
 }
 
-const stdcxx::optional<Measurement::Side>& Measurement::getSide() const {
+const stdcxx::optional<ThreeSides>& Measurement::getSide() const {
     return m_side;
 }
 

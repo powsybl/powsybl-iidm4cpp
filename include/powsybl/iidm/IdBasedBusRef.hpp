@@ -22,7 +22,7 @@ class IdBasedBusRef : public BusRef {
 public:
     explicit IdBasedBusRef(const std::string& id);
 
-    IdBasedBusRef(const std::string& id, const Branch::Side& side);
+    IdBasedBusRef(const std::string& id, const TwoSides& side);
 
     IdBasedBusRef(const IdBasedBusRef&) = default;
 
@@ -40,7 +40,7 @@ protected:
 private:
     std::string m_id;
 
-    stdcxx::optional<Branch::Side> m_side;
+    stdcxx::optional<TwoSides> m_side;
 };
 
 }  // namespace iidm

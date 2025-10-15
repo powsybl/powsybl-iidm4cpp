@@ -296,10 +296,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(0.013+0.0135, dl2.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.014+0.0145, dl2.getB(), std::numeric_limits<double>::epsilon());
 
-    BOOST_CHECK(stdcxx::areSame(dl1, tieLine.getDanglingLine(Branch::Side::ONE)));
-    BOOST_CHECK(stdcxx::areSame(dl2, tieLine.getDanglingLine(Branch::Side::TWO)));
-    BOOST_CHECK(stdcxx::areSame(dl1, modifiableTieLine.getDanglingLine(Branch::Side::ONE)));
-    BOOST_CHECK(stdcxx::areSame(dl2, modifiableTieLine.getDanglingLine(Branch::Side::TWO)));
+    BOOST_CHECK(stdcxx::areSame(dl1, tieLine.getDanglingLine(TwoSides::ONE)));
+    BOOST_CHECK(stdcxx::areSame(dl2, tieLine.getDanglingLine(TwoSides::TWO)));
+    BOOST_CHECK(stdcxx::areSame(dl1, modifiableTieLine.getDanglingLine(TwoSides::ONE)));
+    BOOST_CHECK(stdcxx::areSame(dl2, modifiableTieLine.getDanglingLine(TwoSides::TWO)));
     BOOST_CHECK(stdcxx::areSame(dl1.getTerminal(), tieLine.getTerminal1()));
     BOOST_CHECK(stdcxx::areSame(dl2.getTerminal(), tieLine.getTerminal2()));
 
@@ -562,8 +562,8 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl2));
 
     TieLine& line = network.getTieLine("UNIQUE_TIE_LINE_ID");
-    BOOST_CHECK(!line.getDanglingLine(Branch::Side::ONE).isFictitious());
-    BOOST_CHECK(line.getDanglingLine(Branch::Side::TWO).isFictitious());
+    BOOST_CHECK(!line.getDanglingLine(TwoSides::ONE).isFictitious());
+    BOOST_CHECK(line.getDanglingLine(TwoSides::TWO).isFictitious());
     BOOST_CHECK(!line.isFictitious());
 }
 
@@ -610,8 +610,8 @@ BOOST_AUTO_TEST_CASE(fictitious) {
     tieLineAdder.setDanglingLine1("H1_TL_VL2_VL4").setDanglingLine2("H2_TL_VL2_VL4");
 
     TieLine& line = tieLineAdder.add();
-    BOOST_CHECK(line.getDanglingLine(Branch::Side::ONE).isFictitious());
-    BOOST_CHECK(!line.getDanglingLine(Branch::Side::TWO).isFictitious());
+    BOOST_CHECK(line.getDanglingLine(TwoSides::ONE).isFictitious());
+    BOOST_CHECK(!line.getDanglingLine(TwoSides::TWO).isFictitious());
     BOOST_CHECK(line.isFictitious());
 }
 
@@ -639,8 +639,8 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     Boundary& boundary = tieLine.getDanglingLine1().getBoundary();
 
     constexpr double ACCEPTABLE_THRESHOLD = 1e-6;
-    SV expectedSV1(p1,q1,v1,angle1,Branch::Side::ONE);
-    SV expectedSV2(p2,q2,v2,angle2,Branch::Side::TWO);
+    SV expectedSV1(p1,q1,v1,angle1,TwoSides::ONE);
+    SV expectedSV2(p2,q2,v2,angle2,TwoSides::TWO);
 
     BOOST_CHECK_CLOSE(expectedSV1.otherSideP(tieLine.getDanglingLine1(), true), tieLine.getDanglingLine1().getBoundary().getP(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_CLOSE(expectedSV1.otherSideQ(tieLine.getDanglingLine1(), true), tieLine.getDanglingLine1().getBoundary().getQ(), ACCEPTABLE_THRESHOLD);
@@ -653,8 +653,8 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
 
     BOOST_CHECK(stdcxx::areSame(cTieLine, cBoundary.getDanglingLine().getTieLine().get()));
     BOOST_CHECK(stdcxx::areSame(cTieLine, boundary.getDanglingLine().getTieLine().get()));
-    BOOST_CHECK(stdcxx::areSame(cTieLine.getDanglingLine(Branch::Side::ONE).getTerminal().getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));
-    BOOST_CHECK(stdcxx::areSame(cTieLine.getDanglingLine(Branch::Side::ONE).getTerminal().getVoltageLevel(), boundary.getNetworkSideVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getDanglingLine(TwoSides::ONE).getTerminal().getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getDanglingLine(TwoSides::ONE).getTerminal().getVoltageLevel(), boundary.getNetworkSideVoltageLevel()));
 }
 
 BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
@@ -722,8 +722,8 @@ BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
             .setId("S2VL1-BUS")
             .add();
 
-    std::string boundarySide1 = "Branch::Side::ONE";
-    std::string boundarySide2 = "Branch::Side::TWO";
+    std::string boundarySide1 = "TwoSides::ONE";
+    std::string boundarySide2 = "TwoSides::TWO";
 
     s1vl1.newDanglingLine()
             .setId(boundarySide1)

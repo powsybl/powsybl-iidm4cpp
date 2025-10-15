@@ -28,7 +28,7 @@ public:  // TopologyVisitor
 
     void visitHvdcConverterStation(const HvdcConverterStation& converterStation) override;
 
-    void visitLine(const Line& line, const Branch::Side& side) override;
+    void visitLine(const Line& line, const TwoSides& side) override;
 
     void visitLoad(const Load& load) override;
 
@@ -36,9 +36,9 @@ public:  // TopologyVisitor
 
     void visitStaticVarCompensator(const StaticVarCompensator& staticVarCompensator) override;
 
-    void visitThreeWindingsTransformer(const ThreeWindingsTransformer& transformer, const ThreeWindingsTransformer::Side& side) override;
+    void visitThreeWindingsTransformer(const ThreeWindingsTransformer& transformer, const ThreeSides& side) override;
 
-    void visitTwoWindingsTransformer(const TwoWindingsTransformer& transformer, const Branch::Side& side) override;
+    void visitTwoWindingsTransformer(const TwoWindingsTransformer& transformer, const TwoSides& side) override;
 
 public:
     AbstractTerminalTopologyVisitor() = default;
@@ -56,7 +56,7 @@ public:
     virtual void visitTerminal(const Terminal& terminal) = 0;
 
 private:
-    void visitBranch(const Branch& branch, const Branch::Side& side);
+    void visitBranch(const Branch& branch, const TwoSides& side);
 
     void visitInjection(const Injection& injection);
 };

@@ -43,17 +43,17 @@ BOOST_AUTO_TEST_CASE(integrity) {
     auto& extension = transformer.getExtension<ThreeWindingsTransformerToBeEstimated>();
 
     BOOST_CHECK(extension.shouldEstimatePhaseTapChanger1());
-    BOOST_CHECK(extension.shouldEstimatePhaseTapChanger(ThreeWindingsTransformer::Side::ONE));
+    BOOST_CHECK(extension.shouldEstimatePhaseTapChanger(ThreeSides::ONE));
     BOOST_CHECK(!extension.shouldEstimatePhaseTapChanger2());
-    BOOST_CHECK(!extension.shouldEstimatePhaseTapChanger(ThreeWindingsTransformer::Side::TWO));
+    BOOST_CHECK(!extension.shouldEstimatePhaseTapChanger(ThreeSides::TWO));
     BOOST_CHECK(extension.shouldEstimatePhaseTapChanger3());
-    BOOST_CHECK(extension.shouldEstimatePhaseTapChanger(ThreeWindingsTransformer::Side::THREE));
+    BOOST_CHECK(extension.shouldEstimatePhaseTapChanger(ThreeSides::THREE));
     BOOST_CHECK(!extension.shouldEstimateRatioTapChanger1());
-    BOOST_CHECK(!extension.shouldEstimateRatioTapChanger(ThreeWindingsTransformer::Side::ONE));
+    BOOST_CHECK(!extension.shouldEstimateRatioTapChanger(ThreeSides::ONE));
     BOOST_CHECK(extension.shouldEstimateRatioTapChanger2());
-    BOOST_CHECK(extension.shouldEstimateRatioTapChanger(ThreeWindingsTransformer::Side::TWO));
+    BOOST_CHECK(extension.shouldEstimateRatioTapChanger(ThreeSides::TWO));
     BOOST_CHECK(!extension.shouldEstimateRatioTapChanger3());
-    BOOST_CHECK(!extension.shouldEstimateRatioTapChanger(ThreeWindingsTransformer::Side::THREE));
+    BOOST_CHECK(!extension.shouldEstimateRatioTapChanger(ThreeSides::THREE));
 
     BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimatePhaseTapChanger1(false)));
     BOOST_CHECK(!extension.shouldEstimatePhaseTapChanger1());
@@ -68,18 +68,18 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimateRatioTapChanger3(true)));
     BOOST_CHECK(extension.shouldEstimateRatioTapChanger3());
 
-    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimatePhaseTapChanger(true, ThreeWindingsTransformer::Side::ONE)));
-    BOOST_CHECK(extension.shouldEstimatePhaseTapChanger(ThreeWindingsTransformer::Side::ONE));
-    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimatePhaseTapChanger(false, ThreeWindingsTransformer::Side::TWO)));
-    BOOST_CHECK(!extension.shouldEstimatePhaseTapChanger(ThreeWindingsTransformer::Side::TWO));
-    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimatePhaseTapChanger(true, ThreeWindingsTransformer::Side::THREE)));
-    BOOST_CHECK(extension.shouldEstimatePhaseTapChanger(ThreeWindingsTransformer::Side::THREE));
-    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimateRatioTapChanger(false, ThreeWindingsTransformer::Side::ONE)));
-    BOOST_CHECK(!extension.shouldEstimateRatioTapChanger(ThreeWindingsTransformer::Side::ONE));
-    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimateRatioTapChanger(true, ThreeWindingsTransformer::Side::TWO)));
-    BOOST_CHECK(extension.shouldEstimateRatioTapChanger(ThreeWindingsTransformer::Side::TWO));
-    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimateRatioTapChanger(false, ThreeWindingsTransformer::Side::THREE)));
-    BOOST_CHECK(!extension.shouldEstimateRatioTapChanger(ThreeWindingsTransformer::Side::THREE));
+    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimatePhaseTapChanger(true, ThreeSides::ONE)));
+    BOOST_CHECK(extension.shouldEstimatePhaseTapChanger(ThreeSides::ONE));
+    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimatePhaseTapChanger(false, ThreeSides::TWO)));
+    BOOST_CHECK(!extension.shouldEstimatePhaseTapChanger(ThreeSides::TWO));
+    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimatePhaseTapChanger(true, ThreeSides::THREE)));
+    BOOST_CHECK(extension.shouldEstimatePhaseTapChanger(ThreeSides::THREE));
+    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimateRatioTapChanger(false, ThreeSides::ONE)));
+    BOOST_CHECK(!extension.shouldEstimateRatioTapChanger(ThreeSides::ONE));
+    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimateRatioTapChanger(true, ThreeSides::TWO)));
+    BOOST_CHECK(extension.shouldEstimateRatioTapChanger(ThreeSides::TWO));
+    BOOST_CHECK(stdcxx::areSame(extension, extension.shouldEstimateRatioTapChanger(false, ThreeSides::THREE)));
+    BOOST_CHECK(!extension.shouldEstimateRatioTapChanger(ThreeSides::THREE));
 }
 
 BOOST_FIXTURE_TEST_CASE(ThreeWindingsTransformerToBeEstimatedXmlSerializerTest, test::ResourceFixture) {

@@ -29,7 +29,7 @@ void AbstractTerminalTopologyVisitor::visitBattery(const Battery& battery) {
     visitInjection(battery);
 }
 
-void AbstractTerminalTopologyVisitor::visitBranch(const Branch& branch, const Branch::Side& side) {
+void AbstractTerminalTopologyVisitor::visitBranch(const Branch& branch, const TwoSides& side) {
     visitTerminal(branch.getTerminalFromSide(side));
 }
 
@@ -53,7 +53,7 @@ void AbstractTerminalTopologyVisitor::visitInjection(const Injection& injection)
     visitTerminal(injection.getTerminal());
 }
 
-void AbstractTerminalTopologyVisitor::visitLine(const Line& line, const Branch::Side& side) {
+void AbstractTerminalTopologyVisitor::visitLine(const Line& line, const TwoSides& side) {
     visitBranch(line, side);
 }
 
@@ -69,26 +69,27 @@ void AbstractTerminalTopologyVisitor::visitStaticVarCompensator(const StaticVarC
     visitInjection(staticVarCompensator);
 }
 
-void AbstractTerminalTopologyVisitor::visitThreeWindingsTransformer(const ThreeWindingsTransformer& transformer, const ThreeWindingsTransformer::Side& side) {
+void AbstractTerminalTopologyVisitor::visitThreeWindingsTransformer(const ThreeWindingsTransformer& transformer, const ThreeSides& side) {
     switch (side) {
-        case ThreeWindingsTransformer::Side::ONE:
+        case ThreeSides::ONE:
             visitTerminal(transformer.getLeg1().getTerminal());
             break;
 
-        case ThreeWindingsTransformer::Side::TWO:
+        case ThreeSides::TWO:
             visitTerminal(transformer.getLeg2().getTerminal());
             break;
 
-        case ThreeWindingsTransformer::Side::THREE:
+        case ThreeSides::THREE:
             visitTerminal(transformer.getLeg3().getTerminal());
             break;
 
+        case ThreeSides::UNDEFINED:
         default:
             throw AssertionError(stdcxx::format("Unexpected 3WT side %1%", side));
     }
 }
 
-void AbstractTerminalTopologyVisitor::visitTwoWindingsTransformer(const TwoWindingsTransformer& transformer, const Branch::Side& side) {
+void AbstractTerminalTopologyVisitor::visitTwoWindingsTransformer(const TwoWindingsTransformer& transformer, const TwoSides& side) {
     visitBranch(transformer, side);
 }
 

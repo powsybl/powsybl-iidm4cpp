@@ -13,7 +13,6 @@
 #include <powsybl/iidm/ActivePowerLimits.hpp>
 #include <powsybl/iidm/ApparentPowerLimits.hpp>
 #include <powsybl/iidm/CurrentLimits.hpp>
-#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
 #include <powsybl/stdcxx/format.hpp>
@@ -23,22 +22,21 @@ namespace powsybl {
 
 namespace iidm {
 
-
-
-bool Branch::checkPermanentLimit(const Side& side, const LimitType& type) const {
+bool Branch::checkPermanentLimit(const TwoSides& side, const LimitType& type) const {
     return checkPermanentLimit(side, 1.0, type);
 }
 
-bool Branch::checkPermanentLimit(const Side& side, double limitReduction, const LimitType& type) const {
+bool Branch::checkPermanentLimit(const TwoSides& side, double limitReduction, const LimitType& type) const {
     switch (side) {
-        case Side::ONE:
+        case TwoSides::ONE:
             return checkPermanentLimit1(limitReduction, type);
 
-        case Side::TWO:
+        case TwoSides::TWO:
             return checkPermanentLimit2(limitReduction, type);
 
+        case TwoSides::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected side %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected TwoSides value: %1%", side));
     }
 }
 
@@ -48,7 +46,7 @@ bool Branch::checkPermanentLimit1(const LimitType& type) const {
 
 bool Branch::checkPermanentLimit1(double limitReduction, const LimitType& type) const {
     double limitValue = LimitViolationUtils::getValueForLimit(getTerminal1(), type);
-    return LimitViolationUtils::checkPermanentLimit(*this, Side::ONE, limitReduction, limitValue, type);
+    return LimitViolationUtils::checkPermanentLimit(*this, TwoSides::ONE, limitReduction, limitValue, type);
 }
 
 bool Branch::checkPermanentLimit2(const LimitType& type) const {
@@ -57,23 +55,24 @@ bool Branch::checkPermanentLimit2(const LimitType& type) const {
 
 bool Branch::checkPermanentLimit2(double limitReduction, const LimitType& type) const {
     double limitValue = LimitViolationUtils::getValueForLimit(getTerminal2(), type);
-    return LimitViolationUtils::checkPermanentLimit(*this, Side::TWO, limitReduction, limitValue, type);
+    return LimitViolationUtils::checkPermanentLimit(*this, TwoSides::TWO, limitReduction, limitValue, type);
 }
 
-std::unique_ptr<Overload> Branch::checkTemporaryLimits(const Side& side, const LimitType& type) const {
+std::unique_ptr<Overload> Branch::checkTemporaryLimits(const TwoSides& side, const LimitType& type) const {
     return checkTemporaryLimits(side, 1.0, type);
 }
 
-std::unique_ptr<Overload> Branch::checkTemporaryLimits(const Side& side, double limitReduction, const LimitType& type) const {
+std::unique_ptr<Overload> Branch::checkTemporaryLimits(const TwoSides& side, double limitReduction, const LimitType& type) const {
     switch (side) {
-        case Side::ONE:
+        case TwoSides::ONE:
             return checkTemporaryLimits1(limitReduction, type);
 
-        case Side::TWO:
+        case TwoSides::TWO:
             return checkTemporaryLimits2(limitReduction, type);
 
+        case TwoSides::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected side %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected TwoSides value: %1%", side));
     }
 }
 
@@ -83,7 +82,7 @@ std::unique_ptr<Overload> Branch::checkTemporaryLimits1(const LimitType& type) c
 
 std::unique_ptr<Overload> Branch::checkTemporaryLimits1(double limitReduction, const LimitType& type) const {
     double limitValue = LimitViolationUtils::getValueForLimit(getTerminal1(), type);
-    return LimitViolationUtils::checkTemporaryLimits(*this, Side::ONE, limitReduction, limitValue, type);
+    return LimitViolationUtils::checkTemporaryLimits(*this, TwoSides::ONE, limitReduction, limitValue, type);
 }
 
 std::unique_ptr<Overload> Branch::checkTemporaryLimits2(const LimitType& type) const {
@@ -92,57 +91,60 @@ std::unique_ptr<Overload> Branch::checkTemporaryLimits2(const LimitType& type) c
 
 std::unique_ptr<Overload> Branch::checkTemporaryLimits2(double limitReduction, const LimitType& type) const {
     double limitValue = LimitViolationUtils::getValueForLimit(getTerminal2(), type);
-    return LimitViolationUtils::checkTemporaryLimits(*this, Side::TWO, limitReduction, limitValue, type);
+    return LimitViolationUtils::checkTemporaryLimits(*this, TwoSides::TWO, limitReduction, limitValue, type);
 }
 
-stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits(const Side& side) const {
+stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits(const TwoSides& side) const {
     switch (side) {
-        case Side::ONE:
+        case TwoSides::ONE:
             return getActivePowerLimits1();
-        case Side::TWO:
+        case TwoSides::TWO:
             return getActivePowerLimits2();
+        case TwoSides::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected side: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected TwoSides value: %1%", side));
     }
 }
 
-stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits(const Side& side) {
+stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits(const TwoSides& side) {
     return stdcxx::ref(const_cast<const Branch*>(this)->getActivePowerLimits(side));
 }
 
-stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits(const Side& side) const {
+stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits(const TwoSides& side) const {
     switch (side) {
-        case Side::ONE:
+        case TwoSides::ONE:
             return getApparentPowerLimits1();
-        case Side::TWO:
+        case TwoSides::TWO:
             return getApparentPowerLimits2();
+        case TwoSides::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected side: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected TwoSides value: %1%", side));
     }
 }
 
-stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits(const Side& side) {
+stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits(const TwoSides& side) {
     return stdcxx::ref(const_cast<const Branch*>(this)->getApparentPowerLimits(side));
 }
 
-stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits(const Side& side) const {
+stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits(const TwoSides& side) const {
     switch (side) {
-        case Side::ONE:
+        case TwoSides::ONE:
             return getCurrentLimits1();
 
-        case Side::TWO:
+        case TwoSides::TWO:
             return getCurrentLimits2();
 
+        case TwoSides::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected side: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected TwoSides value: %1%", side));
     }
 }
 
-stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits(const Side& side) {
+stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits(const TwoSides& side) {
     return stdcxx::ref(const_cast<const Branch*>(this)->getCurrentLimits(side));
 }
 
-stdcxx::CReference<LoadingLimits> Branch::getLimits(const LimitType& type, const Side& side) const {
+stdcxx::CReference<LoadingLimits> Branch::getLimits(const LimitType& type, const TwoSides& side) const {
     switch (type) {
         case LimitType::CURRENT:
             return stdcxx::cref<LoadingLimits>(getCurrentLimits(side));
@@ -160,7 +162,7 @@ stdcxx::CReference<LoadingLimits> Branch::getLimits(const LimitType& type, const
     }
 }
 
-stdcxx::Reference<LoadingLimits> Branch::getLimits(const LimitType& type, const Side& side) {
+stdcxx::Reference<LoadingLimits> Branch::getLimits(const LimitType& type, const TwoSides& side) {
     return stdcxx::ref(const_cast<const Branch*>(this)->getLimits(type, side));
 }
 
@@ -174,31 +176,32 @@ unsigned long Branch::getOverloadDuration() const {
     return std::min(duration1, duration2);
 }
 
-Branch::Side Branch::getSide(const Terminal& terminal) const {
+TwoSides Branch::getSide(const Terminal& terminal) const {
     if (stdcxx::areSame(terminal, getTerminal1())) {
-        return Side::ONE;
+        return TwoSides::ONE;
     }
     if (stdcxx::areSame(terminal, getTerminal2())) {
-        return Side::TWO;
+        return TwoSides::TWO;
     }
 
     throw AssertionError("The terminal is not connected to this branch");
 }
 
-const Terminal& Branch::getTerminalFromSide(const Side& side) const {
+const Terminal& Branch::getTerminalFromSide(const TwoSides& side) const {
     switch (side) {
-        case Side::ONE:
+        case TwoSides::ONE:
             return getTerminal1();
 
-        case Side::TWO:
+        case TwoSides::TWO:
             return getTerminal2();
 
+        case TwoSides::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected side value: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected TwoSides value: %1%", side));
     }
 }
 
-Terminal& Branch::getTerminalFromSide(const Side& side) {
+Terminal& Branch::getTerminalFromSide(const TwoSides& side) {
     return const_cast<Terminal&>(static_cast<const Branch*>(this)->getTerminalFromSide(side));
 }
 
@@ -229,19 +232,6 @@ bool Branch::isOverloaded() const {
 bool Branch::isOverloaded(double limitReduction) const {
     return checkPermanentLimit1(limitReduction, LimitType::CURRENT) || checkPermanentLimit2(limitReduction, LimitType::CURRENT);
 }
-
-namespace Enum {
-
-template <>
-const std::initializer_list<std::string>& getNames<Branch::Side>() {
-    static std::initializer_list<std::string> s_sideNames{
-        "ONE",
-        "TWO"
-    };
-    return s_sideNames;
-}
-
-}  // namespace Enum
 
 }  // namespace iidm
 

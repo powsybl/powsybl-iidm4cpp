@@ -17,7 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-SV::SV(double p, double q, double u, double a, const Branch::Side& side) :
+SV::SV(double p, double q, double u, double a, const TwoSides& side) :
     m_p(p),
     m_q(q),
     m_u(u),
@@ -97,7 +97,7 @@ double SV::getRho(const TwoWindingsTransformer& twt) {
     return rho;
 }
 
-const Branch::Side& SV::getSide() const {
+const TwoSides& SV::getSide() const {
     return m_side;
 }
 
@@ -159,19 +159,19 @@ SV SV::otherSide(const DanglingLine& dl, bool splitShuntAdmittance) const {
 SV SV::otherSide(const LinkData::BranchAdmittanceMatrix& adm) const {
     std::complex<double> v;
     std::complex<double> s;
-    Branch::Side otherSide;
-    if (m_side == Branch::Side::ONE) {
+    TwoSides otherSide;
+    if (m_side == TwoSides::ONE) {
         std::complex<double> v1 = std::polar(m_u, m_a * stdcxx::toRadians);
         std::complex<double> s1(m_p, m_q);
         v = voltageAtEnd2(adm, v1, s1);
         s = flowAtEnd2(adm, v1, v);
-        otherSide = Branch::Side::TWO;
+        otherSide = TwoSides::TWO;
     } else {
         std::complex<double> v2 = std::polar(m_u, m_a * stdcxx::toRadians);
         std::complex<double> s2(m_p, m_q);
         v = voltageAtEnd1(adm, v2, s2);
         s = flowAtEnd1(adm, v, v2);
-        otherSide = Branch::Side::ONE;
+        otherSide = TwoSides::ONE;
     }
     return {std::real(s), std::imag(s), std::abs(v), std::arg(v) * stdcxx::toDegrees, otherSide};
 }
@@ -181,13 +181,13 @@ SV SV::otherSideDcApproximation(double x, double ratio, double angle, double zb,
     double xpu = x / zb;
     double b = useRatio ? 1 / (xpu * ratio) : 1 / xpu;
     double aOtherSide;
-    Branch::Side otherSide;
-    if (m_side == Branch::Side::ONE) {
+    TwoSides otherSide;
+    if (m_side == TwoSides::ONE) {
         aOtherSide = (stdcxx::toRadians * m_a - angle - m_p / b) * stdcxx::toDegrees;
-        otherSide = Branch::Side::TWO;
+        otherSide = TwoSides::TWO;
     } else {
         aOtherSide = (stdcxx::toRadians * m_a + angle - m_p / b) * stdcxx::toDegrees;
-        otherSide = Branch::Side::ONE;
+        otherSide = TwoSides::ONE;
     }
 
     return {pOtherSide, stdcxx::nan(), stdcxx::nan(), aOtherSide, otherSide};
@@ -265,7 +265,7 @@ SV SV::otherSide(double r, double x, double g1, double b1, double g2, double b2,
     } else if(isAllDataForCalculatingOterSideDcApproximation(zb)) {
         return otherSideDcApproximation(x, 1 / rho, -alpha, zb, true); // we always consider useRatio true
     } else {
-        Branch::Side otherSide = (m_side == Branch::Side::ONE) ? Branch::Side::TWO : Branch::Side::ONE;
+        TwoSides otherSide = (m_side == TwoSides::ONE) ? TwoSides::TWO : TwoSides::ONE;
         return {stdcxx::nan(), stdcxx::nan(), stdcxx::nan(), stdcxx::nan(), otherSide};
     }
 }

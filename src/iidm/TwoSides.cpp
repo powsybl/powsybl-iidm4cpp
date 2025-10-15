@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <powsybl/iidm/ThreeSides.hpp>
+#include <powsybl/iidm/TwoSides.hpp>
 
 #include <powsybl/iidm/Enum.hpp>
 
@@ -16,19 +16,18 @@ namespace iidm {
 namespace Enum {
 
 template <>
-const std::initializer_list<std::string>& getNames<ThreeSides>() {
+const std::initializer_list<std::string>& getNames<TwoSides>() {
     static std::initializer_list<std::string> s_names {
         "UNDEFINED",
         "ONE",
-        "TWO",
-        "THREE"
+        "TWO"
     };
     return s_names;
 }
 
 }  // namespace Enum
 
-std::ostream& operator<<(std::ostream& stream, const ThreeSides& side) {
+std::ostream& operator<<(std::ostream& stream, const TwoSides& side) {
     stream << Enum::toString(side);
     return stream;
 }

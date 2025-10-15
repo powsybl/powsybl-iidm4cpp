@@ -150,22 +150,12 @@ stdcxx::optional<ThreeSides> Terminal::getConnectableSide(const Terminal& termin
         return stdcxx::optional<ThreeSides>();
     } else if(stdcxx::isInstanceOf<Branch>(connectable)) {
         const auto& branch = dynamic_cast<const Branch&>(connectable.get());
-        Branch::Side side = branch.getSide(terminal);
-        if(side == Branch::Side::ONE) {
-            return stdcxx::optional<ThreeSides>(ThreeSides::ONE);
-        } else if(side == Branch::Side::TWO) {
-            return stdcxx::optional<ThreeSides>(ThreeSides::TWO);
-        }
+        TwoSides side = branch.getSide(terminal);
+        return stdcxx::optional<ThreeSides>(static_cast<ThreeSides>(side));
     } else if(stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable)) {
         const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(connectable.get());
-        ThreeWindingsTransformer::Side side = twt.getSide(terminal);
-        if(side == ThreeWindingsTransformer::Side::ONE) {
-            return stdcxx::optional<ThreeSides>(ThreeSides::ONE);
-        } else if(side == ThreeWindingsTransformer::Side::TWO) {
-            return stdcxx::optional<ThreeSides>(ThreeSides::TWO);
-        } else if(side == ThreeWindingsTransformer::Side::THREE) {
-            return stdcxx::optional<ThreeSides>(ThreeSides::THREE);
-        }
+        ThreeSides side = twt.getSide(terminal);
+        return stdcxx::optional<ThreeSides>(side);
     } else {
         throw PowsyblException(stdcxx::format("Unexpected Connectable instance: %1%", stdcxx::demangle(connectable.get())));
     }
@@ -178,24 +168,10 @@ Terminal& Terminal::getTerminal(Identifiable& identifiable, ThreeSides side) {
         return injection.getTerminal();
     } else if(stdcxx::isInstanceOf<Branch>(identifiable)) {
         auto& branch = dynamic_cast<Branch&>(identifiable);
-        if(side == ThreeSides::ONE) {
-            return branch.getTerminal1();
-        } else if(side == ThreeSides::TWO) {
-            return branch.getTerminal2();
-        } else {
-            throw PowsyblException( stdcxx::format("Unexpected Branch side: %1%", Enum::toString(side)));
-        }
+        return branch.getTerminalFromSide(static_cast<TwoSides>(side));
     } else if(stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
         auto& twt = dynamic_cast<ThreeWindingsTransformer&>(identifiable);
-        if(side == ThreeSides::ONE) {
-            return twt.getLeg1().getTerminal();
-        } else if(side == ThreeSides::TWO) {
-            return twt.getLeg2().getTerminal();
-        } else if(side == ThreeSides::THREE) {
-            return twt.getLeg3().getTerminal();
-        } else {
-            throw PowsyblException( stdcxx::format("Unexpected side: %1%", Enum::toString(side)));
-        }
+        return twt.getTerminal(side);
     } else {
         throw PowsyblException(stdcxx::format("Unexpected terminal reference identifiable instance: %1%", stdcxx::demangle(identifiable)));
     }
