@@ -8,6 +8,7 @@
 #include <powsybl/iidm/Connectable.hpp>
 
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/SwitchPredicate.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
 namespace powsybl {
@@ -108,6 +109,71 @@ void Connectable::remove() {
     }
 
     network.remove(*this);
+}
+
+bool Connectable::connect() {
+    return connect(SwitchPredicate::IS_NONFICTIONAL_BREAKER());
+}
+
+bool Connectable::connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) {
+    bool isAlreadyConnected = true;
+    bool isNowConnected = true;
+
+    //Check connected state of terminals
+    for (auto& terminal : m_terminals) {
+        if (!terminal->isConnected()) {
+            isAlreadyConnected = false;
+        }
+    }
+    // Exit if the connectable is already fully connected
+    if(isAlreadyConnected) {
+        return false;
+    }
+
+    //Try connecting all disconnected terminals
+    for (auto& terminal : m_terminals) {
+        if (terminal->isConnected()) {
+            continue;
+        }
+        isNowConnected = isNowConnected && terminal->connect(isTypeSwitchToOperate);
+        // Exit if the terminal cannot be connected
+        if (!isNowConnected) {
+            return false;
+        }
+    }
+    return isNowConnected;
+}
+
+bool Connectable::disconnect() {
+    return disconnect(SwitchPredicate::IS_CLOSED_BREAKER());
+}
+bool Connectable::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
+    bool isAlreadyDisconnected = true;
+    bool isNowDisconnected = true;
+
+    //Check connected state of terminals
+    for (auto& terminal : m_terminals) {
+        if (terminal->isConnected()) {
+            isAlreadyDisconnected = false;
+        }
+    }
+    // Exit if the connectable is already fully disconnected
+    if(isAlreadyDisconnected) {
+        return false;
+    }
+
+    //We try to disconnect each connected terminal
+    for (auto& terminal : m_terminals) {
+        if (!terminal->isConnected()) {
+            continue;
+        }
+        isNowDisconnected = isNowDisconnected && terminal->disconnect(isSwitchOpenable);
+        // Exit if the terminal cannot be disconnected
+        if (!isNowDisconnected) {
+            return false;
+        }
+    }
+    return isNowDisconnected;
 }
 
 }  // namespace iidm

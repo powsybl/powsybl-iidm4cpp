@@ -14,12 +14,14 @@
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/IdentifiableType.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/stdcxx/Predicate.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
 class Network;
+class Switch;
 
 class Connectable : public virtual Identifiable {
 public:  // Identifiable
@@ -39,6 +41,12 @@ public:
     std::vector<std::reference_wrapper<Terminal> > getTerminals() const;
 
     virtual void remove();
+
+    virtual bool connect();
+    virtual bool connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
+
+    virtual bool disconnect();
+    virtual bool disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable);
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

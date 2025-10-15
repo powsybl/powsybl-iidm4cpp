@@ -103,6 +103,7 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
     return connect(terminal, SwitchPredicate::IS_NONFICTIONAL_BREAKER());
 }
 bool NodeBreakerVoltageLevel::connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) {
+    checkTerminal(terminal);
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
 
     if (terminal.isConnected()) {
@@ -165,6 +166,7 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
     return disconnect(terminal, SwitchPredicate::IS_CLOSED_BREAKER());
 }
 bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) {
+    checkTerminal(terminal);
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
 
     if (!terminal.isConnected()) {

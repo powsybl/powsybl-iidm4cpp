@@ -666,6 +666,13 @@ BOOST_AUTO_TEST_CASE(connectDisconnectRemoveTest) {
     topo.removeSwitch("B_L1_1");
     topo.removeSwitch("B_L1_2");
 
+    // disconnect and reconnect the generator 1
+    BOOST_CHECK(g1.getTerminal().connect());
+    BOOST_CHECK(g1.getTerminal().disconnect());
+    network.getSwitch("B_G1").setFictitious(true);
+    network.getSwitch("B1").setFictitious(true);
+    BOOST_CHECK(!g1.getTerminal().connect(SwitchPredicate::IS_NONFICTIONAL_BREAKER()));
+
     // check load is removed
     POWSYBL_ASSERT_REF_FALSE(topo.getOptionalTerminal(4));
 }

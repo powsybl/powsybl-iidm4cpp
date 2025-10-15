@@ -44,6 +44,18 @@ const stdcxx::Predicate<Switch>& SwitchPredicate::IS_OPEN_DISCONNECTOR() {
     });
     return predicate;
 }
+const stdcxx::Predicate<Switch>& SwitchPredicate::IS_BREAKER() {
+    static stdcxx::Predicate<Switch> predicate([](const Switch& switchObject) {
+        return switchObject.getKind() == SwitchKind::BREAKER;
+    });
+    return predicate;
+}
+const stdcxx::Predicate<Switch>& SwitchPredicate::IS_NONFICTIONAL() {
+    static stdcxx::Predicate<Switch> predicate([](const Switch& switchObject) {
+        return !switchObject.isFictitious();
+    });
+    return predicate;
+}
 const stdcxx::Predicate<Switch>& SwitchPredicate::IS_OPEN() {
     static stdcxx::Predicate<Switch> predicate([](const Switch& switchObject) {
         return switchObject.isOpen();

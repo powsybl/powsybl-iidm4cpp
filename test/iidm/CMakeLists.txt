@@ -15,6 +15,7 @@ set(UNIT_TEST_SOURCES
     BusBreakerVoltageLevelTest.cpp
     BusTest.cpp
     ComponentsTest.cpp
+    ConnectableTest.cpp
     CountryTest.cpp
     CurrentLimitsTest.cpp
     DanglingLineTest.cpp

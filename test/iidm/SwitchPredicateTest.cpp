@@ -182,6 +182,28 @@ BOOST_AUTO_TEST_CASE(OpenDisconnectorTest) {
     BOOST_CHECK(predicate(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("D5").get()));
 }
 
+BOOST_AUTO_TEST_CASE(BreakersTest) {
+    Network network = createSwitchPredicateTestNetwork();
+    stdcxx::Predicate<Switch> predicate = SwitchPredicate::IS_BREAKER();
+
+    POWSYBL_ASSERT_REF_TRUE(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("D4"));
+    POWSYBL_ASSERT_REF_TRUE(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("B3"));
+
+    BOOST_CHECK(!predicate(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("D4").get()));
+    BOOST_CHECK(predicate(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("B3").get()));
+}
+
+BOOST_AUTO_TEST_CASE(NonFictionalTest) {
+    Network network = createSwitchPredicateTestNetwork();
+    stdcxx::Predicate<Switch> predicate = SwitchPredicate::IS_NONFICTIONAL();
+
+    POWSYBL_ASSERT_REF_TRUE(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("B2"));
+    POWSYBL_ASSERT_REF_TRUE(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("B5"));
+
+    BOOST_CHECK(!predicate(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("B2").get()));
+    BOOST_CHECK(predicate(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("B5").get()));
+}
+
 BOOST_AUTO_TEST_CASE(OpenTest) {
     Network network = createSwitchPredicateTestNetwork();
     stdcxx::Predicate<Switch> predicate = SwitchPredicate::IS_OPEN();
