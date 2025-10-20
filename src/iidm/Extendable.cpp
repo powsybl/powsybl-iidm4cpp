@@ -27,10 +27,16 @@ Extendable::Extendable(Extendable&& extendable) noexcept :
 }
 
 void Extendable::addExtension(std::unique_ptr<Extension>&& extension) {
-    auto it = m_extensionsByName.find(extension->getName());
-    if (it != m_extensionsByName.end()) {
-        // Clean the existing extension
-        it->second->setExtendable(stdcxx::ref<Extendable>());
+    // Clean the existing extension either same type or same name:
+    auto itByType = m_extensionsByType.find(extension->getType());
+    if (itByType != m_extensionsByType.end()) {
+        itByType->second.get().setExtendable(stdcxx::ref<Extendable>());
+        m_extensionsByName.erase(itByType->second.get().getName());
+        m_extensionsByType.erase(itByType);
+    }
+    auto itByName = m_extensionsByName.find(extension->getName());
+    if (itByName != m_extensionsByName.end()) {
+        itByName->second->setExtendable(stdcxx::ref<Extendable>());
         m_extensionsByName.erase(extension->getName());
         m_extensionsByType.erase(extension->getType());
     }

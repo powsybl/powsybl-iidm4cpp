@@ -82,7 +82,7 @@ bool SlackTerminal::isEmpty() const {
 }
 
 void SlackTerminal::reduceVariantArraySize(unsigned long number) {
-    m_terminals.resize(number); // remove elements from the top to avoid moves inside the array
+    m_terminals.resize(m_terminals.size() - number); // remove elements from the top to avoid moves inside the array
 }
 
 void SlackTerminal::reset(Network& network) {

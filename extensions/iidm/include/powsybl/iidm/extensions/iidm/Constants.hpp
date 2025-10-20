@@ -51,6 +51,7 @@ static const char* const PHASE_TAP_CHANGER_STATUS = "phaseTapChangerStatus";
 static const char* const PHASE_TAP_CHANGER_1_STATUS = "phaseTapChanger1Status";
 static const char* const PHASE_TAP_CHANGER_2_STATUS = "phaseTapChanger2Status";
 static const char* const PHASE_TAP_CHANGER_3_STATUS = "phaseTapChanger3Status";
+static const char* const PRIORITY = "priority";
 static const char* const PROPERTY = "property";
 static const char* const QUALITY_P = "qualityP";
 static const char* const QUALITY_Q = "qualityQ";

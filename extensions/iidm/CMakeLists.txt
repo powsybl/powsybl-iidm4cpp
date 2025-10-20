@@ -75,6 +75,14 @@ set(EXT_SOURCES
     src/ObservabilityQuality.cpp
     src/PilotPoint.cpp
     src/PilotPointAdder.cpp
+    src/ReferencePriorities.cpp
+    src/ReferencePrioritiesAdder.cpp
+    src/ReferencePrioritiesXmlSerializer.cpp
+    src/ReferencePriority.cpp
+    src/ReferencePriorityAdder.cpp
+    src/ReferenceTerminals.cpp
+    src/ReferenceTerminalsAdder.cpp
+    src/ReferenceTerminalsXmlSerializer.cpp
     src/RemoteReactivePowerControl.cpp
     src/RemoteReactivePowerControlAdder.cpp
     src/RemoteReactivePowerControlXmlSerializer.cpp
@@ -128,6 +136,8 @@ set(UNIT_TEST_SOURCES
     test/InjectionObservabilityTest.cpp
     test/LoadAsymmetricalTest.cpp
     test/MeasurementsTest.cpp
+    test/ReferencePrioritiesTest.cpp
+    test/ReferenceTerminalsTest.cpp
     test/RemoteReactivePowerControlTest.cpp
     test/SecondaryVoltageControlTest.cpp
     test/StandbyAutomatonTest.cpp
