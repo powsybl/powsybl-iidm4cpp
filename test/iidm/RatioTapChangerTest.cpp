@@ -182,6 +182,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(ratioTapChanger.isRegulating());
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
     BOOST_CHECK_CLOSE(25.0, ratioTapChanger.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(25.0, ratioTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(RatioTapChanger::RegulationMode::VOLTAGE, ratioTapChanger.getRegulationMode());
     BOOST_TEST(stdcxx::areSame(terminal, ratioTapChanger.getRegulationTerminal().get()));
     BOOST_TEST(stdcxx::areSame(terminal, cRatioTapChanger.getRegulationTerminal().get()));
 
@@ -280,6 +282,15 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(stdcxx::areSame(ratioTapChanger, ratioTapChanger.setTargetV(31.0)));
     BOOST_CHECK_CLOSE(31.0, ratioTapChanger.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(ratioTapChanger.setRegulating(true));
+
+    ratioTapChanger.setRegulationMode(RatioTapChanger::RegulationMode::REACTIVE_POWER);
+    BOOST_CHECK_EQUAL(RatioTapChanger::RegulationMode::REACTIVE_POWER, ratioTapChanger.getRegulationMode());
+    BOOST_TEST(std::isnan(ratioTapChanger.getTargetV()));
+    BOOST_CHECK_CLOSE(31.0, ratioTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    ratioTapChanger.setTargetV(31.0);
+    BOOST_CHECK_CLOSE(31.0, ratioTapChanger.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(31.0, ratioTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(RatioTapChanger::RegulationMode::VOLTAGE, ratioTapChanger.getRegulationMode());
 
     Terminal& terminal = network.getLoad("LOAD1").getTerminal();
     Terminal& terminal2 = network.getLoad("LOAD2").getTerminal();

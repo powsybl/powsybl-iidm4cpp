@@ -43,6 +43,7 @@ set(UNIT_TEST_SOURCES
     NodeBreakerPropertiesOnBusTest.cpp
     OptionalLoadTypeBugTest.cpp
     PhaseShifterRoundTripTest.cpp
+    RatioTapChangerXmlTest.cpp
     ReactiveLimitsRoundTripTest.cpp
     RegulatingTerminalRoundTripTest.cpp
     ShuntCompensatorRoundTripTest.cpp

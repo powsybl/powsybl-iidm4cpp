@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -18,12 +19,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class Network;
-class RatioTapChanger;
-class RatioTapChangerHolder;
-class RatioTapChangerStep;
-class Terminal;
-class Validable;
+// class Validable;
 
 class RatioTapChangerAdder {
 public:
@@ -77,12 +73,15 @@ public:
 
     RatioTapChangerAdder& setRegulating(bool regulating);
 
+    RatioTapChangerAdder& setRegulationMode(const RatioTapChanger::RegulationMode& regulationMode);
+
     RatioTapChangerAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal);
 
     RatioTapChangerAdder& setTapPosition(long tapPosition);
 
     RatioTapChangerAdder& setTargetDeadband(double targetDeadband);
 
+    RatioTapChangerAdder& setRegulationValue(double regulationValue);
     RatioTapChangerAdder& setTargetV(double targetV);
 
 protected:
@@ -106,7 +105,9 @@ private:
 
     bool m_regulating = false;
 
-    double m_targetV = stdcxx::nan();
+    RatioTapChanger::RegulationMode m_regulationMode = RatioTapChanger::RegulationMode::VOLTAGE;
+
+    double m_regulationValue = stdcxx::nan();
 
     stdcxx::Reference<Terminal> m_regulationTerminal;
 

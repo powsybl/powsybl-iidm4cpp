@@ -140,8 +140,8 @@ double checkRatedU1(const Validable& validable, double ratedU1);
 
 double checkRatedU2(const Validable& validable, double ratedU2);
 
-ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::CReference<Terminal>& regulationTerminal, double targetV, const Network& network, const ValidationLevel& vl);
-ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network, const ValidationLevel& vl);
+ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::CReference<Terminal>& regulationTerminal, const RatioTapChanger::RegulationMode& regulationMode, double regulationValue, const Network& network, const ValidationLevel& vl);
+ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, const RatioTapChanger::RegulationMode& regulationMode, double regulationValue, const Network& network, const ValidationLevel& vl);
 
 void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network);
 

@@ -165,7 +165,7 @@ RatioTapChanger& addRatioTapChanger(TwoWindingsTransformer& transformer, Termina
         .setLoadTapChangingCapabilities(true)
         .setRegulating(true)
         .setRegulationTerminal(stdcxx::ref<Terminal>(terminal))
-        .setTargetV(25.0)
+        .setRegulationValue(25.0)
         .setTargetDeadband(1.0)
         .add();
 }

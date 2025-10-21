@@ -18,6 +18,12 @@ namespace iidm {
 class RatioTapChangerHolder;
 
 class RatioTapChanger : public TapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep> {
+public:
+    enum class RegulationMode : unsigned char {
+        VOLTAGE,
+        REACTIVE_POWER
+    };
+
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -34,22 +40,29 @@ public: // TapChanger
 
 public:
     RatioTapChanger(RatioTapChangerHolder& parent, long lowTapPosition, const std::vector<RatioTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                    bool loadTapChangingCapabilities, long tapPosition, bool regulating, double targetV, double targetDeadband);
+                    bool loadTapChangingCapabilities, long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
 
     ~RatioTapChanger() noexcept override = default;
 
     double getTargetV() const;
+    double getRegulationValue() const;
 
     bool hasLoadTapChangingCapabilities() const;
 
     RatioTapChanger& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities);
 
     RatioTapChanger& setTargetV(double targetV);
+    RatioTapChanger& setRegulationValue(double regulationValue);
+
+    const RegulationMode& getRegulationMode() const;
+    RatioTapChanger& setRegulationMode(const RegulationMode& regulationMode);
 
 private:
+    RegulationMode m_regulationMode;
+
     bool m_loadTapChangingCapabilities;
 
-    std::vector<double> m_targetV;
+    std::vector<double> m_regulationValue;
 };
 
 }  // namespace iidm

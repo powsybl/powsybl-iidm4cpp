@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_12" id="test" caseDate="2024-01-08T09:17:53.764000+00:00" forecastDistance="0" sourceFormat="test" minimumValidationLevel="STEADY_STATE_HYPOTHESIS">
+    <iidm:substation id="SUBSTATION" country="FR">
+        <iidm:voltageLevel id="VL_1" nominalV="132" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="BUS_1"/>
+            </iidm:busBreakerTopology>
+        </iidm:voltageLevel>
+        <iidm:voltageLevel id="VL_2" nominalV="33" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="BUS_2"/>
+            </iidm:busBreakerTopology>
+        </iidm:voltageLevel>
+        <iidm:twoWindingsTransformer id="T2wT" r="17" x="10" g="0.0057392102846648297" b="0.00057392102846648299" ratedU1="132" ratedU2="33" bus1="BUS_1" connectableBus1="BUS_1" voltageLevelId1="VL_1" bus2="BUS_2" connectableBus2="BUS_2" voltageLevelId2="VL_2">
+            <iidm:ratioTapChanger lowTapPosition="0" tapPosition="0" targetDeadband="0" loadTapChangingCapabilities="true" regulating="true" regulationMode="REACTIVE_POWER" regulationValue="-10">
+                <iidm:terminalRef id="T2wT" side="TWO"/>
+                <iidm:step r="0.1089" x="0.01089" g="0.82644628099173556" b="0.082644628099173556" rho="0.90000000000000002"/>
+            </iidm:ratioTapChanger>
+        </iidm:twoWindingsTransformer>
+    </iidm:substation>
+</iidm:network>

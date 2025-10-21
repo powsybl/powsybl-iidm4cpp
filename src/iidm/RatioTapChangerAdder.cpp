@@ -76,11 +76,11 @@ RatioTapChanger& RatioTapChangerAdder::add() {
     }
     network.setValidationLevelIfGreaterThan(checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel()));
 
-    network.setValidationLevelIfGreaterThan(checkRatioTapChangerRegulation(m_parent, m_regulating, m_loadTapChangingCapabilities, m_regulationTerminal, m_targetV, network, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkRatioTapChangerRegulation(m_parent, m_regulating, m_loadTapChangingCapabilities, m_regulationTerminal, m_regulationMode, m_regulationValue, network, network.getMinimumValidationLevel()));
     network.setValidationLevelIfGreaterThan(checkTargetDeadband(m_parent, "ratio tap changer", m_regulating, m_targetDeadband, network.getMinimumValidationLevel()));
 
     std::unique_ptr<RatioTapChanger> ptrRatioTapChanger = stdcxx::make_unique<RatioTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
-                                                                                               m_loadTapChangingCapabilities, *m_tapPosition, m_regulating, m_targetV, m_targetDeadband);
+                                                                                               m_loadTapChangingCapabilities, *m_tapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
 
     bool wasRegulating = m_parent.hasRatioTapChanger() && m_parent.getRatioTapChanger().isRegulating();
     unsigned long count = m_parent.getRegulatingTapChangerCount() - (wasRegulating ? 1 : 0);
@@ -127,6 +127,11 @@ RatioTapChangerAdder& RatioTapChangerAdder::setRegulating(bool regulating) {
     return *this;
 }
 
+RatioTapChangerAdder& RatioTapChangerAdder::setRegulationMode(const RatioTapChanger::RegulationMode& regulationMode) {
+    m_regulationMode = regulationMode;
+    return *this;
+}
+
 RatioTapChangerAdder& RatioTapChangerAdder::setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) {
     m_regulationTerminal = regulationTerminal;
     return *this;
@@ -142,8 +147,15 @@ RatioTapChangerAdder& RatioTapChangerAdder::setTargetDeadband(double targetDeadb
     return *this;
 }
 
+RatioTapChangerAdder& RatioTapChangerAdder::setRegulationValue(double regulationValue) {
+    m_regulationValue = regulationValue;
+    return *this;
+}
 RatioTapChangerAdder& RatioTapChangerAdder::setTargetV(double targetV) {
-    m_targetV = targetV;
+    if(!std::isnan(targetV)){
+        m_regulationMode = RatioTapChanger::RegulationMode::VOLTAGE;
+    }
+    m_regulationValue = targetV;
     return *this;
 }
 

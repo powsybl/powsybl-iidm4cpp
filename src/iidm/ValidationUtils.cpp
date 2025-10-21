@@ -428,23 +428,30 @@ double checkRatedU2(const Validable& validable, double ratedU2) {
     return checkRatedU(validable, ratedU2, 2);
 }
 
-ValidationLevel checkRatioTapChangerRegulationWithouthTerminal(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, double targetV,
-                                    const ValidationLevel& vl) {
+ValidationLevel checkRatioTapChangerRegulationWithouthTerminal(const Validable& validable, bool regulating, bool loadTapChangingCapabilities,
+                                    const RatioTapChanger::RegulationMode& regulationMode, double regulationValue, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
-    if (regulating) {
-        if (std::isnan(targetV)) {
+    switch (regulationMode) {
+        case RatioTapChanger::RegulationMode::VOLTAGE:
+        case RatioTapChanger::RegulationMode::REACTIVE_POWER:
+            break;
+        default:
+            throw AssertionError(stdcxx::format("Unexpected regulation mode value: %1%", regulationMode));
+    }
+    if (regulating) {    
+        if (std::isnan(regulationValue)) {
             checkValidationLevel = validationLevel::min(checkValidationLevel,errorOrWarningForRtc(validable, loadTapChangingCapabilities, "a target voltage has to be set for a regulating ratio tap changer", vl));
         }
-        if (std::islessequal(targetV, 0.0)) {
-            throw ValidationException(validable, stdcxx::format("bad target voltage %1%", targetV));
+        if (regulationMode == RatioTapChanger::RegulationMode::VOLTAGE && std::islessequal(regulationValue, 0.0)) {
+            throw ValidationException(validable, stdcxx::format("bad target voltage %1%", regulationValue));
         }
     }
     return checkValidationLevel;
 }
-ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::CReference<Terminal>& regulationTerminal, double targetV, const Network& network, const ValidationLevel& vl) {
+ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::CReference<Terminal>& regulationTerminal, const RatioTapChanger::RegulationMode& regulationMode, double regulationValue, const Network& network, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
 
-    checkValidationLevel = validationLevel::min(checkValidationLevel, checkRatioTapChangerRegulationWithouthTerminal(validable, regulating, loadTapChangingCapabilities, targetV, vl));
+    checkValidationLevel = validationLevel::min(checkValidationLevel, checkRatioTapChangerRegulationWithouthTerminal(validable, regulating, loadTapChangingCapabilities, regulationMode, regulationValue, vl));
 
     if (regulating && !regulationTerminal) {
         checkValidationLevel = validationLevel::min(checkValidationLevel,errorOrWarningForRtc(validable, loadTapChangingCapabilities, "a regulation terminal has to be set for a regulating ratio tap changer", vl));
@@ -455,10 +462,10 @@ ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool 
 
     return checkValidationLevel;
 }
-ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, double targetV, const Network& network, const ValidationLevel& vl) {
+ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, const RatioTapChanger::RegulationMode& regulationMode, double regulationValue, const Network& network, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
 
-    checkValidationLevel = validationLevel::min(checkValidationLevel, checkRatioTapChangerRegulationWithouthTerminal(validable, regulating, loadTapChangingCapabilities, targetV, vl));
+    checkValidationLevel = validationLevel::min(checkValidationLevel, checkRatioTapChangerRegulationWithouthTerminal(validable, regulating, loadTapChangingCapabilities, regulationMode, regulationValue, vl));
 
     if (regulating && !regulationTerminal) {
         checkValidationLevel = validationLevel::min(checkValidationLevel,errorOrWarningForRtc(validable, loadTapChangingCapabilities, "a regulation terminal has to be set for a regulating ratio tap changer", vl));
@@ -602,7 +609,7 @@ double checkX(const Validable& validable, double x) {
 
 ValidationLevel checkRtc(const Validable& validable, const RatioTapChanger& rtc, const Network& network, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
-    checkValidationLevel = validationLevel::min(checkValidationLevel, checkRatioTapChangerRegulation(validable, rtc.isRegulating(), rtc.hasLoadTapChangingCapabilities(), rtc.getRegulationTerminal(), rtc.getTargetV(), network, vl));
+    checkValidationLevel = validationLevel::min(checkValidationLevel, checkRatioTapChangerRegulation(validable, rtc.isRegulating(), rtc.hasLoadTapChangingCapabilities(), rtc.getRegulationTerminal(), rtc.getRegulationMode(), rtc.getRegulationValue(), network, vl));
     checkValidationLevel = validationLevel::min(checkValidationLevel, checkTargetDeadband(validable, "ratio tap changer", rtc.isRegulating(), rtc.getTargetDeadband(), vl));
     return checkValidationLevel;
 }

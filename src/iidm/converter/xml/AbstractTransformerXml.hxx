@@ -112,11 +112,23 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const double& targetDeadband = readTargetDeadband(context);
     const auto& loadTapChangingCapabilities = context.getReader().getAttributeValue<bool>(LOAD_TAP_CHANGING_CAPABILITIES);
-    double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
+
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_11(), context.getVersion(), [&context, &adder]() {
+        double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
+        adder->setRegulationValue(targetV);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &adder]() {
+        const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
+        const auto& regModeStr = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
+        if(regModeStr.has_value()) {
+            adder->setRegulationMode(Enum::fromString<RatioTapChanger::RegulationMode>(*regModeStr));
+        }
+        adder->setRegulationValue(regulationValue);
+    });
+
     adder->setLowTapPosition(lowTapPosition)
         .setTargetDeadband(targetDeadband)
-        .setLoadTapChangingCapabilities(loadTapChangingCapabilities)
-        .setTargetV(targetV);
+        .setLoadTapChangingCapabilities(loadTapChangingCapabilities);
     const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
     const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
     if(tapPosition.has_value()) {
@@ -231,7 +243,17 @@ void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::strin
     if (rtc.hasLoadTapChangingCapabilities() || rtc.isRegulating()) {
         context.getWriter().writeAttribute(REGULATING, rtc.isRegulating());
     }
-    context.getWriter().writeAttribute(TARGET_V, rtc.getTargetV());
+
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_11(), context.getVersion(), [&context, &rtc]() {
+        context.getWriter().writeAttribute(TARGET_V, rtc.getTargetV());
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &rtc]() {
+        if(!std::isnan(rtc.getRegulationValue())) {
+            context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(rtc.getRegulationMode()));
+            context.getWriter().writeAttribute(REGULATION_VALUE, rtc.getRegulationValue());
+        }
+    });
+
     if (rtc.getRegulationTerminal()) {
         TerminalRefXml::writeTerminalRef(rtc.getRegulationTerminal(), context, TERMINAL_REF);
     }
