@@ -24,6 +24,7 @@
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
+#include <powsybl/iidm/LoadZipModel.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
@@ -43,6 +44,8 @@
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+#include <powsybl/network/LoadBarExt.hpp>
+#include <powsybl/network/LoadFooExt.hpp>
 #include <powsybl/network/MultipleExtensionsTestNetworkFactory.hpp>
 #include <powsybl/network/ScadaNetworkFactory.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
@@ -355,6 +358,25 @@ BOOST_FIXTURE_TEST_CASE(subnetworksRoundTrip, test::ResourceFixture) {
 BOOST_FIXTURE_TEST_CASE(failImportSeveralSubnetworkLevels, test::ResourceFixture) {
     const auto& refXmlPath = test::converter::RoundTrip::getVersionedNetworkPath("multiple-subnetwork-levels.xml",IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
     POWSYBL_ASSERT_THROW(Network::readXml(refXmlPath), PowsyblException, "Only one level of subnetwork is currently supported.");
+}
+
+BOOST_FIXTURE_TEST_CASE(skipExtensionsTest, test::ResourceFixture) {
+    const auto& refXmlPath = test::converter::RoundTrip::getVersionedNetworkPath("skippedExtensions.xml",IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    Network networkReadExtensions = Network::readXml(refXmlPath);
+    Load& load1 = networkReadExtensions.getLoad("LOAD");
+
+    POWSYBL_ASSERT_REF_TRUE(load1.findExtension<powsybl::network::LoadBarExt>());
+    POWSYBL_ASSERT_REF_TRUE(load1.findExtension<powsybl::network::LoadFooExt>());
+    BOOST_CHECK(load1.getModelType() == LoadModelType::ZIP);
+
+    // Read file with only terminalMockNoSerialize
+    converter::ImportOptions importSkipOptions = ImportOptions();
+    importSkipOptions.addExtension("terminalMockNoSerialize").addExtension("loadFoo");
+    Network networkReadSkipExtensions = Network::readXml(refXmlPath, importSkipOptions);
+    Load& load2 = networkReadSkipExtensions.getLoad("LOAD");
+    POWSYBL_ASSERT_REF_FALSE(load2.findExtension<powsybl::network::LoadBarExt>());
+    POWSYBL_ASSERT_REF_TRUE(load2.findExtension<powsybl::network::LoadFooExt>());
+    BOOST_CHECK(load2.getModelType() == LoadModelType::ZIP);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
