@@ -13,6 +13,7 @@
 #include <powsybl/iidm/extensions/sld/BranchStatusXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/sld/BusbarSectionPositionXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/sld/ConnectablePositionXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/sld/OperatingStatusXmlSerializer.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
 namespace powsybl {
@@ -28,6 +29,7 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     serializers.emplace_back(stdcxx::make_unique<BranchStatusXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<BusbarSectionPositionXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<ConnectablePositionXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<OperatingStatusXmlSerializer>());
 
     return serializers;
 }

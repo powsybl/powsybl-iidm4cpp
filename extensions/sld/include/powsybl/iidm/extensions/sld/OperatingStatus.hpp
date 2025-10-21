@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2025, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_EXTENSIONS_SLD_BRANCHSTATUS_HPP
-#define POWSYBL_IIDM_EXTENSIONS_SLD_BRANCHSTATUS_HPP
+#ifndef POWSYBL_IIDM_EXTENSIONS_SLD_OPERATINGSTATUS_HPP
+#define POWSYBL_IIDM_EXTENSIONS_SLD_OPERATINGSTATUS_HPP
 
 #include <powsybl/iidm/Extension.hpp>
 
@@ -14,13 +14,13 @@ namespace powsybl {
 
 namespace iidm {
 
-class Connectable;
+class Identifiable;
 
 namespace extensions {
 
 namespace sld {
 
-class BranchStatus : public Extension {
+class OperatingStatus : public Extension {
 public:
     enum class Status : unsigned char {
         IN_OPERATION,
@@ -36,21 +36,23 @@ public:  // Extension
 public:
     const Status& getStatus() const;
 
-    BranchStatus& setStatus(const Status& status);
+    OperatingStatus& setStatus(const Status& status);
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
-    BranchStatus(Connectable& connectable, const Status& status);
+    OperatingStatus(Identifiable& identifiable, const Status& status);
 
-    friend class BranchStatusAdder;
+    bool isAllowedIdentifiable(Identifiable& identifiable);
+
+    friend class OperatingStatusAdder;
 
 private:
     Status m_status;
 };
 
-std::ostream& operator<<(std::ostream& stream, const BranchStatus::Status& status);
+std::ostream& operator<<(std::ostream& stream, const OperatingStatus::Status& status);
 
 }  // namespace sld
 
@@ -60,4 +62,4 @@ std::ostream& operator<<(std::ostream& stream, const BranchStatus::Status& statu
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_EXTENSIONS_SLD_BRANCHSTATUS_HPP
+#endif  // POWSYBL_IIDM_EXTENSIONS_SLD_OPERATINGSTATUS_HPP

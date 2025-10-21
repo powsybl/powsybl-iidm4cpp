@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2025, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_EXTENSIONS_SLD_BRANCHSTATUSXMLSERIALIZER_HPP
-#define POWSYBL_IIDM_EXTENSIONS_SLD_BRANCHSTATUSXMLSERIALIZER_HPP
+#ifndef POWSYBL_IIDM_EXTENSIONS_SLD_OPERATINGSTATUSXMLSERIALIZER_HPP
+#define POWSYBL_IIDM_EXTENSIONS_SLD_OPERATINGSTATUSXMLSERIALIZER_HPP
 
 #include <powsybl/iidm/converter/xml/AbstractExtensionXmlSerializer.hpp>
 
@@ -18,19 +18,16 @@ namespace extensions {
 
 namespace sld {
 
-class BranchStatusXmlSerializer : public converter::xml::AbstractExtensionXmlSerializer {
+class OperatingStatusXmlSerializer : public converter::xml::AbstractExtensionXmlSerializer {
 public:  // ExtensionXmlSerializer
     Extension& read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const override;
 
-    /**
-     * deprecated : Branch status extension should not be written anymore, use OperatingStatus instead
-     */
     void write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const override;
 
 public:
-    BranchStatusXmlSerializer();
+    OperatingStatusXmlSerializer();
 
-    ~BranchStatusXmlSerializer() noexcept override = default;
+    ~OperatingStatusXmlSerializer() noexcept override = default;
 };
 
 }  // namespace sld
@@ -41,4 +38,4 @@ public:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_EXTENSIONS_SLD_BRANCHSTATUSXMLSERIALIZER_HPP
+#endif  // POWSYBL_IIDM_EXTENSIONS_SLD_OPERATINGSTATUSXMLSERIALIZER_HPP
