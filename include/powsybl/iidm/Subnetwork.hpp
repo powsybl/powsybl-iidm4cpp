@@ -123,6 +123,12 @@ public:
     stdcxx::const_range<Load> getLoads() const override;
     stdcxx::range<Load> getLoads() override;
 
+    const OverloadManagementSystem& getOverloadManagementSystem(const std::string& id) const override;
+    OverloadManagementSystem& getOverloadManagementSystem(const std::string& id) override;
+    unsigned long getOverloadManagementSystemCount() const override;
+    stdcxx::const_range<OverloadManagementSystem> getOverloadManagementSystems() const override;
+    stdcxx::range<OverloadManagementSystem> getOverloadManagementSystems() override;
+
     const ShuntCompensator& getShuntCompensator(const std::string& id) const override;
     ShuntCompensator& getShuntCompensator(const std::string& id) override;
     unsigned long getShuntCompensatorCount() const override;

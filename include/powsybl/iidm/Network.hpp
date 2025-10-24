@@ -49,6 +49,7 @@ class LccConverterStation;
 class Line;
 class LineAdder;
 class Load;
+class OverloadManagementSystem;
 class ShuntCompensator;
 class StaticVarCompensator;
 class Substation;
@@ -296,6 +297,16 @@ public:
     virtual stdcxx::range<Load> getLoads();
 
     virtual const ValidationLevel& getMinimumValidationLevel() const;
+
+    virtual const OverloadManagementSystem& getOverloadManagementSystem(const std::string& id) const;
+
+    virtual OverloadManagementSystem& getOverloadManagementSystem(const std::string& id);
+
+    virtual unsigned long getOverloadManagementSystemCount() const;
+
+    virtual stdcxx::const_range<OverloadManagementSystem> getOverloadManagementSystems() const;
+
+    virtual stdcxx::range<OverloadManagementSystem> getOverloadManagementSystems();
 
     virtual const ShuntCompensator& getShuntCompensator(const std::string& id) const;
 

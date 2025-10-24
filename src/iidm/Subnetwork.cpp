@@ -20,6 +20,7 @@
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/OverloadManagementSystem.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -370,6 +371,26 @@ stdcxx::const_range<Load> Subnetwork::getLoads() const {
 }
 stdcxx::range<Load> Subnetwork::getLoads() {
     return getRootNetwork().Network::getLoads() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+
+const OverloadManagementSystem& Subnetwork::getOverloadManagementSystem(const std::string& id) const {
+    const OverloadManagementSystem& oms = Network::getOverloadManagementSystem(id);
+    if(!contains(oms)) {
+        throw PowsyblException(stdcxx::format("OVerload management system '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+    }
+    return oms;
+}
+OverloadManagementSystem& Subnetwork::getOverloadManagementSystem(const std::string& id) {
+    return const_cast<OverloadManagementSystem&>(static_cast<const Subnetwork*>(this)->getOverloadManagementSystem(id));
+}
+unsigned long Subnetwork::getOverloadManagementSystemCount() const {
+    return boost::size(getOverloadManagementSystems());
+}
+stdcxx::const_range<OverloadManagementSystem> Subnetwork::getOverloadManagementSystems() const {
+    return getRootNetwork().Network::getOverloadManagementSystems() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<OverloadManagementSystem> Subnetwork::getOverloadManagementSystems() {
+    return getRootNetwork().Network::getOverloadManagementSystems() | boost::adaptors::filtered(m_filterIdentifiable);
 }
 
 const ShuntCompensator& Subnetwork::getShuntCompensator(const std::string& id) const {

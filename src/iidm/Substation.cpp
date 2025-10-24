@@ -11,6 +11,8 @@
 #include <boost/range/adaptor/transformed.hpp>
 
 #include <powsybl/iidm/HvdcLine.hpp>
+#include <powsybl/iidm/OverloadManagementSystem.hpp>
+#include <powsybl/iidm/OverloadManagementSystemAdder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
@@ -45,6 +47,10 @@ Substation& Substation::addGeographicalTag(const std::string& geographicalTag) {
 
 void Substation::addVoltageLevel(VoltageLevel& voltageLevel) {
     m_voltageLevels.emplace_back(std::ref(voltageLevel));
+}
+
+void Substation::addOverloadManagement(OverloadManagementSystem& overloadManagementSystem) {
+    m_overloadManagementSystems.emplace_back(std::ref(overloadManagementSystem));
 }
 
 const stdcxx::optional<Country>& Substation::getCountry() const {
@@ -140,6 +146,18 @@ stdcxx::range<VoltageLevel> Substation::getVoltageLevels() {
     return m_voltageLevels;
 }
 
+unsigned long Substation::getOverloadManagementSystemCount() const {
+    return boost::size(getOverloadManagementSystems());
+}
+
+stdcxx::const_range<OverloadManagementSystem> Substation::getOverloadManagementSystems() const {
+    return m_overloadManagementSystems;
+}
+
+stdcxx::range<OverloadManagementSystem> Substation::getOverloadManagementSystems() {
+    return m_overloadManagementSystems;
+}
+
 ThreeWindingsTransformerAdder Substation::newThreeWindingsTransformer() {
     return ThreeWindingsTransformerAdder(*this);
 }
@@ -150,6 +168,10 @@ TwoWindingsTransformerAdder Substation::newTwoWindingsTransformer() {
 
 VoltageLevelAdder Substation::newVoltageLevel() {
     return VoltageLevelAdder(*this);
+}
+
+OverloadManagementSystemAdder Substation::newOverloadManagementSystem() {
+    return OverloadManagementSystemAdder(*this);
 }
 
 void Substation::remove() {

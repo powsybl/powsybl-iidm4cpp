@@ -29,6 +29,7 @@
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/OverloadManagementSystemAdder.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/ShuntCompensatorAdder.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
@@ -291,8 +292,9 @@ void CreateSubnetworkExploreTest(Network& network, const std::string& nid, Count
         .setG(0.0)
         .setB(0.0)
         .add();
+    std::string line1Id = id("line1", nid);
     network.newLine()
-        .setId(id("line1", nid))
+        .setId(line1Id)
         .setVoltageLevel1(id("voltageLevel1", nid))
         .setNode1(13)
         .setVoltageLevel2(id("voltageLevel2", nid))
@@ -339,6 +341,20 @@ void CreateSubnetworkExploreTest(Network& network, const std::string& nid, Count
         .setP0(10)
         .setQ0(1)
         .setPairingKey("mergingKey")
+        .add();
+
+    substation3.newOverloadManagementSystem()
+        .setId(id("overloadManagementSystem", nid))
+        .setEnabled(true)
+        .setMonitoredElementId(line1Id)
+        .setMonitoredElementSide(ThreeSides::ONE)
+        .newBranchTripping()
+            ->setBranchToOperateId(line1Id)
+            .setSideToOperate(TwoSides::ONE)
+            .setKey("branchTripping")
+            .setCurrentLimit(80.)
+            .setOpenAction(true)
+            .add()
         .add();
 
     return;
@@ -723,6 +739,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
         subnetwork2.getBranch(id);
     }
 
+    // OverloadManagementSystem
+    auto expectedOMS0 = {id("overloadManagementSystem", "1"), id("overloadManagementSystem", "2")};
+    auto expectedOMS1 = {id("overloadManagementSystem", "1")};
+    auto expectedOMS2 = {id("overloadManagementSystem", "2")};
+    BOOST_CHECK_EQUAL(expectedOMS0.size(), network.getOverloadManagementSystemCount());
+    BOOST_CHECK_EQUAL(expectedOMS1.size(), subnetwork1.getOverloadManagementSystemCount());
+    BOOST_CHECK_EQUAL(expectedOMS2.size(), subnetwork2.getOverloadManagementSystemCount());
+    BOOST_CHECK_EQUAL(expectedOMS0.size(), boost::size(network.getOverloadManagementSystems()));
+    BOOST_CHECK_EQUAL(expectedOMS1.size(), boost::size(subnetwork1.getOverloadManagementSystems()));
+    BOOST_CHECK_EQUAL(expectedOMS2.size(), boost::size(subnetwork2.getOverloadManagementSystems()));
+    for (auto& id : expectedOMS0) {
+        network.getOverloadManagementSystem(id);
+    }
+    for (auto& id : expectedOMS1) {
+        subnetwork1.getOverloadManagementSystem(id);
+    }
+    for (auto& id : expectedOMS2) {
+        subnetwork2.getOverloadManagementSystem(id);
+    }
+
+
     // Connectables are retrieved from the root network even when called from a subnetwork
     std::set<std::string> expectedConnectables = {id("battery1", "1"), 
                                             id("voltageLevel1BusbarSection1", "1"), id("voltageLevel1BusbarSection2", "1"),
@@ -785,14 +822,14 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     std::set<std::string> expectedIdentifiables1 = {"n1_battery1","n1_danglingLine1","n1_danglingLine2","n1_danglingLine3",
         "n1_generator1","n1_generator1Breaker1","n1_generator1Disconnector1","n1_hvdcLine1","n1_hvdcLine2",
         "n1_lcc1","n1_lcc2","n1_line1","n1_load1","n1_load1Breaker1","n1_load1Disconnector1",
-        "n1_network","n1_shuntCompensator1","n1_substation1","n1_substation2","n1_substation3",
+        "n1_network","n1_overloadManagementSystem","n1_shuntCompensator1","n1_substation1","n1_substation2","n1_substation3",
         "n1_svc1","n1_threeWindingsTransformer1","n1_tieLine1","n1_twoWindingsTransformer1",
         "n1_voltageLevel1","n1_voltageLevel1Breaker1","n1_voltageLevel1BusbarSection1","n1_voltageLevel1BusbarSection2",
         "n1_voltageLevel2","n1_voltageLevel3","n1_voltageLevel4","n1_voltageLevel5","n1_vsc1","n1_vsc2"};
     std::set<std::string> expectedIdentifiables2 = {"n2_battery1","n2_danglingLine1","n2_danglingLine2","n2_danglingLine3",
         "n2_generator1","n2_generator1Breaker1","n2_generator1Disconnector1","n2_hvdcLine1","n2_hvdcLine2",
         "n2_lcc1","n2_lcc2","n2_line1","n2_load1","n2_load1Breaker1","n2_load1Disconnector1",
-        "n2_network","n2_shuntCompensator1","n2_substation1","n2_substation2","n2_substation3",
+        "n2_network","n2_overloadManagementSystem","n2_shuntCompensator1","n2_substation1","n2_substation2","n2_substation3",
         "n2_svc1","n2_threeWindingsTransformer1","n2_tieLine1","n2_twoWindingsTransformer1",
         "n2_voltageLevel1","n2_voltageLevel1Breaker1","n2_voltageLevel1BusbarSection1","n2_voltageLevel1BusbarSection2",
         "n2_voltageLevel2","n2_voltageLevel3","n2_voltageLevel4","n2_voltageLevel5","n2_vsc1","n2_vsc2"};

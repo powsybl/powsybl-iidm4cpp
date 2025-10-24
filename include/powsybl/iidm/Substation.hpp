@@ -25,6 +25,8 @@ namespace iidm {
 
 class Network;
 class NetworkIndex;
+class OverloadManagementSystem;
+class OverloadManagementSystemAdder;
 class ThreeWindingsTransformer;
 class ThreeWindingsTransformerAdder;
 class TwoWindingsTransformer;
@@ -72,11 +74,19 @@ public:
 
     stdcxx::range<VoltageLevel> getVoltageLevels();
 
+    unsigned long getOverloadManagementSystemCount() const;
+
+    stdcxx::const_range<OverloadManagementSystem> getOverloadManagementSystems() const;
+
+    stdcxx::range<OverloadManagementSystem> getOverloadManagementSystems();
+
     ThreeWindingsTransformerAdder newThreeWindingsTransformer();
 
     TwoWindingsTransformerAdder newTwoWindingsTransformer();
 
     VoltageLevelAdder newVoltageLevel();
+
+    OverloadManagementSystemAdder newOverloadManagementSystem();
 
     void remove();
 
@@ -90,6 +100,8 @@ private: // Identifiable
 private:
     void addVoltageLevel(VoltageLevel& voltageLevel);
 
+    void addOverloadManagement(OverloadManagementSystem& overloadManagementSystem);
+
     void remove(const VoltageLevel& voltageLevel);
 
     void setNetworkRef(Network& network);
@@ -101,6 +113,9 @@ private:
     friend class VoltageLevel;
 
     friend class VoltageLevelAdder;
+
+    friend class OverloadManagementSystem;
+    friend class OverloadManagementSystemAdder;
 
     friend class NetworkIndex;
 
@@ -115,6 +130,8 @@ private:
     std::set<std::string> m_geographicalTags;
 
     std::vector<std::reference_wrapper<VoltageLevel> > m_voltageLevels;
+
+    std::vector<std::reference_wrapper<OverloadManagementSystem> > m_overloadManagementSystems;
 };
 
 }  // namespace iidm

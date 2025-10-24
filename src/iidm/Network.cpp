@@ -25,6 +25,7 @@
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/OverloadManagementSystem.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/Subnetwork.hpp>
@@ -539,6 +540,26 @@ bool Network::contains(Identifiable& identifiable) const {
     } else {
         return stdcxx::areSame(identifiable.getParentNetwork(), *this);
     }
+}
+
+const OverloadManagementSystem& Network::getOverloadManagementSystem(const std::string& id) const {
+    return get<OverloadManagementSystem>(id);
+}
+
+OverloadManagementSystem& Network::getOverloadManagementSystem(const std::string& id) {
+    return get<OverloadManagementSystem>(id);
+}
+
+unsigned long Network::getOverloadManagementSystemCount() const {
+    return getObjectCount<OverloadManagementSystem>();
+}
+
+stdcxx::const_range<OverloadManagementSystem> Network::getOverloadManagementSystems() const {
+    return m_networkIndex.getAll<OverloadManagementSystem>();
+}
+
+stdcxx::range<OverloadManagementSystem> Network::getOverloadManagementSystems() {
+    return m_networkIndex.getAll<OverloadManagementSystem>();
 }
 
 const ShuntCompensator& Network::getShuntCompensator(const std::string& id) const {

@@ -35,7 +35,8 @@ const std::initializer_list<std::string>& getNames<IdentifiableType>() {
         "SHUNT_COMPENSATOR",
         "DANGLING_LINE",
         "STATIC_VAR_COMPENSATOR",
-        "HVDC_CONVERTER_STATION"
+        "HVDC_CONVERTER_STATION",
+        "OVERLOAD_MANAGEMENT_SYSTEM"
     };
     return s_typeNames;
 }

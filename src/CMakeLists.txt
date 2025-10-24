@@ -17,6 +17,7 @@ set(IIDM_SOURCES
     iidm/ActivePowerLimitsAdder.cpp
     iidm/ApparentPowerLimits.cpp
     iidm/ApparentPowerLimitsAdder.cpp
+    iidm/AutomationSystem.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
     iidm/Boundary.cpp
@@ -101,6 +102,10 @@ set(IIDM_SOURCES
     iidm/OperationalLimits.cpp
     iidm/OperationalLimitsHolder.cpp
     iidm/Overload.cpp
+    iidm/OverloadManagementSystem.cpp
+    iidm/OverloadManagementSystemAdder.cpp
+    iidm/OverloadManagementSystemTripping.cpp
+    iidm/OverloadManagementSystemTrippingAdder.cpp
     iidm/PhaseTapChanger.cpp
     iidm/PhaseTapChangerAdder.cpp
     iidm/PhaseTapChangerHolder.cpp
