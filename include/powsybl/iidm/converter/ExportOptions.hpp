@@ -35,6 +35,7 @@ public:
     static constexpr const char* const TOPOLOGY_LEVEL = "iidm.export.xml.topology-level";
     static constexpr const char* const VERSION = "iidm.export.xml.version";
     static constexpr const char* const WITH_BRANCH_STATE_VARIABLES = "iidm.export.xml.with-branch-state-variables";
+    static constexpr const char* const WITH_AUTOMATION_SYSTEMS = "iidm.export.xml.with-automation-systems";
 
     enum class IidmVersionIncompatibilityBehavior : unsigned char {
         THROW_EXCEPTION,
@@ -168,9 +169,16 @@ public:
     /**
      * Return true if the state variables must be exported for branches.
      *
-     * @return true if te state variables must be exported, false otherwise
+     * @return true if the state variables must be exported, false otherwise
      */
     bool isWithBranchSV() const;
+
+    /**
+     * Return true if the automation systems must be exported.
+     *
+     * @return true if the automation systems must be exported, false otherwise
+     */
+    bool isWithAutomationSystems() const;
 
     /**
      * Enable/Disable the anonymization of the identifiers.
@@ -254,6 +262,15 @@ public:
     ExportOptions& setWithBranchSV(bool withBranchSV);
 
     /**
+     * Enable/Disable the export of the automation systems
+     *
+     * @param withAutomationSystems Set to true to export automation systems
+     *
+     * @return this ExportOptions object
+     */
+    ExportOptions& setWithAutomationSystems(bool withAutomationSystems);
+
+    /**
      * Return true if the given extension should be exported.
      *
      * @param extension The name of the extension
@@ -287,6 +304,8 @@ private:
     IidmVersionIncompatibilityBehavior m_iidmVersionIncompatibilityBehavior = IidmVersionIncompatibilityBehavior::THROW_EXCEPTION;
 
     std::string m_encoding = powsybl::xml::DEFAULT_ENCODING;
+
+    bool m_withAutomationSystems = true;
 };
 
 std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value);

@@ -24,6 +24,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     options.setThrowExceptionIfExtensionNotFound(true);
     BOOST_CHECK(options.isThrowExceptionIfExtensionNotFound());
 
+    BOOST_CHECK(options.isWithAutomationSystems());
+    options.setWithAutomationSystems(false);
+    BOOST_CHECK(!options.isWithAutomationSystems());
+
     options.addExtension("test");
     BOOST_CHECK(options.withExtension("test"));
     BOOST_CHECK(!options.withExtension("test2"));
@@ -33,10 +37,12 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     stdcxx::Properties properties;
     properties.set(ImportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
     properties.set(ImportOptions::EXTENSIONS_LIST, "");
+    properties.set(ImportOptions::WITH_AUTOMATION_SYSTEMS, "false");
 
     ImportOptions options(properties);
 
     BOOST_CHECK(options.isThrowExceptionIfExtensionNotFound());
+    BOOST_CHECK(!options.isWithAutomationSystems());
     BOOST_CHECK(!options.withExtension("abc"));
     BOOST_CHECK(!options.withExtension("def"));
 }

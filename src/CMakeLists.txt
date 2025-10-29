@@ -196,6 +196,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/NodeBreakerViewFictitiousInjectionXml.cpp
     iidm/converter/xml/NodeBreakerViewInternalConnectionXml.cpp
     iidm/converter/xml/NodeBreakerViewSwitchXml.cpp
+    iidm/converter/xml/OverloadManagementSystemXml.cpp
     iidm/converter/xml/PropertiesXml.cpp
     iidm/converter/xml/ReactiveLimitsXml.cpp
     iidm/converter/xml/ShuntCompensatorXml.cpp

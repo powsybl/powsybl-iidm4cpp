@@ -40,6 +40,10 @@ const char* ShuntCompensatorXml::getRootElementName() const {
     return SHUNT;
 }
 
+void ShuntCompensatorXml::readAndPostponeCreation(VoltageLevel& /*voltageLevel*/, NetworkXmlReaderContext& /*context*/) const {
+    throw AssertionError("Not implemented");
+}
+
 void ShuntCompensatorXml::readRootElementAttributes(ShuntCompensatorAdder& adder, std::vector<std::function<void(Identifiable&)>>& toApply ,NetworkXmlReaderContext& context) const {
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &adder]() {
         bool voltageRegulatorOn = context.getReader().getOptionalAttributeValue(VOLTAGE_REGULATOR_ON, false);

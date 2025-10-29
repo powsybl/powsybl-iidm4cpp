@@ -42,6 +42,7 @@ set(UNIT_TEST_SOURCES
     NetworkXmlWriterContextTest.cpp
     NodeBreakerPropertiesOnBusTest.cpp
     OptionalLoadTypeBugTest.cpp
+    OverloadManagementSystemsXmlTest.cpp
     PhaseShifterRoundTripTest.cpp
     RatioTapChangerXmlTest.cpp
     ReactiveLimitsRoundTripTest.cpp

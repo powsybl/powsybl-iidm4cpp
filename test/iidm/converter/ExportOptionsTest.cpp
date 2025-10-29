@@ -49,6 +49,10 @@ BOOST_AUTO_TEST_CASE(defaultConstructor) {
     options.setVersion("V1.0");
     BOOST_TEST("V1.0", options.getVersion());
 
+    BOOST_CHECK(options.isWithAutomationSystems());
+    options.setWithAutomationSystems(false);
+    BOOST_CHECK(!options.isWithAutomationSystems());
+
     BOOST_CHECK(options.withExtension("abc"));
     BOOST_CHECK(options.withExtension("def"));
 }
@@ -69,6 +73,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(options.isWithBranchSV());
     BOOST_TEST("V1.0", options.getVersion());
     BOOST_CHECK_EQUAL(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION, options.getIidmVersionIncompatibilityBehavior());
+    BOOST_CHECK(options.isWithAutomationSystems());
 }
 
 BOOST_AUTO_TEST_CASE(initFromProperties) {
@@ -82,6 +87,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     properties.set(ExportOptions::EXTENSIONS_LIST, "");
     properties.set(ExportOptions::VERSION, "1.0");
     properties.set(ExportOptions::IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR, "LOG_ERROR");
+    properties.set(ExportOptions::WITH_AUTOMATION_SYSTEMS, "false");
 
     ExportOptions options(properties);
 
@@ -95,6 +101,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     BOOST_CHECK(!options.withExtension("def"));
     BOOST_CHECK_EQUAL("1.0", options.getVersion());
     BOOST_CHECK_EQUAL(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR, options.getIidmVersionIncompatibilityBehavior());
+    BOOST_CHECK(!options.isWithAutomationSystems());
 }
 
 BOOST_AUTO_TEST_CASE(checkAllExtensions) {

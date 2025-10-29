@@ -23,6 +23,7 @@ class ImportOptions {
 public:
     static constexpr const char* const EXTENSIONS_LIST = "iidm.import.xml.extensions";
     static constexpr const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.import.xml.throw-exception-if-extension-not-found";
+    static constexpr const char* const WITH_AUTOMATION_SYSTEMS = "iidm.import.xml.with-automation-systems";
 
 public:
     ImportOptions() = default;
@@ -33,9 +34,13 @@ public:
 
     bool isThrowExceptionIfExtensionNotFound() const;
 
+    bool isWithAutomationSystems() const;
+
     ImportOptions& setExtensions(const std::set<std::string>& extensions);
 
     ImportOptions& setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound);
+
+    ImportOptions& setWithAutomationSystems(bool withAutomationSystems);
 
     bool withExtension(const std::string& extension) const;
 
@@ -43,6 +48,8 @@ private:
     bool m_throwExceptionIfExtensionNotFound = false;
 
     std::set<std::string> m_extensions;
+
+    bool m_withAutomationSystems = true;
 };
 
 }  // namespace converter

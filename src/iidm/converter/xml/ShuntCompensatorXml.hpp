@@ -39,6 +39,9 @@ protected:
     // AbstractComplexIdentifiableXml
     void readSubElements(const std::string& id, ShuntCompensatorAdder& adder, std::vector<std::function<void(Identifiable&)>>& toApply, NetworkXmlReaderContext& context) const override;
 
+    // AbstractComplexIdentifiableXml
+    void readAndPostponeCreation(VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const override;
+
     // AbstractIdentifiableXml
     void writeRootElementAttributes(const ShuntCompensator& shuntCompensator, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 

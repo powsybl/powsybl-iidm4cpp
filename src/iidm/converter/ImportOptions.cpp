@@ -21,10 +21,13 @@ namespace converter {
 static const Parameter EXTENSIONS_LIST_PARAMETER(ImportOptions::EXTENSIONS_LIST, converter::Parameter::Type::STRING_LIST, "The list of exported extensions", "");
 static const Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parameter(ImportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false")
     .addAdditionalNames({"throwExceptionIfExtensionNotFound"});
+static const Parameter WITH_AUTOMATION_SYSTEMS_PARAMETER = Parameter(ImportOptions::WITH_AUTOMATION_SYSTEMS, converter::Parameter::Type::BOOLEAN, 
+    "Import network with automation systems", "true");
 
 ImportOptions::ImportOptions(const stdcxx::Properties& parameters) :
     m_throwExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER)),
-    m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))) {
+    m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))),
+    m_withAutomationSystems(ConversionParameters::readBooleanParameter(parameters, WITH_AUTOMATION_SYSTEMS_PARAMETER)) {
 }
 
 ImportOptions& ImportOptions::addExtension(const std::string& extension) {
@@ -36,6 +39,10 @@ bool ImportOptions::isThrowExceptionIfExtensionNotFound() const {
     return m_throwExceptionIfExtensionNotFound;
 }
 
+bool ImportOptions::isWithAutomationSystems() const {
+    return m_withAutomationSystems;
+}
+
 ImportOptions& ImportOptions::setExtensions(const std::set<std::string>& extensions) {
     m_extensions = extensions;
     return *this;
@@ -43,6 +50,11 @@ ImportOptions& ImportOptions::setExtensions(const std::set<std::string>& extensi
 
 ImportOptions& ImportOptions::setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound) {
     m_throwExceptionIfExtensionNotFound = throwExceptionIfExtensionNotFound;
+    return *this;
+}
+
+ImportOptions& ImportOptions::setWithAutomationSystems(bool withAutomationSystems) {
+    m_withAutomationSystems = withAutomationSystems;
     return *this;
 }
 

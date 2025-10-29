@@ -36,6 +36,18 @@ protected:
     virtual void readRootElementAttributes(Adder& adder, std::vector<std::function<void(Identifiable&)>>& toApply ,NetworkXmlReaderContext& context) const = 0;
 
     virtual void readSubElements(const std::string& id, Adder& adder, std::vector<std::function<void(Identifiable&)>>& toApply, NetworkXmlReaderContext& context) const = 0;
+
+    /**
+     * In some specific cases, the element could not be created right after it is read, typically if it references
+     * other network elements which may have not been yet created.
+     * If this method returns true, the element's creation will be postponed into the "end tasks", to be performed
+     * after the whole network has been read. To do so readAndPostponeCreation() MUST be overriden to implement this behavior.
+     * Default returns false.
+     */
+    virtual bool postponeElementCreation() const;
+
+    virtual void readAndPostponeCreation(Parent& parent, NetworkXmlReaderContext& context) const = 0;
+
 };
 
 }  // namespace xml

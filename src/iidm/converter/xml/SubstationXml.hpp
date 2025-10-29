@@ -17,6 +17,8 @@ namespace powsybl {
 
 namespace iidm {
 
+class OverloadManagementSystem;
+
 namespace converter {
 
 namespace xml {
@@ -42,6 +44,8 @@ private:
     SubstationXml() = default;
 
     ~SubstationXml() noexcept override = default;
+
+    static bool filterValidOverloadManagementSystems(const OverloadManagementSystem& oms);
 };
 
 }  // namespace xml

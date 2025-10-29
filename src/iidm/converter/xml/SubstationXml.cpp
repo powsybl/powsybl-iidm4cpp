@@ -14,6 +14,10 @@
 #include <powsybl/iidm/Country.hpp>
 #include <powsybl/iidm/SubstationAdder.hpp>
 
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
+#include "OverloadManagementSystemXml.hpp"
 #include "ThreeWindingsTransformerXml.hpp"
 #include "TwoWindingsTransformerXml.hpp"
 #include "VoltageLevelXml.hpp"
@@ -72,7 +76,14 @@ void SubstationXml::readSubElements(Substation& substation, NetworkXmlReaderCont
             TwoWindingsTransformerXml::getInstance().read(substation, context);
         } else if (context.getReader().getLocalName() == THREE_WINDINGS_TRANSFORMER) {
             ThreeWindingsTransformerXml::getInstance().read(substation, context);
-        } else {
+        } else if (context.getReader().getLocalName() == OVERLOAD_MANAGEMENT_SYSTEM) {
+            IidmXmlUtil::assertMinimumVersion(SUBSTATION, OVERLOAD_MANAGEMENT_SYSTEM, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
+            if(context.getOptions().isWithAutomationSystems()) {
+                OverloadManagementSystemXml::getInstance().read(substation, context);
+            } else {
+                OverloadManagementSystemXml::getInstance().skip(context);
+            }
+        }  else {
             AbstractSimpleIdentifiableXml::readSubElements(substation, context);
         }
     });
@@ -116,7 +127,61 @@ void SubstationXml::writeSubElements(const Substation& substation, const Network
         }
         ThreeWindingsTransformerXml::getInstance().write(twt, substation, context);
     }
+
+    if(context.getOptions().isWithAutomationSystems()) {
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &substation]() {
+            stdcxx::const_range<OverloadManagementSystem> validOmsRange = substation.getOverloadManagementSystems() | boost::adaptors::filtered(SubstationXml::filterValidOverloadManagementSystems);
+            for (const auto& oms : validOmsRange) {
+                OverloadManagementSystemXml::getInstance().write(oms, substation, context);
+            }
+        });
+    }
+
 }
+
+ bool SubstationXml::filterValidOverloadManagementSystems(const OverloadManagementSystem& oms) {
+    const Network& n = oms.getSubstation().get().getNetwork();
+
+    if(!static_cast<bool>(n.find(oms.getMonitoredElementId()))){
+        logging::Logger& logger = logging::LoggerFactory::getLogger<SubstationXml>();
+        logger.warn(stdcxx::format("Discard overload management system '%1%': monitored element '%2%' is unknown.", oms.getId(), oms.getMonitoredElementId()));
+        return false;
+    }
+
+    for (const auto& tripping : oms.getTrippings()) {
+        bool elementfound = false;
+        std::string id = "";
+
+        if (tripping.getType() == OverloadManagementSystem::Tripping::Type::BRANCH_TRIPPING &&
+            stdcxx::isInstanceOf<overload_management_system::BranchTripping>(tripping)) {
+            const auto &branchTripping = dynamic_cast<const overload_management_system::BranchTripping &>(tripping);
+            id = branchTripping.getBranchToOperateId();
+            elementfound = static_cast<bool>(n.find<Branch>(id));
+        }
+        else if (tripping.getType() == OverloadManagementSystem::Tripping::Type::SWITCH_TRIPPING &&
+                 stdcxx::isInstanceOf<overload_management_system::SwitchTripping>(tripping))
+        {
+            const auto &switchTripping = dynamic_cast<const overload_management_system::SwitchTripping &>(tripping);
+            id = switchTripping.getSwitchToOperateId();
+            elementfound = static_cast<bool>(n.find<Switch>(id));
+        }
+        else if (tripping.getType() == OverloadManagementSystem::Tripping::Type::THREE_WINDINGS_TRANSFORMER_TRIPPING &&
+                 stdcxx::isInstanceOf<overload_management_system::ThreeWindingsTransformerTripping>(tripping))
+        {
+            const auto &twtTripping = dynamic_cast<const overload_management_system::ThreeWindingsTransformerTripping &>(tripping);
+            id = twtTripping.getThreeWindingsTransformerToOperateId();
+            elementfound = static_cast<bool>(n.find<ThreeWindingsTransformer>(id));
+        }
+
+        if(!elementfound) {
+            logging::Logger& logger = logging::LoggerFactory::getLogger<SubstationXml>();
+            logger.warn(stdcxx::format("Discard overload management system '%1%': invalid %2% tripping. '%3%' is unknown.", oms.getNameOrId(), Enum::toString(oms.getType()), id));
+            return false;
+        }
+    }
+
+    return true;
+ }
 
 }  // namespace xml
 

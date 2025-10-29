@@ -45,6 +45,7 @@ static const Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parame
 static const Parameter TOPOLOGY_LEVEL_PARAMETER(ExportOptions::TOPOLOGY_LEVEL, Parameter::Type::STRING, "Export network in this topology level", "NODE_BREAKER");
 static const Parameter VERSION_PARAMETER(ExportOptions::VERSION, Parameter::Type::STRING, "IIDM-XML version in which files will be generated", xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString("."));
 static const Parameter WITH_BRANCH_STATE_VARIABLES_PARAMETER(ExportOptions::WITH_BRANCH_STATE_VARIABLES, Parameter::Type::BOOLEAN, "Export network with branch state variables", "true");
+static const Parameter WITH_AUTOMATION_SYSTEMS_PARAMETER(ExportOptions::WITH_AUTOMATION_SYSTEMS, Parameter::Type::BOOLEAN, "Export network with automation systems", "true");
 
 std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value) {
     stream << iidm::Enum::toString(value);
@@ -72,7 +73,8 @@ ExportOptions::ExportOptions(const stdcxx::Properties& parameters) :
     m_withBranchSV(ConversionParameters::readBooleanParameter(parameters, WITH_BRANCH_STATE_VARIABLES_PARAMETER)),
     m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))),
     m_version(ConversionParameters::readStringParameter(parameters, VERSION_PARAMETER)),
-    m_iidmVersionIncompatibilityBehavior(Enum::fromString<IidmVersionIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER))) {
+    m_iidmVersionIncompatibilityBehavior(Enum::fromString<IidmVersionIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER))),
+    m_withAutomationSystems(ConversionParameters::readBooleanParameter(parameters, WITH_AUTOMATION_SYSTEMS_PARAMETER)) {
 }
 
 ExportOptions& ExportOptions::addExtension(const std::string& extension) {
@@ -142,6 +144,10 @@ bool ExportOptions::isWithBranchSV() const {
     return m_withBranchSV;
 }
 
+bool ExportOptions::isWithAutomationSystems() const {
+    return m_withAutomationSystems;
+}
+
 ExportOptions& ExportOptions::setAnonymized(bool anonymized) {
     m_anonymized = anonymized;
     return *this;
@@ -184,6 +190,11 @@ ExportOptions& ExportOptions::setVersion(const std::string& version) {
 
 ExportOptions& ExportOptions::setWithBranchSV(bool withBranchSV) {
     m_withBranchSV = withBranchSV;
+    return *this;
+}
+
+ExportOptions& ExportOptions::setWithAutomationSystems(bool withAutomationSystems) {
+    m_withAutomationSystems = withAutomationSystems;
     return *this;
 }
 

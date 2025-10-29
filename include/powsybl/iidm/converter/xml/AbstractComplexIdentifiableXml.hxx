@@ -32,16 +32,19 @@ namespace xml {
 
 template <typename Added, typename Adder, typename Parent>
 void AbstractComplexIdentifiableXml<Added, Adder, Parent>::read(Parent& parent, NetworkXmlReaderContext& context) const {
-    std::vector<std::function<void(Identifiable&)>> toApply;
+    if(!postponeElementCreation()) {
+        std::vector<std::function<void(Identifiable&)>> toApply;
+        Adder adder = this->createAdder(parent);
+        const std::string id = AbstractIdentifiableXml<Added, Adder, Parent>::readIdentifierAttributes(adder, context);
+        readRootElementAttributes(adder, toApply, context);
+        readSubElements(id, adder, toApply, context);
 
-    Adder adder = this->createAdder(parent);
-    const std::string id = AbstractIdentifiableXml<Added, Adder, Parent>::readIdentifierAttributes(adder, context);
-    readRootElementAttributes(adder, toApply, context);
-    readSubElements(id, adder, toApply, context);
-
-    Added& identifiable = adder.add();
-    for(auto func : toApply) {
-        func(identifiable);
+        Added& identifiable = adder.add();
+        for(auto func : toApply) {
+            func(identifiable);
+        }
+    } else {
+        readAndPostponeCreation(parent, context);
     }
 }
 
@@ -55,6 +58,11 @@ void AbstractComplexIdentifiableXml<Added, Adder, Parent>::readSubElements(const
     } else {
         throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), id));
     }
+}
+
+template <typename Added, typename Adder, typename Parent>
+bool AbstractComplexIdentifiableXml<Added, Adder, Parent>::postponeElementCreation() const {
+    return false;
 }
 
 }  // namespace xml
