@@ -124,7 +124,7 @@ void CalculatedBusTopology::updateCache() {
 
     const auto& graph = m_voltageLevel.getGraph();
 
-    std::vector<bool> encountered(graph.getVertexCount(), false);
+    std::vector<bool> encountered(graph.getVertexCapacity(), false);
     for (unsigned long v : graph.getVertices()) {
         if (!encountered[v]) {
 

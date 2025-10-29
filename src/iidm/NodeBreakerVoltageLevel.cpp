@@ -149,7 +149,7 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
 
     unsigned long node = nodeTerminal.getNode();
-    assert(node < m_graph.getVertexCount());
+    assert(node < m_graph.getVertexCapacity());
     assert(stdcxx::areSame(m_graph.getVertexObject(node).get(), nodeTerminal));
 
     getNetwork().getVariantManager().forEachVariant([this]() {
