@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_CONVERTER_XML_TERMINALREFXML_HPP
 
 #include <string>
+#include <functional>
 
 #include <powsybl/iidm/ThreeSides.hpp>
 
@@ -35,6 +36,8 @@ class NetworkXmlWriterContext;
 class TerminalRefXml {
 public:
     static Terminal& readTerminal(Network& network, NetworkXmlReaderContext& context);
+
+    static void readTerminalRef(Network& network, NetworkXmlReaderContext& context, const std::function<void(Terminal&)>& endTaskTerminalConsumer);
 
     static Terminal& resolve(const std::string& id, const std::string& side, Network& network);
 

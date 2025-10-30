@@ -60,10 +60,8 @@ void StaticVarCompensatorXml::readSubElements(StaticVarCompensator& svc, Network
     context.getReader().readUntilEndElement(STATIC_VAR_COMPENSATOR, [this, &svc, &context]() {
         if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
             IidmXmlUtil::assertMinimumVersion(STATIC_VAR_COMPENSATOR, REGULATING_TERMINAL, xml::ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_1(), context);
-            const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
-            const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
-            context.addEndTask([id, side, &svc]() {
-                svc.setRegulatingTerminal(stdcxx::ref<Terminal>(TerminalRefXml::resolve(id, side, svc.getNetwork())));
+            TerminalRefXml::readTerminalRef(svc.getNetwork(), context, [&svc](Terminal& regulationTerminal) {
+                svc.setRegulatingTerminal(stdcxx::ref<Terminal>(regulationTerminal));
             });
         } else {
             AbstractSimpleIdentifiableXml::readSubElements(svc, context);

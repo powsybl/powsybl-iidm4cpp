@@ -100,15 +100,13 @@ void OverloadManagementSystemXml::readAndPostponeCreation(Substation& substation
     std::vector<std::function<void(Identifiable&)>> toApply;
 
     auto ptrAdder = std::make_shared<OverloadManagementSystemAdder>(substation);
-    std::shared_ptr<Validable> storePtr = std::dynamic_pointer_cast<Validable>(ptrAdder);
-    context.addEndAdder(storePtr);
     OverloadManagementSystemAdder& adder = *ptrAdder.get();
     const std::string id = readIdentifierAttributes(adder, context);
     readRootElementAttributes(adder, toApply, context);
     readSubElements(id, adder, toApply, context);
 
-    context.addEndTask([&adder, toApply]() {
-        OverloadManagementSystem& identifiable = adder.add();
+    context.addEndTask([ptrAdder, toApply]() {
+        OverloadManagementSystem& identifiable = ptrAdder->add();
         for(auto func : toApply) {
             func(identifiable);
         }

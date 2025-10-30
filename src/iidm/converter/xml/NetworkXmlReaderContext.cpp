@@ -30,10 +30,6 @@ void NetworkXmlReaderContext::addEndTask(const std::function<void()>& endTask) {
     m_endTasks.emplace_back(endTask);
 }
 
-void NetworkXmlReaderContext::addEndAdder(std::shared_ptr<Validable>& endAdder) {
-    m_endAdders.push_back(endAdder);
-}
-
 void NetworkXmlReaderContext::buildExtensionNamespaceUriList(const stdcxx::const_range<ExtensionXmlSerializer>& providers) {
     for (const auto& it : providers) {
         std::string namespaceUri = m_reader.getNamespace(it.getNamespacePrefix(), "");

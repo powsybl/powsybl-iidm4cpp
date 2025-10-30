@@ -110,10 +110,12 @@ set(IIDM_SOURCES
     iidm/PhaseTapChangerAdder.cpp
     iidm/PhaseTapChangerHolder.cpp
     iidm/PhaseTapChangerStep.cpp
+    iidm/PhaseTapChangerStepAdder.cpp
     iidm/RatioTapChanger.cpp
     iidm/RatioTapChangerAdder.cpp
     iidm/RatioTapChangerHolder.cpp
     iidm/RatioTapChangerStep.cpp
+    iidm/RatioTapChangerStepAdder.cpp
     iidm/ReactiveCapabilityCurve.cpp
     iidm/ReactiveCapabilityCurveAdder.cpp
     iidm/ReactiveLimitsHolder.cpp

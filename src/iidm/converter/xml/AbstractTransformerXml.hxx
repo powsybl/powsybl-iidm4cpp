@@ -41,41 +41,23 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(int leg, ThreeWin
 }
 
 template <typename Added, typename Adder>
-void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
-    const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
-    const double& targetDeadband = readTargetDeadband(context);
+void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string& elementName, std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
+    auto tapChangerAdder = std::dynamic_pointer_cast<TapChangerAdder<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder, PhaseTapChangerHolder>>(adder);
+    readTapChangerAttributes<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder, PhaseTapChangerHolder>(context, tapChangerAdder);
     const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
-    adder->setLowTapPosition(lowTapPosition)
-        .setTargetDeadband(targetDeadband)
-        .setRegulationValue(regulationValue);
-    const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
-    const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
+    adder->setRegulationValue(regulationValue);
     const auto& regModeStr = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
-    if(tapPosition.has_value()) {
-        adder->setTapPosition(*tapPosition);
-    }
-    if(regulating.has_value()) {
-        adder->setRegulating(*regulating);
-    }
     if(regModeStr.has_value()) {
         adder->setRegulationMode(Enum::fromString<PhaseTapChanger::RegulationMode>(*regModeStr));
     }
     bool hasTerminalRef = false;
-    context.getReader().readUntilEndElement(elementName, [&adder, &context, &hasTerminalRef, &terminal]() {
+    context.getReader().readUntilEndElement(elementName, [&adder, &tapChangerAdder, &context, &hasTerminalRef, &terminal]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
-            readTerminalRef(context, hasTerminalRef, [adder, &terminal](const std::string& id, const std::string& side) {
-                adder->setRegulationTerminal(stdcxx::ref<Terminal>(TerminalRefXml::resolve(id, side, terminal.getVoltageLevel().getNetwork())));
-                adder->add();
-            });
+            hasTerminalRef = true;
+            readTapChangerTerminalRef(context, tapChangerAdder, terminal);
         } else if (context.getReader().getLocalName() == STEP) {
-            PhaseTapChangerAdder::StepAdder stepAdder = adder->beginStep();
-            readSteps(context, [&stepAdder](double r, double x, double g, double b, double rho) {
-                stepAdder.setR(r)
-                    .setX(x)
-                    .setG(g)
-                    .setB(b)
-                    .setRho(rho);
-            });
+            PhaseTapChangerStepAdder stepAdder = adder->beginStep();
+            readSteps(context, stepAdder);
             const auto& alpha = context.getReader().getAttributeValue<double>(ALPHA);
             stepAdder.setAlpha(alpha)
                 .endStep();
@@ -108,10 +90,11 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(int leg, ThreeWin
 }
 
 template <typename Added, typename Adder>
-void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
-    const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
-    const double& targetDeadband = readTargetDeadband(context);
+void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string& elementName, std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
+    auto tapChangerAdder = std::dynamic_pointer_cast<TapChangerAdder<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder, RatioTapChangerHolder>>(adder);
+    readTapChangerAttributes<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder, RatioTapChangerHolder>(context, tapChangerAdder);
     const auto& loadTapChangingCapabilities = context.getReader().getAttributeValue<bool>(LOAD_TAP_CHANGING_CAPABILITIES);
+    adder->setLoadTapChangingCapabilities(loadTapChangingCapabilities);
 
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_11(), context.getVersion(), [&context, &adder]() {
         double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
@@ -126,34 +109,15 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
         adder->setRegulationValue(regulationValue);
     });
 
-    adder->setLowTapPosition(lowTapPosition)
-        .setTargetDeadband(targetDeadband)
-        .setLoadTapChangingCapabilities(loadTapChangingCapabilities);
-    const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
-    const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
-    if(tapPosition.has_value()) {
-        adder->setTapPosition(*tapPosition);
-    }
-    if(regulating.has_value()) {
-        adder->setRegulating(*regulating);
-    }
     bool hasTerminalRef = false;
-    context.getReader().readUntilEndElement(elementName, [&adder, &context, &terminal, &hasTerminalRef]() {
+    context.getReader().readUntilEndElement(elementName, [&adder, &tapChangerAdder, &context, &terminal, &hasTerminalRef]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
-            readTerminalRef(context, hasTerminalRef, [adder, &terminal](const std::string& id, const std::string& side) {
-                adder->setRegulationTerminal(stdcxx::ref<Terminal>(TerminalRefXml::resolve(id, side, terminal.getVoltageLevel().getNetwork())));
-                adder->add();
-            });
+            hasTerminalRef = true;
+            readTapChangerTerminalRef(context, tapChangerAdder, terminal);
         } else if (context.getReader().getLocalName() == STEP) {
-            readSteps(context, [&adder](double r, double x, double g, double b, double rho) {
-                adder->beginStep()
-                    .setR(r)
-                    .setX(x)
-                    .setG(g)
-                    .setB(b)
-                    .setRho(rho)
-                    .endStep();
-            });
+            RatioTapChangerStepAdder stepAdder = adder->beginStep();
+            readSteps(context, stepAdder);
+            stepAdder.endStep();
         } else {
             throw PowsyblException(stdcxx::format("Unexpected XML element <%1%>", context.getReader().getLocalName()));
         }
@@ -164,14 +128,14 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
 }
 
 template <typename Added, typename Adder>
-template <typename StepConsumer>
-void AbstractTransformerXml<Added, Adder>::readSteps(const NetworkXmlReaderContext& context, const StepConsumer& consumer) {
+template <typename TCStepAdder, typename TCAdder>
+void AbstractTransformerXml<Added, Adder>::readSteps(const NetworkXmlReaderContext& context, TapChangerStepAdder<TCStepAdder, TCAdder>& tapChangerStepAdder) {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);
     const auto& g = context.getReader().getAttributeValue<double>(G);
     const auto& b = context.getReader().getAttributeValue<double>(B);
     const auto& rho = context.getReader().getAttributeValue<double>(RHO);
-    consumer(r, x, g, b, rho);
+    tapChangerStepAdder.setR(r).setX(x).setG(g).setB(b).setRho(rho);
 }
 
 template <typename Added, typename Adder>
@@ -194,14 +158,32 @@ double AbstractTransformerXml<Added, Adder>::readTargetDeadband(NetworkXmlReader
 }
 
 template <typename Added, typename Adder>
-template <typename TerminalRefConsumer>
-void AbstractTransformerXml<Added, Adder>::readTerminalRef(NetworkXmlReaderContext& context, bool& hasTerminalRef, const TerminalRefConsumer& consumer) {
-    const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
-    const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
-    context.addEndTask([id, side, consumer]() {
-        consumer(id, side);
+template <typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+void AbstractTransformerXml<Added, Adder>::readTapChangerTerminalRef(NetworkXmlReaderContext& context, std::shared_ptr<TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>>& tapChangerAdder, Terminal& terminal) {
+    Network& n = terminal.getVoltageLevel().getNetwork();
+    TerminalRefXml::readTerminalRef(n, context, [tapChangerAdder](Terminal& regulationTerminal) {
+                tapChangerAdder->setRegulationTerminal(stdcxx::ref<Terminal>(regulationTerminal));
+                tapChangerAdder->add();
     });
-    hasTerminalRef = true;
+}
+
+template <typename Added, typename Adder>
+template <typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+void AbstractTransformerXml<Added, Adder>::readTapChangerAttributes(NetworkXmlReaderContext& context, std::shared_ptr<TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>>& tapChangerAdder) {
+    const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
+    const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
+    const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
+    const double& targetDeadband = readTargetDeadband(context);
+    
+    tapChangerAdder->setLowTapPosition(lowTapPosition)
+        .setTargetDeadband(targetDeadband);
+    
+    if(tapPosition.has_value()) {
+        tapChangerAdder->setTapPosition(*tapPosition);
+    }
+    if(regulating.has_value()) {
+        tapChangerAdder->setRegulating(*regulating);
+    }
 }
 
 template <typename Added, typename Adder>

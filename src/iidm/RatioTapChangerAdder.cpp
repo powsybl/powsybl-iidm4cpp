@@ -20,47 +20,8 @@ namespace powsybl {
 
 namespace iidm {
 
-RatioTapChangerAdder::StepAdder::StepAdder(RatioTapChangerAdder& parent) :
-    m_parent(parent) {
-}
-
-RatioTapChangerAdder& RatioTapChangerAdder::StepAdder::endStep() {
-    checkOptional(m_parent.getValidable(), m_rho, "step rho is not set");
-    checkOptional(m_parent.getValidable(), m_r, "step r is not set");
-    checkOptional(m_parent.getValidable(), m_x, "step x is not set");
-    checkOptional(m_parent.getValidable(), m_g, "step g is not set");
-    checkOptional(m_parent.getValidable(), m_b, "step b is not set");
-
-    return m_parent.addStep(m_rho, m_r, m_x, m_g, m_b);
-}
-
-RatioTapChangerAdder::StepAdder& RatioTapChangerAdder::StepAdder::setB(double b) {
-    m_b = b;
-    return *this;
-}
-
-RatioTapChangerAdder::StepAdder& RatioTapChangerAdder::StepAdder::setG(double g) {
-    m_g = g;
-    return *this;
-}
-
-RatioTapChangerAdder::StepAdder& RatioTapChangerAdder::StepAdder::setR(double r) {
-    m_r = r;
-    return *this;
-}
-
-RatioTapChangerAdder::StepAdder& RatioTapChangerAdder::StepAdder::setRho(double rho) {
-    m_rho = rho;
-    return *this;
-}
-
-RatioTapChangerAdder::StepAdder& RatioTapChangerAdder::StepAdder::setX(double x) {
-    m_x = x;
-    return *this;
-}
-
 RatioTapChangerAdder::RatioTapChangerAdder(RatioTapChangerHolder& parent) :
-    m_parent(parent) {
+    TapChangerAdder(parent) {
 }
 
 RatioTapChanger& RatioTapChangerAdder::add() {
@@ -100,8 +61,8 @@ RatioTapChangerAdder& RatioTapChangerAdder::addStep(double rho, double r, double
     return *this;
 }
 
-RatioTapChangerAdder::StepAdder RatioTapChangerAdder::beginStep() {
-    return StepAdder(*this);
+RatioTapChangerStepAdder RatioTapChangerAdder::beginStep() {
+    return RatioTapChangerStepAdder(*this);
 }
 
 Network& RatioTapChangerAdder::getNetwork() {

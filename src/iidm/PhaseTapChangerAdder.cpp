@@ -19,53 +19,8 @@ namespace powsybl {
 
 namespace iidm {
 
-PhaseTapChangerAdder::StepAdder::StepAdder(PhaseTapChangerAdder& parent) :
-    m_parent(parent) {
-}
-
-PhaseTapChangerAdder& PhaseTapChangerAdder::StepAdder::endStep() {
-    checkOptional(m_parent.getValidable(), m_alpha, "step alpha is not set");
-    checkOptional(m_parent.getValidable(), m_rho, "step rho is not set");
-    checkOptional(m_parent.getValidable(), m_r, "step r is not set");
-    checkOptional(m_parent.getValidable(), m_x, "step x is not set");
-    checkOptional(m_parent.getValidable(), m_g, "step g is not set");
-    checkOptional(m_parent.getValidable(), m_b, "step b is not set");
-
-    return m_parent.addStep(m_alpha, m_rho, m_r, m_x, m_g, m_b);
-}
-
-PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setAlpha(double alpha) {
-    m_alpha = alpha;
-    return *this;
-}
-
-PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setB(double b) {
-    m_b = b;
-    return *this;
-}
-
-PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setG(double g) {
-    m_g = g;
-    return *this;
-}
-
-PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setR(double r) {
-    m_r = r;
-    return *this;
-}
-
-PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setRho(double rho) {
-    m_rho = rho;
-    return *this;
-}
-
-PhaseTapChangerAdder::StepAdder& PhaseTapChangerAdder::StepAdder::setX(double x) {
-    m_x = x;
-    return *this;
-}
-
 PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent) :
-    m_parent(parent) {
+    TapChangerAdder(parent) {
 }
 
 PhaseTapChanger& PhaseTapChangerAdder::add() {
@@ -106,8 +61,8 @@ PhaseTapChangerAdder& PhaseTapChangerAdder::addStep(double alpha, double rho, do
     return *this;
 }
 
-PhaseTapChangerAdder::StepAdder PhaseTapChangerAdder::beginStep() {
-    return StepAdder(*this);
+PhaseTapChangerStepAdder PhaseTapChangerAdder::beginStep() {
+    return PhaseTapChangerStepAdder(*this);
 }
 
 Network& PhaseTapChangerAdder::getNetwork() {

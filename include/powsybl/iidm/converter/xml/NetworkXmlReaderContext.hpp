@@ -40,7 +40,6 @@ public:
     NetworkXmlReaderContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options, const IidmXmlVersion& version);
 
     void addEndTask(const std::function<void()>& endTask);
-    void addEndAdder(std::shared_ptr<Validable>& endAdder);
 
     void buildExtensionNamespaceUriList(const stdcxx::const_range<ExtensionXmlSerializer>& providers);
 
@@ -64,7 +63,6 @@ private:
     std::unique_ptr<Anonymizer> m_anonymizer;
 
     std::list<std::function<void()>> m_endTasks;
-    std::vector<std::shared_ptr<Validable>> m_endAdders; //Used to store adders for postponed creation of elements
 
     ImportOptions m_options;
 

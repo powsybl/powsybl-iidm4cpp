@@ -12,7 +12,9 @@
 
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TapChanger.hpp>
+#include <powsybl/iidm/TapChangerAdder.hpp>
 #include <powsybl/iidm/TapChangerStep.hpp>
+#include <powsybl/iidm/TapChangerStepAdder.hpp>
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 #include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
 
@@ -27,6 +29,8 @@ class XmlStreamWriter;
 namespace iidm {
 
 class PhaseTapChanger;
+class PhaseTapChangerAdder;
+class RatioTapChangerAdder;
 class RatioTapChanger;
 class Terminal;
 class TwoWindingsTransformer;
@@ -46,7 +50,7 @@ protected:
 
     static void readPhaseTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context);
 
-    static void readPhaseTapChanger(const std::string& elementName, const std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
+    static void readPhaseTapChanger(const std::string& elementName, std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 
     template <typename Consumer>
     static void readRatedS(const std::string& name, NetworkXmlReaderContext& context, const Consumer& consumer);
@@ -55,15 +59,18 @@ protected:
 
     static void readRatioTapChanger(int leg, ThreeWindingsTransformer::Leg& twl, NetworkXmlReaderContext& context);
 
-    static void readRatioTapChanger(const std::string& elementName, const std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
+    static void readRatioTapChanger(const std::string& elementName, std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 
-    template <typename StepConsumer>
-    static void readSteps(const NetworkXmlReaderContext& context, const StepConsumer& consumer);
+    template <typename A, typename B>
+    static void readSteps(const NetworkXmlReaderContext& context, TapChangerStepAdder<A, B>& tapChangerStepAdder);
 
     static double readTargetDeadband(NetworkXmlReaderContext& context);
 
-    template <typename TerminalRefConsumer>
-    static void readTerminalRef(NetworkXmlReaderContext& context, bool& hasTerminalRef, const TerminalRefConsumer& consumer);
+    template <typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+    static void readTapChangerTerminalRef(NetworkXmlReaderContext& context, std::shared_ptr<TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>>& tapChangerAdder, Terminal& terminal);
+    
+    template <typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+    static void readTapChangerAttributes(NetworkXmlReaderContext& context, std::shared_ptr<TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>>& tapChangerAdder);
 
     static void writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context);
 

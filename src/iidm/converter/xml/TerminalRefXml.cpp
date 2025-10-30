@@ -38,6 +38,15 @@ Terminal& TerminalRefXml::readTerminal(Network& network, NetworkXmlReaderContext
     return TerminalRefXml::resolve(id, side, network);
 }
 
+void TerminalRefXml::readTerminalRef(Network& network, NetworkXmlReaderContext& context, const std::function<void(Terminal&)>& endTaskTerminalConsumer) {
+    const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+    const std::string side = context.getReader().getOptionalAttributeValue(SIDE, "");
+    context.addEndTask([&network, id, side, endTaskTerminalConsumer]() {
+        Terminal& terminal = resolve(id, side, network);
+        endTaskTerminalConsumer(terminal);
+    });
+}
+
 Terminal& TerminalRefXml::resolve(const std::string& id, const std::string& side, Network& network) {
     ThreeSides threeSide = ThreeSides::ONE;
     if(!side.empty()) {

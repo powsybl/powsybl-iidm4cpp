@@ -57,10 +57,8 @@ void VscConverterStationXml::readSubElements(VscConverterStation& converterStati
             ReactiveLimitsXml::getInstance().read(converterStation, context);
         } else if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
             IidmXmlUtil::assertMinimumVersion(VSC_CONVERTER_STATION, REGULATING_TERMINAL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
-            const auto& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
-            const auto& side = context.getReader().getOptionalAttributeValue(SIDE, "");
-            context.addEndTask([&converterStation, id, side]() {
-                converterStation.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::resolve(id, side, converterStation.getNetwork())));
+            TerminalRefXml::readTerminalRef(converterStation.getNetwork(), context, [&converterStation](Terminal& regulationTerminal) {
+                converterStation.setRegulatingTerminal(stdcxx::ref<Terminal>(regulationTerminal));
             });
         } else {
             AbstractSimpleIdentifiableXml::readSubElements(converterStation, context);

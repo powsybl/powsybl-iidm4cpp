@@ -11,6 +11,8 @@
 #include <vector>
 
 #include <powsybl/iidm/PhaseTapChanger.hpp>
+#include <powsybl/iidm/PhaseTapChangerStepAdder.hpp>
+#include <powsybl/iidm/TapChangerAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -25,69 +27,32 @@ class Terminal;
 class TwoWindingsTransformer;
 class Validable;
 
-class PhaseTapChangerAdder {
-public:
-    class StepAdder {
-    public:
-        ~StepAdder() noexcept = default;
-
-        PhaseTapChangerAdder& endStep();
-
-        StepAdder& setAlpha(double alpha);
-
-        StepAdder& setB(double b);
-
-        StepAdder& setG(double g);
-
-        StepAdder& setR(double r);
-
-        StepAdder& setRho(double rho);
-
-        StepAdder& setX(double x);
-
-    private:
-        explicit StepAdder(PhaseTapChangerAdder& parent);
-
-        friend class PhaseTapChangerAdder;
-
-    private:
-        PhaseTapChangerAdder& m_parent;
-
-        double m_alpha = stdcxx::nan();
-
-        double m_rho = 1.0;
-
-        double m_r = 0.0;
-
-        double m_x = 0.0;
-
-        double m_g = 0.0;
-
-        double m_b = 0.0;
-    };
+class PhaseTapChangerAdder : public TapChangerAdder<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder, PhaseTapChangerHolder> {
 
 public:
     explicit PhaseTapChangerAdder(PhaseTapChangerHolder& parent);
 
     ~PhaseTapChangerAdder() noexcept = default;
 
-    PhaseTapChanger& add();
+    //TapChanger
+    PhaseTapChanger& add() override;
 
-    StepAdder beginStep();
+    PhaseTapChangerStepAdder beginStep() override;
 
-    PhaseTapChangerAdder& setLowTapPosition(long lowTapPosition);
+    PhaseTapChangerAdder& setLowTapPosition(long lowTapPosition) override;
 
-    PhaseTapChangerAdder& setRegulating(bool regulating);
+    PhaseTapChangerAdder& setTapPosition(long tapPosition) override;
 
+    PhaseTapChangerAdder& setRegulating(bool regulating) override;
+
+    PhaseTapChangerAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) override;
+
+    PhaseTapChangerAdder& setTargetDeadband(double targetDeadband) override;
+
+    //PhaseTapChangerAdder
     PhaseTapChangerAdder& setRegulationMode(const PhaseTapChanger::RegulationMode& regulationMode);
 
-    PhaseTapChangerAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal);
-
     PhaseTapChangerAdder& setRegulationValue(double regulationValue);
-
-    PhaseTapChangerAdder& setTapPosition(long tapPosition);
-
-    PhaseTapChangerAdder& setTargetDeadband(double targetDeadband);
 
 protected:
     Network& getNetwork();
@@ -97,24 +62,14 @@ private:
 
     Validable& getValidable();
 
+    friend class PhaseTapChangerStepAdder;
+
 private:
-    PhaseTapChangerHolder& m_parent;
-
-    long m_lowTapPosition = 0;
-
-    stdcxx::optional<long> m_tapPosition;
-
     std::vector<PhaseTapChangerStep> m_steps;
 
     PhaseTapChanger::RegulationMode m_regulationMode = PhaseTapChanger::RegulationMode::FIXED_TAP;
 
     double m_regulationValue = stdcxx::nan();
-
-    bool m_regulating = false;
-
-    stdcxx::Reference<Terminal> m_regulationTerminal;
-
-    double m_targetDeadband = stdcxx::nan();
 };
 
 }  // namespace iidm

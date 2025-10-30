@@ -11,6 +11,8 @@
 #include <vector>
 
 #include <powsybl/iidm/RatioTapChanger.hpp>
+#include <powsybl/iidm/RatioTapChangerStepAdder.hpp>
+#include <powsybl/iidm/TapChangerAdder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -19,69 +21,35 @@ namespace powsybl {
 
 namespace iidm {
 
-// class Validable;
-
-class RatioTapChangerAdder {
-public:
-    class StepAdder {
-    public:
-        ~StepAdder() noexcept = default;
-
-        RatioTapChangerAdder& endStep();
-
-        StepAdder& setB(double b);
-
-        StepAdder& setG(double g);
-
-        StepAdder& setR(double r);
-
-        StepAdder& setRho(double rho);
-
-        StepAdder& setX(double x);
-
-    private:
-        explicit StepAdder(RatioTapChangerAdder& parent);
-
-        friend class RatioTapChangerAdder;
-
-    private:
-        RatioTapChangerAdder& m_parent;
-
-        double m_rho = stdcxx::nan();
-
-        double m_r = 0.0;
-
-        double m_x = 0.0;
-
-        double m_g = 0.0;
-
-        double m_b = 0.0;
-    };
+class RatioTapChangerAdder : public TapChangerAdder<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder, RatioTapChangerHolder> {
 
 public:
     explicit RatioTapChangerAdder(RatioTapChangerHolder& parent);
 
     ~RatioTapChangerAdder() noexcept = default;
 
-    RatioTapChanger& add();
+    //TapChangerAdder
+    RatioTapChanger& add() override;
 
-    StepAdder beginStep();
+    RatioTapChangerStepAdder beginStep() override;
 
+    RatioTapChangerAdder& setLowTapPosition(long lowTapPosition) override;
+
+    RatioTapChangerAdder& setTapPosition(long tapPosition) override;
+
+    RatioTapChangerAdder& setRegulating(bool regulating) override;
+
+    RatioTapChangerAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) override;
+
+    RatioTapChangerAdder& setTargetDeadband(double targetDeadband) override;
+
+    //RatioTapChangerAdder
     RatioTapChangerAdder& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities);
-
-    RatioTapChangerAdder& setLowTapPosition(long lowTapPosition);
-
-    RatioTapChangerAdder& setRegulating(bool regulating);
 
     RatioTapChangerAdder& setRegulationMode(const RatioTapChanger::RegulationMode& regulationMode);
 
-    RatioTapChangerAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal);
-
-    RatioTapChangerAdder& setTapPosition(long tapPosition);
-
-    RatioTapChangerAdder& setTargetDeadband(double targetDeadband);
-
     RatioTapChangerAdder& setRegulationValue(double regulationValue);
+
     RatioTapChangerAdder& setTargetV(double targetV);
 
 protected:
@@ -92,26 +60,16 @@ private:
 
     Validable& getValidable();
 
+    friend class RatioTapChangerStepAdder;
+
 private:
-    RatioTapChangerHolder& m_parent;
-
-    long m_lowTapPosition = 0;
-
-    stdcxx::optional<long> m_tapPosition;
-
     std::vector<RatioTapChangerStep> m_steps;
 
     bool m_loadTapChangingCapabilities = false;
 
-    bool m_regulating = false;
-
     RatioTapChanger::RegulationMode m_regulationMode = RatioTapChanger::RegulationMode::VOLTAGE;
 
     double m_regulationValue = stdcxx::nan();
-
-    stdcxx::Reference<Terminal> m_regulationTerminal;
-
-    double m_targetDeadband = stdcxx::nan();
 };
 
 }  // namespace iidm

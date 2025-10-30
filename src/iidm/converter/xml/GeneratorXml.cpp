@@ -61,10 +61,8 @@ Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdde
 void GeneratorXml::readSubElements(Generator& generator, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(GENERATOR, [this, &generator, &context]() {
         if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
-            const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(ID, ""));
-            const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
-            context.addEndTask([&generator, id, side]() {
-                generator.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::resolve(id, side, generator.getNetwork())));
+            TerminalRefXml::readTerminalRef(generator.getNetwork(), context, [&generator](Terminal& regulationTerminal) {
+                generator.setRegulatingTerminal(stdcxx::ref<Terminal>(regulationTerminal));
             });
         } else if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
                    context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
