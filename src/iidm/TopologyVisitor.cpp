@@ -12,6 +12,7 @@
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/Line.hpp>
@@ -92,6 +93,10 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
                 visitor.visitHvdcConverterStation(dynamic_cast<const HvdcConverterStation&>(connectable));
                 break;
 
+            case IdentifiableType::GROUND:
+                visitor.visitGround(dynamic_cast<const Ground&>(connectable));
+                break;
+
             case IdentifiableType::NETWORK:
             case IdentifiableType::SUBSTATION:
             case IdentifiableType::VOLTAGE_LEVEL:
@@ -107,6 +112,10 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
 }
 
 void TopologyVisitor::visitGenerator(const Generator& /*generator*/) {
+    // nothing to do
+}
+
+void TopologyVisitor::visitGround(const Ground& /*ground*/) {
     // nothing to do
 }
 

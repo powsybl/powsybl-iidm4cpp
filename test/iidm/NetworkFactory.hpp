@@ -33,6 +33,8 @@ Network createSwitchBBKNetwork();
 
 Terminal& getTerminalFromNetwork2();
 
+Network createTwoVoltageLevelNetwork();
+
 }  // namespace iidm
 
 }  // namespace powsybl

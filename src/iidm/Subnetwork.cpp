@@ -13,6 +13,7 @@
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/HvdcLineAdder.hpp>
@@ -224,6 +225,26 @@ stdcxx::const_range<Generator> Subnetwork::getGenerators() const {
 }
 stdcxx::range<Generator> Subnetwork::getGenerators() {
     return getRootNetwork().Network::getGenerators() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+
+const Ground& Subnetwork::getGround(const std::string& id) const {
+    const Ground& ground = Network::getGround(id);
+    if(!contains(ground)) {
+        throw PowsyblException(stdcxx::format("Ground '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+    }
+    return ground;
+}
+Ground& Subnetwork::getGround(const std::string& id) {
+    return const_cast<Ground&>(static_cast<const Subnetwork*>(this)->getGround(id));
+}
+unsigned long Subnetwork::getGroundCount() const {
+    return boost::size(getGrounds());
+}
+stdcxx::const_range<Ground> Subnetwork::getGrounds() const {
+    return getRootNetwork().Network::getGrounds() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<Ground> Subnetwork::getGrounds() {
+    return getRootNetwork().Network::getGrounds() | boost::adaptors::filtered(m_filterIdentifiable);
 }
 
 const HvdcConverterStation& Subnetwork::getHvdcConverterStation(const std::string& id) const  {

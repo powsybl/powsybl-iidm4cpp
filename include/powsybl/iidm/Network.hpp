@@ -42,6 +42,7 @@ class Connectable;
 class ConnectedComponentsManager;
 class DanglingLine;
 class Generator;
+class Ground;
 class HvdcConverterStation;
 class HvdcLine;
 class HvdcLineAdder;
@@ -223,6 +224,16 @@ public:
     virtual stdcxx::const_range<Generator> getGenerators() const;
 
     virtual stdcxx::range<Generator> getGenerators();
+
+    virtual const Ground& getGround(const std::string& id) const;
+
+    virtual Ground& getGround(const std::string& id);
+
+    virtual unsigned long getGroundCount() const;
+
+    virtual stdcxx::const_range<Ground> getGrounds() const;
+
+    virtual stdcxx::range<Ground> getGrounds();
 
     virtual const HvdcConverterStation& getHvdcConverterStation(const std::string& id) const;
 

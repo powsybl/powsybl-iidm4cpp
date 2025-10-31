@@ -30,6 +30,8 @@ class DanglingLine;
 class DanglingLineAdder;
 class Generator;
 class GeneratorAdder;
+class Ground;
+class GroundAdder;
 class LccConverterStation;
 class LccConverterStationAdder;
 class Load;
@@ -126,6 +128,12 @@ public:
 
     stdcxx::range<Generator> getGenerators();
 
+    unsigned long getGroundCount() const;
+
+    stdcxx::const_range<Ground> getGrounds() const;
+
+    stdcxx::range<Ground> getGrounds();
+
     double getHighVoltageLimit() const;
 
     unsigned long getLccConverterStationCount() const;
@@ -203,6 +211,8 @@ public:
     DanglingLineAdder newDanglingLine();
 
     GeneratorAdder newGenerator();
+
+    GroundAdder newGround();
 
     LccConverterStationAdder newLccConverterStation();
 

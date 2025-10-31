@@ -19,6 +19,7 @@ class Battery;
 class BusbarSection;
 class DanglingLine;
 class Generator;
+class Ground;
 class HvdcConverterStation;
 class Line;
 class Load;
@@ -50,6 +51,8 @@ public:
     virtual void visitDanglingLine(const DanglingLine& danglingLine);
 
     virtual void visitGenerator(const Generator& generator);
+
+    virtual void visitGround(const Ground& ground);
 
     virtual void visitHvdcConverterStation(const HvdcConverterStation& converterStation);
 

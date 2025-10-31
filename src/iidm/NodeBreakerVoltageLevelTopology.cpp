@@ -243,6 +243,9 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& 
                 case IdentifiableType::BUSBAR_SECTION:
                     ++busbarSectionCount;
                     break;
+                
+                case IdentifiableType::GROUND:
+                    break;
 
                 case IdentifiableType::NETWORK:
                 case IdentifiableType::SUBSTATION:

@@ -19,6 +19,7 @@
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/HvdcLineAdder.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
@@ -332,6 +333,26 @@ stdcxx::const_range<Generator> Network::getGenerators() const {
 
 stdcxx::range<Generator> Network::getGenerators() {
     return m_networkIndex.getAll<Generator>();
+}
+
+const Ground& Network::getGround(const std::string& id) const {
+    return get<Ground>(id);
+}
+
+Ground& Network::getGround(const std::string& id) {
+    return get<Ground>(id);
+}
+
+unsigned long Network::getGroundCount() const {
+    return getObjectCount<Ground>();
+}
+
+stdcxx::const_range<Ground> Network::getGrounds() const {
+    return m_networkIndex.getAll<Ground>();
+}
+
+stdcxx::range<Ground> Network::getGrounds() {
+    return m_networkIndex.getAll<Ground>();
 }
 
 const HvdcConverterStation& Network::getHvdcConverterStation(const std::string& id) const {

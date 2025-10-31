@@ -33,7 +33,8 @@ enum class IdentifiableType : unsigned char {
     DANGLING_LINE,
     STATIC_VAR_COMPENSATOR,
     HVDC_CONVERTER_STATION,
-    OVERLOAD_MANAGEMENT_SYSTEM
+    OVERLOAD_MANAGEMENT_SYSTEM,
+    GROUND
 };
 
 }  // namespace iidm

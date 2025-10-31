@@ -26,6 +26,8 @@ public:  // TopologyVisitor
 
     void visitGenerator(const Generator& generator) override;
 
+    void visitGround(const Ground& ground) override;
+
     void visitHvdcConverterStation(const HvdcConverterStation& converterStation) override;
 
     void visitLine(const Line& line, const TwoSides& side) override;

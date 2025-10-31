@@ -98,6 +98,7 @@ static const char* const GENERATION_TARGET_V = "generationTargetV";
 static const char* const GENERATION_VOLTAGE_REGULATION_ON = "generationVoltageRegulationOn";
 static const char* const GENERATOR = "generator";
 static const char* const GEOGRAPHICAL_TAGS = "geographicalTags";
+static const char* const GROUND = "ground";
 static const char* const HIGH_LIMIT = "highLimit";
 static const char* const HIGH_VOLTAGE_LIMIT = "highVoltageLimit";
 static const char* const HVDC_LINE = "hvdcLine";

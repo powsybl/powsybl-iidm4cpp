@@ -139,6 +139,7 @@ double Bus::getP() const {
             case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
             case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
             case IdentifiableType::DANGLING_LINE:
+            case IdentifiableType::GROUND:
                 // skip
                 break;
             case IdentifiableType::GENERATOR:
@@ -177,6 +178,7 @@ double Bus::getQ() const {
             case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
             case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
             case IdentifiableType::DANGLING_LINE:
+            case IdentifiableType::GROUND:
                 // skip
                 break;
             case IdentifiableType::GENERATOR:

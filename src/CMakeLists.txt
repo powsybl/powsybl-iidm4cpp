@@ -59,6 +59,8 @@ set(IIDM_SOURCES
     iidm/FlowsLimitsHolder.cpp
     iidm/Generator.cpp
     iidm/GeneratorAdder.cpp
+    iidm/Ground.cpp
+    iidm/GroundAdder.cpp
     iidm/HvdcConverterStation.cpp
     iidm/HvdcLine.cpp
     iidm/HvdcLineAdder.cpp
@@ -186,6 +188,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/DanglingLineXml.cpp
     iidm/converter/xml/ExtensionXmlSerializer.cpp
     iidm/converter/xml/GeneratorXml.cpp
+    iidm/converter/xml/GroundXml.cpp
     iidm/converter/xml/HvdcLineXml.cpp
     iidm/converter/xml/IidmXmlVersion.cpp
     iidm/converter/xml/IidmXmlUtil.cpp

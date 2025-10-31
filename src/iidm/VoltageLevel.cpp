@@ -15,6 +15,8 @@
 #include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
+#include <powsybl/iidm/Ground.hpp>
+#include <powsybl/iidm/GroundAdder.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -124,6 +126,18 @@ stdcxx::const_range<Generator> VoltageLevel::getGenerators() const {
 
 stdcxx::range<Generator> VoltageLevel::getGenerators() {
     return getConnectables<Generator>();
+}
+
+unsigned long VoltageLevel::getGroundCount() const {
+    return getConnectableCount<Ground>();
+}
+
+stdcxx::const_range<Ground> VoltageLevel::getGrounds() const {
+    return getConnectables<Ground>();
+}
+
+stdcxx::range<Ground> VoltageLevel::getGrounds() {
+    return getConnectables<Ground>();
 }
 
 double VoltageLevel::getHighVoltageLimit() const {
@@ -298,6 +312,10 @@ DanglingLineAdder VoltageLevel::newDanglingLine() {
 
 GeneratorAdder VoltageLevel::newGenerator() {
     return GeneratorAdder(*this);
+}
+
+GroundAdder VoltageLevel::newGround() {
+    return GroundAdder(*this);
 }
 
 LccConverterStationAdder VoltageLevel::newLccConverterStation() {

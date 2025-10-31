@@ -12,6 +12,7 @@
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/Line.hpp>
@@ -43,6 +44,10 @@ void AbstractTerminalTopologyVisitor::visitDanglingLine(const DanglingLine& dang
 
 void AbstractTerminalTopologyVisitor::visitGenerator(const Generator& generator) {
     visitInjection(generator);
+}
+
+void AbstractTerminalTopologyVisitor::visitGround(const Ground& ground) {
+    visitInjection(ground);
 }
 
 void AbstractTerminalTopologyVisitor::visitHvdcConverterStation(const HvdcConverterStation& converterStation) {

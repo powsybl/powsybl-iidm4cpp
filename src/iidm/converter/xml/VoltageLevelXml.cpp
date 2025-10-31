@@ -30,6 +30,7 @@
 #include "BusbarSectionXml.hpp"
 #include "DanglingLineXml.hpp"
 #include "GeneratorXml.hpp"
+#include "GroundXml.hpp"
 #include "LccConverterStationXml.hpp"
 #include "LoadXml.hpp"
 #include "NodeBreakerViewFictitiousInjectionXml.hpp"
@@ -170,6 +171,8 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
             VscConverterStationXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == LCC_CONVERTER_STATION) {
             LccConverterStationXml::getInstance().read(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == GROUND) {
+            GroundXml::getInstance().read(voltageLevel, context);
         } else {
             AbstractSimpleIdentifiableXml::readSubElements(voltageLevel, context);
         }
@@ -242,6 +245,15 @@ void VoltageLevelXml::writeGenerators(const VoltageLevel& voltageLevel, NetworkX
             continue;
         }
         GeneratorXml::getInstance().write(generator, voltageLevel, context);
+    }
+}
+
+void VoltageLevelXml::writeGrounds(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const auto& ground : voltageLevel.getGrounds()) {
+        if (!context.getFilter().test(ground)) {
+            continue;
+        }
+        GroundXml::getInstance().write(ground, voltageLevel, context);
     }
 }
 
@@ -357,6 +369,7 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const C
     writeStaticVarCompensators(voltageLevel, context);
     writeVscConverterStations(voltageLevel, context);
     writeLccConverterStations(voltageLevel, context);
+    writeGrounds(voltageLevel, context);
 }
 
 void VoltageLevelXml::writeVscConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {

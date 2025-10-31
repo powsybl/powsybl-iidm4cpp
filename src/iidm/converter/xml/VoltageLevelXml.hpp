@@ -62,6 +62,8 @@ private:
 
     void writeGenerators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
+    void writeGrounds(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
+
     void writeLccConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;

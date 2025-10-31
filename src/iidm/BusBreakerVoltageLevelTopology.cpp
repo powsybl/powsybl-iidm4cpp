@@ -95,6 +95,8 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                 case IdentifiableType::STATIC_VAR_COMPENSATOR:
                     feederCount++;
                     break;
+                case IdentifiableType::GROUND:
+                    break;
                 case IdentifiableType::NETWORK:
                 case IdentifiableType::SUBSTATION:
                 case IdentifiableType::VOLTAGE_LEVEL:

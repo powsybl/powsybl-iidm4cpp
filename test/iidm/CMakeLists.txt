@@ -23,6 +23,7 @@ set(UNIT_TEST_SOURCES
     ExtensionTest.cpp
     ExtensionAdderTest.cpp
     GeneratorTest.cpp
+    GroundTest.cpp
     HvdcLineTest.cpp
     iidm.cpp
     IdBasedBusRefTest.cpp

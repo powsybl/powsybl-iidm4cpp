@@ -79,6 +79,12 @@ public:
     unsigned long getGeneratorCount() const  override;
     stdcxx::const_range<Generator> getGenerators() const override;
     stdcxx::range<Generator> getGenerators() override;
+
+    const Ground& getGround(const std::string& id) const override;
+    Ground& getGround(const std::string& id) override;
+    unsigned long getGroundCount() const override;
+    stdcxx::const_range<Ground> getGrounds() const override;
+    stdcxx::range<Ground> getGrounds() override;
     
     const HvdcConverterStation& getHvdcConverterStation(const std::string& id) const override;
     HvdcConverterStation& getHvdcConverterStation(const std::string& id) override;
