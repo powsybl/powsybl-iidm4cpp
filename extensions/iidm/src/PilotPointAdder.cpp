@@ -44,7 +44,7 @@ ControlZoneAdder& PilotPointAdder::add() {
         }
     }
     if(std::isnan(m_targetV)){
-        throw PowsyblException("Invalid target voltage");
+        throw PowsyblException("Invalid pilot point target voltage");
     }
 
     m_parent.withPilotPoint(PilotPoint(m_busbarSectionsOrBusesIds, m_targetV));

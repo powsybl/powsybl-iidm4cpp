@@ -29,7 +29,7 @@ PilotPoint::PilotPoint(const std::vector<std::string>& ids, double targetV) {
         }
     }
     if(std::isnan(targetV)){
-        throw PowsyblException("Invalid target voltage");
+        throw PowsyblException("Invalid pilot point target voltage");
     }
     m_busbarSectionsOrBusesIds = ids;
     m_targetV = targetV; 
@@ -44,6 +44,9 @@ double PilotPoint::getTargetV() const {
 }
 
 void PilotPoint::setTargetV(double targetV) {
+    if(std::isnan(targetV)){
+        throw PowsyblException("Invalid pilot point target voltage");
+    }
     m_targetV = targetV;
 }
 
