@@ -24,6 +24,7 @@ public:
     static constexpr const char* const EXTENSIONS_LIST = "iidm.import.xml.extensions";
     static constexpr const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.import.xml.throw-exception-if-extension-not-found";
     static constexpr const char* const WITH_AUTOMATION_SYSTEMS = "iidm.import.xml.with-automation-systems";
+    static constexpr const char* const MISSING_PERMANENT_LIMIT_PERCENTAGE = "iidm.import.xml.missing-permanent-limit-percentage";
 
 public:
     ImportOptions() = default;
@@ -36,11 +37,15 @@ public:
 
     bool isWithAutomationSystems() const;
 
+    double getMissingPermanentLimitPercentage() const;
+
     ImportOptions& setExtensions(const std::set<std::string>& extensions);
 
     ImportOptions& setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound);
 
     ImportOptions& setWithAutomationSystems(bool withAutomationSystems);
+
+    ImportOptions& setMissingPermanentLimitPercentage(double missingPermanentLimitPercentage);
 
     bool withExtension(const std::string& extension) const;
 
@@ -50,6 +55,8 @@ private:
     std::set<std::string> m_extensions;
 
     bool m_withAutomationSystems = true;
+
+    double m_missingPermanentLimitPercentage = 100.0;
 };
 
 }  // namespace converter

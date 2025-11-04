@@ -279,6 +279,26 @@ BOOST_FIXTURE_TEST_CASE(TieLineLoadingLimitsTest, test::ResourceFixture) {
     });
 }
 
+BOOST_FIXTURE_TEST_CASE(importWithouthPermanentLimits, test::ResourceFixture) {
+    ImportOptions options;
+    options.setMissingPermanentLimitPercentage(90.);
+
+    //Check that import succeed for versions prior to 1.12
+    //(the missing permanent limit is computed)
+    test::converter::RoundTrip::testForAllPreviousVersions(IidmXmlVersion::V1_12(), [&options](const iidm::converter::xml::IidmXmlVersion& version){
+        iidm::Network n = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("withoutPermanentLimit.xml", version), options);
+        Line& line = n.getLine("NHV1_NHV2_1");
+        BOOST_CHECK_CLOSE(900., line.getCurrentLimits1().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
+        BOOST_CHECK_CLOSE(300., line.getCurrentLimits2().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
+    });
+
+    //From 1.12, import should fail when permanent limit is missing
+    test::converter::RoundTrip::testForAllVersionsSince(IidmXmlVersion::V1_12(), [&options](const iidm::converter::xml::IidmXmlVersion& version){
+        POWSYBL_ASSERT_THROW(Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("withoutPermanentLimit.xml", version), options), PowsyblException,
+            stdcxx::format("permanentLimit is absent in 'currentLimits1'").c_str());
+    });
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml

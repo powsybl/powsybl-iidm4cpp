@@ -10,13 +10,12 @@
 
 #include <powsybl/iidm/LoadingLimitsAdder.hpp>
 
-#include <unordered_set>
-
 #include <boost/range/adaptor/map.hpp>
 
 #include <powsybl/iidm/OperationalLimitsOwner.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/iidm/util/LoadingLimitsUtil.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 
@@ -113,35 +112,7 @@ typename LoadingLimitsAdder<L, A>::TemporaryLimitAdder LoadingLimitsAdder<L, A>:
 
 template <typename L, typename A>
 void LoadingLimitsAdder<L, A>::checkLoadingLimits() const {
-    checkPermanentLimit(m_owner, m_permanentLimit);
-    checkTemporaryLimits();
-}
-
-template <typename L, typename A>
-void LoadingLimitsAdder<L, A>::checkTemporaryLimits() const {
-    logging::Logger& logger = logging::LoggerFactory::getLogger<LoadingLimitsAdder<L, A>>();
-
-    // check temporary limits are consistents with permanent
-    double previousLimit = stdcxx::nan();
-    for (const LoadingLimits::TemporaryLimit& tl : m_temporaryLimits | boost::adaptors::map_values) {
-        if (tl.getValue() <= m_permanentLimit) {
-            logger.debug(stdcxx::format("%1%temporary limit should be greater than permanent limit", m_owner.getMessageHeader()));
-        }
-        if (std::isnan(previousLimit)) {
-            previousLimit = tl.getValue();
-        } else if (tl.getValue() <= previousLimit) {
-            logger.debug(stdcxx::format("%1%temporary limits should be in ascending value order", m_owner.getMessageHeader()));
-        }
-    }
-
-    // check name unicity
-    std::unordered_set<std::string> names;
-    std::for_each(m_temporaryLimits.cbegin(), m_temporaryLimits.cend(), [this, &names](const std::pair<unsigned long, LoadingLimits::TemporaryLimit>& element) {
-        const auto& res = names.insert(element.second.getName());
-        if (!res.second) {
-            throw ValidationException(m_owner, stdcxx::format("2 temporary limits have the same name %1%", element.second.getName()));
-        }
-    });
+    powsybl::iidm::checkLoadingLimits(m_owner, m_permanentLimit, m_temporaryLimits | boost::adaptors::map_values);
 }
 
 template <typename L, typename A>
@@ -177,6 +148,84 @@ A& LoadingLimitsAdder<L, A>::setPermanentLimit(double limit) {
     m_permanentLimit = limit;
     return static_cast<A&>(*this);
 }
+
+template <typename L, typename A>
+stdcxx::optional<LoadingLimits::TemporaryLimit> LoadingLimitsAdder<L, A>::getTemporaryLimitByName(const std::string& name) const {
+    stdcxx::optional<LoadingLimits::TemporaryLimit> foundLimit;
+    for (auto it = m_temporaryLimits.cbegin(); it != m_temporaryLimits.cend() ; it++) {
+        if(it->second.getName() == name) {
+            foundLimit = it->second;
+            break;
+        }
+    }
+    return foundLimit;
+}
+
+template <typename L, typename A>
+double LoadingLimitsAdder<L, A>::getTemporaryLimitValue(unsigned long acceptableDuration) const {
+    const auto& it = m_temporaryLimits.find(acceptableDuration);
+    return (it == m_temporaryLimits.cend()) ? stdcxx::nan() : m_temporaryLimits.at(acceptableDuration).getValue();
+}
+
+template <typename L, typename A>
+double LoadingLimitsAdder<L, A>::getTemporaryLimitValue(const std::string& name) const {
+    if(getTemporaryLimitByName(name).has_value()) {
+        return getTemporaryLimitByName(name).get().getValue();
+    }
+    return stdcxx::nan();
+}
+
+template <typename L, typename A>
+unsigned long LoadingLimitsAdder<L, A>::getTemporaryLimitAcceptableDuration(const std::string& name) const {
+    if(getTemporaryLimitByName(name).has_value()) {
+        return getTemporaryLimitByName(name).get().getAcceptableDuration();
+    }
+    return std::numeric_limits<unsigned long>::max();
+}
+
+template <typename L, typename A>
+double LoadingLimitsAdder<L, A>::getLowestTemporaryLimitValue() {
+    double lowestLimit = stdcxx::nan();
+    for (auto it = m_temporaryLimits.cbegin(); it != m_temporaryLimits.cend() ; it++) {
+        if(std::isnan(lowestLimit) || it->second.getValue() < lowestLimit) {
+            lowestLimit = it->second.getValue();
+        }
+    }
+    return lowestLimit;
+}
+
+template <typename L, typename A>
+const std::vector<std::string> LoadingLimitsAdder<L, A>::getTemporaryLimitNames() const {
+    std::vector<std::string> limitsNames;
+    for (auto it = m_temporaryLimits.cbegin(); it != m_temporaryLimits.cend() ; it++) {
+        limitsNames.emplace_back(it->second.getName());
+    }
+    return limitsNames;
+}
+
+
+template <typename L, typename A>
+void LoadingLimitsAdder<L, A>::removeTemporaryLimit(const std::string& name) {
+    for (auto it = m_temporaryLimits.cbegin(); it != m_temporaryLimits.cend() ; /*no increment*/) {
+        if (it->second.getName() == name) {
+            it = m_temporaryLimits.erase(it);
+        } else {
+            it++;
+        }
+    }
+}
+
+template <typename L, typename A>
+A& LoadingLimitsAdder<L, A>::fixLimits() {
+    return fixLimits(100.0);
+}
+
+template <typename L, typename A>
+A& LoadingLimitsAdder<L, A>::fixLimits(double missingPermanentLimitPercentage) {
+    LoadingLimitsUtil::fixMissingPermanentLimit<L, A>(*this, missingPermanentLimitPercentage);
+    return static_cast<A&>(*this);
+}
+
 
 }  // namespace iidm
 

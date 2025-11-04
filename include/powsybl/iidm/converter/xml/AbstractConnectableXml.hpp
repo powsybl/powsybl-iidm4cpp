@@ -43,11 +43,11 @@ namespace xml {
 
 class AbstractConnectableXml {
 public:
-    static void readActivePowerLimits(ActivePowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readActivePowerLimits(ActivePowerLimitsAdder&& adder, const NetworkXmlReaderContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
-    static void readApparentPowerLimits(ApparentPowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readApparentPowerLimits(ApparentPowerLimitsAdder&& adder, const NetworkXmlReaderContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
-    static void readCurrentLimits(CurrentLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readCurrentLimits(CurrentLimitsAdder&& adder, const NetworkXmlReaderContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeActivePowerLimits(const ActivePowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
@@ -82,7 +82,7 @@ protected:
 
 private:
     template <typename LimitsAdder>
-    static void readLoadingLimits(const std::string& type, LimitsAdder&& adderValue, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+    static void readLoadingLimits(const std::string& type, LimitsAdder&& adderValue, const NetworkXmlReaderContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 

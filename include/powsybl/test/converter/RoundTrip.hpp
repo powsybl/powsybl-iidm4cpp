@@ -59,6 +59,9 @@ public:
     template <typename Callback>
     static void testForAllPreviousVersions(const iidm::converter::xml::IidmXmlVersion& maxVersion, Callback callback);
 
+    template <typename Callback>
+    static void testForAllVersionsSince(const iidm::converter::xml::IidmXmlVersion& minVersion, Callback callback);
+
     static void writeXmlTest(const iidm::Network& network, const Writer& out, const std::string& ref);
 
 private:

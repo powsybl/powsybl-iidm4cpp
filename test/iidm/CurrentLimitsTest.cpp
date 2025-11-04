@@ -255,6 +255,64 @@ Network createThreeWindingsTransformerCurrentLimitsTestNetwork() {
     return network;
 }
 
+Network createOneLineCurrentLimitsTestNetwork() {
+    Network network("test", "test");
+    Substation& s1 = network.newSubstation()
+                .setId("S1")
+                .setCountry(Country::FR)
+                .add();
+    VoltageLevel &vl1 = s1.newVoltageLevel()
+                            .setId("VL1")
+                            .setNominalV(400.0)
+                            .setTopologyKind(TopologyKind::BUS_BREAKER)
+                            .add();
+    vl1.getBusBreakerView().newBus().setId("B1").add();
+    Substation& s2 = network.newSubstation()
+                        .setId("S2")
+                        .setCountry(Country::FR)
+                        .add();
+    VoltageLevel& vl2 = s2.newVoltageLevel()
+                           .setId("VL2")
+                           .setNominalV(400.0)
+                           .setTopologyKind(TopologyKind::BUS_BREAKER)
+                           .add();
+    vl2.getBusBreakerView().newBus().setId("B2").add();
+    Line& l = network.newLine()
+                 .setId("L")
+                 .setVoltageLevel1("VL1")
+                 .setConnectableBus1("B1")
+                 .setBus1("B1")
+                 .setVoltageLevel2("VL2")
+                 .setConnectableBus2("B2")
+                 .setBus2("B2")
+                 .setR(1.0)
+                 .setX(1.0)
+                 .setG1(0.0)
+                 .setG2(0.0)
+                 .setB1(0.0)
+                 .setB2(0.0)
+                 .add();
+    l.newCurrentLimits1()
+        .setPermanentLimit(1000.0)
+        .beginTemporaryLimit()
+            .setName("20'")
+            .setAcceptableDuration(20 * 60)
+            .setValue(1200.0)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("5'")
+            .setAcceptableDuration(5 * 60)
+            .setValue(1400.0)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("1'")
+            .setAcceptableDuration(60)
+            .setValue(1600.0)
+        .endTemporaryLimit()
+        .add();
+    return network;
+}
+
 BOOST_AUTO_TEST_SUITE(CurrentLimitsTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
@@ -338,7 +396,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(limits, limits.setPermanentLimit(100.0)));
     BOOST_CHECK_CLOSE(100.0, limits.getPermanentLimit(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(limits.setPermanentLimit(-1.0), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
+    POWSYBL_ASSERT_THROW(limits.setPermanentLimit(-1.0), ValidationException, "AC line 'VL1_VL3': permanent limit must be defined and be > 0");
 
     BOOST_TEST(line.getCurrentLimits1());
     BOOST_TEST(cLine.getCurrentLimits1());
@@ -358,7 +416,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK(!adder.hasTemporaryLimits());
 
     adder.setPermanentLimit(-10.0);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be defined and be > 0");
     adder.setPermanentLimit(100.0);
 
     BOOST_CHECK_NO_THROW(adder.add());
@@ -716,6 +774,151 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     t1.setP(15.5);
     BOOST_CHECK_EQUAL(2UL, line.getOverloadDuration());
 }
+
+BOOST_AUTO_TEST_CASE(adderGetLimitsValues) {
+    Network network = createOneLineCurrentLimitsTestNetwork();
+
+    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+
+    BOOST_CHECK(std::isnan(adder.getLowestTemporaryLimitValue()));
+    BOOST_CHECK(std::isnan(adder.getPermanentLimit()));
+    BOOST_CHECK(!adder.hasTemporaryLimits());
+
+    adder.setPermanentLimit(1000.)
+        .beginTemporaryLimit()
+            .setName("TL1")
+            .setAcceptableDuration(20 * 60)
+            .setValue(1200.0)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("TL2")
+            .setAcceptableDuration(10 * 60)
+            .setValue(1400.0)
+        .endTemporaryLimit();
+
+    BOOST_CHECK(adder.hasTemporaryLimits());
+
+    BOOST_CHECK_CLOSE(1200., adder.getTemporaryLimitValue("TL1"), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1400., adder.getTemporaryLimitValue("TL2"), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(adder.getTemporaryLimitValue("Unknown")));
+
+    BOOST_CHECK_EQUAL(20 * 60, adder.getTemporaryLimitAcceptableDuration("TL1"));
+    BOOST_CHECK_EQUAL(10 * 60, adder.getTemporaryLimitAcceptableDuration("TL2"));
+    BOOST_CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), adder.getTemporaryLimitAcceptableDuration("Unknown"));
+
+    BOOST_CHECK_CLOSE(1200.0, adder.getLowestTemporaryLimitValue(), 0.0);
+}
+
+BOOST_AUTO_TEST_CASE(adderRemoveTemporaryLimit) {
+    Network network = createOneLineCurrentLimitsTestNetwork();
+    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+    adder.setPermanentLimit(1000.)
+                .beginTemporaryLimit()
+                    .setName("TL1")
+                    .setAcceptableDuration(20 * 60)
+                    .setValue(1200.0)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("TL2")
+                    .setAcceptableDuration(10 * 60)
+                    .setValue(1400.0)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("TL3")
+                    .setAcceptableDuration(5 * 60)
+                    .setValue(1600.0)
+                .endTemporaryLimit();
+
+    BOOST_CHECK_EQUAL(3, boost::size(adder.getTemporaryLimitNames()));
+    BOOST_CHECK_EQUAL("TL1", adder.getTemporaryLimitNames()[0]);
+    BOOST_CHECK_EQUAL("TL2", adder.getTemporaryLimitNames()[1]);
+    BOOST_CHECK_EQUAL("TL3", adder.getTemporaryLimitNames()[2]);
+
+    BOOST_CHECK_CLOSE(1200.0, adder.getTemporaryLimitValue("TL1"), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1400.0, adder.getTemporaryLimitValue("TL2"), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1600.0, adder.getTemporaryLimitValue("TL3"), std::numeric_limits<double>::epsilon());
+
+    adder.removeTemporaryLimit("TL2");
+
+    BOOST_CHECK_EQUAL(2, boost::size(adder.getTemporaryLimitNames()));
+    BOOST_CHECK_EQUAL("TL1", adder.getTemporaryLimitNames()[0]);
+    BOOST_CHECK_EQUAL("TL3", adder.getTemporaryLimitNames()[1]);
+
+    BOOST_CHECK_CLOSE(1200.0, adder.getTemporaryLimitValue("TL1"), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(adder.getTemporaryLimitValue("TL2")));
+    BOOST_CHECK_CLOSE(1600.0, adder.getTemporaryLimitValue("TL3"), std::numeric_limits<double>::epsilon());
+
+    adder.removeTemporaryLimit("TL1");
+    adder.removeTemporaryLimit("TL3");
+
+    BOOST_CHECK_NO_THROW(adder.removeTemporaryLimit("TL3"));
+
+    BOOST_CHECK(!adder.hasTemporaryLimits());
+    BOOST_CHECK_EQUAL(0, boost::size(adder.getTemporaryLimitNames()));
+}
+
+BOOST_AUTO_TEST_CASE(adderFixPermanentLimit) {
+    Network network = createOneLineCurrentLimitsTestNetwork();
+    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+    adder.beginTemporaryLimit()
+                    .setName("TL1")
+                    .setAcceptableDuration(20 * 60)
+                    .setValue(1200.0)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("TL2")
+                    .setAcceptableDuration(10 * 60)
+                    .setValue(1400.0)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("TL3")
+                    .setAcceptableDuration(5 * 60)
+                    .setValue(1600.0)
+                .endTemporaryLimit();
+
+    BOOST_CHECK(std::isnan(adder.getPermanentLimit()));
+    adder.fixLimits(90.0);
+    BOOST_CHECK_CLOSE(1080., adder.getPermanentLimit(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_AUTO_TEST_CASE(adderFixPermanentLimitAlreadySet) {
+    Network network = createOneLineCurrentLimitsTestNetwork();
+    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+    
+    adder.setPermanentLimit(1000.)
+                .beginTemporaryLimit()
+                    .setName("TL1")
+                    .setAcceptableDuration(20 * 60)
+                    .setValue(1200.0)
+                .endTemporaryLimit();
+    adder.fixLimits(90.);
+    BOOST_CHECK_CLOSE(1000., adder.getPermanentLimit(), std::numeric_limits<double>::epsilon());
+}
+
+BOOST_AUTO_TEST_CASE(adderFixPermanentLimitWithInfiniteDurationValue) {
+    Network network = createOneLineCurrentLimitsTestNetwork();
+    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+    
+    adder.beginTemporaryLimit()
+                    .setName("INFINITE")
+                    .setAcceptableDuration(std::numeric_limits<unsigned long>::max())
+                    .setValue(800.0)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("TL1")
+                    .setAcceptableDuration(20 * 60)
+                    .setValue(1200.0)
+                .endTemporaryLimit();
+
+    BOOST_CHECK(std::isnan(adder.getPermanentLimit()));
+    adder.fixLimits(90.);
+    BOOST_CHECK_CLOSE(800., adder.getPermanentLimit(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK_EQUAL(1, boost::size(adder.getTemporaryLimitNames()));
+    BOOST_CHECK_CLOSE(1200.0, adder.getTemporaryLimitValue("TL1"), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(adder.getTemporaryLimitValue("INFINITE")));
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

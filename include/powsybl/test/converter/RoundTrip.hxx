@@ -25,6 +25,15 @@ void RoundTrip::testForAllPreviousVersions(const iidm::converter::xml::IidmXmlVe
     }
 }
 
+template <typename Callback>
+void RoundTrip::testForAllVersionsSince(const iidm::converter::xml::IidmXmlVersion& minVersion, Callback callback) {
+    for (const iidm::converter::xml::IidmXmlVersion& version : iidm::converter::xml::IidmXmlVersion::all()) {
+        if (version >= minVersion) {
+            callback(version);
+        }
+    }
+}
+
 }  // namespace converter
 
 }  // namespace test

@@ -54,7 +54,7 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string
     context.getReader().readUntilEndElement(elementName, [&adder, &tapChangerAdder, &context, &hasTerminalRef, &terminal]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
             hasTerminalRef = true;
-            readTapChangerTerminalRef(context, tapChangerAdder, terminal);
+            readTapChangerTerminalRef<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder, PhaseTapChangerHolder>(context, tapChangerAdder, terminal);
         } else if (context.getReader().getLocalName() == STEP) {
             PhaseTapChangerStepAdder stepAdder = adder->beginStep();
             readSteps(context, stepAdder);
@@ -113,7 +113,7 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
     context.getReader().readUntilEndElement(elementName, [&adder, &tapChangerAdder, &context, &terminal, &hasTerminalRef]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
             hasTerminalRef = true;
-            readTapChangerTerminalRef(context, tapChangerAdder, terminal);
+            readTapChangerTerminalRef<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder, RatioTapChangerHolder>(context, tapChangerAdder, terminal);
         } else if (context.getReader().getLocalName() == STEP) {
             RatioTapChangerStepAdder stepAdder = adder->beginStep();
             readSteps(context, stepAdder);

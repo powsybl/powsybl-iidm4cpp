@@ -81,11 +81,24 @@ public:
 protected:
     void checkLoadingLimits() const;
 
+public:
     double getPermanentLimit() const;
 
     const LoadingLimits::TemporaryLimits& getTemporaryLimits() const;
 
     const LoadingLimits::FictitiousLimits& getFictitiousLimits() const;
+
+    double getTemporaryLimitValue(unsigned long acceptableDuration) const;
+    double getTemporaryLimitValue(const std::string& name) const;
+    unsigned long getTemporaryLimitAcceptableDuration(const std::string& name) const;
+    double getLowestTemporaryLimitValue();
+    const std::vector<std::string> getTemporaryLimitNames() const;
+
+    void removeTemporaryLimit(const std::string& name);
+    
+    A& fixLimits();
+    A& fixLimits(double missingPermanentLimitPercentage);
+
 
 protected:
     OperationalLimitsOwner& m_owner;
@@ -93,7 +106,7 @@ protected:
 private:
     LoadingLimitsAdder<L, A>& addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious);
 
-    void checkTemporaryLimits() const;
+    stdcxx::optional<LoadingLimits::TemporaryLimit> getTemporaryLimitByName(const std::string& name) const;
 
     bool nameExists(const std::string& name) const;
 

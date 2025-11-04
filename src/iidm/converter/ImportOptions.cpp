@@ -23,11 +23,14 @@ static const Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parame
     .addAdditionalNames({"throwExceptionIfExtensionNotFound"});
 static const Parameter WITH_AUTOMATION_SYSTEMS_PARAMETER = Parameter(ImportOptions::WITH_AUTOMATION_SYSTEMS, converter::Parameter::Type::BOOLEAN, 
     "Import network with automation systems", "true");
+static const Parameter MISSING_PERMANENT_LIMIT_PERCENTAGE_PARAMETER = Parameter(ImportOptions::MISSING_PERMANENT_LIMIT_PERCENTAGE, converter::Parameter::Type::DOUBLE, 
+    "Percentage applied to lowest temporary limit to compute the permanent limit when missing (for IIDM < 1.12 only)", "100.0");
 
 ImportOptions::ImportOptions(const stdcxx::Properties& parameters) :
     m_throwExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER)),
     m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))),
-    m_withAutomationSystems(ConversionParameters::readBooleanParameter(parameters, WITH_AUTOMATION_SYSTEMS_PARAMETER)) {
+    m_withAutomationSystems(ConversionParameters::readBooleanParameter(parameters, WITH_AUTOMATION_SYSTEMS_PARAMETER)),
+    m_missingPermanentLimitPercentage(ConversionParameters::readDoubleParameter(parameters, MISSING_PERMANENT_LIMIT_PERCENTAGE_PARAMETER)) {
 }
 
 ImportOptions& ImportOptions::addExtension(const std::string& extension) {
@@ -43,6 +46,10 @@ bool ImportOptions::isWithAutomationSystems() const {
     return m_withAutomationSystems;
 }
 
+double ImportOptions::getMissingPermanentLimitPercentage() const {
+    return m_missingPermanentLimitPercentage;
+}
+
 ImportOptions& ImportOptions::setExtensions(const std::set<std::string>& extensions) {
     m_extensions = extensions;
     return *this;
@@ -55,6 +62,11 @@ ImportOptions& ImportOptions::setThrowExceptionIfExtensionNotFound(bool throwExc
 
 ImportOptions& ImportOptions::setWithAutomationSystems(bool withAutomationSystems) {
     m_withAutomationSystems = withAutomationSystems;
+    return *this;
+}
+
+ImportOptions& ImportOptions::setMissingPermanentLimitPercentage(double missingPermanentLimitPercentage) {
+    m_missingPermanentLimitPercentage = missingPermanentLimitPercentage;
     return *this;
 }
 

@@ -9,6 +9,8 @@
 
 #include <cmath>
 
+#include <unordered_set>
+
 #include <powsybl/iidm/LoadType.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/logging/Logger.hpp>
@@ -314,11 +316,45 @@ ValidationLevel checkP0(const Validable& validable, double p0, const ValidationL
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;
 }
 
-double checkPermanentLimit(const Validable& validable, double permanentLimit) {
-    if (std::islessequal(permanentLimit, 0.0)) {
-        throw ValidationException(validable, "permanent limit must be > 0");
+void checkLoadingLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits) {
+    checkPermanentLimit(validable, permanentLimit, temporaryLimits);
+    checkTemporaryLimits(validable, permanentLimit, temporaryLimits);
+}
+
+double checkPermanentLimit(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits) {
+    if ((std::isnan(permanentLimit) && !temporaryLimits.empty()) || std::islessequal(permanentLimit, 0.0)) {
+        throw ValidationException(validable, "permanent limit must be defined and be > 0");
     }
     return permanentLimit;
+}
+
+void checkTemporaryLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits) {
+        
+    logging::Logger& logger = logging::LoggerFactory::getLogger("powsybl::iidm::ValidationUtils");
+
+    // check temporary limits are consistents with permanent
+    double previousLimit = stdcxx::nan();
+    bool wrongOrderMessageAlreadyLogged = false;
+    for (const LoadingLimits::TemporaryLimit& tl : temporaryLimits) {
+        if (tl.getValue() <= permanentLimit) {
+            logger.debug(stdcxx::format("%1%temporary limit should be greater than permanent limit", validable.getMessageHeader()));
+        }
+        if (std::isnan(previousLimit)) {
+            previousLimit = tl.getValue();
+        } else if (!wrongOrderMessageAlreadyLogged && !std::isnan(previousLimit) && tl.getValue() <= previousLimit) {
+            logger.debug(stdcxx::format("%1%temporary limits should be in ascending value order", validable.getMessageHeader()));
+            wrongOrderMessageAlreadyLogged = true;
+        }
+    }
+
+    // check name unicity
+    std::unordered_set<std::string> names;
+    for (const LoadingLimits::TemporaryLimit& tl : temporaryLimits) {
+        const auto& res = names.insert(tl.getName());
+        if (!res.second) {
+            throw ValidationException(validable, stdcxx::format("2 temporary limits have the same name %1%", tl.getName()));
+        }
+    }
 }
 
 ValidationLevel checkPhaseTapChangerRegulationWithouthTerminal(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,

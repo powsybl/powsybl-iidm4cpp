@@ -88,15 +88,15 @@ void DanglingLineXml::readSubElements(DanglingLine& dl, NetworkXmlReaderContext&
         if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &dl]() {
-                readActivePowerLimits(dl.newActivePowerLimits(), context.getReader());
+                readActivePowerLimits(dl.newActivePowerLimits(), context);
             });
         } else if (context.getReader().getLocalName() == APPARENT_POWER_LIMITS) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), APPARENT_POWER_LIMITS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &dl]() {
-                readApparentPowerLimits(dl.newApparentPowerLimits(), context.getReader());
+                readApparentPowerLimits(dl.newApparentPowerLimits(), context);
             });
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS) {
-            readCurrentLimits(dl.newCurrentLimits(), context.getReader());
+            readCurrentLimits(dl.newCurrentLimits(), context);
         } else if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
                    context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
             IidmXmlUtil::assertMinimumVersion(stdcxx::format("%1%.generation", DANGLING_LINE), "reactiveLimits", ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);

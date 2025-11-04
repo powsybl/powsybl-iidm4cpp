@@ -24,16 +24,16 @@ namespace converter {
 
 namespace xml {
 
-void AbstractConnectableXml::readActivePowerLimits(ActivePowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    readLoadingLimits(ACTIVE_POWER_LIMITS, std::move(adder), reader, index);
+void AbstractConnectableXml::readActivePowerLimits(ActivePowerLimitsAdder&& adder, const NetworkXmlReaderContext& context, const stdcxx::optional<int>& index) {
+    readLoadingLimits(ACTIVE_POWER_LIMITS, std::move(adder), context, index);
 }
 
-void AbstractConnectableXml::readApparentPowerLimits(ApparentPowerLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    readLoadingLimits(APPARENT_POWER_LIMITS, std::move(adder), reader, index);
+void AbstractConnectableXml::readApparentPowerLimits(ApparentPowerLimitsAdder&& adder, const NetworkXmlReaderContext& context, const stdcxx::optional<int>& index) {
+    readLoadingLimits(APPARENT_POWER_LIMITS, std::move(adder), context, index);
 }
 
-void AbstractConnectableXml::readCurrentLimits(CurrentLimitsAdder&& adder, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
-    readLoadingLimits(CURRENT_LIMITS, std::move(adder), reader, index);
+void AbstractConnectableXml::readCurrentLimits(CurrentLimitsAdder&& adder, const NetworkXmlReaderContext& context, const stdcxx::optional<int>& index) {
+    readLoadingLimits(CURRENT_LIMITS, std::move(adder), context, index);
 }
 
 void AbstractConnectableXml::readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder& adder, const NetworkXmlReaderContext& context) {

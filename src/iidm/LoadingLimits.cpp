@@ -45,6 +45,7 @@ const FictitiousLimits& fictitiousLimits) :
     m_permanentLimit(permanentLimit),
     m_temporaryLimits(temporaryLimits),
     m_fictitiousLimits(fictitiousLimits) {
+        //limit validations must be performed before calling this constructor (in each adders)
 }
 
 double LoadingLimits::getPermanentLimit() const {
@@ -81,7 +82,7 @@ double LoadingLimits::getTemporaryLimitValue(unsigned long acceptableDuration) c
 }
 
 LoadingLimits& LoadingLimits::setPermanentLimit(double permanentLimit) {
-    checkPermanentLimit(m_owner.get(), permanentLimit);
+    checkPermanentLimit(m_owner.get(), permanentLimit, getTemporaryLimits());
     m_permanentLimit = permanentLimit;
     return *this;
 }

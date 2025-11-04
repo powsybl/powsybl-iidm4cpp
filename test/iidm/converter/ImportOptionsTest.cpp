@@ -28,6 +28,10 @@ BOOST_AUTO_TEST_CASE(constructor) {
     options.setWithAutomationSystems(false);
     BOOST_CHECK(!options.isWithAutomationSystems());
 
+    BOOST_CHECK_CLOSE(100.0, options.getMissingPermanentLimitPercentage(), std::numeric_limits<double>::epsilon());
+    options.setMissingPermanentLimitPercentage(95.0);
+    BOOST_CHECK_CLOSE(95.0, options.getMissingPermanentLimitPercentage(), std::numeric_limits<double>::epsilon());
+
     options.addExtension("test");
     BOOST_CHECK(options.withExtension("test"));
     BOOST_CHECK(!options.withExtension("test2"));
@@ -38,6 +42,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     properties.set(ImportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
     properties.set(ImportOptions::EXTENSIONS_LIST, "");
     properties.set(ImportOptions::WITH_AUTOMATION_SYSTEMS, "false");
+    properties.set(ImportOptions::MISSING_PERMANENT_LIMIT_PERCENTAGE, "50.0");
 
     ImportOptions options(properties);
 
@@ -45,6 +50,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     BOOST_CHECK(!options.isWithAutomationSystems());
     BOOST_CHECK(!options.withExtension("abc"));
     BOOST_CHECK(!options.withExtension("def"));
+    BOOST_CHECK_CLOSE(50.0, options.getMissingPermanentLimitPercentage(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(checkAllExtensions) {

@@ -28,10 +28,15 @@ namespace converter {
 namespace xml {
 
 template <typename LimitsAdder>
-void AbstractConnectableXml::readLoadingLimits(const std::string& type, LimitsAdder&& adderValue, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index) {
+void AbstractConnectableXml::readLoadingLimits(const std::string& type, LimitsAdder&& adderValue, const NetworkXmlReaderContext& context, const stdcxx::optional<int>& index) {
     auto&& adder = std::forward<LimitsAdder>(adderValue);
+    const powsybl::xml::XmlStreamReader& reader = context.getReader();
     double permanentLimit = reader.getOptionalAttributeValue(PERMANENT_LIMIT, stdcxx::nan());
+    if(std::isnan(permanentLimit) && context.getVersion() >= IidmXmlVersion::V1_12()) {
+        throw PowsyblException(stdcxx::format("permanentLimit is absent in '%1%'", toString(type.c_str(), index)));
+    }
     adder.setPermanentLimit(permanentLimit);
+    //Read and add temporaryLimits
     reader.readUntilEndElement(toString(type.c_str(), index), [&reader, &adder]() {
         if (reader.getLocalName() == TEMPORARY_LIMIT) {
             const std::string& name = reader.getAttributeValue(NAME);
@@ -46,6 +51,7 @@ void AbstractConnectableXml::readLoadingLimits(const std::string& type, LimitsAd
                 .endTemporaryLimit();
         }
     });
+    adder.fixLimits(context.getOptions().getMissingPermanentLimitPercentage());
     adder.add();
 }
 
