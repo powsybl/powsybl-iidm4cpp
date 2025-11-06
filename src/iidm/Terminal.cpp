@@ -24,7 +24,8 @@ namespace powsybl {
 
 namespace iidm {
 
-Terminal::Terminal(VoltageLevel& voltageLevel) :
+Terminal::Terminal(VoltageLevel& voltageLevel, const ThreeSides& side) :
+    m_side(side),
     m_voltageLevel(voltageLevel),
     m_p(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
     m_q(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()) {
@@ -136,12 +137,12 @@ Terminal& Terminal::setQ(double q) {
     return *this;
 }
 
-std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected) {
-    return stdcxx::make_unique<BusTerminal>(voltageLevel, connectableBusId, connected);
+std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, const std::string& connectableBusId, bool connected) {
+    return stdcxx::make_unique<BusTerminal>(voltageLevel, side, connectableBusId, connected);
 }
 
-std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, unsigned long node) {
-    return stdcxx::make_unique<NodeTerminal>(voltageLevel, node);
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, unsigned long node) {
+    return stdcxx::make_unique<NodeTerminal>(voltageLevel, side, node);
 }
 
 stdcxx::optional<ThreeSides> Terminal::getConnectableSide(const Terminal& terminal) {
@@ -175,6 +176,10 @@ Terminal& Terminal::getTerminal(Identifiable& identifiable, ThreeSides side) {
     } else {
         throw PowsyblException(stdcxx::format("Unexpected terminal reference identifiable instance: %1%", stdcxx::demangle(identifiable)));
     }
+}
+
+ThreeSides Terminal::getSide() const {
+    return m_side;
 }
 
 }  // namespace iidm

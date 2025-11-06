@@ -20,7 +20,7 @@ namespace iidm {
 
 template <typename Added, typename Adder>
 std::unique_ptr<Terminal> BranchAdder<Added, Adder>::checkAndGetTerminal1(VoltageLevel& voltageLevel) {
-    return TerminalBuilder(voltageLevel, *this)
+    return TerminalBuilder(voltageLevel, *this, ThreeSides::ONE)
                .setNode(m_node1)
                .setBus(m_bus1)
                .setConnectableBus(m_connectableBus1)
@@ -29,7 +29,7 @@ std::unique_ptr<Terminal> BranchAdder<Added, Adder>::checkAndGetTerminal1(Voltag
 
 template <typename Added, typename Adder>
 std::unique_ptr<Terminal> BranchAdder<Added, Adder>::checkAndGetTerminal2(VoltageLevel& voltageLevel) {
-    return TerminalBuilder(voltageLevel, *this)
+    return TerminalBuilder(voltageLevel, *this, ThreeSides::TWO)
                .setNode(m_node2)
                .setBus(m_bus2)
                .setConnectableBus(m_connectableBus2)

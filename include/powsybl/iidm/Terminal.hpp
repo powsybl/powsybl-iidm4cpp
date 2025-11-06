@@ -102,6 +102,8 @@ public:
     static stdcxx::optional<ThreeSides> getConnectableSide(const Terminal& terminal);
     static Terminal& getTerminal(Identifiable& identifiable, ThreeSides side);
 
+    ThreeSides getSide() const;
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -114,11 +116,13 @@ protected: // MultiVariantObject
     friend class Connectable;
 
 protected:
-    explicit Terminal(VoltageLevel& voltageLevel);
+    explicit Terminal(VoltageLevel& voltageLevel, const ThreeSides& side);
 
     const Network& getNetwork() const;
 
     Network& getNetwork();
+
+    ThreeSides m_side;
 
 private:
     VoltageLevel& m_voltageLevel;
@@ -130,9 +134,9 @@ private:
     std::vector<double> m_q;
 };
 
-std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);
+std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, const std::string& connectableBusId, bool connected);
 
-std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, unsigned long node);
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, unsigned long node);
 
 }  // namespace iidm
 

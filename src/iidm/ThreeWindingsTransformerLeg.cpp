@@ -23,14 +23,14 @@ namespace iidm {
 
 namespace three_windings_transformer {
 
-Leg::Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU, double ratedS) :
-    FlowsLimitsHolder(stdcxx::format("limits%1%", m_legNumber)),
-    m_legNumber(legNumber),
+Leg::Leg(const ThreeSides& side, double r, double x, double g, double b, double ratedU, double ratedS) :
+    FlowsLimitsHolder(stdcxx::format("limits%1%", static_cast<unsigned int>(side))),
+    m_side(checkThreeSides(*this, side)),
     m_r(checkR(*this, r)),
     m_x(checkX(*this, x)),
     m_g(checkG(*this, g)),
     m_b(checkB(*this, b)),
-    m_ratedU(checkRatedU(*this, ratedU, legNumber)),
+    m_ratedU(checkRatedU(*this, ratedU, static_cast<unsigned int>(side))),
     m_ratedS(checkRatedS(*this, ratedS)) {
 }
 
@@ -121,15 +121,15 @@ unsigned long Leg::getRegulatingTapChangerCount() const {
 }
 
 const Terminal& Leg::getTerminal() const {
-    return m_transformer.get().getTerminal(m_legNumber - 1);
+    return m_transformer.get().getTerminal(static_cast<unsigned int>(m_side) - 1);
 }
 
 Terminal& Leg::getTerminal() {
-    return m_transformer.get().getTerminal(m_legNumber - 1);
+    return m_transformer.get().getTerminal(static_cast<unsigned int>(m_side) - 1);
 }
 
 ThreeSides Leg::getSide() const {
-    return ThreeSides(m_legNumber);
+    return m_side;
 }
 
 stdcxx::CReference<LoadingLimits> Leg::getLimits(const LimitType& type) const {
@@ -161,7 +161,7 @@ const std::string& Leg::getTypeDescription() const {
         u8"3 windings transformer leg3"
     }};
 
-    return s_typeDescriptions[m_legNumber - 1];
+    return s_typeDescriptions[static_cast<unsigned int>(m_side) - 1];
 }
 
 double Leg::getX() const {
@@ -229,7 +229,7 @@ Leg& Leg::setTransformer(ThreeWindingsTransformer& transformer) {
 }
 
 std::string Leg::toString() const {
-    return stdcxx::format("%1% leg%2%", m_transformer.get().getId(), m_legNumber);
+    return stdcxx::format("%1% leg%2%", m_transformer.get().getId(), static_cast<unsigned int>(m_side));
 }
 
 }  // namespace three_windings_transformer

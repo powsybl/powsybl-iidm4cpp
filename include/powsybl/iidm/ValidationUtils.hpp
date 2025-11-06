@@ -157,6 +157,9 @@ ValidationLevel checkTapPosition(const Validable& validable, long tapPosition, l
 
 ValidationLevel checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband, const ValidationLevel& vl);
 
+ThreeSides checkThreeSides(const Validable& validable, const ThreeSides& side);
+TwoSides checkTwoSides(const Validable& validable, const TwoSides& side);
+
 double checkVoltage(const Validable& validable, double voltage);
 
 ValidationLevel checkVoltageControl(const Validable& validable, bool voltageRegulatorOn, double voltageSetpoint, const ValidationLevel& vl);

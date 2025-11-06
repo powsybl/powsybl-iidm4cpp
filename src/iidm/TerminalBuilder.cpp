@@ -16,9 +16,10 @@ namespace powsybl {
 
 namespace iidm {
 
-TerminalBuilder::TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable) :
+TerminalBuilder::TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable, const ThreeSides& side) :
     m_voltageLevel(voltageLevel),
-    m_validable(validable) {
+    m_validable(validable),
+    m_side(side) {
 
 }
 
@@ -46,9 +47,9 @@ std::unique_ptr<Terminal> TerminalBuilder::build() {
             throw ValidationException(m_validable, "connectable bus is not set");
         }
 
-        ptrTerminal = createBusTerminal(m_voltageLevel, connectionBus, !m_bus.empty());
+        ptrTerminal = createBusTerminal(m_voltageLevel, m_side, connectionBus, !m_bus.empty());
     } else {
-        ptrTerminal = createNodeTerminal(m_voltageLevel, *m_node);
+        ptrTerminal = createNodeTerminal(m_voltageLevel, m_side, *m_node);
     }
 
     return ptrTerminal;

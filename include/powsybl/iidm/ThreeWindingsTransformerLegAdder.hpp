@@ -56,7 +56,7 @@ public:
     LegAdder& setX(double x);
 
 private:
-    LegAdder(ThreeWindingsTransformerAdder& parent, unsigned long legNumber);
+    LegAdder(ThreeWindingsTransformerAdder& parent, const ThreeSides& side);
 
     ThreeWindingsTransformer::Leg build() const;
 
@@ -71,7 +71,7 @@ private:
 private:
     ThreeWindingsTransformerAdder& m_parent;
 
-    unsigned long m_legNumber;
+    ThreeSides m_side;
 
     std::string m_voltageLevelId;
 

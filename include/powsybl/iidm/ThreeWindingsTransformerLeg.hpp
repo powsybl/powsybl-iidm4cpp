@@ -57,7 +57,7 @@ public:  // PhaseTapChanger
     PhaseTapChangerAdder newPhaseTapChanger() override;
 
 public:
-    Leg(unsigned long legNumber, double r, double x, double g, double b, double ratedU, double ratedS);
+    Leg(const ThreeSides& side, double r, double x, double g, double b, double ratedU, double ratedS);
 
     Leg(const Leg&) = delete;
 
@@ -125,7 +125,7 @@ private:
 private:
     stdcxx::Reference<ThreeWindingsTransformer> m_transformer;
 
-    unsigned long m_legNumber;
+    ThreeSides m_side;
 
     double m_r;
 

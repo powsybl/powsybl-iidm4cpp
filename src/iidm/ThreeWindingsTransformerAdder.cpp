@@ -107,15 +107,15 @@ const std::string& ThreeWindingsTransformerAdder::getTypeDescription() const {
 }
 
 ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg1() {
-    return LegAdder(*this, static_cast<unsigned long>(ThreeSides::ONE));
+    return LegAdder(*this, ThreeSides::ONE);
 }
 
 ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg2() {
-    return LegAdder(*this, static_cast<unsigned long>(ThreeSides::TWO));
+    return LegAdder(*this, ThreeSides::TWO);
 }
 
 ThreeWindingsTransformerAdder::LegAdder ThreeWindingsTransformerAdder::newLeg3() {
-    return LegAdder(*this, static_cast<unsigned long>(ThreeSides::THREE));
+    return LegAdder(*this, ThreeSides::THREE);
 }
 
 void ThreeWindingsTransformerAdder::setLegAdder1(const LegAdder& legAdder) {

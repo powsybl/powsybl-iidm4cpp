@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 
+#include <powsybl/iidm/ThreeSides.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -23,7 +24,7 @@ class VoltageLevel;
 
 class TerminalBuilder {
 public:
-    TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable);
+    TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable, const ThreeSides& side);
 
     ~TerminalBuilder() noexcept = default;
 
@@ -48,6 +49,8 @@ private:
     std::string m_bus;
 
     std::string m_connectableBus;
+
+    ThreeSides m_side;
 };
 
 }  // namespace iidm

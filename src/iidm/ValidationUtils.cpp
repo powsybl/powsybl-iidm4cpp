@@ -588,6 +588,28 @@ ValidationLevel checkTargetDeadband(const Validable& validable, const std::strin
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;
 }
 
+ThreeSides checkThreeSides(const Validable& validable, const ThreeSides& side) {
+    switch (side) {
+    case ThreeSides::ONE:
+    case ThreeSides::TWO:
+    case ThreeSides::THREE:
+        return side;
+    case ThreeSides::UNDEFINED:
+    default:
+        throw ValidationException(validable, stdcxx::format("Unexpected ThreeSides value: %1%", side));
+    }
+}
+TwoSides checkTwoSides(const Validable& validable, const TwoSides& side) {
+    switch (side) {
+    case TwoSides::ONE:
+    case TwoSides::TWO:
+        return side;
+    case TwoSides::UNDEFINED:
+    default:
+        throw ValidationException(validable, stdcxx::format("Unexpected TwoSides value: %1%", side));
+    }
+}
+
 double checkVoltage(const Validable& validable, double voltage) {
     if (!std::isnan(voltage) && voltage < 0) {
         throw ValidationException(validable, "voltage cannot be < 0");

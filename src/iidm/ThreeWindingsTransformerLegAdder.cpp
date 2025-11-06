@@ -20,9 +20,9 @@ namespace iidm {
 
 namespace three_windings_transformer {
 
-LegAdder::LegAdder(ThreeWindingsTransformerAdder& parent, unsigned long legNumber) :
+LegAdder::LegAdder(ThreeWindingsTransformerAdder& parent, const ThreeSides& side) :
     m_parent(parent),
-    m_legNumber(legNumber) {
+    m_side(side) {
 }
 
 ThreeWindingsTransformerAdder& LegAdder::add() {
@@ -33,31 +33,32 @@ ThreeWindingsTransformerAdder& LegAdder::add() {
     checkOptional(*this, m_ratedU, "rated U is not set");
     checkRatedS(*this, m_ratedS);
 
-    switch (m_legNumber) {
-        case 1:
+    switch (m_side) {
+        case ThreeSides::ONE:
             m_parent.setLegAdder1(*this);
             break;
 
-        case 2:
+        case ThreeSides::TWO:
             m_parent.setLegAdder2(*this);
             break;
 
-        case 3:
+        case ThreeSides::THREE:
             m_parent.setLegAdder3(*this);
             break;
 
+        case ThreeSides::UNDEFINED:
         default:
-            throw ValidationException(*this, "Unexpected leg number");
+            throw ValidationException(*this, stdcxx::format("Unexpected ThreeSides value: %1%", m_side));
     }
     return m_parent;
 }
 
 ThreeWindingsTransformer::Leg LegAdder::build() const {
-    return ThreeWindingsTransformer::Leg(m_legNumber, m_r, m_x, m_g, m_b, m_ratedU, m_ratedS);
+    return ThreeWindingsTransformer::Leg(m_side, m_r, m_x, m_g, m_b, m_ratedU, m_ratedS);
 }
 
 std::unique_ptr<Terminal> LegAdder::checkAndGetTerminal(VoltageLevel& voltageLevel) {
-    return TerminalBuilder(voltageLevel, *this)
+    return TerminalBuilder(voltageLevel, *this, m_side)
         .setNode(m_node)
         .setBus(m_bus)
         .setConnectableBus(m_connectableBus)
@@ -101,7 +102,7 @@ void LegAdder::checkConnectableBus() {
 std::string LegAdder::getMessageHeader() const {
     const std::string& substationId = m_parent.getSubstation().getId();
 
-    return stdcxx::format("3 windings transformer leg%1% in substation %2%: ", m_legNumber, substationId);
+    return stdcxx::format("3 windings transformer leg%1% in substation %2%: ", static_cast<unsigned int>(m_side), substationId);
 }
 
 LegAdder& LegAdder::setB(double b) {
