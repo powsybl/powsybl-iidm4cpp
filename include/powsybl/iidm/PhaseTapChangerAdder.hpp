@@ -27,7 +27,7 @@ class Terminal;
 class TwoWindingsTransformer;
 class Validable;
 
-class PhaseTapChangerAdder : public TapChangerAdder<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder, PhaseTapChangerHolder> {
+class PhaseTapChangerAdder : public TapChangerAdder<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder<PhaseTapChangerAdder>, PhaseTapChangerHolder> {
 
 public:
     explicit PhaseTapChangerAdder(PhaseTapChangerHolder& parent);
@@ -37,7 +37,7 @@ public:
     //TapChanger
     PhaseTapChanger& add() override;
 
-    PhaseTapChangerStepAdder beginStep() override;
+    PhaseTapChangerStepAdder<PhaseTapChangerAdder> beginStep() override;
 
     PhaseTapChangerAdder& setLowTapPosition(long lowTapPosition) override;
 
@@ -62,7 +62,7 @@ private:
 
     Validable& getValidable();
 
-    friend class PhaseTapChangerStepAdder;
+    friend class PhaseTapChangerStepAdder<PhaseTapChangerAdder>;
 
 private:
     std::vector<PhaseTapChangerStep> m_steps;

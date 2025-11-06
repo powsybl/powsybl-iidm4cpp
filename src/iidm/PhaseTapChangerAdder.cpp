@@ -61,8 +61,8 @@ PhaseTapChangerAdder& PhaseTapChangerAdder::addStep(double alpha, double rho, do
     return *this;
 }
 
-PhaseTapChangerStepAdder PhaseTapChangerAdder::beginStep() {
-    return PhaseTapChangerStepAdder(*this);
+PhaseTapChangerStepAdder<PhaseTapChangerAdder> PhaseTapChangerAdder::beginStep() {
+    return PhaseTapChangerStepAdder<PhaseTapChangerAdder>(*this);
 }
 
 Network& PhaseTapChangerAdder::getNetwork() {

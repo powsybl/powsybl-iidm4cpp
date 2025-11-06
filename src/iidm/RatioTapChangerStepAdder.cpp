@@ -8,42 +8,36 @@
 #include <powsybl/iidm/RatioTapChangerStepAdder.hpp>
 
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
+#include <powsybl/iidm/RatioTapChangerStepsReplacer.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-RatioTapChangerStepAdder::RatioTapChangerStepAdder(RatioTapChangerAdder& parent) :
+template<>
+RatioTapChangerStepAdder<RatioTapChangerAdder>::RatioTapChangerStepAdder(RatioTapChangerAdder& parent) :
     TapChangerStepAdder(parent) {
 }
 
-RatioTapChangerStepAdder& RatioTapChangerStepAdder::setB(double b) {
-    m_b = b;
-    return *this;
+template<>
+RatioTapChangerStepAdder<RatioTapChangerStepsReplacer>::RatioTapChangerStepAdder(RatioTapChangerStepsReplacer& parent) :
+    TapChangerStepAdder(parent) {
 }
 
-RatioTapChangerStepAdder& RatioTapChangerStepAdder::setG(double g) {
-    m_g = g;
-    return *this;
+template<>
+RatioTapChangerAdder& RatioTapChangerStepAdder<RatioTapChangerAdder>::endStep() {
+    checkOptional(m_parent.getValidable(), m_rho, "step rho is not set");
+    checkOptional(m_parent.getValidable(), m_r, "step r is not set");
+    checkOptional(m_parent.getValidable(), m_x, "step x is not set");
+    checkOptional(m_parent.getValidable(), m_g, "step g is not set");
+    checkOptional(m_parent.getValidable(), m_b, "step b is not set");
+
+    return m_parent.addStep(m_rho, m_r, m_x, m_g, m_b);
 }
 
-RatioTapChangerStepAdder& RatioTapChangerStepAdder::setR(double r) {
-    m_r = r;
-    return *this;
-}
-
-RatioTapChangerStepAdder& RatioTapChangerStepAdder::setRho(double rho) {
-    m_rho = rho;
-    return *this;
-}
-
-RatioTapChangerStepAdder& RatioTapChangerStepAdder::setX(double x) {
-    m_x = x;
-    return *this;
-}
-
-RatioTapChangerAdder& RatioTapChangerStepAdder::endStep() {
+template<>
+RatioTapChangerStepsReplacer& RatioTapChangerStepAdder<RatioTapChangerStepsReplacer>::endStep() {
     checkOptional(m_parent.getValidable(), m_rho, "step rho is not set");
     checkOptional(m_parent.getValidable(), m_r, "step r is not set");
     checkOptional(m_parent.getValidable(), m_x, "step x is not set");

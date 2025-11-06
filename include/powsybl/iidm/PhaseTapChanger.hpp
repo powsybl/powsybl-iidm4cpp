@@ -8,7 +8,6 @@
 #ifndef POWSYBL_IIDM_PHASETAPCHANGER_HPP
 #define POWSYBL_IIDM_PHASETAPCHANGER_HPP
 
-#include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/PhaseTapChangerStep.hpp>
 #include <powsybl/iidm/TapChanger.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
@@ -17,7 +16,10 @@ namespace powsybl {
 
 namespace iidm {
 
-class PhaseTapChanger : public TapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep> {
+class PhaseTapChangerHolder;
+class PhaseTapChangerStepsReplacer;
+
+class PhaseTapChanger : public TapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep, PhaseTapChangerStepsReplacer> {
 public:
     enum class RegulationMode : unsigned char {
         CURRENT_LIMITER,
@@ -51,10 +53,14 @@ public:
 
     PhaseTapChanger& setRegulationValue(double regulationValue);
 
+    PhaseTapChangerStepsReplacer stepsReplacer() override;
+
 private:
     RegulationMode m_regulationMode;
 
     std::vector<double> m_regulationValue;
+
+    friend class PhaseTapChangerStepsReplacer;
 };
 
 }  // namespace iidm

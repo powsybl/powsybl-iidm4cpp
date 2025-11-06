@@ -78,8 +78,8 @@ protected:
 
     static void writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context);
 
-    template <typename H, typename C, typename S>
-    static void writeTapChanger(const TapChanger<H, C, S>& tc, NetworkXmlWriterContext& context);
+    template <typename H, typename C, typename S, typename R>
+    static void writeTapChanger(const TapChanger<H, C, S, R>& tc, NetworkXmlWriterContext& context);
 
     template <typename S>
     static void writeTapChangerStep(const TapChangerStep<S>& tcs, powsybl::xml::XmlStreamWriter& writer);

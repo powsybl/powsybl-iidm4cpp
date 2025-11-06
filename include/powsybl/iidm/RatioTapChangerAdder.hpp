@@ -21,7 +21,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class RatioTapChangerAdder : public TapChangerAdder<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder, RatioTapChangerHolder> {
+class RatioTapChangerAdder : public TapChangerAdder<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder<RatioTapChangerAdder>, RatioTapChangerHolder> {
 
 public:
     explicit RatioTapChangerAdder(RatioTapChangerHolder& parent);
@@ -31,7 +31,7 @@ public:
     //TapChangerAdder
     RatioTapChanger& add() override;
 
-    RatioTapChangerStepAdder beginStep() override;
+    RatioTapChangerStepAdder<RatioTapChangerAdder> beginStep() override;
 
     RatioTapChangerAdder& setLowTapPosition(long lowTapPosition) override;
 
@@ -60,7 +60,7 @@ private:
 
     Validable& getValidable();
 
-    friend class RatioTapChangerStepAdder;
+    friend class RatioTapChangerStepAdder<RatioTapChangerAdder>;
 
 private:
     std::vector<RatioTapChangerStep> m_steps;

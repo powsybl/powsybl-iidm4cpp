@@ -15,6 +15,7 @@
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
 #include <powsybl/iidm/PhaseTapChangerStep.hpp>
+#include <powsybl/iidm/PhaseTapChangerStepsReplacer.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
@@ -427,6 +428,58 @@ BOOST_AUTO_TEST_CASE(holder) {
     POWSYBL_ASSERT_THROW(cTransformer.getPhaseTapChanger(), PowsyblException, "Phase tap changer not set");
 
     BOOST_CHECK_NO_THROW(transformer.newPhaseTapChanger());
+}
+
+BOOST_AUTO_TEST_CASE(stepsReplacer) {
+    Network network = createPhaseTapChangerTestNetwork();
+    TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
+    PhaseTapChanger& phaseTapChanger = transformer.getPhaseTapChanger();
+
+    BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(3L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(3, phaseTapChanger.getStepCount());
+
+    PhaseTapChangerStepsReplacer stepReplacer = phaseTapChanger.stepsReplacer();
+
+    POWSYBL_ASSERT_THROW(stepReplacer.replaceSteps(), ValidationException, "2 windings transformer '2WT_VL1_VL2': a tap changer shall have at least one step");
+    auto stepAdder = stepReplacer.beginStep();
+    POWSYBL_ASSERT_THROW(stepAdder.endStep(), ValidationException, "2 windings transformer '2WT_VL1_VL2': step alpha is not set");
+
+    stepAdder.setR(6.0)
+            .setX(5.0)
+            .setG(4.0)
+            .setB(3.0)
+            .setAlpha(2.0)
+            .setRho(1.0)
+            .endStep();
+
+    stepReplacer.beginStep()
+                    .setR(60.0)
+                    .setX(50.0)
+                    .setG(40.0)
+                    .setB(30.0)
+                    .setAlpha(20.0)
+                    .setRho(10.0)
+                    .endStep();
+
+    phaseTapChanger.setTapPosition(3);
+    POWSYBL_ASSERT_THROW(stepReplacer.replaceSteps(), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 3 [1, 2]");
+    phaseTapChanger.setTapPosition(1);
+    stepReplacer.replaceSteps();
+
+    BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(2L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK_EQUAL(1L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(2, phaseTapChanger.getStepCount());
+
+    auto& step = phaseTapChanger.getStep(2);
+    BOOST_CHECK_CLOSE(10.0, step.getRho(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, step.getAlpha(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(30.0, step.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(40.0, step.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(50.0, step.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(60.0, step.getR(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

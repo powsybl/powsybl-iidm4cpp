@@ -26,7 +26,7 @@ class Network;
 class Terminal;
 class VariantManagerHolder;
 
-template<typename H, typename C, typename S>
+template<typename H, typename C, typename S, typename R>
 class TapChanger : public virtual MultiVariantObject {
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -60,6 +60,8 @@ public:
 
     S& getStep(long tapPosition);
 
+    virtual R stepsReplacer() = 0;
+
     unsigned int getStepCount() const;
 
     long getTapPosition() const;
@@ -91,6 +93,8 @@ protected:
     const H& getParent() const;
 
     H& getParent();
+
+    C& setSteps(const std::vector<S>& steps);
 
 private:
     H& m_parent;

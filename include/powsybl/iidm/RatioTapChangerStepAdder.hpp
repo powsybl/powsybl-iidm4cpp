@@ -14,32 +14,33 @@ namespace powsybl {
 
 namespace iidm {
 
-class RatioTapChangerAdder;
-
-class RatioTapChangerStepAdder : public TapChangerStepAdder<RatioTapChangerStepAdder, RatioTapChangerAdder> {
+template <typename Parent>
+class RatioTapChangerStepAdder : public TapChangerStepAdder<RatioTapChangerStepAdder<Parent>, Parent> {
 public:
     ~RatioTapChangerStepAdder() noexcept = default;
 
-    RatioTapChangerStepAdder& setRho(double rho) override;
+    RatioTapChangerStepAdder<Parent>& setRho(double rho) override;
 
-    RatioTapChangerStepAdder& setR(double r) override;
+    RatioTapChangerStepAdder<Parent>& setR(double r) override;
 
-    RatioTapChangerStepAdder& setX(double x) override;
+    RatioTapChangerStepAdder<Parent>& setX(double x) override;
 
-    RatioTapChangerStepAdder& setG(double g) override;
+    RatioTapChangerStepAdder<Parent>& setG(double g) override;
 
-    RatioTapChangerStepAdder& setB(double b) override;
+    RatioTapChangerStepAdder<Parent>& setB(double b) override;
 
-    RatioTapChangerAdder& endStep() override;
+    Parent& endStep() override;
 
 private:
-    explicit RatioTapChangerStepAdder(RatioTapChangerAdder &parent);
+    explicit RatioTapChangerStepAdder(Parent &parent);
     friend class RatioTapChangerAdder;
-
+    friend class RatioTapChangerStepsReplacer;
 };
 
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/RatioTapChangerStepAdder.hxx>
 
 #endif  // POWSYBL_IIDM_RATIOTAPCHANGERSTEPADDER_HPP

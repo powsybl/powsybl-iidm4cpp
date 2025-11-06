@@ -61,8 +61,8 @@ RatioTapChangerAdder& RatioTapChangerAdder::addStep(double rho, double r, double
     return *this;
 }
 
-RatioTapChangerStepAdder RatioTapChangerAdder::beginStep() {
-    return RatioTapChangerStepAdder(*this);
+RatioTapChangerStepAdder<RatioTapChangerAdder> RatioTapChangerAdder::beginStep() {
+    return RatioTapChangerStepAdder<RatioTapChangerAdder>(*this);
 }
 
 Network& RatioTapChangerAdder::getNetwork() {

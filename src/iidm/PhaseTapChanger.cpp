@@ -8,6 +8,8 @@
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 
 #include <powsybl/iidm/Enum.hpp>
+#include <powsybl/iidm/PhaseTapChangerHolder.hpp>
+#include <powsybl/iidm/PhaseTapChangerStepsReplacer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/format.hpp>
@@ -75,6 +77,10 @@ PhaseTapChanger& PhaseTapChanger::setRegulationValue(double regulationValue) {
     m_regulationValue[getNetwork().getVariantIndex()] = regulationValue;
     getNetwork().invalidateValidationLevel();
     return *this;
+}
+
+PhaseTapChangerStepsReplacer PhaseTapChanger::stepsReplacer() {
+    return PhaseTapChangerStepsReplacer(*this);
 }
 
 namespace Enum {

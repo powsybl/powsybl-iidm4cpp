@@ -14,29 +14,29 @@ namespace powsybl {
 
 namespace iidm {
 
-class PhaseTapChangerAdder;
-
-class PhaseTapChangerStepAdder : public TapChangerStepAdder<PhaseTapChangerStepAdder, PhaseTapChangerAdder> {
+template <typename Parent>
+class PhaseTapChangerStepAdder : public TapChangerStepAdder<PhaseTapChangerStepAdder<Parent>, Parent> {
 public:
     ~PhaseTapChangerStepAdder() noexcept = default;
 
-    PhaseTapChangerStepAdder& setRho(double rho) override;
+    PhaseTapChangerStepAdder<Parent>& setRho(double rho) override;
 
-    PhaseTapChangerStepAdder& setR(double r) override;
+    PhaseTapChangerStepAdder<Parent>& setR(double r) override;
 
-    PhaseTapChangerStepAdder& setX(double x) override;
+    PhaseTapChangerStepAdder<Parent>& setX(double x) override;
 
-    PhaseTapChangerStepAdder& setG(double g) override;
+    PhaseTapChangerStepAdder<Parent>& setG(double g) override;
 
-    PhaseTapChangerStepAdder& setB(double b) override;
+    PhaseTapChangerStepAdder<Parent>& setB(double b) override;
 
-    PhaseTapChangerAdder& endStep() override;
+    Parent& endStep() override;
 
-    PhaseTapChangerStepAdder& setAlpha(double alpha);
+    PhaseTapChangerStepAdder<Parent>& setAlpha(double alpha);
 
 private:
-    explicit PhaseTapChangerStepAdder(PhaseTapChangerAdder &parent);
+    explicit PhaseTapChangerStepAdder(Parent &parent);
     friend class PhaseTapChangerAdder;
+    friend class PhaseTapChangerStepsReplacer;
 
     double m_alpha = stdcxx::nan();
 };
@@ -44,5 +44,7 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/PhaseTapChangerStepAdder.hxx>
 
 #endif  // POWSYBL_IIDM_PHASETAPCHANGERSTEPADDER_HPP

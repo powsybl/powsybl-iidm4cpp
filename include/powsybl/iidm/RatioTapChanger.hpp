@@ -16,8 +16,9 @@ namespace powsybl {
 namespace iidm {
 
 class RatioTapChangerHolder;
+class RatioTapChangerStepsReplacer;
 
-class RatioTapChanger : public TapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep> {
+class RatioTapChanger : public TapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep, RatioTapChangerStepsReplacer> {
 public:
     enum class RegulationMode : unsigned char {
         VOLTAGE,
@@ -57,12 +58,16 @@ public:
     const RegulationMode& getRegulationMode() const;
     RatioTapChanger& setRegulationMode(const RegulationMode& regulationMode);
 
+    RatioTapChangerStepsReplacer stepsReplacer() override;
+
 private:
     RegulationMode m_regulationMode;
 
     bool m_loadTapChangingCapabilities;
 
     std::vector<double> m_regulationValue;
+
+    friend class RatioTapChangerStepsReplacer;
 };
 
 }  // namespace iidm

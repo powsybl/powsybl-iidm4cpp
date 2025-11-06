@@ -8,6 +8,7 @@
 #include <powsybl/iidm/RatioTapChanger.hpp>
 
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
+#include <powsybl/iidm/RatioTapChangerStepsReplacer.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
@@ -105,6 +106,10 @@ RatioTapChanger& RatioTapChanger::setRegulationMode(const RegulationMode& regula
     m_regulationMode = regulationMode;
     getNetwork().invalidateValidationLevel();
     return *this;
+}
+
+RatioTapChangerStepsReplacer RatioTapChanger::stepsReplacer() {
+    return RatioTapChangerStepsReplacer(*this);
 }
 
 namespace Enum {
