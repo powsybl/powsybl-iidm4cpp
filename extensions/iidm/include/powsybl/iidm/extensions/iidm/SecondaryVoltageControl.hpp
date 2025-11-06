@@ -12,6 +12,8 @@
 
 #include <powsybl/iidm/extensions/iidm/ControlZone.hpp>
 
+#include <powsybl/stdcxx/optional.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -31,6 +33,8 @@ public:
     const std::type_index& getType() const override;
 
     const std::vector<ControlZone>& getControlZones() const;
+
+    stdcxx::optional<ControlZone> getControlZone(const std::string name) const;
 
 private:
 // Extension

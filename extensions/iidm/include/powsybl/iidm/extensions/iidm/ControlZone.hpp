@@ -11,6 +11,8 @@
 #include <powsybl/iidm/extensions/iidm/ControlUnit.hpp>
 #include <powsybl/iidm/extensions/iidm/PilotPoint.hpp>
 
+#include <powsybl/stdcxx/optional.hpp>
+
 #include <string>
 #include <vector>
 
@@ -38,6 +40,7 @@ public:
     const PilotPoint& getPilotPoint() const;
     PilotPoint& getPilotPoint();
     const std::vector<ControlUnit>& getControlUnits() const;
+    stdcxx::optional<ControlUnit> getControlUnit(const std::string id) const;
 
 private:
 

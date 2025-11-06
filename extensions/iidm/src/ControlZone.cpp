@@ -44,6 +44,14 @@ PilotPoint& ControlZone::getPilotPoint() {
 const std::vector<ControlUnit>& ControlZone::getControlUnits() const {
     return m_controlUnits;
 }
+stdcxx::optional<ControlUnit> ControlZone::getControlUnit(const std::string id) const {
+    for (auto controlUnit : m_controlUnits) {
+        if(controlUnit.getId() == id) {
+            return stdcxx::optional<ControlUnit>(controlUnit);
+        }
+    }
+    return stdcxx::optional<ControlUnit>();
+}
 
 }  // namespace iidm
 

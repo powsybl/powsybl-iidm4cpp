@@ -95,6 +95,10 @@ BOOST_AUTO_TEST_CASE(Constructor) {
     BOOST_CHECK_EQUAL(2, controlExtension.getControlZones().size());
     ControlZone z1 = controlExtension.getControlZones().at(0);
 
+    BOOST_CHECK(controlExtension.getControlZone("z1").has_value());
+    BOOST_CHECK(!controlExtension.getControlZone("notFound").has_value());
+    BOOST_CHECK_EQUAL(z1.getName(), controlExtension.getControlZone("z1").get().getName());
+
 
     BOOST_CHECK_EQUAL("z1", z1.getName());
     BOOST_CHECK(!z1.getPilotPoint().getBusbarSectionsOrBusesIds().empty());
@@ -105,6 +109,12 @@ BOOST_AUTO_TEST_CASE(Constructor) {
     BOOST_CHECK(!z1.getControlUnits().at(0).isParticipate());
     BOOST_CHECK_EQUAL("GEN2", z1.getControlUnits().at(1).getId());
     BOOST_CHECK(z1.getControlUnits().at(1).isParticipate());
+
+    BOOST_CHECK(z1.getControlUnit("GEN").has_value());
+    BOOST_CHECK(z1.getControlUnit("GEN2").has_value());
+    BOOST_CHECK(!z1.getControlUnit("notFound").has_value());
+    BOOST_CHECK_EQUAL(z1.getControlUnits().at(0).getId(), z1.getControlUnit("GEN").get().getId());
+
     z1.getPilotPoint().setTargetV(16);
     BOOST_CHECK_CLOSE(16.0, z1.getPilotPoint().getTargetV(), std::numeric_limits<double>::epsilon());
 

@@ -45,6 +45,15 @@ const std::vector<ControlZone>& SecondaryVoltageControl::getControlZones() const
     return m_controlZones;
 }
 
+stdcxx::optional<ControlZone> SecondaryVoltageControl::getControlZone(const std::string name) const {
+    for (auto controlZone : m_controlZones) {
+        if(controlZone.getName() == name) {
+            return stdcxx::optional<ControlZone>(controlZone);
+        }
+    }
+    return stdcxx::optional<ControlZone>();
+}
+
 void SecondaryVoltageControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<Network>(extendable.get())) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Network>()));
