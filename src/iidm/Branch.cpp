@@ -13,6 +13,7 @@
 #include <powsybl/iidm/ActivePowerLimits.hpp>
 #include <powsybl/iidm/ApparentPowerLimits.hpp>
 #include <powsybl/iidm/CurrentLimits.hpp>
+#include <powsybl/iidm/OperationalLimitsGroup.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
 #include <powsybl/stdcxx/format.hpp>
@@ -110,6 +111,36 @@ stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits(const TwoSides
     return stdcxx::ref(const_cast<const Branch*>(this)->getActivePowerLimits(side));
 }
 
+stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits1() const {
+    stdcxx::CReference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup1();
+    if(selectedGroup) {
+        return selectedGroup.get().getActivePowerLimits();
+    }
+    return stdcxx::CReference<ActivePowerLimits>();
+}
+stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits1() {
+    stdcxx::Reference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup1();
+    if(selectedGroup) {
+        return selectedGroup.get().getActivePowerLimits();
+    }
+    return stdcxx::Reference<ActivePowerLimits>();
+}
+
+stdcxx::CReference<ActivePowerLimits> Branch::getActivePowerLimits2() const {
+    stdcxx::CReference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup2();
+    if(selectedGroup) {
+        return selectedGroup.get().getActivePowerLimits();
+    }
+    return stdcxx::CReference<ActivePowerLimits>();
+}
+stdcxx::Reference<ActivePowerLimits> Branch::getActivePowerLimits2() {
+    stdcxx::Reference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup2();
+    if(selectedGroup) {
+        return selectedGroup.get().getActivePowerLimits();
+    }
+    return stdcxx::Reference<ActivePowerLimits>();
+}
+
 stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits(const TwoSides& side) const {
     switch (side) {
         case TwoSides::ONE:
@@ -124,6 +155,36 @@ stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits(const Two
 
 stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits(const TwoSides& side) {
     return stdcxx::ref(const_cast<const Branch*>(this)->getApparentPowerLimits(side));
+}
+
+stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits1() const {
+    stdcxx::CReference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup1();
+    if(selectedGroup) {
+        return selectedGroup.get().getApparentPowerLimits();
+    }
+    return stdcxx::CReference<ApparentPowerLimits>();
+}
+stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits1() {
+    stdcxx::Reference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup1();
+    if(selectedGroup) {
+        return selectedGroup.get().getApparentPowerLimits();
+    }
+    return stdcxx::Reference<ApparentPowerLimits>();
+}
+
+stdcxx::CReference<ApparentPowerLimits> Branch::getApparentPowerLimits2() const {
+    stdcxx::CReference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup2();
+    if(selectedGroup) {
+        return selectedGroup.get().getApparentPowerLimits();
+    }
+    return stdcxx::CReference<ApparentPowerLimits>();
+}
+stdcxx::Reference<ApparentPowerLimits> Branch::getApparentPowerLimits2() {
+    stdcxx::Reference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup2();
+    if(selectedGroup) {
+        return selectedGroup.get().getApparentPowerLimits();
+    }
+    return stdcxx::Reference<ApparentPowerLimits>();
 }
 
 stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits(const TwoSides& side) const {
@@ -142,6 +203,36 @@ stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits(const TwoSides& side)
 
 stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits(const TwoSides& side) {
     return stdcxx::ref(const_cast<const Branch*>(this)->getCurrentLimits(side));
+}
+
+stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits1() const {
+    stdcxx::CReference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup1();
+    if(selectedGroup) {
+        return selectedGroup.get().getCurrentLimits();
+    }
+    return stdcxx::CReference<CurrentLimits>();
+}
+stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits1() {
+    stdcxx::Reference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup1();
+    if(selectedGroup) {
+        return selectedGroup.get().getCurrentLimits();
+    }
+    return stdcxx::Reference<CurrentLimits>();
+}
+
+stdcxx::CReference<CurrentLimits> Branch::getCurrentLimits2() const {
+    stdcxx::CReference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup2();
+    if(selectedGroup) {
+        return selectedGroup.get().getCurrentLimits();
+    }
+    return stdcxx::CReference<CurrentLimits>();
+}
+stdcxx::Reference<CurrentLimits> Branch::getCurrentLimits2() {
+    stdcxx::Reference<OperationalLimitsGroup> selectedGroup = getSelectedOperationalLimitsGroup2();
+    if(selectedGroup) {
+        return selectedGroup.get().getCurrentLimits();
+    }
+    return stdcxx::Reference<CurrentLimits>();
 }
 
 stdcxx::CReference<LoadingLimits> Branch::getLimits(const LimitType& type, const TwoSides& side) const {

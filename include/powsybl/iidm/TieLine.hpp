@@ -66,29 +66,29 @@ public:
     void remove(bool updateDanglingLines);
 
 //Branch:
-    virtual stdcxx::CReference<ActivePowerLimits> getActivePowerLimits1() const override;
+    virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups1() const override;
+    virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups1()override;
+    virtual const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId1() const override;
+    virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id) const override;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id) override;
+    virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() const override;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() override;
+    virtual stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup1(const std::string& id) override;
+    virtual void setSelectedOperationalLimitsGroup1(const std::string& id) override;
+    virtual void removeOperationalLimitsGroup1(const std::string& id) override;
+    virtual void cancelSelectedOperationalLimitsGroup1() override;
 
-    virtual stdcxx::Reference<ActivePowerLimits> getActivePowerLimits1() override;
-
-    virtual stdcxx::CReference<ActivePowerLimits> getActivePowerLimits2() const override;
-
-    virtual stdcxx::Reference<ActivePowerLimits> getActivePowerLimits2() override;
-
-    virtual stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits1() const override;
-
-    virtual stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits1() override;
-
-    virtual stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits2() const override;
-
-    virtual stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits2() override;
-
-    virtual stdcxx::CReference<CurrentLimits> getCurrentLimits1() const override;
-
-    virtual stdcxx::Reference<CurrentLimits> getCurrentLimits1() override;
-
-    virtual stdcxx::CReference<CurrentLimits> getCurrentLimits2() const override;
-
-    virtual stdcxx::Reference<CurrentLimits> getCurrentLimits2() override;
+    virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups2() const override;
+    virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups2()override;
+    virtual const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId2() const override;
+    virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id) const override;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id) override;
+    virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() const override;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() override;
+    virtual stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup2(const std::string& id) override;
+    virtual void setSelectedOperationalLimitsGroup2(const std::string& id) override;
+    virtual void removeOperationalLimitsGroup2(const std::string& id) override;
+    virtual void cancelSelectedOperationalLimitsGroup2() override;
 
     virtual const Terminal& getTerminal1() const override;
 

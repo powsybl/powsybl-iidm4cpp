@@ -7,19 +7,17 @@
 
 #include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
 
-#include <powsybl/stdcxx/make_unique.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
-ActivePowerLimitsAdder::ActivePowerLimitsAdder(OperationalLimitsOwner& owner) :
+ActivePowerLimitsAdder::ActivePowerLimitsAdder(OperationalLimitsGroup& owner) :
     LoadingLimitsAdder(owner) {
 }
 
 ActivePowerLimits& ActivePowerLimitsAdder::add() {
     checkLoadingLimits();
-    auto limit = m_owner.setOperationalLimits(LimitType::ACTIVE_POWER, stdcxx::make_unique<ActivePowerLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits()));
+    auto limit = m_owner.setOperationalLimits(LimitType::ACTIVE_POWER, std::make_shared<ActivePowerLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits()));
     return static_cast<ActivePowerLimits&>(limit.get());
 }
 

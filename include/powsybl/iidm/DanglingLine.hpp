@@ -12,7 +12,7 @@
 #include <powsybl/iidm/DanglingLineGeneration.hpp>
 #include <powsybl/iidm/FlowsLimitsHolder.hpp>
 #include <powsybl/iidm/Injection.hpp>
-#include <powsybl/iidm/OperationalLimitsHolder.hpp>
+#include <powsybl/iidm/OperationalLimitsGroups.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -85,6 +85,24 @@ public:
 
     DanglingLine& setX(double x);
 
+// FlowsLimitsHolder
+    stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups() const override;
+    stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups() override;
+    const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId() const override;
+    stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) const override;
+    stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) override;
+    stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() const override;
+    stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() override;
+    stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup(const std::string& id) override;
+    void setSelectedOperationalLimitsGroup(const std::string& id) override;
+    void removeOperationalLimitsGroup(const std::string& id) override;
+    void cancelSelectedOperationalLimitsGroup() override;
+
+    ActivePowerLimitsAdder newActivePowerLimits() override;
+    ApparentPowerLimitsAdder newApparentPowerLimits() override;
+    CurrentLimitsAdder newCurrentLimits() override;
+
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -115,6 +133,8 @@ private:
     std::unique_ptr<Boundary> m_boundary;
 
     stdcxx::Reference<TieLine> m_tieLine;
+
+    OperationalLimitsGroups m_operationalLimitsGroups;
 };
 
 }  // namespace iidm

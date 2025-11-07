@@ -18,60 +18,52 @@ namespace powsybl {
 
 namespace iidm {
 
-FlowsLimitsHolder::FlowsLimitsHolder(Identifiable& identifiable, std::string&& attributeName) :
-    m_operationalLimitsHolder(identifiable, std::move(attributeName)) {
-}
-
-FlowsLimitsHolder::FlowsLimitsHolder(std::string&& attributeName) :
-    m_operationalLimitsHolder(std::move(attributeName)) {
-}
-
 stdcxx::CReference<ActivePowerLimits> FlowsLimitsHolder::getActivePowerLimits() const {
-    return m_operationalLimitsHolder.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
+    auto selectedLimitsGroup = getSelectedOperationalLimitsGroup();
+    if(static_cast<bool>(selectedLimitsGroup)) {
+        return selectedLimitsGroup.get().getActivePowerLimits();
+    }
+    return stdcxx::CReference<ActivePowerLimits>();
 }
 
 stdcxx::Reference<ActivePowerLimits> FlowsLimitsHolder::getActivePowerLimits() {
-    return m_operationalLimitsHolder.getOperationalLimits<ActivePowerLimits>(LimitType::ACTIVE_POWER);
+    auto selectedLimitsGroup = getSelectedOperationalLimitsGroup();
+    if(static_cast<bool>(selectedLimitsGroup)) {
+        return selectedLimitsGroup.get().getActivePowerLimits();
+    }
+    return stdcxx::Reference<ActivePowerLimits>();
 }
 
 stdcxx::CReference<ApparentPowerLimits> FlowsLimitsHolder::getApparentPowerLimits() const {
-    return m_operationalLimitsHolder.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
+    auto selectedLimitsGroup = getSelectedOperationalLimitsGroup();
+    if(static_cast<bool>(selectedLimitsGroup)) {
+        return selectedLimitsGroup.get().getApparentPowerLimits();
+    }
+    return stdcxx::CReference<ApparentPowerLimits>();
 }
 
 stdcxx::Reference<ApparentPowerLimits> FlowsLimitsHolder::getApparentPowerLimits() {
-    return m_operationalLimitsHolder.getOperationalLimits<ApparentPowerLimits>(LimitType::APPARENT_POWER);
+    auto selectedLimitsGroup = getSelectedOperationalLimitsGroup();
+    if(static_cast<bool>(selectedLimitsGroup)) {
+        return selectedLimitsGroup.get().getApparentPowerLimits();
+    }
+    return stdcxx::Reference<ApparentPowerLimits>();
 }
 
 stdcxx::CReference<CurrentLimits> FlowsLimitsHolder::getCurrentLimits() const {
-    return m_operationalLimitsHolder.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
+    auto selectedLimitsGroup = getSelectedOperationalLimitsGroup();
+    if(static_cast<bool>(selectedLimitsGroup)) {
+        return selectedLimitsGroup.get().getCurrentLimits();
+    }
+    return stdcxx::CReference<CurrentLimits>();
 }
 
 stdcxx::Reference<CurrentLimits> FlowsLimitsHolder::getCurrentLimits() {
-    return m_operationalLimitsHolder.getOperationalLimits<CurrentLimits>(LimitType::CURRENT);
-}
-
-stdcxx::const_range<OperationalLimits> FlowsLimitsHolder::getOperationalLimits() const {
-    return m_operationalLimitsHolder.getOperationalLimits();
-}
-
-stdcxx::range<OperationalLimits> FlowsLimitsHolder::getOperationalLimits() {
-    return m_operationalLimitsHolder.getOperationalLimits();
-}
-
-ActivePowerLimitsAdder FlowsLimitsHolder::newActivePowerLimits() {
-    return m_operationalLimitsHolder.newActivePowerLimits();
-}
-
-ApparentPowerLimitsAdder FlowsLimitsHolder::newApparentPowerLimits() {
-    return m_operationalLimitsHolder.newApparentPowerLimits();
-}
-
-CurrentLimitsAdder FlowsLimitsHolder::newCurrentLimits() {
-    return m_operationalLimitsHolder.newCurrentLimits();
-}
-
-void FlowsLimitsHolder::setIdentifiable(Identifiable& identifiable) {
-    m_operationalLimitsHolder.setIdentifiable(identifiable);
+    auto selectedLimitsGroup = getSelectedOperationalLimitsGroup();
+    if(static_cast<bool>(selectedLimitsGroup)) {
+        return selectedLimitsGroup.get().getCurrentLimits();
+    }
+    return stdcxx::Reference<CurrentLimits>();
 }
 
 }  // namespace iidm

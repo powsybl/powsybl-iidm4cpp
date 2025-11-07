@@ -199,53 +199,72 @@ void TieLine::remove(bool updateDanglingLines) {
     getNetwork().remove(*this);
 }
 
-stdcxx::CReference<ActivePowerLimits> TieLine::getActivePowerLimits1() const {
-    return getDanglingLine1().getActivePowerLimits();
+stdcxx::const_range<OperationalLimitsGroup> TieLine::getOperationalLimitsGroups1() const {
+    return getDanglingLine1().getOperationalLimitsGroups();
+}
+stdcxx::range<OperationalLimitsGroup> TieLine::getOperationalLimitsGroups1() {
+    return getDanglingLine1().getOperationalLimitsGroups();
+}
+const stdcxx::optional<std::string>& TieLine::getSelectedOperationalLimitsGroupId1() const {
+    return getDanglingLine1().getSelectedOperationalLimitsGroupId();
+}
+stdcxx::CReference<OperationalLimitsGroup> TieLine::getOperationalLimitsGroup1(const std::string& id) const {
+    return getDanglingLine1().getOperationalLimitsGroup(id);
+}
+stdcxx::Reference<OperationalLimitsGroup> TieLine::getOperationalLimitsGroup1(const std::string& id) {
+    return getDanglingLine1().getOperationalLimitsGroup(id);
+}
+stdcxx::CReference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup1() const {
+    return getDanglingLine1().getSelectedOperationalLimitsGroup();
+}
+stdcxx::Reference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup1() {
+    return getDanglingLine1().getSelectedOperationalLimitsGroup();
+}
+stdcxx::Reference<OperationalLimitsGroup> TieLine::newOperationalLimitsGroup1(const std::string& id) {
+    return getDanglingLine1().newOperationalLimitsGroup(id);
+}
+void TieLine::setSelectedOperationalLimitsGroup1(const std::string& id) {
+    getDanglingLine1().setSelectedOperationalLimitsGroup(id);
+}
+void TieLine::removeOperationalLimitsGroup1(const std::string& id) {
+    getDanglingLine1().removeOperationalLimitsGroup(id);
+}
+void TieLine::cancelSelectedOperationalLimitsGroup1() {
+    getDanglingLine1().cancelSelectedOperationalLimitsGroup();
 }
 
-stdcxx::Reference<ActivePowerLimits> TieLine::getActivePowerLimits1() {
-    return getDanglingLine1().getActivePowerLimits();
+stdcxx::const_range<OperationalLimitsGroup> TieLine::getOperationalLimitsGroups2() const {
+    return getDanglingLine2().getOperationalLimitsGroups();
 }
-
-stdcxx::CReference<ActivePowerLimits> TieLine::getActivePowerLimits2() const {
-    return getDanglingLine2().getActivePowerLimits();
+stdcxx::range<OperationalLimitsGroup> TieLine::getOperationalLimitsGroups2() {
+    return getDanglingLine2().getOperationalLimitsGroups();
 }
-
-stdcxx::Reference<ActivePowerLimits> TieLine::getActivePowerLimits2() {
-    return getDanglingLine2().getActivePowerLimits();
+const stdcxx::optional<std::string>& TieLine::getSelectedOperationalLimitsGroupId2() const {
+    return getDanglingLine2().getSelectedOperationalLimitsGroupId();
 }
-
-stdcxx::CReference<ApparentPowerLimits> TieLine::getApparentPowerLimits1() const {
-    return getDanglingLine1().getApparentPowerLimits();
+stdcxx::CReference<OperationalLimitsGroup> TieLine::getOperationalLimitsGroup2(const std::string& id) const {
+    return getDanglingLine2().getOperationalLimitsGroup(id);
 }
-
-stdcxx::Reference<ApparentPowerLimits> TieLine::getApparentPowerLimits1() {
-    return getDanglingLine1().getApparentPowerLimits();
+stdcxx::Reference<OperationalLimitsGroup> TieLine::getOperationalLimitsGroup2(const std::string& id) {
+    return getDanglingLine2().getOperationalLimitsGroup(id);
 }
-
-stdcxx::CReference<ApparentPowerLimits> TieLine::getApparentPowerLimits2() const {
-    return getDanglingLine2().getApparentPowerLimits();
+stdcxx::CReference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup2() const {
+    return getDanglingLine2().getSelectedOperationalLimitsGroup();
 }
-
-stdcxx::Reference<ApparentPowerLimits> TieLine::getApparentPowerLimits2() {
-    return getDanglingLine2().getApparentPowerLimits();
+stdcxx::Reference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup2() {
+    return getDanglingLine2().getSelectedOperationalLimitsGroup();
 }
-
-
-stdcxx::CReference<CurrentLimits> TieLine::getCurrentLimits1() const {
-    return getDanglingLine1().getCurrentLimits();
+stdcxx::Reference<OperationalLimitsGroup> TieLine::newOperationalLimitsGroup2(const std::string& id) {
+    return getDanglingLine2().newOperationalLimitsGroup(id);
 }
-
-stdcxx::Reference<CurrentLimits> TieLine::getCurrentLimits1() {
-    return getDanglingLine1().getCurrentLimits();
+void TieLine::setSelectedOperationalLimitsGroup2(const std::string& id) {
+    getDanglingLine2().setSelectedOperationalLimitsGroup(id);
 }
-
-stdcxx::CReference<CurrentLimits> TieLine::getCurrentLimits2() const {
-    return getDanglingLine2().getCurrentLimits();
+void TieLine::removeOperationalLimitsGroup2(const std::string& id) {
+    getDanglingLine2().removeOperationalLimitsGroup(id);
 }
-
-stdcxx::Reference<CurrentLimits> TieLine::getCurrentLimits2() {
-    return getDanglingLine2().getCurrentLimits();
+void TieLine::cancelSelectedOperationalLimitsGroup2() {
+    getDanglingLine2().cancelSelectedOperationalLimitsGroup();
 }
 
 const Terminal& TieLine::getTerminal1() const {

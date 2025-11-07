@@ -39,9 +39,9 @@ bool LoadingLimits::TemporaryLimit::isFictitious() const {
     return m_isFictitious;
 }
 
-LoadingLimits::LoadingLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, 
+LoadingLimits::LoadingLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, 
 const FictitiousLimits& fictitiousLimits) :
-    OperationalLimits(owner),
+    m_limitsGroup(owner),
     m_permanentLimit(permanentLimit),
     m_temporaryLimits(temporaryLimits),
     m_fictitiousLimits(fictitiousLimits) {
@@ -82,7 +82,7 @@ double LoadingLimits::getTemporaryLimitValue(unsigned long acceptableDuration) c
 }
 
 LoadingLimits& LoadingLimits::setPermanentLimit(double permanentLimit) {
-    checkPermanentLimit(m_owner.get(), permanentLimit, getTemporaryLimits());
+    checkPermanentLimit(m_limitsGroup.get().getValidable(), permanentLimit, getTemporaryLimits());
     m_permanentLimit = permanentLimit;
     return *this;
 }

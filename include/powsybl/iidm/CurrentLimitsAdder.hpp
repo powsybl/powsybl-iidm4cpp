@@ -20,7 +20,7 @@ public:  // OperationalLimitsAdder
     CurrentLimits& add() override;
 
 public:
-    explicit CurrentLimitsAdder(OperationalLimitsOwner& owner);
+    explicit CurrentLimitsAdder(OperationalLimitsGroup& owner);
 
     CurrentLimitsAdder(const CurrentLimitsAdder&) = default;
 

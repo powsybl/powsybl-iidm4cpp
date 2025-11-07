@@ -1353,12 +1353,12 @@ BOOST_AUTO_TEST_CASE(operationalLimits) {
     ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
     const ThreeWindingsTransformer&cTransformer = transformer;
 
-    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg1().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg2().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg3().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg1().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg2().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg3().getOperationalLimits()));
+    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg1().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg2().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg3().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg1().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg2().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg3().getOperationalLimitsGroups()));
 
     ActivePowerLimits& acpl = transformer.getLeg1().newActivePowerLimits()
         .setPermanentLimit(10.0)
@@ -1372,12 +1372,12 @@ BOOST_AUTO_TEST_CASE(operationalLimits) {
     BOOST_CHECK(stdcxx::areSame(acpl, transformer.getLeg1().getActivePowerLimits().get()));
     BOOST_CHECK(stdcxx::areSame(acpl, cTransformer.getLeg1().getActivePowerLimits().get()));
 
-    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg1().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg2().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg3().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg1().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg2().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg3().getOperationalLimits()));
+    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg1().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg2().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg3().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg1().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg2().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg3().getOperationalLimitsGroups()));
 
     ApparentPowerLimits& appl = transformer.getLeg2().newApparentPowerLimits()
         .setPermanentLimit(10.0)
@@ -1391,12 +1391,12 @@ BOOST_AUTO_TEST_CASE(operationalLimits) {
     BOOST_CHECK(stdcxx::areSame(appl, transformer.getLeg2().getApparentPowerLimits().get()));
     BOOST_CHECK(stdcxx::areSame(appl, cTransformer.getLeg2().getApparentPowerLimits().get()));
 
-    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg1().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg2().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg3().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg1().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg2().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg3().getOperationalLimits()));
+    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg1().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg2().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg3().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg1().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg2().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(cTransformer.getLeg3().getOperationalLimitsGroups()));
 
     CurrentLimits& cl = transformer.getLeg3().newCurrentLimits()
         .setPermanentLimit(10.0)
@@ -1410,12 +1410,12 @@ BOOST_AUTO_TEST_CASE(operationalLimits) {
     BOOST_CHECK(stdcxx::areSame(cl, transformer.getLeg3().getCurrentLimits().get()));
     BOOST_CHECK(stdcxx::areSame(cl, cTransformer.getLeg3().getCurrentLimits().get()));
 
-    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg1().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg2().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg3().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg1().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg2().getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg3().getOperationalLimits()));
+    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg1().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg2().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(transformer.getLeg3().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg1().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg2().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg3().getOperationalLimitsGroups()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -23,8 +23,10 @@ class CurrentLimits : public LoadingLimits {
 public:  // OperationalLimits
     const LimitType& getLimitType() const override;
 
+    void remove() override;
+
 public:
-    CurrentLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
+    CurrentLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
 
     CurrentLimits(const CurrentLimits&) = default;
 

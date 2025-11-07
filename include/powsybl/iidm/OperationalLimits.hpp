@@ -10,40 +10,28 @@
 
 #include <powsybl/iidm/LimitType.hpp>
 
-#include <powsybl/stdcxx/reference.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
-class OperationalLimitsOwner;
-
 class OperationalLimits {
 public:
-    explicit OperationalLimits(OperationalLimitsOwner& owner);
+    OperationalLimits() = default;
 
     OperationalLimits(const OperationalLimits&) = default;
 
     OperationalLimits(OperationalLimits&&) noexcept = default;
 
-    virtual ~OperationalLimits() = default;
+    virtual ~OperationalLimits() noexcept = default;
 
-    OperationalLimits& operator=(const OperationalLimits&) = delete;
+    OperationalLimits& operator=(const OperationalLimits&) = default;
 
-    OperationalLimits& operator=(OperationalLimits&&) noexcept = delete;
+    OperationalLimits& operator=(OperationalLimits&&) noexcept = default;
+
 
     virtual const LimitType& getLimitType() const = 0;
 
-    virtual void remove();
-
-protected:
-
-    stdcxx::Reference<OperationalLimitsOwner> m_owner;
-
-private:
-    OperationalLimits();
-    friend class VoltageAngleLimit;
-
+    virtual void remove() = 0;
 };
 
 }  // namespace iidm

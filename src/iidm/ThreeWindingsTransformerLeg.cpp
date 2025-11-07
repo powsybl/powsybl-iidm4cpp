@@ -7,9 +7,9 @@
 
 #include <powsybl/iidm/ThreeWindingsTransformerLeg.hpp>
 
-#include <powsybl/iidm/ActivePowerLimits.hpp>
-#include <powsybl/iidm/ApparentPowerLimits.hpp>
-#include <powsybl/iidm/CurrentLimits.hpp>
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/PhaseTapChangerAdder.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
@@ -24,14 +24,14 @@ namespace iidm {
 namespace three_windings_transformer {
 
 Leg::Leg(const ThreeSides& side, double r, double x, double g, double b, double ratedU, double ratedS) :
-    FlowsLimitsHolder(stdcxx::format("limits%1%", static_cast<unsigned int>(side))),
     m_side(checkThreeSides(*this, side)),
     m_r(checkR(*this, r)),
     m_x(checkX(*this, x)),
     m_g(checkG(*this, g)),
     m_b(checkB(*this, b)),
     m_ratedU(checkRatedU(*this, ratedU, static_cast<unsigned int>(side))),
-    m_ratedS(checkRatedS(*this, ratedS)) {
+    m_ratedS(checkRatedS(*this, ratedS)),
+    m_operationalLimitsGroups(stdcxx::format("limits%1%", static_cast<unsigned int>(side))) {
 }
 
 double Leg::getB() const {
@@ -224,12 +224,56 @@ void Leg::setRatioTapChanger(std::unique_ptr<RatioTapChanger>&& ratioTapChanger)
 
 Leg& Leg::setTransformer(ThreeWindingsTransformer& transformer) {
     m_transformer = transformer;
-    setIdentifiable(transformer);
+    m_operationalLimitsGroups.setIdentifiable(transformer);
     return *this;
 }
 
 std::string Leg::toString() const {
     return stdcxx::format("%1% leg%2%", m_transformer.get().getId(), static_cast<unsigned int>(m_side));
+}
+
+stdcxx::const_range<OperationalLimitsGroup> Leg::getOperationalLimitsGroups() const {
+    return m_operationalLimitsGroups.getOperationalLimitsGroups();
+}
+stdcxx::range<OperationalLimitsGroup> Leg::getOperationalLimitsGroups() {
+    return m_operationalLimitsGroups.getOperationalLimitsGroups();
+}
+const stdcxx::optional<std::string>& Leg::getSelectedOperationalLimitsGroupId() const {
+    return m_operationalLimitsGroups.getSelectedOperationalLimitsGroupId();
+}
+stdcxx::CReference<OperationalLimitsGroup> Leg::getOperationalLimitsGroup(const std::string& id) const {
+    return m_operationalLimitsGroups.getOperationalLimitsGroup(id);
+}
+stdcxx::Reference<OperationalLimitsGroup> Leg::getOperationalLimitsGroup(const std::string& id) {
+    return m_operationalLimitsGroups.getOperationalLimitsGroup(id);
+}
+stdcxx::CReference<OperationalLimitsGroup> Leg::getSelectedOperationalLimitsGroup() const {
+    return m_operationalLimitsGroups.getSelectedOperationalLimitsGroup();
+}
+stdcxx::Reference<OperationalLimitsGroup> Leg::getSelectedOperationalLimitsGroup() {
+    return m_operationalLimitsGroups.getSelectedOperationalLimitsGroup();
+}
+stdcxx::Reference<OperationalLimitsGroup> Leg::newOperationalLimitsGroup(const std::string& id) {
+    return m_operationalLimitsGroups.newOperationalLimitsGroup(id);
+}
+void Leg::setSelectedOperationalLimitsGroup(const std::string& id) {
+    m_operationalLimitsGroups.setSelectedOperationalLimitsGroup(id);
+}
+void Leg::removeOperationalLimitsGroup(const std::string& id) {
+    m_operationalLimitsGroups.removeOperationalLimitsGroup(id);
+}
+void Leg::cancelSelectedOperationalLimitsGroup() {
+    m_operationalLimitsGroups.cancelSelectedOperationalLimitsGroup();
+}
+
+ActivePowerLimitsAdder Leg::newActivePowerLimits() {
+    return m_operationalLimitsGroups.newActivePowerLimits();
+}
+ApparentPowerLimitsAdder Leg::newApparentPowerLimits() {
+    return m_operationalLimitsGroups.newApparentPowerLimits();
+}
+CurrentLimitsAdder Leg::newCurrentLimits() {
+    return m_operationalLimitsGroups.newCurrentLimits();
 }
 
 }  // namespace three_windings_transformer

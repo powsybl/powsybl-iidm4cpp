@@ -12,7 +12,7 @@
 
 #include <boost/range/adaptor/map.hpp>
 
-#include <powsybl/iidm/OperationalLimitsOwner.hpp>
+#include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/util/LoadingLimitsUtil.hpp>
@@ -24,7 +24,7 @@ namespace powsybl {
 namespace iidm {
 
 template <typename L, typename A>
-LoadingLimitsAdder<L, A>::TemporaryLimitAdder::TemporaryLimitAdder(OperationalLimitsOwner& owner, LoadingLimitsAdder<L, A>& parent) :
+LoadingLimitsAdder<L, A>::TemporaryLimitAdder::TemporaryLimitAdder(OperationalLimitsGroup& owner, LoadingLimitsAdder<L, A>& parent) :
     m_owner(owner),
     m_parent(parent) {
 }
@@ -91,7 +91,7 @@ typename LoadingLimitsAdder<L, A>::TemporaryLimitAdder& LoadingLimitsAdder<L, A>
 }
 
 template <typename L, typename A>
-LoadingLimitsAdder<L, A>::LoadingLimitsAdder(OperationalLimitsOwner& owner) :
+LoadingLimitsAdder<L, A>::LoadingLimitsAdder(OperationalLimitsGroup& owner) :
     m_owner(owner) {
 }
 

@@ -7,19 +7,21 @@
 
 #include <powsybl/iidm/ApparentPowerLimits.hpp>
 
-#include <powsybl/iidm/OperationalLimitsHolder.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
-ApparentPowerLimits::ApparentPowerLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits) :
+ApparentPowerLimits::ApparentPowerLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits) :
     LoadingLimits(owner, permanentLimit, temporaryLimits, fictitiousLimits) {
 }
 
 const LimitType& ApparentPowerLimits::getLimitType() const {
     static LimitType s_type = LimitType::APPARENT_POWER;
     return s_type;
+}
+
+void ApparentPowerLimits::remove() {
+    m_limitsGroup.get().removeApparentPowerLimits();
 }
 
 }  // namespace iidm

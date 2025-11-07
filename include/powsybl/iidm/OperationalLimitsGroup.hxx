@@ -1,14 +1,14 @@
 /**
- * Copyright (c) 2021, RTE (http://www.rte-france.com)
+ * Copyright (c) 2025, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_OPERATIONALLIMITSHOLDER_HXX
-#define POWSYBL_IIDM_OPERATIONALLIMITSHOLDER_HXX
+#ifndef POWSYBL_IIDM_OPERATIONALLIMITSGROUP_HXX
+#define POWSYBL_IIDM_OPERATIONALLIMITSGROUP_HXX
 
-#include <powsybl/iidm/OperationalLimitsHolder.hpp>
+#include <powsybl/iidm/OperationalLimitsGroup.hpp>
 
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/stdcxx/demangle.hpp>
@@ -20,7 +20,7 @@ namespace powsybl {
 namespace iidm {
 
 template <typename T>
-stdcxx::CReference<T> OperationalLimitsHolder::getOperationalLimits(const LimitType& type) const {
+stdcxx::CReference<T> OperationalLimitsGroup::getOperationalLimits(const LimitType& type) const {
     auto it = m_operationalLimits.find(type);
     if (it == m_operationalLimits.end()) {
         return stdcxx::cref<T>();
@@ -32,12 +32,12 @@ stdcxx::CReference<T> OperationalLimitsHolder::getOperationalLimits(const LimitT
 }
 
 template <typename T>
-stdcxx::Reference<T> OperationalLimitsHolder::getOperationalLimits(const LimitType& type) {
-    return stdcxx::ref(const_cast<const OperationalLimitsHolder*>(this)->getOperationalLimits<const T>(type));
+stdcxx::Reference<T> OperationalLimitsGroup::getOperationalLimits(const LimitType& type) {
+    return stdcxx::ref(const_cast<const OperationalLimitsGroup*>(this)->getOperationalLimits<const T>(type));
 }
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_OPERATIONALLIMITSHOLDER_HXX
+#endif  // POWSYBL_IIDM_OPERATIONALLIMITSGROUP_HXX

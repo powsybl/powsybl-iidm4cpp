@@ -351,8 +351,8 @@ BOOST_AUTO_TEST_CASE(currentLimits) {
     BOOST_TEST(!cDanglingLine.getCurrentLimits());
     BOOST_TEST(!danglingLine.getCurrentLimits());
 
-    BOOST_CHECK_EQUAL(0, boost::size(cDanglingLine.getOperationalLimits()));
-    BOOST_CHECK_EQUAL(0, boost::size(danglingLine.getOperationalLimits()));
+    BOOST_CHECK_EQUAL(0, boost::size(cDanglingLine.getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(danglingLine.getOperationalLimitsGroups()));
 
     danglingLine.newCurrentLimits()
         .setPermanentLimit(10.0)
@@ -379,8 +379,8 @@ BOOST_AUTO_TEST_CASE(currentLimits) {
     BOOST_TEST(cDanglingLine.getCurrentLimits());
     BOOST_TEST(danglingLine.getCurrentLimits());
 
-    BOOST_CHECK_EQUAL(1, boost::size(cDanglingLine.getOperationalLimits()));
-    BOOST_CHECK_EQUAL(1, boost::size(danglingLine.getOperationalLimits()));
+    BOOST_CHECK_EQUAL(1, boost::size(cDanglingLine.getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(danglingLine.getOperationalLimitsGroups()));
 
     BOOST_CHECK(!cDanglingLine.getActivePowerLimits());
     BOOST_CHECK(!danglingLine.getActivePowerLimits());
@@ -410,8 +410,8 @@ BOOST_AUTO_TEST_CASE(currentLimits) {
     BOOST_CHECK(cDanglingLine.getActivePowerLimits());
     BOOST_CHECK(danglingLine.getActivePowerLimits());
 
-    BOOST_CHECK_EQUAL(2, boost::size(cDanglingLine.getOperationalLimits()));
-    BOOST_CHECK_EQUAL(2, boost::size(danglingLine.getOperationalLimits()));
+    BOOST_CHECK_EQUAL(1, boost::size(cDanglingLine.getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(danglingLine.getOperationalLimitsGroups()));
 
     danglingLine.newApparentPowerLimits()
         .setPermanentLimit(10.0)
@@ -438,8 +438,8 @@ BOOST_AUTO_TEST_CASE(currentLimits) {
     BOOST_CHECK(cDanglingLine.getApparentPowerLimits());
     BOOST_CHECK(danglingLine.getApparentPowerLimits());
 
-    BOOST_CHECK_EQUAL(3, boost::size(cDanglingLine.getOperationalLimits()));
-    BOOST_CHECK_EQUAL(3, boost::size(danglingLine.getOperationalLimits()));
+    BOOST_CHECK_EQUAL(1, boost::size(cDanglingLine.getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(1, boost::size(danglingLine.getOperationalLimitsGroups()));
 }
 
 BOOST_AUTO_TEST_CASE(getBoundary) {

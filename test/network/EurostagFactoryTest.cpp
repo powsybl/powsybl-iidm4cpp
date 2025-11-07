@@ -11,6 +11,7 @@
 #include <powsybl/iidm/ApparentPowerLimits.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/CurrentLimits.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/LimitType.hpp>

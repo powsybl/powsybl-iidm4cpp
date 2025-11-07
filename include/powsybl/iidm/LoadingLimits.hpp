@@ -14,14 +14,13 @@
 #include <vector>
 
 #include <powsybl/iidm/OperationalLimits.hpp>
+#include <powsybl/iidm/OperationalLimitsGroup.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
 
 namespace iidm {
-
-class OperationalLimitsOwner;
 
 class LoadingLimits : public OperationalLimits {
 public:
@@ -54,7 +53,7 @@ public:
     using FictitiousLimits = std::map<std::string, TemporaryLimit, std::greater<std::string > >;
 
 public:
-    LoadingLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
+    LoadingLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
 
     LoadingLimits(const LoadingLimits&) = default;
 
@@ -84,6 +83,9 @@ public:
     double getTemporaryLimitValue(unsigned long acceptableDuration) const;
 
     LoadingLimits& setPermanentLimit(double permanentLimit);
+
+protected:
+    stdcxx::Reference<OperationalLimitsGroup> m_limitsGroup;
 
 private:
     double m_permanentLimit;

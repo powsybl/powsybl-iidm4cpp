@@ -7,6 +7,9 @@
 
 #include <powsybl/iidm/DanglingLine.hpp>
 
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
@@ -22,7 +25,6 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
                            double p0, double q0, double r, double x, double g, double b, const std::string& pairingKey,
                            std::unique_ptr<Generation>&& generation) :
     Identifiable(id, name, fictitious),
-    FlowsLimitsHolder(*this, "limits"),
     m_b(checkB(*this, b)),
     m_g(checkG(*this, g)),
     m_r(checkR(*this, r)),
@@ -31,7 +33,8 @@ DanglingLine::DanglingLine(VariantManagerHolder& network, const std::string& id,
     m_q0(network.getVariantManager().getVariantArraySize(), q0),
     m_pairingKey(pairingKey),
     m_generation(std::move(generation)),
-    m_boundary(stdcxx::make_unique<util::dangling_line::Boundary>(*this)) {
+    m_boundary(stdcxx::make_unique<util::dangling_line::Boundary>(*this)),
+    m_operationalLimitsGroups(*this, "limits") {
 
     if (m_generation) {
         m_generation->attach(*this);
@@ -205,6 +208,50 @@ DanglingLine& DanglingLine::setX(double x) {
     m_x = checkX(*this, x);
 
     return *this;
+}
+
+stdcxx::const_range<OperationalLimitsGroup> DanglingLine::getOperationalLimitsGroups() const {
+    return m_operationalLimitsGroups.getOperationalLimitsGroups();
+}
+stdcxx::range<OperationalLimitsGroup> DanglingLine::getOperationalLimitsGroups() {
+    return m_operationalLimitsGroups.getOperationalLimitsGroups();
+}
+const stdcxx::optional<std::string>& DanglingLine::getSelectedOperationalLimitsGroupId() const {
+    return m_operationalLimitsGroups.getSelectedOperationalLimitsGroupId();
+}
+stdcxx::CReference<OperationalLimitsGroup> DanglingLine::getOperationalLimitsGroup(const std::string& id) const {
+    return m_operationalLimitsGroups.getOperationalLimitsGroup(id);
+}
+stdcxx::Reference<OperationalLimitsGroup> DanglingLine::getOperationalLimitsGroup(const std::string& id) {
+    return m_operationalLimitsGroups.getOperationalLimitsGroup(id);
+}
+stdcxx::CReference<OperationalLimitsGroup> DanglingLine::getSelectedOperationalLimitsGroup() const {
+    return m_operationalLimitsGroups.getSelectedOperationalLimitsGroup();
+}
+stdcxx::Reference<OperationalLimitsGroup> DanglingLine::getSelectedOperationalLimitsGroup() {
+    return m_operationalLimitsGroups.getSelectedOperationalLimitsGroup();
+}
+stdcxx::Reference<OperationalLimitsGroup> DanglingLine::newOperationalLimitsGroup(const std::string& id) {
+    return m_operationalLimitsGroups.newOperationalLimitsGroup(id);
+}
+void DanglingLine::setSelectedOperationalLimitsGroup(const std::string& id) {
+    m_operationalLimitsGroups.setSelectedOperationalLimitsGroup(id);
+}
+void DanglingLine::removeOperationalLimitsGroup(const std::string& id) {
+    m_operationalLimitsGroups.removeOperationalLimitsGroup(id);
+}
+void DanglingLine::cancelSelectedOperationalLimitsGroup() {
+    m_operationalLimitsGroups.cancelSelectedOperationalLimitsGroup();
+}
+
+ActivePowerLimitsAdder DanglingLine::newActivePowerLimits() {
+    return m_operationalLimitsGroups.newActivePowerLimits();
+}
+ApparentPowerLimitsAdder DanglingLine::newApparentPowerLimits() {
+    return m_operationalLimitsGroups.newApparentPowerLimits();
+}
+CurrentLimitsAdder DanglingLine::newCurrentLimits() {
+    return m_operationalLimitsGroups.newCurrentLimits();
 }
 
 }  // namespace iidm

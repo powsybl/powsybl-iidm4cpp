@@ -10,7 +10,7 @@
 
 #include <powsybl/iidm/FlowsLimitsHolder.hpp>
 #include <powsybl/iidm/LoadingLimits.hpp>
-#include <powsybl/iidm/OperationalLimitsHolder.hpp>
+#include <powsybl/iidm/OperationalLimitsGroups.hpp>
 #include <powsybl/iidm/PhaseTapChangerHolder.hpp>
 #include <powsybl/iidm/RatioTapChangerHolder.hpp>
 #include <powsybl/iidm/ThreeSides.hpp>
@@ -106,6 +106,24 @@ public:
 
     std::string toString() const;
 
+// FlowsLimitsHolder
+    stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups() const override;
+    stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups() override;
+    const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId() const override;
+    stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) const override;
+    stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) override;
+    stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() const override;
+    stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() override;
+    stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup(const std::string& id) override;
+    void setSelectedOperationalLimitsGroup(const std::string& id) override;
+    void removeOperationalLimitsGroup(const std::string& id) override;
+    void cancelSelectedOperationalLimitsGroup() override;
+
+    ActivePowerLimitsAdder newActivePowerLimits() override;
+    ApparentPowerLimitsAdder newApparentPowerLimits() override;
+    CurrentLimitsAdder newCurrentLimits() override;
+
+
 private:  // TapChangerHolder
     unsigned long getRegulatingTapChangerCount() const override;
 
@@ -142,6 +160,8 @@ private:
     std::unique_ptr<PhaseTapChanger> m_phaseTapChanger;
 
     std::unique_ptr<RatioTapChanger> m_ratioTapChanger;
+
+    OperationalLimitsGroups m_operationalLimitsGroups;
 };
 
 }  // namespace three_windings_transformer

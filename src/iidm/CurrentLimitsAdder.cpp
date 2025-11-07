@@ -7,20 +7,17 @@
 
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 
-#include <powsybl/iidm/OperationalLimitsHolder.hpp>
-#include <powsybl/stdcxx/make_unique.hpp>
-
 namespace powsybl {
 
 namespace iidm {
 
-CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsOwner& owner) :
+CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsGroup& owner) :
     LoadingLimitsAdder(owner) {
 }
 
 CurrentLimits& CurrentLimitsAdder::add() {
     checkLoadingLimits();
-    auto limit = m_owner.setOperationalLimits(LimitType::CURRENT, stdcxx::make_unique<CurrentLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits()));
+    auto limit = m_owner.setOperationalLimits(LimitType::CURRENT, std::make_shared<CurrentLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits()));
     return static_cast<CurrentLimits&>(limit.get());
 }
 

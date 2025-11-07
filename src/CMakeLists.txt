@@ -101,8 +101,8 @@ set(IIDM_SOURCES
     iidm/NodeBreakerVoltageLevelViews.cpp
     iidm/NodeTerminal.cpp
     iidm/NodeTerminalViews.cpp
-    iidm/OperationalLimits.cpp
-    iidm/OperationalLimitsHolder.cpp
+    iidm/OperationalLimitsGroup.cpp
+    iidm/OperationalLimitsGroups.cpp
     iidm/Overload.cpp
     iidm/OverloadManagementSystem.cpp
     iidm/OverloadManagementSystemAdder.cpp

@@ -18,8 +18,10 @@ class ActivePowerLimits : public LoadingLimits {
 public:  // LoadingLimits
     const LimitType& getLimitType() const override;
 
+    void remove() override;
+
 public:
-    ActivePowerLimits(OperationalLimitsOwner& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
+    ActivePowerLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
 
     ActivePowerLimits(const ActivePowerLimits&) = default;
 

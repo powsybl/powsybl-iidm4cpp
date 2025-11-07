@@ -12,7 +12,7 @@
 #include <vector>
 
 #include <powsybl/iidm/OperationalLimits.hpp>
-#include <powsybl/iidm/OperationalLimitsHolder.hpp>
+#include <powsybl/iidm/OperationalLimitsGroup.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
@@ -30,48 +30,57 @@ class Identifiable;
 
 class FlowsLimitsHolder {
 public:
-    FlowsLimitsHolder(Identifiable& identifiable, std::string&& attributeName);
-
-    explicit FlowsLimitsHolder(std::string&& attributeName);
+    FlowsLimitsHolder() = default;
 
     FlowsLimitsHolder(const FlowsLimitsHolder&) = default;
 
-    // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of OperationalLimitsHolder is not marked noexcept
-    FlowsLimitsHolder(FlowsLimitsHolder&&) = default;  // NOSONAR
+    FlowsLimitsHolder(FlowsLimitsHolder&&) = default;
 
-    ~FlowsLimitsHolder() noexcept = default;
+    virtual ~FlowsLimitsHolder() noexcept = default;
 
     FlowsLimitsHolder& operator=(const FlowsLimitsHolder&) = default;
 
     FlowsLimitsHolder& operator=(FlowsLimitsHolder&&) = default;
 
-    stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const;
+    virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups() const = 0;
+    virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups() = 0;
 
-    stdcxx::Reference<ActivePowerLimits> getActivePowerLimits();
+    virtual const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId() const = 0;
 
-    stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits() const;
+    virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) const = 0;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) = 0;
 
-    stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits();
+    virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() const = 0;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() = 0;
 
-    stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
+    virtual stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup(const std::string& id) = 0;
 
-    stdcxx::Reference<CurrentLimits> getCurrentLimits();
+    virtual void setSelectedOperationalLimitsGroup(const std::string& id) = 0;
 
-    stdcxx::const_range<OperationalLimits> getOperationalLimits() const;
+    virtual void removeOperationalLimitsGroup(const std::string& id) = 0;
 
-    stdcxx::range<OperationalLimits> getOperationalLimits();
+    virtual void cancelSelectedOperationalLimitsGroup() = 0;
 
-    ActivePowerLimitsAdder newActivePowerLimits();
+    virtual stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
+    virtual stdcxx::Reference<CurrentLimits> getCurrentLimits();
 
-    ApparentPowerLimitsAdder newApparentPowerLimits();
+    virtual stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const;
+    virtual stdcxx::Reference<ActivePowerLimits> getActivePowerLimits();
 
-    CurrentLimitsAdder newCurrentLimits();
+    virtual stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits() const;
+    virtual stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits();
 
-protected:
-    void setIdentifiable(Identifiable& identifiable);
+    virtual ActivePowerLimitsAdder newActivePowerLimits() = 0;
 
-private:
-    OperationalLimitsHolder m_operationalLimitsHolder;
+    virtual ApparentPowerLimitsAdder newApparentPowerLimits() = 0;
+
+    virtual CurrentLimitsAdder newCurrentLimits() = 0;
+
+// protected:
+//     void setIdentifiable(Identifiable& identifiable);
+
+// private:
+//     OperationalLimitsHolder m_operationalLimitsHolder;
 };
 
 }  // namespace iidm
