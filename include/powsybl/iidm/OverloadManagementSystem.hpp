@@ -38,6 +38,9 @@ public:  // Identifiable
 private: // Identifiable
     const std::string& getTypeDescription() const override;
 
+public: // AutomationSystem
+    void remove() override;
+
 public:
     ~OverloadManagementSystem() noexcept override = default;
 

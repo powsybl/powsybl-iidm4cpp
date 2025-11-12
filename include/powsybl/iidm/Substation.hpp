@@ -104,6 +104,8 @@ private:
 
     void remove(const VoltageLevel& voltageLevel);
 
+    void remove(const OverloadManagementSystem& overloadManagementSystem);
+
     void setNetworkRef(Network& network);
 
     stdcxx::Reference<Network>& getSubNetworkRef();

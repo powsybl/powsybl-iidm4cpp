@@ -67,6 +67,13 @@ const std::string& OverloadManagementSystem::getTypeDescription() const {
     return s_typeDescription;
 }
 
+void OverloadManagementSystem::remove() {
+    if (static_cast<bool>(m_substation)) {
+        m_substation.get().remove(*this);
+    }
+    getNetwork().remove(*this);
+}
+
 stdcxx::CReference<Substation> OverloadManagementSystem::getSubstation() const {
     return stdcxx::cref(m_substation);
 }

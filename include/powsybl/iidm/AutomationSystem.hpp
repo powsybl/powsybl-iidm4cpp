@@ -33,6 +33,8 @@ public:
 
     void setEnabled(bool enabled);
 
+    virtual void remove() = 0;
+
 private:
     std::vector<bool> m_enabled;
 };

@@ -195,6 +195,10 @@ void Substation::remove() {
         vl.remove();
     }
 
+    for(OverloadManagementSystem& oms : m_overloadManagementSystems) {
+        oms.remove();
+    }
+
     // Remove this substation from the network
     getNetwork().remove(*this);
 }
@@ -205,6 +209,15 @@ void Substation::remove(const VoltageLevel& voltageLevel) {
     });
     if (it != m_voltageLevels.end()) {
         m_voltageLevels.erase(it);
+    }
+}
+
+void Substation::remove(const OverloadManagementSystem& overloadManagementSystem) {
+    auto it = std::find_if(m_overloadManagementSystems.begin(), m_overloadManagementSystems.end(), [&overloadManagementSystem](const std::reference_wrapper<OverloadManagementSystem>& oms) {
+        return stdcxx::areSame(overloadManagementSystem, oms.get());
+    });
+    if(it != m_overloadManagementSystems.end()) {
+        m_overloadManagementSystems.erase(it);
     }
 }
 

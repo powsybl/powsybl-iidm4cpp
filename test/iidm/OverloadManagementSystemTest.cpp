@@ -549,6 +549,60 @@ BOOST_AUTO_TEST_CASE(invalidTypeTrippingElementTest) {
     "Overload management system in substation 'S1':  - tripping 'LineTrip':Element (LINE_S1S2V1_2) is of type : powsybl::iidm::Line (powsybl::iidm::ThreeWindingsTransformer expected)");
 }
 
+BOOST_AUTO_TEST_CASE(removeTest) {
+    Network network = createOmsTestNetwork();
+    Substation& substation = network.getSubstation("S1");
+    OverloadManagementSystem& overloadManagementSystem = substation.newOverloadManagementSystem()
+                .setId("OMS1")
+                .setMonitoredElementSide(ThreeSides::ONE)
+                .setMonitoredElementId("LINE_S1S2V1_2")
+                .newBranchTripping()
+                    ->setBranchToOperateId("LINE_S1S2V1_2")
+                    .setSideToOperate(TwoSides::ONE)
+                    .setKey("LineTrip")
+                    .setOpenAction(false)
+                    .setCurrentLimit(50)
+                    .add()
+                .add();
+
+    BOOST_CHECK_EQUAL(1, network.getOverloadManagementSystemCount());
+    BOOST_CHECK_EQUAL(1, substation.getOverloadManagementSystemCount());
+    BOOST_CHECK_NO_THROW(network.getOverloadManagementSystem("OMS1"));
+    BOOST_CHECK(stdcxx::areSame(overloadManagementSystem, network.getOverloadManagementSystem("OMS1")));
+
+    overloadManagementSystem.remove();
+
+    BOOST_CHECK_EQUAL(0, network.getOverloadManagementSystemCount());
+    BOOST_CHECK_EQUAL(0, substation.getOverloadManagementSystemCount());
+    POWSYBL_ASSERT_THROW(network.getOverloadManagementSystem("OMS1"), PowsyblException, "Unable to find to the identifiable 'OMS1'");
+}
+
+BOOST_AUTO_TEST_CASE(removeSubstationTest) {
+    Network network = createOmsTestNetwork();
+    Substation& substation = network.newSubstation().setId("S3").add();
+    substation.newOverloadManagementSystem()
+                .setId("OMS1")
+                .setMonitoredElementSide(ThreeSides::ONE)
+                .setMonitoredElementId("LINE_S1S2V1_2")
+                .newBranchTripping()
+                    ->setBranchToOperateId("LINE_S1S2V1_2")
+                    .setSideToOperate(TwoSides::ONE)
+                    .setKey("LineTrip")
+                    .setOpenAction(false)
+                    .setCurrentLimit(50)
+                    .add()
+                .add();
+
+    BOOST_CHECK_EQUAL(1, network.getOverloadManagementSystemCount());
+    BOOST_CHECK_EQUAL(1, substation.getOverloadManagementSystemCount());
+    BOOST_CHECK_NO_THROW(network.getOverloadManagementSystem("OMS1"));
+
+    substation.remove();
+
+    BOOST_CHECK_EQUAL(0, network.getOverloadManagementSystemCount());
+    POWSYBL_ASSERT_THROW(network.getOverloadManagementSystem("OMS1"), PowsyblException, "Unable to find to the identifiable 'OMS1'");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
