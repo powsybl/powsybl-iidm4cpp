@@ -7,7 +7,10 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -308,6 +311,151 @@ BOOST_AUTO_TEST_CASE(terminal) {
 
     POWSYBL_ASSERT_THROW(line2.getTerminalFromVoltageLevel("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
     POWSYBL_ASSERT_THROW(cLine2.getTerminalFromVoltageLevel("VL2"), PowsyblException, "Both terminals are connected to voltage level VL2");
+}
+
+BOOST_AUTO_TEST_CASE(createSelectedOperationalLimitsWhenMissing) {
+    Network network = createLineTestNetwork();
+    Line& line = network.getLine("VL1_VL3");
+
+    //First all limits are empty
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId1().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups1()));
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
+
+    //Add current Limit in group 1
+    auto adderCurrents = line.newCurrentLimits1();
+    adderCurrents.setPermanentLimit(1000.0).add();
+    //default group is created:
+    POWSYBL_ASSERT_REF_TRUE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK_EQUAL(1, boost::size(line.getOperationalLimitsGroups1()));
+    auto groupsCurrents = line.getOperationalLimitsGroups1();
+    auto groupCurrents = groupsCurrents.front();
+    BOOST_CHECK_EQUAL("DEFAULT" ,groupCurrents.getId());
+    POWSYBL_ASSERT_REF_FALSE(groupCurrents.getActivePowerLimits());
+    POWSYBL_ASSERT_REF_FALSE(groupCurrents.getApparentPowerLimits());
+    POWSYBL_ASSERT_REF_TRUE(groupCurrents.getCurrentLimits());
+    BOOST_CHECK_CLOSE(1000.0, groupCurrents.getCurrentLimits().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
+    //Group 2 still empty
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
+    //remove Limit group
+    line.removeOperationalLimitsGroup1("DEFAULT");
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups1()));
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
+
+    //Add active power limit in group 1
+    auto adderActive = line.newActivePowerLimits1();
+    adderActive.setPermanentLimit(1000.0).add();
+    //default group is created:
+    POWSYBL_ASSERT_REF_TRUE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK_EQUAL(1, boost::size(line.getOperationalLimitsGroups1()));
+    auto groupsActive = line.getOperationalLimitsGroups1();
+    auto groupActive = groupsActive.front();
+    BOOST_CHECK_EQUAL("DEFAULT" ,groupActive.getId());
+    POWSYBL_ASSERT_REF_TRUE(groupActive.getActivePowerLimits());
+    POWSYBL_ASSERT_REF_FALSE(groupActive.getApparentPowerLimits());
+    POWSYBL_ASSERT_REF_FALSE(groupActive.getCurrentLimits());
+    BOOST_CHECK_CLOSE(1000.0, groupActive.getActivePowerLimits().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
+    //Group 2 still empty
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
+    //remove Limit group
+    line.removeOperationalLimitsGroup1("DEFAULT");
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups1()));
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
+
+    //Add apparent power limit in group 1
+    auto adderApparent = line.newApparentPowerLimits1();
+    adderApparent.setPermanentLimit(1000.0).add();
+    //default group is created:
+    POWSYBL_ASSERT_REF_TRUE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK_EQUAL(1, boost::size(line.getOperationalLimitsGroups1()));
+    auto groupsApparent = line.getOperationalLimitsGroups1();
+    auto groupApparent = groupsApparent.front();
+    BOOST_CHECK_EQUAL("DEFAULT" ,groupApparent.getId());
+    POWSYBL_ASSERT_REF_FALSE(groupApparent.getActivePowerLimits());
+    POWSYBL_ASSERT_REF_TRUE(groupApparent.getApparentPowerLimits());
+    POWSYBL_ASSERT_REF_FALSE(groupApparent.getCurrentLimits());
+    BOOST_CHECK_CLOSE(1000.0, groupApparent.getApparentPowerLimits().get().getPermanentLimit(), std::numeric_limits<double>::epsilon());
+    //group 2 stil lempty
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
+    //remove limit group
+    line.removeOperationalLimitsGroup1("DEFAULT");
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups1()));
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
+}
+
+
+BOOST_AUTO_TEST_CASE(createEmptyDefaultOperationalLimitGroupIfAdderNotUsed) {
+    Network network = createLineTestNetwork();
+    Line& line = network.getLine("VL1_VL3");
+
+    //First all limits are empty
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId1().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups1()));
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
+
+    auto adderCurrents = line.newCurrentLimits2(); //default group created there
+    adderCurrents.setPermanentLimit(1000.0);
+    //add() not performed : default group remains empty
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId1().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups1()));
+    POWSYBL_ASSERT_REF_TRUE(line.getSelectedOperationalLimitsGroup2());
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2().get().getActivePowerLimits());
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2().get().getCurrentLimits());
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2().get().getApparentPowerLimits());
+}
+
+BOOST_AUTO_TEST_CASE(dontChangeDefaultOperationalLimitsGroupIfAdderValidationFails) {
+    Network network = createLineTestNetwork();
+    Line& line = network.getLine("VL1_VL3");
+
+    //First all limits are empty
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId1().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups1()));
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
+
+    auto adderCurrents = line.newCurrentLimits2();
+    adderCurrents.setPermanentLimit(stdcxx::nan())
+            .beginTemporaryLimit()
+                .setName("10'")
+                .setValue(500.0)
+                .setAcceptableDuration(600)
+                .endTemporaryLimit();
+
+    POWSYBL_ASSERT_THROW(adderCurrents.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be defined and be > 0");
+    // limits' validation of the adder fails. Default group remains empty
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId1().has_value());
+    BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups1()));
+    POWSYBL_ASSERT_REF_TRUE(line.getSelectedOperationalLimitsGroup2());
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2().get().getActivePowerLimits());
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2().get().getCurrentLimits());
+    POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2().get().getApparentPowerLimits());
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

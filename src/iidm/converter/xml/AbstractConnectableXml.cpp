@@ -8,9 +8,11 @@
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/OperationalLimitsGroup.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -87,6 +89,76 @@ void AbstractConnectableXml::writeCurrentLimits(const CurrentLimits& limits, pow
     writeLoadingLimits(limits, writer, nsPrefix, version, CURRENT_LIMITS, index);
 }
 
+void AbstractConnectableXml::writeLimits(NetworkXmlWriterContext& context, const char* rootName, const stdcxx::CReference<OperationalLimitsGroup>& selectedLimitsGroup, const stdcxx::const_range<OperationalLimitsGroup>& limitsGroups, const stdcxx::optional<int>& index) {
+
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_11(), context.getVersion(), [&context, &rootName, &selectedLimitsGroup, &index](){
+        if(selectedLimitsGroup && selectedLimitsGroup.get().getActivePowerLimits()) {
+            IidmXmlUtil::assertMinimumVersion(rootName, toString(ACTIVE_POWER_LIMITS, index), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &selectedLimitsGroup, &index]() { 
+                writeActivePowerLimits(selectedLimitsGroup.get().getActivePowerLimits(), context.getWriter(), context.getVersion(), index); 
+            });
+        }
+        if(selectedLimitsGroup && selectedLimitsGroup.get().getApparentPowerLimits()) {
+            IidmXmlUtil::assertMinimumVersion(rootName, toString(APPARENT_POWER_LIMITS, index), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &selectedLimitsGroup, &index]() { 
+                writeApparentPowerLimits(selectedLimitsGroup.get().getApparentPowerLimits(), context.getWriter(), context.getVersion(), index); 
+            });
+        }
+        if(selectedLimitsGroup && selectedLimitsGroup.get().getCurrentLimits()) {
+            writeCurrentLimits(selectedLimitsGroup.get().getCurrentLimits(), context.getWriter(), context.getVersion(), index); 
+        }
+    });
+
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&limitsGroups, &context, &index](){
+        writeLoadingLimitsGroups(limitsGroups, context, index);
+    });
+
+}
+
+void AbstractConnectableXml::readLoadingLimitsGroup(const NetworkXmlReaderContext& context, const char* groupElementName, const std::function<stdcxx::Reference<OperationalLimitsGroup>(const std::string&)>& groupBuilder) {
+    const std::string& id = context.getReader().getAttributeValue(ID);
+    stdcxx::Reference<OperationalLimitsGroup> limitsGroup = groupBuilder(id);
+    readAllLoadingLimits(limitsGroup, groupElementName, context);
+}
+void AbstractConnectableXml::readLoadingLimitsGroup(const NetworkXmlReaderContext& context, const char* groupElementName, FlowsLimitsHolder& holder) {
+    const std::string& id = context.getReader().getAttributeValue(ID);
+    stdcxx::Reference<OperationalLimitsGroup> limitsGroup = holder.newOperationalLimitsGroup(id);
+    readAllLoadingLimits(limitsGroup, groupElementName, context);
+}
+
+void AbstractConnectableXml::writeLoadingLimitsGroups(const stdcxx::const_range<OperationalLimitsGroup>& limitsGroups, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
+
+    for( const auto& limitsGroup : limitsGroups) {
+        context.getWriter().writeStartElement(context.getVersion().getPrefix(), toString(LIMITS_GROUP, index));
+        context.getWriter().writeAttribute(ID, limitsGroup.getId());
+        if(limitsGroup.getActivePowerLimits()) {
+            writeActivePowerLimits(limitsGroup.getActivePowerLimits(), context.getWriter(), context.getVersion());
+        }
+        if(limitsGroup.getApparentPowerLimits()) {
+            writeApparentPowerLimits(limitsGroup.getApparentPowerLimits(), context.getWriter(), context.getVersion());
+        }
+        if(limitsGroup.getCurrentLimits()) {
+            writeCurrentLimits(limitsGroup.getCurrentLimits(), context.getWriter(), context.getVersion());
+        }
+        context.getWriter().writeEndElement();
+    }
+
+}
+
+void AbstractConnectableXml::readAllLoadingLimits(OperationalLimitsGroup& limitsGroup, const char* groupElementName, const NetworkXmlReaderContext& context) {
+    context.getReader().readUntilEndElement(groupElementName, [&limitsGroup, &groupElementName, &context]() {
+        if(context.getReader().getLocalName() == ACTIVE_POWER_LIMITS) {
+            readActivePowerLimits(limitsGroup.newActivePowerLimits(), context);
+        } else if(context.getReader().getLocalName() == APPARENT_POWER_LIMITS) {
+            readApparentPowerLimits(limitsGroup.newApparentPowerLimits(), context);
+        } else if(context.getReader().getLocalName() == CURRENT_LIMITS) {
+            readCurrentLimits(limitsGroup.newCurrentLimits(), context);
+        } else {
+            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), groupElementName));
+        }
+    });
+}
+
 void AbstractConnectableXml::writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
     context.getWriter().writeAttribute(toString(NODE, index), terminal.getNodeBreakerView().getNode());
 }
@@ -115,6 +187,23 @@ void AbstractConnectableXml::writeNodeOrBus(const Terminal& terminal, NetworkXml
 void AbstractConnectableXml::writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const stdcxx::optional<int>& index) {
     writer.writeOptionalAttribute(toString(P, index), terminal.getP());
     writer.writeOptionalAttribute(toString(Q, index), terminal.getQ());
+}
+
+void AbstractConnectableXml::writeSelectedGroupId(const stdcxx::optional<std::string>& selectedGroupId, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
+    if(selectedGroupId.has_value()) {
+        context.getWriter().writeAttribute(toString(SELECTED_GROUP_ID, index), *selectedGroupId);
+    }
+}
+
+void AbstractConnectableXml::readSelectedGroupId(NetworkXmlReaderContext& context, const std::function<void(const std::string&)>& endTaskConsumer, const stdcxx::optional<int>& index) {
+
+    std::string selectedGroupId = context.getReader().getOptionalAttributeValue(toString(SELECTED_GROUP_ID, index), "");
+    if(!selectedGroupId.empty()) {
+        context.addEndTask([selectedGroupId, endTaskConsumer](){
+            endTaskConsumer(selectedGroupId);
+        });
+    }
+
 }
 
 }  // namespace xml

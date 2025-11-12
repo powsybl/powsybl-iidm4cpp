@@ -97,12 +97,30 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
     readPQ(twt.getLeg1().getTerminal(), context.getReader(), 1);
     readPQ(twt.getLeg2().getTerminal(), context.getReader(), 2);
     readPQ(twt.getLeg3().getTerminal(), context.getReader(), 3);
+
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt](){
+        readSelectedGroupId(context, [&twt](const std::string& selectedId) {
+            twt.getLeg1().setSelectedOperationalLimitsGroup(selectedId);
+        }, 1);
+        readSelectedGroupId(context, [&twt](const std::string& selectedId) {
+            twt.getLeg2().setSelectedOperationalLimitsGroup(selectedId);
+        }, 2);
+        readSelectedGroupId(context, [&twt](const std::string& selectedId) {
+            twt.getLeg3().setSelectedOperationalLimitsGroup(selectedId);
+        }, 3);
+    });
+
     return twt;
 }
 
 void ThreeWindingsTransformerXml::readSubElements(ThreeWindingsTransformer& twt, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(THREE_WINDINGS_TRANSFORMER, [this, &twt, &context]() {
-        if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_1) {
+        if (context.getReader().getLocalName() == LIMITS_GROUP_1) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt]() {
+                readLoadingLimitsGroup(context, LIMITS_GROUP_1, twt.getLeg1());
+            });
+        } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_1) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() {
                 readActivePowerLimits(twt.getLeg1().newActivePowerLimits(), context, 1);
@@ -114,6 +132,11 @@ void ThreeWindingsTransformerXml::readSubElements(ThreeWindingsTransformer& twt,
             });
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
             readCurrentLimits(twt.getLeg1().newCurrentLimits(), context, 1);
+        } else if (context.getReader().getLocalName() == LIMITS_GROUP_2) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt]() {
+                readLoadingLimitsGroup(context, LIMITS_GROUP_2, twt.getLeg2());
+            });
         } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_2) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() {
@@ -126,6 +149,11 @@ void ThreeWindingsTransformerXml::readSubElements(ThreeWindingsTransformer& twt,
             });
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
             readCurrentLimits(twt.getLeg2().newCurrentLimits(), context, 2);
+        } else if (context.getReader().getLocalName() == LIMITS_GROUP_3) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_3, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt]() {
+                readLoadingLimitsGroup(context, LIMITS_GROUP_3, twt.getLeg3());
+            });
         } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_3) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_3, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() {
@@ -205,6 +233,11 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
         writePQ(twt.getLeg2().getTerminal(), context.getWriter(), 2);
         writePQ(twt.getLeg3().getTerminal(), context.getWriter(), 3);
     }
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(),[&twt, &context](){
+        writeSelectedGroupId(twt.getLeg1().getSelectedOperationalLimitsGroupId(), context, 1);
+        writeSelectedGroupId(twt.getLeg2().getSelectedOperationalLimitsGroupId(), context, 2);
+        writeSelectedGroupId(twt.getLeg3().getSelectedOperationalLimitsGroupId(), context, 3);
+    });
 }
 
 void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
@@ -225,17 +258,7 @@ void ThreeWindingsTransformerXml::writeSubElements(const ThreeWindingsTransforme
 
     int legNumber = 1;
     for (const ThreeWindingsTransformer::Leg& leg : twt.getLegs()) {
-        if (leg.getActivePowerLimits()) {
-            IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(ACTIVE_POWER_LIMITS, legNumber), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&leg, &context, &legNumber]() { writeActivePowerLimits(leg.getActivePowerLimits(), context.getWriter(), context.getVersion(), legNumber); });
-        }
-        if (leg.getApparentPowerLimits()) {
-            IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(APPARENT_POWER_LIMITS, legNumber), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&leg, &context, &legNumber]() { writeApparentPowerLimits(leg.getApparentPowerLimits(), context.getWriter(), context.getVersion(), legNumber); });
-        }
-        if (leg.getCurrentLimits()) {
-            writeCurrentLimits(leg.getCurrentLimits(), context.getWriter(), context.getVersion(), legNumber);
-        }
+        writeLimits(context, getRootElementName(), leg.getSelectedOperationalLimitsGroup(), leg.getOperationalLimitsGroups(), legNumber);
         legNumber++;
     }
 }

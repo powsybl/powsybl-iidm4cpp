@@ -80,12 +80,24 @@ DanglingLine& DanglingLineXml::readRootElementAttributes(DanglingLineAdder& adde
     
     DanglingLine& dl = adder.add();
     readPQ(dl.getTerminal(), context.getReader());
+
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &dl](){
+        readSelectedGroupId(context, [&dl](const std::string& selectedId) {
+            dl.setSelectedOperationalLimitsGroup(selectedId);
+        });
+    });
+
     return dl;
 }
 
 void DanglingLineXml::readSubElements(DanglingLine& dl, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(DANGLING_LINE, [this, &dl, &context]() {
-        if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS) {
+        if (context.getReader().getLocalName() == LIMITS_GROUP) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &dl]() {
+                readLoadingLimitsGroup(context, LIMITS_GROUP, dl);
+            });
+        } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &dl]() {
                 readActivePowerLimits(dl.newActivePowerLimits(), context);
@@ -148,23 +160,17 @@ void DanglingLineXml::writeRootElementAttributes(const DanglingLine& dl, const V
     }
     writeNodeOrBus(dl.getTerminal(), context);
     writePQ(dl.getTerminal(), context.getWriter());
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(),[&dl, &context](){
+        writeSelectedGroupId(dl.getSelectedOperationalLimitsGroupId(), context);
+    });
 }
 
 void DanglingLineXml::writeSubElements(const DanglingLine& dl, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {
     if (dl.getGeneration()) {
         IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &dl]() { ReactiveLimitsXml::getInstance().write(dl.getGeneration(), context); });
     }
-    if (dl.getActivePowerLimits()) {
-        IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&dl, &context]() { writeActivePowerLimits(dl.getActivePowerLimits().get(), context.getWriter(), context.getVersion()); });
-    }
-    if (dl.getApparentPowerLimits()) {
-        IidmXmlUtil::assertMinimumVersion(getRootElementName(), APPARENT_POWER_LIMITS, ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&dl, &context]() { writeApparentPowerLimits(dl.getApparentPowerLimits().get(), context.getWriter(), context.getVersion()); });
-    }
-    if (dl.getCurrentLimits()) {
-        writeCurrentLimits(dl.getCurrentLimits().get(), context.getWriter(), context.getVersion());
-    }
+
+    writeLimits(context, getRootElementName(), dl.getSelectedOperationalLimitsGroup(), dl.getOperationalLimitsGroups());
 }
 
 }  // namespace xml

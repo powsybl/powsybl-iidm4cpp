@@ -52,12 +52,29 @@ TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(Two
     TwoWindingsTransformer& twt = adder.add();
     readPQ(twt.getTerminal1(), context.getReader(), 1);
     readPQ(twt.getTerminal2(), context.getReader(), 2);
+
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt](){
+        readSelectedGroupId(context, [&twt](const std::string& selectedId) {
+            twt.setSelectedOperationalLimitsGroup1(selectedId);
+        }, 1);
+        readSelectedGroupId(context, [&twt](const std::string& selectedId) {
+            twt.setSelectedOperationalLimitsGroup2(selectedId);
+        }, 2);
+    });
+
     return twt;
 }
 
 void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(TWO_WINDINGS_TRANSFORMER, [this, &twt, &context]() {
-        if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_1) {
+        if (context.getReader().getLocalName() == LIMITS_GROUP_1) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt]() {
+                readLoadingLimitsGroup(context, LIMITS_GROUP_1, [&twt](const std::string& id){
+                    return twt.newOperationalLimitsGroup1(id);
+                });
+            });
+        } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_1) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readActivePowerLimits(twt.newActivePowerLimits1(), context, 1); });
         } else if (context.getReader().getLocalName() == APPARENT_POWER_LIMITS_1) {
@@ -65,6 +82,13 @@ void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, Net
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readApparentPowerLimits(twt.newApparentPowerLimits1(), context, 1); });
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
             readCurrentLimits(twt.newCurrentLimits1(), context, 1);
+        } else if(context.getReader().getLocalName() == LIMITS_GROUP_2) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt]() {
+                readLoadingLimitsGroup(context, LIMITS_GROUP_2, [&twt](const std::string& id){
+                    return twt.newOperationalLimitsGroup2(id);
+                });
+            });
         } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_2) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readActivePowerLimits(twt.newActivePowerLimits2(), context, 2);});
@@ -97,6 +121,10 @@ void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTran
         writePQ(twt.getTerminal1(), context.getWriter(), 1);
         writePQ(twt.getTerminal2(), context.getWriter(), 2);
     }
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(),[&twt, &context](){
+        writeSelectedGroupId(twt.getSelectedOperationalLimitsGroupId1(), context, 1);
+        writeSelectedGroupId(twt.getSelectedOperationalLimitsGroupId2(), context, 2);
+    });
 }
 
 void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& twt, const Substation& /*substation*/, NetworkXmlWriterContext& context) const {
@@ -106,28 +134,8 @@ void TwoWindingsTransformerXml::writeSubElements(const TwoWindingsTransformer& t
     if (twt.hasPhaseTapChanger()) {
         writePhaseTapChanger(PHASE_TAP_CHANGER, twt.getPhaseTapChanger(), context);
     }
-    if (twt.getActivePowerLimits1()) {
-        IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(ACTIVE_POWER_LIMITS, 1), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&twt, &context]() { writeActivePowerLimits(twt.getActivePowerLimits1(), context.getWriter(), context.getVersion(), 1); });
-    }
-    if (twt.getApparentPowerLimits1()) {
-        IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(APPARENT_POWER_LIMITS, 1), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&twt, &context]() { writeApparentPowerLimits(twt.getApparentPowerLimits1(), context.getWriter(), context.getVersion(), 1); });
-    }
-    if (twt.getCurrentLimits1()) {
-        writeCurrentLimits(twt.getCurrentLimits1(), context.getWriter(), context.getVersion(), 1);
-    }
-    if (twt.getActivePowerLimits2()) {
-        IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(ACTIVE_POWER_LIMITS, 2), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&twt, &context]() { writeActivePowerLimits(twt.getActivePowerLimits2(), context.getWriter(), context.getVersion(), 2); });
-    }
-    if (twt.getApparentPowerLimits2()) {
-        IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(APPARENT_POWER_LIMITS, 2), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&twt, &context]() { writeApparentPowerLimits(twt.getApparentPowerLimits2(), context.getWriter(), context.getVersion(), 2); });
-    }
-    if (twt.getCurrentLimits2()) {
-        writeCurrentLimits(twt.getCurrentLimits2(), context.getWriter(), context.getVersion(), 2);
-    }
+    writeLimits(context, getRootElementName(), twt.getSelectedOperationalLimitsGroup1(), twt.getOperationalLimitsGroups1(), 1);
+    writeLimits(context, getRootElementName(), twt.getSelectedOperationalLimitsGroup2(), twt.getOperationalLimitsGroups2(), 2);
 }
 
 }  // namespace xml

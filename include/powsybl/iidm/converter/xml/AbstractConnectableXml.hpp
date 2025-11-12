@@ -35,6 +35,7 @@ class ActivePowerLimits;
 class ApparentPowerLimits;
 class Bus;
 class CurrentLimits;
+class OperationalLimitsGroup;
 class Terminal;
 
 namespace converter {
@@ -75,6 +76,15 @@ protected:
 
     static void writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
+    static void writeSelectedGroupId(const stdcxx::optional<std::string>& selectedGroupId, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void readSelectedGroupId(NetworkXmlReaderContext& context, const std::function<void(const std::string&)>& endTaskConsumer, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void writeLimits(NetworkXmlWriterContext& context, const char* rootName, const stdcxx::CReference<OperationalLimitsGroup>& selectedLimitsGroup, const stdcxx::const_range<OperationalLimitsGroup>& limitsGroups, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void readLoadingLimitsGroup(const NetworkXmlReaderContext& context, const char* groupElementName, const std::function<stdcxx::Reference<OperationalLimitsGroup>(const std::string&)>& groupBuilder);
+    static void readLoadingLimitsGroup(const NetworkXmlReaderContext& context, const char* groupElementName, FlowsLimitsHolder& holder);
+
 protected:
     AbstractConnectableXml() = default;
 
@@ -90,6 +100,11 @@ private:
     static void writeLoadingLimits(const Limits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const std::string& type, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeNode(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void writeLoadingLimitsGroups(const stdcxx::const_range<OperationalLimitsGroup>& limitsGroups, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void readAllLoadingLimits(OperationalLimitsGroup& limitsGroup, const char* groupElementName, const NetworkXmlReaderContext& context);
+    
 };
 
 }  // namespace xml

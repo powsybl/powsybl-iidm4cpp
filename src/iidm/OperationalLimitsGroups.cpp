@@ -67,20 +67,21 @@ stdcxx::Reference<OperationalLimitsGroup> OperationalLimitsGroups::newOperationa
     }
 
     std::shared_ptr<OperationalLimitsGroup> operationalLimitsGroupPtr = std::make_shared<OperationalLimitsGroup>(id, m_identifiable, m_attributeName);
-    if(m_selectedLimitsGroupId.has_value()) {
-        operationalLimitsGroupPtr->setSelectedGroupId(*m_selectedLimitsGroupId);
-    }
 
     m_operationalLimitsGroupById[id] = operationalLimitsGroupPtr;
     return stdcxx::ref(*m_operationalLimitsGroupById.find(id)->second);
 }
 
 void OperationalLimitsGroups::setSelectedOperationalLimitsGroup(const std::string& id) {
-    if(id == m_selectedLimitsGroupId) {
+    if(id.empty()){
+        cancelSelectedOperationalLimitsGroup();
+        return;
+    }
+    if(m_selectedLimitsGroupId.has_value() && *m_selectedLimitsGroupId==id) {
         return;
     }
 
-    //update selected groupe id in each group
+    //update selected group id in each group
     for (auto it : m_operationalLimitsGroupById) {
         it.second->setSelectedGroupId(id);
     }
@@ -92,7 +93,14 @@ void OperationalLimitsGroups::setSelectedOperationalLimitsGroup(const std::strin
 }
 
 void OperationalLimitsGroups::removeOperationalLimitsGroup(const std::string& id) {
+    if(id.empty()) {
+        return;
+    }
     m_operationalLimitsGroupById.erase(id);
+
+    if(m_selectedLimitsGroupId.has_value() && *m_selectedLimitsGroupId==id) {
+        cancelSelectedOperationalLimitsGroup();
+    }
 }
 
 void OperationalLimitsGroups::cancelSelectedOperationalLimitsGroup() {

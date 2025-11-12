@@ -40,6 +40,10 @@ const std::string& OperationalLimitsGroup::getId() const {
 }
 
 void OperationalLimitsGroup::setSelectedGroupId(const std::string& selectedGroupId) {
+    if(selectedGroupId.empty()){
+        cancelSelectedGroupId();
+        return;
+    }
     m_selectedGroupId = selectedGroupId;
 }
 void OperationalLimitsGroup::cancelSelectedGroupId() {

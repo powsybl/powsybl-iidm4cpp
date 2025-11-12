@@ -129,7 +129,12 @@ TieLine& TieLineXml::readRootElementAttributes(TieLineAdder& adder, Network& net
 
 void TieLineXml::readSubElements(TieLine& line, NetworkXmlReaderContext& context) const {
     context.getReader().readUntilEndElement(TIE_LINE, [this, &line, &context]() {
-        if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_1) {
+        if (context.getReader().getLocalName() == LIMITS_GROUP_1) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &line]() {
+                readLoadingLimitsGroup(context, LIMITS_GROUP_1, line.getDanglingLine1());
+            });
+        } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_1) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::assertMaximumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_9(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &line]() {
@@ -144,6 +149,11 @@ void TieLineXml::readSubElements(TieLine& line, NetworkXmlReaderContext& context
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
             IidmXmlUtil::assertMaximumVersion(getRootElementName(), CURRENT_LIMITS1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_9(), context);
             readCurrentLimits(line.getDanglingLine1().newCurrentLimits(), context, 1);
+        } else if(context.getReader().getLocalName() == LIMITS_GROUP_2) {
+            IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &line]() {
+                readLoadingLimitsGroup(context, LIMITS_GROUP_2, line.getDanglingLine2());
+            });
         } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_2) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::assertMaximumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_9(), context);
@@ -211,28 +221,10 @@ void TieLineXml::writeRootElementAttributes(const TieLine& tl, const Network& /*
 
 void TieLineXml::writeSubElements(const TieLine& line, const Network& /*network*/, NetworkXmlWriterContext& context) const {
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_9(), context.getVersion(), [this, &line, &context](){
-        if (line.getDanglingLine1().getActivePowerLimits()) {
-            IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(ACTIVE_POWER_LIMITS, 1), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&line, &context]() { writeActivePowerLimits(line.getDanglingLine1().getActivePowerLimits(), context.getWriter(), context.getVersion(), 1); });
-        }
-        if (line.getDanglingLine1().getApparentPowerLimits()) {
-            IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(APPARENT_POWER_LIMITS, 1), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&line, &context]() { writeApparentPowerLimits(line.getDanglingLine1().getApparentPowerLimits(), context.getWriter(), context.getVersion(), 1); });
-        }
-        if (line.getDanglingLine1().getCurrentLimits()) {
-            writeCurrentLimits(line.getDanglingLine1().getCurrentLimits(), context.getWriter(), context.getVersion(), 1);
-        }
-        if (line.getDanglingLine2().getActivePowerLimits()) {
-            IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(ACTIVE_POWER_LIMITS, 2), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&line, &context]() { writeActivePowerLimits(line.getDanglingLine2().getActivePowerLimits(), context.getWriter(), context.getVersion(), 2); });
-        }
-        if (line.getDanglingLine2().getApparentPowerLimits()) {
-            IidmXmlUtil::assertMinimumVersion(getRootElementName(), toString(APPARENT_POWER_LIMITS, 2), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&line, &context]() { writeApparentPowerLimits(line.getDanglingLine2().getApparentPowerLimits(), context.getWriter(), context.getVersion(), 2); });
-        }
-        if (line.getDanglingLine2().getCurrentLimits()) {
-            writeCurrentLimits(line.getDanglingLine2().getCurrentLimits(), context.getWriter(), context.getVersion(), 2);
-        }
+
+        writeLimits(context, getRootElementName(), line.getSelectedOperationalLimitsGroup1(), line.getOperationalLimitsGroups1(), 1);
+        writeLimits(context, getRootElementName(), line.getSelectedOperationalLimitsGroup2(), line.getOperationalLimitsGroups2(), 2);
+
     });
 }
 
