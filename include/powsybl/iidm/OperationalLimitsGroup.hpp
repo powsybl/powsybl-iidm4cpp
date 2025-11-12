@@ -48,7 +48,7 @@ public:
     OperationalLimitsGroup& operator=(OperationalLimitsGroup&&) noexcept = default;
 
     // Validable
-    std::string getMessageHeader() const override;
+    virtual std::string getMessageHeader() const override;
 
     Validable& getValidable() const;
 

@@ -38,6 +38,7 @@ set(UNIT_TEST_SOURCES
     NodeBreakerConnectTest.cpp
     NodeBreakerVoltageLevelTest.cpp
     OperationalLimitsGroupsTest.cpp
+    OperationalLimitsGroupTest.cpp
     OverloadManagementSystemTest.cpp
     PhaseTapChangerTest.cpp
     RatioTapChangerTest.cpp
