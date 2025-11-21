@@ -123,6 +123,10 @@ public:
 
     virtual stdcxx::range<BusbarSection> getBusbarSections() = 0;
 
+    virtual double getFictitiousP0(unsigned long node) const = 0;
+
+    virtual double getFictitiousQ0(unsigned long node) const = 0;
+
     virtual unsigned long getInternalConnectionCount() const = 0;
 
     virtual stdcxx::const_range<InternalConnection> getInternalConnections() const = 0;
@@ -176,6 +180,10 @@ public:
     virtual void removeInternalConnections(unsigned long node1, unsigned long node2) = 0;
 
     virtual void removeSwitch(const std::string& switchId) = 0;
+
+    virtual NodeBreakerView& setFictitiousP0(unsigned long node, double p0) = 0;
+
+    virtual NodeBreakerView& setFictitiousQ0(unsigned long node, double q0) = 0;
 
     virtual void traverse(unsigned long node, const TopologyTraverser& traverser) const = 0;
 

@@ -58,6 +58,14 @@ public: // Bus
 
     void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) override;
 
+    double getFictitiousP0() const override;
+
+    double getFictitiousQ0() const override;
+
+    Bus& setFictitiousP0(double p0) override;
+
+    Bus& setFictitiousQ0(double q0) override;
+
 public:
     /**
      * Create a new CalculatedBus from a list of NodeTerminal references
@@ -66,8 +74,10 @@ public:
      * @param fictious the fictitious status of this bus
      * @param voltageLevel the voltage level of this bus
      * @param terminals the list of NodeTerminal references which are connected to this bus
+     * @param getBusFromTerminalFunc function that retrieve the bus associated to a given terminal
      */
-    CalculatedBus(const std::string& id, const std::string& name, bool fictitious, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals);
+    CalculatedBus(const std::string& id, const std::string& name, bool fictitious, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals,
+        const std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)>& getBusFromTerminalFunc );
 
     ~CalculatedBus() noexcept override = default;
 
@@ -90,6 +100,8 @@ private:
     std::vector<std::reference_wrapper<NodeTerminal> > m_terminals;
 
     stdcxx::CReference<NodeTerminal> m_terminalRef;
+
+    std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)> m_getBusFromTerminalFunc;
 };
 
 }  // namespace iidm

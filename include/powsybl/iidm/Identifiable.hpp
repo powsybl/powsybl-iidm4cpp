@@ -70,6 +70,8 @@ public:
 
     const std::string& getOptionalName() const;
 
+    virtual Identifiable& setOptionalName(const std::string& name);
+
     const std::string& getProperty(const std::string& key) const;
 
     const std::string& getProperty(const std::string& key, const std::string& defaultValue) const;

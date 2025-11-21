@@ -67,6 +67,14 @@ public: // Bus
 
     void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) override;
 
+    double getFictitiousP0() const override;
+
+    double getFictitiousQ0() const override;
+
+    Bus& setFictitiousP0(double p0) override;
+
+    Bus& setFictitiousQ0(double q0) override;
+
 public:
     /**
      * Create a new MergedBus from a list of ConfiguredBus references

@@ -18,6 +18,10 @@ namespace node_breaker_voltage_level {
 
 class NodeBreakerViewImpl : public voltage_level::NodeBreakerView {
 public: // NodeBreakerView
+    double getFictitiousP0(unsigned long node) const override;
+
+    double getFictitiousQ0(unsigned long node) const override;
+
     stdcxx::CReference<BusbarSection> getBusbarSection(const std::string& bbsId) const override;
 
     stdcxx::Reference<BusbarSection> getBusbarSection(const std::string& bbsId) override;
@@ -82,6 +86,10 @@ public: // NodeBreakerView
 
     void removeSwitch(const std::string& switchId) override;
 
+    voltage_level::NodeBreakerView& setFictitiousP0(unsigned long node, double p0) override;
+
+    voltage_level::NodeBreakerView& setFictitiousQ0(unsigned long node, double q0) override;
+
     void traverse(unsigned long node, const TopologyTraverser& traverser) const override;
 
     void traverse(stdcxx::const_range<unsigned long>& nodes, const TopologyTraverser& traverser) const override;
@@ -92,7 +100,15 @@ public:
     ~NodeBreakerViewImpl() noexcept override = default;
 
 private:
+    std::set<unsigned long> clearFictitiousInjections(const std::map<unsigned long,std::vector<double>>& fictitiousInjectionsByNode);
+
+private:
     NodeBreakerVoltageLevel& m_voltageLevel;
+
+    std::map<unsigned long, std::vector<double>> m_fictitiousP0ByNode;
+
+    std::map<unsigned long, std::vector<double>> m_fictitiousQ0ByNode;
+
 };
 
 class BusBreakerViewImpl : public voltage_level::BusBreakerView {

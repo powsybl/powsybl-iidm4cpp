@@ -60,6 +60,14 @@ stdcxx::range<DanglingLine> Bus::getDanglingLines() {
     return getAll<DanglingLine>();
 }
 
+double Bus::getFictitiousP0() const {
+    return stdcxx::nan();
+}
+
+double Bus::getFictitiousQ0() const {
+    return stdcxx::nan();
+}
+
 stdcxx::const_range<Generator> Bus::getGenerators() const {
     return getAll<Generator>();
 }
@@ -235,6 +243,16 @@ bool Bus::isInMainConnectedComponent() const {
 bool Bus::isInMainSynchronousComponent() const {
     const auto& sc = getSynchronousComponent();
     return static_cast<bool>(sc) && (sc.get().getNum() == ComponentConstants::MAIN_NUM);
+}
+
+Bus& Bus::setFictitiousP0(double /*p0*/) {
+    // do nothing
+    return *this;
+}
+
+Bus& Bus::setFictitiousQ0(double /*q0*/) {
+    // do nothing
+    return *this;
 }
 
 void Bus::visitConnectedEquipments(TopologyVisitor& visitor) {

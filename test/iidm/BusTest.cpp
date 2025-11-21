@@ -241,6 +241,26 @@ BOOST_AUTO_TEST_CASE(testSetterGetter) {
 
     BOOST_CHECK_CLOSE(p1 + p2, bus.getP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(q1 + q2, bus.getQ(), std::numeric_limits<double>::epsilon());
+
+    
+    BOOST_CHECK(std::isnan(bus.getFictitiousP0()));
+    BOOST_CHECK(std::isnan(bus.getFictitiousQ0()));
+    bus.setFictitiousP0(1.0).setFictitiousQ0(2.0);
+    BOOST_CHECK_CLOSE(1.0, bus.getFictitiousP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, bus.getFictitiousQ0(), std::numeric_limits<double>::epsilon());
+    const auto& terminals = bus.getConnectedTerminals();
+    for (auto& term : terminals) {
+        stdcxx::Reference<Bus> refBus = term.getBusView().getBus();
+        if(refBus) {
+            BOOST_CHECK_CLOSE(1.0, refBus.get().getFictitiousP0(), std::numeric_limits<double>::epsilon());
+            BOOST_CHECK_CLOSE(2.0, refBus.get().getFictitiousQ0(), std::numeric_limits<double>::epsilon());
+            refBus.get().setFictitiousP0(3.0).setFictitiousQ0(4.0);
+            break;
+        }
+    }
+    BOOST_CHECK_CLOSE(3.0, bus.getFictitiousP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, bus.getFictitiousQ0(), std::numeric_limits<double>::epsilon());
+
 }
 
 BOOST_AUTO_TEST_CASE(range_batteries) {
@@ -257,8 +277,8 @@ BOOST_AUTO_TEST_CASE(range_batteries) {
     vl.newBattery()
         .setId("B")
         .setBus("Bus1")
-        .setP0(0.0)
-        .setQ0(0.0)
+        .setTargetP(0.0)
+        .setTargetQ(0.0)
         .setMinP(0.0)
         .setMaxP(100.0)
         .add();
@@ -588,8 +608,8 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorAllBbk) {
     vl.newBattery()
         .setId("BATTERY")
         .setBus("Bus1")
-        .setP0(0.0)
-        .setQ0(0.0)
+        .setTargetP(0.0)
+        .setTargetQ(0.0)
         .setMinP(0.0)
         .setMaxP(100.0)
         .add();

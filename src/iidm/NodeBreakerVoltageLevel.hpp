@@ -151,6 +151,7 @@ private:
     friend class node_terminal::BusViewImpl;
 
 private:
+
     node_breaker_voltage_level::Graph m_graph;
 
     std::map<std::string, unsigned long> m_switches;

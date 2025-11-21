@@ -122,6 +122,17 @@ BOOST_AUTO_TEST_CASE(adder) {
     adder.setSide(Measurement::Side::ONE);
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "Inconsistent side for measurement of injection");
 
+    MeasurementAdder adderUnicity = measurements.newMeasurement();
+    adderUnicity.setId("m1")
+        .setType(Measurement::Type::ANGLE)
+        .setValid(true)
+        .setStandardDeviation(8.8)
+        .setValue(5.5);
+    POWSYBL_ASSERT_THROW(adderUnicity.add(), PowsyblException, "There is already a measurement with ID m1");
+    
+    Measurement& measurementUniqueId = adderUnicity.setEnsureIdUnicity(true).add();
+    BOOST_CHECK_EQUAL("m1#0", measurementUniqueId.getId());
+
     measurements.newMeasurement()
         .setId("m2")
         .setType(Measurement::Type::CURRENT)
@@ -156,9 +167,9 @@ BOOST_AUTO_TEST_CASE(adder) {
         .setValue(8.8)
         .add();
 
-    BOOST_CHECK_EQUAL(5, boost::size(measurements.getMeasurements()));
+    BOOST_CHECK_EQUAL(6, boost::size(measurements.getMeasurements()));
     BOOST_CHECK_EQUAL(2, boost::size(measurements.getMeasurements(Measurement::Type::CURRENT)));
-    BOOST_CHECK_EQUAL(2, boost::size(measurements.getMeasurements(Measurement::Type::ANGLE)));
+    BOOST_CHECK_EQUAL(3, boost::size(measurements.getMeasurements(Measurement::Type::ANGLE)));
     BOOST_CHECK_EQUAL(1, boost::size(measurements.getMeasurements(Measurement::Type::ACTIVE_POWER)));
 
     Line& line = network.getLine("NHV1_NHV2_1");

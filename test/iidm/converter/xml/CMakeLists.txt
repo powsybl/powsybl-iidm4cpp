@@ -23,6 +23,7 @@ set(UNIT_TEST_SOURCES
     BatteryRoundTripTest.cpp
     EurostagTest.cpp
     ExtensionProvidersTest.cpp
+    FictitiousInjectionsXmlTest.cpp
     FictitiousSwitchTest.cpp
     FourSubstationsNodeBreakerTest.cpp
     HvdcRoundTripTest.cpp
@@ -30,6 +31,7 @@ set(UNIT_TEST_SOURCES
     IidmXmlUtilTest.cpp
     InternalConnectionsRoundTripTest.cpp
     LinesRoundTripTest.cpp
+    LoadingLimitsBugTest.cpp
     LoadingLimitsXmlTest.cpp
     NetworkXmlTest.cpp
     NetworkXmlReaderContextTest.cpp

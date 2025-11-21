@@ -24,13 +24,13 @@ BatteryAdder::BatteryAdder(VoltageLevel& voltageLevel) :
 
 Battery& BatteryAdder::add() {
     Network& network = getNetwork();
-    network.setValidationLevelIfGreaterThan(checkP0(*this, m_p0, network.getMinimumValidationLevel()));
-    network.setValidationLevelIfGreaterThan(checkQ0(*this, m_q0, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkP0(*this, m_targetP, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkQ0(*this, m_targetQ, network.getMinimumValidationLevel()));
     checkMinP(*this, m_minP);
     checkMaxP(*this, m_maxP);
     checkActivePowerLimits(*this, m_minP, m_maxP);
 
-    std::unique_ptr<Battery> ptrBattery = stdcxx::make_unique<Battery>(network, checkAndGetUniqueId(), getName(), isFictitious(), m_p0, m_q0, m_minP, m_maxP);
+    std::unique_ptr<Battery> ptrBattery = stdcxx::make_unique<Battery>(network, checkAndGetUniqueId(), getName(), isFictitious(), m_targetP, m_targetQ, m_minP, m_maxP);
     auto& battery = network.checkAndAdd<Battery>(std::move(ptrBattery));
 
     Terminal& terminal = battery.addTerminal(checkAndGetTerminal());
@@ -55,13 +55,13 @@ BatteryAdder& BatteryAdder::setMinP(double minP) {
     return *this;
 }
 
-BatteryAdder& BatteryAdder::setP0(double p0) {
-    m_p0 = p0;
+BatteryAdder& BatteryAdder::setTargetP(double targetP) {
+    m_targetP = targetP;
     return *this;
 }
 
-BatteryAdder& BatteryAdder::setQ0(double q0) {
-    m_q0 = q0;
+BatteryAdder& BatteryAdder::setTargetQ(double targetQ) {
+    m_targetQ = targetQ;
     return *this;
 }
 

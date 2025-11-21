@@ -25,7 +25,7 @@ DiscreteMeasurementAdder::DiscreteMeasurementAdder(DiscreteMeasurements& discret
 }
 
 DiscreteMeasurement& DiscreteMeasurementAdder::add() {
-    DiscreteMeasurementValidationUtil::checkId(m_id, m_discreteMeasurements);
+    m_id = DiscreteMeasurementValidationUtil::checkId(m_id, m_idUnicity, m_discreteMeasurements);
     DiscreteMeasurementValidationUtil::checkType(m_type, m_discreteMeasurements.getExtendable<Identifiable>().get());
     DiscreteMeasurementValidationUtil::checkTapChanger(m_tapChanger, m_type, m_discreteMeasurements.getExtendable<Identifiable>().get());
     DiscreteMeasurementValidationUtil::checkValue(m_value, m_valid);
@@ -89,6 +89,12 @@ DiscreteMeasurementAdder& DiscreteMeasurementAdder::setValue(bool value) {
 
 DiscreteMeasurementAdder& DiscreteMeasurementAdder::setValue(int value) {
     m_value = value;
+
+    return *this;
+}
+
+DiscreteMeasurementAdder& DiscreteMeasurementAdder::setEnsureIdUnicity(bool idUnicity) {
+    m_idUnicity = idUnicity;
 
     return *this;
 }

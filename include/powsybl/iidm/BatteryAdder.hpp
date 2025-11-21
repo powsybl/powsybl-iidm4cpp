@@ -29,9 +29,9 @@ public:
 
     BatteryAdder& setMinP(double minP);
 
-    BatteryAdder& setP0(double p0);
+    BatteryAdder& setTargetP(double targetP);
 
-    BatteryAdder& setQ0(double q0);
+    BatteryAdder& setTargetQ(double targetQ);
 
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
@@ -42,9 +42,9 @@ private:
     friend class VoltageLevel;
 
 private:
-    double m_p0 = stdcxx::nan();
+    double m_targetP = stdcxx::nan();
 
-    double m_q0 = stdcxx::nan();
+    double m_targetQ = stdcxx::nan();
 
     double m_minP = stdcxx::nan();
 
