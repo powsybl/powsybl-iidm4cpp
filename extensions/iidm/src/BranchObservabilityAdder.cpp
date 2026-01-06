@@ -39,7 +39,8 @@ std::unique_ptr<Extension> BranchObservabilityAdder::createExtension(Extendable&
         if (!std::isnan(m_standardDeviationQ2)) {
             extension->setQualityQ2(m_standardDeviationQ2, m_redundantQ2);
         }
-        return extension;
+        std::unique_ptr<Extension> baseExtension = std::move(extension);
+        return baseExtension;
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Branch>()));
 }
