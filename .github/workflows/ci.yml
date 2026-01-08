@@ -141,12 +141,12 @@ jobs:
       - name: Checkout sources
         uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 #v4.1.6
 
-      - name: Install sonar-scanner and build-wrapper
-        uses: SonarSource/sonarcloud-github-c-cpp@816b1822d71776ee0d32bc012e95024ec52ac1fc # v3.1.0
+      - name: Install Sonar Build Wrapper
+        uses: SonarSource/sonarqube-scan-action/install-build-wrapper@v7.0.0
 
       - name: Build
         run: |
-          cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=TRUE -DBUILD_EXAMPLES=ON
+          cmake -S $GITHUB_WORKSPACE -B $GITHUB_WORKSPACE/build -DCMAKE_BUILD_TYPE=Debug -DCODE_COVERAGE=TRUE -DBUILD_EXAMPLES=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build $GITHUB_WORKSPACE/build --parallel 2
 
       - name: Tests
@@ -158,10 +158,12 @@ jobs:
       - name: Code coverage
         run: cmake --build $GITHUB_WORKSPACE/build --target code-coverage
 
-      - name: Sonarcloud
+      - name: Sonarcloud scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          sonar-scanner --define sonar.cfamily.compile-commands="${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json"
+        with:
+          args: >
+            --define sonar.cfamily.compile-commands=${{ env.BUILD_WRAPPER_OUT_DIR }}/compile_commands.json
+        uses: SonarSource/sonarqube-scan-action@v7.0.0
 
