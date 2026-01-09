@@ -43,6 +43,7 @@ GeneratorStartupXmlSerializer::GeneratorStartupXmlSerializer() :
             .put(converter::xml::IidmXmlVersion::V1_10(), {"1.0-itesla", "1.0", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_11(), {"1.0-itesla", "1.0", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_12(), {"1.0-itesla", "1.0", "1.1"})
+            .put(converter::xml::IidmXmlVersion::V1_13(), {"1.0-itesla", "1.0", "1.1"})
             .build(),
         stdcxx::MapBuilder<std::string, std::string>()
             .put("1.0-itesla", "http://www.itesla_project.eu/schema/iidm/ext/generator_startup/1_0")

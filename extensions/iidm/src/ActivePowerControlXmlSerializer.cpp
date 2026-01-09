@@ -49,11 +49,13 @@ ActivePowerControlXmlSerializer::ActivePowerControlXmlSerializer() :
             .put(converter::xml::IidmXmlVersion::V1_9(), {"1.0", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_10(), {"1.0", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_11(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_12(), {"1.0", "1.1"})
+            .put(converter::xml::IidmXmlVersion::V1_12(), {"1.0", "1.1", "1.2"})
+            .put(converter::xml::IidmXmlVersion::V1_13(), {"1.2"})
             .build(),
         stdcxx::MapBuilder<std::string, std::string>()
             .put("1.0", "http://www.itesla_project.eu/schema/iidm/ext/active_power_control/1_0")
             .put("1.1", "http://www.powsybl.org/schema/iidm/ext/active_power_control/1_1")
+            .put("1.2", "http://www.powsybl.org/schema/iidm/ext/active_power_control/1_2")
             .build()) {
 }
 
@@ -66,7 +68,7 @@ Extension& ActivePowerControlXmlSerializer::read(Extendable& extendable, convert
     if (extensionVersionStr.empty()) {
         throw AssertionError("Extension version not found");
     }
-    if (extensionVersionStr == "1.1") {
+    if (extensionVersionStr == "1.1" || extensionVersionStr == "1.2") {
         participationFactor = context.getReader().getOptionalAttributeValue("participationFactor", 0.0);
     }
 
@@ -88,7 +90,7 @@ void ActivePowerControlXmlSerializer::write(const Extension& extension, converte
     if (extVersionStr.empty()) {
         extVersionStr = getVersion(context.getVersion());
     }
-    if (extVersionStr == "1.1") {
+    if (extVersionStr == "1.1" || extVersionStr == "1.2") {
         context.getWriter().writeAttribute("participationFactor", apc.getParticipationFactor());
     }
 }
