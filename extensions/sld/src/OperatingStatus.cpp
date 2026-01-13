@@ -53,7 +53,8 @@ void OperatingStatus::assertExtendable(const stdcxx::Reference<Extendable>& exte
 
 bool OperatingStatus::isAllowedIdentifiable(Identifiable& identifiable) {
     IdentifiableType identType = identifiable.getType();
-    if(identType == IdentifiableType::LINE || 
+    if(identType == IdentifiableType::BUSBAR_SECTION ||
+        identType == IdentifiableType::LINE || 
         identType == IdentifiableType::HVDC_LINE || 
         identType == IdentifiableType::TIE_LINE || 
         identType == IdentifiableType::DANGLING_LINE || 

@@ -8,6 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/Line.hpp>
@@ -111,6 +112,11 @@ BOOST_AUTO_TEST_CASE(adder) {
     HvdcLine& hvdcl = network2.getHvdcLine("HVDC1");
     hvdcl.newExtension<OperatingStatusAdder>()
         .withStatus(OperatingStatus::Status::PLANNED_OUTAGE)
+        .add();
+
+    BusbarSection& bbs = network2.getBusbarSection("S1VL1_BBS");
+        bbs.newExtension<OperatingStatusAdder>()
+        .withStatus(OperatingStatus::Status::FORCED_OUTAGE)
         .add();
 
     Generator& g = network2.getGenerator("GH1");
