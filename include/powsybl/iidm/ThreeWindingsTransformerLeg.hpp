@@ -90,6 +90,10 @@ public:
 
     stdcxx::Reference<LoadingLimits> getLimits(const LimitType& type);
 
+    stdcxx::CReference<ThreeWindingsTransformer> getTransformer() const;
+
+    stdcxx::Reference<ThreeWindingsTransformer> getTransformer();
+
     double getX() const;
 
     Leg& setB(double b);

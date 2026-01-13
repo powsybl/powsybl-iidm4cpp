@@ -364,6 +364,11 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", cLeg1.toString());
     BOOST_CHECK_EQUAL(ThreeSides::ONE, leg1.getSide());
     BOOST_CHECK_EQUAL(ThreeSides::ONE, cLeg1.getSide());
+    POWSYBL_ASSERT_REF_TRUE(leg1.getTransformer());
+    POWSYBL_ASSERT_REF_TRUE(cLeg1.getTransformer());
+    BOOST_TEST(stdcxx::areSame(leg1.getTransformer().get(), transformer));
+    BOOST_TEST(stdcxx::areSame(cLeg1.getTransformer().get(), cTransformer));
+    BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3", cLeg1.getTransformer().get().getId());
     BOOST_CHECK_CLOSE(1.3, leg1.getR(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.4, leg1.getX(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(1.6, leg1.getG(), std::numeric_limits<double>::epsilon());

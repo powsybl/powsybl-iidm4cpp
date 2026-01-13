@@ -47,6 +47,22 @@ ThreeWindingsTransformerToBeEstimatedAdder& ThreeWindingsTransformerToBeEstimate
     return *this;
 }
 
+ThreeWindingsTransformerToBeEstimatedAdder& ThreeWindingsTransformerToBeEstimatedAdder::withPhaseTapChangerStatus(const ThreeSides& side, bool toBeEstimated) {
+    switch (side) {
+        case ThreeSides::ONE:
+            return withPhaseTapChanger1Status(toBeEstimated);
+        case ThreeSides::TWO:
+            return withPhaseTapChanger2Status(toBeEstimated);
+        case ThreeSides::THREE:
+            return withPhaseTapChanger3Status(toBeEstimated);
+        case ThreeSides::UNDEFINED:
+        default:
+            throw AssertionError(stdcxx::format("Unexpected ThreeSides value: %1%", side));
+    }
+
+    return *this;
+}
+
 ThreeWindingsTransformerToBeEstimatedAdder& ThreeWindingsTransformerToBeEstimatedAdder::withRatioTapChanger1Status(bool toBeEstimated) {
     m_rtc1Status = toBeEstimated;
 
@@ -61,6 +77,22 @@ ThreeWindingsTransformerToBeEstimatedAdder& ThreeWindingsTransformerToBeEstimate
 
 ThreeWindingsTransformerToBeEstimatedAdder& ThreeWindingsTransformerToBeEstimatedAdder::withRatioTapChanger3Status(bool toBeEstimated) {
     m_rtc3Status = toBeEstimated;
+
+    return *this;
+}
+
+ThreeWindingsTransformerToBeEstimatedAdder& ThreeWindingsTransformerToBeEstimatedAdder::withRatioTapChangerStatus(const ThreeSides& side, bool toBeEstimated) {
+    switch (side) {
+        case ThreeSides::ONE:
+            return withRatioTapChanger1Status(toBeEstimated);
+        case ThreeSides::TWO:
+            return withRatioTapChanger2Status(toBeEstimated);
+        case ThreeSides::THREE:
+            return withRatioTapChanger3Status(toBeEstimated);
+        case ThreeSides::UNDEFINED:
+        default:
+            throw AssertionError(stdcxx::format("Unexpected ThreeSides value: %1%", side));
+    }
 
     return *this;
 }

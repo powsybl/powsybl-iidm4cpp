@@ -154,6 +154,14 @@ stdcxx::Reference<LoadingLimits> Leg::getLimits(const LimitType& type) {
     return stdcxx::ref(const_cast<const Leg*>(this)->getLimits(type));
 }
 
+stdcxx::CReference<ThreeWindingsTransformer> Leg::getTransformer() const {
+    return stdcxx::cref(m_transformer);
+}
+
+stdcxx::Reference<ThreeWindingsTransformer> Leg::getTransformer() {
+    return m_transformer;
+}
+
 const std::string& Leg::getTypeDescription() const {
     static std::array<std::string, 3> s_typeDescriptions {{
         u8"3 windings transformer leg1",

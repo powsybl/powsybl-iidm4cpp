@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_THREEWINDINGSTRANSFORMERTOBEESTIMATEDADDER_HPP
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
+#include <powsybl/iidm/ThreeSides.hpp>
 
 namespace powsybl {
 
@@ -56,11 +57,15 @@ public:
 
     ThreeWindingsTransformerToBeEstimatedAdder& withPhaseTapChanger3Status(bool toBeEstimated);
 
+    ThreeWindingsTransformerToBeEstimatedAdder& withPhaseTapChangerStatus(const ThreeSides& side, bool toBeEstimated);
+
     ThreeWindingsTransformerToBeEstimatedAdder& withRatioTapChanger1Status(bool toBeEstimated);
 
     ThreeWindingsTransformerToBeEstimatedAdder& withRatioTapChanger2Status(bool toBeEstimated);
 
     ThreeWindingsTransformerToBeEstimatedAdder& withRatioTapChanger3Status(bool toBeEstimated);
+
+    ThreeWindingsTransformerToBeEstimatedAdder& withRatioTapChangerStatus(const ThreeSides& side, bool toBeEstimated);
 
 protected:
     /**

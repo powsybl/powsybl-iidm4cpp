@@ -10,6 +10,7 @@
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/RatioTapChanger.hpp>
 #include <powsybl/iidm/Substation.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
 
 namespace powsybl {
@@ -116,6 +117,11 @@ stdcxx::range<ThreeWindingsTransformer::Leg> ThreeWindingsTransformer::getLegs()
 
 double ThreeWindingsTransformer::getRatedU0() const {
     return m_ratedU0;
+}
+
+ThreeWindingsTransformer& ThreeWindingsTransformer::setRatedU0(double ratedU0) {
+    m_ratedU0 = checkRatedU(*this, ratedU0);
+    return *this;
 }
 
 ThreeSides ThreeWindingsTransformer::getSide(const Terminal& terminal) const {

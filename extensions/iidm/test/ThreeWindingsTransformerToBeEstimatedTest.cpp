@@ -82,6 +82,36 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK(!extension.shouldEstimateRatioTapChanger(ThreeSides::THREE));
 }
 
+void testThreeSidesArguments(const ThreeSides& rtcSide, const ThreeSides& ptcSide) {
+    Network network = powsybl::network::ThreeWindingsTransformerNetworkFactory::create();
+
+    ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT");
+    transformer.newExtension<ThreeWindingsTransformerToBeEstimatedAdder>()
+        .withPhaseTapChangerStatus(ptcSide,true)
+        .withRatioTapChangerStatus(rtcSide, true)
+        .add();
+
+    auto& extension = transformer.getExtension<ThreeWindingsTransformerToBeEstimated>();
+    BOOST_CHECK_EQUAL(rtcSide == ThreeSides::ONE, extension.shouldEstimateRatioTapChanger1());
+    BOOST_CHECK_EQUAL(rtcSide == ThreeSides::ONE, extension.shouldEstimateRatioTapChanger(ThreeSides::ONE));
+    BOOST_CHECK_EQUAL(rtcSide == ThreeSides::TWO, extension.shouldEstimateRatioTapChanger2());
+    BOOST_CHECK_EQUAL(rtcSide == ThreeSides::TWO, extension.shouldEstimateRatioTapChanger(ThreeSides::TWO));
+    BOOST_CHECK_EQUAL(rtcSide == ThreeSides::THREE, extension.shouldEstimateRatioTapChanger3());
+    BOOST_CHECK_EQUAL(rtcSide == ThreeSides::THREE, extension.shouldEstimateRatioTapChanger(ThreeSides::THREE));
+    BOOST_CHECK_EQUAL(ptcSide == ThreeSides::ONE, extension.shouldEstimatePhaseTapChanger1());
+    BOOST_CHECK_EQUAL(ptcSide == ThreeSides::ONE, extension.shouldEstimatePhaseTapChanger(ThreeSides::ONE));
+    BOOST_CHECK_EQUAL(ptcSide == ThreeSides::TWO, extension.shouldEstimatePhaseTapChanger2());
+    BOOST_CHECK_EQUAL(ptcSide == ThreeSides::TWO, extension.shouldEstimatePhaseTapChanger(ThreeSides::TWO));
+    BOOST_CHECK_EQUAL(ptcSide == ThreeSides::THREE, extension.shouldEstimatePhaseTapChanger3());
+    BOOST_CHECK_EQUAL(ptcSide == ThreeSides::THREE, extension.shouldEstimatePhaseTapChanger(ThreeSides::THREE));
+}
+
+BOOST_AUTO_TEST_CASE(integrityBySides) {
+    testThreeSidesArguments(ThreeSides::ONE, ThreeSides::TWO);
+    testThreeSidesArguments(ThreeSides::TWO, ThreeSides::THREE);
+    testThreeSidesArguments(ThreeSides::THREE, ThreeSides::ONE);
+}
+
 BOOST_FIXTURE_TEST_CASE(ThreeWindingsTransformerToBeEstimatedXmlSerializerTest, test::ResourceFixture) {
     Network network = powsybl::network::ThreeWindingsTransformerNetworkFactory::create();
     network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));

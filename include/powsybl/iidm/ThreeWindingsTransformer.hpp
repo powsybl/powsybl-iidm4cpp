@@ -53,6 +53,8 @@ public:
 
     double getRatedU0() const;
 
+    ThreeWindingsTransformer& setRatedU0(double ratedU0);
+
     ThreeSides getSide(const Terminal& terminal) const;
 
     stdcxx::CReference<Substation> getSubstation() const;
