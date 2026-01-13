@@ -49,7 +49,7 @@ ActivePowerControlXmlSerializer::ActivePowerControlXmlSerializer() :
             .put(converter::xml::IidmXmlVersion::V1_9(), {"1.0", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_10(), {"1.0", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_11(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_12(), {"1.0", "1.1", "1.2"})
+            .put(converter::xml::IidmXmlVersion::V1_12(), {"1.0", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_13(), {"1.2"})
             .build(),
         stdcxx::MapBuilder<std::string, std::string>()
@@ -63,19 +63,27 @@ Extension& ActivePowerControlXmlSerializer::read(Extendable& extendable, convert
     const auto& participate = context.getReader().getAttributeValue<bool>("participate");
     const auto& droop = context.getReader().getAttributeValue<double>("droop");
     double participationFactor = 0.0;
+    double minTargetP = stdcxx::nan();
+    double maxTargetP = stdcxx::nan();
     
     const std::string& extensionVersionStr = context.getExtensionVersion(*this);
     if (extensionVersionStr.empty()) {
         throw AssertionError("Extension version not found");
     }
-    if (extensionVersionStr == "1.1" || extensionVersionStr == "1.2") {
+    if(extensionVersionStr.compare("1.1") >= 0) {
         participationFactor = context.getReader().getOptionalAttributeValue("participationFactor", 0.0);
+    }
+    if (extensionVersionStr.compare("1.2") >= 0) {
+        maxTargetP = context.getReader().getOptionalAttributeValue("maxTargetP", stdcxx::nan());
+        minTargetP = context.getReader().getOptionalAttributeValue("minTargetP", stdcxx::nan());
     }
 
     extendable.newExtension<ActivePowerControlAdder>()
         .withParticipate(participate)
         .withDroop(droop)
         .withParticipationFactor(participationFactor)
+        .withMinTargetP(minTargetP)
+        .withMaxTargetP(maxTargetP)
         .add();
     return extendable.getExtension<ActivePowerControl>();
 }
@@ -90,8 +98,12 @@ void ActivePowerControlXmlSerializer::write(const Extension& extension, converte
     if (extVersionStr.empty()) {
         extVersionStr = getVersion(context.getVersion());
     }
-    if (extVersionStr == "1.1" || extVersionStr == "1.2") {
+    if(extVersionStr.compare("1.1") >= 0) {
         context.getWriter().writeAttribute("participationFactor", apc.getParticipationFactor());
+    }
+    if (extVersionStr.compare("1.2") >= 0) {
+        context.getWriter().writeAttribute("maxTargetP", apc.getMaxTargetP());
+        context.getWriter().writeAttribute("minTargetP", apc.getMinTargetP());
     }
 }
 

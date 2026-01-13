@@ -10,10 +10,13 @@
 
 #include <powsybl/iidm/Extension.hpp>
 
+#include <powsybl/stdcxx/math.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
+class Injection;
 class Battery;
 class Generator;
 
@@ -36,21 +39,39 @@ public:
 
     double getParticipationFactor() const;
 
+    double getMinTargetP() const;
+
+    double getMaxTargetP() const;
+
     ActivePowerControl& setDroop(double droop);
 
     ActivePowerControl& setParticipate(bool participate);
 
     ActivePowerControl& setParticipationFactor(double participationFactor);
 
+    ActivePowerControl& setMinTargetP(double minTargetP);
+
+    ActivePowerControl& setMaxTargetP(double maxTargetP);
+
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
-    ActivePowerControl(Battery& battery, bool participate, double droop, double participationFactor);
+    ActivePowerControl(Battery& battery, bool participate, double droop, double participationFactor, double minTargetP = stdcxx::nan(), double maxTargetP = stdcxx::nan());
 
-    ActivePowerControl(Generator& generator, bool participate, double droop, double participationFactor);
+    ActivePowerControl(Generator& generator, bool participate, double droop, double participationFactor, double minTargetP = stdcxx::nan(), double maxTargetP = stdcxx::nan());
 
     friend class ActivePowerControlAdder;
+
+    struct PLimits {
+        double m_minP;
+        double m_maxP;
+    };
+    PLimits getPLimits(const Injection& extendedComponent) const ;
+
+    double checkWithinPMinMax(double value, const Injection& extendedComponent) const;
+    double checkTargetPLimit(double targetPLimit, const std::string& name, const Injection& extendedComponent) const;
+    void checkLimitOrder(double minTargetP, double maxTargetP) const;
 
 private:
     bool m_participate;
@@ -58,6 +79,9 @@ private:
     double m_droop;
 
     double m_participationFactor;
+
+    double m_minTargetP;
+    double m_maxTargetP;
 };
 
 }  // namespace iidm

@@ -10,6 +10,13 @@
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/Generator.hpp>
 
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
+#include <powsybl/stdcxx/format.hpp>
+
+#include <limits>
+
 namespace powsybl {
 
 namespace iidm {
@@ -18,18 +25,68 @@ namespace extensions {
 
 namespace iidm {
 
-ActivePowerControl::ActivePowerControl(Battery& battery, bool participate, double droop, double participationFactor) :
+ActivePowerControl::PLimits ActivePowerControl::getPLimits(const Injection& extendedComponent) const {
+    double minP = -std::numeric_limits<double>::max();
+    double maxP = std::numeric_limits<double>::max();
+    if (stdcxx::isInstanceOf<Battery>(extendedComponent)) {
+        const auto& battery = dynamic_cast<const Battery&>(extendedComponent);
+        minP = battery.getMinP();
+        maxP = battery.getMaxP();
+    } else if(stdcxx::isInstanceOf<Generator>(extendedComponent)) {
+        const auto& generator = dynamic_cast<const Generator&>(extendedComponent);
+        minP = generator.getMinP();
+        maxP = generator.getMaxP();
+    }
+    return ActivePowerControl::PLimits{minP, maxP};
+}
+
+double ActivePowerControl::checkWithinPMinMax(double value, const Injection& extendedComponent) const {
+    PLimits pLimits = getPLimits(extendedComponent);
+
+    if(!std::isnan(value) && (value < pLimits.m_minP || value > pLimits.m_maxP)) {
+        logging::Logger& logger = logging::LoggerFactory::getLogger<ActivePowerControl>();
+        logger.warn("targetP limit is now outside of pMin,pMax for component {}. Returning closest value in [pmin,pMax].",
+                        extendedComponent.getId());
+        return value < pLimits.m_minP ? pLimits.m_minP : pLimits.m_maxP;
+    }
+    return value;
+}
+
+double ActivePowerControl::checkTargetPLimit(double targetPLimit, const std::string& name, const Injection& extendedComponent) const {
+    PLimits pLimits = getPLimits(extendedComponent);
+    if (!std::isnan(targetPLimit) && (targetPLimit < pLimits.m_minP || targetPLimit > pLimits.m_maxP)) {
+        throw PowsyblException(stdcxx::format("%1% value (%2%) is not between minP and maxP for component %3%",
+            name,
+            targetPLimit,
+            extendedComponent.getId()));
+    }
+    return targetPLimit;
+}
+void ActivePowerControl::checkLimitOrder(double minTargetP, double maxTargetP) const {
+    if (!std::isnan(minTargetP) && !std::isnan(maxTargetP) && minTargetP > maxTargetP) {
+        throw PowsyblException(stdcxx::format("invalid targetP limits [%1%, %2%]", minTargetP, maxTargetP));
+    }
+}
+
+
+ActivePowerControl::ActivePowerControl(Battery& battery, bool participate, double droop, double participationFactor, double minTargetP, double maxTargetP) :
     Extension(battery),
     m_participate(participate),
     m_droop(droop),
-    m_participationFactor(participationFactor) {
+    m_participationFactor(participationFactor),
+    m_minTargetP(checkTargetPLimit(minTargetP, "minTargetP", battery)),
+    m_maxTargetP(checkTargetPLimit(maxTargetP, "maxTargetP", battery)) {
+        checkLimitOrder(minTargetP, maxTargetP);
 }
 
-ActivePowerControl::ActivePowerControl(Generator& generator, bool participate, double droop, double participationFactor) :
+ActivePowerControl::ActivePowerControl(Generator& generator, bool participate, double droop, double participationFactor, double minTargetP, double maxTargetP) :
     Extension(generator),
     m_participate(participate),
     m_droop(droop),
-    m_participationFactor(participationFactor) {
+    m_participationFactor(participationFactor),
+    m_minTargetP(checkTargetPLimit(minTargetP, "minTargetP", generator)),
+    m_maxTargetP(checkTargetPLimit(maxTargetP, "maxTargetP", generator)) {
+        checkLimitOrder(minTargetP, maxTargetP);
 }
 
 void ActivePowerControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -44,6 +101,14 @@ double ActivePowerControl::getDroop() const {
 
 double ActivePowerControl::getParticipationFactor() const {
     return m_participationFactor;
+}
+
+double ActivePowerControl::getMinTargetP() const {
+    return checkWithinPMinMax(m_minTargetP, getExtendable<Injection>().get());
+}
+
+double ActivePowerControl::getMaxTargetP() const {
+    return checkWithinPMinMax(m_maxTargetP, getExtendable<Injection>().get());
 }
 
 const std::string& ActivePowerControl::getName() const {
@@ -72,6 +137,18 @@ ActivePowerControl& ActivePowerControl::setParticipationFactor(double participat
 
 ActivePowerControl& ActivePowerControl::setParticipate(bool participate) {
     m_participate = participate;
+    return *this;
+}
+
+ActivePowerControl& ActivePowerControl::setMinTargetP(double minTargetP) {
+    checkLimitOrder(minTargetP, m_maxTargetP);
+    m_minTargetP = checkTargetPLimit(minTargetP, "minTargetP", getExtendable<Injection>().get());
+    return *this;
+}
+
+ActivePowerControl& ActivePowerControl::setMaxTargetP(double maxTargetP) {
+    checkLimitOrder(m_minTargetP, maxTargetP);
+    m_maxTargetP = checkTargetPLimit(maxTargetP, "maxTargetP", getExtendable<Injection>().get());
     return *this;
 }
 

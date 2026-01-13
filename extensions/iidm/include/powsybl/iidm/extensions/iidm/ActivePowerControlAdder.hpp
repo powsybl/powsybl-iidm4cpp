@@ -10,6 +10,8 @@
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
 
+#include <powsybl/stdcxx/math.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -77,6 +79,25 @@ public:
      */
     ActivePowerControlAdder& withParticipationFactor(double participationFactor);
 
+    /**
+     * Set the minimum value for targetP, the value must be in the [pmin, pmax] interval of the extended generator or battery.
+     *
+     * @param minTargetP The overridden value of minP
+     *
+     * @return this ActivePowerControlAdder object
+     */
+    ActivePowerControlAdder& withMinTargetP(double minTargetP);
+
+    /**
+     * Set the maximum value of targetP, the value must be in the [pmin, pmax] interval of the extended generator or battery.
+     *
+     * @param maxTargetP The overridden value of maxP
+     *
+     * @return this ActivePowerControlAdder object
+     */
+    ActivePowerControlAdder& withMaxTargetP(double maxTargetP);
+
+
 protected:
     /**
      * Creates the ActivePowerControl extension.
@@ -93,6 +114,10 @@ private:
     double m_droop = 0.0;
 
     double m_participationFactor = 0.0;
+
+    double m_minTargetP = stdcxx::nan();
+
+    double m_maxTargetP = stdcxx::nan();
 };
 
 }  // namespace iidm
