@@ -189,7 +189,7 @@ void AbstractTransformerXml<Added, Adder>::readTapChangerAttributes(NetworkXmlRe
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context) {
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), name);
-    writeTapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep>(ptc, context);
+    writeTapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep, PhaseTapChangerStepsReplacer>(ptc, context);
     context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(ptc.getRegulationMode()));
     if (ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP || !std::isnan(ptc.getRegulationValue())) {
         context.getWriter().writeAttribute(REGULATION_VALUE, ptc.getRegulationValue());
@@ -220,7 +220,7 @@ void AbstractTransformerXml<Added, Adder>::writeRatedS(const std::string& name, 
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::string& name, const RatioTapChanger& rtc, NetworkXmlWriterContext& context) {
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), name);
-    writeTapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep>(rtc, context);
+    writeTapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep, RatioTapChangerStepsReplacer>(rtc, context);
     context.getWriter().writeAttribute(LOAD_TAP_CHANGING_CAPABILITIES, rtc.hasLoadTapChangingCapabilities());
     if (rtc.hasLoadTapChangingCapabilities() || rtc.isRegulating()) {
         context.getWriter().writeAttribute(REGULATING, rtc.isRegulating());
