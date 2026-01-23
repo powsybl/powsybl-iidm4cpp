@@ -30,6 +30,7 @@ set(UNIT_TEST_SOURCES
     FictitiousInjectionsXmlTest.cpp
     FictitiousSwitchTest.cpp
     FourSubstationsNodeBreakerTest.cpp
+    GeneratorRoundTripTest.cpp
     GroundXmlTest.cpp
     HvdcRoundTripTest.cpp
     IdentifiableExtensionXmlSerializerTest.cpp

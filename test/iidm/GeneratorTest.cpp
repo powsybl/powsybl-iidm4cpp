@@ -150,11 +150,16 @@ BOOST_AUTO_TEST_CASE(constructor) {
     adder.setRegulatingTerminal(stdcxx::ref<Terminal>());
     adder.setEnsureIdUnicity(true);
 
+    adder.setCondenser(true);
+
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(generatorCount + 1, network.getGeneratorCount());
 
     const Network& cNetwork = network;
     BOOST_CHECK_EQUAL(generatorCount + 1, boost::size(cNetwork.getGenerators()));
+
+    Generator& addedGenerator = network.getGenerator("GEN1#0");
+    BOOST_CHECK(addedGenerator.isCondenser());
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
@@ -179,6 +184,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(gen.isVoltageRegulatorOn());
+    BOOST_TEST(!gen.isCondenser());
 
     BOOST_TEST(stdcxx::areSame(gen, gen.setActivePowerSetpoint(100)));
     BOOST_CHECK_CLOSE(100, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());

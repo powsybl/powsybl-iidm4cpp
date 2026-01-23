@@ -52,6 +52,8 @@ public:
 
     GeneratorAdder& setVoltageSetpoint(double voltageSetpoint);
 
+    GeneratorAdder& setCondenser(bool isCondenser);
+
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
@@ -78,6 +80,8 @@ private:
     double m_reactivePowerSetpoint = stdcxx::nan();
 
     double m_voltageSetpoint = stdcxx::nan();
+
+    bool m_isCondenser = false;
 };
 
 }  // namespace iidm

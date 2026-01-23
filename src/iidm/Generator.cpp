@@ -17,7 +17,7 @@ namespace iidm {
 Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                      const EnergySource& energySource, double minP, double maxP, bool voltageRegulatorOn,
                      Terminal& regulatingTerminal, double activePowerSetpoint,
-                     double reactivePowerSetpoint, double voltageSetpoint, double ratedS) :
+                     double reactivePowerSetpoint, double voltageSetpoint, double ratedS, bool isCondenser) :
     Identifiable(id, name, fictitious),
     m_energySource(energySource),
     m_minP(checkMinP(*this, minP)),
@@ -27,7 +27,8 @@ Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::st
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
     m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), activePowerSetpoint),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
-    m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint) {
+    m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),
+    m_isCondenser(isCondenser) {
     checkActivePowerLimits(*this, minP, maxP);
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (stdcxx::isInstanceOf<Network>(network)) {
@@ -119,6 +120,10 @@ double Generator::getVoltageSetpoint() const {
 
 bool Generator::isVoltageRegulatorOn() const {
     return m_voltageRegulatorOn.at(getNetwork().getVariantIndex());
+}
+
+bool Generator::isCondenser() const {
+    return m_isCondenser;
 }
 
 void Generator::reduceVariantArraySize(unsigned long number) {

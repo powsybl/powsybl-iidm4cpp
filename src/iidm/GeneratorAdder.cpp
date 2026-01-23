@@ -41,7 +41,7 @@ Generator& GeneratorAdder::add() {
     Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal : *terminalPtr;
     std::unique_ptr<Generator> ptrGenerator = stdcxx::make_unique<Generator>(n, checkAndGetUniqueId(), getName(), isFictitious(),
         m_energySource, m_minP, m_maxP, *m_voltageRegulatorOn, regulatingTerminal,
-        m_activePowerSetpoint, m_reactivePowerSetpoint, m_voltageSetpoint, m_ratedS);
+        m_activePowerSetpoint, m_reactivePowerSetpoint, m_voltageSetpoint, m_ratedS, m_isCondenser);
     auto& generator = n.checkAndAdd(std::move(ptrGenerator));
 
     Terminal& terminal = generator.addTerminal(std::move(terminalPtr));
@@ -111,6 +111,11 @@ GeneratorAdder& GeneratorAdder::setVoltageRegulatorOn(bool voltageRegulatorOn) {
 
 GeneratorAdder& GeneratorAdder::setVoltageSetpoint(double voltageSetpoint) {
     m_voltageSetpoint = voltageSetpoint;
+    return *this;
+}
+
+GeneratorAdder& GeneratorAdder::setCondenser(bool isCondenser) {
+    m_isCondenser = isCondenser;
     return *this;
 }
 

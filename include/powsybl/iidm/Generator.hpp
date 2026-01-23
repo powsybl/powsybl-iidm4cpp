@@ -27,7 +27,7 @@ public:  // Identifiable
 public:
     Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const EnergySource& energySource,
         double minP, double maxP, bool voltageRegulatorOn, Terminal& regulatingTerminal,
-        double activePowerSetpoint, double reactivePowerSetpoint, double voltageSetpoint, double ratedS);
+        double activePowerSetpoint, double reactivePowerSetpoint, double voltageSetpoint, double ratedS, bool isCondenser);
 
     ~Generator() noexcept override = default;
 
@@ -56,6 +56,8 @@ public:
     double getVoltageSetpoint() const;
 
     bool isVoltageRegulatorOn() const;
+
+    bool isCondenser() const;
 
     Generator& setActivePowerSetpoint(double activePowerSetpoint);
 
@@ -109,6 +111,8 @@ private:
     std::vector<double> m_reactivePowerSetpoint;
 
     std::vector<double> m_voltageSetpoint;
+
+    bool m_isCondenser;
 };
 
 }  // namespace iidm

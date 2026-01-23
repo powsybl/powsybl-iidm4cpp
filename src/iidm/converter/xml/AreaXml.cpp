@@ -34,9 +34,9 @@ const char* AreaXml::getRootElementName() const {
 }
 
 Area& AreaXml::readRootElementAttributes(AreaAdder& adder, Network& /*network*/, NetworkXmlReaderContext& context) const {
-    const std::string& areaType = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue("areaType"));
+    const std::string& areaType = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(AREA_TYPE));
     adder.setAreaType(areaType);
-    double interchangeTarget = context.getReader().getOptionalAttributeValue("interchangeTarget", stdcxx::nan());
+    double interchangeTarget = context.getReader().getOptionalAttributeValue(INTERCHANGE_TARGET, stdcxx::nan());
     adder.setInterchangeTarget(interchangeTarget);
 
     return adder.add();
@@ -57,8 +57,8 @@ void AreaXml::readSubElements(Area& area, NetworkXmlReaderContext& context) cons
 }
 
 void AreaXml::writeRootElementAttributes(const Area& area, const Network& /*network*/, NetworkXmlWriterContext& context) const {
-    context.getWriter().writeAttribute("areaType", context.getAnonymizer().anonymizeString(area.getAreaType()));
-    context.getWriter().writeAttribute("interchangeTarget",area.getInterchangeTarget());
+    context.getWriter().writeAttribute(AREA_TYPE, context.getAnonymizer().anonymizeString(area.getAreaType()));
+    context.getWriter().writeAttribute(INTERCHANGE_TARGET,area.getInterchangeTarget());
 }
 
 void AreaXml::writeSubElements(const Area& area, const Network& /*network*/, NetworkXmlWriterContext& context) const {

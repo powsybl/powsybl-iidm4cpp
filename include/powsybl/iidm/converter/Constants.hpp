@@ -18,6 +18,7 @@ namespace iidm {
 
 namespace converter {
 
+static const char* const AC = "ac";
 static const char* const ACCEPTABLE_DURATION = "acceptableDuration";
 static const char* const ACTIVE_POWER_LIMITS = "activePowerLimits";
 static const char* const ACTIVE_POWER_LIMITS_1 = "activePowerLimits1";
@@ -32,6 +33,7 @@ static const char* const APPARENT_POWER_LIMITS_1 = "apparentPowerLimits1";
 static const char* const APPARENT_POWER_LIMITS_2 = "apparentPowerLimits2";
 static const char* const APPARENT_POWER_LIMITS_3 = "apparentPowerLimits3";
 static const char* const AREA = "area";
+static const char* const AREA_TYPE = "areaType";
 static const char* const AREA_BOUNDARY = "areaBoundary";
 static const char* const B = "b";
 static const char* const B_MIN = "bMin";
@@ -107,6 +109,8 @@ static const char* const HIGH_VOLTAGE_LIMIT = "highVoltageLimit";
 static const char* const HVDC_LINE = "hvdcLine";
 static const char* const ID = "id";
 static const char* const ID_ = "id_";
+static const char* const INTERCHANGE_TARGET = "interchangeTarget";
+static const char* const IS_CONDENSER = "isCondenser";
 static const char* const INTERNAL_CONNECTION = "internalConnection";
 static const char* const KEY = "key";
 static const char* const KIND = "kind";

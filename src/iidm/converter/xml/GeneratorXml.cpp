@@ -43,6 +43,10 @@ Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdde
     double targetP = context.getReader().getOptionalAttributeValue(TARGET_P, stdcxx::nan());
     double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
     double targetQ = context.getReader().getOptionalAttributeValue(TARGET_Q, stdcxx::nan());
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&context, &generatorAdder]() {
+        bool isCondenser = context.getReader().getOptionalAttributeValue(IS_CONDENSER, false);
+        generatorAdder.setCondenser(isCondenser);
+    });
     readNodeOrBus(generatorAdder, context);
     Generator& generator = generatorAdder.setEnergySource(energySource)
         .setMinP(minP)
@@ -82,6 +86,9 @@ void GeneratorXml::writeRootElementAttributes(const Generator& generator, const 
     context.getWriter().writeAttribute(TARGET_P, generator.getTargetP());
     context.getWriter().writeOptionalAttribute(TARGET_V, generator.getTargetV());
     context.getWriter().writeOptionalAttribute(TARGET_Q, generator.getTargetQ());
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&context, &generator]() {
+        context.getWriter().writeOptionalAttribute(IS_CONDENSER, generator.isCondenser(), false);
+    });
     writeNodeOrBus(generator.getTerminal(), context);
     writePQ(generator.getTerminal(), context.getWriter());
 }
