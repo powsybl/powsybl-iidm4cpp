@@ -10,6 +10,7 @@
 
 #include <boost/filesystem/path.hpp>
 
+#include <powsybl/iidm/AreaAdder.hpp>
 #include <powsybl/iidm/Container.hpp>
 #include <powsybl/iidm/NetworkIndex.hpp>
 #include <powsybl/iidm/NetworkRef.hpp>
@@ -34,6 +35,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class AreaAdder;
 class Battery;
 class Branch;
 class BusCache;
@@ -141,6 +143,20 @@ public:
 
     template <typename T = Identifiable, typename = typename std::enable_if<std::is_base_of<Identifiable, T>::value>::type>
     T& get(const std::string& id);
+
+    virtual unsigned long getAreaTypeCount() const;
+
+    virtual std::set<std::string> getAreaTypes() const;
+
+    virtual unsigned long getAreaCount() const;
+
+    virtual stdcxx::const_range<Area> getAreas() const;
+
+    virtual stdcxx::range<Area> getAreas();
+
+    virtual const Area& getArea(const std::string& id) const;
+
+    virtual Area& getArea(const std::string& id);
 
     virtual const Battery& getBattery(const std::string& id) const;
 
@@ -430,6 +446,8 @@ public:
     virtual stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
 
     virtual stdcxx::range<VscConverterStation> getVscConverterStations();
+
+    virtual AreaAdder newArea();
 
     virtual HvdcLineAdder newHvdcLine();
     virtual HvdcLineAdder newHvdcLine(const std::string& subNetworkId);

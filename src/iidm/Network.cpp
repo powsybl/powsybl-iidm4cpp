@@ -156,6 +156,38 @@ stdcxx::Reference<HvdcLine> Network::findHvdcLine(const HvdcConverterStation& st
     return stdcxx::ref(const_cast<const Network*>(this)->findHvdcLine(station));
 }
 
+unsigned long Network::getAreaTypeCount() const {
+    return getAreaTypes().size();
+}
+
+std::set<std::string> Network::getAreaTypes() const {
+    std::set<std::string> areaTypes;
+    for (const auto& area : getAreas()) {
+        areaTypes.insert(area.getAreaType());
+    }
+    return areaTypes;
+}
+
+unsigned long Network::getAreaCount() const {
+    return getObjectCount<Area>();
+}
+
+stdcxx::const_range<Area> Network::getAreas() const {
+    return m_networkIndex.getAll<Area>();
+}
+
+stdcxx::range<Area> Network::getAreas() {
+    return m_networkIndex.getAll<Area>();
+}
+
+const Area& Network::getArea(const std::string& id) const {
+    return get<Area>(id);
+}
+
+Area& Network::getArea(const std::string& id) {
+    return get<Area>(id);
+}
+
 const Battery& Network::getBattery(const std::string& id) const {
     return get<Battery>(id);
 }
@@ -840,6 +872,10 @@ stdcxx::range<VscConverterStation> Network::getVscConverterStations() {
 
 unsigned long Network::getVscConverterStationCount() const {
     return getObjectCount<VscConverterStation>();
+}
+
+AreaAdder Network::newArea() {
+    return AreaAdder(*this);
 }
 
 HvdcLineAdder Network::newHvdcLine() {

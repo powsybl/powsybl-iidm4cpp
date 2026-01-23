@@ -24,6 +24,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class Area;
 class Battery;
 class BatteryAdder;
 class DanglingLine;
@@ -82,6 +83,15 @@ public:
 
     virtual bool disconnect(Terminal& terminal) = 0;
     virtual bool disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) = 0;
+
+    unsigned long getAreaCount() const;
+    stdcxx::const_range<Area> getAreas() const;
+    stdcxx::range<Area> getAreas();
+    stdcxx::CReference<Area> getArea(const std::string& areaType) const;
+    stdcxx::Reference<Area> getArea(const std::string& areaType);
+
+    void addArea(Area& area);
+    void removeArea(Area& area);
 
     unsigned long getBatteryCount() const;
 
@@ -268,6 +278,8 @@ private:
     double m_lowVoltageLimit;
 
     double m_nominalV;
+
+    std::vector<stdcxx::Reference<Area>> m_areas;
 };
 
 }  // namespace iidm

@@ -21,6 +21,7 @@ const std::initializer_list<std::string>& getNames<IdentifiableType>() {
         "NETWORK",
         "SUBSTATION",
         "VOLTAGE_LEVEL",
+        "AREA",
         "HVDC_LINE",
         "BUS",
         "SWITCH",

@@ -22,6 +22,7 @@ set(EXT_SOURCES
 )
 
 set(UNIT_TEST_SOURCES
+    AreaRoundTripTest.cpp
     BatteryRoundTripTest.cpp
     EncodingTest.cpp
     EurostagTest.cpp

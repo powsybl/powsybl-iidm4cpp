@@ -84,6 +84,62 @@ void VoltageLevel::addNextTerminals(Terminal& otherTerminal, TerminalSet& nextTe
     }
 }
 
+unsigned long VoltageLevel::getAreaCount() const {
+    return boost::size(getAreas());
+}
+stdcxx::const_range<Area> VoltageLevel::getAreas() const {
+    return m_areas;
+}
+stdcxx::range<Area> VoltageLevel::getAreas() {
+    return m_areas;
+}
+stdcxx::CReference<Area> VoltageLevel::getArea(const std::string& areaType) const {
+    for (const auto& area : getAreas()) {
+        if (area.getAreaType()==areaType) {
+            return stdcxx::cref(area);
+        }
+    }
+    return stdcxx::CReference<Area>();
+}
+stdcxx::Reference<Area> VoltageLevel::getArea(const std::string& areaType) {
+    return stdcxx::ref(const_cast<const VoltageLevel*>(this)->getArea(areaType));
+}
+
+void VoltageLevel::addArea(Area& area) {
+    auto it = std::find_if(m_areas.begin(), m_areas.end(), [&area](const stdcxx::Reference<Area>& ar) {
+        return stdcxx::areSame(area, ar.get());
+    });
+    if (it!=m_areas.end()) {
+        //Already present, nothing to do
+        return;
+    }
+
+    // Check that the VoltageLevel belongs to the same network or subnetwork
+    if (!stdcxx::areSame(area.getParentNetwork(), getParentNetwork())) {
+        throw PowsyblException(stdcxx::format("VoltageLevel %1% cannot be added to Area %2%. It does not belong to the same network or subnetwork.", getId(), area.getId()));
+    }
+    // Check if the voltageLevel is already in another Area of the same type
+    auto previousArea = getArea(area.getAreaType());
+    if (static_cast<bool>(previousArea) && !stdcxx::areSame(previousArea.get(), area)) {
+        // This instance already has a different area with the same AreaType
+        throw PowsyblException("VoltageLevel " + getId() + " is already in Area of the same type=" + previousArea.get().getAreaType() + " with id=" + previousArea.get().getId());
+    }
+
+    //No conflict, add the given area to this voltageLevel and vice versa
+    m_areas.emplace_back(stdcxx::ref(area));
+    area.addVoltageLevel(*this);
+}
+void VoltageLevel::removeArea(Area& area) {
+    //We ensure unicity in addArea() but we try to remove several just in case
+    const auto removeIt = std::remove_if(m_areas.begin(), m_areas.end(), [&area](const stdcxx::Reference<Area>& ar) {
+        return stdcxx::areSame(area, ar.get());
+    });
+    if(removeIt!=m_areas.end()) { //at least one element to erase
+        m_areas.erase(removeIt, m_areas.end());
+        area.removeVoltageLevel(*this);
+    }
+}
+
 unsigned long VoltageLevel::getBatteryCount() const {
     return getConnectableCount<Battery>();
 }

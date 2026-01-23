@@ -56,6 +56,8 @@ private:
 
     static void writeVoltageLevels(const Network& network, NetworkXmlWriterContext& context);
 
+    static void writeAreas(const Network& network, NetworkXmlWriterContext& context);
+
     static void writeVoltageAngleLimits(const Network& network, NetworkXmlWriterContext& context);
 
     static void writeExtensions(const Network& network, NetworkXmlWriterContext& context);
@@ -63,6 +65,7 @@ private:
     static bool isElementWrittenInsideNetwork(const Identifiable& element, const Network& network, NetworkXmlWriterContext& context);
 
     static bool supportSubnetworksExport(NetworkXmlWriterContext& context);
+    static bool supportAreasExport(NetworkXmlWriterContext& context);
 
     static void initNetwork(Network& network, const NetworkXmlReaderContext& context);
 

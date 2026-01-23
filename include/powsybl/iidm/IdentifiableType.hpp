@@ -18,6 +18,7 @@ enum class IdentifiableType : unsigned char {
     NETWORK,
     SUBSTATION,
     VOLTAGE_LEVEL,
+    AREA,
     HVDC_LINE,
     BUS,
     SWITCH,

@@ -24,6 +24,8 @@ public:
 
     static iidm::Network createWithVoltageAngleLimit();
 
+    static iidm::Network createWithTieLinesAndAreas();
+
 public:
     EurostagFactory() = delete;
 };

@@ -32,6 +32,7 @@
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
+#include "AreaXml.hpp"
 #include "HvdcLineXml.hpp"
 #include "LineXml.hpp"
 #include "SubstationXml.hpp"
@@ -369,6 +370,11 @@ void NetworkXml::writeNetwork(const Network& network, NetworkXmlWriterContext& c
     writeLines(filter, network, context);
     writeTieLines(filter, network, context);
     writeHvdcLines(filter, network, context);
+
+    if(supportAreasExport(context)){
+        writeAreas(network, context);
+    }
+
     writeVoltageAngleLimits(network, context);
 
     writeExtensions(network, context);
@@ -424,6 +430,15 @@ void NetworkXml::writeVoltageLevels(const Network& network, NetworkXmlWriterCont
     }
 }
 
+void NetworkXml::writeAreas(const Network& network, NetworkXmlWriterContext& context) {
+    for (const Area& area : network.getAreas()) {
+        if (isElementWrittenInsideNetwork(area, network, context)) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, AREA, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_13(), context);
+            AreaXml::getInstance().write(area, network, context);
+        }
+    }
+}
+
 void NetworkXml::writeVoltageAngleLimits(const Network& network, NetworkXmlWriterContext& context) {
     for (const VoltageAngleLimit& limit : network.getVoltageAngleLimits()) {
         VoltageAngleLimitXml::getInstance().write(limit, network, context);
@@ -447,6 +462,10 @@ bool NetworkXml::isElementWrittenInsideNetwork(const Identifiable& element, cons
 
 bool NetworkXml::supportSubnetworksExport(NetworkXmlWriterContext& context) {
     return context.getVersion() >= IidmXmlVersion::V1_11();
+}
+
+bool NetworkXml::supportAreasExport(NetworkXmlWriterContext& context) {
+    return context.getVersion() >= IidmXmlVersion::V1_13();
 }
 
 void NetworkXml::initNetwork(Network& network, const NetworkXmlReaderContext& context) {
@@ -489,6 +508,9 @@ void NetworkXml::readNetworkElements(Network& network, NetworkXmlReaderContext& 
             TieLineXml::getInstance().read(network, context);
         } else if (localName == HVDC_LINE) {
             HvdcLineXml::getInstance().read(network, context);
+        } else if (localName == AREA) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, AREA, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_13(), context);
+            AreaXml::getInstance().read(network, context);
         } else if (localName == VOLTAGE_ANGLE_LIMIT) { 
             VoltageAngleLimitXml::getInstance().read(network, context);
         } else if (localName == EXTENSION) {

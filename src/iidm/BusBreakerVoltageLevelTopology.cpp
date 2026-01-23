@@ -100,6 +100,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                 case IdentifiableType::NETWORK:
                 case IdentifiableType::SUBSTATION:
                 case IdentifiableType::VOLTAGE_LEVEL:
+                case IdentifiableType::AREA:
                 case IdentifiableType::OVERLOAD_MANAGEMENT_SYSTEM:
                 case IdentifiableType::HVDC_LINE:
                 case IdentifiableType::BUS:

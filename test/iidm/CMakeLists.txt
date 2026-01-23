@@ -9,6 +9,7 @@ set(UNIT_TEST_SOURCES
     ActivePowerLimitsTest.cpp
     AliasesTest.cpp
     ApparentPowerLimitsTest.cpp
+    AreaTest.cpp
     BatteryTest.cpp
     BranchTest.cpp
     BusbarSectionTest.cpp

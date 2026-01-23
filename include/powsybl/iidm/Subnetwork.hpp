@@ -42,6 +42,12 @@ public:
     stdcxx::CReference<HvdcLine> findHvdcLine(const HvdcConverterStation& station) const override;
     stdcxx::Reference<HvdcLine> findHvdcLine(const HvdcConverterStation& station) override;
 
+    unsigned long getAreaCount() const override;
+    stdcxx::const_range<Area> getAreas() const override;
+    stdcxx::range<Area> getAreas() override;
+    const Area& getArea(const std::string& id) const override;
+    Area& getArea(const std::string& id) override;
+
     const Battery& getBattery(const std::string& id) const override;
     Battery& getBattery(const std::string& id) override;
     unsigned long getBatteryCount() const override;
@@ -195,6 +201,7 @@ public:
     stdcxx::const_range<VscConverterStation> getVscConverterStations() const override;
     stdcxx::range<VscConverterStation> getVscConverterStations() override;
 
+    AreaAdder newArea() override;
     HvdcLineAdder newHvdcLine() override;
     HvdcLineAdder newHvdcLine(const std::string& subNetworkId) override;
     LineAdder newLine() override;

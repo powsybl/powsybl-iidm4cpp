@@ -11,6 +11,8 @@
 
 #include <powsybl/PowsyblException.hpp>
 
+#include <powsybl/iidm/Area.hpp>
+#include <powsybl/iidm/AreaAdder.hpp>
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
@@ -357,6 +359,13 @@ void CreateSubnetworkExploreTest(Network& network, const std::string& nid, Count
             .add()
         .add();
 
+    Area& area1 = network.newArea()
+                            .setId(id("area1", nid))
+                            .setAreaType(id("areaType1", nid))
+                            .setName("AREA")
+                            .add();
+
+    voltageLevel1.addArea(area1);
     return;
 }
 
@@ -759,6 +768,37 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
         subnetwork2.getOverloadManagementSystem(id);
     }
 
+    //Areas
+    auto expectedAreas0 = {id("area1", "1"), id("area1", "2")};
+    auto expectedAreas1 = {id("area1", "1")};
+    auto expectedAreas2 = {id("area1", "2")};
+    BOOST_CHECK_EQUAL(expectedAreas0.size(), network.getAreaCount());
+    BOOST_CHECK_EQUAL(expectedAreas1.size(), subnetwork1.getAreaCount());
+    BOOST_CHECK_EQUAL(expectedAreas2.size(), subnetwork2.getAreaCount());
+    BOOST_CHECK_EQUAL(expectedAreas0.size(), boost::size(network.getAreas()));
+    BOOST_CHECK_EQUAL(expectedAreas1.size(), boost::size(subnetwork1.getAreas()));
+    BOOST_CHECK_EQUAL(expectedAreas2.size(), boost::size(subnetwork2.getAreas()));
+    
+    for (auto& id : expectedAreas0) {
+        network.getArea(id);
+    }
+    for (auto& id : expectedAreas1) {
+        subnetwork1.getArea(id);
+    }
+    for (auto& id : expectedAreas2) {
+        subnetwork2.getArea(id);
+    }
+
+    //AreaTypes
+    auto expectedAreaTypes0 = {id("areaType1", "1"), id("areaType1", "2")};
+    auto expectedAreaTypes1 = {id("areaType1", "1")};
+    auto expectedAreaTypes2 = {id("areaType1", "2")};
+    BOOST_CHECK_EQUAL(expectedAreaTypes0.size(), network.getAreaTypeCount());
+    BOOST_CHECK_EQUAL(expectedAreaTypes1.size(), subnetwork1.getAreaTypeCount());
+    BOOST_CHECK_EQUAL(expectedAreaTypes2.size(), subnetwork2.getAreaTypeCount());
+    BOOST_CHECK_EQUAL(expectedAreaTypes0.size(), boost::size(network.getAreaTypes()));
+    BOOST_CHECK_EQUAL(expectedAreaTypes1.size(), boost::size(subnetwork1.getAreaTypes()));
+    BOOST_CHECK_EQUAL(expectedAreaTypes2.size(), boost::size(subnetwork2.getAreaTypes()));
 
     // Connectables are retrieved from the root network even when called from a subnetwork
     std::set<std::string> expectedConnectables = {id("battery1", "1"), 
@@ -819,14 +859,14 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     BOOST_CHECK_EQUAL_COLLECTIONS(expectedConnectableBattery.begin(), expectedConnectableBattery.end(), connectablesBatId2.begin(), connectablesBatId2.end());
 
     // Identifiables
-    std::set<std::string> expectedIdentifiables1 = {"n1_battery1","n1_danglingLine1","n1_danglingLine2","n1_danglingLine3",
+    std::set<std::string> expectedIdentifiables1 = {"n1_area1","n1_battery1","n1_danglingLine1","n1_danglingLine2","n1_danglingLine3",
         "n1_generator1","n1_generator1Breaker1","n1_generator1Disconnector1","n1_hvdcLine1","n1_hvdcLine2",
         "n1_lcc1","n1_lcc2","n1_line1","n1_load1","n1_load1Breaker1","n1_load1Disconnector1",
         "n1_network","n1_overloadManagementSystem","n1_shuntCompensator1","n1_substation1","n1_substation2","n1_substation3",
         "n1_svc1","n1_threeWindingsTransformer1","n1_tieLine1","n1_twoWindingsTransformer1",
         "n1_voltageLevel1","n1_voltageLevel1Breaker1","n1_voltageLevel1BusbarSection1","n1_voltageLevel1BusbarSection2",
         "n1_voltageLevel2","n1_voltageLevel3","n1_voltageLevel4","n1_voltageLevel5","n1_vsc1","n1_vsc2"};
-    std::set<std::string> expectedIdentifiables2 = {"n2_battery1","n2_danglingLine1","n2_danglingLine2","n2_danglingLine3",
+    std::set<std::string> expectedIdentifiables2 = {"n2_area1","n2_battery1","n2_danglingLine1","n2_danglingLine2","n2_danglingLine3",
         "n2_generator1","n2_generator1Breaker1","n2_generator1Disconnector1","n2_hvdcLine1","n2_hvdcLine2",
         "n2_lcc1","n2_lcc2","n2_line1","n2_load1","n2_load1Breaker1","n2_load1Disconnector1",
         "n2_network","n2_overloadManagementSystem","n2_shuntCompensator1","n2_substation1","n2_substation2","n2_substation3",

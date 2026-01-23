@@ -17,6 +17,10 @@ set(IIDM_SOURCES
     iidm/ActivePowerLimitsAdder.cpp
     iidm/ApparentPowerLimits.cpp
     iidm/ApparentPowerLimitsAdder.cpp
+    iidm/Area.cpp
+    iidm/AreaAdder.cpp
+    iidm/AreaBoundary.cpp
+    iidm/AreaBoundaryAdder.cpp
     iidm/AutomationSystem.cpp
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
@@ -183,7 +187,10 @@ set(IIDM_SOURCES
     iidm/converter/xml/AbstractExtensionXmlSerializer.cpp
     iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.cpp
     iidm/converter/xml/AliasesXml.cpp
+    iidm/converter/xml/AreaXml.cpp
+    iidm/converter/xml/AreaBoundaryXml.cpp
     iidm/converter/xml/BatteryXml.cpp
+    iidm/converter/xml/BoundaryRefXml.cpp
     iidm/converter/xml/BusbarSectionXml.cpp
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp
     iidm/converter/xml/BusXml.cpp
@@ -216,6 +223,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/VersionsCompatibility.cpp
     iidm/converter/xml/VoltageAngleLimitXml.cpp
     iidm/converter/xml/VoltageLevelXml.cpp
+    iidm/converter/xml/VoltageLevelRefXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
 
     iidm/extensions/LoadDetail.cpp

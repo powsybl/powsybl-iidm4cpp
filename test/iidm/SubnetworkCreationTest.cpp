@@ -9,6 +9,8 @@
 
 #include <powsybl/PowsyblException.hpp>
 
+#include <powsybl/iidm/Area.hpp>
+#include <powsybl/iidm/AreaAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -153,6 +155,11 @@ ThreeWindingsTransformer& addThreeWindingsTransformer(Substation& substation, co
 
 VoltageAngleLimit& addVoltageAngleLimit(Network& network, const std::string& id, Terminal& from, Terminal& to) {
     return network.newVoltageAngleLimit().setId(id).from(stdcxx::Reference<Terminal>(from)).to(stdcxx::Reference<Terminal>(to))
+                .add();
+}
+
+Area& addArea(Network& network, const std::string& id, const std::string& type) {
+    return network.newArea().setId(id).setName("AREA").setAreaType(type)
                 .add();
 }
 
@@ -527,6 +534,33 @@ BOOST_AUTO_TEST_CASE(moveNetworkWithSubnetworksAndVoltageAngleLimits) {
     BOOST_CHECK(stdcxx::areSame(vla2, movedNetwork.getVoltageAngleLimit("vla2")));
     BOOST_CHECK(stdcxx::areSame(vla2, subnetwork2.getVoltageAngleLimit("vla2")));
     POWSYBL_ASSERT_THROW(subnetwork2.getVoltageAngleLimit("vla4"), PowsyblException, "Voltage angle limit 'vla4' does not belong to the subnetwork 'Sub2'");
+
+}
+
+BOOST_AUTO_TEST_CASE(AreasCreationTest) {
+    Network network = CreateSubnetworksNetworkTest();
+    Network& subnetwork1 = network.getSubNetwork("Sub1").get();
+    Network& subnetwork2 = network.getSubNetwork("Sub2").get();
+
+     // On root network level
+    addArea(network, "Area0", "AreaType0");
+    BOOST_CHECK_EQUAL(1, network.getAreaCount());
+    BOOST_CHECK_EQUAL(0, subnetwork1.getAreaCount());
+    BOOST_CHECK_EQUAL(0, subnetwork2.getAreaCount());
+
+    BOOST_CHECK_NO_THROW(network.getArea("Area0"));
+    POWSYBL_ASSERT_THROW(subnetwork1.getArea("Area0"),PowsyblException, "Area 'Area0' does not belong to the subnetwork 'Sub1'");
+    POWSYBL_ASSERT_THROW(subnetwork2.getArea("Area0"),PowsyblException, "Area 'Area0' does not belong to the subnetwork 'Sub2'");
+
+    // On subnetwork level
+    addArea(subnetwork1, "Area1", "AreaType1");
+    BOOST_CHECK_EQUAL(2, network.getAreaCount());
+    BOOST_CHECK_EQUAL(1, subnetwork1.getAreaCount());
+    BOOST_CHECK_EQUAL(0, subnetwork2.getAreaCount());
+
+    BOOST_CHECK_NO_THROW(network.getArea("Area1"));
+    BOOST_CHECK_NO_THROW(subnetwork1.getArea("Area1"));
+    POWSYBL_ASSERT_THROW(subnetwork2.getArea("Area1"),PowsyblException, "Area 'Area1' does not belong to the subnetwork 'Sub2'");
 
 }
 

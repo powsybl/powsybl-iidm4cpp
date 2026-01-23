@@ -107,6 +107,26 @@ stdcxx::Reference<HvdcLine> Subnetwork::findHvdcLine(const HvdcConverterStation&
     return stdcxx::ref(const_cast<const Subnetwork*>(this)->findHvdcLine(station));
 }
 
+unsigned long Subnetwork::getAreaCount() const {
+    return boost::size(getAreas());
+}
+stdcxx::const_range<Area> Subnetwork::getAreas() const {
+    return getRootNetwork().Network::getAreas() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<Area> Subnetwork::getAreas() {
+    return getRootNetwork().Network::getAreas() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+const Area& Subnetwork::getArea(const std::string& id) const {
+    const Area& area = Network::getArea(id);
+    if(!contains(area)) {
+        throw PowsyblException(stdcxx::format("Area '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+    }
+    return area;
+}
+Area& Subnetwork::getArea(const std::string& id) {
+    return const_cast<Area&>(static_cast<const Subnetwork*>(this)->getArea(id));
+}
+
 const Battery& Subnetwork::getBattery(const std::string& id) const {
     const Battery& battery = Network::getBattery(id);
     if(!contains(battery)) {
@@ -610,6 +630,9 @@ stdcxx::range<VscConverterStation> Subnetwork::getVscConverterStations() {
     return getRootNetwork().Network::getVscConverterStations() | boost::adaptors::filtered(m_filterIdentifiable);
 }
 
+AreaAdder Subnetwork::newArea() {
+    return AreaAdder(getRootNetwork(), *this);
+}
 HvdcLineAdder Subnetwork::newHvdcLine() {
     return HvdcLineAdder(getRootNetwork(), getId());
 }
