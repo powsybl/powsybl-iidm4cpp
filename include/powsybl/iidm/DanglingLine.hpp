@@ -85,6 +85,12 @@ public:
 
     DanglingLine& setX(double x);
 
+    /**
+     * Set pairing key only if this dangling line is not paired,
+     * throw exception if already paired.
+     */
+    DanglingLine& setPairingKey(const std::string& pairingKey);
+
 // FlowsLimitsHolder
     stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups() const override;
     stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups() override;

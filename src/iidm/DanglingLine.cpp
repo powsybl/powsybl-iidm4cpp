@@ -210,6 +210,15 @@ DanglingLine& DanglingLine::setX(double x) {
     return *this;
 }
 
+DanglingLine& DanglingLine::setPairingKey(const std::string& pairingKey) {
+    if(isPaired()) {
+        throw ValidationException(*this, "pairing key cannot be set if dangling line is paired.");
+    }
+    m_pairingKey = pairingKey;
+
+    return *this;
+}
+
 stdcxx::const_range<OperationalLimitsGroup> DanglingLine::getOperationalLimitsGroups() const {
     return m_operationalLimitsGroups.getOperationalLimitsGroups();
 }

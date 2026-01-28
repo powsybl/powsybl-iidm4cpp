@@ -308,6 +308,9 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl2));
     BOOST_CHECK(stdcxx::areSame(dl1, TieLineUtil::getPairedDanglingLine(dl2).get()));
     BOOST_CHECK(stdcxx::areSame(dl2, TieLineUtil::getPairedDanglingLine(dl1).get()));
+
+    //try changing pairingKey on paired dangling lines:
+    POWSYBL_ASSERT_THROW(modifiabledl1.setPairingKey("new_code"), ValidationException, "Dangling line 'H1_TL_VL1_VL3': pairing key cannot be set if dangling line is paired.");
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
