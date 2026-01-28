@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/util/TieLineUtil.hpp>
 
+#include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 
@@ -43,6 +44,15 @@ double getB2(const DanglingLine& dl1, const DanglingLine& dl2) {
     return (adm.y22 + adm.y21).imag();
 }
 
+double getBoundaryV(const DanglingLine& dl1, const DanglingLine& dl2) {
+    std::complex<double> boundaryV = voltageAtBoundaryNode(dl1, dl2);
+    return std::abs(boundaryV);
+}
+double getBoundaryAngle(const DanglingLine& dl1, const DanglingLine& dl2) {
+    std::complex<double> boundaryV = voltageAtBoundaryNode(dl1, dl2);
+    return std::atan2(boundaryV.imag(),boundaryV.real()) * stdcxx::toDegrees;
+}
+
 LinkData::BranchAdmittanceMatrix equivalentBranchAdmittanceMatrix(const DanglingLine& dl1, const DanglingLine& dl2) {
 
     LinkData::BranchAdmittanceMatrix adm1 = LinkData::calculateBranchAdmittance(dl1.getR(), dl1.getX(), 1.0, 0.0, 1.0, 0.0,
@@ -65,6 +75,22 @@ bool zeroImpedanceLine(const LinkData::BranchAdmittanceMatrix& adm) {
     } else {
         return (adm.y21.real() == 0.0 && adm.y22.imag() == 0.0);
     }
+}
+
+std::complex<double> voltageAtBoundaryNode(const DanglingLine& dl1, const DanglingLine& dl2) {
+    double v1 = dl1.getTerminal().isConnected() ? dl1.getTerminal().getBusView().getBus().get().getV() : stdcxx::nan();
+    double t1 = dl1.getTerminal().isConnected() ? (dl1.getTerminal().getBusView().getBus().get().getAngle() * stdcxx::toRadians) : stdcxx::nan();
+    double v2 = dl2.getTerminal().isConnected() ? dl2.getTerminal().getBusView().getBus().get().getV() : stdcxx::nan();
+    double t2 = dl2.getTerminal().isConnected() ? (dl2.getTerminal().getBusView().getBus().get().getAngle() * stdcxx::toRadians) : stdcxx::nan();
+    std::complex<double> c1 = std::polar(v1, t1);
+    std::complex<double> c2 = std::polar(v2, t2);
+
+    LinkData::BranchAdmittanceMatrix adm1 = LinkData::calculateBranchAdmittance(dl1.getR(), dl1.getX(), 1.0, 0.0, 1.0, 0.0,
+                std::complex<double>(dl1.getG(), dl1.getB()), std::complex<double>(0.0, 0.0));
+    LinkData::BranchAdmittanceMatrix adm2 = LinkData::calculateBranchAdmittance(dl2.getR(), dl2.getX(), 1.0, 0.0, 1.0, 0.0,
+                std::complex<double>(0.0, 0.0), std::complex<double>(dl2.getG(), dl2.getB()));
+
+    return -(adm1.y21 * c1 + adm2.y12 * c2 ) / (adm1.y22 + adm2.y11);
 }
 
 stdcxx::CReference<DanglingLine> getPairedDanglingLine(const DanglingLine& dl) {

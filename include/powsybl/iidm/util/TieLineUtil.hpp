@@ -28,9 +28,14 @@ double getB1(const DanglingLine& dl1, const DanglingLine& dl2);
 double getG2(const DanglingLine& dl1, const DanglingLine& dl2);
 double getB2(const DanglingLine& dl1, const DanglingLine& dl2);
 
+double getBoundaryV(const DanglingLine& dl1, const DanglingLine& dl2);
+double getBoundaryAngle(const DanglingLine& dl1, const DanglingLine& dl2);
+
 LinkData::BranchAdmittanceMatrix equivalentBranchAdmittanceMatrix(const DanglingLine& dl1, const DanglingLine& dl2);
 
 bool zeroImpedanceLine(const LinkData::BranchAdmittanceMatrix& adm);
+
+std::complex<double> voltageAtBoundaryNode(const DanglingLine& dl1, const DanglingLine& dl2);
 
 stdcxx::CReference<DanglingLine> getPairedDanglingLine(const DanglingLine& dl);
 stdcxx::Reference<DanglingLine> getPairedDanglingLine(DanglingLine& dl);
