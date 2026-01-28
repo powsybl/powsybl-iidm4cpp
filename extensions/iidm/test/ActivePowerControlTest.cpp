@@ -173,6 +173,29 @@ BOOST_FIXTURE_TEST_CASE(ActivePowerControlXmlWithLimitSerializerTest, test::Reso
 
 }
 
+BOOST_FIXTURE_TEST_CASE(ActivePowerControlXml1_0Test, test::ResourceFixture) {
+    Network network = createNetwork();
+
+    std::string filename = "batteryNetworkWithActivePowerControlRoundTripRef.xml";
+    const std::string& expected = ResourceFixture::getResource(filename);
+    const converter::xml::IidmXmlVersion& version = converter::xml::IidmXmlVersion::V1_0();
+
+    const auto& writer = [&version, &filename](const Network& n, std::ostream& stream) {
+        converter::ExportOptions options;
+        options.setVersion(version.toString("."));
+        Network::writeXml(filename, stream, n, options);
+    };
+    const auto& reader = [&filename](const std::string& xmlBytes) {
+        std::istringstream stream(xmlBytes);
+        return Network::readXml(filename, stream);
+    };
+    Network network2 = test::converter::RoundTrip::run(network, writer, reader, test::converter::RoundTrip::compareXml, expected);
+
+    Battery& battery = network2.getBattery("BAT");
+    battery.getExtension<ActivePowerControl>();
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
