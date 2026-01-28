@@ -116,6 +116,9 @@ set(EXT_SOURCES
     src/VoltagePerReactivePowerControl.cpp
     src/VoltagePerReactivePowerControlAdder.cpp
     src/VoltagePerReactivePowerControlXmlSerializer.cpp
+    src/VoltageRegulation.cpp
+    src/VoltageRegulationAdder.cpp
+    src/VoltageRegulationXmlSerializer.cpp
     src/WindingConnectionType.cpp
 )
 
@@ -147,6 +150,7 @@ set(UNIT_TEST_SOURCES
     test/TwoWindingsTransformerPhaseAngleClockTest.cpp
     test/TwoWindingsTransformerToBeEstimatedTest.cpp
     test/VoltagePerReactivePowerControlTest.cpp
+    test/VoltageRegulationTest.cpp
 )
 
 # Shared library
