@@ -28,7 +28,7 @@ stdcxx::CReference<T> OperationalLimitsGroup::getOperationalLimits(const LimitTy
     if (stdcxx::isInstanceOf<T>(*it->second)) {
         return stdcxx::cref(*dynamic_cast<T*>(it->second.get()));
     }
-    throw AssertionError(stdcxx::format("Unexpected class for operational limits of type %1%. Expected: %2%, actual: %3", type, stdcxx::demangle(*it->second), stdcxx::demangle<T>()));
+    throw AssertionError(stdcxx::format("Unexpected class for operational limits of type %1%. Expected: %2%, actual: %3%", type, stdcxx::demangle(*it->second), stdcxx::demangle<T>()));
 }
 
 template <typename T>
