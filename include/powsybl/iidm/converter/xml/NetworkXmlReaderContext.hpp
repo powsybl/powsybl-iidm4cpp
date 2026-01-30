@@ -57,6 +57,10 @@ public:
 
     const IidmXmlVersion& getVersion() const;
 
+    NetworkXmlReaderContext& setNetworkValidationLevel(const ValidationLevel& networkValidationLevel);
+
+    const ValidationLevel& getNetworkValidationLevel() const;
+
 private:
     powsybl::xml::XmlStreamReader& m_reader;
 
@@ -69,6 +73,8 @@ private:
     const IidmXmlVersion& m_version;
 
     std::set<std::string> m_extensionsNamespaceUri;
+
+    ValidationLevel m_networkValidationLevel;
 };
 
 }  // namespace xml

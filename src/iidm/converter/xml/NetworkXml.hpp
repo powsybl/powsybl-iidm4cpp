@@ -67,7 +67,7 @@ private:
     static bool supportSubnetworksExport(NetworkXmlWriterContext& context);
     static bool supportAreasExport(NetworkXmlWriterContext& context);
 
-    static void initNetwork(Network& network, const NetworkXmlReaderContext& context);
+    static void initNetwork(Network& network, NetworkXmlReaderContext& context);
 
     static void readNetworkElements(Network& network, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound);
 

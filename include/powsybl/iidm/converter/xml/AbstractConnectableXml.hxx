@@ -31,8 +31,9 @@ template <typename LimitsAdder>
 void AbstractConnectableXml::readLoadingLimits(const std::string& type, LimitsAdder&& adderValue, const NetworkXmlReaderContext& context, const stdcxx::optional<int>& index) {
     auto&& adder = std::forward<LimitsAdder>(adderValue);
     const powsybl::xml::XmlStreamReader& reader = context.getReader();
+    ValidationLevel minValidationLevel = context.getOptions().getMinimalValidationLevel().has_value() ? context.getOptions().getMinimalValidationLevel().get() : context.getNetworkValidationLevel();
     double permanentLimit = reader.getOptionalAttributeValue(PERMANENT_LIMIT, stdcxx::nan());
-    if(std::isnan(permanentLimit) && context.getVersion() >= IidmXmlVersion::V1_12()) {
+    if(std::isnan(permanentLimit) && context.getVersion() >= IidmXmlVersion::V1_12() && minValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS) {
         throw PowsyblException(stdcxx::format("permanentLimit is absent in '%1%'", toString(type.c_str(), index)));
     }
     adder.setPermanentLimit(permanentLimit);
@@ -51,7 +52,9 @@ void AbstractConnectableXml::readLoadingLimits(const std::string& type, LimitsAd
                 .endTemporaryLimit();
         }
     });
-    adder.fixLimits(context.getOptions().getMissingPermanentLimitPercentage());
+    if (minValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS) {
+        adder.fixLimits(context.getOptions().getMissingPermanentLimitPercentage());
+    }
     adder.add();
 }
 

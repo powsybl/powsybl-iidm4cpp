@@ -279,11 +279,11 @@ BOOST_FIXTURE_TEST_CASE(TieLineLoadingLimitsTest, test::ResourceFixture) {
     });
 }
 
-BOOST_FIXTURE_TEST_CASE(importWithouthPermanentLimits, test::ResourceFixture) {
+BOOST_FIXTURE_TEST_CASE(importWithoutPermanentLimits, test::ResourceFixture) {
     ImportOptions options;
     options.setMissingPermanentLimitPercentage(90.);
 
-    //Check that import succeed for versions prior to 1.12
+    //Check that import succeeds for versions prior to 1.12
     //(the missing permanent limit is computed)
     test::converter::RoundTrip::testForAllPreviousVersions(IidmXmlVersion::V1_12(), [&options](const iidm::converter::xml::IidmXmlVersion& version){
         iidm::Network n = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("withoutPermanentLimit.xml", version), options);
@@ -297,6 +297,28 @@ BOOST_FIXTURE_TEST_CASE(importWithouthPermanentLimits, test::ResourceFixture) {
         POWSYBL_ASSERT_THROW(Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("withoutPermanentLimit.xml", version), options), PowsyblException,
             stdcxx::format("permanentLimit is absent in 'currentLimits1'").c_str());
     });
+}
+
+BOOST_FIXTURE_TEST_CASE(importWithoutPermanentLimitsOption, test::ResourceFixture) {
+    ImportOptions options;
+    options.setMinimalValidationLevel(Enum::toString(ValidationLevel::EQUIPMENT));
+
+    //Check that import succeeds for all versions
+    //(the missing permanent limit is set to nan)
+    test::converter::RoundTrip::testForAllVersionsSince(IidmXmlVersion::V1_0(), [&options](const iidm::converter::xml::IidmXmlVersion& version){
+        iidm::Network n = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("withoutPermanentLimit.xml", version), options);
+        Line& line = n.getLine("NHV1_NHV2_1");
+        BOOST_CHECK(std::isnan(line.getCurrentLimits1().get().getPermanentLimit()));
+        BOOST_CHECK(std::isnan(line.getCurrentLimits2().get().getPermanentLimit()));
+    });
+
+}
+
+BOOST_AUTO_TEST_CASE(testWrongParametersValue) {
+    ImportOptions options;
+
+    POWSYBL_ASSERT_THROW(options.setMinimalValidationLevel("Unknown value"), AssertionError, "Unexpected ValidationLevel name: Unknown value");
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

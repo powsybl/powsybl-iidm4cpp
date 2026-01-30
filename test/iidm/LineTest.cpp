@@ -446,7 +446,7 @@ BOOST_AUTO_TEST_CASE(dontChangeDefaultOperationalLimitsGroupIfAdderValidationFai
                 .setAcceptableDuration(600)
                 .endTemporaryLimit();
 
-    POWSYBL_ASSERT_THROW(adderCurrents.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be defined and be > 0");
+    POWSYBL_ASSERT_THROW(adderCurrents.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be defined if temporary limits are present");
     // limits' validation of the adder fails. Default group remains empty
     POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
     BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId1().has_value());

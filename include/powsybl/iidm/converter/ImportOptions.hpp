@@ -11,6 +11,7 @@
 #include <set>
 #include <string>
 
+#include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 
 namespace powsybl {
@@ -25,6 +26,7 @@ public:
     static constexpr const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.import.xml.throw-exception-if-extension-not-found";
     static constexpr const char* const WITH_AUTOMATION_SYSTEMS = "iidm.import.xml.with-automation-systems";
     static constexpr const char* const MISSING_PERMANENT_LIMIT_PERCENTAGE = "iidm.import.xml.missing-permanent-limit-percentage";
+    static constexpr const char* const MINIMAL_VALIDATION_LEVEL = "iidm.import.xml.minimal-validation-level";
 
 public:
     ImportOptions() = default;
@@ -39,6 +41,8 @@ public:
 
     double getMissingPermanentLimitPercentage() const;
 
+    const stdcxx::optional<ValidationLevel>& getMinimalValidationLevel() const;
+
     ImportOptions& setExtensions(const std::set<std::string>& extensions);
 
     ImportOptions& setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound);
@@ -46,6 +50,8 @@ public:
     ImportOptions& setWithAutomationSystems(bool withAutomationSystems);
 
     ImportOptions& setMissingPermanentLimitPercentage(double missingPermanentLimitPercentage);
+
+    ImportOptions& setMinimalValidationLevel(const std::string& minimalValidationLevel);
 
     bool withExtension(const std::string& extension) const;
 
@@ -57,6 +63,8 @@ private:
     bool m_withAutomationSystems = true;
 
     double m_missingPermanentLimitPercentage = 100.0;
+
+    stdcxx::optional<ValidationLevel> m_minimalValidationLevel;
 };
 
 }  // namespace converter

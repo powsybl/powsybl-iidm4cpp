@@ -16,7 +16,8 @@ CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsGroup& owner) :
 }
 
 CurrentLimits& CurrentLimitsAdder::add() {
-    checkLoadingLimits();
+    Network& network = m_owner.getNetwork();
+    network.setValidationLevelIfGreaterThan(checkLoadingLimits());
     auto limit = m_owner.setOperationalLimits(LimitType::CURRENT, std::make_shared<CurrentLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits()));
     return static_cast<CurrentLimits&>(limit.get());
 }

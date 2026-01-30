@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/stdcxx/set.hpp>
 
 #include "ConversionParameters.hpp"
@@ -25,12 +26,15 @@ static const Parameter WITH_AUTOMATION_SYSTEMS_PARAMETER = Parameter(ImportOptio
     "Import network with automation systems", "true");
 static const Parameter MISSING_PERMANENT_LIMIT_PERCENTAGE_PARAMETER = Parameter(ImportOptions::MISSING_PERMANENT_LIMIT_PERCENTAGE, converter::Parameter::Type::DOUBLE, 
     "Percentage applied to lowest temporary limit to compute the permanent limit when missing (for IIDM < 1.12 only)", "100.0");
+static const Parameter MINIMAL_VALIDATION_LEVEL_PARAMETER = Parameter(ImportOptions::MINIMAL_VALIDATION_LEVEL, converter::Parameter::Type::STRING, "Minimal validation level accepted", "");
+
 
 ImportOptions::ImportOptions(const stdcxx::Properties& parameters) :
     m_throwExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER)),
     m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))),
     m_withAutomationSystems(ConversionParameters::readBooleanParameter(parameters, WITH_AUTOMATION_SYSTEMS_PARAMETER)),
     m_missingPermanentLimitPercentage(ConversionParameters::readDoubleParameter(parameters, MISSING_PERMANENT_LIMIT_PERCENTAGE_PARAMETER)) {
+        setMinimalValidationLevel(ConversionParameters::readStringParameter(parameters, MINIMAL_VALIDATION_LEVEL_PARAMETER));
 }
 
 ImportOptions& ImportOptions::addExtension(const std::string& extension) {
@@ -50,6 +54,10 @@ double ImportOptions::getMissingPermanentLimitPercentage() const {
     return m_missingPermanentLimitPercentage;
 }
 
+const stdcxx::optional<ValidationLevel>& ImportOptions::getMinimalValidationLevel() const {
+    return m_minimalValidationLevel;
+}
+
 ImportOptions& ImportOptions::setExtensions(const std::set<std::string>& extensions) {
     m_extensions = extensions;
     return *this;
@@ -67,6 +75,13 @@ ImportOptions& ImportOptions::setWithAutomationSystems(bool withAutomationSystem
 
 ImportOptions& ImportOptions::setMissingPermanentLimitPercentage(double missingPermanentLimitPercentage) {
     m_missingPermanentLimitPercentage = missingPermanentLimitPercentage;
+    return *this;
+}
+
+ImportOptions& ImportOptions::setMinimalValidationLevel(const std::string& minimalValidationLevel) {
+    if(!minimalValidationLevel.empty()) {
+        m_minimalValidationLevel = Enum::fromString<ValidationLevel>(minimalValidationLevel);
+    }
     return *this;
 }
 

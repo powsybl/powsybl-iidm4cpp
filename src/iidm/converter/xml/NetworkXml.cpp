@@ -468,7 +468,7 @@ bool NetworkXml::supportAreasExport(NetworkXmlWriterContext& context) {
     return context.getVersion() >= IidmXmlVersion::V1_13();
 }
 
-void NetworkXml::initNetwork(Network& network, const NetworkXmlReaderContext& context) {
+void NetworkXml::initNetwork(Network& network, NetworkXmlReaderContext& context) {
     int forecastDistance = context.getReader().getOptionalAttributeValue(FORECAST_DISTANCE, 0);
     const std::string& caseDateStr = context.getReader().getAttributeValue(CASE_DATE);
     
@@ -480,10 +480,18 @@ void NetworkXml::initNetwork(Network& network, const NetworkXmlReaderContext& co
         throw powsybl::xml::XmlStreamException(err.what());
     }
 
-    std::string minimumValidationLevel{STEADY_STATE_HYPOTHESIS};
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), context.getVersion(), [&minimumValidationLevel, &context] { minimumValidationLevel = context.getReader().getAttributeValue(MINIMUM_VALIDATION_LEVEL); });
-    ValidationLevel minValidationLevel = minimumValidationLevel.empty() ? ValidationLevel::UNVALID : Enum::fromString<ValidationLevel>(minimumValidationLevel);
-    IidmXmlUtil::assertMinimumVersionIfNotDefault(minValidationLevel != ValidationLevel::STEADY_STATE_HYPOTHESIS, NETWORK, MINIMUM_VALIDATION_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_7(), context);
+    ValidationLevel minValidationLevel;
+    if (context.getOptions().getMinimalValidationLevel().has_value()) {
+        minValidationLevel = context.getOptions().getMinimalValidationLevel().get();
+        //Read min validation level from file, but don't use it
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), context.getVersion(), [&context] { context.getReader().getAttributeValue(MINIMUM_VALIDATION_LEVEL); });
+    } else {
+        std::string minimumValidationLevel{STEADY_STATE_HYPOTHESIS};
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), context.getVersion(), [&minimumValidationLevel, &context] { minimumValidationLevel = context.getReader().getAttributeValue(MINIMUM_VALIDATION_LEVEL); });
+        minValidationLevel = minimumValidationLevel.empty() ? ValidationLevel::UNVALID : Enum::fromString<ValidationLevel>(minimumValidationLevel);
+        IidmXmlUtil::assertMinimumVersionIfNotDefault(minValidationLevel != ValidationLevel::STEADY_STATE_HYPOTHESIS, NETWORK, MINIMUM_VALIDATION_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_7(), context);
+        context.setNetworkValidationLevel(minValidationLevel);
+    }
     network.setMinimumAcceptableValidationLevel(minValidationLevel);
 }
 

@@ -30,6 +30,7 @@ class CurrentLimits;
 class CurrentLimitsAdder;
 
 class Identifiable;
+class Network;
 
 class OperationalLimitsGroup : public Validable {
 public:
@@ -50,7 +51,10 @@ public:
     // Validable
     virtual std::string getMessageHeader() const override;
 
-    Validable& getValidable() const;
+    const Validable& getValidable() const;
+
+    const Network& getNetwork() const;
+    Network& getNetwork();
 
     const std::string& getId() const;
 

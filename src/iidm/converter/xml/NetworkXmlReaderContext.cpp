@@ -22,7 +22,8 @@ NetworkXmlReaderContext::NetworkXmlReaderContext(std::unique_ptr<Anonymizer>&& a
     m_reader(reader),
     m_anonymizer(std::move(anonymizer)),
     m_options(options),
-    m_version(version) {
+    m_version(version),
+    m_networkValidationLevel(ValidationLevel::STEADY_STATE_HYPOTHESIS) {
 
 }
 
@@ -72,6 +73,15 @@ const powsybl::xml::XmlStreamReader& NetworkXmlReaderContext::getReader() const 
 
 const IidmXmlVersion& NetworkXmlReaderContext::getVersion() const {
     return m_version;
+}
+
+NetworkXmlReaderContext& NetworkXmlReaderContext::setNetworkValidationLevel(const ValidationLevel& networkValidationLevel) {
+    m_networkValidationLevel = networkValidationLevel;
+    return *this;
+}
+
+const ValidationLevel& NetworkXmlReaderContext::getNetworkValidationLevel() const {
+    return m_networkValidationLevel;
 }
 
 }  // namespace xml

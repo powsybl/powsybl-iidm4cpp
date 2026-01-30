@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/LoadingLimits.hpp>
 #include <powsybl/iidm/OperationalLimitsAdder.hpp>
+#include <powsybl/iidm/ValidationLevel.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
@@ -77,7 +78,7 @@ public:
     A& setPermanentLimit(double limit);
 
 protected:
-    void checkLoadingLimits() const;
+    ValidationLevel checkLoadingLimits() const;
 
 public:
     double getPermanentLimit() const;

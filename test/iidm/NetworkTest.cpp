@@ -7,7 +7,9 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/ActivePowerLimits.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
@@ -17,6 +19,7 @@
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/OperationalLimitsGroup.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/TieLine.hpp>
@@ -496,6 +499,42 @@ BOOST_AUTO_TEST_CASE(ScadaNetwork) {
 
     POWSYBL_ASSERT_THROW(network.setMinimumAcceptableValidationLevel(ValidationLevel::STEADY_STATE_HYPOTHESIS), ValidationException, "Network 'scada': Network should be corrected in order to correspond to validation level STEADY_STATE_HYPOTHESIS");
 
+}
+
+BOOST_AUTO_TEST_CASE(permanentLimitValidationLevelTest) {
+    Network network = powsybl::network::EurostagFactory::createWithFixedLimits();
+
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getMinimumValidationLevel());
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getValidationLevel());
+    BOOST_CHECK_NO_THROW(network.runValidationChecks(ValidationLevel::STEADY_STATE_HYPOTHESIS));
+    ActivePowerLimits& limits = network.getLine("NHV1_NHV2_1").getActivePowerLimits2().get();
+    POWSYBL_ASSERT_THROW(limits.setPermanentLimit(stdcxx::nan()), ValidationException, "AC line 'NHV1_NHV2_1': permanent limit must be defined if temporary limits are present");
+
+    network.setMinimumAcceptableValidationLevel(ValidationLevel::EQUIPMENT);
+    limits.setPermanentLimit(stdcxx::nan());
+    BOOST_CHECK(std::isnan(limits.getPermanentLimit()));
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.getValidationLevel());
+}
+
+BOOST_AUTO_TEST_CASE(permanentLimitAdderValidationLevelTest) {
+    Network network = powsybl::network::EurostagFactory::createWithFixedLimits();
+
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getMinimumValidationLevel());
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getValidationLevel());
+
+    OperationalLimitsGroup& unselectedGroup = network.getLine("NHV1_NHV2_1").newOperationalLimitsGroup1("unselectedGroup").get();
+    CurrentLimitsAdder adder = unselectedGroup.newCurrentLimits();
+    adder.setPermanentLimit(stdcxx::nan())
+                .beginTemporaryLimit()
+                .setName("5'")
+                .setAcceptableDuration(300)
+                .setValue(1000)
+                .endTemporaryLimit();
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'NHV1_NHV2_1': permanent limit must be defined if temporary limits are present");
+
+    network.setMinimumAcceptableValidationLevel(ValidationLevel::EQUIPMENT);
+    adder.add();
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.getValidationLevel());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

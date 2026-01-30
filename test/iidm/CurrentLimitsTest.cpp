@@ -396,7 +396,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(limits, limits.setPermanentLimit(100.0)));
     BOOST_CHECK_CLOSE(100.0, limits.getPermanentLimit(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(limits.setPermanentLimit(-1.0), ValidationException, "AC line 'VL1_VL3': permanent limit must be defined and be > 0");
+    POWSYBL_ASSERT_THROW(limits.setPermanentLimit(-1.0), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
 
     BOOST_TEST(line.getCurrentLimits1());
     BOOST_TEST(cLine.getCurrentLimits1());
@@ -416,7 +416,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK(!adder.hasTemporaryLimits());
 
     adder.setPermanentLimit(-10.0);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be defined and be > 0");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
     adder.setPermanentLimit(100.0);
 
     BOOST_CHECK_NO_THROW(adder.add());

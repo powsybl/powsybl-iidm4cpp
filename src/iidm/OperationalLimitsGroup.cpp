@@ -31,8 +31,15 @@ std::string OperationalLimitsGroup::getMessageHeader() const {
     return m_identifiable.getMessageHeader();
 }
 
-Validable& OperationalLimitsGroup::getValidable() const {
+const Validable& OperationalLimitsGroup::getValidable() const {
     return m_identifiable;
+}
+
+const Network& OperationalLimitsGroup::getNetwork() const {
+    return m_identifiable.getNetwork();
+}
+Network& OperationalLimitsGroup::getNetwork() {
+    return m_identifiable.getNetwork();
 }
 
 const std::string& OperationalLimitsGroup::getId() const {

@@ -7,6 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 
 namespace powsybl {
@@ -32,6 +33,11 @@ BOOST_AUTO_TEST_CASE(constructor) {
     options.setMissingPermanentLimitPercentage(95.0);
     BOOST_CHECK_CLOSE(95.0, options.getMissingPermanentLimitPercentage(), std::numeric_limits<double>::epsilon());
 
+    BOOST_CHECK(!options.getMinimalValidationLevel().has_value());
+    options.setMinimalValidationLevel("STEADY_STATE_HYPOTHESIS");
+    BOOST_CHECK(options.getMinimalValidationLevel().has_value());
+    BOOST_CHECK_EQUAL(options.getMinimalValidationLevel().get(), ValidationLevel::STEADY_STATE_HYPOTHESIS);
+
     options.addExtension("test");
     BOOST_CHECK(options.withExtension("test"));
     BOOST_CHECK(!options.withExtension("test2"));
@@ -43,6 +49,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     properties.set(ImportOptions::EXTENSIONS_LIST, "");
     properties.set(ImportOptions::WITH_AUTOMATION_SYSTEMS, "false");
     properties.set(ImportOptions::MISSING_PERMANENT_LIMIT_PERCENTAGE, "50.0");
+    properties.set(ImportOptions::MINIMAL_VALIDATION_LEVEL, "STEADY_STATE_HYPOTHESIS");
 
     ImportOptions options(properties);
 
@@ -51,6 +58,8 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     BOOST_CHECK(!options.withExtension("abc"));
     BOOST_CHECK(!options.withExtension("def"));
     BOOST_CHECK_CLOSE(50.0, options.getMissingPermanentLimitPercentage(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(options.getMinimalValidationLevel().has_value());
+    BOOST_CHECK_EQUAL(options.getMinimalValidationLevel().get(), ValidationLevel::STEADY_STATE_HYPOTHESIS);
 }
 
 BOOST_AUTO_TEST_CASE(checkAllExtensions) {

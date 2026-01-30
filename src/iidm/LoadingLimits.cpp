@@ -82,8 +82,9 @@ double LoadingLimits::getTemporaryLimitValue(unsigned long acceptableDuration) c
 }
 
 LoadingLimits& LoadingLimits::setPermanentLimit(double permanentLimit) {
-    checkPermanentLimit(m_limitsGroup.get().getValidable(), permanentLimit, getTemporaryLimits());
+    checkPermanentLimit(m_limitsGroup.get().getValidable(), permanentLimit, getTemporaryLimits(), m_limitsGroup.get().getNetwork().getMinimumValidationLevel());
     m_permanentLimit = permanentLimit;
+    m_limitsGroup.get().getNetwork().invalidateValidationLevel();
     return *this;
 }
 

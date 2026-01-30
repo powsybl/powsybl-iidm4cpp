@@ -56,7 +56,7 @@ BOOST_AUTO_TEST_CASE(CustomOperationalLimitsGroupTest) {
 
     ApparentPowerLimitsAdder adder = customGroup.newApparentPowerLimits()
                                                     .setPermanentLimit(-1);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Custom Validable : permanent limit must be defined and be > 0");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Custom Validable : permanent limit must be > 0");
 
 }
 

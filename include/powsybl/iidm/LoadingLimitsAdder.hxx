@@ -111,8 +111,8 @@ typename LoadingLimitsAdder<L, A>::TemporaryLimitAdder LoadingLimitsAdder<L, A>:
 }
 
 template <typename L, typename A>
-void LoadingLimitsAdder<L, A>::checkLoadingLimits() const {
-    powsybl::iidm::checkLoadingLimits(m_owner, m_permanentLimit, m_temporaryLimits | boost::adaptors::map_values);
+ValidationLevel LoadingLimitsAdder<L, A>::checkLoadingLimits() const {
+    return powsybl::iidm::checkLoadingLimits(m_owner, m_permanentLimit, m_temporaryLimits | boost::adaptors::map_values, m_owner.getNetwork().getMinimumValidationLevel());
 }
 
 template <typename L, typename A>
