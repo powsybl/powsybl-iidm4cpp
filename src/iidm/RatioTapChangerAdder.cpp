@@ -65,10 +65,6 @@ RatioTapChangerStepAdder<RatioTapChangerAdder> RatioTapChangerAdder::beginStep()
     return RatioTapChangerStepAdder<RatioTapChangerAdder>(*this);
 }
 
-Network& RatioTapChangerAdder::getNetwork() {
-    return m_parent.getNetwork();
-}
-
 Validable& RatioTapChangerAdder::getValidable() {
     return m_parent;
 }
@@ -78,40 +74,11 @@ RatioTapChangerAdder& RatioTapChangerAdder::setLoadTapChangingCapabilities(bool 
     return *this;
 }
 
-RatioTapChangerAdder& RatioTapChangerAdder::setLowTapPosition(long lowTapPosition) {
-    m_lowTapPosition = lowTapPosition;
-    return *this;
-}
-
-RatioTapChangerAdder& RatioTapChangerAdder::setRegulating(bool regulating) {
-    m_regulating = regulating;
-    return *this;
-}
-
 RatioTapChangerAdder& RatioTapChangerAdder::setRegulationMode(const RatioTapChanger::RegulationMode& regulationMode) {
     m_regulationMode = regulationMode;
     return *this;
 }
 
-RatioTapChangerAdder& RatioTapChangerAdder::setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) {
-    m_regulationTerminal = regulationTerminal;
-    return *this;
-}
-
-RatioTapChangerAdder& RatioTapChangerAdder::setTapPosition(long tapPosition) {
-    m_tapPosition = tapPosition;
-    return *this;
-}
-
-RatioTapChangerAdder& RatioTapChangerAdder::setTargetDeadband(double targetDeadband) {
-    m_targetDeadband = targetDeadband;
-    return *this;
-}
-
-RatioTapChangerAdder& RatioTapChangerAdder::setRegulationValue(double regulationValue) {
-    m_regulationValue = regulationValue;
-    return *this;
-}
 RatioTapChangerAdder& RatioTapChangerAdder::setTargetV(double targetV) {
     if(!std::isnan(targetV)){
         m_regulationMode = RatioTapChanger::RegulationMode::VOLTAGE;

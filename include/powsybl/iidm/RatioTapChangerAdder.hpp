@@ -33,27 +33,12 @@ public:
 
     RatioTapChangerStepAdder<RatioTapChangerAdder> beginStep() override;
 
-    RatioTapChangerAdder& setLowTapPosition(long lowTapPosition) override;
-
-    RatioTapChangerAdder& setTapPosition(long tapPosition) override;
-
-    RatioTapChangerAdder& setRegulating(bool regulating) override;
-
-    RatioTapChangerAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) override;
-
-    RatioTapChangerAdder& setTargetDeadband(double targetDeadband) override;
-
     //RatioTapChangerAdder
     RatioTapChangerAdder& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities);
 
     RatioTapChangerAdder& setRegulationMode(const RatioTapChanger::RegulationMode& regulationMode);
 
-    RatioTapChangerAdder& setRegulationValue(double regulationValue);
-
     RatioTapChangerAdder& setTargetV(double targetV);
-
-protected:
-    Network& getNetwork();
 
 private:
     RatioTapChangerAdder& addStep(double rho, double r, double x, double g, double b);
@@ -69,7 +54,6 @@ private:
 
     RatioTapChanger::RegulationMode m_regulationMode = RatioTapChanger::RegulationMode::VOLTAGE;
 
-    double m_regulationValue = stdcxx::nan();
 };
 
 }  // namespace iidm

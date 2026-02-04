@@ -65,46 +65,12 @@ PhaseTapChangerStepAdder<PhaseTapChangerAdder> PhaseTapChangerAdder::beginStep()
     return PhaseTapChangerStepAdder<PhaseTapChangerAdder>(*this);
 }
 
-Network& PhaseTapChangerAdder::getNetwork() {
-    return m_parent.getNetwork();
-}
-
 Validable& PhaseTapChangerAdder::getValidable() {
     return m_parent;
 }
 
-PhaseTapChangerAdder& PhaseTapChangerAdder::setLowTapPosition(long lowTapPosition) {
-    m_lowTapPosition = lowTapPosition;
-    return *this;
-}
-
-PhaseTapChangerAdder& PhaseTapChangerAdder::setRegulating(bool regulating) {
-    m_regulating = regulating;
-    return *this;
-}
-
 PhaseTapChangerAdder& PhaseTapChangerAdder::setRegulationMode(const PhaseTapChanger::RegulationMode& regulationMode) {
     m_regulationMode = regulationMode;
-    return *this;
-}
-
-PhaseTapChangerAdder& PhaseTapChangerAdder::setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) {
-    m_regulationTerminal = regulationTerminal;
-    return *this;
-}
-
-PhaseTapChangerAdder& PhaseTapChangerAdder::setRegulationValue(double regulationValue) {
-    m_regulationValue = regulationValue;
-    return *this;
-}
-
-PhaseTapChangerAdder& PhaseTapChangerAdder::setTapPosition(long tapPosition) {
-    m_tapPosition = tapPosition;
-    return *this;
-}
-
-PhaseTapChangerAdder& PhaseTapChangerAdder::setTargetDeadband(double targetDeadband) {
-    m_targetDeadband = targetDeadband;
     return *this;
 }
 

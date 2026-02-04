@@ -39,23 +39,8 @@ public:
 
     PhaseTapChangerStepAdder<PhaseTapChangerAdder> beginStep() override;
 
-    PhaseTapChangerAdder& setLowTapPosition(long lowTapPosition) override;
-
-    PhaseTapChangerAdder& setTapPosition(long tapPosition) override;
-
-    PhaseTapChangerAdder& setRegulating(bool regulating) override;
-
-    PhaseTapChangerAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) override;
-
-    PhaseTapChangerAdder& setTargetDeadband(double targetDeadband) override;
-
     //PhaseTapChangerAdder
     PhaseTapChangerAdder& setRegulationMode(const PhaseTapChanger::RegulationMode& regulationMode);
-
-    PhaseTapChangerAdder& setRegulationValue(double regulationValue);
-
-protected:
-    Network& getNetwork();
 
 private:
     PhaseTapChangerAdder& addStep(double alpha, double rho, double r, double x, double g, double b);
@@ -69,7 +54,6 @@ private:
 
     PhaseTapChanger::RegulationMode m_regulationMode = PhaseTapChanger::RegulationMode::FIXED_TAP;
 
-    double m_regulationValue = stdcxx::nan();
 };
 
 }  // namespace iidm

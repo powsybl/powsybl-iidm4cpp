@@ -19,6 +19,47 @@ TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::TapChangerAdder(TCHolder& p
     m_parent(parent) {
 }
 
+template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+Network& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::getNetwork() {
+    return m_parent.getNetwork();
+}
+
+template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setLowTapPosition(long lowTapPosition) {
+    m_lowTapPosition = lowTapPosition;
+    return static_cast<TCAdder&>(*this);
+}
+
+template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setTapPosition(long tapPosition) {
+    m_tapPosition = tapPosition;
+    return static_cast<TCAdder&>(*this);
+}
+
+template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setRegulating(bool regulating) {
+    m_regulating = regulating;
+    return static_cast<TCAdder&>(*this);
+}
+
+template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) {
+    m_regulationTerminal = regulationTerminal;
+    return static_cast<TCAdder&>(*this);
+}
+
+template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setTargetDeadband(double targetDeadband) {
+    m_targetDeadband = targetDeadband;
+    return static_cast<TCAdder&>(*this);
+}
+
+template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setRegulationValue(double regulationValue) {
+    m_regulationValue = regulationValue;
+    return static_cast<TCAdder&>(*this);
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

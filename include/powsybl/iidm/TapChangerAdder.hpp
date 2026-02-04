@@ -23,19 +23,24 @@ public:
 
 public:
 
-    virtual TCAdder& setLowTapPosition(long lowTapPosition) = 0;
+    virtual TCAdder& setLowTapPosition(long lowTapPosition);
 
-    virtual TCAdder& setTapPosition(long tapPosition) = 0;
+    virtual TCAdder& setTapPosition(long tapPosition);
 
-    virtual TCAdder& setRegulating(bool regulating) = 0;
+    virtual TCAdder& setRegulating(bool regulating);
 
-    virtual TCAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) = 0;
+    virtual TCAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal);
 
-    virtual TCAdder& setTargetDeadband(double targetDeadband) = 0;
+    virtual TCAdder& setTargetDeadband(double targetDeadband);
+
+    virtual TCAdder& setRegulationValue(double regulationValue);
 
     virtual TC& add() = 0;
 
     virtual TCStepAdder beginStep() = 0;
+
+protected:
+    Network& getNetwork();
 
 protected:
     TapChangerAdder(TCHolder& parent);
@@ -51,6 +56,8 @@ protected:
     stdcxx::Reference<Terminal> m_regulationTerminal;
 
     double m_targetDeadband = stdcxx::nan();
+
+    double m_regulationValue = stdcxx::nan();
 
 };
 
