@@ -39,14 +39,17 @@ public:
     Terminal& addTerminal(std::unique_ptr<Terminal>&& terminal);
 
     std::vector<std::reference_wrapper<Terminal> > getTerminals() const;
+    std::vector<std::reference_wrapper<Terminal> > getTerminals(const stdcxx::optional<ThreeSides>& side) const;
 
     virtual void remove();
 
     virtual bool connect();
     virtual bool connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
+    virtual bool connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<ThreeSides>& side);
 
     virtual bool disconnect();
     virtual bool disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable);
+    virtual bool disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<ThreeSides>& side);
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

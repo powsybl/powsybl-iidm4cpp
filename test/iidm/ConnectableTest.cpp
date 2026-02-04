@@ -274,6 +274,30 @@ BOOST_AUTO_TEST_CASE(partiallyConnectedTest) {
     }
 }
 
+BOOST_AUTO_TEST_CASE(oneTerminalConnectedTest) {
+    Network network = createConnectableTestNetwork();
+    Line& line2 = network.getLine("L2");
+    ThreeWindingsTransformer& twt = network.getThreeWindingsTransformer("twt");
+
+    // Line and twt are connected
+    BOOST_CHECK(!line2.getTerminals().at(0).get().isConnected());
+    BOOST_CHECK(line2.getTerminals().at(1).get().isConnected());
+    BOOST_CHECK(!twt.getTerminal(ThreeSides::ONE).isConnected());
+    BOOST_CHECK(twt.getTerminal(ThreeSides::TWO).isConnected());
+    BOOST_CHECK(twt.getTerminal(ThreeSides::THREE).isConnected());
+
+    //Connect side ONE only :
+    BOOST_CHECK(line2.connect(SwitchPredicate::IS_BREAKER(), ThreeSides::ONE));
+    BOOST_CHECK(line2.getTerminals().at(0).get().isConnected());
+
+    //disconnect twt side Three only :
+    BOOST_CHECK(twt.disconnect(SwitchPredicate::IS_BREAKER_OR_DISCONNECTOR(), ThreeSides::THREE));
+    BOOST_CHECK(!twt.getTerminal(ThreeSides::ONE).isConnected());
+    BOOST_CHECK(twt.getTerminal(ThreeSides::TWO).isConnected());
+    BOOST_CHECK(!twt.getTerminal(ThreeSides::THREE).isConnected());
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

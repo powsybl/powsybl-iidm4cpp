@@ -82,13 +82,18 @@ Terminal& Connectable::getTerminal(unsigned long index) {
 }
 
 std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals() const {
+    return getTerminals(stdcxx::optional<ThreeSides>());
+}
+std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals(const stdcxx::optional<ThreeSides>& side) const {
     std::vector<std::reference_wrapper<Terminal> > terminals;
 
     terminals.reserve(m_terminals.size());
     for (const auto& terminal : m_terminals) {
-        terminals.push_back(std::ref(*terminal));
+        if (!side.has_value() || terminal->getSide() == side.get()) {
+            terminals.push_back(std::ref(*terminal));
+        }
     }
-
+    terminals.shrink_to_fit();
     return terminals;
 }
 
@@ -116,12 +121,17 @@ bool Connectable::connect() {
 }
 
 bool Connectable::connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) {
+    return connect(isTypeSwitchToOperate, stdcxx::optional<ThreeSides>());
+}
+
+bool Connectable::connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<ThreeSides>& side) {
     bool isAlreadyConnected = true;
     bool isNowConnected = true;
 
+    auto terminals = getTerminals(side);
     //Check connected state of terminals
-    for (auto& terminal : m_terminals) {
-        if (!terminal->isConnected()) {
+    for (auto& terminal : terminals) {
+        if (!terminal.get().isConnected()) {
             isAlreadyConnected = false;
         }
     }
@@ -131,11 +141,11 @@ bool Connectable::connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate
     }
 
     //Try connecting all disconnected terminals
-    for (auto& terminal : m_terminals) {
-        if (terminal->isConnected()) {
+    for (auto& terminal : terminals) {
+        if (terminal.get().isConnected()) {
             continue;
         }
-        isNowConnected = isNowConnected && terminal->connect(isTypeSwitchToOperate);
+        isNowConnected = isNowConnected && terminal.get().connect(isTypeSwitchToOperate);
         // Exit if the terminal cannot be connected
         if (!isNowConnected) {
             return false;
@@ -148,12 +158,16 @@ bool Connectable::disconnect() {
     return disconnect(SwitchPredicate::IS_CLOSED_BREAKER());
 }
 bool Connectable::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
+    return disconnect(isSwitchOpenable, stdcxx::optional<ThreeSides>());
+}
+bool Connectable::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<ThreeSides>& side) {
     bool isAlreadyDisconnected = true;
     bool isNowDisconnected = true;
 
+    auto terminals = getTerminals(side);
     //Check connected state of terminals
-    for (auto& terminal : m_terminals) {
-        if (terminal->isConnected()) {
+    for (auto& terminal : terminals) {
+        if (terminal.get().isConnected()) {
             isAlreadyDisconnected = false;
         }
     }
@@ -163,11 +177,11 @@ bool Connectable::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable) 
     }
 
     //We try to disconnect each connected terminal
-    for (auto& terminal : m_terminals) {
-        if (!terminal->isConnected()) {
+    for (auto& terminal : terminals) {
+        if (!terminal.get().isConnected()) {
             continue;
         }
-        isNowDisconnected = isNowDisconnected && terminal->disconnect(isSwitchOpenable);
+        isNowDisconnected = isNowDisconnected && terminal.get().disconnect(isSwitchOpenable);
         // Exit if the terminal cannot be disconnected
         if (!isNowDisconnected) {
             return false;
