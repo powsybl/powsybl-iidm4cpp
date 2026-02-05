@@ -14,8 +14,7 @@ namespace powsybl {
 namespace iidm {
 
 HvdcConverterStation::HvdcConverterStation(double lossFactor) :
-    m_lossFactor(checkLossFactor(*this, lossFactor)) {
-
+    m_lossFactor(lossFactor) {
 }
 
 stdcxx::CReference<HvdcLine> HvdcConverterStation::getHvdcLine() const {
@@ -47,7 +46,8 @@ void HvdcConverterStation::setHvdcLine(const stdcxx::Reference<HvdcLine>& hvdcLi
 }
 
 HvdcConverterStation& HvdcConverterStation::setLossFactor(double lossFactor) {
-    m_lossFactor = checkLossFactor(*this, lossFactor);
+    checkLossFactor(*this, lossFactor, getNetwork().getMinimumValidationLevel());
+    m_lossFactor = lossFactor;
     return *this;
 }
 

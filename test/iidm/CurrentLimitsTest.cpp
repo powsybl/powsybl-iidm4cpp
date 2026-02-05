@@ -467,11 +467,10 @@ BOOST_AUTO_TEST_CASE(adder) {
     adder4.beginTemporaryLimit().setAcceptableDuration(2UL).setFictitious(false).setName("TL_2").setValue(130.0).endTemporaryLimit();
     adder4.beginTemporaryLimit().setAcceptableDuration(3UL).setFictitious(true).setName("TL_3").setValue(110.0).endTemporaryLimit();
     BOOST_CHECK_NO_THROW(adder4.add());
-    //TODO(thiebarr) BOOST_CHECK_EQUAL(3, logger.size());
-    //TODO(thiebarr) indexLog++;
-    //TODO(thiebarr) BOOST_CHECK_EQUAL("AC line 'VL1_VL3': temporary limits should be in ascending value order", logger.getLogMessage(indexLog).getMessage());
-    //TODO(thiebarr) POWSYBL_ASSERT_ENUM_EQ(logging::Level::DEBUG, logger.getLogMessage(indexLog).getLevel());
-    BOOST_CHECK_EQUAL(2, logger.size());
+    BOOST_CHECK_EQUAL(3, logger.size());
+    indexLog++;
+    BOOST_CHECK_EQUAL("AC line 'VL1_VL3': temporary limits should be in ascending value order", logger.getLogMessage(indexLog).getMessage());
+    POWSYBL_ASSERT_ENUM_EQ(logging::Level::DEBUG, logger.getLogMessage(indexLog).getLevel());
     BOOST_TEST(line.getCurrentLimits2());
 
     auto adder5 = adder;
@@ -491,7 +490,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK_EQUAL("TL_2", line.getCurrentLimits2().get().getTemporaryLimit(2UL).getName());
     BOOST_CHECK_EQUAL("TL_3", line.getCurrentLimits2().get().getTemporaryLimit(3UL).getName());
 
-    BOOST_CHECK_EQUAL(2, logger.size());
+    BOOST_CHECK_EQUAL(3, logger.size());
     BOOST_TEST(line.getCurrentLimits2());
 
     logging::LoggerFactory::getInstance().removeLogger("powsybl::iidm");

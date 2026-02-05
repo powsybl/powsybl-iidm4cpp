@@ -74,7 +74,7 @@ double checkHvdcMaxP(const Validable& validable, double maxP);
 
 const LoadType& checkLoadType(const Validable& validable, const LoadType& loadType);
 
-double checkLossFactor(const Validable& validable, double lossFactor);
+ValidationLevel checkLossFactor(const Validable& validable, double lossFactor, const ValidationLevel& vl);
 
 unsigned long checkMaximumSectionCount(const Validable& validable, const stdcxx::optional<unsigned long>& maximumSectionCount);
 
@@ -123,7 +123,7 @@ ValidationLevel checkLoadingLimits(const Validable& validable, double permanentL
 
 ValidationLevel checkPermanentLimit(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl);
 
-void checkTemporaryLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits);
+ValidationLevel checkTemporaryLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl);
 
 ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
                                     const stdcxx::CReference<Terminal>& regulationTerminal, const Network& network, const ValidationLevel& vl);

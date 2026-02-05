@@ -225,14 +225,16 @@ const LoadType& checkLoadType(const Validable& /*validable*/, const LoadType& lo
     return loadType;
 }
 
-double checkLossFactor(const Validable& validable, double lossFactor) {
+ValidationLevel checkLossFactor(const Validable& validable, double lossFactor, const ValidationLevel& vl) {
+    ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (std::isnan(lossFactor)) {
-        throw ValidationException(validable, "loss factor is invalid");
+        throwExceptionOrLogError(validable, "loss factor is invalid", vl);
+        checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
     }
     if (lossFactor < 0 || lossFactor > 100) {
         throw ValidationException(validable, "loss factor must be >= 0 and <= 100");
     }
-    return lossFactor;
+    return checkValidationLevel;
 }
 
 double checkMaxP(const Validable& validable, double maxP) {
@@ -346,7 +348,7 @@ ValidationLevel checkOperationalLimitsGroups(const Validable& validable, const s
 ValidationLevel checkLoadingLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     checkValidationLevel = validationLevel::min(checkValidationLevel, checkPermanentLimit(validable, permanentLimit, temporaryLimits, vl));
-    checkTemporaryLimits(validable, permanentLimit, temporaryLimits);
+    checkTemporaryLimits(validable, permanentLimit, temporaryLimits, vl);
 
     return checkValidationLevel;
 }
@@ -364,8 +366,7 @@ ValidationLevel checkPermanentLimit(const Validable& validable, double permanent
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;
 }
 
-void checkTemporaryLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits) {
-        
+ValidationLevel checkTemporaryLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl) {
     logging::Logger& logger = logging::LoggerFactory::getLogger("powsybl::iidm::ValidationUtils");
 
     // check temporary limits are consistents with permanent
@@ -375,22 +376,24 @@ void checkTemporaryLimits(const Validable& validable, double permanentLimit, con
         if (tl.getValue() <= permanentLimit) {
             logger.debug(stdcxx::format("%1%temporary limit should be greater than permanent limit", validable.getMessageHeader()));
         }
-        if (std::isnan(previousLimit)) {
-            previousLimit = tl.getValue();
-        } else if (!wrongOrderMessageAlreadyLogged && !std::isnan(previousLimit) && tl.getValue() <= previousLimit) {
+        if (!wrongOrderMessageAlreadyLogged && !std::isnan(previousLimit) && tl.getValue() <= previousLimit) {
             logger.debug(stdcxx::format("%1%temporary limits should be in ascending value order", validable.getMessageHeader()));
             wrongOrderMessageAlreadyLogged = true;
         }
+        previousLimit = tl.getValue();
     }
 
     // check name unicity
+    ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     std::unordered_set<std::string> names;
     for (const LoadingLimits::TemporaryLimit& tl : temporaryLimits) {
         const auto& res = names.insert(tl.getName());
         if (!res.second) {
-            throw ValidationException(validable, stdcxx::format("2 temporary limits have the same name %1%", tl.getName()));
+            throwExceptionOrLogError(validable, stdcxx::format("2 temporary limits have the same name %1%", tl.getName()), vl);
+            checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
         }
     }
+    return vl;
 }
 
 ValidationLevel checkPhaseTapChangerRegulationWithoutTerminal(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,

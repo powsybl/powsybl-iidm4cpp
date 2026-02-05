@@ -35,7 +35,7 @@ Adder& HvdcConverterStationAdder<Added, Adder>::setLossFactor(double lossFactor)
 
 template<typename Added, typename Adder>
 void HvdcConverterStationAdder<Added, Adder>::validate() {
-    checkLossFactor(*this, m_lossFactor);
+    checkLossFactor(*this, m_lossFactor, InjectionAdder<Added, Adder>::getNetwork().getMinimumValidationLevel());
 }
 
 }  // namespace iidm
