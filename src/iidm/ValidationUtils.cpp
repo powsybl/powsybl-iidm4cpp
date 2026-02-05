@@ -348,7 +348,7 @@ ValidationLevel checkOperationalLimitsGroups(const Validable& validable, const s
 ValidationLevel checkLoadingLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     checkValidationLevel = validationLevel::min(checkValidationLevel, checkPermanentLimit(validable, permanentLimit, temporaryLimits, vl));
-    checkTemporaryLimits(validable, permanentLimit, temporaryLimits, vl);
+    checkTemporaryLimits(validable, permanentLimit, temporaryLimits);
 
     return checkValidationLevel;
 }
@@ -366,7 +366,7 @@ ValidationLevel checkPermanentLimit(const Validable& validable, double permanent
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;
 }
 
-ValidationLevel checkTemporaryLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl) {
+void checkTemporaryLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits) {
     logging::Logger& logger = logging::LoggerFactory::getLogger("powsybl::iidm::ValidationUtils");
 
     // check temporary limits are consistents with permanent
@@ -382,18 +382,6 @@ ValidationLevel checkTemporaryLimits(const Validable& validable, double permanen
         }
         previousLimit = tl.getValue();
     }
-
-    // check name unicity
-    ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
-    std::unordered_set<std::string> names;
-    for (const LoadingLimits::TemporaryLimit& tl : temporaryLimits) {
-        const auto& res = names.insert(tl.getName());
-        if (!res.second) {
-            throwExceptionOrLogError(validable, stdcxx::format("2 temporary limits have the same name %1%", tl.getName()), vl);
-            checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
-        }
-    }
-    return vl;
 }
 
 ValidationLevel checkPhaseTapChangerRegulationWithoutTerminal(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,

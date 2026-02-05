@@ -473,11 +473,15 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_ENUM_EQ(logging::Level::DEBUG, logger.getLogMessage(indexLog).getLevel());
     BOOST_TEST(line.getCurrentLimits2());
 
+    //Temporary limits name duplicates are allowed :
     auto adder5 = adder;
     adder5.beginTemporaryLimit().setAcceptableDuration(1UL).setFictitious(true).setName("TL_DUPLICATE").setValue(130.0).endTemporaryLimit();
     adder5.beginTemporaryLimit().setAcceptableDuration(2UL).setFictitious(false).setName("TL_2").setValue(120.0).endTemporaryLimit();
     adder5.beginTemporaryLimit().setAcceptableDuration(3UL).setFictitious(true).setName("TL_DUPLICATE").setValue(110.0).endTemporaryLimit();
-    POWSYBL_ASSERT_THROW(adder5.add(), ValidationException, "AC line 'VL1_VL3': 2 temporary limits have the same name TL_DUPLICATE");
+    BOOST_CHECK_NO_THROW(adder5.add()); 
+    BOOST_TEST(line.getCurrentLimits2());
+    BOOST_CHECK_EQUAL("TL_DUPLICATE",line.getCurrentLimits2().get().getTemporaryLimit(1UL).getName());
+    BOOST_CHECK_EQUAL("TL_DUPLICATE",line.getCurrentLimits2().get().getTemporaryLimit(3UL).getName());
 
     adder.beginTemporaryLimit().setAcceptableDuration(1UL).setFictitious(true).setName("TL_1").setValue(130.0).endTemporaryLimit();
     adder.beginTemporaryLimit().setAcceptableDuration(2UL).setFictitious(false).setName("TL_2").setValue(120.0).endTemporaryLimit();
