@@ -29,8 +29,13 @@ public:
         INTEGER
     };
 
+    enum class Scope : unsigned char {
+        FUNCTIONAL,
+        TECHNICAL
+    };
+
 public:
-    Parameter(std::string&& name, const Type& type, std::string&& description, std::string&& defaultValue);
+    Parameter(std::string&& name, const Type& type, std::string&& description, std::string&& defaultValue, const Scope& scope = Scope::FUNCTIONAL, std::string&& categoryKey = std::string(""));
 
     ~Parameter() = default;
 
@@ -62,6 +67,10 @@ public:
 
     const Type& getType() const;
 
+    const Scope& getScope() const;
+
+    const std::string& getCategoryKey() const;
+
 private:
     std::vector<std::string> m_names;
 
@@ -70,6 +79,10 @@ private:
     std::string m_description;
 
     std::string m_defaultValue;
+
+    Scope m_scope;
+
+    std::string m_categoryKey;
 };
 
 }  // namespace converter

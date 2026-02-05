@@ -67,6 +67,7 @@ set(UNIT_TEST_SOURCES
     converter/ExportOptionsTest.cpp
     converter/FakeAnonymizerTest.cpp
     converter/ImportOptionsTest.cpp
+    converter/ParameterTest.cpp
     converter/SimpleAnonymizerTest.cpp
 
     extensions/LoadDetailTest.cpp

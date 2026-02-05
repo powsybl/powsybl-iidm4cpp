@@ -17,11 +17,13 @@ namespace iidm {
 
 namespace converter {
 
-Parameter::Parameter(std::string&& name, const Type& type, std::string&& description, std::string&& defaultValue) :
+Parameter::Parameter(std::string&& name, const Type& type, std::string&& description, std::string&& defaultValue,const Scope& scope, std::string&& categoryKey) :
     m_names({std::move(name)}),
     m_type(type),
     m_description(std::move(description)),
-    m_defaultValue({std::move(defaultValue)}) {
+    m_defaultValue({std::move(defaultValue)}),
+    m_scope(scope),
+    m_categoryKey({std::move(categoryKey)}) {
 }
 
 Parameter& Parameter::addAdditionalNames(const std::initializer_list<std::string>& additionalNames) {
@@ -67,6 +69,14 @@ int Parameter::getIntDefaultValue() const {
 
 const Parameter::Type& Parameter::getType() const {
     return m_type;
+}
+
+const Parameter::Scope& Parameter::getScope() const {
+    return m_scope;
+}
+
+const std::string& Parameter::getCategoryKey() const {
+    return m_categoryKey;
 }
 
 }  // namespace converter
