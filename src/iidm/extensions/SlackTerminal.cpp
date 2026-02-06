@@ -86,6 +86,10 @@ void SlackTerminal::reduceVariantArraySize(unsigned long number) {
 }
 
 void SlackTerminal::reset(Network& network) {
+    /* With current implementation of subnetworks and limitation at 1 level of subnetwork,
+     * getVoltageLevels() on the root network will get the voltagelevels from subnetworks as well.
+     * So there is no need to iterate through each subnetwork for now.
+     */
     for (auto& vl : network.getVoltageLevels()) {
         reset(vl, stdcxx::ref<Terminal>());
     }

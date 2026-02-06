@@ -30,45 +30,43 @@ namespace iidm {
 
 namespace extensions {
 
-Network createBusBreakerNetwork() {
-    Network network("test", "test");
-    network.setCaseDate(stdcxx::DateTime::parse("2016-06-27T12:27:58.535+02:00"));
+void fillBusBreakerNetwork(Network& network, const std::string& subnetworkId) {
     Substation& s = network.newSubstation()
-        .setId("S")
+        .setId(subnetworkId + "S")
         .setCountry(Country::FR)
         .add();
     VoltageLevel& vl = s.newVoltageLevel()
-        .setId("VL")
+        .setId(subnetworkId + "VL")
         .setNominalV(400)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
     vl.getBusBreakerView().newBus()
-        .setId("B")
+        .setId(subnetworkId + "B")
         .add();
     vl.newLoad()
-        .setId("L")
-        .setBus("B")
-        .setConnectableBus("B")
+        .setId(subnetworkId + "L")
+        .setBus(subnetworkId + "B")
+        .setConnectableBus(subnetworkId + "B")
         .setP0(100)
         .setQ0(50)
         .add();
 
     network.newSubstation()
-        .setId("S1")
+        .setId(subnetworkId + "S1")
         .setCountry(Country::FR)
         .add();
     VoltageLevel& vl1 = s.newVoltageLevel()
-        .setId("VL1")
+        .setId(subnetworkId + "VL1")
         .setNominalV(400)
         .setTopologyKind(TopologyKind::BUS_BREAKER)
         .add();
     vl1.getBusBreakerView().newBus()
-        .setId("B1")
+        .setId(subnetworkId + "B1")
         .add();
     vl1.newGenerator()
-        .setId("GE")
-        .setBus("B1")
-        .setConnectableBus("B1")
+        .setId(subnetworkId + "GE")
+        .setBus(subnetworkId + "B1")
+        .setConnectableBus(subnetworkId + "B1")
         .setTargetP(100)
         .setMinP(0)
         .setMaxP(110)
@@ -77,19 +75,24 @@ Network createBusBreakerNetwork() {
         .add();
 
     network.newLine()
-        .setId("LI")
+        .setId(subnetworkId + "LI")
         .setR(0.05)
         .setX(1.)
         .setG1(0.)
         .setG2(0.)
         .setB1(0.)
         .setB2(0.)
-        .setVoltageLevel1("VL")
-        .setVoltageLevel2("VL1")
-        .setBus1("B")
-        .setBus2("B1")
+        .setVoltageLevel1(subnetworkId + "VL")
+        .setVoltageLevel2(subnetworkId + "VL1")
+        .setBus1(subnetworkId + "B")
+        .setBus2(subnetworkId + "B1")
         .add();
+}
 
+Network createBusBreakerNetwork() {
+    Network network("test", "test");
+    network.setCaseDate(stdcxx::DateTime::parse("2016-06-27T12:27:58.535+02:00"));
+    fillBusBreakerNetwork(network, "");
     return network;
 }
 
@@ -241,6 +244,31 @@ BOOST_AUTO_TEST_CASE(variantsResetTest) {
     SlackTerminal::reset(network);
     POWSYBL_ASSERT_THROW(vlgen.getExtension<SlackTerminal>(), PowsyblException, "Extension powsybl::iidm::extensions::SlackTerminal not found");
     POWSYBL_ASSERT_THROW(vlhv1.getExtension<SlackTerminal>(), PowsyblException, "Extension powsybl::iidm::extensions::SlackTerminal not found");
+}
+
+BOOST_AUTO_TEST_CASE(testWithSubnetworks) {
+    Network network("test", "test");
+    Network& subnetwork1 = network.newSubnetwork("subnetwork1","1");
+    Network& subnetwork2 = network.newSubnetwork("subnetwork2","2");
+    fillBusBreakerNetwork(subnetwork1, "1_");
+    fillBusBreakerNetwork(subnetwork2, "2_");
+
+    SlackTerminal::attach(subnetwork1.getBusBreakerView().getBus("1_B"));
+    SlackTerminal::attach(subnetwork2.getBusBreakerView().getBus("2_B"));
+    BOOST_CHECK_NO_THROW(network.getVoltageLevel("1_VL").getExtension<SlackTerminal>());
+    BOOST_CHECK_NO_THROW(network.getVoltageLevel("2_VL").getExtension<SlackTerminal>());
+
+    //we can reset everything from root network:
+    SlackTerminal::reset(network);
+    POWSYBL_ASSERT_REF_FALSE(network.getVoltageLevel("1_VL").findExtension<SlackTerminal>());
+    POWSYBL_ASSERT_REF_FALSE(network.getVoltageLevel("2_VL").findExtension<SlackTerminal>());
+
+    //Or reset only a subnetwork:
+    SlackTerminal::attach(subnetwork1.getBusBreakerView().getBus("1_B"));
+    SlackTerminal::attach(subnetwork2.getBusBreakerView().getBus("2_B"));
+    SlackTerminal::reset(subnetwork1);
+    POWSYBL_ASSERT_REF_FALSE(network.getVoltageLevel("1_VL").findExtension<SlackTerminal>());
+    POWSYBL_ASSERT_REF_TRUE(network.getVoltageLevel("2_VL").findExtension<SlackTerminal>());
 }
 
 BOOST_FIXTURE_TEST_CASE(SlackTerminalXmlSerializerTest, test::ResourceFixture) {

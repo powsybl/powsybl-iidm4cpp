@@ -112,7 +112,7 @@ std::vector<stdcxx::Reference<Terminal>> ReferenceTerminals::getTerminals(Networ
 }
 
 void ReferenceTerminals::addTerminal(Terminal& terminal) {
-    Network& network = terminal.getVoltageLevel().getParentNetwork();
+    Network& network = terminal.getVoltageLevel().getNetwork();
     stdcxx::Reference<ReferenceTerminals> refExtension = network.findExtension<ReferenceTerminals>();
     if(!static_cast<bool>(refExtension)) {
         network.newExtension<ReferenceTerminalsAdder>()
@@ -128,12 +128,25 @@ void ReferenceTerminals::reset(Network& network) {
     if(static_cast<bool>(refExtension)) {
         refExtension.get().reset();
     }
+    for (auto& subnetwork : network.getSubNetworks()) {
+        ReferenceTerminals::reset(subnetwork);
+    }
 }
 
 void ReferenceTerminals::checkTerminalInNetwork(const Terminal& terminal, const Network& network) {
-    if(!network.contains(terminal.getVoltageLevel())){
-        throw PowsyblException(stdcxx::format("Terminal given is not in the right Network (%1% instead of %2%)",
-             terminal.getVoltageLevel().getParentNetwork().getId(), network.getId()));
+    bool extendableIsRootNetwork = stdcxx::areSame(network, network.getRootNetwork());
+    if (extendableIsRootNetwork) {
+        //Fine as long as the terminal belongs to this network
+        if(!stdcxx::areSame(network, terminal.getVoltageLevel().getNetwork())) {
+            throw PowsyblException(stdcxx::format("Terminal given is not in the right Network (%1% instead of %2%)",
+                terminal.getVoltageLevel().getNetwork().getId(), network.getId()));
+        }
+    } else {
+        // extendable is a Subnetwork : terminal must be in it
+        if(!network.contains(terminal.getVoltageLevel())){
+            throw PowsyblException(stdcxx::format("Terminal given is not in the right Network (%1% instead of %2%)",
+                terminal.getVoltageLevel().getParentNetwork().getId(), network.getId()));
+        }
     }
 }
 

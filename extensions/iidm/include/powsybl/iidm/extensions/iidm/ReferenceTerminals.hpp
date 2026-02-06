@@ -56,16 +56,18 @@ public:
 
     /**
      * Gets the reference terminals defined in the given network.
+     * This method returns only the terminal from the extensions attached to the given network,
+     * in case of subnetworks, be careful whether you want the extension from the root network or a subnetwork
      * @param network network from which reference terminals should be listed
      */
     static std::vector<stdcxx::Reference<Terminal>> getTerminals(Network& network);
     /**
-     * Defines/add a terminal as reference in the network for the current variant
+     * Defines/add a terminal as reference in the root network of the given terminal for the current variant
      * @param terminal terminal to be added as reference terminal
      */
     static void addTerminal(Terminal& terminal);
     /**
-     * Deletes all defined reference terminals in the network for the current variant
+     * Deletes all defined reference terminals in the network and all its subnetworks for the current variant
      * @param network network whose reference terminals should be deleted
      */
     static void reset(Network& network);
