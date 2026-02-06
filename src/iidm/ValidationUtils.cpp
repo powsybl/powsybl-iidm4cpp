@@ -358,9 +358,16 @@ ValidationLevel checkPermanentLimit(const Validable& validable, double permanent
         throwExceptionOrLogError(validable, "permanent limit must be defined if temporary limits are present", vl);
         return ValidationLevel::EQUIPMENT;
     }
-    if (!std::isnan(permanentLimit) && std::islessequal(permanentLimit, 0.0)) {
-        //Forbidden for both STEADY_STATE_HYPOTHESIS and EQUIPMENT
-        throw ValidationException(validable, "permanent limit must be > 0");
+    if(!std::isnan(permanentLimit)) {
+        if(std::isless(permanentLimit, 0.0)) {
+            //Forbidden for both STEADY_STATE_HYPOTHESIS and EQUIPMENT
+            throw ValidationException(validable, "permanent limit must be >= 0");
+        } 
+        if(permanentLimit == 0.0) {
+            //Log if null
+            logging::Logger& logger = logging::LoggerFactory::getLogger("powsybl::iidm::ValidationUtils");
+            logger.info(stdcxx::format("%1% permanent limit is set to 0", validable.getMessageHeader()));
+        }
     }
 
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;

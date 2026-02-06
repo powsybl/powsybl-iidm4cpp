@@ -65,7 +65,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     activePowerLimitsAdder.setPermanentLimit(10);
 
     POWSYBL_ASSERT_THROW(activePowerLimitsAdder.beginTemporaryLimit().endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': temporary limit value is not set");
-    POWSYBL_ASSERT_THROW(activePowerLimitsAdder.beginTemporaryLimit().setValue(-1.0).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': temporary limit value must be > 0");
+    POWSYBL_ASSERT_THROW(activePowerLimitsAdder.beginTemporaryLimit().setValue(-1.0).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': temporary limit value must be >= 0");
     POWSYBL_ASSERT_THROW(activePowerLimitsAdder.beginTemporaryLimit().setValue(1.0).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': acceptable duration is not set");
     POWSYBL_ASSERT_THROW(activePowerLimitsAdder.beginTemporaryLimit().setValue(1.0).setAcceptableDuration(20 * 60).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': name is not set");
 

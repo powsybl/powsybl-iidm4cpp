@@ -396,7 +396,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(limits, limits.setPermanentLimit(100.0)));
     BOOST_CHECK_CLOSE(100.0, limits.getPermanentLimit(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(limits.setPermanentLimit(-1.0), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
+    POWSYBL_ASSERT_THROW(limits.setPermanentLimit(-1.0), ValidationException, "AC line 'VL1_VL3': permanent limit must be >= 0");
 
     BOOST_TEST(line.getCurrentLimits1());
     BOOST_TEST(cLine.getCurrentLimits1());
@@ -416,7 +416,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK(!adder.hasTemporaryLimits());
 
     adder.setPermanentLimit(-10.0);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be > 0");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC line 'VL1_VL3': permanent limit must be >= 0");
     adder.setPermanentLimit(100.0);
 
     BOOST_CHECK_NO_THROW(adder.add());
@@ -428,7 +428,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     auto tempAdder = adder2.beginTemporaryLimit();
     POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value is not set");
     tempAdder.setValue(-10.0);
-    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value must be > 0");
+    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value must be >= 0");
     tempAdder.setValue(10.0);
 
     POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': acceptable duration is not set");
@@ -922,6 +922,25 @@ BOOST_AUTO_TEST_CASE(adderFixPermanentLimitWithInfiniteDurationValue) {
     BOOST_CHECK(std::isnan(adder.getTemporaryLimitValue("INFINITE")));
 }
 
+BOOST_AUTO_TEST_CASE(adderWithZeroValue) {
+    Network network = createOneLineCurrentLimitsTestNetwork();
+    Line& line = network.getLine("L");
+    CurrentLimitsAdder adder = line.newCurrentLimits1();
+    adder.setPermanentLimit(0.0)
+        .beginTemporaryLimit()
+                    .setName("TEST")
+                    .setAcceptableDuration(std::numeric_limits<unsigned long>::max())
+                    .setValue(0.0)
+        .endTemporaryLimit();
+    adder.add();
+
+    POWSYBL_ASSERT_REF_TRUE(line.getCurrentLimits(TwoSides::ONE));
+    CurrentLimits limits = line.getCurrentLimits(TwoSides::ONE).get();
+
+    BOOST_CHECK_EQUAL(0.0, limits.getPermanentLimit());
+    BOOST_CHECK_EQUAL(0.0, limits.getTemporaryLimit(std::numeric_limits<unsigned long>::max()).getValue());
+
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

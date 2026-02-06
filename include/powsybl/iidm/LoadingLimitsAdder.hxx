@@ -34,8 +34,12 @@ LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::TemporaryLimitAdder::endTemp
     if (std::isnan(m_value)) {
         throw ValidationException(m_owner, "temporary limit value is not set");
     }
-    if (m_value <= 0) {
-        throw ValidationException(m_owner, "temporary limit value must be > 0");
+    if (m_value < 0) {
+        throw ValidationException(m_owner, "temporary limit value must be >= 0");
+    }
+    if (m_value == 0.0) {
+        logging::Logger& logger = logging::LoggerFactory::getLogger<LoadingLimitsAdder>();
+        logger.info(stdcxx::format("%1%temporary limit value is set to 0", m_owner.getMessageHeader()));
     }
     if (!m_acceptableDuration) {
         throw ValidationException(m_owner, "acceptable duration is not set");
