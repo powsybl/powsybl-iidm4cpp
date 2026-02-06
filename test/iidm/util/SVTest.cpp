@@ -612,8 +612,9 @@ BOOST_AUTO_TEST_CASE(testOlfRealNetwork) {
     BOOST_CHECK_CLOSE(225.1798987500, svDl1other.getU(), tol);
     BOOST_CHECK_CLOSE(-0.4183680524, svDl1other.getA(), tol);
 
-    BOOST_CHECK_SMALL(std::abs(-dl.getP0() - dl.getBoundary().getP()) / std::abs(dl.getBoundary().getP()), tol); // issue with BOOST_CHECK_CLOSE
-
+    //DanglingLineBoundary validates its "useHypothesis" condition :
+    BOOST_CHECK_CLOSE(-dl.getP0(), dl.getBoundary().getP(), std::numeric_limits<double>::epsilon()); 
+    BOOST_CHECK_CLOSE(-dl.getQ0(), dl.getBoundary().getQ(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(testDcOlfRealNetwork) {
@@ -646,7 +647,8 @@ BOOST_AUTO_TEST_CASE(testDcOlfRealNetwork) {
     BOOST_CHECK_CLOSE(-dl.getP0(), svDl1other.getP(), tol);
     BOOST_CHECK_CLOSE(-0.4187543391573424, svDl1other.getA(), tol);
 
-    BOOST_CHECK_CLOSE(-dl.getP0(), dl.getBoundary().getP(), tol);
+    //DanglingLineBoundary validates its "useHypothesis" condition :
+    BOOST_CHECK_CLOSE(-dl.getP0(), dl.getBoundary().getP(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

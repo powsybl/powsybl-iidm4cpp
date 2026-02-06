@@ -11,6 +11,8 @@
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 
+#include <powsybl/iidm/util/DanglingLineUtil.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -78,10 +80,10 @@ bool zeroImpedanceLine(const LinkData::BranchAdmittanceMatrix& adm) {
 }
 
 std::complex<double> voltageAtBoundaryNode(const DanglingLine& dl1, const DanglingLine& dl2) {
-    double v1 = dl1.getTerminal().isConnected() ? dl1.getTerminal().getBusView().getBus().get().getV() : stdcxx::nan();
-    double t1 = dl1.getTerminal().isConnected() ? (dl1.getTerminal().getBusView().getBus().get().getAngle() * stdcxx::toRadians) : stdcxx::nan();
-    double v2 = dl2.getTerminal().isConnected() ? dl2.getTerminal().getBusView().getBus().get().getV() : stdcxx::nan();
-    double t2 = dl2.getTerminal().isConnected() ? (dl2.getTerminal().getBusView().getBus().get().getAngle() * stdcxx::toRadians) : stdcxx::nan();
+    double v1 = DanglingLineUtil::getV(dl1);
+    double t1 = DanglingLineUtil::getTheta(dl1);
+    double v2 = DanglingLineUtil::getV(dl2);
+    double t2 = DanglingLineUtil::getTheta(dl2);
     std::complex<double> c1 = std::polar(v1, t1);
     std::complex<double> c2 = std::polar(v2, t2);
 
@@ -90,7 +92,13 @@ std::complex<double> voltageAtBoundaryNode(const DanglingLine& dl1, const Dangli
     LinkData::BranchAdmittanceMatrix adm2 = LinkData::calculateBranchAdmittance(dl2.getR(), dl2.getX(), 1.0, 0.0, 1.0, 0.0,
                 std::complex<double>(0.0, 0.0), std::complex<double>(dl2.getG(), dl2.getB()));
 
-    return -(adm1.y21 * c1 + adm2.y12 * c2 ) / (adm1.y22 + adm2.y11);
+    if(zeroImpedanceLine(adm1)) {
+        return c1;
+    } else if(zeroImpedanceLine(adm2)) {
+        return c2;
+    } else {
+        return -(adm1.y21 * c1 + adm2.y12 * c2 ) / (adm1.y22 + adm2.y11);
+    }
 }
 
 stdcxx::CReference<DanglingLine> getPairedDanglingLine(const DanglingLine& dl) {

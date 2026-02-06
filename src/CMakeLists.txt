@@ -235,6 +235,7 @@ set(IIDM_SOURCES
 
     iidm/util/ConnectedComponents.cpp
     iidm/util/DanglingLineBoundary.cpp
+    iidm/util/DanglingLineUtil.cpp
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
@@ -258,6 +259,7 @@ set(IIDM_SOURCES
     math/GraphUtil.cpp
 
     network/BatteryNetworkFactory.cpp
+    network/DanglingLineNetworkFactory.cpp
     network/EurostagFactory.cpp
     network/FictitiousSwitchFactory.cpp
     network/FourSubstationsNodeBreakerFactory.cpp

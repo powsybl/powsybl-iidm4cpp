@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/util/DanglingLineUtil.hpp>
 #include <powsybl/iidm/util/SV.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
@@ -26,9 +27,16 @@ Boundary::Boundary(DanglingLine& parent) :
 }
 
 double Boundary::getAngle() const {
+    if(DanglingLineUtil::useHypothesis(m_parent)) {
+        return DanglingLineUtil::getBoundaryBusTheta(m_parent) * stdcxx::toDegrees;
+    }
     const Terminal& t = m_parent.getTerminal();
     const stdcxx::CReference<Bus>& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideA(m_parent, true);
+    if(DanglingLineUtil::zeroImpedance(m_parent)) {
+        return iidm::Boundary::getAngle(b);
+    } else {
+        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideA(m_parent, true);
+    }
 }
 
 const DanglingLine& Boundary::getDanglingLine() const {
@@ -40,21 +48,42 @@ DanglingLine& Boundary::getDanglingLine() {
 }
 
 double Boundary::getP() const {
+    if(DanglingLineUtil::useHypothesis(m_parent)) {
+        return -m_parent.getP0();
+    }
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideP(m_parent, true);
+    if(DanglingLineUtil::zeroImpedance(m_parent)) {
+        return -t.getP();
+    } else {
+        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideP(m_parent, true);
+    }
 }
 
 double Boundary::getQ() const {
+    if(DanglingLineUtil::useHypothesis(m_parent)) {
+        return -m_parent.getQ0();
+    }
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideQ(m_parent, true);
+    if(DanglingLineUtil::zeroImpedance(m_parent)) {
+        return -t.getQ();
+    } else {
+        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideQ(m_parent, true);
+    }
 }
 
 double Boundary::getV() const {
+    if(DanglingLineUtil::useHypothesis(m_parent)) {
+        return DanglingLineUtil::getBoundaryBusU(m_parent);
+    }
     const Terminal& t = m_parent.getTerminal();
     const auto& b = t.getBusView().getBus();
-    return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideU(m_parent, true);
+    if(DanglingLineUtil::zeroImpedance(m_parent)) {
+        return iidm::Boundary::getV(b);
+    } else {
+        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideU(m_parent, true);
+    }
 }
 
 const VoltageLevel& Boundary::getNetworkSideVoltageLevel() const {

@@ -15,6 +15,8 @@
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/util/DanglingLineUtil.hpp>
+#include <powsybl/network/DanglingLineNetworkFactory.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -450,24 +452,91 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     DanglingLine& danglingLine = network.getDanglingLine("DL1");
     const DanglingLine& cDanglingLine = network.getDanglingLine("DL1");
 
-    danglingLine.getTerminal().getBusView().getBus().get().setAngle(2);
-    danglingLine.getTerminal().setP(3);
-    danglingLine.getTerminal().setQ(4);
-    danglingLine.getTerminal().getBusView().getBus().get().setV(5);
     BOOST_CHECK(stdcxx::areSame(cDanglingLine.getBoundary(), danglingLine.getBoundary()));
     const Boundary& cBoundary = danglingLine.getBoundary();
     Boundary& boundary = danglingLine.getBoundary();
 
-    constexpr double ACCEPTABLE_THRESHOLD = 1e-6;
-    BOOST_CHECK_CLOSE(82.47271661854765, boundary.getAngle(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(2065.500000000001, boundary.getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(-781.1250000000001, boundary.getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(43.5, boundary.getV(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK(stdcxx::areSame(cDanglingLine, cBoundary.getDanglingLine()));
     BOOST_CHECK(stdcxx::areSame(cDanglingLine, boundary.getDanglingLine()));
 
     BOOST_CHECK(stdcxx::areSame(cDanglingLine.getTerminal().getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));
     BOOST_CHECK(stdcxx::areSame(danglingLine.getTerminal().getVoltageLevel(), boundary.getNetworkSideVoltageLevel()));
+}
+
+BOOST_AUTO_TEST_CASE(boundaryWithGeneration) {
+    Network network = powsybl::network::DanglingLineNetworkFactory::createWithGeneration();
+    double tol = 1e-3;
+    DanglingLine& danglingLine = network.getDanglingLine("DL");
+    BOOST_CHECK(!DanglingLineUtil::zeroImpedance(danglingLine));
+    BOOST_CHECK(!DanglingLineUtil::useHypothesis(danglingLine));
+
+    // P Q V and angle are computed from SV Util:
+    BOOST_CHECK(std::isnan(danglingLine.getBoundary().getP())); // there is no good solution here.
+    // we run an DC load flow and fill state variable
+    danglingLine.getTerminal().setP(-298.937);
+    danglingLine.getTerminal().setQ(stdcxx::nan());
+    danglingLine.getTerminal().getBusView().getBus().get().setAngle(0.0);
+    danglingLine.getTerminal().getBusView().getBus().get().setV(stdcxx::nan());
+    BOOST_CHECK_CLOSE(298.937, danglingLine.getBoundary().getP(), tol);
+    BOOST_CHECK_CLOSE(1.712783, danglingLine.getBoundary().getAngle(), tol);
+    // we run an AC load flow
+    danglingLine.getTerminal().setP(-298.937);
+    danglingLine.getTerminal().setQ(-7.413);
+    danglingLine.getTerminal().getBusView().getBus().get().setAngle(0.0);
+    danglingLine.getTerminal().getBusView().getBus().get().setV(100.0);
+    BOOST_CHECK_CLOSE(389.999, danglingLine.getBoundary().getP(), tol);
+    BOOST_CHECK_CLOSE(16.250, danglingLine.getBoundary().getQ(), tol);
+    BOOST_CHECK_CLOSE(130.037, danglingLine.getBoundary().getV(), tol);
+    BOOST_CHECK_CLOSE(0.99498, danglingLine.getBoundary().getAngle(), tol);
+
+}
+
+BOOST_AUTO_TEST_CASE(boundaryZeroImpedanceWithGeneration) {
+    Network network = powsybl::network::DanglingLineNetworkFactory::createWithGeneration();
+    DanglingLine& danglingLine = network.getDanglingLine("DL");
+    BOOST_CHECK(!DanglingLineUtil::zeroImpedance(danglingLine));
+    BOOST_CHECK(!DanglingLineUtil::useHypothesis(danglingLine));
+
+    //Set zeroImpedance
+    danglingLine.setR(0.0).setX(0.0);
+    BOOST_CHECK(DanglingLineUtil::zeroImpedance(danglingLine));
+
+    // P Q from terminal; V and Angle from bus:
+    BOOST_CHECK(std::isnan(danglingLine.getBoundary().getP())); // there is no good solution here.
+    // fill state variable
+    danglingLine.getTerminal().setP(-298.937);
+    danglingLine.getTerminal().setQ(-7.413);
+    danglingLine.getTerminal().getBusView().getBus().get().setAngle(0.0);
+    danglingLine.getTerminal().getBusView().getBus().get().setV(100.0);
+    BOOST_CHECK_CLOSE(298.937, danglingLine.getBoundary().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(7.413, danglingLine.getBoundary().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(100.0, danglingLine.getBoundary().getV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, danglingLine.getBoundary().getAngle(), std::numeric_limits<double>::epsilon());
+
+}
+
+BOOST_AUTO_TEST_CASE(boundaryZeroImpedanceWithoutGeneration) {
+    Network network = powsybl::network::DanglingLineNetworkFactory::create();
+    // double tol = 1e-3;
+    DanglingLine& danglingLine = network.getDanglingLine("DL");
+    BOOST_CHECK(!DanglingLineUtil::zeroImpedance(danglingLine));
+    BOOST_CHECK(DanglingLineUtil::useHypothesis(danglingLine));
+
+    //Set zeroImpedance
+    danglingLine.setR(0.0).setX(0.0);
+    BOOST_CHECK(DanglingLineUtil::zeroImpedance(danglingLine));
+
+    // P Q from P0 Q0; V and Angle from DanglingLineUtil:
+    BOOST_CHECK(std::isnan(danglingLine.getTerminal().getP())); // not set
+    BOOST_CHECK(std::isnan(danglingLine.getTerminal().getQ())); // not set
+    // fill state variable
+    danglingLine.getTerminal().getBusView().getBus().get().setAngle(0.0);
+    danglingLine.getTerminal().getBusView().getBus().get().setV(100.0);
+    BOOST_CHECK_CLOSE(-50.0, danglingLine.getBoundary().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-30.0, danglingLine.getBoundary().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(100.0, danglingLine.getBoundary().getV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, danglingLine.getBoundary().getAngle(), std::numeric_limits<double>::epsilon());
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

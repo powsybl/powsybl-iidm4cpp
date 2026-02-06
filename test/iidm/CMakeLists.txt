@@ -73,9 +73,10 @@ set(UNIT_TEST_SOURCES
     extensions/LoadDetailTest.cpp
     extensions/SlackTerminalTest.cpp
 
-    util/SVTest.cpp
     util/NodeBreakerTopologyTest.cpp
+    util/SVTest.cpp
     util/TerminalFinderTest.cpp
+    util/TieLineUtilTest.cpp
 )
 
 add_executable(unit-tests-iidm ${UNIT_TEST_SOURCES})
