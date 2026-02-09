@@ -16,13 +16,15 @@
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Substation.hpp>
-#include <powsybl/iidm/util/SV.hpp>
+#include <powsybl/iidm/SwitchPredicate.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/util/SV.hpp>
 #include <powsybl/iidm/util/TieLineUtil.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
+#include <powsybl/network/FourSubstationsNodeBreakerFactory.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -763,6 +765,121 @@ BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
     BOOST_CHECK_CLOSE(0.0, tieLine.getDanglingLine2().getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(stdcxx::areSame(s1vl1, tieLine.getDanglingLine1().getTerminal().getVoltageLevel()));
     BOOST_CHECK(stdcxx::areSame(s2vl1, tieLine.getDanglingLine2().getTerminal().getVoltageLevel()));
+
+}
+
+BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
+
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    // Existing voltage levels in Node-breaker view
+    VoltageLevel& s1vl1 = network.getVoltageLevel("S1VL1");
+
+    // New voltage levels in bus-breaker view
+    VoltageLevel& s2vl2 = network.getSubstation("S2").newVoltageLevel()
+            .setId("S2VL2")
+            .setNominalV(1.0)
+            .setTopologyKind(TopologyKind::BUS_BREAKER)
+            .add();
+
+    // New buses
+    s2vl2.getBusBreakerView()
+            .newBus()
+            .setId("bus22")
+            .add();
+
+    /*
+    * First Tie line on node-breaker
+    */
+    // Add a dangling line in the first Voltage level
+    s1vl1.getNodeBreakerView().newSwitch()
+            .setId("S1VL1_DL_DISCONNECTOR")
+            .setName("S1VL1_DL_DISCONNECTOR")
+            .setKind(SwitchKind::DISCONNECTOR)
+            .setRetained(false)
+            .setOpen(false)
+            .setFictitious(false)
+            .setNode1(0)
+            .setNode2(20)
+            .add();
+    s1vl1.getNodeBreakerView().newSwitch()
+            .setId("S1VL1_DL_BREAKER")
+            .setName("S1VL1_DL_BREAKER")
+            .setKind(SwitchKind::BREAKER)
+            .setRetained(true)
+            .setOpen(false)
+            .setFictitious(false)
+            .setNode1(20)
+            .setNode2(21)
+            .add();
+
+    DanglingLine& danglingLine1 = s1vl1.newDanglingLine()
+            .setId("NHV1_XNODE1")
+            .setP0(0.0)
+            .setQ0(0.0)
+            .setR(1.5)
+            .setX(20.0)
+            .setG(1E-6)
+            .setB(386E-6 / 2)
+            .setNode(21)
+            .setPairingKey("XNODE1")
+            .add();
+
+    // Add a dangling line in the second Voltage level
+    DanglingLine& danglingLine2 = s2vl2.newDanglingLine()
+            .setId("S2VL2_DL")
+            .setP0(0.0)
+            .setQ0(0.0)
+            .setR(1.5)
+            .setX(13.0)
+            .setG(2E-6)
+            .setB(386E-6 / 2)
+            .setBus("bus22")
+            .setPairingKey("XNODE1")
+            .add();
+
+    TieLine& tieLine = network.newTieLine()
+            .setId("TL")
+            .setDanglingLine1(danglingLine1.getId())
+            .setDanglingLine2(danglingLine2.getId())
+            .add();
+
+    // Check that the tie line is connected
+    BOOST_CHECK(tieLine.getDanglingLine1().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getDanglingLine2().getTerminal().isConnected());
+
+    // Connection fails since it's already connected
+    BOOST_CHECK(!tieLine.connectDanglingLines());
+
+    // Disconnection fails if switches cannot be opened (here, only fictional switches could be opened)
+    BOOST_CHECK(!tieLine.disconnectDanglingLines( [](const Switch& switchObject) {
+            return !SwitchPredicate::IS_NONFICTIONAL()(switchObject) && !SwitchPredicate::IS_OPEN()(switchObject);
+    }));
+
+    // Disconnection
+    BOOST_CHECK(tieLine.disconnectDanglingLines());
+    BOOST_CHECK(!tieLine.getDanglingLine1().getTerminal().isConnected());
+    BOOST_CHECK(!tieLine.getDanglingLine2().getTerminal().isConnected());
+
+    // Disconnection fails since it's already disconnected
+    BOOST_CHECK(!tieLine.disconnectDanglingLines());
+
+    // Connection fails if switches cannot be opened (here, only fictional switches could be closed)
+    BOOST_CHECK(!tieLine.connectDanglingLines( [](const Switch& switchObject) {
+            return !SwitchPredicate::IS_NONFICTIONAL()(switchObject);
+    }));
+
+    // Connection
+    BOOST_CHECK(tieLine.connectDanglingLines());
+    BOOST_CHECK(tieLine.getDanglingLine1().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getDanglingLine2().getTerminal().isConnected());
+
+    // Disconnect one side
+    BOOST_CHECK(tieLine.disconnectDanglingLines(SwitchPredicate::IS_CLOSED_BREAKER(), TwoSides::ONE));
+    BOOST_CHECK(!tieLine.getDanglingLine1().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getDanglingLine2().getTerminal().isConnected());
+
+    // Connection on the other side fails since it's still connected
+    BOOST_CHECK(!tieLine.connectDanglingLines(SwitchPredicate::IS_NONFICTIONAL_BREAKER(), TwoSides::TWO));
 
 }
 

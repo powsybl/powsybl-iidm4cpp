@@ -233,6 +233,7 @@ set(IIDM_SOURCES
     iidm/extensions/SlackTerminalAdder.cpp
     iidm/extensions/SlackTerminalXmlSerializer.cpp
 
+    iidm/util/ConnectDisconnectUtil.cpp
     iidm/util/ConnectedComponents.cpp
     iidm/util/DanglingLineBoundary.cpp
     iidm/util/DanglingLineUtil.cpp

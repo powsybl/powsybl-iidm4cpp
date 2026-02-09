@@ -9,7 +9,11 @@
 
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/SwitchPredicate.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+
+#include <powsybl/iidm/util/ConnectDisconnectUtil.hpp>
 
 namespace powsybl {
 
@@ -182,6 +186,39 @@ HvdcLine& HvdcLine::setR(double r) {
     m_r = checkR(*this, r);
 
     return *this;
+}
+
+bool HvdcLine::connectConverterStations() {
+    return connectConverterStations(SwitchPredicate::IS_NONFICTIONAL_BREAKER());
+}
+bool HvdcLine::connectConverterStations(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) {
+    return connectConverterStations(isTypeSwitchToOperate, stdcxx::optional<TwoSides>());
+}
+bool HvdcLine::connectConverterStations(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<TwoSides>& side) {
+    return ConnectDisconnectUtil::connectAllTerminals(getTerminalsOfConverterStations(side), isTypeSwitchToOperate);
+}
+
+bool HvdcLine::disconnectConverterStations() {
+    return disconnectConverterStations(SwitchPredicate::IS_CLOSED_BREAKER());
+}
+bool HvdcLine::disconnectConverterStations(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
+    return disconnectConverterStations(isSwitchOpenable, stdcxx::optional<TwoSides>());
+}
+bool HvdcLine::disconnectConverterStations(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<TwoSides>& side) {
+    return ConnectDisconnectUtil::disconnectAllTerminals(getTerminalsOfConverterStations(side), isSwitchOpenable);
+}
+
+std::vector<std::reference_wrapper<Terminal>> HvdcLine::getTerminalsOfConverterStations(const stdcxx::optional<TwoSides>& side) {
+    std::vector<std::reference_wrapper<Terminal>> terminals;
+    terminals.reserve(2);
+    if(m_converterStation1 && (!side.has_value() || side==TwoSides::ONE)) {
+        terminals.push_back(std::ref(m_converterStation1.get().getTerminal()));
+    }
+    if(m_converterStation2 && (!side.has_value() || side==TwoSides::TWO)) {
+        terminals.push_back(std::ref(m_converterStation2.get().getTerminal()));
+    }
+    terminals.shrink_to_fit();
+    return terminals;
 }
 
 namespace Enum {

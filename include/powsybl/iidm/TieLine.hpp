@@ -14,6 +14,7 @@
 #include <powsybl/iidm/NetworkRef.hpp>
 
 #include <powsybl/stdcxx/math.hpp>
+#include <powsybl/stdcxx/Predicate.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -110,6 +111,14 @@ public:
 
     virtual CurrentLimitsAdder newCurrentLimits2() override;
 
+    bool connectDanglingLines();
+    bool connectDanglingLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
+    bool connectDanglingLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<TwoSides>& side);
+
+    bool disconnectDanglingLines();
+    bool disconnectDanglingLines(const stdcxx::Predicate<Switch>& isSwitchOpenable);
+    bool disconnectDanglingLines(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<TwoSides>& side);
+
 private: // Identifiable
     const std::string& getTypeDescription() const;
 
@@ -121,6 +130,8 @@ private:
     friend class TieLineAdder;
 
     void updateDanglingLine(DanglingLine& danglingLine);
+
+    std::vector<std::reference_wrapper<Terminal>> getTerminalsOfDanglingLines(const stdcxx::optional<TwoSides>& side);
 
 private:
     NetworkRef m_network;

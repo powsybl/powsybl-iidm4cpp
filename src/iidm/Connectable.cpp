@@ -11,6 +11,8 @@
 #include <powsybl/iidm/SwitchPredicate.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
+#include <powsybl/iidm/util/ConnectDisconnectUtil.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -125,33 +127,7 @@ bool Connectable::connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate
 }
 
 bool Connectable::connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<ThreeSides>& side) {
-    bool isAlreadyConnected = true;
-    bool isNowConnected = true;
-
-    auto terminals = getTerminals(side);
-    //Check connected state of terminals
-    for (auto& terminal : terminals) {
-        if (!terminal.get().isConnected()) {
-            isAlreadyConnected = false;
-        }
-    }
-    // Exit if the connectable is already fully connected
-    if(isAlreadyConnected) {
-        return false;
-    }
-
-    //Try connecting all disconnected terminals
-    for (auto& terminal : terminals) {
-        if (terminal.get().isConnected()) {
-            continue;
-        }
-        isNowConnected = isNowConnected && terminal.get().connect(isTypeSwitchToOperate);
-        // Exit if the terminal cannot be connected
-        if (!isNowConnected) {
-            return false;
-        }
-    }
-    return isNowConnected;
+    return ConnectDisconnectUtil::connectAllTerminals(getTerminals(side), isTypeSwitchToOperate);
 }
 
 bool Connectable::disconnect() {
@@ -161,33 +137,7 @@ bool Connectable::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable) 
     return disconnect(isSwitchOpenable, stdcxx::optional<ThreeSides>());
 }
 bool Connectable::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<ThreeSides>& side) {
-    bool isAlreadyDisconnected = true;
-    bool isNowDisconnected = true;
-
-    auto terminals = getTerminals(side);
-    //Check connected state of terminals
-    for (auto& terminal : terminals) {
-        if (terminal.get().isConnected()) {
-            isAlreadyDisconnected = false;
-        }
-    }
-    // Exit if the connectable is already fully disconnected
-    if(isAlreadyDisconnected) {
-        return false;
-    }
-
-    //We try to disconnect each connected terminal
-    for (auto& terminal : terminals) {
-        if (!terminal.get().isConnected()) {
-            continue;
-        }
-        isNowDisconnected = isNowDisconnected && terminal.get().disconnect(isSwitchOpenable);
-        // Exit if the terminal cannot be disconnected
-        if (!isNowDisconnected) {
-            return false;
-        }
-    }
-    return isNowDisconnected;
+    return ConnectDisconnectUtil::disconnectAllTerminals(getTerminals(side), isSwitchOpenable);
 }
 
 }  // namespace iidm

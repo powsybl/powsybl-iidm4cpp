@@ -14,7 +14,9 @@
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/TwoSides.hpp>
+#include <powsybl/stdcxx/Predicate.hpp>
 #include <powsybl/stdcxx/reference.hpp>
+
 
 namespace powsybl {
 
@@ -22,6 +24,8 @@ namespace iidm {
 
 class HvdcConverterStation;
 class Network;
+class Switch;
+class Terminal;
 
 class HvdcLine : public Identifiable {
 public:
@@ -81,6 +85,14 @@ public:
 
     HvdcLine& setR(double r);
 
+    bool connectConverterStations();
+    bool connectConverterStations(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
+    bool connectConverterStations(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<TwoSides>& side);
+
+    bool disconnectConverterStations();
+    bool disconnectConverterStations(const stdcxx::Predicate<Switch>& isSwitchOpenable);
+    bool disconnectConverterStations(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<TwoSides>& side);
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -93,6 +105,8 @@ private: // Identifiable
 
 private:
     HvdcConverterStation& attach(HvdcConverterStation& converterStation);
+
+    std::vector<std::reference_wrapper<Terminal>> getTerminalsOfConverterStations(const stdcxx::optional<TwoSides>& side);
 
 private:
     NetworkRef m_network;

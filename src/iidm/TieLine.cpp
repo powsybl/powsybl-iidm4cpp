@@ -11,8 +11,10 @@
 #include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
+#include <powsybl/iidm/SwitchPredicate.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/util/ConnectDisconnectUtil.hpp>
 #include <powsybl/iidm/util/TieLineUtil.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
@@ -324,6 +326,39 @@ void TieLine::updateDanglingLine(DanglingLine& danglingLine) {
             danglingLine.getGeneration().get().setTargetQ(0.0).setVoltageRegulationOn(false).setTargetV(stdcxx::nan());
         }
     }
+}
+
+bool TieLine::connectDanglingLines() {
+    return connectDanglingLines(SwitchPredicate::IS_NONFICTIONAL_BREAKER());
+}
+bool TieLine::connectDanglingLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) {
+    return connectDanglingLines(isTypeSwitchToOperate, stdcxx::optional<TwoSides>());
+}
+bool TieLine::connectDanglingLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<TwoSides>& side) {
+    return ConnectDisconnectUtil::connectAllTerminals(getTerminalsOfDanglingLines(side), isTypeSwitchToOperate);
+}
+
+bool TieLine::disconnectDanglingLines() {
+    return disconnectDanglingLines(SwitchPredicate::IS_CLOSED_BREAKER());
+}
+bool TieLine::disconnectDanglingLines(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
+    return disconnectDanglingLines(isSwitchOpenable, stdcxx::optional<TwoSides>());
+}
+bool TieLine::disconnectDanglingLines(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<TwoSides>& side) {
+    return ConnectDisconnectUtil::disconnectAllTerminals(getTerminalsOfDanglingLines(side), isSwitchOpenable);
+}
+
+std::vector<std::reference_wrapper<Terminal>> TieLine::getTerminalsOfDanglingLines(const stdcxx::optional<TwoSides>& side) {
+    std::vector<std::reference_wrapper<Terminal>> terminals;
+    terminals.reserve(2);
+    if(!side.has_value() || side==TwoSides::ONE) {
+        terminals.push_back(std::ref(getTerminal1()));
+    }
+    if(!side.has_value() || side==TwoSides::TWO) {
+        terminals.push_back(std::ref(getTerminal2()));
+    }
+    terminals.shrink_to_fit();
+    return terminals;
 }
 
 }  // namespace iidm
