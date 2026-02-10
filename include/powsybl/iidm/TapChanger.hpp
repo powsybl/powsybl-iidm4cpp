@@ -60,11 +60,17 @@ public:
 
     S& getStep(long tapPosition);
 
+    virtual stdcxx::CReference<S> getNeutralStep() const;
+
+    virtual stdcxx::Reference<S> getNeutralStep();
+
     virtual R stepsReplacer() = 0;
 
     unsigned int getStepCount() const;
 
     long getTapPosition() const;
+
+    virtual stdcxx::optional<long> getNeutralPosition() const;
 
     double getTargetDeadband() const;
 
@@ -95,6 +101,8 @@ protected:
     H& getParent();
 
     C& setSteps(const std::vector<S>& steps);
+
+    virtual stdcxx::optional<long> getRelativeNeutralPosition() const = 0;
 
 private:
     H& m_parent;

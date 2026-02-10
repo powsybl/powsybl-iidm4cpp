@@ -148,7 +148,7 @@ Network createRatioTapChangerTestNetwork() {
         .setB(15.0)
         .setG(16.0)
         .setR(17.0)
-        .setRho(18.0)
+        .setRho(1.0)
         .setX(19.0)
         .endStep()
         .beginStep()
@@ -179,6 +179,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK(ratioTapChanger.getNeutralPosition().has_value());
+    BOOST_CHECK_EQUAL(2L, ratioTapChanger.getNeutralPosition().get());
     BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
     BOOST_TEST(ratioTapChanger.isRegulating());
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
@@ -188,15 +190,17 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(terminal, ratioTapChanger.getRegulationTerminal().get()));
     BOOST_TEST(stdcxx::areSame(terminal, cRatioTapChanger.getRegulationTerminal().get()));
 
-
+    auto neutralStep = ratioTapChanger.getNeutralStep();
+    POWSYBL_ASSERT_REF_TRUE(neutralStep);
     RatioTapChangerStep& step = ratioTapChanger.getCurrentStep();
     BOOST_TEST(stdcxx::areSame(step, cRatioTapChanger.getCurrentStep()));
+    BOOST_TEST(stdcxx::areSame(step, neutralStep.get()));
     BOOST_TEST(stdcxx::areSame(step, ratioTapChanger.getStep(2)));
     BOOST_TEST(stdcxx::areSame(step, cRatioTapChanger.getStep(2)));
     BOOST_CHECK_CLOSE(15.0, step.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(16.0, step.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(17.0, step.getR(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(18.0, step.getRho(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, step.getRho(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(19.0, step.getX(), std::numeric_limits<double>::epsilon());
 
     POWSYBL_ASSERT_THROW(ratioTapChanger.getStep(0), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 0 [1, 3]");
@@ -270,6 +274,14 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(std::isnan(step.getX()));
     BOOST_TEST(stdcxx::areSame(step, step.setX(30.0)));
     BOOST_CHECK_CLOSE(30.0, step.getX(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK(ratioTapChanger.getNeutralPosition().has_value());
+    BOOST_CHECK_EQUAL(2L, ratioTapChanger.getNeutralPosition().get());
+    auto neutralStep = ratioTapChanger.getNeutralStep();
+    POWSYBL_ASSERT_REF_TRUE(neutralStep);
+    neutralStep.get().setRho(10.0);
+    BOOST_CHECK(!ratioTapChanger.getNeutralPosition().has_value());
+    POWSYBL_ASSERT_REF_FALSE(ratioTapChanger.getNeutralStep());
 
     POWSYBL_ASSERT_THROW(ratioTapChanger.setTargetV(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': a target voltage has to be set for a regulating ratio tap changer");
     POWSYBL_ASSERT_THROW(ratioTapChanger.setTargetV(-15.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': bad target voltage -15");
@@ -436,6 +448,8 @@ BOOST_AUTO_TEST_CASE(stepsReplacer) {
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
+    BOOST_CHECK(ratioTapChanger.getNeutralPosition().has_value());
+    BOOST_CHECK_EQUAL(2L, ratioTapChanger.getNeutralPosition().get());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getTapPosition());
     BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
 
@@ -449,7 +463,7 @@ BOOST_AUTO_TEST_CASE(stepsReplacer) {
             .setX(5.0)
             .setG(4.0)
             .setB(3.0)
-            .setRho(1.0)
+            .setRho(1.5)
             .endStep();
 
     stepReplacer.beginStep()
@@ -467,6 +481,7 @@ BOOST_AUTO_TEST_CASE(stepsReplacer) {
 
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getHighTapPosition());
+    BOOST_CHECK(!ratioTapChanger.getNeutralPosition().has_value());
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getTapPosition());
     BOOST_CHECK_EQUAL(2, ratioTapChanger.getStepCount());
 

@@ -55,6 +55,9 @@ public:
 
     PhaseTapChangerStepsReplacer stepsReplacer() override;
 
+protected:
+    virtual stdcxx::optional<long> getRelativeNeutralPosition() const override;
+
 private:
     RegulationMode m_regulationMode;
 

@@ -112,6 +112,15 @@ RatioTapChangerStepsReplacer RatioTapChanger::stepsReplacer() {
     return RatioTapChangerStepsReplacer(*this);
 }
 
+stdcxx::optional<long> RatioTapChanger::getRelativeNeutralPosition() const {
+    for (auto step : getAllSteps()) {
+        if(step.second.get().getRho() == 1.0) {
+            return stdcxx::optional<long>(step.first - getLowTapPosition());
+        }
+    }
+    return stdcxx::optional<long>();
+}
+
 namespace Enum {
 
 template <>

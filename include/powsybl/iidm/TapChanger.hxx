@@ -137,6 +137,18 @@ S& TapChanger<H, C, S, R>::getStep(long tapPosition) {
 }
 
 template<typename H, typename C, typename S, typename R>
+stdcxx::CReference<S> TapChanger<H, C, S, R>::getNeutralStep() const {
+    stdcxx::optional<long> neutralPosition = getNeutralPosition();
+    return neutralPosition.has_value() ? stdcxx::cref<S>(getStep(*neutralPosition)) : stdcxx::cref<S>();
+}
+
+template<typename H, typename C, typename S, typename R>
+stdcxx::Reference<S> TapChanger<H, C, S, R>::getNeutralStep() {
+    stdcxx::optional<long> neutralPosition = getNeutralPosition();
+    return neutralPosition.has_value() ? stdcxx::ref<S>(getStep(*neutralPosition)) : stdcxx::ref<S>();
+}
+
+template<typename H, typename C, typename S, typename R>
 unsigned int TapChanger<H, C, S, R>::getStepCount() const {
     return m_steps.size();
 }
@@ -144,6 +156,12 @@ unsigned int TapChanger<H, C, S, R>::getStepCount() const {
 template<typename H, typename C, typename S, typename R>
 long TapChanger<H, C, S, R>::getTapPosition() const {
     return m_tapPosition.at(getNetwork().getVariantIndex());
+}
+
+template<typename H, typename C, typename S, typename R>
+stdcxx::optional<long> TapChanger<H, C, S, R>::getNeutralPosition() const {
+    stdcxx::optional<long> relativeNeutralPosition = getRelativeNeutralPosition();
+    return relativeNeutralPosition.has_value() ? stdcxx::optional<long>(*relativeNeutralPosition + m_lowTapPosition) : stdcxx::optional<long>();
 }
 
 template<typename H, typename C, typename S, typename R>

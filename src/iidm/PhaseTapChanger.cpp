@@ -83,6 +83,15 @@ PhaseTapChangerStepsReplacer PhaseTapChanger::stepsReplacer() {
     return PhaseTapChangerStepsReplacer(*this);
 }
 
+stdcxx::optional<long> PhaseTapChanger::getRelativeNeutralPosition() const {
+    for (auto step : getAllSteps()) {
+        if(step.second.get().getRho() == 1.0 && step.second.get().getAlpha() == 0.0) {
+            return stdcxx::optional<long>(step.first - getLowTapPosition());
+        }
+    }
+    return stdcxx::optional<long>();
+}
+
 namespace Enum {
 
 template <>

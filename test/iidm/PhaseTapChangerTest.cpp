@@ -146,11 +146,11 @@ Network createPhaseTapChangerTestNetwork() {
         .setX(14.0)
         .endStep()
         .beginStep()
-        .setAlpha(14.5)
+        .setAlpha(0.0)
         .setB(15.0)
         .setG(16.0)
         .setR(17.0)
-        .setRho(18.0)
+        .setRho(1.0)
         .setX(19.0)
         .endStep()
         .beginStep()
@@ -182,6 +182,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, phaseTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK(phaseTapChanger.getNeutralPosition().has_value());
+    BOOST_CHECK_EQUAL(2L, phaseTapChanger.getNeutralPosition().get());
     BOOST_CHECK_EQUAL(3, phaseTapChanger.getStepCount());
     BOOST_TEST(phaseTapChanger.isRegulating());
     BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL, phaseTapChanger.getRegulationMode());
@@ -189,16 +191,18 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
     BOOST_TEST(stdcxx::areSame(terminal, cPhaseTapChanger.getRegulationTerminal().get()));
 
-
+    auto neutralStep = phaseTapChanger.getNeutralStep();
+    POWSYBL_ASSERT_REF_TRUE(neutralStep);
     PhaseTapChangerStep& step = phaseTapChanger.getCurrentStep();
     BOOST_TEST(stdcxx::areSame(step, cPhaseTapChanger.getCurrentStep()));
+    BOOST_TEST(stdcxx::areSame(step, neutralStep.get()));
     BOOST_TEST(stdcxx::areSame(step, phaseTapChanger.getStep(2)));
     BOOST_TEST(stdcxx::areSame(step, cPhaseTapChanger.getStep(2)));
-    BOOST_CHECK_CLOSE(14.5, step.getAlpha(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, step.getAlpha(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(15.0, step.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(16.0, step.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(17.0, step.getR(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(18.0, step.getRho(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, step.getRho(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(19.0, step.getX(), std::numeric_limits<double>::epsilon());
 
     POWSYBL_ASSERT_THROW(phaseTapChanger.getStep(0), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 0 [1, 3]");
@@ -280,6 +284,14 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(std::isnan(step.getX()));
     BOOST_TEST(stdcxx::areSame(step, step.setX(30.0)));
     BOOST_CHECK_CLOSE(30.0, step.getX(), std::numeric_limits<double>::epsilon());
+
+    BOOST_CHECK(phaseTapChanger.getNeutralPosition().has_value());
+    BOOST_CHECK_EQUAL(2L, phaseTapChanger.getNeutralPosition().get());
+    auto neutralStep = phaseTapChanger.getNeutralStep();
+    POWSYBL_ASSERT_REF_TRUE(neutralStep);
+    neutralStep.get().setAlpha(10.0);
+    BOOST_CHECK(!phaseTapChanger.getNeutralPosition().has_value());
+    POWSYBL_ASSERT_REF_FALSE(phaseTapChanger.getNeutralStep());
 
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(static_cast<PhaseTapChanger::RegulationMode>(7)), AssertionError, "Unexpected RegulationMode value: 7");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
@@ -437,6 +449,8 @@ BOOST_AUTO_TEST_CASE(stepsReplacer) {
 
     BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK(phaseTapChanger.getNeutralPosition().has_value());
+    BOOST_CHECK_EQUAL(2L, phaseTapChanger.getNeutralPosition().get());
     BOOST_CHECK_EQUAL(2L, phaseTapChanger.getTapPosition());
     BOOST_CHECK_EQUAL(3, phaseTapChanger.getStepCount());
 
@@ -470,6 +484,7 @@ BOOST_AUTO_TEST_CASE(stepsReplacer) {
 
     BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(2L, phaseTapChanger.getHighTapPosition());
+    BOOST_CHECK(!phaseTapChanger.getNeutralPosition().has_value());
     BOOST_CHECK_EQUAL(1L, phaseTapChanger.getTapPosition());
     BOOST_CHECK_EQUAL(2, phaseTapChanger.getStepCount());
 
