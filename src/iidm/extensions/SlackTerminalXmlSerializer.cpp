@@ -41,6 +41,7 @@ SlackTerminalXmlSerializer::SlackTerminalXmlSerializer() :
               .put(converter::xml::IidmXmlVersion::V1_11(), {"1.5"})
               .put(converter::xml::IidmXmlVersion::V1_12(), {"1.5"})
               .put(converter::xml::IidmXmlVersion::V1_13(), {"1.5"})
+              .put(converter::xml::IidmXmlVersion::V1_14(), {"1.5"})
               .build(),
           stdcxx::MapBuilder<std::string, std::string>()
               .put("1.0", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_0")

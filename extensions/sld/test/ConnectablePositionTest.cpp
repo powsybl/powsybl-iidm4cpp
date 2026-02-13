@@ -114,7 +114,7 @@ BOOST_FIXTURE_TEST_CASE(ConnectablePositionXmlSerializerFeeder0Test, test::Resou
 
     //BackwardCompatibility
     std::string filename = "connectablePositionFeeder0_V1_0.xml";
-    const converter::xml::IidmXmlVersion& version = converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION();
+    const converter::xml::IidmXmlVersion& version = converter::xml::IidmXmlVersion::V1_13();
     const auto& writer = [&version, &filename](const Network& n, std::ostream& stream) {
         converter::ExportOptions options;
         options.setVersion(version.toString("."));

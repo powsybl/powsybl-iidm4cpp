@@ -51,6 +51,7 @@ ActivePowerControlXmlSerializer::ActivePowerControlXmlSerializer() :
             .put(converter::xml::IidmXmlVersion::V1_11(), {"1.0", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_12(), {"1.0", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_13(), {"1.2"})
+            .put(converter::xml::IidmXmlVersion::V1_14(), {"1.2"})
             .build(),
         stdcxx::MapBuilder<std::string, std::string>()
             .put("1.0", "http://www.itesla_project.eu/schema/iidm/ext/active_power_control/1_0")

@@ -45,6 +45,7 @@ VoltageRegulationXmlSerializer::VoltageRegulationXmlSerializer() :
             .put(converter::xml::IidmXmlVersion::V1_11(), {"1.11", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_12(), {"1.12", "1.1"})
             .put(converter::xml::IidmXmlVersion::V1_13(), {"1.1"})
+            .put(converter::xml::IidmXmlVersion::V1_14(), {"1.1"})
             .build(),
       stdcxx::MapBuilder<std::string, std::string>()
             .put("1.0-legacy", "http://www.itesla_project.eu/schema/iidm/ext/voltageregulation/1_0")
