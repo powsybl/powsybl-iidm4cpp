@@ -84,7 +84,11 @@ public:
 
     LoadingLimits& setPermanentLimit(double permanentLimit);
 
+    LoadingLimits& setTemporaryLimitValue(unsigned long acceptableDuration, double temporaryLimitValue);
+
 protected:
+    bool isTemporaryLimitValueValid(unsigned long acceptableDuration, double temporaryLimitValue);
+
     stdcxx::Reference<OperationalLimitsGroup> m_limitsGroup;
 
 private:

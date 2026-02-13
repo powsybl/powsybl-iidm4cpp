@@ -942,6 +942,39 @@ BOOST_AUTO_TEST_CASE(adderWithZeroValue) {
 
 }
 
+BOOST_AUTO_TEST_CASE(testSetTemporaryLimitValue) {
+    Network network = createOneLineCurrentLimitsTestNetwork();
+    auto currentLimit = network.getLine("L").getCurrentLimits1().get();
+
+    //valid values :
+    currentLimit.setTemporaryLimitValue(20*60, 1050.0);
+    BOOST_CHECK_CLOSE(1050.0, currentLimit.getTemporaryLimitValue(20*60), std::numeric_limits<double>::epsilon());
+    currentLimit.setTemporaryLimitValue(5*60, 1450.0);
+    BOOST_CHECK_CLOSE(1450.0, currentLimit.getTemporaryLimitValue(5*60), std::numeric_limits<double>::epsilon());
+    currentLimit.setTemporaryLimitValue(60, 1750.0);
+    BOOST_CHECK_CLOSE(1750.0, currentLimit.getTemporaryLimitValue(60), std::numeric_limits<double>::epsilon());
+
+    //Invalid value but not forbiden :
+    logging::LoggerFactory::getInstance().addLogger("powsybl::iidm", stdcxx::make_unique<logging::ContainerLogger>());
+    logging::ContainerLogger& logger = dynamic_cast<logging::ContainerLogger&>(logging::LoggerFactory::getLogger("powsybl::iidm"));
+    BOOST_CHECK_EQUAL(0, logger.size());
+    currentLimit.setTemporaryLimitValue(5*60, 1010.0);
+    BOOST_CHECK_CLOSE(1010.0, currentLimit.getTemporaryLimitValue(5*60), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(1, logger.size());
+    BOOST_CHECK_EQUAL("AC line 'L':  Temporary limit value changed from 1450 to 1010, but it is not valid", logger.getLogMessage(0).getMessage());
+    checkTemporaryLimits(network.getLine("L"), currentLimit.getPermanentLimit(), currentLimit.getTemporaryLimits());
+    BOOST_CHECK_EQUAL(2, logger.size());
+    BOOST_CHECK_EQUAL("AC line 'L': temporary limits should be in ascending value order", logger.getLogMessage(1).getMessage());
+    logging::LoggerFactory::getInstance().removeLogger("powsybl::iidm");
+
+    //Invalid values:
+    POWSYBL_ASSERT_THROW(currentLimit.setTemporaryLimitValue(10*60, 1750.0), ValidationException, "AC line 'L': No temporary limit found for the given acceptable duration");
+    POWSYBL_ASSERT_THROW(currentLimit.setTemporaryLimitValue(5*60, stdcxx::nan()), ValidationException, "AC line 'L': temporary limit value must be >= 0");
+    POWSYBL_ASSERT_THROW(currentLimit.setTemporaryLimitValue(5*60, -1.0), ValidationException, "AC line 'L': temporary limit value must be >= 0");
+
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
