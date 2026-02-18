@@ -1423,6 +1423,87 @@ BOOST_AUTO_TEST_CASE(operationalLimits) {
     BOOST_CHECK_EQUAL(1, boost::size(cTransformer.getLeg3().getOperationalLimitsGroups()));
 }
 
+BOOST_AUTO_TEST_CASE(operationalLimitsAdderByCopy) {
+    Network network = createThreeWindingsTransformerTestNetwork();
+    ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");
+
+    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg1().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg2().getOperationalLimitsGroups()));
+    BOOST_CHECK_EQUAL(0, boost::size(transformer.getLeg3().getOperationalLimitsGroups()));
+
+    auto& leg1 = transformer.getLeg1();
+    auto& leg2 = transformer.getLeg2();
+
+    ActivePowerLimits& acpl1 = leg1.newActivePowerLimits()
+        .setPermanentLimit(1000.0)
+        .beginTemporaryLimit()
+            .setName("TL1")
+            .setValue(1200.0)
+            .setAcceptableDuration(20 * 60)
+        .endTemporaryLimit()
+        .add();
+
+    ApparentPowerLimits& apl1 = leg1.newApparentPowerLimits()
+        .setPermanentLimit(1000.0)
+        .beginTemporaryLimit()
+            .setName("TL1")
+            .setValue(1200.0)
+            .setAcceptableDuration(20 * 60)
+        .endTemporaryLimit()
+        .add();
+
+    CurrentLimits& cl1 = leg1.newCurrentLimits()
+        .setPermanentLimit(1000.0)
+        .beginTemporaryLimit()
+            .setName("TL1")
+            .setValue(1200.0)
+            .setAcceptableDuration(20 * 60)
+            .setFictitious(true)
+        .endTemporaryLimit()
+        .add();
+
+    CurrentLimitsAdder clAdder = leg2.FlowsLimitsHolder::newCurrentLimits(cl1);
+    clAdder.add();
+    ApparentPowerLimitsAdder aplAdder = leg2.FlowsLimitsHolder::newApparentPowerLimits(apl1);
+    aplAdder.add();
+    ActivePowerLimitsAdder acplAdder = leg2.FlowsLimitsHolder::newActivePowerLimits(acpl1);
+    acplAdder.add();
+
+    POWSYBL_ASSERT_REF_TRUE(leg2.getCurrentLimits());
+    POWSYBL_ASSERT_REF_TRUE(leg2.getApparentPowerLimits());
+    POWSYBL_ASSERT_REF_TRUE(leg2.getActivePowerLimits());
+    CurrentLimits cl2 = leg2.getCurrentLimits().get();
+    ApparentPowerLimits apl2 = leg2.getApparentPowerLimits().get();
+    ActivePowerLimits acpl2 = leg2.getActivePowerLimits().get();
+
+    BOOST_CHECK_EQUAL(cl2.getPermanentLimit(), cl1.getPermanentLimit());
+    BOOST_CHECK_EQUAL(boost::size(cl2.getTemporaryLimits()), boost::size(cl1.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(apl2.getPermanentLimit(), apl1.getPermanentLimit());
+    BOOST_CHECK_EQUAL(boost::size(apl2.getTemporaryLimits()), boost::size(apl1.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(acpl2.getPermanentLimit(), acpl1.getPermanentLimit());
+    BOOST_CHECK_EQUAL(boost::size(acpl2.getTemporaryLimits()), boost::size(acpl1.getTemporaryLimits()));
+
+    for(auto& tl1 : cl1.getTemporaryLimits()) {
+        auto& tl2 = cl2.getTemporaryLimit(tl1.getAcceptableDuration());
+        BOOST_CHECK_EQUAL(tl1.getName(), tl2.getName());
+        BOOST_CHECK_EQUAL(tl1.getValue(), tl2.getValue());
+        BOOST_CHECK_EQUAL(tl1.isFictitious(), tl2.isFictitious());
+    }
+    for(auto& tl1 : apl1.getTemporaryLimits()) {
+        auto& tl2 = apl2.getTemporaryLimit(tl1.getAcceptableDuration());
+        BOOST_CHECK_EQUAL(tl1.getName(), tl2.getName());
+        BOOST_CHECK_EQUAL(tl1.getValue(), tl2.getValue());
+        BOOST_CHECK_EQUAL(tl1.isFictitious(), tl2.isFictitious());
+    }
+    for(auto& tl1 : acpl1.getTemporaryLimits()) {
+        auto& tl2 = acpl2.getTemporaryLimit(tl1.getAcceptableDuration());
+        BOOST_CHECK_EQUAL(tl1.getName(), tl2.getName());
+        BOOST_CHECK_EQUAL(tl1.getValue(), tl2.getValue());
+        BOOST_CHECK_EQUAL(tl1.isFictitious(), tl2.isFictitious());
+    }
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

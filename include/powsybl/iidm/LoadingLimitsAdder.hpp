@@ -59,6 +59,11 @@ public:
 public:
     explicit LoadingLimitsAdder(OperationalLimitsGroup& owner);
 
+    /**
+     * Initialize this new limits adder with given limits values
+     */
+    explicit LoadingLimitsAdder(OperationalLimitsGroup& owner, const L& limits);
+
     LoadingLimitsAdder(const LoadingLimitsAdder&) = default;
 
     // NOLINTNEXTLINE(performance-noexcept-move-constructor): move constructor of std::map is not marked noexcept

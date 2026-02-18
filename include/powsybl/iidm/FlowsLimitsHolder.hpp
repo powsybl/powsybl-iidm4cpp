@@ -53,13 +53,22 @@ public:
     virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() const = 0;
     virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() = 0;
 
-    virtual stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup(const std::string& id) = 0;
+    virtual OperationalLimitsGroup& newOperationalLimitsGroup(const std::string& id) = 0;
 
     virtual void setSelectedOperationalLimitsGroup(const std::string& id) = 0;
 
     virtual void removeOperationalLimitsGroup(const std::string& id) = 0;
 
     virtual void cancelSelectedOperationalLimitsGroup() = 0;
+
+    /**
+     * Get the OperationalLimitsGroup selected or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup() = 0;
+    /**
+     * Get the OperationalLimitsGroup corresponding to the given id or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup(const std::string& id);
 
     virtual stdcxx::CReference<CurrentLimits> getCurrentLimits() const;
     virtual stdcxx::Reference<CurrentLimits> getCurrentLimits();
@@ -70,11 +79,32 @@ public:
     virtual stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits() const;
     virtual stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits();
 
+    /** \deprecated
+     *  Use OperationalLimitsGroup::newActivePowerLimits() instead.
+     */
     virtual ActivePowerLimitsAdder newActivePowerLimits() = 0;
+    /** \deprecated
+     *  Use OperationalLimitsGroup::newActivePowerLimits() instead.
+     */
+    ActivePowerLimitsAdder newActivePowerLimits(const ActivePowerLimits& activePowerLimits);
 
+    /** \deprecated
+     *  Use OperationalLimitsGroup::newApparentPowerLimits() instead.
+     */
     virtual ApparentPowerLimitsAdder newApparentPowerLimits() = 0;
+    /** \deprecated
+     *  Use OperationalLimitsGroup::newApparentPowerLimits() instead.
+     */
+    ApparentPowerLimitsAdder newApparentPowerLimits(const ApparentPowerLimits& apparentPowerLimits);
 
+    /** \deprecated
+     *  Use OperationalLimitsGroup::newCurrentLimits() instead.
+     */
     virtual CurrentLimitsAdder newCurrentLimits() = 0;
+    /** \deprecated
+     *  Use OperationalLimitsGroup::newCurrentLimits() instead.
+     */
+    CurrentLimitsAdder newCurrentLimits(const CurrentLimits& currentLimits);
 
 // protected:
 //     void setIdentifiable(Identifiable& identifiable);

@@ -85,6 +85,15 @@ ApparentPowerLimitsAdder OperationalLimitsGroup::newApparentPowerLimits() {
 CurrentLimitsAdder OperationalLimitsGroup::newCurrentLimits() {
     return CurrentLimitsAdder(*this);
 }
+ActivePowerLimitsAdder OperationalLimitsGroup::newActivePowerLimits(const ActivePowerLimits& limits) {
+    return ActivePowerLimitsAdder(*this, limits);
+}
+ApparentPowerLimitsAdder OperationalLimitsGroup::newApparentPowerLimits(const ApparentPowerLimits& limits) {
+    return ApparentPowerLimitsAdder(*this, limits);
+}
+CurrentLimitsAdder OperationalLimitsGroup::newCurrentLimits(const CurrentLimits& limits) {
+    return CurrentLimitsAdder(*this, limits);
+}
 
 stdcxx::Reference<OperationalLimits> OperationalLimitsGroup::setOperationalLimits(const LimitType& limitType, const std::shared_ptr<OperationalLimits>& operationalLimits) {
     if (!operationalLimits) {

@@ -209,8 +209,8 @@ iidm::Network EurostagFactory::createWithCurrentLimits() {
     iidm::Line& line = network.getLine("NHV1_NHV2_1");
     line.getTerminal1().setP(560.0).setQ(550.0);
     line.getTerminal2().setP(560.0).setQ(550.0);
-    line.newCurrentLimits1().setPermanentLimit(500).add();
-    line.newCurrentLimits2()
+    line.getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits().setPermanentLimit(500).add();
+    line.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits()
         .setPermanentLimit(1100)
         .beginTemporaryLimit()
         .setName("10'")
@@ -227,7 +227,7 @@ iidm::Network EurostagFactory::createWithCurrentLimits() {
     iidm::Line& line2 = network.getLine("NHV1_NHV2_2");
     line2.getTerminal1().setP(560.0).setQ(550.0);
     line2.getTerminal2().setP(560.0).setQ(550.0);
-    line2.newCurrentLimits1()
+    line2.getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits()
         .setPermanentLimit(1100)
         .beginTemporaryLimit()
         .setName("20'")
@@ -235,7 +235,7 @@ iidm::Network EurostagFactory::createWithCurrentLimits() {
         .setValue(1200)
         .endTemporaryLimit()
         .add();
-    line2.newCurrentLimits2().setPermanentLimit(500).add();
+    line2.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits().setPermanentLimit(500).add();
 
     return network;
 }
@@ -266,8 +266,8 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
     iidm::Line& line = network.getLine("NHV1_NHV2_1");
     line.getTerminal1().setP(560.0).setQ(550.0);
     line.getTerminal2().setP(560.0).setQ(550.0);
-    line.newActivePowerLimits1().setPermanentLimit(500).add();
-    line.newActivePowerLimits2()
+    line.getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits().setPermanentLimit(500).add();
+    line.getOrCreateSelectedOperationalLimitsGroup2().newActivePowerLimits()
         .setPermanentLimit(1100)
         .beginTemporaryLimit()
             .setName("10'")
@@ -286,8 +286,8 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
         .endTemporaryLimit()
         .add();
 
-    line.newApparentPowerLimits1().setPermanentLimit(500).add();
-    line.newApparentPowerLimits2()
+    line.getOrCreateSelectedOperationalLimitsGroup1().newApparentPowerLimits().setPermanentLimit(500).add();
+    line.getOrCreateSelectedOperationalLimitsGroup2().newApparentPowerLimits()
         .setPermanentLimit(1100)
         .beginTemporaryLimit()
             .setName("10'")
@@ -309,7 +309,7 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
     iidm::Line& line2 = network.getLine("NHV1_NHV2_2");
     line2.getTerminal1().setP(560.0).setQ(550.0);
     line2.getTerminal2().setP(560.0).setQ(550.0);
-    line2.newActivePowerLimits1()
+    line2.getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits()
         .setPermanentLimit(1100)
         .beginTemporaryLimit()
             .setName("20'")
@@ -322,9 +322,9 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
             .setValue(std::numeric_limits<double>::max())
         .endTemporaryLimit()
         .add();
-    line2.newActivePowerLimits2().setPermanentLimit(500).add();
+    line2.getOrCreateSelectedOperationalLimitsGroup2().newActivePowerLimits().setPermanentLimit(500).add();
 
-    line2.newApparentPowerLimits1()
+    line2.getOrCreateSelectedOperationalLimitsGroup1().newApparentPowerLimits()
         .setPermanentLimit(1100)
         .beginTemporaryLimit()
             .setName("20'")
@@ -337,7 +337,7 @@ iidm::Network EurostagFactory::createWithFixedLimits() {
             .setValue(std::numeric_limits<double>::max())
         .endTemporaryLimit()
         .add();
-    line2.newApparentPowerLimits2().setPermanentLimit(500).add();
+    line2.getOrCreateSelectedOperationalLimitsGroup2().newApparentPowerLimits().setPermanentLimit(500).add();
 
     return network;
 }

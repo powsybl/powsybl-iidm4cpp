@@ -80,7 +80,7 @@ Network createDanglingLineNetwork() {
         .setQ0(30.0)
         .add();
 
-    danglingLine.newCurrentLimits()
+    danglingLine.getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
         .setPermanentLimit(100.0)
         .beginTemporaryLimit()
             .setName("20'")
@@ -121,17 +121,17 @@ BOOST_FIXTURE_TEST_CASE(ThreeWindingsTransformerLoadingLimitsTest, test::Resourc
 
     Network network = powsybl::network::ThreeWindingsTransformerNetworkFactory::createWithCurrentLimits();
     ThreeWindingsTransformer& twt = network.getThreeWindingsTransformer("3WT");
-    ActivePowerLimitsAdder l1AdderAct = twt.getLeg1().newActivePowerLimits();
+    ActivePowerLimitsAdder l1AdderAct = twt.getLeg1().getOrCreateSelectedOperationalLimitsGroup().newActivePowerLimits();
     createLoadingLimits(l1AdderAct);
-    ApparentPowerLimitsAdder l1AdderApp = twt.getLeg1().newApparentPowerLimits();
+    ApparentPowerLimitsAdder l1AdderApp = twt.getLeg1().getOrCreateSelectedOperationalLimitsGroup().newApparentPowerLimits();
     createLoadingLimits(l1AdderApp);
-    ActivePowerLimitsAdder l2AdderAct = twt.getLeg2().newActivePowerLimits();
+    ActivePowerLimitsAdder l2AdderAct = twt.getLeg2().getOrCreateSelectedOperationalLimitsGroup().newActivePowerLimits();
     createLoadingLimits(l2AdderAct);
-    ApparentPowerLimitsAdder l2AdderApp = twt.getLeg2().newApparentPowerLimits();
+    ApparentPowerLimitsAdder l2AdderApp = twt.getLeg2().getOrCreateSelectedOperationalLimitsGroup().newApparentPowerLimits();
     createLoadingLimits(l2AdderApp);
-    ActivePowerLimitsAdder l3AdderAct = twt.getLeg3().newActivePowerLimits();
+    ActivePowerLimitsAdder l3AdderAct = twt.getLeg3().getOrCreateSelectedOperationalLimitsGroup().newActivePowerLimits();
     createLoadingLimits(l3AdderAct);
-    ApparentPowerLimitsAdder l3AdderApp = twt.getLeg3().newApparentPowerLimits();
+    ApparentPowerLimitsAdder l3AdderApp = twt.getLeg3().getOrCreateSelectedOperationalLimitsGroup().newApparentPowerLimits();
     createLoadingLimits(l3AdderApp);
 
     // check it fails for all versions < 1.5
@@ -161,11 +161,12 @@ BOOST_FIXTURE_TEST_CASE(DanglingLineLoadingLimitsTest, test::ResourceFixture) {
     Network network = createDanglingLineNetwork();
     network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
     DanglingLine& danglingLine = network.getDanglingLine("DL");
-    ApparentPowerLimitsAdder activePowerLimitsAdder = danglingLine.newApparentPowerLimits();
+    OperationalLimitsGroup& limitsGroups = danglingLine.getOrCreateSelectedOperationalLimitsGroup();
+    ApparentPowerLimitsAdder activePowerLimitsAdder = limitsGroups.newApparentPowerLimits();
     createLoadingLimits(activePowerLimitsAdder);
-    ActivePowerLimitsAdder apparentPowerLimitsAdder = danglingLine.newActivePowerLimits();
+    ActivePowerLimitsAdder apparentPowerLimitsAdder = limitsGroups.newActivePowerLimits();
     createLoadingLimits(apparentPowerLimitsAdder);
-    CurrentLimitsAdder currentLimitsAdder = danglingLine.newCurrentLimits();
+    CurrentLimitsAdder currentLimitsAdder = limitsGroups.newCurrentLimits();
     createLoadingLimits(currentLimitsAdder);
 
     // check it fails for all versions < 1.5
@@ -195,30 +196,34 @@ BOOST_FIXTURE_TEST_CASE(EurostagLoadingLimitsTest, test::ResourceFixture) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
     Line& line = network.getLine("NHV1_NHV2_2");
-    ApparentPowerLimitsAdder activePowerLimitsAdder1 = line.newApparentPowerLimits1();
+    OperationalLimitsGroup& lineLimitsGroup1 = line.getOrCreateSelectedOperationalLimitsGroup1();
+    OperationalLimitsGroup& lineLimitsGroup2 = line.getOrCreateSelectedOperationalLimitsGroup2();
+    ApparentPowerLimitsAdder activePowerLimitsAdder1 = lineLimitsGroup1.newApparentPowerLimits();
     createLoadingLimits(activePowerLimitsAdder1);
-    ActivePowerLimitsAdder ApparentPowerLimitsAdder1 = line.newActivePowerLimits1();
+    ActivePowerLimitsAdder ApparentPowerLimitsAdder1 = lineLimitsGroup1.newActivePowerLimits();
     createLoadingLimits(activePowerLimitsAdder1);
-    CurrentLimitsAdder currentLimitsAdder1 = line.newCurrentLimits1();
+    CurrentLimitsAdder currentLimitsAdder1 = lineLimitsGroup1.newCurrentLimits();
     createLoadingLimits(currentLimitsAdder1);
-    ApparentPowerLimitsAdder activePowerLimitsAdder2 = line.newApparentPowerLimits2();
+    ApparentPowerLimitsAdder activePowerLimitsAdder2 = lineLimitsGroup2.newApparentPowerLimits();
     createLoadingLimits(activePowerLimitsAdder2);
-    ActivePowerLimitsAdder ApparentPowerLimitsAdder2 = line.newActivePowerLimits2();
+    ActivePowerLimitsAdder ApparentPowerLimitsAdder2 = lineLimitsGroup2.newActivePowerLimits();
     createLoadingLimits(activePowerLimitsAdder2);
-    CurrentLimitsAdder currentLimitsAdder2 = line.newCurrentLimits2();
+    CurrentLimitsAdder currentLimitsAdder2 = lineLimitsGroup2.newCurrentLimits();
     createLoadingLimits(currentLimitsAdder2);
     TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("NGEN_NHV1");
-    ActivePowerLimitsAdder adderAct1 = twt.newActivePowerLimits1();
+    OperationalLimitsGroup& twtLimitsGroup1 = twt.getOrCreateSelectedOperationalLimitsGroup1();
+    OperationalLimitsGroup& twtLimitsGroup2 = twt.getOrCreateSelectedOperationalLimitsGroup2();
+    ActivePowerLimitsAdder adderAct1 = twtLimitsGroup1.newActivePowerLimits();
     createLoadingLimits(adderAct1);
-    ApparentPowerLimitsAdder adderApp1 = twt.newApparentPowerLimits1();
+    ApparentPowerLimitsAdder adderApp1 = twtLimitsGroup1.newApparentPowerLimits();
     createLoadingLimits(adderApp1);
-    CurrentLimitsAdder adderCurr1 = twt.newCurrentLimits1();
+    CurrentLimitsAdder adderCurr1 = twtLimitsGroup1.newCurrentLimits();
     createLoadingLimits(adderCurr1);
-    ActivePowerLimitsAdder adderAct2 = twt.newActivePowerLimits2();
+    ActivePowerLimitsAdder adderAct2 = twtLimitsGroup2.newActivePowerLimits();
     createLoadingLimits(adderAct2);
-    ApparentPowerLimitsAdder adderApp2 = twt.newApparentPowerLimits2();
+    ApparentPowerLimitsAdder adderApp2 = twtLimitsGroup2.newApparentPowerLimits();
     createLoadingLimits(adderApp2);
-    CurrentLimitsAdder adderCurr2 = twt.newCurrentLimits2();
+    CurrentLimitsAdder adderCurr2 = twtLimitsGroup2.newCurrentLimits();
     createLoadingLimits(adderCurr2);
 
     // check it fails for all versions < 1.5
@@ -248,17 +253,19 @@ BOOST_FIXTURE_TEST_CASE(TieLineLoadingLimitsTest, test::ResourceFixture) {
     std::stringstream stream(test::converter::RoundTrip::getVersionedNetwork("tieline.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
     Network network = Network::readXml("network.xiidm", stream);
     TieLine& tieLine = network.getTieLine("NHV1_NHV2_1");
-    ActivePowerLimitsAdder activePowerLimitsAdder1 = tieLine.newActivePowerLimits1();
+    OperationalLimitsGroup& lineLimitsGroup1 = tieLine.getOrCreateSelectedOperationalLimitsGroup1();
+    OperationalLimitsGroup& lineLimitsGroup2 = tieLine.getOrCreateSelectedOperationalLimitsGroup2();
+    ActivePowerLimitsAdder activePowerLimitsAdder1 = lineLimitsGroup1.newActivePowerLimits();
     createLoadingLimits(activePowerLimitsAdder1);
-    ApparentPowerLimitsAdder apparentPowerLimitsAdder1 = tieLine.newApparentPowerLimits1();
+    ApparentPowerLimitsAdder apparentPowerLimitsAdder1 = lineLimitsGroup1.newApparentPowerLimits();
     createLoadingLimits(apparentPowerLimitsAdder1);
-    CurrentLimitsAdder currentLimitsAdder1 = tieLine.newCurrentLimits1();
+    CurrentLimitsAdder currentLimitsAdder1 = lineLimitsGroup1.newCurrentLimits();
     createLoadingLimits(currentLimitsAdder1);
-    ActivePowerLimitsAdder activePowerLimitsAdder2 = tieLine.newActivePowerLimits2();
+    ActivePowerLimitsAdder activePowerLimitsAdder2 = lineLimitsGroup2.newActivePowerLimits();
     createLoadingLimits(activePowerLimitsAdder2);
-    ApparentPowerLimitsAdder apparentPowerLimitsAdder2 = tieLine.newApparentPowerLimits2();
+    ApparentPowerLimitsAdder apparentPowerLimitsAdder2 = lineLimitsGroup2.newApparentPowerLimits();
     createLoadingLimits(apparentPowerLimitsAdder2);
-    CurrentLimitsAdder currentLimitsAdder2 = tieLine.newCurrentLimits2();
+    CurrentLimitsAdder currentLimitsAdder2 = lineLimitsGroup2.newCurrentLimits();
     createLoadingLimits(currentLimitsAdder2);
 
     // check it fails for all versions < 1.5

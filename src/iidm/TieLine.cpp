@@ -222,7 +222,7 @@ stdcxx::CReference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimits
 stdcxx::Reference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup1() {
     return getDanglingLine1().getSelectedOperationalLimitsGroup();
 }
-stdcxx::Reference<OperationalLimitsGroup> TieLine::newOperationalLimitsGroup1(const std::string& id) {
+OperationalLimitsGroup& TieLine::newOperationalLimitsGroup1(const std::string& id) {
     return getDanglingLine1().newOperationalLimitsGroup(id);
 }
 void TieLine::setSelectedOperationalLimitsGroup1(const std::string& id) {
@@ -233,6 +233,12 @@ void TieLine::removeOperationalLimitsGroup1(const std::string& id) {
 }
 void TieLine::cancelSelectedOperationalLimitsGroup1() {
     getDanglingLine1().cancelSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& TieLine::getOrCreateSelectedOperationalLimitsGroup1() {
+    return getDanglingLine1().getOrCreateSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& TieLine::getOrCreateSelectedOperationalLimitsGroup1(const std::string& id) {
+    return Branch::getOrCreateSelectedOperationalLimitsGroup1(id);
 }
 
 stdcxx::const_range<OperationalLimitsGroup> TieLine::getOperationalLimitsGroups2() const {
@@ -256,7 +262,7 @@ stdcxx::CReference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimits
 stdcxx::Reference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup2() {
     return getDanglingLine2().getSelectedOperationalLimitsGroup();
 }
-stdcxx::Reference<OperationalLimitsGroup> TieLine::newOperationalLimitsGroup2(const std::string& id) {
+OperationalLimitsGroup& TieLine::newOperationalLimitsGroup2(const std::string& id) {
     return getDanglingLine2().newOperationalLimitsGroup(id);
 }
 void TieLine::setSelectedOperationalLimitsGroup2(const std::string& id) {
@@ -267,6 +273,12 @@ void TieLine::removeOperationalLimitsGroup2(const std::string& id) {
 }
 void TieLine::cancelSelectedOperationalLimitsGroup2() {
     getDanglingLine2().cancelSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& TieLine::getOrCreateSelectedOperationalLimitsGroup2() {
+    return getDanglingLine2().getOrCreateSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& TieLine::getOrCreateSelectedOperationalLimitsGroup2(const std::string& id) {
+    return Branch::getOrCreateSelectedOperationalLimitsGroup2(id);
 }
 
 const Terminal& TieLine::getTerminal1() const {
@@ -286,27 +298,27 @@ Terminal& TieLine::getTerminal2() {
 }
 
 ActivePowerLimitsAdder TieLine::newActivePowerLimits1() {
-    return getDanglingLine1().newActivePowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits();
 }
 
 ActivePowerLimitsAdder TieLine::newActivePowerLimits2() {
-    return getDanglingLine2().newActivePowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup2().newActivePowerLimits();
 }
 
 ApparentPowerLimitsAdder TieLine::newApparentPowerLimits1() {
-    return getDanglingLine1().newApparentPowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup1().newApparentPowerLimits();
 }
 
 ApparentPowerLimitsAdder TieLine::newApparentPowerLimits2() {
-    return getDanglingLine2().newApparentPowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup2().newApparentPowerLimits();
 }
 
 CurrentLimitsAdder TieLine::newCurrentLimits1() {
-    return getDanglingLine1().newCurrentLimits();
+    return getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits();
 }
 
 CurrentLimitsAdder TieLine::newCurrentLimits2() {
-    return getDanglingLine2().newCurrentLimits();
+    return getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits();
 }
 
 void TieLine::updateDanglingLine(DanglingLine& danglingLine) {

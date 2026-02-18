@@ -21,6 +21,7 @@ public:  // OperationalLimitsAdder
 
 public:
     explicit ApparentPowerLimitsAdder(OperationalLimitsGroup& owner);
+    explicit ApparentPowerLimitsAdder(OperationalLimitsGroup& owner, const ApparentPowerLimits& limits);
 
     ApparentPowerLimitsAdder(const ApparentPowerLimitsAdder&) = default;
 

@@ -75,6 +75,9 @@ public:
     ActivePowerLimitsAdder newActivePowerLimits();
     ApparentPowerLimitsAdder newApparentPowerLimits();
     CurrentLimitsAdder newCurrentLimits();
+    ActivePowerLimitsAdder newActivePowerLimits(const ActivePowerLimits& limits);
+    ApparentPowerLimitsAdder newApparentPowerLimits(const ApparentPowerLimits& limits);
+    CurrentLimitsAdder newCurrentLimits(const CurrentLimits& limits);
 
     stdcxx::Reference<OperationalLimits> setOperationalLimits(const LimitType& limitType, const std::shared_ptr<OperationalLimits>& operationalLimits);
 

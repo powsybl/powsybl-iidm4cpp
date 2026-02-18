@@ -41,7 +41,7 @@ stdcxx::CReference<OperationalLimitsGroup> AbstractConnectableBranch::getSelecte
 stdcxx::Reference<OperationalLimitsGroup> AbstractConnectableBranch::getSelectedOperationalLimitsGroup1() {
     return m_operationalLimitsHolder1.getSelectedOperationalLimitsGroup();
 }
-stdcxx::Reference<OperationalLimitsGroup> AbstractConnectableBranch::newOperationalLimitsGroup1(const std::string& id) {
+OperationalLimitsGroup& AbstractConnectableBranch::newOperationalLimitsGroup1(const std::string& id) {
     return m_operationalLimitsHolder1.newOperationalLimitsGroup(id);
 }
 void AbstractConnectableBranch::setSelectedOperationalLimitsGroup1(const std::string& id) {
@@ -52,6 +52,12 @@ void AbstractConnectableBranch::removeOperationalLimitsGroup1(const std::string&
 }
 void AbstractConnectableBranch::cancelSelectedOperationalLimitsGroup1() {
     m_operationalLimitsHolder1.cancelSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& AbstractConnectableBranch::getOrCreateSelectedOperationalLimitsGroup1() {
+    return m_operationalLimitsHolder1.getOrCreateSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& AbstractConnectableBranch::getOrCreateSelectedOperationalLimitsGroup1(const std::string& id) {
+    return Branch::getOrCreateSelectedOperationalLimitsGroup1(id);
 }
 
 stdcxx::const_range<OperationalLimitsGroup> AbstractConnectableBranch::getOperationalLimitsGroups2() const {
@@ -75,7 +81,7 @@ stdcxx::CReference<OperationalLimitsGroup> AbstractConnectableBranch::getSelecte
 stdcxx::Reference<OperationalLimitsGroup> AbstractConnectableBranch::getSelectedOperationalLimitsGroup2() {
     return m_operationalLimitsHolder2.getSelectedOperationalLimitsGroup();
 }
-stdcxx::Reference<OperationalLimitsGroup> AbstractConnectableBranch::newOperationalLimitsGroup2(const std::string& id) {
+OperationalLimitsGroup& AbstractConnectableBranch::newOperationalLimitsGroup2(const std::string& id) {
     return m_operationalLimitsHolder2.newOperationalLimitsGroup(id);
 }
 void AbstractConnectableBranch::setSelectedOperationalLimitsGroup2(const std::string& id) {
@@ -86,6 +92,12 @@ void AbstractConnectableBranch::removeOperationalLimitsGroup2(const std::string&
 }
 void AbstractConnectableBranch::cancelSelectedOperationalLimitsGroup2() {
     m_operationalLimitsHolder2.cancelSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& AbstractConnectableBranch::getOrCreateSelectedOperationalLimitsGroup2() {
+    return m_operationalLimitsHolder2.getOrCreateSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& AbstractConnectableBranch::getOrCreateSelectedOperationalLimitsGroup2(const std::string& id) {
+    return Branch::getOrCreateSelectedOperationalLimitsGroup2(id);
 }
 
 const Terminal& AbstractConnectableBranch::getTerminal1() const {
@@ -105,27 +117,27 @@ Terminal& AbstractConnectableBranch::getTerminal2() {
 }
 
 ActivePowerLimitsAdder AbstractConnectableBranch::newActivePowerLimits1() {
-    return m_operationalLimitsHolder1.newActivePowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits();
 }
 
 ActivePowerLimitsAdder AbstractConnectableBranch::newActivePowerLimits2() {
-    return m_operationalLimitsHolder2.newActivePowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup2().newActivePowerLimits();
 }
 
 ApparentPowerLimitsAdder AbstractConnectableBranch::newApparentPowerLimits1() {
-    return m_operationalLimitsHolder1.newApparentPowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup1().newApparentPowerLimits();
 }
 
 ApparentPowerLimitsAdder AbstractConnectableBranch::newApparentPowerLimits2() {
-    return m_operationalLimitsHolder2.newApparentPowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup2().newApparentPowerLimits();
 }
 
 CurrentLimitsAdder AbstractConnectableBranch::newCurrentLimits1() {
-    return m_operationalLimitsHolder1.newCurrentLimits();
+    return getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits();
 }
 
 CurrentLimitsAdder AbstractConnectableBranch::newCurrentLimits2() {
-    return m_operationalLimitsHolder2.newCurrentLimits();
+    return getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits();
 }
 
 

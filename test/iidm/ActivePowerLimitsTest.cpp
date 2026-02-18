@@ -26,7 +26,7 @@ BOOST_AUTO_TEST_CASE(BranchApi) {
     Line& line = network.getLine("NHV1_NHV2_2");
     const Line& cLine = network.getLine("NHV1_NHV2_2");
 
-    ActivePowerLimits& apl = line.newActivePowerLimits1()
+    ActivePowerLimits& apl = line.getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits()
         .setPermanentLimit(10)
         .beginTemporaryLimit()
         .setName("20'")
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(adder) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
     Line& line = network.getLine("NHV1_NHV2_2");
-    ActivePowerLimitsAdder activePowerLimitsAdder = line.newActivePowerLimits1();
+    ActivePowerLimitsAdder activePowerLimitsAdder = line.getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits();
     activePowerLimitsAdder.setPermanentLimit(10);
 
     POWSYBL_ASSERT_THROW(activePowerLimitsAdder.beginTemporaryLimit().endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': temporary limit value is not set");
@@ -95,6 +95,44 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK_EQUAL("20'#0", tl2.getName());
     BOOST_CHECK_CLOSE(200.0, tl2.getValue(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(tl2.isFictitious());
+}
+
+BOOST_AUTO_TEST_CASE(testAdderByCopy) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    Line& line = network.getLine("NHV1_NHV2_2");
+    ActivePowerLimitsAdder activePowerLimitsAdder = line.getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits();
+    activePowerLimitsAdder.setPermanentLimit(10);
+    const ActivePowerLimits& apl1 = activePowerLimitsAdder.beginTemporaryLimit()
+            .setName("20'")
+            .setValue(100.0)
+            .setAcceptableDuration(20 * 60)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("20'")
+            .ensureNameUnicity()
+            .setValue(200.0)
+            .setAcceptableDuration(30 * 60)
+            .setFictitious(true)
+        .endTemporaryLimit()
+        .add();
+
+    //Set second limits by copy
+    auto adder = line.getOrCreateSelectedOperationalLimitsGroup2().newActivePowerLimits(apl1);
+    adder.add();
+    auto apl2 = line.getActivePowerLimits2().get();
+
+    BOOST_CHECK_EQUAL(apl1.getPermanentLimit(), apl2.getPermanentLimit());
+    BOOST_CHECK_EQUAL(2UL, boost::size(apl2.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(boost::size(apl1.getTemporaryLimits()), boost::size(apl2.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(0UL, boost::size(apl2.getFictitiousLimits()));
+    BOOST_CHECK_EQUAL(boost::size(apl1.getFictitiousLimits()), boost::size(apl2.getFictitiousLimits()));
+    for(auto& tl1 : apl1.getTemporaryLimits()) {
+        auto& tl2 = apl2.getTemporaryLimit(tl1.getAcceptableDuration());
+        BOOST_CHECK_EQUAL(tl1.getName(), tl2.getName());
+        BOOST_CHECK_EQUAL(tl1.getValue(), tl2.getValue());
+        BOOST_CHECK_EQUAL(tl1.isFictitious(), tl2.isFictitious());
+    }
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

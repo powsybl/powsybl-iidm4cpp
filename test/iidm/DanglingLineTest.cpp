@@ -359,7 +359,7 @@ BOOST_AUTO_TEST_CASE(currentLimits) {
     BOOST_CHECK_EQUAL(0, boost::size(cDanglingLine.getOperationalLimitsGroups()));
     BOOST_CHECK_EQUAL(0, boost::size(danglingLine.getOperationalLimitsGroups()));
 
-    danglingLine.newCurrentLimits()
+    danglingLine.getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
         .setPermanentLimit(10.0)
         .beginTemporaryLimit()
             .setName("TL1")
@@ -390,7 +390,7 @@ BOOST_AUTO_TEST_CASE(currentLimits) {
     BOOST_CHECK(!cDanglingLine.getActivePowerLimits());
     BOOST_CHECK(!danglingLine.getActivePowerLimits());
 
-    danglingLine.newActivePowerLimits()
+    danglingLine.getOrCreateSelectedOperationalLimitsGroup().newActivePowerLimits()
         .setPermanentLimit(10.0)
         .beginTemporaryLimit()
             .setName("TL1")
@@ -418,7 +418,7 @@ BOOST_AUTO_TEST_CASE(currentLimits) {
     BOOST_CHECK_EQUAL(1, boost::size(cDanglingLine.getOperationalLimitsGroups()));
     BOOST_CHECK_EQUAL(1, boost::size(danglingLine.getOperationalLimitsGroups()));
 
-    danglingLine.newApparentPowerLimits()
+    danglingLine.getOrCreateSelectedOperationalLimitsGroup().newApparentPowerLimits()
         .setPermanentLimit(10.0)
         .beginTemporaryLimit()
             .setName("TL1")

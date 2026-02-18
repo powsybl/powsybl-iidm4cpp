@@ -61,7 +61,7 @@ stdcxx::Reference<OperationalLimitsGroup> OperationalLimitsGroups::getSelectedOp
     return m_selectedLimitsGroupId.has_value() ? getOperationalLimitsGroup(*m_selectedLimitsGroupId) : stdcxx::Reference<OperationalLimitsGroup>();
 }
 
-stdcxx::Reference<OperationalLimitsGroup> OperationalLimitsGroups::newOperationalLimitsGroup(const std::string& id) {
+OperationalLimitsGroup& OperationalLimitsGroups::newOperationalLimitsGroup(const std::string& id) {
     if(!m_identifiable) {
         throw PowsyblException("OperationalLimitsGroup's Identifiable owner not set");
     }
@@ -69,7 +69,7 @@ stdcxx::Reference<OperationalLimitsGroup> OperationalLimitsGroups::newOperationa
     std::shared_ptr<OperationalLimitsGroup> operationalLimitsGroupPtr = std::make_shared<OperationalLimitsGroup>(id, m_identifiable, m_attributeName);
 
     m_operationalLimitsGroupById[id] = operationalLimitsGroupPtr;
-    return stdcxx::ref(*m_operationalLimitsGroupById.find(id)->second);
+    return *m_operationalLimitsGroupById.find(id)->second;
 }
 
 void OperationalLimitsGroups::setSelectedOperationalLimitsGroup(const std::string& id) {
@@ -109,6 +109,10 @@ void OperationalLimitsGroups::cancelSelectedOperationalLimitsGroup() {
         it.second->cancelSelectedGroupId();
     }
     m_selectedLimitsGroupId.reset();
+}
+
+OperationalLimitsGroup& OperationalLimitsGroups::getOrCreateSelectedOperationalLimitsGroup(const std::string& id) {
+    return FlowsLimitsHolder::getOrCreateSelectedOperationalLimitsGroup(id);
 }
 
 ActivePowerLimitsAdder OperationalLimitsGroups::newActivePowerLimits() {

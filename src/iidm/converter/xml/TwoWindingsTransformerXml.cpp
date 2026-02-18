@@ -71,32 +71,32 @@ void TwoWindingsTransformerXml::readSubElements(TwoWindingsTransformer& twt, Net
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt]() {
                 readLoadingLimitsGroup(context, LIMITS_GROUP_1, [&twt](const std::string& id){
-                    return twt.newOperationalLimitsGroup1(id);
+                    return stdcxx::ref(twt.newOperationalLimitsGroup1(id));
                 });
             });
         } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_1) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readActivePowerLimits(twt.newActivePowerLimits1(), context, 1); });
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readActivePowerLimits(twt.getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits(), context, 1); });
         } else if (context.getReader().getLocalName() == APPARENT_POWER_LIMITS_1) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), APPARENT_POWER_LIMITS_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readApparentPowerLimits(twt.newApparentPowerLimits1(), context, 1); });
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readApparentPowerLimits(twt.getOrCreateSelectedOperationalLimitsGroup1().newApparentPowerLimits(), context, 1); });
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS1) {
-            readCurrentLimits(twt.newCurrentLimits1(), context, 1);
+            readCurrentLimits(twt.getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits(), context, 1);
         } else if(context.getReader().getLocalName() == LIMITS_GROUP_2) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt]() {
                 readLoadingLimitsGroup(context, LIMITS_GROUP_2, [&twt](const std::string& id){
-                    return twt.newOperationalLimitsGroup2(id);
+                    return stdcxx::ref(twt.newOperationalLimitsGroup2(id));
                 });
             });
         } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_2) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readActivePowerLimits(twt.newActivePowerLimits2(), context, 2);});
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readActivePowerLimits(twt.getOrCreateSelectedOperationalLimitsGroup2().newActivePowerLimits(), context, 2);});
         } else if (context.getReader().getLocalName() == APPARENT_POWER_LIMITS_2) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), APPARENT_POWER_LIMITS_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
-            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readApparentPowerLimits(twt.newApparentPowerLimits2(), context, 2); });
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &twt]() { readApparentPowerLimits(twt.getOrCreateSelectedOperationalLimitsGroup2().newApparentPowerLimits(), context, 2); });
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS2) {
-            readCurrentLimits(twt.newCurrentLimits2(), context, 2);
+            readCurrentLimits(twt.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits(), context, 2);
         } else if (context.getReader().getLocalName() == RATIO_TAP_CHANGER) {
             readRatioTapChanger(twt, context);
         } else if (context.getReader().getLocalName() == PHASE_TAP_CHANGER) {

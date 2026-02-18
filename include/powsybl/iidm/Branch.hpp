@@ -64,10 +64,19 @@ public:
     virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id) = 0;
     virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() const = 0;
     virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() = 0;
-    virtual stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup1(const std::string& id) = 0;
+    virtual OperationalLimitsGroup& newOperationalLimitsGroup1(const std::string& id) = 0;
     virtual void setSelectedOperationalLimitsGroup1(const std::string& id) = 0;
     virtual void removeOperationalLimitsGroup1(const std::string& id) = 0;
     virtual void cancelSelectedOperationalLimitsGroup1() = 0;
+    /**
+     * Get the OperationalLimitsGroup selected on side 1 or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup1() = 0;
+    /**
+     * Get the OperationalLimitsGroup corresponding to the given id from side 1 or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup1(const std::string& id);
+
 
     virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups2() const = 0;
     virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups2()= 0;
@@ -76,10 +85,18 @@ public:
     virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id) = 0;
     virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() const = 0;
     virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() = 0;
-    virtual stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup2(const std::string& id) = 0;
+    virtual OperationalLimitsGroup& newOperationalLimitsGroup2(const std::string& id) = 0;
     virtual void setSelectedOperationalLimitsGroup2(const std::string& id) = 0;
     virtual void removeOperationalLimitsGroup2(const std::string& id) = 0;
     virtual void cancelSelectedOperationalLimitsGroup2() = 0;
+    /**
+     * Get the OperationalLimitsGroup selected on side 2 or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2() = 0;
+    /**
+     * Get the OperationalLimitsGroup corresponding to the given id from side 2 or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2(const std::string& id);
 
     stdcxx::CReference<ActivePowerLimits> getActivePowerLimits(const TwoSides& side) const;
 
@@ -145,17 +162,59 @@ public:
 
     bool isOverloaded(double limitReduction) const;
 
+    /** \deprecated
+     * Use OperationalLimitsGroup::newActivePowerLimits() instead.
+     */
     virtual ActivePowerLimitsAdder newActivePowerLimits1() = 0;
+    /** \deprecated
+     * Use OperationalLimitsGroup::newActivePowerLimits(const ActivePowerLimits& activePowerLimits) instead.
+     */
+    ActivePowerLimitsAdder newActivePowerLimits1(const ActivePowerLimits& activePowerLimits);
 
+    /** \deprecated
+     * Use OperationalLimitsGroup::newActivePowerLimits() instead.
+     */
     virtual ActivePowerLimitsAdder newActivePowerLimits2() = 0;
+    /** \deprecated
+     * Use OperationalLimitsGroup::newActivePowerLimits(const ActivePowerLimits& activePowerLimits) instead.
+     */
+    ActivePowerLimitsAdder newActivePowerLimits2(const ActivePowerLimits& activePowerLimits);
 
+    /** \deprecated
+     * Use OperationalLimitsGroup::newApparentPowerLimits() instead.
+     */
     virtual ApparentPowerLimitsAdder newApparentPowerLimits1() = 0;
+    /** \deprecated
+     * Use OperationalLimitsGroup::newApparentPowerLimits(const ApparentPowerLimits& apparentPowerLimits) instead.
+     */
+    ApparentPowerLimitsAdder newApparentPowerLimits1(const ApparentPowerLimits& apparentPowerLimits);
 
+    /** \deprecated
+     * Use OperationalLimitsGroup::newApparentPowerLimits() instead.
+     */
     virtual ApparentPowerLimitsAdder newApparentPowerLimits2() = 0;
+    /** \deprecated
+     * Use OperationalLimitsGroup::newApparentPowerLimits(const ApparentPowerLimits& apparentPowerLimits) instead.
+     */
+    ApparentPowerLimitsAdder newApparentPowerLimits2(const ApparentPowerLimits& apparentPowerLimits);
 
+    /** \deprecated
+     * Use OperationalLimitsGroup::newCurrentLimits() instead.
+     */
     virtual CurrentLimitsAdder newCurrentLimits1() = 0;
+    /** \deprecated
+     * Use OperationalLimitsGroup::newCurrentLimits(const CurrentLimits& currentLimits) instead.
+     */
+    CurrentLimitsAdder newCurrentLimits1(const CurrentLimits& currentLimits);
 
+    /** \deprecated
+     * Use OperationalLimitsGroup::newCurrentLimits() instead.
+     */
     virtual CurrentLimitsAdder newCurrentLimits2() = 0;
+    /** \deprecated
+     * Use OperationalLimitsGroup::newCurrentLimits(const CurrentLimits& currentLimits) instead.
+     */
+    CurrentLimitsAdder newCurrentLimits2(const CurrentLimits& currentLimits);
 
 protected:
     Branch() = default;

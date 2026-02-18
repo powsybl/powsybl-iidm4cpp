@@ -100,6 +100,14 @@ LoadingLimitsAdder<L, A>::LoadingLimitsAdder(OperationalLimitsGroup& owner) :
 }
 
 template <typename L, typename A>
+LoadingLimitsAdder<L, A>::LoadingLimitsAdder(OperationalLimitsGroup& owner, const L& limits) :
+    LoadingLimitsAdder(owner) {
+
+        LoadingLimitsUtil::initializeFromLoadingLimits<L, A>(*this, limits);
+
+}
+
+template <typename L, typename A>
 LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious) {
     if (fictitious && acceptableDuration == std::numeric_limits<unsigned long>::max()) {
         m_fictitiousLimits.emplace(name, LoadingLimits::TemporaryLimit(name, value, acceptableDuration, fictitious));

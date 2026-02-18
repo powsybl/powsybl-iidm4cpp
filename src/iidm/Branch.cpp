@@ -11,11 +11,15 @@
 
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/ActivePowerLimits.hpp>
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
 #include <powsybl/iidm/ApparentPowerLimits.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/CurrentLimits.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/OperationalLimitsGroup.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/LimitViolationUtils.hpp>
+#include <powsybl/iidm/util/LoadingLimitsUtil.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -322,6 +326,56 @@ bool Branch::isOverloaded() const {
 
 bool Branch::isOverloaded(double limitReduction) const {
     return checkPermanentLimit1(limitReduction, LimitType::CURRENT) || checkPermanentLimit2(limitReduction, LimitType::CURRENT);
+}
+
+
+ActivePowerLimitsAdder Branch::newActivePowerLimits1(const ActivePowerLimits& activePowerLimits) {
+    ActivePowerLimitsAdder adder = newActivePowerLimits1();
+    LoadingLimitsUtil::initializeFromLoadingLimits(adder, activePowerLimits);
+    return adder;
+}
+
+ActivePowerLimitsAdder Branch::newActivePowerLimits2(const ActivePowerLimits& activePowerLimits) {
+    ActivePowerLimitsAdder adder = newActivePowerLimits2();
+    LoadingLimitsUtil::initializeFromLoadingLimits(adder, activePowerLimits);
+    return adder;
+}
+
+ApparentPowerLimitsAdder Branch::newApparentPowerLimits1(const ApparentPowerLimits& apparentPowerLimits) {
+    ApparentPowerLimitsAdder adder = newApparentPowerLimits1();
+    LoadingLimitsUtil::initializeFromLoadingLimits(adder, apparentPowerLimits);
+    return adder;
+}
+
+ApparentPowerLimitsAdder Branch::newApparentPowerLimits2(const ApparentPowerLimits& apparentPowerLimits) {
+    ApparentPowerLimitsAdder adder = newApparentPowerLimits2();
+    LoadingLimitsUtil::initializeFromLoadingLimits(adder, apparentPowerLimits);
+    return adder;
+}
+
+CurrentLimitsAdder Branch::newCurrentLimits1(const CurrentLimits& currentLimits) {
+    CurrentLimitsAdder adder = newCurrentLimits1();
+    LoadingLimitsUtil::initializeFromLoadingLimits(adder, currentLimits);
+    return adder;
+}
+
+CurrentLimitsAdder Branch::newCurrentLimits2(const CurrentLimits& currentLimits) {
+    CurrentLimitsAdder adder = newCurrentLimits2();
+    LoadingLimitsUtil::initializeFromLoadingLimits(adder, currentLimits);
+    return adder;
+}
+
+OperationalLimitsGroup& Branch::getOrCreateSelectedOperationalLimitsGroup1(const std::string& id) {
+    stdcxx::Reference<OperationalLimitsGroup> refLimitsGroup = getOperationalLimitsGroup1(id);
+    OperationalLimitsGroup& limitsGroup = static_cast<bool>(refLimitsGroup) ? refLimitsGroup.get() : newOperationalLimitsGroup1(id);
+    setSelectedOperationalLimitsGroup1(id);
+    return limitsGroup;
+}
+OperationalLimitsGroup& Branch::getOrCreateSelectedOperationalLimitsGroup2(const std::string& id) {
+    stdcxx::Reference<OperationalLimitsGroup> refLimitsGroup = getOperationalLimitsGroup2(id);
+    OperationalLimitsGroup& limitsGroup = static_cast<bool>(refLimitsGroup) ? refLimitsGroup.get() : newOperationalLimitsGroup2(id);
+    setSelectedOperationalLimitsGroup2(id);
+    return limitsGroup;
 }
 
 }  // namespace iidm

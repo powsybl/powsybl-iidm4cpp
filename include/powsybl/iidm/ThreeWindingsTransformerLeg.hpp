@@ -118,13 +118,30 @@ public:
     stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) override;
     stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() const override;
     stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() override;
-    stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup(const std::string& id) override;
+    OperationalLimitsGroup& newOperationalLimitsGroup(const std::string& id) override;
     void setSelectedOperationalLimitsGroup(const std::string& id) override;
     void removeOperationalLimitsGroup(const std::string& id) override;
     void cancelSelectedOperationalLimitsGroup() override;
+    /**
+     * Get the OperationalLimitsGroup selected or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup() override;
+    /**
+     * Get the OperationalLimitsGroup corresponding to the given id or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup(const std::string& id) override;
 
+    /** \deprecated
+    * Use OperationalLimitsGroup::newActivePowerLimits() instead.
+    */
     ActivePowerLimitsAdder newActivePowerLimits() override;
+    /** \deprecated
+    * Use OperationalLimitsGroup::newApparentPowerLimits() instead.
+    */
     ApparentPowerLimitsAdder newApparentPowerLimits() override;
+    /** \deprecated
+    * Use OperationalLimitsGroup::newCurrentLimits() instead.
+    */
     CurrentLimitsAdder newCurrentLimits() override;
 
 

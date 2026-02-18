@@ -60,7 +60,7 @@ Network createOperationalLimitsOnLineNetwork() {
         .setB2(0.0)
         .add();
 
-    l.newOperationalLimitsGroup1("1").get()
+    l.newOperationalLimitsGroup1("1")
                 .newCurrentLimits()
                 .setPermanentLimit(900.0)
                 .beginTemporaryLimit()
@@ -79,7 +79,7 @@ Network createOperationalLimitsOnLineNetwork() {
                 .setValue(1500.0)
                 .endTemporaryLimit()
                 .add();
-    l.newOperationalLimitsGroup1("2").get()
+    l.newOperationalLimitsGroup1("2")
                 .newActivePowerLimits()
                 .setPermanentLimit(750.0)
                 .beginTemporaryLimit()
@@ -122,9 +122,9 @@ Network createOperationalLimitsOnLineNetwork() {
                 .setPermanentLimit(890.0)
                 .add();
 
-    l.newOperationalLimitsGroup1("3").get().newApparentPowerLimits().setPermanentLimit(850.0).add();
+    l.newOperationalLimitsGroup1("3").newApparentPowerLimits().setPermanentLimit(850.0).add();
     l.getOperationalLimitsGroup1("3").get().newCurrentLimits().setPermanentLimit(1000.0) .add();
-    l.newOperationalLimitsGroup2("1").get().newCurrentLimits().setPermanentLimit(850.0).add();
+    l.newOperationalLimitsGroup2("1").newCurrentLimits().setPermanentLimit(850.0).add();
     l.getOperationalLimitsGroup2("1").get().getCurrentLimits().get().setPermanentLimit(800.0);
     l.setSelectedOperationalLimitsGroup2("1");
     l.getOperationalLimitsGroup2("1").get().newApparentPowerLimits().setPermanentLimit(1100.0).add();
@@ -190,7 +190,7 @@ Network createOperationalLimitsOnTWTNetwork() {
         .add();
 
     ThreeWindingsTransformer::Leg& leg = network.getThreeWindingsTransformer("3WT").getLeg3();
-    leg.newOperationalLimitsGroup("1").get()
+    leg.newOperationalLimitsGroup("1")
                 .newCurrentLimits()
                 .setPermanentLimit(900.0)
                 .beginTemporaryLimit()
@@ -209,7 +209,7 @@ Network createOperationalLimitsOnTWTNetwork() {
                 .setValue(1500.0)
                 .endTemporaryLimit()
                 .add();
-    leg.newOperationalLimitsGroup("2").get()
+    leg.newOperationalLimitsGroup("2")
                 .newActivePowerLimits()
                 .setPermanentLimit(750.0)
                 .beginTemporaryLimit()
@@ -251,7 +251,7 @@ Network createOperationalLimitsOnTWTNetwork() {
                 .newApparentPowerLimits()
                 .setPermanentLimit(890.0)
                 .add();
-    leg.newOperationalLimitsGroup("3").get().newApparentPowerLimits().setPermanentLimit(850.0).add();
+    leg.newOperationalLimitsGroup("3").newApparentPowerLimits().setPermanentLimit(850.0).add();
     leg.getOperationalLimitsGroup("3").get().newCurrentLimits().setPermanentLimit(1000.0).add();
 
     return network;

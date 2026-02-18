@@ -15,6 +15,10 @@ CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsGroup& owner) :
     LoadingLimitsAdder(owner) {
 }
 
+CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsGroup& owner, const CurrentLimits& limits) :
+    LoadingLimitsAdder(owner, limits) {
+}
+
 CurrentLimits& CurrentLimitsAdder::add() {
     Network& network = m_owner.getNetwork();
     network.setValidationLevelIfGreaterThan(checkLoadingLimits());

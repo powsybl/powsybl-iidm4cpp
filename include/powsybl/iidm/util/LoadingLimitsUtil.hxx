@@ -14,6 +14,8 @@
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 
+#include <boost/range/join.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -52,6 +54,20 @@ void fixMissingPermanentLimit(LoadingLimitsAdder<L, A>& limitsAdder, double miss
                            stdcxx::nan(), percentage, fixedPermanentLimit));
         limitsAdder.setPermanentLimit(fixedPermanentLimit);
     }
+}
+
+template<typename L, typename A>
+void initializeFromLoadingLimits(LoadingLimitsAdder<L, A>& limitsAdder,  const L& limits) {
+
+    limitsAdder.setPermanentLimit(limits.getPermanentLimit());
+    for (const auto& limit : boost::range::join(limits.getTemporaryLimits(), limits.getFictitiousLimits())) {
+        limitsAdder.beginTemporaryLimit().setName(limit.getName())
+                                .setAcceptableDuration(limit.getAcceptableDuration())
+                                .setValue(limit.getValue())
+                                .setFictitious(limit.isFictitious())
+                                .endTemporaryLimit();
+    }
+
 }
 
 }  // namespace LoadingLimitsUtil

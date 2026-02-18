@@ -74,10 +74,18 @@ public:
     virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id) override;
     virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() const override;
     virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() override;
-    virtual stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup1(const std::string& id) override;
+    virtual OperationalLimitsGroup& newOperationalLimitsGroup1(const std::string& id) override;
     virtual void setSelectedOperationalLimitsGroup1(const std::string& id) override;
     virtual void removeOperationalLimitsGroup1(const std::string& id) override;
     virtual void cancelSelectedOperationalLimitsGroup1() override;
+    /**
+     * Get the OperationalLimitsGroup selected on side 1 or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup1() override;
+    /**
+     * Get the OperationalLimitsGroup corresponding to the given id from side 1 or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup1(const std::string& id) override;
 
     virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups2() const override;
     virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups2()override;
@@ -86,10 +94,18 @@ public:
     virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id) override;
     virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() const override;
     virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() override;
-    virtual stdcxx::Reference<OperationalLimitsGroup> newOperationalLimitsGroup2(const std::string& id) override;
+    virtual OperationalLimitsGroup& newOperationalLimitsGroup2(const std::string& id) override;
     virtual void setSelectedOperationalLimitsGroup2(const std::string& id) override;
     virtual void removeOperationalLimitsGroup2(const std::string& id) override;
     virtual void cancelSelectedOperationalLimitsGroup2() override;
+    /**
+     * Get the OperationalLimitsGroup selected on side 2 or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2() override;
+    /**
+     * Get the OperationalLimitsGroup corresponding to the given id from side 2 or create a new one if it does not exist and set it as selected.
+     */
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2(const std::string& id) override;
 
     virtual const Terminal& getTerminal1() const override;
 
@@ -99,16 +115,29 @@ public:
 
     virtual Terminal& getTerminal2() override;
 
+    /** \deprecated
+     * Use OperationalLimitsGroup::newActivePowerLimits() instead.
+     */
     virtual ActivePowerLimitsAdder newActivePowerLimits1() override;
-
+    /** \deprecated
+     * Use OperationalLimitsGroup::newActivePowerLimits() instead.
+     */
     virtual ActivePowerLimitsAdder newActivePowerLimits2() override;
-
+    /** \deprecated
+     * Use OperationalLimitsGroup::newApparentPowerLimits() instead.
+     */
     virtual ApparentPowerLimitsAdder newApparentPowerLimits1() override;
-
+    /** \deprecated
+     * Use OperationalLimitsGroup::newApparentPowerLimits() instead.
+     */
     virtual ApparentPowerLimitsAdder newApparentPowerLimits2() override;
-
+    /** \deprecated
+     * Use OperationalLimitsGroup::newCurrentLimits() instead.
+     */
     virtual CurrentLimitsAdder newCurrentLimits1() override;
-
+    /** \deprecated
+     * Use OperationalLimitsGroup::newCurrentLimits() instead.
+     */
     virtual CurrentLimitsAdder newCurrentLimits2() override;
 
     bool connectDanglingLines();

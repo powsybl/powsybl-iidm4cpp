@@ -240,7 +240,7 @@ stdcxx::CReference<OperationalLimitsGroup> DanglingLine::getSelectedOperationalL
 stdcxx::Reference<OperationalLimitsGroup> DanglingLine::getSelectedOperationalLimitsGroup() {
     return m_operationalLimitsGroups.getSelectedOperationalLimitsGroup();
 }
-stdcxx::Reference<OperationalLimitsGroup> DanglingLine::newOperationalLimitsGroup(const std::string& id) {
+OperationalLimitsGroup& DanglingLine::newOperationalLimitsGroup(const std::string& id) {
     return m_operationalLimitsGroups.newOperationalLimitsGroup(id);
 }
 void DanglingLine::setSelectedOperationalLimitsGroup(const std::string& id) {
@@ -252,15 +252,21 @@ void DanglingLine::removeOperationalLimitsGroup(const std::string& id) {
 void DanglingLine::cancelSelectedOperationalLimitsGroup() {
     m_operationalLimitsGroups.cancelSelectedOperationalLimitsGroup();
 }
+OperationalLimitsGroup& DanglingLine::getOrCreateSelectedOperationalLimitsGroup() {
+    return m_operationalLimitsGroups.getOrCreateSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& DanglingLine::getOrCreateSelectedOperationalLimitsGroup(const std::string& id) {
+    return FlowsLimitsHolder::getOrCreateSelectedOperationalLimitsGroup(id);
+}
 
 ActivePowerLimitsAdder DanglingLine::newActivePowerLimits() {
-    return m_operationalLimitsGroups.newActivePowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup().newActivePowerLimits();
 }
 ApparentPowerLimitsAdder DanglingLine::newApparentPowerLimits() {
-    return m_operationalLimitsGroups.newApparentPowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup().newApparentPowerLimits();
 }
 CurrentLimitsAdder DanglingLine::newCurrentLimits() {
-    return m_operationalLimitsGroups.newCurrentLimits();
+    return getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits();
 }
 
 }  // namespace iidm

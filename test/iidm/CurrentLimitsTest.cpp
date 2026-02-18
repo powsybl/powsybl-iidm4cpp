@@ -116,7 +116,7 @@ Network createCurrentLimitsTestNetwork() {
         .setG2(2.0)
         .setB2(0.4)
         .add()
-        .newCurrentLimits1()
+        .getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits()
         .setPermanentLimit(4.0)
         .beginTemporaryLimit()
         .setName("TL1")
@@ -197,7 +197,7 @@ Network createThreeWindingsTransformerCurrentLimitsTestNetwork() {
                                                     .add()
                                                .add();
 
-    transformer.getLeg1().newCurrentLimits()
+    transformer.getLeg1().getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
                     .setPermanentLimit(1000.0)
                     .beginTemporaryLimit()
                     .setName("20'")
@@ -215,7 +215,7 @@ Network createThreeWindingsTransformerCurrentLimitsTestNetwork() {
                     .setValue(1600.0)
                     .endTemporaryLimit()
                     .add();
-    transformer.getLeg2().newCurrentLimits()
+    transformer.getLeg2().getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
                     .setPermanentLimit(1000.0)
                     .beginTemporaryLimit()
                     .setName("20'")
@@ -233,7 +233,7 @@ Network createThreeWindingsTransformerCurrentLimitsTestNetwork() {
                     .setValue(1600.0)
                     .endTemporaryLimit()
                     .add();
-    transformer.getLeg3().newCurrentLimits()
+    transformer.getLeg3().getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
                     .setPermanentLimit(1000.0)
                     .beginTemporaryLimit()
                     .setName("20'")
@@ -292,7 +292,7 @@ Network createOneLineCurrentLimitsTestNetwork() {
                  .setB1(0.0)
                  .setB2(0.0)
                  .add();
-    l.newCurrentLimits1()
+    l.getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits()
         .setPermanentLimit(1000.0)
         .beginTemporaryLimit()
             .setName("20'")
@@ -411,7 +411,7 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     Line& line = network.getLine("VL1_VL3");
     BOOST_TEST(!line.getCurrentLimits2());
-    auto adder = line.newCurrentLimits2();
+    auto adder = line.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits();
 
     BOOST_CHECK(!adder.hasTemporaryLimits());
 
@@ -530,7 +530,7 @@ BOOST_AUTO_TEST_CASE(checkPermanentLimitsTest) {
     BOOST_TEST(!line.getCurrentLimits2());
     BOOST_TEST(!line.checkPermanentLimit2(2.0, LimitType::CURRENT));
 
-    line.newCurrentLimits2()
+    line.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits()
         .setPermanentLimit(1000.0)
         .beginTemporaryLimit()
         .setName("TL1_2")
@@ -710,7 +710,7 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     ptrOverload = line.checkTemporaryLimits2(2.0, LimitType::CURRENT);
     BOOST_TEST(!static_cast<bool>(ptrOverload));
 
-    line.newCurrentLimits2()
+    line.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits()
         .setPermanentLimit(8.0)
         .beginTemporaryLimit()
         .setName("TL1_2")
@@ -781,7 +781,7 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
 BOOST_AUTO_TEST_CASE(adderGetLimitsValues) {
     Network network = createOneLineCurrentLimitsTestNetwork();
 
-    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+    CurrentLimitsAdder adder = network.getLine("L").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits();
 
     BOOST_CHECK(std::isnan(adder.getLowestTemporaryLimitValue()));
     BOOST_CHECK(std::isnan(adder.getPermanentLimit()));
@@ -814,7 +814,7 @@ BOOST_AUTO_TEST_CASE(adderGetLimitsValues) {
 
 BOOST_AUTO_TEST_CASE(adderRemoveTemporaryLimit) {
     Network network = createOneLineCurrentLimitsTestNetwork();
-    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+    CurrentLimitsAdder adder = network.getLine("L").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits();
     adder.setPermanentLimit(1000.)
                 .beginTemporaryLimit()
                     .setName("TL1")
@@ -862,7 +862,7 @@ BOOST_AUTO_TEST_CASE(adderRemoveTemporaryLimit) {
 
 BOOST_AUTO_TEST_CASE(adderFixPermanentLimit) {
     Network network = createOneLineCurrentLimitsTestNetwork();
-    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+    CurrentLimitsAdder adder = network.getLine("L").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits();
     adder.beginTemporaryLimit()
                     .setName("TL1")
                     .setAcceptableDuration(20 * 60)
@@ -886,7 +886,7 @@ BOOST_AUTO_TEST_CASE(adderFixPermanentLimit) {
 
 BOOST_AUTO_TEST_CASE(adderFixPermanentLimitAlreadySet) {
     Network network = createOneLineCurrentLimitsTestNetwork();
-    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+    CurrentLimitsAdder adder = network.getLine("L").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits();
     
     adder.setPermanentLimit(1000.)
                 .beginTemporaryLimit()
@@ -900,7 +900,7 @@ BOOST_AUTO_TEST_CASE(adderFixPermanentLimitAlreadySet) {
 
 BOOST_AUTO_TEST_CASE(adderFixPermanentLimitWithInfiniteDurationValue) {
     Network network = createOneLineCurrentLimitsTestNetwork();
-    CurrentLimitsAdder adder = network.getLine("L").newCurrentLimits1();
+    CurrentLimitsAdder adder = network.getLine("L").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits();
     
     adder.beginTemporaryLimit()
                     .setName("INFINITE")
@@ -925,7 +925,7 @@ BOOST_AUTO_TEST_CASE(adderFixPermanentLimitWithInfiniteDurationValue) {
 BOOST_AUTO_TEST_CASE(adderWithZeroValue) {
     Network network = createOneLineCurrentLimitsTestNetwork();
     Line& line = network.getLine("L");
-    CurrentLimitsAdder adder = line.newCurrentLimits1();
+    CurrentLimitsAdder adder = line.getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits();
     adder.setPermanentLimit(0.0)
         .beginTemporaryLimit()
                     .setName("TEST")
@@ -971,6 +971,59 @@ BOOST_AUTO_TEST_CASE(testSetTemporaryLimitValue) {
     POWSYBL_ASSERT_THROW(currentLimit.setTemporaryLimitValue(10*60, 1750.0), ValidationException, "AC line 'L': No temporary limit found for the given acceptable duration");
     POWSYBL_ASSERT_THROW(currentLimit.setTemporaryLimitValue(5*60, stdcxx::nan()), ValidationException, "AC line 'L': temporary limit value must be >= 0");
     POWSYBL_ASSERT_THROW(currentLimit.setTemporaryLimitValue(5*60, -1.0), ValidationException, "AC line 'L': temporary limit value must be >= 0");
+
+}
+
+BOOST_AUTO_TEST_CASE(testAdderByCopy) {
+    Network network = createOneLineCurrentLimitsTestNetwork();
+    auto currentLimits1 = network.getLine("L").getCurrentLimits1().get();
+
+    //Set second current limits by copy
+    auto adder = network.getLine("L").getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits(currentLimits1);
+    adder.add();
+
+    auto currentLimits2 = network.getLine("L").getCurrentLimits2().get();
+
+    BOOST_CHECK_EQUAL(currentLimits1.getPermanentLimit(), currentLimits2.getPermanentLimit());
+    BOOST_CHECK_EQUAL(3UL, boost::size(currentLimits2.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(boost::size(currentLimits1.getTemporaryLimits()), boost::size(currentLimits2.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(0UL, boost::size(currentLimits2.getFictitiousLimits()));
+    BOOST_CHECK_EQUAL(boost::size(currentLimits1.getFictitiousLimits()), boost::size(currentLimits2.getFictitiousLimits()));
+    for(auto& tl1 : currentLimits1.getTemporaryLimits()) {
+        auto& tl2 = currentLimits2.getTemporaryLimit(tl1.getAcceptableDuration());
+        BOOST_CHECK_EQUAL(tl1.getName(), tl2.getName());
+        BOOST_CHECK_EQUAL(tl1.getValue(), tl2.getValue());
+        BOOST_CHECK_EQUAL(tl1.isFictitious(), tl2.isFictitious());
+    }
+
+    //Add a fictitous limit on currentLimits2
+    auto adder2 = network.getLine("L").getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits(currentLimits2);
+    adder2.beginTemporaryLimit().setName("FL").setAcceptableDuration(std::numeric_limits<unsigned long>::max()).setValue(10.0).setFictitious(true).endTemporaryLimit();
+    adder2.add();
+    auto currentLimits2withFL = network.getLine("L").getCurrentLimits2().get();
+    //Copy on currentlimits1:
+    auto adder1 = network.getLine("L").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits(currentLimits2withFL);
+    adder1.add();
+    auto currentLimits1withFL = network.getLine("L").getCurrentLimits1().get();
+    
+    BOOST_CHECK_EQUAL(currentLimits1withFL.getPermanentLimit(), currentLimits2withFL.getPermanentLimit());
+    BOOST_CHECK_EQUAL(3UL, boost::size(currentLimits2withFL.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(boost::size(currentLimits1withFL.getTemporaryLimits()), boost::size(currentLimits2withFL.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(currentLimits2withFL.getFictitiousLimits()));
+    BOOST_CHECK_EQUAL(boost::size(currentLimits1withFL.getFictitiousLimits()), boost::size(currentLimits2withFL.getFictitiousLimits()));
+
+    for(auto& tl1 : currentLimits1withFL.getTemporaryLimits()) {
+        auto& tl2 = currentLimits2withFL.getTemporaryLimit(tl1.getAcceptableDuration());
+        BOOST_CHECK_EQUAL(tl1.getName(), tl2.getName());
+        BOOST_CHECK_EQUAL(tl1.getValue(), tl2.getValue());
+        BOOST_CHECK_EQUAL(tl1.isFictitious(), tl2.isFictitious());
+    }
+    for (auto& fl : currentLimits1withFL.getFictitiousLimits()) {
+        BOOST_CHECK(fl.isFictitious());
+        BOOST_CHECK_EQUAL("FL", fl.getName());
+        BOOST_CHECK_EQUAL(10.0, fl.getValue());
+        BOOST_CHECK_EQUAL(std::numeric_limits<unsigned long>::max(), fl.getAcceptableDuration());
+    }
 
 }
 

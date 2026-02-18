@@ -15,6 +15,10 @@ ApparentPowerLimitsAdder::ApparentPowerLimitsAdder(OperationalLimitsGroup& owner
     LoadingLimitsAdder(owner) {
 }
 
+ApparentPowerLimitsAdder::ApparentPowerLimitsAdder(OperationalLimitsGroup& owner, const ApparentPowerLimits& limits) :
+    LoadingLimitsAdder(owner, limits) {
+}
+
 ApparentPowerLimits& ApparentPowerLimitsAdder::add() {
     Network& network = m_owner.getNetwork();
     network.setValidationLevelIfGreaterThan(checkLoadingLimits());

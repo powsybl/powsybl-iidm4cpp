@@ -522,7 +522,7 @@ BOOST_AUTO_TEST_CASE(permanentLimitAdderValidationLevelTest) {
     BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getMinimumValidationLevel());
     BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getValidationLevel());
 
-    OperationalLimitsGroup& unselectedGroup = network.getLine("NHV1_NHV2_1").newOperationalLimitsGroup1("unselectedGroup").get();
+    OperationalLimitsGroup& unselectedGroup = network.getLine("NHV1_NHV2_1").newOperationalLimitsGroup1("unselectedGroup");
     CurrentLimitsAdder adder = unselectedGroup.newCurrentLimits();
     adder.setPermanentLimit(stdcxx::nan())
                 .beginTemporaryLimit()

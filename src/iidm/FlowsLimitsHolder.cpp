@@ -13,6 +13,7 @@
 #include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/CurrentLimits.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
+#include <powsybl/iidm/util/LoadingLimitsUtil.hpp>
 
 namespace powsybl {
 
@@ -64,6 +65,31 @@ stdcxx::Reference<CurrentLimits> FlowsLimitsHolder::getCurrentLimits() {
         return selectedLimitsGroup.get().getCurrentLimits();
     }
     return stdcxx::Reference<CurrentLimits>();
+}
+
+ActivePowerLimitsAdder FlowsLimitsHolder::newActivePowerLimits(const ActivePowerLimits& activePowerLimits) {
+    ActivePowerLimitsAdder adder = newActivePowerLimits();
+    LoadingLimitsUtil::initializeFromLoadingLimits(adder, activePowerLimits);
+    return adder;
+}
+
+ApparentPowerLimitsAdder FlowsLimitsHolder::newApparentPowerLimits(const ApparentPowerLimits& apparentPowerLimits) {
+    ApparentPowerLimitsAdder adder = newApparentPowerLimits();
+    LoadingLimitsUtil::initializeFromLoadingLimits(adder, apparentPowerLimits);
+    return adder;
+}
+
+CurrentLimitsAdder FlowsLimitsHolder::newCurrentLimits(const CurrentLimits& currentLimits) {
+    CurrentLimitsAdder adder = newCurrentLimits();
+    LoadingLimitsUtil::initializeFromLoadingLimits(adder, currentLimits);
+    return adder;
+}
+
+OperationalLimitsGroup& FlowsLimitsHolder::getOrCreateSelectedOperationalLimitsGroup(const std::string& id) {
+    stdcxx::Reference<OperationalLimitsGroup> refLimitsGroup = getOperationalLimitsGroup(id);
+    OperationalLimitsGroup& limitsGroup = static_cast<bool>(refLimitsGroup) ? refLimitsGroup.get() : newOperationalLimitsGroup(id);
+    setSelectedOperationalLimitsGroup(id);
+    return limitsGroup;
 }
 
 }  // namespace iidm

@@ -87,7 +87,7 @@ Network createDlGenerationLinear() {
         .setMaxQ(46.25)
         .endPoint()
         .add();
-    danglingLine.newCurrentLimits()
+    danglingLine.getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
         .setPermanentLimit(100.0)
         .beginTemporaryLimit()
         .setName("20'")

@@ -117,12 +117,16 @@ void AbstractConnectableXml::writeLimits(NetworkXmlWriterContext& context, const
 
 void AbstractConnectableXml::readLoadingLimitsGroup(const NetworkXmlReaderContext& context, const char* groupElementName, const std::function<stdcxx::Reference<OperationalLimitsGroup>(const std::string&)>& groupBuilder) {
     const std::string& id = context.getReader().getAttributeValue(ID);
-    stdcxx::Reference<OperationalLimitsGroup> limitsGroup = groupBuilder(id);
-    readAllLoadingLimits(limitsGroup, groupElementName, context);
+    stdcxx::Reference<OperationalLimitsGroup> refLimitsGroup = groupBuilder(id);
+    if(!refLimitsGroup) {
+        throw PowsyblException(stdcxx::format("Could not retrieve OperationalLimitsGroup %1%", id));
+    }
+    readAllLoadingLimits(refLimitsGroup.get(), groupElementName, context);
+
 }
 void AbstractConnectableXml::readLoadingLimitsGroup(const NetworkXmlReaderContext& context, const char* groupElementName, FlowsLimitsHolder& holder) {
     const std::string& id = context.getReader().getAttributeValue(ID);
-    stdcxx::Reference<OperationalLimitsGroup> limitsGroup = holder.newOperationalLimitsGroup(id);
+    OperationalLimitsGroup& limitsGroup = holder.newOperationalLimitsGroup(id);
     readAllLoadingLimits(limitsGroup, groupElementName, context);
 }
 

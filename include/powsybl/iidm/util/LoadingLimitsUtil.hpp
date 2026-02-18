@@ -21,6 +21,9 @@ namespace LoadingLimitsUtil {
 template<typename L, typename A>
 void fixMissingPermanentLimit(LoadingLimitsAdder<L, A>& limitsAdder, double missingPermanentLimitPercentage);
 
+template<typename L, typename A>
+void initializeFromLoadingLimits(LoadingLimitsAdder<L, A>& limitsAdder,  const L& limits);
+
 }  // namespace LoadingLimitsUtil
 
 }  // namespace iidm

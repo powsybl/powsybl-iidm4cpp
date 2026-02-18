@@ -66,7 +66,7 @@ BOOST_FIXTURE_TEST_CASE(LoadingLimitsBugTest_V1_5, test::ResourceFixture) {
                 .setB(0.0)
                 .add();
 
-    twt.newApparentPowerLimits1()
+    twt.getOrCreateSelectedOperationalLimitsGroup1().newApparentPowerLimits()
         .setPermanentLimit(100)
         .add();
 

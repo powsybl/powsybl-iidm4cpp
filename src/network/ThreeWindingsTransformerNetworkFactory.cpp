@@ -197,7 +197,7 @@ iidm::Network ThreeWindingsTransformerNetworkFactory::create() {
 iidm::Network ThreeWindingsTransformerNetworkFactory::createWithCurrentLimits() {
     iidm::Network network = create();
 
-    network.getThreeWindingsTransformer("3WT").getLeg1().newCurrentLimits()
+    network.getThreeWindingsTransformer("3WT").getLeg1().getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
         .setPermanentLimit(1000.0)
         .beginTemporaryLimit()
             .setName("20'")
@@ -211,7 +211,7 @@ iidm::Network ThreeWindingsTransformerNetworkFactory::createWithCurrentLimits() 
         .endTemporaryLimit()
         .add();
 
-    network.getThreeWindingsTransformer("3WT").getLeg2().newCurrentLimits()
+    network.getThreeWindingsTransformer("3WT").getLeg2().getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
         .setPermanentLimit(100.0)
         .beginTemporaryLimit()
             .setName("20'")
@@ -225,7 +225,7 @@ iidm::Network ThreeWindingsTransformerNetworkFactory::createWithCurrentLimits() 
         .endTemporaryLimit()
         .add();
 
-    network.getThreeWindingsTransformer("3WT").getLeg3().newCurrentLimits()
+    network.getThreeWindingsTransformer("3WT").getLeg3().getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
         .setPermanentLimit(10.0)
         .beginTemporaryLimit()
             .setName("20'")

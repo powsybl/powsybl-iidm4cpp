@@ -100,15 +100,15 @@ void DanglingLineXml::readSubElements(DanglingLine& dl, NetworkXmlReaderContext&
         } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &dl]() {
-                readActivePowerLimits(dl.newActivePowerLimits(), context);
+                readActivePowerLimits(dl.getOrCreateSelectedOperationalLimitsGroup().newActivePowerLimits(), context);
             });
         } else if (context.getReader().getLocalName() == APPARENT_POWER_LIMITS) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), APPARENT_POWER_LIMITS, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &dl]() {
-                readApparentPowerLimits(dl.newApparentPowerLimits(), context);
+                readApparentPowerLimits(dl.getOrCreateSelectedOperationalLimitsGroup().newApparentPowerLimits(), context);
             });
         } else if (context.getReader().getLocalName() == CURRENT_LIMITS) {
-            readCurrentLimits(dl.newCurrentLimits(), context);
+            readCurrentLimits(dl.getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits(), context);
         } else if (context.getReader().getLocalName() == REACTIVE_CAPABILITY_CURVE ||
                    context.getReader().getLocalName() == MIN_MAX_REACTIVE_LIMITS) {
             IidmXmlUtil::assertMinimumVersion(stdcxx::format("%1%.generation", DANGLING_LINE), "reactiveLimits", ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);

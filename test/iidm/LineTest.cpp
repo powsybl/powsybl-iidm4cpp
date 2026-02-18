@@ -326,7 +326,7 @@ BOOST_AUTO_TEST_CASE(createSelectedOperationalLimitsWhenMissing) {
     BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
 
     //Add current Limit in group 1
-    auto adderCurrents = line.newCurrentLimits1();
+    auto adderCurrents = line.getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits();
     adderCurrents.setPermanentLimit(1000.0).add();
     //default group is created:
     POWSYBL_ASSERT_REF_TRUE(line.getSelectedOperationalLimitsGroup1());
@@ -351,7 +351,7 @@ BOOST_AUTO_TEST_CASE(createSelectedOperationalLimitsWhenMissing) {
     BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
 
     //Add active power limit in group 1
-    auto adderActive = line.newActivePowerLimits1();
+    auto adderActive = line.getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits();
     adderActive.setPermanentLimit(1000.0).add();
     //default group is created:
     POWSYBL_ASSERT_REF_TRUE(line.getSelectedOperationalLimitsGroup1());
@@ -376,7 +376,7 @@ BOOST_AUTO_TEST_CASE(createSelectedOperationalLimitsWhenMissing) {
     BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
 
     //Add apparent power limit in group 1
-    auto adderApparent = line.newApparentPowerLimits1();
+    auto adderApparent = line.getOrCreateSelectedOperationalLimitsGroup1().newApparentPowerLimits();
     adderApparent.setPermanentLimit(1000.0).add();
     //default group is created:
     POWSYBL_ASSERT_REF_TRUE(line.getSelectedOperationalLimitsGroup1());
@@ -414,7 +414,7 @@ BOOST_AUTO_TEST_CASE(createEmptyDefaultOperationalLimitGroupIfAdderNotUsed) {
     BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
     BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
 
-    auto adderCurrents = line.newCurrentLimits2(); //default group created there
+    auto adderCurrents = line.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits(); //default group created there
     adderCurrents.setPermanentLimit(1000.0);
     //add() not performed : default group remains empty
     POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup1());
@@ -426,7 +426,7 @@ BOOST_AUTO_TEST_CASE(createEmptyDefaultOperationalLimitGroupIfAdderNotUsed) {
     POWSYBL_ASSERT_REF_FALSE(line.getSelectedOperationalLimitsGroup2().get().getApparentPowerLimits());
 }
 
-BOOST_AUTO_TEST_CASE(dontChangeDefaultOperationalLimitsGroupIfAdderValidationFails) {
+BOOST_AUTO_TEST_CASE(createEmptyDefaultOperationalLimitsGroupIfAdderValidationFails) {
     Network network = createLineTestNetwork();
     Line& line = network.getLine("VL1_VL3");
 
@@ -438,7 +438,7 @@ BOOST_AUTO_TEST_CASE(dontChangeDefaultOperationalLimitsGroupIfAdderValidationFai
     BOOST_CHECK(!line.getSelectedOperationalLimitsGroupId2().has_value());
     BOOST_CHECK_EQUAL(0, boost::size(line.getOperationalLimitsGroups2()));
 
-    auto adderCurrents = line.newCurrentLimits2();
+    auto adderCurrents = line.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits(); //default group created there
     adderCurrents.setPermanentLimit(stdcxx::nan())
             .beginTemporaryLimit()
                 .setName("10'")

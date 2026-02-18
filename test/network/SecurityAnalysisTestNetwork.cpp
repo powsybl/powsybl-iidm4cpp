@@ -236,10 +236,10 @@ iidm::Network createNetwork() {
 iidm::Network createNetworkWithCurrentLimits() {
     iidm::Network network = createNetwork();
 
-    network.getLine("LINE_S1S2V1_1").newCurrentLimits2()
+    network.getLine("LINE_S1S2V1_1").getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits()
                 .setPermanentLimit(75)
                 .add();
-        network.getLine("LINE_S1S2V1_1").newCurrentLimits1()
+        network.getLine("LINE_S1S2V1_1").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits()
                 .setPermanentLimit(75)
                 .beginTemporaryLimit()
                 .setName("10'")
@@ -257,10 +257,10 @@ iidm::Network createNetworkWithCurrentLimits() {
                 .setValue(std::numeric_limits<double>::max())
                 .endTemporaryLimit()
                 .add();
-        network.getLine("LINE_S1S2V1_2").newCurrentLimits2()
+        network.getLine("LINE_S1S2V1_2").getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits()
             .setPermanentLimit(75)
             .add();
-        network.getLine("LINE_S1S2V1_2").newCurrentLimits1()
+        network.getLine("LINE_S1S2V1_2").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits()
                 .setPermanentLimit(75)
                 .beginTemporaryLimit()
                 .setName("10'")
@@ -278,7 +278,7 @@ iidm::Network createNetworkWithCurrentLimits() {
                 .setValue(std::numeric_limits<double>::max())
                 .endTemporaryLimit()
                 .add();
-        network.getLine("LINE_S1S2V2").newCurrentLimits1()
+        network.getLine("LINE_S1S2V2").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits()
                 .setPermanentLimit(60)
                 .beginTemporaryLimit()
                 .setName("10'")
@@ -286,7 +286,7 @@ iidm::Network createNetworkWithCurrentLimits() {
                 .setValue(80)
                 .endTemporaryLimit()
                 .add();
-        network.getTwoWindingsTransformer("TWT2").newCurrentLimits1().setPermanentLimit(90)
+        network.getTwoWindingsTransformer("TWT2").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits().setPermanentLimit(90)
                 .beginTemporaryLimit()
                 .setName("10'")
                 .setAcceptableDuration(10 * 60)
@@ -298,7 +298,7 @@ iidm::Network createNetworkWithCurrentLimits() {
                 .setValue(110)
                 .endTemporaryLimit()
                 .add();
-        network.getTwoWindingsTransformer("TWT").newCurrentLimits1().setPermanentLimit(92)
+        network.getTwoWindingsTransformer("TWT").getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits().setPermanentLimit(92)
                 .beginTemporaryLimit()
                 .setName("10'")
                 .setAcceptableDuration(10 * 60)
@@ -317,11 +317,11 @@ iidm::Network createNetworkWithCurrentLimits() {
 iidm::Network createNetworkWithFixedPowerLimits() {
     iidm::Network network = createNetwork();
 
-    network.getTwoWindingsTransformer("TWT").newActivePowerLimits1().setPermanentLimit(71).add();
-        network.getTwoWindingsTransformer("TWT2").newActivePowerLimits1().setPermanentLimit(55).add();
-        network.getLine("LINE_S1S2V1_1").newActivePowerLimits1().setPermanentLimit(55).add();
-        network.getLine("LINE_S1S2V1_2").newActivePowerLimits1().setPermanentLimit(55).add();
-        network.getLine("LINE_S1S2V2").newActivePowerLimits1().setPermanentLimit(30).add();
+    network.getTwoWindingsTransformer("TWT").getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits().setPermanentLimit(71).add();
+        network.getTwoWindingsTransformer("TWT2").getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits().setPermanentLimit(55).add();
+        network.getLine("LINE_S1S2V1_1").getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits().setPermanentLimit(55).add();
+        network.getLine("LINE_S1S2V1_2").getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits().setPermanentLimit(55).add();
+        network.getLine("LINE_S1S2V2").getOrCreateSelectedOperationalLimitsGroup1().newActivePowerLimits().setPermanentLimit(30).add();
         return network;
 
     return network;

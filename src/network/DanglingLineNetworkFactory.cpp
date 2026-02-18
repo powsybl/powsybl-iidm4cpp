@@ -104,7 +104,7 @@ iidm::Network DanglingLineNetworkFactory::createBase() {
 }
 
 void DanglingLineNetworkFactory::createDanglingLineCurrentLimits(iidm::DanglingLine& danglingLine) {
-    danglingLine.newCurrentLimits()
+    danglingLine.getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
                 .setPermanentLimit(100.0)
                 .beginTemporaryLimit()
                 .setName("20'")

@@ -21,6 +21,7 @@ public:  // OperationalLimitsAdder
 
 public:
     explicit CurrentLimitsAdder(OperationalLimitsGroup& owner);
+    explicit CurrentLimitsAdder(OperationalLimitsGroup& owner, const CurrentLimits& limits);
 
     CurrentLimitsAdder(const CurrentLimitsAdder&) = default;
 

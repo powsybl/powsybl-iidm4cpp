@@ -261,7 +261,7 @@ stdcxx::CReference<OperationalLimitsGroup> Leg::getSelectedOperationalLimitsGrou
 stdcxx::Reference<OperationalLimitsGroup> Leg::getSelectedOperationalLimitsGroup() {
     return m_operationalLimitsGroups.getSelectedOperationalLimitsGroup();
 }
-stdcxx::Reference<OperationalLimitsGroup> Leg::newOperationalLimitsGroup(const std::string& id) {
+OperationalLimitsGroup& Leg::newOperationalLimitsGroup(const std::string& id) {
     return m_operationalLimitsGroups.newOperationalLimitsGroup(id);
 }
 void Leg::setSelectedOperationalLimitsGroup(const std::string& id) {
@@ -273,15 +273,21 @@ void Leg::removeOperationalLimitsGroup(const std::string& id) {
 void Leg::cancelSelectedOperationalLimitsGroup() {
     m_operationalLimitsGroups.cancelSelectedOperationalLimitsGroup();
 }
+OperationalLimitsGroup& Leg::getOrCreateSelectedOperationalLimitsGroup() {
+    return m_operationalLimitsGroups.getOrCreateSelectedOperationalLimitsGroup();
+}
+OperationalLimitsGroup& Leg::getOrCreateSelectedOperationalLimitsGroup(const std::string& id) {
+    return FlowsLimitsHolder::getOrCreateSelectedOperationalLimitsGroup(id);
+}
 
 ActivePowerLimitsAdder Leg::newActivePowerLimits() {
-    return m_operationalLimitsGroups.newActivePowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup().newActivePowerLimits();
 }
 ApparentPowerLimitsAdder Leg::newApparentPowerLimits() {
-    return m_operationalLimitsGroups.newApparentPowerLimits();
+    return getOrCreateSelectedOperationalLimitsGroup().newApparentPowerLimits();
 }
 CurrentLimitsAdder Leg::newCurrentLimits() {
-    return m_operationalLimitsGroups.newCurrentLimits();
+    return getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits();
 }
 
 }  // namespace three_windings_transformer
