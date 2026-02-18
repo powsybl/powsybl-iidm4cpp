@@ -9,10 +9,10 @@
 
 #include <vector>
 
-#include <powsybl/iidm/Branch.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 
@@ -42,7 +42,8 @@ const std::vector<TerminalFinder::Predicate>& getDefaultRules() {
     static std::vector<Predicate> s_rules = {
         [](const Terminal& t) { return stdcxx::isInstanceOf<BusbarSection>(t.getConnectable()); },
         [](const Terminal& t) { return stdcxx::isInstanceOf<Injection>(t.getConnectable()); },
-        [](const Terminal& t) { return stdcxx::isInstanceOf<Branch>(t.getConnectable()); },
+        [](const Terminal& t) { return stdcxx::isInstanceOf<Line>(t.getConnectable()); },
+        [](const Terminal& t) { return stdcxx::isInstanceOf<TwoWindingsTransformer>(t.getConnectable()); },
         [](const Terminal& t) { return stdcxx::isInstanceOf<ThreeWindingsTransformer>(t.getConnectable()); },
         [](const Terminal& t) { return stdcxx::isInstanceOf<HvdcConverterStation>(t.getConnectable()); }
     };
