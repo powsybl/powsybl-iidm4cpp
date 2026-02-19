@@ -355,14 +355,14 @@ BOOST_AUTO_TEST_CASE(removeTieLine) {
     tl1.remove(true);
     tl2.remove(true);
 
-    BOOST_CHECK_CLOSE_FRACTION(301.316, dl1_1.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(116.525, dl1_1.getQ0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(-301.782, dl1_2.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(-116.442, dl1_2.getQ0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(301.316, dl2_1.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(116.525, dl2_1.getQ0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(-301.782, dl2_2.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(-116.442, dl2_2.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(301.278, dl1_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(116.563, dl1_1.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-301.745, dl1_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-116.566, dl1_2.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(301.278, dl2_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(116.563, dl2_1.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-301.745, dl2_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-116.567, dl2_2.getQ0(), 1e-4);
 }
 
 BOOST_AUTO_TEST_CASE(removeTieLineNotCalculated) {
@@ -645,16 +645,16 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
 
     constexpr double ACCEPTABLE_THRESHOLD = 1e-6;
     SV expectedSV1(p1,q1,v1,angle1,TwoSides::ONE);
-    SV expectedSV2(p2,q2,v2,angle2,TwoSides::TWO);
+    SV expectedSV2(p2,q2,v2,angle2,TwoSides::ONE);
 
-    BOOST_CHECK_CLOSE(expectedSV1.otherSideP(tieLine.getDanglingLine1(), true), tieLine.getDanglingLine1().getBoundary().getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV1.otherSideQ(tieLine.getDanglingLine1(), true), tieLine.getDanglingLine1().getBoundary().getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV2.otherSideP(tieLine.getDanglingLine2(), true), tieLine.getDanglingLine2().getBoundary().getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV2.otherSideQ(tieLine.getDanglingLine2(), true), tieLine.getDanglingLine2().getBoundary().getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV1.otherSideU(tieLine.getDanglingLine1(), true), tieLine.getDanglingLine1().getBoundary().getV(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV1.otherSideA(tieLine.getDanglingLine1(), true), tieLine.getDanglingLine1().getBoundary().getAngle(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV2.otherSideU(tieLine.getDanglingLine2(), true), tieLine.getDanglingLine2().getBoundary().getV(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV2.otherSideA(tieLine.getDanglingLine2(), true), tieLine.getDanglingLine2().getBoundary().getAngle(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideP(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideQ(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideP(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideQ(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideU(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getV(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideA(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getAngle(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideU(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getV(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideA(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getAngle(), ACCEPTABLE_THRESHOLD);
 
     BOOST_CHECK(stdcxx::areSame(cTieLine, cBoundary.getDanglingLine().getTieLine().get()));
     BOOST_CHECK(stdcxx::areSame(cTieLine, boundary.getDanglingLine().getTieLine().get()));

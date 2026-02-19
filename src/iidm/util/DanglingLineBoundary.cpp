@@ -35,7 +35,7 @@ double Boundary::getAngle() const {
     if(DanglingLineUtil::zeroImpedance(m_parent)) {
         return iidm::Boundary::getAngle(b);
     } else {
-        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideA(m_parent, true);
+        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideA(m_parent, false);
     }
 }
 
@@ -56,7 +56,7 @@ double Boundary::getP() const {
     if(DanglingLineUtil::zeroImpedance(m_parent)) {
         return -t.getP();
     } else {
-        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideP(m_parent, true);
+        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideP(m_parent, false);
     }
 }
 
@@ -69,7 +69,7 @@ double Boundary::getQ() const {
     if(DanglingLineUtil::zeroImpedance(m_parent)) {
         return -t.getQ();
     } else {
-        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideQ(m_parent, true);
+        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideQ(m_parent, false);
     }
 }
 
@@ -82,7 +82,7 @@ double Boundary::getV() const {
     if(DanglingLineUtil::zeroImpedance(m_parent)) {
         return iidm::Boundary::getV(b);
     } else {
-        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideU(m_parent, true);
+        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideU(m_parent, false);
     }
 }
 

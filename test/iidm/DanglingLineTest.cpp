@@ -484,10 +484,10 @@ BOOST_AUTO_TEST_CASE(boundaryWithGeneration) {
     danglingLine.getTerminal().setQ(-7.413);
     danglingLine.getTerminal().getBusView().getBus().get().setAngle(0.0);
     danglingLine.getTerminal().getBusView().getBus().get().setV(100.0);
-    BOOST_CHECK_CLOSE(389.999, danglingLine.getBoundary().getP(), tol);
-    BOOST_CHECK_CLOSE(16.250, danglingLine.getBoundary().getQ(), tol);
-    BOOST_CHECK_CLOSE(130.037, danglingLine.getBoundary().getV(), tol);
-    BOOST_CHECK_CLOSE(0.99498, danglingLine.getBoundary().getAngle(), tol);
+    BOOST_CHECK_CLOSE(389.953, danglingLine.getBoundary().getP(), tol);
+    BOOST_CHECK_CLOSE(16.3146, danglingLine.getBoundary().getQ(), tol);
+    BOOST_CHECK_CLOSE(130.087, danglingLine.getBoundary().getV(), tol);
+    BOOST_CHECK_CLOSE(0.999, danglingLine.getBoundary().getAngle(), tol);
 
 }
 

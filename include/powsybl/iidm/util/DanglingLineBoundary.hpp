@@ -26,6 +26,7 @@ namespace dangling_line {
 class Boundary : public iidm::Boundary {
     // for SV use: side represents the network side, that is always
     // Side.ONE for a dangling line.
+    // DanglingLine model has shunt admittance on network side only, hence splitShuntAdmittance argument in SV methods must be set to false
 
 public:  // iidm::Boundary
     double getAngle() const override;

@@ -113,8 +113,8 @@ BOOST_AUTO_TEST_CASE(getAreaBoundaryTest) {
     BOOST_CHECK(areaBoundary->isAc());
     BOOST_CHECK_EQUAL(controlAreaA.getId(), areaBoundary->getArea().getId());
     BOOST_CHECK(stdcxx::areSame(controlAreaA, areaBoundary->getArea()));
-    BOOST_CHECK_CLOSE(-301.47, areaBoundary->getP(), tol);
-    BOOST_CHECK_CLOSE(-116.52, areaBoundary->getQ(), tol);
+    BOOST_CHECK_CLOSE(-301.44, areaBoundary->getP(), tol);
+    BOOST_CHECK_CLOSE(-116.55, areaBoundary->getQ(), tol);
 
     controlAreaA.removeAreaBoundary(dl.getBoundary());
     areaBoundary = controlAreaA.getAreaBoundary(dl.getBoundary());
@@ -129,13 +129,13 @@ BOOST_AUTO_TEST_CASE(areaInterchangeTest) {
     Area& regionAB = network.getArea("Region_AB");
     DanglingLine& dl = network.getDanglingLine("NHV1_XNODE1");
 
-    BOOST_CHECK_CLOSE(-602.94, controlAreaA.getAcInterchange(), tol);
+    BOOST_CHECK_CLOSE(-602.88, controlAreaA.getAcInterchange(), tol);
     BOOST_CHECK_EQUAL(0.0, controlAreaA.getDcInterchange());
-    BOOST_CHECK_CLOSE(-602.94, controlAreaA.getInterchange(), tol);
+    BOOST_CHECK_CLOSE(-602.88, controlAreaA.getInterchange(), tol);
 
-    BOOST_CHECK_CLOSE(+602.94, controlAreaB.getAcInterchange(), tol);
+    BOOST_CHECK_CLOSE(+602.88, controlAreaB.getAcInterchange(), tol);
     BOOST_CHECK_SMALL(0.0, controlAreaB.getDcInterchange());
-    BOOST_CHECK_CLOSE(+602.94, controlAreaB.getInterchange(), tol);
+    BOOST_CHECK_CLOSE(+602.88, controlAreaB.getInterchange(), tol);
 
     // no boundaries defined
     BOOST_CHECK_EQUAL(0.0, regionAB.getAcInterchange());
@@ -144,9 +144,9 @@ BOOST_AUTO_TEST_CASE(areaInterchangeTest) {
 
     // verify NaN do not mess up the calculation
     dl.getTerminal().setP(stdcxx::nan());
-    BOOST_CHECK_CLOSE(-301.47, controlAreaA.getAcInterchange(), tol);
+    BOOST_CHECK_CLOSE(-301.44, controlAreaA.getAcInterchange(), tol);
     BOOST_CHECK_EQUAL(0.0, controlAreaA.getDcInterchange());
-    BOOST_CHECK_CLOSE(-301.47, controlAreaA.getInterchange(), tol);
+    BOOST_CHECK_CLOSE(-301.44, controlAreaA.getInterchange(), tol);
 
 }
 
@@ -277,17 +277,17 @@ BOOST_AUTO_TEST_CASE(addSameBoundaryTest) {
                 .newAreaBoundary().setBoundary(dlXnode2A.getBoundary()).setAc(true).add();
     // no change
     BOOST_CHECK_EQUAL(2, boost::size(controlAreaA.getAreaBoundaries()));
-    BOOST_CHECK_CLOSE(-602.94, controlAreaA.getAcInterchange(), tol);
+    BOOST_CHECK_CLOSE(-602.88, controlAreaA.getAcInterchange(), tol);
     BOOST_CHECK_EQUAL(0.0, controlAreaA.getDcInterchange());
-    BOOST_CHECK_CLOSE(-602.94, controlAreaA.getInterchange(), tol);
+    BOOST_CHECK_CLOSE(-602.88, controlAreaA.getInterchange(), tol);
 
     // change them to DC
     controlAreaA.newAreaBoundary().setBoundary(dlXnode1A.getBoundary()).setAc(false).add()
                 .newAreaBoundary().setBoundary(dlXnode2A.getBoundary()).setAc(false).add();
     BOOST_CHECK_EQUAL(2, boost::size(controlAreaA.getAreaBoundaries()));
     BOOST_CHECK_EQUAL(0.0, controlAreaA.getAcInterchange());
-    BOOST_CHECK_CLOSE(-602.94, controlAreaA.getDcInterchange(), tol);
-    BOOST_CHECK_CLOSE(-602.94, controlAreaA.getInterchange(), tol);
+    BOOST_CHECK_CLOSE(-602.88, controlAreaA.getDcInterchange(), tol);
+    BOOST_CHECK_CLOSE(-602.88, controlAreaA.getInterchange(), tol);
 }
 
 BOOST_AUTO_TEST_CASE(withDcTest) {
@@ -296,9 +296,9 @@ BOOST_AUTO_TEST_CASE(withDcTest) {
     DanglingLine& dlXnode2A = network.getDanglingLine("NHV1_XNODE2");
 
     controlAreaA.newAreaBoundary().setBoundary(dlXnode2A.getBoundary()).setAc(false).add();
-    BOOST_CHECK_CLOSE(-301.47, controlAreaA.getAcInterchange(), tol);
-    BOOST_CHECK_CLOSE(-301.47, controlAreaA.getDcInterchange(), tol);
-    BOOST_CHECK_CLOSE(-602.94, controlAreaA.getInterchange(), tol);
+    BOOST_CHECK_CLOSE(-301.44, controlAreaA.getAcInterchange(), tol);
+    BOOST_CHECK_CLOSE(-301.44, controlAreaA.getDcInterchange(), tol);
+    BOOST_CHECK_CLOSE(-602.88, controlAreaA.getInterchange(), tol);
 }
 
 BOOST_AUTO_TEST_CASE(removeVoltageLevelTest) {

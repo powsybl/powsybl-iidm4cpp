@@ -25,7 +25,7 @@ namespace DanglingLineUtil {
             return !std::isnan(theta);
         }
 
-        std::complex<double> getBoundaryBus(const DanglingLine& danglingLine, bool splitShuntAdmittance) {
+        std::complex<double> getBoundaryBus(const DanglingLine& danglingLine) {
 
             double u1 = getV(danglingLine);
             double theta1 = getTheta(danglingLine);
@@ -36,32 +36,25 @@ namespace DanglingLineUtil {
                 return std::polar(u1, theta1);
             }
 
-            double g1 = splitShuntAdmittance ? danglingLine.getG() * 0.5 : danglingLine.getG();
-            double b1 = splitShuntAdmittance ? danglingLine.getB() * 0.5 : danglingLine.getB();
-            double g2 = splitShuntAdmittance ? danglingLine.getG() * 0.5 : 0.0;
-            double b2 = splitShuntAdmittance ? danglingLine.getB() * 0.5 : 0.0;
-
+            // DanglingLine model has shunt admittance on network side only, so it is not split between both sides.
             std::complex<double> c1 = std::polar(u1, theta1);
             std::complex<double> cBoundaryBus = std::complex<double>(stdcxx::nan(), stdcxx::nan());
         
             if (danglingLine.getP0() == 0.0 && danglingLine.getQ0() == 0.0) {
                 LinkData::BranchAdmittanceMatrix adm = LinkData::calculateBranchAdmittance(danglingLine.getR(), danglingLine.getX(), 1.0, 0.0, 1.0, 0.0, 
-                                                std::complex<double>(g1, b1), std::complex<double>(g2, b2));
+                                                std::complex<double>(danglingLine.getG(), danglingLine.getB()), std::complex<double>(0.0, 0.0));
                 cBoundaryBus = - adm.y21 * c1 / adm.y22;
             } else {
                 // Two buses Loadflow
                 std::complex<double> sBoundary = std::complex<double>(-danglingLine.getP0(), -danglingLine.getQ0());
-                std::complex<double> ytr = std::complex<double>(1.0) / std::complex<double>(danglingLine.getR(), danglingLine.getX());
-                std::complex<double> ysh2 = std::complex<double>(g2, b2);
-                std::complex<double> zt = std::complex<double>(1.0) / (ytr + ysh2);
-                std::complex<double> v0 = ytr * c1 / (ytr + ysh2);
-                double v02 = std::abs(v0) * std::abs(v0);
+                std::complex<double> zt = std::complex<double>(danglingLine.getR(), danglingLine.getX());
+                double v12 = std::abs(c1) * std::abs(c1);
 
-                std::complex<double> sigma = zt * std::conj(sBoundary) * (std::complex<double>(1.0) / v02);
+                std::complex<double> sigma = zt * std::conj(sBoundary) * (std::complex<double>(1.0) / v12);
                 double d = 0.25 + sigma.real() - sigma.imag() * sigma.imag();
                 // d < 0 Collapsed network
                 if (d >= 0) {
-                    cBoundaryBus = std::complex<double>(0.5 + std::sqrt(d), sigma.imag()) * v0;
+                    cBoundaryBus = std::complex<double>(0.5 + std::sqrt(d), sigma.imag()) * c1;
                 }
             }
 
@@ -78,12 +71,12 @@ bool zeroImpedance(const DanglingLine& danglingLine) {
 }
 
 double getBoundaryBusU(const DanglingLine& danglingLine) {
-    std::complex<double> cBoundaryBus = getBoundaryBus(danglingLine, true);
+    std::complex<double> cBoundaryBus = getBoundaryBus(danglingLine);
     return std::abs(cBoundaryBus);
 }
 
 double getBoundaryBusTheta(const DanglingLine& danglingLine) {
-    std::complex<double> cBoundaryBus = getBoundaryBus(danglingLine, true);
+    std::complex<double> cBoundaryBus = getBoundaryBus(danglingLine);
     return std::arg(cBoundaryBus);
 }
 
