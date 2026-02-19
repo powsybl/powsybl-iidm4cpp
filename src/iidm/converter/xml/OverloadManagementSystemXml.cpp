@@ -183,7 +183,7 @@ void OverloadManagementSystemXml::skipTrippingCommonAttributes(NetworkXmlReaderC
 }
 void OverloadManagementSystemXml::getTrippingCommonAttributes(NetworkXmlReaderContext& context, std::string& key, std::string& name, double& currentLimit, bool& openAction) const {
     key = context.getReader().getAttributeValue(KEY);
-    name = context.getReader().getAttributeValue(NAME);
+    name = context.getReader().getOptionalAttributeValue(NAME, "");
     currentLimit = context.getReader().getAttributeValue<double>(CURRENT_LIMIT);
     openAction = context.getReader().getAttributeValue<bool>(OPEN_ACTION);
 }
