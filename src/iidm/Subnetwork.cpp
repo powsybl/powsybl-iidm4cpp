@@ -43,7 +43,7 @@ namespace powsybl {
 namespace iidm {
 
 Subnetwork::Subnetwork(Network& parentNetwork, const std::string& id, const std::string& sourceFormat) :
-    Network(id, sourceFormat),
+    Network(id, sourceFormat, false),
     m_subBusBreakerView(*this),
     m_subBusView(*this) {
     m_parentNetworkRef = parentNetwork;

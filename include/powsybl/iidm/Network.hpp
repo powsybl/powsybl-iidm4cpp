@@ -103,6 +103,11 @@ public:  // VariantManagerHolder
 
     virtual VariantManager& getVariantManager() override;
 
+protected:
+    /**
+    * Same as default constructor, with additional bool to control adding this network in the NetworkIndex, (for subnetwork)
+    */
+    Network(const std::string& id, const std::string& sourceFormat, bool manageIndex);
 public:
     Network(const std::string& id, const std::string& sourceFormat);
 

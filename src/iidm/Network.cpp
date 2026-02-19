@@ -79,13 +79,18 @@ void Network::writeXml(const std::string& filename, std::ostream& ostream, const
 }
 
 Network::Network(const std::string& id, const std::string& sourceFormat) :
+    Network(id, sourceFormat, true) {
+}
+Network::Network(const std::string& id, const std::string& sourceFormat, bool manageIndex) :
     Container(id, id, false, Container::Type::NETWORK),
     m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
     m_variantManager(*this),
     m_variants(*this, [this]() { return stdcxx::make_unique<network::VariantImpl>(*this); }),
     m_busBreakerView(*this),
     m_busView(*this) {
-    checkAndAdd(std::unique_ptr<Network>(this));
+        if(manageIndex) {
+            checkAndAdd(std::unique_ptr<Network>(this));
+        }
 }
 
 Network::Network(Network&& network) noexcept :

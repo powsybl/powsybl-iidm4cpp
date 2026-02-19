@@ -13,6 +13,7 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include <boost/range/join.hpp>
 
+#include <powsybl/iidm/Subnetwork.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/stdcxx/map.hpp>
@@ -27,12 +28,13 @@ namespace iidm {
 
 /**
  * This functor overrides the default deleter of the {@link std::unique_ptr}.
- * Delete the pointer for all {@link Identifiable} subclasses except {@link Network}.
+ * Delete the pointer for all {@link Identifiable} subclasses except {@link Network}. 
+ * (but not Subnetworks, since we don't manage their own NetworkIndex)
  *
  * This hack allows to store the network instance in the NetworkIndex without a double-free corruption.
  */
 void NetworkIndex::Deleter::operator()(Identifiable* ptr) const {
-    if (!stdcxx::isInstanceOf<Network, Identifiable>(ptr)) {
+    if (!stdcxx::isInstanceOf<Network, Identifiable>(ptr) || stdcxx::isInstanceOf<Subnetwork, Identifiable>(ptr)) {
         delete ptr;
     }
 }
