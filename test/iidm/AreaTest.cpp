@@ -223,7 +223,7 @@ BOOST_AUTO_TEST_CASE(areaWithTerminalTest) {
     Area& controlAreaB = network.getArea("ControlArea_B");
     DanglingLine& dlXnode1A = network.getDanglingLine("NHV1_XNODE1");
     DanglingLine& dlXnode1B = network.getDanglingLine("XNODE1_NHV2");
-    DanglingLine& dlXnode2A = network.getDanglingLine("NVH1_XNODE2");
+    DanglingLine& dlXnode2A = network.getDanglingLine("NHV1_XNODE2");
     DanglingLine& dlXnode2B = network.getDanglingLine("XNODE2_NHV2");
 
     controlAreaA.removeAreaBoundary(dlXnode1A.getBoundary())
@@ -269,7 +269,7 @@ BOOST_AUTO_TEST_CASE(addSameBoundaryTest) {
     Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
     Area& controlAreaA = network.getArea("ControlArea_A");
     DanglingLine& dlXnode1A = network.getDanglingLine("NHV1_XNODE1");
-    DanglingLine& dlXnode2A = network.getDanglingLine("NVH1_XNODE2");
+    DanglingLine& dlXnode2A = network.getDanglingLine("NHV1_XNODE2");
     
     BOOST_CHECK_EQUAL(2, boost::size(controlAreaA.getAreaBoundaries()));
     // re-add
@@ -293,7 +293,7 @@ BOOST_AUTO_TEST_CASE(addSameBoundaryTest) {
 BOOST_AUTO_TEST_CASE(withDcTest) {
     Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
     Area& controlAreaA = network.getArea("ControlArea_A");
-    DanglingLine& dlXnode2A = network.getDanglingLine("NVH1_XNODE2");
+    DanglingLine& dlXnode2A = network.getDanglingLine("NHV1_XNODE2");
 
     controlAreaA.newAreaBoundary().setBoundary(dlXnode2A.getBoundary()).setAc(false).add();
     BOOST_CHECK_CLOSE(-301.47, controlAreaA.getAcInterchange(), tol);
@@ -315,7 +315,7 @@ BOOST_AUTO_TEST_CASE(removeAreaBoundariesTest) {
     Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
     Area& controlAreaA = network.getArea("ControlArea_A");
     DanglingLine& dlXnode1A = network.getDanglingLine("NHV1_XNODE1");
-    DanglingLine& dlXnode2A = network.getDanglingLine("NVH1_XNODE2");
+    DanglingLine& dlXnode2A = network.getDanglingLine("NHV1_XNODE2");
     BOOST_CHECK_EQUAL(2, boost::size(controlAreaA.getAreaBoundaries()));
         
     controlAreaA.removeAreaBoundary(dlXnode1A.getBoundary())

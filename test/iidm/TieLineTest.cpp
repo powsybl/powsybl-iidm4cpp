@@ -83,8 +83,8 @@ Network createEurostagExampleWithTieLines() {
                 .setDanglingLine1(nhv1xnode1.getId())
                 .setDanglingLine2(xnode1nhv2.getId())
                 .add();
-    DanglingLine& nvh1xnode2 = network.getVoltageLevel("VLHV1").newDanglingLine()
-                .setId("NVH1_XNODE2")
+    DanglingLine& nhv1xnode2 = network.getVoltageLevel("VLHV1").newDanglingLine()
+                .setId("NHV1_XNODE2")
                 .setP0(0.0)
                 .setQ0(0.0)
                 .setR(1.5)
@@ -107,7 +107,7 @@ Network createEurostagExampleWithTieLines() {
                 .add();
     network.newTieLine()
                 .setId("NHV1_NHV2_2")
-                .setDanglingLine1(nvh1xnode2.getId())
+                .setDanglingLine1(nhv1xnode2.getId())
                 .setDanglingLine2(xnode2nhv2.getId())
                 .add();
     network.getTieLine("NHV1_NHV2_1").getDanglingLine1().getTerminal().setP(302.4440612792969).setQ(98.74027252197266);
