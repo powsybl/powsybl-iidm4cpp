@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "BusBreakerVoltageLevelBusCache.hpp"
+#include "BusBreakerTopologyBusCache.hpp"
 
 #include <cassert>
 
@@ -16,7 +16,7 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace bus_breaker_voltage_level {
+namespace bus_breaker_topology_model {
 
 BusCache::BusCache(MergedBusById mergedBus, MergedBusByConfiguredBus mapping) :
     m_mergedBus(std::move(mergedBus)),
@@ -49,7 +49,7 @@ stdcxx::range<MergedBus> BusCache::getMergedBuses() {
     return boost::adaptors::values(m_mergedBus) | boost::adaptors::indirected;
 }
 
-}  // namespace bus_breaker_voltage_level
+}  // namespace bus_breaker_topology_model
 
 }  // namespace iidm
 

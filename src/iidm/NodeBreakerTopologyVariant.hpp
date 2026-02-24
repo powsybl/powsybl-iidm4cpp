@@ -5,26 +5,26 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVARIANT_HPP
-#define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVARIANT_HPP
+#ifndef POWSYBL_IIDM_NODEBREAKERTOPOLOGYVARIANT_HPP
+#define POWSYBL_IIDM_NODEBREAKERTOPOLOGYVARIANT_HPP
 
 #include <powsybl/iidm/Variant.hpp>
 #include <powsybl/iidm/VariantArray.hpp>
 
-#include "NodeBreakerVoltageLevelTopology.hpp"
+#include "NodeBreakerTopologyCalculatedBus.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-namespace node_breaker_voltage_level {
+namespace node_breaker_topology_model {
 
-class VariantImpl : public Variant<NodeBreakerVoltageLevel, VariantImpl> {
+class VariantImpl : public Variant<NodeBreakerTopologyModel, VariantImpl> {
 public: // Variant
     std::unique_ptr<VariantImpl> copy() const override;
 
 public:
-    explicit VariantImpl(NodeBreakerVoltageLevel& voltageLevel);
+    explicit VariantImpl(NodeBreakerTopologyModel& topologyModel);
 
     ~VariantImpl() noexcept override = default;
 
@@ -40,12 +40,12 @@ private:
     CalculatedBusTopology m_calculatedBusTopology;
 };
 
-using VariantArray = iidm::VariantArray<NodeBreakerVoltageLevel, VariantImpl>;
+using VariantArray = iidm::VariantArray<NodeBreakerTopologyModel, VariantImpl>;
 
-}  // namespace node_breaker_voltage_level
+}  // namespace node_breaker_topology_model
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVARIANT_HPP
+#endif  // POWSYBL_IIDM_NODEBREAKERTOPOLOGYVARIANT_HPP

@@ -38,7 +38,7 @@ DanglingLine& DanglingLineAdder::add() {
     auto& danglingLine = network.checkAndAdd<DanglingLine>(std::move(ptrDanglingLine));
 
     Terminal& terminal = danglingLine.addTerminal(checkAndGetTerminal());
-    getVoltageLevel().attach(terminal, false);
+    getVoltageLevel().getTopologyModel().attach(terminal, false);
 
     return danglingLine;
 }

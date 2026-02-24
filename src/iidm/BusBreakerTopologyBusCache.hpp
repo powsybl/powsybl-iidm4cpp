@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELBUSCACHE_HPP
-#define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELBUSCACHE_HPP
+#ifndef POWSYBL_IIDM_BUSBREAKERTOPOLOGYBUSCACHE_HPP
+#define POWSYBL_IIDM_BUSBREAKERTOPOLOGYBUSCACHE_HPP
 
 #include <functional>
 #include <map>
@@ -22,7 +22,7 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace bus_breaker_voltage_level {
+namespace bus_breaker_topology_model {
 
 class BusCache {
 public:
@@ -51,10 +51,10 @@ private:
     MergedBusByConfiguredBus m_mapping;
 };
 
-}  // namespace bus_breaker_voltage_level
+}  // namespace bus_breaker_topology_model
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELBUSCACHE_HPP
+#endif  // POWSYBL_IIDM_BUSBREAKERTOPOLOGYBUSCACHE_HPP

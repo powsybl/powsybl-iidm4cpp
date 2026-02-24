@@ -32,12 +32,15 @@
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
 #include <powsybl/iidm/util/VoltageLevels.hpp>
 
+#include "BusBreakerTopologyModel.hpp"
+#include "NodeBreakerTopologyModel.hpp"
+
 namespace powsybl {
 
 namespace iidm {
 
 VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                           Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit) :
+                           Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit, const TopologyKind& topologyKind) :
     Container(id, name, fictitious, Container::Type::VOLTAGE_LEVEL),
     m_network(network),
     m_subnetworkRef(),
@@ -46,42 +49,55 @@ VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool 
     m_lowVoltageLimit(lowVoltageLimit),
     m_nominalV(nominalV) {
 
+        switch (topologyKind) {
+            case TopologyKind::NODE_BREAKER:
+                m_topologyModel = stdcxx::make_unique<NodeBreakerTopologyModel>(*this);
+                break;
+            case TopologyKind::BUS_BREAKER:
+                m_topologyModel = stdcxx::make_unique<BusBreakerTopologyModel>(*this);
+                break;
+            default:
+                throw AssertionError(stdcxx::format("Unexpected TopologyKind value: %1%", topologyKind));
+        }
+
     checkNominalVoltage(*this, m_nominalV);
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
 }
 
 VoltageLevel::VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                 Network& rootNetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltageLimit) : 
-    VoltageLevel(id, name, fictitious, substation, rootNetwork, nominalV, lowVoltageLimit, highVoltageLimit) {
+                 Network& rootNetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltageLimit, const TopologyKind& topologyKind) : 
+    VoltageLevel(id, name, fictitious, substation, rootNetwork, nominalV, lowVoltageLimit, highVoltageLimit, topologyKind) {
     m_subnetworkRef = subnetwork;
 }
 
-void VoltageLevel::addNextTerminals(Terminal& otherTerminal, TerminalSet& nextTerminals) {
-    Connectable& otherConnectable = otherTerminal.getConnectable();
-    if (stdcxx::isInstanceOf<Branch>(otherConnectable)) {
-        auto& branch = dynamic_cast<Branch&>(otherConnectable);
-        if (stdcxx::areSame(branch.getTerminal1(), otherTerminal)) {
-            nextTerminals.emplace(branch.getTerminal2());
-        } else if (stdcxx::areSame(branch.getTerminal2(), otherTerminal)) {
-            nextTerminals.emplace(branch.getTerminal1());
-        } else {
-            throw AssertionError("Terminal is not one the branch terminals");
-        }
-    } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(otherConnectable)) {
-        auto& ttc = dynamic_cast<ThreeWindingsTransformer&>(otherConnectable);
-        if (stdcxx::areSame(ttc.getLeg1().getTerminal(), otherTerminal)) {
-            nextTerminals.emplace(ttc.getLeg2().getTerminal());
-            nextTerminals.emplace(ttc.getLeg3().getTerminal());
-        } else if (stdcxx::areSame(ttc.getLeg2().getTerminal(), otherTerminal)) {
-            nextTerminals.emplace(ttc.getLeg1().getTerminal());
-            nextTerminals.emplace(ttc.getLeg3().getTerminal());
-        } else if (stdcxx::areSame(ttc.getLeg3().getTerminal(), otherTerminal)) {
-            nextTerminals.emplace(ttc.getLeg1().getTerminal());
-            nextTerminals.emplace(ttc.getLeg2().getTerminal());
-        } else {
-            throw AssertionError("Terminal is not one the 3 legs terminals");
-        }
-    }
+const VoltageLevel::BusBreakerView& VoltageLevel::getBusBreakerView() const {
+    assertTopologyModel();
+    return m_topologyModel->getBusBreakerView();
+}
+
+VoltageLevel::BusBreakerView& VoltageLevel::getBusBreakerView() {
+    assertTopologyModel();
+    return m_topologyModel->getBusBreakerView();
+}
+
+const VoltageLevel::BusView& VoltageLevel::getBusView() const {
+    assertTopologyModel();
+    return m_topologyModel->getBusView();
+}
+
+VoltageLevel::BusView& VoltageLevel::getBusView() {
+    assertTopologyModel();
+    return m_topologyModel->getBusView();
+}
+
+const VoltageLevel::NodeBreakerView& VoltageLevel::getNodeBreakerView() const {
+    assertTopologyModel();
+    return m_topologyModel->getNodeBreakerView();
+}
+
+VoltageLevel::NodeBreakerView& VoltageLevel::getNodeBreakerView() {
+    assertTopologyModel();
+    return m_topologyModel->getNodeBreakerView();
 }
 
 unsigned long VoltageLevel::getAreaCount() const {
@@ -311,6 +327,21 @@ stdcxx::Reference<Substation> VoltageLevel::getSubstation() {
     return m_substation;
 }
 
+unsigned long VoltageLevel::getSwitchCount() const {
+    assertTopologyModel();
+    return m_topologyModel->getSwitchCount();
+}
+
+stdcxx::const_range<Switch> VoltageLevel::getSwitches() const {
+    assertTopologyModel();
+    return m_topologyModel->getSwitches();
+}
+
+stdcxx::range<Switch> VoltageLevel::getSwitches() {
+    assertTopologyModel();
+    return m_topologyModel->getSwitches();
+}
+
 unsigned long VoltageLevel::getThreeWindingsTransformerCount() const {
     return getConnectableCount<ThreeWindingsTransformer>();
 }
@@ -321,6 +352,11 @@ stdcxx::const_range<ThreeWindingsTransformer> VoltageLevel::getThreeWindingsTran
 
 stdcxx::range<ThreeWindingsTransformer> VoltageLevel::getThreeWindingsTransformers() {
     return getConnectables<ThreeWindingsTransformer>();
+}
+
+const TopologyKind& VoltageLevel::getTopologyKind() const {
+    assertTopologyModel();
+    return m_topologyModel->getTopologyKind();
 }
 
 unsigned long VoltageLevel::getTwoWindingsTransformerCount() const {
@@ -403,7 +439,9 @@ void VoltageLevel::remove() {
     }
 
     // Remove the topology
-    removeTopology();
+    if(m_topologyModel){
+        m_topologyModel->removeTopology();
+    }
 
     if (static_cast<bool>(m_substation)) {
         // Remove this voltage level from the network
@@ -434,7 +472,42 @@ VoltageLevel& VoltageLevel::setNominalV(double nominalV) {
 }
 
 void VoltageLevel::visitEquipments(TopologyVisitor& visitor) const {
-    TopologyVisitor::visitEquipments(getTerminals(), visitor);
+    assertTopologyModel();
+    TopologyVisitor::visitEquipments(m_topologyModel->getTerminals(), visitor);
+}
+
+void VoltageLevel::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    Identifiable::allocateVariantArrayElement(indexes, sourceIndex);
+    if(m_topologyModel) {
+        m_topologyModel->allocateVariantArrayElement(indexes, sourceIndex);
+    }
+}
+
+void VoltageLevel::deleteVariantArrayElement(unsigned long index) {
+    Identifiable::deleteVariantArrayElement(index);
+    if(m_topologyModel) {
+        m_topologyModel->deleteVariantArrayElement(index);
+    }
+}
+
+void VoltageLevel::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    Identifiable::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    if(m_topologyModel) {
+        m_topologyModel->extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    }
+}
+
+void VoltageLevel::reduceVariantArraySize(unsigned long number) {
+    Identifiable::reduceVariantArraySize(number);
+    if(m_topologyModel) {
+        m_topologyModel->reduceVariantArraySize(number);
+    }
+}
+
+void VoltageLevel::assertTopologyModel() const {
+    if(!static_cast<bool>(m_topologyModel)) {
+        throw PowsyblException(stdcxx::format("TopologyModel missing from VoltageLevel %1%", getId())); 
+    }
 }
 
 }  // namespace iidm

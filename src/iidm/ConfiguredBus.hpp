@@ -19,7 +19,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class BusBreakerVoltageLevel;
+class VoltageLevel;
 class BusTerminal;
 class Network;
 class Terminal;
@@ -67,7 +67,7 @@ public: // Bus
     Bus& setFictitiousQ0(double q0) override;
 
 public:
-    ConfiguredBus(const std::string& id, const std::string& name, bool fictitious, BusBreakerVoltageLevel& voltageLevel);
+    ConfiguredBus(const std::string& id, const std::string& name, bool fictitious, VoltageLevel& voltageLevel);
 
     ~ConfiguredBus() noexcept override = default;
 
@@ -91,7 +91,7 @@ protected: // MultiVariantObject
     void reduceVariantArraySize(unsigned long number) override;
 
 private:
-    stdcxx::Reference<BusBreakerVoltageLevel> m_voltageLevel;
+    stdcxx::Reference<VoltageLevel> m_voltageLevel;
 
     std::vector<std::list<std::reference_wrapper<BusTerminal> > > m_terminals;
 

@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVIEWS_HPP
-#define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVIEWS_HPP
+#ifndef POWSYBL_IIDM_BUSBREAKERTOPOLOGYVIEWS_HPP
+#define POWSYBL_IIDM_BUSBREAKERTOPOLOGYVIEWS_HPP
 
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/math/UndirectedGraph.hpp>
@@ -15,9 +15,9 @@ namespace powsybl {
 
 namespace iidm {
 
-class BusBreakerVoltageLevel;
+class BusBreakerTopologyModel;
 
-namespace bus_breaker_voltage_level {
+namespace bus_breaker_topology_model {
 
 class BusBreakerViewImpl : public voltage_level::BusBreakerView {
 public: // BusBreakerView
@@ -64,12 +64,12 @@ public: // BusBreakerView
     void traverse(const Bus& bus, const TopologyTraverser& traverser) override;
 
 public:
-    explicit BusBreakerViewImpl(BusBreakerVoltageLevel& voltageLevel);
+    explicit BusBreakerViewImpl(BusBreakerTopologyModel& topologyModel);
 
     ~BusBreakerViewImpl() noexcept override = default;
 
 private:
-    BusBreakerVoltageLevel& m_voltageLevel;
+    BusBreakerTopologyModel& m_topologyModel;
 };
 
 class BusViewImpl : public voltage_level::BusView {
@@ -89,18 +89,18 @@ public:
     stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) override;
 
 public:
-    explicit BusViewImpl(BusBreakerVoltageLevel& voltageLevel);
+    explicit BusViewImpl(BusBreakerTopologyModel& topologyModel);
 
     ~BusViewImpl() noexcept override = default;
 
 private:
-    BusBreakerVoltageLevel& m_voltageLevel;
+    BusBreakerTopologyModel& m_topologyModel;
 };
 
-}  // namespace bus_breaker_voltage_level
+}  // namespace bus_breaker_topology_model
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELVIEWS_HPP
+#endif  // POWSYBL_IIDM_BUSBREAKERTOPOLOGYVIEWS_HPP

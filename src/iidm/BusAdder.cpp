@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/BusAdder.hpp>
 
-#include "BusBreakerVoltageLevel.hpp"
+#include "BusBreakerTopologyModel.hpp"
 #include "ConfiguredBus.hpp"
 
 namespace powsybl {
@@ -19,10 +19,8 @@ BusAdder::BusAdder(VoltageLevel& voltageLevel) :
 }
 
 Bus& BusAdder::add() {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_voltageLevel);
-
-    std::unique_ptr<ConfiguredBus> ptrBus = stdcxx::make_unique<ConfiguredBus>(checkAndGetUniqueId(), getName(), isFictitious(), voltageLevel);
-    return voltageLevel.addBus(std::move(ptrBus));
+    std::unique_ptr<ConfiguredBus> ptrBus = stdcxx::make_unique<ConfiguredBus>(checkAndGetUniqueId(), getName(), isFictitious(), m_voltageLevel);
+    return m_voltageLevel.getTopologyModel<BusBreakerTopologyModel>().addBus(std::move(ptrBus));
 }
 
 const Network& BusAdder::getNetwork() const {

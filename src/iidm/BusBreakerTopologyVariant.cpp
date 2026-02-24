@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "BusBreakerVoltageLevelVariant.hpp"
+#include "BusBreakerTopologyVariant.hpp"
 
 #include <powsybl/stdcxx/make_unique.hpp>
 
@@ -13,11 +13,11 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace bus_breaker_voltage_level {
+namespace bus_breaker_topology_model {
 
-VariantImpl::VariantImpl(BusBreakerVoltageLevel& voltageLevel) :
-    Variant(voltageLevel),
-    m_calculatedBusTopology(voltageLevel) {
+VariantImpl::VariantImpl(BusBreakerTopologyModel& topologyModel) :
+    Variant(topologyModel),
+    m_calculatedBusTopology(topologyModel) {
 }
 
 std::unique_ptr<VariantImpl> VariantImpl::copy() const {
@@ -28,7 +28,7 @@ CalculatedBusTopology& VariantImpl::getCalculatedBusTopology() {
     return m_calculatedBusTopology;
 }
 
-}  // namespace bus_breaker_voltage_level
+}  // namespace bus_breaker_topology_model
 
 }  // namespace iidm
 

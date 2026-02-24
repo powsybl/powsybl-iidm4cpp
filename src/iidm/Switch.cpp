@@ -96,7 +96,7 @@ void Switch::setFictitious(bool fictitious) {
     bool oldValue = isFictitious();
     if (oldValue != fictitious) {
         Identifiable::setFictitious(fictitious);
-        m_voltageLevel.get().invalidateCache();
+        m_voltageLevel.get().getTopologyModel().invalidateCache();
     }
 }
 
@@ -105,7 +105,7 @@ Switch& Switch::setOpen(bool open) {
     bool oldValue = m_open[index];
     if (oldValue != open) {
         m_open[index] = open;
-        m_voltageLevel.get().invalidateCache(isRetained());
+        m_voltageLevel.get().getTopologyModel().invalidateCache(isRetained());
     }
 
     return *this;
@@ -120,7 +120,7 @@ Switch& Switch::setRetained(bool retained) {
     bool oldValue = m_retained[index];
     if (oldValue != retained) {
         m_retained[index] = retained;
-        m_voltageLevel.get().invalidateCache();
+        m_voltageLevel.get().getTopologyModel().invalidateCache();
     }
 
     return *this;

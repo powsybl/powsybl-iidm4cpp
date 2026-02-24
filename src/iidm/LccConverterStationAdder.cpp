@@ -27,7 +27,7 @@ LccConverterStation& LccConverterStationAdder::add() {
     auto& lcc = getNetwork().checkAndAdd<LccConverterStation>(std::move(ptrLcc));
 
     Terminal& terminal = lcc.addTerminal(checkAndGetTerminal());
-    getVoltageLevel().attach(terminal, false);
+    getVoltageLevel().getTopologyModel().attach(terminal, false);
 
     return lcc;
 }

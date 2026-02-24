@@ -10,8 +10,8 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 
-#include "BusBreakerVoltageLevel.hpp"
-#include "NodeBreakerVoltageLevel.hpp"
+#include "BusBreakerTopologyModel.hpp"
+#include "NodeBreakerTopologyModel.hpp"
 
 namespace powsybl {
 
@@ -28,10 +28,9 @@ Switch& SwitchAdder::add() {
     checkOptional(*this, m_node2, "Second connection node is not set");
     checkOptional(*this, m_kind, "Kind is not set");
 
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel());
-
+    auto& voltageLevel = getVoltageLevel();
     std::unique_ptr<Switch> ptrSwitch = stdcxx::make_unique<Switch>(voltageLevel, checkAndGetUniqueId(), getName(), isFictitious(), *m_kind, isOpen(), m_retained);
-    Switch& aSwitch = voltageLevel.addSwitch(std::move(ptrSwitch), *m_node1, *m_node2);
+    Switch& aSwitch = voltageLevel.getTopologyModel<NodeBreakerTopologyModel>().addSwitch(std::move(ptrSwitch), *m_node1, *m_node2);
 
     return aSwitch;
 }
@@ -68,10 +67,10 @@ Switch& SwitchAdder::add() {
     checkNotEmpty(*this, m_bus1, "First connection bus is not set");
     checkNotEmpty(*this, m_bus2, "Second connection bus is not set");
 
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel());
+    auto& voltageLevel = getVoltageLevel();
 
     std::unique_ptr<Switch> ptrSwitch = stdcxx::make_unique<Switch>(voltageLevel, checkAndGetUniqueId(), getName(), isFictitious(), SwitchKind::BREAKER, isOpen(), true);
-    Switch& aSwitch = voltageLevel.addSwitch(std::move(ptrSwitch), m_bus1, m_bus2);
+    Switch& aSwitch = voltageLevel.getTopologyModel<BusBreakerTopologyModel>().addSwitch(std::move(ptrSwitch), m_bus1, m_bus2);
 
     return aSwitch;
 }

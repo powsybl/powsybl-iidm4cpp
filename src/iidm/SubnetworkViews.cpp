@@ -15,8 +15,6 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/flattened.hpp>
 
-#include "BusBreakerVoltageLevelViews.hpp"
-
 namespace powsybl {
 
 namespace iidm {

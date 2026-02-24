@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "NodeBreakerVoltageLevel.hpp"
+#include "NodeBreakerTopologyModel.hpp"
 
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Switch.hpp>
@@ -14,41 +14,30 @@
 #include <powsybl/stdcxx/memory.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
-#include "NodeBreakerVoltageLevelBusCache.hpp"
+#include "NodeBreakerTopologyBusCache.hpp"
 #include "NodeTerminal.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                                                 Network& network, double nominalV, double lowVoltageLimit, double highVoltagelimit) :
-    VoltageLevel(id, name, fictitious, substation, network, nominalV, lowVoltageLimit, highVoltagelimit),
-    m_busNamingStrategy(*this),
-    m_variants(*this, [this]() { return stdcxx::make_unique<node_breaker_voltage_level::VariantImpl>(*this); }),
+NodeBreakerTopologyModel::NodeBreakerTopologyModel(VoltageLevel& voltageLevel) :
+    TopologyModel(voltageLevel),
+    m_busNamingStrategy(voltageLevel),
+    m_variants(*this, [this]() { return stdcxx::make_unique<node_breaker_topology_model::VariantImpl>(*this); }),
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {
 }
 
-NodeBreakerVoltageLevel::NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                            Network& rootnetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltagelimit) :
-    VoltageLevel(id, name, fictitious, substation, rootnetwork, subnetwork, nominalV, lowVoltageLimit, highVoltagelimit),
-    m_busNamingStrategy(*this),
-    m_variants(*this, [this]() { return stdcxx::make_unique<node_breaker_voltage_level::VariantImpl>(*this); }),
-    m_nodeBreakerView(*this),
-    m_busBreakerView(*this),
-    m_busView(*this) {
-}
-
-void NodeBreakerVoltageLevel::addInternalConnection(unsigned long node1, unsigned long node2) {
+void NodeBreakerTopologyModel::addInternalConnection(unsigned long node1, unsigned long node2) {
     m_graph.addVertexIfNotPresent(node1);
     m_graph.addVertexIfNotPresent(node2);
     m_graph.addEdge(node1, node2, stdcxx::ref<Switch>());
     invalidateCache();
 }
 
-Switch& NodeBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, unsigned long node1, unsigned long node2) {
+Switch& NodeBreakerTopologyModel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, unsigned long node1, unsigned long node2) {
     Switch& aSwitch = getNetwork().checkAndAdd(std::move(ptrSwitch));
     m_graph.addVertexIfNotPresent(node1);
     m_graph.addVertexIfNotPresent(node2);
@@ -58,12 +47,11 @@ Switch& NodeBreakerVoltageLevel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, 
     return aSwitch;
 }
 
-void NodeBreakerVoltageLevel::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
-    VoltageLevel::allocateVariantArrayElement(indexes, sourceIndex);
+void NodeBreakerTopologyModel::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     m_variants.allocateVariantArrayElement(indexes, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
-void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
+void NodeBreakerTopologyModel::attach(Terminal& terminal, bool test) {
     checkTerminal(terminal);
     if (!test) {
         auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
@@ -74,7 +62,7 @@ void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
         if (static_cast<bool>(tmp)) {
             throw ValidationException(terminal.getConnectable(),
                 stdcxx::format("An equipment (%1%) is already connected to the node %2% of voltage level %3%",
-                                tmp.get().getConnectable().get().getId(), node, getId()));
+                                tmp.get().getConnectable().get().getId(), node, getVoltageLevel().getId()));
         }
 
         // create the link terminal <-> graph vertex
@@ -86,23 +74,23 @@ void NodeBreakerVoltageLevel::attach(Terminal& terminal, bool test) {
     }
 }
 
-void NodeBreakerVoltageLevel::checkTerminal(Terminal& terminal) const {
+void NodeBreakerTopologyModel::checkTerminal(Terminal& terminal) const {
     if (!stdcxx::isInstanceOf<NodeTerminal>(terminal)) {
         throw ValidationException(terminal.getConnectable(),
             stdcxx::format("Voltage level %1% has a node/breaker topology, a node connection should be specified instead of a bus connection",
-                            getId()));
+                            getVoltageLevel().getId()));
     }
 }
 
-void NodeBreakerVoltageLevel::clean() {
+void NodeBreakerTopologyModel::clean() {
     m_graph.removeIsolatedVertices();
 }
 
-bool NodeBreakerVoltageLevel::connect(Terminal& terminal) {
+bool NodeBreakerTopologyModel::connect(Terminal& terminal) {
     //Only keep the closed non-fictionnal breakers in the nominal case
     return connect(terminal, SwitchPredicate::IS_NONFICTIONAL_BREAKER());
 }
-bool NodeBreakerVoltageLevel::connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) {
+bool NodeBreakerTopologyModel::connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) {
     checkTerminal(terminal);
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
 
@@ -115,10 +103,10 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal, const stdcxx::Predicat
     // find all paths starting from the current terminal to a busbar section that does not contain an open switch
     // that is not of the type of switch the user wants to disconnect
     // paths are already sorted
-    node_breaker_voltage_level::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& refTerminal) {
+    node_breaker_topology_model::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& refTerminal) {
         return static_cast<bool>(refTerminal) && refTerminal.get().getConnectable().get().getType() == IdentifiableType::BUSBAR_SECTION;
     };
-    node_breaker_voltage_level::Graph::EdgeVisitor checkNonClosableSwitch = [&isTypeSwitchToOperate](const stdcxx::Reference<Switch>& aSwitch) {
+    node_breaker_topology_model::Graph::EdgeVisitor checkNonClosableSwitch = [&isTypeSwitchToOperate](const stdcxx::Reference<Switch>& aSwitch) {
         return aSwitch && SwitchPredicate::IS_OPEN()(aSwitch.get()) && !isTypeSwitchToOperate(aSwitch.get());
     };
     const auto& paths = m_graph.findAllPaths(node, isBusbarSection, checkNonClosableSwitch);
@@ -140,12 +128,11 @@ bool NodeBreakerVoltageLevel::connect(Terminal& terminal, const stdcxx::Predicat
     return connected;
 }
 
-void NodeBreakerVoltageLevel::deleteVariantArrayElement(unsigned long index) {
-    VoltageLevel::deleteVariantArrayElement(index);
+void NodeBreakerTopologyModel::deleteVariantArrayElement(unsigned long index) {
     m_variants.deleteVariantArrayElement(index);
 }
 
-void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
+void NodeBreakerTopologyModel::detach(Terminal& terminal) {
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
 
     unsigned long node = nodeTerminal.getNode();
@@ -161,11 +148,11 @@ void NodeBreakerVoltageLevel::detach(Terminal& terminal) {
     clean();
 }
 
-bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal) {
+bool NodeBreakerTopologyModel::disconnect(Terminal& terminal) {
     // Only keep the closed non-fictional breakers in the nominal case
     return disconnect(terminal, SwitchPredicate::IS_CLOSED_BREAKER());
 }
-bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) {
+bool NodeBreakerTopologyModel::disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) {
     checkTerminal(terminal);
     auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
 
@@ -176,10 +163,10 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal, const stdcxx::Predi
     unsigned long node = nodeTerminal.getNode();
 
     // find all paths starting from the current terminal to a busbar section that does not contain an open switch
-    node_breaker_voltage_level::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& refTerminal) {
+    node_breaker_topology_model::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& refTerminal) {
         return static_cast<bool>(refTerminal) && refTerminal.get().getConnectable().get().getType() == IdentifiableType::BUSBAR_SECTION;
     };
-    node_breaker_voltage_level::Graph::EdgeVisitor isOpenedSwitch = [](const stdcxx::Reference<Switch>& aSwitch) {
+    node_breaker_topology_model::Graph::EdgeVisitor isOpenedSwitch = [](const stdcxx::Reference<Switch>& aSwitch) {
         return aSwitch && SwitchPredicate::IS_OPEN()(aSwitch.get());
     };
     const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedSwitch);
@@ -211,44 +198,43 @@ bool NodeBreakerVoltageLevel::disconnect(Terminal& terminal, const stdcxx::Predi
     return true;
 }
 
-void NodeBreakerVoltageLevel::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
-    VoltageLevel::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+void NodeBreakerTopologyModel::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
 }
 
-const NodeBreakerVoltageLevel::BusBreakerView& NodeBreakerVoltageLevel::getBusBreakerView() const {
+const NodeBreakerTopologyModel::BusBreakerView& NodeBreakerTopologyModel::getBusBreakerView() const {
     return m_busBreakerView;
 }
 
-NodeBreakerVoltageLevel::BusBreakerView& NodeBreakerVoltageLevel::getBusBreakerView() {
+NodeBreakerTopologyModel::BusBreakerView& NodeBreakerTopologyModel::getBusBreakerView() {
     return m_busBreakerView;
 }
 
-const NodeBreakerVoltageLevel::BusView& NodeBreakerVoltageLevel::getBusView() const {
+const NodeBreakerTopologyModel::BusView& NodeBreakerTopologyModel::getBusView() const {
     return m_busView;
 }
 
-NodeBreakerVoltageLevel::BusView& NodeBreakerVoltageLevel::getBusView() {
+NodeBreakerTopologyModel::BusView& NodeBreakerTopologyModel::getBusView() {
     return m_busView;
 }
 
-node_breaker_voltage_level::BusNamingStrategy& NodeBreakerVoltageLevel::getBusNamingStrategy() {
+node_breaker_topology_model::BusNamingStrategy& NodeBreakerTopologyModel::getBusNamingStrategy() {
     return m_busNamingStrategy;
 }
 
-const node_breaker_voltage_level::CalculatedBusBreakerTopology& NodeBreakerVoltageLevel::getCalculatedBusBreakerTopology() const {
+const node_breaker_topology_model::CalculatedBusBreakerTopology& NodeBreakerTopologyModel::getCalculatedBusBreakerTopology() const {
     return m_variants.get().getCalculatedBusBreakerTopology();
 }
 
-node_breaker_voltage_level::CalculatedBusBreakerTopology& NodeBreakerVoltageLevel::getCalculatedBusBreakerTopology() {
+node_breaker_topology_model::CalculatedBusBreakerTopology& NodeBreakerTopologyModel::getCalculatedBusBreakerTopology() {
     return m_variants.get().getCalculatedBusBreakerTopology();
 }
 
-node_breaker_voltage_level::CalculatedBusTopology& NodeBreakerVoltageLevel::getCalculatedBusTopology() {
+node_breaker_topology_model::CalculatedBusTopology& NodeBreakerTopologyModel::getCalculatedBusTopology() {
     return m_variants.get().getCalculatedBusTopology();
 }
 
-stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::string& switchId, bool throwException) const {
+stdcxx::optional<unsigned long> NodeBreakerTopologyModel::getEdge(const std::string& switchId, bool throwException) const {
     checkNotEmpty(switchId, "switch id is null");
 
     const auto& it = m_switches.find(switchId);
@@ -259,41 +245,41 @@ stdcxx::optional<unsigned long> NodeBreakerVoltageLevel::getEdge(const std::stri
         return {};
     }
 
-    throw PowsyblException(stdcxx::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getId()));
+    throw PowsyblException(stdcxx::format("Switch '%1%' not found in the voltage level '%2%'", switchId, getVoltageLevel().getId()));
 }
 
-const node_breaker_voltage_level::Graph& NodeBreakerVoltageLevel::getGraph() const {
+const node_breaker_topology_model::Graph& NodeBreakerTopologyModel::getGraph() const {
     return m_graph;
 }
 
-unsigned long NodeBreakerVoltageLevel::getInternalConnectionCount() const {
+unsigned long NodeBreakerTopologyModel::getInternalConnectionCount() const {
     const auto& switches = m_graph.getEdgeObjects();
     return std::count(std::begin(switches), std::end(switches), stdcxx::ref<Switch>());
 }
 
-long NodeBreakerVoltageLevel::getMaximumNodeIndex() const {
+long NodeBreakerTopologyModel::getMaximumNodeIndex() const {
     return m_graph.getVertexCapacity() - 1;
 }
 
-unsigned long NodeBreakerVoltageLevel::getNode1(const std::string& switchId) const {
+unsigned long NodeBreakerTopologyModel::getNode1(const std::string& switchId) const {
     const auto& e = getEdge(switchId, true);
     return m_graph.getVertex1(*e);
 }
 
-unsigned long NodeBreakerVoltageLevel::getNode2(const std::string& switchId) const {
+unsigned long NodeBreakerTopologyModel::getNode2(const std::string& switchId) const {
     const auto& e = getEdge(switchId, true);
     return m_graph.getVertex2(*e);
 }
 
-const NodeBreakerVoltageLevel::NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreakerView() const {
+const NodeBreakerTopologyModel::NodeBreakerView& NodeBreakerTopologyModel::getNodeBreakerView() const {
     return m_nodeBreakerView;
 }
 
-NodeBreakerVoltageLevel::NodeBreakerView& NodeBreakerVoltageLevel::getNodeBreakerView() {
+NodeBreakerTopologyModel::NodeBreakerView& NodeBreakerTopologyModel::getNodeBreakerView() {
     return m_nodeBreakerView;
 }
 
-stdcxx::CReference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string& switchId) const {
+stdcxx::CReference<Switch> NodeBreakerTopologyModel::getSwitch(const std::string& switchId) const {
     stdcxx::Reference<Switch> aSwitch;
 
     const auto& e = getEdge(switchId, false);
@@ -307,30 +293,30 @@ stdcxx::CReference<Switch> NodeBreakerVoltageLevel::getSwitch(const std::string&
     return stdcxx::cref<Switch>(aSwitch);
 }
 
-unsigned long NodeBreakerVoltageLevel::getSwitchCount() const {
+unsigned long NodeBreakerTopologyModel::getSwitchCount() const {
     const auto& switches = m_graph.getEdgeObjects();
     return std::count_if(std::begin(switches), std::end(switches), [](stdcxx::Reference<Switch> sw) {
         return static_cast<bool>(sw);
     });
 }
 
-stdcxx::const_range<Switch> NodeBreakerVoltageLevel::getSwitches() const {
+stdcxx::const_range<Switch> NodeBreakerTopologyModel::getSwitches() const {
     return getNodeBreakerView().getSwitches();
 }
 
-stdcxx::range<Switch> NodeBreakerVoltageLevel::getSwitches() {
+stdcxx::range<Switch> NodeBreakerTopologyModel::getSwitches() {
     return getNodeBreakerView().getSwitches();
 }
 
-stdcxx::CReference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long node) const {
+stdcxx::CReference<Terminal> NodeBreakerTopologyModel::getTerminal(unsigned long node) const {
     return stdcxx::cref<Terminal>(m_graph.getVertexObject(node));
 }
 
-stdcxx::Reference<Terminal> NodeBreakerVoltageLevel::getTerminal(unsigned long node) {
+stdcxx::Reference<Terminal> NodeBreakerTopologyModel::getTerminal(unsigned long node) {
     return stdcxx::ref<Terminal>(m_graph.getVertexObject(node));
 }
 
-stdcxx::const_range<Terminal> NodeBreakerVoltageLevel::getTerminals() const {
+stdcxx::const_range<Terminal> NodeBreakerTopologyModel::getTerminals() const {
     const auto& filter = [](const stdcxx::Reference<NodeTerminal>& terminal) {
         return static_cast<bool>(terminal);
     };
@@ -340,7 +326,7 @@ stdcxx::const_range<Terminal> NodeBreakerVoltageLevel::getTerminals() const {
     return m_graph.getVertexObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
-stdcxx::range<Terminal> NodeBreakerVoltageLevel::getTerminals() {
+stdcxx::range<Terminal> NodeBreakerTopologyModel::getTerminals() {
     const auto& filter = [](const stdcxx::Reference<NodeTerminal>& terminal) {
         return static_cast<bool>(terminal);
     };
@@ -350,20 +336,20 @@ stdcxx::range<Terminal> NodeBreakerVoltageLevel::getTerminals() {
     return m_graph.getVertexObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
-const TopologyKind& NodeBreakerVoltageLevel::getTopologyKind() const {
+const TopologyKind& NodeBreakerTopologyModel::getTopologyKind() const {
     static TopologyKind s_topologyKind = TopologyKind::NODE_BREAKER;
 
     return s_topologyKind;
 }
 
-math::TraverseResult NodeBreakerVoltageLevel::getTraverseResult(TerminalSet& visitedTerminals, NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) {
+math::TraverseResult NodeBreakerTopologyModel::getTraverseResult(TerminalSet& visitedTerminals, NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) {
     if (visitedTerminals.insert(terminal).second) {
         return traverser.traverse(terminal, true);
     }
     return math::TraverseResult::TERMINATE_PATH;
 }
 
-void NodeBreakerVoltageLevel::invalidateCache(bool exceptBusBreakerView) {
+void NodeBreakerTopologyModel::invalidateCache(bool exceptBusBreakerView) {
     if(!exceptBusBreakerView) {
         m_variants.get().getCalculatedBusBreakerTopology().invalidateCache();
         getNetwork().getBusBreakerView().invalidateCache();
@@ -374,18 +360,17 @@ void NodeBreakerVoltageLevel::invalidateCache(bool exceptBusBreakerView) {
     getNetwork().getSynchronousComponentsManager().invalidate();
 }
 
-bool NodeBreakerVoltageLevel::isConnected(const Terminal& terminal) const {
+bool NodeBreakerTopologyModel::isConnected(const Terminal& terminal) const {
     const auto& nodeTerminal = dynamic_cast<const NodeTerminal&>(terminal);
 
     return nodeTerminal.getBusView().getBus();
 }
 
-void NodeBreakerVoltageLevel::reduceVariantArraySize(unsigned long number) {
-    VoltageLevel::reduceVariantArraySize(number);
+void NodeBreakerTopologyModel::reduceVariantArraySize(unsigned long number) {
     m_variants.reduceVariantArraySize(number);
 }
 
-void NodeBreakerVoltageLevel::removeInternalConnections(unsigned long node1, unsigned long node2) {
+void NodeBreakerTopologyModel::removeInternalConnections(unsigned long node1, unsigned long node2) {
     const auto& filter = [this, node1, node2](const unsigned long& edge) {
         return !m_graph.getEdgeObject(edge) && ((m_graph.getVertex1(edge) == node1 && m_graph.getVertex2(edge) == node2) || (m_graph.getVertex1(edge) == node2 && m_graph.getVertex2(edge) == node1));
     };
@@ -401,10 +386,10 @@ void NodeBreakerVoltageLevel::removeInternalConnections(unsigned long node1, uns
     invalidateCache();
 }
 
-void NodeBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
+void NodeBreakerTopologyModel::removeSwitch(const std::string& switchId) {
     const auto& it = m_switches.find(switchId);
     if (it == m_switches.end()) {
-        throw PowsyblException(stdcxx::format("Switch '%1%' not found in voltage level '%2%'", switchId, getId()));
+        throw PowsyblException(stdcxx::format("Switch '%1%' not found in voltage level '%2%'", switchId, getVoltageLevel().getId()));
     }
 
     const auto& aSwitch = m_graph.removeEdge(it->second);
@@ -414,7 +399,7 @@ void NodeBreakerVoltageLevel::removeSwitch(const std::string& switchId) {
     getNetwork().remove(aSwitch.get());
 }
 
-void NodeBreakerVoltageLevel::removeTopology() {
+void NodeBreakerTopologyModel::removeTopology() {
     for (Switch& s : m_graph.getEdgeObjects()) {
         getNetwork().getIndex().remove(s);
     }
@@ -422,12 +407,12 @@ void NodeBreakerVoltageLevel::removeTopology() {
     m_switches.clear();
 }
 
-bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, math::TraversalType traversalType) const {
+bool NodeBreakerTopologyModel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, math::TraversalType traversalType) const {
     TerminalSet traversedTerminals;
     return traverse(terminal, traverser, traversedTerminals, traversalType);
 }
 
-bool NodeBreakerVoltageLevel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) const {
+bool NodeBreakerTopologyModel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) const {
     const math::TraverseResult& termTraverseResult = getTraverseResult(traversedTerminals, terminal, traverser);
     if (termTraverseResult == math::TraverseResult::TERMINATE_TRAVERSER) {
         return false;

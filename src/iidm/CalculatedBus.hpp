@@ -18,11 +18,11 @@ namespace powsybl {
 
 namespace iidm {
 
-class NodeBreakerVoltageLevel;
+class VoltageLevel;
 class NodeTerminal;
 
 /**
- * A Bus implementation used in BusBreakerView and BusView of a NodeBreakerVoltageLevel
+ * A Bus implementation used in BusBreakerView and BusView of a NodeBreaker VoltageLevel
  */
 class CalculatedBus : public Bus {
 public: // Bus
@@ -76,7 +76,7 @@ public:
      * @param terminals the list of NodeTerminal references which are connected to this bus
      * @param getBusFromTerminalFunc function that retrieve the bus associated to a given terminal
      */
-    CalculatedBus(const std::string& id, const std::string& name, bool fictitious, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals,
+    CalculatedBus(const std::string& id, const std::string& name, bool fictitious, VoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals,
         const std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)>& getBusFromTerminalFunc );
 
     ~CalculatedBus() noexcept override = default;
@@ -87,13 +87,13 @@ public:
     void invalidate();
 
 private:
-    static stdcxx::CReference<NodeTerminal> findTerminal(const NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals);
+    static stdcxx::CReference<NodeTerminal> findTerminal(const VoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals);
 
 private:
     void checkValidity() const;
 
 private:
-    stdcxx::Reference<NodeBreakerVoltageLevel> m_voltageLevel;
+    stdcxx::Reference<VoltageLevel> m_voltageLevel;
 
     bool m_valid = true;
 

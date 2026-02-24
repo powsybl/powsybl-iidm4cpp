@@ -98,9 +98,6 @@ stdcxx::CReference<Identifiable> NetworkIndex::find(const std::string& id) const
 template <>
 const Identifiable& NetworkIndex::get(const std::string& id) const;
 
-template <>
-unsigned long NetworkIndex::getObjectCount<VoltageLevel>() const;
-
 }  // namespace iidm
 
 }  // namespace powsybl

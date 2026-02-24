@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "BusBreakerVoltageLevelTopology.hpp"
+#include "BusBreakerTopologyCalculatedBus.hpp"
 
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/Switch.hpp>
@@ -15,27 +15,27 @@
 #include <powsybl/stdcxx/reference.hpp>
 #include <powsybl/stdcxx/set.hpp>
 
-#include "BusBreakerVoltageLevel.hpp"
+#include "BusBreakerTopologyModel.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-namespace bus_breaker_voltage_level {
+namespace bus_breaker_topology_model {
 
-CalculatedBusTopology::CalculatedBusTopology(BusBreakerVoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+CalculatedBusTopology::CalculatedBusTopology(BusBreakerTopologyModel& topologyModel) :
+    m_topologyModel(topologyModel) {
 }
 
 std::unique_ptr<MergedBus> CalculatedBusTopology::createMergedBus(unsigned long busCount, const MergedBus::BusSet& busSet) const {
 
-    const Network& network = m_voltageLevel.getNetwork();
-    const std::string& mergedBusId = Identifiables::getUniqueId(stdcxx::format("%1%_%2%", m_voltageLevel.getId(), busCount), [&network](const std::string& id) {
+    const Network& network = m_topologyModel.getNetwork();
+    const std::string& mergedBusId = Identifiables::getUniqueId(stdcxx::format("%1%_%2%", m_topologyModel.getVoltageLevel().getId(), busCount), [&network](const std::string& id) {
             return static_cast<bool>(network.find(id));
         });
-    const std::string& mergedBusName = m_voltageLevel.getOptionalName().empty() ? "" : stdcxx::format("%1%_%2%", m_voltageLevel.getOptionalName(), busCount);
+    const std::string& mergedBusName = m_topologyModel.getVoltageLevel().getOptionalName().empty() ? "" : stdcxx::format("%1%_%2%", m_topologyModel.getVoltageLevel().getOptionalName(), busCount);
 
-    return stdcxx::make_unique<MergedBus>(mergedBusId, mergedBusName, m_voltageLevel.isFictitious(), busSet);
+    return stdcxx::make_unique<MergedBus>(mergedBusId, mergedBusName, m_topologyModel.getVoltageLevel().isFictitious(), busSet);
 }
 
 stdcxx::Reference<MergedBus> CalculatedBusTopology::getMergedBus(const std::string& id, bool throwException) {
@@ -43,7 +43,7 @@ stdcxx::Reference<MergedBus> CalculatedBusTopology::getMergedBus(const std::stri
 
     stdcxx::Reference<MergedBus> bus = m_cache->getMergedBus(id);
     if (throwException && !bus) {
-        throw PowsyblException(stdcxx::format("Bus %1% not found in voltage level %2%", id, m_voltageLevel.getId()));
+        throw PowsyblException(stdcxx::format("Bus %1% not found in voltage level %2%", id, m_topologyModel.getVoltageLevel().getId()));
     }
 
     return bus;
@@ -125,7 +125,7 @@ void CalculatedBusTopology::updateCache() {
     BusCache::MergedBusById mergedBuses;
     BusCache::MergedBusByConfiguredBus mapping;
 
-    const auto& graph = m_voltageLevel.getGraph();
+    const auto& graph = m_topologyModel.getGraph();
 
     std::vector<bool> encountered(graph.getVertexCapacity(), false);
     for (unsigned long v : graph.getVertices()) {
@@ -160,7 +160,7 @@ void CalculatedBusTopology::updateCache() {
     m_cache = stdcxx::make_unique<BusCache>(std::move(mergedBuses), std::move(mapping));
 }
 
-}  // namespace bus_breaker_voltage_level
+}  // namespace bus_breaker_topology_model
 
 }  // namespace iidm
 

@@ -44,7 +44,7 @@ StaticVarCompensator& StaticVarCompensatorAdder::add() {
     auto& svc = network.checkAndAdd<StaticVarCompensator>(std::move(ptrSvc));
 
     Terminal& terminal = svc.addTerminal(std::move(ptrTerminal));
-    getVoltageLevel().attach(terminal, false);
+    getVoltageLevel().getTopologyModel().attach(terminal, false);
 
     return svc;
 }

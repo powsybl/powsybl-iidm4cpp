@@ -26,7 +26,7 @@ Ground& GroundAdder::add() {
     auto& ground = network.checkAndAdd<Ground>(std::move(ptrGround));
 
     Terminal& terminal = ground.addTerminal(checkAndGetTerminal());
-    getVoltageLevel().attach(terminal, false);
+    getVoltageLevel().getTopologyModel().attach(terminal, false);
 
     return ground;
 }

@@ -44,7 +44,7 @@ Load& LoadAdder::add() {
     auto& load = network.checkAndAdd<Load>(std::move(ptrLoad));
 
     Terminal& terminal = load.addTerminal(checkAndGetTerminal());
-    getVoltageLevel().attach(terminal, false);
+    getVoltageLevel().getTopologyModel().attach(terminal, false);
 
     return load;
 }

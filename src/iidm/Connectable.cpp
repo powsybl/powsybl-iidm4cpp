@@ -112,7 +112,7 @@ void Connectable::remove() {
 
     for (auto& terminal : m_terminals) {
         VoltageLevel& voltageLevel = terminal->getVoltageLevel();
-        voltageLevel.detach(*terminal);
+        voltageLevel.getTopologyModel().detach(*terminal);
     }
 
     network.remove(*this);

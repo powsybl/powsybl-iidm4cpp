@@ -40,7 +40,7 @@ ShuntCompensator& ShuntCompensatorAdder::add() {
     auto& shunt = getNetwork().checkAndAdd<ShuntCompensator>(std::move(ptrShunt));
 
     Terminal& terminal = shunt.addTerminal(std::move(ptrTerminal));
-    getVoltageLevel().attach(terminal, false);
+    getVoltageLevel().getTopologyModel().attach(terminal, false);
 
     return shunt;
 }

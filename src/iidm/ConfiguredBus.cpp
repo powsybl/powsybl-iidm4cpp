@@ -16,19 +16,19 @@
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/TopologyVisitor.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/cast.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
-#include "BusBreakerVoltageLevel.hpp"
 #include "BusTerminal.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-ConfiguredBus::ConfiguredBus(const std::string& id, const std::string& name, bool fictitious, BusBreakerVoltageLevel& voltageLevel) :
+ConfiguredBus::ConfiguredBus(const std::string& id, const std::string& name, bool fictitious, VoltageLevel& voltageLevel) :
     Bus(id, name, fictitious),
     m_voltageLevel(voltageLevel),
     m_terminals(voltageLevel.getNetwork().getVariantManager().getVariantArraySize()),

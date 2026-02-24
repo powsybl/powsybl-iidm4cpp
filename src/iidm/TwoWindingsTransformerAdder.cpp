@@ -55,16 +55,16 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     checkRatedS(*this, m_ratedS);
 
     // check that the two windings transformer is attachable on both side
-    voltageLevel1.attach(*ptrTerminal1, true);
-    voltageLevel2.attach(*ptrTerminal2, true);
+    voltageLevel1.getTopologyModel().attach(*ptrTerminal1, true);
+    voltageLevel2.getTopologyModel().attach(*ptrTerminal2, true);
 
     std::unique_ptr<TwoWindingsTransformer> ptrTransformer = stdcxx::make_unique<TwoWindingsTransformer>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_r, m_x, m_g, m_b, m_ratedU1, m_ratedU2, m_ratedS);
     auto& transformer = getNetwork().checkAndAdd<TwoWindingsTransformer>(std::move(ptrTransformer));
 
     Terminal& terminal1 = transformer.addTerminal(std::move(ptrTerminal1));
     Terminal& terminal2 = transformer.addTerminal(std::move(ptrTerminal2));
-    voltageLevel1.attach(terminal1, false);
-    voltageLevel2.attach(terminal2, false);
+    voltageLevel1.getTopologyModel().attach(terminal1, false);
+    voltageLevel2.getTopologyModel().attach(terminal2, false);
 
     return transformer;
 }

@@ -11,9 +11,6 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
 
-#include "BusBreakerVoltageLevel.hpp"
-#include "NodeBreakerVoltageLevel.hpp"
-
 namespace powsybl {
 
 namespace iidm {
@@ -39,31 +36,13 @@ VoltageLevel& VoltageLevelAdder::add() {
     checkVoltageLimits(*this, m_lowVoltageLimit, m_highVoltageLimit);
     checkOptional(*this, m_topologyKind, "TopologyKind is not set");
 
-    stdcxx::Reference<VoltageLevel> voltageLevel;
-    switch (*m_topologyKind) {
-        case TopologyKind::NODE_BREAKER:
-            if(static_cast<bool>(m_subNetworkRef)) {
-                voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<NodeBreakerVoltageLevel>(
-                    stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_subNetworkRef.get(), m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
-            } else {
-                voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<NodeBreakerVoltageLevel>(
-                    stdcxx::make_unique<NodeBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
-            }
-            break;
-
-        case TopologyKind::BUS_BREAKER:
-            if(static_cast<bool>(m_subNetworkRef)) {
-                voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<BusBreakerVoltageLevel>(
-                    stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_subNetworkRef.get(), m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
-            } else {
-                voltageLevel = stdcxx::ref<VoltageLevel>(getNetwork().checkAndAdd<BusBreakerVoltageLevel>(
-                    stdcxx::make_unique<BusBreakerVoltageLevel>(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit)));
-            }
-            break;
-
-        default:
-            throw AssertionError(stdcxx::format("Unexpected TopologyKind value: %1%", *m_topologyKind));
+    std::unique_ptr<VoltageLevel> ptrVoltageLevel;
+    if(static_cast<bool>(m_subNetworkRef)) {
+        ptrVoltageLevel = std::unique_ptr<VoltageLevel>(new VoltageLevel(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_subNetworkRef.get(), m_nominalV, m_lowVoltageLimit, m_highVoltageLimit, *m_topologyKind));
+    } else {
+        ptrVoltageLevel = std::unique_ptr<VoltageLevel>(new VoltageLevel(checkAndGetUniqueId(), getName(), isFictitious(), m_substation, m_network, m_nominalV, m_lowVoltageLimit, m_highVoltageLimit, *m_topologyKind));
     }
+    auto& voltageLevel = getNetwork().checkAndAdd<VoltageLevel>(std::move(ptrVoltageLevel));    
 
     if (static_cast<bool>(m_substation)) {
         m_substation.get().addVoltageLevel(voltageLevel);

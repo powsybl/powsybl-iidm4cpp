@@ -34,7 +34,7 @@ Battery& BatteryAdder::add() {
     auto& battery = network.checkAndAdd<Battery>(std::move(ptrBattery));
 
     Terminal& terminal = battery.addTerminal(checkAndGetTerminal());
-    getVoltageLevel().attach(terminal, false);
+    getVoltageLevel().getTopologyModel().attach(terminal, false);
 
     return battery;
 }

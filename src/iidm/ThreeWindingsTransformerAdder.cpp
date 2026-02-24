@@ -60,9 +60,9 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     }
 
     // check that the 3 windings transformer is attachable on the 3 sides
-    voltageLevel1.attach(*ptrTerminal1, true);
-    voltageLevel2.attach(*ptrTerminal2, true);
-    voltageLevel3.attach(*ptrTerminal3, true);
+    voltageLevel1.getTopologyModel().attach(*ptrTerminal1, true);
+    voltageLevel2.getTopologyModel().attach(*ptrTerminal2, true);
+    voltageLevel3.getTopologyModel().attach(*ptrTerminal3, true);
 
     // Define ratedU0 equal to ratedU1 if it has not been defined
     if (std::isnan(m_ratedU0)) {
@@ -77,9 +77,9 @@ ThreeWindingsTransformer& ThreeWindingsTransformerAdder::add() {
     Terminal& terminal2 = transformer.addTerminal(std::move(ptrTerminal2));
     Terminal& terminal3 = transformer.addTerminal(std::move(ptrTerminal3));
 
-    voltageLevel1.attach(terminal1, false);
-    voltageLevel2.attach(terminal2, false);
-    voltageLevel3.attach(terminal3, false);
+    voltageLevel1.getTopologyModel().attach(terminal1, false);
+    voltageLevel2.getTopologyModel().attach(terminal2, false);
+    voltageLevel3.getTopologyModel().attach(terminal3, false);
 
     return transformer;
 }

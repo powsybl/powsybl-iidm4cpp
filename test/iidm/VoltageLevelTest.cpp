@@ -88,6 +88,20 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(420, vl1.getHighVoltageLimit(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(380, vl1.getNominalV(), std::numeric_limits<double>::epsilon());
 
+    auto& topology1 = vl1.getTopologyModel();
+    BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, topology1.getTopologyKind());
+    BOOST_CHECK_EQUAL(stdcxx::demangle(topology1), "powsybl::iidm::BusBreakerTopologyModel");
+    topology1.getBusBreakerView();
+    POWSYBL_ASSERT_THROW(topology1.getNodeBreakerView(), AssertionError, "Not implemented");
+
+    VoltageLevel& vl2 = network.getVoltageLevel("VL2");
+    BOOST_CHECK_EQUAL(TopologyKind::NODE_BREAKER, vl2.getTopologyKind());
+    auto& topology2 = vl2.getTopologyModel();
+    BOOST_CHECK_EQUAL(TopologyKind::NODE_BREAKER, topology2.getTopologyKind());
+    BOOST_CHECK_EQUAL(stdcxx::demangle(topology2), "powsybl::iidm::NodeBreakerTopologyModel");
+    topology2.getBusBreakerView();
+    topology2.getNodeBreakerView();
+
     Substation& s1 = network.getSubstation("S1");
     VoltageLevelAdder adder = s1.newVoltageLevel().setId("VL1");
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': Nominal voltage is undefined");
@@ -105,12 +119,12 @@ BOOST_AUTO_TEST_CASE(constructor) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Voltage level 'VL1': TopologyKind is not set");
 
     adder.setTopologyKind(static_cast<TopologyKind>(5)).setLowVoltageLimit(stdcxx::nan()).setHighVoltageLimit(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'VoltageLevel' with the id 'VL1'");
+
+    adder.setId("UNIQUE_VOLTAGE_LEVEL_ID");
     POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected TopologyKind value: 5");
 
-    adder.setTopologyKind(TopologyKind::BUS_BREAKER);
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'BusBreakerVoltageLevel' with the id 'VL1'");
-
-    adder.setId("UNIQUE_VOLTAGE_LEVEL_ID").setLowVoltageLimit(0).setHighVoltageLimit(0);
+    adder.setTopologyKind(TopologyKind::BUS_BREAKER).setLowVoltageLimit(0).setHighVoltageLimit(0);
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_CHECK_EQUAL(voltageLevelCount + 1, network.getVoltageLevelCount());
 

@@ -24,7 +24,7 @@ namespace powsybl {
 namespace iidm {
 
 /**
- * A Bus implementation used in the BusView of a BusBreakerVoltageLevel
+ * A Bus implementation used in the BusView of a BusBreaker VoltageLevel
  */
 class MergedBus : public Bus {
 public:

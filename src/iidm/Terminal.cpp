@@ -43,7 +43,7 @@ bool Terminal::connect() {
     return connect(SwitchPredicate::IS_NONFICTIONAL_BREAKER());
 }
 bool Terminal::connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate){
-    return m_voltageLevel.connect(*this, isTypeSwitchToOperate);
+    return m_voltageLevel.getTopologyModel().connect(*this, isTypeSwitchToOperate);
 }
 
 void Terminal::deleteVariantArrayElement(unsigned long /*index*/) {
@@ -54,7 +54,7 @@ bool Terminal::disconnect() {
     return disconnect(SwitchPredicate::IS_CLOSED_BREAKER());
 }
 bool Terminal::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
-    return m_voltageLevel.disconnect(*this, isSwitchOpenable);
+    return m_voltageLevel.getTopologyModel().disconnect(*this, isSwitchOpenable);
 }
 
 void Terminal::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {

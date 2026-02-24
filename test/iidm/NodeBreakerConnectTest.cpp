@@ -335,7 +335,7 @@ BOOST_AUTO_TEST_CASE(NodeBreakerConnectViaVoltageLevelConnectedLoad) {
     BOOST_CHECK(network.getSwitch("B2").isOpen());
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL");
-    voltageLevel.connect(l.getTerminal());
+    voltageLevel.getTopologyModel().connect(l.getTerminal());
 
     BOOST_CHECK(network.getSwitch("B2").isOpen());
     BOOST_CHECK(l.getTerminal().isConnected());
@@ -365,7 +365,7 @@ BOOST_AUTO_TEST_CASE(NodeBreakerDisconnectionViaVoltageLevelDiamond) {
     BOOST_CHECK(l.getTerminal().isConnected());
 
     VoltageLevel& voltageLevel = network.getVoltageLevel("VL");
-    voltageLevel.disconnect(l.getTerminal());
+    voltageLevel.getTopologyModel().disconnect(l.getTerminal());
 
     BOOST_CHECK(!l.getTerminal().isConnected());
 }

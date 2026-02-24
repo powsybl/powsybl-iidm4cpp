@@ -33,7 +33,7 @@ VscConverterStation& VscConverterStationAdder::add() {
     auto& vsc = n.checkAndAdd<VscConverterStation>(std::move(ptrVsc));
 
     Terminal& terminal = vsc.addTerminal(std::move(terminalPtr));
-    getVoltageLevel().attach(terminal, false);
+    getVoltageLevel().getTopologyModel().attach(terminal, false);
 
     return vsc;
 }

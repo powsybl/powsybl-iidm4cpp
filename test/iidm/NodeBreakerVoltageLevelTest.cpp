@@ -1391,22 +1391,23 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
     BOOST_TEST(std::isnan(terminal.getAngle()));
     BOOST_TEST(std::isnan(terminal.getI()));
 
+    TopologyModel& topology = vl.getTopologyModel();
     BOOST_TEST(terminal.isConnected());
-    BOOST_TEST(vl.disconnect(terminal));
+    BOOST_TEST(topology.disconnect(terminal));
     BOOST_TEST(!terminal.isConnected());
     // TODO(thiebarr): BOOST_TEST(!vl.disconnect(terminal));
     // TODO(thiebarr): BOOST_TEST(!terminal.isConnected());
-    BOOST_TEST(vl.connect(terminal));
+    BOOST_TEST(topology.connect(terminal));
     BOOST_TEST(terminal.isConnected());
-    BOOST_TEST(!vl.connect(terminal));
+    BOOST_TEST(!topology.connect(terminal));
     BOOST_TEST(terminal.isConnected());
     BOOST_TEST(terminal.disconnect());
     BOOST_TEST(!terminal.isConnected());
     BOOST_TEST(terminal.connect());
     BOOST_TEST(terminal.isConnected());
 
-    POWSYBL_ASSERT_THROW(vl3.attach(l1.getTerminal(), true), ValidationException, "Load 'LOAD1': Voltage level 'VL3' has a bus/breaker topology, a bus connection should be specified instead of a node connection");
-    POWSYBL_ASSERT_THROW(vl.attach(l3.getTerminal(), true), ValidationException, "Load 'LOAD3': Voltage level VL has a node/breaker topology, a node connection should be specified instead of a bus connection");
+    POWSYBL_ASSERT_THROW(vl3.getTopologyModel().attach(l1.getTerminal(), true), ValidationException, "Load 'LOAD1': Voltage level 'VL3' has a bus/breaker topology, a bus connection should be specified instead of a node connection");
+    POWSYBL_ASSERT_THROW(vl.getTopologyModel().attach(l3.getTerminal(), true), ValidationException, "Load 'LOAD3': Voltage level VL has a node/breaker topology, a node connection should be specified instead of a bus connection");
 
     const Terminal& cTerminal = l1.getTerminal();
     auto& busBreakerView = terminal.getBusBreakerView();

@@ -11,14 +11,13 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
-
-#include "NodeBreakerVoltageLevel.hpp"
+#include <powsybl/iidm/VoltageLevel.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-BusbarSectionAdder::BusbarSectionAdder(NodeBreakerVoltageLevel& voltageLevel) :
+BusbarSectionAdder::BusbarSectionAdder(VoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel) {
 }
 
@@ -29,7 +28,7 @@ BusbarSection& BusbarSectionAdder::add() {
     BusbarSection& busbarSection = getNetwork().checkAndAdd(std::move(ptrBusbarSection));
 
     Terminal& terminal = busbarSection.addTerminal(createNodeTerminal(m_voltageLevel, ThreeSides::UNDEFINED, *m_node));
-    m_voltageLevel.attach(terminal, false);
+    m_voltageLevel.getTopologyModel().attach(terminal, false);
 
     return busbarSection;
 }

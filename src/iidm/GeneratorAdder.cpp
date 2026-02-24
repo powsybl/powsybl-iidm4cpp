@@ -45,7 +45,7 @@ Generator& GeneratorAdder::add() {
     auto& generator = n.checkAndAdd(std::move(ptrGenerator));
 
     Terminal& terminal = generator.addTerminal(std::move(terminalPtr));
-    getVoltageLevel().attach(terminal, false);
+    getVoltageLevel().getTopologyModel().attach(terminal, false);
 
     return generator;
 }

@@ -9,7 +9,7 @@
 
 #include <powsybl/iidm/ValidationUtils.hpp>
 
-#include "BusBreakerVoltageLevel.hpp"
+#include "BusBreakerTopologyModel.hpp"
 #include "BusTerminal.hpp"
 
 namespace powsybl {
@@ -31,28 +31,28 @@ stdcxx::Reference<Bus> BusBreakerViewImpl::getBus() {
 }
 
 stdcxx::CReference<Bus> BusBreakerViewImpl::getConnectableBus() const {
-    const auto& voltageLevel = dynamic_cast<const BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    const auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<BusBreakerTopologyModel>();
 
-    return stdcxx::cref<Bus>(voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true));
+    return stdcxx::cref<Bus>(topologyModel.getConfiguredBus(m_terminal.getConnectableBusId(), true));
 }
 
 stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<BusBreakerTopologyModel>();
 
-    return stdcxx::ref<Bus>(voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true));
+    return stdcxx::ref<Bus>(topologyModel.getConfiguredBus(m_terminal.getConnectableBusId(), true));
 }
 
 void BusBreakerViewImpl::setConnectableBus(const std::string& busId) {
     checkNotEmpty(busId, "busId is empty");
 
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<BusBreakerTopologyModel>();
 
     // Assert that the new bus exists
-    voltageLevel.getConfiguredBus(busId, true);
+    topologyModel.getConfiguredBus(busId, true);
 
-    voltageLevel.detach(m_terminal);
+    topologyModel.detach(m_terminal);
     m_terminal.setConnectableBusId(busId);
-    voltageLevel.attach(m_terminal, false);
+    topologyModel.attach(m_terminal, false);
 }
 
 BusViewImpl::BusViewImpl(powsybl::iidm::BusTerminal& terminal):
@@ -68,19 +68,19 @@ stdcxx::Reference<Bus> BusViewImpl::getBus() {
 }
 
 stdcxx::CReference<Bus> BusViewImpl::getConnectableBus() const {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<BusBreakerTopologyModel>();
 
-    const auto& configuredBus = voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true);
+    const auto& configuredBus = topologyModel.getConfiguredBus(m_terminal.getConnectableBusId(), true);
 
-    return stdcxx::cref<Bus>(voltageLevel.getCalculatedBusTopology().getMergedBus(configuredBus));
+    return stdcxx::cref<Bus>(topologyModel.getCalculatedBusTopology().getMergedBus(configuredBus));
 }
 
 stdcxx::Reference<Bus> BusViewImpl::getConnectableBus() {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<BusBreakerTopologyModel>();
 
-    const auto& configuredBus = voltageLevel.getConfiguredBus(m_terminal.getConnectableBusId(), true);
+    const auto& configuredBus = topologyModel.getConfiguredBus(m_terminal.getConnectableBusId(), true);
 
-    return stdcxx::ref<Bus>(voltageLevel.getCalculatedBusTopology().getMergedBus(configuredBus));
+    return stdcxx::ref<Bus>(topologyModel.getCalculatedBusTopology().getMergedBus(configuredBus));
 }
 
 }  // namespace bus_terminal

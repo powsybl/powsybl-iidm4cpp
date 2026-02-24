@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVIEWS_HPP
-#define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVIEWS_HPP
+#ifndef POWSYBL_IIDM_NODEBREAKERTOPOLOGYVIEWS_HPP
+#define POWSYBL_IIDM_NODEBREAKERTOPOLOGYVIEWS_HPP
 
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 
@@ -14,7 +14,7 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace node_breaker_voltage_level {
+namespace node_breaker_topology_model {
 
 class NodeBreakerViewImpl : public voltage_level::NodeBreakerView {
 public: // NodeBreakerView
@@ -95,7 +95,7 @@ public: // NodeBreakerView
     void traverse(stdcxx::const_range<unsigned long>& nodes, const TopologyTraverser& traverser) const override;
 
 public:
-    explicit NodeBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
+    explicit NodeBreakerViewImpl(NodeBreakerTopologyModel& topologyModel);
 
     ~NodeBreakerViewImpl() noexcept override = default;
 
@@ -103,7 +103,7 @@ private:
     std::set<unsigned long> clearFictitiousInjections(const std::map<unsigned long,std::vector<double>>& fictitiousInjectionsByNode);
 
 private:
-    NodeBreakerVoltageLevel& m_voltageLevel;
+    NodeBreakerTopologyModel& m_topologyModel;
 
     std::map<unsigned long, std::vector<double>> m_fictitiousP0ByNode;
 
@@ -144,7 +144,7 @@ public: // BusBreakerView
     void traverse(const Bus& bus, const TopologyTraverser& traverser) override;
 
 public:
-    explicit BusBreakerViewImpl(NodeBreakerVoltageLevel& voltageLevel);
+    explicit BusBreakerViewImpl(NodeBreakerTopologyModel& topologyModel);
 
     ~BusBreakerViewImpl() noexcept override = default;
 
@@ -162,7 +162,7 @@ private: // BusBreakerView
     void removeSwitch(const std::string& switchId) override;
 
 private:
-    NodeBreakerVoltageLevel& m_voltageLevel;
+    NodeBreakerTopologyModel& m_topologyModel;
 };
 
 class BusViewImpl : public voltage_level::BusView {
@@ -182,18 +182,18 @@ public: // BusView
     stdcxx::Reference<Bus> getMergedBus(const std::string& busbarSectionId) override;
 
 public:
-    explicit BusViewImpl(NodeBreakerVoltageLevel& voltageLevel);
+    explicit BusViewImpl(NodeBreakerTopologyModel& topologyModel);
 
     ~BusViewImpl() noexcept override = default;
 
 private:
-    NodeBreakerVoltageLevel& m_voltageLevel;
+    NodeBreakerTopologyModel& m_topologyModel;
 };
 
-}  // namespace node_breaker_voltage_level
+}  // namespace node_breaker_topology_model
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELVIEWS_HPP
+#endif  // POWSYBL_IIDM_NODEBREAKERTOPOLOGYVIEWS_HPP

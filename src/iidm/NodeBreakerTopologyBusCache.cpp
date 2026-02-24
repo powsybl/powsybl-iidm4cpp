@@ -5,7 +5,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "NodeBreakerVoltageLevelBusCache.hpp"
+#include "NodeBreakerTopologyBusCache.hpp"
 
 #include <boost/range/adaptor/indirected.hpp>
 #include <boost/range/adaptor/map.hpp>
@@ -14,7 +14,7 @@ namespace powsybl {
 
 namespace iidm {
 
-namespace node_breaker_voltage_level {
+namespace node_breaker_topology_model {
 
 BusCache::BusCache(CalculatedBusByNode busByNode, CalculatedBusById busById) :
     m_busByNode(std::move(busByNode)),
@@ -43,7 +43,7 @@ stdcxx::range<CalculatedBus> BusCache::getBuses() {
     return boost::adaptors::values(m_busById) | boost::adaptors::indirected;
 }
 
-}  // namespace node_breaker_voltage_level
+}  // namespace node_breaker_topology_model
 
 }  // namespace iidm
 

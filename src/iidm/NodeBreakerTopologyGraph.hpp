@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELGRAPH_HPP
-#define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELGRAPH_HPP
+#ifndef POWSYBL_IIDM_NODEBREAKERTOPOLOGYGRAPH_HPP
+#define POWSYBL_IIDM_NODEBREAKERTOPOLOGYGRAPH_HPP
 
 #include <powsybl/math/UndirectedGraph.hpp>
 
@@ -17,14 +17,14 @@ namespace iidm {
 class NodeTerminal;
 class Switch;
 
-namespace node_breaker_voltage_level {
+namespace node_breaker_topology_model {
 
 using Graph = math::UndirectedGraph<NodeTerminal, Switch>;
 
-}  // namespace node_breaker_voltage_level
+}  // namespace node_breaker_topology_model
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELGRAPH_HPP
+#endif  // POWSYBL_IIDM_NODEBREAKERTOPOLOGYGRAPH_HPP

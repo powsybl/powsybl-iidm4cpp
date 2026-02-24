@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELTOPOLOGY_HPP
-#define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELTOPOLOGY_HPP
+#ifndef POWSYBL_IIDM_NODEBREAKERTOPOLOGYCALCULATEDBUS_HPP
+#define POWSYBL_IIDM_NODEBREAKERTOPOLOGYCALCULATEDBUS_HPP
 
 #include <functional>
 #include <memory>
@@ -15,20 +15,23 @@
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
-#include "NodeBreakerVoltageLevelBusCache.hpp"
-#include "NodeBreakerVoltageLevelGraph.hpp"
+#include "NodeBreakerTopologyBusCache.hpp"
+#include "NodeBreakerTopologyGraph.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-namespace node_breaker_voltage_level {
+class NodeBreakerTopologyModel;
+class VoltageLevel;
+
+namespace node_breaker_topology_model {
 
 class graph;
 
 class CalculatedBusTopology {
 public:
-    explicit CalculatedBusTopology(NodeBreakerVoltageLevel& voltageLevel);
+    explicit CalculatedBusTopology(NodeBreakerTopologyModel& topologyModel);
 
     virtual ~CalculatedBusTopology() noexcept = default;
 
@@ -50,28 +53,28 @@ protected:
     using SwitchPredicate = std::function<bool(const stdcxx::Reference<Switch>& a)>;
 
 protected:
-    const NodeBreakerVoltageLevel& getVoltageLevel() const;
+    const NodeBreakerTopologyModel& getTopologyModel() const;
 
-    NodeBreakerVoltageLevel& getVoltageLevel();
+    NodeBreakerTopologyModel& getTopologyModel();
 
 private:
     virtual SwitchPredicate createSwitchPredicate() const;
 
-    virtual bool isBusValid(const node_breaker_voltage_level::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) const;
+    virtual bool isBusValid(const node_breaker_topology_model::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) const;
 
     void traverse(unsigned long v, std::vector<bool>& encountered, const CalculatedBusTopology::SwitchPredicate& terminate, BusCache::CalculatedBusById& busById, BusCache::CalculatedBusByNode& busByNode);
 
     void updateCache(const SwitchPredicate& predicate);
 
 private:
-    NodeBreakerVoltageLevel& m_voltageLevel;
+    NodeBreakerTopologyModel& m_topologyModel;
 
     std::unique_ptr<BusCache> m_cache;
 };
 
 class CalculatedBusBreakerTopology : public CalculatedBusTopology {
 public:
-    explicit CalculatedBusBreakerTopology(NodeBreakerVoltageLevel& voltageLevel);
+    explicit CalculatedBusBreakerTopology(NodeBreakerTopologyModel& topologyModel);
 
     ~CalculatedBusBreakerTopology() noexcept override = default;
 
@@ -92,13 +95,13 @@ private: // CalculatedBusTopology
 
     stdcxx::Reference<Switch> getRetainedSwitch(const stdcxx::optional<unsigned long>& e) const;
 
-    bool isBusValid(const node_breaker_voltage_level::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) const override;
+    bool isBusValid(const node_breaker_topology_model::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) const override;
 };
 
-}  // namespace node_breaker_voltage_level
+}  // namespace node_breaker_topology_model
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELTOPOLOGY_HPP
+#endif  // POWSYBL_IIDM_NODEBREAKERTOPOLOGYCALCULATEDBUS_HPP

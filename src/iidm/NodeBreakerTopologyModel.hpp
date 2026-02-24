@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVEL_HPP
-#define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVEL_HPP
+#ifndef POWSYBL_IIDM_NODEBREAKERTOPOLOGYMODEL_HPP
+#define POWSYBL_IIDM_NODEBREAKERTOPOLOGYMODEL_HPP
 
 #include <map>
 #include <set>
@@ -15,18 +15,18 @@
 #include <powsybl/iidm/VariantArray.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
-#include "NodeBreakerVoltageLevelBusNamingStrategy.hpp"
-#include "NodeBreakerVoltageLevelGraph.hpp"
-#include "NodeBreakerVoltageLevelVariant.hpp"
-#include "NodeBreakerVoltageLevelViews.hpp"
+#include "NodeBreakerTopologyBusNamingStrategy.hpp"
+#include "NodeBreakerTopologyGraph.hpp"
+#include "NodeBreakerTopologyVariant.hpp"
+#include "NodeBreakerTopologyViews.hpp"
 #include "NodeTerminalViews.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-class NodeBreakerVoltageLevel : public VoltageLevel {
-public: // VoltageLevel
+class NodeBreakerTopologyModel : public TopologyModel {
+public: // TopologyModel
     void attach(Terminal& terminal, bool test) override;
 
     bool connect(Terminal& terminal) override;
@@ -71,12 +71,9 @@ public: // VoltageLevel
     bool traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) const;
 
 public:
-    NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                            Network& network, double nominalV, double lowVoltageLimit, double highVoltagelimit);
-    NodeBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                            Network& rootnetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltagelimit);
+    NodeBreakerTopologyModel(VoltageLevel& voltageLevel);
 
-    ~NodeBreakerVoltageLevel() noexcept override = default;
+    ~NodeBreakerTopologyModel() noexcept override = default;
 
     void addInternalConnection(unsigned long node1, unsigned long node2);
 
@@ -93,12 +90,12 @@ protected: // MultiVariantObject
 
     void reduceVariantArraySize(unsigned long number) override;
 
-protected: // VoltageLevel
+protected: // TopologyModel
     stdcxx::const_range<Terminal> getTerminals() const override;
 
     stdcxx::range<Terminal> getTerminals() override;
 
-private:  // VoltageLevel
+protected:  // TopologyModel
     void removeTopology() override;
 
 private:
@@ -109,17 +106,17 @@ private:
 
     void clean();
 
-    node_breaker_voltage_level::BusNamingStrategy& getBusNamingStrategy();
+    node_breaker_topology_model::BusNamingStrategy& getBusNamingStrategy();
 
-    const node_breaker_voltage_level::CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology() const;
+    const node_breaker_topology_model::CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology() const;
 
-    node_breaker_voltage_level::CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology();
+    node_breaker_topology_model::CalculatedBusBreakerTopology& getCalculatedBusBreakerTopology();
 
-    node_breaker_voltage_level::CalculatedBusTopology& getCalculatedBusTopology();
+    node_breaker_topology_model::CalculatedBusTopology& getCalculatedBusTopology();
 
     stdcxx::optional<unsigned long> getEdge(const std::string& switchId, bool throwException) const;
 
-    const node_breaker_voltage_level::Graph& getGraph() const;
+    const node_breaker_topology_model::Graph& getGraph() const;
 
     unsigned long getInternalConnectionCount() const;
 
@@ -138,15 +135,15 @@ private:
     void removeSwitch(const std::string& switchId);
 
 private:
-    friend class node_breaker_voltage_level::NodeBreakerViewImpl;
+    friend class node_breaker_topology_model::NodeBreakerViewImpl;
 
-    friend class node_breaker_voltage_level::BusBreakerViewImpl;
+    friend class node_breaker_topology_model::BusBreakerViewImpl;
 
-    friend class node_breaker_voltage_level::BusViewImpl;
+    friend class node_breaker_topology_model::BusViewImpl;
 
-    friend class node_breaker_voltage_level::CalculatedBusBreakerTopology;
+    friend class node_breaker_topology_model::CalculatedBusBreakerTopology;
 
-    friend class node_breaker_voltage_level::CalculatedBusTopology;
+    friend class node_breaker_topology_model::CalculatedBusTopology;
 
     friend class node_terminal::NodeBreakerViewImpl;
 
@@ -156,19 +153,19 @@ private:
 
 private:
 
-    node_breaker_voltage_level::Graph m_graph;
+    node_breaker_topology_model::Graph m_graph;
 
     std::map<std::string, unsigned long> m_switches;
 
-    node_breaker_voltage_level::BusNamingStrategy m_busNamingStrategy;
+    node_breaker_topology_model::BusNamingStrategy m_busNamingStrategy;
 
-    node_breaker_voltage_level::VariantArray m_variants;
+    node_breaker_topology_model::VariantArray m_variants;
 
-    node_breaker_voltage_level::NodeBreakerViewImpl m_nodeBreakerView;
+    node_breaker_topology_model::NodeBreakerViewImpl m_nodeBreakerView;
 
-    node_breaker_voltage_level::BusBreakerViewImpl m_busBreakerView;
+    node_breaker_topology_model::BusBreakerViewImpl m_busBreakerView;
 
-    node_breaker_voltage_level::BusViewImpl m_busView;
+    node_breaker_topology_model::BusViewImpl m_busView;
 };
 
 }  // namespace iidm

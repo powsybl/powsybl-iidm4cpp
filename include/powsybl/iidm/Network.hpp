@@ -582,7 +582,7 @@ private:
 
     friend class VoltageLevel;
 
-    friend class NodeBreakerVoltageLevel;
+    friend class NodeBreakerTopologyModel;
 
     friend class network::BusView;
     friend class subnetwork::BusView;

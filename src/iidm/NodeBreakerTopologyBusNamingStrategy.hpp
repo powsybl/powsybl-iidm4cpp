@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELBUSNAMINGSTRATEGY_HPP
-#define POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELBUSNAMINGSTRATEGY_HPP
+#ifndef POWSYBL_IIDM_NODEBREAKERTOPOLOGYBUSNAMINGSTRATEGY_HPP
+#define POWSYBL_IIDM_NODEBREAKERTOPOLOGYBUSNAMINGSTRATEGY_HPP
 
 #include <string>
 #include <vector>
@@ -15,13 +15,13 @@ namespace powsybl {
 
 namespace iidm {
 
-class NodeBreakerVoltageLevel;
+class VoltageLevel;
 
-namespace node_breaker_voltage_level {
+namespace node_breaker_topology_model {
 
 class BusNamingStrategy {
 public:
-    explicit BusNamingStrategy(NodeBreakerVoltageLevel& voltageLevel);
+    explicit BusNamingStrategy(VoltageLevel& voltageLevel);
 
     ~BusNamingStrategy() noexcept = default;
 
@@ -30,13 +30,13 @@ public:
     std::string getName(const std::vector<unsigned long>& nodes);
 
 private:
-    NodeBreakerVoltageLevel& m_voltageLevel;
+    VoltageLevel& m_voltageLevel;
 };
 
-}  // namespace node_breaker_voltage_level
+}  // namespace node_breaker_topology_model
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_NODEBREAKERVOLTAGELEVELBUSNAMINGSTRATEGY_HPP
+#endif  // POWSYBL_IIDM_NODEBREAKERTOPOLOGYBUSNAMINGSTRATEGY_HPP

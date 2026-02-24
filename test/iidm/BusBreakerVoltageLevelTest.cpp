@@ -442,14 +442,15 @@ BOOST_AUTO_TEST_CASE(TerminalTest) {
         .add();
 
     Terminal& terminal = l1.getTerminal();
+    TopologyModel& topology = vl.getTopologyModel();
     BOOST_TEST(terminal.isConnected());
-    BOOST_TEST(vl.disconnect(terminal));
+    BOOST_TEST(topology.disconnect(terminal));
     BOOST_TEST(!terminal.isConnected());
-    BOOST_TEST(!vl.disconnect(terminal));
+    BOOST_TEST(!topology.disconnect(terminal));
     BOOST_TEST(!terminal.isConnected());
-    BOOST_TEST(vl.connect(terminal));
+    BOOST_TEST(topology.connect(terminal));
     BOOST_TEST(terminal.isConnected());
-    BOOST_TEST(!vl.connect(terminal));
+    BOOST_TEST(!topology.connect(terminal));
     BOOST_TEST(terminal.isConnected());
     BOOST_TEST(terminal.disconnect());
     BOOST_TEST(!terminal.isConnected());

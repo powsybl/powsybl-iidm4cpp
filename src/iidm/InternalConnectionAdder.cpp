@@ -9,7 +9,7 @@
 
 #include <powsybl/iidm/ValidationUtils.hpp>
 
-#include "NodeBreakerVoltageLevel.hpp"
+#include "NodeBreakerTopologyModel.hpp"
 
 namespace powsybl {
 
@@ -25,8 +25,7 @@ void InternalConnectionAdder::add() {
     checkOptional(m_voltageLevel, m_node1, "first connection node is not set");
     checkOptional(m_voltageLevel, m_node2, "second connection node is not set");
 
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_voltageLevel);
-    voltageLevel.addInternalConnection(*m_node1, *m_node2);
+    m_voltageLevel.getTopologyModel<NodeBreakerTopologyModel>().addInternalConnection(*m_node1, *m_node2);
 }
 
 InternalConnectionAdder& InternalConnectionAdder::setNode1(unsigned long node1) {

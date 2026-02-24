@@ -17,11 +17,11 @@ namespace iidm {
 
 class BusbarSection;
 class Network;
-class NodeBreakerVoltageLevel;
+class VoltageLevel;
 
 class BusbarSectionAdder : public IdentifiableAdder<BusbarSection, BusbarSectionAdder> {
 public:
-    explicit BusbarSectionAdder(NodeBreakerVoltageLevel& voltageLevel);
+    explicit BusbarSectionAdder(VoltageLevel& voltageLevel);
 
     ~BusbarSectionAdder() noexcept override = default;
 
@@ -38,7 +38,7 @@ private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
 private:
-    NodeBreakerVoltageLevel& m_voltageLevel;
+    VoltageLevel& m_voltageLevel;
 
     stdcxx::optional<unsigned long> m_node;
 };

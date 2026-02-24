@@ -5,22 +5,22 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "NodeBreakerVoltageLevelVariant.hpp"
+#include "NodeBreakerTopologyVariant.hpp"
 
 #include <powsybl/stdcxx/make_unique.hpp>
 
-#include "NodeBreakerVoltageLevel.hpp"
+#include "NodeBreakerTopologyModel.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-namespace node_breaker_voltage_level {
+namespace node_breaker_topology_model {
 
-VariantImpl::VariantImpl(NodeBreakerVoltageLevel& voltageLevel) :
-    Variant(voltageLevel),
-    m_calculatedBusBreakerTopology(voltageLevel),
-    m_calculatedBusTopology(voltageLevel) {
+VariantImpl::VariantImpl(NodeBreakerTopologyModel& topologyModel) :
+    Variant(topologyModel),
+    m_calculatedBusBreakerTopology(topologyModel),
+    m_calculatedBusTopology(topologyModel) {
 
 }
 
@@ -40,7 +40,7 @@ CalculatedBusTopology& VariantImpl::getCalculatedBusTopology() {
     return m_calculatedBusTopology;
 }
 
-}  // namespace node_breaker_voltage_level
+}  // namespace node_breaker_topology_model
 
 }  // namespace iidm
 

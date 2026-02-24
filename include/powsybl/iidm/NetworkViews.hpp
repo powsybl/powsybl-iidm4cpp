@@ -19,9 +19,9 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
-class BusBreakerVoltageLevel;
+class BusBreakerTopologyModel;
 class Network;
-class NodeBreakerVoltageLevel;
+class NodeBreakerTopologyModel;
 class Switch;
 
 namespace network {
@@ -51,9 +51,9 @@ public:
 protected:
     void invalidateCache();
 
-    friend class iidm::BusBreakerVoltageLevel;
+    friend class iidm::BusBreakerTopologyModel;
 
-    friend class iidm::NodeBreakerVoltageLevel;
+    friend class iidm::NodeBreakerTopologyModel;
 
 protected:
     Network& m_network;
@@ -86,9 +86,8 @@ public:
 protected:
     void invalidateCache();
 
-    friend class iidm::BusBreakerVoltageLevel;
-
-    friend class iidm::NodeBreakerVoltageLevel;
+    friend class iidm::BusBreakerTopologyModel;
+    friend class iidm::NodeBreakerTopologyModel;
 
 protected:
     Network& m_network;

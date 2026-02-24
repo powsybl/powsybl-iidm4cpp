@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_BUSBREAKERVOLTAGELEVEL_HPP
-#define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVEL_HPP
+#ifndef POWSYBL_IIDM_BUSBREAKERTOPOLOGYMODEL_HPP
+#define POWSYBL_IIDM_BUSBREAKERTOPOLOGYMODEL_HPP
 
 #include <map>
 #include <set>
@@ -17,19 +17,19 @@
 #include <powsybl/math/UndirectedGraph.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
-#include "BusBreakerVoltageLevelVariant.hpp"
-#include "BusBreakerVoltageLevelViews.hpp"
+#include "BusBreakerTopologyVariant.hpp"
+#include "BusBreakerTopologyViews.hpp"
 #include "BusTerminalViews.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-class BusBreakerVoltageLevel : public VoltageLevel {
+class BusBreakerTopologyModel : public TopologyModel {
 public:
     using Graph = math::UndirectedGraph<ConfiguredBus, Switch>;
 
-public: // VoltageLevel
+public: // TopologyModel
     void attach(Terminal& terminal, bool test) override;
 
     bool connect(Terminal& terminal) override;
@@ -59,12 +59,9 @@ public: // VoltageLevel
     void invalidateCache(bool exceptBusBreakerView = false) override;
 
 public:
-    BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                           Network& network, double nominalV, double lowVoltageLimit, double highVoltagelimit);
-    BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                           Network& rootnetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltagelimit);
+    BusBreakerTopologyModel(VoltageLevel& voltageLevel);
 
-    ~BusBreakerVoltageLevel() noexcept override = default;
+    ~BusBreakerTopologyModel() noexcept override = default;
 
     Bus& addBus(std::unique_ptr<ConfiguredBus>&& ptrBus);
 
@@ -83,17 +80,17 @@ protected: // MultiVariantObject
 
     void reduceVariantArraySize(unsigned long number) override;
 
-protected: // VoltageLevel
+protected: // TopologyModel
     stdcxx::const_range<Terminal> getTerminals() const override;
 
     stdcxx::range<Terminal> getTerminals() override;
 
-private: // VoltageLevel
+    void removeTopology() override;
+
+private: // TopologyModel
     const NodeBreakerView& getNodeBreakerView() const override;
 
     NodeBreakerView& getNodeBreakerView() override;
-
-    void removeTopology() override;
 
 private:
     static math::TraverseResult getTraverserResult(TerminalSet& visitedTerminals, BusTerminal& terminal, Terminal::TopologyTraverser& traverser);
@@ -101,7 +98,7 @@ private:
 private:
     void checkTerminal(Terminal& terminal) const;
 
-    bus_breaker_voltage_level::CalculatedBusTopology& getCalculatedBusTopology();
+    bus_breaker_topology_model::CalculatedBusTopology& getCalculatedBusTopology();
 
     stdcxx::CReference<ConfiguredBus> getConfiguredBus(const std::string& busId, bool throwException) const;
 
@@ -130,11 +127,11 @@ private:
     void removeSwitch(const std::string& switchId);
 
 private:
-    friend class bus_breaker_voltage_level::BusBreakerViewImpl;
+    friend class bus_breaker_topology_model::BusBreakerViewImpl;
 
-    friend class bus_breaker_voltage_level::BusViewImpl;
+    friend class bus_breaker_topology_model::BusViewImpl;
 
-    friend class bus_breaker_voltage_level::CalculatedBusTopology;
+    friend class bus_breaker_topology_model::CalculatedBusTopology;
 
     friend class bus_terminal::BusBreakerViewImpl;
 
@@ -147,15 +144,15 @@ private:
 
     std::map<std::string, unsigned long> m_switches;
 
-    bus_breaker_voltage_level::VariantArray m_variants;
+    bus_breaker_topology_model::VariantArray m_variants;
 
-    bus_breaker_voltage_level::BusBreakerViewImpl m_busBreakerView;
+    bus_breaker_topology_model::BusBreakerViewImpl m_busBreakerView;
 
-    bus_breaker_voltage_level::BusViewImpl m_busView;
+    bus_breaker_topology_model::BusViewImpl m_busView;
 };
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_BUSBREAKERVOLTAGELEVEL_HPP
+#endif  // POWSYBL_IIDM_BUSBREAKERTOPOLOGYMODEL_HPP

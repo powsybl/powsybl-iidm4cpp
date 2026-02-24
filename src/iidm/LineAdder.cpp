@@ -47,16 +47,16 @@ Line& LineAdder::add() {
     checkX(*this, m_x);
 
     // check that the line is attachable on both side
-    voltageLevel1.attach(*ptrTerminal1, true);
-    voltageLevel2.attach(*ptrTerminal2, true);
+    voltageLevel1.getTopologyModel().attach(*ptrTerminal1, true);
+    voltageLevel2.getTopologyModel().attach(*ptrTerminal2, true);
 
     std::unique_ptr<Line> ptrLine = stdcxx::make_unique<Line>(checkAndGetUniqueId(), getName(), isFictitious(), m_r, m_x, m_g1, m_b1, m_g2, m_b2);
     auto& line = m_network.checkAndAdd<Line>(std::move(ptrLine));
 
     Terminal& terminal1 = line.addTerminal(std::move(ptrTerminal1));
     Terminal& terminal2 = line.addTerminal(std::move(ptrTerminal2));
-    voltageLevel1.attach(terminal1, false);
-    voltageLevel2.attach(terminal2, false);
+    voltageLevel1.getTopologyModel().attach(terminal1, false);
+    voltageLevel2.getTopologyModel().attach(terminal2, false);
 
     return line;
 }

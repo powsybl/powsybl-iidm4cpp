@@ -30,11 +30,11 @@ set(IIDM_SOURCES
     iidm/BusAdder.cpp
     iidm/BusbarSection.cpp
     iidm/BusbarSectionAdder.cpp
-    iidm/BusBreakerVoltageLevel.cpp
-    iidm/BusBreakerVoltageLevelBusCache.cpp
-    iidm/BusBreakerVoltageLevelTopology.cpp
-    iidm/BusBreakerVoltageLevelVariant.cpp
-    iidm/BusBreakerVoltageLevelViews.cpp
+    iidm/BusBreakerTopologyBusCache.cpp
+    iidm/BusBreakerTopologyCalculatedBus.cpp
+    iidm/BusBreakerTopologyModel.cpp
+    iidm/BusBreakerTopologyVariant.cpp
+    iidm/BusBreakerTopologyViews.cpp
     iidm/BusCache.cpp
     iidm/BusRef.cpp
     iidm/BusTerminal.cpp
@@ -97,12 +97,12 @@ set(IIDM_SOURCES
     iidm/NetworkRef.cpp
     iidm/NetworkVariant.cpp
     iidm/NetworkViews.cpp
-    iidm/NodeBreakerVoltageLevel.cpp
-    iidm/NodeBreakerVoltageLevelBusCache.cpp
-    iidm/NodeBreakerVoltageLevelBusNamingStrategy.cpp
-    iidm/NodeBreakerVoltageLevelTopology.cpp
-    iidm/NodeBreakerVoltageLevelVariant.cpp
-    iidm/NodeBreakerVoltageLevelViews.cpp
+    iidm/NodeBreakerTopologyBusCache.cpp
+    iidm/NodeBreakerTopologyBusNamingStrategy.cpp
+    iidm/NodeBreakerTopologyCalculatedBus.cpp
+    iidm/NodeBreakerTopologyModel.cpp
+    iidm/NodeBreakerTopologyVariant.cpp
+    iidm/NodeBreakerTopologyViews.cpp
     iidm/NodeTerminal.cpp
     iidm/NodeTerminalViews.cpp
     iidm/OperationalLimitsGroup.cpp
@@ -158,6 +158,7 @@ set(IIDM_SOURCES
     iidm/TieLineAdder.cpp
     iidm/TopologyKind.cpp
     iidm/TopologyLevel.cpp
+    iidm/TopologyModel.cpp
     iidm/TopologyVisitor.cpp
     iidm/TwoSides.cpp
     iidm/TwoWindingsTransformer.cpp

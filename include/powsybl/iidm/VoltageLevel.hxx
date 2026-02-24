@@ -77,12 +77,31 @@ unsigned long VoltageLevel::getConnectableCount() const {
 
 template <typename T, typename>
 stdcxx::const_range<T> VoltageLevel::getConnectables() const {
-    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<const T>) | boost::adaptors::filtered(DistinctPredicate());
+    assertTopologyModel();
+    return m_topologyModel->getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<const T>) | boost::adaptors::filtered(DistinctPredicate());
 }
 
 template <typename T, typename>
 stdcxx::range<T> VoltageLevel::getConnectables() {
-    return getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<T>) | boost::adaptors::filtered(DistinctPredicate());
+    assertTopologyModel();
+    return m_topologyModel->getTerminals() | boost::adaptors::filtered(Terminal::isInstanceOf<T>) | boost::adaptors::transformed(Terminal::map<T>) | boost::adaptors::filtered(DistinctPredicate());
+}
+
+template <typename T, typename>
+T& VoltageLevel::getTopologyModel() {
+    assertTopologyModel();
+    if (!stdcxx::isInstanceOf<T>(m_topologyModel)) {
+        throw AssertionError(stdcxx::format("Unexpected TopologyModel type: %1% (%2% expected)", stdcxx::demangle(*m_topologyModel), stdcxx::demangle<T>()));
+    }
+    return dynamic_cast<T&>(*m_topologyModel);
+}
+template <typename T, typename>
+const T& VoltageLevel::getTopologyModel() const {
+    assertTopologyModel();
+    if (!stdcxx::isInstanceOf<T>(m_topologyModel)) {
+        throw AssertionError(stdcxx::format("Unexpected TopologyModel type: %1% (%2% expected)", stdcxx::demangle(*m_topologyModel), stdcxx::demangle<T>()));
+    }
+    return dynamic_cast<const T&>(*m_topologyModel);
 }
 
 }  // namespace iidm

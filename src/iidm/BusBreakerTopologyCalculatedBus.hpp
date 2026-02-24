@@ -5,8 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELTOPOLOGY_HPP
-#define POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELTOPOLOGY_HPP
+#ifndef POWSYBL_IIDM_BUSBREAKERTOPOLOGYCALCULATEDBUS_HPP
+#define POWSYBL_IIDM_BUSBREAKERTOPOLOGYCALCULATEDBUS_HPP
 
 #include <functional>
 #include <memory>
@@ -14,18 +14,20 @@
 
 #include <powsybl/stdcxx/reference.hpp>
 
-#include "BusBreakerVoltageLevelBusCache.hpp"
+#include "BusBreakerTopologyBusCache.hpp"
 #include "MergedBus.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-namespace bus_breaker_voltage_level {
+class BusBreakerTopologyModel;
+
+namespace bus_breaker_topology_model {
 
 class CalculatedBusTopology {
 public:
-    explicit CalculatedBusTopology(BusBreakerVoltageLevel& voltageLevel);
+    explicit CalculatedBusTopology(BusBreakerTopologyModel& topologyModel);
 
     ~CalculatedBusTopology() noexcept = default;
 
@@ -47,15 +49,15 @@ private:
     bool isBusValid(const MergedBus::BusSet& buses) const;
 
 private:
-    BusBreakerVoltageLevel& m_voltageLevel;
+    BusBreakerTopologyModel& m_topologyModel;
 
     std::unique_ptr<BusCache> m_cache;
 };
 
-}  // namespace bus_breaker_voltage_level
+}  // namespace bus_breaker_topology_model
 
 }  // namespace iidm
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_BUSBREAKERVOLTAGELEVELTOPOLOGY_HPP
+#endif  // POWSYBL_IIDM_BUSBREAKERTOPOLOGYCALCULATEDBUS_HPP

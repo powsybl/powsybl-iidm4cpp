@@ -5,28 +5,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "NodeBreakerVoltageLevelTopology.hpp"
+#include "NodeBreakerTopologyCalculatedBus.hpp"
 
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 
-#include "NodeBreakerVoltageLevel.hpp"
+#include "NodeBreakerTopologyModel.hpp"
 #include "NodeTerminal.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-namespace node_breaker_voltage_level {
+namespace node_breaker_topology_model {
 
 PowsyblException createSwitchNotFoundException(const std::string& switchId) {
     return PowsyblException(stdcxx::format("Switch %1% not found", switchId));
 }
 
-CalculatedBusBreakerTopology::CalculatedBusBreakerTopology(NodeBreakerVoltageLevel& voltageLevel) :
-    CalculatedBusTopology(voltageLevel) {
+CalculatedBusBreakerTopology::CalculatedBusBreakerTopology(NodeBreakerTopologyModel& topologyModel) :
+    CalculatedBusTopology(topologyModel) {
 
 }
 
@@ -37,10 +37,10 @@ CalculatedBusTopology::SwitchPredicate CalculatedBusBreakerTopology::createSwitc
 }
 
 stdcxx::Reference<CalculatedBus> CalculatedBusBreakerTopology::getBus1(const std::string& switchId, bool throwException) {
-    stdcxx::optional<unsigned long> e = getVoltageLevel().getEdge(switchId, throwException);
+    stdcxx::optional<unsigned long> e = getTopologyModel().getEdge(switchId, throwException);
     stdcxx::Reference<Switch> aSwitch = getRetainedSwitch(e);
     if (static_cast<bool>(aSwitch)) {
-        unsigned long v = getVoltageLevel().getGraph().getVertex1(*e);
+        unsigned long v = getTopologyModel().getGraph().getVertex1(*e);
         return getBus(v);
     }
 
@@ -52,10 +52,10 @@ stdcxx::Reference<CalculatedBus> CalculatedBusBreakerTopology::getBus1(const std
 }
 
 stdcxx::Reference<CalculatedBus> CalculatedBusBreakerTopology::getBus2(const std::string& switchId, bool throwException) {
-    stdcxx::optional<unsigned long> e = getVoltageLevel().getEdge(switchId, throwException);
+    stdcxx::optional<unsigned long> e = getTopologyModel().getEdge(switchId, throwException);
     stdcxx::Reference<Switch> aSwitch = getRetainedSwitch(e);
     if (static_cast<bool>(aSwitch)) {
-        unsigned long v = getVoltageLevel().getGraph().getVertex2(*e);
+        unsigned long v = getTopologyModel().getGraph().getVertex2(*e);
         return getBus(v);
     }
 
@@ -68,7 +68,7 @@ stdcxx::Reference<CalculatedBus> CalculatedBusBreakerTopology::getBus2(const std
 
 stdcxx::Reference<Switch> CalculatedBusBreakerTopology::getRetainedSwitch(const stdcxx::optional<unsigned long>& e) const {
     if (e) {
-        const auto& aSwitch = getVoltageLevel().getGraph().getEdgeObject(*e);
+        const auto& aSwitch = getTopologyModel().getGraph().getEdgeObject(*e);
         if (aSwitch.get().isRetained()) {
             return aSwitch;
         }
@@ -78,7 +78,7 @@ stdcxx::Reference<Switch> CalculatedBusBreakerTopology::getRetainedSwitch(const 
 }
 
 stdcxx::CReference<Switch> CalculatedBusBreakerTopology::getSwitch(const std::string& switchId, bool throwException) const {
-    stdcxx::optional<unsigned long> e = getVoltageLevel().getEdge(switchId, false);
+    stdcxx::optional<unsigned long> e = getTopologyModel().getEdge(switchId, false);
     stdcxx::Reference<Switch> aSwitch = getRetainedSwitch(e);
     if (throwException && !aSwitch) {
         throw createSwitchNotFoundException(switchId);
@@ -90,7 +90,7 @@ stdcxx::CReference<Switch> CalculatedBusBreakerTopology::getSwitch(const std::st
 unsigned long CalculatedBusBreakerTopology::getSwitchCount() const {
     unsigned long switchCount = 0;
 
-    for (const auto& sw : getVoltageLevel().getGraph().getEdgeObjects()) {
+    for (const auto& sw : getTopologyModel().getGraph().getEdgeObjects()) {
         if (static_cast<bool>(sw) && sw.get().isRetained()) {
             ++switchCount;
         }
@@ -105,7 +105,7 @@ stdcxx::const_range<Switch> CalculatedBusBreakerTopology::getSwitches() const {
     };
     const auto& mapper = stdcxx::map<stdcxx::Reference<Switch>, Switch>;
 
-    return getVoltageLevel().getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+    return getTopologyModel().getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
 stdcxx::range<Switch> CalculatedBusBreakerTopology::getSwitches() {
@@ -114,15 +114,15 @@ stdcxx::range<Switch> CalculatedBusBreakerTopology::getSwitches() {
     };
     const auto& mapper = stdcxx::map<stdcxx::Reference<Switch>, Switch>;
 
-    return getVoltageLevel().getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
+    return getTopologyModel().getGraph().getEdgeObjects() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(mapper);
 }
 
-bool CalculatedBusBreakerTopology::isBusValid(const node_breaker_voltage_level::Graph& /*graph*/, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& /*terminals*/) const {
+bool CalculatedBusBreakerTopology::isBusValid(const node_breaker_topology_model::Graph& /*graph*/, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& /*terminals*/) const {
     return !vertices.empty();
 }
 
-CalculatedBusTopology::CalculatedBusTopology(powsybl::iidm::NodeBreakerVoltageLevel& voltageLevel) :
-    m_voltageLevel(voltageLevel) {
+CalculatedBusTopology::CalculatedBusTopology(NodeBreakerTopologyModel& topologyModel) :
+    m_topologyModel(topologyModel) {
 }
 
 CalculatedBusTopology::SwitchPredicate CalculatedBusTopology::createSwitchPredicate() const {
@@ -142,7 +142,7 @@ stdcxx::Reference<CalculatedBus> CalculatedBusTopology::getBus(const std::string
 
     stdcxx::Reference<CalculatedBus> bus = m_cache->getBus(id);
     if (throwException && !bus) {
-        throw PowsyblException(stdcxx::format("Bus %1% not found in voltage level %2%", id, m_voltageLevel.getId()));
+        throw PowsyblException(stdcxx::format("Bus %1% not found in voltage level %2%", id, m_topologyModel.getVoltageLevel().getId()));
     }
 
     return bus;
@@ -169,7 +169,7 @@ stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long no
 
     // if not traverse the graph starting from the node (without stopping at open switches) until finding another
     // node associated to a bus
-    const auto& graph = m_voltageLevel.getGraph();
+    const auto& graph = m_topologyModel.getGraph();
     graph.traverse(node, math::TraversalType::DEPTH_FIRST, [this, &connectableBus](unsigned long /*v1*/, unsigned long /*e*/, unsigned long v2) {
         if (static_cast<bool>(connectableBus)) {
             // traverse does not stop the algorithm when TERMINATE, it only stops searching in a given direction
@@ -194,12 +194,12 @@ stdcxx::Reference<Bus> CalculatedBusTopology::getConnectableBus(unsigned long no
     return stdcxx::ref<Bus>(connectableBus);
 }
 
-const NodeBreakerVoltageLevel& CalculatedBusTopology::getVoltageLevel() const {
-    return m_voltageLevel;
+const NodeBreakerTopologyModel& CalculatedBusTopology::getTopologyModel() const {
+    return m_topologyModel;
 }
 
-NodeBreakerVoltageLevel& CalculatedBusTopology::getVoltageLevel() {
-    return m_voltageLevel;
+NodeBreakerTopologyModel& CalculatedBusTopology::getTopologyModel() {
+    return m_topologyModel;
 }
 
 void CalculatedBusTopology::invalidateCache() {
@@ -211,7 +211,7 @@ void CalculatedBusTopology::invalidateCache() {
     }
 }
 
-bool CalculatedBusTopology::isBusValid(const node_breaker_voltage_level::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& /*terminals*/) const {
+bool CalculatedBusTopology::isBusValid(const node_breaker_topology_model::Graph& graph, const std::vector<unsigned long>& vertices, const std::vector<std::reference_wrapper<NodeTerminal> >& /*terminals*/) const {
     unsigned long feederCount = 0;
     unsigned long branchCount = 0;
     unsigned long busbarSectionCount = 0;
@@ -269,7 +269,7 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
     if (!encountered[v]) {
         std::vector<unsigned long> vertices(1, v);
 
-        const auto& graph = m_voltageLevel.getGraph();
+        const auto& graph = m_topologyModel.getGraph();
         graph.traverse(v, math::TraversalType::DEPTH_FIRST, [&graph, &terminate, &vertices](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
             const stdcxx::Reference<Switch> aSwitch = graph.getEdgeObject(e);
             if (static_cast<bool>(aSwitch) && terminate(aSwitch)) {
@@ -280,8 +280,8 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
             return math::TraverseResult::CONTINUE;
         }, encountered);
 
-        const Network& network = m_voltageLevel.getNetwork();
-        std::string busId = Identifiables::getUniqueId(m_voltageLevel.getBusNamingStrategy().getId(vertices),[&network](const std::string& id){
+        const Network& network = m_topologyModel.getNetwork();
+        std::string busId = Identifiables::getUniqueId(m_topologyModel.getBusNamingStrategy().getId(vertices),[&network](const std::string& id){
             return static_cast<bool>(network.find(id));
         });
         std::vector<std::reference_wrapper<NodeTerminal> > terminals;
@@ -294,11 +294,11 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
         }
 
         if (isBusValid(graph, vertices, terminals)) {
-            std::string busName = m_voltageLevel.getBusNamingStrategy().getName(vertices);
+            std::string busName = m_topologyModel.getBusNamingStrategy().getName(vertices);
             std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)> getBusFromTerminal = [](stdcxx::CReference<Terminal> term){
                 return term.get().getBusView().getBus();
             };
-            std::unique_ptr<CalculatedBus> ptrCalculatedBus = stdcxx::make_unique<CalculatedBus>(busId, busName, m_voltageLevel.isFictitious(), m_voltageLevel, vertices, std::move(terminals),getBusFromTerminal);
+            std::unique_ptr<CalculatedBus> ptrCalculatedBus = stdcxx::make_unique<CalculatedBus>(busId, busName, m_topologyModel.getVoltageLevel().isFictitious(), m_topologyModel.getVoltageLevel(), vertices, std::move(terminals),getBusFromTerminal);
             const auto& it = busById.insert(std::make_pair(busId, std::move(ptrCalculatedBus)));
             const stdcxx::Reference<CalculatedBus>& calculatedBus = stdcxx::ref(*it.first->second);
 
@@ -319,9 +319,9 @@ void CalculatedBusTopology::updateCache(const SwitchPredicate& predicate) {
     }
 
     logging::Logger& logger = logging::LoggerFactory::getLogger<CalculatedBusTopology>();
-    logger.trace(stdcxx::format("Update bus topology of voltage level %1%", m_voltageLevel.getId()));
+    logger.trace(stdcxx::format("Update bus topology of voltage level %1%", m_topologyModel.getVoltageLevel().getId()));
 
-    const auto& graph = m_voltageLevel.getGraph();
+    const auto& graph = m_topologyModel.getGraph();
 
     BusCache::CalculatedBusById busById;
     BusCache::CalculatedBusByNode busByNode(graph.getMaxVertex());
@@ -337,7 +337,7 @@ void CalculatedBusTopology::updateCache(const SwitchPredicate& predicate) {
     logger.trace(stdcxx::format("Found buses %1%", stdcxx::toString<CalculatedBus>(m_cache->getBuses())));
 }
 
-}  // namespace node_breaker_voltage_level
+}  // namespace node_breaker_topology_model
 
 }  // namespace iidm
 

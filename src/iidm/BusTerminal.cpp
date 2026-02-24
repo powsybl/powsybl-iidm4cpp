@@ -13,7 +13,7 @@
 #include <powsybl/stdcxx/demangle.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
-#include "BusBreakerVoltageLevel.hpp"
+#include "BusBreakerTopologyModel.hpp"
 
 namespace powsybl {
 
@@ -117,13 +117,13 @@ bool BusTerminal::traverse(TopologyTraverser& traverser) {
 }
 
 bool BusTerminal::traverse(TopologyTraverser& traverser, math::TraversalType traversalType) {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel());
-    return voltageLevel.traverse(*this, traverser, traversalType);
+    auto& topologyModel = getVoltageLevel().getTopologyModel<BusBreakerTopologyModel>();
+    return topologyModel.traverse(*this, traverser, traversalType);
 }
 
 bool BusTerminal::traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) {
-    auto& voltageLevel = dynamic_cast<BusBreakerVoltageLevel&>(getVoltageLevel());
-    return voltageLevel.traverse(*this, traverser, traversedTerminals, traversalType);
+    auto& topologyModel = getVoltageLevel().getTopologyModel<BusBreakerTopologyModel>();
+    return topologyModel.traverse(*this, traverser, traversedTerminals, traversalType);
 }
 
 std::ostream& operator<<(std::ostream& stream, const BusTerminal& busTerminal) {

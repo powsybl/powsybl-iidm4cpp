@@ -15,6 +15,7 @@
 #include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TopologyKind.hpp>
+#include <powsybl/iidm/TopologyModel.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/Predicate.hpp>
@@ -74,15 +75,7 @@ public:  // Identifiable
 public:
     ~VoltageLevel() noexcept override = default;
 
-    virtual void attach(Terminal& terminal, bool test) = 0;
 
-    virtual bool connect(Terminal& terminal) = 0;
-    virtual bool connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) = 0;
-
-    virtual void detach(Terminal& terminal) = 0;
-
-    virtual bool disconnect(Terminal& terminal) = 0;
-    virtual bool disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) = 0;
 
     unsigned long getAreaCount() const;
     stdcxx::const_range<Area> getAreas() const;
@@ -99,13 +92,13 @@ public:
 
     stdcxx::range<Battery> getBatteries();
 
-    virtual const BusBreakerView& getBusBreakerView() const = 0;
+    const BusBreakerView& getBusBreakerView() const;
 
-    virtual BusBreakerView& getBusBreakerView() = 0;
+    BusBreakerView& getBusBreakerView();
 
-    virtual const BusView& getBusView() const = 0;
+    const BusView& getBusView() const;
 
-    virtual BusView& getBusView() = 0;
+    BusView& getBusView();
 
     template <typename T, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::CReference<T> getConnectable(const std::string& id) const;
@@ -166,9 +159,9 @@ public:
 
     double getLowVoltageLimit() const;
 
-    virtual const NodeBreakerView& getNodeBreakerView() const = 0;
+    const NodeBreakerView& getNodeBreakerView() const;
 
-    virtual NodeBreakerView& getNodeBreakerView() = 0;
+    NodeBreakerView& getNodeBreakerView();
 
     double getNominalV() const;
 
@@ -188,11 +181,11 @@ public:
 
     stdcxx::Reference<Substation> getSubstation();
 
-    virtual unsigned long getSwitchCount() const = 0;
+    unsigned long getSwitchCount() const;
 
-    virtual stdcxx::const_range<Switch> getSwitches() const = 0;
+    stdcxx::const_range<Switch> getSwitches() const;
 
-    virtual stdcxx::range<Switch> getSwitches() = 0;
+    stdcxx::range<Switch> getSwitches();
 
     unsigned long getThreeWindingsTransformerCount() const;
 
@@ -200,7 +193,12 @@ public:
 
     stdcxx::range<ThreeWindingsTransformer> getThreeWindingsTransformers();
 
-    virtual const TopologyKind& getTopologyKind() const = 0;
+    const TopologyKind& getTopologyKind() const;
+
+    template <typename T = TopologyModel, typename = typename std::enable_if<std::is_base_of<TopologyModel, T>::value>::type>
+    T& getTopologyModel();
+    template <typename T = TopologyModel, typename = typename std::enable_if<std::is_base_of<TopologyModel, T>::value>::type>
+    const T& getTopologyModel() const;
 
     unsigned long getTwoWindingsTransformerCount() const;
 
@@ -213,8 +211,6 @@ public:
     stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
 
     stdcxx::range<VscConverterStation> getVscConverterStations();
-
-    virtual void invalidateCache(bool exceptBusBreakerView = false) = 0;
 
     BatteryAdder newBattery();
 
@@ -245,23 +241,27 @@ public:
     void visitEquipments(TopologyVisitor& visitor) const;
 
 protected:
-    static void addNextTerminals(Terminal& otherTerminal, TerminalSet& nextTerminals);
-
-protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                 Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit);
+                 Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit, const TopologyKind& topologyKind);
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
-                 Network& rootNetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltageLimit);
+                 Network& rootNetwork, Network& subnetwork, double nominalV, double lowVoltageLimit, double highVoltageLimit, const TopologyKind& topologyKind);
 
-    virtual stdcxx::const_range<Terminal> getTerminals() const = 0;
+    friend class VoltageLevelAdder;
 
-    virtual stdcxx::range<Terminal> getTerminals() = 0;
+protected:  // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
 
 private: // Identifiable
     const std::string& getTypeDescription() const override;
 
 private:
-    virtual void removeTopology() = 0;
+    void assertTopologyModel() const;
 
     void setNetworkRef(Network& network);
 
@@ -278,6 +278,8 @@ private:
     double m_lowVoltageLimit;
 
     double m_nominalV;
+
+    std::unique_ptr<TopologyModel> m_topologyModel;
 
     std::vector<stdcxx::Reference<Area>> m_areas;
 };

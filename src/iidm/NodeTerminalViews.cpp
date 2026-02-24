@@ -7,7 +7,7 @@
 
 #include "NodeTerminalViews.hpp"
 
-#include "NodeBreakerVoltageLevel.hpp"
+#include "NodeBreakerTopologyModel.hpp"
 #include "NodeTerminal.hpp"
 
 namespace powsybl {
@@ -21,27 +21,27 @@ BusBreakerViewImpl::BusBreakerViewImpl(powsybl::iidm::NodeTerminal& terminal):
 }
 
 stdcxx::CReference<Bus> BusBreakerViewImpl::getBus() const {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
 
-    return stdcxx::cref<Bus>(voltageLevel.getCalculatedBusBreakerTopology().getBus(m_terminal.getNode()));
+    return stdcxx::cref<Bus>(topologyModel.getCalculatedBusBreakerTopology().getBus(m_terminal.getNode()));
 }
 
 stdcxx::Reference<Bus> BusBreakerViewImpl::getBus() {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
 
-    return stdcxx::ref<Bus>(voltageLevel.getCalculatedBusBreakerTopology().getBus(m_terminal.getNode()));
+    return stdcxx::ref<Bus>(topologyModel.getCalculatedBusBreakerTopology().getBus(m_terminal.getNode()));
 }
 
 stdcxx::CReference<Bus> BusBreakerViewImpl::getConnectableBus() const {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
 
-    return stdcxx::cref(voltageLevel.getCalculatedBusBreakerTopology().getConnectableBus(m_terminal.getNode()));
+    return stdcxx::cref(topologyModel.getCalculatedBusBreakerTopology().getConnectableBus(m_terminal.getNode()));
 }
 
 stdcxx::Reference<Bus> BusBreakerViewImpl::getConnectableBus() {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
 
-    return voltageLevel.getCalculatedBusBreakerTopology().getConnectableBus(m_terminal.getNode());
+    return topologyModel.getCalculatedBusBreakerTopology().getConnectableBus(m_terminal.getNode());
 }
 
 void BusBreakerViewImpl::setConnectableBus(const std::string& /*busId*/) {
@@ -53,27 +53,27 @@ BusViewImpl::BusViewImpl(powsybl::iidm::NodeTerminal& terminal):
 }
 
 stdcxx::CReference<Bus> BusViewImpl::getBus() const {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
 
-    return stdcxx::cref<Bus>(voltageLevel.getCalculatedBusTopology().getBus(m_terminal.getNode()));
+    return stdcxx::cref<Bus>(topologyModel.getCalculatedBusTopology().getBus(m_terminal.getNode()));
 }
 
 stdcxx::Reference<Bus> BusViewImpl::getBus() {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
 
-    return stdcxx::ref<Bus>(voltageLevel.getCalculatedBusTopology().getBus(m_terminal.getNode()));
+    return stdcxx::ref<Bus>(topologyModel.getCalculatedBusTopology().getBus(m_terminal.getNode()));
 }
 
 stdcxx::CReference<Bus> BusViewImpl::getConnectableBus() const {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
 
-    return stdcxx::cref(voltageLevel.getCalculatedBusTopology().getConnectableBus(m_terminal.getNode()));
+    return stdcxx::cref(topologyModel.getCalculatedBusTopology().getConnectableBus(m_terminal.getNode()));
 }
 
 stdcxx::Reference<Bus> BusViewImpl::getConnectableBus() {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(m_terminal.getVoltageLevel());
+    auto& topologyModel = m_terminal.getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
 
-    return voltageLevel.getCalculatedBusTopology().getConnectableBus(m_terminal.getNode());
+    return topologyModel.getCalculatedBusTopology().getConnectableBus(m_terminal.getNode());
 }
 
 NodeBreakerViewImpl::NodeBreakerViewImpl(NodeTerminal& terminal):

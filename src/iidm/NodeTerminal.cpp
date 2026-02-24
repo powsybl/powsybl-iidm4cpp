@@ -12,7 +12,7 @@
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
-#include "NodeBreakerVoltageLevel.hpp"
+#include "NodeBreakerTopologyModel.hpp"
 
 namespace powsybl {
 
@@ -51,8 +51,8 @@ void NodeTerminal::extendVariantArraySize(unsigned long initVariantArraySize, un
     m_angle.resize(m_angle.size() + number, m_angle[sourceIndex]);
 }
 
-bool NodeTerminal::isConnected() const {
-    return dynamic_cast<const NodeBreakerVoltageLevel&>(getVoltageLevel()).isConnected(*this);
+bool NodeTerminal::isConnected() const {    
+    return getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>().isConnected(*this);
 }
 
 double NodeTerminal::getAngle() const {
@@ -140,13 +140,13 @@ bool NodeTerminal::traverse(TopologyTraverser& traverser) {
 }
 
 bool NodeTerminal::traverse(TopologyTraverser& traverser, math::TraversalType traversalType) {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel());
-    return voltageLevel.traverse(*this, traverser, traversalType);
+    auto& topologyModel = getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
+    return topologyModel.traverse(*this, traverser, traversalType);
 }
 
 bool NodeTerminal::traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) {
-    auto& voltageLevel = dynamic_cast<NodeBreakerVoltageLevel&>(getVoltageLevel());
-    return voltageLevel.traverse(*this, traverser, traversedTerminals, traversalType);
+    auto& topologyModel = getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
+    return topologyModel.traverse(*this, traverser, traversedTerminals, traversalType);
 }
 
 }  // namespace iidm

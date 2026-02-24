@@ -11,18 +11,18 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/TopologyVisitor.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/util/Networks.hpp>
 #include <powsybl/stdcxx/cast.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
-#include "NodeBreakerVoltageLevel.hpp"
 #include "NodeTerminal.hpp"
 
 namespace powsybl {
 
 namespace iidm {
 
-CalculatedBus::CalculatedBus(const std::string& id, const std::string& name, bool fictitious, NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals, const std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)>& getBusFromTerminalFunc) :
+CalculatedBus::CalculatedBus(const std::string& id, const std::string& name, bool fictitious, VoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals, const std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)>& getBusFromTerminalFunc) :
     Bus(id, name, fictitious),
     m_voltageLevel(voltageLevel),
     m_terminals(std::move(terminals)),
@@ -36,7 +36,7 @@ void CalculatedBus::checkValidity() const {
     }
 }
 
-stdcxx::CReference<NodeTerminal> CalculatedBus::findTerminal(const NodeBreakerVoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) {
+stdcxx::CReference<NodeTerminal> CalculatedBus::findTerminal(const VoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, const std::vector<std::reference_wrapper<NodeTerminal> >& terminals) {
     if (!terminals.empty()) {
         return stdcxx::cref<NodeTerminal>(terminals.front().get());
     }

@@ -21,9 +21,7 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
-class BusBreakerVoltageLevel;
 class Network;
-class NodeBreakerVoltageLevel;
 class Switch;
 
 namespace subnetwork {
