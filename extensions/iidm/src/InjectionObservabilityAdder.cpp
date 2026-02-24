@@ -37,7 +37,8 @@ std::unique_ptr<Extension> InjectionObservabilityAdder::createExtension(Extendab
         if (!std::isnan(m_standardDeviationV)) {
             extension->setQualityV(m_standardDeviationV, m_redundantV);
         }
-        return extension;
+        std::unique_ptr<Extension> baseExtension = std::move(extension);
+        return baseExtension;
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Injection>()));
 }
