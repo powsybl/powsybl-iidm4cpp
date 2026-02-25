@@ -32,6 +32,8 @@ public:
 
     double getA() const;
 
+    double getI() const;
+
     const TwoSides& getSide() const;
 
     double getP() const;
@@ -59,6 +61,12 @@ public:
     double otherSideA(const DanglingLine& dl) const;
 
     double otherSideA(const DanglingLine& dl, bool splitShuntAdmittance) const;
+
+    double otherSideI(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
+
+    double otherSideI(const DanglingLine& dl) const;
+
+    double otherSideI(const DanglingLine& dl, bool splitShuntAdmittance) const;
 
     double otherSideP(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
 

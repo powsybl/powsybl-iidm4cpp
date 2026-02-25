@@ -86,6 +86,19 @@ double Boundary::getV() const {
     }
 }
 
+double Boundary::getI() const {
+    if(DanglingLineUtil::useHypothesis(m_parent)) {
+        return std::hypot(getP(), getQ()) / (std::sqrt(3.0) * getV() / 1000.0);
+    }
+    const Terminal& t = m_parent.getTerminal();
+    const auto& b = t.getBusView().getBus();
+    if(DanglingLineUtil::zeroImpedance(m_parent)) {
+        return t.getI();
+    } else {
+        return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), TwoSides::ONE).otherSideI(m_parent, false);
+    }
+}
+
 const VoltageLevel& Boundary::getNetworkSideVoltageLevel() const {
     return m_parent.getTerminal().getVoltageLevel();
 }

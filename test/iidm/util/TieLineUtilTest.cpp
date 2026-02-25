@@ -38,6 +38,15 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         double q1;
         double p2;
         double q2;
+        double v1;
+        double v2;
+
+        double getI1() const {
+            return std::hypot(p1, q1) / (std::sqrt(3.0) * v1 / 1000.0);
+        }
+        double getI2() const {
+            return std::hypot(p2, q2) / (std::sqrt(3.0) * v2 / 1000.0);
+        }
     };
     struct CaseSv {
         NodeSv node1;
@@ -53,8 +62,8 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         NodeSv nodeBoundary = NodeSv{1.05913402, -0.01700730 * stdcxx::toDegrees};
         NodeSv node2 = NodeSv{1.04546576, -0.04168907 * stdcxx::toDegrees};
 
-        LineSv line1 = LineSv{0.32101578, -0.16210107, -0.26328124, 0.00991455};
-        LineSv line2 = LineSv{0.26328124, -0.00991455, -0.21700000, -0.12700000};
+        LineSv line1 = LineSv{0.32101578, -0.16210107, -0.26328124, 0.00991455, node1.v, nodeBoundary.v};
+        LineSv line2 = LineSv{0.26328124, -0.00991455, -0.21700000, -0.12700000, nodeBoundary.v, node2.v};
         return CaseSv{node1, node2, nodeBoundary, line1, line2};
     }
 
@@ -64,8 +73,8 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         NodeSv nodeBoundary = NodeSv{1.05916756, -0.01702560 * stdcxx::toDegrees};
         NodeSv node2 = NodeSv{1.04216358, -0.03946400 * stdcxx::toDegrees};
 
-        LineSv line1 = LineSv{0.32116645, -0.16274609, -0.26342655, 0.01056498};
-        LineSv line2 = LineSv{-0.21700000, -0.12700000, 0.26342655, -0.01056498};
+        LineSv line1 = LineSv{0.32116645, -0.16274609, -0.26342655, 0.01056498, node1.v, nodeBoundary.v};
+        LineSv line2 = LineSv{-0.21700000, -0.12700000, 0.26342655, -0.01056498, node2.v, nodeBoundary.v};
         return CaseSv{node1, node2, nodeBoundary, line1, line2};
     }
 
@@ -75,8 +84,8 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         NodeSv nodeBoundary = NodeSv{1.05998661, -0.01660626 * stdcxx::toDegrees};
         NodeSv node2 = NodeSv{1.04634503, -0.04125738 * stdcxx::toDegrees};
 
-        LineSv line1 = LineSv{-0.26335112, 0.01016197, 0.32106283, -0.16270573};
-        LineSv line2 = LineSv{0.26335112, -0.01016197, -0.21700000, -0.12700000};
+        LineSv line1 = LineSv{-0.26335112, 0.01016197, 0.32106283, -0.16270573, nodeBoundary.v, node1.v};
+        LineSv line2 = LineSv{0.26335112, -0.01016197, -0.21700000, -0.12700000, nodeBoundary.v, node2.v};
         return CaseSv{node1, node2, nodeBoundary, line1, line2};
     }
 
@@ -86,12 +95,11 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         NodeSv nodeBoundary = NodeSv{1.06002014, -0.01662448 * stdcxx::toDegrees};
         NodeSv node2 = NodeSv{1.04304009, -0.03903205 * stdcxx::toDegrees};
 
-        LineSv line1 = LineSv{-0.26349561, 0.01081185, 0.32121215, -0.16335034};
-        LineSv line2 = LineSv{-0.21700000, -0.12700000, 0.26349561, -0.01081185};
+        LineSv line1 = LineSv{-0.26349561, 0.01081185, 0.32121215, -0.16335034, nodeBoundary.v, node1.v};
+        LineSv line2 = LineSv{-0.21700000, -0.12700000, 0.26349561, -0.01081185, node2.v, nodeBoundary.v};
         return CaseSv{node1, node2, nodeBoundary, line1, line2};
     }
 
-    // Line1 from nodeBoundary to node1, Line2 from node2 to nodeBoundary
     // Line1 from node1 to nodeBoundary, Line2 from nodeBoundary to node2
     // Different nominal voltage at node1 and node2
     static CaseSv createCaseDifferentNominalVoltageAtEnds() {
@@ -99,8 +107,21 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         NodeSv nodeBoundary = NodeSv{145.42378472578227, -0.02324020 * stdcxx::toDegrees};
         NodeSv node2 = NodeSv{231.30269602522478, -0.02818192 * stdcxx::toDegrees};
 
-        LineSv line1 = LineSv{11.729938, -8.196614, -11.713527, 1.301712};
-        LineSv line2 = LineSv{11.713527, -1.301712, -11.700000, -6.700000};
+        LineSv line1 = LineSv{11.729938, -8.196614, -11.713527, 1.301712, node1.v, nodeBoundary.v};
+        LineSv line2 = LineSv{11.713527, -1.301712, -11.700000, -6.700000, nodeBoundary.v, node2.v};
+        return CaseSv{node1, node2, nodeBoundary, line1, line2};
+    }
+
+    // Line1 from node1 to nodeBoundary, Line2 from nodeBoundary to node2
+    // Different nominal voltage at node1 and node2
+    // NaN values for voltages - simulates DC LF
+    static CaseSv createCaseNaNVoltages() {
+        NodeSv node1 = NodeSv{stdcxx::nan(), -0.01745197 * stdcxx::toDegrees};
+        NodeSv nodeBoundary = NodeSv{stdcxx::nan(), -0.02324020 * stdcxx::toDegrees};
+        NodeSv node2 = NodeSv{stdcxx::nan(), -0.02818192 * stdcxx::toDegrees};
+
+        LineSv line1 = LineSv{11.729938, -8.196614, -11.713527, 1.301712, node1.v, nodeBoundary.v};
+        LineSv line2 = LineSv{11.713527, -1.301712, -11.700000, -6.700000, nodeBoundary.v, node2.v};
         return CaseSv{node1, node2, nodeBoundary, line1, line2};
     }
 
@@ -167,6 +188,14 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
             return line.q1;
         } else {
             return line.q2;
+        }
+    }
+
+    static double getI(const LineSv& line, const TwoSides& boundarySide) {
+        if (boundarySide == TwoSides::ONE) {
+            return line.getI1();
+        } else {
+            return line.getI2();
         }
     }
 
@@ -443,12 +472,14 @@ BOOST_AUTO_TEST_CASE(tieLineTest0) {
     BOOST_CHECK(compare(caseSv0.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
     BOOST_CHECK(compare(getP(caseSv0.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
     BOOST_CHECK(compare(getQ(caseSv0.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv0.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv0, initialModelCase(TwoSides::TWO, TwoSides::ONE), TwoSides::ONE);
     BOOST_CHECK(compare(caseSv0.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
     BOOST_CHECK(compare(caseSv0.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
     BOOST_CHECK(compare(getP(caseSv0.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
     BOOST_CHECK(compare(getQ(caseSv0.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv0.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
     
 }
 BOOST_AUTO_TEST_CASE(tieLineTest1) {
@@ -476,12 +507,14 @@ BOOST_AUTO_TEST_CASE(tieLineTest1) {
     BOOST_CHECK(compare(caseSv1.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
     BOOST_CHECK(compare(getP(caseSv1.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
     BOOST_CHECK(compare(getQ(caseSv1.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv1.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv1, initialModelCase(TwoSides::TWO, TwoSides::TWO), TwoSides::TWO);
     BOOST_CHECK(compare(caseSv1.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
     BOOST_CHECK(compare(caseSv1.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
     BOOST_CHECK(compare(getP(caseSv1.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
     BOOST_CHECK(compare(getQ(caseSv1.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv1.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
     
 }
 BOOST_AUTO_TEST_CASE(tieLineTest2) {
@@ -509,12 +542,14 @@ BOOST_AUTO_TEST_CASE(tieLineTest2) {
     BOOST_CHECK(compare(caseSv2.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
     BOOST_CHECK(compare(getP(caseSv2.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
     BOOST_CHECK(compare(getQ(caseSv2.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv2.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv2, initialModelCase(TwoSides::ONE, TwoSides::ONE), TwoSides::ONE);
     BOOST_CHECK(compare(caseSv2.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
     BOOST_CHECK(compare(caseSv2.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
     BOOST_CHECK(compare(getP(caseSv2.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
     BOOST_CHECK(compare(getQ(caseSv2.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv2.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
     
 }
 BOOST_AUTO_TEST_CASE(tieLineTest3) {
@@ -542,12 +577,14 @@ BOOST_AUTO_TEST_CASE(tieLineTest3) {
     BOOST_CHECK(compare(caseSv3.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
     BOOST_CHECK(compare(getP(caseSv3.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
     BOOST_CHECK(compare(getQ(caseSv3.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv3.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv3, initialModelCase(TwoSides::ONE, TwoSides::TWO), TwoSides::TWO);
     BOOST_CHECK(compare(caseSv3.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
     BOOST_CHECK(compare(caseSv3.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
     BOOST_CHECK(compare(getP(caseSv3.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
     BOOST_CHECK(compare(getQ(caseSv3.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv3.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
     
 }
 BOOST_AUTO_TEST_CASE(tieLineWithDifferentNominalVoltageAtEndsTest) {
@@ -575,13 +612,51 @@ BOOST_AUTO_TEST_CASE(tieLineWithDifferentNominalVoltageAtEndsTest) {
     BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
     BOOST_CHECK(compare(getP(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
     BOOST_CHECK(compare(getQ(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::ONE);
     BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
     BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
     BOOST_CHECK(compare(getP(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
     BOOST_CHECK(compare(getQ(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
 
+}
+
+BOOST_AUTO_TEST_CASE(tieLineWithNaNVoltagesTest) {
+
+    // Line1 from node1 to boundaryNode, Line2 from boundaryNode to node2
+    CaseSv caseSv = createCaseNaNVoltages();
+    Network n = createNetworkWithTieLineWithDifferentNominalVoltageAtEnds(TwoSides::TWO, TwoSides::ONE, caseSv);
+    TieLine& tieLine = n.getTieLine("TWO + ONE");
+
+    SV sv2 = SV(tieLine.getDanglingLine1().getTerminal().getP(), tieLine.getDanglingLine1().getTerminal().getQ(),
+                tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getV(),
+                tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getAngle(),
+                TwoSides::ONE).otherSide(tieLine);
+    SV isv2 = initialSv2(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO, TwoSides::ONE);
+    BOOST_CHECK(compare(sv2, caseSv.node2, caseSv.line2, TwoSides::ONE, isv2));
+
+    SV sv1 = SV(tieLine.getDanglingLine2().getTerminal().getP(), tieLine.getDanglingLine2().getTerminal().getQ(),
+                tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getV(),
+                tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getAngle(),
+                TwoSides::TWO).otherSide(tieLine);
+    SV isv1 = initialSv1(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO, TwoSides::ONE);
+    BOOST_CHECK(compare(sv1, caseSv.node1, caseSv.line1, TwoSides::TWO, isv1));
+
+    SV isvHalf1 = initialHalf1SvBoundary(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO);
+    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getDanglingLine1().getBoundary().getV(), isvHalf1.getU()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
+    BOOST_CHECK(compare(getP(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
+    BOOST_CHECK(compare(getQ(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
+
+    SV isvHalf2 = initialHalf2SvBoundary(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::ONE);
+    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
+    BOOST_CHECK(compare(getP(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
+    BOOST_CHECK(compare(getQ(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
 }
 
 BOOST_AUTO_TEST_CASE(tieLineTestZeroImpedanceDl1) {

@@ -41,6 +41,8 @@ public:  // iidm::Boundary
 
     double getV() const override;
 
+    double getI() const override;
+
     const VoltageLevel& getNetworkSideVoltageLevel() const override;
 
     VoltageLevel& getNetworkSideVoltageLevel() override;

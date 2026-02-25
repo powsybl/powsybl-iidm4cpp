@@ -56,6 +56,10 @@ double SV::getB(const TwoWindingsTransformer& twt) {
     return b;
 }
 
+double SV::getI() const{
+    return std::hypot(m_p, m_q) / (std::sqrt(3.0) * m_u / 1000.0);
+}
+
 double SV::getG(const TwoWindingsTransformer& twt) {
     double g = twt.getG();
     if (twt.hasRatioTapChanger()) {
@@ -203,6 +207,18 @@ double SV::otherSideA(const DanglingLine& dl) const {
 
 double SV::otherSideA(const DanglingLine& dl, bool splitShuntAdmittance) const {
     return otherSide(dl, splitShuntAdmittance).getA();
+}
+
+double SV::otherSideI(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
+    return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getI();
+}
+
+double SV::otherSideI(const DanglingLine& dl) const {
+    return otherSide(dl).getI();
+}
+
+double SV::otherSideI(const DanglingLine& dl, bool splitShuntAdmittance) const {
+    return otherSide(dl, splitShuntAdmittance).getI();
 }
 
 double SV::otherSideP(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {

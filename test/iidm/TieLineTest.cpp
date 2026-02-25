@@ -656,6 +656,9 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     BOOST_CHECK_CLOSE(expectedSV2.otherSideU(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getV(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_CLOSE(expectedSV2.otherSideA(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getAngle(), ACCEPTABLE_THRESHOLD);
 
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideI(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getI(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideI(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getI(), ACCEPTABLE_THRESHOLD);
+
     BOOST_CHECK(stdcxx::areSame(cTieLine, cBoundary.getDanglingLine().getTieLine().get()));
     BOOST_CHECK(stdcxx::areSame(cTieLine, boundary.getDanglingLine().getTieLine().get()));
     BOOST_CHECK(stdcxx::areSame(cTieLine.getDanglingLine(TwoSides::ONE).getTerminal().getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));

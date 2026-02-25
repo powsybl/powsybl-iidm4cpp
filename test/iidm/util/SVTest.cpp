@@ -240,11 +240,13 @@ BOOST_AUTO_TEST_CASE(testDanglingLine) {
     double q1 = -77.444122;
     double v1 = 118.13329315185547;
     double a1 = 0.19568365812301636;
+    double i1 = 726.224579;
 
     double p2 = 15.098317;
     double q2 = 64.333028;
     double v2 = 138.0;
     double a2 = 0.0;
+    double i2 = 276.462893;
 
     SV svA1(p1, q1, v1, a1, TwoSides::ONE);
     SV svA2 = svA1.otherSide(dl);
@@ -252,6 +254,7 @@ BOOST_AUTO_TEST_CASE(testDanglingLine) {
     BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
     BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
     BOOST_CHECK_SMALL(svA2.getA(), tol);
+    BOOST_CHECK_CLOSE(i2, svA2.getI(), tol);
 
     SV svB2(p2, q2, v2, a2, TwoSides::TWO);
     SV svB1 = svB2.otherSide(dl);
@@ -259,38 +262,45 @@ BOOST_AUTO_TEST_CASE(testDanglingLine) {
     BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
     BOOST_CHECK_CLOSE(v1, svB1.getU(), tol);
     BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
+    BOOST_CHECK_CLOSE(i1, svB1.getI(), tol);
 
     BOOST_CHECK_CLOSE(p2, svA1.otherSideP(dl), tol);
     BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(dl), tol);
     BOOST_CHECK_CLOSE(v2, svA1.otherSideU(dl), tol);
     BOOST_CHECK_SMALL(svA1.otherSideA(dl), tol);
+    BOOST_CHECK_CLOSE(i2, svA1.otherSideI(dl), tol);
 
     BOOST_CHECK_CLOSE(p1, svB2.otherSideP(dl), tol);
     BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(dl), tol);
     BOOST_CHECK_CLOSE(v1, svB2.otherSideU(dl), tol);
     BOOST_CHECK_CLOSE(a1, svB2.otherSideA(dl), tol);
+    BOOST_CHECK_CLOSE(i1, svB2.otherSideI(dl), tol);
 
     BOOST_CHECK_CLOSE(p2, svA1.otherSideP(dl, false), tol);
     BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(dl, false), tol);
     BOOST_CHECK_CLOSE(v2, svA1.otherSideU(dl, false), tol);
     BOOST_CHECK_SMALL(svA1.otherSideA(dl, false), tol);
+    BOOST_CHECK_CLOSE(i2, svA1.otherSideI(dl, false), tol);
 
     BOOST_CHECK_CLOSE(p1, svB2.otherSideP(dl, false), tol);
     BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(dl, false), tol);
     BOOST_CHECK_CLOSE(v1, svB2.otherSideU(dl, false), tol);
     BOOST_CHECK_CLOSE(a1, svB2.otherSideA(dl, false), tol);
+    BOOST_CHECK_CLOSE(i1, svB2.otherSideI(dl, false), tol);
 
     SV svB1_noSplit = svB2.otherSide(dl, false);
     BOOST_CHECK_CLOSE(p1, svB1_noSplit.getP(), tol);
     BOOST_CHECK_CLOSE(q1, svB1_noSplit.getQ(), tol);
     BOOST_CHECK_CLOSE(v1, svB1_noSplit.getU(), tol);
     BOOST_CHECK_CLOSE(a1, svB1_noSplit.getA(), tol);
+    BOOST_CHECK_CLOSE(i1, svB1_noSplit.getI(), tol);
 
     SV svB1_split = svB2.otherSide(dl, true);
     BOOST_CHECK_CLOSE(164.26909345746856, svB1_split.getP(), tol);
     BOOST_CHECK_CLOSE(-65.013195498595877, svB1_split.getQ(), tol);
     BOOST_CHECK_CLOSE(124.29901066736439, svB1_split.getU(), tol);
     BOOST_CHECK_CLOSE(13.624022208160760, svB1_split.getA(), tol);
+    BOOST_CHECK_CLOSE(820.58938540275483, svB1_split.getI(), tol);
 }
 
 BOOST_AUTO_TEST_CASE(testTwoWindingsTransformer) {
@@ -615,6 +625,9 @@ BOOST_AUTO_TEST_CASE(testOlfRealNetwork) {
     //DanglingLineBoundary validates its "useHypothesis" condition :
     BOOST_CHECK_CLOSE(-dl.getP0(), dl.getBoundary().getP(), std::numeric_limits<double>::epsilon()); 
     BOOST_CHECK_CLOSE(-dl.getQ0(), dl.getBoundary().getQ(), std::numeric_limits<double>::epsilon());
+
+    double expectedI = std::hypot(-dl.getP0(), -dl.getQ0()) / (std::sqrt(3.0) * dl.getBoundary().getV() / 1000.0);
+    BOOST_CHECK_CLOSE(expectedI, dl.getBoundary().getI(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(testDcOlfRealNetwork) {
@@ -649,6 +662,8 @@ BOOST_AUTO_TEST_CASE(testDcOlfRealNetwork) {
 
     //DanglingLineBoundary validates its "useHypothesis" condition :
     BOOST_CHECK_CLOSE(-dl.getP0(), dl.getBoundary().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-dl.getQ0(), dl.getBoundary().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(dl.getBoundary().getI()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

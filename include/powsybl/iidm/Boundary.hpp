@@ -65,6 +65,11 @@ public:
     virtual double getV() const = 0;
 
     /**
+     * Get the current in A at the fictitious terminal.
+     */
+    virtual double getI() const = 0;
+
+    /**
      * Get the voltage level at network side.
      */
     virtual const VoltageLevel& getNetworkSideVoltageLevel() const = 0;
