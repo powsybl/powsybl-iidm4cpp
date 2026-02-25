@@ -97,7 +97,7 @@ public:
 
     bool traverse(const stdcxx::const_range<unsigned long>& startingVertices, TraversalType traversalType, const Traverser& traverser) const;
 
-    bool traverse(unsigned long v, TraversalType traversalType, const Traverser& traverser, std::vector<bool>& encountered) const;
+    bool traverse(unsigned long v, TraversalType traversalType, const Traverser& traverser, std::vector<bool>& encounteredVertices) const;
 
     bool vertexExists(unsigned long v) const;
 
@@ -123,8 +123,8 @@ private:
 
     void invalidateAdjacencyList();
 
-    bool traverseDepthFirst(unsigned long v, const Traverser& traverser, const std::vector<std::vector<unsigned long> >& adjacencyList, std::vector<bool>& encountered) const;
-    bool traverseBreadthFirst(unsigned long v, const Traverser& traverser, const std::vector<std::vector<unsigned long> >& adjacencyList, std::vector<bool>& encountered) const;
+    bool traverseDepthFirst(unsigned long v, const Traverser& traverser, const std::vector<std::vector<unsigned long> >& adjacencyList, std::vector<bool>& encounteredVertices, std::vector<bool>& encounteredEdges) const;
+    bool traverseBreadthFirst(unsigned long v, const Traverser& traverser, const std::vector<std::vector<unsigned long> >& adjacencyList, std::vector<bool>& encounteredVertices, std::vector<bool>& encounteredEdges) const;
 
 private:
     std::vector<std::unique_ptr<Vertex> > m_vertices;

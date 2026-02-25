@@ -385,7 +385,165 @@ BOOST_AUTO_TEST_CASE(traverse) {
     std::vector<bool> encounteredBreadthExpected3 = {false, false, false, true, true, true};
     graph.traverse(5, TraversalType::BREADTH_FIRST, traverser3);
     BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredBreadthExpected3.begin(), encounteredBreadthExpected3.end());
+
+
+    std::fill(encountered.begin(), encountered.end(), false);
+    std::vector<bool> eEncountered(graph.getEdgeCount());
+    std::fill(eEncountered.begin(), eEncountered.end(), false);
+    const Traverser& traverser4 = [&](unsigned long /*v1*/, unsigned long e, unsigned long /*v2*/) {
+        eEncountered[e] = true;
+        return TraverseResult::CONTINUE;
+    };
+
+    graph.traverse(5, TraversalType::BREADTH_FIRST, traverser4, encountered);
+    //All vertices and edges are encountered :
+    std::vector<bool> encounteredBreadthExpected4 = {true, true, true, true, true, true};
+    std::vector<bool> eEncounteredBreadthExpected4 = {true, true, true, true, true, true, true};
+    BOOST_CHECK_EQUAL_COLLECTIONS(encountered.begin(), encountered.end(), encounteredBreadthExpected4.begin(), encounteredBreadthExpected4.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(eEncountered.begin(), eEncountered.end(), eEncounteredBreadthExpected4.begin(), eEncounteredBreadthExpected4.end());
+
+    struct GraphPath
+    {
+        unsigned long v1;
+        unsigned long e;
+        unsigned long v2;
+
+        bool operator!=(const GraphPath& reference) const {
+            return v1 != reference.v1 ||e != reference.e ||v2 != reference.v2 ;
+        }
+
+    };
+
+    std::vector<GraphPath> breadthFirstexpected = {
+                {5, 5, 4},
+                {5, 6, 3},
+                {4, 3, 1},
+                {4, 4, 2},
+                {3, 2, 0},
+                {1, 0, 0},
+                {2, 1, 0}};
+    std::vector<GraphPath> depthFirstExpected = {
+                {5, 5, 4},
+                {4, 3, 1},
+                {1, 0, 0},
+                {0, 1, 2},
+                {2, 4, 4},
+                {0, 2, 3},
+                {3, 6, 5}};
+    
+    // Check that all edges and vertices are traversed in the right order when traversing the graph with no stopping point
+    std::vector<GraphPath> pathsBf;
+    std::vector<GraphPath> pathsDf;
+    graph.traverse(5, TraversalType::BREADTH_FIRST, [&](unsigned long v1, unsigned long e,unsigned long  v2){
+            pathsBf.push_back({v1, e, v2});
+            return TraverseResult::CONTINUE;
+        });
+    graph.traverse(5, TraversalType::DEPTH_FIRST, [&](unsigned long v1, unsigned long e, unsigned long v2){
+            pathsDf.push_back({v1, e, v2});
+            return TraverseResult::CONTINUE;
+        });
+
+    auto itpathBf = pathsBf.begin();
+    auto itpathBfExp = breadthFirstexpected.begin();
+    for(; itpathBf != pathsBf.end() && itpathBfExp != breadthFirstexpected.end(); ++itpathBf, ++itpathBfExp) {
+        BOOST_CHECK(!( *itpathBf != *itpathBfExp ));
+    }
+    auto itpathDf = pathsDf.begin();
+    auto itpathDfExp = depthFirstExpected.begin();
+    for(; itpathDf != pathsDf.end() && itpathDfExp != depthFirstExpected.end(); ++itpathDf, ++itpathDfExp) {
+        BOOST_CHECK(!( *itpathDf != *itpathDfExp ));
+    }
+
+    // Check all calls done when traversing the graph with one stopping point at vertex 0 when arriving from 3
+    // to ensure the edge 0 and 1 still get traversed even if the destination vertex 0 is already encountered
+    std::vector<GraphPath> pathsWithStoppingPoint;
+    graph.traverse(5, TraversalType::BREADTH_FIRST, [&](unsigned long v1, unsigned long e, unsigned long v2){
+            pathsWithStoppingPoint.push_back({v1, e, v2});
+            return (v1 == 3 && v2 == 0) ? TraverseResult::TERMINATE_PATH : TraverseResult::CONTINUE;
+        });
+    auto itpathStop = pathsWithStoppingPoint.begin();
+    auto itpathExp = breadthFirstexpected.begin();
+    for(; itpathStop != pathsWithStoppingPoint.end() && itpathExp != breadthFirstexpected.end(); ++itpathStop, ++itpathExp) {
+        BOOST_CHECK(!( *itpathStop != *itpathExp ));
+    }
+
 }
+
+    /**
+     *           0
+     *           |
+     *         -------
+     *         |  |  |
+     *         -------
+     *           |
+     *           1
+     *           |
+     *           2
+     *
+     *  edges:
+     *  0 <-> 1 : 0
+     *  0 <-> 1 : 1
+     *  1 <-> 2 : 2
+     *  0 <-> 1 : 3
+     */
+BOOST_AUTO_TEST_CASE(traverseParallelEdges) {
+
+    UndirectedGraph<V, E> graph;
+    graph.addVertex();
+    graph.addVertex();
+    graph.addVertex();
+    graph.addEdge(0, 1, stdcxx::ref<E>()); //0
+    graph.addEdge(1, 0, stdcxx::ref<E>()); //1
+    graph.addEdge(1, 2, stdcxx::ref<E>()); //2
+    graph.addEdge(0, 1, stdcxx::ref<E>()); //3
+
+    struct GraphPath
+    {
+        unsigned long v1;
+        unsigned long e;
+        unsigned long v2;
+
+        bool operator!=(const GraphPath& reference) const {
+            return v1 != reference.v1 ||e != reference.e ||v2 != reference.v2 ;
+        }
+
+    };
+    std::vector<GraphPath> expectedBF = {
+        {0, 0, 1},
+        {0, 1, 1},
+        {0, 3, 1},
+        {1, 2, 2}
+    };
+    std::vector<GraphPath> expectedDF = {
+        {0, 0, 1},
+        {1, 1, 0},
+        {1, 2, 2},
+        {1, 3, 0}
+    };
+    std::vector<GraphPath> pathBF;
+    std::vector<GraphPath> pathDF;
+    graph.traverse(0, TraversalType::BREADTH_FIRST, [&](unsigned long v1, unsigned long e, unsigned long v2){
+        pathBF.push_back({v1, e, v2});
+        return TraverseResult::CONTINUE;
+    });
+    graph.traverse(0, TraversalType::DEPTH_FIRST, [&](unsigned long v1, unsigned long e, unsigned long v2){
+        pathDF.push_back({v1, e, v2});
+        return TraverseResult::CONTINUE;
+    });
+
+    auto itpathBF = pathBF.begin();
+    auto itpathExpBF = expectedBF.begin();
+    for(; itpathBF != pathBF.end() && itpathExpBF != expectedBF.end(); ++itpathBF, ++itpathExpBF) {
+        BOOST_CHECK(!( *itpathBF != *itpathExpBF ));
+    }
+    auto itpathDF = pathDF.begin();
+    auto itpathExpDF = expectedDF.begin();
+    for(; itpathDF != pathDF.end() && itpathExpDF != expectedDF.end(); ++itpathDF, ++itpathExpDF) {
+        BOOST_CHECK(!( *itpathDF != *itpathExpDF ));
+    }
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
