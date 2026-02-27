@@ -45,7 +45,7 @@ double ActivePowerControl::checkWithinPMinMax(double value, const Injection& ext
 
     if(!std::isnan(value) && (value < pLimits.m_minP || value > pLimits.m_maxP)) {
         logging::Logger& logger = logging::LoggerFactory::getLogger<ActivePowerControl>();
-        logger.warn("targetP limit is now outside of pMin,pMax for component {}. Returning closest value in [pmin,pMax].",
+        logger.warn("targetP limit is now outside of pMin,pMax for component %1%. Returning closest value in [pmin,pMax].",
                         extendedComponent.getId());
         return value < pLimits.m_minP ? pLimits.m_minP : pLimits.m_maxP;
     }
