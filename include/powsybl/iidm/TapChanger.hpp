@@ -15,6 +15,7 @@
 #include <vector>
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -27,7 +28,7 @@ class Terminal;
 class VariantManagerHolder;
 
 template<typename H, typename C, typename S, typename R>
-class TapChanger : public virtual MultiVariantObject {
+class TapChanger : public virtual MultiVariantObject, public Referrer<Terminal> {
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
@@ -36,6 +37,9 @@ public: // MultiVariantObject
     void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
     void reduceVariantArraySize(unsigned long number) override;
+
+public: // Referrer<Terminal>
+    virtual void onReferencedRemoval(Terminal& removedReference) override;
 
 public:
     ~TapChanger() noexcept override = default;
@@ -76,7 +80,7 @@ public:
 
     bool isRegulating() const;
 
-    virtual void remove() = 0;
+    virtual void remove();
 
     C& setLowTapPosition(long lowTapPosition);
 

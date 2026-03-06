@@ -94,7 +94,16 @@ void VoltageRegulation::reduceVariantArraySize(unsigned long number) {
 
 VoltageRegulation& VoltageRegulation::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
     checkTerminalInNetwork(regulatingTerminal, getNetworkFromExtendable());
-    m_regulatingTerminal = regulatingTerminal ? regulatingTerminal : stdcxx::ref(getExtendable<Battery>().get().getTerminal());
+    stdcxx::Reference<Terminal> newRegulatingTerminal = regulatingTerminal ? regulatingTerminal : stdcxx::ref(getExtendable<Battery>().get().getTerminal());
+
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+    }
+    m_regulatingTerminal = newRegulatingTerminal;
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        m_regulatingTerminal.get().registerReferrer(*this);
+    }
+
     return *this;
 }
 
@@ -106,6 +115,21 @@ VoltageRegulation& VoltageRegulation::setTargetV(double targetV) {
 VoltageRegulation& VoltageRegulation::setVoltageRegulatorOn(bool voltageRegulatorOn) {
     m_voltageRegulatorOn[getVariantIndex()] = voltageRegulatorOn;
     return *this;
+}
+
+void VoltageRegulation::cleanup() {
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+    }
+}
+
+void VoltageRegulation::onReferencedRemoval(Terminal& removedReference) {
+    Terminal& localTerminal = getExtendable<Battery>().get().getTerminal();
+    if(static_cast<bool>(m_regulatingTerminal) && !stdcxx::areSame(removedReference, localTerminal)) {
+        //fall back to local terminal
+        m_regulatingTerminal = stdcxx::ref(localTerminal);
+        //no need to register local Terminal since removal of the extendable will remove this.
+    }
 }
 
 }  // namespace iidm

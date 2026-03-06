@@ -164,6 +164,137 @@ BOOST_AUTO_TEST_CASE(ThrowVoltageRegulationConstructor) {
     POWSYBL_ASSERT_THROW(adder2.add(), PowsyblException, "regulating terminal is not part of the same network");
 }
 
+BOOST_AUTO_TEST_CASE(removeTerminal){
+    Network network = powsybl::network::BatteryNetworkFactory::create();
+    Battery& bat = network.getBattery("BAT");
+    Battery& bat2 = network.getBattery("BAT2");
+
+    bat.newExtension<VoltageRegulationAdder>()
+        .withRegulatingTerminal(stdcxx::ref(bat2.getTerminal())) //set to "remote" terminal
+        .withTargetV(5.0)
+        .withVoltageRegulatorOn(true)
+        .add();
+
+    bat2.newExtension<VoltageRegulationAdder>() //set to "local" terminal
+        .withTargetV(5.0)
+        .withVoltageRegulatorOn(true)
+        .add();
+
+    VoltageRegulation& ext = bat.getExtension<VoltageRegulation>();
+    BOOST_CHECK_EQUAL(0, bat.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(2, bat2.getTerminal().getReferrers().size());
+
+    bat2.remove(); //also deletes its extension
+    // ext regulating Terminal fall back to local
+    POWSYBL_ASSERT_REF_TRUE(ext.getRegulatingTerminal());
+    BOOST_CHECK(stdcxx::areSame(ext.getRegulatingTerminal().get(), bat.getTerminal()));
+    //But reference not registered:
+    BOOST_CHECK_EQUAL(0, bat.getTerminal().getReferrers().size());
+
+    //If we manually set to "local" terminal, gets registered though:
+    ext.setRegulatingTerminal(stdcxx::Reference<Terminal>());
+    BOOST_CHECK_EQUAL(1, bat.getTerminal().getReferrers().size());
+
+}
+
+BOOST_AUTO_TEST_CASE(changeTerminal){
+    Network network = powsybl::network::BatteryNetworkFactory::create();
+    Battery& bat = network.getBattery("BAT");
+    Battery& bat2 = network.getBattery("BAT2");
+
+    VoltageLevel& vlBat = network.getVoltageLevel("VLBAT");
+    Bus& nbat = vlBat.getBusBreakerView().getBus("NBAT");
+    Battery& bat3 = vlBat.newBattery()
+                .setId("BAT3")
+                .setBus(nbat.getId())
+                .setConnectableBus(nbat.getId())
+                .setTargetP(9999.99)
+                .setTargetQ(9999.99)
+                .setMinP(-9999.99)
+                .setMaxP(9999.99)
+                .add();
+
+    bat.newExtension<VoltageRegulationAdder>()
+        .withRegulatingTerminal(stdcxx::ref(bat2.getTerminal())) //set to "remote" terminal of bat2
+        .withTargetV(5.0)
+        .withVoltageRegulatorOn(true)
+        .add();
+
+
+    VoltageRegulation& ext = bat.getExtension<VoltageRegulation>();
+    POWSYBL_ASSERT_REF_TRUE(ext.getRegulatingTerminal());
+    BOOST_CHECK(stdcxx::areSame(ext.getRegulatingTerminal().get(), bat2.getTerminal()));
+    BOOST_CHECK_EQUAL(0, bat.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(1, bat2.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, bat3.getTerminal().getReferrers().size());
+
+    //Change to terminal of bat3
+    ext.setRegulatingTerminal(stdcxx::ref(bat3.getTerminal()));
+    POWSYBL_ASSERT_REF_TRUE(ext.getRegulatingTerminal());
+    BOOST_CHECK(stdcxx::areSame(ext.getRegulatingTerminal().get(), bat3.getTerminal()));
+    BOOST_CHECK_EQUAL(0, bat.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, bat2.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(1, bat3.getTerminal().getReferrers().size());
+
+    //remove bat2 does not affect ext
+    bat2.remove();
+    POWSYBL_ASSERT_REF_TRUE(ext.getRegulatingTerminal());
+    BOOST_CHECK(stdcxx::areSame(ext.getRegulatingTerminal().get(), bat3.getTerminal()));
+    BOOST_CHECK_EQUAL(0, bat.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(1, bat3.getTerminal().getReferrers().size());
+
+    // Removing battery 3 should change the regulating terminal to the local one (fallback) but does not register it
+    bat3.remove();
+    POWSYBL_ASSERT_REF_TRUE(ext.getRegulatingTerminal());
+    BOOST_CHECK(stdcxx::areSame(ext.getRegulatingTerminal().get(), bat.getTerminal()));
+    BOOST_CHECK_EQUAL(0, bat.getTerminal().getReferrers().size());
+
+    //If we manually set to "local" terminal, gets registered though:
+    ext.setRegulatingTerminal(stdcxx::Reference<Terminal>());
+    BOOST_CHECK(stdcxx::areSame(ext.getRegulatingTerminal().get(), bat.getTerminal()));
+    BOOST_CHECK_EQUAL(1, bat.getTerminal().getReferrers().size());
+
+}
+
+BOOST_AUTO_TEST_CASE(cleanupTest){
+    Network network = powsybl::network::BatteryNetworkFactory::create();
+    Battery& bat = network.getBattery("BAT");
+    Battery& bat2 = network.getBattery("BAT2");
+
+    bat.newExtension<VoltageRegulationAdder>()
+        .withRegulatingTerminal(stdcxx::ref(bat2.getTerminal())) //set to "remote" terminal
+        .withTargetV(5.0)
+        .withVoltageRegulatorOn(true)
+        .add();
+
+    bat2.newExtension<VoltageRegulationAdder>() //set to "local" terminal
+        .withTargetV(5.0)
+        .withVoltageRegulatorOn(true)
+        .add();
+
+    VoltageRegulation& ext = bat.getExtension<VoltageRegulation>();
+    VoltageRegulation& ext2 = bat2.getExtension<VoltageRegulation>();
+    BOOST_CHECK_EQUAL(0, bat.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(2, bat2.getTerminal().getReferrers().size());
+    POWSYBL_ASSERT_REF_TRUE(ext.getRegulatingTerminal());
+    BOOST_CHECK(stdcxx::areSame(ext.getRegulatingTerminal().get(), bat2.getTerminal()));
+    POWSYBL_ASSERT_REF_TRUE(ext2.getRegulatingTerminal());
+    BOOST_CHECK(stdcxx::areSame(ext2.getRegulatingTerminal().get(), bat2.getTerminal()));
+
+    bat.removeExtension<VoltageRegulation>();
+    POWSYBL_ASSERT_REF_FALSE(bat.findExtension<VoltageRegulation>());
+    BOOST_CHECK_EQUAL(0, bat.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(1, bat2.getTerminal().getReferrers().size());
+
+    bat2.removeExtension<VoltageRegulation>();
+    POWSYBL_ASSERT_REF_FALSE(bat2.findExtension<VoltageRegulation>());
+    BOOST_CHECK_EQUAL(0, bat.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, bat2.getTerminal().getReferrers().size());
+
+
+}
+
+
 BOOST_FIXTURE_TEST_CASE(VoltageRegulationXmlSerializerTest, test::ResourceFixture) {
 
     Network network = createBatteryWithVoltageRegulationNetwork();

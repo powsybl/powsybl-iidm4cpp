@@ -27,11 +27,13 @@ namespace extensions {
 
 namespace iidm {
 
-class ReferenceTerminals : public AbstractMultiVariantIdentifiableExtension {
+class ReferenceTerminals : public AbstractMultiVariantIdentifiableExtension, public Referrer<Terminal> {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
+
+    void cleanup() override;
 
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -41,6 +43,18 @@ public: // MultiVariantObject
     void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
 
     void reduceVariantArraySize(unsigned long number) override;
+
+public: //Referrer<Terminal>
+    void onReferencedRemoval(Terminal& removedReference) override;
+private:
+    /**
+     * if given variant terminals are not present in any other variants, unregister them
+     */
+    void unregisterReferencedTerminalIfNeeded(unsigned long variantIndex);
+    /**
+     * If given terminal is not already referenced by this extension, in any variant, register it.
+     */
+    void registerReferencedTerminalIfNeeded(Terminal& terminal);
 
 public:
     ~ReferenceTerminals() noexcept override = default;
@@ -83,6 +97,8 @@ private:
     static void checkTerminalInNetwork(const Terminal& terminal, const Network& network);
 
 private:
+
+    //Referrer<Terminal> inheritance manage these references. Register each terminal only once (even if referenced by several variants)
     std::vector<std::vector<stdcxx::Reference<Terminal>>> m_referenceTerminals;
 };
 

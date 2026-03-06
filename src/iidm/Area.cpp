@@ -181,9 +181,11 @@ Area& Area::addAreaBoundary(const std::shared_ptr<AreaBoundary>& areaBoundary) {
     auto boundaryRef = areaBoundary->getBoundary();
     if (static_cast<bool>(boundaryRef)) {
         checkBoundaryNetwork(boundaryRef.get().getDanglingLine().getParentNetwork(), stdcxx::format("Boundary of DanglingLine %1%", boundaryRef.get().getDanglingLine().getId()));
+        boundaryRef.get().registerReferrer(*this);
     }
     if (static_cast<bool>(terminalRef) && static_cast<bool>(terminalRef.get().getConnectable())) {
         checkBoundaryNetwork(terminalRef.get().getConnectable().get().getParentNetwork(), stdcxx::format("Terminal of Connectable %1%", terminalRef.get().getConnectable().get().getId()));
+        terminalRef.get().registerReferrer(*this);
     }
 
     m_areaBoundaries.push_back(areaBoundary);
@@ -195,14 +197,26 @@ void Area::checkBoundaryNetwork(const Network& network, const std::string& bound
     }
 }
 
-Area& Area::removeAreaBoundary(const Terminal& terminal) {
+Area& Area::removeAreaBoundary(Terminal& terminal) {
+    return removeAreaBoundary(terminal, true);
+}
+Area& Area::removeAreaBoundary(Boundary& boundary) {
+    return removeAreaBoundary(boundary, true);
+}
+Area& Area::removeAreaBoundary(Terminal& terminal, bool updateReferrer) {
+    if(updateReferrer){
+        terminal.unregisterReferrer(*this);
+    }
     m_areaBoundaries.erase(std::remove_if(m_areaBoundaries.begin(), m_areaBoundaries.end(), [&terminal](const std::shared_ptr<AreaBoundary>& ptrAreaBoundary) {
         return (static_cast<bool>(ptrAreaBoundary) && static_cast<bool>(ptrAreaBoundary->getTerminal())) ? stdcxx::areSame(terminal, ptrAreaBoundary->getTerminal().get()) : false;
     }), m_areaBoundaries.end());
 
     return *this;
 }
-Area& Area::removeAreaBoundary(const Boundary& boundary) {
+Area& Area::removeAreaBoundary(Boundary& boundary, bool updateReferrer) {
+    if(updateReferrer) {
+        boundary.unregisterReferrer(*this);
+    }
     m_areaBoundaries.erase(std::remove_if(m_areaBoundaries.begin(), m_areaBoundaries.end(), [&boundary](const std::shared_ptr<AreaBoundary>& ptrAreaBoundary) {
         return (static_cast<bool>(ptrAreaBoundary) && static_cast<bool>(ptrAreaBoundary->getBoundary())) ? stdcxx::areSame(boundary, ptrAreaBoundary->getBoundary().get()) : false;
     }), m_areaBoundaries.end());
@@ -247,9 +261,30 @@ void Area::remove() {
         vl.removeArea(*this);
     }
 
+    for (auto& areaBoundary : m_areaBoundaries) {
+        if(!areaBoundary) {
+            continue;
+        }
+
+        auto terminalRef = areaBoundary->getTerminal();
+        auto boundaryRef = areaBoundary->getBoundary();
+        if (static_cast<bool>(boundaryRef)) {
+            boundaryRef.get().unregisterReferrer(*this);
+        }
+        if (static_cast<bool>(terminalRef) && static_cast<bool>(terminalRef.get().getConnectable())) {
+            terminalRef.get().unregisterReferrer(*this);
+        }
+    }
+
     getNetwork().remove(*this);
 }
 
+void Area::onReferencedRemoval(Boundary& removedReference) {
+    removeAreaBoundary(removedReference, false);
+}
+void Area::onReferencedRemoval(Terminal& removedReference) {
+    removeAreaBoundary(removedReference, false);
+}
 
 }  // namespace iidm
 

@@ -40,9 +40,15 @@ Area& AreaBoundary::getArea() {
 stdcxx::CReference<Terminal> AreaBoundary::getTerminal() const {
     return static_cast<bool>(m_terminal) ? stdcxx::cref(m_terminal) : stdcxx::cref<Terminal>();
 }
+stdcxx::Reference<Terminal> AreaBoundary::getTerminal() {
+    return m_terminal;
+}
 
 stdcxx::CReference<Boundary> AreaBoundary::getBoundary() const {
     return static_cast<bool>(m_boundary) ? stdcxx::cref(m_boundary) : stdcxx::cref<Boundary>();
+}
+stdcxx::Reference<Boundary> AreaBoundary::getBoundary() {
+    return m_boundary;
 }
 
 bool AreaBoundary::isAc() const {

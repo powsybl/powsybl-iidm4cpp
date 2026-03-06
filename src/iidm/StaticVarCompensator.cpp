@@ -12,12 +12,15 @@
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
 StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-        double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, Terminal& regulatingTerminal) :
+        double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, stdcxx::Reference<Terminal>& regulatingTerminal) :
     Identifiable(id, name, fictitious),
     m_bMin(checkBmin(*this, bMin)),
     m_bMax(checkBmax(*this, bMax)),
@@ -25,6 +28,9 @@ StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const 
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_regulatingTerminal(regulatingTerminal),
     m_regulationMode(network.getVariantManager().getVariantArraySize(), regulationMode) {
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        m_regulatingTerminal.get().registerReferrer(*this);
+    }
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (stdcxx::isInstanceOf<Network>(network)) {
         auto& n = dynamic_cast<Network&>(network);
@@ -64,11 +70,11 @@ double StaticVarCompensator::getReactivePowerSetpoint() const {
 }
 
 const Terminal& StaticVarCompensator::getRegulatingTerminal() const {
-    return m_regulatingTerminal.get();
+    return (static_cast<bool>(m_regulatingTerminal)) ? m_regulatingTerminal.get() : getTerminal();
 }
 
 Terminal& StaticVarCompensator::getRegulatingTerminal() {
-    return m_regulatingTerminal.get();
+    return (static_cast<bool>(m_regulatingTerminal)) ? m_regulatingTerminal.get() : getTerminal();
 }
 
 const StaticVarCompensator::RegulationMode& StaticVarCompensator::getRegulationMode() const {
@@ -119,7 +125,14 @@ StaticVarCompensator& StaticVarCompensator::setReactivePowerSetpoint(double reac
 
 StaticVarCompensator& StaticVarCompensator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
     checkRegulatingTerminal(*this, regulatingTerminal, getNetwork());
-    m_regulatingTerminal = regulatingTerminal ? regulatingTerminal : getTerminal();
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+        m_regulatingTerminal = stdcxx::Reference<Terminal>();
+    }
+    if(static_cast<bool>(regulatingTerminal)) {
+        m_regulatingTerminal = regulatingTerminal;
+        m_regulatingTerminal.get().registerReferrer(*this);
+    }
     return *this;
 }
 
@@ -135,6 +148,42 @@ StaticVarCompensator& StaticVarCompensator::setVoltageSetpoint(double voltageSet
     m_voltageSetpoint[getNetwork().getVariantIndex()] = voltageSetpoint;
     getNetwork().invalidateValidationLevel();
     return *this;
+}
+
+void StaticVarCompensator::remove() {
+    if(static_cast<bool>(m_regulatingTerminal)){
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+    }
+    Injection::remove();
+}
+
+void StaticVarCompensator::onReferencedRemoval(Terminal& /*removedReference*/) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<StaticVarCompensator>();
+
+    //At least one variant set in Voltage regulation ?
+    bool bUseVoltageRegulation = std::find(m_regulationMode.begin(), m_regulationMode.end(), RegulationMode::VOLTAGE) != m_regulationMode.end();
+
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        Terminal& oldRegulatingTerminal = m_regulatingTerminal.get();
+        Terminal& localTerminal = getTerminal();
+
+        auto bus = oldRegulatingTerminal.getBusView().getBus();
+        auto localBus = localTerminal.getBusView().getBus();
+        if (bUseVoltageRegulation && static_cast<bool>(bus) && stdcxx::areSame(bus, localBus)) {
+            // local voltage regulation, we keep the regulating status, and re-locate the regulation at the regulated equipment
+            logger.warn(stdcxx::format("Connectable %1% was a local voltage regulation point for %2%. Regulation terminal is re-located at %3%.",
+                        oldRegulatingTerminal.getConnectable().get().getId(), getId(), getId()));
+        
+            m_regulatingTerminal = localTerminal;
+            return;
+        } else {
+            logger.warn(stdcxx::format("Connectable %1% was a regulating terminal for (%2%). Regulation is deactivated",
+                        oldRegulatingTerminal.getConnectable().get().getId(), getId()));
+            m_regulatingTerminal = stdcxx::Reference<Terminal>();
+        }
+    }
+
+    m_regulationMode.assign(m_regulationMode.size(), RegulationMode::OFF);
 }
 
 namespace Enum {

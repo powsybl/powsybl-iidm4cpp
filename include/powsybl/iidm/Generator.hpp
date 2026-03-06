@@ -13,6 +13,7 @@
 #include <powsybl/iidm/EnergySource.hpp>
 #include <powsybl/iidm/Injection.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 
 namespace powsybl {
 
@@ -20,13 +21,19 @@ namespace iidm {
 
 class Terminal;
 
-class Generator : public Injection, public ReactiveLimitsHolder {
+class Generator : public Injection, public ReactiveLimitsHolder, public Referrer<Terminal> {
 public:  // Identifiable
     const IdentifiableType& getType() const override;
 
+public: //Connectable
+    virtual void remove() override;
+
+public: //Referrer<Terminal>
+    void onReferencedRemoval(Terminal& removedReference) override;
+
 public:
     Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const EnergySource& energySource,
-        double minP, double maxP, bool voltageRegulatorOn, Terminal& regulatingTerminal,
+        double minP, double maxP, bool voltageRegulatorOn, stdcxx::Reference<Terminal>& regulatingTerminal,
         double activePowerSetpoint, double reactivePowerSetpoint, double voltageSetpoint, double ratedS, bool isCondenser);
 
     ~Generator() noexcept override = default;
@@ -102,7 +109,7 @@ private:
 
     double m_ratedS;
 
-    std::reference_wrapper<Terminal> m_regulatingTerminal;
+    stdcxx::Reference<Terminal> m_regulatingTerminal;
 
     std::vector<bool> m_voltageRegulatorOn;
 

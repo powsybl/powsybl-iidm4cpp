@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
+#include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -187,6 +188,7 @@ BOOST_AUTO_TEST_CASE(variantsResetTest) {
     SlackTerminal::attach(network.getBusBreakerView().getBus("NGEN"));
     auto& stGen = vlgen.getExtension<SlackTerminal>();
     Terminal& tGen = stGen.getTerminal();
+    BOOST_CHECK_EQUAL(1, tGen.getReferrers().size());
 
     // Testing that only current variant was set
     variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
@@ -195,35 +197,36 @@ BOOST_AUTO_TEST_CASE(variantsResetTest) {
     BOOST_CHECK(!stGen.getTerminal());
     stGen.setTerminal(stdcxx::ref(tGen));
     BOOST_CHECK(stdcxx::areSame(stGen.getTerminal().get(), tGen));
-    stGen.setTerminal(stdcxx::cref<Terminal>());
-    BOOST_CHECK(!stGen.getTerminal());
-    stGen.setTerminal(stdcxx::cref(tGen));
-    BOOST_CHECK(stdcxx::areSame(stGen.getTerminal().get(), tGen));
+    BOOST_CHECK_EQUAL(1, tGen.getReferrers().size());
 
     variantManager.setWorkingVariant(variant1);
     BOOST_CHECK(!stGen.getTerminal());
     stGen.setTerminal(stdcxx::ref(tGen));
+    BOOST_CHECK_EQUAL(1, tGen.getReferrers().size());
 
     // Testing the cleanable property of the slackTerminal
     variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
     BOOST_CHECK(!stGen.setTerminal(stdcxx::ref<Terminal>()).isEmpty());
+    BOOST_CHECK_EQUAL(1, tGen.getReferrers().size());
 
     variantManager.setWorkingVariant(variant2);
     BOOST_CHECK(!stGen.setTerminal(stdcxx::ref<Terminal>()).isEmpty());
+    BOOST_CHECK_EQUAL(1, tGen.getReferrers().size());
 
     variantManager.setWorkingVariant(variant1);
     BOOST_CHECK(stGen.setTerminal(stdcxx::ref<Terminal>()).isEmpty());
+    BOOST_CHECK_EQUAL(0, tGen.getReferrers().size());
     BOOST_CHECK(!stGen.setTerminal(stdcxx::ref(tGen)).isEmpty());
+    BOOST_CHECK_EQUAL(1, tGen.getReferrers().size());
 
     // Testing the cleanIfEmpty boolean
     stGen.setTerminal(stdcxx::ref<Terminal>(), false);
     BOOST_CHECK_NO_THROW(vlgen.getExtension<SlackTerminal>());
     BOOST_CHECK(!stGen.setTerminal(stdcxx::ref(tGen)).isEmpty());
     BOOST_CHECK_NO_THROW(vlgen.getExtension<SlackTerminal>());
-    stGen.setTerminal(stdcxx::cref<Terminal>(), false);
-    BOOST_CHECK_NO_THROW(vlgen.getExtension<SlackTerminal>());
     stGen.setTerminal(stdcxx::ref<Terminal>(), true);
     POWSYBL_ASSERT_THROW(vlgen.getExtension<SlackTerminal>(), PowsyblException, "Extension powsybl::iidm::extensions::SlackTerminal not found");
+    BOOST_CHECK_EQUAL(0, tGen.getReferrers().size());
 
     // Creates an extension on another voltageLevel
     VoltageLevel& vlhv1 = network.getVoltageLevel("VLLOAD");
@@ -244,6 +247,52 @@ BOOST_AUTO_TEST_CASE(variantsResetTest) {
     SlackTerminal::reset(network);
     POWSYBL_ASSERT_THROW(vlgen.getExtension<SlackTerminal>(), PowsyblException, "Extension powsybl::iidm::extensions::SlackTerminal not found");
     POWSYBL_ASSERT_THROW(vlhv1.getExtension<SlackTerminal>(), PowsyblException, "Extension powsybl::iidm::extensions::SlackTerminal not found");
+    BOOST_CHECK_EQUAL(0, tGen.getReferrers().size());
+}
+
+BOOST_AUTO_TEST_CASE(removeTerminal) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    //Add a second generator:
+    VoltageLevel& vlgen = network.getVoltageLevel("VLGEN");
+    Bus& ngen = vlgen.getBusBreakerView().getBus("NGEN").get();
+    Generator& generator2 = vlgen.newGenerator()
+                .setId("GEN2")
+                .setBus(ngen.getId())
+                .setConnectableBus(ngen.getId())
+                .setMinP(-9999.99)
+                .setMaxP(9999.99)
+                .setVoltageRegulatorOn(true)
+                .setTargetV(24.5)
+                .setTargetP(607.0)
+                .setTargetQ(301.0)
+                .add();
+    generator2.newReactiveCapabilityCurve()
+                .beginPoint()
+                .setP(3.0)
+                .setMaxQ(5.0)
+                .setMinQ(4.0)
+                .endPoint()
+                .beginPoint()
+                .setP(0.0)
+                .setMaxQ(7.0)
+                .setMinQ(6.0)
+                .endPoint()
+                .beginPoint()
+                .setP(1.0)
+                .setMaxQ(5.0)
+                .setMinQ(4.0)
+                .endPoint()
+                .add();
+
+    vlgen.newExtension<SlackTerminalAdder>().withTerminal(generator2.getTerminal()).add();
+
+    auto& slackTerminal = vlgen.getExtension<SlackTerminal>();
+    POWSYBL_ASSERT_REF_TRUE( slackTerminal.getTerminal() );
+    BOOST_CHECK_EQUAL(1, generator2.getTerminal().getReferrers().size());
+
+    generator2.remove();
+    POWSYBL_ASSERT_REF_FALSE(vlgen.findExtension<SlackTerminal>());
+
 }
 
 BOOST_AUTO_TEST_CASE(testWithSubnetworks) {

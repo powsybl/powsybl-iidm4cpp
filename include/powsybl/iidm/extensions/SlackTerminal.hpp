@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -24,7 +25,7 @@ class VoltageLevel;
 
 namespace extensions {
 
-class SlackTerminal : public AbstractMultiVariantIdentifiableExtension {
+class SlackTerminal : public AbstractMultiVariantIdentifiableExtension, public Referrer<Terminal> {
 public:
     static void attach(Bus& bus);
 
@@ -36,6 +37,20 @@ public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
+
+    void cleanup() override;
+
+public: //Referrer<Terminal>
+    void onReferencedRemoval(Terminal& removedReference) override;
+private:
+    /**
+     * if given variant terminal is not present in any other variants, unregister it
+     */
+    void unregisterReferencedTerminalIfNeeded(unsigned long variantIndex);
+    /**
+     * If given terminal is not already referenced by this extension, in any variant, register it.
+     */
+    void registerReferencedTerminalIfNeeded(Terminal& terminal);
 
 public:  // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -55,11 +70,7 @@ public:
 
     bool isEmpty() const;
 
-    SlackTerminal& setTerminal(const stdcxx::CReference<Terminal>& terminal);
-
     SlackTerminal& setTerminal(const stdcxx::Reference<Terminal>& terminal);
-
-    SlackTerminal& setTerminal(const stdcxx::CReference<Terminal>& terminal, bool cleanIfEmpty);
 
     SlackTerminal& setTerminal(const stdcxx::Reference<Terminal>& terminal, bool cleanIfEmpty);
 
@@ -67,6 +78,7 @@ private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
+    // Referrer<Terminal> inheritance manage theses references. Register a terminal only once (even if referenced by several variants)
     std::vector<stdcxx::Reference<Terminal>> m_terminals;
 };
 

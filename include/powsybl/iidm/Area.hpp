@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/AreaBoundaryAdder.hpp>
 #include <powsybl/iidm/NetworkRef.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 
 #include <powsybl/stdcxx/Predicate.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -25,7 +26,7 @@ class Boundary;
 class Terminal;
 class VoltageLevel;
 
-class Area : public Identifiable {
+class Area : public Identifiable, public Referrer<Boundary>, public Referrer<Terminal> {
 
 public:  // Identifiable
     virtual const Network& getNetwork() const override;
@@ -37,6 +38,10 @@ public:  // Identifiable
     virtual Network& getParentNetwork() override;
 
     virtual const IdentifiableType& getType() const override;
+
+public: //Referrer
+    virtual void onReferencedRemoval(Boundary& removedReference) override;
+    virtual void onReferencedRemoval(Terminal& removedReference) override;
 
 public: // MultiVariantObject
     virtual void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -88,9 +93,13 @@ private:
     friend class AreaBoundaryAdder;
 
 public:
-    Area& removeAreaBoundary(const Terminal& terminal);
-    Area& removeAreaBoundary(const Boundary& boundary);
+    Area& removeAreaBoundary(Terminal& terminal);
+    Area& removeAreaBoundary(Boundary& boundary);
+private:
+    Area& removeAreaBoundary(Terminal& terminal, bool updateReferrer);
+    Area& removeAreaBoundary(Boundary& boundary, bool updateReferrer);
 
+public:
     std::shared_ptr<AreaBoundary> getAreaBoundary(const Terminal& terminal);
     stdcxx::CReference<AreaBoundary> getAreaBoundary(const Terminal& terminal) const;
     std::shared_ptr<AreaBoundary> getAreaBoundary(const Boundary& boundary);

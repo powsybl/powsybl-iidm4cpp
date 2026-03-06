@@ -11,17 +11,23 @@
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
-VscConverterStation::VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint, Terminal& regulatingTerminal) :
+VscConverterStation::VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint, stdcxx::Reference<Terminal>& regulatingTerminal) :
     Identifiable(id, name, fictitious),
     HvdcConverterStation(lossFactor),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),
     m_regulatingTerminal(regulatingTerminal) {
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        m_regulatingTerminal.get().registerReferrer(*this);
+    }
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (stdcxx::isInstanceOf<Network>(network)) {
         auto& n = dynamic_cast<Network&>(network);
@@ -63,11 +69,11 @@ double VscConverterStation::getReactivePowerSetpoint() const {
 }
 
 const Terminal& VscConverterStation::getRegulatingTerminal() const {
-    return m_regulatingTerminal.get();
+    return (static_cast<bool>(m_regulatingTerminal)) ? m_regulatingTerminal.get() : getTerminal();
 }
 
 Terminal& VscConverterStation::getRegulatingTerminal() {
-    return m_regulatingTerminal.get();
+    return (static_cast<bool>(m_regulatingTerminal)) ? m_regulatingTerminal.get() : getTerminal();
 }
 
 double VscConverterStation::getVoltageSetpoint() const {
@@ -99,7 +105,16 @@ VscConverterStation& VscConverterStation::setReactivePowerSetpoint(double reacti
 
 VscConverterStation& VscConverterStation::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
     checkRegulatingTerminal(*this, regulatingTerminal, getNetwork());
-    m_regulatingTerminal = regulatingTerminal ? regulatingTerminal : getTerminal();
+
+    if(static_cast<bool>(m_regulatingTerminal)){
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+        m_regulatingTerminal = stdcxx::Reference<Terminal>();
+    }
+    if(static_cast<bool>(regulatingTerminal)) {
+        m_regulatingTerminal = regulatingTerminal;
+        m_regulatingTerminal.get().registerReferrer(*this);
+    }
+
     return *this;
 }
 
@@ -116,6 +131,39 @@ VscConverterStation& VscConverterStation::setVoltageSetpoint(double voltageSetpo
     getNetwork().invalidateValidationLevel();
     return *this;
 }
+
+void VscConverterStation::remove() {
+    if(static_cast<bool>(m_regulatingTerminal)){
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+    }
+    HvdcConverterStation::remove();
+}
+
+void VscConverterStation::onReferencedRemoval(Terminal& /*removedReference*/) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<VscConverterStation>();
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        Terminal& oldRegulatingTerminal = m_regulatingTerminal.get();
+        Terminal& localTerminal = getTerminal();
+
+        auto bus = oldRegulatingTerminal.getBusView().getBus();
+        auto localBus = localTerminal.getBusView().getBus();
+        if (static_cast<bool>(bus) && stdcxx::areSame(bus, localBus)) {
+            // local voltage regulation, we keep the regulating status, and re-locate the regulation at the regulated equipment
+            logger.warn(stdcxx::format("Connectable %1% was a local voltage regulation point for %2%. Regulation terminal is re-located at %3%.",
+                        oldRegulatingTerminal.getConnectable().get().getId(), getId(), getId()));
+        
+            m_regulatingTerminal = localTerminal;
+            return;
+        } else {
+            logger.warn(stdcxx::format("Connectable %1% was a regulating terminal for (%2%). Regulation is deactivated",
+                        oldRegulatingTerminal.getConnectable().get().getId(), getId()));
+            m_regulatingTerminal = stdcxx::Reference<Terminal>();
+        }
+    }
+
+    m_voltageRegulatorOn.assign(m_voltageRegulatorOn.size(), false);
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

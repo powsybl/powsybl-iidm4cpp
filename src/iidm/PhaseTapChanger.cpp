@@ -56,6 +56,7 @@ void PhaseTapChanger::reduceVariantArraySize(unsigned long number) {
 }
 
 void PhaseTapChanger::remove() {
+    TapChanger::remove();
     getParent().setPhaseTapChanger(std::unique_ptr<PhaseTapChanger>());
 }
 

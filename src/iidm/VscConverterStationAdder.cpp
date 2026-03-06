@@ -28,8 +28,7 @@ VscConverterStation& VscConverterStationAdder::add() {
     }
     validate();
 
-    Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *terminalPtr;
-    std::unique_ptr<VscConverterStation> ptrVsc = stdcxx::make_unique<VscConverterStation>(n, checkAndGetUniqueId(), getName(), isFictitious(), getLossFactor(), *m_voltageRegulatorOn, m_reactivePowerSetpoint, m_voltageSetpoint, regulatingTerminal);
+    std::unique_ptr<VscConverterStation> ptrVsc = stdcxx::make_unique<VscConverterStation>(n, checkAndGetUniqueId(), getName(), isFictitious(), getLossFactor(), *m_voltageRegulatorOn, m_reactivePowerSetpoint, m_voltageSetpoint, m_regulatingTerminal);
     auto& vsc = n.checkAndAdd<VscConverterStation>(std::move(ptrVsc));
 
     Terminal& terminal = vsc.addTerminal(std::move(terminalPtr));

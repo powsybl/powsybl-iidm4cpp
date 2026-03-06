@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_REMOTEREACTIVEPOWERCONTROL_HPP
 
 #include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -16,6 +17,7 @@ namespace powsybl {
 namespace iidm {
 
 class Generator;
+class Network;
 class Terminal;
 
 namespace extensions {
@@ -24,11 +26,16 @@ namespace iidm {
 
 class RemoteReactivePowerControlAdder;
 
-class RemoteReactivePowerControl : public Extension {
+class RemoteReactivePowerControl : public Extension, public Referrer<Terminal> {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
+
+    void cleanup() override;
+
+public: //Referrer<Terminal>
+    void onReferencedRemoval(Terminal& removedReference) override;
 
 public:
     ~RemoteReactivePowerControl() noexcept override = default;
@@ -41,6 +48,10 @@ public:
 
     bool isEnabled() const;
 
+    RemoteReactivePowerControl& setTargeQ(double targetQ);
+    RemoteReactivePowerControl& setEnabled(bool enabled);
+    RemoteReactivePowerControl& setRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal);
+
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
@@ -49,10 +60,13 @@ private:
 
     friend RemoteReactivePowerControlAdder;
 
+    static double checkTargetQ(double targetQ);
+    static void checkRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal, const Network& network);
+
 private:
     double m_targetQ;
 
-    std::reference_wrapper<Terminal> m_regulatingTerminal;
+    std::reference_wrapper<Terminal> m_regulatingTerminal; //Managed through Referrer<Terminal> inheritance
 
     bool m_enabled;
 };

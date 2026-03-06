@@ -11,19 +11,25 @@
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
 ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
-                                   unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband) :
+                                   unsigned long currentSectionCount, stdcxx::Reference<Terminal>& regulatingTerminal, bool voltageRegulatorOn, double targetV, double targetDeadband) :
     Identifiable(id, name, fictitious),
     m_model(std::move(model)),
     m_sectionCount(network.getVariantManager().getVariantArraySize(), currentSectionCount),
-    m_regulatingTerminal(terminal),
+    m_regulatingTerminal(regulatingTerminal),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
     m_targetV(network.getVariantManager().getVariantArraySize(), targetV),
     m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband) {
+        if(static_cast<bool>(m_regulatingTerminal)) {
+            m_regulatingTerminal.get().registerReferrer(*this);
+        }
 
     m_model->attach(*this);
 }
@@ -81,11 +87,11 @@ const ShuntCompensatorModelType& ShuntCompensator::getModelType() const {
 }
 
 const Terminal& ShuntCompensator::getRegulatingTerminal() const {
-    return m_regulatingTerminal.get();
+    return (static_cast<bool>(m_regulatingTerminal)) ? m_regulatingTerminal.get() : getTerminal();
 }
 
 Terminal& ShuntCompensator::getRegulatingTerminal() {
-    return m_regulatingTerminal.get();
+    return (static_cast<bool>(m_regulatingTerminal)) ? m_regulatingTerminal.get() : getTerminal();
 }
 
 unsigned long ShuntCompensator::getSectionCount() const {
@@ -126,7 +132,15 @@ void ShuntCompensator::reduceVariantArraySize(unsigned long number) {
 
 ShuntCompensator& ShuntCompensator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal) {
     checkRegulatingTerminal(*this, regulatingTerminal, getNetwork());
-    m_regulatingTerminal = regulatingTerminal ? regulatingTerminal.get() : getTerminal();
+
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+        m_regulatingTerminal = stdcxx::Reference<Terminal>();
+    }
+    if(static_cast<bool>(regulatingTerminal)) {
+        m_regulatingTerminal = regulatingTerminal;
+        m_regulatingTerminal.get().registerReferrer(*this);
+    }
 
     return *this;
 }
@@ -159,6 +173,38 @@ ShuntCompensator& ShuntCompensator::setVoltageRegulatorOn(bool voltageRegulatorO
     m_voltageRegulatorOn[getNetwork().getVariantIndex()] = voltageRegulatorOn;
     getNetwork().invalidateValidationLevel();
     return *this;
+}
+
+void ShuntCompensator::remove() {
+    if(static_cast<bool>(m_regulatingTerminal)){
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+    }
+    Injection::remove();
+}
+
+void ShuntCompensator::onReferencedRemoval(Terminal& /*removedReference*/) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<ShuntCompensator>();
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        Terminal& oldRegulatingTerminal = m_regulatingTerminal.get();
+        Terminal& localTerminal = getTerminal();
+
+        auto bus = oldRegulatingTerminal.getBusView().getBus();
+        auto localBus = localTerminal.getBusView().getBus();
+        if (static_cast<bool>(bus) && stdcxx::areSame(bus, localBus)) { 
+            // local voltage regulation, we keep the regulating status, and re-locate the regulation at the regulated equipment
+            logger.warn(stdcxx::format("Connectable %1% was a local voltage regulation point for %2%. Regulation terminal is re-located at %3%.",
+                        oldRegulatingTerminal.getConnectable().get().getId(), getId(), getId()));
+        
+            m_regulatingTerminal = localTerminal;
+            return;
+        } else {
+            logger.warn(stdcxx::format("Connectable %1% was a regulating terminal for (%2%). Regulation is deactivated",
+                        oldRegulatingTerminal.getConnectable().get().getId(), getId()));
+            m_regulatingTerminal = stdcxx::Reference<Terminal>();
+        }
+    }
+
+    m_voltageRegulatorOn.assign(m_voltageRegulatorOn.size(), false);
 }
 
 }  // namespace iidm

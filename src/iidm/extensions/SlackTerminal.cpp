@@ -29,6 +29,8 @@ SlackTerminal::SlackTerminal(VoltageLevel& voltageLevel, Terminal& terminal) :
 void SlackTerminal::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     const auto& terminalSource = m_terminals[sourceIndex];
     for (auto index : indexes) {
+        unregisterReferencedTerminalIfNeeded(index);
+        //no need to register terminalSource since it's already referenced.
         m_terminals[index] = terminalSource;
     }
 }
@@ -49,10 +51,12 @@ void SlackTerminal::attach(Bus& bus) {
 }
 
 void SlackTerminal::deleteVariantArrayElement(unsigned long index) {
+    unregisterReferencedTerminalIfNeeded(index);
     m_terminals[index].reset();
 }
 
 void SlackTerminal::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    //No need to register terminal, since it's already referenced at sourceIndex
     m_terminals.resize(m_terminals.size() + number, m_terminals[sourceIndex]);
 }
 
@@ -62,11 +66,11 @@ const std::string& SlackTerminal::getName() const {
 }
 
 stdcxx::CReference<Terminal> SlackTerminal::getTerminal() const {
-    return stdcxx::cref(m_terminals[getVariantIndex()]);
+    return static_cast<bool>(m_terminals[getVariantIndex()]) ? stdcxx::cref(m_terminals[getVariantIndex()]) : stdcxx::CReference<Terminal>();
 }
 
 stdcxx::Reference<Terminal> SlackTerminal::getTerminal() {
-    return m_terminals[getVariantIndex()];
+    return static_cast<bool>(m_terminals[getVariantIndex()]) ? m_terminals[getVariantIndex()] : stdcxx::Reference<Terminal>();
 }
 
 const std::type_index& SlackTerminal::getType() const {
@@ -82,7 +86,12 @@ bool SlackTerminal::isEmpty() const {
 }
 
 void SlackTerminal::reduceVariantArraySize(unsigned long number) {
-    m_terminals.resize(m_terminals.size() - number); // remove elements from the top to avoid moves inside the array
+    // remove elements from the top to avoid moves inside the array
+    // and one by one to unregister reference correctly
+    for(unsigned long index = 0; index < number ; index ++) {
+        unregisterReferencedTerminalIfNeeded(m_terminals.size() - 1);
+        m_terminals.resize(m_terminals.size() - 1);
+    }
 }
 
 void SlackTerminal::reset(Network& network) {
@@ -104,19 +113,20 @@ void SlackTerminal::reset(VoltageLevel& voltageLevel, const stdcxx::Reference<Te
     }
 }
 
-SlackTerminal& SlackTerminal::setTerminal(const stdcxx::CReference<Terminal>& terminal) {
+SlackTerminal& SlackTerminal::setTerminal(const stdcxx::Reference<Terminal>& terminal) {
     if (terminal && !stdcxx::areSame(terminal.get().getVoltageLevel(), getExtendable().get())) {
         throw PowsyblException(stdcxx::format("Terminal given is not in the right VoltageLevel (%1% instead of %2%)", terminal.get().getVoltageLevel().getId(), getExtendable<VoltageLevel>().get().getId()));
     }
-    m_terminals[getVariantIndex()] = stdcxx::ref(terminal);
+
+    unregisterReferencedTerminalIfNeeded(getVariantIndex());
+    if(static_cast<bool>(terminal)) {
+        registerReferencedTerminalIfNeeded(terminal.get());
+    }
+    m_terminals[getVariantIndex()] = terminal;
     return *this;
 }
 
-SlackTerminal& SlackTerminal::setTerminal(const stdcxx::Reference<Terminal>& terminal) {
-    return setTerminal(stdcxx::cref(terminal));
-}
-
-SlackTerminal& SlackTerminal::setTerminal(const stdcxx::CReference<Terminal>& terminal, bool cleanIfEmpty) {
+SlackTerminal& SlackTerminal::setTerminal(const stdcxx::Reference<Terminal>& terminal, bool cleanIfEmpty) {
     setTerminal(terminal);
     if (cleanIfEmpty && isEmpty()) {
         getExtendable().get().removeExtension<SlackTerminal>();
@@ -124,8 +134,56 @@ SlackTerminal& SlackTerminal::setTerminal(const stdcxx::CReference<Terminal>& te
     return *this;
 }
 
-SlackTerminal& SlackTerminal::setTerminal(const stdcxx::Reference<Terminal>& terminal, bool cleanIfEmpty) {
-    return setTerminal(stdcxx::cref(terminal), cleanIfEmpty);
+void SlackTerminal::cleanup() {
+    //Might try to unregister several times the same terminal if referenced in several variants. Not an issue, unregisterReferrer will just do nothing is *this is not registered
+    for (auto& terminal : m_terminals) {
+        if(static_cast<bool>(terminal)) {
+            terminal.get().unregisterReferrer(*this);
+        }
+    }
+}
+
+void SlackTerminal::onReferencedRemoval(Terminal& removedReference) {
+    for(auto& terminal : m_terminals) {
+        if(static_cast<bool>(terminal) && stdcxx::areSame(terminal.get(), removedReference)) {
+            terminal = stdcxx::Reference<Terminal>();
+        }
+    }
+    if (isEmpty()) { //remove extension if there is no terminal left
+        getExtendable().get().removeExtension<SlackTerminal>();
+    }
+}
+
+void SlackTerminal::unregisterReferencedTerminalIfNeeded(unsigned long variantIndex) {
+    auto currentVariantTerminal = m_terminals[variantIndex];
+    if(!currentVariantTerminal) {
+        return;
+    }
+
+    unsigned int count = 0; //Count of variants on which this terminal is referenced
+    for(auto& terminal : m_terminals) {
+        if (static_cast<bool>(terminal) && stdcxx::areSame(terminal.get(), currentVariantTerminal.get())) {
+            count++;
+        }
+    }
+
+    if(count == 1) { //current Terminal is referenced only in the current variant
+        currentVariantTerminal.get().unregisterReferrer(*this);
+    }
+}
+
+void SlackTerminal::registerReferencedTerminalIfNeeded(Terminal& terminal) {
+    //Register the given terminal only if not already present in the list
+    auto it = std::find_if(m_terminals.begin(), m_terminals.end(), [&terminal](const stdcxx::Reference<Terminal>& terminalRef){
+        return (static_cast<bool>(terminalRef) && stdcxx::areSame(terminalRef.get(), terminal));
+    });
+    if(it != m_terminals.end()) {
+        //already referenced
+        return;
+    }
+
+    //given temrinal not found : register it
+    terminal.registerReferrer(*this);
 }
 
 }  // namespace extensions

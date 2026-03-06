@@ -11,6 +11,7 @@
 #include <functional>
 
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -19,9 +20,15 @@ namespace iidm {
 
 class Terminal;
 
-class StaticVarCompensator : public Injection {
+class StaticVarCompensator : public Injection, public Referrer<Terminal> {
 public:  // Identifiable
     const IdentifiableType& getType() const override;
+
+public: //Connectable
+    virtual void remove() override;
+
+public: //Referrer<Terminal>
+    void onReferencedRemoval(Terminal& removedReference) override;
 
 public:
     enum class RegulationMode : unsigned char {
@@ -32,7 +39,7 @@ public:
 
 public:
     StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-                         double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, Terminal& regulatingTerminal);
+                         double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, stdcxx::Reference<Terminal>& regulatingTerminal);
 
     ~StaticVarCompensator() noexcept override = default;
 
@@ -81,7 +88,7 @@ private:
 
     std::vector<double> m_reactivePowerSetpoint;
 
-    std::reference_wrapper<Terminal> m_regulatingTerminal;
+    stdcxx::Reference<Terminal> m_regulatingTerminal;
 
     std::vector<RegulationMode> m_regulationMode;
 };

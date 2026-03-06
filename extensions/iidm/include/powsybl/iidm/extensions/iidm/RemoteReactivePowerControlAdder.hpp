@@ -71,11 +71,11 @@ protected:
     std::unique_ptr<Extension> createExtension(Extendable& extendable) const override;
 
 private:
-    double m_targetQ = 0.0;
+    double m_targetQ = stdcxx::nan();
 
     stdcxx::Reference<Terminal> m_regulatingTerminal;
 
-    bool m_enabled = false;
+    bool m_enabled = true;
 };
 
 }  // namespace iidm

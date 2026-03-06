@@ -13,6 +13,10 @@
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
 #include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {
@@ -33,6 +37,9 @@ TapChanger<H, C, S, R>::TapChanger(VariantManagerHolder& network, H& parent, lon
    m_regulating(network.getVariantManager().getVariantArraySize(), regulating),
    m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband),
    m_type(std::move(type)) {
+    if(static_cast<bool>(regulationTerminal)){
+        regulationTerminal.get().registerReferrer(*this);
+    }
 }
 
 template<typename H, typename C, typename S, typename R>
@@ -203,7 +210,14 @@ C& TapChanger<H, C, S, R>::setRegulationTerminal(const stdcxx::Reference<Termina
     if (static_cast<bool>(regulationTerminal) && !stdcxx::areSame(regulationTerminal.get().getVoltageLevel().getNetwork(), getNetwork())) {
         throw ValidationException(m_parent, "regulation terminal is not part of the network");
     }
+
+    if(static_cast<bool>(m_regulationTerminal)){
+        m_regulationTerminal.get().unregisterReferrer(*this);
+    }
     m_regulationTerminal = regulationTerminal;
+    if(static_cast<bool>(m_regulationTerminal)){
+        m_regulationTerminal.get().registerReferrer(*this);
+    }
 
     return static_cast<C&>(*this);
 }
@@ -240,6 +254,23 @@ C& TapChanger<H, C, S, R>::setSteps(const std::vector<S>& steps) {
     return static_cast<C&>(*this);
 }
 
+template<typename H, typename C, typename S, typename R>
+void TapChanger<H, C, S, R>::remove() {
+    if(static_cast<bool>(m_regulationTerminal)) {
+        m_regulationTerminal.get().unregisterReferrer(*this);
+    }
+}
+
+template<typename H, typename C, typename S, typename R>
+void TapChanger<H, C, S, R>::onReferencedRemoval(Terminal& /*removedReference*/) {
+    if(static_cast<bool>(m_regulationTerminal) && static_cast<bool>(m_regulationTerminal.get().getConnectable())) {
+        logging::Logger& logger = logging::LoggerFactory::getLogger<TapChanger>();
+        logger.warn(stdcxx::format("Connectable %1% was a regulating terminal for tap changer (%2%). Regulation is deactivated",
+                        m_regulationTerminal.get().getConnectable().get().getId(), m_parent.getMessageHeader()));
+    }
+    m_regulationTerminal = stdcxx::Reference<Terminal>();
+    m_regulating.assign(m_regulating.size(), false);
+}
 
 }  // namespace iidm
 

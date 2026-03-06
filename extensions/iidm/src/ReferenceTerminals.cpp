@@ -43,25 +43,81 @@ const std::type_index& ReferenceTerminals::getType() const {
 
 void ReferenceTerminals::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     for (unsigned long index : indexes) {
+        // unregister (if needed) terminals before overwriting them 
+        unregisterReferencedTerminalIfNeeded(index);
         m_referenceTerminals[index] = m_referenceTerminals[sourceIndex];
+        //no need to register them additionaly, since they already are referenced in sourceIndex Variant
     }
 }
 void ReferenceTerminals::deleteVariantArrayElement(unsigned long index) {
+    unregisterReferencedTerminalIfNeeded(index);
     m_referenceTerminals[index].clear();
 }
 void ReferenceTerminals::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    //No need to register terminals, since they already have been referenced when added in sourceIndex Variant
     m_referenceTerminals.resize(m_referenceTerminals.size() + number, m_referenceTerminals[sourceIndex]);
 }
 void ReferenceTerminals::reduceVariantArraySize(unsigned long number) {
-    m_referenceTerminals.resize(m_referenceTerminals.size() - number);
+    //reduce variant size one by one to ensure references checked before each variant is removed
+    for(unsigned long index = 0; index < number ; index ++) {
+        unregisterReferencedTerminalIfNeeded(m_referenceTerminals.size() - 1);
+        m_referenceTerminals.resize(m_referenceTerminals.size() - 1);
+    }
+}
+
+void ReferenceTerminals::unregisterReferencedTerminalIfNeeded(unsigned long variantIndex) {
+    auto currentVariantTerminals = m_referenceTerminals[variantIndex];
+
+    for (auto& currentTerminal : currentVariantTerminals) {
+        if(!currentTerminal) {
+            continue;
+        }
+        unsigned int count = 0; //Count of variants on which this terminal is referenced
+
+        for(auto& terminals : m_referenceTerminals) {
+            auto it = std::find_if(terminals.begin(), terminals.end(), [&currentTerminal](const stdcxx::Reference<Terminal>& terminalRef) {
+                return (static_cast<bool>(terminalRef) && stdcxx::areSame(currentTerminal.get(), terminalRef.get()));
+            });
+            if (it != terminals.end()) {
+                count++;
+            }
+        }
+
+        if(count == 1) { //current Terminal is referenced only in the current variant
+            currentTerminal.get().unregisterReferrer(*this);
+        }
+    }
+}
+
+void ReferenceTerminals::registerReferencedTerminalIfNeeded(Terminal& terminal) {
+    //Register the given terminal only if not already referenced (by another variant also)
+
+    for(auto& terminals : m_referenceTerminals) {
+        auto it = std::find_if(terminals.begin(), terminals.end(), [&terminal](const stdcxx::Reference<Terminal>& terminalRef) {
+            return (static_cast<bool>(terminalRef) && stdcxx::areSame(terminal, terminalRef.get()));
+        });
+        if (it != terminals.end()) {
+            //already referenced
+            return;
+        }
+    }
+
+    //given terminal not found : register it
+    terminal.registerReferrer(*this);
 }
 
 ReferenceTerminals& ReferenceTerminals::setReferenceTerminals(const std::vector<stdcxx::Reference<Terminal>>& terminals) {
     for(auto& terminal : terminals) {
+        if(!terminal) {
+            continue;
+        }
         checkTerminalInNetwork(terminal, getExtendable<Network>().get());
     }
     reset();
     for(auto& terminal : terminals) {
+        if(!terminal) {
+            continue;
+        }
         addReferenceTerminal(terminal);
     }
     return *this;
@@ -77,6 +133,7 @@ ReferenceTerminals& ReferenceTerminals::addReferenceTerminal(Terminal& terminalR
         }
     }
 
+    registerReferencedTerminalIfNeeded(terminalRef);
     m_referenceTerminals[getVariantIndex()].push_back(stdcxx::ref(terminalRef));
     return *this;
 }
@@ -91,6 +148,7 @@ stdcxx::const_range<Terminal> ReferenceTerminals::getReferenceTerminals() const 
 }
 
 ReferenceTerminals& ReferenceTerminals::reset() {
+    unregisterReferencedTerminalIfNeeded(getVariantIndex());
     m_referenceTerminals[getVariantIndex()].clear();
     return *this;
 }
@@ -147,6 +205,25 @@ void ReferenceTerminals::checkTerminalInNetwork(const Terminal& terminal, const 
             throw PowsyblException(stdcxx::format("Terminal given is not in the right Network (%1% instead of %2%)",
                 terminal.getVoltageLevel().getParentNetwork().getId(), network.getId()));
         }
+    }
+}
+
+void ReferenceTerminals::cleanup() {
+    //Might try to unregister several times the same terminal if referenced in several variants. Not an issue, unregisterReferrer will just do nothing is *this is not registered
+    for (auto& terminals : m_referenceTerminals) {
+        for (auto& terminal : terminals) {
+            if(static_cast<bool>(terminal)) {
+                terminal.get().unregisterReferrer(*this);
+            }
+        }
+    }
+}
+
+void ReferenceTerminals::onReferencedRemoval(Terminal& removedReference) {
+    for (auto& terminals : m_referenceTerminals) {
+        terminals.erase(std::remove_if(terminals.begin(), terminals.end(), [&removedReference](const stdcxx::Reference<Terminal>& terminalRef) {
+            return (static_cast<bool>(terminalRef) && stdcxx::areSame(removedReference, terminalRef.get()));
+        }), terminals.end());
     }
 }
 

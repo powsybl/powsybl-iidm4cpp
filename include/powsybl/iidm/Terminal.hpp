@@ -12,6 +12,7 @@
 #include <vector>
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/iidm/ReferrerManager.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TerminalTopologyTraverser.hpp>
@@ -30,7 +31,7 @@ class Connectable;
 class Network;
 class VoltageLevel;
 
-class Terminal : public MultiVariantObject {
+class Terminal : public MultiVariantObject, public ReferrerManager<Terminal> {
 public:
     using BusBreakerView = terminal::BusBreakerView;
 

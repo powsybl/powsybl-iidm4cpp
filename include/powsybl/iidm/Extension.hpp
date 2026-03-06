@@ -49,6 +49,12 @@ public:
 
     void setExtendable(const stdcxx::Reference<Extendable>& extendable);
 
+    /**
+     * Method called just before the extension is removed from its holder and thus its deletion.
+     * Used to clean ressources, such as references managmeent
+     */
+    virtual void cleanup();
+
 protected:
     explicit Extension(Extendable& extendable);
 

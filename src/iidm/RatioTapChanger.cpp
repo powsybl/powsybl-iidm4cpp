@@ -64,6 +64,7 @@ void RatioTapChanger::reduceVariantArraySize(unsigned long number) {
 }
 
 void RatioTapChanger::remove() {
+    TapChanger::remove();
     getParent().setRatioTapChanger(std::unique_ptr<RatioTapChanger>());
 }
 

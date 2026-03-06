@@ -10,13 +10,16 @@
 #include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
 Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                      const EnergySource& energySource, double minP, double maxP, bool voltageRegulatorOn,
-                     Terminal& regulatingTerminal, double activePowerSetpoint,
+                     stdcxx::Reference<Terminal>& regulatingTerminal, double activePowerSetpoint,
                      double reactivePowerSetpoint, double voltageSetpoint, double ratedS, bool isCondenser) :
     Identifiable(id, name, fictitious),
     m_energySource(energySource),
@@ -29,6 +32,9 @@ Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::st
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),
     m_isCondenser(isCondenser) {
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        m_regulatingTerminal.get().registerReferrer(*this);
+    }
     checkActivePowerLimits(*this, minP, maxP);
     ValidationLevel vl = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     if (stdcxx::isInstanceOf<Network>(network)) {
@@ -84,11 +90,11 @@ double Generator::getReactivePowerSetpoint() const {
 }
 
 const Terminal& Generator::getRegulatingTerminal() const {
-    return m_regulatingTerminal.get();
+    return (static_cast<bool>(m_regulatingTerminal)) ? m_regulatingTerminal.get() : getTerminal();
 }
 
 Terminal& Generator::getRegulatingTerminal() {
-    return m_regulatingTerminal.get();
+    return (static_cast<bool>(m_regulatingTerminal)) ? m_regulatingTerminal.get() : getTerminal();
 }
 
 double Generator::getTargetP() const {
@@ -174,12 +180,17 @@ Generator& Generator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
 }
 
 Generator& Generator::setRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal) {
-    if (static_cast<bool>(terminal)) {
-        checkRegulatingTerminal(*this, terminal, getNetwork());
-        m_regulatingTerminal = terminal.get();
-    } else {
-        m_regulatingTerminal = getTerminal();
+    checkRegulatingTerminal(*this, terminal, getNetwork());
+
+    if(static_cast<bool>(m_regulatingTerminal)){
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+        m_regulatingTerminal = stdcxx::Reference<Terminal>();
     }
+    if(static_cast<bool>(terminal)) {
+        m_regulatingTerminal = terminal;
+        m_regulatingTerminal.get().registerReferrer(*this);
+    }
+
     return *this;
 }
 
@@ -207,6 +218,38 @@ Generator& Generator::setVoltageSetpoint(double voltageSetpoint) {
     m_voltageSetpoint[getNetwork().getVariantIndex()] = voltageSetpoint;
     getNetwork().invalidateValidationLevel();
     return *this;
+}
+
+void Generator::remove() {
+    if(static_cast<bool>(m_regulatingTerminal)){
+        m_regulatingTerminal.get().unregisterReferrer(*this);
+    }
+    Injection::remove();
+}
+
+void Generator::onReferencedRemoval(Terminal& /*removedReference*/) {
+    logging::Logger& logger = logging::LoggerFactory::getLogger<Generator>();
+    if(static_cast<bool>(m_regulatingTerminal)) {
+        Terminal& oldRegulatingTerminal = m_regulatingTerminal.get();
+        Terminal& localTerminal = getTerminal();
+
+        auto bus = oldRegulatingTerminal.getBusView().getBus();
+        auto localBus = localTerminal.getBusView().getBus();
+        if (static_cast<bool>(bus) && stdcxx::areSame(bus, localBus)) {
+            // local voltage regulation, we keep the regulating status, and re-locate the regulation at the regulated equipment
+            logger.warn(stdcxx::format("Connectable %1% was a local voltage regulation point for %2%. Regulation terminal is re-located at %3%.",
+                        oldRegulatingTerminal.getConnectable().get().getId(), getId(), getId()));
+        
+            m_regulatingTerminal = localTerminal;
+            return;
+        } else {
+            logger.warn(stdcxx::format("Connectable %1% was a regulating terminal for (%2%). Regulation is deactivated",
+                        oldRegulatingTerminal.getConnectable().get().getId(), getId()));
+            m_regulatingTerminal = stdcxx::Reference<Terminal>();
+        }
+    }
+
+    m_voltageRegulatorOn.assign(m_voltageRegulatorOn.size(), false);
 }
 
 }  // namespace iidm

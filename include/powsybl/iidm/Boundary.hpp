@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_BOUNDARY_HPP
 
 #include <powsybl/iidm/Branch.hpp>
+#include <powsybl/iidm/ReferrerManager.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
@@ -20,7 +21,7 @@ class Bus;
 class DanglingLine;
 class VoltageLevel;
 
-class Boundary {
+class Boundary : public ReferrerManager<Boundary> {
 public:
     Boundary() = default;
 

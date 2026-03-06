@@ -398,7 +398,9 @@ BOOST_AUTO_TEST_CASE(removeAreaTest) {
         vls.push_back(stdcxx::ref(vl));
     }
 
+    BOOST_CHECK_EQUAL(1, network.getDanglingLine("NHV1_XNODE1").getBoundary().getReferrers().size());
     controlAreaA.remove();
+    BOOST_CHECK_EQUAL(0, network.getDanglingLine("NHV1_XNODE1").getBoundary().getReferrers().size());
 
     POWSYBL_ASSERT_THROW(network.getArea("ControlArea_A"), PowsyblException, "Unable to find to the identifiable 'ControlArea_A'");
     for(auto& area : network.getAreas()) {
@@ -411,6 +413,30 @@ BOOST_AUTO_TEST_CASE(removeAreaTest) {
         }
     }
 
+    //Add a second Area on the same dangling line boundary
+    network.newArea()
+                .setId("ControlArea_B_Bis")
+                .setName("Control Area B_Bis")
+                .setAreaType("ControlAreaBis")
+                .setInterchangeTarget(+602.6)
+                .addVoltageLevel(network.getVoltageLevel("VLHV2"))
+                .addVoltageLevel(network.getVoltageLevel("VLLOAD"))
+                .addAreaBoundary(network.getDanglingLine("XNODE1_NHV2").getBoundary(), true)
+                .addAreaBoundary(network.getDanglingLine("XNODE2_NHV2").getBoundary(), true)
+                .add();
+    Area& controlAreaB = network.getArea("ControlArea_B");
+    Area& controlAreaBBis = network.getArea("ControlArea_B_Bis");
+
+    controlAreaBBis.removeAreaBoundary(network.getDanglingLine("XNODE1_NHV2").getBoundary());
+
+    BOOST_CHECK_EQUAL(2, network.getDanglingLine("XNODE2_NHV2").getBoundary().getReferrers().size());
+    BOOST_CHECK_EQUAL(2, controlAreaB.getAreaBoundaries().size());
+    BOOST_CHECK_EQUAL(1, controlAreaBBis.getAreaBoundaries().size());
+    //Remove Dangling Line Boundary will remove all area boundaries attached to it:
+    network.getTieLine("NHV1_NHV2_2").remove();
+    network.getDanglingLine("XNODE2_NHV2").remove();
+    BOOST_CHECK_EQUAL(1, controlAreaB.getAreaBoundaries().size());
+    BOOST_CHECK_EQUAL(0, controlAreaBBis.getAreaBoundaries().size());
 }
 
 

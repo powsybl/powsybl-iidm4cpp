@@ -71,7 +71,7 @@ public:
     Adder newExtension();
 
     template <typename E, typename = typename std::enable_if<std::is_base_of<Extension, E>::value>::type>
-    void removeExtension();
+    void removeExtension(bool cleanup = true);
 
 private:
     std::map<std::string, std::unique_ptr<Extension> > m_extensionsByName;

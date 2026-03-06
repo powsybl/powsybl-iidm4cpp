@@ -30,6 +30,16 @@ TwoWindingsTransformer::TwoWindingsTransformer(const std::string& id, const std:
     m_ratedS(checkRatedS(*this, ratedS)) {
 }
 
+void TwoWindingsTransformer::remove() {
+    if (m_ratioTapChanger) {
+        m_ratioTapChanger->remove();
+    }
+    if (m_phaseTapChanger) {
+        m_phaseTapChanger->remove();
+    }
+    AbstractConnectableBranch::remove();
+}
+
 void TwoWindingsTransformer::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     AbstractConnectableBranch::allocateVariantArrayElement(indexes, sourceIndex);
 

@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
@@ -24,11 +25,16 @@ namespace extensions {
 
 namespace iidm {
 
-class VoltageRegulation : public AbstractMultiVariantIdentifiableExtension {
+class VoltageRegulation : public AbstractMultiVariantIdentifiableExtension, public Referrer<Terminal> {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
+
+    void cleanup() override;
+
+public: // Referrer<Terminal>
+    void onReferencedRemoval(Terminal& removedReference) override;
 
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

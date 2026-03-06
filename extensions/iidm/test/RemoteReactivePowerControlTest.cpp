@@ -87,7 +87,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     Generator& generator = network.getGenerator("GEN");
     auto adder = generator.newExtension<RemoteReactivePowerControlAdder>().withTargetQ(1.0).withEnabled(true);
-    POWSYBL_ASSERT_THROW(adder.add(), std::runtime_error, "m_pointer is null");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "RemoteReactivePowerControl's regulating terminal must be set");
 
     Terminal& terminal = network.getLine("NHV1_NHV2_1").getTerminal1();
     generator.newExtension<RemoteReactivePowerControlAdder>().withTargetQ(2.0).withRegulatingTerminal(terminal).withEnabled(false).add();
@@ -95,6 +95,67 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(2.0, ext.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(stdcxx::areSame(terminal, ext.getRegulatingTerminal()));
     BOOST_CHECK(!ext.isEnabled());
+
+    ext.setEnabled(true);
+    BOOST_CHECK(ext.isEnabled());
+    ext.setTargeQ(3.0);
+    BOOST_CHECK_CLOSE(3.0, ext.getTargetQ(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_THROW(ext.setTargeQ(stdcxx::nan()), PowsyblException, "RemoteReactivePowerControl's reactive power target must be set");
+    POWSYBL_ASSERT_THROW(ext.setRegulatingTerminal(stdcxx::Reference<Terminal>()), PowsyblException, "RemoteReactivePowerControl's regulating terminal must be set");
+    Terminal& genTerminal = generator.getTerminal();
+    ext.setRegulatingTerminal(stdcxx::Reference<Terminal>(genTerminal));
+    BOOST_CHECK(!stdcxx::areSame(ext.getRegulatingTerminal(), terminal));
+    BOOST_CHECK(stdcxx::areSame(ext.getRegulatingTerminal(), generator.getTerminal()));
+
+}
+
+BOOST_AUTO_TEST_CASE(adder) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+
+    Generator& generator = network.getGenerator("GEN");
+    auto adder = generator.newExtension<RemoteReactivePowerControlAdder>();
+    
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "RemoteReactivePowerControl's reactive power target must be set");
+    adder.withTargetQ(1.0);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "RemoteReactivePowerControl's regulating terminal must be set");
+
+    Terminal& terminal = network.getLine("NHV1_NHV2_1").getTerminal1();
+    adder.withRegulatingTerminal(terminal).add();
+    auto& ext = generator.getExtension<RemoteReactivePowerControl>();
+    BOOST_CHECK_CLOSE(1.0, ext.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(terminal, ext.getRegulatingTerminal()));
+    BOOST_CHECK(ext.isEnabled());
+
+    generator.removeExtension<RemoteReactivePowerControl>();
+    generator.newExtension<RemoteReactivePowerControlAdder>().withTargetQ(2.0).withRegulatingTerminal(terminal).withEnabled(false).add();
+
+    BOOST_CHECK(!generator.getExtension<RemoteReactivePowerControl>().isEnabled());
+
+}
+
+BOOST_AUTO_TEST_CASE(removeTerminal) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+
+    Generator& generator = network.getGenerator("GEN");
+    Line& line = network.getLine("NHV1_NHV2_1");
+    Terminal& terminal = line.getTerminal1();
+
+    generator.newExtension<RemoteReactivePowerControlAdder>()
+                    .withTargetQ(1.0)
+                    .withEnabled(true)
+                    .withRegulatingTerminal(terminal)
+                    .add();
+
+    stdcxx::Reference<RemoteReactivePowerControl> ext = generator.findExtension<RemoteReactivePowerControl>();
+    POWSYBL_ASSERT_REF_TRUE(ext);
+    BOOST_CHECK_EQUAL(1, line.getTerminal1().getReferrers().size());
+
+    line.remove();
+    //extension has been removed because regulating terminal is invalid
+    ext = generator.findExtension<RemoteReactivePowerControl>();
+    POWSYBL_ASSERT_REF_FALSE(ext);
+
+
 }
 
 BOOST_FIXTURE_TEST_CASE(rrpcXmlTest, test::ResourceFixture) {

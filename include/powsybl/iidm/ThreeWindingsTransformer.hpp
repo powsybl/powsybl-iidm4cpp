@@ -26,6 +26,9 @@ public:
 public:  // Identifiable
     const IdentifiableType& getType() const override;
 
+public: //Connectable
+    virtual void remove() override;
+
 public:
     ThreeWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Leg&& leg1, Leg&& leg2, Leg&& leg3, double ratedU0);
 

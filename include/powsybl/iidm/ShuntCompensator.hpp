@@ -12,6 +12,7 @@
 #include <vector>
 
 #include <powsybl/iidm/Injection.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 #include <powsybl/iidm/ShuntCompensatorModel.hpp>
 #include <powsybl/iidm/ShuntCompensatorModelType.hpp>
 
@@ -21,13 +22,19 @@ namespace iidm {
 
 class Terminal;
 
-class ShuntCompensator : public Injection {
+class ShuntCompensator : public Injection, public Referrer<Terminal> {
 public:  // Identifiable
     const IdentifiableType& getType() const override;
 
+public: //Injection
+    virtual void remove() override;
+
+public: //Referrer<Terminal>
+    void onReferencedRemoval(Terminal& removedReference) override;
+
 public:
     ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
-                     unsigned long currentSectionCount, Terminal& terminal, bool voltageRegulatorOn, double targetV, double targetDeadband);
+                     unsigned long currentSectionCount, stdcxx::Reference<Terminal>& regulatingTerminal, bool voltageRegulatorOn, double targetV, double targetDeadband);
 
     ~ShuntCompensator() noexcept override = default;
 
@@ -91,7 +98,7 @@ private:
     /* the current number of section switched on */
     std::vector<unsigned long> m_sectionCount;
 
-    std::reference_wrapper<Terminal> m_regulatingTerminal;
+    stdcxx::Reference<Terminal> m_regulatingTerminal;
 
     std::vector<bool> m_voltageRegulatorOn;
 

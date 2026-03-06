@@ -12,19 +12,26 @@
 
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/ReactiveLimitsHolder.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class VscConverterStation : public HvdcConverterStation, public ReactiveLimitsHolder {
+class VscConverterStation : public HvdcConverterStation, public ReactiveLimitsHolder, public Referrer<Terminal> {
 public: // HvdcConverterStation
     HvdcType getHvdcType() const override;
 
     VscConverterStation& setLossFactor(double lossFactor) override;
 
+public: //Connectable
+    virtual void remove() override;
+
+public: //Referrer<Terminal>
+    void onReferencedRemoval(Terminal& removedReference) override;
+
 public:
-    VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint, Terminal& regulatingTerminal);
+    VscConverterStation(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, double lossFactor, bool voltageRegulatorOn, double reactivePowerSetpoint, double voltageSetpoint, stdcxx::Reference<Terminal>& regulatingTerminal);
 
     ~VscConverterStation() noexcept override = default;
 
@@ -63,7 +70,7 @@ private:
 
     std::vector<double> m_voltageSetpoint;
 
-    std::reference_wrapper<Terminal> m_regulatingTerminal;
+    stdcxx::Reference<Terminal> m_regulatingTerminal;
 };
 
 }  // namespace iidm

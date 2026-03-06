@@ -24,6 +24,9 @@ class TwoWindingsTransformer : public virtual AbstractConnectableBranch, public 
 public:  // Identifiable
     const IdentifiableType& getType() const override;
 
+public: //Connectable
+    virtual void remove() override;
+
 public:  // TapChangerHolder
     const Network& getNetwork() const override;
 

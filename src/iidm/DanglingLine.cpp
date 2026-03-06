@@ -102,6 +102,9 @@ void DanglingLine::remove() {
     if(static_cast<bool>(m_tieLine)) {
         throw PowsyblException(stdcxx::format("Parent tie line %1% should be removed before the child dangling line", m_tieLine.get().getId()));
     }
+    if(m_boundary) {
+        m_boundary->notifyRemoval();
+    }
     Injection::remove();
 }
 void DanglingLine::removeTieLine(){

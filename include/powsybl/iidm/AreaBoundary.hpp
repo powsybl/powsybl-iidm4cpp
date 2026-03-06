@@ -32,8 +32,10 @@ public:
     Area& getArea();
 
     stdcxx::CReference<Terminal> getTerminal() const;
+    stdcxx::Reference<Terminal> getTerminal();
 
     stdcxx::CReference<Boundary> getBoundary() const;
+    stdcxx::Reference<Boundary> getBoundary();
 
     bool isAc() const;
 

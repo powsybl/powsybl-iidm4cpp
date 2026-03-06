@@ -75,9 +75,12 @@ Adder Extendable::newExtension() {
 }
 
 template <typename E, typename>
-void Extendable::removeExtension() {
+void Extendable::removeExtension(bool cleanup) {
     const auto& it = m_extensionsByType.find(typeid(E));
     if (it != m_extensionsByType.end()) {
+        if(cleanup) {
+            it->second.get().cleanup();
+        }
         m_extensionsByName.erase(it->second.get().getName());
         m_extensionsByType.erase(it);
     }

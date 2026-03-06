@@ -31,6 +31,10 @@ void Extension::setExtendable(const stdcxx::Reference<Extendable>& extendable) {
     m_extendable = extendable;
 }
 
+void Extension::cleanup() {
+    // nothing to do by default
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

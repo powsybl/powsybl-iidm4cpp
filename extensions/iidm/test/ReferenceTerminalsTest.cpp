@@ -92,6 +92,9 @@ BOOST_AUTO_TEST_CASE(ReferenceTerminalsVariantsTest) {
                 .withTerminals({stdcxx::ref(gh1.getTerminal())})
                 .add();
     ReferenceTerminals& ext = network.getExtension<ReferenceTerminals>();
+    BOOST_CHECK_EQUAL(1, gh1.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, gh2.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, gh3.getTerminal().getReferrers().size());
 
     //Add Variants:
     VariantManager& variantManager = network.getVariantManager();
@@ -102,9 +105,11 @@ BOOST_AUTO_TEST_CASE(ReferenceTerminalsVariantsTest) {
     // add gh2 to variant1
     variantManager.setWorkingVariant(variant1);
     ext.addReferenceTerminal(gh2.getTerminal());
+    BOOST_CHECK_EQUAL(1, gh2.getTerminal().getReferrers().size());
     // add gh3 to variant2
     variantManager.setWorkingVariant(variant2);
     ext.addReferenceTerminal(gh3.getTerminal());
+    BOOST_CHECK_EQUAL(1, gh3.getTerminal().getReferrers().size());
 
     // initial variant unmodified
     variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
@@ -128,6 +133,9 @@ BOOST_AUTO_TEST_CASE(ReferenceTerminalsVariantsTest) {
     ext.reset();
     // check variant 1 empty
     BOOST_CHECK_EQUAL(0, ext.getReferenceTerminals().size());
+    BOOST_CHECK_EQUAL(1, gh1.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, gh2.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(1, gh3.getTerminal().getReferrers().size());
 
     // check other variants unchanged
     variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
@@ -145,9 +153,22 @@ BOOST_AUTO_TEST_CASE(ReferenceTerminalsVariantsTest) {
     BOOST_CHECK_EQUAL(2, ext.getReferenceTerminals().size());
     BOOST_CHECK(stdcxx::areSame(ext.getReferenceTerminals().at(0).get(),gh1.getTerminal()));
     BOOST_CHECK(stdcxx::areSame(ext.getReferenceTerminals().at(1).get(),gh3.getTerminal()));
+    BOOST_CHECK_EQUAL(1, gh1.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, gh2.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(1, gh3.getTerminal().getReferrers().size());
 
     // test array resize for coverage completeness
     variantManager.removeVariant(variant2);
+    BOOST_CHECK_EQUAL(1, gh1.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, gh2.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(1, gh3.getTerminal().getReferrers().size());
+
+    //remove extension  unregisters terminals correctly:
+    network.removeExtension<ReferenceTerminals>();
+    BOOST_CHECK_EQUAL(0, gh1.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, gh2.getTerminal().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, gh3.getTerminal().getReferrers().size());
+
 }
 
 BOOST_AUTO_TEST_CASE(ReferenceTerminalsWrongNetworkTest) {

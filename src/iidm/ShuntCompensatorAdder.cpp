@@ -31,12 +31,12 @@ ShuntCompensator& ShuntCompensatorAdder::add() {
     network.setValidationLevelIfGreaterThan(checkSections(*this, m_sectionCount, m_modelBuilder->getMaximumSectionCount(), network.getMinimumValidationLevel()));
 
     auto ptrTerminal = checkAndGetTerminal();
-    Terminal& regulatingTerminal = m_regulatingTerminal ? m_regulatingTerminal.get() : *ptrTerminal;
+
     if(network.getMinimumValidationLevel() == ValidationLevel::EQUIPMENT && !m_sectionCount) {
         m_sectionCount = 0UL;
     }
     std::unique_ptr<ShuntCompensator> ptrShunt = stdcxx::make_unique<ShuntCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_modelBuilder->build(),
-                                                                                       *m_sectionCount, regulatingTerminal, m_voltageRegulatorOn, m_targetV, m_targetDeadband);
+                                                                                       *m_sectionCount, m_regulatingTerminal, m_voltageRegulatorOn, m_targetV, m_targetDeadband);
     auto& shunt = getNetwork().checkAndAdd<ShuntCompensator>(std::move(ptrShunt));
 
     Terminal& terminal = shunt.addTerminal(std::move(ptrTerminal));

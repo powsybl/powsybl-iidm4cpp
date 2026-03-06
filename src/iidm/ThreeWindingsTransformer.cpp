@@ -25,6 +25,18 @@ ThreeWindingsTransformer::ThreeWindingsTransformer(const std::string& id, const 
     m_legs.emplace_back(std::move(leg3.setTransformer(*this)));
 }
 
+void ThreeWindingsTransformer::remove() {
+    for (Leg& leg : m_legs) {
+        if (leg.hasRatioTapChanger()) {
+            leg.getRatioTapChanger().remove();
+        }
+        if (leg.hasPhaseTapChanger()) {
+            leg.getPhaseTapChanger().remove();
+        }
+    }
+    Connectable::remove();
+}
+
 void ThreeWindingsTransformer::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     Connectable::allocateVariantArrayElement(indexes, sourceIndex);
 
