@@ -47,6 +47,8 @@ public:  // RatioTapChangerHolder
 
     RatioTapChangerAdder newRatioTapChanger() override;
 
+    RatioTapChangerAdder newRatioTapChanger(const RatioTapChanger& ratioTapChanger) override;
+
 public:  // PhaseTapChanger
     const PhaseTapChanger& getPhaseTapChanger() const override;
 
@@ -55,6 +57,8 @@ public:  // PhaseTapChanger
     bool hasPhaseTapChanger() const override;
 
     PhaseTapChangerAdder newPhaseTapChanger() override;
+
+    PhaseTapChangerAdder newPhaseTapChanger(const PhaseTapChanger& phaseTapChanger) override;
 
 public:
     Leg(const ThreeSides& side, double r, double x, double g, double b, double ratedU, double ratedS);

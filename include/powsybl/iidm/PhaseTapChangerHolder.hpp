@@ -32,6 +32,8 @@ public:
 
     virtual PhaseTapChangerAdder newPhaseTapChanger() = 0;
 
+    virtual PhaseTapChangerAdder newPhaseTapChanger(const PhaseTapChanger& phaseTapChanger) = 0;
+
 protected:
     PhaseTapChangerHolder() noexcept = default;
 

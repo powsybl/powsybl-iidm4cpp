@@ -24,6 +24,31 @@ RatioTapChangerAdder::RatioTapChangerAdder(RatioTapChangerHolder& parent) :
     TapChangerAdder(parent) {
 }
 
+RatioTapChangerAdder::RatioTapChangerAdder(RatioTapChangerHolder& parent, const RatioTapChanger& ratioTapChanger) :
+    TapChangerAdder(parent) {
+
+        //Init from ratioTapChanger:
+        setRegulationMode(ratioTapChanger.getRegulationMode());
+        setRegulationTerminal(stdcxx::ref(ratioTapChanger.getRegulationTerminal()));
+        setRegulating(ratioTapChanger.isRegulating());
+        setRegulationValue(ratioTapChanger.getRegulationValue());
+        setLoadTapChangingCapabilities(ratioTapChanger.hasLoadTapChangingCapabilities());
+        setLowTapPosition(ratioTapChanger.getLowTapPosition());
+        setTapPosition(ratioTapChanger.getTapPosition());
+        setTargetDeadband(ratioTapChanger.getTargetDeadband());
+        for(const auto& step : ratioTapChanger.getAllSteps() ){
+            beginStep()
+                .setRho(step.second.get().getRho())
+                .setB(step.second.get().getB())
+                .setG(step.second.get().getG())
+                .setX(step.second.get().getX())
+                .setR(step.second.get().getR())
+                .endStep();
+        }
+
+
+}
+
 RatioTapChanger& RatioTapChangerAdder::add() {
     logging::Logger& logger = logging::LoggerFactory::getLogger<RatioTapChangerAdder>();
     Network& network = getNetwork();

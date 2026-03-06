@@ -32,6 +32,11 @@ class PhaseTapChangerAdder : public TapChangerAdder<PhaseTapChanger, PhaseTapCha
 public:
     explicit PhaseTapChangerAdder(PhaseTapChangerHolder& parent);
 
+    /**
+     * Adder by copy of a given PhaseTapChanger
+     */
+    explicit PhaseTapChangerAdder(PhaseTapChangerHolder& parent, const PhaseTapChanger& phaseTapChanger);
+
     ~PhaseTapChangerAdder() noexcept = default;
 
     //TapChanger

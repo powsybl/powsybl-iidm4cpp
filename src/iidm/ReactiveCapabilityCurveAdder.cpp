@@ -51,6 +51,19 @@ ReactiveCapabilityCurveAdder::ReactiveCapabilityCurveAdder(ReactiveLimitsHolder&
     m_owner(owner) {
 }
 
+ReactiveCapabilityCurveAdder::ReactiveCapabilityCurveAdder(ReactiveLimitsHolder& owner, const ReactiveCapabilityCurve& copiedCurve) :
+    m_owner(owner) {
+
+    //Init from existing curve:
+    for(const auto& point : copiedCurve.getPoints()) {
+        beginPoint()
+            .setP(point.getP())
+            .setMinQ(point.getMinQ())
+            .setMaxQ(point.getMaxQ())
+            .endPoint();
+    }
+}
+
 ReactiveCapabilityCurve& ReactiveCapabilityCurveAdder::add() {
     const auto& owner = dynamic_cast<Validable&>(m_owner);
 

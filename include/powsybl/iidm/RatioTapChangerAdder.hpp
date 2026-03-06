@@ -26,6 +26,11 @@ class RatioTapChangerAdder : public TapChangerAdder<RatioTapChanger, RatioTapCha
 public:
     explicit RatioTapChangerAdder(RatioTapChangerHolder& parent);
 
+    /**
+     * Adder by copy of a given RatioTapChanger
+     */
+    explicit RatioTapChangerAdder(RatioTapChangerHolder& parent, const RatioTapChanger& ratioTapChanger);
+
     ~RatioTapChangerAdder() noexcept = default;
 
     //TapChangerAdder

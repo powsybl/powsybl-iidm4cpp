@@ -121,6 +121,43 @@ BOOST_AUTO_TEST_CASE(ReactiveCapabilityCurveTest) {
     BOOST_CHECK(itE == expected.end());
 }
 
+BOOST_AUTO_TEST_CASE(copyCurve) {
+
+    ReactiveLimitsHolderMock mock, mockCopy;
+    mock.newReactiveCapabilityCurve()
+                .beginPoint()
+                    .setP(1)
+                    .setMinQ(5)
+                    .setMaxQ(50)
+                .endPoint()
+                .beginPoint()
+                    .setP(2)
+                    .setMinQ(7)
+                    .setMaxQ(70)
+                .endPoint()
+                .add();
+    const auto& curve = mock.getReactiveLimits<ReactiveCapabilityCurve>();
+    BOOST_CHECK_EQUAL(2, curve.getPointCount());
+
+    mockCopy.newReactiveCapabilityCurve(curve)
+                .add();
+    const auto& copiedCurve = mockCopy.getReactiveLimits<ReactiveCapabilityCurve>();
+
+    std::map<double, ReactiveCapabilityCurve::Point> expected = { { 1.0, { 1, 5, 50 } }, { 2.0, { 2, 7, 70 } } };
+
+    BOOST_CHECK_EQUAL(curve.getPointCount(), copiedCurve.getPointCount());
+    auto itE = expected.begin();
+    for (const auto& pointCurve : copiedCurve.getPoints()) {
+        const ReactiveCapabilityCurve::Point& expectedP = itE->second;
+        BOOST_CHECK_EQUAL(pointCurve.getP(), expectedP.getP());
+        BOOST_CHECK_EQUAL(pointCurve.getMinQ(), expectedP.getMinQ());
+        BOOST_CHECK_EQUAL(pointCurve.getMaxQ(), expectedP.getMaxQ());
+        ++itE;
+    }
+    BOOST_CHECK(itE == expected.end());
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

@@ -49,6 +49,11 @@ public:
 public:
     explicit ReactiveCapabilityCurveAdder(ReactiveLimitsHolder& owner);
 
+    /**
+     * Adder by copy of an existing curve
+     */
+    explicit ReactiveCapabilityCurveAdder(ReactiveLimitsHolder& owner, const ReactiveCapabilityCurve& copiedCurve);
+
     ~ReactiveCapabilityCurveAdder() noexcept = default;
 
     ReactiveCapabilityCurve& add();

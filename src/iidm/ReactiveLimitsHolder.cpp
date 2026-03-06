@@ -30,6 +30,10 @@ ReactiveCapabilityCurveAdder ReactiveLimitsHolder::newReactiveCapabilityCurve() 
     return ReactiveCapabilityCurveAdder(*this);
 }
 
+ReactiveCapabilityCurveAdder ReactiveLimitsHolder::newReactiveCapabilityCurve(const ReactiveCapabilityCurve& copiedCurve) {
+    return ReactiveCapabilityCurveAdder(*this, copiedCurve);
+}
+
 void ReactiveLimitsHolder::setReactiveLimits(std::unique_ptr<ReactiveLimits>&& limits) {
     m_reactiveLimits = std::move(limits);
 }

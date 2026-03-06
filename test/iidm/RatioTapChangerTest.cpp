@@ -165,6 +165,18 @@ Network createRatioTapChangerTestNetwork() {
         .setTargetDeadband(0.0)
         .add();
 
+    substation.newTwoWindingsTransformer()
+        .setId("2WT_VL1_VL2_2")
+        .setVoltageLevel1(vl1.getId())
+        .setBus1(vl1Bus1.getId())
+        .setConnectableBus1(vl1Bus1.getId())
+        .setVoltageLevel2(vl2.getId())
+        .setBus2(vl2Bus1.getId())
+        .setConnectableBus2(vl2Bus1.getId())
+        .setR(3.0)
+        .setX(33.0)
+        .add();
+
     return network;
 }
 
@@ -407,6 +419,40 @@ BOOST_AUTO_TEST_CASE(adder) {
     adder.setTargetDeadband(2.0);
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_TEST(transformer.hasRatioTapChanger());
+}
+
+BOOST_AUTO_TEST_CASE(adderByCopy) {
+    Network network = createRatioTapChangerTestNetwork();
+
+    TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
+    BOOST_TEST(transformer.hasRatioTapChanger());
+    const auto& existingRatioTapChanger = transformer.getRatioTapChanger();
+
+    TwoWindingsTransformer& transformer2 = network.getTwoWindingsTransformer("2WT_VL1_VL2_2");
+    BOOST_TEST(!transformer2.hasRatioTapChanger());
+    transformer2.newRatioTapChanger(existingRatioTapChanger)
+                    .add();
+
+    const auto& copiedRatioTapChanger = transformer2.getRatioTapChanger();
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.getTapPosition(), copiedRatioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.getLowTapPosition(), copiedRatioTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.getRegulationValue(), copiedRatioTapChanger.getRegulationValue());
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.getRegulationMode(), copiedRatioTapChanger.getRegulationMode());
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.isRegulating(), copiedRatioTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.getTargetDeadband(), copiedRatioTapChanger.getTargetDeadband());
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.getRegulationTerminal(), copiedRatioTapChanger.getRegulationTerminal());
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.hasLoadTapChangingCapabilities(), copiedRatioTapChanger.hasLoadTapChangingCapabilities());
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.getTargetV(), copiedRatioTapChanger.getTargetV());
+
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.getStepCount(), copiedRatioTapChanger.getStepCount());
+    for(const auto& existingStep : existingRatioTapChanger.getAllSteps()) {
+        const auto& copiedStep = copiedRatioTapChanger.getStep(existingStep.first);
+        BOOST_CHECK_EQUAL(existingStep.second.get().getRho(), copiedStep.getRho());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getR(), copiedStep.getR());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getG(), copiedStep.getG());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getB(), copiedStep.getB());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getX(), copiedStep.getX());
+    }
 }
 
 BOOST_AUTO_TEST_CASE(holder) {

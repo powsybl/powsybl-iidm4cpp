@@ -32,6 +32,8 @@ public:
 
     virtual RatioTapChangerAdder newRatioTapChanger() = 0;
 
+    virtual RatioTapChangerAdder newRatioTapChanger(const RatioTapChanger& ratioTapChanger) = 0;
+
 protected:
     RatioTapChangerHolder() noexcept = default;
 

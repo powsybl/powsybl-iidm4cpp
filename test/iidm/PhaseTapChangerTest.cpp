@@ -168,6 +168,19 @@ Network createPhaseTapChangerTestNetwork() {
         .setTargetDeadband(0.0)
         .add();
 
+
+    substation.newTwoWindingsTransformer()
+        .setId("2WT_VL1_VL2_2")
+        .setVoltageLevel1(vl1.getId())
+        .setBus1(vl1Bus1.getId())
+        .setConnectableBus1(vl1Bus1.getId())
+        .setVoltageLevel2(vl2.getId())
+        .setBus2(vl2Bus1.getId())
+        .setConnectableBus2(vl2Bus1.getId())
+        .setR(3.0)
+        .setX(33.0)
+        .add();
+
     return network;
 }
 
@@ -411,6 +424,87 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     BOOST_CHECK_NO_THROW(adder.add());
     BOOST_TEST(transformer.hasPhaseTapChanger());
+}
+
+BOOST_AUTO_TEST_CASE(adderByCopyActivePowerControl) {
+    Network network = createPhaseTapChangerTestNetwork();
+
+    TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
+    BOOST_TEST(transformer.hasPhaseTapChanger());
+    const auto& existingPhaseTapChanger = transformer.getPhaseTapChanger();
+
+    TwoWindingsTransformer& transformer2 = network.getTwoWindingsTransformer("2WT_VL1_VL2_2");
+    BOOST_TEST(!transformer2.hasPhaseTapChanger());
+    transformer2.newPhaseTapChanger(existingPhaseTapChanger)
+                    .add();
+
+    const auto& copiedPhaseTapChanger = transformer2.getPhaseTapChanger();
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getTapPosition(), copiedPhaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getLowTapPosition(), copiedPhaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getRegulationValue(), copiedPhaseTapChanger.getRegulationValue());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getRegulationMode(), copiedPhaseTapChanger.getRegulationMode());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.isRegulating(), copiedPhaseTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getTargetDeadband(), copiedPhaseTapChanger.getTargetDeadband());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getRegulationTerminal(), copiedPhaseTapChanger.getRegulationTerminal());
+
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getStepCount(), copiedPhaseTapChanger.getStepCount());
+    for(const auto& existingStep : existingPhaseTapChanger.getAllSteps()) {
+        const auto& copiedStep = copiedPhaseTapChanger.getStep(existingStep.first);
+        BOOST_CHECK_EQUAL(existingStep.second.get().getAlpha(), copiedStep.getAlpha());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getRho(), copiedStep.getRho());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getR(), copiedStep.getR());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getG(), copiedStep.getG());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getB(), copiedStep.getB());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getX(), copiedStep.getX());
+    }
+}
+BOOST_AUTO_TEST_CASE(adderByCopyFixedTap) {
+    Network network = createPhaseTapChangerTestNetwork();
+
+    TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
+    BOOST_TEST(transformer.hasPhaseTapChanger());
+    transformer.getPhaseTapChanger().remove();
+    BOOST_TEST(!transformer.hasPhaseTapChanger());
+    transformer.newPhaseTapChanger()
+                .setTapPosition(1)
+                .setRegulationValue(12)
+                .setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP)
+                .setLowTapPosition(0)
+                .setRegulating(false)
+                .setTargetDeadband(3)
+                .beginStep().setAlpha(1).setRho(2).setR(3).setG(4).setB(5).setX(6)
+                .endStep()
+                .beginStep().setAlpha(20).setRho(30).setR(40).setG(50).setB(60).setX(70)
+                .endStep()
+                .beginStep().setAlpha(300).setRho(400).setR(500).setG(600).setB(700).setX(800)
+                .endStep()
+                .add();
+    const auto& existingPhaseTapChanger = transformer.getPhaseTapChanger();
+
+    TwoWindingsTransformer& transformer2 = network.getTwoWindingsTransformer("2WT_VL1_VL2_2");
+    BOOST_TEST(!transformer2.hasPhaseTapChanger());
+    transformer2.newPhaseTapChanger(existingPhaseTapChanger)
+                    .add();
+
+    const auto& copiedPhaseTapChanger = transformer2.getPhaseTapChanger();
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getTapPosition(), copiedPhaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getLowTapPosition(), copiedPhaseTapChanger.getLowTapPosition());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getRegulationValue(), copiedPhaseTapChanger.getRegulationValue());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getRegulationMode(), copiedPhaseTapChanger.getRegulationMode());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.isRegulating(), copiedPhaseTapChanger.isRegulating());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getTargetDeadband(), copiedPhaseTapChanger.getTargetDeadband());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getRegulationTerminal(), copiedPhaseTapChanger.getRegulationTerminal());
+
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getStepCount(), copiedPhaseTapChanger.getStepCount());
+    for(const auto& existingStep : existingPhaseTapChanger.getAllSteps()) {
+        const auto& copiedStep = copiedPhaseTapChanger.getStep(existingStep.first);
+        BOOST_CHECK_EQUAL(existingStep.second.get().getAlpha(), copiedStep.getAlpha());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getRho(), copiedStep.getRho());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getR(), copiedStep.getR());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getG(), copiedStep.getG());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getB(), copiedStep.getB());
+        BOOST_CHECK_EQUAL(existingStep.second.get().getX(), copiedStep.getX());
+    }
 }
 
 BOOST_AUTO_TEST_CASE(holder) {

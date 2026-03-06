@@ -23,6 +23,30 @@ PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent) :
     TapChangerAdder(parent) {
 }
 
+PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent, const PhaseTapChanger& phaseTapChanger) :
+    TapChangerAdder(parent) {
+
+        //Init from phaseTapChanger:
+        setRegulationMode(phaseTapChanger.getRegulationMode());
+        setRegulationTerminal(stdcxx::ref(phaseTapChanger.getRegulationTerminal()));
+        setRegulating(phaseTapChanger.isRegulating());
+        setRegulationValue(phaseTapChanger.getRegulationValue());
+        setLowTapPosition(phaseTapChanger.getLowTapPosition());
+        setTapPosition(phaseTapChanger.getTapPosition());
+        setTargetDeadband(phaseTapChanger.getTargetDeadband());
+        for(const auto& step : phaseTapChanger.getAllSteps() ){
+            beginStep()
+                .setAlpha(step.second.get().getAlpha())
+                .setRho(step.second.get().getRho())
+                .setB(step.second.get().getB())
+                .setG(step.second.get().getG())
+                .setX(step.second.get().getX())
+                .setR(step.second.get().getR())
+                .endStep();
+        }
+
+}
+
 PhaseTapChanger& PhaseTapChangerAdder::add() {
     logging::Logger& logger = logging::LoggerFactory::getLogger<PhaseTapChangerAdder>();
     Network& network = getNetwork();

@@ -45,6 +45,8 @@ public:  // RatioTapChangerHolder
 
     RatioTapChangerAdder newRatioTapChanger() override;
 
+    RatioTapChangerAdder newRatioTapChanger(const RatioTapChanger& ratioTapChanger) override;
+
 public:  // PhaseTapChangerHolder
     const PhaseTapChanger& getPhaseTapChanger() const override;
 
@@ -53,6 +55,8 @@ public:  // PhaseTapChangerHolder
     bool hasPhaseTapChanger() const override;
 
     PhaseTapChangerAdder newPhaseTapChanger() override;
+
+    PhaseTapChangerAdder newPhaseTapChanger(const PhaseTapChanger& phaseTapChanger) override;
 
 public:
     TwoWindingsTransformer(const std::string& id, const std::string& name, bool fictitious, Substation& substation, double r, double x, double g, double b, double ratedU1, double ratedU2, double ratedS);

@@ -213,8 +213,16 @@ PhaseTapChangerAdder Leg::newPhaseTapChanger() {
     return PhaseTapChangerAdder(*this);
 }
 
+PhaseTapChangerAdder Leg::newPhaseTapChanger(const PhaseTapChanger& phaseTapChanger) {
+    return PhaseTapChangerAdder(*this, phaseTapChanger);
+}
+
 RatioTapChangerAdder Leg::newRatioTapChanger() {
     return RatioTapChangerAdder(*this);
+}
+
+RatioTapChangerAdder Leg::newRatioTapChanger(const RatioTapChanger& ratioTapChanger) {
+    return RatioTapChangerAdder(*this, ratioTapChanger);
 }
 
 Leg& Leg::setX(double x) {

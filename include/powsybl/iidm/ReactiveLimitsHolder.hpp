@@ -33,6 +33,11 @@ public:
 
     ReactiveCapabilityCurveAdder newReactiveCapabilityCurve();
 
+    /**
+     * Create a ReactiveCapabilityCurveAdder based on an existing curve
+     */
+    ReactiveCapabilityCurveAdder newReactiveCapabilityCurve(const ReactiveCapabilityCurve& copiedCurve);
+
 protected:
     ReactiveLimitsHolder();
 

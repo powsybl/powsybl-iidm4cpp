@@ -176,8 +176,16 @@ PhaseTapChangerAdder TwoWindingsTransformer::newPhaseTapChanger() {
     return PhaseTapChangerAdder(*this);
 }
 
+PhaseTapChangerAdder TwoWindingsTransformer::newPhaseTapChanger(const PhaseTapChanger& phaseTapChanger) {
+    return PhaseTapChangerAdder(*this, phaseTapChanger);
+}
+
 RatioTapChangerAdder TwoWindingsTransformer::newRatioTapChanger() {
     return RatioTapChangerAdder(*this);
+}
+
+RatioTapChangerAdder TwoWindingsTransformer::newRatioTapChanger(const RatioTapChanger& ratioTapChanger) {
+    return RatioTapChangerAdder(*this, ratioTapChanger);
 }
 
 void TwoWindingsTransformer::reduceVariantArraySize(unsigned long number) {
