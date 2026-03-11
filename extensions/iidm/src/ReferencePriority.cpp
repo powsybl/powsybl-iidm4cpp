@@ -112,6 +112,12 @@ void ReferencePriority::set(ThreeWindingsTransformer& threeWindingsTransformer, 
                 .add();
 }
 
+void ReferencePriority::replaceTerminal(Terminal& oldTerminal, Terminal& newTerminal) {
+    if(static_cast<bool>(m_terminal) && stdcxx::areSame(m_terminal.get(), oldTerminal)) {
+        m_terminal = newTerminal;
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace extensions

@@ -252,6 +252,14 @@ void Generator::onReferencedRemoval(Terminal& /*removedReference*/) {
     m_voltageRegulatorOn.assign(m_voltageRegulatorOn.size(), false);
 }
 
+void Generator::onReferencedReplacement(Terminal& oldReference, Terminal& newReference) {
+    checkRegulatingTerminal(*this, stdcxx::ref(newReference), getNetwork());
+    if(static_cast<bool>(m_regulatingTerminal) && stdcxx::areSame(m_regulatingTerminal.get(), oldReference)) {
+        m_regulatingTerminal = newReference;
+        newReference.registerReferrer(*this);
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

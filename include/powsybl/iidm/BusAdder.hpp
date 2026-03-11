@@ -15,6 +15,7 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
+class BusBreakerTopologyModel;
 class VoltageLevel;
 
 class BusAdder : public IdentifiableAdder<Bus, BusAdder> {
@@ -33,6 +34,10 @@ public:
     explicit BusAdder(VoltageLevel& voltageLevel);
 
     ~BusAdder() noexcept override = default;
+
+private:
+    Bus& addOnTopology(BusBreakerTopologyModel& topologyModel);
+    friend class VoltageLevel;
 
 private:
     VoltageLevel& m_voltageLevel;

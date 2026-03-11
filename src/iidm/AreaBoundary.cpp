@@ -72,6 +72,13 @@ double AreaBoundary::getQ() const {
     return stdcxx::nan();
 }
 
+void AreaBoundary::replaceTerminal(Terminal& oldTerminal, Terminal& newTerminal) {
+    if(static_cast<bool>(m_terminal) && stdcxx::areSame(m_terminal.get(), oldTerminal)) {
+        m_terminal = newTerminal;
+        newTerminal.registerReferrer(m_area);
+    }
+}
+
 
 }  // namespace iidm
 

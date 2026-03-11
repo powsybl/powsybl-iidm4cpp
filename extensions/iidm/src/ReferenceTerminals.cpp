@@ -227,6 +227,26 @@ void ReferenceTerminals::onReferencedRemoval(Terminal& removedReference) {
     }
 }
 
+void ReferenceTerminals::onReferencedReplacement(Terminal& oldReference, Terminal& newReference) {
+    checkTerminalInNetwork(newReference, getExtendable<Network>().get());
+    bool bRegisterOnlyOnce = true;
+
+    //Order does not matter, so we just push_back the new reference and remove the old one afterwards
+    for (auto& terminals : m_referenceTerminals) {
+        auto it = std::find_if(terminals.begin(), terminals.end(), [&oldReference](const stdcxx::Reference<Terminal>& terminalRef) {
+            return (static_cast<bool>(terminalRef) && stdcxx::areSame(oldReference, terminalRef.get()));
+        });
+        if(it!=terminals.end()){
+            if(bRegisterOnlyOnce) { //register only once for all the variants
+                bRegisterOnlyOnce = false;
+                registerReferencedTerminalIfNeeded(newReference);
+            }
+            terminals.push_back(stdcxx::ref(newReference));
+        }
+    }
+    onReferencedRemoval(oldReference);
+}
+
 
 }  // namespace iidm
 

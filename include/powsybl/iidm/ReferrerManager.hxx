@@ -42,8 +42,20 @@ void ReferrerManager<T>::notifyRemoval() {
             referrer.get().onReferencedRemoval(dynamic_cast<T&>(*this));
         }
     }
+    //All referrers holding this, should now refer to something else.
+    m_referrers.clear();
 }
 
+template<typename T>
+void ReferrerManager<T>::notifyReplacement(T& newReferred) {
+    for(auto& referrer : m_referrers) {
+        if(static_cast<bool>(referrer)) {
+            referrer.get().onReferencedReplacement(dynamic_cast<T&>(*this), newReferred);
+        }
+    }
+    //All referrers holding this, should now refer to something else.
+    m_referrers.clear();
+}
 
 
 }  // namespace iidm

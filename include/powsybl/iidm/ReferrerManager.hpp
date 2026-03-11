@@ -42,6 +42,11 @@ virtual std::vector<stdcxx::Reference<Referrer<T>>> getReferrers();
 virtual void notifyRemoval();
 
 
+/**
+ * notify each registered Referrer that this ReferrerManager object must be replaced by the given 
+ */
+virtual void notifyReplacement(T& newReferred);
+
 private:
     std::vector<stdcxx::Reference<Referrer<T>>> m_referrers;
 

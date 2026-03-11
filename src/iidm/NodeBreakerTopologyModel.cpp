@@ -387,16 +387,10 @@ void NodeBreakerTopologyModel::removeInternalConnections(unsigned long node1, un
 }
 
 void NodeBreakerTopologyModel::removeSwitch(const std::string& switchId) {
-    const auto& it = m_switches.find(switchId);
-    if (it == m_switches.end()) {
-        throw PowsyblException(stdcxx::format("Switch '%1%' not found in voltage level '%2%'", switchId, getVoltageLevel().getId()));
-    }
+    removeSwitchFromTopology(switchId);
 
-    const auto& aSwitch = m_graph.removeEdge(it->second);
-    clean();
-
-    m_switches.erase(it);
-    getNetwork().remove(aSwitch.get());
+    //remove switch from network
+    getNetwork().remove(getNetwork().getIdentifiable(switchId));
 }
 
 void NodeBreakerTopologyModel::removeTopology() {
@@ -405,6 +399,18 @@ void NodeBreakerTopologyModel::removeTopology() {
     }
     m_graph.removeAllEdges();
     m_switches.clear();
+}
+
+void NodeBreakerTopologyModel::removeSwitchFromTopology(const std::string& switchId) {
+    const auto& it = m_switches.find(switchId);
+    if (it == m_switches.end()) {
+        throw PowsyblException(stdcxx::format("Switch '%1%' not found in voltage level '%2%'", switchId, getVoltageLevel().getId()));
+    }
+
+    m_graph.removeEdge(it->second);
+    clean();
+
+    m_switches.erase(it);
 }
 
 bool NodeBreakerTopologyModel::traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser, math::TraversalType traversalType) const {

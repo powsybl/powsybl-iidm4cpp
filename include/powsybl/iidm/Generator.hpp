@@ -31,6 +31,8 @@ public: //Connectable
 public: //Referrer<Terminal>
     void onReferencedRemoval(Terminal& removedReference) override;
 
+    void onReferencedReplacement(Terminal& oldReference, Terminal& newReference) override;
+
 public:
     Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const EnergySource& energySource,
         double minP, double maxP, bool voltageRegulatorOn, stdcxx::Reference<Terminal>& regulatingTerminal,

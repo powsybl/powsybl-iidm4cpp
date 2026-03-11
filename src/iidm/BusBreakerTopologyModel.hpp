@@ -71,6 +71,10 @@ public:
 
     bool traverse(BusTerminal& terminal, Terminal::TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) const;
 
+protected:
+    void addSwitchToTopology(Switch& sw, const std::string& busId1, const std::string& busId2);
+    friend class VoltageLevel;
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

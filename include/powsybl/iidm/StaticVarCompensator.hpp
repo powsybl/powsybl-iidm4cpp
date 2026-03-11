@@ -29,6 +29,7 @@ public: //Connectable
 
 public: //Referrer<Terminal>
     void onReferencedRemoval(Terminal& removedReference) override;
+    void onReferencedReplacement(Terminal& oldReference, Terminal& newReference) override;
 
 public:
     enum class RegulationMode : unsigned char {

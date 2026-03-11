@@ -13,6 +13,7 @@
 
 #include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
 #include <powsybl/iidm/IdentifiableType.hpp>
+#include <powsybl/iidm/Referrer.hpp>
 #include <powsybl/iidm/extensions/iidm/ReferencePriority.hpp>
 #include <powsybl/stdcxx/range.hpp>
 #include <powsybl/stdcxx/reference.hpp>
@@ -30,11 +31,30 @@ namespace iidm {
 
 class ReferencePriorityAdder;
 
-class ReferencePriorities : public AbstractMultiVariantIdentifiableExtension {
+class ReferencePriorities : public AbstractMultiVariantIdentifiableExtension, public Referrer<Terminal> {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
+
+    /**
+     * Unregister this extension from all referrers
+     */
+    void cleanup() override;
+
+public: // Referrer<Terminal>
+    void onReferencedRemoval(Terminal& removedReference) override;
+
+    void onReferencedReplacement(Terminal& oldReference, Terminal& newReference) override;
+private:
+    /**
+     * if given variant terminals references are not present in any other variants, unregister them
+     */
+    void unregisterReferencedTerminalIfNeeded(unsigned long variantIndex);
+    /**
+     * If given terminal is not already referenced by this extension, in any variant, register it.
+     */
+    void registerReferencedTerminalIfNeeded(Terminal& terminal);
 
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -80,6 +100,10 @@ private:
     friend class ReferencePrioritiesAdder;
 
 private:
+    /**
+     * Each ReferencePiority holds a reference to a terminal of the connectable extended by this extension
+     * Referrer<Terminal> inheritance manages registering those references.
+     */
     std::vector<std::vector<std::shared_ptr<ReferencePriority>>> m_referencePriorities;
 
     static std::map<IdentifiableType, unsigned long> DEFAULT_CONNECTABLE_TYPE_PRIORITIES;

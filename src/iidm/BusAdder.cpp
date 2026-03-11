@@ -19,8 +19,12 @@ BusAdder::BusAdder(VoltageLevel& voltageLevel) :
 }
 
 Bus& BusAdder::add() {
+    return addOnTopology(m_voltageLevel.getTopologyModel<BusBreakerTopologyModel>());
+}
+
+Bus& BusAdder::addOnTopology(BusBreakerTopologyModel& topologyModel) {
     std::unique_ptr<ConfiguredBus> ptrBus = stdcxx::make_unique<ConfiguredBus>(checkAndGetUniqueId(), getName(), isFictitious(), m_voltageLevel);
-    return m_voltageLevel.getTopologyModel<BusBreakerTopologyModel>().addBus(std::move(ptrBus));
+    return topologyModel.addBus(std::move(ptrBus));
 }
 
 const Network& BusAdder::getNetwork() const {

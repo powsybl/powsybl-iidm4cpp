@@ -46,6 +46,7 @@ public: // MultiVariantObject
 
 public: //Referrer<Terminal>
     void onReferencedRemoval(Terminal& removedReference) override;
+    void onReferencedReplacement(Terminal& oldReference, Terminal& newReference) override;
 private:
     /**
      * if given variant terminals are not present in any other variants, unregister them

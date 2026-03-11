@@ -35,6 +35,7 @@ public:  // Extension
 
 public: // Referrer<Terminal>
     void onReferencedRemoval(Terminal& removedReference) override;
+    void onReferencedReplacement(Terminal& oldReference, Terminal& newReference) override;
 
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

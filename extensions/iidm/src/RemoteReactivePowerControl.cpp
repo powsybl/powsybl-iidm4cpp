@@ -112,6 +112,12 @@ void RemoteReactivePowerControl::onReferencedRemoval(Terminal& /*removedReferenc
     getExtendable<Generator>().get().removeExtension<RemoteReactivePowerControl>();
 }
 
+void RemoteReactivePowerControl::onReferencedReplacement(Terminal& /*oldReference*/, Terminal& newReference) {
+    checkRegulatingTerminal(stdcxx::ref(newReference), getExtendable<Generator>().get().getNetwork());
+    m_regulatingTerminal = newReference;
+    newReference.registerReferrer(*this);
+}
+
 void RemoteReactivePowerControl::cleanup() {
     getRegulatingTerminal().unregisterReferrer(*this);
 }

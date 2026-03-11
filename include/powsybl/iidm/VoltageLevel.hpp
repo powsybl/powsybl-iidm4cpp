@@ -240,6 +240,14 @@ public:
 
     void visitEquipments(TopologyVisitor& visitor) const;
 
+    /**
+     * Convert topology model to the given kind.
+     * When converting from node/breaker to bus/breaker, information are lost as during the process.
+     * If current topology model is already of the given type, does nothing.
+     * Only bus/breaker to node/breaker conversion is supported yet.
+     */
+    void convertToTopology(const TopologyKind& newTopologyKind);
+
 protected:
     VoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,
                  Network& network, double nominalV, double lowVoltageLimit, double highVoltageLimit, const TopologyKind& topologyKind);
@@ -262,6 +270,8 @@ private: // Identifiable
 
 private:
     void assertTopologyModel() const;
+
+    void convertToBusBreakerTopology();
 
     void setNetworkRef(Network& network);
 

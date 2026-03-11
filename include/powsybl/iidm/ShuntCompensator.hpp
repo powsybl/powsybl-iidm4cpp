@@ -31,6 +31,7 @@ public: //Injection
 
 public: //Referrer<Terminal>
     void onReferencedRemoval(Terminal& removedReference) override;
+    void onReferencedReplacement(Terminal& oldReference, Terminal& newReference) override;
 
 public:
     ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,

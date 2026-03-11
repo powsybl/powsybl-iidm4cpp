@@ -17,6 +17,7 @@ set(UNIT_TEST_SOURCES
     BusTest.cpp
     ComponentsTest.cpp
     ConnectableTest.cpp
+    ConvertTopologyTest.cpp
     CountryTest.cpp
     CurrentLimitsTest.cpp
     DanglingLineTest.cpp

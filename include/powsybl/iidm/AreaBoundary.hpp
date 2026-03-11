@@ -42,6 +42,10 @@ public:
     double getP() const;
     double getQ() const;
 
+protected:
+    void replaceTerminal(Terminal& oldTerminal, Terminal& newTerminal);
+    friend class Area;
+
 private:
     Area& m_area;
 

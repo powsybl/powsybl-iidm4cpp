@@ -32,6 +32,30 @@ Terminal& Connectable::addTerminal(std::unique_ptr<Terminal>&& terminal) {
     return *m_terminals.back();
 }
 
+void Connectable::replaceTerminal(Terminal& oldTerminal, std::unique_ptr<Terminal>&& newTerminal, TopologyModel& topologyModelToAttach) {
+    if (!newTerminal) {
+        throw PowsyblException(getId() + " cannot replace terminal by null");
+    }
+
+    auto it = std::find_if(m_terminals.begin(), m_terminals.end(), [&oldTerminal](const std::unique_ptr<powsybl::iidm::Terminal>& ptrTerminal) {
+        return ptrTerminal.get() == std::addressof(oldTerminal);
+    });
+    if(it!=m_terminals.end()) { //oldTerminal owned by this connectable
+        //attach and validates new Terminal
+        newTerminal->setConnectable(stdcxx::ref(*this));
+        topologyModelToAttach.attach(*newTerminal, false);
+
+        //detach oldTerminal
+        oldTerminal.getVoltageLevel().getTopologyModel().detach(oldTerminal);
+
+        //notify Referrers
+        oldTerminal.notifyReplacement(*newTerminal);
+
+        //replace owned terminal and deletes old one
+        *it = std::move(newTerminal);
+    }
+}
+
 void Connectable::deleteVariantArrayElement(unsigned long index) {
     Identifiable::deleteVariantArrayElement(index);
 

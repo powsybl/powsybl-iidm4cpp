@@ -164,6 +164,12 @@ void VscConverterStation::onReferencedRemoval(Terminal& /*removedReference*/) {
     m_voltageRegulatorOn.assign(m_voltageRegulatorOn.size(), false);
 }
 
+void VscConverterStation::onReferencedReplacement(Terminal& /*oldReference*/, Terminal& newReference) {
+    checkRegulatingTerminal(*this, stdcxx::ref(newReference), getNetwork());
+    m_regulatingTerminal = newReference;
+    newReference.registerReferrer(*this);
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

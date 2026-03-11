@@ -59,6 +59,9 @@ public:
 
     static void set(ThreeWindingsTransformer& threeWindingsTransformer, ThreeSides side, unsigned long priority);
 
+protected:
+    void replaceTerminal(Terminal& oldTerminal, Terminal& newTerminal);
+    friend class ReferencePriorities;
 
 private:
     stdcxx::Reference<Terminal> m_terminal;

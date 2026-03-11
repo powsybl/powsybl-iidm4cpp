@@ -41,14 +41,17 @@ Bus& BusBreakerTopologyModel::addBus(std::unique_ptr<ConfiguredBus>&& ptrBus) {
 }
 
 Switch& BusBreakerTopologyModel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch, const std::string& busId1, const std::string& busId2) {
+    Switch& aSwitch = getNetwork().checkAndAdd(std::move(ptrSwitch));
+    addSwitchToTopology(aSwitch, busId1, busId2);
+    return aSwitch;
+}
+
+void BusBreakerTopologyModel::addSwitchToTopology(Switch& sw, const std::string& busId1, const std::string& busId2) {
     unsigned long v1 = *getVertex(busId1, true);
     unsigned long v2 = *getVertex(busId2, true);
 
-    Switch& aSwitch = getNetwork().checkAndAdd(std::move(ptrSwitch));
-    unsigned long e = m_graph.addEdge(v1, v2, stdcxx::ref(aSwitch));
-    m_switches.insert(std::make_pair(aSwitch.getId(), e));
-
-    return aSwitch;
+    unsigned long e = m_graph.addEdge(v1, v2, stdcxx::ref(sw));
+    m_switches.insert(std::make_pair(sw.getId(), e));
 }
 
 void BusBreakerTopologyModel::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {

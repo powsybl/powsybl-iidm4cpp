@@ -48,17 +48,26 @@ const std::type_index& ReferencePriorities::getType() const {
 
 void ReferencePriorities::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     for (unsigned long index : indexes) {
+        // unregister (if needed) terminals before overwriting them 
+        unregisterReferencedTerminalIfNeeded(index);
         m_referencePriorities[index] = m_referencePriorities[sourceIndex];
+        //no need to register them additionaly, since they already are referenced in sourceIndex Variant
     }
 }
 void ReferencePriorities::deleteVariantArrayElement(unsigned long index) {
+    unregisterReferencedTerminalIfNeeded(index);
     m_referencePriorities[index].clear();
 }
 void ReferencePriorities::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    //No need to register terminals, since they already have been referenced when added in sourceIndex Variant
     m_referencePriorities.resize(m_referencePriorities.size() + number, m_referencePriorities[sourceIndex]);
 }
 void ReferencePriorities::reduceVariantArraySize(unsigned long number) {
-    m_referencePriorities.resize(m_referencePriorities.size() - number);
+    //reduce variant size one by one to ensure references checked before each variant is removed
+    for(unsigned long index = 0; index < number ; index ++) {
+        unregisterReferencedTerminalIfNeeded(m_referencePriorities.size() - 1);
+        m_referencePriorities.resize(m_referencePriorities.size() - 1);
+    }
 }
 
 
@@ -76,7 +85,7 @@ ReferencePriorities& ReferencePriorities::add(const std::shared_ptr<ReferencePri
         }
     }
     if (!containsTerminal) {
-        throw PowsyblException("The provided terminal does not belong to this connectable");
+        throw PowsyblException("The provided terminal for this ReferencePriorities does not belong to this connectable");
     }
 
     // If the provided terminal already got a ReferencePriority, replace it.
@@ -87,6 +96,7 @@ ReferencePriorities& ReferencePriorities::add(const std::shared_ptr<ReferencePri
         }
     }
 
+    registerReferencedTerminalIfNeeded(referencePriority->getTerminal());
     m_referencePriorities[getVariantIndex()].push_back(referencePriority);
     return *this;
 }
@@ -104,6 +114,7 @@ stdcxx::const_range<ReferencePriority> ReferencePriorities::getReferencePrioriti
 }
 
 void ReferencePriorities::deleteReferencePriorities() {
+    unregisterReferencedTerminalIfNeeded(getVariantIndex());
     m_referencePriorities[getVariantIndex()].clear();
 }
 
@@ -154,6 +165,101 @@ void ReferencePriorities::deleteReferencePriorities(Network& network) {
     }
 }
 
+void ReferencePriorities::cleanup() {
+    for (auto& referencePriorities : m_referencePriorities) {
+        for (auto& referencePriority : referencePriorities) {
+            if(static_cast<bool>(referencePriority) ) {
+                referencePriority->getTerminal().unregisterReferrer(*this);
+            }
+        }
+    }
+}
+
+void ReferencePriorities::onReferencedRemoval(Terminal& removedReference) {
+    // Called on deletion of the Connectable this extends, so we could as well do nothing since all its terminals and this extension will be removed anyway afterward
+
+    //remove all ReferencePriority referencing the given Terminal
+    for (auto& referencePriorities : m_referencePriorities) {
+        referencePriorities.erase(std::remove_if(referencePriorities.begin(), referencePriorities.end(), [&removedReference](const std::shared_ptr<ReferencePriority>& refPrioPtr) {
+            return (static_cast<bool>(refPrioPtr) && stdcxx::areSame(removedReference, refPrioPtr->getTerminal()));
+        }), referencePriorities.end());
+    }
+}
+
+void ReferencePriorities::onReferencedReplacement(Terminal& oldReference, Terminal& newReference) {
+    //check that newReference Terminal is on the same Connectable:
+    if(!stdcxx::areSame(newReference.getConnectable().get(), oldReference.getConnectable().get())) {
+        throw PowsyblException("The provided terminal for this ReferencePriorities does not belong to this connectable");
+    }
+    bool bRegisterOnlyOnce = true;
+
+    for(auto& referencePriorities : m_referencePriorities) {
+        // If the newReference terminal already got a ReferencePriority, skip this variant
+        auto itNewReference = std::find_if(referencePriorities.begin(), referencePriorities.end(), [&newReference](const std::shared_ptr<ReferencePriority>& refPrioPtr) {
+            return (static_cast<bool>(refPrioPtr) && stdcxx::areSame(newReference, refPrioPtr->getTerminal()));
+        });
+        if (itNewReference != referencePriorities.end()) {
+            //already referenced, go to next variant
+            continue;
+        }
+
+        //Else search oldReference :
+        auto itOldReference = std::find_if(referencePriorities.begin(), referencePriorities.end(), [&oldReference](const std::shared_ptr<ReferencePriority>& refPrioPtr) {
+            return (static_cast<bool>(refPrioPtr) && stdcxx::areSame(oldReference, refPrioPtr->getTerminal()));
+        });
+        if (itOldReference != referencePriorities.end()) {
+            //oldReference found, we replace it
+            if(bRegisterOnlyOnce) { //register only once for all the variants
+                bRegisterOnlyOnce = false;
+                registerReferencedTerminalIfNeeded(newReference);
+            }
+            (*itOldReference)->replaceTerminal(oldReference, newReference);
+        }
+    }
+    //remove any remaining ReferencePriority holding oldReference
+    onReferencedRemoval(oldReference);
+}
+
+void ReferencePriorities::unregisterReferencedTerminalIfNeeded(unsigned long variantIndex) {
+    auto currentVariantRefPriorities = m_referencePriorities[variantIndex];
+
+    for (auto& referencePriorityPtr : currentVariantRefPriorities) {
+        if(!referencePriorityPtr) {
+            continue;
+        }
+        unsigned int count = 0; //Count of variants on which the referenced terminal of this refPriority is referenced
+
+        for(auto& priorities : m_referencePriorities) {
+            auto it = std::find_if(priorities.begin(), priorities.end(), [&referencePriorityPtr](const std::shared_ptr<ReferencePriority>& refPrioPtr) {
+                return (static_cast<bool>(refPrioPtr) && stdcxx::areSame(refPrioPtr->getTerminal(), referencePriorityPtr->getTerminal()));
+            });
+            if (it != priorities.end()) {
+                count++;
+            }
+        }
+
+        if(count == 1) { //current Priority's Terminal is referenced only in the current variant
+            referencePriorityPtr->getTerminal().unregisterReferrer(*this);
+        }
+    }
+}
+
+void ReferencePriorities::registerReferencedTerminalIfNeeded(Terminal& terminal) {
+    //Register the given terminal only if not already referenced (by another variant also)
+
+    for(auto& referencePriorities : m_referencePriorities) {
+        auto it = std::find_if(referencePriorities.begin(), referencePriorities.end(), [&terminal](const std::shared_ptr<ReferencePriority>& refPrioPtr) {
+            return (static_cast<bool>(refPrioPtr) && stdcxx::areSame(terminal, refPrioPtr->getTerminal()));
+        });
+        if (it != referencePriorities.end()) {
+            //already referenced
+            return;
+        }
+    }
+
+    //given terminal not found : register it
+    terminal.registerReferrer(*this);
+}
 
 }  // namespace iidm
 

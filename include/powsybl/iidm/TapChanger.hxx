@@ -272,6 +272,15 @@ void TapChanger<H, C, S, R>::onReferencedRemoval(Terminal& /*removedReference*/)
     m_regulating.assign(m_regulating.size(), false);
 }
 
+template<typename H, typename C, typename S, typename R>
+void TapChanger<H, C, S, R>::onReferencedReplacement(Terminal& /*oldReference*/, Terminal& newReference) {
+    if (!stdcxx::areSame(newReference.getVoltageLevel().getNetwork(), getNetwork())) {
+        throw ValidationException(m_parent, "regulation terminal is not part of the network");
+    }
+    m_regulationTerminal = newReference;
+    newReference.registerReferrer(*this);
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

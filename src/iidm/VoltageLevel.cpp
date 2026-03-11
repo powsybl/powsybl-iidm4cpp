@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/DanglingLineFilter.hpp>
@@ -33,6 +34,7 @@
 #include <powsybl/iidm/util/VoltageLevels.hpp>
 
 #include "BusBreakerTopologyModel.hpp"
+#include "CalculatedBus.hpp"
 #include "NodeBreakerTopologyModel.hpp"
 
 namespace powsybl {
@@ -508,6 +510,102 @@ void VoltageLevel::assertTopologyModel() const {
     if(!static_cast<bool>(m_topologyModel)) {
         throw PowsyblException(stdcxx::format("TopologyModel missing from VoltageLevel %1%", getId())); 
     }
+}
+
+void VoltageLevel::convertToTopology(const TopologyKind& newTopologyKind) {
+    assertTopologyModel();
+    if(newTopologyKind == getTopologyKind()) {
+        return;
+    }
+
+    switch (newTopologyKind) {
+        case TopologyKind::NODE_BREAKER:
+            throw PowsyblException(stdcxx::format("Topology model conversion from %1% to %2% not yet supported", getTopologyKind(), newTopologyKind));
+        case TopologyKind::BUS_BREAKER:
+            convertToBusBreakerTopology();
+            break;
+        default:
+            throw AssertionError(stdcxx::format("Unexpected TopologyKind value: %1%", newTopologyKind));
+    }
+}
+
+void VoltageLevel::convertToBusBreakerTopology() {
+    assertTopologyModel();
+    auto& nodeBreakerTopology = dynamic_cast<NodeBreakerTopologyModel&>(*m_topologyModel);
+
+    std::unique_ptr<TopologyModel> newTopologyModel = stdcxx::make_unique<BusBreakerTopologyModel>(*this);
+    auto& busBreakerTopologyModel = dynamic_cast<BusBreakerTopologyModel&>(*newTopologyModel);
+
+    // first store all bus/breaker topological infos associated to terminals because we will start moving
+    // them from old mode to new one, it will modify the old topology model so we can then reconnect them
+    struct TopologyModelTerminalInfos{
+        Terminal& m_terminal;
+        std::string m_connectableBusId;
+        bool m_connected;
+    };
+    std::vector<TopologyModelTerminalInfos> oldTopologyModelInfos;
+    for (Terminal& oldTerminal : m_topologyModel->getTerminals()) {
+        if(oldTerminal.getConnectable() && oldTerminal.getConnectable().get().getType() != IdentifiableType::BUSBAR_SECTION) {
+            stdcxx::Reference<Bus> connectableBus = oldTerminal.getBusBreakerView().getConnectableBus();
+            std::string connectableBusId = static_cast<bool>(connectableBus) ? connectableBus.get().getId() : "";
+            bool connected = oldTerminal.isConnected();
+            oldTopologyModelInfos.emplace_back(TopologyModelTerminalInfos{oldTerminal, connectableBusId, connected});
+        }
+    }
+
+    //Convert calculated buses
+    for (Bus& bus : m_topologyModel->getBusBreakerView().getBuses()) {
+        BusAdder(*this)
+            .setId(bus.getId())
+            .setName(bus.getOptionalName())
+            .setFictitious(bus.isFictitious())
+            .addOnTopology(busBreakerTopologyModel);
+    }
+
+    //Transfer retained switches
+    for(Switch& sw : m_topologyModel->getBusBreakerView().getSwitches()) {
+        auto bus1 = m_topologyModel->getBusBreakerView().getBus1(sw.getId());
+        auto bus2 = m_topologyModel->getBusBreakerView().getBus2(sw.getId());
+        std::string busId1 = (static_cast<bool>(bus1)) ? bus1.get().getId() : "";
+        std::string busId2 = (static_cast<bool>(bus2)) ? bus2.get().getId() : "";
+        nodeBreakerTopology.removeSwitchFromTopology(sw.getId());
+        busBreakerTopologyModel.addSwitchToTopology(sw, busId1, busId2);
+    }
+
+    //reconnect connectables in new topology
+    for (auto& infos : oldTopologyModelInfos ) {
+        stdcxx::Reference<Connectable> connectable = infos.m_terminal.getConnectable();
+        if(!connectable){
+            continue;
+        }
+
+        // if there is no way to find a connectable bus, remove the connectable
+        // an alternative would be to connect them all to a new trash configured bus
+        if(infos.m_connectableBusId.empty()) {
+            connectable.get().remove();
+            continue;
+        }
+
+        //Create new Terminal
+        std::unique_ptr<Terminal> newTerminalPtr = TerminalBuilder(*this, *this, infos.m_terminal.getSide())
+                                                        .setBus((infos.m_connected) ? infos.m_connectableBusId : "")
+                                                        .setConnectableBus(infos.m_connectableBusId)
+                                                        .build();
+
+        //Replace terminal in connectable
+        connectable.get().replaceTerminal(infos.m_terminal, std::move(newTerminalPtr), busBreakerTopologyModel);
+    }
+
+    // remove busbar sections because not needed in a bus/breaker topology
+    for (BusbarSection& bbs : m_topologyModel->getNodeBreakerView().getBusbarSections()) {
+        bbs.remove();
+    }
+
+    // also here keep the notification for remaining switches removal
+    m_topologyModel->removeTopology();
+    m_topologyModel = std::move(newTopologyModel);
+
+    return;
 }
 
 }  // namespace iidm

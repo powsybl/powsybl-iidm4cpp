@@ -43,6 +43,10 @@ public: //Referrer
     virtual void onReferencedRemoval(Boundary& removedReference) override;
     virtual void onReferencedRemoval(Terminal& removedReference) override;
 
+    virtual void onReferencedReplacement(Boundary& oldReference, Boundary& newReference) override;
+    virtual void onReferencedReplacement(Terminal& oldReference, Terminal& newReference) override;
+
+
 public: // MultiVariantObject
     virtual void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

@@ -154,6 +154,24 @@ void SlackTerminal::onReferencedRemoval(Terminal& removedReference) {
     }
 }
 
+void SlackTerminal::onReferencedReplacement(Terminal& oldReference, Terminal& newReference) {
+    if (!stdcxx::areSame(newReference.getVoltageLevel(), getExtendable().get())) {
+        throw PowsyblException(stdcxx::format("Terminal given is not in the right VoltageLevel (%1% instead of %2%)", newReference.getVoltageLevel().getId(), getExtendable<VoltageLevel>().get().getId()));
+    }
+    
+    bool bRegisterOnlyOnce = true;
+    
+    for(auto& terminal : m_terminals) {
+        if(static_cast<bool>(terminal) && stdcxx::areSame(terminal.get(), oldReference)) {
+            if(bRegisterOnlyOnce) { //Only register once for all the variants
+                bRegisterOnlyOnce = false;
+                registerReferencedTerminalIfNeeded(newReference);
+            }
+            terminal = newReference;
+        }
+    }
+}
+
 void SlackTerminal::unregisterReferencedTerminalIfNeeded(unsigned long variantIndex) {
     auto currentVariantTerminal = m_terminals[variantIndex];
     if(!currentVariantTerminal) {

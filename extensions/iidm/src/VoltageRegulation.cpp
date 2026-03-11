@@ -132,6 +132,12 @@ void VoltageRegulation::onReferencedRemoval(Terminal& removedReference) {
     }
 }
 
+void VoltageRegulation::onReferencedReplacement(Terminal& /*oldReference*/, Terminal& newReference) {
+    checkTerminalInNetwork(stdcxx::ref(newReference), getNetworkFromExtendable());
+    m_regulatingTerminal = newReference;
+    newReference.registerReferrer(*this);
+}
+
 }  // namespace iidm
 
 }  // namespace extensions

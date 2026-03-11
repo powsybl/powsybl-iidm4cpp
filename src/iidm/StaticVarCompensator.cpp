@@ -186,6 +186,12 @@ void StaticVarCompensator::onReferencedRemoval(Terminal& /*removedReference*/) {
     m_regulationMode.assign(m_regulationMode.size(), RegulationMode::OFF);
 }
 
+void StaticVarCompensator::onReferencedReplacement(Terminal& /*oldReference*/, Terminal& newReference) {
+    checkRegulatingTerminal(*this, stdcxx::ref(newReference), getNetwork());
+    m_regulatingTerminal = newReference;
+    newReference.registerReferrer(*this);
+}
+
 namespace Enum {
 
 template <>

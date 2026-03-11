@@ -42,6 +42,7 @@ public:  // Extension
 
 public: //Referrer<Terminal>
     void onReferencedRemoval(Terminal& removedReference) override;
+    void onReferencedReplacement(Terminal& oldReference, Terminal& newReference) override;
 private:
     /**
      * if given variant terminal is not present in any other variants, unregister it

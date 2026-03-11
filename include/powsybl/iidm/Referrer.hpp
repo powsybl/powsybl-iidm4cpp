@@ -27,6 +27,15 @@ public:
      */
 virtual void onReferencedRemoval(T& removedReference) = 0;
 
+    /**
+    * Called when a referenced object is being replaced (before being removed)
+    * Implementations of this method should handle any required cleanup or updates implied by this referenced object deletion,
+    * and registering the new reference. Do not unregister the previously hold reference, since it is intented to be deleted after replacement.
+    * @param oldReference : The reference being replaced
+    * @param newReference : The reference that should replace the oldReference
+    */
+virtual void onReferencedReplacement(T& oldReference, T& newReference) = 0;
+
 };
 
 }  // namespace iidm

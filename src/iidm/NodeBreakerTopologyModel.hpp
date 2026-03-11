@@ -98,6 +98,9 @@ protected: // TopologyModel
 protected:  // TopologyModel
     void removeTopology() override;
 
+    void removeSwitchFromTopology(const std::string& switchId);
+    friend class VoltageLevel;
+
 private:
     static math::TraverseResult getTraverseResult(TerminalSet& visitedTerminals, NodeTerminal& terminal, Terminal::TopologyTraverser& traverser);
 

@@ -22,6 +22,7 @@ namespace iidm {
 
 class Network;
 class Switch;
+class TopologyModel;
 
 class Connectable : public virtual Identifiable {
 public:  // Identifiable
@@ -66,6 +67,13 @@ protected:
     const Terminal& getTerminal(unsigned long index) const;
 
     Terminal& getTerminal(unsigned long index);
+
+    /**
+     * Connects the new terminal to this connectable and attach it to its topologyModel,
+     * and replace old Terminal, by this new one
+     */
+    void replaceTerminal(Terminal& oldTerminal, std::unique_ptr<Terminal>&& newTerminal, TopologyModel& topologyModelToAttach);
+    friend class VoltageLevel;
 
 private:
     std::vector<std::unique_ptr<Terminal> > m_terminals;

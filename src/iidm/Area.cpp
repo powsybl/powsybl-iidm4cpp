@@ -286,6 +286,19 @@ void Area::onReferencedRemoval(Terminal& removedReference) {
     removeAreaBoundary(removedReference, false);
 }
 
+void Area::onReferencedReplacement(Boundary& /*oldReference*/, Boundary& /*newReference*/) {
+    //Not implemented, since not used
+    throw AssertionError("Not implemented");
+}
+void Area::onReferencedReplacement(Terminal& oldReference, Terminal& newReference) {
+    for(auto& areaBoundary : m_areaBoundaries) {
+        if(!areaBoundary) {
+            continue;
+        }
+        areaBoundary->replaceTerminal(oldReference, newReference);
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

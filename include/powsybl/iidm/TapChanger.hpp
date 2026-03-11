@@ -40,6 +40,7 @@ public: // MultiVariantObject
 
 public: // Referrer<Terminal>
     virtual void onReferencedRemoval(Terminal& removedReference) override;
+    virtual void onReferencedReplacement(Terminal& oldReference, Terminal& newReference) override;
 
 public:
     ~TapChanger() noexcept override = default;

@@ -69,6 +69,7 @@ BOOST_AUTO_TEST_CASE(ReferencePriorityTest) {
     ReferencePriority::set(lineS2S3, TwoSides::TWO, 0);
 
     BOOST_CHECK_EQUAL(3, ReferencePriority::get(bbs1));
+    BOOST_CHECK_EQUAL(1, bbs1.getTerminal().getReferrers().size());
     BOOST_CHECK_EQUAL(8, ReferencePriority::get(bbs2));
     BOOST_CHECK_EQUAL(9, ReferencePriority::get(bbs3));
     BOOST_CHECK_EQUAL(1, ReferencePriority::get(gh1));
@@ -100,10 +101,12 @@ BOOST_AUTO_TEST_CASE(ReferencePriorityTest) {
     std::string variant1 = "variant1";
     std::string variant2 = "variant2";
     variantManager.cloneVariant(VariantManager::getInitialVariantId(),{variant1, variant2});
+    BOOST_CHECK_EQUAL(1, bbs1.getTerminal().getReferrers().size());
 
     // add gh2 priority to 20 in variant1
     variantManager.setWorkingVariant(variant1);
     ReferencePriority::set(gh2, 20);
+    BOOST_CHECK_EQUAL(1, gh2.getTerminal().getReferrers().size());
     // add gh3 priority to 0 in variant2
     variantManager.setWorkingVariant(variant2);
     ReferencePriority::set(gh3, 0);
@@ -124,6 +127,8 @@ BOOST_AUTO_TEST_CASE(ReferencePriorityTest) {
     ReferencePriorities::deleteReferencePriorities(network);
     // check variant 1 empty
     BOOST_CHECK(ReferencePriorities::get(network).empty());
+    // Still have Referrers
+    BOOST_CHECK_EQUAL(1, gh2.getTerminal().getReferrers().size());
     // check other variants unchanged
     variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
     BOOST_CHECK_EQUAL(10, ReferencePriorities::get(network).size());
@@ -152,6 +157,14 @@ BOOST_AUTO_TEST_CASE(ReferencePriorityTest) {
     BOOST_CHECK_EQUAL(0, ReferencePriority::get(gh1));
     BOOST_CHECK_EQUAL(0, ReferencePriority::get(ld1));
     BOOST_CHECK_EQUAL(0, ReferencePriority::get(lineS2S3, TwoSides::ONE));
+
+    //Still got one variant holding references 
+    BOOST_CHECK_EQUAL(1, gh2.getTerminal().getReferrers().size());
+
+    //Remove the last variant holding references:
+    variantManager.removeVariant("variant3");
+    BOOST_CHECK_EQUAL(0, gh2.getTerminal().getReferrers().size());
+
 }
 
 BOOST_AUTO_TEST_CASE(ReferencePriorityThreeWindingsTransformerTest) {
@@ -187,7 +200,62 @@ BOOST_AUTO_TEST_CASE(ReferencePriorityTerminalNotInConnectableTest) {
 
     lineS3S4.newExtension<ReferencePrioritiesAdder>().add();
     ReferencePriorityAdder adder = lineS3S4.getExtension<ReferencePriorities>().newReferencePriority().setTerminal(gh1.getTerminal());
-    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The provided terminal does not belong to this connectable");
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The provided terminal for this ReferencePriorities does not belong to this connectable");
+}
+
+BOOST_AUTO_TEST_CASE(ReferencePriorityRemovalTest) {
+    Network network = powsybl::network::ThreeWindingsTransformerNetworkFactory::create();
+
+    ThreeWindingsTransformer& t3wf = network.getThreeWindingsTransformer("3WT");
+    ReferencePriority::set(t3wf, ThreeSides::ONE, 4);
+    ReferencePriority::set(t3wf, ThreeSides::TWO, 5);
+    ReferencePriority::set(t3wf, ThreeSides::THREE, 6);
+
+    //auto& ext = t3wf.getExtension<ReferencePriorities>();
+    BOOST_CHECK_EQUAL(1, t3wf.getTerminal(ThreeSides::ONE).getReferrers().size());
+    BOOST_CHECK_EQUAL(1, t3wf.getTerminal(ThreeSides::TWO).getReferrers().size());
+    BOOST_CHECK_EQUAL(1, t3wf.getTerminal(ThreeSides::THREE).getReferrers().size());
+
+    t3wf.removeExtension<ReferencePriorities>();
+
+    BOOST_CHECK_EQUAL(0, t3wf.getTerminal(ThreeSides::ONE).getReferrers().size());
+    BOOST_CHECK_EQUAL(0, t3wf.getTerminal(ThreeSides::TWO).getReferrers().size());
+    BOOST_CHECK_EQUAL(0, t3wf.getTerminal(ThreeSides::THREE).getReferrers().size());
+
+    ReferencePriority::set(t3wf, ThreeSides::ONE, 4);
+    ReferencePriority::set(t3wf, ThreeSides::TWO, 5);
+    ReferencePriority::set(t3wf, ThreeSides::THREE, 6);
+    BOOST_CHECK_EQUAL(1, t3wf.getTerminal(ThreeSides::ONE).getReferrers().size());
+    BOOST_CHECK_EQUAL(1, t3wf.getTerminal(ThreeSides::TWO).getReferrers().size());
+    BOOST_CHECK_EQUAL(1, t3wf.getTerminal(ThreeSides::THREE).getReferrers().size());
+
+    t3wf.remove();
+}
+
+BOOST_AUTO_TEST_CASE(ReferencePriorityReplaceTerminalsTest) {
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    
+    BusbarSection& bbs1 = network.getBusbarSection("S1VL2_BBS1");
+    Generator& gh1 = network.getGenerator("GH1");
+    
+    ReferencePriority::set(bbs1, 5);
+    ReferencePriority::set(gh1, 6);
+
+    auto& extgh1 = gh1.getExtension<ReferencePriorities>();
+    BOOST_CHECK_EQUAL(1, extgh1.getReferencePriorities().size());
+
+    VoltageLevel& vl = network.getVoltageLevel("S1VL2");
+    vl.convertToTopology(TopologyKind::BUS_BREAKER);
+
+    //bb1 is removed, so is its extension, generator reference is updated
+    POWSYBL_ASSERT_REF_FALSE(network.find("S1VL2_BBS1"));
+    std::vector<std::shared_ptr<ReferencePriority>> referencePriorities = ReferencePriorities::get(network);
+    BOOST_CHECK_EQUAL(1, extgh1.getReferencePriorities().size());
+    BOOST_CHECK(stdcxx::areSame(referencePriorities.at(0)->getTerminal(), gh1.getTerminal()));
+    BOOST_CHECK_EQUAL(6, ReferencePriority::get(gh1));
+
+    ReferencePriorities::deleteReferencePriorities(network);
+    BOOST_CHECK_EQUAL(0, gh1.getTerminal().getReferrers().size());
 }
 
 BOOST_FIXTURE_TEST_CASE(ReferencePrioritiesXmlSerializerTest, test::ResourceFixture) {
