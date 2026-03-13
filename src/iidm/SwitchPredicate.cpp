@@ -62,6 +62,13 @@ const stdcxx::Predicate<Switch>& SwitchPredicate::IS_OPEN() {
     });
     return predicate;
 }
+const stdcxx::Predicate<Switch>& SwitchPredicate::TRUE() {
+    static stdcxx::Predicate<Switch> predicate([](const Switch& /*switchObject*/) {
+        return true;
+    });
+    return predicate;
+}
+
 
 }  // namespace iidm
 

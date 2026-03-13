@@ -25,6 +25,7 @@ public:
     static const stdcxx::Predicate<Switch>& IS_BREAKER();
     static const stdcxx::Predicate<Switch>& IS_NONFICTIONAL();
     static const stdcxx::Predicate<Switch>& IS_OPEN();
+    static const stdcxx::Predicate<Switch>& TRUE();
 
 private:
     SwitchPredicate();

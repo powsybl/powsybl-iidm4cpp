@@ -162,24 +162,29 @@ bool NodeBreakerTopologyModel::disconnect(Terminal& terminal, const stdcxx::Pred
 
     unsigned long node = nodeTerminal.getNode();
 
-    // find all paths starting from the current terminal to a busbar section that does not contain an open switch
-    node_breaker_topology_model::Graph::VertexVisitor isBusbarSection = [](const stdcxx::Reference<NodeTerminal>& refTerminal) {
-        return static_cast<bool>(refTerminal) && refTerminal.get().getConnectable().get().getType() == IdentifiableType::BUSBAR_SECTION;
+    // find all paths starting from the current terminal to a non null terminal that does not contain an open switch
+    node_breaker_topology_model::Graph::VertexVisitor isTerminalNonNull = [](const stdcxx::Reference<NodeTerminal>& refTerminal) {
+        return static_cast<bool>(refTerminal);
     };
     node_breaker_topology_model::Graph::EdgeVisitor isOpenedSwitch = [](const stdcxx::Reference<Switch>& aSwitch) {
         return aSwitch && SwitchPredicate::IS_OPEN()(aSwitch.get());
     };
-    const auto& paths = m_graph.findAllPaths(node, isBusbarSection, isOpenedSwitch);
+    const auto& paths = m_graph.findAllPaths(node, isTerminalNonNull, isOpenedSwitch);
 
     if (paths.empty()) {
         return false;
     }
 
     for (const auto& path : paths) {
+        //Disconnect each path:
         bool pathOpen = false;
 
         for (unsigned long e : path) {
             const auto& aSwitch = m_graph.getEdgeObject(e);
+            if(isOpenedSwitch(aSwitch)) { //Path might have been opened when opening another path
+                pathOpen = true;
+                break;
+            }
             if (aSwitch && isSwitchOpenable(aSwitch.get())) {
                 aSwitch.get().setOpen(true);
                 // Just opening the first one is sufficient to disconnect the terminal
@@ -188,7 +193,7 @@ bool NodeBreakerTopologyModel::disconnect(Terminal& terminal, const stdcxx::Pred
             }
         }
 
-        // No switch found, the terminal is still connected
+        // No suitable openable switch found but path still closed -> the terminal is still connected
         if (!pathOpen) {
             return false;
         }

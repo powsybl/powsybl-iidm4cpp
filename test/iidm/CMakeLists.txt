@@ -24,6 +24,7 @@ set(UNIT_TEST_SOURCES
     EnergySourceTest.cpp
     ExtensionTest.cpp
     ExtensionAdderTest.cpp
+    ForkConnectDisconnectTest.cpp
     GeneratorTest.cpp
     GroundTest.cpp
     HvdcLineTest.cpp

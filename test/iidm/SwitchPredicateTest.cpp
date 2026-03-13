@@ -215,6 +215,15 @@ BOOST_AUTO_TEST_CASE(OpenTest) {
     BOOST_CHECK(predicate(network.getVoltageLevel("VL1").getNodeBreakerView().getSwitch("D5").get()));
 }
 
+BOOST_AUTO_TEST_CASE(TrueTest) {
+    Network network = createSwitchPredicateTestNetwork();
+    stdcxx::Predicate<Switch> predicate = SwitchPredicate::TRUE();
+
+    for(auto& sw : network.getSwitches()){
+        BOOST_CHECK(predicate(sw));
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
