@@ -388,6 +388,51 @@ BOOST_AUTO_TEST_CASE(throwBoundaryAttributeNotSetTest) {
     POWSYBL_ASSERT_THROW(areaBoundaryAdder2.add(), PowsyblException, "AreaBoundary AC flag is not set.");
 }
 
+BOOST_AUTO_TEST_CASE(removeVoltageLevelFromNetworkTest) {
+    Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
+    Area& controlAreaB = network.getArea("ControlArea_B");
+    Area& regionAB = network.getArea("Region_AB");
+
+    VoltageLevel& newVoltageLevel = network.newVoltageLevel()
+        .setId("newVoltageLevel")
+        .setNominalV(400.0)
+        .setTopologyKind(TopologyKind::BUS_BREAKER)
+        .add();
+
+    newVoltageLevel.addArea(controlAreaB);
+    newVoltageLevel.addArea(regionAB);
+
+    std::set<std::string> expectedAreasNewVl = {"ControlArea_B", "Region_AB"};
+    std::set<std::string> expectedVlAreaB = {"VLHV2", "VLLOAD", "newVoltageLevel"};
+    std::set<std::string> expectedVlRegionAB = {"VLGEN", "VLHV1", "newVoltageLevel", "VLHV2", "VLLOAD"};
+    BOOST_CHECK_EQUAL(expectedAreasNewVl.size(), boost::size(newVoltageLevel.getAreas()));
+    BOOST_CHECK_EQUAL(expectedVlAreaB.size(), boost::size(controlAreaB.getVoltageLevels()));
+    BOOST_CHECK_EQUAL(expectedVlRegionAB.size(), boost::size(regionAB.getVoltageLevels()));
+    for (auto& area : newVoltageLevel.getAreas()) {
+        BOOST_CHECK(expectedAreasNewVl.find(area.getId())!=expectedAreasNewVl.end());
+    }
+    for (auto& vl : controlAreaB.getVoltageLevels()) {
+        BOOST_CHECK(expectedVlAreaB.find(vl.getId())!=expectedVlAreaB.end());
+    }
+    for (auto& vl : regionAB.getVoltageLevels()) {
+        BOOST_CHECK(expectedVlRegionAB.find(vl.getId())!=expectedVlRegionAB.end());
+    }
+
+    
+    newVoltageLevel.remove();
+    expectedVlAreaB.erase("newVoltageLevel");
+    expectedVlRegionAB.erase("newVoltageLevel");
+    BOOST_CHECK_EQUAL(expectedVlAreaB.size(), boost::size(controlAreaB.getVoltageLevels()));
+    BOOST_CHECK_EQUAL(expectedVlRegionAB.size(), boost::size(regionAB.getVoltageLevels()));
+    for (auto& vl : controlAreaB.getVoltageLevels()) {
+        BOOST_CHECK(expectedVlAreaB.find(vl.getId())!=expectedVlAreaB.end());
+    }
+    for (auto& vl : regionAB.getVoltageLevels()) {
+        BOOST_CHECK(expectedVlRegionAB.find(vl.getId())!=expectedVlRegionAB.end());
+    }
+
+}
+
 BOOST_AUTO_TEST_CASE(removeAreaTest) {
     Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
     Area& controlAreaA = network.getArea("ControlArea_A");

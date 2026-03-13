@@ -445,6 +445,12 @@ void VoltageLevel::remove() {
         m_topologyModel->removeTopology();
     }
 
+    for (auto &area : m_areas){
+        if(static_cast<bool>(area)) {
+            area.get().removeVoltageLevel(*this);
+        }
+    }
+
     if (static_cast<bool>(m_substation)) {
         // Remove this voltage level from the network
         m_substation.get().remove(*this);
