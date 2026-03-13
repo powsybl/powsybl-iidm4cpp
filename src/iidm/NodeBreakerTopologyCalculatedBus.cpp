@@ -270,13 +270,18 @@ void CalculatedBusTopology::traverse(unsigned long v, std::vector<bool>& encount
         std::vector<unsigned long> vertices(1, v);
 
         const auto& graph = m_topologyModel.getGraph();
-        graph.traverse(v, math::TraversalType::DEPTH_FIRST, [&graph, &terminate, &vertices](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
+        graph.traverse(v, math::TraversalType::DEPTH_FIRST, [&graph, &terminate, &vertices, &encountered](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
             const stdcxx::Reference<Switch> aSwitch = graph.getEdgeObject(e);
             if (static_cast<bool>(aSwitch) && terminate(aSwitch)) {
                 return math::TraverseResult::TERMINATE_PATH;
             }
 
-            vertices.push_back(v2);
+            if(!encountered[v2]){
+                //We need to check this as the traverser might be called twice with the same v2 from different edge
+                //Note the 'encountered'  array is managed by graph::traverse so we should not update it there
+                vertices.push_back(v2);
+            }
+
             return math::TraverseResult::CONTINUE;
         }, encountered);
 

@@ -479,6 +479,33 @@ Network createDisconnectTestNetwork() {
     return network;
 }
 
+    /**
+     *                load
+     *                  |
+     *               ___|___
+     *               |     |
+     *           fd1 x     x fd2
+     * bbs1 _________|__   |
+     *        |            |
+     *        c            |
+     * bbs2 __|____________|__
+     */
+Network createNetworkWithLoop() {
+    Network network("test", "test");
+
+    Substation& substation = network.newSubstation().setId("s").add();
+    VoltageLevel& vl = substation.newVoltageLevel().setId("vl").setNominalV(400).setTopologyKind(TopologyKind::NODE_BREAKER).add();
+    VoltageLevel::NodeBreakerView& topology = vl.getNodeBreakerView();
+    topology.newBusbarSection().setId("bbs1").setNode(0).add();
+    topology.newBusbarSection().setId("bbs2").setNode(1).add();
+    topology.newDisconnector().setId("fd1").setNode1(0).setNode2(2).add();
+    topology.newDisconnector().setId("fd2").setNode1(1).setNode2(2).add();
+    topology.newBreaker().setId("c").setNode1(0).setNode2(1).add();
+    vl.newLoad().setId("load").setNode(2).setP0(10).setQ0(3).add();
+
+    return network;
+}
+
 BOOST_AUTO_TEST_SUITE(NodeBreakerVoltageLevelTestSuite)
 
 BOOST_AUTO_TEST_CASE(busbarSection) {
@@ -1634,6 +1661,21 @@ BOOST_AUTO_TEST_CASE(testRemove) {
     POWSYBL_ASSERT_THROW(network.getSubstation("S1"), PowsyblException, "Unable to find to the identifiable 'S1'");
 }
 
+BOOST_AUTO_TEST_CASE(testCalculatedBusTopologyWithLoop) {
+    Network n = createNetworkWithLoop();
+
+    BOOST_CHECK_EQUAL(1, n.getBusBreakerView().getBusCount());
+    stdcxx::Reference<Bus> busBbv = n.getBusBreakerView().getBus("vl_0");
+    POWSYBL_ASSERT_REF_TRUE(busBbv);
+    BOOST_CHECK_EQUAL(3, busBbv.get().getConnectedTerminalCount());
+
+    BOOST_CHECK_EQUAL(1, n.getBusView().getBusCount());
+    stdcxx::Reference<Bus> busBv = n.getBusView().getBus("vl_0");
+    POWSYBL_ASSERT_REF_TRUE(busBv);
+    BOOST_CHECK_EQUAL(3, busBv.get().getConnectedTerminalCount());
+
+
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
