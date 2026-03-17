@@ -892,6 +892,13 @@ LineAdder Network::newLine(const std::string& subNetworkId) {
     return LineAdder(*this, subNetworkId);
 }
 
+LineAdder Network::newLine(const Line& copyLine) {
+    return LineAdder(*this, copyLine);
+}
+LineAdder Network::newLine(const std::string& subNetworkId, const Line& copyLine) {
+    return LineAdder(*this, subNetworkId, copyLine);
+}
+
 Network& Network::newSubnetwork(const std::string& id, const std::string& sourceFormat) {
     if(m_subNetworksIndex.find(id) != m_subNetworksIndex.end()){
         throw PowsyblException(stdcxx::format("The network '%1%' already contains a subnetwork '%2%'", getId(), id));

@@ -261,6 +261,62 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK_EQUAL(2UL, network.getLineCount());
 }
 
+BOOST_AUTO_TEST_CASE(adderByCopy) {
+    Network network = createLineTestNetwork();
+    Line& line1 = network.getLine("VL1_VL3");
+    //Add limits on line1 :
+    line1.newOperationalLimitsGroup1("group1").newCurrentLimits().setPermanentLimit(220.0).add();
+    line1.setSelectedOperationalLimitsGroup1("group1");
+    stdcxx::Reference<CurrentLimits> optionalLimits1 = line1.getCurrentLimits1();
+    POWSYBL_ASSERT_REF_TRUE(optionalLimits1);
+    CurrentLimits& currentLimits1 = optionalLimits1.get();
+
+    line1.getOperationalLimitsGroup1("group1").get().newActivePowerLimits().setPermanentLimit(220.0).add();
+    line1.setSelectedOperationalLimitsGroup1("group1");
+    stdcxx::Reference<ActivePowerLimits> optionalActivePowerLimits1 = line1.getActivePowerLimits1();
+    POWSYBL_ASSERT_REF_TRUE(optionalActivePowerLimits1);
+
+    line1.getOperationalLimitsGroup1("group1").get().newApparentPowerLimits().setPermanentLimit(220.0).add();
+    line1.setSelectedOperationalLimitsGroup1("group1");
+    stdcxx::Reference<ApparentPowerLimits> optionalApparentPowerLimits1 = line1.getApparentPowerLimits1();
+    POWSYBL_ASSERT_REF_TRUE(optionalApparentPowerLimits1);
+
+    line1.newOperationalLimitsGroup2("group2").newCurrentLimits().setPermanentLimit(80.0).add();
+    line1.setSelectedOperationalLimitsGroup2("group2");
+    stdcxx::Reference<CurrentLimits> optionalLimits2 = line1.getCurrentLimits2();
+    POWSYBL_ASSERT_REF_TRUE(optionalLimits2);
+
+    //Create second Line by copy:
+
+    LineAdder line2Adder = network.newLine(line1);
+    line2Adder.setId("line2")
+                .setName("line2")
+                .setBus1("VL1_BUS1")
+                .setConnectableBus1("VL1_BUS1")
+                .setBus2("VL3_BUS1")
+                .setConnectableBus2("VL3_BUS1");
+    Line& line2 = line2Adder.add();
+
+    //Check limits Groups :
+    stdcxx::Reference<CurrentLimits> limits3 = line2.getCurrentLimits1();
+    POWSYBL_ASSERT_REF_TRUE(limits3);
+    CurrentLimits& currentLimits3 = limits3.get();
+
+    BOOST_CHECK_EQUAL(line2.getR(), line1.getR());
+    BOOST_CHECK_EQUAL(line2.getX(), line1.getX());
+    BOOST_CHECK_EQUAL(line2.getB1(), line1.getB1());
+    BOOST_CHECK_EQUAL(line2.getB2(), line1.getB2());
+    BOOST_CHECK_EQUAL(line2.getG1(), line1.getG1());
+    BOOST_CHECK_EQUAL(line2.getG2(), line1.getG2());
+    BOOST_CHECK_EQUAL(line2.getTerminal1().getVoltageLevel().getId(), line1.getTerminal1().getVoltageLevel().getId());
+    BOOST_CHECK_EQUAL(line2.getTerminal2().getVoltageLevel().getId(), line1.getTerminal2().getVoltageLevel().getId());
+
+    BOOST_CHECK_EQUAL(currentLimits1.getPermanentLimit(), currentLimits3.getPermanentLimit());
+    POWSYBL_ASSERT_REF_TRUE(line2.getOperationalLimitsGroup2("group2"));
+    BOOST_CHECK_EQUAL(line1.getSelectedOperationalLimitsGroupId2().get(), line2.getSelectedOperationalLimitsGroupId2().get());
+
+}
+
 BOOST_AUTO_TEST_CASE(terminal) {
     Network network = createLineTestNetwork();
     Line& line = network.getLine("VL1_VL3");

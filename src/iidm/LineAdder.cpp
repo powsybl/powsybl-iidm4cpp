@@ -29,6 +29,28 @@ LineAdder::LineAdder(Network& network, const std::string& subNetworkId) :
     m_subnetworkId = subNetworkId;
 }
 
+LineAdder::LineAdder(Network& network, const Line& copyLine) :
+    LineAdder(network) {
+    m_copyLine = stdcxx::cref(copyLine);
+    initFromLine(copyLine);
+}
+LineAdder::LineAdder(Network& network, const std::string& subNetworkId, const Line& copyLine) :
+    LineAdder(network, subNetworkId) {
+    m_copyLine = stdcxx::cref(copyLine);
+    initFromLine(copyLine);
+}
+
+void LineAdder::initFromLine(const Line& copyLine) {
+    setR(copyLine.getR());
+    setX(copyLine.getX());
+    setB1(copyLine.getB1());
+    setB2(copyLine.getB2());
+    setG1(copyLine.getG1());
+    setG2(copyLine.getG2());
+    setVoltageLevel1(copyLine.getTerminal1().getVoltageLevel().getId());
+    setVoltageLevel2(copyLine.getTerminal2().getVoltageLevel().getId());
+}
+
 Line& LineAdder::add() {
     checkConnectableBuses();
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
@@ -57,6 +79,10 @@ Line& LineAdder::add() {
     Terminal& terminal2 = line.addTerminal(std::move(ptrTerminal2));
     voltageLevel1.getTopologyModel().attach(terminal1, false);
     voltageLevel2.getTopologyModel().attach(terminal2, false);
+
+    if(static_cast<bool>(m_copyLine)) {
+        line.copyOperationalLimits(m_copyLine.get());
+    }
 
     return line;
 }

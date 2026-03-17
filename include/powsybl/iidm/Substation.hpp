@@ -83,6 +83,7 @@ public:
     ThreeWindingsTransformerAdder newThreeWindingsTransformer();
 
     TwoWindingsTransformerAdder newTwoWindingsTransformer();
+    TwoWindingsTransformerAdder newTwoWindingsTransformer(const TwoWindingsTransformer& copyTWTransformer);
 
     VoltageLevelAdder newVoltageLevel();
 

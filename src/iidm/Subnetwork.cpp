@@ -645,6 +645,12 @@ LineAdder Subnetwork::newLine() {
 LineAdder Subnetwork::newLine(const std::string& subNetworkId) {
     return LineAdder(getRootNetwork(), subNetworkId);
 }
+LineAdder Subnetwork::newLine(const Line& copyLine) {
+    return LineAdder(getRootNetwork(), getId(), copyLine);
+}
+LineAdder Subnetwork::newLine(const std::string& subNetworkId, const Line& copyLine) {
+    return LineAdder(getRootNetwork(), subNetworkId, copyLine);
+}
 Network& Subnetwork::newSubnetwork(const std::string& /*id*/, const std::string& /*sourceFormat*/) {
     throw PowsyblException(stdcxx::format("Unsupported operation, Inner subnetworks are not supported"));
 }

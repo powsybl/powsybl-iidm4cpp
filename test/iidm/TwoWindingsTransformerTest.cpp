@@ -7,7 +7,10 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
@@ -381,6 +384,63 @@ BOOST_AUTO_TEST_CASE(adder) {
     BOOST_CHECK_NO_THROW(adder.add());
 
     BOOST_CHECK_EQUAL(twoWindingsTransformerCount + 1, network.getTwoWindingsTransformerCount());
+}
+
+BOOST_AUTO_TEST_CASE(adderByCopy) {
+    Network network = createTwoWindingsTransformerTestNetwork();
+    Substation& substation2 = network.getSubstation("S1");
+    BOOST_CHECK_EQUAL(1UL, network.getTwoWindingsTransformerCount());
+    TwoWindingsTransformer& twt1 = network.getTwoWindingsTransformer("2WT_VL1_VL2");
+
+    TwoWindingsTransformerAdder adder = substation2.newTwoWindingsTransformer(twt1)
+                                            .setId("TWT_copy")
+                                            .setBus1("VL1_BUS1")
+                                            .setBus2("VL2_BUS1");
+
+    //Add limits on twt1 :
+    twt1.newOperationalLimitsGroup1("group1").newCurrentLimits().setPermanentLimit(220.0).add();
+    twt1.setSelectedOperationalLimitsGroup1("group1");
+    stdcxx::Reference<CurrentLimits> optionalLimits1 = twt1.getCurrentLimits1();
+    POWSYBL_ASSERT_REF_TRUE(optionalLimits1);
+    CurrentLimits& currentLimits1 = optionalLimits1.get();
+
+    twt1.getOperationalLimitsGroup1("group1").get().newActivePowerLimits().setPermanentLimit(220.0).add();
+    stdcxx::Reference<ActivePowerLimits> optionalActivePowerLimits1 = twt1.getActivePowerLimits1();
+    POWSYBL_ASSERT_REF_TRUE(optionalActivePowerLimits1);
+
+    twt1.getOperationalLimitsGroup1("group1").get().newApparentPowerLimits().setPermanentLimit(220.0).add();
+    stdcxx::Reference<ApparentPowerLimits> optionalApparentPowerLimits1 = twt1.getApparentPowerLimits1();
+    POWSYBL_ASSERT_REF_TRUE(optionalApparentPowerLimits1);
+
+    twt1.newOperationalLimitsGroup2("group2").newCurrentLimits().setPermanentLimit(80.0).add();
+    twt1.setSelectedOperationalLimitsGroup2("group2");
+    stdcxx::Reference<CurrentLimits> optionalLimits2 = twt1.getCurrentLimits2();
+    POWSYBL_ASSERT_REF_TRUE(optionalLimits2);
+
+    //Add by copy
+    TwoWindingsTransformer& twtcopy = adder.add();
+
+    BOOST_CHECK_EQUAL(twt1.getR(), twtcopy.getR());
+    BOOST_CHECK_EQUAL(twt1.getX(), twtcopy.getX());
+    BOOST_CHECK_EQUAL(twt1.getG(), twtcopy.getG());
+    BOOST_CHECK_EQUAL(twt1.getB(), twtcopy.getB());
+    BOOST_CHECK_EQUAL(twt1.getRatedS(), twtcopy.getRatedS());
+    BOOST_CHECK_EQUAL(twt1.getRatedU1(), twtcopy.getRatedU1());
+    BOOST_CHECK_EQUAL(twt1.getRatedU2(), twtcopy.getRatedU2());
+    BOOST_CHECK_EQUAL(twt1.getTerminal1().getVoltageLevel().getId(), twtcopy.getTerminal1().getVoltageLevel().getId());
+    BOOST_CHECK_EQUAL(twt1.getTerminal2().getVoltageLevel().getId(), twtcopy.getTerminal2().getVoltageLevel().getId());
+
+
+    stdcxx::Reference<CurrentLimits> optionalLimits3 = twtcopy.getCurrentLimits1();
+    POWSYBL_ASSERT_REF_TRUE(optionalLimits3);
+    CurrentLimits& currentLimits3 = optionalLimits3.get();
+    
+    BOOST_CHECK_EQUAL(currentLimits1.getPermanentLimit(), currentLimits3.getPermanentLimit());
+    BOOST_CHECK_EQUAL(0, boost::size(currentLimits3.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(boost::size(currentLimits1.getTemporaryLimits()), boost::size(currentLimits3.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(0, boost::size(currentLimits3.getFictitiousLimits()));
+    BOOST_CHECK_EQUAL(boost::size(currentLimits1.getFictitiousLimits()), boost::size(currentLimits3.getFictitiousLimits()));
+
 }
 
 BOOST_AUTO_TEST_CASE(invalidSubstationContainer) {

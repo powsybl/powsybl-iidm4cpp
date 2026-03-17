@@ -455,6 +455,9 @@ public:
     virtual LineAdder newLine();
     virtual LineAdder newLine(const std::string& subNetworkId);
 
+    virtual LineAdder newLine(const Line& copyLine);
+    virtual LineAdder newLine(const std::string& subNetworkId, const Line& copyLine);
+
     /**
      * Creates a new subnetwork inside this current network;
      * @return created subnetwork

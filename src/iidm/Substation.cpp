@@ -166,6 +166,10 @@ TwoWindingsTransformerAdder Substation::newTwoWindingsTransformer() {
     return TwoWindingsTransformerAdder(*this);
 }
 
+TwoWindingsTransformerAdder Substation::newTwoWindingsTransformer(const TwoWindingsTransformer& copyTWTransformer) {
+    return TwoWindingsTransformerAdder(*this, copyTWTransformer);
+}
+
 VoltageLevelAdder Substation::newVoltageLevel() {
     return VoltageLevelAdder(*this);
 }

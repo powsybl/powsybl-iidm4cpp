@@ -22,6 +22,26 @@ TwoWindingsTransformerAdder::TwoWindingsTransformerAdder(Substation& substation)
     m_substation(substation) {
 }
 
+TwoWindingsTransformerAdder::TwoWindingsTransformerAdder(Substation& substation, const TwoWindingsTransformer& copyTWTransformer) :
+    TwoWindingsTransformerAdder(substation) {
+
+    m_copyTWTransformer = stdcxx::cref(copyTWTransformer);
+    initFromTwoWindingsTransformer(copyTWTransformer);
+
+}
+
+void TwoWindingsTransformerAdder::initFromTwoWindingsTransformer(const TwoWindingsTransformer& copyTwoWindingsTransformer) {
+
+    setR(copyTwoWindingsTransformer.getR());
+    setX(copyTwoWindingsTransformer.getX());
+    setB(copyTwoWindingsTransformer.getB());
+    setG(copyTwoWindingsTransformer.getG());
+    setRatedU1(copyTwoWindingsTransformer.getRatedU1());
+    setRatedU2(copyTwoWindingsTransformer.getRatedU2());
+    setRatedS(copyTwoWindingsTransformer.getRatedS());
+
+}
+
 TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     checkConnectableBuses();
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
@@ -65,6 +85,10 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     Terminal& terminal2 = transformer.addTerminal(std::move(ptrTerminal2));
     voltageLevel1.getTopologyModel().attach(terminal1, false);
     voltageLevel2.getTopologyModel().attach(terminal2, false);
+
+    if(static_cast<bool>(m_copyTWTransformer)) {
+        transformer.copyOperationalLimits(m_copyTWTransformer.get());
+    }
 
     return transformer;
 }

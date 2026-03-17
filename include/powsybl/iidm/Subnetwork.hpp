@@ -206,6 +206,8 @@ public:
     HvdcLineAdder newHvdcLine(const std::string& subNetworkId) override;
     LineAdder newLine() override;
     LineAdder newLine(const std::string& subNetworkId) override;
+    LineAdder newLine(const Line& copyLine) override;
+    LineAdder newLine(const std::string& subNetworkId, const Line& copyLine) override;
     Network& newSubnetwork(const std::string& id, const std::string& sourceFormat) override;
     SubstationAdder newSubstation() override;
     TieLineAdder newTieLine() override;

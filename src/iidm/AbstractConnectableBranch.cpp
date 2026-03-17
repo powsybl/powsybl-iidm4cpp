@@ -140,6 +140,44 @@ CurrentLimitsAdder AbstractConnectableBranch::newCurrentLimits2() {
     return getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits();
 }
 
+void AbstractConnectableBranch::copyOperationalLimits(const AbstractConnectableBranch& copiedBranch) {
+
+    for(const auto& copyLimitsGroup : copiedBranch.getOperationalLimitsGroups1()) {
+        OperationalLimitsGroup& newLimitsGroup1 = newOperationalLimitsGroup1(copyLimitsGroup.getId());
+
+        if(static_cast<bool>(copyLimitsGroup.getCurrentLimits())) {
+            newLimitsGroup1.newCurrentLimits(copyLimitsGroup.getCurrentLimits().get()).add();
+        }
+        if(static_cast<bool>(copyLimitsGroup.getActivePowerLimits())) {
+            newLimitsGroup1.newActivePowerLimits(copyLimitsGroup.getActivePowerLimits().get()).add();
+        }
+        if(static_cast<bool>(copyLimitsGroup.getApparentPowerLimits())) {
+            newLimitsGroup1.newApparentPowerLimits(copyLimitsGroup.getApparentPowerLimits().get()).add();
+        }
+    }
+    if(copiedBranch.getSelectedOperationalLimitsGroupId1().has_value()) {
+        setSelectedOperationalLimitsGroup1(copiedBranch.getSelectedOperationalLimitsGroupId1().get());
+    }
+
+    for(const auto& copyLimitsGroup : copiedBranch.getOperationalLimitsGroups2()) {
+        OperationalLimitsGroup& newLimitsGroup2 = newOperationalLimitsGroup2(copyLimitsGroup.getId());
+
+        if(static_cast<bool>(copyLimitsGroup.getCurrentLimits())) {
+            newLimitsGroup2.newCurrentLimits(copyLimitsGroup.getCurrentLimits().get()).add();
+        }
+        if(static_cast<bool>(copyLimitsGroup.getActivePowerLimits())) {
+            newLimitsGroup2.newActivePowerLimits(copyLimitsGroup.getActivePowerLimits().get()).add();
+        }
+        if(static_cast<bool>(copyLimitsGroup.getApparentPowerLimits())) {
+            newLimitsGroup2.newApparentPowerLimits(copyLimitsGroup.getApparentPowerLimits().get()).add();
+        }
+    }
+    if(copiedBranch.getSelectedOperationalLimitsGroupId2().has_value()) {
+        setSelectedOperationalLimitsGroup2(copiedBranch.getSelectedOperationalLimitsGroupId2().get());
+    }
+
+}
+
 
 }  // namespace iidm
 

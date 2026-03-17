@@ -23,6 +23,9 @@ public:
     explicit LineAdder(Network& network);
     explicit LineAdder(Network& network, const std::string& subNetworkId);
 
+    explicit LineAdder(Network& network, const Line& copyLine);
+    explicit LineAdder(Network& network, const std::string& subNetworkId, const Line& copyLine);
+
     ~LineAdder() noexcept override = default;
 
     Line& add() override;
@@ -47,9 +50,12 @@ protected: // IdentifiableAdder
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
+    void initFromLine(const Line& copyLine);
+
 private:
     Network& m_network;
     std::string m_subnetworkId;
+    stdcxx::CReference<Line> m_copyLine;
 
     double m_b1 = 0.0;
 

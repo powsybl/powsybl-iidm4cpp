@@ -22,6 +22,7 @@ class TwoWindingsTransformer;
 class TwoWindingsTransformerAdder : public BranchAdder<TwoWindingsTransformer, TwoWindingsTransformerAdder> {
 public:
     explicit TwoWindingsTransformerAdder(Substation& substation);
+    explicit TwoWindingsTransformerAdder(Substation& substation, const TwoWindingsTransformer& copyTWTransformer);
 
     ~TwoWindingsTransformerAdder() noexcept override = default;
 
@@ -49,8 +50,11 @@ protected: // IdentifiableAdder
 private: // IdentifiableAdder
     const std::string& getTypeDescription() const override;
 
+    void initFromTwoWindingsTransformer(const TwoWindingsTransformer& copyTwoWindingsTransformer);
+
 private:
     Substation& m_substation;
+    stdcxx::CReference<TwoWindingsTransformer> m_copyTWTransformer;
 
     double m_r = stdcxx::nan();
 

@@ -61,6 +61,8 @@ public:
      */
     virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2(const std::string& id) override;
 
+    virtual void copyOperationalLimits(const AbstractConnectableBranch& copiedBranch);
+
     virtual const Terminal& getTerminal1() const override;
 
     virtual Terminal& getTerminal1() override;

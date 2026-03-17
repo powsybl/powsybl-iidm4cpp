@@ -294,11 +294,19 @@ BOOST_AUTO_TEST_CASE(LineCreationTest) {
     // On root network, voltage levels in root network and subnetwork2
     Line& l4 = addLine(network, "l4", "vl0_0", "vl2_0");
 
+    //New lines creation using the adder by copy
+    Line& l2bis = subnetwork2.newLine(l2)
+                .setId("l2_bis")
+                .setBus1(getBusId("vl2_0"))
+                .setBus2(getBusId("vl2_1"))
+                .add();
+
     assertNetworks(network, network, l0);
     assertNetworks(network, subnetwork1, l1);
     assertNetworks(network, subnetwork2, l2);
     assertNetworks(network, network, l3);
     assertNetworks(network, network, l4);
+    assertNetworks(network, subnetwork2, l2bis);
 
     //On subnetwork1, voltage levels in root network and subnetwork1
     POWSYBL_ASSERT_THROW(addLine(subnetwork1, "l5", "vl0_0", "vl1_1"), ValidationException, 
@@ -333,9 +341,17 @@ BOOST_AUTO_TEST_CASE(TwoWindingsCreationTest) {
     // On subnetwork2
     TwoWindingsTransformer& t2 = addTwoWindingsTransformer(substation2, "twt2", "vl2_0", 380, "vl2_1", 90);
 
+    //Adder by copy
+    TwoWindingsTransformer& t1bis = substation2.newTwoWindingsTransformer(t1)
+                                        .setId("twt1bis")
+                                        .setBus1(getBusId("vl2_0"))
+                                        .setBus2(getBusId("vl2_1"))
+                                        .add();
+    
     assertNetworks(network, network, t0);
     assertNetworks(network, subnetwork1, t1);
     assertNetworks(network, subnetwork2, t2);
+    assertNetworks(network, subnetwork2, t1bis);
 }
 
 BOOST_AUTO_TEST_CASE(ThreeWindingsCreationTest) {
