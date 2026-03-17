@@ -53,8 +53,7 @@ BOOST_FIXTURE_TEST_CASE(StandbyAutomatonConstructor, test::ResourceFixture) {
 
     extension.setB0(1.2);
     BOOST_CHECK_CLOSE(1.2, extension.getB0(), std::numeric_limits<double>::epsilon());
-    extension.setStandby(false);
-    BOOST_CHECK(!extension.isStandby());
+    
     extension.setLowVoltageSetpoint(2.3);
     BOOST_CHECK_CLOSE(2.3, extension.getLowVoltageSetpoint(), std::numeric_limits<double>::epsilon());
     extension.setHighVoltageSetpoint(3.4);
@@ -73,6 +72,16 @@ BOOST_FIXTURE_TEST_CASE(StandbyAutomatonConstructor, test::ResourceFixture) {
     POWSYBL_ASSERT_THROW(extension.setLowVoltageThreshold(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC2': lowVoltageThreshold (nan) is invalid");
     POWSYBL_ASSERT_THROW(extension.setHighVoltageThreshold(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC2': highVoltageThreshold (nan) is invalid");
     POWSYBL_ASSERT_THROW(extension.setLowVoltageThreshold(5.7), ValidationException, "staticVarCompensator 'SVC2': Inconsistent low (5.7) and high (5.6) voltage thresholds");
+
+    //When standby is false : does not throw if inconsistent low and high voltage thresholds :
+    extension.setStandby(false);
+    BOOST_CHECK(!extension.isStandby());
+    extension.setLowVoltageThreshold(5.7);
+    BOOST_CHECK_CLOSE(5.7, extension.getLowVoltageThreshold(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(5.6, extension.getHighVoltageThreshold(), std::numeric_limits<double>::epsilon());
+    //But throws when standby set to true afterwards, while still inconsistent:
+    POWSYBL_ASSERT_THROW(extension.setStandby(true), ValidationException, "staticVarCompensator 'SVC2': Inconsistent low (5.7) and high (5.6) voltage thresholds");
+
 
     auto adder = svc.newExtension<StandbyAutomatonAdder>();
     
