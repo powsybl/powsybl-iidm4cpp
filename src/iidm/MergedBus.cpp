@@ -190,6 +190,7 @@ void MergedBus::visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) 
 }
 
 double MergedBus::getFictitiousP0() const {
+    checkValidity();
     double fictP0 = 0.0;
     bool hasValue = false;
     for (const auto& bus : m_buses){
@@ -206,6 +207,7 @@ double MergedBus::getFictitiousP0() const {
 }
 
 double MergedBus::getFictitiousQ0() const {
+    checkValidity();
     double fictQ0 = 0.0;
     bool hasValue = false;
     for (const auto& bus : m_buses){
