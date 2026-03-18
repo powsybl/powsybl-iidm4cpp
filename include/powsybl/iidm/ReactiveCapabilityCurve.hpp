@@ -43,8 +43,21 @@ public: // ReactiveLimits
     ReactiveLimitsKind getKind() const override;
 
     double getMaxQ(double p) const override;
+    /**
+     * Get the reactive power maximum value of the curve (with the possibility of extrapolating slope of reactive
+     * limits outside active limits)
+     */
+    double getMaxQ(double p, bool extrapolateSlope) const;
 
     double getMinQ(double p) const override;
+    /**
+     * Get the reactive power minimum value of the curve (with the possibility of extrapolating slope of reactive
+     * limits outside active limits)
+     */
+    double getMinQ(double p, bool extrapolateSlope) const;
+
+private:
+    Point extrapolateReactiveLimitsSlope(double p) const;
 
 public:
     explicit ReactiveCapabilityCurve(std::map<double, Point>&& points);

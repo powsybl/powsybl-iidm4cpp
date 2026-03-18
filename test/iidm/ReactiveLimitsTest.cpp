@@ -121,6 +121,63 @@ BOOST_AUTO_TEST_CASE(ReactiveCapabilityCurveTest) {
     BOOST_CHECK(itE == expected.end());
 }
 
+
+BOOST_AUTO_TEST_CASE(extrapolateCurves) {
+    ReactiveLimitsHolderMock mock;
+    mock.newReactiveCapabilityCurve()
+        .beginPoint()
+            .setP(100.0).setMinQ(200.0).setMaxQ(300.0)
+        .endPoint()
+        .beginPoint()
+            .setP(200.0).setMinQ(300.0).setMaxQ(400.0)
+        .endPoint()
+        .beginPoint()
+            .setP(300.0).setMinQ(300.0).setMaxQ(400.0)
+        .endPoint()
+        .beginPoint()
+            .setP(400.0).setMinQ(310.0).setMaxQ(390.0)
+        .endPoint()
+        .add();
+
+    auto& curveLimits = mock.getReactiveLimits<ReactiveCapabilityCurve>();
+
+    //Bounds:
+    BOOST_CHECK_CLOSE(200.0, curveLimits.getMinQ(100.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300.0, curveLimits.getMaxQ(100.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300.0, curveLimits.getMinQ(200.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(400.0, curveLimits.getMaxQ(200.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, curveLimits.getMinQ(100.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300.0, curveLimits.getMaxQ(100.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300.0, curveLimits.getMinQ(200.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(400.0, curveLimits.getMaxQ(200.0, true), std::numeric_limits<double>::epsilon());
+
+    //inside curve definition interval
+    BOOST_CHECK_CLOSE(250.0, curveLimits.getMinQ(150.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(350.0, curveLimits.getMaxQ(150.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(210.0, curveLimits.getMinQ(110.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(310.0, curveLimits.getMaxQ(110.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(250.0, curveLimits.getMinQ(150.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(350.0, curveLimits.getMaxQ(150.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(210.0, curveLimits.getMinQ(110.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(310.0, curveLimits.getMaxQ(110.0, true), std::numeric_limits<double>::epsilon());
+
+    //out of bounds :
+    BOOST_CHECK_CLOSE(200.0, curveLimits.getMinQ(0.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(300.0, curveLimits.getMaxQ(0.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(310.0, curveLimits.getMinQ(500.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(390.0, curveLimits.getMaxQ(500.0), std::numeric_limits<double>::epsilon());
+    //extrapolated results :
+    BOOST_CHECK_CLOSE(100.0, curveLimits.getMinQ(0.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(200.0, curveLimits.getMaxQ(0.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(320.0, curveLimits.getMinQ(500.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(380.0, curveLimits.getMaxQ(500.0, true), std::numeric_limits<double>::epsilon());
+
+    // corner case of intersecting reactive limits extrapolations
+    BOOST_CHECK_CLOSE(350.0, curveLimits.getMinQ(1500.0, true), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(350.0, curveLimits.getMaxQ(1500.0, true), std::numeric_limits<double>::epsilon());
+
+}
+
 BOOST_AUTO_TEST_CASE(copyCurve) {
 
     ReactiveLimitsHolderMock mock, mockCopy;
