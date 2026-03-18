@@ -332,9 +332,8 @@ void CalculatedBusTopology::updateCache(const SwitchPredicate& predicate) {
     BusCache::CalculatedBusByNode busByNode(graph.getMaxVertex());
 
     std::vector<bool> encountered(graph.getMaxVertex(), false);
-    for (unsigned long e : graph.getEdges()) {
-        traverse(graph.getVertex1(e), encountered, predicate, busById, busByNode);
-        traverse(graph.getVertex2(e), encountered, predicate, busById, busByNode);
+    for (unsigned long v : graph.getVertices()) {
+        traverse(v, encountered, predicate, busById, busByNode);
     }
 
     m_cache = stdcxx::make_unique<BusCache>(std::move(busByNode), std::move(busById));

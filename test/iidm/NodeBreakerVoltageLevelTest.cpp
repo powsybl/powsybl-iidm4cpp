@@ -508,6 +508,19 @@ Network createNetworkWithLoop() {
 
 BOOST_AUTO_TEST_SUITE(NodeBreakerVoltageLevelTestSuite)
 
+stdcxx::Reference<Bus> getBusInBusBreakerView(Injection& i) {
+    return i.getTerminal().getBusBreakerView().getBus();
+}
+stdcxx::Reference<Bus> getBusInBusView(Injection& i) {
+    return i.getTerminal().getBusView().getBus();
+}
+stdcxx::Reference<Bus> getConnectableBusInBusBreakerView(Injection& i) {
+    return i.getTerminal().getBusBreakerView().getConnectableBus();
+}
+stdcxx::Reference<Bus> getConnectableBusInBusView(Injection& i) {
+    return i.getTerminal().getBusView().getConnectableBus();
+}
+
 BOOST_AUTO_TEST_CASE(busbarSection) {
     Network network = createNetwork();
     const Network& cNetwork = network;
@@ -1179,7 +1192,15 @@ BOOST_AUTO_TEST_CASE(CalculatedBusTopology2) {
         .setQ0(40.0)
         .add();
 
-    POWSYBL_ASSERT_REF_FALSE(l1.getTerminal().getBusBreakerView().getConnectableBus());
+    // Load is not connected, has no connectable bus and is in a disconnected voltage level : BusBreakerView does build a calculated bus though:
+    BOOST_CHECK(!l1.getTerminal().isConnected());
+    POWSYBL_ASSERT_REF_FALSE(getBusInBusView(l1));
+    POWSYBL_ASSERT_REF_FALSE(getConnectableBusInBusView(l1));
+
+    POWSYBL_ASSERT_REF_TRUE(getBusInBusBreakerView(l1)); 
+    POWSYBL_ASSERT_REF_TRUE(getConnectableBusInBusBreakerView(l1));
+    BOOST_CHECK_EQUAL("VL_0", getConnectableBusInBusBreakerView(l1).get().getId());
+
 }
 
 BOOST_AUTO_TEST_CASE(CalculatedBusTopology3) {
@@ -1678,6 +1699,53 @@ BOOST_AUTO_TEST_CASE(testCalculatedBusTopologyWithLoop) {
     POWSYBL_ASSERT_REF_TRUE(busBv);
     BOOST_CHECK_EQUAL(3, busBv.get().getConnectedTerminalCount());
 
+
+}
+
+BOOST_AUTO_TEST_CASE(testIsolatedLoadBusBranch) {
+
+    Network network = createIsolatedLoadNetwork();
+    BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getBuses()));
+
+    // load "L0" is connected to bus "VL_0"
+    Load& l0 = network.getLoad("L0");
+    BOOST_CHECK(l0.getTerminal().isConnected());
+    POWSYBL_ASSERT_REF_TRUE(getBusInBusBreakerView(l0));
+    BOOST_CHECK_EQUAL("VL_0", getConnectableBusInBusBreakerView(l0).get().getId());
+    POWSYBL_ASSERT_REF_TRUE(getBusInBusView(l0));
+    BOOST_CHECK_EQUAL("VL_0", getConnectableBusInBusView(l0).get().getId());
+
+    // Load "L1" is connected to bus "VL_1"
+    Load& l1 = network.getLoad("L1");
+    BOOST_CHECK(l1.getTerminal().isConnected());
+    POWSYBL_ASSERT_REF_TRUE(getBusInBusBreakerView(l1));
+    BOOST_CHECK_EQUAL("VL_1", getConnectableBusInBusBreakerView(l1).get().getId());
+    POWSYBL_ASSERT_REF_TRUE(getBusInBusView(l1));
+    BOOST_CHECK_EQUAL("VL_1", getConnectableBusInBusView(l1).get().getId());
+
+    // Load "L2" is not connected but is connectable to bus "VL_1"
+    Load& l2 = network.getLoad("L2");
+    BOOST_CHECK(!l2.getTerminal().isConnected());
+    POWSYBL_ASSERT_REF_TRUE(getBusInBusBreakerView(l2));
+    BOOST_CHECK_EQUAL("VL_4", getConnectableBusInBusBreakerView(l2).get().getId());
+    POWSYBL_ASSERT_REF_FALSE(getBusInBusView(l2));
+    BOOST_CHECK_EQUAL("VL_1", getConnectableBusInBusView(l2).get().getId());
+
+    // Load "L3" is not connected and has no connectable bus (the first bus is taken as connectable bus in this case)
+    Load& l3 = network.getLoad("L3");
+    BOOST_CHECK(!l3.getTerminal().isConnected());
+    POWSYBL_ASSERT_REF_TRUE(getBusInBusBreakerView(l3));
+    BOOST_CHECK_EQUAL("VL_5", getConnectableBusInBusBreakerView(l3).get().getId());
+    POWSYBL_ASSERT_REF_FALSE(getBusInBusView(l3));
+    BOOST_CHECK_EQUAL("VL_0", getConnectableBusInBusView(l3).get().getId());
+
+    // Load "L4" is not connected, has no connectable bus and is in a disconnected voltage level
+    Load& l4 = network.getLoad("L4");
+    BOOST_CHECK(!l4.getTerminal().isConnected());
+    POWSYBL_ASSERT_REF_TRUE(getBusInBusBreakerView(l4));
+    BOOST_CHECK_EQUAL("VL2_0", getConnectableBusInBusBreakerView(l4).get().getId());
+    POWSYBL_ASSERT_REF_FALSE(getBusInBusView(l4));
+    POWSYBL_ASSERT_REF_FALSE(getConnectableBusInBusView(l4));
 
 }
 
