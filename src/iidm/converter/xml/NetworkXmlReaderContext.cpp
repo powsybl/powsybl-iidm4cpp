@@ -28,7 +28,7 @@ NetworkXmlReaderContext::NetworkXmlReaderContext(std::unique_ptr<Anonymizer>&& a
 }
 
 void NetworkXmlReaderContext::addEndTask(const XmlReaderEndTask::Step& step, const std::function<void()>& endTask) {
-    m_endTasks.emplace_back(XmlReaderEndTask(step, endTask));
+    m_endTasks[step].emplace_back(XmlReaderEndTask(step, endTask));
 }
 
 void NetworkXmlReaderContext::buildExtensionNamespaceUriList(const stdcxx::const_range<ExtensionXmlSerializer>& providers) {
@@ -48,22 +48,18 @@ const Anonymizer& NetworkXmlReaderContext::getAnonymizer() const {
     return *m_anonymizer;
 }
 
-const std::list<XmlReaderEndTask>& NetworkXmlReaderContext::getEndTasks() const {
+const std::map<XmlReaderEndTask::Step, std::list<XmlReaderEndTask>>& NetworkXmlReaderContext::getEndTasks() const {
     return m_endTasks;
 }
 
 void NetworkXmlReaderContext::executeEndTasks(const XmlReaderEndTask::Step& step) {
-
-    //previous steps that might not have been run yet
-    for (auto& endTask : m_endTasks) {
-        if(endTask.getStep() < step && !endTask.isProcessed()) {
-            endTask.runTask();
+    //Also tries to run tasks from 'previous' steps. (XmlReaderEndTask can be performed only once)
+    for (auto& tasksPerStep : m_endTasks) {
+        if(tasksPerStep.first > step) {
+           return; 
         }
-    }
 
-    //current step
-    for (auto& endTask : m_endTasks) {
-        if(endTask.getStep() == step) {
+        for (auto& endTask : tasksPerStep.second) {
             endTask.runTask();
         }
     }

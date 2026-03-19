@@ -51,7 +51,7 @@ public:
     /**
      * Returns all EndTasks
      */
-    const std::list<XmlReaderEndTask>& getEndTasks() const;
+    const std::map<XmlReaderEndTask::Step, std::list<XmlReaderEndTask>>& getEndTasks() const;
 
     /**
      * Executes all tasks associated to the given Step and all previous tasks that are still not processed yet
@@ -79,7 +79,7 @@ private:
 
     std::unique_ptr<Anonymizer> m_anonymizer;
 
-    std::list<XmlReaderEndTask> m_endTasks;
+    std::map<XmlReaderEndTask::Step, std::list<XmlReaderEndTask>> m_endTasks;
 
     ImportOptions m_options;
 

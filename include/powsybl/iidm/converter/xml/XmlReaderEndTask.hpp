@@ -20,6 +20,10 @@ namespace converter {
 
 namespace xml {
 
+    /**
+     * Class to hold Tasks (functions) to be performed at a later step of execution.
+     * A task can only be run once.
+     */
 class XmlReaderEndTask {
 public:
 
@@ -34,6 +38,10 @@ public:
 
     const std::function<void()>& getTask() const;
 
+    /**
+     * Run the task if it has not been performed already.
+     * Otherwise do nothing.
+     */
     void runTask();
 
     bool isProcessed() const;
