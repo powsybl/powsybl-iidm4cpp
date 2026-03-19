@@ -203,7 +203,7 @@ void AbstractConnectableXml::readSelectedGroupId(NetworkXmlReaderContext& contex
 
     std::string selectedGroupId = context.getReader().getOptionalAttributeValue(toString(SELECTED_GROUP_ID, index), "");
     if(!selectedGroupId.empty()) {
-        context.addEndTask([selectedGroupId, endTaskConsumer](){
+        context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [selectedGroupId, endTaskConsumer](){
             endTaskConsumer(selectedGroupId);
         });
     }

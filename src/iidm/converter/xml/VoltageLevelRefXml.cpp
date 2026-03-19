@@ -28,7 +28,7 @@ namespace xml {
 void VoltageLevelRefXml::readVoltageLevelRef(Network& network, NetworkXmlReaderContext& context, const std::function<void(VoltageLevel&)>& endTaskTerminalConsumer) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
 
-    context.addEndTask([&network, id, endTaskTerminalConsumer]() {
+    context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&network, id, endTaskTerminalConsumer]() {
         VoltageLevel& vl = network.getVoltageLevel(id);
         endTaskTerminalConsumer(vl);
     });

@@ -41,7 +41,7 @@ Terminal& TerminalRefXml::readTerminal(Network& network, NetworkXmlReaderContext
 void TerminalRefXml::readTerminalRef(Network& network, NetworkXmlReaderContext& context, const std::function<void(Terminal&)>& endTaskTerminalConsumer) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     const std::string side = context.getReader().getOptionalAttributeValue(SIDE, "");
-    context.addEndTask([&network, id, side, endTaskTerminalConsumer]() {
+    context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&network, id, side, endTaskTerminalConsumer]() {
         Terminal& terminal = resolve(id, side, network);
         endTaskTerminalConsumer(terminal);
     });

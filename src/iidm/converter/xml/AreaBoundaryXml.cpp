@@ -53,7 +53,7 @@ void AreaBoundaryXml::read(Area& area, NetworkXmlReaderContext& context) const {
     } else {
         throw PowsyblException(stdcxx::format("Unexpected element for AreaBoundary: %1%. Should be %2% or %3%", type, BOUNDARY_REF, TERMINAL_REF));
     }
-    context.addEndTask([ptrAdder]() {
+    context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [ptrAdder]() {
         ptrAdder->add();
     });
 }

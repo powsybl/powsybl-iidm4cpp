@@ -35,7 +35,7 @@ void AbstractComplexIdentifiableXml<Added, Adder, Parent>::read(Parent& parent, 
     if(!postponeElementCreation()) {
         std::vector<std::function<void(Identifiable&)>> toApply;
         Adder adder = this->createAdder(parent);
-        const std::string id = AbstractIdentifiableXml<Added, Adder, Parent>::readIdentifierAttributes(adder, context);
+        std::string id = AbstractIdentifiableXml<Added, Adder, Parent>::readIdentifierAttributes(adder, context);
         readRootElementAttributes(adder, toApply, context);
         readSubElements(id, adder, toApply, context);
 
@@ -61,8 +61,8 @@ void AbstractComplexIdentifiableXml<Added, Adder, Parent>::readSubElements(const
 }
 
 template <typename Added, typename Adder, typename Parent>
-bool AbstractComplexIdentifiableXml<Added, Adder, Parent>::postponeElementCreation() const {
-    return false;
+stdcxx::optional<XmlReaderEndTask::Step> AbstractComplexIdentifiableXml<Added, Adder, Parent>::postponeElementCreation() const {
+    return stdcxx::optional<XmlReaderEndTask::Step>();
 }
 
 }  // namespace xml

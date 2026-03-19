@@ -32,27 +32,27 @@ namespace converter {
 namespace xml {
 
 template <typename Added, typename Adder, typename Parent>
-const std::string& AbstractIdentifiableXml<Added, Adder, Parent>::readIdentifierAttributes(Adder& adder, NetworkXmlReaderContext& context) const {
+std::string AbstractIdentifiableXml<Added, Adder, Parent>::readIdentifierAttributes(Adder& adder, NetworkXmlReaderContext& context) const {
     std::string id = "";
     std::string name = "";
     bool fictitious = false;
-    const std::string& strId = getIdentifierAttributes(context, id, name, fictitious);
+    getIdentifierAttributes(context, id, name, fictitious);
     adder.setId(id).setName(name);
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&adder, fictitious]() {
         adder.setFictitious(fictitious);
     });
-    return strId;
+    return id;
 }
 template <typename Added, typename Adder, typename Parent>
-const std::string& AbstractIdentifiableXml<Added, Adder, Parent>::skipIdentifierAttributes(NetworkXmlReaderContext& context) const {
+std::string AbstractIdentifiableXml<Added, Adder, Parent>::skipIdentifierAttributes(NetworkXmlReaderContext& context) const {
     std::string id = "";
     std::string name = "";
     bool fictitious = false;
-    const std::string& strId = getIdentifierAttributes(context, id, name, fictitious);
-    return strId;
+    getIdentifierAttributes(context, id, name, fictitious);
+    return id;
 }
 template <typename Added, typename Adder, typename Parent>
-const std::string& AbstractIdentifiableXml<Added, Adder, Parent>::getIdentifierAttributes(NetworkXmlReaderContext& context, std::string& id, std::string& name, bool& fictitious) const {
+std::string AbstractIdentifiableXml<Added, Adder, Parent>::getIdentifierAttributes(NetworkXmlReaderContext& context, std::string& id, std::string& name, bool& fictitious) const {
     id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     name = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(NAME, ""));
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &fictitious]() {

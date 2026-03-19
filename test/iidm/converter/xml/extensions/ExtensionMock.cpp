@@ -17,6 +17,7 @@
 #include "LoadMockExtXmlSerializer.hpp"
 #include "LoadQuxXmlSerializer.hpp"
 #include "NetworkSourceXmlSerializer.hpp"
+#include "OverloadManagementSystemMockXmlSerializer.hpp"
 #include "TerminalMockXmlSerializer.hpp"
 
 namespace powsybl {
@@ -36,6 +37,7 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     serializers.emplace_back(stdcxx::make_unique<LoadMockExtXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<LoadQuxXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<NetworkSourceXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<OverloadManagementSystemMockXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<TerminalMockXmlSerializer>());
 
     return serializers;

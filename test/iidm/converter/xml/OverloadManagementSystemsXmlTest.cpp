@@ -66,7 +66,11 @@ BOOST_FIXTURE_TEST_CASE(importexportDisable, test::ResourceFixture) {
     std::stringstream ostream;
     propertiesExport.set(ExportOptions::WITH_AUTOMATION_SYSTEMS, "false");
     Network::writeXml("overloadManagementSystemRoundTripRef.xml", ostream, networkWithOms, ExportOptions(propertiesExport));
+    //OMS not exported
     BOOST_CHECK(ostream.str().find("overloadManagementSystem")==std::string::npos);
+    //neither its extension
+    BOOST_CHECK(ostream.str().find("omsMock")==std::string::npos);
+
 
     Network networkWithoutOms2 = Network::readXml("overloadManagementSystemRoundTripRef.xml", ostream);
     BOOST_CHECK_EQUAL(2, networkWithoutOms2.getSubstationCount());

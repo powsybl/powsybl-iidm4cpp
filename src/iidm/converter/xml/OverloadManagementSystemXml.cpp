@@ -101,11 +101,11 @@ void OverloadManagementSystemXml::readAndPostponeCreation(Substation& substation
 
     auto ptrAdder = std::make_shared<OverloadManagementSystemAdder>(substation);
     OverloadManagementSystemAdder& adder = *ptrAdder.get();
-    const std::string id = readIdentifierAttributes(adder, context);
+    std::string id = readIdentifierAttributes(adder, context);
     readRootElementAttributes(adder, toApply, context);
     readSubElements(id, adder, toApply, context);
 
-    context.addEndTask([ptrAdder, toApply]() {
+    context.addEndTask(XmlReaderEndTask::Step::BEFORE_EXTENSIONS, [ptrAdder, toApply]() {
         OverloadManagementSystem& identifiable = ptrAdder->add();
         for(auto func : toApply) {
             func(identifiable);
@@ -249,14 +249,15 @@ void OverloadManagementSystemXml::getThreeWindingsTransformerTrippingAttributes(
     side = Enum::fromString<ThreeSides>(strSide);
 }
 
-bool OverloadManagementSystemXml::postponeElementCreation() const {
-    return true;
+stdcxx::optional<XmlReaderEndTask::Step> OverloadManagementSystemXml::postponeElementCreation() const {
+    return stdcxx::optional<XmlReaderEndTask::Step>(XmlReaderEndTask::Step::BEFORE_EXTENSIONS);
 }
 
 void OverloadManagementSystemXml::skip(NetworkXmlReaderContext& context) const {
-    const std::string id = skipIdentifierAttributes(context);
+    std::string id = skipIdentifierAttributes(context);
     skipRootElementAttributes(context);
     skipSubElements(id, context);
+    context.addIgnoredEquipment(id);
 }
 
 }  // namespace xml

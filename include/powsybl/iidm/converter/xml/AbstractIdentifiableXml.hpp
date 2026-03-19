@@ -33,8 +33,8 @@ protected:
 
     virtual const char* getRootElementName() const = 0;
 
-    virtual const std::string& readIdentifierAttributes(Adder& adder, NetworkXmlReaderContext& context) const;
-    virtual const std::string& skipIdentifierAttributes(NetworkXmlReaderContext& context) const;
+    virtual std::string readIdentifierAttributes(Adder& adder, NetworkXmlReaderContext& context) const;
+    virtual std::string skipIdentifierAttributes(NetworkXmlReaderContext& context) const;
 
     virtual void writeRootElementAttributes(const Added& identifiable, const Parent& parent, NetworkXmlWriterContext& context) const = 0;
 
@@ -46,7 +46,7 @@ protected:
     virtual ~AbstractIdentifiableXml() noexcept = default;
 
 private:
-    virtual const std::string& getIdentifierAttributes(NetworkXmlReaderContext& context, std::string& id, std::string& name, bool& fictitious) const;
+    virtual std::string getIdentifierAttributes(NetworkXmlReaderContext& context, std::string& id, std::string& name, bool& fictitious) const;
 };
 
 }  // namespace xml

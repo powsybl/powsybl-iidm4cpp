@@ -10,6 +10,10 @@
 
 #include <powsybl/iidm/converter/xml/AbstractIdentifiableXml.hpp>
 
+#include <powsybl/iidm/converter/xml/XmlReaderEndTask.hpp>
+
+#include <powsybl/stdcxx/optional.hpp>
+
 #include <functional>
 #include <string>
 #include <vector>
@@ -40,11 +44,11 @@ protected:
     /**
      * In some specific cases, the element could not be created right after it is read, typically if it references
      * other network elements which may have not been yet created.
-     * If this method returns true, the element's creation will be postponed into the "end tasks", to be performed
+     * If this method returns a Step , the element's creation will be postponed into the reader context's "end tasks", to be performed
      * after the whole network has been read. To do so readAndPostponeCreation() MUST be overriden to implement this behavior.
-     * Default returns false.
+     * Default returns an empty optional.
      */
-    virtual bool postponeElementCreation() const;
+    virtual stdcxx::optional<XmlReaderEndTask::Step> postponeElementCreation() const;
 
     virtual void readAndPostponeCreation(Parent& parent, NetworkXmlReaderContext& context) const = 0;
 

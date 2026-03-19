@@ -226,6 +226,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VoltageLevelRefXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
+    iidm/converter/xml/XmlReaderEndTask.cpp
 
     iidm/extensions/LoadDetail.cpp
     iidm/extensions/LoadDetailAdder.cpp

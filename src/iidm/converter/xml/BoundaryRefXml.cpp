@@ -29,7 +29,7 @@ namespace xml {
 void BoundaryRefXml::readBoundaryRef(Network& network, NetworkXmlReaderContext& context, const std::function<void(Boundary&)>& endTaskTerminalConsumer) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     
-    context.addEndTask([&network, id, endTaskTerminalConsumer]() {
+    context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&network, id, endTaskTerminalConsumer]() {
         DanglingLine& dl = network.getDanglingLine(id);
         endTaskTerminalConsumer(dl.getBoundary());
     });

@@ -27,8 +27,8 @@ NetworkXmlReaderContext::NetworkXmlReaderContext(std::unique_ptr<Anonymizer>&& a
 
 }
 
-void NetworkXmlReaderContext::addEndTask(const std::function<void()>& endTask) {
-    m_endTasks.emplace_back(endTask);
+void NetworkXmlReaderContext::addEndTask(const XmlReaderEndTask::Step& step, const std::function<void()>& endTask) {
+    m_endTasks.emplace_back(XmlReaderEndTask(step, endTask));
 }
 
 void NetworkXmlReaderContext::buildExtensionNamespaceUriList(const stdcxx::const_range<ExtensionXmlSerializer>& providers) {
@@ -48,8 +48,25 @@ const Anonymizer& NetworkXmlReaderContext::getAnonymizer() const {
     return *m_anonymizer;
 }
 
-const std::list<std::function<void()>>& NetworkXmlReaderContext::getEndTasks() const {
+const std::list<XmlReaderEndTask>& NetworkXmlReaderContext::getEndTasks() const {
     return m_endTasks;
+}
+
+void NetworkXmlReaderContext::executeEndTasks(const XmlReaderEndTask::Step& step) {
+
+    //previous steps that might not have been run yet
+    for (auto& endTask : m_endTasks) {
+        if(endTask.getStep() < step && !endTask.isProcessed()) {
+            endTask.runTask();
+        }
+    }
+
+    //current step
+    for (auto& endTask : m_endTasks) {
+        if(endTask.getStep() == step) {
+            endTask.runTask();
+        }
+    }
 }
 
 const std::string& NetworkXmlReaderContext::getExtensionVersion(const ExtensionXmlSerializer& extensionXmlSerializer) const {
@@ -82,6 +99,15 @@ NetworkXmlReaderContext& NetworkXmlReaderContext::setNetworkValidationLevel(cons
 
 const ValidationLevel& NetworkXmlReaderContext::getNetworkValidationLevel() const {
     return m_networkValidationLevel;
+}
+
+
+void NetworkXmlReaderContext::addIgnoredEquipment(const std::string& equipmentId) {
+    m_ignoredEquipments.insert(equipmentId);
+}
+
+bool NetworkXmlReaderContext::isIgnoredEquipment(const std::string& equipmentId) const {
+    return m_ignoredEquipments.find(equipmentId)!=m_ignoredEquipments.cend();
 }
 
 }  // namespace xml

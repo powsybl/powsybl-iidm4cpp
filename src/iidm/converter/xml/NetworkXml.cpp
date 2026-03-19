@@ -13,6 +13,7 @@
 
 #include <powsybl/iidm/ExtensionProviders.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/OverloadManagementSystem.hpp>
 #include <powsybl/iidm/Subnetwork.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
@@ -143,18 +144,23 @@ const std::string& getNamespaceUri(const ExtensionXmlSerializer& extensionXmlSer
     return getNamespaceUri(extensionXmlSerializer, options, networkVersion);
 }
 
-void readExtensions(Identifiable& identifiable, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound) {
+void readExtensions(Network& network, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound) {
+    context.executeEndTasks(XmlReaderEndTask::Step::BEFORE_EXTENSIONS);
+
+    const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
+
     powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>& extensionProviders = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance();
 
-    context.getReader().readUntilEndElement(EXTENSION, [&identifiable, &context, &extensionsNotFound, &extensionProviders]() {
+    context.getReader().readUntilEndElement(EXTENSION, [&network, &id, &context, &extensionsNotFound, &extensionProviders]() {
         const std::string& extensionName = context.getReader().getLocalName();
-        if (!context.getOptions().withExtension(extensionName)) {
+        if (context.isIgnoredEquipment(id) || !context.getOptions().withExtension(extensionName)) {
             context.getReader().readUntilEndElement(extensionName, []() {});
             return;
         }
 
         stdcxx::CReference<ExtensionXmlSerializer> serializer = extensionProviders.findProvider(extensionName);
         if (serializer) {
+            Identifiable& identifiable = network.getIdentifiable(id);
             serializer.get().read(identifiable, context);
         } else {
             extensionsNotFound.insert(extensionName);
@@ -214,7 +220,7 @@ void writeExtension(const Extension& extension, NetworkXmlWriterContext& context
 
 void NetworkXml::writeExtensions(const Network& network, NetworkXmlWriterContext& context) {
     for (const auto& identifiable : network.getIdentifiables()) {
-        if (!context.isExportedEquipment(identifiable.getId()) || boost::empty(identifiable.getExtensions()) 
+        if (ignoreEquipmentAtExport(identifiable, context) || boost::empty(identifiable.getExtensions()) 
         || !isElementWrittenInsideNetwork(identifiable, network, context)
         || !context.getOptions().hasAtLeastOneExtension(identifiable.getExtensions())) {
             continue;
@@ -283,11 +289,9 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
 
     readNetworkElements(network, context, extensionsNotFound);
 
-    checkExtensionsNotFound(context, extensionsNotFound);
+    context.executeEndTasks(XmlReaderEndTask::Step::AFTER_EXTENSIONS);
 
-    for (const auto& task : context.getEndTasks()) {
-        task();
-    }
+    checkExtensionsNotFound(context, extensionsNotFound);
 
     auto endTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = endTime - startTime;
@@ -445,6 +449,11 @@ void NetworkXml::writeVoltageAngleLimits(const Network& network, NetworkXmlWrite
     }
 }
 
+bool NetworkXml::ignoreEquipmentAtExport(const Identifiable& identifiable, NetworkXmlWriterContext& context) {
+    return ( !context.isExportedEquipment(identifiable.getId()) ||
+        (stdcxx::isInstanceOf<OverloadManagementSystem>(identifiable) && !context.getOptions().isWithAutomationSystems()) );
+}
+
 bool NetworkXml::isElementWrittenInsideNetwork(const Identifiable& element, const Network &network, NetworkXmlWriterContext &context) {
     // if subnetworks not supported, all elements need to be written in the root network (in that case this is only called giving the root network)
     if (!supportSubnetworksExport(context)) {
@@ -522,9 +531,7 @@ void NetworkXml::readNetworkElements(Network& network, NetworkXmlReaderContext& 
         } else if (localName == VOLTAGE_ANGLE_LIMIT) { 
             VoltageAngleLimitXml::getInstance().read(network, context);
         } else if (localName == EXTENSION) {
-            const std::string& id2 = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
-            Identifiable& identifiable = network.get(id2);
-            readExtensions(identifiable, context, extensionsNotFound);
+            readExtensions(network, context, extensionsNotFound);
         } else {
             throw powsybl::xml::XmlStreamException(stdcxx::format("Unexpected element: %1%", localName));
         }

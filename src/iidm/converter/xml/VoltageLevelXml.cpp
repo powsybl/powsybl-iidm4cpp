@@ -98,7 +98,7 @@ void VoltageLevelXml::readCalculatedBus(VoltageLevel &voltageLevel, NetworkXmlRe
         }
     });
 
-    context.addEndTask([v, angle, strNodes, properties, &voltageLevel]() {
+    context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [v, angle, strNodes, properties, &voltageLevel]() {
         std::vector<std::string> nodes;
         boost::algorithm::split(nodes, strNodes, [](char c) { return c == ','; });
         for (const std::string& nodeStr : nodes) {

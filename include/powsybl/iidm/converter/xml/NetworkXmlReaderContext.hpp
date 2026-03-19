@@ -15,6 +15,7 @@
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+#include <powsybl/iidm/converter/xml/XmlReaderEndTask.hpp>
 #include <powsybl/stdcxx/range.hpp>
 
 namespace powsybl {
@@ -39,7 +40,7 @@ class NetworkXmlReaderContext {
 public:
     NetworkXmlReaderContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamReader& reader, const ImportOptions& options, const IidmXmlVersion& version);
 
-    void addEndTask(const std::function<void()>& endTask);
+    void addEndTask(const XmlReaderEndTask::Step& step, const std::function<void()>& endTask);
 
     void buildExtensionNamespaceUriList(const stdcxx::const_range<ExtensionXmlSerializer>& providers);
 
@@ -47,7 +48,15 @@ public:
 
     const Anonymizer& getAnonymizer() const;
 
-    const std::list<std::function<void()>>& getEndTasks() const;
+    /**
+     * Returns all EndTasks
+     */
+    const std::list<XmlReaderEndTask>& getEndTasks() const;
+
+    /**
+     * Executes all tasks associated to the given Step and all previous tasks that are still not processed yet
+     */
+    void executeEndTasks(const XmlReaderEndTask::Step& step);
 
     const std::string& getExtensionVersion(const ExtensionXmlSerializer& extensionXmlSerializer) const;
 
@@ -61,12 +70,16 @@ public:
 
     const ValidationLevel& getNetworkValidationLevel() const;
 
+    void addIgnoredEquipment(const std::string& equipmentId);
+
+    bool isIgnoredEquipment(const std::string& equipmentId) const;
+
 private:
     powsybl::xml::XmlStreamReader& m_reader;
 
     std::unique_ptr<Anonymizer> m_anonymizer;
 
-    std::list<std::function<void()>> m_endTasks;
+    std::list<XmlReaderEndTask> m_endTasks;
 
     ImportOptions m_options;
 
@@ -75,6 +88,8 @@ private:
     std::set<std::string> m_extensionsNamespaceUri;
 
     ValidationLevel m_networkValidationLevel;
+
+    std::set<std::string> m_ignoredEquipments;
 };
 
 }  // namespace xml

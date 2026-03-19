@@ -44,8 +44,7 @@ protected:
     void skipSubElements(const std::string& id, NetworkXmlReaderContext& context) const;
 
     // AbstractComplexIdentifiableXml
-    bool postponeElementCreation() const;
-
+    stdcxx::optional<XmlReaderEndTask::Step> postponeElementCreation() const override;
     // AbstractComplexIdentifiableXml
     void readAndPostponeCreation(Substation& substation, NetworkXmlReaderContext& context) const override;
 

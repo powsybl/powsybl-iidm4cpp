@@ -62,6 +62,8 @@ private:
 
     static void writeExtensions(const Network& network, NetworkXmlWriterContext& context);
 
+    static bool ignoreEquipmentAtExport(const Identifiable& identifiable, NetworkXmlWriterContext& context); 
+
     static bool isElementWrittenInsideNetwork(const Identifiable& element, const Network& network, NetworkXmlWriterContext& context);
 
     static bool supportSubnetworksExport(NetworkXmlWriterContext& context);

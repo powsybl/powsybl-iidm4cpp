@@ -39,7 +39,7 @@ BusbarSection& BusbarSectionXml::readRootElementAttributes(BusbarSectionAdder& a
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_0(), context.getVersion(), [&bbs, &context]() {
         double v = context.getReader().getOptionalAttributeValue(V, stdcxx::nan());
         double angle = context.getReader().getOptionalAttributeValue(ANGLE, stdcxx::nan());
-        context.addEndTask([&bbs, angle, v]() {
+        context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&bbs, angle, v]() {
             const auto& b = bbs.getTerminal().getBusView().getBus();
             if (b) {
                 b.get().setV(v).setAngle(angle);
