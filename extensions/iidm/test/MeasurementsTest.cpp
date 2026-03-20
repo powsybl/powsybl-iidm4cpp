@@ -89,6 +89,45 @@ BOOST_AUTO_TEST_CASE(measurement) {
     BOOST_CHECK_EQUAL(0, boost::size(measurements.getMeasurements(Measurement::Type::CURRENT)));
 }
 
+BOOST_AUTO_TEST_CASE(measurementValueAndValidityCheck) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    Load& load = network.getLoad("LOAD");
+
+    load.newExtension<MeasurementsAdder>().add();
+    auto& measurements = load.getExtension<Measurements>();
+    measurements.newMeasurement()
+        .setId("m1")
+        .setType(Measurement::Type::CURRENT)
+        .setValid(false)
+        .setStandardDeviation(1.1)
+        .setValue(stdcxx::nan())
+        .putProperty("prop1_m1", "value1")
+        .putProperty("prop2_m1", "value2")
+        .add();
+
+    auto& m1 = measurements.getMeasurement("m1").get();
+
+    BOOST_CHECK(std::isnan(m1.getValue()));
+    BOOST_CHECK(!m1.isValid());
+
+    //If we want to setvalid with a value, would require to set the value before the validity , otherwise throw:
+    POWSYBL_ASSERT_THROW(m1.setValid(true), PowsyblException, "Valid measurement can not have an undefined value");
+    //Or set both at the same time:
+    m1.setValueAndValidity(200.0, true);
+    BOOST_CHECK_CLOSE(200.0, m1.getValue(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(m1.isValid());
+
+    //Same thing if wanting to set nan and false vailidity at the same time:
+    //either set validity to false first to avoid throw :
+    POWSYBL_ASSERT_THROW(m1.setValue(stdcxx::nan()), PowsyblException, "Valid measurement can not have an undefined value");
+    //Or set both at the same time:
+    m1.setValueAndValidity(stdcxx::nan(), false);
+    BOOST_CHECK(std::isnan(m1.getValue()));
+    BOOST_CHECK(!m1.isValid());
+
+    POWSYBL_ASSERT_THROW(m1.setValueAndValidity(stdcxx::nan(), true), PowsyblException, "Valid measurement can not have an undefined value");
+}
+
 BOOST_AUTO_TEST_CASE(adder) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     Load& load = network.getLoad("LOAD");

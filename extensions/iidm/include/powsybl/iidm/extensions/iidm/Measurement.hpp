@@ -119,6 +119,12 @@ public:
      */
     Measurement& setValue(double value);
 
+    /**
+     * Set measurement value and validity status at once, performing consistency check of couple (value, validity) only once before effective set
+     * Prevent to throw because of incoherent Measurement state if single setters are not called in the right order when setting both attributes.
+     */
+    Measurement& setValueAndValidity(double value, bool valid);
+
 private:
     Measurements& m_measurements;
 

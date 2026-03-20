@@ -11,6 +11,7 @@
 
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/extensions/iidm/Measurements.hpp>
+#include <powsybl/iidm/extensions/iidm/MeasurementValidationUtil.hpp>
 
 namespace powsybl {
 
@@ -54,6 +55,7 @@ Measurement::Measurement(Measurements& measurements, const std::string& id, cons
     m_value(value),
     m_standardDeviation(standardDeviation),
     m_valid(valid) {
+        MeasurementValidationUtil::checkValue(m_value, m_valid);
 }
 
 const std::string& Measurement::getId() const {
@@ -112,12 +114,21 @@ Measurement& Measurement::setStandardDeviation(double standardDeviation) {
 }
 
 Measurement& Measurement::setValid(bool valid) {
+    MeasurementValidationUtil::checkValue(m_value, valid);
     m_valid = valid;
     return *this;
 }
 
 Measurement& Measurement::setValue(double value) {
+    MeasurementValidationUtil::checkValue(value, m_valid);
     m_value = value;
+    return *this;
+}
+
+Measurement& Measurement::setValueAndValidity(double value, bool valid) {
+    MeasurementValidationUtil::checkValue(value, valid);
+    m_value = value;
+    m_valid = valid;
     return *this;
 }
 
