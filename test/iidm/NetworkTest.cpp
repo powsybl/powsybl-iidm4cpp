@@ -28,6 +28,9 @@
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
 
+#include <powsybl/logging/ContainerLogger.hpp>
+#include <powsybl/logging/LogMessage.hpp>
+
 #include <powsybl/iidm/util/Networks.hpp>
 
 #include <powsybl/network/EurostagFactory.hpp>
@@ -535,6 +538,60 @@ BOOST_AUTO_TEST_CASE(permanentLimitAdderValidationLevelTest) {
     network.setMinimumAcceptableValidationLevel(ValidationLevel::EQUIPMENT);
     adder.add();
     BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.getValidationLevel());
+}
+
+BOOST_AUTO_TEST_CASE(equipmentAndSSHStatesActionOnErrorValidationTest) {
+
+    logging::LoggerFactory::getInstance().addLogger("powsybl::iidm", stdcxx::make_unique<logging::ContainerLogger>());
+    logging::ContainerLogger& logger = dynamic_cast<logging::ContainerLogger&>(logging::LoggerFactory::getLogger("powsybl::iidm"));
+    BOOST_CHECK_EQUAL(0, logger.size());
+
+    Network network("oneLoad", "test");
+    network.setMinimumAcceptableValidationLevel(ValidationLevel::EQUIPMENT);
+
+    //Check SILENT option, as minimum ValidationLevel is set to EQUIPMENT, nothing is reported during creation:
+    Substation& s1 = network.newSubstation()
+                .setId("S1")
+                .setCountry(Country::FR)
+                .setTso("RTE")
+                .setGeographicalTags({"A"})
+                .add();
+    VoltageLevel& vl1 = s1.newVoltageLevel()
+                .setId("VL1")
+                .setNominalV(24.0)
+                .setTopologyKind(TopologyKind::BUS_BREAKER)
+                .add();
+    Bus& loadBus = vl1.getBusBreakerView().newBus()
+                .setId("LoadBus")
+                .add();
+    vl1.newLoad()
+                .setId("LOAD")
+                .setBus(loadBus.getId())
+                .setConnectableBus(loadBus.getId())
+                .add();
+
+    BOOST_CHECK_EQUAL(ValidationLevel::EQUIPMENT, network.getValidationLevel());
+    BOOST_CHECK_EQUAL(0, logger.size());
+
+    //RunValidationChecks does output log 
+    network.runValidationChecks(ValidationLevel::EQUIPMENT);
+
+    BOOST_CHECK_EQUAL(2, logger.size());
+    BOOST_CHECK_EQUAL("Load 'LOAD':  p0 is invalid", logger.getLogMessage(0).getMessage());
+    BOOST_CHECK_EQUAL("Load 'LOAD':  q0 is invalid", logger.getLogMessage(1).getMessage());
+
+    POWSYBL_ASSERT_THROW(network.setMinimumAcceptableValidationLevel(ValidationLevel::STEADY_STATE_HYPOTHESIS), ValidationException, "Network 'oneLoad': Network should be corrected in order to correspond to validation level STEADY_STATE_HYPOTHESIS");
+
+    //Define steady-state attributes:
+    network.getLoad("LOAD").setP0(10.0).setQ0(-5.0);
+    //no additional logged warning : 
+    BOOST_CHECK_EQUAL(2, logger.size());
+
+    //Running ValidationChecks without warnings:
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.runValidationChecks(ValidationLevel::EQUIPMENT));
+    BOOST_CHECK_EQUAL(ValidationLevel::STEADY_STATE_HYPOTHESIS, network.getValidationLevel());
+    BOOST_CHECK_EQUAL(2, logger.size());
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

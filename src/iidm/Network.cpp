@@ -953,10 +953,11 @@ Network& Network::setForecastDistance(int forecastDistance) {
 }
 
 Network& Network::setMinimumAcceptableValidationLevel(const ValidationLevel& minimumValidationLevel) {
-    if(m_validationLevel == ValidationLevel::UNVALID) {
-        m_validationLevel = validateIdentifiables(getIdentifiables(), false, m_validationLevel, ValidationLevel::UNVALID);
+    ValidationLevel vl = m_validationLevel;
+    if(vl == ValidationLevel::UNVALID) {
+        vl = validateIdentifiables(getIdentifiables(), false, ValidationLevel::UNVALID, ActionOnError::IGNORE);
     }
-    if (m_validationLevel < minimumValidationLevel) {
+    if (vl < minimumValidationLevel) {
         throw ValidationException(*this,stdcxx::format("Network should be corrected in order to correspond to validation level %1%", minimumValidationLevel) );
     }
     m_minimumValidationLevel = checkMinValidationLevel(*this, minimumValidationLevel);
@@ -967,13 +968,16 @@ ValidationLevel Network::runValidationChecks() {
     return runValidationChecks(ValidationLevel::STEADY_STATE_HYPOTHESIS);
 }
 ValidationLevel Network::runValidationChecks(const ValidationLevel& vl) {
-    m_validationLevel = validateIdentifiables(getIdentifiables(), true, m_validationLevel != ValidationLevel::UNVALID ? m_validationLevel : m_minimumValidationLevel, vl);
+    m_validationLevel = validateIdentifiables(getIdentifiables(), true, 
+                (m_validationLevel != ValidationLevel::UNVALID) ? m_validationLevel : m_minimumValidationLevel,
+                (vl >= ValidationLevel::STEADY_STATE_HYPOTHESIS) ? ActionOnError::THROW_EXCEPTION : ActionOnError::LOG_ERROR);
     return m_validationLevel;
 }
 
 const ValidationLevel& Network::validate() {
     if (m_validationLevel == ValidationLevel::UNVALID) {
-        m_validationLevel = validateIdentifiables(getIdentifiables(), false, m_minimumValidationLevel, ValidationLevel::UNVALID);
+        m_validationLevel = validateIdentifiables(getIdentifiables(), false, m_minimumValidationLevel, 
+                (m_minimumValidationLevel >= ValidationLevel::STEADY_STATE_HYPOTHESIS) ? ActionOnError::THROW_EXCEPTION : ActionOnError::LOG_ERROR);
     }
     return m_validationLevel;
 }
@@ -981,7 +985,7 @@ const ValidationLevel& Network::validate() {
 ValidationLevel Network::getValidationLevel() const {
     ValidationLevel vl = m_validationLevel;
     if (vl == ValidationLevel::UNVALID) {
-        vl = validateIdentifiables(getIdentifiables(), false, m_minimumValidationLevel, ValidationLevel::UNVALID);
+        vl = validateIdentifiables(getIdentifiables(), false, m_minimumValidationLevel, ActionOnError::IGNORE);
     }
     return vl;
 }
