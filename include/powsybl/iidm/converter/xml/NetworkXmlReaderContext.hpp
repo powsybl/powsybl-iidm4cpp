@@ -42,7 +42,7 @@ public:
 
     void addEndTask(const XmlReaderEndTask::Step& step, const std::function<void()>& endTask);
 
-    void buildExtensionNamespaceUriList(const stdcxx::const_range<ExtensionXmlSerializer>& providers);
+    void checkAndAddExtensionNamespaceUri();
 
     bool containsExtensionNamespaceUri(const std::string& extensionNamespaceUri) const;
 

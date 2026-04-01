@@ -125,11 +125,15 @@ std::string XmlStreamReader::getLocalName() const {
     return XML2S(localNameXml.get());
 }
 
+std::string XmlStreamReader::getNamespace() const {
+    std::string prefix = getPrefix();
+    return getNamespace(prefix);
+}
+
 std::string XmlStreamReader::getNamespace(const std::string& prefix) const {
     if (prefix.empty()) {
         return getDefaultNamespace();
     }
-
     XmlString namespaceXml(xmlTextReaderLookupNamespace(m_reader.get(), S2XML(prefix)));
     if (!namespaceXml) {
         throw XmlStreamException(stdcxx::format("Unknown prefix %1%", prefix));

@@ -11,6 +11,9 @@ set(EXT_SOURCES
     src/ActivePowerControl.cpp
     src/ActivePowerControlAdder.cpp
     src/ActivePowerControlXmlSerializer.cpp
+    src/BatteryShortCircuit.cpp
+    src/BatteryShortCircuitAdder.cpp
+    src/BatteryShortCircuitXmlSerializer.cpp
     src/BranchObservability.cpp
     src/BranchObservabilityAdder.cpp
     src/BranchObservabilityXmlSerializer.cpp
@@ -124,6 +127,7 @@ set(EXT_SOURCES
 
 set(UNIT_TEST_SOURCES
     test/ActivePowerControlTest.cpp
+    test/BatteryShortCircuitTest.cpp
     test/BranchObservabilityTest.cpp
     test/CoordinateTest.cpp
     test/CoordinatedReactiveControlTest.cpp

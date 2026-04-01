@@ -18,10 +18,7 @@ namespace extensions {
 namespace iidm {
 
 GeneratorShortCircuit::GeneratorShortCircuit(Generator& generator, double directSubtransX, double directTransX, double stepUpTransformerX) :
-    Extension(generator),
-    m_directSubtransX(directSubtransX),
-    m_directTransX(directTransX),
-    m_stepUpTransformerX(stepUpTransformerX) {
+    AbstractShortCircuit(generator, directSubtransX, directTransX, stepUpTransformerX) {
 }
 
 void GeneratorShortCircuit::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -30,21 +27,9 @@ void GeneratorShortCircuit::assertExtendable(const stdcxx::Reference<Extendable>
     }
 }
 
-double GeneratorShortCircuit::getDirectSubtransX() const {
-    return m_directSubtransX;
-}
-
-double GeneratorShortCircuit::getDirectTransX() const {
-    return m_directTransX;
-}
-
 const std::string& GeneratorShortCircuit::getName() const {
     static std::string s_name = "generatorShortCircuit";
     return s_name;
-}
-
-double GeneratorShortCircuit::getStepUpTransformerX() const {
-    return m_stepUpTransformerX;
 }
 
 const std::type_index& GeneratorShortCircuit::getType() const {
@@ -52,20 +37,6 @@ const std::type_index& GeneratorShortCircuit::getType() const {
     return s_type;
 }
 
-GeneratorShortCircuit& GeneratorShortCircuit::setDirectSubtransX(double directSubtransX) {
-    m_directSubtransX = directSubtransX;
-    return *this;
-}
-
-GeneratorShortCircuit& GeneratorShortCircuit::setDirectTransX(double directTransX) {
-    m_directTransX = directTransX;
-    return *this;
-}
-
-GeneratorShortCircuit& GeneratorShortCircuit::setStepUpTransformerX(double setUpTransformerX) {
-    m_stepUpTransformerX = setUpTransformerX;
-    return *this;
-}
 
 }  // namespace iidm
 

@@ -51,6 +51,8 @@ public:
 
     void registerExtension(std::unique_ptr<T>&& provider, const boost::filesystem::path& libraryPath = boost::filesystem::path());
 
+    void unregisterExtension(const std::string& extensionName);
+
 private:
     ExtensionProviders();
 
@@ -60,10 +62,13 @@ private:
 
     void loadLibrary(const boost::filesystem::path& libraryPath);
 
+    void registerExtensionAlternativeNames(std::unique_ptr<T>& provider);
+
 private:
     std::map<boost::filesystem::path, boost::dll::shared_library> m_loadedLibraries;
 
     std::map<std::string, std::unique_ptr<T>> m_providers;
+    std::map<std::string, std::string> m_providersAliases; //"revert" map (first : provider's "alternative name", second : provider's "real name")
 };
 
 }  // namespace iidm

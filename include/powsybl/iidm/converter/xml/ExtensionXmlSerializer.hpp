@@ -67,11 +67,25 @@ public:
     const std::string& getName() const;
 
     /**
+     * Return the serialization name to be used for the given extension version
+     */
+    virtual const std::string& getSerializationName(const std::string& extensionVersion) const;
+    /**
+     * Return the list of possible serialization names for this extension (contains at least the name the extension)
+     */
+    virtual std::set<std::string> getSerializationNames() const;
+
+    /**
      * Return the XML prefix of the extension
      *
      * @return the XML prefix of the extension
      */
-    const std::string& getNamespacePrefix() const;
+    virtual const std::string& getNamespacePrefix() const;
+
+    /**
+     * Return the prefix to be used for the given extension version
+     */
+    virtual const std::string& getNamespacePrefix(const std::string& extensionVersion) const;
 
     /**
      * Return the namespace URI of the extension in the latest version of its serialization

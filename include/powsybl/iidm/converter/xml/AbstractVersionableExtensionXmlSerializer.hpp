@@ -29,6 +29,13 @@ public:  // ExtensionXmlSerializer
 
     const std::string& getNamespaceUri(const std::string& extensionVersion) const override;
 
+    const std::string& getNamespacePrefix() const override;
+    const std::string& getNamespacePrefix(const std::string& extensionVersion) const override;
+
+    const std::string& getSerializationName(const std::string& extensionVersion) const override;
+
+    std::set<std::string> getSerializationNames() const override;
+
     const std::string& getVersion() const override;
 
     bool versionExists(const std::string& networkVersion) const;
@@ -37,8 +44,18 @@ public:  // ExtensionXmlSerializer
     stdcxx::const_range<std::string> getVersions() const override;
 
 public:
+
+    struct AlternativeSerializationData {
+        std::set<std::string> m_extensionVersions;
+        std::string m_namespacePrefix;
+    };
+
     AbstractVersionableExtensionXmlSerializer(std::string&& extensionName, std::string&& extensionCategory, std::string&& namespacePrefix,
                                               VersionsCompatibility&& extensionVersions, std::map<std::string, std::string>&& namespaceUris);
+
+    AbstractVersionableExtensionXmlSerializer(std::string&& extensionName, std::string&& extensionCategory, std::string&& namespacePrefix,
+                                              VersionsCompatibility&& extensionVersions, std::map<std::string, std::string>&& namespaceUris, 
+                                              const std::map<std::string, AlternativeSerializationData>& alternativeData);
 
     ~AbstractVersionableExtensionXmlSerializer() override = default;
 
@@ -53,6 +70,8 @@ private:
     VersionsCompatibility m_extensionVersions;
 
     std::map<std::string, std::string> m_namespaceUris;
+    std::map<std::string, std::string> m_serializationNameByVersion;
+    std::map<std::string, std::string> m_namespacePrefixByVersion;
 };
 
 }  // namespace xml

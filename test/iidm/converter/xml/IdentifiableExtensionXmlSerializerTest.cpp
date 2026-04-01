@@ -37,8 +37,8 @@ BOOST_AUTO_TEST_CASE(ExtensionXmlSerializerTest) {
 
     auto& providers = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
     const auto& cProviders = providers;
-    BOOST_CHECK_EQUAL(7 + DEFAULT_EXTENSION_COUNT, boost::size(providers.getProviders()));
-    BOOST_CHECK_EQUAL(7 + DEFAULT_EXTENSION_COUNT, boost::size(cProviders.getProviders()));
+    BOOST_CHECK_EQUAL(8 + DEFAULT_EXTENSION_COUNT, boost::size(providers.getProviders()));
+    BOOST_CHECK_EQUAL(8 + DEFAULT_EXTENSION_COUNT, boost::size(cProviders.getProviders()));
 
     const auto& serializer = providers.findProvider("loadMock");
     BOOST_CHECK_EQUAL(true, static_cast<bool>(serializer));
@@ -46,9 +46,15 @@ BOOST_AUTO_TEST_CASE(ExtensionXmlSerializerTest) {
     BOOST_CHECK_EQUAL("loadMock", serializer.get().getName());
     BOOST_CHECK_EQUAL("loadMock", serializer.get().getExtensionName());
     BOOST_CHECK_EQUAL("network", serializer.get().getCategoryName());
+    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_element_mock/1_0", serializer.get().getNamespaceUri("0.1"));
+    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_element_mock/1_1", serializer.get().getNamespaceUri("0.2"));
     BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_mock/1_0", serializer.get().getNamespaceUri("1.0"));
     BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_mock/1_1", serializer.get().getNamespaceUri("1.1"));
     BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_mock/1_2", serializer.get().getNamespaceUri("1.2"));
+    BOOST_CHECK_EQUAL("http://www.powsybl.org/schema/iidm/ext/load_mock/1_2", serializer.get().getNamespaceUri());
+    BOOST_CHECK_EQUAL("loadMock", serializer.get().getSerializationName("1.2"));
+    BOOST_CHECK_EQUAL("loadElementMock", serializer.get().getSerializationName("0.1"));
+    BOOST_CHECK_EQUAL("loadEltMock", serializer.get().getSerializationName("0.2"));
 }
 
 BOOST_AUTO_TEST_CASE(TerminalExtension) {

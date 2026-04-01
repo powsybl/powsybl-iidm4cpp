@@ -33,7 +33,17 @@ const std::string& ExtensionXmlSerializer::getName() const {
     return getExtensionName();
 }
 
+const std::string& ExtensionXmlSerializer::getSerializationName(const std::string& /*extensionVersion*/) const {
+    return getExtensionName();
+}
+std::set<std::string> ExtensionXmlSerializer::getSerializationNames() const {
+    return {getExtensionName()};
+}
+
 const std::string& ExtensionXmlSerializer::getNamespacePrefix() const {
+    return m_namespacePrefix;
+}
+const std::string& ExtensionXmlSerializer::getNamespacePrefix(const std::string& /*extensionVersion*/) const {
     return m_namespacePrefix;
 }
 

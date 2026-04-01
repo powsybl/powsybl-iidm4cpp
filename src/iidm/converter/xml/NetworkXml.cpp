@@ -152,19 +152,27 @@ void readExtensions(Network& network, NetworkXmlReaderContext& context, std::set
     powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>& extensionProviders = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance();
 
     context.getReader().readUntilEndElement(EXTENSION, [&network, &id, &context, &extensionsNotFound, &extensionProviders]() {
-        const std::string& extensionName = context.getReader().getLocalName();
-        if (context.isIgnoredEquipment(id) || !context.getOptions().withExtension(extensionName)) {
-            context.getReader().readUntilEndElement(extensionName, []() {});
+        const std::string& extensionSerializedName = context.getReader().getLocalName();
+
+        if(context.isIgnoredEquipment(id)) {
+            context.getReader().readUntilEndElement(extensionSerializedName, []() {});
             return;
         }
 
-        stdcxx::CReference<ExtensionXmlSerializer> serializer = extensionProviders.findProvider(extensionName);
-        if (serializer) {
-            Identifiable& identifiable = network.getIdentifiable(id);
-            serializer.get().read(identifiable, context);
+        stdcxx::CReference<ExtensionXmlSerializer> serializer = extensionProviders.findProvider(extensionSerializedName);
+        std::string extensionName = (static_cast<bool>(serializer)) ? serializer.get().getExtensionName() : extensionSerializedName;
+
+        if(context.getOptions().withExtension(extensionName) || context.getOptions().withExtension(extensionSerializedName)) {
+            if(static_cast<bool>(serializer)) {
+                Identifiable& identifiable = network.getIdentifiable(id);
+                context.checkAndAddExtensionNamespaceUri();
+                serializer.get().read(identifiable, context);
+            } else {
+                extensionsNotFound.insert(extensionName);
+                context.getReader().readUntilEndElement(extensionSerializedName, []() {});
+            }
         } else {
-            extensionsNotFound.insert(extensionName);
-            context.getReader().readUntilEndElement(extensionName, []() {});
+            context.getReader().readUntilEndElement(extensionSerializedName, []() {});
         }
     });
 }
@@ -183,20 +191,28 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
                 continue;
             }
 
-            const std::string& uri = getNamespaceUri(serializer.get(), context.getOptions());
-            const std::string& prefix = serializer.get().getNamespacePrefix();
+            std::string uri = getNamespaceUri(serializer.get(), context.getOptions());
+            const std::string& prefix = serializer.get().getNamespacePrefix(context.getExtensionVersion(extension));
+            std::string fixedPrefix = prefix;
 
             if (extensionUris.find(uri) != extensionUris.end()) {
                 throw PowsyblException(stdcxx::format("Extension namespace URI collision"));
             }
 
-            if (extensionPrefixes.find(prefix) != extensionPrefixes.end()) {
-                throw PowsyblException(stdcxx::format("Extension namespace prefix collision"));
+            //If prefix collision, compute another prefix
+            int i = 1;
+            while (i < MAX_NAMESPACE_PREFIX_NUM && extensionPrefixes.count(fixedPrefix)) {
+                fixedPrefix = prefix + std::to_string(i++);
+            }
+            if(i>=MAX_NAMESPACE_PREFIX_NUM) {
+                throw PowsyblException(stdcxx::format("Cannot compute a unique extension namespace prefix : %1%", prefix));
             }
 
             extensionUris.insert(uri);
-            extensionPrefixes.insert(prefix);
-            context.getWriter().setPrefix(prefix, uri);
+            extensionPrefixes.insert(fixedPrefix);
+            context.addExtensionFixedPrefix(extension, fixedPrefix);
+            
+            context.getWriter().setPrefix(fixedPrefix, uri);
         }
     }
 }
@@ -213,7 +229,14 @@ void writeExtension(const Extension& extension, NetworkXmlWriterContext& context
         serializer.get().checkExtensionVersionSupported(version);
     }
 
-    writer.writeStartElement(serializer.get().getNamespacePrefix(), extension.getName());
+    std::string prefix = context.getExtensionFixedPrefix(extension.getName());
+    if(prefix.empty()) { //Retrieve default one from extension provider
+        prefix = serializer.get().getNamespacePrefix(version);
+    }
+
+    std::string serializationName = serializer.get().getSerializationName(version);
+
+    writer.writeStartElement(prefix, serializationName);
     serializer.get().write(extension, context);
     writer.writeEndElement();
 }
@@ -281,9 +304,6 @@ Network NetworkXml::read(const std::string& filename, std::istream& is, const Im
     const std::string& sourceFormat = reader.getAttributeValue(SOURCE_FORMAT);
     Network network(id, sourceFormat);
     initNetwork(network, context);
-
-    const auto& extensionProviders = ExtensionProviders<ExtensionXmlSerializer>::getInstance();
-    context.buildExtensionNamespaceUriList(extensionProviders.getProviders());
 
     std::set<std::string> extensionsNotFound;
 

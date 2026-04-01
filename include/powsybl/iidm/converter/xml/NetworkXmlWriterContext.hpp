@@ -35,6 +35,8 @@ class Anonymizer;
 
 namespace xml {
 
+static const int MAX_NAMESPACE_PREFIX_NUM = 100;
+
 class NetworkXmlWriterContext {
 public:
     NetworkXmlWriterContext(std::unique_ptr<Anonymizer>&& anonymizer, powsybl::xml::XmlStreamWriter& writer, const ExportOptions& options, const BusFilter& filter, const IidmXmlVersion& version = IidmXmlVersion::CURRENT_IIDM_XML_VERSION(), bool valid = true);
@@ -63,6 +65,17 @@ public:
 
     bool isExportedEquipment(const std::string& id);
 
+    /**
+     * Store a "fixed" prefix to be associated with the given extension, to be used in place of the default one defined in the serializer
+     * Only relevant in case several extension would use the same prefix
+     */
+    void addExtensionFixedPrefix(const std::string& extensionName, const std::string& fixedPrefix);
+    /**
+     * Get the fixed prefix associated with the given extension name.
+     * If extension not found returns an empty string.
+     */
+    std::string getExtensionFixedPrefix(const std::string& extensionName) const;
+
 private:
     powsybl::xml::XmlStreamWriter& m_writer;
 
@@ -77,6 +90,8 @@ private:
     BusFilter m_filter;
 
     bool m_valid;
+
+    std::map<std::string, std::string> m_fixedExtensionPrefixes;
 };
 
 }  // namespace xml

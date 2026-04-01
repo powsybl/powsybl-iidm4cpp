@@ -271,6 +271,7 @@ set(IIDM_SOURCES
     network/MultipleExtensionsTestNetworkFactory.cpp
     network/ScadaNetworkFactory.cpp
     network/ThreeWindingsTransformerNetworkFactory.cpp
+    network/VoltageLevelFooExt.cpp
 
     stdcxx/DateTime.cpp
     stdcxx/demangle.cpp

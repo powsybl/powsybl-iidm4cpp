@@ -1,0 +1,38 @@
+/**
+ * Copyright (c) 2026, RTE (http://www.rte-france.com)
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#include <powsybl/network/VoltageLevelFooExt.hpp>
+
+#include <powsybl/iidm/VoltageLevel.hpp>
+
+namespace powsybl {
+
+namespace network {
+
+VoltageLevelFooExt::VoltageLevelFooExt(iidm::VoltageLevel& vl) :
+    Extension(vl) {
+}
+
+void VoltageLevelFooExt::assertExtendable(const stdcxx::Reference<iidm::Extendable>& extendable) const {
+    if (extendable && !stdcxx::isInstanceOf<iidm::VoltageLevel>(extendable.get())) {
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<iidm::VoltageLevel>()));
+    }
+}
+
+const std::string& VoltageLevelFooExt::getName() const {
+    static std::string s_name = "voltageLevelFoo";
+    return s_name;
+}
+
+const std::type_index& VoltageLevelFooExt::getType() const {
+    static std::type_index s_type = typeid(VoltageLevelFooExt);
+    return s_type;
+}
+
+}  // namespace network
+
+}  // namespace powsybl

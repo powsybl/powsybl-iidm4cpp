@@ -42,6 +42,7 @@ public:
 
     std::string getLocalName() const;
 
+    std::string getNamespace() const;
     std::string getNamespace(const std::string& prefix) const;
 
     std::string getNamespace(const std::string& prefix, const std::string& defaultValue) const;

@@ -38,6 +38,12 @@ stdcxx::CReference<T> ExtensionProviders<T, Dummy>::findProvider(const std::stri
     const auto& it = m_providers.find(name);
     if (it != m_providers.end()) {
         provider = stdcxx::cref(it->second);
+    } else { //not found in "real name" extensions
+        //Look into "alternative names"
+        const auto& itAlternative = m_providersAliases.find(name);
+        if(itAlternative != m_providersAliases.end() && m_providers.count(itAlternative->second)) {
+            provider = stdcxx::cref(m_providers.at(itAlternative->second));
+        }
     }
 
     return provider;
@@ -47,7 +53,13 @@ template <typename T, typename Dummy>
 const T& ExtensionProviders<T, Dummy>::findProviderOrThrowException(const std::string& name) const {
     const auto& it = m_providers.find(name);
     if (it == m_providers.end()) {
-        throw PowsyblException(stdcxx::format("No provider found for extension '%1%'", name));
+
+        //Look into aliases also
+        const auto& itAlternative = m_providersAliases.find(name);
+        if(itAlternative == m_providersAliases.end() || m_providers.count(itAlternative->second)==0) {
+            throw PowsyblException(stdcxx::format("No provider found for extension '%1%'", name));
+        }
+        return *m_providers.at(itAlternative->second);
     }
     return *it->second;
 }
@@ -120,11 +132,74 @@ void ExtensionProviders<T, Dummy>::registerExtension(std::unique_ptr<T>&& provid
     logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
 
     const std::string& extensionName = provider->getExtensionName();
+    
     const auto& status = m_providers.emplace(std::make_pair(extensionName, std::move(provider)));
     if (!status.second) {
         throw PowsyblException(stdcxx::format("Unable to load file %1%: Extension %2% is already registered", libraryPath, status.first->first));
     }
+    //When provider registered, also map alternativesNames if any
+    //First of all "real name" of this extensionProvider has priority over any alternative name
+    if(m_providersAliases.count(extensionName)) {
+        logger.warn(stdcxx::format("Extension name %1% was used as alternative name for extension %2% - Alternative name unregistered.", 
+                    extensionName, m_providersAliases[extensionName]));
+        m_providersAliases.erase(extensionName);
+    }
+    registerExtensionAlternativeNames(status.first->second);
+
     logger.debug(stdcxx::format("Extension %1% has been loaded from %2%", extensionName, libraryPath));
+}
+
+template <typename T, typename Dummy>
+void ExtensionProviders<T, Dummy>::unregisterExtension(const std::string& extensionName) {
+    if(m_providers.erase(extensionName)) {
+        logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
+        logger.warn(stdcxx::format("Extension name %1% unregistered.", extensionName));
+    }
+    m_providersAliases.erase(extensionName);
+
+    for (auto& providerIt : m_providers) {
+        registerExtensionAlternativeNames(providerIt.second);
+    }
+
+}
+
+template <typename T, typename Dummy>
+void ExtensionProviders<T, Dummy>::registerExtensionAlternativeNames(std::unique_ptr<T>& provider) {
+    if(stdcxx::isInstanceOf<converter::xml::ExtensionXmlSerializer>(provider)) {
+        auto serializer = dynamic_cast<converter::xml::ExtensionXmlSerializer*>(provider.get());
+        if(!serializer) {
+            return;
+        }
+        const std::string& extensionName = provider->getExtensionName();
+        auto alternativeNames = serializer->getSerializationNames();
+        for (const auto& alternativeName : alternativeNames) {
+            //not consider real name as an alternative name :
+            if(alternativeName == extensionName) {
+                continue;
+            }
+            //alternative name already register for this provider :
+            if(m_providersAliases.count(alternativeName) && m_providersAliases.at(alternativeName)==extensionName) {
+                continue;
+            }
+
+            logging::Logger& logger = logging::LoggerFactory::getLogger<ExtensionProviders>();
+            // If alternative name is the real name of this or any other registered provieder, that alternative name is disabled.
+            if(m_providers.count(alternativeName)) {
+                logger.warn(stdcxx::format("Alternative extension name %1% for extension %2% is already used by extension %3% - Skipped", 
+                    alternativeName, extensionName, alternativeName));
+                    continue;
+            }
+            // Or if alternative name is already used by another provider, ignore it
+            if(m_providersAliases.count(alternativeName)) {
+                logger.warn(stdcxx::format("Alternative extension name %1% for extension %2% is already used by extension %3% - Skipped", 
+                    alternativeName, extensionName, m_providersAliases[alternativeName]));
+                continue;
+            }
+
+            //Register alternative name
+            m_providersAliases[alternativeName] = extensionName;
+        }
+    }
 }
 
 template class

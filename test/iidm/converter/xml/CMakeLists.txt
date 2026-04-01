@@ -21,6 +21,7 @@ set(EXT_SOURCES
     extensions/OverloadManagementSystemMockXmlSerializer.cpp
     extensions/TerminalMockExt.cpp
     extensions/TerminalMockXmlSerializer.cpp
+    extensions/VoltageLevelFooXmlSerializer.cpp
 )
 
 set(UNIT_TEST_SOURCES
@@ -28,6 +29,7 @@ set(UNIT_TEST_SOURCES
     BatteryRoundTripTest.cpp
     EncodingTest.cpp
     EurostagTest.cpp
+    ExtensionXmlSerializerTest.cpp
     ExtensionProvidersTest.cpp
     FictitiousInjectionsXmlTest.cpp
     FictitiousSwitchTest.cpp

@@ -72,6 +72,18 @@ bool NetworkXmlWriterContext::isExportedEquipment(const std::string& id) {
     return m_exportedEquipments.find(id) != m_exportedEquipments.end();
 }
 
+void NetworkXmlWriterContext::addExtensionFixedPrefix(const std::string& extensionName, const std::string& fixedPrefix) {
+    m_fixedExtensionPrefixes[extensionName] = fixedPrefix;
+}
+
+std::string NetworkXmlWriterContext::getExtensionFixedPrefix(const std::string& extensionName) const {
+    const auto& it = m_fixedExtensionPrefixes.find(extensionName);
+    if(it != m_fixedExtensionPrefixes.end()) {
+        return it->second;
+    }
+    return "";
+}
+
 }  // namespace xml
 
 }  // namespace converter

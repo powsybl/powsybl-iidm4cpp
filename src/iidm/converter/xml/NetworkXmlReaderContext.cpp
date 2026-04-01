@@ -31,12 +31,10 @@ void NetworkXmlReaderContext::addEndTask(const XmlReaderEndTask::Step& step, con
     m_endTasks[step].emplace_back(XmlReaderEndTask(step, endTask));
 }
 
-void NetworkXmlReaderContext::buildExtensionNamespaceUriList(const stdcxx::const_range<ExtensionXmlSerializer>& providers) {
-    for (const auto& it : providers) {
-        std::string namespaceUri = m_reader.getNamespace(it.getNamespacePrefix(), "");
-        if (!namespaceUri.empty()) {
-            m_extensionsNamespaceUri.emplace(std::move(namespaceUri));
-        }
+void NetworkXmlReaderContext::checkAndAddExtensionNamespaceUri() {
+    std::string namespaceUri = m_reader.getNamespace();
+    if (!namespaceUri.empty()) {
+        m_extensionsNamespaceUri.emplace(std::move(namespaceUri));
     }
 }
 

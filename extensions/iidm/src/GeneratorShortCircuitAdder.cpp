@@ -20,32 +20,15 @@ namespace extensions {
 namespace iidm {
 
 GeneratorShortCircuitAdder::GeneratorShortCircuitAdder(Extendable& extendable) :
-    ExtensionAdder(extendable) {
+    AbstractShortCircuitAdder(extendable) {
 }
 
 std::unique_ptr<Extension> GeneratorShortCircuitAdder::createExtension(Extendable& extendable) const {
-    if (std::isnan(m_directTransX)) {
-        throw PowsyblException("Undefined directTransX");
-    }
+    GeneratorShortCircuit::checkTransX(m_directTransX);
     if (stdcxx::isInstanceOf<Generator>(extendable)) {
         return std::unique_ptr<GeneratorShortCircuit>(new GeneratorShortCircuit(dynamic_cast<Generator&>(extendable), m_directSubtransX, m_directTransX, m_stepUpTransformerX));
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
-}
-
-GeneratorShortCircuitAdder& GeneratorShortCircuitAdder::withDirectSubtransX(double directSubtransX) {
-    m_directSubtransX = directSubtransX;
-    return *this;
-}
-
-GeneratorShortCircuitAdder& GeneratorShortCircuitAdder::withDirectTransX(double directTransX) {
-    m_directTransX = directTransX;
-    return *this;
-}
-
-GeneratorShortCircuitAdder& GeneratorShortCircuitAdder::withStepUpTransformerX(double stepUpTransformerX) {
-    m_stepUpTransformerX = stepUpTransformerX;
-    return *this;
 }
 
 }  // namespace iidm

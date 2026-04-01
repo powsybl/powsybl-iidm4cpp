@@ -9,6 +9,9 @@
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_GENERATORSHORTCIRCUITADDER_HPP
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
+
+#include <powsybl/iidm/extensions/iidm/AbstractShortCircuitAdder.hpp>
+
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -19,7 +22,7 @@ namespace extensions {
 
 namespace iidm {
 
-class GeneratorShortCircuitAdder : public ExtensionAdder {
+class GeneratorShortCircuitAdder : public AbstractShortCircuitAdder<GeneratorShortCircuitAdder> {
 public:
     /**
      * Constructor
@@ -51,21 +54,6 @@ public:
      */
     GeneratorShortCircuitAdder& operator=(GeneratorShortCircuitAdder&&) = delete;
 
-    /**
-     * Set the direct-axis subtransient reactance (also known as X''d)
-     */
-    GeneratorShortCircuitAdder& withDirectSubtransX(double directSubtransX);
-
-    /**
-     * Set the direct-axis transient reactance (also known as X'd)
-     */
-    GeneratorShortCircuitAdder& withDirectTransX(double directTransX);
-
-    /**
-     * Set the step-up transformer reactance
-     */
-    GeneratorShortCircuitAdder& withStepUpTransformerX(double stepUpTransformerX);
-
 protected:
     /**
      * Creates the GeneratorShortCircuit extension.
@@ -76,12 +64,6 @@ protected:
      */
     std::unique_ptr<Extension> createExtension(Extendable& extendable) const override;
 
-private:
-    double m_directTransX = 0.0;
-
-    double m_directSubtransX = stdcxx::nan();
-
-    double m_stepUpTransformerX = stdcxx::nan();
 };
 
 }  // namespace iidm
