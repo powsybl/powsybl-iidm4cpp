@@ -44,6 +44,9 @@ PilotPoint& ControlZone::getPilotPoint() {
 const std::vector<ControlUnit>& ControlZone::getControlUnits() const {
     return m_controlUnits;
 }
+std::vector<ControlUnit>& ControlZone::getControlUnits() {
+    return m_controlUnits;
+}
 stdcxx::optional<ControlUnit> ControlZone::getControlUnit(const std::string id) const {
     for (auto controlUnit : m_controlUnits) {
         if(controlUnit.getId() == id) {
@@ -51,6 +54,46 @@ stdcxx::optional<ControlUnit> ControlZone::getControlUnit(const std::string id) 
         }
     }
     return stdcxx::optional<ControlUnit>();
+}
+stdcxx::Reference<ControlUnit> ControlZone::getControlUnit(const std::string id) {
+        for (auto& controlUnit : m_controlUnits) {
+        if(controlUnit.getId() == id) {
+            return stdcxx::ref(controlUnit);
+        }
+    }
+    return stdcxx::Reference<ControlUnit>();
+}
+
+void ControlZone::setVariantManagerHolder(const VariantManagerHolder& variantManagerHolder) {
+    m_pilotPoint.setVariantManagerHolder(variantManagerHolder);
+    for (auto& controlUnit : m_controlUnits) {
+        controlUnit.setVariantManagerHolder(variantManagerHolder);
+    }
+}
+
+void ControlZone::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    m_pilotPoint.allocateVariantArrayElement(indexes, sourceIndex);
+    for (auto& controlUnit : m_controlUnits) {
+        controlUnit.allocateVariantArrayElement(indexes, sourceIndex);
+    }
+}
+
+void ControlZone::deleteVariantArrayElement(unsigned long /*index*/) {
+    //nothing to do
+}
+
+void ControlZone::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    m_pilotPoint.extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    for (auto& controlUnit : m_controlUnits) {
+        controlUnit.extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    }
+}
+
+void ControlZone::reduceVariantArraySize(unsigned long number) {
+    m_pilotPoint.reduceVariantArraySize(number);
+    for (auto& controlUnit : m_controlUnits) {
+        controlUnit.reduceVariantArraySize(number);
+    }
 }
 
 }  // namespace iidm

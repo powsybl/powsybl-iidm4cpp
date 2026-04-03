@@ -85,6 +85,41 @@ BOOST_AUTO_TEST_CASE(CoordinatedReactiveControlTest) {
     POWSYBL_ASSERT_THROW(crc.getExtendable<Load>(), AssertionError, "Unexpected extendable type: powsybl::iidm::Load (powsybl::iidm::Generator expected)");
 }
 
+BOOST_AUTO_TEST_CASE(variantTest) {
+
+    Network network = createNetwork();
+    Generator& generator = network.getGenerator("GEN");
+    generator.newExtension<CoordinatedReactiveControlAdder>()
+                .withQPercent(100.0)
+                .add();
+    auto& control = generator.getExtension<CoordinatedReactiveControl>();
+
+    // Testing variant cloning
+    VariantManager& variantManager = network.getVariantManager();
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), "variant1");
+    variantManager.cloneVariant("variant1", "variant2");
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK_CLOSE(100.0, control.getQPercent(), std::numeric_limits<double>::epsilon());
+
+    // Testing setting different values in the cloned variant and going back to the initial one
+    control.setQPercent(150.0);
+    BOOST_CHECK_CLOSE(150.0, control.getQPercent(), std::numeric_limits<double>::epsilon());
+    variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
+    BOOST_CHECK_CLOSE(100.0, control.getQPercent(), std::numeric_limits<double>::epsilon());
+
+    // Removes a variant then adds another variant to test variant recycling (hence calling allocateVariantArrayElement)
+    variantManager.removeVariant("variant1");
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), {"variant1", "variant3"});
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK_CLOSE(100, control.getQPercent(), std::numeric_limits<double>::epsilon());
+    variantManager.setWorkingVariant("variant3");
+    BOOST_CHECK_CLOSE(100, control.getQPercent(), std::numeric_limits<double>::epsilon());
+
+    // Test removing current variant
+    variantManager.removeVariant("variant3");
+    POWSYBL_ASSERT_THROW(control.getQPercent(), PowsyblException, "Variant index not set");
+}
+
 BOOST_FIXTURE_TEST_CASE(CoordinatedReactiveControlXmlSerializerTest, test::ResourceFixture) {
     Network network = powsybl::network::EurostagFactory::createTutorial1Network();
     network.setCaseDate(stdcxx::DateTime::parse("2019-05-27T12:17:02.504+02:00"));

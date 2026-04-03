@@ -12,6 +12,8 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/StaticVarCompensator.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 
 #include <powsybl/logging/LoggerFactory.hpp>
 
@@ -39,14 +41,15 @@ const std::type_index& StandbyAutomaton::getType() const {
 StandbyAutomaton::StandbyAutomaton(StaticVarCompensator& svc, double b0, bool standby,
                                 double lowVoltageSetpoint, double highVoltageSetpoint,
                                 double lowVoltageThreshold, double highVoltageThreshold) :
-    Extension(svc),
-    m_standby(standby) {
+    AbstractMultiVariantIdentifiableExtension(svc) {
+    unsigned long variantArraySize = getVariantManagerHolder().getVariantManager().getVariantArraySize();
+    m_standby.resize(variantArraySize, standby);
     m_b0 = checkB0(b0, svc);
     checkVoltageConfig(lowVoltageSetpoint, highVoltageSetpoint, lowVoltageThreshold, highVoltageThreshold, svc, standby);
-    m_lowVoltageSetpoint = lowVoltageSetpoint;
-    m_highVoltageSetpoint = highVoltageSetpoint;
-    m_lowVoltageThreshold = lowVoltageThreshold;
-    m_highVoltageThreshold = highVoltageThreshold;
+    m_lowVoltageSetpoint.resize(variantArraySize, lowVoltageSetpoint);
+    m_highVoltageSetpoint.resize(variantArraySize, highVoltageSetpoint);
+    m_lowVoltageThreshold.resize(variantArraySize, lowVoltageThreshold);
+    m_highVoltageThreshold.resize(variantArraySize, highVoltageThreshold);
 }
 
 void StandbyAutomaton::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -94,12 +97,15 @@ void StandbyAutomaton::checkVoltageConfig(double lowVoltageSetpoint, double high
 }
 
 bool StandbyAutomaton::isStandby() const {
-    return m_standby;
+    return m_standby[getVariantIndex()];
 }
 StandbyAutomaton& StandbyAutomaton::setStandby(bool standby) {
     const auto& svc = getExtendable<StaticVarCompensator>().get();
-    checkVoltageConfig(m_lowVoltageSetpoint, m_highVoltageSetpoint, m_lowVoltageThreshold, m_highVoltageThreshold, svc, standby);
-    m_standby = standby;
+    unsigned long varIndex = getVariantIndex();
+    checkVoltageConfig(m_lowVoltageSetpoint[varIndex], m_highVoltageSetpoint[varIndex],
+                        m_lowVoltageThreshold[varIndex], m_highVoltageThreshold[varIndex],
+                        svc, standby);
+    m_standby[varIndex] = standby;
     return *this;
 }
 
@@ -113,46 +119,86 @@ StandbyAutomaton& StandbyAutomaton::setB0(double b0) {
 }
 
 double StandbyAutomaton::getHighVoltageSetpoint() const {
-    return m_highVoltageSetpoint;
+    return m_highVoltageSetpoint[getVariantIndex()];
 }
 StandbyAutomaton& StandbyAutomaton::setHighVoltageSetpoint(double highVoltageSetpoint) {
     const auto& svc = getExtendable<StaticVarCompensator>().get();
-    checkVoltageConfig(m_lowVoltageSetpoint, highVoltageSetpoint, m_lowVoltageThreshold, m_highVoltageThreshold, svc, m_standby);
-    m_highVoltageSetpoint = highVoltageSetpoint;
+    unsigned long varIndex = getVariantIndex();
+    checkVoltageConfig(m_lowVoltageSetpoint[varIndex], highVoltageSetpoint,
+                        m_lowVoltageThreshold[varIndex], m_highVoltageThreshold[varIndex],
+                        svc, m_standby[varIndex]);
+    m_highVoltageSetpoint[varIndex] = highVoltageSetpoint;
     return *this;
 }
 
 double StandbyAutomaton::getHighVoltageThreshold() const {
-    return m_highVoltageThreshold;
+    return m_highVoltageThreshold[getVariantIndex()];
 }
 StandbyAutomaton& StandbyAutomaton::setHighVoltageThreshold(double highVoltageThreshold) {
     const auto& svc = getExtendable<StaticVarCompensator>().get();
-    checkVoltageConfig(m_lowVoltageSetpoint, m_highVoltageSetpoint, m_lowVoltageThreshold, highVoltageThreshold, svc, m_standby);
-    m_highVoltageThreshold = highVoltageThreshold;
+    unsigned long varIndex = getVariantIndex();
+    checkVoltageConfig(m_lowVoltageSetpoint[varIndex], m_highVoltageSetpoint[varIndex],
+                        m_lowVoltageThreshold[varIndex], highVoltageThreshold,
+                        svc, m_standby[varIndex]);
+    m_highVoltageThreshold[varIndex] = highVoltageThreshold;
     return *this;
 }
 
 double StandbyAutomaton::getLowVoltageSetpoint() const {
-    return m_lowVoltageSetpoint;
+    return m_lowVoltageSetpoint[getVariantIndex()];
 }
 StandbyAutomaton& StandbyAutomaton::setLowVoltageSetpoint(double lowVoltageSetpoint) {
     const auto& svc = getExtendable<StaticVarCompensator>().get();
-    checkVoltageConfig(lowVoltageSetpoint, m_highVoltageSetpoint, m_lowVoltageThreshold, m_highVoltageThreshold, svc, m_standby);
-    m_lowVoltageSetpoint = lowVoltageSetpoint;
+    unsigned long varIndex = getVariantIndex();
+    checkVoltageConfig(lowVoltageSetpoint, m_highVoltageSetpoint[varIndex],
+                        m_lowVoltageThreshold[varIndex], m_highVoltageThreshold[varIndex],
+                        svc, m_standby[varIndex]);
+    m_lowVoltageSetpoint[varIndex] = lowVoltageSetpoint;
     return *this;
 }
 
 double StandbyAutomaton::getLowVoltageThreshold() const {
-    return m_lowVoltageThreshold;
+    return m_lowVoltageThreshold[getVariantIndex()];
 }
 StandbyAutomaton& StandbyAutomaton::setLowVoltageThreshold(double lowVoltageThreshold) {
     const auto& svc = getExtendable<StaticVarCompensator>().get();
-    checkVoltageConfig(m_lowVoltageSetpoint, m_highVoltageSetpoint, lowVoltageThreshold, m_highVoltageThreshold, svc, m_standby);
-    m_lowVoltageThreshold = lowVoltageThreshold;
+    unsigned long varIndex = getVariantIndex();
+    checkVoltageConfig(m_lowVoltageSetpoint[varIndex], m_highVoltageSetpoint[varIndex],
+                        lowVoltageThreshold, m_highVoltageThreshold[varIndex],
+                        svc, m_standby[varIndex]);
+    m_lowVoltageThreshold[varIndex] = lowVoltageThreshold;
     return *this;
 }
 
+void StandbyAutomaton::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (unsigned long index : indexes) {
+        m_standby[index] = m_standby[sourceIndex];
+        m_lowVoltageSetpoint[index] = m_lowVoltageSetpoint[sourceIndex];
+        m_highVoltageSetpoint[index] = m_highVoltageSetpoint[sourceIndex];
+        m_lowVoltageThreshold[index] = m_lowVoltageThreshold[sourceIndex];
+        m_highVoltageThreshold[index] = m_highVoltageThreshold[sourceIndex];
+    }
+}
 
+void StandbyAutomaton::deleteVariantArrayElement(unsigned long /*index*/) {
+    //nothing to do
+}
+
+void StandbyAutomaton::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    m_standby.resize(m_standby.size() + number, m_standby[sourceIndex]);
+    m_lowVoltageSetpoint.resize(m_lowVoltageSetpoint.size() + number, m_lowVoltageSetpoint[sourceIndex]);
+    m_highVoltageSetpoint.resize(m_highVoltageSetpoint.size() + number, m_highVoltageSetpoint[sourceIndex]);
+    m_lowVoltageThreshold.resize(m_lowVoltageThreshold.size() + number, m_lowVoltageThreshold[sourceIndex]);
+    m_highVoltageThreshold.resize(m_highVoltageThreshold.size() + number, m_highVoltageThreshold[sourceIndex]);
+}
+
+void StandbyAutomaton::reduceVariantArraySize(unsigned long number) {
+    m_standby.resize(m_standby.size() - number);
+    m_lowVoltageSetpoint.resize(m_lowVoltageSetpoint.size() - number);
+    m_highVoltageSetpoint.resize(m_highVoltageSetpoint.size() - number);
+    m_lowVoltageThreshold.resize(m_lowVoltageThreshold.size() - number);
+    m_highVoltageThreshold.resize(m_highVoltageThreshold.size() - number);
+}
 
 } // namespace iidm
 

@@ -12,6 +12,8 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 
 namespace powsybl {
 
@@ -22,10 +24,11 @@ namespace extensions {
 namespace iidm {
 
 HvdcAngleDroopActivePowerControl::HvdcAngleDroopActivePowerControl(HvdcLine& hvdcLine, double p0, double droop, bool enabled) :
-    Extension(hvdcLine),
-    m_p0(checkP0(p0, hvdcLine)),
-    m_droop(checkDroop(droop, hvdcLine)),
-    m_enabled(enabled) {
+    AbstractMultiVariantIdentifiableExtension(hvdcLine) {
+    unsigned long variantArraySize = getVariantManagerHolder().getVariantManager().getVariantArraySize();
+    m_p0.resize(variantArraySize, checkP0(p0, hvdcLine));
+    m_droop.resize(variantArraySize, checkDroop(droop, hvdcLine));
+    m_enabled.resize(variantArraySize, enabled);
 }
 
 void HvdcAngleDroopActivePowerControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -49,7 +52,7 @@ double HvdcAngleDroopActivePowerControl::checkP0(double p0, const HvdcLine& line
 }
 
 double HvdcAngleDroopActivePowerControl::getDroop() const {
-    return m_droop;
+    return m_droop[getVariantIndex()];
 }
 
 const std::string& HvdcAngleDroopActivePowerControl::getName() const {
@@ -58,7 +61,7 @@ const std::string& HvdcAngleDroopActivePowerControl::getName() const {
 }
 
 double HvdcAngleDroopActivePowerControl::getP0() const {
-    return m_p0;
+    return m_p0[getVariantIndex()];
 }
 
 const std::type_index& HvdcAngleDroopActivePowerControl::getType() const {
@@ -67,24 +70,48 @@ const std::type_index& HvdcAngleDroopActivePowerControl::getType() const {
 }
 
 bool HvdcAngleDroopActivePowerControl::isEnabled() const {
-    return m_enabled;
+    return m_enabled[getVariantIndex()];
 }
 
 HvdcAngleDroopActivePowerControl& HvdcAngleDroopActivePowerControl::setDroop(double droop) {
     const auto& hvdcLine = getExtendable<HvdcLine>().get();
-    m_droop = checkDroop(droop, hvdcLine);
+    m_droop[getVariantIndex()] = checkDroop(droop, hvdcLine);
     return *this;
 }
 
 HvdcAngleDroopActivePowerControl& HvdcAngleDroopActivePowerControl::setEnabled(bool enabled) {
-    m_enabled = enabled;
+    m_enabled[getVariantIndex()] = enabled;
     return *this;
 }
 
 HvdcAngleDroopActivePowerControl& HvdcAngleDroopActivePowerControl::setP0(double p0) {
     const auto& hvdcLine = getExtendable<HvdcLine>().get();
-    m_p0 = checkP0(p0, hvdcLine);
+    m_p0[getVariantIndex()] = checkP0(p0, hvdcLine);
     return *this;
+}
+
+void HvdcAngleDroopActivePowerControl::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (unsigned long index : indexes) {
+        m_p0[index] = m_p0[sourceIndex];
+        m_droop[index] = m_droop[sourceIndex];
+        m_enabled[index] = m_enabled[sourceIndex];
+    }
+}
+
+void HvdcAngleDroopActivePowerControl::deleteVariantArrayElement(unsigned long /*index*/) {
+    //nothing to do
+}
+
+void HvdcAngleDroopActivePowerControl::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    m_p0.resize(m_p0.size() + number, m_p0[sourceIndex]);
+    m_droop.resize(m_droop.size() + number, m_droop[sourceIndex]);
+    m_enabled.resize(m_enabled.size() + number, m_enabled[sourceIndex]);
+}
+
+void HvdcAngleDroopActivePowerControl::reduceVariantArraySize(unsigned long number) {
+    m_p0.resize(m_p0.size() - number);
+    m_droop.resize(m_droop.size() - number);
+    m_enabled.resize(m_enabled.size() - number);
 }
 
 }  // namespace iidm

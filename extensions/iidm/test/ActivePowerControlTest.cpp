@@ -44,6 +44,30 @@ Network createNetwork() {
     return network;
 }
 
+void checkValues(ActivePowerControl& apc, bool participate, double droop, double participationFactor, double minTargetP, double maxTargetP) {
+
+    if(participate) {
+        BOOST_CHECK(apc.isParticipate());
+    } else {
+        BOOST_CHECK(!apc.isParticipate());
+    }
+
+    BOOST_CHECK_CLOSE(droop, apc.getDroop(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(participationFactor, apc.getParticipationFactor(), std::numeric_limits<double>::epsilon());
+
+    if(!std::isnan(minTargetP)) {
+        BOOST_CHECK_CLOSE(minTargetP, apc.getMinTargetP(), std::numeric_limits<double>::epsilon());
+    } else {
+        BOOST_CHECK(std::isnan(apc.getMinTargetP()));
+    }
+    if(!std::isnan(maxTargetP)) {
+        BOOST_CHECK_CLOSE(maxTargetP, apc.getMaxTargetP(), std::numeric_limits<double>::epsilon());
+    } else {
+        BOOST_CHECK(std::isnan(apc.getMaxTargetP()));
+    }
+
+}
+
 BOOST_AUTO_TEST_CASE(ActivePowerControlLimitsCheckTest) {
 
     Network network = powsybl::network::BatteryNetworkFactory::create();
@@ -108,6 +132,98 @@ BOOST_AUTO_TEST_CASE(ActivePowerControlTest) {
     BOOST_CHECK_CLOSE(10.0, apcBat.getMinTargetP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK(std::isnan(apcBat.getMaxTargetP()));
 
+}
+
+BOOST_AUTO_TEST_CASE(variantTest) {
+    Network network = createNetwork();
+    Battery& bat = network.getBattery("BAT");
+    ActivePowerControl& activePowerControl = bat.getExtension<ActivePowerControl>();
+
+    // Testing variant cloning
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"v1"});
+    network.getVariantManager().cloneVariant("v1", "v2");
+    network.getVariantManager().setWorkingVariant("v1");
+    checkValues(activePowerControl, true, 4.0, 1.2, stdcxx::nan(), stdcxx::nan());
+
+    // Testing setting different values in the cloned variant and going back to the initial one
+    activePowerControl.setDroop(6.0);
+    activePowerControl.setParticipate(false);
+    activePowerControl.setParticipationFactor(3.0);
+    checkValues(activePowerControl, false, 6.0, 3.0, stdcxx::nan(), stdcxx::nan());
+    network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
+    checkValues(activePowerControl, true, 4.0, 1.2, stdcxx::nan(), stdcxx::nan());
+
+    // Removes a variant then adds another variant to test variant recycling (hence calling allocateVariantArrayElement)
+    network.getVariantManager().removeVariant("v1");
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"v1","v3"});
+    network.getVariantManager().setWorkingVariant("v1");
+    checkValues(activePowerControl, true, 4.0, 1.2, stdcxx::nan(), stdcxx::nan());
+    network.getVariantManager().setWorkingVariant("v2");
+    checkValues(activePowerControl, true, 4.0, 1.2, stdcxx::nan(), stdcxx::nan());
+    network.getVariantManager().setWorkingVariant("v3");
+    checkValues(activePowerControl, true, 4.0, 1.2, stdcxx::nan(), stdcxx::nan());
+
+
+    // test limitControl
+    double minP = bat.getMinP();
+    double maxP = bat.getMaxP();
+    POWSYBL_ASSERT_THROW(activePowerControl.setMaxTargetP(maxP+1), PowsyblException, "maxTargetP value (10001) is not between minP and maxP for component BAT");
+    POWSYBL_ASSERT_THROW(activePowerControl.setMaxTargetP(minP-1), PowsyblException, "maxTargetP value (-10001) is not between minP and maxP for component BAT");
+    POWSYBL_ASSERT_THROW(activePowerControl.setMinTargetP(maxP+1), PowsyblException, "minTargetP value (10001) is not between minP and maxP for component BAT");
+    POWSYBL_ASSERT_THROW(activePowerControl.setMinTargetP(minP-1), PowsyblException, "minTargetP value (-10001) is not between minP and maxP for component BAT");
+
+    activePowerControl.setMaxTargetP(200);
+    activePowerControl.setMinTargetP(100);
+    POWSYBL_ASSERT_THROW(activePowerControl.setMinTargetP(201), PowsyblException, "invalid targetP limits [201, 200]");
+    POWSYBL_ASSERT_THROW(activePowerControl.setMaxTargetP(99), PowsyblException, "invalid targetP limits [100, 99]");
+
+    // try to fool the extension
+    bat.setMaxP(190);
+    bat.setMinP(110);
+    BOOST_CHECK_CLOSE(190.0, activePowerControl.getMaxTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(110.0, activePowerControl.getMinTargetP(), std::numeric_limits<double>::epsilon());
+
+    // Test removing current variant
+    network.getVariantManager().removeVariant("v3");
+    POWSYBL_ASSERT_THROW(activePowerControl.getDroop(), PowsyblException, "Variant index not set");
+}
+
+BOOST_AUTO_TEST_CASE(variantWithOverrideTest) {
+    Network network = createNetwork();
+    Battery& bat = network.getBattery("BAT");
+    ActivePowerControl& activePowerControl = bat.getExtension<ActivePowerControl>();
+    activePowerControl.setMinTargetP(10.0).setMaxTargetP(100.0);
+
+    // Testing variant cloning
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"v1"});
+    network.getVariantManager().cloneVariant("v1", "v2");
+    network.getVariantManager().setWorkingVariant("v1");
+    checkValues(activePowerControl, true, 4.0, 1.2, 10.0, 100.0);
+
+    // Testing setting different values in the cloned variant and going back to the initial one
+    activePowerControl.setDroop(6.0);
+    activePowerControl.setParticipate(false);
+    activePowerControl.setParticipationFactor(3.0);
+    activePowerControl.setMaxTargetP(110.0).setMinTargetP(stdcxx::nan());
+    checkValues(activePowerControl, false, 6.0, 3.0, stdcxx::nan(), 110.0);
+    activePowerControl.setMinTargetP(11.0).setMaxTargetP(stdcxx::nan());
+    checkValues(activePowerControl, false, 6.0, 3.0, 11.0, stdcxx::nan());
+    network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
+    checkValues(activePowerControl, true, 4.0, 1.2, 10.0, 100.0);
+
+    // Removes a variant then adds another variant to test variant recycling (hence calling allocateVariantArrayElement)
+    network.getVariantManager().removeVariant("v1");
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"v1","v3"});
+    network.getVariantManager().setWorkingVariant("v1");
+    checkValues(activePowerControl, true, 4.0, 1.2, 10.0, 100.0);
+    network.getVariantManager().setWorkingVariant("v2");
+    checkValues(activePowerControl, true, 4.0, 1.2, 10.0, 100.0);
+    network.getVariantManager().setWorkingVariant("v3");
+    checkValues(activePowerControl, true, 4.0, 1.2, 10.0, 100.0);
+
+    // Test removing current variant
+    network.getVariantManager().removeVariant("v3");
+    POWSYBL_ASSERT_THROW(activePowerControl.getDroop(), PowsyblException, "Variant index not set");
 }
 
 BOOST_FIXTURE_TEST_CASE(ActivePowerControlXmlSerializerTest, test::ResourceFixture) {

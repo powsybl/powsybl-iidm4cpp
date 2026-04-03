@@ -13,6 +13,8 @@
 #include <powsybl/iidm/extensions/iidm/StandbyAutomaton.hpp>
 #include <powsybl/iidm/extensions/iidm/StandbyAutomatonAdder.hpp>
 
+#include <powsybl/network/ScadaNetworkFactory.hpp>
+
 #include <powsybl/stdcxx/math.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
@@ -28,6 +30,77 @@ namespace extensions {
 namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(StandbyAutomatonTestSuite)
+
+BOOST_AUTO_TEST_CASE(variantTest) {
+    Network network = powsybl::network::ScadaNetworkFactory::create();
+    auto& svc = network.getStaticVarCompensator("svc");
+    svc.newExtension<StandbyAutomatonAdder>()
+        .withB0(0.0001)
+        .withStandby(true)
+        .withLowVoltageSetpoint(390.0)
+        .withHighVoltageSetpoint(400.0)
+        .withLowVoltageThreshold(385.0)
+        .withHighVoltageThreshold(405.0)
+        .add();
+    auto& standbyAutomaton = svc.getExtension<StandbyAutomaton>();
+
+    // Testing variant cloning
+    VariantManager& variantManager = network.getVariantManager();
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), "variant1");
+    variantManager.cloneVariant("variant1", "variant2");
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK(standbyAutomaton.isStandby());
+    BOOST_CHECK_CLOSE(0.0001, standbyAutomaton.getB0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(390, standbyAutomaton.getLowVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(400, standbyAutomaton.getHighVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(385, standbyAutomaton.getLowVoltageThreshold(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(405, standbyAutomaton.getHighVoltageThreshold(), std::numeric_limits<double>::epsilon());
+
+    // Testing setting different values in the cloned variant and going back to the initial one
+    standbyAutomaton.setB0(0.0004)
+        .setStandby(false)
+        .setLowVoltageSetpoint(392)
+        .setHighVoltageSetpoint(403)
+        .setLowVoltageThreshold(390)
+        .setHighVoltageThreshold(410);
+
+    BOOST_CHECK(!standbyAutomaton.isStandby());
+    BOOST_CHECK_CLOSE(0.0004, standbyAutomaton.getB0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(392, standbyAutomaton.getLowVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(403, standbyAutomaton.getHighVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(390, standbyAutomaton.getLowVoltageThreshold(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(410, standbyAutomaton.getHighVoltageThreshold(), std::numeric_limits<double>::epsilon());
+    variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
+
+    BOOST_CHECK(standbyAutomaton.isStandby());
+    BOOST_CHECK_CLOSE(0.0004, standbyAutomaton.getB0(), std::numeric_limits<double>::epsilon()); // not modify by variant change
+    BOOST_CHECK_CLOSE(390, standbyAutomaton.getLowVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(400, standbyAutomaton.getHighVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(385, standbyAutomaton.getLowVoltageThreshold(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(405, standbyAutomaton.getHighVoltageThreshold(), std::numeric_limits<double>::epsilon());
+
+    // Removes a variant then adds another variant to test variant recycling (hence calling allocateVariantArrayElement)
+    variantManager.removeVariant("variant1");
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), {"variant1", "variant3"});
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK(standbyAutomaton.isStandby());
+    BOOST_CHECK_CLOSE(0.0004, standbyAutomaton.getB0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(390, standbyAutomaton.getLowVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(400, standbyAutomaton.getHighVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(385, standbyAutomaton.getLowVoltageThreshold(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(405, standbyAutomaton.getHighVoltageThreshold(), std::numeric_limits<double>::epsilon());
+    variantManager.setWorkingVariant("variant3");
+    BOOST_CHECK(standbyAutomaton.isStandby());
+    BOOST_CHECK_CLOSE(0.0004, standbyAutomaton.getB0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(390, standbyAutomaton.getLowVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(400, standbyAutomaton.getHighVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(385, standbyAutomaton.getLowVoltageThreshold(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(405, standbyAutomaton.getHighVoltageThreshold(), std::numeric_limits<double>::epsilon());
+
+    // Test removing current variant
+    variantManager.removeVariant("variant3");
+    POWSYBL_ASSERT_THROW(standbyAutomaton.getLowVoltageSetpoint(), PowsyblException, "Variant index not set");
+}
 
 BOOST_FIXTURE_TEST_CASE(StandbyAutomatonConstructor, test::ResourceFixture) {
     Network network = Network::readXml(ResourceFixture::getResourcePath("staticVarCompensatorRef.xml"));

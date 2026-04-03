@@ -24,11 +24,14 @@ namespace extensions {
 namespace iidm {
 
 SecondaryVoltageControl::SecondaryVoltageControl(Network& network, const std::vector<ControlZone>& controlZones) : 
-    Extension(network) {
+    AbstractMultiVariantIdentifiableExtension(network) {
     if(controlZones.empty()) {
         throw PowsyblException("Empty control zone list");
     }
     m_controlZones = controlZones;
+    for (auto& controlZone : m_controlZones) {
+        controlZone.setVariantManagerHolder(network);
+    } 
 }
 
 const std::string& SecondaryVoltageControl::getName() const {
@@ -44,6 +47,9 @@ const std::type_index& SecondaryVoltageControl::getType() const {
 const std::vector<ControlZone>& SecondaryVoltageControl::getControlZones() const {
     return m_controlZones;
 }
+std::vector<ControlZone>& SecondaryVoltageControl::getControlZones() {
+    return m_controlZones;
+}
 
 stdcxx::optional<ControlZone> SecondaryVoltageControl::getControlZone(const std::string name) const {
     for (auto controlZone : m_controlZones) {
@@ -53,10 +59,40 @@ stdcxx::optional<ControlZone> SecondaryVoltageControl::getControlZone(const std:
     }
     return stdcxx::optional<ControlZone>();
 }
+stdcxx::Reference<ControlZone> SecondaryVoltageControl::getControlZone(const std::string name) {
+    for (auto& controlZone : m_controlZones) {
+        if(controlZone.getName() == name) {
+            return stdcxx::ref(controlZone);
+        }
+    }
+    return stdcxx::Reference<ControlZone>();
+}
 
 void SecondaryVoltageControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<Network>(extendable.get())) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Network>()));
+    }
+}
+
+void SecondaryVoltageControl::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (auto& controlZone : m_controlZones) {
+        controlZone.allocateVariantArrayElement(indexes, sourceIndex);
+    }
+}
+
+void SecondaryVoltageControl::deleteVariantArrayElement(unsigned long /*index*/) {
+    //nothing to do;
+}
+
+void SecondaryVoltageControl::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
+    for (auto& controlZone : m_controlZones) {
+        controlZone.extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+    }
+}
+
+void SecondaryVoltageControl::reduceVariantArraySize(unsigned long number) {
+    for (auto& controlZone : m_controlZones) {
+        controlZone.reduceVariantArraySize(number);
     }
 }
 

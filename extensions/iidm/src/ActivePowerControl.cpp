@@ -9,6 +9,8 @@
 
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
@@ -70,23 +72,25 @@ void ActivePowerControl::checkLimitOrder(double minTargetP, double maxTargetP) c
 
 
 ActivePowerControl::ActivePowerControl(Battery& battery, bool participate, double droop, double participationFactor, double minTargetP, double maxTargetP) :
-    Extension(battery),
-    m_participate(participate),
-    m_droop(droop),
-    m_participationFactor(participationFactor),
-    m_minTargetP(checkTargetPLimit(minTargetP, "minTargetP", battery)),
-    m_maxTargetP(checkTargetPLimit(maxTargetP, "maxTargetP", battery)) {
-        checkLimitOrder(minTargetP, maxTargetP);
+    AbstractMultiVariantIdentifiableExtension(battery) {
+    unsigned long variantArraySize = getVariantManagerHolder().getVariantManager().getVariantArraySize();
+    m_participate.resize(variantArraySize, participate);
+    m_droop.resize(variantArraySize, droop);
+    m_participationFactor.resize(variantArraySize, participationFactor);
+    m_minTargetP.resize(variantArraySize, checkTargetPLimit(minTargetP, "minTargetP", battery));
+    m_maxTargetP.resize(variantArraySize, checkTargetPLimit(maxTargetP, "maxTargetP", battery));
+    checkLimitOrder(minTargetP, maxTargetP);
 }
 
 ActivePowerControl::ActivePowerControl(Generator& generator, bool participate, double droop, double participationFactor, double minTargetP, double maxTargetP) :
-    Extension(generator),
-    m_participate(participate),
-    m_droop(droop),
-    m_participationFactor(participationFactor),
-    m_minTargetP(checkTargetPLimit(minTargetP, "minTargetP", generator)),
-    m_maxTargetP(checkTargetPLimit(maxTargetP, "maxTargetP", generator)) {
-        checkLimitOrder(minTargetP, maxTargetP);
+    AbstractMultiVariantIdentifiableExtension(generator) {
+    unsigned long variantArraySize = getVariantManagerHolder().getVariantManager().getVariantArraySize();
+    m_participate.resize(variantArraySize, participate);
+    m_droop.resize(variantArraySize, droop);
+    m_participationFactor.resize(variantArraySize, participationFactor);
+    m_minTargetP.resize(variantArraySize, checkTargetPLimit(minTargetP, "minTargetP", generator));
+    m_maxTargetP.resize(variantArraySize, checkTargetPLimit(maxTargetP, "maxTargetP", generator));
+    checkLimitOrder(minTargetP, maxTargetP);
 }
 
 void ActivePowerControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -96,19 +100,19 @@ void ActivePowerControl::assertExtendable(const stdcxx::Reference<Extendable>& e
 }
 
 double ActivePowerControl::getDroop() const {
-    return m_droop;
+    return m_droop[getVariantIndex()];
 }
 
 double ActivePowerControl::getParticipationFactor() const {
-    return m_participationFactor;
+    return m_participationFactor[getVariantIndex()];
 }
 
 double ActivePowerControl::getMinTargetP() const {
-    return checkWithinPMinMax(m_minTargetP, getExtendable<Injection>().get());
+    return checkWithinPMinMax(m_minTargetP[getVariantIndex()], getExtendable<Injection>().get());
 }
 
 double ActivePowerControl::getMaxTargetP() const {
-    return checkWithinPMinMax(m_maxTargetP, getExtendable<Injection>().get());
+    return checkWithinPMinMax(m_maxTargetP[getVariantIndex()], getExtendable<Injection>().get());
 }
 
 const std::string& ActivePowerControl::getName() const {
@@ -122,34 +126,64 @@ const std::type_index& ActivePowerControl::getType() const {
 }
 
 bool ActivePowerControl::isParticipate() const {
-    return m_participate;
+    return m_participate[getVariantIndex()];
 }
 
 ActivePowerControl& ActivePowerControl::setDroop(double droop) {
-    m_droop = droop;
+    m_droop[getVariantIndex()] = droop;
     return *this;
 }
 
 ActivePowerControl& ActivePowerControl::setParticipationFactor(double participationFactor) {
-    m_participationFactor = participationFactor;
+    m_participationFactor[getVariantIndex()] = participationFactor;
     return *this;
 }
 
 ActivePowerControl& ActivePowerControl::setParticipate(bool participate) {
-    m_participate = participate;
+    m_participate[getVariantIndex()] = participate;
     return *this;
 }
 
 ActivePowerControl& ActivePowerControl::setMinTargetP(double minTargetP) {
-    checkLimitOrder(minTargetP, m_maxTargetP);
-    m_minTargetP = checkTargetPLimit(minTargetP, "minTargetP", getExtendable<Injection>().get());
+    checkLimitOrder(minTargetP, m_maxTargetP[getVariantIndex()]);
+    m_minTargetP[getVariantIndex()] = checkTargetPLimit(minTargetP, "minTargetP", getExtendable<Injection>().get());
     return *this;
 }
 
 ActivePowerControl& ActivePowerControl::setMaxTargetP(double maxTargetP) {
-    checkLimitOrder(m_minTargetP, maxTargetP);
-    m_maxTargetP = checkTargetPLimit(maxTargetP, "maxTargetP", getExtendable<Injection>().get());
+    checkLimitOrder(m_minTargetP[getVariantIndex()], maxTargetP);
+    m_maxTargetP[getVariantIndex()] = checkTargetPLimit(maxTargetP, "maxTargetP", getExtendable<Injection>().get());
     return *this;
+}
+
+void ActivePowerControl::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (unsigned long index : indexes) {
+        m_droop[index] = m_droop[sourceIndex];
+        m_participate[index] = m_participate[sourceIndex];
+        m_participationFactor[index] = m_participationFactor[sourceIndex];
+        m_minTargetP[index] = m_minTargetP[sourceIndex];
+        m_maxTargetP[index] = m_maxTargetP[sourceIndex];
+    }
+}
+
+void ActivePowerControl::deleteVariantArrayElement(unsigned long /*index*/) {
+    //nothing to do
+}
+
+void ActivePowerControl::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    m_droop.resize(m_droop.size() + number, m_droop[sourceIndex]);
+    m_participate.resize(m_participate.size() + number, m_participate[sourceIndex]);
+    m_participationFactor.resize(m_participationFactor.size() + number, m_participationFactor[sourceIndex]);
+    m_minTargetP.resize(m_minTargetP.size() + number, m_minTargetP[sourceIndex]);
+    m_maxTargetP.resize(m_maxTargetP.size() + number, m_maxTargetP[sourceIndex]);
+}
+
+void ActivePowerControl::reduceVariantArraySize(unsigned long number) {
+    m_droop.resize(m_droop.size() - number);
+    m_participate.resize(m_participate.size() - number);
+    m_participationFactor.resize(m_participationFactor.size() - number);
+    m_minTargetP.resize(m_minTargetP.size() - number);
+    m_maxTargetP.resize(m_maxTargetP.size() - number);
 }
 
 }  // namespace iidm

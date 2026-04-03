@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_SECONDARYVOLTAGECONTROL_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_SECONDARYVOLTAGECONTROL_HPP
 
-#include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
 
 #include <powsybl/iidm/extensions/iidm/ControlZone.hpp>
 
@@ -24,7 +24,7 @@ namespace extensions {
 
 namespace iidm {
 
-class SecondaryVoltageControl : public Extension {
+class SecondaryVoltageControl : public AbstractMultiVariantIdentifiableExtension {
 
 public:
 // Extension
@@ -33,8 +33,19 @@ public:
     const std::type_index& getType() const override;
 
     const std::vector<ControlZone>& getControlZones() const;
+    std::vector<ControlZone>& getControlZones();
 
     stdcxx::optional<ControlZone> getControlZone(const std::string name) const;
+    stdcxx::Reference<ControlZone> getControlZone(const std::string name);
+
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
 
 private:
 // Extension

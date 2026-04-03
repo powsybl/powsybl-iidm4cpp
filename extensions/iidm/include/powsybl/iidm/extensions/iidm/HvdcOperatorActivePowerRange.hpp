@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_HVDCOPERATORACTIVEPOWERRANGE_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_HVDCOPERATORACTIVEPOWERRANGE_HPP
 
-#include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
 
 namespace powsybl {
 
@@ -21,11 +21,20 @@ namespace extensions {
 
 namespace iidm {
 
-class HvdcOperatorActivePowerRange : public Extension {
+class HvdcOperatorActivePowerRange : public AbstractMultiVariantIdentifiableExtension {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
+
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
 
 public:
     double getOprFromCS1toCS2() const;
@@ -51,12 +60,12 @@ private:
     /**
      * Operator active power range from the converter station 1 to the converter station 2 in MW.
      */
-    double m_oprFromCS1toCS2;
+    std::vector<double> m_oprFromCS1toCS2;
 
     /**
      * Operator active power range from the converter station 2 to the converter station 1 in MW.
      */
-    double m_oprFromCS2toCS1;
+    std::vector<double> m_oprFromCS2toCS1;
 };
 
 }  // namespace iidm

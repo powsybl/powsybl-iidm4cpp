@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_STANDBYAUTOMATON_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_STANDBYAUTOMATON_HPP
 
-#include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
 
 namespace powsybl {
 
@@ -20,11 +20,20 @@ namespace extensions {
 
 namespace iidm {
 
-class StandbyAutomaton : public Extension {
+class StandbyAutomaton : public AbstractMultiVariantIdentifiableExtension {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
+
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
 
 public:
     bool isStandby() const;
@@ -62,12 +71,12 @@ private:
 private:
     double m_b0;
 
-    bool m_standby;
+    std::vector<bool> m_standby;
 
-    double m_lowVoltageSetpoint;
-    double m_highVoltageSetpoint;
-    double m_lowVoltageThreshold;
-    double m_highVoltageThreshold;
+    std::vector<double> m_lowVoltageSetpoint;
+    std::vector<double> m_highVoltageSetpoint;
+    std::vector<double> m_lowVoltageThreshold;
+    std::vector<double> m_highVoltageThreshold;
 };
 
 }  // namespace iidm

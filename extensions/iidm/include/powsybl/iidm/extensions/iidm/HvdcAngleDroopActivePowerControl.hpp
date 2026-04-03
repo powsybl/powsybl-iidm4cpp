@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_HVDCANGLEDROOPACTIVEPOWERCONTROL_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_HVDCANGLEDROOPACTIVEPOWERCONTROL_HPP
 
-#include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
 
 namespace powsybl {
 
@@ -20,11 +20,20 @@ namespace extensions {
 
 namespace iidm {
 
-class HvdcAngleDroopActivePowerControl : public Extension {
+class HvdcAngleDroopActivePowerControl : public AbstractMultiVariantIdentifiableExtension {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
+
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
 
 public:
     double getDroop() const;
@@ -56,18 +65,18 @@ private:
     /**
      * Active power offset in MW
      */
-    double m_p0;
+    std::vector<double> m_p0;
 
     /**
      * Droop in MW/degree
      */
-    double m_droop;
+    std::vector<double> m_droop;
 
     /**
      * Enables or disables this active power control mode.
      * If this active power control mode is disabled, use the setpoint mode by default.
      */
-    bool m_enabled;
+    std::vector<bool> m_enabled;
 };
 
 }  // namespace iidm

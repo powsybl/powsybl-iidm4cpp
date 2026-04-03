@@ -8,6 +8,10 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_PILOTPOINT_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_PILOTPOINT_HPP
 
+#include <powsybl/iidm/MultiVariantObject.hpp>
+
+#include <powsybl/stdcxx/reference.hpp>
+
 #include <string>
 #include <vector>
 
@@ -15,11 +19,13 @@ namespace powsybl {
 
 namespace iidm {
 
+class VariantManagerHolder;
+
 namespace extensions {
 
 namespace iidm {
 
-class PilotPoint {
+class PilotPoint : public MultiVariantObject {
 public:
     PilotPoint(const std::vector<std::string>& ids, double targetV);
 
@@ -36,12 +42,28 @@ public:
 
     void setTargetV(double targetV);
 
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
+
+protected:
+    void setVariantManagerHolder(const VariantManagerHolder& variantManagerHolder);
+    friend class ControlZone;
+
+private:
+    unsigned long getVariantIndex() const;
 
 private:
     std::vector<std::string> m_busbarSectionsOrBusesIds;
 
-    double m_targetV;
+    std::vector<double> m_targetV;
 
+    stdcxx::Reference<VariantManagerHolder> m_variantManagerHolder;
 };
 
 }  // namespace iidm

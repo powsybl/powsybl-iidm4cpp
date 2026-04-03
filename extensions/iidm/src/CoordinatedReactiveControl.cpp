@@ -13,6 +13,8 @@
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/format.hpp>
@@ -26,8 +28,9 @@ namespace extensions {
 namespace iidm {
 
 CoordinatedReactiveControl::CoordinatedReactiveControl(Generator& generator, double qPercent) :
-    Extension(generator),
-    m_qPercent(checkQPercent(generator, qPercent)) {
+    AbstractMultiVariantIdentifiableExtension(generator) {
+    unsigned long variantArraySize = getVariantManagerHolder().getVariantManager().getVariantArraySize();
+    m_qPercent.resize(variantArraySize, checkQPercent(generator, qPercent));
 }
 
 void CoordinatedReactiveControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -53,7 +56,7 @@ const std::string& CoordinatedReactiveControl::getName() const {
 }
 
 double CoordinatedReactiveControl::getQPercent() const {
-    return m_qPercent;
+    return m_qPercent[getVariantIndex()];
 }
 
 const std::type_index& CoordinatedReactiveControl::getType() const {
@@ -62,8 +65,26 @@ const std::type_index& CoordinatedReactiveControl::getType() const {
 }
 
 CoordinatedReactiveControl& CoordinatedReactiveControl::setQPercent(double qPercent) {
-    m_qPercent = checkQPercent(getExtendable<Generator>(), qPercent);
+    m_qPercent[getVariantIndex()] = checkQPercent(getExtendable<Generator>(), qPercent);
     return *this;
+}
+
+void CoordinatedReactiveControl::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (unsigned long index : indexes) {
+        m_qPercent[index] = m_qPercent[sourceIndex];
+    }
+}
+
+void CoordinatedReactiveControl::deleteVariantArrayElement(unsigned long /*index*/) {
+    //nothing to do
+}
+
+void CoordinatedReactiveControl::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    m_qPercent.resize(m_qPercent.size() + number, m_qPercent[sourceIndex]);
+}
+
+void CoordinatedReactiveControl::reduceVariantArraySize(unsigned long number) {
+    m_qPercent.resize(m_qPercent.size() - number);
 }
 
 }  // namespace iidm

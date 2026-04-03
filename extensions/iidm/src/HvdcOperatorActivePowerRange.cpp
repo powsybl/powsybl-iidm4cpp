@@ -11,6 +11,8 @@
 
 #include <powsybl/iidm/HvdcConverterStation.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/stdcxx/format.hpp>
 
 namespace powsybl {
@@ -22,9 +24,10 @@ namespace extensions {
 namespace iidm {
 
 HvdcOperatorActivePowerRange::HvdcOperatorActivePowerRange(HvdcLine& hvdcLine, double oprFromCS1toCS2, double oprFromCS2toCS1) :
-    Extension(hvdcLine),
-    m_oprFromCS1toCS2(checkOPR(oprFromCS1toCS2, hvdcLine.getConverterStation1(), hvdcLine.getConverterStation2())),
-    m_oprFromCS2toCS1(checkOPR(oprFromCS2toCS1, hvdcLine.getConverterStation2(), hvdcLine.getConverterStation1())) {
+    AbstractMultiVariantIdentifiableExtension(hvdcLine) {
+    unsigned long variantArraySize = getVariantManagerHolder().getVariantManager().getVariantArraySize();
+    m_oprFromCS1toCS2.resize(variantArraySize, checkOPR(oprFromCS1toCS2, hvdcLine.getConverterStation1(), hvdcLine.getConverterStation2()));
+    m_oprFromCS2toCS1.resize(variantArraySize, checkOPR(oprFromCS2toCS1, hvdcLine.getConverterStation2(), hvdcLine.getConverterStation1()));
 
 }
 
@@ -48,11 +51,11 @@ const std::string& HvdcOperatorActivePowerRange::getName() const {
 }
 
 double HvdcOperatorActivePowerRange::getOprFromCS1toCS2() const {
-    return m_oprFromCS1toCS2;
+    return m_oprFromCS1toCS2[getVariantIndex()];
 }
 
 double HvdcOperatorActivePowerRange::getOprFromCS2toCS1() const {
-    return m_oprFromCS2toCS1;
+    return m_oprFromCS2toCS1[getVariantIndex()];
 }
 
 const std::type_index& HvdcOperatorActivePowerRange::getType() const {
@@ -62,14 +65,35 @@ const std::type_index& HvdcOperatorActivePowerRange::getType() const {
 
 HvdcOperatorActivePowerRange& HvdcOperatorActivePowerRange::setOprFromCS1toCS2(double oprFromCS1toCS2) {
     const HvdcLine& hvdcLine = getExtendable<HvdcLine>().get();
-    m_oprFromCS1toCS2 = checkOPR(oprFromCS1toCS2, hvdcLine.getConverterStation1(), hvdcLine.getConverterStation2());
+    m_oprFromCS1toCS2[getVariantIndex()] = checkOPR(oprFromCS1toCS2, hvdcLine.getConverterStation1(), hvdcLine.getConverterStation2());
     return *this;
 }
 
 HvdcOperatorActivePowerRange& HvdcOperatorActivePowerRange::setOprFromCS2toCS1(double oprFromCS2toCS1) {
     const HvdcLine& hvdcLine = getExtendable<HvdcLine>().get();
-    m_oprFromCS2toCS1 = checkOPR(oprFromCS2toCS1, hvdcLine.getConverterStation2(), hvdcLine.getConverterStation1());
+    m_oprFromCS2toCS1[getVariantIndex()] = checkOPR(oprFromCS2toCS1, hvdcLine.getConverterStation2(), hvdcLine.getConverterStation1());
     return *this;
+}
+
+void HvdcOperatorActivePowerRange::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (unsigned long index : indexes) {
+        m_oprFromCS1toCS2[index] = m_oprFromCS1toCS2[sourceIndex];
+        m_oprFromCS2toCS1[index] = m_oprFromCS2toCS1[sourceIndex];
+    }
+}
+
+void HvdcOperatorActivePowerRange::deleteVariantArrayElement(unsigned long /*index*/) {
+    //nothing to do
+}
+
+void HvdcOperatorActivePowerRange::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    m_oprFromCS1toCS2.resize(m_oprFromCS1toCS2.size() + number, m_oprFromCS1toCS2[sourceIndex]);
+    m_oprFromCS2toCS1.resize(m_oprFromCS2toCS1.size() + number, m_oprFromCS2toCS1[sourceIndex]);
+}
+
+void HvdcOperatorActivePowerRange::reduceVariantArraySize(unsigned long number) {
+    m_oprFromCS1toCS2.resize(m_oprFromCS1toCS2.size() - number);
+    m_oprFromCS2toCS1.resize(m_oprFromCS2toCS1.size() - number);
 }
 
 }  // namespace iidm

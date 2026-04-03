@@ -10,6 +10,8 @@
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/VariantManager.hpp>
+#include <powsybl/iidm/VariantManagerHolder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
 #include <powsybl/logging/Logger.hpp>
@@ -27,15 +29,16 @@ namespace extensions {
 namespace iidm {
 
 RemoteReactivePowerControl::RemoteReactivePowerControl(Generator& generator, double targetQ, Terminal& terminal, bool enabled) :
-    Extension(generator),
-    m_targetQ(targetQ),
-    m_regulatingTerminal(terminal),
-    m_enabled(enabled) {
-        if (!stdcxx::areSame(terminal.getVoltageLevel().getParentNetwork(), generator.getParentNetwork())) {
-            throw PowsyblException( stdcxx::format("Regulating terminal is not in the right Network (%1% instead of %2%)",
-                terminal.getVoltageLevel().getParentNetwork().getId(), generator.getParentNetwork().getId()) );
-        }
-        terminal.registerReferrer(*this);
+    AbstractMultiVariantIdentifiableExtension(generator),
+    m_regulatingTerminal(terminal) {
+    unsigned long variantArraySize = getVariantManagerHolder().getVariantManager().getVariantArraySize();
+    m_targetQ.resize(variantArraySize, targetQ);
+    m_enabled.resize(variantArraySize, enabled);
+    if (!stdcxx::areSame(terminal.getVoltageLevel().getParentNetwork(), generator.getParentNetwork())) {
+        throw PowsyblException( stdcxx::format("Regulating terminal is not in the right Network (%1% instead of %2%)",
+            terminal.getVoltageLevel().getParentNetwork().getId(), generator.getParentNetwork().getId()) );
+    }
+    terminal.registerReferrer(*this);
 }
 
 void RemoteReactivePowerControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -58,7 +61,7 @@ Terminal& RemoteReactivePowerControl::getRegulatingTerminal() {
 }
 
 double RemoteReactivePowerControl::getTargetQ() const {
-    return m_targetQ;
+    return m_targetQ[getVariantIndex()];
 }
 
 const std::type_index& RemoteReactivePowerControl::getType() const {
@@ -67,15 +70,15 @@ const std::type_index& RemoteReactivePowerControl::getType() const {
 }
 
 bool RemoteReactivePowerControl::isEnabled() const {
-    return m_enabled;
+    return m_enabled[getVariantIndex()];
 }
 
-RemoteReactivePowerControl& RemoteReactivePowerControl::setTargeQ(double targetQ) {
-    m_targetQ = checkTargetQ(targetQ);
+RemoteReactivePowerControl& RemoteReactivePowerControl::setTargetQ(double targetQ) {
+    m_targetQ[getVariantIndex()] = checkTargetQ(targetQ);
     return *this;
 }
 RemoteReactivePowerControl& RemoteReactivePowerControl::setEnabled(bool enabled) {
-    m_enabled = enabled;
+    m_enabled[getVariantIndex()] = enabled;
     return *this;
 }
 RemoteReactivePowerControl& RemoteReactivePowerControl::setRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal) {
@@ -120,6 +123,27 @@ void RemoteReactivePowerControl::onReferencedReplacement(Terminal& /*oldReferenc
 
 void RemoteReactivePowerControl::cleanup() {
     getRegulatingTerminal().unregisterReferrer(*this);
+}
+
+void RemoteReactivePowerControl::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (unsigned long index : indexes) {
+        m_targetQ[index] = m_targetQ[sourceIndex];
+        m_enabled[index] = m_enabled[sourceIndex];
+    }
+}
+
+void RemoteReactivePowerControl::deleteVariantArrayElement(unsigned long /*index*/) {
+    //nothing to do
+}
+
+void RemoteReactivePowerControl::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    m_targetQ.resize(m_targetQ.size() + number, m_targetQ[sourceIndex]);
+    m_enabled.resize(m_enabled.size() + number, m_enabled[sourceIndex]);
+}
+
+void RemoteReactivePowerControl::reduceVariantArraySize(unsigned long number) {
+    m_targetQ.resize(m_targetQ.size() - number);
+    m_enabled.resize(m_enabled.size() - number);
 }
 
 }  // namespace iidm

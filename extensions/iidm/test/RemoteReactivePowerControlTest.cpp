@@ -98,9 +98,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     ext.setEnabled(true);
     BOOST_CHECK(ext.isEnabled());
-    ext.setTargeQ(3.0);
+    ext.setTargetQ(3.0);
     BOOST_CHECK_CLOSE(3.0, ext.getTargetQ(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(ext.setTargeQ(stdcxx::nan()), PowsyblException, "RemoteReactivePowerControl's reactive power target must be set");
+    POWSYBL_ASSERT_THROW(ext.setTargetQ(stdcxx::nan()), PowsyblException, "RemoteReactivePowerControl's reactive power target must be set");
     POWSYBL_ASSERT_THROW(ext.setRegulatingTerminal(stdcxx::Reference<Terminal>()), PowsyblException, "RemoteReactivePowerControl's regulating terminal must be set");
     Terminal& genTerminal = generator.getTerminal();
     ext.setRegulatingTerminal(stdcxx::Reference<Terminal>(genTerminal));
@@ -156,6 +156,44 @@ BOOST_AUTO_TEST_CASE(removeTerminal) {
     POWSYBL_ASSERT_REF_FALSE(ext);
 
 
+}
+
+BOOST_AUTO_TEST_CASE(variantTest) {
+    Network network = createNetworkTest();
+    RemoteReactivePowerControl& control = network.getGenerator("G").getExtension<RemoteReactivePowerControl>();
+    control.setTargetQ(200.0);
+
+    // Testing variant cloning
+    VariantManager& variantManager = network.getVariantManager();
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), "variant1");
+    variantManager.cloneVariant("variant1", "variant2");
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK_CLOSE(200.0, control.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(control.isEnabled());
+
+    // Testing setting different values in the cloned variant and going back to the initial one
+    control.setTargetQ(210.0);
+    control.setEnabled(false);
+    BOOST_CHECK(!control.isEnabled());
+    BOOST_CHECK_CLOSE(210.0, control.getTargetQ(), std::numeric_limits<double>::epsilon());
+
+    variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
+    BOOST_CHECK_CLOSE(200.0, control.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(control.isEnabled());
+
+    // Removes a variant then adds another variant to test variant recycling (hence calling allocateVariantArrayElement)
+    variantManager.removeVariant("variant1");
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), {"variant1", "variant3"});
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK_CLOSE(200.0, control.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(control.isEnabled());
+    variantManager.setWorkingVariant("variant3");
+    BOOST_CHECK_CLOSE(200.0, control.getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(control.isEnabled());
+
+    // Test removing current variant
+    variantManager.removeVariant("variant3");
+    POWSYBL_ASSERT_THROW(control.getTargetQ(), PowsyblException, "Variant index not set");
 }
 
 BOOST_FIXTURE_TEST_CASE(rrpcXmlTest, test::ResourceFixture) {

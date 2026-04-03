@@ -8,17 +8,24 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_CONTROLUNIT_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_CONTROLUNIT_HPP
 
+#include <powsybl/iidm/MultiVariantObject.hpp>
+
+#include <powsybl/stdcxx/reference.hpp>
+
 #include <string>
+#include <vector>
 
 namespace powsybl {
 
 namespace iidm {
 
+class VariantManagerHolder;
+
 namespace extensions {
 
 namespace iidm {
 
-class ControlUnit {
+class ControlUnit : public MultiVariantObject {
 public:
     ControlUnit(const std::string& id, bool participate = true);
 
@@ -34,11 +41,28 @@ public:
     bool isParticipate() const;
     void setParticipate(bool participate);
 
-private:
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
+
+protected:
+    void setVariantManagerHolder(const VariantManagerHolder& variantManagerHolder);
+    friend class ControlZone;
+
+private:
+    unsigned long getVariantIndex() const;
+
+private:
     std::string m_id;
 
-    bool m_participate;
+    std::vector<bool> m_participate;
+
+    stdcxx::Reference<VariantManagerHolder> m_variantManagerHolder;
 };
 
 }  // namespace iidm

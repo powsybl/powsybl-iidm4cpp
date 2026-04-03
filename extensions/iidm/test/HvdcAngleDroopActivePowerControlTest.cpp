@@ -13,6 +13,7 @@
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControl.hpp>
 #include <powsybl/iidm/extensions/iidm/HvdcAngleDroopActivePowerControlAdder.hpp>
+#include <powsybl/network/ScadaNetworkFactory.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
@@ -27,6 +28,55 @@ namespace extensions {
 namespace iidm {
 
 BOOST_AUTO_TEST_SUITE(HvdcAngleDroopActivePowerControlTestSuite)
+
+BOOST_AUTO_TEST_CASE(variantTest) {
+    Network network = powsybl::network::ScadaNetworkFactory::create();
+    HvdcLine& line = network.getHvdcLine("hvdcline");
+    line.newExtension<HvdcAngleDroopActivePowerControlAdder>().withP0(200.0).withDroop(0.9).withEnabled(true).add();
+    auto& hadpc = line.getExtension<HvdcAngleDroopActivePowerControl>();
+
+    // Testing variant cloning
+    VariantManager& variantManager = network.getVariantManager();
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), "variant1");
+    variantManager.cloneVariant("variant1", "variant2");
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK_CLOSE(200.0, hadpc.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.9, hadpc.getDroop(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(hadpc.isEnabled());
+
+    // Testing setting different values in the cloned variant and going back to the initial one
+    hadpc.setP0(210.0);
+    hadpc.setDroop(0.8);
+    hadpc.setEnabled(false);
+    BOOST_CHECK(!hadpc.isEnabled());
+    BOOST_CHECK_CLOSE(210.0, hadpc.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.8, hadpc.getDroop(), std::numeric_limits<double>::epsilon());
+    variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
+    BOOST_CHECK_CLOSE(200.0, hadpc.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.9, hadpc.getDroop(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(hadpc.isEnabled());
+
+    // Removes a variant then adds another variant to test variant recycling (hence calling allocateVariantArrayElement)
+    variantManager.removeVariant("variant1");
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), {"variant1", "variant3"});
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK_CLOSE(200.0, hadpc.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.9, hadpc.getDroop(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(hadpc.isEnabled());
+    variantManager.setWorkingVariant("variant3");
+    BOOST_CHECK_CLOSE(200.0, hadpc.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.9, hadpc.getDroop(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(hadpc.isEnabled());
+
+    // Test removing current variant
+    variantManager.removeVariant("variant3");
+    POWSYBL_ASSERT_THROW(hadpc.setP0(stdcxx::nan()), PowsyblException, "Variant index not set");
+    // Test illegal arguments in set methods
+    variantManager.setWorkingVariant("variant1");
+    POWSYBL_ASSERT_THROW(hadpc.setP0(stdcxx::nan()), ValidationException, "hvdcLine 'hvdcline': p0 value (nan) is invalid");
+    POWSYBL_ASSERT_THROW(hadpc.setDroop(stdcxx::nan()), ValidationException, "hvdcLine 'hvdcline': droop value (nan) is invalid");
+    
+}
 
 BOOST_FIXTURE_TEST_CASE(HvdcAngleDroopActivePowerControlConstructor, test::ResourceFixture) {
     Network network = Network::readXml(ResourceFixture::getResourcePath("VscRoundTripRef.xml"));

@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_CONTROLZONE_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_CONTROLZONE_HPP
 
+#include <powsybl/iidm/MultiVariantObject.hpp>
+
 #include <powsybl/iidm/extensions/iidm/ControlUnit.hpp>
 #include <powsybl/iidm/extensions/iidm/PilotPoint.hpp>
 
@@ -24,7 +26,7 @@ namespace extensions {
 
 namespace iidm {
 
-class ControlZone {
+class ControlZone : public MultiVariantObject {
 public:
 
     ControlZone(const std::string& name, const PilotPoint& pilotPoint, const std::vector<ControlUnit>& controlUnits);
@@ -40,7 +42,22 @@ public:
     const PilotPoint& getPilotPoint() const;
     PilotPoint& getPilotPoint();
     const std::vector<ControlUnit>& getControlUnits() const;
+    std::vector<ControlUnit>& getControlUnits();
     stdcxx::optional<ControlUnit> getControlUnit(const std::string id) const;
+    stdcxx::Reference<ControlUnit> getControlUnit(const std::string id);
+
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
+
+protected:
+    void setVariantManagerHolder(const VariantManagerHolder& variantManagerHolder);
+    friend class SecondaryVoltageControl;
 
 private:
 

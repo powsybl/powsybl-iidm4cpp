@@ -8,7 +8,7 @@
 #ifndef POWSYBL_IIDM_EXTENSIONS_IIDM_REMOTEREACTIVEPOWERCONTROL_HPP
 #define POWSYBL_IIDM_EXTENSIONS_IIDM_REMOTEREACTIVEPOWERCONTROL_HPP
 
-#include <powsybl/iidm/Extension.hpp>
+#include <powsybl/iidm/AbstractMultiVariantIdentifiableExtension.hpp>
 #include <powsybl/iidm/Referrer.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
@@ -26,13 +26,22 @@ namespace iidm {
 
 class RemoteReactivePowerControlAdder;
 
-class RemoteReactivePowerControl : public Extension, public Referrer<Terminal> {
+class RemoteReactivePowerControl : public AbstractMultiVariantIdentifiableExtension, public Referrer<Terminal> {
 public:  // Extension
     const std::string& getName() const override;
 
     const std::type_index& getType() const override;
 
     void cleanup() override;
+
+public: // MultiVariantObject
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
 
 public: //Referrer<Terminal>
     void onReferencedRemoval(Terminal& removedReference) override;
@@ -49,7 +58,7 @@ public:
 
     bool isEnabled() const;
 
-    RemoteReactivePowerControl& setTargeQ(double targetQ);
+    RemoteReactivePowerControl& setTargetQ(double targetQ);
     RemoteReactivePowerControl& setEnabled(bool enabled);
     RemoteReactivePowerControl& setRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal);
 
@@ -65,11 +74,11 @@ private:
     static void checkRegulatingTerminal(const stdcxx::Reference<Terminal>& terminal, const Network& network);
 
 private:
-    double m_targetQ;
+    std::vector<double> m_targetQ;
 
     std::reference_wrapper<Terminal> m_regulatingTerminal; //Managed through Referrer<Terminal> inheritance
 
-    bool m_enabled;
+    std::vector<bool> m_enabled;
 };
 
 }  // namespace iidm

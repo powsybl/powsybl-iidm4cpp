@@ -126,6 +126,47 @@ Network createVsc() {
 
 BOOST_AUTO_TEST_SUITE(HvdcOperatorActivePowerRangeTestSuite)
 
+BOOST_AUTO_TEST_CASE(variantTest) {
+    Network network = createVsc();
+    HvdcLine& line = network.getHvdcLine("L");
+    line.newExtension<HvdcOperatorActivePowerRangeAdder>().withOprFromCS1toCS2(2.0).withOprFromCS2toCS1(1.0).add();
+    auto& hopc = line.getExtension<HvdcOperatorActivePowerRange>();
+
+    // Testing variant cloning
+    VariantManager& variantManager = network.getVariantManager();
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), "variant1");
+    variantManager.cloneVariant("variant1", "variant2");
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK_CLOSE(1.0, hopc.getOprFromCS2toCS1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, hopc.getOprFromCS1toCS2(), std::numeric_limits<double>::epsilon());
+
+    // Testing setting different values in the cloned variant and going back to the initial one
+    hopc.setOprFromCS2toCS1(1.5);
+    hopc.setOprFromCS1toCS2(2.5);
+    BOOST_CHECK_CLOSE(1.5, hopc.getOprFromCS2toCS1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.5, hopc.getOprFromCS1toCS2(), std::numeric_limits<double>::epsilon());
+    variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
+    BOOST_CHECK_CLOSE(1.0, hopc.getOprFromCS2toCS1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, hopc.getOprFromCS1toCS2(), std::numeric_limits<double>::epsilon());
+
+    // Removes a variant then adds another variant to test variant recycling (hence calling allocateVariantArrayElement)
+    variantManager.removeVariant("variant1");
+    variantManager.cloneVariant(VariantManager::getInitialVariantId(), {"variant1", "variant3"});
+    variantManager.setWorkingVariant("variant1");
+    BOOST_CHECK_CLOSE(1.0, hopc.getOprFromCS2toCS1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, hopc.getOprFromCS1toCS2(), std::numeric_limits<double>::epsilon());
+    variantManager.setWorkingVariant("variant3");
+    BOOST_CHECK_CLOSE(1.0, hopc.getOprFromCS2toCS1(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, hopc.getOprFromCS1toCS2(), std::numeric_limits<double>::epsilon());
+
+    // Test removing current variant
+    variantManager.removeVariant("variant3");
+    POWSYBL_ASSERT_THROW(hopc.setOprFromCS2toCS1(-1.0), PowsyblException, "Variant index not set");
+    // Test illegal arguments in set methods
+    variantManager.setWorkingVariant("variant1");
+    POWSYBL_ASSERT_THROW(hopc.setOprFromCS2toCS1(-1.0), PowsyblException, "OPR from C2 to C1 must be greater than 0 (current value -1).");
+}
+
 BOOST_FIXTURE_TEST_CASE(HvdcOperatorActivePowerRangeConstructor, test::ResourceFixture) {
     Network network = Network::readXml(ResourceFixture::getResourcePath("LccRoundTripRef.xml"));
     HvdcLine& hvdcLine = network.getHvdcLine("L");
