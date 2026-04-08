@@ -321,6 +321,41 @@ BOOST_FIXTURE_TEST_CASE(importWithoutPermanentLimitsOption, test::ResourceFixtur
 
 }
 
+BOOST_FIXTURE_TEST_CASE(withProperties, test::ResourceFixture) {
+    Network network = createDanglingLineNetwork();
+    network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
+    DanglingLine& danglingLine = network.getDanglingLine("DL");
+    OperationalLimitsGroup& group1 = danglingLine.getOperationalLimitsGroup("DEFAULT");
+    group1.setProperty("type", "A");
+    group1.setProperty("source", "s1");
+    auto adder1 = group1.newCurrentLimits();
+    createLoadingLimits(adder1);
+    OperationalLimitsGroup& group2 = danglingLine.newOperationalLimitsGroup("GROUP_2");
+    group2.setProperty("type", "B");
+    group2.setProperty("source", "s2");
+    auto adder2 = group2.newCurrentLimits();
+    createLoadingLimits(adder2);
+
+    test::converter::RoundTrip::runXml(network, test::converter::RoundTrip::getVersionedNetwork("operational-limits-groups-with-properties.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
+
+    // backward compatibility checks from version 1.14
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("tl-loading-limits.xml", IidmXmlVersion::V1_14());
+
+    // properties not exported on previous versions:
+    auto versionfilter = [](const iidm::converter::xml::IidmXmlVersion& version) {
+        return version >= IidmXmlVersion::V1_12() && version < iidm::converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION();
+    };
+    for (const auto& version : iidm::converter::xml::IidmXmlVersion::all() | boost::adaptors::filtered(versionfilter)) {
+        ExportOptions options = ExportOptions().setVersion(version.get().toString("."));
+        const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
+            iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);
+        };
+
+        test::converter::RoundTrip::writeXmlTest(network, writer, test::converter::RoundTrip::getVersionedNetwork("operational-limits-groups-with-properties.xml", version.get()));
+    }
+
+}
+
 BOOST_AUTO_TEST_CASE(testWrongParametersValue) {
     ImportOptions options;
 

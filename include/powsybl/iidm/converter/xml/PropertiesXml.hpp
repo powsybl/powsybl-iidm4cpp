@@ -15,7 +15,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class Identifiable;
+class PropertiesHolder;
 
 namespace converter {
 
@@ -26,14 +26,16 @@ class NetworkXmlWriterContext;
 
 class PropertiesXml {
 public:
-    static void read(Identifiable& identifiable, NetworkXmlReaderContext& context);
+    static void read(PropertiesHolder& propertiesHolder,const NetworkXmlReaderContext& context);
 
-    static void read(std::vector<std::function<void(Identifiable&)>>& toApply, const NetworkXmlReaderContext& context);
+    template <typename H, typename = typename std::enable_if<std::is_base_of<PropertiesHolder, H>::value>::type>
+    static void read(std::vector<std::function<void(H&)>>& toApply, const NetworkXmlReaderContext& context);
 
-    static void write(const Identifiable& identifiable, NetworkXmlWriterContext& context);
+    static void write(const PropertiesHolder& propertiesHolder, NetworkXmlWriterContext& context);
 
 private:
-    static std::function<void(Identifiable&)> read(const NetworkXmlReaderContext& context);
+    template <typename H, typename = typename std::enable_if<std::is_base_of<PropertiesHolder, H>::value>::type>
+    static std::function<void(H&)> read(const NetworkXmlReaderContext& context);
 
     PropertiesXml() = default;
 
@@ -47,5 +49,7 @@ private:
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/converter/xml/PropertiesXml.hxx>
 
 #endif  // POWSYBL_IIDM_CONVERTER_XML_PROPERTIESXML_HPP

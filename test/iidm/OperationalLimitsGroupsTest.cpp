@@ -13,10 +13,12 @@
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/OperationalLimitsGroup.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformer.hpp>
 #include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
+#include <powsybl/stdcxx/exception.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
@@ -450,6 +452,36 @@ BOOST_AUTO_TEST_CASE(testGetOrCreateDefault) {
     BOOST_CHECK_EQUAL(l.getSelectedOperationalLimitsGroup1().get().getId(), "DEFAULT");
 }
 
+
+BOOST_AUTO_TEST_CASE(propertiesHolderTest) {
+    Network network = createOperationalLimitsOnLineNetwork();
+    Line& l = network.getLine("L");
+
+    OperationalLimitsGroup& group = l.getOperationalLimitsGroup1("1").get();
+    BOOST_CHECK(!group.hasProperty());
+    std::string property1 = "property_1";
+    std::string property2 = "property_2";
+    std::set<std::string> propertyNamesSet = {property1};
+    group.setProperty(property1, "A");
+    BOOST_CHECK(group.hasProperty());
+    BOOST_CHECK(group.hasProperty(property1));
+    BOOST_CHECK(!group.hasProperty(property2));
+    BOOST_CHECK_EQUAL(1, boost::size(group.getPropertyNames()));
+    BOOST_CHECK_EQUAL_COLLECTIONS(group.getPropertyNames().begin(), group.getPropertyNames().end(), propertyNamesSet.begin(), propertyNamesSet.end());
+    BOOST_CHECK_EQUAL("A", group.getProperty(property1));
+    POWSYBL_ASSERT_THROW(group.getProperty(property2), stdcxx::PropertyNotFoundException, "Property property_2 does not exist");
+    BOOST_CHECK(group.getProperty(property2, "").empty());
+
+    BOOST_CHECK(!group.removeProperty(property2));
+    BOOST_CHECK_EQUAL(1, boost::size(group.getPropertyNames()));
+    BOOST_CHECK_EQUAL_COLLECTIONS(group.getPropertyNames().begin(), group.getPropertyNames().end(), propertyNamesSet.begin(), propertyNamesSet.end());
+
+    BOOST_CHECK(group.removeProperty(property1));
+    BOOST_CHECK(!group.hasProperty());
+    BOOST_CHECK(!group.hasProperty(property1));
+    BOOST_CHECK(group.getPropertyNames().empty());
+    POWSYBL_ASSERT_THROW(group.getProperty(property1), stdcxx::PropertyNotFoundException, "Property property_1 does not exist");
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

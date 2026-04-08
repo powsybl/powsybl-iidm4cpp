@@ -14,6 +14,7 @@
 
 #include <powsybl/iidm/LimitType.hpp>
 #include <powsybl/iidm/OperationalLimits.hpp>
+#include <powsybl/iidm/PropertiesHolder.hpp>
 #include <powsybl/iidm/Validable.hpp>
 
 #include <powsybl/stdcxx/reference.hpp>
@@ -32,7 +33,7 @@ class CurrentLimitsAdder;
 class Identifiable;
 class Network;
 
-class OperationalLimitsGroup : public Validable {
+class OperationalLimitsGroup : public Validable, public PropertiesHolder {
 public:
     OperationalLimitsGroup(const std::string& id, Identifiable& identifiable, const std::string& attributeName, const std::string& selectedGroupId);
     OperationalLimitsGroup(const std::string& id, Identifiable& identifiable, const std::string& attributeName);

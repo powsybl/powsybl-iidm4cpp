@@ -154,28 +154,8 @@ Identifiable& Identifiable::setOptionalName(const std::string& name) {
     return *this;
 }
 
-const std::string& Identifiable::getProperty(const std::string& key) const {
-    return m_properties.get(key);
-}
-
-const std::string& Identifiable::getProperty(const std::string& key, const std::string& defaultValue) const {
-    return m_properties.get(key, defaultValue);
-}
-
-stdcxx::const_range<std::string> Identifiable::getPropertyNames() const {
-    return m_properties.getKeys();
-}
-
 bool Identifiable::hasAliases() const {
     return !m_aliasesWithoutType.empty() || !m_aliasesByType.empty();
-}
-
-bool Identifiable::hasProperty() const {
-    return !m_properties.isEmpty();
-}
-
-bool Identifiable::hasProperty(const std::string& key) const {
-    return m_properties.contains(key);
 }
 
 bool Identifiable::isFictitious() const {
@@ -202,16 +182,8 @@ void Identifiable::removeAlias(const std::string& alias) {
     }
 }
 
-bool Identifiable::removeProperty(const std::string& key) {
-    return static_cast<bool>(m_properties.remove(key));
-}
-
 void Identifiable::setFictitious(bool fictitious) {
     m_fictitious = fictitious;
-}
-
-stdcxx::optional<std::string> Identifiable::setProperty(const std::string& key, const std::string& value) {
-    return m_properties.set(key, value);
 }
 
 std::ostream& operator<<(std::ostream& stream, const Identifiable& identifiable) {

@@ -15,6 +15,7 @@
 #include <powsybl/iidm/Extendable.hpp>
 #include <powsybl/iidm/IdentifiableType.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/iidm/PropertiesHolder.hpp>
 #include <powsybl/iidm/Validable.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/stdcxx/optional.hpp>
@@ -26,7 +27,7 @@ namespace iidm {
 
 class Network;
 
-class Identifiable : public virtual Validable, public Extendable, public MultiVariantObject {
+class Identifiable : public virtual Validable, public Extendable, public MultiVariantObject, public virtual PropertiesHolder {
 public: // Validable
     std::string getMessageHeader() const override;
 
@@ -76,29 +77,15 @@ public:
 
     virtual Identifiable& setOptionalName(const std::string& name);
 
-    const std::string& getProperty(const std::string& key) const;
-
-    const std::string& getProperty(const std::string& key, const std::string& defaultValue) const;
-
-    stdcxx::const_range<std::string> getPropertyNames() const;
-
     virtual const IdentifiableType& getType() const = 0;
 
     bool hasAliases() const;
-
-    bool hasProperty() const;
-
-    bool hasProperty(const std::string& key) const;
 
     bool isFictitious() const;
 
     void removeAlias(const std::string& alias);
 
-    bool removeProperty(const std::string& key);
-
     virtual void setFictitious(bool fictitious);
-
-    stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
 
 protected:  // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -122,8 +109,6 @@ private:
     std::string m_name;
 
     bool m_fictitious;
-
-    stdcxx::Properties m_properties;
 
     std::set<std::string> m_aliasesWithoutType;
 

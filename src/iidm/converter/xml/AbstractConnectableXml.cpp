@@ -13,6 +13,7 @@
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
+#include <powsybl/iidm/converter/xml/PropertiesXml.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -131,10 +132,14 @@ void AbstractConnectableXml::readLoadingLimitsGroup(const NetworkXmlReaderContex
 }
 
 void AbstractConnectableXml::writeLoadingLimitsGroups(const stdcxx::const_range<OperationalLimitsGroup>& limitsGroups, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
-
     for( const auto& limitsGroup : limitsGroups) {
         context.getWriter().writeStartElement(context.getVersion().getPrefix(), toString(LIMITS_GROUP, index));
         context.getWriter().writeAttribute(ID, limitsGroup.getId());
+
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&limitsGroup, &context](){
+            PropertiesXml::write(limitsGroup, context);
+        });
+
         if(limitsGroup.getActivePowerLimits()) {
             writeActivePowerLimits(limitsGroup.getActivePowerLimits(), context.getWriter(), context.getVersion());
         }
@@ -151,14 +156,17 @@ void AbstractConnectableXml::writeLoadingLimitsGroups(const stdcxx::const_range<
 
 void AbstractConnectableXml::readAllLoadingLimits(OperationalLimitsGroup& limitsGroup, const char* groupElementName, const NetworkXmlReaderContext& context) {
     context.getReader().readUntilEndElement(groupElementName, [&limitsGroup, &groupElementName, &context]() {
-        if(context.getReader().getLocalName() == ACTIVE_POWER_LIMITS) {
+        std::string localName = context.getReader().getLocalName();
+        if(localName == ACTIVE_POWER_LIMITS) {
             readActivePowerLimits(limitsGroup.newActivePowerLimits(), context);
-        } else if(context.getReader().getLocalName() == APPARENT_POWER_LIMITS) {
+        } else if(localName == APPARENT_POWER_LIMITS) {
             readApparentPowerLimits(limitsGroup.newApparentPowerLimits(), context);
-        } else if(context.getReader().getLocalName() == CURRENT_LIMITS) {
+        } else if(localName == CURRENT_LIMITS) {
             readCurrentLimits(limitsGroup.newCurrentLimits(), context);
+        } else if(localName == PROPERTY) {
+            PropertiesXml::read(limitsGroup, context);
         } else {
-            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), groupElementName));
+            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", localName, groupElementName));
         }
     });
 }
