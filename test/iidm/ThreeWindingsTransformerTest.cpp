@@ -812,6 +812,105 @@ BOOST_AUTO_TEST_CASE(adders) {
     BOOST_CHECK_CLOSE(2.2, twt.getLeg1().getG(), std::numeric_limits<double>::epsilon());
 }
 
+BOOST_AUTO_TEST_CASE(getTerminalFromVoltageLevelId) {
+    Network network = createThreeWindingsTransformerTestNetwork();
+
+    // Substation& s1 = network.getSubstation("S1");
+
+    ThreeWindingsTransformerAdder adder = network.getSubstation("S1").newThreeWindingsTransformer();
+    adder.setId("twt")
+         .setName("twt_name")
+         .newLeg1()
+         .setR(1.3)
+         .setX(1.4)
+         .setG(1.6)
+         .setB(1.7)
+         .setRatedU(1.1)
+         .setRatedS(2.2)
+         .setVoltageLevel("VL1")
+         .setBus("VL1_BUS1")
+         .setConnectableBus("VL1_BUS1")
+         .add()
+         .newLeg2()
+         .setR(2.3)
+         .setX(2.4)
+         .setG(0.0)
+         .setB(0.0)
+         .setRatedU(2.1)
+         .setVoltageLevel("VL2")
+         .setConnectableBus("VL2_BUS1")
+         .add()
+         .newLeg3()
+         .setR(3.3)
+         .setX(3.4)
+         .setG(0.0)
+         .setB(0.0)
+         .setRatedU(3.1)
+         .setVoltageLevel("VL2")
+         .setConnectableBus("VL2_BUS1")
+         .add();
+
+    adder.add();
+    auto& transformer = network.getThreeWindingsTransformer("twt");
+    BOOST_CHECK(stdcxx::areSame(transformer.getTerminal("VL1").getBusBreakerView().getConnectableBus().get(),
+                                transformer.getLeg1().getTerminal().getBusBreakerView().getConnectableBus().get()));
+    POWSYBL_ASSERT_THROW(transformer.getTerminal("VL2"), PowsyblException, "Two of the three terminals are connected to the same voltage level VL2");
+
+    adder.setId("twt_3")
+            .newLeg3()
+            .setR(3.3)
+            .setX(3.4)
+            .setG(0.0)
+            .setB(0.0)
+            .setRatedU(3.5)
+            .setRatedS(3.6)
+            .setVoltageLevel("VL3")
+            .setConnectableBus("VL3_BUS1")
+            .add();
+    ThreeWindingsTransformer& transformer3 = adder.add();
+    BOOST_CHECK(stdcxx::areSame(transformer3.getTerminal("VL2").getBusBreakerView().getConnectableBus().get(),
+                                transformer3.getLeg2().getTerminal().getBusBreakerView().getConnectableBus().get()));
+    BOOST_CHECK(stdcxx::areSame(transformer3.getTerminal("VL3").getBusBreakerView().getConnectableBus().get(),
+                                transformer3.getLeg3().getTerminal().getBusBreakerView().getConnectableBus().get()));
+    POWSYBL_ASSERT_THROW(transformer3.getTerminal("VL4"), PowsyblException, "No terminal connected to voltage level VL4");
+
+    ThreeWindingsTransformer& transformer4 = adder.setId("twt_4")
+            .newLeg1()
+                .setR(3.3)
+                .setX(3.4)
+                .setG(0.0)
+                .setB(0.0)
+                .setRatedU(3.5)
+                .setRatedS(3.6)
+                .setVoltageLevel("VL1")
+                .setConnectableBus("VL1_BUS1")
+                .add()
+            .newLeg2()
+                .setR(3.3)
+                .setX(3.4)
+                .setG(0.0)
+                .setB(0.0)
+                .setRatedU(3.5)
+                .setRatedS(3.6)
+                .setVoltageLevel("VL1")
+                .setConnectableBus("VL1_BUS1")
+                .add()
+            .newLeg3()
+                .setR(3.3)
+                .setX(3.4)
+                .setG(0.0)
+                .setB(0.0)
+                .setRatedU(3.5)
+                .setRatedS(3.6)
+                .setVoltageLevel("VL1")
+                .setConnectableBus("VL1_BUS1")
+                .add()
+            .add();
+
+    POWSYBL_ASSERT_THROW(transformer4.getTerminal("VL1"), PowsyblException, "The three terminals are connected to the same voltage level VL1");
+
+}
+
 BOOST_AUTO_TEST_CASE(multivariantRTC) {
     Network network = createThreeWindingsTransformerTestNetwork();
     ThreeWindingsTransformer& transformer = network.getThreeWindingsTransformer("3WT_VL1_VL2_VL3");

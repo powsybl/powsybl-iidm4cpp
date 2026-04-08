@@ -182,6 +182,29 @@ Terminal& ThreeWindingsTransformer::getTerminal(const ThreeSides& side) {
     return const_cast<Terminal&>(terminal);
 }
 
+const Terminal& ThreeWindingsTransformer::getTerminal(const std::string& voltageLevelId) const {
+    bool isLeg1 = getLeg1().getTerminal().getVoltageLevel().getId()==voltageLevelId;
+    bool isLeg2 = getLeg2().getTerminal().getVoltageLevel().getId()==voltageLevelId;
+    bool isLeg3 = getLeg3().getTerminal().getVoltageLevel().getId()==voltageLevelId;
+    if (isLeg1 && isLeg2 && isLeg3) {
+        throw PowsyblException(stdcxx::format("The three terminals are connected to the same voltage level %1%", voltageLevelId));
+    } else if ((isLeg1 && isLeg2) || (isLeg1 && isLeg3) || (isLeg2 && isLeg3)) {
+        throw PowsyblException(stdcxx::format("Two of the three terminals are connected to the same voltage level %1%", voltageLevelId));
+    } else if (isLeg1) {
+        return getLeg1().getTerminal();
+    } else if (isLeg2) {
+        return getLeg2().getTerminal();
+    } else if (isLeg3) {
+        return getLeg3().getTerminal();
+    }
+    throw PowsyblException(stdcxx::format("No terminal connected to voltage level %1%", voltageLevelId));
+}
+
+Terminal& ThreeWindingsTransformer::getTerminal(const std::string& voltageLevelId) {
+    const auto& terminal = static_cast<const ThreeWindingsTransformer*>(this)->getTerminal(voltageLevelId);
+    return const_cast<Terminal&>(terminal);
+}
+
 
 bool ThreeWindingsTransformer::isOverloaded() const {
     return isOverloaded(1.0);

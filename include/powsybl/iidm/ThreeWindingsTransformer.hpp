@@ -68,6 +68,10 @@ public:
 
     Terminal& getTerminal(const ThreeSides& side);
 
+    const Terminal& getTerminal(const std::string& voltageLevelId) const;
+
+    Terminal& getTerminal(const std::string& voltageLevelId);
+
     bool isOverloaded() const;
 
     bool isOverloaded(double limitReduction) const;
