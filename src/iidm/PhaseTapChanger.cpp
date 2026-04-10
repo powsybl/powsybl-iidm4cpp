@@ -19,12 +19,12 @@ namespace powsybl {
 namespace iidm {
 
 PhaseTapChanger::PhaseTapChanger(PhaseTapChangerHolder& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                                 long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband) :
-    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, tapPosition, regulating, targetDeadband, "phase tap changer"),
+                                 bool loadTapChangingCapabilities, long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband) :
+    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, loadTapChangingCapabilities, tapPosition, regulating, targetDeadband, "phase tap changer"),
     m_regulationMode(regulationMode),
     m_regulationValue(parent.getNetwork().getVariantManager().getVariantArraySize(), regulationValue) {
     checkTapPosition(parent, tapPosition, lowTapPosition, getHighTapPosition(), parent.getNetwork().getMinimumValidationLevel());
-    checkPhaseTapChangerRegulation(parent, regulationMode, regulationValue, regulating, regulationTerminal, parent.getNetwork(), parent.getNetwork().getMinimumValidationLevel());
+    checkPhaseTapChangerRegulation(parent, regulationMode, regulationValue, regulating, loadTapChangingCapabilities, regulationTerminal, parent.getNetwork(), parent.getNetwork().getMinimumValidationLevel());
 }
 
 void PhaseTapChanger::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -61,21 +61,34 @@ void PhaseTapChanger::remove() {
 }
 
 PhaseTapChanger& PhaseTapChanger::setRegulationMode(const RegulationMode& regulationMode) {
-    checkPhaseTapChangerRegulation(getParent(), regulationMode, getRegulationValue(), isRegulating(), getRegulationTerminal(), getNetwork(), getNetwork().getMinimumValidationLevel());
+    checkPhaseTapChangerRegulation(getParent(), regulationMode, getRegulationValue(), isRegulating(), hasLoadTapChangingCapabilities(), getRegulationTerminal(), getNetwork(), getNetwork().getMinimumValidationLevel());
     m_regulationMode = regulationMode;
     getNetwork().invalidateValidationLevel();
     return *this;
 }
 
+PhaseTapChanger& PhaseTapChanger::setRegulating(bool regulating) {
+    checkPhaseTapChangerRegulation(getParent(), m_regulationMode, getRegulationValue(), regulating, hasLoadTapChangingCapabilities(), getRegulationTerminal(), getNetwork(), getNetwork().getMinimumValidationLevel());
+    getNetwork().invalidateValidationLevel();
+    return TapChanger::setRegulating(regulating);
+}
+
 PhaseTapChanger& PhaseTapChanger::setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) {
-    checkPhaseTapChangerRegulation(getParent(), m_regulationMode, getRegulationValue(), isRegulating(), regulationTerminal, getNetwork(), getNetwork().getMinimumValidationLevel());
+    checkPhaseTapChangerRegulation(getParent(), m_regulationMode, getRegulationValue(), isRegulating(), hasLoadTapChangingCapabilities(), regulationTerminal, getNetwork(), getNetwork().getMinimumValidationLevel());
     getNetwork().invalidateValidationLevel();
     return TapChanger::setRegulationTerminal(regulationTerminal);
 }
 
 PhaseTapChanger& PhaseTapChanger::setRegulationValue(double regulationValue) {
-    checkPhaseTapChangerRegulation(getParent(), m_regulationMode, regulationValue, isRegulating(), getRegulationTerminal(), getNetwork(), getNetwork().getMinimumValidationLevel());
+    checkPhaseTapChangerRegulation(getParent(), m_regulationMode, regulationValue, isRegulating(), hasLoadTapChangingCapabilities(), getRegulationTerminal(), getNetwork(), getNetwork().getMinimumValidationLevel());
     m_regulationValue[getNetwork().getVariantIndex()] = regulationValue;
+    getNetwork().invalidateValidationLevel();
+    return *this;
+}
+
+PhaseTapChanger& PhaseTapChanger::setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) {
+    checkPhaseTapChangerRegulation(getParent(), m_regulationMode, getRegulationValue(), isRegulating(), loadTapChangingCapabilities, getRegulationTerminal(), getNetwork(), getNetwork().getMinimumValidationLevel());
+    m_loadTapChangingCapabilities[getNetwork().getVariantIndex()] = loadTapChangingCapabilities;
     getNetwork().invalidateValidationLevel();
     return *this;
 }

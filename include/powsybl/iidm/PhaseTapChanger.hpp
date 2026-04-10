@@ -37,11 +37,15 @@ public: // MultiVariantObject
 public: // TapChanger
     void remove() override;
 
+    PhaseTapChanger& setRegulating(bool regulating) override;
+
     PhaseTapChanger& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) override;
+
+    PhaseTapChanger& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) override;
 
 public:
     PhaseTapChanger(PhaseTapChangerHolder& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                    long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
+                    bool loadTapChangingCapabilities, long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
 
     ~PhaseTapChanger() noexcept override = default;
 

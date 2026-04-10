@@ -45,8 +45,6 @@ PowsyblException createUnsetMethodException();
 
 void actionOnError(const Validable& validable, const std::string& message, const ActionOnError& action);
 ActionOnError checkValidationActionOnError(const ValidationLevel& vl);
-void throwExceptionOrLogError(const Validable& validable, const std::string& message, const ValidationLevel& vl);
-void throwExceptionOrIgnore(const Validable& validable, const std::string& message, const ValidationLevel& vl);
 
 void checkActivePowerLimits(const Validable& validable, double minP, double maxP);
 
@@ -141,9 +139,9 @@ void checkTemporaryLimits(const Validable& validable, double permanentLimit, con
 
 ValidationLevel checkLoadingLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl);
 
-ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
+ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating, bool loadTapChangingCapabilities,
                                     const stdcxx::CReference<Terminal>& regulationTerminal, const Network& network, const ValidationLevel& vl);
-ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating,
+ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating, bool loadTapChangingCapabilities,
                                     const stdcxx::Reference<Terminal>& regulationTerminal, const Network& network, const ValidationLevel& vl);
 
 double checkPowerFactor(const Validable& validable, double powerFactor);

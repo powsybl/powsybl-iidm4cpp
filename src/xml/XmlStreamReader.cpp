@@ -62,7 +62,7 @@ XmlStreamReader::XmlStreamReader(std::istream& stream, const std::string& encodi
 
 template <>
 bool XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
-    XmlString value = getAttributeValue(attributeName, false);
+    XmlString value = getAttributeValue(attributeName, true);
     const std::string& booleanStr = XML2S(value.get());
     return boost::iequals(booleanStr, "true");
 }
@@ -87,7 +87,7 @@ long XmlStreamReader::getAttributeValue(const std::string& attributeName) const 
 
 template <>
 unsigned long XmlStreamReader::getAttributeValue(const std::string& attributeName) const {
-    XmlString value = getAttributeValue(attributeName, false);
+    XmlString value = getAttributeValue(attributeName, true);
     return std::stoul(XML2S(value.get()));
 }
 

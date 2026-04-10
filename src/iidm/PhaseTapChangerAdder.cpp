@@ -20,7 +20,7 @@ namespace powsybl {
 namespace iidm {
 
 PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent) :
-    TapChangerAdder(parent) {
+    TapChangerAdder(parent, true) {
 }
 
 PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent, const PhaseTapChanger& phaseTapChanger) :
@@ -30,6 +30,7 @@ PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent, const 
         setRegulationMode(phaseTapChanger.getRegulationMode());
         setRegulationTerminal(stdcxx::ref(phaseTapChanger.getRegulationTerminal()));
         setRegulating(phaseTapChanger.isRegulating());
+        setLoadTapChangingCapabilities(phaseTapChanger.hasLoadTapChangingCapabilities());
         setRegulationValue(phaseTapChanger.getRegulationValue());
         setLowTapPosition(phaseTapChanger.getLowTapPosition());
         setTapPosition(phaseTapChanger.getTapPosition());
@@ -61,10 +62,10 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
     network.setValidationLevelIfGreaterThan(checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel()));
 
 
-    network.setValidationLevelIfGreaterThan(checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, m_regulationTerminal, network, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, m_loadTapChangingCapabilities, m_regulationTerminal, network, network.getMinimumValidationLevel()));
     network.setValidationLevelIfGreaterThan(checkTargetDeadband(m_parent, "phase tap changer", m_regulating, m_targetDeadband, network.getMinimumValidationLevel()));
 
-    std::unique_ptr<PhaseTapChanger> ptrPhaseTapChanger = stdcxx::make_unique<PhaseTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
+    std::unique_ptr<PhaseTapChanger> ptrPhaseTapChanger = stdcxx::make_unique<PhaseTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal, m_loadTapChangingCapabilities,
                                                                                                *m_tapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
 
     bool wasRegulating = m_parent.hasPhaseTapChanger() && m_parent.getPhaseTapChanger().isRegulating();

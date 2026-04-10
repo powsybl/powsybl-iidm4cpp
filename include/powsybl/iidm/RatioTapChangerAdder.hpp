@@ -39,7 +39,6 @@ public:
     RatioTapChangerStepAdder<RatioTapChangerAdder> beginStep() override;
 
     //RatioTapChangerAdder
-    RatioTapChangerAdder& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities);
 
     RatioTapChangerAdder& setRegulationMode(const RatioTapChanger::RegulationMode& regulationMode);
 
@@ -54,8 +53,6 @@ private:
 
 private:
     std::vector<RatioTapChangerStep> m_steps;
-
-    bool m_loadTapChangingCapabilities = false;
 
     RatioTapChanger::RegulationMode m_regulationMode = RatioTapChanger::RegulationMode::VOLTAGE;
 

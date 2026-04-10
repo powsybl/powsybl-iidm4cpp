@@ -44,6 +44,12 @@ template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string& elementName, std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     auto tapChangerAdder = std::dynamic_pointer_cast<TapChangerAdder<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder<PhaseTapChangerAdder>, PhaseTapChangerHolder>>(adder);
     readTapChangerAttributes<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder<PhaseTapChangerAdder>, PhaseTapChangerHolder>(context, tapChangerAdder);
+    
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&context, &adder]() {
+        const auto& loadTapChangingCapabilities = context.getReader().getAttributeValue<bool>(LOAD_TAP_CHANGING_CAPABILITIES);
+        adder->setLoadTapChangingCapabilities(loadTapChangingCapabilities);
+    });
+
     const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
     adder->setRegulationValue(regulationValue);
     const auto& regModeStr = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
@@ -92,7 +98,7 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(int leg, ThreeWin
 template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string& elementName, std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     auto tapChangerAdder = std::dynamic_pointer_cast<TapChangerAdder<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder<RatioTapChangerAdder>, RatioTapChangerHolder>>(adder);
-    readTapChangerAttributes<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder<RatioTapChangerAdder>, RatioTapChangerHolder>(context, tapChangerAdder);
+    bool regulating = readTapChangerAttributes<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder<RatioTapChangerAdder>, RatioTapChangerHolder>(context, tapChangerAdder);
     const auto& loadTapChangingCapabilities = context.getReader().getAttributeValue<bool>(LOAD_TAP_CHANGING_CAPABILITIES);
     adder->setLoadTapChangingCapabilities(loadTapChangingCapabilities);
 
@@ -107,6 +113,12 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
             adder->setRegulationMode(Enum::fromString<RatioTapChanger::RegulationMode>(*regModeStr));
         }
         adder->setRegulationValue(regulationValue);
+    });
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&context, regulating, loadTapChangingCapabilities, &adder]() {
+        // starting v1.14 it is forbidden to be regulating without on-load tap changing capabilities
+        if(!loadTapChangingCapabilities && regulating) {
+            adder->setRegulating(false);
+        }
     });
 
     bool hasTerminalRef = false;
@@ -169,7 +181,7 @@ void AbstractTransformerXml<Added, Adder>::readTapChangerTerminalRef(NetworkXmlR
 
 template <typename Added, typename Adder>
 template <typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
-void AbstractTransformerXml<Added, Adder>::readTapChangerAttributes(NetworkXmlReaderContext& context, std::shared_ptr<TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>>& tapChangerAdder) {
+bool AbstractTransformerXml<Added, Adder>::readTapChangerAttributes(NetworkXmlReaderContext& context, std::shared_ptr<TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>>& tapChangerAdder) {
     const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
@@ -184,6 +196,7 @@ void AbstractTransformerXml<Added, Adder>::readTapChangerAttributes(NetworkXmlRe
     if(regulating.has_value()) {
         tapChangerAdder->setRegulating(*regulating);
     }
+    return regulating.has_value() ? *regulating : false;
 }
 
 template <typename Added, typename Adder>
@@ -194,9 +207,13 @@ void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::strin
     if (ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP || !std::isnan(ptc.getRegulationValue())) {
         context.getWriter().writeAttribute(REGULATION_VALUE, ptc.getRegulationValue());
     }
-    if (ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP || ptc.isRegulating()) {
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&context, &ptc]() {
+        context.getWriter().writeAttribute(LOAD_TAP_CHANGING_CAPABILITIES, ptc.hasLoadTapChangingCapabilities());
+    });
+    if (ptc.hasLoadTapChangingCapabilities() && ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP) {
         context.getWriter().writeAttribute(REGULATING, ptc.isRegulating());
     }
+
     if (ptc.getRegulationTerminal()) {
         TerminalRefXml::writeTerminalRef(ptc.getRegulationTerminal(), context, TERMINAL_REF);
     }
@@ -222,7 +239,7 @@ void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::strin
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), name);
     writeTapChanger<RatioTapChangerHolder, RatioTapChanger, RatioTapChangerStep, RatioTapChangerStepsReplacer>(rtc, context);
     context.getWriter().writeAttribute(LOAD_TAP_CHANGING_CAPABILITIES, rtc.hasLoadTapChangingCapabilities());
-    if (rtc.hasLoadTapChangingCapabilities() || rtc.isRegulating()) {
+    if (rtc.hasLoadTapChangingCapabilities()) {
         context.getWriter().writeAttribute(REGULATING, rtc.isRegulating());
     }
 

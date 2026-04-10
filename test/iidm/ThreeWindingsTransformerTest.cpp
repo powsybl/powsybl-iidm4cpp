@@ -194,6 +194,7 @@ void addPhaseTapChangerLeg2(ThreeWindingsTransformer& transformer, Terminal& ter
         .endStep()
         .setRegulationMode(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL)
         .setRegulating(true)
+        .setLoadTapChangingCapabilities(true)
         .setRegulationTerminal(stdcxx::ref(terminal))
         .setRegulationValue(25.0)
         .setTargetDeadband(0.0)
@@ -230,6 +231,7 @@ void addPhaseTapChangerLeg3(ThreeWindingsTransformer& transformer, Terminal& ter
         .endStep()
         .setRegulationMode(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL)
         .setRegulating(false)
+        .setLoadTapChangingCapabilities(false)
         .setRegulationTerminal(stdcxx::ref(terminal))
         .setRegulationValue(25.0)
         .setTargetDeadband(0.0)
@@ -969,8 +971,8 @@ BOOST_AUTO_TEST_CASE(multivariantRTC) {
     leg1.setR(1.31).setX(1.41).setG(1.61).setB(1.71).setRatedU(1.11);
     leg2.setR(2.31).setX(2.41).setRatedU(2.11);
     leg3.setR(3.31).setX(3.41).setRatedU(3.11);
-    ratioTapChangerLeg2.setTapPosition(1L).setRegulating(false).setRegulationTerminal(stdcxx::ref<Terminal>(terminal2)).setTargetV(100.0);
-    ratioTapChangerLeg3.setTapPosition(-3L).setRegulating(false).setRegulationTerminal(stdcxx::ref<Terminal>(terminal)).setTargetV(200.0);
+    ratioTapChangerLeg2.setTapPosition(1L).setRegulating(false).setRegulationTerminal(stdcxx::ref<Terminal>(terminal2)).setTargetV(100.0).setLoadTapChangingCapabilities(false);
+    ratioTapChangerLeg3.setTapPosition(-3L).setRegulating(false).setRegulationTerminal(stdcxx::ref<Terminal>(terminal)).setTargetV(200.0).setLoadTapChangingCapabilities(false);
 
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
     BOOST_CHECK_CLOSE(1.31, leg1.getR(), std::numeric_limits<double>::epsilon());
@@ -995,7 +997,7 @@ BOOST_AUTO_TEST_CASE(multivariantRTC) {
     BOOST_CHECK_EQUAL(1L, ratioTapChangerLeg2.getTapPosition());
     BOOST_CHECK_EQUAL(3, ratioTapChangerLeg2.getStepCount());
     BOOST_TEST(!ratioTapChangerLeg2.isRegulating());
-    BOOST_TEST(ratioTapChangerLeg2.hasLoadTapChangingCapabilities());
+    BOOST_TEST(!ratioTapChangerLeg2.hasLoadTapChangingCapabilities());
     BOOST_CHECK_CLOSE(100.0, ratioTapChangerLeg2.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChangerLeg2.getRegulationTerminal().get()));
 
@@ -1004,7 +1006,7 @@ BOOST_AUTO_TEST_CASE(multivariantRTC) {
     BOOST_CHECK_EQUAL(-3L, ratioTapChangerLeg3.getTapPosition());
     BOOST_CHECK_EQUAL(3, ratioTapChangerLeg3.getStepCount());
     BOOST_TEST(!ratioTapChangerLeg3.isRegulating());
-    BOOST_TEST(ratioTapChangerLeg3.hasLoadTapChangingCapabilities());
+    BOOST_TEST(!ratioTapChangerLeg3.hasLoadTapChangingCapabilities());
     BOOST_CHECK_CLOSE(200.0, ratioTapChangerLeg3.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(terminal, ratioTapChangerLeg3.getRegulationTerminal().get()));
 
@@ -1050,7 +1052,7 @@ BOOST_AUTO_TEST_CASE(multivariantRTC) {
     leg2.setRatedU(2.12).setR(2.32).setX(2.42);
     leg3.setRatedU(3.12).setR(3.32).setX(3.42);
     ratioTapChangerLeg2.setTapPosition(3L).setRegulationTerminal(stdcxx::ref<Terminal>(terminal)).setTargetV(150.0).setRegulating(false);
-    ratioTapChangerLeg3.setTapPosition(-1L).setRegulationTerminal(stdcxx::ref<Terminal>(terminal2)).setTargetV(250.0).setRegulating(false);
+    ratioTapChangerLeg3.setTapPosition(-1L).setRegulationTerminal(stdcxx::ref<Terminal>(terminal2)).setTargetV(250.0).setRegulating(false).setLoadTapChangingCapabilities(false);
 
     BOOST_CHECK_EQUAL("3WT_VL1_VL2_VL3 leg1", leg1.toString());
     BOOST_CHECK_CLOSE(1.32, leg1.getR(), std::numeric_limits<double>::epsilon());
@@ -1084,7 +1086,7 @@ BOOST_AUTO_TEST_CASE(multivariantRTC) {
     BOOST_CHECK_EQUAL(-1L, ratioTapChangerLeg3.getTapPosition());
     BOOST_CHECK_EQUAL(3, ratioTapChangerLeg3.getStepCount());
     BOOST_TEST(!ratioTapChangerLeg3.isRegulating());
-    BOOST_TEST(ratioTapChangerLeg3.hasLoadTapChangingCapabilities());
+    BOOST_TEST(!ratioTapChangerLeg3.hasLoadTapChangingCapabilities());
     BOOST_CHECK_CLOSE(250.0, ratioTapChangerLeg3.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChangerLeg3.getRegulationTerminal().get()));
 
@@ -1164,7 +1166,7 @@ BOOST_AUTO_TEST_CASE(multivariantRTC) {
     BOOST_CHECK_EQUAL(-1L, ratioTapChangerLeg3.getTapPosition());
     BOOST_CHECK_EQUAL(3, ratioTapChangerLeg3.getStepCount());
     BOOST_TEST(!ratioTapChangerLeg3.isRegulating());
-    BOOST_TEST(ratioTapChangerLeg3.hasLoadTapChangingCapabilities());
+    BOOST_TEST(!ratioTapChangerLeg3.hasLoadTapChangingCapabilities());
     BOOST_CHECK_CLOSE(250.0, ratioTapChangerLeg3.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(terminal2, ratioTapChangerLeg3.getRegulationTerminal().get()));
 

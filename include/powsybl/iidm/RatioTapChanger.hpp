@@ -39,6 +39,8 @@ public: // TapChanger
 
     RatioTapChanger& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) override;
 
+    RatioTapChanger& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) override;
+
 public:
     RatioTapChanger(RatioTapChangerHolder& parent, long lowTapPosition, const std::vector<RatioTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
                     bool loadTapChangingCapabilities, long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
@@ -47,10 +49,6 @@ public:
 
     double getTargetV() const;
     double getRegulationValue() const;
-
-    bool hasLoadTapChangingCapabilities() const;
-
-    RatioTapChanger& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities);
 
     RatioTapChanger& setTargetV(double targetV);
     RatioTapChanger& setRegulationValue(double regulationValue);
@@ -65,8 +63,6 @@ protected:
 
 private:
     RegulationMode m_regulationMode;
-
-    bool m_loadTapChangingCapabilities;
 
     std::vector<double> m_regulationValue;
 

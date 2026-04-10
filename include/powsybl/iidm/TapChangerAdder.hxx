@@ -15,8 +15,9 @@ namespace powsybl {
 namespace iidm {
 
 template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
-TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::TapChangerAdder(TCHolder& parent) :
-    m_parent(parent) {
+TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::TapChangerAdder(TCHolder& parent, bool loadTapChangingCapabilities) :
+    m_parent(parent),
+    m_loadTapChangingCapabilities(loadTapChangingCapabilities) {
 }
 
 template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
@@ -39,6 +40,12 @@ TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setTapPosition(lon
 template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
 TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setRegulating(bool regulating) {
     m_regulating = regulating;
+    return static_cast<TCAdder&>(*this);
+}
+
+template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) {
+    m_loadTapChangingCapabilities = loadTapChangingCapabilities;
     return static_cast<TCAdder&>(*this);
 }
 

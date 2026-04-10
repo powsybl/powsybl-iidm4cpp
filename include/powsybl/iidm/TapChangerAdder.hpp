@@ -29,6 +29,8 @@ public:
 
     virtual TCAdder& setRegulating(bool regulating);
 
+    virtual TCAdder& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities);
+
     virtual TCAdder& setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal);
 
     virtual TCAdder& setTargetDeadband(double targetDeadband);
@@ -43,7 +45,7 @@ protected:
     Network& getNetwork();
 
 protected:
-    TapChangerAdder(TCHolder& parent);
+    TapChangerAdder(TCHolder& parent, bool loadTapChangingCapabilities = false);
 
     TCHolder& m_parent;
 
@@ -52,6 +54,8 @@ protected:
     stdcxx::optional<long> m_tapPosition;
 
     bool m_regulating = false;
+
+    bool m_loadTapChangingCapabilities = false;
 
     stdcxx::Reference<Terminal> m_regulationTerminal;
 

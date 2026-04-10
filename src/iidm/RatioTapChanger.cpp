@@ -17,9 +17,8 @@ namespace iidm {
 
 RatioTapChanger::RatioTapChanger(RatioTapChangerHolder& parent, long lowTapPosition, const std::vector<RatioTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
                                  bool loadTapChangingCapabilities, long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband) :
-    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, tapPosition, regulating, targetDeadband, "ratio tap changer"),
+    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, loadTapChangingCapabilities, tapPosition, regulating, targetDeadband, "ratio tap changer"),
     m_regulationMode(regulationMode),
-    m_loadTapChangingCapabilities(loadTapChangingCapabilities),
     m_regulationValue(parent.getNetwork().getVariantManager().getVariantArraySize(), regulationValue) {
     checkTapPosition(parent, tapPosition, lowTapPosition, getHighTapPosition(), parent.getNetwork().getMinimumValidationLevel());
     checkRatioTapChangerRegulation(parent, regulating, loadTapChangingCapabilities, regulationTerminal, regulationMode, regulationValue, parent.getNetwork(), parent.getNetwork().getMinimumValidationLevel());
@@ -53,10 +52,6 @@ const RatioTapChanger::RegulationMode& RatioTapChanger::getRegulationMode() cons
     return m_regulationMode;
 }
 
-bool RatioTapChanger::hasLoadTapChangingCapabilities() const {
-    return m_loadTapChangingCapabilities;
-}
-
 void RatioTapChanger::reduceVariantArraySize(unsigned long number) {
     TapChanger::reduceVariantArraySize(number);
 
@@ -68,27 +63,27 @@ void RatioTapChanger::remove() {
     getParent().setRatioTapChanger(std::unique_ptr<RatioTapChanger>());
 }
 
-RatioTapChanger& RatioTapChanger::setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) {
-    checkRatioTapChangerRegulation(getParent(), isRegulating(), m_loadTapChangingCapabilities, getRegulationTerminal(), getRegulationMode(), getRegulationValue(), getNetwork(), getNetwork().getMinimumValidationLevel());
-    m_loadTapChangingCapabilities = loadTapChangingCapabilities;
-    getNetwork().invalidateValidationLevel();
-    return *this;
-}
-
 RatioTapChanger& RatioTapChanger::setRegulating(bool regulating) {
-    checkRatioTapChangerRegulation(getParent(), regulating, m_loadTapChangingCapabilities, getRegulationTerminal(), getRegulationMode(), getRegulationValue(), getNetwork(), getNetwork().getMinimumValidationLevel());
+    checkRatioTapChangerRegulation(getParent(), regulating, hasLoadTapChangingCapabilities(), getRegulationTerminal(), getRegulationMode(), getRegulationValue(), getNetwork(), getNetwork().getMinimumValidationLevel());
     getNetwork().invalidateValidationLevel();
     return TapChanger::setRegulating(regulating);
 }
 
 RatioTapChanger& RatioTapChanger::setRegulationTerminal(const stdcxx::Reference<Terminal>& regulationTerminal) {
-    checkRatioTapChangerRegulation(getParent(), isRegulating(), m_loadTapChangingCapabilities, regulationTerminal, getRegulationMode(), getRegulationValue(), getNetwork(), getNetwork().getMinimumValidationLevel());
+    checkRatioTapChangerRegulation(getParent(), isRegulating(), hasLoadTapChangingCapabilities(), regulationTerminal, getRegulationMode(), getRegulationValue(), getNetwork(), getNetwork().getMinimumValidationLevel());
     getNetwork().invalidateValidationLevel();
     return TapChanger::setRegulationTerminal(regulationTerminal);
 }
 
+RatioTapChanger& RatioTapChanger::setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) {
+    checkRatioTapChangerRegulation(getParent(), isRegulating(), loadTapChangingCapabilities, getRegulationTerminal(), getRegulationMode(), getRegulationValue(), getNetwork(), getNetwork().getMinimumValidationLevel());
+    m_loadTapChangingCapabilities[getNetwork().getVariantIndex()] = loadTapChangingCapabilities;
+    getNetwork().invalidateValidationLevel();
+    return *this;
+}
+
 RatioTapChanger& RatioTapChanger::setTargetV(double targetV) {
-    checkRatioTapChangerRegulation(getParent(), isRegulating(), m_loadTapChangingCapabilities, getRegulationTerminal(), RegulationMode::VOLTAGE, targetV, getNetwork(), getNetwork().getMinimumValidationLevel());
+    checkRatioTapChangerRegulation(getParent(), isRegulating(), hasLoadTapChangingCapabilities(), getRegulationTerminal(), RegulationMode::VOLTAGE, targetV, getNetwork(), getNetwork().getMinimumValidationLevel());
     m_regulationValue[getNetwork().getVariantIndex()] = targetV;
     m_regulationMode = RegulationMode::VOLTAGE;
     getNetwork().invalidateValidationLevel();
@@ -96,14 +91,14 @@ RatioTapChanger& RatioTapChanger::setTargetV(double targetV) {
 }
 
 RatioTapChanger& RatioTapChanger::setRegulationValue(double regulationValue) {
-    checkRatioTapChangerRegulation(getParent(), isRegulating(), m_loadTapChangingCapabilities, getRegulationTerminal(), getRegulationMode(), regulationValue, getNetwork(), getNetwork().getMinimumValidationLevel());
+    checkRatioTapChangerRegulation(getParent(), isRegulating(), hasLoadTapChangingCapabilities(), getRegulationTerminal(), getRegulationMode(), regulationValue, getNetwork(), getNetwork().getMinimumValidationLevel());
     m_regulationValue[getNetwork().getVariantIndex()] = regulationValue;
     getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 RatioTapChanger& RatioTapChanger::setRegulationMode(const RegulationMode& regulationMode) {
-    checkRatioTapChangerRegulation(getParent(), isRegulating(), m_loadTapChangingCapabilities, getRegulationTerminal(), regulationMode, getRegulationValue(), getNetwork(), getNetwork().getMinimumValidationLevel());
+    checkRatioTapChangerRegulation(getParent(), isRegulating(), hasLoadTapChangingCapabilities(), getRegulationTerminal(), regulationMode, getRegulationValue(), getNetwork(), getNetwork().getMinimumValidationLevel());
     m_regulationMode = regulationMode;
     getNetwork().invalidateValidationLevel();
     return *this;

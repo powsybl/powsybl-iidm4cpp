@@ -28,11 +28,12 @@ ValidationLevel checkTargetDeadband(const Validable& validable, const std::strin
 
 template<typename H, typename C, typename S, typename R>
 TapChanger<H, C, S, R>::TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                                long tapPosition, bool regulating, double targetDeadband, std::string&& type) :
+                                bool loadTapChangingCapabilities, long tapPosition, bool regulating, double targetDeadband, std::string&& type) :
    m_parent(parent),
    m_lowTapPosition(lowTapPosition),
    m_steps(steps),
    m_regulationTerminal(regulationTerminal),
+   m_loadTapChangingCapabilities(network.getVariantManager().getVariantArraySize(), loadTapChangingCapabilities),
    m_tapPosition(network.getVariantManager().getVariantArraySize(), tapPosition),
    m_regulating(network.getVariantManager().getVariantArraySize(), regulating),
    m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband),
@@ -47,6 +48,7 @@ void TapChanger<H, C, S, R>::allocateVariantArrayElement(const std::set<unsigned
     for (auto index : indexes) {
         m_tapPosition[index] = m_tapPosition[sourceIndex];
         m_regulating[index] = m_regulating[sourceIndex];
+        m_loadTapChangingCapabilities[index] = m_loadTapChangingCapabilities[sourceIndex];
         m_targetDeadband[index] = m_targetDeadband[sourceIndex];
     }
 }
@@ -60,6 +62,7 @@ template<typename H, typename C, typename S, typename R>
 void TapChanger<H, C, S, R>::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
     m_tapPosition.resize(m_tapPosition.size() + number, m_tapPosition[sourceIndex]);
     m_regulating.resize(m_regulating.size() + number, m_regulating[sourceIndex]);
+    m_loadTapChangingCapabilities.resize(m_loadTapChangingCapabilities.size() + number, m_loadTapChangingCapabilities[sourceIndex]);
     m_targetDeadband.resize(m_targetDeadband.size() + number, m_targetDeadband[sourceIndex]);
 }
 
@@ -182,9 +185,15 @@ bool TapChanger<H, C, S, R>::isRegulating() const {
 }
 
 template<typename H, typename C, typename S, typename R>
+bool TapChanger<H, C, S, R>::hasLoadTapChangingCapabilities() const {
+    return m_loadTapChangingCapabilities.at(getNetwork().getVariantIndex());
+}
+
+template<typename H, typename C, typename S, typename R>
 void TapChanger<H, C, S, R>::reduceVariantArraySize(unsigned long number) {
     m_tapPosition.resize(m_tapPosition.size() - number);
     m_regulating.resize(m_regulating.size() - number);
+    m_loadTapChangingCapabilities.resize(m_loadTapChangingCapabilities.size() - number);
     m_targetDeadband.resize(m_targetDeadband.size() - number);
 }
 

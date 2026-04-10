@@ -334,10 +334,13 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getTapPosition());
-    BOOST_CHECK_NO_THROW(ratioTapChanger.setLoadTapChangingCapabilities(false).setLowTapPosition(-3L).setRegulating(false).setTargetV(stdcxx::nan()));
+    BOOST_CHECK(ratioTapChanger.isRegulating());
+    POWSYBL_ASSERT_THROW(ratioTapChanger.setLoadTapChangingCapabilities(false), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation cannot be enabled on ratio tap changer without load tap changing capabilities");
+    BOOST_CHECK_NO_THROW(ratioTapChanger.setRegulating(false).setLoadTapChangingCapabilities(false).setLowTapPosition(-3L).setTargetV(stdcxx::nan()));
     BOOST_TEST(!ratioTapChanger.hasLoadTapChangingCapabilities());
     BOOST_CHECK_EQUAL(-3L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(-1L, ratioTapChanger.getTapPosition());
+    POWSYBL_ASSERT_THROW(ratioTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation cannot be enabled on ratio tap changer without load tap changing capabilities");
     BOOST_CHECK_NO_THROW(ratioTapChanger.setLoadTapChangingCapabilities(true));
     POWSYBL_ASSERT_THROW(ratioTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': a target voltage has to be set for a regulating ratio tap changer");
 
@@ -395,7 +398,11 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position -5 [0, 0]");
     adder.setLowTapPosition(-5L).setTapPosition(3L);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 3 [-5, -5]");
-    adder.setTapPosition(-5L).setRegulating(true).setLoadTapChangingCapabilities(true);
+    adder.setTapPosition(-5L);
+    
+    adder.setRegulating(true);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation cannot be enabled on ratio tap changer without load tap changing capabilities");
+    adder.setLoadTapChangingCapabilities(true);
 
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': a target voltage has to be set for a regulating ratio tap changer");
     adder.setTargetV(stdcxx::nan());

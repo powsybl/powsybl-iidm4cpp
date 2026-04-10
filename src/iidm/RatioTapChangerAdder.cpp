@@ -94,11 +94,6 @@ Validable& RatioTapChangerAdder::getValidable() {
     return m_parent;
 }
 
-RatioTapChangerAdder& RatioTapChangerAdder::setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) {
-    m_loadTapChangingCapabilities = loadTapChangingCapabilities;
-    return *this;
-}
-
 RatioTapChangerAdder& RatioTapChangerAdder::setRegulationMode(const RatioTapChanger::RegulationMode& regulationMode) {
     m_regulationMode = regulationMode;
     return *this;
