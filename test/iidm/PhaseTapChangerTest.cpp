@@ -308,7 +308,6 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_REF_FALSE(phaseTapChanger.getNeutralStep());
 
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(static_cast<PhaseTapChanger::RegulationMode>(7)), AssertionError, "Unexpected RegulationMode value: 7");
-    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
 
     Terminal& terminal = network.getLoad("LOAD1").getTerminal();
     Terminal& terminal2 = network.getLoad("LOAD2").getTerminal();
@@ -322,22 +321,21 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(phaseTapChanger.setLoadTapChangingCapabilities(false), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation cannot be enabled on phase tap changer without load tap changing capabilities");
     phaseTapChanger.setRegulating(false);
     BOOST_CHECK_NO_THROW(phaseTapChanger.setLoadTapChangingCapabilities(false));
-    BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP));
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation cannot be enabled on phase tap changer without load tap changing capabilities");
     phaseTapChanger.setLoadTapChangingCapabilities(true);
-    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
     BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationValue(stdcxx::nan())));
     BOOST_TEST(std::isnan(phaseTapChanger.getRegulationValue()));
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
     BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationValue(-15.0)));
     BOOST_CHECK_CLOSE(-15.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
 
-    phaseTapChanger.setRegulating(false).setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP);
+    phaseTapChanger.setRegulating(false);
     BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()));
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(getTerminalFromNetwork2())), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation terminal is not part of the network");
     BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationTerminal(stdcxx::ref<Terminal>(terminal))));
     BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
-    BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
+    BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulating(true));
 
     BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, phaseTapChanger.getTapPosition());
@@ -403,17 +401,16 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 3 [-5, -5]");
     adder.setTapPosition(-5L).setRegulating(true);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
     //PhaseTapChangerAdder default loadTapChangingCapabilities is true
     adder.setLoadTapChangingCapabilities(false);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': regulation cannot be enabled on phase tap changer without load tap changing capabilities");
     adder.setLoadTapChangingCapabilities(true);
-
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation cannot be on if mode is FIXED");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
     adder.setRegulationMode(static_cast<PhaseTapChanger::RegulationMode>(7));
     POWSYBL_ASSERT_THROW(adder.add(), AssertionError, "Unexpected RegulationMode value: 7");
 
-    adder.setRegulating(false).setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP);
+    adder.setRegulating(false).setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER);
     BOOST_CHECK_NO_THROW(adder.add());
     adder.setRegulationValue(stdcxx::nan());
     BOOST_CHECK_NO_THROW(adder.add());
@@ -481,7 +478,7 @@ BOOST_AUTO_TEST_CASE(adderByCopyFixedTap) {
     transformer.newPhaseTapChanger()
                 .setTapPosition(1)
                 .setRegulationValue(12)
-                .setRegulationMode(PhaseTapChanger::RegulationMode::FIXED_TAP)
+                .setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER)
                 .setLowTapPosition(0)
                 .setRegulating(false)
                 .setTargetDeadband(3)

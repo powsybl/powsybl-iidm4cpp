@@ -44,7 +44,15 @@ template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string& elementName, std::shared_ptr<PhaseTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context) {
     auto tapChangerAdder = std::dynamic_pointer_cast<TapChangerAdder<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder<PhaseTapChangerAdder>, PhaseTapChangerHolder>>(adder);
     readTapChangerAttributes<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder<PhaseTapChangerAdder>, PhaseTapChangerHolder>(context, tapChangerAdder);
-    
+
+    auto regModeStr = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&adder, &regModeStr]() {
+        if(regModeStr.has_value() && *regModeStr == "FIXED_TAP") {
+            regModeStr = "CURRENT_LIMITER";
+            adder->setRegulating(false);
+        }
+    });
+
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&context, &adder]() {
         const auto& loadTapChangingCapabilities = context.getReader().getAttributeValue<bool>(LOAD_TAP_CHANGING_CAPABILITIES);
         adder->setLoadTapChangingCapabilities(loadTapChangingCapabilities);
@@ -52,7 +60,6 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string
 
     const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
     adder->setRegulationValue(regulationValue);
-    const auto& regModeStr = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
     if(regModeStr.has_value()) {
         adder->setRegulationMode(Enum::fromString<PhaseTapChanger::RegulationMode>(*regModeStr));
     }
@@ -204,13 +211,13 @@ void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::strin
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), name);
     writeTapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep, PhaseTapChangerStepsReplacer>(ptc, context);
     context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(ptc.getRegulationMode()));
-    if (ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP || !std::isnan(ptc.getRegulationValue())) {
+    if (!std::isnan(ptc.getRegulationValue())) {
         context.getWriter().writeAttribute(REGULATION_VALUE, ptc.getRegulationValue());
     }
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&context, &ptc]() {
         context.getWriter().writeAttribute(LOAD_TAP_CHANGING_CAPABILITIES, ptc.hasLoadTapChangingCapabilities());
     });
-    if (ptc.hasLoadTapChangingCapabilities() && ptc.getRegulationMode() != PhaseTapChanger::RegulationMode::FIXED_TAP) {
+    if (ptc.hasLoadTapChangingCapabilities()) {
         context.getWriter().writeAttribute(REGULATING, ptc.isRegulating());
     }
 

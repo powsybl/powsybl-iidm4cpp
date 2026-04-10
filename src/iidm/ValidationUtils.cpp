@@ -422,7 +422,6 @@ ValidationLevel checkPhaseTapChangerRegulationWithoutTerminal(const Validable& v
     switch (regulationMode) {
         case PhaseTapChanger::RegulationMode::CURRENT_LIMITER:
         case PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL:
-        case PhaseTapChanger::RegulationMode::FIXED_TAP:
             break;
 
         default:
@@ -433,12 +432,8 @@ ValidationLevel checkPhaseTapChangerRegulationWithoutTerminal(const Validable& v
             actionOnError(validable, "regulation cannot be enabled on phase tap changer without load tap changing capabilities", action);
             checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
         }
-        if (regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP && std::isnan(regulationValue)) {
+        if (std::isnan(regulationValue)) {
             actionOnError(validable, "phase regulation is on and threshold/setpoint value is not set", action);
-            checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
-        }
-        if (regulationMode == PhaseTapChanger::RegulationMode::FIXED_TAP) {
-            actionOnError(validable, "phase regulation cannot be on if mode is FIXED", action);
             checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
         }
     }
@@ -450,7 +445,7 @@ ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const
 
     checkValidationLevel = validationLevel::min(checkValidationLevel, checkPhaseTapChangerRegulationWithoutTerminal(validable, regulationMode, regulationValue, regulating, loadTapChangingCapabilities, action));
 
-    if (regulating && regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP && !regulationTerminal) {
+    if (regulating && !regulationTerminal) {
         actionOnError(validable, "phase regulation is on and regulated terminal is not set", action);
         checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
     }
@@ -470,7 +465,7 @@ ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const
 
     checkValidationLevel = validationLevel::min(checkValidationLevel, checkPhaseTapChangerRegulationWithoutTerminal(validable, regulationMode, regulationValue, regulating, loadTapChangingCapabilities, action));
 
-    if(regulating && regulationMode != PhaseTapChanger::RegulationMode::FIXED_TAP && !regulationTerminal) {
+    if(regulating && !regulationTerminal) {
         actionOnError(validable, "phase regulation is on and regulated terminal is not set", action);
         checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
     }

@@ -23,8 +23,7 @@ class PhaseTapChanger : public TapChanger<PhaseTapChangerHolder, PhaseTapChanger
 public:
     enum class RegulationMode : unsigned char {
         CURRENT_LIMITER,
-        ACTIVE_POWER_CONTROL,
-        FIXED_TAP
+        ACTIVE_POWER_CONTROL
     };
 
 public: // MultiVariantObject

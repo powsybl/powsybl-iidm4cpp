@@ -197,7 +197,7 @@ iidm::Network FourSubstationsNodeBreakerFactory::create() {
     twt.newPhaseTapChanger()
             .setLowTapPosition(0)
             .setTapPosition(15)
-            .setRegulationMode(iidm::PhaseTapChanger::RegulationMode::FIXED_TAP)
+            .setRegulationMode(iidm::PhaseTapChanger::RegulationMode::CURRENT_LIMITER)
             .setRegulating(false)
             .setRegulationTerminal(stdcxx::ref(twt.getTerminalFromSide(iidm::TwoSides::ONE)))
             .beginStep().setR(39.78473).setX(29.784725).setG(0.0).setB(0.0).setRho(1.0).setAlpha(-42.8).endStep()

@@ -28,6 +28,8 @@ BOOST_FIXTURE_TEST_CASE(ThreeWindingsTransformerRoundTripTest, test::ResourceFix
 
 BOOST_FIXTURE_TEST_CASE(CompleteThreeWindingsTransformerRoundTripTest, test::ResourceFixture) {
     test::converter::RoundTrip::roundTripVersionedXmlTest("completeThreeWindingsTransformerRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("completeThreeWindingsTransformerRoundTripRef.xml", IidmXmlVersion::V1_1());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -57,7 +57,7 @@ private:
 private:
     std::vector<PhaseTapChangerStep> m_steps;
 
-    PhaseTapChanger::RegulationMode m_regulationMode = PhaseTapChanger::RegulationMode::FIXED_TAP;
+    PhaseTapChanger::RegulationMode m_regulationMode = PhaseTapChanger::RegulationMode::CURRENT_LIMITER;
 
 };
 

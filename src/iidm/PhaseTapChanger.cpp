@@ -112,8 +112,7 @@ template <>
 const std::initializer_list<std::string>& getNames<PhaseTapChanger::RegulationMode>() {
     static std::initializer_list<std::string> s_regulationModeNames {
         "CURRENT_LIMITER",
-        "ACTIVE_POWER_CONTROL",
-        "FIXED_TAP"
+        "ACTIVE_POWER_CONTROL"
     };
     return s_regulationModeNames;
 }

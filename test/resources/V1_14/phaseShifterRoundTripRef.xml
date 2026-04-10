@@ -15,7 +15,7 @@
             </iidm:busBreakerTopology>
         </iidm:voltageLevel>
         <iidm:twoWindingsTransformer id="PS1" r="2" x="100" g="0" b="0" ratedU1="380" ratedU2="380" bus1="B1" connectableBus1="B1" voltageLevelId1="VL1" bus2="B3" connectableBus2="B3" voltageLevelId2="VL3" p1="50.084029999999998" q1="29.201415999999998" p2="-50.042014999999999" q2="-27.100708000000001">
-            <iidm:phaseTapChanger lowTapPosition="0" tapPosition="1" targetDeadband="10" regulationMode="FIXED_TAP" regulationValue="200" loadTapChangingCapabilities="true">
+            <iidm:phaseTapChanger lowTapPosition="0" tapPosition="1" targetDeadband="10" regulationMode="CURRENT_LIMITER" regulationValue="200" loadTapChangingCapabilities="true" regulating="false">
                 <iidm:terminalRef id="PS1" side="TWO"/>
                 <iidm:step r="0" x="0" g="0" b="0" rho="1" alpha="-20"/>
                 <iidm:step r="0" x="0" g="0" b="0" rho="1" alpha="0"/>
