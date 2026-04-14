@@ -41,15 +41,33 @@ StaticVarCompensator& StaticVarCompensatorXml::readRootElementAttributes(StaticV
     const std::string& reactivePowerSetpointName = context.getVersion() <= IidmXmlVersion::V1_2() ? REACTIVE_POWER_SET_POINT : REACTIVE_POWER_SETPOINT;
     double voltageSetpoint = context.getReader().getOptionalAttributeValue(voltageSetpointName, stdcxx::nan());
     double reactivePowerSetpoint = context.getReader().getOptionalAttributeValue(reactivePowerSetpointName, stdcxx::nan());
-    const auto& optRegulationMode = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
+
     adder.setBmin(bMin)
             .setBmax(bMax)
             .setVoltageSetpoint(voltageSetpoint)
             .setReactivePowerSetpoint(reactivePowerSetpoint);
-    if(optRegulationMode.has_value()) {
-        const auto& regulationMode = Enum::fromString<StaticVarCompensator::RegulationMode>(*optRegulationMode);
+
+
+    auto regModeStr = context.getReader().getOptionalAttributeValue<std::string>(REGULATION_MODE);
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&adder, &regModeStr]() {
+        if(regModeStr.has_value()) {
+            if(*regModeStr == "OFF") {
+                regModeStr = "VOLTAGE";
+                adder.setRegulating(false);
+            } else {
+                adder.setRegulating(true);
+            }
+        }
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&adder, &context]() {
+        bool regulating = context.getReader().getOptionalAttributeValue(REGULATING, false);
+        adder.setRegulating(regulating);
+    });
+    if(regModeStr.has_value()) {
+        const auto& regulationMode = Enum::fromString<StaticVarCompensator::RegulationMode>(*regModeStr);
         adder.setRegulationMode(regulationMode);
     }
+
     readNodeOrBus(adder, context);
     StaticVarCompensator& svc = adder.add();
     readPQ(svc.getTerminal(), context.getReader());
@@ -76,7 +94,20 @@ void StaticVarCompensatorXml::writeRootElementAttributes(const StaticVarCompensa
     const std::string& reactivePowerSetpointName = context.getVersion() <= IidmXmlVersion::V1_2() ? REACTIVE_POWER_SET_POINT : REACTIVE_POWER_SETPOINT;
     context.getWriter().writeAttribute(voltageSetpointName, svc.getVoltageSetpoint());
     context.getWriter().writeAttribute(reactivePowerSetpointName, svc.getReactivePowerSetpoint());
-    context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(svc.getRegulationMode()));
+
+    //before 1.14, if SVC not regulating, regulation mode should be exported as OFF (as imported with "OFF" or no regulation mode)
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&context, &svc]() {
+        if(svc.isRegulating()) {
+            context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(svc.getRegulationMode()));
+        } else {
+            context.getWriter().writeAttribute(REGULATION_MODE, "OFF");
+        }
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&context, &svc]() {
+        context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(svc.getRegulationMode()));
+        context.getWriter().writeAttribute(REGULATING, svc.isRegulating());
+    });
+
     writeNodeOrBus(svc.getTerminal(), context);
     writePQ(svc.getTerminal(), context.getWriter());
 }

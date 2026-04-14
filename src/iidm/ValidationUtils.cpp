@@ -621,40 +621,27 @@ ValidationLevel checkSections(const Validable& validable, const stdcxx::optional
     return checkSections(validable, currentSectionCount, maximumSectionCount, checkValidationActionOnError(vl));
 }
 
-ValidationLevel checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode, const ActionOnError& action) {
-    ValidationLevel checkValidationLevel;
-    checkValidationLevel = checkOptional(validable, regulationMode, "Regulation mode is invalid", action);
-
-    if(checkValidationLevel == ValidationLevel::EQUIPMENT) {
-        return ValidationLevel::EQUIPMENT;
-    }
-
-    switch (*regulationMode) {
+ValidationLevel checkSvcRegulator(const Validable& validable, bool regulating, double voltageSetpoint, double reactivePowerSetpoint, const StaticVarCompensator::RegulationMode& regulationMode, const ActionOnError& action) {
+    switch (regulationMode) {
         case StaticVarCompensator::RegulationMode::VOLTAGE:
-            if (std::isnan(voltageSetpoint)) {
+            if (regulating && std::isnan(voltageSetpoint)) {
                 actionOnErrorForInvalidValue(validable, voltageSetpoint, converter::VOLTAGE_SETPOINT, action);
                 return ValidationLevel::EQUIPMENT;
             }
             break;
-
         case StaticVarCompensator::RegulationMode::REACTIVE_POWER:
-            if (std::isnan(reactivePowerSetpoint)) {
+            if (regulating && std::isnan(reactivePowerSetpoint)) {
                 actionOnErrorForInvalidValue(validable, reactivePowerSetpoint, converter::REACTIVE_POWER_SETPOINT, action);
                 return ValidationLevel::EQUIPMENT;
             }
             break;
-
-        case StaticVarCompensator::RegulationMode::OFF:
-            // nothing to check
-            break;
-
         default:
-            throw AssertionError(stdcxx::format("Unexpected regulation mode value: %1%", *regulationMode));
+            throw AssertionError(stdcxx::format("Unexpected regulation mode value: %1%", regulationMode));
     }
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;
 }
-ValidationLevel checkSvcRegulator(const Validable& validable, double voltageSetpoint, double reactivePowerSetpoint, const stdcxx::optional<StaticVarCompensator::RegulationMode>& regulationMode, const ValidationLevel& vl) {
-    return checkSvcRegulator(validable, voltageSetpoint, reactivePowerSetpoint, regulationMode, checkValidationActionOnError(vl));
+ValidationLevel checkSvcRegulator(const Validable& validable, bool regulating, double voltageSetpoint, double reactivePowerSetpoint, const StaticVarCompensator::RegulationMode& regulationMode, const ValidationLevel& vl) {
+    return checkSvcRegulator(validable, regulating, voltageSetpoint, reactivePowerSetpoint, regulationMode, checkValidationActionOnError(vl));
 }
 
 ValidationLevel checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition, const ActionOnError& action) {
@@ -889,7 +876,7 @@ ValidationLevel checkIdentifiable(const Identifiable& identifiable,const Validat
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkSections(validable, shunt.getSectionCount(), shunt.getMaximumSectionCount(), action));
         } else if (stdcxx::isInstanceOf<StaticVarCompensator>(identifiable)) {
             const auto& svc = dynamic_cast<const StaticVarCompensator&>(identifiable);
-            checkValidationLevel = validationLevel::min(checkValidationLevel, checkSvcRegulator(validable, svc.getVoltageSetpoint(), svc.getReactivePowerSetpoint(), svc.getRegulationMode(), action));
+            checkValidationLevel = validationLevel::min(checkValidationLevel, checkSvcRegulator(validable, svc.isRegulating(), svc.getVoltageSetpoint(), svc.getReactivePowerSetpoint(), svc.getRegulationMode(), action));
         } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
             const auto& threewt = dynamic_cast<const ThreeWindingsTransformer&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkThreeWindingsTransformer(validable, threewt, action));

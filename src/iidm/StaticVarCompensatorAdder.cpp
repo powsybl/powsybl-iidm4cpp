@@ -26,20 +26,11 @@ StaticVarCompensator& StaticVarCompensatorAdder::add() {
     checkBmin(*this, m_bMin);
     checkBmax(*this, m_bMax);
     checkRegulatingTerminal(*this, m_regulatingTerminal, network);
-    network.setValidationLevelIfGreaterThan(checkSvcRegulator(*this, m_voltageSetpoint, m_reactivePowerSetpoint, m_regulationMode, network.getMinimumValidationLevel()));
+    network.setValidationLevelIfGreaterThan(checkSvcRegulator(*this, m_regulating, m_voltageSetpoint, m_reactivePowerSetpoint, m_regulationMode, network.getMinimumValidationLevel()));
 
     std::unique_ptr<Terminal> ptrTerminal = checkAndGetTerminal();
-    if(network.getMinimumValidationLevel() == ValidationLevel::EQUIPMENT && !m_regulationMode) {
-        if(!std::isnan(m_voltageSetpoint)) {
-            m_regulationMode = StaticVarCompensator::RegulationMode::VOLTAGE;
-        } else if (!std::isnan(m_reactivePowerSetpoint)) {
-            m_regulationMode = StaticVarCompensator::RegulationMode::REACTIVE_POWER;
-        } else {
-            m_regulationMode = StaticVarCompensator::RegulationMode::OFF;
-        }
-    }
     std::unique_ptr<StaticVarCompensator> ptrSvc = stdcxx::make_unique<StaticVarCompensator>(network, checkAndGetUniqueId(), getName(), isFictitious(), m_bMin, m_bMax, m_voltageSetpoint,
-        m_reactivePowerSetpoint, *m_regulationMode, m_regulatingTerminal);
+        m_reactivePowerSetpoint, m_regulationMode, m_regulating, m_regulatingTerminal);
     auto& svc = network.checkAndAdd<StaticVarCompensator>(std::move(ptrSvc));
 
     Terminal& terminal = svc.addTerminal(std::move(ptrTerminal));
@@ -76,6 +67,11 @@ StaticVarCompensatorAdder& StaticVarCompensatorAdder::setRegulatingTerminal(cons
 
 StaticVarCompensatorAdder& StaticVarCompensatorAdder::setRegulationMode(const StaticVarCompensator::RegulationMode& regulationMode) {
     m_regulationMode = regulationMode;
+    return *this;
+}
+
+StaticVarCompensatorAdder& StaticVarCompensatorAdder::setRegulating(bool regulating) {
+    m_regulating = regulating;
     return *this;
 }
 

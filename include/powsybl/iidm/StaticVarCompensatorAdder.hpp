@@ -33,6 +33,8 @@ public:
 
     StaticVarCompensatorAdder& setRegulationMode(const StaticVarCompensator::RegulationMode& regulationMode);
 
+    StaticVarCompensatorAdder& setRegulating(bool regulating);
+
     StaticVarCompensatorAdder& setVoltageSetpoint(double voltageSetpoint);
 
 private: // IdentifiableAdder
@@ -54,7 +56,9 @@ private:
 
     stdcxx::Reference<Terminal> m_regulatingTerminal;
 
-    stdcxx::optional<StaticVarCompensator::RegulationMode> m_regulationMode;
+    StaticVarCompensator::RegulationMode m_regulationMode = StaticVarCompensator::RegulationMode::VOLTAGE;
+
+    bool m_regulating = false;
 };
 
 }  // namespace iidm

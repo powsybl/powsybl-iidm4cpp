@@ -34,13 +34,13 @@ public: //Referrer<Terminal>
 public:
     enum class RegulationMode : unsigned char {
         VOLTAGE,
-        REACTIVE_POWER,
-        OFF
+        REACTIVE_POWER
     };
 
 public:
     StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-                         double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, stdcxx::Reference<Terminal>& regulatingTerminal);
+                         double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, 
+                         const RegulationMode& regulationMode, bool regulating, stdcxx::Reference<Terminal>& regulatingTerminal);
 
     ~StaticVarCompensator() noexcept override = default;
 
@@ -58,11 +58,15 @@ public:
 
     double getVoltageSetpoint() const;
 
+    bool isRegulating() const;
+
     StaticVarCompensator& setBmax(double bMax);
 
     StaticVarCompensator& setBmin(double bMin);
 
     StaticVarCompensator& setReactivePowerSetpoint(double reactivePowerSetpoint);
+
+    StaticVarCompensator& setRegulating(bool regulating);
 
     StaticVarCompensator& setRegulatingTerminal(const stdcxx::Reference<Terminal>& regulatingTerminal);
 
@@ -92,6 +96,8 @@ private:
     stdcxx::Reference<Terminal> m_regulatingTerminal;
 
     std::vector<RegulationMode> m_regulationMode;
+
+    std::vector<bool> m_regulationOn;
 };
 
 }  // namespace iidm

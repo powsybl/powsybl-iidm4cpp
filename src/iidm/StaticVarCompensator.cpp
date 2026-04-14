@@ -20,14 +20,16 @@ namespace powsybl {
 namespace iidm {
 
 StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
-        double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, const RegulationMode& regulationMode, stdcxx::Reference<Terminal>& regulatingTerminal) :
+        double bMin, double bMax, double voltageSetpoint, double reactivePowerSetpoint, 
+        const RegulationMode& regulationMode, bool regulating, stdcxx::Reference<Terminal>& regulatingTerminal) :
     Identifiable(id, name, fictitious),
     m_bMin(checkBmin(*this, bMin)),
     m_bMax(checkBmax(*this, bMax)),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_regulatingTerminal(regulatingTerminal),
-    m_regulationMode(network.getVariantManager().getVariantArraySize(), regulationMode) {
+    m_regulationMode(network.getVariantManager().getVariantArraySize(), regulationMode),
+    m_regulationOn(network.getVariantManager().getVariantArraySize(), regulating) {
     if(static_cast<bool>(m_regulatingTerminal)) {
         m_regulatingTerminal.get().registerReferrer(*this);
     }
@@ -36,7 +38,7 @@ StaticVarCompensator::StaticVarCompensator(VariantManagerHolder& network, const 
         auto& n = dynamic_cast<Network&>(network);
         vl = n.getMinimumValidationLevel();
     }
-    checkSvcRegulator(*this, voltageSetpoint, reactivePowerSetpoint, regulationMode, vl);
+    checkSvcRegulator(*this, regulating, voltageSetpoint, reactivePowerSetpoint, regulationMode, vl);
 }
 
 void StaticVarCompensator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -46,6 +48,7 @@ void StaticVarCompensator::allocateVariantArrayElement(const std::set<unsigned l
         m_voltageSetpoint[index] = m_voltageSetpoint[sourceIndex];
         m_reactivePowerSetpoint[index] = m_reactivePowerSetpoint[sourceIndex];
         m_regulationMode[index] = m_regulationMode[sourceIndex];
+        m_regulationOn[index] = m_regulationOn[sourceIndex];
     }
 }
 
@@ -55,6 +58,7 @@ void StaticVarCompensator::extendVariantArraySize(unsigned long initVariantArray
     m_voltageSetpoint.resize(m_voltageSetpoint.size() + number, m_voltageSetpoint[sourceIndex]);
     m_reactivePowerSetpoint.resize(m_reactivePowerSetpoint.size() + number, m_reactivePowerSetpoint[sourceIndex]);
     m_regulationMode.resize(m_regulationMode.size() + number, m_regulationMode[sourceIndex]);
+    m_regulationOn.resize(m_regulationOn.size() + number, m_regulationOn[sourceIndex]);
 }
 
 double StaticVarCompensator::getBmax() const {
@@ -96,12 +100,17 @@ double StaticVarCompensator::getVoltageSetpoint() const {
     return m_voltageSetpoint.at(getNetwork().getVariantIndex());
 }
 
+bool StaticVarCompensator::isRegulating() const {
+    return m_regulationOn.at(getNetwork().getVariantIndex());
+}
+
 void StaticVarCompensator::reduceVariantArraySize(unsigned long number) {
     Injection::reduceVariantArraySize(number);
 
     m_voltageSetpoint.resize(m_voltageSetpoint.size() - number);
     m_reactivePowerSetpoint.resize(m_reactivePowerSetpoint.size() - number);
     m_regulationMode.resize(m_regulationMode.size() - number);
+    m_regulationOn.resize(m_regulationOn.size() - number);
 }
 
 StaticVarCompensator& StaticVarCompensator::setBmax(double bMax) {
@@ -117,8 +126,15 @@ StaticVarCompensator& StaticVarCompensator::setBmin(double bMin) {
 }
 
 StaticVarCompensator& StaticVarCompensator::setReactivePowerSetpoint(double reactivePowerSetpoint) {
-    checkSvcRegulator(*this, getVoltageSetpoint(), reactivePowerSetpoint, getRegulationMode(), getNetwork().getMinimumValidationLevel());
+    checkSvcRegulator(*this, isRegulating(), getVoltageSetpoint(), reactivePowerSetpoint, getRegulationMode(), getNetwork().getMinimumValidationLevel());
     m_reactivePowerSetpoint[getNetwork().getVariantIndex()] = reactivePowerSetpoint;
+    getNetwork().invalidateValidationLevel();
+    return *this;
+}
+
+StaticVarCompensator& StaticVarCompensator::setRegulating(bool regulating) {
+    checkSvcRegulator(*this, regulating, getVoltageSetpoint(), getReactivePowerSetpoint(), getRegulationMode(), getNetwork().getMinimumValidationLevel());
+    m_regulationOn[getNetwork().getVariantIndex()] = regulating;
     getNetwork().invalidateValidationLevel();
     return *this;
 }
@@ -137,14 +153,14 @@ StaticVarCompensator& StaticVarCompensator::setRegulatingTerminal(const stdcxx::
 }
 
 StaticVarCompensator& StaticVarCompensator::setRegulationMode(const RegulationMode& regulationMode) {
-    checkSvcRegulator(*this, getVoltageSetpoint(), getReactivePowerSetpoint(), regulationMode, getNetwork().getMinimumValidationLevel());
+    checkSvcRegulator(*this, isRegulating(), getVoltageSetpoint(), getReactivePowerSetpoint(), regulationMode, getNetwork().getMinimumValidationLevel());
     m_regulationMode[getNetwork().getVariantIndex()] = regulationMode;
     getNetwork().invalidateValidationLevel();
     return *this;
 }
 
 StaticVarCompensator& StaticVarCompensator::setVoltageSetpoint(double voltageSetpoint) {
-    checkSvcRegulator(*this, voltageSetpoint, getReactivePowerSetpoint(), getRegulationMode(), getNetwork().getMinimumValidationLevel());
+    checkSvcRegulator(*this, isRegulating(), voltageSetpoint, getReactivePowerSetpoint(), getRegulationMode(), getNetwork().getMinimumValidationLevel());
     m_voltageSetpoint[getNetwork().getVariantIndex()] = voltageSetpoint;
     getNetwork().invalidateValidationLevel();
     return *this;
@@ -182,8 +198,8 @@ void StaticVarCompensator::onReferencedRemoval(Terminal& /*removedReference*/) {
             m_regulatingTerminal = stdcxx::Reference<Terminal>();
         }
     }
-
-    m_regulationMode.assign(m_regulationMode.size(), RegulationMode::OFF);
+    m_regulationOn.assign(m_regulationOn.size(), false);
+    m_regulationMode.assign(m_regulationMode.size(), RegulationMode::VOLTAGE);
 }
 
 void StaticVarCompensator::onReferencedReplacement(Terminal& /*oldReference*/, Terminal& newReference) {
@@ -198,8 +214,7 @@ template <>
 const std::initializer_list<std::string>& getNames<StaticVarCompensator::RegulationMode>() {
     static std::initializer_list<std::string> s_staticVarCompensatorRegulationNames {
         "VOLTAGE",
-        "REACTIVE_POWER",
-        "OFF"
+        "REACTIVE_POWER"
     };
     return s_staticVarCompensatorRegulationNames;
 }

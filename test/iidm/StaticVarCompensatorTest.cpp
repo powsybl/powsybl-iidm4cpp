@@ -55,6 +55,7 @@ Network createStaticVarCompensatorTestNetwork() {
         .setVoltageSetpoint(380.0)
         .setReactivePowerSetpoint(90.0)
         .setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER)
+        .setRegulating(true)
         .add();
 
     return network;
@@ -111,6 +112,7 @@ Network createSvcNetwork() {
         .setBmin(0.0002)
         .setBmax(0.0008)
         .setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE)
+        .setRegulating(true)
         .setVoltageSetpoint(390)
         .add();
     network.newLine()
@@ -140,6 +142,7 @@ StaticVarCompensator& createSvc(Network& network, const std::string& id, const s
         .setBmin(0.0002)
         .setBmax(0.0008)
         .setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE)
+        .setRegulating(true)
         .setVoltageSetpoint(390.0)
         .setReactivePowerSetpoint(1.0)
         .setRegulatingTerminal(regulatingTerminal)
@@ -163,9 +166,9 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': bMax is invalid");
     adder.setBmax(50.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': Regulation mode is invalid");
-    adder.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE);
+    POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'StaticVarCompensator' with the id 'SVC1'");
 
+    adder.setRegulating(true);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltageSetpoint");
     adder.setVoltageSetpoint(30.0);
 
@@ -208,9 +211,13 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(200, svc.getBmin(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(svc.setBmin(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC1': bMin is invalid");
 
-    BOOST_TEST(stdcxx::areSame(svc, svc.setRegulationMode(StaticVarCompensator::RegulationMode::OFF)));
-    BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::OFF, svc.getRegulationMode());
+    BOOST_TEST(stdcxx::areSame(svc, svc.setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER)));
+    BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::REACTIVE_POWER, svc.getRegulationMode());
     POWSYBL_ASSERT_THROW(svc.setRegulationMode(static_cast<StaticVarCompensator::RegulationMode>(5)), AssertionError, "Unexpected RegulationMode value: 5");
+
+    BOOST_TEST(svc.isRegulating());
+    svc.setRegulating(false);
+    BOOST_TEST(!svc.isRegulating());
 
     BOOST_TEST(stdcxx::areSame(svc, svc.setVoltageSetpoint(400)));
     BOOST_CHECK_CLOSE(400, svc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
@@ -220,10 +227,13 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(500, svc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_NO_THROW(svc.setReactivePowerSetpoint(stdcxx::nan()));
 
-    POWSYBL_ASSERT_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for reactivePowerSetpoint");
-    POWSYBL_ASSERT_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltageSetpoint");
+    //While not regulating  do not check values ; if regulating, or to set regulating check values
+    BOOST_CHECK_NO_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER));
+    POWSYBL_ASSERT_THROW(svc.setRegulating(true), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for reactivePowerSetpoint");
+    BOOST_CHECK_NO_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE));
+    POWSYBL_ASSERT_THROW(svc.setRegulating(true), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltageSetpoint");
 
-    svc.setVoltageSetpoint(600);
+    svc.setVoltageSetpoint(600).setRegulating(true);
     BOOST_CHECK_NO_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE));
 
     svc.setReactivePowerSetpoint(700);
@@ -267,12 +277,13 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(90.0, svc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::REACTIVE_POWER, svc.getRegulationMode());
     BOOST_CHECK_CLOSE(380.0, svc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
-    svc.setBmin(150).setBmax(250).setReactivePowerSetpoint(350).setVoltageSetpoint(450).setRegulationMode(StaticVarCompensator::RegulationMode::OFF);
+    svc.setBmin(150).setBmax(250).setReactivePowerSetpoint(350).setVoltageSetpoint(450).setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE).setRegulating(false);
 
     BOOST_CHECK_CLOSE(150, svc.getBmin(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250, svc.getBmax(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(350, svc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::OFF, svc.getRegulationMode());
+    BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::VOLTAGE, svc.getRegulationMode());
+    BOOST_CHECK(!svc.isRegulating());
     BOOST_CHECK_CLOSE(450, svc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
@@ -280,6 +291,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(250, svc.getBmax(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(90.0, svc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::REACTIVE_POWER, svc.getRegulationMode());
+    BOOST_CHECK(svc.isRegulating());
     BOOST_CHECK_CLOSE(380.0, svc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
 
     network.getVariantManager().removeVariant("s1");
@@ -292,7 +304,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(150, svc.getBmin(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250, svc.getBmax(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(350, svc.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::OFF, svc.getRegulationMode());
+    BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::VOLTAGE, svc.getRegulationMode());
+    BOOST_CHECK(!svc.isRegulating());
     BOOST_CHECK_CLOSE(450.0, svc.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
 
     const std::string workingVariantId = network.getVariantManager().getWorkingVariantId();

@@ -88,6 +88,7 @@ Network createStaticVarCompensatorTestNetwork() {
         .setBmin(0.0002)
         .setBmax(0.0008)
         .setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE)
+        .setRegulating(true)
         .setVoltageSetpoint(390)
         .add();
     network.newLine()

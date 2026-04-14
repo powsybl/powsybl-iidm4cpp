@@ -454,7 +454,6 @@ BOOST_AUTO_TEST_CASE(range_staticVarCompensators) {
         .setBus("Bus1")
         .setBmin(0.0)
         .setBmax(10.0)
-        .setRegulationMode(StaticVarCompensator::RegulationMode::OFF)
         .add();
 
     BOOST_CHECK_EQUAL(1, network.getStaticVarCompensatorCount());
@@ -619,7 +618,6 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorAllBbk) {
         .setBus("Bus1")
         .setBmin(0.0)
         .setBmax(10.0)
-        .setRegulationMode(StaticVarCompensator::RegulationMode::OFF)
         .add();
 
     vl.newVscConverterStation()
