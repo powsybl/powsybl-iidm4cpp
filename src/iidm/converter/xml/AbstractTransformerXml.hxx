@@ -192,6 +192,12 @@ bool AbstractTransformerXml<Added, Adder>::readTapChangerAttributes(NetworkXmlRe
     const auto& regulating = context.getReader().getOptionalAttributeValue<bool>(REGULATING);
     const auto& lowTapPosition = context.getReader().getAttributeValue<long>(LOW_TAP_POSITION);
     const auto& tapPosition = context.getReader().getOptionalAttributeValue<long>(TAP_POSITION);
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&context, &tapChangerAdder]() {
+        auto solvedTapPosition = context.getReader().getOptionalAttributeValue<long>(SOLVED_TAP_POSITION);
+        if(solvedTapPosition.has_value()) {
+            tapChangerAdder->setSolvedTapPosition(solvedTapPosition.get());
+        }
+    });
     const double& targetDeadband = readTargetDeadband(context);
     
     tapChangerAdder->setLowTapPosition(lowTapPosition)
@@ -276,7 +282,17 @@ template <typename Added, typename Adder>
 template <typename H, typename C, typename S, typename R>
 void AbstractTransformerXml<Added, Adder>::writeTapChanger(const TapChanger<H, C, S, R>& tc, NetworkXmlWriterContext& context) {
     context.getWriter().writeAttribute(LOW_TAP_POSITION, tc.getLowTapPosition());
-    context.getWriter().writeAttribute(TAP_POSITION, tc.getTapPosition());
+    stdcxx::optional<long> solvedTapPosition = tc.getSolvedTapPosition();
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&context, &tc, &solvedTapPosition]() {
+        long tapPosition = solvedTapPosition.has_value() ? solvedTapPosition.get() : tc.getTapPosition();
+        context.getWriter().writeAttribute(TAP_POSITION, tapPosition);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&context, &tc, &solvedTapPosition]() {
+        context.getWriter().writeAttribute(TAP_POSITION, tc.getTapPosition());
+        if(solvedTapPosition.has_value()) {
+            context.getWriter().writeAttribute(SOLVED_TAP_POSITION, solvedTapPosition.get());
+        }
+    });
     writeTargetDeadband(tc.getTargetDeadband(), context);
 }
 

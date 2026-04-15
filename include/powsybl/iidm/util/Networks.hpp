@@ -18,9 +18,10 @@ namespace powsybl {
 
 namespace iidm {
 
-class VoltageLevel;
-class Terminal;
 class Bus;
+class Network;
+class Terminal;
+class VoltageLevel;
 
 namespace Networks {
 
@@ -47,6 +48,21 @@ stdcxx::CReference<Terminal> getEquivalentTerminal(const VoltageLevel& voltageLe
 std::map<std::string, std::set<unsigned long>> getNodesByBus(const VoltageLevel& voltageLevel);
 
 std::set<unsigned long> getNodes(const std::string& busId, const VoltageLevel& voltageLevel, const std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)>& getBusFromTerminalFunc);
+
+/**
+ * Replaces "input" values by their solved values. This includes :
+ * - tap position of TapChangers,
+ * - section count of ShuntCompensators,
+ * - active and reactive power flow on Generators, Batteries, Loads and generation part of DanglingLines
+ * - voltage on Generators and DanglingLines
+ */
+void applySolvedValues(Network& network);
+
+/**
+ * Replaces "input" values of tap changers and shunt compensators by their solved values.
+ */
+void applySolvedTapPositionAndSolvedSectionCount(Network& network);
+
 
 }  // namespace Networks
 

@@ -8,7 +8,13 @@
 #include <powsybl/iidm/util/Networks.hpp>
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/Load.hpp>
+#include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/ShuntCompensator.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -97,6 +103,42 @@ std::set<unsigned long> getNodes(const std::string& busId, const VoltageLevel& v
     }
 
     return nodes;
+}
+
+void applySolvedValues(Network& network) {
+    for(auto& twowt : network.getTwoWindingsTransformers()) {
+        twowt.applySolvedValues();
+    }
+    for(auto& threewt : network.getThreeWindingsTransformers()) {
+        threewt.applySolvedValues();
+    }
+    for(auto& sc : network.getShuntCompensators()) {
+        sc.applySolvedValues();
+    }
+    for(auto& gen : network.getGenerators()) {
+        gen.applySolvedValues();
+    }
+    for(auto& bat : network.getBatteries()) {
+        bat.applySolvedValues();
+    }
+    for(auto& load : network.getLoads()) {
+        load.applySolvedValues();
+    }
+    for(auto& dl : network.getDanglingLines()) {
+        dl.applySolvedValues();
+    }
+}
+
+void applySolvedTapPositionAndSolvedSectionCount(Network& network) {
+    for(auto& twowt : network.getTwoWindingsTransformers()) {
+        twowt.applySolvedValues();
+    }
+    for(auto& threewt : network.getThreeWindingsTransformers()) {
+        threewt.applySolvedValues();
+    }
+    for(auto& sc : network.getShuntCompensators()) {
+        sc.applySolvedValues();
+    }
 }
 
 }  // namespace Networks

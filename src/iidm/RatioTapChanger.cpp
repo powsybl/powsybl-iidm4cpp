@@ -16,8 +16,8 @@ namespace powsybl {
 namespace iidm {
 
 RatioTapChanger::RatioTapChanger(RatioTapChangerHolder& parent, long lowTapPosition, const std::vector<RatioTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                                 bool loadTapChangingCapabilities, long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband) :
-    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, loadTapChangingCapabilities, tapPosition, regulating, targetDeadband, "ratio tap changer"),
+                                 bool loadTapChangingCapabilities, long tapPosition, const stdcxx::optional<long>& solvedTapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband) :
+    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, loadTapChangingCapabilities, tapPosition, solvedTapPosition, regulating, targetDeadband, "ratio tap changer"),
     m_regulationMode(regulationMode),
     m_regulationValue(parent.getNetwork().getVariantManager().getVariantArraySize(), regulationValue) {
     checkTapPosition(parent, tapPosition, lowTapPosition, getHighTapPosition(), parent.getNetwork().getMinimumValidationLevel());

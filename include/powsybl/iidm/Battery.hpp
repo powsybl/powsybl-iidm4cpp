@@ -41,6 +41,10 @@ public:
 
     Battery& setTargetQ(double targetQ);
 
+    void applySolvedValues();
+    void setTargetPtoP();
+    void setTargetQtoQ();
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

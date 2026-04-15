@@ -250,6 +250,21 @@ TwoWindingsTransformer& TwoWindingsTransformer::setX(double x) {
     return *this;
 }
 
+void TwoWindingsTransformer::applySolvedValues() {
+    setRatioTapPositionToSolvedTapPosition();
+    setPhaseTapPositionToSolvedTapPosition();
+}
+void TwoWindingsTransformer::setRatioTapPositionToSolvedTapPosition() {
+    if (hasRatioTapChanger()) {
+        getRatioTapChanger().applySolvedValues();
+    }
+}
+void TwoWindingsTransformer::setPhaseTapPositionToSolvedTapPosition() {
+    if (hasPhaseTapChanger()) {
+        getPhaseTapChanger().applySolvedValues();
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

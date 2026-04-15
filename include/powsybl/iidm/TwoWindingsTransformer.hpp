@@ -95,6 +95,10 @@ public:
 
     TwoWindingsTransformer& setX(double x);
 
+    void applySolvedValues();
+    void setRatioTapPositionToSolvedTapPosition();
+    void setPhaseTapPositionToSolvedTapPosition();
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

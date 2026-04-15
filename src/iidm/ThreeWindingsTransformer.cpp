@@ -318,6 +318,25 @@ void ThreeWindingsTransformer::reduceVariantArraySize(unsigned long number) {
     }
 }
 
+void ThreeWindingsTransformer::applySolvedValues() {
+    setRatioTapPositionToSolvedTapPosition();
+    setPhaseTapPositionToSolvedTapPosition();
+}
+void ThreeWindingsTransformer::setRatioTapPositionToSolvedTapPosition() {
+    for (Leg& leg : m_legs) {
+        if (leg.hasRatioTapChanger()) {
+            leg.getRatioTapChanger().applySolvedValues();
+        }
+    }
+}
+void ThreeWindingsTransformer::setPhaseTapPositionToSolvedTapPosition() {
+    for (Leg& leg : m_legs) {
+        if (leg.hasPhaseTapChanger()) {
+            leg.getPhaseTapChanger().applySolvedValues();
+        }
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

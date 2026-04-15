@@ -123,6 +123,23 @@ Load& Load::setQ0(double q0) {
     return *this;
 }
 
+void Load::applySolvedValues() {
+    setP0ToP();
+    setQ0ToQ();
+}
+void Load::setP0ToP() {
+    double terminalP = getTerminal().getP();
+    if(!std::isnan(terminalP)) {
+        setP0(terminalP);
+    }
+}
+void Load::setQ0ToQ() {
+    double terminalQ = getTerminal().getQ();
+    if(!std::isnan(terminalQ)) {
+        setQ0(terminalQ);
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

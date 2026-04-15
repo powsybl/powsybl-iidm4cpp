@@ -19,10 +19,11 @@ namespace powsybl {
 namespace iidm {
 
 ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
-                                   unsigned long currentSectionCount, stdcxx::Reference<Terminal>& regulatingTerminal, bool voltageRegulatorOn, double targetV, double targetDeadband) :
+                                   unsigned long currentSectionCount, const stdcxx::optional<unsigned long>& solvedSectionCount, stdcxx::Reference<Terminal>& regulatingTerminal, bool voltageRegulatorOn, double targetV, double targetDeadband) :
     Identifiable(id, name, fictitious),
     m_model(std::move(model)),
     m_sectionCount(network.getVariantManager().getVariantArraySize(), currentSectionCount),
+    m_solvedSectionCount(network.getVariantManager().getVariantArraySize(), solvedSectionCount),
     m_regulatingTerminal(regulatingTerminal),
     m_voltageRegulatorOn(network.getVariantManager().getVariantArraySize(), voltageRegulatorOn),
     m_targetV(network.getVariantManager().getVariantArraySize(), targetV),
@@ -32,6 +33,8 @@ ShuntCompensator::ShuntCompensator(VariantManagerHolder& network, const std::str
         }
 
     m_model->attach(*this);
+
+    checkSolvedSection(*this, solvedSectionCount, m_model->getMaximumSectionCount());
 }
 
 void ShuntCompensator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -39,6 +42,7 @@ void ShuntCompensator::allocateVariantArrayElement(const std::set<unsigned long>
 
     for (auto index : indexes) {
         m_sectionCount[index] = m_sectionCount[sourceIndex];
+        m_solvedSectionCount[index] = m_solvedSectionCount[sourceIndex];
         m_voltageRegulatorOn[index] = m_voltageRegulatorOn[sourceIndex];
         m_targetV[index] = m_targetV[sourceIndex];
         m_targetDeadband[index] = m_targetDeadband[sourceIndex];
@@ -49,6 +53,7 @@ void ShuntCompensator::extendVariantArraySize(unsigned long initVariantArraySize
     Injection::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
     m_sectionCount.resize(m_sectionCount.size() + number, m_sectionCount[sourceIndex]);
+    m_solvedSectionCount.resize(m_solvedSectionCount.size() + number, m_solvedSectionCount[sourceIndex]);
     m_voltageRegulatorOn.resize(m_voltageRegulatorOn.size() + number, m_voltageRegulatorOn[sourceIndex]);
     m_targetV.resize(m_targetV.size() + number, m_targetV[sourceIndex]);
     m_targetDeadband.resize(m_targetDeadband.size() + number, m_targetDeadband[sourceIndex]);
@@ -98,6 +103,10 @@ unsigned long ShuntCompensator::getSectionCount() const {
     return m_sectionCount[getNetwork().getVariantIndex()];
 }
 
+stdcxx::optional<unsigned long> ShuntCompensator::getSolvedSectionCount() const {
+    return m_solvedSectionCount[getNetwork().getVariantIndex()];
+}
+
 double ShuntCompensator::getTargetDeadband() const {
     return m_targetDeadband[getNetwork().getVariantIndex()];
 }
@@ -125,6 +134,7 @@ void ShuntCompensator::reduceVariantArraySize(unsigned long number) {
     Injection::reduceVariantArraySize(number);
 
     m_sectionCount.resize(m_sectionCount.size() - number);
+    m_solvedSectionCount.resize(m_solvedSectionCount.size() - number);
     m_voltageRegulatorOn.resize(m_voltageRegulatorOn.size() - number);
     m_targetV.resize(m_targetV.size() - number);
     m_targetDeadband.resize(m_targetDeadband.size() - number);
@@ -150,6 +160,18 @@ ShuntCompensator& ShuntCompensator::setSectionCount(unsigned long sectionCount) 
     unsigned long variantIndex = getNetwork().getVariantIndex();
     m_sectionCount[variantIndex] = sectionCount;
     getNetwork().invalidateValidationLevel();
+    return *this;
+}
+
+ShuntCompensator& ShuntCompensator::setSolvedSectionCount(unsigned long solvedSectionCount) {
+    checkSolvedSection(*this, solvedSectionCount, m_model->getMaximumSectionCount());
+    unsigned long variantIndex = getNetwork().getVariantIndex();
+    m_solvedSectionCount[variantIndex] = solvedSectionCount;
+    return *this;
+}
+ShuntCompensator& ShuntCompensator::unsetSolvedSectionCount() {
+    unsigned long variantIndex = getNetwork().getVariantIndex();
+    m_solvedSectionCount[variantIndex].reset();
     return *this;
 }
 
@@ -212,6 +234,16 @@ void ShuntCompensator::onReferencedReplacement(Terminal& oldReference, Terminal&
     if(static_cast<bool>(m_regulatingTerminal) && stdcxx::areSame(m_regulatingTerminal.get(), oldReference)) {
         m_regulatingTerminal = newReference;
         newReference.registerReferrer(*this);
+    }
+}
+
+void ShuntCompensator::applySolvedValues() {
+    setSectionCountToSolvedSectionCount();
+}
+void ShuntCompensator::setSectionCountToSolvedSectionCount() {
+    auto solvedValue = getSolvedSectionCount();
+    if(solvedValue.has_value()) {
+        setSectionCount(solvedValue.get());
     }
 }
 

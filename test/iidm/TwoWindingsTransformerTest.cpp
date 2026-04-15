@@ -557,6 +557,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK(!ratioTapChanger.getSolvedTapPosition());
     BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
     BOOST_TEST(ratioTapChanger.isRegulating());
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
@@ -566,6 +567,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(-2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK(!phaseTapChanger.getSolvedTapPosition());
     BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
     BOOST_TEST(!phaseTapChanger.isRegulating());
     BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::ACTIVE_POWER_CONTROL, phaseTapChanger.getRegulationMode());
@@ -573,8 +575,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_TEST(stdcxx::areSame(terminal2, phaseTapChanger.getRegulationTerminal().get()));
 
     transformer.setR(-3.0).setRatedU1(-2.0).setRatedU2(-0.4).setX(-33.0).setG(-1.0).setB(-0.2);
-    ratioTapChanger.setTapPosition(1L).setRegulating(false).setRegulationTerminal(stdcxx::ref<Terminal>(terminal2)).setTargetV(300.0);
-    phaseTapChanger.setTapPosition(0L).setRegulating(true).setRegulationTerminal(stdcxx::ref<Terminal>(terminal)).setRegulationValue(400.0).setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER);
+    ratioTapChanger.setTapPosition(1L).setSolvedTapPosition(2L).setRegulating(false).setRegulationTerminal(stdcxx::ref<Terminal>(terminal2)).setTargetV(300.0);
+    phaseTapChanger.setTapPosition(0L).setSolvedTapPosition(-1L).setRegulating(true).setRegulationTerminal(stdcxx::ref<Terminal>(terminal)).setRegulationValue(400.0).setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER);
 
     BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
     BOOST_CHECK_CLOSE(-3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
@@ -588,6 +590,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(2L, ratioTapChanger.getSolvedTapPosition().get());
     BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
     BOOST_TEST(!ratioTapChanger.isRegulating());
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
@@ -597,6 +600,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(0L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(-1L, phaseTapChanger.getSolvedTapPosition().get());
     BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
     BOOST_TEST(phaseTapChanger.isRegulating());
     BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
@@ -617,6 +621,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK(!ratioTapChanger.getSolvedTapPosition());
     BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
     BOOST_TEST(ratioTapChanger.isRegulating());
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
@@ -626,6 +631,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(-2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK(!phaseTapChanger.getSolvedTapPosition());
     BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
     BOOST_TEST(!phaseTapChanger.isRegulating());
     BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
@@ -633,8 +639,8 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_TEST(stdcxx::areSame(terminal, phaseTapChanger.getRegulationTerminal().get()));
 
     transformer.setR(3.0).setRatedU1(2.0).setRatedU2(0.4).setX(33.0).setG(1.0).setB(0.2);
-    ratioTapChanger.setTapPosition(3L).setRegulating(false).setTargetV(350.0);
-    phaseTapChanger.setTapPosition(-3L).setRegulating(true).setRegulationValue(450.0);
+    ratioTapChanger.setTapPosition(3L).setSolvedTapPosition(1L).setRegulating(false).setTargetV(350.0);
+    phaseTapChanger.setTapPosition(-3L).setSolvedTapPosition(0L).setRegulating(true).setRegulationValue(450.0);
 
     BOOST_CHECK_EQUAL("2WT_VL1_VL2", transformer.getId());
     BOOST_CHECK_CLOSE(3.0, transformer.getR(), std::numeric_limits<double>::epsilon());
@@ -648,6 +654,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(1L, ratioTapChanger.getSolvedTapPosition().get());
     BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
     BOOST_TEST(!ratioTapChanger.isRegulating());
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
@@ -657,6 +664,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(0L, phaseTapChanger.getSolvedTapPosition().get());
     BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
     BOOST_TEST(phaseTapChanger.isRegulating());
     BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
@@ -677,6 +685,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK(!ratioTapChanger.getSolvedTapPosition());
     BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
     BOOST_TEST(ratioTapChanger.isRegulating());
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
@@ -686,6 +695,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(-2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK(!phaseTapChanger.getSolvedTapPosition());
     BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
     BOOST_TEST(!phaseTapChanger.isRegulating());
     BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());
@@ -710,6 +720,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(1L, ratioTapChanger.getSolvedTapPosition().get());
     BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
     BOOST_TEST(!ratioTapChanger.isRegulating());
     BOOST_TEST(ratioTapChanger.hasLoadTapChangingCapabilities());
@@ -719,6 +730,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(0L, phaseTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(-3L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK_EQUAL(0L, phaseTapChanger.getSolvedTapPosition().get());
     BOOST_CHECK_EQUAL(4, phaseTapChanger.getStepCount());
     BOOST_TEST(phaseTapChanger.isRegulating());
     BOOST_CHECK_EQUAL(PhaseTapChanger::RegulationMode::CURRENT_LIMITER, phaseTapChanger.getRegulationMode());

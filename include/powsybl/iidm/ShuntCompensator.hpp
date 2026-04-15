@@ -35,7 +35,7 @@ public: //Referrer<Terminal>
 
 public:
     ShuntCompensator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, std::unique_ptr<ShuntCompensatorModel>&& model,
-                     unsigned long currentSectionCount, stdcxx::Reference<Terminal>& regulatingTerminal, bool voltageRegulatorOn, double targetV, double targetDeadband);
+                     unsigned long currentSectionCount, const stdcxx::optional<unsigned long>& solvedSectionCount, stdcxx::Reference<Terminal>& regulatingTerminal, bool voltageRegulatorOn, double targetV, double targetDeadband);
 
     ~ShuntCompensator() noexcept override = default;
 
@@ -67,6 +67,8 @@ public:
 
     unsigned long getSectionCount() const;
 
+    stdcxx::optional<unsigned long> getSolvedSectionCount() const;
+
     double getTargetDeadband() const;
 
     double getTargetV() const;
@@ -77,11 +79,17 @@ public:
 
     ShuntCompensator& setSectionCount(unsigned long sectionCount);
 
+    ShuntCompensator& setSolvedSectionCount(unsigned long solvedSectionCount);
+    ShuntCompensator& unsetSolvedSectionCount();
+
     ShuntCompensator& setTargetDeadband(double targetDeadband);
 
     ShuntCompensator& setTargetV(double targetV);
 
     ShuntCompensator& setVoltageRegulatorOn(bool voltageRegulatorOn);
+
+    void applySolvedValues();
+    void setSectionCountToSolvedSectionCount();
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -98,6 +106,8 @@ private:
 
     /* the current number of section switched on */
     std::vector<unsigned long> m_sectionCount;
+
+    std::vector<stdcxx::optional<unsigned long>> m_solvedSectionCount;
 
     stdcxx::Reference<Terminal> m_regulatingTerminal;
 

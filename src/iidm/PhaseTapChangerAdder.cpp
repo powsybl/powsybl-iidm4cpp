@@ -34,6 +34,9 @@ PhaseTapChangerAdder::PhaseTapChangerAdder(PhaseTapChangerHolder& parent, const 
         setRegulationValue(phaseTapChanger.getRegulationValue());
         setLowTapPosition(phaseTapChanger.getLowTapPosition());
         setTapPosition(phaseTapChanger.getTapPosition());
+        if(phaseTapChanger.getSolvedTapPosition()){
+            setSolvedTapPosition(phaseTapChanger.getSolvedTapPosition().get());
+        }
         setTargetDeadband(phaseTapChanger.getTargetDeadband());
         for(const auto& step : phaseTapChanger.getAllSteps() ){
             beginStep()
@@ -60,13 +63,15 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
         m_tapPosition = 0L;
     }
     network.setValidationLevelIfGreaterThan(checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel()));
-
+    if(m_solvedTapPosition.has_value()) {
+        checkSolvedTapPosition(m_parent, *m_solvedTapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel());
+    }
 
     network.setValidationLevelIfGreaterThan(checkPhaseTapChangerRegulation(m_parent, m_regulationMode, m_regulationValue, m_regulating, m_loadTapChangingCapabilities, m_regulationTerminal, network, network.getMinimumValidationLevel()));
     network.setValidationLevelIfGreaterThan(checkTargetDeadband(m_parent, "phase tap changer", m_regulating, m_targetDeadband, network.getMinimumValidationLevel()));
 
     std::unique_ptr<PhaseTapChanger> ptrPhaseTapChanger = stdcxx::make_unique<PhaseTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal, m_loadTapChangingCapabilities,
-                                                                                               *m_tapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
+                                                                                               *m_tapPosition, m_solvedTapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
 
     bool wasRegulating = m_parent.hasPhaseTapChanger() && m_parent.getPhaseTapChanger().isRegulating();
     unsigned long count = m_parent.getRegulatingTapChangerCount() - (wasRegulating ? 1 : 0);

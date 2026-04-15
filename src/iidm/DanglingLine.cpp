@@ -272,6 +272,36 @@ CurrentLimitsAdder DanglingLine::newCurrentLimits() {
     return getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits();
 }
 
+void DanglingLine::applySolvedValues() {
+    setGenerationTargetPToP();
+    setGenerationTargetQToQ();
+    setGenerationTargetVToV();
+}
+void DanglingLine::setGenerationTargetPToP() {
+    if(m_generation) {
+        double terminalP = getTerminal().getP();
+        if(!std::isnan(terminalP)) {
+            m_generation->setTargetP(-terminalP);
+        }
+    }
+}
+void DanglingLine::setGenerationTargetQToQ() {
+    if(m_generation) {
+        double terminalQ = getTerminal().getQ();
+        if(!std::isnan(terminalQ)) {
+            m_generation->setTargetQ(-terminalQ);
+        }
+    }
+}
+void DanglingLine::setGenerationTargetVToV() {
+    if(m_generation) {
+        auto bus = getTerminal().getBusView().getBus();
+        if(static_cast<bool>(bus) && !std::isnan(bus.get().getV())) {
+            m_generation->setTargetV(bus.get().getV());
+        }
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

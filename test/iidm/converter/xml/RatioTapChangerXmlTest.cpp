@@ -96,6 +96,18 @@ BOOST_FIXTURE_TEST_CASE(RatioTapChangerXmlTest, test::ResourceFixture) {
 
 }
 
+BOOST_FIXTURE_TEST_CASE(RatioTapChangerWithSolvedTapPositionXmlTest, test::ResourceFixture) {
+
+    Network network = createRatioTapChangerNetwork();
+    network.getTwoWindingsTransformer("T2wT").getRatioTapChanger()
+        .setSolvedTapPosition(0);
+
+    test::converter::RoundTrip::runXml(network, test::converter::RoundTrip::getVersionedNetwork("ratioTapChangerWithSolvedTapPositionRef.xml", converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
+
+    // backward compatibility
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("ratioTapChangerWithSolvedTapPositionRef.xml", IidmXmlVersion::V1_14());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml

@@ -260,6 +260,30 @@ void Generator::onReferencedReplacement(Terminal& oldReference, Terminal& newRef
     }
 }
 
+void Generator::applySolvedValues() {
+    setTargetPToP();
+    setTargetQToQ();
+    setTargetVToV();
+}
+void Generator::setTargetPToP() {
+    double terminalP = getTerminal().getP();
+    if(!std::isnan(terminalP)) {
+        setTargetP(-terminalP);
+    }
+}
+void Generator::setTargetQToQ() {
+    double terminalQ = getTerminal().getQ();
+    if(!std::isnan(terminalQ)) {
+        setTargetQ(-terminalQ);
+    }
+}
+void Generator::setTargetVToV() {
+    auto bus = getTerminal().getBusView().getBus();
+    if(static_cast<bool>(bus) && !std::isnan(bus.get().getV())) {
+        setTargetV(bus.get().getV());
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

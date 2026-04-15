@@ -70,6 +70,12 @@ void ShuntCompensatorXml::readRootElementAttributes(ShuntCompensatorAdder& adder
             adder.setSectionCount(*sectionCount);
         }
     });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&context, &adder]() {
+        auto solvedSectionCount = context.getReader().getOptionalAttributeValue<unsigned long>(SOLVED_SECTION_COUNT);
+        if(solvedSectionCount.has_value()) {
+            adder.setSolvedSectionCount(*solvedSectionCount);
+        }
+    });
     readNodeOrBus(adder, context);
     double p = context.getReader().getOptionalAttributeValue(P, stdcxx::nan());
     double q = context.getReader().getOptionalAttributeValue(Q, stdcxx::nan());
@@ -163,7 +169,8 @@ void ShuntCompensatorXml::writeRootElementAttributes(const ShuntCompensator& shu
     if (ShuntCompensatorModelType::NON_LINEAR == shuntCompensator.getModelType()) {
         IidmXmlUtil::assertMinimumVersion(getRootElementName(), SHUNT_NON_LINEAR_MODEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
     }
-    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &shuntCompensator]() {
+    stdcxx::optional<unsigned long> solvedSectionCount = shuntCompensator.getSolvedSectionCount();
+    IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_2(), context.getVersion(), [&context, &shuntCompensator, &solvedSectionCount]() {
         const ShuntCompensatorModel& model = shuntCompensator.getModel();
         double bPerSection = stdcxx::isInstanceOf<ShuntCompensatorLinearModel>(model) ? shuntCompensator.getModel<ShuntCompensatorLinearModel>().getBPerSection() : shuntCompensator.getB();
         if(bPerSection == 0.0) {
@@ -175,10 +182,29 @@ void ShuntCompensatorXml::writeRootElementAttributes(const ShuntCompensator& shu
         context.getWriter().writeAttribute(B_PER_SECTION, bPerSection);
         unsigned long maximumSectionCount = stdcxx::isInstanceOf<ShuntCompensatorLinearModel>(model) ? shuntCompensator.getMaximumSectionCount() : 1;
         context.getWriter().writeAttribute(MAXIMUM_SECTION_COUNT, maximumSectionCount);
-        unsigned long currentSectionCount = stdcxx::isInstanceOf<ShuntCompensatorLinearModel>(model) ? shuntCompensator.getSectionCount() : 1;
+        
+        unsigned long currentSectionCount = 1;
+        if(stdcxx::isInstanceOf<ShuntCompensatorLinearModel>(model)) {
+            if(solvedSectionCount.has_value()) {
+                currentSectionCount = solvedSectionCount.get();
+            } else {
+                currentSectionCount = shuntCompensator.getSectionCount();
+            }
+        }
         context.getWriter().writeAttribute(CURRENT_SECTION_COUNT, currentSectionCount);
     });
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &shuntCompensator]() { context.getWriter().writeAttribute(SECTION_COUNT, shuntCompensator.getSectionCount()); });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &shuntCompensator, &solvedSectionCount]() {
+        IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&context, &shuntCompensator, &solvedSectionCount]() {
+            unsigned long currentSectionCount = solvedSectionCount.has_value() ? solvedSectionCount.get() : shuntCompensator.getSectionCount();
+            context.getWriter().writeAttribute(SECTION_COUNT, currentSectionCount);
+        });
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_14(), context.getVersion(), [&context, &shuntCompensator, &solvedSectionCount]() {
+            context.getWriter().writeAttribute(SECTION_COUNT, shuntCompensator.getSectionCount());
+            if(solvedSectionCount.has_value()) {
+                context.getWriter().writeAttribute(SOLVED_SECTION_COUNT, solvedSectionCount.get());
+            }
+        });
+    });
     IidmXmlUtil::writeBooleanAttributeFromMinimumVersion(SHUNT, VOLTAGE_REGULATOR_ON, shuntCompensator.isVoltageRegulatorOn(), false, ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_2(), context);
     IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(SHUNT, TARGET_V, shuntCompensator.getTargetV(), ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_2(), context);
     IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(SHUNT, TARGET_DEADBAND, shuntCompensator.getTargetDeadband(), ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_2(), context);

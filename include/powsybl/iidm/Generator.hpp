@@ -92,6 +92,11 @@ public:
 
     Generator& setVoltageSetpoint(double voltageSetpoint);
 
+    void applySolvedValues();
+    void setTargetPToP();
+    void setTargetQToQ();
+    void setTargetVToV();
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

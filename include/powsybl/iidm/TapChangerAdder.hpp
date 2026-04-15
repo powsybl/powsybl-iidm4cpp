@@ -27,6 +27,8 @@ public:
 
     virtual TCAdder& setTapPosition(long tapPosition);
 
+    virtual TCAdder& setSolvedTapPosition(long solvedTapPosition);
+
     virtual TCAdder& setRegulating(bool regulating);
 
     virtual TCAdder& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities);
@@ -52,6 +54,8 @@ protected:
     long m_lowTapPosition = 0;
 
     stdcxx::optional<long> m_tapPosition;
+
+    stdcxx::optional<long> m_solvedTapPosition;
 
     bool m_regulating = false;
 

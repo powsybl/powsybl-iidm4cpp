@@ -191,6 +191,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(1L, ratioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getTapPosition());
+    BOOST_CHECK(!ratioTapChanger.getSolvedTapPosition());
+    POWSYBL_ASSERT_THROW(ratioTapChanger.getSolvedStep(), ValidationException, "2 windings transformer '2WT_VL1_VL2': solved tap position is not set");
     BOOST_CHECK(ratioTapChanger.getNeutralPosition().has_value());
     BOOST_CHECK_EQUAL(2L, ratioTapChanger.getNeutralPosition().get());
     BOOST_CHECK_EQUAL(3, ratioTapChanger.getStepCount());
@@ -256,6 +258,13 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(ratioTapChanger.setTapPosition(6), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 6 [1, 3]");
     RatioTapChangerStep& step = ratioTapChanger.setTapPosition(3).getCurrentStep();
     BOOST_CHECK_EQUAL(3L, ratioTapChanger.getTapPosition());
+
+    POWSYBL_ASSERT_THROW(ratioTapChanger.setSolvedTapPosition(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect solved tap position -1 [1, 3]");
+    POWSYBL_ASSERT_THROW(ratioTapChanger.setSolvedTapPosition(6), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect solved tap position 6 [1, 3]");
+    RatioTapChangerStep& solvedStep = ratioTapChanger.setSolvedTapPosition(3).getSolvedStep();
+    BOOST_CHECK_EQUAL(3L, ratioTapChanger.getSolvedTapPosition().get());
+    BOOST_CHECK(stdcxx::areSame(step, solvedStep));
+
     BOOST_CHECK_CLOSE(20.0, step.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(21.0, step.getG(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(22.0, step.getR(), std::numeric_limits<double>::epsilon());
@@ -433,6 +442,7 @@ BOOST_AUTO_TEST_CASE(adderByCopy) {
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_TEST(transformer.hasRatioTapChanger());
+    transformer.getRatioTapChanger().setSolvedTapPosition(3);
     const auto& existingRatioTapChanger = transformer.getRatioTapChanger();
 
     TwoWindingsTransformer& transformer2 = network.getTwoWindingsTransformer("2WT_VL1_VL2_2");
@@ -442,6 +452,8 @@ BOOST_AUTO_TEST_CASE(adderByCopy) {
 
     const auto& copiedRatioTapChanger = transformer2.getRatioTapChanger();
     BOOST_CHECK_EQUAL(existingRatioTapChanger.getTapPosition(), copiedRatioTapChanger.getTapPosition());
+    BOOST_CHECK(copiedRatioTapChanger.getSolvedTapPosition().has_value());
+    BOOST_CHECK_EQUAL(existingRatioTapChanger.getSolvedTapPosition().get(), copiedRatioTapChanger.getSolvedTapPosition().get());
     BOOST_CHECK_EQUAL(existingRatioTapChanger.getLowTapPosition(), copiedRatioTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(existingRatioTapChanger.getRegulationValue(), copiedRatioTapChanger.getRegulationValue());
     BOOST_CHECK_EQUAL(existingRatioTapChanger.getRegulationMode(), copiedRatioTapChanger.getRegulationMode());

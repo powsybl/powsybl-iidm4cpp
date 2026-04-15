@@ -36,7 +36,7 @@ ShuntCompensator& ShuntCompensatorAdder::add() {
         m_sectionCount = 0UL;
     }
     std::unique_ptr<ShuntCompensator> ptrShunt = stdcxx::make_unique<ShuntCompensator>(getNetwork(), checkAndGetUniqueId(), getName(), isFictitious(), m_modelBuilder->build(),
-                                                                                       *m_sectionCount, m_regulatingTerminal, m_voltageRegulatorOn, m_targetV, m_targetDeadband);
+                                                                                       *m_sectionCount, m_solvedSectionCount, m_regulatingTerminal, m_voltageRegulatorOn, m_targetV, m_targetDeadband);
     auto& shunt = getNetwork().checkAndAdd<ShuntCompensator>(std::move(ptrShunt));
 
     Terminal& terminal = shunt.addTerminal(std::move(ptrTerminal));
@@ -66,6 +66,11 @@ ShuntCompensatorAdder& ShuntCompensatorAdder::setRegulatingTerminal(const stdcxx
 
 ShuntCompensatorAdder& ShuntCompensatorAdder::setSectionCount(unsigned long sectionCount) {
     m_sectionCount = sectionCount;
+    return *this;
+}
+
+ShuntCompensatorAdder& ShuntCompensatorAdder::setSolvedSectionCount(unsigned long solvedSectionCount) {
+    m_solvedSectionCount = solvedSectionCount;
     return *this;
 }
 

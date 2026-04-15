@@ -621,6 +621,20 @@ ValidationLevel checkSections(const Validable& validable, const stdcxx::optional
     return checkSections(validable, currentSectionCount, maximumSectionCount, checkValidationActionOnError(vl));
 }
 
+stdcxx::optional<unsigned long> checkSolvedSection(const Validable& validable, const stdcxx::optional<unsigned long>& solvedSectionCount, unsigned long maximumSectionCount) {
+    checkMaximumSectionCount(validable, maximumSectionCount);
+    if (solvedSectionCount.has_value() && *solvedSectionCount > maximumSectionCount) {
+        throw ValidationException(validable, stdcxx::format("unexpected solved section number (%1%): no existing associated section", *solvedSectionCount));
+    }
+    return solvedSectionCount;
+}
+
+void checkSolvedTapPosition(const Validable& validable, long solvedTapPosition, long lowTapPosition, long highTapPosition, const ValidationLevel& vl) {
+    if ((solvedTapPosition < lowTapPosition) || (solvedTapPosition > highTapPosition)) {
+        actionOnError(validable, stdcxx::format("incorrect solved tap position %1% [%2%, %3%]", solvedTapPosition, lowTapPosition, highTapPosition), checkValidationActionOnError(vl));
+    }
+}
+
 ValidationLevel checkSvcRegulator(const Validable& validable, bool regulating, double voltageSetpoint, double reactivePowerSetpoint, const StaticVarCompensator::RegulationMode& regulationMode, const ActionOnError& action) {
     switch (regulationMode) {
         case StaticVarCompensator::RegulationMode::VOLTAGE:

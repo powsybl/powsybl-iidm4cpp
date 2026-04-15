@@ -19,8 +19,8 @@ namespace powsybl {
 namespace iidm {
 
 PhaseTapChanger::PhaseTapChanger(PhaseTapChangerHolder& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                                 bool loadTapChangingCapabilities, long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband) :
-    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, loadTapChangingCapabilities, tapPosition, regulating, targetDeadband, "phase tap changer"),
+                                 bool loadTapChangingCapabilities, long tapPosition, const stdcxx::optional<long>& solvedTapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband) :
+    TapChanger(parent.getNetwork(), parent, lowTapPosition, steps, regulationTerminal, loadTapChangingCapabilities, tapPosition, solvedTapPosition, regulating, targetDeadband, "phase tap changer"),
     m_regulationMode(regulationMode),
     m_regulationValue(parent.getNetwork().getVariantManager().getVariantArraySize(), regulationValue) {
     checkTapPosition(parent, tapPosition, lowTapPosition, getHighTapPosition(), parent.getNetwork().getMinimumValidationLevel());

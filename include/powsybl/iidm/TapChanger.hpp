@@ -53,6 +53,10 @@ public:
 
     S& getCurrentStep();
 
+    const S& getSolvedStep() const;
+
+    S& getSolvedStep();
+
     long getHighTapPosition() const;
 
     long getLowTapPosition() const;
@@ -75,6 +79,8 @@ public:
 
     long getTapPosition() const;
 
+    stdcxx::optional<long> getSolvedTapPosition() const;
+
     virtual stdcxx::optional<long> getNeutralPosition() const;
 
     double getTargetDeadband() const;
@@ -91,15 +97,21 @@ public:
 
     C& setTapPosition(long tapPosition);
 
+    C& setSolvedTapPosition(long solvedTapPosition);
+    C& unsetSolvedTapPosition();
+
     C& setTargetDeadband(double targetDeadband);
 
     bool hasLoadTapChangingCapabilities() const;
 
     virtual C& setLoadTapChangingCapabilities(bool loadTapChangingCapabilities) = 0;
 
+    void applySolvedValues();
+    void setTapPositionToSolvedTapPosition();
+
 protected:
     TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-               bool loadTapChangingCapabilities, long tapPosition, bool regulating, double targetDeadband, std::string&& type);
+               bool loadTapChangingCapabilities, long tapPosition, const stdcxx::optional<long>& solvedTapPosition, bool regulating, double targetDeadband, std::string&& type);
 
     virtual const Network& getNetwork() const;
 
@@ -127,6 +139,8 @@ protected:
 
 private:
     std::vector<long> m_tapPosition;
+
+    std::vector<stdcxx::optional<long>> m_solvedTapPosition;
 
     std::vector<bool> m_regulating;
 

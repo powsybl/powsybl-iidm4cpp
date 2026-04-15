@@ -191,6 +191,7 @@ BOOST_AUTO_TEST_CASE(adder) {
         .setB(3.0)
         .endSection()
         .add()
+        .setSolvedSectionCount(1)
         .add();
 
     const ShuntCompensator& cSc4 = sc4;
@@ -205,6 +206,9 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     BOOST_CHECK_EQUAL(3, boost::size(sc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections()));
     BOOST_CHECK_EQUAL(3, boost::size(cSc4.getModel<ShuntCompensatorNonLinearModel>().getAllSections()));
+
+    BOOST_CHECK(sc4.getSolvedSectionCount().has_value());
+    BOOST_CHECK_EQUAL(1, sc4.getSolvedSectionCount().get());
     BOOST_CHECK_EQUAL(3, sc4.getMaximumSectionCount());
     BOOST_CHECK_EQUAL(ShuntCompensatorModelType::NON_LINEAR, sc4.getModelType());
 
@@ -237,6 +241,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("SHUNT_COMPENSATOR", oss.str());
     BOOST_CHECK_CLOSE(12.0, shunt.getModel<ShuntCompensatorLinearModel>().getBPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2UL, shunt.getSectionCount());
+    BOOST_CHECK(!shunt.getSolvedSectionCount());
     BOOST_CHECK_EQUAL(3UL, shunt.getMaximumSectionCount());
     BOOST_CHECK_CLOSE(24.0, shunt.getB(), std::numeric_limits<double>::epsilon());
 }
@@ -265,6 +270,15 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_EQUAL(350UL, shunt.getSectionCount());
     BOOST_CHECK_CLOSE(100.0*350, shunt.getB(), std::numeric_limits<double>::epsilon());
 
+    BOOST_CHECK(!shunt.getSolvedSectionCount());
+    shunt.setSolvedSectionCount(300UL);
+    BOOST_CHECK(shunt.getSolvedSectionCount().has_value());
+    BOOST_CHECK_EQUAL(300UL, shunt.getSolvedSectionCount().get());
+    shunt.unsetSolvedSectionCount();
+    BOOST_CHECK(!shunt.getSolvedSectionCount());
+    shunt.setSolvedSectionCount(shunt.getMaximumSectionCount());
+
+    POWSYBL_ASSERT_THROW(shunt.setSolvedSectionCount(500UL), ValidationException, "Shunt compensator 'SHUNT1': unexpected solved section number (500): no existing associated section");
     POWSYBL_ASSERT_THROW(shunt.setSectionCount(500UL), ValidationException, "Shunt compensator 'SHUNT1': the current number (500) of section should be lesser than the maximum number of section (400)");
     POWSYBL_ASSERT_THROW(shunt.getModel<ShuntCompensatorLinearModel>().setMaximumSectionCount(250UL), ValidationException, "Shunt compensator 'SHUNT1': the current number (350) of section should be lesser than the maximum number of section (250)");
 
@@ -336,14 +350,16 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_CLOSE(12.0, shunt.getModel<ShuntCompensatorLinearModel>().getBPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2UL, shunt.getSectionCount());
+    BOOST_CHECK(!shunt.getSolvedSectionCount());
     BOOST_CHECK_EQUAL(3UL, shunt.getMaximumSectionCount());
     BOOST_CHECK_CLOSE(24.0, shunt.getB(), std::numeric_limits<double>::epsilon());
     shunt.getModel<ShuntCompensatorLinearModel>().setBPerSection(100).setMaximumSectionCount(300UL);
-    shunt.setSectionCount(200UL);
+    shunt.setSectionCount(200UL).setSolvedSectionCount(100UL);
 
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_CLOSE(100.0, shunt.getModel<ShuntCompensatorLinearModel>().getBPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(200UL, shunt.getSectionCount());
+    BOOST_CHECK_EQUAL(100UL, shunt.getSolvedSectionCount().get());
     BOOST_CHECK_EQUAL(300UL, shunt.getMaximumSectionCount());
     BOOST_CHECK_CLOSE(20000.0, shunt.getB(), std::numeric_limits<double>::epsilon());
 
@@ -351,14 +367,16 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_CLOSE(100.0, shunt.getModel<ShuntCompensatorLinearModel>().getBPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2UL, shunt.getSectionCount());
+    BOOST_CHECK(!shunt.getSolvedSectionCount());
     BOOST_CHECK_EQUAL(300UL, shunt.getMaximumSectionCount());
     BOOST_CHECK_CLOSE(200.0, shunt.getB(), std::numeric_limits<double>::epsilon());
     shunt.getModel<ShuntCompensatorLinearModel>().setBPerSection(150).setMaximumSectionCount(350UL);
-    shunt.setSectionCount(250UL);
+    shunt.setSectionCount(250UL).setSolvedSectionCount(150UL);
 
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_CLOSE(150.0, shunt.getModel<ShuntCompensatorLinearModel>().getBPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(250UL, shunt.getSectionCount());
+    BOOST_CHECK_EQUAL(150UL, shunt.getSolvedSectionCount().get());
     BOOST_CHECK_EQUAL(350UL, shunt.getMaximumSectionCount());
     BOOST_CHECK_CLOSE(37500.0, shunt.getB(), std::numeric_limits<double>::epsilon());
 
@@ -366,6 +384,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_CLOSE(150.0, shunt.getModel<ShuntCompensatorLinearModel>().getBPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(2UL, shunt.getSectionCount());
+    BOOST_CHECK(!shunt.getSolvedSectionCount());
     BOOST_CHECK_EQUAL(350UL, shunt.getMaximumSectionCount());
     BOOST_CHECK_CLOSE(300.0, shunt.getB(), std::numeric_limits<double>::epsilon());
 
@@ -377,6 +396,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_EQUAL("SHUNT1", shunt.getId());
     BOOST_CHECK_CLOSE(150.0, shunt.getModel<ShuntCompensatorLinearModel>().getBPerSection(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(250UL, shunt.getSectionCount());
+    BOOST_CHECK_EQUAL(150UL, shunt.getSolvedSectionCount().get());
     BOOST_CHECK_EQUAL(350UL, shunt.getMaximumSectionCount());
     BOOST_CHECK_CLOSE(37500.0, shunt.getB(), std::numeric_limits<double>::epsilon());
 

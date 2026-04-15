@@ -57,6 +57,10 @@ public:
 
     Load& setQ0(double q0);
 
+    void applySolvedValues();
+    void setP0ToP();
+    void setQ0ToQ();
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

@@ -116,6 +116,23 @@ Battery& Battery::setTargetQ(double targetQ) {
     return *this;
 }
 
+void Battery::applySolvedValues() {
+    setTargetPtoP();
+    setTargetQtoQ();
+}
+void Battery::setTargetPtoP() {
+    double terminalP = getTerminal().getP();
+    if(!std::isnan(terminalP)) {
+        setTargetP(-terminalP);
+    }
+}
+void Battery::setTargetQtoQ() {
+    double terminalQ = getTerminal().getQ();
+    if(!std::isnan(terminalQ)) {
+        setTargetQ(-terminalQ);
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

@@ -44,7 +44,7 @@ public: // TapChanger
 
 public:
     PhaseTapChanger(PhaseTapChangerHolder& parent, long lowTapPosition, const std::vector<PhaseTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                    bool loadTapChangingCapabilities, long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
+                    bool loadTapChangingCapabilities, long tapPosition, const stdcxx::optional<long>& solvedTapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
 
     ~PhaseTapChanger() noexcept override = default;
 

@@ -44,6 +44,8 @@ public:
 
     ShuntCompensatorAdder& setSectionCount(unsigned long sectionCount);
 
+    ShuntCompensatorAdder& setSolvedSectionCount(unsigned long solvedSectionCount);
+
     ShuntCompensatorAdder& setTargetDeadband(double targetDeadband);
 
     ShuntCompensatorAdder& setTargetV(double targetV);
@@ -66,6 +68,8 @@ private:
 
 private:
     stdcxx::optional<unsigned long> m_sectionCount;
+
+    stdcxx::optional<unsigned long> m_solvedSectionCount;
 
     double m_targetDeadband = stdcxx::nan();
 

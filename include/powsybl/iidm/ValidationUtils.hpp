@@ -165,6 +165,10 @@ void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference
 
 ValidationLevel checkSections(const Validable& validable, const stdcxx::optional<unsigned long>& currentSectionCount, unsigned long maximumSectionCount, const ValidationLevel& vl);
 
+stdcxx::optional<unsigned long> checkSolvedSection(const Validable& validable, const stdcxx::optional<unsigned long>& solvedSectionCount, unsigned long maximumSectionCount);
+
+void checkSolvedTapPosition(const Validable& validable, long solvedTapPosition, long lowTapPosition, long highTapPosition, const ValidationLevel& vl);
+
 ValidationLevel checkSvcRegulator(const Validable& validable, bool regulating, double voltageSetpoint, double reactivePowerSetpoint, const StaticVarCompensator::RegulationMode& regulationMode, const ValidationLevel& vl);
 
 ValidationLevel checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition, const ValidationLevel& vl);

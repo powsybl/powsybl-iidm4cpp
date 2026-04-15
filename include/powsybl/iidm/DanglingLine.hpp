@@ -125,6 +125,10 @@ public:
     */
     CurrentLimitsAdder newCurrentLimits() override;
 
+    void applySolvedValues();
+    void setGenerationTargetPToP();
+    void setGenerationTargetQToQ();
+    void setGenerationTargetVToV();
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;

@@ -195,6 +195,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(1L, phaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(3L, phaseTapChanger.getHighTapPosition());
     BOOST_CHECK_EQUAL(2L, phaseTapChanger.getTapPosition());
+    BOOST_CHECK(!phaseTapChanger.getSolvedTapPosition());
+    POWSYBL_ASSERT_THROW(phaseTapChanger.getSolvedStep(), ValidationException, "2 windings transformer '2WT_VL1_VL2': solved tap position is not set");
     BOOST_CHECK(phaseTapChanger.getNeutralPosition().has_value());
     BOOST_CHECK_EQUAL(2L, phaseTapChanger.getNeutralPosition().get());
     BOOST_CHECK_EQUAL(3, phaseTapChanger.getStepCount());
@@ -262,6 +264,13 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(phaseTapChanger.setTapPosition(6), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect tap position 6 [1, 3]");
     PhaseTapChangerStep& step = phaseTapChanger.setTapPosition(3).getCurrentStep();
     BOOST_CHECK_EQUAL(3L, phaseTapChanger.getTapPosition());
+
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setSolvedTapPosition(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect solved tap position -1 [1, 3]");
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setSolvedTapPosition(6), ValidationException, "2 windings transformer '2WT_VL1_VL2': incorrect solved tap position 6 [1, 3]");
+    PhaseTapChangerStep& solvedStep = phaseTapChanger.setSolvedTapPosition(3).getSolvedStep();
+    BOOST_CHECK_EQUAL(3L, phaseTapChanger.getSolvedTapPosition().get());
+    BOOST_CHECK(stdcxx::areSame(step, solvedStep));
+
     BOOST_CHECK_CLOSE(20.5, step.getAlpha(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(20.0, step.getB(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(21.0, step.getG(), std::numeric_limits<double>::epsilon());
@@ -441,6 +450,7 @@ BOOST_AUTO_TEST_CASE(adderByCopyActivePowerControl) {
 
     TwoWindingsTransformer& transformer = network.getTwoWindingsTransformer("2WT_VL1_VL2");
     BOOST_TEST(transformer.hasPhaseTapChanger());
+    transformer.getPhaseTapChanger().setSolvedTapPosition(3);
     const auto& existingPhaseTapChanger = transformer.getPhaseTapChanger();
 
     TwoWindingsTransformer& transformer2 = network.getTwoWindingsTransformer("2WT_VL1_VL2_2");
@@ -450,6 +460,8 @@ BOOST_AUTO_TEST_CASE(adderByCopyActivePowerControl) {
 
     const auto& copiedPhaseTapChanger = transformer2.getPhaseTapChanger();
     BOOST_CHECK_EQUAL(existingPhaseTapChanger.getTapPosition(), copiedPhaseTapChanger.getTapPosition());
+    BOOST_CHECK(copiedPhaseTapChanger.getSolvedTapPosition().has_value());
+    BOOST_CHECK_EQUAL(existingPhaseTapChanger.getSolvedTapPosition().get(), copiedPhaseTapChanger.getSolvedTapPosition().get());
     BOOST_CHECK_EQUAL(existingPhaseTapChanger.getLowTapPosition(), copiedPhaseTapChanger.getLowTapPosition());
     BOOST_CHECK_EQUAL(existingPhaseTapChanger.getRegulationValue(), copiedPhaseTapChanger.getRegulationValue());
     BOOST_CHECK_EQUAL(existingPhaseTapChanger.getRegulationMode(), copiedPhaseTapChanger.getRegulationMode());

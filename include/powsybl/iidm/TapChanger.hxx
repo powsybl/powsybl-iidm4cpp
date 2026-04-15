@@ -23,18 +23,20 @@ namespace powsybl {
 
 namespace iidm {
 
+void checkSolvedTapPosition(const Validable& validable, long solvedTapPosition, long lowTapPosition, long highTapPosition, const ValidationLevel& vl);
 ValidationLevel checkTapPosition(const Validable& validable, long tapPosition, long lowTapPosition, long highTapPosition, const ValidationLevel& vl);
 ValidationLevel checkTargetDeadband(const Validable& validable, const std::string& validableType, bool regulating, double targetDeadband, const ValidationLevel& vl);
 
 template<typename H, typename C, typename S, typename R>
 TapChanger<H, C, S, R>::TapChanger(VariantManagerHolder& network, H& parent, long lowTapPosition, const std::vector<S>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                                bool loadTapChangingCapabilities, long tapPosition, bool regulating, double targetDeadband, std::string&& type) :
+                                bool loadTapChangingCapabilities, long tapPosition, const stdcxx::optional<long>& solvedTapPosition, bool regulating, double targetDeadband, std::string&& type) :
    m_parent(parent),
    m_lowTapPosition(lowTapPosition),
    m_steps(steps),
    m_regulationTerminal(regulationTerminal),
    m_loadTapChangingCapabilities(network.getVariantManager().getVariantArraySize(), loadTapChangingCapabilities),
    m_tapPosition(network.getVariantManager().getVariantArraySize(), tapPosition),
+   m_solvedTapPosition(network.getVariantManager().getVariantArraySize(), solvedTapPosition),
    m_regulating(network.getVariantManager().getVariantArraySize(), regulating),
    m_targetDeadband(network.getVariantManager().getVariantArraySize(), targetDeadband),
    m_type(std::move(type)) {
@@ -47,6 +49,7 @@ template<typename H, typename C, typename S, typename R>
 void TapChanger<H, C, S, R>::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     for (auto index : indexes) {
         m_tapPosition[index] = m_tapPosition[sourceIndex];
+        m_solvedTapPosition[index] = m_solvedTapPosition[sourceIndex];
         m_regulating[index] = m_regulating[sourceIndex];
         m_loadTapChangingCapabilities[index] = m_loadTapChangingCapabilities[sourceIndex];
         m_targetDeadband[index] = m_targetDeadband[sourceIndex];
@@ -61,6 +64,7 @@ void TapChanger<H, C, S, R>::deleteVariantArrayElement(unsigned long /*index*/) 
 template<typename H, typename C, typename S, typename R>
 void TapChanger<H, C, S, R>::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
     m_tapPosition.resize(m_tapPosition.size() + number, m_tapPosition[sourceIndex]);
+    m_solvedTapPosition.resize(m_solvedTapPosition.size() + number, m_solvedTapPosition[sourceIndex]);
     m_regulating.resize(m_regulating.size() + number, m_regulating[sourceIndex]);
     m_loadTapChangingCapabilities.resize(m_loadTapChangingCapabilities.size() + number, m_loadTapChangingCapabilities[sourceIndex]);
     m_targetDeadband.resize(m_targetDeadband.size() + number, m_targetDeadband[sourceIndex]);
@@ -92,6 +96,22 @@ const S& TapChanger<H, C, S, R>::getCurrentStep() const {
 template<typename H, typename C, typename S, typename R>
 S& TapChanger<H, C, S, R>::getCurrentStep() {
     return getStep(getTapPosition());
+}
+
+template<typename H, typename C, typename S, typename R>
+const S& TapChanger<H, C, S, R>::getSolvedStep() const {
+    if(!getSolvedTapPosition()){
+        throw ValidationException(m_parent, "solved tap position is not set");
+    }
+    return getStep(getSolvedTapPosition().get());
+}
+
+template<typename H, typename C, typename S, typename R>
+S& TapChanger<H, C, S, R>::getSolvedStep() {
+    if(!getSolvedTapPosition()){
+        throw ValidationException(m_parent, "solved tap position is not set");
+    }
+    return getStep(getSolvedTapPosition().get());
 }
 
 template<typename H, typename C, typename S, typename R>
@@ -169,6 +189,11 @@ long TapChanger<H, C, S, R>::getTapPosition() const {
 }
 
 template<typename H, typename C, typename S, typename R>
+stdcxx::optional<long> TapChanger<H, C, S, R>::getSolvedTapPosition() const {
+    return m_solvedTapPosition.at(getNetwork().getVariantIndex());
+}
+
+template<typename H, typename C, typename S, typename R>
 stdcxx::optional<long> TapChanger<H, C, S, R>::getNeutralPosition() const {
     stdcxx::optional<long> relativeNeutralPosition = getRelativeNeutralPosition();
     return relativeNeutralPosition.has_value() ? stdcxx::optional<long>(*relativeNeutralPosition + m_lowTapPosition) : stdcxx::optional<long>();
@@ -192,6 +217,7 @@ bool TapChanger<H, C, S, R>::hasLoadTapChangingCapabilities() const {
 template<typename H, typename C, typename S, typename R>
 void TapChanger<H, C, S, R>::reduceVariantArraySize(unsigned long number) {
     m_tapPosition.resize(m_tapPosition.size() - number);
+    m_solvedTapPosition.resize(m_solvedTapPosition.size() - number);
     m_regulating.resize(m_regulating.size() - number);
     m_loadTapChangingCapabilities.resize(m_loadTapChangingCapabilities.size() - number);
     m_targetDeadband.resize(m_targetDeadband.size() - number);
@@ -240,6 +266,19 @@ C& TapChanger<H, C, S, R>::setTapPosition(long tapPosition) {
 }
 
 template<typename H, typename C, typename S, typename R>
+C& TapChanger<H, C, S, R>::setSolvedTapPosition(long solvedTapPosition) {
+    checkSolvedTapPosition(m_parent, solvedTapPosition, m_lowTapPosition, getHighTapPosition(), ValidationLevel::STEADY_STATE_HYPOTHESIS);
+    m_solvedTapPosition[getNetwork().getVariantIndex()] = solvedTapPosition;
+    return static_cast<C&>(*this);
+}
+
+template<typename H, typename C, typename S, typename R>
+C& TapChanger<H, C, S, R>::unsetSolvedTapPosition() {
+    m_solvedTapPosition[getNetwork().getVariantIndex()].reset();
+    return static_cast<C&>(*this);
+}
+
+template<typename H, typename C, typename S, typename R>
 C& TapChanger<H, C, S, R>::setTargetDeadband(double targetDeadband) {
     checkTargetDeadband(m_parent, m_type, m_regulating[getNetwork().getVariantIndex()], targetDeadband, getNetwork().getMinimumValidationLevel());
     m_targetDeadband[getNetwork().getVariantIndex()] = targetDeadband;
@@ -256,6 +295,9 @@ C& TapChanger<H, C, S, R>::setSteps(const std::vector<S>& steps) {
 
     long newHighTapPosition = m_lowTapPosition + steps.size() - 1;
     checkTapPosition(m_parent, getTapPosition(), m_lowTapPosition, newHighTapPosition, getNetwork().getMinimumValidationLevel());
+    if(getSolvedTapPosition().has_value()) {
+        checkSolvedTapPosition(m_parent, getSolvedTapPosition().get(), m_lowTapPosition, newHighTapPosition, getNetwork().getMinimumValidationLevel()); 
+    }
 
     m_steps = steps;
     getNetwork().invalidateValidationLevel();
@@ -288,6 +330,19 @@ void TapChanger<H, C, S, R>::onReferencedReplacement(Terminal& /*oldReference*/,
     }
     m_regulationTerminal = newReference;
     newReference.registerReferrer(*this);
+}
+
+template<typename H, typename C, typename S, typename R>
+void TapChanger<H, C, S, R>::applySolvedValues() {
+    setTapPositionToSolvedTapPosition();
+}
+
+template<typename H, typename C, typename S, typename R>
+void TapChanger<H, C, S, R>::setTapPositionToSolvedTapPosition() {
+    auto solvedValue = getSolvedTapPosition();
+    if(solvedValue.has_value()) {
+        setTapPosition(solvedValue.get());
+    }
 }
 
 }  // namespace iidm

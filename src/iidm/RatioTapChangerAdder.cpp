@@ -35,6 +35,9 @@ RatioTapChangerAdder::RatioTapChangerAdder(RatioTapChangerHolder& parent, const 
         setLoadTapChangingCapabilities(ratioTapChanger.hasLoadTapChangingCapabilities());
         setLowTapPosition(ratioTapChanger.getLowTapPosition());
         setTapPosition(ratioTapChanger.getTapPosition());
+        if(ratioTapChanger.getSolvedTapPosition()){
+            setSolvedTapPosition(ratioTapChanger.getSolvedTapPosition().get());
+        }
         setTargetDeadband(ratioTapChanger.getTargetDeadband());
         for(const auto& step : ratioTapChanger.getAllSteps() ){
             beginStep()
@@ -61,12 +64,15 @@ RatioTapChanger& RatioTapChangerAdder::add() {
         m_tapPosition = 0L;
     }
     network.setValidationLevelIfGreaterThan(checkTapPosition(m_parent, *m_tapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel()));
+    if(m_solvedTapPosition.has_value()) {
+        checkSolvedTapPosition(m_parent, *m_solvedTapPosition, m_lowTapPosition, highTapPosition, network.getMinimumValidationLevel());
+    }
 
     network.setValidationLevelIfGreaterThan(checkRatioTapChangerRegulation(m_parent, m_regulating, m_loadTapChangingCapabilities, m_regulationTerminal, m_regulationMode, m_regulationValue, network, network.getMinimumValidationLevel()));
     network.setValidationLevelIfGreaterThan(checkTargetDeadband(m_parent, "ratio tap changer", m_regulating, m_targetDeadband, network.getMinimumValidationLevel()));
 
     std::unique_ptr<RatioTapChanger> ptrRatioTapChanger = stdcxx::make_unique<RatioTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal,
-                                                                                               m_loadTapChangingCapabilities, *m_tapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
+                                                                                               m_loadTapChangingCapabilities, *m_tapPosition, m_solvedTapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
 
     bool wasRegulating = m_parent.hasRatioTapChanger() && m_parent.getRatioTapChanger().isRegulating();
     unsigned long count = m_parent.getRegulatingTapChangerCount() - (wasRegulating ? 1 : 0);

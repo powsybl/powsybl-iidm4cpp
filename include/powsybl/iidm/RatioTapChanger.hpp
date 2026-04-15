@@ -43,7 +43,7 @@ public: // TapChanger
 
 public:
     RatioTapChanger(RatioTapChangerHolder& parent, long lowTapPosition, const std::vector<RatioTapChangerStep>& steps, const stdcxx::Reference<Terminal>& regulationTerminal,
-                    bool loadTapChangingCapabilities, long tapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
+                    bool loadTapChangingCapabilities, long tapPosition, const stdcxx::optional<long>& solvedTapPosition, bool regulating, const RegulationMode& regulationMode, double regulationValue, double targetDeadband);
 
     ~RatioTapChanger() noexcept override = default;
 

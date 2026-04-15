@@ -222,6 +222,17 @@ BOOST_AUTO_TEST_CASE(ShuntLinearNullBPerSection) {
     BOOST_CHECK_EQUAL(std::numeric_limits<double>::min(), bPerSection2);
 }
 
+BOOST_FIXTURE_TEST_CASE(ShuntWithSolvedSection, test::ResourceFixture) {
+
+    Network network = createWithActivePower();
+    network.getShuntCompensator("SHUNT").setSolvedSectionCount(0);
+
+    test::converter::RoundTrip::runXml(network, test::converter::RoundTrip::getVersionedNetwork("shuntWithSolvedSectionRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
+
+    // backward compatibility
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("shuntWithSolvedSectionRoundTripRef.xml", IidmXmlVersion::V1_14());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml

@@ -38,6 +38,12 @@ TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setTapPosition(lon
 }
 
 template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
+TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setSolvedTapPosition(long solvedTapPosition) {
+    m_solvedTapPosition = solvedTapPosition;
+    return static_cast<TCAdder&>(*this);
+}
+
+template<typename TC, typename TCAdder, typename TCStepAdder, typename TCHolder>
 TCAdder& TapChangerAdder<TC, TCAdder, TCStepAdder, TCHolder>::setRegulating(bool regulating) {
     m_regulating = regulating;
     return static_cast<TCAdder&>(*this);
