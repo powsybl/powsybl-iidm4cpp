@@ -379,6 +379,31 @@ BOOST_FIXTURE_TEST_CASE(skipExtensionsTest, test::ResourceFixture) {
     BOOST_CHECK(load2.getModelType() == LoadModelType::ZIP);
 }
 
+BOOST_FIXTURE_TEST_CASE(emptyFormatTest, test::ResourceFixture) {
+    Network network("testId", "");
+    const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
+
+    for (const auto& version : iidm::converter::xml::IidmXmlVersion::all()) {
+        const auto& writer = [&version, &filename](const iidm::Network& n, std::ostream& stream) {
+            iidm::converter::ExportOptions options;
+            options.setVersion(version.get().toString("."));
+            iidm::Network::writeXml(filename, stream, n, options);
+        };
+
+        const auto& reader = [&filename](const std::string& xmlBytes) {
+            std::istringstream stream(xmlBytes);
+            return iidm::Network::readXml(filename, stream);
+        };
+
+        std::stringstream buffer;
+        writer(network, buffer);
+
+        Network networkRead = reader(buffer.str());
+        BOOST_CHECK_EQUAL("testId", networkRead.getId());
+        BOOST_CHECK(networkRead.getSourceFormat().empty());
+    }
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml

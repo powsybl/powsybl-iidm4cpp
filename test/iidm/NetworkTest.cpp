@@ -136,7 +136,10 @@ BOOST_AUTO_TEST_SUITE(NetworkTestSuite)
 
 BOOST_AUTO_TEST_CASE(constructor) {
     POWSYBL_ASSERT_THROW(Network("", ""), PowsyblException, "Invalid id");
-    POWSYBL_ASSERT_THROW(Network("id", ""), ValidationException, "Network 'id': Source format is empty");
+    Network networkNoFormat("id", "");
+    BOOST_CHECK_EQUAL("id", networkNoFormat.getId());
+    BOOST_CHECK_EQUAL("id", networkNoFormat.getOptionalName());
+    BOOST_CHECK(networkNoFormat.getSourceFormat().empty());
 
     Network network("id", "sourceFormat");
     BOOST_CHECK_EQUAL("id", network.getId());

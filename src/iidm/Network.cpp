@@ -85,7 +85,7 @@ Network::Network(const std::string& id, const std::string& sourceFormat) :
 }
 Network::Network(const std::string& id, const std::string& sourceFormat, bool manageIndex) :
     Container(id, id, false, Container::Type::NETWORK),
-    m_sourceFormat(checkNotEmpty(*this, sourceFormat, "Source format is empty")),
+    m_sourceFormat(sourceFormat),
     m_variantManager(*this),
     m_variants(*this, [this]() { return stdcxx::make_unique<network::VariantImpl>(*this); }),
     m_busBreakerView(*this),
