@@ -337,7 +337,10 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulating(true), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase regulation is on and threshold/setpoint value is not set");
     BOOST_TEST(stdcxx::areSame(phaseTapChanger, phaseTapChanger.setRegulationValue(-15.0)));
     BOOST_CHECK_CLOSE(-15.0, phaseTapChanger.getRegulationValue(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER).setRegulating(true));
+    BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulating(true));
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase tap changer in CURRENT_LIMITER mode must have a non-negative regulation value");
+    phaseTapChanger.setRegulationValue(15.0);
+    BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationMode(PhaseTapChanger::RegulationMode::CURRENT_LIMITER));
 
     phaseTapChanger.setRegulating(false);
     BOOST_CHECK_NO_THROW(phaseTapChanger.setRegulationTerminal(stdcxx::Reference<Terminal>()));
@@ -360,6 +363,10 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulating(true).setTargetDeadband(stdcxx::nan()), ValidationException, "2 windings transformer '2WT_VL1_VL2': Undefined value for target deadband of regulating phase tap changer");
     POWSYBL_ASSERT_THROW(phaseTapChanger.setTargetDeadband(-1), ValidationException, "2 windings transformer '2WT_VL1_VL2': Unexpected value for target deadband of tap changer: -1");
+
+    // Current_Limiter with negative value throws even in Equipment level 
+    network.setMinimumAcceptableValidationLevel(ValidationLevel::EQUIPMENT);
+    POWSYBL_ASSERT_THROW(phaseTapChanger.setRegulationValue(-1.0), ValidationException, "2 windings transformer '2WT_VL1_VL2': phase tap changer in CURRENT_LIMITER mode must have a non-negative regulation value");
 
     BOOST_CHECK_NO_THROW(phaseTapChanger.remove());
     BOOST_TEST(!transformer.hasPhaseTapChanger());

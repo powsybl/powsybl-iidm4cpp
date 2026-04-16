@@ -428,6 +428,9 @@ ValidationLevel checkPhaseTapChangerRegulationWithoutTerminal(const Validable& v
             throw AssertionError(stdcxx::format("Unexpected regulation mode value: %1%", regulationMode));
     }
     if (regulating) {
+        if(regulationMode == PhaseTapChanger::RegulationMode::CURRENT_LIMITER && regulationValue < 0) {
+            throw ValidationException(validable, "phase tap changer in CURRENT_LIMITER mode must have a non-negative regulation value");
+        }
         if(!loadTapChangingCapabilities) {
             actionOnError(validable, "regulation cannot be enabled on phase tap changer without load tap changing capabilities", action);
             checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);

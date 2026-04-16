@@ -7,6 +7,9 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/PhaseTapChanger.hpp>
+#include <powsybl/iidm/TwoWindingsTransformer.hpp>
+
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
@@ -41,6 +44,22 @@ BOOST_FIXTURE_TEST_CASE(PhaseShifterRoundTripTest, test::ResourceFixture) {
 
         const std::string& currentVersionNetworkExpected = test::converter::RoundTrip::getVersionedNetwork(filename, IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
         test::converter::RoundTrip::runXml(network, currentVersionNetworkExpected);
+    }
+
+}
+
+BOOST_FIXTURE_TEST_CASE(currentLimiterWithNegativeValueConversionTest, test::ResourceFixture) {
+    const std::string& filename = "phaseShifterCurrentLimiter.xml";
+
+    //Not a round trip since negative value for current limiter can't be exported now, but read operation will convert the value to its absolute value:
+    auto versionfilter = [](const iidm::converter::xml::IidmXmlVersion& version) {
+        return version >= IidmXmlVersion::V1_14();
+    };
+    for (const auto& version : iidm::converter::xml::IidmXmlVersion::all() | boost::adaptors::filtered(versionfilter)) {
+        auto filePath = test::converter::RoundTrip::getVersionedNetworkPath(filename, version);
+        iidm::Network network = iidm::Network::readXml(filePath);
+
+        BOOST_CHECK_CLOSE(20.0, network.getTwoWindingsTransformer("PS1").getPhaseTapChanger().getRegulationValue(), std::numeric_limits<double>::epsilon());
     }
 
 }

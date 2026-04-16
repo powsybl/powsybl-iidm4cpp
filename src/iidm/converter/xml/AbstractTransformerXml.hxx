@@ -58,11 +58,18 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string
         adder->setLoadTapChangingCapabilities(loadTapChangingCapabilities);
     });
 
-    const double& regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
-    adder->setRegulationValue(regulationValue);
+    double regulationValue = context.getReader().getOptionalAttributeValue(REGULATION_VALUE, stdcxx::nan());
+    stdcxx::optional<PhaseTapChanger::RegulationMode> regulationMode;
     if(regModeStr.has_value()) {
-        adder->setRegulationMode(Enum::fromString<PhaseTapChanger::RegulationMode>(*regModeStr));
+        regulationMode = Enum::fromString<PhaseTapChanger::RegulationMode>(*regModeStr);
+        adder->setRegulationMode(regulationMode.get());
     }
+    if((!regulationMode || regulationMode.get() == PhaseTapChanger::RegulationMode::CURRENT_LIMITER) //default regulation mode of PhaseTapChanger is CURRENT_LIMITER
+        && regulationValue < 0) {
+        regulationValue = std::abs(regulationValue);
+    }
+    adder->setRegulationValue(regulationValue);
+
     bool hasTerminalRef = false;
     context.getReader().readUntilEndElement(elementName, [&adder, &tapChangerAdder, &context, &hasTerminalRef, &terminal]() {
         if (context.getReader().getLocalName() == TERMINAL_REF) {
