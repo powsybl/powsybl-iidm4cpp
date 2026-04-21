@@ -85,6 +85,7 @@ static const char* const FICTITIOUS_ = "fictitious_";
 static const char* const FICTITIOUS_INJECTION = "inj";
 static const char* const FICTITIOUS_P0 = "fictitiousP0";
 static const char* const FICTITIOUS_Q0 = "fictitiousQ0";
+static const char* const FIXED_TAP_REGULATION_MODE = "FIXED_TAP";
 static const char* const FORECAST_DISTANCE = "forecastDistance";
 static const char* const FROM = "from";
 static const char* const G = "g";

@@ -223,7 +223,11 @@ template <typename Added, typename Adder>
 void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::string& name, const PhaseTapChanger& ptc, NetworkXmlWriterContext& context) {
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), name);
     writeTapChanger<PhaseTapChangerHolder, PhaseTapChanger, PhaseTapChangerStep, PhaseTapChangerStepsReplacer>(ptc, context);
-    context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(ptc.getRegulationMode()));
+    if(context.getVersion() <= IidmXmlVersion::V1_5() && (std::isnan(ptc.getRegulationValue()) || !ptc.getRegulationTerminal())) {
+        context.getWriter().writeAttribute(REGULATION_MODE, FIXED_TAP_REGULATION_MODE);
+    } else {
+        context.getWriter().writeAttribute(REGULATION_MODE, Enum::toString(ptc.getRegulationMode()));
+    }
     if (!std::isnan(ptc.getRegulationValue())) {
         context.getWriter().writeAttribute(REGULATION_VALUE, ptc.getRegulationValue());
     }
