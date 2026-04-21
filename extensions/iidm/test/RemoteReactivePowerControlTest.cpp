@@ -22,6 +22,7 @@
 #include <powsybl/iidm/extensions/iidm/RemoteReactivePowerControl.hpp>
 #include <powsybl/iidm/extensions/iidm/RemoteReactivePowerControlAdder.hpp>
 #include <powsybl/network/EurostagFactory.hpp>
+#include <powsybl/network/FourSubstationsNodeBreakerFactory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
@@ -156,6 +157,65 @@ BOOST_AUTO_TEST_CASE(removeTerminal) {
     POWSYBL_ASSERT_REF_FALSE(ext);
 
 
+}
+
+BOOST_AUTO_TEST_CASE(terminalReplacementTest) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+
+    Generator& generator = network.getGenerator("GEN");
+    Line& line = network.getLine("NHV1_NHV2_1");
+    Line& line2 = network.getLine("NHV1_NHV2_2");
+
+    Terminal& terminal = line.getTerminal1();
+
+    generator.newExtension<RemoteReactivePowerControlAdder>()
+                    .withTargetQ(1.0)
+                    .withEnabled(true)
+                    .withRegulatingTerminal(terminal)
+                    .add();
+
+    stdcxx::Reference<RemoteReactivePowerControl> ext = generator.findExtension<RemoteReactivePowerControl>();
+    POWSYBL_ASSERT_REF_TRUE(ext);
+
+    ext.get().setRegulatingTerminal(stdcxx::Reference<Terminal>(line2.getTerminal2()));
+    line.remove();
+
+    //ext should not have been removed since regulating terminal was not pointeing to this line anymore:
+    ext = generator.findExtension<RemoteReactivePowerControl>();
+    POWSYBL_ASSERT_REF_TRUE(ext);
+
+    line2.remove();
+    //now ext has been removed since its terminal ref was pointing to this line2
+    ext = generator.findExtension<RemoteReactivePowerControl>();
+    POWSYBL_ASSERT_REF_FALSE(ext);
+}
+
+BOOST_AUTO_TEST_CASE(replacementTest) {
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    
+    Generator& generator = network.getGenerator("GTH1");
+    Line& line = network.getLine("LINE_S2S3");
+    Terminal& terminal = line.getTerminal1();
+
+    generator.newExtension<RemoteReactivePowerControlAdder>()
+                    .withTargetQ(1.0)
+                    .withEnabled(true)
+                    .withRegulatingTerminal(terminal)
+                    .add();
+    stdcxx::Reference<RemoteReactivePowerControl> ext = generator.findExtension<RemoteReactivePowerControl>();
+    POWSYBL_ASSERT_REF_TRUE(ext);
+
+    VoltageLevel& vl = network.getVoltageLevel("S2VL1");
+    vl.convertToTopology(TopologyKind::BUS_BREAKER);
+
+    //terminal reference is updated
+    ext = generator.findExtension<RemoteReactivePowerControl>();
+    POWSYBL_ASSERT_REF_TRUE(ext);
+    BOOST_CHECK(stdcxx::areSame(ext.get().getRegulatingTerminal(), line.getTerminal1()));
+
+    line.remove();
+    ext = generator.findExtension<RemoteReactivePowerControl>();
+    POWSYBL_ASSERT_REF_FALSE(ext);
 }
 
 BOOST_AUTO_TEST_CASE(variantTest) {
