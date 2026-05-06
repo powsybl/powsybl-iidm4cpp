@@ -20,7 +20,7 @@ namespace extensions {
 
 namespace iidm {
 
-ControlZone::ControlZone(const std::string& name, const PilotPoint& pilotPoint, const std::vector<ControlUnit> controlUnits) :
+ControlZone::ControlZone(const std::string& name, const PilotPoint& pilotPoint, const std::vector<ControlUnit>& controlUnits) :
     m_pilotPoint(pilotPoint) {
     if (name.empty()) {
         throw PowsyblException("Zone name is not set");

@@ -25,7 +25,7 @@ namespace iidm {
 class ControlZone {
 public:
 
-    ControlZone(const std::string& name, const PilotPoint& pilotPoint, const std::vector<ControlUnit> controlUnits);
+    ControlZone(const std::string& name, const PilotPoint& pilotPoint, const std::vector<ControlUnit>& controlUnits);
 
     ControlZone() = delete;
     ControlZone(const ControlZone& coord) = default;

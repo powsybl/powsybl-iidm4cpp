@@ -69,9 +69,8 @@ VoltageLevel& LegAdder::checkAndGetVoltageLevel() {
         std::string defaultVoltageLevelId = checkAndGetDefaultVoltageLevelId();
         if(defaultVoltageLevelId.empty()) {
             throw ValidationException(*this, "voltage level is not set and has no default value");
-        } else {
-            m_voltageLevelId = defaultVoltageLevelId;
         }
+        m_voltageLevelId = defaultVoltageLevelId;
     }
 
     stdcxx::Reference<VoltageLevel> voltageLevel = m_parent.getNetwork().template find<VoltageLevel>(m_voltageLevelId);

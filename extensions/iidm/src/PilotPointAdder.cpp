@@ -23,7 +23,7 @@ PilotPointAdder::PilotPointAdder(ControlZoneAdder& parent) :
     m_parent(parent) {
 }
 
-PilotPointAdder& PilotPointAdder::withBusbarSectionsOrBusesIds(std::vector<std::string> busbarSectionsOrBusesIds) {
+PilotPointAdder& PilotPointAdder::withBusbarSectionsOrBusesIds(const std::vector<std::string>& busbarSectionsOrBusesIds) {
     m_busbarSectionsOrBusesIds = busbarSectionsOrBusesIds;
     return *this;
 }

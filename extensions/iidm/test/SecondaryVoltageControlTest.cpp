@@ -11,10 +11,12 @@
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/network/EurostagFactory.hpp>
+
 #include <powsybl/iidm/extensions/iidm/ControlZoneAdder.hpp>
 #include <powsybl/iidm/extensions/iidm/SecondaryVoltageControl.hpp>
 #include <powsybl/iidm/extensions/iidm/SecondaryVoltageControlAdder.hpp>
+
+#include <powsybl/network/EurostagFactory.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
@@ -71,7 +73,7 @@ Network createNetworkWithMoreGenerator() {
 BOOST_AUTO_TEST_CASE(Constructor) {
     Network network = createNetworkWithMoreGenerator();
 
-    SecondaryVoltageControlAdder controlAdder = network.newExtension<SecondaryVoltageControlAdder>();
+    auto controlAdder = network.newExtension<SecondaryVoltageControlAdder>();
 
     controlAdder.newControlZone()
                     .withName("z1")
@@ -86,7 +88,7 @@ BOOST_AUTO_TEST_CASE(Constructor) {
                                             {ControlUnit("GEN", false), ControlUnit("GEN2")}));
     controlAdder.add();
 
-    SecondaryVoltageControl& controlExtension = network.getExtension<SecondaryVoltageControl>();
+    auto& controlExtension = network.getExtension<SecondaryVoltageControl>();
     BOOST_CHECK_EQUAL("secondaryVoltageControl", controlExtension.getName());
     BOOST_CHECK(stdcxx::areSame(network, controlExtension.getExtendable().get()));
 
@@ -127,7 +129,7 @@ BOOST_FIXTURE_TEST_CASE(SecondaryVoltageControlXmlSerializerTest, test::Resource
     const std::string& networkStrRef = ResourceFixture::getResource("/secondaryVoltageControlRef.xml");
     Network network2 = test::converter::RoundTrip::runXml(network, networkStrRef);
 
-    SecondaryVoltageControl& control2 = network2.getExtension<SecondaryVoltageControl>();
+    auto& control2 = network2.getExtension<SecondaryVoltageControl>();
 
     BOOST_CHECK_EQUAL(2, control2.getControlZones().size());
     BOOST_CHECK_EQUAL("NLOAD", control2.getControlZones().at(0).getPilotPoint().getBusbarSectionsOrBusesIds().at(0));

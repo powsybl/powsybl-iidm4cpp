@@ -33,7 +33,7 @@ namespace network {
 
 BOOST_AUTO_TEST_SUITE(SecurityanalysisTestSuite)
 
-void createSwitch(iidm::VoltageLevel &vl, std::string id, iidm::SwitchKind kind, bool open, int node1, int node2)
+void createSwitch(iidm::VoltageLevel &vl, const std::string& id, iidm::SwitchKind kind, bool open, int node1, int node2)
 {
     vl.getNodeBreakerView().newSwitch()
         .setId(id)

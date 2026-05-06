@@ -38,7 +38,7 @@ public:
     ControlZoneAdder& add();
     ControlZoneAdder& getParent();
 
-    PilotPointAdder& withBusbarSectionsOrBusesIds(std::vector<std::string> busbarSectionsOrBusesIds);
+    PilotPointAdder& withBusbarSectionsOrBusesIds(const std::vector<std::string>& busbarSectionsOrBusesIds);
 
     PilotPointAdder& withTargetV(double targetV);
 

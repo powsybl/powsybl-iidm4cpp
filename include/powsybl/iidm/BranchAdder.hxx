@@ -42,9 +42,8 @@ VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel1() {
         std::string defaultVoltageLevelId1 = checkAndGetDefaultVoltageLevelId(m_connectableBus1);
         if(defaultVoltageLevelId1.empty()) {
             throw ValidationException(*this, "First voltage level is not set and has no default value");
-        } else {
-            m_voltageLevelId1 = defaultVoltageLevelId1;
         }
+        m_voltageLevelId1 = defaultVoltageLevelId1;
     }
 
     stdcxx::Reference<VoltageLevel> voltageLevel1 = this->getNetwork().template find<VoltageLevel>(m_voltageLevelId1);
@@ -61,9 +60,8 @@ VoltageLevel& BranchAdder<Adder>::checkAndGetVoltageLevel2() {
         std::string defaultVoltageLevelId2 = checkAndGetDefaultVoltageLevelId(m_connectableBus2);
         if(defaultVoltageLevelId2.empty()) {
             throw ValidationException(*this, "Second voltage level is not set and has no default value");
-        } else {
-            m_voltageLevelId2 = defaultVoltageLevelId2;
         }
+        m_voltageLevelId2 = defaultVoltageLevelId2;
     }
 
     stdcxx::Reference<VoltageLevel> voltageLevel2 = this->getNetwork().template find<VoltageLevel>(m_voltageLevelId2);

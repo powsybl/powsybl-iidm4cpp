@@ -55,16 +55,16 @@ void SecondaryVoltageControlXmlSerializer::readControlZone(converter::xml::Netwo
 
 }
 void SecondaryVoltageControlXmlSerializer::readControlUnit(converter::xml::NetworkXmlReaderContext& context, ControlZoneAdder& czAdder) const {
-    bool participate = context.getReader().getAttributeValue<bool>("participate");
+    auto participate = context.getReader().getAttributeValue<bool>("participate");
     std::string strId = context.getReader().readCharacters();
 
     czAdder.newControlUnit().withId(strId).withParticipate(participate).add();
 }
 void SecondaryVoltageControlXmlSerializer::readPilotPoint(converter::xml::NetworkXmlReaderContext& context, ControlZoneAdder& czAdder) const {
-    double targetV = context.getReader().getAttributeValue<double>("targetV");
+    auto targetV = context.getReader().getAttributeValue<double>("targetV");
 
     std::vector<std::string> ids;
-    context.getReader().readUntilEndElement("pilotPoint", [this, &context, &ids](){
+    context.getReader().readUntilEndElement("pilotPoint", [&context, &ids](){
         if(context.getReader().getLocalName() == "busbarSectionOrBusId") {
             ids.emplace_back(context.getReader().readCharacters());
         }

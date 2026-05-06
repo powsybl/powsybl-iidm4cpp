@@ -41,13 +41,11 @@ Extension& BranchObservabilityXmlSerializer::read(Extendable& extendable, conver
         if (context.getReader().getLocalName() == QUALITY_P) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
             auto redundant = context.getReader().getOptionalAttributeValue<bool>(REDUNDANT);
-            // auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
             const auto& side = Enum::fromString<Branch::Side>(context.getReader().getAttributeValue(SIDE));
             readQualityP(standardDeviation, redundant, side, adder);
         } else if (context.getReader().getLocalName() == QUALITY_Q) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
             auto redundant = context.getReader().getOptionalAttributeValue<bool>(REDUNDANT);
-            // auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
             const auto& side = Enum::fromString<Branch::Side>(context.getReader().getAttributeValue(SIDE));
             readQualityQ(standardDeviation, redundant, side, adder);
         } else {
