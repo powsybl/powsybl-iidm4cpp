@@ -54,6 +54,14 @@ NetworkIndex::NetworkIndex(Network& network, NetworkIndex&& networkIndex) noexce
     for (Substation& substation : getAll<Substation>()) {
         substation.setNetworkRef(network);
     }
+
+    for (Area& area : getAll<Area>()) {
+        area.setNetworkRef(network);
+    }
+
+    for (HvdcLine& hvdc : getAll<HvdcLine>()) {
+        hvdc.setNetworkRef(network);
+    }
 }
 
 bool NetworkIndex::addAlias(const Identifiable& obj, const std::string& alias) {

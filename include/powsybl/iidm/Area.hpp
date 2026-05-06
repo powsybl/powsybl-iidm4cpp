@@ -59,6 +59,7 @@ private: // Identifiable
 
 private:
     void setNetworkRef(Network& network);
+    friend class NetworkIndex;
 
     stdcxx::Reference<Network>& getSubNetworkRef();
     void setSubNetworkRef(const stdcxx::Reference<Network>& subNetwork);

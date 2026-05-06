@@ -109,6 +109,10 @@ private:
     std::vector<std::reference_wrapper<Terminal>> getTerminalsOfConverterStations(const stdcxx::optional<TwoSides>& side);
 
 private:
+    void setNetworkRef(Network& network);
+    friend class NetworkIndex;
+
+private:
     NetworkRef m_network;
 
     stdcxx::Reference<HvdcConverterStation> m_converterStation1;

@@ -91,6 +91,10 @@ double HvdcLine::getMaxP() const {
     return m_maxP;
 }
 
+void HvdcLine::setNetworkRef(Network& network) {
+    m_network.set(network);
+}
+
 const Network& HvdcLine::getNetwork() const {
     return m_network.get();
 }
