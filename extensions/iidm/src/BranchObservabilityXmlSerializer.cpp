@@ -40,12 +40,12 @@ Extension& BranchObservabilityXmlSerializer::read(Extendable& extendable, conver
     context.getReader().readUntilEndElement(getExtensionName(), [&adder, &context]() {
         if (context.getReader().getLocalName() == QUALITY_P) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
+            auto redundant = context.getReader().getOptionalAttributeValue<bool>(REDUNDANT);
             const auto& side = Enum::fromString<Branch::Side>(context.getReader().getAttributeValue(SIDE));
             readQualityP(standardDeviation, redundant, side, adder);
         } else if (context.getReader().getLocalName() == QUALITY_Q) {
             auto standardDeviation = context.getReader().getAttributeValue<double>(STANDARD_DEVIATION);
-            auto redundant = context.getReader().getOptionalAttributeValue(REDUNDANT, false);
+            auto redundant = context.getReader().getOptionalAttributeValue<bool>(REDUNDANT);
             const auto& side = Enum::fromString<Branch::Side>(context.getReader().getAttributeValue(SIDE));
             readQualityQ(standardDeviation, redundant, side, adder);
         } else {
@@ -57,30 +57,30 @@ Extension& BranchObservabilityXmlSerializer::read(Extendable& extendable, conver
     return extendable.getExtension<BranchObservability>();
 }
 
-void BranchObservabilityXmlSerializer::readQualityP(double standardDeviation, bool redundant, const Branch::Side& side, BranchObservabilityAdder& adder) {
+void BranchObservabilityXmlSerializer::readQualityP(double standardDeviation, stdcxx::optional<bool> redundant, const Branch::Side& side, BranchObservabilityAdder& adder) {
     if (side == Branch::Side::ONE) {
         adder.withStandardDeviationP1(standardDeviation);
-        if (redundant) {
-            adder.withRedundantP1(redundant);
+        if (redundant.has_value()) {
+            adder.withRedundantP1(*redundant);
         }
     } else if (side == Branch::Side::TWO) {
         adder.withStandardDeviationP2(standardDeviation);
-        if (redundant) {
-            adder.withRedundantP2(redundant);
+        if (redundant.has_value()) {
+            adder.withRedundantP2(*redundant);
         }
     }
 }
 
-void BranchObservabilityXmlSerializer::readQualityQ(double standardDeviation, bool redundant, const Branch::Side& side, BranchObservabilityAdder& adder) {
+void BranchObservabilityXmlSerializer::readQualityQ(double standardDeviation, stdcxx::optional<bool> redundant, const Branch::Side& side, BranchObservabilityAdder& adder) {
     if (side == Branch::Side::ONE) {
         adder.withStandardDeviationQ1(standardDeviation);
-        if (redundant) {
-            adder.withRedundantQ1(redundant);
+        if (redundant.has_value()) {
+            adder.withRedundantQ1(*redundant);
         }
     } else if (side == Branch::Side::TWO) {
         adder.withStandardDeviationQ2(standardDeviation);
-        if (redundant) {
-            adder.withRedundantQ2(redundant);
+        if (redundant.has_value()) {
+            adder.withRedundantQ2(*redundant);
         }
     }
 }
@@ -99,7 +99,9 @@ void BranchObservabilityXmlSerializer::writeOptionalQuality(const std::string& e
         writer.writeStartElement(getNamespacePrefix(), elementName);
         writer.writeAttribute(SIDE, Enum::toString(side));
         writer.writeAttribute(STANDARD_DEVIATION, quality.get().getStandardDeviation());
-        writer.writeOptionalAttribute(REDUNDANT, quality.get().isRedundant(), false);
+        if(quality.get().getRedundant().has_value()) {
+            writer.writeAttribute(REDUNDANT, quality.get().isRedundant());
+        }
         writer.writeEndElement();
     }
 }

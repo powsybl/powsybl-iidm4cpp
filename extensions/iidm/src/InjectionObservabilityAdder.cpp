@@ -22,7 +22,9 @@ namespace iidm {
 
 InjectionObservabilityAdder::InjectionObservabilityAdder(Extendable& extendable) :
     ExtensionAdder(extendable) {
-
+        m_redundantP.reset();
+        m_redundantQ.reset();
+        m_redundantV.reset();
 }
 
 std::unique_ptr<Extension> InjectionObservabilityAdder::createExtension(Extendable& extendable) const {

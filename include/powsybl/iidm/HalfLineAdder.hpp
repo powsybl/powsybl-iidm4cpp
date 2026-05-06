@@ -70,13 +70,13 @@ private:
 
     double m_x = stdcxx::nan();
 
-    double m_g1 = stdcxx::nan();
+    double m_g1 = 0.0;
 
-    double m_g2 = stdcxx::nan();
+    double m_g2 = 0.0;
 
-    double m_b1 = stdcxx::nan();
+    double m_b1 = 0.0;
 
-    double m_b2 = stdcxx::nan();
+    double m_b2 = 0.0;
 };
 
 }  // namespace tie_line

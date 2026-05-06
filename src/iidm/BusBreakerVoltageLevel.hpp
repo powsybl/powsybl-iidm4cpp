@@ -54,7 +54,7 @@ public: // VoltageLevel
 
     const TopologyKind& getTopologyKind() const override;
 
-    void invalidateCache() override;
+    void invalidateCache(bool exceptBusBreakerView = false) override;
 
 public:
     BusBreakerVoltageLevel(const std::string& id, const std::string& name, bool fictitious, const stdcxx::Reference<Substation>& substation,

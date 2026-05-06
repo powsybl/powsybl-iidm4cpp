@@ -340,10 +340,12 @@ math::TraverseResult NodeBreakerVoltageLevel::getTraverseResult(TerminalSet& vis
     return math::TraverseResult::TERMINATE_PATH;
 }
 
-void NodeBreakerVoltageLevel::invalidateCache() {
+void NodeBreakerVoltageLevel::invalidateCache(bool exceptBusBreakerView) {
+    if(!exceptBusBreakerView) {
+        m_variants.get().getCalculatedBusBreakerTopology().invalidateCache();
+        getNetwork().getBusBreakerView().invalidateCache();
+    }
     m_variants.get().getCalculatedBusTopology().invalidateCache();
-    m_variants.get().getCalculatedBusBreakerTopology().invalidateCache();
-    getNetwork().getBusBreakerView().invalidateCache();
     getNetwork().getBusView().invalidateCache();
     getNetwork().getConnectedComponentsManager().invalidate();
     getNetwork().getSynchronousComponentsManager().invalidate();

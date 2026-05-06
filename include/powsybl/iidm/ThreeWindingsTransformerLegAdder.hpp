@@ -63,6 +63,8 @@ private:
     std::unique_ptr<Terminal> checkAndGetTerminal(VoltageLevel& voltageLevel);
 
     VoltageLevel& checkAndGetVoltageLevel();
+    std::string checkAndGetDefaultVoltageLevelId();
+    void checkConnectableBus();
 
     friend class iidm::ThreeWindingsTransformerAdder;
 
@@ -83,9 +85,9 @@ private:
 
     double m_x = stdcxx::nan();
 
-    double m_g = stdcxx::nan();
+    double m_g = 0.0;
 
-    double m_b = stdcxx::nan();
+    double m_b = 0.0;
 
     double m_ratedU = stdcxx::nan();
 

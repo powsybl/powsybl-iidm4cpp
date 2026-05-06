@@ -62,7 +62,7 @@ public: // VoltageLevel
 
     const TopologyKind& getTopologyKind() const override;
 
-    void invalidateCache() override;
+    void invalidateCache(bool exceptBusBreakerView = false) override;
 
     bool traverse(NodeTerminal& terminal, Terminal::TopologyTraverser& traverser) const;
 

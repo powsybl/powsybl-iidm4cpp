@@ -72,6 +72,11 @@ public:
      */
     static const IidmXmlVersion& V1_8();
 
+    /**
+     * IIDM V1.9 (http://www.powsybl.org)
+     */
+    static const IidmXmlVersion& V1_9();
+
 public:
     /**
      * Return the list of all supported XIIDM versions
@@ -152,6 +157,11 @@ public:
      * @return true if this version is after or equal to the other version, false otherwise
      */
     bool operator>=(const IidmXmlVersion& version) const;
+
+    /**
+     * Return if this IidmXmlVersion supports Equipment Validation Level.
+     */
+    bool supportEquipmentValidationLevel() const;
 
     /**
      * Get the namespace URI associated to this IIDM version

@@ -98,9 +98,11 @@ BOOST_AUTO_TEST_CASE(adder) {
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Dangling line 'DL1': x is invalid");
     adder.setX(10.0);
 
+    adder.setG(stdcxx::nan());
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Dangling line 'DL1': g is invalid");
     adder.setG(11.0);
 
+    adder.setB(stdcxx::nan());
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Dangling line 'DL1': b is invalid");
     adder.setB(12.0);
 
@@ -461,8 +463,8 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     BOOST_CHECK(stdcxx::areSame(cDanglingLine, cBoundary.getConnectable()));
     BOOST_CHECK(stdcxx::areSame(cDanglingLine, boundary.getConnectable()));
     BOOST_CHECK(!boundary.getSide());
-    BOOST_CHECK(stdcxx::areSame(cDanglingLine.getTerminal().getVoltageLevel(), cBoundary.getVoltageLevel()));
-    BOOST_CHECK(stdcxx::areSame(danglingLine.getTerminal().getVoltageLevel(), boundary.getVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(cDanglingLine.getTerminal().getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(danglingLine.getTerminal().getVoltageLevel(), boundary.getNetworkSideVoltageLevel()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

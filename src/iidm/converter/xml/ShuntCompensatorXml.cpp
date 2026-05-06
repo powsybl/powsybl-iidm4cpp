@@ -173,7 +173,8 @@ void ShuntCompensatorXml::writeRootElementAttributes(const ShuntCompensator& shu
     IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(SHUNT, TARGET_V, shuntCompensator.getTargetV(), ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_2(), context);
     IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(SHUNT, TARGET_DEADBAND, shuntCompensator.getTargetDeadband(), ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_2(), context);
     writeNodeOrBus(shuntCompensator.getTerminal(), context);
-    writePQ(shuntCompensator.getTerminal(), context.getWriter());
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_9(), context.getVersion(), [&context, &shuntCompensator]() { context.getWriter().writeOptionalAttribute(P, shuntCompensator.getTerminal().getP()); });
+    context.getWriter().writeOptionalAttribute(Q, shuntCompensator.getTerminal().getQ());
 }
 
 void ShuntCompensatorXml::writeSubElements(const ShuntCompensator& sc, const VoltageLevel& /*voltageLevel*/, NetworkXmlWriterContext& context) const {

@@ -73,12 +73,12 @@ public:
     /**
      * Get the voltage level at network side.
      */
-    virtual const VoltageLevel& getVoltageLevel() const = 0;
+    virtual const VoltageLevel& getNetworkSideVoltageLevel() const = 0;
 
     /**
      * Get the voltage level at network side.
      */
-    virtual VoltageLevel& getVoltageLevel() = 0;
+    virtual VoltageLevel& getNetworkSideVoltageLevel() = 0;
 
 protected:
     static double getAngle(const stdcxx::CReference<Bus>& bus);
