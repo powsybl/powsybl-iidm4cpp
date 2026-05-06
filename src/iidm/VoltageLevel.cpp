@@ -20,6 +20,8 @@
 #include <powsybl/iidm/GroundAdder.hpp>
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
+#include <powsybl/iidm/LineCommutatedConverter.hpp>
+#include <powsybl/iidm/LineCommutatedConverterAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
@@ -29,6 +31,8 @@
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/TopologyVisitor.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
+#include <powsybl/iidm/VoltageSourceConverter.hpp>
+#include <powsybl/iidm/VoltageSourceConverterAdder.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
 #include <powsybl/iidm/util/VoltageLevels.hpp>
@@ -242,6 +246,18 @@ stdcxx::range<Line> VoltageLevel::getLines() {
     return getConnectables<Line>();
 }
 
+unsigned long VoltageLevel::getLineCommutatedConverterCount() const {
+    return getConnectableCount<LineCommutatedConverter>();
+}
+
+stdcxx::const_range<LineCommutatedConverter> VoltageLevel::getLineCommutatedConverters() const {
+    return getConnectables<LineCommutatedConverter>();
+}
+
+stdcxx::range<LineCommutatedConverter> VoltageLevel::getLineCommutatedConverters() {
+    return getConnectables<LineCommutatedConverter>();
+}
+
 unsigned long VoltageLevel::getLoadCount() const {
     return getConnectableCount<Load>();
 }
@@ -384,6 +400,18 @@ const std::string& VoltageLevel::getTypeDescription() const {
     return s_typeDescription;
 }
 
+unsigned long VoltageLevel::getVoltageSourceConverterCount() const {
+    return getConnectableCount<VoltageSourceConverter>();
+}
+
+stdcxx::const_range<VoltageSourceConverter> VoltageLevel::getVoltageSourceConverters() const {
+    return getConnectables<VoltageSourceConverter>();
+}
+
+stdcxx::range<VoltageSourceConverter> VoltageLevel::getVoltageSourceConverters() {
+    return getConnectables<VoltageSourceConverter>();
+}
+
 unsigned long VoltageLevel::getVscConverterStationCount() const {
     return getConnectableCount<VscConverterStation>();
 }
@@ -416,6 +444,10 @@ LccConverterStationAdder VoltageLevel::newLccConverterStation() {
     return LccConverterStationAdder(*this);
 }
 
+LineCommutatedConverterAdder VoltageLevel::newLineCommutatedConverter() {
+    return LineCommutatedConverterAdder(*this);
+}
+
 LoadAdder VoltageLevel::newLoad() {
     return LoadAdder(*this);
 }
@@ -426,6 +458,10 @@ ShuntCompensatorAdder VoltageLevel::newShuntCompensator() {
 
 StaticVarCompensatorAdder VoltageLevel::newStaticVarCompensator() {
     return StaticVarCompensatorAdder(*this);
+}
+
+VoltageSourceConverterAdder VoltageLevel::newVoltageSourceConverter() {
+    return VoltageSourceConverterAdder(*this);
 }
 
 VscConverterStationAdder VoltageLevel::newVscConverterStation() {

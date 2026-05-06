@@ -13,6 +13,7 @@ set(IIDM_SOURCES
     iidm/AbstractConnectableBranch.cpp
     iidm/AbstractMultiVariantIdentifiableExtension.cpp
     iidm/AbstractTerminalTopologyVisitor.cpp
+    iidm/AcDcConverter.cpp
     iidm/ActivePowerLimits.cpp
     iidm/ActivePowerLimitsAdder.cpp
     iidm/ApparentPowerLimits.cpp
@@ -54,6 +55,17 @@ set(IIDM_SOURCES
     iidm/DanglingLineFilter.cpp
     iidm/DanglingLineGeneration.cpp
     iidm/DanglingLineGenerationAdder.cpp
+    iidm/DcConnectable.cpp
+    iidm/DcGround.cpp
+    iidm/DcGroundAdder.cpp
+    iidm/DcLine.cpp
+    iidm/DcLineAdder.cpp
+    iidm/DcNode.cpp
+    iidm/DcNodeAdder.cpp
+    iidm/DcSwitch.cpp
+    iidm/DcSwitchAdder.cpp
+    iidm/DcSwitchKind.cpp
+    iidm/DcTerminal.cpp
     iidm/EnergySource.cpp
     iidm/Extendable.cpp
     iidm/Extension.cpp
@@ -80,6 +92,8 @@ set(IIDM_SOURCES
     iidm/Line.cpp
     iidm/LineAdder.cpp
     iidm/LineCharacteristics.cpp
+    iidm/LineCommutatedConverter.cpp
+    iidm/LineCommutatedConverterAdder.cpp
     iidm/Load.cpp
     iidm/LoadAdder.cpp
     iidm/LoadingLimits.cpp
@@ -173,6 +187,8 @@ set(IIDM_SOURCES
     iidm/VoltageAngleLimitAdder.cpp
     iidm/VoltageLevel.cpp
     iidm/VoltageLevelAdder.cpp
+    iidm/VoltageSourceConverter.cpp
+    iidm/VoltageSourceConverterAdder.cpp
     iidm/VscConverterStation.cpp
     iidm/VscConverterStationAdder.cpp
 
@@ -264,6 +280,7 @@ set(IIDM_SOURCES
 
     network/BatteryNetworkFactory.cpp
     network/DanglingLineNetworkFactory.cpp
+    network/DcDetailedNetworkFactory.cpp
     network/EurostagFactory.cpp
     network/FictitiousSwitchFactory.cpp
     network/FourSubstationsNodeBreakerFactory.cpp

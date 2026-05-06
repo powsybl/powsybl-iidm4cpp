@@ -159,6 +159,12 @@ double Bus::getP() const {
             case IdentifiableType::BUS:
             case IdentifiableType::SWITCH:
             case IdentifiableType::TIE_LINE:
+            case IdentifiableType::DC_NODE:
+            case IdentifiableType::DC_SWITCH:
+            case IdentifiableType::DC_GROUND:
+            case IdentifiableType::DC_LINE:
+            case IdentifiableType::LINE_COMMUTATED_CONVERTER:
+            case IdentifiableType::VOLTAGE_SOURCE_CONVERTER:
             default:
                 throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }
@@ -201,6 +207,12 @@ double Bus::getQ() const {
             case IdentifiableType::BUS:
             case IdentifiableType::SWITCH:
             case IdentifiableType::TIE_LINE:
+            case IdentifiableType::DC_NODE:
+            case IdentifiableType::DC_SWITCH:
+            case IdentifiableType::DC_GROUND:
+            case IdentifiableType::DC_LINE:
+            case IdentifiableType::LINE_COMMUTATED_CONVERTER:
+            case IdentifiableType::VOLTAGE_SOURCE_CONVERTER:
             default:
                 throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }

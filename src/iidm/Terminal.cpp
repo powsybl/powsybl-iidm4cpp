@@ -9,6 +9,7 @@
 
 #include <cmath>
 
+#include <powsybl/iidm/AcDcConverter.hpp>
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/SwitchPredicate.hpp>
 #include <powsybl/iidm/ValidationException.hpp>
@@ -157,6 +158,10 @@ stdcxx::optional<ThreeSides> Terminal::getConnectableSide(const Terminal& termin
         const auto& twt = dynamic_cast<const ThreeWindingsTransformer&>(connectable.get());
         ThreeSides side = twt.getSide(terminal);
         return stdcxx::optional<ThreeSides>(side);
+    } else if(stdcxx::isInstanceOf<AcDcConverter>(connectable)) {
+        const auto& acDcConverter = dynamic_cast<const AcDcConverter&>(connectable.get());
+        TwoSides side = acDcConverter.getSide(terminal);
+        return stdcxx::optional<ThreeSides>(static_cast<ThreeSides>(side));
     } else {
         throw PowsyblException(stdcxx::format("Unexpected Connectable instance: %1%", stdcxx::demangle(connectable.get())));
     }
@@ -173,6 +178,9 @@ Terminal& Terminal::getTerminal(Identifiable& identifiable, ThreeSides side) {
     } else if(stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
         auto& twt = dynamic_cast<ThreeWindingsTransformer&>(identifiable);
         return twt.getTerminal(side);
+    } else if(stdcxx::isInstanceOf<AcDcConverter>(identifiable)) {
+        auto& acDcConverter = dynamic_cast<AcDcConverter&>(identifiable);
+        return acDcConverter.getTerminal(static_cast<TwoSides>(side));
     } else {
         throw PowsyblException(stdcxx::format("Unexpected terminal reference identifiable instance: %1%", stdcxx::demangle(identifiable)));
     }

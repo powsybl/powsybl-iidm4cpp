@@ -12,6 +12,14 @@
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineFilter.hpp>
+#include <powsybl/iidm/DcLine.hpp>
+#include <powsybl/iidm/DcLineAdder.hpp>
+#include <powsybl/iidm/DcGround.hpp>
+#include <powsybl/iidm/DcGroundAdder.hpp>
+#include <powsybl/iidm/DcNode.hpp>
+#include <powsybl/iidm/DcNodeAdder.hpp>
+#include <powsybl/iidm/DcSwitch.hpp>
+#include <powsybl/iidm/DcSwitchAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
@@ -20,6 +28,7 @@
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/LineCommutatedConverter.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/OverloadManagementSystem.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
@@ -35,6 +44,7 @@
 #include <powsybl/iidm/VoltageAngleLimitAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
+#include <powsybl/iidm/VoltageSourceConverter.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 
 #include <boost/range/adaptor/map.hpp>
@@ -227,6 +237,86 @@ stdcxx::range<DanglingLine> Subnetwork::getDanglingLines() {
     return getRootNetwork().Network::getDanglingLines() | boost::adaptors::filtered(m_filterIdentifiable);
 }
 
+const DcLine& Subnetwork::getDcLine(const std::string& id) const  {
+    const DcLine& dcLine = Network::getDcLine(id);
+    if(!contains(dcLine)) {
+        throw PowsyblException(stdcxx::format("DcLine '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+    }
+    return dcLine;
+}
+DcLine& Subnetwork::getDcLine(const std::string& id) {
+    return const_cast<DcLine&>(static_cast<const Subnetwork*>(this)->getDcLine(id));
+}
+unsigned long Subnetwork::getDcLineCount() const {
+    return boost::size(getDcLines());
+}
+stdcxx::const_range<DcLine> Subnetwork::getDcLines() const {
+    return getRootNetwork().Network::getDcLines() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<DcLine> Subnetwork::getDcLines() {
+    return getRootNetwork().Network::getDcLines() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+
+const DcGround& Subnetwork::getDcGround(const std::string& id) const  {
+    const DcGround& g = Network::getDcGround(id);
+    if(!contains(g)) {
+        throw PowsyblException(stdcxx::format("DcGround '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+    }
+    return g;
+}
+DcGround& Subnetwork::getDcGround(const std::string& id) {
+    return const_cast<DcGround&>(static_cast<const Subnetwork*>(this)->getDcGround(id));
+}
+unsigned long Subnetwork::getDcGroundCount() const {
+    return boost::size(getDcGrounds());
+}
+stdcxx::const_range<DcGround> Subnetwork::getDcGrounds() const {
+    return getRootNetwork().Network::getDcGrounds() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<DcGround> Subnetwork::getDcGrounds() {
+    return getRootNetwork().Network::getDcGrounds() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+
+const DcNode& Subnetwork::getDcNode(const std::string& id) const  {
+    const DcNode& dcNode = Network::getDcNode(id);
+    if(!contains(dcNode)) {
+        throw PowsyblException(stdcxx::format("DcNode '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+    }
+    return dcNode;
+}
+DcNode& Subnetwork::getDcNode(const std::string& id) {
+    return const_cast<DcNode&>(static_cast<const Subnetwork*>(this)->getDcNode(id));
+}
+unsigned long Subnetwork::getDcNodeCount() const {
+    return boost::size(getDcNodes());
+}
+stdcxx::const_range<DcNode> Subnetwork::getDcNodes() const {
+    return getRootNetwork().Network::getDcNodes() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<DcNode> Subnetwork::getDcNodes() {
+    return getRootNetwork().Network::getDcNodes() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+
+const DcSwitch& Subnetwork::getDcSwitch(const std::string& id) const  {
+    const DcSwitch& dcSwitch = Network::getDcSwitch(id);
+    if(!contains(dcSwitch)) {
+        throw PowsyblException(stdcxx::format("DcSwitch '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+    }
+    return dcSwitch;
+}
+DcSwitch& Subnetwork::getDcSwitch(const std::string& id) {
+    return const_cast<DcSwitch&>(static_cast<const Subnetwork*>(this)->getDcSwitch(id));
+}
+unsigned long Subnetwork::getDcSwitchCount() const {
+    return boost::size(getDcSwitches());
+}
+stdcxx::const_range<DcSwitch> Subnetwork::getDcSwitches() const {
+    return getRootNetwork().Network::getDcSwitches() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<DcSwitch> Subnetwork::getDcSwitches() {
+    return getRootNetwork().Network::getDcSwitches() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+
 const Generator& Subnetwork::getGenerator(const std::string& id) const {
     const Generator& gen = Network::getGenerator(id);
     if(!contains(gen)) {
@@ -372,6 +462,26 @@ stdcxx::const_range<Line> Subnetwork::getLines() const {
 }
 stdcxx::range<Line> Subnetwork::getLines() {
     return getRootNetwork().Network::getLines() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+
+const LineCommutatedConverter& Subnetwork::getLineCommutatedConverter(const std::string& id) const  {
+    const LineCommutatedConverter& c = Network::getLineCommutatedConverter(id);
+    if(!contains(c)) {
+        throw PowsyblException(stdcxx::format("LineCommutatedConverter '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+    }
+    return c;
+}
+LineCommutatedConverter& Subnetwork::getLineCommutatedConverter(const std::string& id) {
+    return const_cast<LineCommutatedConverter&>(static_cast<const Subnetwork*>(this)->getLineCommutatedConverter(id));
+}
+unsigned long Subnetwork::getLineCommutatedConverterCount() const {
+    return boost::size(getLineCommutatedConverters());
+}
+stdcxx::const_range<LineCommutatedConverter> Subnetwork::getLineCommutatedConverters() const {
+    return getRootNetwork().Network::getLineCommutatedConverters() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<LineCommutatedConverter> Subnetwork::getLineCommutatedConverters() {
+    return getRootNetwork().Network::getLineCommutatedConverters() | boost::adaptors::filtered(m_filterIdentifiable);
 }
 
 const TieLine& Subnetwork::getTieLine(const std::string& id) const {
@@ -610,6 +720,26 @@ stdcxx::range<VoltageLevel> Subnetwork::getVoltageLevels() {
     return getRootNetwork().Network::getVoltageLevels() | boost::adaptors::filtered(m_filterIdentifiable);
 }
 
+const VoltageSourceConverter& Subnetwork::getVoltageSourceConverter(const std::string& id) const  {
+    const VoltageSourceConverter& c = Network::getVoltageSourceConverter(id);
+    if(!contains(c)) {
+        throw PowsyblException(stdcxx::format("VoltageSourceConverter '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+    }
+    return c;
+}
+VoltageSourceConverter& Subnetwork::getVoltageSourceConverter(const std::string& id) {
+    return const_cast<VoltageSourceConverter&>(static_cast<const Subnetwork*>(this)->getVoltageSourceConverter(id));
+}
+unsigned long Subnetwork::getVoltageSourceConverterCount() const {
+    return boost::size(getVoltageSourceConverters());
+}
+stdcxx::const_range<VoltageSourceConverter> Subnetwork::getVoltageSourceConverters() const {
+    return getRootNetwork().Network::getVoltageSourceConverters() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<VoltageSourceConverter> Subnetwork::getVoltageSourceConverters() {
+    return getRootNetwork().Network::getVoltageSourceConverters() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+
 const VscConverterStation& Subnetwork::getVscConverterStation(const std::string& id) const {
     const VscConverterStation& vsc = Network::getVscConverterStation(id);
     if(!contains(vsc)) {
@@ -632,6 +762,18 @@ stdcxx::range<VscConverterStation> Subnetwork::getVscConverterStations() {
 
 AreaAdder Subnetwork::newArea() {
     return AreaAdder(getRootNetwork(), *this);
+}
+DcLineAdder Subnetwork::newDcLine() {
+    return DcLineAdder(getRootNetwork(), getId());
+}
+DcGroundAdder Subnetwork::newDcGround() {
+    return DcGroundAdder(getRootNetwork(), getId());
+}
+DcNodeAdder Subnetwork::newDcNode() {
+    return DcNodeAdder(getRootNetwork(), *this);
+}
+DcSwitchAdder Subnetwork::newDcSwitch() {
+    return DcSwitchAdder(getRootNetwork(), getId());
 }
 HvdcLineAdder Subnetwork::newHvdcLine() {
     return HvdcLineAdder(getRootNetwork(), getId());

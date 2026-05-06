@@ -10,10 +10,13 @@
 
 #include <string>
 
+#include <powsybl/iidm/AcDcConverter.hpp>
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/DcNode.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
+#include <powsybl/iidm/LineCommutatedConverter.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/PhaseTapChanger.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
@@ -46,9 +49,15 @@ PowsyblException createUnsetMethodException();
 void actionOnError(const Validable& validable, const std::string& message, const ActionOnError& action);
 ActionOnError checkValidationActionOnError(const ValidationLevel& vl);
 
+ValidationLevel checkAcDcConverterControl(const Validable& validable, const AcDcConverter::ControlMode& controlMode, double targetP, double targetVdc, const ValidationLevel& vl);
+
+void checkAcDcConverterPccTerminal(const Validable& validable, bool twoAcTerminals, const stdcxx::Reference<Terminal>& pccTerminal, const VoltageLevel& voltageLevel);
+
 void checkActivePowerLimits(const Validable& validable, double minP, double maxP);
 
 ValidationLevel checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint, const ValidationLevel& vl);
+
+DcNode& checkAndGetDcNode(Network& network, const Validable& validable, const std::string& dcNodeId, const std::string& attributeName);
 
 double checkB(const Validable& validable, double b);
 
@@ -66,6 +75,8 @@ double checkCoefficient(const Validable& validable, double coefficient);
 
 ValidationLevel checkConvertersMode(const Validable& validable, const HvdcLine::ConvertersMode& converterMode, const ValidationLevel& vl);
 
+double checkDoubleParamPositive(const Validable& validable, double param, const std::string& paramName);
+
 double checkExponent(const Validable& validable, double n);
 
 int checkForecastDistance(const Validable& validable, int forecastDistance);
@@ -79,6 +90,8 @@ double checkG2(const Validable& validable, double g2);
 ValidationLevel checkHvdcActivePowerSetpoint(const Validable& validable, double activePowerSetpoint, const ValidationLevel& vl);
 
 double checkHvdcMaxP(const Validable& validable, double maxP);
+
+const LineCommutatedConverter::ReactiveModel& checkLccReactiveModel(const Validable& validable, const LineCommutatedConverter::ReactiveModel& reactiveModel);
 
 const LoadType& checkLoadType(const Validable& validable, const LoadType& loadType);
 
@@ -146,6 +159,8 @@ ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const
 
 double checkPowerFactor(const Validable& validable, double powerFactor);
 
+double checkPowerFactorPositive(const Validable& validable, double powerFactor);
+
 ValidationLevel checkQ0(const Validable& validable, double q0, const ValidationLevel& vl);
 
 double checkR(const Validable& validable, double r);
@@ -162,6 +177,9 @@ ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool 
 ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool regulating, bool loadTapChangingCapabilities, const stdcxx::Reference<Terminal>& regulationTerminal, const RatioTapChanger::RegulationMode& regulationMode, double regulationValue, const Network& network, const ValidationLevel& vl);
 
 void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network);
+
+void checkSameParentNetwork(const std::string& validableNetworkId, const Validable& validable, const DcNode& dcNode);
+void checkSameParentNetwork(const std::string& validableNetworkId, const Validable& validable, const DcNode& dcNode1, const DcNode& dcNode2);
 
 ValidationLevel checkSections(const Validable& validable, const stdcxx::optional<unsigned long>& currentSectionCount, unsigned long maximumSectionCount, const ValidationLevel& vl);
 

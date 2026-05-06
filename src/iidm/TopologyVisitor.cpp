@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/TopologyVisitor.hpp>
 
+#include <powsybl/iidm/AcDcConverter.hpp>
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Connectable.hpp>
@@ -26,6 +27,10 @@
 namespace powsybl {
 
 namespace iidm {
+
+void TopologyVisitor::visitAcDcConverter(const AcDcConverter& /*converter*/, const TwoSides& /*side*/) {
+    // nothing to do
+}
 
 void TopologyVisitor::visitBattery(const Battery& /*battery*/) {
     // nothing to do
@@ -97,6 +102,13 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
                 visitor.visitGround(dynamic_cast<const Ground&>(connectable));
                 break;
 
+            case IdentifiableType::LINE_COMMUTATED_CONVERTER:
+            case IdentifiableType::VOLTAGE_SOURCE_CONVERTER: {
+                const auto& acDcConverter = dynamic_cast<const AcDcConverter&>(connectable);
+                visitor.visitAcDcConverter(acDcConverter, acDcConverter.getSide(terminal));
+                break;
+            }
+
             case IdentifiableType::NETWORK:
             case IdentifiableType::SUBSTATION:
             case IdentifiableType::VOLTAGE_LEVEL:
@@ -106,6 +118,10 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
             case IdentifiableType::BUS:
             case IdentifiableType::SWITCH:
             case IdentifiableType::TIE_LINE:
+            case IdentifiableType::DC_NODE:
+            case IdentifiableType::DC_SWITCH:
+            case IdentifiableType::DC_GROUND:
+            case IdentifiableType::DC_LINE:
             default:
                 throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
         }

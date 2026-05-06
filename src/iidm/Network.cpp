@@ -18,6 +18,14 @@
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineFilter.hpp>
+#include <powsybl/iidm/DcLine.hpp>
+#include <powsybl/iidm/DcLineAdder.hpp>
+#include <powsybl/iidm/DcGround.hpp>
+#include <powsybl/iidm/DcGroundAdder.hpp>
+#include <powsybl/iidm/DcNode.hpp>
+#include <powsybl/iidm/DcNodeAdder.hpp>
+#include <powsybl/iidm/DcSwitch.hpp>
+#include <powsybl/iidm/DcSwitchAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
@@ -25,6 +33,7 @@
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/LineCommutatedConverter.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/OverloadManagementSystem.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
@@ -42,6 +51,7 @@
 #include <powsybl/iidm/VoltageAngleLimit.hpp>
 #include <powsybl/iidm/VoltageAngleLimitAdder.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/VoltageSourceConverter.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
@@ -343,6 +353,86 @@ stdcxx::range<DanglingLine> Network::getDanglingLines() {
     return getDanglingLines(DanglingLineFilter::ALL());
 }
 
+const DcLine& Network::getDcLine(const std::string& id) const {
+    return get<DcLine>(id);
+}
+
+DcLine& Network::getDcLine(const std::string& id) {
+    return get<DcLine>(id);
+}
+
+unsigned long Network::getDcLineCount() const {
+    return getObjectCount<DcLine>();
+}
+
+stdcxx::const_range<DcLine> Network::getDcLines() const {
+    return m_networkIndex.getAll<DcLine>();
+}
+
+stdcxx::range<DcLine> Network::getDcLines() {
+    return m_networkIndex.getAll<DcLine>();
+}
+
+const DcGround& Network::getDcGround(const std::string& id) const {
+    return get<DcGround>(id);
+}
+
+DcGround& Network::getDcGround(const std::string& id) {
+    return get<DcGround>(id);
+}
+
+unsigned long Network::getDcGroundCount() const {
+    return getObjectCount<DcGround>();
+}
+
+stdcxx::const_range<DcGround> Network::getDcGrounds() const {
+    return m_networkIndex.getAll<DcGround>();
+}
+
+stdcxx::range<DcGround> Network::getDcGrounds() {
+    return m_networkIndex.getAll<DcGround>();
+}
+
+const DcNode& Network::getDcNode(const std::string& id) const {
+    return get<DcNode>(id);
+}
+
+DcNode& Network::getDcNode(const std::string& id) {
+    return get<DcNode>(id);
+}
+
+unsigned long Network::getDcNodeCount() const {
+    return getObjectCount<DcNode>();
+}
+
+stdcxx::const_range<DcNode> Network::getDcNodes() const {
+    return m_networkIndex.getAll<DcNode>();
+}
+
+stdcxx::range<DcNode> Network::getDcNodes() {
+    return m_networkIndex.getAll<DcNode>();
+}
+
+const DcSwitch& Network::getDcSwitch(const std::string& id) const {
+    return get<DcSwitch>(id);
+}
+
+DcSwitch& Network::getDcSwitch(const std::string& id) {
+    return get<DcSwitch>(id);
+}
+
+unsigned long Network::getDcSwitchCount() const {
+    return getObjectCount<DcSwitch>();
+}
+
+stdcxx::const_range<DcSwitch> Network::getDcSwitches() const {
+    return m_networkIndex.getAll<DcSwitch>();
+}
+
+stdcxx::range<DcSwitch> Network::getDcSwitches() {
+    return m_networkIndex.getAll<DcSwitch>();
+}
+
 int Network::getForecastDistance() const {
     return m_forecastDistance;
 }
@@ -505,6 +595,26 @@ stdcxx::const_range<Line> Network::getLines() const {
 
 stdcxx::range<Line> Network::getLines() {
     return  m_networkIndex.getAll<Line>();
+}
+
+const LineCommutatedConverter& Network::getLineCommutatedConverter(const std::string& id) const {
+    return get<LineCommutatedConverter>(id);
+}
+
+LineCommutatedConverter& Network::getLineCommutatedConverter(const std::string& id) {
+    return get<LineCommutatedConverter>(id);
+}
+
+unsigned long Network::getLineCommutatedConverterCount() const {
+    return getObjectCount<LineCommutatedConverter>();
+}
+
+stdcxx::const_range<LineCommutatedConverter> Network::getLineCommutatedConverters() const {
+    return m_networkIndex.getAll<LineCommutatedConverter>();
+}
+
+stdcxx::range<LineCommutatedConverter> Network::getLineCommutatedConverters() {
+    return m_networkIndex.getAll<LineCommutatedConverter>();
 }
 
 const TieLine& Network::getTieLine(const std::string& id) const {
@@ -854,6 +964,26 @@ stdcxx::range<VoltageLevel> Network::getVoltageLevels() {
     return m_networkIndex.getAll<VoltageLevel>();
 }
 
+const VoltageSourceConverter& Network::getVoltageSourceConverter(const std::string& id) const {
+    return get<VoltageSourceConverter>(id);
+}
+
+VoltageSourceConverter& Network::getVoltageSourceConverter(const std::string& id) {
+    return get<VoltageSourceConverter>(id);
+}
+
+unsigned long Network::getVoltageSourceConverterCount() const {
+    return getObjectCount<VoltageSourceConverter>();
+}
+
+stdcxx::const_range<VoltageSourceConverter> Network::getVoltageSourceConverters() const {
+    return m_networkIndex.getAll<VoltageSourceConverter>();
+}
+
+stdcxx::range<VoltageSourceConverter> Network::getVoltageSourceConverters() {
+    return m_networkIndex.getAll<VoltageSourceConverter>();
+}
+
 const VscConverterStation& Network::getVscConverterStation(const std::string& id) const {
     return get<VscConverterStation>(id);
 }
@@ -876,6 +1006,19 @@ unsigned long Network::getVscConverterStationCount() const {
 
 AreaAdder Network::newArea() {
     return AreaAdder(*this);
+}
+
+DcLineAdder Network::newDcLine() {
+    return DcLineAdder(*this);
+}
+DcGroundAdder Network::newDcGround() {
+    return DcGroundAdder(*this);
+}
+DcNodeAdder Network::newDcNode() {
+    return DcNodeAdder(*this);
+}
+DcSwitchAdder Network::newDcSwitch() {
+    return DcSwitchAdder(*this);
 }
 
 HvdcLineAdder Network::newHvdcLine() {

@@ -6,6 +6,7 @@
 #
 
 set(UNIT_TEST_SOURCES
+    DcDetailedNetworkFactoryTest.cpp
     EurostagFactoryTest.cpp
     network.cpp
     SecurityAnalysisTestNetwork.cpp)

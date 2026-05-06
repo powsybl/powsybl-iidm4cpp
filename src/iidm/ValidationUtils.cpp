@@ -88,6 +88,51 @@ ActionOnError checkValidationActionOnError(const ValidationLevel& vl) {
     return (vl >= ValidationLevel::STEADY_STATE_HYPOTHESIS) ? ActionOnError::THROW_EXCEPTION : ActionOnError::IGNORE;
 }
 
+ValidationLevel checkAcDcConverterControl(const Validable& validable, const AcDcConverter::ControlMode& controlMode, double targetP, double targetVdc, const ActionOnError& action) {
+    ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
+    switch (controlMode) {
+        case AcDcConverter::ControlMode::P_PCC:
+            if(std::isnan(targetP)) {
+                actionOnError(validable, "targetP is invalid", action);
+                checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
+            }
+            break;
+        case AcDcConverter::ControlMode::V_DC:
+            if(std::isnan(targetVdc)) {
+                actionOnError(validable, "targetVdc is invalid", action);
+                checkValidationLevel = validationLevel::min(checkValidationLevel, ValidationLevel::EQUIPMENT);
+            }
+            break;
+
+        default:
+            throw AssertionError(stdcxx::format("Unexpected converter control mode value: %1%", controlMode));
+            return ValidationLevel::EQUIPMENT;
+    }
+    return checkValidationLevel;
+}
+ValidationLevel checkAcDcConverterControl(const Validable& validable, const AcDcConverter::ControlMode& controlMode, double targetP, double targetVdc, const ValidationLevel& vl) {
+    return checkAcDcConverterControl(validable, controlMode, targetP, targetVdc, checkValidationActionOnError(vl));
+}
+
+void checkAcDcConverterPccTerminal(const Validable& validable, bool twoAcTerminals, const stdcxx::Reference<Terminal>& pccTerminal, const VoltageLevel& voltageLevel) {
+    if(static_cast<bool>(pccTerminal)) {
+        stdcxx::Reference<Connectable> connectable = pccTerminal.get().getConnectable();
+        if(twoAcTerminals && !(stdcxx::isInstanceOf<Branch>(connectable) || stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable))) {
+            throw ValidationException(validable, "converter has two AC terminals and pccTerminal is not a line or transformer terminal");
+        } else if(!twoAcTerminals && 
+                !(stdcxx::isInstanceOf<Branch>(connectable) || stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable) || stdcxx::isInstanceOf<AcDcConverter>(connectable))) {
+            throw ValidationException(validable, "pccTerminal is not a line or transformer or the converter terminal");
+        }
+
+        if(!twoAcTerminals && stdcxx::isInstanceOf<AcDcConverter>(connectable) && !stdcxx::areSame(connectable.get(), validable)) {
+            throw ValidationException(validable, "pccTerminal cannot be the terminal of another converter");
+        }
+        if (!stdcxx::areSame(connectable.get().getParentNetwork(), voltageLevel.getParentNetwork())) {
+            throw ValidationException(validable, "pccTerminal is not in the same parent network as the voltage level");
+        }
+    }
+}
+
 void checkActivePowerLimits(const Validable& validable, double minP, double maxP) {
     if (minP > maxP) {
         throw ValidationException(validable, stdcxx::format("Invalid active limits [%1%, %2%]", minP, maxP));
@@ -103,6 +148,18 @@ ValidationLevel checkActivePowerSetpoint(const Validable& validable, double acti
 }
 ValidationLevel checkActivePowerSetpoint(const Validable& validable, double activePowerSetpoint, const ValidationLevel& vl) {
     return checkActivePowerSetpoint(validable, activePowerSetpoint, checkValidationActionOnError(vl));
+}
+
+DcNode& checkAndGetDcNode(Network& network, const Validable& validable, const std::string& dcNodeId, const std::string& attributeName) {
+    if(dcNodeId.empty()) {
+        throw ValidationException(validable, stdcxx::format("%1% is not set", attributeName));
+    }
+
+    stdcxx::Reference<DcNode> dcNodeRef = network.find<DcNode>(dcNodeId);
+    if (!dcNodeRef) {
+        throw ValidationException(validable, stdcxx::format("DcNode '%1%' not found", dcNodeId));
+    }
+    return dcNodeRef.get();
 }
 
 double checkB(const Validable& validable, double b) {
@@ -170,6 +227,13 @@ ValidationLevel checkConvertersMode(const Validable& validable, const HvdcLine::
     return checkConvertersMode(validable, converterMode, checkValidationActionOnError(vl));
 }
 
+double checkDoubleParamPositive(const Validable& validable, double param, const std::string& paramName) {
+    if (std::isnan(param) || param < 0) {
+        throw ValidationException(validable, stdcxx::format("%1% is invalid", paramName));
+    }
+    return param;
+}
+
 double checkExponent(const Validable& validable, double n) {
     if (std::isnan(n) || n < 0) {
         throw ValidationException(validable, stdcxx::format("Invalid load model exponential value: %1%", n));
@@ -227,6 +291,18 @@ double checkHvdcMaxP(const Validable& validable, double maxP) {
         throw createInvalidValueException(validable, maxP, converter::MAX_P, "maximum P should not be negative");
     }
     return maxP;
+}
+
+const LineCommutatedConverter::ReactiveModel& checkLccReactiveModel(const Validable& /*validable*/, const LineCommutatedConverter::ReactiveModel& reactiveModel) {
+    switch (reactiveModel) {
+        case LineCommutatedConverter::ReactiveModel::FIXED_POWER_FACTOR:
+        case LineCommutatedConverter::ReactiveModel::CALCULATED_POWER_FACTOR:
+            break;
+
+        default:
+            throw AssertionError(stdcxx::format("Unexpected converter's reactive power model: %1%", reactiveModel));
+    }
+    return reactiveModel;
 }
 
 const LoadType& checkLoadType(const Validable& /*validable*/, const LoadType& loadType) {
@@ -494,6 +570,16 @@ double checkPowerFactor(const Validable& validable, double powerFactor) {
     return powerFactor;
 }
 
+double checkPowerFactorPositive(const Validable& validable, double powerFactor) {
+    if (std::isnan(powerFactor)) {
+        throw ValidationException(validable, "power factor is invalid");
+    }
+    if (powerFactor < 0 || powerFactor > 1) {
+        throw ValidationException(validable, "power factor is invalid, it must be between 0 and 1");
+    }
+    return powerFactor;
+}
+
 ValidationLevel checkQ0(const Validable& validable, double q0, const ActionOnError& action) {
     if (std::isnan(q0)) {
         actionOnError(validable, "q0 is invalid", action);
@@ -601,6 +687,26 @@ ValidationLevel checkRatioTapChangerRegulation(const Validable& validable, bool 
 void checkRegulatingTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& regulatingTerminal, const Network& network) {
     if (regulatingTerminal && !stdcxx::areSame(regulatingTerminal.get().getVoltageLevel().getNetwork(), network)) {
         throw ValidationException(validable, "Regulating terminal is not part of the network");
+    }
+}
+
+void checkSameParentNetwork(const std::string& validableNetworkId, const Validable& validable, const DcNode& dcNode) {
+    if(validableNetworkId.empty()) {
+        throw ValidationException(validable, "invalid empty network Id");
+    }
+    if(validableNetworkId != dcNode.getParentNetwork().getId()) {
+        throw ValidationException(validable, stdcxx::format("DC Node '%1%' is in network '%2%' but DC Equipment is in '%3%'", dcNode.getId(), dcNode.getParentNetwork().getId(), validableNetworkId));
+    }
+}
+void checkSameParentNetwork(const std::string& validableNetworkId, const Validable& validable, const DcNode& dcNode1, const DcNode& dcNode2) {
+    if(validableNetworkId.empty()) {
+        throw ValidationException(validable, "invalid empty network Id");
+    }
+    if(dcNode1.getParentNetwork().getId() != dcNode2.getParentNetwork().getId()) {
+        throw ValidationException(validable, stdcxx::format("DC Nodes '%1%' and '%2%' are in different networks '%3%' and '%4%'", dcNode1.getId(), dcNode2.getId(), dcNode1.getParentNetwork().getId(), dcNode2.getParentNetwork().getId()));
+    }
+    if(validableNetworkId != dcNode1.getParentNetwork().getId()) {
+        throw ValidationException(validable, stdcxx::format("DC Nodes '%1%' and '%2%' are in network '%3%' but DC Equipment is in '%4%'", dcNode1.getId(), dcNode2.getId(), dcNode1.getParentNetwork().getId(), validableNetworkId));
     }
 }
 

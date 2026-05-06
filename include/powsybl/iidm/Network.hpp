@@ -43,6 +43,15 @@ class BusbarSection;
 class Connectable;
 class ConnectedComponentsManager;
 class DanglingLine;
+class DcConnectable;
+class DcLine;
+class DcLineAdder;
+class DcGround;
+class DcGroundAdder;
+class DcNode;
+class DcNodeAdder;
+class DcSwitch;
+class DcSwitchAdder;
 class Generator;
 class Ground;
 class HvdcConverterStation;
@@ -51,6 +60,7 @@ class HvdcLineAdder;
 class LccConverterStation;
 class Line;
 class LineAdder;
+class LineCommutatedConverter;
 class Load;
 class OverloadManagementSystem;
 class ShuntCompensator;
@@ -68,6 +78,7 @@ class TwoWindingsTransformerAdder;
 class VoltageAngleLimitAdder;
 class VoltageLevel;
 class VoltageLevelAdder;
+class VoltageSourceConverter;
 class VscConverterStation;
 
 class Network : public Container, public VariantManagerHolder {
@@ -207,6 +218,15 @@ public:
     template <typename T = Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::range<T> getConnectables();
 
+    template <typename T = DcConnectable, typename = typename std::enable_if<std::is_base_of<DcConnectable, T>::value>::type>
+    unsigned long getDcConnectableCount() const;
+
+    template <typename T = DcConnectable, typename = typename std::enable_if<std::is_base_of<DcConnectable, T>::value>::type>
+    stdcxx::const_range<T> getDcConnectables() const;
+
+    template <typename T = DcConnectable, typename = typename std::enable_if<std::is_base_of<DcConnectable, T>::value>::type>
+    stdcxx::range<T> getDcConnectables();
+
     const ConnectedComponentsManager& getConnectedComponentsManager() const;
 
     ConnectedComponentsManager& getConnectedComponentsManager();
@@ -228,6 +248,46 @@ public:
     virtual stdcxx::const_range<DanglingLine> getDanglingLines() const;
 
     virtual stdcxx::range<DanglingLine> getDanglingLines();
+
+    virtual const DcLine& getDcLine(const std::string& id) const;
+
+    virtual DcLine& getDcLine(const std::string& id);
+
+    virtual unsigned long getDcLineCount() const;
+
+    virtual stdcxx::const_range<DcLine> getDcLines() const;
+
+    virtual stdcxx::range<DcLine> getDcLines();
+
+    virtual const DcGround& getDcGround(const std::string& id) const;
+
+    virtual DcGround& getDcGround(const std::string& id);
+
+    virtual unsigned long getDcGroundCount() const;
+
+    virtual stdcxx::const_range<DcGround> getDcGrounds() const;
+
+    virtual stdcxx::range<DcGround> getDcGrounds();
+
+    virtual const DcNode& getDcNode(const std::string& id) const;
+
+    virtual DcNode& getDcNode(const std::string& id);
+
+    virtual unsigned long getDcNodeCount() const;
+
+    virtual stdcxx::const_range<DcNode> getDcNodes() const;
+
+    virtual stdcxx::range<DcNode> getDcNodes();
+
+    virtual const DcSwitch& getDcSwitch(const std::string& id) const;
+
+    virtual DcSwitch& getDcSwitch(const std::string& id);
+
+    virtual unsigned long getDcSwitchCount() const;
+
+    virtual stdcxx::const_range<DcSwitch> getDcSwitches() const;
+
+    virtual stdcxx::range<DcSwitch> getDcSwitches();
 
     int getForecastDistance() const;
 
@@ -302,6 +362,16 @@ public:
     virtual stdcxx::const_range<Line> getLines() const;
 
     virtual stdcxx::range<Line> getLines();
+
+    virtual const LineCommutatedConverter& getLineCommutatedConverter(const std::string& id) const;
+
+    virtual LineCommutatedConverter& getLineCommutatedConverter(const std::string& id);
+
+    virtual unsigned long getLineCommutatedConverterCount() const;
+
+    virtual stdcxx::const_range<LineCommutatedConverter> getLineCommutatedConverters() const;
+
+    virtual stdcxx::range<LineCommutatedConverter> getLineCommutatedConverters();
 
     virtual const TieLine& getTieLine(const std::string& id) const;
 
@@ -437,6 +507,16 @@ public:
 
     virtual stdcxx::range<VoltageLevel> getVoltageLevels();
 
+    virtual const VoltageSourceConverter& getVoltageSourceConverter(const std::string& id) const;
+
+    virtual VoltageSourceConverter& getVoltageSourceConverter(const std::string& id);
+
+    virtual unsigned long getVoltageSourceConverterCount() const;
+
+    virtual stdcxx::const_range<VoltageSourceConverter> getVoltageSourceConverters() const;
+
+    virtual stdcxx::range<VoltageSourceConverter> getVoltageSourceConverters();
+
     virtual const VscConverterStation& getVscConverterStation(const std::string& id) const;
 
     virtual VscConverterStation& getVscConverterStation(const std::string& id);
@@ -448,6 +528,11 @@ public:
     virtual stdcxx::range<VscConverterStation> getVscConverterStations();
 
     virtual AreaAdder newArea();
+
+    virtual DcLineAdder newDcLine();
+    virtual DcGroundAdder newDcGround();
+    virtual DcNodeAdder newDcNode();
+    virtual DcSwitchAdder newDcSwitch();
 
     virtual HvdcLineAdder newHvdcLine();
     virtual HvdcLineAdder newHvdcLine(const std::string& subNetworkId);

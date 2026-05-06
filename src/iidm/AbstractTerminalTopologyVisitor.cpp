@@ -8,6 +8,7 @@
 #include <powsybl/iidm/AbstractTerminalTopologyVisitor.hpp>
 
 #include <powsybl/AssertionError.hpp>
+#include <powsybl/iidm/AcDcConverter.hpp>
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
@@ -25,6 +26,10 @@
 namespace powsybl {
 
 namespace iidm {
+
+void AbstractTerminalTopologyVisitor::visitAcDcConverter(const AcDcConverter& converter, const TwoSides& side) {
+    visitTerminal(converter.getTerminal(side));
+}
 
 void AbstractTerminalTopologyVisitor::visitBattery(const Battery& battery) {
     visitInjection(battery);

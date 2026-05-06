@@ -6,6 +6,7 @@
 #
 
 set(UNIT_TEST_SOURCES
+    AcDcConverterTest.cpp
     ActivePowerLimitsTest.cpp
     AliasesTest.cpp
     ApparentPowerLimitsTest.cpp
@@ -21,6 +22,11 @@ set(UNIT_TEST_SOURCES
     CountryTest.cpp
     CurrentLimitsTest.cpp
     DanglingLineTest.cpp
+    DcGroundTest.cpp
+    DcLineTest.cpp
+    DcNodeTest.cpp
+    DcSwitchTest.cpp
+    DcTerminalTest.cpp
     EnergySourceTest.cpp
     ExtensionTest.cpp
     ExtensionAdderTest.cpp

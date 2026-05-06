@@ -93,6 +93,8 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                 case IdentifiableType::BATTERY:
                 case IdentifiableType::SHUNT_COMPENSATOR:
                 case IdentifiableType::STATIC_VAR_COMPENSATOR:
+                case IdentifiableType::LINE_COMMUTATED_CONVERTER:
+                case IdentifiableType::VOLTAGE_SOURCE_CONVERTER:
                     feederCount++;
                     break;
                 case IdentifiableType::GROUND:
@@ -107,6 +109,10 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                 case IdentifiableType::SWITCH:
                 case IdentifiableType::TIE_LINE:
                 case IdentifiableType::BUSBAR_SECTION: // must not happen in a bus/breaker topology
+                case IdentifiableType::DC_NODE:
+                case IdentifiableType::DC_SWITCH:
+                case IdentifiableType::DC_GROUND:
+                case IdentifiableType::DC_LINE:
                     throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
             }
         }

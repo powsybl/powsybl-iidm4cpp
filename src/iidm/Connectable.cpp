@@ -107,6 +107,10 @@ Terminal& Connectable::getTerminal(unsigned long index) {
     return *m_terminals.at(index);
 }
 
+unsigned long Connectable::getTerminalsCount() const {
+    return m_terminals.size();
+}
+
 std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals() const {
     return getTerminals(stdcxx::optional<ThreeSides>());
 }

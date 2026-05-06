@@ -237,6 +237,8 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_topology_model::Graph&
                 case IdentifiableType::BATTERY:
                 case IdentifiableType::SHUNT_COMPENSATOR:
                 case IdentifiableType::STATIC_VAR_COMPENSATOR:
+                case IdentifiableType::LINE_COMMUTATED_CONVERTER:
+                case IdentifiableType::VOLTAGE_SOURCE_CONVERTER:
                     ++feederCount;
                     break;
 
@@ -256,6 +258,10 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_topology_model::Graph&
                 case IdentifiableType::BUS:
                 case IdentifiableType::SWITCH:
                 case IdentifiableType::TIE_LINE:
+                case IdentifiableType::DC_NODE:
+                case IdentifiableType::DC_SWITCH:
+                case IdentifiableType::DC_GROUND:
+                case IdentifiableType::DC_LINE:
                 default:
                     throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectableType));
             }

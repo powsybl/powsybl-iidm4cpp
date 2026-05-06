@@ -68,6 +68,8 @@ protected:
 
     Terminal& getTerminal(unsigned long index);
 
+    unsigned long getTerminalsCount() const;
+
     /**
      * Connects the new terminal to this connectable and attach it to its topologyModel,
      * and replace old Terminal, by this new one

@@ -15,6 +15,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class AcDcConverter;
 class Battery;
 class BusbarSection;
 class DanglingLine;
@@ -43,6 +44,8 @@ public:
     TopologyVisitor& operator=(const TopologyVisitor&) = default;
 
     TopologyVisitor& operator=(TopologyVisitor&&) noexcept = default;
+
+    virtual void visitAcDcConverter(const AcDcConverter& converter, const TwoSides& side);
 
     virtual void visitBattery(const Battery& battery);
 

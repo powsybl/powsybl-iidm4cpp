@@ -80,6 +80,30 @@ public:
     stdcxx::const_range<DanglingLine> getDanglingLines() const override;
     stdcxx::range<DanglingLine> getDanglingLines() override;
 
+    const DcLine& getDcLine(const std::string& id) const override;
+    DcLine& getDcLine(const std::string& id) override;
+    unsigned long getDcLineCount() const override;
+    stdcxx::const_range<DcLine> getDcLines() const override;
+    stdcxx::range<DcLine> getDcLines() override;
+
+    const DcGround& getDcGround(const std::string& id) const override;
+    DcGround& getDcGround(const std::string& id) override;
+    unsigned long getDcGroundCount() const override;
+    stdcxx::const_range<DcGround> getDcGrounds() const override;
+    stdcxx::range<DcGround> getDcGrounds() override;
+
+    const DcNode& getDcNode(const std::string& id) const override;
+    DcNode& getDcNode(const std::string& id) override;
+    unsigned long getDcNodeCount() const override;
+    stdcxx::const_range<DcNode> getDcNodes() const override;
+    stdcxx::range<DcNode> getDcNodes() override;
+
+    const DcSwitch& getDcSwitch(const std::string& id) const override;
+    DcSwitch& getDcSwitch(const std::string& id) override;
+    unsigned long getDcSwitchCount() const override;
+    stdcxx::const_range<DcSwitch> getDcSwitches() const override;
+    stdcxx::range<DcSwitch> getDcSwitches() override;
+
     const Generator& getGenerator(const std::string& id) const override;
     Generator& getGenerator(const std::string& id) override;
     unsigned long getGeneratorCount() const  override;
@@ -122,6 +146,12 @@ public:
     unsigned long getLineCount() const override;
     stdcxx::const_range<Line> getLines() const override;
     stdcxx::range<Line> getLines() override;
+
+    const LineCommutatedConverter& getLineCommutatedConverter(const std::string& id) const override;
+    LineCommutatedConverter& getLineCommutatedConverter(const std::string& id) override;
+    unsigned long getLineCommutatedConverterCount() const override;
+    stdcxx::const_range<LineCommutatedConverter> getLineCommutatedConverters() const override;
+    stdcxx::range<LineCommutatedConverter> getLineCommutatedConverters() override;
 
     const TieLine& getTieLine(const std::string& id) const override;
     TieLine& getTieLine(const std::string& id) override;
@@ -195,6 +225,12 @@ public:
     stdcxx::const_range<VoltageLevel> getVoltageLevels() const override;
     stdcxx::range<VoltageLevel> getVoltageLevels() override;
 
+    const VoltageSourceConverter& getVoltageSourceConverter(const std::string& id) const override;
+    VoltageSourceConverter& getVoltageSourceConverter(const std::string& id) override;
+    unsigned long getVoltageSourceConverterCount() const override;
+    stdcxx::const_range<VoltageSourceConverter> getVoltageSourceConverters() const override;
+    stdcxx::range<VoltageSourceConverter> getVoltageSourceConverters() override;
+
     const VscConverterStation& getVscConverterStation(const std::string& id) const override;
     VscConverterStation& getVscConverterStation(const std::string& id) override;
     unsigned long getVscConverterStationCount() const override;
@@ -202,6 +238,10 @@ public:
     stdcxx::range<VscConverterStation> getVscConverterStations() override;
 
     AreaAdder newArea() override;
+    DcLineAdder newDcLine() override;
+    DcGroundAdder newDcGround() override;
+    DcNodeAdder newDcNode() override;
+    DcSwitchAdder newDcSwitch() override;
     HvdcLineAdder newHvdcLine() override;
     HvdcLineAdder newHvdcLine(const std::string& subNetworkId) override;
     LineAdder newLine() override;

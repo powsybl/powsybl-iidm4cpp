@@ -58,6 +58,29 @@ stdcxx::range<T> Network::getConnectables() {
 }
 
 template <typename T, typename>
+unsigned long Network::getDcConnectableCount() const {
+    return boost::size(getDcConnectables<T>());
+}
+
+template <typename T, typename>
+stdcxx::const_range<T> Network::getDcConnectables() const {
+    const auto& filter = [](const Identifiable& identifiable) {
+        return stdcxx::isInstanceOf<T>(identifiable);
+    };
+
+    return getIndex().getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(map<const T>);
+}
+
+template <typename T, typename>
+stdcxx::range<T> Network::getDcConnectables() {
+    const auto& filter = [](const Identifiable& identifiable) {
+        return stdcxx::isInstanceOf<T>(identifiable);
+    };
+
+    return getIndex().getAll<Identifiable, Identifiable>() | boost::adaptors::filtered(filter) | boost::adaptors::transformed(map<T>);
+}
+
+template <typename T, typename>
 unsigned long Network::getObjectCount() const {
     return getIndex().getObjectCount<T>();
 }

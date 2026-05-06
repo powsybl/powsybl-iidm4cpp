@@ -115,6 +115,7 @@ protected: // MultiVariantObject
     void reduceVariantArraySize(unsigned long number) override;
 
     friend class Connectable;
+    friend class AcDcConverter;
 
 protected:
     explicit Terminal(VoltageLevel& voltageLevel, const ThreeSides& side);

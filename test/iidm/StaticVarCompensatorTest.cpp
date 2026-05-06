@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
+#include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
@@ -133,7 +134,7 @@ Network createSvcNetwork() {
     return network;
 }
 
-StaticVarCompensator& createSvc(Network& network, const std::string& id, const stdcxx::Reference<Terminal>& regulatingTerminal) {
+StaticVarCompensator& createSvc(Network& network, const std::string& id, const stdcxx::Reference<Terminal>& regulatingTerminal, const StaticVarCompensator::RegulationMode& mode) {
     VoltageLevel& vl2 = network.getVoltageLevel("VL2");
     return vl2.newStaticVarCompensator()
         .setId(id)
@@ -141,7 +142,7 @@ StaticVarCompensator& createSvc(Network& network, const std::string& id, const s
         .setBus("B2")
         .setBmin(0.0002)
         .setBmax(0.0008)
-        .setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE)
+        .setRegulationMode(mode)
         .setRegulating(true)
         .setVoltageSetpoint(390.0)
         .setReactivePowerSetpoint(1.0)
@@ -336,12 +337,19 @@ BOOST_AUTO_TEST_CASE(regulatingTerminalTest) {
     svc.setRegulatingTerminal(stdcxx::ref<Terminal>());
     BOOST_CHECK(stdcxx::areSame(svc.getTerminal(), svc.getRegulatingTerminal()));
 
-    StaticVarCompensator& svc3 = createSvc(network, "SVC3", stdcxx::ref<Terminal>());
+    StaticVarCompensator& svc3 = createSvc(network, "SVC3", stdcxx::ref<Terminal>(), StaticVarCompensator::RegulationMode::VOLTAGE);
     BOOST_CHECK(stdcxx::areSame(svc3.getTerminal(), svc3.getRegulatingTerminal()));
     svc3.remove();
 
-    StaticVarCompensator& svc4 = createSvc(network, "SVC4", stdcxx::ref<Terminal>(loadTerminal));
+    StaticVarCompensator& svc4 = createSvc(network, "SVC4", stdcxx::ref<Terminal>(loadTerminal), StaticVarCompensator::RegulationMode::VOLTAGE);
     BOOST_CHECK(stdcxx::areSame(loadTerminal, svc4.getRegulatingTerminal()));
+
+    StaticVarCompensator& svc5 = createSvc(network, "SVC5", stdcxx::ref<Terminal>(network.getLine("L1").getTerminal2()), StaticVarCompensator::RegulationMode::REACTIVE_POWER);
+    BOOST_CHECK(stdcxx::areSame(network.getLine("L1").getTerminal2(), svc5.getRegulatingTerminal()));
+    BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::REACTIVE_POWER, svc5.getRegulationMode());
+    network.getLine("L1").remove();
+    BOOST_CHECK(stdcxx::areSame(svc5.getTerminal(), svc5.getRegulatingTerminal()));
+    BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::VOLTAGE, svc5.getRegulationMode());
 
     Network network2 = createSvcNetwork();
     StaticVarCompensator& svc2 = network2.getStaticVarCompensator("SVC2");

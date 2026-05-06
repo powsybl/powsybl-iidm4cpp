@@ -34,6 +34,8 @@ class Generator;
 class GeneratorAdder;
 class Ground;
 class GroundAdder;
+class LineCommutatedConverter;
+class LineCommutatedConverterAdder;
 class LccConverterStation;
 class LccConverterStationAdder;
 class Load;
@@ -48,6 +50,8 @@ class Switch;
 class Substation;
 class Terminal;
 class TopologyVisitor;
+class VoltageSourceConverter;
+class VoltageSourceConverterAdder;
 class VscConverterStation;
 class VscConverterStationAdder;
 
@@ -151,6 +155,12 @@ public:
 
     stdcxx::range<Line> getLines();
 
+    unsigned long getLineCommutatedConverterCount() const;
+
+    stdcxx::const_range<LineCommutatedConverter> getLineCommutatedConverters() const;
+
+    stdcxx::range<LineCommutatedConverter> getLineCommutatedConverters();
+
     unsigned long getLoadCount() const;
 
     stdcxx::const_range<Load> getLoads() const;
@@ -206,6 +216,12 @@ public:
 
     stdcxx::range<TwoWindingsTransformer> getTwoWindingsTransformers();
 
+    unsigned long getVoltageSourceConverterCount() const;
+
+    stdcxx::const_range<VoltageSourceConverter> getVoltageSourceConverters() const;
+
+    stdcxx::range<VoltageSourceConverter> getVoltageSourceConverters();
+
     unsigned long getVscConverterStationCount() const;
 
     stdcxx::const_range<VscConverterStation> getVscConverterStations() const;
@@ -222,11 +238,15 @@ public:
 
     LccConverterStationAdder newLccConverterStation();
 
+    LineCommutatedConverterAdder newLineCommutatedConverter();
+
     LoadAdder newLoad();
 
     ShuntCompensatorAdder newShuntCompensator();
 
     StaticVarCompensatorAdder newStaticVarCompensator();
+
+    VoltageSourceConverterAdder newVoltageSourceConverter();
 
     VscConverterStationAdder newVscConverterStation();
 

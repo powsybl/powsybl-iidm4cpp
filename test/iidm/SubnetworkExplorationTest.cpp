@@ -19,6 +19,14 @@
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
 #include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/DcGround.hpp>
+#include <powsybl/iidm/DcGroundAdder.hpp>
+#include <powsybl/iidm/DcLine.hpp>
+#include <powsybl/iidm/DcLineAdder.hpp>
+#include <powsybl/iidm/DcNode.hpp>
+#include <powsybl/iidm/DcNodeAdder.hpp>
+#include <powsybl/iidm/DcSwitch.hpp>
+#include <powsybl/iidm/DcSwitchAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
@@ -28,6 +36,8 @@
 #include <powsybl/iidm/LccConverterStationAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/LineCommutatedConverter.hpp>
+#include <powsybl/iidm/LineCommutatedConverterAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -49,6 +59,8 @@
 #include <powsybl/iidm/ValidationException.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/VoltageLevelAdder.hpp>
+#include <powsybl/iidm/VoltageSourceConverter.hpp>
+#include <powsybl/iidm/VoltageSourceConverterAdder.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/iidm/VscConverterStationAdder.hpp>
 
@@ -367,6 +379,54 @@ void CreateSubnetworkExploreTest(Network& network, const std::string& nid, Count
                             .add();
 
     voltageLevel1.addArea(area1);
+
+    DcNode& dcNode1 = network.newDcNode()
+                            .setId(id("dcNode1", nid))
+                            .setNominalV(500.0)
+                            .add();
+    DcNode& dcNode2 = network.newDcNode()
+                            .setId(id("dcNode2", nid))
+                            .setNominalV(500.0)
+                            .add();
+    network.newDcSwitch()
+                .setId(id("dcSwitch1", nid))
+                .setKind(DcSwitchKind::DISCONNECTOR)
+                .setOpen(false)
+                .setDcNode1(dcNode1.getId())
+                .setDcNode2(dcNode2.getId())
+                .add();
+    network.newDcGround()
+                .setId(id("dcGround1", nid))
+                .setDcNode(dcNode1.getId())
+                .setR(0.01)
+                .add();
+    network.newDcLine()
+                .setId(id("dcLine1", nid))
+                .setDcNode1(dcNode1.getId())
+                .setDcNode2(dcNode2.getId())
+                .setR(1.0)
+                .add();
+    voltageLevel1.newLineCommutatedConverter()
+                .setId(id("lccDetailed1", nid))
+                .setControlMode(AcDcConverter::ControlMode::V_DC)
+                .setNode1(16)
+                .setDcNode1(dcNode1.getId())
+                .setDcNode2(dcNode2.getId())
+                .setTargetP(0.)
+                .setTargetVdc(500.)
+                .add();
+    voltageLevel1.newVoltageSourceConverter()
+                .setId(id("vscDetailed1", nid))
+                .setControlMode(AcDcConverter::ControlMode::V_DC)
+                .setNode1(17)
+                .setDcNode1(dcNode1.getId())
+                .setDcNode2(dcNode2.getId())
+                .setTargetP(0.)
+                .setTargetVdc(500.)
+                .setVoltageRegulatorOn(false)
+                .setReactivePowerSetpoint(0.)
+                .add();
+
     return;
 }
 
@@ -814,6 +874,7 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
                                             id("threeWindingsTransformer1", "1"),
                                             id("twoWindingsTransformer1", "1"),
                                             id("danglingLine1", "1"), id("danglingLine2", "1"), id("danglingLine3", "1"),
+                                            id("lccDetailed1", "1"), id("vscDetailed1", "1"),
                                 id("battery1", "2"),
                                             id("voltageLevel1BusbarSection1", "2"), id("voltageLevel1BusbarSection2", "2"),
                                             id("generator1", "2"),
@@ -825,7 +886,8 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
                                             id("vsc1", "2"), id("vsc2", "2"),
                                             id("threeWindingsTransformer1", "2"),
                                             id("twoWindingsTransformer1", "2"),
-                                            id("danglingLine1", "2"), id("danglingLine2", "2"), id("danglingLine3", "2")};
+                                            id("danglingLine1", "2"), id("danglingLine2", "2"), id("danglingLine3", "2"),
+                                            id("lccDetailed1", "2"), id("vscDetailed1", "2")};
 
     BOOST_CHECK_EQUAL(expectedConnectables.size(), subnetwork1.getConnectableCount());
     BOOST_CHECK_EQUAL(expectedConnectables.size(), subnetwork2.getConnectableCount());
@@ -859,21 +921,129 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
     BOOST_CHECK_EQUAL_COLLECTIONS(expectedConnectableBattery.begin(), expectedConnectableBattery.end(), connectablesBatId2.begin(), connectablesBatId2.end());
 
+    //DcConnectables also are retrieved from root network
+    std::set<std::string> expectedDcConnectables = {id("dcGround1", "1"), id("dcLine1", "1"), id("lccDetailed1", "1"), id("vscDetailed1", "1"),
+                                                    id("dcGround1", "2"), id("dcLine1", "2"), id("lccDetailed1", "2"), id("vscDetailed1", "2")};
+    BOOST_CHECK_EQUAL(expectedDcConnectables.size(), subnetwork1.getDcConnectableCount());
+    BOOST_CHECK_EQUAL(expectedDcConnectables.size(), subnetwork2.getDcConnectableCount());
+    BOOST_CHECK_EQUAL(expectedDcConnectables.size(), boost::size(subnetwork1.getDcConnectables()));
+    BOOST_CHECK_EQUAL(expectedDcConnectables.size(), boost::size(subnetwork2.getDcConnectables()));
+    BOOST_CHECK_EQUAL(2, subnetwork1.getDcConnectableCount<DcLine>());
+    BOOST_CHECK_EQUAL(2, subnetwork2.getDcConnectableCount<DcLine>());
+    BOOST_CHECK_EQUAL(4, subnetwork1.getDcConnectableCount<AcDcConverter>());
+    BOOST_CHECK_EQUAL(4, subnetwork2.getDcConnectableCount<AcDcConverter>());
+    std::set<std::string> dcConnectablesId1;
+    for (auto& c : subnetwork1.getDcConnectables()){
+        dcConnectablesId1.emplace(c.getId());
+    }
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedDcConnectables.begin(), expectedDcConnectables.end(), dcConnectablesId1.begin(), dcConnectablesId1.end());
+    std::set<std::string> dcConnectablesId2;
+    for (auto& c : subnetwork2.getDcConnectables()){
+        dcConnectablesId2.emplace(c.getId());
+    }
+    BOOST_CHECK_EQUAL_COLLECTIONS(expectedDcConnectables.begin(), expectedDcConnectables.end(), dcConnectablesId2.begin(), dcConnectablesId2.end());
+
+    //DcNodes
+    auto expectedDcNodes1 = {id("dcNode1", "1"), id("dcNode2", "1"),};
+    auto expectedDcNodes2 = {id("dcNode1", "2"), id("dcNode2", "2"),};
+    BOOST_CHECK_EQUAL(expectedDcNodes1.size(), subnetwork1.getDcNodeCount());
+    BOOST_CHECK_EQUAL(expectedDcNodes2.size(), subnetwork2.getDcNodeCount());
+    BOOST_CHECK_EQUAL(expectedDcNodes1.size(), boost::size(subnetwork1.getDcNodes()));
+    BOOST_CHECK_EQUAL(expectedDcNodes2.size(), boost::size(subnetwork2.getDcNodes()));
+    for (auto& id : expectedDcNodes1) {
+        subnetwork1.getDcNode(id);
+    }
+    for (auto& id : expectedDcNodes2) {
+        subnetwork2.getDcNode(id);
+    }
+
+    //DcLines
+    auto expectedDcLines1 = {id("dcLine1", "1")};
+    auto expectedDcLines2 = {id("dcLine1", "2")};
+    BOOST_CHECK_EQUAL(expectedDcLines1.size(), subnetwork1.getDcLineCount());
+    BOOST_CHECK_EQUAL(expectedDcLines2.size(), subnetwork2.getDcLineCount());
+    BOOST_CHECK_EQUAL(expectedDcLines1.size(), boost::size(subnetwork1.getDcLines()));
+    BOOST_CHECK_EQUAL(expectedDcLines2.size(), boost::size(subnetwork2.getDcLines()));
+    for (auto& id : expectedDcLines1) {
+        subnetwork1.getDcLine(id);
+    }
+    for (auto& id : expectedDcLines2) {
+        subnetwork2.getDcLine(id);
+    }
+
+    //DcGrounds
+    auto expectedDcGrounds1 = {id("dcGround1", "1")};
+    auto expectedDcGrounds2 = {id("dcGround1", "2")};
+    BOOST_CHECK_EQUAL(expectedDcGrounds1.size(), subnetwork1.getDcGroundCount());
+    BOOST_CHECK_EQUAL(expectedDcGrounds2.size(), subnetwork2.getDcGroundCount());
+    BOOST_CHECK_EQUAL(expectedDcGrounds1.size(), boost::size(subnetwork1.getDcGrounds()));
+    BOOST_CHECK_EQUAL(expectedDcGrounds2.size(), boost::size(subnetwork2.getDcGrounds()));
+    for (auto& id : expectedDcGrounds1) {
+        subnetwork1.getDcGround(id);
+    }
+    for (auto& id : expectedDcGrounds2) {
+        subnetwork2.getDcGround(id);
+    }
+
+    //DcSwitches
+    auto expectedDcSwitchs1 = {id("dcSwitch1", "1")};
+    auto expectedDcSwitchs2 = {id("dcSwitch1", "2")};
+    BOOST_CHECK_EQUAL(expectedDcSwitchs1.size(), subnetwork1.getDcSwitchCount());
+    BOOST_CHECK_EQUAL(expectedDcSwitchs2.size(), subnetwork2.getDcSwitchCount());
+    BOOST_CHECK_EQUAL(expectedDcSwitchs1.size(), boost::size(subnetwork1.getDcSwitches()));
+    BOOST_CHECK_EQUAL(expectedDcSwitchs2.size(), boost::size(subnetwork2.getDcSwitches()));
+    for (auto& id : expectedDcSwitchs1) {
+        subnetwork1.getDcSwitch(id);
+    }
+    for (auto& id : expectedDcSwitchs2) {
+        subnetwork2.getDcSwitch(id);
+    }
+
+    //LineCommutatedConverters
+    auto expectedLineCommutatedConverters1 = {id("lccDetailed1", "1")};
+    auto expectedLineCommutatedConverters2 = {id("lccDetailed1", "2")};
+    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters1.size(), subnetwork1.getLineCommutatedConverterCount());
+    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters2.size(), subnetwork2.getLineCommutatedConverterCount());
+    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters1.size(), boost::size(subnetwork1.getLineCommutatedConverters()));
+    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters2.size(), boost::size(subnetwork2.getLineCommutatedConverters()));
+    for (auto& id : expectedLineCommutatedConverters1) {
+        subnetwork1.getLineCommutatedConverter(id);
+    }
+    for (auto& id : expectedLineCommutatedConverters2) {
+        subnetwork2.getLineCommutatedConverter(id);
+    }
+
+    //VoltageSourceConverters
+    auto expectedVoltageSourceConverters1 = {id("vscDetailed1", "1")};
+    auto expectedVoltageSourceConverters2 = {id("vscDetailed1", "2")};
+    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters1.size(), subnetwork1.getVoltageSourceConverterCount());
+    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters2.size(), subnetwork2.getVoltageSourceConverterCount());
+    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters1.size(), boost::size(subnetwork1.getVoltageSourceConverters()));
+    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters2.size(), boost::size(subnetwork2.getVoltageSourceConverters()));
+    for (auto& id : expectedVoltageSourceConverters1) {
+        subnetwork1.getVoltageSourceConverter(id);
+    }
+    for (auto& id : expectedVoltageSourceConverters2) {
+        subnetwork2.getVoltageSourceConverter(id);
+    }
+
     // Identifiables
     std::set<std::string> expectedIdentifiables1 = {"n1_area1","n1_battery1","n1_danglingLine1","n1_danglingLine2","n1_danglingLine3",
+        "n1_dcGround1","n1_dcLine1","n1_dcNode1","n1_dcNode2","n1_dcSwitch1",
         "n1_generator1","n1_generator1Breaker1","n1_generator1Disconnector1","n1_hvdcLine1","n1_hvdcLine2",
-        "n1_lcc1","n1_lcc2","n1_line1","n1_load1","n1_load1Breaker1","n1_load1Disconnector1",
+        "n1_lcc1","n1_lcc2","n1_lccDetailed1","n1_line1","n1_load1","n1_load1Breaker1","n1_load1Disconnector1",
         "n1_network","n1_overloadManagementSystem","n1_shuntCompensator1","n1_substation1","n1_substation2","n1_substation3",
         "n1_svc1","n1_threeWindingsTransformer1","n1_tieLine1","n1_twoWindingsTransformer1",
         "n1_voltageLevel1","n1_voltageLevel1Breaker1","n1_voltageLevel1BusbarSection1","n1_voltageLevel1BusbarSection2",
-        "n1_voltageLevel2","n1_voltageLevel3","n1_voltageLevel4","n1_voltageLevel5","n1_vsc1","n1_vsc2"};
+        "n1_voltageLevel2","n1_voltageLevel3","n1_voltageLevel4","n1_voltageLevel5","n1_vsc1","n1_vsc2","n1_vscDetailed1"};
     std::set<std::string> expectedIdentifiables2 = {"n2_area1","n2_battery1","n2_danglingLine1","n2_danglingLine2","n2_danglingLine3",
+        "n2_dcGround1","n2_dcLine1","n2_dcNode1","n2_dcNode2","n2_dcSwitch1",
         "n2_generator1","n2_generator1Breaker1","n2_generator1Disconnector1","n2_hvdcLine1","n2_hvdcLine2",
-        "n2_lcc1","n2_lcc2","n2_line1","n2_load1","n2_load1Breaker1","n2_load1Disconnector1",
+        "n2_lcc1","n2_lcc2","n2_lccDetailed1","n2_line1","n2_load1","n2_load1Breaker1","n2_load1Disconnector1",
         "n2_network","n2_overloadManagementSystem","n2_shuntCompensator1","n2_substation1","n2_substation2","n2_substation3",
         "n2_svc1","n2_threeWindingsTransformer1","n2_tieLine1","n2_twoWindingsTransformer1",
         "n2_voltageLevel1","n2_voltageLevel1Breaker1","n2_voltageLevel1BusbarSection1","n2_voltageLevel1BusbarSection2",
-        "n2_voltageLevel2","n2_voltageLevel3","n2_voltageLevel4","n2_voltageLevel5","n2_vsc1","n2_vsc2"};
+        "n2_voltageLevel2","n2_voltageLevel3","n2_voltageLevel4","n2_voltageLevel5","n2_vsc1","n2_vsc2","n2_vscDetailed1"};
     std::set<std::string> expectedIdentifiables0 = {"Root", "n0_tieLine3"};
     for (auto& i : expectedIdentifiables1){
         expectedIdentifiables0.emplace(i);
