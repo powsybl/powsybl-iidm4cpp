@@ -222,6 +222,11 @@ iidm::Network EurostagFactory::createWithCurrentLimits() {
         .setAcceptableDuration(60)
         .setValue(1500)
         .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("N/A")
+            .setAcceptableDuration(0)
+            .setValue(std::numeric_limits<double>::max())
+        .endTemporaryLimit()
         .add();
 
     iidm::Line& line2 = network.getLine("NHV1_NHV2_2");
@@ -233,6 +238,11 @@ iidm::Network EurostagFactory::createWithCurrentLimits() {
         .setName("20'")
         .setAcceptableDuration(20 * 60)
         .setValue(1200)
+        .endTemporaryLimit()
+        .beginTemporaryLimit()
+            .setName("N/A")
+            .setAcceptableDuration(0)
+            .setValue(std::numeric_limits<double>::max())
         .endTemporaryLimit()
         .add();
     line2.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits().setPermanentLimit(500).add();

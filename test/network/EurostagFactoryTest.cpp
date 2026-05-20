@@ -367,7 +367,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_CHECK_EQUAL(0, boost::size(line1CurLimit1.getTemporaryLimits()));
     const auto& line1CurLimit2 = line1.getCurrentLimits2().get();
     BOOST_CHECK_CLOSE(1100.0, line1CurLimit2.getPermanentLimit(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_EQUAL(2, boost::size(line1CurLimit2.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(3, boost::size(line1CurLimit2.getTemporaryLimits()));
     auto tempLimit = line1CurLimit2.getTemporaryLimit(600UL);
     BOOST_CHECK_EQUAL("10'", tempLimit.getName());
     BOOST_CHECK_EQUAL(600UL, tempLimit.getAcceptableDuration());
@@ -396,7 +396,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
     BOOST_TEST(line2.isOverloaded());
     const auto& line2CurLimit1 = line2.getCurrentLimits1().get();
     BOOST_CHECK_CLOSE(1100.0, line2CurLimit1.getPermanentLimit(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_EQUAL(1, boost::size(line2CurLimit1.getTemporaryLimits()));
+    BOOST_CHECK_EQUAL(2, boost::size(line2CurLimit1.getTemporaryLimits()));
     tempLimit = line2CurLimit1.getTemporaryLimit(1200UL);
     BOOST_CHECK_EQUAL("20'", tempLimit.getName());
     BOOST_CHECK_EQUAL(1200UL, tempLimit.getAcceptableDuration());
