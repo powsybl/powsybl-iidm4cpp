@@ -10,6 +10,8 @@
 
 #include <powsybl/iidm/ExtensionAdder.hpp>
 
+#include <powsybl/stdcxx/math.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -73,17 +75,17 @@ protected:
     std::unique_ptr<Extension> createExtension(Extendable& extendable) const override;
 
 private:
-    double m_b0 = 0.0;
+    double m_b0 = stdcxx::nan();
 
     bool m_standby = false;
 
-    double m_lowVoltageSetpoint = 0.0;
+    double m_lowVoltageSetpoint = stdcxx::nan();
 
-    double m_highVoltageSetpoint = 0.0;
+    double m_highVoltageSetpoint = stdcxx::nan();
 
-    double m_lowVoltageThreshold = 0.0;
+    double m_lowVoltageThreshold = stdcxx::nan();
 
-    double m_highVoltageThreshold = 0.0;
+    double m_highVoltageThreshold = stdcxx::nan();
 };
 
 }  // namespace iidm

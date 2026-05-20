@@ -40,7 +40,7 @@ StaticVarCompensator& StaticVarCompensatorAdder::add() {
 }
 
 const std::string& StaticVarCompensatorAdder::getTypeDescription() const {
-    static std::string s_typeDescription = "staticVarCompensator";
+    static std::string s_typeDescription = "Static var compensator";
 
     return s_typeDescription;
 }

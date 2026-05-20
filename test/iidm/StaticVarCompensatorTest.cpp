@@ -161,16 +161,16 @@ BOOST_AUTO_TEST_CASE(adder) {
         .setId("SVC1")
         .setBus("VL1_BUS1");
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': bMin is invalid");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Static var compensator 'SVC1': bMin is invalid");
     adder.setBmin(40.0);
 
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': bMax is invalid");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Static var compensator 'SVC1': bMax is invalid");
     adder.setBmax(50.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'StaticVarCompensator' with the id 'SVC1'");
 
     adder.setRegulating(true);
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltageSetpoint");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Static var compensator 'SVC1': invalid value (nan) for voltageSetpoint");
     adder.setVoltageSetpoint(30.0);
 
     POWSYBL_ASSERT_THROW(adder.add(), PowsyblException, "The network test already contains an object 'StaticVarCompensator' with the id 'SVC1'");
@@ -206,11 +206,11 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     BOOST_TEST(stdcxx::areSame(svc, svc.setBmax(100)));
     BOOST_CHECK_CLOSE(100, svc.getBmax(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(svc.setBmax(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC1': bMax is invalid");
+    POWSYBL_ASSERT_THROW(svc.setBmax(stdcxx::nan()), ValidationException, "Static var compensator 'SVC1': bMax is invalid");
 
     BOOST_TEST(stdcxx::areSame(svc, svc.setBmin(200)));
     BOOST_CHECK_CLOSE(200, svc.getBmin(), std::numeric_limits<double>::epsilon());
-    POWSYBL_ASSERT_THROW(svc.setBmin(stdcxx::nan()), ValidationException, "staticVarCompensator 'SVC1': bMin is invalid");
+    POWSYBL_ASSERT_THROW(svc.setBmin(stdcxx::nan()), ValidationException, "Static var compensator 'SVC1': bMin is invalid");
 
     BOOST_TEST(stdcxx::areSame(svc, svc.setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER)));
     BOOST_CHECK_EQUAL(StaticVarCompensator::RegulationMode::REACTIVE_POWER, svc.getRegulationMode());
@@ -230,9 +230,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
 
     //While not regulating  do not check values ; if regulating, or to set regulating check values
     BOOST_CHECK_NO_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::REACTIVE_POWER));
-    POWSYBL_ASSERT_THROW(svc.setRegulating(true), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for reactivePowerSetpoint");
+    POWSYBL_ASSERT_THROW(svc.setRegulating(true), ValidationException, "Static var compensator 'SVC1': invalid value (nan) for reactivePowerSetpoint");
     BOOST_CHECK_NO_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE));
-    POWSYBL_ASSERT_THROW(svc.setRegulating(true), ValidationException, "staticVarCompensator 'SVC1': invalid value (nan) for voltageSetpoint");
+    POWSYBL_ASSERT_THROW(svc.setRegulating(true), ValidationException, "Static var compensator 'SVC1': invalid value (nan) for voltageSetpoint");
 
     svc.setVoltageSetpoint(600).setRegulating(true);
     BOOST_CHECK_NO_THROW(svc.setRegulationMode(StaticVarCompensator::RegulationMode::VOLTAGE));
@@ -353,7 +353,7 @@ BOOST_AUTO_TEST_CASE(regulatingTerminalTest) {
 
     Network network2 = createSvcNetwork();
     StaticVarCompensator& svc2 = network2.getStaticVarCompensator("SVC2");
-    POWSYBL_ASSERT_THROW(svc2.setRegulatingTerminal(stdcxx::ref<Terminal>(loadTerminal)), ValidationException, "staticVarCompensator 'SVC2': Regulating terminal is not part of the network");
+    POWSYBL_ASSERT_THROW(svc2.setRegulatingTerminal(stdcxx::ref<Terminal>(loadTerminal)), ValidationException, "Static var compensator 'SVC2': Regulating terminal is not part of the network");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -67,23 +67,23 @@ double StandbyAutomaton::checkB0(double b0, const StaticVarCompensator& svc) {
 
 void StandbyAutomaton::checkVoltageConfig(double lowVoltageSetpoint, double highVoltageSetpoint, double lowVoltageThreshold, double highVoltageThreshold, const StaticVarCompensator& svc, bool standby) {
     if (std::isnan(lowVoltageSetpoint)) {
-        throw ValidationException(svc, stdcxx::format("lowVoltageSetpoint (%1%) is invalid", lowVoltageSetpoint));
+        throw ValidationException(svc, stdcxx::format("low voltage setpoint (%1%) is invalid", lowVoltageSetpoint));
     }
     if (std::isnan(highVoltageSetpoint)) {
-        throw ValidationException(svc, stdcxx::format("highVoltageSetpoint (%1%) is invalid", highVoltageSetpoint));
+        throw ValidationException(svc, stdcxx::format("high voltage setpoint (%1%) is invalid", highVoltageSetpoint));
     }
     if (std::isnan(lowVoltageThreshold)) {
-        throw ValidationException(svc, stdcxx::format("lowVoltageThreshold (%1%) is invalid", lowVoltageThreshold));
+        throw ValidationException(svc, stdcxx::format("low voltage threshold (%1%) is invalid", lowVoltageThreshold));
     }
     if (std::isnan(highVoltageThreshold)) {
-        throw ValidationException(svc, stdcxx::format("highVoltageThreshold (%1%) is invalid", highVoltageThreshold));
+        throw ValidationException(svc, stdcxx::format("high voltage threshold (%1%) is invalid", highVoltageThreshold));
     }
     if (lowVoltageThreshold >= highVoltageThreshold) {
         if(standby) {
             throw ValidationException(svc, stdcxx::format("Inconsistent low (%1%) and high (%2%) voltage thresholds", lowVoltageThreshold, highVoltageThreshold));
         } else {
             logging::Logger& logger = logging::LoggerFactory::getLogger<StandbyAutomaton>();
-            logger.warn(stdcxx::format("%1%Inconsistent low %2% and high (%3%) voltage thresholds", svc.getMessageHeader(),  lowVoltageSetpoint, lowVoltageThreshold));
+            logger.warn(stdcxx::format("%1%Inconsistent low (%2%) and high (%3%) voltage thresholds", svc.getMessageHeader(),  lowVoltageThreshold, highVoltageThreshold));
         }
     }
     if (lowVoltageSetpoint < lowVoltageThreshold) {
