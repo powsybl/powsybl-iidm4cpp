@@ -57,8 +57,12 @@ void RoundTrip::roundTripAllPreviousVersionedXmlTest(const std::string& filename
 }
 
 void RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& minVersion) {
-    auto filter = [&minVersion](const iidm::converter::xml::IidmXmlVersion& version) {
-        return version >= minVersion && version < iidm::converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION();
+    roundTripVersionedXmlFromMinToMaxVersionTest(filename, minVersion, iidm::converter::xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+}
+
+void RoundTrip::roundTripVersionedXmlFromMinToMaxVersionTest(const std::string& filename, const iidm::converter::xml::IidmXmlVersion& minVersion,  const iidm::converter::xml::IidmXmlVersion& maxVersion) {
+    auto filter = [&minVersion, &maxVersion](const iidm::converter::xml::IidmXmlVersion& version) {
+        return version >= minVersion && version < maxVersion;
     };
 
     for (const auto& version : iidm::converter::xml::IidmXmlVersion::all() | boost::adaptors::filtered(filter)) {

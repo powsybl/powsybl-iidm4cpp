@@ -45,6 +45,7 @@ BatteryShortCircuitXmlSerializer::BatteryShortCircuitXmlSerializer() :
             .put(converter::xml::IidmXmlVersion::V1_12(), {"1.0-legacy-2", "1.0-legacy"})
             .put(converter::xml::IidmXmlVersion::V1_13(), {"1.0-legacy-2", "1.0-legacy", "1.0"})
             .put(converter::xml::IidmXmlVersion::V1_14(), {"1.0"})
+            .put(converter::xml::IidmXmlVersion::V1_15(), {"1.0"})
             .build(),
         stdcxx::MapBuilder<std::string, std::string>()
             .put("1.0-legacy-2", "http://www.itesla_project.eu/schema/iidm/ext/batteryshortcircuits/1_0")
