@@ -214,6 +214,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/BusXml.cpp
     iidm/converter/xml/DanglingLineXml.cpp
     iidm/converter/xml/ExtensionXmlSerializer.cpp
+    iidm/converter/xml/ExtensionXmlVersion.cpp
     iidm/converter/xml/GeneratorXml.cpp
     iidm/converter/xml/GroundXml.cpp
     iidm/converter/xml/HvdcLineXml.cpp

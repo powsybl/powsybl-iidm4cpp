@@ -24,6 +24,10 @@ public:  // ExtensionXmlSerializer
 
     void write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const override;
 
+public:  // AbstractVersionableExtensionXmlSerializer
+    virtual const converter::xml::ExtensionXmlVersion& getVersion(const converter::xml::IidmXmlVersion& networkVersion) const override;
+
+
 public:
     BatteryShortCircuitXmlSerializer();
 

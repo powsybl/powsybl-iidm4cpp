@@ -72,17 +72,17 @@ bool canExtensionBeWritten(const stdcxx::CReference<ExtensionXmlSerializer>& ext
         return false;
     }
 
-    bool versionExists = true;
+    bool versionSupported = true;
     if (stdcxx::isInstanceOf<AbstractVersionableExtensionXmlSerializer>(extensionXmlSerializer)) {
         const auto& serializer = dynamic_cast<const AbstractVersionableExtensionXmlSerializer&>(extensionXmlSerializer.get());
-        versionExists = serializer.versionExists(version);
+        versionSupported = serializer.isIIDMVersionSupported(version);
     }
-    if(!versionExists) {
+    if(!versionSupported) {
         const std::string& message = stdcxx::format("Version %1% does not support %2% extension", version.toString("."), extensionXmlSerializer.get().getExtensionName());
         throwExceptionIfOption(options.isThrowExceptionIfExtensionNotFound(),message);
     }
 
-    return versionExists;
+    return versionSupported;
 }
 
 stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOptions& options, const Extension& extension) {
@@ -119,29 +119,24 @@ std::set<std::string> getExtensionNames(const Network& network,const IidmXmlVers
     return names;
 }
 
-const std::string& getNamespaceUri(const ExtensionXmlSerializer& extensionXmlSerializer, const ExportOptions& options, const IidmXmlVersion& networkVersion) {
-    const auto& extensionVersion = options.getExtensionVersion(extensionXmlSerializer.getExtensionName());
+std::string getExtensionVersion(const ExtensionXmlSerializer& extensionXmlSerializer, const ExportOptions& options) {
+    const IidmXmlVersion& networkVersion = options.getVersion().empty() ? IidmXmlVersion::CURRENT_IIDM_XML_VERSION() : IidmXmlVersion::of(options.getVersion(), ".");
+    const auto& specifiedExtensionVersion = options.getExtensionVersion(extensionXmlSerializer.getExtensionName());
+
     if (stdcxx::isInstanceOf<AbstractVersionableExtensionXmlSerializer>(extensionXmlSerializer)) {
         const auto& serializer = dynamic_cast<const AbstractVersionableExtensionXmlSerializer&>(extensionXmlSerializer);
 
-        if (!extensionVersion.empty()) {
-            serializer.checkWritingCompatibility(extensionVersion, networkVersion);
-            return serializer.getNamespaceUri(extensionVersion);
+        if (!specifiedExtensionVersion.empty()) {
+            serializer.checkWritingCompatibility(specifiedExtensionVersion, networkVersion);
+            return specifiedExtensionVersion;
         }
-
-        return serializer.getNamespaceUri(serializer.getVersion(networkVersion));
+        return serializer.getVersion(networkVersion).toString();
     }
 
-    if (!extensionVersion.empty()) {
-        return extensionXmlSerializer.getNamespaceUri(extensionVersion);
+    if (!specifiedExtensionVersion.empty()) {
+        return specifiedExtensionVersion;
     }
-
-    return extensionXmlSerializer.getNamespaceUri();
-}
-
-const std::string& getNamespaceUri(const ExtensionXmlSerializer& extensionXmlSerializer, const ExportOptions& options) {
-    const IidmXmlVersion& networkVersion = options.getVersion().empty() ? IidmXmlVersion::CURRENT_IIDM_XML_VERSION() : IidmXmlVersion::of(options.getVersion(), ".");
-    return getNamespaceUri(extensionXmlSerializer, options, networkVersion);
+    return extensionXmlSerializer.getVersion();
 }
 
 void readExtensions(Network& network, NetworkXmlReaderContext& context, std::set<std::string>& extensionsNotFound) {
@@ -191,8 +186,9 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
                 continue;
             }
 
-            std::string uri = getNamespaceUri(serializer.get(), context.getOptions());
-            const std::string& prefix = serializer.get().getNamespacePrefix(context.getExtensionVersion(extension));
+            std::string extensionVersionStr = getExtensionVersion(serializer.get(), context.getOptions());
+            std::string uri = serializer.get().getNamespaceUri(extensionVersionStr);
+            const std::string& prefix = serializer.get().getNamespacePrefix(extensionVersionStr);
             std::string fixedPrefix = prefix;
 
             if (extensionUris.find(uri) != extensionUris.end()) {

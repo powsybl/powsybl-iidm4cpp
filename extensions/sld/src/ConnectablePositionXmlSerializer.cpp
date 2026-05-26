@@ -30,28 +30,12 @@ namespace sld {
 
 ConnectablePositionXmlSerializer::ConnectablePositionXmlSerializer() :
     AbstractVersionableExtensionXmlSerializer("position", "network", "cp",
-        converter::xml::VersionsCompatibilityBuilder()
-            .put(converter::xml::IidmXmlVersion::V1_0(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_1(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_2(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_3(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_4(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_5(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_6(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_7(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_8(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_9(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_10(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_11(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_12(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_13(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_14(), {"1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_15(), {"1.1"})
-            .build(),
-        stdcxx::MapBuilder<std::string, std::string>()
-            .put("1.0", "http://www.itesla_project.eu/schema/iidm/ext/connectable_position/1_0")
-            .put("1.1", "http://www.powsybl.org/schema/iidm/ext/connectable_position/1_1")
-            .build()) {
+        converter::xml::ExtensionXmlVersions({
+            {"http://www.itesla_project.eu/schema/iidm/ext/connectable_position/1_0", "cp", "position",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_14(), {1,0}},
+            {"http://www.powsybl.org/schema/iidm/ext/connectable_position/1_1", "cp", "position",
+            converter::xml::IidmXmlVersion::V1_0(), {1,1}}
+        })){
 }
 
 Extension& ConnectablePositionXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
@@ -88,11 +72,8 @@ void ConnectablePositionXmlSerializer::readPosition(const converter::xml::Networ
     if(name.has_value()) {
         feederAdder.withName(*name);
     } else {
-        const std::string& extensionVersionStr = context.getExtensionVersion(*this);
-        if (extensionVersionStr.empty()) {
-            throw AssertionError("Extension version not found");
-        }
-        if(extensionVersionStr.compare("1.1") < 0) {
+        const auto& extensionVersion = getExtensionVersionImported(context);
+        if(extensionVersion < versionOf("1.1")) {
             throw PowsyblException("Feeder name is mandatory for version < 1.1");
         }
     }
@@ -128,22 +109,19 @@ void ConnectablePositionXmlSerializer::writePosition(const std::string& connecta
 
     context.getWriter().writeStartElement(getNamespacePrefix(), elementName);
 
-    std::string extVersionStr = context.getExtensionVersion("position");
-    if (extVersionStr.empty()) {
-        extVersionStr = getVersion(context.getVersion());
-    }
+    const auto& extensionVersion = getExtensionVersionToExport(context);
     stdcxx::optional<std::string> name = feeder.getName();
-    if(extVersionStr == "1.0") {
+    if(extensionVersion == versionOf("1.0")) {
         if(!name) {
             name = connectableId;
         }
         context.getWriter().writeAttribute("name", *name);
-    } else if(extVersionStr == "1.1") {
+    } else if(extensionVersion == versionOf("1.1")) {
         if(name.has_value()) {
             context.getWriter().writeAttribute("name", *name);
         }
     } else {
-        throw PowsyblException(stdcxx::format("Unsupported version (%1%) for position", extVersionStr));
+        throw PowsyblException(stdcxx::format("Unsupported version (%1%) for position", extensionVersion.toString()));
     }
 
     stdcxx::optional<unsigned long> order = feeder.getOrder();

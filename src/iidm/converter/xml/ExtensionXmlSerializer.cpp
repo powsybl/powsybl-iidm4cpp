@@ -51,18 +51,22 @@ const std::string& ExtensionXmlSerializer::getNamespaceUri() const {
     return getNamespaceUri(getVersion());
 }
 
-const std::string& ExtensionXmlSerializer::getVersion() const {
-    static std::string s_version = "1.0";
-    return s_version;
+std::string ExtensionXmlSerializer::getVersion() const {
+    return "1.0";
 }
 
-stdcxx::const_range<std::string> ExtensionXmlSerializer::getVersions() const {
+std::set<std::string> ExtensionXmlSerializer::getVersions() const {
     static std::set<std::string> s_versions = {"1.0"};
     return s_versions;
 }
 
 bool ExtensionXmlSerializer::isSerializable(const Extension& /*extension*/) const {
     return true;
+}
+
+void ExtensionXmlSerializer::checkReadingCompatibility(const NetworkXmlReaderContext& /*networkContext*/) const {
+    //nothing to do if not a versionable extension serializer
+    return;
 }
 
 }  // namespace xml

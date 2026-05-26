@@ -32,42 +32,40 @@ namespace extensions {
 
 TerminalMockXmlSerializer::TerminalMockXmlSerializer() :
     AbstractVersionableExtensionXmlSerializer("terminalMock", "network", "mock",
-        VersionsCompatibilityBuilder()
-            .put(IidmXmlVersion::V1_0(), {"1.0"})
-            .put(IidmXmlVersion::V1_1(), {"1.1"})
-            .put(IidmXmlVersion::V1_2(), {"1.2"})
-            .put(IidmXmlVersion::V1_3(), {"1.3"})
-            .put(IidmXmlVersion::V1_4(), {"1.4"})
-            .put(IidmXmlVersion::V1_5(), {"1.5"})
-            .put(IidmXmlVersion::V1_6(), {"1.6"})
-            .put(IidmXmlVersion::V1_7(), {"1.7"})
-            .put(IidmXmlVersion::V1_8(), {"1.8"})
-            .put(IidmXmlVersion::V1_9(), {"1.9"})
-            .put(IidmXmlVersion::V1_10(), {"1.10"})
-            .put(IidmXmlVersion::V1_11(), {"1.11"})
-            .put(IidmXmlVersion::V1_12(), {"1.12"})
-            .put(IidmXmlVersion::V1_13(), {"1.13"})
-            .put(IidmXmlVersion::V1_14(), {"1.14"})
-            .put(IidmXmlVersion::V1_15(), {"1.15"})
-            .build(),
-        stdcxx::MapBuilder<std::string, std::string>()
-            .put("1.0", "http://www.itesla_project.eu/schema/iidm/ext/terminal_mock/1_0")
-            .put("1.1", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_1")
-            .put("1.2", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_2")
-            .put("1.3", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_3")
-            .put("1.4", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_4")
-            .put("1.5", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_5")
-            .put("1.6", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_6")
-            .put("1.7", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_7")
-            .put("1.8", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_8")
-            .put("1.9", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_9")
-            .put("1.10", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_10")
-            .put("1.11", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_11")
-            .put("1.12", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_12")
-            .put("1.13", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_13")
-            .put("1.14", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_14")
-            .put("1.15", "http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_15")
-            .build()) {
+        converter::xml::ExtensionXmlVersions({
+            {"http://www.itesla_project.eu/schema/iidm/ext/terminal_mock/1_0", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_1(), {1,0}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_1", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_1(), converter::xml::IidmXmlVersion::V1_2(), {1,1}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_2", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_2(), converter::xml::IidmXmlVersion::V1_3(), {1,2}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_3", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_3(), converter::xml::IidmXmlVersion::V1_4(), {1,3}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_4", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_4(), converter::xml::IidmXmlVersion::V1_5(), {1,4}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_5", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_5(), converter::xml::IidmXmlVersion::V1_6(), {1,5}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_6", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_6(), converter::xml::IidmXmlVersion::V1_7(), {1,6}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_7", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_7(), converter::xml::IidmXmlVersion::V1_8(), {1,7}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_8", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_8(), converter::xml::IidmXmlVersion::V1_9(), {1,8}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_9", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_9(), converter::xml::IidmXmlVersion::V1_10(), {1,9}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_10", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_10(), converter::xml::IidmXmlVersion::V1_11(), {1,10}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_11", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_11(), converter::xml::IidmXmlVersion::V1_12(), {1,11}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_12", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_12(), converter::xml::IidmXmlVersion::V1_13(), {1,12}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_13", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_13(), converter::xml::IidmXmlVersion::V1_14(), {1,13}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_14", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_14(), converter::xml::IidmXmlVersion::V1_15(), {1,14}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_15", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_15(), {1,15}}
+        })){
 }
 
 Extension& TerminalMockXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {

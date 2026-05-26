@@ -108,14 +108,14 @@ public:
      *
      * @return the current version of this serializer
      */
-    virtual const std::string& getVersion() const;
+    virtual std::string getVersion() const;
 
     /**
      * Return all supported versions for the serialization of this extension.
      *
      * @return all supported versions for the serialization of this extension.
      */
-    virtual stdcxx::const_range<std::string> getVersions() const;
+    virtual std::set<std::string> getVersions() const;
 
     /**
      * Return true if the extension is serializable, false else
@@ -143,6 +143,8 @@ public:
      * @param context The current XML context
      */
     virtual void write(const Extension& extension, NetworkXmlWriterContext& context) const = 0;
+
+    virtual void checkReadingCompatibility(const NetworkXmlReaderContext& networkContext) const;
 
 protected:
     /**

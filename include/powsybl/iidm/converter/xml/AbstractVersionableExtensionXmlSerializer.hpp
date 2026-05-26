@@ -9,7 +9,7 @@
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTVERSIONABLEEXTENSIONXMLSERIALIZER_HPP
 
 #include <powsybl/iidm/converter/xml/ExtensionXmlSerializer.hpp>
-#include <powsybl/iidm/converter/xml/VersionsCompatibity.hpp>
+#include <powsybl/iidm/converter/xml/ExtensionXmlVersion.hpp>
 
 namespace powsybl {
 
@@ -36,42 +36,57 @@ public:  // ExtensionXmlSerializer
 
     std::set<std::string> getSerializationNames() const override;
 
-    const std::string& getVersion() const override;
+    std::string getVersion() const override;
 
-    bool versionExists(const std::string& networkVersion) const;
-    bool versionExists(const IidmXmlVersion& networkVersion) const;
+    /**
+     * Get the greatest version of this extension serializer working with the given IIDM version
+     * Throw an exception if none of the extension version supports it
+     * Can be overwritten to define a different default version for a given IIDM version
+     */
+    virtual const ExtensionXmlVersion& getVersion(const IidmXmlVersion& networkVersion) const;
 
-    stdcxx::const_range<std::string> getVersions() const override;
+    /**
+     * Checks if at least one extension version supports the given IIDM version
+     */
+    bool isIIDMVersionSupported(const IidmXmlVersion& networkVersion) const;
 
-public:
+    std::set<std::string> getVersions() const override;
 
-    struct AlternativeSerializationData {
-        std::set<std::string> m_extensionVersions;
-        std::string m_namespacePrefix;
-    };
-
-    AbstractVersionableExtensionXmlSerializer(std::string&& extensionName, std::string&& extensionCategory, std::string&& namespacePrefix,
-                                              VersionsCompatibility&& extensionVersions, std::map<std::string, std::string>&& namespaceUris);
-
-    AbstractVersionableExtensionXmlSerializer(std::string&& extensionName, std::string&& extensionCategory, std::string&& namespacePrefix,
-                                              VersionsCompatibility&& extensionVersions, std::map<std::string, std::string>&& namespaceUris, 
-                                              const std::map<std::string, AlternativeSerializationData>& alternativeData);
-
-    ~AbstractVersionableExtensionXmlSerializer() override = default;
+    void checkReadingCompatibility(const NetworkXmlReaderContext& networkContext) const override;
 
     void checkWritingCompatibility(const std::string& extensionVersion, const IidmXmlVersion& version) const;
 
-    const std::string& getVersion(const IidmXmlVersion& networkVersion) const;
+private:
+    /**
+    * Throw exception if no extension version support the given IIDM version
+    */
+    void checkCompatibilityNetworkVersion(const IidmXmlVersion& version) const;
 
 protected:
-    void checkReadingCompatibility(const NetworkXmlReaderContext& networkContext) const;
+    virtual const ExtensionXmlVersion& getExtensionVersionImported(const NetworkXmlReaderContext& networkContext) const;
+    virtual const ExtensionXmlVersion& getExtensionVersionToExport(const NetworkXmlWriterContext& networkContext) const;
+
+    virtual const ExtensionXmlVersion& getDefaultVersion() const;
+
+protected:
+    /**
+     * get the ExtensionXmlVersion of the given string representation, throws Exception if not found
+     */
+    const ExtensionXmlVersion& versionOf(const std::string& extensionVersion) const;
+private:
+    stdcxx::CReference<ExtensionXmlVersion> versionOf(const std::string& extensionVersion, bool throwIfUnknown) const;
+
+public:
+
+    AbstractVersionableExtensionXmlSerializer(std::string&& extensionName, std::string&& extensionCategory, std::string&& namespacePrefix,
+                                             ExtensionXmlVersions&& versions);
+
+    ~AbstractVersionableExtensionXmlSerializer() override = default;
+
 
 private:
-    VersionsCompatibility m_extensionVersions;
+    ExtensionXmlVersions m_versions;
 
-    std::map<std::string, std::string> m_namespaceUris;
-    std::map<std::string, std::string> m_serializationNameByVersion;
-    std::map<std::string, std::string> m_namespacePrefixByVersion;
 };
 
 }  // namespace xml

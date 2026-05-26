@@ -26,22 +26,18 @@ namespace extensions {
 
 LoadMockExtXmlSerializer::LoadMockExtXmlSerializer() :
     AbstractVersionableExtensionXmlSerializer("loadMock", "network", "lmock",
-        VersionsCompatibilityBuilder()
-            .put(IidmXmlVersion::V1_0(), {"0.1", "0.2", "1.0"})
-            .put(IidmXmlVersion::V1_1(), {"1.1", "1.2"})
-            .put(IidmXmlVersion::CURRENT_IIDM_XML_VERSION(), {"1.1", "1.2"})
-            .build(),
-        stdcxx::MapBuilder<std::string, std::string>()
-            .put("0.1", "http://www.powsybl.org/schema/iidm/ext/load_element_mock/1_0")
-            .put("0.2", "http://www.powsybl.org/schema/iidm/ext/load_element_mock/1_1")
-            .put("1.0", "http://www.powsybl.org/schema/iidm/ext/load_mock/1_0")
-            .put("1.1", "http://www.powsybl.org/schema/iidm/ext/load_mock/1_1")
-            .put("1.2", "http://www.powsybl.org/schema/iidm/ext/load_mock/1_2")
-            .build(),
-        stdcxx::MapBuilder<std::string, AlternativeSerializationData>()
-            .put("loadElementMock", {{"0.1"}, ""})
-            .put("loadEltMock", {{"0.2"}, "lem"})
-            .build()) {
+        converter::xml::ExtensionXmlVersions({
+            {"http://www.powsybl.org/schema/iidm/ext/load_element_mock/1_0", "lmock", "loadElementMock",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_1(), {0,1}},
+            {"http://www.powsybl.org/schema/iidm/ext/load_element_mock/1_1", "lem", "loadEltMock",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_1(), {0,2}},
+            {"http://www.powsybl.org/schema/iidm/ext/load_mock/1_0", "lmock", "loadMock",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_1(), {1,0}},
+            {"http://www.powsybl.org/schema/iidm/ext/load_mock/1_1", "lmock", "loadMock",
+            converter::xml::IidmXmlVersion::V1_1(), {1,1}},
+            {"http://www.powsybl.org/schema/iidm/ext/load_mock/1_2", "lmock", "loadMock",
+            converter::xml::IidmXmlVersion::V1_1(), {1,2}}
+        })){
 }
 
 Extension& LoadMockExtXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {

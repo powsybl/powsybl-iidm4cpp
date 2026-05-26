@@ -29,29 +29,20 @@ namespace extensions {
 
 SlackTerminalXmlSerializer::SlackTerminalXmlSerializer() :
     AbstractVersionableExtensionXmlSerializer("slackTerminal", "network", "slt",
-          converter::xml::VersionsCompatibilityBuilder()
-              .put(converter::xml::IidmXmlVersion::V1_3(), {"1.0"})
-              .put(converter::xml::IidmXmlVersion::V1_4(), {"1.1"})
-              .put(converter::xml::IidmXmlVersion::V1_5(), {"1.2"})
-              .put(converter::xml::IidmXmlVersion::V1_6(), {"1.3"})
-              .put(converter::xml::IidmXmlVersion::V1_7(), {"1.4"})
-              .put(converter::xml::IidmXmlVersion::V1_8(), {"1.5"})
-              .put(converter::xml::IidmXmlVersion::V1_9(), {"1.5"})
-              .put(converter::xml::IidmXmlVersion::V1_10(), {"1.5"})
-              .put(converter::xml::IidmXmlVersion::V1_11(), {"1.5"})
-              .put(converter::xml::IidmXmlVersion::V1_12(), {"1.5"})
-              .put(converter::xml::IidmXmlVersion::V1_13(), {"1.5"})
-              .put(converter::xml::IidmXmlVersion::V1_14(), {"1.5"})
-              .put(converter::xml::IidmXmlVersion::V1_15(), {"1.5"})
-              .build(),
-          stdcxx::MapBuilder<std::string, std::string>()
-              .put("1.0", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_0")
-              .put("1.1", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_1")
-              .put("1.2", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_2")
-              .put("1.3", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_3")
-              .put("1.4", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_4")
-              .put("1.5", "http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_5")
-              .build()) {
+        converter::xml::ExtensionXmlVersions({
+            {"http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_0", "slt", "slackTerminal", 
+            converter::xml::IidmXmlVersion::V1_3(), converter::xml::IidmXmlVersion::V1_4(), {1,0}},
+            {"http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_1", "slt", "slackTerminal", 
+            converter::xml::IidmXmlVersion::V1_4(), converter::xml::IidmXmlVersion::V1_5(), {1,1}},
+            {"http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_2", "slt", "slackTerminal", 
+            converter::xml::IidmXmlVersion::V1_5(), converter::xml::IidmXmlVersion::V1_6(), {1,2}},
+            {"http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_3", "slt", "slackTerminal", 
+            converter::xml::IidmXmlVersion::V1_6(), converter::xml::IidmXmlVersion::V1_7(), {1,3}},
+            {"http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_4", "slt", "slackTerminal", 
+            converter::xml::IidmXmlVersion::V1_7(), converter::xml::IidmXmlVersion::V1_8(), {1,4}},
+            {"http://www.powsybl.org/schema/iidm/ext/slack_terminal/1_5", "slt", "slackTerminal", 
+            converter::xml::IidmXmlVersion::V1_8(), {1,5}}
+        })){
 }
 
 bool SlackTerminalXmlSerializer::isSerializable(const Extension& extension) const {

@@ -24,6 +24,9 @@ public:  // ExtensionXmlSerializer
 
     void write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const override;
 
+protected: // AbstractVersionableExtensionXmlSerializer
+    virtual const converter::xml::ExtensionXmlVersion& getDefaultVersion() const override;
+
 public:
     VoltageRegulationXmlSerializer();
 

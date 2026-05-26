@@ -36,29 +36,14 @@ namespace iidm {
 
 ActivePowerControlXmlSerializer::ActivePowerControlXmlSerializer() :
     AbstractVersionableExtensionXmlSerializer("activePowerControl", "network", "apc",
-        converter::xml::VersionsCompatibilityBuilder()
-            .put(converter::xml::IidmXmlVersion::V1_0(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_1(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_2(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_3(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_4(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_5(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_6(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_7(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_8(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_9(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_10(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_11(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_12(), {"1.0", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_13(), {"1.2"})
-            .put(converter::xml::IidmXmlVersion::V1_14(), {"1.2"})
-            .put(converter::xml::IidmXmlVersion::V1_15(), {"1.2"})
-            .build(),
-        stdcxx::MapBuilder<std::string, std::string>()
-            .put("1.0", "http://www.itesla_project.eu/schema/iidm/ext/active_power_control/1_0")
-            .put("1.1", "http://www.powsybl.org/schema/iidm/ext/active_power_control/1_1")
-            .put("1.2", "http://www.powsybl.org/schema/iidm/ext/active_power_control/1_2")
-            .build()) {
+        converter::xml::ExtensionXmlVersions({
+            {"http://www.itesla_project.eu/schema/iidm/ext/active_power_control/1_0", "apc", "activePowerControl",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_13(), {1,0}},
+            {"http://www.powsybl.org/schema/iidm/ext/active_power_control/1_1", "apc", "activePowerControl",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_13(), {1,1}},
+            {"http://www.powsybl.org/schema/iidm/ext/active_power_control/1_2", "apc", "activePowerControl",
+            converter::xml::IidmXmlVersion::V1_13(), {1,2}}
+        })){
 }
 
 Extension& ActivePowerControlXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
@@ -68,14 +53,11 @@ Extension& ActivePowerControlXmlSerializer::read(Extendable& extendable, convert
     double minTargetP = stdcxx::nan();
     double maxTargetP = stdcxx::nan();
     
-    const std::string& extensionVersionStr = context.getExtensionVersion(*this);
-    if (extensionVersionStr.empty()) {
-        throw AssertionError("Extension version not found");
-    }
-    if(extensionVersionStr.compare("1.1") >= 0) {
+    const auto& extensionVersion = getExtensionVersionImported(context);
+    if (extensionVersion >= versionOf("1.1")) {
         participationFactor = context.getReader().getOptionalAttributeValue("participationFactor", 0.0);
     }
-    if (extensionVersionStr.compare("1.2") >= 0) {
+    if (extensionVersion >= versionOf("1.2")) {
         maxTargetP = context.getReader().getOptionalAttributeValue("maxTargetP", stdcxx::nan());
         minTargetP = context.getReader().getOptionalAttributeValue("minTargetP", stdcxx::nan());
     }
@@ -96,14 +78,11 @@ void ActivePowerControlXmlSerializer::write(const Extension& extension, converte
     context.getWriter().writeAttribute("participate", apc.isParticipate());
     context.getWriter().writeAttribute("droop", apc.getDroop());
 
-    std::string extVersionStr = context.getExtensionVersion("activePowerControl");
-    if (extVersionStr.empty()) {
-        extVersionStr = getVersion(context.getVersion());
-    }
-    if(extVersionStr.compare("1.1") >= 0) {
+    const auto& extensionVersion = getExtensionVersionToExport(context);
+    if (extensionVersion >= versionOf("1.1")) {
         context.getWriter().writeAttribute("participationFactor", apc.getParticipationFactor());
     }
-    if (extVersionStr.compare("1.2") >= 0) {
+    if (extensionVersion >= versionOf("1.2")) {
         context.getWriter().writeAttribute("maxTargetP", apc.getMaxTargetP());
         context.getWriter().writeAttribute("minTargetP", apc.getMinTargetP());
     }

@@ -802,6 +802,7 @@ INPUT                  = \
     ../include \
     ../extensions/entsoe/include \
     ../extensions/iidm/include \
+    ../extensions/sld/include \
     ../examples
 
 # This tag can be used to specify the character encoding of the source files

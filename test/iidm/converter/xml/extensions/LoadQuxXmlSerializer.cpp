@@ -26,12 +26,10 @@ namespace extensions {
 
 LoadQuxXmlSerializer::LoadQuxXmlSerializer() :
     AbstractVersionableExtensionXmlSerializer("loadQux", "network", "lq",
-        VersionsCompatibilityBuilder()
-            .put(IidmXmlVersion::V1_0(), {"1.0"})
-            .build(),
-        stdcxx::MapBuilder<std::string, std::string>()
-            .put("1.0", "http://www.powsybl.org/schema/iidm/ext/load_qux/1_0")
-            .build()) {
+        converter::xml::ExtensionXmlVersions({
+            {"http://www.powsybl.org/schema/iidm/ext/load_qux/1_0", "lq", "loadQux",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_1(), {1,0}}
+        })){
 }
 
 Extension& LoadQuxXmlSerializer::read(Extendable& extendable, NetworkXmlReaderContext& context) const {

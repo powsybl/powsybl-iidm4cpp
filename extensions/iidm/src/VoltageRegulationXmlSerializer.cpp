@@ -29,41 +29,42 @@ namespace extensions {
 namespace iidm {
 
 VoltageRegulationXmlSerializer::VoltageRegulationXmlSerializer() :
-    converter::xml::AbstractVersionableExtensionXmlSerializer("voltageRegulation", "network", "vr",
-        converter::xml::VersionsCompatibilityBuilder()
-            .put(converter::xml::IidmXmlVersion::V1_0(), {"1.0", "1.0-legacy"})
-            .put(converter::xml::IidmXmlVersion::V1_1(), {"1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_2(), {"1.2", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_3(), {"1.3", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_4(), {"1.4", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_5(), {"1.5", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_6(), {"1.6", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_7(), {"1.7", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_8(), {"1.8", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_9(), {"1.9", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_10(), {"1.10", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_11(), {"1.11", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_12(), {"1.12", "1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_13(), {"1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_14(), {"1.1"})
-            .put(converter::xml::IidmXmlVersion::V1_15(), {"1.1"})
-            .build(),
-      stdcxx::MapBuilder<std::string, std::string>()
-            .put("1.0-legacy", "http://www.itesla_project.eu/schema/iidm/ext/voltageregulation/1_0")
-            .put("1.0", "http://www.itesla_project.eu/schema/iidm/ext/voltage_regulation/1_0")
-            .put("1.1", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_1")
-            .put("1.2", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_2")
-            .put("1.3", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_3")
-            .put("1.4", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_4")
-            .put("1.5", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_5")
-            .put("1.6", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_6")
-            .put("1.7", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_7")
-            .put("1.8", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_8")
-            .put("1.9", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_9")
-            .put("1.10", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_10")
-            .put("1.11", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_11")
-            .put("1.12", "http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_12")
-            .build()) {
+    AbstractVersionableExtensionXmlSerializer("voltageRegulation", "network", "vr",
+        converter::xml::ExtensionXmlVersions({
+            {"http://www.itesla_project.eu/schema/iidm/ext/voltageregulation/1_0", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_1(), {1,0}, "legacy"},
+            {"http://www.itesla_project.eu/schema/iidm/ext/voltage_regulation/1_0", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_0(), converter::xml::IidmXmlVersion::V1_1(), {1,0}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_1", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_1(), {1,1}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_2", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_2(), converter::xml::IidmXmlVersion::V1_3(), {1,2}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_3", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_3(), converter::xml::IidmXmlVersion::V1_4(), {1,3}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_4", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_4(), converter::xml::IidmXmlVersion::V1_5(), {1,4}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_5", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_5(), converter::xml::IidmXmlVersion::V1_6(), {1,5}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_6", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_6(), converter::xml::IidmXmlVersion::V1_7(), {1,6}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_7", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_7(), converter::xml::IidmXmlVersion::V1_8(), {1,7}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_8", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_8(), converter::xml::IidmXmlVersion::V1_9(), {1,8}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_9", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_9(), converter::xml::IidmXmlVersion::V1_10(), {1,9}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_10", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_10(), converter::xml::IidmXmlVersion::V1_11(), {1,10}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_11", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_11(), converter::xml::IidmXmlVersion::V1_12(), {1,11}},
+            {"http://www.powsybl.org/schema/iidm/ext/voltage_regulation/1_12", "vr", "voltageRegulation",
+            converter::xml::IidmXmlVersion::V1_12(), converter::xml::IidmXmlVersion::V1_13(), {1,12}}
+        })){
+}
+
+const converter::xml::ExtensionXmlVersion& VoltageRegulationXmlSerializer::getDefaultVersion() const {
+    //Default version v1.1 (subsequent ones have been added without change)
+    return versionOf("1.1");
 }
 
 Extension& VoltageRegulationXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
