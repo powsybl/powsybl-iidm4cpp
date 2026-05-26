@@ -31,6 +31,8 @@ set(EXT_SOURCES
     src/DiscreteMeasurementsAdder.cpp
     src/DiscreteMeasurementsXmlSerializer.cpp
     src/DiscreteMeasurementValidationUtil.cpp
+    src/DynamicModelInfo.cpp
+    src/DynamicModelInfoAdder.cpp
     src/GeneratorEntsoeCategory.cpp
     src/GeneratorEntsoeCategoryAdder.cpp
     src/GeneratorEntsoeCategoryXmlSerializer.cpp
@@ -132,6 +134,7 @@ set(UNIT_TEST_SOURCES
     test/CoordinateTest.cpp
     test/CoordinatedReactiveControlTest.cpp
     test/DiscreteMeasurementsTest.cpp
+    test/DynamicModelInfoTest.cpp
     test/FortescueTest.cpp
     test/GeneratorEntsoeCategoryTest.cpp
     test/GeneratorShortCircuitTest.cpp
