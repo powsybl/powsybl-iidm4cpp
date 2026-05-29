@@ -249,26 +249,36 @@ void checkAcDcConvertersAB(Network& network) {
     AcDcConverter& acDcConverterA = network.get<AcDcConverter>("converterA");
     AcDcConverter& acDcConverterB = network.get<AcDcConverter>("converterB");
 
-    BOOST_CHECK_EQUAL(TwoSides::ONE, acDcConverterA.getDcTerminal1().getSide());
-    BOOST_CHECK_EQUAL(TwoSides::TWO, acDcConverterA.getDcTerminal2().getSide());
-    BOOST_CHECK_EQUAL(TwoSides::ONE, acDcConverterA.getSide(acDcConverterA.getDcTerminal1()));
-    BOOST_CHECK_EQUAL(TwoSides::TWO, acDcConverterA.getSide(acDcConverterA.getDcTerminal2()));
-    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getDcTerminal1(), acDcConverterA.getDcTerminal(TwoSides::ONE)));
-    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getDcTerminal2(), acDcConverterA.getDcTerminal(TwoSides::TWO)));
+    BOOST_CHECK_EQUAL(TwoSides::UNDEFINED, acDcConverterA.getDcTerminal1().getSide());
+    BOOST_CHECK_EQUAL(TwoSides::UNDEFINED, acDcConverterA.getDcTerminal2().getSide());
+    BOOST_CHECK_EQUAL(TerminalNumber::ONE, acDcConverterA.getDcTerminal1().getTerminalNumber());
+    BOOST_CHECK_EQUAL(TerminalNumber::TWO, acDcConverterA.getDcTerminal2().getTerminalNumber());
+    BOOST_CHECK_EQUAL(TerminalNumber::ONE, acDcConverterA.getTerminalNumber(acDcConverterA.getDcTerminal1()));
+    BOOST_CHECK_EQUAL(TerminalNumber::TWO, acDcConverterA.getTerminalNumber(acDcConverterA.getDcTerminal2()));
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getDcTerminal1(), acDcConverterA.getDcTerminal(TerminalNumber::ONE)));
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getDcTerminal2(), acDcConverterA.getDcTerminal(TerminalNumber::TWO)));
 
     BOOST_CHECK_EQUAL("B1A", acDcConverterA.getTerminal1().getBusBreakerView().getBus().get().getId());
     POWSYBL_ASSERT_REF_TRUE(acDcConverterA.getTerminal2());
     BOOST_CHECK_EQUAL("B2A", acDcConverterA.getTerminal2().get().getBusBreakerView().getBus().get().getId());
-    BOOST_CHECK_EQUAL(ThreeSides::ONE, acDcConverterA.getTerminal1().getSide());
-    BOOST_CHECK_EQUAL(ThreeSides::TWO, acDcConverterA.getTerminal2().get().getSide());
-    BOOST_CHECK_EQUAL(TwoSides::ONE, acDcConverterA.getSide(acDcConverterA.getTerminal1()));
-    BOOST_CHECK_EQUAL(TwoSides::TWO, acDcConverterA.getSide(acDcConverterA.getTerminal2().get()));
-    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal1(), acDcConverterA.getTerminal(TwoSides::ONE)));
-    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal2().get(), acDcConverterA.getTerminal(TwoSides::TWO)));
-    BOOST_CHECK_EQUAL(ThreeSides::ONE, Terminal::getConnectableSide(acDcConverterA.getTerminal1()).get());
-    BOOST_CHECK_EQUAL(ThreeSides::TWO, Terminal::getConnectableSide(acDcConverterA.getTerminal2().get()).get());
-    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal1(), Terminal::getTerminal(acDcConverterA, ThreeSides::ONE)));
-    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal2().get(), Terminal::getTerminal(acDcConverterA, ThreeSides::TWO)));
+    
+    BOOST_CHECK_EQUAL(ThreeSides::UNDEFINED, acDcConverterA.getTerminal1().getSide());
+    BOOST_CHECK_EQUAL(ThreeSides::UNDEFINED, acDcConverterA.getTerminal2().get().getSide());
+    BOOST_CHECK_EQUAL(TerminalNumber::ONE, acDcConverterA.getTerminal1().getTerminalNumber());
+    BOOST_CHECK_EQUAL(TerminalNumber::TWO, acDcConverterA.getTerminal2().get().getTerminalNumber());
+    BOOST_CHECK_EQUAL(TerminalNumber::ONE, acDcConverterA.getTerminalNumber(acDcConverterA.getTerminal1()));
+    BOOST_CHECK_EQUAL(TerminalNumber::TWO, acDcConverterA.getTerminalNumber(acDcConverterA.getTerminal2().get()));
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal1(), acDcConverterA.getTerminal(TerminalNumber::ONE)));
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal2().get(), acDcConverterA.getTerminal(TerminalNumber::TWO)));
+    BOOST_CHECK(!Terminal::getConnectableSide(acDcConverterA.getTerminal1()).has_value());
+    BOOST_CHECK(!Terminal::getConnectableSide(acDcConverterA.getTerminal2().get()).has_value());
+    Line& lineax = network.getLine("LINEAX");
+    BOOST_CHECK(!Terminal::getConnectableTerminalNumber(lineax.getTerminal1()).has_value());
+    BOOST_CHECK(!Terminal::getConnectableTerminalNumber(lineax.getTerminal2()).has_value());
+    BOOST_CHECK_EQUAL(TerminalNumber::ONE, Terminal::getConnectableTerminalNumber(acDcConverterA.getTerminal1()).get());
+    BOOST_CHECK_EQUAL(TerminalNumber::TWO, Terminal::getConnectableTerminalNumber(acDcConverterA.getTerminal2().get()).get());
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal1(), Terminal::getTerminal(acDcConverterA, TerminalNumber::ONE)));
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal2().get(), Terminal::getTerminal(acDcConverterA, TerminalNumber::TWO)));
 
     BOOST_CHECK(acDcConverterA.getDcTerminal1().isConnected());
     BOOST_CHECK(acDcConverterA.getDcTerminal2().isConnected());
@@ -706,7 +716,7 @@ BOOST_AUTO_TEST_CASE(testSingleAcTerminal) {
     POWSYBL_ASSERT_REF_FALSE(acDcConverterA.getTerminal2());
     BOOST_CHECK(stdcxx::areSame(acDcConverterA.getPccTerminal(), acDcConverterA.getTerminal1()));
 
-    POWSYBL_ASSERT_THROW(acDcConverterA.getTerminal(TwoSides::TWO), PowsyblException, "AC/DC Converter 'converterA' does not have a second AC Terminal");
+    POWSYBL_ASSERT_THROW(acDcConverterA.getTerminal(TerminalNumber::TWO), PowsyblException, "AC/DC Converter 'converterA' does not have a second AC Terminal");
 
 }
 

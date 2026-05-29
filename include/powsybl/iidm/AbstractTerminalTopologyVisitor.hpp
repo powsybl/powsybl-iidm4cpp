@@ -18,7 +18,7 @@ class Injection;
 
 class AbstractTerminalTopologyVisitor : public TopologyVisitor {
 public:  // TopologyVisitor
-    void visitAcDcConverter(const AcDcConverter& converter, const TwoSides& side) override;
+    void visitAcDcConverter(const AcDcConverter& converter, const TerminalNumber& terminalNumber) override;
 
     void visitBattery(const Battery& battery) override;
 

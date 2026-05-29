@@ -93,6 +93,19 @@ std::vector<std::reference_wrapper<DcTerminal> > DcConnectable::getDcTerminals(c
     return dcterminals;
 }
 
+std::vector<std::reference_wrapper<DcTerminal> > DcConnectable::getDcTerminals(const stdcxx::optional<TerminalNumber>& terminalNumber) const {
+    std::vector<std::reference_wrapper<DcTerminal> > dcterminals;
+
+    dcterminals.reserve(m_dcTerminals.size());
+    for (const auto& terminal : m_dcTerminals) {
+        if (!terminalNumber.has_value() || terminal->getTerminalNumber() == terminalNumber.get()) {
+            dcterminals.push_back(std::ref(*terminal));
+        }
+    }
+    dcterminals.shrink_to_fit();
+    return dcterminals;
+}
+
 void DcConnectable::remove() {
     Network& network = getNetwork();
     network.remove(*this);

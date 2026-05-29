@@ -80,20 +80,23 @@ public:
         return m_equipments;
     }
 
-    const std::map<iidm::ThreeSides, std::vector<stdcxx::Reference<iidm::Terminal>>>& getTerminals() const {
+    const std::map<iidm::TerminalNumber, std::vector<stdcxx::Reference<iidm::Terminal>>>& getTerminals() const {
         return m_terminals;
     }
 
     void visitTerminal(const iidm::Terminal& terminal) override {
         if(stdcxx::isInstanceOf<iidm::AcDcConverter>(terminal.getConnectable())) {
             m_equipments[terminal.getConnectable().get().getType()].push_back(terminal.getConnectable().get().getId());
-            m_terminals[terminal.getSide()].push_back(stdcxx::ref(terminal));
+            if(terminal.getTerminalNumber() != iidm::TerminalNumber::UNDEFINED) {
+                m_terminals[terminal.getTerminalNumber()].push_back(stdcxx::ref(terminal));
+            }
+            
         }
     }
 
 private:
     std::map<iidm::IdentifiableType, std::vector<std::string>> m_equipments;
-    std::map<iidm::ThreeSides, std::vector<stdcxx::Reference<iidm::Terminal>>> m_terminals;
+    std::map<iidm::TerminalNumber, std::vector<stdcxx::Reference<iidm::Terminal>>> m_terminals;
 };
 
 BOOST_AUTO_TEST_CASE(topologyVisitorTest) {
@@ -115,7 +118,7 @@ BOOST_AUTO_TEST_CASE(topologyVisitorTest) {
     for (auto& terminal : visitor.getTerminals()) {
         BOOST_CHECK_EQUAL(1, terminal.second.size());
         BOOST_CHECK(stdcxx::areSame(terminal.second[0].get().getConnectable().get(), lcc));
-        BOOST_CHECK(stdcxx::areSame(lcc.getTerminal(static_cast<iidm::TwoSides>(terminal.first)), terminal.second[0].get()));
+        BOOST_CHECK(stdcxx::areSame(lcc.getTerminal(static_cast<iidm::TerminalNumber>(terminal.first)), terminal.second[0].get()));
     }
 }
 

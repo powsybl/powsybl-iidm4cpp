@@ -17,12 +17,21 @@ namespace powsybl {
 
 namespace iidm {
 
-DcTerminal::DcTerminal(DcNode& dcNode, const TwoSides& side, bool connected) :
+DcTerminal::DcTerminal(DcNode& dcNode, bool connected) :
     m_dcNode(dcNode),
-    m_side(side),
     m_connected(dcNode.getNetwork().getVariantManager().getVariantArraySize(), connected),
     m_p(dcNode.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
     m_i(dcNode.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()) {
+}
+
+DcTerminal::DcTerminal(DcNode& dcNode, const TwoSides& side, bool connected) :
+    DcTerminal(dcNode, connected) {
+        m_side = side;
+}
+
+DcTerminal::DcTerminal(DcNode& dcNode, const TerminalNumber& terminalNumber, bool connected) :
+    DcTerminal(dcNode, connected) {
+        m_terminalNumber = terminalNumber;
 }
 
 void DcTerminal::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -58,6 +67,9 @@ stdcxx::Reference<DcConnectable> DcTerminal::getDcConnectable() {
 
 TwoSides DcTerminal::getSide() const {
     return m_side;
+}
+TerminalNumber DcTerminal::getTerminalNumber() const {
+    return m_terminalNumber;
 }
 
 const DcNode& DcTerminal::getDcNode() const {

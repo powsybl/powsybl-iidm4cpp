@@ -322,6 +322,9 @@ BOOST_AUTO_TEST_CASE(terminal) {
     Line& line = network.getLine("VL1_VL3");
     const Line& cLine = line;
 
+    BOOST_CHECK_EQUAL(TerminalNumber::UNDEFINED, line.getTerminal1().getTerminalNumber());
+    BOOST_CHECK_EQUAL(TerminalNumber::UNDEFINED, line.getTerminal2().getTerminalNumber());
+
     Terminal& t1 = line.getTerminalFromVoltageLevel("VL1");
     BOOST_CHECK_EQUAL(TwoSides::ONE, line.getSide(t1));
     BOOST_TEST(stdcxx::areSame(t1, line.getTerminal1()));

@@ -18,8 +18,8 @@ namespace powsybl {
 
 namespace iidm {
 
-NodeTerminal::NodeTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, unsigned long node) :
-    Terminal(voltageLevel, side),
+NodeTerminal::NodeTerminal(VoltageLevel& voltageLevel, unsigned long node) :
+    Terminal(voltageLevel),
     m_node(node),
     m_v(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
     m_angle(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
@@ -28,7 +28,14 @@ NodeTerminal::NodeTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, u
     m_nodeBreakerView(*this),
     m_busBreakerView(*this),
     m_busView(*this) {
-
+}
+NodeTerminal::NodeTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, unsigned long node) :
+    NodeTerminal(voltageLevel, node) {
+        m_side = side;
+}
+NodeTerminal::NodeTerminal(VoltageLevel& voltageLevel, const TerminalNumber& terminalNumber, unsigned long node) :
+    NodeTerminal(voltageLevel, node) {
+        m_terminalNumber = terminalNumber;
 }
 
 void NodeTerminal::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {

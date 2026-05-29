@@ -629,7 +629,7 @@ void VoltageLevel::convertToBusBreakerTopology() {
         }
 
         //Create new Terminal
-        std::unique_ptr<Terminal> newTerminalPtr = TerminalBuilder(*this, *this, infos.m_terminal.getSide())
+        std::unique_ptr<Terminal> newTerminalPtr = TerminalBuilder(*this, *this, infos.m_terminal.getSide(), infos.m_terminal.getTerminalNumber())
                                                         .setBus((infos.m_connected) ? infos.m_connectableBusId : "")
                                                         .setConnectableBus(infos.m_connectableBusId)
                                                         .build();

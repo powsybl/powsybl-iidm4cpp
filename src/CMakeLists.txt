@@ -163,6 +163,7 @@ set(IIDM_SOURCES
     iidm/SynchronousComponentsManager.cpp
     iidm/Terminal.cpp
     iidm/TerminalBuilder.cpp
+    iidm/TerminalNumber.cpp
     iidm/ThreadLocalMultipleVariantContext.cpp
     iidm/ThreeSides.cpp
     iidm/ThreeWindingsTransformer.cpp

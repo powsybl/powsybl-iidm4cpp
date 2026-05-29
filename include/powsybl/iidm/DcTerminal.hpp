@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_DCTERMINAL_HPP
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/iidm/TerminalNumber.hpp>
 #include <powsybl/iidm/TwoSides.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
@@ -37,13 +38,26 @@ protected: //MultiVariantObject
     friend class AcDcConverter;
 
 public:
+    /**
+     * DcTerminal constructor without side nor terminal number
+     */
+    explicit DcTerminal(DcNode& dcNode, bool connected);
+    /**
+     * DcTerminal constructor for a side of a DcConnectable
+     */
     explicit DcTerminal(DcNode& dcNode, const TwoSides& side, bool connected);
+    /**
+     * DcTerminal constructor for a terminal number of an AcDcConverter
+     */
+    explicit DcTerminal(DcNode& dcNode, const TerminalNumber& terminalNumber, bool connected);
+
     ~DcTerminal() noexcept override = default;
 
     stdcxx::CReference<DcConnectable> getDcConnectable() const;
     stdcxx::Reference<DcConnectable> getDcConnectable();
 
     TwoSides getSide() const;
+    TerminalNumber getTerminalNumber() const;
 
     const DcNode& getDcNode() const;
     DcNode& getDcNode();
@@ -77,7 +91,8 @@ protected:
 private:
     DcNode& m_dcNode;
 
-    TwoSides m_side;
+    TwoSides m_side = TwoSides::UNDEFINED;
+    TerminalNumber m_terminalNumber = TerminalNumber::UNDEFINED;
 
     stdcxx::Reference<DcConnectable> m_dcConnectable;
 

@@ -14,6 +14,7 @@
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/ReferrerManager.hpp>
 #include <powsybl/iidm/Switch.hpp>
+#include <powsybl/iidm/TerminalNumber.hpp>
 #include <powsybl/iidm/TerminalSet.hpp>
 #include <powsybl/iidm/TerminalTopologyTraverser.hpp>
 #include <powsybl/iidm/TerminalViews.hpp>
@@ -101,9 +102,13 @@ public:
     virtual bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) = 0;
 
     static stdcxx::optional<ThreeSides> getConnectableSide(const Terminal& terminal);
+    static stdcxx::optional<TerminalNumber> getConnectableTerminalNumber(const Terminal& terminal);
+
     static Terminal& getTerminal(Identifiable& identifiable, ThreeSides side);
+    static Terminal& getTerminal(Identifiable& identifiable, TerminalNumber terminalNumber);
 
     ThreeSides getSide() const;
+    TerminalNumber getTerminalNumber() const;
 
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -118,13 +123,26 @@ protected: // MultiVariantObject
     friend class AcDcConverter;
 
 protected:
+
+/**
+ * Terminal constructor without any side nor terminal number
+ */
+    explicit Terminal(VoltageLevel& voltageLevel);
+/**
+ * Terminal constructor on a side of a Connectable
+ */
     explicit Terminal(VoltageLevel& voltageLevel, const ThreeSides& side);
+/**
+ * Terminal constructor on a terminal number of an AcDcConverter
+ */
+    explicit Terminal(VoltageLevel& voltageLevel, const TerminalNumber& terminalNumber);
 
     const Network& getNetwork() const;
 
     Network& getNetwork();
 
-    ThreeSides m_side;
+    ThreeSides m_side = ThreeSides::UNDEFINED;
+    TerminalNumber m_terminalNumber = TerminalNumber::UNDEFINED;
 
 private:
     VoltageLevel& m_voltageLevel;
@@ -136,9 +154,13 @@ private:
     std::vector<double> m_q;
 };
 
+std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);
 std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, const std::string& connectableBusId, bool connected);
+std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const TerminalNumber& terminalNumber, const std::string& connectableBusId, bool connected);
 
-std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, unsigned long node);
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, unsigned long node);
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, const ThreeSides& side,  unsigned long node);
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, const TerminalNumber& terminalNumber, unsigned long node);
 
 }  // namespace iidm
 

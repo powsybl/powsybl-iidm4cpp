@@ -135,12 +135,12 @@ stdcxx::Reference<Terminal> AcDcConverter::getTerminal2() {
     return stdcxx::Reference<Terminal>();
 }
 
-const Terminal& AcDcConverter::getTerminal(const TwoSides& side) const {
-    switch (side) {
-        case TwoSides::ONE:
+const Terminal& AcDcConverter::getTerminal(const TerminalNumber& terminalNumber) const {
+    switch (terminalNumber) {
+        case TerminalNumber::ONE:
             return getTerminal1();
 
-        case TwoSides::TWO: {
+        case TerminalNumber::TWO: {
             auto terminal2Ref = getTerminal2();
             if(!terminal2Ref) {
                 throw PowsyblException(stdcxx::format("AC/DC Converter '%1%' does not have a second AC Terminal", getId()));
@@ -148,14 +148,14 @@ const Terminal& AcDcConverter::getTerminal(const TwoSides& side) const {
             return terminal2Ref.get();
         }
 
-        case TwoSides::UNDEFINED:
+        case TerminalNumber::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected TwoSides value: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected TerminalNumber value: %1%", terminalNumber));
     }
 }
 
-Terminal& AcDcConverter::getTerminal(const TwoSides& side) {
-    return const_cast<Terminal&>(static_cast<const AcDcConverter*>(this)->getTerminal(side));
+Terminal& AcDcConverter::getTerminal(const TerminalNumber& terminalNumber) {
+    return const_cast<Terminal&>(static_cast<const AcDcConverter*>(this)->getTerminal(terminalNumber));
 }
 
 const DcTerminal& AcDcConverter::getDcTerminal1() const {
@@ -174,47 +174,47 @@ DcTerminal& AcDcConverter::getDcTerminal2() {
     return DcConnectable::getDcTerminal(1);
 }
 
-const DcTerminal& AcDcConverter::getDcTerminal(const TwoSides& side) const {
-    switch (side) {
-        case TwoSides::ONE:
+const DcTerminal& AcDcConverter::getDcTerminal(const TerminalNumber& terminalNumber) const {
+    switch (terminalNumber) {
+        case TerminalNumber::ONE:
             return getDcTerminal1();
 
-        case TwoSides::TWO:
+        case TerminalNumber::TWO:
             return getDcTerminal2();
 
-        case TwoSides::UNDEFINED:
+        case TerminalNumber::UNDEFINED:
         default:
-            throw AssertionError(stdcxx::format("Unexpected TwoSides value: %1%", side));
+            throw AssertionError(stdcxx::format("Unexpected TerminalNumber value: %1%", terminalNumber));
     }
 }
 
-DcTerminal& AcDcConverter::getDcTerminal(const TwoSides& side) {
-    return const_cast<DcTerminal&>(static_cast<const AcDcConverter*>(this)->getDcTerminal(side));
+DcTerminal& AcDcConverter::getDcTerminal(const TerminalNumber& terminalNumber) {
+    return const_cast<DcTerminal&>(static_cast<const AcDcConverter*>(this)->getDcTerminal(terminalNumber));
 }
 
-TwoSides AcDcConverter::getSide(const Terminal& terminal) const {
+TerminalNumber AcDcConverter::getTerminalNumber(const Terminal& terminal) const {
     if (stdcxx::areSame(getTerminal1(), terminal)) {
-        return TwoSides::ONE;
+        return TerminalNumber::ONE;
     }
     
     auto terminal2Ref = getTerminal2();
     if(static_cast<bool>(terminal2Ref) && stdcxx::areSame(terminal2Ref.get(), terminal)) {
-        return TwoSides::TWO;
+        return TerminalNumber::TWO;
     }
     
     throw PowsyblException(stdcxx::format("The terminal is not connected to this AC/DC Converter"));
-    return TwoSides::UNDEFINED;
+    return TerminalNumber::UNDEFINED;
 }
 
-TwoSides AcDcConverter::getSide(const DcTerminal& terminal) const {
+TerminalNumber AcDcConverter::getTerminalNumber(const DcTerminal& terminal) const {
     if (stdcxx::areSame(terminal, getDcTerminal1())) {
-        return TwoSides::ONE;
+        return TerminalNumber::ONE;
     } else if (stdcxx::areSame(terminal, getDcTerminal2())) {
-        return TwoSides::TWO;
+        return TerminalNumber::TWO;
     }
 
     throw AssertionError("The DC terminal is not connected to this AC/DC Converter");
-    return TwoSides::UNDEFINED;
+    return TerminalNumber::UNDEFINED;
 }
 
 

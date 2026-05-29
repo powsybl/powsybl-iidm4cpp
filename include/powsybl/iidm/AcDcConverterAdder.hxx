@@ -130,7 +130,7 @@ Adder& AcDcConverterAdder<Added, Adder>::setTargetVdc(double targetVdc) {
 
 template <typename Added, typename Adder>
 std::unique_ptr<Terminal> AcDcConverterAdder<Added, Adder>::checkAndGetTerminal1() {
-    return TerminalBuilder(m_voltageLevel, *this, ThreeSides::ONE)
+    return TerminalBuilder(m_voltageLevel, *this, TerminalNumber::ONE)
                .setNode(m_node1)
                .setBus(m_bus1)
                .setConnectableBus(m_connectableBus1)
@@ -139,7 +139,7 @@ std::unique_ptr<Terminal> AcDcConverterAdder<Added, Adder>::checkAndGetTerminal1
 template <typename Added, typename Adder>
 std::unique_ptr<Terminal> AcDcConverterAdder<Added, Adder>::checkAndGetTerminal2() {
     if(hasTwoAcTerminals()) {
-        return TerminalBuilder(m_voltageLevel, *this, ThreeSides::TWO)
+        return TerminalBuilder(m_voltageLevel, *this, TerminalNumber::TWO)
                .setNode(m_node2)
                .setBus(m_bus2)
                .setConnectableBus(m_connectableBus2)
@@ -177,10 +177,10 @@ Added& AcDcConverterAdder<Added, Adder>::checkAndAdd(std::unique_ptr<Added>&& co
         m_voltageLevel.getTopologyModel().attach(acTerminal2, false);
     }
 
-    std::unique_ptr<DcTerminal> ptrDcTerminal1 = stdcxx::make_unique<DcTerminal>(dcNode1, TwoSides::ONE, m_dcConnected1);
+    std::unique_ptr<DcTerminal> ptrDcTerminal1 = stdcxx::make_unique<DcTerminal>(dcNode1, TerminalNumber::ONE, m_dcConnected1);
     converter->addDcTerminal(std::move(ptrDcTerminal1));
 
-    std::unique_ptr<DcTerminal> ptrDcTerminal2 = stdcxx::make_unique<DcTerminal>(dcNode2, TwoSides::TWO, m_dcConnected2);
+    std::unique_ptr<DcTerminal> ptrDcTerminal2 = stdcxx::make_unique<DcTerminal>(dcNode2, TerminalNumber::TWO, m_dcConnected2);
     converter->addDcTerminal(std::move(ptrDcTerminal2));
 
     Added& acdcConverter = getNetwork().checkAndAdd(std::move(converter));

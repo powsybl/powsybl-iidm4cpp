@@ -27,8 +27,8 @@ namespace powsybl {
 
 namespace iidm {
 
-void AbstractTerminalTopologyVisitor::visitAcDcConverter(const AcDcConverter& converter, const TwoSides& side) {
-    visitTerminal(converter.getTerminal(side));
+void AbstractTerminalTopologyVisitor::visitAcDcConverter(const AcDcConverter& converter, const TerminalNumber& terminalNumber) {
+    visitTerminal(converter.getTerminal(terminalNumber));
 }
 
 void AbstractTerminalTopologyVisitor::visitBattery(const Battery& battery) {

@@ -28,7 +28,7 @@ namespace powsybl {
 
 namespace iidm {
 
-void TopologyVisitor::visitAcDcConverter(const AcDcConverter& /*converter*/, const TwoSides& /*side*/) {
+void TopologyVisitor::visitAcDcConverter(const AcDcConverter& /*converter*/, const TerminalNumber& /*terminalNumber*/) {
     // nothing to do
 }
 
@@ -105,7 +105,7 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
             case IdentifiableType::LINE_COMMUTATED_CONVERTER:
             case IdentifiableType::VOLTAGE_SOURCE_CONVERTER: {
                 const auto& acDcConverter = dynamic_cast<const AcDcConverter&>(connectable);
-                visitor.visitAcDcConverter(acDcConverter, acDcConverter.getSide(terminal));
+                visitor.visitAcDcConverter(acDcConverter, acDcConverter.getTerminalNumber(terminal));
                 break;
             }
 

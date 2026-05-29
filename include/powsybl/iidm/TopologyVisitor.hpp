@@ -45,7 +45,7 @@ public:
 
     TopologyVisitor& operator=(TopologyVisitor&&) noexcept = default;
 
-    virtual void visitAcDcConverter(const AcDcConverter& converter, const TwoSides& side);
+    virtual void visitAcDcConverter(const AcDcConverter& converter, const TerminalNumber& terminalNumber);
 
     virtual void visitBattery(const Battery& battery);
 

@@ -47,7 +47,7 @@ DcGround& DcGroundAdder::add() {
 
     std::unique_ptr<DcGround> ptrDcGround = stdcxx::make_unique<DcGround>(id, getName(), isFictitious(), m_r);
 
-    std::unique_ptr<DcTerminal> ptrDcTerminal = stdcxx::make_unique<DcTerminal>(dcNode, TwoSides::UNDEFINED, m_connected);
+    std::unique_ptr<DcTerminal> ptrDcTerminal = stdcxx::make_unique<DcTerminal>(dcNode, m_connected);
     ptrDcGround->addDcTerminal(std::move(ptrDcTerminal));
 
     auto& dcGround = getNetwork().checkAndAdd<DcGround>(std::move(ptrDcGround));

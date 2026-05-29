@@ -44,6 +44,8 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(2 ,dcLine1.getDcTerminals().size());
     BOOST_CHECK_EQUAL(TwoSides::ONE ,dcLine1.getDcTerminal1().getSide());
     BOOST_CHECK_EQUAL(TwoSides::TWO ,dcLine1.getDcTerminal2().getSide());
+    BOOST_CHECK_EQUAL(TerminalNumber::UNDEFINED ,dcLine1.getDcTerminal1().getTerminalNumber());
+    BOOST_CHECK_EQUAL(TerminalNumber::UNDEFINED ,dcLine1.getDcTerminal2().getTerminalNumber());
     BOOST_CHECK(stdcxx::areSame(dcLine1.getDcTerminals().at(0).get(), dcLine1.getDcTerminal1()));
     BOOST_CHECK(stdcxx::areSame(dcLine1.getDcTerminals().at(1).get(), dcLine1.getDcTerminal2()));
     BOOST_CHECK(stdcxx::areSame(dcLine1, dcLine1.getDcTerminal1().getDcConnectable().get()));

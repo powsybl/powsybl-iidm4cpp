@@ -54,7 +54,9 @@ public: // Terminal
     bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) override;
 
 public:
+    BusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected);
     BusTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, const std::string& connectableBusId, bool connected);
+    BusTerminal(VoltageLevel& voltageLevel, const TerminalNumber& terminalNumber, const std::string& connectableBusId, bool connected);
 
     BusTerminal(const BusTerminal&) = delete;
 

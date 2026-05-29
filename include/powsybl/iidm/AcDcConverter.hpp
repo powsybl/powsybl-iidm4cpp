@@ -76,13 +76,13 @@ public:
     stdcxx::Reference<Terminal> getTerminal2();
 
     /**
-     * Get the AC terminal at provided side
+     * Get the AC terminal at provided terminal number
      */
-    const Terminal& getTerminal(const TwoSides& side) const;
+    const Terminal& getTerminal(const TerminalNumber& terminalNumber) const;
     /**
-     * Get the AC terminal at provided side
+     * Get the AC terminal provided terminal number
      */
-    Terminal& getTerminal(const TwoSides& side);
+    Terminal& getTerminal(const TerminalNumber& terminalNumber);
 
     /**
      * Get the first DC Terminal
@@ -103,22 +103,22 @@ public:
     DcTerminal& getDcTerminal2();
 
     /**
-     * Get the DC Terminal at provided side
+     * Get the DC Terminal at provided terminal number
      */
-    const DcTerminal& getDcTerminal(const TwoSides& side) const;
+    const DcTerminal& getDcTerminal(const TerminalNumber& terminalNumber) const;
     /**
-     * Get the DC Terminal at provided side
+     * Get the DC Terminal at provided terminal number
      */
-    DcTerminal& getDcTerminal(const TwoSides& side);
+    DcTerminal& getDcTerminal(const TerminalNumber& terminalNumber);
 
     /**
-     * Get the side the given AC terminal is connected to
+     * Get the terminal number the given AC terminal is connected to
      */
-    TwoSides getSide(const Terminal& terminal) const;
+    TerminalNumber getTerminalNumber(const Terminal& terminal) const;
     /**
-     * Get the side the given DC terminal is connected to
+     * Get the terminal number the given DC terminal is connected to
      */
-    TwoSides getSide(const DcTerminal& terminal) const;
+    TerminalNumber getTerminalNumber(const DcTerminal& terminal) const;
 
     /**
      * Get the idle loss (MW).

@@ -41,6 +41,7 @@ public:
 
     std::vector<std::reference_wrapper<Terminal> > getTerminals() const;
     std::vector<std::reference_wrapper<Terminal> > getTerminals(const stdcxx::optional<ThreeSides>& side) const;
+    std::vector<std::reference_wrapper<Terminal> > getTerminals(const stdcxx::optional<TerminalNumber>& terminalNumber) const;
 
     virtual void remove();
 

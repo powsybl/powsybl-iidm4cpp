@@ -52,7 +52,9 @@ public: // Terminal
     bool traverse(TopologyTraverser& traverser, TerminalSet& traversedTerminals, math::TraversalType traversalType) override;
 
 public:
+    NodeTerminal(VoltageLevel& voltageLevel, unsigned long node);
     NodeTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, unsigned long node);
+    NodeTerminal(VoltageLevel& voltageLevel, const TerminalNumber& terminalNumber, unsigned long node);
 
     NodeTerminal(const NodeTerminal&) = delete;
 

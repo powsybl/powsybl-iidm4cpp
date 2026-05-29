@@ -48,6 +48,7 @@ public:
 
     std::vector<std::reference_wrapper<DcTerminal> > getDcTerminals() const;
     std::vector<std::reference_wrapper<DcTerminal> > getDcTerminals(const stdcxx::optional<TwoSides>& side) const;
+    std::vector<std::reference_wrapper<DcTerminal> > getDcTerminals(const stdcxx::optional<TerminalNumber>& terminalNumber) const;
 
     virtual void remove();
 

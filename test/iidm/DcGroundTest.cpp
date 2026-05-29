@@ -38,6 +38,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL("dcGround1Id", dcGround1.getId());
     BOOST_CHECK(dcGround1.getDcTerminal().isConnected());
     BOOST_CHECK_EQUAL(TwoSides::UNDEFINED ,dcGround1.getDcTerminal().getSide());
+    BOOST_CHECK_EQUAL(TerminalNumber::UNDEFINED ,dcGround1.getDcTerminal().getTerminalNumber());
     BOOST_CHECK_EQUAL(1, dcGround1.getDcTerminals().size());
     BOOST_CHECK(stdcxx::areSame(dcGround1.getDcTerminals().at(0).get(), dcGround1.getDcTerminal()));
     BOOST_CHECK(stdcxx::areSame(dcGround1, dcGround1.getDcTerminal().getDcConnectable().get()));

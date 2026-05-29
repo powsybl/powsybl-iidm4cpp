@@ -126,6 +126,18 @@ std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals(const s
     terminals.shrink_to_fit();
     return terminals;
 }
+std::vector<std::reference_wrapper<Terminal> > Connectable::getTerminals(const stdcxx::optional<TerminalNumber>& terminalNumber) const {
+    std::vector<std::reference_wrapper<Terminal> > terminals;
+
+    terminals.reserve(m_terminals.size());
+    for (const auto& terminal : m_terminals) {
+        if (!terminalNumber.has_value() || terminal->getTerminalNumber() == terminalNumber.get()) {
+            terminals.push_back(std::ref(*terminal));
+        }
+    }
+    terminals.shrink_to_fit();
+    return terminals;
+}
 
 void Connectable::reduceVariantArraySize(unsigned long number) {
     Identifiable::reduceVariantArraySize(number);

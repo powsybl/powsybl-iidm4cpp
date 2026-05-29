@@ -26,7 +26,7 @@ InjectionAdder<Added, Adder>::InjectionAdder(VoltageLevel& voltageLevel) :
 
 template <typename Added, typename Adder>
 std::unique_ptr<Terminal> InjectionAdder<Added, Adder>::checkAndGetTerminal() {
-    return TerminalBuilder(m_voltageLevel, *this, ThreeSides::UNDEFINED)
+    return TerminalBuilder(m_voltageLevel, *this)
                .setNode(m_node)
                .setBus(m_bus)
                .setConnectableBus(m_connectableBus)

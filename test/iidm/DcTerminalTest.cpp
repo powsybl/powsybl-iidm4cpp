@@ -117,13 +117,22 @@ BOOST_AUTO_TEST_CASE(testDcTerminalOfAcDcConverter) {
                 .setTargetVdc(500.)
                 .add();
 
-    DcTerminal& dcConverterTerminal = converter.getDcTerminal(TwoSides::ONE);
+    DcTerminal& dcConverterTerminal = converter.getDcTerminal(TerminalNumber::ONE);
 
     BOOST_CHECK(std::isnan(dcConverterTerminal.getP()));
     BOOST_CHECK(std::isnan(dcConverterTerminal.getI()));
     BOOST_CHECK(dcConverterTerminal.isConnected());
 
     checkDcTerminalInMultiVariant(network, dcConverterTerminal);
+}
+
+BOOST_AUTO_TEST_CASE(testTerminalBuilder) {
+    Network network("test", "test");
+    Substation& sa = network.newSubstation().setId("S").add();
+    VoltageLevel& vl = sa.newVoltageLevel().setId("VL").setTopologyKind(TopologyKind::BUS_BREAKER).setNominalV(175).add();
+
+    POWSYBL_ASSERT_THROW(TerminalBuilder(vl, vl, ThreeSides::ONE, TerminalNumber::ONE), ValidationException, "Voltage level 'VL': cannot create a terminal that have both side and number");
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

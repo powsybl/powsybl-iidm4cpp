@@ -16,11 +16,26 @@ namespace powsybl {
 
 namespace iidm {
 
-TerminalBuilder::TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable, const ThreeSides& side) :
+TerminalBuilder::TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable) :
     m_voltageLevel(voltageLevel),
-    m_validable(validable),
-    m_side(side) {
+    m_validable(validable) {
+}
+TerminalBuilder::TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable, const ThreeSides& side) :
+    TerminalBuilder(voltageLevel, validable) {
+        m_side = side;
+}
+TerminalBuilder::TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable, const TerminalNumber& terminalNumber) :
+    TerminalBuilder(voltageLevel, validable) {
+        m_terminalNumber = terminalNumber;
+}
+TerminalBuilder::TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable, const ThreeSides& side, const TerminalNumber& terminalNumber) :
+    TerminalBuilder(voltageLevel, validable) {
 
+    if(side != ThreeSides::UNDEFINED && terminalNumber != TerminalNumber::UNDEFINED) {
+        throw ValidationException(validable, "cannot create a terminal that have both side and number");
+    }
+    m_side = side;
+    m_terminalNumber = terminalNumber;
 }
 
 const std::string& TerminalBuilder::getConnectionBus() const {
@@ -47,9 +62,21 @@ std::unique_ptr<Terminal> TerminalBuilder::build() {
             throw ValidationException(m_validable, "connectable bus is not set");
         }
 
-        ptrTerminal = createBusTerminal(m_voltageLevel, m_side, connectionBus, !m_bus.empty());
+        if (m_side != ThreeSides::UNDEFINED) {
+            ptrTerminal = createBusTerminal(m_voltageLevel, m_side, connectionBus, !m_bus.empty());
+        } else if( m_terminalNumber != TerminalNumber::UNDEFINED) {
+            ptrTerminal = createBusTerminal(m_voltageLevel, m_terminalNumber, connectionBus, !m_bus.empty());
+        } else {
+            ptrTerminal = createBusTerminal(m_voltageLevel, connectionBus, !m_bus.empty());
+        }
     } else {
-        ptrTerminal = createNodeTerminal(m_voltageLevel, m_side, *m_node);
+        if (m_side != ThreeSides::UNDEFINED) {
+            ptrTerminal = createNodeTerminal(m_voltageLevel, m_side, *m_node);
+        } else if( m_terminalNumber != TerminalNumber::UNDEFINED) {
+            ptrTerminal = createNodeTerminal(m_voltageLevel, m_terminalNumber, *m_node);
+        } else {
+            ptrTerminal = createNodeTerminal(m_voltageLevel, *m_node);
+        }
     }
 
     return ptrTerminal;

@@ -25,12 +25,21 @@ namespace powsybl {
 
 namespace iidm {
 
-Terminal::Terminal(VoltageLevel& voltageLevel, const ThreeSides& side) :
-    m_side(side),
+Terminal::Terminal(VoltageLevel& voltageLevel) :
     m_voltageLevel(voltageLevel),
     m_p(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()),
     m_q(voltageLevel.getNetwork().getVariantManager().getVariantArraySize(), stdcxx::nan()) {
 
+}
+
+Terminal::Terminal(VoltageLevel& voltageLevel, const ThreeSides& side) :
+    Terminal(voltageLevel) {
+        m_side = side;
+}
+
+Terminal::Terminal(VoltageLevel& voltageLevel, const TerminalNumber& terminalNumber) :
+    Terminal(voltageLevel) {
+        m_terminalNumber = terminalNumber;
 }
 
 void Terminal::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -138,12 +147,24 @@ Terminal& Terminal::setQ(double q) {
     return *this;
 }
 
+std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const std::string& connectableBusId, bool connected) {
+    return stdcxx::make_unique<BusTerminal>(voltageLevel, connectableBusId, connected);
+}
 std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, const std::string& connectableBusId, bool connected) {
     return stdcxx::make_unique<BusTerminal>(voltageLevel, side, connectableBusId, connected);
 }
+std::unique_ptr<Terminal> createBusTerminal(VoltageLevel& voltageLevel, const TerminalNumber& terminalNumber, const std::string& connectableBusId, bool connected) {
+    return stdcxx::make_unique<BusTerminal>(voltageLevel, terminalNumber, connectableBusId, connected);
+}
 
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, unsigned long node) {
+    return stdcxx::make_unique<NodeTerminal>(voltageLevel, node);
+}
 std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, const ThreeSides& side, unsigned long node) {
     return stdcxx::make_unique<NodeTerminal>(voltageLevel, side, node);
+}
+std::unique_ptr<Terminal> createNodeTerminal(VoltageLevel& voltageLevel, const TerminalNumber& terminalNumber, unsigned long node) {
+    return stdcxx::make_unique<NodeTerminal>(voltageLevel, terminalNumber, node);
 }
 
 stdcxx::optional<ThreeSides> Terminal::getConnectableSide(const Terminal& terminal) {
@@ -159,13 +180,21 @@ stdcxx::optional<ThreeSides> Terminal::getConnectableSide(const Terminal& termin
         ThreeSides side = twt.getSide(terminal);
         return stdcxx::optional<ThreeSides>(side);
     } else if(stdcxx::isInstanceOf<AcDcConverter>(connectable)) {
-        const auto& acDcConverter = dynamic_cast<const AcDcConverter&>(connectable.get());
-        TwoSides side = acDcConverter.getSide(terminal);
-        return stdcxx::optional<ThreeSides>(static_cast<ThreeSides>(side));
+        return stdcxx::optional<ThreeSides>();
     } else {
         throw PowsyblException(stdcxx::format("Unexpected Connectable instance: %1%", stdcxx::demangle(connectable.get())));
     }
     return stdcxx::optional<ThreeSides>();
+}
+
+stdcxx::optional<TerminalNumber> Terminal::getConnectableTerminalNumber(const Terminal& terminal) {
+    stdcxx::CReference<Connectable> connectable = terminal.getConnectable();
+    if(stdcxx::isInstanceOf<AcDcConverter>(connectable)) {
+        const auto& acDcConverter = dynamic_cast<const AcDcConverter&>(connectable.get());
+        TerminalNumber tn = acDcConverter.getTerminalNumber(terminal);
+        return stdcxx::optional<TerminalNumber>(tn);
+    }
+    return stdcxx::optional<TerminalNumber>();
 }
 
 Terminal& Terminal::getTerminal(Identifiable& identifiable, ThreeSides side) {
@@ -178,9 +207,15 @@ Terminal& Terminal::getTerminal(Identifiable& identifiable, ThreeSides side) {
     } else if(stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
         auto& twt = dynamic_cast<ThreeWindingsTransformer&>(identifiable);
         return twt.getTerminal(side);
-    } else if(stdcxx::isInstanceOf<AcDcConverter>(identifiable)) {
+    } else {
+        throw PowsyblException(stdcxx::format("Unexpected terminal reference identifiable instance: %1%", stdcxx::demangle(identifiable)));
+    }
+}
+
+Terminal& Terminal::getTerminal(Identifiable& identifiable, TerminalNumber terminalNumber) {
+    if(stdcxx::isInstanceOf<AcDcConverter>(identifiable)) {
         auto& acDcConverter = dynamic_cast<AcDcConverter&>(identifiable);
-        return acDcConverter.getTerminal(static_cast<TwoSides>(side));
+        return acDcConverter.getTerminal(terminalNumber);
     } else {
         throw PowsyblException(stdcxx::format("Unexpected terminal reference identifiable instance: %1%", stdcxx::demangle(identifiable)));
     }
@@ -188,6 +223,10 @@ Terminal& Terminal::getTerminal(Identifiable& identifiable, ThreeSides side) {
 
 ThreeSides Terminal::getSide() const {
     return m_side;
+}
+
+TerminalNumber Terminal::getTerminalNumber() const {
+    return m_terminalNumber;
 }
 
 }  // namespace iidm
