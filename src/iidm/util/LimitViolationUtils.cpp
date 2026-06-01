@@ -42,13 +42,19 @@ std::unique_ptr<Overload> getOverload(stdcxx::CReference<LoadingLimits>& limits,
     if (static_cast<bool>(limits) && !std::isnan(limits.get().getPermanentLimit()) && !std::isnan(i)) {
         std::string previousLimitName = PERMANENT_LIMIT_NAME;
         double previousLimit = limits.get().getPermanentLimit();
+        bool bcheckLastTemporaryLimit = false; 
         for (const auto& tl : limits.get().getTemporaryLimits()) { // iterate in ascending order
             if (std::isgreaterequal(i, previousLimit * limitReduction) && std::isless(i, tl.getValue() * limitReduction)) {
-                res = stdcxx::make_unique<Overload>(tl, previousLimitName, previousLimit);
-                break;
+                res = stdcxx::make_unique<Overload>(tl, previousLimitName, previousLimit, limitReduction);
+                return res;
             }
+            
             previousLimitName = tl.getName();
             previousLimit = tl.getValue();
+            bcheckLastTemporaryLimit = true;
+        }
+        if(bcheckLastTemporaryLimit && std::isgreaterequal(i, previousLimit * limitReduction)) {
+            res = stdcxx::make_unique<Overload>(previousLimitName, previousLimit, limitReduction);
         }
     }
 

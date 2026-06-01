@@ -677,6 +677,7 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     const CurrentLimits::TemporaryLimit& tl3 = overload3.getTemporaryLimit();
     BOOST_CHECK_EQUAL("TL2", overload3.getPreviousLimitName());
     BOOST_CHECK_CLOSE(6.0, overload3.getPreviousLimit(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(1.0, overload3.getLimitReductionCoefficient(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_EQUAL(1UL, tl3.getAcceptableDuration());
     BOOST_CHECK_EQUAL("TL1", tl3.getName());
     BOOST_CHECK_CLOSE(7.0, tl3.getValue(), std::numeric_limits<double>::epsilon());
@@ -685,10 +686,17 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
 
     t1.setP(50.0);
     ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
-    BOOST_TEST(!static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
 
     ptrOverload = line.checkTemporaryLimits(TwoSides::ONE, 2.0, LimitType::CURRENT);
-    BOOST_TEST(!static_cast<bool>(ptrOverload));
+    BOOST_TEST(static_cast<bool>(ptrOverload));
+    BOOST_CHECK_EQUAL("TL1", ptrOverload->getPreviousLimitName());
+    BOOST_CHECK_CLOSE(7.0, ptrOverload->getPreviousLimit(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, ptrOverload->getLimitReductionCoefficient(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL("Unacceptable", ptrOverload->getTemporaryLimit().getName());
+    BOOST_CHECK_EQUAL(0UL, ptrOverload->getTemporaryLimit().getAcceptableDuration());
+    BOOST_CHECK(ptrOverload->getTemporaryLimit().isFictitious());
+    BOOST_CHECK_EQUAL(std::numeric_limits<double>::infinity(), ptrOverload->getTemporaryLimit().getValue());
 
     t1.setP(30.0);
     ptrOverload = line.checkTemporaryLimits(TwoSides::ONE, 2.0, LimitType::CURRENT);

@@ -18,7 +18,9 @@ namespace iidm {
 
 class Overload {
 public:
-    Overload(const LoadingLimits::TemporaryLimit &temporaryLimit, const std::string &previousLimitName, double previousLimit);
+    Overload(const LoadingLimits::TemporaryLimit &temporaryLimit, const std::string &previousLimitName, double previousLimit, double limitReductionCoefficient = 1.0);
+
+    Overload(const std::string &previousLimitName, double previousLimit, double limitReductionCoefficient = 1.0);
 
     ~Overload() noexcept = default;
 
@@ -28,12 +30,22 @@ public:
 
     const LoadingLimits::TemporaryLimit &getTemporaryLimit() const;
 
+    double getLimitReductionCoefficient() const;
+
 private:
+    /**
+     * returns a default "Unacceptable" fictitious limit of acceptable duration 0 and infinite value,
+     * internally used for overload without an acceptable temporary limit.
+     */
+    static const LoadingLimits::TemporaryLimit& UNACCEPTABLE_LIMIT();
+
     LoadingLimits::TemporaryLimit m_temporaryLimit;
 
     std::string m_previousLimitName;
 
     double m_previousLimit;
+
+    double m_limitReductionCoefficient;
 };
 
 }  // namespace iidm
