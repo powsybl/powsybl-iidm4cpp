@@ -145,6 +145,41 @@ BOOST_AUTO_TEST_CASE(checkSomeExtensions) {
     BOOST_CHECK(!options3.withExtension("def"));
 }
 
+BOOST_AUTO_TEST_CASE(checkVoltageLevelsTopologyLevel) {
+    stdcxx::Properties properties;
+
+    properties.set(ExportOptions::VOLTAGE_LEVELS_NODE_BREAKER, "vl1,vl2");
+    properties.set(ExportOptions::VOLTAGE_LEVELS_BUS_BREAKER, "vl3");
+
+    ExportOptions options1(properties);
+    BOOST_CHECK_EQUAL(options1.getVoltageLevelTopologyLevel("vl1").get(), TopologyLevel::NODE_BREAKER);
+    BOOST_CHECK_EQUAL(options1.getVoltageLevelTopologyLevel("vl2").get(), TopologyLevel::NODE_BREAKER);
+    BOOST_CHECK_EQUAL(options1.getVoltageLevelTopologyLevel("vl3").get(), TopologyLevel::BUS_BREAKER);
+    BOOST_CHECK(!options1.getVoltageLevelTopologyLevel("undefinedVL").has_value());
+
+    //Can add extra voltageLevel after or modify values:
+    options1.addVoltageLevelTopologyLevel("vl1", TopologyLevel::BUS_BRANCH);
+    options1.addVoltageLevelTopologyLevel("vl4", TopologyLevel::NODE_BREAKER);
+    BOOST_CHECK_EQUAL(options1.getVoltageLevelTopologyLevel("vl1").get(), TopologyLevel::BUS_BRANCH);
+    BOOST_CHECK_EQUAL(options1.getVoltageLevelTopologyLevel("vl2").get(), TopologyLevel::NODE_BREAKER);
+    BOOST_CHECK_EQUAL(options1.getVoltageLevelTopologyLevel("vl3").get(), TopologyLevel::BUS_BREAKER);
+    BOOST_CHECK_EQUAL(options1.getVoltageLevelTopologyLevel("vl4").get(), TopologyLevel::NODE_BREAKER);
+    BOOST_CHECK(!options1.getVoltageLevelTopologyLevel("undefinedVL").has_value());
+
+    //if same voltage level with different topology level, ignored
+    properties.set(ExportOptions::VOLTAGE_LEVELS_BUS_BRANCH, "vl2,vl4,,vl5");
+    ExportOptions options2(properties);
+    BOOST_CHECK_EQUAL(options2.getVoltageLevelTopologyLevel("vl1").get(), TopologyLevel::NODE_BREAKER);
+    BOOST_CHECK(!options2.getVoltageLevelTopologyLevel("vl2").has_value());
+    BOOST_CHECK_EQUAL(options2.getVoltageLevelTopologyLevel("vl3").get(), TopologyLevel::BUS_BREAKER);
+    BOOST_CHECK_EQUAL(options2.getVoltageLevelTopologyLevel("vl4").get(), TopologyLevel::BUS_BRANCH);
+    BOOST_CHECK_EQUAL(options2.getVoltageLevelTopologyLevel("vl5").get(), TopologyLevel::BUS_BRANCH);
+    BOOST_CHECK(!options2.getVoltageLevelTopologyLevel("undefinedVL").has_value());
+
+
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace converter

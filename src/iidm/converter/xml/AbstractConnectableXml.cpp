@@ -14,6 +14,7 @@
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/iidm/converter/xml/PropertiesXml.hpp>
+#include <powsybl/iidm/converter/xml/TopologyLevelXmlUtil.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -176,7 +177,7 @@ void AbstractConnectableXml::writeNode(const Terminal& terminal, NetworkXmlWrite
 }
 
 void AbstractConnectableXml::writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
-    const TopologyLevel& topologyLevel = getMinTopologyLevel(terminal.getVoltageLevel().getTopologyKind(), context.getOptions().getTopologyLevel());
+    TopologyLevel topologyLevel = TopologyLevelXmlUtil::determineTopologyLevel(terminal.getVoltageLevel(), context);
     switch (topologyLevel) {
         case TopologyLevel::NODE_BREAKER:
             writeNode(terminal, context, index);

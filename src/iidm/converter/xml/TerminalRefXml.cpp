@@ -20,6 +20,7 @@
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/iidm/converter/xml/TopologyLevelXmlUtil.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
@@ -74,37 +75,33 @@ void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriter
 }
 
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& nsPrefix, const std::string& elementName, powsybl::xml::XmlStreamWriter& writer) {
-    const auto& c = terminal.getConnectable();
-    if (!context.getFilter().test(c)) {
-        throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
-    }
-    if (terminal.getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER &&
-            context.getOptions().getTopologyLevel() != TopologyLevel::NODE_BREAKER &&
-            stdcxx::isInstanceOf<BusbarSection>(terminal.getConnectable())) {
-        throw PowsyblException(stdcxx::format("Terminal ref should not point to a busbar section (here %1%). Try to export in node-breaker or delete this terminal ref.", terminal.getConnectable().get().getId()));
-    }
     writer.writeStartElement(nsPrefix, elementName);
     writeTerminalRefAttribute(terminal, context);
     writer.writeEndElement();
 }
 
 void TerminalRefXml::writeTerminalRefAttribute(const Terminal& terminal, NetworkXmlWriterContext& context) {
+    checkTerminal(terminal, context);
+
     const auto& c = terminal.getConnectable();
-    if (!context.getFilter().test(c)) {
-        throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
-    }
-    if (terminal.getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER &&
-        context.getOptions().getTopologyLevel() != TopologyLevel::NODE_BREAKER &&
-        stdcxx::isInstanceOf<BusbarSection>(terminal.getConnectable())) {
-        throw PowsyblException(stdcxx::format("Terminal ref should not point to a busbar section (here %1%). Try to export in node-breaker or delete this terminal ref.", terminal.getConnectable().get().getId()));
-    }
     context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(c.get().getId()));
 
     auto optSide = Terminal::getConnectableSide(terminal);
     if(optSide.has_value() && *optSide != ThreeSides::UNDEFINED) {
         context.getWriter().writeAttribute(SIDE, Enum::toString(*optSide));
     }
+}
 
+void TerminalRefXml::checkTerminal(const Terminal& terminal, const NetworkXmlWriterContext& context) {
+    const auto& c = terminal.getConnectable();
+    if (!context.getFilter().test(c)) {
+        throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));
+    }
+    if (terminal.getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER &&
+            TopologyLevelXmlUtil::determineTopologyLevel(terminal.getVoltageLevel(), context) != TopologyLevel::NODE_BREAKER &&
+            stdcxx::isInstanceOf<BusbarSection>(terminal.getConnectable())) {
+        throw PowsyblException(stdcxx::format("Terminal ref should not point to a busbar section (here %1%). Try to export in node-breaker or delete this terminal ref.", terminal.getConnectable().get().getId()));
+    }
 }
 
 }  // namespace xml

@@ -11,6 +11,10 @@
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Extension.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+
+#include <powsybl/logging/Logger.hpp>
+#include <powsybl/logging/LoggerFactory.hpp>
+
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/set.hpp>
 
@@ -46,6 +50,10 @@ static const Parameter TOPOLOGY_LEVEL_PARAMETER(ExportOptions::TOPOLOGY_LEVEL, P
 static const Parameter VERSION_PARAMETER(ExportOptions::VERSION, Parameter::Type::STRING, "IIDM-XML version in which files will be generated", xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString("."));
 static const Parameter WITH_BRANCH_STATE_VARIABLES_PARAMETER(ExportOptions::WITH_BRANCH_STATE_VARIABLES, Parameter::Type::BOOLEAN, "Export network with branch state variables", "true");
 static const Parameter WITH_AUTOMATION_SYSTEMS_PARAMETER(ExportOptions::WITH_AUTOMATION_SYSTEMS, Parameter::Type::BOOLEAN, "Export network with automation systems", "true");
+static const Parameter VOLTAGE_LEVELS_NODEBREAKER_PARAMETER(ExportOptions::VOLTAGE_LEVELS_NODE_BREAKER, Parameter::Type::STRING_LIST, "Apply Node/Breaker topology level at export for listed voltage levels", "");
+static const Parameter VOLTAGE_LEVELS_BUSBREAKER_PARAMETER(ExportOptions::VOLTAGE_LEVELS_BUS_BREAKER, Parameter::Type::STRING_LIST, "Apply Bus/Breaker topology level at export for listed voltage levels", "");
+static const Parameter VOLTAGE_LEVELS_BUSBRANCH_PARAMETER(ExportOptions::VOLTAGE_LEVELS_BUS_BRANCH, Parameter::Type::STRING_LIST, "Apply Bus/Branch topology level at export for listed voltage levels", "");
+
 
 std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value) {
     stream << iidm::Enum::toString(value);
@@ -75,6 +83,43 @@ ExportOptions::ExportOptions(const stdcxx::Properties& parameters) :
     m_version(ConversionParameters::readStringParameter(parameters, VERSION_PARAMETER)),
     m_iidmVersionIncompatibilityBehavior(Enum::fromString<IidmVersionIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER))),
     m_withAutomationSystems(ConversionParameters::readBooleanParameter(parameters, WITH_AUTOMATION_SYSTEMS_PARAMETER)) {
+        addTopologyLevelVoltageLevels(parameters);
+}
+
+void ExportOptions::addTopologyLevelVoltageLevels(const stdcxx::Properties& parameters) {
+    std::set<std::string> nodeBreakerVLs = stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, VOLTAGE_LEVELS_NODEBREAKER_PARAMETER));
+    std::set<std::string> busBreakerVLs = stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, VOLTAGE_LEVELS_BUSBREAKER_PARAMETER));
+    std::set<std::string> busBranchVLs = stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, VOLTAGE_LEVELS_BUSBRANCH_PARAMETER));
+
+    std::set<std::string> allVLIds;
+    allVLIds.insert(nodeBreakerVLs.begin(), nodeBreakerVLs.end());
+    allVLIds.insert(busBreakerVLs.begin(), busBreakerVLs.end());
+    allVLIds.insert(busBranchVLs.begin(), busBranchVLs.end());
+
+    for (const auto& vlID : allVLIds) {
+        unsigned int foundVL = 0;
+        TopologyLevel topology;
+
+        if(nodeBreakerVLs.count(vlID)) {
+            foundVL++;
+            topology = TopologyLevel::NODE_BREAKER;
+        }
+        if(busBreakerVLs.count(vlID)) {
+            foundVL++;
+            topology = TopologyLevel::BUS_BREAKER;
+        }
+        if(busBranchVLs.count(vlID)) {
+            foundVL++;
+            topology = TopologyLevel::BUS_BRANCH;
+        }
+
+        if(foundVL == 1) {
+            addVoltageLevelTopologyLevel(vlID, topology);
+        } else if(foundVL > 1) {
+            logging::Logger& logger = logging::LoggerFactory::getLogger<ExportOptions>();
+            logger.warn(stdcxx::format("VoltageLevel %1% is associated with different topology levels in property => ignored", vlID));
+        } // else (foundVL == 0) should not be possible, and in that case we would do nothing.
+    }
 }
 
 ExportOptions& ExportOptions::addExtension(const std::string& extension) {
@@ -101,6 +146,26 @@ const std::string& ExportOptions::getExtensionVersion(const std::string& extensi
     const auto& it = m_extensionsVersions.find(extensionName);
 
     return it == m_extensionsVersions.end() ? s_noVersion : it->second;
+}
+
+ExportOptions& ExportOptions::addVoltageLevelTopologyLevel(const std::string& voltageLevelId, const TopologyLevel& topologyLevel) {
+    if(!voltageLevelId.empty()) {
+        const auto& it = m_voltageLevelTopologyLevels.find(voltageLevelId);
+        if(it != m_voltageLevelTopologyLevels.end()) {
+            //Erase previous value, so we can override
+            m_voltageLevelTopologyLevels.erase(it);
+        }
+
+        m_voltageLevelTopologyLevels.insert(std::make_pair(voltageLevelId, topologyLevel));
+    }
+
+    return *this;
+}
+
+stdcxx::optional<TopologyLevel> ExportOptions::getVoltageLevelTopologyLevel(const std::string& voltageLevelId) const {
+    const auto& it = m_voltageLevelTopologyLevels.find(voltageLevelId);
+
+    return it == m_voltageLevelTopologyLevels.end() ? stdcxx::optional<TopologyLevel>() : stdcxx::optional<TopologyLevel>(it->second);
 }
 
 const ExportOptions::IidmVersionIncompatibilityBehavior& ExportOptions::getIidmVersionIncompatibilityBehavior() const {

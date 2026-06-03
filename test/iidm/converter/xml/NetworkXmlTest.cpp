@@ -404,6 +404,33 @@ BOOST_FIXTURE_TEST_CASE(emptyFormatTest, test::ResourceFixture) {
     }
 }
 
+BOOST_FIXTURE_TEST_CASE(exportTopologyLevelVoltageLevels, test::ResourceFixture) {
+
+    std::string networkNodeBreakerFilename = "voltageLevelTopology/testNetworkNodeBreaker.xml";
+    std::string networkWithTopologyLevelsFilename = "voltageLevelTopology/topologyLevelVoltageLevels.xml";
+
+    Network networkNBK = Network::readXml(ResourceFixture::getResourcePath(networkNodeBreakerFilename));
+
+    stdcxx::Properties properties;
+    properties.set(ExportOptions::VOLTAGE_LEVELS_BUS_BREAKER, "vl1,vl2,vl3");
+    properties.set(ExportOptions::VOLTAGE_LEVELS_BUS_BRANCH, "vl3"); // vl3 not unique so ignored, thus exported as NODE_BREAKER
+    ExportOptions options(properties);
+
+    const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
+        iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);
+    };
+    test::converter::RoundTrip::writeXmlTest(networkNBK, writer, ResourceFixture::getResource(networkWithTopologyLevelsFilename));
+
+    //AssertionError: Not implemented :
+    Network networkTest = Network::readXml(ResourceFixture::getResourcePath(networkWithTopologyLevelsFilename));
+
+    BOOST_CHECK_EQUAL(TopologyKind::NODE_BREAKER, networkNBK.getVoltageLevel("vl1").getTopologyModel().getTopologyKind());
+    BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, networkTest.getVoltageLevel("vl1").getTopologyModel().getTopologyKind());
+
+}
+
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml

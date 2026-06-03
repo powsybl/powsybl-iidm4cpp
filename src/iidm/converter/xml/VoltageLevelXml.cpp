@@ -18,6 +18,7 @@
 #include <powsybl/iidm/converter/Constants.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+#include <powsybl/iidm/converter/xml/TopologyLevelXmlUtil.hpp>
 #include <powsybl/iidm/util/Networks.hpp>
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
@@ -319,7 +320,7 @@ void VoltageLevelXml::writeRootElementAttributes(const VoltageLevel& voltageLeve
     context.getWriter().writeAttribute(NOMINAL_V, voltageLevel.getNominalV());
     context.getWriter().writeOptionalAttribute(LOW_VOLTAGE_LIMIT, voltageLevel.getLowVoltageLimit());
     context.getWriter().writeOptionalAttribute(HIGH_VOLTAGE_LIMIT, voltageLevel.getHighVoltageLimit());
-    const TopologyLevel& topologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), context.getOptions().getTopologyLevel());
+    TopologyLevel topologyLevel = TopologyLevelXmlUtil::determineTopologyLevel(voltageLevel, context);
     const TopologyKind& topologyKind = getTopologyKind(topologyLevel);
     context.getWriter().writeAttribute(TOPOLOGY_KIND, Enum::toString(topologyKind));
 }
@@ -343,7 +344,7 @@ void VoltageLevelXml::writeStaticVarCompensators(const VoltageLevel& voltageLeve
 }
 
 void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const Container& /*container*/, NetworkXmlWriterContext& context) const {
-    TopologyLevel topologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), context.getOptions().getTopologyLevel());
+    TopologyLevel topologyLevel = TopologyLevelXmlUtil::determineTopologyLevel(voltageLevel, context);
     switch (topologyLevel) {
         case TopologyLevel::BUS_BREAKER:
             writeBusBreakerTopology(voltageLevel, context);

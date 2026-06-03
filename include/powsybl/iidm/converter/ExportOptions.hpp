@@ -37,6 +37,10 @@ public:
     static constexpr const char* const WITH_BRANCH_STATE_VARIABLES = "iidm.export.xml.with-branch-state-variables";
     static constexpr const char* const WITH_AUTOMATION_SYSTEMS = "iidm.export.xml.with-automation-systems";
 
+    static constexpr const char* const VOLTAGE_LEVELS_NODE_BREAKER = "iidm.export.xml.topology-level.voltage-levels.node-breaker";
+    static constexpr const char* const VOLTAGE_LEVELS_BUS_BREAKER = "iidm.export.xml.topology-level.voltage-levels.bus-breaker";
+    static constexpr const char* const VOLTAGE_LEVELS_BUS_BRANCH = "iidm.export.xml.topology-level.voltage-levels.bus-branch";
+
     enum class IidmVersionIncompatibilityBehavior : unsigned char {
         THROW_EXCEPTION,
         LOG_ERROR
@@ -105,6 +109,20 @@ public:
      * @return the version in which the extension should be exported or an empty string if the extension is not found
      */
     const std::string& getExtensionVersion(const std::string& extensionName) const;
+
+    /**
+     * Add a specific topology level to be used on a voltage.
+     * That TopologyLevel should be "simpler" than the VoltageLevel's modeled topology.
+     *
+     * @param voltageLevelId The id of the VoltageLevel
+     * @param topologyLevel The TopologyLevel in which that VoltageLevel should be exported
+     */
+    ExportOptions& addVoltageLevelTopologyLevel(const std::string& voltageLevelId, const TopologyLevel& topologyLevel);
+
+    /**
+     * Return the expected TopologyLevel for the export of the given VoltageLevel
+     */
+    stdcxx::optional<TopologyLevel> getVoltageLevelTopologyLevel(const std::string& voltageLevelId) const;
 
     /**
      * Return the expecting behaviour if an IIDM's version incompatibility occurs
@@ -283,6 +301,8 @@ public:
     void setXmlEncoding(const std::string& encoding);
 
 private:
+    void addTopologyLevelVoltageLevels(const stdcxx::Properties& parameters);
+
     bool m_anonymized = false;
 
     bool m_indent = true;
@@ -292,6 +312,8 @@ private:
     bool m_throwExceptionIfExtensionNotFound = false;
 
     TopologyLevel m_topologyLevel = TopologyLevel::NODE_BREAKER;
+
+    std::map<std::string, TopologyLevel> m_voltageLevelTopologyLevels;
 
     bool m_withBranchSV = true;
 
