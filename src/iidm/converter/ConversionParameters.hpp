@@ -33,6 +33,11 @@ public:
 
     static int readIntParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
 
+    /**
+     * Return true if the Properties contains one of the configured Parameter name whatever its value
+     */
+    static bool containsParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter);
+
 public:
     ConversionParameters() = delete;
 

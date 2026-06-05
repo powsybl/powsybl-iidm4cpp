@@ -67,6 +67,13 @@ void checkExtensionsNotFound(const NetworkXmlReaderContext& context, const std::
     }
 }
 
+bool isExtensionIncluded(const stdcxx::CReference<ExtensionXmlSerializer>& extensionXmlSerializer, const ExportOptions& options) {
+    if(!extensionXmlSerializer) {
+        return false;
+    }
+    return options.withExtension(extensionXmlSerializer.get().getExtensionName());
+}
+
 bool canExtensionBeWritten(const stdcxx::CReference<ExtensionXmlSerializer>& extensionXmlSerializer, const IidmXmlVersion& version, const ExportOptions& options) {
     if(!extensionXmlSerializer) {
         return false;
@@ -106,8 +113,13 @@ stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOp
     return serializer;
 }
 
-std::set<std::string> getExtensionNames(const Network& network,const IidmXmlVersion& version, const ExportOptions& options) {
+std::set<std::string> getExtensionNames(const Network& network, const IidmXmlVersion& version, const ExportOptions& options) {
     std::set<std::string> names;
+
+    if(options.withNoExtension()) {
+        return names;
+    }
+
     for (const auto& identifiable : network.getIdentifiables()) {
         for (const auto& extension : identifiable.getExtensions()) {
             if(canExtensionBeWritten(getExtensionSerializer(options,extension), version, options)) {
@@ -247,7 +259,9 @@ void NetworkXml::writeExtensions(const Network& network, NetworkXmlWriterContext
 
         bool atLeastOneExtensionToWrite = false;
         for (const auto& extension : identifiable.getExtensions()) {
-            if(canExtensionBeWritten(getExtensionSerializer(context.getOptions(),extension), context.getVersion(), context.getOptions())) {
+            auto extensionSerializer = getExtensionSerializer(context.getOptions(), extension);
+            if(isExtensionIncluded(extensionSerializer, context.getOptions()) && 
+               canExtensionBeWritten(extensionSerializer, context.getVersion(), context.getOptions())) {
                 atLeastOneExtensionToWrite = true;
                 break;
             }

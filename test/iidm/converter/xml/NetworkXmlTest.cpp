@@ -217,7 +217,7 @@ BOOST_AUTO_TEST_CASE(FromParameters) {
     std::set<std::string> extensions;
     extensions.insert("extension1");
     extensions.insert("extension2");
-    properties.set(ExportOptions::EXTENSIONS_LIST, boost::algorithm::join(extensions, ","));
+    properties.set(ExportOptions::EXTENSIONS_INCLUDED_LIST, boost::algorithm::join(extensions, ","));
     Network::writeXml(filename, ostream, network, ExportOptions(properties));
 }
 
@@ -228,7 +228,7 @@ BOOST_AUTO_TEST_CASE(WriteFromParametersCheckExtensions) {
     std::stringstream ostream;
     const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
 
-    properties.set(ExportOptions::EXTENSIONS_LIST, "loadBar");
+    properties.set(ExportOptions::EXTENSIONS_INCLUDED_LIST, "loadBar");
     Network::writeXml(filename, ostream, network, ExportOptions(properties));
     const std::string& loadBarOnly = ostream.str();
     BOOST_TEST(loadBarOnly.find("loadBar") != std::string::npos);
@@ -236,7 +236,7 @@ BOOST_AUTO_TEST_CASE(WriteFromParametersCheckExtensions) {
 
     ostream.str("");
     ostream.clear();
-    properties.set(ExportOptions::EXTENSIONS_LIST, "loadFoo");
+    properties.set(ExportOptions::EXTENSIONS_INCLUDED_LIST, "loadFoo");
     Network::writeXml(filename, ostream, network, ExportOptions(properties));
     const std::string& loadFooOnly = ostream.str();
     BOOST_TEST(loadFooOnly.find("loadBar") == std::string::npos);
@@ -244,11 +244,19 @@ BOOST_AUTO_TEST_CASE(WriteFromParametersCheckExtensions) {
 
     ostream.str("");
     ostream.clear();
-    properties.remove(ExportOptions::EXTENSIONS_LIST);
+    properties.remove(ExportOptions::EXTENSIONS_INCLUDED_LIST);
     Network::writeXml(filename, ostream, network, ExportOptions(properties));
     const std::string& loadAllExtsOutput = ostream.str();
     BOOST_TEST(loadAllExtsOutput.find("loadBar") != std::string::npos);
     BOOST_TEST(loadAllExtsOutput.find("loadFoo") != std::string::npos);
+
+    ostream.str("");
+    ostream.clear();
+    properties.set(ExportOptions::EXTENSIONS_EXCLUDED_LIST, "");
+    Network::writeXml(filename, ostream, network, ExportOptions(properties));
+    const std::string& loadAllExtsOutput2 = ostream.str();
+    BOOST_TEST(loadAllExtsOutput2.find("loadBar") != std::string::npos);
+    BOOST_TEST(loadAllExtsOutput2.find("loadFoo") != std::string::npos);
 
     std::stringstream referenceStream;
     Network::writeXml(filename, referenceStream, network);
@@ -269,24 +277,31 @@ BOOST_AUTO_TEST_CASE(ReadFromParametersCheckExtensions) {
 
     std::string refString = inputStream.str();
 
-    properties.set(ImportOptions::EXTENSIONS_LIST, "loadFoo");
+    properties.set(ImportOptions::EXTENSIONS_INCLUDED_LIST, "loadFoo");
     inputStream.str(refString);
     inputStream.clear();
     Network fooNetwork = Network::readXml(filename, inputStream, ImportOptions(properties));
     BOOST_CHECK_EQUAL(1UL, boost::size(fooNetwork.getLoad("LOAD").getExtensions()));
     BOOST_CHECK_EQUAL(1UL, boost::size(fooNetwork.getLoad("LOAD2").getExtensions()));
 
-    properties.set(ImportOptions::EXTENSIONS_LIST, "loadBar");
+    properties.set(ImportOptions::EXTENSIONS_INCLUDED_LIST, "loadBar");
     inputStream.str(refString);
     inputStream.clear();
     Network barNetwork = Network::readXml(filename, inputStream, ImportOptions(properties));
     BOOST_CHECK_EQUAL(1UL, boost::size(barNetwork.getLoad("LOAD").getExtensions()));
     BOOST_CHECK_EQUAL(0UL, boost::size(barNetwork.getLoad("LOAD2").getExtensions()));
 
-    properties.remove(ImportOptions::EXTENSIONS_LIST);
+    properties.remove(ImportOptions::EXTENSIONS_INCLUDED_LIST);
     inputStream.str(refString);
     inputStream.clear();
     Network allExtNetwork = Network::readXml(filename, inputStream, ImportOptions(properties));
+    BOOST_CHECK_EQUAL(2UL, boost::size(allExtNetwork.getLoad("LOAD").getExtensions()));
+    BOOST_CHECK_EQUAL(1UL, boost::size(allExtNetwork.getLoad("LOAD2").getExtensions()));
+
+    properties.set(ImportOptions::EXTENSIONS_EXCLUDED_LIST, "");
+    inputStream.str(refString);
+    inputStream.clear();
+    Network allExtNetwork2 = Network::readXml(filename, inputStream, ImportOptions(properties));
     BOOST_CHECK_EQUAL(2UL, boost::size(allExtNetwork.getLoad("LOAD").getExtensions()));
     BOOST_CHECK_EQUAL(1UL, boost::size(allExtNetwork.getLoad("LOAD2").getExtensions()));
 }
@@ -369,9 +384,9 @@ BOOST_FIXTURE_TEST_CASE(skipExtensionsTest, test::ResourceFixture) {
     POWSYBL_ASSERT_REF_TRUE(load1.findExtension<powsybl::network::LoadFooExt>());
     BOOST_CHECK(load1.getModelType() == LoadModelType::ZIP);
 
-    // Read file with only terminalMockNoSerialize
+    // Read file with only terminalMockNoSerialize and loadFoo
     converter::ImportOptions importSkipOptions = ImportOptions();
-    importSkipOptions.addExtension("terminalMockNoSerialize").addExtension("loadFoo");
+    importSkipOptions.addIncludedExtension("terminalMockNoSerialize").addIncludedExtension("loadFoo");
     Network networkReadSkipExtensions = Network::readXml(refXmlPath, importSkipOptions);
     Load& load2 = networkReadSkipExtensions.getLoad("LOAD");
     POWSYBL_ASSERT_REF_FALSE(load2.findExtension<powsybl::network::LoadBarExt>());

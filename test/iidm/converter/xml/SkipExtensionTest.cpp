@@ -41,7 +41,7 @@ BOOST_FIXTURE_TEST_CASE(SkipExtensionTest, test::ResourceFixture) {
     stdcxx::Properties properties;
     std::stringstream ostream;
 
-    properties.set(ExportOptions::EXTENSIONS_LIST, "");
+    properties.set(ExportOptions::EXTENSIONS_INCLUDED_LIST, "");
     properties.set(ExportOptions::VERSION, "1.0");
     Network::writeXml(filename, ostream, network, ExportOptions(properties));
     BOOST_CHECK_EQUAL(refNetwork, ostream.str());
@@ -50,7 +50,7 @@ BOOST_FIXTURE_TEST_CASE(SkipExtensionTest, test::ResourceFixture) {
 BOOST_FIXTURE_TEST_CASE(checkSomeFiltered, test::ResourceFixture) {
     const std::string& filename = "multiple-extensions.xml";
     stdcxx::Properties properties;
-    properties.set(ImportOptions::EXTENSIONS_LIST, "loadFoo");
+    properties.set(ImportOptions::EXTENSIONS_INCLUDED_LIST, "loadFoo");
 
     Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath(filename, IidmXmlVersion::V1_0()), ImportOptions(properties));
     network.getLoad("LOAD").getExtension<powsybl::network::LoadFooExt>();
@@ -60,7 +60,7 @@ BOOST_FIXTURE_TEST_CASE(checkSomeFiltered, test::ResourceFixture) {
 
 BOOST_FIXTURE_TEST_CASE(checkReadNoExtension, test::ResourceFixture) {
     stdcxx::Properties properties;
-    properties.set(ImportOptions::EXTENSIONS_LIST, "");
+    properties.set(ImportOptions::EXTENSIONS_INCLUDED_LIST, "");
 
     Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("multiple-extensions.xml", IidmXmlVersion::V1_0()), ImportOptions(properties));
     POWSYBL_ASSERT_THROW(network.getLoad("LOAD").getExtension<powsybl::network::LoadFooExt>(), PowsyblException, "Extension powsybl::network::LoadFooExt not found");
@@ -70,12 +70,20 @@ BOOST_FIXTURE_TEST_CASE(checkReadNoExtension, test::ResourceFixture) {
 
 BOOST_FIXTURE_TEST_CASE(checkReadAllExtensions, test::ResourceFixture) {
     stdcxx::Properties properties;
-    properties.set(ImportOptions::EXTENSIONS_LIST, "loadFoo,loadBar");
+    properties.set(ImportOptions::EXTENSIONS_INCLUDED_LIST, "loadFoo,loadBar");
 
     Network network = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("multiple-extensions.xml", IidmXmlVersion::V1_0()), ImportOptions(properties));
     network.getLoad("LOAD").getExtension<powsybl::network::LoadFooExt>();
     network.getLoad("LOAD").getExtension<powsybl::network::LoadBarExt>();
     network.getLoad("LOAD2").getExtension<powsybl::network::LoadFooExt>();
+
+    stdcxx::Properties properties2;
+    properties2.set(ImportOptions::EXTENSIONS_EXCLUDED_LIST, "");
+    Network network2 = Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("multiple-extensions.xml", IidmXmlVersion::V1_0()), ImportOptions(properties2));
+    network2.getLoad("LOAD").getExtension<powsybl::network::LoadFooExt>();
+    network2.getLoad("LOAD").getExtension<powsybl::network::LoadBarExt>();
+    network2.getLoad("LOAD2").getExtension<powsybl::network::LoadFooExt>();
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

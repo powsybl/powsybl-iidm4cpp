@@ -19,35 +19,29 @@ namespace iidm {
 
 namespace converter {
 
-static const Parameter EXTENSIONS_LIST_PARAMETER(ImportOptions::EXTENSIONS_LIST, converter::Parameter::Type::STRING_LIST, "The list of exported extensions", "");
-static const Parameter THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parameter(ImportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false")
+static const Parameter IMPORT_EXTENSIONS_INCLUDED_LIST_PARAMETER(ImportOptions::EXTENSIONS_INCLUDED_LIST, converter::Parameter::Type::STRING_LIST, "The list of extensions to be imported", "");
+static const Parameter IMPORT_EXTENSIONS_EXCLUDED_LIST_PARAMETER(ImportOptions::EXTENSIONS_EXCLUDED_LIST, converter::Parameter::Type::STRING_LIST, "The list of extensions that will be excluded and not imported", "");
+static const Parameter IMPORT_THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parameter(ImportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, converter::Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false")
     .addAdditionalNames({"throwExceptionIfExtensionNotFound"});
-static const Parameter WITH_AUTOMATION_SYSTEMS_PARAMETER = Parameter(ImportOptions::WITH_AUTOMATION_SYSTEMS, converter::Parameter::Type::BOOLEAN, 
+static const Parameter IMPORT_WITH_AUTOMATION_SYSTEMS_PARAMETER = Parameter(ImportOptions::WITH_AUTOMATION_SYSTEMS, converter::Parameter::Type::BOOLEAN, 
     "Import network with automation systems", "true");
-static const Parameter MISSING_PERMANENT_LIMIT_PERCENTAGE_PARAMETER = Parameter(ImportOptions::MISSING_PERMANENT_LIMIT_PERCENTAGE, converter::Parameter::Type::DOUBLE, 
+static const Parameter IMPORT_MISSING_PERMANENT_LIMIT_PERCENTAGE_PARAMETER = Parameter(ImportOptions::MISSING_PERMANENT_LIMIT_PERCENTAGE, converter::Parameter::Type::DOUBLE, 
     "Percentage applied to lowest temporary limit to compute the permanent limit when missing (for IIDM < 1.12 only)", "100.0");
-static const Parameter MINIMAL_VALIDATION_LEVEL_PARAMETER = Parameter(ImportOptions::MINIMAL_VALIDATION_LEVEL, converter::Parameter::Type::STRING, "Minimal validation level accepted", "");
+static const Parameter IMPORT_MINIMAL_VALIDATION_LEVEL_PARAMETER = Parameter(ImportOptions::MINIMAL_VALIDATION_LEVEL, converter::Parameter::Type::STRING, "Minimal validation level accepted", "");
 
 
-ImportOptions::ImportOptions(const stdcxx::Properties& parameters) :
-    m_throwExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER)),
-    m_extensions(stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, EXTENSIONS_LIST_PARAMETER))),
-    m_withAutomationSystems(ConversionParameters::readBooleanParameter(parameters, WITH_AUTOMATION_SYSTEMS_PARAMETER)),
-    m_missingPermanentLimitPercentage(ConversionParameters::readDoubleParameter(parameters, MISSING_PERMANENT_LIMIT_PERCENTAGE_PARAMETER)) {
-        setMinimalValidationLevel(ConversionParameters::readStringParameter(parameters, MINIMAL_VALIDATION_LEVEL_PARAMETER));
-}
+ImportOptions::ImportOptions(const stdcxx::Properties& parameters) : 
+    m_missingPermanentLimitPercentage(ConversionParameters::readDoubleParameter(parameters, IMPORT_MISSING_PERMANENT_LIMIT_PERCENTAGE_PARAMETER)) {
+        setThrowExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, IMPORT_THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER));
+        setWithAutomationSystems(ConversionParameters::readBooleanParameter(parameters, IMPORT_WITH_AUTOMATION_SYSTEMS_PARAMETER));
 
-ImportOptions& ImportOptions::addExtension(const std::string& extension) {
-    m_extensions.insert(extension);
-    return *this;
-}
+        checkAndAddExtensions(ConversionParameters::containsParameter(parameters, IMPORT_EXTENSIONS_INCLUDED_LIST_PARAMETER),
+                              stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, IMPORT_EXTENSIONS_INCLUDED_LIST_PARAMETER)),
+                              ConversionParameters::containsParameter(parameters, IMPORT_EXTENSIONS_EXCLUDED_LIST_PARAMETER),
+                              stdcxx::toSet(ConversionParameters::readStringListParameter(parameters, IMPORT_EXTENSIONS_EXCLUDED_LIST_PARAMETER)),
+                              false);
 
-bool ImportOptions::isThrowExceptionIfExtensionNotFound() const {
-    return m_throwExceptionIfExtensionNotFound;
-}
-
-bool ImportOptions::isWithAutomationSystems() const {
-    return m_withAutomationSystems;
+        setMinimalValidationLevel(ConversionParameters::readStringParameter(parameters, IMPORT_MINIMAL_VALIDATION_LEVEL_PARAMETER));
 }
 
 double ImportOptions::getMissingPermanentLimitPercentage() const {
@@ -56,21 +50,6 @@ double ImportOptions::getMissingPermanentLimitPercentage() const {
 
 const stdcxx::optional<ValidationLevel>& ImportOptions::getMinimalValidationLevel() const {
     return m_minimalValidationLevel;
-}
-
-ImportOptions& ImportOptions::setExtensions(const std::set<std::string>& extensions) {
-    m_extensions = extensions;
-    return *this;
-}
-
-ImportOptions& ImportOptions::setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound) {
-    m_throwExceptionIfExtensionNotFound = throwExceptionIfExtensionNotFound;
-    return *this;
-}
-
-ImportOptions& ImportOptions::setWithAutomationSystems(bool withAutomationSystems) {
-    m_withAutomationSystems = withAutomationSystems;
-    return *this;
 }
 
 ImportOptions& ImportOptions::setMissingPermanentLimitPercentage(double missingPermanentLimitPercentage) {
@@ -83,10 +62,6 @@ ImportOptions& ImportOptions::setMinimalValidationLevel(const std::string& minim
         m_minimalValidationLevel = Enum::fromString<ValidationLevel>(minimalValidationLevel);
     }
     return *this;
-}
-
-bool ImportOptions::withExtension(const std::string& extension) const {
-    return m_extensions.empty() || m_extensions.find(extension) != m_extensions.end();
 }
 
 }  // namespace converter

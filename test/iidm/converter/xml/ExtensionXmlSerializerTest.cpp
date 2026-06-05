@@ -162,12 +162,12 @@ BOOST_FIXTURE_TEST_CASE(indicateExtensionAtImportTest,  test::ResourceFixture) {
 
     std::string filename= "extensionName/extensionName_0_1_otherPrefix.xml";
     ImportOptions options1;
-    options1.addExtension("loadElementMock"); //Using serialization name
+    options1.addIncludedExtension("loadElementMock"); //Using serialization name
     Network network1 = Network::readXml(ResourceFixture::getResourcePath(filename), options1);
     POWSYBL_ASSERT_REF_TRUE(network1.getLoad("Load1").findExtension<extensions::LoadMockExt>());
 
     ImportOptions options2;
-    options2.addExtension("loadMock"); //Using "real" extension name
+    options2.addIncludedExtension("loadMock"); //Using "real" extension name
     Network network2 = Network::readXml(ResourceFixture::getResourcePath(filename), options2);
     POWSYBL_ASSERT_REF_TRUE(network2.getLoad("Load1").findExtension<extensions::LoadMockExt>());
 

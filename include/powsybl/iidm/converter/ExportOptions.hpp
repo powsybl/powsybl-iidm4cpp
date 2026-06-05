@@ -13,6 +13,7 @@
 #include <string>
 
 #include <powsybl/iidm/TopologyLevel.hpp>
+#include <powsybl/iidm/converter/AbstractOptions.hpp>
 #include <powsybl/stdcxx/Properties.hpp>
 #include <powsybl/xml/XmlEncoding.hpp>
 
@@ -20,14 +21,13 @@ namespace powsybl {
 
 namespace iidm {
 
-class Extension;
-
 namespace converter {
 
-class ExportOptions {
+class ExportOptions : public AbstractOptions<ExportOptions> {
 public:
     static constexpr const char* const ANONYMISED = "iidm.export.xml.anonymised";
-    static constexpr const char* const EXTENSIONS_LIST = "iidm.export.xml.extensions";
+    static constexpr const char* const EXTENSIONS_INCLUDED_LIST = "iidm.export.xml.included.extensions";
+    static constexpr const char* const EXTENSIONS_EXCLUDED_LIST = "iidm.export.xml.excluded.extensions";
     static constexpr const char* const IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR = "iidm.export.xml.iidm-version-incompatibility-behavior";
     static constexpr const char* const INDENT = "iidm.export.xml.indent";
     static constexpr const char* const ONLY_MAIN_CC = "iidm.export.xml.only-main-cc";
@@ -73,15 +73,6 @@ public:
      * @param parameters import parameters
      */
     explicit ExportOptions(const stdcxx::Properties& parameters);
-
-    /**
-     * Add an extension to the list of exported extensions.
-     *
-     * @param extension The name of the extension to add
-     *
-     * @return this ExportOptions object
-     */
-    ExportOptions& addExtension(const std::string& extension);
 
     /**
      * Add a given version in which the extension with the given name will be exported if this version is supported by
@@ -148,15 +139,6 @@ public:
     const std::string& getVersion() const;
 
     /**
-     * Return true if one (or more) extension of the given list should be exported
-     *
-     * @param extensions the list of extensions to be checked.
-     *
-     * @return true if at least one extension should be exported, false otherwise
-     */
-    bool hasAtLeastOneExtension(const stdcxx::const_range<Extension>& extensions) const;
-
-    /**
      * Return true if the identifier should be anonymized
      *
      * @return true if the identifier should be anonymized, false otherwise
@@ -178,25 +160,11 @@ public:
     bool isOnlyMainCc() const;
 
     /**
-     * Return true if an exception should be thrown if an XML serializer for an extension is not found.
-     *
-     * @return true if an exception should be thrown, false otherwise
-     */
-    bool isThrowExceptionIfExtensionNotFound() const;
-
-    /**
      * Return true if the state variables must be exported for branches.
      *
      * @return true if the state variables must be exported, false otherwise
      */
     bool isWithBranchSV() const;
-
-    /**
-     * Return true if the automation systems must be exported.
-     *
-     * @return true if the automation systems must be exported, false otherwise
-     */
-    bool isWithAutomationSystems() const;
 
     /**
      * Enable/Disable the anonymization of the identifiers.
@@ -206,15 +174,6 @@ public:
      * @return this ExportOptions object
      */
     ExportOptions& setAnonymized(bool anonymized);
-
-    /**
-     * Set the list of exported extensions.
-     *
-     * @param extensions The exported extension list
-     *
-     * @return this ExportOptions object
-     */
-    ExportOptions& setExtensions(const std::set<std::string>& extensions);
 
     /**
      * Set the expected behaviour if an IIDM's version incompatibility occurs
@@ -244,15 +203,6 @@ public:
     ExportOptions& setOnlyMainCc(bool onlyMainCc);
 
     /**
-     * Enable/Disable the lookup of extension's serializers permissive mode.
-     *
-     * @param throwExceptionIfExtensionNotFound The extension's serializer lookup status
-     *
-     * @return This ExportOptions object
-     */
-    ExportOptions& setThrowExceptionIfExtensionNotFound(bool throwExceptionIfExtensionNotFound);
-
-    /**
      * Set the maximum topology level, to decrease the level of details of the exported topology
      *
      * @param topologyLevel The maximum TopologyLevel to use for the export
@@ -279,28 +229,11 @@ public:
      */
     ExportOptions& setWithBranchSV(bool withBranchSV);
 
-    /**
-     * Enable/Disable the export of the automation systems
-     *
-     * @param withAutomationSystems Set to true to export automation systems
-     *
-     * @return this ExportOptions object
-     */
-    ExportOptions& setWithAutomationSystems(bool withAutomationSystems);
-
-    /**
-     * Return true if the given extension should be exported.
-     *
-     * @param extension The name of the extension
-     *
-     * @return true if the given extension should be exported, false otherwise
-     */
-    bool withExtension(const std::string& extension) const;
-
     const std::string& getXmlEncoding() const;
     void setXmlEncoding(const std::string& encoding);
 
 private:
+    void addExtensionVersions(const stdcxx::Properties& parameters);
     void addTopologyLevelVoltageLevels(const stdcxx::Properties& parameters);
 
     bool m_anonymized = false;
@@ -309,15 +242,11 @@ private:
 
     bool m_onlyMainCc = false;
 
-    bool m_throwExceptionIfExtensionNotFound = false;
-
     TopologyLevel m_topologyLevel = TopologyLevel::NODE_BREAKER;
 
     std::map<std::string, TopologyLevel> m_voltageLevelTopologyLevels;
 
     bool m_withBranchSV = true;
-
-    std::set<std::string> m_extensions;
 
     std::map<std::string, std::string> m_extensionsVersions;
 
@@ -327,7 +256,6 @@ private:
 
     std::string m_encoding = powsybl::xml::DEFAULT_ENCODING;
 
-    bool m_withAutomationSystems = true;
 };
 
 std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value);

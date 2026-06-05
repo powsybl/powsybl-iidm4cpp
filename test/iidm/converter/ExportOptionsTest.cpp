@@ -10,6 +10,8 @@
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/converter/ExportOptions.hpp>
 
+#include <powsybl/test/AssertionUtils.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -84,7 +86,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     properties.set(ExportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, "true");
     properties.set(ExportOptions::TOPOLOGY_LEVEL, "NODE_BREAKER");
     properties.set(ExportOptions::WITH_BRANCH_STATE_VARIABLES, "true");
-    properties.set(ExportOptions::EXTENSIONS_LIST, "");
+    properties.set(ExportOptions::EXTENSIONS_INCLUDED_LIST, "");
     properties.set(ExportOptions::VERSION, "1.0");
     properties.set(ExportOptions::IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR, "LOG_ERROR");
     properties.set(ExportOptions::WITH_AUTOMATION_SYSTEMS, "false");
@@ -109,11 +111,16 @@ BOOST_AUTO_TEST_CASE(checkAllExtensions) {
     ExportOptions options(properties);
     BOOST_CHECK(options.withExtension("abc"));
     BOOST_CHECK(options.withExtension("def"));
+
+    properties.set(ExportOptions::EXTENSIONS_EXCLUDED_LIST, "");
+    ExportOptions options2(properties);
+    BOOST_CHECK(options2.withExtension("abc"));
+    BOOST_CHECK(options2.withExtension("def"));
 }
 
 BOOST_AUTO_TEST_CASE(checkNoExtension) {
     stdcxx::Properties properties;
-    properties.set(ExportOptions::EXTENSIONS_LIST, "");
+    properties.set(ExportOptions::EXTENSIONS_INCLUDED_LIST, "");
 
     ExportOptions options(properties);
     BOOST_CHECK(!options.withExtension("abc"));
@@ -123,26 +130,44 @@ BOOST_AUTO_TEST_CASE(checkNoExtension) {
 BOOST_AUTO_TEST_CASE(checkSomeExtensions) {
     stdcxx::Properties properties;
 
-    properties.set(ExportOptions::EXTENSIONS_LIST, "loadFoo,loadBar");
+    properties.set(ExportOptions::EXTENSIONS_INCLUDED_LIST, "loadFoo,loadBar");
     ExportOptions options(properties);
     BOOST_CHECK(options.withExtension("loadFoo"));
     BOOST_CHECK(options.withExtension("loadBar"));
     BOOST_CHECK(!options.withExtension("abc"));
     BOOST_CHECK(!options.withExtension("def"));
 
-    properties.set(ExportOptions::EXTENSIONS_LIST, "loadFoo:loadBar");
+    properties.set(ExportOptions::EXTENSIONS_INCLUDED_LIST, "loadFoo:loadBar");
     ExportOptions options2(properties);
     BOOST_CHECK(options2.withExtension("loadFoo"));
     BOOST_CHECK(options2.withExtension("loadBar"));
     BOOST_CHECK(!options2.withExtension("abc"));
     BOOST_CHECK(!options2.withExtension("def"));
 
-    properties.set(ExportOptions::EXTENSIONS_LIST, "loadFoo");
+    properties.set(ExportOptions::EXTENSIONS_INCLUDED_LIST, "loadFoo");
     ExportOptions options3(properties);
     BOOST_CHECK(options3.withExtension("loadFoo"));
     BOOST_CHECK(!options3.withExtension("loadBar"));
     BOOST_CHECK(!options3.withExtension("abc"));
     BOOST_CHECK(!options3.withExtension("def"));
+
+    properties.set(ExportOptions::EXTENSIONS_EXCLUDED_LIST, "loadFoo,loadBar");
+
+    POWSYBL_ASSERT_THROW(new ExportOptions(properties), PowsyblException, "You can't define both included and excluded extensions in parameters.");
+    properties.remove(ExportOptions::EXTENSIONS_INCLUDED_LIST);
+    ExportOptions options4(properties);
+    BOOST_CHECK(!options4.withExtension("loadFoo"));
+    BOOST_CHECK(!options4.withExtension("loadBar"));
+    BOOST_CHECK(options4.withExtension("abc"));
+    BOOST_CHECK(options4.withExtension("def"));
+
+    properties.set(ExportOptions::EXTENSIONS_EXCLUDED_LIST, "loadBar");
+    ExportOptions options5(properties);
+    BOOST_CHECK(options5.withExtension("loadFoo"));
+    BOOST_CHECK(!options5.withExtension("loadBar"));
+    BOOST_CHECK(options5.withExtension("abc"));
+    BOOST_CHECK(options5.withExtension("def"));
+
 }
 
 BOOST_AUTO_TEST_CASE(checkVoltageLevelsTopologyLevel) {
