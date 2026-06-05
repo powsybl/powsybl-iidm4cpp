@@ -114,17 +114,13 @@ ValidationLevel checkAcDcConverterControl(const Validable& validable, const AcDc
     return checkAcDcConverterControl(validable, controlMode, targetP, targetVdc, checkValidationActionOnError(vl));
 }
 
-void checkAcDcConverterPccTerminal(const Validable& validable, bool twoAcTerminals, const stdcxx::Reference<Terminal>& pccTerminal, const VoltageLevel& voltageLevel) {
+void checkAcDcConverterPccTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& pccTerminal, const VoltageLevel& voltageLevel) {
     if(static_cast<bool>(pccTerminal)) {
         stdcxx::Reference<Connectable> connectable = pccTerminal.get().getConnectable();
-        if(twoAcTerminals && !(stdcxx::isInstanceOf<Branch>(connectable) || stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable))) {
-            throw ValidationException(validable, "converter has two AC terminals and pccTerminal is not a line or transformer terminal");
-        } else if(!twoAcTerminals && 
-                !(stdcxx::isInstanceOf<Branch>(connectable) || stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable) || stdcxx::isInstanceOf<AcDcConverter>(connectable))) {
-            throw ValidationException(validable, "pccTerminal is not a line or transformer or the converter terminal");
+        if(!(stdcxx::isInstanceOf<Branch>(connectable) || stdcxx::isInstanceOf<ThreeWindingsTransformer>(connectable) || stdcxx::isInstanceOf<AcDcConverter>(connectable))) {
+            throw ValidationException(validable, "pccTerminal is not a line or transformer or converter terminal");
         }
-
-        if(!twoAcTerminals && stdcxx::isInstanceOf<AcDcConverter>(connectable) && !stdcxx::areSame(connectable.get(), validable)) {
+        if(stdcxx::isInstanceOf<AcDcConverter>(connectable) && !stdcxx::areSame(connectable.get(), validable)) {
             throw ValidationException(validable, "pccTerminal cannot be the terminal of another converter");
         }
         if (!stdcxx::areSame(connectable.get().getParentNetwork(), voltageLevel.getParentNetwork())) {

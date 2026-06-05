@@ -51,7 +51,7 @@ ActionOnError checkValidationActionOnError(const ValidationLevel& vl);
 
 ValidationLevel checkAcDcConverterControl(const Validable& validable, const AcDcConverter::ControlMode& controlMode, double targetP, double targetVdc, const ValidationLevel& vl);
 
-void checkAcDcConverterPccTerminal(const Validable& validable, bool twoAcTerminals, const stdcxx::Reference<Terminal>& pccTerminal, const VoltageLevel& voltageLevel);
+void checkAcDcConverterPccTerminal(const Validable& validable, const stdcxx::Reference<Terminal>& pccTerminal, const VoltageLevel& voltageLevel);
 
 void checkActivePowerLimits(const Validable& validable, double minP, double maxP);
 

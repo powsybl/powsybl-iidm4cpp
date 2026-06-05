@@ -663,6 +663,8 @@ BOOST_AUTO_TEST_CASE(testCreationError) {
                 .setId("converterA")
                 .setBus1("B1A")
                 .setBus2("B2A");
+    
+    auto& acDcConverterB = createLccB(network);
 
     // VDC by default
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC/DC Line Commutated Converter 'converterA': targetVdc is invalid");
@@ -672,10 +674,10 @@ BOOST_AUTO_TEST_CASE(testCreationError) {
     adder.setTargetP(200.);
 
     adder.setPccTerminal(stdcxx::ref(network.getLoad("LAX").getTerminal()));
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC/DC Line Commutated Converter 'converterA': converter has two AC terminals and pccTerminal is not a line or transformer terminal");
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC/DC Line Commutated Converter 'converterA': pccTerminal is not a line or transformer or converter terminal");
 
-    adder.setBus2("");
-    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC/DC Line Commutated Converter 'converterA': pccTerminal is not a line or transformer or the converter terminal");
+    adder.setPccTerminal(stdcxx::ref(acDcConverterB.getTerminal1()));
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC/DC Line Commutated Converter 'converterA': pccTerminal cannot be the terminal of another converter");
 
     adder.setPccTerminal(stdcxx::ref(network.getLine("LINEAX").getTerminal1()));
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "AC/DC Line Commutated Converter 'converterA': dcNode1 is not set");
@@ -741,6 +743,14 @@ BOOST_AUTO_TEST_CASE(testTwoAcTerminals) {
     BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal(TerminalNumber::TWO), acDcConverterA.getTerminal2().get()));
 
     // change PCC Terminal to line terminal
+    acDcConverterA.setPccTerminal(stdcxx::ref(network.getLine("LINEAX").getTerminal1()));
+    BOOST_CHECK(stdcxx::areSame(network.getLine("LINEAX").getTerminal1(), acDcConverterA.getPccTerminal()));
+
+    // check we can set again to converter's AC terminal
+    acDcConverterA.setPccTerminal(stdcxx::ref(acDcConverterA.getTerminal1()));
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal1(), acDcConverterA.getPccTerminal()));
+
+    // change again PCC Terminal to line terminal
     acDcConverterA.setPccTerminal(stdcxx::ref(network.getLine("LINEAX").getTerminal1()));
     BOOST_CHECK(stdcxx::areSame(network.getLine("LINEAX").getTerminal1(), acDcConverterA.getPccTerminal()));
 

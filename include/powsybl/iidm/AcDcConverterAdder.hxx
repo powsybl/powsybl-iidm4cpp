@@ -157,7 +157,7 @@ void AcDcConverterAdder<Added, Adder>::checkAcDcConverter() {
 
     Network& network = getNetwork();
     network.setValidationLevelIfGreaterThan(checkAcDcConverterControl(*this, m_controlMode, m_targetP, m_targetVdc, network.getMinimumValidationLevel()));
-    checkAcDcConverterPccTerminal(*this, hasTwoAcTerminals(), m_pccTerminal, m_voltageLevel);
+    checkAcDcConverterPccTerminal(*this, m_pccTerminal, m_voltageLevel);
 
 }
 template <typename Added, typename Adder>

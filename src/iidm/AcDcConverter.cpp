@@ -108,7 +108,7 @@ void AcDcConverter::onReferencedRemoval(Terminal& /*removedReference*/) {
     m_controlMode.assign(m_controlMode.size(), ControlMode::V_DC);
 }
 void AcDcConverter::onReferencedReplacement(Terminal& /*oldReference*/, Terminal& newReference) {
-    checkAcDcConverterPccTerminal(*this, static_cast<bool>(getTerminal2()), stdcxx::ref(newReference), getTerminal1().getVoltageLevel());
+    checkAcDcConverterPccTerminal(*this, stdcxx::ref(newReference), getTerminal1().getVoltageLevel());
     m_pccRegulatingTerminal = newReference;
     newReference.registerReferrer(*this);
 }
@@ -249,7 +249,7 @@ double AcDcConverter::getResistiveLoss() const {
 }
 
 AcDcConverter& AcDcConverter::setPccTerminal(const stdcxx::Reference<Terminal>& pccTerminal) {
-    checkAcDcConverterPccTerminal(*this, static_cast<bool>(getTerminal2()), pccTerminal, getTerminal1().getVoltageLevel());
+    checkAcDcConverterPccTerminal(*this, pccTerminal, getTerminal1().getVoltageLevel());
 
     if(static_cast<bool>(m_pccRegulatingTerminal)) {
         m_pccRegulatingTerminal.get().unregisterReferrer(*this);
