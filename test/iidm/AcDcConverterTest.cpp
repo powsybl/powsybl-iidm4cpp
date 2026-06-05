@@ -714,9 +714,39 @@ BOOST_AUTO_TEST_CASE(testSingleAcTerminal) {
                 .add();
 
     POWSYBL_ASSERT_REF_FALSE(acDcConverterA.getTerminal2());
-    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getPccTerminal(), acDcConverterA.getTerminal1()));
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getPccTerminal(), acDcConverterA.getTerminal1())); //Pcc terminal by default set to terminal1
 
     POWSYBL_ASSERT_THROW(acDcConverterA.getTerminal(TerminalNumber::TWO), PowsyblException, "AC/DC Converter 'converterA' does not have a second AC Terminal");
+
+}
+
+BOOST_AUTO_TEST_CASE(testTwoAcTerminals) {
+    Network network = createAcDcNetwork();
+    auto& acDcConverterA = network.getVoltageLevel("VLA").newVoltageSourceConverter()
+                .setId("converterA")
+                .setBus1("B1A")
+                .setBus2("B2A")
+                .setDcNode1("dcNode1a")
+                .setDcNode2("dcNode2a")
+                .setControlMode(AcDcConverter::ControlMode::P_PCC)
+                .setTargetP(100.)
+                .setTargetVdc(500.)
+                .setVoltageRegulatorOn(false)
+                .setReactivePowerSetpoint(0.0)
+                .add();
+
+    POWSYBL_ASSERT_REF_TRUE(acDcConverterA.getTerminal2());
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getPccTerminal(), acDcConverterA.getTerminal1())); //Pcc terminal by default set to terminal1
+
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getTerminal(TerminalNumber::TWO), acDcConverterA.getTerminal2().get()));
+
+    // change PCC Terminal to line terminal
+    acDcConverterA.setPccTerminal(stdcxx::ref(network.getLine("LINEAX").getTerminal1()));
+    BOOST_CHECK(stdcxx::areSame(network.getLine("LINEAX").getTerminal1(), acDcConverterA.getPccTerminal()));
+
+    //remove line, Pcc Terminal removed, return default converter terminal 1
+    network.getLine("LINEAX").remove();
+    BOOST_CHECK(stdcxx::areSame(acDcConverterA.getPccTerminal(), acDcConverterA.getTerminal1()));
 
 }
 
