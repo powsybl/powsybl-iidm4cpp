@@ -91,6 +91,8 @@ ActionOnError checkValidationActionOnError(const ValidationLevel& vl) {
 ValidationLevel checkAcDcConverterControl(const Validable& validable, const AcDcConverter::ControlMode& controlMode, double targetP, double targetVdc, const ActionOnError& action) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
     switch (controlMode) {
+        case AcDcConverter::ControlMode::DROOP:
+            break;
         case AcDcConverter::ControlMode::P_PCC:
             if(std::isnan(targetP)) {
                 actionOnError(validable, "targetP is invalid", action);

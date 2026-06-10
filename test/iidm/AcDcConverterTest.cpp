@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/DcNode.hpp>
 #include <powsybl/iidm/DcNodeAdder.hpp>
+#include <powsybl/iidm/DroopCurveAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
@@ -838,6 +839,33 @@ BOOST_AUTO_TEST_CASE(testSetterGetterInMultiVariants) {
     POWSYBL_ASSERT_THROW(vscA.isVoltageRegulatorOn(), PowsyblException, "Variant index not set");
 
 }
+
+BOOST_AUTO_TEST_CASE(testDroopCurve) {
+    Network network = createAcDcNetwork();
+    auto& acDcConverterA = createVscA(network);
+    
+    acDcConverterA.setControlMode(AcDcConverter::ControlMode::DROOP);
+    BOOST_CHECK_EQUAL(AcDcConverter::ControlMode::DROOP, acDcConverterA.getControlMode());
+
+    acDcConverterA.newDroopCurve()
+                    .addSegment(-500,-10)
+                    .addSegment(-100,-5)
+                    .addSegment(100, -1)
+                    .setMaxV(500)
+                    .add();
+    POWSYBL_ASSERT_REF_TRUE(acDcConverterA.getDroopCurve());
+    const auto& curve = acDcConverterA.getDroopCurve().get();
+    BOOST_CHECK_CLOSE(-10.0, curve.getK(-250.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-5.0, curve.getK(-100.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-1.0, curve.getK(400.0), std::numeric_limits<double>::epsilon());
+
+    acDcConverterA.newDroopCurve().add();
+    BOOST_CHECK_CLOSE(0.0, acDcConverterA.getDroopCurve().get().getK(400.0), std::numeric_limits<double>::epsilon());
+
+    acDcConverterA.removeDroopCurve();
+    POWSYBL_ASSERT_REF_FALSE(acDcConverterA.getDroopCurve());
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

@@ -66,6 +66,8 @@ set(IIDM_SOURCES
     iidm/DcSwitchAdder.cpp
     iidm/DcSwitchKind.cpp
     iidm/DcTerminal.cpp
+    iidm/DroopCurve.cpp
+    iidm/DroopCurveAdder.cpp
     iidm/EnergySource.cpp
     iidm/Extendable.cpp
     iidm/Extension.cpp

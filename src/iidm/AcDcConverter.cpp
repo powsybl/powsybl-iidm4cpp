@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/AcDcConverter.hpp>
 
+#include <powsybl/iidm/DroopCurveAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/ValidationUtils.hpp>
@@ -318,6 +319,26 @@ void AcDcConverter::remove() {
 }
 
 
+DroopCurveAdder AcDcConverter::newDroopCurve() {
+    return DroopCurveAdder(*this);
+}
+
+stdcxx::CReference<DroopCurve> AcDcConverter::getDroopCurve() const {
+    return stdcxx::cref(m_droopCurve);
+}
+
+AcDcConverter& AcDcConverter::removeDroopCurve() {
+    m_droopCurve.reset();
+    return *this;
+}
+
+DroopCurve& AcDcConverter::setDroopCurve(std::unique_ptr<DroopCurve>&& curve) {
+    if(static_cast<bool>(m_droopCurve)) {
+        m_droopCurve.reset();
+    }
+    m_droopCurve = std::move(curve);
+    return *m_droopCurve;
+}
 
 namespace Enum {
 
@@ -325,7 +346,8 @@ template <>
 const std::initializer_list<std::string>& getNames<AcDcConverter::ControlMode>() {
     static std::initializer_list<std::string> s_acdcConverterControlModeNames {
         "P_PCC",
-        "V_DC"
+        "V_DC",
+        "DROOP"
     };
     return s_acdcConverterControlModeNames;
 }

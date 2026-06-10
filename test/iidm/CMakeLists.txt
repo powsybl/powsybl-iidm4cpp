@@ -27,6 +27,7 @@ set(UNIT_TEST_SOURCES
     DcNodeTest.cpp
     DcSwitchTest.cpp
     DcTerminalTest.cpp
+    DroopCurveTest.cpp
     EnergySourceTest.cpp
     ExtensionTest.cpp
     ExtensionAdderTest.cpp

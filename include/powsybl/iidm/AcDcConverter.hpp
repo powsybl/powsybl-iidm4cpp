@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/Connectable.hpp>
 #include <powsybl/iidm/DcConnectable.hpp>
+#include <powsybl/iidm/DroopCurve.hpp>
 #include <powsybl/iidm/Referrer.hpp>
 
 #include <vector>
@@ -18,12 +19,15 @@ namespace powsybl {
 
 namespace iidm {
 
+class DroopCurveAdder;
+
 class AcDcConverter : public Connectable, public DcConnectable, public Referrer<Terminal> {
 
 public:
     enum class ControlMode : unsigned char {
         P_PCC,
-        V_DC
+        V_DC,
+        DROOP
     };
 
 protected:
@@ -184,6 +188,21 @@ public:
      */
     AcDcConverter& setTargetVdc(double targetVdc);
 
+    /**
+     * Create a new Droop Curve
+     */
+    DroopCurveAdder newDroopCurve();
+
+    /**
+     * Get the converter droop curve.
+     */
+    stdcxx::CReference<DroopCurve> getDroopCurve() const;
+
+    /**
+     * Removes the Droop Curve
+     */
+    AcDcConverter& removeDroopCurve();
+
 private:
     double m_idleLoss;
     double m_switchingLoss;
@@ -195,6 +214,11 @@ private:
 
     std::vector<double> m_targetP;
     std::vector<double> m_targetVdc;
+
+    std::unique_ptr<DroopCurve> m_droopCurve = nullptr;
+
+    DroopCurve& setDroopCurve(std::unique_ptr<DroopCurve>&& curve);
+    friend class DroopCurveAdder;
 };
 
 }  // namespace iidm
