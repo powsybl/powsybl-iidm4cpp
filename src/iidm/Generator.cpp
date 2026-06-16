@@ -20,7 +20,7 @@ namespace iidm {
 Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious,
                      const EnergySource& energySource, double minP, double maxP, bool voltageRegulatorOn,
                      stdcxx::Reference<Terminal>& regulatingTerminal, double activePowerSetpoint,
-                     double reactivePowerSetpoint, double voltageSetpoint, double ratedS, bool isCondenser) :
+                     double reactivePowerSetpoint, double voltageSetpoint, double equivalentLocalTargetV, double ratedS, bool isCondenser) :
     Identifiable(id, name, fictitious),
     m_energySource(energySource),
     m_minP(checkMinP(*this, minP)),
@@ -31,6 +31,7 @@ Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::st
     m_activePowerSetpoint(network.getVariantManager().getVariantArraySize(), activePowerSetpoint),
     m_reactivePowerSetpoint(network.getVariantManager().getVariantArraySize(), reactivePowerSetpoint),
     m_voltageSetpoint(network.getVariantManager().getVariantArraySize(), voltageSetpoint),
+    m_equivalentLocalTargetV(network.getVariantManager().getVariantArraySize(), equivalentLocalTargetV),
     m_isCondenser(isCondenser) {
     if(static_cast<bool>(m_regulatingTerminal)) {
         m_regulatingTerminal.get().registerReferrer(*this);
@@ -43,6 +44,7 @@ Generator::Generator(powsybl::iidm::VariantManagerHolder& network, const std::st
     }
     checkActivePowerSetpoint(*this, activePowerSetpoint, vl);
     checkVoltageControl(*this, voltageRegulatorOn, voltageSetpoint, reactivePowerSetpoint, vl);
+    checkEquivalentLocalTargetV(*this, equivalentLocalTargetV);
 }
 
 void Generator::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
@@ -53,6 +55,7 @@ void Generator::allocateVariantArrayElement(const std::set<unsigned long>& index
         m_activePowerSetpoint[index] = m_activePowerSetpoint[sourceIndex];
         m_reactivePowerSetpoint[index] = m_reactivePowerSetpoint[sourceIndex];
         m_voltageSetpoint[index] = m_voltageSetpoint[sourceIndex];
+        m_equivalentLocalTargetV[index] = m_equivalentLocalTargetV[sourceIndex];
     }
 }
 
@@ -63,6 +66,7 @@ void Generator::extendVariantArraySize(unsigned long initVariantArraySize, unsig
     m_activePowerSetpoint.resize(m_activePowerSetpoint.size() + number, m_activePowerSetpoint[sourceIndex]);
     m_reactivePowerSetpoint.resize(m_reactivePowerSetpoint.size() + number, m_reactivePowerSetpoint[sourceIndex]);
     m_voltageSetpoint.resize(m_voltageSetpoint.size() + number, m_voltageSetpoint[sourceIndex]);
+    m_equivalentLocalTargetV.resize(m_equivalentLocalTargetV.size() + number, m_equivalentLocalTargetV[sourceIndex]);
 }
 
 double Generator::getActivePowerSetpoint() const {
@@ -124,6 +128,10 @@ double Generator::getVoltageSetpoint() const {
     return m_voltageSetpoint.at(getNetwork().getVariantIndex());
 }
 
+double Generator::getEquivalentLocalTargetV() const {
+    return m_equivalentLocalTargetV.at(getNetwork().getVariantIndex());
+}
+
 bool Generator::isVoltageRegulatorOn() const {
     return m_voltageRegulatorOn.at(getNetwork().getVariantIndex());
 }
@@ -139,6 +147,7 @@ void Generator::reduceVariantArraySize(unsigned long number) {
     m_activePowerSetpoint.resize(m_activePowerSetpoint.size() - number);
     m_reactivePowerSetpoint.resize(m_reactivePowerSetpoint.size() - number);
     m_voltageSetpoint.resize(m_voltageSetpoint.size() - number);
+    m_equivalentLocalTargetV.resize(m_equivalentLocalTargetV.size() - number);
 }
 
 Generator& Generator::setActivePowerSetpoint(double activePowerSetpoint) {
@@ -202,8 +211,8 @@ Generator& Generator::setTargetQ(double reactivePowerSetpoint) {
     return setReactivePowerSetpoint(reactivePowerSetpoint);
 }
 
-Generator& Generator::setTargetV(double voltageSetpoint) {
-    return setVoltageSetpoint(voltageSetpoint);
+Generator& Generator::setTargetV(double targetV, double equivalentLocalTargetV) {
+    return setVoltageSetpoint(targetV, equivalentLocalTargetV);
 }
 
 Generator& Generator::setVoltageRegulatorOn(bool voltageRegulatorOn) {
@@ -213,9 +222,11 @@ Generator& Generator::setVoltageRegulatorOn(bool voltageRegulatorOn) {
     return *this;
 }
 
-Generator& Generator::setVoltageSetpoint(double voltageSetpoint) {
+Generator& Generator::setVoltageSetpoint(double voltageSetpoint, double equivalentLocalTargetV) {
     checkVoltageControl(*this, isVoltageRegulatorOn(), voltageSetpoint, getReactivePowerSetpoint(), getNetwork().getMinimumValidationLevel());
+    checkEquivalentLocalTargetV(*this, equivalentLocalTargetV);
     m_voltageSetpoint[getNetwork().getVariantIndex()] = voltageSetpoint;
+    m_equivalentLocalTargetV[getNetwork().getVariantIndex()] = equivalentLocalTargetV;
     getNetwork().invalidateValidationLevel();
     return *this;
 }

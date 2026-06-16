@@ -42,10 +42,14 @@ Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdde
     bool voltageRegulatorOn = context.getReader().getOptionalAttributeValue(VOLTAGE_REGULATOR_ON, false);
     double targetP = context.getReader().getOptionalAttributeValue(TARGET_P, stdcxx::nan());
     double targetV = context.getReader().getOptionalAttributeValue(TARGET_V, stdcxx::nan());
+    double equivalentLocalTargetV = stdcxx::nan();
     double targetQ = context.getReader().getOptionalAttributeValue(TARGET_Q, stdcxx::nan());
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&context, &generatorAdder]() {
         bool isCondenser = context.getReader().getOptionalAttributeValue(IS_CONDENSER, false);
         generatorAdder.setCondenser(isCondenser);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_15(), context.getVersion(), [&context, &generatorAdder, &equivalentLocalTargetV]() {
+        equivalentLocalTargetV = context.getReader().getOptionalAttributeValue(EQUIVALENT_LOCAL_TARGET_V, stdcxx::nan());
     });
     readNodeOrBus(generatorAdder, context);
     Generator& generator = generatorAdder.setEnergySource(energySource)
@@ -54,7 +58,7 @@ Generator& GeneratorXml::readRootElementAttributes(GeneratorAdder& generatorAdde
         .setRatedS(ratedS)
         .setVoltageRegulatorOn(voltageRegulatorOn)
         .setTargetP(targetP)
-        .setTargetV(targetV)
+        .setTargetV(targetV, equivalentLocalTargetV)
         .setTargetQ(targetQ)
         .add();
 
@@ -88,6 +92,9 @@ void GeneratorXml::writeRootElementAttributes(const Generator& generator, const 
     context.getWriter().writeOptionalAttribute(TARGET_Q, generator.getTargetQ());
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_13(), context.getVersion(), [&context, &generator]() {
         context.getWriter().writeOptionalAttribute(IS_CONDENSER, generator.isCondenser(), false);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_15(), context.getVersion(), [&context, &generator]() {
+        context.getWriter().writeOptionalAttribute(EQUIVALENT_LOCAL_TARGET_V, generator.getEquivalentLocalTargetV());
     });
     writeNodeOrBus(generator.getTerminal(), context);
     writePQ(generator.getTerminal(), context.getWriter());

@@ -78,6 +78,7 @@ static const char* const DANGLING_LINE_ID1 = "danglingLineId1";
 static const char* const DANGLING_LINE_ID2 = "danglingLineId2";
 static const char* const ENABLED = "enabled";
 static const char* const ENERGY_SOURCE = "energySource";
+static const char* const EQUIVALENT_LOCAL_TARGET_V = "equivalentLocalTargetV";
 static const char* const EXPONENTIAL_MODEL = "exponentialModel";
 static const char* const EXTENSION = "extension";
 static const char* const FICTITIOUS = "fictitious";

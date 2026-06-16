@@ -37,10 +37,12 @@ Generator& GeneratorAdder::add() {
     checkActivePowerLimits(*this, m_minP, m_maxP);
     checkRatedS(*this, m_ratedS);
 
+    checkEquivalentLocalTargetV(*this, m_equivalentLocalTargetV);
+
     auto terminalPtr = checkAndGetTerminal();
     std::unique_ptr<Generator> ptrGenerator = stdcxx::make_unique<Generator>(n, checkAndGetUniqueId(), getName(), isFictitious(),
         m_energySource, m_minP, m_maxP, *m_voltageRegulatorOn, m_regulatingTerminal,
-        m_activePowerSetpoint, m_reactivePowerSetpoint, m_voltageSetpoint, m_ratedS, m_isCondenser);
+        m_activePowerSetpoint, m_reactivePowerSetpoint, m_voltageSetpoint, m_equivalentLocalTargetV, m_ratedS, m_isCondenser);
     auto& generator = n.checkAndAdd(std::move(ptrGenerator));
 
     Terminal& terminal = generator.addTerminal(std::move(terminalPtr));
@@ -99,8 +101,8 @@ GeneratorAdder& GeneratorAdder::setTargetQ(double reactivePowerSetpoint) {
     return setReactivePowerSetpoint(reactivePowerSetpoint);
 }
 
-GeneratorAdder& GeneratorAdder::setTargetV(double voltageSetpoint) {
-    return setVoltageSetpoint(voltageSetpoint);
+GeneratorAdder& GeneratorAdder::setTargetV(double voltageSetpoint, double equivalentLocalTargetV) {
+    return setVoltageSetpoint(voltageSetpoint, equivalentLocalTargetV);
 }
 
 GeneratorAdder& GeneratorAdder::setVoltageRegulatorOn(bool voltageRegulatorOn) {
@@ -108,8 +110,9 @@ GeneratorAdder& GeneratorAdder::setVoltageRegulatorOn(bool voltageRegulatorOn) {
     return *this;
 }
 
-GeneratorAdder& GeneratorAdder::setVoltageSetpoint(double voltageSetpoint) {
+GeneratorAdder& GeneratorAdder::setVoltageSetpoint(double voltageSetpoint, double equivalentLocalTargetV) {
     m_voltageSetpoint = voltageSetpoint;
+    m_equivalentLocalTargetV = equivalentLocalTargetV;
     return *this;
 }
 

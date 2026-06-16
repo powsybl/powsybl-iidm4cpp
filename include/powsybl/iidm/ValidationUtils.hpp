@@ -77,6 +77,8 @@ ValidationLevel checkConvertersMode(const Validable& validable, const HvdcLine::
 
 double checkDoubleParamPositive(const Validable& validable, double param, const std::string& paramName);
 
+double checkEquivalentLocalTargetV(const Validable& validable, double equivalentLocalTargetV);
+
 double checkExponent(const Validable& validable, double n);
 
 int checkForecastDistance(const Validable& validable, int forecastDistance);

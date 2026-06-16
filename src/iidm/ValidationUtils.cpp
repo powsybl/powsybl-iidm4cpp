@@ -232,6 +232,13 @@ double checkDoubleParamPositive(const Validable& validable, double param, const 
     return param;
 }
 
+double checkEquivalentLocalTargetV(const Validable& validable, double equivalentLocalTargetV) {
+    if (!std::isnan(equivalentLocalTargetV) && equivalentLocalTargetV < 0.0) {
+        throw createInvalidValueException(validable, equivalentLocalTargetV, converter::EQUIVALENT_LOCAL_TARGET_V, "must be positive");
+    }
+    return equivalentLocalTargetV;
+}
+
 double checkExponent(const Validable& validable, double n) {
     if (std::isnan(n) || n < 0) {
         throw ValidationException(validable, stdcxx::format("Invalid load model exponential value: %1%", n));

@@ -162,6 +162,22 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(addedGenerator.isCondenser());
 }
 
+BOOST_AUTO_TEST_CASE(invalidLocalTargetVAdder) {
+    Network network = createGeneratorTestNetwork();
+    VoltageLevel& vl1 = network.getVoltageLevel("VL");
+    GeneratorAdder adder = vl1.newGenerator()
+                            .setId("GEN1")
+                            .setNode(3)
+                            .setTargetP(15)
+                            .setMinP(10)
+                            .setMaxP(25)
+                            .setVoltageRegulatorOn(true)
+                            .setTargetV(220, -15);
+
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "Generator 'GEN1': invalid value (-15) for equivalentLocalTargetV (must be positive)");
+
+}
+
 BOOST_AUTO_TEST_CASE(integrity) {
     Network network = createGeneratorTestNetwork();
 
@@ -183,6 +199,7 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(gen.getEquivalentLocalTargetV()));
     BOOST_TEST(gen.isVoltageRegulatorOn());
     BOOST_TEST(!gen.isCondenser());
 
@@ -252,6 +269,9 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(gen.setVoltageRegulatorOn(true), ValidationException, "Generator 'GEN1': invalid value (-20) for voltageSetpoint (voltage regulator is on)");
     gen.setVoltageSetpoint(800);
     BOOST_CHECK_NO_THROW(gen.setVoltageRegulatorOn(true));
+
+    POWSYBL_ASSERT_THROW(gen.setTargetV(800, -10), ValidationException, "Generator 'GEN1': invalid value (-10) for equivalentLocalTargetV (must be positive)");
+    POWSYBL_ASSERT_THROW(gen.setVoltageSetpoint(800, -17.5), ValidationException, "Generator 'GEN1': invalid value (-17.5) for equivalentLocalTargetV (must be positive)");
 
     const Generator& cGen = gen;
     const auto& terminal = cGen.getRegulatingTerminal();
@@ -323,8 +343,9 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, gen.getVoltageSetpoint(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(gen.getEquivalentLocalTargetV()));
     BOOST_TEST(gen.isVoltageRegulatorOn());
-    gen.setTargetP(100).setTargetQ(200).setTargetV(300).setVoltageRegulatorOn(false);
+    gen.setTargetP(100).setTargetQ(200).setTargetV(300, 301).setVoltageRegulatorOn(false);
 
     BOOST_CHECK_CLOSE(100, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
@@ -332,6 +353,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(100, gen.getTargetP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(200, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(300, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(301, gen.getEquivalentLocalTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!gen.isVoltageRegulatorOn());
 
     network.getVariantManager().setWorkingVariant("s2");
@@ -341,8 +363,9 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(45.0, gen.getTargetP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(gen.getEquivalentLocalTargetV()));
     BOOST_TEST(gen.isVoltageRegulatorOn());
-    gen.setTargetP(150).setTargetQ(250).setTargetV(350).setVoltageRegulatorOn(true);
+    gen.setTargetP(150).setTargetQ(250).setTargetV(350, 351).setVoltageRegulatorOn(true);
 
     BOOST_CHECK_CLOSE(150, gen.getActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250, gen.getReactivePowerSetpoint(), std::numeric_limits<double>::epsilon());
@@ -350,6 +373,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(150, gen.getTargetP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(350, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(351, gen.getEquivalentLocalTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(gen.isVoltageRegulatorOn());
 
     network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
@@ -359,6 +383,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(45.0, gen.getTargetP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(6.0, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(gen.getEquivalentLocalTargetV()));
     BOOST_TEST(gen.isVoltageRegulatorOn());
 
     network.getVariantManager().removeVariant("s1");
@@ -372,6 +397,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     BOOST_CHECK_CLOSE(150, gen.getTargetP(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(250, gen.getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(350, gen.getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(351, gen.getEquivalentLocalTargetV(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(gen.isVoltageRegulatorOn());
 
     network.getVariantManager().removeVariant("s3");

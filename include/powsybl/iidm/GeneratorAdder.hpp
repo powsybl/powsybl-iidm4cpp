@@ -46,11 +46,11 @@ public:
 
     GeneratorAdder& setTargetQ(double reactivePowerSetpoint);
 
-    GeneratorAdder& setTargetV(double voltageSetpoint);
+    GeneratorAdder& setTargetV(double voltageSetpoint, double equivalentLocalTargetV = stdcxx::nan());
 
     GeneratorAdder& setVoltageRegulatorOn(bool voltageRegulatorOn);
 
-    GeneratorAdder& setVoltageSetpoint(double voltageSetpoint);
+    GeneratorAdder& setVoltageSetpoint(double voltageSetpoint, double equivalentLocalTargetV = stdcxx::nan());
 
     GeneratorAdder& setCondenser(bool isCondenser);
 
@@ -80,6 +80,8 @@ private:
     double m_reactivePowerSetpoint = stdcxx::nan();
 
     double m_voltageSetpoint = stdcxx::nan();
+
+    double m_equivalentLocalTargetV = stdcxx::nan();
 
     bool m_isCondenser = false;
 };

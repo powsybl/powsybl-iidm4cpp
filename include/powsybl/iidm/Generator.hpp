@@ -36,7 +36,7 @@ public: //Referrer<Terminal>
 public:
     Generator(VariantManagerHolder& network, const std::string& id, const std::string& name, bool fictitious, const EnergySource& energySource,
         double minP, double maxP, bool voltageRegulatorOn, stdcxx::Reference<Terminal>& regulatingTerminal,
-        double activePowerSetpoint, double reactivePowerSetpoint, double voltageSetpoint, double ratedS, bool isCondenser);
+        double activePowerSetpoint, double reactivePowerSetpoint, double voltageSetpoint, double equivalentLocalTargetV, double ratedS, bool isCondenser);
 
     ~Generator() noexcept override = default;
 
@@ -64,6 +64,8 @@ public:
 
     double getVoltageSetpoint() const;
 
+    double getEquivalentLocalTargetV() const;
+
     bool isVoltageRegulatorOn() const;
 
     bool isCondenser() const;
@@ -86,11 +88,14 @@ public:
 
     Generator& setTargetQ(double reactivePowerSetpoint);
 
-    Generator& setTargetV(double voltageSetpoint);
+    /**
+     * Set the voltage target for the regulated terminal (local or remote) and the optional equivalentLocalTargetV (to NaN if not specified)
+     */
+    Generator& setTargetV(double voltageSetpoint, double equivalentLocalTargetV = stdcxx::nan());
 
     Generator& setVoltageRegulatorOn(bool voltageRegulatorOn);
 
-    Generator& setVoltageSetpoint(double voltageSetpoint);
+    Generator& setVoltageSetpoint(double voltageSetpoint, double equivalentLocalTargetV = stdcxx::nan());
 
     void applySolvedValues();
     void setTargetPToP();
@@ -125,6 +130,7 @@ private:
     std::vector<double> m_reactivePowerSetpoint;
 
     std::vector<double> m_voltageSetpoint;
+    std::vector<double> m_equivalentLocalTargetV;
 
     bool m_isCondenser;
 };
