@@ -18,6 +18,8 @@ namespace powsybl {
 
 namespace iidm {
 
+const double LoadingLimits::TEMPORARY_LIMIT_EPSILON = 1e-6;
+
 LoadingLimits::TemporaryLimit::TemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool hasOverloadingProtection) :
     m_name(name),
     m_value(value),
@@ -100,10 +102,11 @@ LoadingLimits& LoadingLimits::setTemporaryLimitValue(unsigned long acceptableDur
     }
     TemporaryLimit& tl = getTemporaryLimit(acceptableDuration);
 
-    if(!isTemporaryLimitValueValid(acceptableDuration, temporaryLimitValue)){
+    if(!isTemporaryLimitValueValid(acceptableDuration, temporaryLimitValue) &&
+        abs(temporaryLimitValue - tl.getValue()) > TEMPORARY_LIMIT_EPSILON /*do not log small changes*/ ){
         logging::Logger& logger = logging::LoggerFactory::getLogger<LoadingLimits>();
-        logger.warn(stdcxx::format("%1% Temporary limit value changed from %2% to %3%, but it is not valid", 
-                m_limitsGroup.get().getValidable().getMessageHeader(), tl.getValue(), temporaryLimitValue));
+        logger.warn(stdcxx::format("%1% Temporary limit (%2%s) value changed from %3% to %4%, but it is not valid", 
+                m_limitsGroup.get().getValidable().getMessageHeader(), acceptableDuration, tl.getValue(), temporaryLimitValue));
     }
 
     TemporaryLimit newTl(tl.getName(), temporaryLimitValue, acceptableDuration, tl.isFictitious());

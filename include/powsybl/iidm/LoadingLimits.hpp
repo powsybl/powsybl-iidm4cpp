@@ -23,6 +23,10 @@ namespace powsybl {
 namespace iidm {
 
 class LoadingLimits : public OperationalLimits {
+private:
+    // defines an epsilon to filter out small temporary limits changes from log warnings
+    static const double TEMPORARY_LIMIT_EPSILON;
+
 public:
     class TemporaryLimit {
     public:

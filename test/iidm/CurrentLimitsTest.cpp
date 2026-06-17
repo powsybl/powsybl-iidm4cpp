@@ -961,15 +961,23 @@ BOOST_AUTO_TEST_CASE(testSetTemporaryLimitValue) {
     BOOST_CHECK_CLOSE(1450.0, currentLimit.getTemporaryLimitValue(5*60), std::numeric_limits<double>::epsilon());
     currentLimit.setTemporaryLimitValue(60, 1750.0);
     BOOST_CHECK_CLOSE(1750.0, currentLimit.getTemporaryLimitValue(60), std::numeric_limits<double>::epsilon());
+    //Even small changes are applied:
+    currentLimit.setTemporaryLimitValue(60, 1750.0 + 1e-8);
+    BOOST_CHECK_CLOSE(1750.0 + 1e-8, currentLimit.getTemporaryLimitValue(60), std::numeric_limits<double>::epsilon());
 
-    //Invalid value but not forbiden :
+    //Invalid value but not forbiden 
+    //Small temporary limit value changes are applied but not logged
     logging::LoggerFactory::getInstance().addLogger("powsybl::iidm", stdcxx::make_unique<logging::ContainerLogger>());
     logging::ContainerLogger& logger = dynamic_cast<logging::ContainerLogger&>(logging::LoggerFactory::getLogger("powsybl::iidm"));
     BOOST_CHECK_EQUAL(0, logger.size());
     currentLimit.setTemporaryLimitValue(5*60, 1010.0);
     BOOST_CHECK_CLOSE(1010.0, currentLimit.getTemporaryLimitValue(5*60), std::numeric_limits<double>::epsilon());
+    currentLimit.setTemporaryLimitValue(5*60, 1010.0 + 1e-8);
+    BOOST_CHECK_CLOSE(1010.0 + 1e-8, currentLimit.getTemporaryLimitValue(5*60), std::numeric_limits<double>::epsilon());
+    // only the first change has been logged since the second is to small
     BOOST_CHECK_EQUAL(1, logger.size());
-    BOOST_CHECK_EQUAL("AC line 'L':  Temporary limit value changed from 1450 to 1010, but it is not valid", logger.getLogMessage(0).getMessage());
+    BOOST_CHECK_EQUAL("AC line 'L':  Temporary limit (300s) value changed from 1450 to 1010, but it is not valid", logger.getLogMessage(0).getMessage());
+
     checkTemporaryLimits(network.getLine("L"), currentLimit.getPermanentLimit(), currentLimit.getTemporaryLimits());
     BOOST_CHECK_EQUAL(2, logger.size());
     BOOST_CHECK_EQUAL("AC line 'L': temporary limits should be in ascending value order", logger.getLogMessage(1).getMessage());
