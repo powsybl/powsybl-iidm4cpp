@@ -92,7 +92,7 @@ void TerminalRefXml::writeTerminalRefAttribute(const Terminal& terminal, Network
     }
 }
 
-void TerminalRefXml::checkTerminal(const Terminal& terminal, const NetworkXmlWriterContext& context) {
+void TerminalRefXml::checkTerminal(const Terminal& terminal, NetworkXmlWriterContext& context) {
     const auto& c = terminal.getConnectable();
     if (!context.getFilter().test(c)) {
         throw PowsyblException(stdcxx::format("Oups, terminal ref point to a filtered equipment %1%", c.get().getId()));

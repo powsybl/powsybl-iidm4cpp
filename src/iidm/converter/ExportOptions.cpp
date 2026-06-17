@@ -31,11 +31,20 @@ namespace Enum {
 
 template <>
 const std::initializer_list<std::string>& getNames<converter::ExportOptions::IidmVersionIncompatibilityBehavior>() {
-    static std::initializer_list<std::string> s_names {
+    static std::initializer_list<std::string> s_iidmVersionIncompatibilityBehaviorNames {
         "THROW_EXCEPTION",
         "LOG_ERROR"
     };
-    return s_names;
+    return s_iidmVersionIncompatibilityBehaviorNames;
+}
+
+template <>
+const std::initializer_list<std::string>& getNames<converter::ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior>() {
+    static std::initializer_list<std::string> s_busBranchVoltageLevelIncompatibilityBehaviorNames {
+        "THROW_EXCEPTION",
+        "KEEP_ORIGINAL_TOPOLOGY"
+    };
+    return s_busBranchVoltageLevelIncompatibilityBehaviorNames;
 }
 
 }  // namespace Enum
@@ -46,6 +55,7 @@ static const Parameter EXPORT_ANONYMISED_PARAMETER(ExportOptions::ANONYMISED, Pa
 static const Parameter EXPORT_EXTENSIONS_INCLUDED_LIST_PARAMETER(ExportOptions::EXTENSIONS_INCLUDED_LIST, Parameter::Type::STRING_LIST, "The list of exported extensions", "");
 static const Parameter EXPORT_EXTENSIONS_EXCLUDED_LIST_PARAMETER(ExportOptions::EXTENSIONS_EXCLUDED_LIST, Parameter::Type::STRING_LIST, "The list of extensions that will be excluded during export", "");
 static const Parameter EXPORT_IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER (ExportOptions::IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR, Parameter::Type::STRING, "Behavior when there is an IIDM version incompatibility", "THROW_EXCEPTION");
+static const Parameter EXPORT_BUS_BRANCH_VOLTAGE_LEVEL_INCOMPATIBILITY_BEHAVIOR_PARAMETER (ExportOptions::BUS_BRANCH_VOLTAGE_LEVEL_INCOMPATIBILITY_BEHAVIOR, Parameter::Type::STRING, "Behavior when there is a voltage level topology incompatibility", "THROW_EXCEPTION");
 static const Parameter EXPORT_INDENT_PARAMETER(ExportOptions::INDENT, Parameter::Type::BOOLEAN, "Indent export output file", "true");
 static const Parameter EXPORT_ONLY_MAIN_CC_PARAMETER(ExportOptions::ONLY_MAIN_CC, Parameter::Type::BOOLEAN, "Export only main CC", "false");
 static const Parameter EXPORT_THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER = Parameter(ExportOptions::THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND, Parameter::Type::BOOLEAN, "Throw exception if extension not found", "false").addAdditionalNames({"throwExceptionIfExtensionNotFound"});
@@ -59,6 +69,11 @@ static const Parameter EXPORT_VOLTAGE_LEVELS_BUSBRANCH_PARAMETER(ExportOptions::
 
 
 std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value) {
+    stream << iidm::Enum::toString(value);
+    return stream;
+}
+
+std::ostream& operator<<(std::ostream& stream, const ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior& value) {
     stream << iidm::Enum::toString(value);
     return stream;
 }
@@ -82,7 +97,8 @@ ExportOptions::ExportOptions(const stdcxx::Properties& parameters) :
     m_topologyLevel(Enum::fromString<TopologyLevel>(ConversionParameters::readStringParameter(parameters, EXPORT_TOPOLOGY_LEVEL_PARAMETER))),
     m_withBranchSV(ConversionParameters::readBooleanParameter(parameters, EXPORT_WITH_BRANCH_STATE_VARIABLES_PARAMETER)),
     m_version(ConversionParameters::readStringParameter(parameters, EXPORT_VERSION_PARAMETER)),
-    m_iidmVersionIncompatibilityBehavior(Enum::fromString<IidmVersionIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, EXPORT_IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER))) {
+    m_iidmVersionIncompatibilityBehavior(Enum::fromString<IidmVersionIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, EXPORT_IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER))),
+    m_busBranchVoltageLevelIncompatibilityBehavior(Enum::fromString<BusBranchVoltageLevelIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, EXPORT_BUS_BRANCH_VOLTAGE_LEVEL_INCOMPATIBILITY_BEHAVIOR_PARAMETER))) {
         setThrowExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, EXPORT_THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER));
         setWithAutomationSystems(ConversionParameters::readBooleanParameter(parameters, EXPORT_WITH_AUTOMATION_SYSTEMS_PARAMETER));
 
@@ -201,6 +217,10 @@ stdcxx::optional<TopologyLevel> ExportOptions::getVoltageLevelTopologyLevel(cons
     return it == m_voltageLevelTopologyLevels.end() ? stdcxx::optional<TopologyLevel>() : stdcxx::optional<TopologyLevel>(it->second);
 }
 
+const ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior& ExportOptions::getBusBranchVoltageLevelIncompatibilityBehavior() const {
+    return m_busBranchVoltageLevelIncompatibilityBehavior;
+}
+
 const ExportOptions::IidmVersionIncompatibilityBehavior& ExportOptions::getIidmVersionIncompatibilityBehavior() const {
     return m_iidmVersionIncompatibilityBehavior;
 }
@@ -231,6 +251,11 @@ bool ExportOptions::isWithBranchSV() const {
 
 ExportOptions& ExportOptions::setAnonymized(bool anonymized) {
     m_anonymized = anonymized;
+    return *this;
+}
+
+ExportOptions& ExportOptions::setBusBranchVoltageLevelIncompatibilityBehavior(const BusBranchVoltageLevelIncompatibilityBehavior& behavior) {
+    m_busBranchVoltageLevelIncompatibilityBehavior = behavior;
     return *this;
 }
 

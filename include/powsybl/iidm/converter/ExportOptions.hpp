@@ -29,6 +29,7 @@ public:
     static constexpr const char* const EXTENSIONS_INCLUDED_LIST = "iidm.export.xml.included.extensions";
     static constexpr const char* const EXTENSIONS_EXCLUDED_LIST = "iidm.export.xml.excluded.extensions";
     static constexpr const char* const IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR = "iidm.export.xml.iidm-version-incompatibility-behavior";
+    static constexpr const char* const BUS_BRANCH_VOLTAGE_LEVEL_INCOMPATIBILITY_BEHAVIOR = "iidm.export.xml.bus-branch.voltage-level.incompatibility-behavior";
     static constexpr const char* const INDENT = "iidm.export.xml.indent";
     static constexpr const char* const ONLY_MAIN_CC = "iidm.export.xml.only-main-cc";
     static constexpr const char* const THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND = "iidm.export.xml.throw-exception-if-extension-not-found";
@@ -44,6 +45,11 @@ public:
     enum class IidmVersionIncompatibilityBehavior : unsigned char {
         THROW_EXCEPTION,
         LOG_ERROR
+    };
+
+    enum class BusBranchVoltageLevelIncompatibilityBehavior : unsigned char {
+        THROW_EXCEPTION,
+        KEEP_ORIGINAL_TOPOLOGY
     };
 
 public:
@@ -116,6 +122,11 @@ public:
     stdcxx::optional<TopologyLevel> getVoltageLevelTopologyLevel(const std::string& voltageLevelId) const;
 
     /**
+     * Return the expected behaviour for incompatible BUS_BRANCH export of VoltageLevel
+     */
+    const BusBranchVoltageLevelIncompatibilityBehavior& getBusBranchVoltageLevelIncompatibilityBehavior() const;
+
+    /**
      * Return the expecting behaviour if an IIDM's version incompatibility occurs
      *
      * @return the expecting behaviour if an IIDM's version incompatibility occurs
@@ -174,6 +185,15 @@ public:
      * @return this ExportOptions object
      */
     ExportOptions& setAnonymized(bool anonymized);
+
+    /**
+     * Set the expected behaviour when exporting a VoltageLevel in BUS_BRANCH would result in non-readable iidm (for instance if all switches are open or references to a non-exported bus)
+     *
+     * @param behavior the expected behaviour
+     *
+     * @return this ExportOptions object
+     */
+    ExportOptions& setBusBranchVoltageLevelIncompatibilityBehavior(const BusBranchVoltageLevelIncompatibilityBehavior& behavior);
 
     /**
      * Set the expected behaviour if an IIDM's version incompatibility occurs
@@ -256,9 +276,12 @@ private:
 
     std::string m_encoding = powsybl::xml::DEFAULT_ENCODING;
 
+    BusBranchVoltageLevelIncompatibilityBehavior m_busBranchVoltageLevelIncompatibilityBehavior = BusBranchVoltageLevelIncompatibilityBehavior::THROW_EXCEPTION;
+
 };
 
 std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value);
+std::ostream& operator<<(std::ostream& stream, const ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior& value);
 
 }  // namespace converter
 

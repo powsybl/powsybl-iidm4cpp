@@ -76,6 +76,10 @@ public:
      */
     std::string getExtensionFixedPrefix(const std::string& extensionName) const;
 
+    void addVoltageLevelExportTopologyLevel(const std::string& voltageLevelId, const TopologyLevel& topologyLevel);
+
+    stdcxx::optional<TopologyLevel> getVoltageLevelTopologyLevel(const std::string& voltageLevelId) const;
+
 private:
     powsybl::xml::XmlStreamWriter& m_writer;
 
@@ -92,6 +96,8 @@ private:
     bool m_valid;
 
     std::map<std::string, std::string> m_fixedExtensionPrefixes;
+
+    std::map<std::string, TopologyLevel> m_voltageLevelExportTopologyLevels;
 };
 
 }  // namespace xml

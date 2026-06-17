@@ -57,6 +57,8 @@ BOOST_AUTO_TEST_CASE(defaultConstructor) {
 
     BOOST_CHECK(options.withExtension("abc"));
     BOOST_CHECK(options.withExtension("def"));
+
+    BOOST_CHECK_EQUAL(ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior::THROW_EXCEPTION, options.getBusBranchVoltageLevelIncompatibilityBehavior());
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {
@@ -90,6 +92,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     properties.set(ExportOptions::VERSION, "1.0");
     properties.set(ExportOptions::IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR, "LOG_ERROR");
     properties.set(ExportOptions::WITH_AUTOMATION_SYSTEMS, "false");
+    properties.set(ExportOptions::BUS_BRANCH_VOLTAGE_LEVEL_INCOMPATIBILITY_BEHAVIOR, "KEEP_ORIGINAL_TOPOLOGY");
 
     ExportOptions options(properties);
 
@@ -104,6 +107,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     BOOST_CHECK_EQUAL("1.0", options.getVersion());
     BOOST_CHECK_EQUAL(ExportOptions::IidmVersionIncompatibilityBehavior::LOG_ERROR, options.getIidmVersionIncompatibilityBehavior());
     BOOST_CHECK(!options.isWithAutomationSystems());
+    BOOST_CHECK_EQUAL(ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior::KEEP_ORIGINAL_TOPOLOGY, options.getBusBranchVoltageLevelIncompatibilityBehavior());
 }
 
 BOOST_AUTO_TEST_CASE(checkAllExtensions) {

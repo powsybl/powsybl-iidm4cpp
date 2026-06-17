@@ -27,6 +27,7 @@ set(EXT_SOURCES
 set(UNIT_TEST_SOURCES
     AreaRoundTripTest.cpp
     BatteryRoundTripTest.cpp
+    BusBranchTopologyRoundTripTest.cpp
     EncodingTest.cpp
     EurostagTest.cpp
     ExtensionXmlSerializerTest.cpp

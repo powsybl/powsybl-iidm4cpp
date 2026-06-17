@@ -18,14 +18,44 @@ namespace converter {
 
 namespace xml {
 
-TopologyLevel TopologyLevelXmlUtil::determineTopologyLevel(const VoltageLevel& voltageLevel, const NetworkXmlWriterContext& context) {
-    auto configTopologyLevel = context.getOptions().getVoltageLevelTopologyLevel(voltageLevel.getId());
-    if(!configTopologyLevel.has_value()) {
-        configTopologyLevel = context.getOptions().getTopologyLevel();
+TopologyLevel TopologyLevelXmlUtil::determineTopologyLevel(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) {
+    auto exportTopologyLevel = context.getVoltageLevelTopologyLevel(voltageLevel.getId());
+    if(!exportTopologyLevel.has_value()) { // check has not been performed on this voltage level yet
+        auto configTopologyLevel = context.getOptions().getVoltageLevelTopologyLevel(voltageLevel.getId());
+        if(!configTopologyLevel.has_value()) {
+            configTopologyLevel = context.getOptions().getTopologyLevel();
+        }
+        TopologyLevel expectedTopologyLevel = getMinTopologyLevel(voltageLevel.getTopologyKind(), configTopologyLevel.get());
+
+        exportTopologyLevel = checkVoltageLevelExportTopology(voltageLevel, context, expectedTopologyLevel);
+        context.addVoltageLevelExportTopologyLevel(voltageLevel.getId(),  exportTopologyLevel.get());
+    }
+    return exportTopologyLevel.get();
+
+}
+
+TopologyLevel TopologyLevelXmlUtil::checkVoltageLevelExportTopology(const VoltageLevel& voltageLevel, const NetworkXmlWriterContext& context, const TopologyLevel& topologyLevel) {
+    if(topologyLevel != TopologyLevel::BUS_BRANCH) {
+        return topologyLevel;
     }
 
-    return getMinTopologyLevel(voltageLevel.getTopologyKind(), configTopologyLevel.get());
+    for (const auto& connectable : voltageLevel.getConnectables()) {
+        for (const auto& terminal : connectable.getTerminals()) {
+            if( !terminal.get().getBusView().getConnectableBus()) {  
+                // At least one terminal which has a missing connectable bus reference:
+
+                if (context.getOptions().getBusBranchVoltageLevelIncompatibilityBehavior() == ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior::THROW_EXCEPTION) { 
+                    throw PowsyblException(stdcxx::format("Cannot export voltage level '%1%' in BUS_BRANCH topology: this would lead to an invalid IIDM.", voltageLevel.getId()));
+                }
+                return getMinTopologyLevel(voltageLevel.getTopologyKind(), TopologyLevel::NODE_BREAKER);
+
+            }
+        }
+    }
+    //No issue detected:
+    return topologyLevel;
 }
+
 
 }  // namespace xml
 

@@ -52,7 +52,7 @@ public:
     static void writeTerminalRefAttribute(const Terminal& terminal, NetworkXmlWriterContext& context);
 
 private:
-    static void checkTerminal(const Terminal& terminal, const NetworkXmlWriterContext& context);
+    static void checkTerminal(const Terminal& terminal, NetworkXmlWriterContext& context);
 
     TerminalRefXml() = default;
 

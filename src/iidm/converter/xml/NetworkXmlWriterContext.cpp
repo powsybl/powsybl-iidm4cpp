@@ -84,6 +84,17 @@ std::string NetworkXmlWriterContext::getExtensionFixedPrefix(const std::string& 
     return "";
 }
 
+void NetworkXmlWriterContext::addVoltageLevelExportTopologyLevel(const std::string& voltageLevelId, const TopologyLevel& topologyLevel) {
+    m_voltageLevelExportTopologyLevels.insert(std::make_pair(voltageLevelId, topologyLevel));
+}
+
+stdcxx::optional<TopologyLevel> NetworkXmlWriterContext::getVoltageLevelTopologyLevel(const std::string& voltageLevelId) const {
+    if(m_voltageLevelExportTopologyLevels.count(voltageLevelId)) {
+        return m_voltageLevelExportTopologyLevels.at(voltageLevelId);
+    }
+    return stdcxx::optional<TopologyLevel>();
+}
+
 }  // namespace xml
 
 }  // namespace converter
