@@ -11,6 +11,9 @@
 #include <powsybl/iidm/AreaBoundary.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/Line.hpp>
+#include <powsybl/iidm/LineAdder.hpp>
+#include <powsybl/iidm/LoadAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -283,6 +286,72 @@ BOOST_AUTO_TEST_CASE(testNodeBreakerToBusBreakerWithSlackTerminal) {
     vl.convertToTopology(TopologyKind::BUS_BREAKER);
     BOOST_CHECK(stdcxx::areSame(gh2.getTerminal(), slackTerminal.getTerminal().get()));
     BOOST_CHECK_EQUAL(1, gh2.getTerminal().getReferrers().size());
+}
+
+BOOST_AUTO_TEST_CASE(testNodeBreakerToBusBreakerConnectionIssue) {
+    Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
+    VoltageLevel& vl = network.getVoltageLevel("S1VL2");
+    for (Switch& sw : vl.getSwitches()) {
+        sw.setRetained((sw.getId()=="S1VL2_COUPLER"));
+    }
+    
+    auto& vlIssue = network.newVoltageLevel()
+        .setId("vl_issue")
+        .setTopologyKind(TopologyKind::NODE_BREAKER)
+        .setNominalV(400)
+        .add();
+
+    vlIssue.getNodeBreakerView().newBusbarSection()
+        .setId("bbs")
+        .setNode(0)
+        .add();
+
+    auto& line = network.newLine()
+        .setId("line")
+        .setVoltageLevel1("S1VL2")
+        .setVoltageLevel2("vl_issue")
+        .setNode1(999)
+        .setNode2(1)
+        .setR(0.1)
+        .setX(1.0)
+        .setG1(0.0)
+        .setG2(0.0)
+        .setB1(0.0)
+        .setB2(0.0)
+        .add();
+
+    network.getVoltageLevel("S1VL2").getNodeBreakerView().newDisconnector()
+        .setId("disconnector")
+        .setNode1(0)
+        .setNode2(999)
+        .setOpen(false)
+        .add();
+    vlIssue.getNodeBreakerView().newDisconnector()
+        .setId("disconnector2")
+        .setNode1(0)
+        .setNode2(1)
+        .setOpen(false)
+        .add();
+    vlIssue.newLoad()
+        .setId("load")
+        .setNode(2)
+        .setP0(1.0)
+        .setQ0(2.0)
+        .add();
+    vlIssue.getNodeBreakerView().newBreaker()
+        .setId("breaker")
+        .setNode1(0)
+        .setNode2(2)
+        .setOpen(true)
+        .add();
+
+    BOOST_CHECK(line.getTerminal1().isConnected());
+    BOOST_CHECK(line.getTerminal2().isConnected());
+
+    vlIssue.convertToTopology(TopologyKind::BUS_BREAKER);
+    BOOST_CHECK(line.getTerminal1().isConnected());
+    BOOST_CHECK(line.getTerminal2().isConnected());
+
 }
 
 
