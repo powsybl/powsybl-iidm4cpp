@@ -70,6 +70,9 @@ set(EXT_SOURCES
     src/LoadAsymmetricalAdder.cpp
     src/LoadAsymmetricalXmlSerializer.cpp
     src/LoadConnectionType.cpp
+    src/ManualFrequencyRestorationReserve.cpp
+    src/ManualFrequencyRestorationReserveAdder.cpp
+    src/ManualFrequencyRestorationReserveXmlSerializer.cpp
     src/Measurement.cpp
     src/MeasurementAdder.cpp
     src/Measurements.cpp
@@ -145,6 +148,7 @@ set(UNIT_TEST_SOURCES
     test/IdentifiableShortCircuitTest.cpp
     test/InjectionObservabilityTest.cpp
     test/LoadAsymmetricalTest.cpp
+    test/ManualFrequencyRestorationReserveTest.cpp
     test/MeasurementsTest.cpp
     test/ReferencePrioritiesTest.cpp
     test/ReferenceTerminalsTest.cpp

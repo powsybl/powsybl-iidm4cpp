@@ -26,6 +26,7 @@
 #include <powsybl/iidm/extensions/iidm/LineFortescueXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/LinePositionXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/LoadAsymmetricalXmlSerializer.hpp>
+#include <powsybl/iidm/extensions/iidm/ManualFrequencyRestorationReserveXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/MeasurementsXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/ReferencePrioritiesXmlSerializer.hpp>
 #include <powsybl/iidm/extensions/iidm/ReferenceTerminalsXmlSerializer.hpp>
@@ -69,6 +70,7 @@ std::vector<std::unique_ptr<ExtensionProvider>> create() {
     serializers.emplace_back(stdcxx::make_unique<LineFortescueXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<LinePositionXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<LoadAsymmetricalXmlSerializer>());
+    serializers.emplace_back(stdcxx::make_unique<ManualFrequencyRestorationReserveXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<MeasurementsXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<ReferencePrioritiesXmlSerializer>());
     serializers.emplace_back(stdcxx::make_unique<ReferenceTerminalsXmlSerializer>());
