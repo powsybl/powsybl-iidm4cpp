@@ -113,6 +113,7 @@ bool CalculatedBusTopology::isBusValid(const MergedBus::BusSet& buses) const {
                 case IdentifiableType::DC_SWITCH:
                 case IdentifiableType::DC_GROUND:
                 case IdentifiableType::DC_LINE:
+                case IdentifiableType::DC_BUS:
                     throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectable.getType()));
             }
         }

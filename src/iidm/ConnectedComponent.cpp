@@ -8,6 +8,7 @@
 #include "ConnectedComponent.hpp"
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/DcBus.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {
@@ -20,6 +21,11 @@ ConnectedComponent::ConnectedComponent(Network& network, unsigned long num, unsi
 
 bool ConnectedComponent::checkBus(const Bus& bus) const {
     const auto& component = bus.getConnectedComponent();
+    return static_cast<bool>(component) && stdcxx::areSame(component.get(), *this);
+}
+
+bool ConnectedComponent::checkDcBus(const DcBus& dcBus) const {
+    const auto& component = dcBus.getConnectedComponent();
     return static_cast<bool>(component) && stdcxx::areSame(component.get(), *this);
 }
 

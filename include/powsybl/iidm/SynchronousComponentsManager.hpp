@@ -20,11 +20,13 @@ public:
 
     SynchronousComponentsManager(Network& network, SynchronousComponentsManager&& manager) noexcept;
 
-protected:  // AbstractComponentsManager
-    void setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) override;
-
 private:  // AbstractComponentsManager
     const std::string& getComponentLabel() const override;
+
+protected:  // AbstractComponentsManager
+    virtual void setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) override;
+    virtual void setComponentNumber(DcBus& dcBus, const stdcxx::optional<unsigned long>& num) override;
+
 
 private:
     static std::unique_ptr<Component> createComponent(Network& network, unsigned long num, unsigned long size);

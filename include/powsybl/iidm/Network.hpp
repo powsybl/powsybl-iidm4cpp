@@ -12,6 +12,7 @@
 
 #include <powsybl/iidm/AreaAdder.hpp>
 #include <powsybl/iidm/Container.hpp>
+#include <powsybl/iidm/DcTopologyModel.hpp>
 #include <powsybl/iidm/NetworkIndex.hpp>
 #include <powsybl/iidm/NetworkRef.hpp>
 #include <powsybl/iidm/NetworkVariant.hpp>
@@ -43,6 +44,8 @@ class BusbarSection;
 class Connectable;
 class ConnectedComponentsManager;
 class DanglingLine;
+class DcBus;
+class DcComponentsManager;
 class DcConnectable;
 class DcLine;
 class DcLineAdder;
@@ -248,6 +251,24 @@ public:
     virtual stdcxx::const_range<DanglingLine> getDanglingLines() const;
 
     virtual stdcxx::range<DanglingLine> getDanglingLines();
+
+    virtual stdcxx::CReference<DcBus> getDcBus(const std::string& id) const;
+
+    virtual stdcxx::Reference<DcBus> getDcBus(const std::string& id);
+
+    virtual unsigned long getDcBusCount() const;
+
+    virtual stdcxx::const_range<DcBus> getDcBuses() const;
+
+    virtual stdcxx::range<DcBus> getDcBuses();
+
+    virtual stdcxx::const_range<Component> getDcComponents() const;
+
+    virtual stdcxx::range<Component> getDcComponents();
+
+    const DcComponentsManager& getDcComponentsManager() const;
+
+    DcComponentsManager& getDcComponentsManager();
 
     virtual const DcLine& getDcLine(const std::string& id) const;
 
@@ -641,6 +662,10 @@ protected:
 private:  // Identifiable
     const std::string& getTypeDescription() const override;
 
+public:
+    const DcTopologyModel& getDcTopologyModel() const;
+    DcTopologyModel& getDcTopologyModel();
+
 private:
     stdcxx::DateTime m_caseDate;
 
@@ -666,6 +691,8 @@ private:
     stdcxx::Reference<Network> m_parentNetworkRef;
     std::map<std::string, stdcxx::Reference<Network>> m_subNetworksIndex;
 
+    DcTopologyModel m_dcTopologyModel;
+
     friend class Identifiable;
 
     friend class VoltageLevel;
@@ -679,6 +706,7 @@ private:
     friend class subnetwork::BusBreakerView;
 
     friend class Subnetwork;
+
 };
 
 }  // namespace iidm

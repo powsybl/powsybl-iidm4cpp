@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/DcConnectable.hpp>
 #include <powsybl/iidm/DcNode.hpp>
+#include <powsybl/iidm/DcTopologyModel.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
@@ -77,14 +78,24 @@ const DcNode& DcTerminal::getDcNode() const {
 }
 DcNode& DcTerminal::getDcNode() {
     return m_dcNode;
-}
+}   
 
 bool DcTerminal::isConnected() const {
     return m_connected.at(getNetwork().getVariantIndex());
 }
 DcTerminal& DcTerminal::setConnected(bool connected) {
+    if(isConnected() != connected && static_cast<bool>(m_dcConnectable)) {
+        m_dcConnectable.get().getParentNetwork().getDcTopologyModel().invalidateCache();
+    }
     m_connected[getNetwork().getVariantIndex()] = connected;
     return *this;
+}
+
+stdcxx::CReference<DcBus> DcTerminal::getDcBus() const {
+    return isConnected() ? getDcNode().getDcBus() : stdcxx::CReference<DcBus>();
+}
+stdcxx::Reference<DcBus> DcTerminal::getDcBus() {
+    return isConnected() ? getDcNode().getDcBus() : stdcxx::Reference<DcBus>();
 }
 
 double DcTerminal::getP() const {
@@ -109,6 +120,12 @@ const Network& DcTerminal::getNetwork() const {
 DcTerminal& DcTerminal::setDcConnectable(const stdcxx::Reference<DcConnectable>& dcConnectable) {
     m_dcConnectable = dcConnectable;
     return *this;
+}
+
+std::ostream& operator<<(std::ostream& stream, const DcTerminal& dcTerminal) {
+    stream << stdcxx::simpleClassName(dcTerminal) << "[" << dcTerminal.getDcConnectable().get().getId() << "]";
+
+    return stream;
 }
 
 }  // namespace iidm

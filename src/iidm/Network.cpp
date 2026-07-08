@@ -26,6 +26,7 @@
 #include <powsybl/iidm/DcNodeAdder.hpp>
 #include <powsybl/iidm/DcSwitch.hpp>
 #include <powsybl/iidm/DcSwitchAdder.hpp>
+#include <powsybl/iidm/DcTopologyModel.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
@@ -57,8 +58,10 @@
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 
-#include <powsybl/stdcxx/Properties.hpp>
+#include <powsybl/stdcxx/flattened.hpp>
 #include <powsybl/stdcxx/hash.hpp>
+#include <powsybl/stdcxx/Properties.hpp>
+
 
 #include "converter/xml/NetworkXml.hpp"
 
@@ -99,7 +102,8 @@ Network::Network(const std::string& id, const std::string& sourceFormat, bool ma
     m_variantManager(*this),
     m_variants(*this, [this]() { return stdcxx::make_unique<network::VariantImpl>(*this); }),
     m_busBreakerView(*this),
-    m_busView(*this) {
+    m_busView(*this),
+    m_dcTopologyModel(*this) {
         if(manageIndex) {
             checkAndAdd(std::unique_ptr<Network>(this));
         }
@@ -120,12 +124,14 @@ Network::Network(Network&& network) noexcept :
     m_busView(*this),
     m_voltageAngleLimitsIndex(std::move(network.m_voltageAngleLimitsIndex)),
     m_parentNetworkRef(std::move(network.m_parentNetworkRef)),
-    m_subNetworksIndex(std::move(network.m_subNetworksIndex)) {
-        for(auto& val : getVoltageAngleLimits()) {
+    m_subNetworksIndex(std::move(network.m_subNetworksIndex)),
+    m_dcTopologyModel(*this, std::move(network.m_dcTopologyModel)) {
+
+        for (auto& val : getVoltageAngleLimits()) {
             val.m_network = stdcxx::ref(*this);
         }
         for (auto& subnetwork : getSubNetworks()) {
-            subnetwork.m_parentNetworkRef = stdcxx::ref(*this);
+            subnetwork.m_parentNetworkRef=stdcxx::ref(*this);
         }
 }
 
@@ -139,17 +145,23 @@ network::VariantArray& Network::getVariants() {
 void Network::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     Container::allocateVariantArrayElement(indexes, sourceIndex);
 
+    m_dcTopologyModel.allocateVariantArrayElement(indexes, sourceIndex);
+
     getVariants().allocateVariantArrayElement(indexes, [this, sourceIndex]() { return getVariants().copy(sourceIndex); });
 }
 
 void Network::deleteVariantArrayElement(unsigned long index) {
     Container::deleteVariantArrayElement(index);
 
+    m_dcTopologyModel.deleteVariantArrayElement(index);
+
     getVariants().deleteVariantArrayElement(index);
 }
 
 void Network::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     Container::extendVariantArraySize(initVariantArraySize, number, sourceIndex);
+
+    m_dcTopologyModel.extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 
     getVariants().extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return getVariants().copy(sourceIndex); });
 }
@@ -351,6 +363,70 @@ stdcxx::const_range<DanglingLine> Network::getDanglingLines() const {
 
 stdcxx::range<DanglingLine> Network::getDanglingLines() {
     return getDanglingLines(DanglingLineFilter::ALL());
+}
+
+stdcxx::CReference<DcBus> Network::getDcBus(const std::string& id) const {
+    stdcxx::CReference<DcBus> foundDcBus = getDcTopologyModel().getDcBus(id);
+    if(static_cast<bool>(foundDcBus)) {
+        return foundDcBus;
+    }
+    for (const auto& subnetwork : getSubNetworks()) {
+        foundDcBus = subnetwork.getDcBus(id);
+        if(static_cast<bool>(foundDcBus)) {
+            return foundDcBus;
+        }
+    }
+    return stdcxx::CReference<DcBus>();
+}
+
+stdcxx::Reference<DcBus> Network::getDcBus(const std::string& id) {
+    return stdcxx::ref(static_cast<const Network*>(this)->getDcBus(id));
+}
+
+unsigned long Network::getDcBusCount() const {
+    unsigned long count = getDcTopologyModel().getDcBusCount();
+    for (const auto& subn : getSubNetworks()) {
+        count += subn.getDcBusCount();
+    }
+    return count;
+}
+
+stdcxx::const_range<DcBus> Network::getDcBuses() const {
+
+    const auto& mapper = [](const Network& subnetwork) {
+        return subnetwork.getDcBuses();
+    };
+
+    return boost::range::join( 
+        getDcTopologyModel().getDcBuses(),
+        getSubNetworks() | boost::adaptors::transformed(mapper) | stdcxx::flattened);
+
+}
+
+stdcxx::range<DcBus> Network::getDcBuses() {
+    const auto& mapper = [](const Network& subnetwork) {
+        return subnetwork.getDcBuses();
+    };
+
+    return boost::range::join( 
+        getDcTopologyModel().getDcBuses(),
+        getSubNetworks() | boost::adaptors::transformed(mapper) | stdcxx::flattened);
+}
+
+stdcxx::const_range<Component> Network::getDcComponents() const {
+    return getDcComponentsManager().getConnectedComponents();
+}
+
+stdcxx::range<Component> Network::getDcComponents() {
+    return getDcComponentsManager().getConnectedComponents();
+}
+
+const DcComponentsManager& Network::getDcComponentsManager() const {
+    return getVariants().get().getDcComponentsManager();
+}
+
+DcComponentsManager& Network::getDcComponentsManager() {
+    return getVariants().get().getDcComponentsManager();
 }
 
 const DcLine& Network::getDcLine(const std::string& id) const {
@@ -1078,6 +1154,8 @@ VoltageLevelAdder Network::newVoltageLevel() {
 void Network::reduceVariantArraySize(unsigned long number) {
     Container::reduceVariantArraySize(number);
 
+    m_dcTopologyModel.reduceVariantArraySize(number);
+
     getVariants().reduceVariantArraySize(number);
 }
 
@@ -1143,6 +1221,13 @@ Network& Network::invalidateValidationLevel() {
         m_validationLevel = ValidationLevel::UNVALID;
     }
     return *this;
+}
+
+const DcTopologyModel& Network::getDcTopologyModel() const {
+    return m_dcTopologyModel;
+}
+DcTopologyModel& Network::getDcTopologyModel() {
+    return m_dcTopologyModel;
 }
 
 }  // namespace iidm

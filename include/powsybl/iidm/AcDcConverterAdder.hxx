@@ -177,11 +177,15 @@ Added& AcDcConverterAdder<Added, Adder>::checkAndAdd(std::unique_ptr<Added>&& co
         m_voltageLevel.getTopologyModel().attach(acTerminal2, false);
     }
 
+    DcTopologyModel& dcTopologyModel = m_voltageLevel.getParentNetwork().getDcTopologyModel();
+
     std::unique_ptr<DcTerminal> ptrDcTerminal1 = stdcxx::make_unique<DcTerminal>(dcNode1, TerminalNumber::ONE, m_dcConnected1);
-    converter->addDcTerminal(std::move(ptrDcTerminal1));
+    DcTerminal& dcTerminal1 = converter->addDcTerminal(std::move(ptrDcTerminal1));
+    dcTopologyModel.attach(dcTerminal1);
 
     std::unique_ptr<DcTerminal> ptrDcTerminal2 = stdcxx::make_unique<DcTerminal>(dcNode2, TerminalNumber::TWO, m_dcConnected2);
-    converter->addDcTerminal(std::move(ptrDcTerminal2));
+    DcTerminal& dcTerminal2 = converter->addDcTerminal(std::move(ptrDcTerminal2));
+    dcTopologyModel.attach(dcTerminal2);
 
     Added& acdcConverter = getNetwork().checkAndAdd(std::move(converter));
     return acdcConverter;

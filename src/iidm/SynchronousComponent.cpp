@@ -8,6 +8,7 @@
 #include "SynchronousComponent.hpp"
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/DcBus.hpp>
 #include <powsybl/stdcxx/memory.hpp>
 
 namespace powsybl {
@@ -18,9 +19,21 @@ SynchronousComponent::SynchronousComponent(Network& network, unsigned long num, 
     Component(network, num, size) {
 }
 
+stdcxx::const_range<DcBus> SynchronousComponent::getDcBuses() const {
+    return stdcxx::const_range<DcBus>();
+}
+
+stdcxx::range<DcBus> SynchronousComponent::getDcBuses() {
+    return stdcxx::range<DcBus>();
+}
+
 bool SynchronousComponent::checkBus(const Bus& bus) const {
     const auto& component = bus.getSynchronousComponent();
     return static_cast<bool>(component) && stdcxx::areSame(component.get(), *this);
+}
+
+bool SynchronousComponent::checkDcBus(const DcBus& /*dcBus*/) const {
+    return false;
 }
 
 }  // namespace iidm

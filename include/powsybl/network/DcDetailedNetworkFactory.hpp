@@ -20,11 +20,23 @@ class DcDetailedNetworkFactory {
 
 public: 
     static const char* const X_NODE_DC_1_FR;
+    static const char* const X_NODE_DC_2_FR;
     static const char* const X_NODE_DC_1_GB;
+    static const char* const X_NODE_DC_2_GB;
     static const char* const DC_NODE_FR_POS;
+    static const char* const DC_NODE_FR_POS_A;
+    static const char* const DC_NODE_FR_POS_B;
     static const char* const DC_NODE_FR_NEG;
+    static const char* const DC_NODE_FR_NEG_A;
+    static const char* const DC_NODE_FR_NEG_B;
+    static const char* const DC_NODE_FR_MID;
     static const char* const DC_NODE_GB_POS;
+    static const char* const DC_NODE_GB_POS_A;
+    static const char* const DC_NODE_GB_POS_B;
     static const char* const DC_NODE_GB_NEG;
+    static const char* const DC_NODE_GB_NEG_A;
+    static const char* const DC_NODE_GB_NEG_B;
+    static const char* const DC_NODE_GB_MID;
     static const char* const DC_GROUND_FR;
     static const char* const DC_GROUND_GB;
     static const char* const SUFFIX_NONE;
@@ -35,6 +47,16 @@ public:
     static const char* const SUFFIX_150;
     static const char* const SUFFIX_150_1;
     static const char* const SUFFIX_150_2;
+    static const char* const DC_NODE_POS_A1;
+    static const char* const DC_NODE_POS_A2;
+    static const char* const DC_NODE_POS_B1;
+    static const char* const DC_NODE_POS_B2;
+    static const char* const DC_NODE_NEG_A1;
+    static const char* const DC_NODE_NEG_A2;
+    static const char* const DC_NODE_NEG_B1;
+    static const char* const DC_NODE_NEG_B2;
+    static const char* const DC_LINE1;
+    static const char* const DC_LINE2;
 
 private:
     enum class Mode : unsigned char {
@@ -46,6 +68,23 @@ private:
 public:
     static iidm::Network createLccMonopoleGroundReturn();
     static iidm::Network createLccMonopoleMetallicReturn();
+
+    static iidm::Network createLccBipoleGroundReturn();
+    static iidm::Network createLccBipoleGroundReturnNegativePoleOutage();
+    /**
+    * Each pole looks like this, two lines in parallel with multiple segments
+    * to model e.g. overhead/underground/submarine portions.
+    * Here showing only one pole:
+    *
+    *   FR                       2 ohm             4 ohm              2 ohm                      GB
+    * converter -- switchA -- dcLine segment -- dcLine segment -- dcLine segment -- switchA -- converter
+    *           \                                                                           /
+    *            - switchB -- dcLine segment -- dcLine segment -- dcLine segment -- switchB
+    *                            2 ohm             4 ohm              2 ohm
+    *
+    * when everything connected equivalent to one 5 ohm DcLine
+     */
+    static iidm::Network createLccBipoleGroundReturnWithDcLineSegments();
 
     static iidm::Network createVscSymmetricalMonopole();
     static iidm::Network createVscAsymmetricalMonopole();
@@ -85,6 +124,7 @@ private:
     static void addDcAcElements(iidm::Network& network, const iidm::Country& country, const std::string& xNode, double exchange, const Mode& mode);
 
     static iidm::Network createLccMonopoleBase(const std::string& dcNetworkId);
+    static iidm::Network createLccBipoleBase(const std::string& dcNetworkId);
 
     static iidm::Network createVscMonopoleBase(const std::string& dcNetworkId);
 

@@ -8,6 +8,7 @@
 #include <powsybl/iidm/Component.hpp>
 
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/DcBus.hpp>
 #include <powsybl/iidm/Network.hpp>
 
 namespace powsybl {
@@ -34,6 +35,22 @@ stdcxx::range<Bus> Component::getBuses() {
     };
 
     return m_network.getBusView().getBuses() | boost::adaptors::filtered(filter);
+}
+
+stdcxx::const_range<DcBus> Component::getDcBuses() const {
+    const auto& dcFilter = [this](const DcBus& dcBus) {
+        return checkDcBus(dcBus);
+    };
+
+    return m_network.getDcBuses() | boost::adaptors::filtered(dcFilter);
+}
+
+stdcxx::range<DcBus> Component::getDcBuses() {
+    const auto& dcFilter = [this](const DcBus& dcBus) {
+        return checkDcBus(dcBus);
+    };
+
+    return m_network.getDcBuses() | boost::adaptors::filtered(dcFilter);
 }
 
 unsigned long Component::getNum() const {

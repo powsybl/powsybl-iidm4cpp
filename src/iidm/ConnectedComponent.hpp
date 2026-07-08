@@ -20,8 +20,9 @@ public:
 
     ~ConnectedComponent() noexcept override = default;
 
-private:  // Component
+protected:  // Component
     bool checkBus(const Bus& bus) const override;
+    bool checkDcBus(const DcBus& dcBus) const override;
 };
 
 }  // namespace iidm

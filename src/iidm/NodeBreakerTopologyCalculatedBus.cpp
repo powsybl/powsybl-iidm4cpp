@@ -262,6 +262,7 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_topology_model::Graph&
                 case IdentifiableType::DC_SWITCH:
                 case IdentifiableType::DC_GROUND:
                 case IdentifiableType::DC_LINE:
+                case IdentifiableType::DC_BUS:
                 default:
                     throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", connectableType));
             }

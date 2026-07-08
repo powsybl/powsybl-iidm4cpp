@@ -55,7 +55,10 @@ set(IIDM_SOURCES
     iidm/DanglingLineFilter.cpp
     iidm/DanglingLineGeneration.cpp
     iidm/DanglingLineGenerationAdder.cpp
+    iidm/DcBus.cpp
     iidm/DcConnectable.cpp
+    iidm/DcComponent.cpp
+    iidm/DcComponentsManager.cpp
     iidm/DcGround.cpp
     iidm/DcGroundAdder.cpp
     iidm/DcLine.cpp
@@ -66,6 +69,13 @@ set(IIDM_SOURCES
     iidm/DcSwitchAdder.cpp
     iidm/DcSwitchKind.cpp
     iidm/DcTerminal.cpp
+    iidm/DcTopologyDcBusCache.cpp
+    iidm/DcTopologyDcBusTopology.cpp
+    iidm/DcTopologyModel.cpp
+    iidm/DcTopologyVariant.cpp
+    iidm/DcTopologyView.cpp
+    iidm/DcTopologyVisitable.cpp
+    iidm/DcTopologyVisitor.cpp
     iidm/DroopCurve.cpp
     iidm/DroopCurveAdder.cpp
     iidm/EnergySource.cpp

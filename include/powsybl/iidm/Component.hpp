@@ -15,6 +15,7 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
+class DcBus;
 class Network;
 
 class Component {
@@ -31,16 +32,21 @@ public:
 
     Component& operator=(Component&&) noexcept = delete;
 
-    stdcxx::const_range<Bus> getBuses() const;
+    virtual stdcxx::const_range<Bus> getBuses() const;
 
-    stdcxx::range<Bus> getBuses();
+    virtual stdcxx::range<Bus> getBuses();
+
+    virtual stdcxx::const_range<DcBus> getDcBuses() const;
+
+    virtual stdcxx::range<DcBus> getDcBuses();
 
     unsigned long getNum() const;
 
     unsigned long getSize() const;
 
-private:
+protected:
     virtual bool checkBus(const Bus& bus) const = 0;
+    virtual bool checkDcBus(const DcBus& dcBus) const = 0;
 
 private:
     Network& m_network;

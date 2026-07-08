@@ -10,6 +10,7 @@
 
 #include <powsybl/iidm/BusCache.hpp>
 #include <powsybl/iidm/ConnectedComponentsManager.hpp>
+#include <powsybl/iidm/DcComponentsManager.hpp>
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
 #include <powsybl/iidm/Variant.hpp>
 #include <powsybl/iidm/VariantArray.hpp>
@@ -53,12 +54,18 @@ public:
 
     ConnectedComponentsManager& getConnectedComponentsManager();
 
+    const DcComponentsManager& getDcComponentsManager() const;
+
+    DcComponentsManager& getDcComponentsManager();
+
     const SynchronousComponentsManager& getSynchronousComponentsManager() const;
 
     SynchronousComponentsManager& getSynchronousComponentsManager();
 
 private:
     ConnectedComponentsManager m_connectedComponentsManager;
+
+    DcComponentsManager m_dcComponentsManager;
 
     SynchronousComponentsManager m_synchronousComponentsManager;
 

@@ -20,6 +20,7 @@
 #include <powsybl/iidm/DcNodeAdder.hpp>
 #include <powsybl/iidm/DcSwitch.hpp>
 #include <powsybl/iidm/DcSwitchAdder.hpp>
+#include <powsybl/iidm/DcTopologyModel.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
@@ -235,6 +236,47 @@ stdcxx::const_range<DanglingLine> Subnetwork::getDanglingLines() const {
 }
 stdcxx::range<DanglingLine> Subnetwork::getDanglingLines() {
     return getRootNetwork().Network::getDanglingLines() | boost::adaptors::filtered(m_filterIdentifiable);
+}
+
+stdcxx::CReference<DcBus> Subnetwork::getDcBus(const std::string& id) const {
+    return getDcTopologyModel().getDcBus(id);
+}
+stdcxx::Reference<DcBus> Subnetwork::getDcBus(const std::string& id) {
+    return getDcTopologyModel().getDcBus(id);
+}
+unsigned long Subnetwork::getDcBusCount() const {
+    return getDcTopologyModel().getDcBusCount();
+}
+stdcxx::const_range<DcBus> Subnetwork::getDcBuses() const {
+    return getDcTopologyModel().getDcBuses();
+}
+stdcxx::range<DcBus> Subnetwork::getDcBuses() {
+    return getDcTopologyModel().getDcBuses();
+}
+
+stdcxx::const_range<Component> Subnetwork::getDcComponents() const {
+    const auto& filterContainsComponent = [this](const Component& component) {
+        for (const auto& dcBus : component.getDcBuses()) {
+            if(contains(dcBus)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    return getRootNetwork().Network::getDcComponents() | boost::adaptors::filtered(filterContainsComponent);
+}
+stdcxx::range<Component> Subnetwork::getDcComponents() {
+    const auto& filterContainsComponent = [this](const Component& component) {
+        for (const auto& dcBus : component.getDcBuses()) {
+            if(contains(dcBus)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    return getRootNetwork().Network::getDcComponents() | boost::adaptors::filtered(filterContainsComponent);
 }
 
 const DcLine& Subnetwork::getDcLine(const std::string& id) const  {

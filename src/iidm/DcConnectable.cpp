@@ -108,6 +108,12 @@ std::vector<std::reference_wrapper<DcTerminal> > DcConnectable::getDcTerminals(c
 
 void DcConnectable::remove() {
     Network& network = getNetwork();
+
+    DcTopologyModel& dcTopology = getParentNetwork().getDcTopologyModel();
+    for(auto& dcTerminal : m_dcTerminals) {
+        dcTopology.detach(*dcTerminal);
+    }
+
     network.remove(*this);
 }
 

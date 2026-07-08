@@ -41,7 +41,8 @@ enum class IdentifiableType : unsigned char {
     DC_GROUND,
     DC_LINE,
     LINE_COMMUTATED_CONVERTER,
-    VOLTAGE_SOURCE_CONVERTER
+    VOLTAGE_SOURCE_CONVERTER,
+    DC_BUS
 };
 
 }  // namespace iidm

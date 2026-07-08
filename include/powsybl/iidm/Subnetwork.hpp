@@ -80,6 +80,15 @@ public:
     stdcxx::const_range<DanglingLine> getDanglingLines() const override;
     stdcxx::range<DanglingLine> getDanglingLines() override;
 
+    stdcxx::CReference<DcBus> getDcBus(const std::string& id) const override;
+    stdcxx::Reference<DcBus> getDcBus(const std::string& id) override;
+    unsigned long getDcBusCount() const override;
+    stdcxx::const_range<DcBus> getDcBuses() const override;
+    stdcxx::range<DcBus> getDcBuses() override;
+
+    stdcxx::const_range<Component> getDcComponents() const override;
+    stdcxx::range<Component> getDcComponents() override;
+
     const DcLine& getDcLine(const std::string& id) const override;
     DcLine& getDcLine(const std::string& id) override;
     unsigned long getDcLineCount() const override;

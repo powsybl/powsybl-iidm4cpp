@@ -48,6 +48,10 @@ DcNode& DcNodeAdder::add() {
         ptrDcNode = std::unique_ptr<DcNode>(new DcNode(m_network, id, getName(), isFictitious(), m_nominalV));
     }
     auto& dcNode = getNetwork().checkAndAdd<DcNode>(std::move(ptrDcNode));
+
+    Network& parentNetwork = (static_cast<bool>(m_subNetworkRef)) ? m_subNetworkRef.get() : getNetwork();
+    parentNetwork.getDcTopologyModel().addDcNodeToTopology(dcNode);
+
     return dcNode;
 }
 

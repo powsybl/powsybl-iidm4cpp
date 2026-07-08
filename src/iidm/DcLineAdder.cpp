@@ -60,8 +60,11 @@ DcLine& DcLineAdder::add() {
 
     std::unique_ptr<DcTerminal> ptrDcTerminal1 = stdcxx::make_unique<DcTerminal>(dcNode1, TwoSides::ONE, m_dcConnected1);
     std::unique_ptr<DcTerminal> ptrDcTerminal2 = stdcxx::make_unique<DcTerminal>(dcNode2, TwoSides::TWO, m_dcConnected2);
-    ptrDcLine->addDcTerminal(std::move(ptrDcTerminal1));
-    ptrDcLine->addDcTerminal(std::move(ptrDcTerminal2));
+    DcTerminal& dcTerminal1 = ptrDcLine->addDcTerminal(std::move(ptrDcTerminal1));
+    DcTerminal& dcTerminal2 = ptrDcLine->addDcTerminal(std::move(ptrDcTerminal2));
+    //Since checkSameParentNetwork(), ParentNetwork of dcNode1 and dcNode2 are actually the same :
+    dcNode1.getParentNetwork().getDcTopologyModel().attach(dcTerminal1);
+    dcNode2.getParentNetwork().getDcTopologyModel().attach(dcTerminal2);
 
     auto& dcLine = getNetwork().checkAndAdd<DcLine>(std::move(ptrDcLine));
     return dcLine;

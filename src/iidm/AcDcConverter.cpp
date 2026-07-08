@@ -310,6 +310,12 @@ double AcDcConverter::getTargetVdc() const {
 
 
 void AcDcConverter::remove() {
+    DcTopologyModel& dcTopology = getParentNetwork().getDcTopologyModel();
+    for (unsigned long dcterminalIndex = 0 ; dcterminalIndex < getDcTerminalsCount(); dcterminalIndex++) {
+        DcTerminal& dcTerminal = DcConnectable::getDcTerminal(dcterminalIndex);
+        dcTopology.detach(dcTerminal);
+    }
+
     if(static_cast<bool>(m_pccRegulatingTerminal)){
         m_pccRegulatingTerminal.get().unregisterReferrer(*this);
     }

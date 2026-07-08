@@ -28,8 +28,15 @@ BOOST_AUTO_TEST_SUITE(DcDetailedNetworkFactoryTestSuite)
 
 BOOST_AUTO_TEST_CASE(testLccMonopoleGroundReturn) {
     iidm::Network network = DcDetailedNetworkFactory::createLccMonopoleGroundReturn();
+    iidm::Network& dcNetwork = network.getSubNetwork("LccMonopoleGroundReturn").get();
 
     BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getSynchronousComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getBusView().getConnectedComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(dcNetwork.getBusView().getSynchronousComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(dcNetwork.getDcComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(dcNetwork.getBusView().getConnectedComponents()));
+
     BOOST_CHECK_EQUAL(3, boost::size(network.getSubNetworks()));
     BOOST_CHECK_EQUAL(4, network.getDcNodeCount());
     BOOST_CHECK_EQUAL(1, network.getDcLineCount());
@@ -43,6 +50,8 @@ BOOST_AUTO_TEST_CASE(testLccMonopoleGroundReturn) {
 BOOST_AUTO_TEST_CASE(testLccMonopoleMetallicReturn) {
     iidm::Network  network = DcDetailedNetworkFactory::createLccMonopoleMetallicReturn();
     BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getSynchronousComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getBusView().getConnectedComponents()));
     BOOST_CHECK_EQUAL(3, boost::size(network.getSubNetworks()));
     BOOST_CHECK_EQUAL(4, network.getDcNodeCount());
     BOOST_CHECK_EQUAL(2, network.getDcLineCount());
@@ -55,6 +64,8 @@ BOOST_AUTO_TEST_CASE(testLccMonopoleMetallicReturn) {
 BOOST_AUTO_TEST_CASE(testVscSymmetricalMonopole) {
     iidm::Network  network = DcDetailedNetworkFactory::createVscSymmetricalMonopole();
     BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getSynchronousComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getBusView().getConnectedComponents()));
     BOOST_CHECK_EQUAL(3, boost::size(network.getSubNetworks()));
     BOOST_CHECK_EQUAL(4, network.getDcNodeCount());
     BOOST_CHECK_EQUAL(2, network.getDcLineCount());
@@ -65,12 +76,68 @@ BOOST_AUTO_TEST_CASE(testVscSymmetricalMonopole) {
 BOOST_AUTO_TEST_CASE(testVscAsymmetricalMonopole) {
     iidm::Network  network = DcDetailedNetworkFactory::createVscAsymmetricalMonopole();
     BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getSynchronousComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getBusView().getConnectedComponents()));
     BOOST_CHECK_EQUAL(3, boost::size(network.getSubNetworks()));
     BOOST_CHECK_EQUAL(4, network.getDcNodeCount());
     BOOST_CHECK_EQUAL(1, network.getDcLineCount());
     BOOST_CHECK_EQUAL(2, network.getVoltageSourceConverterCount());
     BOOST_CHECK_EQUAL(2, network.getDcGroundCount());
 }
+
+BOOST_AUTO_TEST_CASE(testLccBipoleGroundReturn) {
+    iidm::Network network = DcDetailedNetworkFactory::createLccBipoleGroundReturn();
+
+    BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getSynchronousComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getBusView().getConnectedComponents()));
+    BOOST_CHECK_EQUAL(3, boost::size(network.getSubNetworks()));
+    BOOST_CHECK_EQUAL(6, network.getDcNodeCount());
+    BOOST_CHECK_EQUAL(4, network.getDcSwitchCount());
+    BOOST_CHECK_EQUAL(2, network.getDcLineCount());
+    BOOST_CHECK_EQUAL(4, network.getLineCommutatedConverterCount());
+    BOOST_CHECK_EQUAL(2, network.getDcGroundCount());
+    BOOST_CHECK_EQUAL(6, network.getDcBusCount());
+}
+
+BOOST_AUTO_TEST_CASE(testLccBipoleGroundReturnNegativePoleOutage) {
+    iidm::Network network = DcDetailedNetworkFactory::createLccBipoleGroundReturnNegativePoleOutage();
+
+    BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getSynchronousComponents()));
+    auto dcComponents = network.getDcComponents();
+    BOOST_CHECK_EQUAL(1, boost::size(dcComponents));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getBusView().getConnectedComponents()));
+    BOOST_CHECK_EQUAL(3, boost::size(network.getSubNetworks()));
+    BOOST_CHECK_EQUAL(6, network.getDcNodeCount());
+    BOOST_CHECK_EQUAL(4, network.getDcSwitchCount());
+    BOOST_CHECK_EQUAL(2, network.getDcLineCount());
+    BOOST_CHECK_EQUAL(4, network.getLineCommutatedConverterCount());
+    BOOST_CHECK_EQUAL(2, network.getDcGroundCount());
+    BOOST_CHECK_EQUAL(4, network.getDcBusCount());
+
+    auto& dcComponent0 = dcComponents.front();
+    BOOST_CHECK_EQUAL(4, dcComponent0.getSize());
+}
+
+BOOST_AUTO_TEST_CASE(testLccBipoleGroundReturnWithDcLineSegments) {
+    iidm::Network network = DcDetailedNetworkFactory::createLccBipoleGroundReturnWithDcLineSegments();
+
+    BOOST_CHECK_EQUAL(2, boost::size(network.getBusView().getSynchronousComponents()));
+    auto dcComponents = network.getDcComponents();
+    BOOST_CHECK_EQUAL(1, boost::size(dcComponents));
+    BOOST_CHECK_EQUAL(1, boost::size(network.getBusView().getConnectedComponents()));
+    BOOST_CHECK_EQUAL(3, boost::size(network.getSubNetworks()));
+    BOOST_CHECK_EQUAL(22, network.getDcNodeCount());
+    BOOST_CHECK_EQUAL(12, network.getDcSwitchCount());
+    BOOST_CHECK_EQUAL(12, network.getDcLineCount());
+    BOOST_CHECK_EQUAL(4, network.getLineCommutatedConverterCount());
+    BOOST_CHECK_EQUAL(2, network.getDcGroundCount());
+    BOOST_CHECK_EQUAL(14, network.getDcBusCount());
+
+    auto& dcComponent0 = dcComponents.front();
+    BOOST_CHECK_EQUAL(14, dcComponent0.getSize());
+}
+
 
 class TerminalTopologyVisitor : public iidm::AbstractTerminalTopologyVisitor {
 public:

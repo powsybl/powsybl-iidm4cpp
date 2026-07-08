@@ -37,6 +37,7 @@ const auto& filterNonBusBreaker = [](const VoltageLevel& voltageLevel) {
 VariantImpl::VariantImpl(Network& network) :
     Variant(network),
     m_connectedComponentsManager(network),
+    m_dcComponentsManager(network),
     m_synchronousComponentsManager(network),
     m_busViewCache([&network]() {
         return network.getVoltageLevels() | boost::adaptors::transformed(busViewMapper) | stdcxx::flattened;
@@ -50,6 +51,7 @@ VariantImpl::VariantImpl(Network& network) :
 VariantImpl::VariantImpl(Network& network, VariantImpl&& variant) noexcept :
     Variant(network),
     m_connectedComponentsManager(network, std::move(variant.m_connectedComponentsManager)),
+    m_dcComponentsManager(network, std::move(variant.m_dcComponentsManager)),
     m_synchronousComponentsManager(network, std::move(variant.m_synchronousComponentsManager)),
     m_busViewCache([&network]() {
         return network.getVoltageLevels() | boost::adaptors::transformed(busViewMapper) | stdcxx::flattened;
@@ -85,6 +87,14 @@ const ConnectedComponentsManager& VariantImpl::getConnectedComponentsManager() c
 
 ConnectedComponentsManager& VariantImpl::getConnectedComponentsManager() {
     return m_connectedComponentsManager;
+}
+
+const DcComponentsManager& VariantImpl::getDcComponentsManager() const {
+    return m_dcComponentsManager;
+}
+
+DcComponentsManager& VariantImpl::getDcComponentsManager() {
+    return m_dcComponentsManager;
 }
 
 const SynchronousComponentsManager& VariantImpl::getSynchronousComponentsManager() const {

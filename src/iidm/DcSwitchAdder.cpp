@@ -52,6 +52,7 @@ DcSwitch& DcSwitchAdder::add() {
 
     auto ptrDcSwitch = std::unique_ptr<DcSwitch>(new DcSwitch(id, getName(), isFictitious(), dcNode1, dcNode2, *m_kind, *m_open));
     auto& dcSwitch = getNetwork().checkAndAdd<DcSwitch>(std::move(ptrDcSwitch));
+    dcNode1.getParentNetwork().getDcTopologyModel().addDcSwitchToTopology(dcSwitch, m_dcNodeId1, m_dcNodeId2);
     return dcSwitch;
 }
 

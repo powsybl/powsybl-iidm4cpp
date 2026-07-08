@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/SynchronousComponentsManager.hpp>
 
+#include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
 
@@ -17,11 +18,11 @@ namespace powsybl {
 namespace iidm {
 
 SynchronousComponentsManager::SynchronousComponentsManager(Network& network) :
-    AbstractComponentsManager(network, &SynchronousComponentsManager::createComponent) {
+    AbstractComponentsManager(network, &SynchronousComponentsManager::createComponent, true, false) {
 }
 
 SynchronousComponentsManager::SynchronousComponentsManager(Network& network, SynchronousComponentsManager&& manager) noexcept :
-        AbstractComponentsManager(network, std::move(manager)) {
+        AbstractComponentsManager(network, std::move(manager), true, false) {
 }
 
 std::unique_ptr<Component> SynchronousComponentsManager::createComponent(Network& network, unsigned long num, unsigned long size) {
@@ -35,6 +36,10 @@ const std::string& SynchronousComponentsManager::getComponentLabel() const {
 
 void SynchronousComponentsManager::setComponentNumber(Bus& bus, const stdcxx::optional<unsigned long>& num) {
     bus.setSynchronousComponentNumber(num);
+}
+
+void SynchronousComponentsManager::setComponentNumber(DcBus& /*dcBus*/, const stdcxx::optional<unsigned long>& /*num*/) {
+    throw PowsyblException("SynchronousComponentsManager should not compute DC buses component number");
 }
 
 }  // namespace iidm

@@ -19,6 +19,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class DcBus;
 class DcConnectable;
 class DcNode;
 class Network;
@@ -36,6 +37,13 @@ protected: //MultiVariantObject
 
     friend class DcConnectable;
     friend class AcDcConverter;
+
+public:
+    template <typename T, typename = typename std::enable_if<std::is_base_of<DcConnectable, T>::value>::type>
+    static bool isInstanceOf(const DcTerminal& dcTerminal);
+
+    template <typename T, typename = typename std::enable_if<std::is_base_of<DcConnectable, T>::value>::type>
+    static const T& map(const DcTerminal& dcTerminal);
 
 public:
     /**
@@ -64,6 +72,9 @@ public:
 
     bool isConnected() const;
     DcTerminal& setConnected(bool connected);
+
+    stdcxx::CReference<DcBus> getDcBus() const;
+    stdcxx::Reference<DcBus> getDcBus();
 
     /**
      * Returns the active power (in MW) injected at the DC terminal.
@@ -102,8 +113,12 @@ private:
 
 };
 
+std::ostream& operator<<(std::ostream& stream, const DcTerminal& dcTerminal);
+
 }  // namespace iidm
 
 }  // namespace powsybl
+
+#include <powsybl/iidm/DcTerminal.hxx>
 
 #endif  // POWSYBL_IIDM_DCTERMINAL_HPP

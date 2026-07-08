@@ -97,12 +97,16 @@ DcSwitch& DcSwitch::setOpen(bool open) {
     bool oldValue = m_open[index];
     if (oldValue != open) {
         m_open[index] = open;
+        getParentNetwork().getDcTopologyModel().invalidateCache();
     }
     return *this;
 }
 
 void DcSwitch::remove() {
-    getNetwork().remove(*this);
+    Network& network = getNetwork();
+    getParentNetwork().getDcTopologyModel().removeDcSwitch(getId());
+
+    network.remove(*this);
 }
 
 DcSwitch::DcSwitch(const std::string& id, const std::string& name, bool fictitious, 
