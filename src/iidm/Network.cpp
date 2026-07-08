@@ -105,7 +105,16 @@ Network::Network(Network&& network) noexcept :
     m_variantManager(*this, std::move(network.m_variantManager)),
     m_variants(*this, std::move(network.m_variants)),
     m_busBreakerView(*this),
-    m_busView(*this) {
+    m_busView(*this),
+    m_voltageAngleLimitsIndex(std::move(network.m_voltageAngleLimitsIndex)),
+    m_parentNetworkRef(std::move(network.m_parentNetworkRef)),
+    m_subNetworksIndex(std::move(network.m_subNetworksIndex)) {
+        for(auto& val : getVoltageAngleLimits()) {
+            val.m_network = stdcxx::ref(*this);
+        }
+        for (auto& subnetwork : getSubNetworks()) {
+            subnetwork.m_parentNetworkRef = stdcxx::ref(*this);
+        }
 }
 
 const network::VariantArray& Network::getVariants() const {

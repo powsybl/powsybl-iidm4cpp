@@ -48,6 +48,8 @@ private:
     friend class VoltageAngleLimitAdder;
 
     stdcxx::Reference<Network> m_network;
+    friend class Network;
+
     std::string m_id;
 
     std::reference_wrapper<Terminal> m_fromTerminal;
