@@ -11,6 +11,7 @@
 #include <powsybl/iidm/MultiVariantObject.hpp>
 
 #include <powsybl/iidm/DcBus.hpp>
+#include <powsybl/iidm/DcTerminal.hpp>
 #include <powsybl/iidm/DcTopologyVariant.hpp>
 #include <powsybl/iidm/DcTopologyView.hpp>
 
@@ -24,11 +25,6 @@ namespace powsybl {
 
 namespace iidm {
 
-class DcNode;
-class DcSwitch;
-class DcTerminal;
-class Network;
-
 class DcTopologyModel : public MultiVariantObject {
 public:
     DcTopologyModel(Network& owner);
@@ -38,9 +34,13 @@ public:
 
     using Graph = math::UndirectedGraph<DcNode, DcSwitch>;
 
+protected:
     void addDcNodeToTopology(DcNode& dcNode);
+    friend class DcNodeAdder;
     void addDcSwitchToTopology(DcSwitch& dcSwitch, std::string dcNodeId1, std::string dcNodeId2);
+    friend class DcSwitchAdder;
 
+public:
     void removeDcNode(std::string dcNodeId);
     void removeDcSwitch(std::string dcSwitchId);
     void removeAllDcNodes();
@@ -50,6 +50,22 @@ public:
 
     void attach(DcTerminal& dcTerminal);
     void detach(DcTerminal& dcTerminal);
+
+    bool connect(DcTerminal& dcTerminal);
+    bool disconnect(DcTerminal& dcTerminal);
+
+    bool traverse(DcTerminal& dcTerminal, DcTerminal::DcTopologyTraverser& traverser, math::TraversalType traversalType) const;
+
+    /**
+     * Traverse the full DC Topology graph according to the given TraversalType, keeping track on the traversed DC Terminals,
+     * and using the given DcTerminal as point of origin.
+     * 
+     * @return false if the traversal has been terminated before getting through the whole graph 
+     * (i.e. a math::TraverseResult::TERMINATE_TRAVERSER has been returned by the traverser),
+     * true if not interrupted before the end.
+     */
+    bool traverse(DcTerminal& dcTerminal, DcTerminal::DcTopologyTraverser& traverser, DcTerminalSet& traversedTerminals, math::TraversalType traversalType) const; 
+
 
     void invalidateAllVariantsCache();
 
@@ -86,6 +102,9 @@ public:
 private:
     void assertGraph() const;
     stdcxx::optional<unsigned long> getVertex(const std::string& dcNodeId, bool throwException) const;
+
+    static void addNextDcTerminals(DcTerminal& dcTerminal, DcTerminalSet& nextDcTerminals);
+    static math::TraverseResult getTraverserResult(DcTerminalSet& visitedDcTerminals, DcTerminal& dcTerminal, DcTerminal::DcTopologyTraverser& traverser);
 
     const dc_topology_model::DcBusTopology& getDcBusTopology() const;
     dc_topology_model::DcBusTopology& getDcBusTopology();

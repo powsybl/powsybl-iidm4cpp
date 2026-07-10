@@ -53,7 +53,7 @@ void TopologyModel::addNextTerminals(Terminal& otherTerminal, TerminalSet& nextT
         } else if (stdcxx::areSame(branch.getTerminal2(), otherTerminal)) {
             nextTerminals.emplace(branch.getTerminal1());
         } else {
-            throw AssertionError("Terminal is not one the branch terminals");
+            throw AssertionError("Terminal is not one of the branch terminals");
         }
     } else if (stdcxx::isInstanceOf<ThreeWindingsTransformer>(otherConnectable)) {
         auto& ttc = dynamic_cast<ThreeWindingsTransformer&>(otherConnectable);
@@ -67,7 +67,7 @@ void TopologyModel::addNextTerminals(Terminal& otherTerminal, TerminalSet& nextT
             nextTerminals.emplace(ttc.getLeg1().getTerminal());
             nextTerminals.emplace(ttc.getLeg2().getTerminal());
         } else {
-            throw AssertionError("Terminal is not one the 3 legs terminals");
+            throw AssertionError("Terminal is not one of the 3 legs terminals");
         }
     }
 }

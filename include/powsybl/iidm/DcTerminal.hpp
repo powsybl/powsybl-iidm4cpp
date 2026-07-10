@@ -8,9 +8,12 @@
 #ifndef POWSYBL_IIDM_DCTERMINAL_HPP
 #define POWSYBL_IIDM_DCTERMINAL_HPP
 
+#include <powsybl/iidm/DcTerminalSet.hpp>
+#include <powsybl/iidm/DcTerminalTopologyTraverser.hpp>
 #include <powsybl/iidm/MultiVariantObject.hpp>
 #include <powsybl/iidm/TerminalNumber.hpp>
 #include <powsybl/iidm/TwoSides.hpp>
+#include <powsybl/math/TraversalType.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 #include <vector>
@@ -25,6 +28,9 @@ class DcNode;
 class Network;
 
 class DcTerminal : public MultiVariantObject {
+
+public:
+    using DcTopologyTraverser = dc_terminal::TopologyTraverser;
 
 protected: //MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
@@ -94,8 +100,38 @@ public:
      */
     DcTerminal& setI(double i);
 
+    /**
+     * Traverse the full network DC Topology graph usig a "Depth-first" TraversalType
+     */
+    bool traverse(DcTopologyTraverser& traverser);
+    /**
+     * Traverse the full network DC Topology graph.
+     */
+    bool traverse(DcTopologyTraverser& traverser, math::TraversalType traversalType);
+
+    /**
+     * Traverse the full network DC Topology graph, keeping track on the traversed DC Terminals.
+     */
+    bool traverse(DcTopologyTraverser& traverser, DcTerminalSet& traversedDcTerminals, math::TraversalType traversalType);
+
+    /**
+     * Connects this DC Terminal for the working Variant
+     * 
+     * @return true if the terminal has been connected, false if already connected
+     */
+    bool connect();
+    /**
+     * Disconnects this DC Terminal for the working Variant
+     * 
+     * @return true if the terminal has been disconnected, false if already disconnected
+     */
+    bool disconnect();
+
 protected:
     const Network& getNetwork() const;
+    const Network& getParentNetwork() const;
+    Network& getParentNetwork();
+
     DcTerminal& setDcConnectable(const stdcxx::Reference<DcConnectable>& dcConnectable);
     friend class DcConnectable;
 

@@ -84,8 +84,8 @@ bool DcTerminal::isConnected() const {
     return m_connected.at(getNetwork().getVariantIndex());
 }
 DcTerminal& DcTerminal::setConnected(bool connected) {
-    if(isConnected() != connected && static_cast<bool>(m_dcConnectable)) {
-        m_dcConnectable.get().getParentNetwork().getDcTopologyModel().invalidateCache();
+    if(isConnected() != connected) {
+        getParentNetwork().getDcTopologyModel().invalidateCache();
     }
     m_connected[getNetwork().getVariantIndex()] = connected;
     return *this;
@@ -114,16 +114,57 @@ DcTerminal& DcTerminal::setI(double i) {
     return *this;
 }
 
+bool DcTerminal::traverse(DcTopologyTraverser& traverser) {
+    return traverse(traverser, math::TraversalType::DEPTH_FIRST);
+}
+
+bool DcTerminal::traverse(DcTopologyTraverser& traverser, math::TraversalType traversalType) {
+    const auto& dcTopologyModel = getParentNetwork().getDcTopologyModel();
+    return dcTopologyModel.traverse(*this, traverser, traversalType);
+}
+
+bool DcTerminal::traverse(DcTopologyTraverser& traverser, DcTerminalSet& traversedDcTerminals, math::TraversalType traversalType) {
+    const auto& dcTopologyModel = getParentNetwork().getDcTopologyModel();
+    return dcTopologyModel.traverse(*this, traverser, traversedDcTerminals, traversalType);
+}
+
+bool DcTerminal::connect() {
+    auto& dcTopologyModel = getParentNetwork().getDcTopologyModel();
+    return dcTopologyModel.connect(*this);
+}
+
+bool DcTerminal::disconnect() {
+    auto& dcTopologyModel = getParentNetwork().getDcTopologyModel();
+    return dcTopologyModel.disconnect(*this);
+}
+
+
+
 const Network& DcTerminal::getNetwork() const {
     return m_dcNode.getNetwork();
 }
+const Network& DcTerminal::getParentNetwork() const {
+    if(static_cast<bool>(m_dcConnectable)) {
+        return m_dcConnectable.get().getParentNetwork();
+    }
+    return m_dcNode.getParentNetwork();
+}
+Network& DcTerminal::getParentNetwork() {
+    return const_cast<Network&>(static_cast<const DcTerminal*>(this)->getParentNetwork());
+}
+
 DcTerminal& DcTerminal::setDcConnectable(const stdcxx::Reference<DcConnectable>& dcConnectable) {
     m_dcConnectable = dcConnectable;
     return *this;
 }
 
 std::ostream& operator<<(std::ostream& stream, const DcTerminal& dcTerminal) {
-    stream << stdcxx::simpleClassName(dcTerminal) << "[" << dcTerminal.getDcConnectable().get().getId() << "]";
+    const auto& dcConnectable = dcTerminal.getDcConnectable();
+    if(static_cast<bool>(dcConnectable)) {
+        stream << stdcxx::simpleClassName(dcTerminal) << "[" << dcConnectable.get().getId() << "]";
+    } else {
+        stream << stdcxx::simpleClassName(dcTerminal) << "[" << dcTerminal.getDcNode().getId() << "]";
+    }
 
     return stream;
 }

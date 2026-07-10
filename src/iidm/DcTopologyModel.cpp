@@ -7,6 +7,8 @@
 
 #include <powsybl/iidm/DcTopologyModel.hpp>
 
+#include <powsybl/iidm/AcDcConverter.hpp>
+#include <powsybl/iidm/DcLine.hpp>
 #include <powsybl/iidm/DcNode.hpp>
 #include <powsybl/iidm/DcSwitch.hpp>
 #include <powsybl/iidm/DcTerminal.hpp>
@@ -166,6 +168,119 @@ void DcTopologyModel::detach(DcTerminal& dcTerminal) {
 
     invalidateAllVariantsCache();
 }
+
+void DcTopologyModel::addNextDcTerminals(DcTerminal& dcTerminal, DcTerminalSet& nextDcTerminals) {
+    DcConnectable& otherDcConnectable = dcTerminal.getDcConnectable();
+    if (stdcxx::isInstanceOf<DcLine>(otherDcConnectable)) {
+        auto& dcLine = dynamic_cast<DcLine&>(otherDcConnectable);
+        if (stdcxx::areSame(dcLine.getDcTerminal1(), dcTerminal)) {
+            nextDcTerminals.emplace(dcLine.getDcTerminal2());
+        } else if (stdcxx::areSame(dcLine.getDcTerminal2(), dcTerminal)) {
+            nextDcTerminals.emplace(dcLine.getDcTerminal1());
+        } else {
+            throw AssertionError(stdcxx::format("%1% is not one of the DcLine '%2%' terminals", dcTerminal, dcLine.getId()));
+        }
+    } else if (stdcxx::isInstanceOf<AcDcConverter>(otherDcConnectable)) {
+        auto& acdcConverter = dynamic_cast<AcDcConverter&>(otherDcConnectable);
+        if (stdcxx::areSame(acdcConverter.getDcTerminal1(), dcTerminal)) {
+            nextDcTerminals.emplace(acdcConverter.getDcTerminal2());
+        } else if (stdcxx::areSame(acdcConverter.getDcTerminal2(), dcTerminal)) {
+            nextDcTerminals.emplace(acdcConverter.getDcTerminal1());
+        } else {
+            throw AssertionError(stdcxx::format("%1% is not one of the AcDcConverter '%2%' terminals", dcTerminal, acdcConverter.getId()));
+        }
+    }
+}
+math::TraverseResult DcTopologyModel::getTraverserResult(DcTerminalSet& visitedDcTerminals, DcTerminal& dcTerminal, DcTerminal::DcTopologyTraverser& traverser) {
+    if (visitedDcTerminals.insert(dcTerminal).second) {
+        return traverser.traverse(dcTerminal, dcTerminal.isConnected());
+    }
+    return math::TraverseResult::TERMINATE_PATH;
+}
+
+bool DcTopologyModel::connect(DcTerminal& dcTerminal) {
+    // Already connected ?
+    if (dcTerminal.isConnected()) {
+        return false;
+    }
+
+    dcTerminal.setConnected(true);
+    return true;
+}
+bool DcTopologyModel::disconnect(DcTerminal& dcTerminal) {
+    // Already disconnected ?
+    if (!dcTerminal.isConnected()) {
+        return false;
+    }
+
+    dcTerminal.setConnected(false);
+    return true;
+}
+
+bool DcTopologyModel::traverse(DcTerminal& dcTerminal, DcTerminal::DcTopologyTraverser& traverser, math::TraversalType traversalType) const {
+    DcTerminalSet traversedDcTerminals;
+    return traverse(dcTerminal, traverser, traversedDcTerminals, traversalType);
+}
+
+bool DcTopologyModel::traverse(DcTerminal& dcTerminal, DcTerminal::DcTopologyTraverser& traverser, DcTerminalSet& traversedTerminals, math::TraversalType traversalType) const {
+    //Check traversing the terminal itself:
+    math::TraverseResult termTraverseResult = getTraverserResult(traversedTerminals, dcTerminal, traverser);
+    if (termTraverseResult == math::TraverseResult::TERMINATE_TRAVERSER) {
+        return false;
+    }
+
+    if(termTraverseResult == math::TraverseResult::CONTINUE) {
+        //Continue traversal on adjacent dc terminals:
+        DcTerminalSet nextDcTerminals;
+        addNextDcTerminals(dcTerminal, nextDcTerminals);
+
+        //Check traversing the dcTerminals connected to the same DcNode:
+        unsigned long v = *getVertex(dcTerminal.getDcNode().getId(), true);
+        assertGraph();
+        DcNode& dcNode = m_graph->getVertexObject(v).get();
+        for (DcTerminal& t : dcNode.getDcTerminals()) {
+            math::TraverseResult tTraverseResult = getTraverserResult(traversedTerminals, t, traverser);
+            if (tTraverseResult == math::TraverseResult::TERMINATE_TRAVERSER) {
+                return false;
+            }
+            if (tTraverseResult == math::TraverseResult::CONTINUE) {
+                addNextDcTerminals(t, nextDcTerminals);
+            }
+        }
+
+        //Then go through the graph to visit other connected DcNodes:
+        bool traversalTerminated = !m_graph->traverse(v, traversalType, 
+            [this, &nextDcTerminals, &traverser, &traversedTerminals](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
+                DcSwitch& dcSwitch = m_graph->getEdgeObject(e).get();
+                const stdcxx::range<DcTerminal>& otherNodeDcTerminals = m_graph->getVertexObject(v2).get().getDcTerminals();
+                math::TraverseResult switchTraverseResult = traverser.traverse(dcSwitch);
+                if(switchTraverseResult == math::TraverseResult::CONTINUE && !otherNodeDcTerminals.empty()) {
+                    //At lest one DcTerminal on the other node :
+                    DcTerminal& otherDcTerminal = *otherNodeDcTerminals.begin();
+                    math::TraverseResult otherDcTerminalResult = getTraverserResult(traversedTerminals, otherDcTerminal, traverser);
+                    if(otherDcTerminalResult == math::TraverseResult::CONTINUE) {
+                        addNextDcTerminals(otherDcTerminal, nextDcTerminals);
+                    }
+                    return otherDcTerminalResult;
+                }
+                return switchTraverseResult;
+            }
+        );
+
+        if(traversalTerminated) {
+            return false;
+        }
+
+        //Look into the next Dc Terminals
+        for (DcTerminal& nextDcTerminal : nextDcTerminals) {
+            if (!nextDcTerminal.traverse(traverser, traversedTerminals, traversalType)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 
 void DcTopologyModel::invalidateAllVariantsCache() {
     getNetwork().getVariantManager().forEachVariant( [this]() {
