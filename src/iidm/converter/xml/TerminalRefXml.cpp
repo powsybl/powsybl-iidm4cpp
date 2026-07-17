@@ -36,20 +36,28 @@ namespace xml {
 Terminal& TerminalRefXml::readTerminal(Network& network, NetworkXmlReaderContext& context) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     const std::string side = context.getReader().getOptionalAttributeValue(SIDE, "");
-    return TerminalRefXml::resolve(id, side, network);
+    const std::string number = context.getReader().getOptionalAttributeValue(NUMBER, "");
+    return TerminalRefXml::resolve(id, side, number, network);
 }
 
 void TerminalRefXml::readTerminalRef(Network& network, NetworkXmlReaderContext& context, const std::function<void(Terminal&)>& endTaskTerminalConsumer) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     const std::string side = context.getReader().getOptionalAttributeValue(SIDE, "");
-    context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&network, id, side, endTaskTerminalConsumer]() {
-        Terminal& terminal = resolve(id, side, network);
+    const std::string number = context.getReader().getOptionalAttributeValue(NUMBER, "");
+    context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&network, id, side, number, endTaskTerminalConsumer]() {
+        Terminal& terminal = resolve(id, side, number, network);
         endTaskTerminalConsumer(terminal);
     });
 }
 
-Terminal& TerminalRefXml::resolve(const std::string& id, const std::string& side, Network& network) {
+Terminal& TerminalRefXml::resolve(const std::string& id, const std::string& side, const std::string& terminalNumber, Network& network) {
     ThreeSides threeSide = ThreeSides::ONE;
+    if(!side.empty() && !terminalNumber.empty()) {
+        throw PowsyblException(stdcxx::format("Terminal reference specifies both terminal side and number: '%1%'", id));
+    }
+    if(!terminalNumber.empty()){
+        return TerminalRefXml::resolve(id, Enum::fromString<TerminalNumber>(terminalNumber), network);
+    }
     if(!side.empty()) {
         threeSide = Enum::fromString<ThreeSides>(side);
     }
@@ -64,6 +72,16 @@ Terminal& TerminalRefXml::resolve(const std::string& id, ThreeSides side, Networ
     auto& identifiable = identifiableRef.get();
 
     return Terminal::getTerminal(identifiable, side);
+}
+
+Terminal& TerminalRefXml::resolve(const std::string& id, TerminalNumber number, Network& network) {
+    const auto& identifiableRef = network.find<Identifiable>(id);
+    if (!identifiableRef) {
+        throw PowsyblException(stdcxx::format("Terminal reference identifiable not found: '%1%'", id));
+    }
+    auto& identifiable = identifiableRef.get();
+
+    return Terminal::getTerminal(identifiable, number);
 }
 
 void TerminalRefXml::writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& elementName) {
@@ -90,6 +108,12 @@ void TerminalRefXml::writeTerminalRefAttribute(const Terminal& terminal, Network
     if(optSide.has_value() && *optSide != ThreeSides::UNDEFINED) {
         context.getWriter().writeAttribute(SIDE, Enum::toString(*optSide));
     }
+
+    auto optNumber = Terminal::getConnectableTerminalNumber(terminal);
+    if(optNumber.has_value() && *optNumber != TerminalNumber::UNDEFINED) {
+        context.getWriter().writeAttribute(NUMBER, Enum::toString(*optNumber));
+    }
+
 }
 
 void TerminalRefXml::checkTerminal(const Terminal& terminal, NetworkXmlWriterContext& context) {

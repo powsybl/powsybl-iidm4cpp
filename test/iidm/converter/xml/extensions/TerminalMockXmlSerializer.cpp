@@ -81,7 +81,8 @@ Extension& TerminalMockXmlSerializer::read(Extendable& extendable, NetworkXmlRea
         if (context.getReader().getLocalName() == "terminal") {
             const std::string& id = context.getReader().getAttributeValue(ID);
             const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
-            Terminal& terminal = TerminalRefXml::resolve(id, side, load.getNetwork());
+            const std::string& number = context.getReader().getOptionalAttributeValue(NUMBER, "");
+            Terminal& terminal = TerminalRefXml::resolve(id, side, number, load.getNetwork());
             terminalMockExt->setTerminal(stdcxx::ref(terminal));
         } else {
             throw AssertionError(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));

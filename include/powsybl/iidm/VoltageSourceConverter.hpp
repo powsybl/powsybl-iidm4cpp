@@ -51,7 +51,7 @@ public:
     /**
      * Check if voltage regulator is on.
      */
-    bool isVoltageRegulatorOn();
+    bool isVoltageRegulatorOn() const;
     /**
      * Set voltage regulator status.
      */
@@ -60,7 +60,7 @@ public:
     /**
      * Get the AC voltage setpoint (kV).
      */
-    double getVoltageSetpoint();
+    double getVoltageSetpoint() const;
     /**
      * Set the AC voltage setpoint (kV).
      */
@@ -69,7 +69,7 @@ public:
     /**
      * Get the reactive power setpoint (MVar).
      */
-    double getReactivePowerSetpoint();
+    double getReactivePowerSetpoint() const;
     /**
      * Set the reactive power setpoint (MVar).
      */

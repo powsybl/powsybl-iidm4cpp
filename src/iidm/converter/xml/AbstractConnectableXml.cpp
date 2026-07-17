@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
+#include <powsybl/iidm/AcDcConverter.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/OperationalLimitsGroup.hpp>
 #include <powsybl/iidm/Terminal.hpp>
@@ -61,6 +62,13 @@ void AbstractConnectableXml::readPQ(Terminal& terminal, const powsybl::xml::XmlS
     const double& p = reader.getOptionalAttributeValue(toString(P, index), stdcxx::nan());
     const double& q = reader.getOptionalAttributeValue(toString(Q, index), stdcxx::nan());
     terminal.setP(p).setQ(q);
+}
+
+void AbstractConnectableXml::readPI(DcTerminal& dcTerminal, const powsybl::xml::XmlStreamReader& reader) {
+    std::string suffix = getDcTerminalSuffix(dcTerminal);
+    const double& dcP = reader.getOptionalAttributeValue(std::string(DC_P) + suffix, stdcxx::nan());
+    const double& dcI = reader.getOptionalAttributeValue(std::string(DC_I) + suffix, stdcxx::nan());
+    dcTerminal.setP(dcP).setI(dcI);
 }
 
 void AbstractConnectableXml::writeBus(const stdcxx::CReference<Bus>& bus, const stdcxx::CReference<Bus>& connectableBus, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
@@ -197,9 +205,44 @@ void AbstractConnectableXml::writeNodeOrBus(const Terminal& terminal, NetworkXml
     }
 }
 
+void AbstractConnectableXml::writeNodeOrBus(const AcDcConverter& converter, NetworkXmlWriterContext& context) {
+    const auto& t1 = converter.getTerminal1();
+    const auto& t2 = converter.getTerminal2();
+    //t1 and t2 are on the same voltageLevel so they share the same topology level:
+    TopologyLevel topologyLevel = TopologyLevelXmlUtil::determineTopologyLevel(t1.getVoltageLevel(), context);
+    switch (topologyLevel) {
+        case TopologyLevel::NODE_BREAKER:
+            writeNode(t1, context, 1);
+            if(static_cast<bool>(t2)){
+                writeNode(t2.get(), context, 2);
+            }
+            break;
+        case TopologyLevel::BUS_BREAKER:
+            writeBus(t1.getBusBreakerView().getBus(), t1.getBusBreakerView().getConnectableBus(), context, 1);
+            if(static_cast<bool>(t2)){
+                writeBus(t2.get().getBusBreakerView().getBus(), t2.get().getBusBreakerView().getConnectableBus(), context, 2);
+            }
+            break;
+        case TopologyLevel::BUS_BRANCH:
+            writeBus(t1.getBusView().getBus(), t1.getBusView().getConnectableBus(), context, 1);
+            if(static_cast<bool>(t2)){
+                writeBus(t2.get().getBusView().getBus(), t2.get().getBusView().getConnectableBus(), context, 2);
+            }
+            break;
+        default:
+            throw powsybl::xml::XmlStreamException(stdcxx::format("Unexpected TopologyLevel value: ", topologyLevel));
+    }
+}
+
 void AbstractConnectableXml::writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const stdcxx::optional<int>& index) {
     writer.writeOptionalAttribute(toString(P, index), terminal.getP());
     writer.writeOptionalAttribute(toString(Q, index), terminal.getQ());
+}
+
+void AbstractConnectableXml::writePI(const DcTerminal& dcTerminal, powsybl::xml::XmlStreamWriter& writer) {
+    std::string suffix = getDcTerminalSuffix(dcTerminal);
+    writer.writeOptionalAttribute(std::string(DC_P) + suffix, dcTerminal.getP());
+    writer.writeOptionalAttribute(std::string(DC_I) + suffix, dcTerminal.getI());
 }
 
 void AbstractConnectableXml::writeSelectedGroupId(const stdcxx::optional<std::string>& selectedGroupId, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
@@ -217,6 +260,16 @@ void AbstractConnectableXml::readSelectedGroupId(NetworkXmlReaderContext& contex
         });
     }
 
+}
+
+std::string AbstractConnectableXml::getDcTerminalSuffix(const DcTerminal& dcTerminal) {
+    TerminalNumber number = dcTerminal.getTerminalNumber();
+    TwoSides side = dcTerminal.getSide();
+    // note that they dcTerminal TerminalNumber and TwoSides are exclusive, meaning that only of those two can be set 
+
+    return stdcxx::format("%1%%2%", 
+        (number != TerminalNumber::UNDEFINED) ? std::to_string(static_cast<int>(number)) : "", 
+        (side != TwoSides::UNDEFINED) ? std::to_string(static_cast<int>(side)) : "");
 }
 
 }  // namespace xml

@@ -20,7 +20,7 @@ namespace iidm {
 class DroopCurveAdder;
 
 /**
- * Droop Curve defines the droop function of a AcDcConverter in Droop mode.
+ * Droop Curve defines the droop function of a AcDcConverter in P_PCC_DROOP mode.
  * This curve is made of segments defined by its minimum voltage and the associated droop coefficient.
  * the maximum voltage of a segment if defined by the minimum voltage of the next segment (if any).
  * This ensure no overlapping and continuous segments definition.

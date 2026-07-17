@@ -226,6 +226,11 @@ set(IIDM_SOURCES
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp
     iidm/converter/xml/BusXml.cpp
     iidm/converter/xml/DanglingLineXml.cpp
+    iidm/converter/xml/DcGroundXml.cpp
+    iidm/converter/xml/DcLineXml.cpp
+    iidm/converter/xml/DcNodeXml.cpp
+    iidm/converter/xml/DcSwitchXml.cpp
+    iidm/converter/xml/DroopCurveXml.cpp
     iidm/converter/xml/ExtensionXmlSerializer.cpp
     iidm/converter/xml/ExtensionXmlVersion.cpp
     iidm/converter/xml/GeneratorXml.cpp
@@ -235,6 +240,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/IidmXmlUtil.cpp
     iidm/converter/xml/LccConverterStationXml.cpp
     iidm/converter/xml/LineXml.cpp
+    iidm/converter/xml/LineCommutatedConverterXml.cpp
     iidm/converter/xml/LoadXml.cpp
     iidm/converter/xml/NetworkXml.cpp
     iidm/converter/xml/NetworkXmlReaderContext.cpp
@@ -257,6 +263,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/VoltageAngleLimitXml.cpp
     iidm/converter/xml/VoltageLevelXml.cpp
     iidm/converter/xml/VoltageLevelRefXml.cpp
+    iidm/converter/xml/VoltageSourceConverterXml.cpp
     iidm/converter/xml/VscConverterStationXml.cpp
     iidm/converter/xml/XmlReaderEndTask.cpp
 

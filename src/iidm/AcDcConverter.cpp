@@ -353,7 +353,7 @@ const std::initializer_list<std::string>& getNames<AcDcConverter::ControlMode>()
     static std::initializer_list<std::string> s_acdcConverterControlModeNames {
         "P_PCC",
         "V_DC",
-        "DROOP"
+        "P_PCC_DROOP"
     };
     return s_acdcConverterControlModeNames;
 }

@@ -112,6 +112,35 @@ void AbstractConnectableXml::readNodeOrBus(InjectionAdder<Added, Adder>& adder,c
     }
 }
 
+template <typename Added, typename Adder>
+void AbstractConnectableXml::readNodeOrBus(AcDcConverterAdder<Added, Adder>& adder, const NetworkXmlReaderContext& context) {
+    const auto& bus1 = context.getReader().getOptionalAttributeValue<std::string>(BUS1);
+    const auto& connectableBus1 = context.getReader().getOptionalAttributeValue<std::string>(CONNECTABLE_BUS1);
+    const auto& node1 = context.getReader().getOptionalAttributeValue<int>(NODE1);
+    const auto& bus2 = context.getReader().getOptionalAttributeValue<std::string>(BUS2);
+    const auto& connectableBus2 = context.getReader().getOptionalAttributeValue<std::string>(CONNECTABLE_BUS2);
+    const auto& node2 = context.getReader().getOptionalAttributeValue<int>(NODE2);
+
+    if (bus1) {
+        adder.setBus1(context.getAnonymizer().deanonymizeString(*bus1));
+    }
+    if (connectableBus1) {
+        adder.setConnectableBus1(context.getAnonymizer().deanonymizeString(*connectableBus1));
+    }
+    if (node1) {
+        adder.setNode1(*node1);
+    }
+    if (bus2) {
+        adder.setBus2(context.getAnonymizer().deanonymizeString(*bus2));
+    }
+    if (connectableBus2) {
+        adder.setConnectableBus2(context.getAnonymizer().deanonymizeString(*connectableBus2));
+    }
+    if (node2) {
+        adder.setNode2(*node2);
+    }
+}
+
 template <typename Limits>
 void AbstractConnectableXml::writeLoadingLimits(const Limits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const std::string& type, const stdcxx::optional<int>& index) {
     if (!std::isnan(limits.getPermanentLimit()) || !boost::empty(limits.getTemporaryLimits()) || !boost::empty(limits.getFictitiousLimits())) {

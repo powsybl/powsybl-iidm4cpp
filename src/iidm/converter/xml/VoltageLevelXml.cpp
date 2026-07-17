@@ -33,12 +33,14 @@
 #include "GeneratorXml.hpp"
 #include "GroundXml.hpp"
 #include "LccConverterStationXml.hpp"
+#include "LineCommutatedConverterXml.hpp"
 #include "LoadXml.hpp"
 #include "NodeBreakerViewFictitiousInjectionXml.hpp"
 #include "NodeBreakerViewInternalConnectionXml.hpp"
 #include "NodeBreakerViewSwitchXml.hpp"
 #include "ShuntCompensatorXml.hpp"
 #include "StaticVarCompensatorXml.hpp"
+#include "VoltageSourceConverterXml.hpp"
 #include "VscConverterStationXml.hpp"
 
 
@@ -174,6 +176,12 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
             LccConverterStationXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == GROUND) {
             GroundXml::getInstance().read(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == VOLTAGE_SOURCE_CONVERTER) {
+            IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, VOLTAGE_SOURCE_CONVERTER, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_15(), context);
+            VoltageSourceConverterXml::getInstance().read(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == LINE_COMMUTATED_CONVERTER) {
+            IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, LINE_COMMUTATED_CONVERTER, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_15(), context);
+            LineCommutatedConverterXml::getInstance().read(voltageLevel, context);
         } else {
             AbstractSimpleIdentifiableXml::readSubElements(voltageLevel, context);
         }
@@ -255,6 +263,16 @@ void VoltageLevelXml::writeGrounds(const VoltageLevel& voltageLevel, NetworkXmlW
             continue;
         }
         GroundXml::getInstance().write(ground, voltageLevel, context);
+    }
+}
+
+void VoltageLevelXml::writeLineCommutatedConverters(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const auto& lcc : voltageLevel.getLineCommutatedConverters()) {
+        if(!context.getFilter().test(lcc)) {
+            continue;
+        }
+        IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, LINE_COMMUTATED_CONVERTER, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_15(), context);
+        LineCommutatedConverterXml::getInstance().write(lcc, voltageLevel, context);
     }
 }
 
@@ -370,7 +388,19 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const C
     writeStaticVarCompensators(voltageLevel, context);
     writeVscConverterStations(voltageLevel, context);
     writeLccConverterStations(voltageLevel, context);
+    writeVoltageSourceConverters(voltageLevel, context);
+    writeLineCommutatedConverters(voltageLevel, context);
     writeGrounds(voltageLevel, context);
+}
+
+void VoltageLevelXml::writeVoltageSourceConverters(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const auto& vsc : voltageLevel.getVoltageSourceConverters()) {
+        if(!context.getFilter().test(vsc)) {
+            continue;
+        }
+        IidmXmlUtil::assertMinimumVersion(VOLTAGE_LEVEL, VOLTAGE_SOURCE_CONVERTER, xml::ErrorMessage::NOT_SUPPORTED, xml::IidmXmlVersion::V1_15(), context);
+        VoltageSourceConverterXml::getInstance().write(vsc, voltageLevel, context);
+    }
 }
 
 void VoltageLevelXml::writeVscConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {

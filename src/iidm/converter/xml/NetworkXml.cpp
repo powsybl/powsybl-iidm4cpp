@@ -34,6 +34,10 @@
 #include <powsybl/xml/XmlStreamWriter.hpp>
 
 #include "AreaXml.hpp"
+#include "DcGroundXml.hpp"
+#include "DcLineXml.hpp"
+#include "DcNodeXml.hpp"
+#include "DcSwitchXml.hpp"
 #include "HvdcLineXml.hpp"
 #include "LineXml.hpp"
 #include "SubstationXml.hpp"
@@ -399,6 +403,7 @@ void NetworkXml::writeNetwork(const Network& network, NetworkXmlWriterContext& c
         writeSubnetworks(network, context);
     }
 
+    writeDcDetailed(network, context);
     writeVoltageLevels(network, context);
     writeSubstations(network, context);
     writeLines(filter, network, context);
@@ -479,6 +484,47 @@ void NetworkXml::writeVoltageAngleLimits(const Network& network, NetworkXmlWrite
     }
 }
 
+void NetworkXml::writeDcDetailed(const Network& network, NetworkXmlWriterContext& context) {
+    //Introduced and supported only from IIDM V1.15
+    //"DC-only" equipments and in particular DcNodes are written first in the network, so that AC/DC converters can refer to those DcNodes.
+    writeDcNodes(network, context);
+    writeDcSwitches(network, context);
+    writeDcGrounds(network ,context);
+    writeDcLines(network, context);
+}
+void NetworkXml::writeDcNodes(const Network& network, NetworkXmlWriterContext& context) {
+    for (const DcNode& dcNode : network.getDcNodes()) {
+        if (isElementWrittenInsideNetwork(dcNode, network, context)) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, DC_NODE, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_15(), context);
+            DcNodeXml::getInstance().write(dcNode, network, context);
+        }
+    }
+}
+void NetworkXml::writeDcSwitches(const Network& network, NetworkXmlWriterContext& context) {
+    for (const DcSwitch& dcSwitch : network.getDcSwitches()) {
+        if (isElementWrittenInsideNetwork(dcSwitch, network, context)) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, DC_SWITCH, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_15(), context);
+            DcSwitchXml::getInstance().write(dcSwitch, network, context);
+        }
+    }
+}
+void NetworkXml::writeDcGrounds(const Network& network, NetworkXmlWriterContext& context) {
+    for (const DcGround& dcGround : network.getDcGrounds()) {
+        if (isElementWrittenInsideNetwork(dcGround, network, context)) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, DC_GROUND, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_15(), context);
+            DcGroundXml::getInstance().write(dcGround, network, context);
+        }
+    }
+}
+void NetworkXml::writeDcLines(const Network& network, NetworkXmlWriterContext& context) {
+    for (const DcLine& dcLine : network.getDcLines()) {
+        if (isElementWrittenInsideNetwork(dcLine, network, context)) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, DC_LINE, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_15(), context);
+            DcLineXml::getInstance().write(dcLine, network, context);
+        }
+    }
+}
+
 bool NetworkXml::ignoreEquipmentAtExport(const Identifiable& identifiable, NetworkXmlWriterContext& context) {
     return ( !context.isExportedEquipment(identifiable.getId()) ||
         (stdcxx::isInstanceOf<OverloadManagementSystem>(identifiable) && !context.getOptions().isWithAutomationSystems()) );
@@ -544,6 +590,18 @@ void NetworkXml::readNetworkElements(Network& network, NetworkXmlReaderContext& 
             PropertiesXml::read(network, context);
         } else if (localName == NETWORK) {
             readSubnetwork(network, context, extensionsNotFound);
+        } else if (localName == DC_NODE) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, DC_NODE, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_15(), context);
+            DcNodeXml::getInstance().read(network, context);
+        } else if (localName == DC_SWITCH) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, DC_SWITCH, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_15(), context);
+            DcSwitchXml::getInstance().read(network, context);
+        } else if (localName == DC_GROUND) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, DC_GROUND, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_15(), context);
+            DcGroundXml::getInstance().read(network, context);
+        } else if (localName == DC_LINE) {
+            IidmXmlUtil::assertMinimumVersion(NETWORK, DC_LINE, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_15(), context);
+            DcLineXml::getInstance().read(network, context);
         } else if (localName == VOLTAGE_LEVEL) {
             IidmXmlUtil::assertMinimumVersion(NETWORK, VOLTAGE_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_6(), context);
             VoltageLevelXml::getInstance().read(network, context);

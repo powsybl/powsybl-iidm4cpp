@@ -93,12 +93,13 @@ void ShuntCompensatorXml::readSubElements(const std::string& id, ShuntCompensato
         if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
             std::string regId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             std::string regSide = context.getReader().getOptionalAttributeValue(SIDE, "");
+            std::string regNumber = context.getReader().getOptionalAttributeValue(NUMBER, "");
 
             if (!regId.empty()) {
-                std::function<void(Identifiable&)> fun = [&context, regId, regSide](Identifiable &shuntCompensator) {
+                std::function<void(Identifiable&)> fun = [&context, regId, regSide, regNumber](Identifiable &shuntCompensator) {
                     ShuntCompensator& sc = dynamic_cast<ShuntCompensator&>(shuntCompensator);
-                    context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&sc, regId, regSide]() {
-                        sc.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::resolve(regId, regSide, sc.getNetwork())));
+                    context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&sc, regId, regSide, regNumber]() {
+                        sc.setRegulatingTerminal(stdcxx::ref(TerminalRefXml::resolve(regId, regSide, regNumber, sc.getNetwork())));
                     });
                 };
                 toApply.emplace_back(fun);

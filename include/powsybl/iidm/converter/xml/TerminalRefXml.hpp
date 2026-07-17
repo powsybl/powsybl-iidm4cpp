@@ -11,6 +11,7 @@
 #include <string>
 #include <functional>
 
+#include <powsybl/iidm/TerminalNumber.hpp>
 #include <powsybl/iidm/ThreeSides.hpp>
 
 namespace powsybl {
@@ -39,9 +40,10 @@ public:
 
     static void readTerminalRef(Network& network, NetworkXmlReaderContext& context, const std::function<void(Terminal&)>& endTaskTerminalConsumer);
 
-    static Terminal& resolve(const std::string& id, const std::string& side, Network& network);
+    static Terminal& resolve(const std::string& id, const std::string& side, const std::string& terminalNumber, Network& network);
 
     static Terminal& resolve(const std::string& id, ThreeSides side, Network& network);
+    static Terminal& resolve(const std::string& id, TerminalNumber number, Network& network);
 
     static void writeTerminalRef(const Terminal& terminal, NetworkXmlWriterContext& context, const std::string& elementName);
 

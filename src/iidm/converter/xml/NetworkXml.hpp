@@ -60,6 +60,12 @@ private:
 
     static void writeVoltageAngleLimits(const Network& network, NetworkXmlWriterContext& context);
 
+    static void writeDcDetailed(const Network& network, NetworkXmlWriterContext& context);
+    static void writeDcNodes(const Network& network, NetworkXmlWriterContext& context);
+    static void writeDcSwitches(const Network& network, NetworkXmlWriterContext& context);
+    static void writeDcGrounds(const Network& network, NetworkXmlWriterContext& context);
+    static void writeDcLines(const Network& network, NetworkXmlWriterContext& context);
+
     static void writeExtensions(const Network& network, NetworkXmlWriterContext& context);
 
     static bool ignoreEquipmentAtExport(const Identifiable& identifiable, NetworkXmlWriterContext& context); 

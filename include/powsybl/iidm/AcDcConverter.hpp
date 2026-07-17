@@ -27,7 +27,7 @@ public:
     enum class ControlMode : unsigned char {
         P_PCC,
         V_DC,
-        DROOP
+        P_PCC_DROOP
     };
 
 protected:

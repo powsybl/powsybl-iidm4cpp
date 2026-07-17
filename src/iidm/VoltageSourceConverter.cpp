@@ -94,7 +94,7 @@ void VoltageSourceConverter::reduceVariantArraySize(unsigned long number) {
     m_voltageSetpoint.resize(m_voltageSetpoint.size() - number);
 }
 
-bool VoltageSourceConverter::isVoltageRegulatorOn() {
+bool VoltageSourceConverter::isVoltageRegulatorOn() const {
     return m_voltageRegulatorOn.at(getNetwork().getVariantIndex());
 }
 
@@ -105,7 +105,7 @@ VoltageSourceConverter& VoltageSourceConverter::setVoltageRegulatorOn(bool volta
     return *this;
 }
 
-double VoltageSourceConverter::getVoltageSetpoint() {
+double VoltageSourceConverter::getVoltageSetpoint() const {
     return m_voltageSetpoint.at(getNetwork().getVariantIndex());
 }
 
@@ -116,7 +116,7 @@ VoltageSourceConverter& VoltageSourceConverter::setVoltageSetpoint(double voltag
     return *this;
 }
 
-double VoltageSourceConverter::getReactivePowerSetpoint() {
+double VoltageSourceConverter::getReactivePowerSetpoint() const {
     return m_reactivePowerSetpoint.at(getNetwork().getVariantIndex());
 }
 

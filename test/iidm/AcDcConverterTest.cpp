@@ -844,8 +844,10 @@ BOOST_AUTO_TEST_CASE(testDroopCurve) {
     Network network = createAcDcNetwork();
     auto& acDcConverterA = createVscA(network);
     
-    acDcConverterA.setControlMode(AcDcConverter::ControlMode::DROOP);
-    BOOST_CHECK_EQUAL(AcDcConverter::ControlMode::DROOP, acDcConverterA.getControlMode());
+    acDcConverterA.setControlMode(AcDcConverter::ControlMode::P_PCC_DROOP);
+    BOOST_CHECK_EQUAL(AcDcConverter::ControlMode::P_PCC_DROOP, acDcConverterA.getControlMode());
+
+    POWSYBL_ASSERT_REF_FALSE(acDcConverterA.getDroopCurve());
 
     acDcConverterA.newDroopCurve()
                     .addSegment(-500,-10)
@@ -855,9 +857,12 @@ BOOST_AUTO_TEST_CASE(testDroopCurve) {
                     .add();
     POWSYBL_ASSERT_REF_TRUE(acDcConverterA.getDroopCurve());
     const auto& curve = acDcConverterA.getDroopCurve().get();
+    BOOST_CHECK_EQUAL(3, boost::size(curve.getSegments()));
+    BOOST_CHECK_CLOSE(-10.0, curve.getK(-1000.0), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-10.0, curve.getK(-250.0), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-5.0, curve.getK(-100.0), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-1.0, curve.getK(400.0), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-1.0, curve.getK(1000.0), std::numeric_limits<double>::epsilon());
 
     acDcConverterA.newDroopCurve().add();
     BOOST_CHECK_CLOSE(0.0, acDcConverterA.getDroopCurve().get().getK(400.0), std::numeric_limits<double>::epsilon());

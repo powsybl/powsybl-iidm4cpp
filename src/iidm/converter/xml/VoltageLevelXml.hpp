@@ -66,6 +66,8 @@ private:
 
     void writeLccConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
+    void writeLineCommutatedConverters(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
+
     void writeLoads(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeNodeBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
@@ -75,6 +77,8 @@ private:
     void writeShuntCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeStaticVarCompensators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
+
+    void writeVoltageSourceConverters(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeVscConverterStations(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 };

@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HPP
 
+#include <powsybl/iidm/AcDcConverterAdder.hpp>
 #include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
 #include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/BranchAdder.hpp>
@@ -31,6 +32,7 @@ class XmlStreamWriter;
 
 namespace iidm {
 
+class AcDcConverter;
 class ActivePowerLimits;
 class ApparentPowerLimits;
 class Bus;
@@ -70,11 +72,20 @@ protected:
 
     static void readNodeOrBus(int index, ThreeWindingsTransformerAdder::LegAdder& adder, const NetworkXmlReaderContext& context);
 
+    template <typename Added, typename Adder>
+    static void readNodeOrBus(AcDcConverterAdder<Added, Adder>& adder, const NetworkXmlReaderContext& context);
+
     static void readPQ(Terminal& terminal, const powsybl::xml::XmlStreamReader& reader, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void readPI(DcTerminal& dcTerminal, const powsybl::xml::XmlStreamReader& reader);
 
     static void writeNodeOrBus(const Terminal& terminal, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
+    static void writeNodeOrBus(const AcDcConverter& converter, NetworkXmlWriterContext& context);
+
     static void writePQ(const Terminal& terminal, powsybl::xml::XmlStreamWriter& writer, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void writePI(const DcTerminal& dcTerminal, powsybl::xml::XmlStreamWriter& writer);
 
     static void writeSelectedGroupId(const stdcxx::optional<std::string>& selectedGroupId, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
@@ -104,7 +115,9 @@ private:
     static void writeLoadingLimitsGroups(const stdcxx::const_range<OperationalLimitsGroup>& limitsGroups, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void readAllLoadingLimits(OperationalLimitsGroup& limitsGroup, const char* groupElementName, const NetworkXmlReaderContext& context);
-    
+
+    static std::string getDcTerminalSuffix(const DcTerminal& dcTerminal);
+
 };
 
 }  // namespace xml

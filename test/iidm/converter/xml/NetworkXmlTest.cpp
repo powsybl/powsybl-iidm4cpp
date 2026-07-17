@@ -428,7 +428,7 @@ BOOST_FIXTURE_TEST_CASE(exportTopologyLevelVoltageLevels, test::ResourceFixture)
 
     stdcxx::Properties properties;
     properties.set(ExportOptions::VOLTAGE_LEVELS_BUS_BREAKER, "vl1,vl2,vl3");
-    properties.set(ExportOptions::VOLTAGE_LEVELS_BUS_BRANCH, "vl3"); // vl3 not unique so ignored, thus exported as NODE_BREAKER
+    properties.set(ExportOptions::VOLTAGE_LEVELS_BUS_BRANCH, "vl3,VL_DC_Converter"); // vl3 not unique so ignored, thus exported as NODE_BREAKER
     ExportOptions options(properties);
 
     const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {

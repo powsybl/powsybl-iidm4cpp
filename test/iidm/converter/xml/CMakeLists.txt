@@ -28,6 +28,10 @@ set(UNIT_TEST_SOURCES
     AreaRoundTripTest.cpp
     BatteryRoundTripTest.cpp
     BusBranchTopologyRoundTripTest.cpp
+    DcGroundXmlTest.cpp
+    DcLineXmlTest.cpp
+    DcNodeXmlTest.cpp
+    DcSwitchXmlTest.cpp
     EncodingTest.cpp
     EurostagTest.cpp
     ExtensionXmlSerializerTest.cpp
@@ -41,6 +45,7 @@ set(UNIT_TEST_SOURCES
     IdentifiableExtensionXmlSerializerTest.cpp
     IidmXmlUtilTest.cpp
     InternalConnectionsRoundTripTest.cpp
+    LineCommutatedConverterXmlTest.cpp
     LinesRoundTripTest.cpp
     LoadingLimitsBugTest.cpp
     LoadingLimitsXmlTest.cpp
@@ -63,6 +68,7 @@ set(UNIT_TEST_SOURCES
     TieLineTerminalRefBugTest.cpp
     TieLineWithAliasesXmlTest.cpp
     VoltageAngleLimitXmlTest.cpp
+    VoltageSourceConverterXmlTest.cpp
     xiidm.cpp
 )
 
