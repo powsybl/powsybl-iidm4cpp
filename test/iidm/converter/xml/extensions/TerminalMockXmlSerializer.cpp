@@ -64,7 +64,9 @@ TerminalMockXmlSerializer::TerminalMockXmlSerializer() :
             {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_14", "mock", "terminalMock",
             converter::xml::IidmXmlVersion::V1_14(), converter::xml::IidmXmlVersion::V1_15(), {1,14}},
             {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_15", "mock", "terminalMock",
-            converter::xml::IidmXmlVersion::V1_15(), {1,15}}
+            converter::xml::IidmXmlVersion::V1_15(), converter::xml::IidmXmlVersion::V1_16(), {1,15}},
+            {"http://www.powsybl.org/schema/iidm/ext/terminal_mock/1_16", "mock", "terminalMock",
+            converter::xml::IidmXmlVersion::V1_16(), {1,16}}
         })){
 }
 

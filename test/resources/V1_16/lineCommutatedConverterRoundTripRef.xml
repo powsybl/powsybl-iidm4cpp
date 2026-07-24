@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iidm:network xmlns:iidm="http://www.powsybl.org/schema/iidm/1_16" id="lineCommutatedConverterTest" caseDate="2025-01-02T03:04:05+01:00" forecastDistance="0" sourceFormat="code" minimumValidationLevel="STEADY_STATE_HYPOTHESIS">
+    <iidm:dcNode id="dcNode1" nominalV="500"/>
+    <iidm:dcNode id="dcNode2" nominalV="500"/>
+    <iidm:substation id="S">
+        <iidm:voltageLevel id="vlBB400" nominalV="400" topologyKind="BUS_BREAKER">
+            <iidm:busBreakerTopology>
+                <iidm:bus id="bus1"/>
+                <iidm:bus id="bus2"/>
+            </iidm:busBreakerTopology>
+            <iidm:lineCommutatedConverter id="lccBb1ACWithoutSolvedV" name="LCC in Bus/Breaker with one AC Terminal without solved values" dcNode1="dcNode1" dcConnected1="false" dcNode2="dcNode2" dcConnected2="false" idleLoss="0" switchingLoss="0" resistiveLoss="0" controlMode="V_DC" targetVdc="502" connectableBus1="bus1" reactiveModel="FIXED_POWER_FACTOR" powerFactor="0.92000000000000004">
+                <iidm:alias>someAlias</iidm:alias>
+                <iidm:property name="prop name" value="prop value"/>
+                <iidm:pccTerminal id="lccBb1ACWithoutSolvedV" number="ONE"/>
+            </iidm:lineCommutatedConverter>
+            <iidm:lineCommutatedConverter id="lccBb2ACWithSolvedV" name="LCC in Bus/Breaker with two AC Terminals with solved values and droop curve" dcNode1="dcNode1" dcConnected1="true" dcNode2="dcNode2" dcConnected2="true" idleLoss="2" switchingLoss="0.20000000000000001" resistiveLoss="1.9999999999999999e-06" controlMode="P_PCC_DROOP" targetP="301" targetVdc="502" bus1="bus1" connectableBus1="bus1" bus2="bus2" connectableBus2="bus2" reactiveModel="CALCULATED_POWER_FACTOR" powerFactor="0.92000000000000004" p1="-100" q1="-200" p2="-100.09999999999999" q2="-200.19999999999999" dcP1="-100" dcI1="-200" dcP2="0.40000000000000002" dcI2="200">
+                <iidm:pccTerminal id="lineBb" side="ONE"/>
+                <iidm:droopCurve>
+                    <iidm:segment minV="-500" maxV="-100" k="-10"/>
+                    <iidm:segment minV="-100" maxV="100" k="-5"/>
+                    <iidm:segment minV="100" maxV="500" k="-1"/>
+                </iidm:droopCurve>
+            </iidm:lineCommutatedConverter>
+        </iidm:voltageLevel>
+        <iidm:voltageLevel id="vlNB400" nominalV="400" topologyKind="NODE_BREAKER">
+            <iidm:nodeBreakerTopology>
+                <iidm:busbarSection id="bbs400-1" node="0"/>
+                <iidm:busbarSection id="bbs400-2" node="1"/>
+                <iidm:internalConnection node1="0" node2="2"/>
+                <iidm:internalConnection node1="2" node2="4"/>
+                <iidm:internalConnection node1="1" node2="3"/>
+                <iidm:internalConnection node1="3" node2="5"/>
+                <iidm:bus v="402" angle="12.300000000000001" nodes="0,2,4"/>
+            </iidm:nodeBreakerTopology>
+            <iidm:lineCommutatedConverter id="lccNb2ACWithPartiallySolvedV" name="LCC in Node/Breaker with two AC Terminals with some solved values missing" dcNode1="dcNode1" dcConnected1="true" dcNode2="dcNode2" dcConnected2="true" idleLoss="3" switchingLoss="0.29999999999999999" resistiveLoss="3.0000000000000001e-06" controlMode="P_PCC" targetP="302" targetVdc="503" node1="4" node2="5" reactiveModel="FIXED_POWER_FACTOR" powerFactor="0.93999999999999995" p1="-105" q2="-200.80000000000001" dcP1="-102" dcI2="202">
+                <iidm:pccTerminal id="lineNb" side="TWO"/>
+            </iidm:lineCommutatedConverter>
+        </iidm:voltageLevel>
+    </iidm:substation>
+    <iidm:line id="lineBb" r="0" x="3" g1="0" b1="0" g2="0" b2="0" bus1="bus1" connectableBus1="bus1" voltageLevelId1="vlBB400" bus2="bus2" connectableBus2="bus2" voltageLevelId2="vlBB400"/>
+    <iidm:line id="lineNb" r="0" x="3" g1="0" b1="0" g2="0" b2="0" node1="2" voltageLevelId1="vlNB400" node2="3" voltageLevelId2="vlNB400"/>
+</iidm:network>
