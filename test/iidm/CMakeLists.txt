@@ -48,6 +48,7 @@ set(UNIT_TEST_SOURCES
     NetworkIndexTest.cpp
     NetworkTest.cpp
     NodeBreakerConnectTest.cpp
+    NodeBreakerSwitchConsistencyTest.cpp
     NodeBreakerVoltageLevelTest.cpp
     OperationalLimitsGroupsTest.cpp
     OperationalLimitsGroupTest.cpp
