@@ -399,7 +399,7 @@ void NetworkXml::writeNetwork(const Network& network, NetworkXmlWriterContext& c
     AliasesXml::write(network, NETWORK, context);
     PropertiesXml::write(network, context);
 
-    if(supportSubnetworksExport(context)){
+    if(supportSubnetworksExport(context) && !context.getOptions().isFlatten()) {
         writeSubnetworks(network, context);
     }
 
@@ -531,8 +531,8 @@ bool NetworkXml::ignoreEquipmentAtExport(const Identifiable& identifiable, Netwo
 }
 
 bool NetworkXml::isElementWrittenInsideNetwork(const Identifiable& element, const Network &network, NetworkXmlWriterContext &context) {
-    // if subnetworks not supported, all elements need to be written in the root network (in that case this is only called giving the root network)
-    if (!supportSubnetworksExport(context)) {
+    // if subnetworks not supported or flatten, all elements need to be written in the root network (in that case this is only called giving the root network)
+    if (!supportSubnetworksExport(context) || context.getOptions().isFlatten()) {
         return true;
     }
     // corner case: if the element is the given network, it is considered as written within that network, as extensions have to be written within the network

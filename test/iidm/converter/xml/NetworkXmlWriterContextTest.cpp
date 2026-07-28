@@ -39,6 +39,7 @@ BOOST_AUTO_TEST_CASE(Constructor) {
     BOOST_CHECK_EQUAL(exportOptions.isOnlyMainCc(), context.getOptions().isOnlyMainCc());
     BOOST_CHECK_EQUAL(exportOptions.isThrowExceptionIfExtensionNotFound(), context.getOptions().isThrowExceptionIfExtensionNotFound());
     BOOST_CHECK_EQUAL(exportOptions.isWithBranchSV(), context.getOptions().isWithBranchSV());
+    BOOST_CHECK_EQUAL(exportOptions.isFlatten(), context.getOptions().isFlatten());
     BOOST_CHECK_EQUAL(&writer, &context.getWriter());
 
     BOOST_CHECK(context.getExportedEquipments().empty());

@@ -364,7 +364,12 @@ BOOST_FIXTURE_TEST_CASE(subnetworksRoundTrip, test::ResourceFixture) {
                 return Network::readXml(filename, stream);
             };
             const auto& ref = test::converter::RoundTrip::getVersionedNetwork(filename, version);
-            test::converter::RoundTrip::run(n0, writer, reader, test::converter::RoundTrip::compareXml, ref.c_str());
+            Network readNetwork = test::converter::RoundTrip::run(n0, writer, reader, test::converter::RoundTrip::compareXml, ref.c_str());
+            if(version.get() >= IidmXmlVersion::V1_11()) { //from V1_11, subnetworks supported, and not flatten by default:
+                BOOST_CHECK_EQUAL(2, readNetwork.getSubNetworksCount());
+            } else { //before that, subnetworks were not supported:
+                BOOST_CHECK_EQUAL(0, readNetwork.getSubNetworksCount());
+            }
         }
     }
 
@@ -441,6 +446,97 @@ BOOST_FIXTURE_TEST_CASE(exportTopologyLevelVoltageLevels, test::ResourceFixture)
 
     BOOST_CHECK_EQUAL(TopologyKind::NODE_BREAKER, networkNBK.getVoltageLevel("vl1").getTopologyModel().getTopologyKind());
     BOOST_CHECK_EQUAL(TopologyKind::BUS_BREAKER, networkTest.getVoltageLevel("vl1").getTopologyModel().getTopologyKind());
+
+}
+
+BOOST_FIXTURE_TEST_CASE(flattenExportTest, test::ResourceFixture) {
+    Network n0 = Network("Network-0", "test");
+    Network& n1 = createSubnetwork(n0, 1);
+    Network& n2 = createSubnetwork(n0, 2);
+
+    // add an extension and propeties at root network level and both subnetworks:
+    n0.addExtension(stdcxx::make_unique<extensions::NetworkSourceExt>(n0, "Source_0"));
+    n0.addAlias("n0_alias");
+    n0.setProperty("n0_prop", "propVal_0");
+    n1.addExtension(stdcxx::make_unique<extensions::NetworkSourceExt>(n1, "Source_1"));
+    n1.addAlias("n1_alias");
+    n1.setProperty("n1_prop", "propVal_1");
+    n2.addExtension(stdcxx::make_unique<extensions::NetworkSourceExt>(n2, "Source_2"));
+    n2.addAlias("n2_alias");
+    n2.setProperty("n2_prop", "propVal_2");
+    const std::string& filename = "flattenedNetwork.xiidm";
+
+    iidm::converter::ExportOptions options;
+    options.setFlatten(true);
+    std::stringstream buffer;
+
+    iidm::Network::writeXml(filename, buffer, n0, options);
+    Network readNetwork = iidm::Network::readXml(filename, buffer);
+
+    //Exported network not modified:
+    BOOST_CHECK_EQUAL(2, n0.getSubNetworksCount());
+    BOOST_CHECK_EQUAL(3, boost::size(n0.getIdentifiables(IdentifiableType::NETWORK)));
+    //Written network is "flat":
+    BOOST_CHECK_EQUAL(0, readNetwork.getSubNetworksCount());
+    BOOST_CHECK_EQUAL(1, boost::size(readNetwork.getIdentifiables(IdentifiableType::NETWORK))); //only a root network
+
+    //"subnetworks" are removed:
+    BOOST_CHECK_EQUAL(boost::size(n0.getIdentifiables()) - 2, boost::size(readNetwork.getIdentifiables()));
+    //Any identifiable from root can be retrieved from read Network except subnetworks:
+    for (const auto& identifiableRoot : n0.getIdentifiables()) {
+        std::string id = identifiableRoot.getId();
+        if(id != "Network-1" && id != "Network-2") {
+            readNetwork.getIdentifiable(id);
+        }
+    }
+
+    //Only extensions and properties of the root network are kept
+    POWSYBL_ASSERT_REF_TRUE(readNetwork.findExtension<extensions::NetworkSourceExt>());
+    BOOST_CHECK_EQUAL(1, boost::size(readNetwork.getAliases()));
+    BOOST_CHECK_EQUAL("n0_alias", readNetwork.getAliases().front());
+    BOOST_CHECK_EQUAL(1, boost::size(readNetwork.getPropertyNames()));
+    BOOST_CHECK_EQUAL("propVal_0", readNetwork.getProperty("n0_prop"));
+}
+
+BOOST_FIXTURE_TEST_CASE(flattenExportSubnetworksExtensionsAndPropertiesTest, test::ResourceFixture) {
+    Network n0 = Network("Network-0", "test");
+    Network& n1 = createSubnetwork(n0, 1);
+    Network& n2 = createSubnetwork(n0, 2);
+
+    // add an extension and propeties ononly on subnetworks:
+    n1.addExtension(stdcxx::make_unique<extensions::NetworkSourceExt>(n1, "Source_1"));
+    n1.addAlias("n1_alias");
+    n1.setProperty("n1_prop", "propVal_1");
+    n2.addExtension(stdcxx::make_unique<extensions::NetworkSourceExt>(n2, "Source_2"));
+    n2.addAlias("n2_alias");
+    n2.setProperty("n2_prop", "propVal_2");
+    const std::string& filename = "flattenedNetwork.xiidm";
+
+    iidm::converter::ExportOptions options;
+    options.setFlatten(true);
+    std::stringstream buffer;
+
+    iidm::Network::writeXml(filename, buffer, n0, options);
+    std::string xmlOutput = buffer.str();
+    Network readNetwork = iidm::Network::readXml(filename, buffer);
+
+    //Exported network not modified:
+    BOOST_CHECK_EQUAL(2, n0.getSubNetworksCount());
+    //Written network is "flat":
+    BOOST_CHECK_EQUAL(0, readNetwork.getSubNetworksCount());
+
+    //Extensions and properties on the subnetworks are not moved onto the root Network, thus are lost in the flattening export
+    // though we have the extension namespace uri still declared
+    BOOST_CHECK_EQUAL(0, boost::size(readNetwork.getExtensions()));
+    POWSYBL_ASSERT_REF_FALSE(readNetwork.findExtension<extensions::NetworkSourceExt>());
+    BOOST_CHECK_EQUAL(0, boost::size(readNetwork.getAliases()));
+    BOOST_CHECK_EQUAL(0, boost::size(readNetwork.getPropertyNames()));
+
+    //namespace is declared :
+    BOOST_TEST(xmlOutput.find("xmlns:extNetworkSource=") != std::string::npos);
+    //but no extension :
+    BOOST_TEST(xmlOutput.find("extNetworkSource:networkSource") == std::string::npos);
+    //an export of this 'readNetwork' would lose the networkSource extension namespace declaration, since there is no extension of this type anymore.
 
 }
 

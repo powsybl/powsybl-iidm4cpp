@@ -63,6 +63,7 @@ static const Parameter EXPORT_TOPOLOGY_LEVEL_PARAMETER(ExportOptions::TOPOLOGY_L
 static const Parameter EXPORT_VERSION_PARAMETER(ExportOptions::VERSION, Parameter::Type::STRING, "IIDM-XML version in which files will be generated", xml::IidmXmlVersion::CURRENT_IIDM_XML_VERSION().toString("."));
 static const Parameter EXPORT_WITH_BRANCH_STATE_VARIABLES_PARAMETER(ExportOptions::WITH_BRANCH_STATE_VARIABLES, Parameter::Type::BOOLEAN, "Export network with branch state variables", "true");
 static const Parameter EXPORT_WITH_AUTOMATION_SYSTEMS_PARAMETER(ExportOptions::WITH_AUTOMATION_SYSTEMS, Parameter::Type::BOOLEAN, "Export network with automation systems", "true");
+static const Parameter EXPORT_FLATTEN_PARAMETER(ExportOptions::FLATTEN, Parameter::Type::BOOLEAN, "Flatten network containing subnetworks", "false");
 static const Parameter EXPORT_VOLTAGE_LEVELS_NODEBREAKER_PARAMETER(ExportOptions::VOLTAGE_LEVELS_NODE_BREAKER, Parameter::Type::STRING_LIST, "Apply Node/Breaker topology level at export for listed voltage levels", "");
 static const Parameter EXPORT_VOLTAGE_LEVELS_BUSBREAKER_PARAMETER(ExportOptions::VOLTAGE_LEVELS_BUS_BREAKER, Parameter::Type::STRING_LIST, "Apply Bus/Breaker topology level at export for listed voltage levels", "");
 static const Parameter EXPORT_VOLTAGE_LEVELS_BUSBRANCH_PARAMETER(ExportOptions::VOLTAGE_LEVELS_BUS_BRANCH, Parameter::Type::STRING_LIST, "Apply Bus/Branch topology level at export for listed voltage levels", "");
@@ -80,14 +81,15 @@ std::ostream& operator<<(std::ostream& stream, const ExportOptions::BusBranchVol
 
 ExportOptions::ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
                              bool throwExceptionIfExtensionNotFound, const std::string& version,
-                             const IidmVersionIncompatibilityBehavior& iidmVersionIncompatibilityBehavior) :
+                             const IidmVersionIncompatibilityBehavior& iidmVersionIncompatibilityBehavior, bool flatten) :
     AbstractOptions(throwExceptionIfExtensionNotFound),
     m_indent(indent),
     m_onlyMainCc(onlyMainCc),
     m_topologyLevel(topologyLevel),
     m_withBranchSV(withBranchSV),
     m_version(version),
-    m_iidmVersionIncompatibilityBehavior(iidmVersionIncompatibilityBehavior) {
+    m_iidmVersionIncompatibilityBehavior(iidmVersionIncompatibilityBehavior),
+    m_flatten(flatten) {
 }
 
 ExportOptions::ExportOptions(const stdcxx::Properties& parameters) :
@@ -98,7 +100,8 @@ ExportOptions::ExportOptions(const stdcxx::Properties& parameters) :
     m_withBranchSV(ConversionParameters::readBooleanParameter(parameters, EXPORT_WITH_BRANCH_STATE_VARIABLES_PARAMETER)),
     m_version(ConversionParameters::readStringParameter(parameters, EXPORT_VERSION_PARAMETER)),
     m_iidmVersionIncompatibilityBehavior(Enum::fromString<IidmVersionIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, EXPORT_IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER))),
-    m_busBranchVoltageLevelIncompatibilityBehavior(Enum::fromString<BusBranchVoltageLevelIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, EXPORT_BUS_BRANCH_VOLTAGE_LEVEL_INCOMPATIBILITY_BEHAVIOR_PARAMETER))) {
+    m_busBranchVoltageLevelIncompatibilityBehavior(Enum::fromString<BusBranchVoltageLevelIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, EXPORT_BUS_BRANCH_VOLTAGE_LEVEL_INCOMPATIBILITY_BEHAVIOR_PARAMETER))),
+    m_flatten(ConversionParameters::readBooleanParameter(parameters, EXPORT_FLATTEN_PARAMETER)) {
         setThrowExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, EXPORT_THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER));
         setWithAutomationSystems(ConversionParameters::readBooleanParameter(parameters, EXPORT_WITH_AUTOMATION_SYSTEMS_PARAMETER));
 
@@ -237,6 +240,10 @@ bool ExportOptions::isAnonymized() const {
     return m_anonymized;
 }
 
+bool ExportOptions::isFlatten() const {
+    return m_flatten;
+}
+
 bool ExportOptions::isIndent() const {
     return m_indent;
 }
@@ -256,6 +263,11 @@ ExportOptions& ExportOptions::setAnonymized(bool anonymized) {
 
 ExportOptions& ExportOptions::setBusBranchVoltageLevelIncompatibilityBehavior(const BusBranchVoltageLevelIncompatibilityBehavior& behavior) {
     m_busBranchVoltageLevelIncompatibilityBehavior = behavior;
+    return *this;
+}
+
+ExportOptions& ExportOptions::setFlatten(bool flatten) {
+    m_flatten = flatten;
     return *this;
 }
 

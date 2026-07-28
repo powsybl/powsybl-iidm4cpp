@@ -37,6 +37,7 @@ public:
     static constexpr const char* const VERSION = "iidm.export.xml.version";
     static constexpr const char* const WITH_BRANCH_STATE_VARIABLES = "iidm.export.xml.with-branch-state-variables";
     static constexpr const char* const WITH_AUTOMATION_SYSTEMS = "iidm.export.xml.with-automation-systems";
+    static constexpr const char* const FLATTEN = "iidm.export.xml.flatten";
 
     static constexpr const char* const VOLTAGE_LEVELS_NODE_BREAKER = "iidm.export.xml.topology-level.voltage-levels.node-breaker";
     static constexpr const char* const VOLTAGE_LEVELS_BUS_BREAKER = "iidm.export.xml.topology-level.voltage-levels.bus-breaker";
@@ -68,10 +69,11 @@ public:
      * @param throwExceptionIfExtensionNotFound The extension's serializer lookup mode
      * @param version The expected XIIDM version
      * @param iidmVersionIncompatibilityBehavior The expected behaviour when an IIDM's version incompatibility occurs
+     * @param flatten Boolean of weither flatten or not the subnetworks during export. 
      */
     ExportOptions(bool withBranchSV, bool indent, bool onlyMainCc, const TopologyLevel& topologyLevel,
                   bool throwExceptionIfExtensionNotFound, const std::string& version,
-                  const IidmVersionIncompatibilityBehavior& iidmVersionIncompatibilityBehavior);
+                  const IidmVersionIncompatibilityBehavior& iidmVersionIncompatibilityBehavior, bool flatten = false);
 
     /**
      * Constructor
@@ -157,6 +159,11 @@ public:
     bool isAnonymized() const;
 
     /**
+     * Return true if the network and subnetworks should be flatten during export
+     */
+    bool isFlatten() const;
+
+    /**
      * Return true if the XML should be indented
      *
      * @return true if the XML should be indented, false otherwise
@@ -194,6 +201,12 @@ public:
      * @return this ExportOptions object
      */
     ExportOptions& setBusBranchVoltageLevelIncompatibilityBehavior(const BusBranchVoltageLevelIncompatibilityBehavior& behavior);
+
+    /**
+     * Set the expected behaviour regarding the network and subnetworks flattening. If true, subnetworks will be integrated with the root network into a 'flat' network during export.
+     * Ig the network does not contain subnetworks, setting this to 'true' has no effect.
+     */
+    ExportOptions& setFlatten(bool flatten);
 
     /**
      * Set the expected behaviour if an IIDM's version incompatibility occurs
@@ -277,6 +290,8 @@ private:
     std::string m_encoding = powsybl::xml::DEFAULT_ENCODING;
 
     BusBranchVoltageLevelIncompatibilityBehavior m_busBranchVoltageLevelIncompatibilityBehavior = BusBranchVoltageLevelIncompatibilityBehavior::THROW_EXCEPTION;
+
+    bool m_flatten = false;
 
 };
 
