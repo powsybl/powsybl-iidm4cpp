@@ -437,6 +437,11 @@ void assertCollection(const std::set<T>& expectedSet, const std::set<T>& resultS
 
 BOOST_AUTO_TEST_SUITE(SubnetworkExplorationTestSuite)
 
+template <typename T>
+std::string mapId(const T& identifiable) {
+    return identifiable.getId();
+}
+
 BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     Network network("Root", "Root");
     Network& subnetwork1 = network.newSubnetwork("n1_network", "n1_format");
@@ -479,6 +484,16 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     BOOST_CHECK(stdcxx::areSame(network, subnetwork1.getParentNetworkRef().get()));
     BOOST_CHECK(stdcxx::areSame(network, subnetwork2.getParentNetworkRef().get()));
 
+    auto expectedNetworksRoot = {std::string("Root"), id("network", "1"), id("network", "2")};
+    auto expectedNetworks1 = {id("network", "1")};
+    auto expectedNetworks2 = {id("network", "2")};
+    const auto& networksRoot = network.getIdentifiables(IdentifiableType::NETWORK) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& networks1 = subnetwork1.getIdentifiables(IdentifiableType::NETWORK) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& networks2 = subnetwork2.getIdentifiables(IdentifiableType::NETWORK) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL_COLLECTIONS(networksRoot.begin(), networksRoot.end(), expectedNetworksRoot.begin(), expectedNetworksRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(networks1.begin(), networks1.end(), expectedNetworks1.begin(), expectedNetworks1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(networks2.begin(), networks2.end(), expectedNetworks2.begin(), expectedNetworks2.end());
+
     // Explore VariantManager
     BOOST_CHECK(stdcxx::areSame(network.getVariantManager(), subnetwork1.getVariantManager()));
     BOOST_CHECK(stdcxx::areSame(network.getVariantManager(), subnetwork2.getVariantManager()));
@@ -492,12 +507,28 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     assertCollection({Country::FR, Country::BE, Country::DE}, subnetwork2.getCountries());
 
     //Explore substations
+    auto expectedSubstations = {id("substation1", "1"), id("substation2", "1"), id("substation3", "1"),
+                                id("substation1", "2"), id("substation2", "2"), id("substation3", "2")};
     auto expectedSubstations1 = {id("substation1", "1"), id("substation2", "1"), id("substation3", "1")};
     auto expectedSubstations2 = {id("substation1", "2"), id("substation2", "2"), id("substation3", "2")};
+    BOOST_CHECK_EQUAL(expectedSubstations.size(), network.getSubstationCount());
     BOOST_CHECK_EQUAL(expectedSubstations1.size(), subnetwork1.getSubstationCount());
     BOOST_CHECK_EQUAL(expectedSubstations2.size(), subnetwork2.getSubstationCount());
-    BOOST_CHECK_EQUAL(expectedSubstations1.size(), boost::size(subnetwork1.getSubstations()));
-    BOOST_CHECK_EQUAL(expectedSubstations2.size(), boost::size(subnetwork2.getSubstations()));
+    const auto& substationsRoot = network.getSubstations() | boost::adaptors::transformed(mapId<Substation>);
+    const auto& substations1 = subnetwork1.getSubstations() | boost::adaptors::transformed(mapId<Substation>);
+    const auto& substations2 = subnetwork2.getSubstations() | boost::adaptors::transformed(mapId<Substation>);
+    const auto& substationsIdRoot = network.getIdentifiables(IdentifiableType::SUBSTATION) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& substationsId1 = subnetwork1.getIdentifiables(IdentifiableType::SUBSTATION) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& substationsId2 = subnetwork2.getIdentifiables(IdentifiableType::SUBSTATION) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedSubstations.size(), boost::size(substationsRoot));
+    BOOST_CHECK_EQUAL(expectedSubstations1.size(), boost::size(substations1));
+    BOOST_CHECK_EQUAL(expectedSubstations2.size(), boost::size(substations2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(substationsRoot.begin(), substationsRoot.end(), substationsIdRoot.begin(), substationsIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(substationsRoot.begin(), substationsRoot.end(), expectedSubstations.begin(), expectedSubstations.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(substations1.begin(), substations1.end(), substationsId1.begin(), substationsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(substations1.begin(), substations1.end(), expectedSubstations1.begin(), expectedSubstations1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(substations2.begin(), substations2.end(), substationsId2.begin(), substationsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(substations2.begin(), substations2.end(), expectedSubstations2.begin(), expectedSubstations2.end());
     for (auto& id : expectedSubstations1) {
         subnetwork1.getSubstation(id);
     }
@@ -506,17 +537,29 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // Voltage levels
-    auto expectedVls1 = {id("voltageLevel1", "1"),
-                                            id("voltageLevel2", "1"), id("voltageLevel3", "1"),
-                                            id("voltageLevel4", "1"), id("voltageLevel5", "1")};
-    auto expectedVls2 = {id("voltageLevel1", "2"),
-                                            id("voltageLevel2", "2"), id("voltageLevel3", "2"),
-                                            id("voltageLevel4", "2"), id("voltageLevel5", "2")};
+    auto expectedVlsRoot = {id("voltageLevel1", "1"), id("voltageLevel2", "1"), id("voltageLevel3", "1"), id("voltageLevel4", "1"), id("voltageLevel5", "1"),
+                                  id("voltageLevel1", "2"), id("voltageLevel2", "2"), id("voltageLevel3", "2"), id("voltageLevel4", "2"), id("voltageLevel5", "2")};
+    auto expectedVls1 = {id("voltageLevel1", "1"), id("voltageLevel2", "1"), id("voltageLevel3", "1"), id("voltageLevel4", "1"), id("voltageLevel5", "1")};
+    auto expectedVls2 = {id("voltageLevel1", "2"), id("voltageLevel2", "2"), id("voltageLevel3", "2"), id("voltageLevel4", "2"), id("voltageLevel5", "2")};
 
+    BOOST_CHECK_EQUAL(expectedVlsRoot.size(), network.getVoltageLevelCount());
     BOOST_CHECK_EQUAL(expectedVls1.size(), subnetwork1.getVoltageLevelCount());
     BOOST_CHECK_EQUAL(expectedVls2.size(), subnetwork2.getVoltageLevelCount());
-    BOOST_CHECK_EQUAL(expectedVls1.size(), boost::size(subnetwork1.getVoltageLevels()));
-    BOOST_CHECK_EQUAL(expectedVls2.size(), boost::size(subnetwork2.getVoltageLevels()));
+    const auto& vlsRoot = network.getVoltageLevels() | boost::adaptors::transformed(mapId<VoltageLevel>);
+    const auto& vls1 = subnetwork1.getVoltageLevels() | boost::adaptors::transformed(mapId<VoltageLevel>);
+    const auto& vls2 = subnetwork2.getVoltageLevels() | boost::adaptors::transformed(mapId<VoltageLevel>);
+    const auto& vlsIdRoot = network.getIdentifiables(IdentifiableType::VOLTAGE_LEVEL) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& vlsId1 = subnetwork1.getIdentifiables(IdentifiableType::VOLTAGE_LEVEL) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& vlsId2 = subnetwork2.getIdentifiables(IdentifiableType::VOLTAGE_LEVEL) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedVlsRoot.size(), boost::size(vlsRoot));
+    BOOST_CHECK_EQUAL(expectedVls1.size(), boost::size(vls1));
+    BOOST_CHECK_EQUAL(expectedVls2.size(), boost::size(vls2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(vlsRoot.begin(), vlsRoot.end(), vlsIdRoot.begin(), vlsIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vlsRoot.begin(), vlsRoot.end(), expectedVlsRoot.begin(), expectedVlsRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vls1.begin(), vls1.end(), vlsId1.begin(), vlsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vls1.begin(), vls1.end(), expectedVls1.begin(), expectedVls1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vls2.begin(), vls2.end(), vlsId2.begin(), vlsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vls2.begin(), vls2.end(), expectedVls2.begin(), expectedVls2.end());
     for (auto& id : expectedVls1) {
         subnetwork1.getVoltageLevel(id);
     }
@@ -525,13 +568,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // Generators
+    auto expectedGensRoot = {id("generator1", "1"), id("generator1", "2")};
     auto expectedGens1 = {id("generator1", "1")};
     auto expectedGens2 = {id("generator1", "2")};
-
+    BOOST_CHECK_EQUAL(expectedGensRoot.size(), network.getGeneratorCount());
     BOOST_CHECK_EQUAL(expectedGens1.size(), subnetwork1.getGeneratorCount());
     BOOST_CHECK_EQUAL(expectedGens2.size(), subnetwork2.getGeneratorCount());
-    BOOST_CHECK_EQUAL(expectedGens1.size(), boost::size(subnetwork1.getGenerators()));
-    BOOST_CHECK_EQUAL(expectedGens2.size(), boost::size(subnetwork2.getGenerators()));
+    const auto& gensRoot = network.getGenerators() | boost::adaptors::transformed(mapId<Generator>);
+    const auto& gens1 = subnetwork1.getGenerators() | boost::adaptors::transformed(mapId<Generator>);
+    const auto& gens2 = subnetwork2.getGenerators() | boost::adaptors::transformed(mapId<Generator>);
+    const auto& gensIdRoot = network.getIdentifiables(IdentifiableType::GENERATOR) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& gensId1 = subnetwork1.getIdentifiables(IdentifiableType::GENERATOR) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& gensId2 = subnetwork2.getIdentifiables(IdentifiableType::GENERATOR) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedGensRoot.size(), boost::size(gensRoot));
+    BOOST_CHECK_EQUAL(expectedGens1.size(), boost::size(gens1));
+    BOOST_CHECK_EQUAL(expectedGens2.size(), boost::size(gens2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(gensRoot.begin(), gensRoot.end(), gensIdRoot.begin(), gensIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(gensRoot.begin(), gensRoot.end(), expectedGensRoot.begin(), expectedGensRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(gens1.begin(), gens1.end(), gensId1.begin(), gensId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(gens1.begin(), gens1.end(), expectedGens1.begin(), expectedGens1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(gens2.begin(), gens2.end(), gensId2.begin(), gensId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(gens2.begin(), gens2.end(), expectedGens2.begin(), expectedGens2.end());
     for (auto& id : expectedGens1) {
         subnetwork1.getGenerator(id);
     }
@@ -540,13 +597,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // Loads
+    auto expectedLoadsRoot = {id("load1", "1"), id("load1", "2")};
     auto expectedLoads1 = {id("load1", "1")};
     auto expectedLoads2 = {id("load1", "2")};
-
+    BOOST_CHECK_EQUAL(expectedLoadsRoot.size(), network.getLoadCount());
     BOOST_CHECK_EQUAL(expectedLoads1.size(), subnetwork1.getLoadCount());
     BOOST_CHECK_EQUAL(expectedLoads2.size(), subnetwork2.getLoadCount());
-    BOOST_CHECK_EQUAL(expectedLoads1.size(), boost::size(subnetwork1.getLoads()));
-    BOOST_CHECK_EQUAL(expectedLoads2.size(), boost::size(subnetwork2.getLoads()));
+    const auto& loadsRoot = network.getLoads() | boost::adaptors::transformed(mapId<Load>);
+    const auto& loads1 = subnetwork1.getLoads() | boost::adaptors::transformed(mapId<Load>);
+    const auto& loads2 = subnetwork2.getLoads() | boost::adaptors::transformed(mapId<Load>);
+    const auto& loadsIdRoot = network.getIdentifiables(IdentifiableType::LOAD) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& loadsId1 = subnetwork1.getIdentifiables(IdentifiableType::LOAD) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& loadsId2 = subnetwork2.getIdentifiables(IdentifiableType::LOAD) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedLoadsRoot.size(), boost::size(loadsRoot));
+    BOOST_CHECK_EQUAL(expectedLoads1.size(), boost::size(loads1));
+    BOOST_CHECK_EQUAL(expectedLoads2.size(), boost::size(loads2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(loadsRoot.begin(), loadsRoot.end(), loadsIdRoot.begin(), loadsIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(loadsRoot.begin(), loadsRoot.end(), expectedLoadsRoot.begin(), expectedLoadsRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(loads1.begin(), loads1.end(), loadsId1.begin(), loadsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(loads1.begin(), loads1.end(), expectedLoads1.begin(), expectedLoads1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(loads2.begin(), loads2.end(), loadsId2.begin(), loadsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(loads2.begin(), loads2.end(), expectedLoads2.begin(), expectedLoads2.end());
     for (auto& id : expectedLoads1) {
         subnetwork1.getLoad(id);
     }
@@ -555,13 +626,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // Batteries
+    auto expectedIdsForRoot = {id("battery1", "1"), id("battery1", "2")};
     auto expectedIdsForSubnetwork1 = {id("battery1", "1")};
     auto expectedIdsForSubnetwork2 = {id("battery1", "2")};
-
+    BOOST_CHECK_EQUAL(expectedIdsForRoot.size(), network.getBatteryCount());
     BOOST_CHECK_EQUAL(expectedIdsForSubnetwork1.size(), subnetwork1.getBatteryCount());
     BOOST_CHECK_EQUAL(expectedIdsForSubnetwork2.size(), subnetwork2.getBatteryCount());
-    BOOST_CHECK_EQUAL(expectedIdsForSubnetwork1.size(), boost::size(subnetwork1.getBatteries()));
-    BOOST_CHECK_EQUAL(expectedIdsForSubnetwork2.size(), boost::size(subnetwork2.getBatteries()));
+    const auto& batteriesRoot = network.getBatteries() | boost::adaptors::transformed(mapId<Battery>);
+    const auto& batteries1 = subnetwork1.getBatteries() | boost::adaptors::transformed(mapId<Battery>);
+    const auto& batteries2 = subnetwork2.getBatteries() | boost::adaptors::transformed(mapId<Battery>);
+    const auto& batteriesIdRoot = network.getIdentifiables(IdentifiableType::BATTERY) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& batteriesId1 = subnetwork1.getIdentifiables(IdentifiableType::BATTERY) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& batteriesId2 = subnetwork2.getIdentifiables(IdentifiableType::BATTERY) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedIdsForRoot.size(), boost::size(batteriesRoot));
+    BOOST_CHECK_EQUAL(expectedIdsForSubnetwork1.size(), boost::size(batteries1));
+    BOOST_CHECK_EQUAL(expectedIdsForSubnetwork2.size(), boost::size(batteries2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(batteriesRoot.begin(), batteriesRoot.end(), batteriesIdRoot.begin(), batteriesIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(batteriesRoot.begin(), batteriesRoot.end(), expectedIdsForRoot.begin(), expectedIdsForRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(batteries1.begin(), batteries1.end(), batteriesId1.begin(), batteriesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(batteries1.begin(), batteries1.end(), expectedIdsForSubnetwork1.begin(), expectedIdsForSubnetwork1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(batteries2.begin(), batteries2.end(), batteriesId2.begin(), batteriesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(batteries2.begin(), batteries2.end(), expectedIdsForSubnetwork2.begin(), expectedIdsForSubnetwork2.end());
     for (auto& id : expectedIdsForSubnetwork1) {
         subnetwork1.getBattery(id);
     }
@@ -570,13 +655,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // ShuntCompensators
+    auto expectedShuntsRoot = {id("shuntCompensator1", "1"), id("shuntCompensator1", "2")};
     auto expectedShunts1 = {id("shuntCompensator1", "1")};
     auto expectedShunts2 = {id("shuntCompensator1", "2")};
-
+    BOOST_CHECK_EQUAL(expectedShuntsRoot.size(), network.getShuntCompensatorCount());
     BOOST_CHECK_EQUAL(expectedShunts1.size(), subnetwork1.getShuntCompensatorCount());
     BOOST_CHECK_EQUAL(expectedShunts2.size(), subnetwork2.getShuntCompensatorCount());
-    BOOST_CHECK_EQUAL(expectedShunts1.size(), boost::size(subnetwork1.getShuntCompensators()));
-    BOOST_CHECK_EQUAL(expectedShunts2.size(), boost::size(subnetwork2.getShuntCompensators()));
+    const auto& shuntsRoot = network.getShuntCompensators() | boost::adaptors::transformed(mapId<ShuntCompensator>);
+    const auto& shunts1 = subnetwork1.getShuntCompensators() | boost::adaptors::transformed(mapId<ShuntCompensator>);
+    const auto& shunts2 = subnetwork2.getShuntCompensators() | boost::adaptors::transformed(mapId<ShuntCompensator>);
+    const auto& shuntsIdRoot = network.getIdentifiables(IdentifiableType::SHUNT_COMPENSATOR) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& shuntsId1 = subnetwork1.getIdentifiables(IdentifiableType::SHUNT_COMPENSATOR) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& shuntsId2 = subnetwork2.getIdentifiables(IdentifiableType::SHUNT_COMPENSATOR) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedShuntsRoot.size(), boost::size(shuntsRoot));
+    BOOST_CHECK_EQUAL(expectedShunts1.size(), boost::size(shunts1));
+    BOOST_CHECK_EQUAL(expectedShunts2.size(), boost::size(shunts2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(shuntsRoot.begin(), shuntsRoot.end(), shuntsIdRoot.begin(), shuntsIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(shuntsRoot.begin(), shuntsRoot.end(), expectedShuntsRoot.begin(), expectedShuntsRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(shunts1.begin(), shunts1.end(), shuntsId1.begin(), shuntsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(shunts1.begin(), shunts1.end(), expectedShunts1.begin(), expectedShunts1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(shunts2.begin(), shunts2.end(), shuntsId2.begin(), shuntsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(shunts2.begin(), shunts2.end(), expectedShunts2.begin(), expectedShunts2.end());
     for (auto& id : expectedShunts1) {
         subnetwork1.getShuntCompensator(id);
     }
@@ -585,13 +684,28 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // StaticVarCompensators
+    auto expectedSvcRoot = {id("svc1", "1"), id("svc1", "2")};
     auto expectedSvc1 = {id("svc1", "1")};
     auto expectedSvc2 = {id("svc1", "2")};
 
+    BOOST_CHECK_EQUAL(expectedSvcRoot.size(), network.getStaticVarCompensatorCount());
     BOOST_CHECK_EQUAL(expectedSvc1.size(), subnetwork1.getStaticVarCompensatorCount());
     BOOST_CHECK_EQUAL(expectedSvc2.size(), subnetwork2.getStaticVarCompensatorCount());
-    BOOST_CHECK_EQUAL(expectedSvc1.size(), boost::size(subnetwork1.getStaticVarCompensators()));
-    BOOST_CHECK_EQUAL(expectedSvc2.size(), boost::size(subnetwork2.getStaticVarCompensators()));
+    const auto& svcsRoot = network.getStaticVarCompensators() | boost::adaptors::transformed(mapId<StaticVarCompensator>);
+    const auto& svcs1 = subnetwork1.getStaticVarCompensators() | boost::adaptors::transformed(mapId<StaticVarCompensator>);
+    const auto& svcs2 = subnetwork2.getStaticVarCompensators() | boost::adaptors::transformed(mapId<StaticVarCompensator>);
+    const auto& svcsIdRoot = network.getIdentifiables(IdentifiableType::STATIC_VAR_COMPENSATOR) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& svcsId1 = subnetwork1.getIdentifiables(IdentifiableType::STATIC_VAR_COMPENSATOR) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& svcsId2 = subnetwork2.getIdentifiables(IdentifiableType::STATIC_VAR_COMPENSATOR) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedSvcRoot.size(), boost::size(svcsRoot));
+    BOOST_CHECK_EQUAL(expectedSvc1.size(), boost::size(svcs1));
+    BOOST_CHECK_EQUAL(expectedSvc2.size(), boost::size(svcs2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(svcsRoot.begin(), svcsRoot.end(), svcsIdRoot.begin(), svcsIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(svcsRoot.begin(), svcsRoot.end(), expectedSvcRoot.begin(), expectedSvcRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(svcs1.begin(), svcs1.end(), svcsId1.begin(), svcsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(svcs1.begin(), svcs1.end(), expectedSvc1.begin(), expectedSvc1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(svcs2.begin(), svcs2.end(), svcsId2.begin(), svcsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(svcs2.begin(), svcs2.end(), expectedSvc2.begin(), expectedSvc2.end());
     for (auto& id : expectedSvc1) {
         subnetwork1.getStaticVarCompensator(id);
     }
@@ -600,13 +714,29 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // BusbarSections
+    auto expectedBbsRoot = {id("voltageLevel1BusbarSection1", "1"), id("voltageLevel1BusbarSection2", "1"),
+                            id("voltageLevel1BusbarSection1", "2"), id("voltageLevel1BusbarSection2", "2")};
     auto expectedBbs1 = {id("voltageLevel1BusbarSection1", "1"), id("voltageLevel1BusbarSection2", "1")};
     auto expectedBbs2 = {id("voltageLevel1BusbarSection1", "2"), id("voltageLevel1BusbarSection2", "2")};
 
+    BOOST_CHECK_EQUAL(expectedBbsRoot.size(), network.getBusbarSectionCount());
     BOOST_CHECK_EQUAL(expectedBbs1.size(), subnetwork1.getBusbarSectionCount());
     BOOST_CHECK_EQUAL(expectedBbs2.size(), subnetwork2.getBusbarSectionCount());
-    BOOST_CHECK_EQUAL(expectedBbs1.size(), boost::size(subnetwork1.getBusbarSections()));
-    BOOST_CHECK_EQUAL(expectedBbs2.size(), boost::size(subnetwork2.getBusbarSections()));
+    const auto& bbsRoot = network.getBusbarSections() | boost::adaptors::transformed(mapId<BusbarSection>);
+    const auto& bbs1 = subnetwork1.getBusbarSections() | boost::adaptors::transformed(mapId<BusbarSection>);
+    const auto& bbs2 = subnetwork2.getBusbarSections() | boost::adaptors::transformed(mapId<BusbarSection>);
+    const auto& bbsIdRoot = network.getIdentifiables(IdentifiableType::BUSBAR_SECTION) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& bbsId1 = subnetwork1.getIdentifiables(IdentifiableType::BUSBAR_SECTION) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& bbsId2 = subnetwork2.getIdentifiables(IdentifiableType::BUSBAR_SECTION) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedBbsRoot.size(), boost::size(bbsRoot));
+    BOOST_CHECK_EQUAL(expectedBbs1.size(), boost::size(bbs1));
+    BOOST_CHECK_EQUAL(expectedBbs2.size(), boost::size(bbs2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(bbsRoot.begin(), bbsRoot.end(), bbsIdRoot.begin(), bbsIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(bbsRoot.begin(), bbsRoot.end(), expectedBbsRoot.begin(), expectedBbsRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(bbs1.begin(), bbs1.end(), bbsId1.begin(), bbsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(bbs1.begin(), bbs1.end(), expectedBbs1.begin(), expectedBbs1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(bbs2.begin(), bbs2.end(), bbsId2.begin(), bbsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(bbs2.begin(), bbs2.end(), expectedBbs2.begin(), expectedBbs2.end());
     for (auto& id : expectedBbs1) {
         subnetwork1.getBusbarSection(id);
     }
@@ -615,6 +745,8 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // Switches
+    auto expectedSwitchesRoot = {id("voltageLevel1Breaker1", "1"), id("load1Disconnector1", "1"), id("load1Breaker1", "1"), id("generator1Disconnector1", "1"), id("generator1Breaker1", "1"),
+                                 id("voltageLevel1Breaker1", "2"), id("load1Disconnector1", "2"), id("load1Breaker1", "2"), id("generator1Disconnector1", "2"), id("generator1Breaker1", "2")};
     auto expectedSwitches1 = {id("voltageLevel1Breaker1", "1"),
                                             id("load1Disconnector1", "1"),
                                             id("load1Breaker1", "1"),
@@ -626,10 +758,24 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
                                             id("generator1Disconnector1", "2"),
                                             id("generator1Breaker1", "2")};
 
+    BOOST_CHECK_EQUAL(expectedSwitchesRoot.size(), network.getSwitchCount());
     BOOST_CHECK_EQUAL(expectedSwitches1.size(), subnetwork1.getSwitchCount());
     BOOST_CHECK_EQUAL(expectedSwitches2.size(), subnetwork2.getSwitchCount());
-    BOOST_CHECK_EQUAL(expectedSwitches1.size(), boost::size(subnetwork1.getSwitches()));
-    BOOST_CHECK_EQUAL(expectedSwitches2.size(), boost::size(subnetwork2.getSwitches()));
+    const auto& switchesRoot = network.getSwitches() | boost::adaptors::transformed(mapId<Switch>);
+    const auto& switches1 = subnetwork1.getSwitches() | boost::adaptors::transformed(mapId<Switch>);
+    const auto& switches2 = subnetwork2.getSwitches() | boost::adaptors::transformed(mapId<Switch>);
+    const auto& switchesIdRoot = network.getIdentifiables(IdentifiableType::SWITCH) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& switchesId1 = subnetwork1.getIdentifiables(IdentifiableType::SWITCH) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& switchesId2 = subnetwork2.getIdentifiables(IdentifiableType::SWITCH) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedSwitchesRoot.size(), boost::size(switchesRoot));
+    BOOST_CHECK_EQUAL(expectedSwitches1.size(), boost::size(switches1));
+    BOOST_CHECK_EQUAL(expectedSwitches2.size(), boost::size(switches2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(switchesRoot.begin(), switchesRoot.end(), switchesIdRoot.begin(), switchesIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(switchesRoot.begin(), switchesRoot.end(), expectedSwitchesRoot.begin(), expectedSwitchesRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(switches1.begin(), switches1.end(), switchesId1.begin(), switchesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(switches1.begin(), switches1.end(), expectedSwitches1.begin(), expectedSwitches1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(switches2.begin(), switches2.end(), switchesId2.begin(), switchesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(switches2.begin(), switches2.end(), expectedSwitches2.begin(), expectedSwitches2.end());
     for (auto& id : expectedSwitches1) {
         subnetwork1.getSwitch(id);
     }
@@ -664,12 +810,28 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
         subnetwork2.getVscConverterStation(id);
     }
 
+    auto hvdcConvertersForRoot= {id("lcc1", "1"), id("lcc2", "1"), id("lcc1", "2"), id("lcc2", "2"),
+                                 id("vsc1", "1"), id("vsc2", "1"), id("vsc1", "2"), id("vsc2", "2")}; //All lcc then all vsc
     auto hvdcConvertersForSubnetwork1 = {id("lcc1", "1"), id("lcc2", "1"), id("vsc1", "1"), id("vsc2", "1")};
     auto hvdcConvertersForSubnetwork2 = {id("lcc1", "2"), id("lcc2", "2"), id("vsc1", "2"), id("vsc2", "2")};
+    BOOST_CHECK_EQUAL(hvdcConvertersForRoot.size(), network.getHvdcConverterStationCount());
     BOOST_CHECK_EQUAL(hvdcConvertersForSubnetwork1.size(), subnetwork1.getHvdcConverterStationCount());
     BOOST_CHECK_EQUAL(hvdcConvertersForSubnetwork2.size(), subnetwork2.getHvdcConverterStationCount());
-    BOOST_CHECK_EQUAL(hvdcConvertersForSubnetwork1.size(), boost::size(subnetwork1.getHvdcConverterStations()));
-    BOOST_CHECK_EQUAL(hvdcConvertersForSubnetwork2.size(), boost::size(subnetwork2.getHvdcConverterStations()));
+    const auto& hvdcConvertersRoot = network.getHvdcConverterStations() | boost::adaptors::transformed(mapId<HvdcConverterStation>);
+    const auto& hvdcConverters1 = subnetwork1.getHvdcConverterStations() | boost::adaptors::transformed(mapId<HvdcConverterStation>);
+    const auto& hvdcConverters2 = subnetwork2.getHvdcConverterStations() | boost::adaptors::transformed(mapId<HvdcConverterStation>);
+    const auto& hvdcConvertersIdRoot = network.getIdentifiables(IdentifiableType::HVDC_CONVERTER_STATION) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& hvdcConvertersId1 = subnetwork1.getIdentifiables(IdentifiableType::HVDC_CONVERTER_STATION) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& hvdcConvertersId2 = subnetwork2.getIdentifiables(IdentifiableType::HVDC_CONVERTER_STATION) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(hvdcConvertersForRoot.size(), boost::size(hvdcConvertersRoot));
+    BOOST_CHECK_EQUAL(hvdcConvertersForSubnetwork1.size(), boost::size(hvdcConverters1));
+    BOOST_CHECK_EQUAL(hvdcConvertersForSubnetwork2.size(), boost::size(hvdcConverters2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcConvertersRoot.begin(), hvdcConvertersRoot.end(), hvdcConvertersIdRoot.begin(), hvdcConvertersIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcConvertersRoot.begin(), hvdcConvertersRoot.end(), hvdcConvertersForRoot.begin(), hvdcConvertersForRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcConverters1.begin(), hvdcConverters1.end(), hvdcConvertersId1.begin(), hvdcConvertersId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcConverters1.begin(), hvdcConverters1.end(), hvdcConvertersForSubnetwork1.begin(), hvdcConvertersForSubnetwork1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcConverters2.begin(), hvdcConverters2.end(), hvdcConvertersId2.begin(), hvdcConvertersId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcConverters2.begin(), hvdcConverters2.end(), hvdcConvertersForSubnetwork2.begin(), hvdcConvertersForSubnetwork2.end());
     for (auto& id : hvdcConvertersForSubnetwork1) {
         subnetwork1.getHvdcConverterStation(id);
     }
@@ -678,12 +840,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // HVDC Lines
+    auto expectedhvdclinesRoot = {id("hvdcLine1", "1"), id("hvdcLine2", "1"), id("hvdcLine1", "2"), id("hvdcLine2", "2")};
     auto expectedhvdclines1 = {id("hvdcLine1", "1"), id("hvdcLine2", "1")};
     auto expectedhvdclines2 = {id("hvdcLine1", "2"), id("hvdcLine2", "2")};
+    BOOST_CHECK_EQUAL(expectedhvdclinesRoot.size(), network.getHvdcLineCount());
     BOOST_CHECK_EQUAL(expectedhvdclines1.size(), subnetwork1.getHvdcLineCount());
     BOOST_CHECK_EQUAL(expectedhvdclines2.size(), subnetwork2.getHvdcLineCount());
-    BOOST_CHECK_EQUAL(expectedhvdclines1.size(), boost::size(subnetwork1.getHvdcLines()));
-    BOOST_CHECK_EQUAL(expectedhvdclines2.size(), boost::size(subnetwork2.getHvdcLines()));
+    const auto& hvdcLinesRoot = network.getHvdcLines() | boost::adaptors::transformed(mapId<HvdcLine>);
+    const auto& hvdcLines1 = subnetwork1.getHvdcLines() | boost::adaptors::transformed(mapId<HvdcLine>);
+    const auto& hvdcLines2 = subnetwork2.getHvdcLines() | boost::adaptors::transformed(mapId<HvdcLine>);
+    const auto& hvdcLinesIdRoot = network.getIdentifiables(IdentifiableType::HVDC_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& hvdcLinesId1 = subnetwork1.getIdentifiables(IdentifiableType::HVDC_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& hvdcLinesId2 = subnetwork2.getIdentifiables(IdentifiableType::HVDC_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedhvdclinesRoot.size(), boost::size(hvdcLinesRoot));
+    BOOST_CHECK_EQUAL(expectedhvdclines1.size(), boost::size(hvdcLines1));
+    BOOST_CHECK_EQUAL(expectedhvdclines2.size(), boost::size(hvdcLines2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcLinesRoot.begin(), hvdcLinesRoot.end(), hvdcLinesIdRoot.begin(), hvdcLinesIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcLinesRoot.begin(), hvdcLinesRoot.end(), expectedhvdclinesRoot.begin(), expectedhvdclinesRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcLines1.begin(), hvdcLines1.end(), hvdcLinesId1.begin(), hvdcLinesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcLines1.begin(), hvdcLines1.end(), expectedhvdclines1.begin(), expectedhvdclines1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcLines2.begin(), hvdcLines2.end(), hvdcLinesId2.begin(), hvdcLinesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(hvdcLines2.begin(), hvdcLines2.end(), expectedhvdclines2.begin(), expectedhvdclines2.end());
     for (auto& id : expectedhvdclines1) {
         subnetwork1.getHvdcLine(id);
     }
@@ -712,12 +889,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     BOOST_CHECK(!subnetwork1.findHvdcLine(converterlcc2));
 
     // 3WT
+    auto expected3wtRoot = {id("threeWindingsTransformer1", "1"), id("threeWindingsTransformer1", "2")};
     auto expected3wt1 = {id("threeWindingsTransformer1", "1")};
     auto expected3wt2 = {id("threeWindingsTransformer1", "2")};
+    BOOST_CHECK_EQUAL(expected3wtRoot.size(), network.getThreeWindingsTransformerCount());
     BOOST_CHECK_EQUAL(expected3wt1.size(), subnetwork1.getThreeWindingsTransformerCount());
     BOOST_CHECK_EQUAL(expected3wt2.size(), subnetwork2.getThreeWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(expected3wt1.size(), boost::size(subnetwork1.getThreeWindingsTransformers()));
-    BOOST_CHECK_EQUAL(expected3wt2.size(), boost::size(subnetwork2.getThreeWindingsTransformers()));
+    const auto& threeWTsRoot = network.getThreeWindingsTransformers() | boost::adaptors::transformed(mapId<ThreeWindingsTransformer>);
+    const auto& threeWTs1 = subnetwork1.getThreeWindingsTransformers() | boost::adaptors::transformed(mapId<ThreeWindingsTransformer>);
+    const auto& threeWTs2 = subnetwork2.getThreeWindingsTransformers() | boost::adaptors::transformed(mapId<ThreeWindingsTransformer>);
+    const auto& threeWTsIdRoot = network.getIdentifiables(IdentifiableType::THREE_WINDINGS_TRANSFORMER) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& threeWTsId1 = subnetwork1.getIdentifiables(IdentifiableType::THREE_WINDINGS_TRANSFORMER) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& threeWTsId2 = subnetwork2.getIdentifiables(IdentifiableType::THREE_WINDINGS_TRANSFORMER) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expected3wtRoot.size(), boost::size(threeWTsRoot));
+    BOOST_CHECK_EQUAL(expected3wt1.size(), boost::size(threeWTs1));
+    BOOST_CHECK_EQUAL(expected3wt2.size(), boost::size(threeWTs2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(threeWTsRoot.begin(), threeWTsRoot.end(), threeWTsIdRoot.begin(), threeWTsIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(threeWTsRoot.begin(), threeWTsRoot.end(), expected3wtRoot.begin(), expected3wtRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(threeWTs1.begin(), threeWTs1.end(), threeWTsId1.begin(), threeWTsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(threeWTs1.begin(), threeWTs1.end(), expected3wt1.begin(), expected3wt1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(threeWTs2.begin(), threeWTs2.end(), threeWTsId2.begin(), threeWTsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(threeWTs2.begin(), threeWTs2.end(), expected3wt2.begin(), expected3wt2.end());
     for (auto& id : expected3wt1) {
         subnetwork1.getThreeWindingsTransformer(id);
     }
@@ -726,12 +918,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // 2WT
+    auto expected2wtRoot = {id("twoWindingsTransformer1", "1"), id("twoWindingsTransformer1", "2")};
     auto expected2wt1 = {id("twoWindingsTransformer1", "1")};
     auto expected2wt2 = {id("twoWindingsTransformer1", "2")};
+    BOOST_CHECK_EQUAL(expected2wtRoot.size(), network.getTwoWindingsTransformerCount());
     BOOST_CHECK_EQUAL(expected2wt1.size(), subnetwork1.getTwoWindingsTransformerCount());
     BOOST_CHECK_EQUAL(expected2wt2.size(), subnetwork2.getTwoWindingsTransformerCount());
-    BOOST_CHECK_EQUAL(expected2wt1.size(), boost::size(subnetwork1.getTwoWindingsTransformers()));
-    BOOST_CHECK_EQUAL(expected2wt2.size(), boost::size(subnetwork2.getTwoWindingsTransformers()));
+    const auto& twoWTsRoot = network.getTwoWindingsTransformers() | boost::adaptors::transformed(mapId<TwoWindingsTransformer>);
+    const auto& twoWTs1 = subnetwork1.getTwoWindingsTransformers() | boost::adaptors::transformed(mapId<TwoWindingsTransformer>);
+    const auto& twoWTs2 = subnetwork2.getTwoWindingsTransformers() | boost::adaptors::transformed(mapId<TwoWindingsTransformer>);
+    const auto& twoWTsIdRoot = network.getIdentifiables(IdentifiableType::TWO_WINDINGS_TRANSFORMER) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& twoWTsId1 = subnetwork1.getIdentifiables(IdentifiableType::TWO_WINDINGS_TRANSFORMER) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& twoWTsId2 = subnetwork2.getIdentifiables(IdentifiableType::TWO_WINDINGS_TRANSFORMER) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expected2wtRoot.size(), boost::size(twoWTsRoot));
+    BOOST_CHECK_EQUAL(expected2wt1.size(), boost::size(twoWTs1));
+    BOOST_CHECK_EQUAL(expected2wt2.size(), boost::size(twoWTs2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(twoWTsRoot.begin(), twoWTsRoot.end(), twoWTsIdRoot.begin(), twoWTsIdRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(twoWTsRoot.begin(), twoWTsRoot.end(), expected2wtRoot.begin(), expected2wtRoot.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(twoWTs1.begin(), twoWTs1.end(), twoWTsId1.begin(), twoWTsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(twoWTs1.begin(), twoWTs1.end(), expected2wt1.begin(), expected2wt1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(twoWTs2.begin(), twoWTs2.end(), twoWTsId2.begin(), twoWTsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(twoWTs2.begin(), twoWTs2.end(), expected2wt2.begin(), expected2wt2.end());
     for (auto& id : expected2wt1) {
         subnetwork1.getTwoWindingsTransformer(id);
     }
@@ -740,12 +947,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // Lines
+    auto expectedLines0 = {id("line1", "1"), id("line1", "2")};
     auto expectedLines1 = {id("line1", "1")};
     auto expectedLines2 = {id("line1", "2")};
+    BOOST_CHECK_EQUAL(expectedLines0.size(), network.getLineCount());
     BOOST_CHECK_EQUAL(expectedLines1.size(), subnetwork1.getLineCount());
     BOOST_CHECK_EQUAL(expectedLines2.size(), subnetwork2.getLineCount());
-    BOOST_CHECK_EQUAL(expectedLines1.size(), boost::size(subnetwork1.getLines()));
-    BOOST_CHECK_EQUAL(expectedLines2.size(), boost::size(subnetwork2.getLines()));
+    const auto& lines0 = network.getLines() | boost::adaptors::transformed(mapId<Line>);
+    const auto& lines1 = subnetwork1.getLines() | boost::adaptors::transformed(mapId<Line>);
+    const auto& lines2 = subnetwork2.getLines() | boost::adaptors::transformed(mapId<Line>);
+    const auto& linesId0 = network.getIdentifiables(IdentifiableType::LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& linesId1 = subnetwork1.getIdentifiables(IdentifiableType::LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& linesId2 = subnetwork2.getIdentifiables(IdentifiableType::LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedLines0.size(), boost::size(lines0));
+    BOOST_CHECK_EQUAL(expectedLines1.size(), boost::size(lines1));
+    BOOST_CHECK_EQUAL(expectedLines2.size(), boost::size(lines2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(lines0.begin(), lines0.end(), linesId0.begin(), linesId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lines0.begin(), lines0.end(), expectedLines0.begin(), expectedLines0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lines1.begin(), lines1.end(), linesId1.begin(), linesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lines1.begin(), lines1.end(), expectedLines1.begin(), expectedLines1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lines2.begin(), lines2.end(), linesId2.begin(), linesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lines2.begin(), lines2.end(), expectedLines2.begin(), expectedLines2.end());
     for (auto& id : expectedLines1) {
         subnetwork1.getLine(id);
     }
@@ -754,12 +976,28 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // DanglingLines
+    auto expectedDLines0 = {id("danglingLine1", "1"), id("danglingLine2", "1"), id("danglingLine3", "1"), 
+                               id("danglingLine1", "2"), id("danglingLine2", "2"), id("danglingLine3", "2")};
     auto expectedDLines1 = {id("danglingLine1", "1"), id("danglingLine2", "1"), id("danglingLine3", "1")};
     auto expectedDLines2 = {id("danglingLine1", "2"), id("danglingLine2", "2"), id("danglingLine3", "2")};
+    BOOST_CHECK_EQUAL(expectedDLines0.size(), network.getDanglingLineCount());
     BOOST_CHECK_EQUAL(expectedDLines1.size(), subnetwork1.getDanglingLineCount());
     BOOST_CHECK_EQUAL(expectedDLines2.size(), subnetwork2.getDanglingLineCount());
-    BOOST_CHECK_EQUAL(expectedDLines1.size(), boost::size(subnetwork1.getDanglingLines()));
-    BOOST_CHECK_EQUAL(expectedDLines2.size(), boost::size(subnetwork2.getDanglingLines()));
+    const auto& danglingLines0 = network.getDanglingLines() | boost::adaptors::transformed(mapId<DanglingLine>);
+    const auto& danglingLines1 = subnetwork1.getDanglingLines() | boost::adaptors::transformed(mapId<DanglingLine>);
+    const auto& danglingLines2 = subnetwork2.getDanglingLines() | boost::adaptors::transformed(mapId<DanglingLine>);
+    const auto& danglingLinesId0 = network.getIdentifiables(IdentifiableType::DANGLING_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& danglingLinesId1 = subnetwork1.getIdentifiables(IdentifiableType::DANGLING_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& danglingLinesId2 = subnetwork2.getIdentifiables(IdentifiableType::DANGLING_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedDLines0.size(), boost::size(danglingLines0));
+    BOOST_CHECK_EQUAL(expectedDLines1.size(), boost::size(danglingLines1));
+    BOOST_CHECK_EQUAL(expectedDLines2.size(), boost::size(danglingLines2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines0.begin(), danglingLines0.end(), danglingLinesId0.begin(), danglingLinesId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines0.begin(), danglingLines0.end(), expectedDLines0.begin(), expectedDLines0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines1.begin(), danglingLines1.end(), danglingLinesId1.begin(), danglingLinesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines1.begin(), danglingLines1.end(), expectedDLines1.begin(), expectedDLines1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines2.begin(), danglingLines2.end(), danglingLinesId2.begin(), danglingLinesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines2.begin(), danglingLines2.end(), expectedDLines2.begin(), expectedDLines2.end());
     for (auto& id : expectedDLines1) {
         subnetwork1.getDanglingLine(id);
     }
@@ -768,15 +1006,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // TieLines
-    auto expectedTieLine0= {id("tieLine3", "0"), id("tieLine1", "1"), id("tieLine1", "2")};
+    auto expectedTieLine0= {id("tieLine1", "1"), id("tieLine1", "2"), id("tieLine3", "0")};
     auto expectedTieLine1 = {id("tieLine1", "1")};
     auto expectedTieLine2 = {id("tieLine1", "2")};
     BOOST_CHECK_EQUAL(expectedTieLine0.size(), network.getTieLineCount());
     BOOST_CHECK_EQUAL(expectedTieLine1.size(), subnetwork1.getTieLineCount());
     BOOST_CHECK_EQUAL(expectedTieLine2.size(), subnetwork2.getTieLineCount());
-    BOOST_CHECK_EQUAL(expectedTieLine0.size(), boost::size(network.getTieLines()));
-    BOOST_CHECK_EQUAL(expectedTieLine1.size(), boost::size(subnetwork1.getTieLines()));
-    BOOST_CHECK_EQUAL(expectedTieLine2.size(), boost::size(subnetwork2.getTieLines()));
+    const auto& tieLines0 = network.getTieLines() | boost::adaptors::transformed(mapId<TieLine>);
+    const auto& tieLines1 = subnetwork1.getTieLines() | boost::adaptors::transformed(mapId<TieLine>);
+    const auto& tieLines2 = subnetwork2.getTieLines() | boost::adaptors::transformed(mapId<TieLine>);
+    const auto& tieLinesId0 = network.getIdentifiables(IdentifiableType::TIE_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& tieLinesId1 = subnetwork1.getIdentifiables(IdentifiableType::TIE_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& tieLinesId2 = subnetwork2.getIdentifiables(IdentifiableType::TIE_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedTieLine0.size(), boost::size(tieLines0));
+    BOOST_CHECK_EQUAL(expectedTieLine1.size(), boost::size(tieLines1));
+    BOOST_CHECK_EQUAL(expectedTieLine2.size(), boost::size(tieLines2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(tieLines0.begin(), tieLines0.end(), tieLinesId0.begin(), tieLinesId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(tieLines0.begin(), tieLines0.end(), expectedTieLine0.begin(), expectedTieLine0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(tieLines1.begin(), tieLines1.end(), tieLinesId1.begin(), tieLinesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(tieLines1.begin(), tieLines1.end(), expectedTieLine1.begin(), expectedTieLine1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(tieLines2.begin(), tieLines2.end(), tieLinesId2.begin(), tieLinesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(tieLines2.begin(), tieLines2.end(), expectedTieLine2.begin(), expectedTieLine2.end());
     for (auto& id : expectedTieLine0) {
         network.getTieLine(id);
     }
@@ -816,9 +1066,21 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     BOOST_CHECK_EQUAL(expectedOMS0.size(), network.getOverloadManagementSystemCount());
     BOOST_CHECK_EQUAL(expectedOMS1.size(), subnetwork1.getOverloadManagementSystemCount());
     BOOST_CHECK_EQUAL(expectedOMS2.size(), subnetwork2.getOverloadManagementSystemCount());
-    BOOST_CHECK_EQUAL(expectedOMS0.size(), boost::size(network.getOverloadManagementSystems()));
-    BOOST_CHECK_EQUAL(expectedOMS1.size(), boost::size(subnetwork1.getOverloadManagementSystems()));
-    BOOST_CHECK_EQUAL(expectedOMS2.size(), boost::size(subnetwork2.getOverloadManagementSystems()));
+    const auto& oms0 = network.getOverloadManagementSystems() | boost::adaptors::transformed(mapId<OverloadManagementSystem>);
+    const auto& oms1 = subnetwork1.getOverloadManagementSystems() | boost::adaptors::transformed(mapId<OverloadManagementSystem>);
+    const auto& oms2 = subnetwork2.getOverloadManagementSystems() | boost::adaptors::transformed(mapId<OverloadManagementSystem>);
+    const auto& omsId0 = network.getIdentifiables(IdentifiableType::OVERLOAD_MANAGEMENT_SYSTEM) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& omsId1 = subnetwork1.getIdentifiables(IdentifiableType::OVERLOAD_MANAGEMENT_SYSTEM) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& omsId2 = subnetwork2.getIdentifiables(IdentifiableType::OVERLOAD_MANAGEMENT_SYSTEM) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedOMS0.size(), boost::size(oms0));
+    BOOST_CHECK_EQUAL(expectedOMS1.size(), boost::size(oms1));
+    BOOST_CHECK_EQUAL(expectedOMS2.size(), boost::size(oms2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(oms0.begin(), oms0.end(), omsId0.begin(), omsId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(oms0.begin(), oms0.end(), expectedOMS0.begin(), expectedOMS0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(oms1.begin(), oms1.end(), omsId1.begin(), omsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(oms1.begin(), oms1.end(), expectedOMS1.begin(), expectedOMS1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(oms2.begin(), oms2.end(), omsId2.begin(), omsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(oms2.begin(), oms2.end(), expectedOMS2.begin(), expectedOMS2.end());
     for (auto& id : expectedOMS0) {
         network.getOverloadManagementSystem(id);
     }
@@ -836,9 +1098,21 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     BOOST_CHECK_EQUAL(expectedAreas0.size(), network.getAreaCount());
     BOOST_CHECK_EQUAL(expectedAreas1.size(), subnetwork1.getAreaCount());
     BOOST_CHECK_EQUAL(expectedAreas2.size(), subnetwork2.getAreaCount());
-    BOOST_CHECK_EQUAL(expectedAreas0.size(), boost::size(network.getAreas()));
-    BOOST_CHECK_EQUAL(expectedAreas1.size(), boost::size(subnetwork1.getAreas()));
-    BOOST_CHECK_EQUAL(expectedAreas2.size(), boost::size(subnetwork2.getAreas()));
+    const auto& areas0 = network.getAreas() | boost::adaptors::transformed(mapId<Area>);
+    const auto& areas1 = subnetwork1.getAreas() | boost::adaptors::transformed(mapId<Area>);
+    const auto& areas2 = subnetwork2.getAreas() | boost::adaptors::transformed(mapId<Area>);
+    const auto& areasId0 = network.getIdentifiables(IdentifiableType::AREA) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& areasId1 = subnetwork1.getIdentifiables(IdentifiableType::AREA) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& areasId2 = subnetwork2.getIdentifiables(IdentifiableType::AREA) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedAreas0.size(), boost::size(areas0));
+    BOOST_CHECK_EQUAL(expectedAreas1.size(), boost::size(areas1));
+    BOOST_CHECK_EQUAL(expectedAreas2.size(), boost::size(areas2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(areas0.begin(), areas0.end(), areasId0.begin(), areasId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(areas0.begin(), areas0.end(), expectedAreas0.begin(), expectedAreas0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(areas1.begin(), areas1.end(), areasId1.begin(), areasId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(areas1.begin(), areas1.end(), expectedAreas1.begin(), expectedAreas1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(areas2.begin(), areas2.end(), areasId2.begin(), areasId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(areas2.begin(), areas2.end(), expectedAreas2.begin(), expectedAreas2.end());
     
     for (auto& id : expectedAreas0) {
         network.getArea(id);
@@ -944,12 +1218,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     BOOST_CHECK_EQUAL_COLLECTIONS(expectedDcConnectables.begin(), expectedDcConnectables.end(), dcConnectablesId2.begin(), dcConnectablesId2.end());
 
     //DcNodes
+    auto expectedDcNodes0 = {id("dcNode1", "1"), id("dcNode2", "1"), id("dcNode1", "2"), id("dcNode2", "2")};
     auto expectedDcNodes1 = {id("dcNode1", "1"), id("dcNode2", "1"),};
     auto expectedDcNodes2 = {id("dcNode1", "2"), id("dcNode2", "2"),};
+    BOOST_CHECK_EQUAL(expectedDcNodes0.size(), network.getDcNodeCount());
     BOOST_CHECK_EQUAL(expectedDcNodes1.size(), subnetwork1.getDcNodeCount());
     BOOST_CHECK_EQUAL(expectedDcNodes2.size(), subnetwork2.getDcNodeCount());
-    BOOST_CHECK_EQUAL(expectedDcNodes1.size(), boost::size(subnetwork1.getDcNodes()));
-    BOOST_CHECK_EQUAL(expectedDcNodes2.size(), boost::size(subnetwork2.getDcNodes()));
+    const auto& dcNodes0 = network.getDcNodes() | boost::adaptors::transformed(mapId<DcNode>);
+    const auto& dcNodes1 = subnetwork1.getDcNodes() | boost::adaptors::transformed(mapId<DcNode>);
+    const auto& dcNodes2 = subnetwork2.getDcNodes() | boost::adaptors::transformed(mapId<DcNode>);
+    const auto& dcNodesId0 = network.getIdentifiables(IdentifiableType::DC_NODE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcNodesId1 = subnetwork1.getIdentifiables(IdentifiableType::DC_NODE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcNodesId2 = subnetwork2.getIdentifiables(IdentifiableType::DC_NODE) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedDcNodes0.size(), boost::size(dcNodes0));
+    BOOST_CHECK_EQUAL(expectedDcNodes1.size(), boost::size(dcNodes1));
+    BOOST_CHECK_EQUAL(expectedDcNodes2.size(), boost::size(dcNodes2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcNodes0.begin(), dcNodes0.end(), dcNodesId0.begin(), dcNodesId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcNodes0.begin(), dcNodes0.end(), expectedDcNodes0.begin(), expectedDcNodes0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcNodes1.begin(), dcNodes1.end(), dcNodesId1.begin(), dcNodesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcNodes1.begin(), dcNodes1.end(), expectedDcNodes1.begin(), expectedDcNodes1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcNodes2.begin(), dcNodes2.end(), dcNodesId2.begin(), dcNodesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcNodes2.begin(), dcNodes2.end(), expectedDcNodes2.begin(), expectedDcNodes2.end());
     for (auto& id : expectedDcNodes1) {
         subnetwork1.getDcNode(id);
     }
@@ -958,12 +1247,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     //DcLines
+    auto expectedDcLines0 = {id("dcLine1", "1"), id("dcLine1", "2")};
     auto expectedDcLines1 = {id("dcLine1", "1")};
     auto expectedDcLines2 = {id("dcLine1", "2")};
+    BOOST_CHECK_EQUAL(expectedDcLines0.size(), network.getDcLineCount());
     BOOST_CHECK_EQUAL(expectedDcLines1.size(), subnetwork1.getDcLineCount());
     BOOST_CHECK_EQUAL(expectedDcLines2.size(), subnetwork2.getDcLineCount());
-    BOOST_CHECK_EQUAL(expectedDcLines1.size(), boost::size(subnetwork1.getDcLines()));
-    BOOST_CHECK_EQUAL(expectedDcLines2.size(), boost::size(subnetwork2.getDcLines()));
+    const auto& dcLines0 = network.getDcLines() | boost::adaptors::transformed(mapId<DcLine>);
+    const auto& dcLines1 = subnetwork1.getDcLines() | boost::adaptors::transformed(mapId<DcLine>);
+    const auto& dcLines2 = subnetwork2.getDcLines() | boost::adaptors::transformed(mapId<DcLine>);
+    const auto& dcLinesId0 = network.getIdentifiables(IdentifiableType::DC_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcLinesId1 = subnetwork1.getIdentifiables(IdentifiableType::DC_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcLinesId2 = subnetwork2.getIdentifiables(IdentifiableType::DC_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedDcLines0.size(), boost::size(dcLines0));
+    BOOST_CHECK_EQUAL(expectedDcLines1.size(), boost::size(dcLines1));
+    BOOST_CHECK_EQUAL(expectedDcLines2.size(), boost::size(dcLines2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcLines0.begin(), dcLines0.end(), dcLinesId0.begin(), dcLinesId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcLines0.begin(), dcLines0.end(), expectedDcLines0.begin(), expectedDcLines0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcLines1.begin(), dcLines1.end(), dcLinesId1.begin(), dcLinesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcLines1.begin(), dcLines1.end(), expectedDcLines1.begin(), expectedDcLines1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcLines2.begin(), dcLines2.end(), dcLinesId2.begin(), dcLinesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcLines2.begin(), dcLines2.end(), expectedDcLines2.begin(), expectedDcLines2.end());
     for (auto& id : expectedDcLines1) {
         subnetwork1.getDcLine(id);
     }
@@ -972,12 +1276,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     //DcGrounds
+    auto expectedDcGrounds0 = {id("dcGround1", "1"), id("dcGround1", "2")};
     auto expectedDcGrounds1 = {id("dcGround1", "1")};
     auto expectedDcGrounds2 = {id("dcGround1", "2")};
+    BOOST_CHECK_EQUAL(expectedDcGrounds0.size(), network.getDcGroundCount());
     BOOST_CHECK_EQUAL(expectedDcGrounds1.size(), subnetwork1.getDcGroundCount());
     BOOST_CHECK_EQUAL(expectedDcGrounds2.size(), subnetwork2.getDcGroundCount());
-    BOOST_CHECK_EQUAL(expectedDcGrounds1.size(), boost::size(subnetwork1.getDcGrounds()));
-    BOOST_CHECK_EQUAL(expectedDcGrounds2.size(), boost::size(subnetwork2.getDcGrounds()));
+    const auto& dcGrounds0 = network.getDcGrounds() | boost::adaptors::transformed(mapId<DcGround>);
+    const auto& dcGrounds1 = subnetwork1.getDcGrounds() | boost::adaptors::transformed(mapId<DcGround>);
+    const auto& dcGrounds2 = subnetwork2.getDcGrounds() | boost::adaptors::transformed(mapId<DcGround>);
+    const auto& dcGroundsId0 = network.getIdentifiables(IdentifiableType::DC_GROUND) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcGroundsId1 = subnetwork1.getIdentifiables(IdentifiableType::DC_GROUND) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcGroundsId2 = subnetwork2.getIdentifiables(IdentifiableType::DC_GROUND) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedDcGrounds0.size(), boost::size(dcGrounds0));
+    BOOST_CHECK_EQUAL(expectedDcGrounds1.size(), boost::size(dcGrounds1));
+    BOOST_CHECK_EQUAL(expectedDcGrounds2.size(), boost::size(dcGrounds2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcGrounds0.begin(), dcGrounds0.end(), dcGroundsId0.begin(), dcGroundsId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcGrounds0.begin(), dcGrounds0.end(), expectedDcGrounds0.begin(), expectedDcGrounds0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcGrounds1.begin(), dcGrounds1.end(), dcGroundsId1.begin(), dcGroundsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcGrounds1.begin(), dcGrounds1.end(), expectedDcGrounds1.begin(), expectedDcGrounds1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcGrounds2.begin(), dcGrounds2.end(), dcGroundsId2.begin(), dcGroundsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcGrounds2.begin(), dcGrounds2.end(), expectedDcGrounds2.begin(), expectedDcGrounds2.end());
     for (auto& id : expectedDcGrounds1) {
         subnetwork1.getDcGround(id);
     }
@@ -986,26 +1305,56 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     //DcSwitches
-    auto expectedDcSwitchs1 = {id("dcSwitch1", "1")};
-    auto expectedDcSwitchs2 = {id("dcSwitch1", "2")};
-    BOOST_CHECK_EQUAL(expectedDcSwitchs1.size(), subnetwork1.getDcSwitchCount());
-    BOOST_CHECK_EQUAL(expectedDcSwitchs2.size(), subnetwork2.getDcSwitchCount());
-    BOOST_CHECK_EQUAL(expectedDcSwitchs1.size(), boost::size(subnetwork1.getDcSwitches()));
-    BOOST_CHECK_EQUAL(expectedDcSwitchs2.size(), boost::size(subnetwork2.getDcSwitches()));
-    for (auto& id : expectedDcSwitchs1) {
+    auto expectedDcSwitches0 = {id("dcSwitch1", "1"), id("dcSwitch1", "2")};
+    auto expectedDcSwitches1 = {id("dcSwitch1", "1")};
+    auto expectedDcSwitches2 = {id("dcSwitch1", "2")};
+    BOOST_CHECK_EQUAL(expectedDcSwitches0.size(), network.getDcSwitchCount());
+    BOOST_CHECK_EQUAL(expectedDcSwitches1.size(), subnetwork1.getDcSwitchCount());
+    BOOST_CHECK_EQUAL(expectedDcSwitches2.size(), subnetwork2.getDcSwitchCount());
+    const auto& dcSwitches0 = network.getDcSwitches() | boost::adaptors::transformed(mapId<DcSwitch>);
+    const auto& dcSwitches1 = subnetwork1.getDcSwitches() | boost::adaptors::transformed(mapId<DcSwitch>);
+    const auto& dcSwitches2 = subnetwork2.getDcSwitches() | boost::adaptors::transformed(mapId<DcSwitch>);
+    const auto& dcSwitchesId0 = network.getIdentifiables(IdentifiableType::DC_SWITCH) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcSwitchesId1 = subnetwork1.getIdentifiables(IdentifiableType::DC_SWITCH) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcSwitchesId2 = subnetwork2.getIdentifiables(IdentifiableType::DC_SWITCH) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedDcSwitches0.size(), boost::size(dcSwitches0));
+    BOOST_CHECK_EQUAL(expectedDcSwitches1.size(), boost::size(dcSwitches1));
+    BOOST_CHECK_EQUAL(expectedDcSwitches2.size(), boost::size(dcSwitches2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcSwitches0.begin(), dcSwitches0.end(), dcSwitchesId0.begin(), dcSwitchesId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcSwitches0.begin(), dcSwitches0.end(), expectedDcSwitches0.begin(), expectedDcSwitches0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcSwitches1.begin(), dcSwitches1.end(), dcSwitchesId1.begin(), dcSwitchesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcSwitches1.begin(), dcSwitches1.end(), expectedDcSwitches1.begin(), expectedDcSwitches1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcSwitches2.begin(), dcSwitches2.end(), dcSwitchesId2.begin(), dcSwitchesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcSwitches2.begin(), dcSwitches2.end(), expectedDcSwitches2.begin(), expectedDcSwitches2.end());
+    for (auto& id : expectedDcSwitches1) {
         subnetwork1.getDcSwitch(id);
     }
-    for (auto& id : expectedDcSwitchs2) {
+    for (auto& id : expectedDcSwitches2) {
         subnetwork2.getDcSwitch(id);
     }
 
     //LineCommutatedConverters
+    auto expectedLineCommutatedConverters0 = {id("lccDetailed1", "1"), id("lccDetailed1", "2")};
     auto expectedLineCommutatedConverters1 = {id("lccDetailed1", "1")};
     auto expectedLineCommutatedConverters2 = {id("lccDetailed1", "2")};
+    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters0.size(), network.getLineCommutatedConverterCount());
     BOOST_CHECK_EQUAL(expectedLineCommutatedConverters1.size(), subnetwork1.getLineCommutatedConverterCount());
     BOOST_CHECK_EQUAL(expectedLineCommutatedConverters2.size(), subnetwork2.getLineCommutatedConverterCount());
-    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters1.size(), boost::size(subnetwork1.getLineCommutatedConverters()));
-    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters2.size(), boost::size(subnetwork2.getLineCommutatedConverters()));
+    const auto& lccs0 = network.getLineCommutatedConverters() | boost::adaptors::transformed(mapId<LineCommutatedConverter>);
+    const auto& lccs1 = subnetwork1.getLineCommutatedConverters() | boost::adaptors::transformed(mapId<LineCommutatedConverter>);
+    const auto& lccs2 = subnetwork2.getLineCommutatedConverters() | boost::adaptors::transformed(mapId<LineCommutatedConverter>);
+    const auto& lccsId0 = network.getIdentifiables(IdentifiableType::LINE_COMMUTATED_CONVERTER) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& lccsId1 = subnetwork1.getIdentifiables(IdentifiableType::LINE_COMMUTATED_CONVERTER) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& lccsId2 = subnetwork2.getIdentifiables(IdentifiableType::LINE_COMMUTATED_CONVERTER) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters0.size(), boost::size(lccs0));
+    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters1.size(), boost::size(lccs1));
+    BOOST_CHECK_EQUAL(expectedLineCommutatedConverters2.size(), boost::size(lccs2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(lccs0.begin(), lccs0.end(), lccsId0.begin(), lccsId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lccs0.begin(), lccs0.end(), expectedLineCommutatedConverters0.begin(), expectedLineCommutatedConverters0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lccs1.begin(), lccs1.end(), lccsId1.begin(), lccsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lccs1.begin(), lccs1.end(), expectedLineCommutatedConverters1.begin(), expectedLineCommutatedConverters1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lccs2.begin(), lccs2.end(), lccsId2.begin(), lccsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(lccs2.begin(), lccs2.end(), expectedLineCommutatedConverters2.begin(), expectedLineCommutatedConverters2.end());
     for (auto& id : expectedLineCommutatedConverters1) {
         subnetwork1.getLineCommutatedConverter(id);
     }
@@ -1014,12 +1363,27 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     //VoltageSourceConverters
+    auto expectedVoltageSourceConverters0 = {id("vscDetailed1", "1"), id("vscDetailed1", "2")};
     auto expectedVoltageSourceConverters1 = {id("vscDetailed1", "1")};
     auto expectedVoltageSourceConverters2 = {id("vscDetailed1", "2")};
+    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters0.size(), network.getVoltageSourceConverterCount());
     BOOST_CHECK_EQUAL(expectedVoltageSourceConverters1.size(), subnetwork1.getVoltageSourceConverterCount());
     BOOST_CHECK_EQUAL(expectedVoltageSourceConverters2.size(), subnetwork2.getVoltageSourceConverterCount());
-    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters1.size(), boost::size(subnetwork1.getVoltageSourceConverters()));
-    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters2.size(), boost::size(subnetwork2.getVoltageSourceConverters()));
+    const auto& vscs0 = network.getVoltageSourceConverters() | boost::adaptors::transformed(mapId<VoltageSourceConverter>);
+    const auto& vscs1 = subnetwork1.getVoltageSourceConverters() | boost::adaptors::transformed(mapId<VoltageSourceConverter>);
+    const auto& vscs2 = subnetwork2.getVoltageSourceConverters() | boost::adaptors::transformed(mapId<VoltageSourceConverter>);
+    const auto& vscsId0 = network.getIdentifiables(IdentifiableType::VOLTAGE_SOURCE_CONVERTER) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& vscsId1 = subnetwork1.getIdentifiables(IdentifiableType::VOLTAGE_SOURCE_CONVERTER) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& vscsId2 = subnetwork2.getIdentifiables(IdentifiableType::VOLTAGE_SOURCE_CONVERTER) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters0.size(), boost::size(vscs0));
+    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters1.size(), boost::size(vscs1));
+    BOOST_CHECK_EQUAL(expectedVoltageSourceConverters2.size(), boost::size(vscs2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(vscs0.begin(), vscs0.end(), vscsId0.begin(), vscsId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vscs0.begin(), vscs0.end(), expectedVoltageSourceConverters0.begin(), expectedVoltageSourceConverters0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vscs1.begin(), vscs1.end(), vscsId1.begin(), vscsId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vscs1.begin(), vscs1.end(), expectedVoltageSourceConverters1.begin(), expectedVoltageSourceConverters1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vscs2.begin(), vscs2.end(), vscsId2.begin(), vscsId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(vscs2.begin(), vscs2.end(), expectedVoltageSourceConverters2.begin(), expectedVoltageSourceConverters2.end());
     for (auto& id : expectedVoltageSourceConverters1) {
         subnetwork1.getVoltageSourceConverter(id);
     }
@@ -1064,6 +1428,43 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     for (auto& i : expectedIdentifiables2){
         subnetwork2.getIdentifiable(i);
     }
+
+    //GROUND not tested since none present in the network built for this test, but covered in GroundTestSuite
+
+    //BUS unsupported IdentifiableType from Network
+    POWSYBL_ASSERT_THROW(network.getIdentifiables(IdentifiableType::BUS), AssertionError, "Can't get a range of BUS from a network");
+    POWSYBL_ASSERT_THROW(subnetwork1.getIdentifiables(IdentifiableType::BUS), AssertionError, "Can't get a range of BUS from a network");
+    POWSYBL_ASSERT_THROW(subnetwork2.getIdentifiables(IdentifiableType::BUS), AssertionError, "Can't get a range of BUS from a network");
+
+    //DC_BUS acceptable though can be retrieved since they are hold by the network:
+    std::list<std::string> expectedDcBuses0 = {id("dcNode1_dcBus", "1"), id("dcNode1_dcBus", "2")};
+    auto expectedDcBuses1 = {id("dcNode1_dcBus", "1")};
+    auto expectedDcBuses2 = {id("dcNode1_dcBus", "2")};
+    BOOST_CHECK_EQUAL(expectedDcBuses0.size(), network.getDcBusCount());
+    BOOST_CHECK_EQUAL(expectedDcBuses1.size(), subnetwork1.getDcBusCount());
+    BOOST_CHECK_EQUAL(expectedDcBuses2.size(), subnetwork2.getDcBusCount());
+    const auto& dcBuses0 = network.getDcBuses() | boost::adaptors::transformed(mapId<DcBus>);
+    const auto& dcBuses1 = subnetwork1.getDcBuses() | boost::adaptors::transformed(mapId<DcBus>);
+    const auto& dcBuses2 = subnetwork2.getDcBuses() | boost::adaptors::transformed(mapId<DcBus>);
+    const auto& dcBusesId0 = network.getIdentifiables(IdentifiableType::DC_BUS) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcBusesId1 = subnetwork1.getIdentifiables(IdentifiableType::DC_BUS) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& dcBusesId2 = subnetwork2.getIdentifiables(IdentifiableType::DC_BUS) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedDcBuses0.size(), boost::size(dcBuses0));
+    BOOST_CHECK_EQUAL(expectedDcBuses1.size(), boost::size(dcBuses1));
+    BOOST_CHECK_EQUAL(expectedDcBuses2.size(), boost::size(dcBuses2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcBuses0.begin(), dcBuses0.end(), dcBusesId0.begin(), dcBusesId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcBuses0.begin(), dcBuses0.end(), expectedDcBuses0.begin(), expectedDcBuses0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcBuses1.begin(), dcBuses1.end(), dcBusesId1.begin(), dcBusesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcBuses1.begin(), dcBuses1.end(), expectedDcBuses1.begin(), expectedDcBuses1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcBuses2.begin(), dcBuses2.end(), dcBusesId2.begin(), dcBusesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(dcBuses2.begin(), dcBuses2.end(), expectedDcBuses2.begin(), expectedDcBuses2.end());
+    for (auto& id : expectedDcBuses1) {
+        subnetwork1.getDcBus(id);
+    }
+    for (auto& id : expectedDcBuses2) {
+        subnetwork2.getDcBus(id);
+    }
+
 }
 
 

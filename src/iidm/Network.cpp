@@ -625,6 +625,136 @@ stdcxx::range<Identifiable> Network::getIdentifiables() {
     return m_networkIndex.getAll<Identifiable>();
 }
 
+stdcxx::const_range<Identifiable> Network::getIdentifiables(const IdentifiableType& type) const {
+    switch (type) {
+        case IdentifiableType::LINE:
+            return getIndex().getAll<Line, Identifiable>();
+        case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
+            return getIndex().getAll<TwoWindingsTransformer, Identifiable>();
+        case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
+            return getIndex().getAll<ThreeWindingsTransformer, Identifiable>();
+        case IdentifiableType::HVDC_CONVERTER_STATION:
+            return boost::range::join( getIndex().getAll<LccConverterStation, Identifiable>(),
+                                       getIndex().getAll<VscConverterStation, Identifiable>());
+        case IdentifiableType::DANGLING_LINE:
+            return getIndex().getAll<DanglingLine, Identifiable>();
+        case IdentifiableType::LOAD:
+            return getIndex().getAll<Load, Identifiable>();
+        case IdentifiableType::GENERATOR:
+            return getIndex().getAll<Generator, Identifiable>();
+        case IdentifiableType::BATTERY:
+            return getIndex().getAll<Battery, Identifiable>();
+        case IdentifiableType::SHUNT_COMPENSATOR:
+            return getIndex().getAll<ShuntCompensator, Identifiable>();
+        case IdentifiableType::STATIC_VAR_COMPENSATOR:
+            return getIndex().getAll<StaticVarCompensator, Identifiable>();
+        case IdentifiableType::LINE_COMMUTATED_CONVERTER:
+            return getIndex().getAll<LineCommutatedConverter, Identifiable>();
+        case IdentifiableType::VOLTAGE_SOURCE_CONVERTER:
+            return getIndex().getAll<VoltageSourceConverter, Identifiable>();
+        case IdentifiableType::GROUND:
+            return getIndex().getAll<Ground, Identifiable>();
+        case IdentifiableType::NETWORK:
+            return boost::range::join( getIndex().getAll<Network, Identifiable>(),
+                                       getIndex().getAll<Subnetwork, Identifiable>());
+        case IdentifiableType::SUBSTATION:
+            return getIndex().getAll<Substation, Identifiable>();
+        case IdentifiableType::VOLTAGE_LEVEL:
+            return getIndex().getAll<VoltageLevel, Identifiable>();
+        case IdentifiableType::AREA:
+            return getIndex().getAll<Area, Identifiable>();
+        case IdentifiableType::OVERLOAD_MANAGEMENT_SYSTEM:
+            return getIndex().getAll<OverloadManagementSystem, Identifiable>();
+        case IdentifiableType::HVDC_LINE:
+            return getIndex().getAll<HvdcLine, Identifiable>();
+        case IdentifiableType::SWITCH:
+            return getIndex().getAll<Switch, Identifiable>();
+        case IdentifiableType::TIE_LINE:
+            return getIndex().getAll<TieLine, Identifiable>();
+        case IdentifiableType::BUSBAR_SECTION:
+            return getIndex().getAll<BusbarSection, Identifiable>();
+        case IdentifiableType::DC_NODE:
+            return getIndex().getAll<DcNode, Identifiable>();
+        case IdentifiableType::DC_SWITCH:
+            return getIndex().getAll<DcSwitch, Identifiable>();
+        case IdentifiableType::DC_GROUND:
+            return getIndex().getAll<DcGround, Identifiable>();
+        case IdentifiableType::DC_LINE:
+            return getIndex().getAll<DcLine, Identifiable>();
+        case IdentifiableType::DC_BUS:
+            return getDcBuses() | boost::adaptors::transformed(map<const Identifiable>);
+        case IdentifiableType::BUS:
+            throw AssertionError(stdcxx::format("Can't get a range of %1% from a network", type)); 
+        default:
+            throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", type));
+    }
+}
+
+stdcxx::range<Identifiable> Network::getIdentifiables(const IdentifiableType& type) {
+    switch (type) {
+        case IdentifiableType::LINE:
+            return getIndex().getAll<Line, Identifiable>();
+        case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
+            return getIndex().getAll<TwoWindingsTransformer, Identifiable>();
+        case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
+            return getIndex().getAll<ThreeWindingsTransformer, Identifiable>();
+        case IdentifiableType::HVDC_CONVERTER_STATION:
+            return boost::range::join( getIndex().getAll<LccConverterStation, Identifiable>(),
+                                       getIndex().getAll<VscConverterStation, Identifiable>());
+        case IdentifiableType::DANGLING_LINE:
+            return getIndex().getAll<DanglingLine, Identifiable>();
+        case IdentifiableType::LOAD:
+            return getIndex().getAll<Load, Identifiable>();
+        case IdentifiableType::GENERATOR:
+            return getIndex().getAll<Generator, Identifiable>();
+        case IdentifiableType::BATTERY:
+            return getIndex().getAll<Battery, Identifiable>();
+        case IdentifiableType::SHUNT_COMPENSATOR:
+            return getIndex().getAll<ShuntCompensator, Identifiable>();
+        case IdentifiableType::STATIC_VAR_COMPENSATOR:
+            return getIndex().getAll<StaticVarCompensator, Identifiable>();
+        case IdentifiableType::LINE_COMMUTATED_CONVERTER:
+            return getIndex().getAll<LineCommutatedConverter, Identifiable>();
+        case IdentifiableType::VOLTAGE_SOURCE_CONVERTER:
+            return getIndex().getAll<VoltageSourceConverter, Identifiable>();
+        case IdentifiableType::GROUND:
+            return getIndex().getAll<Ground, Identifiable>();
+        case IdentifiableType::NETWORK:
+            return boost::range::join( getIndex().getAll<Network, Identifiable>(),
+                                       getIndex().getAll<Subnetwork, Identifiable>());
+        case IdentifiableType::SUBSTATION:
+            return getIndex().getAll<Substation, Identifiable>();
+        case IdentifiableType::VOLTAGE_LEVEL:
+            return getIndex().getAll<VoltageLevel, Identifiable>();
+        case IdentifiableType::AREA:
+            return getIndex().getAll<Area, Identifiable>();
+        case IdentifiableType::OVERLOAD_MANAGEMENT_SYSTEM:
+            return getIndex().getAll<OverloadManagementSystem, Identifiable>();
+        case IdentifiableType::HVDC_LINE:
+            return getIndex().getAll<HvdcLine, Identifiable>();
+        case IdentifiableType::SWITCH:
+            return getIndex().getAll<Switch, Identifiable>();
+        case IdentifiableType::TIE_LINE:
+            return getIndex().getAll<TieLine, Identifiable>();
+        case IdentifiableType::BUSBAR_SECTION:
+            return getIndex().getAll<BusbarSection, Identifiable>();
+        case IdentifiableType::DC_NODE:
+            return getIndex().getAll<DcNode, Identifiable>();
+        case IdentifiableType::DC_SWITCH:
+            return getIndex().getAll<DcSwitch, Identifiable>();
+        case IdentifiableType::DC_GROUND:
+            return getIndex().getAll<DcGround, Identifiable>();
+        case IdentifiableType::DC_LINE:
+            return getIndex().getAll<DcLine, Identifiable>();
+        case IdentifiableType::DC_BUS:
+            return getDcBuses() | boost::adaptors::transformed(map<Identifiable>);
+        case IdentifiableType::BUS:
+            throw AssertionError(stdcxx::format("Can't get a range of %1% from a network", type)); 
+        default:
+            throw AssertionError(stdcxx::format("Unexpected IdentifiableType %1%", type));
+    }
+}
+
 const NetworkIndex& Network::getIndex() const {
     return m_networkIndex;
 }

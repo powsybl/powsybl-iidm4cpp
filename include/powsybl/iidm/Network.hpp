@@ -364,6 +364,10 @@ public:
 
     virtual stdcxx::range<Identifiable> getIdentifiables();
 
+    virtual stdcxx::const_range<Identifiable> getIdentifiables(const IdentifiableType& type) const;
+
+    virtual stdcxx::range<Identifiable> getIdentifiables(const IdentifiableType& type);
+
     virtual const LccConverterStation& getLccConverterStation(const std::string& id) const;
 
     virtual LccConverterStation& getLccConverterStation(const std::string& id);

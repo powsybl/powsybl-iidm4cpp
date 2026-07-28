@@ -143,6 +143,8 @@ public:
     Identifiable& getIdentifiable(const std::string& id) override;
     stdcxx::const_range<Identifiable> getIdentifiables() const override;
     stdcxx::range<Identifiable> getIdentifiables() override;
+    stdcxx::const_range<Identifiable> getIdentifiables(const IdentifiableType& type) const override;
+    stdcxx::range<Identifiable> getIdentifiables(const IdentifiableType& type) override;
 
     const LccConverterStation& getLccConverterStation(const std::string& id) const override;
     LccConverterStation& getLccConverterStation(const std::string& id) override;

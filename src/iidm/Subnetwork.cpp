@@ -465,6 +465,12 @@ stdcxx::const_range<Identifiable> Subnetwork::getIdentifiables() const {
 stdcxx::range<Identifiable> Subnetwork::getIdentifiables() {
     return getRootNetwork().Network::getIdentifiables() | boost::adaptors::filtered(m_filterIdentifiable);
 }
+stdcxx::const_range<Identifiable> Subnetwork::getIdentifiables(const IdentifiableType& type) const {
+    return Network::getIdentifiables(type) | boost::adaptors::filtered(m_filterIdentifiable);
+}
+stdcxx::range<Identifiable> Subnetwork::getIdentifiables(const IdentifiableType& type) {
+    return Network::getIdentifiables(type) | boost::adaptors::filtered(m_filterIdentifiable);
+}
 
 const LccConverterStation& Subnetwork::getLccConverterStation(const std::string& id) const {
     const LccConverterStation& lcc = Network::getLccConverterStation(id);

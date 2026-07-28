@@ -61,6 +61,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK(stdcxx::areSame(network, groundBB.getParentNetwork()));
     BOOST_CHECK_EQUAL(2, network.getGroundCount());
     BOOST_CHECK_EQUAL(2, boost::size(network.getGrounds()));
+    BOOST_CHECK_EQUAL(2, boost::size(network.getIdentifiables(IdentifiableType::GROUND)));
     BOOST_CHECK_EQUAL(1, vl1.getGroundCount());
     BOOST_CHECK_EQUAL(1, boost::size(vl1.getGrounds()));
     BOOST_CHECK_EQUAL(1, vl2.getGroundCount());
@@ -112,10 +113,14 @@ BOOST_AUTO_TEST_CASE(createOnSubnetwork) {
     BOOST_CHECK(stdcxx::areSame(groundNBSub16, subnetwork1.getGround("GroundNBSub1_6")));
     BOOST_CHECK(stdcxx::areSame(groundNBSub17, network.getGround("GroundNBSub1_7")));
     BOOST_CHECK_EQUAL(3, network.getGroundCount());
+    BOOST_CHECK_EQUAL(3, boost::size(network.getGrounds()));
+    BOOST_CHECK_EQUAL(3, boost::size(network.getIdentifiables(IdentifiableType::GROUND)));
     BOOST_CHECK_EQUAL(3, subnetwork1.getGroundCount());
     BOOST_CHECK_EQUAL(3, boost::size(subnetwork1.getGrounds()));
+    BOOST_CHECK_EQUAL(3, boost::size(subnetwork1.getIdentifiables(IdentifiableType::GROUND)));
     BOOST_CHECK_EQUAL(0, subnetwork2.getGroundCount());
     BOOST_CHECK(subnetwork2.getGrounds().empty());
+    BOOST_CHECK(subnetwork2.getIdentifiables(IdentifiableType::GROUND).empty());
 }
 
 BOOST_AUTO_TEST_CASE(sameIds) {
