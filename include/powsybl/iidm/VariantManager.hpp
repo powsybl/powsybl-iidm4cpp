@@ -74,6 +74,8 @@ private:
 
     unsigned long getVariantIndex(const std::string& variantId) const;
 
+    void checkExistingVariantIds(const std::initializer_list<std::string>& targetVariantIds) const;
+
 private:
     Network& m_network;
 

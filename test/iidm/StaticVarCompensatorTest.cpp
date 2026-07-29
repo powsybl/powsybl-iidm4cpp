@@ -298,7 +298,7 @@ BOOST_AUTO_TEST_CASE(multivariant) {
     network.getVariantManager().removeVariant("s1");
     BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
-    POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant("s2", "s2"), PowsyblException, "Target variant 's2' already exists");
+    POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant("s2", "s2"), PowsyblException, "Target variants {s2} already exist");
     POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant("s4", "s3"), PowsyblException, "Variant 's4' not found");
     network.getVariantManager().cloneVariant("s2", "s3");
     network.getVariantManager().setWorkingVariant("s3");

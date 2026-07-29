@@ -34,13 +34,41 @@ BOOST_AUTO_TEST_CASE(cloneVariant) {
     network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1"});
     BOOST_CHECK_EQUAL(2UL, network.getVariantManager().getVariantArraySize());
 
-    POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), "s1"), PowsyblException, "Target variant 's1' already exists");
+    //retry cloning into existing s1 - throw - no variants change
+    POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), "s1"), PowsyblException, "Target variants {s1} already exist");
     BOOST_CHECK_EQUAL(2UL, network.getVariantManager().getVariantArraySize());
 
-    POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"}), PowsyblException, "Target variant 's1' already exists");
+    //retry cloning into existing s1 and a new s2 - throw - no variants change
+    POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2"}), PowsyblException, "Target variants {s1} already exist");
     BOOST_CHECK_EQUAL(2UL, network.getVariantManager().getVariantArraySize());
 
-    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), "s2");
+    //try cloning into a new s2 2 consecutive times - no throw - first extend variants to insert s2, then reallocate and overwrite s2
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s2", "s2"});
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    //removing s1 (not the last) - variants size unchanged
+    network.getVariantManager().removeVariant("s1"); 
+    BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
+
+    //cloning and overwrite into a new s3, s1 2 consecutive times, and existing s2 - no throw - s3 reuse previously removed s1 index, variants extended to insert s1, then overwrite s1 and s2
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s3", "s1", "s1", "s2"}, true); //
+    BOOST_CHECK_EQUAL(4UL, network.getVariantManager().getVariantArraySize());
+
+    //retry cloning into existing s1, s2 and s3 - throw - no variants change
+    POWSYBL_ASSERT_THROW(network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s3", "s2"}), PowsyblException, "Target variants {s1, s2, s3} already exist");
+    BOOST_CHECK_EQUAL(4UL, network.getVariantManager().getVariantArraySize());
+
+    //clone and overwrite s1, s2 and s3
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s2", "s3"}, true);
+    BOOST_CHECK_EQUAL(4UL, network.getVariantManager().getVariantArraySize());
+
+    //Remove all variants 
+    network.getVariantManager().removeVariant("s3");
+    network.getVariantManager().removeVariant("s2");
+    network.getVariantManager().removeVariant("s1");
+    BOOST_CHECK_EQUAL(1UL, network.getVariantManager().getVariantArraySize());
+    //try clone and overwrite into s1 and s2 and overwite s1 - no throw - extend for s1 and s2 and overwrite s1
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), {"s1", "s1", "s2"});
     BOOST_CHECK_EQUAL(3UL, network.getVariantManager().getVariantArraySize());
 
     network.getVariantManager().setWorkingVariant("s2");

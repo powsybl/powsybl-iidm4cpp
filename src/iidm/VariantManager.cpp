@@ -87,6 +87,10 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
     }
 
     logger.debug("Creating variants %1%", stdcxx::toString(targetVariantIds));
+    if(!mayOverwrite) {
+        //Throw right away if duplicate target variant id :
+        checkExistingVariantIds(targetVariantIds);
+    }
 
     std::lock_guard<std::mutex> lock(m_variantMutex);
 
@@ -97,11 +101,7 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
     std::set<unsigned long> overwritten;
     for (const auto& targetVariantId : targetVariantIds) {
         if (m_variantsById.find(targetVariantId) != m_variantsById.end()) {
-            if (mayOverwrite) {
-                overwritten.emplace(m_variantsById[targetVariantId]);
-            } else {
-                throw PowsyblException(stdcxx::format("Target variant '%1%' already exists", targetVariantId));
-            }
+            overwritten.emplace(m_variantsById[targetVariantId]);
         }
         else if (m_unusedIndexes.empty()) {
             // extend variant array size
@@ -118,13 +118,27 @@ void VariantManager::cloneVariant(const std::string& sourceVariantId, const std:
         }
     }
 
-    allocateVariantArrayElement(sourceIndex, recycled, overwritten);
-
+    //extend before allocate, in case we try to allocate to overwite on an index just inserted. (which happens with a target list including duplicated ids)
     if (extendedCount > 0) {
         for (auto& multiVariantObject : m_network.getStatefulObjects()) {
             multiVariantObject.extendVariantArraySize(initVariantArraySize, extendedCount, sourceIndex);
         }
         logger.trace("Extending variant array size to %1% (+%2%)", m_variantArraySize, extendedCount);
+    }
+
+    allocateVariantArrayElement(sourceIndex, recycled, overwritten);
+}
+
+void VariantManager::checkExistingVariantIds(const std::initializer_list<std::string>& targetVariantIds) const {
+    std::set<std::string> duplicates;
+    auto existingVariantsIds = getVariantIds();
+    for (const auto& targetId : targetVariantIds) {
+        if(existingVariantsIds.find(targetId) != existingVariantsIds.end()) {
+            duplicates.emplace(targetId);
+        }
+    }
+    if(duplicates.size()>0) {
+        throw PowsyblException(stdcxx::format("Target variants %1% already exist", stdcxx::toString(duplicates)));
     }
 }
 
