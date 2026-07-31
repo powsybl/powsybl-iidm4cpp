@@ -87,6 +87,7 @@ set(UNIT_TEST_SOURCES
     extensions/LoadDetailTest.cpp
     extensions/SlackTerminalTest.cpp
 
+    util/BusbarSectionFinderTraverserTest.cpp
     util/NetworksTest.cpp
     util/NodeBreakerTopologyTest.cpp
     util/SVTest.cpp
