@@ -7,6 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/ComponentConstants.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -43,8 +44,8 @@ BOOST_AUTO_TEST_CASE(GeneratorStartupConstructor) {
         .withPredefinedActivePowerSetpoint(1.0)
         .withStartupCost(5.0)
         .withMarginalCost(2.0)
-        .withPlannedOutageRate(3.0)
-        .withForcedOutageRate(4.0)
+        .withPlannedOutageRate(0.7)
+        .withForcedOutageRate(0.8)
         .add();
 
     auto& extension = generator.getExtension<GeneratorStartup>();
@@ -53,8 +54,8 @@ BOOST_AUTO_TEST_CASE(GeneratorStartupConstructor) {
     BOOST_CHECK_CLOSE(1.0, extension.getPredefinedActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(5.0, extension.getStartupCost(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, extension.getMarginalCost(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(3.0, extension.getPlannedOutageRate(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(4.0, extension.getForcedOutageRate(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.7, extension.getPlannedOutageRate(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.8, extension.getForcedOutageRate(), std::numeric_limits<double>::epsilon());
 
     extension.setPredefinedActivePowerSetpoint(11.0);
     BOOST_CHECK_CLOSE(11.0, extension.getPredefinedActivePowerSetpoint(), std::numeric_limits<double>::epsilon());
@@ -62,15 +63,61 @@ BOOST_AUTO_TEST_CASE(GeneratorStartupConstructor) {
     extension.setMarginalCost(22.0);
     BOOST_CHECK_CLOSE(22.0, extension.getMarginalCost(), std::numeric_limits<double>::epsilon());
 
-    extension.setPlannedOutageRate(33.0);
-    BOOST_CHECK_CLOSE(33.0, extension.getPlannedOutageRate(), std::numeric_limits<double>::epsilon());
+    extension.setPlannedOutageRate(0.5);
+    BOOST_CHECK_CLOSE(0.5, extension.getPlannedOutageRate(), std::numeric_limits<double>::epsilon());
 
-    extension.setForcedOutageRate(44.0);
-    BOOST_CHECK_CLOSE(44.0, extension.getForcedOutageRate(), std::numeric_limits<double>::epsilon());
+    extension.setForcedOutageRate(0.1);
+    BOOST_CHECK_CLOSE(0.1, extension.getForcedOutageRate(), std::numeric_limits<double>::epsilon());
 
     extension.setStartupCost(55.0);
     BOOST_CHECK_CLOSE(55.0, extension.getStartupCost(), std::numeric_limits<double>::epsilon());
 }
+
+BOOST_AUTO_TEST_CASE(wrongOutageRate) {
+    Network network = ::powsybl::network::EurostagFactory::createTutorial1Network();
+    Generator& generator = network.getGenerator("GEN");
+
+    //test adder
+    auto adder = generator.newExtension<GeneratorStartupAdder>();
+    adder.withForcedOutageRate(2.0);
+    std::string expectedMessage = stdcxx::format("Generator 'GEN': Unexpected value for forced outage rate of GeneratorStartup : 2 is not included in [%1%, %2%]", ComponentConstants::MIN_RATE, ComponentConstants::MAX_RATE);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, expectedMessage.c_str());
+
+    adder.withForcedOutageRate(-0.5);
+    expectedMessage = stdcxx::format("Generator 'GEN': Unexpected value for forced outage rate of GeneratorStartup : -0.5 is not included in [%1%, %2%]", ComponentConstants::MIN_RATE, ComponentConstants::MAX_RATE);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, expectedMessage.c_str());
+
+    adder.withForcedOutageRate(stdcxx::nan());
+
+    adder.withPlannedOutageRate(1.1);
+    expectedMessage = stdcxx::format("Generator 'GEN': Unexpected value for planned outage rate of GeneratorStartup : 1.1 is not included in [%1%, %2%]", ComponentConstants::MIN_RATE, ComponentConstants::MAX_RATE);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, expectedMessage.c_str());
+
+    adder.withPlannedOutageRate(-0.2);
+    expectedMessage = stdcxx::format("Generator 'GEN': Unexpected value for planned outage rate of GeneratorStartup : -0.2 is not included in [%1%, %2%]", ComponentConstants::MIN_RATE, ComponentConstants::MAX_RATE);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, expectedMessage.c_str());
+
+    adder.withPlannedOutageRate(stdcxx::nan());
+    adder.add();
+
+    auto& extension = generator.getExtension<GeneratorStartup>();
+    BOOST_CHECK(std::isnan(extension.getPlannedOutageRate()));
+    BOOST_CHECK(std::isnan(extension.getForcedOutageRate()));
+
+    //test setter
+    expectedMessage = stdcxx::format("Generator 'GEN': Unexpected value for forced outage rate of GeneratorStartup : 2 is not included in [%1%, %2%]", ComponentConstants::MIN_RATE, ComponentConstants::MAX_RATE);
+    POWSYBL_ASSERT_THROW(extension.setForcedOutageRate(2.0), ValidationException, expectedMessage.c_str());
+    expectedMessage = stdcxx::format("Generator 'GEN': Unexpected value for forced outage rate of GeneratorStartup : -0.5 is not included in [%1%, %2%]", ComponentConstants::MIN_RATE, ComponentConstants::MAX_RATE);
+    POWSYBL_ASSERT_THROW(extension.setForcedOutageRate(-0.5), ValidationException, expectedMessage.c_str());
+    expectedMessage = stdcxx::format("Generator 'GEN': Unexpected value for planned outage rate of GeneratorStartup : 1.1 is not included in [%1%, %2%]", ComponentConstants::MIN_RATE, ComponentConstants::MAX_RATE);
+    POWSYBL_ASSERT_THROW(extension.setPlannedOutageRate(1.1), ValidationException, expectedMessage.c_str());
+    expectedMessage = stdcxx::format("Generator 'GEN': Unexpected value for planned outage rate of GeneratorStartup : -0.2 is not included in [%1%, %2%]", ComponentConstants::MIN_RATE, ComponentConstants::MAX_RATE);
+    POWSYBL_ASSERT_THROW(extension.setPlannedOutageRate(-0.2), ValidationException, expectedMessage.c_str());
+    BOOST_CHECK(std::isnan(extension.getPlannedOutageRate()));
+    BOOST_CHECK(std::isnan(extension.getForcedOutageRate()));
+
+}
+
 
 BOOST_FIXTURE_TEST_CASE(GeneratorStartupSerializerTest, test::ResourceFixture) {
     Network network = ::powsybl::network::EurostagFactory::createTutorial1Network();
@@ -79,8 +126,8 @@ BOOST_FIXTURE_TEST_CASE(GeneratorStartupSerializerTest, test::ResourceFixture) {
     generator.newExtension<GeneratorStartupAdder>()
         .withPredefinedActivePowerSetpoint(1.1)
         .withMarginalCost(2.2)
-        .withPlannedOutageRate(3.3)
-        .withForcedOutageRate(4.4)
+        .withPlannedOutageRate(0.8)
+        .withForcedOutageRate(0.7)
         .withStartupCost(5.5)
         .add();
 

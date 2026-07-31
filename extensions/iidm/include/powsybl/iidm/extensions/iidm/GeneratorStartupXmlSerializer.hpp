@@ -28,6 +28,9 @@ public:
     GeneratorStartupXmlSerializer();
 
     ~GeneratorStartupXmlSerializer() noexcept override = default;
+
+private:
+    double readOutageRate(const std::string& attributeName, converter::xml::NetworkXmlReaderContext& context) const;
 };
 
 }  // namespace iidm

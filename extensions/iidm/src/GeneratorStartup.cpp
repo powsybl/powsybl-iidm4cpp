@@ -8,6 +8,7 @@
 #include <powsybl/iidm/extensions/iidm/GeneratorStartup.hpp>
 
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 
@@ -20,10 +21,10 @@ namespace iidm {
 GeneratorStartup::GeneratorStartup(Generator& generator, double predefinedActivePowerSetpoint, double startupCost, double marginalCost, double plannedOutageRate, double forcedOutageRate) :
     Extension(generator),
     m_predefinedActivePowerSetpoint(predefinedActivePowerSetpoint),
-    m_startupCost(startupCost),
+    m_startupCost(startupCost), 
     m_marginalCost(marginalCost),
-    m_plannedOutageRate(plannedOutageRate),
-    m_forcedOutageRate(forcedOutageRate) {
+    m_plannedOutageRate(checkRate(generator, "GeneratorStartup", plannedOutageRate, "planned outage rate")),
+    m_forcedOutageRate(checkRate(generator, "GeneratorStartup", forcedOutageRate, "forced outage rate")) {
 }
 
 void GeneratorStartup::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -63,7 +64,7 @@ const std::type_index& GeneratorStartup::getType() const {
 }
 
 GeneratorStartup& GeneratorStartup::setForcedOutageRate(double forcedOutageRate) {
-    m_forcedOutageRate = forcedOutageRate;
+    m_forcedOutageRate = checkRate(getExtendable<Generator>().get(), "GeneratorStartup", forcedOutageRate, "forced outage rate");
     return *this;
 }
 
@@ -73,7 +74,7 @@ GeneratorStartup& GeneratorStartup::setMarginalCost(double marginalCost) {
 }
 
 GeneratorStartup& GeneratorStartup::setPlannedOutageRate(double plannedOutageRate) {
-    m_plannedOutageRate = plannedOutageRate;
+    m_plannedOutageRate = checkRate(getExtendable<Generator>().get(), "GeneratorStartup", plannedOutageRate, "planned outage rate");
     return *this;
 }
 

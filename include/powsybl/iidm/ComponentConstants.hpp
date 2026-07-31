@@ -15,6 +15,8 @@ namespace iidm {
 namespace ComponentConstants {
 
 const unsigned long MAIN_NUM = 0UL;
+const double MIN_RATE = 0.0;
+const double MAX_RATE = 1.0;
 
 }  // namespace ComponentConstants
 

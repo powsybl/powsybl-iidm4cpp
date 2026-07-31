@@ -8,6 +8,7 @@
 #include <powsybl/iidm/extensions/iidm/GeneratorStartupAdder.hpp>
 
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 #include <powsybl/iidm/extensions/iidm/GeneratorStartup.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/stdcxx/memory.hpp>
@@ -26,7 +27,10 @@ GeneratorStartupAdder::GeneratorStartupAdder(Extendable& extendable) :
 
 std::unique_ptr<Extension> GeneratorStartupAdder::createExtension(Extendable& extendable) const {
     if (stdcxx::isInstanceOf<Generator>(extendable)) {
-        return stdcxx::make_unique<GeneratorStartup>(dynamic_cast<Generator&>(extendable), m_predefinedActivePowerSetpoint, m_startupCost, m_marginalCost, m_plannedOutageRate, m_forcedOutageRate);
+        auto& generator = dynamic_cast<Generator&>(extendable);
+        checkRate(generator, "GeneratorStartup", m_forcedOutageRate, "forced outage rate");
+        checkRate(generator, "GeneratorStartup", m_plannedOutageRate, "planned outage rate");
+        return stdcxx::make_unique<GeneratorStartup>(generator, m_predefinedActivePowerSetpoint, m_startupCost, m_marginalCost, m_plannedOutageRate, m_forcedOutageRate);
     }
     throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Generator>()));
 }

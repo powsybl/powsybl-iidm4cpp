@@ -167,6 +167,8 @@ ValidationLevel checkQ0(const Validable& validable, double q0, const ValidationL
 
 double checkR(const Validable& validable, double r);
 
+double checkRate(const Validable& validable, const std::string& type, double rate, const std::string& attributeName);
+
 double checkRatedS(const Validable& validable, double ratedS);
 
 double checkRatedU(const Validable& validable, double ratedU, const stdcxx::optional<unsigned long>& num = stdcxx::optional<unsigned long>());

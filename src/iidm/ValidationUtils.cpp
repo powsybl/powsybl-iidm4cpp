@@ -11,6 +11,7 @@
 
 #include <unordered_set>
 
+#include <powsybl/iidm/ComponentConstants.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/LoadType.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
@@ -601,6 +602,13 @@ double checkR(const Validable& validable, double r) {
         throw ValidationException(validable, "r is invalid");
     }
     return r;
+}
+
+double checkRate(const Validable& validable, const std::string& type, double rate, const std::string& attributeName) {
+    if(!std::isnan(rate) && (rate < ComponentConstants::MIN_RATE || rate > ComponentConstants::MAX_RATE)) {
+        throw ValidationException(validable, stdcxx::format("Unexpected value for %1% of %2% : %3% is not included in [%4%, %5%]", attributeName, type, rate, ComponentConstants::MIN_RATE, ComponentConstants::MAX_RATE));
+    }
+    return rate;
 }
 
 double checkRatedS(const Validable& validable, double ratedS) {

@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/extensions/iidm/GeneratorStartupXmlSerializer.hpp>
 
+#include <powsybl/iidm/ComponentConstants.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
@@ -55,8 +56,8 @@ Extension& GeneratorStartupXmlSerializer::read(Extendable& extendable, converter
         startupCost = context.getReader().getOptionalAttributeValue("startupCost", stdcxx::nan());
     }
     const double& marginalCost = context.getReader().getOptionalAttributeValue("marginalCost", stdcxx::nan());
-    const double& plannedOutageRate = context.getReader().getOptionalAttributeValue("plannedOutageRate", stdcxx::nan());
-    const double& forcedOutageRate = context.getReader().getOptionalAttributeValue("forcedOutageRate", stdcxx::nan());
+    const double& plannedOutageRate = readOutageRate("plannedOutageRate", context);
+    const double& forcedOutageRate = readOutageRate("forcedOutageRate", context);
 
     extendable.newExtension<GeneratorStartupAdder>()
         .withPredefinedActivePowerSetpoint(predefinedActivePowerSetpoint)
@@ -82,6 +83,17 @@ void GeneratorStartupXmlSerializer::write(const Extension& extension, converter:
     context.getWriter().writeAttribute("marginalCost", startup.getMarginalCost());
     context.getWriter().writeAttribute("plannedOutageRate", startup.getPlannedOutageRate());
     context.getWriter().writeAttribute("forcedOutageRate", startup.getForcedOutageRate());
+}
+
+double GeneratorStartupXmlSerializer::readOutageRate(const std::string& attributeName, converter::xml::NetworkXmlReaderContext& context) const {
+    double rate = context.getReader().getOptionalAttributeValue(attributeName, stdcxx::nan());
+    // compatibility, if out of bound values, set to min max limits
+    if(rate > ComponentConstants::MAX_RATE) {
+        rate = ComponentConstants::MAX_RATE;
+    } else if(rate < ComponentConstants::MIN_RATE) {
+        rate = ComponentConstants::MIN_RATE;
+    }
+    return rate;
 }
 
 }  // namespace iidm
