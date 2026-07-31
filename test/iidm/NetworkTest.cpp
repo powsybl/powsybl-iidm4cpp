@@ -446,8 +446,7 @@ BOOST_AUTO_TEST_CASE(GetNodesByBus) {
     for (const auto& pair : nodesByBus) {
         if (pair.second.find(0)!=pair.second.end()) {
             BOOST_CHECK_CLOSE(1.0, vl.getBusView().getBus(pair.first).get().getFictitiousP0(), std::numeric_limits<double>::epsilon());
-        } else if (pair.second.find(1)!=pair.second.end()) {
-            BOOST_CHECK_CLOSE(2.0, vl.getBusView().getBus(pair.first).get().getFictitiousP0(), std::numeric_limits<double>::epsilon());
+            BOOST_CHECK_CLOSE(2.0, vl.getBusView().getBus(pair.first).get().getFictitiousQ0(), std::numeric_limits<double>::epsilon());
         }
     }
     topology.setFictitiousP0(0, 0.0).setFictitiousQ0(0,0.0);
