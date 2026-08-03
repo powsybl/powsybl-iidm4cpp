@@ -216,6 +216,7 @@ set(IIDM_SOURCES
 
     iidm/converter/xml/AbstractConnectableXml.cpp
     iidm/converter/xml/AbstractExtensionXmlSerializer.cpp
+    iidm/converter/xml/AbstractShuntCompensatorXml.cpp
     iidm/converter/xml/AbstractVersionableExtensionXmlSerializer.cpp
     iidm/converter/xml/AliasesXml.cpp
     iidm/converter/xml/AreaXml.cpp
@@ -252,6 +253,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/PropertiesXml.cpp
     iidm/converter/xml/ReactiveLimitsXml.cpp
     iidm/converter/xml/ShuntCompensatorXml.cpp
+    iidm/converter/xml/ShuntXml.cpp
     iidm/converter/xml/StaticVarCompensatorXml.cpp
     iidm/converter/xml/SubstationXml.cpp
     iidm/converter/xml/TerminalRefXml.cpp

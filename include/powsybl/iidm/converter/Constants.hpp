@@ -215,6 +215,7 @@ static const char* const SECTION_COUNT = "sectionCount";
 static const char* const SEGMENT = "segment";
 static const char* const SELECTED_GROUP_ID = "selectedOperationalLimitsGroupId";
 static const char* const SHUNT = "shunt";
+static const char* const SHUNT_COMPENSATOR = "shuntCompensator";
 static const char* const SHUNT_LINEAR_MODEL = "shuntLinearModel";
 static const char* const SHUNT_NON_LINEAR_MODEL = "shuntNonLinearModel";
 static const char* const SIDE = "side";

@@ -38,6 +38,9 @@ PowsyblException createException(const std::string& elementName, const char* err
 }
 
 PowsyblException createException(const std::string& rootElementName, const std::string& elementName, const char* errorMessage, const IidmXmlVersion& version, const IidmXmlVersion& contextVersion, const std::string& reason) {
+    if(elementName.empty()) {
+        return createException(rootElementName, errorMessage, version, contextVersion, reason);
+    }
     return createException(stdcxx::format("%1%.%2%", rootElementName, elementName), errorMessage, version, contextVersion, reason);
 }
 

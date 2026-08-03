@@ -39,6 +39,7 @@
 #include "NodeBreakerViewInternalConnectionXml.hpp"
 #include "NodeBreakerViewSwitchXml.hpp"
 #include "ShuntCompensatorXml.hpp"
+#include "ShuntXml.hpp"
 #include "StaticVarCompensatorXml.hpp"
 #include "VoltageSourceConverterXml.hpp"
 #include "VscConverterStationXml.hpp"
@@ -165,6 +166,8 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
         } else if (context.getReader().getLocalName() == LOAD) {
             LoadXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == SHUNT) {
+            ShuntXml::getInstance().read(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == SHUNT_COMPENSATOR) {
             ShuntCompensatorXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == DANGLING_LINE) {
             DanglingLineXml::getInstance().read(voltageLevel, context);
@@ -348,7 +351,12 @@ void VoltageLevelXml::writeShuntCompensators(const VoltageLevel& voltageLevel, N
         if (!context.getFilter().test(shuntCompensator)) {
             continue;
         }
-        ShuntCompensatorXml::getInstance().write(shuntCompensator, voltageLevel, context);
+
+        if(context.getVersion() >= IidmXmlVersion::V1_16()) {
+            ShuntCompensatorXml::getInstance().write(shuntCompensator, voltageLevel, context);
+        } else {
+            ShuntXml::getInstance().write(shuntCompensator, voltageLevel, context);
+        }
     }
 }
 

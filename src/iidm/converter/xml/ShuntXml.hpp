@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2019, RTE (http://www.rte-france.com)
+ * Copyright (c) 2026, RTE (http://www.rte-france.com)
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef POWSYBL_IIDM_CONVERTOR_XML_SHUNTCOMPENSATORXML_HPP
-#define POWSYBL_IIDM_CONVERTOR_XML_SHUNTCOMPENSATORXML_HPP
+#ifndef POWSYBL_IIDM_CONVERTOR_XML_SHUNTXML_HPP
+#define POWSYBL_IIDM_CONVERTOR_XML_SHUNTXML_HPP
 
 #include "AbstractShuntCompensatorXml.hpp"
 
@@ -18,9 +18,9 @@ namespace converter {
 
 namespace xml {
 
-class ShuntCompensatorXml : public AbstractShuntCompensatorXml {
+class ShuntXml : public AbstractShuntCompensatorXml {
 public:
-    static const ShuntCompensatorXml& getInstance();
+    static const ShuntXml& getInstance();
 
 protected:
     // AbstractIdentifiableXml
@@ -31,9 +31,9 @@ protected:
     void assertWriteCompatibilityVersion(NetworkXmlWriterContext& context) const override;
 
 private:
-    ShuntCompensatorXml() = default;
+    ShuntXml() = default;
 
-    ~ShuntCompensatorXml() noexcept override = default;
+    ~ShuntXml() noexcept override = default;
 };
 
 }  // namespace xml
@@ -44,5 +44,5 @@ private:
 
 }  // namespace powsybl
 
-#endif  // POWSYBL_IIDM_CONVERTOR_XML_SHUNTCOMPENSATORXML_HPP
+#endif  // POWSYBL_IIDM_CONVERTOR_XML_SHUNTXML_HPP
 
