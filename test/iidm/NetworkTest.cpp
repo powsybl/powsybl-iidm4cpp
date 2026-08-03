@@ -424,6 +424,13 @@ BOOST_AUTO_TEST_CASE(GetNodesByBus) {
     topology.setFictitiousP0(0, 0.0).setFictitiousQ0(0,0.0);
     BOOST_CHECK_CLOSE(0.0, topology.getFictitiousP0(0), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, topology.getFictitiousQ0(0), std::numeric_limits<double>::epsilon());
+
+    //Test setter/getter on the bus keep the total fictitious value 
+    //We do not enforce how it is distributed among the nodes to allow different behaviors
+    topology.getTerminal(0).get().getBusView().getBus().get().setFictitiousP0(3.0);
+    topology.getTerminal(0).get().getBusView().getBus().get().setFictitiousQ0(4.0);
+    BOOST_CHECK_CLOSE(3.0, topology.getTerminal(0).get().getBusView().getBus().get().getFictitiousP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(4.0, topology.getTerminal(0).get().getBusView().getBus().get().getFictitiousQ0(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(Validation) {
