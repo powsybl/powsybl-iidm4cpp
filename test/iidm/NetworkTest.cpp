@@ -441,8 +441,10 @@ BOOST_AUTO_TEST_CASE(GetNodesByBus) {
     topology.setFictitiousP0(0, 1.0).setFictitiousQ0(0, 2.0);
     BOOST_CHECK_CLOSE(1.0, topology.getFictitiousP0(0), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(2.0, topology.getFictitiousQ0(0), std::numeric_limits<double>::epsilon());
-    
+
     const auto& nodesByBus = Networks::getNodesByBus(vl);
+    BOOST_CHECK_CLOSE(1.0, topology.getTerminal(0).get().getBusView().getBus().get().getFictitiousP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, topology.getTerminal(0).get().getBusView().getBus().get().getFictitiousQ0(), std::numeric_limits<double>::epsilon());
     for (const auto& pair : nodesByBus) {
         if (pair.second.find(0)!=pair.second.end()) {
             BOOST_CHECK_CLOSE(1.0, vl.getBusView().getBus(pair.first).get().getFictitiousP0(), std::numeric_limits<double>::epsilon());
