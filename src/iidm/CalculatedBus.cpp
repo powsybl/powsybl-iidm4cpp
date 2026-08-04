@@ -192,7 +192,7 @@ Bus& CalculatedBus::setFictitiousP0(double p0) {
 
     std::set<unsigned long> nodes = Networks::getNodes(getId(), m_voltageLevel, m_getBusFromTerminalFunc);
     for (const auto& node : nodes) {
-        m_voltageLevel.get().getNodeBreakerView().setFictitiousP0(node, stdcxx::nan());
+        m_voltageLevel.get().getNodeBreakerView().setFictitiousP0(node, 0.0);
     }
 
     if(!nodes.empty()){
@@ -209,7 +209,7 @@ Bus& CalculatedBus::setFictitiousQ0(double q0) {
 
     std::set<unsigned long> nodes = Networks::getNodes(getId(), m_voltageLevel, m_getBusFromTerminalFunc);
     for (const auto& node : nodes) {
-        m_voltageLevel.get().getNodeBreakerView().setFictitiousQ0(node, stdcxx::nan());
+        m_voltageLevel.get().getNodeBreakerView().setFictitiousQ0(node, 0.0);
     }
 
     if(!nodes.empty()){
