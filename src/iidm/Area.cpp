@@ -10,7 +10,7 @@
 #include <powsybl/iidm/AreaBoundary.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Boundary.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 
@@ -180,7 +180,7 @@ Area& Area::addAreaBoundary(const std::shared_ptr<AreaBoundary>& areaBoundary) {
     auto terminalRef = areaBoundary->getTerminal();
     auto boundaryRef = areaBoundary->getBoundary();
     if (static_cast<bool>(boundaryRef)) {
-        checkBoundaryNetwork(boundaryRef.get().getDanglingLine().getParentNetwork(), stdcxx::format("Boundary of DanglingLine %1%", boundaryRef.get().getDanglingLine().getId()));
+        checkBoundaryNetwork(boundaryRef.get().getBoundaryLine().getParentNetwork(), stdcxx::format("Boundary of BoundaryLine %1%", boundaryRef.get().getBoundaryLine().getId()));
         boundaryRef.get().registerReferrer(*this);
     }
     if (static_cast<bool>(terminalRef) && static_cast<bool>(terminalRef.get().getConnectable())) {

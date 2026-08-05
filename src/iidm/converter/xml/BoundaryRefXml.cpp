@@ -8,7 +8,7 @@
 #include "BoundaryRefXml.hpp"
 
 #include <powsybl/iidm/Boundary.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
@@ -30,13 +30,13 @@ void BoundaryRefXml::readBoundaryRef(Network& network, NetworkXmlReaderContext& 
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     
     context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&network, id, endTaskTerminalConsumer]() {
-        DanglingLine& dl = network.getDanglingLine(id);
-        endTaskTerminalConsumer(dl.getBoundary());
+        BoundaryLine& bl = network.getBoundaryLine(id);
+        endTaskTerminalConsumer(bl.getBoundary());
     });
 }
 
 void BoundaryRefXml::writeBoundaryRefAttributes(const Boundary& boundary, NetworkXmlWriterContext& context) {
-    context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(boundary.getDanglingLine().getId()));
+    context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(boundary.getBoundaryLine().getId()));
 }
 
 }  // namespace xml

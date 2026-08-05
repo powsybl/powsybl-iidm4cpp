@@ -10,7 +10,7 @@
 
 #include <powsybl/iidm/Branch.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/NetworkRef.hpp>
 
 #include <powsybl/stdcxx/math.hpp>
@@ -49,22 +49,22 @@ public: // Identifiable
 public:
     ~TieLine() noexcept override = default;
 
-    const DanglingLine& getDanglingLine1() const;
-    DanglingLine& getDanglingLine1();
+    const BoundaryLine& getBoundaryLine1() const;
+    BoundaryLine& getBoundaryLine1();
 
-    const DanglingLine& getDanglingLine2() const;
-    DanglingLine& getDanglingLine2();
+    const BoundaryLine& getBoundaryLine2() const;
+    BoundaryLine& getBoundaryLine2();
 
-    const DanglingLine& getDanglingLine(const TwoSides& side) const;
-    DanglingLine& getDanglingLine(const TwoSides& side);
+    const BoundaryLine& getBoundaryLine(const TwoSides& side) const;
+    BoundaryLine& getBoundaryLine(const TwoSides& side);
     
-    const DanglingLine& getDanglingLine(const std::string& voltageLevelId) const;
-    DanglingLine& getDanglingLine(const std::string& voltageLevelId);
+    const BoundaryLine& getBoundaryLine(const std::string& voltageLevelId) const;
+    BoundaryLine& getBoundaryLine(const std::string& voltageLevelId);
 
     std::string getPairingKey() const;
 
     void remove();
-    void remove(bool updateDanglingLines);
+    void remove(bool updateBoundaryLines);
 
 //Branch:
     virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups1() const override;
@@ -140,34 +140,34 @@ public:
      */
     virtual CurrentLimitsAdder newCurrentLimits2() override;
 
-    bool connectDanglingLines();
-    bool connectDanglingLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
-    bool connectDanglingLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<TwoSides>& side);
+    bool connectBoundaryLines();
+    bool connectBoundaryLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
+    bool connectBoundaryLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<TwoSides>& side);
 
-    bool disconnectDanglingLines();
-    bool disconnectDanglingLines(const stdcxx::Predicate<Switch>& isSwitchOpenable);
-    bool disconnectDanglingLines(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<TwoSides>& side);
+    bool disconnectBoundaryLines();
+    bool disconnectBoundaryLines(const stdcxx::Predicate<Switch>& isSwitchOpenable);
+    bool disconnectBoundaryLines(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<TwoSides>& side);
 
 private: // Identifiable
     const std::string& getTypeDescription() const;
 
 private:
     TieLine(Network& network, const std::string& id, const std::string& name, bool fictitious);
-    void attachDanglingLines(DanglingLine& dl1, DanglingLine& dl2);
-    DanglingLine& attach(DanglingLine& dl);
+    void attachBoundaryLines(BoundaryLine& bl1, BoundaryLine& bl2);
+    BoundaryLine& attach(BoundaryLine& bl);
 
     friend class TieLineAdder;
 
-    void updateDanglingLine(DanglingLine& danglingLine);
+    void updateBoundaryLine(BoundaryLine& boundaryLine);
 
-    std::vector<std::reference_wrapper<Terminal>> getTerminalsOfDanglingLines(const stdcxx::optional<TwoSides>& side);
+    std::vector<std::reference_wrapper<Terminal>> getTerminalsOfBoundaryLines(const stdcxx::optional<TwoSides>& side);
 
 private:
     NetworkRef m_network;
 
-    stdcxx::Reference<DanglingLine> m_danglingLine1;
+    stdcxx::Reference<BoundaryLine> m_boundaryLine1;
 
-    stdcxx::Reference<DanglingLine> m_danglingLine2;
+    stdcxx::Reference<BoundaryLine> m_boundaryLine2;
 };
 
 }  // namespace iidm

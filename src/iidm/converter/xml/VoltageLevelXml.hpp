@@ -58,7 +58,7 @@ private:
 
     void writeBusBreakerTopology(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
-    void writeDanglingLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
+    void writeBoundaryLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 
     void writeGenerators(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const;
 

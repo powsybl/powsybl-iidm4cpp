@@ -7,8 +7,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -46,13 +46,13 @@ Network createNetworkWithAreas() {
     vl2.getBusBreakerView().newBus().setId("N3").add();
 
     Load& load1 = vl1.newLoad().setId("L1").setBus("N1").setP0(0).setQ0(0).add();
-    DanglingLine& danglingLine = vl1.newDanglingLine().setId("DL1").setBus("N2").setR(0.0).setX(0.0).setP0(0).setQ0(0).add();
+    BoundaryLine& boundaryLine = vl1.newBoundaryLine().setId("DL1").setBus("N2").setR(0.0).setX(0.0).setP0(0).setQ0(0).add();
 
     // Add area types and areas to the network
     std::string biddingZoneType = "BiddingZone";
     std::string controlAreaType = "ControlArea";
     network.newArea().setAreaType(biddingZoneType).setId("BidZoneId1").setName("BidZoneName1").addAreaBoundary(load1.getTerminal(), true)
-               .addAreaBoundary(danglingLine.getBoundary(), false).add();
+               .addAreaBoundary(boundaryLine.getBoundary(), false).add();
     network.newArea().setAreaType(biddingZoneType).setId("BidZoneId2").setName("BidZoneName2").addAreaBoundary(line.getTerminal1(), true)
                .setInterchangeTarget(100.).add();
     network.newArea().setAreaType(controlAreaType).setId("ControlAreaId1").setName("ControlAreaName1").add();

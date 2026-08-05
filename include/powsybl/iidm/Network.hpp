@@ -43,7 +43,7 @@ class BusCache;
 class BusbarSection;
 class Connectable;
 class ConnectedComponentsManager;
-class DanglingLine;
+class BoundaryLine;
 class DcBus;
 class DcComponentsManager;
 class DcConnectable;
@@ -238,19 +238,19 @@ public:
 
     virtual unsigned long getCountryCount() const;
 
-    virtual const DanglingLine& getDanglingLine(const std::string& id) const;
+    virtual const BoundaryLine& getBoundaryLine(const std::string& id) const;
 
-    virtual DanglingLine& getDanglingLine(const std::string& id);
+    virtual BoundaryLine& getBoundaryLine(const std::string& id);
 
-    virtual unsigned long getDanglingLineCount() const;
+    virtual unsigned long getBoundaryLineCount() const;
 
-    virtual stdcxx::const_range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) const;
+    virtual stdcxx::const_range<BoundaryLine> getBoundaryLines(const BoundaryLineFilter& filter) const;
 
-    virtual stdcxx::range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter);
+    virtual stdcxx::range<BoundaryLine> getBoundaryLines(const BoundaryLineFilter& filter);
 
-    virtual stdcxx::const_range<DanglingLine> getDanglingLines() const;
+    virtual stdcxx::const_range<BoundaryLine> getBoundaryLines() const;
 
-    virtual stdcxx::range<DanglingLine> getDanglingLines();
+    virtual stdcxx::range<BoundaryLine> getBoundaryLines();
 
     virtual stdcxx::CReference<DcBus> getDcBus(const std::string& id) const;
 

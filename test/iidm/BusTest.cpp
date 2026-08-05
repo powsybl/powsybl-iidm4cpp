@@ -12,10 +12,10 @@
 #include <powsybl/iidm/AbstractTerminalTopologyVisitor.hpp>
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
@@ -293,14 +293,14 @@ BOOST_AUTO_TEST_CASE(range_batteries) {
     BOOST_CHECK_EQUAL(1, boost::size(cVL.getBatteries()));
 }
 
-BOOST_AUTO_TEST_CASE(range_danglingLines) {
+BOOST_AUTO_TEST_CASE(range_boundaryLines) {
     Network network = create();
     auto& bus = network.get<Bus>("Bus1");
     const auto& cBus = bus;
 
     VoltageLevel& vl = network.getVoltageLevel("VL1");
-    vl.newDanglingLine()
-        .setId("DL")
+    vl.newBoundaryLine()
+        .setId("BL")
         .setBus("Bus1")
         .setP0(0.0)
         .setQ0(0.0)
@@ -310,14 +310,14 @@ BOOST_AUTO_TEST_CASE(range_danglingLines) {
         .setB(0.00005)
         .add();
 
-    BOOST_CHECK_EQUAL(1, network.getDanglingLineCount());
-    BOOST_CHECK_EQUAL(1, boost::size(bus.getDanglingLines()));
-    BOOST_CHECK_EQUAL(1, boost::size(cBus.getDanglingLines()));
+    BOOST_CHECK_EQUAL(1, network.getBoundaryLineCount());
+    BOOST_CHECK_EQUAL(1, boost::size(bus.getBoundaryLines()));
+    BOOST_CHECK_EQUAL(1, boost::size(cBus.getBoundaryLines()));
 
     const VoltageLevel& cVL = vl;
-    BOOST_CHECK_EQUAL(1, vl.getDanglingLineCount());
-    BOOST_CHECK_EQUAL(1, boost::size(vl.getDanglingLines()));
-    BOOST_CHECK_EQUAL(1, boost::size(cVL.getDanglingLines()));
+    BOOST_CHECK_EQUAL(1, vl.getBoundaryLineCount());
+    BOOST_CHECK_EQUAL(1, boost::size(vl.getBoundaryLines()));
+    BOOST_CHECK_EQUAL(1, boost::size(cVL.getBoundaryLines()));
 }
 
 BOOST_AUTO_TEST_CASE(range_generators) {
@@ -677,8 +677,8 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorAllBbk) {
         .setVoltageRegulatorOn(false)
         .add();
 
-    vl.newDanglingLine()
-        .setId("DANGLINE_LINE")
+    vl.newBoundaryLine()
+        .setId("BOUNDARY_LINE")
         .setBus("Bus1")
         .setP0(0.0)
         .setQ0(0.0)
@@ -759,8 +759,8 @@ BOOST_AUTO_TEST_CASE(TerminalVisitorAllBbk) {
     std::set<std::string> connectedShunts = { "SHUNT" };
     BOOST_CHECK(connectedShunts == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::SHUNT_COMPENSATOR)->second);
 
-    std::set<std::string> connectedDanglingLines = { "DANGLINE_LINE" };
-    BOOST_CHECK(connectedDanglingLines == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::DANGLING_LINE)->second);
+    std::set<std::string> connectedBoundaryLines = { "BOUNDARY_LINE" };
+    BOOST_CHECK(connectedBoundaryLines == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::BOUNDARY_LINE)->second);
 
     std::set<std::string> connectedSvc = { "SVC" };
     BOOST_CHECK(connectedSvc == connectedEquipmentsVisitor.getConnectables().find(IdentifiableType::STATIC_VAR_COMPENSATOR)->second);

@@ -41,7 +41,7 @@ const char* TieLineXml::getRootElementName() const  {
     return TIE_LINE;
 }
 
-DanglingLine& TieLineXml::readDanglingLine(DanglingLineAdder& adder, const NetworkXmlReaderContext& context, int side) {
+BoundaryLine& TieLineXml::readBoundaryLine(BoundaryLineAdder& adder, const NetworkXmlReaderContext& context, int side) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(toString(ID_, side)));
     const std::string& name = context.getAnonymizer().deanonymizeString(context.getReader().getOptionalAttributeValue(toString(NAME_ , side), ""));
     const auto& r = context.getReader().getAttributeValue<double>(toString(R_, side));
@@ -76,30 +76,36 @@ DanglingLine& TieLineXml::readDanglingLine(DanglingLineAdder& adder, const Netwo
     return adder.add();
 }
 
-DanglingLineAdder TieLineXml::readVlAndNodeOrBus(const NetworkXmlReaderContext& context, Network& network, int side){
+BoundaryLineAdder TieLineXml::readVlAndNodeOrBus(const NetworkXmlReaderContext& context, Network& network, int side){
     const std::string& vlId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(toString(VOLTAGE_LEVEL_ID, side)));
     VoltageLevel& vl = network.getVoltageLevel(vlId);
-    DanglingLineAdder adderDl = vl.newDanglingLine();
-    readNodeOrBus(adderDl, std::to_string(side), context);
-    return adderDl;
+    BoundaryLineAdder adderBl = vl.newBoundaryLine();
+    readNodeOrBus(adderBl, std::to_string(side), context);
+    return adderBl;
 }
 
 TieLine& TieLineXml::readRootElementAttributes(TieLineAdder& adder, Network& network, NetworkXmlReaderContext& context) const  {
 
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_9(), context.getVersion(), [&adder, &network, &context](){
-        DanglingLineAdder adderDl1 = readVlAndNodeOrBus(context, network, 1);
-        DanglingLineAdder adderDl2 = readVlAndNodeOrBus(context, network, 2);
-        DanglingLine& dl1 = readDanglingLine(adderDl1, context, 1);
-        DanglingLine& dl2 = readDanglingLine(adderDl2, context, 2);
+        BoundaryLineAdder adderBl1 = readVlAndNodeOrBus(context, network, 1);
+        BoundaryLineAdder adderBl2 = readVlAndNodeOrBus(context, network, 2);
+        BoundaryLine& bl1 = readBoundaryLine(adderBl1, context, 1);
+        BoundaryLine& bl2 = readBoundaryLine(adderBl2, context, 2);
 
-        adder.setDanglingLine1(dl1.getId())
-             .setDanglingLine2(dl2.getId());
+        adder.setBoundaryLine1(bl1.getId())
+             .setBoundaryLine2(bl2.getId());
     });
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_10(), context.getVersion(), [&adder, &context](){
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_10(), IidmXmlVersion::V1_15(), context.getVersion(), [&adder, &context](){
         const std::string& dl1Id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(DANGLING_LINE_ID1));
         const std::string& dl2Id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(DANGLING_LINE_ID2));
 
-        adder.setDanglingLine1(dl1Id).setDanglingLine2(dl2Id);
+        adder.setBoundaryLine1(dl1Id).setBoundaryLine2(dl2Id);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&adder, &context](){
+        const std::string& bl1Id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(BOUNDARY_LINE_ID1));
+        const std::string& bl2Id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(BOUNDARY_LINE_ID2));
+
+        adder.setBoundaryLine1(bl1Id).setBoundaryLine2(bl2Id);
     });
 
     TieLine& tl = adder.add();
@@ -109,10 +115,10 @@ TieLine& TieLineXml::readRootElementAttributes(TieLineAdder& adder, Network& net
         double half2BoundaryP = context.getReader().getOptionalAttributeValue(toString(XNODE_P_, 2), stdcxx::nan());
         double half1BoundaryQ = context.getReader().getOptionalAttributeValue(toString(XNODE_Q_, 1), stdcxx::nan());
         double half2BoundaryQ = context.getReader().getOptionalAttributeValue(toString(XNODE_Q_, 1), stdcxx::nan());
-        checkBoundaryValue(half1BoundaryP, tl.getDanglingLine1().getBoundary().getP(), toString(XNODE_P_, 1), tl.getId());
-        checkBoundaryValue(half2BoundaryP, tl.getDanglingLine2().getBoundary().getP(), toString(XNODE_P_, 2), tl.getId());
-        checkBoundaryValue(half1BoundaryQ, tl.getDanglingLine1().getBoundary().getQ(), toString(XNODE_Q_, 1), tl.getId());
-        checkBoundaryValue(half2BoundaryQ, tl.getDanglingLine2().getBoundary().getQ(), toString(XNODE_P_, 2), tl.getId());
+        checkBoundaryValue(half1BoundaryP, tl.getBoundaryLine1().getBoundary().getP(), toString(XNODE_P_, 1), tl.getId());
+        checkBoundaryValue(half2BoundaryP, tl.getBoundaryLine2().getBoundary().getP(), toString(XNODE_P_, 2), tl.getId());
+        checkBoundaryValue(half1BoundaryQ, tl.getBoundaryLine1().getBoundary().getQ(), toString(XNODE_Q_, 1), tl.getId());
+        checkBoundaryValue(half2BoundaryQ, tl.getBoundaryLine2().getBoundary().getQ(), toString(XNODE_P_, 2), tl.getId());
     });
 
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_9(), context.getVersion(), [&context, &tl]() {
@@ -120,8 +126,8 @@ TieLine& TieLineXml::readRootElementAttributes(TieLineAdder& adder, Network& net
             double q1 = context.getReader().getOptionalAttributeValue("q1", stdcxx::nan());
             double p2 = context.getReader().getOptionalAttributeValue("p2", stdcxx::nan());
             double q2 = context.getReader().getOptionalAttributeValue("q2", stdcxx::nan());
-            tl.getDanglingLine1().getTerminal().setP(p1).setQ(q1);
-            tl.getDanglingLine2().getTerminal().setP(p2).setQ(q2);
+            tl.getBoundaryLine1().getTerminal().setP(p1).setQ(q1);
+            tl.getBoundaryLine2().getTerminal().setP(p2).setQ(q2);
         });
 
     return tl;
@@ -132,7 +138,7 @@ void TieLineXml::readSubElements(TieLine& line, NetworkXmlReaderContext& context
         if (context.getReader().getLocalName() == LIMITS_GROUP_1) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &line]() {
-                readLoadingLimitsGroup(context, LIMITS_GROUP_1, line.getDanglingLine1());
+                readLoadingLimitsGroup(context, LIMITS_GROUP_1, line.getBoundaryLine1());
             });
         } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_1) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_1, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
@@ -152,7 +158,7 @@ void TieLineXml::readSubElements(TieLine& line, NetworkXmlReaderContext& context
         } else if(context.getReader().getLocalName() == LIMITS_GROUP_2) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), LIMITS_GROUP_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_12(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &line]() {
-                readLoadingLimitsGroup(context, LIMITS_GROUP_2, line.getDanglingLine2());
+                readLoadingLimitsGroup(context, LIMITS_GROUP_2, line.getBoundaryLine2());
             });
         } else if (context.getReader().getLocalName() == ACTIVE_POWER_LIMITS_2) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), ACTIVE_POWER_LIMITS_2, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
@@ -175,47 +181,51 @@ void TieLineXml::readSubElements(TieLine& line, NetworkXmlReaderContext& context
     });
 }
 
-void TieLineXml::writeDanglingLine(const DanglingLine& dl, NetworkXmlWriterContext& context, int side) {
-    const Boundary& boundary = dl.getBoundary();
-    context.getWriter().writeAttribute(toString(ID_, side), context.getAnonymizer().anonymizeString(dl.getId()));
-    if(!dl.getOptionalName().empty()) {
-        context.getWriter().writeAttribute(toString(NAME_, side), context.getAnonymizer().anonymizeString(dl.getOptionalName()));
+void TieLineXml::writeBoundaryLine(const BoundaryLine& bl, NetworkXmlWriterContext& context, int side) {
+    const Boundary& boundary = bl.getBoundary();
+    context.getWriter().writeAttribute(toString(ID_, side), context.getAnonymizer().anonymizeString(bl.getId()));
+    if(!bl.getOptionalName().empty()) {
+        context.getWriter().writeAttribute(toString(NAME_, side), context.getAnonymizer().anonymizeString(bl.getOptionalName()));
     }
-    context.getWriter().writeAttribute(toString(R_, side), dl.getR());
-    context.getWriter().writeAttribute(toString(X_, side), dl.getX());
-    context.getWriter().writeAttribute(toString(G1_, side), dl.getG() / 2 );
-    context.getWriter().writeAttribute(toString(B1_, side), dl.getB() / 2);
-    context.getWriter().writeAttribute(toString(G2_, side), dl.getG() / 2);
-    context.getWriter().writeAttribute(toString(B2_, side), dl.getB() / 2);
+    context.getWriter().writeAttribute(toString(R_, side), bl.getR());
+    context.getWriter().writeAttribute(toString(X_, side), bl.getX());
+    context.getWriter().writeAttribute(toString(G1_, side), bl.getG() / 2 );
+    context.getWriter().writeAttribute(toString(B1_, side), bl.getB() / 2);
+    context.getWriter().writeAttribute(toString(G2_, side), bl.getG() / 2);
+    context.getWriter().writeAttribute(toString(B2_, side), bl.getB() / 2);
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_4(), context.getVersion(), [&context, &side, &boundary]() {
         context.getWriter().writeAttribute(toString(XNODE_P_, side), boundary.getP());
         context.getWriter().writeAttribute(toString(XNODE_Q_, side), boundary.getQ());
     });
 
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &side, &dl]() {
-        context.getWriter().writeOptionalAttribute(toString(FICTITIOUS_, side), dl.isFictitious(), false);
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &side, &bl]() {
+        context.getWriter().writeOptionalAttribute(toString(FICTITIOUS_, side), bl.isFictitious(), false);
     });
 }
 
 void TieLineXml::writeRootElementAttributes(const TieLine& tl, const Network& /*network*/, NetworkXmlWriterContext& context) const {
 
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_10(), context.getVersion(), [&tl, &context](){
-        context.getWriter().writeAttribute(DANGLING_LINE_ID1, context.getAnonymizer().anonymizeString(tl.getDanglingLine1().getId()));
-        context.getWriter().writeAttribute(DANGLING_LINE_ID2, context.getAnonymizer().anonymizeString(tl.getDanglingLine2().getId()));
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&tl, &context](){
+        context.getWriter().writeAttribute(BOUNDARY_LINE_ID1, context.getAnonymizer().anonymizeString(tl.getBoundaryLine1().getId()));
+        context.getWriter().writeAttribute(BOUNDARY_LINE_ID2, context.getAnonymizer().anonymizeString(tl.getBoundaryLine2().getId()));
+    });
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_10(), IidmXmlVersion::V1_15(), context.getVersion(), [&tl, &context](){
+        context.getWriter().writeAttribute(DANGLING_LINE_ID1, context.getAnonymizer().anonymizeString(tl.getBoundaryLine1().getId()));
+        context.getWriter().writeAttribute(DANGLING_LINE_ID2, context.getAnonymizer().anonymizeString(tl.getBoundaryLine2().getId()));
     });
 
     IidmXmlUtil::runUntilMaximumVersion(IidmXmlVersion::V1_9(), context.getVersion(), [this, &tl, &context](){
         if(!tl.getPairingKey().empty()) {
             context.getWriter().writeAttribute(UCTE_XNODE_CODE, tl.getPairingKey());
         }
-        writeNodeOrBus(tl.getDanglingLine1().getTerminal(), context, 1);
-        writeNodeOrBus(tl.getDanglingLine2().getTerminal(), context, 2);
+        writeNodeOrBus(tl.getBoundaryLine1().getTerminal(), context, 1);
+        writeNodeOrBus(tl.getBoundaryLine2().getTerminal(), context, 2);
         if (context.getOptions().isWithBranchSV()) {
-            writePQ(tl.getDanglingLine1().getTerminal(), context.getWriter(), 1);
-            writePQ(tl.getDanglingLine2().getTerminal(), context.getWriter(), 2);
+            writePQ(tl.getBoundaryLine1().getTerminal(), context.getWriter(), 1);
+            writePQ(tl.getBoundaryLine2().getTerminal(), context.getWriter(), 2);
         }
-        writeDanglingLine(tl.getDanglingLine1(), context, 1);
-        writeDanglingLine(tl.getDanglingLine2(), context, 2);
+        writeBoundaryLine(tl.getBoundaryLine1(), context, 1);
+        writeBoundaryLine(tl.getBoundaryLine2(), context, 2);
     });
 }
 

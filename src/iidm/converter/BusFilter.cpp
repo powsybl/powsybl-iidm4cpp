@@ -66,12 +66,12 @@ bool BusFilter::test(const TieLine& tl) const {
     }
 
     auto b = m_options.getTopologyLevel() == TopologyLevel::BUS_BRANCH ?
-            tl.getDanglingLine1().getTerminal().getBusView().getConnectableBus() : tl.getDanglingLine1().getTerminal().getBusBreakerView().getConnectableBus();
+            tl.getBoundaryLine1().getTerminal().getBusView().getConnectableBus() : tl.getBoundaryLine1().getTerminal().getBusBreakerView().getConnectableBus();
     if(static_cast<bool>(b) && m_buses.find(b.get().getId()) == m_buses.cend() ){
         return false;
     }
     b = m_options.getTopologyLevel() == TopologyLevel::BUS_BRANCH ?
-            tl.getDanglingLine2().getTerminal().getBusView().getConnectableBus() : tl.getDanglingLine2().getTerminal().getBusBreakerView().getConnectableBus();
+            tl.getBoundaryLine2().getTerminal().getBusView().getConnectableBus() : tl.getBoundaryLine2().getTerminal().getBusBreakerView().getConnectableBus();
     if(static_cast<bool>(b) && m_buses.find(b.get().getId()) == m_buses.cend() ){
         return false;
     }

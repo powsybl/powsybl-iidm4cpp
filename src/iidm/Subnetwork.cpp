@@ -8,10 +8,10 @@
 #include <powsybl/iidm/Subnetwork.hpp>
 
 #include <powsybl/iidm/Battery.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineFilter.hpp>
 #include <powsybl/iidm/Branch.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/DcLine.hpp>
 #include <powsybl/iidm/DcLineAdder.hpp>
 #include <powsybl/iidm/DcGround.hpp>
@@ -212,30 +212,30 @@ Network::BusView& Subnetwork::getBusView() {
     return m_subBusView;
 }
 
-const DanglingLine& Subnetwork::getDanglingLine(const std::string& id) const {
-    const DanglingLine& line = Network::getDanglingLine(id);
+const BoundaryLine& Subnetwork::getBoundaryLine(const std::string& id) const {
+    const BoundaryLine& line = Network::getBoundaryLine(id);
     if(!contains(line)) {
-        throw PowsyblException(stdcxx::format("Dangling line '%1%' does not belong to the subnetwork '%2%'", id, getId()));
+        throw PowsyblException(stdcxx::format("Boundary line '%1%' does not belong to the subnetwork '%2%'", id, getId()));
     }
     return line;
 }
-DanglingLine& Subnetwork::getDanglingLine(const std::string& id) {
-    return const_cast<DanglingLine&>(static_cast<const Subnetwork*>(this)->getDanglingLine(id));
+BoundaryLine& Subnetwork::getBoundaryLine(const std::string& id) {
+    return const_cast<BoundaryLine&>(static_cast<const Subnetwork*>(this)->getBoundaryLine(id));
 }
-unsigned long Subnetwork::getDanglingLineCount() const {
-    return boost::size(getDanglingLines());
+unsigned long Subnetwork::getBoundaryLineCount() const {
+    return boost::size(getBoundaryLines());
 }
-stdcxx::const_range<DanglingLine> Subnetwork::getDanglingLines(const DanglingLineFilter& filter) const {
-    return getDanglingLines() | boost::adaptors::filtered(filter.getPredicate());
+stdcxx::const_range<BoundaryLine> Subnetwork::getBoundaryLines(const BoundaryLineFilter& filter) const {
+    return getBoundaryLines() | boost::adaptors::filtered(filter.getPredicate());
 }
-stdcxx::range<DanglingLine> Subnetwork::getDanglingLines(const DanglingLineFilter& filter) {
-    return getDanglingLines() | boost::adaptors::filtered(filter.getPredicate());
+stdcxx::range<BoundaryLine> Subnetwork::getBoundaryLines(const BoundaryLineFilter& filter) {
+    return getBoundaryLines() | boost::adaptors::filtered(filter.getPredicate());
 }
-stdcxx::const_range<DanglingLine> Subnetwork::getDanglingLines() const {
-    return getRootNetwork().Network::getDanglingLines() | boost::adaptors::filtered(m_filterIdentifiable);
+stdcxx::const_range<BoundaryLine> Subnetwork::getBoundaryLines() const {
+    return getRootNetwork().Network::getBoundaryLines() | boost::adaptors::filtered(m_filterIdentifiable);
 }
-stdcxx::range<DanglingLine> Subnetwork::getDanglingLines() {
-    return getRootNetwork().Network::getDanglingLines() | boost::adaptors::filtered(m_filterIdentifiable);
+stdcxx::range<BoundaryLine> Subnetwork::getBoundaryLines() {
+    return getRootNetwork().Network::getBoundaryLines() | boost::adaptors::filtered(m_filterIdentifiable);
 }
 
 stdcxx::CReference<DcBus> Subnetwork::getDcBus(const std::string& id) const {

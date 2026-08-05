@@ -10,8 +10,8 @@
 #include <powsybl/AssertionError.hpp>
 #include <powsybl/iidm/AcDcConverter.hpp>
 #include <powsybl/iidm/Battery.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
@@ -43,8 +43,8 @@ void AbstractTerminalTopologyVisitor::visitBusbarSection(const BusbarSection& se
     visitInjection(section);
 }
 
-void AbstractTerminalTopologyVisitor::visitDanglingLine(const DanglingLine& danglingLine) {
-    visitInjection(danglingLine);
+void AbstractTerminalTopologyVisitor::visitBoundaryLine(const BoundaryLine& boundaryLine) {
+    visitInjection(boundaryLine);
 }
 
 void AbstractTerminalTopologyVisitor::visitGenerator(const Generator& generator) {

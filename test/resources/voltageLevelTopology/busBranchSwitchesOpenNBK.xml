@@ -13,7 +13,7 @@
                 <iidm:switch id="LOAD_DISCONNECTOR_2" kind="DISCONNECTOR" retained="false" open="true" node1="5" node2="3"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="LOAD" loadType="FICTITIOUS" p0="0.0" q0="0.0" node="1" p="0.0" q="0.0"/>
-            <iidm:danglingLine id="DL" p0="0.0" q0="0.0" r="0.5" x="6.0" g="0.0" b="0" node="0" p="0.0" q="0.0"/>
+            <iidm:boundaryLine id="DL" p0="0.0" q0="0.0" r="0.5" x="6.0" g="0.0" b="0" node="0" p="0.0" q="0.0"/>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="VL2" nominalV="380.0" lowVoltageLimit="380.0" highVoltageLimit="420.0" topologyKind="NODE_BREAKER">
             <iidm:nodeBreakerTopology>
@@ -27,7 +27,7 @@
                 <iidm:switch id="LOAD_DISCONNECTOR_4" kind="DISCONNECTOR" retained="false" open="false" node1="5" node2="3"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="LOAD2" loadType="FICTITIOUS" p0="0.0" q0="0.0" node="1" p="0.0" q="0.0"/>
-            <iidm:danglingLine id="DL2" p0="0.0" q0="0.0" r="0.5" x="6.0" g="0.0" b="0" node="0" p="0.0" q="0.0"/>
+            <iidm:boundaryLine id="DL2" p0="0.0" q0="0.0" r="0.5" x="6.0" g="0.0" b="0" node="0" p="0.0" q="0.0"/>
         </iidm:voltageLevel>
     </iidm:substation>
 </iidm:network>

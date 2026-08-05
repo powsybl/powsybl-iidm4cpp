@@ -9,8 +9,8 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/Battery.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -124,8 +124,8 @@ void applySolvedValues(Network& network) {
     for(auto& load : network.getLoads()) {
         load.applySolvedValues();
     }
-    for(auto& dl : network.getDanglingLines()) {
-        dl.applySolvedValues();
+    for(auto& bl : network.getBoundaryLines()) {
+        bl.applySolvedValues();
     }
 }
 

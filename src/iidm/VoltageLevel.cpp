@@ -9,11 +9,11 @@
 
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
+#include <powsybl/iidm/BoundaryLineFilter.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
-#include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Ground.hpp>
@@ -174,24 +174,24 @@ stdcxx::range<Battery> VoltageLevel::getBatteries() {
     return getConnectables<Battery>();
 }
 
-unsigned long VoltageLevel::getDanglingLineCount() const {
-    return getConnectableCount<DanglingLine>();
+unsigned long VoltageLevel::getBoundaryLineCount() const {
+    return getConnectableCount<BoundaryLine>();
 }
 
-stdcxx::const_range<DanglingLine> VoltageLevel::getDanglingLines() const {
-    return getDanglingLines(DanglingLineFilter::ALL());
+stdcxx::const_range<BoundaryLine> VoltageLevel::getBoundaryLines() const {
+    return getBoundaryLines(BoundaryLineFilter::ALL());
 }
 
-stdcxx::range<DanglingLine> VoltageLevel::getDanglingLines() {
-    return getDanglingLines(DanglingLineFilter::ALL());
+stdcxx::range<BoundaryLine> VoltageLevel::getBoundaryLines() {
+    return getBoundaryLines(BoundaryLineFilter::ALL());
 }
 
-stdcxx::const_range<DanglingLine> VoltageLevel::getDanglingLines(const DanglingLineFilter& filter) const {
-    return getConnectables<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+stdcxx::const_range<BoundaryLine> VoltageLevel::getBoundaryLines(const BoundaryLineFilter& filter) const {
+    return getConnectables<BoundaryLine>() | boost::adaptors::filtered(filter.getPredicate());
 }
 
-stdcxx::range<DanglingLine> VoltageLevel::getDanglingLines(const DanglingLineFilter& filter) {
-    return getConnectables<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+stdcxx::range<BoundaryLine> VoltageLevel::getBoundaryLines(const BoundaryLineFilter& filter) {
+    return getConnectables<BoundaryLine>() | boost::adaptors::filtered(filter.getPredicate());
 }
 
 unsigned long VoltageLevel::getGeneratorCount() const {
@@ -428,8 +428,8 @@ BatteryAdder VoltageLevel::newBattery() {
     return BatteryAdder(*this);
 }
 
-DanglingLineAdder VoltageLevel::newDanglingLine() {
-    return DanglingLineAdder(*this);
+BoundaryLineAdder VoltageLevel::newBoundaryLine() {
+    return BoundaryLineAdder(*this);
 }
 
 GeneratorAdder VoltageLevel::newGenerator() {

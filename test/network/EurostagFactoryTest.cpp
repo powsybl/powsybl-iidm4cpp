@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(createTutorial1NetworkTest) {
 
     BOOST_CHECK_EQUAL(0UL, network.getBatteryCount());
     BOOST_CHECK_EQUAL(0UL, network.getBusbarSectionCount());
-    BOOST_CHECK_EQUAL(0UL, network.getDanglingLineCount());
+    BOOST_CHECK_EQUAL(0UL, network.getBoundaryLineCount());
     BOOST_CHECK_EQUAL(1UL, network.getGeneratorCount());
     BOOST_CHECK_EQUAL(0UL, network.getHvdcConverterStationCount());
     BOOST_CHECK_EQUAL(0UL, network.getLccConverterStationCount());
@@ -271,7 +271,7 @@ BOOST_AUTO_TEST_CASE(createWithCurrentLimitsTest) {
 
     BOOST_CHECK_EQUAL(0UL, network.getBatteryCount());
     BOOST_CHECK_EQUAL(0UL, network.getBusbarSectionCount());
-    BOOST_CHECK_EQUAL(0UL, network.getDanglingLineCount());
+    BOOST_CHECK_EQUAL(0UL, network.getBoundaryLineCount());
     BOOST_CHECK_EQUAL(2UL, network.getGeneratorCount());
     BOOST_CHECK_EQUAL(0UL, network.getHvdcConverterStationCount());
     BOOST_CHECK_EQUAL(0UL, network.getLccConverterStationCount());

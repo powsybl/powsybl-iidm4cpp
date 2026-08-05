@@ -8,11 +8,7 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_DANGLINGLINEXML_HPP
 #define POWSYBL_IIDM_CONVERTER_XML_DANGLINGLINEXML_HPP
 
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
-#include <powsybl/iidm/VoltageLevel.hpp>
-#include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
-#include <powsybl/iidm/converter/xml/AbstractSimpleIdentifiableXml.hpp>
+#include "AbstractBoundaryLineXml.hpp"
 
 namespace powsybl {
 
@@ -22,22 +18,15 @@ namespace converter {
 
 namespace xml {
 
-class DanglingLineXml : public AbstractSimpleIdentifiableXml<DanglingLine, DanglingLineAdder, VoltageLevel>, public AbstractConnectableXml {
+class DanglingLineXml : public AbstractBoundaryLineXml {
 public:
     static const DanglingLineXml& getInstance();
 
 protected:  // AbstractIdentifiableXml
-    DanglingLineAdder createAdder(VoltageLevel& voltageLevel) const override;
-
     const char* getRootElementName() const override;
 
-    DanglingLine& readRootElementAttributes(DanglingLineAdder& adder, VoltageLevel& voltageLevel, NetworkXmlReaderContext& context) const override;
-
-    void readSubElements(DanglingLine& dl, NetworkXmlReaderContext& context) const override;
-
-    void writeRootElementAttributes(const DanglingLine& dl, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
-
-    void writeSubElements(const DanglingLine& dl, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
+    void assertReadCompatibilityVersion(NetworkXmlReaderContext& context) const override;
+    void assertWriteCompatibilityVersion(NetworkXmlWriterContext& context) const override;
 
 private:
     DanglingLineXml() = default;

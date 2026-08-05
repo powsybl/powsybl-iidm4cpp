@@ -8,9 +8,9 @@
 #include <powsybl/network/DcDetailedNetworkFactory.hpp>
 
 #include <powsybl/iidm/AcDcConverter.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Country.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/DcGround.hpp>
 #include <powsybl/iidm/DcGroundAdder.hpp>
 #include <powsybl/iidm/DcLine.hpp>
@@ -316,7 +316,7 @@ std::string DcDetailedNetworkFactory::getLineId(const iidm::Country& country, co
     return getId("LINEDC-", country, xNode, suffix);
 }
 
-iidm::Network& DcDetailedNetworkFactory::createSimpleAcNetworkWithDanglingLines(iidm::Network& rootNetwork, const iidm::Country& country, const std::map<std::string, double>& xNodes) {
+iidm::Network& DcDetailedNetworkFactory::createSimpleAcNetworkWithBoundaryLines(iidm::Network& rootNetwork, const iidm::Country& country, const std::map<std::string, double>& xNodes) {
 
     iidm::Network& acNetwork = rootNetwork.newSubnetwork(iidm::getCountryName(country), "test");
     iidm::Substation& s = acNetwork.newSubstation()
@@ -352,7 +352,7 @@ iidm::Network& DcDetailedNetworkFactory::createSimpleAcNetworkWithDanglingLines(
 
     for(auto& xNode : xNodes) {
         load.setP0(load.getP0() - xNode.second);
-        vl.newDanglingLine()
+        vl.newBoundaryLine()
             .setId(getId("DLAC-", country, xNode.first, SUFFIX_NONE))
             .setBus(b.getId())
             .setR(0.3)
@@ -387,7 +387,7 @@ void DcDetailedNetworkFactory::addDcAcElements(iidm::Network& network, const iid
     iidm::Bus& bDc400 = vldc400.getBusBreakerView().newBus()
                 .setId(getBusId(country, xNode, SUFFIX_400))
                 .add();
-    vldc400.newDanglingLine()
+    vldc400.newBoundaryLine()
                 .setId(getId("DLDC-", country, xNode, SUFFIX_NONE))
                 .setBus(bDc400.getId())
                 .setR(0.3)
@@ -527,8 +527,8 @@ iidm::Network DcDetailedNetworkFactory::createLccMonopoleBase(const std::string&
     iidm::Network rootNetwork(rootNetworkId, "test");
 
     iidm::Network& dcNetwork = rootNetwork.newSubnetwork(dcNetworkId, "test");
-    createSimpleAcNetworkWithDanglingLines(rootNetwork, iidm::Country::FR, {{X_NODE_DC_1_FR, 200.0}});
-    createSimpleAcNetworkWithDanglingLines(rootNetwork, iidm::Country::GB, {{X_NODE_DC_1_GB, -200.0}});
+    createSimpleAcNetworkWithBoundaryLines(rootNetwork, iidm::Country::FR, {{X_NODE_DC_1_FR, 200.0}});
+    createSimpleAcNetworkWithBoundaryLines(rootNetwork, iidm::Country::GB, {{X_NODE_DC_1_GB, -200.0}});
     addDcAcElements(dcNetwork, iidm::Country::FR, X_NODE_DC_1_FR, -200., Mode::TWO_T2WT);
     addDcAcElements(dcNetwork, iidm::Country::GB, X_NODE_DC_1_GB, 200., Mode::T3WT);
 
@@ -536,15 +536,15 @@ iidm::Network DcDetailedNetworkFactory::createLccMonopoleBase(const std::string&
                 .setId("tlFr")
                 .setEnsureIdUnicity(true)
                 .setName("tlFr")
-                .setDanglingLine1(getId("DLDC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
-                .setDanglingLine2(getId("DLAC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
+                .setBoundaryLine1(getId("DLDC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
+                .setBoundaryLine2(getId("DLAC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
                 .add();
     rootNetwork.newTieLine()
                 .setId("tlGb")
                 .setEnsureIdUnicity(true)
                 .setName("tlGb")
-                .setDanglingLine1(getId("DLDC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
-                .setDanglingLine2(getId("DLAC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
+                .setBoundaryLine1(getId("DLDC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
+                .setBoundaryLine2(getId("DLAC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
                 .add();
 
     iidm::DcNode& dcNodeFrPos = dcNetwork.newDcNode()
@@ -613,8 +613,8 @@ iidm::Network DcDetailedNetworkFactory::createLccBipoleBase(const std::string& d
     iidm::Network rootNetwork(rootNetworkId, "test");
 
     iidm::Network& dcNetwork = rootNetwork.newSubnetwork(dcNetworkId, "test");
-    createSimpleAcNetworkWithDanglingLines(rootNetwork, iidm::Country::FR, {{X_NODE_DC_1_FR, 200.0}, {X_NODE_DC_2_FR, 200.0}});
-    createSimpleAcNetworkWithDanglingLines(rootNetwork, iidm::Country::GB, {{X_NODE_DC_1_GB, -200.0}, {X_NODE_DC_2_GB, -200.}});
+    createSimpleAcNetworkWithBoundaryLines(rootNetwork, iidm::Country::FR, {{X_NODE_DC_1_FR, 200.0}, {X_NODE_DC_2_FR, 200.0}});
+    createSimpleAcNetworkWithBoundaryLines(rootNetwork, iidm::Country::GB, {{X_NODE_DC_1_GB, -200.0}, {X_NODE_DC_2_GB, -200.}});
     addDcAcElements(dcNetwork, iidm::Country::FR, X_NODE_DC_1_FR, -200., Mode::TWO_T2WT);
     addDcAcElements(dcNetwork, iidm::Country::FR, X_NODE_DC_2_FR, -200., Mode::TWO_T2WT);
     addDcAcElements(dcNetwork, iidm::Country::GB, X_NODE_DC_1_GB, 200., Mode::T3WT);
@@ -624,29 +624,29 @@ iidm::Network DcDetailedNetworkFactory::createLccBipoleBase(const std::string& d
                 .setId("tlFr")
                 .setEnsureIdUnicity(true)
                 .setName("tlFr")
-                .setDanglingLine1(getId("DLDC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
-                .setDanglingLine2(getId("DLAC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
+                .setBoundaryLine1(getId("DLDC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
+                .setBoundaryLine2(getId("DLAC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
                 .add();
     rootNetwork.newTieLine()
                 .setId("tlFr")
                 .setEnsureIdUnicity(true)
                 .setName("tlFr")
-                .setDanglingLine1(getId("DLDC-", iidm::Country::FR, X_NODE_DC_2_FR, SUFFIX_NONE))
-                .setDanglingLine2(getId("DLAC-", iidm::Country::FR, X_NODE_DC_2_FR, SUFFIX_NONE))
+                .setBoundaryLine1(getId("DLDC-", iidm::Country::FR, X_NODE_DC_2_FR, SUFFIX_NONE))
+                .setBoundaryLine2(getId("DLAC-", iidm::Country::FR, X_NODE_DC_2_FR, SUFFIX_NONE))
                 .add();
     rootNetwork.newTieLine()
                 .setId("tlGb")
                 .setEnsureIdUnicity(true)
                 .setName("tlGb")
-                .setDanglingLine1(getId("DLDC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
-                .setDanglingLine2(getId("DLAC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
+                .setBoundaryLine1(getId("DLDC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
+                .setBoundaryLine2(getId("DLAC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
                 .add();
     rootNetwork.newTieLine()
                 .setId("tlGb")
                 .setEnsureIdUnicity(true)
                 .setName("tlGb")
-                .setDanglingLine1(getId("DLDC-", iidm::Country::GB, X_NODE_DC_2_GB, SUFFIX_NONE))
-                .setDanglingLine2(getId("DLAC-", iidm::Country::GB, X_NODE_DC_2_GB, SUFFIX_NONE))
+                .setBoundaryLine1(getId("DLDC-", iidm::Country::GB, X_NODE_DC_2_GB, SUFFIX_NONE))
+                .setBoundaryLine2(getId("DLAC-", iidm::Country::GB, X_NODE_DC_2_GB, SUFFIX_NONE))
                 .add();
 
     iidm::DcNode& dcNodeFrPos = dcNetwork.newDcNode()
@@ -787,8 +787,8 @@ iidm::Network DcDetailedNetworkFactory::createVscMonopoleBase(const std::string&
     iidm::Network rootNetwork(rootNetworkId, "test");
 
     iidm::Network& dcNetwork = rootNetwork.newSubnetwork(dcNetworkId, "test");
-    createSimpleAcNetworkWithDanglingLines(rootNetwork, iidm::Country::FR, {{X_NODE_DC_1_FR, 200.0}});
-    createSimpleAcNetworkWithDanglingLines(rootNetwork, iidm::Country::GB, {{X_NODE_DC_1_GB, -200.0}});
+    createSimpleAcNetworkWithBoundaryLines(rootNetwork, iidm::Country::FR, {{X_NODE_DC_1_FR, 200.0}});
+    createSimpleAcNetworkWithBoundaryLines(rootNetwork, iidm::Country::GB, {{X_NODE_DC_1_GB, -200.0}});
 
     addDcAcElements(dcNetwork, iidm::Country::FR, X_NODE_DC_1_FR, -200.0, Mode::ONE_T2WT);
     addDcAcElements(dcNetwork, iidm::Country::GB, X_NODE_DC_1_GB, 200.0, Mode::ONE_T2WT);
@@ -797,15 +797,15 @@ iidm::Network DcDetailedNetworkFactory::createVscMonopoleBase(const std::string&
                 .setId("tlFr")
                 .setEnsureIdUnicity(true)
                 .setName("tlFr")
-                .setDanglingLine1(getId("DLDC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
-                .setDanglingLine2(getId("DLAC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
+                .setBoundaryLine1(getId("DLDC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
+                .setBoundaryLine2(getId("DLAC-", iidm::Country::FR, X_NODE_DC_1_FR, SUFFIX_NONE))
                 .add();
     rootNetwork.newTieLine()
                 .setId("tlGb")
                 .setEnsureIdUnicity(true)
                 .setName("tlGb")
-                .setDanglingLine1(getId("DLDC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
-                .setDanglingLine2(getId("DLAC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
+                .setBoundaryLine1(getId("DLDC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
+                .setBoundaryLine2(getId("DLAC-", iidm::Country::GB, X_NODE_DC_1_GB, SUFFIX_NONE))
                 .add();
 
     iidm::DcNode& dcNodeFrPos = dcNetwork.newDcNode()

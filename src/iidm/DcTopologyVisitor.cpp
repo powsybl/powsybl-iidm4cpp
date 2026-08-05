@@ -58,7 +58,7 @@ void DcTopologyVisitor::visitDcEquipments(const stdcxx::const_range<DcTerminal>&
             case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
             case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
             case IdentifiableType::LOAD:
-            case IdentifiableType::DANGLING_LINE:
+            case IdentifiableType::BOUNDARY_LINE:
             case IdentifiableType::STATIC_VAR_COMPENSATOR:
             case IdentifiableType::HVDC_CONVERTER_STATION:
             case IdentifiableType::GROUND:

@@ -26,6 +26,11 @@ set(IIDM_SOURCES
     iidm/Battery.cpp
     iidm/BatteryAdder.cpp
     iidm/Boundary.cpp
+    iidm/BoundaryLine.cpp
+    iidm/BoundaryLineAdder.cpp
+    iidm/BoundaryLineFilter.cpp
+    iidm/BoundaryLineGeneration.cpp
+    iidm/BoundaryLineGenerationAdder.cpp
     iidm/Branch.cpp
     iidm/Bus.cpp
     iidm/BusAdder.cpp
@@ -50,11 +55,6 @@ set(IIDM_SOURCES
     iidm/Country.cpp
     iidm/CurrentLimits.cpp
     iidm/CurrentLimitsAdder.cpp
-    iidm/DanglingLine.cpp
-    iidm/DanglingLineAdder.cpp
-    iidm/DanglingLineFilter.cpp
-    iidm/DanglingLineGeneration.cpp
-    iidm/DanglingLineGenerationAdder.cpp
     iidm/DcBus.cpp
     iidm/DcConnectable.cpp
     iidm/DcComponent.cpp
@@ -214,6 +214,7 @@ set(IIDM_SOURCES
     iidm/converter/Parameter.cpp
     iidm/converter/SimpleAnonymizer.cpp
 
+    iidm/converter/xml/AbstractBoundaryLineXml.cpp
     iidm/converter/xml/AbstractConnectableXml.cpp
     iidm/converter/xml/AbstractExtensionXmlSerializer.cpp
     iidm/converter/xml/AbstractShuntCompensatorXml.cpp
@@ -222,6 +223,7 @@ set(IIDM_SOURCES
     iidm/converter/xml/AreaXml.cpp
     iidm/converter/xml/AreaBoundaryXml.cpp
     iidm/converter/xml/BatteryXml.cpp
+    iidm/converter/xml/BoundaryLineXml.cpp
     iidm/converter/xml/BoundaryRefXml.cpp
     iidm/converter/xml/BusbarSectionXml.cpp
     iidm/converter/xml/BusBreakerViewSwitchXml.cpp
@@ -276,11 +278,11 @@ set(IIDM_SOURCES
     iidm/extensions/SlackTerminalAdder.cpp
     iidm/extensions/SlackTerminalXmlSerializer.cpp
 
+    iidm/util/BoundaryLineBoundary.cpp
+    iidm/util/BoundaryLineUtil.cpp
     iidm/util/BusbarSectionFinderTraverser.cpp
     iidm/util/ConnectDisconnectUtil.cpp
     iidm/util/ConnectedComponents.cpp
-    iidm/util/DanglingLineBoundary.cpp
-    iidm/util/DanglingLineUtil.cpp
     iidm/util/DistinctPredicate.cpp
     iidm/util/Identifiables.cpp
     iidm/util/LimitViolationUtils.cpp
@@ -304,7 +306,7 @@ set(IIDM_SOURCES
     math/GraphUtil.cpp
 
     network/BatteryNetworkFactory.cpp
-    network/DanglingLineNetworkFactory.cpp
+    network/BoundaryLineNetworkFactory.cpp
     network/DcDetailedNetworkFactory.cpp
     network/EurostagFactory.cpp
     network/FictitiousSwitchFactory.cpp

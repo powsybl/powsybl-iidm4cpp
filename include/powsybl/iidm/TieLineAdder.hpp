@@ -28,9 +28,9 @@ public:
 
     TieLine& add() override;
 
-    TieLineAdder& setDanglingLine1(const std::string& id);
+    TieLineAdder& setBoundaryLine1(const std::string& id);
 
-    TieLineAdder& setDanglingLine2(const std::string& id);
+    TieLineAdder& setBoundaryLine2(const std::string& id);
 
 protected: // IdentifiableAdder
     const Network& getNetwork() const override;
@@ -44,8 +44,8 @@ private:
     Network& m_network;
     std::string m_subnetworkId;
 
-    std::string m_dlId1;
-    std::string m_dlId2;
+    std::string m_blId1;
+    std::string m_blId2;
 };
 
 }  // namespace iidm

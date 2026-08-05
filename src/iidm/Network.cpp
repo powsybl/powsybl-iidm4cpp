@@ -15,9 +15,9 @@
 #include <boost/range/join.hpp>
 
 #include <powsybl/iidm/Battery.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineFilter.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/DcLine.hpp>
 #include <powsybl/iidm/DcLineAdder.hpp>
 #include <powsybl/iidm/DcGround.hpp>
@@ -337,32 +337,32 @@ unsigned long Network::getCountryCount() const {
     return getCountries().size();
 }
 
-const DanglingLine& Network::getDanglingLine(const std::string& id) const {
-    return get<DanglingLine>(id);
+const BoundaryLine& Network::getBoundaryLine(const std::string& id) const {
+    return get<BoundaryLine>(id);
 }
 
-DanglingLine& Network::getDanglingLine(const std::string& id) {
-    return get<DanglingLine>(id);
+BoundaryLine& Network::getBoundaryLine(const std::string& id) {
+    return get<BoundaryLine>(id);
 }
 
-unsigned long Network::getDanglingLineCount() const {
-    return getObjectCount<DanglingLine>();
+unsigned long Network::getBoundaryLineCount() const {
+    return getObjectCount<BoundaryLine>();
 }
 
-stdcxx::const_range<DanglingLine> Network::getDanglingLines(const DanglingLineFilter& filter) const {
-    return m_networkIndex.getAll<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+stdcxx::const_range<BoundaryLine> Network::getBoundaryLines(const BoundaryLineFilter& filter) const {
+    return m_networkIndex.getAll<BoundaryLine>() | boost::adaptors::filtered(filter.getPredicate());
 }
 
-stdcxx::range<DanglingLine> Network::getDanglingLines(const DanglingLineFilter& filter) {
-    return m_networkIndex.getAll<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+stdcxx::range<BoundaryLine> Network::getBoundaryLines(const BoundaryLineFilter& filter) {
+    return m_networkIndex.getAll<BoundaryLine>() | boost::adaptors::filtered(filter.getPredicate());
 }
 
-stdcxx::const_range<DanglingLine> Network::getDanglingLines() const {
-    return getDanglingLines(DanglingLineFilter::ALL());
+stdcxx::const_range<BoundaryLine> Network::getBoundaryLines() const {
+    return getBoundaryLines(BoundaryLineFilter::ALL());
 }
 
-stdcxx::range<DanglingLine> Network::getDanglingLines() {
-    return getDanglingLines(DanglingLineFilter::ALL());
+stdcxx::range<BoundaryLine> Network::getBoundaryLines() {
+    return getBoundaryLines(BoundaryLineFilter::ALL());
 }
 
 stdcxx::CReference<DcBus> Network::getDcBus(const std::string& id) const {
@@ -636,8 +636,8 @@ stdcxx::const_range<Identifiable> Network::getIdentifiables(const IdentifiableTy
         case IdentifiableType::HVDC_CONVERTER_STATION:
             return boost::range::join( getIndex().getAll<LccConverterStation, Identifiable>(),
                                        getIndex().getAll<VscConverterStation, Identifiable>());
-        case IdentifiableType::DANGLING_LINE:
-            return getIndex().getAll<DanglingLine, Identifiable>();
+        case IdentifiableType::BOUNDARY_LINE:
+            return getIndex().getAll<BoundaryLine, Identifiable>();
         case IdentifiableType::LOAD:
             return getIndex().getAll<Load, Identifiable>();
         case IdentifiableType::GENERATOR:
@@ -701,8 +701,8 @@ stdcxx::range<Identifiable> Network::getIdentifiables(const IdentifiableType& ty
         case IdentifiableType::HVDC_CONVERTER_STATION:
             return boost::range::join( getIndex().getAll<LccConverterStation, Identifiable>(),
                                        getIndex().getAll<VscConverterStation, Identifiable>());
-        case IdentifiableType::DANGLING_LINE:
-            return getIndex().getAll<DanglingLine, Identifiable>();
+        case IdentifiableType::BOUNDARY_LINE:
+            return getIndex().getAll<BoundaryLine, Identifiable>();
         case IdentifiableType::LOAD:
             return getIndex().getAll<Load, Identifiable>();
         case IdentifiableType::GENERATOR:

@@ -12,9 +12,9 @@
 #include <powsybl/iidm/ApparentPowerLimits.hpp>
 #include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/AreaAdder.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
@@ -514,7 +514,7 @@ iidm::Network EurostagFactory::createWithTieLinesAndAreas() {
         .setMaxQ(9999.99)
         .add();
 
-    iidm::DanglingLine& nhv1xnode1 = network.getVoltageLevel("VLHV1").newDanglingLine()
+    iidm::BoundaryLine& nhv1xnode1 = network.getVoltageLevel("VLHV1").newBoundaryLine()
                 .setId("NHV1_XNODE1")
                 .setP0(0.0)
                 .setQ0(0.0)
@@ -525,7 +525,7 @@ iidm::Network EurostagFactory::createWithTieLinesAndAreas() {
                 .setBus("NHV1")
                 .setPairingKey("XNODE1")
                 .add();
-    iidm::DanglingLine& xnode1nhv2 = network.getVoltageLevel("VLHV2").newDanglingLine()
+    iidm::BoundaryLine& xnode1nhv2 = network.getVoltageLevel("VLHV2").newBoundaryLine()
                 .setId("XNODE1_NHV2")
                 .setP0(0.0)
                 .setQ0(0.0)
@@ -538,10 +538,10 @@ iidm::Network EurostagFactory::createWithTieLinesAndAreas() {
                 .add();
     network.newTieLine()
                 .setId("NHV1_NHV2_1")
-                .setDanglingLine1(nhv1xnode1.getId())
-                .setDanglingLine2(xnode1nhv2.getId())
+                .setBoundaryLine1(nhv1xnode1.getId())
+                .setBoundaryLine2(xnode1nhv2.getId())
                 .add();
-    iidm::DanglingLine& nhv1xnode2 = network.getVoltageLevel("VLHV1").newDanglingLine()
+    iidm::BoundaryLine& nhv1xnode2 = network.getVoltageLevel("VLHV1").newBoundaryLine()
                 .setId("NHV1_XNODE2")
                 .setP0(0.0)
                 .setQ0(0.0)
@@ -552,7 +552,7 @@ iidm::Network EurostagFactory::createWithTieLinesAndAreas() {
                 .setBus("NHV1")
                 .setPairingKey("XNODE2")
                 .add();
-    iidm::DanglingLine& xnode2nhv2 = network.getVoltageLevel("VLHV2").newDanglingLine()
+    iidm::BoundaryLine& xnode2nhv2 = network.getVoltageLevel("VLHV2").newBoundaryLine()
                 .setId("XNODE2_NHV2")
                 .setP0(0.0)
                 .setQ0(0.0)
@@ -565,23 +565,23 @@ iidm::Network EurostagFactory::createWithTieLinesAndAreas() {
                 .add();
     network.newTieLine()
                 .setId("NHV1_NHV2_2")
-                .setDanglingLine1(nhv1xnode2.getId())
-                .setDanglingLine2(xnode2nhv2.getId())
+                .setBoundaryLine1(nhv1xnode2.getId())
+                .setBoundaryLine2(xnode2nhv2.getId())
                 .add();
-    network.getTieLine("NHV1_NHV2_1").getDanglingLine1().getTerminal()
+    network.getTieLine("NHV1_NHV2_1").getBoundaryLine1().getTerminal()
                 .setP(302.4440612792969)
                 .setQ(98.74027252197266);
-    network.getTieLine("NHV1_NHV2_1").getDanglingLine2().getTerminal()
+    network.getTieLine("NHV1_NHV2_1").getBoundaryLine2().getTerminal()
                 .setP(-300.43389892578125)
                 .setQ(-137.18849182128906);
-    network.getTieLine("NHV1_NHV2_2").getDanglingLine1().getTerminal()
+    network.getTieLine("NHV1_NHV2_2").getBoundaryLine1().getTerminal()
                 .setP(302.4440612792969)
                 .setQ(98.74027252197266);
-    network.getTieLine("NHV1_NHV2_2").getDanglingLine2().getTerminal()
+    network.getTieLine("NHV1_NHV2_2").getBoundaryLine2().getTerminal()
                 .setP(-300.43389892578125)
                 .setQ(-137.188491821289060);
 
-    //Set LoadFlowResults and all DanglingLine's G to zero.
+    //Set LoadFlowResults and all BoundaryLine's G to zero.
     network.getBusBreakerView().getBus("NGEN").get()
                 .setV(24.500000610351563)
                 .setAngle(2.3259763717651367);
@@ -613,7 +613,7 @@ iidm::Network EurostagFactory::createWithTieLinesAndAreas() {
     network.getTwoWindingsTransformer("NHV2_NLOAD").getTerminal2()
                 .setP(-600.0)
                 .setQ(-200.0);
-    for (auto& dl : network.getDanglingLines()) {
+    for (auto& dl : network.getBoundaryLines()) {
         dl.setG(0.0);
     }
 
@@ -624,8 +624,8 @@ iidm::Network EurostagFactory::createWithTieLinesAndAreas() {
                 .setInterchangeTarget(-602.6)
                 .addVoltageLevel(network.getVoltageLevel("VLGEN"))
                 .addVoltageLevel(network.getVoltageLevel("VLHV1"))
-                .addAreaBoundary(network.getDanglingLine("NHV1_XNODE1").getBoundary(), true)
-                .addAreaBoundary(network.getDanglingLine("NHV1_XNODE2").getBoundary(), true)
+                .addAreaBoundary(network.getBoundaryLine("NHV1_XNODE1").getBoundary(), true)
+                .addAreaBoundary(network.getBoundaryLine("NHV1_XNODE2").getBoundary(), true)
                 .add();
     network.newArea()
                 .setId("ControlArea_B")
@@ -634,8 +634,8 @@ iidm::Network EurostagFactory::createWithTieLinesAndAreas() {
                 .setInterchangeTarget(+602.6)
                 .addVoltageLevel(network.getVoltageLevel("VLHV2"))
                 .addVoltageLevel(network.getVoltageLevel("VLLOAD"))
-                .addAreaBoundary(network.getDanglingLine("XNODE1_NHV2").getBoundary(), true)
-                .addAreaBoundary(network.getDanglingLine("XNODE2_NHV2").getBoundary(), true)
+                .addAreaBoundary(network.getBoundaryLine("XNODE1_NHV2").getBoundary(), true)
+                .addAreaBoundary(network.getBoundaryLine("XNODE2_NHV2").getBoundary(), true)
                 .add();
     network.newArea()
                 .setId("Region_AB")

@@ -983,16 +983,16 @@ ValidationLevel checkIdentifiable(const Identifiable& identifiable,const Validat
             const auto& battery = dynamic_cast<const Battery&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkP0(validable, battery.getTargetP(), action));
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkQ0(validable, battery.getTargetQ(), action));
-        } else if (stdcxx::isInstanceOf<DanglingLine>(identifiable)) {
-            const auto& danglingLine = dynamic_cast<const DanglingLine&>(identifiable);
-            checkValidationLevel = validationLevel::min(checkValidationLevel, checkP0(validable, danglingLine.getP0(), action));
-            checkValidationLevel = validationLevel::min(checkValidationLevel, checkQ0(validable, danglingLine.getQ0(), action));
-            const auto& generation = danglingLine.getGeneration();
+        } else if (stdcxx::isInstanceOf<BoundaryLine>(identifiable)) {
+            const auto& boundaryLine = dynamic_cast<const BoundaryLine&>(identifiable);
+            checkValidationLevel = validationLevel::min(checkValidationLevel, checkP0(validable, boundaryLine.getP0(), action));
+            checkValidationLevel = validationLevel::min(checkValidationLevel, checkQ0(validable, boundaryLine.getQ0(), action));
+            const auto& generation = boundaryLine.getGeneration();
             if (generation) {
                 checkValidationLevel = validationLevel::min(checkValidationLevel, checkActivePowerSetpoint(validable, generation.get().getTargetP(), action));
                 checkValidationLevel = validationLevel::min(checkValidationLevel, checkVoltageControl(validable, generation.get().isVoltageRegulationOn(), generation.get().getTargetV(), generation.get().getTargetQ(), action));
             }
-            checkValidationLevel = validationLevel::min(checkValidationLevel, checkOperationalLimitsGroups(validable, danglingLine.getOperationalLimitsGroups(), action));
+            checkValidationLevel = validationLevel::min(checkValidationLevel, checkOperationalLimitsGroups(validable, boundaryLine.getOperationalLimitsGroups(), action));
         } else if (stdcxx::isInstanceOf<Generator>(identifiable)) {
             const auto& generator = dynamic_cast<const Generator&>(identifiable);
             checkValidationLevel = validationLevel::min(checkValidationLevel, checkActivePowerSetpoint(validable, generator.getTargetP(), action));

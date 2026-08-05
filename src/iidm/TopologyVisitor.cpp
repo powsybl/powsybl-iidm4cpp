@@ -9,9 +9,9 @@
 
 #include <powsybl/iidm/AcDcConverter.hpp>
 #include <powsybl/iidm/Battery.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/Connectable.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Ground.hpp>
 #include <powsybl/iidm/HvdcConverterStation.hpp>
@@ -36,11 +36,11 @@ void TopologyVisitor::visitBattery(const Battery& /*battery*/) {
     // nothing to do
 }
 
-void TopologyVisitor::visitBusbarSection(const BusbarSection& /*section*/) {
+void TopologyVisitor::visitBoundaryLine(const BoundaryLine& /*boundaryLine*/) {
     // nothing to do
 }
 
-void TopologyVisitor::visitDanglingLine(const DanglingLine& /*danglingLine*/) {
+void TopologyVisitor::visitBusbarSection(const BusbarSection& /*section*/) {
     // nothing to do
 }
 
@@ -86,8 +86,8 @@ void TopologyVisitor::visitEquipments(const stdcxx::const_range<Terminal>& termi
                 visitor.visitLoad(dynamic_cast<const Load&>(connectable));
                 break;
 
-            case IdentifiableType::DANGLING_LINE:
-                visitor.visitDanglingLine(dynamic_cast<const DanglingLine&>(connectable));
+            case IdentifiableType::BOUNDARY_LINE:
+                visitor.visitBoundaryLine(dynamic_cast<const BoundaryLine&>(connectable));
                 break;
 
             case IdentifiableType::STATIC_VAR_COMPENSATOR:

@@ -9,9 +9,9 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Load.hpp>
@@ -56,7 +56,7 @@ Network createEurostagExampleWithTieLines() {
     network.getLine("NHV1_NHV2_1").remove();
     network.getLine("NHV1_NHV2_2").remove();
 
-    DanglingLine& nhv1xnode1 = network.getVoltageLevel("VLHV1").newDanglingLine()
+    BoundaryLine& nhv1xnode1 = network.getVoltageLevel("VLHV1").newBoundaryLine()
                 .setId("NHV1_XNODE1")
                 .setP0(0.0)
                 .setQ0(0.0)
@@ -67,7 +67,7 @@ Network createEurostagExampleWithTieLines() {
                 .setBus("NHV1")
                 .setPairingKey("XNODE1")
                 .add();
-    DanglingLine& xnode1nhv2 = network.getVoltageLevel("VLHV2").newDanglingLine()
+    BoundaryLine& xnode1nhv2 = network.getVoltageLevel("VLHV2").newBoundaryLine()
                 .setId("XNODE1_NHV2")
                 .setP0(0.0)
                 .setQ0(0.0)
@@ -80,10 +80,10 @@ Network createEurostagExampleWithTieLines() {
                 .add();
     network.newTieLine()
                 .setId("NHV1_NHV2_1")
-                .setDanglingLine1(nhv1xnode1.getId())
-                .setDanglingLine2(xnode1nhv2.getId())
+                .setBoundaryLine1(nhv1xnode1.getId())
+                .setBoundaryLine2(xnode1nhv2.getId())
                 .add();
-    DanglingLine& nhv1xnode2 = network.getVoltageLevel("VLHV1").newDanglingLine()
+    BoundaryLine& nhv1xnode2 = network.getVoltageLevel("VLHV1").newBoundaryLine()
                 .setId("NHV1_XNODE2")
                 .setP0(0.0)
                 .setQ0(0.0)
@@ -94,7 +94,7 @@ Network createEurostagExampleWithTieLines() {
                 .setBus("NHV1")
                 .setPairingKey("XNODE2")
                 .add();
-    DanglingLine& xnode2nhv2 = network.getVoltageLevel("VLHV2").newDanglingLine()
+    BoundaryLine& xnode2nhv2 = network.getVoltageLevel("VLHV2").newBoundaryLine()
                 .setId("XNODE2_NHV2")
                 .setP0(0.0)
                 .setQ0(0.0)
@@ -107,13 +107,13 @@ Network createEurostagExampleWithTieLines() {
                 .add();
     network.newTieLine()
                 .setId("NHV1_NHV2_2")
-                .setDanglingLine1(nhv1xnode2.getId())
-                .setDanglingLine2(xnode2nhv2.getId())
+                .setBoundaryLine1(nhv1xnode2.getId())
+                .setBoundaryLine2(xnode2nhv2.getId())
                 .add();
-    network.getTieLine("NHV1_NHV2_1").getDanglingLine1().getTerminal().setP(302.4440612792969).setQ(98.74027252197266);
-    network.getTieLine("NHV1_NHV2_1").getDanglingLine2().getTerminal().setP(-300.43389892578125).setQ(-137.18849182128906);
-    network.getTieLine("NHV1_NHV2_2").getDanglingLine1().getTerminal().setP(302.4440612792969).setQ(98.74027252197266);
-    network.getTieLine("NHV1_NHV2_2").getDanglingLine2().getTerminal().setP(-300.43389892578125).setQ(-137.188491821289060);
+    network.getTieLine("NHV1_NHV2_1").getBoundaryLine1().getTerminal().setP(302.4440612792969).setQ(98.74027252197266);
+    network.getTieLine("NHV1_NHV2_1").getBoundaryLine2().getTerminal().setP(-300.43389892578125).setQ(-137.18849182128906);
+    network.getTieLine("NHV1_NHV2_2").getBoundaryLine1().getTerminal().setP(302.4440612792969).setQ(98.74027252197266);
+    network.getTieLine("NHV1_NHV2_2").getBoundaryLine2().getTerminal().setP(-300.43389892578125).setQ(-137.188491821289060);
 
     return network;
 }
@@ -200,7 +200,7 @@ Network createTieLineTestNetwork() {
     double hl2b1 = 0.014;
     double hl2b2 = 0.0145;
 
-    DanglingLine& dl1 = network.getVoltageLevel(vl1.getId()).newDanglingLine()
+    BoundaryLine& bl1 = network.getVoltageLevel(vl1.getId()).newBoundaryLine()
         .setId("H1_TL_VL1_VL3")
         .setR(r)
         .setX(x)
@@ -212,7 +212,7 @@ Network createTieLineTestNetwork() {
         .setConnectableBus(vl1Bus1.getId())
         .setPairingKey("pairKey")
         .add();
-    DanglingLine& dl2 = network.getVoltageLevel(vl3.getId()).newDanglingLine()
+    BoundaryLine& bl2 = network.getVoltageLevel(vl3.getId()).newBoundaryLine()
         .setId("H2_TL_VL1_VL3")
         .setR(r2)
         .setX(x2)
@@ -226,8 +226,8 @@ Network createTieLineTestNetwork() {
         .add();
     network.newTieLine()
         .setId("TL_VL1_VL3")
-        .setDanglingLine1(dl1.getId())
-        .setDanglingLine2(dl2.getId())
+        .setBoundaryLine1(bl1.getId())
+        .setBoundaryLine2(bl2.getId())
         .add();
 
     return network;
@@ -263,56 +263,56 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_CLOSE(0.0285, tieLine.getB2(), ACCEPTABLE_THRESHOLD);
     BOOST_CHECK_EQUAL("pairKey", tieLine.getPairingKey());
 
-    const DanglingLine& dl1 = tieLine.getDanglingLine1();
-    BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", dl1.getId());
-    BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", dl1.getNameOrId());
-    BOOST_CHECK_CLOSE(10.0, dl1.getR(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(20.0, dl1.getX(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.03+0.035, dl1.getG(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.04+0.045, dl1.getB(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, dl1.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, dl1.getQ0(), std::numeric_limits<double>::epsilon());
+    const BoundaryLine& bl1 = tieLine.getBoundaryLine1();
+    BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", bl1.getId());
+    BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", bl1.getNameOrId());
+    BOOST_CHECK_CLOSE(10.0, bl1.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20.0, bl1.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.03+0.035, bl1.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.04+0.045, bl1.getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, bl1.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, bl1.getQ0(), std::numeric_limits<double>::epsilon());
 
-    DanglingLine& modifiabledl1 = modifiableTieLine.getDanglingLine1();
-    POWSYBL_ASSERT_THROW(modifiabledl1.setR(stdcxx::nan()), ValidationException, "Dangling line 'H1_TL_VL1_VL3': r is invalid");
-    BOOST_CHECK(stdcxx::areSame(dl1, modifiabledl1.setR(1.0)));
-    BOOST_CHECK_CLOSE(1.0, dl1.getR(), std::numeric_limits<double>::epsilon());
+    BoundaryLine& modifiablebl1 = modifiableTieLine.getBoundaryLine1();
+    POWSYBL_ASSERT_THROW(modifiablebl1.setR(stdcxx::nan()), ValidationException, "Boundary line 'H1_TL_VL1_VL3': r is invalid");
+    BOOST_CHECK(stdcxx::areSame(bl1, modifiablebl1.setR(1.0)));
+    BOOST_CHECK_CLOSE(1.0, bl1.getR(), std::numeric_limits<double>::epsilon());
 
-    POWSYBL_ASSERT_THROW(modifiabledl1.setX(stdcxx::nan()), ValidationException, "Dangling line 'H1_TL_VL1_VL3': x is invalid");
-    BOOST_CHECK(stdcxx::areSame(dl1, modifiabledl1.setX(2.0)));
-    BOOST_CHECK_CLOSE(2.0, dl1.getX(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_THROW(modifiablebl1.setX(stdcxx::nan()), ValidationException, "Boundary line 'H1_TL_VL1_VL3': x is invalid");
+    BOOST_CHECK(stdcxx::areSame(bl1, modifiablebl1.setX(2.0)));
+    BOOST_CHECK_CLOSE(2.0, bl1.getX(), std::numeric_limits<double>::epsilon());
 
-    POWSYBL_ASSERT_THROW(modifiabledl1.setG(stdcxx::nan()), ValidationException, "Dangling line 'H1_TL_VL1_VL3': g is invalid");
-    BOOST_CHECK(stdcxx::areSame(dl1, modifiabledl1.setG(3.0)));
-    BOOST_CHECK_CLOSE(3.0, dl1.getG(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_THROW(modifiablebl1.setG(stdcxx::nan()), ValidationException, "Boundary line 'H1_TL_VL1_VL3': g is invalid");
+    BOOST_CHECK(stdcxx::areSame(bl1, modifiablebl1.setG(3.0)));
+    BOOST_CHECK_CLOSE(3.0, bl1.getG(), std::numeric_limits<double>::epsilon());
 
-    POWSYBL_ASSERT_THROW(modifiabledl1.setB(stdcxx::nan()), ValidationException, "Dangling line 'H1_TL_VL1_VL3': b is invalid");
-    BOOST_CHECK(stdcxx::areSame(dl1, modifiabledl1.setB(4.0)));
-    BOOST_CHECK_CLOSE(4.0, dl1.getB(), std::numeric_limits<double>::epsilon());
+    POWSYBL_ASSERT_THROW(modifiablebl1.setB(stdcxx::nan()), ValidationException, "Boundary line 'H1_TL_VL1_VL3': b is invalid");
+    BOOST_CHECK(stdcxx::areSame(bl1, modifiablebl1.setB(4.0)));
+    BOOST_CHECK_CLOSE(4.0, bl1.getB(), std::numeric_limits<double>::epsilon());
 
-    const DanglingLine& dl2 = tieLine.getDanglingLine2();
-    BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", dl2.getId());
-    BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", dl2.getNameOrId());
-    BOOST_CHECK_CLOSE(1.0, dl2.getR(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(2.0, dl2.getX(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.013+0.0135, dl2.getG(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.014+0.0145, dl2.getB(), std::numeric_limits<double>::epsilon());
+    const BoundaryLine& bl2 = tieLine.getBoundaryLine2();
+    BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", bl2.getId());
+    BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", bl2.getNameOrId());
+    BOOST_CHECK_CLOSE(1.0, bl2.getR(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(2.0, bl2.getX(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.013+0.0135, bl2.getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.014+0.0145, bl2.getB(), std::numeric_limits<double>::epsilon());
 
-    BOOST_CHECK(stdcxx::areSame(dl1, tieLine.getDanglingLine(TwoSides::ONE)));
-    BOOST_CHECK(stdcxx::areSame(dl2, tieLine.getDanglingLine(TwoSides::TWO)));
-    BOOST_CHECK(stdcxx::areSame(dl1, modifiableTieLine.getDanglingLine(TwoSides::ONE)));
-    BOOST_CHECK(stdcxx::areSame(dl2, modifiableTieLine.getDanglingLine(TwoSides::TWO)));
-    BOOST_CHECK(stdcxx::areSame(dl1.getTerminal(), tieLine.getTerminal1()));
-    BOOST_CHECK(stdcxx::areSame(dl2.getTerminal(), tieLine.getTerminal2()));
+    BOOST_CHECK(stdcxx::areSame(bl1, tieLine.getBoundaryLine(TwoSides::ONE)));
+    BOOST_CHECK(stdcxx::areSame(bl2, tieLine.getBoundaryLine(TwoSides::TWO)));
+    BOOST_CHECK(stdcxx::areSame(bl1, modifiableTieLine.getBoundaryLine(TwoSides::ONE)));
+    BOOST_CHECK(stdcxx::areSame(bl2, modifiableTieLine.getBoundaryLine(TwoSides::TWO)));
+    BOOST_CHECK(stdcxx::areSame(bl1.getTerminal(), tieLine.getTerminal1()));
+    BOOST_CHECK(stdcxx::areSame(bl2.getTerminal(), tieLine.getTerminal2()));
 
-    //test retrieval paired danglingline
-    BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl1));
-    BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl2));
-    BOOST_CHECK(stdcxx::areSame(dl1, TieLineUtil::getPairedDanglingLine(dl2).get()));
-    BOOST_CHECK(stdcxx::areSame(dl2, TieLineUtil::getPairedDanglingLine(dl1).get()));
+    //test retrieval paired boundaryline
+    BOOST_CHECK(TieLineUtil::getPairedBoundaryLine(bl1));
+    BOOST_CHECK(TieLineUtil::getPairedBoundaryLine(bl2));
+    BOOST_CHECK(stdcxx::areSame(bl1, TieLineUtil::getPairedBoundaryLine(bl2).get()));
+    BOOST_CHECK(stdcxx::areSame(bl2, TieLineUtil::getPairedBoundaryLine(bl1).get()));
 
-    //try changing pairingKey on paired dangling lines:
-    POWSYBL_ASSERT_THROW(modifiabledl1.setPairingKey("new_code"), ValidationException, "Dangling line 'H1_TL_VL1_VL3': pairing key cannot be set if dangling line is paired.");
+    //try changing pairingKey on paired boundary lines:
+    POWSYBL_ASSERT_THROW(modifiablebl1.setPairingKey("new_code"), ValidationException, "Boundary line 'H1_TL_VL1_VL3': pairing key cannot be set if boundary line is paired.");
 }
 
 BOOST_AUTO_TEST_CASE(integrity) {
@@ -321,8 +321,8 @@ BOOST_AUTO_TEST_CASE(integrity) {
     POWSYBL_ASSERT_THROW(network.getLine("TL_VL1_VL3"), PowsyblException, "Identifiable 'TL_VL1_VL3' is not a powsybl::iidm::Line");
 
     TieLine& tieLine = network.getTieLine("TL_VL1_VL3");
-    BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", tieLine.getDanglingLine1().getId());
-    BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", tieLine.getDanglingLine2().getId());
+    BOOST_CHECK_EQUAL("H1_TL_VL1_VL3", tieLine.getBoundaryLine1().getId());
+    BOOST_CHECK_EQUAL("H2_TL_VL1_VL3", tieLine.getBoundaryLine2().getId());
 
     tieLine.setFictitious(true);
     BOOST_CHECK(tieLine.isFictitious());
@@ -337,124 +337,124 @@ BOOST_AUTO_TEST_CASE(removeTieLine) {
     Network network = createEurostagExampleWithTieLines();
 
     TieLine& tl1 = network.getTieLine("NHV1_NHV2_1");
-    DanglingLine& dl1_1 = tl1.getDanglingLine1();
-    DanglingLine& dl1_2 = tl1.getDanglingLine2();
+    BoundaryLine& bl1_1 = tl1.getBoundaryLine1();
+    BoundaryLine& bl1_2 = tl1.getBoundaryLine2();
     TieLine& tl2 = network.getTieLine("NHV1_NHV2_2");
-    DanglingLine& dl2_1 = tl2.getDanglingLine1();
-    DanglingLine& dl2_2 = tl2.getDanglingLine2();
+    BoundaryLine& bl2_1 = tl2.getBoundaryLine1();
+    BoundaryLine& bl2_2 = tl2.getBoundaryLine2();
 
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine2().getQ0(), std::numeric_limits<double>::epsilon());
 
     tl1.remove(true);
     tl2.remove(true);
 
-    BOOST_CHECK_CLOSE_FRACTION(301.278, dl1_1.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(116.563, dl1_1.getQ0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(-301.745, dl1_2.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(-116.566, dl1_2.getQ0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(301.278, dl2_1.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(116.563, dl2_1.getQ0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(-301.745, dl2_2.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE_FRACTION(-116.567, dl2_2.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(301.278, bl1_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(116.563, bl1_1.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-301.745, bl1_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-116.566, bl1_2.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(301.278, bl2_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(116.563, bl2_1.getQ0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-301.745, bl2_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE_FRACTION(-116.567, bl2_2.getQ0(), 1e-4);
 }
 
 BOOST_AUTO_TEST_CASE(removeTieLineNotCalculated) {
     Network network = createEurostagExampleWithTieLines();
 
     TieLine& tl1 = network.getTieLine("NHV1_NHV2_1");
-    DanglingLine& dl1_1 = tl1.getDanglingLine1();
-    DanglingLine& dl1_2 = tl1.getDanglingLine2();
+    BoundaryLine& bl1_1 = tl1.getBoundaryLine1();
+    BoundaryLine& bl1_2 = tl1.getBoundaryLine2();
     TieLine& tl2 = network.getTieLine("NHV1_NHV2_2");
-    DanglingLine& dl2_1 = tl2.getDanglingLine1();
-    DanglingLine& dl2_2 = tl2.getDanglingLine2();
+    BoundaryLine& bl2_1 = tl2.getBoundaryLine1();
+    BoundaryLine& bl2_2 = tl2.getBoundaryLine2();
 
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
-    // reset the terminal flows at dangling lines, we simulate we do not have calculated
-    tl1.getDanglingLine1().getTerminal().setP(stdcxx::nan());
-    tl1.getDanglingLine1().getTerminal().setQ(stdcxx::nan());
-    tl1.getDanglingLine2().getTerminal().setP(stdcxx::nan());
-    tl1.getDanglingLine2().getTerminal().setQ(stdcxx::nan());
-    tl2.getDanglingLine1().getTerminal().setP(stdcxx::nan());
-    tl2.getDanglingLine1().getTerminal().setQ(stdcxx::nan());
-    tl2.getDanglingLine2().getTerminal().setP(stdcxx::nan());
-    tl2.getDanglingLine2().getTerminal().setQ(stdcxx::nan());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    // reset the terminal flows at boundary lines, we simulate we do not have calculated
+    tl1.getBoundaryLine1().getTerminal().setP(stdcxx::nan());
+    tl1.getBoundaryLine1().getTerminal().setQ(stdcxx::nan());
+    tl1.getBoundaryLine2().getTerminal().setP(stdcxx::nan());
+    tl1.getBoundaryLine2().getTerminal().setQ(stdcxx::nan());
+    tl2.getBoundaryLine1().getTerminal().setP(stdcxx::nan());
+    tl2.getBoundaryLine1().getTerminal().setQ(stdcxx::nan());
+    tl2.getBoundaryLine2().getTerminal().setP(stdcxx::nan());
+    tl2.getBoundaryLine2().getTerminal().setQ(stdcxx::nan());
     // Set some non-zero p0, q0 values to check that:
     // if we remove the tie line without flows calculated
-    // p0, q0 of dangling lines are preserved
-    tl1.getDanglingLine1().setP0(10);
-    tl1.getDanglingLine1().setQ0(20);
-    tl1.getDanglingLine2().setP0(-10);
-    tl1.getDanglingLine2().setQ0(-20);
+    // p0, q0 of boundary lines are preserved
+    tl1.getBoundaryLine1().setP0(10);
+    tl1.getBoundaryLine1().setQ0(20);
+    tl1.getBoundaryLine2().setP0(-10);
+    tl1.getBoundaryLine2().setQ0(-20);
 
     tl1.remove(true);
     tl2.remove(true);
 
-    BOOST_CHECK_CLOSE(10, dl1_1.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(20, dl1_1.getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(-10, dl1_2.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(-20, dl1_2.getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0, dl2_1.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0, dl2_1.getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0, dl2_2.getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0, dl2_2.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(10, bl1_1.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(20, bl1_1.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-10, bl1_2.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-20, bl1_2.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0, bl2_1.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0, bl2_1.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0, bl2_2.getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0, bl2_2.getQ0(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(removeTieLineDCCalculated) {
     Network network = createEurostagExampleWithTieLines();
 
     TieLine &tl1 = network.getTieLine("NHV1_NHV2_1");
-    DanglingLine &dl1_1 = tl1.getDanglingLine1();
-    DanglingLine &dl1_2 = tl1.getDanglingLine2();
+    BoundaryLine &bl1_1 = tl1.getBoundaryLine1();
+    BoundaryLine &bl1_2 = tl1.getBoundaryLine2();
     TieLine &tl2 = network.getTieLine("NHV1_NHV2_2");
-    DanglingLine &dl2_1 = tl2.getDanglingLine1();
-    DanglingLine &dl2_2 = tl2.getDanglingLine2();
+    BoundaryLine &bl2_1 = tl2.getBoundaryLine1();
+    BoundaryLine &bl2_2 = tl2.getBoundaryLine2();
 
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl1.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine1().getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getP0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tl2.getDanglingLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl1.getBoundaryLine2().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine1().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine1().getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine2().getP0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tl2.getBoundaryLine2().getQ0(), std::numeric_limits<double>::epsilon());
     // reset only the terminal q values (simulate only a dc load flow has been calculated)
-    tl1.getDanglingLine1().getTerminal().setQ(stdcxx::nan());
-    tl1.getDanglingLine2().getTerminal().setQ(stdcxx::nan());
-    tl2.getDanglingLine1().getTerminal().setQ(stdcxx::nan());
-    tl2.getDanglingLine2().getTerminal().setQ(stdcxx::nan());
+    tl1.getBoundaryLine1().getTerminal().setQ(stdcxx::nan());
+    tl1.getBoundaryLine2().getTerminal().setQ(stdcxx::nan());
+    tl2.getBoundaryLine1().getTerminal().setQ(stdcxx::nan());
+    tl2.getBoundaryLine2().getTerminal().setQ(stdcxx::nan());
     // Set some non-zero p0, q0 values to check that:
     // if we remove the tie line without flows calculated
-    // p0, q0 of dangling lines are preserved
-    tl1.getDanglingLine1().setP0(10);
-    tl1.getDanglingLine1().setQ0(20);
-    tl1.getDanglingLine2().setP0(-10);
-    tl1.getDanglingLine2().setQ0(-20);
+    // p0, q0 of boundary lines are preserved
+    tl1.getBoundaryLine1().setP0(10);
+    tl1.getBoundaryLine1().setQ0(20);
+    tl1.getBoundaryLine2().setP0(-10);
+    tl1.getBoundaryLine2().setQ0(-20);
 
     tl1.remove(true);
     tl2.remove(true);
 
-    BOOST_CHECK_CLOSE(302.444, dl1_1.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE(20, dl1_1.getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(-300.434, dl1_2.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE(-20, dl1_2.getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(302.444, dl2_1.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE(0, dl2_1.getQ0(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(-300.434, dl2_2.getP0(), 1e-4);
-    BOOST_CHECK_CLOSE(0, dl2_2.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(302.444, bl1_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE(20, bl1_1.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-300.434, bl1_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE(-20, bl1_2.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(302.444, bl2_1.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE(0, bl2_1.getQ0(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-300.434, bl2_2.getP0(), 1e-4);
+    BOOST_CHECK_CLOSE(0, bl2_2.getQ0(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(adderFail) {
@@ -462,7 +462,7 @@ BOOST_AUTO_TEST_CASE(adderFail) {
 
     TieLineAdder tieLineAdder = network.newTieLine();
     
-    DanglingLine& dl1 = network.getVoltageLevel("VL2").newDanglingLine()
+    BoundaryLine& bl1 = network.getVoltageLevel("VL2").newBoundaryLine()
         .setId("H1_TL_VL2_VL4")
         .setR(6.0)
         .setX(66.0)
@@ -474,7 +474,7 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .setConnectableBus("VL2_BUS1")
         .setPairingKey("pairKey")
         .add();
-    DanglingLine& dl2 = network.getVoltageLevel("VL4").newDanglingLine()
+    BoundaryLine& bl2 = network.getVoltageLevel("VL4").newBoundaryLine()
         .setId("H2_TL_VL2_VL4")
         .setR(7.0)
         .setX(77.0)
@@ -487,8 +487,8 @@ BOOST_AUTO_TEST_CASE(adderFail) {
         .setPairingKey("pairKey")
         .add();
     
-    tieLineAdder.setDanglingLine1(dl1.getId())
-                .setDanglingLine2(dl2.getId());
+    tieLineAdder.setBoundaryLine1(bl1.getId())
+                .setBoundaryLine2(bl2.getId());
     
     POWSYBL_ASSERT_THROW(tieLineAdder.add(), PowsyblException, "AC tie line id is not set");
 
@@ -503,45 +503,45 @@ BOOST_AUTO_TEST_CASE(adder) {
     TieLineAdder tieLineAdder = network.newTieLine();
     tieLineAdder.setName("TL_VL2_VL4");
     tieLineAdder.setId("UNIQUE_TIE_LINE_ID");
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': undefined dangling line");
+    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': undefined boundary line");
 
-    //DL1
-    auto danglingLineLineAdder1 = network.getVoltageLevel("VL2").newDanglingLine();
-    danglingLineLineAdder1.setName("H1_TL_VL2_VL4");
-    danglingLineLineAdder1.setId("H1_TL_VL2_VL4");
+    //BL1
+    auto boundaryLineLineAdder1 = network.getVoltageLevel("VL2").newBoundaryLine();
+    boundaryLineLineAdder1.setName("H1_TL_VL2_VL4");
+    boundaryLineLineAdder1.setId("H1_TL_VL2_VL4");
 
-    POWSYBL_ASSERT_THROW(danglingLineLineAdder1.add(), ValidationException, "Dangling line 'H1_TL_VL2_VL4': p0 is invalid");
-    danglingLineLineAdder1.setP0(0.0).setQ0(0.0);
+    POWSYBL_ASSERT_THROW(boundaryLineLineAdder1.add(), ValidationException, "Boundary line 'H1_TL_VL2_VL4': p0 is invalid");
+    boundaryLineLineAdder1.setP0(0.0).setQ0(0.0);
 
-    POWSYBL_ASSERT_THROW(danglingLineLineAdder1.add(), ValidationException, "Dangling line 'H1_TL_VL2_VL4': r is invalid");
-    danglingLineLineAdder1.setR(60.0);
+    POWSYBL_ASSERT_THROW(boundaryLineLineAdder1.add(), ValidationException, "Boundary line 'H1_TL_VL2_VL4': r is invalid");
+    boundaryLineLineAdder1.setR(60.0);
 
-    POWSYBL_ASSERT_THROW(danglingLineLineAdder1.add(), ValidationException, "Dangling line 'H1_TL_VL2_VL4': x is invalid");
-    danglingLineLineAdder1.setX(660.0);
+    POWSYBL_ASSERT_THROW(boundaryLineLineAdder1.add(), ValidationException, "Boundary line 'H1_TL_VL2_VL4': x is invalid");
+    boundaryLineLineAdder1.setX(660.0);
 
-    danglingLineLineAdder1.setG(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(danglingLineLineAdder1.add(), ValidationException, "Dangling line 'H1_TL_VL2_VL4': g is invalid");
-    danglingLineLineAdder1.setG(2.0);
+    boundaryLineLineAdder1.setG(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(boundaryLineLineAdder1.add(), ValidationException, "Boundary line 'H1_TL_VL2_VL4': g is invalid");
+    boundaryLineLineAdder1.setG(2.0);
 
-    danglingLineLineAdder1.setB(stdcxx::nan());
-    POWSYBL_ASSERT_THROW(danglingLineLineAdder1.add(), ValidationException, "Dangling line 'H1_TL_VL2_VL4': b is invalid");
-    danglingLineLineAdder1.setB(4.0);
+    boundaryLineLineAdder1.setB(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(boundaryLineLineAdder1.add(), ValidationException, "Boundary line 'H1_TL_VL2_VL4': b is invalid");
+    boundaryLineLineAdder1.setB(4.0);
 
-    danglingLineLineAdder1.setId("");
-    POWSYBL_ASSERT_THROW(danglingLineLineAdder1.add(), PowsyblException, "Dangling line id is not set");
-    danglingLineLineAdder1.setId("H1_TL_VL2_VL4");
+    boundaryLineLineAdder1.setId("");
+    POWSYBL_ASSERT_THROW(boundaryLineLineAdder1.add(), PowsyblException, "Boundary line id is not set");
+    boundaryLineLineAdder1.setId("H1_TL_VL2_VL4");
 
-    danglingLineLineAdder1.setBus("VL2_BUS1");
-    danglingLineLineAdder1.setConnectableBus("");
-    danglingLineLineAdder1.setPairingKey("pairKeyTest");
-    auto& dl1 = danglingLineLineAdder1.add();
+    boundaryLineLineAdder1.setBus("VL2_BUS1");
+    boundaryLineLineAdder1.setConnectableBus("");
+    boundaryLineLineAdder1.setPairingKey("pairKeyTest");
+    auto& bl1 = boundaryLineLineAdder1.add();
 
-    tieLineAdder.setDanglingLine1("H1_TL_VL2_VL4");
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': undefined dangling line");
+    tieLineAdder.setBoundaryLine1("H1_TL_VL2_VL4");
+    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': undefined boundary line");
 
-    //Dl2
-    auto danglingLineLineAdder2 = network.getVoltageLevel("VL4").newDanglingLine();
-    danglingLineLineAdder2.setName("H2_TL_VL2_VL4")
+    //BL2
+    auto boundaryLineLineAdder2 = network.getVoltageLevel("VL4").newBoundaryLine();
+    boundaryLineLineAdder2.setName("H2_TL_VL2_VL4")
         .setId("H2_TL_VL2_VL4")
         .setP0(0.0)
         .setQ0(0.0)
@@ -553,22 +553,22 @@ BOOST_AUTO_TEST_CASE(adder) {
         .setConnectableBus("")
         .setPairingKey("pairKeyTest")
         .setFictitious(true);
-    auto& dl2 = danglingLineLineAdder2.add();
-    tieLineAdder.setDanglingLine2("H2_TL_VL2_VL4");
+    auto& bl2 = boundaryLineLineAdder2.add();
+    tieLineAdder.setBoundaryLine2("H2_TL_VL2_VL4");
 
-    BOOST_CHECK(!TieLineUtil::getPairedDanglingLine(dl1));
-    BOOST_CHECK(!TieLineUtil::getPairedDanglingLine(dl2));
+    BOOST_CHECK(!TieLineUtil::getPairedBoundaryLine(bl1));
+    BOOST_CHECK(!TieLineUtil::getPairedBoundaryLine(bl2));
 
     BOOST_CHECK_NO_THROW(tieLineAdder.add());
-    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': danglingLine1 (H1_TL_VL2_VL4) already has a tie line");
+    POWSYBL_ASSERT_THROW(tieLineAdder.add(), ValidationException, "AC tie line 'UNIQUE_TIE_LINE_ID': boundaryLine1 (H1_TL_VL2_VL4) already has a tie line");
     BOOST_CHECK_EQUAL(2UL, network.getTieLineCount());
 
-    BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl1));
-    BOOST_CHECK(TieLineUtil::getPairedDanglingLine(dl2));
+    BOOST_CHECK(TieLineUtil::getPairedBoundaryLine(bl1));
+    BOOST_CHECK(TieLineUtil::getPairedBoundaryLine(bl2));
 
     TieLine& line = network.getTieLine("UNIQUE_TIE_LINE_ID");
-    BOOST_CHECK(!line.getDanglingLine(TwoSides::ONE).isFictitious());
-    BOOST_CHECK(line.getDanglingLine(TwoSides::TWO).isFictitious());
+    BOOST_CHECK(!line.getBoundaryLine(TwoSides::ONE).isFictitious());
+    BOOST_CHECK(line.getBoundaryLine(TwoSides::TWO).isFictitious());
     BOOST_CHECK(!line.isFictitious());
 }
 
@@ -580,8 +580,8 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .setId("UNIQUE_TIE_LINE_ID")
         .setFictitious(true); // test that generated TieLine can be fictitious
 
-    //DL1
-    network.getVoltageLevel("VL2").newDanglingLine()
+    //BL1
+    network.getVoltageLevel("VL2").newBoundaryLine()
         .setName("H1_TL_VL2_VL4")
         .setId("H1_TL_VL2_VL4")
         .setB(4.0)
@@ -597,7 +597,7 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .add();
 
     //Half2
-    network.getVoltageLevel("VL4").newDanglingLine()
+    network.getVoltageLevel("VL4").newBoundaryLine()
         .setName("H2_TL_VL2_VL4")
         .setId("H2_TL_VL2_VL4")
         .setB(7.0)
@@ -612,11 +612,11 @@ BOOST_AUTO_TEST_CASE(fictitious) {
         .setFictitious(false)
         .add();
 
-    tieLineAdder.setDanglingLine1("H1_TL_VL2_VL4").setDanglingLine2("H2_TL_VL2_VL4");
+    tieLineAdder.setBoundaryLine1("H1_TL_VL2_VL4").setBoundaryLine2("H2_TL_VL2_VL4");
 
     TieLine& line = tieLineAdder.add();
-    BOOST_CHECK(line.getDanglingLine(TwoSides::ONE).isFictitious());
-    BOOST_CHECK(!line.getDanglingLine(TwoSides::TWO).isFictitious());
+    BOOST_CHECK(line.getBoundaryLine(TwoSides::ONE).isFictitious());
+    BOOST_CHECK(!line.getBoundaryLine(TwoSides::TWO).isFictitious());
     BOOST_CHECK(line.isFictitious());
 }
 
@@ -634,35 +634,35 @@ BOOST_AUTO_TEST_CASE(getBoundary) {
     double angle1 = -1e-4;
     double angle2 = -1.7e-3;
 
-    tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().setAngle(angle1);
-    tieLine.getDanglingLine1().getTerminal().setP(p1);
-    tieLine.getDanglingLine1().getTerminal().setQ(q1);
-    tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().setV(v1);
-    tieLine.getDanglingLine2().getTerminal().setP(p2).setQ(q2).getBusView().getBus().get().setAngle(angle2).setV(v2);
-    BOOST_CHECK(stdcxx::areSame(cTieLine.getDanglingLine1().getBoundary(), tieLine.getDanglingLine1().getBoundary()));
-    const Boundary& cBoundary = tieLine.getDanglingLine1().getBoundary();
-    Boundary& boundary = tieLine.getDanglingLine1().getBoundary();
+    tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().setAngle(angle1);
+    tieLine.getBoundaryLine1().getTerminal().setP(p1);
+    tieLine.getBoundaryLine1().getTerminal().setQ(q1);
+    tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().setV(v1);
+    tieLine.getBoundaryLine2().getTerminal().setP(p2).setQ(q2).getBusView().getBus().get().setAngle(angle2).setV(v2);
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getBoundaryLine1().getBoundary(), tieLine.getBoundaryLine1().getBoundary()));
+    const Boundary& cBoundary = tieLine.getBoundaryLine1().getBoundary();
+    Boundary& boundary = tieLine.getBoundaryLine1().getBoundary();
 
     constexpr double ACCEPTABLE_THRESHOLD = 1e-6;
     SV expectedSV1(p1,q1,v1,angle1,TwoSides::ONE);
     SV expectedSV2(p2,q2,v2,angle2,TwoSides::ONE);
 
-    BOOST_CHECK_CLOSE(expectedSV1.otherSideP(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV1.otherSideQ(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV2.otherSideP(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getP(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV2.otherSideQ(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getQ(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV1.otherSideU(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getV(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV1.otherSideA(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getAngle(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV2.otherSideU(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getV(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV2.otherSideA(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getAngle(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideP(tieLine.getBoundaryLine1(), false), tieLine.getBoundaryLine1().getBoundary().getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideQ(tieLine.getBoundaryLine1(), false), tieLine.getBoundaryLine1().getBoundary().getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideP(tieLine.getBoundaryLine2(), false), tieLine.getBoundaryLine2().getBoundary().getP(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideQ(tieLine.getBoundaryLine2(), false), tieLine.getBoundaryLine2().getBoundary().getQ(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideU(tieLine.getBoundaryLine1(), false), tieLine.getBoundaryLine1().getBoundary().getV(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideA(tieLine.getBoundaryLine1(), false), tieLine.getBoundaryLine1().getBoundary().getAngle(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideU(tieLine.getBoundaryLine2(), false), tieLine.getBoundaryLine2().getBoundary().getV(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideA(tieLine.getBoundaryLine2(), false), tieLine.getBoundaryLine2().getBoundary().getAngle(), ACCEPTABLE_THRESHOLD);
 
-    BOOST_CHECK_CLOSE(expectedSV1.otherSideI(tieLine.getDanglingLine1(), false), tieLine.getDanglingLine1().getBoundary().getI(), ACCEPTABLE_THRESHOLD);
-    BOOST_CHECK_CLOSE(expectedSV2.otherSideI(tieLine.getDanglingLine2(), false), tieLine.getDanglingLine2().getBoundary().getI(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV1.otherSideI(tieLine.getBoundaryLine1(), false), tieLine.getBoundaryLine1().getBoundary().getI(), ACCEPTABLE_THRESHOLD);
+    BOOST_CHECK_CLOSE(expectedSV2.otherSideI(tieLine.getBoundaryLine2(), false), tieLine.getBoundaryLine2().getBoundary().getI(), ACCEPTABLE_THRESHOLD);
 
-    BOOST_CHECK(stdcxx::areSame(cTieLine, cBoundary.getDanglingLine().getTieLine().get()));
-    BOOST_CHECK(stdcxx::areSame(cTieLine, boundary.getDanglingLine().getTieLine().get()));
-    BOOST_CHECK(stdcxx::areSame(cTieLine.getDanglingLine(TwoSides::ONE).getTerminal().getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));
-    BOOST_CHECK(stdcxx::areSame(cTieLine.getDanglingLine(TwoSides::ONE).getTerminal().getVoltageLevel(), boundary.getNetworkSideVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine, cBoundary.getBoundaryLine().getTieLine().get()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine, boundary.getBoundaryLine().getTieLine().get()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getBoundaryLine(TwoSides::ONE).getTerminal().getVoltageLevel(), cBoundary.getNetworkSideVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(cTieLine.getBoundaryLine(TwoSides::ONE).getTerminal().getVoltageLevel(), boundary.getNetworkSideVoltageLevel()));
 }
 
 BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
@@ -733,7 +733,7 @@ BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
     std::string boundarySide1 = "TwoSides::ONE";
     std::string boundarySide2 = "TwoSides::TWO";
 
-    s1vl1.newDanglingLine()
+    s1vl1.newBoundaryLine()
             .setId(boundarySide1)
             .setName(boundarySide1)
             .setR(1.0)
@@ -743,7 +743,7 @@ BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
             .setBus("S1VL1-BUS")
             .setPairingKey("pairKey")
             .add();
-    s2vl1.newDanglingLine()
+    s2vl1.newBoundaryLine()
             .setId(boundarySide2)
             .setName(boundarySide2)
             .setR(1.0)
@@ -757,17 +757,17 @@ BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
     TieLineAdder adder = network.newTieLine()
                              .setId(boundarySide1 + " + " + boundarySide2)
                              .setName(boundarySide1 + " + " + boundarySide2)
-                             .setDanglingLine1(boundarySide1)
-                             .setDanglingLine2(boundarySide2);
+                             .setBoundaryLine1(boundarySide1)
+                             .setBoundaryLine2(boundarySide2);
 
     TieLine& tieLine = adder.add();
 
-    BOOST_CHECK_CLOSE(0.0, tieLine.getDanglingLine1().getG(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tieLine.getDanglingLine2().getG(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tieLine.getDanglingLine1().getB(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(0.0, tieLine.getDanglingLine2().getB(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(stdcxx::areSame(s1vl1, tieLine.getDanglingLine1().getTerminal().getVoltageLevel()));
-    BOOST_CHECK(stdcxx::areSame(s2vl1, tieLine.getDanglingLine2().getTerminal().getVoltageLevel()));
+    BOOST_CHECK_CLOSE(0.0, tieLine.getBoundaryLine1().getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getBoundaryLine2().getG(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getBoundaryLine1().getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(0.0, tieLine.getBoundaryLine2().getB(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(stdcxx::areSame(s1vl1, tieLine.getBoundaryLine1().getTerminal().getVoltageLevel()));
+    BOOST_CHECK(stdcxx::areSame(s2vl1, tieLine.getBoundaryLine2().getTerminal().getVoltageLevel()));
 
 }
 
@@ -793,10 +793,10 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
     /*
     * First Tie line on node-breaker
     */
-    // Add a dangling line in the first Voltage level
+    // Add a boundary line in the first Voltage level
     s1vl1.getNodeBreakerView().newSwitch()
-            .setId("S1VL1_DL_DISCONNECTOR")
-            .setName("S1VL1_DL_DISCONNECTOR")
+            .setId("S1VL1_BL_DISCONNECTOR")
+            .setName("S1VL1_BL_DISCONNECTOR")
             .setKind(SwitchKind::DISCONNECTOR)
             .setRetained(false)
             .setOpen(false)
@@ -805,8 +805,8 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
             .setNode2(20)
             .add();
     s1vl1.getNodeBreakerView().newSwitch()
-            .setId("S1VL1_DL_BREAKER")
-            .setName("S1VL1_DL_BREAKER")
+            .setId("S1VL1_BL_BREAKER")
+            .setName("S1VL1_BL_BREAKER")
             .setKind(SwitchKind::BREAKER)
             .setRetained(true)
             .setOpen(false)
@@ -815,7 +815,7 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
             .setNode2(21)
             .add();
 
-    DanglingLine& danglingLine1 = s1vl1.newDanglingLine()
+    BoundaryLine& boundaryLine1 = s1vl1.newBoundaryLine()
             .setId("NHV1_XNODE1")
             .setP0(0.0)
             .setQ0(0.0)
@@ -827,9 +827,9 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
             .setPairingKey("XNODE1")
             .add();
 
-    // Add a dangling line in the second Voltage level
-    DanglingLine& danglingLine2 = s2vl2.newDanglingLine()
-            .setId("S2VL2_DL")
+    // Add a boundary line in the second Voltage level
+    BoundaryLine& boundaryLine2 = s2vl2.newBoundaryLine()
+            .setId("S2VL2_BL")
             .setP0(0.0)
             .setQ0(0.0)
             .setR(1.5)
@@ -842,47 +842,47 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
 
     TieLine& tieLine = network.newTieLine()
             .setId("TL")
-            .setDanglingLine1(danglingLine1.getId())
-            .setDanglingLine2(danglingLine2.getId())
+            .setBoundaryLine1(boundaryLine1.getId())
+            .setBoundaryLine2(boundaryLine2.getId())
             .add();
 
     // Check that the tie line is connected
-    BOOST_CHECK(tieLine.getDanglingLine1().getTerminal().isConnected());
-    BOOST_CHECK(tieLine.getDanglingLine2().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getBoundaryLine1().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getBoundaryLine2().getTerminal().isConnected());
 
     // Connection fails since it's already connected
-    BOOST_CHECK(!tieLine.connectDanglingLines());
+    BOOST_CHECK(!tieLine.connectBoundaryLines());
 
     // Disconnection fails if switches cannot be opened (here, only fictional switches could be opened)
-    BOOST_CHECK(!tieLine.disconnectDanglingLines( [](const Switch& switchObject) {
+    BOOST_CHECK(!tieLine.disconnectBoundaryLines( [](const Switch& switchObject) {
             return !SwitchPredicate::IS_NONFICTIONAL()(switchObject) && !SwitchPredicate::IS_OPEN()(switchObject);
     }));
 
     // Disconnection
-    BOOST_CHECK(tieLine.disconnectDanglingLines());
-    BOOST_CHECK(!tieLine.getDanglingLine1().getTerminal().isConnected());
-    BOOST_CHECK(!tieLine.getDanglingLine2().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.disconnectBoundaryLines());
+    BOOST_CHECK(!tieLine.getBoundaryLine1().getTerminal().isConnected());
+    BOOST_CHECK(!tieLine.getBoundaryLine2().getTerminal().isConnected());
 
     // Disconnection fails since it's already disconnected
-    BOOST_CHECK(!tieLine.disconnectDanglingLines());
+    BOOST_CHECK(!tieLine.disconnectBoundaryLines());
 
     // Connection fails if switches cannot be opened (here, only fictional switches could be closed)
-    BOOST_CHECK(!tieLine.connectDanglingLines( [](const Switch& switchObject) {
+    BOOST_CHECK(!tieLine.connectBoundaryLines( [](const Switch& switchObject) {
             return !SwitchPredicate::IS_NONFICTIONAL()(switchObject);
     }));
 
     // Connection
-    BOOST_CHECK(tieLine.connectDanglingLines());
-    BOOST_CHECK(tieLine.getDanglingLine1().getTerminal().isConnected());
-    BOOST_CHECK(tieLine.getDanglingLine2().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.connectBoundaryLines());
+    BOOST_CHECK(tieLine.getBoundaryLine1().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getBoundaryLine2().getTerminal().isConnected());
 
     // Disconnect one side
-    BOOST_CHECK(tieLine.disconnectDanglingLines(SwitchPredicate::IS_CLOSED_BREAKER(), TwoSides::ONE));
-    BOOST_CHECK(!tieLine.getDanglingLine1().getTerminal().isConnected());
-    BOOST_CHECK(tieLine.getDanglingLine2().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.disconnectBoundaryLines(SwitchPredicate::IS_CLOSED_BREAKER(), TwoSides::ONE));
+    BOOST_CHECK(!tieLine.getBoundaryLine1().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getBoundaryLine2().getTerminal().isConnected());
 
     // Connection on the other side fails since it's still connected
-    BOOST_CHECK(!tieLine.connectDanglingLines(SwitchPredicate::IS_NONFICTIONAL_BREAKER(), TwoSides::TWO));
+    BOOST_CHECK(!tieLine.connectBoundaryLines(SwitchPredicate::IS_NONFICTIONAL_BREAKER(), TwoSides::TWO));
 
 }
 

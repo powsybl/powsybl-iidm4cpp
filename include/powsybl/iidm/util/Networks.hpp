@@ -53,8 +53,8 @@ std::set<unsigned long> getNodes(const std::string& busId, const VoltageLevel& v
  * Replaces "input" values by their solved values. This includes :
  * - tap position of TapChangers,
  * - section count of ShuntCompensators,
- * - active and reactive power flow on Generators, Batteries, Loads and generation part of DanglingLines
- * - voltage on Generators and DanglingLines
+ * - active and reactive power flow on Generators, Batteries, Loads and generation part of BoundaryLines
+ * - voltage on Generators and BoundaryLines
  */
 void applySolvedValues(Network& network);
 

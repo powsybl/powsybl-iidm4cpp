@@ -57,7 +57,7 @@ bool OperatingStatus::isAllowedIdentifiable(Identifiable& identifiable) {
         identType == IdentifiableType::LINE || 
         identType == IdentifiableType::HVDC_LINE || 
         identType == IdentifiableType::TIE_LINE || 
-        identType == IdentifiableType::DANGLING_LINE || 
+        identType == IdentifiableType::BOUNDARY_LINE || 
         identType == IdentifiableType::TWO_WINDINGS_TRANSFORMER || 
         identType == IdentifiableType::THREE_WINDINGS_TRANSFORMER) {
             return true;

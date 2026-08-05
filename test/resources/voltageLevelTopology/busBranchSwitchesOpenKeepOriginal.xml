@@ -13,14 +13,14 @@
                 <iidm:switch id="LOAD_DISCONNECTOR_2" kind="DISCONNECTOR" retained="false" open="true" node1="5" node2="3"/>
             </iidm:nodeBreakerTopology>
             <iidm:load id="LOAD" loadType="FICTITIOUS" p0="0" q0="0" node="1" p="0" q="0"/>
-            <iidm:danglingLine id="DL" p0="0" q0="0" r="0.5" x="6" g="0" b="0" node="0" p="0" q="0"/>
+            <iidm:boundaryLine id="DL" p0="0" q0="0" r="0.5" x="6" g="0" b="0" node="0" p="0" q="0"/>
         </iidm:voltageLevel>
         <iidm:voltageLevel id="VL2" nominalV="380" lowVoltageLimit="380" highVoltageLimit="420" topologyKind="BUS_BREAKER">
             <iidm:busBreakerTopology>
                 <iidm:bus id="VL2_1"/>
             </iidm:busBreakerTopology>
             <iidm:load id="LOAD2" loadType="FICTITIOUS" p0="0" q0="0" bus="VL2_1" connectableBus="VL2_1" p="0" q="0"/>
-            <iidm:danglingLine id="DL2" p0="0" q0="0" r="0.5" x="6" g="0" b="0" connectableBus="VL2_1" p="0" q="0"/>
+            <iidm:boundaryLine id="DL2" p0="0" q0="0" r="0.5" x="6" g="0" b="0" connectableBus="VL2_1" p="0" q="0"/>
         </iidm:voltageLevel>
     </iidm:substation>
 </iidm:network>

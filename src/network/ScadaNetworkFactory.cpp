@@ -8,10 +8,10 @@
 #include <powsybl/network/ScadaNetworkFactory.hpp>
 
 #include <powsybl/iidm/BatteryAdder.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
+#include <powsybl/iidm/BoundaryLineGeneration.hpp>
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
-#include <powsybl/iidm/DanglingLineGeneration.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
@@ -66,7 +66,7 @@ iidm::Network ScadaNetworkFactory::create() {
         .setMaxP(100.0)
         .setBus(busId)
         .add();
-    iidm::DanglingLine &dl = vl.newDanglingLine()
+    iidm::BoundaryLine &dl = vl.newBoundaryLine()
                            .setId("dl")
                            .setBus(busId)
                            .setR(1.0)

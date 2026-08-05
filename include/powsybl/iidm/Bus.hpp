@@ -21,8 +21,8 @@ namespace iidm {
 
 class Battery;
 class Component;
-class DanglingLine;
-class DanglingLineFilter;
+class BoundaryLine;
+class BoundaryLineFilter;
 class Generator;
 class LccConverterStation;
 class Line;
@@ -67,13 +67,13 @@ public:
 
     virtual stdcxx::range<Terminal> getConnectedTerminals() = 0;
 
-    stdcxx::const_range<DanglingLine> getDanglingLines() const;
+    stdcxx::const_range<BoundaryLine> getBoundaryLines() const;
 
-    stdcxx::range<DanglingLine> getDanglingLines();
+    stdcxx::range<BoundaryLine> getBoundaryLines();
 
-    stdcxx::const_range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) const;
+    stdcxx::const_range<BoundaryLine> getBoundaryLines(const BoundaryLineFilter& filter) const;
 
-    stdcxx::range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter);
+    stdcxx::range<BoundaryLine> getBoundaryLines(const BoundaryLineFilter& filter);
 
     stdcxx::const_range<Generator> getGenerators() const;
 

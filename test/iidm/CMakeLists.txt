@@ -12,6 +12,7 @@ set(UNIT_TEST_SOURCES
     ApparentPowerLimitsTest.cpp
     AreaTest.cpp
     BatteryTest.cpp
+    BoundaryLineTest.cpp
     BranchTest.cpp
     BusbarSectionTest.cpp
     BusBreakerVoltageLevelTest.cpp
@@ -21,7 +22,6 @@ set(UNIT_TEST_SOURCES
     ConvertTopologyTest.cpp
     CountryTest.cpp
     CurrentLimitsTest.cpp
-    DanglingLineTest.cpp
     DcGroundTest.cpp
     DcLineTest.cpp
     DcNodeTest.cpp

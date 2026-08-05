@@ -7,7 +7,7 @@
 
 #include <powsybl/iidm/util/SV.hpp>
 
-#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
@@ -147,17 +147,17 @@ SV SV::otherSide(const TieLine& tieLine) const {
     return otherSide(tieLine.getR(), tieLine.getX(), tieLine.getG1(), tieLine.getB1(), tieLine.getG2(), tieLine.getB2(), 1.0, 0.0, zbase);
 }
 
-SV SV::otherSide(const DanglingLine& dl) const {
-    double zbase = dl.getTerminal().getVoltageLevel().getNominalV() * dl.getTerminal().getVoltageLevel().getNominalV();
-    return otherSide(dl.getR(), dl.getX(), dl.getG(), dl.getB(), 0.0, 0.0, 1.0, 0.0, zbase);
+SV SV::otherSide(const BoundaryLine& bl) const {
+    double zbase = bl.getTerminal().getVoltageLevel().getNominalV() * bl.getTerminal().getVoltageLevel().getNominalV();
+    return otherSide(bl.getR(), bl.getX(), bl.getG(), bl.getB(), 0.0, 0.0, 1.0, 0.0, zbase);
 }
 
-SV SV::otherSide(const DanglingLine& dl, bool splitShuntAdmittance) const {
+SV SV::otherSide(const BoundaryLine& bl, bool splitShuntAdmittance) const {
     if (splitShuntAdmittance) {
-        double zbase = dl.getTerminal().getVoltageLevel().getNominalV() * dl.getTerminal().getVoltageLevel().getNominalV();
-        return otherSide(dl.getR(), dl.getX(), dl.getG() * 0.5, dl.getB() * 0.5, dl.getG() * 0.5, dl.getB() * 0.5, 1.0, 0.0, zbase);
+        double zbase = bl.getTerminal().getVoltageLevel().getNominalV() * bl.getTerminal().getVoltageLevel().getNominalV();
+        return otherSide(bl.getR(), bl.getX(), bl.getG() * 0.5, bl.getB() * 0.5, bl.getG() * 0.5, bl.getB() * 0.5, 1.0, 0.0, zbase);
     }
-    return otherSide(dl);
+    return otherSide(bl);
 }
 
 SV SV::otherSide(const LinkData::BranchAdmittanceMatrix& adm) const {
@@ -201,60 +201,60 @@ double SV::otherSideA(double r, double x, double g1, double b1, double g2, doubl
     return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getA();
 }
 
-double SV::otherSideA(const DanglingLine& dl) const {
-    return otherSide(dl).getA();
+double SV::otherSideA(const BoundaryLine& bl) const {
+    return otherSide(bl).getA();
 }
 
-double SV::otherSideA(const DanglingLine& dl, bool splitShuntAdmittance) const {
-    return otherSide(dl, splitShuntAdmittance).getA();
+double SV::otherSideA(const BoundaryLine& bl, bool splitShuntAdmittance) const {
+    return otherSide(bl, splitShuntAdmittance).getA();
 }
 
 double SV::otherSideI(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
     return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getI();
 }
 
-double SV::otherSideI(const DanglingLine& dl) const {
-    return otherSide(dl).getI();
+double SV::otherSideI(const BoundaryLine& bl) const {
+    return otherSide(bl).getI();
 }
 
-double SV::otherSideI(const DanglingLine& dl, bool splitShuntAdmittance) const {
-    return otherSide(dl, splitShuntAdmittance).getI();
+double SV::otherSideI(const BoundaryLine& bl, bool splitShuntAdmittance) const {
+    return otherSide(bl, splitShuntAdmittance).getI();
 }
 
 double SV::otherSideP(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
     return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getP();
 }
 
-double SV::otherSideP(const DanglingLine& dl) const {
-    return otherSide(dl).getP();
+double SV::otherSideP(const BoundaryLine& bl) const {
+    return otherSide(bl).getP();
 }
 
-double SV::otherSideP(const DanglingLine& dl, bool splitShuntAdmittance) const {
-    return otherSide(dl, splitShuntAdmittance).getP();
+double SV::otherSideP(const BoundaryLine& bl, bool splitShuntAdmittance) const {
+    return otherSide(bl, splitShuntAdmittance).getP();
 }
 
 double SV::otherSideQ(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
     return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getQ();
 }
 
-double SV::otherSideQ(const DanglingLine& dl) const {
-    return otherSide(dl).getQ();
+double SV::otherSideQ(const BoundaryLine& bl) const {
+    return otherSide(bl).getQ();
 }
 
-double SV::otherSideQ(const DanglingLine& dl, bool splitShuntAdmittance) const {
-    return otherSide(dl, splitShuntAdmittance).getQ();
+double SV::otherSideQ(const BoundaryLine& bl, bool splitShuntAdmittance) const {
+    return otherSide(bl, splitShuntAdmittance).getQ();
 }
 
 double SV::otherSideU(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const {
     return otherSide(r, x, g1, b1, g2, b2, rho, alpha, stdcxx::nan()).getU();
 }
 
-double SV::otherSideU(const DanglingLine& dl) const {
-    return otherSide(dl).getU();
+double SV::otherSideU(const BoundaryLine& bl) const {
+    return otherSide(bl).getU();
 }
 
-double SV::otherSideU(const DanglingLine& dl, bool splitShuntAdmittance) const {
-    return otherSide(dl, splitShuntAdmittance).getU();
+double SV::otherSideU(const BoundaryLine& bl, bool splitShuntAdmittance) const {
+    return otherSide(bl, splitShuntAdmittance).getU();
 }
 
 std::complex<double> SV::voltageAtEnd1(const LinkData::BranchAdmittanceMatrix& adm, const std::complex<double>& vEnd2, const std::complex<double>& sEnd2) {

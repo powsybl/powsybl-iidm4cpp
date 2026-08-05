@@ -18,7 +18,7 @@ namespace powsybl {
 namespace iidm {
 
 class Bus;
-class DanglingLine;
+class BoundaryLine;
 class VoltageLevel;
 
 class Boundary : public ReferrerManager<Boundary> {
@@ -41,14 +41,14 @@ public:
     virtual double getAngle() const = 0;
 
     /**
-     * Get the danglingLine the boundary is associated to.
+     * Get the boundaryLine the boundary is associated to.
      */
-    virtual const DanglingLine& getDanglingLine() const = 0;
+    virtual const BoundaryLine& getBoundaryLine() const = 0;
 
     /**
-     * Get the danglingLine the boundary is associated to.
+     * Get the boundaryLine the boundary is associated to.
      */
-    virtual DanglingLine& getDanglingLine() = 0;
+    virtual BoundaryLine& getBoundaryLine() = 0;
 
     /**
      * Get the active power at the fictitious terminal going from the boundary fictitious bus to the network.

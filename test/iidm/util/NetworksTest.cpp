@@ -8,7 +8,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/Battery.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -18,7 +18,7 @@
 #include <powsybl/iidm/util/Networks.hpp>
 
 #include <powsybl/network/BatteryNetworkFactory.hpp>
-#include <powsybl/network/DanglingLineNetworkFactory.hpp>
+#include <powsybl/network/BoundaryLineNetworkFactory.hpp>
 #include <powsybl/network/FourSubstationsNodeBreakerFactory.hpp>
 
 namespace powsybl {
@@ -75,25 +75,25 @@ BOOST_AUTO_TEST_CASE(applySolvedValuesBatteryTest) {
     BOOST_CHECK_CLOSE(-battery.getTerminal().getQ(), battery.getTargetQ(), std::numeric_limits<double>::epsilon());
 }
 
-BOOST_AUTO_TEST_CASE(applySolvedValuesDanglingLineTest) {
-    Network network = powsybl::network::DanglingLineNetworkFactory::createWithGeneration();
-    DanglingLine& dl = network.getDanglingLine("DL");
-    dl.getTerminal().setP(441).setQ(30);
-    dl.getTerminal().getBusView().getBus().get().setV(100);
-    BOOST_CHECK_NE(-dl.getTerminal().getP(), dl.getGeneration().get().getTargetP());
-    BOOST_CHECK_NE(dl.getTerminal().getBusView().getBus().get().getV(), dl.getGeneration().get().getTargetV());
+BOOST_AUTO_TEST_CASE(applySolvedValuesBoundaryLineTest) {
+    Network network = powsybl::network::BoundaryLineNetworkFactory::createWithGeneration();
+    BoundaryLine& bl = network.getBoundaryLine("BL");
+    bl.getTerminal().setP(441).setQ(30);
+    bl.getTerminal().getBusView().getBus().get().setV(100);
+    BOOST_CHECK_NE(-bl.getTerminal().getP(), bl.getGeneration().get().getTargetP());
+    BOOST_CHECK_NE(bl.getTerminal().getBusView().getBus().get().getV(), bl.getGeneration().get().getTargetV());
 
     Networks::applySolvedValues(network);
-    BOOST_CHECK_CLOSE(-dl.getTerminal().getP(), dl.getGeneration().get().getTargetP(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(dl.getTerminal().getBusView().getBus().get().getV(), dl.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-bl.getTerminal().getP(), bl.getGeneration().get().getTargetP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(bl.getTerminal().getBusView().getBus().get().getV(), bl.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
 
-    dl.getGeneration().get().setVoltageRegulationOn(false).setTargetV(stdcxx::nan()).setTargetQ(35);
-    BOOST_CHECK_NE(-dl.getTerminal().getQ(), dl.getGeneration().get().getTargetQ());
-    BOOST_CHECK(std::isnan(dl.getGeneration().get().getTargetV()));
+    bl.getGeneration().get().setVoltageRegulationOn(false).setTargetV(stdcxx::nan()).setTargetQ(35);
+    BOOST_CHECK_NE(-bl.getTerminal().getQ(), bl.getGeneration().get().getTargetQ());
+    BOOST_CHECK(std::isnan(bl.getGeneration().get().getTargetV()));
 
     Networks::applySolvedValues(network);
-    BOOST_CHECK_CLOSE(-dl.getTerminal().getQ(), dl.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(dl.getTerminal().getBusView().getBus().get().getV(), dl.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-bl.getTerminal().getQ(), bl.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(bl.getTerminal().getBusView().getBus().get().getV(), bl.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
 }
 BOOST_AUTO_TEST_SUITE_END()
 

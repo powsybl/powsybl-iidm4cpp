@@ -24,7 +24,7 @@ public:  // TopologyVisitor
 
     void visitBusbarSection(const BusbarSection& section) override;
 
-    void visitDanglingLine(const DanglingLine& danglingLine) override;
+    void visitBoundaryLine(const BoundaryLine& boundaryLine) override;
 
     void visitGenerator(const Generator& generator) override;
 

@@ -17,7 +17,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class DanglingLine;
+class BoundaryLine;
 class Line;
 class TwoWindingsTransformer;
 class TieLine;
@@ -52,39 +52,39 @@ public:
 
     SV otherSide(const TieLine& tieLine) const;
 
-    SV otherSide(const DanglingLine& dl) const;
+    SV otherSide(const BoundaryLine& bl) const;
 
-    SV otherSide(const DanglingLine& dl, bool splitShuntAdmittance) const;
+    SV otherSide(const BoundaryLine& bl, bool splitShuntAdmittance) const;
 
     double otherSideA(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
 
-    double otherSideA(const DanglingLine& dl) const;
+    double otherSideA(const BoundaryLine& bl) const;
 
-    double otherSideA(const DanglingLine& dl, bool splitShuntAdmittance) const;
+    double otherSideA(const BoundaryLine& bl, bool splitShuntAdmittance) const;
 
     double otherSideI(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
 
-    double otherSideI(const DanglingLine& dl) const;
+    double otherSideI(const BoundaryLine& bl) const;
 
-    double otherSideI(const DanglingLine& dl, bool splitShuntAdmittance) const;
+    double otherSideI(const BoundaryLine& bl, bool splitShuntAdmittance) const;
 
     double otherSideP(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
 
-    double otherSideP(const DanglingLine& dl) const;
+    double otherSideP(const BoundaryLine& bl) const;
 
-    double otherSideP(const DanglingLine& dl, bool splitShuntAdmittance) const;
+    double otherSideP(const BoundaryLine& bl, bool splitShuntAdmittance) const;
 
     double otherSideQ(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
 
-    double otherSideQ(const DanglingLine& dl) const;
+    double otherSideQ(const BoundaryLine& bl) const;
 
-    double otherSideQ(const DanglingLine& dl, bool splitShuntAdmittance) const;
+    double otherSideQ(const BoundaryLine& bl, bool splitShuntAdmittance) const;
 
     double otherSideU(double r, double x, double g1, double b1, double g2, double b2, double rho, double alpha) const;
 
-    double otherSideU(const DanglingLine& dl) const;
+    double otherSideU(const BoundaryLine& bl) const;
 
-    double otherSideU(const DanglingLine& dl, bool splitShuntAdmittance) const;
+    double otherSideU(const BoundaryLine& bl, bool splitShuntAdmittance) const;
 
 private:
     // Get S1 from Y11.V1 + Y12.V2 = S1* / V1*

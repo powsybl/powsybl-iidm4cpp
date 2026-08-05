@@ -10,8 +10,8 @@
 #include <powsybl/iidm/Area.hpp>
 #include <powsybl/iidm/AreaBoundary.hpp>
 #include <powsybl/iidm/AreaAdder.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/TieLine.hpp>
@@ -106,9 +106,9 @@ BOOST_AUTO_TEST_CASE(getAreaBoundaryTest) {
     Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
     Area& controlAreaA = network.getArea("ControlArea_A");
 
-    DanglingLine& dl = network.getDanglingLine("NHV1_XNODE1");
+    BoundaryLine& bl = network.getBoundaryLine("NHV1_XNODE1");
 
-    std::shared_ptr<AreaBoundary> areaBoundary = controlAreaA.getAreaBoundary(dl.getBoundary());
+    std::shared_ptr<AreaBoundary> areaBoundary = controlAreaA.getAreaBoundary(bl.getBoundary());
     BOOST_CHECK(static_cast<bool>(areaBoundary));
     BOOST_CHECK(areaBoundary->isAc());
     BOOST_CHECK_EQUAL(controlAreaA.getId(), areaBoundary->getArea().getId());
@@ -116,8 +116,8 @@ BOOST_AUTO_TEST_CASE(getAreaBoundaryTest) {
     BOOST_CHECK_CLOSE(-301.44, areaBoundary->getP(), tol);
     BOOST_CHECK_CLOSE(-116.55, areaBoundary->getQ(), tol);
 
-    controlAreaA.removeAreaBoundary(dl.getBoundary());
-    areaBoundary = controlAreaA.getAreaBoundary(dl.getBoundary());
+    controlAreaA.removeAreaBoundary(bl.getBoundary());
+    areaBoundary = controlAreaA.getAreaBoundary(bl.getBoundary());
     BOOST_CHECK(!static_cast<bool>(areaBoundary));
 
 }
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(areaInterchangeTest) {
     Area& controlAreaA = network.getArea("ControlArea_A");
     Area& controlAreaB = network.getArea("ControlArea_B");
     Area& regionAB = network.getArea("Region_AB");
-    DanglingLine& dl = network.getDanglingLine("NHV1_XNODE1");
+    BoundaryLine& bl = network.getBoundaryLine("NHV1_XNODE1");
 
     BOOST_CHECK_CLOSE(-602.88, controlAreaA.getAcInterchange(), tol);
     BOOST_CHECK_EQUAL(0.0, controlAreaA.getDcInterchange());
@@ -143,7 +143,7 @@ BOOST_AUTO_TEST_CASE(areaInterchangeTest) {
     BOOST_CHECK_EQUAL(0.0, regionAB.getInterchange());
 
     // verify NaN do not mess up the calculation
-    dl.getTerminal().setP(stdcxx::nan());
+    bl.getTerminal().setP(stdcxx::nan());
     BOOST_CHECK_CLOSE(-301.44, controlAreaA.getAcInterchange(), tol);
     BOOST_CHECK_EQUAL(0.0, controlAreaA.getDcInterchange());
     BOOST_CHECK_CLOSE(-301.44, controlAreaA.getInterchange(), tol);
@@ -221,21 +221,21 @@ BOOST_AUTO_TEST_CASE(areaWithTerminalTest) {
     auto& twt = network.getTwoWindingsTransformer("NGEN_NHV1");
     Area& controlAreaA = network.getArea("ControlArea_A");
     Area& controlAreaB = network.getArea("ControlArea_B");
-    DanglingLine& dlXnode1A = network.getDanglingLine("NHV1_XNODE1");
-    DanglingLine& dlXnode1B = network.getDanglingLine("XNODE1_NHV2");
-    DanglingLine& dlXnode2A = network.getDanglingLine("NHV1_XNODE2");
-    DanglingLine& dlXnode2B = network.getDanglingLine("XNODE2_NHV2");
+    BoundaryLine& blXnode1A = network.getBoundaryLine("NHV1_XNODE1");
+    BoundaryLine& blXnode1B = network.getBoundaryLine("XNODE1_NHV2");
+    BoundaryLine& blXnode2A = network.getBoundaryLine("NHV1_XNODE2");
+    BoundaryLine& blXnode2B = network.getBoundaryLine("XNODE2_NHV2");
 
-    controlAreaA.removeAreaBoundary(dlXnode1A.getBoundary())
-                .removeAreaBoundary(dlXnode2A.getBoundary());
-    controlAreaB.removeAreaBoundary(dlXnode1B.getBoundary())
-                .removeAreaBoundary(dlXnode2B.getBoundary());
+    controlAreaA.removeAreaBoundary(blXnode1A.getBoundary())
+                .removeAreaBoundary(blXnode2A.getBoundary());
+    controlAreaB.removeAreaBoundary(blXnode1B.getBoundary())
+                .removeAreaBoundary(blXnode2B.getBoundary());
 
     BOOST_CHECK(!static_cast<bool>(controlAreaA.getAreaBoundary(twt.getTerminal2())));
 
     controlAreaA.newAreaBoundary().setTerminal(twt.getTerminal2()).setAc(true).add();
-    controlAreaB.newAreaBoundary().setTerminal(dlXnode1A.getTerminal()).setAc(true).add()
-                .newAreaBoundary().setTerminal(dlXnode2A.getTerminal()).setAc(true).add();
+    controlAreaB.newAreaBoundary().setTerminal(blXnode1A.getTerminal()).setAc(true).add()
+                .newAreaBoundary().setTerminal(blXnode2A.getTerminal()).setAc(true).add();
 
     std::shared_ptr<AreaBoundary> areaBoundary = controlAreaA.getAreaBoundary(twt.getTerminal2());
     BOOST_CHECK(static_cast<bool>(areaBoundary));
@@ -259,8 +259,8 @@ BOOST_AUTO_TEST_CASE(areaWithTerminalTest) {
     BOOST_CHECK_EQUAL(0.0, controlAreaA.getInterchange());
 
     //remove terminal boundaries
-    controlAreaB.removeAreaBoundary(dlXnode1A.getTerminal())
-                .removeAreaBoundary(dlXnode2A.getTerminal());
+    controlAreaB.removeAreaBoundary(blXnode1A.getTerminal())
+                .removeAreaBoundary(blXnode2A.getTerminal());
     BOOST_CHECK_EQUAL(0, boost::size(controlAreaB.getAreaBoundaries()));
 
 }
@@ -268,13 +268,13 @@ BOOST_AUTO_TEST_CASE(areaWithTerminalTest) {
 BOOST_AUTO_TEST_CASE(addSameBoundaryTest) {
     Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
     Area& controlAreaA = network.getArea("ControlArea_A");
-    DanglingLine& dlXnode1A = network.getDanglingLine("NHV1_XNODE1");
-    DanglingLine& dlXnode2A = network.getDanglingLine("NHV1_XNODE2");
+    BoundaryLine& blXnode1A = network.getBoundaryLine("NHV1_XNODE1");
+    BoundaryLine& blXnode2A = network.getBoundaryLine("NHV1_XNODE2");
     
     BOOST_CHECK_EQUAL(2, boost::size(controlAreaA.getAreaBoundaries()));
     // re-add
-    controlAreaA.newAreaBoundary().setBoundary(dlXnode1A.getBoundary()).setAc(true).add()
-                .newAreaBoundary().setBoundary(dlXnode2A.getBoundary()).setAc(true).add();
+    controlAreaA.newAreaBoundary().setBoundary(blXnode1A.getBoundary()).setAc(true).add()
+                .newAreaBoundary().setBoundary(blXnode2A.getBoundary()).setAc(true).add();
     // no change
     BOOST_CHECK_EQUAL(2, boost::size(controlAreaA.getAreaBoundaries()));
     BOOST_CHECK_CLOSE(-602.88, controlAreaA.getAcInterchange(), tol);
@@ -282,8 +282,8 @@ BOOST_AUTO_TEST_CASE(addSameBoundaryTest) {
     BOOST_CHECK_CLOSE(-602.88, controlAreaA.getInterchange(), tol);
 
     // change them to DC
-    controlAreaA.newAreaBoundary().setBoundary(dlXnode1A.getBoundary()).setAc(false).add()
-                .newAreaBoundary().setBoundary(dlXnode2A.getBoundary()).setAc(false).add();
+    controlAreaA.newAreaBoundary().setBoundary(blXnode1A.getBoundary()).setAc(false).add()
+                .newAreaBoundary().setBoundary(blXnode2A.getBoundary()).setAc(false).add();
     BOOST_CHECK_EQUAL(2, boost::size(controlAreaA.getAreaBoundaries()));
     BOOST_CHECK_EQUAL(0.0, controlAreaA.getAcInterchange());
     BOOST_CHECK_CLOSE(-602.88, controlAreaA.getDcInterchange(), tol);
@@ -293,9 +293,9 @@ BOOST_AUTO_TEST_CASE(addSameBoundaryTest) {
 BOOST_AUTO_TEST_CASE(withDcTest) {
     Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
     Area& controlAreaA = network.getArea("ControlArea_A");
-    DanglingLine& dlXnode2A = network.getDanglingLine("NHV1_XNODE2");
+    BoundaryLine& blXnode2A = network.getBoundaryLine("NHV1_XNODE2");
 
-    controlAreaA.newAreaBoundary().setBoundary(dlXnode2A.getBoundary()).setAc(false).add();
+    controlAreaA.newAreaBoundary().setBoundary(blXnode2A.getBoundary()).setAc(false).add();
     BOOST_CHECK_CLOSE(-301.44, controlAreaA.getAcInterchange(), tol);
     BOOST_CHECK_CLOSE(-301.44, controlAreaA.getDcInterchange(), tol);
     BOOST_CHECK_CLOSE(-602.88, controlAreaA.getInterchange(), tol);
@@ -314,12 +314,12 @@ BOOST_AUTO_TEST_CASE(removeVoltageLevelTest) {
 BOOST_AUTO_TEST_CASE(removeAreaBoundariesTest) {
     Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
     Area& controlAreaA = network.getArea("ControlArea_A");
-    DanglingLine& dlXnode1A = network.getDanglingLine("NHV1_XNODE1");
-    DanglingLine& dlXnode2A = network.getDanglingLine("NHV1_XNODE2");
+    BoundaryLine& blXnode1A = network.getBoundaryLine("NHV1_XNODE1");
+    BoundaryLine& blXnode2A = network.getBoundaryLine("NHV1_XNODE2");
     BOOST_CHECK_EQUAL(2, boost::size(controlAreaA.getAreaBoundaries()));
         
-    controlAreaA.removeAreaBoundary(dlXnode1A.getBoundary())
-                .removeAreaBoundary(dlXnode2A.getBoundary());
+    controlAreaA.removeAreaBoundary(blXnode1A.getBoundary())
+                .removeAreaBoundary(blXnode2A.getBoundary());
     BOOST_CHECK_EQUAL(0, boost::size(controlAreaA.getAreaBoundaries()));
 }
 
@@ -360,8 +360,8 @@ BOOST_AUTO_TEST_CASE(throwBoundaryOtherNetworkTest) {
     Bus& bus = sn1VL1.getBusBreakerView().newBus()
                 .setId("sub1_bus")
                 .add();
-    DanglingLine& danglingLine = sn1VL1.newDanglingLine()
-                .setId("sub1_dl")
+    BoundaryLine& boundaryLine = sn1VL1.newBoundaryLine()
+                .setId("sub1_bl")
                 .setP0(0.0)
                 .setQ0(0.0)
                 .setR(1.0)
@@ -371,20 +371,20 @@ BOOST_AUTO_TEST_CASE(throwBoundaryOtherNetworkTest) {
                 .setBus(bus.getId())
                 .setPairingKey("XNODE")
                 .add();
-    AreaBoundaryAdder areaBoundaryAdder = controlAreaA.newAreaBoundary().setBoundary(danglingLine.getBoundary()).setAc(true);
-    POWSYBL_ASSERT_THROW(areaBoundaryAdder.add(), PowsyblException, "Boundary of DanglingLine sub1_dl cannot be added to Area ControlArea_A boundaries. It does not belong to the same network or subnetwork.");
+    AreaBoundaryAdder areaBoundaryAdder = controlAreaA.newAreaBoundary().setBoundary(boundaryLine.getBoundary()).setAc(true);
+    POWSYBL_ASSERT_THROW(areaBoundaryAdder.add(), PowsyblException, "Boundary of BoundaryLine sub1_bl cannot be added to Area ControlArea_A boundaries. It does not belong to the same network or subnetwork.");
 
 }
 
 BOOST_AUTO_TEST_CASE(throwBoundaryAttributeNotSetTest) {
     Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
     Area& controlAreaA = network.getArea("ControlArea_A");
-    DanglingLine& dlXnode1A = network.getDanglingLine("NHV1_XNODE1");
+    BoundaryLine& blXnode1A = network.getBoundaryLine("NHV1_XNODE1");
 
     AreaBoundaryAdder areaBoundaryAdder1 = controlAreaA.newAreaBoundary().setAc(true);
     POWSYBL_ASSERT_THROW(areaBoundaryAdder1.add(), PowsyblException, "No AreaBoundary element (terminal or boundary) is set.");
 
-    AreaBoundaryAdder areaBoundaryAdder2 = controlAreaA.newAreaBoundary().setBoundary(dlXnode1A.getBoundary());
+    AreaBoundaryAdder areaBoundaryAdder2 = controlAreaA.newAreaBoundary().setBoundary(blXnode1A.getBoundary());
     POWSYBL_ASSERT_THROW(areaBoundaryAdder2.add(), PowsyblException, "AreaBoundary AC flag is not set.");
 }
 
@@ -443,9 +443,9 @@ BOOST_AUTO_TEST_CASE(removeAreaTest) {
         vls.push_back(stdcxx::ref(vl));
     }
 
-    BOOST_CHECK_EQUAL(1, network.getDanglingLine("NHV1_XNODE1").getBoundary().getReferrers().size());
+    BOOST_CHECK_EQUAL(1, network.getBoundaryLine("NHV1_XNODE1").getBoundary().getReferrers().size());
     controlAreaA.remove();
-    BOOST_CHECK_EQUAL(0, network.getDanglingLine("NHV1_XNODE1").getBoundary().getReferrers().size());
+    BOOST_CHECK_EQUAL(0, network.getBoundaryLine("NHV1_XNODE1").getBoundary().getReferrers().size());
 
     POWSYBL_ASSERT_THROW(network.getArea("ControlArea_A"), PowsyblException, "Unable to find to the identifiable 'ControlArea_A'");
     for(auto& area : network.getAreas()) {
@@ -458,7 +458,7 @@ BOOST_AUTO_TEST_CASE(removeAreaTest) {
         }
     }
 
-    //Add a second Area on the same dangling line boundary
+    //Add a second Area on the same boundary line boundary
     network.newArea()
                 .setId("ControlArea_B_Bis")
                 .setName("Control Area B_Bis")
@@ -466,20 +466,20 @@ BOOST_AUTO_TEST_CASE(removeAreaTest) {
                 .setInterchangeTarget(+602.6)
                 .addVoltageLevel(network.getVoltageLevel("VLHV2"))
                 .addVoltageLevel(network.getVoltageLevel("VLLOAD"))
-                .addAreaBoundary(network.getDanglingLine("XNODE1_NHV2").getBoundary(), true)
-                .addAreaBoundary(network.getDanglingLine("XNODE2_NHV2").getBoundary(), true)
+                .addAreaBoundary(network.getBoundaryLine("XNODE1_NHV2").getBoundary(), true)
+                .addAreaBoundary(network.getBoundaryLine("XNODE2_NHV2").getBoundary(), true)
                 .add();
     Area& controlAreaB = network.getArea("ControlArea_B");
     Area& controlAreaBBis = network.getArea("ControlArea_B_Bis");
 
-    controlAreaBBis.removeAreaBoundary(network.getDanglingLine("XNODE1_NHV2").getBoundary());
+    controlAreaBBis.removeAreaBoundary(network.getBoundaryLine("XNODE1_NHV2").getBoundary());
 
-    BOOST_CHECK_EQUAL(2, network.getDanglingLine("XNODE2_NHV2").getBoundary().getReferrers().size());
+    BOOST_CHECK_EQUAL(2, network.getBoundaryLine("XNODE2_NHV2").getBoundary().getReferrers().size());
     BOOST_CHECK_EQUAL(2, controlAreaB.getAreaBoundaries().size());
     BOOST_CHECK_EQUAL(1, controlAreaBBis.getAreaBoundaries().size());
-    //Remove Dangling Line Boundary will remove all area boundaries attached to it:
+    //Remove Boundary Line Boundary will remove all area boundaries attached to it:
     network.getTieLine("NHV1_NHV2_2").remove();
-    network.getDanglingLine("XNODE2_NHV2").remove();
+    network.getBoundaryLine("XNODE2_NHV2").remove();
     BOOST_CHECK_EQUAL(1, controlAreaB.getAreaBoundaries().size());
     BOOST_CHECK_EQUAL(0, controlAreaBBis.getAreaBoundaries().size());
 }

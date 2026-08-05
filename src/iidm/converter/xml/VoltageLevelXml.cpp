@@ -26,6 +26,7 @@
 #include <powsybl/xml/XmlStreamException.hpp>
 
 #include "BatteryXml.hpp"
+#include "BoundaryLineXml.hpp"
 #include "BusBreakerViewSwitchXml.hpp"
 #include "BusXml.hpp"
 #include "BusbarSectionXml.hpp"
@@ -165,11 +166,13 @@ void VoltageLevelXml::readSubElements(VoltageLevel& voltageLevel, NetworkXmlRead
             GeneratorXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == LOAD) {
             LoadXml::getInstance().read(voltageLevel, context);
-        } else if (context.getReader().getLocalName() == SHUNT) {
+        } else if (context.getReader().getLocalName() == SHUNT) { //kept for backward compatibility
             ShuntXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == SHUNT_COMPENSATOR) {
             ShuntCompensatorXml::getInstance().read(voltageLevel, context);
-        } else if (context.getReader().getLocalName() == DANGLING_LINE) {
+        } else if (context.getReader().getLocalName() == BOUNDARY_LINE) {
+            BoundaryLineXml::getInstance().read(voltageLevel, context);
+        } else if (context.getReader().getLocalName() == DANGLING_LINE) { //kept for backward compatibility
             DanglingLineXml::getInstance().read(voltageLevel, context);
         } else if (context.getReader().getLocalName() == STATIC_VAR_COMPENSATOR) {
             StaticVarCompensatorXml::getInstance().read(voltageLevel, context);
@@ -242,12 +245,16 @@ void VoltageLevelXml::writeCalculatedBus(const Bus& bus, const std::set<unsigned
     context.getWriter().writeEndElement();
 }
 
-void VoltageLevelXml::writeDanglingLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
-    for (const auto& dl : voltageLevel.getDanglingLines()) {
-        if (!context.getFilter().test(dl) || (context.getVersion() < IidmXmlVersion::V1_10() && dl.isPaired())) {
+void VoltageLevelXml::writeBoundaryLines(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const {
+    for (const auto& bl : voltageLevel.getBoundaryLines()) {
+        if (!context.getFilter().test(bl) || (context.getVersion() < IidmXmlVersion::V1_10() && bl.isPaired())) {
             continue;
         }
-        DanglingLineXml::getInstance().write(dl, voltageLevel, context);
+        if(context.getVersion() >= IidmXmlVersion::V1_16()) {
+            BoundaryLineXml::getInstance().write(bl, voltageLevel, context);
+        } else {
+            DanglingLineXml::getInstance().write(bl, voltageLevel, context);
+        }
     }
 }
 
@@ -392,7 +399,7 @@ void VoltageLevelXml::writeSubElements(const VoltageLevel& voltageLevel, const C
     writeBatteries(voltageLevel, context);
     writeLoads(voltageLevel, context);
     writeShuntCompensators(voltageLevel, context);
-    writeDanglingLines(voltageLevel, context);
+    writeBoundaryLines(voltageLevel, context);
     writeStaticVarCompensators(voltageLevel, context);
     writeVscConverterStations(voltageLevel, context);
     writeLccConverterStations(voltageLevel, context);

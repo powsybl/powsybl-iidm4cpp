@@ -11,9 +11,9 @@
 
 #include <powsybl/PowsyblException.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
-#include <powsybl/iidm/DanglingLineGeneration.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
+#include <powsybl/iidm/BoundaryLineGeneration.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
@@ -75,7 +75,7 @@ void assertNetwork(const Network& network) {
 }
 
 Network& createSubnetwork(Network& rootnetwork, int num) {
-    std::string dlId = "dl" + std::to_string(num);
+    std::string blId = "dl" + std::to_string(num);
     std::string voltageLevelId = "vl" + std::to_string(num);
     std::string busId = "b" + std::to_string(num);
 
@@ -90,7 +90,7 @@ Network& createSubnetwork(Network& rootnetwork, int num) {
                            .setTopologyKind(TopologyKind::BUS_BREAKER)
                            .add();
     vl1.getBusBreakerView().newBus().setId(busId).add();
-    network.getVoltageLevel(voltageLevelId).newDanglingLine().setId(dlId).setName(dlId + "_name").setConnectableBus(busId).setBus(busId).setP0(0.0).setQ0(0.0).setR(1.0).setX(2.0).setG(4.0).setB(5.0).setPairingKey("code").add();
+    network.getVoltageLevel(voltageLevelId).newBoundaryLine().setId(blId).setName(blId + "_name").setConnectableBus(busId).setBus(busId).setP0(0.0).setQ0(0.0).setR(1.0).setX(2.0).setG(4.0).setB(5.0).setPairingKey("code").add();
 
     // Add an extension on the network and on an inner element
     network.addExtension(stdcxx::make_unique<extensions::NetworkSourceExt>(network, "Source_" + std::to_string(num)));
@@ -347,8 +347,8 @@ BOOST_FIXTURE_TEST_CASE(subnetworksRoundTrip, test::ResourceFixture) {
 
     n0.newTieLine().setId("dl1 + dl2")
                     .setName("dl1_name + dl2_name")
-                    .setDanglingLine1("dl1")
-                    .setDanglingLine2("dl2")
+                    .setBoundaryLine1("dl1")
+                    .setBoundaryLine2("dl2")
                     .add();
 
     std::string filename = "subnetworks.xml";

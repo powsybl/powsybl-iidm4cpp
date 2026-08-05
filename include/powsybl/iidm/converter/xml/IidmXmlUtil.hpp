@@ -196,6 +196,16 @@ public:
     static void runUntilMaximumVersion(const IidmXmlVersion& maxVersion, const IidmXmlVersion& contextVersion, const std::function<void()>& runnable);
 
     /**
+     * Run a given runnable if the context's IIDM-XML version equals or is in betwwen the two given IIDM-XML versions
+     *
+     * @param minVersion the IIDM-XML version from which the runnable can be called
+     * @param maxVersion the IIDM-XML version until which the runnable can be called
+     * @param contextVersion the context's IIDM-XML version
+     * @param runnable the function to run if contextVersion is in betwwen minVersion and maxVersion
+     */
+    static void runInBetweenVersions(const IidmXmlVersion& minVersion, const IidmXmlVersion& maxVersion, const IidmXmlVersion& contextVersion, const std::function<void()>& runnable);
+
+    /**
      * Write a <b>mandatory</b> boolean attribute from a given minimum IIDM-XML version
      *
      * If the context's IIDM-XML version is strictly older than the given minimum IIDM-XML version, the attribute's value <b>should be default</b>

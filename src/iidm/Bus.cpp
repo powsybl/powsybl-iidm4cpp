@@ -10,10 +10,10 @@
 #include <boost/range/adaptor/filtered.hpp>
 
 #include <powsybl/iidm/Battery.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineFilter.hpp>
 #include <powsybl/iidm/Component.hpp>
 #include <powsybl/iidm/ComponentConstants.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineFilter.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/LccConverterStation.hpp>
 #include <powsybl/iidm/Line.hpp>
@@ -53,20 +53,20 @@ stdcxx::range<Battery> Bus::getBatteries() {
     return getAll<Battery>();
 }
 
-stdcxx::const_range<DanglingLine> Bus::getDanglingLines(const DanglingLineFilter& filter) const {
-    return getAll<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+stdcxx::const_range<BoundaryLine> Bus::getBoundaryLines(const BoundaryLineFilter& filter) const {
+    return getAll<BoundaryLine>() | boost::adaptors::filtered(filter.getPredicate());
 }
 
-stdcxx::range<DanglingLine> Bus::getDanglingLines(const DanglingLineFilter& filter) {
-    return getAll<DanglingLine>() | boost::adaptors::filtered(filter.getPredicate());
+stdcxx::range<BoundaryLine> Bus::getBoundaryLines(const BoundaryLineFilter& filter) {
+    return getAll<BoundaryLine>() | boost::adaptors::filtered(filter.getPredicate());
 }
 
-stdcxx::const_range<DanglingLine> Bus::getDanglingLines() const {
-    return getDanglingLines(DanglingLineFilter::ALL());
+stdcxx::const_range<BoundaryLine> Bus::getBoundaryLines() const {
+    return getBoundaryLines(BoundaryLineFilter::ALL());
 }
 
-stdcxx::range<DanglingLine> Bus::getDanglingLines() {
-    return getDanglingLines(DanglingLineFilter::ALL());
+stdcxx::range<BoundaryLine> Bus::getBoundaryLines() {
+    return getBoundaryLines(BoundaryLineFilter::ALL());
 }
 
 double Bus::getFictitiousP0() const {
@@ -138,7 +138,7 @@ double Bus::getP() const {
             case IdentifiableType::LINE:
             case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
             case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
-            case IdentifiableType::DANGLING_LINE:
+            case IdentifiableType::BOUNDARY_LINE:
             case IdentifiableType::GROUND:
                 // skip
                 break;
@@ -185,7 +185,7 @@ double Bus::getQ() const {
             case IdentifiableType::LINE:
             case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
             case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
-            case IdentifiableType::DANGLING_LINE:
+            case IdentifiableType::BOUNDARY_LINE:
             case IdentifiableType::GROUND:
                 // skip
                 break;

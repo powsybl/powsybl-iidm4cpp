@@ -99,11 +99,11 @@ public:
 private:
 
     /**
-     * Creates a simple one bus AC (sub)network with dangling lines.
+     * Creates a simple one bus AC (sub)network with boundary lines.
      * <br/>
      * Example with FR and one xNode where FR exports 200 MW:
      * <pre>
-     *     var net = createSimpleAcNetworkWithDanglingLines(networkFactory, Country.FR, Map.of("xNode1", 200.));
+     *     var net = createSimpleAcNetworkWithBoundaryLines(networkFactory, Country.FR, Map.of("xNode1", 200.));
      * </pre>
      *
      * <pre>
@@ -116,7 +116,7 @@ private:
      *  P0 = 2000 MW - 200 MW = 1800 MW
      * </pre>
      */
-    static iidm::Network& createSimpleAcNetworkWithDanglingLines(iidm::Network& rootNetwork, const iidm::Country& country, const std::map<std::string, double>& xNodes);
+    static iidm::Network& createSimpleAcNetworkWithBoundaryLines(iidm::Network& rootNetwork, const iidm::Country& country, const std::map<std::string, double>& xNodes);
 
 
     static std::string getId(const std::string& type, const iidm::Country& country, const std::string& xNode, const std::string& suffix);

@@ -7,9 +7,9 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/LineAdder.hpp>
@@ -245,8 +245,8 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
 
 
     // We define an error by value to adjust the case. The error is calculated by difference between
-    // the calculated value with both models, the initial model of the case and the current model of the danglingLine
-    // Errors are due to the danglingLine model (it does not allow shunt admittance at both ends)
+    // the calculated value with both models, the initial model of the case and the current model of the boundaryLine
+    // Errors are due to the boundaryLine model (it does not allow shunt admittance at both ends)
     static bool compare(const SV& sv, const NodeSv& nodeSv, const LineSv& lineSv, const TwoSides& boundarySide, const SV& initialModelSv) {
         double tol = 0.00001;
         double errorP = initialModelSv.getP() - sv.getP();
@@ -269,8 +269,8 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
     }
 
     // We define an error to adjust the case. The error is calculated by difference between
-    // the calculated value with both models, the initial model of the case and the current model of the danglingLine
-    // Errors are due to the danglingLine model (it does not allow shunt admittance at both ends)
+    // the calculated value with both models, the initial model of the case and the current model of the boundaryLine
+    // Errors are due to the boundaryLine model (it does not allow shunt admittance at both ends)
     static bool compare(double expected, double actual, double initialActual) {
         double tol = 0.00001;
         double error = initialActual - actual;
@@ -322,7 +322,7 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         // AcLinesegment 1 must be reoriented if boundary side is at end 1
         // AcLinesegment 2 must be reoriented if boundary side is at end 2
         // Current model does not allow shunt admittances at both ends, so it does not make sense to reorient the AcLineSegments
-        DanglingLine& dl1 = s1vl1.newDanglingLine()
+        BoundaryLine& bl1 = s1vl1.newBoundaryLine()
                 .setBus("S1VL1-BUS")
                 .setId(Enum::toString(boundarySide1))
                 .setEnsureIdUnicity(true)
@@ -334,7 +334,7 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
                 .setG(0.05)
                 .setB(0.14)
                 .add();
-        DanglingLine& dl2 = s2vl1.newDanglingLine()
+        BoundaryLine& bl2 = s2vl1.newBoundaryLine()
                 .setBus("S2VL1-BUS")
                 .setId(Enum::toString(boundarySide2))
                 .setEnsureIdUnicity(true)
@@ -351,18 +351,18 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         TieLine& tieLine = network.newTieLine()
             .setId(Enum::toString(boundarySide1) + " + " + Enum::toString(boundarySide2))
             .setName(Enum::toString(boundarySide1) + " + " + Enum::toString(boundarySide2))
-            .setDanglingLine1(dl1.getId())
-            .setDanglingLine2(dl2.getId())
+            .setBoundaryLine1(bl1.getId())
+            .setBoundaryLine2(bl2.getId())
             .add();
-        tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().setV(caseSv.node1.v);
-        tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().setAngle(caseSv.node1.a);
-        tieLine.getDanglingLine1().getTerminal().setP(getOtherSideP(caseSv.line1, boundarySide1));
-        tieLine.getDanglingLine1().getTerminal().setQ(getOtherSideQ(caseSv.line1, boundarySide1));
+        tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().setV(caseSv.node1.v);
+        tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().setAngle(caseSv.node1.a);
+        tieLine.getBoundaryLine1().getTerminal().setP(getOtherSideP(caseSv.line1, boundarySide1));
+        tieLine.getBoundaryLine1().getTerminal().setQ(getOtherSideQ(caseSv.line1, boundarySide1));
 
-        tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().setV(caseSv.node2.v);
-        tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().setAngle(caseSv.node2.a);
-        tieLine.getDanglingLine2().getTerminal().setP(getOtherSideP(caseSv.line2, boundarySide2));
-        tieLine.getDanglingLine2().getTerminal().setQ(getOtherSideQ(caseSv.line2, boundarySide2));
+        tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().setV(caseSv.node2.v);
+        tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().setAngle(caseSv.node2.a);
+        tieLine.getBoundaryLine2().getTerminal().setP(getOtherSideP(caseSv.line2, boundarySide2));
+        tieLine.getBoundaryLine2().getTerminal().setQ(getOtherSideQ(caseSv.line2, boundarySide2));
 
         return network;
     }
@@ -402,7 +402,7 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         // The initial parameters for AcLineSegment 2 are R = 3.1513680000000006, X = 14.928011999999999, G1 = 0.008044414674299755, B1 = -0.03791520949675112, G2 = -0.005046041932060755, B2 = 0.023978278075869598
         // AcLinesegment 2 must be reoriented if boundary side is at end 2
         // Current model does not allow shunt admittances at both ends, so it does not make sense to reorient it
-        DanglingLine& dl1 = s1vl1.newDanglingLine()
+        BoundaryLine& bl1 = s1vl1.newBoundaryLine()
                 .setBus("S1VL1-BUS")
                 .setId(Enum::toString(boundarySide1))
                 .setName(Enum::toString(boundarySide1))
@@ -414,7 +414,7 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
                 .setB(0.00032976265)
                 .setPairingKey("key")
                 .add();
-        DanglingLine& dl2 = s2vl1.newDanglingLine()
+        BoundaryLine& bl2 = s2vl1.newBoundaryLine()
                 .setBus("S2VL1-BUS")
                 .setId(Enum::toString(boundarySide2))
                 .setName(Enum::toString(boundarySide2))
@@ -429,19 +429,19 @@ BOOST_AUTO_TEST_SUITE(TieLineTestSuite)
         TieLine& tieLine = network.newTieLine()
                 .setId(Enum::toString(boundarySide1) + " + " + Enum::toString(boundarySide2))
                 .setName(Enum::toString(boundarySide1) + " + " + Enum::toString(boundarySide2))
-                .setDanglingLine1(dl1.getId())
-                .setDanglingLine2(dl2.getId())
+                .setBoundaryLine1(bl1.getId())
+                .setBoundaryLine2(bl2.getId())
                 .add();
 
-        tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().setV(caseSv.node1.v);
-        tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().setAngle(caseSv.node1.a);
-        tieLine.getDanglingLine1().getTerminal().setP(getOtherSideP(caseSv.line1, boundarySide1));
-        tieLine.getDanglingLine1().getTerminal().setQ(getOtherSideQ(caseSv.line1, boundarySide1));
+        tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().setV(caseSv.node1.v);
+        tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().setAngle(caseSv.node1.a);
+        tieLine.getBoundaryLine1().getTerminal().setP(getOtherSideP(caseSv.line1, boundarySide1));
+        tieLine.getBoundaryLine1().getTerminal().setQ(getOtherSideQ(caseSv.line1, boundarySide1));
 
-        tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().setV(caseSv.node2.v);
-        tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().setAngle(caseSv.node2.a);
-        tieLine.getDanglingLine2().getTerminal().setP(getOtherSideP(caseSv.line2, boundarySide2));
-        tieLine.getDanglingLine2().getTerminal().setQ(getOtherSideQ(caseSv.line2, boundarySide2));
+        tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().setV(caseSv.node2.v);
+        tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().setAngle(caseSv.node2.a);
+        tieLine.getBoundaryLine2().getTerminal().setP(getOtherSideP(caseSv.line2, boundarySide2));
+        tieLine.getBoundaryLine2().getTerminal().setQ(getOtherSideQ(caseSv.line2, boundarySide2));
 
         return network;
     }
@@ -453,33 +453,33 @@ BOOST_AUTO_TEST_CASE(tieLineTest0) {
     Network n = createNetworkWithTieLine(TwoSides::TWO, TwoSides::ONE, caseSv0);
 
     TieLine& tieLine = n.getTieLine("TWO + ONE");
-    SV sv2 = SV(tieLine.getDanglingLine1().getTerminal().getP(), tieLine.getDanglingLine1().getTerminal().getQ(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv2 = SV(tieLine.getBoundaryLine1().getTerminal().getP(), tieLine.getBoundaryLine1().getTerminal().getQ(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::ONE).otherSide(tieLine);
     SV isv2 = initialSv2(caseSv0, initialModelCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO, TwoSides::ONE);
     BOOST_CHECK(compare(sv2, caseSv0.node2, caseSv0.line2, TwoSides::ONE, isv2));
 
-    SV sv1 = SV(tieLine.getDanglingLine2().getTerminal().getP(), tieLine.getDanglingLine2().getTerminal().getQ(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv1 = SV(tieLine.getBoundaryLine2().getTerminal().getP(), tieLine.getBoundaryLine2().getTerminal().getQ(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::TWO).otherSide(tieLine);
     SV isv1 = initialSv1(caseSv0, initialModelCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO, TwoSides::ONE);
     BOOST_CHECK(compare(sv1, caseSv0.node1, caseSv0.line1, TwoSides::TWO, isv1));
 
     SV isvHalf1 = initialHalf1SvBoundary(caseSv0, initialModelCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO);
-    BOOST_CHECK(compare(caseSv0.nodeBoundary.v, tieLine.getDanglingLine1().getBoundary().getV(), isvHalf1.getU()));
-    BOOST_CHECK(compare(caseSv0.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
-    BOOST_CHECK(compare(getP(caseSv0.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
-    BOOST_CHECK(compare(getQ(caseSv0.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
-    BOOST_CHECK(compare(getI(caseSv0.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
+    BOOST_CHECK(compare(caseSv0.nodeBoundary.v, tieLine.getBoundaryLine1().getBoundary().getV(), isvHalf1.getU()));
+    BOOST_CHECK(compare(caseSv0.nodeBoundary.a, tieLine.getBoundaryLine1().getBoundary().getAngle(), isvHalf1.getA()));
+    BOOST_CHECK(compare(getP(caseSv0.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getP(), isvHalf1.getP()));
+    BOOST_CHECK(compare(getQ(caseSv0.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv0.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv0, initialModelCase(TwoSides::TWO, TwoSides::ONE), TwoSides::ONE);
-    BOOST_CHECK(compare(caseSv0.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
-    BOOST_CHECK(compare(caseSv0.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
-    BOOST_CHECK(compare(getP(caseSv0.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
-    BOOST_CHECK(compare(getQ(caseSv0.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
-    BOOST_CHECK(compare(getI(caseSv0.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
+    BOOST_CHECK(compare(caseSv0.nodeBoundary.v, tieLine.getBoundaryLine2().getBoundary().getV(), isvHalf2.getU()));
+    BOOST_CHECK(compare(caseSv0.nodeBoundary.a, tieLine.getBoundaryLine2().getBoundary().getAngle(), isvHalf2.getA()));
+    BOOST_CHECK(compare(getP(caseSv0.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getP(), isvHalf2.getP()));
+    BOOST_CHECK(compare(getQ(caseSv0.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv0.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getI(), isvHalf2.getI()));
     
 }
 BOOST_AUTO_TEST_CASE(tieLineTest1) {
@@ -488,33 +488,33 @@ BOOST_AUTO_TEST_CASE(tieLineTest1) {
     Network n = createNetworkWithTieLine(TwoSides::TWO, TwoSides::TWO, caseSv1);
     TieLine& tieLine = n.getTieLine("TWO + TWO");
 
-    SV sv2 = SV(tieLine.getDanglingLine1().getTerminal().getP(), tieLine.getDanglingLine1().getTerminal().getQ(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv2 = SV(tieLine.getBoundaryLine1().getTerminal().getP(), tieLine.getBoundaryLine1().getTerminal().getQ(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::ONE).otherSide(tieLine);
     SV isv2 = initialSv2(caseSv1, initialModelCase(TwoSides::TWO, TwoSides::TWO), TwoSides::TWO, TwoSides::TWO);
     BOOST_CHECK(compare(sv2, caseSv1.node2, caseSv1.line2, TwoSides::TWO, isv2));
 
-    SV sv1 = SV(tieLine.getDanglingLine2().getTerminal().getP(), tieLine.getDanglingLine2().getTerminal().getQ(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv1 = SV(tieLine.getBoundaryLine2().getTerminal().getP(), tieLine.getBoundaryLine2().getTerminal().getQ(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::TWO).otherSide(tieLine);
     SV isv1 = initialSv1(caseSv1, initialModelCase(TwoSides::TWO, TwoSides::TWO), TwoSides::TWO, TwoSides::TWO);
     BOOST_CHECK(compare(sv1, caseSv1.node1, caseSv1.line1, TwoSides::TWO, isv1));
 
     SV isvHalf1 = initialHalf1SvBoundary(caseSv1, initialModelCase(TwoSides::TWO, TwoSides::TWO), TwoSides::TWO);
-    BOOST_CHECK(compare(caseSv1.nodeBoundary.v, tieLine.getDanglingLine1().getBoundary().getV(), isvHalf1.getU()));
-    BOOST_CHECK(compare(caseSv1.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
-    BOOST_CHECK(compare(getP(caseSv1.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
-    BOOST_CHECK(compare(getQ(caseSv1.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
-    BOOST_CHECK(compare(getI(caseSv1.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
+    BOOST_CHECK(compare(caseSv1.nodeBoundary.v, tieLine.getBoundaryLine1().getBoundary().getV(), isvHalf1.getU()));
+    BOOST_CHECK(compare(caseSv1.nodeBoundary.a, tieLine.getBoundaryLine1().getBoundary().getAngle(), isvHalf1.getA()));
+    BOOST_CHECK(compare(getP(caseSv1.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getP(), isvHalf1.getP()));
+    BOOST_CHECK(compare(getQ(caseSv1.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv1.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv1, initialModelCase(TwoSides::TWO, TwoSides::TWO), TwoSides::TWO);
-    BOOST_CHECK(compare(caseSv1.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
-    BOOST_CHECK(compare(caseSv1.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
-    BOOST_CHECK(compare(getP(caseSv1.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
-    BOOST_CHECK(compare(getQ(caseSv1.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
-    BOOST_CHECK(compare(getI(caseSv1.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
+    BOOST_CHECK(compare(caseSv1.nodeBoundary.v, tieLine.getBoundaryLine2().getBoundary().getV(), isvHalf2.getU()));
+    BOOST_CHECK(compare(caseSv1.nodeBoundary.a, tieLine.getBoundaryLine2().getBoundary().getAngle(), isvHalf2.getA()));
+    BOOST_CHECK(compare(getP(caseSv1.line2, TwoSides::TWO), tieLine.getBoundaryLine2().getBoundary().getP(), isvHalf2.getP()));
+    BOOST_CHECK(compare(getQ(caseSv1.line2, TwoSides::TWO), tieLine.getBoundaryLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv1.line2, TwoSides::TWO), tieLine.getBoundaryLine2().getBoundary().getI(), isvHalf2.getI()));
     
 }
 BOOST_AUTO_TEST_CASE(tieLineTest2) {
@@ -523,33 +523,33 @@ BOOST_AUTO_TEST_CASE(tieLineTest2) {
     Network n = createNetworkWithTieLine(TwoSides::ONE, TwoSides::ONE, caseSv2);
     TieLine& tieLine = n.getTieLine("ONE + ONE");
 
-    SV sv2 = SV(tieLine.getDanglingLine1().getTerminal().getP(), tieLine.getDanglingLine1().getTerminal().getQ(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv2 = SV(tieLine.getBoundaryLine1().getTerminal().getP(), tieLine.getBoundaryLine1().getTerminal().getQ(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::ONE).otherSide(tieLine);
     SV isv2 = initialSv2(caseSv2, initialModelCase(TwoSides::ONE, TwoSides::ONE), TwoSides::ONE, TwoSides::ONE);
     BOOST_CHECK(compare(sv2, caseSv2.node2, caseSv2.line2, TwoSides::ONE, isv2));
 
-    SV sv1 = SV(tieLine.getDanglingLine2().getTerminal().getP(), tieLine.getDanglingLine2().getTerminal().getQ(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv1 = SV(tieLine.getBoundaryLine2().getTerminal().getP(), tieLine.getBoundaryLine2().getTerminal().getQ(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::TWO).otherSide(tieLine);
     SV isv1 = initialSv1(caseSv2, initialModelCase(TwoSides::ONE, TwoSides::ONE), TwoSides::ONE, TwoSides::ONE);
     BOOST_CHECK(compare(sv1, caseSv2.node1, caseSv2.line1, TwoSides::ONE, isv1));
 
     SV isvHalf1 = initialHalf1SvBoundary(caseSv2, initialModelCase(TwoSides::ONE, TwoSides::ONE), TwoSides::ONE);
-    BOOST_CHECK(compare(caseSv2.nodeBoundary.v, tieLine.getDanglingLine1().getBoundary().getV(), isvHalf1.getU()));
-    BOOST_CHECK(compare(caseSv2.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
-    BOOST_CHECK(compare(getP(caseSv2.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
-    BOOST_CHECK(compare(getQ(caseSv2.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
-    BOOST_CHECK(compare(getI(caseSv2.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
+    BOOST_CHECK(compare(caseSv2.nodeBoundary.v, tieLine.getBoundaryLine1().getBoundary().getV(), isvHalf1.getU()));
+    BOOST_CHECK(compare(caseSv2.nodeBoundary.a, tieLine.getBoundaryLine1().getBoundary().getAngle(), isvHalf1.getA()));
+    BOOST_CHECK(compare(getP(caseSv2.line1, TwoSides::ONE), tieLine.getBoundaryLine1().getBoundary().getP(), isvHalf1.getP()));
+    BOOST_CHECK(compare(getQ(caseSv2.line1, TwoSides::ONE), tieLine.getBoundaryLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv2.line1, TwoSides::ONE), tieLine.getBoundaryLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv2, initialModelCase(TwoSides::ONE, TwoSides::ONE), TwoSides::ONE);
-    BOOST_CHECK(compare(caseSv2.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
-    BOOST_CHECK(compare(caseSv2.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
-    BOOST_CHECK(compare(getP(caseSv2.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
-    BOOST_CHECK(compare(getQ(caseSv2.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
-    BOOST_CHECK(compare(getI(caseSv2.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
+    BOOST_CHECK(compare(caseSv2.nodeBoundary.v, tieLine.getBoundaryLine2().getBoundary().getV(), isvHalf2.getU()));
+    BOOST_CHECK(compare(caseSv2.nodeBoundary.a, tieLine.getBoundaryLine2().getBoundary().getAngle(), isvHalf2.getA()));
+    BOOST_CHECK(compare(getP(caseSv2.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getP(), isvHalf2.getP()));
+    BOOST_CHECK(compare(getQ(caseSv2.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv2.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getI(), isvHalf2.getI()));
     
 }
 BOOST_AUTO_TEST_CASE(tieLineTest3) {
@@ -558,33 +558,33 @@ BOOST_AUTO_TEST_CASE(tieLineTest3) {
     Network n = createNetworkWithTieLine(TwoSides::ONE, TwoSides::TWO, caseSv3);
     TieLine& tieLine = n.getTieLine("ONE + TWO");
 
-    SV sv2 = SV(tieLine.getDanglingLine1().getTerminal().getP(), tieLine.getDanglingLine1().getTerminal().getQ(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv2 = SV(tieLine.getBoundaryLine1().getTerminal().getP(), tieLine.getBoundaryLine1().getTerminal().getQ(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::ONE).otherSide(tieLine);
     SV isv2 = initialSv2(caseSv3, initialModelCase(TwoSides::ONE, TwoSides::TWO), TwoSides::ONE, TwoSides::TWO);
     BOOST_CHECK(compare(sv2, caseSv3.node2, caseSv3.line2, TwoSides::TWO, isv2));
 
-    SV sv1 = SV(tieLine.getDanglingLine2().getTerminal().getP(), tieLine.getDanglingLine2().getTerminal().getQ(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv1 = SV(tieLine.getBoundaryLine2().getTerminal().getP(), tieLine.getBoundaryLine2().getTerminal().getQ(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::TWO).otherSide(tieLine);
     SV isv1 = initialSv1(caseSv3, initialModelCase(TwoSides::ONE, TwoSides::TWO), TwoSides::ONE, TwoSides::TWO);
     BOOST_CHECK(compare(sv1, caseSv3.node1, caseSv3.line1, TwoSides::ONE, isv1));
 
     SV isvHalf1 = initialHalf1SvBoundary(caseSv3, initialModelCase(TwoSides::ONE, TwoSides::TWO), TwoSides::ONE);
-    BOOST_CHECK(compare(caseSv3.nodeBoundary.v, tieLine.getDanglingLine1().getBoundary().getV(), isvHalf1.getU()));
-    BOOST_CHECK(compare(caseSv3.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
-    BOOST_CHECK(compare(getP(caseSv3.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
-    BOOST_CHECK(compare(getQ(caseSv3.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
-    BOOST_CHECK(compare(getI(caseSv3.line1, TwoSides::ONE), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
+    BOOST_CHECK(compare(caseSv3.nodeBoundary.v, tieLine.getBoundaryLine1().getBoundary().getV(), isvHalf1.getU()));
+    BOOST_CHECK(compare(caseSv3.nodeBoundary.a, tieLine.getBoundaryLine1().getBoundary().getAngle(), isvHalf1.getA()));
+    BOOST_CHECK(compare(getP(caseSv3.line1, TwoSides::ONE), tieLine.getBoundaryLine1().getBoundary().getP(), isvHalf1.getP()));
+    BOOST_CHECK(compare(getQ(caseSv3.line1, TwoSides::ONE), tieLine.getBoundaryLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv3.line1, TwoSides::ONE), tieLine.getBoundaryLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv3, initialModelCase(TwoSides::ONE, TwoSides::TWO), TwoSides::TWO);
-    BOOST_CHECK(compare(caseSv3.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
-    BOOST_CHECK(compare(caseSv3.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
-    BOOST_CHECK(compare(getP(caseSv3.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
-    BOOST_CHECK(compare(getQ(caseSv3.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
-    BOOST_CHECK(compare(getI(caseSv3.line2, TwoSides::TWO), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
+    BOOST_CHECK(compare(caseSv3.nodeBoundary.v, tieLine.getBoundaryLine2().getBoundary().getV(), isvHalf2.getU()));
+    BOOST_CHECK(compare(caseSv3.nodeBoundary.a, tieLine.getBoundaryLine2().getBoundary().getAngle(), isvHalf2.getA()));
+    BOOST_CHECK(compare(getP(caseSv3.line2, TwoSides::TWO), tieLine.getBoundaryLine2().getBoundary().getP(), isvHalf2.getP()));
+    BOOST_CHECK(compare(getQ(caseSv3.line2, TwoSides::TWO), tieLine.getBoundaryLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv3.line2, TwoSides::TWO), tieLine.getBoundaryLine2().getBoundary().getI(), isvHalf2.getI()));
     
 }
 BOOST_AUTO_TEST_CASE(tieLineWithDifferentNominalVoltageAtEndsTest) {
@@ -593,33 +593,33 @@ BOOST_AUTO_TEST_CASE(tieLineWithDifferentNominalVoltageAtEndsTest) {
     Network n = createNetworkWithTieLineWithDifferentNominalVoltageAtEnds(TwoSides::TWO, TwoSides::ONE, caseSv);
     TieLine& tieLine = n.getTieLine("TWO + ONE");
 
-    SV sv2 = SV(tieLine.getDanglingLine1().getTerminal().getP(), tieLine.getDanglingLine1().getTerminal().getQ(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv2 = SV(tieLine.getBoundaryLine1().getTerminal().getP(), tieLine.getBoundaryLine1().getTerminal().getQ(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::ONE).otherSide(tieLine);
     SV isv2 = initialSv2(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO, TwoSides::ONE);
     BOOST_CHECK(compare(sv2, caseSv.node2, caseSv.line2, TwoSides::ONE, isv2));
 
-    SV sv1 = SV(tieLine.getDanglingLine2().getTerminal().getP(), tieLine.getDanglingLine2().getTerminal().getQ(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getV(),
-            tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv1 = SV(tieLine.getBoundaryLine2().getTerminal().getP(), tieLine.getBoundaryLine2().getTerminal().getQ(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getV(),
+            tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getAngle(),
             TwoSides::TWO).otherSide(tieLine);
     SV isv1 = initialSv1(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO, TwoSides::ONE);
     BOOST_CHECK(compare(sv1, caseSv.node1, caseSv.line1, TwoSides::TWO, isv1));
 
     SV isvHalf1 = initialHalf1SvBoundary(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO);
-    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getDanglingLine1().getBoundary().getV(), isvHalf1.getU()));
-    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
-    BOOST_CHECK(compare(getP(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
-    BOOST_CHECK(compare(getQ(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
-    BOOST_CHECK(compare(getI(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getBoundaryLine1().getBoundary().getV(), isvHalf1.getU()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getBoundaryLine1().getBoundary().getAngle(), isvHalf1.getA()));
+    BOOST_CHECK(compare(getP(caseSv.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getP(), isvHalf1.getP()));
+    BOOST_CHECK(compare(getQ(caseSv.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::ONE);
-    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
-    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
-    BOOST_CHECK(compare(getP(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
-    BOOST_CHECK(compare(getQ(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
-    BOOST_CHECK(compare(getI(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getBoundaryLine2().getBoundary().getV(), isvHalf2.getU()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getBoundaryLine2().getBoundary().getAngle(), isvHalf2.getA()));
+    BOOST_CHECK(compare(getP(caseSv.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getP(), isvHalf2.getP()));
+    BOOST_CHECK(compare(getQ(caseSv.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getI(), isvHalf2.getI()));
 
 }
 
@@ -630,82 +630,82 @@ BOOST_AUTO_TEST_CASE(tieLineWithNaNVoltagesTest) {
     Network n = createNetworkWithTieLineWithDifferentNominalVoltageAtEnds(TwoSides::TWO, TwoSides::ONE, caseSv);
     TieLine& tieLine = n.getTieLine("TWO + ONE");
 
-    SV sv2 = SV(tieLine.getDanglingLine1().getTerminal().getP(), tieLine.getDanglingLine1().getTerminal().getQ(),
-                tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getV(),
-                tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv2 = SV(tieLine.getBoundaryLine1().getTerminal().getP(), tieLine.getBoundaryLine1().getTerminal().getQ(),
+                tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getV(),
+                tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getAngle(),
                 TwoSides::ONE).otherSide(tieLine);
     SV isv2 = initialSv2(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO, TwoSides::ONE);
     BOOST_CHECK(compare(sv2, caseSv.node2, caseSv.line2, TwoSides::ONE, isv2));
 
-    SV sv1 = SV(tieLine.getDanglingLine2().getTerminal().getP(), tieLine.getDanglingLine2().getTerminal().getQ(),
-                tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getV(),
-                tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getAngle(),
+    SV sv1 = SV(tieLine.getBoundaryLine2().getTerminal().getP(), tieLine.getBoundaryLine2().getTerminal().getQ(),
+                tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getV(),
+                tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getAngle(),
                 TwoSides::TWO).otherSide(tieLine);
     SV isv1 = initialSv1(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO, TwoSides::ONE);
     BOOST_CHECK(compare(sv1, caseSv.node1, caseSv.line1, TwoSides::TWO, isv1));
 
     SV isvHalf1 = initialHalf1SvBoundary(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::TWO);
-    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getDanglingLine1().getBoundary().getV(), isvHalf1.getU()));
-    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getDanglingLine1().getBoundary().getAngle(), isvHalf1.getA()));
-    BOOST_CHECK(compare(getP(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getP(), isvHalf1.getP()));
-    BOOST_CHECK(compare(getQ(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getQ(), isvHalf1.getQ()));
-    BOOST_CHECK(compare(getI(caseSv.line1, TwoSides::TWO), tieLine.getDanglingLine1().getBoundary().getI(), isvHalf1.getI()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getBoundaryLine1().getBoundary().getV(), isvHalf1.getU()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getBoundaryLine1().getBoundary().getAngle(), isvHalf1.getA()));
+    BOOST_CHECK(compare(getP(caseSv.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getP(), isvHalf1.getP()));
+    BOOST_CHECK(compare(getQ(caseSv.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getQ(), isvHalf1.getQ()));
+    BOOST_CHECK(compare(getI(caseSv.line1, TwoSides::TWO), tieLine.getBoundaryLine1().getBoundary().getI(), isvHalf1.getI()));
 
     SV isvHalf2 = initialHalf2SvBoundary(caseSv, initialModelDifferentVlCase(TwoSides::TWO, TwoSides::ONE), TwoSides::ONE);
-    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getDanglingLine2().getBoundary().getV(), isvHalf2.getU()));
-    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getDanglingLine2().getBoundary().getAngle(), isvHalf2.getA()));
-    BOOST_CHECK(compare(getP(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getP(), isvHalf2.getP()));
-    BOOST_CHECK(compare(getQ(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getQ(), isvHalf2.getQ()));
-    BOOST_CHECK(compare(getI(caseSv.line2, TwoSides::ONE), tieLine.getDanglingLine2().getBoundary().getI(), isvHalf2.getI()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.v, tieLine.getBoundaryLine2().getBoundary().getV(), isvHalf2.getU()));
+    BOOST_CHECK(compare(caseSv.nodeBoundary.a, tieLine.getBoundaryLine2().getBoundary().getAngle(), isvHalf2.getA()));
+    BOOST_CHECK(compare(getP(caseSv.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getP(), isvHalf2.getP()));
+    BOOST_CHECK(compare(getQ(caseSv.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getQ(), isvHalf2.getQ()));
+    BOOST_CHECK(compare(getI(caseSv.line2, TwoSides::ONE), tieLine.getBoundaryLine2().getBoundary().getI(), isvHalf2.getI()));
 }
 
-BOOST_AUTO_TEST_CASE(tieLineTestZeroImpedanceDl1) {
+BOOST_AUTO_TEST_CASE(tieLineTestZeroImpedanceBl1) {
     // Line1 from node1 to boundaryNode, Line2 from node2 to boundaryNode
     CaseSv caseSv0 = createCase0();
     Network n = createNetworkWithTieLine(TwoSides::TWO, TwoSides::TWO, caseSv0);
     TieLine& tieLine = n.getTieLine("TWO + TWO");
-    //set danglingLine1 with zeroImpedance 
-    tieLine.getDanglingLine1().setR(0.0).setX(0.0).setG(0.0).setB(0.0);
+    //set boundaryLine1 with zeroImpedance 
+    tieLine.getBoundaryLine1().setR(0.0).setX(0.0).setG(0.0).setB(0.0);
 
     double tol = 1.0e-6;
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine2().getR(), tieLine.getR(), tol);
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine2().getX(), tieLine.getX(), tol);
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine2().getG(), tieLine.getG2(), tol);
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine2().getB(), tieLine.getB2(), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine2().getR(), tieLine.getR(), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine2().getX(), tieLine.getX(), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine2().getG(), tieLine.getG2(), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine2().getB(), tieLine.getB2(), tol);
     BOOST_CHECK_CLOSE(0.0, tieLine.getG1(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, tieLine.getB1(), std::numeric_limits<double>::epsilon());
 
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getV(), TieLineUtil::getBoundaryV(tieLine.getDanglingLine1(), tieLine.getDanglingLine2()), tol);
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getAngle(), TieLineUtil::getBoundaryAngle(tieLine.getDanglingLine1(), tieLine.getDanglingLine2()), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getV(), TieLineUtil::getBoundaryV(tieLine.getBoundaryLine1(), tieLine.getBoundaryLine2()), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getAngle(), TieLineUtil::getBoundaryAngle(tieLine.getBoundaryLine1(), tieLine.getBoundaryLine2()), tol);
 
 }
-BOOST_AUTO_TEST_CASE(tieLineTestZeroImpedanceDl2) {
+BOOST_AUTO_TEST_CASE(tieLineTestZeroImpedanceBl2) {
     // Line1 from node1 to boundaryNode, Line2 from node2 to boundaryNode
     CaseSv caseSv0 = createCase0();
     Network n = createNetworkWithTieLine(TwoSides::TWO, TwoSides::TWO, caseSv0);
     TieLine& tieLine = n.getTieLine("TWO + TWO");
-    //set danglingLine2 with zeroImpedance 
-    tieLine.getDanglingLine2().setR(0.0).setX(0.0).setG(0.0).setB(0.0);
+    //set boundaryLine2 with zeroImpedance 
+    tieLine.getBoundaryLine2().setR(0.0).setX(0.0).setG(0.0).setB(0.0);
 
     double tol = 1.0e-6;
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine1().getR(), tieLine.getR(), tol);
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine1().getX(), tieLine.getX(), tol);
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine1().getG(), tieLine.getG1(), tol);
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine1().getB(), tieLine.getB1(), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine1().getR(), tieLine.getR(), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine1().getX(), tieLine.getX(), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine1().getG(), tieLine.getG1(), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine1().getB(), tieLine.getB1(), tol);
     BOOST_CHECK_CLOSE(0.0, tieLine.getG2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, tieLine.getB2(), std::numeric_limits<double>::epsilon());
 
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getV(), TieLineUtil::getBoundaryV(tieLine.getDanglingLine1(), tieLine.getDanglingLine2()), tol);
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine2().getTerminal().getBusView().getBus().get().getAngle(), TieLineUtil::getBoundaryAngle(tieLine.getDanglingLine1(), tieLine.getDanglingLine2()), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getV(), TieLineUtil::getBoundaryV(tieLine.getBoundaryLine1(), tieLine.getBoundaryLine2()), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine2().getTerminal().getBusView().getBus().get().getAngle(), TieLineUtil::getBoundaryAngle(tieLine.getBoundaryLine1(), tieLine.getBoundaryLine2()), tol);
     
 }
-BOOST_AUTO_TEST_CASE(tieLineTestZeroImpedanceDl1AndDl2) {
+BOOST_AUTO_TEST_CASE(tieLineTestZeroImpedanceBl1AndBl2) {
     // Line1 from node1 to boundaryNode, Line2 from node2 to boundaryNode
     CaseSv caseSv0 = createCase0();
     Network n = createNetworkWithTieLine(TwoSides::TWO, TwoSides::TWO, caseSv0);
     TieLine& tieLine = n.getTieLine("TWO + TWO");
-    tieLine.getDanglingLine1().setR(0.0).setX(0.0).setG(0.0).setB(0.0);
-    tieLine.getDanglingLine2().setR(0.0).setX(0.0).setG(0.0).setB(0.0);
+    tieLine.getBoundaryLine1().setR(0.0).setX(0.0).setG(0.0).setB(0.0);
+    tieLine.getBoundaryLine2().setR(0.0).setX(0.0).setG(0.0).setB(0.0);
 
     double tol = 1.0e-6;
     BOOST_CHECK_CLOSE(0.0, tieLine.getR(), std::numeric_limits<double>::epsilon());
@@ -715,8 +715,8 @@ BOOST_AUTO_TEST_CASE(tieLineTestZeroImpedanceDl1AndDl2) {
     BOOST_CHECK_CLOSE(0.0, tieLine.getG2(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(0.0, tieLine.getB2(), std::numeric_limits<double>::epsilon());
 
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getV(), TieLineUtil::getBoundaryV(tieLine.getDanglingLine1(), tieLine.getDanglingLine2()), tol);
-    BOOST_CHECK_CLOSE(tieLine.getDanglingLine1().getTerminal().getBusView().getBus().get().getAngle(), TieLineUtil::getBoundaryAngle(tieLine.getDanglingLine1(), tieLine.getDanglingLine2()), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getV(), TieLineUtil::getBoundaryV(tieLine.getBoundaryLine1(), tieLine.getBoundaryLine2()), tol);
+    BOOST_CHECK_CLOSE(tieLine.getBoundaryLine1().getTerminal().getBusView().getBus().get().getAngle(), TieLineUtil::getBoundaryAngle(tieLine.getBoundaryLine1(), tieLine.getBoundaryLine2()), tol);
     
 }
 

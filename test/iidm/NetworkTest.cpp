@@ -8,10 +8,10 @@
 #include <boost/test/unit_test.hpp>
 
 #include <powsybl/iidm/ActivePowerLimits.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Line.hpp>
@@ -216,9 +216,9 @@ BOOST_AUTO_TEST_CASE(getConnectablesTest) {
     BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<Line>()));
     BOOST_CHECK_EQUAL(1UL, network.getConnectableCount<Line>());
 
-    BOOST_CHECK_EQUAL(3, boost::size(network.getConnectables<DanglingLine>()));
-    BOOST_CHECK_EQUAL(3, boost::size(cNetwork.getConnectables<DanglingLine>()));
-    BOOST_CHECK_EQUAL(3UL, network.getConnectableCount<DanglingLine>());
+    BOOST_CHECK_EQUAL(3, boost::size(network.getConnectables<BoundaryLine>()));
+    BOOST_CHECK_EQUAL(3, boost::size(cNetwork.getConnectables<BoundaryLine>()));
+    BOOST_CHECK_EQUAL(3UL, network.getConnectableCount<BoundaryLine>());
 
     BOOST_CHECK_EQUAL(1, boost::size(network.getConnectables<TwoWindingsTransformer>()));
     BOOST_CHECK_EQUAL(1, boost::size(cNetwork.getConnectables<TwoWindingsTransformer>()));
@@ -258,8 +258,8 @@ BOOST_AUTO_TEST_CASE(branch) {
     BOOST_CHECK_EQUAL(3, cNetwork.getBranchCount());
     POWSYBL_ASSERT_THROW(cNetwork.getBranch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
     POWSYBL_ASSERT_THROW(network.getBranch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
-    POWSYBL_ASSERT_THROW(cNetwork.getBranch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Branch");
-    POWSYBL_ASSERT_THROW(network.getBranch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Branch");
+    POWSYBL_ASSERT_THROW(cNetwork.getBranch("BL1"), PowsyblException, "Identifiable 'BL1' is not a powsybl::iidm::Branch");
+    POWSYBL_ASSERT_THROW(network.getBranch("BL1"), PowsyblException, "Identifiable 'BL1' is not a powsybl::iidm::Branch");
     BOOST_CHECK_NO_THROW(cNetwork.getBranch("TL_VL1_VL3"));
     BOOST_CHECK_NO_THROW(network.getBranch("TL_VL1_VL3"));
 
@@ -300,7 +300,7 @@ BOOST_AUTO_TEST_CASE(views) {
     POWSYBL_ASSERT_REF_TRUE(network1.getBusView().getBus("VL1_0"));
     POWSYBL_ASSERT_REF_FALSE(network1.getBusView().getBus("UNKNOWN"));
     POWSYBL_ASSERT_THROW(network1.getSwitch("UNKNOWN"), PowsyblException, "Unable to find to the identifiable 'UNKNOWN'");
-    POWSYBL_ASSERT_THROW(network1.getSwitch("DL1"), PowsyblException, "Identifiable 'DL1' is not a powsybl::iidm::Switch");
+    POWSYBL_ASSERT_THROW(network1.getSwitch("BL1"), PowsyblException, "Identifiable 'BL1' is not a powsybl::iidm::Switch");
     BOOST_CHECK_NO_THROW(network1.getSwitch("SW1"));
 
     network1.getSwitch("SW1").setOpen(true);

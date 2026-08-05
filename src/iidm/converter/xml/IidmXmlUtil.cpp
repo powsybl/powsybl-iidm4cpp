@@ -134,6 +134,12 @@ void IidmXmlUtil::runUntilMaximumVersion(const IidmXmlVersion& maxVersion, const
     }
 }
 
+void IidmXmlUtil::runInBetweenVersions(const IidmXmlVersion& minVersion, const IidmXmlVersion& maxVersion, const IidmXmlVersion& contextVersion, const std::function<void()>& runnable) {
+    if (minVersion <= contextVersion && contextVersion <= maxVersion) {
+        runnable();
+    }
+}
+
 void IidmXmlUtil::writeBooleanAttributeFromMinimumVersion(const std::string& rootElementName, const std::string& attributeName, bool value, bool defaultValue, const char* errorMessage, const IidmXmlVersion& minVersion, NetworkXmlWriterContext& context) {
     writeAttributeFromMinimumVersion(rootElementName, attributeName, value != defaultValue, errorMessage, minVersion, context, [&context, &attributeName, &value]() {
         context.getWriter().writeAttribute(attributeName, value);

@@ -17,28 +17,28 @@ namespace powsybl {
 
 namespace iidm {
 
-class DanglingLine;
+class BoundaryLine;
 
 namespace TieLineUtil {
 
-double getR(const DanglingLine& dl1, const DanglingLine& dl2);
-double getX(const DanglingLine& dl1, const DanglingLine& dl2);
-double getG1(const DanglingLine& dl1, const DanglingLine& dl2);
-double getB1(const DanglingLine& dl1, const DanglingLine& dl2);
-double getG2(const DanglingLine& dl1, const DanglingLine& dl2);
-double getB2(const DanglingLine& dl1, const DanglingLine& dl2);
+double getR(const BoundaryLine& bl1, const BoundaryLine& bl2);
+double getX(const BoundaryLine& bl1, const BoundaryLine& bl2);
+double getG1(const BoundaryLine& bl1, const BoundaryLine& bl2);
+double getB1(const BoundaryLine& bl1, const BoundaryLine& bl2);
+double getG2(const BoundaryLine& bl1, const BoundaryLine& bl2);
+double getB2(const BoundaryLine& bl1, const BoundaryLine& bl2);
 
-double getBoundaryV(const DanglingLine& dl1, const DanglingLine& dl2);
-double getBoundaryAngle(const DanglingLine& dl1, const DanglingLine& dl2);
+double getBoundaryV(const BoundaryLine& bl1, const BoundaryLine& bl2);
+double getBoundaryAngle(const BoundaryLine& bl1, const BoundaryLine& bl2);
 
-LinkData::BranchAdmittanceMatrix equivalentBranchAdmittanceMatrix(const DanglingLine& dl1, const DanglingLine& dl2);
+LinkData::BranchAdmittanceMatrix equivalentBranchAdmittanceMatrix(const BoundaryLine& bl1, const BoundaryLine& bl2);
 
 bool zeroImpedanceLine(const LinkData::BranchAdmittanceMatrix& adm);
 
-std::complex<double> voltageAtBoundaryNode(const DanglingLine& dl1, const DanglingLine& dl2);
+std::complex<double> voltageAtBoundaryNode(const BoundaryLine& bl1, const BoundaryLine& bl2);
 
-stdcxx::CReference<DanglingLine> getPairedDanglingLine(const DanglingLine& dl);
-stdcxx::Reference<DanglingLine> getPairedDanglingLine(DanglingLine& dl);
+stdcxx::CReference<BoundaryLine> getPairedBoundaryLine(const BoundaryLine& bl);
+stdcxx::Reference<BoundaryLine> getPairedBoundaryLine(BoundaryLine& bl);
 
 }
 

@@ -7,9 +7,9 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -29,8 +29,8 @@ namespace converter {
 
 namespace xml {
 
-Network createDlGenerationLinear() {
-    Network network("dangling-line", "test");
+Network createBlGenerationLinear() {
+    Network network("boundary-line", "test");
     network.setCaseDate(stdcxx::DateTime::parse("2020-07-16T10:08:48.321+02:00"));
 
     Substation& substation = network.newSubstation()
@@ -58,8 +58,8 @@ Network createDlGenerationLinear() {
         .setBus("BUS")
         .add();
 
-    DanglingLine& danglingLine = network.getVoltageLevel("VL").newDanglingLine()
-        .setId("DL")
+    BoundaryLine& boundaryLine = network.getVoltageLevel("VL").newBoundaryLine()
+        .setId("BL")
         .setBus("BUS")
         .setR(10.0)
         .setX(1.0)
@@ -75,7 +75,7 @@ Network createDlGenerationLinear() {
         .setVoltageRegulationOn(true)
         .add()
         .add();
-    danglingLine.getGeneration().get().newReactiveCapabilityCurve()
+    boundaryLine.getGeneration().get().newReactiveCapabilityCurve()
         .beginPoint()
         .setP(0.0)
         .setMinQ(-59.3)
@@ -87,7 +87,7 @@ Network createDlGenerationLinear() {
         .setMaxQ(46.25)
         .endPoint()
         .add();
-    danglingLine.getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
+    boundaryLine.getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
         .setPermanentLimit(100.0)
         .beginTemporaryLimit()
         .setName("20'")
@@ -100,23 +100,23 @@ Network createDlGenerationLinear() {
         .setAcceptableDuration(10 * 60)
         .endTemporaryLimit()
         .add();
-    danglingLine.setProperty("test", "test");
+    boundaryLine.setProperty("test", "test");
     return network;
 }
 
 BOOST_AUTO_TEST_SUITE(XmlRoundTrip)
 
-BOOST_FIXTURE_TEST_CASE(DanglingLineTest, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("danglingLine.xml", IidmXmlVersion::all());
+BOOST_FIXTURE_TEST_CASE(BoundaryLineTest, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("boundaryLine.xml", IidmXmlVersion::all());
 }
 
-BOOST_FIXTURE_TEST_CASE(DanglingLineWithGenerationTest, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("danglingLineWithGeneration.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+BOOST_FIXTURE_TEST_CASE(BoundaryLineWithGenerationTest, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("boundaryLineWithGeneration.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 
     // backward compatibility checks from version 1.3
-    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("danglingLineWithGeneration.xml", IidmXmlVersion::V1_3());
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("boundaryLineWithGeneration.xml", IidmXmlVersion::V1_3());
 
-    Network network = createDlGenerationLinear();
+    Network network = createBlGenerationLinear();
 
     // check it fails for all versions < 1.3
     test::converter::RoundTrip::testForAllPreviousVersions(IidmXmlVersion::V1_3(), [&network](const iidm::converter::xml::IidmXmlVersion& version) {
@@ -132,7 +132,14 @@ BOOST_FIXTURE_TEST_CASE(DanglingLineWithGenerationTest, test::ResourceFixture) {
         const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
             iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);
         };
-        test::converter::RoundTrip::writeXmlTest(network, writer, test::converter::RoundTrip::getVersionedNetwork("danglingLineWithGeneration.xml", version));
+        test::converter::RoundTrip::writeXmlTest(network, writer, test::converter::RoundTrip::getVersionedNetwork("boundaryLineWithGeneration.xml", version));
+    });
+}
+
+BOOST_FIXTURE_TEST_CASE(testRejectDanglingLine, test::ResourceFixture) {
+    test::converter::RoundTrip::testForAllVersionsSince(IidmXmlVersion::V1_16(), [](const iidm::converter::xml::IidmXmlVersion& version) {
+        POWSYBL_ASSERT_THROW(Network::readXml(test::converter::RoundTrip::getVersionedNetworkPath("danglingLine.xml", version)), PowsyblException,
+            stdcxx::format("danglingLine is not supported for IIDM-XML version %1%. IIDM-XML version should be <= 1.15", version.toString(".")).c_str());
     });
 }
 

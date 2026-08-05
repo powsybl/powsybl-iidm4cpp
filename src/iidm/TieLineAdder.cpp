@@ -30,36 +30,36 @@ TieLineAdder::TieLineAdder(Network& network, const std::string& subNetworkId) :
 
 TieLine& TieLineAdder::add() {
     
-    if(m_dlId1.empty() || m_dlId2.empty()) {
-        throw ValidationException(*this, "undefined dangling line");
+    if(m_blId1.empty() || m_blId2.empty()) {
+        throw ValidationException(*this, "undefined boundary line");
     }
 
-    DanglingLine& dl1 = m_network.getDanglingLine(m_dlId1);
-    DanglingLine& dl2 = m_network.getDanglingLine(m_dlId2);
+    BoundaryLine& bl1 = m_network.getBoundaryLine(m_blId1);
+    BoundaryLine& bl2 = m_network.getBoundaryLine(m_blId2);
 
-    if(stdcxx::areSame(dl1, dl2)) {
-        throw ValidationException(*this, stdcxx::format("danglingLine1 and danglingLine2 are identical (%1%)", m_dlId1));
+    if(stdcxx::areSame(bl1, bl2)) {
+        throw ValidationException(*this, stdcxx::format("boundaryLine1 and boundaryLine2 are identical (%1%)", m_blId1));
     }
 
-    if (static_cast<bool>(dl1.getTieLine())) {
-        throw ValidationException(*this, stdcxx::format("danglingLine1 (%1%) already has a tie line", m_dlId1));
-    } else if (static_cast<bool>(dl2.getTieLine())) {
-        throw ValidationException(*this, stdcxx::format("danglingLine2 (%1%) already has a tie line", m_dlId2));
+    if (static_cast<bool>(bl1.getTieLine())) {
+        throw ValidationException(*this, stdcxx::format("boundaryLine1 (%1%) already has a tie line", m_blId1));
+    } else if (static_cast<bool>(bl2.getTieLine())) {
+        throw ValidationException(*this, stdcxx::format("boundaryLine2 (%1%) already has a tie line", m_blId2));
     }
 
-    if (!dl1.getPairingKey().empty() && !dl2.getPairingKey().empty() && dl1.getPairingKey() != dl2.getPairingKey()) {
+    if (!bl1.getPairingKey().empty() && !bl2.getPairingKey().empty() && bl1.getPairingKey() != bl2.getPairingKey()) {
         throw ValidationException(*this, "pairingKey is not consistent");
     }
 
-    VoltageLevel& vl1 = dl1.getTerminal().getVoltageLevel();
-    VoltageLevel& vl2 = dl2.getTerminal().getVoltageLevel();
+    VoltageLevel& vl1 = bl1.getTerminal().getVoltageLevel();
+    VoltageLevel& vl2 = bl2.getTerminal().getVoltageLevel();
     if(!m_subnetworkId.empty() && (vl1.getSubnetworkId() != m_subnetworkId || vl2.getSubnetworkId() != m_subnetworkId)) {
-        throw ValidationException(*this, stdcxx::format("The involved dangling lines are not in the subnetwork '%1%'. Create this tie line from the parent network '%2%'", m_subnetworkId, getNetwork().getId()));
+        throw ValidationException(*this, stdcxx::format("The involved boundary lines are not in the subnetwork '%1%'. Create this tie line from the parent network '%2%'", m_subnetworkId, getNetwork().getId()));
     }
 
     std::unique_ptr<TieLine> ptrTieLine = std::unique_ptr<TieLine>(new TieLine(m_network, checkAndGetUniqueId(), getName(), isFictitious()));
     auto& tieLine = m_network.checkAndAdd<TieLine>(std::move(ptrTieLine));
-    tieLine.attachDanglingLines(dl1, dl2);
+    tieLine.attachBoundaryLines(bl1, bl2);
 
     m_network.getConnectedComponentsManager().invalidate();
     m_network.getSynchronousComponentsManager().invalidate();
@@ -81,13 +81,13 @@ const std::string& TieLineAdder::getTypeDescription() const {
     return s_typeDescription;
 }
 
-TieLineAdder& TieLineAdder::setDanglingLine1(const std::string& id) {
-    m_dlId1 = id;
+TieLineAdder& TieLineAdder::setBoundaryLine1(const std::string& id) {
+    m_blId1 = id;
     return *this;
 }
 
-TieLineAdder& TieLineAdder::setDanglingLine2(const std::string& id) {
-    m_dlId2 = id;
+TieLineAdder& TieLineAdder::setBoundaryLine2(const std::string& id) {
+    m_blId2 = id;
     return *this;
 }
 

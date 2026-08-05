@@ -7,10 +7,10 @@
 
 #include "NetworkFactory.hpp"
 
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
@@ -483,7 +483,7 @@ Network createSwitchBBKNetwork() {
         .setB2(0.4)
     .add();
 
-    DanglingLine& dl1 = network.getVoltageLevel(vl1.getId()).newDanglingLine()
+    BoundaryLine& bl1 = network.getVoltageLevel(vl1.getId()).newBoundaryLine()
         .setId("H1_TL_VL1_VL3")
         .setR(6.0)
         .setX(66.0)
@@ -495,7 +495,7 @@ Network createSwitchBBKNetwork() {
         .setConnectableBus(vl1Bus1.getId())
         .setPairingKey("code")
         .add();
-    DanglingLine& dl2 = network.getVoltageLevel(vl3.getId()).newDanglingLine()
+    BoundaryLine& bl2 = network.getVoltageLevel(vl3.getId()).newBoundaryLine()
         .setId("H2_TL_VL1_VL3")
         .setR(7.0)
         .setX(77.0)
@@ -509,8 +509,8 @@ Network createSwitchBBKNetwork() {
         .add();
     network.newTieLine()
         .setId("TL_VL1_VL3")
-        .setDanglingLine1(dl1.getId())
-        .setDanglingLine2(dl2.getId())
+        .setBoundaryLine1(bl1.getId())
+        .setBoundaryLine2(bl2.getId())
         .add();
 
     network.newSubstation()
@@ -524,9 +524,9 @@ Network createSwitchBBKNetwork() {
         .setId("S4")
         .add();
 
-    vl1.newDanglingLine()
-        .setId("DL1")
-        .setName("DL1_NAME")
+    vl1.newBoundaryLine()
+        .setId("BL1")
+        .setName("BL1_NAME")
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
         .setB(1.0)
@@ -719,7 +719,7 @@ Network createComponentsTestNetworkBB() {
         .setPowerFactor(0.2)
         .add();
 
-    DanglingLine& dl1 = network.getVoltageLevel(vl4.getId()).newDanglingLine()
+    BoundaryLine& bl1 = network.getVoltageLevel(vl4.getId()).newBoundaryLine()
         .setId("H1_TL_VL4_VL6")
         .setR(6.0)
         .setX(66.0)
@@ -730,7 +730,7 @@ Network createComponentsTestNetworkBB() {
         .setBus(vl4Bus1.getId())
         .setPairingKey("code")
         .add();
-    DanglingLine& dl2 = network.getVoltageLevel(vl6.getId()).newDanglingLine()
+    BoundaryLine& bl2 = network.getVoltageLevel(vl6.getId()).newBoundaryLine()
         .setId("H2_TL_VL4_VL6")
         .setR(7.0)
         .setX(77.0)
@@ -743,8 +743,8 @@ Network createComponentsTestNetworkBB() {
         .add();
     network.newTieLine()
         .setId("TL_VL4_VL6")
-        .setDanglingLine1(dl1.getId())
-        .setDanglingLine2(dl2.getId())
+        .setBoundaryLine1(bl1.getId())
+        .setBoundaryLine2(bl2.getId())
         .add();
 
     Substation& substation4 = network.newSubstation()
@@ -1109,7 +1109,7 @@ Network createComponentsTestNetworkNB() {
         .setOpen(false)
         .add();
 
-    DanglingLine& dl1 = network.getVoltageLevel(vl4.getId()).newDanglingLine()
+    BoundaryLine& bl1 = network.getVoltageLevel(vl4.getId()).newBoundaryLine()
         .setId("H1_TL_VL4_VL6")
         .setR(6.0)
         .setX(66.0)
@@ -1120,7 +1120,7 @@ Network createComponentsTestNetworkNB() {
         .setNode(2)
         .setPairingKey("code")
         .add();
-    DanglingLine& dl2 = network.getVoltageLevel(vl6.getId()).newDanglingLine()
+    BoundaryLine& bl2 = network.getVoltageLevel(vl6.getId()).newBoundaryLine()
         .setId("H2_TL_VL4_VL6")
         .setR(7.0)
         .setX(77.0)
@@ -1133,8 +1133,8 @@ Network createComponentsTestNetworkNB() {
         .add();
     network.newTieLine()
         .setId("TL_VL4_VL6")
-        .setDanglingLine1(dl1.getId())
-        .setDanglingLine2(dl2.getId())
+        .setBoundaryLine1(bl1.getId())
+        .setBoundaryLine2(bl2.getId())
         .add();
 
     Substation& substation4 = network.newSubstation()

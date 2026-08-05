@@ -227,7 +227,7 @@ bool CalculatedBusTopology::isBusValid(const node_breaker_topology_model::Graph&
                 case IdentifiableType::TWO_WINDINGS_TRANSFORMER:
                 case IdentifiableType::THREE_WINDINGS_TRANSFORMER:
                 case IdentifiableType::HVDC_CONVERTER_STATION:
-                case IdentifiableType::DANGLING_LINE:
+                case IdentifiableType::BOUNDARY_LINE:
                     ++branchCount;
                     ++feederCount;
                     break;

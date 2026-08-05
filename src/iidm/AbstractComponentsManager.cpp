@@ -8,9 +8,9 @@
 #include <powsybl/iidm/AbstractComponentsManager.hpp>
 
 #include <powsybl/iidm/AcDcConverter.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/Component.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
 #include <powsybl/iidm/DcBus.hpp>
 #include <powsybl/iidm/DcLine.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
@@ -63,8 +63,8 @@ void AbstractComponentsManager::fillAcAdjacencyList(const std::map<std::string, 
         addToAdjacencyList(bus1, bus2, busId2num, adjacencyList);
     }
     for (const TieLine& tl : getNetwork().getTieLines()) {
-        const auto& bus1 = tl.getDanglingLine1().getTerminal().getBusView().getBus();
-        const auto& bus2 = tl.getDanglingLine2().getTerminal().getBusView().getBus();
+        const auto& bus1 = tl.getBoundaryLine1().getTerminal().getBusView().getBus();
+        const auto& bus2 = tl.getBoundaryLine2().getTerminal().getBusView().getBus();
         addToAdjacencyList(bus1, bus2, busId2num, adjacencyList);
     }
     for (const TwoWindingsTransformer& twt : getNetwork().getTwoWindingsTransformers()) {

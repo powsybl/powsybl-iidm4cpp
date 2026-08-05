@@ -7,9 +7,9 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
@@ -33,8 +33,8 @@ namespace powsybl {
 
 namespace iidm {
 
-Network createNodeBreakerDanglingLineNetwork() {
-    Network network("twoBusesWithLineAndDanglingLine", "test");
+Network createNodeBreakerBoundaryLineNetwork() {
+    Network network("twoBusesWithLineAndBoundaryLine", "test");
     double vn = 225.0;
 
     // First substation
@@ -119,8 +119,8 @@ Network createNodeBreakerDanglingLineNetwork() {
             .add();
     load.getTerminal().setP(45.0).setQ(9.0);
 
-    network.getVoltageLevel("S2VL1").newDanglingLine()
-            .setId("Dl-3")
+    network.getVoltageLevel("S2VL1").newBoundaryLine()
+            .setId("Bl-3")
             .setR(0.01)
             .setX(2.0)
             .setG(0.0)
@@ -150,7 +150,7 @@ Network createNodeBreakerDanglingLineNetwork() {
     return network;
 }
 
-Network createDanglingLineTestNetwork() {
+Network createBoundaryLineTestNetwork() {
     Network network("test", "test");
     Substation& substation = network.newSubstation()
         .setId("S1")
@@ -172,9 +172,9 @@ Network createDanglingLineTestNetwork() {
         .setId("VL1_BUS1")
         .add();
 
-    vl1.newDanglingLine()
-        .setId("DL1")
-        .setName("DL1_NAME")
+    vl1.newBoundaryLine()
+        .setId("BL1")
+        .setName("BL1_NAME")
         .setBus(vl1Bus1.getId())
         .setConnectableBus(vl1Bus1.getId())
         .setB(0.0016)
@@ -227,13 +227,13 @@ BOOST_AUTO_TEST_CASE(testLine) {
     BOOST_CHECK_SMALL(svB1.getA(), tol);
 }
 
-BOOST_AUTO_TEST_CASE(testDanglingLine) {
-    Network network = createDanglingLineTestNetwork();
-    DanglingLine& dl = network.getDanglingLine("DL1");
-    dl.setR(10.30);
-    dl.setX(40.20);
-    dl.setG(0.01);
-    dl.setB(0.0016);
+BOOST_AUTO_TEST_CASE(testBoundaryLine) {
+    Network network = createBoundaryLineTestNetwork();
+    BoundaryLine& bl = network.getBoundaryLine("BL1");
+    bl.setR(10.30);
+    bl.setX(40.20);
+    bl.setG(0.01);
+    bl.setB(0.0016);
 
     double tol = 0.0001;
     double p1 = 126.818177;
@@ -249,7 +249,7 @@ BOOST_AUTO_TEST_CASE(testDanglingLine) {
     double i2 = 276.462893;
 
     SV svA1(p1, q1, v1, a1, TwoSides::ONE);
-    SV svA2 = svA1.otherSide(dl);
+    SV svA2 = svA1.otherSide(bl);
     BOOST_CHECK_CLOSE(p2, svA2.getP(), tol);
     BOOST_CHECK_CLOSE(q2, svA2.getQ(), tol);
     BOOST_CHECK_CLOSE(v2, svA2.getU(), tol);
@@ -257,45 +257,45 @@ BOOST_AUTO_TEST_CASE(testDanglingLine) {
     BOOST_CHECK_CLOSE(i2, svA2.getI(), tol);
 
     SV svB2(p2, q2, v2, a2, TwoSides::TWO);
-    SV svB1 = svB2.otherSide(dl);
+    SV svB1 = svB2.otherSide(bl);
     BOOST_CHECK_CLOSE(p1, svB1.getP(), tol);
     BOOST_CHECK_CLOSE(q1, svB1.getQ(), tol);
     BOOST_CHECK_CLOSE(v1, svB1.getU(), tol);
     BOOST_CHECK_CLOSE(a1, svB1.getA(), tol);
     BOOST_CHECK_CLOSE(i1, svB1.getI(), tol);
 
-    BOOST_CHECK_CLOSE(p2, svA1.otherSideP(dl), tol);
-    BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(dl), tol);
-    BOOST_CHECK_CLOSE(v2, svA1.otherSideU(dl), tol);
-    BOOST_CHECK_SMALL(svA1.otherSideA(dl), tol);
-    BOOST_CHECK_CLOSE(i2, svA1.otherSideI(dl), tol);
+    BOOST_CHECK_CLOSE(p2, svA1.otherSideP(bl), tol);
+    BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(bl), tol);
+    BOOST_CHECK_CLOSE(v2, svA1.otherSideU(bl), tol);
+    BOOST_CHECK_SMALL(svA1.otherSideA(bl), tol);
+    BOOST_CHECK_CLOSE(i2, svA1.otherSideI(bl), tol);
 
-    BOOST_CHECK_CLOSE(p1, svB2.otherSideP(dl), tol);
-    BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(dl), tol);
-    BOOST_CHECK_CLOSE(v1, svB2.otherSideU(dl), tol);
-    BOOST_CHECK_CLOSE(a1, svB2.otherSideA(dl), tol);
-    BOOST_CHECK_CLOSE(i1, svB2.otherSideI(dl), tol);
+    BOOST_CHECK_CLOSE(p1, svB2.otherSideP(bl), tol);
+    BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(bl), tol);
+    BOOST_CHECK_CLOSE(v1, svB2.otherSideU(bl), tol);
+    BOOST_CHECK_CLOSE(a1, svB2.otherSideA(bl), tol);
+    BOOST_CHECK_CLOSE(i1, svB2.otherSideI(bl), tol);
 
-    BOOST_CHECK_CLOSE(p2, svA1.otherSideP(dl, false), tol);
-    BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(dl, false), tol);
-    BOOST_CHECK_CLOSE(v2, svA1.otherSideU(dl, false), tol);
-    BOOST_CHECK_SMALL(svA1.otherSideA(dl, false), tol);
-    BOOST_CHECK_CLOSE(i2, svA1.otherSideI(dl, false), tol);
+    BOOST_CHECK_CLOSE(p2, svA1.otherSideP(bl, false), tol);
+    BOOST_CHECK_CLOSE(q2, svA1.otherSideQ(bl, false), tol);
+    BOOST_CHECK_CLOSE(v2, svA1.otherSideU(bl, false), tol);
+    BOOST_CHECK_SMALL(svA1.otherSideA(bl, false), tol);
+    BOOST_CHECK_CLOSE(i2, svA1.otherSideI(bl, false), tol);
 
-    BOOST_CHECK_CLOSE(p1, svB2.otherSideP(dl, false), tol);
-    BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(dl, false), tol);
-    BOOST_CHECK_CLOSE(v1, svB2.otherSideU(dl, false), tol);
-    BOOST_CHECK_CLOSE(a1, svB2.otherSideA(dl, false), tol);
-    BOOST_CHECK_CLOSE(i1, svB2.otherSideI(dl, false), tol);
+    BOOST_CHECK_CLOSE(p1, svB2.otherSideP(bl, false), tol);
+    BOOST_CHECK_CLOSE(q1, svB2.otherSideQ(bl, false), tol);
+    BOOST_CHECK_CLOSE(v1, svB2.otherSideU(bl, false), tol);
+    BOOST_CHECK_CLOSE(a1, svB2.otherSideA(bl, false), tol);
+    BOOST_CHECK_CLOSE(i1, svB2.otherSideI(bl, false), tol);
 
-    SV svB1_noSplit = svB2.otherSide(dl, false);
+    SV svB1_noSplit = svB2.otherSide(bl, false);
     BOOST_CHECK_CLOSE(p1, svB1_noSplit.getP(), tol);
     BOOST_CHECK_CLOSE(q1, svB1_noSplit.getQ(), tol);
     BOOST_CHECK_CLOSE(v1, svB1_noSplit.getU(), tol);
     BOOST_CHECK_CLOSE(a1, svB1_noSplit.getA(), tol);
     BOOST_CHECK_CLOSE(i1, svB1_noSplit.getI(), tol);
 
-    SV svB1_split = svB2.otherSide(dl, true);
+    SV svB1_split = svB2.otherSide(bl, true);
     BOOST_CHECK_CLOSE(164.26909345746856, svB1_split.getP(), tol);
     BOOST_CHECK_CLOSE(-65.013195498595877, svB1_split.getQ(), tol);
     BOOST_CHECK_CLOSE(124.29901066736439, svB1_split.getU(), tol);
@@ -580,9 +580,9 @@ BOOST_AUTO_TEST_CASE(testDCPhaseShifter) {
 }
 
 BOOST_AUTO_TEST_CASE(testOlfRealNetwork) {
-    Network network = createNodeBreakerDanglingLineNetwork();
+    Network network = createNodeBreakerBoundaryLineNetwork();
     Line& line = network.getLine("Line-2-2");
-    DanglingLine& dl = network.getDanglingLine("Dl-3");
+    BoundaryLine& bl = network.getBoundaryLine("Bl-3");
     Bus& bus1 = network.getBusBreakerView().getBus("S1VL1_0");
     Bus& bus2 = network.getBusBreakerView().getBus("S2VL1_0");
 
@@ -593,7 +593,7 @@ BOOST_AUTO_TEST_CASE(testOlfRealNetwork) {
     line.getTerminal1().setP(115.003788).setQ(-56.302621);
     line.getTerminal2().setP(-115.000986).setQ(6.176675);
 
-    dl.getTerminal().setP(70.000986).setQ(-15.176675);
+    bl.getTerminal().setP(70.000986).setQ(-15.176675);
 
     double tol = 0.00001;
     SV svL1 = SV(line.getTerminal1().getP(), line.getTerminal1().getQ(), bus1.getV(), bus1.getAngle(), TwoSides::ONE);
@@ -615,25 +615,25 @@ BOOST_AUTO_TEST_CASE(testOlfRealNetwork) {
     BOOST_CHECK_CLOSE(bus1.getV(), svL2.otherSideU(line.getR(), line.getX(), line.getG1(), line.getB1(), line.getG2(), line.getB2(), 1.0, 0.0), tol);
     BOOST_CHECK_SMALL(svL2.otherSideA(line.getR(), line.getX(), line.getG1(), line.getB1(), line.getG2(), line.getB2(), 1.0, 0.0), tol);
 
-    SV svDl1 = SV(dl.getTerminal().getP(), dl.getTerminal().getQ(), bus2.getV(), bus2.getAngle(), TwoSides::ONE);
-    SV svDl1other = svDl1.otherSide(dl);
-    BOOST_CHECK_CLOSE(-dl.getP0(), svDl1other.getP(), tol);
-    BOOST_CHECK_CLOSE(-dl.getQ0(), svDl1other.getQ(), tol);
-    BOOST_CHECK_CLOSE(225.1798987500, svDl1other.getU(), tol);
-    BOOST_CHECK_CLOSE(-0.4183680524, svDl1other.getA(), tol);
+    SV svBl1 = SV(bl.getTerminal().getP(), bl.getTerminal().getQ(), bus2.getV(), bus2.getAngle(), TwoSides::ONE);
+    SV svBl1other = svBl1.otherSide(bl);
+    BOOST_CHECK_CLOSE(-bl.getP0(), svBl1other.getP(), tol);
+    BOOST_CHECK_CLOSE(-bl.getQ0(), svBl1other.getQ(), tol);
+    BOOST_CHECK_CLOSE(225.1798987500, svBl1other.getU(), tol);
+    BOOST_CHECK_CLOSE(-0.4183680524, svBl1other.getA(), tol);
 
-    //DanglingLineBoundary validates its "useHypothesis" condition :
-    BOOST_CHECK_CLOSE(-dl.getP0(), dl.getBoundary().getP(), std::numeric_limits<double>::epsilon()); 
-    BOOST_CHECK_CLOSE(-dl.getQ0(), dl.getBoundary().getQ(), std::numeric_limits<double>::epsilon());
+    //BoundaryLineBoundary validates its "useHypothesis" condition :
+    BOOST_CHECK_CLOSE(-bl.getP0(), bl.getBoundary().getP(), std::numeric_limits<double>::epsilon()); 
+    BOOST_CHECK_CLOSE(-bl.getQ0(), bl.getBoundary().getQ(), std::numeric_limits<double>::epsilon());
 
-    double expectedI = std::hypot(-dl.getP0(), -dl.getQ0()) / (std::sqrt(3.0) * dl.getBoundary().getV() / 1000.0);
-    BOOST_CHECK_CLOSE(expectedI, dl.getBoundary().getI(), std::numeric_limits<double>::epsilon());
+    double expectedI = std::hypot(-bl.getP0(), -bl.getQ0()) / (std::sqrt(3.0) * bl.getBoundary().getV() / 1000.0);
+    BOOST_CHECK_CLOSE(expectedI, bl.getBoundary().getI(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_CASE(testDcOlfRealNetwork) {
-    Network network = createNodeBreakerDanglingLineNetwork();
+    Network network = createNodeBreakerBoundaryLineNetwork();
     Line &line = network.getLine("Line-2-2");
-    DanglingLine &dl = network.getDanglingLine("Dl-3");
+    BoundaryLine &bl = network.getBoundaryLine("Bl-3");
     Bus &bus1 = network.getBusBreakerView().getBus("S1VL1_0");
     Bus &bus2 = network.getBusBreakerView().getBus("S2VL1_0");
 
@@ -642,7 +642,7 @@ BOOST_AUTO_TEST_CASE(testDcOlfRealNetwork) {
     bus2.setAngle(-0.26030675136807774);
     line.getTerminal1().setP(115.0);
     line.getTerminal2().setP(-115.0);
-    dl.getTerminal().setP(70.0);
+    bl.getTerminal().setP(70.0);
 
     double tol = 0.00001;
     SV svL1 = SV(line.getTerminal1().getP(), line.getTerminal1().getQ(), bus1.getV(), bus1.getAngle(), TwoSides::ONE);
@@ -655,15 +655,15 @@ BOOST_AUTO_TEST_CASE(testDcOlfRealNetwork) {
     BOOST_CHECK_CLOSE(line.getTerminal1().getP(), svL2other.getP(), tol);
     BOOST_CHECK_SMALL(svL2other.getA(), tol);
 
-    SV svDl1 = SV(dl.getTerminal().getP(), dl.getTerminal().getQ(), bus2.getV(), bus2.getAngle(), TwoSides::ONE);
-    SV svDl1other = svDl1.otherSide(dl);
-    BOOST_CHECK_CLOSE(-dl.getP0(), svDl1other.getP(), tol);
-    BOOST_CHECK_CLOSE(-0.4187543391573424, svDl1other.getA(), tol);
+    SV svBl1 = SV(bl.getTerminal().getP(), bl.getTerminal().getQ(), bus2.getV(), bus2.getAngle(), TwoSides::ONE);
+    SV svBl1other = svBl1.otherSide(bl);
+    BOOST_CHECK_CLOSE(-bl.getP0(), svBl1other.getP(), tol);
+    BOOST_CHECK_CLOSE(-0.4187543391573424, svBl1other.getA(), tol);
 
-    //DanglingLineBoundary validates its "useHypothesis" condition :
-    BOOST_CHECK_CLOSE(-dl.getP0(), dl.getBoundary().getP(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK_CLOSE(-dl.getQ0(), dl.getBoundary().getQ(), std::numeric_limits<double>::epsilon());
-    BOOST_CHECK(std::isnan(dl.getBoundary().getI()));
+    //BoundaryLineBoundary validates its "useHypothesis" condition :
+    BOOST_CHECK_CLOSE(-bl.getP0(), bl.getBoundary().getP(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_CLOSE(-bl.getQ0(), bl.getBoundary().getQ(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(std::isnan(bl.getBoundary().getI()));
 }
 
 BOOST_AUTO_TEST_SUITE_END()

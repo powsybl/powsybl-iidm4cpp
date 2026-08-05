@@ -72,13 +72,13 @@ public:
     const network::BusView& getBusView() const override;
     network::BusView& getBusView() override;
 
-    const DanglingLine& getDanglingLine(const std::string& id) const override;
-    DanglingLine& getDanglingLine(const std::string& id) override;
-    stdcxx::const_range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) const override;
-    stdcxx::range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) override;
-    unsigned long getDanglingLineCount() const override;
-    stdcxx::const_range<DanglingLine> getDanglingLines() const override;
-    stdcxx::range<DanglingLine> getDanglingLines() override;
+    const BoundaryLine& getBoundaryLine(const std::string& id) const override;
+    BoundaryLine& getBoundaryLine(const std::string& id) override;
+    stdcxx::const_range<BoundaryLine> getBoundaryLines(const BoundaryLineFilter& filter) const override;
+    stdcxx::range<BoundaryLine> getBoundaryLines(const BoundaryLineFilter& filter) override;
+    unsigned long getBoundaryLineCount() const override;
+    stdcxx::const_range<BoundaryLine> getBoundaryLines() const override;
+    stdcxx::range<BoundaryLine> getBoundaryLines() override;
 
     stdcxx::CReference<DcBus> getDcBus(const std::string& id) const override;
     stdcxx::Reference<DcBus> getDcBus(const std::string& id) override;

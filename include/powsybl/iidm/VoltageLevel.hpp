@@ -28,8 +28,8 @@ namespace iidm {
 class Area;
 class Battery;
 class BatteryAdder;
-class DanglingLine;
-class DanglingLineAdder;
+class BoundaryLine;
+class BoundaryLineAdder;
 class Generator;
 class GeneratorAdder;
 class Ground;
@@ -119,15 +119,15 @@ public:
     template <typename T = Connectable, typename = typename std::enable_if<std::is_base_of<Connectable, T>::value>::type>
     stdcxx::range<T> getConnectables();
 
-    unsigned long getDanglingLineCount() const;
+    unsigned long getBoundaryLineCount() const;
 
-    stdcxx::const_range<DanglingLine> getDanglingLines() const;
+    stdcxx::const_range<BoundaryLine> getBoundaryLines() const;
 
-    stdcxx::range<DanglingLine> getDanglingLines();
+    stdcxx::range<BoundaryLine> getBoundaryLines();
 
-    stdcxx::const_range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter) const;
+    stdcxx::const_range<BoundaryLine> getBoundaryLines(const BoundaryLineFilter& filter) const;
 
-    stdcxx::range<DanglingLine> getDanglingLines(const DanglingLineFilter& filter);
+    stdcxx::range<BoundaryLine> getBoundaryLines(const BoundaryLineFilter& filter);
 
     unsigned long getGeneratorCount() const;
 
@@ -230,7 +230,7 @@ public:
 
     BatteryAdder newBattery();
 
-    DanglingLineAdder newDanglingLine();
+    BoundaryLineAdder newBoundaryLine();
 
     GeneratorAdder newGenerator();
 

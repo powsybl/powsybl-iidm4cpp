@@ -34,7 +34,7 @@ const std::initializer_list<std::string>& getNames<IdentifiableType>() {
         "BATTERY",
         "LOAD",
         "SHUNT_COMPENSATOR",
-        "DANGLING_LINE",
+        "BOUNDARY_LINE",
         "STATIC_VAR_COMPENSATOR",
         "HVDC_CONVERTER_STATION",
         "OVERLOAD_MANAGEMENT_SYSTEM",

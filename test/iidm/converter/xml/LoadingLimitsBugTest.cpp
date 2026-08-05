@@ -12,8 +12,6 @@
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusAdder.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/LoadingLimits.hpp>

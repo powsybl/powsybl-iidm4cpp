@@ -9,11 +9,11 @@
 
 #include <powsybl/iidm/ActivePowerLimitsAdder.hpp>
 #include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Bus.hpp>
 #include <powsybl/iidm/BusAdder.hpp>
 #include <powsybl/iidm/CurrentLimitsAdder.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
@@ -42,8 +42,8 @@ namespace xml {
 
 BOOST_AUTO_TEST_SUITE(LoadingLimitsRoundTrip)
 
-Network createDanglingLineNetwork() {
-    Network network("dangling-line", "test");
+Network createBoundaryLineNetwork() {
+    Network network("boundary-line", "test");
     Substation& substation = network.newSubstation()
         .setId("S")
         .setCountry(Country::FR)
@@ -69,8 +69,8 @@ Network createDanglingLineNetwork() {
         .setBus("BUS")
         .add();
 
-    DanglingLine& danglingLine = network.getVoltageLevel("VL").newDanglingLine()
-        .setId("DL")
+    BoundaryLine& boundaryLine = network.getVoltageLevel("VL").newBoundaryLine()
+        .setId("BL")
         .setBus("BUS")
         .setR(10.0)
         .setX(1.0)
@@ -80,7 +80,7 @@ Network createDanglingLineNetwork() {
         .setQ0(30.0)
         .add();
 
-    danglingLine.getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
+    boundaryLine.getOrCreateSelectedOperationalLimitsGroup().newCurrentLimits()
         .setPermanentLimit(100.0)
         .beginTemporaryLimit()
             .setName("20'")
@@ -152,16 +152,16 @@ BOOST_FIXTURE_TEST_CASE(ThreeWindingsTransformerLoadingLimitsTest, test::Resourc
     });
 }
 
-BOOST_FIXTURE_TEST_CASE(DanglingLineLoadingLimitsTest, test::ResourceFixture) {
-    test::converter::RoundTrip::roundTripVersionedXmlTest("dl-loading-limits.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+BOOST_FIXTURE_TEST_CASE(BoundaryLineLoadingLimitsTest, test::ResourceFixture) {
+    test::converter::RoundTrip::roundTripVersionedXmlTest("bl-loading-limits.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
 
     // backward compatibility checks from version 1.5
-    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("dl-loading-limits.xml", IidmXmlVersion::V1_5());
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("bl-loading-limits.xml", IidmXmlVersion::V1_5());
 
-    Network network = createDanglingLineNetwork();
+    Network network = createBoundaryLineNetwork();
     network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
-    DanglingLine& danglingLine = network.getDanglingLine("DL");
-    OperationalLimitsGroup& limitsGroups = danglingLine.getOrCreateSelectedOperationalLimitsGroup();
+    BoundaryLine& boundaryLine = network.getBoundaryLine("BL");
+    OperationalLimitsGroup& limitsGroups = boundaryLine.getOrCreateSelectedOperationalLimitsGroup();
     ApparentPowerLimitsAdder activePowerLimitsAdder = limitsGroups.newApparentPowerLimits();
     createLoadingLimits(activePowerLimitsAdder);
     ActivePowerLimitsAdder apparentPowerLimitsAdder = limitsGroups.newActivePowerLimits();
@@ -183,7 +183,7 @@ BOOST_FIXTURE_TEST_CASE(DanglingLineLoadingLimitsTest, test::ResourceFixture) {
         const auto& writer = [&options](const iidm::Network& n, std::ostream& stream) {
             iidm::Network::writeXml(stdcxx::format("%1%.xiidm", n.getId()), stream, n, options);
         };
-        test::converter::RoundTrip::writeXmlTest(network, writer, test::converter::RoundTrip::getVersionedNetwork("dl-loading-limits.xml", version));
+        test::converter::RoundTrip::writeXmlTest(network, writer, test::converter::RoundTrip::getVersionedNetwork("bl-loading-limits.xml", version));
     });
 }
 
@@ -322,15 +322,15 @@ BOOST_FIXTURE_TEST_CASE(importWithoutPermanentLimitsOption, test::ResourceFixtur
 }
 
 BOOST_FIXTURE_TEST_CASE(withProperties, test::ResourceFixture) {
-    Network network = createDanglingLineNetwork();
+    Network network = createBoundaryLineNetwork();
     network.setCaseDate(stdcxx::DateTime::parse("2013-01-15T18:45:00.000+01:00"));
-    DanglingLine& danglingLine = network.getDanglingLine("DL");
-    OperationalLimitsGroup& group1 = danglingLine.getOperationalLimitsGroup("DEFAULT");
+    BoundaryLine& boundaryLine = network.getBoundaryLine("BL");
+    OperationalLimitsGroup& group1 = boundaryLine.getOperationalLimitsGroup("DEFAULT");
     group1.setProperty("type", "A");
     group1.setProperty("source", "s1");
     auto adder1 = group1.newCurrentLimits();
     createLoadingLimits(adder1);
-    OperationalLimitsGroup& group2 = danglingLine.newOperationalLimitsGroup("GROUP_2");
+    OperationalLimitsGroup& group2 = boundaryLine.newOperationalLimitsGroup("GROUP_2");
     group2.setProperty("type", "B");
     group2.setProperty("source", "s2");
     auto adder2 = group2.newCurrentLimits();

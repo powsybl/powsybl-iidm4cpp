@@ -15,10 +15,10 @@
 #include <powsybl/iidm/AreaAdder.hpp>
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/BusbarSectionAdder.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
-#include <powsybl/iidm/DanglingLineAdder.hpp>
 #include <powsybl/iidm/DcGround.hpp>
 #include <powsybl/iidm/DcGroundAdder.hpp>
 #include <powsybl/iidm/DcLine.hpp>
@@ -321,8 +321,8 @@ void CreateSubnetworkExploreTest(Network& network, const std::string& nid, Count
         .setB1(0)
         .setB2(0)
         .add();
-    voltageLevel1.newDanglingLine()
-        .setId(id("danglingLine1", nid))
+    voltageLevel1.newBoundaryLine()
+        .setId(id("boundaryLine1", nid))
         .setNode(15)
         .setR(1.0)
         .setX(0.1)
@@ -331,8 +331,8 @@ void CreateSubnetworkExploreTest(Network& network, const std::string& nid, Count
         .setP0(10)
         .setQ0(1)
         .add();
-    voltageLevel2.newDanglingLine()
-        .setId(id("danglingLine2", nid))
+    voltageLevel2.newBoundaryLine()
+        .setId(id("boundaryLine2", nid))
         .setNode(16)
         .setR(1.0)
         .setX(0.1)
@@ -343,11 +343,11 @@ void CreateSubnetworkExploreTest(Network& network, const std::string& nid, Count
         .add();
     network.newTieLine()
         .setId(id("tieLine1", nid))
-        .setDanglingLine1(id("danglingLine1", nid))
-        .setDanglingLine2(id("danglingLine2", nid))
+        .setBoundaryLine1(id("boundaryLine1", nid))
+        .setBoundaryLine2(id("boundaryLine2", nid))
         .add();
-    voltageLevel3.newDanglingLine()
-        .setId(id("danglingLine3", nid))
+    voltageLevel3.newBoundaryLine()
+        .setId(id("boundaryLine3", nid))
         .setNode(17)
         .setR(1.0)
         .setX(0.1)
@@ -450,11 +450,11 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     CreateSubnetworkExploreTest(subnetwork1, "1", Country::ES);
     CreateSubnetworkExploreTest(subnetwork2, "2", Country::BE);
 
-    //Create Tie line on dangling lines from each subnetworks
+    //Create Tie line on boundary lines from each subnetworks
     network.newTieLine()
         .setId(id("tieLine3", "0"))
-        .setDanglingLine1(id("danglingLine3", "1"))
-        .setDanglingLine2(id("danglingLine3", "2"))
+        .setBoundaryLine1(id("boundaryLine3", "1"))
+        .setBoundaryLine2(id("boundaryLine3", "2"))
         .add();
 
     // Explore subnetworks
@@ -975,34 +975,34 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
         subnetwork2.getLine(id);
     }
 
-    // DanglingLines
-    auto expectedDLines0 = {id("danglingLine1", "1"), id("danglingLine2", "1"), id("danglingLine3", "1"), 
-                               id("danglingLine1", "2"), id("danglingLine2", "2"), id("danglingLine3", "2")};
-    auto expectedDLines1 = {id("danglingLine1", "1"), id("danglingLine2", "1"), id("danglingLine3", "1")};
-    auto expectedDLines2 = {id("danglingLine1", "2"), id("danglingLine2", "2"), id("danglingLine3", "2")};
-    BOOST_CHECK_EQUAL(expectedDLines0.size(), network.getDanglingLineCount());
-    BOOST_CHECK_EQUAL(expectedDLines1.size(), subnetwork1.getDanglingLineCount());
-    BOOST_CHECK_EQUAL(expectedDLines2.size(), subnetwork2.getDanglingLineCount());
-    const auto& danglingLines0 = network.getDanglingLines() | boost::adaptors::transformed(mapId<DanglingLine>);
-    const auto& danglingLines1 = subnetwork1.getDanglingLines() | boost::adaptors::transformed(mapId<DanglingLine>);
-    const auto& danglingLines2 = subnetwork2.getDanglingLines() | boost::adaptors::transformed(mapId<DanglingLine>);
-    const auto& danglingLinesId0 = network.getIdentifiables(IdentifiableType::DANGLING_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
-    const auto& danglingLinesId1 = subnetwork1.getIdentifiables(IdentifiableType::DANGLING_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
-    const auto& danglingLinesId2 = subnetwork2.getIdentifiables(IdentifiableType::DANGLING_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
-    BOOST_CHECK_EQUAL(expectedDLines0.size(), boost::size(danglingLines0));
-    BOOST_CHECK_EQUAL(expectedDLines1.size(), boost::size(danglingLines1));
-    BOOST_CHECK_EQUAL(expectedDLines2.size(), boost::size(danglingLines2));
-    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines0.begin(), danglingLines0.end(), danglingLinesId0.begin(), danglingLinesId0.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines0.begin(), danglingLines0.end(), expectedDLines0.begin(), expectedDLines0.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines1.begin(), danglingLines1.end(), danglingLinesId1.begin(), danglingLinesId1.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines1.begin(), danglingLines1.end(), expectedDLines1.begin(), expectedDLines1.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines2.begin(), danglingLines2.end(), danglingLinesId2.begin(), danglingLinesId2.end());
-    BOOST_CHECK_EQUAL_COLLECTIONS(danglingLines2.begin(), danglingLines2.end(), expectedDLines2.begin(), expectedDLines2.end());
-    for (auto& id : expectedDLines1) {
-        subnetwork1.getDanglingLine(id);
+    // BoundaryLines
+    auto expectedBLines0 = {id("boundaryLine1", "1"), id("boundaryLine2", "1"), id("boundaryLine3", "1"), 
+                               id("boundaryLine1", "2"), id("boundaryLine2", "2"), id("boundaryLine3", "2")};
+    auto expectedBLines1 = {id("boundaryLine1", "1"), id("boundaryLine2", "1"), id("boundaryLine3", "1")};
+    auto expectedBLines2 = {id("boundaryLine1", "2"), id("boundaryLine2", "2"), id("boundaryLine3", "2")};
+    BOOST_CHECK_EQUAL(expectedBLines0.size(), network.getBoundaryLineCount());
+    BOOST_CHECK_EQUAL(expectedBLines1.size(), subnetwork1.getBoundaryLineCount());
+    BOOST_CHECK_EQUAL(expectedBLines2.size(), subnetwork2.getBoundaryLineCount());
+    const auto& boundaryLines0 = network.getBoundaryLines() | boost::adaptors::transformed(mapId<BoundaryLine>);
+    const auto& boundaryLines1 = subnetwork1.getBoundaryLines() | boost::adaptors::transformed(mapId<BoundaryLine>);
+    const auto& boundaryLines2 = subnetwork2.getBoundaryLines() | boost::adaptors::transformed(mapId<BoundaryLine>);
+    const auto& boundaryLinesId0 = network.getIdentifiables(IdentifiableType::BOUNDARY_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& boundaryLinesId1 = subnetwork1.getIdentifiables(IdentifiableType::BOUNDARY_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    const auto& boundaryLinesId2 = subnetwork2.getIdentifiables(IdentifiableType::BOUNDARY_LINE) | boost::adaptors::transformed(mapId<Identifiable>);
+    BOOST_CHECK_EQUAL(expectedBLines0.size(), boost::size(boundaryLines0));
+    BOOST_CHECK_EQUAL(expectedBLines1.size(), boost::size(boundaryLines1));
+    BOOST_CHECK_EQUAL(expectedBLines2.size(), boost::size(boundaryLines2));
+    BOOST_CHECK_EQUAL_COLLECTIONS(boundaryLines0.begin(), boundaryLines0.end(), boundaryLinesId0.begin(), boundaryLinesId0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(boundaryLines0.begin(), boundaryLines0.end(), expectedBLines0.begin(), expectedBLines0.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(boundaryLines1.begin(), boundaryLines1.end(), boundaryLinesId1.begin(), boundaryLinesId1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(boundaryLines1.begin(), boundaryLines1.end(), expectedBLines1.begin(), expectedBLines1.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(boundaryLines2.begin(), boundaryLines2.end(), boundaryLinesId2.begin(), boundaryLinesId2.end());
+    BOOST_CHECK_EQUAL_COLLECTIONS(boundaryLines2.begin(), boundaryLines2.end(), expectedBLines2.begin(), expectedBLines2.end());
+    for (auto& id : expectedBLines1) {
+        subnetwork1.getBoundaryLine(id);
     }
-    for (auto& id : expectedDLines2) {
-        subnetwork2.getDanglingLine(id);
+    for (auto& id : expectedBLines2) {
+        subnetwork2.getBoundaryLine(id);
     }
 
     // TieLines
@@ -1147,7 +1147,7 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
                                             id("vsc1", "1"), id("vsc2", "1"),
                                             id("threeWindingsTransformer1", "1"),
                                             id("twoWindingsTransformer1", "1"),
-                                            id("danglingLine1", "1"), id("danglingLine2", "1"), id("danglingLine3", "1"),
+                                            id("boundaryLine1", "1"), id("boundaryLine2", "1"), id("boundaryLine3", "1"),
                                             id("lccDetailed1", "1"), id("vscDetailed1", "1"),
                                 id("battery1", "2"),
                                             id("voltageLevel1BusbarSection1", "2"), id("voltageLevel1BusbarSection2", "2"),
@@ -1160,7 +1160,7 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
                                             id("vsc1", "2"), id("vsc2", "2"),
                                             id("threeWindingsTransformer1", "2"),
                                             id("twoWindingsTransformer1", "2"),
-                                            id("danglingLine1", "2"), id("danglingLine2", "2"), id("danglingLine3", "2"),
+                                            id("boundaryLine1", "2"), id("boundaryLine2", "2"), id("boundaryLine3", "2"),
                                             id("lccDetailed1", "2"), id("vscDetailed1", "2")};
 
     BOOST_CHECK_EQUAL(expectedConnectables.size(), subnetwork1.getConnectableCount());
@@ -1392,7 +1392,7 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
     }
 
     // Identifiables
-    std::set<std::string> expectedIdentifiables1 = {"n1_area1","n1_battery1","n1_danglingLine1","n1_danglingLine2","n1_danglingLine3",
+    std::set<std::string> expectedIdentifiables1 = {"n1_area1","n1_battery1","n1_boundaryLine1","n1_boundaryLine2","n1_boundaryLine3",
         "n1_dcGround1","n1_dcLine1","n1_dcNode1","n1_dcNode2","n1_dcSwitch1",
         "n1_generator1","n1_generator1Breaker1","n1_generator1Disconnector1","n1_hvdcLine1","n1_hvdcLine2",
         "n1_lcc1","n1_lcc2","n1_lccDetailed1","n1_line1","n1_load1","n1_load1Breaker1","n1_load1Disconnector1",
@@ -1400,7 +1400,7 @@ BOOST_AUTO_TEST_CASE(SubnetworkExplorationTest) {
         "n1_svc1","n1_threeWindingsTransformer1","n1_tieLine1","n1_twoWindingsTransformer1",
         "n1_voltageLevel1","n1_voltageLevel1Breaker1","n1_voltageLevel1BusbarSection1","n1_voltageLevel1BusbarSection2",
         "n1_voltageLevel2","n1_voltageLevel3","n1_voltageLevel4","n1_voltageLevel5","n1_vsc1","n1_vsc2","n1_vscDetailed1"};
-    std::set<std::string> expectedIdentifiables2 = {"n2_area1","n2_battery1","n2_danglingLine1","n2_danglingLine2","n2_danglingLine3",
+    std::set<std::string> expectedIdentifiables2 = {"n2_area1","n2_battery1","n2_boundaryLine1","n2_boundaryLine2","n2_boundaryLine3",
         "n2_dcGround1","n2_dcLine1","n2_dcNode1","n2_dcNode2","n2_dcSwitch1",
         "n2_generator1","n2_generator1Breaker1","n2_generator1Disconnector1","n2_hvdcLine1","n2_hvdcLine2",
         "n2_lcc1","n2_lcc2","n2_lccDetailed1","n2_line1","n2_load1","n2_load1Breaker1","n2_load1Disconnector1",

@@ -18,7 +18,7 @@ namespace iidm {
 class AcDcConverter;
 class Battery;
 class BusbarSection;
-class DanglingLine;
+class BoundaryLine;
 class Generator;
 class Ground;
 class HvdcConverterStation;
@@ -49,9 +49,9 @@ public:
 
     virtual void visitBattery(const Battery& battery);
 
-    virtual void visitBusbarSection(const BusbarSection& section);
+    virtual void visitBoundaryLine(const BoundaryLine& boundaryLine);
 
-    virtual void visitDanglingLine(const DanglingLine& danglingLine);
+    virtual void visitBusbarSection(const BusbarSection& section);
 
     virtual void visitGenerator(const Generator& generator);
 

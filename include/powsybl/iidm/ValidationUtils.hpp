@@ -12,7 +12,7 @@
 
 #include <powsybl/iidm/AcDcConverter.hpp>
 #include <powsybl/iidm/Battery.hpp>
-#include <powsybl/iidm/DanglingLine.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/DcNode.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
