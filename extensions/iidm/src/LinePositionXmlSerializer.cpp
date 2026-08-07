@@ -7,6 +7,7 @@
 
 #include <powsybl/iidm/extensions/iidm/LinePositionXmlSerializer.hpp>
 
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
@@ -32,8 +33,8 @@ LinePositionXmlSerializer::LinePositionXmlSerializer() :
 }
 
 Extension& LinePositionXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
-    if (!stdcxx::isInstanceOf<Line>(extendable)) {
-        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
+    if (!stdcxx::isInstanceOf<Line>(extendable) && !stdcxx::isInstanceOf<BoundaryLine>(extendable)) {
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% or %3% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>(), stdcxx::demangle<BoundaryLine>()));
     }
 
     std::vector<Coordinate> coordinates;

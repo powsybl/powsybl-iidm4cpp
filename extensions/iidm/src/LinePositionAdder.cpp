@@ -8,6 +8,7 @@
 #include <powsybl/iidm/extensions/iidm/LinePositionAdder.hpp>
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/extensions/iidm/Coordinate.hpp>
 #include <powsybl/iidm/extensions/iidm/LinePosition.hpp>
@@ -29,7 +30,10 @@ std::unique_ptr<Extension> LinePositionAdder::createExtension(Extendable& extend
     if (stdcxx::isInstanceOf<Line>(extendable)) {
         return stdcxx::make_unique<LinePosition>(dynamic_cast<Line&>(extendable), m_coordinates);
     }
-    throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>()));
+    if (stdcxx::isInstanceOf<BoundaryLine>(extendable)) {
+        return stdcxx::make_unique<LinePosition>(dynamic_cast<BoundaryLine&>(extendable), m_coordinates);
+    }
+    throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% or %3% expected)", stdcxx::demangle(extendable), stdcxx::demangle<Line>(), stdcxx::demangle<BoundaryLine>()));
 }
 
 LinePositionAdder& LinePositionAdder::withCoordinates(const std::vector<Coordinate>& coords) {

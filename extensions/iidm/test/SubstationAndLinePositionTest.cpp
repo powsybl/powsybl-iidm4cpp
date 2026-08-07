@@ -7,6 +7,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/BoundaryLineAdder.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/Substation.hpp>
@@ -57,6 +59,28 @@ BOOST_AUTO_TEST_CASE(SubstationAndLinePositionConstructor) {
     BOOST_CHECK(Coordinate(48.1, 2.1) == linePosition.getCoordinates().at(1));
     BOOST_CHECK(std::vector<Coordinate>({Coordinate(48, 2), Coordinate(48.1, 2.1)}) == linePosition.getCoordinates());
 
+    BoundaryLine& boundaryLine = network.getVoltageLevel("VLHV1").newBoundaryLine()
+                .setId("NHV1_XNODE1")
+                .setP0(0.0)
+                .setQ0(0.0)
+                .setR(1.5)
+                .setX(20.0)
+                .setG(1E-6)
+                .setB(386E-6 / 2)
+                .setBus("NHV1")
+                .setPairingKey("XNODE1")
+                .add();
+
+    boundaryLine.newExtension<LinePositionAdder>()
+        .withCoordinates({Coordinate(49, -2)})
+        .add();
+
+    auto& linePositionBL = boundaryLine.getExtension<LinePosition>();
+    BOOST_CHECK_EQUAL("linePosition", linePositionBL.getName());
+    BOOST_CHECK(stdcxx::areSame(boundaryLine, linePositionBL.getExtendable().get()));
+    BOOST_CHECK_EQUAL(1, linePositionBL.getCoordinates().size());
+    BOOST_CHECK(Coordinate(49, -2) == linePositionBL.getCoordinates().at(0));
+    BOOST_CHECK(std::vector<Coordinate>({Coordinate(49, -2)}) == linePositionBL.getCoordinates());
 }
 
 BOOST_FIXTURE_TEST_CASE(SubstationAndLinePositionSerializerTest, test::ResourceFixture) {

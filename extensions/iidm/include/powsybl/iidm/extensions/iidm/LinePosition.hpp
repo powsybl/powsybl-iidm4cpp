@@ -16,6 +16,7 @@ namespace powsybl {
 
 namespace iidm {
 
+class BoundaryLine;
 class Line;
 
 namespace extensions {
@@ -32,6 +33,7 @@ public: // Extension
 
 public:
     LinePosition(Line& line, const std::vector<Coordinate>& coords);
+    LinePosition(BoundaryLine& boundaryLine, const std::vector<Coordinate>& coords);
 
     const std::vector<Coordinate>& getCoordinates() const;
 

@@ -8,6 +8,7 @@
 #include <powsybl/iidm/extensions/iidm/LinePosition.hpp>
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/extensions/iidm/Coordinate.hpp>
 
@@ -24,9 +25,14 @@ LinePosition::LinePosition(Line& line, const std::vector<Coordinate>& coords) :
     m_coordinates(coords) {
 }
 
+LinePosition::LinePosition(BoundaryLine& boundaryLine, const std::vector<Coordinate>& coords) :
+    Extension(boundaryLine),
+    m_coordinates(coords) {
+}
+
 void LinePosition::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
-    if (extendable && !stdcxx::isInstanceOf<Line>(extendable.get())) {
-        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Line>()));
+    if (extendable && !stdcxx::isInstanceOf<Line>(extendable.get()) && !stdcxx::isInstanceOf<BoundaryLine>(extendable.get())) {
+        throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% or %3% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Line>(), stdcxx::demangle<BoundaryLine>()));
     }
 }
 
