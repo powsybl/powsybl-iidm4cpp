@@ -132,6 +132,9 @@ Network createOperationalLimitsOnLineNetwork() {
     l.getOperationalLimitsGroup2("1").get().newApparentPowerLimits().setPermanentLimit(1100.0).add();
     l.getOperationalLimitsGroup2("1").get().getApparentPowerLimits().get().setPermanentLimit(900.0);
 
+    l.getOperationalLimitsGroup1("3").get().setProperty("propName1", "propValue1");
+    l.getOperationalLimitsGroup2("1").get().setProperty("propName2", "propValue2");
+
     return network;
 }
 
@@ -481,6 +484,43 @@ BOOST_AUTO_TEST_CASE(propertiesHolderTest) {
     BOOST_CHECK(!group.hasProperty(property1));
     BOOST_CHECK(group.getPropertyNames().empty());
     POWSYBL_ASSERT_THROW(group.getProperty(property1), stdcxx::PropertyNotFoundException, "Property property_1 does not exist");
+}
+
+BOOST_AUTO_TEST_CASE(copyOperationalLimitsTest) {
+    Network network = createOperationalLimitsOnLineNetwork();
+    Line& l = network.getLine("L");
+
+    Line& l2 = network.newLine()
+        .setId("L2")
+        .setVoltageLevel1("VL1")
+        .setConnectableBus1("B1")
+        .setBus1("B1")
+        .setVoltageLevel2("VL2")
+        .setConnectableBus2("B2")
+        .setBus2("B2")
+        .setR(1.0)
+        .setX(1.0)
+        .setG1(0.0)
+        .setG2(0.0)
+        .setB1(0.0)
+        .setB2(0.0)
+        .add();
+
+    l2.copyOperationalLimits(l);
+
+    BOOST_CHECK_EQUAL(boost::size(l.getOperationalLimitsGroups1()), boost::size(l2.getOperationalLimitsGroups1()));
+    BOOST_CHECK_EQUAL(boost::size(l.getOperationalLimitsGroups2()), boost::size(l2.getOperationalLimitsGroups2()));
+
+    POWSYBL_ASSERT_REF_TRUE(l2.getOperationalLimitsGroup1("3"));
+    OperationalLimitsGroup& olg3side1 = l2.getOperationalLimitsGroup1("3").get();
+    BOOST_CHECK_EQUAL(1, boost::size(olg3side1.getPropertyNames()));
+    BOOST_CHECK_EQUAL("propValue1", olg3side1.getProperty("propName1"));
+
+    POWSYBL_ASSERT_REF_TRUE(l2.getOperationalLimitsGroup2("1"));
+    OperationalLimitsGroup& olg1side2 = l2.getOperationalLimitsGroup2("1").get();
+    BOOST_CHECK_EQUAL(1, boost::size(olg1side2.getPropertyNames()));
+    BOOST_CHECK_EQUAL("propValue2", olg1side2.getProperty("propName2"));
+
 }
 
 BOOST_AUTO_TEST_SUITE_END()

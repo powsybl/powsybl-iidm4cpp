@@ -286,6 +286,9 @@ BOOST_AUTO_TEST_CASE(adderByCopy) {
     stdcxx::Reference<CurrentLimits> optionalLimits2 = line1.getCurrentLimits2();
     POWSYBL_ASSERT_REF_TRUE(optionalLimits2);
 
+    line1.getOperationalLimitsGroup1("group1").get().setProperty("propName1", "propValue1");
+    line1.getOperationalLimitsGroup2("group2").get().setProperty("propName2", "propValue2");
+
     //Create second Line by copy:
 
     LineAdder line2Adder = network.newLine(line1);
@@ -314,6 +317,14 @@ BOOST_AUTO_TEST_CASE(adderByCopy) {
     BOOST_CHECK_EQUAL(currentLimits1.getPermanentLimit(), currentLimits3.getPermanentLimit());
     POWSYBL_ASSERT_REF_TRUE(line2.getOperationalLimitsGroup2("group2"));
     BOOST_CHECK_EQUAL(line1.getSelectedOperationalLimitsGroupId2().get(), line2.getSelectedOperationalLimitsGroupId2().get());
+
+    OperationalLimitsGroup& olg1line2 = line2.getOperationalLimitsGroup1("group1");
+    BOOST_CHECK_EQUAL(1, boost::size(olg1line2.getPropertyNames()));
+    BOOST_CHECK_EQUAL("propValue1", olg1line2.getProperty("propName1"));
+
+    OperationalLimitsGroup& olg2line2 = line2.getOperationalLimitsGroup2("group2").get();
+    BOOST_CHECK_EQUAL(1, boost::size(olg2line2.getPropertyNames()));
+    BOOST_CHECK_EQUAL("propValue2", olg2line2.getProperty("propName2"));
 
 }
 

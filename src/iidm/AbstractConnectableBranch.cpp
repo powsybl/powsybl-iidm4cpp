@@ -154,6 +154,9 @@ void AbstractConnectableBranch::copyOperationalLimits(const AbstractConnectableB
         if(static_cast<bool>(copyLimitsGroup.getApparentPowerLimits())) {
             newLimitsGroup1.newApparentPowerLimits(copyLimitsGroup.getApparentPowerLimits().get()).add();
         }
+        for (const auto& propertyName : copyLimitsGroup.getPropertyNames()) {
+            newLimitsGroup1.setProperty(propertyName, copyLimitsGroup.getProperty(propertyName));
+        }
     }
     if(copiedBranch.getSelectedOperationalLimitsGroupId1().has_value()) {
         setSelectedOperationalLimitsGroup1(copiedBranch.getSelectedOperationalLimitsGroupId1().get());
@@ -170,6 +173,9 @@ void AbstractConnectableBranch::copyOperationalLimits(const AbstractConnectableB
         }
         if(static_cast<bool>(copyLimitsGroup.getApparentPowerLimits())) {
             newLimitsGroup2.newApparentPowerLimits(copyLimitsGroup.getApparentPowerLimits().get()).add();
+        }
+        for (const auto& propertyName : copyLimitsGroup.getPropertyNames()) {
+            newLimitsGroup2.setProperty(propertyName, copyLimitsGroup.getProperty(propertyName));
         }
     }
     if(copiedBranch.getSelectedOperationalLimitsGroupId2().has_value()) {
