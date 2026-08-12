@@ -131,11 +131,13 @@ OperationalLimitsGroup& OperationalLimitsGroups::getOrCreateSelectedOperationalL
         auto defaultGroup = getOperationalLimitsGroup(defaultId);
         if(!defaultGroup) {
             selectedGroup = newOperationalLimitsGroup(defaultId);
+        } else {
+            selectedGroup = defaultGroup;
         }
         setSelectedOperationalLimitsGroup(defaultId);
     }
 
-    return dynamic_cast<OperationalLimitsGroup&>(selectedGroup.get());
+    return selectedGroup.get();
 }
 
 

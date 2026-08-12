@@ -430,6 +430,27 @@ BOOST_AUTO_TEST_CASE(OperationalLimitsGroupsOnTWTTest) {
     BOOST_CHECK(!t.checkPermanentLimit1(LimitType::APPARENT_POWER));
 }
 
+BOOST_AUTO_TEST_CASE(testGetOrCreateDefault) {
+    Network network = createOperationalLimitsOnLineNetwork();
+    Line& l = network.getLine("L");
+ 
+    POWSYBL_ASSERT_REF_FALSE(l.getSelectedOperationalLimitsGroup1());
+ 
+    l.newApparentPowerLimits1().setPermanentLimit(850.0).add(); //create default and set selected
+ 
+    POWSYBL_ASSERT_REF_TRUE(l.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK_EQUAL(l.getSelectedOperationalLimitsGroup1().get().getId(), "DEFAULT");
+ 
+    l.cancelSelectedOperationalLimitsGroup1(); //unselect, but default group still exist
+    POWSYBL_ASSERT_REF_FALSE(l.getSelectedOperationalLimitsGroup1());
+    POWSYBL_ASSERT_REF_TRUE(l.getOperationalLimitsGroup1("DEFAULT"));
+
+    l.newApparentPowerLimits1().setPermanentLimit(9000.0).add(); //retrieve default group and reset it as selected
+    POWSYBL_ASSERT_REF_TRUE(l.getSelectedOperationalLimitsGroup1());
+    BOOST_CHECK_EQUAL(l.getSelectedOperationalLimitsGroup1().get().getId(), "DEFAULT");
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
