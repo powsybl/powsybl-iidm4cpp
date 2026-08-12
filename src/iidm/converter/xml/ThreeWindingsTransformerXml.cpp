@@ -98,7 +98,7 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
     readPQ(twt.getLeg2().getTerminal(), context.getReader(), 2);
     readPQ(twt.getLeg3().getTerminal(), context.getReader(), 3);
 
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt](){
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_12(), IidmXmlVersion::V1_15(), context.getVersion(), [&context, &twt](){
         readSelectedGroupId(context, [&twt](const std::string& selectedId) {
             twt.getLeg1().setSelectedOperationalLimitsGroup(selectedId);
         }, 1);
@@ -107,6 +107,17 @@ ThreeWindingsTransformer& ThreeWindingsTransformerXml::readRootElementAttributes
         }, 2);
         readSelectedGroupId(context, [&twt](const std::string& selectedId) {
             twt.getLeg3().setSelectedOperationalLimitsGroup(selectedId);
+        }, 3);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &twt](){
+        readAllSelectedGroupIds(context, [&twt](const std::list<std::string>& selectedIds) {
+            twt.getLeg1().addSelectedOperationalLimitsGroups(selectedIds);
+        }, 1);
+        readAllSelectedGroupIds(context, [&twt](const std::list<std::string>& selectedIds) {
+            twt.getLeg2().addSelectedOperationalLimitsGroups(selectedIds);
+        }, 2);
+        readAllSelectedGroupIds(context, [&twt](const std::list<std::string>& selectedIds) {
+            twt.getLeg3().addSelectedOperationalLimitsGroups(selectedIds);
         }, 3);
     });
 
@@ -233,10 +244,15 @@ void ThreeWindingsTransformerXml::writeRootElementAttributes(const ThreeWindings
         writePQ(twt.getLeg2().getTerminal(), context.getWriter(), 2);
         writePQ(twt.getLeg3().getTerminal(), context.getWriter(), 3);
     }
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(),[&twt, &context](){
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_12(), IidmXmlVersion::V1_15(), context.getVersion(),[&twt, &context](){
         writeSelectedGroupId(twt.getLeg1().getSelectedOperationalLimitsGroupId(), context, 1);
         writeSelectedGroupId(twt.getLeg2().getSelectedOperationalLimitsGroupId(), context, 2);
         writeSelectedGroupId(twt.getLeg3().getSelectedOperationalLimitsGroupId(), context, 3);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(),[&twt, &context](){
+        writeAllSelectedGroupIds(twt.getLeg1().getAllSelectedOperationalLimitsGroupIds(), context, 1);
+        writeAllSelectedGroupIds(twt.getLeg2().getAllSelectedOperationalLimitsGroupIds(), context, 2);
+        writeAllSelectedGroupIds(twt.getLeg3().getAllSelectedOperationalLimitsGroupIds(), context, 3);
     });
 }
 

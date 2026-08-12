@@ -52,6 +52,10 @@ const FictitiousLimits& fictitiousLimits) :
         //limit validations must be performed before calling this constructor (in each adders)
 }
 
+const std::string& LoadingLimits::getLimitsGroupId() const {
+    return m_limitsGroup.get().getId();
+}
+
 double LoadingLimits::getPermanentLimit() const {
     return m_permanentLimit;
 }

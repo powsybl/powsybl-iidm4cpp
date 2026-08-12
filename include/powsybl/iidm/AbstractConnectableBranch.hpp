@@ -21,46 +21,12 @@ class AbstractConnectableBranch : public Branch, public Connectable {
 public:
     ~AbstractConnectableBranch() noexcept override = default;
 
-    virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups1() const override;
-    virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups1()override;
-    virtual const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId1() const override;
-    virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id) const override;
-    virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id) override;
-    virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() const override;
-    virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() override;
-    virtual OperationalLimitsGroup& newOperationalLimitsGroup1(const std::string& id) override;
-    virtual void setSelectedOperationalLimitsGroup1(const std::string& id) override;
-    virtual void removeOperationalLimitsGroup1(const std::string& id) override;
-    virtual void cancelSelectedOperationalLimitsGroup1() override;
     /**
-     * Get the OperationalLimitsGroup selected on side 1 or create a new one if it does not exist and set it as selected.
+     * Copy every OperationalLimitsGroup from the copiedBranch into this Branch,
+     * if a group already exists with the same Id, it will be overwwritten.
+     * Sets the selected groups of this Branch as they are selected on the copiedBranch,
+     * groups are deselected before the copy.
      */
-    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup1() override;
-    /**
-     * Get the OperationalLimitsGroup corresponding to the given id from side 1 or create a new one if it does not exist and set it as selected.
-     */
-    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup1(const std::string& id) override;
-
-    virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups2() const override;
-    virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups2()override;
-    virtual const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId2() const override;
-    virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id) const override;
-    virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id) override;
-    virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() const override;
-    virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() override;
-    virtual OperationalLimitsGroup& newOperationalLimitsGroup2(const std::string& id) override;
-    virtual void setSelectedOperationalLimitsGroup2(const std::string& id) override;
-    virtual void removeOperationalLimitsGroup2(const std::string& id) override;
-    virtual void cancelSelectedOperationalLimitsGroup2() override;
-    /**
-     * Get the OperationalLimitsGroup selected on side 2 or create a new one if it does not exist and set it as selected.
-     */
-    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2() override;
-    /**
-     * Get the OperationalLimitsGroup corresponding to the given id from side 2 or create a new one if it does not exist and set it as selected.
-     */
-    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2(const std::string& id) override;
-
     virtual void copyOperationalLimits(const AbstractConnectableBranch& copiedBranch);
 
     virtual const Terminal& getTerminal1() const override;
@@ -98,6 +64,11 @@ public:
 
 protected:
     AbstractConnectableBranch();
+
+    virtual const FlowsLimitsHolder& getOperationalLimitsHolder1() const override;
+    virtual FlowsLimitsHolder& getOperationalLimitsHolder1() override;
+    virtual const FlowsLimitsHolder& getOperationalLimitsHolder2() const override;
+    virtual FlowsLimitsHolder& getOperationalLimitsHolder2() override;
 
 private:
     OperationalLimitsGroups m_operationalLimitsHolder1;

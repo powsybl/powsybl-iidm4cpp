@@ -228,8 +228,11 @@ stdcxx::const_range<OperationalLimitsGroup> BoundaryLine::getOperationalLimitsGr
 stdcxx::range<OperationalLimitsGroup> BoundaryLine::getOperationalLimitsGroups() {
     return m_operationalLimitsGroups.getOperationalLimitsGroups();
 }
-const stdcxx::optional<std::string>& BoundaryLine::getSelectedOperationalLimitsGroupId() const {
+stdcxx::optional<std::string> BoundaryLine::getSelectedOperationalLimitsGroupId() const {
     return m_operationalLimitsGroups.getSelectedOperationalLimitsGroupId();
+}
+const std::list<std::string>& BoundaryLine::getAllSelectedOperationalLimitsGroupIds() const {
+    return m_operationalLimitsGroups.getAllSelectedOperationalLimitsGroupIds();
 }
 stdcxx::CReference<OperationalLimitsGroup> BoundaryLine::getOperationalLimitsGroup(const std::string& id) const {
     return m_operationalLimitsGroups.getOperationalLimitsGroup(id);
@@ -243,17 +246,29 @@ stdcxx::CReference<OperationalLimitsGroup> BoundaryLine::getSelectedOperationalL
 stdcxx::Reference<OperationalLimitsGroup> BoundaryLine::getSelectedOperationalLimitsGroup() {
     return m_operationalLimitsGroups.getSelectedOperationalLimitsGroup();
 }
+stdcxx::const_range<OperationalLimitsGroup> BoundaryLine::getAllSelectedOperationalLimitsGroups() const {
+    return m_operationalLimitsGroups.getAllSelectedOperationalLimitsGroups();
+}
+stdcxx::range<OperationalLimitsGroup> BoundaryLine::getAllSelectedOperationalLimitsGroups() {
+    return m_operationalLimitsGroups.getAllSelectedOperationalLimitsGroups();
+}
 OperationalLimitsGroup& BoundaryLine::newOperationalLimitsGroup(const std::string& id) {
     return m_operationalLimitsGroups.newOperationalLimitsGroup(id);
 }
 void BoundaryLine::setSelectedOperationalLimitsGroup(const std::string& id) {
     m_operationalLimitsGroups.setSelectedOperationalLimitsGroup(id);
 }
+void BoundaryLine::addSelectedOperationalLimitsGroups(const std::list<std::string>& ids) {
+    m_operationalLimitsGroups.addSelectedOperationalLimitsGroups(ids);
+}
 void BoundaryLine::removeOperationalLimitsGroup(const std::string& id) {
     m_operationalLimitsGroups.removeOperationalLimitsGroup(id);
 }
 void BoundaryLine::cancelSelectedOperationalLimitsGroup() {
     m_operationalLimitsGroups.cancelSelectedOperationalLimitsGroup();
+}
+void BoundaryLine::deselectOperationalLimitsGroups(const std::list<std::string>& ids) {
+    m_operationalLimitsGroups.deselectOperationalLimitsGroups(ids);
 }
 OperationalLimitsGroup& BoundaryLine::getOrCreateSelectedOperationalLimitsGroup() {
     return m_operationalLimitsGroups.getOrCreateSelectedOperationalLimitsGroup();

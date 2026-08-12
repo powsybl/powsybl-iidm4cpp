@@ -41,7 +41,7 @@
             <iidm:load id="CH" loadType="UNDEFINED" p0="-5.1022489999999996" q0="4.9081216000000003" bus="N_1" connectableBus="N_1" p="-5.1022489999999996" q="4.9081216000000003"/>
             <iidm:load id="CE" loadType="UNDEFINED" p0="-72.186890000000005" q0="50.168945000000001" bus="N_3" connectableBus="N_3" p="-72.186890000000005" q="50.168945000000001"/>
         </iidm:voltageLevel>
-        <iidm:twoWindingsTransformer id="CI" r="2" x="14.744999999999999" g="0" b="3.1999999999999999e-05" ratedU1="225" ratedU2="225" bus1="C_0" connectableBus1="C_0" voltageLevelId1="C" bus2="N_1" connectableBus2="N_1" voltageLevelId2="N" selectedOperationalLimitsGroupId1="DEFAULT" selectedOperationalLimitsGroupId2="DEFAULT">
+        <iidm:twoWindingsTransformer id="CI" r="2" x="14.744999999999999" g="0" b="3.1999999999999999e-05" ratedU1="225" ratedU2="225" bus1="C_0" connectableBus1="C_0" voltageLevelId1="C" bus2="N_1" connectableBus2="N_1" voltageLevelId2="N" selectedOperationalLimitsGroupIds1="DEFAULT" selectedOperationalLimitsGroupIds2="DEFAULT">
             <iidm:phaseTapChanger lowTapPosition="0" tapPosition="22" regulationMode="CURRENT_LIMITER" regulationValue="930.66669999999999" loadTapChangingCapabilities="true" regulating="false">
                 <iidm:terminalRef id="CI" side="ONE"/>
                 <iidm:step r="39.784730000000003" x="39.784725000000002" g="0" b="0" rho="1" alpha="-42.799999999999997"/>
@@ -86,7 +86,7 @@
             </iidm:operationalLimitsGroup2>
         </iidm:twoWindingsTransformer>
     </iidm:substation>
-    <iidm:line id="CJ" r="0.0099999990000000007" x="0.10000002400000001" g1="0" b1="0" g2="0" b2="0" bus1="C_0" connectableBus1="C_0" voltageLevelId1="C" bus2="N_3" connectableBus2="N_3" voltageLevelId2="N" selectedOperationalLimitsGroupId1="DEFAULT" selectedOperationalLimitsGroupId2="DEFAULT">
+    <iidm:line id="CJ" r="0.0099999990000000007" x="0.10000002400000001" g1="0" b1="0" g2="0" b2="0" bus1="C_0" connectableBus1="C_0" voltageLevelId1="C" bus2="N_3" connectableBus2="N_3" voltageLevelId2="N" selectedOperationalLimitsGroupIds1="DEFAULT" selectedOperationalLimitsGroupIds2="DEFAULT">
         <iidm:operationalLimitsGroup1 id="DEFAULT">
             <iidm:currentLimits permanentLimit="931"/>
         </iidm:operationalLimitsGroup1>

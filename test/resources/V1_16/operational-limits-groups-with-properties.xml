@@ -8,7 +8,7 @@
             <iidm:generator id="G" energySource="OTHER" minP="0" maxP="100" voltageRegulatorOn="true" targetP="50" targetV="100" targetQ="30" bus="BUS" connectableBus="BUS">
                 <iidm:minMaxReactiveLimits minQ="-1.7976931348623157e+308" maxQ="1.7976931348623157e+308"/>
             </iidm:generator>
-            <iidm:boundaryLine id="BL" p0="50" q0="30" r="10" x="1" g="0.0001" b="1.0000000000000001e-05" bus="BUS" connectableBus="BUS" selectedOperationalLimitsGroupId="DEFAULT">
+            <iidm:boundaryLine id="BL" p0="50" q0="30" r="10" x="1" g="0.0001" b="1.0000000000000001e-05" bus="BUS" connectableBus="BUS" selectedOperationalLimitsGroupIds="DEFAULT">
                 <iidm:operationalLimitsGroup id="DEFAULT">
                     <iidm:property name="source" value="s1"/>
                     <iidm:property name="type" value="A"/>

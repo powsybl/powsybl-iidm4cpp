@@ -89,7 +89,11 @@ protected:
 
     static void writeSelectedGroupId(const stdcxx::optional<std::string>& selectedGroupId, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
+    static void writeAllSelectedGroupIds(const std::list<std::string>& groupIds, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
     static void readSelectedGroupId(NetworkXmlReaderContext& context, const std::function<void(const std::string&)>& endTaskConsumer, const stdcxx::optional<int>& index = stdcxx::optional<int>());
+
+    static void readAllSelectedGroupIds(NetworkXmlReaderContext& context, const std::function<void(const std::list<std::string>&)>& endTaskConsumer, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 
     static void writeLimits(NetworkXmlWriterContext& context, const char* rootName, const stdcxx::CReference<OperationalLimitsGroup>& selectedLimitsGroup, const stdcxx::const_range<OperationalLimitsGroup>& limitsGroups, const stdcxx::optional<int>& index = stdcxx::optional<int>());
 

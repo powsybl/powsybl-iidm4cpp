@@ -154,6 +154,13 @@ stdcxx::Reference<LoadingLimits> Leg::getLimits(const LimitType& type) {
     return stdcxx::ref(const_cast<const Leg*>(this)->getLimits(type));
 }
 
+stdcxx::const_range<LoadingLimits> Leg::getAllSelectedLoadingLimits(const LimitType& type) const {
+    return m_operationalLimitsGroups.getAllSelectedLoadingLimits(type);
+}
+stdcxx::range<LoadingLimits> Leg::getAllSelectedLoadingLimits(const LimitType& type) {
+    return m_operationalLimitsGroups.getAllSelectedLoadingLimits(type);
+}
+
 stdcxx::CReference<ThreeWindingsTransformer> Leg::getTransformer() const {
     return stdcxx::cref(m_transformer);
 }
@@ -254,8 +261,11 @@ stdcxx::const_range<OperationalLimitsGroup> Leg::getOperationalLimitsGroups() co
 stdcxx::range<OperationalLimitsGroup> Leg::getOperationalLimitsGroups() {
     return m_operationalLimitsGroups.getOperationalLimitsGroups();
 }
-const stdcxx::optional<std::string>& Leg::getSelectedOperationalLimitsGroupId() const {
+stdcxx::optional<std::string> Leg::getSelectedOperationalLimitsGroupId() const {
     return m_operationalLimitsGroups.getSelectedOperationalLimitsGroupId();
+}
+const std::list<std::string>& Leg::getAllSelectedOperationalLimitsGroupIds() const {
+    return m_operationalLimitsGroups.getAllSelectedOperationalLimitsGroupIds();
 }
 stdcxx::CReference<OperationalLimitsGroup> Leg::getOperationalLimitsGroup(const std::string& id) const {
     return m_operationalLimitsGroups.getOperationalLimitsGroup(id);
@@ -269,17 +279,29 @@ stdcxx::CReference<OperationalLimitsGroup> Leg::getSelectedOperationalLimitsGrou
 stdcxx::Reference<OperationalLimitsGroup> Leg::getSelectedOperationalLimitsGroup() {
     return m_operationalLimitsGroups.getSelectedOperationalLimitsGroup();
 }
+stdcxx::const_range<OperationalLimitsGroup> Leg::getAllSelectedOperationalLimitsGroups() const {
+    return m_operationalLimitsGroups.getAllSelectedOperationalLimitsGroups();
+}
+stdcxx::range<OperationalLimitsGroup> Leg::getAllSelectedOperationalLimitsGroups() {
+    return m_operationalLimitsGroups.getAllSelectedOperationalLimitsGroups();
+}
 OperationalLimitsGroup& Leg::newOperationalLimitsGroup(const std::string& id) {
     return m_operationalLimitsGroups.newOperationalLimitsGroup(id);
 }
 void Leg::setSelectedOperationalLimitsGroup(const std::string& id) {
     m_operationalLimitsGroups.setSelectedOperationalLimitsGroup(id);
 }
+void Leg::addSelectedOperationalLimitsGroups(const std::list<std::string>& ids) {
+    m_operationalLimitsGroups.addSelectedOperationalLimitsGroups(ids);
+}
 void Leg::removeOperationalLimitsGroup(const std::string& id) {
     m_operationalLimitsGroups.removeOperationalLimitsGroup(id);
 }
 void Leg::cancelSelectedOperationalLimitsGroup() {
     m_operationalLimitsGroups.cancelSelectedOperationalLimitsGroup();
+}
+void Leg::deselectOperationalLimitsGroups(const std::list<std::string>& ids) {
+    m_operationalLimitsGroups.deselectOperationalLimitsGroups(ids);
 }
 OperationalLimitsGroup& Leg::getOrCreateSelectedOperationalLimitsGroup() {
     return m_operationalLimitsGroups.getOrCreateSelectedOperationalLimitsGroup();

@@ -15,6 +15,7 @@
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/TwoSides.hpp>
 
+#include <list>
 
 namespace powsybl {
 
@@ -27,6 +28,7 @@ class ApparentPowerLimitsAdder;
 class CurrentLimits;
 class CurrentLimitsAdder;
 
+class FlowsLimitsHolder;
 class OperationalLimitsGroup;
 
 class Branch : public virtual Identifiable {
@@ -57,46 +59,69 @@ public:
 
     std::unique_ptr<Overload> checkTemporaryLimits2(double limitReduction, const LimitType& type) const;
 
-    virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups1() const = 0;
-    virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups1()= 0;
-    virtual const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId1() const = 0;
-    virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id) const = 0;
-    virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id) = 0;
-    virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() const = 0;
-    virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() = 0;
-    virtual OperationalLimitsGroup& newOperationalLimitsGroup1(const std::string& id) = 0;
-    virtual void setSelectedOperationalLimitsGroup1(const std::string& id) = 0;
-    virtual void removeOperationalLimitsGroup1(const std::string& id) = 0;
-    virtual void cancelSelectedOperationalLimitsGroup1() = 0;
+    std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const TwoSides& side, const LimitType& type) const;
+
+    std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const TwoSides& side, double limitReduction, const LimitType& type) const;
+
+    virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups1() const;
+    virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups1();
+    virtual stdcxx::optional<std::string> getSelectedOperationalLimitsGroupId1() const;
+    virtual const std::list<std::string>& getAllSelectedOperationalLimitsGroupIds1() const;
+    virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id) const;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup1(const std::string& id);
+    virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1() const;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup1();
+    virtual stdcxx::const_range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups1() const;
+    virtual stdcxx::range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups1();
+    virtual OperationalLimitsGroup& newOperationalLimitsGroup1(const std::string& id);
+    virtual void setSelectedOperationalLimitsGroup1(const std::string& id);
+    virtual void addSelectedOperationalLimitsGroups1(const std::list<std::string>& ids);
+    virtual void addSelectedOperationalLimitsGroupsByPredicate1(const stdcxx::Predicate<std::string>& operationalLimitsGroupIdPredicate);
+    virtual void removeOperationalLimitsGroup1(const std::string& id);
+    virtual void cancelSelectedOperationalLimitsGroup1();
+    virtual void deselectOperationalLimitsGroups1(const std::list<std::string>& ids);
     /**
      * Get the OperationalLimitsGroup selected on side 1 or create a new one if it does not exist and set it as selected.
      */
-    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup1() = 0;
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup1();
     /**
      * Get the OperationalLimitsGroup corresponding to the given id from side 1 or create a new one if it does not exist and set it as selected.
      */
     virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup1(const std::string& id);
 
 
-    virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups2() const = 0;
-    virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups2()= 0;
-    virtual const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId2() const = 0;
-    virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id) const = 0;
-    virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id) = 0;
-    virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() const = 0;
-    virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() = 0;
-    virtual OperationalLimitsGroup& newOperationalLimitsGroup2(const std::string& id) = 0;
-    virtual void setSelectedOperationalLimitsGroup2(const std::string& id) = 0;
-    virtual void removeOperationalLimitsGroup2(const std::string& id) = 0;
-    virtual void cancelSelectedOperationalLimitsGroup2() = 0;
+    virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups2() const;
+    virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups2();
+    virtual stdcxx::optional<std::string> getSelectedOperationalLimitsGroupId2() const;
+    virtual const std::list<std::string>& getAllSelectedOperationalLimitsGroupIds2() const;
+    virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id) const;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup2(const std::string& id);
+    virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2() const;
+    virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup2();
+    virtual stdcxx::const_range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups2() const;
+    virtual stdcxx::range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups2();
+    virtual OperationalLimitsGroup& newOperationalLimitsGroup2(const std::string& id);
+    virtual void setSelectedOperationalLimitsGroup2(const std::string& id);
+    virtual void addSelectedOperationalLimitsGroups2(const std::list<std::string>& ids);
+    virtual void addSelectedOperationalLimitsGroupsByPredicate2(const stdcxx::Predicate<std::string>& operationalLimitsGroupIdPredicate);
+    virtual void removeOperationalLimitsGroup2(const std::string& id);
+    virtual void cancelSelectedOperationalLimitsGroup2();
+    virtual void deselectOperationalLimitsGroups2(const std::list<std::string>& ids);
     /**
      * Get the OperationalLimitsGroup selected on side 2 or create a new one if it does not exist and set it as selected.
      */
-    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2() = 0;
+    virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2();
     /**
      * Get the OperationalLimitsGroup corresponding to the given id from side 2 or create a new one if it does not exist and set it as selected.
      */
     virtual OperationalLimitsGroup& getOrCreateSelectedOperationalLimitsGroup2(const std::string& id);
+
+    const std::list<std::string>& getAllSelectedOperationalLimitsGroupIds(const TwoSides& side) const;
+    stdcxx::const_range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups(const TwoSides& side) const;
+    stdcxx::range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups(const TwoSides& side);
+    void addSelectedOperationalLimitsGroups(const TwoSides& side, const std::list<std::string>& ids);
+    void addSelectedOperationalLimitsGroupsByPredicate(const TwoSides& side, const stdcxx::Predicate<std::string>& operationalLimitsGroupIdPredicate);
+    void deselectOperationalLimitsGroups(const TwoSides& side, const std::list<std::string>& ids);
 
     stdcxx::CReference<ActivePowerLimits> getActivePowerLimits(const TwoSides& side) const;
 
@@ -110,6 +135,13 @@ public:
 
     virtual stdcxx::Reference<ActivePowerLimits> getActivePowerLimits2();
 
+    stdcxx::const_range<ActivePowerLimits> getAllSelectedActivePowerLimits(const TwoSides& side) const;
+    stdcxx::range<ActivePowerLimits> getAllSelectedActivePowerLimits(const TwoSides& side);
+    virtual stdcxx::const_range<ActivePowerLimits> getAllSelectedActivePowerLimits1() const;
+    virtual stdcxx::range<ActivePowerLimits> getAllSelectedActivePowerLimits1();
+    virtual stdcxx::const_range<ActivePowerLimits> getAllSelectedActivePowerLimits2() const;
+    virtual stdcxx::range<ActivePowerLimits> getAllSelectedActivePowerLimits2();
+
     stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits(const TwoSides& side) const;
 
     stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits(const TwoSides& side);
@@ -121,6 +153,13 @@ public:
     virtual stdcxx::CReference<ApparentPowerLimits> getApparentPowerLimits2() const;
 
     virtual stdcxx::Reference<ApparentPowerLimits> getApparentPowerLimits2();
+
+    stdcxx::const_range<ApparentPowerLimits> getAllSelectedApparentPowerLimits(const TwoSides& side) const;
+    stdcxx::range<ApparentPowerLimits> getAllSelectedApparentPowerLimits(const TwoSides& side);
+    virtual stdcxx::const_range<ApparentPowerLimits> getAllSelectedApparentPowerLimits1() const;
+    virtual stdcxx::range<ApparentPowerLimits> getAllSelectedApparentPowerLimits1();
+    virtual stdcxx::const_range<ApparentPowerLimits> getAllSelectedApparentPowerLimits2() const;
+    virtual stdcxx::range<ApparentPowerLimits> getAllSelectedApparentPowerLimits2();
 
     stdcxx::CReference<CurrentLimits> getCurrentLimits(const TwoSides& side) const;
 
@@ -134,11 +173,21 @@ public:
 
     virtual stdcxx::Reference<CurrentLimits> getCurrentLimits2();
 
+    stdcxx::const_range<CurrentLimits> getAllSelectedCurrentLimits(const TwoSides& side) const;
+    stdcxx::range<CurrentLimits> getAllSelectedCurrentLimits(const TwoSides& side);
+    virtual stdcxx::const_range<CurrentLimits> getAllSelectedCurrentLimits1() const;
+    virtual stdcxx::range<CurrentLimits> getAllSelectedCurrentLimits1();
+    virtual stdcxx::const_range<CurrentLimits> getAllSelectedCurrentLimits2() const;
+    virtual stdcxx::range<CurrentLimits> getAllSelectedCurrentLimits2();
+
     stdcxx::CReference<LoadingLimits> getLimits(const LimitType& type, const TwoSides& side) const;
 
     stdcxx::Reference<LoadingLimits> getLimits(const LimitType& type, const TwoSides& side);
 
-    unsigned long getOverloadDuration() const;
+    stdcxx::const_range<LoadingLimits> getAllSelectedLoadingLimits(const LimitType& type, const TwoSides& side) const;
+    stdcxx::range<LoadingLimits> getAllSelectedLoadingLimits(const LimitType& type, const TwoSides& side);
+
+    virtual unsigned long getOverloadDuration() const;
 
     TwoSides getSide(const Terminal& terminal) const;
 
@@ -158,8 +207,14 @@ public:
 
     virtual Terminal& getTerminal2() = 0;
 
+    /**
+     * Only checks permanent limits for limitType::CURRENT
+     */
     bool isOverloaded() const;
 
+    /**
+     * Only checks permanent limits for limitType::CURRENT
+     */
     bool isOverloaded(double limitReduction) const;
 
     /** \deprecated
@@ -217,6 +272,13 @@ public:
     CurrentLimitsAdder newCurrentLimits2(const CurrentLimits& currentLimits);
 
 protected:
+    virtual const FlowsLimitsHolder& getOperationalLimitsHolder(const TwoSides& side) const;
+    virtual FlowsLimitsHolder& getOperationalLimitsHolder(const TwoSides& side);
+    virtual const FlowsLimitsHolder& getOperationalLimitsHolder1() const = 0;
+    virtual FlowsLimitsHolder& getOperationalLimitsHolder1() = 0;
+    virtual const FlowsLimitsHolder& getOperationalLimitsHolder2() const = 0;
+    virtual FlowsLimitsHolder& getOperationalLimitsHolder2() = 0;
+
     Branch() = default;
 
 };

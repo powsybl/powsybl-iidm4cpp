@@ -20,32 +20,43 @@ namespace iidm {
 
 namespace LimitViolationUtils {
 
-bool checkPermanentLimitIfAny(stdcxx::CReference<LoadingLimits>& limits, double limitReduction, double i) {
-    return static_cast<bool>(limits)
-           && !std::isnan(limits.get().getPermanentLimit())
-           && !std::isnan(i)
-           && std::isgreaterequal(i, limits.get().getPermanentLimit() * limitReduction);
+PermanentLimitCheckResult checkPermanentLimitIfAny(const LoadingLimits& limits, double limitReduction, double i) {
+    return {!std::isnan(limits.getPermanentLimit()) && !std::isnan(i) && std::isgreaterequal(i, limits.getPermanentLimit() * limitReduction),
+            limits.getPermanentLimit(),
+            limitReduction,
+            limits.getLimitsGroupId()};
 }
 
 bool checkPermanentLimit(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type) {
-    stdcxx::CReference<LoadingLimits> limits = branch.getLimits(type, side);
-    return checkPermanentLimitIfAny(limits, limitReduction, i);
+    stdcxx::const_range<LoadingLimits> allSelectedLimits = branch.getAllSelectedLoadingLimits(type, side);
+    for (const auto& limits : allSelectedLimits) {
+        if(checkPermanentLimitIfAny(limits, limitReduction, i).m_isOverloaded) {
+            return true;
+        }
+    }
+    return false;
 }
 bool checkPermanentLimit(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, double i, const LimitType& type) {
-    stdcxx::CReference<LoadingLimits> limits = transformer.getLeg(side).getLimits(type);
-    return checkPermanentLimitIfAny(limits, limitReduction, i);
+    stdcxx::const_range<LoadingLimits> allSelectedLimits = transformer.getLeg(side).getAllSelectedLoadingLimits(type);
+    for (const auto& limits : allSelectedLimits) {
+        if(checkPermanentLimitIfAny(limits, limitReduction, i).m_isOverloaded) {
+            return true;
+        }
+    }
+    return false;
 }
 
-std::unique_ptr<Overload> getOverload(stdcxx::CReference<LoadingLimits>& limits, double limitReduction, double i) {
+std::unique_ptr<Overload> getOverload(const LoadingLimits& limits, double limitReduction, double i) {
     std::unique_ptr<Overload> res;
 
-    if (static_cast<bool>(limits) && !std::isnan(limits.get().getPermanentLimit()) && !std::isnan(i)) {
+    if (!std::isnan(limits.getPermanentLimit()) && !std::isnan(i)) {
         std::string previousLimitName = PERMANENT_LIMIT_NAME;
-        double previousLimit = limits.get().getPermanentLimit();
+        const std::string& limitsGroupId = limits.getLimitsGroupId();
+        double previousLimit = limits.getPermanentLimit();
         bool bcheckLastTemporaryLimit = false; 
-        for (const auto& tl : limits.get().getTemporaryLimits()) { // iterate in ascending order
+        for (const auto& tl : limits.getTemporaryLimits()) { // iterate in ascending order
             if (std::isgreaterequal(i, previousLimit * limitReduction) && std::isless(i, tl.getValue() * limitReduction)) {
-                res = stdcxx::make_unique<Overload>(tl, previousLimitName, previousLimit, limitReduction);
+                res = stdcxx::make_unique<Overload>(tl, limitsGroupId, previousLimitName, previousLimit, limitReduction);
                 return res;
             }
             
@@ -54,7 +65,7 @@ std::unique_ptr<Overload> getOverload(stdcxx::CReference<LoadingLimits>& limits,
             bcheckLastTemporaryLimit = true;
         }
         if(bcheckLastTemporaryLimit && std::isgreaterequal(i, previousLimit * limitReduction)) {
-            res = stdcxx::make_unique<Overload>(previousLimitName, previousLimit, limitReduction);
+            res = stdcxx::make_unique<Overload>(limitsGroupId, previousLimitName, previousLimit, limitReduction);
         }
     }
 
@@ -63,11 +74,41 @@ std::unique_ptr<Overload> getOverload(stdcxx::CReference<LoadingLimits>& limits,
 
 std::unique_ptr<Overload> checkTemporaryLimits(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type) {
     stdcxx::CReference<LoadingLimits> limits = branch.getLimits(type, side);
-    return getOverload(limits, limitReduction, i);
+    if(static_cast<bool>(limits)) {
+        return getOverload(limits.get(), limitReduction, i);
+    }
+    return std::unique_ptr<Overload>();
 }
 std::unique_ptr<Overload> checkTemporaryLimits(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, double i, const LimitType& type) {
     stdcxx::CReference<LoadingLimits> limits = transformer.getLeg(side).getLimits(type);
-    return getOverload(limits, limitReduction, i);
+    if(static_cast<bool>(limits)) {
+        return getOverload(limits.get(), limitReduction, i);
+    }
+    return std::unique_ptr<Overload>();
+}
+std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type) {
+    std::vector<std::unique_ptr<Overload>> overloads;
+    stdcxx::const_range<LoadingLimits> allSelectedLimits = branch.getAllSelectedLoadingLimits(type, side);
+
+    for (const auto& limits : allSelectedLimits) {
+        std::unique_ptr<Overload> overload = getOverload(limits, limitReduction, i);
+        if(static_cast<bool>(overload)) {
+            overloads.emplace_back(std::move(overload));
+        }
+    }
+    return overloads;
+}
+std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, double i, const LimitType& type) {
+    std::vector<std::unique_ptr<Overload>> overloads;
+    stdcxx::const_range<LoadingLimits> allSelectedLimits = transformer.getLeg(side).getAllSelectedLoadingLimits(type);
+
+    for (const auto& limits : allSelectedLimits) {
+        std::unique_ptr<Overload> overload = getOverload(limits, limitReduction, i);
+        if(static_cast<bool>(overload)) {
+            overloads.emplace_back(std::move(overload));
+        }
+    }
+    return overloads;
 }
 
 double getValueForLimit(const Terminal& terminal, const LimitType& type) {

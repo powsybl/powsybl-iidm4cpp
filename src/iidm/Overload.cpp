@@ -11,15 +11,16 @@ namespace powsybl {
 
 namespace iidm {
 
-Overload::Overload(const LoadingLimits::TemporaryLimit& temporaryLimit, const std::string& previousLimitName, double previousLimit, double limitReductionCoefficient) :
+Overload::Overload(const LoadingLimits::TemporaryLimit& temporaryLimit, const std::string& operationalLimitsGroupId, const std::string& previousLimitName, double previousLimit, double limitReductionCoefficient) :
     m_temporaryLimit(temporaryLimit),
+    m_operationLimitsGroupId(operationalLimitsGroupId),
     m_previousLimitName(previousLimitName),
     m_previousLimit(previousLimit),
     m_limitReductionCoefficient(limitReductionCoefficient) {
 }
 
-Overload::Overload(const std::string &previousLimitName, double previousLimit, double limitReductionCoefficient) :
-    Overload(UNACCEPTABLE_LIMIT(), previousLimitName, previousLimit, limitReductionCoefficient) {
+Overload::Overload(const std::string& operationalLimitsGroupId, const std::string &previousLimitName, double previousLimit, double limitReductionCoefficient) :
+    Overload(UNACCEPTABLE_LIMIT(), operationalLimitsGroupId, previousLimitName, previousLimit, limitReductionCoefficient) {
 
 }
 
@@ -44,6 +45,9 @@ const LoadingLimits::TemporaryLimit& Overload::UNACCEPTABLE_LIMIT() {
     return UNACCEPTABLE_LIMIT;
 }
 
+const std::string& Overload::getOperationalLimitsGroupId() const {
+    return m_operationLimitsGroupId;
+}
 
 }  // namespace iidm
 

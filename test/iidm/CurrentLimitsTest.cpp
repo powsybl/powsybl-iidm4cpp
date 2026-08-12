@@ -341,6 +341,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     const CurrentLimits& cLimits = limits;
     BOOST_TEST(stdcxx::areSame(limits, cLimits));
     BOOST_CHECK_CLOSE(4.0, limits.getPermanentLimit(), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK_EQUAL(limits.getLimitsGroupId(), "DEFAULT");
 
     stdcxx::range<CurrentLimits::TemporaryLimit> tempLimits = limits.getTemporaryLimits();
     BOOST_CHECK_EQUAL(3, boost::size(tempLimits));

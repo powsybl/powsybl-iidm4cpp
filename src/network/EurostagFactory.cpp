@@ -24,6 +24,8 @@
 #include <powsybl/iidm/RatioTapChangerAdder.hpp>
 #include <powsybl/iidm/Substation.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformer.hpp>
+#include <powsybl/iidm/ThreeWindingsTransformerAdder.hpp>
 #include <powsybl/iidm/TieLineAdder.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/TwoWindingsTransformerAdder.hpp>
@@ -651,6 +653,231 @@ iidm::Network EurostagFactory::createWithTieLinesAndAreas() {
 
 
 }
+
+iidm::Network EurostagFactory::createWithMultipleSelectedFixedCurrentLimits() {
+    iidm::Network network = createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2018-01-01T11:00:00+01:00"));
+
+    iidm::Line& line1 = network.getLine("NHV1_NHV2_1");
+    iidm::Line& line2 = network.getLine("NHV1_NHV2_2");
+
+    line1.getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits().setPermanentLimit(500).add();
+
+    line1.newOperationalLimitsGroup1("activated_1_1").newCurrentLimits()
+                .setPermanentLimit(1100)
+                .beginTemporaryLimit()
+                    .setName("10'")
+                    .setAcceptableDuration(10 * 60)
+                    .setValue(1200)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("1'")
+                    .setAcceptableDuration(60)
+                    .setValue(1500)
+                .endTemporaryLimit()
+                .add();
+
+    line1.newOperationalLimitsGroup1("activated_1_2").newCurrentLimits()
+                .setPermanentLimit(300)
+                .beginTemporaryLimit()
+                    .setName("40'")
+                    .setAcceptableDuration(40 * 60)
+                    .setValue(700)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("0.5'")
+                    .setAcceptableDuration(30)
+                    .setValue(1600)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("N/A")
+                    .setAcceptableDuration(0)
+                    .setValue(std::numeric_limits<double>::max())
+                .endTemporaryLimit()
+                .add();
+
+    line1.newOperationalLimitsGroup1("not_activated").newCurrentLimits()
+            .setPermanentLimit(400)
+            .beginTemporaryLimit()
+                .setValue(600)
+                .setName("30'")
+                .setAcceptableDuration(30 * 60)
+            .endTemporaryLimit()
+            .add();
+
+    line1.addSelectedOperationalLimitsGroups(iidm::TwoSides::ONE, {"activated_1_1", "activated_1_2"});
+
+    line1.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits().setPermanentLimit(600);
+
+    line1.newOperationalLimitsGroup2("activated_2_1").newCurrentLimits()
+                .setPermanentLimit(600)
+                .beginTemporaryLimit()
+                    .setName("10'")
+                    .setAcceptableDuration(60 * 10)
+                    .setValue(1000)
+                .endTemporaryLimit()
+                .add();
+
+    line1.addSelectedOperationalLimitsGroups(iidm::TwoSides::TWO, {"activated_2_1"});
+
+    line2.getTerminal1().setP(560.0).setQ(550.0);
+    line2.getTerminal2().setP(-560.0).setQ(-550.0);
+    line2.getOrCreateSelectedOperationalLimitsGroup1().newCurrentLimits()
+                .setPermanentLimit(1100)
+                .beginTemporaryLimit()
+                    .setName("20'")
+                    .setAcceptableDuration(20 * 60)
+                    .setValue(1200)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("N/A")
+                    .setAcceptableDuration(60)
+                    .setValue(std::numeric_limits<double>::max())
+                .endTemporaryLimit()
+                .add();
+    line2.getOrCreateSelectedOperationalLimitsGroup2().newCurrentLimits().setPermanentLimit(500).add();
+
+    line2.newOperationalLimitsGroup2("activated_2_1").newCurrentLimits()
+                .setPermanentLimit(200)
+                .beginTemporaryLimit()
+                    .setName("20'")
+                    .setAcceptableDuration(20 * 60)
+                    .setValue(600)
+                .endTemporaryLimit()
+                .beginTemporaryLimit()
+                    .setName("N/A")
+                    .setAcceptableDuration(0)
+                    .setValue(std::numeric_limits<double>::max())
+                .endTemporaryLimit()
+                .add();
+
+    line2.newOperationalLimitsGroup2("activated_2_2").newCurrentLimits()
+                .setPermanentLimit(300)
+                .beginTemporaryLimit()
+                    .setName("N/A")
+                    .setAcceptableDuration(0)
+                    .setValue(std::numeric_limits<double>::max())
+                .endTemporaryLimit()
+                .add();
+
+    line2.newOperationalLimitsGroup2("not_activated").newCurrentLimits()
+                .setPermanentLimit(400)
+                .add();
+
+    line2.addSelectedOperationalLimitsGroups(iidm::TwoSides::TWO, {"activated_2_1", "activated_2_2"});
+
+    return network;
+}
+
+iidm::Network EurostagFactory::createWithMultipleSelectedFixedActivePowerLimits() {
+    iidm::Network network = createWith3wTransformer();
+    network.setCaseDate(stdcxx::DateTime::parse("2018-01-01T11:00:00+01:00"));
+
+    iidm::ThreeWindingsTransformer& threeWindingsTransformer = network.getThreeWindingsTransformer("NGEN_V2_NHV1");
+    iidm::ThreeWindingsTransformer::Leg& legThree = threeWindingsTransformer.getLeg(iidm::ThreeSides::THREE);
+
+    legThree.getOrCreateSelectedOperationalLimitsGroup()
+                .newActivePowerLimits()
+                .setPermanentLimit(250)
+                .add();
+
+    legThree.newOperationalLimitsGroup("activated_3_1")
+                .newActivePowerLimits()
+                .setPermanentLimit(350)
+                .beginTemporaryLimit()
+                    .setValue(400)
+                    .setName("45'")
+                    .setAcceptableDuration(45 * 60)
+                .endTemporaryLimit()
+                .add();
+
+    legThree.newOperationalLimitsGroup("not_activated")
+            .newActivePowerLimits()
+            .setPermanentLimit(10)
+            .add();
+
+    legThree.addSelectedOperationalLimitsGroups({"activated_3_1"});
+
+    return network;
+}
+
+iidm::Network EurostagFactory::createWith3wTransformer() {
+    iidm::Network network = createTutorial1Network();
+    iidm::Substation& p1 = network.getSubstation("P1");
+    iidm::VoltageLevel& v2 = p1.newVoltageLevel()
+                .setId("V2")
+                .setNominalV(150.0)
+                .setTopologyKind(iidm::TopologyKind::BUS_BREAKER)
+            .add();
+    v2.getBusBreakerView().newBus()
+                .setId("N2")
+            .add();
+    network.getTwoWindingsTransformer("NHV2_NLOAD").remove();
+    iidm::ThreeWindingsTransformerAdder threeWindingsTransformerAdder1 = p1.newThreeWindingsTransformer()
+                .setId("NGEN_V2_NHV1")
+                .setRatedU0(400);
+    threeWindingsTransformerAdder1.newLeg1()
+                .setBus("NHV1")
+                .setR(0.001)
+                .setX(0.000001)
+                .setB(0)
+                .setG(0)
+                .setRatedU(400)
+                .setVoltageLevel("VLHV1")
+                .add();
+    threeWindingsTransformerAdder1.newLeg2()
+                .setBus("N2")
+                .setR(0.1)
+                .setX(0.00001)
+                .setB(0)
+                .setG(0)
+                .setRatedU(150.0)
+                .setVoltageLevel("V2")
+                .add();
+    threeWindingsTransformerAdder1.newLeg3()
+                .setBus("NGEN")
+                .setR(0.01)
+                .setX(0.0001)
+                .setB(0)
+                .setG(0)
+                .setRatedU(24)
+                .setVoltageLevel("VLGEN")
+                .add();
+    threeWindingsTransformerAdder1.add();
+    return network;
+}
+
+iidm::Network EurostagFactory::createWithMultipleSelectedFixedApparentPowerLimits() {
+    iidm::Network network = createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2018-01-01T11:00:00+01:00"));
+
+    iidm::TwoWindingsTransformer& twoWindingsTransformer = network.getTwoWindingsTransformer("NGEN_NHV1");
+
+    twoWindingsTransformer.newOperationalLimitsGroup2("activated_2_1")
+                .newApparentPowerLimits()
+                .setPermanentLimit(230)
+                .beginTemporaryLimit()
+                    .setValue(240)
+                    .setName("10'")
+                    .setAcceptableDuration(10 * 60)
+                .endTemporaryLimit()
+                .add();
+
+    twoWindingsTransformer.newOperationalLimitsGroup2("activated_2_2")
+                .newApparentPowerLimits()
+                .setPermanentLimit(240)
+                .beginTemporaryLimit()
+                    .setValue(250)
+                    .setName("20'")
+                    .setAcceptableDuration(20 * 60)
+                .endTemporaryLimit()
+                .add();
+
+    twoWindingsTransformer.addSelectedOperationalLimitsGroups(iidm::TwoSides::TWO, {"activated_2_1", "activated_2_2"});
+
+    return network;
+}
+
 
 }  // namespace network
 

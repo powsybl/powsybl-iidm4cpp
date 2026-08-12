@@ -20,84 +20,17 @@ AbstractConnectableBranch::AbstractConnectableBranch() :
     m_operationalLimitsHolder2(*this, "limits2") {
 }
 
-stdcxx::const_range<OperationalLimitsGroup> AbstractConnectableBranch::getOperationalLimitsGroups1() const {
-    return m_operationalLimitsHolder1.getOperationalLimitsGroups();
+const FlowsLimitsHolder& AbstractConnectableBranch::getOperationalLimitsHolder1() const {
+    return m_operationalLimitsHolder1;
 }
-stdcxx::range<OperationalLimitsGroup> AbstractConnectableBranch::getOperationalLimitsGroups1() {
-    return m_operationalLimitsHolder1.getOperationalLimitsGroups();
+FlowsLimitsHolder& AbstractConnectableBranch::getOperationalLimitsHolder1()  {
+    return m_operationalLimitsHolder1;
 }
-const stdcxx::optional<std::string>& AbstractConnectableBranch::getSelectedOperationalLimitsGroupId1() const {
-    return m_operationalLimitsHolder1.getSelectedOperationalLimitsGroupId();
+const FlowsLimitsHolder& AbstractConnectableBranch::getOperationalLimitsHolder2() const {
+    return m_operationalLimitsHolder2;
 }
-stdcxx::CReference<OperationalLimitsGroup> AbstractConnectableBranch::getOperationalLimitsGroup1(const std::string& id) const {
-    return m_operationalLimitsHolder1.getOperationalLimitsGroup(id);
-}
-stdcxx::Reference<OperationalLimitsGroup> AbstractConnectableBranch::getOperationalLimitsGroup1(const std::string& id) {
-    return m_operationalLimitsHolder1.getOperationalLimitsGroup(id);
-}
-stdcxx::CReference<OperationalLimitsGroup> AbstractConnectableBranch::getSelectedOperationalLimitsGroup1() const {
-    return m_operationalLimitsHolder1.getSelectedOperationalLimitsGroup();
-}
-stdcxx::Reference<OperationalLimitsGroup> AbstractConnectableBranch::getSelectedOperationalLimitsGroup1() {
-    return m_operationalLimitsHolder1.getSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& AbstractConnectableBranch::newOperationalLimitsGroup1(const std::string& id) {
-    return m_operationalLimitsHolder1.newOperationalLimitsGroup(id);
-}
-void AbstractConnectableBranch::setSelectedOperationalLimitsGroup1(const std::string& id) {
-    m_operationalLimitsHolder1.setSelectedOperationalLimitsGroup(id);
-}
-void AbstractConnectableBranch::removeOperationalLimitsGroup1(const std::string& id) {
-    m_operationalLimitsHolder1.removeOperationalLimitsGroup(id);
-}
-void AbstractConnectableBranch::cancelSelectedOperationalLimitsGroup1() {
-    m_operationalLimitsHolder1.cancelSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& AbstractConnectableBranch::getOrCreateSelectedOperationalLimitsGroup1() {
-    return m_operationalLimitsHolder1.getOrCreateSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& AbstractConnectableBranch::getOrCreateSelectedOperationalLimitsGroup1(const std::string& id) {
-    return Branch::getOrCreateSelectedOperationalLimitsGroup1(id);
-}
-
-stdcxx::const_range<OperationalLimitsGroup> AbstractConnectableBranch::getOperationalLimitsGroups2() const {
-    return m_operationalLimitsHolder2.getOperationalLimitsGroups();
-}
-stdcxx::range<OperationalLimitsGroup> AbstractConnectableBranch::getOperationalLimitsGroups2() {
-    return m_operationalLimitsHolder2.getOperationalLimitsGroups();
-}
-const stdcxx::optional<std::string>& AbstractConnectableBranch::getSelectedOperationalLimitsGroupId2() const {
-    return m_operationalLimitsHolder2.getSelectedOperationalLimitsGroupId();
-}
-stdcxx::CReference<OperationalLimitsGroup> AbstractConnectableBranch::getOperationalLimitsGroup2(const std::string& id) const {
-    return m_operationalLimitsHolder2.getOperationalLimitsGroup(id);
-}
-stdcxx::Reference<OperationalLimitsGroup> AbstractConnectableBranch::getOperationalLimitsGroup2(const std::string& id) {
-    return m_operationalLimitsHolder2.getOperationalLimitsGroup(id);
-}
-stdcxx::CReference<OperationalLimitsGroup> AbstractConnectableBranch::getSelectedOperationalLimitsGroup2() const {
-    return m_operationalLimitsHolder2.getSelectedOperationalLimitsGroup();
-}
-stdcxx::Reference<OperationalLimitsGroup> AbstractConnectableBranch::getSelectedOperationalLimitsGroup2() {
-    return m_operationalLimitsHolder2.getSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& AbstractConnectableBranch::newOperationalLimitsGroup2(const std::string& id) {
-    return m_operationalLimitsHolder2.newOperationalLimitsGroup(id);
-}
-void AbstractConnectableBranch::setSelectedOperationalLimitsGroup2(const std::string& id) {
-    m_operationalLimitsHolder2.setSelectedOperationalLimitsGroup(id);
-}
-void AbstractConnectableBranch::removeOperationalLimitsGroup2(const std::string& id) {
-    m_operationalLimitsHolder2.removeOperationalLimitsGroup(id);
-}
-void AbstractConnectableBranch::cancelSelectedOperationalLimitsGroup2() {
-    m_operationalLimitsHolder2.cancelSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& AbstractConnectableBranch::getOrCreateSelectedOperationalLimitsGroup2() {
-    return m_operationalLimitsHolder2.getOrCreateSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& AbstractConnectableBranch::getOrCreateSelectedOperationalLimitsGroup2(const std::string& id) {
-    return Branch::getOrCreateSelectedOperationalLimitsGroup2(id);
+FlowsLimitsHolder& AbstractConnectableBranch::getOperationalLimitsHolder2() {
+    return m_operationalLimitsHolder2;
 }
 
 const Terminal& AbstractConnectableBranch::getTerminal1() const {
@@ -158,9 +91,8 @@ void AbstractConnectableBranch::copyOperationalLimits(const AbstractConnectableB
             newLimitsGroup1.setProperty(propertyName, copyLimitsGroup.getProperty(propertyName));
         }
     }
-    if(copiedBranch.getSelectedOperationalLimitsGroupId1().has_value()) {
-        setSelectedOperationalLimitsGroup1(copiedBranch.getSelectedOperationalLimitsGroupId1().get());
-    }
+    cancelSelectedOperationalLimitsGroup1();
+    addSelectedOperationalLimitsGroups1(copiedBranch.getAllSelectedOperationalLimitsGroupIds1());
 
     for(const auto& copyLimitsGroup : copiedBranch.getOperationalLimitsGroups2()) {
         OperationalLimitsGroup& newLimitsGroup2 = newOperationalLimitsGroup2(copyLimitsGroup.getId());
@@ -178,9 +110,8 @@ void AbstractConnectableBranch::copyOperationalLimits(const AbstractConnectableB
             newLimitsGroup2.setProperty(propertyName, copyLimitsGroup.getProperty(propertyName));
         }
     }
-    if(copiedBranch.getSelectedOperationalLimitsGroupId2().has_value()) {
-        setSelectedOperationalLimitsGroup2(copiedBranch.getSelectedOperationalLimitsGroupId2().get());
-    }
+    cancelSelectedOperationalLimitsGroup2();
+    addSelectedOperationalLimitsGroups2(copiedBranch.getAllSelectedOperationalLimitsGroupIds2());
 
 }
 

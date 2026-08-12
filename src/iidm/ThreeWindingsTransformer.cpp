@@ -217,15 +217,21 @@ bool ThreeWindingsTransformer::isOverloaded(double limitReduction) const {
 }
 
 unsigned long ThreeWindingsTransformer::getOverloadDuration() const {
-    std::unique_ptr<Overload> o1 = checkTemporaryLimits1(LimitType::CURRENT);
-    std::unique_ptr<Overload> o2 = checkTemporaryLimits2(LimitType::CURRENT);
-    std::unique_ptr<Overload> o3 = checkTemporaryLimits3(LimitType::CURRENT);
+    std::vector<std::unique_ptr<Overload>> currentOverloads1 = checkAllTemporaryLimits(ThreeSides::ONE, LimitType::CURRENT);
+    std::vector<std::unique_ptr<Overload>> currentOverloads2 = checkAllTemporaryLimits(ThreeSides::TWO, LimitType::CURRENT);
+    std::vector<std::unique_ptr<Overload>> currentOverloads3 = checkAllTemporaryLimits(ThreeSides::THREE, LimitType::CURRENT);
 
-    unsigned long duration1 = o1 ? o1->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
-    unsigned long duration2 = o2 ? o2->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
-    unsigned long duration3 = o3 ? o3->getTemporaryLimit().getAcceptableDuration() : std::numeric_limits<unsigned long>::max();
-
-    return std::min(std::min(duration1, duration2), duration3);
+    unsigned long minDuration = std::numeric_limits<unsigned long>::max();
+    for (const auto& overload : currentOverloads1) {
+        minDuration = std::min(minDuration, overload->getTemporaryLimit().getAcceptableDuration());
+    }
+    for (const auto& overload : currentOverloads2) {
+        minDuration = std::min(minDuration, overload->getTemporaryLimit().getAcceptableDuration());
+    }
+    for (const auto& overload : currentOverloads3) {
+        minDuration = std::min(minDuration, overload->getTemporaryLimit().getAcceptableDuration());
+    }
+    return minDuration;
 }
 
 bool ThreeWindingsTransformer::checkPermanentLimit(const ThreeSides& side, const LimitType& type) const {
@@ -292,6 +298,15 @@ std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits3(const 
 
 std::unique_ptr<Overload> ThreeWindingsTransformer::checkTemporaryLimits3(double limitReduction, const LimitType& type) const {
     return checkTemporaryLimits(ThreeSides::THREE, limitReduction, type);
+}
+
+std::vector<std::unique_ptr<Overload>> ThreeWindingsTransformer::checkAllTemporaryLimits(const ThreeSides& side, const LimitType& type) const {
+    return checkAllTemporaryLimits(side, 1.0, type);
+}
+
+std::vector<std::unique_ptr<Overload>> ThreeWindingsTransformer::checkAllTemporaryLimits(const ThreeSides& side, double limitReduction, const LimitType& type) const {
+    double limitValue = LimitViolationUtils::getValueForLimit(getTerminal(side), type);
+    return LimitViolationUtils::checkAllTemporaryLimits(*this, side, limitReduction, limitValue, type);
 }
 
 const IdentifiableType& ThreeWindingsTransformer::getType() const {

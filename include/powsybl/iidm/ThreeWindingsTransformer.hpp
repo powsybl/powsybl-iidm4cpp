@@ -72,11 +72,17 @@ public:
 
     Terminal& getTerminal(const std::string& voltageLevelId);
 
+    /**
+     * Only checks permanent limits for limitType::CURRENT
+     */
     bool isOverloaded() const;
 
+    /**
+     * Only checks permanent limits for limitType::CURRENT
+     */
     bool isOverloaded(double limitReduction) const;
 
-    unsigned long getOverloadDuration() const;
+    virtual unsigned long getOverloadDuration() const;
 
     bool checkPermanentLimit(const ThreeSides& side, const LimitType& type) const;
 
@@ -109,6 +115,10 @@ public:
     std::unique_ptr<Overload> checkTemporaryLimits3(const LimitType& type) const;
 
     std::unique_ptr<Overload> checkTemporaryLimits3(double limitReduction, const LimitType& type) const;
+
+    std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const ThreeSides& side, const LimitType& type) const;
+
+    std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const ThreeSides& side, double limitReduction, const LimitType& type) const;
 
     void applySolvedValues();
     void setRatioTapPositionToSolvedTapPosition();

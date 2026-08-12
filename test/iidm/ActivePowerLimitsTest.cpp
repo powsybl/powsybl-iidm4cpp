@@ -86,6 +86,8 @@ BOOST_AUTO_TEST_CASE(adder) {
     // to ensure adder reusability
     const ActivePowerLimits& apl = activePowerLimitsAdder.add();
 
+    BOOST_CHECK_EQUAL(apl.getLimitsGroupId(), "DEFAULT");
+
     const ActivePowerLimits::TemporaryLimit& tl1 = apl.getTemporaryLimit(20 * 60);
     BOOST_CHECK_EQUAL("20'", tl1.getName());
     BOOST_CHECK_CLOSE(100.0, tl1.getValue(), std::numeric_limits<double>::epsilon());

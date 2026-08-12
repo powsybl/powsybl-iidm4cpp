@@ -50,12 +50,20 @@ Line& LineXml::readRootElementAttributes(LineAdder& adder, Network& /*network*/,
     readPQ(line.getTerminal1(), context.getReader(), 1);
     readPQ(line.getTerminal2(), context.getReader(), 2);
 
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &line](){
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_12(), IidmXmlVersion::V1_15(),  context.getVersion(), [&context, &line](){
         readSelectedGroupId(context, [&line](const std::string& selectedId) {
             line.setSelectedOperationalLimitsGroup1(selectedId);
         }, 1);
         readSelectedGroupId(context, [&line](const std::string& selectedId) {
             line.setSelectedOperationalLimitsGroup2(selectedId);
+        }, 2);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(),  context.getVersion(), [&context, &line](){
+        readAllSelectedGroupIds(context, [&line](const std::list<std::string>& selectedIds) {
+            line.addSelectedOperationalLimitsGroups1(selectedIds);
+        }, 1);
+        readAllSelectedGroupIds(context, [&line](const std::list<std::string>& selectedIds) {
+            line.addSelectedOperationalLimitsGroups2(selectedIds);
         }, 2);
     });
 
@@ -113,9 +121,13 @@ void LineXml::writeRootElementAttributes(const Line& line, const Network& /*netw
         writePQ(line.getTerminal1(), context.getWriter(), 1);
         writePQ(line.getTerminal2(), context.getWriter(), 2);
     }
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(),[&line, &context](){
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_12(), IidmXmlVersion::V1_15(), context.getVersion(),[&line, &context](){
         writeSelectedGroupId(line.getSelectedOperationalLimitsGroupId1(), context, 1);
         writeSelectedGroupId(line.getSelectedOperationalLimitsGroupId2(), context, 2);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(),[&line, &context](){
+        writeAllSelectedGroupIds(line.getAllSelectedOperationalLimitsGroupIds1(), context, 1);
+        writeAllSelectedGroupIds(line.getAllSelectedOperationalLimitsGroupIds2(), context, 2);
     });
 }
 

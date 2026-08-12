@@ -73,9 +73,14 @@ BoundaryLine& AbstractBoundaryLineXml::readRootElementAttributes(BoundaryLineAdd
     BoundaryLine& bl = adder.add();
     readPQ(bl.getTerminal(), context.getReader());
 
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &bl](){
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_12(), IidmXmlVersion::V1_15(), context.getVersion(), [&context, &bl](){
         readSelectedGroupId(context, [&bl](const std::string& selectedId) {
             bl.setSelectedOperationalLimitsGroup(selectedId);
+        });
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &bl](){
+        readAllSelectedGroupIds(context, [&bl](const std::list<std::string>& selectedIds) {
+            bl.addSelectedOperationalLimitsGroups(selectedIds);
         });
     });
 
@@ -153,8 +158,11 @@ void AbstractBoundaryLineXml::writeRootElementAttributes(const BoundaryLine& bl,
     }
     writeNodeOrBus(bl.getTerminal(), context);
     writePQ(bl.getTerminal(), context.getWriter());
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(),[&bl, &context](){
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_12(), IidmXmlVersion::V1_15(), context.getVersion(),[&bl, &context](){
         writeSelectedGroupId(bl.getSelectedOperationalLimitsGroupId(), context);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(),[&bl, &context](){
+        writeAllSelectedGroupIds(bl.getAllSelectedOperationalLimitsGroupIds(), context);
     });
 }
 

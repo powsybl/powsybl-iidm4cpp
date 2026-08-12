@@ -53,12 +53,20 @@ TwoWindingsTransformer& TwoWindingsTransformerXml::readRootElementAttributes(Two
     readPQ(twt.getTerminal1(), context.getReader(), 1);
     readPQ(twt.getTerminal2(), context.getReader(), 2);
 
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(), [&context, &twt](){
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_12(), IidmXmlVersion::V1_15(), context.getVersion(), [&context, &twt](){
         readSelectedGroupId(context, [&twt](const std::string& selectedId) {
             twt.setSelectedOperationalLimitsGroup1(selectedId);
         }, 1);
         readSelectedGroupId(context, [&twt](const std::string& selectedId) {
             twt.setSelectedOperationalLimitsGroup2(selectedId);
+        }, 2);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &twt](){
+        readAllSelectedGroupIds(context, [&twt](const std::list<std::string>& selectedIds) {
+            twt.addSelectedOperationalLimitsGroups1(selectedIds);
+        }, 1);
+        readAllSelectedGroupIds(context, [&twt](const std::list<std::string>& selectedIds) {
+            twt.addSelectedOperationalLimitsGroups2(selectedIds);
         }, 2);
     });
 
@@ -121,9 +129,13 @@ void TwoWindingsTransformerXml::writeRootElementAttributes(const TwoWindingsTran
         writePQ(twt.getTerminal1(), context.getWriter(), 1);
         writePQ(twt.getTerminal2(), context.getWriter(), 2);
     }
-    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_12(), context.getVersion(),[&twt, &context](){
+    IidmXmlUtil::runInBetweenVersions(IidmXmlVersion::V1_12(), IidmXmlVersion::V1_15(), context.getVersion(),[&twt, &context](){
         writeSelectedGroupId(twt.getSelectedOperationalLimitsGroupId1(), context, 1);
         writeSelectedGroupId(twt.getSelectedOperationalLimitsGroupId2(), context, 2);
+    });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(),[&twt, &context](){
+        writeAllSelectedGroupIds(twt.getAllSelectedOperationalLimitsGroupIds1(), context, 1);
+        writeAllSelectedGroupIds(twt.getAllSelectedOperationalLimitsGroupIds2(), context, 2);
     });
 }
 

@@ -40,8 +40,8 @@ BOOST_AUTO_TEST_CASE(CustomOperationalLimitsGroupTest) {
 
     class CustomOperationalLimitsGroup : public OperationalLimitsGroup {
         public: 
-        CustomOperationalLimitsGroup(const std::string& id, Identifiable& identifiable, const std::string& attributeName, const std::string& selectedGroupId) :
-            OperationalLimitsGroup(id, identifiable, attributeName, selectedGroupId) {
+        CustomOperationalLimitsGroup(const std::string& id, Identifiable& identifiable, const std::string& attributeName) :
+            OperationalLimitsGroup(id, identifiable, attributeName) {
         }
 
         std::string getMessageHeader() const override {
@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(CustomOperationalLimitsGroupTest) {
         }
     };
 
-    CustomOperationalLimitsGroup customGroup("group1", bus1, "limits", "selected");
+    CustomOperationalLimitsGroup customGroup("group1", bus1, "limits");
     customGroup.newCurrentLimits().setPermanentLimit(100.0).add();
 
     BOOST_CHECK_EQUAL("Custom Validable : ", customGroup.getMessageHeader());

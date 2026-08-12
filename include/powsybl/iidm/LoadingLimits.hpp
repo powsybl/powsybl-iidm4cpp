@@ -90,6 +90,8 @@ public:
 
     LoadingLimits& setTemporaryLimitValue(unsigned long acceptableDuration, double temporaryLimitValue);
 
+    const std::string& getLimitsGroupId() const;
+
 protected:
     bool isTemporaryLimitValueValid(unsigned long acceptableDuration, double temporaryLimitValue);
 

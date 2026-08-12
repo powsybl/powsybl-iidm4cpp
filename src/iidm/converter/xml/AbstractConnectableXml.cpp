@@ -251,6 +251,12 @@ void AbstractConnectableXml::writeSelectedGroupId(const stdcxx::optional<std::st
     }
 }
 
+void AbstractConnectableXml::writeAllSelectedGroupIds(const std::list<std::string>& groupIds, NetworkXmlWriterContext& context, const stdcxx::optional<int>& index) {
+    if (!groupIds.empty()) {
+        context.getWriter().writeAttribute(toString(SELECTED_GROUP_IDS, index), boost::algorithm::join(groupIds, ","));
+    }
+}
+
 void AbstractConnectableXml::readSelectedGroupId(NetworkXmlReaderContext& context, const std::function<void(const std::string&)>& endTaskConsumer, const stdcxx::optional<int>& index) {
 
     std::string selectedGroupId = context.getReader().getOptionalAttributeValue(toString(SELECTED_GROUP_ID, index), "");
@@ -261,6 +267,23 @@ void AbstractConnectableXml::readSelectedGroupId(NetworkXmlReaderContext& contex
     }
 
 }
+
+void AbstractConnectableXml::readAllSelectedGroupIds(NetworkXmlReaderContext& context, const std::function<void(const std::list<std::string>&)>& endTaskConsumer, const stdcxx::optional<int>& index) {
+
+    std::string selectedGroupdIds = context.getReader().getOptionalAttributeValue(toString(SELECTED_GROUP_IDS, index), "");
+    std::list<std::string> selectedGroupIdsList;
+
+    if(!selectedGroupdIds.empty()) {
+        boost::algorithm::split(selectedGroupIdsList, selectedGroupdIds, boost::is_any_of(","));
+    }
+    if(!selectedGroupIdsList.empty()) {
+        context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [selectedGroupIdsList, endTaskConsumer](){
+            endTaskConsumer(selectedGroupIdsList);
+        });
+    }
+
+}
+
 
 std::string AbstractConnectableXml::getDcTerminalSuffix(const DcTerminal& dcTerminal) {
     TerminalNumber number = dcTerminal.getTerminalNumber();

@@ -11,6 +11,7 @@
 #include <powsybl/stdcxx/format.hpp>
 
 #include <iterator>
+#include <list>
 #include <set>
 #include <sstream>
 #include <vector>
@@ -54,6 +55,17 @@ void serialize(std::ostream& stream, const Iterator& begin, const Iterator& end)
 
 template <typename T>
 std::string toString(const std::initializer_list<T>& list) {
+    std::ostringstream oss;
+
+    oss << "[";
+    serialize(oss, list.begin(), list.end());
+    oss << "]";
+
+    return oss.str();
+}
+
+template <typename T>
+std::string toString(const std::list<T>& list) {
     std::ostringstream oss;
 
     oss << "[";

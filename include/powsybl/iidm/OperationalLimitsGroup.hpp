@@ -35,7 +35,6 @@ class Network;
 
 class OperationalLimitsGroup : public Validable, public PropertiesHolder {
 public:
-    OperationalLimitsGroup(const std::string& id, Identifiable& identifiable, const std::string& attributeName, const std::string& selectedGroupId);
     OperationalLimitsGroup(const std::string& id, Identifiable& identifiable, const std::string& attributeName);
 
     OperationalLimitsGroup(const OperationalLimitsGroup&) = default;
@@ -58,9 +57,6 @@ public:
     Network& getNetwork();
 
     const std::string& getId() const;
-
-    void setSelectedGroupId(const std::string& selectedGroupId);
-    void cancelSelectedGroupId();
 
     stdcxx::CReference<ActivePowerLimits> getActivePowerLimits() const;
     stdcxx::Reference<ActivePowerLimits> getActivePowerLimits();
@@ -98,7 +94,6 @@ private:
 
     std::string m_attributeName;
 
-    stdcxx::optional<std::string> m_selectedGroupId;
 };
 
 }  // namespace iidm

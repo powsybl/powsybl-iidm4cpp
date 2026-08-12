@@ -21,6 +21,17 @@ namespace iidm {
 
 template <typename T>
 stdcxx::CReference<T> OperationalLimitsGroup::getOperationalLimits(const LimitType& type) const {
+    switch (type) {
+        case LimitType::CURRENT:
+        case LimitType::ACTIVE_POWER:
+        case LimitType::APPARENT_POWER:
+            break;
+        case LimitType::VOLTAGE:
+        case LimitType::VOLTAGE_ANGLE:
+        default:
+            throw AssertionError(stdcxx::format("Getting %1% limits is not supported for an OperationalLimitsGroup.", type));
+    }
+
     auto it = m_operationalLimits.find(type);
     if (it == m_operationalLimits.end()) {
         return stdcxx::cref<T>();
@@ -28,7 +39,7 @@ stdcxx::CReference<T> OperationalLimitsGroup::getOperationalLimits(const LimitTy
     if (stdcxx::isInstanceOf<T>(*it->second)) {
         return stdcxx::cref(*dynamic_cast<T*>(it->second.get()));
     }
-    throw AssertionError(stdcxx::format("Unexpected class for operational limits of type %1%. Expected: %2%, actual: %3%", type, stdcxx::demangle(*it->second), stdcxx::demangle<T>()));
+    throw AssertionError(stdcxx::format("Unexpected class for operational limits of type %1%. Expected: %2%, actual: %3%", type, stdcxx::demangle<T>(), stdcxx::demangle(*it->second)));
 }
 
 template <typename T>

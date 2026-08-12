@@ -41,7 +41,8 @@ public:
     virtual stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups() const override;
     virtual stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups() override;
 
-    virtual const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId() const override;
+    virtual stdcxx::optional<std::string> getSelectedOperationalLimitsGroupId() const override;
+    virtual const std::list<std::string>& getAllSelectedOperationalLimitsGroupIds() const override;
 
     virtual stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) const override;
     virtual stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) override;
@@ -49,13 +50,21 @@ public:
     virtual stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() const override;
     virtual stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() override;
 
+    virtual stdcxx::const_range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups() const override;
+    virtual stdcxx::range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups() override;
+
     virtual OperationalLimitsGroup& newOperationalLimitsGroup(const std::string& id) override;
 
     virtual void setSelectedOperationalLimitsGroup(const std::string& id) override;
 
+    virtual void addSelectedOperationalLimitsGroups(const std::list<std::string>& ids) override;
+
     virtual void removeOperationalLimitsGroup(const std::string& id) override;
 
     virtual void cancelSelectedOperationalLimitsGroup() override;
+
+    virtual void deselectOperationalLimitsGroups(const std::list<std::string>& ids) override;
+
     /**
      * Get the OperationalLimitsGroup selected or create a new one if it does not exist and set it as selected.
      */
@@ -79,13 +88,15 @@ public:
     virtual CurrentLimitsAdder newCurrentLimits() override;
 
 private:
+    bool isSelectedOperationalLimitsGroup(const std::string& groupId) const;
+
     static const char* const DEFAULT_SELECTED_OPERATIONAL_LIMITS_GROUP_ID;
 
     stdcxx::Reference<Identifiable> m_identifiable;
 
     std::string m_attributeName;
 
-    stdcxx::optional<std::string> m_selectedLimitsGroupId;
+    std::list<std::string> m_selectedLimitsGroupIds;
 
     std::map<std::string, std::shared_ptr<OperationalLimitsGroup>> m_operationalLimitsGroupById;
 };

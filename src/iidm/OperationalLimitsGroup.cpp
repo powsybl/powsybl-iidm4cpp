@@ -16,11 +16,6 @@ namespace powsybl {
 
 namespace iidm {
 
-OperationalLimitsGroup::OperationalLimitsGroup(const std::string& id, Identifiable& identifiable, const std::string& attributeName, const std::string& selectedGroupId) :
-    OperationalLimitsGroup(id, identifiable, attributeName) {
-    m_selectedGroupId = selectedGroupId;
-}
-
 OperationalLimitsGroup::OperationalLimitsGroup(const std::string& id, Identifiable& identifiable, const std::string& attributeName) :
     m_id(id),
     m_identifiable(identifiable),
@@ -44,17 +39,6 @@ Network& OperationalLimitsGroup::getNetwork() {
 
 const std::string& OperationalLimitsGroup::getId() const {
     return m_id;
-}
-
-void OperationalLimitsGroup::setSelectedGroupId(const std::string& selectedGroupId) {
-    if(selectedGroupId.empty()){
-        cancelSelectedGroupId();
-        return;
-    }
-    m_selectedGroupId = selectedGroupId;
-}
-void OperationalLimitsGroup::cancelSelectedGroupId() {
-    m_selectedGroupId.reset();
 }
 
 stdcxx::CReference<ActivePowerLimits> OperationalLimitsGroup::getActivePowerLimits() const {

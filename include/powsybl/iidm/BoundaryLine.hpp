@@ -94,15 +94,20 @@ public:
 // FlowsLimitsHolder
     stdcxx::const_range<OperationalLimitsGroup> getOperationalLimitsGroups() const override;
     stdcxx::range<OperationalLimitsGroup> getOperationalLimitsGroups() override;
-    const stdcxx::optional<std::string>& getSelectedOperationalLimitsGroupId() const override;
+    stdcxx::optional<std::string> getSelectedOperationalLimitsGroupId() const override;
+    const std::list<std::string>& getAllSelectedOperationalLimitsGroupIds() const override;
     stdcxx::CReference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) const override;
     stdcxx::Reference<OperationalLimitsGroup> getOperationalLimitsGroup(const std::string& id) override;
     stdcxx::CReference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() const override;
     stdcxx::Reference<OperationalLimitsGroup> getSelectedOperationalLimitsGroup() override;
+    stdcxx::const_range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups() const override;
+    stdcxx::range<OperationalLimitsGroup> getAllSelectedOperationalLimitsGroups() override;
     OperationalLimitsGroup& newOperationalLimitsGroup(const std::string& id) override;
     void setSelectedOperationalLimitsGroup(const std::string& id) override;
+    void addSelectedOperationalLimitsGroups(const std::list<std::string>& ids) override;
     void removeOperationalLimitsGroup(const std::string& id) override;
     void cancelSelectedOperationalLimitsGroup() override;
+    void deselectOperationalLimitsGroups(const std::list<std::string>& ids) override;
     /**
      * Get the OperationalLimitsGroup selected or create a new one if it does not exist and set it as selected.
      */

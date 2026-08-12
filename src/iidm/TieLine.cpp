@@ -201,84 +201,17 @@ void TieLine::remove(bool updateBoundaryLines) {
     getNetwork().remove(*this);
 }
 
-stdcxx::const_range<OperationalLimitsGroup> TieLine::getOperationalLimitsGroups1() const {
-    return getBoundaryLine1().getOperationalLimitsGroups();
+const FlowsLimitsHolder& TieLine::getOperationalLimitsHolder1() const {
+    return getBoundaryLine1();
 }
-stdcxx::range<OperationalLimitsGroup> TieLine::getOperationalLimitsGroups1() {
-    return getBoundaryLine1().getOperationalLimitsGroups();
+FlowsLimitsHolder& TieLine::getOperationalLimitsHolder1() {
+    return getBoundaryLine1();
 }
-const stdcxx::optional<std::string>& TieLine::getSelectedOperationalLimitsGroupId1() const {
-    return getBoundaryLine1().getSelectedOperationalLimitsGroupId();
+const FlowsLimitsHolder& TieLine::getOperationalLimitsHolder2() const {
+    return getBoundaryLine2();
 }
-stdcxx::CReference<OperationalLimitsGroup> TieLine::getOperationalLimitsGroup1(const std::string& id) const {
-    return getBoundaryLine1().getOperationalLimitsGroup(id);
-}
-stdcxx::Reference<OperationalLimitsGroup> TieLine::getOperationalLimitsGroup1(const std::string& id) {
-    return getBoundaryLine1().getOperationalLimitsGroup(id);
-}
-stdcxx::CReference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup1() const {
-    return getBoundaryLine1().getSelectedOperationalLimitsGroup();
-}
-stdcxx::Reference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup1() {
-    return getBoundaryLine1().getSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& TieLine::newOperationalLimitsGroup1(const std::string& id) {
-    return getBoundaryLine1().newOperationalLimitsGroup(id);
-}
-void TieLine::setSelectedOperationalLimitsGroup1(const std::string& id) {
-    getBoundaryLine1().setSelectedOperationalLimitsGroup(id);
-}
-void TieLine::removeOperationalLimitsGroup1(const std::string& id) {
-    getBoundaryLine1().removeOperationalLimitsGroup(id);
-}
-void TieLine::cancelSelectedOperationalLimitsGroup1() {
-    getBoundaryLine1().cancelSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& TieLine::getOrCreateSelectedOperationalLimitsGroup1() {
-    return getBoundaryLine1().getOrCreateSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& TieLine::getOrCreateSelectedOperationalLimitsGroup1(const std::string& id) {
-    return Branch::getOrCreateSelectedOperationalLimitsGroup1(id);
-}
-
-stdcxx::const_range<OperationalLimitsGroup> TieLine::getOperationalLimitsGroups2() const {
-    return getBoundaryLine2().getOperationalLimitsGroups();
-}
-stdcxx::range<OperationalLimitsGroup> TieLine::getOperationalLimitsGroups2() {
-    return getBoundaryLine2().getOperationalLimitsGroups();
-}
-const stdcxx::optional<std::string>& TieLine::getSelectedOperationalLimitsGroupId2() const {
-    return getBoundaryLine2().getSelectedOperationalLimitsGroupId();
-}
-stdcxx::CReference<OperationalLimitsGroup> TieLine::getOperationalLimitsGroup2(const std::string& id) const {
-    return getBoundaryLine2().getOperationalLimitsGroup(id);
-}
-stdcxx::Reference<OperationalLimitsGroup> TieLine::getOperationalLimitsGroup2(const std::string& id) {
-    return getBoundaryLine2().getOperationalLimitsGroup(id);
-}
-stdcxx::CReference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup2() const {
-    return getBoundaryLine2().getSelectedOperationalLimitsGroup();
-}
-stdcxx::Reference<OperationalLimitsGroup> TieLine::getSelectedOperationalLimitsGroup2() {
-    return getBoundaryLine2().getSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& TieLine::newOperationalLimitsGroup2(const std::string& id) {
-    return getBoundaryLine2().newOperationalLimitsGroup(id);
-}
-void TieLine::setSelectedOperationalLimitsGroup2(const std::string& id) {
-    getBoundaryLine2().setSelectedOperationalLimitsGroup(id);
-}
-void TieLine::removeOperationalLimitsGroup2(const std::string& id) {
-    getBoundaryLine2().removeOperationalLimitsGroup(id);
-}
-void TieLine::cancelSelectedOperationalLimitsGroup2() {
-    getBoundaryLine2().cancelSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& TieLine::getOrCreateSelectedOperationalLimitsGroup2() {
-    return getBoundaryLine2().getOrCreateSelectedOperationalLimitsGroup();
-}
-OperationalLimitsGroup& TieLine::getOrCreateSelectedOperationalLimitsGroup2(const std::string& id) {
-    return Branch::getOrCreateSelectedOperationalLimitsGroup2(id);
+FlowsLimitsHolder& TieLine::getOperationalLimitsHolder2() {
+    return getBoundaryLine2();
 }
 
 const Terminal& TieLine::getTerminal1() const {
