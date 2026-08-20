@@ -63,6 +63,9 @@ std::set<std::string> ExtensionXmlSerializer::getVersions() const {
 bool ExtensionXmlSerializer::isSerializable(const Extension& /*extension*/) const {
     return true;
 }
+bool ExtensionXmlSerializer::isSerializable(const Extension& extension, NetworkXmlWriterContext& /*context*/) const {
+    return isSerializable(extension);
+}
 
 void ExtensionXmlSerializer::checkReadingCompatibility(const NetworkXmlReaderContext& /*networkContext*/) const {
     //nothing to do if not a versionable extension serializer

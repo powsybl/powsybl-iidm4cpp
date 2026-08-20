@@ -22,20 +22,13 @@ namespace iidm {
 
 GeneratorEntsoeCategory::GeneratorEntsoeCategory(Generator& generator, unsigned long code) :
     Extension(generator),
-    m_code(checkCode(code, generator)) {
+    m_code(code) {
 }
 
 void GeneratorEntsoeCategory::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
     if (extendable && !stdcxx::isInstanceOf<Generator>(extendable.get())) {
         throw AssertionError(stdcxx::format("Unexpected extendable type: %1% (%2% expected)", stdcxx::demangle(extendable.get()), stdcxx::demangle<Generator>()));
     }
-}
-
-unsigned long GeneratorEntsoeCategory::checkCode(unsigned long code, const Generator& generator) {
-    if (code < 1) {
-        throw ValidationException(generator, stdcxx::format("Bad generator ENTSO-E code (%1%)", code));
-    }
-    return code;
 }
 
 unsigned long GeneratorEntsoeCategory::getCode() const {
@@ -53,8 +46,7 @@ const std::type_index& GeneratorEntsoeCategory::getType() const {
 }
 
 GeneratorEntsoeCategory& GeneratorEntsoeCategory::setCode(unsigned long code) {
-    const auto& gen = getExtendable<Generator>().get();
-    m_code = checkCode(code, gen);
+    m_code = code;
     return *this;
 }
 

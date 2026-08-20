@@ -78,25 +78,29 @@ bool isExtensionIncluded(const stdcxx::CReference<ExtensionXmlSerializer>& exten
     return options.withExtension(extensionXmlSerializer.get().getExtensionName());
 }
 
-bool canExtensionBeWritten(const stdcxx::CReference<ExtensionXmlSerializer>& extensionXmlSerializer, const IidmXmlVersion& version, const ExportOptions& options) {
+bool canExtensionBeWritten(const Extension& extension, const stdcxx::CReference<ExtensionXmlSerializer>& extensionXmlSerializer, NetworkXmlWriterContext& context) {
+    bool canBeWritten = false;
+    
     if(!extensionXmlSerializer) {
-        return false;
+        return canBeWritten;
     }
 
     bool versionSupported = true;
     if (stdcxx::isInstanceOf<AbstractVersionableExtensionXmlSerializer>(extensionXmlSerializer)) {
         const auto& serializer = dynamic_cast<const AbstractVersionableExtensionXmlSerializer&>(extensionXmlSerializer.get());
-        versionSupported = serializer.isIIDMVersionSupported(version);
+        versionSupported = serializer.isIIDMVersionSupported(context.getVersion());
     }
     if(!versionSupported) {
-        const std::string& message = stdcxx::format("Version %1% does not support %2% extension", version.toString("."), extensionXmlSerializer.get().getExtensionName());
-        throwExceptionIfOption(options.isThrowExceptionIfExtensionNotFound(),message);
+        const std::string& message = stdcxx::format("Version %1% does not support %2% extension", context.getVersion().toString("."), extensionXmlSerializer.get().getExtensionName());
+        throwExceptionIfOption(context.getOptions().isThrowExceptionIfExtensionNotFound(),message);
     }
 
-    return versionSupported;
+    canBeWritten = versionSupported && extensionXmlSerializer.get().isSerializable(extension, context);
+
+    return canBeWritten;
 }
 
-stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOptions& options, const Extension& extension) {
+stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const Extension& extension, const ExportOptions& options) {
     powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>& extensionProviders = powsybl::iidm::ExtensionProviders<ExtensionXmlSerializer>::getInstance();
 
     stdcxx::CReference<ExtensionXmlSerializer> serializer;
@@ -104,11 +108,7 @@ stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOp
         serializer = stdcxx::cref(extensionProviders.findProviderOrThrowException(extension.getName()));
     } else {
         serializer = extensionProviders.findProvider(extension.getName());
-        if (serializer) {
-            if (!serializer.get().isSerializable(extension)) {
-                serializer.reset();
-            }
-        } else {
+        if (!serializer) {
             logging::Logger& logger = logging::LoggerFactory::getLogger<NetworkXml>();
             logger.warn("No extension XML serializer for %1%", extension.getName());
         }
@@ -117,16 +117,17 @@ stdcxx::CReference<ExtensionXmlSerializer> getExtensionSerializer(const ExportOp
     return serializer;
 }
 
-std::set<std::string> getExtensionNames(const Network& network, const IidmXmlVersion& version, const ExportOptions& options) {
+std::set<std::string> getExtensionNames(const Network& network, NetworkXmlWriterContext& context) {
     std::set<std::string> names;
 
-    if(options.withNoExtension()) {
+    if(context.getOptions().withNoExtension()) {
         return names;
     }
 
     for (const auto& identifiable : network.getIdentifiables()) {
         for (const auto& extension : identifiable.getExtensions()) {
-            if(canExtensionBeWritten(getExtensionSerializer(options,extension), version, options)) {
+            stdcxx::CReference<ExtensionXmlSerializer> serializer = getExtensionSerializer(extension, context.getOptions());
+            if(static_cast<bool>(serializer) && canExtensionBeWritten(extension, serializer, context)) {
                 names.insert(extension.getName());
             }
         }
@@ -194,7 +195,7 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
     std::set<std::string> extensionUris;
     std::set<std::string> extensionPrefixes;
 
-    const auto& extensions = getExtensionNames(network, context.getVersion(), context.getOptions());
+    const auto& extensions = getExtensionNames(network, context);
     for (const auto& extension : extensions) {
         if (context.getOptions().withExtension(extension)) {
             stdcxx::CReference<ExtensionXmlSerializer> serializer = extensionProviders.findProvider(extension);
@@ -231,7 +232,7 @@ void writeExtensionNamespaces(const Network& network, NetworkXmlWriterContext& c
 
 void writeExtension(const Extension& extension, NetworkXmlWriterContext& context) {
     powsybl::xml::XmlStreamWriter& writer = context.getWriter();
-    stdcxx::CReference<ExtensionXmlSerializer> serializer = getExtensionSerializer(context.getOptions(), extension);
+    stdcxx::CReference<ExtensionXmlSerializer> serializer = getExtensionSerializer(extension, context.getOptions());
     if (!serializer) {
         throw AssertionError(stdcxx::format("Extension XML Serializer of %1% should not be null", extension.getName()));
     }
@@ -263,9 +264,10 @@ void NetworkXml::writeExtensions(const Network& network, NetworkXmlWriterContext
 
         bool atLeastOneExtensionToWrite = false;
         for (const auto& extension : identifiable.getExtensions()) {
-            auto extensionSerializer = getExtensionSerializer(context.getOptions(), extension);
-            if(isExtensionIncluded(extensionSerializer, context.getOptions()) && 
-               canExtensionBeWritten(extensionSerializer, context.getVersion(), context.getOptions())) {
+            auto extensionSerializer = getExtensionSerializer(extension, context.getOptions());
+            if(static_cast<bool>(extensionSerializer) && 
+               isExtensionIncluded(extensionSerializer, context.getOptions()) && 
+               canExtensionBeWritten(extension, extensionSerializer, context)) {
                 atLeastOneExtensionToWrite = true;
                 break;
             }
@@ -276,7 +278,7 @@ void NetworkXml::writeExtensions(const Network& network, NetworkXmlWriterContext
             context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(identifiable.getId()));
 
             for (const auto& extension : identifiable.getExtensions()) {
-                bool canBeWritten = canExtensionBeWritten(getExtensionSerializer(context.getOptions(),extension), context.getVersion(), context.getOptions());
+                bool canBeWritten = canExtensionBeWritten(extension, getExtensionSerializer(extension, context.getOptions()), context);
                 if (canBeWritten && context.getOptions().withExtension(extension.getName())) {
                     writeExtension(extension, context);
                 }

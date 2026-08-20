@@ -37,10 +37,7 @@ private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
-    static unsigned long checkCode(unsigned long code, const Generator& generator);
-
-private:
-    unsigned long m_code;
+    unsigned long m_code; //unsigned long ensure it can't be negative
 };
 
 }  // namespace iidm
