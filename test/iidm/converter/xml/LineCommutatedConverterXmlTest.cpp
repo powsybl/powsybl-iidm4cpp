@@ -172,10 +172,10 @@ Network createBaseNetwork() {
 BOOST_FIXTURE_TEST_CASE(LineCommutatedConverterNetworkTest, test::ResourceFixture) {
     Network network = createBaseNetwork();
 
-    test::converter::RoundTrip::roundTripVersionedXmlTest("lineCommutatedConverterRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    test::converter::RoundTrip::runXml(network, test::converter::RoundTrip::getVersionedNetwork("lineCommutatedConverterRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
 
     //Backward compatibility check
-    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("lineCommutatedConverterRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("lineCommutatedConverterRoundTripRef.xml", IidmXmlVersion::V1_15());
 
 }
 

@@ -192,10 +192,10 @@ Network createBaseNetwork() {
 BOOST_FIXTURE_TEST_CASE(VoltageSourceConverterNetworkTest, test::ResourceFixture) {
     Network network = createBaseNetwork();
 
-    test::converter::RoundTrip::roundTripVersionedXmlTest("voltageSourceConverterRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    test::converter::RoundTrip::runXml(network, test::converter::RoundTrip::getVersionedNetwork("voltageSourceConverterRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
 
     //Backward compatibility check
-    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("voltageSourceConverterRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("voltageSourceConverterRoundTripRef.xml", IidmXmlVersion::V1_15());
 
 }
 

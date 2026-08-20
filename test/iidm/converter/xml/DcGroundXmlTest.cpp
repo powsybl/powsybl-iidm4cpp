@@ -61,10 +61,10 @@ Network createBaseNetwork() {
 BOOST_FIXTURE_TEST_CASE(DcGroundNetworkTest, test::ResourceFixture) {
     Network network = createBaseNetwork();
 
-    test::converter::RoundTrip::roundTripVersionedXmlTest("dcGroundRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    test::converter::RoundTrip::runXml(network, test::converter::RoundTrip::getVersionedNetwork("dcGroundRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
 
     //Backward compatibility check
-    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("dcGroundRoundTripRef.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION());
+    test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("dcGroundRoundTripRef.xml", IidmXmlVersion::V1_15());
 
 }
 
