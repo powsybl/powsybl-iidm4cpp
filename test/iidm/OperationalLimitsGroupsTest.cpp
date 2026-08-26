@@ -917,6 +917,7 @@ void checkLimitViolationUtilTemporaryLimits(Identifiable& identifiable, const Th
             });
         }
 
+        BOOST_CHECK_EQUAL(results.size(), expectedOverloads.size());
         for(const auto& rslt : results) {
             BOOST_CHECK(std::find(expectedOverloads.begin(), expectedOverloads.end(),rslt)!=expectedOverloads.end());
         }
@@ -961,6 +962,60 @@ BOOST_AUTO_TEST_CASE(testLimitViolationUtilsCheckTemporaryLimits) {
         {ExpectedOverload{"45'", "activated_3_1", 400, 0}}); // above last temporary of activated_3_1
 }
 
+void checkLimitViolationUtilTemporaryLimitsByGroup(Identifiable& identifiable, const ThreeSides& side, double limitReduction, const std::list<std::string>& groupsToApplyLimitReduction, const LimitType& type, double value, const std::vector<ExpectedOverload>& expectedOverloads) {
+
+    std::vector<std::unique_ptr<Overload>> overloads;
+    if (stdcxx::isInstanceOf<Branch>(identifiable)) {
+        overloads = LimitViolationUtils::checkAllTemporaryLimits(dynamic_cast<Branch&>(identifiable), static_cast<TwoSides>(side), limitReduction, groupsToApplyLimitReduction, value, type);
+    } else if(stdcxx::isInstanceOf<ThreeWindingsTransformer>(identifiable)) {
+        overloads = LimitViolationUtils::checkAllTemporaryLimits(dynamic_cast<ThreeWindingsTransformer&>(identifiable), side, limitReduction, groupsToApplyLimitReduction, value, type);
+    } else {
+        throw PowsyblException(stdcxx::format("The class %1% cannot be used to check temporary limits", stdcxx::demangle(identifiable)));
+    }
+
+    std::vector<ExpectedOverload> results;
+    for (const auto& overloadPtr : overloads) {
+        results.emplace_back(ExpectedOverload{
+            overloadPtr->getPreviousLimitName(),
+            overloadPtr->getOperationalLimitsGroupId(),
+            overloadPtr->getPreviousLimit(),
+            overloadPtr->getTemporaryLimit().getAcceptableDuration(),
+        });
+    }
+
+    BOOST_CHECK_EQUAL(results.size(), expectedOverloads.size());
+    for(const auto& rslt : results) {
+        BOOST_CHECK(std::find(expectedOverloads.begin(), expectedOverloads.end(),rslt)!=expectedOverloads.end());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testLimitViolationUtilsCheckTemporaryLimitsByGroup) {
+    Network networkLine = powsybl::network::EurostagFactory::createWithMultipleSelectedFixedCurrentLimits();
+    Line& l = networkLine.getLine("NHV1_NHV2_1");
+    //activate the usually not activated group to have 3 groups with temporary (default doesn't have any)
+    l.addSelectedOperationalLimitsGroups(TwoSides::ONE, {"not_activated"});
+
+    Network network3wt = powsybl::network::EurostagFactory::createWithMultipleSelectedFixedActivePowerLimits();
+    ThreeWindingsTransformer& transformer = network3wt.getThreeWindingsTransformer("NGEN_V2_NHV1");
+    //activate the not_activated to have more groups to test on
+    transformer.getLeg(ThreeSides::THREE).addSelectedOperationalLimitsGroups({"not_activated"});
+
+    checkLimitViolationUtilTemporaryLimitsByGroup(l, ThreeSides::ONE, 0.01, {}, LimitType::CURRENT, 250, //Apply on all selected groups
+        {ExpectedOverload{"1'","activated_1_1",1500, 0},
+         ExpectedOverload{"0.5'", "activated_1_2", 1600, 0},
+         ExpectedOverload{"30'", "not_activated", 600, 0}});
+    checkLimitViolationUtilTemporaryLimitsByGroup(l, ThreeSides::ONE, 0.01, {"activated_1_2"}, LimitType::CURRENT, 250, //Apply only on "activated_1_2"
+        {ExpectedOverload{"0.5'", "activated_1_2", 1600, 0}});
+    checkLimitViolationUtilTemporaryLimitsByGroup(l, ThreeSides::ONE, 0.01, {"activated_1_1", "activated_1_2"}, LimitType::CURRENT, 250, // apply to only 2 groups out of 4
+         {ExpectedOverload{"1'", "activated_1_1", 1500, 0},
+          ExpectedOverload{"0.5'", "activated_1_2", 1600, 0}});
+
+    checkLimitViolationUtilTemporaryLimitsByGroup(transformer, ThreeSides::THREE, 0.8, {}, LimitType::ACTIVE_POWER, 290, // apply to all selected groups
+        {ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_3_1", 350, 45 * 60}, 
+         ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "not_activated", 300, 25 * 60}}), 
+    checkLimitViolationUtilTemporaryLimitsByGroup(transformer, ThreeSides::THREE, 0.8, {"activated_3_1"}, LimitType::ACTIVE_POWER, 290, // only reduce "activated_3_1"
+        {ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_3_1", 350, 45 * 60}});
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 

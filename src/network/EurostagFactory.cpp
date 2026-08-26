@@ -793,7 +793,12 @@ iidm::Network EurostagFactory::createWithMultipleSelectedFixedActivePowerLimits(
 
     legThree.newOperationalLimitsGroup("not_activated")
             .newActivePowerLimits()
-            .setPermanentLimit(10)
+            .setPermanentLimit(300)
+            .beginTemporaryLimit()
+                .setName("25'")
+                .setValue(550)
+                .setAcceptableDuration(25 * 60)
+            .endTemporaryLimit()
             .add();
 
     legThree.addSelectedOperationalLimitsGroups({"activated_3_1"});

@@ -87,23 +87,40 @@ std::unique_ptr<Overload> checkTemporaryLimits(const ThreeWindingsTransformer& t
     return std::unique_ptr<Overload>();
 }
 std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type) {
+    return checkAllTemporaryLimits(branch, side, limitReduction, {}, i, type);
+}
+std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const Branch& branch, const TwoSides& side, double limitReduction, const std::list<std::string>& reducedGroupIds, double i, const LimitType& type) {
     std::vector<std::unique_ptr<Overload>> overloads;
     stdcxx::const_range<LoadingLimits> allSelectedLimits = branch.getAllSelectedLoadingLimits(type, side);
 
     for (const auto& limits : allSelectedLimits) {
-        std::unique_ptr<Overload> overload = getOverload(limits, limitReduction, i);
+        double reductionValue = 1;
+        if(reducedGroupIds.empty() || std::find(reducedGroupIds.cbegin(), reducedGroupIds.cend(), limits.getLimitsGroupId())!=reducedGroupIds.cend()){
+            reductionValue = limitReduction;
+        }
+
+        std::unique_ptr<Overload> overload = getOverload(limits, reductionValue, i);
         if(static_cast<bool>(overload)) {
             overloads.emplace_back(std::move(overload));
         }
     }
     return overloads;
 }
+
 std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, double i, const LimitType& type) {
+    return checkAllTemporaryLimits(transformer, side, limitReduction, {}, i, type);
+}
+std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, const std::list<std::string>& reducedGroupIds, double i, const LimitType& type) {
     std::vector<std::unique_ptr<Overload>> overloads;
     stdcxx::const_range<LoadingLimits> allSelectedLimits = transformer.getLeg(side).getAllSelectedLoadingLimits(type);
 
     for (const auto& limits : allSelectedLimits) {
-        std::unique_ptr<Overload> overload = getOverload(limits, limitReduction, i);
+        double reductionValue = 1;
+        if(reducedGroupIds.empty() || std::find(reducedGroupIds.cbegin(), reducedGroupIds.cend(), limits.getLimitsGroupId())!=reducedGroupIds.cend()){
+            reductionValue = limitReduction;
+        }
+
+        std::unique_ptr<Overload> overload = getOverload(limits, reductionValue, i);
         if(static_cast<bool>(overload)) {
             overloads.emplace_back(std::move(overload));
         }

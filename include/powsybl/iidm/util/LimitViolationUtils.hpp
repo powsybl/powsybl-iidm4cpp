@@ -51,11 +51,24 @@ std::unique_ptr<Overload> checkTemporaryLimits(const ThreeWindingsTransformer& t
  * @return vector of all Overload for each violation that happened on the selected limits
  */
 std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type);
+
+/**
+ * Checks the temporary limits on all the selected OperationalLimitsGroup for the given side of the branch, appliying a limitReduction to specified groups
+ * @param reducedGroupIds list of operationalLimitsGroup's ids, the limitReduction will be applied only on those. (limitReduction forced to 1 on any other selected group)
+ */
+std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const Branch& branch, const TwoSides& side, double limitReduction, const std::list<std::string>& reducedGroupIds, double i, const LimitType& type);
+
 /**
  * Checks the temporary limits on all the selected OperationalLimitsGroup for the given side of the transformer
  * @return vector of all Overload for each violation that happened on the selected limits
  */
 std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, double i, const LimitType& type);
+/**
+ * Checks the temporary limits on all the selected OperationalLimitsGroup for the given side of the transformer, appliying a limitReduction to specified groups
+ * @param reducedGroupIds list of operationalLimitsGroup's ids, the limitReduction will be applied only on those. (limitReduction forced to 1 on any other selected group)
+ */
+std::vector<std::unique_ptr<Overload>> checkAllTemporaryLimits(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, const std::list<std::string>& reducedGroupIds, double i, const LimitType& type);
+
 
 double getValueForLimit(const Terminal& terminal, const LimitType& type);
 
