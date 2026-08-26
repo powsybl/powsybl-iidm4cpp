@@ -45,12 +45,42 @@ public:
 
     virtual void remove();
 
+    /**
+     * Try to connect all sides of the connectable by operating only non-fictional breakers,
+     * If you wish to operate other kind of switches, use connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate)
+     */
     virtual bool connect();
+
+    /**
+     * Try to connect all sides of the connectable by operating switches that respect the given predicate.
+     */
     virtual bool connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
+
+    /**
+     * Try to connect the connectable on the given side by operating switches that respect the given predicate.
+     * 
+     * @param isTypeSwitchToOperate predicate to filter allowed switches to operate on
+     * @param side optional side of the connectable to connect. Use an empty optional to connect all sides
+     * @return true if the connection succeeded, false otherwise (if one of the terminal of this connectable could not be connected, or it was already connected)
+     */
     virtual bool connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<ThreeSides>& side);
 
+    /**
+     * Try to disconnect all sides of the connectable by operating only closed non-fictional breakers,
+     * If you wish to operate other kind of switches, use disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable)
+     */
     virtual bool disconnect();
+    /**
+     * Try to disconnect the connectable on the given side by operating switches that respect the given predicate.
+     */
     virtual bool disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable);
+    /**
+     * Try to disconnect the connectable on the given side by operating switches that respect the given predicate.
+     * 
+     * @param isSwitchOpenable predicate to filter allowed switches to operate on
+     * @param side optional side of the connectable to disconnect. Use an empty optional to disconnect all sides
+     * @return true if the diconnection succeeded, false otherwise (if one of the terminal of this connectable could not be disconnected, or it was already disconnected)
+     */
     virtual bool disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<ThreeSides>& side);
 
 protected: // MultiVariantObject

@@ -107,12 +107,30 @@ public:
      */
     virtual CurrentLimitsAdder newCurrentLimits2() override;
 
+    /**
+     * Try to connect the boundary lines on all sides, by operating on non-fictional breakers
+     */
     bool connectBoundaryLines();
+    /**
+     * Try to connect the boundary lines, by operating on switches that respect the given predicate.
+     */
     bool connectBoundaryLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
+    /**
+     * Try to connect the boundary lines on the given side, by operating on switches that respect the given predicate.
+     */
     bool connectBoundaryLines(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<TwoSides>& side);
 
+    /**
+     * Try to disconnect the boundary lines on all sides, by operating on closed non-fictional breakers
+     */
     bool disconnectBoundaryLines();
+    /**
+     * Try to disconnect the boundary lines on all sides, by operating on switches that respect the given predicate.
+     */
     bool disconnectBoundaryLines(const stdcxx::Predicate<Switch>& isSwitchOpenable);
+    /**
+     * Try to disconnect the boundary lines on the given side, by operating on switches that respect the given predicate.
+     */
     bool disconnectBoundaryLines(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<TwoSides>& side);
 
 private: // Identifiable

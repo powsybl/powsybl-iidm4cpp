@@ -172,7 +172,7 @@ bool Connectable::connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate
 }
 
 bool Connectable::disconnect() {
-    return disconnect(SwitchPredicate::IS_CLOSED_BREAKER());
+    return disconnect(SwitchPredicate::IS_NONFICTIONAL_CLOSED_BREAKER());
 }
 bool Connectable::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
     return disconnect(isSwitchOpenable, stdcxx::optional<ThreeSides>());

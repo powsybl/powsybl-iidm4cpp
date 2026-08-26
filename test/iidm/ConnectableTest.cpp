@@ -204,8 +204,11 @@ BOOST_AUTO_TEST_CASE(nominallyConnectedTest) {
     // Failing disconnection
     BOOST_CHECK(!line1.disconnect(SwitchPredicate::IS_NONFICTIONAL_CLOSED_BREAKER()));
 
-    // disconnect the line 1
-    BOOST_CHECK(line1.disconnect());
+    // Default disconnect() use IS_NONFICTIONAL_CLOSED_BREAKER() predicate so it fails as well :
+    BOOST_CHECK(!line1.disconnect());
+
+    //Disconnect allowing fictional breaker:
+    BOOST_CHECK(line1.disconnect(SwitchPredicate::IS_CLOSED_BREAKER()));
 
     // check line 1 is disconnected
     POWSYBL_ASSERT_REF_TRUE(topo.getOptionalTerminal(4));
@@ -273,6 +276,60 @@ BOOST_AUTO_TEST_CASE(partiallyConnectedTest) {
         BOOST_CHECK(!terminal.get().isConnected());
     }
 }
+
+
+BOOST_AUTO_TEST_CASE(connectionRoundTripFictionalBreaker) {
+    //checks that connect and disconnect work in the same way
+    Network network = createConnectableTestNetwork();
+    Line& l2 = network.getLine("L2");
+    BOOST_CHECK(l2.connect(SwitchPredicate::IS_BREAKER_OR_DISCONNECTOR()));
+    BOOST_CHECK(l2.getTerminal1().isConnected());
+
+    // check that when we disconnect then connect, it leads to the same state
+    l2.disconnect();
+    l2.connect();
+    BOOST_CHECK(l2.getTerminal1().isConnected());
+}
+
+BOOST_AUTO_TEST_CASE(connectDisconnectOnOpenFictionalBreaker) {
+    //checks that connect and disconnect do not touch fictional breakers in open position
+    Network n = createConnectableTestNetwork();
+    Line& l2 = n.getLine("L2");
+    Switch& l2FictitiousBreaker = n.getSwitch("B_L2"); // fictitious
+    Switch& l2RealBreaker = n.getSwitch("B1"); // non-fictitious
+
+    BOOST_CHECK(l2FictitiousBreaker.isOpen());
+    BOOST_CHECK(l2RealBreaker.isOpen());
+
+    BOOST_CHECK(!l2.connect()); //fails cause can't connect the fictious breaker
+    BOOST_CHECK(!l2.getTerminal1().isConnected()); //terminal1 still disconnected
+    BOOST_CHECK(l2FictitiousBreaker.isOpen());
+    // cannot access the real breaker behind the open fictitious breaker, no connection is made
+    BOOST_CHECK(l2RealBreaker.isOpen());
+
+    BOOST_CHECK(l2.disconnect());
+    BOOST_CHECK(l2FictitiousBreaker.isOpen());
+    BOOST_CHECK(l2RealBreaker.isOpen());
+}
+
+BOOST_AUTO_TEST_CASE(connectDisconnectOnClosedFictionalBreaker) {
+    //checks that connect and disconnect do not touch fictional breakers on closed position
+    Network n = createConnectableTestNetwork();
+    Line& l2 = n.getLine("L2");
+    Switch& l2FictitiousBreaker = n.getSwitch("B_L2"); // fictitious
+    Switch& l2RealBreaker = n.getSwitch("B1"); // non-fictitious
+
+    BOOST_CHECK(l2.connect(SwitchPredicate::IS_BREAKER_OR_DISCONNECTOR())); // forcibly close the open fictitious breaker
+
+    BOOST_CHECK(l2.disconnect());
+    BOOST_CHECK(!l2FictitiousBreaker.isOpen()); //can't disconnect the fictitious breaker
+    BOOST_CHECK(l2RealBreaker.isOpen()); //but can access the real breaker behind it
+
+    BOOST_CHECK(l2.connect()); // this works because fictitious is closed, so we can access the real breaker behind it
+    BOOST_CHECK(!l2FictitiousBreaker.isOpen()); //fictitous breaker didn't change (was already closed)
+    BOOST_CHECK(!l2RealBreaker.isOpen());
+}
+
 
 BOOST_AUTO_TEST_CASE(oneTerminalConnectedTest) {
     Network network = createConnectableTestNetwork();

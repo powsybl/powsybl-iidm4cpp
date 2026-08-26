@@ -203,7 +203,7 @@ bool HvdcLine::connectConverterStations(const stdcxx::Predicate<Switch>& isTypeS
 }
 
 bool HvdcLine::disconnectConverterStations() {
-    return disconnectConverterStations(SwitchPredicate::IS_CLOSED_BREAKER());
+    return disconnectConverterStations(SwitchPredicate::IS_NONFICTIONAL_CLOSED_BREAKER());
 }
 bool HvdcLine::disconnectConverterStations(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
     return disconnectConverterStations(isSwitchOpenable, stdcxx::optional<TwoSides>());

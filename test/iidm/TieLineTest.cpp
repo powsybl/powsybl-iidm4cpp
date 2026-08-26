@@ -771,8 +771,7 @@ BOOST_AUTO_TEST_CASE(defaultValuesTieLine) {
 
 }
 
-BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
-
+Network createNetworkWithTieLines(bool fictitiousSwitches) {
     Network network = powsybl::network::FourSubstationsNodeBreakerFactory::create();
     // Existing voltage levels in Node-breaker view
     VoltageLevel& s1vl1 = network.getVoltageLevel("S1VL1");
@@ -800,7 +799,7 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
             .setKind(SwitchKind::DISCONNECTOR)
             .setRetained(false)
             .setOpen(false)
-            .setFictitious(false)
+            .setFictitious(fictitiousSwitches)
             .setNode1(0)
             .setNode2(20)
             .add();
@@ -810,7 +809,7 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
             .setKind(SwitchKind::BREAKER)
             .setRetained(true)
             .setOpen(false)
-            .setFictitious(false)
+            .setFictitious(fictitiousSwitches)
             .setNode1(20)
             .setNode2(21)
             .add();
@@ -840,11 +839,19 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
             .setPairingKey("XNODE1")
             .add();
 
-    TieLine& tieLine = network.newTieLine()
+    network.newTieLine()
             .setId("TL")
             .setBoundaryLine1(boundaryLine1.getId())
             .setBoundaryLine2(boundaryLine2.getId())
             .add();
+
+    return network;
+}
+
+
+BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
+    Network network = createNetworkWithTieLines(false);
+    TieLine& tieLine = network.getTieLine("TL");
 
     // Check that the tie line is connected
     BOOST_CHECK(tieLine.getBoundaryLine1().getTerminal().isConnected());
@@ -885,6 +892,36 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
     BOOST_CHECK(!tieLine.connectBoundaryLines(SwitchPredicate::IS_NONFICTIONAL_BREAKER(), TwoSides::TWO));
 
 }
+
+BOOST_AUTO_TEST_CASE(testConnectDisconnectWithFictitiousBreaker) {
+    Network network = createNetworkWithTieLines(true);
+    TieLine& tieLine = network.getTieLine("TL");
+
+    //TieLine is connected
+    BOOST_CHECK(tieLine.getBoundaryLine1().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getBoundaryLine2().getTerminal().isConnected());
+
+    //Disconnection fails since breakers are fictitious
+    BOOST_CHECK(!tieLine.disconnectBoundaryLines());
+    BOOST_CHECK(tieLine.getBoundaryLine1().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getBoundaryLine2().getTerminal().isConnected());
+
+    //Force open
+    BOOST_CHECK(tieLine.disconnectBoundaryLines(SwitchPredicate::IS_CLOSED_BREAKER()));
+    BOOST_CHECK(!tieLine.getBoundaryLine1().getTerminal().isConnected());
+    BOOST_CHECK(!tieLine.getBoundaryLine2().getTerminal().isConnected());
+
+    //Conenction fails since breakers are fictitious
+    BOOST_CHECK(!tieLine.connectBoundaryLines());
+    BOOST_CHECK(!tieLine.getBoundaryLine1().getTerminal().isConnected());
+    BOOST_CHECK(!tieLine.getBoundaryLine2().getTerminal().isConnected());
+
+    //Force close
+    BOOST_CHECK(tieLine.connectBoundaryLines(SwitchPredicate::IS_BREAKER_OR_DISCONNECTOR()));
+    BOOST_CHECK(tieLine.getBoundaryLine1().getTerminal().isConnected());
+    BOOST_CHECK(tieLine.getBoundaryLine2().getTerminal().isConnected());
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

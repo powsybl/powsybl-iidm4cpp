@@ -10,7 +10,10 @@
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/Terminal.hpp>
+#include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
+
+#include "../NodeBreakerTopologyModel.hpp"
 
 namespace powsybl {
 
@@ -22,10 +25,26 @@ bool connectAllTerminals(std::vector<std::reference_wrapper<Terminal>> terminals
     bool isAlreadyConnected = true;
     bool isNowConnected = true;
 
+    //list of nodebreaker view switches to connect
+    std::vector<stdcxx::Reference<Switch>> switchesToConnect;
+
     //Check connected state of terminals
     for (auto& terminal : terminals) {
-        if (!terminal.get().isConnected()) {
-            isAlreadyConnected = false;
+        if(terminal.get().isConnected()) {
+            continue;
+        }
+
+        //not already connected :
+        isAlreadyConnected = false;
+        //If it's a nodebreaker terminal, get the switches to connect :
+        if(terminal.get().getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER) {
+            auto& topologyModel = terminal.get().getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
+            isNowConnected = topologyModel.getConnectingSwitches(terminal.get() , isTypeSwitchToOperate, switchesToConnect); 
+        }
+        //in busbreaker, nothing to do here
+
+        if(!isNowConnected) { //Cannot connect this nodebreaker terminal, return immediatly
+            return false;
         }
     }
     // Exit if the connectable is already fully connected
@@ -33,17 +52,25 @@ bool connectAllTerminals(std::vector<std::reference_wrapper<Terminal>> terminals
         return false;
     }
 
-    //Try connecting all disconnected terminals
+    //Connect all disconnected busbreaker terminals
     for (auto& terminal : terminals) {
         if (terminal.get().isConnected()) {
             continue;
         }
-        isNowConnected = isNowConnected && terminal.get().connect(isTypeSwitchToOperate);
+        if(terminal.get().getVoltageLevel().getTopologyKind() == TopologyKind::BUS_BREAKER) {
+            // at this point isNowConnected should always stay true
+            isNowConnected = isNowConnected && terminal.get().connect(isTypeSwitchToOperate);
+        }
         // Exit if the terminal cannot be connected
         if (!isNowConnected) {
             return false;
         }
     }
+    //Connect all the switches for nodebreaker terminals
+    for (const auto& sw : switchesToConnect) { // no need to reverify the predicate here, it is done while fetching them
+        sw.get().setOpen(false);
+    }
+
     return isNowConnected;
 }
 
@@ -51,10 +78,25 @@ bool disconnectAllTerminals(std::vector<std::reference_wrapper<Terminal>> termin
     bool isAlreadyDisconnected = true;
     bool isNowDisconnected = true;
 
+    //list of nodebreaker view switches to disconnect
+    std::vector<stdcxx::Reference<Switch>> switchesToDisconnect;
+
     //Check connected state of terminals
     for (auto& terminal : terminals) {
-        if (terminal.get().isConnected()) {
-            isAlreadyDisconnected = false;
+        if (!terminal.get().isConnected()) {
+            continue; //terminal already disconnected
+        }
+
+        isAlreadyDisconnected = false;
+        //If it's a nodebreaker terminal, get the switches to disconnect :
+        if(terminal.get().getVoltageLevel().getTopologyKind() == TopologyKind::NODE_BREAKER) {
+            auto& topologyModel = terminal.get().getVoltageLevel().getTopologyModel<NodeBreakerTopologyModel>();
+            isNowDisconnected = topologyModel.getDisconnectingSwitches(terminal.get() , isTypeSwitchOpenable, switchesToDisconnect); 
+        }
+        //in busbreaker, nothing to do here
+
+        if(!isNowDisconnected) { //Cannot disconnect this (nodebreaker) terminal, return immediatly
+            return false;
         }
     }
     // Exit if the connectable is already fully disconnected
@@ -62,16 +104,23 @@ bool disconnectAllTerminals(std::vector<std::reference_wrapper<Terminal>> termin
         return false;
     }
 
-    //We try to disconnect each connected terminal
+    //Disconnect all busbreaker terminals
     for (auto& terminal : terminals) {
         if (!terminal.get().isConnected()) {
             continue;
         }
-        isNowDisconnected = isNowDisconnected && terminal.get().disconnect(isTypeSwitchOpenable);
+        if(terminal.get().getVoltageLevel().getTopologyKind() == TopologyKind::BUS_BREAKER) {
+            // at this point isNowDisconnected should always stay true
+            isNowDisconnected = isNowDisconnected && terminal.get().disconnect(isTypeSwitchOpenable);
+        }
         // Exit if the terminal cannot be disconnected
         if (!isNowDisconnected) {
             return false;
         }
+    }
+    //Disconnect all the identified switches for nodebreaker terminals
+    for (const auto& sw : switchesToDisconnect) { // no need to reverify the predicate here, it is done while fetching them
+        sw.get().setOpen(true);
     }
     return isNowDisconnected;
 }

@@ -556,6 +556,38 @@ BOOST_AUTO_TEST_CASE(testConnectDisconnect) {
 
 }
 
+BOOST_AUTO_TEST_CASE(testConnectDisconnectWithFictitiousBreaker) {
+    Network network = createNBKLcc();
+    HvdcLine& hvdcLine = network.getHvdcLine("L");
+
+    network.getSwitch("BK1").setFictitious(true);
+    network.getSwitch("BK2").setFictitious(true);
+    network.getSwitch("BK3").setFictitious(true);
+
+    BOOST_CHECK(hvdcLine.getConverterStation1().get().getTerminal().isConnected());
+    BOOST_CHECK(hvdcLine.getConverterStation2().get().getTerminal().isConnected());
+
+    //disconnect default cannot operate fictitious breakers:
+    BOOST_CHECK(!hvdcLine.disconnectConverterStations()); //side 2 cannot be disconnected : nothing changes even if side 1 could be disconnected
+    BOOST_CHECK(hvdcLine.getConverterStation1().get().getTerminal().isConnected());
+    BOOST_CHECK(hvdcLine.getConverterStation2().get().getTerminal().isConnected());
+
+    //Force open
+    BOOST_CHECK(hvdcLine.disconnectConverterStations(SwitchPredicate::IS_CLOSED_BREAKER()));
+    BOOST_CHECK(!hvdcLine.getConverterStation1().get().getTerminal().isConnected());
+    BOOST_CHECK(!hvdcLine.getConverterStation2().get().getTerminal().isConnected());
+
+    //Cannot disconnect side 2, because of the fictitious breaker
+    BOOST_CHECK(!hvdcLine.connectConverterStations());
+    BOOST_CHECK(!hvdcLine.getConverterStation1().get().getTerminal().isConnected()); //side 1 stays disconnected, even though it could have been individually connected.
+    BOOST_CHECK(!hvdcLine.getConverterStation2().get().getTerminal().isConnected());
+
+    //Force close
+    BOOST_CHECK(hvdcLine.connectConverterStations(SwitchPredicate::IS_BREAKER_OR_DISCONNECTOR()));
+    BOOST_CHECK(hvdcLine.getConverterStation1().get().getTerminal().isConnected());
+    BOOST_CHECK(hvdcLine.getConverterStation2().get().getTerminal().isConnected());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

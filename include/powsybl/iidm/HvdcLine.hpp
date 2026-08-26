@@ -85,12 +85,30 @@ public:
 
     HvdcLine& setR(double r);
 
+    /**
+     * Try to connect the converter stations on all sides, by operating on non-fictional breakers
+     */
     bool connectConverterStations();
+    /**
+     * Try to connect the converter stations, by operating on switches that respect the given predicate.
+     */
     bool connectConverterStations(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
+    /**
+     * Try to connect the converter stations on the given side, by operating on switches that respect the given predicate.
+     */
     bool connectConverterStations(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, const stdcxx::optional<TwoSides>& side);
 
+    /**
+     * Try to disconnect the converter stations on all sides, by operating on closed non-fictional breakers
+     */
     bool disconnectConverterStations();
+    /**
+     * Try to disconnect the converter stations on all sides, by operating on switches that respect the given predicate.
+     */
     bool disconnectConverterStations(const stdcxx::Predicate<Switch>& isSwitchOpenable);
+    /**
+     * Try to disconnect the converter stations on the given side, by operating on switches that respect the given predicate.
+     */
     bool disconnectConverterStations(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<TwoSides>& side);
 
 protected: // MultiVariantObject

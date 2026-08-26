@@ -61,7 +61,7 @@ void Terminal::deleteVariantArrayElement(unsigned long /*index*/) {
 }
 
 bool Terminal::disconnect() {
-    return disconnect(SwitchPredicate::IS_CLOSED_BREAKER());
+    return disconnect(SwitchPredicate::IS_NONFICTIONAL_CLOSED_BREAKER());
 }
 bool Terminal::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
     return m_voltageLevel.getTopologyModel().disconnect(*this, isSwitchOpenable);

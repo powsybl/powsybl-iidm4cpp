@@ -284,7 +284,7 @@ bool TieLine::connectBoundaryLines(const stdcxx::Predicate<Switch>& isTypeSwitch
 }
 
 bool TieLine::disconnectBoundaryLines() {
-    return disconnectBoundaryLines(SwitchPredicate::IS_CLOSED_BREAKER());
+    return disconnectBoundaryLines(SwitchPredicate::IS_NONFICTIONAL_CLOSED_BREAKER());
 }
 bool TieLine::disconnectBoundaryLines(const stdcxx::Predicate<Switch>& isSwitchOpenable) {
     return disconnectBoundaryLines(isSwitchOpenable, stdcxx::optional<TwoSides>());

@@ -92,12 +92,24 @@ bool NodeBreakerTopologyModel::connect(Terminal& terminal) {
 }
 bool NodeBreakerTopologyModel::connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) {
     checkTerminal(terminal);
-    auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
-
-    if (terminal.isConnected()) {
+    if (terminal.isConnected()) { //already connected;
         return false;
     }
 
+    std::vector<stdcxx::Reference<Switch>> switchesToConnect;
+    if(getConnectingSwitches(terminal, isTypeSwitchToOperate, switchesToConnect) && !switchesToConnect.empty()) {
+        for (const auto& sw : switchesToConnect) { // no need to reverify the predicate here, it is done while fetching them
+            sw.get().setOpen(false);
+        }
+        //check that closing those switches indeed connected the terminal
+        return terminal.isConnected();
+    }
+    //no appropriate switch to close found : still disconnected
+    return false;
+}
+bool NodeBreakerTopologyModel::getConnectingSwitches(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, std::vector<stdcxx::Reference<Switch>>& switchesForConnection) {
+    checkTerminal(terminal);
+    auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
     unsigned long node = nodeTerminal.getNode();
 
     // find all paths starting from the current terminal to a busbar section that does not contain an open switch
@@ -111,21 +123,19 @@ bool NodeBreakerTopologyModel::connect(Terminal& terminal, const stdcxx::Predica
     };
     const auto& paths = m_graph.findAllPaths(node, isBusbarSection, checkNonClosableSwitch);
 
-    bool connected = false;
     if (!paths.empty()) {
         const auto& shortestPath = paths[0];
-        //Close all open switches on the path
+        //Fetch all the switches to close on that path
         for (unsigned long e : shortestPath) {
             const auto& aSwitch = m_graph.getEdgeObject(e);
-            if (aSwitch && SwitchPredicate::IS_OPEN()(aSwitch.get())) {
-                aSwitch.get().setOpen(false);
+            if (aSwitch && SwitchPredicate::IS_OPEN()(aSwitch.get())) { //IS_OPEN already checked in the graph.findAllPAths() method
+                switchesForConnection.emplace_back(aSwitch.get());
             }
         }
-        //check that the terminal is indeed connected
-        connected = terminal.isConnected();
+        return true;
     }
-
-    return connected;
+    // no path to connect
+    return false;
 }
 
 void NodeBreakerTopologyModel::deleteVariantArrayElement(unsigned long index) {
@@ -150,19 +160,32 @@ void NodeBreakerTopologyModel::detach(Terminal& terminal) {
 
 bool NodeBreakerTopologyModel::disconnect(Terminal& terminal) {
     // Only keep the closed non-fictional breakers in the nominal case
-    return disconnect(terminal, SwitchPredicate::IS_CLOSED_BREAKER());
+    return disconnect(terminal, SwitchPredicate::IS_NONFICTIONAL_CLOSED_BREAKER());
 }
 bool NodeBreakerTopologyModel::disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) {
     checkTerminal(terminal);
-    auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
-
-    if (!terminal.isConnected()) {
+    if (!terminal.isConnected()) { //already disconnected
         return false;
     }
 
+    std::vector<stdcxx::Reference<Switch>> switchesToDisconnect;
+    if(getDisconnectingSwitches(terminal, isSwitchOpenable, switchesToDisconnect) && !switchesToDisconnect.empty()) {
+        // no need to reverify the predicate here, it is done while fetching them, even might be opening the same one several times (parallel paths)
+        for (const auto& sw : switchesToDisconnect) {
+            sw.get().setOpen(true);
+        }
+        //check that opening those switches indeed disconnected the terminal
+        return !(terminal.isConnected());
+    }
+    //no appropriate switch to open found : still connected
+    return false;
+}
+bool NodeBreakerTopologyModel::getDisconnectingSwitches(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable, std::vector<stdcxx::Reference<Switch>>& switchesForDisconnection) {
+    checkTerminal(terminal);
+    auto& nodeTerminal = dynamic_cast<NodeTerminal&>(terminal);
     unsigned long node = nodeTerminal.getNode();
 
-    // find all paths starting from the current terminal to a non null terminal that does not contain an open switch
+    // find all paths starting switchesToDisconnectfrom the current terminal to a non null terminal that does not contain an open switch
     node_breaker_topology_model::Graph::VertexVisitor isTerminalNonNull = [](const stdcxx::Reference<NodeTerminal>& refTerminal) {
         return static_cast<bool>(refTerminal);
     };
@@ -171,35 +194,29 @@ bool NodeBreakerTopologyModel::disconnect(Terminal& terminal, const stdcxx::Pred
     };
     const auto& paths = m_graph.findAllPaths(node, isTerminalNonNull, isOpenedSwitch);
 
-    if (paths.empty()) {
+    if (paths.empty()) { // No acceptable path to disconnect
         return false;
     }
 
     for (const auto& path : paths) {
-        //Disconnect each path:
-        bool pathOpen = false;
+        //Fetch the first 'openable" switch from each path each path:
+        bool pathOpenable = false;
 
         for (unsigned long e : path) {
             const auto& aSwitch = m_graph.getEdgeObject(e);
-            if(isOpenedSwitch(aSwitch)) { //Path might have been opened when opening another path
-                pathOpen = true;
-                break;
-            }
             if (aSwitch && isSwitchOpenable(aSwitch.get())) {
-                aSwitch.get().setOpen(true);
-                // Just opening the first one is sufficient to disconnect the terminal
-                pathOpen = true;
+                switchesForDisconnection.emplace_back(aSwitch.get());
+                pathOpenable = true;
                 break;
             }
         }
 
-        // No suitable openable switch found but path still closed -> the terminal is still connected
-        if (!pathOpen) {
+        // No suitable openable switch on this path -> cannot disconnect it, return false immediatly
+        if (!pathOpenable) {
             return false;
         }
     }
-
-    // For all paths, a breaker has been found, the terminal is disconnected
+    // For all paths, an openable breaker has been found, the terminal can be disconnected by opening all the fetched Switches.
     return true;
 }
 

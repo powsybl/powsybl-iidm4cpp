@@ -31,11 +31,26 @@ public: // TopologyModel
 
     bool connect(Terminal& terminal) override;
     bool connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) override;
+    /**
+     * Retrieve a list of switches that verify the given predicate and that when all are closed, should connect the given Terminal with the shortest path.
+     * Switches are appended to the given vector.
+     *
+     * @return true if there is at least one path found that contains an appropriate Switch. false otherwise (meaning there is no path to connect the Terminal for that predicate)
+     */
+    bool getConnectingSwitches(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, std::vector<stdcxx::Reference<Switch>>& switchesForConnection);
 
     void detach(Terminal& terminal) override;
 
     bool disconnect(Terminal& terminal) override;
     bool disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) override;
+    /**
+     * Retrieve a list of switches that verify the given predicate and that when all are opened, should disconnect the given Terminal.
+     * Switches are appended to the given vector. Depending on the topology graph, the same switch could be added in this list several times.
+     *
+     * @return true if there is at least one openable Switch on each path leading from the given Terminal to another one,
+     * false otherwise (meaning there is at least one path that cannot be opened to disconnect the Terminal for that predicate)
+     */
+    bool getDisconnectingSwitches(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable, std::vector<stdcxx::Reference<Switch>>& switchesForDisconnection);
 
     const BusBreakerView& getBusBreakerView() const override;
 

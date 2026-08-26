@@ -52,10 +52,22 @@ public:
 public:
     ~Terminal() noexcept override = default;
 
+    /**
+     * Try to connect the terminal on operating only non-fictional breakers.
+     */
     bool connect();
+    /**
+     * Try to connect the terminal, by operating on switches that respect the given predicate.
+     */
     bool connect(const stdcxx::Predicate<Switch>& isTypeSwitchToOperate);
 
+    /**
+     * Try to disconnect the terminal on operating only closed non-fictional breakers.
+     */
     bool disconnect();
+    /**
+     * Try to disconnect the terminal, by operating on switches that respect the given predicate.
+     */
     bool disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable);
 
     virtual double getAngle() const = 0;
