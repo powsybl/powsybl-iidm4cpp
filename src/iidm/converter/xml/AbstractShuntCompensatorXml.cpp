@@ -99,34 +99,57 @@ void AbstractShuntCompensatorXml::readSubElements(const std::string& id, ShuntCo
             }
         } else if (context.getReader().getLocalName() == SHUNT_LINEAR_MODEL) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), SHUNT_LINEAR_MODEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
-            auto bPerSection = context.getReader().getAttributeValue<double>(B_PER_SECTION);
-            double gPerSection = context.getReader().getOptionalAttributeValue(G_PER_SECTION, stdcxx::nan());
-            auto maximumSectionCount = context.getReader().getAttributeValue<unsigned long>(MAXIMUM_SECTION_COUNT);
-            adder.newLinearModel()
-                .setBPerSection(bPerSection)
-                .setGPerSection(gPerSection)
-                .setMaximumSectionCount(maximumSectionCount)
-                .add();
+            readShuntLinearModel(id, adder, context);
         } else if (context.getReader().getLocalName() == SHUNT_NON_LINEAR_MODEL) {
             IidmXmlUtil::assertMinimumVersion(getRootElementName(), SHUNT_NON_LINEAR_MODEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_3(), context);
-            ShuntCompensatorAdder::ShuntCompensatorNonLinearModelAdder modelAdder = adder.newNonLinearModel();
-            context.getReader().readUntilEndElement(SHUNT_NON_LINEAR_MODEL, [&context, &modelAdder, &id]() {
-                if (context.getReader().getLocalName() == SECTION) {
-                    auto b = context.getReader().getAttributeValue<double>(B);
-                    auto g = context.getReader().getAttributeValue<double>(G);
-                    modelAdder.beginSection()
-                        .setB(b)
-                        .setG(g)
-                        .endSection();
-                } else {
-                    throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), id));
-                }
-            });
-            modelAdder.add();
+            readNonLinearShuntModel(id, adder, context);
         } else {
             AbstractComplexIdentifiableXml::readSubElements(id, toApply, context);
         }
     });
+}
+
+void AbstractShuntCompensatorXml::readShuntLinearModel(const std::string& id, ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const {
+    auto bPerSection = context.getReader().getAttributeValue<double>(B_PER_SECTION);
+    double gPerSection = context.getReader().getOptionalAttributeValue(G_PER_SECTION, stdcxx::nan());
+    auto maximumSectionCount = context.getReader().getAttributeValue<unsigned long>(MAXIMUM_SECTION_COUNT);
+    ShuntCompensatorAdder::ShuntCompensatorLinearModelAdder linearAdder = adder.newLinearModel();
+    linearAdder.setBPerSection(bPerSection)
+            .setGPerSection(gPerSection)
+            .setMaximumSectionCount(maximumSectionCount);
+    context.getReader().readUntilEndElement(SHUNT_LINEAR_MODEL, [&context, &linearAdder, &id]() {
+        if(context.getReader().getLocalName() == PROPERTY) {
+            PropertiesXml::read(linearAdder, context);
+        } else {
+            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>/<%3%>", context.getReader().getLocalName(), id, SHUNT_LINEAR_MODEL));
+        }
+    });
+    linearAdder.add();
+}
+void AbstractShuntCompensatorXml::readNonLinearShuntModel(const std::string& id, ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const {
+    ShuntCompensatorAdder::ShuntCompensatorNonLinearModelAdder modelAdder = adder.newNonLinearModel();
+    context.getReader().readUntilEndElement(SHUNT_NON_LINEAR_MODEL, [&context, &modelAdder, &id]() {
+        if (context.getReader().getLocalName() == SECTION) {
+            auto b = context.getReader().getAttributeValue<double>(B);
+            auto g = context.getReader().getAttributeValue<double>(G);
+            ShuntCompensatorAdder::ShuntCompensatorNonLinearModelAdder::SectionAdder sectionAdder = modelAdder.beginSection();
+            sectionAdder.setB(b)
+                        .setG(g);
+            context.getReader().readUntilEndElement(SECTION, [&context, &sectionAdder, &id]() {
+                if(context.getReader().getLocalName() == PROPERTY) {
+                    PropertiesXml::read(sectionAdder, context);
+                } else {
+                    throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>/<%3%>/<%4%>", context.getReader().getLocalName(), id, SHUNT_NON_LINEAR_MODEL, SECTION));
+                }
+            });
+            sectionAdder.endSection();
+        } else if(context.getReader().getLocalName() == PROPERTY) {
+            PropertiesXml::read(modelAdder, context);
+        } else {
+            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>/<%3%>", context.getReader().getLocalName(), id, SHUNT_NON_LINEAR_MODEL));
+        }
+    });
+    modelAdder.add();
 }
 
 void AbstractShuntCompensatorXml::writeModel(const ShuntCompensator& sc, NetworkXmlWriterContext& context) {
@@ -142,14 +165,23 @@ void AbstractShuntCompensatorXml::writeModel(const ShuntCompensator& sc, Network
         context.getWriter().writeAttribute(B_PER_SECTION, bPerSection);
         context.getWriter().writeAttribute(G_PER_SECTION, sc.getModel<ShuntCompensatorLinearModel>().getGPerSection());
         context.getWriter().writeAttribute(MAXIMUM_SECTION_COUNT, sc.getMaximumSectionCount());
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &sc](){
+            PropertiesXml::write(sc.getModel<ShuntCompensatorLinearModel>(), context);
+        });
         context.getWriter().writeEndElement();
     } else if (sc.getModelType() == ShuntCompensatorModelType::NON_LINEAR) {
         IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_3(), context.getVersion(), [&context, &sc]() {
             context.getWriter().writeStartElement(context.getVersion().getPrefix(), SHUNT_NON_LINEAR_MODEL);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &sc](){
+                PropertiesXml::write(sc.getModel<ShuntCompensatorNonLinearModel>(), context);
+            });
             for (const ShuntCompensatorNonLinearModel::Section& s : sc.getModel<ShuntCompensatorNonLinearModel>().getAllSections()) {
                 context.getWriter().writeStartElement(context.getVersion().getPrefix(), SECTION);
                 context.getWriter().writeAttribute(B, s.getB());
                 context.getWriter().writeAttribute(G, s.getG());
+                IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &s](){
+                    PropertiesXml::write(s, context);
+                });
                 context.getWriter().writeEndElement();
             }
             context.getWriter().writeEndElement();

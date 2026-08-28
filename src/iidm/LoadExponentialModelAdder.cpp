@@ -42,7 +42,7 @@ LoadAdder& LoadExponentialModelAdder::add() {
 }
 std::unique_ptr<LoadModel> LoadExponentialModelAdder::build() const {
     std::unique_ptr<LoadModel> ptrLoadModel = std::unique_ptr<LoadModel>(new LoadExponentialModel(m_np, m_nq));
-
+    copyPropertiesTo(*ptrLoadModel);
     return ptrLoadModel;
 }
 

@@ -8,12 +8,14 @@
 #ifndef POWSYBL_IIDM_TAPCHANGERSTEP_HPP
 #define POWSYBL_IIDM_TAPCHANGERSTEP_HPP
 
+#include <powsybl/iidm/PropertiesHolder.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
 template<typename S>
-class TapChangerStep {
+class TapChangerStep : public PropertiesHolder {
 public:
     virtual ~TapChangerStep() noexcept = default;
 

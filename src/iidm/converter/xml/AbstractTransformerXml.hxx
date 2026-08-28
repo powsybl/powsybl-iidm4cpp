@@ -71,18 +71,21 @@ void AbstractTransformerXml<Added, Adder>::readPhaseTapChanger(const std::string
     adder->setRegulationValue(regulationValue);
 
     bool hasTerminalRef = false;
-    context.getReader().readUntilEndElement(elementName, [&adder, &tapChangerAdder, &context, &hasTerminalRef, &terminal]() {
-        if (context.getReader().getLocalName() == TERMINAL_REF) {
+    context.getReader().readUntilEndElement(elementName, [&adder, &tapChangerAdder, &context, &hasTerminalRef, &terminal, &elementName]() {
+        if (context.getReader().getLocalName() == PROPERTY) {
+            PropertiesXml::read(*adder, context);
+        } else if (context.getReader().getLocalName() == TERMINAL_REF) {
             hasTerminalRef = true;
             readTapChangerTerminalRef<PhaseTapChanger, PhaseTapChangerAdder, PhaseTapChangerStepAdder<PhaseTapChangerAdder>, PhaseTapChangerHolder>(context, tapChangerAdder, terminal);
         } else if (context.getReader().getLocalName() == STEP) {
             PhaseTapChangerStepAdder<PhaseTapChangerAdder> stepAdder = adder->beginStep();
-            readSteps(context, stepAdder);
+            readStepCommonAttributes(context, stepAdder);
             const auto& alpha = context.getReader().getAttributeValue<double>(ALPHA);
-            stepAdder.setAlpha(alpha)
-                .endStep();
+            stepAdder.setAlpha(alpha);
+            readStepProperties(elementName, context, stepAdder);
+            stepAdder.endStep();
         } else {
-            throw PowsyblException(stdcxx::format("Unknown element <%1%>", context.getReader().getLocalName()));
+            throw PowsyblException(stdcxx::format("Unknown element <%1%> in <%2%>", context.getReader().getLocalName(), elementName));
         }
     });
     if (!hasTerminalRef) {
@@ -136,16 +139,19 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
     });
 
     bool hasTerminalRef = false;
-    context.getReader().readUntilEndElement(elementName, [&adder, &tapChangerAdder, &context, &terminal, &hasTerminalRef]() {
-        if (context.getReader().getLocalName() == TERMINAL_REF) {
+    context.getReader().readUntilEndElement(elementName, [&adder, &tapChangerAdder, &context, &terminal, &hasTerminalRef, &elementName]() {
+        if (context.getReader().getLocalName() == PROPERTY) {
+            PropertiesXml::read(*adder, context);
+        } else if (context.getReader().getLocalName() == TERMINAL_REF) {
             hasTerminalRef = true;
             readTapChangerTerminalRef<RatioTapChanger, RatioTapChangerAdder, RatioTapChangerStepAdder<RatioTapChangerAdder>, RatioTapChangerHolder>(context, tapChangerAdder, terminal);
         } else if (context.getReader().getLocalName() == STEP) {
             RatioTapChangerStepAdder<RatioTapChangerAdder> stepAdder = adder->beginStep();
-            readSteps(context, stepAdder);
+            readStepCommonAttributes(context, stepAdder);
+            readStepProperties(elementName, context, stepAdder);
             stepAdder.endStep();
         } else {
-            throw PowsyblException(stdcxx::format("Unexpected XML element <%1%>", context.getReader().getLocalName()));
+            throw PowsyblException(stdcxx::format("Unexpected XML element <%1%> in <%2%>", context.getReader().getLocalName(), elementName));
         }
     });
     if (!hasTerminalRef) {
@@ -155,13 +161,25 @@ void AbstractTransformerXml<Added, Adder>::readRatioTapChanger(const std::string
 
 template <typename Added, typename Adder>
 template <typename TCStepAdder, typename TCAdder>
-void AbstractTransformerXml<Added, Adder>::readSteps(const NetworkXmlReaderContext& context, TapChangerStepAdder<TCStepAdder, TCAdder>& tapChangerStepAdder) {
+void AbstractTransformerXml<Added, Adder>::readStepCommonAttributes(const NetworkXmlReaderContext& context, TapChangerStepAdder<TCStepAdder, TCAdder>& tapChangerStepAdder) {
     const auto& r = context.getReader().getAttributeValue<double>(R);
     const auto& x = context.getReader().getAttributeValue<double>(X);
     const auto& g = context.getReader().getAttributeValue<double>(G);
     const auto& b = context.getReader().getAttributeValue<double>(B);
     const auto& rho = context.getReader().getAttributeValue<double>(RHO);
     tapChangerStepAdder.setR(r).setX(x).setG(g).setB(b).setRho(rho);
+}
+
+template <typename Added, typename Adder>
+template <typename TCStepAdder, typename TCAdder>
+void AbstractTransformerXml<Added, Adder>::readStepProperties(const std::string& elementName, const NetworkXmlReaderContext& context, TapChangerStepAdder<TCStepAdder, TCAdder>& tapChangerStepAdder) {
+    context.getReader().readUntilEndElement(STEP, [&context, &tapChangerStepAdder, &elementName]() {
+        if(context.getReader().getLocalName() == PROPERTY) {
+            PropertiesXml::read(tapChangerStepAdder, context);
+        } else {
+            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>/<%3%>", context.getReader().getLocalName(), elementName, STEP));
+        }
+    });
 }
 
 template <typename Added, typename Adder>
@@ -237,15 +255,18 @@ void AbstractTransformerXml<Added, Adder>::writePhaseTapChanger(const std::strin
     if (ptc.hasLoadTapChangingCapabilities()) {
         context.getWriter().writeAttribute(REGULATING, ptc.isRegulating());
     }
-
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &ptc](){
+        PropertiesXml::write(ptc, context);
+    });
     if (ptc.getRegulationTerminal()) {
         TerminalRefXml::writeTerminalRef(ptc.getRegulationTerminal(), context, TERMINAL_REF);
     }
     for (long p = ptc.getLowTapPosition(); p <= ptc.getHighTapPosition(); ++p) {
         const PhaseTapChangerStep& ptcs = ptc.getStep(p);
         context.getWriter().writeStartElement(context.getVersion().getPrefix(), STEP);
-        writeTapChangerStep(ptcs, context.getWriter());
+        writeTapChangerStepCommonAttributes(ptcs, context);
         context.getWriter().writeAttribute(ALPHA, ptcs.getAlpha());
+        writeTapChangerStepProperties(ptcs, context);
         context.getWriter().writeEndElement();
     }
     context.getWriter().writeEndElement();
@@ -276,6 +297,9 @@ void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::strin
             context.getWriter().writeAttribute(REGULATION_VALUE, rtc.getRegulationValue());
         }
     });
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &rtc](){
+        PropertiesXml::write(rtc, context);
+    });
 
     if (rtc.getRegulationTerminal()) {
         TerminalRefXml::writeTerminalRef(rtc.getRegulationTerminal(), context, TERMINAL_REF);
@@ -283,7 +307,8 @@ void AbstractTransformerXml<Added, Adder>::writeRatioTapChanger(const std::strin
     for (long p = rtc.getLowTapPosition(); p <= rtc.getHighTapPosition(); ++p) {
         const RatioTapChangerStep& rtcs = rtc.getStep(p);
         context.getWriter().writeStartElement(context.getVersion().getPrefix(), STEP);
-        writeTapChangerStep(rtcs, context.getWriter());
+        writeTapChangerStepCommonAttributes(rtcs, context);
+        writeTapChangerStepProperties(rtcs, context);
         context.getWriter().writeEndElement();
     }
     context.getWriter().writeEndElement();
@@ -309,12 +334,21 @@ void AbstractTransformerXml<Added, Adder>::writeTapChanger(const TapChanger<H, C
 
 template <typename Added, typename Adder>
 template <typename S>
-void AbstractTransformerXml<Added, Adder>::writeTapChangerStep(const TapChangerStep<S>& tcs, powsybl::xml::XmlStreamWriter& writer) {
+void AbstractTransformerXml<Added, Adder>::writeTapChangerStepCommonAttributes(const TapChangerStep<S>& tcs, NetworkXmlWriterContext& context) {
+    auto& writer = context.getWriter();
     writer.writeOptionalAttribute(R, tcs.getR());
     writer.writeOptionalAttribute(X, tcs.getX());
     writer.writeOptionalAttribute(G, tcs.getG());
     writer.writeOptionalAttribute(B, tcs.getB());
     writer.writeOptionalAttribute(RHO, tcs.getRho());
+}
+
+template <typename Added, typename Adder>
+template <typename S>
+void AbstractTransformerXml<Added, Adder>::writeTapChangerStepProperties(const TapChangerStep<S>& tcs, NetworkXmlWriterContext& context) {
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &tcs](){
+        PropertiesXml::write(tcs, context);
+    });
 }
 
 template <typename Added, typename Adder>

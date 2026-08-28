@@ -19,9 +19,9 @@ namespace iidm {
 class ReactiveLimitsHolder;
 class Validable;
 
-class ReactiveCapabilityCurveAdder {
+class ReactiveCapabilityCurveAdder : public PropertiesHolder {
 public:
-    class PointAdder {
+    class PointAdder : public PropertiesHolder {
     public:
         ReactiveCapabilityCurveAdder& endPoint();
 

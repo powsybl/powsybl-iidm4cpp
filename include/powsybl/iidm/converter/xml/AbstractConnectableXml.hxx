@@ -14,6 +14,8 @@
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
+#include <powsybl/iidm/converter/xml/PropertiesXml.hpp>
 #include <powsybl/stdcxx/math.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -38,18 +40,27 @@ void AbstractConnectableXml::readLoadingLimits(const std::string& type, LimitsAd
     }
     adder.setPermanentLimit(permanentLimit);
     //Read and add temporaryLimits
-    reader.readUntilEndElement(toString(type.c_str(), index), [&reader, &adder]() {
-        if (reader.getLocalName() == TEMPORARY_LIMIT) {
+    reader.readUntilEndElement(toString(type.c_str(), index), [&context, &reader, &adder]() {
+        if(reader.getLocalName() == PROPERTY) {
+            PropertiesXml::read(adder, context);
+        } else if (reader.getLocalName() == TEMPORARY_LIMIT) {
             const std::string& name = reader.getAttributeValue(NAME);
             unsigned long acceptableDuration = reader.getOptionalAttributeValue(ACCEPTABLE_DURATION, std::numeric_limits<unsigned long>::max());
             double value = reader.getOptionalAttributeValue(VALUE, std::numeric_limits<double>::max());
             bool fictitious = reader.getOptionalAttributeValue(FICTITIOUS, false);
-            adder.beginTemporaryLimit()
-                .setName(name)
+            typename LimitsAdder::TemporaryLimitAdder temporaryLimitAdder = adder.beginTemporaryLimit();
+            temporaryLimitAdder.setName(name)
                 .setAcceptableDuration(acceptableDuration)
                 .setValue(value)
-                .setFictitious(fictitious)
-                .endTemporaryLimit();
+                .setFictitious(fictitious);
+            reader.readUntilEndElement(TEMPORARY_LIMIT, [&context, &reader, &temporaryLimitAdder]() {
+                if(reader.getLocalName() == PROPERTY) {
+                    PropertiesXml::read(temporaryLimitAdder, context);
+                } else {
+                    throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", reader.getLocalName(), TEMPORARY_LIMIT));
+                }
+            });
+            temporaryLimitAdder.endTemporaryLimit();
         }
     });
     if (minValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS) {
@@ -146,6 +157,9 @@ void AbstractConnectableXml::writeLoadingLimits(const Limits& limits, powsybl::x
     if (!std::isnan(limits.getPermanentLimit()) || !boost::empty(limits.getTemporaryLimits()) || !boost::empty(limits.getFictitiousLimits())) {
         writer.writeStartElement(nsPrefix, toString(type.c_str(), index));
         writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), version, [&nsPrefix, &writer, &limits](){
+            PropertiesXml::write(limits, nsPrefix, writer);
+        });
 
         for (const auto& fl : limits.getFictitiousLimits()) {
             writer.writeStartElement(version.getPrefix(), TEMPORARY_LIMIT);
@@ -153,6 +167,9 @@ void AbstractConnectableXml::writeLoadingLimits(const Limits& limits, powsybl::x
             writer.writeOptionalAttribute(ACCEPTABLE_DURATION, fl.getAcceptableDuration(), std::numeric_limits<unsigned long>::max());
             writer.writeOptionalAttribute(VALUE, fl.getValue(), std::numeric_limits<double>::max());
             writer.writeOptionalAttribute(FICTITIOUS, fl.isFictitious(), false); // for fictitious limits that attribute is supposed to be true.
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), version, [&nsPrefix, &writer, &fl](){
+                PropertiesXml::write(fl, nsPrefix, writer);
+            });
             writer.writeEndElement();
         }
         for (const auto& tl : limits.getTemporaryLimits()) {
@@ -161,6 +178,9 @@ void AbstractConnectableXml::writeLoadingLimits(const Limits& limits, powsybl::x
             writer.writeOptionalAttribute(ACCEPTABLE_DURATION, tl.getAcceptableDuration(), std::numeric_limits<unsigned long>::max());
             writer.writeOptionalAttribute(VALUE, tl.getValue(), std::numeric_limits<double>::max());
             writer.writeOptionalAttribute(FICTITIOUS, tl.isFictitious(), false);
+            IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), version, [&nsPrefix, &writer, &tl](){
+                PropertiesXml::write(tl, nsPrefix, writer);
+            });
             writer.writeEndElement();
         }
         writer.writeEndElement();

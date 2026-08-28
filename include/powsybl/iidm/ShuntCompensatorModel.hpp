@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_SHUNTCOMPENSATORMODEL_HPP
 #define POWSYBL_IIDM_SHUNTCOMPENSATORMODEL_HPP
 
+#include <powsybl/iidm/PropertiesHolder.hpp>
 #include <powsybl/iidm/ShuntCompensatorModelType.hpp>
 
 namespace powsybl {
@@ -16,7 +17,7 @@ namespace iidm {
 
 class ShuntCompensator;
 
-class ShuntCompensatorModel {
+class ShuntCompensatorModel : public PropertiesHolder {
 public:
     ShuntCompensatorModel() = default;
 

@@ -26,14 +26,27 @@ void PropertiesXml::read(PropertiesHolder& propertiesHolder, const NetworkXmlRea
     read<PropertiesHolder>(context)(propertiesHolder);
 }
 
-void PropertiesXml::write(const PropertiesHolder& propertiesHolder, NetworkXmlWriterContext& context) {
+void PropertiesXml::skip(const NetworkXmlReaderContext& context) {
+    if(context.getReader().getLocalName() != PROPERTY) {
+        throw PowsyblException(stdcxx::format("Unexpected element name <%1%> (expected <%2%>)", context.getReader().getLocalName(), PROPERTY));
+    }
+
+    context.getReader().getAttributeValue(NAME);
+    context.getReader().getAttributeValue(VALUE);
+}
+
+void PropertiesXml::write(const PropertiesHolder& propertiesHolder, const std::string& nsprefix, powsybl::xml::XmlStreamWriter& writer) {
     for (const auto& name : propertiesHolder.getPropertyNames()) {
         const auto& value = propertiesHolder.getProperty(name);
-        context.getWriter().writeStartElement(context.getVersion().getPrefix(), PROPERTY);
-        context.getWriter().writeAttribute(NAME, name);
-        context.getWriter().writeAttribute(VALUE, value);
-        context.getWriter().writeEndElement();
+        writer.writeStartElement(nsprefix, PROPERTY);
+        writer.writeAttribute(NAME, name);
+        writer.writeAttribute(VALUE, value);
+        writer.writeEndElement();
     }
+}
+
+void PropertiesXml::write(const PropertiesHolder& propertiesHolder, NetworkXmlWriterContext& context) {
+    write(propertiesHolder, context.getVersion().getPrefix(), context.getWriter());
 }
 
 }  // namespace xml

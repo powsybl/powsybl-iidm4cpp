@@ -9,12 +9,13 @@
 #define POWSYBL_IIDM_REACTIVELIMITS_HPP
 
 #include <powsybl/iidm/ReactiveLimitsKind.hpp>
+#include <powsybl/iidm/PropertiesHolder.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class ReactiveLimits {
+class ReactiveLimits : public PropertiesHolder {
 public:
     ReactiveLimits() = default;
 

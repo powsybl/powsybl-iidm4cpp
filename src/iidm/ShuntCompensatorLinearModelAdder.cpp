@@ -31,7 +31,9 @@ iidm::ShuntCompensatorAdder& ShuntCompensatorLinearModelAdder::add() {
 }
 
 std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorLinearModelAdder::build() const {
-    return stdcxx::make_unique<ShuntCompensatorLinearModel>(m_bPerSection, m_gPerSection, *m_maximumSectionCount);
+    std::unique_ptr<ShuntCompensatorModel> ptrLinearModel = stdcxx::make_unique<ShuntCompensatorLinearModel>(m_bPerSection, m_gPerSection, *m_maximumSectionCount);
+    copyPropertiesTo(*ptrLinearModel);
+    return ptrLinearModel;
 }
 
 unsigned long ShuntCompensatorLinearModelAdder::getMaximumSectionCount() const {

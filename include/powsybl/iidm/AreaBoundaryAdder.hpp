@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_AREABOUNDARYADDER_HPP
 #define POWSYBL_IIDM_AREABOUNDARYADDER_HPP
 
+#include <powsybl/iidm/PropertiesHolder.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -19,7 +20,7 @@ class AreaBoundary;
 class Boundary;
 class Terminal;
 
-class AreaBoundaryAdder {
+class AreaBoundaryAdder : public PropertiesHolder {
 
 public:
     AreaBoundaryAdder(Area& area);

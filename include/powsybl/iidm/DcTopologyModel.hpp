@@ -25,7 +25,7 @@ namespace powsybl {
 
 namespace iidm {
 
-class DcTopologyModel : public MultiVariantObject {
+class DcTopologyModel : public MultiVariantObject, public PropertiesHolder {
 public:
     DcTopologyModel(Network& owner);
 

@@ -672,6 +672,9 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     BOOST_CHECK_CLOSE(tl2.getValue(), limits.getTemporaryLimitValue(tl2.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
 
     t1.setP(18.5);
+ 
+    line.getCurrentLimits1().get().getTemporaryLimit(1).setProperty("TestPropertyTemporaryLimit","valueTest");
+
     ptrOverload = line.checkTemporaryLimits1(LimitType::CURRENT);
     BOOST_TEST(static_cast<bool>(ptrOverload));
     Overload& overload3 = *ptrOverload;
@@ -684,6 +687,10 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     BOOST_CHECK_CLOSE(7.0, tl3.getValue(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(!tl3.isFictitious());
     BOOST_CHECK_CLOSE(tl3.getValue(), limits.getTemporaryLimitValue(tl3.getAcceptableDuration()), std::numeric_limits<double>::epsilon());
+    BOOST_CHECK(tl3.hasProperty());
+    BOOST_CHECK(tl3.hasProperty("TestPropertyTemporaryLimit"));
+    BOOST_CHECK_EQUAL(1, boost::size(tl3.getPropertyNames()));
+    BOOST_CHECK_EQUAL("valueTest", tl3.getProperty("TestPropertyTemporaryLimit"));
 
     t1.setP(50.0);
     ptrOverload = line.checkTemporaryLimits1(2.0, LimitType::CURRENT);
@@ -698,6 +705,15 @@ BOOST_AUTO_TEST_CASE(checkTemporaryLimitsTest) {
     BOOST_CHECK_EQUAL(0UL, ptrOverload->getTemporaryLimit().getAcceptableDuration());
     BOOST_CHECK(ptrOverload->getTemporaryLimit().isFictitious());
     BOOST_CHECK_EQUAL(std::numeric_limits<double>::infinity(), ptrOverload->getTemporaryLimit().getValue());
+    //Unsupported PropertiesHolder for overload default "Unacceptable" Temporary limit:
+    BOOST_CHECK(!ptrOverload->getTemporaryLimit().hasProperty());
+    BOOST_CHECK(!ptrOverload->getTemporaryLimit().hasProperty("anyProperty"));
+    BOOST_CHECK(ptrOverload->getTemporaryLimit().getPropertyNames().empty());
+    POWSYBL_ASSERT_THROW(ptrOverload->getTemporaryLimit().getProperty("anyProperty"), PowsyblException, "Overload::UnacceptableTemporaryLimit does not support Properties.");
+    POWSYBL_ASSERT_THROW(ptrOverload->getTemporaryLimit().getProperty("anyProperty", "defaultValue"), PowsyblException, "Overload::UnacceptableTemporaryLimit does not support Properties.");
+    POWSYBL_ASSERT_THROW(ptrOverload->getTemporaryLimit().copyPropertiesTo(line), PowsyblException, "Overload::UnacceptableTemporaryLimit does not support Properties.");
+    //copy Properties failed, line still has no Property
+    BOOST_CHECK(!line.hasProperty());
 
     t1.setP(30.0);
     ptrOverload = line.checkTemporaryLimits(TwoSides::ONE, 2.0, LimitType::CURRENT);

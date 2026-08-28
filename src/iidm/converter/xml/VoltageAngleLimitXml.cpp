@@ -19,6 +19,7 @@
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/iidm/converter/xml/PropertiesXml.hpp>
 #include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
 
 #include <powsybl/stdcxx/Properties.hpp>
@@ -51,7 +52,9 @@ void VoltageAngleLimitXml::read(Network& network, NetworkXmlReaderContext& conte
             .setHighLimit(highLimit);
 
         context.getReader().readUntilEndElement(VOLTAGE_ANGLE_LIMIT, [&adder, &network, &context]() {
-            if (context.getReader().getLocalName() == FROM) {
+            if (context.getReader().getLocalName() == PROPERTY) {
+                PropertiesXml::read(adder, context);
+            } else if (context.getReader().getLocalName() == FROM) {
                 adder.from(stdcxx::ref<Terminal>(TerminalRefXml::readTerminal(network, context)));
             } else if (context.getReader().getLocalName() == TO) {
                 adder.to(stdcxx::ref<Terminal>(TerminalRefXml::readTerminal(network, context)));
@@ -71,6 +74,10 @@ void VoltageAngleLimitXml::write(const VoltageAngleLimit& limit, const Network& 
         context.getWriter().writeAttribute(ID, context.getAnonymizer().anonymizeString(limit.getId()));
         context.getWriter().writeOptionalAttribute(LOW_LIMIT, limit.getLowLimit());
         context.getWriter().writeOptionalAttribute(HIGH_LIMIT, limit.getHighLimit());
+
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &limit](){
+            PropertiesXml::write(limit, context);
+        });
 
         TerminalRefXml::writeTerminalRef(limit.getTerminalFrom(), context, FROM);
         TerminalRefXml::writeTerminalRef(limit.getTerminalTo(), context, TO);

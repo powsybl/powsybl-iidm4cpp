@@ -8,12 +8,14 @@
 #ifndef POWSYBL_IIDM_OPERATIONALLIMITSADDER_HPP
 #define POWSYBL_IIDM_OPERATIONALLIMITSADDER_HPP
 
+#include <powsybl/iidm/PropertiesHolder.hpp>
+
 namespace powsybl {
 
 namespace iidm {
 
 template <typename L>
-class OperationalLimitsAdder {
+class OperationalLimitsAdder : public PropertiesHolder {
 public:
     OperationalLimitsAdder() = default;
 

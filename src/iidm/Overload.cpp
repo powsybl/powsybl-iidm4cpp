@@ -11,8 +11,34 @@ namespace powsybl {
 
 namespace iidm {
 
+bool Overload::UnacceptableTemporaryLimit::hasProperty() const {
+    return false;
+}
+bool Overload::UnacceptableTemporaryLimit::hasProperty(const std::string& /*key*/) const {
+    return false;
+}
+const std::string& Overload::UnacceptableTemporaryLimit::getProperty(const std::string& /*key*/) const {
+    throw PowsyblException("Overload::UnacceptableTemporaryLimit does not support Properties.");
+}
+const std::string& Overload::UnacceptableTemporaryLimit::getProperty(const std::string& /*key*/, const std::string& /*defaultValue*/) const {
+    throw PowsyblException("Overload::UnacceptableTemporaryLimit does not support Properties.");
+}
+stdcxx::optional<std::string> Overload::UnacceptableTemporaryLimit::setProperty(const std::string& /*key*/, const std::string& /*value*/) {
+    throw PowsyblException("Overload::UnacceptableTemporaryLimit does not support Properties.");
+}
+bool Overload::UnacceptableTemporaryLimit::removeProperty(const std::string& /*key*/) {
+    return false;
+}
+stdcxx::const_range<std::string> Overload::UnacceptableTemporaryLimit::getPropertyNames() const {
+    return stdcxx::const_range<std::string>();
+}
+void Overload::UnacceptableTemporaryLimit::copyPropertiesTo(PropertiesHolder& /*propertiesHolder*/) const {
+    throw PowsyblException("Overload::UnacceptableTemporaryLimit does not support Properties.");
+}
+
+
 Overload::Overload(const LoadingLimits::TemporaryLimit& temporaryLimit, const std::string& operationalLimitsGroupId, const std::string& previousLimitName, double previousLimit, double limitReductionCoefficient) :
-    m_temporaryLimit(temporaryLimit),
+    m_temporaryLimit(new LoadingLimits::TemporaryLimit(temporaryLimit)),
     m_operationLimitsGroupId(operationalLimitsGroupId),
     m_previousLimitName(previousLimitName),
     m_previousLimit(previousLimit),
@@ -20,7 +46,11 @@ Overload::Overload(const LoadingLimits::TemporaryLimit& temporaryLimit, const st
 }
 
 Overload::Overload(const std::string& operationalLimitsGroupId, const std::string &previousLimitName, double previousLimit, double limitReductionCoefficient) :
-    Overload(UNACCEPTABLE_LIMIT(), operationalLimitsGroupId, previousLimitName, previousLimit, limitReductionCoefficient) {
+    m_temporaryLimit(new UnacceptableTemporaryLimit()),
+    m_operationLimitsGroupId(operationalLimitsGroupId),
+    m_previousLimitName(previousLimitName),
+    m_previousLimit(previousLimit),
+    m_limitReductionCoefficient(limitReductionCoefficient) {
 
 }
 
@@ -33,16 +63,11 @@ const std::string& Overload::getPreviousLimitName() const {
 }
 
 const LoadingLimits::TemporaryLimit& Overload::getTemporaryLimit() const {
-    return m_temporaryLimit;
+    return *m_temporaryLimit;
 }
 
 double Overload::getLimitReductionCoefficient() const {
     return m_limitReductionCoefficient;
-}
-
-const LoadingLimits::TemporaryLimit& Overload::UNACCEPTABLE_LIMIT() {
-    static LoadingLimits::TemporaryLimit UNACCEPTABLE_LIMIT("Unacceptable", std::numeric_limits<double>::infinity(), 0UL, true);
-    return UNACCEPTABLE_LIMIT;
 }
 
 const std::string& Overload::getOperationalLimitsGroupId() const {

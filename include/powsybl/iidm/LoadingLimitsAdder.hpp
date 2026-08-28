@@ -21,7 +21,7 @@ namespace iidm {
 template <typename L, typename A>
 class LoadingLimitsAdder : public OperationalLimitsAdder<L> {
 public:
-    class TemporaryLimitAdder {
+    class TemporaryLimitAdder : public PropertiesHolder {
     public:
         TemporaryLimitAdder(OperationalLimitsGroup& owner, LoadingLimitsAdder<L, A>& parent);
 
@@ -36,6 +36,8 @@ public:
         TemporaryLimitAdder& setName(const std::string& name);
 
         TemporaryLimitAdder& setValue(double value);
+
+        TemporaryLimitAdder& addProperty(const std::string& key, const std::string& value);
 
     private:
         void checkAndGetUniqueName();
@@ -108,7 +110,8 @@ protected:
     OperationalLimitsGroup& m_owner;
 
 private:
-    LoadingLimitsAdder<L, A>& addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious);
+    LoadingLimitsAdder<L, A>& addTemporaryLimit(LoadingLimits::TemporaryLimit&& temporaryLimit);
+    LoadingLimitsAdder<L, A>& addFictitiousLimit(LoadingLimits::TemporaryLimit&& fictitiousLimit);
 
     stdcxx::optional<LoadingLimits::TemporaryLimit> getTemporaryLimitByName(const std::string& name) const;
 

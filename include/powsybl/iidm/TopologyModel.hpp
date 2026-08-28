@@ -10,6 +10,7 @@
 
 
 #include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/PropertiesHolder.hpp>
 #include <powsybl/iidm/VoltageLevelViews.hpp>
 
 #include <powsybl/stdcxx/Predicate.hpp>
@@ -23,7 +24,7 @@ class Switch;
 class Terminal;
 class VoltageLevel;
 
-class TopologyModel : public MultiVariantObject {
+class TopologyModel : public MultiVariantObject, public PropertiesHolder {
 public:
     using BusBreakerView = voltage_level::BusBreakerView;
     using BusView = voltage_level::BusView;

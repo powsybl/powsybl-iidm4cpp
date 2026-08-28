@@ -88,6 +88,7 @@ std::unique_ptr<Tripping> SwitchTrippingAdder::buildTripping(const std::string& 
     checkSwitchId(m_switchId);
     std::unique_ptr<Tripping> ptrSwitchTripping = std::unique_ptr<Tripping>(new SwitchTripping(overloadManagementSystemId,
                                         m_key, m_name, m_currentLimit, m_openAction, m_switchId));
+    copyPropertiesTo(*ptrSwitchTripping);
     return ptrSwitchTripping;
 }
 
@@ -126,6 +127,7 @@ std::unique_ptr<Tripping> BranchTrippingAdder::buildTripping(const std::string& 
 
     std::unique_ptr<Tripping> ptrBranchTripping = std::unique_ptr<Tripping>(new BranchTripping(overloadManagementSystemId,
                                         m_key, m_name, m_currentLimit, m_openAction, m_branchId, m_side));
+    copyPropertiesTo(*ptrBranchTripping);
     return ptrBranchTripping;
 }
 
@@ -162,6 +164,7 @@ std::unique_ptr<Tripping> ThreeWindingsTransformerTrippingAdder::buildTripping(c
     checkThreeWindingsTransformerId(m_transformerId);
     std::unique_ptr<Tripping> ptrTransformerTripping = std::unique_ptr<Tripping>(new ThreeWindingsTransformerTripping(overloadManagementSystemId,
                                         m_key, m_name, m_currentLimit, m_openAction, m_transformerId, m_side));
+    copyPropertiesTo(*ptrTransformerTripping);
     return ptrTransformerTripping;
 }
 

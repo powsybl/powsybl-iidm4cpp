@@ -60,6 +60,10 @@ private:
     void readTrippingCommonAttributes(overload_management_system::TrippingAdder& trippingAdder, NetworkXmlReaderContext& context) const;
     void skipTrippingCommonAttributes(NetworkXmlReaderContext& context) const;
     void getTrippingCommonAttributes(NetworkXmlReaderContext& context, std::string& key, std::string& name, double& currentLimit, bool& openAction) const;
+
+    void readTrippingSubElements(const std::string& trippingType, overload_management_system::TrippingAdder& trippingAdder, NetworkXmlReaderContext& context) const;
+    void skipTrippingSubElements(const std::string& trippingType, NetworkXmlReaderContext& context) const;
+
     void readBranchTripping(OverloadManagementSystemAdder& adder, NetworkXmlReaderContext& context) const;
     void skipBranchTripping(NetworkXmlReaderContext& context) const;
     void getBranchTrippingAttributes(NetworkXmlReaderContext& context, std::string& branchId, TwoSides& side) const;

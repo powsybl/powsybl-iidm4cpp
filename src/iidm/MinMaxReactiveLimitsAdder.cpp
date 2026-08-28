@@ -40,6 +40,7 @@ MinMaxReactiveLimits& MinMaxReactiveLimitsAdder::add() {
     }
 
     std::unique_ptr<ReactiveLimits> limits = stdcxx::make_unique<MinMaxReactiveLimits>(m_minQ, m_maxQ);
+    copyPropertiesTo(*limits);
     m_owner.setReactiveLimits(std::move(limits));
 
     return m_owner.getReactiveLimits<MinMaxReactiveLimits>();

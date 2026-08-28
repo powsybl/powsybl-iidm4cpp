@@ -22,7 +22,7 @@ namespace shunt_compensator {
 
 class ShuntCompensatorNonLinearModelAdder : public ShuntCompensatorModelAdder {
 public:
-    class SectionAdder {
+    class SectionAdder :public PropertiesHolder {
     public:
         ShuntCompensatorNonLinearModelAdder& endSection();
 

@@ -15,6 +15,7 @@
 #include <vector>
 
 #include <powsybl/iidm/MultiVariantObject.hpp>
+#include <powsybl/iidm/PropertiesHolder.hpp>
 #include <powsybl/iidm/Referrer.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
@@ -28,7 +29,7 @@ class Terminal;
 class VariantManagerHolder;
 
 template<typename H, typename C, typename S, typename R>
-class TapChanger : public virtual MultiVariantObject, public Referrer<Terminal> {
+class TapChanger : public virtual MultiVariantObject, public Referrer<Terminal>, public PropertiesHolder {
 public: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

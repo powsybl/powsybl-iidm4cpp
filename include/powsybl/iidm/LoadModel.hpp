@@ -9,6 +9,7 @@
 #define POWSYBL_IIDM_LOADMODEL_HPP
 
 #include <powsybl/iidm/LoadModelType.hpp>
+#include <powsybl/iidm/PropertiesHolder.hpp>
 
 namespace powsybl {
 
@@ -16,7 +17,7 @@ namespace iidm {
 
 class Load;
 
-class LoadModel {
+class LoadModel : public PropertiesHolder {
 public:
     LoadModel() = default;
 

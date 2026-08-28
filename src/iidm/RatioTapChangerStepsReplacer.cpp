@@ -24,8 +24,8 @@ RatioTapChangerStepAdder<RatioTapChangerStepsReplacer> RatioTapChangerStepsRepla
     return RatioTapChangerStepAdder<RatioTapChangerStepsReplacer>(*this);
 }
 
-RatioTapChangerStepsReplacer& RatioTapChangerStepsReplacer::addStep(double rho, double r, double x, double g, double b) {
-    m_newSteps.emplace_back(rho, r, x, g, b);
+RatioTapChangerStepsReplacer& RatioTapChangerStepsReplacer::addStep(RatioTapChangerStep&& step) {
+    m_newSteps.emplace_back(std::move(step));
     return *this;
 }
 

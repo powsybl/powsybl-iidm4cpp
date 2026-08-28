@@ -40,6 +40,8 @@ protected:  // AbstractIdentifiableXml
     void writeSubElements(const Load& load, const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context) const override;
 
 private:
+    void readLoadModelSubElements(const std::string& modelType, Load& load, NetworkXmlReaderContext& context) const;
+
     LoadXml() = default;
 
     ~LoadXml() override = default;

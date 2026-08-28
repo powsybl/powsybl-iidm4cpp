@@ -34,6 +34,8 @@ Area& AreaBoundaryAdder::add() {
     } else {
         throw PowsyblException("No AreaBoundary element (terminal or boundary) is set.");
     }
+    //addAreaBoundary() add the boundary last
+    copyPropertiesTo(*m_area.getAreaBoundaries().back());
     return m_area;
 }
 

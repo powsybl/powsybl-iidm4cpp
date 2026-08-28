@@ -24,8 +24,8 @@ PhaseTapChangerStepAdder<PhaseTapChangerStepsReplacer> PhaseTapChangerStepsRepla
     return PhaseTapChangerStepAdder<PhaseTapChangerStepsReplacer>(*this);
 }
 
-PhaseTapChangerStepsReplacer& PhaseTapChangerStepsReplacer::addStep(double alpha, double rho, double r, double x, double g, double b) {
-    m_newSteps.emplace_back(alpha, rho, r, x, g, b);
+PhaseTapChangerStepsReplacer& PhaseTapChangerStepsReplacer::addStep(PhaseTapChangerStep&& step) {
+    m_newSteps.emplace_back(std::move(step));
     return *this;
 }
 

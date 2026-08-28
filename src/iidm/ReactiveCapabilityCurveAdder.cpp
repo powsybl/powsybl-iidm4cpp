@@ -29,7 +29,9 @@ ReactiveCapabilityCurveAdder& ReactiveCapabilityCurveAdder::PointAdder::endPoint
     checkOptional(owner, m_minQ, "min Q is not set");
     checkOptional(owner, m_maxQ, "max Q is not set");
 
-    return m_adder.addPoint(ReactiveCapabilityCurve::Point(m_p, m_minQ, m_maxQ));
+    ReactiveCapabilityCurve::Point point = ReactiveCapabilityCurve::Point(m_p, m_minQ, m_maxQ);
+    copyPropertiesTo(point);
+    return m_adder.addPoint(std::move(point));
 }
 
 ReactiveCapabilityCurveAdder::PointAdder& ReactiveCapabilityCurveAdder::PointAdder::setMaxQ(double maxQ) {
@@ -72,6 +74,7 @@ ReactiveCapabilityCurve& ReactiveCapabilityCurveAdder::add() {
     }
 
     std::unique_ptr<ReactiveCapabilityCurve> limits = stdcxx::make_unique<ReactiveCapabilityCurve>(std::move(m_points));
+    copyPropertiesTo(*limits);
     m_owner.setReactiveLimits(std::move(limits));
 
     return m_owner.getReactiveLimits<ReactiveCapabilityCurve>();

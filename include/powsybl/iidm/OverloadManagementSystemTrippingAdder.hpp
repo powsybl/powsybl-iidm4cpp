@@ -26,7 +26,7 @@ class OverloadManagementSystemAdder;
 
 namespace overload_management_system {
 
-class TrippingAdder : public virtual Validable, public std::enable_shared_from_this<TrippingAdder> {
+class TrippingAdder : public virtual Validable, public PropertiesHolder, public std::enable_shared_from_this<TrippingAdder> {
 public: //Validable
     virtual std::string getMessageHeader() const override;
 

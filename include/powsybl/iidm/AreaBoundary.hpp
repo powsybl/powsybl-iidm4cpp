@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_AREABOUNDARY_HPP
 #define POWSYBL_IIDM_AREABOUNDARY_HPP
 
+#include <powsybl/iidm/PropertiesHolder.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -18,7 +19,7 @@ class Area;
 class Boundary;
 class Terminal;
 
-class AreaBoundary {
+class AreaBoundary : public PropertiesHolder {
 
 public:
     AreaBoundary() = delete;

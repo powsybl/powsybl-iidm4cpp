@@ -29,20 +29,51 @@ public:
 
     PropertiesHolder& operator=(PropertiesHolder&&) noexcept = default;
 
+    /**
+     * Checks if this object has some properties
+     * @return true if has at least one property
+     */
+    virtual bool hasProperty() const;
 
-    bool hasProperty() const;
+    /**
+     * Checks if this object has a property associated to a specified key
+     * @return true if that key is associated to a property of this object
+     */
+    virtual bool hasProperty(const std::string& key) const;
 
-    bool hasProperty(const std::string& key) const;
+    /**
+     * Get the property value associated to the specified key, throw if there is no property associated with the specified key
+     */
+    virtual const std::string& getProperty(const std::string& key) const;
 
-    const std::string& getProperty(const std::string& key) const;
+    /**
+     * Get the property value associated to the specified key, return the defaultValue if there is no property associated with the specified key
+     */
+    virtual const std::string& getProperty(const std::string& key, const std::string& defaultValue) const;
 
-    const std::string& getProperty(const std::string& key, const std::string& defaultValue) const;
+    /**
+     * Set a property value associated to the specified key
+     * @return optional string, containing the previous value associated with that key if there was one. empty string if that key was not associated yet.
+     */
+    virtual stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
 
-    stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value);
+    /**
+     * Remove the property associated to the specified key
+     * @return true if a property was associated to the given key and has been removed, false otherwise (the key was not found).
+     */
+    virtual bool removeProperty(const std::string& key);
 
-    bool removeProperty(const std::string& key);
+    /**
+     * Gets all the property keys of this object
+     */
+    virtual stdcxx::const_range<std::string> getPropertyNames() const;
 
-    stdcxx::const_range<std::string> getPropertyNames() const;
+    /**
+     * Copy all the properties of this object to another properties holder
+     * The destination properties holder previous properties are not removed, though if some properties keys are common, they will be overriden by the value of this object.
+     * @param propertiesHolder the destination properties holder
+     */
+    virtual void copyPropertiesTo(PropertiesHolder& propertiesHolder) const;
 
 private:
     stdcxx::Properties m_properties;

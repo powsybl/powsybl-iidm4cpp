@@ -57,6 +57,7 @@ set(UNIT_TEST_SOURCES
     OptionalLoadTypeBugTest.cpp
     OverloadManagementSystemsXmlTest.cpp
     PhaseShifterRoundTripTest.cpp
+    PropertiesXmlTest.cpp
     RatioTapChangerXmlTest.cpp
     ReactiveLimitsRoundTripTest.cpp
     RegulatingTerminalRoundTripTest.cpp

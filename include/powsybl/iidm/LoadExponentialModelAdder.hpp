@@ -17,7 +17,7 @@ namespace iidm {
 class LoadModel;
 class LoadAdder;
 
-class LoadExponentialModelAdder {
+class LoadExponentialModelAdder : public PropertiesHolder {
 public:
     LoadExponentialModelAdder(LoadAdder& parent);
 

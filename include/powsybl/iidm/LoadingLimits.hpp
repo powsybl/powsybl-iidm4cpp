@@ -28,7 +28,7 @@ private:
     static const double TEMPORARY_LIMIT_EPSILON;
 
 public:
-    class TemporaryLimit {
+    class TemporaryLimit : public PropertiesHolder {
     public:
         TemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool hasOverloadingProtection);
 

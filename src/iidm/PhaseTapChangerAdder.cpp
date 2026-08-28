@@ -73,6 +73,7 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
     std::unique_ptr<PhaseTapChanger> ptrPhaseTapChanger = stdcxx::make_unique<PhaseTapChanger>(m_parent, m_lowTapPosition, m_steps, m_regulationTerminal, m_loadTapChangingCapabilities,
                                                                                                *m_tapPosition, m_solvedTapPosition, m_regulating, m_regulationMode, m_regulationValue, m_targetDeadband);
 
+    copyPropertiesTo(*ptrPhaseTapChanger);
     bool wasRegulating = m_parent.hasPhaseTapChanger() && m_parent.getPhaseTapChanger().isRegulating();
     unsigned long count = m_parent.getRegulatingTapChangerCount() - (wasRegulating ? 1 : 0);
     network.setValidationLevelIfGreaterThan(checkOnlyOneTapChangerRegulatingEnabled(m_parent, count, m_regulating, network.getMinimumValidationLevel()));
@@ -86,8 +87,8 @@ PhaseTapChanger& PhaseTapChangerAdder::add() {
     return m_parent.getPhaseTapChanger();
 }
 
-PhaseTapChangerAdder& PhaseTapChangerAdder::addStep(double alpha, double rho, double r, double x, double g, double b) {
-    m_steps.emplace_back(alpha, rho, r, x, g, b);
+PhaseTapChangerAdder& PhaseTapChangerAdder::addStep(PhaseTapChangerStep&& step) {
+    m_steps.emplace_back(std::move(step));
     return *this;
 }
 

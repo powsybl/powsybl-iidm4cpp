@@ -48,6 +48,9 @@ protected:
 private:
     static void writeModel(const ShuntCompensator& sc, NetworkXmlWriterContext& context);
 
+    void readShuntLinearModel(const std::string& id, ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const;
+    void readNonLinearShuntModel(const std::string& id, ShuntCompensatorAdder& adder, NetworkXmlReaderContext& context) const;
+
 protected:
     AbstractShuntCompensatorXml() = default;
 

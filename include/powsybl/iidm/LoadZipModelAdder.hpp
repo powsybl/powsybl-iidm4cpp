@@ -17,7 +17,7 @@ namespace iidm {
 class LoadModel;
 class LoadAdder;
 
-class LoadZipModelAdder {
+class LoadZipModelAdder : public PropertiesHolder {
 public:
     LoadZipModelAdder(LoadAdder& parent);
 

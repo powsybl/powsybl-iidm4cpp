@@ -72,9 +72,12 @@ std::unique_ptr<ShuntCompensatorModel> ShuntCompensatorNonLinearModelAdder::buil
     sections.reserve(m_sectionAdders.size());
     for (const auto& adder : m_sectionAdders) {
         sections.emplace_back(ShuntCompensatorNonLinearModel::Section(adder.m_b, adder.m_g));
+        adder.copyPropertiesTo(sections.back());
     }
 
-    return stdcxx::make_unique<ShuntCompensatorNonLinearModel>(std::move(sections));
+    std::unique_ptr<ShuntCompensatorModel> ptrNonLinearModel = stdcxx::make_unique<ShuntCompensatorNonLinearModel>(std::move(sections));
+    copyPropertiesTo(*ptrNonLinearModel);
+    return ptrNonLinearModel;
 }
 
 unsigned long ShuntCompensatorNonLinearModelAdder::getMaximumSectionCount() const {

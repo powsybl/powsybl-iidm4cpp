@@ -32,7 +32,7 @@ public:
     void replaceSteps() override;
 
 private:
-    RatioTapChangerStepsReplacer& addStep(double rho, double r, double x, double g, double b);
+    RatioTapChangerStepsReplacer& addStep(RatioTapChangerStep&& step);
 
     Validable& getValidable();
 

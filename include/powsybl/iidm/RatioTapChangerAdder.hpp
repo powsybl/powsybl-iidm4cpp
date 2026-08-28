@@ -45,7 +45,7 @@ public:
     RatioTapChangerAdder& setTargetV(double targetV);
 
 private:
-    RatioTapChangerAdder& addStep(double rho, double r, double x, double g, double b);
+    RatioTapChangerAdder& addStep(RatioTapChangerStep&& step);
 
     Validable& getValidable();
 

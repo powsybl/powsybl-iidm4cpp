@@ -17,7 +17,39 @@ namespace powsybl {
 namespace iidm {
 
 class Overload {
+
 public:
+    /**
+    * encapsulated "Unacceptable" fictitious limit of acceptable duration 0 and infinite value
+    * internally used for Overload without acceptable temporary limit.
+    * PropertiesHolder capabilities inherited through TemporaryLimit overriden to an "unsupported" behavior.
+    */
+    class UnacceptableTemporaryLimit : public LoadingLimits::TemporaryLimit {
+        private:
+        UnacceptableTemporaryLimit() : LoadingLimits::TemporaryLimit("Unacceptable", std::numeric_limits<double>::infinity(), 0UL, true) {};
+        friend class Overload; //only encapsulating Overload class can build UnacceptableTemporaryLimit
+
+        public:
+        ~UnacceptableTemporaryLimit() noexcept = default;
+
+        //Override PropertiesHolder methods for unsupported behavior
+        bool hasProperty() const override;
+
+        bool hasProperty(const std::string& key) const override;
+
+        const std::string& getProperty(const std::string& key) const override;
+
+        const std::string& getProperty(const std::string& key, const std::string& defaultValue) const override;
+
+        stdcxx::optional<std::string> setProperty(const std::string& key, const std::string& value) override;
+
+        bool removeProperty(const std::string& key) override;
+
+        stdcxx::const_range<std::string> getPropertyNames() const override;
+
+        void copyPropertiesTo(PropertiesHolder& propertiesHolder) const override;
+    };
+
     Overload(const LoadingLimits::TemporaryLimit &temporaryLimit, const std::string& operationalLimitsGroupId, const std::string &previousLimitName, double previousLimit, double limitReductionCoefficient = 1.0);
 
     Overload(const std::string& operationalLimitsGroupId, const std::string &previousLimitName, double previousLimit, double limitReductionCoefficient = 1.0);
@@ -35,13 +67,8 @@ public:
     const std::string& getOperationalLimitsGroupId() const;
 
 private:
-    /**
-     * returns a default "Unacceptable" fictitious limit of acceptable duration 0 and infinite value,
-     * internally used for overload without an acceptable temporary limit.
-     */
-    static const LoadingLimits::TemporaryLimit& UNACCEPTABLE_LIMIT();
 
-    LoadingLimits::TemporaryLimit m_temporaryLimit;
+    std::unique_ptr<LoadingLimits::TemporaryLimit> m_temporaryLimit;
 
     std::string m_operationLimitsGroupId;
 

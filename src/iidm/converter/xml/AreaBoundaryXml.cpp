@@ -15,8 +15,10 @@
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
+#include <powsybl/iidm/converter/xml/IidmXmlUtil.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
+#include <powsybl/iidm/converter/xml/PropertiesXml.hpp>
 #include <powsybl/iidm/converter/xml/TerminalRefXml.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
@@ -53,6 +55,15 @@ void AreaBoundaryXml::read(Area& area, NetworkXmlReaderContext& context) const {
     } else {
         throw PowsyblException(stdcxx::format("Unexpected element for AreaBoundary: %1%. Should be %2% or %3%", type, BOUNDARY_REF, TERMINAL_REF));
     }
+
+    context.getReader().readUntilEndElement(AREA_BOUNDARY, [&context, &area, &adder]() {
+        if(context.getReader().getLocalName() == PROPERTY) {
+            PropertiesXml::read(adder, context);
+        } else {
+            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>/<%3%>", context.getReader().getLocalName(), area.getId(), AREA_BOUNDARY));
+        }
+    });
+
     context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [ptrAdder]() {
         ptrAdder->add();
     });
@@ -72,6 +83,11 @@ void AreaBoundaryXml::write(const Area& area, NetworkXmlWriterContext& context) 
             context.getWriter().writeAttribute(TYPE, BOUNDARY_REF);
             BoundaryRefXml::writeBoundaryRefAttributes(boundaryRef.get(), context);
         }
+
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &areaBoundary](){
+            PropertiesXml::write(areaBoundary, context);
+        });
+
         context.getWriter().writeEndElement();
     }
 }

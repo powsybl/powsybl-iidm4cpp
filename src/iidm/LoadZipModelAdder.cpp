@@ -66,7 +66,7 @@ LoadAdder& LoadZipModelAdder::add() {
 }
 std::unique_ptr<LoadModel> LoadZipModelAdder::build() const {
     std::unique_ptr<LoadModel> ptrLoadModel = std::unique_ptr<LoadModel>(new LoadZipModel(m_c0p, m_c1p, m_c2p, m_c0q, m_c1q, m_c2q));
-
+    copyPropertiesTo(*ptrLoadModel);
     return ptrLoadModel;
 }
 

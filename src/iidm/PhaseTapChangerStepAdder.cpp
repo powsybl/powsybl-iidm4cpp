@@ -36,7 +36,9 @@ PhaseTapChangerAdder& PhaseTapChangerStepAdder<PhaseTapChangerAdder>::endStep() 
     checkOptional(m_parent.getValidable(), m_g, "step g is not set");
     checkOptional(m_parent.getValidable(), m_b, "step b is not set");
 
-    return m_parent.addStep(m_alpha, m_rho, m_r, m_x, m_g, m_b);
+    PhaseTapChangerStep step = PhaseTapChangerStep(m_alpha, m_rho, m_r, m_x, m_g, m_b);
+    copyPropertiesTo(step);
+    return m_parent.addStep(std::move(step));
 }
 
 template<>
@@ -48,7 +50,9 @@ PhaseTapChangerStepsReplacer& PhaseTapChangerStepAdder<PhaseTapChangerStepsRepla
     checkOptional(m_parent.getValidable(), m_g, "step g is not set");
     checkOptional(m_parent.getValidable(), m_b, "step b is not set");
 
-    return m_parent.addStep(m_alpha, m_rho, m_r, m_x, m_g, m_b);
+    PhaseTapChangerStep step = PhaseTapChangerStep(m_alpha, m_rho, m_r, m_x, m_g, m_b);
+    copyPropertiesTo(step);
+    return m_parent.addStep(std::move(step));
 }
 
 }  // namespace iidm

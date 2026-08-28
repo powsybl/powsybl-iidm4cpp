@@ -48,7 +48,7 @@ public:
     PhaseTapChangerAdder& setRegulationMode(const PhaseTapChanger::RegulationMode& regulationMode);
 
 private:
-    PhaseTapChangerAdder& addStep(double alpha, double rho, double r, double x, double g, double b);
+    PhaseTapChangerAdder& addStep(PhaseTapChangerStep&& step);
 
     Validable& getValidable();
 

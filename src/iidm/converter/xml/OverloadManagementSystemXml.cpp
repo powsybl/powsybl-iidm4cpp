@@ -11,6 +11,7 @@
 
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
+#include <powsybl/iidm/converter/xml/PropertiesXml.hpp>
 
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
@@ -63,6 +64,9 @@ void OverloadManagementSystemXml::writeTripping(const OverloadManagementSystem::
         monitoredId = context.getAnonymizer().anonymizeString(branchTripping.getBranchToOperateId());
         context.getWriter().writeAttribute(BRANCH_ID, monitoredId);
         context.getWriter().writeAttribute(SIDE, Enum::toString(branchTripping.getSideToOperate()));
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &tripping](){
+            PropertiesXml::write(tripping, context);
+        });
         context.getWriter().writeEndElement();
     } else if(tripping.getType() == OverloadManagementSystem::Tripping::Type::SWITCH_TRIPPING &&
             stdcxx::isInstanceOf<overload_management_system::SwitchTripping>(tripping)) {
@@ -71,6 +75,9 @@ void OverloadManagementSystemXml::writeTripping(const OverloadManagementSystem::
         writeTrippingCommonAttributes(tripping, context);
         monitoredId = context.getAnonymizer().anonymizeString(switchTripping.getSwitchToOperateId());
         context.getWriter().writeAttribute(SWITCH_ID, monitoredId);
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &tripping](){
+            PropertiesXml::write(tripping, context);
+        });
         context.getWriter().writeEndElement();
     } else if(tripping.getType() == OverloadManagementSystem::Tripping::Type::THREE_WINDINGS_TRANSFORMER_TRIPPING &&
             stdcxx::isInstanceOf<overload_management_system::ThreeWindingsTransformerTripping>(tripping)) {
@@ -80,6 +87,9 @@ void OverloadManagementSystemXml::writeTripping(const OverloadManagementSystem::
         monitoredId = context.getAnonymizer().anonymizeString(twtTripping.getThreeWindingsTransformerToOperateId());
         context.getWriter().writeAttribute(THREE_WINDINGS_TRANSFORMER_ID, monitoredId);
         context.getWriter().writeAttribute(SIDE, Enum::toString(twtTripping.getSideToOperate()));
+        IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), context.getVersion(), [&context, &tripping](){
+            PropertiesXml::write(tripping, context);
+        });
         context.getWriter().writeEndElement();
     } else {
         throw powsybl::xml::XmlStreamException(stdcxx::format("Unexpected tripping type: %1%", Enum::toString(tripping.getType())));
@@ -188,18 +198,39 @@ void OverloadManagementSystemXml::getTrippingCommonAttributes(NetworkXmlReaderCo
     openAction = context.getReader().getAttributeValue<bool>(OPEN_ACTION);
 }
 
+void OverloadManagementSystemXml::readTrippingSubElements(const std::string& trippingType, overload_management_system::TrippingAdder& trippingAdder, NetworkXmlReaderContext& context) const {
+    context.getReader().readUntilEndElement(trippingType, [&context, &trippingAdder, &trippingType]() {
+        if(context.getReader().getLocalName() == PROPERTY) {
+            PropertiesXml::read(trippingAdder, context);
+        } else {
+            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), trippingType));
+        }
+    });
+}
+void OverloadManagementSystemXml::skipTrippingSubElements(const std::string& trippingType, NetworkXmlReaderContext& context) const {
+    context.getReader().readUntilEndElement(trippingType, [&context, &trippingType]() {
+        if(context.getReader().getLocalName() == PROPERTY) {
+            PropertiesXml::skip(context);
+        } else {
+            throw PowsyblException(stdcxx::format("Unknown element name <%1%> in <%2%>", context.getReader().getLocalName(), trippingType));
+        }
+    });
+}
+
 void OverloadManagementSystemXml::readSwitchTripping(OverloadManagementSystemAdder& adder, NetworkXmlReaderContext& context) const {
     std::string switchId;
     getSwitchTrippingAttributes(context, switchId);
     auto switchTrippingAdderPtr = adder.newSwitchTripping();
     auto& trippingAdder = switchTrippingAdderPtr->setSwitchToOperateId(switchId);
     readTrippingCommonAttributes(trippingAdder, context);
+    readTrippingSubElements(SWITCH_TRIPPING, trippingAdder ,context);
     trippingAdder.add();
 }
 void OverloadManagementSystemXml::skipSwitchTripping(NetworkXmlReaderContext& context) const {
     std::string switchId;
     getSwitchTrippingAttributes(context, switchId);
     skipTrippingCommonAttributes(context);
+    skipTrippingSubElements(SWITCH_TRIPPING, context);
 }
 void OverloadManagementSystemXml::getSwitchTrippingAttributes(NetworkXmlReaderContext& context, std::string& switchId) const {
     switchId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(SWITCH_ID));
@@ -213,6 +244,7 @@ void OverloadManagementSystemXml::readBranchTripping(OverloadManagementSystemAdd
     auto& trippingAdder = branchTrippingAdderPtr->setBranchToOperateId(branchId)
                                                     .setSideToOperate(twoSide);
     readTrippingCommonAttributes(trippingAdder, context);
+    readTrippingSubElements(BRANCH_TRIPPING, trippingAdder ,context);
     trippingAdder.add();
 }
 void OverloadManagementSystemXml::skipBranchTripping(NetworkXmlReaderContext& context) const {
@@ -220,6 +252,7 @@ void OverloadManagementSystemXml::skipBranchTripping(NetworkXmlReaderContext& co
     TwoSides twoSide; 
     getBranchTrippingAttributes(context, branchId, twoSide);
     skipTrippingCommonAttributes(context);
+    skipTrippingSubElements(BRANCH_TRIPPING, context);
 }
 void OverloadManagementSystemXml::getBranchTrippingAttributes(NetworkXmlReaderContext& context, std::string& branchId, TwoSides& side) const {
     branchId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(BRANCH_ID));
@@ -235,6 +268,7 @@ void OverloadManagementSystemXml::readThreeWindingsTransformerTripping(OverloadM
     auto& trippingAdder = twtTrippingAdderPtr->setThreeWindingsTransformerToOperateId(twtId)
                                                                         .setSideToOperate(threeSide);
     readTrippingCommonAttributes(trippingAdder, context);
+    readTrippingSubElements(THREE_WINDINGS_TRANSFORMER_TRIPPING, trippingAdder ,context);
     trippingAdder.add();
 }
 void OverloadManagementSystemXml::skipThreeWindingsTransformerTripping(NetworkXmlReaderContext& context) const {
@@ -242,6 +276,7 @@ void OverloadManagementSystemXml::skipThreeWindingsTransformerTripping(NetworkXm
     ThreeSides threeSide;
     getThreeWindingsTransformerTrippingAttributes(context, twtId, threeSide);
     skipTrippingCommonAttributes(context);
+    skipTrippingSubElements(THREE_WINDINGS_TRANSFORMER_TRIPPING, context);
 }
 void OverloadManagementSystemXml::getThreeWindingsTransformerTrippingAttributes(NetworkXmlReaderContext& context, std::string& twtId, ThreeSides& side) const {
     twtId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(THREE_WINDINGS_TRANSFORMER_ID));

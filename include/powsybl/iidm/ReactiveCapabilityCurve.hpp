@@ -19,7 +19,7 @@ namespace iidm {
 
 class ReactiveCapabilityCurve : public ReactiveLimits {
 public:
-    class Point {
+    class Point : public PropertiesHolder {
     public:
         Point(double p, double minQ, double maxQ);
 

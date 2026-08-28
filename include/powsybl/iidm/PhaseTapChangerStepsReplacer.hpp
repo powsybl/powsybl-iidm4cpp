@@ -32,7 +32,7 @@ public:
     void replaceSteps() override;
 
 private:
-    PhaseTapChangerStepsReplacer& addStep(double alpha, double rho, double r, double x, double g, double b);
+    PhaseTapChangerStepsReplacer& addStep(PhaseTapChangerStep&& step);
 
     Validable& getValidable();
 

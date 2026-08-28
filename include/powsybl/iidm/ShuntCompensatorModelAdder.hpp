@@ -10,6 +10,8 @@
 
 #include <memory>
 
+#include <powsybl/iidm/PropertiesHolder.hpp>
+
 namespace powsybl {
 
 namespace iidm {
@@ -18,7 +20,7 @@ class ShuntCompensator;
 class ShuntCompensatorAdder;
 class ShuntCompensatorModel;
 
-class ShuntCompensatorModelAdder {
+class ShuntCompensatorModelAdder :public PropertiesHolder {
 public:
     ShuntCompensatorModelAdder() = default;
 

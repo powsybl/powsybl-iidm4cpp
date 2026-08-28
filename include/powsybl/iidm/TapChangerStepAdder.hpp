@@ -8,6 +8,7 @@
 #ifndef POWSYBL_IIDM_TAPCHANGERSTEPADDER_HPP
 #define POWSYBL_IIDM_TAPCHANGERSTEPADDER_HPP
 
+#include <powsybl/iidm/PropertiesHolder.hpp>
 #include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
@@ -15,7 +16,7 @@ namespace powsybl {
 namespace iidm {
 
 template<typename TCStepAdder, typename TCAdder>
-class TapChangerStepAdder {
+class TapChangerStepAdder : public PropertiesHolder {
 public:
     virtual ~TapChangerStepAdder() noexcept = default;
 

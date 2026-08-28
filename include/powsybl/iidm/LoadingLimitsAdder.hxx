@@ -45,7 +45,14 @@ LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::TemporaryLimitAdder::endTemp
         throw ValidationException(m_owner, "acceptable duration is not set");
     }
     checkAndGetUniqueName();
-    return m_parent.addTemporaryLimit(m_name, m_value, *m_acceptableDuration, m_fictitious);
+
+    //Build temporaryLimit and add it to the parent LoadingLimits:
+    LoadingLimits::TemporaryLimit temporaryLimit = LoadingLimits::TemporaryLimit(m_name, m_value, *m_acceptableDuration, m_fictitious);
+    copyPropertiesTo(temporaryLimit);
+    if (m_fictitious && *m_acceptableDuration == std::numeric_limits<unsigned long>::max()) {
+        return m_parent.addFictitiousLimit(std::move(temporaryLimit));
+    }
+    return m_parent.addTemporaryLimit(std::move(temporaryLimit));
 }
 
 template <typename L, typename A>
@@ -95,6 +102,13 @@ typename LoadingLimitsAdder<L, A>::TemporaryLimitAdder& LoadingLimitsAdder<L, A>
 }
 
 template <typename L, typename A>
+typename LoadingLimitsAdder<L, A>::TemporaryLimitAdder& LoadingLimitsAdder<L, A>::TemporaryLimitAdder::addProperty(const std::string& key, const std::string& value) {
+    setProperty(key, value);
+    return *this;
+}
+
+
+template <typename L, typename A>
 LoadingLimitsAdder<L, A>::LoadingLimitsAdder(OperationalLimitsGroup& owner) :
     m_owner(owner) {
 }
@@ -108,12 +122,13 @@ LoadingLimitsAdder<L, A>::LoadingLimitsAdder(OperationalLimitsGroup& owner, cons
 }
 
 template <typename L, typename A>
-LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::addTemporaryLimit(const std::string& name, double value, unsigned long acceptableDuration, bool fictitious) {
-    if (fictitious && acceptableDuration == std::numeric_limits<unsigned long>::max()) {
-        m_fictitiousLimits.emplace(name, LoadingLimits::TemporaryLimit(name, value, acceptableDuration, fictitious));
-    } else {
-        m_temporaryLimits.emplace(acceptableDuration, LoadingLimits::TemporaryLimit(name, value, acceptableDuration, fictitious));
-    }
+LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::addTemporaryLimit(LoadingLimits::TemporaryLimit&& temporaryLimit) {
+    m_temporaryLimits.emplace(temporaryLimit.getAcceptableDuration(), std::move(temporaryLimit));
+    return *this;
+}
+template <typename L, typename A>
+LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::addFictitiousLimit(LoadingLimits::TemporaryLimit&& fictitiousLimit) {
+    m_fictitiousLimits.emplace(fictitiousLimit.getName(), std::move(fictitiousLimit));
     return *this;
 }
 

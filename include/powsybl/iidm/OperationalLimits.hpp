@@ -9,12 +9,13 @@
 #define POWSYBL_IIDM_OPERATIONALLIMITS_HPP
 
 #include <powsybl/iidm/LimitType.hpp>
+#include <powsybl/iidm/PropertiesHolder.hpp>
 
 namespace powsybl {
 
 namespace iidm {
 
-class OperationalLimits {
+class OperationalLimits : public PropertiesHolder {
 public:
     OperationalLimits() = default;
 

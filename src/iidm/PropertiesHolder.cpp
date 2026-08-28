@@ -39,6 +39,12 @@ stdcxx::const_range<std::string> PropertiesHolder::getPropertyNames() const {
     return m_properties.getKeys();
 }
 
+void PropertiesHolder::copyPropertiesTo(PropertiesHolder& propertiesHolder) const {
+    for (const auto& key : getPropertyNames()) {
+        propertiesHolder.setProperty(key, getProperty(key));
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

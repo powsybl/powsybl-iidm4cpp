@@ -38,8 +38,10 @@ private:
     ~ReactiveLimitsXml() noexcept = default;
 
     void write(const MinMaxReactiveLimits& limits, NetworkXmlWriterContext& context) const;
+    void readMinMaxReactiveLimits(ReactiveLimitsHolder& holder, const NetworkXmlReaderContext& context) const;
 
     void write(const ReactiveCapabilityCurve& curve, NetworkXmlWriterContext& context) const;
+    void readCurveReactiveLimits(ReactiveLimitsHolder& holder, const NetworkXmlReaderContext& context) const;
 };
 
 }  // namespace xml

@@ -20,7 +20,7 @@ namespace iidm {
 
 class ShuntCompensatorNonLinearModel : public ShuntCompensatorModel {
 public:
-    class Section {
+    class Section : public PropertiesHolder {
     public:
         Section(double b, double g);
 

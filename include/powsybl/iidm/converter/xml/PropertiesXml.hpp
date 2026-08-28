@@ -9,9 +9,16 @@
 #define POWSYBL_IIDM_CONVERTER_XML_PROPERTIESXML_HPP
 
 #include <functional>
+#include <string>
 #include <vector>
 
 namespace powsybl {
+
+namespace xml {
+
+class XmlStreamWriter;
+
+}
 
 namespace iidm {
 
@@ -31,6 +38,9 @@ public:
     template <typename H, typename = typename std::enable_if<std::is_base_of<PropertiesHolder, H>::value>::type>
     static void read(std::vector<std::function<void(H&)>>& toApply, const NetworkXmlReaderContext& context);
 
+    static void skip(const NetworkXmlReaderContext& context);
+
+    static void write(const PropertiesHolder& propertiesHolder, const std::string& nsprefix, powsybl::xml::XmlStreamWriter& writer);
     static void write(const PropertiesHolder& propertiesHolder, NetworkXmlWriterContext& context);
 
 private:

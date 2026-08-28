@@ -20,12 +20,6 @@
 
 namespace powsybl {
 
-namespace xml {
-
-class XmlStreamWriter;
-
-}  // namespace xml
-
 namespace iidm {
 
 class PhaseTapChanger;
@@ -62,7 +56,10 @@ protected:
     static void readRatioTapChanger(const std::string& elementName, std::shared_ptr<RatioTapChangerAdder>& adder, Terminal& terminal, NetworkXmlReaderContext& context);
 
     template <typename A, typename B>
-    static void readSteps(const NetworkXmlReaderContext& context, TapChangerStepAdder<A, B>& tapChangerStepAdder);
+    static void readStepCommonAttributes(const NetworkXmlReaderContext& context, TapChangerStepAdder<A, B>& tapChangerStepAdder);
+
+    template <typename A, typename B>
+    static void readStepProperties(const std::string& elementName, const NetworkXmlReaderContext& context, TapChangerStepAdder<A, B>& tapChangerStepAdder);
 
     static double readTargetDeadband(NetworkXmlReaderContext& context);
 
@@ -82,7 +79,10 @@ protected:
     static void writeTapChanger(const TapChanger<H, C, S, R>& tc, NetworkXmlWriterContext& context);
 
     template <typename S>
-    static void writeTapChangerStep(const TapChangerStep<S>& tcs, powsybl::xml::XmlStreamWriter& writer);
+    static void writeTapChangerStepCommonAttributes(const TapChangerStep<S>& tcs, NetworkXmlWriterContext& context);
+
+    template <typename S>
+    static void writeTapChangerStepProperties(const TapChangerStep<S>& tcs, NetworkXmlWriterContext& context);
 
     static void writeTargetDeadband(double targetDeadband, NetworkXmlWriterContext& context);
 };

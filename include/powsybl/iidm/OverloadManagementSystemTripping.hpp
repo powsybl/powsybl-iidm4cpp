@@ -10,6 +10,7 @@
 
 #include <string>
 
+#include <powsybl/iidm/PropertiesHolder.hpp>
 #include <powsybl/iidm/ThreeSides.hpp>
 #include <powsybl/iidm/TwoSides.hpp>
 #include <powsybl/iidm/Validable.hpp>
@@ -20,7 +21,7 @@ namespace iidm {
 
 namespace overload_management_system {
 
-class Tripping : public Validable {
+class Tripping : public Validable, public PropertiesHolder {
 public:
     enum class Type : unsigned char {
         BRANCH_TRIPPING,

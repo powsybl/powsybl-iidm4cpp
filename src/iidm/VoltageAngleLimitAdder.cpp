@@ -75,6 +75,7 @@ VoltageAngleLimit& VoltageAngleLimitAdder::add() {
     auto pairRslt = m_network.getVoltageAngleLimitsIndex().emplace(m_id, VoltageAngleLimit(m_network, m_id,
         terminalFrom, terminalTo, m_lowLimit, m_highLimit));
 
+    copyPropertiesTo(pairRslt.first->second);
     return pairRslt.first->second;
 }
 
