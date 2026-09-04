@@ -36,8 +36,8 @@ HvdcLine& HvdcLineXml::readRootElementAttributes(HvdcLineAdder& adder, Network& 
     const auto& convertersMode = Enum::fromString<HvdcLine::ConvertersMode>(context.getReader().getAttributeValue(CONVERTERS_MODE));
     double activePowerSetpoint = context.getReader().getOptionalAttributeValue(ACTIVE_POWER_SETPOINT, stdcxx::nan());
     const auto& maxP = context.getReader().getAttributeValue<double>(MAX_P);
-    const std::string& converterStation1 = context.getReader().getAttributeValue(CONVERTER_STATION1);
-    const std::string& converterStation2 = context.getReader().getAttributeValue(CONVERTER_STATION2);
+    const std::string& converterStation1 = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(CONVERTER_STATION1));
+    const std::string& converterStation2 = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(CONVERTER_STATION2));
     return adder.setR(r)
         .setNominalV(nominalV)
         .setConvertersMode(convertersMode)
@@ -60,8 +60,8 @@ void HvdcLineXml::writeRootElementAttributes(const HvdcLine& line, const Network
     context.getWriter().writeAttribute(CONVERTERS_MODE, Enum::toString(line.getConvertersMode()));
     context.getWriter().writeAttribute(ACTIVE_POWER_SETPOINT, line.getActivePowerSetpoint());
     context.getWriter().writeAttribute(MAX_P, line.getMaxP());
-    context.getWriter().writeAttribute(CONVERTER_STATION1, line.getConverterStation1().get().getId());
-    context.getWriter().writeAttribute(CONVERTER_STATION2, line.getConverterStation2().get().getId());
+    context.getWriter().writeAttribute(CONVERTER_STATION1, context.getAnonymizer().anonymizeString(line.getConverterStation1().get().getId()));
+    context.getWriter().writeAttribute(CONVERTER_STATION2, context.getAnonymizer().anonymizeString(line.getConverterStation2().get().getId()));
 }
 
 }  // namespace xml
