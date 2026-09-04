@@ -40,7 +40,7 @@ public:
     ~DiscreteMeasurementsXmlSerializer() noexcept override = default;
 
 private:
-    static void readDiscreteMeasurement(DiscreteMeasurements& discreteMeasurements, const xml::XmlStreamReader& reader);
+    static void readDiscreteMeasurement(DiscreteMeasurements& discreteMeasurements, converter::xml::NetworkXmlReaderContext& context);
 };
 
 }  // namespace iidm

@@ -10,6 +10,7 @@
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
 #include <powsybl/iidm/converter/Constants.hpp>
+#include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/iidm/extensions/iidm/Measurement.hpp>
@@ -49,8 +50,12 @@ Extension& MeasurementsXmlSerializer::read(Extendable& extendable, converter::xm
                 .setValue(context.getReader().getOptionalAttributeValue(converter::VALUE, stdcxx::nan()))
                 .setStandardDeviation(context.getReader().getOptionalAttributeValue("standardDeviation", stdcxx::nan()))
                 .setValid(context.getReader().getAttributeValue<bool>("valid"));
-            const std::string& mId = context.getReader().getOptionalAttributeValue(converter::ID, "");
-            if (!mId.empty()) {
+            const std::string& anonymisedMeasurementId = context.getReader().getOptionalAttributeValue(converter::ID, "");
+            if (!anonymisedMeasurementId.empty()) {
+                std::string mId = anonymisedMeasurementId;
+                if(context.getVersion() >= converter::xml::IidmXmlVersion::V1_16()) {
+                    mId = context.getAnonymizer().deanonymizeString(mId);
+                }
                 adder.setId(mId);
             }
             const std::string& side = context.getReader().getOptionalAttributeValue(converter::SIDE, "");
@@ -75,10 +80,15 @@ Extension& MeasurementsXmlSerializer::read(Extendable& extendable, converter::xm
 void MeasurementsXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& measurements = safeCast<Measurements>(extension);
     xml::XmlStreamWriter& writer = context.getWriter();
+    const converter::xml::IidmXmlVersion& version = context.getVersion();
     for (const Measurement& measurement : measurements.getMeasurements()) {
         writer.writeStartElement(getNamespacePrefix(), "measurement");
-        if (!measurement.getId().empty()) {
-            writer.writeAttribute(converter::ID, measurement.getId());
+        std::string measurementId = measurement.getId();
+        if (!measurementId.empty()) {
+            if (version >= converter::xml::IidmXmlVersion::V1_16()) {
+                measurementId = context.getAnonymizer().anonymizeString(measurementId);
+            }
+            writer.writeAttribute(converter::ID, measurementId);
         }
         writer.writeAttribute(converter::TYPE, Enum::toString(measurement.getType()));
         if (measurement.getSide()) {

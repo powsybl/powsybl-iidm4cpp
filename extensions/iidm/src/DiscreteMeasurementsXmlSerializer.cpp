@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/iidm/Identifiable.hpp>
+#include <powsybl/iidm/converter/Anonymizer.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlReaderContext.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 #include <powsybl/iidm/extensions/iidm/Constants.hpp>
@@ -39,23 +40,27 @@ bool DiscreteMeasurementsXmlSerializer::isSerializable(const Extension& extensio
 Extension& DiscreteMeasurementsXmlSerializer::read(Extendable& extendable, converter::xml::NetworkXmlReaderContext& context) const {
     extendable.newExtension<DiscreteMeasurementsAdder>().add();
     auto& discreteMeasurements = extendable.getExtension<DiscreteMeasurements>();
-    const xml::XmlStreamReader& reader = context.getReader();
-    context.getReader().readUntilEndElement(DISCRETE_MEASUREMENTS, [&reader, &discreteMeasurements](){
-        if (reader.getLocalName() == DISCRETE_MEASUREMENT) {
-            readDiscreteMeasurement(discreteMeasurements, reader);
+    context.getReader().readUntilEndElement(DISCRETE_MEASUREMENTS, [&context, &discreteMeasurements](){
+        if (context.getReader().getLocalName() == DISCRETE_MEASUREMENT) {
+            readDiscreteMeasurement(discreteMeasurements, context);
         } else {
-            throw PowsyblException(stdcxx::format("Unexpected element: %1%", reader.getLocalName()));
+            throw PowsyblException(stdcxx::format("Unexpected element: %1%", context.getReader().getLocalName()));
         }
     });
     return discreteMeasurements;
 }
 
-void DiscreteMeasurementsXmlSerializer::readDiscreteMeasurement(DiscreteMeasurements& discreteMeasurements, const xml::XmlStreamReader& reader) {
+void DiscreteMeasurementsXmlSerializer::readDiscreteMeasurement(DiscreteMeasurements& discreteMeasurements, converter::xml::NetworkXmlReaderContext& context) {
+    const xml::XmlStreamReader& reader = context.getReader();
     DiscreteMeasurementAdder adder = discreteMeasurements.newDiscreteMeasurement()
         .setType(Enum::fromString<DiscreteMeasurement::Type>(reader.getAttributeValue(TYPE)))
         .setValid(reader.getAttributeValue<bool>(VALID));
-    const std::string& dmId = reader.getOptionalAttributeValue(ID, "");
-    if (!dmId.empty()) {
+    const std::string& anonymisedDmId = reader.getOptionalAttributeValue(ID, "");
+    if (!anonymisedDmId.empty()) {
+        std::string dmId = anonymisedDmId;
+        if(context.getVersion() >= converter::xml::IidmXmlVersion::V1_16()) {
+            dmId = context.getAnonymizer().deanonymizeString(dmId);
+        }
         adder.setId(dmId);
     }
     const std::string& tapChanger = reader.getOptionalAttributeValue(TAP_CHANGER, "");
@@ -94,10 +99,15 @@ void DiscreteMeasurementsXmlSerializer::readDiscreteMeasurement(DiscreteMeasurem
 void DiscreteMeasurementsXmlSerializer::write(const Extension& extension, converter::xml::NetworkXmlWriterContext& context) const {
     const auto& discreteMeasurements = safeCast<DiscreteMeasurements>(extension);
     xml::XmlStreamWriter& writer = context.getWriter();
+    const converter::xml::IidmXmlVersion& version = context.getVersion();
     for (const DiscreteMeasurement& discreteMeasurement : discreteMeasurements.getDiscreteMeasurements()) {
         writer.writeStartElement(getNamespacePrefix(), DISCRETE_MEASUREMENT);
-        if (!discreteMeasurement.getId().empty()) {
-            writer.writeAttribute(ID, discreteMeasurement.getId());
+        std::string discreteMeasurementId = discreteMeasurement.getId();
+        if (!discreteMeasurementId.empty()) {
+            if (version >= converter::xml::IidmXmlVersion::V1_16()) {
+                discreteMeasurementId = context.getAnonymizer().anonymizeString(discreteMeasurementId);
+            }
+            writer.writeAttribute(ID, discreteMeasurementId);
         }
         writer.writeAttribute(TYPE, Enum::toString(discreteMeasurement.getType()));
         if (discreteMeasurement.getTapChanger()) {

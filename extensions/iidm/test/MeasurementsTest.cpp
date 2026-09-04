@@ -286,6 +286,60 @@ BOOST_FIXTURE_TEST_CASE(MeasurementsXmlSerializerTest, test::ResourceFixture) {
     test::converter::RoundTrip::runXml(network, networkStrRef);
 }
 
+BOOST_FIXTURE_TEST_CASE(MeasurementsAnonymisedTest, test::ResourceFixture) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+    Load& load = network.getLoad("LOAD");
+    load.newExtension<MeasurementsAdder>().add();
+    load.getExtension<Measurements>()
+                .newMeasurement()
+                .setId("Measurement_Id")
+                .setType(Measurement::Type::OTHER)
+                .setValue(0.0)
+                .setValid(false)
+                .putProperty("source","test")
+                .add();
+    POWSYBL_ASSERT_REF_TRUE(load.getExtension<Measurements>().getMeasurement("Measurement_Id"));
+
+    test::converter::RoundTrip::testForAllPreviousVersions(converter::xml::IidmXmlVersion::V1_16(), [&network](const converter::xml::IidmXmlVersion& version){
+        converter::ExportOptions options = converter::ExportOptions().setVersion(version.toString(".")).setAnonymized(true);
+        std::stringstream buffer;
+        Network::writeXml("MeasurementsAnonymisedTest.xiidm", buffer, network, options);
+
+        //Exported Measurement ID is NOT anonymised :
+        std::string xmlOutput = buffer.str();
+        BOOST_CHECK(xmlOutput.find("m:measurement id=\"Measurement_Id\"")!=std::string::npos);
+    });
+    test::converter::RoundTrip::testForAllVersionsSince(converter::xml::IidmXmlVersion::V1_16(), [&network](const converter::xml::IidmXmlVersion& version){
+        converter::ExportOptions options = converter::ExportOptions().setVersion(version.toString(".")).setAnonymized(true);
+        std::stringstream buffer;
+        Network::writeXml("MeasurementsAnonymisedTest.xiidm", buffer, network, options);
+
+        //Exported DiscreteMeasurement ID is anonymised :
+        std::string xmlOutput = buffer.str();
+        BOOST_CHECK(xmlOutput.find("m:measurement id=")!=std::string::npos);
+        BOOST_CHECK(xmlOutput.find("Measurement_Id")==std::string::npos);
+
+        //Import (without Anonymizer)
+        std::istringstream stream1(xmlOutput);
+        std::istringstream stream2(xmlOutput);
+
+        Network networkImportedWithoutAnonymizer = Network::readXml("", stream1);
+        Load& anonymizedLoad = networkImportedWithoutAnonymizer.getLoads().front();
+        POWSYBL_ASSERT_REF_TRUE(anonymizedLoad.findExtension<Measurements>());
+        BOOST_CHECK_EQUAL(1, boost::size(anonymizedLoad.getExtension<Measurements>().getMeasurements()));
+        BOOST_CHECK(anonymizedLoad.getExtension<Measurements>().getMeasurements().front().getId() != "Measurement_Id");
+        POWSYBL_ASSERT_REF_FALSE(anonymizedLoad.getExtension<Measurements>().getMeasurement("Measurement_Id"));
+
+        //Import (using Anonymizer)
+        Network networkImportedWithAnonymizer = Network::readXml("MeasurementsAnonymisedTest.xiidm", stream2);
+        Load& deanonymizedLoad = networkImportedWithAnonymizer.getLoad("LOAD");
+        POWSYBL_ASSERT_REF_TRUE(deanonymizedLoad.findExtension<Measurements>());
+        BOOST_CHECK_EQUAL(1, boost::size(deanonymizedLoad.getExtension<Measurements>().getMeasurements()));
+        BOOST_CHECK_EQUAL("Measurement_Id", deanonymizedLoad.getExtension<Measurements>().getMeasurements().front().getId());
+        POWSYBL_ASSERT_REF_TRUE(deanonymizedLoad.getExtension<Measurements>().getMeasurement("Measurement_Id"));
+    });
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm
