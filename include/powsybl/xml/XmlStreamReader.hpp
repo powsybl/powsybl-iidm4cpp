@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <iosfwd>
+#include <list>
 #include <memory>
 #include <string>
 
@@ -49,6 +50,8 @@ public:
 
     std::string getNamespaceOrDefault(const std::string& prefix) const;
 
+    std::list<std::string> getOptionalArrayAttributeValue(const std::string& attributeName, const std::string& defaultValue) const;
+
     template <typename T>
     stdcxx::optional<T> getOptionalAttributeValue(const std::string& attributeName) const;
 
@@ -84,6 +87,8 @@ private:
     int getCurrentNodeType() const;
 
     int next() const;
+
+    std::list<std::string> listFromCSV(const std::string& formatedValue) const;
 
 private:
     using XmlTextReaderPtr = std::unique_ptr<xmlTextReader, std::function<void(xmlTextReader*)>>;

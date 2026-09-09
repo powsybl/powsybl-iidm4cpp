@@ -15,6 +15,10 @@
 #include <powsybl/xml/XmlEncoding.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 
+#include <boost/algorithm/string.hpp>
+#include <boost/algorithm/string/join.hpp>
+
+
 namespace powsybl {
 
 namespace xml {
@@ -33,6 +37,29 @@ void XmlStreamWriter::setPrefix(const std::string& prefix, const std::string& ur
 
     const std::string& fullPrefix = "xmlns:" + prefix;
     writeAttribute(fullPrefix, uri);
+}
+
+std::string XmlStreamWriter::listToCSV(const std::list<std::string>& listValue) {
+    std::list<std::string> formatedValues;
+
+    for (const auto& value : listValue) {
+        std::string formatedValue = value;
+        if(formatedValue.find("\"")!=std::string::npos) { //escape '"' by doubling it
+            boost::replace_all(formatedValue, "\"", "\"\"");
+        }
+        if(formatedValue.find("\"")!=std::string::npos || 
+            formatedValue.find(",")!=std::string::npos) { // quote the whole field if containing an escape quote or a comma
+                formatedValue ="\"" + formatedValue + "\"";
+        }
+
+        formatedValues.emplace_back(formatedValue);
+    }
+
+    return boost::algorithm::join(formatedValues, ",");
+}
+
+void XmlStreamWriter::writeArrayAttribute(const std::string& attributeName, const std::list<std::string>& listValue) {
+    writeAttribute(attributeName, listToCSV(listValue));
 }
 
 void XmlStreamWriter::writeAttribute(const std::string& attributeName, bool attributeValue) {

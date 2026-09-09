@@ -140,6 +140,44 @@ BOOST_AUTO_TEST_CASE(FailureErroneousAttributeNS) {
                          "Attribute fakeAttribute does not exists");
 }
 
+BOOST_AUTO_TEST_CASE(readListAttributeCSVFormated) {
+
+    const std::string& txt = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                             "<element "
+                             "    testListFormated0=\"&quot;&quot;&quot;&quot;,&quot;&quot;&quot;&quot;&quot;&quot;,&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;,&quot;,&quot;,&quot;,&quot;&quot;,&quot;, ,A\" "
+                             "    testListFormated1=\"&quot;test&quot;&quot;Value&quot;\" "
+                             "    testListFormated2=\"&quot;&quot;&quot;testValue&quot;\" "
+                             "    testListFormated3=\"&quot;testValue&quot;&quot;&quot;\" "
+                             "    testListFormated4=\"&quot;test,Value,,,,&quot;\"  /> ";
+
+    std::stringstream ss;
+    ss << txt;
+    powsybl::xml::XmlStreamReader reader(ss);
+
+    auto list0 = reader.getOptionalArrayAttributeValue("testListFormated0","");
+    auto list1 = reader.getOptionalArrayAttributeValue("testListFormated1","");
+    auto list2 = reader.getOptionalArrayAttributeValue("testListFormated2","");
+    auto list3 = reader.getOptionalArrayAttributeValue("testListFormated3","");
+    auto list4 = reader.getOptionalArrayAttributeValue("testListFormated4","");
+    BOOST_CHECK_EQUAL(7, list0.size());
+    BOOST_CHECK_EQUAL(1, list1.size());
+    BOOST_CHECK_EQUAL(1, list2.size());
+    BOOST_CHECK_EQUAL(1, list3.size());
+    BOOST_CHECK_EQUAL(1, list4.size());
+    BOOST_CHECK(std::find(list0.begin(), list0.end(),"\"")!=list0.end());
+    BOOST_CHECK(std::find(list0.begin(), list0.end(),"\"\"")!=list0.end());
+    BOOST_CHECK(std::find(list0.begin(), list0.end(),"\"\"\"")!=list0.end());
+    BOOST_CHECK(std::find(list0.begin(), list0.end(),",")!=list0.end());
+    BOOST_CHECK(std::find(list0.begin(), list0.end(),",\",")!=list0.end());
+    BOOST_CHECK(std::find(list0.begin(), list0.end()," ")!=list0.end());
+    BOOST_CHECK(std::find(list0.begin(), list0.end(),"A")!=list0.end());
+    BOOST_CHECK_EQUAL(list1.front(), "test\"Value");
+    BOOST_CHECK_EQUAL(list2.front(), "\"testValue");
+    BOOST_CHECK_EQUAL(list3.front(), "testValue\"");
+    BOOST_CHECK_EQUAL(list4.front(), "test,Value,,,,");
+
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml

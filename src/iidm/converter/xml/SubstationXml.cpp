@@ -55,12 +55,9 @@ Substation& SubstationXml::readRootElementAttributes(SubstationAdder& adder, Net
         adder.setTso(context.getAnonymizer().deanonymizeString(tso));
     }
 
-    const std::string& geographicalTags = context.getReader().getOptionalAttributeValue(GEOGRAPHICAL_TAGS, "");
+    std::list<std::string> geographicalTags = context.getReader().getOptionalArrayAttributeValue(GEOGRAPHICAL_TAGS, "");
     if (!geographicalTags.empty()) {
-        std::vector<std::string> tags;
-        boost::algorithm::split(tags, geographicalTags, boost::is_any_of(","));
-
-        for (const auto& tag : tags) {
+        for (const auto& tag : geographicalTags) {
             adder.addGeographicalTag(context.getAnonymizer().deanonymizeString(tag));
         }
     }
@@ -100,12 +97,12 @@ void SubstationXml::writeRootElementAttributes(const Substation& substation, con
     }
 
     if (!substation.getGeographicalTags().empty()) {
-        std::vector<std::string> tags;
+        std::list<std::string> tags;
         for (const auto& tag : substation.getGeographicalTags()) {
             tags.emplace_back(context.getAnonymizer().anonymizeString(tag));
         }
 
-        context.getWriter().writeAttribute(GEOGRAPHICAL_TAGS, boost::algorithm::join(tags, ","));
+        context.getWriter().writeArrayAttribute(GEOGRAPHICAL_TAGS, tags);
     }
 }
 

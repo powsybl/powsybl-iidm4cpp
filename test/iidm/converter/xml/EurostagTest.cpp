@@ -7,10 +7,13 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
 #include <powsybl/network/EurostagFactory.hpp>
+
+#include <powsybl/iidm/Line.hpp>
 
 namespace powsybl {
 
@@ -53,6 +56,31 @@ BOOST_FIXTURE_TEST_CASE(EurostagWithMultipleSelectedOperationalLimitsGroup, test
 
     // backward compatibility round trip
     test::converter::RoundTrip::roundTripVersionedXmlFromMinToCurrentVersionTest("eurostag-tutorial-multiple-selected-op-lim-group.xml", IidmXmlVersion::V1_12());
+
+}
+
+BOOST_FIXTURE_TEST_CASE(EurostagWithMultipleSelectedOperationalLimitsGroupSpecialCharacterName, test::ResourceFixture) {
+    Network network =  ::powsybl::network::EurostagFactory::createWithMultipleSelectedFixedCurrentLimits();
+
+    Line& line = network.getLine("NHV1_NHV2_1");
+    std::string special_name_1 = "notANiceName\"";
+    std::string special_name_2 = "anotherName,,,";
+
+    line.newOperationalLimitsGroup1(special_name_1);
+    line.newOperationalLimitsGroup1(special_name_2);
+    line.addSelectedOperationalLimitsGroups1({special_name_1, special_name_2});
+
+    Network importedNetwork = test::converter::RoundTrip::runXml(network, test::converter::RoundTrip::getVersionedNetwork("eurostag-tutorial-multiple-selected-op-lim-group_special_character_name.xml", IidmXmlVersion::CURRENT_IIDM_XML_VERSION()));
+
+    Line& importedLine = importedNetwork.getLine("NHV1_NHV2_1");
+    auto allGroups = importedLine.getOperationalLimitsGroups1();
+    auto selectedGroups = importedLine.getAllSelectedOperationalLimitsGroups1();
+
+    BOOST_CHECK_EQUAL(6, boost::size(allGroups));
+    BOOST_CHECK_EQUAL(5, boost::size(selectedGroups));
+
+    POWSYBL_ASSERT_REF_TRUE(importedLine.getOperationalLimitsGroup1(special_name_1));
+    POWSYBL_ASSERT_REF_TRUE(importedLine.getOperationalLimitsGroup1(special_name_2));
 
 }
 

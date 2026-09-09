@@ -150,6 +150,44 @@ std::string XmlStreamReader::getNamespaceOrDefault(const std::string& prefix) co
     return getNamespace(prefix, getDefaultNamespace());
 }
 
+std::list<std::string> XmlStreamReader::listFromCSV(const std::string& formatedValue) const {
+    std::list<std::string> listOfValues;
+    std::string rawValue = formatedValue;
+
+    if(!rawValue.empty()) {
+        bool bQuotedField = false;
+        std::string currentField = "";
+
+        for (size_t i = 0; i<rawValue.length(); i++) {
+            char c = rawValue[i];
+
+            if(c == '"') {
+                if(bQuotedField && i+1 <rawValue.length() && rawValue[i+1] == '"') {
+                    //inside a quoted field, double consecutive quotes is an escaped quote - we keep only one
+                    currentField += '"';
+                    i++;
+                } else { //Start or end of a quoted field
+                    bQuotedField = !bQuotedField;
+                }
+            } else if(c == ',' && !bQuotedField) {
+                //start a new field
+                listOfValues.emplace_back(currentField);
+                currentField = "";
+            } else {
+                currentField += c;
+            }
+        }
+        if(!currentField.empty()) { //the last one
+            listOfValues.emplace_back(currentField);
+        }
+    }
+    return listOfValues;
+}
+
+std::list<std::string> XmlStreamReader::getOptionalArrayAttributeValue(const std::string& attributeName, const std::string& defaultValue) const {
+    return listFromCSV(getOptionalAttributeValue(attributeName, defaultValue));
+}
+
 template <>
 stdcxx::optional<bool> XmlStreamReader::getOptionalAttributeValue(const std::string& attributeName) const {
     stdcxx::optional<bool> value;

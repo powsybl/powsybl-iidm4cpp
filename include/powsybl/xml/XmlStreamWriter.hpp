@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <iosfwd>
+#include <list>
 #include <memory>
 #include <string>
 
@@ -26,6 +27,8 @@ public:
     ~XmlStreamWriter() = default;
 
     void setPrefix(const std::string& prefix, const std::string& uri);
+
+    void writeArrayAttribute(const std::string& attributeName, const std::list<std::string>& listValue);
 
     void writeAttribute(const std::string& attributeName, bool attributeValue);
 
@@ -70,6 +73,8 @@ public:
 
 private:
     using XmlStreamWriterPtr = std::unique_ptr<xmlTextWriter, std::function<void(xmlTextWriter*)>>;
+
+    std::string listToCSV(const std::list<std::string>& listValue);
 
 private:
     std::ostream& m_stream;

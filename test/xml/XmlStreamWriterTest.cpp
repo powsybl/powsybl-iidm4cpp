@@ -105,6 +105,32 @@ BOOST_AUTO_TEST_CASE(FailureSetPrefix) {
     POWSYBL_ASSERT_THROW(writer.setPrefix("", ""), powsybl::xml::XmlStreamException, "Prefix cannot be empty");
 }
 
+BOOST_AUTO_TEST_CASE(writeListAttributeCSVFormated) {
+
+    std::stringstream ss;
+    powsybl::xml::XmlStreamWriter writer(ss, false);
+
+    writer.writeStartDocument("UTF-8", "1.0");
+    writer.writeStartElement("", "element");
+
+    writer.writeArrayAttribute("testListFormated0", {"\"", "\"\"", "\"\"\"", ",", ",\",", " ","A"});
+    writer.writeArrayAttribute("testListFormated1", {"test\"Value"});
+    writer.writeArrayAttribute("testListFormated2", {"\"testValue"});
+    writer.writeArrayAttribute("testListFormated3", {"testValue\""});
+    writer.writeArrayAttribute("testListFormated4", {"test,Value,,,,"});
+
+    writer.writeEndElement();
+    writer.writeEndDocument();
+
+    std::string result = ss.str();
+
+    BOOST_CHECK(result.find("testListFormated0=\"&quot;&quot;&quot;&quot;,&quot;&quot;&quot;&quot;&quot;&quot;,&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;,&quot;,&quot;,&quot;,&quot;&quot;,&quot;, ,A\"") != std::string::npos);
+    BOOST_CHECK(result.find("testListFormated1=\"&quot;test&quot;&quot;Value&quot;\"") != std::string::npos);
+    BOOST_CHECK(result.find("testListFormated2=\"&quot;&quot;&quot;testValue&quot;\"") != std::string::npos);
+    BOOST_CHECK(result.find("testListFormated3=\"&quot;testValue&quot;&quot;&quot;\"") != std::string::npos);
+    BOOST_CHECK(result.find("testListFormated4=\"&quot;test,Value,,,,&quot;\"") != std::string::npos);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace xml
