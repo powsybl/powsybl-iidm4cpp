@@ -86,7 +86,10 @@ void AbstractShuntCompensatorXml::readSubElements(const std::string& id, ShuntCo
         if (context.getReader().getLocalName() == REGULATING_TERMINAL) {
             std::string regId = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
             std::string regSide = context.getReader().getOptionalAttributeValue(SIDE, "");
-            std::string regNumber = context.getReader().getOptionalAttributeValue(NUMBER, "");
+            std::string regNumber = "";
+            if(context.getVersion() >= IidmXmlVersion::V1_15()) {
+                regNumber = context.getReader().getOptionalAttributeValue(NUMBER, "");
+            }
 
             if (!regId.empty()) {
                 std::function<void(Identifiable&)> fun = [&context, regId, regSide, regNumber](Identifiable &shuntCompensator) {

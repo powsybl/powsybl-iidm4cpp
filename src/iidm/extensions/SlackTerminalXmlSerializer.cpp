@@ -60,7 +60,10 @@ Extension& SlackTerminalXmlSerializer::read(Extendable& extendable, converter::x
     auto& voltageLevel = dynamic_cast<VoltageLevel&>(extendable);
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(converter::ID));
     const std::string& side = context.getReader().getOptionalAttributeValue(converter::SIDE, "");
-    const std::string& number = context.getReader().getOptionalAttributeValue(converter::NUMBER, "");
+    std::string number = "";
+    if(context.getVersion() >= converter::xml::IidmXmlVersion::V1_15()) {
+        number = context.getReader().getOptionalAttributeValue(converter::NUMBER, "");
+    }
     Terminal& terminal = converter::xml::TerminalRefXml::resolve(id, side, number, voltageLevel.getNetwork());
     extendable.newExtension<SlackTerminalAdder>().withTerminal(terminal).add();
     return extendable.getExtension<iidm::extensions::SlackTerminal>();

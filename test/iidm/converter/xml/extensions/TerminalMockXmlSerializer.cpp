@@ -83,7 +83,10 @@ Extension& TerminalMockXmlSerializer::read(Extendable& extendable, NetworkXmlRea
         if (context.getReader().getLocalName() == "terminal") {
             const std::string& id = context.getReader().getAttributeValue(ID);
             const std::string& side = context.getReader().getOptionalAttributeValue(SIDE, "");
-            const std::string& number = context.getReader().getOptionalAttributeValue(NUMBER, "");
+            std::string number = "";
+            if(context.getVersion() >= IidmXmlVersion::V1_15()) {
+                number = context.getReader().getOptionalAttributeValue(NUMBER, "");
+            }
             Terminal& terminal = TerminalRefXml::resolve(id, side, number, load.getNetwork());
             terminalMockExt->setTerminal(stdcxx::ref(terminal));
         } else {

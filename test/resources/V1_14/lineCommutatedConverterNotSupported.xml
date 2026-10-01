@@ -11,7 +11,7 @@
             <iidm:lineCommutatedConverter id="lccBb1ACWithoutSolvedV" name="LCC in Bus/Breaker with one AC Terminal without solved values" dcNode1="dcNode1" dcConnected1="false" dcNode2="dcNode2" dcConnected2="false" idleLoss="0" switchingLoss="0" resistiveLoss="0" controlMode="V_DC" targetVdc="502" connectableBus1="bus1" reactiveModel="FIXED_POWER_FACTOR" powerFactor="0.92000000000000004">
                 <iidm:alias>someAlias</iidm:alias>
                 <iidm:property name="prop name" value="prop value"/>
-                <iidm:pccTerminal id="lccBb1ACWithoutSolvedV" number="ONE"/>
+                <iidm:pccTerminal id="lccBb1ACWithoutSolvedV"/>
             </iidm:lineCommutatedConverter>
             <iidm:lineCommutatedConverter id="lccBb2ACWithSolvedV" name="LCC in Bus/Breaker with two AC Terminals with solved values and droop curve" dcNode1="dcNode1" dcConnected1="true" dcNode2="dcNode2" dcConnected2="true" idleLoss="2" switchingLoss="0.20000000000000001" resistiveLoss="1.9999999999999999e-06" controlMode="P_PCC_DROOP" targetP="301" targetVdc="502" bus1="bus1" connectableBus1="bus1" bus2="bus2" connectableBus2="bus2" reactiveModel="CALCULATED_POWER_FACTOR" powerFactor="0.92000000000000004" p1="-100" q1="-200" p2="-100.09999999999999" q2="-200.19999999999999" dcP1="-100" dcI1="-200" dcP2="0.40000000000000002" dcI2="200">
                 <iidm:pccTerminal id="lineBb" side="ONE"/>

@@ -36,14 +36,20 @@ namespace xml {
 Terminal& TerminalRefXml::readTerminal(Network& network, NetworkXmlReaderContext& context) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     const std::string side = context.getReader().getOptionalAttributeValue(SIDE, "");
-    const std::string number = context.getReader().getOptionalAttributeValue(NUMBER, "");
+    std::string number = "";
+    if(context.getVersion() >= IidmXmlVersion::V1_15()) {
+        number = context.getReader().getOptionalAttributeValue(NUMBER, "");
+    }
     return TerminalRefXml::resolve(id, side, number, network);
 }
 
 void TerminalRefXml::readTerminalRef(Network& network, NetworkXmlReaderContext& context, const std::function<void(Terminal&)>& endTaskTerminalConsumer) {
     const std::string& id = context.getAnonymizer().deanonymizeString(context.getReader().getAttributeValue(ID));
     const std::string side = context.getReader().getOptionalAttributeValue(SIDE, "");
-    const std::string number = context.getReader().getOptionalAttributeValue(NUMBER, "");
+    std::string number = "";
+    if(context.getVersion() >= IidmXmlVersion::V1_15()) {
+        number = context.getReader().getOptionalAttributeValue(NUMBER, "");
+    }
     context.addEndTask(XmlReaderEndTask::Step::AFTER_EXTENSIONS, [&network, id, side, number, endTaskTerminalConsumer]() {
         Terminal& terminal = resolve(id, side, number, network);
         endTaskTerminalConsumer(terminal);
@@ -110,7 +116,7 @@ void TerminalRefXml::writeTerminalRefAttribute(const Terminal& terminal, Network
     }
 
     auto optNumber = Terminal::getConnectableTerminalNumber(terminal);
-    if(optNumber.has_value() && *optNumber != TerminalNumber::UNDEFINED) {
+    if(optNumber.has_value() && *optNumber != TerminalNumber::UNDEFINED && context.getVersion() >= IidmXmlVersion::V1_15()) {
         context.getWriter().writeAttribute(NUMBER, Enum::toString(*optNumber));
     }
 
