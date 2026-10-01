@@ -94,6 +94,17 @@ public: // NodeBreakerView
 
     void traverse(stdcxx::const_range<unsigned long>& nodes, const TopologyTraverser& traverser) const override;
 
+protected:
+    void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
+
+    void deleteVariantArrayElement(unsigned long index) override;
+
+    void extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) override;
+
+    void reduceVariantArraySize(unsigned long number) override;
+
+    friend class iidm::NodeBreakerTopologyModel;
+
 public:
     explicit NodeBreakerViewImpl(NodeBreakerTopologyModel& topologyModel);
 

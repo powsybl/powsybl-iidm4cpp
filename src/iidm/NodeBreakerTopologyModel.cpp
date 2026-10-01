@@ -49,6 +49,7 @@ Switch& NodeBreakerTopologyModel::addSwitch(std::unique_ptr<Switch>&& ptrSwitch,
 
 void NodeBreakerTopologyModel::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
     m_variants.allocateVariantArrayElement(indexes, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
+    m_nodeBreakerView.allocateVariantArrayElement(indexes, sourceIndex);
 }
 
 void NodeBreakerTopologyModel::attach(Terminal& terminal, bool test) {
@@ -140,6 +141,7 @@ bool NodeBreakerTopologyModel::getConnectingSwitches(Terminal& terminal, const s
 
 void NodeBreakerTopologyModel::deleteVariantArrayElement(unsigned long index) {
     m_variants.deleteVariantArrayElement(index);
+    m_nodeBreakerView.deleteVariantArrayElement(index);
 }
 
 void NodeBreakerTopologyModel::detach(Terminal& terminal) {
@@ -222,6 +224,7 @@ bool NodeBreakerTopologyModel::getDisconnectingSwitches(Terminal& terminal, cons
 
 void NodeBreakerTopologyModel::extendVariantArraySize(unsigned long initVariantArraySize, unsigned long number, unsigned long sourceIndex) {
     m_variants.extendVariantArraySize(initVariantArraySize, number, [this, sourceIndex]() { return m_variants.copy(sourceIndex); });
+    m_nodeBreakerView.extendVariantArraySize(initVariantArraySize, number, sourceIndex);
 }
 
 const NodeBreakerTopologyModel::BusBreakerView& NodeBreakerTopologyModel::getBusBreakerView() const {
@@ -390,6 +393,7 @@ bool NodeBreakerTopologyModel::isConnected(const Terminal& terminal) const {
 
 void NodeBreakerTopologyModel::reduceVariantArraySize(unsigned long number) {
     m_variants.reduceVariantArraySize(number);
+    m_nodeBreakerView.reduceVariantArraySize(number);
 }
 
 void NodeBreakerTopologyModel::removeInternalConnections(unsigned long node1, unsigned long node2) {

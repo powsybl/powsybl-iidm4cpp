@@ -104,7 +104,7 @@ public:
     virtual stdcxx::Reference<Bus> getMergedBus(const std::string& configuredBusId) = 0;
 };
 
-class NodeBreakerView {
+class NodeBreakerView : public MultiVariantObject {
 public:
     using InternalConnection = node_breaker_view::InternalConnection;
 

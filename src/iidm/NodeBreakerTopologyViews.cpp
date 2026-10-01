@@ -169,6 +169,41 @@ NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerTopologyModel& voltageLevel)
     m_fictitiousQ0ByNode = std::map<unsigned long, std::vector<double>>();
 }
 
+void NodeBreakerViewImpl::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
+    for (auto& nodeP0 : m_fictitiousP0ByNode) {
+        for (const auto& index : indexes) {
+            nodeP0.second[index] = nodeP0.second[sourceIndex];
+        }
+    }
+    for (auto& nodeQ0 : m_fictitiousQ0ByNode) {
+        for (const auto& index : indexes) {
+            nodeQ0.second[index] = nodeQ0.second[sourceIndex];
+        }
+    }
+}
+
+void NodeBreakerViewImpl::deleteVariantArrayElement(unsigned long /*index*/) {
+    //nothing to do
+}
+
+void NodeBreakerViewImpl::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
+    for (auto& nodeP0 : m_fictitiousP0ByNode) {
+        nodeP0.second.resize(nodeP0.second.size() + number, nodeP0.second[sourceIndex]);
+    }
+    for (auto& nodeQ0 : m_fictitiousQ0ByNode) {
+        nodeQ0.second.resize(nodeQ0.second.size() + number, nodeQ0.second[sourceIndex]);
+    }
+}
+
+void NodeBreakerViewImpl::reduceVariantArraySize(unsigned long number) {
+    for (auto& nodeP0 : m_fictitiousP0ByNode) {
+        nodeP0.second.resize(nodeP0.second.size() - number);
+    }
+    for (auto& nodeQ0 : m_fictitiousQ0ByNode) {
+        nodeQ0.second.resize(nodeQ0.second.size() - number);
+    }
+}
+
 double NodeBreakerViewImpl::getFictitiousP0(unsigned long node) const {
     const auto& it = m_fictitiousP0ByNode.find(node);
     if(it!=m_fictitiousP0ByNode.cend()) {
