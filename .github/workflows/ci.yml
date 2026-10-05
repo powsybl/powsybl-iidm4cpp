@@ -73,7 +73,7 @@ jobs:
       LIBXML2_ROOT: C:\thirdparties\libxml2-2.9.10
       LIBXML2_URL: https://github.com/GNOME/libxml2/archive/v2.9.10.zip
     name: Windows
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Install LibXml2
         shell: cmd
