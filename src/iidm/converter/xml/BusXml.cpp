@@ -57,8 +57,8 @@ void BusXml::writeRootElementAttributes(const Bus& bus, const VoltageLevel& /*vo
     context.getWriter().writeOptionalAttribute(V, bus.getV());
     context.getWriter().writeOptionalAttribute(ANGLE, bus.getAngle());
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_8(), context.getVersion(), [&context, &bus]() {
-        context.getWriter().writeOptionalAttribute(FICTITIOUS_P0, bus.getFictitiousP0());
-        context.getWriter().writeOptionalAttribute(FICTITIOUS_Q0, bus.getFictitiousQ0());
+        context.getWriter().writeOptionalAttribute(FICTITIOUS_P0, bus.getFictitiousP0(), 0.0);
+        context.getWriter().writeOptionalAttribute(FICTITIOUS_Q0, bus.getFictitiousQ0(), 0.0);
     });
 }
 

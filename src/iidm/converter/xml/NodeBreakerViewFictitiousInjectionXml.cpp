@@ -42,8 +42,8 @@ void NodeBreakerViewFictitiousInjectionXml::read(VoltageLevel& voltageLevel, con
 void NodeBreakerViewFictitiousInjectionXml::write(unsigned long node, double fictP0, double fictQ0, NetworkXmlWriterContext& context) const {
     context.getWriter().writeStartElement(context.getVersion().getPrefix(), FICTITIOUS_INJECTION);
     context.getWriter().writeAttribute(NODE, node);
-    context.getWriter().writeOptionalAttribute(FICTITIOUS_P0, fictP0);
-    context.getWriter().writeOptionalAttribute(FICTITIOUS_Q0, fictQ0);
+    context.getWriter().writeOptionalAttribute(FICTITIOUS_P0, fictP0, 0.0);
+    context.getWriter().writeOptionalAttribute(FICTITIOUS_Q0, fictQ0, 0.0);
     context.getWriter().writeEndElement();
 }
 
