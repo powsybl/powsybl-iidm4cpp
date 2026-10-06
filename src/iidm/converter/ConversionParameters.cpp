@@ -58,6 +58,15 @@ const std::string& ConversionParameters::readStringParameter(const stdcxx::Prope
     return configuredParameter.getStringDefaultValue();
 }
 
+int ConversionParameters::readIntParameter(const stdcxx::Properties& parameters, const Parameter& configuredParameter) {
+    for (const std::string& name : configuredParameter.getNames()) {
+        if (parameters.contains(name)) {
+            return std::stoi(parameters.get(name));
+        }
+    }
+    return configuredParameter.getIntDefaultValue();
+}
+
 }  // namespace converter
 
 }  // namespace iidm

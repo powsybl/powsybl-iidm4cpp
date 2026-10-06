@@ -68,6 +68,15 @@ public:
      */
     ActivePowerControlAdder& withParticipate(bool participate);
 
+    /**
+     * Set participation factor
+     *
+     * @param participationFactor The participation factor
+     *
+     * @return this ActivePowerControlAdder object
+     */
+    ActivePowerControlAdder& withParticipationFactor(double participationFactor);
+
 protected:
     /**
      * Creates the ActivePowerControl extension.
@@ -82,6 +91,8 @@ private:
     bool m_participate = false;
 
     double m_droop = 0.0;
+
+    double m_participationFactor = 0.0;
 };
 
 }  // namespace iidm

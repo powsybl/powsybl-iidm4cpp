@@ -22,6 +22,7 @@ TieLineAdder::TieLineAdder(Network& network) :
 }
 
 TieLine& TieLineAdder::add() {
+    checkConnectableBuses();
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
     VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
     std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1(voltageLevel1);

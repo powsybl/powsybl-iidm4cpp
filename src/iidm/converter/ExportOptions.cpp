@@ -191,6 +191,14 @@ bool ExportOptions::withExtension(const std::string& extension) const {
     return m_extensions.empty() || m_extensions.find(extension) != m_extensions.end();
 }
 
+const std::string& ExportOptions::getXmlEncoding() const {
+    return m_encoding;
+}
+
+void ExportOptions::setXmlEncoding(const std::string& encoding) {
+    m_encoding = encoding;
+}
+
 }  // namespace converter
 
 }  // namespace iidm

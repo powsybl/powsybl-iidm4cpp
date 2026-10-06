@@ -111,9 +111,6 @@ Terminal& Terminal::setP(double p) {
     if (connectable.getType() == IdentifiableType::BUSBAR_SECTION) {
         throw ValidationException(connectable, "cannot set active power on a busbar section");
     }
-    if (!std::isnan(p) && connectable.getType() == IdentifiableType::SHUNT_COMPENSATOR) {
-        throw ValidationException(connectable, "cannot set active power on a shunt compensator");
-    }
 
     m_p[getNetwork().getVariantIndex()] = p;
 

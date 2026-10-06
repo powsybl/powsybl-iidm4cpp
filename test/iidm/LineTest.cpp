@@ -148,18 +148,22 @@ BOOST_AUTO_TEST_CASE(integrity) {
     BOOST_CHECK_CLOSE(200, line.getX(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setX(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': x is invalid");
 
+    BOOST_CHECK_CLOSE(1.0, line.getG1(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(line, line.setG1(300)));
     BOOST_CHECK_CLOSE(300, line.getG1(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setG1(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': g1 is invalid");
 
+    BOOST_CHECK_CLOSE(2.0, line.getG2(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(line, line.setG2(400)));
     BOOST_CHECK_CLOSE(400, line.getG2(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setG2(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': g2 is invalid");
 
+    BOOST_CHECK_CLOSE(0.2, line.getB1(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(line, line.setB1(500)));
     BOOST_CHECK_CLOSE(500, line.getB1(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setB1(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': b1 is invalid");
 
+    BOOST_CHECK_CLOSE(0.4, line.getB2(), std::numeric_limits<double>::epsilon());
     BOOST_TEST(stdcxx::areSame(line, line.setB2(600)));
     BOOST_CHECK_CLOSE(600, line.getB2(), std::numeric_limits<double>::epsilon());
     POWSYBL_ASSERT_THROW(line.setB2(stdcxx::nan()), ValidationException, "AC line 'VL1_VL3': b2 is invalid");
@@ -180,12 +184,12 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     LineAdder lineAdder = network.newLine();
 
-    POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': First voltage level is not set");
+    POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': First voltage level is not set and has no default value");
     lineAdder.setVoltageLevel1("INVALID");
     POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': First voltage level 'INVALID' not found");
     lineAdder.setVoltageLevel1("VL2");
 
-    POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': Second voltage level is not set");
+    POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': Second voltage level is not set and has no default value");
     lineAdder.setVoltageLevel2("INVALID");
     POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': Second voltage level 'INVALID' not found");
     lineAdder.setVoltageLevel2("VL4");
@@ -216,22 +220,20 @@ BOOST_AUTO_TEST_CASE(adder) {
     lineAdder.setBus2("");
     lineAdder.setConnectableBus2("VL4_BUS1");
 
-    POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': b1 is invalid");
+    POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': r is invalid");
+
     lineAdder.setB1(stdcxx::nan());
     POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': b1 is invalid");
     lineAdder.setB1(0.02);
 
-    POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': b2 is invalid");
     lineAdder.setB2(stdcxx::nan());
     POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': b2 is invalid");
     lineAdder.setB2(0.04);
 
-    POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': g1 is invalid");
     lineAdder.setG1(stdcxx::nan());
     POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': g1 is invalid");
     lineAdder.setG1(4.0);
 
-    POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': g2 is invalid");
     lineAdder.setG2(stdcxx::nan());
     POWSYBL_ASSERT_THROW(lineAdder.add(), ValidationException, "AC line '': g2 is invalid");
     lineAdder.setG2(5.0);

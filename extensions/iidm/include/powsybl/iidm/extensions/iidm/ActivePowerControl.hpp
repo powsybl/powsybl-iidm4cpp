@@ -34,17 +34,21 @@ public:
 
     bool isParticipate() const;
 
+    double getParticipationFactor() const;
+
     ActivePowerControl& setDroop(double droop);
 
     ActivePowerControl& setParticipate(bool participate);
+
+    ActivePowerControl& setParticipationFactor(double participationFactor);
 
 private:  // Extension
     void assertExtendable(const stdcxx::Reference<Extendable>& extendable) const override;
 
 private:
-    ActivePowerControl(Battery& battery, bool participate, double droop);
+    ActivePowerControl(Battery& battery, bool participate, double droop, double participationFactor);
 
-    ActivePowerControl(Generator& generator, bool participate, double droop);
+    ActivePowerControl(Generator& generator, bool participate, double droop, double participationFactor);
 
     friend class ActivePowerControlAdder;
 
@@ -52,6 +56,8 @@ private:
     bool m_participate;
 
     double m_droop;
+
+    double m_participationFactor;
 };
 
 }  // namespace iidm

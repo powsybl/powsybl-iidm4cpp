@@ -14,6 +14,10 @@ set(EXT_SOURCES
     src/BranchObservability.cpp
     src/BranchObservabilityAdder.cpp
     src/BranchObservabilityXmlSerializer.cpp
+    src/ControlUnit.cpp
+    src/ControlUnitAdder.cpp
+    src/ControlZone.cpp
+    src/ControlZoneAdder.cpp
     src/Coordinate.cpp
     src/CoordinatedReactiveControl.cpp
     src/CoordinatedReactiveControlAdder.cpp
@@ -57,8 +61,16 @@ set(EXT_SOURCES
     src/MeasurementValidationUtil.cpp
     src/Observability.cpp
     src/ObservabilityQuality.cpp
+    src/PilotPoint.cpp
+    src/PilotPointAdder.cpp
     src/RemoteReactivePowerControl.cpp
     src/RemoteReactivePowerControlAdder.cpp
+    src/SecondaryVoltageControl.cpp
+    src/SecondaryVoltageControlAdder.cpp
+    src/SecondaryVoltageControlXmlSerializer.cpp
+    src/StandbyAutomaton.cpp
+    src/StandbyAutomatonAdder.cpp
+    src/StandbyAutomatonXmlSerializer.cpp
     src/SubstationPosition.cpp
     src/SubstationPositionAdder.cpp
     src/SubstationPositionXmlSerializer.cpp
@@ -95,6 +107,8 @@ set(UNIT_TEST_SOURCES
     test/InjectionObservabilityTest.cpp
     test/MeasurementsTest.cpp
     test/RemoteReactivePowerControlTest.cpp
+    test/SecondaryVoltageControlTest.cpp
+    test/StandbyAutomatonTest.cpp
     test/SubstationAndLinePositionTest.cpp
     test/ThreeWindingsTransformerPhaseAngleClockTest.cpp
     test/ThreeWindingsTransformerToBeEstimatedTest.cpp

@@ -183,7 +183,7 @@ public:
 
     stdcxx::range<VscConverterStation> getVscConverterStations();
 
-    virtual void invalidateCache() = 0;
+    virtual void invalidateCache(bool exceptBusBreakerView = false) = 0;
 
     BatteryAdder newBattery();
 

@@ -842,10 +842,11 @@ BOOST_AUTO_TEST_CASE(testDisconnectConnect) {
 
     BOOST_CHECK(l1t.disconnect());
     BOOST_CHECK(!l1t.isConnected());
-    BOOST_CHECK_EQUAL(0, boost::size(vl1.getBusView().getBuses())); // Because no line in the VL
+    BOOST_CHECK_EQUAL(1, boost::size(vl1.getBusView().getBuses()));
     BOOST_CHECK(!l1t.getBusView().getBus());
-    BOOST_CHECK(!l1t.getBusView().getConnectableBus()); // Because no buses
-    BOOST_CHECK(!l1t.getBusView().getConnectableBus() && !vl1.getBusView().getBus("VL1_0"));
+    BOOST_CHECK(l1t.getBusView().getConnectableBus());
+    BOOST_CHECK(stdcxx::areSame(vl1.getBusView().getBus("VL1_0").get(), l1t.getBusView().getConnectableBus().get()));
+
     BOOST_CHECK(l1t.connect());
     BOOST_CHECK(l1t.isConnected());
 

@@ -53,13 +53,13 @@ public:
 
         double m_rho = stdcxx::nan();
 
-        double m_r = stdcxx::nan();
+        double m_r = 0.0;
 
-        double m_x = stdcxx::nan();
+        double m_x = 0.0;
 
-        double m_g = stdcxx::nan();
+        double m_g = 0.0;
 
-        double m_b = stdcxx::nan();
+        double m_b = 0.0;
     };
 
 public:

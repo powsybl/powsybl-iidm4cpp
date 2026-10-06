@@ -35,7 +35,7 @@ public:
         FeederAdder& withOrder(unsigned long order);
 
     private:
-        std::string m_name;
+        stdcxx::optional<std::string> m_name;
 
         stdcxx::optional<unsigned long> m_order;
 

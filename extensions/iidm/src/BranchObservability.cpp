@@ -70,25 +70,45 @@ const std::type_index& BranchObservability::getType() const {
     return s_type;
 }
 
-BranchObservability& BranchObservability::setQualityP1(double standardDeviation, bool redundant) {
+BranchObservability& BranchObservability::setQualityP1(double standardDeviation) {
+    m_qualityP1 = ObservabilityQuality(standardDeviation);
+
+    return *this;
+}
+BranchObservability& BranchObservability::setQualityP1(double standardDeviation, stdcxx::optional<bool> redundant) {
     m_qualityP1 = ObservabilityQuality(standardDeviation, redundant);
 
     return *this;
 }
 
-BranchObservability& BranchObservability::setQualityP2(double standardDeviation, bool redundant) {
+BranchObservability& BranchObservability::setQualityP2(double standardDeviation) {
+    m_qualityP2 = ObservabilityQuality(standardDeviation);
+
+    return *this;
+}
+BranchObservability& BranchObservability::setQualityP2(double standardDeviation, stdcxx::optional<bool> redundant) {
     m_qualityP2 = ObservabilityQuality(standardDeviation, redundant);
 
     return *this;
 }
 
-BranchObservability& BranchObservability::setQualityQ1(double standardDeviation, bool redundant) {
+BranchObservability& BranchObservability::setQualityQ1(double standardDeviation) {
+    m_qualityQ1 = ObservabilityQuality(standardDeviation);
+
+    return *this;
+}
+BranchObservability& BranchObservability::setQualityQ1(double standardDeviation, stdcxx::optional<bool> redundant) {
     m_qualityQ1 = ObservabilityQuality(standardDeviation, redundant);
 
     return *this;
 }
 
-BranchObservability& BranchObservability::setQualityQ2(double standardDeviation, bool redundant) {
+BranchObservability& BranchObservability::setQualityQ2(double standardDeviation) {
+    m_qualityQ2 = ObservabilityQuality(standardDeviation);
+
+    return *this;
+}
+BranchObservability& BranchObservability::setQualityQ2(double standardDeviation, stdcxx::optional<bool> redundant) {
     m_qualityQ2 = ObservabilityQuality(standardDeviation, redundant);
 
     return *this;

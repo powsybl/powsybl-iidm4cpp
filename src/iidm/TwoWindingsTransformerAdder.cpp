@@ -28,6 +28,7 @@ TwoWindingsTransformerAdder::TwoWindingsTransformerAdder(Substation& substation)
 }
 
 TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
+    checkConnectableBuses();
     VoltageLevel& voltageLevel1 = checkAndGetVoltageLevel1();
     VoltageLevel& voltageLevel2 = checkAndGetVoltageLevel2();
     if (m_substation) {
@@ -42,6 +43,13 @@ TwoWindingsTransformer& TwoWindingsTransformerAdder::add() {
     } else if (voltageLevel1.getSubstation() || voltageLevel2.getSubstation()) {
         throw ValidationException(*this, stdcxx::format("the 2 windings of the transformer shall belong to a substation since there are located in voltage levels with substations ('%1%', '%2%')", voltageLevel1.getId(), voltageLevel2.getId()));
     }
+    if(std::isnan(m_ratedU1)) {
+        m_ratedU1 = voltageLevel1.getNominalV();
+    }
+    if(std::isnan(m_ratedU2)) {
+        m_ratedU2 = voltageLevel2.getNominalV();
+    }
+
     std::unique_ptr<Terminal> ptrTerminal1 = checkAndGetTerminal1(voltageLevel1);
     std::unique_ptr<Terminal> ptrTerminal2 = checkAndGetTerminal2(voltageLevel2);
 

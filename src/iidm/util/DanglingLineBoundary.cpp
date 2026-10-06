@@ -61,11 +61,11 @@ double Boundary::getV() const {
     return SV(t.getP(), t.getQ(), iidm::Boundary::getV(b), iidm::Boundary::getAngle(b), Branch::Side::ONE).otherSideU(m_parent, true);
 }
 
-const VoltageLevel& Boundary::getVoltageLevel() const {
+const VoltageLevel& Boundary::getNetworkSideVoltageLevel() const {
     return m_parent.getTerminal().getVoltageLevel();
 }
 
-VoltageLevel& Boundary::getVoltageLevel() {
+VoltageLevel& Boundary::getNetworkSideVoltageLevel() {
     return m_parent.getTerminal().getVoltageLevel();
 }
 

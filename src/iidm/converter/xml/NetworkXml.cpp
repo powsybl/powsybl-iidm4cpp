@@ -26,11 +26,10 @@
 #include <powsybl/logging/Logger.hpp>
 #include <powsybl/logging/LoggerFactory.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
+#include <powsybl/xml/XmlEncoding.hpp>
 #include <powsybl/xml/XmlStreamException.hpp>
 #include <powsybl/xml/XmlStreamReader.hpp>
 #include <powsybl/xml/XmlStreamWriter.hpp>
-
-#include "xml/XmlEncoding.hpp"
 
 #include "HvdcLineXml.hpp"
 #include "LineXml.hpp"
@@ -354,7 +353,7 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     NetworkXmlWriterContext context(std::move(anonymizer), writer, options, filter, version, networkValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS);
     IidmXmlUtil::assertMinimumVersionIfNotDefault(networkValidationLevel != ValidationLevel::STEADY_STATE_HYPOTHESIS, NETWORK, MINIMUM_VALIDATION_LEVEL, ErrorMessage::NOT_SUPPORTED, IidmXmlVersion::V1_7(), context);
     
-    writer.writeStartDocument(powsybl::xml::DEFAULT_ENCODING, "1.0");
+    writer.writeStartDocument(options.getXmlEncoding(), "1.0");
     writer.writeStartElement(context.getVersion().getPrefix(), NETWORK);
     writer.setPrefix(context.getVersion().getPrefix(), version.getNamespaceUri(networkValidationLevel == ValidationLevel::STEADY_STATE_HYPOTHESIS));
     
@@ -365,6 +364,9 @@ void NetworkXml::write(const std::string& filename, std::ostream& os, const Netw
     writer.writeAttribute(FORECAST_DISTANCE, network.getForecastDistance());
     writer.writeAttribute(SOURCE_FORMAT, network.getSourceFormat());
     IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_7(), version, [&writer, &networkValidationLevel] { writer.writeAttribute(MINIMUM_VALIDATION_LEVEL, Enum::toString(networkValidationLevel)); });
+
+    //consider the network as exported so its extensions will be written
+    context.addExportedEquipment(network);
 
     AliasesXml::write(network, NETWORK, context);
     PropertiesXml::write(network, context);

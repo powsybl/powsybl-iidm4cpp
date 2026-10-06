@@ -18,16 +18,18 @@ namespace extensions {
 
 namespace iidm {
 
-ActivePowerControl::ActivePowerControl(Battery& battery, bool participate, double droop) :
+ActivePowerControl::ActivePowerControl(Battery& battery, bool participate, double droop, double participationFactor) :
     Extension(battery),
     m_participate(participate),
-    m_droop(droop) {
+    m_droop(droop),
+    m_participationFactor(participationFactor) {
 }
 
-ActivePowerControl::ActivePowerControl(Generator& generator, bool participate, double droop) :
+ActivePowerControl::ActivePowerControl(Generator& generator, bool participate, double droop, double participationFactor) :
     Extension(generator),
     m_participate(participate),
-    m_droop(droop) {
+    m_droop(droop),
+    m_participationFactor(participationFactor) {
 }
 
 void ActivePowerControl::assertExtendable(const stdcxx::Reference<Extendable>& extendable) const {
@@ -38,6 +40,10 @@ void ActivePowerControl::assertExtendable(const stdcxx::Reference<Extendable>& e
 
 double ActivePowerControl::getDroop() const {
     return m_droop;
+}
+
+double ActivePowerControl::getParticipationFactor() const {
+    return m_participationFactor;
 }
 
 const std::string& ActivePowerControl::getName() const {
@@ -56,6 +62,11 @@ bool ActivePowerControl::isParticipate() const {
 
 ActivePowerControl& ActivePowerControl::setDroop(double droop) {
     m_droop = droop;
+    return *this;
+}
+
+ActivePowerControl& ActivePowerControl::setParticipationFactor(double participationFactor) {
+    m_participationFactor = participationFactor;
     return *this;
 }
 
