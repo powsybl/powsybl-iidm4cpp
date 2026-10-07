@@ -171,6 +171,16 @@ public:
 
     virtual bool hasAttachedEquipment(unsigned long node) const = 0;
 
+    /**
+     * Return true if at least one node has a (non-zero) fictitious p0 
+     */
+    virtual double hasFictitiousP0() const = 0;
+
+    /**
+     * Return true if at least one node has a (non-zero) fictitious q0 
+     */
+    virtual double hasFictitiousQ0() const = 0;
+
     virtual SwitchAdder newBreaker() = 0;
 
     virtual BusbarSectionAdder newBusbarSection() = 0;
@@ -185,8 +195,15 @@ public:
 
     virtual void removeSwitch(const std::string& switchId) = 0;
 
+    /*
+    * Set a non-zero value for fictitious p0 at the the given node.
+    * If p0 is zero, the node's fictitious p0 is removed.
+    */
     virtual NodeBreakerView& setFictitiousP0(unsigned long node, double p0) = 0;
-
+    /*
+    * Set a non-zero value for fictitious q0 at the the given node.
+    * If q0 is zero, the node's fictitious q0 is removed.
+    */
     virtual NodeBreakerView& setFictitiousQ0(unsigned long node, double q0) = 0;
 
     virtual void traverse(unsigned long node, const TopologyTraverser& traverser) const = 0;

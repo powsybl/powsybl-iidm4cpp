@@ -5,6 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <cmath>
+
 #include "NodeBreakerTopologyViews.hpp"
 
 #include <powsybl/iidm/BusbarSection.hpp>
@@ -165,57 +167,51 @@ stdcxx::Reference<Bus> BusViewImpl::getMergedBus(const std::string& busbarSectio
 
 NodeBreakerViewImpl::NodeBreakerViewImpl(NodeBreakerTopologyModel& voltageLevel) :
     m_topologyModel(voltageLevel) {
-    m_fictitiousP0ByNode = std::map<unsigned long, std::vector<double>>();
-    m_fictitiousQ0ByNode = std::map<unsigned long, std::vector<double>>();
+        unsigned long variantArraySize = m_topologyModel.getNetwork().getVariantManager().getVariantArraySize();
+        m_fictitiousP0ByNode.resize(variantArraySize, std::map<unsigned long, double>());
+        m_fictitiousQ0ByNode.resize(variantArraySize, std::map<unsigned long, double>());
 }
 
 void NodeBreakerViewImpl::allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) {
-    for (auto& nodeP0 : m_fictitiousP0ByNode) {
-        for (const auto& index : indexes) {
-            nodeP0.second[index] = nodeP0.second[sourceIndex];
-        }
-    }
-    for (auto& nodeQ0 : m_fictitiousQ0ByNode) {
-        for (const auto& index : indexes) {
-            nodeQ0.second[index] = nodeQ0.second[sourceIndex];
-        }
+    for (const auto& index : indexes) {
+        m_fictitiousP0ByNode[index] = m_fictitiousP0ByNode[sourceIndex];
+        m_fictitiousQ0ByNode[index] = m_fictitiousQ0ByNode[sourceIndex];
     }
 }
 
-void NodeBreakerViewImpl::deleteVariantArrayElement(unsigned long /*index*/) {
-    //nothing to do
+void NodeBreakerViewImpl::deleteVariantArrayElement(unsigned long index) {
+    m_fictitiousP0ByNode[index].clear();
+    m_fictitiousQ0ByNode[index].clear();
 }
 
 void NodeBreakerViewImpl::extendVariantArraySize(unsigned long /*initVariantArraySize*/, unsigned long number, unsigned long sourceIndex) {
-    for (auto& nodeP0 : m_fictitiousP0ByNode) {
-        nodeP0.second.resize(nodeP0.second.size() + number, nodeP0.second[sourceIndex]);
-    }
-    for (auto& nodeQ0 : m_fictitiousQ0ByNode) {
-        nodeQ0.second.resize(nodeQ0.second.size() + number, nodeQ0.second[sourceIndex]);
-    }
+    m_fictitiousP0ByNode.resize(m_fictitiousP0ByNode.size() + number, m_fictitiousP0ByNode[sourceIndex]);
+    m_fictitiousQ0ByNode.resize(m_fictitiousQ0ByNode.size() + number, m_fictitiousQ0ByNode[sourceIndex]);
 }
 
 void NodeBreakerViewImpl::reduceVariantArraySize(unsigned long number) {
-    for (auto& nodeP0 : m_fictitiousP0ByNode) {
-        nodeP0.second.resize(nodeP0.second.size() - number);
-    }
-    for (auto& nodeQ0 : m_fictitiousQ0ByNode) {
-        nodeQ0.second.resize(nodeQ0.second.size() - number);
-    }
+    m_fictitiousP0ByNode.resize(m_fictitiousP0ByNode.size() - number);
+    m_fictitiousQ0ByNode.resize(m_fictitiousQ0ByNode.size() - number);
 }
 
 double NodeBreakerViewImpl::getFictitiousP0(unsigned long node) const {
-    const auto& it = m_fictitiousP0ByNode.find(node);
-    if(it!=m_fictitiousP0ByNode.cend()) {
-        return it->second.at(m_topologyModel.getNetwork().getVariantIndex());
+    //get map of the current Variant index
+    const auto& fictP0ByNode = m_fictitiousP0ByNode.at(m_topologyModel.getNetwork().getVariantIndex());
+
+    const auto& it = fictP0ByNode.find(node);
+    if(it!=fictP0ByNode.cend()) {
+        return it->second;
     }
     return stdcxx::nan();
 }
 
 double NodeBreakerViewImpl::getFictitiousQ0(unsigned long node) const {
-    const auto& it = m_fictitiousQ0ByNode.find(node);
-    if(it!=m_fictitiousQ0ByNode.cend()) {
-        return it->second.at(m_topologyModel.getNetwork().getVariantIndex());
+    //get map of the current Variant index
+    const auto& fictQ0ByNode = m_fictitiousQ0ByNode.at(m_topologyModel.getNetwork().getVariantIndex());
+
+    const auto& it = fictQ0ByNode.find(node);
+    if(it!=fictQ0ByNode.cend()) {
+        return it->second;
     }
     return stdcxx::nan();
 }
@@ -349,6 +345,18 @@ bool NodeBreakerViewImpl::hasAttachedEquipment(unsigned long node) const {
     return m_topologyModel.getGraph().vertexExists(node);
 }
 
+double NodeBreakerViewImpl::hasFictitiousP0() const {
+    //get map of the current variant index:
+    const auto& fictP0ByNode = m_fictitiousP0ByNode.at(m_topologyModel.getNetwork().getVariantIndex());
+    return !fictP0ByNode.empty();
+}
+
+double NodeBreakerViewImpl::hasFictitiousQ0() const {
+    //get map of the current Variant index
+    const auto& fictQ0ByNode = m_fictitiousQ0ByNode.at(m_topologyModel.getNetwork().getVariantIndex());
+    return !fictQ0ByNode.empty();
+}
+
 NodeBreakerViewImpl::SwitchAdder NodeBreakerViewImpl::newBreaker() {
     return SwitchAdder(m_topologyModel.getVoltageLevel()).setKind(SwitchKind::BREAKER);
 }
@@ -381,16 +389,16 @@ voltage_level::NodeBreakerView& NodeBreakerViewImpl::setFictitiousP0(unsigned lo
     const Network& network = m_topologyModel.getNetwork();
     checkP0(m_topologyModel.getVoltageLevel(), p0, network.getMinimumValidationLevel());
 
-    if(m_fictitiousP0ByNode.find(node) == m_fictitiousP0ByNode.cend()) {
-        m_fictitiousP0ByNode[node] = std::vector<double>(network.getVariantManager().getVariantArraySize(), stdcxx::nan());
+    //get map of the current Variant index
+    auto& fictP0ByNode = m_fictitiousP0ByNode.at(m_topologyModel.getNetwork().getVariantIndex());
+
+    //save the value, or remove if value is nan or 0.0
+    if(std::isnan(p0) || p0 == 0.0) {
+        fictP0ByNode.erase(node);
+    } else {
+        fictP0ByNode[node] = p0;
     }
-    m_fictitiousP0ByNode.at(node)[network.getVariantIndex()] = p0;
-    
-    std::set<unsigned long> nodesToRemove = clearFictitiousInjections(m_fictitiousP0ByNode);
-    for(const auto& nodeRemoved : nodesToRemove) {
-        m_fictitiousP0ByNode.erase(nodeRemoved);
-    }
-    
+
     return *this;
 }
 
@@ -398,31 +406,17 @@ voltage_level::NodeBreakerView& NodeBreakerViewImpl::setFictitiousQ0(unsigned lo
     const Network& network = m_topologyModel.getNetwork();
     checkQ0(m_topologyModel.getVoltageLevel(), q0, network.getMinimumValidationLevel());
 
-    if(m_fictitiousQ0ByNode.find(node) == m_fictitiousQ0ByNode.cend()) {
-        m_fictitiousQ0ByNode[node] = std::vector<double>(network.getVariantManager().getVariantArraySize(), stdcxx::nan());
-    }
-    m_fictitiousQ0ByNode.at(node)[network.getVariantIndex()] = q0;
-    
-    std::set<unsigned long> nodesToRemove = clearFictitiousInjections(m_fictitiousQ0ByNode);
-    for(const auto& nodeRemoved : nodesToRemove) {
-        m_fictitiousQ0ByNode.erase(nodeRemoved);
-    }
-    
-    return *this;
-}
+    //get map of the current Variant index
+    auto& fictQ0ByNode = m_fictitiousQ0ByNode.at(m_topologyModel.getNetwork().getVariantIndex());
 
-std::set<unsigned long> NodeBreakerViewImpl::clearFictitiousInjections(const std::map<unsigned long,std::vector<double>>& fictitiousInjectionsByNode) {
-    std::set<unsigned long> toRemove;
-    for(const auto& it : fictitiousInjectionsByNode) {
-        toRemove.insert(it.first);
-        for(const auto& vect : it.second) {
-            if(!std::isnan(vect)) {
-                toRemove.erase(it.first);
-                break;
-            }
-        }
+    //save the value, or remove if value is nan or 0.0
+    if(std::isnan(q0) || q0 == 0.0) {
+        fictQ0ByNode.erase(node);
+    } else {
+        fictQ0ByNode[node] = q0;
     }
-    return toRemove;
+
+    return *this;
 }
 
 void NodeBreakerViewImpl::traverse(unsigned long node, const TopologyTraverser& traverser) const {

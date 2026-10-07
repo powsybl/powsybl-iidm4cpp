@@ -71,8 +71,8 @@ BOOST_AUTO_TEST_CASE(testGetFictitiousP0AndFictitiousQ0) {
     BOOST_CHECK_CLOSE(20, bus.getFictitiousQ0(), std::numeric_limits<double>::epsilon());
     bus.setFictitiousP0(0.0);
     bus.setFictitiousQ0(0.0);
-    BOOST_CHECK_EQUAL(0.0, bus.getFictitiousP0());
-    BOOST_CHECK_EQUAL(0.0, bus.getFictitiousQ0());
+    BOOST_CHECK(std::isnan(bus.getFictitiousP0()));
+    BOOST_CHECK(std::isnan(bus.getFictitiousQ0()));
 
     //delete variant and clone a new one
     variantManager.removeVariant("duplicateState");

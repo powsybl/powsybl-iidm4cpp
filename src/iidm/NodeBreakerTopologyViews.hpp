@@ -72,6 +72,10 @@ public: // NodeBreakerView
 
     bool hasAttachedEquipment(unsigned long node) const override;
 
+    double hasFictitiousP0() const override;
+
+    double hasFictitiousQ0() const override;
+
     SwitchAdder newBreaker() override;
 
     BusbarSectionAdder newBusbarSection() override;
@@ -110,15 +114,12 @@ public:
 
     ~NodeBreakerViewImpl() noexcept override = default;
 
-private:
-    std::set<unsigned long> clearFictitiousInjections(const std::map<unsigned long,std::vector<double>>& fictitiousInjectionsByNode);
 
 private:
     NodeBreakerTopologyModel& m_topologyModel;
 
-    std::map<unsigned long, std::vector<double>> m_fictitiousP0ByNode;
-
-    std::map<unsigned long, std::vector<double>> m_fictitiousQ0ByNode;
+    std::vector<std::map<unsigned long, double>> m_fictitiousP0ByNode; //Managed by Variant
+    std::vector<std::map<unsigned long, double>> m_fictitiousQ0ByNode; //managed by Variant
 
 };
 

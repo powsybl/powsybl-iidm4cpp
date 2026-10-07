@@ -73,11 +73,10 @@ public:
      * @param name the name of this bus
      * @param fictious the fictitious status of this bus
      * @param voltageLevel the voltage level of this bus
+     * @param nodes the list of nodes this bus connects
      * @param terminals the list of NodeTerminal references which are connected to this bus
-     * @param getBusFromTerminalFunc function that retrieve the bus associated to a given terminal
      */
-    CalculatedBus(const std::string& id, const std::string& name, bool fictitious, VoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals,
-        const std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)>& getBusFromTerminalFunc );
+    CalculatedBus(const std::string& id, const std::string& name, bool fictitious, VoltageLevel& voltageLevel, const std::vector<unsigned long>& nodes, std::vector<std::reference_wrapper<NodeTerminal> >&& terminals);
 
     ~CalculatedBus() noexcept override = default;
 
@@ -101,7 +100,7 @@ private:
 
     stdcxx::CReference<NodeTerminal> m_terminalRef;
 
-    std::function<stdcxx::CReference<Bus>(stdcxx::CReference<Terminal>)> m_getBusFromTerminalFunc;
+    std::set<unsigned long> m_nodes;
 };
 
 }  // namespace iidm
