@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HXX
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTCONNECTABLEXML_HXX
 
+#include <cmath>
+
 #include <powsybl/iidm/converter/xml/AbstractConnectableXml.hpp>
 
 #include <powsybl/iidm/Bus.hpp>

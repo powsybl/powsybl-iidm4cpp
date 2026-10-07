@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_CONVERTER_XML_ABSTRACTTRANSFORMERXML_HXX
 #define POWSYBL_IIDM_CONVERTER_XML_ABSTRACTTRANSFORMERXML_HXX
 
+#include <cmath>
+
 #include "AbstractTransformerXml.hpp"
 
 #include <powsybl/iidm/PhaseTapChanger.hpp>

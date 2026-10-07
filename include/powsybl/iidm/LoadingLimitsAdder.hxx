@@ -8,6 +8,8 @@
 #ifndef POWSYBL_IIDM_LOADINGLIMITSADDER_HXX
 #define POWSYBL_IIDM_LOADINGLIMITSADDER_HXX
 
+#include <cmath>
+
 #include <powsybl/iidm/LoadingLimitsAdder.hpp>
 
 #include <unordered_set>

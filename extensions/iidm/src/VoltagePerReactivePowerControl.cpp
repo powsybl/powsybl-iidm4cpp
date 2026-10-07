@@ -5,6 +5,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <cmath>
+
 #include <powsybl/iidm/extensions/iidm/VoltagePerReactivePowerControl.hpp>
 
 #include <powsybl/iidm/StaticVarCompensator.hpp>
