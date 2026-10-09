@@ -28,6 +28,10 @@ namespace iidm {
 class NodeBreakerTopologyModel : public TopologyModel {
 public: // TopologyModel
     void attach(Terminal& terminal, bool test) override;
+    /**
+     * Not implemented for NodeBreaker Topology
+     */
+    void attachInCurrentVariant(Terminal& terminal, bool test) override;
 
     bool connect(Terminal& terminal) override;
     bool connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) override;
@@ -40,6 +44,10 @@ public: // TopologyModel
     bool getConnectingSwitches(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate, std::vector<stdcxx::Reference<Switch>>& switchesForConnection);
 
     void detach(Terminal& terminal) override;
+    /**
+     * Not implemented for NodeBrekaer Topology
+     */
+    void detachInCurrentVariant(Terminal& terminal) override;
 
     bool disconnect(Terminal& terminal) override;
     bool disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) override;

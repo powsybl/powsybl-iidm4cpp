@@ -74,6 +74,9 @@ void NodeBreakerTopologyModel::attach(Terminal& terminal, bool test) {
         });
     }
 }
+void NodeBreakerTopologyModel::attachInCurrentVariant(Terminal& /*terminal*/, bool /*test*/) {
+    throw PowsyblException("Not supported in a node/breaker topology");
+}
 
 void NodeBreakerTopologyModel::checkTerminal(Terminal& terminal) const {
     if (!stdcxx::isInstanceOf<NodeTerminal>(terminal)) {
@@ -158,6 +161,9 @@ void NodeBreakerTopologyModel::detach(Terminal& terminal) {
     // remove the link terminal <-> graph vertex
     m_graph.setVertexObject(node, stdcxx::ref<NodeTerminal>());
     clean();
+}
+void NodeBreakerTopologyModel::detachInCurrentVariant(Terminal& /*terminal*/) {
+    throw PowsyblException("Not supported in a node/breaker topology");
 }
 
 bool NodeBreakerTopologyModel::disconnect(Terminal& terminal) {

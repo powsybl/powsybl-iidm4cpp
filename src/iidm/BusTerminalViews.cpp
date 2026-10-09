@@ -50,9 +50,9 @@ void BusBreakerViewImpl::setConnectableBus(const std::string& busId) {
     // Assert that the new bus exists
     topologyModel.getConfiguredBus(busId, true);
 
-    topologyModel.detach(m_terminal);
+    topologyModel.detachInCurrentVariant(m_terminal);
     m_terminal.setConnectableBusId(busId);
-    topologyModel.attach(m_terminal, false);
+    topologyModel.attachInCurrentVariant(m_terminal, false);
 }
 
 BusViewImpl::BusViewImpl(powsybl::iidm::BusTerminal& terminal):

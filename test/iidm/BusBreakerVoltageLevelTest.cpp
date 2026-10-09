@@ -525,6 +525,52 @@ BOOST_AUTO_TEST_CASE(expandBusBranch) {
     BOOST_CHECK(stdcxx::areSame(b2, (*buses.begin()).get()));
 }
 
+void assertConnection(Load& load, const std::string& expectedconnectableBusId, bool expectedConnected, unsigned long connectedComponents) {
+    POWSYBL_ASSERT_REF_TRUE(load.getTerminal().getBusBreakerView().getConnectableBus());
+    BOOST_CHECK_EQUAL(expectedconnectableBusId, load.getTerminal().getBusBreakerView().getConnectableBus().get().getId());
+    if(expectedConnected) {
+        BOOST_CHECK(load.getTerminal().isConnected());
+        POWSYBL_ASSERT_REF_TRUE(load.getTerminal().getBusBreakerView().getBus());
+        BOOST_CHECK_EQUAL(expectedconnectableBusId, load.getTerminal().getBusBreakerView().getBus().get().getId());
+    } else {
+        BOOST_CHECK(!load.getTerminal().isConnected());
+        POWSYBL_ASSERT_REF_FALSE(load.getTerminal().getBusBreakerView().getBus());
+    }
+    BOOST_CHECK_EQUAL(connectedComponents, boost::size(load.getNetwork().getBusView().getConnectedComponents()));
+}
+
+BOOST_AUTO_TEST_CASE(testConnectableBusVariantManagement) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+
+    VoltageLevel& vl = network.getVoltageLevel("VLLOAD");
+    vl.getBusBreakerView().newBus().setId("NLOAD2").add();
+    vl.getBusBreakerView().newBus().setId("NLOAD3").add();
+
+    Load& l = network.getLoad("LOAD");
+    assertConnection(l, "NLOAD", true, 1);
+
+    //Change connectable bus
+    l.getTerminal().getBusBreakerView().setConnectableBus("NLOAD2");
+    assertConnection(l, "NLOAD2", true, 2);
+
+    // Create a new variant, "VARIANT 2", and use it
+    network.getVariantManager().cloneVariant(VariantManager::getInitialVariantId(), "VARIANT 2");
+    network.getVariantManager().setWorkingVariant("VARIANT 2");
+    assertConnection(l, "NLOAD2", true, 2);
+
+    // Change the connectable bus in "VARIANT 2"
+    l.getTerminal().getBusBreakerView().setConnectableBus("NLOAD3");
+    assertConnection(l, "NLOAD3", true, 2);
+
+    // Disconnect the load in "VARIANT 2"
+    l.disconnect();
+    assertConnection(l, "NLOAD3", false, 1);
+
+    // Use initial variant
+    network.getVariantManager().setWorkingVariant(VariantManager::getInitialVariantId());
+    assertConnection(l, "NLOAD2", true, 2);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

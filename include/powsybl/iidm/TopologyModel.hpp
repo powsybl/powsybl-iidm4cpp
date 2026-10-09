@@ -42,12 +42,26 @@ public:
 
     virtual void invalidateCache(bool exceptBusBreakerView = false) = 0;
 
+    /**
+     * Attach the given terminal for all the variants
+     */
     virtual void attach(Terminal& terminal, bool test) = 0;
+    /**
+     * Attach the given terminal in the current Variant
+     */
+    virtual void attachInCurrentVariant(Terminal& terminal, bool test) = 0;
 
     virtual bool connect(Terminal& terminal) = 0;
     virtual bool connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) = 0;
 
+    /**
+     * Detach the given terminal for all the variants
+     */
     virtual void detach(Terminal& terminal) = 0;
+    /**
+     * Detach the given terminal in the current Variant
+     */
+    virtual void detachInCurrentVariant(Terminal& terminal) = 0;
 
     virtual bool disconnect(Terminal& terminal) = 0;
     virtual bool disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) = 0;

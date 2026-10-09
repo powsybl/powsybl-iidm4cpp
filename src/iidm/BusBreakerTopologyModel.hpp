@@ -31,11 +31,13 @@ public:
 
 public: // TopologyModel
     void attach(Terminal& terminal, bool test) override;
+    void attachInCurrentVariant(Terminal& terminal, bool test) override;
 
     bool connect(Terminal& terminal) override;
     bool connect(Terminal& terminal, const stdcxx::Predicate<Switch>& isTypeSwitchToOperate) override;
 
     void detach(Terminal& terminal) override;
+    void detachInCurrentVariant(Terminal& terminal) override;
 
     bool disconnect(Terminal& terminal) override;
     bool disconnect(Terminal& terminal, const stdcxx::Predicate<Switch>& isSwitchOpenable) override;
@@ -100,7 +102,11 @@ private:
     static math::TraverseResult getTraverserResult(TerminalSet& visitedTerminals, BusTerminal& terminal, Terminal::TopologyTraverser& traverser);
 
 private:
+    void attach(Terminal& terminal, bool test, bool allVariants);
+
     void checkTerminal(Terminal& terminal) const;
+
+    void detach(Terminal& terminal, bool allVariants);
 
     bus_breaker_topology_model::CalculatedBusTopology& getCalculatedBusTopology();
 

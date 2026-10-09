@@ -59,16 +59,30 @@ void BusBreakerTopologyModel::allocateVariantArrayElement(const std::set<unsigne
 }
 
 void BusBreakerTopologyModel::attach(Terminal& terminal, bool test) {
+    attach(terminal, test, true);
+}
+void BusBreakerTopologyModel::attachInCurrentVariant(Terminal& terminal, bool test) {
+    attach(terminal, test, false);
+}
+void BusBreakerTopologyModel::attach(Terminal& terminal, bool test, bool allVariants) {
     checkTerminal(terminal);
-    if (!test) {
-        auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
-        const auto& connectableBus = getConfiguredBus(busTerminal.getConnectableBusId(), true);
+    if(test) {
+        return;
+    }
 
-        getNetwork().getVariantManager().forEachVariant([&connectableBus, &busTerminal, this]() {
-            connectableBus.get().addTerminal(busTerminal);
+    auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
+    const auto& connectableBus = getConfiguredBus(busTerminal.getConnectableBusId(), true);
 
-            invalidateCache();
-        });
+    const auto& taskAddTerminalToBus = [&connectableBus, &busTerminal, this]() {
+        connectableBus.get().addTerminal(busTerminal);
+
+        invalidateCache();
+    };
+
+    if(allVariants) {
+        getNetwork().getVariantManager().forEachVariant(taskAddTerminalToBus);
+    } else {
+        taskAddTerminalToBus();
     }
 }
 
@@ -109,17 +123,29 @@ void BusBreakerTopologyModel::deleteVariantArrayElement(unsigned long index) {
 }
 
 void BusBreakerTopologyModel::detach(Terminal& terminal) {
+    detach(terminal, true);
+}
+void BusBreakerTopologyModel::detachInCurrentVariant(Terminal& terminal) {
+    detach(terminal, false);
+}
+void BusBreakerTopologyModel::detach(Terminal& terminal, bool allVariants) {
     assert(stdcxx::isInstanceOf<BusTerminal>(terminal));
 
     auto& busTerminal = dynamic_cast<BusTerminal&>(terminal);
     auto& bus = getConfiguredBus(busTerminal.getConnectableBusId(), true).get();
 
-    getNetwork().getVariantManager().forEachVariant([&bus, &busTerminal, this]() {
+    const auto& taskRemoveTerminalFromBus = [&bus, &busTerminal, this]() {
         bus.removeTerminal(busTerminal);
         busTerminal.setConnectableBusId("");
 
         invalidateCache();
-    });
+    };
+
+    if(allVariants) {
+        getNetwork().getVariantManager().forEachVariant(taskRemoveTerminalFromBus);
+    } else {
+        taskRemoveTerminalFromBus();
+    }
 }
 
 bool BusBreakerTopologyModel::disconnect(Terminal& terminal) {
@@ -293,9 +319,14 @@ stdcxx::optional<unsigned long> BusBreakerTopologyModel::getVertex(const std::st
 }
 
 void BusBreakerTopologyModel::invalidateCache(bool /*exceptBusBreakerView*/) {
+    //For the current Variant:
+    
+    //invalidate cache
     m_variants.get().getCalculatedBusTopology().invalidateCache();
     getNetwork().getBusView().invalidateCache();
     getNetwork().getBusBreakerView().invalidateCache();
+
+    //invalidate components
     getNetwork().getConnectedComponentsManager().invalidate();
     getNetwork().getSynchronousComponentsManager().invalidate();
 }
