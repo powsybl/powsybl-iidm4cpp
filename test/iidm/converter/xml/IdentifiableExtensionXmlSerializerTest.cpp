@@ -18,6 +18,7 @@
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/converter/RoundTrip.hpp>
 
+#include "extensions/NetworkSourceExt.hpp"
 #include "extensions/TerminalMockExt.hpp"
 
 namespace powsybl {
@@ -129,6 +130,41 @@ BOOST_AUTO_TEST_CASE(ThrowErrorUnsupportedExtensionVersion2) {
     // should fail while trying to import a file in IIDM-XML network version 1.1 and loadMock in v1.0 (not compatible)
     POWSYBL_ASSERT_THROW(Network::readXml(path), PowsyblException, "IIDM-XML version of network (1.1) is not supported by the loadQux extension's XML serializer");
 }
+
+
+BOOST_AUTO_TEST_CASE(testAnonymizedNetworkIdWithExtension) {
+    Network network = powsybl::network::EurostagFactory::createTutorial1Network();
+
+    network.addExtension(stdcxx::make_unique<extensions::NetworkSourceExt>(network, "source"));
+    const std::string& originalId = network.getId();
+
+    converter::ExportOptions options = converter::ExportOptions().setAnonymized(true);
+    std::stringstream buffer;
+    Network::writeXml("anonymized-network-with-extension.xiidm", buffer, network, options);
+
+    //Exported network ID is anonymised :
+    std::string xmlOutput = buffer.str();
+    BOOST_CHECK(xmlOutput.find(originalId)==std::string::npos);
+
+    std::istringstream stream1(xmlOutput);
+    std::istringstream stream2(xmlOutput);
+
+    //Import (without Anonymizer)
+    Network networkImportedWithoutAnonymizer = Network::readXml("", stream1);
+    POWSYBL_ASSERT_REF_TRUE(networkImportedWithoutAnonymizer.findExtension<extensions::NetworkSourceExt>());
+    auto& importedExtWithoutAnonymizer = networkImportedWithoutAnonymizer.getExtension<extensions::NetworkSourceExt>();
+    BOOST_CHECK(networkImportedWithoutAnonymizer.getId()!=originalId);
+    BOOST_CHECK_EQUAL(networkImportedWithoutAnonymizer.getId(), importedExtWithoutAnonymizer.getExtendable<Identifiable>().get().getId());
+
+    //Import (using Anonymizer)
+    Network networkImportedWithAnonymizer = Network::readXml("anonymized-network-with-extension.xiidm", stream2);
+    POWSYBL_ASSERT_REF_TRUE(networkImportedWithAnonymizer.findExtension<extensions::NetworkSourceExt>());
+    auto& importedExtWithAnonymizer = networkImportedWithAnonymizer.getExtension<extensions::NetworkSourceExt>();
+    BOOST_CHECK_EQUAL(originalId, networkImportedWithAnonymizer.getId());
+    BOOST_CHECK_EQUAL(originalId, importedExtWithAnonymizer.getExtendable<Identifiable>().get().getId());
+
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 
