@@ -933,32 +933,32 @@ BOOST_AUTO_TEST_CASE(testLimitViolationUtilsCheckTemporaryLimits) {
     Network network3wt = powsybl::network::EurostagFactory::createWithMultipleSelectedFixedActivePowerLimits();
     ThreeWindingsTransformer& transformer = network3wt.getThreeWindingsTransformer("NGEN_V2_NHV1");
 
-    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.95}, LimitType::CURRENT, 299, {}); //below any Permanent Limit
-    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.8}, LimitType::CURRENT, 310,
+    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.95, 1.12}, LimitType::CURRENT, 299, {}); //below any Permanent Limit
+    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.8, 1.37}, LimitType::CURRENT, 310,
         {ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_1_2", 300,60 * 40}}); // above permanent of activated_1_2
-    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.82}, LimitType::CURRENT, 510, 
+    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.82, 1.23}, LimitType::CURRENT, 510, 
         {ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_1_2", 300, 60 * 40}}); // above permanent of Default, but no temporary above. `checkAllTemporaryLimits` doesn't detect anything in this case. It is the responsibility of `checkPermanentLimit`
-    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.7}, LimitType::CURRENT, 701, 
+    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.7, 1.5}, LimitType::CURRENT, 701, 
         {ExpectedOverload{"40'", "activated_1_2", 700, 30}}); // above first temporary of 1_2
-    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.92}, LimitType::CURRENT, 1122, 
+    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.92, 2.}, LimitType::CURRENT, 1122, 
         {ExpectedOverload{"40'", "activated_1_2", 700, 30}, 
          ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_1_1", 1100, 60 * 10}}); // above permanent of 1_1
-    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.87}, LimitType::CURRENT, 1450, 
+    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.87, 1.43}, LimitType::CURRENT, 1450, 
         {ExpectedOverload{"40'", "activated_1_2", 700, 30}, 
          ExpectedOverload{"10'", "activated_1_1", 1200, 60}}); // above first temporary of 1_1
-    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.3}, LimitType::CURRENT, 1500, 
+    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.3, 3.1}, LimitType::CURRENT, 1500, 
         {ExpectedOverload{"40'", "activated_1_2", 700, 30}, 
          ExpectedOverload{"1'", "activated_1_1", 1500, 0}}); // above last temporary of 1_1
-    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.84}, LimitType::CURRENT, 1601, 
+    checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.84, 1.75}, LimitType::CURRENT, 1601, 
         {ExpectedOverload{"0.5'", "activated_1_2", 1600, 0}, 
          ExpectedOverload{"1'", "activated_1_1", 1500, 0}}); // above last temporary of 1_2
 
 
-    checkLimitViolationUtilTemporaryLimits(transformer, ThreeSides::THREE, {1., 0.99}, LimitType::ACTIVE_POWER, 200, {}); // under all limits
-    checkLimitViolationUtilTemporaryLimits(transformer, ThreeSides::THREE, {1., 0.96}, LimitType::ACTIVE_POWER, 275, {}); // above permanent of Default, but no temporary above. `checkAllTemporaryLimits` doesn't detect anything in this case. It is the responsibility of `checkPermanentLimit`
-    checkLimitViolationUtilTemporaryLimits(transformer, ThreeSides::THREE, {1., 0.88}, LimitType::ACTIVE_POWER, 375, 
+    checkLimitViolationUtilTemporaryLimits(transformer, ThreeSides::THREE, {1., 0.99, 1.01}, LimitType::ACTIVE_POWER, 200, {}); // under all limits
+    checkLimitViolationUtilTemporaryLimits(transformer, ThreeSides::THREE, {1., 0.96, 1.87}, LimitType::ACTIVE_POWER, 275, {}); // above permanent of Default, but no temporary above. `checkAllTemporaryLimits` doesn't detect anything in this case. It is the responsibility of `checkPermanentLimit`
+    checkLimitViolationUtilTemporaryLimits(transformer, ThreeSides::THREE, {1., 0.88, 1.64}, LimitType::ACTIVE_POWER, 375, 
         {ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_3_1", 350, 45 * 60}}); // above permanent of activated_3_1
-    checkLimitViolationUtilTemporaryLimits(transformer, ThreeSides::THREE, {1., 0.77}, LimitType::ACTIVE_POWER, 405, 
+    checkLimitViolationUtilTemporaryLimits(transformer, ThreeSides::THREE, {1., 0.77, 1.67}, LimitType::ACTIVE_POWER, 405, 
         {ExpectedOverload{"45'", "activated_3_1", 400, 0}}); // above last temporary of activated_3_1
 }
 
