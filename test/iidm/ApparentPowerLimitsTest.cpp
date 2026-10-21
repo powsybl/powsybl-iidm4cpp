@@ -64,10 +64,10 @@ BOOST_AUTO_TEST_CASE(adder) {
     ApparentPowerLimitsAdder apparentPowerLimitsAdder = line.getOrCreateSelectedOperationalLimitsGroup1().newApparentPowerLimits();
     apparentPowerLimitsAdder.setPermanentLimit(10);
 
-    POWSYBL_ASSERT_THROW(apparentPowerLimitsAdder.beginTemporaryLimit().endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': temporary limit value is not set");
-    POWSYBL_ASSERT_THROW(apparentPowerLimitsAdder.beginTemporaryLimit().setValue(-1.0).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': temporary limit value must be >= 0");
-    POWSYBL_ASSERT_THROW(apparentPowerLimitsAdder.beginTemporaryLimit().setValue(1.0).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': acceptable duration is not set");
-    POWSYBL_ASSERT_THROW(apparentPowerLimitsAdder.beginTemporaryLimit().setValue(1.0).setAcceptableDuration(20 * 60).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': name is not set");
+    POWSYBL_ASSERT_THROW(apparentPowerLimitsAdder.beginTemporaryLimit().endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': temporary limit name is not set");
+    POWSYBL_ASSERT_THROW(apparentPowerLimitsAdder.beginTemporaryLimit().setName("TL").endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': temporary limit value is not set for 'TL' within limit set 'DEFAULT'");
+    POWSYBL_ASSERT_THROW(apparentPowerLimitsAdder.beginTemporaryLimit().setName("TL").setValue(-1.0).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': temporary limit value must be >= 0 for 'TL' within limit set 'DEFAULT'");
+    POWSYBL_ASSERT_THROW(apparentPowerLimitsAdder.beginTemporaryLimit().setName("TL").setValue(1.0).endTemporaryLimit(), PowsyblException, "AC line 'NHV1_NHV2_2': acceptable duration is not set for 'TL' within limit set 'DEFAULT'");
 
     apparentPowerLimitsAdder.beginTemporaryLimit()
             .setName("20'")

@@ -427,16 +427,17 @@ BOOST_AUTO_TEST_CASE(adder) {
 
     auto adder2 = adder;
     auto tempAdder = adder2.beginTemporaryLimit();
-    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value is not set");
+    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit name is not set");
+    tempAdder.setName("TL_1");
+
+    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value is not set for 'TL_1' within limit set 'DEFAULT'");
     tempAdder.setValue(-10.0);
-    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value must be >= 0");
+    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': temporary limit value must be >= 0 for 'TL_1' within limit set 'DEFAULT'");
     tempAdder.setValue(10.0);
 
-    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': acceptable duration is not set");
+    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': acceptable duration is not set for 'TL_1' within limit set 'DEFAULT'");
     tempAdder.setAcceptableDuration(1UL);
-
-    POWSYBL_ASSERT_THROW(tempAdder.endTemporaryLimit(), ValidationException, "AC line 'VL1_VL3': name is not set");
-    tempAdder.setName("TL_1");
+    
     BOOST_CHECK_NO_THROW(tempAdder.endTemporaryLimit());
 
     BOOST_CHECK(!adder.hasTemporaryLimits());

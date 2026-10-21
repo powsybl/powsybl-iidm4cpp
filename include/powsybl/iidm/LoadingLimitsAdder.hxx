@@ -31,23 +31,24 @@ LoadingLimitsAdder<L, A>::TemporaryLimitAdder::TemporaryLimitAdder(OperationalLi
 
 template <typename L, typename A>
 LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::TemporaryLimitAdder::endTemporaryLimit() {
+    std::string name = checkAndGetUniqueName();
+
     if (std::isnan(m_value)) {
-        throw ValidationException(m_owner, "temporary limit value is not set");
+        throw ValidationException(m_owner, stdcxx::format("temporary limit value is not set for '%1%' within limit set '%2%'", m_name, m_owner.getId()));
     }
     if (m_value < 0) {
-        throw ValidationException(m_owner, "temporary limit value must be >= 0");
+        throw ValidationException(m_owner, stdcxx::format("temporary limit value must be >= 0 for '%1%' within limit set '%2%'", m_name, m_owner.getId()));
     }
     if (m_value == 0.0) {
         logging::Logger& logger = logging::LoggerFactory::getLogger<LoadingLimitsAdder>();
         logger.info(stdcxx::format("%1%temporary limit value is set to 0", m_owner.getMessageHeader()));
     }
     if (!m_acceptableDuration) {
-        throw ValidationException(m_owner, "acceptable duration is not set");
+        throw ValidationException(m_owner, stdcxx::format("acceptable duration is not set for '%1%' within limit set '%2%'", m_name, m_owner.getId()));
     }
-    checkAndGetUniqueName();
 
     //Build temporaryLimit and add it to the parent LoadingLimits:
-    LoadingLimits::TemporaryLimit temporaryLimit = LoadingLimits::TemporaryLimit(m_name, m_value, *m_acceptableDuration, m_fictitious);
+    LoadingLimits::TemporaryLimit temporaryLimit = LoadingLimits::TemporaryLimit(name, m_value, *m_acceptableDuration, m_fictitious);
     copyPropertiesTo(temporaryLimit);
     if (m_fictitious && *m_acceptableDuration == std::numeric_limits<unsigned long>::max()) {
         return m_parent.addFictitiousLimit(std::move(temporaryLimit));
@@ -56,9 +57,9 @@ LoadingLimitsAdder<L, A>& LoadingLimitsAdder<L, A>::TemporaryLimitAdder::endTemp
 }
 
 template <typename L, typename A>
-void LoadingLimitsAdder<L, A>::TemporaryLimitAdder::checkAndGetUniqueName() {
+std::string LoadingLimitsAdder<L, A>::TemporaryLimitAdder::checkAndGetUniqueName() const {
     if (m_name.empty()) {
-        throw ValidationException(m_owner, "name is not set");
+        throw ValidationException(m_owner, "temporary limit name is not set");
     }
     if (m_ensureNameUnicity) {
         unsigned long i = 0UL;
@@ -67,8 +68,9 @@ void LoadingLimitsAdder<L, A>::TemporaryLimitAdder::checkAndGetUniqueName() {
             uniqueName = m_name + stdcxx::format("#%1%", i);
             i++;
         }
-        m_name = uniqueName;
+        return uniqueName;
     }
+    return m_name;
 }
 
 template <typename L, typename A>

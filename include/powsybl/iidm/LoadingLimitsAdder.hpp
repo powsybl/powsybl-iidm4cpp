@@ -40,7 +40,7 @@ public:
         TemporaryLimitAdder& addProperty(const std::string& key, const std::string& value);
 
     private:
-        void checkAndGetUniqueName();
+        std::string checkAndGetUniqueName() const;
 
     private:
         OperationalLimitsGroup& m_owner;
