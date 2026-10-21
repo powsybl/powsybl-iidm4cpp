@@ -31,6 +31,7 @@ public:
     DcSwitchAdder& setKind(const DcSwitchKind& kind);
     DcSwitchAdder& setDcNode1(const std::string& dcNodeId1);
     DcSwitchAdder& setDcNode2(const std::string& dcNodeId1);
+    DcSwitchAdder& setR(double r);
 
 protected: // IdentifiableAdder
     const Network& getNetwork() const override;
@@ -48,6 +49,7 @@ private:
     stdcxx::optional<DcSwitchKind> m_kind;
     std::string m_dcNodeId1;
     std::string m_dcNodeId2;
+    double m_r = 0.0;
 };
 
 }  // namespace iidm

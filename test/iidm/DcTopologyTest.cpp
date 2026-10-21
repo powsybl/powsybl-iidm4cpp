@@ -77,6 +77,79 @@ void assertComponent(const Component& component, unsigned long expectedNum, cons
 
 }
 
+
+BOOST_AUTO_TEST_CASE(testDisconnectedNodes) {
+    Network network = powsybl::network::DcDetailedNetworkFactory::createSimple2NodesDcSwitch();
+
+    //DCSwitch does not count as a Connectable for bus creation:
+    BOOST_CHECK_EQUAL(0, network.getDcBusCount());
+    network.getDcSwitch("dcSwitch").remove();
+    // disconnected nodes do not form buses
+    BOOST_CHECK_EQUAL(0, network.getDcBusCount());
+}
+
+BOOST_AUTO_TEST_CASE(testDcComponentsRespectSwitchOpenState) {
+    Network network = powsybl::network::DcDetailedNetworkFactory::createSimple4NodesDcLinesSwitchLine();
+    // n1 -- dcLine1 -- n2 -- [dcSwitch closed, R=0.1] -- n3 -- dcLine2 -- n4
+    // switch closed: n2 and n3 remain in distinct buses (switch has resistance), but all in one component
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+    BOOST_CHECK_EQUAL(4, network.getDcComponents().front().getSize());
+    BOOST_CHECK_EQUAL(4, network.getDcBusCount());
+
+    network.getDcSwitch("dcSwitch").setR(0.0);
+    // switch closed with R=0: n2 and n3 merge into one bus, component size drops to 3
+    // Incidentally, this checks that the topology is updated when the DcSwitch resistance goes from non-zero to zero.
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+    BOOST_CHECK_EQUAL(3, network.getDcComponents().front().getSize());
+    BOOST_CHECK_EQUAL(3, network.getDcBusCount());
+
+    network.getDcSwitch("dcSwitch").setR(0.1);
+    // Check that topology is updated when the DcSwitch resistance goes from zero to non-zero.
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+    BOOST_CHECK_EQUAL(4, network.getDcComponents().front().getSize());
+    BOOST_CHECK_EQUAL(4, network.getDcBusCount());
+
+    network.getDcSwitch("dcSwitch").setOpen(true);
+    // switch open: n2 and n3 are disconnected, yielding two separate components
+    BOOST_CHECK_EQUAL(2, boost::size(network.getDcComponents()));
+    for(const auto& component : network.getDcComponents()) {
+        BOOST_CHECK_EQUAL(2, component.getSize());
+    }
+}
+
+BOOST_AUTO_TEST_CASE(testHotChangeTopology) {
+    // check that
+    // n1 -- dcLine1 -- n2 -- [dcSwitch closed, R=0.1] -- n3 -- dcLine2 -- n4
+    Network network = powsybl::network::DcDetailedNetworkFactory::createSimple4NodesDcLinesSwitchLine();
+    BOOST_CHECK_EQUAL(4, network.getDcBusCount());
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+
+    network.getDcSwitch("dcSwitch").setOpen(true);
+    // switch open: n2 and n3 isolated from each other -> 2 components
+    BOOST_CHECK_EQUAL(4, network.getDcBusCount());
+    BOOST_CHECK_EQUAL(2, boost::size(network.getDcComponents()));
+
+    network.getDcSwitch("dcSwitch").setOpen(false);
+    // switch closed again: back to 1 component
+    BOOST_CHECK_EQUAL(4, network.getDcBusCount());
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+
+    network.getDcSwitch("dcSwitch").setR(0.0);
+    // R=0: n2 and n3 merge into one bus
+    BOOST_CHECK_EQUAL(3, network.getDcBusCount());
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+
+    network.getDcLine("dcLine1").remove();
+    // n1 has no more connected equipment -> no bus. Remaining: {n2,n3} and {n4}
+    BOOST_CHECK_EQUAL(2, network.getDcBusCount());
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+
+    network.getDcNode("n1").remove();
+    // removing the isolated node changes nothing topologically
+    BOOST_CHECK_EQUAL(2, network.getDcBusCount());
+    BOOST_CHECK_EQUAL(1, boost::size(network.getDcComponents()));
+}
+
 BOOST_AUTO_TEST_CASE(testBasicDcBusTopology) {
     Network net1("n1", "test");
 
@@ -173,6 +246,18 @@ BOOST_AUTO_TEST_CASE(testMultiVariantDcBusV) {
     BOOST_CHECK_CLOSE(501., n11.getV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-502., n12DcBus_init.getV(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(-502., n12.getV(), std::numeric_limits<double>::epsilon());
+
+    // check that topology changes *for all variants* when switch resistance is altered
+    variantManager.cloneVariant("v1", "v2");
+    variantManager.setWorkingVariant("v2");
+    // single DcBus because the switch is closed and its resistance is zero.
+    BOOST_CHECK_EQUAL(1, net1.getDcBusCount());
+    // topology changes when resistance is non-zero
+    net1.getDcSwitch("s11-12").setR(0.1);
+    BOOST_CHECK_EQUAL(2, net1.getDcBusCount());
+    // It should have changed in variant v1 as well
+    variantManager.setWorkingVariant("v1");
+    BOOST_CHECK_EQUAL(2, net1.getDcBusCount());
 
 }
 

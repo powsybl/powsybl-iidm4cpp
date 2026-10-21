@@ -41,6 +41,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(DcSwitchKind::DISCONNECTOR, dcSwitch1.getKind());
     BOOST_CHECK(stdcxx::areSame(dcNode1, dcSwitch1.getDcNode1()));
     BOOST_CHECK(stdcxx::areSame(dcNode2, dcSwitch1.getDcNode2()));
+    BOOST_CHECK_EQUAL(0.0, dcSwitch1.getR()); //default R value
     BOOST_CHECK(stdcxx::areSame(network.getDcSwitch("dcSwitch1Id"), dcSwitch1));
     BOOST_CHECK_EQUAL(1, network.getDcSwitchCount());
 
@@ -50,10 +51,12 @@ BOOST_AUTO_TEST_CASE(constructor) {
                 .setDcNode1(dcNode1.getId())
                 .setDcNode2(dcNode2.getId())
                 .setOpen(true)
+                .setR(1.5)
                 .add();
     BOOST_CHECK_EQUAL("dcSwitch2Id", dcSwitch2.getId());
     BOOST_CHECK(dcSwitch2.isOpen());
     BOOST_CHECK_EQUAL(DcSwitchKind::BREAKER, dcSwitch2.getKind());
+    BOOST_CHECK_CLOSE(1.5, dcSwitch2.getR(), std::numeric_limits<double>::epsilon());
 
     BOOST_CHECK_EQUAL(2, network.getDcSwitchCount());
     POWSYBL_ASSERT_REF_TRUE(network.find("dcSwitch1Id"));
@@ -72,11 +75,23 @@ BOOST_AUTO_TEST_CASE(getterSetterTest) {
                 .setDcNode1(dcNode1.getId())
                 .setDcNode2(dcNode2.getId())
                 .setOpen(true)
+                .setR(1.5)
                 .add();
 
     BOOST_CHECK(dcSwitch.isOpen());
     dcSwitch.setOpen(false);
     BOOST_CHECK(!dcSwitch.isOpen());
+
+    BOOST_CHECK_CLOSE(1.5, dcSwitch.getR(), std::numeric_limits<double>::epsilon());
+    dcSwitch.setR(2.5);
+    BOOST_CHECK_CLOSE(2.5, dcSwitch.getR(), std::numeric_limits<double>::epsilon());
+
+    dcSwitch.setR(0.0);
+    BOOST_CHECK_EQUAL(0.0, dcSwitch.getR());
+
+    POWSYBL_ASSERT_THROW(dcSwitch.setR(-0.1), ValidationException, "DC Switch 'dcSwitch': r is invalid");
+    POWSYBL_ASSERT_THROW(dcSwitch.setR(stdcxx::nan()), ValidationException, "DC Switch 'dcSwitch': r is invalid");
+
 }
 
 BOOST_AUTO_TEST_CASE(testCreateDuplicate) {
@@ -155,6 +170,12 @@ BOOST_AUTO_TEST_CASE(testCreationError) {
     adder.setKind(DcSwitchKind::DISCONNECTOR);
     POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "DC Switch 'dcSwitch': open is not set");
 
+    adder.setR(stdcxx::nan());
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "DC Switch 'dcSwitch': r is invalid");
+
+    adder.setR(-1.1);
+    POWSYBL_ASSERT_THROW(adder.add(), ValidationException, "DC Switch 'dcSwitch': r is invalid");
+
 }
 
 BOOST_AUTO_TEST_CASE(testNotAcrossNetworkSubnetworks) {
@@ -192,6 +213,7 @@ BOOST_AUTO_TEST_CASE(testVariant) {
                              .setDcNode1(dcNode1.getId())
                              .setDcNode2(dcNode2.getId())
                              .setOpen(false)
+                             .setR(1.5)
                              .add();
 
     VariantManager& variantManager = network.getVariantManager();
@@ -204,10 +226,14 @@ BOOST_AUTO_TEST_CASE(testVariant) {
     variantManager.setWorkingVariant("s4");
     // check values cloned by extend
     BOOST_CHECK(!dcSwitch.isOpen());
+    BOOST_CHECK_CLOSE(1.5, dcSwitch.getR(), std::numeric_limits<double>::epsilon());
 
     // change values in s4
     dcSwitch.setOpen(true);
     BOOST_CHECK(dcSwitch.isOpen());
+    //change in all Variants
+    dcSwitch.setR(0.5);
+    BOOST_CHECK_CLOSE(0.5, dcSwitch.getR(), std::numeric_limits<double>::epsilon());
 
     // remove s2
     variantManager.removeVariant("s2");
@@ -216,10 +242,12 @@ BOOST_AUTO_TEST_CASE(testVariant) {
     variantManager.setWorkingVariant("s2b");
     // check values cloned by allocate
     BOOST_CHECK(dcSwitch.isOpen());
+    BOOST_CHECK_CLOSE(0.5, dcSwitch.getR(), std::numeric_limits<double>::epsilon());
 
     // recheck initial variant value unchanged
     variantManager.setWorkingVariant(VariantManager::getInitialVariantId());
     BOOST_CHECK(!dcSwitch.isOpen());
+    BOOST_CHECK_CLOSE(0.5, dcSwitch.getR(), std::numeric_limits<double>::epsilon());
 
     // remove working variant s4
     variantManager.setWorkingVariant("s4");
@@ -229,6 +257,7 @@ BOOST_AUTO_TEST_CASE(testVariant) {
     // check we delete a single variant's values
     variantManager.setWorkingVariant("s3");
     BOOST_CHECK(!dcSwitch.isOpen());
+    BOOST_CHECK_CLOSE(0.5, dcSwitch.getR(), std::numeric_limits<double>::epsilon());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

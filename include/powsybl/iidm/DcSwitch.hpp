@@ -55,6 +55,9 @@ public:
     const DcNode& getDcNode2() const;
     DcNode& getDcNode2();
 
+    double getR() const;
+    DcSwitch& setR(double r);
+
     bool isOpen() const;
     DcSwitch& setOpen(bool open);
     
@@ -62,7 +65,7 @@ public:
 
 protected:
     DcSwitch(const std::string& id, const std::string& name, bool fictitious,
-            DcNode& node1, DcNode& node2, const DcSwitchKind& kind, bool open);
+            DcNode& node1, DcNode& node2, const DcSwitchKind& kind, bool open, double r);
     friend class DcSwitchAdder;
 
 private:
@@ -72,6 +75,8 @@ private:
     DcSwitchKind m_kind;
 
     std::vector<bool> m_open;
+
+    double m_r = 0.0;
 };
 
 }  // namespace iidm

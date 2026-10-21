@@ -11,6 +11,7 @@
 #include <powsybl/iidm/AbstractTerminalTopologyVisitor.hpp>
 #include <powsybl/iidm/AcDcConverter.hpp>
 #include <powsybl/iidm/DcGround.hpp>
+#include <powsybl/iidm/DcSwitch.hpp>
 #include <powsybl/iidm/LineCommutatedConverter.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/NetworkViews.hpp>
@@ -136,6 +137,20 @@ BOOST_AUTO_TEST_CASE(testLccBipoleGroundReturnWithDcLineSegments) {
 
     auto& dcComponent0 = dcComponents.front();
     BOOST_CHECK_EQUAL(14, dcComponent0.getSize());
+}
+
+BOOST_AUTO_TEST_CASE(testCreateSimple2NodesDCSwitch) {
+    iidm::Network dcNetwork = DcDetailedNetworkFactory::createSimple2NodesDcSwitch();
+
+    auto& dcNode1 = dcNetwork.getDcNode("dcNode1");
+    auto& dcNode2 = dcNetwork.getDcNode("dcNode2");
+    iidm::DcSwitch& dcSwitch = dcNetwork.getDcSwitch("dcSwitch");
+
+    BOOST_CHECK(!dcSwitch.isOpen());
+    BOOST_CHECK_EQUAL(iidm::DcSwitchKind::DISCONNECTOR, dcSwitch.getKind());
+    BOOST_CHECK(stdcxx::areSame(dcNode1, dcSwitch.getDcNode1()));
+    BOOST_CHECK(stdcxx::areSame(dcNode2, dcSwitch.getDcNode2()));
+    BOOST_CHECK_CLOSE(0.125, dcSwitch.getR(), std::numeric_limits<double>::epsilon());
 }
 
 

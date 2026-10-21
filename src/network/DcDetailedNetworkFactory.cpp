@@ -868,6 +868,79 @@ iidm::Network DcDetailedNetworkFactory::createVscMonopoleBase(const std::string&
     return rootNetwork;
 }
 
+iidm::Network DcDetailedNetworkFactory::createSimple2NodesDcSwitch() {
+    iidm::Network dcNetwork("Simple2NodesDcSwitch", "test");
+
+    dcNetwork.newDcNode()
+        .setId("dcNode1")
+        .setNominalV(500.)
+        .add();
+
+    dcNetwork.newDcNode()
+        .setId("dcNode2")
+        .setNominalV(500.)
+        .add();
+
+    dcNetwork.newDcSwitch()
+        .setId("dcSwitch")
+        .setR(0.125)
+        .setDcNode1("dcNode1")
+        .setDcNode2("dcNode2")
+        .setKind(iidm::DcSwitchKind::DISCONNECTOR)
+        .setOpen(false)
+        .add();
+
+    return dcNetwork;
+}
+
+iidm::Network DcDetailedNetworkFactory::createSimple4NodesDcLinesSwitchLine() {
+    iidm::Network dcNetwork("Simple4NodesDcLinesSwitchLine", "test");
+
+    dcNetwork.newDcNode()
+        .setId("n1")
+        .setNominalV(500.)
+        .add();
+    dcNetwork.newDcNode()
+        .setId("n2")
+        .setNominalV(500.)
+        .add();
+    dcNetwork.newDcNode()
+        .setId("n3")
+        .setNominalV(500.)
+        .add();
+    dcNetwork.newDcNode()
+        .setId("n4")
+        .setNominalV(500.)
+        .add();
+
+    dcNetwork.newDcLine()
+        .setId(DC_LINE1)
+        .setDcNode1("n1")
+        .setConnected1(true)
+        .setDcNode2("n2")
+        .setConnected2(true)
+        .setR(5.0)
+        .add();
+    dcNetwork.newDcSwitch()
+        .setId("dcSwitch")
+        .setR(0.1)
+        .setDcNode1("n2")
+        .setDcNode2("n3")
+        .setKind(iidm::DcSwitchKind::DISCONNECTOR)
+        .setOpen(false)
+        .add();
+    dcNetwork.newDcLine()
+        .setId(DC_LINE2)
+        .setDcNode1("n3")
+        .setConnected1(true)
+        .setDcNode2("n4")
+        .setConnected2(true)
+        .setR(5.0)
+        .add();
+
+    return dcNetwork;
+}
+
 }  // namespace network
 
 }  // namespace powsybl

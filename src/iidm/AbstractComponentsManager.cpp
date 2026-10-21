@@ -13,6 +13,8 @@
 #include <powsybl/iidm/Component.hpp>
 #include <powsybl/iidm/DcBus.hpp>
 #include <powsybl/iidm/DcLine.hpp>
+#include <powsybl/iidm/DcNode.hpp>
+#include <powsybl/iidm/DcSwitch.hpp>
 #include <powsybl/iidm/HvdcLine.hpp>
 #include <powsybl/iidm/Line.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -99,6 +101,14 @@ void AbstractComponentsManager::fillDcAdjacencyList(const std::map<std::string, 
         const auto& dcBus2 = acDcConverter.getDcTerminal2().getDcBus();
         addToAdjacencyList(dcBus1, dcBus2, busId2num, adjacencyList);
     }
+    for (const DcSwitch& dcSwitch : getNetwork().getDcSwitches()) {
+        if(!dcSwitch.isOpen() && dcSwitch.getR()!=0.0) {
+            const auto& dcBus1 = dcSwitch.getDcNode1().getDcBus();
+            const auto& dcBus2 = dcSwitch.getDcNode2().getDcBus();
+            addToAdjacencyList(dcBus1, dcBus2, busId2num, adjacencyList);
+        }
+    }
+
 }
 void AbstractComponentsManager::fillAcDcAdjacencyList(const std::map<std::string, unsigned long>& busId2num, std::vector<std::vector<unsigned long>>& adjacencyList) const {
     if(!m_ac || !m_dc){

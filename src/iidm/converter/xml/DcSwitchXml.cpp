@@ -39,6 +39,11 @@ DcSwitch& DcSwitchXml::readRootElementAttributes(DcSwitchAdder& adder, Network& 
     const auto& switchKind = Enum::fromString<DcSwitchKind>(context.getReader().getAttributeValue(KIND));
     const auto& open = context.getReader().getAttributeValue<bool>(OPEN);
 
+    IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_17(), context.getVersion(), [&context, &adder]() {
+        const auto& r = context.getReader().getAttributeValue<double>(R);
+        adder.setR(r);
+    });
+    //For previous versions, use adder default value 0.0
     return adder.setDcNode1(dcNode1Id)
                             .setDcNode2(dcNode2Id)
                             .setKind(switchKind)
@@ -59,6 +64,9 @@ void DcSwitchXml::writeRootElementAttributes(const DcSwitch& dcSwitch, const Net
 
     context.getWriter().writeAttribute(KIND, Enum::toString(dcSwitch.getKind()));
     context.getWriter().writeAttribute(OPEN, dcSwitch.isOpen());
+
+    IidmXmlUtil::writeDoubleAttributeFromMinimumVersion(getRootElementName(), R, dcSwitch.getR(), 0.0, ErrorMessage::NOT_DEFAULT_NOT_SUPPORTED, IidmXmlVersion::V1_17(), context);
+
 }
 
 }  // namespace xml

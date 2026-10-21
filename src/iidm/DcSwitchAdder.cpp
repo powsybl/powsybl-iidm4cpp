@@ -43,6 +43,7 @@ DcSwitch& DcSwitchAdder::add() {
 
     std::string parentNetworkId = (!m_subnetworkId.empty()) ? m_subnetworkId : m_network.getId();
     checkSameParentNetwork(parentNetworkId, *this, dcNode1, dcNode2);
+    checkDoubleParamPositive(*this, m_r, "r");
     if(!m_kind) {
         throw ValidationException(*this, "kind is not set");
     }
@@ -50,7 +51,7 @@ DcSwitch& DcSwitchAdder::add() {
         throw ValidationException(*this, "open is not set");
     }
 
-    auto ptrDcSwitch = std::unique_ptr<DcSwitch>(new DcSwitch(id, getName(), isFictitious(), dcNode1, dcNode2, *m_kind, *m_open));
+    auto ptrDcSwitch = std::unique_ptr<DcSwitch>(new DcSwitch(id, getName(), isFictitious(), dcNode1, dcNode2, *m_kind, *m_open, m_r));
     auto& dcSwitch = getNetwork().checkAndAdd<DcSwitch>(std::move(ptrDcSwitch));
     dcNode1.getParentNetwork().getDcTopologyModel().addDcSwitchToTopology(dcSwitch, m_dcNodeId1, m_dcNodeId2);
     return dcSwitch;
@@ -70,6 +71,10 @@ DcSwitchAdder& DcSwitchAdder::setDcNode1(const std::string& dcNodeId1) {
 }
 DcSwitchAdder& DcSwitchAdder::setDcNode2(const std::string& dcNodeId2) {
     m_dcNodeId2 = dcNodeId2;
+    return *this;
+}
+DcSwitchAdder& DcSwitchAdder::setR(double r) {
+    m_r = r;
     return *this;
 }
 

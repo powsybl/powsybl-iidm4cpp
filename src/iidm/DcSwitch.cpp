@@ -9,6 +9,7 @@
 
 #include <powsybl/iidm/DcNode.hpp>
 #include <powsybl/iidm/Network.hpp>
+#include <powsybl/iidm/ValidationUtils.hpp>
 
 namespace powsybl {
 
@@ -88,6 +89,19 @@ DcNode& DcSwitch::getDcNode2() {
     return m_dcNode2.get();
 }
 
+double DcSwitch::getR() const {
+    return m_r;
+}
+DcSwitch& DcSwitch::setR(double r) {
+    checkDoubleParamPositive(*this, r, "r");
+    double oldValue = m_r;
+    m_r = r;
+    if((oldValue == 0.0) != (r == 0.0)) { //changed r value from 0 to non-zero or vice versa
+        getParentNetwork().getDcTopologyModel().invalidateAllVariantsCache();
+    }
+    return *this;
+}
+
 bool DcSwitch::isOpen() const {
     return m_open[getNetwork().getVariantIndex()];
 }
@@ -110,12 +124,13 @@ void DcSwitch::remove() {
 }
 
 DcSwitch::DcSwitch(const std::string& id, const std::string& name, bool fictitious, 
-                    DcNode& node1, DcNode& node2, const DcSwitchKind& kind, bool open) :
+                    DcNode& node1, DcNode& node2, const DcSwitchKind& kind, bool open, double r) :
     Identifiable(id, name, fictitious),
     m_dcNode1(node1),
     m_dcNode2(node2),
     m_kind(kind),
-    m_open(node1.getNetwork().getVariantManager().getVariantArraySize(), open) {
+    m_open(node1.getNetwork().getVariantManager().getVariantArraySize(), open),
+    m_r(checkDoubleParamPositive(*this, r, "r")) {
 }
 
 }  // namespace iidm

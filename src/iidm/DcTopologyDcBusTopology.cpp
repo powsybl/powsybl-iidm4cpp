@@ -83,7 +83,7 @@ void DcBusTopology::updateCache() {
 
             graph->traverse(v, math::TraversalType::DEPTH_FIRST, [&dcNodeSet, &graph](unsigned long /*v1*/, unsigned long e, unsigned long v2) {
                 stdcxx::Reference<DcSwitch> dcSwitch = graph->getEdgeObject(e);
-                if(!dcSwitch || dcSwitch.get().isOpen()) {
+                if(!dcSwitch || dcSwitch.get().isOpen() || dcSwitch.get().getR() != 0.0) {
                     return math::TraverseResult::TERMINATE_PATH; 
                 }
                 dcNodeSet.push_back(std::ref(graph->getVertexObject(v2).get()));

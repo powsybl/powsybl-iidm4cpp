@@ -49,10 +49,11 @@ Network createBaseNetwork() {
                              .setDcNode2(dcNode2.getId())
                              .setKind(DcSwitchKind::DISCONNECTOR)
                              .setOpen(true)
+                             .setR(0.9)
                              .add();
     dcSwitch1.setProperty("prop name", "prop value");
     dcSwitch1.addAlias("someAlias");
-    network.newDcSwitch()
+    network.newDcSwitch() //default R = 0.0
         .setId("dcSwitchClosed")
         .setName("A closed DC Switch")
         .setDcNode1(dcNode1.getId())
@@ -92,6 +93,17 @@ BOOST_FIXTURE_TEST_CASE(DcSwitchNotSupportedTest, test::ResourceFixture) {
     const auto& dcNotSupportedNetwork = test::converter::RoundTrip::getVersionedNetworkPath("dcSwitchNotSupported.xml",IidmXmlVersion::V1_14());
     POWSYBL_ASSERT_THROW(Network::readXml(dcNotSupportedNetwork), PowsyblException, "network.dcNode is not supported for IIDM-XML version 1.14. IIDM-XML version should be >= 1.15");
 
+}
+
+BOOST_FIXTURE_TEST_CASE(testNonZeroRNotSupportedBeforeIidm117, test::ResourceFixture) {
+    Network dcNetwork = createBaseNetwork();
+
+    test::converter::RoundTrip::testForAllVersionsBetween(IidmXmlVersion::V1_15(), IidmXmlVersion::V1_16(), [&dcNetwork](const iidm::converter::xml::IidmXmlVersion& version){
+        ExportOptions options = ExportOptions().setVersion(version.toString("."));
+        std::stringstream buffer;
+        POWSYBL_ASSERT_THROW(Network::writeXml(stdcxx::format("%1%.xiidm", dcNetwork.getId()), buffer, dcNetwork, options), PowsyblException, 
+            stdcxx::format("dcSwitch.r is not defined as default and not supported for IIDM-XML version %1%. IIDM-XML version should be >= 1.17", version.toString(".")).c_str());
+    });
 }
 
 BOOST_AUTO_TEST_SUITE_END()

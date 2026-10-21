@@ -94,7 +94,14 @@ public:
     static std::string getTransformerId(const iidm::Country& country, const std::string& xNode, const std::string& suffix);
     static std::string getLineId(const iidm::Country& country, const std::string& xNode, const std::string& suffix);
 
-
+    /**
+     * Dc Grid with 2 DcNodes connected by a DCSwitch
+     */
+    static iidm::Network createSimple2NodesDcSwitch();
+    /**
+     * Dc Grid with 4 DcNodes : n1-n2 connected by a DCLine, n2-n3 connected by a DCSwitch and n3-n4 connected by a DCLine
+     */
+    static iidm::Network createSimple4NodesDcLinesSwitchLine();
 
 private:
 
