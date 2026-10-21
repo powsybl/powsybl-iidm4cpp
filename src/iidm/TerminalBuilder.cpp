@@ -18,7 +18,8 @@ namespace iidm {
 
 TerminalBuilder::TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable) :
     m_voltageLevel(voltageLevel),
-    m_validable(validable) {
+    m_validable(validable),
+    m_topologyKind(voltageLevel.getTopologyKind()) {
 }
 TerminalBuilder::TerminalBuilder(VoltageLevel& voltageLevel, Validable& validable, const ThreeSides& side) :
     TerminalBuilder(voltageLevel, validable) {
@@ -57,7 +58,19 @@ std::unique_ptr<Terminal> TerminalBuilder::build() {
     }
 
     std::unique_ptr<Terminal> ptrTerminal;
-    if (!checkOptional(m_node)) {
+    if(m_topologyKind == TopologyKind::NODE_BREAKER) {
+        //NodeBreaker Topology = node required
+        checkOptional(m_validable, m_node, "node is not set");
+
+        if (m_side != ThreeSides::UNDEFINED) {
+            ptrTerminal = createNodeTerminal(m_voltageLevel, m_side, *m_node);
+        } else if( m_terminalNumber != TerminalNumber::UNDEFINED) {
+            ptrTerminal = createNodeTerminal(m_voltageLevel, m_terminalNumber, *m_node);
+        } else {
+            ptrTerminal = createNodeTerminal(m_voltageLevel, *m_node);
+        }
+    } else { 
+        //BusBreaker topology = connectable bus required
         if (connectionBus.empty()) {
             throw ValidationException(m_validable, "connectable bus is not set");
         }
@@ -68,14 +81,6 @@ std::unique_ptr<Terminal> TerminalBuilder::build() {
             ptrTerminal = createBusTerminal(m_voltageLevel, m_terminalNumber, connectionBus, !m_bus.empty());
         } else {
             ptrTerminal = createBusTerminal(m_voltageLevel, connectionBus, !m_bus.empty());
-        }
-    } else {
-        if (m_side != ThreeSides::UNDEFINED) {
-            ptrTerminal = createNodeTerminal(m_voltageLevel, m_side, *m_node);
-        } else if( m_terminalNumber != TerminalNumber::UNDEFINED) {
-            ptrTerminal = createNodeTerminal(m_voltageLevel, m_terminalNumber, *m_node);
-        } else {
-            ptrTerminal = createNodeTerminal(m_voltageLevel, *m_node);
         }
     }
 
@@ -95,6 +100,11 @@ TerminalBuilder& TerminalBuilder::setConnectableBus(const std::string& connectab
 
 TerminalBuilder& TerminalBuilder::setNode(const stdcxx::optional<unsigned long>& node) {
     m_node = node;
+    return *this;
+}
+
+TerminalBuilder& TerminalBuilder::setTopologyKind(const TopologyKind& topologyKind) {
+    m_topologyKind = topologyKind;
     return *this;
 }
 

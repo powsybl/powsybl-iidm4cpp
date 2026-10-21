@@ -629,7 +629,9 @@ void VoltageLevel::convertToBusBreakerTopology() {
         }
 
         //Create new Terminal
+        //Force BusBreaker TopologyKind on the TerminalBuilder, as this VoltageLevel topology is still in NodeBreaker, though new terminals must be BusTerminal.
         std::unique_ptr<Terminal> newTerminalPtr = TerminalBuilder(*this, *this, infos.m_terminal.getSide(), infos.m_terminal.getTerminalNumber())
+                                                        .setTopologyKind(TopologyKind::BUS_BREAKER)
                                                         .setBus((infos.m_connected) ? infos.m_connectableBusId : "")
                                                         .setConnectableBus(infos.m_connectableBusId)
                                                         .build();

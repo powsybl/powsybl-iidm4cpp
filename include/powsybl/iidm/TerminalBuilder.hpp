@@ -13,6 +13,7 @@
 
 #include <powsybl/iidm/TerminalNumber.hpp>
 #include <powsybl/iidm/ThreeSides.hpp>
+#include <powsybl/iidm/TopologyKind.hpp>
 #include <powsybl/stdcxx/optional.hpp>
 
 namespace powsybl {
@@ -40,6 +41,13 @@ public:
 
     TerminalBuilder& setNode(const stdcxx::optional<unsigned long>& node);
 
+    /**
+     * Sets a TopologyKind, in which to build the Terminal.
+     * Default topologyKind is based on the VoltageLevel this builder is constructed from.
+     * In NODE_BREAKER topology, a node is mandatory, as in BUS_BREAKER a connectable bus is mandatory
+     */
+    TerminalBuilder& setTopologyKind(const TopologyKind& topologyKind);
+
 private:
     const std::string& getConnectionBus() const;
 
@@ -56,6 +64,8 @@ private:
 
     ThreeSides m_side = ThreeSides::UNDEFINED;
     TerminalNumber m_terminalNumber = TerminalNumber::UNDEFINED;
+
+    TopologyKind m_topologyKind;
 };
 
 }  // namespace iidm

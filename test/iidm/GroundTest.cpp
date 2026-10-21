@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE(creationErrors) {
     //in NB need a node
     GroundAdder groundAdder = vl1.newGround();
     groundAdder.setId("Ground").setEnsureIdUnicity(true);
-    POWSYBL_ASSERT_THROW(groundAdder.add(), PowsyblException, "Ground 'Ground': connectable bus is not set");
+    POWSYBL_ASSERT_THROW(groundAdder.add(), PowsyblException, "Ground 'Ground': node is not set");
     groundAdder.setNode(6).add();
     GroundAdder groundAdder1 = vl1.newGround();
     groundAdder1.setNode(6).setEnsureIdUnicity(true);
@@ -185,11 +185,11 @@ BOOST_AUTO_TEST_CASE(creationErrors) {
     GroundAdder groundAdder4 = vl1.newGround();
     groundAdder4.setId("Ground").setEnsureIdUnicity(true)
         .setBus("BUS1");
-    POWSYBL_ASSERT_THROW(groundAdder4.add(), ValidationException, "Ground 'Ground#4': Voltage level VL1 has a node/breaker topology, a node connection should be specified instead of a bus connection");
+    POWSYBL_ASSERT_THROW(groundAdder4.add(), ValidationException, "Ground 'Ground': node is not set");
     GroundAdder groundAdder5 = vl2.newGround();
     groundAdder5.setId("Ground").setEnsureIdUnicity(true)
         .setNode(7);
-    POWSYBL_ASSERT_THROW(groundAdder5.add(), ValidationException, "Ground 'Ground#5': Voltage level 'VL2' has a bus/breaker topology, a bus connection should be specified instead of a node connection");
+    POWSYBL_ASSERT_THROW(groundAdder5.add(), ValidationException, "Ground 'Ground': connectable bus is not set");
 }
 
 BOOST_AUTO_TEST_SUITE_END()
