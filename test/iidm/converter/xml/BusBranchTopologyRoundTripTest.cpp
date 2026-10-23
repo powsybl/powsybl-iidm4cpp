@@ -7,8 +7,12 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include <powsybl/iidm/BusbarSection.hpp>
+#include <powsybl/iidm/GeneratorAdder.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+
+#include <powsybl/iidm/converter/xml/TopologyLevelXmlUtil.hpp>
 
 #include <powsybl/test/AssertionUtils.hpp>
 #include <powsybl/test/ResourceFixture.hpp>
@@ -98,6 +102,83 @@ BOOST_FIXTURE_TEST_CASE(BusBranchTopologyIncompatibilityMissingConnectableBus, t
     BOOST_CHECK_EQUAL(networkBusBranch.getVoltageLevel("VL2").getTopologyKind(), TopologyKind::BUS_BREAKER);
     BOOST_CHECK_EQUAL(1UL, networkBusBranch.getVoltageLevel("VL2").getBusView().getBusCount());
 
+}
+
+BOOST_AUTO_TEST_CASE(shouldKeepOriginalTopologyWhenDetectingReferenceToBusbarTerminal) {
+    Network network = Network("n1", "test");
+    Substation& substation = network.newSubstation().setId("S1").add();
+    VoltageLevel& vl = substation.newVoltageLevel()
+                .setId("VL1")
+                .setNominalV(225.0)
+                .setTopologyKind(TopologyKind::NODE_BREAKER)
+                .add();
+
+    vl.getNodeBreakerView().newBusbarSection().setId("BBS1").setNode(0).add();
+    BusbarSection& bbs2 = vl.getNodeBreakerView().newBusbarSection()
+                .setId("BBS2")
+                .setNode(1)
+                .add();
+
+    vl.newGenerator()
+                .setId("GEN1")
+                .setNode(2)
+                .setRegulatingTerminal(stdcxx::ref<Terminal>(bbs2.getTerminal()))
+                .setMinP(-9999.99)
+                .setMaxP(9999.99)
+                .setVoltageRegulatorOn(true)
+                .setTargetV(24.5)
+                .setTargetP(607.0)
+                .setTargetQ(301.0)
+                .add();
+
+    vl.getNodeBreakerView().newSwitch()
+                .setId("SW1")
+                .setNode1(0)
+                .setNode2(1)
+                .setKind(SwitchKind::BREAKER)
+                .setOpen(true)
+                .add();
+
+    vl.getNodeBreakerView().newSwitch()
+                .setId("SW2")
+                .setNode1(0)
+                .setNode2(2)
+                .setKind(SwitchKind::BREAKER)
+                .setOpen(false)
+                .add();
+
+    BOOST_CHECK(TopologyLevelXmlUtil::hasReferencedBusbarSection(vl));
+
+    ExportOptions options;
+    options.setTopologyLevel(TopologyLevel::BUS_BRANCH);
+
+    const std::string& filename = stdcxx::format("%1%.xiidm", network.getId());
+    std::stringstream ostream;
+    POWSYBL_ASSERT_THROW( Network::writeXml(filename, ostream, network, options), PowsyblException, "Cannot export voltage level 'VL1' in BUS_BRANCH topology: this would lead to an invalid IIDM.");
+
+    options.setBusBranchVoltageLevelIncompatibilityBehavior(ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior::KEEP_ORIGINAL_TOPOLOGY);
+    
+    ostream.str("");
+    ostream.clear();
+
+    Network::writeXml(filename, ostream, network, options);
+    Network importedNetwork = Network::readXml(filename, ostream);
+    BOOST_CHECK_EQUAL(importedNetwork.getVoltageLevel("VL1").getTopologyKind(), TopologyKind::NODE_BREAKER);
+
+}
+
+BOOST_AUTO_TEST_CASE(shouldReturnFalseWhenTopologyIsBusBreaker) {
+    Network network = Network("n1", "test");
+    Substation& substation = network.newSubstation()
+                .setId("S1")
+                .add();
+    VoltageLevel& vl = substation.newVoltageLevel()
+                .setId("VL1")
+                .setNominalV(225.0)
+                .setTopologyKind(TopologyKind::BUS_BREAKER)
+                .add();
+
+    BOOST_CHECK(!TopologyLevelXmlUtil::hasReferencedBusbarSection(vl));
 }
 
 

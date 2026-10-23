@@ -36,6 +36,11 @@ std::vector<stdcxx::Reference<Referrer<T>>> ReferrerManager<T>::getReferrers() {
 }
 
 template<typename T>
+bool ReferrerManager<T>::isReferenced() const {
+    return !m_referrers.empty();
+}
+
+template<typename T>
 void ReferrerManager<T>::notifyRemoval() {
     for(auto& referrer : m_referrers) {
         if(static_cast<bool>(referrer)) {

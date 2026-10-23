@@ -30,6 +30,16 @@ public:
      */
     static TopologyLevel determineTopologyLevel(const VoltageLevel& voltageLevel, NetworkXmlWriterContext& context);
 
+    /**
+     * Return true if the given VoltageLevel has at least one terminal with a missing connectable bus reference:
+     */
+    static bool withMissingConnectableBus(const VoltageLevel& voltageLevel);
+
+    /**
+     * Return true if the given VoltageLevel in NodeBreaker Topoogy has at least one busbar section's terminal is referenced by another equipment.
+     */
+    static bool hasReferencedBusbarSection(const VoltageLevel& voltageLevel);
+
 public:
     TopologyLevelXmlUtil() = delete;
 

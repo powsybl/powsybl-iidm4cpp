@@ -36,6 +36,8 @@ virtual void unregisterReferrer(const Referrer<T>& referrer);
 
 virtual std::vector<stdcxx::Reference<Referrer<T>>> getReferrers();
 
+virtual bool isReferenced() const;
+
 /**
  * notify each registered Referrer that this ReferrerManager object is removed
  */

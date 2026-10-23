@@ -7,7 +7,9 @@
 
 #include <powsybl/iidm/converter/xml/TopologyLevelXmlUtil.hpp>
 
+#include <powsybl/iidm/BusbarSection.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/converter/xml/NetworkXmlWriterContext.hpp>
 
 namespace powsybl {
@@ -34,24 +36,44 @@ TopologyLevel TopologyLevelXmlUtil::determineTopologyLevel(const VoltageLevel& v
 
 }
 
+bool TopologyLevelXmlUtil::withMissingConnectableBus(const VoltageLevel& voltageLevel) {
+    for (const auto& connectable : voltageLevel.getConnectables()) {
+        for (const auto& terminal : connectable.getTerminals()) {
+            if(!terminal.get().getBusView().getConnectableBus()) {
+                // At least one terminal which has a missing connectable bus reference:
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool TopologyLevelXmlUtil::hasReferencedBusbarSection(const VoltageLevel& voltageLevel) {
+    if(voltageLevel.getTopologyKind() != TopologyKind::NODE_BREAKER) {
+        return false;
+    }
+
+    for (const auto& bbs : voltageLevel.getNodeBreakerView().getBusbarSections()) {
+        if(bbs.getTerminal().isReferenced()) {
+            // At least one bbs terminal is referenced:
+            return true;
+        }
+    }
+    return false;
+}
+
 TopologyLevel TopologyLevelXmlUtil::checkVoltageLevelExportTopology(const VoltageLevel& voltageLevel, const NetworkXmlWriterContext& context, const TopologyLevel& topologyLevel) {
     if(topologyLevel != TopologyLevel::BUS_BRANCH) {
         return topologyLevel;
     }
 
-    for (const auto& connectable : voltageLevel.getConnectables()) {
-        for (const auto& terminal : connectable.getTerminals()) {
-            if( !terminal.get().getBusView().getConnectableBus()) {  
-                // At least one terminal which has a missing connectable bus reference:
-
-                if (context.getOptions().getBusBranchVoltageLevelIncompatibilityBehavior() == ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior::THROW_EXCEPTION) { 
-                    throw PowsyblException(stdcxx::format("Cannot export voltage level '%1%' in BUS_BRANCH topology: this would lead to an invalid IIDM.", voltageLevel.getId()));
-                }
-                return getMinTopologyLevel(voltageLevel.getTopologyKind(), TopologyLevel::NODE_BREAKER);
-
-            }
+    if(withMissingConnectableBus(voltageLevel) || hasReferencedBusbarSection(voltageLevel)) {
+        if (context.getOptions().getBusBranchVoltageLevelIncompatibilityBehavior() == ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior::THROW_EXCEPTION) { 
+            throw PowsyblException(stdcxx::format("Cannot export voltage level '%1%' in BUS_BRANCH topology: this would lead to an invalid IIDM.", voltageLevel.getId()));
         }
+        return getMinTopologyLevel(voltageLevel.getTopologyKind(), TopologyLevel::NODE_BREAKER);
     }
+
     //No issue detected:
     return topologyLevel;
 }
