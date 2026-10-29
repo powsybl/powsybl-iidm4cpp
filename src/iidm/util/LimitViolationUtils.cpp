@@ -12,6 +12,7 @@
 #include <powsybl/iidm/Enum.hpp>
 #include <powsybl/stdcxx/format.hpp>
 #include <powsybl/stdcxx/make_unique.hpp>
+#include <powsybl/stdcxx/math.hpp>
 #include <powsybl/stdcxx/reference.hpp>
 
 namespace powsybl {
@@ -30,7 +31,7 @@ PermanentLimitCheckResult checkPermanentLimitIfAny(const LoadingLimits& limits, 
 bool checkPermanentLimit(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type) {
     stdcxx::const_range<LoadingLimits> allSelectedLimits = branch.getAllSelectedLoadingLimits(type, side);
     for (const auto& limits : allSelectedLimits) {
-        if(checkPermanentLimitIfAny(limits, limitReduction, i).m_isOverloaded) {
+        if(limits.getDetectionKind()==DetectionKind::HIGH && checkPermanentLimitIfAny(limits, limitReduction, i).m_isOverloaded) {
             return true;
         }
     }
@@ -39,14 +40,14 @@ bool checkPermanentLimit(const Branch& branch, const TwoSides& side, double limi
 bool checkPermanentLimit(const ThreeWindingsTransformer& transformer, const ThreeSides& side, double limitReduction, double i, const LimitType& type) {
     stdcxx::const_range<LoadingLimits> allSelectedLimits = transformer.getLeg(side).getAllSelectedLoadingLimits(type);
     for (const auto& limits : allSelectedLimits) {
-        if(checkPermanentLimitIfAny(limits, limitReduction, i).m_isOverloaded) {
+        if(limits.getDetectionKind()==DetectionKind::HIGH && checkPermanentLimitIfAny(limits, limitReduction, i).m_isOverloaded) {
             return true;
         }
     }
     return false;
 }
 
-std::unique_ptr<Overload> getOverload(const LoadingLimits& limits, double limitReduction, double i) {
+std::unique_ptr<Overload> getOverloadHigh(const LoadingLimits& limits, double limitReduction, double i) {
     std::unique_ptr<Overload> res;
 
     if (!std::isnan(limits.getPermanentLimit()) && !std::isnan(i)) {
@@ -70,6 +71,37 @@ std::unique_ptr<Overload> getOverload(const LoadingLimits& limits, double limitR
     }
 
     return res;
+}
+
+std::unique_ptr<Overload> getOverloadLow(const LoadingLimits& limits, double limitReduction, double i) {
+    std::unique_ptr<Overload> res;
+
+    stdcxx::CReference<LoadingLimits::TemporaryLimit> previousTemporaryLimit;
+    for(const auto& tl : limits.getTemporaryLimits()) {
+        if(std::isgreaterequal(i, tl.getValue() * limitReduction)) {
+            previousTemporaryLimit = stdcxx::cref(tl);
+        } else {
+            break;
+        }
+    }
+    if(static_cast<bool>(previousTemporaryLimit)) {
+        res = stdcxx::make_unique<Overload>(previousTemporaryLimit.get(), limits.getLimitsGroupId(), previousTemporaryLimit.get().getName(), previousTemporaryLimit.get().getValue(), limitReduction);
+    }
+    return res;
+}
+
+
+std::unique_ptr<Overload> getOverload(const LoadingLimits& limits, double limitReduction, double i) {
+    switch(limits.getDetectionKind()) {
+        case DetectionKind::HIGH: {
+            return getOverloadHigh(limits, limitReduction, i);
+        }
+        case DetectionKind::LOW: {
+            return getOverloadLow(limits, limitReduction, i);
+        }
+        default:
+            throw AssertionError(stdcxx::format("Unexpected detectionKind value: %1%", limits.getDetectionKind()));
+    }
 }
 
 std::unique_ptr<Overload> checkTemporaryLimits(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type) {

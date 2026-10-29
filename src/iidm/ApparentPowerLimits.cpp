@@ -11,8 +11,8 @@ namespace powsybl {
 
 namespace iidm {
 
-ApparentPowerLimits::ApparentPowerLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits) :
-    LoadingLimits(owner, permanentLimit, temporaryLimits, fictitiousLimits) {
+ApparentPowerLimits::ApparentPowerLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits, const DetectionKind& detectionKind) :
+    LoadingLimits(owner, permanentLimit, temporaryLimits, fictitiousLimits, detectionKind) {
 }
 
 const LimitType& ApparentPowerLimits::getLimitType() const {

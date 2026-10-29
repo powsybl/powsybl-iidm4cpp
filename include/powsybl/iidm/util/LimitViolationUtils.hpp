@@ -37,7 +37,9 @@ struct PermanentLimitCheckResult {
  */
 std::unique_ptr<Overload> getOverload(const LoadingLimits& limits, double limitReduction, double i);
 
-
+/**
+ * Returns a permanent limit violation if any. This should only be called on limits that have a permanent limit value and with High detection kind 
+ */
 PermanentLimitCheckResult checkPermanentLimitIfAny(const LoadingLimits& limits, double limitReduction, double i);
 
 bool checkPermanentLimit(const Branch& branch, const TwoSides& side, double limitReduction, double i, const LimitType& type);

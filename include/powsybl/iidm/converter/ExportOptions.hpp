@@ -43,6 +43,8 @@ public:
     static constexpr const char* const VOLTAGE_LEVELS_BUS_BREAKER = "iidm.export.xml.topology-level.voltage-levels.bus-breaker";
     static constexpr const char* const VOLTAGE_LEVELS_BUS_BRANCH = "iidm.export.xml.topology-level.voltage-levels.bus-branch";
 
+    static constexpr const char* const FORCE_EXPORT_NETWORK_WITH_BETA_FEATURES = "iidm.export.xml.force-export-network-with-beta-features";
+
     enum class IidmVersionIncompatibilityBehavior : unsigned char {
         THROW_EXCEPTION,
         LOG_ERROR
@@ -164,6 +166,11 @@ public:
     bool isFlatten() const;
 
     /**
+     * Return true if network export should ignore encountered BETA features.
+     */
+    bool isForceExportNetworkWithBetaFeatures() const;
+
+    /**
      * Return true if the XML should be indented
      *
      * @return true if the XML should be indented, false otherwise
@@ -204,9 +211,16 @@ public:
 
     /**
      * Set the expected behaviour regarding the network and subnetworks flattening. If true, subnetworks will be integrated with the root network into a 'flat' network during export.
-     * Ig the network does not contain subnetworks, setting this to 'true' has no effect.
+     * If the network does not contain subnetworks, setting this to 'true' has no effect.
      */
     ExportOptions& setFlatten(bool flatten);
+
+    /**
+     * Set the export behavior regarding network containing BETA Features that are not serializable.
+     * If false (which is the default), if the network contain such features it will throw an Exception.
+     * If true, force the export of network even when such features are encountered, which will be ignored.
+     */
+    ExportOptions& setForceExportNetworkWithBetaFeatures(bool forceExportNetworkWithBetaFeatures);
 
     /**
      * Set the expected behaviour if an IIDM's version incompatibility occurs
@@ -292,6 +306,8 @@ private:
     BusBranchVoltageLevelIncompatibilityBehavior m_busBranchVoltageLevelIncompatibilityBehavior = BusBranchVoltageLevelIncompatibilityBehavior::THROW_EXCEPTION;
 
     bool m_flatten = false;
+
+    bool m_forceExportNetworkWithBetaFeatures = false;
 
 };
 

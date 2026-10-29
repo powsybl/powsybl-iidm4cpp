@@ -67,6 +67,7 @@ static const Parameter EXPORT_FLATTEN_PARAMETER(ExportOptions::FLATTEN, Paramete
 static const Parameter EXPORT_VOLTAGE_LEVELS_NODEBREAKER_PARAMETER(ExportOptions::VOLTAGE_LEVELS_NODE_BREAKER, Parameter::Type::STRING_LIST, "Apply Node/Breaker topology level at export for listed voltage levels", "");
 static const Parameter EXPORT_VOLTAGE_LEVELS_BUSBREAKER_PARAMETER(ExportOptions::VOLTAGE_LEVELS_BUS_BREAKER, Parameter::Type::STRING_LIST, "Apply Bus/Breaker topology level at export for listed voltage levels", "");
 static const Parameter EXPORT_VOLTAGE_LEVELS_BUSBRANCH_PARAMETER(ExportOptions::VOLTAGE_LEVELS_BUS_BRANCH, Parameter::Type::STRING_LIST, "Apply Bus/Branch topology level at export for listed voltage levels", "");
+static const Parameter EXPORT_FORCE_NETWORK_WITH_BETA_FEATURES_PARAMETER(ExportOptions::FORCE_EXPORT_NETWORK_WITH_BETA_FEATURES, Parameter::Type::BOOLEAN, "Force the export of a network containing elements in a beta state, skipping the serialization of beta elements when the serialization does not exist.", "false");
 
 
 std::ostream& operator<<(std::ostream& stream, const ExportOptions::IidmVersionIncompatibilityBehavior& value) {
@@ -101,7 +102,8 @@ ExportOptions::ExportOptions(const stdcxx::Properties& parameters) :
     m_version(ConversionParameters::readStringParameter(parameters, EXPORT_VERSION_PARAMETER)),
     m_iidmVersionIncompatibilityBehavior(Enum::fromString<IidmVersionIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, EXPORT_IIDM_VERSION_INCOMPATIBILITY_BEHAVIOR_PARAMETER))),
     m_busBranchVoltageLevelIncompatibilityBehavior(Enum::fromString<BusBranchVoltageLevelIncompatibilityBehavior>(ConversionParameters::readStringParameter(parameters, EXPORT_BUS_BRANCH_VOLTAGE_LEVEL_INCOMPATIBILITY_BEHAVIOR_PARAMETER))),
-    m_flatten(ConversionParameters::readBooleanParameter(parameters, EXPORT_FLATTEN_PARAMETER)) {
+    m_flatten(ConversionParameters::readBooleanParameter(parameters, EXPORT_FLATTEN_PARAMETER)),
+    m_forceExportNetworkWithBetaFeatures(ConversionParameters::readBooleanParameter(parameters, EXPORT_FORCE_NETWORK_WITH_BETA_FEATURES_PARAMETER)) {
         setThrowExceptionIfExtensionNotFound(ConversionParameters::readBooleanParameter(parameters, EXPORT_THROW_EXCEPTION_IF_EXTENSION_NOT_FOUND_PARAMETER));
         setWithAutomationSystems(ConversionParameters::readBooleanParameter(parameters, EXPORT_WITH_AUTOMATION_SYSTEMS_PARAMETER));
 
@@ -244,6 +246,10 @@ bool ExportOptions::isFlatten() const {
     return m_flatten;
 }
 
+bool ExportOptions::isForceExportNetworkWithBetaFeatures() const {
+    return m_forceExportNetworkWithBetaFeatures;
+}
+
 bool ExportOptions::isIndent() const {
     return m_indent;
 }
@@ -268,6 +274,17 @@ ExportOptions& ExportOptions::setBusBranchVoltageLevelIncompatibilityBehavior(co
 
 ExportOptions& ExportOptions::setFlatten(bool flatten) {
     m_flatten = flatten;
+    return *this;
+}
+
+ExportOptions& ExportOptions::setForceExportNetworkWithBetaFeatures(bool forceExportNetworkWithBetaFeatures) {
+    m_forceExportNetworkWithBetaFeatures = forceExportNetworkWithBetaFeatures;
+
+    if(m_forceExportNetworkWithBetaFeatures) {
+        logging::Logger& logger = logging::LoggerFactory::getLogger<ExportOptions>();
+        logger.warn(stdcxx::format("Forcing export of network with BETA features might result in an unreadable file."));
+    }
+
     return *this;
 }
 

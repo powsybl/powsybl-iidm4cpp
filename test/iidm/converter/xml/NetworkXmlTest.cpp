@@ -10,6 +10,7 @@
 #include <boost/algorithm/string/join.hpp>
 
 #include <powsybl/PowsyblException.hpp>
+#include <powsybl/iidm/ApparentPowerLimitsAdder.hpp>
 #include <powsybl/iidm/BatteryAdder.hpp>
 #include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/BoundaryLineAdder.hpp>
@@ -44,6 +45,7 @@
 #include <powsybl/iidm/converter/FakeAnonymizer.hpp>
 #include <powsybl/iidm/converter/ImportOptions.hpp>
 #include <powsybl/iidm/converter/xml/IidmXmlVersion.hpp>
+#include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/network/LoadBarExt.hpp>
 #include <powsybl/network/LoadFooExt.hpp>
 #include <powsybl/network/MultipleExtensionsTestNetworkFactory.hpp>
@@ -540,6 +542,44 @@ BOOST_FIXTURE_TEST_CASE(flattenExportSubnetworksExtensionsAndPropertiesTest, tes
 
 }
 
+
+BOOST_FIXTURE_TEST_CASE(checkNoExportOfLowLimits, test::ResourceFixture) {
+
+    Network lowLimitNetwork = powsybl::network::EurostagFactory::createWithMultipleSelectedFixedCurrentLimits();
+
+    lowLimitNetwork.getLine("NHV1_NHV2_1").newOperationalLimitsGroup1("low limits")
+            .newApparentPowerLimits()
+            .setDetectionKind(DetectionKind::LOW)
+            .beginTemporaryLimit()
+            .setValue(1000)
+            .setAcceptableDuration(60)
+            .setName("1'")
+            .endTemporaryLimit()
+            .add();
+
+    const std::string& filename = "eurostag-tutorial-multiple-selected-op-lim-group-force_low_limit.xml";
+
+
+    //Export throw with default options
+    std::stringstream ss;
+    ExportOptions options = ExportOptions().setVersion(IidmXmlVersion::V1_17().toString("."));
+    POWSYBL_ASSERT_THROW(Network::writeXml(filename, ss, lowLimitNetwork, options), PowsyblException, "The network contains low limits, export of this kind of limit is not yet supported. To force the export of the network and ignore those limits, either use the config parameter iidm.export.xml.force-export-network-with-beta-features, or ExportOptions::setForceExportNetworkWithBetaFeatures");
+
+    const auto& writer = [&filename](const Network& n, std::ostream& stream) {
+        converter::ExportOptions options;
+        options.setVersion(IidmXmlVersion::V1_17().toString(".")).setForceExportNetworkWithBetaFeatures(true);
+        Network::writeXml(filename, stream, n, options);
+    };
+    const auto& reader = [&filename](const std::string& xmlBytes) {
+        std::istringstream stream(xmlBytes);
+        return Network::readXml(filename, stream);
+    };
+    const auto& ref = test::converter::RoundTrip::getVersionedNetwork(filename, IidmXmlVersion::V1_17());
+    Network importedLowLimitNetwork = test::converter::RoundTrip::run(lowLimitNetwork, writer, reader, test::converter::RoundTrip::compareXml, ref.c_str());
+
+    POWSYBL_ASSERT_REF_TRUE(importedLowLimitNetwork.getLine("NHV1_NHV2_1").getOperationalLimitsGroup1("low limits"));
+    BOOST_CHECK(importedLowLimitNetwork.getLine("NHV1_NHV2_1").getOperationalLimitsGroup1("low limits").get().isEmpty());
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()

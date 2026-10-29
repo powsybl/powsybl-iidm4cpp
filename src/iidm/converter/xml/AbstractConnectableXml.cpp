@@ -80,23 +80,23 @@ void AbstractConnectableXml::writeBus(const stdcxx::CReference<Bus>& bus, const 
     }
 }
 
-void AbstractConnectableXml::writeActivePowerLimits(const ActivePowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
-    writeLoadingLimits(limits, writer, version.getPrefix(), version, ACTIVE_POWER_LIMITS, index);
+void AbstractConnectableXml::writeActivePowerLimits(const ActivePowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, bool forceNetworkWithBetaFeatures, const stdcxx::optional<int>& index) {
+    writeLoadingLimits(limits, writer, version.getPrefix(), version, ACTIVE_POWER_LIMITS, forceNetworkWithBetaFeatures, index);
 }
 
 
-void AbstractConnectableXml::writeApparentPowerLimits(const ApparentPowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
-    writeLoadingLimits(limits, writer, version.getPrefix(), version, APPARENT_POWER_LIMITS, index);
+void AbstractConnectableXml::writeApparentPowerLimits(const ApparentPowerLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, bool forceNetworkWithBetaFeatures, const stdcxx::optional<int>& index) {
+    writeLoadingLimits(limits, writer, version.getPrefix(), version, APPARENT_POWER_LIMITS, forceNetworkWithBetaFeatures, index);
 }
 
 
-void AbstractConnectableXml::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
-    writeLoadingLimits(limits, writer, version.getPrefix(), version, CURRENT_LIMITS, index);
+void AbstractConnectableXml::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const IidmXmlVersion& version, bool forceNetworkWithBetaFeatures, const stdcxx::optional<int>& index) {
+    writeLoadingLimits(limits, writer, version.getPrefix(), version, CURRENT_LIMITS, forceNetworkWithBetaFeatures, index);
 }
 
 
-void AbstractConnectableXml::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const stdcxx::optional<int>& index) {
-    writeLoadingLimits(limits, writer, nsPrefix, version, CURRENT_LIMITS, index);
+void AbstractConnectableXml::writeCurrentLimits(const CurrentLimits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, bool forceNetworkWithBetaFeatures, const stdcxx::optional<int>& index) {
+    writeLoadingLimits(limits, writer, nsPrefix, version, CURRENT_LIMITS, forceNetworkWithBetaFeatures, index);
 }
 
 void AbstractConnectableXml::writeLimits(NetworkXmlWriterContext& context, const char* rootName, const stdcxx::CReference<OperationalLimitsGroup>& selectedLimitsGroup, const stdcxx::const_range<OperationalLimitsGroup>& limitsGroups, const stdcxx::optional<int>& index) {
@@ -105,17 +105,17 @@ void AbstractConnectableXml::writeLimits(NetworkXmlWriterContext& context, const
         if(selectedLimitsGroup && selectedLimitsGroup.get().getActivePowerLimits()) {
             IidmXmlUtil::assertMinimumVersion(rootName, toString(ACTIVE_POWER_LIMITS, index), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &selectedLimitsGroup, &index]() { 
-                writeActivePowerLimits(selectedLimitsGroup.get().getActivePowerLimits(), context.getWriter(), context.getVersion(), index); 
+                writeActivePowerLimits(selectedLimitsGroup.get().getActivePowerLimits(), context.getWriter(), context.getVersion(), context.getOptions().isForceExportNetworkWithBetaFeatures(), index); 
             });
         }
         if(selectedLimitsGroup && selectedLimitsGroup.get().getApparentPowerLimits()) {
             IidmXmlUtil::assertMinimumVersion(rootName, toString(APPARENT_POWER_LIMITS, index), ErrorMessage::NOT_NULL_NOT_SUPPORTED, IidmXmlVersion::V1_5(), context);
             IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_5(), context.getVersion(), [&context, &selectedLimitsGroup, &index]() { 
-                writeApparentPowerLimits(selectedLimitsGroup.get().getApparentPowerLimits(), context.getWriter(), context.getVersion(), index); 
+                writeApparentPowerLimits(selectedLimitsGroup.get().getApparentPowerLimits(), context.getWriter(), context.getVersion(), context.getOptions().isForceExportNetworkWithBetaFeatures(), index); 
             });
         }
         if(selectedLimitsGroup && selectedLimitsGroup.get().getCurrentLimits()) {
-            writeCurrentLimits(selectedLimitsGroup.get().getCurrentLimits(), context.getWriter(), context.getVersion(), index); 
+            writeCurrentLimits(selectedLimitsGroup.get().getCurrentLimits(), context.getWriter(), context.getVersion(), context.getOptions().isForceExportNetworkWithBetaFeatures(), index); 
         }
     });
 
@@ -150,13 +150,13 @@ void AbstractConnectableXml::writeLoadingLimitsGroups(const stdcxx::const_range<
         });
 
         if(limitsGroup.getActivePowerLimits()) {
-            writeActivePowerLimits(limitsGroup.getActivePowerLimits(), context.getWriter(), context.getVersion());
+            writeActivePowerLimits(limitsGroup.getActivePowerLimits(), context.getWriter(), context.getVersion(), context.getOptions().isForceExportNetworkWithBetaFeatures());
         }
         if(limitsGroup.getApparentPowerLimits()) {
-            writeApparentPowerLimits(limitsGroup.getApparentPowerLimits(), context.getWriter(), context.getVersion());
+            writeApparentPowerLimits(limitsGroup.getApparentPowerLimits(), context.getWriter(), context.getVersion(), context.getOptions().isForceExportNetworkWithBetaFeatures());
         }
         if(limitsGroup.getCurrentLimits()) {
-            writeCurrentLimits(limitsGroup.getCurrentLimits(), context.getWriter(), context.getVersion());
+            writeCurrentLimits(limitsGroup.getCurrentLimits(), context.getWriter(), context.getVersion(), context.getOptions().isForceExportNetworkWithBetaFeatures());
         }
         context.getWriter().writeEndElement();
     }

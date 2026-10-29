@@ -59,6 +59,7 @@ void fixMissingPermanentLimit(LoadingLimitsAdder<L, A>& limitsAdder, double miss
 template<typename L, typename A>
 void initializeFromLoadingLimits(LoadingLimitsAdder<L, A>& limitsAdder,  const L& limits) {
 
+    limitsAdder.setDetectionKind(limits.getDetectionKind());
     limitsAdder.setPermanentLimit(limits.getPermanentLimit());
     for (const auto& limit : boost::range::join(limits.getTemporaryLimits(), limits.getFictitiousLimits())) {
         limitsAdder.beginTemporaryLimit().setName(limit.getName())

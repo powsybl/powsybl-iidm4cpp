@@ -22,7 +22,7 @@ ActivePowerLimitsAdder::ActivePowerLimitsAdder(OperationalLimitsGroup& owner, co
 ActivePowerLimits& ActivePowerLimitsAdder::add() {
     Network& network = m_owner.getNetwork();
     network.setValidationLevelIfGreaterThan(checkLoadingLimits());
-    auto limit = m_owner.setOperationalLimits(LimitType::ACTIVE_POWER, std::make_shared<ActivePowerLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits()));
+    auto limit = m_owner.setOperationalLimits(LimitType::ACTIVE_POWER, std::make_shared<ActivePowerLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits(), getDetectionKind()));
     copyPropertiesTo(limit.get());
     return static_cast<ActivePowerLimits&>(limit.get());
 }

@@ -153,8 +153,14 @@ void AbstractConnectableXml::readNodeOrBus(AcDcConverterAdder<Added, Adder>& add
 }
 
 template <typename Limits>
-void AbstractConnectableXml::writeLoadingLimits(const Limits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const std::string& type, const stdcxx::optional<int>& index) {
-    if (!std::isnan(limits.getPermanentLimit()) || !boost::empty(limits.getTemporaryLimits()) || !boost::empty(limits.getFictitiousLimits())) {
+void AbstractConnectableXml::writeLoadingLimits(const Limits& limits, powsybl::xml::XmlStreamWriter& writer, const std::string& nsPrefix, const IidmXmlVersion& version, const std::string& type, bool forceNetworkWithBetaFeatures, const stdcxx::optional<int>& index) {
+    if(limits.getDetectionKind() == DetectionKind::LOW) {
+        if(!forceNetworkWithBetaFeatures) {
+            throw PowsyblException(std::string("The network contains low limits, export of this kind of limit is not yet supported. ") +
+                "To force the export of the network and ignore those limits, either use the config parameter iidm.export.xml.force-export-network-with-beta-features, " +
+                "or ExportOptions::setForceExportNetworkWithBetaFeatures");
+        } // else force export and continue by ignoring this limits
+    } else if (!std::isnan(limits.getPermanentLimit()) || !boost::empty(limits.getTemporaryLimits()) || !boost::empty(limits.getFictitiousLimits())) { //DetectionKind::HIGH
         writer.writeStartElement(nsPrefix, toString(type.c_str(), index));
         writer.writeAttribute(PERMANENT_LIMIT, limits.getPermanentLimit());
         IidmXmlUtil::runFromMinimumVersion(IidmXmlVersion::V1_16(), version, [&nsPrefix, &writer, &limits](){

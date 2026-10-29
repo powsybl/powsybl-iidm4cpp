@@ -44,12 +44,28 @@ bool LoadingLimits::TemporaryLimit::isFictitious() const {
 }
 
 LoadingLimits::LoadingLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, 
-const FictitiousLimits& fictitiousLimits) :
+    const FictitiousLimits& fictitiousLimits, const DetectionKind& detectionKind) :
     m_limitsGroup(owner),
     m_permanentLimit(permanentLimit),
     m_temporaryLimits(temporaryLimits),
-    m_fictitiousLimits(fictitiousLimits) {
+    m_fictitiousLimits(fictitiousLimits),
+    m_detectionKind(detectionKind) {
         //limit validations must be performed before calling this constructor (in each adders)
+        if(m_detectionKind!=DetectionKind::HIGH) {
+            logging::Logger& logger = logging::LoggerFactory::getLogger<LoadingLimits>();
+            logger.warn(stdcxx::format("BETA Feature, there is no guarantee that a LoadingLimit with a %1% DetectionKind will still exist in next releases", m_detectionKind));
+        }
+}
+
+
+LoadingLimits::LoadingLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits) :
+    LoadingLimits(owner, permanentLimit, temporaryLimits, fictitiousLimits, DetectionKind::HIGH) {
+        //limit validations must be performed before calling this constructor (in each adders)
+}
+
+LoadingLimits::LoadingLimits(OperationalLimitsGroup& owner, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits) :
+    LoadingLimits(owner, stdcxx::nan(), temporaryLimits, fictitiousLimits, DetectionKind::LOW) {
+    //limit validations must be performed before calling this constructor (in each adders)
 }
 
 const std::string& LoadingLimits::getLimitsGroupId() const {
@@ -58,6 +74,10 @@ const std::string& LoadingLimits::getLimitsGroupId() const {
 
 double LoadingLimits::getPermanentLimit() const {
     return m_permanentLimit;
+}
+
+const DetectionKind& LoadingLimits::getDetectionKind() const {
+    return m_detectionKind;
 }
 
 const LoadingLimits::TemporaryLimit& LoadingLimits::getTemporaryLimit(unsigned long acceptableDuration) const {
@@ -90,7 +110,7 @@ double LoadingLimits::getTemporaryLimitValue(unsigned long acceptableDuration) c
 }
 
 LoadingLimits& LoadingLimits::setPermanentLimit(double permanentLimit) {
-    checkPermanentLimit(m_limitsGroup.get().getValidable(), permanentLimit, getTemporaryLimits(), m_limitsGroup.get().getNetwork().getMinimumValidationLevel());
+    checkPermanentLimit(m_limitsGroup.get().getValidable(), permanentLimit, m_detectionKind, getTemporaryLimits(), m_limitsGroup.get().getNetwork().getMinimumValidationLevel());
     m_permanentLimit = permanentLimit;
     m_limitsGroup.get().getNetwork().invalidateValidationLevel();
     return *this;

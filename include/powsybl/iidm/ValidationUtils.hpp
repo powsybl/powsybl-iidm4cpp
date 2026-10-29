@@ -148,11 +148,11 @@ ValidationLevel checkOptional(const Validable& validable, const stdcxx::optional
 
 ValidationLevel checkP0(const Validable& validable, double p0, const ValidationLevel& vl);
 
-ValidationLevel checkPermanentLimit(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl);
+ValidationLevel checkPermanentLimit(const Validable& validable, double permanentLimit, const DetectionKind& detectionKind, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl);
 
-void checkTemporaryLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits);
+void checkTemporaryLimits(const Validable& validable, double permanentLimit, const DetectionKind& detectionKind, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits);
 
-ValidationLevel checkLoadingLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl);
+ValidationLevel checkLoadingLimits(const Validable& validable, double permanentLimit, const DetectionKind& detectionKind, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl);
 
 ValidationLevel checkPhaseTapChangerRegulation(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating, bool loadTapChangingCapabilities,
                                     const stdcxx::CReference<Terminal>& regulationTerminal, const Network& network, const ValidationLevel& vl);

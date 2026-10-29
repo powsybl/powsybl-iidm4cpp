@@ -13,6 +13,7 @@
 #include <string>
 #include <vector>
 
+#include <powsybl/iidm/DetectionKind.hpp>
 #include <powsybl/iidm/OperationalLimits.hpp>
 #include <powsybl/iidm/OperationalLimitsGroup.hpp>
 #include <powsybl/stdcxx/range.hpp>
@@ -57,7 +58,23 @@ public:
     using FictitiousLimits = std::map<std::string, TemporaryLimit, std::greater<std::string > >;
 
 public:
+    /**
+     * Build a LoadingLimits object with given permanent limit, temporary (and ficitious) limits and detection kind.
+     * Limit validations must be performed before calling this constructor.
+     */
+    LoadingLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits, const DetectionKind& detectionKind);
+
+    /**
+     * Build a LoadingLimits object with HIGH DetectionKind, permanent limit value is mandatory.
+     * limit validations must be performed before calling this constructor.
+     */
     LoadingLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
+
+    /**
+     * Build a LoadingLimits object with LOW DetectionKind.
+     * limit validations must be performed before calling this constructor.
+     */
+    LoadingLimits(OperationalLimitsGroup& owner, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
 
     LoadingLimits(const LoadingLimits&) = default;
 
@@ -70,6 +87,9 @@ public:
 
     LoadingLimits& operator=(LoadingLimits&&) noexcept = delete;
 
+    /**
+     * If this LoadingLimits DetectionKind is LOW, there is no valid permanent limit it should return NAN.
+     */
     double getPermanentLimit() const;
 
     const TemporaryLimit& getTemporaryLimit(unsigned long acceptableDuration) const;
@@ -92,6 +112,12 @@ public:
 
     const std::string& getLimitsGroupId() const;
 
+    /**
+     * Gets the detection kind, indicating if the acceptable duration at a given value, is to be taken from the limit above (HIGH) or below (LOW)
+     */
+    const DetectionKind& getDetectionKind() const;
+
+
 protected:
     bool isTemporaryLimitValueValid(unsigned long acceptableDuration, double temporaryLimitValue);
 
@@ -103,6 +129,8 @@ private:
     TemporaryLimits m_temporaryLimits;
 
     FictitiousLimits m_fictitiousLimits;
+
+    DetectionKind m_detectionKind;
 };
 
 }  // namespace iidm

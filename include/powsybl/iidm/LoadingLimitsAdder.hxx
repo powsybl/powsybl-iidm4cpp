@@ -141,12 +141,17 @@ typename LoadingLimitsAdder<L, A>::TemporaryLimitAdder LoadingLimitsAdder<L, A>:
 
 template <typename L, typename A>
 ValidationLevel LoadingLimitsAdder<L, A>::checkLoadingLimits() const {
-    return powsybl::iidm::checkLoadingLimits(m_owner, m_permanentLimit, m_temporaryLimits | boost::adaptors::map_values, m_owner.getNetwork().getMinimumValidationLevel());
+    return powsybl::iidm::checkLoadingLimits(m_owner, m_permanentLimit, m_detectionKind, m_temporaryLimits | boost::adaptors::map_values, m_owner.getNetwork().getMinimumValidationLevel());
 }
 
 template <typename L, typename A>
 double LoadingLimitsAdder<L, A>::getPermanentLimit() const {
     return m_permanentLimit;
+}
+
+template <typename L, typename A>
+const DetectionKind& LoadingLimitsAdder<L, A>::getDetectionKind() const {
+    return m_detectionKind;
 }
 
 template <typename L, typename A>
@@ -175,6 +180,12 @@ bool LoadingLimitsAdder<L, A>::nameExists(const std::string& name) const {
 template <typename L, typename A>
 A& LoadingLimitsAdder<L, A>::setPermanentLimit(double limit) {
     m_permanentLimit = limit;
+    return static_cast<A&>(*this);
+}
+
+template <typename L, typename A>
+A& LoadingLimitsAdder<L, A>::setDetectionKind(const DetectionKind& detectionKind) {
+    m_detectionKind = detectionKind;
     return static_cast<A&>(*this);
 }
 

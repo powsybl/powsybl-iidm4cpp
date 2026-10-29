@@ -22,7 +22,7 @@ CurrentLimitsAdder::CurrentLimitsAdder(OperationalLimitsGroup& owner, const Curr
 CurrentLimits& CurrentLimitsAdder::add() {
     Network& network = m_owner.getNetwork();
     network.setValidationLevelIfGreaterThan(checkLoadingLimits());
-    auto limit = m_owner.setOperationalLimits(LimitType::CURRENT, std::make_shared<CurrentLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits()));
+    auto limit = m_owner.setOperationalLimits(LimitType::CURRENT, std::make_shared<CurrentLimits>(m_owner, getPermanentLimit(), getTemporaryLimits(), getFictitiousLimits(), getDetectionKind()));
     copyPropertiesTo(limit.get());
     return static_cast<CurrentLimits&>(limit.get());
 }

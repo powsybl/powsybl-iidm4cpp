@@ -439,37 +439,49 @@ ValidationLevel checkP0(const Validable& validable, double p0, const ValidationL
     return checkP0(validable, p0, checkValidationActionOnError(vl));
 }
 
-ValidationLevel checkPermanentLimit(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ActionOnError& action) {
-    if (std::isnan(permanentLimit) && !temporaryLimits.empty()) {
-        actionOnError(validable, "permanent limit must be defined if temporary limits are present", action);
-        return ValidationLevel::EQUIPMENT;
-    }
-    if(!std::isnan(permanentLimit)) {
-        if(std::isless(permanentLimit, 0.0)) {
-            //Forbidden for both STEADY_STATE_HYPOTHESIS and EQUIPMENT
-            throw ValidationException(validable, "permanent limit must be >= 0");
-        } 
-        if(permanentLimit == 0.0) {
-            //Log if null
-            logging::Logger& logger = logging::LoggerFactory::getLogger("powsybl::iidm::ValidationUtils");
-            logger.info(stdcxx::format("%1% permanent limit is set to 0", validable.getMessageHeader()));
+ValidationLevel checkPermanentLimit(const Validable& validable, double permanentLimit, const DetectionKind& detectionKind, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ActionOnError& action) {
+    switch(detectionKind) {
+        case DetectionKind::HIGH: {
+            if (std::isnan(permanentLimit) && !temporaryLimits.empty()) {
+                actionOnError(validable, "permanent limit must be defined if temporary limits are present", action);
+                return ValidationLevel::EQUIPMENT;
+            }
+            if(!std::isnan(permanentLimit)) {
+                if(std::isless(permanentLimit, 0.0)) {
+                    //Forbidden for both STEADY_STATE_HYPOTHESIS and EQUIPMENT
+                    throw ValidationException(validable, "permanent limit must be >= 0");
+                } 
+                if(permanentLimit == 0.0) {
+                    //Log if null
+                    logging::Logger& logger = logging::LoggerFactory::getLogger("powsybl::iidm::ValidationUtils");
+                    logger.info(stdcxx::format("%1% permanent limit is set to 0", validable.getMessageHeader()));
+                }
+            }
+            break;
         }
+        case DetectionKind::LOW: {
+            if(!std::isnan(permanentLimit)) {
+                throw ValidationException(validable, stdcxx::format("permanent limit cannot be set if DetectionKind is %1%", detectionKind));
+            }
+            break;
+        }
+        default:
+            throw AssertionError(stdcxx::format("Unexpected detectionKind value: %1%", detectionKind));
     }
-
     return ValidationLevel::STEADY_STATE_HYPOTHESIS;
 }
-ValidationLevel checkPermanentLimit(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl) {
-    return checkPermanentLimit(validable, permanentLimit, temporaryLimits, checkValidationActionOnError(vl));
+ValidationLevel checkPermanentLimit(const Validable& validable, double permanentLimit, const DetectionKind& detectionKind, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl) {
+    return checkPermanentLimit(validable, permanentLimit, detectionKind, temporaryLimits, checkValidationActionOnError(vl));
 }
 
-void checkTemporaryLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits) {
+void checkTemporaryLimits(const Validable& validable, double permanentLimit, const DetectionKind& detectionKind, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits) {
     logging::Logger& logger = logging::LoggerFactory::getLogger("powsybl::iidm::ValidationUtils");
 
     // check temporary limits are consistents with permanent
     double previousLimit = stdcxx::nan();
     bool wrongOrderMessageAlreadyLogged = false;
     for (const LoadingLimits::TemporaryLimit& tl : temporaryLimits) {
-        if (tl.getValue() <= permanentLimit) {
+        if (detectionKind == DetectionKind::HIGH && tl.getValue() <= permanentLimit) {
             logger.debug(stdcxx::format("%1%temporary limit should be greater than permanent limit", validable.getMessageHeader()));
         }
         if (!wrongOrderMessageAlreadyLogged && !std::isnan(previousLimit) && tl.getValue() <= previousLimit) {
@@ -480,22 +492,22 @@ void checkTemporaryLimits(const Validable& validable, double permanentLimit, con
     }
 }
 
-ValidationLevel checkLoadingLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ActionOnError& action) {
+ValidationLevel checkLoadingLimits(const Validable& validable, double permanentLimit, const DetectionKind& detectionKind, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ActionOnError& action) {
     ValidationLevel checkValidationLevel = ValidationLevel::STEADY_STATE_HYPOTHESIS;
-    checkValidationLevel = validationLevel::min(checkValidationLevel, checkPermanentLimit(validable, permanentLimit, temporaryLimits, action));
-    checkTemporaryLimits(validable, permanentLimit, temporaryLimits);
+    checkValidationLevel = validationLevel::min(checkValidationLevel, checkPermanentLimit(validable, permanentLimit, detectionKind, temporaryLimits, action));
+    checkTemporaryLimits(validable, permanentLimit, detectionKind, temporaryLimits);
 
     return checkValidationLevel;
 }
-ValidationLevel checkLoadingLimits(const Validable& validable, double permanentLimit, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl) {
-    return checkLoadingLimits(validable, permanentLimit, temporaryLimits, checkValidationActionOnError(vl));
+ValidationLevel checkLoadingLimits(const Validable& validable, double permanentLimit, const DetectionKind& detectionKind, const stdcxx::const_range<LoadingLimits::TemporaryLimit>& temporaryLimits, const ValidationLevel& vl) {
+    return checkLoadingLimits(validable, permanentLimit, detectionKind, temporaryLimits, checkValidationActionOnError(vl));
 }
 
 ValidationLevel checkLoadingLimits(const Validable& validable, const LoadingLimits& limits, const ActionOnError& action) {
-    return checkLoadingLimits(validable, limits.getPermanentLimit(), limits.getTemporaryLimits(), action);
+    return checkLoadingLimits(validable, limits.getPermanentLimit(), limits.getDetectionKind(), limits.getTemporaryLimits(), action);
 }
 ValidationLevel checkLoadingLimits(const Validable& validable, const LoadingLimits& limits, const ValidationLevel& vl) {
-    return checkLoadingLimits(validable, limits.getPermanentLimit(), limits.getTemporaryLimits(), checkValidationActionOnError(vl));
+    return checkLoadingLimits(validable, limits.getPermanentLimit(), limits.getDetectionKind(), limits.getTemporaryLimits(), checkValidationActionOnError(vl));
 }
 
 ValidationLevel checkPhaseTapChangerRegulationWithoutTerminal(const Validable& validable, const PhaseTapChanger::RegulationMode& regulationMode, double regulationValue, bool regulating, bool loadTapChangingCapabilities,

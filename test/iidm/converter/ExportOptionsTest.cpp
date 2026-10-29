@@ -63,6 +63,11 @@ BOOST_AUTO_TEST_CASE(defaultConstructor) {
     BOOST_CHECK(!options.isFlatten());
     options.setFlatten(true);
     BOOST_CHECK(options.isFlatten());
+
+    BOOST_CHECK(!options.isForceExportNetworkWithBetaFeatures());
+    options.setForceExportNetworkWithBetaFeatures(true);
+    BOOST_CHECK(options.isForceExportNetworkWithBetaFeatures());
+
 }
 
 BOOST_AUTO_TEST_CASE(constructor) {
@@ -84,6 +89,7 @@ BOOST_AUTO_TEST_CASE(constructor) {
     BOOST_CHECK_EQUAL(ExportOptions::IidmVersionIncompatibilityBehavior::THROW_EXCEPTION, options.getIidmVersionIncompatibilityBehavior());
     BOOST_CHECK(options.isWithAutomationSystems());
     BOOST_CHECK(options.isFlatten());
+    BOOST_CHECK(!options.isForceExportNetworkWithBetaFeatures());
 }
 
 BOOST_AUTO_TEST_CASE(initFromProperties) {
@@ -100,6 +106,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     properties.set(ExportOptions::WITH_AUTOMATION_SYSTEMS, "false");
     properties.set(ExportOptions::BUS_BRANCH_VOLTAGE_LEVEL_INCOMPATIBILITY_BEHAVIOR, "KEEP_ORIGINAL_TOPOLOGY");
     properties.set(ExportOptions::FLATTEN, "true");
+    properties.set(ExportOptions::FORCE_EXPORT_NETWORK_WITH_BETA_FEATURES, "true");
 
     ExportOptions options(properties);
 
@@ -116,6 +123,7 @@ BOOST_AUTO_TEST_CASE(initFromProperties) {
     BOOST_CHECK(!options.isWithAutomationSystems());
     BOOST_CHECK_EQUAL(ExportOptions::BusBranchVoltageLevelIncompatibilityBehavior::KEEP_ORIGINAL_TOPOLOGY, options.getBusBranchVoltageLevelIncompatibilityBehavior());
     BOOST_CHECK(options.isFlatten());
+    BOOST_CHECK(options.isForceExportNetworkWithBetaFeatures());
 }
 
 BOOST_AUTO_TEST_CASE(checkAllExtensions) {

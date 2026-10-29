@@ -91,6 +91,20 @@ public:
      */
     static iidm::Network createWithMultipleSelectedFixedApparentPowerLimits();
 
+
+    /**
+     * On line 'NHV1_NHV2_1' side 2 :
+     * <pre>
+     *      activated_2_1 (HIGH)    activated_2_2 (LOW)
+     *      |                       ---- IT5 1200 (300s)
+     *      | ---- IT10 1000 (600s)
+     *      |                       ---- IT10 900 (600s)
+     *      | ---- ITP 600
+     *      |                       ---- IT40 500 (2400s)
+     * </pre>
+     */
+    static iidm::Network createWithHighAndLowCurrentLimits();
+
 public:
     EurostagFactory() = delete;
 };

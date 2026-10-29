@@ -933,6 +933,9 @@ BOOST_AUTO_TEST_CASE(testLimitViolationUtilsCheckTemporaryLimits) {
     Network network3wt = powsybl::network::EurostagFactory::createWithMultipleSelectedFixedActivePowerLimits();
     ThreeWindingsTransformer& transformer = network3wt.getThreeWindingsTransformer("NGEN_V2_NHV1");
 
+    Network lowLimitNetwork = powsybl::network::EurostagFactory::createWithHighAndLowCurrentLimits();
+    Line& lowLimitLine = lowLimitNetwork.getLine("NHV1_NHV2_1");
+
     checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.95, 1.12}, LimitType::CURRENT, 299, {}); //below any Permanent Limit
     checkLimitViolationUtilTemporaryLimits(line, ThreeSides::ONE, {1., 0.8, 1.37}, LimitType::CURRENT, 310,
         {ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_1_2", 300,60 * 40}}); // above permanent of activated_1_2
@@ -960,6 +963,24 @@ BOOST_AUTO_TEST_CASE(testLimitViolationUtilsCheckTemporaryLimits) {
         {ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_3_1", 350, 45 * 60}}); // above permanent of activated_3_1
     checkLimitViolationUtilTemporaryLimits(transformer, ThreeSides::THREE, {1., 0.77, 1.67}, LimitType::ACTIVE_POWER, 405, 
         {ExpectedOverload{"45'", "activated_3_1", 400, 0}}); // above last temporary of activated_3_1
+
+
+    checkLimitViolationUtilTemporaryLimits(lowLimitLine, ThreeSides::TWO, {1., 0.7}, LimitType::CURRENT, 400, {}); //under all limits
+    checkLimitViolationUtilTemporaryLimits(lowLimitLine, ThreeSides::TWO, {1., 0.7}, LimitType::CURRENT, 550, 
+        {ExpectedOverload{"40'", "activated_2_2", 500, 2400}}); // above first temporary of activated_2_2 (LOW limit)
+    checkLimitViolationUtilTemporaryLimits(lowLimitLine, ThreeSides::TWO, {1., 0.7}, LimitType::CURRENT, 650, 
+        {ExpectedOverload{"40'", "activated_2_2", 500, 2400},
+         ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_2_1", 600, 600}}); // above permanent of activated_2_1 (HIGH limit)
+    checkLimitViolationUtilTemporaryLimits(lowLimitLine, ThreeSides::TWO, {1., 0.7}, LimitType::CURRENT, 950, 
+        {ExpectedOverload{"10'", "activated_2_2", 900, 600},
+         ExpectedOverload{LimitViolationUtils::PERMANENT_LIMIT_NAME, "activated_2_1", 600, 600}}); // above second temporary of activated_2_2 (LOW limit)
+    checkLimitViolationUtilTemporaryLimits(lowLimitLine, ThreeSides::TWO, {1., 0.7}, LimitType::CURRENT, 1100, 
+        {ExpectedOverload{"10'", "activated_2_2", 900, 600},
+         ExpectedOverload{"10'", "activated_2_1", 1000, 0}}); // above first and last temporary of activated_2_1 (HIGH limit)
+    checkLimitViolationUtilTemporaryLimits(lowLimitLine, ThreeSides::TWO, {1., 0.7}, LimitType::CURRENT, 1210, 
+        {ExpectedOverload{"5'", "activated_2_2", 1200, 300},
+         ExpectedOverload{"10'", "activated_2_1", 1000, 0}}); // above last temporary of activated_2_2 (LOW limit)
+
 }
 
 void checkLimitViolationUtilTemporaryLimitsByGroup(Identifiable& identifiable, const ThreeSides& side, double limitReduction, const std::list<std::string>& groupsToApplyLimitReduction, const LimitType& type, double value, const std::vector<ExpectedOverload>& expectedOverloads) {

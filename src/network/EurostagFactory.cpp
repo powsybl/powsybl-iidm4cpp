@@ -883,6 +883,46 @@ iidm::Network EurostagFactory::createWithMultipleSelectedFixedApparentPowerLimit
     return network;
 }
 
+iidm::Network EurostagFactory::createWithHighAndLowCurrentLimits() {
+    iidm::Network network = createTutorial1Network();
+    network.setCaseDate(stdcxx::DateTime::parse("2018-01-01T11:00:00+01:00"));
+
+    iidm::Line& line = network.getLine("NHV1_NHV2_1");
+
+
+    line.newOperationalLimitsGroup2("activated_2_1").newCurrentLimits()
+            .setPermanentLimit(600)
+            .beginTemporaryLimit()
+            .setName("10'")
+            .setAcceptableDuration(60 * 10)
+            .setValue(1000)
+            .endTemporaryLimit()
+            .add();
+
+    line.newOperationalLimitsGroup2("activated_2_2").newCurrentLimits()
+            .setDetectionKind(iidm::DetectionKind::LOW)
+            .beginTemporaryLimit()
+            .setName("40'")
+            .setAcceptableDuration(60 * 40)
+            .setValue(500)
+            .endTemporaryLimit()
+            .beginTemporaryLimit()
+            .setName("10'")
+            .setAcceptableDuration(60 * 10)
+            .setValue(900)
+            .endTemporaryLimit()
+            .beginTemporaryLimit()
+            .setName("5'")
+            .setAcceptableDuration(60 * 5)
+            .setValue(1200)
+            .endTemporaryLimit()
+            .add();
+
+    line.addSelectedOperationalLimitsGroups(iidm::TwoSides::TWO, {"activated_2_1", "activated_2_2"});
+
+    return network;
+}
+
 
 }  // namespace network
 

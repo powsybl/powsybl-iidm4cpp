@@ -84,11 +84,15 @@ public:
 
     A& setPermanentLimit(double limit);
 
+    A& setDetectionKind(const DetectionKind& detectionKind);
+
 protected:
     ValidationLevel checkLoadingLimits() const;
 
 public:
     double getPermanentLimit() const;
+
+    const DetectionKind& getDetectionKind() const;
 
     const LoadingLimits::TemporaryLimits& getTemporaryLimits() const;
 
@@ -123,6 +127,8 @@ private:
     LoadingLimits::TemporaryLimits m_temporaryLimits;
 
     LoadingLimits::FictitiousLimits m_fictitiousLimits;
+
+    DetectionKind m_detectionKind = DetectionKind::HIGH;
 };
 
 }  // namespace iidm

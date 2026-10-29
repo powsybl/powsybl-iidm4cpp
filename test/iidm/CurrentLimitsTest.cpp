@@ -996,7 +996,7 @@ BOOST_AUTO_TEST_CASE(testSetTemporaryLimitValue) {
     BOOST_CHECK_EQUAL(1, logger.size());
     BOOST_CHECK_EQUAL("AC line 'L':  Temporary limit (300s) value changed from 1450 to 1010, but it is not valid", logger.getLogMessage(0).getMessage());
 
-    checkTemporaryLimits(network.getLine("L"), currentLimit.getPermanentLimit(), currentLimit.getTemporaryLimits());
+    checkTemporaryLimits(network.getLine("L"), currentLimit.getPermanentLimit(), currentLimit.getDetectionKind(), currentLimit.getTemporaryLimits());
     BOOST_CHECK_EQUAL(2, logger.size());
     BOOST_CHECK_EQUAL("AC line 'L': temporary limits should be in ascending value order", logger.getLogMessage(1).getMessage());
     logging::LoggerFactory::getInstance().removeLogger("powsybl::iidm");

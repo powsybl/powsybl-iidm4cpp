@@ -26,7 +26,7 @@ public:  // OperationalLimits
     void remove() override;
 
 public:
-    CurrentLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
+    CurrentLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits, const DetectionKind& detectionKind = DetectionKind::HIGH);
 
     CurrentLimits(const CurrentLimits&) = default;
 

@@ -76,6 +76,7 @@ set(IIDM_SOURCES
     iidm/DcTopologyView.cpp
     iidm/DcTopologyVisitable.cpp
     iidm/DcTopologyVisitor.cpp
+    iidm/DetectionKind.cpp
     iidm/DroopCurve.cpp
     iidm/DroopCurveAdder.cpp
     iidm/EnergySource.cpp

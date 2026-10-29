@@ -21,7 +21,7 @@ public:  // LoadingLimits
     void remove() override;
 
 public:
-    ActivePowerLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits);
+    ActivePowerLimits(OperationalLimitsGroup& owner, double permanentLimit, const TemporaryLimits& temporaryLimits, const FictitiousLimits& fictitiousLimits, const DetectionKind& detectionKind = DetectionKind::HIGH);
 
     ActivePowerLimits(const ActivePowerLimits&) = default;
 
