@@ -181,6 +181,12 @@ bool Connectable::disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable, 
     return ConnectDisconnectUtil::disconnectAllTerminals(getTerminals(side), isSwitchOpenable);
 }
 
+void Connectable::unsetSolvedValues() {
+    for(auto& terminal :getTerminals()) {
+        terminal.get().unsetSolvedValues();
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

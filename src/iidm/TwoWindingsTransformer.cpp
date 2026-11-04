@@ -265,6 +265,16 @@ void TwoWindingsTransformer::setPhaseTapPositionToSolvedTapPosition() {
     }
 }
 
+void TwoWindingsTransformer::unsetSolvedValues() {
+    AbstractConnectableBranch::unsetSolvedValues();
+    if(hasRatioTapChanger()){
+        getRatioTapChanger().unsetSolvedTapPosition();
+    }
+    if(hasPhaseTapChanger()){
+        getPhaseTapChanger().unsetSolvedTapPosition();
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

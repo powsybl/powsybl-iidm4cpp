@@ -175,6 +175,11 @@ ShuntCompensator& ShuntCompensator::unsetSolvedSectionCount() {
     return *this;
 }
 
+void ShuntCompensator::unsetSolvedValues() {
+    Injection::unsetSolvedValues();
+    unsetSolvedSectionCount();
+}
+
 ShuntCompensator& ShuntCompensator::setTargetDeadband(double targetDeadband) {
     checkTargetDeadband(*this, "shunt compensator", isVoltageRegulatorOn(), targetDeadband, getNetwork().getMinimumValidationLevel());
     m_targetDeadband[getNetwork().getVariantIndex()] = targetDeadband;

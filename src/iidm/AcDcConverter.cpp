@@ -324,6 +324,11 @@ void AcDcConverter::remove() {
     Connectable::remove();
 }
 
+void AcDcConverter::unsetSolvedValues() {
+    Connectable::unsetSolvedValues();
+    DcConnectable::unsetSolvedValues();
+}
+
 
 DroopCurveAdder AcDcConverter::newDroopCurve() {
     return DroopCurveAdder(*this);

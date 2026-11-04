@@ -52,6 +52,8 @@ public:
 
     virtual void remove();
 
+    virtual void unsetSolvedValues();
+
 protected:
     const DcTerminal& getDcTerminal(unsigned long index) const;
     DcTerminal& getDcTerminal(unsigned long index);

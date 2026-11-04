@@ -83,6 +83,8 @@ public:
      */
     virtual bool disconnect(const stdcxx::Predicate<Switch>& isSwitchOpenable, const stdcxx::optional<ThreeSides>& side);
 
+    virtual void unsetSolvedValues();
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

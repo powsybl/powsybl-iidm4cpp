@@ -124,6 +124,8 @@ public:
     void setRatioTapPositionToSolvedTapPosition();
     void setPhaseTapPositionToSolvedTapPosition();
 
+    void unsetSolvedValues() override;
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

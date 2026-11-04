@@ -11,6 +11,8 @@
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BoundaryLine.hpp>
 #include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/Connectable.hpp>
+#include <powsybl/iidm/DcConnectable.hpp>
 #include <powsybl/iidm/Generator.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
@@ -18,6 +20,7 @@
 #include <powsybl/iidm/Switch.hpp>
 #include <powsybl/iidm/Terminal.hpp>
 #include <powsybl/iidm/VoltageLevel.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -106,15 +109,7 @@ std::set<unsigned long> getNodes(const std::string& busId, const VoltageLevel& v
 }
 
 void applySolvedValues(Network& network) {
-    for(auto& twowt : network.getTwoWindingsTransformers()) {
-        twowt.applySolvedValues();
-    }
-    for(auto& threewt : network.getThreeWindingsTransformers()) {
-        threewt.applySolvedValues();
-    }
-    for(auto& sc : network.getShuntCompensators()) {
-        sc.applySolvedValues();
-    }
+    applySolvedTapPositionAndSolvedSectionCount(network);
     for(auto& gen : network.getGenerators()) {
         gen.applySolvedValues();
     }
@@ -138,6 +133,21 @@ void applySolvedTapPositionAndSolvedSectionCount(Network& network) {
     }
     for(auto& sc : network.getShuntCompensators()) {
         sc.applySolvedValues();
+    }
+}
+
+void unsetSolvedValues(Network& network) {
+    for(auto& bus : network.getBusView().getBuses()) {
+        bus.unsetSolvedValues();
+    }
+    for(auto& connectable : network.getConnectables()) {
+        connectable.unsetSolvedValues();
+    }
+    for(auto& dcBus : network.getDcBuses()) {
+        dcBus.setV(stdcxx::nan());
+    }
+    for(auto& dcConnectable : network.getDcConnectables()){
+        dcConnectable.unsetSolvedValues();
     }
 }
 

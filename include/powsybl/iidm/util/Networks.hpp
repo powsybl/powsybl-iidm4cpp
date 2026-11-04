@@ -63,6 +63,11 @@ void applySolvedValues(Network& network);
  */
 void applySolvedTapPositionAndSolvedSectionCount(Network& network);
 
+/**
+ * Replaces all solved values with NaN values, including all P and Q values for AC or I for DC, buses voltage magnitude (and angle),
+ * solved shunt/compensator section counts and tap changers tap positions.
+ */
+void unsetSolvedValues(Network& network);
 
 }  // namespace Networks
 

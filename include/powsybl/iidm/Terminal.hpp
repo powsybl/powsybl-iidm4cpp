@@ -122,6 +122,8 @@ public:
     ThreeSides getSide() const;
     TerminalNumber getTerminalNumber() const;
 
+    void unsetSolvedValues();
+
 protected: // MultiVariantObject
     void allocateVariantArrayElement(const std::set<unsigned long>& indexes, unsigned long sourceIndex) override;
 

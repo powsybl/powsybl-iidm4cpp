@@ -26,6 +26,7 @@
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 #include <powsybl/iidm/VscConverterStation.hpp>
 #include <powsybl/stdcxx/instanceof.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -291,6 +292,11 @@ Bus& Bus::setFictitiousP0(double /*p0*/) {
 Bus& Bus::setFictitiousQ0(double /*q0*/) {
     // do nothing
     return *this;
+}
+
+void Bus::unsetSolvedValues() {
+    setV(stdcxx::nan());
+    setAngle(stdcxx::nan());
 }
 
 void Bus::visitConnectedEquipments(TopologyVisitor& visitor) {

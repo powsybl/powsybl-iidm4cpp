@@ -229,6 +229,11 @@ TerminalNumber Terminal::getTerminalNumber() const {
     return m_terminalNumber;
 }
 
+void Terminal::unsetSolvedValues() {
+    setP(stdcxx::nan());
+    setQ(stdcxx::nan());
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

@@ -9,16 +9,23 @@
 
 #include <powsybl/iidm/Battery.hpp>
 #include <powsybl/iidm/BoundaryLine.hpp>
+#include <powsybl/iidm/Bus.hpp>
+#include <powsybl/iidm/DcBus.hpp>
+#include <powsybl/iidm/DcLine.hpp>
 #include <powsybl/iidm/Generator.hpp>
+#include <powsybl/iidm/LineCommutatedConverter.hpp>
 #include <powsybl/iidm/Load.hpp>
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/ShuntCompensator.hpp>
+#include <powsybl/iidm/TieLine.hpp>
 #include <powsybl/iidm/TwoWindingsTransformer.hpp>
 
 #include <powsybl/iidm/util/Networks.hpp>
 
 #include <powsybl/network/BatteryNetworkFactory.hpp>
 #include <powsybl/network/BoundaryLineNetworkFactory.hpp>
+#include <powsybl/network/DcDetailedNetworkFactory.hpp>
+#include <powsybl/network/EurostagFactory.hpp>
 #include <powsybl/network/FourSubstationsNodeBreakerFactory.hpp>
 
 namespace powsybl {
@@ -95,6 +102,70 @@ BOOST_AUTO_TEST_CASE(applySolvedValuesBoundaryLineTest) {
     BOOST_CHECK_CLOSE(-bl.getTerminal().getQ(), bl.getGeneration().get().getTargetQ(), std::numeric_limits<double>::epsilon());
     BOOST_CHECK_CLOSE(bl.getTerminal().getBusView().getBus().get().getV(), bl.getGeneration().get().getTargetV(), std::numeric_limits<double>::epsilon());
 }
+
+BOOST_AUTO_TEST_CASE(unsetSolvedValuesTest) {
+    Network network = powsybl::network::EurostagFactory::createWithTieLinesAndAreas();
+    TieLine& tl = network.getTieLine("NHV1_NHV2_1");
+    Bus& bus = network.getBusView().getBus("VLHV1_0").get();
+    TwoWindingsTransformer& twt = network.getTwoWindingsTransformer("NHV2_NLOAD");
+    twt.getRatioTapChanger().setSolvedTapPosition(2);
+
+    BOOST_CHECK(!std::isnan(tl.getTerminal1().getP()));
+    BOOST_CHECK(!std::isnan(tl.getTerminal1().getQ()));
+    BOOST_CHECK(!std::isnan(tl.getTerminal2().getP()));
+    BOOST_CHECK(!std::isnan(tl.getTerminal2().getQ()));
+    BOOST_CHECK(!std::isnan(bus.getV()));
+    BOOST_CHECK(!std::isnan(bus.getAngle()));
+    BOOST_CHECK(twt.getRatioTapChanger().getSolvedTapPosition().has_value());
+    BOOST_CHECK_EQUAL(2, twt.getRatioTapChanger().getSolvedTapPosition().get());
+
+    Networks::unsetSolvedValues(network);
+
+    BOOST_CHECK(std::isnan(tl.getTerminal1().getP()));
+    BOOST_CHECK(std::isnan(tl.getTerminal1().getQ()));
+    BOOST_CHECK(std::isnan(tl.getTerminal2().getP()));
+    BOOST_CHECK(std::isnan(tl.getTerminal2().getQ()));
+    BOOST_CHECK(std::isnan(bus.getV()));
+    BOOST_CHECK(std::isnan(bus.getAngle()));
+    BOOST_CHECK(!twt.getRatioTapChanger().getSolvedTapPosition().has_value());
+}
+
+BOOST_AUTO_TEST_CASE(unsetDcSolvedValuesTest) {
+    Network network = powsybl::network::DcDetailedNetworkFactory::createLccMonopoleGroundReturn();
+    DcLine& line = network.getDcLine(powsybl::network::DcDetailedNetworkFactory::DC_LINE1);
+    LineCommutatedConverter& lcc = network.getLineCommutatedConverter("LccFr");
+    DcBus& dcBus = network.getDcBus("dcNodeFrPos_dcBus").get();
+
+    line.getDcTerminal1().setP(10.0);
+    line.getDcTerminal1().setI(20.0);
+
+    lcc.getDcTerminal1().setP(30.0);
+    lcc.getDcTerminal1().setI(40.0);
+    lcc.getTerminal1().setP(50.0);
+    lcc.getTerminal1().setQ(60.0);
+
+    dcBus.setV(100.0);
+
+    BOOST_CHECK(!std::isnan(line.getDcTerminal1().getP()));
+    BOOST_CHECK(!std::isnan(line.getDcTerminal1().getI()));
+    BOOST_CHECK(!std::isnan(lcc.getDcTerminal1().getP()));
+    BOOST_CHECK(!std::isnan(lcc.getDcTerminal1().getI()));
+    BOOST_CHECK(!std::isnan(lcc.getTerminal1().getP()));
+    BOOST_CHECK(!std::isnan(lcc.getTerminal1().getQ()));
+    BOOST_CHECK(!std::isnan(dcBus.getV()));
+
+    Networks::unsetSolvedValues(network);
+
+    BOOST_CHECK(std::isnan(line.getDcTerminal1().getP()));
+    BOOST_CHECK(std::isnan(line.getDcTerminal1().getI()));
+    BOOST_CHECK(std::isnan(lcc.getDcTerminal1().getP()));
+    BOOST_CHECK(std::isnan(lcc.getDcTerminal1().getI()));
+    BOOST_CHECK(std::isnan(lcc.getTerminal1().getP()));
+    BOOST_CHECK(std::isnan(lcc.getTerminal1().getQ()));
+    BOOST_CHECK(std::isnan(dcBus.getV()));
+}
+
+
 BOOST_AUTO_TEST_SUITE_END()
 
 }  // namespace iidm

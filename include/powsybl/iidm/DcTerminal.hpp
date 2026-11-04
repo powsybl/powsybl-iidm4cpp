@@ -127,6 +127,8 @@ public:
      */
     bool disconnect();
 
+    void unsetSolvedValues();
+
 protected:
     const Network& getNetwork() const;
     const Network& getParentNetwork() const;

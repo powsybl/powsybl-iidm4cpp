@@ -159,6 +159,8 @@ public:
 
     virtual void remove() override;
 
+    virtual void unsetSolvedValues() override;
+
     /**
      * Set the idle loss (MW).
      */

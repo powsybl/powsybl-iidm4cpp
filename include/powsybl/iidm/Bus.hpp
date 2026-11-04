@@ -133,6 +133,8 @@ public:
 
     virtual Bus& setV(double v) = 0;
 
+    virtual void unsetSolvedValues();
+
     void visitConnectedEquipments(TopologyVisitor& visitor);
 
     virtual void visitConnectedOrConnectableEquipments(TopologyVisitor& visitor) = 0;

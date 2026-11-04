@@ -127,6 +127,12 @@ unsigned long DcConnectable::getDcTerminalsCount() const {
     return m_dcTerminals.size();
 }
 
+void DcConnectable::unsetSolvedValues() {
+    for (auto& dcTerminal : getDcTerminals()) {
+        dcTerminal.get().unsetSolvedValues();
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

@@ -13,6 +13,7 @@
 #include <powsybl/iidm/Network.hpp>
 #include <powsybl/iidm/VariantManager.hpp>
 #include <powsybl/iidm/VariantManagerHolder.hpp>
+#include <powsybl/stdcxx/math.hpp>
 
 namespace powsybl {
 
@@ -138,7 +139,10 @@ bool DcTerminal::disconnect() {
     return dcTopologyModel.disconnect(*this);
 }
 
-
+void DcTerminal::unsetSolvedValues() {
+    setP(stdcxx::nan());
+    setI(stdcxx::nan());
+}
 
 const Network& DcTerminal::getNetwork() const {
     return m_dcNode.getNetwork();

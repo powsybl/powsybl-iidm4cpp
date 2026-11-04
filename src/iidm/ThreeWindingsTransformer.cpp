@@ -352,6 +352,18 @@ void ThreeWindingsTransformer::setPhaseTapPositionToSolvedTapPosition() {
     }
 }
 
+void ThreeWindingsTransformer::unsetSolvedValues() {
+    Connectable::unsetSolvedValues();
+    for (Leg& leg : getLegs()) {
+        if (leg.hasRatioTapChanger()) {
+            leg.getRatioTapChanger().unsetSolvedTapPosition();
+        }
+        if (leg.hasPhaseTapChanger()) {
+            leg.getPhaseTapChanger().unsetSolvedTapPosition();
+        }
+    }
+}
+
 }  // namespace iidm
 
 }  // namespace powsybl

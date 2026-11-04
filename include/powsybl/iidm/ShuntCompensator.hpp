@@ -82,6 +82,8 @@ public:
     ShuntCompensator& setSolvedSectionCount(unsigned long solvedSectionCount);
     ShuntCompensator& unsetSolvedSectionCount();
 
+    void unsetSolvedValues() override;
+
     ShuntCompensator& setTargetDeadband(double targetDeadband);
 
     ShuntCompensator& setTargetV(double targetV);
